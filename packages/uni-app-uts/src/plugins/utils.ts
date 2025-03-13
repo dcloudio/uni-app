@@ -1,29 +1,35 @@
 import path from 'node:path'
-import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
+import {
+  isAppHarmonyUVueNativeTag,
+  isAppIOSUVueNativeTag,
+  isAppUVueBuiltInEasyComponent,
+} from '@dcloudio/uni-shared'
 import {
   MANIFEST_JSON_UTS,
   PAGES_JSON_UTS,
   type UniViteCopyPluginOptions,
   type UniVitePlugin,
+  createTransformTag,
   initI18nOptions,
   injectAssetPlugin,
+  isUTSCustomElement,
   matchUTSComponent,
   normalizeNodeModules,
   normalizePath,
   parseUTSComponent,
+  removePlugins,
   transformTapToClick,
   transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { ResolvedConfig } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 
 export function createUniOptions(
-  platform: 'android' | 'ios'
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
 ): UniVitePlugin['uni'] {
   return {
     copyOptions() {
-      const platform = process.env.UNI_PLATFORM
       const inputDir = process.env.UNI_INPUT_DIR
       const outputDir = process.env.UNI_OUTPUT_DIR
       const targets: UniViteCopyPluginOptions['targets'] = []
@@ -34,7 +40,12 @@ export function createUniOptions(
             src: 'androidPrivacy.json',
             dest: outputDir,
             transform(source) {
-              const options = initI18nOptions(platform, inputDir, false, true)
+              const options = initI18nOptions(
+                process.env.UNI_PLATFORM,
+                inputDir,
+                false,
+                true
+              )
               if (!options) {
                 return
               }
@@ -49,10 +60,16 @@ export function createUniOptions(
       }
     },
     compilerOptions:
-      platform === 'ios'
+      platform === 'app-ios' || platform === 'app-harmony'
         ? {
             isNativeTag(tag) {
-              return matchUTSComponent(tag) || isAppIOSUVueNativeTag(tag)
+              return (
+                isUTSCustomElement(tag) ||
+                matchUTSComponent(tag) ||
+                (platform === 'app-ios'
+                  ? isAppIOSUVueNativeTag
+                  : isAppHarmonyUVueNativeTag)(tag)
+              )
             },
             nodeTransforms: [
               transformTapToClick,
@@ -76,13 +93,16 @@ export function createUniOptions(
                 // 收集可能的 extApiComponents
                 if (
                   node.type === NodeTypes.ELEMENT &&
-                  node.tagType === ElementTypes.ELEMENT
+                  (node.tagType === ElementTypes.ELEMENT ||
+                    (node.tagType === ElementTypes.COMPONENT &&
+                      isAppUVueBuiltInEasyComponent(node.tag)))
                 ) {
                   if (!parseUTSComponent(node.tag, 'swift')) {
                     addExtApiComponents([node.tag])
                   }
                 }
               },
+              createTransformTag({ 'cover-image': 'image' }),
             ],
           }
         : {},
@@ -121,25 +141,16 @@ const REMOVED_PLUGINS = [
   'vite:dynamic-import-vars',
   'vite:import-glob',
   'vite:build-import-analysis',
-  'vite:esbuild-transpile',
   'vite:terser',
   'vite:reporter',
 ]
 
+if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+  REMOVED_PLUGINS.push('vite:esbuild-transpile')
+}
+
 export function configResolved(config: ResolvedConfig, isAndroidX = false) {
-  const plugins = config.plugins as Plugin[]
-  const len = plugins.length
-  const removedPlugins = REMOVED_PLUGINS.slice(0)
-  if (isAndroidX) {
-    removedPlugins.push('vite:css')
-    removedPlugins.push('vite:css-post')
-  }
-  for (let i = len - 1; i >= 0; i--) {
-    const plugin = plugins[i]
-    if (removedPlugins.includes(plugin.name)) {
-      plugins.splice(i, 1)
-    }
-  }
+  removePlugins(REMOVED_PLUGINS.slice(0), config)
   // console.log(plugins.map((p) => p.name))
   // 强制不inline
   config.build.assetsInlineLimit = 0
@@ -166,6 +177,9 @@ export function normalizeManifestJson(userManifestJson: Record<string, any>) {
       app.distribute = {}
     }
     app.distribute['_uni-app-x_'] = {
+      pageOrientation,
+    }
+    app.distribute.globalStyle = {
       pageOrientation,
     }
   }

@@ -36,7 +36,7 @@ describe('miniProgram:jsonFile', () => {
     })
     test(`miniProgram:jsonFile:findMiniProgramUsingComponents`, () => {
       let json = findUsingComponentsJson(
-        '../wxcomponents/xr-start',
+        '../wxcomponents/xr-start/xr-start',
         'wxcomponents'
       )
       expect(json).toEqual(xrStart)

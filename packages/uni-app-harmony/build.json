@@ -27,12 +27,8 @@
     },
     "external": [
       "vue",
-      {
-        "source": "^@ohos.*"
-      },
-      {
-        "source": "^@hms.*"
-      }
+      "@vue/shared",
+      "@dcloudio/uni-shared"
     ]
   },
   {
@@ -43,9 +39,24 @@
       "format": "cjs"
     },
     "external": [
+      "@dcloudio/uni-app-uts",
       "@dcloudio/uni-app-vite",
       "@dcloudio/uni-cli-shared",
       "fs-extra"
     ]
+  },
+  {
+    "input": {
+      "src/api/index.ts": "dist/uni.api.js"
+    },
+    "output": {
+      "format": "esm"
+    },
+    "external": [
+      "@vue/shared"
+    ],
+    "replacements": {
+      "__X__": "true"
+    }
   }
 ]

@@ -1,7 +1,8 @@
 import type { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
 import {
   createIsCustomElement,
-  isMiniProgramNativeTag as isNativeTag,
+  isMiniProgramNativeTag,
+  isMiniProgramUVueNativeTag,
 } from '@dcloudio/uni-shared'
 import { compile } from '../src/index'
 import type { CompilerOptions } from '../src/options'
@@ -29,7 +30,8 @@ export function assert(
   template: string,
   templateCode: string,
   renderCode: string,
-  options: CompilerOptions = {}
+  options: CompilerOptions = {},
+  miniProgramOptions: Partial<MiniProgramCompilerOptions> = {}
 ) {
   const compilerOptions: CompilerOptions = {
     root: '',
@@ -37,13 +39,17 @@ export function assert(
     filename: 'foo.vue',
     prefixIdentifiers: true,
     inline: true,
-    isNativeTag,
+    isNativeTag: options.isX
+      ? isMiniProgramUVueNativeTag
+      : isMiniProgramNativeTag,
     isCustomElement: createIsCustomElement([]),
     generatorOpts: {
       concise: true,
     },
     miniProgram: {
       ...miniProgram,
+      ...options.miniProgram,
+      ...miniProgramOptions,
     },
     ...options,
   }

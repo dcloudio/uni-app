@@ -20,7 +20,7 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   { resolve, reject }
 ) => {
   const { url, events, animationType, animationDuration } = args
-  const { path, query } = parseUrl(url)
+  const { path, query } = parseUrl(url as string)
   const [aniType, aniDuration] = initAnimation(
     path,
     animationType,
@@ -30,7 +30,7 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
     path,
     () => {
       _navigateTo({
-        url,
+        url: url as string,
         path,
         query,
         events,
@@ -76,7 +76,8 @@ function _navigateTo({
       aniDuration,
       () => {
         resolve({ eventChannel })
-      }
+      },
+      0
     )
     setStatusBarStyle()
   })

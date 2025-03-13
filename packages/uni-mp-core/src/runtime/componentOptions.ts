@@ -19,6 +19,7 @@ import {
 import type { MPComponentInstance } from '..'
 
 import type { MPComponentOptions } from './component'
+import { resolvePropValue } from './componentProps'
 
 export function initData(_: ComponentOptions) {
   return {}
@@ -31,13 +32,17 @@ export function initPropsObserver(componentOptions: MPComponentOptions) {
       return
     }
     if (this.$vm) {
-      updateComponentProps(up, this.$vm.$)
-    } else if (this.properties.uT === 'm') {
+      updateComponentProps(resolvePropValue(up), this.$vm.$)
+    } else if (resolvePropValue(this.properties.uT) === 'm') {
       // 小程序组件
-      updateMiniProgramComponentProperties(up, this)
+      updateMiniProgramComponentProperties(resolvePropValue(up), this)
     }
   }
-  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {
+  if (
+    __PLATFORM__ === 'mp-weixin' ||
+    __PLATFORM__ === 'mp-qq' ||
+    __PLATFORM__ === 'mp-harmony'
+  ) {
     if (!componentOptions.observers) {
       componentOptions.observers = {}
     }
@@ -53,8 +58,9 @@ export function updateMiniProgramComponentProperties(
 ) {
   const prevProps =
     __PLATFORM__ === 'mp-alipay'
-      ? (mpInstance.props as unknown as Data)
+      ? (mpInstance.props as unknown as Record<string, unknown>)
       : mpInstance.properties
+
   const nextProps = findComponentPropsData(up) || {}
   if (hasPropsChanged(prevProps, nextProps, false)) {
     mpInstance.setData(nextProps)
@@ -89,8 +95,8 @@ export function updateComponentProps(
 }
 
 function hasPropsChanged(
-  prevProps: Data,
-  nextProps: Data,
+  prevProps: Record<string, unknown>,
+  nextProps: Record<string, unknown>,
   checkLen: boolean = true
 ): boolean {
   const nextKeys = Object.keys(nextProps)

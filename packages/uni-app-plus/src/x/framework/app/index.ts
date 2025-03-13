@@ -7,6 +7,7 @@ import { defineGlobalData } from '@dcloudio/uni-core'
 // import { initTabBar } from './initTabBar'
 import { initGlobalEvent } from './initGlobalEvent'
 import { initAppLaunch } from './initAppLaunch'
+import { initAppError } from './initAppError'
 // import { clearTempFile } from './clearTempFile'
 import { initSubscribeHandlers } from './subscriber'
 import { initVueApp } from '../../../service/framework/app/vueApp'
@@ -20,29 +21,11 @@ import type {
   SwitchTabOptions,
 } from '@dcloudio/uni-app-x/types/uni'
 import type { UniApp } from '@dcloudio/uni-app-x/types/app'
-import { UniEventBus } from '../../../service/framework/page/eventBus'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
-
-class UniAppImpl extends UniEventBus implements UniApp {
-  get vm() {
-    return appCtx
-  }
-  get $vm() {
-    return appCtx
-  }
-  get globalData() {
-    return appCtx?.globalData || {}
-  }
-  getAndroidApplication() {
-    return null
-  }
-}
-
-let $uniApp = new UniAppImpl()
 
 export const entryPageState = {
   isReady: false,
@@ -87,8 +70,14 @@ function initAppVm(appVm: ComponentPublicInstance) {
   // TODO uni-app x useI18n
 }
 
-export function getApp() {
-  return $uniApp
+export function initUniApp(uniApp: UniApp) {
+  uniApp.vm = appCtx
+  uniApp.$vm = appCtx
+  Object.defineProperty(uniApp, 'globalData', {
+    get: () => {
+      return appCtx.globalData || {}
+    },
+  })
 }
 
 /**
@@ -96,7 +85,11 @@ export function getApp() {
  * @param appVm
  * @param nativeApp
  */
-export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
+export function registerApp(
+  appVm: ComponentPublicInstance,
+  nativeApp: IApp,
+  uniApp: UniApp
+) {
   if (__DEV__) {
     console.log(formatLog('registerApp'))
   }
@@ -119,6 +112,7 @@ export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
 
   appCtx = appVm
   initAppVm(appCtx)
+  initUniApp(uniApp)
 
   extend(appCtx, defaultApp) // 拷贝默认实现
 
@@ -133,6 +127,9 @@ export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
 
   // onLaunch 触发时机 在 WebviewReady 之前
   initAppLaunch(appVm)
+
+  initAppError(appVm, nativeApp)
+
   initSubscribeHandlers()
 
   // // 10s后清理临时文件

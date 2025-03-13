@@ -1,4 +1,4 @@
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Logger, Plugin } from 'vite'
 import { extend, isString } from '@vue/shared'
 import {
   checkUpdate,
@@ -53,7 +53,10 @@ function initCheckUpdate() {
 export function initLogger({
   logger,
   nvue,
-}: ResolvedConfig & { nvue?: boolean }) {
+}: {
+  logger: Logger
+  nvue?: boolean
+}) {
   const { info, warn, error } = logger
   logger.info = (msg, opts) => {
     msg = formatInfoMsg(msg, extend(opts || {}, { nvue }))
@@ -73,4 +76,5 @@ export function initLogger({
       return error(msg, opts)
     }
   }
+  return logger
 }

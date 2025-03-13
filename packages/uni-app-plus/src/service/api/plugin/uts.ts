@@ -3,6 +3,7 @@ import {
   capitalize,
   extend,
   hasOwn,
+  isArray,
   isPlainObject,
   isString,
 } from '@vue/shared'
@@ -10,10 +11,11 @@ declare const uni: any
 declare const plus: any
 let callbackId = 1
 let proxy: any
-const callbacks: Record<string, Function> = {}
+
+const keepAliveCallbacks: Record<string, Function> = {}
 
 function isUniElement(obj: any) {
-  return typeof obj?.getNodeId === 'function' && obj?.pageId
+  return obj && typeof obj.getNodeId === 'function' && obj.pageId
 }
 
 function isComponentPublicInstance(instance: any) {
@@ -23,9 +25,37 @@ function isComponentPublicInstance(instance: any) {
 function parseElement(obj: any) {
   if (isUniElement(obj)) {
     return obj
-  } else if (isComponentPublicInstance(obj)) {
+  }
+}
+
+function parseComponentPublicInstance(obj: any) {
+  if (isComponentPublicInstance(obj)) {
     return obj.$el
   }
+}
+
+function serializeArrayBuffer(obj: ArrayBuffer) {
+  // @ts-expect-error ios 提供了 ArrayBufferWrapper 类来处理 ArrayBuffer 的传递
+  if (typeof ArrayBufferWrapper !== 'undefined') {
+    // @ts-expect-error
+    return { __type__: 'ArrayBuffer', value: new ArrayBufferWrapper(obj) }
+  }
+  return { __type__: 'ArrayBuffer', value: obj }
+}
+
+// 序列化 UniElement | ComponentPublicInstance
+function serializeUniElement(
+  el: any,
+  type: 'UniElement' | 'ComponentPublicInstance'
+) {
+  let nodeId = ''
+  let pageId = ''
+  // 非 x 可能不存在 getNodeId 方法？
+  if (el && el.getNodeId) {
+    pageId = el.pageId
+    nodeId = el.getNodeId()
+  }
+  return { __type__: type, pageId, nodeId }
 }
 
 function toRaw(observed?: unknown): unknown {
@@ -33,30 +63,70 @@ function toRaw(observed?: unknown): unknown {
   return raw ? toRaw(raw) : observed
 }
 
-export function normalizeArg(arg: unknown) {
+export function normalizeArg(
+  arg: unknown,
+  callbacks: Record<string, Function>,
+  keepAlive: boolean,
+  context: {
+    depth: number
+    nested: boolean
+  }
+) {
   arg = toRaw(arg)
   if (typeof arg === 'function') {
-    // 查找该函数是否已缓存
-    const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg)
-    const id = oldId ? parseInt(oldId) : callbackId++
-    callbacks[id] = arg
-    return id
-  } else if (isPlainObject(arg) || isUniElement(arg)) {
-    // 判断值是否为元素
-    const el = parseElement(arg)
-    if (el) {
-      let nodeId = ''
-      let pageId = ''
-      // 非 x 可能不存在 getNodeId 方法？
-      if (el && el.getNodeId) {
-        pageId = el.pageId
-        nodeId = el.getNodeId()
-      }
-      return { pageId, nodeId }
+    let id: number
+    if (keepAlive) {
+      // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+      const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg)
+      id = oldId ? parseInt(oldId) : callbackId++
+      callbacks[id] = arg
     } else {
-      Object.keys(arg as Object).forEach((name) => {
-        ;(arg as any)[name] = normalizeArg((arg as any)[name])
+      id = callbackId++
+      callbacks[id] = arg
+    }
+    return id
+  } else if (isArray(arg)) {
+    context.depth++
+    return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context))
+    // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
+  } else if (arg instanceof ArrayBuffer) {
+    if (context.depth > 0) {
+      context.nested = true
+    }
+    return serializeArrayBuffer(arg)
+  } else if (isPlainObject(arg) || isUniElement(arg)) {
+    const uniElement = parseElement(arg)
+    const componentPublicInstanceUniElement = !uniElement
+      ? parseComponentPublicInstance(arg)
+      : undefined
+    const el = uniElement || componentPublicInstanceUniElement
+    if (el) {
+      if (context.depth > 0) {
+        context.nested = true
+      }
+      return serializeUniElement(
+        el,
+        uniElement ? 'UniElement' : 'ComponentPublicInstance'
+      )
+    } else {
+      // 必须复制，否则会污染原始对象，比如：
+      // const obj = {
+      //   a: 1,
+      //   b: () => {}
+      // }
+      // const newObj = normalizeArg(obj, {}, false)
+      // newObj.a = 2 // 这会污染原始对象 obj
+      const newArg = {}
+      Object.keys(arg as object).forEach((name) => {
+        context.depth++
+        newArg[name] = normalizeArg(
+          (arg as any)[name],
+          callbacks,
+          keepAlive,
+          context
+        )
       })
+      return newArg
     }
   }
   return arg
@@ -111,6 +181,10 @@ interface ProxyFunctionOptions extends ModuleOptions {
    */
   companion?: boolean
   /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
+  /**
    * 方法参数列表
    */
   params: Parameter[]
@@ -134,6 +208,7 @@ interface ProxyInterfaceOptions extends ModuleOptions {
   methods: {
     [name: string]: {
       async?: boolean
+      keepAlive: boolean
       params: Parameter[]
       return?: ProxyFunctionReturnOptions
     }
@@ -157,6 +232,7 @@ interface ProxyClassOptions extends ModuleOptions {
   methods: {
     [name: string]: {
       async?: boolean
+      keepAlive: boolean
       params: Parameter[]
       return?: ProxyFunctionReturnOptions
     }
@@ -164,6 +240,7 @@ interface ProxyClassOptions extends ModuleOptions {
   staticMethods: {
     [name: string]: {
       async?: boolean
+      keepAlive: boolean
       params: Parameter[]
       return?: ProxyFunctionReturnOptions
     }
@@ -187,13 +264,13 @@ interface InvokeInstanceArgs extends ModuleOptions {
    */
   type: InvokeType
   /**
-   * 是否抛出异常
-   */
-  // throws: boolean
-  /**
    * 回调是否持久保留
    */
   keepAlive: boolean
+  /**
+   * 参数中是否包含嵌套序列化对象
+   */
+  nested: boolean
   /**
    * 执行方法时的真实参数列表
    */
@@ -228,6 +305,10 @@ interface InvokeStaticArgs extends ModuleOptions {
    * 回调是否持久保留
    */
   keepAlive: boolean
+  /**
+   * 参数中是否包含嵌套序列化对象
+   */
+  nested: boolean
   /**
    * 执行方法时的真实参数列表
    */
@@ -394,6 +475,7 @@ function initProxyFunction(
     name: methodName,
     method,
     companion,
+    keepAlive,
     params: methodParams,
     return: returnOptions,
     errMsg,
@@ -401,21 +483,11 @@ function initProxyFunction(
   instanceId: number,
   proxy?: unknown
 ) {
-  const keepAlive =
-    methodName.indexOf('on') === 0 &&
-    methodParams.length === 1 &&
-    methodParams[0].type === 'UTSCallback'
-  // const throws = async
-  const invokeCallback = ({ id, name, params }: InvokeCallbackParamsRes) => {
-    const callback = callbacks[id!]
-    if (callback) {
-      callback(...params)
-      if (!keepAlive) {
-        delete callbacks[id]
-      }
-    } else {
-      console.error(`${pkg}${cls}.${methodName} ${name} is not found`)
-    }
+  if (!keepAlive) {
+    keepAlive =
+      (methodName.indexOf('on') === 0 || methodName.indexOf('off') === 0) &&
+      methodParams.length === 1 &&
+      methodParams[0].type === 'UTSCallback'
   }
   const baseArgs: InvokeArgs = instanceId
     ? {
@@ -425,8 +497,8 @@ function initProxyFunction(
         type,
         name: methodName,
         method: methodParams,
+        nested: false,
         keepAlive,
-        // throws,
       }
     : {
         moduleName,
@@ -437,16 +509,44 @@ function initProxyFunction(
         type,
         companion,
         method: methodParams,
+        nested: false,
         keepAlive,
-        // throws,
       }
   return (...args: unknown[]) => {
     if (errMsg) {
       throw new Error(errMsg)
     }
+    // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+    // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+    const callbacks = keepAlive ? keepAliveCallbacks : {}
+    const invokeCallback = ({ id, name, params }: InvokeCallbackParamsRes) => {
+      const callback = callbacks[id!]
+      if (callback) {
+        callback(...params)
+        if (!keepAlive) {
+          delete callbacks[id]
+        }
+      } else {
+        console.error(
+          `uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace(
+            'ByJs',
+            ''
+          )} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`
+        )
+      }
+    }
+    const context = {
+      depth: 0,
+      nested: false,
+    }
     const invokeArgs = extend({}, baseArgs, {
-      params: args.map((arg) => normalizeArg(arg)),
+      params: args.map((arg) =>
+        normalizeArg(arg, callbacks, keepAlive, context)
+      ),
     })
+
+    invokeArgs.nested = context.nested
+
     if (async) {
       return new Promise((resolve, reject) => {
         if (__DEV__) {
@@ -579,7 +679,11 @@ export function initUTSProxyClass(
           'constructor',
           false,
           extend(
-            { name: 'constructor', params: constructorParams },
+            {
+              name: 'constructor',
+              keepAlive: false,
+              params: constructorParams,
+            },
             baseOptions
           ),
           0
@@ -601,12 +705,18 @@ export function initUTSProxyClass(
             //实例方法
             name = parseClassMethodName(name, methods)
             if (hasOwn(methods, name)) {
-              const { async, params, return: returnOptions } = methods[name]
+              const {
+                async,
+                keepAlive,
+                params,
+                return: returnOptions,
+              } = methods[name]
               target[name] = initUTSInstanceMethod(
                 !!async,
                 extend(
                   {
                     name,
+                    keepAlive,
                     params,
                     return: returnOptions,
                   },
@@ -623,7 +733,7 @@ export function initUTSProxyClass(
                 id: instance.__instanceId,
                 type: 'getter',
                 keepAlive: false,
-                // throws: false,
+                nested: false,
                 name: name as string,
                 errMsg,
               })
@@ -643,6 +753,7 @@ export function initUTSProxyClass(
                   extend(
                     {
                       name: name as string,
+                      keepAlive: false,
                       params: [param],
                     },
                     baseOptions
@@ -658,76 +769,85 @@ export function initUTSProxyClass(
           return false
         },
       })
-      return proxy
+      return Object.freeze(proxy)
     }
   }
   const staticPropSetterCache: Record<string, Function> = {}
   const staticMethodCache: Record<string, Function> = {}
-  return new Proxy(ProxyClass, {
-    get(target, name, receiver) {
-      name = parseClassMethodName(name, staticMethods)
-      if (hasOwn(staticMethods, name)) {
-        if (!staticMethodCache[name as string]) {
-          const { async, params, return: returnOptions } = staticMethods[name]
-          // 静态方法
-          staticMethodCache[name] = initUTSStaticMethod(
-            !!async,
-            extend(
-              {
-                name,
-                companion: true,
-                params,
-                return: returnOptions,
-              },
-              baseOptions
-            )
-          )
-        }
-        return staticMethodCache[name]
-      }
-      if (staticProps.includes(name as string)) {
-        return invokePropGetter(
-          extend(
-            {
-              name: name as string,
-              companion: true,
-              type: 'getter',
-            },
-            baseOptions
-          ) as InvokeStaticArgs
-        )
-      }
-      return Reflect.get(target, name, receiver)
-    },
-    set(_, name, newValue) {
-      if (staticProps.includes(name as string)) {
-        // 静态属性
-        const setter = parseClassPropertySetter(name as string)
-        if (!staticPropSetterCache[setter]) {
-          const param = staticSetters[name as string]
-          if (param) {
-            staticPropSetterCache[setter] = initProxyFunction(
-              'setter',
-              false,
+  return Object.freeze(
+    new Proxy(ProxyClass, {
+      get(target, name, receiver) {
+        name = parseClassMethodName(name, staticMethods)
+        if (hasOwn(staticMethods, name)) {
+          if (!staticMethodCache[name as string]) {
+            const {
+              async,
+              keepAlive,
+              params,
+              return: returnOptions,
+            } = staticMethods[name]
+            // 静态方法
+            staticMethodCache[name] = initUTSStaticMethod(
+              !!async,
               extend(
                 {
-                  name: name as string,
-                  params: [param],
+                  name,
+                  companion: true,
+                  keepAlive,
+                  params,
+                  return: returnOptions,
                 },
                 baseOptions
-              ),
-              0
+              )
             )
           }
+          return staticMethodCache[name]
         }
-        staticPropSetterCache[parseClassPropertySetter(name as string)](
-          newValue
-        )
-        return true
-      }
-      return false
-    },
-  })
+        if (staticProps.includes(name as string)) {
+          return invokePropGetter(
+            extend(
+              {
+                name: name as string,
+                companion: true,
+                type: 'getter',
+              },
+              baseOptions
+            ) as InvokeStaticArgs
+          )
+        }
+        return Reflect.get(target, name, receiver)
+      },
+      set(_, name, newValue) {
+        if (staticProps.includes(name as string)) {
+          // 静态属性
+          const setter = parseClassPropertySetter(name as string)
+          if (!staticPropSetterCache[setter]) {
+            const param = staticSetters[name as string]
+            if (param) {
+              staticPropSetterCache[setter] = initProxyFunction(
+                'setter',
+                false,
+                extend(
+                  {
+                    name: name as string,
+                    keepAlive: false,
+                    params: [param],
+                  },
+                  baseOptions
+                ),
+                0
+              )
+            }
+          }
+          staticPropSetterCache[parseClassPropertySetter(name as string)](
+            newValue
+          )
+          return true
+        }
+        return false
+      },
+    })
+  )
 }
 
 function isUTSAndroid() {

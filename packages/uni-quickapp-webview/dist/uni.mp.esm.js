@@ -1,7 +1,100 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
-import { isArray, isFunction, hasOwn, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, isRef, pruneComponentPropsCache } from 'vue';
+import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
+import { nextTick, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+const EXTRAS = ['externalClasses'];
+function initExtraOptions(miniProgramComponentOptions, vueOptions) {
+    EXTRAS.forEach((name) => {
+        if (hasOwn(vueOptions, name)) {
+            miniProgramComponentOptions[name] = vueOptions[name];
+        }
+    });
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function selectAllComponents(mpInstance, selector, $refs) {
+    const components = mpInstance.selectAllComponents(selector);
+    components.forEach((component) => {
+        const ref = component.properties.uR;
+        $refs[ref] = component.$vm || component;
+    });
+}
+function initRefs(instance, mpInstance) {
+    Object.defineProperty(instance, 'refs', {
+        get() {
+            const $refs = {};
+            selectAllComponents(mpInstance, '.r', $refs);
+            const forComponents = mpInstance.selectAllComponents('.r-i-f');
+            forComponents.forEach((component) => {
+                const ref = component.properties.uR;
+                if (!ref) {
+                    return;
+                }
+                if (!$refs[ref]) {
+                    $refs[ref] = [];
+                }
+                $refs[ref].push(component.$vm || component);
+            });
+            return $refs;
+        },
+    });
+}
+function nextSetDataTick(mpInstance, fn) {
+    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
+    {
+        mpInstance.setData({ r1: 1 }, () => fn());
+    }
+}
+function initSetRef(mpInstance) {
+    if (!mpInstance._$setRef) {
+        mpInstance._$setRef = (fn) => {
+            nextTick(() => nextSetDataTick(mpInstance, fn));
+        };
+    }
+}
+let triggerEventId = 0;
+const triggerEventDetails = {};
+function wrapTriggerEventArgs(detail, options) {
+    triggerEventId++;
+    triggerEventDetails[triggerEventId] = detail;
+    return [triggerEventId, options];
+}
+function getTriggerEventDetail(eventId) {
+    const detail = triggerEventDetails[eventId];
+    delete triggerEventDetails[eventId];
+    return detail;
+}
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        localeLanguage =
+            normalizeLocale(qa.getSystemInfoSync().language) || LOCALE_EN;
+    }
+    return localeLanguage;
+}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -28,6 +121,9 @@ function initBaseInstance(instance, options) {
     ctx.$mpType = options.mpType;
     ctx.$mpPlatform = "quickapp-webview";
     ctx.$scope = options.mpInstance;
+    {
+        ctx.$getTriggerEventDetail = getTriggerEventDetail;
+    }
     // TODO @deprecated
     ctx.$mp = {};
     if (__VUE_OPTIONS_API__) {
@@ -205,8 +301,9 @@ function parseApp(instance, parseAppOptions) {
         onLaunch(options) {
             this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
-            if (this.$vm && ctx.$scope) {
+            if (this.$vm && ctx.$scope && ctx.$callHook) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
+                // $scope值在微信小程序混合分包情况下存在，额外用$callHook兼容判断处理
                 return;
             }
             initBaseInstance(internalInstance, {
@@ -218,11 +315,12 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, options);
         },
     };
-    const { onError } = internalInstance;
-    if (onError) {
-        internalInstance.appContext.config.errorHandler = (err) => {
-            instance.$callHook(ON_ERROR, err);
-        };
+    const onErrorHandlers = qa.$onErrorHandlers;
+    if (onErrorHandlers) {
+        onErrorHandlers.forEach((fn) => {
+            injectHook(ON_ERROR, fn, internalInstance);
+        });
+        onErrorHandlers.length = 0;
     }
     initLocale(instance);
     const vueOptions = instance.$.type;
@@ -232,19 +330,16 @@ function parseApp(instance, parseAppOptions) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
     }
-    if (parseAppOptions) {
-        parseAppOptions.parse(appOptions);
-    }
     return appOptions;
 }
 function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
-        return App(parseApp(vm, parseAppOptions));
+        return App(parseApp(vm));
     };
 }
 function initCreateSubpackageApp(parseAppOptions) {
     return function createApp(vm) {
-        const appOptions = parseApp(vm, parseAppOptions);
+        const appOptions = parseApp(vm);
         const app = isFunction(getApp) &&
             getApp({
                 allowDefault: true,
@@ -290,7 +385,7 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(qa.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(getLocaleLanguage());
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;
@@ -299,77 +394,6 @@ function initLocale(appVm) {
             locale.value = v;
         },
     });
-}
-
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-const EXTRAS = ['externalClasses'];
-function initExtraOptions(miniProgramComponentOptions, vueOptions) {
-    EXTRAS.forEach((name) => {
-        if (hasOwn(vueOptions, name)) {
-            miniProgramComponentOptions[name] = vueOptions[name];
-        }
-    });
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function selectAllComponents(mpInstance, selector, $refs) {
-    const components = mpInstance.selectAllComponents(selector);
-    components.forEach((component) => {
-        const ref = component.properties.uR;
-        $refs[ref] = component.$vm || component;
-    });
-}
-function initRefs(instance, mpInstance) {
-    Object.defineProperty(instance, 'refs', {
-        get() {
-            const $refs = {};
-            selectAllComponents(mpInstance, '.r', $refs);
-            const forComponents = mpInstance.selectAllComponents('.r-i-f');
-            forComponents.forEach((component) => {
-                const ref = component.properties.uR;
-                if (!ref) {
-                    return;
-                }
-                if (!$refs[ref]) {
-                    $refs[ref] = [];
-                }
-                $refs[ref].push(component.$vm || component);
-            });
-            return $refs;
-        },
-    });
-}
-function nextSetDataTick(mpInstance, fn) {
-    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
-    mpInstance.setData({ r1: 1 }, () => fn());
-}
-function initSetRef(mpInstance) {
-    if (!mpInstance._$setRef) {
-        mpInstance._$setRef = (fn) => {
-            nextTick(() => nextSetDataTick(mpInstance, fn));
-        };
-    }
 }
 
 const builtInProps = [
@@ -400,20 +424,23 @@ function initDefaultProps(options, isBehavior = false) {
             };
         });
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+        function observerSlots(newVal) {
+            const $slots = Object.create(null);
+            newVal &&
+                newVal.forEach((slotName) => {
+                    $slots[slotName] = true;
+                });
+            this.setData({
+                $slots,
+            });
+        }
         properties.uS = {
             type: null,
             value: [],
-            observer: function (newVal) {
-                const $slots = Object.create(null);
-                newVal &&
-                    newVal.forEach((slotName) => {
-                        $slots[slotName] = true;
-                    });
-                this.setData({
-                    $slots,
-                });
-            },
         };
+        {
+            properties.uS.observer = observerSlots;
+        }
     }
     if (options.behaviors) {
         // wx://form-field
@@ -503,14 +530,14 @@ function initPageProps({ properties }, rawProps) {
 function findPropsData(properties, isPage) {
     return ((isPage
         ? findPagePropsData(properties)
-        : findComponentPropsData(properties.uP)) || {});
+        : findComponentPropsData(resolvePropValue(properties.uP))) || {});
 }
 function findPagePropsData(properties) {
     const propsData = {};
     if (isPlainObject(properties)) {
         Object.keys(properties).forEach((name) => {
             if (builtInProps.indexOf(name) === -1) {
-                propsData[name] = properties[name];
+                propsData[name] = resolvePropValue(properties[name]);
             }
         });
     }
@@ -532,6 +559,9 @@ function initFormField(vm) {
         });
     }
 }
+function resolvePropValue(prop) {
+    return prop;
+}
 
 function initData(_) {
     return {};
@@ -543,11 +573,11 @@ function initPropsObserver(componentOptions) {
             return;
         }
         if (this.$vm) {
-            updateComponentProps(up, this.$vm.$);
+            updateComponentProps(resolvePropValue(up), this.$vm.$);
         }
-        else if (this.properties.uT === 'm') {
+        else if (resolvePropValue(this.properties.uT) === 'm') {
             // 小程序组件
-            updateMiniProgramComponentProperties(up, this);
+            updateMiniProgramComponentProperties(resolvePropValue(up), this);
         }
     };
     {
@@ -623,7 +653,7 @@ function applyOptions(componentOptions, vueOptions) {
     componentOptions.behaviors = initBehaviors(vueOptions);
 }
 
-function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handleLink, initLifetimes, }) {
+function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, initRelation, handleLink, initLifetimes, }) {
     vueOptions = vueOptions.default || vueOptions;
     const options = {
         multipleSlots: true,
@@ -709,6 +739,7 @@ function parsePage(vueOptions, parseOptions) {
     const miniProgramPageOptions = parseComponent(vueOptions, {
         mocks,
         isPage,
+        isPageInProject: true,
         initRelation,
         handleLink,
         initLifetimes,
@@ -716,7 +747,9 @@ function parsePage(vueOptions, parseOptions) {
     initPageProps(miniProgramPageOptions, (vueOptions.default || vueOptions).props);
     const methods = miniProgramPageOptions.methods;
     methods.onLoad = function (query) {
-        this.options = query;
+        {
+            this.options = query;
+        }
         this.$page = {
             fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
         };
@@ -742,7 +775,18 @@ const MPComponent = Component;
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
     const newTriggerEvent = function (event, ...args) {
-        return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
+        {
+            if (event !== '__l' && event !== '__e') {
+                // 忽略 handleLink，还有其他内置事件吗？
+                // triggerEvent的参数被序列化，导致vue的响应式数据对比始终不相等，从而陷入死循环
+                // 比如 uni-ui 的 collapse 组件的v-model
+                args = wrapTriggerEventArgs(args[0], args[1]);
+            }
+        }
+        return oldTriggerEvent.apply(mpInstance, [
+            customizeEvent(event),
+            ...args,
+        ]);
     };
     // 京东小程序triggerEvent为只读属性
     try {
@@ -781,117 +825,19 @@ Component = function (options) {
     return MPComponent(options);
 };
 
-function provide(instance, key, value) {
-    if (!instance) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`provide() can only be used inside setup().`);
-        }
-    }
-    else {
-        let provides = instance.provides;
-        // by default an instance inherits its parent's provides object
-        // but when it needs to provide values of its own, it creates its
-        // own provides object using parent provides object as prototype.
-        // this way in `inject` we can simply look up injections from direct
-        // parent and let the prototype chain do the work.
-        const parentProvides = instance.parent && instance.parent.provides;
-        if (parentProvides === provides) {
-            provides = instance.provides = Object.create(parentProvides);
-        }
-        // TS doesn't allow symbol as index type
-        provides[key] = value;
-    }
-}
-function initProvide(instance) {
-    const provideOptions = instance.$options.provide;
-    if (!provideOptions) {
-        return;
-    }
-    const provides = isFunction(provideOptions)
-        ? provideOptions.call(instance)
-        : provideOptions;
-    const internalInstance = instance.$;
-    for (const key in provides) {
-        provide(internalInstance, key, provides[key]);
-    }
-}
-function inject(instance, key, defaultValue, treatDefaultAsFactory = false) {
-    if (instance) {
-        // #2400
-        // to support `app.use` plugins,
-        // fallback to appContext's `provides` if the intance is at root
-        const provides = instance.parent == null
-            ? instance.vnode.appContext && instance.vnode.appContext.provides
-            : instance.parent.provides;
-        if (provides && key in provides) {
-            // TS doesn't allow symbol as index type
-            return provides[key];
-        }
-        else if (arguments.length > 1) {
-            return treatDefaultAsFactory && isFunction(defaultValue)
-                ? defaultValue()
-                : defaultValue;
-        }
-        else if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`injection "${String(key)}" not found.`);
-        }
-    }
-    else if ((process.env.NODE_ENV !== 'production')) {
-        console.warn(`inject() can only be used inside setup() or functional components.`);
-    }
-}
-function initInjections(instance) {
-    const injectOptions = instance.$options.inject;
-    if (!injectOptions) {
-        return;
-    }
-    const internalInstance = instance.$;
-    const ctx = internalInstance.ctx;
-    if (isArray(injectOptions)) {
-        for (let i = 0; i < injectOptions.length; i++) {
-            const key = injectOptions[i];
-            ctx[key] = inject(internalInstance, key);
-        }
-    }
-    else {
-        for (const key in injectOptions) {
-            const opt = injectOptions[key];
-            let injected;
-            if (isObject(opt)) {
-                if ('default' in opt) {
-                    injected = inject(internalInstance, opt.from || key, opt.default, true /* treat default function as factory */);
-                }
-                else {
-                    injected = inject(internalInstance, opt.from || key);
-                }
-            }
-            else {
-                injected = inject(internalInstance, opt);
-            }
-            if (isRef(injected)) {
-                Object.defineProperty(ctx, key, {
-                    enumerable: true,
-                    configurable: true,
-                    get: () => injected.value,
-                    set: (v) => (injected.value = v),
-                });
-            }
-            else {
-                ctx[key] = injected;
-            }
-        }
-    }
-}
-
 // @ts-expect-error
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function attached() {
         initSetRef(this);
         const properties = this.properties;
-        initVueIds(properties.uI, this);
+        initVueIds(resolvePropValue(properties.uI), this);
         const relationOptions = {
             vuePid: this._$vuePid,
         };
+        {
+            // 处理父子关系
+            initRelation(this, relationOptions);
+        }
         // 初始化 vue 实例
         const mpInstance = this;
         const mpType = isPage(mpInstance) ? 'page' : 'component';
@@ -905,7 +851,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         }, {
             mpType,
             mpInstance,
-            slots: properties.uS || {}, // vueSlots
+            slots: resolvePropValue(properties.uS) || {}, // vueSlots
             parentComponent: relationOptions.parent && relationOptions.parent.$,
             onBeforeSetup(instance, options) {
                 initRefs(instance, mpInstance);
@@ -913,17 +859,43 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
                 initComponentInstance(instance, options);
             },
         });
+        if (process.env.UNI_DEBUG) {
+            console.log('uni-app:[' +
+                Date.now() +
+                '][' +
+                (mpInstance.is || mpInstance.route) +
+                '][' +
+                this.$vm.$.uid +
+                ']attached');
+        }
         if (mpType === 'component') {
             initFormField(this.$vm);
         }
-        if (mpType === 'page') {
-            if (__VUE_OPTIONS_API__) {
-                initInjections(this.$vm);
-                initProvide(this.$vm);
+    }
+    function ready() {
+        if (process.env.UNI_DEBUG) {
+            console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
+        }
+        if (this.$vm) {
+            if (isPage(this)) {
+                if (this.pageinstance) {
+                    this.__webviewId__ = this.pageinstance.__pageId__;
+                }
+                nextSetDataTick(this, () => {
+                    this.$vm.$callHook('mounted');
+                    this.$vm.$callHook(ON_READY);
+                });
+            }
+            else {
+                {
+                    this.$vm.$callHook('mounted');
+                    this.$vm.$callHook(ON_READY);
+                }
             }
         }
-        // 处理父子关系
-        initRelation(this, relationOptions);
+        else {
+            this.is && console.warn(this.is + ' is not ready');
+        }
     }
     function detached() {
         if (this.$vm) {
@@ -932,7 +904,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         }
     }
     {
-        return { attached, detached };
+        return { attached, ready, detached };
     }
 }
 
@@ -943,21 +915,6 @@ function parse(componentOptions, { handleLink }) {
 
 function initLifetimes(lifetimesOptions) {
     return extend(initLifetimes$1(lifetimesOptions), {
-        ready() {
-            if (this.$vm && lifetimesOptions.isPage(this)) {
-                if (this.pageinstance) {
-                    this.__webviewId__ = this.pageinstance.__pageId__;
-                }
-                this.$vm.$callCreatedHook();
-                nextSetDataTick(this, () => {
-                    this.$vm.$callHook('mounted');
-                    this.$vm.$callHook(ON_READY);
-                });
-            }
-            else {
-                this.is && console.warn(this.is + ' is not ready');
-            }
-        },
         detached() {
             this.$vm && $destroyComponent(this.$vm);
             // 清理
@@ -973,63 +930,38 @@ function initLifetimes(lifetimesOptions) {
 }
 
 const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
-function isPage(mpInstance) {
-    return !!mpInstance.methods.onLoad;
-}
 
-function initRelation(mpInstance) {
-    // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
+function isPage(mpInstance) {
+    return (!!mpInstance.route ||
+        !!(mpInstance._methods || mpInstance.methods || mpInstance).onLoad);
+}
+function initRelation(mpInstance, relationOptions) {
     const nodeId = mpInstance.nodeId + '';
     const webviewId = mpInstance.pageinstance.__pageId__ + '';
-    instances[webviewId + '_' + nodeId] = mpInstance.$vm;
-    mpInstance.triggerEvent('__l', {
+    // 存储的是当前mpInstance，而不是$vm，因为$vm还没有创建
+    instances[webviewId + '_' + nodeId] = mpInstance;
+    // 不使用 triggerEvent 是因为时机太晚，应该同步建立父子关系，确保setup中的provide/inject正常
+    // 当前平台有ownerId可以查找父子关系
+    extend(relationOptions, {
         nodeId,
         webviewId,
     });
+    handleLink.call(mpInstance, {
+        detail: relationOptions,
+    });
 }
-function handleLink({ detail: { nodeId, webviewId }, }) {
-    const vm = instances[webviewId + '_' + nodeId];
-    if (!vm) {
+function handleLink({ detail, }) {
+    var _a;
+    const { nodeId, webviewId } = detail;
+    const mpInstance = instances[webviewId + '_' + nodeId];
+    if (!mpInstance) {
         return;
     }
-    let parentVm = instances[webviewId + '_' + vm.$scope.ownerId];
+    let parentVm = (_a = instances[webviewId + '_' + mpInstance.ownerId]) === null || _a === void 0 ? void 0 : _a.$vm;
     if (!parentVm) {
         parentVm = this.$vm;
     }
-    vm.$.parent = parentVm.$;
-    const createdVm = function () {
-        if (__VUE_OPTIONS_API__) {
-            parentVm.$children.push(vm);
-            const parent = parentVm.$;
-            vm.$.provides = parent
-                ? parent.provides
-                : Object.create(parent.appContext.provides);
-            initInjections(vm);
-            initProvide(vm);
-        }
-        vm.$callCreatedHook();
-    };
-    const mountedVm = function () {
-        // 处理当前 vm 子
-        if (vm._$childVues) {
-            vm._$childVues.forEach(([createdVm]) => createdVm());
-            vm._$childVues.forEach(([, mountedVm]) => mountedVm());
-            delete vm._$childVues;
-        }
-        vm.$callHook('mounted');
-        vm.$callHook(ON_READY);
-    };
-    // 当 parentVm 已经 mounted 时，直接触发，否则延迟
-    if (!parentVm || parentVm.$.isMounted) {
-        createdVm();
-        mountedVm();
-    }
-    else {
-        (parentVm._$childVues || (parentVm._$childVues = [])).push([
-            createdVm,
-            mountedVm,
-        ]);
-    }
+    detail.parent = parentVm;
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({

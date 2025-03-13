@@ -125,19 +125,26 @@ async function main() {
 
 function updateVersions(version) {
   // 1. update root package.json
-  updatePackage(path.resolve(__dirname, '..'), version)
+  updatePackage(path.resolve(__dirname, '..'), version, true)
   // 2. update all packages
   packages.forEach((p) => updatePackage(getPkgRoot(p), version))
 }
 
-function updatePackage(pkgRoot, version) {
+function updatePackage(pkgRoot, version, ignoreDeps = false) {
   const pkgPath = path.resolve(pkgRoot, 'package.json')
+  if (!fs.existsSync(pkgPath)) {
+    console.log(colors.yellow(`Cannot find package.json in ${pkgRoot}`))
+    return
+  }
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
   pkg.version = version
-  updateDeps(pkg, 'dependencies', version)
-  updateDeps(pkg, 'devDependencies', version)
-  updateDeps(pkg, 'peerDependencies', version)
-  updateDeps(pkg, 'optionalDependencies', version)
+  // workspace:* 依赖交给 pnpm 处理
+  // if (!ignoreDeps) {
+  // updateDeps(pkg, 'dependencies', version)
+  // updateDeps(pkg, 'devDependencies', version)
+  // updateDeps(pkg, 'peerDependencies', version)
+  // updateDeps(pkg, 'optionalDependencies', version)
+  // }
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
 }
 
@@ -163,6 +170,10 @@ async function publishPackage(pkgName, version, runIfNotDry) {
   }
   const pkgRoot = getPkgRoot(pkgName)
   const pkgPath = path.resolve(pkgRoot, 'package.json')
+  if (!fs.existsSync(pkgPath)) {
+    console.log(colors.yellow(`Cannot find package.json in ${pkgRoot}`))
+    return
+  }
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
   if (pkg.private) {
     return
@@ -173,13 +184,11 @@ async function publishPackage(pkgName, version, runIfNotDry) {
   step(`Publishing ${pkgName}...`)
   try {
     await runIfNotDry(
-      // note: use of yarn is intentional here as we rely on its publishing
-      // behavior.
-      'yarn',
+      // Don't change the package manager here as we rely on pnpm to handle
+      // workspace:* deps
+      'pnpm',
       [
         'publish',
-        '--new-version',
-        version,
         ...(releaseTag ? ['--tag', releaseTag] : []),
         '--access',
         'public',

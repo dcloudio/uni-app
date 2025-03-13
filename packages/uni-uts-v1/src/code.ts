@@ -18,12 +18,14 @@ import type {
   Expression,
   FunctionDeclaration,
   FunctionExpression,
+  HasDecorator,
   Identifier,
   Module,
   Param,
   Span,
   TsFnParameter,
   TsInterfaceDeclaration,
+  TsParameterProperty,
   TsType,
   TsTypeAliasDeclaration,
   TsTypeAnnotation,
@@ -40,6 +42,7 @@ import {
 } from './utils'
 import { normalizePath } from './shared'
 import { parseUTSSyntaxError } from './stacktrace'
+import type { SyncUniModulesFilePreprocessor } from './uni_modules'
 
 const IOS_HOOK_CLASS = 'UTSiOSHookProxy'
 const ANDROID_HOOK_CLASS = 'UTSAndroidHookProxy'
@@ -55,6 +58,8 @@ export const enum FORMATS {
 
 export interface ClassMeta {
   typeParams?: boolean
+  interfaces: string[]
+  keepAliveMethods: string[]
 }
 
 // 不应该用 class，应该用lit，调整起来影响较多，暂不调整
@@ -63,6 +68,7 @@ type Types = {
   class: Record<string, ClassMeta>
   fn: Record<string, Param[]>
   alias: Record<string, {}>
+  uni?: string[]
 }
 
 interface Meta {
@@ -74,8 +80,26 @@ interface Meta {
       params?: Parameter[]
     }
   >
-  types: Record<string, 'function' | 'class' | 'interface' | 'typealias'>
+  types: Record<
+    string,
+    'function' | 'class' | 'interface' | 'typealias' | string[]
+  >
   components: string[]
+  customElements: string[]
+  android?: {
+    typeParams: string[]
+    types: Record<
+      string,
+      'function' | 'class' | 'interface' | 'typealias' | string[]
+    >
+  }
+  ios?: {
+    typeParams: string[]
+    types: Record<
+      string,
+      'function' | 'class' | 'interface' | 'typealias' | string[]
+    >
+  }
 }
 export interface GenProxyCodeOptions {
   is_uni_modules: boolean
@@ -85,6 +109,7 @@ export interface GenProxyCodeOptions {
   namespace: string
   androidComponents?: Record<string, string>
   iosComponents?: Record<string, string>
+  customElements?: Record<string, string>
   format?: FORMATS
   inputDir?: string
   pluginRelativeDir?: string
@@ -95,6 +120,8 @@ export interface GenProxyCodeOptions {
   isExtApi?: boolean
   androidHookClass?: string
   iOSHookClass?: string
+  androidPreprocessor?: SyncUniModulesFilePreprocessor
+  iosPreprocessor?: SyncUniModulesFilePreprocessor
 }
 
 export async function genProxyCode(
@@ -104,35 +131,75 @@ export async function genProxyCode(
   const { name, is_uni_modules, format, moduleName, moduleType } = options
   options.inputDir = options.inputDir || process.env.UNI_INPUT_DIR
   if (!options.meta) {
-    options.meta = { exports: {}, types: {}, typeParams: [], components: [] }
+    options.meta = {
+      exports: {},
+      types: {},
+      typeParams: [],
+      components: [],
+      customElements: [],
+    }
   }
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
   options.meta!.typeParams = parseTypeParams(options.types)
+
+  if (options.androidPreprocessor) {
+    // 内置 ext-api 需要分平台解析interface
+    const androidTypes = await parseInterfaceTypes(
+      module,
+      options,
+      options.androidPreprocessor
+    )
+    options.meta!.android = {
+      typeParams: parseTypeParams(androidTypes),
+      types: parseMetaTypes(androidTypes),
+    }
+  }
+  if (options.iosPreprocessor) {
+    const iosTypes = await parseInterfaceTypes(
+      module,
+      options,
+      options.iosPreprocessor
+    )
+    options.meta!.ios = {
+      typeParams: parseTypeParams(iosTypes),
+      types: parseMetaTypes(iosTypes),
+    }
+  }
+
   const components = new Set<string>()
   // 自动补充 VideoElement 导出
   if (options.androidComponents) {
     Object.keys(options.androidComponents).forEach((name) => {
-      options.meta!.types[
+      const className =
         (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
-          capitalize(camelize(name)) +
-          'Element'
-      ] = 'class'
+        capitalize(camelize(name)) +
+        'Element'
+      options.meta!.types[className] = 'class'
+      if (options.meta?.android?.types) {
+        options.meta.android.types[className] = 'class'
+      }
       components.add(name)
     })
   }
   if (options.iosComponents) {
     Object.keys(options.iosComponents).forEach((name) => {
-      options.meta!.types[
+      const className =
         (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
-          capitalize(camelize(name)) +
-          'Element'
-      ] = 'class'
+        capitalize(camelize(name)) +
+        'Element'
+      options.meta!.types[className] = 'class'
+      if (options.meta?.ios?.types) {
+        options.meta.ios.types[className] = 'class'
+      }
       components.add(name)
     })
   }
-  options.meta!.components = [...components]
+  options.meta.components = [...components]
   const decls = await parseModuleDecls(module, options)
+
+  normalizeInterfaceKeepAlive(decls, options.types)
+
   return `
 const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
@@ -153,14 +220,40 @@ ${genComponentsCode(
   format,
   options.androidComponents || {},
   options.iosComponents || {}
-)}
+)}${genCustomElementsCode(format, options.customElements || {})}
 
 ${genModuleCode(decls, format, options.pluginRelativeDir!, options.meta!)}
 `
 }
 
+// 查找实现该interface的class中是否有keepAlive方法，有则标记为keepAlive
+function normalizeInterfaceKeepAlive(decls: ProxyDecl[], types: Types) {
+  const classTypes = types.class
+  if (!classTypes) {
+    return
+  }
+  const classNames = Object.keys(classTypes)
+  decls.forEach((decl) => {
+    if (decl.type === 'InterfaceDeclaration') {
+      classNames.find((n) => {
+        const classMeta = classTypes[n]
+        if (classMeta.interfaces && classMeta.interfaces.includes(decl.cls)) {
+          classMeta.keepAliveMethods.forEach((method) => {
+            const jsMethod = method + 'ByJs'
+            if (decl.options.methods[jsMethod]) {
+              decl.options.methods[jsMethod].keepAlive = true
+            }
+          })
+        }
+      })
+    }
+  })
+}
+
 function parseMetaTypes(types: Types) {
-  let res: Meta['types'] = {}
+  let res: Meta['types'] = {
+    uni: types.uni || [],
+  }
   Object.keys(types.class).forEach((n) => {
     res[n] = 'class'
   })
@@ -186,7 +279,7 @@ function parseTypeParams(types: Types) {
   return res
 }
 
-export function genComponentsCode(
+function genComponentsCode(
   format: FORMATS = FORMATS.ES,
   androidComponents: Record<string, string>,
   iosComponents: Record<string, string>
@@ -201,6 +294,24 @@ export function genComponentsCode(
       }
     }
   )
+  return codes.join('\n')
+}
+
+function genCustomElementsCode(
+  format: FORMATS = FORMATS.ES,
+  customElements: Record<string, string>
+) {
+  const codes: string[] = []
+  Object.keys(customElements).forEach((name) => {
+    if (format === FORMATS.CJS) {
+      codes.push(`exports.${capitalize(camelize(name))}Element = {}`)
+    } else {
+      codes.push(`export const ${capitalize(camelize(name))}Element = {}`)
+    }
+  })
+  if (codes.length) {
+    codes.unshift('\n')
+  }
   return codes.join('\n')
 }
 
@@ -334,7 +445,7 @@ function genModuleCode(
             decl.async
           }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
-          }ByJs', params: ${JSON.stringify(
+          }ByJs', keepAlive: ${decl.keepAlive}, params: ${JSON.stringify(
             decl.params
           )}, return: ${JSON.stringify(returnOptions)}})`
         )
@@ -344,7 +455,7 @@ function genModuleCode(
             decl.async
           }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
-          }ByJs', params: ${JSON.stringify(
+          }ByJs', keepAlive: ${decl.keepAlive}, params: ${JSON.stringify(
             decl.params
           )}, return: ${JSON.stringify(returnOptions)}})`
         )
@@ -394,9 +505,10 @@ function genModuleCode(
  * @param options
  * @returns
  */
-async function parseInterfaceTypes(
+export async function parseInterfaceTypes(
   module: string,
-  options: GenProxyCodeOptions
+  options: GenProxyCodeOptions,
+  preprocessor?: SyncUniModulesFilePreprocessor
 ): Promise<Types> {
   const interfaceFilename = resolveRootInterface(module, options)
 
@@ -406,6 +518,7 @@ async function parseInterfaceTypes(
       class: {},
       fn: {},
       alias: {},
+      uni: [],
     }
   }
   // 懒加载 uts 编译器
@@ -413,10 +526,14 @@ async function parseInterfaceTypes(
   const { parse } = require('@dcloudio/uts')
   let ast: Module | null = null
   try {
-    ast = await parse(fs.readFileSync(interfaceFilename, 'utf8'), {
-      filename: relative(interfaceFilename, options.inputDir!),
-      noColor: !isColorSupported(),
-    })
+    const code = fs.readFileSync(interfaceFilename, 'utf8')
+    ast = await parse(
+      preprocessor ? await preprocessor(code, interfaceFilename) : code,
+      {
+        filename: relative(interfaceFilename, options.inputDir!),
+        noColor: !isColorSupported(),
+      }
+    )
   } catch (e) {
     console.error(parseUTSSyntaxError(e, options.inputDir!))
   }
@@ -428,6 +545,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
   const classTypes: Types['class'] = {}
   const fnTypes: Types['fn'] = {}
   const aliasTypes: Types['alias'] = {}
+  const uniMethods: string[] = []
 
   const exportNamed: string[] = []
   if (ast) {
@@ -458,8 +576,26 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
             returned: false,
             decl: node.declaration,
           }
+          if (node.declaration.id.value === 'Uni') {
+            node.declaration.body.body.forEach((item) => {
+              if (
+                item.type === 'TsMethodSignature' &&
+                item.key.type === 'Identifier'
+              ) {
+                uniMethods.push(item.key.value)
+              } else if (
+                item.type === 'TsPropertySignature' &&
+                item.key.type === 'Identifier'
+              ) {
+                uniMethods.push(item.key.value)
+              }
+            })
+          }
         } else if (node.declaration.type === 'ClassDeclaration') {
-          classTypes[node.declaration.identifier.value] = {}
+          classTypes[node.declaration.identifier.value] = {
+            interfaces: parseImplements(node.declaration),
+            keepAliveMethods: parseKeepAliveMethods(node.declaration),
+          }
         }
       } else if (node.type === 'TsTypeAliasDeclaration') {
         if (!isInterface || exportNamed.includes(node.id.value)) {
@@ -471,7 +607,10 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
           decl: node,
         }
       } else if (node.type === 'ClassDeclaration') {
-        classTypes[node.identifier.value] = {}
+        classTypes[node.identifier.value] = {
+          interfaces: parseImplements(node),
+          keepAliveMethods: parseKeepAliveMethods(node),
+        }
       }
     })
   }
@@ -480,7 +619,32 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
     class: classTypes,
     fn: fnTypes,
     alias: aliasTypes,
+    uni: uniMethods,
   }
+}
+
+function parseImplements(node: ClassDeclaration | ClassExpression): string[] {
+  const interfaces: string[] = []
+  node.implements.forEach((implement) => {
+    if (implement.expression.type === 'Identifier') {
+      interfaces.push(implement.expression.value)
+    }
+  })
+  return interfaces
+}
+
+function parseKeepAliveMethods(
+  node: ClassDeclaration | ClassExpression
+): string[] {
+  const keepAliveMethods: string[] = []
+  node.body.forEach((method) => {
+    if (method.type === 'ClassMethod' && method.key.type === 'Identifier') {
+      if (parseKeepAlive(method.function)) {
+        keepAliveMethods.push(method.key.value)
+      }
+    }
+  })
+  return keepAliveMethods
 }
 
 function parseTypes(
@@ -505,6 +669,8 @@ function parseTypes(
     case 'TsUnionType':
       classTypes[decl.id.value] = {
         typeParams: !!decl.typeParams,
+        interfaces: [],
+        keepAliveMethods: [],
       }
       break
     default:
@@ -529,7 +695,11 @@ function createParams(tsParams: TsFnParameter[]) {
 async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
   const iosDecls = (
-    await parseFile(resolvePlatformIndex('app-ios', module, options), options)
+    await parseFile(
+      resolvePlatformIndex('app-ios', module, options),
+      options,
+      options.iosPreprocessor
+    )
   ).filter((decl) => {
     if (decl.type === 'Class') {
       if (decl.isHook) {
@@ -542,7 +712,8 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   const androidDecls = (
     await parseFile(
       resolvePlatformIndex('app-android', module, options),
-      options
+      options,
+      options.androidPreprocessor
     )
   ).filter((decl) => {
     if (decl.type === 'Class') {
@@ -649,14 +820,16 @@ function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
 
 async function parseFile(
   filename: string | undefined | false,
-  options: GenProxyCodeOptions
+  options: GenProxyCodeOptions,
+  preprocessor?: SyncUniModulesFilePreprocessor
 ): Promise<ProxyDecl[]> {
   if (filename) {
     // 暂时不从uvue目录读取了，就读取原始文件
     // filename = resolveUVueFileName(filename)
     if (fs.existsSync(filename)) {
+      const code = fs.readFileSync(filename, 'utf8')
       return parseCode(
-        fs.readFileSync(filename, 'utf8'),
+        preprocessor ? await preprocessor(code, filename) : code,
         options.namespace,
         options.types!,
         filename,
@@ -703,7 +876,9 @@ interface ProxyInterface {
   type: 'InterfaceDeclaration'
   cls: string
   options: {
-    methods: Record<string, any>
+    methods: {
+      [name: string]: ProxyClassMethod
+    }
     props: string[]
     setters: Record<string, Parameter>
   }
@@ -712,6 +887,7 @@ interface ProxyInterface {
 interface ProxyFunctionDeclaration {
   type: 'FunctionDeclaration'
   method: string
+  keepAlive: boolean
   async: boolean
   params: Parameter[]
   isDefault: boolean
@@ -721,14 +897,28 @@ interface ProxyFunctionDeclaration {
     options: string
   }
 }
+interface ProxyFunctionReturnOptions {
+  type: 'interface'
+  options: string
+}
 
+interface ProxyClassMethod {
+  async?: boolean
+  keepAlive: boolean
+  params: Parameter[]
+  return?: ProxyFunctionReturnOptions
+}
 interface ProxyClass {
   type: 'Class'
   cls: string
   options: {
     constructor: { params: Parameter[] }
-    methods: Record<string, any>
-    staticMethods: Record<string, any>
+    methods: {
+      [name: string]: ProxyClassMethod
+    }
+    staticMethods: {
+      [name: string]: ProxyClassMethod
+    }
     props: string[]
     staticProps: string[]
     setters: Record<string, Parameter>
@@ -737,6 +927,7 @@ interface ProxyClass {
   isDefault: boolean
   isVar: boolean
   isHook: boolean
+  interfaces: string[]
 }
 
 function mergeAstTypes(to: Types, from: Types) {
@@ -845,12 +1036,14 @@ function genProxyFunction(
   params: Parameter[],
   ret: string = '',
   isDefault: boolean = false,
-  isVar: boolean = false
+  isVar: boolean = false,
+  keepAlive: boolean = false
 ): ProxyFunctionDeclaration {
   return {
     type: 'FunctionDeclaration',
     method,
     async,
+    keepAlive,
     params,
     return: ret ? { type: 'interface', options: ret } : undefined,
     isDefault,
@@ -860,20 +1053,13 @@ function genProxyFunction(
 
 function genProxyClass(
   cls: string,
-  options: {
-    constructor: { params: Parameter[] }
-    methods: Record<string, any>
-    staticMethods: Record<string, any>
-    props: string[]
-    staticProps: string[]
-    setters: Record<string, Parameter>
-    staticSetters: Record<string, Parameter>
-  },
+  options: ProxyClass['options'],
   isDefault = false,
   isVar = false,
-  isHook = false
+  isHook = false,
+  interfaces: string[] = []
 ): ProxyClass {
-  return { type: 'Class', cls, options, isDefault, isVar, isHook }
+  return { type: 'Class', cls, options, isDefault, isVar, isHook, interfaces }
 }
 
 interface Parameter {
@@ -972,11 +1158,12 @@ function isTDotType(pat: BindingIdentifier) {
 
 function resolveFunctionParams(
   types: Types,
-  params: Param[],
+  params: (Param | TsParameterProperty)[],
   resolveTypeReferenceName: ResolveTypeReferenceName
 ) {
   const result: Parameter[] = []
-  params.forEach(({ pat }) => {
+  params.forEach((param) => {
+    let pat = param.type === 'Parameter' ? param.pat : param.param
     if (pat.type === 'Identifier') {
       if (!isTDotType(pat)) {
         // ignore T.Type
@@ -1059,8 +1246,25 @@ function genFunctionDeclaration(
       ? parseReturnInterface(types, decl.returnType.typeAnnotation)
       : '',
     isDefault,
-    isVar
+    isVar,
+    parseKeepAlive(decl)
   )
+}
+
+function parseKeepAlive(decl: HasDecorator) {
+  if (!decl.decorators || !decl.decorators.length) {
+    return false
+  }
+  return decl.decorators.some((decorator) => {
+    if (
+      decorator.expression.type === 'MemberExpression' &&
+      decorator.expression.property.type === 'Identifier' &&
+      decorator.expression.property.value === 'keepAlive'
+    ) {
+      return true
+    }
+    return false
+  })
 }
 
 function parseInterfaceBody(
@@ -1098,7 +1302,7 @@ function genInterfaceDeclaration(
   elements.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
       if (item.key.type === 'Identifier') {
-        let returnOptions = {}
+        let returnOptions: ProxyFunctionReturnOptions | undefined
         if (item.typeAnn) {
           let returnInterface = parseReturnInterface(
             types,
@@ -1113,8 +1317,9 @@ function genInterfaceDeclaration(
         }
 
         const name = item.key.value
-        const value = {
+        const value: ProxyClassMethod = {
           async: isReturnPromise(item.typeAnn),
+          keepAlive: false,
           params: resolveFunctionParams(
             types,
             tsParamsToParams(item.params),
@@ -1186,11 +1391,12 @@ function genClassDeclaration(
       implement.expression.type === 'Identifier' &&
       isHookClass(implement.expression.value)
   )
+  const interfaces = parseImplements(decl)
   decl.body.forEach((item) => {
     if (item.type === 'Constructor') {
       constructor.params = resolveFunctionParams(
         types,
-        item.params as Param[],
+        item.params,
         resolveTypeReferenceName
       )
     } else if (item.type === 'ClassMethod') {
@@ -1212,7 +1418,7 @@ function genClassDeclaration(
             }
           }
         } else {
-          let returnOptions = {}
+          let returnOptions: ProxyFunctionReturnOptions | undefined
           if (item.function.returnType) {
             let returnInterface = parseReturnInterface(
               types,
@@ -1227,15 +1433,16 @@ function genClassDeclaration(
           }
 
           const name = item.key.value
-          const value = {
+          const value: ProxyClassMethod = {
             async:
               item.function.async || isReturnPromise(item.function.returnType),
+            keepAlive: parseKeepAlive(item.function),
             params: resolveFunctionParams(
               types,
               item.function.params,
               resolveTypeReferenceName
             ),
-            returnOptions,
+            return: returnOptions,
           }
           if (item.isStatic) {
             staticMethods[name + 'ByJs'] = value
@@ -1280,7 +1487,8 @@ function genClassDeclaration(
     },
     isDefault,
     false,
-    isHook
+    isHook,
+    interfaces
   )
 }
 

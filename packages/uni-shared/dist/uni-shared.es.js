@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, hyphenate, camelize, normalizeStyle as normalizeStyle$1, isString, parseStringStyle, isArray, normalizeClass as normalizeClass$1, isFunction, isPlainObject, extend, capitalize } from '@vue/shared';
+import { isHTMLTag, isSVGTag, isString, isFunction, isPlainObject, hyphenate, camelize, normalizeStyle as normalizeStyle$1, parseStringStyle, isArray, normalizeClass as normalizeClass$1, extend, capitalize } from '@vue/shared';
 
 const BUILT_IN_TAG_NAMES = [
     'ad',
@@ -131,6 +131,11 @@ const UVUE_BUILT_IN_TAGS = [
     'button',
     'nested-scroll-header',
     'nested-scroll-body',
+    'waterflow',
+    'flow-item',
+    'share-element',
+    'cover-view',
+    'cover-image',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -145,6 +150,10 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'slider',
     'form',
     'switch',
+];
+const UVUE_HARMONY_BUILT_IN_TAGS = [
+    // TODO 列出完整列表
+    ...BUILT_IN_TAG_NAMES,
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -210,6 +219,16 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view',
     'picker-view-column',
 ];
+// 内置的easycom组件
+const UVUE_BUILT_IN_EASY_COMPONENTS = ['map', 'camera'];
+function isAppUVueBuiltInEasyComponent(tag) {
+    return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
+}
+// 主要是指前端实现的组件列表
+const UVUE_CUSTOM_COMPONENTS = [
+    ...NVUE_CUSTOM_COMPONENTS,
+    ...UVUE_BUILT_IN_EASY_COMPONENTS,
+];
 function isAppUVueNativeTag(tag) {
     // 前端实现的内置组件都会注册一个根组件
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
@@ -218,7 +237,7 @@ function isAppUVueNativeTag(tag) {
     if (UVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
-    if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+    if (UVUE_CUSTOM_COMPONENTS.includes(tag)) {
         return false;
     }
     if (isBuiltInComponent(tag)) {
@@ -246,6 +265,26 @@ function isAppIOSUVueNativeTag(tag) {
     }
     return false;
 }
+function isAppHarmonyUVueNativeTag(tag) {
+    // video 目前是easycom实现的
+    if (tag === 'video') {
+        return false;
+    }
+    // 前端实现的内置组件都会注册一个根组件
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
+    if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_HARMONY_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    return false;
+}
 function isAppNVueNativeTag(tag) {
     if (NVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
@@ -263,6 +302,13 @@ function isAppNVueNativeTag(tag) {
     return false;
 }
 function isMiniProgramNativeTag(tag) {
+    return isBuiltInComponent(tag);
+}
+function isMiniProgramUVueNativeTag(tag) {
+    // 小程序平台内置的自定义元素，会被转换为 view
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
     return isBuiltInComponent(tag);
 }
 function createIsCustomElement(tags = []) {
@@ -310,6 +356,8 @@ const ON_LAUNCH = 'onLaunch';
 const ON_ERROR = 'onError';
 const ON_THEME_CHANGE = 'onThemeChange';
 const OFF_THEME_CHANGE = 'offThemeChange';
+const ON_HOST_THEME_CHANGE = 'onHostThemeChange';
+const OFF_HOST_THEME_CHANGE = 'offHostThemeChange';
 const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
@@ -329,6 +377,7 @@ const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_SHARE_TIMELINE = 'onShareTimeline';
+const ON_SHARE_CHAT = 'onShareChat'; // xhs-share
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 // navigationBar
@@ -343,129 +392,11 @@ const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
-
-function isComponentInternalInstance(vm) {
-    return !!vm.appContext;
-}
-function resolveComponentInstance(instance) {
-    return (instance &&
-        (isComponentInternalInstance(instance) ? instance.proxy : instance));
-}
-function resolveOwnerVm(vm) {
-    if (!vm) {
-        return;
-    }
-    let componentName = vm.type.name;
-    while (componentName && isBuiltInComponent(hyphenate(componentName))) {
-        // ownerInstance 内置组件需要使用父 vm
-        vm = vm.parent;
-        componentName = vm.type.name;
-    }
-    return vm.proxy;
-}
-function isElement(el) {
-    // Element
-    return el.nodeType === 1;
-}
-function resolveOwnerEl(instance, multi = false) {
-    const { vnode } = instance;
-    if (isElement(vnode.el)) {
-        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
-    }
-    const { subTree } = instance;
-    // ShapeFlags.ARRAY_CHILDREN = 1<<4
-    if (subTree.shapeFlag & 16) {
-        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
-        if (elemVNodes.length > 0) {
-            if (multi) {
-                return elemVNodes.map((node) => node.el);
-            }
-            return elemVNodes[0].el;
-        }
-    }
-    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
-}
-function dynamicSlotName(name) {
-    return name === 'default' ? SLOT_DEFAULT_NAME : name;
-}
-const customizeRE = /:/g;
-function customizeEvent(str) {
-    return camelize(str.replace(customizeRE, '-'));
-}
-function normalizeStyle(value) {
-    if (value instanceof Map) {
-        const styleObject = {};
-        value.forEach((value, key) => {
-            styleObject[key] = value;
-        });
-        return normalizeStyle$1(styleObject);
-    }
-    else if (isString(value)) {
-        return parseStringStyle(value);
-    }
-    else if (isArray(value)) {
-        const res = {};
-        for (let i = 0; i < value.length; i++) {
-            const item = value[i];
-            const normalized = isString(item)
-                ? parseStringStyle(item)
-                : normalizeStyle(item);
-            if (normalized) {
-                for (const key in normalized) {
-                    res[key] = normalized[key];
-                }
-            }
-        }
-        return res;
-    }
-    else {
-        return normalizeStyle$1(value);
-    }
-}
-function normalizeClass(value) {
-    let res = '';
-    if (value instanceof Map) {
-        value.forEach((value, key) => {
-            if (value) {
-                res += key + ' ';
-            }
-        });
-    }
-    else if (isArray(value)) {
-        for (let i = 0; i < value.length; i++) {
-            const normalized = normalizeClass(value[i]);
-            if (normalized) {
-                res += normalized + ' ';
-            }
-        }
-    }
-    else {
-        res = normalizeClass$1(value);
-    }
-    return res.trim();
-}
-function normalizeProps(props) {
-    if (!props)
-        return null;
-    let { class: klass, style } = props;
-    if (klass && !isString(klass)) {
-        props.class = normalizeClass(klass);
-    }
-    if (style) {
-        props.style = normalizeStyle(style);
-    }
-    return props;
-}
-
-let lastLogTime = 0;
-function formatLog(module, ...args) {
-    const now = Date.now();
-    const diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    return `[${now}][${diff}ms][${module}]：${args
-        .map((arg) => JSON.stringify(arg))
-        .join(' ')}`;
-}
+// mergeVirtualHostAttributes
+const VIRTUAL_HOST_STYLE = 'virtualHostStyle';
+const VIRTUAL_HOST_CLASS = 'virtualHostClass';
+const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden';
+const VIRTUAL_HOST_ID = 'virtualHostId';
 
 function cache(fn) {
     const cache = Object.create(null);
@@ -573,16 +504,191 @@ function sortObject(obj) {
     }
     return !Object.keys(sortObj) ? obj : sortObj;
 }
+function getGlobalOnce() {
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    // worker
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    // browser
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    // nodejs
+    // if (typeof global !== 'undefined') {
+    //   return global
+    // }
+    function g() {
+        return this;
+    }
+    if (typeof g() !== 'undefined') {
+        return g();
+    }
+    return (function () {
+        return new Function('return this')();
+    })();
+}
+let g = undefined;
+function getGlobal() {
+    if (g) {
+        return g;
+    }
+    g = getGlobalOnce();
+    return g;
+}
+
+function isComponentInternalInstance(vm) {
+    return !!vm.appContext;
+}
+function resolveComponentInstance(instance) {
+    return (instance &&
+        (isComponentInternalInstance(instance) ? instance.proxy : instance));
+}
+function resolveOwnerVm(vm) {
+    if (!vm) {
+        return;
+    }
+    let componentName = vm.type.name;
+    while (componentName && isBuiltInComponent(hyphenate(componentName))) {
+        // ownerInstance 内置组件需要使用父 vm
+        vm = vm.parent;
+        componentName = vm.type.name;
+    }
+    return vm.proxy;
+}
+function isElement(el) {
+    // Element
+    return el.nodeType === 1;
+}
+function resolveOwnerEl(instance, multi = false) {
+    const { vnode } = instance;
+    if (isElement(vnode.el)) {
+        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
+    }
+    const { subTree } = instance;
+    // ShapeFlags.ARRAY_CHILDREN = 1<<4
+    if (subTree.shapeFlag & 16) {
+        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
+        if (elemVNodes.length > 0) {
+            if (multi) {
+                return elemVNodes.map((node) => node.el);
+            }
+            return elemVNodes[0].el;
+        }
+    }
+    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
+}
+function dynamicSlotName(name) {
+    return name === 'default' ? SLOT_DEFAULT_NAME : name;
+}
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return camelize(str.replace(customizeRE, '-'));
+}
+function normalizeStyle(value) {
+    const g = getGlobal();
+    if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+        const styleObject = {};
+        g.UTSJSONObject.keys(value).forEach((key) => {
+            styleObject[key] = value[key];
+        });
+        return normalizeStyle$1(styleObject);
+    }
+    else if (value instanceof Map) {
+        const styleObject = {};
+        value.forEach((value, key) => {
+            styleObject[key] = value;
+        });
+        return normalizeStyle$1(styleObject);
+    }
+    else if (isString(value)) {
+        return parseStringStyle(value);
+    }
+    else if (isArray(value)) {
+        const res = {};
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            const normalized = isString(item)
+                ? parseStringStyle(item)
+                : normalizeStyle(item);
+            if (normalized) {
+                for (const key in normalized) {
+                    res[key] = normalized[key];
+                }
+            }
+        }
+        return res;
+    }
+    else {
+        return normalizeStyle$1(value);
+    }
+}
+function normalizeClass(value) {
+    let res = '';
+    const g = getGlobal();
+    if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+        g.UTSJSONObject.keys(value).forEach((key) => {
+            if (value[key]) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (value instanceof Map) {
+        value.forEach((value, key) => {
+            if (value) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+            const normalized = normalizeClass(value[i]);
+            if (normalized) {
+                res += normalized + ' ';
+            }
+        }
+    }
+    else {
+        res = normalizeClass$1(value);
+    }
+    return res.trim();
+}
+function normalizeProps(props) {
+    if (!props)
+        return null;
+    let { class: klass, style } = props;
+    if (klass && !isString(klass)) {
+        props.class = normalizeClass(klass);
+    }
+    if (style) {
+        props.style = normalizeStyle(style);
+    }
+    return props;
+}
+
+let lastLogTime = 0;
+function formatLog(module, ...args) {
+    const now = Date.now();
+    const diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return `[${now}][${diff}ms][${module}]：${args
+        .map((arg) => JSON.stringify(arg))
+        .join(' ')}`;
+}
 
 function formatKey(key) {
     return camelize(key.substring(5));
 }
 // question/139181，增加副作用，避免 initCustomDataset 在 build 下被 tree-shaking
-const initCustomDatasetOnce = /*#__PURE__*/ once(() => {
+const initCustomDatasetOnce = /*#__PURE__*/ once((isBuiltInElement) => {
+    isBuiltInElement =
+        isBuiltInElement || ((el) => el.tagName.startsWith('UNI-'));
     const prototype = HTMLElement.prototype;
     const setAttribute = prototype.setAttribute;
     prototype.setAttribute = function (key, value) {
-        if (key.startsWith('data-') && this.tagName.startsWith('UNI-')) {
+        if (key.startsWith('data-') && isBuiltInElement(this)) {
             const dataset = this.__uniDataset ||
                 (this.__uniDataset = {});
             dataset[formatKey(key)] = value;
@@ -593,7 +699,7 @@ const initCustomDatasetOnce = /*#__PURE__*/ once(() => {
     prototype.removeAttribute = function (key) {
         if (this.__uniDataset &&
             key.startsWith('data-') &&
-            this.tagName.startsWith('UNI-')) {
+            isBuiltInElement(this)) {
             delete this.__uniDataset[formatKey(key)];
         }
         removeAttribute.call(this, key);
@@ -1409,6 +1515,7 @@ const PAGE_HOOKS = [
     ON_PULL_DOWN_REFRESH,
     ON_SHARE_TIMELINE,
     ON_SHARE_APP_MESSAGE,
+    ON_SHARE_CHAT,
     ON_ADD_TO_FAVORITES,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -1447,6 +1554,7 @@ const UniLifecycleHooks = [
     ON_SHARE_TIMELINE,
     ON_ADD_TO_FAVORITES,
     ON_SHARE_APP_MESSAGE,
+    ON_SHARE_CHAT,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -1494,9 +1602,8 @@ function invokeCreateVueAppHook(app) {
     createVueAppHooks.forEach((hook) => hook(app));
 }
 const invokeCreateErrorHandler = once((app, createErrorHandler) => {
-    if (isFunction(app._component.onError)) {
-        return createErrorHandler(app);
-    }
+    // 不再判断开发者是否监听了onError，直接返回 createErrorHandler，内部 errorHandler 会调用开发者自定义的 errorHandler，以及判断开发者是否监听了onError
+    return createErrorHandler(app);
 });
 
 const E = function () {
@@ -1504,13 +1611,15 @@ const E = function () {
     // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
 };
 E.prototype = {
+    _id: 1,
     on: function (name, callback, ctx) {
         var e = this.e || (this.e = {});
         (e[name] || (e[name] = [])).push({
             fn: callback,
             ctx: ctx,
+            _id: this._id,
         });
-        return this;
+        return this._id++;
     },
     once: function (name, callback, ctx) {
         var self = this;
@@ -1531,13 +1640,15 @@ E.prototype = {
         }
         return this;
     },
-    off: function (name, callback) {
+    off: function (name, event) {
         var e = this.e || (this.e = {});
         var evts = e[name];
         var liveEvents = [];
-        if (evts && callback) {
+        if (evts && event) {
             for (var i = evts.length - 1; i >= 0; i--) {
-                if (evts[i].fn === callback || evts[i].fn._ === callback) {
+                if (evts[i].fn === event ||
+                    evts[i].fn._ === event ||
+                    evts[i]._id === event) {
                     evts.splice(i, 1);
                     break;
                 }
@@ -1594,7 +1705,7 @@ function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
                 return normalizeStyles(styleItem, themeConfig, mode);
             if (isArray(styleItem))
                 return styleItem.map((item) => {
-                    if (typeof item === 'object')
+                    if (isPlainObject(item))
                         return normalizeStyles(item, themeConfig, mode);
                     return resolveStringStyleItem(modeStyle, item);
                 });
@@ -1611,4 +1722,20 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_EXIT, ON_HIDE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UVUE_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueNativeTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isH5CustomElement, isH5NativeTag, isMiniProgramNativeTag, isRootHook, isRootImmediateHook, isUniLifecycleHook, isUniXElement, normalizeClass, normalizeDataset, normalizeEventType, normalizeProps, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, sortObject, stringifyQuery, updateElementStyle };
+const isStringIntegerKey = (key) => typeof key === 'string' &&
+    key !== 'NaN' &&
+    key[0] !== '-' &&
+    '' + parseInt(key, 10) === key;
+const isNumberIntegerKey = (key) => typeof key === 'number' &&
+    !isNaN(key) &&
+    key >= 0 &&
+    parseInt(key + '', 10) === key;
+/**
+ * 用于替代@vue/shared的isIntegerKey，原始方法在鸿蒙arkts中会引发bug。根本原因是arkts的数组的key是数字而不是字符串。
+ * 目前这个方法使用的地方都和数组有关，切记不能挪作他用。
+ * @param key
+ * @returns
+ */
+const isIntegerKey = (key) => isNumberIntegerKey(key) || isStringIntegerKey(key);
+
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_EXIT, ON_HIDE, ON_HOST_THEME_CHANGE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UVUE_BUILT_IN_TAGS, UVUE_HARMONY_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, VIRTUAL_HOST_ID, VIRTUAL_HOST_STYLE, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getGlobal, getLen, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppHarmonyUVueNativeTag, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueBuiltInEasyComponent, isAppUVueNativeTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isH5CustomElement, isH5NativeTag, isIntegerKey, isMiniProgramNativeTag, isMiniProgramUVueNativeTag, isRootHook, isRootImmediateHook, isUniLifecycleHook, isUniXElement, normalizeClass, normalizeDataset, normalizeEventType, normalizeProps, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, sortObject, stringifyQuery, updateElementStyle };

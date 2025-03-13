@@ -1070,8 +1070,8 @@ function generateScriptMap(
   scriptMapConsumer.eachMapping((m) => {
     scriptMapGenerator.addMapping({
       original: {
-        line: m.originalLine,
-        column: m.originalColumn,
+        line: m.originalLine ?? 0,
+        column: m.originalColumn ?? 0,
       },
       generated: {
         line: m.generatedLine,
@@ -1084,8 +1084,8 @@ function generateScriptMap(
   templateMapConsumer.eachMapping((m) => {
     scriptMapGenerator.addMapping({
       original: {
-        line: m.originalLine,
-        column: m.originalColumn,
+        line: m.originalLine ?? 0,
+        column: m.originalColumn ?? 0,
       },
       generated: {
         line: m.generatedLine + offset,

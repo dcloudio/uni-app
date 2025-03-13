@@ -113,6 +113,11 @@ function initUniStatistics(manifestJson: Record<string, any>) {
       manifestJson.uniStatistics,
       manifestJson.plus.uniStatistics
     )
+    manifestJson['app-harmony'].uniStatistics = recursive(
+      true,
+      manifestJson.uniStatistics,
+      manifestJson['app-harmony'].uniStatistics
+    )
     delete manifestJson.uniStatistics
   }
   if (!process.env.UNI_CLOUD_PROVIDER) {

@@ -5,6 +5,7 @@ import {
   M,
   defineUniMainJsPlugin,
   getUniStatistics,
+  isNormalCompileTarget,
   isSsr,
   parseManifestJsonOnce,
   parsePagesJson,
@@ -34,7 +35,7 @@ export default () => [
       name: 'uni:stat',
       enforce: 'pre',
       config(config: UserConfig, env: ConfigEnv) {
-        if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+        if (!isNormalCompileTarget()) {
           // 不需要统计
           return
         }
@@ -53,6 +54,18 @@ export default () => [
             titlesJson[page.path] = titleText
           }
         })
+        // 小程序 X 模式下，需要将标题信息注入到环境中
+        if (process.env.UNI_APP_X === 'true') {
+          if (process.env.UNI_PLATFORM?.startsWith('mp-')) {
+            process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson)
+            return {
+              define: {
+                'process.env.UNI_STAT_TITLE_JSON':
+                  process.env.UNI_STAT_TITLE_JSON,
+              },
+            }
+          }
+        }
         // ssr 时不开启
         if (!isSsr(env.command, config)) {
           const statConfig = getUniStatistics(inputDir, platform)
@@ -113,7 +126,9 @@ export default () => [
               `;import '@dcloudio/uni${
                 statVersion === '2' ? '-cloud' : ''
               }-stat';`,
-            map: null,
+            map: {
+              mappings: '',
+            },
           }
         }
       },

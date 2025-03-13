@@ -2,7 +2,7 @@ import type { UserConfig } from 'vite'
 import {
   cssTarget,
   initEasycomsOnce,
-  resolveComponentsLibPath,
+  resolveComponentsLibDirs,
 } from '@dcloudio/uni-cli-shared'
 import type { VitePluginUniResolvedOptions } from '..'
 import { hasOwn, isArray } from '@vue/shared'
@@ -12,7 +12,7 @@ export function createBuild(
   config: UserConfig
 ): UserConfig['build'] {
   initEasycomsOnce(options.inputDir, {
-    dirs: [resolveComponentsLibPath()],
+    dirs: resolveComponentsLibDirs(),
     platform: process.env.UNI_PLATFORM,
     isX: process.env.UNI_APP_X === 'true',
   })

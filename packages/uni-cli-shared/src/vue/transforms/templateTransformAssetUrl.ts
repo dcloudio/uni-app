@@ -124,6 +124,11 @@ export const transformAssetUrl: NodeTransform = (
         return
       }
       const url = parseUrl(attr.value.content)
+      // 这里是有问题的，static的相对路径可能是分包里的，或者uni_modules里的，不能简单的通过base来合并
+      // 只不过目前编译器非有意的同时保留了vue标准的transformAssetUrl和uni-app的transformAssetUrl
+      // 当static相对路径经过vue的transformAssetUrl后，就变成了 import 语句，不会再走到下边的逻辑里
+      // 最初的设计，应该是用uni-app的transformAssetUrl来直接替换vue的transformAssetUrl的。
+      // 如果后续要替换，需要考虑这个问题
       if (options.base && attr.value.content[0] === '.' && isStaticAsset) {
         // explicit base - directly rewrite relative urls into absolute url
         // to avoid generating extra imports

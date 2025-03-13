@@ -37,7 +37,10 @@ import {
   locStub,
 } from '@vue/compiler-core'
 import { findMiniProgramUsingComponents } from '@dcloudio/uni-cli-shared'
-import type { MiniProgramComponentsType } from '@dcloudio/uni-cli-shared'
+import type {
+  MiniProgramComponentsType,
+  MiniProgramFilterOptions,
+} from '@dcloudio/uni-cli-shared'
 import IdentifierGenerator from './identifier'
 import type {
   CodegenRootNode,
@@ -95,6 +98,7 @@ export interface TransformContext
   helpers: Map<symbol, number>
   components: Set<string>
   imports: ImportItem[]
+  autoImportFilters: Array<Omit<MiniProgramFilterOptions, 'code'>>
   bindingComponents: Record<
     string,
     { type: BindingComponentTypes; name: string }
@@ -126,6 +130,7 @@ export interface TransformContext
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
   isMiniProgramComponent(name: string): MiniProgramComponentsType | undefined
   rootNode: TemplateChildNode | null
+  elementRefIndex: number
 }
 
 export function isRootScope(scope: CodegenScope): scope is CodegenRootScope {
@@ -259,6 +264,7 @@ function defaultOnWarn(msg: CompilerError) {
 export function createTransformContext(
   rootNode: RootNode,
   {
+    isX = false,
     root = '',
     filename = '',
     isTS = false,
@@ -338,6 +344,7 @@ export function createTransformContext(
   const context: TransformContext = {
     // options
     // 暂不提供根据文件名生成递归组件
+    isX,
     selfName: '', //nameMatch && capitalize(camelize(nameMatch[1])),
     miniProgram,
     isTS,
@@ -345,6 +352,7 @@ export function createTransformContext(
     hashId,
     scopeId,
     filters,
+    autoImportFilters: [],
     bindingCssVars,
     bindingMetadata,
     cacheHandlers,
@@ -489,6 +497,7 @@ export function createTransformContext(
       return miniProgramComponents[name]
     },
     rootNode: null,
+    elementRefIndex: 0,
   }
 
   function addId(id: string) {

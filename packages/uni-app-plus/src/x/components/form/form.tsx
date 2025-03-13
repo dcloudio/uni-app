@@ -1,31 +1,34 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import {
-  onMounted,
-  ComponentInternalInstance,
+  type ComponentInternalInstance,
+  type Ref,
+  type VNode,
   getCurrentInstance,
+  onMounted,
   ref,
-  Ref,
-  VNode,
 } from 'vue'
 
-export class UniFormElement extends UniElementImpl {
-  constructor(data: INodeData, pageNode: PageNode) {
-    super(data, pageNode)
-  }
+export const UniFormElement = /* @__PURE__ */ (() =>
+  class extends UniElementImpl {
+    constructor(data: INodeData, pageNode: PageNode) {
+      super(data, pageNode)
+    }
 
-  // override getAttribute(key: string): string | null {
-  //   const value = this._getAttribute(key)
-  //   if (value != null) {
-  //     return value
-  //   }
-  //   return super.getAttribute(key)
-  // }
+    // override getAttribute(key: string): string | null {
+    //   const value = this._getAttribute(key)
+    //   if (value != null) {
+    //     return value
+    //   }
+    //   return super.getAttribute(key)
+    // }
 
-  _getAttribute = (key: string): string | null => {
-    return null
-  }
-}
+    _getAttribute = (key: string): string | null => {
+      return null
+    }
+  })()
+
+export type UniFormElement = InstanceType<typeof UniFormElement>
 
 class UniFormSubmitEventDetail {
   value = {}
@@ -36,21 +39,27 @@ class UniFormSubmitEventDetail {
 
 class UniFormResetEventDetail {}
 
-export class UniFormSubmitEvent extends CustomEvent<UniFormSubmitEventDetail> {
-  constructor(value: any) {
-    super('change', {
-      detail: new UniFormSubmitEventDetail(value),
-    } as CustomEventOptions<UniFormSubmitEventDetail>)
-  }
-}
+export const UniFormSubmitEvent = /* @__PURE__ */ (() =>
+  class extends CustomEvent<UniFormSubmitEventDetail> {
+    constructor(value: any) {
+      super('change', {
+        detail: new UniFormSubmitEventDetail(value),
+      } as CustomEventOptions<UniFormSubmitEventDetail>)
+    }
+  })()
 
-export class UniFormResetEvent extends CustomEvent<UniFormResetEventDetail> {
-  constructor() {
-    super('change', {
-      detail: new UniFormResetEventDetail(),
-    } as CustomEventOptions<UniFormResetEventDetail>)
-  }
-}
+export type UniFormSubmitEvent = InstanceType<typeof UniFormSubmitEvent>
+
+export const UniFormResetEvent = /* @__PURE__ */ (() =>
+  class extends CustomEvent<UniFormResetEventDetail> {
+    constructor() {
+      super('change', {
+        detail: new UniFormResetEventDetail(),
+      } as CustomEventOptions<UniFormResetEventDetail>)
+    }
+  })()
+
+export type UniFormResetEvent = InstanceType<typeof UniFormResetEvent>
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Form',

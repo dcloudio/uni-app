@@ -15,7 +15,7 @@ import {
   isPlainObject,
   isString,
 } from '@vue/shared'
-import glob from 'fast-glob'
+import glob, { sync } from 'fast-glob'
 import type { Module, ModuleItem } from '../types/types'
 import {
   installHBuilderXPlugin,
@@ -35,6 +35,7 @@ interface ToOptions {
   outFilename?: string
   sourceMap: boolean
   components: Record<string, string>
+  customElements?: Record<string, string>
   isX: boolean
   isSingleThread: boolean
   isPlugin: boolean
@@ -51,6 +52,7 @@ export const ERR_MSG_PLACEHOLDER = `___ERR_MSG___`
 
 export interface RunOptions {
   components: Record<string, string>
+  customElements?: Record<string, string>
   extApis?: Record<string, [string, string]>
   isPlugin: boolean
   isSingleThread: boolean
@@ -72,6 +74,7 @@ export interface RunDevOptions extends RunOptions {
   cacheDir: string
   pluginRelativeDir: string
   is_uni_modules: boolean
+  rewriteConsoleExpr?: (fileName: string, content: string) => string
 }
 
 export function resolveUTSSourceMapPath() {
@@ -119,10 +122,67 @@ export function resolvePackage(filename: string) {
   }
 }
 
+const GARBAGE_REGEX = /(?:Thumbs\.db|\.DS_Store)$/i
+const isGarbageFile = (file: string) => GARBAGE_REGEX.test(file)
+
+// 删除所有空子目录，需要考虑到.DS_Store等文件
+function removeAllEmptySubDir(dir: string) {
+  if (!fs.existsSync(dir)) {
+    return
+  }
+
+  try {
+    const files = fs.readdirSync(dir)
+    for (const file of files) {
+      const filePath = path.join(dir, file)
+      const stat = fs.statSync(filePath)
+
+      if (stat.isDirectory()) {
+        removeAllEmptySubDir(filePath)
+
+        const subFiles = fs.readdirSync(filePath)
+        if (subFiles.length === 0 || subFiles.every(isGarbageFile)) {
+          fs.rmSync(filePath, { recursive: true, force: true })
+        }
+      }
+    }
+  } catch {}
+}
+
+export function copyPlatformNativeLanguageFiles(
+  utsInputDir: string,
+  utsOutputDir: string,
+  extnameArr: string[],
+  rewriteConsoleExpr: (fileName: string, content: string) => string
+) {
+  const srcFiles: string[] = []
+  const destFiles: string[] = []
+  if (fs.existsSync(utsInputDir)) {
+    // 遍历所有的 extname 文件，并进行 rewrite
+    const globPattern =
+      extnameArr.length > 1
+        ? `**/*.{${extnameArr.map((extname) => extname.slice(1)).join(',')}}`
+        : `**/*${extnameArr[0]}`
+    sync(globPattern, {
+      cwd: utsInputDir,
+      absolute: false,
+    }).forEach((file) => {
+      const srcFile = path.resolve(utsInputDir, file)
+      const destFile = path.resolve(utsOutputDir, file)
+      const content = fs.readFileSync(srcFile, 'utf8')
+      const newContent = rewriteConsoleExpr(srcFile, content)
+      fs.outputFileSync(destFile, newContent)
+      srcFiles.push(srcFile)
+      destFiles.push(destFile)
+    })
+  }
+  return { srcFiles, destFiles }
+}
+
 export function copyPlatformFiles(
   utsInputDir: string,
   utsOutputDir: string,
-  extname: string[]
+  extnameArr: string[]
 ) {
   const files: string[] = []
   if (fs.existsSync(utsInputDir)) {
@@ -131,7 +191,8 @@ export function copyPlatformFiles(
         if (fs.statSync(src).isDirectory()) {
           return true
         }
-        if (extname.includes(path.extname(src))) {
+        if (extnameArr.includes(path.extname(src))) {
+          // 应该引入copy后的文件
           files.push(src)
           return true
         }
@@ -150,6 +211,7 @@ export interface UTSPlatformResourceOptions {
   platform: typeof process.env.UNI_UTS_PLATFORM
   extname: '.kt' | '.swift'
   components: Record<string, string>
+  customElements?: Record<string, string>
   package: string
   hookClass: string
   result: UTSResult
@@ -168,11 +230,13 @@ export function genUTSPlatformResource(
 
   const extname: string[] =
     options.extname === '.kt' ? ['.kt', '.java'] : [options.extname]
+  const configJsonFile = normalizePath(path.resolve(utsInputDir, 'config.json'))
   // 拷贝所有非uts,vue文件及目录
   if (fs.existsSync(utsInputDir)) {
     fs.copySync(utsInputDir, utsOutputDir, {
       filter(src) {
-        if (src.endsWith('config.json')) {
+        // ignore config.json
+        if (normalizePath(src) === configJsonFile) {
           return false
         }
         if (extname.includes(path.extname(src))) {
@@ -210,6 +274,7 @@ export function genUTSPlatformResource(
     utsOutputDir,
     options.hookClass,
     options.components,
+    options.customElements,
     options.package,
     options.provider
   )
@@ -240,6 +305,7 @@ export function genUTSPlatformResource(
       }
     })
   }
+  removeAllEmptySubDir(utsOutputDir)
 }
 
 export function moveRootIndexSourceMap(
@@ -248,7 +314,10 @@ export function moveRootIndexSourceMap(
     inputDir,
     platform,
     extname,
-  }: Omit<UTSPlatformResourceOptions, 'hookClass' | 'pluginId' | 'uniModules'>
+  }: Omit<
+    UTSPlatformResourceOptions,
+    'hookClass' | 'pluginId' | 'uniModules' | 'components' | 'customElements'
+  >
 ) {
   if (isRootIndex(filename, platform)) {
     const sourceMapFilename = path
@@ -300,7 +369,10 @@ export function resolveUTSPlatformFile(
     outputDir,
     platform,
     extname,
-  }: Omit<UTSPlatformResourceOptions, 'hookClass' | 'pluginId' | 'uniModules'>
+  }: Omit<
+    UTSPlatformResourceOptions,
+    'hookClass' | 'pluginId' | 'uniModules' | 'components' | 'customElements'
+  >
 ) {
   let platformFile = path
     .resolve(outputDir, path.relative(inputDir, filename))
@@ -355,7 +427,7 @@ export function getCompilerServer<T extends CompilerServer>(
   pluginName: 'uts-development-ios' | 'uniapp-runextension'
 ): T | undefined {
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
-    console.error(`HBuilderX is not found`)
+    console.error(`该项目必须在 HBuilderX 中运行`)
     return
   }
   const isAndroid = pluginName === 'uniapp-runextension'
@@ -413,6 +485,60 @@ function resolveComponents(
   return components
 }
 
+export function isCustomElementsSupported(pluginDir: string) {
+  if (process.env.UNI_UTS_PLATFORM) {
+    // 当前平台不支持自定义元素
+    const packageJson = path.resolve(pluginDir, 'package.json')
+    if (fs.existsSync(packageJson)) {
+      const pkg = parseJson(fs.readFileSync(packageJson, 'utf8'))
+      const customElements = pkg['uni_modules']?.['customElements']
+      if (
+        customElements &&
+        typeof customElements === 'object' &&
+        customElements[process.env.UNI_UTS_PLATFORM] === false
+      ) {
+        return false
+      }
+    }
+  }
+  return true
+}
+
+export function resolveCustomElements(pluginDir: string) {
+  if (!isCustomElementsSupported(pluginDir)) {
+    return {}
+  }
+  const customElements: Record<string, string> = {}
+  const customElementsDir = path.resolve(pluginDir, 'customElements')
+  if (fs.existsSync(customElementsDir)) {
+    const ext = '.uts'
+    fs.readdirSync(customElementsDir).forEach((name) => {
+      if (!customElements[name]) {
+        const folder = path.resolve(customElementsDir, name)
+        if (!isDir(folder)) {
+          return
+        }
+        const files = fs.readdirSync(folder)
+        // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+        if (files.includes(name + ext)) {
+          customElements[name] = path.resolve(folder, name + ext)
+        }
+      }
+    })
+  }
+  return customElements
+}
+
+const isDir = (path: string) => {
+  const stat = fs.lstatSync(path)
+  if (stat.isDirectory()) {
+    return true
+  } else if (stat.isSymbolicLink()) {
+    return fs.lstatSync(fs.realpathSync(path)).isDirectory()
+  }
+  return false
+}
+
 export function resolveAndroidComponents(
   pluginDir: string,
   is_uni_modules: boolean
@@ -457,20 +583,40 @@ export function genComponentsCode(
   return codes.join('\n')
 }
 
+export function genCustomElementsCode(
+  filename: string,
+  customElements: Record<string, string>
+) {
+  const codes: string[] = []
+  const dirname = path.dirname(filename)
+  Object.keys(customElements).forEach((name) => {
+    const source = normalizePath(path.relative(dirname, customElements[name]))
+    const className = capitalize(camelize(name))
+    codes.push(
+      `export { ${className}Element } from '${
+        source.startsWith('.') ? source : './' + source
+      }'`
+    )
+  })
+  return codes.join('\n')
+}
+
 export function genConfigJson(
   platform: 'app-android' | 'app-ios',
   isX: boolean,
   hookClass: string,
   components: Record<string, string>,
+  customElements: Record<string, string> | undefined,
   pluginRelativeDir: string,
   is_uni_modules: boolean,
   inputDir: string,
   outputDir: string,
   provider?: { name: string; service: string; class: string }
 ) {
-  if (!Object.keys(components).length && !hookClass && !provider) {
-    return
-  }
+  // 不过滤了，只要有，就copy
+  // if (!Object.keys(components).length && !hookClass && !provider) {
+  //   return
+  // }
   const pluginId = basename(pluginRelativeDir)
   const utsInputDir = resolve(
     inputDir,
@@ -491,6 +637,7 @@ export function genConfigJson(
     utsOutputDir,
     hookClass,
     components,
+    customElements,
     platform === 'app-android'
       ? parseKotlinPackageWithPluginId(pluginId, is_uni_modules) + '.'
       : parseSwiftPackageWithPluginId(pluginId, is_uni_modules),
@@ -505,15 +652,18 @@ function copyConfigJson(
   outputDir: string,
   hookClass: string,
   componentsObj: Record<string, string>,
+  customElementsObj: Record<string, string> | undefined,
   namespace: string,
   provider?: { name: string; service: string; class: string }
 ) {
   const configJsonFilename = resolve(inputDir, 'config.json')
   const outputConfigJsonFilename = resolve(outputDir, 'config.json')
   const hasComponents = !!Object.keys(componentsObj).length
+  const hasCustomElements =
+    customElementsObj && !!Object.keys(customElementsObj).length
   const hasHookClass = !!hookClass
   const hasProvider = !!provider
-  if (hasComponents || hasHookClass || hasProvider) {
+  if (hasComponents || hasCustomElements || hasHookClass || hasProvider) {
     const configJson: Record<string, any> = fs.existsSync(configJsonFilename)
       ? parseJson(fs.readFileSync(configJsonFilename, 'utf8'))
       : {}
@@ -523,6 +673,14 @@ function copyConfigJson(
         platform,
         isX,
         componentsObj,
+        namespace
+      )
+    }
+    if (hasCustomElements) {
+      configJson.customElements = genCustomElementsConfigJson(
+        platform,
+        isX,
+        customElementsObj,
         namespace
       )
     }
@@ -558,6 +716,27 @@ function genComponentsConfigJson(
     }
     if (isX && platform === 'app-ios') {
       options['delegateClass'] = normalized + 'ComponentRegister'
+    }
+    res.push(options)
+  })
+  return res
+}
+
+function genCustomElementsConfigJson(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  isX: boolean,
+  customElements: Record<string, string>,
+  namespace: string
+) {
+  const res: { name: string; class: string; delegateClass?: string }[] = []
+  Object.keys(customElements).forEach((name) => {
+    const normalized = capitalize(camelize(name))
+    const options: (typeof res)[0] = {
+      name,
+      class: namespace + normalized + 'CustomElement',
+    }
+    if (isX && platform === 'app-ios') {
+      options['delegateClass'] = normalized + 'CustomElementRegister'
     }
     res.push(options)
   })
@@ -777,7 +956,11 @@ export type Define =
 export function normalizeExtApiModules(json: Record<string, any>) {
   const res: Record<string, string> = {}
   Object.keys(json).forEach((module) => {
-    const options = json[module] as { uni?: Define; components?: string[] }
+    const options = json[module] as {
+      uni?: Define
+      components?: string[]
+      easycom: string[]
+    }
     if (isPlainObject(options)) {
       if (options.uni) {
         const uniApis = options.uni
@@ -795,6 +978,11 @@ export function normalizeExtApiModules(json: Record<string, any>) {
       }
       if (isArray(options.components)) {
         options.components.forEach((component) => {
+          res['component.' + component] = module
+        })
+      }
+      if (isArray(options.easycom)) {
+        options.easycom.forEach((component) => {
           res['component.' + component] = module
         })
       }
@@ -855,7 +1043,7 @@ export function resolveBundleInputRoot(
   if (
     process.env.UNI_APP_X_TSC === 'true' &&
     // 云端uni_modules编译，传入的已经是真实地址
-    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
+    (isNormalCompileTarget() || process.env.UNI_COMPILE_TARGET === 'ext-api')
   ) {
     return uvueOutDir(platform)
   }
@@ -869,7 +1057,7 @@ export function resolveBundleInputFileName(
   if (
     process.env.UNI_APP_X_TSC === 'true' &&
     // 云端uni_modules编译，传入的已经是真实地址 uni-cli-shared/vite/cloud.ts:190
-    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
+    (isNormalCompileTarget() || process.env.UNI_COMPILE_TARGET === 'ext-api')
   ) {
     const uvueDir = uvueOutDir(platform)
     if (!fileName.startsWith(uvueDir)) {
@@ -923,4 +1111,135 @@ export function normalizeUTSResult(
     }
   }
   return result
+}
+
+export function isNormalCompileTarget() {
+  // 目前有特殊编译目标 uni_modules 和 ext-api
+  return !process.env.UNI_COMPILE_TARGET
+}
+
+// 首先确保是字符串键
+type StringKeys<T> = T extends object ? keyof T & string : never
+
+// 提取以 'enable' 开头的属性键
+type ExtractEnableKeys<T> = T extends object
+  ? StringKeys<T> extends infer K
+    ? K extends string
+      ? K extends `enable${string}`
+        ? K
+        : never
+      : never
+    : never
+  : never
+
+type EnableKeys = ExtractEnableKeys<NonNullable<UTSOutputOptions['transform']>>
+let utsConfig: Pick<NonNullable<UTSOutputOptions['transform']>, EnableKeys>
+
+function getUTSConfig() {
+  if (!utsConfig) {
+    if (process.env.UNI_INPUT_DIR) {
+      const configPath = path.resolve(
+        process.env.UNI_INPUT_DIR,
+        'uts.config.json'
+      )
+      if (fs.existsSync(configPath)) {
+        utsConfig = require(configPath)
+      }
+    }
+    if (!utsConfig) {
+      utsConfig = {}
+    }
+  }
+  return utsConfig
+}
+
+function isEnableUTSFeature(feature: EnableKeys) {
+  return getUTSConfig()[feature]
+}
+
+export function isEnableUTSNumber() {
+  return isEnableUTSFeature('enableUtsNumber')
+}
+
+export function isEnableNarrowType() {
+  return isEnableUTSFeature('enableNarrowType')
+}
+
+export function isEnableGenericsParameterDefaults() {
+  return isEnableUTSFeature('enableGenericsParameterDefaults')
+}
+
+export function isEnableInlineReified() {
+  return isEnableUTSFeature('enableInlineReified')
+}
+
+export function updateManifestModules(
+  inputDir: string,
+  inject_apis: string[],
+  localExtApis: Record<string, [string, string]> = {}
+) {
+  const filename = path.resolve(inputDir, 'manifest.json')
+  if (fs.existsSync(filename)) {
+    const content = fs.readFileSync(filename, 'utf8')
+    try {
+      const json = JSON.parse(content)
+      if (!json.app) {
+        json.app = {}
+      }
+      if (!json.app.distribute) {
+        json.app.distribute = {}
+      }
+      if (!json.app.distribute.modules) {
+        json.app.distribute.modules = {}
+      }
+      const modules = json.app.distribute.modules
+      let updated = false
+      parseInjectModules(inject_apis, localExtApis, []).forEach((name) => {
+        if (!hasOwn(modules, name)) {
+          modules[name] = {}
+          updated = true
+        }
+      })
+      if (updated) {
+        fs.outputFileSync(filename, JSON.stringify(json, null, 2))
+      }
+    } catch (e) {}
+  }
+}
+
+const pluginInjectApis = new Set<string>()
+
+export function addPluginInjectApis(apis: string[]) {
+  apis.forEach((api) => {
+    pluginInjectApis.add(api)
+  })
+}
+
+export function getPluginInjectApis() {
+  return [...pluginInjectApis]
+}
+
+const pluginInjectComponents = new Set<string>()
+
+export function addPluginInjectComponents(components: string[]) {
+  components.forEach((component) => {
+    pluginInjectComponents.add(component)
+  })
+}
+
+const pluginInjectCustomElements: Record<string, string> = {}
+export function addPluginInjectCustomElements(
+  customElements: Record<string, string>
+) {
+  Object.keys(customElements).forEach((key) => {
+    pluginInjectCustomElements[key] = customElements[key]
+  })
+}
+
+export function getPluginInjectCustomElements() {
+  return pluginInjectCustomElements
+}
+
+export function getPluginInjectComponents() {
+  return [...pluginInjectComponents]
 }

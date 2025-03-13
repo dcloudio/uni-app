@@ -74,6 +74,8 @@ export function initPluginVueOptions(
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
+  ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
+
   const {
     compiler,
     styleOptions: { postcssPlugins },
@@ -186,7 +188,7 @@ export function initPluginVueOptions(
   // app-nvue | app-uvue 需要启用 customElement 机制来内联 styles
   if (
     process.env.UNI_COMPILER === 'nvue' ||
-    (isX && options.platform === 'app')
+    (isX && (options.platform === 'app' || options.platform === 'app-harmony'))
   ) {
     vueOptions.customElement = true
     if (process.env.UNI_RENDERER_NATIVE !== 'appService' || isX) {

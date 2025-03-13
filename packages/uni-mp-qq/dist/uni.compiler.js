@@ -38,7 +38,7 @@ var packOptions = {
 	]
 };
 var setting = {
-	urlCheck: true,
+	urlCheck: false,
 	es6: true,
 	postcss: false,
 	minified: false,
@@ -130,6 +130,10 @@ const miniProgram = {
         dir: COMPONENTS_DIR,
         vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN,
         getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
+    },
+    filter: {
+        lang: 'wxs',
+        setStyle: true,
     },
 };
 const options = {

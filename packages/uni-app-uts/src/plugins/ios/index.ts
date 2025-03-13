@@ -1,6 +1,7 @@
 import * as path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
+  isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
   uniDecryptUniModulesPlugin,
@@ -10,19 +11,21 @@ import {
   uniHBuilderXConsolePlugin,
   uniUTSAppUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
+  uniUniModulesExtApiPlugin,
 } from '@dcloudio/uni-cli-shared'
 
-import { uniAppIOSPlugin } from './plugin'
-import { uniAppIOSMainPlugin } from './mainUTS'
-import { uniAppManifestPlugin } from './manifestJson'
-import { uniAppPagesPlugin } from './pagesJson'
 import * as vueCompilerDom from '@vue/compiler-dom'
 import * as uniCliShared from '@dcloudio/uni-cli-shared'
+import { createUniAppJsEnginePlugin } from '../js/plugin'
+import { uniAppJsEngineMainPlugin } from '../js/mainUTS'
+import { uniAppManifestPlugin } from '../js/manifestJson'
+import { uniAppPagesPlugin } from '../js/pagesJson'
 
 export function init() {
   return [
-    uniDecryptUniModulesPlugin(),
+    ...(isNormalCompileTarget() ? [uniDecryptUniModulesPlugin()] : []),
     uniHBuilderXConsolePlugin('uni.__log__'),
+    // 非 isNormalCompileTarget 时（ext-api模式），仍需要编译 uni_modules 获取 js code
     uniUTSAppUniModulesPlugin({
       x: true,
       isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
@@ -32,10 +35,16 @@ export function init() {
       ),
     }),
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
-    uniAppIOSPlugin(),
-    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+    createUniAppJsEnginePlugin('app-ios')(),
+    ...(process.env.UNI_COMPILE_TARGET === 'ext-api'
+      ? [uniUniModulesExtApiPlugin()]
+      : process.env.UNI_COMPILE_TARGET === 'uni_modules'
       ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
-      : [uniAppIOSMainPlugin(), uniAppManifestPlugin(), uniAppPagesPlugin()]),
+      : [
+          uniAppJsEngineMainPlugin(),
+          uniAppManifestPlugin(),
+          uniAppPagesPlugin(),
+        ]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({
       inputDir: process.env.UNI_INPUT_DIR,

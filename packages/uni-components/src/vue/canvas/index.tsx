@@ -439,7 +439,12 @@ function useMethods(
         }
 
         // 安卓 WebView 除本地路径无跨域问题
-        if (__PLATFORM__ === 'app' && navigator.vendor === 'Google Inc.') {
+        if (
+          __PLATFORM__ === 'app' &&
+          // @ts-expect-error 修正plus.os.name类型
+          plus.os.name !== 'HarmonyOS' &&
+          navigator.vendor === 'Google Inc.'
+        ) {
           if (src.indexOf('file://') === 0) {
             image.crossOrigin = 'anonymous'
           }

@@ -40,6 +40,10 @@ export function initWx() {
     typeof requireMiniProgram === 'undefined'
   ) {
     ;(globalThis as any).wx = newWx
+    // #if _X_
+    // 不同平台globalThis表现可能有差异，暂时在这里设置__uniX
+    ;(globalThis as any).__uniX = true
+    // #endif
   }
   return newWx
 }

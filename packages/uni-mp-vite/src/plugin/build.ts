@@ -9,8 +9,10 @@ import {
   M,
   dynamicImportPolyfill,
   emptyDir,
+  enableSourceMap,
   hasJsonFile,
   isCSSRequest,
+  isEnableConsole,
   isMiniProgramAssetFile,
   normalizeMiniProgramFilename,
   normalizePath,
@@ -45,18 +47,36 @@ export function createBuildOptions(
 ): BuildOptions {
   const { renderDynamicImport } = dynamicImportPolyfill()
   return {
-    // sourcemap: 'inline', // TODO
+    // TODO 待优化，不同小程序平台sourcemap处理逻辑可能不同
+    // TODO 目前存在两层sourcemap，一层是vite的，一层是小程序的，目前拿不到小程序的sourcemap，导致没法还原到源码，所以暂时不默认启用
+    sourcemap: isEnableConsole() && enableSourceMap(),
     // target: ['chrome53'], // 由小程序自己启用 es6 编译
     emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
-    lib: {
-      // 必须使用 lib 模式，否则会生成 preload 等代码
-      fileName: 'app.js',
-      entry: resolveMainPathOnce(inputDir),
-      formats: ['cjs'],
-    },
+    lib:
+      process.env.UNI_COMPILE_TARGET === 'uni_modules'
+        ? false
+        : {
+            // 必须使用 lib 模式，否则会生成 preload 等代码
+            fileName: 'app.js',
+            entry: resolveMainPathOnce(inputDir),
+            formats: ['cjs'],
+          },
     rollupOptions: {
-      input: parseRollupInput(inputDir, platform),
+      input:
+        process.env.UNI_COMPILE_TARGET === 'uni_modules'
+          ? {}
+          : parseRollupInput(inputDir, platform),
       output: {
+        sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
+          const result = sourcemapPathTransform(
+            relativeSourcePath,
+            sourcemapPath
+          )
+          if (platform === 'mp-alipay') {
+            return path.basename(result)
+          }
+          return result
+        },
         entryFileNames(chunk) {
           if (chunk.name === 'main') {
             return 'app.js'
@@ -84,6 +104,34 @@ export function createBuildOptions(
       },
     },
   }
+}
+
+function sourcemapPathTransform(
+  relativeSourcePath: string,
+  sourcemapPath: string
+) {
+  const prefix = ''
+  let [, modulePath] = relativeSourcePath.split('/node_modules/')
+  if (modulePath) {
+    return `${prefix}node_modules/${modulePath}`
+  }
+  let [, base64] = relativeSourcePath.split('/uniPage:/')
+  if (base64) {
+    return prefix + parseVirtualPagePath(base64) + '?type=page'
+  }
+  ;[, base64] = relativeSourcePath.split('/uniComponent:/')
+  if (base64) {
+    return prefix + parseVirtualComponentPath(base64) + '?type=component'
+  }
+  return (
+    prefix +
+    normalizePath(
+      path.relative(
+        process.env.UNI_INPUT_DIR,
+        path.resolve(path.dirname(sourcemapPath), relativeSourcePath)
+      )
+    )
+  )
 }
 
 function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {

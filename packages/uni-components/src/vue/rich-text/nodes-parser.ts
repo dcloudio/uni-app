@@ -121,7 +121,6 @@ function processClickEvent(node: Node, triggerItemClick: Function) {
         triggerItemClick(e, { node })
         //#endif
         //#if _X_
-        // TODO 确认ref属性的值
         if (node.name === 'a') {
           triggerItemClick(e, { href: (node.attrs || {}).href })
         } else {

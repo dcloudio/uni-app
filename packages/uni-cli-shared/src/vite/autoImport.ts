@@ -1,4 +1,13 @@
-import type { Options } from 'unplugin-auto-import/types'
+import { once } from '@dcloudio/uni-shared'
+import type {
+  ImportExtended,
+  Options,
+  ScanDir,
+  ScanDirExportsOptions,
+} from 'unplugin-auto-import/types'
+import type { Unimport, UnimportOptions } from 'unimport'
+
+import { getUTSCustomElementsExports } from '../uts'
 
 export type AutoImportOptions = Options
 
@@ -33,6 +42,12 @@ const uniPreset = {
     'onTabItemTap',
     'onReachBottom',
     'onPullDownRefresh',
+
+    // 其他
+    'onShareTimeline',
+    'onShareAppMessage',
+    'onShareChat', // xhs-share
+
     // 辅助
     'renderComponentSlot',
   ],
@@ -85,9 +100,16 @@ const uniH5Preset = {
     'UniPickerElement',
   ],
 }
-const cloudPreset = {
-  '@dcloudio/uni-cloud': [['default', 'uniCloud']],
+
+const uniMiniProgramPreset = {
+  from: 'vue',
+  imports: ['UniElement', 'UniElementImpl'],
 }
+
+const cloudPreset = {
+  '@dcloudio/uni-cloud': ['uniCloud', 'UniCloudError'],
+}
+
 const vuePreset = {
   from: 'vue',
   imports: [
@@ -167,9 +189,12 @@ export function initAutoImportOptions(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   { imports = [], ...userOptions }: AutoImportOptions
 ): AutoImportOptions {
+  rewriteAutoImportOnce()
   const autoImport = [uniPreset, cloudPreset, vuePreset]
   if (platform === 'web') {
     autoImport.push(uniH5Preset)
+  } else if (platform.startsWith('mp-')) {
+    autoImport.push(uniMiniProgramPreset)
   }
   return {
     ...userOptions,
@@ -180,5 +205,38 @@ export function initAutoImportOptions(
       platform === 'app-android' ? [] : autoImport
     ),
     dts: false,
+  }
+}
+
+const rewriteAutoImportOnce = once(() => {
+  const unimport = require('unimport')
+  const originalCreateUnimport = unimport.createUnimport
+  unimport.createUnimport = (opts: Partial<UnimportOptions>): Unimport => {
+    const unimport_ = originalCreateUnimport(opts) as Unimport
+    const originalScanImportsFromDir = unimport_.scanImportsFromDir
+    unimport_.scanImportsFromDir = async (
+      dir?: (string | ScanDir)[],
+      options?: ScanDirExportsOptions
+    ) => {
+      const exports_ = (await originalScanImportsFromDir(
+        dir,
+        options
+      )) as ImportExtended[]
+      scanCustomElements(exports_)
+      return exports_
+    }
+    return unimport_
+  }
+})
+
+function scanCustomElements(exports_: ImportExtended[]) {
+  const utsCustomElementsExports = getUTSCustomElementsExports()
+  for (const [key, value] of utsCustomElementsExports.entries()) {
+    value.exports.forEach((export_) => {
+      exports_.push({
+        from: key,
+        name: export_[0],
+      })
+    })
   }
 }

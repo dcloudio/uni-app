@@ -21,6 +21,9 @@ export {
   requestComponentInfo,
   addIntersectionObserver,
   removeIntersectionObserver,
+  //#if _X_
+  registerSystemRoute,
+  //#endif
 } from '@dcloudio/uni-platform'
 export {
   getCurrentPage,
@@ -28,5 +31,8 @@ export {
   getCurrentPageMeta,
   getCurrentPageVm,
   getPageIdByVm,
+  //#if _X_
+  isSystemActionSheetDialogPage,
+  //#endif
 } from '@dcloudio/uni-core'
 export const __uniConfig = globalThis.__uniConfig

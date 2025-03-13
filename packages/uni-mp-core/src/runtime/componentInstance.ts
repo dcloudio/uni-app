@@ -1,6 +1,7 @@
 import {
   EventChannel,
   SLOT_DEFAULT_NAME,
+  VIRTUAL_HOST_ID,
   invokeArrayFns,
 } from '@dcloudio/uni-shared'
 import { capitalize, hasOwn, isArray, isFunction } from '@vue/shared'
@@ -9,11 +10,18 @@ import {
   type ComponentInternalInstance,
   type ComponentPublicInstance,
   // @ts-expect-error
+  destroyUniElements,
+  // @ts-expect-error
   devtoolsComponentAdded,
   // @ts-expect-error
   devtoolsComponentRemoved,
+  onUnmounted,
+  onUpdated,
+  // @ts-expect-error
+  pruneUniElements,
 } from 'vue'
 import type { MPComponentInstance } from './component'
+import { getTriggerEventDetail } from './util'
 
 const MP_METHODS = [
   'createSelectorQuery',
@@ -75,6 +83,28 @@ export function initBaseInstance(
   ctx.$mpPlatform = __PLATFORM__
   ctx.$scope = options.mpInstance
 
+  if (
+    __PLATFORM__ === 'mp-weixin' ||
+    __PLATFORM__ === 'mp-alipay' ||
+    __PLATFORM__ === 'mp-toutiao'
+  ) {
+    // mergeVirtualHostAttributes
+    Object.defineProperties(ctx, {
+      // only id
+      [VIRTUAL_HOST_ID]: {
+        get() {
+          const id = this.$scope.data[VIRTUAL_HOST_ID]
+          // props in page can be undefined
+          return id === undefined ? '' : id
+        },
+      },
+    })
+  }
+
+  if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
+    ctx.$getTriggerEventDetail = getTriggerEventDetail
+  }
+
   // TODO @deprecated
   ctx.$mp = {}
   if (__VUE_OPTIONS_API__) {
@@ -112,6 +142,15 @@ export function initBaseInstance(
 
   // $emit
   instance.emit = createEmitFn(instance.emit, ctx)
+
+  if (__X__) {
+    onUpdated(() => {
+      pruneUniElements(instance)
+    }, instance)
+    onUnmounted(() => {
+      destroyUniElements(instance)
+    }, instance)
+  }
 }
 
 export function initComponentInstance(

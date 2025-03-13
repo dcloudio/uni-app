@@ -6,6 +6,23 @@ export function initDefine(stringifyBoolean: boolean = false) {
   const platformManifestJson = getPlatformManifestJsonOnce()
   const isRunByHBuilderX = runByHBuilderX()
   const isDebug = !!manifestJson.debug
+  const isX = process.env.UNI_APP_X === 'true'
+  const isMP = process.env.UNI_PLATFORM.startsWith('mp')
+
+  process.env['UNI_APP_ID'] = manifestJson.appid
+
+  let mpXDefine =
+    isX && isMP
+      ? {
+          __UNI_FEATURE_VIRTUAL_HOST__: true,
+        }
+      : {
+          __UNI_FEATURE_VIRTUAL_HOST__: false,
+        }
+  if (isX && isMP) {
+    mpXDefine.__UNI_FEATURE_VIRTUAL_HOST__ =
+      platformManifestJson.enableVirtualHost !== false
+  }
 
   return {
     ...initCustomDefine(),
@@ -56,6 +73,7 @@ export function initDefine(stringifyBoolean: boolean = false) {
     'process.env.VUE_APP_DARK_MODE': JSON.stringify(
       platformManifestJson.darkmode || false
     ),
+    ...mpXDefine,
   }
 }
 

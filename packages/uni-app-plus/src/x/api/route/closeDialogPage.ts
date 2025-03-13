@@ -1,57 +1,8 @@
 import { ON_SHOW } from '@dcloudio/uni-shared'
-import { invokeHook } from '@dcloudio/uni-core'
-import { UniDialogPageImpl } from '../../framework/page/dialogPage'
-import { closeNativeDialogPage } from './utils'
-
-/**
- *
- * 文档: []()
- */
-type CloseDialogPageSuccess = AsyncApiResult
-type CloseDialogPageFail = AsyncApiResult
-type CloseDialogPageComplete = AsyncApiResult
-interface CloseDialogPageOptions {
-  /**
-   * 窗口显示的动画类型
-   * - auto: 自动选择动画效果
-   * - none: 无动画效果
-   * - slide-out-right: 横向向右侧滑出屏幕动画
-   * - slide-out-left: 横向向左侧滑出屏幕动画
-   * - slide-out-top: 竖向向上侧滑出屏幕动画
-   * - slide-out-bottom: 竖向向下侧滑出屏幕动画
-   * - fade-out: 从不透明到透明逐渐隐藏动画
-   * - zoom-in: 从大逐渐缩小关闭动画
-   * - zoom-fade-in: 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画
-   */
-  animationType?:
-    | 'auto'
-    | 'none'
-    | 'slide-out-right'
-    | 'slide-out-left'
-    | 'slide-out-top'
-    | 'slide-out-bottom'
-    | 'fade-out'
-    | 'zoom-in'
-    | 'zoom-fade-in'
-  /**
-   * 页面间通信接口，用于监听被打开页面发送到当前页面的数据
-   */
-  events?: any
-
-  dialogPage?: UniDialogPage
-  /**
-   * 接口调用成功的回调函数
-   */
-  success?: (result: CloseDialogPageSuccess) => void
-  /**
-   * 接口调用失败的回调函数
-   */
-  fail?: (result: CloseDialogPageFail) => void
-  /**
-   * 接口调用结束的回调函数（调用成功、失败都会执行）
-   */
-  complete?: (result: CloseDialogPageComplete) => void
-}
+import { invokeHook, isSystemDialogPage } from '@dcloudio/uni-core'
+import closeNativeDialogPage from './closeNativeDialogPage'
+import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
+import { ANI_DURATION } from '../../../service/constants'
 
 export const closeDialogPage = (options?: CloseDialogPageOptions) => {
   const currentPages = getCurrentPages() as UniPage[]
@@ -71,29 +22,57 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       triggerFailCallback(options, 'dialogPage is not a valid page')
       return
     }
-    const parentPage = dialogPage.getParentPage!()
-    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.getDialogPages()
-      const index = parentDialogPages.indexOf(dialogPage)
-      parentDialogPages.splice(index, 1)
-      closeNativeDialogPage(dialogPage, options?.animationType || 'none')
-      if (index > 0 && index === parentDialogPages.length) {
-        invokeHook(
-          parentDialogPages[parentDialogPages.length - 1].$vm!,
-          ON_SHOW
+    const parentPage = dialogPage.getParentPage()
+    if (!isSystemDialogPage(dialogPage)) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        const parentDialogPages = parentPage.getDialogPages()
+        const index = parentDialogPages.indexOf(dialogPage)
+        parentDialogPages.splice(index, 1)
+        closeNativeDialogPage(
+          dialogPage,
+          options?.animationType || 'auto',
+          options?.animationDuration || ANI_DURATION
         )
+        if (index > 0 && index === parentDialogPages.length) {
+          invokeHook(
+            parentDialogPages[parentDialogPages.length - 1].vm!,
+            ON_SHOW
+          )
+        }
+      } else {
+        triggerFailCallback(options, 'dialogPage is not a valid page')
+        return
       }
     } else {
-      triggerFailCallback(options, 'dialogPage is not a valid page')
+      const systemDialogPages = parentPage?.vm?.$systemDialogPages?.value
+      if (systemDialogPages) {
+        const index = systemDialogPages.indexOf(dialogPage)
+        if (index > -1) {
+          systemDialogPages.splice(index, 1)
+          closeNativeDialogPage(
+            dialogPage,
+            options?.animationType || 'auto',
+            options?.animationDuration || ANI_DURATION
+          )
+        } else {
+          triggerFailCallback(options, 'dialogPage is not a valid page')
+        }
+      }
       return
     }
   } else {
     const dialogPages = currentPage.getDialogPages()
     for (let i = dialogPages.length - 1; i >= 0; i--) {
-      closeNativeDialogPage(dialogPages[i], options?.animationType || 'none')
+      closeNativeDialogPage(
+        dialogPages[i],
+        options?.animationType || 'auto',
+        options?.animationDuration || ANI_DURATION
+      )
       if (i > 0) {
         invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
       }
+      // @ts-expect-error
+      dialogPages[i] = null
     }
     dialogPages.length = 0
   }
@@ -112,6 +91,7 @@ function triggerFailCallback(
     4,
     `openDialogPage: fail, ${errMsg}`
   )
+  // @ts-expect-error
   options?.fail?.(failOptions)
   options?.complete?.(failOptions)
 }

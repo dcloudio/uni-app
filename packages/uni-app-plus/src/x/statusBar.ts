@@ -7,9 +7,30 @@ interface UniPageFix extends IPage {
 }
 
 export function setStatusBarStyle() {
-  const page = __X__
-    ? ((getCurrentPage() as unknown as UniPage).vm as ComponentPublicInstance)
-    : (getCurrentPage() as ComponentPublicInstance)
+  let page: ComponentPublicInstance
+  if (__X__) {
+    const currentPage = getCurrentPage() as unknown as UniPage
+    const dialogPages = currentPage?.getDialogPages()
+    const systemDialogPages = currentPage?.vm?.$systemDialogPages?.value
+    if (systemDialogPages?.length && dialogPages?.length) {
+      const lastSystemDialogPage =
+        systemDialogPages[systemDialogPages.length - 1]
+      const lastDialogPage = dialogPages[dialogPages.length - 1]
+      page =
+        Number(lastSystemDialogPage.__nativePageId) >
+        Number((lastDialogPage as any).__nativePageId)
+          ? lastSystemDialogPage.vm
+          : lastDialogPage.vm
+    } else if (dialogPages?.length) {
+      page = dialogPages[dialogPages.length - 1].vm
+    } else if (systemDialogPages?.length) {
+      page = systemDialogPages[systemDialogPages.length - 1].vm
+    } else {
+      page = currentPage.vm
+    }
+  } else {
+    page = getCurrentPage() as ComponentPublicInstance
+  }
   if (page) {
     const nativePage = page.$nativePage as UniPageFix
     nativePage.applyStatusBarStyle()

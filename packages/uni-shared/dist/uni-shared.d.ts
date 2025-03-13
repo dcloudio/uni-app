@@ -177,8 +177,9 @@ export declare function dynamicSlotName(name: string): string;
 
 export declare interface Emitter {
     e: Record<string, unknown>;
-    on: (name: EventName, callback: EventCallback, ctx?: any) => this;
-    once: (name: EventName, callback: EventCallback, ctx?: any) => this;
+    _id: number;
+    on: (name: EventName, callback: EventCallback, ctx?: any) => number;
+    once: (name: EventName, callback: EventCallback, ctx?: any) => number;
     emit: (name: EventName, ...args: any[]) => this;
     off: (name: EventName, callback?: EventCallback | null) => this;
 }
@@ -228,6 +229,8 @@ export declare function getCustomDataset(el: HTMLElement | HTMLElementWithDatase
 
 export declare function getEnvLocale(): string;
 
+export declare function getGlobal(): any;
+
 export declare function getLen(str?: string): number;
 
 export declare function getValueByDataPath(obj: any, path: string): unknown;
@@ -238,7 +241,7 @@ declare interface HTMLElementWithDataset extends HTMLElement {
 
 export declare const I18N_JSON_DELIMITERS: [string, string];
 
-export declare const initCustomDatasetOnce: () => void;
+export declare const initCustomDatasetOnce: (isBuiltInElement?: ((el: HTMLElement) => boolean) | undefined) => void;
 
 /**
  * nodeId
@@ -260,11 +263,15 @@ export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (a
 
 export declare function invokeCreateVueAppHook(app: App): void;
 
+export declare function isAppHarmonyUVueNativeTag(tag: string): boolean;
+
 export declare function isAppIOSUVueNativeTag(tag: string): boolean;
 
 export declare function isAppNativeTag(tag: string): boolean;
 
 export declare function isAppNVueNativeTag(tag: string): boolean;
+
+export declare function isAppUVueBuiltInEasyComponent(tag: string): boolean;
 
 export declare function isAppUVueNativeTag(tag: string): boolean;
 
@@ -278,7 +285,17 @@ export declare function isH5CustomElement(tag: string, isX?: boolean): boolean;
 
 export declare function isH5NativeTag(tag: string): boolean;
 
+/**
+ * 用于替代@vue/shared的isIntegerKey，原始方法在鸿蒙arkts中会引发bug。根本原因是arkts的数组的key是数字而不是字符串。
+ * 目前这个方法使用的地方都和数组有关，切记不能挪作他用。
+ * @param key
+ * @returns
+ */
+export declare const isIntegerKey: (key: unknown) => boolean;
+
 export declare function isMiniProgramNativeTag(tag: string): boolean;
+
+export declare function isMiniProgramUVueNativeTag(tag: string): boolean;
 
 export declare function isRootHook(name: string): boolean;
 
@@ -455,6 +472,8 @@ export declare interface NVueTaskCenter {
     updateData: (componentId: string, data: Record<string, unknown> | void, callback?: Function) => void;
 }
 
+export declare const OFF_HOST_THEME_CHANGE = "offHostThemeChange";
+
 export declare const OFF_THEME_CHANGE = "offThemeChange";
 
 export declare const ON_ADD_TO_FAVORITES = "onAddToFavorites";
@@ -470,6 +489,8 @@ export declare const ON_ERROR = "onError";
 export declare const ON_EXIT = "onExit";
 
 export declare const ON_HIDE = "onHide";
+
+export declare const ON_HOST_THEME_CHANGE = "onHostThemeChange";
 
 export declare const ON_INIT = "onInit";
 
@@ -508,6 +529,8 @@ export declare const ON_RESIZE = "onResize";
 export declare const ON_SAVE_EXIT_STATE = "onSaveExitState";
 
 export declare const ON_SHARE_APP_MESSAGE = "onShareAppMessage";
+
+export declare const ON_SHARE_CHAT = "onShareChat";
 
 export declare const ON_SHARE_TIMELINE = "onShareTimeline";
 
@@ -672,6 +695,11 @@ number,
 string | number
 ];
 
+export declare const enum SetUniElementIdTagType {
+    BuiltInComponent = 1,// 如：unicloud-db
+    BuiltInRootElement = 2
+}
+
 export declare const SLOT_DEFAULT_NAME = "d";
 
 export declare function sortObject<T extends Object>(obj: T): T;
@@ -779,7 +807,7 @@ export declare class UniInputElement extends UniElement {
     set value(val: string | number);
 }
 
-export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
+export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onShareChat", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
 
 export declare class UniNode extends UniEventTarget {
     nodeId?: number;
@@ -883,9 +911,19 @@ export declare function updateElementStyle(element: HTMLElement, styles: Partial
 
 export declare const UVUE_BUILT_IN_TAGS: string[];
 
+export declare const UVUE_HARMONY_BUILT_IN_TAGS: string[];
+
 export declare const UVUE_IOS_BUILT_IN_TAGS: string[];
 
 export declare const UVUE_WEB_BUILT_IN_TAGS: string[];
+
+export declare const VIRTUAL_HOST_CLASS = "virtualHostClass";
+
+export declare const VIRTUAL_HOST_HIDDEN = "virtualHostHidden";
+
+export declare const VIRTUAL_HOST_ID = "virtualHostId";
+
+export declare const VIRTUAL_HOST_STYLE = "virtualHostStyle";
 
 declare interface Vue_2 {
     createApp: typeof createApp;

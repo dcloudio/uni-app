@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5-vue",
-  "version": "3.0.0-alpha-4020520240719001",
+  "version": "3.0.0-alpha-4040120241205001",
   "description": "@dcloudio/uni-h5-vue",
   "main": "dist/vue.runtime.cjs.js",
   "module": "dist/vue.runtime.esm.js",
@@ -21,7 +21,7 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-shared": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-shared": "workspace:*",
     "@vue/server-renderer": "3.4.21"
   }
 }

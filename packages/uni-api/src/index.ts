@@ -2,6 +2,7 @@ export * from './service/base/base64'
 export * from './service/base/upx2px'
 export * from './service/base/interceptor'
 export * from './service/base/eventBus'
+export * from './service/base/__f__'
 
 export * from './service/context/createVideoContext'
 export * from './service/context/createMapContext'
@@ -16,6 +17,7 @@ export * from './service/ui/tabBar'
 export * from './service/ui/window'
 export * from './service/ui/locale'
 export * from './service/ui/setPageMeta'
+export * from './service/ui/background'
 
 export * from './service/keyboard/getSelectedTextRange'
 

@@ -1,6 +1,6 @@
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
@@ -10,7 +10,7 @@ function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = 
 **/
 function makeMap(str, expectsLowerCase) {
   var set = new Set(str.split(","));
-  return expectsLowerCase ? val => set.has(val.toLowerCase()) : val => set.has(val);
+  return val => set.has(val);
 }
 var EMPTY_OBJ = Object.freeze({});
 var EMPTY_ARR = Object.freeze([]);
@@ -604,7 +604,7 @@ function getDepFromReactive(object, key) {
   return (_a = targetMap.get(object)) == null ? void 0 : _a.get(key);
 }
 var isNonTrackableKeys = /* @__PURE__ */makeMap("__proto__,__v_isRef,__isVue");
-var builtInSymbols = new Set( /* @__PURE__ */Object.getOwnPropertyNames(Symbol).filter(key => key !== "arguments" && key !== "caller").map(key => Symbol[key]).filter(isSymbol));
+var builtInSymbols = new Set(/* @__PURE__ */Object.getOwnPropertyNames(Symbol).filter(key => key !== "arguments" && key !== "caller").map(key => Symbol[key]).filter(isSymbol));
 var arrayInstrumentations = /* @__PURE__ */createArrayInstrumentations();
 function createArrayInstrumentations() {
   var instrumentations = {};
@@ -1373,6 +1373,7 @@ var ON_TAB_ITEM_TAP = 'onTabItemTap';
 var ON_REACH_BOTTOM = 'onReachBottom';
 var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 var ON_SHARE_TIMELINE = 'onShareTimeline';
+var ON_SHARE_CHAT = 'onShareChat'; // xhs-share
 var ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 var ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 // navigationBar
@@ -1381,13 +1382,54 @@ var ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked'
 var ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
 var ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
 var ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
+function getGlobalOnce() {
+  if (typeof globalThis !== 'undefined') {
+    return globalThis;
+  }
+  // worker
+  if (typeof self !== 'undefined') {
+    return self;
+  }
+  // browser
+  if (typeof window !== 'undefined') {
+    return window;
+  }
+  // nodejs
+  // if (typeof global !== 'undefined') {
+  //   return global
+  // }
+  function g() {
+    return this;
+  }
+  if (typeof g() !== 'undefined') {
+    return g();
+  }
+  return function () {
+    return new Function('return this')();
+  }();
+}
+var g = undefined;
+function getGlobal() {
+  if (g) {
+    return g;
+  }
+  g = getGlobalOnce();
+  return g;
+}
 function normalizeStyle$1(value) {
-  if (value instanceof Map) {
+  var g = getGlobal();
+  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
     var styleObject = {};
-    value.forEach((value, key) => {
-      styleObject[key] = value;
+    g.UTSJSONObject.keys(value).forEach(key => {
+      styleObject[key] = value[key];
     });
     return normalizeStyle$2(styleObject);
+  } else if (value instanceof Map) {
+    var _styleObject = {};
+    value.forEach((value, key) => {
+      _styleObject[key] = value;
+    });
+    return normalizeStyle$2(_styleObject);
   } else if (isString(value)) {
     return parseStringStyle(value);
   } else if (isArray$1(value)) {
@@ -1408,7 +1450,14 @@ function normalizeStyle$1(value) {
 }
 function normalizeClass(value) {
   var res = '';
-  if (value instanceof Map) {
+  var g = getGlobal();
+  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+    g.UTSJSONObject.keys(value).forEach(key => {
+      if (value[key]) {
+        res += key + ' ';
+      }
+    });
+  } else if (value instanceof Map) {
     value.forEach((value, key) => {
       if (value) {
         res += key + ' ';
@@ -1440,7 +1489,7 @@ function normalizeProps(props) {
   }
   return props;
 }
-var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
+var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
 function isRootImmediateHook(name) {
   var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
   return PAGE_SYNC_HOOKS.indexOf(name) > -1;
@@ -1806,9 +1855,61 @@ function createTransformBackground(options) {
     }
   };
 }
-var borderWidth = 'Width';
-var borderStyle = 'Style';
-var borderColor = 'Color';
+function borderTop() {
+  return 'borderTop';
+}
+function borderRight() {
+  return 'borderRight';
+}
+function borderBottom() {
+  return 'borderBottom';
+}
+function borderLeft() {
+  return 'borderLeft';
+}
+var transformBorderColor = decl => {
+  var {
+    prop,
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var _property_split = hyphenate(prop).split('-');
+  var property = _property_split[_property_split.length - 1];
+  {
+    property = capitalize(property);
+  }
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/); // 1pt
+  switch (splitResult.length) {
+    case 1:
+      if (_property_split.length === 3) {
+        // border-top-width
+        return [decl];
+      }
+      // border-width
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTop() + property, splitResult[0], important, raws, source), createDecl(borderRight() + property, splitResult[1], important, raws, source), createDecl(borderBottom() + property, splitResult[2], important, raws, source), createDecl(borderLeft() + property, splitResult[3], important, raws, source)];
+};
+var transformBorderStyle = transformBorderColor;
+var transformBorderWidth = transformBorderColor;
+var borderWidth = () => {
+  return 'Width';
+};
+var borderStyle = () => {
+  return 'Style';
+};
+var borderColor = () => {
+  return 'Color';
+};
 function createTransformBorder(options) {
   return decl => {
     var {
@@ -1823,9 +1924,9 @@ function createTransformBorder(options) {
       var index = splitResult.findIndex(str => item.test(str));
       return index < 0 ? null : splitResult.splice(index, 1)[0];
     });
-    var isUvuePlatform = options.type === 'uvue';
+    var isUvuePlatform = options.type == 'uvue';
     if (isUvuePlatform) {
-      if (splitResult.length > 0 && value !== '') {
+      if (splitResult.length > 0 && value != '') {
         return [decl];
       }
     } else {
@@ -1834,38 +1935,37 @@ function createTransformBorder(options) {
         return [decl];
       }
     }
-    return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+    var defaultWidth = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      if (options.type == 'uvue') {
+        return 'medium';
+      }
+      return '0';
+    };
+    var defaultStyle = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      if (options.type == 'uvue') {
+        return 'none';
+      }
+      return 'solid';
+    };
+    var defaultColor = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      return '#000000';
+    };
+    if (!isUvuePlatform) {
+      // nvue 维持不变
+      return [createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source), createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source), createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source)];
+    }
+    return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
   };
 }
-var borderTop = 'borderTop';
-var borderRight = 'borderRight';
-var borderBottom = 'borderBottom';
-var borderLeft = 'borderLeft';
-var transformBorderColor = decl => {
-  var {
-    prop,
-    value,
-    important,
-    raws,
-    source
-  } = decl;
-  var property = hyphenate(prop).split('-')[1];
-  {
-    property = capitalize(property);
-  }
-  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
-  switch (splitResult.length) {
-    case 1:
-      return [decl];
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
-};
 var borderTopLeftRadius = 'borderTopLeftRadius';
 var borderTopRightRadius = 'borderTopRightRadius';
 var borderBottomRightRadius = 'borderBottomRightRadius';
@@ -1883,6 +1983,31 @@ var transformBorderRadius = decl => {
   }
   switch (splitResult.length) {
     case 1:
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
+};
+var transformBorderRadiusNvue = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var splitResult = value.split(/\s+/);
+  if (value.includes('/')) {
+    return [decl];
+  }
+  // const isUvuePlatform = options.type == 'uvue'
+  switch (splitResult.length) {
+    case 1:
       return [decl];
     case 2:
       splitResult.push(splitResult[0], splitResult[1]);
@@ -1893,8 +2018,6 @@ var transformBorderRadius = decl => {
   }
   return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
 };
-var transformBorderStyle = transformBorderColor;
-var transformBorderWidth = transformBorderColor;
 var flexDirection = 'flexDirection';
 var flexWrap = 'flexWrap';
 var transformFlexFlow = decl => {
@@ -1987,7 +2110,7 @@ function getDeclTransforms(options) {
     borderStyle: transformBorderStyle,
     borderWidth: transformBorderWidth,
     borderColor: transformBorderColor,
-    borderRadius: transformBorderRadius,
+    borderRadius: options.type == 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
     // uvue已经支持这些简写属性，不需要展开
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
@@ -2283,7 +2406,7 @@ var flushIndex = 0;
 var pendingPostFlushCbs = [];
 var activePostFlushCbs = null;
 var postFlushIndex = 0;
-var isIOS = ("nativeApp" in getGlobalThis());
+var isIOS = "nativeApp" in getGlobalThis();
 var resolvedPromise = /* @__PURE__ */(isIOS ? PromisePolyfill : Promise).resolve();
 var currentFlushPromise = null;
 var RECURSION_LIMIT = 100;
@@ -4186,7 +4309,7 @@ function getTransitionRawChildren(children) {
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
-function defineComponent(options, extraOptions) {
+function defineComponent$1(options, extraOptions) {
   return isFunction(options) ?
   // #8326: extend call and options.name access are considered side-effects
   // by Rollup, so we have to wrap it in a pure-annotated IIFE.
@@ -4254,7 +4377,7 @@ function defineAsyncComponent(source) {
       return comp;
     }));
   };
-  return defineComponent({
+  return defineComponent$1({
     name: "AsyncComponentWrapper",
     __asyncLoader: load,
     get __asyncResolved() {
@@ -4753,7 +4876,7 @@ var publicPropertiesMap =
 // Move PURE marker to new line to workaround compiler discarding it
 // due to type annotation
 /* @__PURE__ */
-extend$1( /* @__PURE__ */Object.create(null), {
+extend$1(/* @__PURE__ */Object.create(null), {
   $: i => i,
   $el: i => i.vnode.el,
   $data: i => i.data,
@@ -5514,14 +5637,14 @@ function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
 }
 function mergeObjectOptions(to, from) {
-  return to ? extend$1( /* @__PURE__ */Object.create(null), to, from) : from;
+  return to ? extend$1(/* @__PURE__ */Object.create(null), to, from) : from;
 }
 function mergeEmitsOrPropsOptions(to, from) {
   if (to) {
     if (isArray$1(to) && isArray$1(from)) {
       return [... /* @__PURE__ */new Set([...to, ...from])];
     }
-    return extend$1( /* @__PURE__ */Object.create(null), normalizePropsOrEmits(to), normalizePropsOrEmits(from != null ? from : {}));
+    return extend$1(/* @__PURE__ */Object.create(null), normalizePropsOrEmits(to), normalizePropsOrEmits(from != null ? from : {}));
   } else {
     return from;
   }
@@ -5529,7 +5652,7 @@ function mergeEmitsOrPropsOptions(to, from) {
 function mergeWatchOptions(to, from) {
   if (!to) return from;
   if (!from) return to;
-  var merged = extend$1( /* @__PURE__ */Object.create(null), to);
+  var merged = extend$1(/* @__PURE__ */Object.create(null), to);
   for (var key in from) {
     merged[key] = mergeAsArray(to[key], from[key]);
   }
@@ -8723,10 +8846,10 @@ var getCurrentInstance = () => currentInstance || currentRenderingInstance;
 var internalSetCurrentInstance;
 var setInSSRSetupState;
 {
-  var g = getGlobalThis();
+  var _g = getGlobalThis();
   var registerGlobalSetter = (key, setter) => {
     var setters;
-    if (!(setters = g[key])) setters = g[key] = [];
+    if (!(setters = _g[key])) setters = _g[key] = [];
     setters.push(setter);
     return v => {
       if (setters.length > 1) setters.forEach(set => set(v));else setters[0](v);
@@ -9543,7 +9666,7 @@ function extend(a, b) {
   return a;
 }
 function toStyle(el, classStyle, classStyleWeights) {
-  var res = extend( /* @__PURE__ */new Map(), classStyle);
+  var res = extend(/* @__PURE__ */new Map(), classStyle);
   var style = getExtraStyle(el);
   if (style != null) {
     style.forEach((value, key) => {
@@ -9586,6 +9709,9 @@ function updateClassStyles(el) {
   var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
   if (styles.size == 0) {
     return;
+  }
+  if (el._vsh) {
+    styles.set("display", "none");
   }
   el.updateStyle(styles);
 }
@@ -9911,6 +10037,9 @@ function patchStyle(el, prev, next) {
   if (batchedStyles.size == 0) {
     return;
   }
+  if (el._vsh) {
+    batchedStyles.set("display", "none");
+  }
   el.updateStyle(batchedStyles);
 }
 function setBatchedStyles(batchedStyles, key, value) {
@@ -10106,6 +10235,7 @@ var vShow = {
 };
 function setDisplay(el, value) {
   el.style.setProperty("display", value ? el._vod : "none");
+  el._vsh = !value;
 }
 var rendererOptions = extend$1({
   patchProp
@@ -10128,4 +10258,11 @@ var createApp = function () {
   };
   return app;
 };
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle$1 as normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+var defineComponent = options => {
+  var rootElement = options.rootElement;
+  if (rootElement && typeof customElements !== 'undefined') {
+    customElements.define(rootElement.name, rootElement.class, rootElement.options);
+  }
+  return defineComponent$1(options);
+};
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle$1 as normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

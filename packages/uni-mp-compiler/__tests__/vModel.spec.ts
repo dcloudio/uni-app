@@ -4,7 +4,7 @@ describe('compiler: transform v-model', () => {
   test(`component v-model`, () => {
     assert(
       `<Comp v-model="model" />`,
-      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b}}"/>`,
+      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o($event => _ctx.model = $event), b: _p({ modelValue: _ctx.model }) }
 }`
@@ -13,7 +13,7 @@ describe('compiler: transform v-model', () => {
   test(`component v-model with cache`, () => {
     assert(
       `<Comp v-model="model" />`,
-      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b}}"/>`,
+      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o($event => _ctx.model = $event), b: _p({ modelValue: _ctx.model }) }
 }`,
@@ -25,7 +25,7 @@ describe('compiler: transform v-model', () => {
   test(`component v-model with number`, () => {
     assert(
       `<Comp v-model.number="model" />`,
-      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b}}"/>`,
+      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_m($event => _ctx.model = $event, { number: true }, true)), b: _p({ modelValue: _ctx.model }) }
 }`,
@@ -37,7 +37,7 @@ describe('compiler: transform v-model', () => {
   test(`component v-model with trim`, () => {
     assert(
       `<Comp v-model.trim="model" />`,
-      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b}}"/>`,
+      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_m($event => _ctx.model = $event, { trim: true }, true)), b: _p({ modelValue: _ctx.model }) }
 }`,
@@ -49,7 +49,7 @@ describe('compiler: transform v-model', () => {
   test(`component v-model with number and trim`, () => {
     assert(
       `<Comp v-model.trim.number="model" />`,
-      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b}}"/>`,
+      `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_m($event => _ctx.model = $event, { trim: true, number: true }, true)), b: _p({ modelValue: _ctx.model }) }
 }`

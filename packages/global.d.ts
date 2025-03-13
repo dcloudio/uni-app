@@ -1,3 +1,4 @@
+declare var global: typeof globalThis
 declare var __VUE__: any
 declare var Vue: any
 declare var weex: any
@@ -9,6 +10,7 @@ declare var qq: any
 declare var ks: any
 declare var jd: any
 declare var xhs: any
+declare var has: any
 declare var __NVUE__: undefined | boolean
 declare var __PLATFORM__: UniApp.PLATFORM
 declare var __PLATFORM_PREFIX__:
@@ -40,6 +42,7 @@ declare var __PLUS__: boolean
 declare var __VUE_OPTIONS_API__: boolean
 declare var __VUE_PROD_DEVTOOLS__: boolean
 
+declare var __UNI_FEATURE_VIRTUAL_HOST__: boolean
 declare var __UNI_FEATURE_WX__: boolean
 declare var __UNI_FEATURE_WXS__: boolean
 declare var __UNI_FEATURE_RPX__: boolean
@@ -74,6 +77,8 @@ declare var UniViewJSBridge: UniApp.UniViewJSBridge
 declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
 // app view
 declare var __id__: string
+// uni-console
+declare var __HARMONY__: boolean
 // TODO X 引入真实类型
 declare class UTSJSONObject {
   constructor(obj: Record<string, any>)

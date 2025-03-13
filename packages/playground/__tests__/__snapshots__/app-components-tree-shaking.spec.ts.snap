@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`app-components-tree-shaking playground uni-app-x build:app-android 1`] = `
+"{
+  "id": "__UNI__XXXXXXX",
+  "name": "app-components-tree-shaking",
+  "description": "",
+  "version": {
+    "name": "1.0.0",
+    "code": "100"
+  },
+  "app": {
+    "distribute": {
+      "modules": {
+        "uni-map-tencent": {},
+        "uni-canvas": {}
+      }
+    }
+  }
+}"
+`;
+
+exports[`app-components-tree-shaking playground uni-app-x build:app-ios 1`] = `
+"{
+  "id": "__UNI__XXXXXXX",
+  "name": "app-components-tree-shaking",
+  "description": "",
+  "version": {
+    "name": "1.0.0",
+    "code": "100"
+  },
+  "app": {
+    "distribute": {
+      "modules": {
+        "uni-map-tencent": {},
+        "uni-canvas": {}
+      }
+    }
+  }
+}"
+`;

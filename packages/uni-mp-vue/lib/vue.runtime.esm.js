@@ -6,7 +6,6 @@
 import { NOOP, extend, isArray, isSymbol, isMap, isIntegerKey, hasOwn, hasChanged, isObject, makeMap, capitalize, toRawType, def, isFunction, isString, isPromise, isOn, hyphenate, EMPTY_OBJ, toHandlerKey, looseToNumber, camelize, remove, isSet, isPlainObject, isBuiltInDirective, NO, isReservedProp, EMPTY_ARR, normalizeClass, normalizeStyle, toTypeString, invokeArrayFns, isModelListener } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, getValueByDataPath } from '@dcloudio/uni-shared';
-export { useCssModule } from '@vue/runtime-dom';
 
 function warn$2(msg, ...args) {
   console.warn(`[Vue warn] ${msg}`, ...args);
@@ -2908,8 +2907,13 @@ function applyOptions(instance) {
       }
     }
   }
-  if (!__VUE_CREATED_DEFERRED__ && injectOptions) {
-    resolveInjections(injectOptions, ctx, checkDuplicateProperties);
+  function initInjections() {
+    if (injectOptions) {
+      resolveInjections(injectOptions, ctx, checkDuplicateProperties);
+    }
+  }
+  if (!__VUE_CREATED_DEFERRED__) {
+    initInjections();
   }
   if (methods) {
     for (const key in methods) {
@@ -2999,7 +3003,7 @@ function applyOptions(instance) {
       createWatcher(watchOptions[key], ctx, publicThis, key);
     }
   }
-  if (!__VUE_CREATED_DEFERRED__) {
+  function initProvides() {
     if (provideOptions) {
       const provides = isFunction(provideOptions) ? provideOptions.call(publicThis) : provideOptions;
       Reflect.ownKeys(provides).forEach((key) => {
@@ -3007,10 +3011,26 @@ function applyOptions(instance) {
       });
     }
   }
+  if (!__VUE_CREATED_DEFERRED__) {
+    initProvides();
+  }
   if (__VUE_CREATED_DEFERRED__) {
-    ctx.$callCreatedHook = function(name) {
+    let callCreatedHook2 = function() {
+      initInjections();
+      initProvides();
       if (created) {
-        return callHook(created, instance, "c");
+        callHook(created, instance, "c");
+      }
+      instance.update();
+    };
+    ctx.$callCreatedHook = function(name) {
+      const reset = setCurrentInstance(instance);
+      pauseTracking();
+      try {
+        callCreatedHook2();
+      } finally {
+        resetTracking();
+        reset();
       }
     };
   } else {
@@ -3299,11 +3319,6 @@ function initProps(instance, rawProps, isStateful, isSSR = false) {
   instance.attrs = attrs;
 }
 function isInHmrContext(instance) {
-  while (instance) {
-    if (instance.type.__hmrId)
-      return true;
-    instance = instance.parent;
-  }
 }
 function updateProps(instance, rawProps, rawPrevProps, optimized) {
   const {
@@ -3318,7 +3333,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
     // always force full diff in dev
     // - #1942 if hmr is enabled with sfc component
     // - vite#872 non-sfc component used by sfc component
-    !(!!(process.env.NODE_ENV !== "production") && isInHmrContext(instance)) && (optimized || patchFlag > 0) && !(patchFlag & 16)
+    !(!!(process.env.NODE_ENV !== "production") && isInHmrContext()) && (optimized || patchFlag > 0) && !(patchFlag & 16)
   ) {
     if (patchFlag & 8) {
       const propsToUpdate = instance.vnode.dynamicProps;
@@ -4076,7 +4091,13 @@ function createComponentInstance(vnode, parent, suspense) {
     rtg: null,
     rtc: null,
     ec: null,
-    sp: null
+    sp: null,
+    // fixed by xxxxxx 用于存储uni-app的元素缓存
+    $uniElements: /* @__PURE__ */ new Map(),
+    $templateUniElementRefs: [],
+    $templateUniElementStyles: {},
+    $eS: {},
+    $eA: {}
   };
   if (!!(process.env.NODE_ENV !== "production")) {
     instance.ctx = createDevRenderContext(instance);
@@ -4580,7 +4601,7 @@ function flushCallbacks(instance) {
     if (process.env.UNI_DEBUG) {
       const mpInstance = ctx.$scope;
       console.log(
-        "[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:flushCallbacks[" + callbacks.length + "]"
+        "uni-app:[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:flushCallbacks[" + callbacks.length + "]"
       );
     }
     const copies = callbacks.slice(0);
@@ -4596,7 +4617,7 @@ function nextTick(instance, fn) {
     if (process.env.UNI_DEBUG) {
       const mpInstance = ctx.$scope;
       console.log(
-        "[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:nextVueTick"
+        "uni-app:[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:nextVueTick"
       );
     }
     return nextTick$1(fn && fn.bind(instance.proxy));
@@ -4604,7 +4625,7 @@ function nextTick(instance, fn) {
   if (process.env.UNI_DEBUG) {
     const mpInstance = ctx.$scope;
     console.log(
-      "[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:nextMPTick"
+      "uni-app:[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:nextMPTick"
     );
   }
   let _resolve;
@@ -4674,6 +4695,8 @@ function patch(instance, data, oldData) {
     return;
   }
   data = deepCopy(data);
+  data.$eS = instance.$eS || {};
+  data.$eA = instance.$eA || {};
   const ctx = instance.ctx;
   const mpType = ctx.mpType;
   if (mpType === "page" || mpType === "component") {
@@ -4685,7 +4708,7 @@ function patch(instance, data, oldData) {
     if (Object.keys(diffData).length) {
       if (process.env.UNI_DEBUG) {
         console.log(
-          "[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "][\u8017\u65F6" + (Date.now() - start) + "]\u5DEE\u91CF\u66F4\u65B0",
+          "uni-app:[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "][\u8017\u65F6" + (Date.now() - start) + "]\u5DEE\u91CF\u66F4\u65B0",
           JSON.stringify(diffData)
         );
       }
@@ -4731,21 +4754,29 @@ function setRef(instance, isUnmount = false) {
   const {
     setupState,
     $templateRefs,
+    $templateUniElementRefs,
     ctx: { $scope, $mpPlatform }
   } = instance;
   if ($mpPlatform === "mp-alipay") {
     return;
   }
-  if (!$templateRefs || !$scope) {
+  if (!$scope || !$templateRefs && !$templateUniElementRefs) {
     return;
   }
   if (isUnmount) {
-    return $templateRefs.forEach(
+    $templateRefs && $templateRefs.forEach(
       (templateRef) => setTemplateRef(templateRef, null, setupState)
     );
+    $templateUniElementRefs && $templateUniElementRefs.forEach(
+      (templateRef) => setTemplateRef(templateRef, null, setupState)
+    );
+    return;
   }
   const check = $mpPlatform === "mp-baidu" || $mpPlatform === "mp-toutiao";
   const doSetByRefs = (refs) => {
+    if (refs.length === 0) {
+      return [];
+    }
     const mpComponents = (
       // 字节小程序 selectAllComponents 可能返回 null
       // https://github.com/dcloudio/uni-app/issues/3954
@@ -4763,13 +4794,28 @@ function setRef(instance, isUnmount = false) {
     });
   };
   const doSet = () => {
-    const refs = doSetByRefs($templateRefs);
-    if (refs.length && instance.proxy && instance.proxy.$scope) {
-      instance.proxy.$scope.setData({ r1: 1 }, () => {
-        doSetByRefs(refs);
-      });
+    if ($templateRefs) {
+      const refs = doSetByRefs($templateRefs);
+      if (refs.length && instance.proxy && instance.proxy.$scope) {
+        instance.proxy.$scope.setData({ r1: 1 }, () => {
+          doSetByRefs(refs);
+        });
+      }
     }
   };
+  if ($templateUniElementRefs && $templateUniElementRefs.length) {
+    nextTick(instance, () => {
+      $templateUniElementRefs.forEach((templateRef) => {
+        if (isArray(templateRef.v)) {
+          templateRef.v.forEach((v) => {
+            setTemplateRef(templateRef, v, setupState);
+          });
+        } else {
+          setTemplateRef(templateRef, templateRef.v, setupState);
+        }
+      });
+    });
+  }
   if ($scope._$setRef) {
     $scope._$setRef(doSet);
   } else {
@@ -4815,7 +4861,9 @@ function setTemplateRef({ r, f }, refValue, setupState) {
           if (!refValue) {
             return;
           }
-          onBeforeUnmount(() => remove(existing, refValue), refValue.$);
+          if (refValue.$) {
+            onBeforeUnmount(() => remove(existing, refValue), refValue.$);
+          }
         }
       } else if (_isString) {
         if (hasOwn(setupState, r)) {
@@ -4906,7 +4954,10 @@ function renderComponentRoot(instance) {
     },
     inheritAttrs
   } = instance;
+  instance.$uniElementIds = /* @__PURE__ */ new Map();
   instance.$templateRefs = [];
+  instance.$templateUniElementRefs = [];
+  instance.$templateUniElementStyles = {};
   instance.$ei = 0;
   pruneComponentPropsCache(uid);
   instance.__counter = instance.__counter === 0 ? 1 : 0;
@@ -4999,7 +5050,7 @@ function componentUpdateScopedSlotsFn() {
   if (Object.keys(diffData).length) {
     if (process.env.UNI_DEBUG) {
       console.log(
-        "[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + this.uid + "][\u8017\u65F6" + (Date.now() - start) + "]\u4F5C\u7528\u57DF\u63D2\u69FD\u5DEE\u91CF\u66F4\u65B0",
+        "uni-app:[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + this.uid + "][\u8017\u65F6" + (Date.now() - start) + "]\u4F5C\u7528\u57DF\u63D2\u69FD\u5DEE\u91CF\u66F4\u65B0",
         JSON.stringify(diffData)
       );
     }
@@ -5077,12 +5128,25 @@ function setupRenderEffect(instance) {
     effect.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
     update.ownerInstance = instance;
   }
-  update();
+  if (!__VUE_CREATED_DEFERRED__) {
+    update();
+  }
 }
 function unmountComponent(instance) {
   const { bum, scope, update, um } = instance;
   if (bum) {
     invokeArrayFns(bum);
+  }
+  if (__VUE_OPTIONS_API__) {
+    const parentInstance = instance.parent;
+    if (parentInstance) {
+      const $children = parentInstance.ctx.$children;
+      const target = getExposeProxy(instance) || instance.proxy;
+      const index = $children.indexOf(target);
+      if (index > -1) {
+        $children.splice(index, 1);
+      }
+    }
   }
   scope.stop();
   if (update) {
@@ -5161,6 +5225,27 @@ function createVueApp(rootComponent, rootProps = null) {
   return app;
 }
 
+function useCssModule(name = "$style") {
+  {
+    const instance = getCurrentInstance();
+    if (!instance) {
+      !!(process.env.NODE_ENV !== "production") && warn(`useCssModule must be called inside setup()`);
+      return EMPTY_OBJ;
+    }
+    const modules = instance.type.__cssModules;
+    if (!modules) {
+      !!(process.env.NODE_ENV !== "production") && warn(`Current instance does not have CSS modules injected.`);
+      return EMPTY_OBJ;
+    }
+    const mod = modules[name];
+    if (!mod) {
+      !!(process.env.NODE_ENV !== "production") && warn(`Current instance does not have CSS module named "${name}".`);
+      return EMPTY_OBJ;
+    }
+    return mod;
+  }
+}
+
 function useCssVars(getter) {
   const instance = getCurrentInstance();
   if (!instance) {
@@ -5185,4 +5270,4 @@ function withModifiers() {
 function createVNode() {
 }
 
-export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createPropsRestProxy, createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick$1 as nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssVars, useModel, useSSRContext, useSlots, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createPropsRestProxy, createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick$1 as nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

@@ -9,7 +9,7 @@
   import { SlotsType } from 'vue'
   //#endif
 
-  //#ifdef WEB || APP-IOS
+  //#ifdef WEB || APP-IOS || MP || APP-HARMONY
   let registerFlag = false
   //#endif
 
@@ -109,7 +109,7 @@
       super(data, pageNode)
     }
   //#endif
-  //#ifdef WEB || APP-IOS
+  //#ifdef WEB || APP-IOS || MP || APP-HARMONY
   const RealUniElementImpl = typeof UniElementImpl === 'undefined' ? class {} : UniElementImpl
   export class UniCloudDBElement extends RealUniElementImpl {
     constructor(data : INodeData, pageNode : PageNode) {
@@ -155,7 +155,7 @@
     }
     // @ts-ignore
     remove(id : any, options : UTSJSONObject) {
-      //#ifdef WEB || APP-IOS
+      //#ifdef WEB || APP-IOS || APP-HARMONY
       // @ts-ignore
       if (arguments.length == 0) {
         super.remove()
@@ -296,7 +296,7 @@
     },
     data() {
       return {
-        //#ifdef WEB
+        //#ifdef WEB || MP || APP-HARMONY
         // TODO 修复类型错误
         // @ts-ignore
         dataList: ssrRef([] as Array<UTSJSONObject>) as Array<UTSJSONObject>,
@@ -316,13 +316,14 @@
         error: null as UniCloudError | null
       }
     },
-    //#ifdef WEB || APP-IOS
+    //#ifdef WEB || APP-IOS || MP || APP-HARMONY
     beforeCreate() {
       if (!registerFlag) {
         registerFlag = true
         // @ts-ignore
         typeof customElements !== 'undefined' && customElements.define(
           'uni-cloud-db-element',
+          // @ts-ignore
           UniCloudDBElement,
         )
       }
@@ -406,7 +407,7 @@
       uniCloudDBElement.onUpdate = this.update;
       uniCloudDBElement.onRemove = this.remove;
       //#endif
-      //#ifdef WEB
+      //#ifdef WEB || MP || APP-HARMONY
       uniCloudDBElement.onLoadData = this.loadData.bind(this);
       uniCloudDBElement.onLoadMore = this.loadMore.bind(this);
       uniCloudDBElement.onAdd = this.add.bind(this);

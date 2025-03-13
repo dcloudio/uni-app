@@ -3,26 +3,29 @@
 export const CHECKBOX_NAME = 'Checkbox'
 export const CHECKBOX_ROOT_ELEMENT = 'uni-checkbox-element'
 
-export class UniCheckboxElement extends UniElementImpl {
-  constructor(data: INodeData, pageNode: PageNode) {
-    super(data, pageNode)
-  }
-
-  override tagName = 'CHECKBOX'
-  override nodeName = this.tagName
-
-  override getAnyAttribute(key: string): string {
-    const value = this._getAttribute(key)
-    if (value != null) {
-      return value
+export const UniCheckboxElement = /* @__PURE__ */ (() =>
+  class extends UniElementImpl {
+    constructor(data: INodeData, pageNode: PageNode) {
+      super(data, pageNode)
     }
-    return super.getAnyAttribute(key)
-  }
 
-  _getAttribute = (key: string): string | null => {
-    return null
-  }
-}
+    override tagName = 'CHECKBOX'
+    override nodeName = this.tagName
+
+    override getAnyAttribute(key: string): string {
+      const value = this._getAttribute(key)
+      if (value != null) {
+        return value
+      }
+      return super.getAnyAttribute(key)
+    }
+
+    _getAttribute = (key: string): string | null => {
+      return null
+    }
+  })()
+
+export type UniCheckboxElement = InstanceType<typeof UniCheckboxElement>
 
 // UniElementImpl
 

@@ -4,7 +4,7 @@ import {
   getCurrentInstance,
 } from 'vue'
 
-type VNodeRef =
+export type VNodeRef =
   | string
   | Ref
   | ((ref: object | null, refs: Record<string, any>) => void)

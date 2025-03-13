@@ -5,13 +5,36 @@ import replace from '@rollup/plugin-replace'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import babel from '@rollup/plugin-babel'
-import { cssTarget } from '@dcloudio/uni-cli-shared'
+import {
+  cssTarget,
+  initPreContext,
+  uniPrePlugin,
+  uniRemoveCssScopedPlugin,
+  uniUVueTypeScriptPlugin,
+} from '@dcloudio/uni-cli-shared'
 import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
+import { uts2ts, syncPagesFile, replacePagePaths } from '../../scripts/ext-api'
+
+import { initUniAppJsEngineCssPlugin } from '@dcloudio/uni-app-uts'
+import { OutputChunk } from 'rollup'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
 }
+
+process.env.UNI_APP_X = 'true'
+process.env.UNI_UTS_PLATFORM = 'app-ios'
+initPreContext('app', {}, 'app-ios', true)
+
+const apiDirs: string[] = []
+if (process.env.UNI_APP_EXT_API_DIR) {
+  apiDirs.push(process.env.UNI_APP_EXT_API_DIR)
+}
+if (process.env.UNI_APP_EXT_API_DCLOUD_DIR) {
+  apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
+}
+const systemPagePaths = syncPagesFile(apiDirs, 'app-ios')
 
 const rollupPlugins = [
   replace({
@@ -30,7 +53,7 @@ const rollupPlugins = [
     values: {
       // 该插件限制了不能以__开头
       _NODE_JS_: 0,
-      _X_: 0,
+      _X_: 1,
     },
     // 忽略 pako 内部条件编译
     exclude: [/pako/ as unknown as string],
@@ -109,14 +132,30 @@ export default defineConfig({
     },
   },
   plugins: [
+    uniPrePlugin({} as any, { include: ['**/*.vue'] }),
+    uniUVueTypeScriptPlugin(),
+    uniRemoveCssScopedPlugin(),
+    {
+      name: 'uni-x:ios',
+      configResolved(config) {
+        initUniAppJsEngineCssPlugin(config)
+      },
+    },
+    uts2ts({ target: 'uni-app-plus', platform: 'app-js' }),
     vue({
+      customElement: true,
       template: {
         compilerOptions: {
-          isCustomElement: isAppIOSUVueNativeTag,
+          isNativeTag: isAppIOSUVueNativeTag,
+          expressionPlugins: ['typescript'],
         },
+      },
+      script: {
+        babelParserPlugins: ['typescript'],
       },
     }),
     vueJsx({ optimize: true, isCustomElement: isAppIOSUVueNativeTag }),
+    replacePagePaths(systemPagePaths),
   ],
   build: {
     emptyOutDir: false,

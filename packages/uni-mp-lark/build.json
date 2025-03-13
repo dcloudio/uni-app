@@ -33,6 +33,7 @@
     },
     "replacements": {
       "__GLOBAL__": "tt",
+      "__X__": "false",
       "__PLATFORM__": "\"mp-lark\"",
       "__PLATFORM_TITLE__": "飞书小程序"
     },

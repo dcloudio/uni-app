@@ -3,6 +3,7 @@
   "$off",
   "$on",
   "$once",
+  "__f__",
   "addInterceptor",
   "addPhoneContact",
   "arrayBufferToBase64",

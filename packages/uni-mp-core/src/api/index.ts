@@ -1,6 +1,11 @@
 import { hasOwn } from '@vue/shared'
 // 直接引用具体文件，避免引入其他需要额外配置的信息，比如@dcloudio/uni-platform
+//#if _X_
+import { getElementById } from './x/getElementId'
+import { createCanvasContextAsync } from './x/createCanvasContextAsync'
+//#endif
 import { upx2px } from '@dcloudio/uni-api/src/service/base/upx2px'
+import { __f__ } from '@dcloudio/uni-api/src/service/base/__f__'
 import {
   addInterceptor,
   interceptors,
@@ -32,6 +37,7 @@ const baseApis = {
   $once,
   $emit,
   upx2px,
+  rpx2px: upx2px,
   interceptors,
   addInterceptor,
   removeInterceptor,
@@ -44,6 +50,11 @@ const baseApis = {
   onPushMessage,
   offPushMessage,
   invokePushCallback,
+  __f__,
+  //#if _X_
+  getElementById,
+  createCanvasContextAsync,
+  //#endif
 }
 export function initUni(
   api: Record<string, any>,
@@ -71,6 +82,7 @@ export function initUni(
   // 处理 api mp 打包后为不同js，emitter 无法共享问题
   if (__PLATFORM__ === 'mp-alipay') {
     platform.$emit = $emit
+    // @ts-expect-error
     if (!my.canIUse('getOpenerEventChannel'))
       platform.getEventChannel = getEventChannel
   }

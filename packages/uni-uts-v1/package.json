@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-uts-v1",
-  "version": "3.0.0-alpha-4020520240719001",
+  "version": "3.0.0-alpha-4040120241205001",
   "description": "uni-uts-v1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,8 +19,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@babel/code-frame": "^7.23.5",
-    "@dcloudio/uni-app-x": "^0.7.30",
-    "@dcloudio/uts": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-app-x": "^0.7.44",
+    "@dcloudio/uts": "workspace:*",
     "@rollup/pluginutils": "^5.0.5",
     "@vue/shared": "3.4.21",
     "adm-zip": "^0.5.12",
@@ -43,6 +43,6 @@
     "@types/adm-zip": "^0.5.5",
     "@types/android-versions": "^1.8.0",
     "@types/fs-extra": "^9.0.13",
-    "rollup": "^4.13.0"
+    "rollup": "^4.21.2"
   }
 }

@@ -577,9 +577,9 @@ export class CanvasContext implements UniApp.CanvasContext {
         if (typeof callback === 'function') {
           const webview = plus.webview.getLaunchWebview()
           // @ts-expect-error evalJSASync 后新增，和 plus 签名不匹配，暂时忽略 ts 报错
-          if (webview && typeof webview.evalJSASync === 'function') {
+          if (webview && typeof webview.evalJSAsync === 'function') {
             ;(
-              (webview as any).evalJSASync(
+              (webview as any).evalJSAsync(
                 `(function measureText(text, font) {
   const canvas = document.createElement('canvas')
   const c2d = canvas.getContext('2d')
@@ -799,8 +799,10 @@ export class CanvasContext implements UniApp.CanvasContext {
     this.state.font = value
     // eslint-disable-next-line
     var fontFormat = value.match(
-      /^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
+      // 支持小数点 github #5329
+      /^(([\w\-]+\s)*)(\d+\.?\d*r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
     )
+    //
     if (fontFormat) {
       var style = fontFormat[1].trim().split(/\s/)
       var fontSize = parseFloat(fontFormat[3])
@@ -813,7 +815,10 @@ export class CanvasContext implements UniApp.CanvasContext {
             data: [value],
           })
           self.state.fontStyle = value
-        } else if (['bold', 'normal'].indexOf(value) > -1) {
+        } else if (
+          ['bold', 'normal', 'lighter', 'bolder'].indexOf(value) > -1 ||
+          /^\d+$/.test(value)
+        ) {
           actions.push({
             method: 'setFontWeight',
             data: [value],

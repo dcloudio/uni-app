@@ -11,7 +11,7 @@ import {
   parseManifestJson,
   parsePagesJson,
   resolveBuiltIn,
-  resolveComponentsLibPath,
+  resolveComponentsLibDirs,
 } from '@dcloudio/uni-cli-shared'
 
 const debugHmr = debug('uni:hmr')
@@ -71,15 +71,18 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
     debugHmr('define', define)
     if (isPagesJson) {
       const easycom = pagesJson.easycom || {}
-      const { options, refresh } = initEasycomsOnce(inputDir, {
-        dirs: [resolveComponentsLibPath()],
+      const { easyComOptions, refresh } = initEasycomsOnce(inputDir, {
+        dirs: resolveComponentsLibDirs(),
         platform,
         isX: process.env.UNI_APP_X === 'true',
       })
       if (
         !equal(
           { autoscan: easycom.autoscan, custom: easycom.custom },
-          { autoscan: options.autoscan, custom: options.custom }
+          {
+            autoscan: easyComOptions.autoscan,
+            custom: easyComOptions.custom,
+          }
         )
       ) {
         refresh()

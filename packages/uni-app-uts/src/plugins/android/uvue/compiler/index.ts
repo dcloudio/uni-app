@@ -3,6 +3,8 @@ import { type CompilerError, baseParse } from '@vue/compiler-core'
 
 import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
 import {
+  createTransformTag,
+  createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   transformTapToClick,
 } from '@dcloudio/uni-cli-shared'
@@ -39,6 +41,11 @@ import {
 } from 'source-map-js'
 import { trackSlotScopes, trackVForSlotScopes } from './transforms/vSlot'
 import { transformElement } from './transforms/transformElement'
+import {
+  createAssetUrlTransformWithOptions,
+  normalizeOptions,
+} from '../sfc/compiler/template/transformAssetUrl'
+import { createSrcsetTransformWithOptions } from '../sfc/compiler/template/transformSrcset'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -96,6 +103,7 @@ export function compile(
     function (tag: string) {
       return (
         isAppUVueNativeTag(tag) ||
+        !!options.parseUTSCustomElement?.(tag, options.targetLanguage!) ||
         !!options.parseUTSComponent?.(tag, options.targetLanguage!)
       )
     }
@@ -108,13 +116,19 @@ export function compile(
     options.prefixIdentifiers
   )
 
+  // 重要不能传入base
+  const assetOptions = normalizeOptions(createUniVueTransformAssetUrls(''))
+
   transform(
     ast,
     extend({}, options, {
       nodeTransforms: [
         ...nodeTransforms,
+        createAssetUrlTransformWithOptions(assetOptions),
+        createSrcsetTransformWithOptions(assetOptions),
         ...getBaseNodeTransforms('/'),
         ...(options.nodeTransforms || []), // user transforms
+        createTransformTag({ 'cover-image': 'image' }),
       ],
       directiveTransforms: extend(
         {},
@@ -156,7 +170,7 @@ function mapLines(oldMap: RawSourceMap, newMap: RawSourceMap): RawSourceMap {
 
     const origPosInOldMap = oldMapConsumer.originalPositionFor({
       line: m.originalLine,
-      column: m.originalColumn,
+      column: m.originalColumn ?? 0,
     })
 
     if (origPosInOldMap.source == null) {
@@ -172,7 +186,7 @@ function mapLines(oldMap: RawSourceMap, newMap: RawSourceMap): RawSourceMap {
         line: origPosInOldMap.line, // map line
         // use current column, since the oldMap produced by @vue/compiler-sfc
         // does not
-        column: m.originalColumn,
+        column: m.originalColumn ?? 0,
       },
       source: origPosInOldMap.source,
       name: origPosInOldMap.name,

@@ -4,11 +4,11 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, LINEFEED, PRIMARY_COLOR, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, parseUrl, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, normalizeClass, toDisplayString, createCommentVNode } from "vue";
+import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { useRoute, isNavigationFailure, createRouter, createWebHistory, createWebHashHistory, useRouter, RouterView } from "vue-router";
+import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 function arrayPop(array) {
   if (array.length === 0) {
@@ -114,8 +114,11 @@ function isImplementationOf(leftType, rightType, visited = []) {
   });
 }
 function isInstanceOf(value, type) {
+  if (type === UTSValueIterable) {
+    return value && value[Symbol.iterator];
+  }
   const isNativeInstanceofType = value instanceof type;
-  if (isNativeInstanceofType || typeof value !== "object") {
+  if (isNativeInstanceofType || typeof value !== "object" || value === null) {
     return isNativeInstanceofType;
   }
   const proto = Object.getPrototypeOf(value).constructor;
@@ -139,6 +142,7 @@ function normalizeGenericValue(value, genericType, isJSONParse = false) {
 class UTSType {
   static get$UTSMetadata$(...args) {
     return {
+      name: "",
       kind: UTS_CLASS_METADATA_KIND.TYPE,
       interfaces: [],
       fields: {}
@@ -213,14 +217,15 @@ class UTSType {
         }
       }
       if (isUTSType(type)) {
-        obj[key] = new type(options[realKey], void 0, isJSONParse);
+        obj[key] = isJSONParse ? (
+          // @ts-ignore
+          new type(options[realKey], void 0, isJSONParse)
+        ) : options[realKey];
       } else if (type === Array) {
         if (!Array.isArray(options[realKey])) {
           throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
         }
-        obj[key] = options[realKey].map((item) => {
-          return item == null ? null : item;
-        });
+        obj[key] = options[realKey];
       } else {
         obj[key] = options[realKey];
       }
@@ -229,12 +234,32 @@ class UTSType {
   }
 }
 const OriginalJSON = JSON;
+function createUTSJSONObject(obj) {
+  const result = new UTSJSONObject({});
+  for (const key in obj) {
+    const value = obj[key];
+    if (isPlainObject(value)) {
+      result[key] = createUTSJSONObject(value);
+    } else if (getType$1(value) === "array") {
+      result[key] = value.map((item) => {
+        if (isPlainObject(item)) {
+          return createUTSJSONObject(item);
+        } else {
+          return item;
+        }
+      });
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
 function parseObjectOrArray(object, utsType) {
   const objectType = getType$1(object);
   if (object === null || objectType !== "object" && objectType !== "array") {
     return object;
   }
-  if (utsType || utsType === UTSJSONObject) {
+  if (utsType && utsType !== UTSJSONObject) {
     try {
       return new utsType(object, void 0, true);
     } catch (error) {
@@ -247,7 +272,7 @@ function parseObjectOrArray(object, utsType) {
       return parseObjectOrArray(value);
     });
   } else if (objectType === "object") {
-    return new UTSJSONObject(object);
+    return createUTSJSONObject(object);
   }
   return object;
 }
@@ -410,21 +435,6 @@ function initUTSJSONObjectProperties(obj) {
   }
   Object.defineProperties(obj, propertyDescriptorMap);
 }
-function setUTSJSONObjectValue(obj, key, value) {
-  if (isPlainObject(value)) {
-    obj[key] = new UTSJSONObject$1(value);
-  } else if (getType$1(value) === "array") {
-    obj[key] = value.map((item) => {
-      if (isPlainObject(item)) {
-        return new UTSJSONObject$1(item);
-      } else {
-        return item;
-      }
-    });
-  } else {
-    obj[key] = value;
-  }
-}
 let UTSJSONObject$1 = class UTSJSONObject2 {
   static keys(obj) {
     return Object.keys(obj);
@@ -441,13 +451,12 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
   constructor(content = {}) {
     if (content instanceof Map) {
       content.forEach((value, key) => {
-        setUTSJSONObjectValue(this, key, value);
+        this[key] = value;
       });
     } else {
       for (const key in content) {
         if (Object.prototype.hasOwnProperty.call(content, key)) {
-          const value = content[key];
-          setUTSJSONObjectValue(this, key, value);
+          this[key] = content[key];
         }
       }
     }
@@ -511,18 +520,19 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     }
     return keyPathArr;
   }
-  _getValue(keyPath) {
+  _getValue(keyPath, defaultValue) {
     const keyPathArr = this._resolveKeyPath(keyPath);
+    const realDefaultValue = defaultValue === void 0 ? null : defaultValue;
     if (keyPathArr.length === 0) {
-      return null;
+      return realDefaultValue;
     }
     let value = this;
     for (let i = 0; i < keyPathArr.length; i++) {
       const key = keyPathArr[i];
       if (value instanceof Object) {
-        value = value[key];
+        value = key in value ? value[key] : realDefaultValue;
       } else {
-        return null;
+        return realDefaultValue;
       }
     }
     return value;
@@ -533,43 +543,43 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
   set(key, value) {
     this[key] = value;
   }
-  getAny(key) {
-    return this._getValue(key);
+  getAny(key, defaultValue) {
+    return this._getValue(key, defaultValue);
   }
-  getString(key) {
-    const value = this._getValue(key);
+  getString(key, defaultValue) {
+    const value = this._getValue(key, defaultValue);
     if (typeof value === "string") {
       return value;
     } else {
       return null;
     }
   }
-  getNumber(key) {
-    const value = this._getValue(key);
+  getNumber(key, defaultValue) {
+    const value = this._getValue(key, defaultValue);
     if (typeof value === "number") {
       return value;
     } else {
       return null;
     }
   }
-  getBoolean(key) {
-    const boolean = this._getValue(key);
+  getBoolean(key, defaultValue) {
+    const boolean = this._getValue(key, defaultValue);
     if (typeof boolean === "boolean") {
       return boolean;
     } else {
       return null;
     }
   }
-  getJSON(key) {
-    let value = this._getValue(key);
+  getJSON(key, defaultValue) {
+    let value = this._getValue(key, defaultValue);
     if (value instanceof Object) {
-      return new UTSJSONObject2(value);
+      return value;
     } else {
       return null;
     }
   }
-  getArray(key) {
-    let value = this._getValue(key);
+  getArray(key, defaultValue) {
+    let value = this._getValue(key, defaultValue);
     if (value instanceof Array) {
       return value;
     } else {
@@ -588,6 +598,8 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
       callback(this[key], key);
     }
   }
+};
+let UTSValueIterable$1 = class UTSValueIterable2 {
 };
 function getGlobal() {
   if (typeof globalThis !== "undefined") {
@@ -616,6 +628,7 @@ const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError$1;
 realGlobal.UTS = UTS$1;
+realGlobal.UTSValueIterable = UTSValueIterable$1;
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -746,33 +759,6 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     );
   }
 });
-const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
-  const name = "uni.showActionSheet.";
-  const keys = ["cancel"];
-  if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Cancel"]), false);
-  }
-  if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Cancelar"]), false);
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler"]), false);
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(
-      LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["取消"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(
-      LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["取消"]),
-      false
-    );
-  }
-});
 const initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.showToast.";
   const keys = ["unpaired"];
@@ -867,45 +853,6 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
       normalizeMessages(name, keys, [
         "請注意 showLoading 與 hideLoading 必須配對使用"
       ]),
-      false
-    );
-  }
-});
-const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
-  const name = "uni.showModal.";
-  const keys = ["cancel", "confirm"];
-  if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(
-      LOCALE_EN,
-      normalizeMessages(name, keys, ["Cancel", "OK"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(
-      LOCALE_ES,
-      normalizeMessages(name, keys, ["Cancelar", "OK"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(
-      LOCALE_FR,
-      normalizeMessages(name, keys, ["Annuler", "OK"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(
-      LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["取消", "确定"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(
-      LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["取消", "確定"]),
       false
     );
   }
@@ -1122,45 +1069,6 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
     );
   }
 });
-const initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
-  const name = "uni.chooseLocation.";
-  const keys = ["search", "cancel"];
-  if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(
-      LOCALE_EN,
-      normalizeMessages(name, keys, ["Find Place", "Cancel"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(
-      LOCALE_ES,
-      normalizeMessages(name, keys, ["Encontrar", "Cancelar"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(
-      LOCALE_FR,
-      normalizeMessages(name, keys, ["Trouve", "Annuler"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(
-      LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["搜索地点", "取消"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(
-      LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["搜索地點", "取消"]),
-      false
-    );
-  }
-});
 function initNavigationBarI18n(navigationBar) {
   if (isEnableLocale()) {
     return defineI18nProperties(navigationBar, [
@@ -1220,7 +1128,7 @@ function normalizeViewMethodName(pageId, name) {
 function subscribeViewMethod(pageId, wrapper) {
   UniViewJSBridge.subscribe(
     normalizeViewMethodName(pageId, INVOKE_VIEW_API),
-    wrapper ? wrapper(onInvokeViewMethod) : onInvokeViewMethod
+    onInvokeViewMethod
   );
 }
 function unsubscribeViewMethod(pageId) {
@@ -1342,13 +1250,6 @@ function useRem() {
   document.addEventListener("DOMContentLoaded", updateRem);
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
-}
-function initView() {
-  useRem();
-  initCustomDatasetOnce();
-  if (__UNI_FEATURE_LONGPRESS__) {
-    initLongPress();
-  }
 }
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
@@ -1637,6 +1538,14 @@ function rpx2pxWithReplace(str) {
     return uni.upx2px(parseFloat(b)) + "px";
   });
 }
+function get$pageByPage(page) {
+  return page.vm.$basePage;
+}
+function isBuiltInElement(target) {
+  {
+    return !!target.__isUniElement;
+  }
+}
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
 const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
@@ -1648,7 +1557,6 @@ const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
 const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
-const ICON_PATH_CONFIRM = "M31.562 4.9966666659375q0.435 0.399 0.435 0.87 0.036 0.58-0.399 0.98l-18.61 19.917q-0.145 0.145-0.327 0.217-0.073 0.037-0.145 0.11-0.254 0.035-0.472 0.035-0.29 0-0.544-0.036l-0.145-0.072q-0.109-0.073-0.217-0.182l-0.11-0.072L0.363 16.2786666659375q-0.327-0.399-0.363-0.907 0-0.544 0.363-1.016 0.435-0.326 0.961-0.362 0.527-0.036 0.962 0.362l9.722 9.542L29.712 5.0326666659375q0.399-0.363 0.943-0.363 0.544-0.036 0.907 0.327z";
 function createSvgIconVNode(path, color = "#000", size = 27) {
   return createVNode(
     "svg",
@@ -1676,20 +1584,26 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 function useCurrentPageId() {
   {
     const { $pageInstance } = getCurrentInstance();
-    return $pageInstance && $pageInstance.proxy.$page.id;
+    return $pageInstance && getPageProxyId($pageInstance.proxy);
   }
 }
 function getPageIdByVm(instance2) {
   const vm = resolveComponentInstance(instance2);
   if (vm.$page) {
-    return vm.$page.id;
+    return getPageProxyId(vm);
   }
   if (!vm.$) {
     return;
   }
   {
     const { $pageInstance } = vm.$;
-    return $pageInstance && $pageInstance.proxy.$page.id;
+    if ($pageInstance) {
+      return getPageProxyId($pageInstance.proxy);
+    }
+  }
+  const rootProxy = vm.$.root.proxy;
+  if (rootProxy && rootProxy.$page) {
+    return getPageProxyId(rootProxy);
   }
 }
 function getCurrentPage() {
@@ -1700,9 +1614,10 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
+  var _a, _b;
+  const $page = (_b = (_a = getCurrentPage()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
+  if ($page) {
+    return $page.meta;
   }
 }
 function getCurrentPageId() {
@@ -1713,7 +1628,8 @@ function getCurrentPageId() {
   return -1;
 }
 function getCurrentPageVm() {
-  const page = getCurrentPage();
+  var _a;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   if (page) {
     return page.$vm;
   }
@@ -1763,6 +1679,10 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
 }
+function getPageProxyId(proxy) {
+  var _a, _b;
+  return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
+}
 function removeHook(vm, name, hook) {
   const hooks = vm.$[name];
   if (!isArray(hooks)) {
@@ -1778,7 +1698,9 @@ function invokeHook(vm, name, args) {
     name = vm;
     vm = getCurrentPageVm();
   } else if (typeof vm === "number") {
-    const page = getCurrentPages().find((page2) => page2.$page.id === vm);
+    const page = getCurrentPages().find(
+      (page2) => get$pageByPage(page2).id === vm
+    );
     if (page) {
       vm = page.$vm;
     } else {
@@ -1850,13 +1772,13 @@ function createScrollListener({
   };
 }
 function normalizeRoute(toRoute) {
-  if (toRoute.indexOf("/") === 0) {
+  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
     return toRoute;
   }
   let fromRoute = "";
   const pages = getCurrentPages();
   if (pages.length) {
-    fromRoute = pages[pages.length - 1].$page.route;
+    fromRoute = get$pageByPage(pages[pages.length - 1]).route;
   }
   return getRealRoute(fromRoute, toRoute);
 }
@@ -1902,6 +1824,71 @@ function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
     if (tabBar2 && tabBar2.list && tabBar2.list[index2]) {
       tabBar2.list[index2].pagePath = removeLeadingSlash(newPagePath);
     }
+  }
+}
+const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
+function isSystemDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function isSystemActionSheetDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
+}
+function dialogPageTriggerParentHide(dialogPage) {
+  dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE);
+}
+function dialogPageTriggerParentShow(dialogPage, triggerParentHideDialogPageNum = 0) {
+  dialogPageTriggerParentLifeCycle(
+    dialogPage,
+    ON_SHOW,
+    triggerParentHideDialogPageNum
+  );
+}
+function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHideDialogPageNum = 0) {
+  if (!dialogPage.$triggerParentHide)
+    return;
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  if (!currentPage)
+    return;
+  const parentPage = dialogPage.getParentPage();
+  if (!parentPage)
+    return;
+  if (parentPage !== currentPage)
+    return;
+  const dialogPages = currentPage.getDialogPages();
+  for (let i = 0; i < dialogPages.length; i++) {
+    if (!!dialogPages[i].$triggerParentHide) {
+      triggerParentHideDialogPageNum++;
+      if (triggerParentHideDialogPageNum > 1) {
+        return;
+      }
+    }
+  }
+  if (triggerParentHideDialogPageNum <= 1) {
+    const systemDialogPage = getSystemDialogPages(parentPage);
+    for (let i = 0; i < systemDialogPage.length; i++) {
+      if (!!systemDialogPage[i].$triggerParentHide) {
+        triggerParentHideDialogPageNum++;
+        if (triggerParentHideDialogPageNum > 1) {
+          return;
+        }
+      }
+    }
+  }
+  invokeHook(currentPage.vm, lifeCycle);
+}
+function getSystemDialogPages(parentPage) {
+  var _b;
+  {
+    return (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
+  }
+}
+function initView() {
+  useRem();
+  initCustomDatasetOnce(isBuiltInElement);
+  if (__UNI_FEATURE_LONGPRESS__) {
+    initLongPress();
   }
 }
 class ComponentDescriptor {
@@ -2124,16 +2111,12 @@ function getWxsVm(el) {
     return el.__vueParentComponent && el.__vueParentComponent.proxy;
   }
 }
-const isKeyboardEvent = (val) => !val.type.indexOf("key") && val instanceof KeyboardEvent;
-const isClickEvent = (val) => val.type === "click";
-const isMouseEvent = (val) => val.type.indexOf("mouse") === 0 || ["contextmenu"].includes(val.type);
-const isTouchEvent = (val) => typeof TouchEvent !== "undefined" && val instanceof TouchEvent || val.type.indexOf("touch") === 0 || ["longpress"].indexOf(val.type) >= 0;
 function $nne(evt, eventValue, instance2) {
   const { currentTarget } = evt;
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return [evt];
   }
-  const isHTMLTarget = currentTarget.tagName.indexOf("UNI-") !== 0;
+  const isHTMLTarget = !isBuiltInElement(currentTarget);
   {
     if (isHTMLTarget) {
       return wrapperH5WxsEvent(
@@ -2146,24 +2129,6 @@ function $nne(evt, eventValue, instance2) {
     }
   }
   const res = createNativeEvent(evt, isHTMLTarget);
-  if (isClickEvent(evt)) {
-    normalizeClickEvent(res, evt);
-  } else if (isMouseEvent(evt)) {
-    normalizeMouseEvent(res, evt);
-  } else if (isTouchEvent(evt)) {
-    const top = getWindowTop();
-    res.touches = normalizeTouchEvent(evt.touches, top);
-    res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
-  } else if (isKeyboardEvent(evt)) {
-    const proxyKeys = ["key", "code"];
-    proxyKeys.forEach((key) => {
-      Object.defineProperty(res, key, {
-        get() {
-          return evt[key];
-        }
-      });
-    });
-  }
   {
     return wrapperH5WxsEvent(
       res,
@@ -2173,7 +2138,7 @@ function $nne(evt, eventValue, instance2) {
   }
 }
 function findUniTarget(target) {
-  while (target && target.tagName.indexOf("UNI-") !== 0) {
+  while (!isBuiltInElement(target)) {
     target = target.parentElement;
   }
   return target;
@@ -2181,8 +2146,10 @@ function findUniTarget(target) {
 function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
   let realTarget, realCurrentTarget;
-  realTarget = htmlElement ? target : findUniTarget(target);
-  realCurrentTarget = currentTarget;
+  {
+    realTarget = htmlElement ? target : findUniTarget(target);
+    realCurrentTarget = currentTarget;
+  }
   const event = {
     type,
     timeStamp,
@@ -2198,71 +2165,18 @@ function createNativeEvent(evt, htmlElement = false) {
     event.changedTouches = evt.changedTouches;
   }
   {
-    wrapperEvent(event, evt);
-  }
-  return event;
-}
-function wrapperEvent(event, evt) {
-  extend(event, {
-    preventDefault() {
-      return evt.preventDefault();
-    },
-    stopPropagation() {
-      return evt.stopPropagation();
+    {
+      return new Proxy(evt, {
+        get(target2, key) {
+          if (key in event) {
+            return event[key];
+          }
+          const value = target2[key];
+          return isFunction(value) ? value.bind(target2) : value;
+        }
+      });
     }
-  });
-}
-function normalizeClickEvent(evt, mouseEvt) {
-  const { x, y } = mouseEvt;
-  const top = getWindowTop();
-  evt.detail = { x, y: y - top };
-  evt.x = x;
-  evt.y = y - top;
-  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)];
-}
-function normalizeMouseEvent(evt, mouseEvt) {
-  const top = getWindowTop();
-  evt.pageX = mouseEvt.pageX;
-  evt.pageY = mouseEvt.pageY - top;
-  evt.clientX = mouseEvt.clientX;
-  evt.clientY = mouseEvt.clientY - top;
-  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)];
-}
-function createTouchEvent(evt, top) {
-  return {
-    force: 1,
-    identifier: 0,
-    clientX: evt.clientX,
-    clientY: evt.clientY - top,
-    pageX: evt.pageX,
-    pageY: evt.pageY - top
-  };
-}
-function normalizeTouchEvent(touches, top) {
-  const res = [];
-  for (let i = 0; i < touches.length; i++) {
-    const {
-      identifier,
-      pageX,
-      pageY,
-      clientX,
-      clientY,
-      force,
-      screenX,
-      screenY
-    } = touches[i];
-    res.push({
-      identifier,
-      pageX,
-      pageY: pageY - top,
-      clientX,
-      clientY: clientY - top,
-      screenX,
-      screenY,
-      force: force || 0
-    });
   }
-  return res;
 }
 const instance = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -2318,11 +2232,28 @@ function initOn() {
   on2(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
 function onResize$1(res) {
-  invokeHook(getCurrentPage(), ON_RESIZE, res);
+  var _a, _b;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  invokeHook(page, ON_RESIZE, res);
+  {
+    const dialogPages = page == null ? void 0 : page.$page.getDialogPages();
+    if ((dialogPages == null ? void 0 : dialogPages.length) > 0) {
+      invokeHook(dialogPages[dialogPages.length - 1].vm, ON_RESIZE, res);
+    }
+    const systemDialogPages = (_b = page == null ? void 0 : page.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
+    if ((systemDialogPages == null ? void 0 : systemDialogPages.length) > 0) {
+      invokeHook(
+        systemDialogPages[systemDialogPages.length - 1].vm,
+        ON_RESIZE,
+        res
+      );
+    }
+  }
   UniServiceJSBridge.invokeOnCallback("onWindowResize", res);
 }
 function onAppEnterForeground(enterOptions2) {
-  const page = getCurrentPage();
+  var _a;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(
     getApp().vm,
     ON_SHOW,
@@ -2331,11 +2262,15 @@ function onAppEnterForeground(enterOptions2) {
   invokeHook(page, ON_SHOW);
 }
 function onAppEnterBackground() {
+  var _a;
   invokeHook(
     getApp().vm,
     ON_HIDE
   );
-  invokeHook(getCurrentPage(), ON_HIDE);
+  invokeHook(
+    (_a = getCurrentPage()) == null ? void 0 : _a.vm,
+    ON_HIDE
+  );
 }
 const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
 function initSubscribe() {
@@ -2417,7 +2352,9 @@ function getOpenerEventChannel() {
     if (this.$route) {
       const meta = this.$route.meta;
       if (!meta.eventChannel) {
-        meta.eventChannel = new EventChannel(this.$page.id);
+        meta.eventChannel = new EventChannel(
+          this.$basePage.id
+        );
       }
       return meta.eventChannel;
     }
@@ -2615,7 +2552,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   let target;
   target = el;
   return {
-    type: detail.type || name,
+    type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
@@ -2730,10 +2667,15 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
+const rpx2Unit = createRpx2Unit(
+  defaultRpx2Unit.unit,
+  defaultRpx2Unit.unitRatio,
+  defaultRpx2Unit.unitPrecision
+);
 function transformRpx(value) {
   if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
     return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text2, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`;
+      return rpx2Unit(num + "rpx");
     });
   }
   return value;
@@ -2742,6 +2684,7 @@ class UniElement extends HTMLElement {
   constructor() {
     super();
     this._props = {};
+    this._page = null;
     this.__isUniElement = true;
   }
   attachVmProps(props2) {
@@ -2749,7 +2692,39 @@ class UniElement extends HTMLElement {
   }
   getAttribute(qualifiedName) {
     const name = camelize(qualifiedName);
-    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
+    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
+    return attr2 === void 0 ? null : attr2;
+  }
+  getPage() {
+    if (this._page) {
+      return this._page;
+    }
+    let parent = this.parentNode;
+    while (parent && !parent._page) {
+      parent = parent.parentNode;
+    }
+    return (parent == null ? void 0 : parent._page) || null;
+  }
+  getBoundingClientRectAsync(callback) {
+    var _a, _b;
+    if (callback) {
+      const domRect = this.getBoundingClientRect();
+      try {
+        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      return;
+    }
+    return new Promise((resolve, reject) => {
+      const domRect = this.getBoundingClientRect();
+      resolve(domRect);
+    });
   }
   get style() {
     const originalStyle = super.style;
@@ -2777,7 +2752,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2847,7 +2822,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2990,7 +2965,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -3055,7 +3030,7 @@ const index$w = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$y = {
+const props$v = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -3091,7 +3066,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$y,
+  props: props$v,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -3114,7 +3089,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$x = {
+const props$u = {
   name: {
     type: String,
     default: ""
@@ -3122,9 +3097,9 @@ const props$x = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$x,
+  props: props$u,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -3184,7 +3159,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$w = {
+const props$t = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3233,9 +3208,9 @@ const props$w = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$w,
+  props: props$t,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -3376,7 +3351,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$v = {
+const props$s = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -3426,382 +3401,116 @@ function useKeyboard$1(props2, elRef, trigger) {
   );
 }
 const TEMP_PATH = "";
-function findElem(vm) {
-  return vm.$el;
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
+function usePageMeta() {
+  return inject(pageMetaKey);
 }
-function addBase(filePath) {
-  const { base: baseUrl } = __uniConfig.router;
-  if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
-    return addLeadingSlash(filePath);
-  }
-  return baseUrl + filePath;
+function providePageMeta(id2) {
+  const pageMeta = initPageMeta(id2);
+  provide(pageMetaKey, pageMeta);
+  return pageMeta;
 }
-function getRealPath(filePath) {
-  const { base, assets } = __uniConfig.router;
-  if (base === "./") {
-    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
-      filePath = filePath.slice(1);
-    }
+function usePageRoute() {
+  if (__UNI_FEATURE_PAGES__) {
+    return useRoute();
   }
-  if (filePath.indexOf("/") === 0) {
-    if (filePath.indexOf("//") === 0) {
-      filePath = "https:" + filePath;
-    } else {
-      return addBase(filePath.slice(1));
-    }
-  }
-  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
-    return filePath;
-  }
-  {
-    if (process.env.NODE_ENV !== "production") {
-      if (!filePath.includes("/static/")) {
-        return filePath;
-      }
-    }
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    return addBase(
-      getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1)
+  const url = location.href;
+  const searchPos = url.indexOf("?");
+  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
+  let query = {};
+  if (searchPos > -1) {
+    query = parseQuery(
+      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
     );
   }
-  return filePath;
-}
-const ua = navigator.userAgent;
-const isAndroid = /* @__PURE__ */ /android/i.test(ua);
-const isIOS$1 = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
-const isIPadOS = isMac && navigator.maxTouchPoints > 0;
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
-}
-function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
+  const { meta } = __uniRoutes[0];
+  const path = addLeadingSlash(meta.route);
   return {
-    platform: isIOS$1 ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
+    meta,
+    query,
+    path,
+    matched: [{ path }]
   };
 }
-function operateVideoPlayer(videoId, pageId, type, data) {
-  UniServiceJSBridge.invokeViewMethod(
-    "video." + videoId,
-    {
-      videoId,
-      type,
-      data
-    },
-    pageId
+function initPageMeta(id2) {
+  if (__UNI_FEATURE_PAGES__) {
+    return reactive(
+      normalizePageMeta(
+        JSON.parse(
+          JSON.stringify(
+            initRouteMeta(
+              useRoute().meta,
+              id2
+            )
+          )
+        )
+      )
+    );
+  }
+  return reactive(
+    normalizePageMeta(
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
+    )
   );
 }
-function operateMap(id2, pageId, type, data, operateMapCallback2) {
-  UniServiceJSBridge.invokeViewMethod(
-    "map." + id2,
+function normalizePageMeta(pageMeta) {
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const { enablePullDownRefresh, navigationBar } = pageMeta;
     {
-      type,
-      data
-    },
-    pageId,
-    operateMapCallback2
-  );
-}
-function getRootInfo(fields2) {
-  const info = {};
-  if (fields2.id) {
-    info.id = "";
-  }
-  if (fields2.dataset) {
-    info.dataset = {};
-  }
-  if (fields2.rect) {
-    info.left = 0;
-    info.right = 0;
-    info.top = 0;
-    info.bottom = 0;
-  }
-  if (fields2.size) {
-    info.width = document.documentElement.clientWidth;
-    info.height = document.documentElement.clientHeight;
-  }
-  if (fields2.scrollOffset) {
-    const documentElement2 = document.documentElement;
-    const body = document.body;
-    info.scrollLeft = documentElement2.scrollLeft || body.scrollLeft || 0;
-    info.scrollTop = documentElement2.scrollTop || body.scrollTop || 0;
-    info.scrollHeight = documentElement2.scrollHeight || body.scrollHeight || 0;
-    info.scrollWidth = documentElement2.scrollWidth || body.scrollWidth || 0;
-  }
-  return info;
-}
-function getNodeInfo(el, fields2) {
-  const info = {};
-  const { top, topWindowHeight } = getWindowOffset();
-  if (fields2.node) {
-    const tagName = el.tagName.split("-")[1];
-    if (tagName) {
-      info.node = el.querySelector(tagName);
-    }
-  }
-  if (fields2.id) {
-    info.id = el.id;
-  }
-  if (fields2.dataset) {
-    info.dataset = getCustomDataset(el);
-  }
-  if (fields2.rect || fields2.size) {
-    const rect = el.getBoundingClientRect();
-    if (fields2.rect) {
-      info.left = rect.left;
-      info.right = rect.right;
-      info.top = rect.top - top - topWindowHeight;
-      info.bottom = rect.bottom - top - topWindowHeight;
-    }
-    if (fields2.size) {
-      info.width = rect.width;
-      info.height = rect.height;
-    }
-  }
-  if (isArray(fields2.properties)) {
-    fields2.properties.forEach((prop) => {
-      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
-        return t2.toUpperCase();
-      });
-    });
-  }
-  if (fields2.scrollOffset) {
-    if (el.tagName === "UNI-SCROLL-VIEW") {
-      const scroll = el.children[0].children[0];
-      info.scrollLeft = scroll.scrollLeft;
-      info.scrollTop = scroll.scrollTop;
-      info.scrollHeight = scroll.scrollHeight;
-      info.scrollWidth = scroll.scrollWidth;
-    } else {
-      info.scrollLeft = 0;
-      info.scrollTop = 0;
-      info.scrollHeight = 0;
-      info.scrollWidth = 0;
-    }
-  }
-  if (isArray(fields2.computedStyle)) {
-    const sytle = getComputedStyle(el);
-    fields2.computedStyle.forEach((name) => {
-      info[name] = sytle[name];
-    });
-  }
-  if (fields2.context) {
-    info.contextInfo = getContextInfo(el);
-  }
-  return info;
-}
-function findElm(component, pageVm) {
-  if (!component) {
-    return pageVm.$el;
-  }
-  return component.$el;
-}
-function matches(element, selectors) {
-  const matches2 = element.matches || element.matchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector || function(selectors2) {
-    const matches3 = this.parentElement.querySelectorAll(
-      selectors2
-    );
-    let i = matches3.length;
-    while (--i >= 0 && matches3.item(i) !== this) {
-    }
-    return i > -1;
-  };
-  return matches2.call(element, selectors);
-}
-class QuerySelectorHelper {
-  constructor(element, vnode) {
-    this._element = element;
-    this._commentStartVNode = vnode;
-  }
-  static queryElement(element, selector, all, vnode) {
-    return new QuerySelectorHelper(element, vnode).query(selector, all);
-  }
-  query(selector, all) {
-    const isFragment = (
-      // @ts-expect-error
-      this._element.nodeType === 3 || this._element.nodeType === 8
-    );
-    if (isFragment) {
-      return this.queryFragment(this._element, selector, all);
-    } else {
-      return all ? this.querySelectorAll(this._element, selector) : this.querySelector(this._element, selector);
-    }
-  }
-  queryFragment(el, selector, all) {
-    let current = el.nextSibling;
-    if (current == null) {
-      return null;
-    }
-    let depth = 65535;
-    if (all) {
-      const result1 = [];
-      while (depth > 0) {
-        depth--;
-        if (current.nodeName && current.nodeName == "#comment") {
-          current = current.nextSibling;
-          continue;
-        }
-        const queryResult = this.querySelectorAll(current, selector);
-        if (queryResult != null) {
-          result1.push(...queryResult);
-        }
-        current = current.nextSibling;
-        if (current == null || this._commentStartVNode.anchor == current) {
-          break;
-        }
+      const pullToRefresh = normalizePullToRefreshRpx(
+        extend(
+          {
+            support: true,
+            color: "#2BD009",
+            style: "circle",
+            height: 70,
+            range: 150,
+            offset: 0
+          },
+          pageMeta.pullToRefresh
+        )
+      );
+      const { type, style } = navigationBar;
+      if (style !== "custom" && type !== "transparent") {
+        pullToRefresh.offset += NAVBAR_HEIGHT + safeAreaInsets$1.top;
       }
-      return result1;
-    } else {
-      let result2 = null;
-      while (depth > 0) {
-        depth--;
-        if (current.nodeName && current.nodeName == "#comment") {
-          current = current.nextSibling;
-          continue;
-        }
-        result2 = this.querySelector(current, selector);
-        current = current.nextSibling;
-        if (result2 != null || current == null || this._commentStartVNode.anchor == current) {
-          break;
-        }
-      }
-      return result2;
+      pageMeta.pullToRefresh = pullToRefresh;
     }
   }
-  querySelector(element, selector) {
-    let element2 = this.querySelf(element, selector);
-    if (element2 == null) {
-      element2 = element.querySelector(selector);
-    }
-    if (element2 != null) {
-      return this.getNodeInfo(element2);
-    }
-    return null;
+  if (__UNI_FEATURE_NAVIGATIONBAR__ || __UNI_FEATURE_I18N_LOCALE__) {
+    const { navigationBar } = pageMeta;
+    const { titleSize, titleColor, backgroundColor } = navigationBar;
+    navigationBar.titleText = navigationBar.titleText || "";
+    navigationBar.type = navigationBar.type || "default";
+    navigationBar.titleSize = titleSize || "16px";
+    navigationBar.titleColor = titleColor || "#000000";
+    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
+    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
   }
-  querySelectorAll(element, selector) {
-    const nodesInfoArray = [];
-    const element2 = this.querySelf(element, selector);
-    if (element2 != null) {
-      nodesInfoArray.push(this.getNodeInfo(element));
+  if (__UNI_FEATURE_PAGES__ && history.state) {
+    const type = history.state.__type__;
+    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
+      pageMeta.isEntry = true;
+      pageMeta.isQuit = true;
     }
-    const findNodes = element.querySelectorAll(selector);
-    findNodes == null ? void 0 : findNodes.forEach((el) => {
-      nodesInfoArray.push(this.getNodeInfo(el));
-    });
-    return nodesInfoArray;
   }
-  querySelf(element, selector) {
-    if (element == null || selector.length < 2) {
-      return null;
-    }
-    const selectorType2 = selector.charAt(0);
-    const selectorName = selector.slice(1);
-    if (selectorType2 == "." && element.classList.contains(selectorName)) {
-      return element;
-    }
-    if (selectorType2 == "#" && element.getAttribute("id") == selectorName) {
-      return element;
-    }
-    if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
-      return element;
-    }
-    return null;
-  }
-  getNodeInfo(element) {
-    var _a;
-    const rect = element.getBoundingClientRect();
-    const nodeInfo = {
-      id: (_a = element.getAttribute("id")) == null ? void 0 : _a.toString(),
-      dataset: null,
-      left: rect.left,
-      top: rect.top,
-      right: rect.right,
-      bottom: rect.bottom,
-      width: rect.width,
-      height: rect.height
-    };
-    return nodeInfo;
-  }
+  return pageMeta;
 }
-function getNodesInfo(pageVm, component, selector, single, fields2) {
-  const selfElement = findElm(component, pageVm);
-  const parentElement = selfElement.parentElement;
-  if (!parentElement) {
-    return single ? null : [];
-  }
-  const { nodeType } = selfElement;
-  const maybeFragment = nodeType === 3 || nodeType === 8;
-  if (maybeFragment)
-    return QuerySelectorHelper.queryElement(
-      selfElement,
-      selector,
-      !single,
-      component == null ? void 0 : component.$.subTree
-    );
-  if (single) {
-    const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
-    if (node) {
-      return getNodeInfo(node, fields2);
-    }
-    return null;
-  } else {
-    let infos = [];
-    const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
-    if (nodeList && nodeList.length) {
-      [].forEach.call(nodeList, (node) => {
-        infos.push(getNodeInfo(node, fields2));
-      });
-    }
-    if (!maybeFragment && matches(selfElement, selector)) {
-      infos.unshift(getNodeInfo(selfElement, fields2));
-    }
-    return infos;
-  }
+function checkMinWidth(minWidth) {
+  const screen2 = window.screen;
+  const documentElement = document.documentElement;
+  const sizes = [
+    window.outerWidth,
+    window.outerHeight,
+    screen2.width,
+    screen2.height,
+    documentElement.clientWidth,
+    documentElement.clientHeight
+  ];
+  return Math.max.apply(null, sizes) > minWidth;
 }
-function requestComponentInfo(page, reqs, callback) {
-  const result = [];
-  reqs.forEach(({ component, selector, single, fields: fields2 }) => {
-    if (component === null) {
-      result.push(getRootInfo(fields2));
-    } else {
-      result.push(getNodesInfo(page, component, selector, single, fields2));
-    }
-  });
-  callback(result);
-}
-function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
-  if (pageStyle) {
-    const pageElm = document.querySelector("uni-page-body") || document.body;
-    pageElm.setAttribute("style", pageStyle);
-  }
-  if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
-    document.documentElement.style.fontSize = rootFontSize;
-  }
+function getStateId() {
+  return history.state && history.state.__id__ || 1;
 }
 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 var lookup = /* @__PURE__ */ function() {
@@ -4269,14 +3978,26 @@ function invokeSuccess(id2, name, res) {
   const result = {
     errMsg: name + ":ok"
   };
-  result.errSubject = name;
+  {
+    result.errSubject = name;
+  }
   return invokeCallback(id2, extend(res || {}, result));
 }
 function invokeFail(id2, name, errMsg, errRes = {}) {
-  const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
+  const errMsgPrefix = name + ":fail";
+  let apiErrMsg = "";
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix;
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg;
+  } else {
+    apiErrMsg = errMsgPrefix + " " + errMsg;
+  }
   let res = extend({ errMsg: apiErrMsg }, errRes);
-  if (typeof UniError !== "undefined") {
-    res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+  {
+    if (typeof UniError !== "undefined") {
+      res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+    }
   }
   return invokeCallback(id2, res);
 }
@@ -4338,7 +4059,6 @@ function parseErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -4448,17 +4168,17 @@ const Upx2pxProtocol = [
 ];
 const EPS = 1e-4;
 const BASE_DEVICE_WIDTH = 750;
-let isIOS = false;
+let isIOS$1 = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-  const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+  const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
-  isIOS = platform === "ios";
+  isIOS$1 = platform === "ios";
 }
 function checkValue(value, defaultValue) {
   const newValue = Number(value);
@@ -4493,7 +4213,7 @@ const upx2px = /* @__PURE__ */ defineSyncApi(
     }
     result = Math.floor(result + EPS);
     if (result === 0) {
-      if (deviceDPR === 1 || !isIOS) {
+      if (deviceDPR === 1 || !isIOS$1) {
         result = 1;
       } else {
         result = 0.5;
@@ -4601,7 +4321,7 @@ const OffProtocol = [
   },
   {
     name: "callback",
-    type: Function
+    type: [Function, Number]
   }
 ];
 const API_EMIT = "$emit";
@@ -4617,10 +4337,10 @@ class EventBus {
     this.$emitter = new Emitter();
   }
   on(name, callback) {
-    this.$emitter.on(name, callback);
+    return this.$emitter.on(name, callback);
   }
   once(name, callback) {
-    this.$emitter.once(name, callback);
+    return this.$emitter.once(name, callback);
   }
   off(name, callback) {
     if (!name) {
@@ -4637,16 +4357,20 @@ const eventBus = new EventBus();
 const $on = /* @__PURE__ */ defineSyncApi(
   API_ON,
   (name, callback) => {
-    eventBus.on(name, callback);
-    return () => eventBus.off(name, callback);
+    const id2 = eventBus.on(name, callback);
+    {
+      return id2;
+    }
   },
   OnProtocol
 );
 const $once = /* @__PURE__ */ defineSyncApi(
   API_ONCE,
   (name, callback) => {
-    eventBus.once(name, callback);
-    return () => eventBus.off(name, callback);
+    const id2 = eventBus.once(name, callback);
+    {
+      return id2;
+    }
   },
   OnceProtocol
 );
@@ -4655,7 +4379,9 @@ const $off = /* @__PURE__ */ defineSyncApi(
   (name, callback) => {
     if (!isArray(name))
       name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+      eventBus.off(n, callback);
+    });
   },
   OffProtocol
 );
@@ -4666,6 +4392,12 @@ const $emit = /* @__PURE__ */ defineSyncApi(
   },
   EmitProtocol
 );
+function __f__(type, filename, ...args) {
+  if (filename) {
+    args.push(filename);
+  }
+  console[type].apply(console, args);
+}
 const validator = [
   {
     name: "id",
@@ -6020,13 +5752,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$t = 0;
+let index$o = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$t++);
+    const callbackId = String(index$o++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -6734,12 +6466,6 @@ const OpenDocumentProtocol = {
   fileType: String
 };
 const API_HIDE_KEYBOARD = "hideKeyboard";
-const API_CHOOSE_LOCATION = "chooseLocation";
-const ChooseLocationProtocol = {
-  keyword: String,
-  latitude: Number,
-  longitude: Number
-};
 const API_GET_LOCATION = "getLocation";
 const coordTypes$1 = ["wgs84", "gcj02"];
 const GetLocationOptions = {
@@ -6880,8 +6606,13 @@ const ChooseFileOptions = {
       if (extension instanceof Array && extension.length === 0) {
         return "param extension should not be empty.";
       }
-      if (!extension)
-        params.extension = [""];
+      if (!extension) {
+        if (params.type === "all" || !params.type) {
+          params.extension = [""];
+        } else {
+          params.extension = ["*"];
+        }
+      }
     }
   }
 };
@@ -7360,21 +7091,6 @@ const PageScrollToOptions = {
     duration: 300
   }
 };
-const API_SHOW_ACTION_SHEET = "showActionSheet";
-const ShowActionSheetProtocol = {
-  itemList: {
-    type: Array,
-    required: true
-  },
-  title: String,
-  itemColor: String,
-  popover: Object
-};
-const ShowActionSheetOptions = {
-  formatArgs: {
-    itemColor: "#000"
-  }
-};
 const API_SHOW_LOADING = "showLoading";
 const ShowLoadingProtocol = {
   title: String,
@@ -7384,43 +7100,6 @@ const ShowLoadingOptions = {
   formatArgs: {
     title: "",
     mask: false
-  }
-};
-const API_SHOW_MODAL = "showModal";
-const ShowModalProtocol = {
-  title: String,
-  content: String,
-  showCancel: Boolean,
-  cancelText: String,
-  cancelColor: String,
-  confirmText: String,
-  confirmColor: String
-};
-const ShowModalOptions = {
-  beforeInvoke() {
-    initI18nShowModalMsgsOnce();
-  },
-  formatArgs: {
-    title: "",
-    content: "",
-    placeholderText: "",
-    showCancel: true,
-    editable: false,
-    cancelText(_value, params) {
-      if (!hasOwn(params, "cancelText")) {
-        const { t: t2 } = useI18n();
-        params.cancelText = t2("uni.showModal.cancel");
-      }
-    },
-    cancelColor: "#000",
-    confirmText(_value, params) {
-      if (!hasOwn(params, "confirmText")) {
-        const { t: t2 } = useI18n();
-        params.confirmText = t2("uni.showModal.confirm");
-      }
-    },
-    //@ts-expect-error
-    confirmColor: "#576b95"
   }
 };
 const API_SHOW_TOAST = "showToast";
@@ -7993,14 +7672,14 @@ const initIntersectionObserverPolyfill = function() {
   }
   function addEvent(node, event, fn, opt_useCapture) {
     if (typeof node.addEventListener == "function") {
-      node.addEventListener(event, fn, opt_useCapture || false);
+      node.addEventListener(event, fn, opt_useCapture);
     } else if (typeof node.attachEvent == "function") {
       node.attachEvent("on" + event, fn);
     }
   }
   function removeEvent(node, event, fn, opt_useCapture) {
     if (typeof node.removeEventListener == "function") {
-      node.removeEventListener(event, fn, opt_useCapture || false);
+      node.removeEventListener(event, fn, opt_useCapture);
     } else if (typeof node.detatchEvent == "function") {
       node.detatchEvent("on" + event, fn);
     }
@@ -8170,6 +7849,1264 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
+function removeNonTabBarPages() {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    if (!page.$.__isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = false;
+    }
+  }
+  if (curTabBarPageVm.$.__isTabBar) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, ON_HIDE);
+  }
+}
+function isSamePage(url, $page) {
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = getPage$BasePage(page);
+    if (isSamePage(url, $page)) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+const switchTab = /* @__PURE__ */ defineAsyncApi(
+  API_SWITCH_TAB,
+  // @ts-expect-error
+  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      switchTabPagesBeforeEntryPages.push({
+        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return removeNonTabBarPages(), navigate(
+      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+      getTabBarPageId(url)
+    ).then(resolve).catch(reject);
+  },
+  SwitchTabProtocol,
+  SwitchTabOptions
+);
+function removeLastPage() {
+  var _a;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  if (!page) {
+    return;
+  }
+  const $page = getPage$BasePage(page);
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
+const redirectTo = /* @__PURE__ */ defineAsyncApi(
+  API_REDIRECT_TO,
+  // @ts-expect-error
+  ({ url, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      redirectToPagesBeforeEntryPages.push({
+        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return (
+      // TODO exists 属性未实现
+      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
+    );
+  },
+  RedirectToProtocol,
+  RedirectToOptions
+);
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
+const reLaunch = /* @__PURE__ */ defineAsyncApi(
+  API_RE_LAUNCH,
+  // @ts-expect-error
+  ({ url, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      reLaunchPagesBeforeEntryPages.push({
+        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  ReLaunchProtocol,
+  ReLaunchOptions
+);
+function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
+  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
+    console.warn(
+      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
+    );
+  }
+  const router = getApp().vm.$router;
+  const { path, query } = parseUrl(url);
+  return new Promise((resolve, reject) => {
+    const state2 = createPageState(type, __id__);
+    router[type === "navigateTo" ? "push" : "replace"]({
+      path,
+      query,
+      state: state2,
+      force: true
+    }).then((failure) => {
+      if (isNavigationFailure(failure)) {
+        return reject(failure.message);
+      }
+      if (type === "switchTab") {
+        router.currentRoute.value.meta.tabBarText = tabBarText;
+      }
+      if (type === "navigateTo") {
+        const meta = router.currentRoute.value.meta;
+        if (!meta.eventChannel) {
+          meta.eventChannel = new EventChannel(state2.__id__, events);
+        } else if (events) {
+          Object.keys(events).forEach((eventName) => {
+            meta.eventChannel._addListener(
+              eventName,
+              "on",
+              events[eventName]
+            );
+          });
+          meta.eventChannel._clearCache();
+        }
+        return isAutomatedTesting ? resolve({
+          __id__: state2.__id__
+        }) : resolve({
+          eventChannel: meta.eventChannel
+        });
+      }
+      return isAutomatedTesting ? resolve({ __id__: state2.__id__ }) : resolve();
+    });
+  });
+}
+function handleBeforeEntryPageRoutes() {
+  if (entryPageState.handledBeforeEntryPageRoutes) {
+    return;
+  }
+  entryPageState.handledBeforeEntryPageRoutes = true;
+  const navigateToPages = [...navigateToPagesBeforeEntryPages];
+  navigateToPagesBeforeEntryPages.length = 0;
+  navigateToPages.forEach(
+    ({ args, resolve, reject }) => (
+      // @ts-expect-error
+      navigate(args).then(resolve).catch(reject)
+    )
+  );
+  const switchTabPages = [...switchTabPagesBeforeEntryPages];
+  switchTabPagesBeforeEntryPages.length = 0;
+  switchTabPages.forEach(
+    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
+  );
+  const redirectToPages = [...redirectToPagesBeforeEntryPages];
+  redirectToPagesBeforeEntryPages.length = 0;
+  redirectToPages.forEach(
+    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
+  );
+  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
+  reLaunchPagesBeforeEntryPages.length = 0;
+  reLaunchPages.forEach(
+    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
+  );
+}
+let tabBar;
+function useTabBar() {
+  if (!tabBar) {
+    tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
+  }
+  return tabBar;
+}
+function cssSupports(css) {
+  const supports = window.CSS && window.CSS.supports;
+  return supports && (supports(css) || supports.apply(window.CSS, css.split(":")));
+}
+const cssVar = /* @__PURE__ */ cssSupports("--a:0");
+const cssEnv = /* @__PURE__ */ cssSupports("top:env(a)");
+const cssConstant = /* @__PURE__ */ cssSupports("top:constant(a)");
+const cssBackdropFilter = /* @__PURE__ */ cssSupports("backdrop-filter:blur(10px)");
+const SCHEMA_CSS = {
+  "css.var": cssVar,
+  "css.env": cssEnv,
+  "css.constant": cssConstant,
+  "css.backdrop-filter": cssBackdropFilter
+};
+const canIUse = /* @__PURE__ */ defineSyncApi(
+  API_CAN_I_USE,
+  (schema) => {
+    if (hasOwn(SCHEMA_CSS, schema)) {
+      return SCHEMA_CSS[schema];
+    }
+    return true;
+  },
+  CanIUseProtocol
+);
+const envMethod = /* @__PURE__ */ (() => cssEnv ? "env" : cssConstant ? "constant" : "")();
+function updateCurPageCssVar(pageMeta) {
+  let windowTopValue = 0;
+  let windowBottomValue = 0;
+  if (__UNI_FEATURE_NAVIGATIONBAR__ && pageMeta.navigationBar.style !== "custom" && ["default", "float"].indexOf(pageMeta.navigationBar.type) > -1) {
+    windowTopValue = NAVBAR_HEIGHT;
+  }
+  if (__UNI_FEATURE_TABBAR__ && pageMeta.isTabBar) {
+    const tabBar2 = useTabBar();
+    tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
+  }
+  updatePageCssVar({
+    "--window-top": normalizeWindowTop(windowTopValue),
+    "--window-bottom": normalizeWindowBottom(windowBottomValue)
+  });
+}
+function normalizeWindowTop(windowTop) {
+  return envMethod ? `calc(${windowTop}px + ${envMethod}(safe-area-inset-top))` : `${windowTop}px`;
+}
+function normalizeWindowBottom(windowBottom) {
+  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+}
+function getPageWrapperInfo(pageBody) {
+  const pageWrapper = pageBody || document.querySelector("uni-page-wrapper");
+  const pageWrapperRect = pageWrapper.getBoundingClientRect();
+  const bodyRect = document.body.getBoundingClientRect();
+  return {
+    top: pageWrapperRect.top,
+    left: pageWrapperRect.left,
+    right: bodyRect.right - pageWrapperRect.right,
+    bottom: bodyRect.bottom - pageWrapperRect.bottom,
+    width: pageWrapperRect.width,
+    height: pageWrapperRect.height
+  };
+}
+const getSystemSafeAreaInsets = function() {
+  return {
+    top: safeAreaInsets$1.top,
+    right: safeAreaInsets$1.right,
+    bottom: safeAreaInsets$1.bottom,
+    left: safeAreaInsets$1.left
+  };
+};
+function getSafeAreaInsets(pageBody) {
+  const pageWrapperEdge = getPageWrapperInfo(pageBody);
+  const systemSafeAreaInsets = getSystemSafeAreaInsets();
+  return {
+    top: Math.max(pageWrapperEdge.top, systemSafeAreaInsets.top),
+    left: Math.max(pageWrapperEdge.left, systemSafeAreaInsets.left),
+    right: Math.max(pageWrapperEdge.right, systemSafeAreaInsets.right),
+    bottom: Math.max(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom)
+  };
+}
+const DIALOG_TAG = "dialog";
+const SYSTEM_DIALOG_TAG = "systemDialog";
+function isDialogPageInstance(vm) {
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
+}
+function isNormalDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === DIALOG_TAG;
+}
+function isSystemDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
+}
+let escBackPageNum = 0;
+const homeDialogPages = [];
+const homeSystemDialogPages = [];
+function isDialogPageImpl(page) {
+  return page instanceof UniDialogPageImpl;
+}
+class UniPageImpl {
+  constructor({
+    route,
+    options,
+    vm
+  }) {
+    this.getParentPage = () => null;
+    this.route = route;
+    this.options = options;
+    this.vm = vm;
+    this.$vm = vm;
+  }
+  get pageBody() {
+    var _a;
+    const currentPage = getCurrentPage();
+    let container = document;
+    if (isDialogPageImpl(this)) {
+      const dialogPage = document.querySelector(
+        `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"]`
+      );
+      if (!dialogPage) {
+        throw new Error("dialogPage not found");
+      }
+      container = dialogPage;
+    } else if (this !== currentPage) {
+      throw new Error("Can't get pageBody of other page");
+    }
+    const pageBody = container.querySelector("uni-page-wrapper");
+    const pageWrapperInfo = getPageWrapperInfo(pageBody);
+    return {
+      top: pageWrapperInfo.top,
+      left: pageWrapperInfo.left,
+      right: pageWrapperInfo.left + pageWrapperInfo.width,
+      bottom: pageWrapperInfo.top + pageWrapperInfo.height,
+      width: pageWrapperInfo.width,
+      height: pageWrapperInfo.height
+    };
+  }
+  get safeAreaInsets() {
+    var _a;
+    const currentPage = getCurrentPage();
+    let container = document;
+    if (isDialogPageImpl(this)) {
+      const dialogPage = document.querySelector(
+        `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"]`
+      );
+      if (!dialogPage) {
+        throw new Error("dialogPage not found");
+      }
+      container = dialogPage;
+    } else if (this !== currentPage) {
+      throw new Error("Can't get safeAreaInsets of other page");
+    }
+    const pageBody = container.querySelector("uni-page-wrapper");
+    return getSafeAreaInsets(pageBody);
+  }
+  getPageStyle() {
+    var _a;
+    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    return pageMeta ? new UTSJSONObject({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage || "",
+      navigationStyle: pageMeta.navigationBar.style || "default",
+      disableScroll: pageMeta.disableScroll || false,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+      onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent
+    }) : new UTSJSONObject({});
+  }
+  $getPageStyle() {
+    return this.getPageStyle();
+  }
+  setPageStyle(style) {
+    var _a;
+    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    if (!pageMeta)
+      return;
+    for (const key in style) {
+      switch (key) {
+        case "navigationBarBackgroundColor":
+          pageMeta.navigationBar.backgroundColor = style[key];
+          break;
+        case "navigationBarTextStyle":
+          const textStyle = style[key];
+          if (textStyle == null) {
+            continue;
+          }
+          pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+            textStyle
+          ) ? normalizeTitleColor(textStyle || "") : textStyle;
+          break;
+        case "navigationBarTitleText":
+          pageMeta.navigationBar.titleText = style[key];
+          break;
+        case "titleImage":
+          pageMeta.navigationBar.titleImage = style[key];
+          break;
+        case "navigationStyle":
+          pageMeta.navigationBar.style = style[key];
+          break;
+        default:
+          pageMeta[key] = style[key];
+          break;
+      }
+    }
+  }
+  $setPageStyle(style) {
+    this.setPageStyle(style);
+  }
+  getElementById(id2) {
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      return null;
+    }
+    const uniPageBody = document.querySelector("uni-page-body");
+    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
+  }
+  getAndroidView() {
+    return null;
+  }
+  getIOSView() {
+    return null;
+  }
+  getHTMLElement() {
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      return null;
+    }
+    return document.querySelector("uni-page-body");
+  }
+  getDialogPages() {
+    return [];
+  }
+}
+class UniNormalPageImpl extends UniPageImpl {
+  getDialogPages() {
+    var _a, _b;
+    return ((_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$dialogPages.value) || [];
+  }
+  constructor({
+    route,
+    options,
+    vm
+  }) {
+    super({ route, options, vm });
+  }
+}
+class UniDialogPageImpl extends UniPageImpl {
+  constructor({
+    route,
+    options,
+    $component,
+    $triggerParentHide,
+    getParentPage,
+    $disableEscBack = false
+  }) {
+    super({ route, options, vm: null });
+    this.$component = null;
+    this.$disableEscBack = false;
+    this.$triggerParentHide = false;
+    this.$component = markRaw($component);
+    this.getParentPage = getParentPage;
+    this.$disableEscBack = !!$disableEscBack;
+    this.$triggerParentHide = !!$triggerParentHide;
+  }
+  getElementById(id2) {
+    var _a;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this.getParentPage()) {
+      return null;
+    }
+    const uniPageBody = document.querySelector(
+      `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"] uni-page-body`
+    );
+    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
+  }
+  getHTMLElement() {
+    var _a;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this.getParentPage()) {
+      return null;
+    }
+    return document.querySelector(
+      `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"] uni-page-body`
+    );
+  }
+}
+function initXPage(vm, route, page) {
+  var _a, _b;
+  initPageVm(vm, page);
+  Object.defineProperty(vm, "$pageLayoutInstance", {
+    get() {
+      var _a2, _b2;
+      let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
+      while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
+        res = res.parent;
+      }
+      return res;
+    }
+  });
+  vm.$basePage = vm.$page;
+  const pageInstance = vm.$pageLayoutInstance;
+  if (!isDialogPageInstance(pageInstance)) {
+    const uniPage = new UniNormalPageImpl({
+      route: (route == null ? void 0 : route.path) || "",
+      options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
+      vm
+    });
+    vm.$page = uniPage;
+    vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
+    currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+    if (currentPagesMap.size === 1) {
+      setTimeout(() => {
+        handleBeforeEntryPageRoutes();
+      }, 0);
+      if (homeDialogPages.length) {
+        homeDialogPages.forEach((dialogPage) => {
+          dialogPage.getParentPage = () => vm.$page;
+          pageInstance.$dialogPages.value.push(dialogPage);
+        });
+        homeDialogPages.length = 0;
+      }
+      if (homeSystemDialogPages.length) {
+        homeSystemDialogPages.forEach((dialogPage) => {
+          dialogPage.getParentPage = () => vm.$page;
+          pageInstance.$systemDialogPages.value.push(dialogPage);
+        });
+        homeSystemDialogPages.length = 0;
+      }
+    }
+  } else {
+    vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
+    pageInstance.$dialogPage.vm = vm;
+    pageInstance.$dialogPage.$vm = vm;
+  }
+}
+function useBackgroundColorContent$1(vm) {
+  vm && watchEffect(() => {
+    const uniPageBody = document.querySelector(
+      `uni-page[data-page="${vm.route}"] uni-page-body`
+    );
+    if (uniPageBody && vm.$basePage.meta.backgroundColorContent) {
+      uniPageBody.style.backgroundColor = vm.$basePage.meta.backgroundColorContent;
+    }
+  });
+}
+function handleEscKeyPress(event) {
+  if (event.key === "Escape") {
+    const currentPage = getCurrentPage();
+    const dialogPages = currentPage.getDialogPages();
+    const dialogPage = dialogPages[dialogPages.length - 1];
+    if (!dialogPage.$disableEscBack) {
+      closeDialogPage({ dialogPage });
+    }
+  }
+}
+function incrementEscBackPageNum() {
+  escBackPageNum++;
+  if (escBackPageNum === 1) {
+    document.addEventListener("keydown", handleEscKeyPress);
+  }
+}
+function decrementEscBackPageNum() {
+  escBackPageNum--;
+  if (escBackPageNum === 0) {
+    document.removeEventListener("keydown", handleEscKeyPress);
+  }
+}
+const closeDialogPage = (options) => {
+  var _a, _b;
+  const currentPages = getCurrentPages();
+  const currentPage = currentPages[currentPages.length - 1];
+  if (!currentPage) {
+    triggerFailCallback$1(options, "currentPage is null");
+    return;
+  }
+  if (options == null ? void 0 : options.dialogPage) {
+    const dialogPage = options == null ? void 0 : options.dialogPage;
+    const parentPage = dialogPage.getParentPage();
+    if (!isSystemDialogPage(dialogPage)) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        const parentDialogPages = parentPage.getDialogPages();
+        const index2 = parentDialogPages.indexOf(dialogPage);
+        parentDialogPages.splice(index2, 1);
+        invokeHook(dialogPage.vm, ON_UNLOAD);
+        if (index2 > 0 && index2 === parentDialogPages.length) {
+          invokeHook(
+            parentDialogPages[parentDialogPages.length - 1].vm,
+            ON_SHOW
+          );
+        }
+        dialogPageTriggerParentShow(dialogPage, 1);
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum();
+        }
+      } else {
+        triggerFailCallback$1(options, "dialogPage is not a valid page");
+        return;
+      }
+    } else {
+      const parentSystemDialogPages = parentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
+      const index2 = parentSystemDialogPages.indexOf(dialogPage);
+      if (index2 > -1) {
+        parentSystemDialogPages.splice(index2, 1);
+        dialogPageTriggerParentShow(dialogPage, 1);
+      } else {
+        triggerFailCallback$1(options, "dialogPage is not a valid page");
+      }
+      return;
+    }
+  } else {
+    const dialogPages = currentPage.getDialogPages();
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      invokeHook(dialogPages[i].vm, ON_UNLOAD);
+      if (i > 0) {
+        invokeHook(dialogPages[i - 1].vm, ON_SHOW);
+      }
+      dialogPageTriggerParentShow(dialogPages[i]);
+      if ((!dialogPages[i]).$disableEscBack) {
+        decrementEscBackPageNum();
+      }
+    }
+    dialogPages.length = 0;
+  }
+  const successOptions = { errMsg: "closeDialogPage: ok" };
+  (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, successOptions);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, successOptions);
+};
+function triggerFailCallback$1(options, errMsg) {
+  var _a, _b;
+  const failOptions = new UniError(
+    "uni-closeDialogPage",
+    4,
+    `closeDialogPage: fail, ${errMsg}`
+  );
+  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
+}
+const SEP = "$$";
+const currentPagesMap = /* @__PURE__ */ new Map();
+function getPage$BasePage(page) {
+  return page.$basePage;
+}
+const entryPageState = {
+  handledBeforeEntryPageRoutes: false
+};
+const navigateToPagesBeforeEntryPages = [];
+const switchTabPagesBeforeEntryPages = [];
+const redirectToPagesBeforeEntryPages = [];
+const reLaunchPagesBeforeEntryPages = [];
+function pruneCurrentPages() {
+  currentPagesMap.forEach((page, id2) => {
+    if (page.$.isUnmounted) {
+      currentPagesMap.delete(id2);
+    }
+  });
+}
+function getCurrentPagesMap() {
+  return currentPagesMap;
+}
+function getCurrentPages$1() {
+  const curPages = getCurrentBasePages();
+  {
+    return curPages.map((page) => page.$page);
+  }
+}
+function getCurrentBasePages() {
+  const curPages = [];
+  const pages = currentPagesMap.values();
+  for (const page of pages) {
+    if (page.$.__isTabBar) {
+      if (page.$.__isActive) {
+        curPages.push(page);
+      }
+    } else {
+      curPages.push(page);
+    }
+  }
+  return curPages;
+}
+function removeRouteCache(routeKey) {
+  const vnode = pageCacheMap.get(routeKey);
+  if (vnode) {
+    pageCacheMap.delete(routeKey);
+    routeCache.pruneCacheEntry(vnode);
+  }
+}
+function removePage(routeKey, removeRouteCaches = true) {
+  var _a;
+  const pageVm = currentPagesMap.get(routeKey);
+  {
+    const dialogPages = pageVm.$page.getDialogPages();
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      closeDialogPage({ dialogPage: dialogPages[i] });
+    }
+    const systemDialogPages = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+    if (systemDialogPages) {
+      systemDialogPages.length = 0;
+    }
+  }
+  pageVm.$.__isUnload = true;
+  invokeHook(pageVm, ON_UNLOAD);
+  currentPagesMap.delete(routeKey);
+  removeRouteCaches && removeRouteCache(routeKey);
+}
+let id = /* @__PURE__ */ getStateId();
+function createPageState(type, __id__) {
+  return {
+    __id__: __id__ || ++id,
+    __type__: type
+  };
+}
+function initPublicPage(route) {
+  const meta = usePageMeta();
+  if (!__UNI_FEATURE_PAGES__) {
+    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
+  }
+  let fullPath = route.fullPath;
+  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
+    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
+  }
+  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
+}
+function initPage(vm) {
+  const route = vm.$route;
+  const page = initPublicPage(route);
+  initPageVm(vm, page);
+  {
+    initXPage(vm, route, page);
+  }
+}
+function normalizeRouteKey(path, id2) {
+  return path + SEP + id2;
+}
+function useKeepAliveRoute() {
+  const route = useRoute();
+  const routeKey = computed(
+    () => normalizeRouteKey("/" + route.meta.route, getStateId())
+  );
+  const isTabBar = computed(() => route.meta.isTabBar);
+  return {
+    routeKey,
+    isTabBar,
+    routeCache
+  };
+}
+const pageCacheMap = /* @__PURE__ */ new Map();
+const routeCache = {
+  get(key) {
+    return pageCacheMap.get(key);
+  },
+  set(key, value) {
+    pruneRouteCache(key);
+    pageCacheMap.set(key, value);
+  },
+  delete(key) {
+    const vnode = pageCacheMap.get(key);
+    if (!vnode) {
+      return;
+    }
+    pageCacheMap.delete(key);
+  },
+  forEach(fn) {
+    pageCacheMap.forEach(fn);
+  }
+};
+function isTabBarVNode(vnode) {
+  return vnode.props.type === "tabBar";
+}
+function pruneRouteCache(key) {
+  const pageId = parseInt(key.split(SEP)[1]);
+  if (!pageId) {
+    return;
+  }
+  routeCache.forEach((vnode, key2) => {
+    const cPageId = parseInt(key2.split(SEP)[1]);
+    if (cPageId && cPageId > pageId) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+        return;
+      }
+      routeCache.delete(key2);
+      routeCache.pruneCacheEntry(vnode);
+      nextTick(() => pruneCurrentPages());
+    }
+  });
+}
+function updateCurPageAttrs(pageMeta) {
+  {
+    const uvueDirKey = "uvue-dir-" + __uniConfig.uvue["flex-direction"];
+    document.body.setAttribute("uvue", "");
+    document.body.setAttribute(uvueDirKey, "");
+  }
+}
+function onPageShow(instance2, pageMeta) {
+  updateBodyScopeId(instance2);
+  updateCurPageCssVar(pageMeta);
+  updateCurPageAttrs();
+  initPageScrollListener(instance2, pageMeta);
+}
+function onPageReady(instance2) {
+  const scopeId = getScopeId(instance2);
+  scopeId && updateCurPageBodyScopeId(scopeId);
+}
+function updateCurPageBodyScopeId(scopeId) {
+  const pageBodyEl = document.querySelector("uni-page-body");
+  if (pageBodyEl) {
+    pageBodyEl.setAttribute(scopeId, "");
+  } else if (process.env.NODE_ENV !== "production") {
+    console.warn("uni-page-body not found");
+  }
+}
+function getScopeId(instance2) {
+  return instance2.type.__scopeId;
+}
+let curScopeId;
+function updateBodyScopeId(instance2) {
+  const scopeId = getScopeId(instance2);
+  const { body } = document;
+  curScopeId && body.removeAttribute(curScopeId);
+  scopeId && body.setAttribute(scopeId, "");
+  curScopeId = scopeId;
+}
+let curScrollListener;
+function initPageScrollListener(instance2, pageMeta) {
+  document.removeEventListener("touchmove", disableScrollListener);
+  if (curScrollListener) {
+    document.removeEventListener("scroll", curScrollListener);
+  }
+  if (pageMeta.disableScroll) {
+    return document.addEventListener("touchmove", disableScrollListener);
+  }
+  const { onPageScroll, onReachBottom } = instance2;
+  const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
+  if (!(onPageScroll == null ? void 0 : onPageScroll.length) && !(onReachBottom == null ? void 0 : onReachBottom.length) && !navigationBarTransparent) {
+    return;
+  }
+  const opts = {};
+  const pageId = getPage$BasePage(instance2.proxy).id;
+  if (onPageScroll || navigationBarTransparent) {
+    opts.onPageScroll = createOnPageScroll(
+      pageId,
+      onPageScroll,
+      navigationBarTransparent
+    );
+  }
+  if (onReachBottom == null ? void 0 : onReachBottom.length) {
+    opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
+    opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
+  }
+  curScrollListener = createScrollListener(opts);
+  requestAnimationFrame(
+    () => document.addEventListener("scroll", curScrollListener)
+  );
+  {
+    watch(
+      () => pageMeta.onReachBottomDistance,
+      (onReachBottomDistance) => {
+        if (!onReachBottom) {
+          return;
+        }
+        opts.onReachBottomDistance = onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
+        document.removeEventListener("scroll", curScrollListener);
+        curScrollListener = createScrollListener(opts);
+        document.addEventListener("scroll", curScrollListener);
+      }
+    );
+    watch(
+      () => pageMeta.disableScroll,
+      (disableScroll) => {
+        document.removeEventListener("touchmove", disableScrollListener);
+        if (disableScroll) {
+          return document.addEventListener("touchmove", disableScrollListener);
+        }
+      }
+    );
+  }
+}
+function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
+  return (scrollTop) => {
+    if (onPageScroll) {
+      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop }, pageId);
+    }
+    if (navigationBarTransparent) {
+      UniViewJSBridge.emit(pageId + "." + ON_PAGE_SCROLL, {
+        scrollTop
+      });
+    }
+  };
+}
+function findElem(vm) {
+  return vm.$el;
+}
+function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
+  if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
+    return addLeadingSlash(filePath);
+  }
+  return baseUrl + filePath;
+}
+function getRealPath(filePath) {
+  const { base, assets } = __uniConfig.router;
+  if (base === "./") {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
+      filePath = filePath.slice(1);
+    }
+  }
+  if (filePath.indexOf("/") === 0) {
+    if (filePath.indexOf("//") === 0) {
+      filePath = "https:" + filePath;
+    } else {
+      return addBase(filePath.slice(1));
+    }
+  }
+  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+    return filePath;
+  }
+  {
+    if (process.env.NODE_ENV !== "production") {
+      if (!filePath.includes("/static/")) {
+        return filePath;
+      }
+    }
+  }
+  const pages = getCurrentBasePages();
+  if (pages.length) {
+    return addBase(
+      getRealRoute(
+        getPage$BasePage(pages[pages.length - 1]).route,
+        filePath
+      ).slice(1)
+    );
+  }
+  return filePath;
+}
+const ua = navigator.userAgent;
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(
+    window.innerWidth,
+    document.documentElement.clientWidth,
+    screenWidth
+  ) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(
+    getScreenWidth(screenFix, isLandscape(screenFix))
+  );
+  return {
+    platform: isIOS ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
+function operateVideoPlayer(videoId, pageId, type, data) {
+  UniServiceJSBridge.invokeViewMethod(
+    "video." + videoId,
+    {
+      videoId,
+      type,
+      data
+    },
+    pageId
+  );
+}
+function operateMap(id2, pageId, type, data, operateMapCallback2) {
+  UniServiceJSBridge.invokeViewMethod(
+    "map." + id2,
+    {
+      type,
+      data
+    },
+    pageId,
+    operateMapCallback2
+  );
+}
+function getRootInfo(fields2) {
+  const info = {};
+  if (fields2.id) {
+    info.id = "";
+  }
+  if (fields2.dataset) {
+    info.dataset = {};
+  }
+  if (fields2.rect) {
+    info.left = 0;
+    info.right = 0;
+    info.top = 0;
+    info.bottom = 0;
+  }
+  if (fields2.size) {
+    info.width = document.documentElement.clientWidth;
+    info.height = document.documentElement.clientHeight;
+  }
+  if (fields2.scrollOffset) {
+    const documentElement = document.documentElement;
+    const body = document.body;
+    info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
+    info.scrollTop = documentElement.scrollTop || body.scrollTop || 0;
+    info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0;
+    info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0;
+  }
+  return info;
+}
+function getNodeInfo(el, fields2) {
+  const info = {};
+  const { top, topWindowHeight } = getWindowOffset();
+  if (fields2.node) {
+    const tagName = el.tagName.split("-")[1] || el.tagName;
+    if (tagName) {
+      info.node = el.querySelector(tagName);
+    }
+  }
+  if (fields2.id) {
+    info.id = el.id;
+  }
+  if (fields2.dataset) {
+    info.dataset = getCustomDataset(el);
+  }
+  if (fields2.rect || fields2.size) {
+    const rect = el.getBoundingClientRect();
+    if (fields2.rect) {
+      info.left = rect.left;
+      info.right = rect.right;
+      info.top = rect.top - top - topWindowHeight;
+      info.bottom = rect.bottom - top - topWindowHeight;
+    }
+    if (fields2.size) {
+      info.width = rect.width;
+      info.height = rect.height;
+    }
+  }
+  if (isArray(fields2.properties)) {
+    fields2.properties.forEach((prop) => {
+      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
+        return t2.toUpperCase();
+      });
+    });
+  }
+  if (fields2.scrollOffset) {
+    if (el.tagName === "SCROLL-VIEW") {
+      const scroll = el.children[0].children[0];
+      info.scrollLeft = scroll.scrollLeft;
+      info.scrollTop = scroll.scrollTop;
+      info.scrollHeight = scroll.scrollHeight;
+      info.scrollWidth = scroll.scrollWidth;
+    } else {
+      info.scrollLeft = 0;
+      info.scrollTop = 0;
+      info.scrollHeight = 0;
+      info.scrollWidth = 0;
+    }
+  }
+  if (isArray(fields2.computedStyle)) {
+    const sytle = getComputedStyle(el);
+    fields2.computedStyle.forEach((name) => {
+      info[name] = sytle[name];
+    });
+  }
+  if (fields2.context) {
+    info.contextInfo = getContextInfo(el);
+  }
+  return info;
+}
+function findElm(component, pageVm) {
+  if (!component) {
+    return pageVm.$el;
+  }
+  return component.$el;
+}
+function matches(element, selectors) {
+  const matches2 = element.matches || element.matchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector || function(selectors2) {
+    const matches3 = this.parentElement.querySelectorAll(
+      selectors2
+    );
+    let i = matches3.length;
+    while (--i >= 0 && matches3.item(i) !== this) {
+    }
+    return i > -1;
+  };
+  return matches2.call(element, selectors);
+}
+class QuerySelectorHelper {
+  constructor(element, vnode) {
+    this._element = element;
+    this._commentStartVNode = vnode;
+  }
+  static queryElement(element, selector, fields2, all, vnode) {
+    return new QuerySelectorHelper(element, vnode).query(selector, all, fields2);
+  }
+  query(selector, all, fields2) {
+    const isFragment = (
+      // @ts-expect-error
+      this._element.nodeType === 3 || this._element.nodeType === 8
+    );
+    if (isFragment) {
+      return this.queryFragment(this._element, selector, all, fields2);
+    } else {
+      return all ? this.querySelectorAll(this._element, selector, fields2) : this.querySelector(this._element, selector, fields2);
+    }
+  }
+  queryFragment(el, selector, all, fields2) {
+    let current = el.nextSibling;
+    if (current == null) {
+      return null;
+    }
+    let depth = 65535;
+    if (all) {
+      const result1 = [];
+      while (depth > 0) {
+        depth--;
+        if (current.nodeName && current.nodeName == "#comment") {
+          current = current.nextSibling;
+          continue;
+        }
+        const queryResult = this.querySelectorAll(current, selector, fields2);
+        if (queryResult != null) {
+          result1.push(...queryResult);
+        }
+        current = current.nextSibling;
+        if (current == null || this._commentStartVNode.anchor == current) {
+          break;
+        }
+      }
+      return result1;
+    } else {
+      let result2 = null;
+      while (depth > 0) {
+        depth--;
+        if (current.nodeName && current.nodeName == "#comment") {
+          current = current.nextSibling;
+          continue;
+        }
+        result2 = this.querySelector(current, selector, fields2);
+        current = current.nextSibling;
+        if (result2 != null || current == null || this._commentStartVNode.anchor == current) {
+          break;
+        }
+      }
+      return result2;
+    }
+  }
+  querySelector(element, selector, fields2) {
+    let element2 = this.querySelf(element, selector);
+    if (element2 == null) {
+      element2 = element.querySelector(selector);
+    }
+    if (element2 != null) {
+      return this.getNodeInfo(element2, fields2);
+    }
+    return null;
+  }
+  querySelectorAll(element, selector, fields2) {
+    const nodesInfoArray = [];
+    const element2 = this.querySelf(element, selector);
+    if (element2 != null) {
+      nodesInfoArray.push(this.getNodeInfo(element, fields2));
+    }
+    const findNodes = element.querySelectorAll(selector);
+    findNodes == null ? void 0 : findNodes.forEach((el) => {
+      nodesInfoArray.push(this.getNodeInfo(el, fields2));
+    });
+    return nodesInfoArray;
+  }
+  querySelf(element, selector) {
+    if (element == null || selector.length < 2) {
+      return null;
+    }
+    const selectorType2 = selector.charAt(0);
+    const selectorName = selector.slice(1);
+    if (selectorType2 == "." && element.classList.contains(selectorName)) {
+      return element;
+    }
+    if (selectorType2 == "#" && element.getAttribute("id") == selectorName) {
+      return element;
+    }
+    if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
+      return element;
+    }
+    return null;
+  }
+  getNodeInfo(element, fields2) {
+    var _a;
+    const rect = element.getBoundingClientRect();
+    const nodeInfo = {
+      id: (_a = element.getAttribute("id")) == null ? void 0 : _a.toString(),
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height
+    };
+    if (fields2.node) {
+      nodeInfo.node = element;
+    }
+    if (fields2.dataset) {
+      nodeInfo.dataset = {};
+    }
+    return nodeInfo;
+  }
+}
+function getNodesInfo(pageVm, component, selector, single, fields2) {
+  const selfElement = findElm(component, pageVm);
+  const parentElement = selfElement.parentElement;
+  if (!parentElement) {
+    return single ? null : [];
+  }
+  const { nodeType } = selfElement;
+  const maybeFragment = nodeType === 3 || nodeType === 8;
+  if (maybeFragment)
+    return QuerySelectorHelper.queryElement(
+      selfElement,
+      selector,
+      fields2,
+      !single,
+      component == null ? void 0 : component.$.subTree
+    );
+  if (single) {
+    const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
+    if (node) {
+      return getNodeInfo(node, fields2);
+    }
+    return null;
+  } else {
+    let infos = [];
+    const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
+    if (nodeList && nodeList.length) {
+      [].forEach.call(nodeList, (node) => {
+        infos.push(getNodeInfo(node, fields2));
+      });
+    }
+    if (!maybeFragment && matches(selfElement, selector)) {
+      infos.unshift(getNodeInfo(selfElement, fields2));
+    }
+    return infos;
+  }
+}
+function requestComponentInfo(page, reqs, callback) {
+  const result = [];
+  reqs.forEach(({ component, selector, single, fields: fields2 }) => {
+    if (component === null) {
+      result.push(getRootInfo(fields2));
+    } else {
+      result.push(getNodesInfo(page, component, selector, single, fields2));
+    }
+  });
+  callback(result);
+}
+function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
+  if (pageStyle) {
+    const pageElm = document.querySelector("uni-page-body") || document.body;
+    pageElm.setAttribute("style", pageStyle);
+  }
+  if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
+    document.documentElement.style.fontSize = rootFontSize;
+  }
+}
 function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
   const $el = findElem(component);
   ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver(
@@ -8332,14 +9269,6 @@ function initLaunchOptions({
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
 }
-function getPageInstanceByVm(vm) {
-  var _a;
-  let pageInstance = vm.$.parent;
-  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
-}
 function getPageInstanceByChild(child) {
   var _a;
   let pageInstance = child;
@@ -8347,6 +9276,1592 @@ function getPageInstanceByChild(child) {
     pageInstance = pageInstance.parent;
   }
   return pageInstance;
+}
+const clazz = { class: "uni-async-loading" };
+const loadingVNode = /* @__PURE__ */ createVNode(
+  "i",
+  { class: "uni-loading" },
+  null,
+  -1
+  /* HOISTED */
+);
+const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "AsyncLoading",
+  render() {
+    return openBlock(), createBlock("div", clazz, [loadingVNode]);
+  }
+});
+function reload() {
+  window.location.reload();
+}
+const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "AsyncError",
+  setup() {
+    initI18nAsyncMsgsOnce();
+    const {
+      t: t2
+    } = useI18n();
+    return () => createVNode("div", {
+      "class": "uni-async-error",
+      "onClick": reload
+    }, [t2("uni.async.error")], 8, ["onClick"]);
+  }
+});
+let appVm;
+let $uniApp;
+{
+  class UniAppImpl {
+    get vm() {
+      return appVm;
+    }
+    get $vm() {
+      return appVm;
+    }
+    get globalData() {
+      return (appVm == null ? void 0 : appVm.globalData) || {};
+    }
+    getAndroidApplication() {
+      return null;
+    }
+  }
+  $uniApp = new UniAppImpl();
+}
+function getApp$1() {
+  {
+    return $uniApp;
+  }
+}
+function initApp$1(vm) {
+  appVm = vm;
+  Object.defineProperty(appVm.$.ctx, "$children", {
+    get() {
+      return getCurrentBasePages().map((page) => page.$vm);
+    }
+  });
+  const app = appVm.$.appContext.app;
+  if (!app.component(AsyncLoadingComponent.name)) {
+    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
+  }
+  if (!app.component(AsyncErrorComponent.name)) {
+    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
+  }
+  initAppVm(appVm);
+  defineGlobalData(appVm);
+  initService();
+  initView();
+}
+function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+  if (clone) {
+    comp = extend({}, comp);
+  }
+  before && before(comp);
+  const oldSetup = comp.setup;
+  comp.setup = (props2, ctx) => {
+    const instance2 = getCurrentInstance();
+    init2(instance2.proxy);
+    setup(instance2);
+    if (oldSetup) {
+      return oldSetup(props2, ctx);
+    }
+  };
+  return comp;
+}
+function setupComponent(comp, options) {
+  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
+    return wrapperComponentSetup(comp.default, options);
+  }
+  return wrapperComponentSetup(comp, options);
+}
+function setupWindow(comp, id2) {
+  return setupComponent(comp, {
+    init: (vm) => {
+      {
+        vm.$basePage = {
+          id: id2
+        };
+      }
+    },
+    setup(instance2) {
+      instance2.$pageInstance = instance2;
+    }
+  });
+}
+function setupPage(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "page";
+  }
+  return setupComponent(comp, {
+    clone: true,
+    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
+    init: initPage,
+    setup(instance2) {
+      instance2.$pageInstance = instance2;
+      const route = usePageRoute();
+      const query = decodedQuery(route.query);
+      instance2.attrs.__pageQuery = query;
+      {
+        const pageInstance = getPageInstanceByChild(instance2);
+        if (isDialogPageInstance(pageInstance)) {
+          instance2.attrs.__pageQuery = decodedQuery(
+            parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+          );
+        }
+      }
+      getPage$BasePage(instance2.proxy).options = query;
+      instance2.proxy.options = query;
+      const pageMeta = usePageMeta();
+      instance2.onReachBottom = reactive([]);
+      instance2.onPageScroll = reactive([]);
+      watch(
+        [instance2.onReachBottom, instance2.onPageScroll],
+        () => {
+          const currentPage = getCurrentPage().vm;
+          if (instance2.proxy === currentPage) {
+            initPageScrollListener(instance2, pageMeta);
+          }
+        },
+        { once: true }
+      );
+      onBeforeMount(() => {
+        onPageShow(instance2, pageMeta);
+      });
+      onMounted(() => {
+        var _a, _b, _c;
+        {
+          if (instance2.subTree.el) {
+            instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
+          }
+          const pageInstance = getPageInstanceByChild(instance2);
+          if (isDialogPageInstance(pageInstance)) {
+            const parentPage = ((_b = instance2.proxy) == null ? void 0 : _b.$page).getParentPage();
+            const parentPageInstance = parentPage == null ? void 0 : parentPage.vm.$pageLayoutInstance;
+            if (parentPageInstance) {
+              const dialogPages = parentPageInstance.$dialogPages.value;
+              if (dialogPages.length > 1) {
+                const preDialogPage = dialogPages[dialogPages.length - 2];
+                if (preDialogPage.vm) {
+                  const { onHide } = preDialogPage.vm.$;
+                  onHide && invokeArrayFns$1(onHide);
+                }
+              }
+            }
+            dialogPageTriggerParentHide((_c = instance2.proxy) == null ? void 0 : _c.$page);
+            useBackgroundColorContent$1(instance2.proxy);
+          }
+        }
+        onPageReady(instance2);
+        const { onReady } = instance2;
+        onReady && invokeArrayFns$1(onReady);
+        invokeOnTabItemTap(route);
+      });
+      onBeforeActivate(() => {
+        if (!instance2.__isVisible) {
+          onPageShow(instance2, pageMeta);
+          instance2.__isVisible = true;
+          const { onShow } = instance2;
+          onShow && invokeArrayFns$1(onShow);
+          nextTick(() => {
+            invokeOnTabItemTap(route);
+          });
+        }
+      });
+      onBeforeDeactivate(() => {
+        if (instance2.__isVisible && !instance2.__isUnload) {
+          instance2.__isVisible = false;
+          {
+            const pageInstance = getPageInstanceByChild(instance2);
+            if (!isDialogPageInstance(pageInstance)) {
+              const { onHide } = instance2;
+              onHide && invokeArrayFns$1(onHide);
+            }
+          }
+        }
+      });
+      subscribeViewMethod(pageMeta.id);
+      onBeforeUnmount(() => {
+        unsubscribeViewMethod(pageMeta.id);
+        {
+          if (instance2.subTree.el) {
+            instance2.subTree.el._page = null;
+          }
+        }
+      });
+      return query;
+    }
+  });
+}
+function setupApp(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "app";
+  }
+  return setupComponent(comp, {
+    init: initApp$1,
+    setup(instance2) {
+      const route = usePageRoute();
+      const onLaunch = () => {
+        injectAppHooks(instance2);
+        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2 } = instance2;
+        const path = route.path.slice(1);
+        const launchOptions2 = initLaunchOptions({
+          path: path || __uniRoutes[0].meta.route,
+          query: decodedQuery(route.query)
+        });
+        onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
+        onShow && invokeArrayFns$1(onShow, launchOptions2);
+        if (__UNI_FEATURE_PAGES__) {
+          if (!route.matched.length) {
+            const pageNotFoundOptions = {
+              notFound: true,
+              openType: "appLaunch",
+              path: route.path,
+              query: {},
+              scene: 1001
+            };
+            handleBeforeEntryPageRoutes();
+            onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
+          }
+        }
+      };
+      if (__UNI_FEATURE_PAGES__) {
+        useRouter().isReady().then(onLaunch);
+      } else {
+        onBeforeMount(onLaunch);
+      }
+      onMounted(() => {
+        window.addEventListener(
+          "resize",
+          debounce(onResize, 50, { setTimeout, clearTimeout })
+        );
+        window.addEventListener("message", onMessage);
+        document.addEventListener("visibilitychange", onVisibilityChange);
+        onThemeChange$2();
+      });
+      return route.query;
+    },
+    before(comp2) {
+      comp2.mpType = "app";
+      const { setup } = comp2;
+      const render = () => {
+        return openBlock(), createBlock(LayoutComponent);
+      };
+      comp2.setup = (props2, ctx) => {
+        const res = setup && setup(props2, ctx);
+        return isFunction(res) ? render : res;
+      };
+      comp2.render = render;
+    }
+  });
+}
+function onResize() {
+  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
+  const landscape = Math.abs(Number(window.orientation)) === 90;
+  const deviceOrientation = landscape ? "landscape" : "portrait";
+  UniServiceJSBridge.emit(ON_RESIZE, {
+    deviceOrientation,
+    size: {
+      windowWidth,
+      windowHeight,
+      screenWidth,
+      screenHeight
+    }
+  });
+}
+function onMessage(evt) {
+  if (isPlainObject$1(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
+    UniServiceJSBridge.emit(
+      ON_WEB_INVOKE_APP_SERVICE,
+      evt.data.data,
+      evt.data.pageId
+    );
+  }
+}
+function onVisibilityChange() {
+  const { emit: emit2 } = UniServiceJSBridge;
+  if (document.visibilityState === "visible") {
+    emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
+  } else {
+    emit2(ON_APP_ENTER_BACKGROUND);
+  }
+}
+function onThemeChange$2() {
+  let mediaQueryList = null;
+  try {
+    mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+  } catch (error) {
+  }
+  if (mediaQueryList) {
+    let callback = (e2) => {
+      UniServiceJSBridge.emit(ON_THEME_CHANGE, {
+        theme: e2.matches ? "dark" : "light"
+      });
+    };
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener("change", callback);
+    } else {
+      mediaQueryList.addListener(callback);
+    }
+  }
+}
+function invokeOnTabItemTap(route) {
+  const { tabBarText, tabBarIndex, route: pagePath } = route.meta;
+  if (tabBarText) {
+    invokeHook("onTabItemTap", {
+      index: tabBarIndex,
+      text: tabBarText,
+      pagePath
+    });
+  }
+}
+function updateDocumentTitle(title) {
+  {
+    document.title = title;
+  }
+  UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
+}
+function useDocumentTitle(pageMeta) {
+  function update() {
+    updateDocumentTitle(pageMeta.navigationBar.titleText);
+  }
+  watchEffect(update);
+  onActivated(update);
+}
+function IEVersion() {
+  const userAgent = navigator.userAgent;
+  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
+  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
+  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
+  if (isIE) {
+    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+    reIE.test(userAgent);
+    const fIEVersion = parseFloat(RegExp.$1);
+    if (fIEVersion > 6) {
+      return fIEVersion;
+    } else {
+      return 6;
+    }
+  } else if (isEdge) {
+    return -1;
+  } else if (isIE11) {
+    return 11;
+  } else {
+    return -1;
+  }
+}
+function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
+function getBrowserInfo() {
+  let osname;
+  let osversion = "0";
+  let model = "";
+  let deviceType = "phone";
+  const language = navigator.language;
+  if (isIOS) {
+    osname = "iOS";
+    const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
+    if (osversionFind) {
+      osversion = osversionFind[1].replace(/_/g, ".");
+    }
+    const modelFind = ua.match(/\(([a-zA-Z]+);/);
+    if (modelFind) {
+      model = modelFind[1];
+    }
+  } else if (isAndroid) {
+    osname = "Android";
+    const osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    const infoFind = ua.match(/\((.+?)\)/);
+    const infos = infoFind ? infoFind[1].split(";") : ua.split(" ");
+    const otherInfo = [
+      /\bAndroid\b/i,
+      /\bLinux\b/i,
+      /\bU\b/i,
+      /^\s?[a-z][a-z]$/i,
+      /^\s?[a-z][a-z]-[a-z][a-z]$/i,
+      /\bwv\b/i,
+      /\/[\d\.,]+$/,
+      /^\s?[\d\.,]+$/,
+      /\bBrowser\b/i,
+      /\bMobile\b/i
+    ];
+    for (let i = 0; i < infos.length; i++) {
+      const info = infos[i];
+      if (info.indexOf("Build") > 0) {
+        model = info.split("Build")[0].trim();
+        break;
+      }
+      let other;
+      for (let o2 = 0; o2 < otherInfo.length; o2++) {
+        if (otherInfo[o2].test(info)) {
+          other = true;
+          break;
+        }
+      }
+      if (!other) {
+        model = info.trim();
+        break;
+      }
+    }
+  } else if (isIPadOS) {
+    model = "iPad";
+    osname = "iOS";
+    deviceType = "pad";
+    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
+    if (parseInt(osversion) === 14) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/);
+      if (versionMatched) {
+        osversion = versionMatched[1];
+      }
+    }
+  } else if (isWindows || isMac || isLinux) {
+    model = "PC";
+    osname = "PC";
+    deviceType = "pc";
+    osversion = "0";
+    let osversionFind = ua.match(/\((.+?)\)/)[1];
+    if (isWindows) {
+      osname = "Windows";
+      switch (isWindows[1]) {
+        case "5.1":
+          osversion = "XP";
+          break;
+        case "6.0":
+          osversion = "Vista";
+          break;
+        case "6.1":
+          osversion = "7";
+          break;
+        case "6.2":
+          osversion = "8";
+          break;
+        case "6.3":
+          osversion = "8.1";
+          break;
+        case "10.0":
+          osversion = "10";
+          break;
+      }
+      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
+      if (framework) {
+        osversion += ` x${framework[1]}`;
+      }
+    } else if (isMac) {
+      osname = "macOS";
+      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
+      if (osversion) {
+        osversion = _osversion[1].replace(/_/g, ".");
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    } else if (isLinux) {
+      osname = "Linux";
+      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
+      if (_osversion) {
+        osversion = _osversion[1];
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    }
+  } else {
+    osname = "Other";
+    osversion = "0";
+    deviceType = "unknown";
+  }
+  const system = `${osname} ${osversion}`;
+  const platform = osname.toLocaleLowerCase();
+  let browserName = "";
+  let browserVersion = String(IEVersion());
+  if (browserVersion !== "-1") {
+    browserName = "IE";
+  } else {
+    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
+    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
+    for (let index2 = 0; index2 < browseVendors.length; index2++) {
+      const vendor = browseVendors[index2];
+      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
+      if (reg.test(ua)) {
+        browserName = vendors[index2];
+        browserVersion = ua.match(reg)[2];
+      }
+    }
+  }
+  let deviceOrientation = "portrait";
+  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
+  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
+  return {
+    deviceBrand: void 0,
+    brand: void 0,
+    deviceModel: model,
+    deviceOrientation,
+    model,
+    system,
+    platform,
+    browserName: browserName.toLocaleLowerCase(),
+    browserVersion,
+    language,
+    deviceType,
+    ua,
+    osname,
+    osversion,
+    theme: getTheme()
+  };
+}
+function onThemeChange$1(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+  }
+}
+function offThemeChange$1(callback) {
+  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactivity = isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
+    watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange$1(onThemeChangeCallback);
+  return reactivePageStyle;
+}
+function updateBackgroundColorContent(backgroundColorContent) {
+  if (backgroundColorContent) {
+    document.body.style.setProperty(
+      "--background-color-content",
+      backgroundColorContent
+    );
+  } else {
+    document.body.style.removeProperty("--background-color-content");
+  }
+}
+function useBackgroundColorContent(pageMeta) {
+  function update() {
+    if (pageMeta.backgroundColorContent) {
+      updateBackgroundColorContent(
+        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
+      );
+    }
+  }
+  onThemeChange$1(update);
+  watchEffect(update);
+  onActivated(update);
+}
+function hexToRgba(hex) {
+  if (!hex) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  let tmpHex = hex.slice(1);
+  const tmpHexLen = tmpHex.length;
+  if (![3, 4, 6, 8].includes(tmpHexLen)) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  if (tmpHexLen === 3 || tmpHexLen === 4) {
+    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
+  }
+  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
+  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
+  if (!sa) {
+    return { r, g: g2, b, a: 1 };
+  }
+  return {
+    r,
+    g: g2,
+    b,
+    a: (`0x100${sa}` - 65536) / 255
+  };
+}
+function usePageHeadTransparentBackgroundColor(backgroundColor) {
+  const { r, g: g2, b } = hexToRgba(backgroundColor);
+  return `rgba(${r},${g2},${b},0)`;
+}
+function usePageHeadTransparent(headRef, {
+  id: id2,
+  navigationBar: { titleColor, coverage, backgroundColor }
+}) {
+  let A = 0;
+  const rgb = computed(() => hexToRgba(backgroundColor));
+  const offset = parseInt(coverage);
+  let titleElem;
+  let transparentElemStyle;
+  const iconElemsPaths = [];
+  const borderRadiusElemsStyles = [];
+  const oldColors = [];
+  onMounted(() => {
+    const $el = headRef.value;
+    transparentElemStyle = $el.style;
+    titleElem = $el.querySelector(".uni-page-head__title");
+    const borderRadiusElems = $el.querySelectorAll(
+      ".uni-page-head-btn"
+    );
+    const iconSvgElems = $el.querySelectorAll(
+      "svg path"
+    );
+    for (let i = 0; i < iconSvgElems.length; i++) {
+      iconElemsPaths.push(iconSvgElems[i]);
+    }
+    for (let i = 0; i < borderRadiusElems.length; i++) {
+      const borderRadiusElem = borderRadiusElems[i];
+      oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
+      borderRadiusElemsStyles.push(borderRadiusElem.style);
+    }
+  });
+  useOn(id2 + ".onPageScroll", ({ scrollTop }) => {
+    const alpha = Math.min(scrollTop / offset, 1);
+    if (alpha === 1 && A === 1) {
+      return;
+    }
+    if (alpha > 0.5 && A <= 0.5) {
+      iconElemsPaths.forEach(function(iconElemPath) {
+        iconElemPath.setAttribute("fill", titleColor);
+      });
+    } else if (alpha <= 0.5 && A > 0.5) {
+      iconElemsPaths.forEach(function(iconElemPath) {
+        iconElemPath.setAttribute("fill", "#fff");
+      });
+    }
+    A = alpha;
+    if (titleElem) {
+      titleElem.style.opacity = alpha;
+    }
+    const bg = rgb.value;
+    transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`;
+    borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
+      const oldColor = oldColors[index2];
+      const rgba = oldColor.match(/[\d+\.]+/g);
+      rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
+      borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
+    });
+  });
+}
+const ICON_PATHS = {
+  none: "",
+  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+  back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
+  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+  close: ICON_PATH_CLOSE
+};
+const PageHead = /* @__PURE__ */ defineSystemComponent({
+  name: "PageHead",
+  setup() {
+    const headRef = ref(null);
+    const pageMeta = usePageMeta();
+    const navigationBar = useTheme(pageMeta.navigationBar, () => {
+      const _navigationBar = parseTheme(pageMeta.navigationBar);
+      navigationBar.backgroundColor = _navigationBar.backgroundColor;
+      navigationBar.titleColor = _navigationBar.titleColor;
+    });
+    const {
+      clazz: clazz2,
+      style
+    } = usePageHead(navigationBar);
+    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
+    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
+    return () => {
+      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
+      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
+      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
+      const type = navigationBar.type || "default";
+      const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
+        "class": {
+          "uni-placeholder": true,
+          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
+        }
+      }, null, 2);
+      return createVNode("uni-page-head", {
+        "uni-page-head-type": type
+      }, [createVNode("div", {
+        "ref": headRef,
+        "class": clazz2.value,
+        "style": style.value
+      }, [createVNode("div", {
+        "class": "uni-page-head-hd"
+      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
+        "class": "uni-page-head-ft"
+      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
+    };
+  }
+});
+function createBackButtonTsx(navigationBar, isQuit) {
+  if (!isQuit) {
+    return createVNode("div", {
+      "class": "uni-page-head-btn",
+      "onClick": onPageHeadBackButton
+    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
+  }
+}
+function createButtonsTsx(btns) {
+  return btns.map(({
+    onClick,
+    btnClass,
+    btnStyle,
+    btnText,
+    btnIconPath,
+    badgeText,
+    iconStyle,
+    btnSelect
+  }, index2) => {
+    return createVNode("div", {
+      "key": index2,
+      "class": btnClass,
+      "style": btnStyle,
+      "onClick": onClick,
+      "badge-text": badgeText
+    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
+      "style": iconStyle
+    }, [createVNode("i", {
+      "class": "uni-btn-icon",
+      "innerHTML": btnText
+    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : createVNode("i", {
+      "class": "uni-btn-icon",
+      "style": iconStyle,
+      "innerHTML": btnText
+    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
+  });
+}
+function createPageHeadBdTsx(navigationBar, searchInput) {
+  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
+    return createPageHeadTitleTextTsx(navigationBar);
+  }
+  return createPageHeadSearchInputTsx(navigationBar, searchInput);
+}
+function createPageHeadTitleTextTsx({
+  type,
+  loading,
+  titleSize,
+  titleText,
+  titleImage
+}) {
+  return createVNode("div", {
+    "class": "uni-page-head-bd"
+  }, [createVNode("div", {
+    "style": {
+      fontSize: titleSize,
+      opacity: type === "transparent" ? 0 : 1
+    },
+    "class": "uni-page-head__title"
+  }, [loading ? createVNode("i", {
+    "class": "uni-loading"
+  }, null) : titleImage ? createVNode("img", {
+    "src": titleImage,
+    "class": "uni-page-head__title_image"
+  }, null, 8, ["src"]) : titleText], 4)]);
+}
+function createPageHeadSearchInputTsx(navigationBar, {
+  text: text2,
+  focus,
+  composing,
+  onBlur,
+  onFocus,
+  onInput,
+  onConfirm,
+  onClick
+}) {
+  const {
+    color,
+    align: align2,
+    autoFocus,
+    disabled,
+    borderRadius,
+    backgroundColor,
+    placeholder,
+    placeholderColor
+  } = navigationBar.searchInput;
+  const searchStyle = {
+    borderRadius,
+    backgroundColor
+  };
+  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
+  return createVNode("div", {
+    "class": "uni-page-head-search",
+    "style": searchStyle
+  }, [createVNode("div", {
+    "style": {
+      color: placeholderColor
+    },
+    "class": placeholderClass
+  }, [createVNode("div", {
+    "class": "uni-page-head-search-icon"
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3, {
+    "disabled": true,
+    "style": {
+      color
+    },
+    "placeholder-style": "color: " + placeholderColor,
+    "class": "uni-page-head-search-input",
+    "confirm-type": "search",
+    "onClick": onClick
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3, {
+    "focus": autoFocus,
+    "style": {
+      color
+    },
+    "placeholder-style": "color: " + placeholderColor,
+    "class": "uni-page-head-search-input",
+    "confirm-type": "search",
+    "onFocus": onFocus,
+    "onBlur": onBlur,
+    "onInput": onInput,
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
+}
+function onPageHeadBackButton() {
+  if (getCurrentPages().length === 1) {
+    uni.reLaunch({
+      url: "/"
+    });
+  } else {
+    uni.navigateBack({
+      from: "backbutton",
+      success() {
+      }
+      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+    });
+  }
+}
+function usePageHead(navigationBar) {
+  const clazz2 = computed(() => {
+    const {
+      type,
+      titlePenetrate,
+      shadowColorType
+    } = navigationBar;
+    const clazz3 = {
+      "uni-page-head": true,
+      "uni-page-head-transparent": type === "transparent",
+      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+      "uni-page-head-shadow": !!shadowColorType
+    };
+    if (shadowColorType) {
+      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+    }
+    return clazz3;
+  });
+  const style = computed(() => {
+    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
+    return {
+      backgroundColor,
+      color: navigationBar.titleColor,
+      transitionDuration: navigationBar.duration,
+      transitionTimingFunction: navigationBar.timingFunc
+    };
+  });
+  return {
+    clazz: clazz2,
+    style
+  };
+}
+function usePageHeadButtons({
+  id: id2,
+  navigationBar
+}) {
+  const left = [];
+  const right = [];
+  const {
+    buttons
+  } = navigationBar;
+  if (isArray(buttons)) {
+    const {
+      type
+    } = navigationBar;
+    const isTransparent = type === "transparent";
+    const fonts = /* @__PURE__ */ Object.create(null);
+    buttons.forEach((btn, index2) => {
+      if (btn.fontSrc && !btn.fontFamily) {
+        const fontSrc = getRealPath(btn.fontSrc);
+        let fontFamily = fonts[fontSrc];
+        if (!fontFamily) {
+          fontFamily = `font${Date.now()}`;
+          fonts[fontSrc] = fontFamily;
+          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
+        }
+        btn.fontFamily = fontFamily;
+      }
+      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+      if (btn.float === "left") {
+        left.push(pageHeadBtn);
+      } else {
+        right.push(pageHeadBtn);
+      }
+    });
+  }
+  return {
+    left,
+    right
+  };
+}
+function usePageHeadButton(pageId, index2, btn, isTransparent) {
+  const iconStyle = {
+    color: btn.color,
+    fontSize: btn.fontSize,
+    fontWeight: btn.fontWeight
+  };
+  if (btn.fontFamily) {
+    iconStyle.fontFamily = btn.fontFamily;
+  }
+  return new Proxy({
+    btnClass: {
+      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
+      "uni-page-head-btn": true,
+      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+      "uni-page-head-btn-select": !!btn.select
+    },
+    btnStyle: {
+      backgroundColor: isTransparent ? btn.background : "transparent",
+      width: btn.width
+    },
+    btnText: "",
+    btnIconPath: ICON_PATHS[btn.type],
+    badgeText: btn.badgeText,
+    iconStyle,
+    onClick() {
+      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
+        index: index2
+      }, btn));
+    },
+    btnSelect: btn.select
+  }, {
+    get(target, key, receiver) {
+      if (["btnText"].includes(key)) {
+        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+      } else {
+        return Reflect.get(target, key, receiver);
+      }
+    }
+  });
+}
+function usePageHeadSearchInput({
+  id: id2,
+  navigationBar: {
+    searchInput
+  }
+}) {
+  const focus = ref(false);
+  const text2 = ref("");
+  const composing = ref(false);
+  const {
+    disabled
+  } = searchInput;
+  if (disabled) {
+    const onClick = () => {
+      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+    };
+    return {
+      focus,
+      text: text2,
+      composing,
+      onClick
+    };
+  }
+  const onFocus = () => {
+    focus.value = true;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: true
+    });
+  };
+  const onBlur = () => {
+    focus.value = false;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: false
+    });
+  };
+  const onInput = (evt) => {
+    text2.value = evt.detail.value;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+      text: text2.value
+    });
+  };
+  const onConfirm = (evt) => {
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text2.value
+    });
+  };
+  return {
+    focus,
+    text: text2,
+    composing,
+    onFocus,
+    onBlur,
+    onInput,
+    onConfirm
+  };
+}
+const _sfc_main$2 = {
+  name: "PageRefresh",
+  setup() {
+    const { pullToRefresh } = usePageMeta();
+    return {
+      offset: pullToRefresh.offset,
+      color: pullToRefresh.color
+    };
+  }
+};
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
+const _hoisted_1 = { class: "uni-page-refresh-inner" };
+const _hoisted_2 = ["fill"];
+const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
+const _hoisted_4 = /* @__PURE__ */ createElementVNode("path", {
+  d: "M0 0h24v24H0z",
+  fill: "none"
+}, null, -1);
+const _hoisted_5 = [
+  _hoisted_3,
+  _hoisted_4
+];
+const _hoisted_6 = {
+  class: "uni-page-refresh__spinner",
+  width: "24",
+  height: "24",
+  viewBox: "25 25 50 50"
+};
+const _hoisted_7 = ["stroke"];
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("uni-page-refresh", null, [
+    createElementVNode("div", {
+      style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
+      class: "uni-page-refresh"
+    }, [
+      createElementVNode("div", _hoisted_1, [
+        (openBlock(), createElementBlock("svg", {
+          fill: $setup.color,
+          class: "uni-page-refresh__icon",
+          width: "24",
+          height: "24",
+          viewBox: "0 0 24 24"
+        }, _hoisted_5, 8, _hoisted_2)),
+        (openBlock(), createElementBlock("svg", _hoisted_6, [
+          createElementVNode("circle", {
+            stroke: $setup.color,
+            class: "uni-page-refresh__path",
+            cx: "50",
+            cy: "50",
+            r: "20",
+            fill: "none",
+            "stroke-width": "4",
+            "stroke-miterlimit": "10"
+          }, null, 8, _hoisted_7)
+        ]))
+      ])
+    ], 4)
+  ]);
+}
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2]]);
+function processDeltaY(ev, identifier, startY) {
+  const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
+  if (!touch) {
+    return false;
+  }
+  ev.deltaY = touch.pageY - startY;
+  return true;
+}
+const PULLING = "pulling";
+const REACHED = "reached";
+const ABORTING = "aborting";
+const REFRESHING = "refreshing";
+const RESTORING = "restoring";
+function usePageRefresh(refreshRef) {
+  const pageMeta = usePageMeta();
+  const { id: id2, pullToRefresh } = pageMeta;
+  const { range, height } = pullToRefresh;
+  let refreshContainerElem;
+  let refreshControllerElem;
+  let refreshControllerElemStyle;
+  let refreshInnerElemStyle;
+  useSubscribe(
+    () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return;
+      }
+      if (!state2) {
+        state2 = REFRESHING;
+        addClass();
+        setTimeout(() => {
+          refreshing();
+        }, 50);
+      }
+    },
+    API_START_PULL_DOWN_REFRESH,
+    false,
+    id2
+  );
+  useSubscribe(
+    () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return;
+      }
+      if (state2 === REFRESHING) {
+        removeClass();
+        state2 = RESTORING;
+        addClass();
+        restoring(() => {
+          removeClass();
+          state2 = distance = offset = null;
+        });
+      }
+    },
+    API_STOP_PULL_DOWN_REFRESH,
+    false,
+    id2
+  );
+  function initElement() {
+    refreshContainerElem = refreshRef.value.$el;
+    refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
+    refreshControllerElemStyle = refreshControllerElem.style;
+    refreshInnerElemStyle = refreshControllerElem.querySelector(
+      ".uni-page-refresh-inner"
+    ).style;
+  }
+  onMounted(() => {
+    initElement();
+  });
+  {
+    watch(
+      () => pageMeta.enablePullDownRefresh,
+      (enablePullDownRefresh) => {
+        if (enablePullDownRefresh) {
+          nextTick(() => {
+            initElement();
+          });
+        }
+      }
+    );
+  }
+  let touchId;
+  let startY;
+  let canRefresh;
+  let state2;
+  let distance = null;
+  let offset = null;
+  function toggleClass(type) {
+    if (!state2) {
+      return;
+    }
+    if (refreshContainerElem) {
+      refreshContainerElem.classList[type]("uni-page-refresh--" + state2);
+    }
+  }
+  function addClass() {
+    toggleClass("add");
+  }
+  function removeClass() {
+    toggleClass("remove");
+  }
+  function pulling(deltaY) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    let rotate = deltaY / range;
+    if (rotate > 1) {
+      rotate = 1;
+    } else {
+      rotate = rotate * rotate * rotate;
+    }
+    const y = Math.round(deltaY / (range / height)) || 0;
+    refreshInnerElemStyle.transform = "rotate(" + 360 * rotate + "deg)";
+    refreshControllerElemStyle.clip = "rect(" + (45 - y) + "px,45px,45px,-5px)";
+    refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
+  }
+  const onTouchstartPassive = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
+    const touch = ev.changedTouches[0];
+    touchId = touch.identifier;
+    startY = touch.pageY;
+    if ([ABORTING, REFRESHING, RESTORING].indexOf(state2) >= 0) {
+      canRefresh = false;
+    } else {
+      canRefresh = true;
+    }
+  });
+  const onTouchmove = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
+    if (!canRefresh) {
+      return;
+    }
+    if (!processDeltaY(ev, touchId, startY)) {
+      return;
+    }
+    let { deltaY } = ev;
+    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
+      touchId = null;
+      return;
+    }
+    if (deltaY < 0 && !state2) {
+      return;
+    }
+    if (ev.cancelable) {
+      ev.preventDefault();
+    }
+    if (distance === null) {
+      offset = deltaY;
+      state2 = PULLING;
+      addClass();
+    }
+    deltaY = deltaY - offset;
+    if (deltaY < 0) {
+      deltaY = 0;
+    }
+    distance = deltaY;
+    const isReached = deltaY >= range && state2 !== REACHED;
+    const isPulling = deltaY < range && state2 !== PULLING;
+    if (isReached || isPulling) {
+      removeClass();
+      state2 = state2 === REACHED ? PULLING : REACHED;
+      addClass();
+    }
+    pulling(deltaY);
+  });
+  const onTouchend = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
+    if (!processDeltaY(ev, touchId, startY)) {
+      return;
+    }
+    if (state2 === null) {
+      return;
+    }
+    if (state2 === PULLING) {
+      removeClass();
+      state2 = ABORTING;
+      addClass();
+      aborting(() => {
+        removeClass();
+        state2 = distance = offset = null;
+      });
+    } else if (state2 === REACHED) {
+      removeClass();
+      state2 = REFRESHING;
+      addClass();
+      refreshing();
+    }
+  });
+  function aborting(callback) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    if (refreshControllerElemStyle.transform) {
+      refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
+      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
+      const abortTransitionEnd = function() {
+        timeout && clearTimeout(timeout);
+        refreshControllerElem.removeEventListener(
+          "webkitTransitionEnd",
+          abortTransitionEnd
+        );
+        refreshControllerElemStyle.transition = "";
+        callback();
+      };
+      refreshControllerElem.addEventListener(
+        "webkitTransitionEnd",
+        abortTransitionEnd
+      );
+      const timeout = setTimeout(abortTransitionEnd, 350);
+    } else {
+      callback();
+    }
+  }
+  function refreshing() {
+    if (!refreshControllerElem) {
+      return;
+    }
+    refreshControllerElemStyle.transition = "-webkit-transform 0.2s";
+    refreshControllerElemStyle.transform = "translate3d(-50%, " + height + "px, 0)";
+    invokeHook(id2, ON_PULL_DOWN_REFRESH);
+  }
+  function restoring(callback) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
+    refreshControllerElemStyle.transform += " scale(0.01)";
+    const restoreTransitionEnd = function() {
+      timeout && clearTimeout(timeout);
+      refreshControllerElem.removeEventListener(
+        "webkitTransitionEnd",
+        restoreTransitionEnd
+      );
+      refreshControllerElemStyle.transition = "";
+      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
+      callback();
+    };
+    refreshControllerElem.addEventListener(
+      "webkitTransitionEnd",
+      restoreTransitionEnd
+    );
+    const timeout = setTimeout(restoreTransitionEnd, 350);
+  }
+  return {
+    onTouchstartPassive,
+    onTouchmove,
+    onTouchend,
+    onTouchcancel: onTouchend
+  };
+}
+const PageBody = /* @__PURE__ */ defineSystemComponent({
+  name: "PageBody",
+  setup(props2, ctx) {
+    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
+    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
+    const wrapperRef = ref(null);
+    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
+    const pageRefresh = ref(null);
+    watch(() => {
+      return pageMeta.enablePullDownRefresh;
+    }, () => {
+      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
+    }, {
+      immediate: true
+    });
+    function _resize() {
+      const {
+        top,
+        left,
+        right,
+        bottom
+      } = getSafeAreaInsets(wrapperRef.value);
+      const vars = {
+        "--uni-safe-area-inset-top": `${top}px`,
+        "--uni-safe-area-inset-left": `${left}px`,
+        "--uni-safe-area-inset-right": `${right}px`,
+        "--uni-safe-area-inset-bottom": `${bottom}px`
+      };
+      for (const key in vars) {
+        wrapperRef.value.style.setProperty(key, vars[key]);
+      }
+    }
+    return () => {
+      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
+      const pageResizeSensor = createVNode(ResizeSensor, {
+        "onResize": _resize
+      }, null, 8, ["onResize"]);
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", mergeProps({
+        "ref": wrapperRef
+      }, pageRefresh.value), [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
+    };
+  }
+});
+function createPageRefreshTsx(refreshRef, pageMeta) {
+  return createVNode(PageRefresh, {
+    "ref": refreshRef
+  }, null, 512);
+}
+const PageComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "Page",
+  setup(_props, ctx) {
+    var _a;
+    let pageMeta = providePageMeta(getStateId());
+    const navigationBar = pageMeta.navigationBar;
+    const pageStyle = {};
+    useDocumentTitle(pageMeta);
+    const currentInstance = getCurrentInstance();
+    {
+      currentInstance.$dialogPages = ref([]);
+      currentInstance.$systemDialogPages = ref([]);
+      if (isDialogPageInstance(ctx)) {
+        pageMeta.route = ctx.attrs.route;
+        const routePageMeta = (_a = __uniRoutes.find(
+          (route) => route.path === pageMeta.route.split("?")[0]
+        )) == null ? void 0 : _a.meta;
+        if (routePageMeta) {
+          routePageMeta.navigationBar = Object.assign(
+            navigationBar,
+            routePageMeta.navigationBar
+          );
+          pageMeta = Object.assign(pageMeta, routePageMeta);
+        }
+        if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
+          pageMeta.backgroundColorContent = "transparent";
+        }
+        if (!(routePageMeta == null ? void 0 : routePageMeta.navigationBar.style)) {
+          pageMeta.navigationBar.style = "custom";
+        }
+        const parentInstance = inject(
+          "parentInstance"
+        );
+        if (currentInstance && parentInstance) {
+          currentInstance.$parentInstance = parentInstance;
+          if (isNormalDialogPageInstance(
+            ctx
+          )) {
+            const parentDialogPages = parentInstance.$dialogPages.value;
+            currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
+          }
+          if (isSystemDialogPageInstance(
+            ctx
+          )) {
+            const parentSystemDialogPages = parentInstance.$systemDialogPages.value;
+            currentInstance.$dialogPage = parentSystemDialogPages[parentSystemDialogPages.length - 1];
+          }
+        }
+      } else {
+        useBackgroundColorContent(pageMeta);
+        provide("parentInstance", currentInstance);
+      }
+    }
+    return () => createVNode(
+      "uni-page",
+      {
+        "data-page": pageMeta.route,
+        style: pageStyle
+      },
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
+        createVNode(PageHead),
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(
+          currentInstance.$dialogPages,
+          currentInstance.$systemDialogPages
+        )
+      ] : [
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(
+          currentInstance.$dialogPages,
+          currentInstance.$systemDialogPages
+        )
+      ]
+    );
+  }
+});
+function createPageBodyVNode(ctx) {
+  return openBlock(), createBlock(
+    PageBody,
+    { key: 0 },
+    {
+      default: withCtx(() => [renderSlot(ctx.slots, "page")]),
+      _: 3
+    }
+  );
+}
+function createDialogPageVNode(normalDialogPages, systemDialogPages) {
+  const dialogPages = [
+    ...normalDialogPages.value.map((page) => ({ page, type: DIALOG_TAG })),
+    ...systemDialogPages.value.map((page) => ({
+      page,
+      type: SYSTEM_DIALOG_TAG
+    }))
+  ];
+  return openBlock(true), createElementBlock(
+    Fragment,
+    null,
+    renderList(dialogPages, (dialogPage) => {
+      const { type, page } = dialogPage;
+      const fullUrl = `${page.route}${stringifyQuery$1(page.options)}`;
+      return openBlock(), createBlock(
+        createVNode(
+          page.$component,
+          {
+            key: fullUrl,
+            style: {
+              position: "fixed",
+              "z-index": 999,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0
+            },
+            "data-type": type,
+            route: fullUrl
+          },
+          null
+        )
+      );
+    })
+  );
+}
+function renderPage(component, props2) {
+  return openBlock(), createBlock(PageComponent, null, {
+    page: withCtx(() => [
+      createVNode(
+        component,
+        extend({}, props2, { ref: "page" }),
+        null,
+        512
+        /* NEED_PATCH */
+      )
+    ]),
+    _: 1
+  });
+}
+const systemRoutes = [];
+function registerSystemRoute(route, page, meta = {}) {
+  if (systemRoutes.includes(route)) {
+    return;
+  }
+  systemRoutes.push(route);
+  if (isArray(page.styles) && page.styles.length > 0) {
+    page.styles.forEach((style, index2) => {
+      updateStyle(`${route}-style-${index2}`, style);
+    });
+  }
+  const __uniPage = setupPage(page);
+  __uniRoutes.push({
+    path: route,
+    component: {
+      mpType: "page",
+      setup() {
+        const app = getApp();
+        const query = app && app.$route && app.$route.query || {};
+        return () => renderPage(__uniPage, query);
+      }
+    },
+    meta: extend(
+      {
+        isQuit: false,
+        isEntry: false,
+        navigationBar: {},
+        route
+      },
+      meta
+    )
+  });
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
@@ -9140,7 +11655,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$u = /* @__PURE__ */ extend({}, props$v, {
+const props$r = /* @__PURE__ */ extend({}, props$s, {
   id: {
     type: String,
     default: ""
@@ -9168,9 +11683,9 @@ const props$u = /* @__PURE__ */ extend({}, props$v, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$u,
+  props: props$r,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   rootElement: {
     name: "uni-editor",
@@ -9240,7 +11755,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -9264,14 +11779,14 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const rootRef = ref(null);
     const path = computed(() => ICONS[props2.type]);
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
     return () => {
       const {
         value
       } = path;
-      onMounted(() => {
-        const rootElement = rootRef.value;
-        rootElement.attachVmProps(props2);
-      });
       return createVNode("uni-icon", {
         "ref": rootRef
       }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
@@ -9346,7 +11861,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$t = {
+const props$q = {
   src: {
     type: String,
     default: ""
@@ -9385,9 +11900,9 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$t,
+  props: props$q,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -9750,7 +12265,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$s = /* @__PURE__ */ extend(
+const props$p = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -9840,7 +12355,7 @@ const props$s = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$v
+  props$s
 );
 const emit = [
   "input",
@@ -10090,7 +12605,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$r = /* @__PURE__ */ extend({}, props$s, {
+const props$o = /* @__PURE__ */ extend({}, props$p, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -10165,9 +12680,9 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const Input = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$r,
+  props: props$o,
   emits: ["confirm", ...emit],
   rootElement: {
     name: "uni-input",
@@ -11084,7 +13599,7 @@ const movableViewProps = {
   },
   scaleMin: {
     type: [Number, String],
-    default: 0.5
+    default: 0.1
   },
   scaleMax: {
     type: [Number, String],
@@ -11435,7 +13950,7 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
 function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA) {
   const scaleMinNumber = computed(() => {
     let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
+    return isNaN(val) ? 0.1 : val;
   });
   const scaleMaxNumber = computed(() => {
     let val = Number(props2.scaleMax);
@@ -11501,7 +14016,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     _oldScale.value = scale;
   }
   function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.max(0.1, scaleMinNumber.value, scale);
     scale = Math.min(10, scaleMaxNumber.value, scale);
     return scale;
   }
@@ -11927,7 +14442,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -12008,7 +14523,7 @@ const pickerViewProps = {
     default: ""
   }
 };
-function useState$4(props2) {
+function useState$3(props2) {
   const value = reactive([...props2.value]);
   const state2 = reactive({
     value,
@@ -12043,7 +14558,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = ref(null);
     const wrapperRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const state2 = useState$4(props2);
+    const state2 = useState$3(props2);
     const resizeSensorRef = ref(null);
     const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value;
@@ -13094,7 +15609,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -13202,7 +15717,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$q = {
+const props$n = {
   name: {
     type: String,
     default: ""
@@ -13210,9 +15725,9 @@ const props$q = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$q,
+  props: props$n,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -13304,7 +15819,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$p = {
+const props$m = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -13355,7 +15870,7 @@ class UniRadioElement extends UniElement {
 }
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$p,
+  props: props$m,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -13601,7 +16116,11 @@ function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
     return {
       onClick: (e2) => {
-        triggerItemClick(e2, { node });
+        if (node.name === "a") {
+          triggerItemClick(e2, { href: (node.attrs || {}).href });
+        } else {
+          triggerItemClick(e2, { src: (node.attrs || {}).src });
+        }
         e2.stopPropagation();
         e2.preventDefault();
         e2.returnValue = false;
@@ -13742,7 +16261,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$o = {
+const props$l = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -13752,12 +16271,12 @@ const props$o = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$o,
+  props: props$l,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -13898,7 +16417,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$n = {
+const props$k = {
   direction: {
     type: [String],
     default: "vertical"
@@ -13966,12 +16485,12 @@ const props$n = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
   },
-  props: props$n,
+  props: props$k,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   rootElement: {
     name: "uni-scroll-view",
@@ -14038,6 +16557,11 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
           },
           set(val) {
             _scrollTopChanged(val);
+          }
+        },
+        scrollTo: {
+          get() {
+            return main.value.scrollTo.bind(main.value);
           }
         },
         scrollBy: {
@@ -14463,7 +16987,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$m = {
+const props$j = {
   name: {
     type: String,
     default: ""
@@ -14572,7 +17096,7 @@ class UniSliderElement extends UniElement {
 }
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$m,
+  props: props$j,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -14722,7 +17246,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$l = {
+const props$i = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -14796,7 +17320,7 @@ const props$l = {
     default: "rgba(53, 53, 53, 0.6)"
   }
 };
-function useState$3(props2) {
+function useState$2(props2) {
   const interval = computed(() => {
     const interval2 = Number(props2.interval);
     return isNaN(interval2) ? 5e3 : interval2;
@@ -15225,7 +17749,7 @@ class UniSwiperElement extends UniElement {
 }
 const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$l,
+  props: props$i,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -15239,7 +17763,7 @@ const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     const trigger = useCustomEvent(rootRef, emit2);
     const slidesWrapperRef = ref(null);
     const slideFrameRef = ref(null);
-    const state2 = useState$3(props2);
+    const state2 = useState$2(props2);
     const slidesStyle = computed(() => {
       let style = {};
       if (props2.nextMargin || props2.previousMargin) {
@@ -15309,7 +17833,9 @@ const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       const defaultSlots = slots.default && slots.default();
-      swiperItems = flatVNode(defaultSlots);
+      {
+        swiperItems = flatVNode(defaultSlots);
+      }
       return createVNode("uni-swiper", {
         "ref": rootRef
       }, [createVNode("div", {
@@ -15455,7 +17981,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$k = {
+const props$h = {
   itemId: {
     type: String,
     default: ""
@@ -15465,7 +17991,7 @@ class UniSwiperItemElement extends UniElement {
 }
 const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$k,
+  props: props$h,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -15522,7 +18048,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$j = {
+const props$g = {
   name: {
     type: String,
     default: ""
@@ -15568,7 +18094,7 @@ class UniSwitchElement extends UniElement {
 }
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$j,
+  props: props$g,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -15725,7 +18251,7 @@ function parseText(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -15788,7 +18314,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$i = /* @__PURE__ */ extend({}, props$s, {
+const props$f = /* @__PURE__ */ extend({}, props$p, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -15817,9 +18343,9 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$i,
+  props: props$f,
   emits: ["confirm", "linechange", ...emit],
   rootElement: {
     name: "uni-textarea",
@@ -15990,7 +18516,7 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
@@ -16015,11 +18541,11 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
         return createVNode("uni-view", mergeProps({
           "class": hovering.value ? hoverClass : "",
           "ref": rootRef
-        }, binding), [slots.default && slots.default()], 16);
+        }, binding), [renderSlot(slots, "default")], 16);
       }
       return createVNode("uni-view", {
         "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      }, [renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -16060,7 +18586,7 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
-const props$h = {
+const props$e = {
   direction: {
     type: String,
     default: "vertical",
@@ -16120,9 +18646,9 @@ const props$h = {
 };
 class UniListViewElement extends UniElement {
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: props$h,
+  props: props$e,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -16152,19 +18678,44 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     } = useListViewState(props2);
     provide("__listViewIsVertical", isVertical);
     provide("__listViewDefaultItemSize", state2.defaultItemSize);
-    const onItemChange = debounce(() => {
+    provide("__listViewDefaultHeaderSize", state2.defaultHeaderSize);
+    const rearrangeDebounce = debounce(() => {
       nextTick(() => {
         _rearrange();
       });
-    }, 10, {
+    }, 5, {
       clearTimeout,
       setTimeout
     });
+    const childStatus = [];
     provide("__listViewRegisterItem", (status) => {
-      onItemChange();
+      childStatus.push(status);
+      rearrangeDebounce();
     });
     provide("__listViewUnregisterItem", (status) => {
-      onItemChange();
+      const index2 = childStatus.indexOf(status);
+      childStatus.splice(index2, 1);
+      rearrangeDebounce();
+    });
+    provide("__listViewFirstItemRendered", (status) => {
+      state2.defaultItemSize = status.cachedSize;
+      state2.defaultItemSizeUpdated = true;
+    });
+    watch(() => {
+      return state2.defaultHeaderSize;
+    }, (value) => {
+      rearrangeDebounce();
+    });
+    watch(() => {
+      return state2.defaultItemSize;
+    }, () => {
+      childStatus.forEach((status) => {
+        if (status.cachedSizeUpdated) {
+          return;
+        }
+        status.cachedSize = state2.defaultItemSize;
+      });
+      rearrangeDebounce();
     });
     const trigger = useCustomEvent(rootRef, emit2);
     handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emit2);
@@ -16174,6 +18725,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     function resetContainerSize() {
       const containerEl = containerRef.value;
       state2.containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
+      rearrangeDebounce();
     }
     watch(isVertical, () => {
       resetContainerSize();
@@ -16272,43 +18824,11 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       });
       rootElement.attachVmProps(props2);
     });
-    function forceRearrange() {
-      traverseAllItems(visibleVNode, (child) => {
-        const exposed = child.component.exposed;
-        if (exposed == null ? void 0 : exposed.__listViewChildStatus.seen.value) {
-          exposed.__listViewChildStatus.seen.value = false;
-        }
-      });
-      nextTick(() => {
-        nextTick(() => {
-          _rearrange();
-        });
-      });
-    }
     function onResize2() {
-      resetContainerSize();
-      forceRearrange();
-    }
-    function traverseAllItems(visibleVNode2, callback) {
-      traverseListView(visibleVNode2, (child) => {
-        var _a;
-        const childType = (_a = child.component) == null ? void 0 : _a.type.name;
-        if (childType === "StickySection") {
-          traverseStickySection(child, function() {
-            var _a2;
-            const childType2 = (_a2 = child.component) == null ? void 0 : _a2.type.name;
-            if (childType2 === "ListItem") {
-              callback(child);
-            }
-          });
-        } else if (childType === "ListItem") {
-          callback(child);
-        } else if (childType === "StickyHeader")
-          ;
-        else if (child.component && child.component.subTree) {
-          traverseAllItems(child.component.subTree, callback);
-        }
+      childStatus.forEach((status) => {
+        status.cachedSizeUpdated = false;
       });
+      resetContainerSize();
     }
     function _rearrange() {
       rearrange(visibleVNode, containerRef, isVertical, state2);
@@ -16373,12 +18893,15 @@ function useListViewState(props2) {
   });
   const state2 = reactive({
     defaultItemSize: 40,
+    defaultItemSizeUpdated: false,
+    defaultHeaderSize: 40,
+    defaultHeaderSizeUpdated: false,
     totalSize: 0,
     placehoderSize: 0,
     visibleSize: 0,
     containerSize: 0,
-    cacheScreenCount: 5,
-    loadScreenThreshold: 3,
+    cacheScreenCount: 10,
+    loadScreenThreshold: 8,
     refresherHeight: 0,
     refreshState: ""
   });
@@ -16423,9 +18946,14 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
       tempTotalSize += tailSize.value;
     } else if (childType === "ListItem") {
       const {
-        cachedSize
+        cachedSize,
+        cachedSizeUpdated
       } = status;
-      const itemSize = cachedSize;
+      if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultItemSizeUpdated) {
+        state2.defaultItemSize = cachedSize;
+        state2.defaultItemSizeUpdated = true;
+      }
+      const itemSize = cachedSize || state2.defaultItemSize;
       tempTotalSize += itemSize;
       if (!start && tempTotalSize > offsetMin) {
         start = true;
@@ -16444,9 +18972,14 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
       }
     } else if (childType === "StickyHeader") {
       const {
-        cachedSize
+        cachedSize,
+        cachedSizeUpdated
       } = status;
-      tempTotalSize += cachedSize;
+      if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultHeaderSizeUpdated) {
+        state2.defaultHeaderSize = cachedSize;
+        state2.defaultHeaderSizeUpdated = true;
+      }
+      tempTotalSize += cachedSize || state2.defaultHeaderSize;
       tempVisibleSize += cachedSize;
     }
   }
@@ -16615,7 +19148,7 @@ function getSize(isVertical, el) {
 }
 class UniListItemElement extends UniElement {
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   rootElement: {
@@ -16629,36 +19162,39 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = ref(null);
     const isVertical = inject("__listViewIsVertical");
     const visible = ref(false);
-    const seen = ref(false);
     const status = {
       type: "ListItem",
       visible,
-      cachedSize: 0,
-      seen
+      cachedSize: inject("__listViewDefaultItemSize"),
+      cachedSizeUpdated: false
     };
     expose({
       __listViewChildStatus: status
     });
     const registerItem = inject("__listViewRegisterItem");
     const unregisterItem = inject("__listViewUnregisterItem");
+    const firstItemRendered = inject("__listViewFirstItemRendered");
     onMounted(() => {
       registerItem(status);
     });
     onBeforeUnmount(() => {
       unregisterItem(status);
     });
-    const realVisible = computed(() => {
-      return visible.value || !status.seen.value;
-    });
-    return () => {
+    watch(visible, (value) => {
+      if (!value || status.cachedSizeUpdated) {
+        return;
+      }
       nextTick(() => {
         const rootNode = rootRef.value;
-        if (realVisible.value && isHTMlElement(rootNode)) {
+        if (isHTMlElement(rootNode)) {
           status.cachedSize = getSize(isVertical.value, rootNode);
-          seen.value = true;
+          status.cachedSizeUpdated = true;
+          firstItemRendered(status);
         }
       });
-      if (!realVisible.value) {
+    });
+    return () => {
+      if (!visible.value) {
         return null;
       }
       return createVNode("uni-list-item", {
@@ -16669,7 +19205,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickySectionElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
     padding: {
@@ -16724,7 +19260,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickyHeaderElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
     padding: {
@@ -16753,7 +19289,8 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     });
     const status = {
       type: "StickyHeader",
-      cachedSize: 0
+      cachedSize: inject("__listViewDefaultHeaderSize"),
+      cachedSizeUpdated: false
     };
     expose({
       __listViewChildStatus: status
@@ -16762,13 +19299,14 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
     });
+    onMounted(() => {
+      const rootEl = rootRef.value;
+      const rect = rootEl.getBoundingClientRect();
+      status.cachedSize = isVertical ? rect.height : rect.width;
+      status.cachedSizeUpdated = true;
+    });
     return () => {
       var _a;
-      nextTick(() => {
-        const rootEl = rootRef.value;
-        const rect = rootEl.getBoundingClientRect();
-        status.cachedSize = isVertical ? rect.height : rect.width;
-      });
       return createVNode("uni-sticky-header", {
         "ref": rootRef,
         "style": style.value
@@ -16826,13 +19364,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$e = 0;
+let index$d = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$e++}`;
+  const id2 = vm.id || `context${index$d++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -16852,7 +19390,6 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
   }
 }
 function initHooks(options, instance2, publicThis) {
-  var _b;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -16874,14 +19411,15 @@ function initHooks(options, instance2, publicThis) {
     try {
       let query = instance2.attrs.__pageQuery;
       if (true) {
-        query = decodedQuery(query);
+        query = new UTSJSONObject(decodedQuery(query));
       }
       if (false)
         ;
       invokeHook(publicThis, ON_LOAD, query);
       delete instance2.attrs.__pageQuery;
+      const $basePage = true ? publicThis.$basePage : publicThis.$page;
       if (true) {
-        if (((_b = publicThis.$page) == null ? void 0 : _b.openType) !== "preloadPage") {
+        if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
           invokeHook(publicThis, ON_SHOW);
         }
       }
@@ -16905,16 +19443,21 @@ function $callMethod(method, ...args) {
   return null;
 }
 function createErrorHandler(app) {
-  return function errorHandler(err, instance2, _info) {
-    if (!instance2) {
-      throw err;
+  const userErrorHandler = app.config.errorHandler;
+  return function errorHandler(err, instance2, info) {
+    if (userErrorHandler) {
+      userErrorHandler(err, instance2, info);
     }
     const appInstance = app._instance;
     if (!appInstance || !appInstance.proxy) {
       throw err;
     }
-    {
-      invokeHook(appInstance.proxy, ON_ERROR, err);
+    if (appInstance[ON_ERROR]) {
+      {
+        invokeHook(appInstance.proxy, ON_ERROR, err);
+      }
+    } else {
+      logError(err, info, instance2 ? instance2.$.vnode : null, false);
     }
   };
 }
@@ -16999,8 +19542,8 @@ function uniIdMixin(globalProperties) {
     return tokenExpired > Date.now();
   };
 }
-function initApp$1(app) {
-  const appConfig = app._context.config;
+function initApp(app) {
+  const appConfig = app.config;
   appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
@@ -17017,702 +19560,6 @@ function initApp$1(app) {
   {
     invokeCreateVueAppHook(app);
   }
-}
-const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
-function usePageMeta() {
-  return inject(pageMetaKey);
-}
-function providePageMeta(id2) {
-  const pageMeta = initPageMeta(id2);
-  provide(pageMetaKey, pageMeta);
-  return pageMeta;
-}
-function usePageRoute() {
-  if (__UNI_FEATURE_PAGES__) {
-    return useRoute();
-  }
-  const url = location.href;
-  const searchPos = url.indexOf("?");
-  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
-  let query = {};
-  if (searchPos > -1) {
-    query = parseQuery(
-      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
-    );
-  }
-  const { meta } = __uniRoutes[0];
-  const path = addLeadingSlash(meta.route);
-  return {
-    meta,
-    query,
-    path,
-    matched: [{ path }]
-  };
-}
-function initPageMeta(id2) {
-  if (__UNI_FEATURE_PAGES__) {
-    return reactive(
-      normalizePageMeta(
-        JSON.parse(
-          JSON.stringify(
-            initRouteMeta(
-              useRoute().meta,
-              id2
-            )
-          )
-        )
-      )
-    );
-  }
-  return reactive(
-    normalizePageMeta(
-      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
-    )
-  );
-}
-function normalizePageMeta(pageMeta) {
-  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    const { enablePullDownRefresh, navigationBar } = pageMeta;
-    {
-      const pullToRefresh = normalizePullToRefreshRpx(
-        extend(
-          {
-            support: true,
-            color: "#2BD009",
-            style: "circle",
-            height: 70,
-            range: 150,
-            offset: 0
-          },
-          pageMeta.pullToRefresh
-        )
-      );
-      const { type, style } = navigationBar;
-      if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += NAVBAR_HEIGHT + safeAreaInsets$1.top;
-      }
-      pageMeta.pullToRefresh = pullToRefresh;
-    }
-  }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
-    const { navigationBar } = pageMeta;
-    const { titleSize, titleColor, backgroundColor } = navigationBar;
-    navigationBar.titleText = navigationBar.titleText || "";
-    navigationBar.type = navigationBar.type || "default";
-    navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#000000";
-    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
-    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
-  }
-  if (__UNI_FEATURE_PAGES__ && history.state) {
-    const type = history.state.__type__;
-    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
-      pageMeta.isEntry = true;
-      pageMeta.isQuit = true;
-    }
-  }
-  return pageMeta;
-}
-const screen$1 = window.screen;
-const documentElement = document.documentElement;
-function checkMinWidth(minWidth) {
-  const sizes = [
-    window.outerWidth,
-    window.outerHeight,
-    screen$1.width,
-    screen$1.height,
-    documentElement.clientWidth,
-    documentElement.clientHeight
-  ];
-  return Math.max.apply(null, sizes) > minWidth;
-}
-function getStateId() {
-  return history.state && history.state.__id__ || 1;
-}
-function removeNonTabBarPages() {
-  const curTabBarPageVm = getCurrentPageVm();
-  if (!curTabBarPageVm) {
-    return;
-  }
-  const pagesMap = getCurrentPagesMap();
-  const keys = pagesMap.keys();
-  for (const routeKey of keys) {
-    const page = pagesMap.get(routeKey);
-    if (!page.$.__isTabBar) {
-      removePage(routeKey);
-    } else {
-      page.$.__isActive = false;
-    }
-  }
-  if (curTabBarPageVm.$.__isTabBar) {
-    curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, ON_HIDE);
-  }
-}
-function isSamePage(url, $page) {
-  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
-}
-function getTabBarPageId(url) {
-  const pages = getCurrentPagesMap().values();
-  for (const page of pages) {
-    const $page = page.$page;
-    if (isSamePage(url, $page)) {
-      page.$.__isActive = true;
-      return $page.id;
-    }
-  }
-}
-const switchTab = /* @__PURE__ */ defineAsyncApi(
-  API_SWITCH_TAB,
-  // @ts-expect-error
-  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      switchTabPagesBeforeEntryPages.push({
-        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return removeNonTabBarPages(), navigate(
-      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-      getTabBarPageId(url)
-    ).then(resolve).catch(reject);
-  },
-  SwitchTabProtocol,
-  SwitchTabOptions
-);
-function removeLastPage() {
-  const page = getCurrentPage();
-  if (!page) {
-    return;
-  }
-  const $page = page.$page;
-  removePage(normalizeRouteKey($page.path, $page.id));
-}
-const redirectTo = /* @__PURE__ */ defineAsyncApi(
-  API_REDIRECT_TO,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      redirectToPagesBeforeEntryPages.push({
-        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return (
-      // TODO exists 属性未实现
-      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
-    );
-  },
-  RedirectToProtocol,
-  RedirectToOptions
-);
-function removeAllPages() {
-  const keys = getCurrentPagesMap().keys();
-  for (const routeKey of keys) {
-    removePage(routeKey);
-  }
-}
-const reLaunch = /* @__PURE__ */ defineAsyncApi(
-  API_RE_LAUNCH,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      reLaunchPagesBeforeEntryPages.push({
-        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  ReLaunchProtocol,
-  ReLaunchOptions
-);
-function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
-  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
-    console.warn(
-      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
-    );
-  }
-  const router = getApp().vm.$router;
-  const { path, query } = parseUrl(url);
-  return new Promise((resolve, reject) => {
-    const state2 = createPageState(type, __id__);
-    router[type === "navigateTo" ? "push" : "replace"]({
-      path,
-      query,
-      state: state2,
-      force: true
-    }).then((failure) => {
-      if (isNavigationFailure(failure)) {
-        return reject(failure.message);
-      }
-      if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
-      }
-      if (type === "navigateTo") {
-        const meta = router.currentRoute.value.meta;
-        if (!meta.eventChannel) {
-          meta.eventChannel = new EventChannel(state2.__id__, events);
-        } else if (events) {
-          Object.keys(events).forEach((eventName) => {
-            meta.eventChannel._addListener(
-              eventName,
-              "on",
-              events[eventName]
-            );
-          });
-          meta.eventChannel._clearCache();
-        }
-        return isAutomatedTesting ? resolve({
-          __id__: state2.__id__
-        }) : resolve({
-          eventChannel: meta.eventChannel
-        });
-      }
-      return isAutomatedTesting ? resolve({ __id__: state2.__id__ }) : resolve();
-    });
-  });
-}
-function handleBeforeEntryPageRoutes() {
-  if (entryPageState.handledBeforeEntryPageRoutes) {
-    return;
-  }
-  entryPageState.handledBeforeEntryPageRoutes = true;
-  const navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach(
-    ({ args, resolve, reject }) => (
-      // @ts-expect-error
-      navigate(args).then(resolve).catch(reject)
-    )
-  );
-  const switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
-  const redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
-}
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
-  }
-  return tabBar;
-}
-const supports = window.CSS && window.CSS.supports;
-function cssSupports(css) {
-  return supports && (supports(css) || supports.apply(window.CSS, css.split(":")));
-}
-const cssVar = /* @__PURE__ */ cssSupports("--a:0");
-const cssEnv = /* @__PURE__ */ cssSupports("top:env(a)");
-const cssConstant = /* @__PURE__ */ cssSupports("top:constant(a)");
-const cssBackdropFilter = /* @__PURE__ */ cssSupports("backdrop-filter:blur(10px)");
-const SCHEMA_CSS = {
-  "css.var": cssVar,
-  "css.env": cssEnv,
-  "css.constant": cssConstant,
-  "css.backdrop-filter": cssBackdropFilter
-};
-const canIUse = /* @__PURE__ */ defineSyncApi(
-  API_CAN_I_USE,
-  (schema) => {
-    if (hasOwn(SCHEMA_CSS, schema)) {
-      return SCHEMA_CSS[schema];
-    }
-    return true;
-  },
-  CanIUseProtocol
-);
-const envMethod = /* @__PURE__ */ (() => cssEnv ? "env" : cssConstant ? "constant" : "")();
-function updateCurPageCssVar(pageMeta) {
-  let windowTopValue = 0;
-  let windowBottomValue = 0;
-  if (__UNI_FEATURE_NAVIGATIONBAR__ && pageMeta.navigationBar.style !== "custom" && ["default", "float"].indexOf(pageMeta.navigationBar.type) > -1) {
-    windowTopValue = NAVBAR_HEIGHT;
-  }
-  if (__UNI_FEATURE_TABBAR__ && pageMeta.isTabBar) {
-    const tabBar2 = useTabBar();
-    tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
-  }
-  updatePageCssVar({
-    "--window-top": normalizeWindowTop(windowTopValue),
-    "--window-bottom": normalizeWindowBottom(windowBottomValue)
-  });
-}
-function normalizeWindowTop(windowTop) {
-  return envMethod ? `calc(${windowTop}px + ${envMethod}(safe-area-inset-top))` : `${windowTop}px`;
-}
-function normalizeWindowBottom(windowBottom) {
-  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
-}
-const SEP = "$$";
-const currentPagesMap = /* @__PURE__ */ new Map();
-const homeDialogPages = [];
-const entryPageState = {
-  handledBeforeEntryPageRoutes: false
-};
-const navigateToPagesBeforeEntryPages = [];
-const switchTabPagesBeforeEntryPages = [];
-const redirectToPagesBeforeEntryPages = [];
-const reLaunchPagesBeforeEntryPages = [];
-let escBackPageNum = 0;
-function handleEscKeyPress(event) {
-  if (event.key === "Escape") {
-    const currentPage = getCurrentPage();
-    const dialogPages = currentPage.getDialogPages();
-    const dialogPage = dialogPages[dialogPages.length - 1];
-    if (!dialogPage.$disableEscBack) {
-      uni.closeDialogPage({ dialogPage });
-    }
-  }
-}
-function incrementEscBackPageNum() {
-  escBackPageNum++;
-  if (escBackPageNum === 1) {
-    document.addEventListener("keydown", handleEscKeyPress);
-  }
-}
-function decrementEscBackPageNum() {
-  escBackPageNum--;
-  if (escBackPageNum === 0) {
-    document.removeEventListener("keydown", handleEscKeyPress);
-  }
-}
-class DialogPageImpl extends EventBus {
-  constructor({
-    route,
-    $component,
-    getParentPage,
-    $disableEscBack = false
-  }) {
-    super();
-    this.route = "";
-    this.options = /* @__PURE__ */ new Map();
-    this.vm = null;
-    this.$vm = null;
-    this.$component = null;
-    this.$disableEscBack = false;
-    this.route = route;
-    this.$component = $component;
-    this.getParentPage = getParentPage;
-    this.$disableEscBack = $disableEscBack;
-  }
-}
-function pruneCurrentPages() {
-  currentPagesMap.forEach((page, id2) => {
-    if (page.$.isUnmounted) {
-      currentPagesMap.delete(id2);
-    }
-  });
-}
-function getCurrentPagesMap() {
-  return currentPagesMap;
-}
-function getCurrentPages$1() {
-  const curPages = [];
-  const pages = currentPagesMap.values();
-  for (const page of pages) {
-    if (page.$.__isTabBar) {
-      if (page.$.__isActive) {
-        curPages.push(page);
-      }
-    } else {
-      curPages.push(page);
-    }
-  }
-  return curPages;
-}
-function removeRouteCache(routeKey) {
-  const vnode = pageCacheMap.get(routeKey);
-  if (vnode) {
-    pageCacheMap.delete(routeKey);
-    routeCache.pruneCacheEntry(vnode);
-  }
-}
-function removePage(routeKey, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey);
-  {
-    const dialogPages = pageVm.getDialogPages();
-    for (let i = dialogPages.length - 1; i >= 0; i--) {
-      uni.closeDialogPage({ dialogPage: dialogPages[i] });
-    }
-  }
-  pageVm.$.__isUnload = true;
-  invokeHook(pageVm, ON_UNLOAD);
-  currentPagesMap.delete(routeKey);
-  removeRouteCaches && removeRouteCache(routeKey);
-}
-let id = /* @__PURE__ */ getStateId();
-function createPageState(type, __id__) {
-  return {
-    __id__: __id__ || ++id,
-    __type__: type
-  };
-}
-function initPublicPage(route) {
-  const meta = usePageMeta();
-  if (!__UNI_FEATURE_PAGES__) {
-    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
-  }
-  let fullPath = route.fullPath;
-  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
-    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
-  }
-  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
-}
-function initPage(vm) {
-  var _a;
-  const route = vm.$route;
-  const page = initPublicPage(route);
-  initPageVm(vm, page);
-  {
-    const pageMeta = page.meta;
-    vm.$setPageStyle = (style) => {
-      for (const key in style) {
-        switch (key) {
-          case "navigationBarBackgroundColor":
-            pageMeta.navigationBar.backgroundColor = style[key];
-            break;
-          case "navigationBarTextStyle":
-            const textStyle = style[key];
-            if (textStyle == null) {
-              continue;
-            }
-            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
-              textStyle
-            ) ? normalizeTitleColor(textStyle || "") : textStyle;
-            break;
-          case "navigationBarTitleText":
-            pageMeta.navigationBar.titleText = style[key];
-            break;
-          case "titleImage":
-            pageMeta.navigationBar.titleImage = style[key];
-            break;
-          case "navigationStyle":
-            pageMeta.navigationBar.style = style[key];
-            break;
-          default:
-            pageMeta[key] = style[key];
-            break;
-        }
-      }
-    };
-    vm.$getPageStyle = () => new UTSJSONObject({
-      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-      navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage || "",
-      navigationStyle: pageMeta.navigationBar.style || "default",
-      disableScroll: pageMeta.disableScroll || false,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-      backgroundColorContent: pageMeta.backgroundColorContent
-    });
-    vm.getDialogPages = () => {
-      var _a2;
-      return ((_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPages.value) || [];
-    };
-    vm.getParentPage = () => {
-      var _a2, _b;
-      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.getParentPage()) || null;
-    };
-    vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
-  }
-  {
-    const pageInstance = getPageInstanceByVm(vm);
-    if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
-      currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-      if (currentPagesMap.size === 1) {
-        setTimeout(() => {
-          handleBeforeEntryPageRoutes();
-        }, 0);
-        if (homeDialogPages.length) {
-          homeDialogPages.forEach((dialogPage) => {
-            dialogPage.getParentPage = () => vm;
-            pageInstance.$dialogPages.value.push(dialogPage);
-          });
-          homeDialogPages.length = 0;
-        }
-      }
-    } else {
-      pageInstance.$dialogPage.$vm = vm;
-    }
-    return;
-  }
-}
-function normalizeRouteKey(path, id2) {
-  return path + SEP + id2;
-}
-function useKeepAliveRoute() {
-  const route = useRoute();
-  const routeKey = computed(
-    () => normalizeRouteKey("/" + route.meta.route, getStateId())
-  );
-  const isTabBar = computed(() => route.meta.isTabBar);
-  return {
-    routeKey,
-    isTabBar,
-    routeCache
-  };
-}
-const pageCacheMap = /* @__PURE__ */ new Map();
-const routeCache = {
-  get(key) {
-    return pageCacheMap.get(key);
-  },
-  set(key, value) {
-    pruneRouteCache(key);
-    pageCacheMap.set(key, value);
-  },
-  delete(key) {
-    const vnode = pageCacheMap.get(key);
-    if (!vnode) {
-      return;
-    }
-    pageCacheMap.delete(key);
-  },
-  forEach(fn) {
-    pageCacheMap.forEach(fn);
-  }
-};
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
-}
-function pruneRouteCache(key) {
-  const pageId = parseInt(key.split(SEP)[1]);
-  if (!pageId) {
-    return;
-  }
-  routeCache.forEach((vnode, key2) => {
-    const cPageId = parseInt(key2.split(SEP)[1]);
-    if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
-        return;
-      }
-      routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
-      nextTick(() => pruneCurrentPages());
-    }
-  });
-}
-function updateCurPageAttrs(pageMeta) {
-  {
-    const uvueDirKey = "uvue-dir-" + __uniConfig.uvue["flex-direction"];
-    document.body.setAttribute("uvue", "");
-    document.body.setAttribute(uvueDirKey, "");
-  }
-}
-function onPageShow(instance2, pageMeta) {
-  updateBodyScopeId(instance2);
-  updateCurPageCssVar(pageMeta);
-  updateCurPageAttrs();
-  initPageScrollListener(instance2, pageMeta);
-}
-function onPageReady(instance2) {
-  const scopeId = getScopeId(instance2);
-  scopeId && updateCurPageBodyScopeId(scopeId);
-}
-function updateCurPageBodyScopeId(scopeId) {
-  const pageBodyEl = document.querySelector("uni-page-body");
-  if (pageBodyEl) {
-    pageBodyEl.setAttribute(scopeId, "");
-  } else if (process.env.NODE_ENV !== "production") {
-    console.warn("uni-page-body not found");
-  }
-}
-function getScopeId(instance2) {
-  return instance2.type.__scopeId;
-}
-let curScopeId;
-function updateBodyScopeId(instance2) {
-  const scopeId = getScopeId(instance2);
-  const { body } = document;
-  curScopeId && body.removeAttribute(curScopeId);
-  scopeId && body.setAttribute(scopeId, "");
-  curScopeId = scopeId;
-}
-let curScrollListener;
-function initPageScrollListener(instance2, pageMeta) {
-  document.removeEventListener("touchmove", disableScrollListener);
-  if (curScrollListener) {
-    document.removeEventListener("scroll", curScrollListener);
-  }
-  if (pageMeta.disableScroll) {
-    return document.addEventListener("touchmove", disableScrollListener);
-  }
-  const { onPageScroll, onReachBottom } = instance2;
-  const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
-  if (!(onPageScroll == null ? void 0 : onPageScroll.length) && !(onReachBottom == null ? void 0 : onReachBottom.length) && !navigationBarTransparent) {
-    return;
-  }
-  const opts = {};
-  const pageId = instance2.proxy.$page.id;
-  if (onPageScroll || navigationBarTransparent) {
-    opts.onPageScroll = createOnPageScroll(
-      pageId,
-      onPageScroll,
-      navigationBarTransparent
-    );
-  }
-  if (onReachBottom == null ? void 0 : onReachBottom.length) {
-    opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
-    opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
-  }
-  curScrollListener = createScrollListener(opts);
-  requestAnimationFrame(
-    () => document.addEventListener("scroll", curScrollListener)
-  );
-  {
-    watch(
-      () => pageMeta.onReachBottomDistance,
-      (onReachBottomDistance) => {
-        if (!onReachBottom) {
-          return;
-        }
-        opts.onReachBottomDistance = onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
-        document.removeEventListener("scroll", curScrollListener);
-        curScrollListener = createScrollListener(opts);
-        document.addEventListener("scroll", curScrollListener);
-      }
-    );
-    watch(
-      () => pageMeta.disableScroll,
-      (disableScroll) => {
-        document.removeEventListener("touchmove", disableScrollListener);
-        if (disableScroll) {
-          return document.addEventListener("touchmove", disableScrollListener);
-        }
-      }
-    );
-  }
-}
-function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
-  return (scrollTop) => {
-    if (onPageScroll) {
-      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop }, pageId);
-    }
-    if (navigationBarTransparent) {
-      UniViewJSBridge.emit(pageId + "." + ON_PAGE_SCROLL, {
-        scrollTop
-      });
-    }
-  };
 }
 function usePopupStyle(props2) {
   const popupWidth = ref(0);
@@ -17832,485 +19679,6 @@ function useKeyboard() {
     disable
   };
 }
-function IEVersion() {
-  const userAgent = navigator.userAgent;
-  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
-  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
-  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
-  if (isIE) {
-    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
-    reIE.test(userAgent);
-    const fIEVersion = parseFloat(RegExp.$1);
-    if (fIEVersion > 6) {
-      return fIEVersion;
-    } else {
-      return 6;
-    }
-  } else if (isEdge) {
-    return -1;
-  } else if (isIE11) {
-    return 11;
-  } else {
-    return -1;
-  }
-}
-function getTheme() {
-  if (__uniConfig.darkmode !== true)
-    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-  try {
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  } catch (error) {
-    return "light";
-  }
-}
-function getBrowserInfo() {
-  let osname;
-  let osversion = "0";
-  let model = "";
-  let deviceType = "phone";
-  const language = navigator.language;
-  if (isIOS$1) {
-    osname = "iOS";
-    const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
-    if (osversionFind) {
-      osversion = osversionFind[1].replace(/_/g, ".");
-    }
-    const modelFind = ua.match(/\(([a-zA-Z]+);/);
-    if (modelFind) {
-      model = modelFind[1];
-    }
-  } else if (isAndroid) {
-    osname = "Android";
-    const osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/);
-    if (osversionFind) {
-      osversion = osversionFind[1];
-    }
-    const infoFind = ua.match(/\((.+?)\)/);
-    const infos = infoFind ? infoFind[1].split(";") : ua.split(" ");
-    const otherInfo = [
-      /\bAndroid\b/i,
-      /\bLinux\b/i,
-      /\bU\b/i,
-      /^\s?[a-z][a-z]$/i,
-      /^\s?[a-z][a-z]-[a-z][a-z]$/i,
-      /\bwv\b/i,
-      /\/[\d\.,]+$/,
-      /^\s?[\d\.,]+$/,
-      /\bBrowser\b/i,
-      /\bMobile\b/i
-    ];
-    for (let i = 0; i < infos.length; i++) {
-      const info = infos[i];
-      if (info.indexOf("Build") > 0) {
-        model = info.split("Build")[0].trim();
-        break;
-      }
-      let other;
-      for (let o2 = 0; o2 < otherInfo.length; o2++) {
-        if (otherInfo[o2].test(info)) {
-          other = true;
-          break;
-        }
-      }
-      if (!other) {
-        model = info.trim();
-        break;
-      }
-    }
-  } else if (isIPadOS) {
-    model = "iPad";
-    osname = "iOS";
-    deviceType = "pad";
-    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
-    if (parseInt(osversion) === 14) {
-      const versionMatched = ua.match(/Version\/(\S*)\b/);
-      if (versionMatched) {
-        osversion = versionMatched[1];
-      }
-    }
-  } else if (isWindows || isMac || isLinux) {
-    model = "PC";
-    osname = "PC";
-    deviceType = "pc";
-    osversion = "0";
-    let osversionFind = ua.match(/\((.+?)\)/)[1];
-    if (isWindows) {
-      osname = "Windows";
-      switch (isWindows[1]) {
-        case "5.1":
-          osversion = "XP";
-          break;
-        case "6.0":
-          osversion = "Vista";
-          break;
-        case "6.1":
-          osversion = "7";
-          break;
-        case "6.2":
-          osversion = "8";
-          break;
-        case "6.3":
-          osversion = "8.1";
-          break;
-        case "10.0":
-          osversion = "10";
-          break;
-      }
-      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
-      if (framework) {
-        osversion += ` x${framework[1]}`;
-      }
-    } else if (isMac) {
-      osname = "macOS";
-      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
-      if (osversion) {
-        osversion = _osversion[1].replace(/_/g, ".");
-        if (osversion.indexOf(";") !== -1) {
-          osversion = osversion.split(";")[0];
-        }
-      }
-    } else if (isLinux) {
-      osname = "Linux";
-      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
-      if (_osversion) {
-        osversion = _osversion[1];
-        if (osversion.indexOf(";") !== -1) {
-          osversion = osversion.split(";")[0];
-        }
-      }
-    }
-  } else {
-    osname = "Other";
-    osversion = "0";
-    deviceType = "unknown";
-  }
-  const system = `${osname} ${osversion}`;
-  const platform = osname.toLocaleLowerCase();
-  let browserName = "";
-  let browserVersion = String(IEVersion());
-  if (browserVersion !== "-1") {
-    browserName = "IE";
-  } else {
-    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
-    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
-    for (let index2 = 0; index2 < browseVendors.length; index2++) {
-      const vendor = browseVendors[index2];
-      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
-      if (reg.test(ua)) {
-        browserName = vendors[index2];
-        browserVersion = ua.match(reg)[2];
-      }
-    }
-  }
-  let deviceOrientation = "portrait";
-  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
-  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
-  return {
-    deviceBrand: void 0,
-    brand: void 0,
-    deviceModel: model,
-    deviceOrientation,
-    model,
-    system,
-    platform,
-    browserName: browserName.toLocaleLowerCase(),
-    browserVersion,
-    language,
-    deviceType,
-    ua,
-    osname,
-    osversion,
-    theme: getTheme()
-  };
-}
-function onThemeChange$2(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
-  }
-}
-function offThemeChange$1(callback) {
-  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactivity = isReactive(pageStyle);
-  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactivity) {
-    watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange$2(onThemeChangeCallback);
-  return reactivePageStyle;
-}
-const ACTION_SHEET_THEME = {
-  light: {
-    listItemColor: "#000000",
-    cancelItemColor: "#000000"
-  },
-  dark: {
-    listItemColor: "rgba(255, 255, 255, 0.8)",
-    cancelItemColor: "rgba(255, 255, 255)"
-  }
-};
-function setActionSheetTheme(theme, actionSheetTheme) {
-  const ActionSheetThemeKey = ["listItemColor", "cancelItemColor"];
-  ActionSheetThemeKey.forEach((key) => {
-    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
-  });
-}
-const props$g = {
-  title: {
-    type: String,
-    default: ""
-  },
-  itemList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  itemColor: {
-    type: String,
-    default: "#000000"
-  },
-  popover: {
-    type: Object,
-    default: null
-  },
-  visible: {
-    type: Boolean,
-    default: false
-  }
-};
-const actionSheet = /* @__PURE__ */ defineComponent({
-  name: "ActionSheet",
-  props: props$g,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    initI18nShowActionSheetMsgsOnce();
-    const HEIGHT = ref(336);
-    const contentHeight = ref(0);
-    const titleHeight = ref(0);
-    const deltaY = ref(0);
-    const scrollTop = ref(0);
-    const content = ref(null);
-    const main = ref(null);
-    const {
-      t: t2
-    } = useI18n();
-    const {
-      _close
-    } = useActionSheetLoader(props2, emit2);
-    const {
-      popupStyle
-    } = usePopupStyle(props2);
-    let scroller;
-    onMounted(() => {
-      const {
-        scroller: _scroller,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd
-      } = useScroller(content.value, {
-        enableY: true,
-        friction: new Friction(1e-4),
-        spring: new Spring(2, 90, 20),
-        onScroll: (e2) => {
-          scrollTop.value = e2.target.scrollTop;
-        }
-      });
-      scroller = _scroller;
-      useTouchtrack(content.value, (e2) => {
-        if (_scroller) {
-          switch (e2.detail.state) {
-            case "start":
-              handleTouchStart(e2);
-              break;
-            case "move":
-              handleTouchMove(e2);
-              break;
-            case "end":
-            case "cancel":
-              handleTouchEnd(e2);
-          }
-        }
-      }, true);
-    });
-    function _handleWheel($event) {
-      const _deltaY = deltaY.value + $event.deltaY;
-      if (Math.abs(_deltaY) > 10) {
-        scrollTop.value += _deltaY / 3;
-        scrollTop.value = scrollTop.value >= contentHeight.value ? contentHeight.value : scrollTop.value <= 0 ? 0 : scrollTop.value;
-        scroller.scrollTo(scrollTop.value);
-      } else {
-        deltaY.value = _deltaY;
-      }
-      $event.preventDefault();
-    }
-    watch(() => props2.visible, () => {
-      nextTick(() => {
-        if (props2.title) {
-          titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
-        }
-        scroller.update();
-        if (content.value)
-          contentHeight.value = content.value.clientHeight - HEIGHT.value;
-        document.querySelectorAll(".uni-actionsheet__cell").forEach((item) => {
-          initClick(item);
-        });
-      });
-    });
-    const actionSheetTheme = useOnThemeChange$1(props2);
-    return () => {
-      return createVNode("uni-actionsheet", {
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-actionsheet__mask",
-          "onClick": () => _close(-1)
-        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
-      }), createVNode("div", {
-        "class": ["uni-actionsheet", {
-          "uni-actionsheet_toggle": props2.visible
-        }],
-        "style": popupStyle.value.content
-      }, [createVNode("div", {
-        "ref": main,
-        "class": "uni-actionsheet__menu",
-        "onWheel": _handleWheel
-      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
-        "class": "uni-actionsheet__cell",
-        "style": {
-          height: `${titleHeight.value}px`
-        }
-      }, null), createVNode("div", {
-        "class": "uni-actionsheet__title"
-      }, [props2.title])]) : "", createVNode("div", {
-        "style": {
-          maxHeight: `${HEIGHT.value}px`,
-          overflow: "hidden"
-        }
-      }, [createVNode("div", {
-        "ref": content
-      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
-        "key": index2,
-        "style": {
-          color: actionSheetTheme.listItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(index2)
-      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
-        "class": "uni-actionsheet__action"
-      }, [createVNode("div", {
-        "style": {
-          color: actionSheetTheme.cancelItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(-1)
-      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
-        "style": popupStyle.value.triangle
-      }, null, 4)], 6)], 40, ["onTouchmove"]);
-    };
-  }
-});
-function useActionSheetLoader(props2, emit2) {
-  function _close(tapIndex) {
-    emit2("close", tapIndex);
-  }
-  const {
-    key,
-    disable
-  } = useKeyboard();
-  watch(() => props2.visible, (value) => disable.value = !value);
-  watchEffect(() => {
-    const {
-      value
-    } = key;
-    if (value === "esc") {
-      _close && _close(-1);
-    }
-  });
-  return {
-    _close
-  };
-}
-function initClick(dom) {
-  const MAX_MOVE = 20;
-  let x = 0;
-  let y = 0;
-  dom.addEventListener("touchstart", (event) => {
-    const info = event.changedTouches[0];
-    x = info.clientX;
-    y = info.clientY;
-  });
-  dom.addEventListener("touchend", (event) => {
-    const info = event.changedTouches[0];
-    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
-      const target = event.target;
-      const currentTarget = event.currentTarget;
-      const customEvent = new CustomEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        target,
-        currentTarget
-      });
-      ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"].forEach((key) => {
-        customEvent[key] = info[key];
-      });
-      event.target.dispatchEvent(customEvent);
-    }
-  });
-}
-function useOnThemeChange$1(props2) {
-  const actionSheetTheme = reactive({
-    listItemColor: "#000",
-    cancelItemColor: "#000"
-  });
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setActionSheetTheme(theme, actionSheetTheme);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
-      if (props2.itemColor === "#000") {
-        _onThemeChange({
-          theme: getTheme()
-        });
-        onThemeChange$2(_onThemeChange);
-      }
-    } else {
-      offThemeChange$1(_onThemeChange);
-    }
-  });
-  return actionSheetTheme;
-}
-const VNODE_MASK = /* @__PURE__ */ createVNode(
-  "div",
-  { class: "uni-mask" },
-  null,
-  -1
-  /* HOISTED */
-);
 function createRootApp(component, rootState, callback) {
   rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
   return createApp(
@@ -18360,240 +19728,11 @@ function usePopup(props2, {
   });
   return visible;
 }
-let resolveAction;
-let rejectAction;
-let showActionSheetState;
-const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on(
-    "onHidePopup",
-    () => showActionSheetState.visible = false
-  );
-});
-function onActionSheetClose(tapIndex) {
-  if (tapIndex === -1) {
-    rejectAction && rejectAction("cancel");
-  } else {
-    resolveAction && resolveAction({ tapIndex });
-  }
-}
-const hideActionSheet = () => {
-  if (showActionSheetState) {
-    showActionSheetState.visible = false;
-  }
-};
-const showActionSheet = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_ACTION_SHEET,
-  (args, { resolve, reject }) => {
-    onHidePopupOnce$1();
-    resolveAction = resolve;
-    rejectAction = reject;
-    if (!showActionSheetState) {
-      showActionSheetState = reactive(args);
-      nextTick(
-        () => (createRootApp(
-          actionSheet,
-          showActionSheetState,
-          onActionSheetClose
-        ).mount(ensureRoot("u-s-a-s")), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showActionSheetState.visible = true))
-      );
-    } else {
-      extend(showActionSheetState, args);
-      showActionSheetState.visible = true;
-    }
-  },
-  ShowActionSheetProtocol,
-  ShowActionSheetOptions
-);
-const ModalTheme = {
-  light: {
-    cancelColor: "#000000"
-  },
-  dark: {
-    cancelColor: "rgb(170, 170, 170)"
-  }
-};
-const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
-const props$f = {
-  title: {
-    type: String,
-    default: ""
-  },
-  content: {
-    type: String,
-    default: ""
-  },
-  showCancel: {
-    type: Boolean,
-    default: true
-  },
-  cancelText: {
-    type: String,
-    default: "Cancel"
-  },
-  cancelColor: {
-    type: String,
-    default: "#000000"
-  },
-  confirmText: {
-    type: String,
-    default: "OK"
-  },
-  confirmColor: {
-    type: String,
-    default: "#576b95"
-  },
-  visible: {
-    type: Boolean
-  },
-  editable: {
-    type: Boolean,
-    default: false
-  },
-  placeholderText: {
-    type: String,
-    default: ""
-  }
-};
-const modal = /* @__PURE__ */ defineComponent({
-  props: props$f,
-  setup(props2, {
-    emit: emit2
-  }) {
-    const editContent = ref("");
-    const close = () => visible.value = false;
-    const cancel = () => (close(), emit2("close", "cancel"));
-    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
-    const visible = usePopup(props2, {
-      onEsc: cancel,
-      onEnter: () => {
-        !props2.editable && confirm();
-      }
-    });
-    const cancelColor = useOnThemeChange(props2);
-    return () => {
-      const {
-        title,
-        content,
-        showCancel,
-        confirmText,
-        confirmColor,
-        editable,
-        placeholderText
-      } = props2;
-      editContent.value = content;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-modal", {
-          "onTouchmove": onEventPrevent
-        }, [VNODE_MASK, createVNode("div", {
-          "class": "uni-modal"
-        }, [title || true ? createVNode("div", {
-          "class": "uni-modal__hd"
-        }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title || ""
-        }, null, 8, ["textContent"])]) : null, editable ? createVNode("div", {
-          "class": "uni-modal__bd",
-          "key": "uni-modal-bd-editable"
-        }, [createVNode("textarea", {
-          "class": "uni-modal__textarea",
-          "rows": "2",
-          "placeholder": placeholderText,
-          "value": content,
-          "onInput": (e2) => editContent.value = e2.target.value
-        }, null, 40, ["placeholder", "value", "onInput"])]) : createVNode("div", {
-          "class": "uni-modal__bd",
-          "onTouchmovePassive": onEventStop,
-          "textContent": content
-        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          "class": "uni-modal__ft"
-        }, [showCancel && createVNode("div", {
-          "style": {
-            color: cancelColor.value
-          },
-          "class": "uni-modal__btn uni-modal__btn_default",
-          "onClick": cancel
-        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          "style": {
-            color: confirmColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_primary",
-          "onClick": confirm
-        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
-      });
-    };
-  }
-});
-function useOnThemeChange(props2) {
-  const cancelColor = ref(props2.cancelColor);
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setCancelColor(theme, cancelColor);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      cancelColor.value = props2.cancelColor;
-      if (props2.cancelColor === "#000") {
-        if (getTheme() === "dark")
-          _onThemeChange({
-            theme: "dark"
-          });
-        onThemeChange$2(_onThemeChange);
-      }
-    } else {
-      offThemeChange$1(_onThemeChange);
-    }
-  });
-  return cancelColor;
-}
-let showModalState;
-const onHidePopupOnce = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
-});
-let currentShowModalResolve;
-function onModalClose(type, content) {
-  const isConfirm = type === "confirm";
-  const res = {
-    confirm: isConfirm,
-    cancel: type === "cancel"
-  };
-  isConfirm && showModalState.editable && (res.content = content);
-  currentShowModalResolve && currentShowModalResolve(res);
-}
 const hideModal = () => {
-  if (showModalState) {
-    showModalState.visible = false;
-  }
 };
-const showModal = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_MODAL,
-  (args, { resolve }) => {
-    onHidePopupOnce();
-    currentShowModalResolve = resolve;
-    if (!showModalState) {
-      showModalState = reactive(args);
-      nextTick(
-        () => (createRootApp(modal, showModalState, onModalClose).mount(
-          ensureRoot("u-a-m")
-        ), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showModalState.visible = true))
-      );
-    } else {
-      extend(showModalState, args);
-      showModalState.visible = true;
-    }
-  },
-  ShowModalProtocol,
-  ShowModalOptions
-);
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
-    hideActionSheet();
-    hideModal();
     uni.hideToast();
     uni.hideLoading();
   });
@@ -18642,11 +19781,11 @@ function createRouterOptions() {
   };
 }
 function removeCurrentPages(delta = 1) {
-  const keys = getCurrentPages$1();
+  const keys = getCurrentBasePages();
   const start = keys.length - 1;
   const end = start - delta;
   for (let i = start; i > end; i--) {
-    const page = keys[i].$page;
+    const page = getPage$BasePage(keys[i]);
     removePage(normalizeRouteKey(page.path, page.id), false);
   }
 }
@@ -18663,9 +19802,9 @@ function initHistory() {
   });
   return history2;
 }
-const index$d = {
+const index$c = {
   install(app) {
-    initApp$1(app);
+    initApp(app);
     initViewPlugin(app);
     initServicePlugin(app);
     if (!app.config.warnHandler) {
@@ -18694,327 +19833,6 @@ function warnHandler(msg, instance2, trace) {
   }
   console.warn(...warnArgs);
 }
-const clazz = { class: "uni-async-loading" };
-const loadingVNode = /* @__PURE__ */ createVNode(
-  "i",
-  { class: "uni-loading" },
-  null,
-  -1
-  /* HOISTED */
-);
-const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncLoading",
-  render() {
-    return openBlock(), createBlock("div", clazz, [loadingVNode]);
-  }
-});
-function reload() {
-  window.location.reload();
-}
-const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncError",
-  setup() {
-    initI18nAsyncMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    return () => createVNode("div", {
-      "class": "uni-async-error",
-      "onClick": reload
-    }, [t2("uni.async.error")], 8, ["onClick"]);
-  }
-});
-let appVm;
-let $uniApp;
-{
-  class UniAppImpl extends EventBus {
-    get vm() {
-      return appVm;
-    }
-    get $vm() {
-      return appVm;
-    }
-    get globalData() {
-      return (appVm == null ? void 0 : appVm.globalData) || {};
-    }
-  }
-  $uniApp = new UniAppImpl();
-}
-function getApp$1() {
-  {
-    return $uniApp;
-  }
-}
-function initApp(vm) {
-  appVm = vm;
-  Object.defineProperty(appVm.$.ctx, "$children", {
-    get() {
-      return getCurrentPages().map((page) => page.$vm);
-    }
-  });
-  const app = appVm.$.appContext.app;
-  if (!app.component(AsyncLoadingComponent.name)) {
-    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
-  }
-  if (!app.component(AsyncErrorComponent.name)) {
-    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
-  }
-  initAppVm(appVm);
-  defineGlobalData(appVm);
-  initService();
-  initView();
-}
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
-  if (clone) {
-    comp = extend({}, comp);
-  }
-  before && before(comp);
-  const oldSetup = comp.setup;
-  comp.setup = (props2, ctx) => {
-    const instance2 = getCurrentInstance();
-    init2(instance2.proxy);
-    setup(instance2);
-    if (oldSetup) {
-      return oldSetup(props2, ctx);
-    }
-  };
-  return comp;
-}
-function setupComponent(comp, options) {
-  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
-    return wrapperComponentSetup(comp.default, options);
-  }
-  return wrapperComponentSetup(comp, options);
-}
-function setupWindow(comp, id2) {
-  return setupComponent(comp, {
-    init: (vm) => {
-      vm.$page = {
-        id: id2
-      };
-    },
-    setup(instance2) {
-      instance2.$pageInstance = instance2;
-    }
-  });
-}
-function setupPage(comp) {
-  if (process.env.NODE_ENV !== "production") {
-    comp.__mpType = "page";
-  }
-  return setupComponent(comp, {
-    clone: true,
-    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
-    init: initPage,
-    setup(instance2) {
-      instance2.$pageInstance = instance2;
-      const route = usePageRoute();
-      const query = decodedQuery(route.query);
-      instance2.attrs.__pageQuery = query;
-      {
-        const pageInstance = getPageInstanceByChild(instance2);
-        if (pageInstance.attrs.type === "dialog") {
-          instance2.attrs.__pageQuery = decodedQuery(
-            parseQuery(pageInstance.attrs.route.split("?")[1] || "")
-          );
-        }
-      }
-      instance2.proxy.$page.options = query;
-      instance2.proxy.options = query;
-      const pageMeta = usePageMeta();
-      instance2.onReachBottom = reactive([]);
-      instance2.onPageScroll = reactive([]);
-      watch(
-        [instance2.onReachBottom, instance2.onPageScroll],
-        () => {
-          if (instance2.proxy === getCurrentPage()) {
-            initPageScrollListener(instance2, pageMeta);
-          }
-        },
-        { once: true }
-      );
-      onBeforeMount(() => {
-        onPageShow(instance2, pageMeta);
-      });
-      onMounted(() => {
-        var _a;
-        {
-          const pageInstance = getPageInstanceByChild(instance2);
-          if (pageInstance.attrs.type === "dialog") {
-            const parentPage = (_a = instance2.proxy) == null ? void 0 : _a.getParentPage();
-            const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage) : null;
-            if (parentPageInstance) {
-              const dialogPages = parentPageInstance.$dialogPages.value;
-              if (dialogPages.length > 1) {
-                const preDialogPage = dialogPages[dialogPages.length - 2];
-                const { onHide } = preDialogPage.$vm.$;
-                onHide && invokeArrayFns$1(onHide);
-              }
-            }
-          }
-        }
-        onPageReady(instance2);
-        const { onReady } = instance2;
-        onReady && invokeArrayFns$1(onReady);
-        invokeOnTabItemTap(route);
-      });
-      onBeforeActivate(() => {
-        if (!instance2.__isVisible) {
-          onPageShow(instance2, pageMeta);
-          instance2.__isVisible = true;
-          const { onShow } = instance2;
-          onShow && invokeArrayFns$1(onShow);
-          nextTick(() => {
-            invokeOnTabItemTap(route);
-          });
-        }
-      });
-      onBeforeDeactivate(() => {
-        if (instance2.__isVisible && !instance2.__isUnload) {
-          instance2.__isVisible = false;
-          {
-            const pageInstance = getPageInstanceByChild(instance2);
-            if (pageInstance.attrs.type !== "dialog") {
-              const { onHide } = instance2;
-              onHide && invokeArrayFns$1(onHide);
-            }
-          }
-        }
-      });
-      subscribeViewMethod(pageMeta.id);
-      onBeforeUnmount(() => {
-        unsubscribeViewMethod(pageMeta.id);
-      });
-      return query;
-    }
-  });
-}
-function setupApp(comp) {
-  if (process.env.NODE_ENV !== "production") {
-    comp.__mpType = "app";
-  }
-  return setupComponent(comp, {
-    init: initApp,
-    setup(instance2) {
-      const route = usePageRoute();
-      const onLaunch = () => {
-        injectAppHooks(instance2);
-        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2, onError: onError2 } = instance2;
-        const path = route.path.slice(1);
-        const launchOptions2 = initLaunchOptions({
-          path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query)
-        });
-        onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
-        onShow && invokeArrayFns$1(onShow, launchOptions2);
-        if (__UNI_FEATURE_PAGES__) {
-          if (!route.matched.length) {
-            const pageNotFoundOptions = {
-              notFound: true,
-              openType: "appLaunch",
-              path: route.path,
-              query: {},
-              scene: 1001
-            };
-            onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
-          }
-        }
-        if (onError2) {
-          instance2.appContext.config.errorHandler = (err) => {
-            invokeArrayFns$1(onError2, err);
-          };
-        }
-      };
-      if (__UNI_FEATURE_PAGES__) {
-        useRouter().isReady().then(onLaunch);
-      } else {
-        onBeforeMount(onLaunch);
-      }
-      onMounted(() => {
-        window.addEventListener(
-          "resize",
-          debounce(onResize, 50, { setTimeout, clearTimeout })
-        );
-        window.addEventListener("message", onMessage);
-        document.addEventListener("visibilitychange", onVisibilityChange);
-        onThemeChange$1();
-      });
-      return route.query;
-    },
-    before(comp2) {
-      comp2.mpType = "app";
-      const { setup } = comp2;
-      const render = () => {
-        return openBlock(), createBlock(LayoutComponent);
-      };
-      comp2.setup = (props2, ctx) => {
-        const res = setup && setup(props2, ctx);
-        return isFunction(res) ? render : res;
-      };
-      comp2.render = render;
-    }
-  });
-}
-function onResize() {
-  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
-  const landscape = Math.abs(Number(window.orientation)) === 90;
-  const deviceOrientation = landscape ? "landscape" : "portrait";
-  UniServiceJSBridge.emit(ON_RESIZE, {
-    deviceOrientation,
-    size: {
-      windowWidth,
-      windowHeight,
-      screenWidth,
-      screenHeight
-    }
-  });
-}
-function onMessage(evt) {
-  if (isPlainObject$1(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
-    UniServiceJSBridge.emit(
-      ON_WEB_INVOKE_APP_SERVICE,
-      evt.data.data,
-      evt.data.pageId
-    );
-  }
-}
-function onVisibilityChange() {
-  const { emit: emit2 } = UniServiceJSBridge;
-  if (document.visibilityState === "visible") {
-    emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
-  } else {
-    emit2(ON_APP_ENTER_BACKGROUND);
-  }
-}
-function onThemeChange$1() {
-  let mediaQueryList = null;
-  try {
-    mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
-  } catch (error) {
-  }
-  if (mediaQueryList) {
-    let callback = (e2) => {
-      UniServiceJSBridge.emit(ON_THEME_CHANGE, {
-        theme: e2.matches ? "dark" : "light"
-      });
-    };
-    if (mediaQueryList.addEventListener) {
-      mediaQueryList.addEventListener("change", callback);
-    } else {
-      mediaQueryList.addListener(callback);
-    }
-  }
-}
-function invokeOnTabItemTap(route) {
-  const { tabBarText, tabBarIndex, route: pagePath } = route.meta;
-  if (tabBarText) {
-    invokeHook("onTabItemTap", {
-      index: tabBarIndex,
-      text: tabBarText,
-      pagePath
-    });
-  }
-}
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
   const h2 = Math.floor(val / 3600);
@@ -19031,6 +19849,7 @@ function formatTime(val) {
 }
 function useGesture(props2, videoRef, fullscreenState) {
   const state2 = reactive({
+    seeking: false,
     gestureType: "none",
     volumeOld: 0,
     volumeNew: 0,
@@ -19047,7 +19866,6 @@ function useGesture(props2, videoRef, fullscreenState) {
     touchStartOrigin.y = toucher.pageY;
     state2.gestureType = "none";
     state2.volumeOld = 0;
-    state2.currentTimeOld = state2.currentTimeNew = 0;
   }
   function onTouchmove(event) {
     function stop() {
@@ -19068,6 +19886,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     const video = videoRef.value;
     if (gestureType === "progress") {
       changeProgress(pageX - origin.x);
+      state2.seeking = true;
     } else if (gestureType === "volume") {
       changeVolume(pageY - origin.y);
     }
@@ -19222,7 +20041,8 @@ function useVideo(props2, attrs2, trigger) {
     duration: 0,
     progress: 0,
     buffered: 0,
-    muted
+    muted,
+    pauseUpdatingCurrentTime: false
   });
   watch(() => src.value, () => {
     state2.playing = false;
@@ -19284,7 +20104,10 @@ function useVideo(props2, attrs2, trigger) {
   }
   function onTimeUpdate($event) {
     const video = $event.target;
-    const currentTime = state2.currentTime = video.currentTime;
+    if (!state2.pauseUpdatingCurrentTime) {
+      state2.currentTime = video.currentTime;
+    }
+    const currentTime = video.currentTime;
     trigger("timeupdate", $event, {
       currentTime,
       duration: video.duration
@@ -19342,13 +20165,14 @@ function useVideo(props2, attrs2, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek) {
+function useControls(props2, videoState, seek, seeking) {
   const progressRef = ref(null);
   const ballRef = ref(null);
   const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
   const controlsVisible = ref(true);
   const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
   const state2 = reactive({
+    seeking: false,
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -19397,13 +20221,6 @@ function useControls(props2, videoState, seek) {
       autoHideEnd();
     }
   });
-  watch([() => videoState.currentTime, () => {
-    props2.duration;
-  }], function updateProgress() {
-    if (!state2.touching) {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
-    }
-  });
   onMounted(() => {
     const passiveOptions2 = passive(false);
     let originX;
@@ -19429,6 +20246,8 @@ function useControls(props2, videoState, seek) {
         progress = 100;
       }
       videoState.progress = progress;
+      seeking == null ? void 0 : seeking(videoState.duration * progress / 100);
+      state2.seeking = true;
       event.preventDefault();
       event.stopPropagation();
     }
@@ -19576,7 +20395,26 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
     }
   }, id2, true);
 }
-const props$e = {
+function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
+  const progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  watch(progressing, (val) => {
+    videoState.pauseUpdatingCurrentTime = val;
+    controlsState.controlsTouching = val;
+    if (gestureState.gestureType === "progress" && val) {
+      controlsState.controlsVisible = val;
+    }
+  });
+  watch([() => videoState.currentTime, () => {
+    props$d.duration;
+  }], () => {
+    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  });
+  watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
+    videoState.currentTime = currentTimeNew;
+  });
+  return progressing;
+}
+const props$d = {
   id: {
     type: String,
     default: ""
@@ -19662,9 +20500,9 @@ const props$e = {
 };
 class UniVideoElement extends UniElement {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$e,
+  props: props$d,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   rootElement: {
     name: "uni-video",
@@ -19735,9 +20573,14 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls
-    } = useControls(props2, videoState, seek);
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
+    } = useControls(props2, videoState, seek, (currentTimeNew) => {
+      gestureState.currentTimeNew = currentTimeNew;
+    });
     useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    const progressing = useProgressing(videoState, gestureState, controlsState);
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.assign(rootElement, {
@@ -19803,6 +20646,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-controls"
       }, [withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
@@ -19815,30 +20659,44 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-progress-container",
         "onClick": withModifiers(clickProgress, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-progress"
+        "class": {
+          "uni-video-progress": true,
+          "uni-video-progress-progressing": progressing.value
+        }
       }, [createVNode("div", {
         "style": {
-          width: videoState.buffered + "%"
+          width: videoState.buffered - videoState.progress + "%",
+          left: videoState.progress + "%"
         },
         "class": "uni-video-progress-buffered"
+      }, null, 4), createVNode("div", {
+        "style": {
+          width: videoState.progress + "%"
+        },
+        "class": "uni-video-progress-played"
       }, null, 4), createVNode("div", {
         "ref": ballRef,
         "style": {
           left: videoState.progress + "%"
         },
-        "class": "uni-video-ball"
+        "class": {
+          "uni-video-ball": true,
+          "uni-video-ball-progressing": progressing.value
+        }
       }, [createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+      }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
         "onClick": withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+      }, null, 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
@@ -19852,11 +20710,9 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": withModifiers(() => {
         }, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-cover-play-button",
+        "class": "uni-video-cover-play-button uni-video-icon",
         "onClick": withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+      }, null, 8, ["onClick"])], 8, ["onClick"]), createVNode("div", {
         "class": {
           "uni-video-toast": true,
           "uni-video-toast-volume": gestureState.gestureType === "volume"
@@ -19886,11 +20742,13 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       }, null))])], 4)])], 2), createVNode("div", {
         "class": {
           "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
+          "uni-video-toast-progress": progressing.value
         }
       }, [createVNode("div", {
         "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+      }, [createVNode("span", {
+        "class": "uni-video-toast-title-current-time"
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -19904,7 +20762,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$d = {
+const props$c = {
   src: {
     type: String,
     default: ""
@@ -19915,7 +20773,7 @@ class UniWebViewElement extends UniElement {
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$d,
+  props: props$c,
   rootElement: {
     name: "uni-web-view",
     class: UniWebViewElement
@@ -19964,11 +20822,11 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-let index$b = 0;
+let index$a = 0;
 function getJSONP(url, options, success, error) {
   var js = document.createElement("script");
   var callbackKey = options.callback || "callback";
-  var callbackName = "__uni_jsonp_callback_" + index$b++;
+  var callbackName = "__uni_jsonp_callback_" + index$a++;
   var timeout = options.timeout || 3e4;
   var timing;
   function end() {
@@ -20358,7 +21216,7 @@ function translateCoordinateSystem(type, coords, skip) {
   }
   return Promise.reject(new Error("translate coordinate system faild"));
 }
-const props$c = {
+const props$b = {
   id: {
     type: [Number, String],
     default: ""
@@ -20444,7 +21302,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$c,
+  props: props$b,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -20726,9 +21584,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
             }
             const a2 = marker.getPosition();
             const b = new maps2.LatLng(destination.latitude, destination.longitude);
-            const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
+            const distance = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
             const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
-            const speed = distance2 / time;
+            const speed = distance / time;
             const MapsEvent = maps2.event || maps2.Event;
             const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
               const latLng = e2.latLng;
@@ -20787,41 +21645,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function hexToRgba(hex) {
-  if (!hex) {
-    return {
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0
-    };
-  }
-  let tmpHex = hex.slice(1);
-  const tmpHexLen = tmpHex.length;
-  if (![3, 4, 6, 8].includes(tmpHexLen)) {
-    return {
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0
-    };
-  }
-  if (tmpHexLen === 3 || tmpHexLen === 4) {
-    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
-  }
-  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
-  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
-  if (!sa) {
-    return { r, g: g2, b, a: 1 };
-  }
-  return {
-    r,
-    g: g2,
-    b,
-    a: (`0x100${sa}` - 65536) / 255
-  };
-}
-const props$b = {
+const props$a = {
   points: {
     type: Array,
     require: true
@@ -20867,7 +21691,7 @@ const props$b = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$b,
+  props: props$a,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -20956,7 +21780,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$a = {
+const props$9 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -20988,7 +21812,7 @@ const props$a = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$a,
+  props: props$9,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -21064,7 +21888,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$9 = {
+const props$8 = {
   id: {
     type: [Number, String],
     default: ""
@@ -21088,7 +21912,7 @@ const props$9 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$9,
+  props: props$8,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -21356,24 +22180,20 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       osname,
       osversion
     } = browserInfo;
-    return extend(
-      {
-        brand,
-        deviceBrand,
-        deviceModel,
-        devicePixelRatio: window.devicePixelRatio,
-        deviceId: deviceId$1(),
-        deviceOrientation,
-        deviceType,
-        model,
-        platform,
-        system
-      },
-      {
-        osName: osname ? osname.toLocaleLowerCase() : void 0,
-        osVersion: osversion
-      }
-    );
+    return extend({
+      brand,
+      deviceBrand,
+      deviceModel,
+      devicePixelRatio: window.devicePixelRatio,
+      deviceId: deviceId$1(),
+      deviceOrientation,
+      deviceType,
+      model,
+      platform,
+      system,
+      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osVersion: osversion
+    });
   }
 );
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
@@ -21399,14 +22219,17 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         language,
         SDKVersion: "",
         theme,
-        version: ""
+        version: "",
+        uniPlatform: "web",
+        isUniAppX: true,
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniCompilerVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion
       },
       {
-        uniCompilerVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion,
         uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
         uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
-        isUniAppX: true
+        uniRuntimeVersion: __uniConfig.compilerVersion
       }
     );
   }
@@ -21735,6 +22558,32 @@ const offThemeChange = /* @__PURE__ */ defineOffApi(
     UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
   }
 );
+const THEME_CALLBACK = [];
+const onHostThemeChange = /* @__PURE__ */ defineSyncApi(
+  ON_HOST_THEME_CHANGE,
+  (callback) => {
+    const onHostThemeChangeCallback = (res) => {
+      callback({ hostTheme: res.theme });
+    };
+    const index2 = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1;
+    UniServiceJSBridge.on(ON_THEME_CHANGE, onHostThemeChangeCallback);
+    return index2;
+  }
+);
+const offHostThemeChange = /* @__PURE__ */ defineSyncApi(
+  OFF_HOST_THEME_CHANGE,
+  (callbackId) => {
+    if (isFunction(callbackId)) {
+      callbackId = THEME_CALLBACK.findIndex(
+        ([callback]) => callback === callbackId
+      );
+    }
+    if (callbackId > -1) {
+      const arr = THEME_CALLBACK.splice(callbackId, 1)[0];
+      isArray(arr) && UniServiceJSBridge.off(ON_THEME_CHANGE, arr[1]);
+    }
+  }
+);
 const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
@@ -21745,8 +22594,8 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
-          if (type === "object" && !Array.isArray(object.data)) {
-            return new UTSJSONObject(object.data);
+          if (type === "object") {
+            return UTS.JSON.parse(JSON.stringify(object.data));
           }
           return object.data;
         }
@@ -22190,13 +23039,13 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
   ChooseImageProtocol,
   ChooseImageOptions
 );
-let index$a = 0;
+let index$9 = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$a;
-  index$a += prevent ? 1 : -1;
-  index$a = Math.max(0, index$a);
-  if (index$a > 0) {
+  let before = index$9;
+  index$9 += prevent ? 1 : -1;
+  index$9 = Math.max(0, index$9);
+  if (index$9 > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -22210,7 +23059,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$8 = {
+const props$7 = {
   src: {
     type: String,
     default: ""
@@ -22218,7 +23067,7 @@ const props$8 = {
 };
 const ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$8,
+  props: props$7,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -22305,10 +23154,10 @@ const ImageView = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function _isSlot$2(s) {
+function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$7 = {
+const props$6 = {
   urls: {
     type: Array,
     default() {
@@ -22327,7 +23176,7 @@ function getIndex(props2) {
 }
 const ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$7,
+  props: props$6,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -22405,7 +23254,7 @@ const ImagePreview = /* @__PURE__ */ defineSystemComponent({
           width: "100%",
           height: "100%"
         }
-      }, _isSlot$2(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
+      }, _isSlot$1(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
         default: () => [createVNode(ImageView, {
           "src": src
         }, null, 8, ["src"])]
@@ -22418,10 +23267,10 @@ const ImagePreview = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-let state$2 = null;
+let state$1 = null;
 let imagePreviewInstance;
 const closePreviewImageView = () => {
-  state$2 = null;
+  state$1 = null;
   nextTick(() => {
     imagePreviewInstance == null ? void 0 : imagePreviewInstance.unmount();
     imagePreviewInstance = null;
@@ -22430,18 +23279,18 @@ const closePreviewImageView = () => {
 const previewImage = /* @__PURE__ */ defineAsyncApi(
   API_PREVIEW_IMAGE,
   (args, { resolve }) => {
-    if (!state$2) {
-      state$2 = reactive(args);
+    if (!state$1) {
+      state$1 = reactive(args);
       nextTick(() => {
         imagePreviewInstance = createRootApp(
           ImagePreview,
-          state$2,
+          state$1,
           closePreviewImageView
         );
         imagePreviewInstance.mount(ensureRoot("u-a-p"));
       });
     } else {
-      extend(state$2, args);
+      extend(state$1, args);
     }
     resolve();
   },
@@ -23217,7 +24066,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
   GetLocationOptions
 );
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$6 = {
+const props$5 = {
   latitude: {
     type: Number
   },
@@ -23237,7 +24086,7 @@ const props$6 = {
     default: ""
   }
 };
-function useState$2(props2) {
+function useState$1(props2) {
   const state2 = reactive({
     center: {
       latitude: 0,
@@ -23274,12 +24123,12 @@ function useState$2(props2) {
 }
 const LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$6,
+  props: props$5,
   emits: ["close"],
   setup(props2, {
     emit: emit2
   }) {
-    const state2 = useState$2(props2);
+    const state2 = useState$1(props2);
     usePreventScroll();
     getLocation({
       type: "gcj02",
@@ -23326,7 +24175,7 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
     return () => {
       return createVNode("div", {
         "class": "uni-system-open-location"
-      }, [createVNode(Map$1, {
+      }, [createVNode(__syscom_0, {
         "latitude": state2.center.latitude,
         "longitude": state2.center.longitude,
         "class": "map",
@@ -23355,15 +24204,15 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-let state$1 = null;
+let state = null;
 const openLocation = /* @__PURE__ */ defineAsyncApi(
   API_OPEN_LOCATION,
   (args, { resolve }) => {
-    if (!state$1) {
-      state$1 = reactive(args);
+    if (!state) {
+      state = reactive(args);
       nextTick(() => {
-        const app = createRootApp(LocationView, state$1, () => {
-          state$1 = null;
+        const app = createRootApp(LocationView, state, () => {
+          state = null;
           nextTick(() => {
             app.unmount();
           });
@@ -23371,363 +24220,12 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(
         app.mount(ensureRoot("u-a-o"));
       });
     } else {
-      extend(state$1, args);
+      extend(state, args);
     }
     resolve();
   },
   OpenLocationProtocol,
   OpenLocationOptions
-);
-function _isSlot$1(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-const props$5 = {
-  latitude: {
-    type: Number
-  },
-  longitude: {
-    type: Number
-  }
-};
-function distance(distance2) {
-  if (distance2 > 100) {
-    return `${distance2 > 1e3 ? (distance2 / 1e3).toFixed(1) + "k" : distance2.toFixed(0)}m | `;
-  } else if (distance2 > 0) {
-    return "<100m | ";
-  } else {
-    return "";
-  }
-}
-function useState$1(props2) {
-  const state2 = reactive({
-    latitude: 0,
-    longitude: 0,
-    keyword: "",
-    searching: false
-  });
-  function updatePosition() {
-    if (props2.latitude && props2.longitude) {
-      state2.latitude = props2.latitude;
-      state2.longitude = props2.longitude;
-    }
-  }
-  watch([() => props2.latitude, () => props2.longitude], updatePosition);
-  updatePosition();
-  return state2;
-}
-function useList(state2) {
-  const key = __uniConfig.qqMapKey;
-  const list2 = reactive([]);
-  const selectedIndexRef = ref(-1);
-  const selectedRef = computed(() => list2[selectedIndexRef.value]);
-  const listState = reactive({
-    loading: true,
-    // google map default
-    pageSize: 20,
-    pageIndex: 1,
-    hasNextPage: true,
-    nextPage: null,
-    selectedIndex: selectedIndexRef,
-    selected: selectedRef
-  });
-  const adcodeRef = ref("");
-  const boundaryRef = computed(() => adcodeRef.value ? `region(${adcodeRef.value},1,${state2.latitude},${state2.longitude})` : `nearby(${state2.latitude},${state2.longitude},5000)`);
-  function pushData(array) {
-    array.forEach((item) => {
-      list2.push({
-        name: item.title || item.name,
-        address: item.address,
-        distance: item._distance || item.distance,
-        latitude: item.location.lat,
-        longitude: item.location.lng
-      });
-    });
-  }
-  function getList() {
-    listState.loading = true;
-    const mapInfo = getMapInfo();
-    if (mapInfo.type === MapType.GOOGLE) {
-      if (listState.pageIndex > 1 && listState.nextPage) {
-        listState.nextPage();
-        return;
-      }
-      const service = new google.maps.places.PlacesService(document.createElement("div"));
-      service[state2.searching ? "textSearch" : "nearbySearch"]({
-        location: {
-          lat: state2.latitude,
-          lng: state2.longitude
-        },
-        query: state2.keyword,
-        radius: 5e3
-      }, (results, state3, page) => {
-        listState.loading = false;
-        if (results && results.length) {
-          results.forEach((item) => {
-            list2.push({
-              name: item.name || "",
-              address: item.vicinity || item.formatted_address || "",
-              distance: 0,
-              latitude: item.geometry.location.lat(),
-              longitude: item.geometry.location.lng()
-            });
-          });
-        }
-        if (page) {
-          if (!page.hasNextPage) {
-            listState.hasNextPage = false;
-          } else {
-            listState.nextPage = () => {
-              page.nextPage();
-            };
-          }
-        }
-      });
-    } else if (mapInfo.type === MapType.QQ) {
-      const url = state2.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state2.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state2.latitude},${state2.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`;
-      getJSONP(url, {
-        callback: "callback"
-      }, (res) => {
-        listState.loading = false;
-        if (state2.searching && "data" in res && res.data.length) {
-          pushData(res.data);
-        } else if ("result" in res) {
-          const result = res.result;
-          adcodeRef.value = result.ad_info ? result.ad_info.adcode : "";
-          if (result.pois) {
-            pushData(result.pois);
-          }
-        }
-        if (list2.length === listState.pageSize * listState.pageIndex) {
-          listState.hasNextPage = false;
-        }
-      }, () => {
-        listState.loading = false;
-      });
-    } else if (mapInfo.type === MapType.AMAP) {
-      window.AMap.plugin("AMap.PlaceSearch", function() {
-        const placeSearch = new window.AMap.PlaceSearch({
-          city: "全国",
-          pageSize: 10,
-          pageIndex: listState.pageIndex
-        });
-        const keyword = state2.searching ? state2.keyword : "";
-        const radius = state2.searching ? 5e4 : 5e3;
-        placeSearch.searchNearBy(keyword, [state2.longitude, state2.latitude], radius, function(status, result) {
-          if (status === "error") {
-            console.error(result);
-          } else if (status === "no_data") {
-            listState.hasNextPage = false;
-          } else {
-            pushData(result.poiList.pois);
-          }
-        });
-        listState.loading = false;
-      });
-    }
-  }
-  function loadMore() {
-    if (!listState.loading && listState.hasNextPage) {
-      listState.pageIndex++;
-      getList();
-    }
-  }
-  function reset() {
-    listState.selectedIndex = -1;
-    listState.pageIndex = 1;
-    listState.hasNextPage = true;
-    listState.nextPage = null;
-    list2.splice(0, list2.length);
-  }
-  return {
-    listState,
-    list: list2,
-    loadMore,
-    reset,
-    getList
-  };
-}
-const LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
-  name: "LoctaionPicker",
-  props: props$5,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    usePreventScroll();
-    initI18nChooseLocationMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    const state2 = useState$1(props2);
-    const {
-      list: list2,
-      listState,
-      loadMore,
-      reset,
-      getList
-    } = useList(state2);
-    const search = debounce(() => {
-      reset();
-      if (state2.keyword) {
-        getList();
-      }
-    }, 1e3, {
-      setTimeout,
-      clearTimeout
-    });
-    watch(() => state2.searching, (val) => {
-      reset();
-      if (!val) {
-        getList();
-      }
-    });
-    function onInput(event) {
-      state2.keyword = event.detail.value;
-      search();
-    }
-    function onChoose() {
-      emit2("close", extend({}, listState.selected));
-    }
-    function onBack() {
-      emit2("close");
-    }
-    function onRegionChange(event) {
-      const centerLocation = event.detail.centerLocation;
-      if (centerLocation) {
-        move(centerLocation);
-      }
-    }
-    function moveToLocation() {
-      getLocation({
-        type: "gcj02",
-        success: move,
-        fail: () => {
-        }
-      });
-    }
-    function move({
-      latitude,
-      longitude
-    }) {
-      state2.latitude = latitude;
-      state2.longitude = longitude;
-      if (!state2.searching) {
-        reset();
-        getList();
-      }
-    }
-    if (!state2.latitude || !state2.longitude) {
-      moveToLocation();
-    }
-    return () => {
-      const content = list2.map((item, index2) => {
-        return createVNode("div", {
-          "key": index2,
-          "class": {
-            "list-item": true,
-            selected: listState.selectedIndex === index2
-          },
-          "onClick": () => {
-            listState.selectedIndex = index2;
-            state2.latitude = item.latitude;
-            state2.longitude = item.longitude;
-          }
-        }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#007aff", 24), createVNode("div", {
-          "class": "list-item-title"
-        }, [item.name]), createVNode("div", {
-          "class": "list-item-detail"
-        }, [distance(item.distance), item.address])], 10, ["onClick"]);
-      });
-      if (listState.loading) {
-        content.unshift(createVNode("div", {
-          "class": "list-loading"
-        }, [createVNode("i", {
-          "class": "uni-loading"
-        }, null)]));
-      }
-      return createVNode("div", {
-        "class": "uni-system-choose-location"
-      }, [createVNode(Map$1, {
-        "latitude": state2.latitude,
-        "longitude": state2.longitude,
-        "class": "map",
-        "show-location": true,
-        "libraries": ["places"],
-        "onUpdated": getList,
-        "onRegionchange": onRegionChange
-      }, {
-        default: () => [createVNode("div", {
-          "class": "map-location",
-          "style": `background-image: url("${ICON_PATH_TARGET}")`
-        }, null), createVNode("div", {
-          "class": "map-move",
-          "onClick": moveToLocation
-        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])],
-        _: 1
-      }, 8, ["latitude", "longitude", "show-location", "onUpdated", "onRegionchange"]), createVNode("div", {
-        "class": "nav"
-      }, [createVNode("div", {
-        "class": "nav-btn back",
-        "onClick": onBack
-      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 8, ["onClick"]), createVNode("div", {
-        "class": {
-          "nav-btn": true,
-          confirm: true,
-          disable: !listState.selected
-        },
-        "onClick": onChoose
-      }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#ffffff", 26)], 10, ["onClick"])]), createVNode("div", {
-        "class": "menu"
-      }, [createVNode("div", {
-        "class": "search"
-      }, [createVNode(Input, {
-        "value": state2.keyword,
-        "class": "search-input",
-        "placeholder": t2("uni.chooseLocation.search"),
-        "onFocus": () => state2.searching = true,
-        "onInput": onInput
-      }, null, 8, ["value", "placeholder", "onFocus", "onInput"]), state2.searching && createVNode("div", {
-        "class": "search-btn",
-        "onClick": () => {
-          state2.searching = false;
-          state2.keyword = "";
-        }
-      }, [t2("uni.chooseLocation.cancel")], 8, ["onClick"])]), createVNode(ScrollView, {
-        "scroll-y": true,
-        "class": "list",
-        "onScrolltolower": loadMore
-      }, _isSlot$1(content) ? content : {
-        default: () => [content],
-        _: 2
-      }, 8, ["scroll-y", "onScrolltolower"])])]);
-    };
-  }
-});
-let state = null;
-const chooseLocation = /* @__PURE__ */ defineAsyncApi(
-  API_CHOOSE_LOCATION,
-  (args, { resolve, reject }) => {
-    if (!state) {
-      state = reactive(args);
-      nextTick(() => {
-        const app = createRootApp(
-          LoctaionPicker,
-          state,
-          (poi) => {
-            state = null;
-            nextTick(() => {
-              app.unmount();
-            });
-            poi ? resolve(poi) : reject("cancel");
-          }
-        );
-        app.mount(ensureRoot("u-a-c"));
-      });
-    } else {
-      reject("cancel");
-    }
-  },
-  ChooseLocationProtocol
 );
 let started = false;
 let watchId = 0;
@@ -23815,7 +24313,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
       if (currentPage) {
         const dialogPages = currentPage.getDialogPages();
         const dialogPage = dialogPages[dialogPages.length - 1];
-        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.$vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
+        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
           canBack = false;
         }
       }
@@ -23868,6 +24366,25 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
   },
   PreloadPageProtocol
 );
+if (process.env.NODE_ENV !== "production") {
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("Preload pages in uni-app-x development mode.");
+    __uniRoutes.reduce((prev, route) => {
+      return prev.then(() => {
+        return new Promise((resolve) => {
+          preloadPage({
+            url: route.alias || route.path,
+            complete() {
+              setTimeout(() => {
+                resolve();
+              }, 200);
+            }
+          });
+        });
+      });
+    }, Promise.resolve());
+  });
+}
 const props$4 = {
   title: {
     type: String,
@@ -23950,7 +24467,7 @@ function useToastIcon(props2) {
   }) => iconColor.value = getIconColor(theme);
   watchEffect(() => {
     if (props2.visible) {
-      onThemeChange$2(_onThemeChange);
+      onThemeChange$1(_onThemeChange);
     } else {
       offThemeChange$1(_onThemeChange);
     }
@@ -24093,19 +24610,6 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   },
   LoadFontFaceProtocol
 );
-function updateDocumentTitle(title) {
-  {
-    document.title = title;
-  }
-  UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
-}
-function useDocumentTitle(pageMeta) {
-  function update() {
-    updateDocumentTitle(pageMeta.navigationBar.titleText);
-  }
-  watchEffect(update);
-  onActivated(update);
-}
 function setNavigationBar(pageMeta, type, args, resolve, reject) {
   if (!pageMeta) {
     return reject("page not found");
@@ -24245,9 +24749,9 @@ function setProperties(item, props2, propsData) {
 function setTabBar(type, args, resolve, reject) {
   var _a;
   let isTabBar = false;
-  const pages = getCurrentPages();
+  const pages = getCurrentBasePages();
   if (pages.length) {
-    if (pages[pages.length - 1].$page.meta.isTabBar) {
+    if (getPage$BasePage(pages[pages.length - 1]).meta.isTabBar) {
       isTabBar = true;
     }
   }
@@ -24751,11 +25255,11 @@ function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
   function checkMaxWidth2() {
     const windowWidth = document.body.clientWidth;
-    const pages = getCurrentPages();
+    const pages = getCurrentBasePages();
     let meta = {};
     if (pages.length > 0) {
       const curPage = pages[pages.length - 1];
-      meta = curPage.$page.meta;
+      meta = getPage$BasePage(curPage).meta;
     } else {
       const routeOptions = getRouteOptions(route.path, true);
       if (routeOptions) {
@@ -24952,7 +25456,9 @@ function useTopWindow(layoutState) {
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
@@ -24972,7 +25478,9 @@ function useLeftWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
@@ -24992,7 +25500,9 @@ function useRightWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {
@@ -25282,6 +25792,19 @@ const getProvider = /* @__PURE__ */ defineAsyncApi(
   API_GET_PROVIDER,
   createUnsupportedAsyncApi(API_GET_PROVIDER)
 );
+class CanvasImage extends Image {
+  constructor() {
+    super();
+    this._src = "";
+  }
+  get src() {
+    return this._src;
+  }
+  set src(value) {
+    this._src = value;
+    super.src = getRealPath(value);
+  }
+}
 class CanvasContextImpl {
   constructor(element) {
     this._element = element;
@@ -25297,7 +25820,7 @@ class CanvasContextImpl {
   }
   // @ts-expect-error TODO 类型不匹配?
   createImage() {
-    return new Image();
+    return new CanvasImage();
   }
   createPath2D() {
     return new Path2D();
@@ -25310,343 +25833,40 @@ class CanvasContextImpl {
   }
 }
 const createCanvasContextAsync = function(options) {
-  var _a, _b, _c, _d, _e, _f;
-  const currentPage = (_a = options.component) != null ? _a : getCurrentPages()[getCurrentPages().length - 1];
-  if (currentPage != null) {
-    const element = (_b = currentPage.$el) == null ? void 0 : _b.querySelector("#" + options.id);
-    if (element != null) {
-      const canvas = element;
-      (_c = options.success) == null ? void 0 : _c.call(options, new CanvasContextImpl(canvas));
-    } else {
-      const uniError = new UniError(
-        "uni-createCanvasContextAsync",
-        -1,
-        "canvas id invalid."
-      );
-      (_d = options.fail) == null ? void 0 : _d.call(options, uniError);
-    }
-  } else {
-    const uniError = new UniError(
-      "uni-createCanvasContextAsync",
-      -1,
-      "No found current page."
+  nextTick(() => {
+    var _a;
+    const pages = getCurrentBasePages();
+    const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
+    requestComponentInfo(
+      currentPage,
+      [
+        {
+          component: currentPage,
+          selector: "#" + options.id,
+          single: true,
+          fields: {
+            node: true
+          }
+        }
+      ],
+      (result) => {
+        var _a2, _b, _c;
+        if (result.length > 0) {
+          const canvas = result[0].node;
+          (_a2 = options.success) == null ? void 0 : _a2.call(options, new CanvasContextImpl(canvas));
+        } else {
+          const uniError = new UniError(
+            "uni-createCanvasContextAsync",
+            -1,
+            "canvas id invalid."
+          );
+          (_b = options.fail) == null ? void 0 : _b.call(options, uniError);
+        }
+        (_c = options.complete) == null ? void 0 : _c.call(options);
+      }
     );
-    (_e = options.fail) == null ? void 0 : _e.call(options, uniError);
-  }
-  (_f = options.complete) == null ? void 0 : _f.call(options);
-};
-const openDialogPage = (options) => {
-  var _a, _b;
-  if (!options.url) {
-    triggerFailCallback$1(options, "url is required");
-    return null;
-  }
-  const normalizeUrl = createNormalizeUrl("navigateTo");
-  const errMsg = normalizeUrl(options.url, {});
-  if (errMsg) {
-    triggerFailCallback$1(options, errMsg);
-    return null;
-  }
-  const targetRoute = __uniRoutes.find((route) => {
-    return options.url.indexOf(route.meta.route) !== -1;
   });
-  if (!targetRoute) {
-    triggerFailCallback$1(options, `page '${options.url}' is not found`);
-    return null;
-  }
-  const dialogPage = new DialogPageImpl({
-    route: options.url,
-    $component: targetRoute.component,
-    getParentPage: () => null,
-    $disableEscBack: options.disableEscBack
-  });
-  let parentPage = options.parentPage;
-  const currentPages = getCurrentPages();
-  if (parentPage) {
-    if (currentPages.indexOf(parentPage) === -1) {
-      triggerFailCallback$1(options, "parentPage is not a valid page");
-      return null;
-    }
-  }
-  if (!currentPages.length) {
-    homeDialogPages.push(dialogPage);
-  } else {
-    if (!parentPage) {
-      parentPage = currentPages[currentPages.length - 1];
-    }
-    dialogPage.getParentPage = () => parentPage;
-    getPageInstanceByVm(
-      parentPage
-    ).$dialogPages.value.push(dialogPage);
-  }
-  if (!options.disableEscBack) {
-    incrementEscBackPageNum();
-  }
-  const successOptions = {
-    errMsg: "openDialogPage: ok",
-    eventChannel: new EventChannel(0, options.events)
-  };
-  (_a = options.success) == null ? void 0 : _a.call(options, successOptions);
-  (_b = options.complete) == null ? void 0 : _b.call(options, successOptions);
-  return dialogPage;
 };
-function triggerFailCallback$1(options, errMsg) {
-  var _a, _b;
-  const failOptions = new UniError(
-    "uni-openDialogPage",
-    4,
-    `openDialogPage: fail, ${errMsg}`
-  );
-  (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
-  (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
-}
-const closeDialogPage = (options) => {
-  var _a, _b, _c;
-  const currentPages = getCurrentPages();
-  const currentPage = currentPages[currentPages.length - 1];
-  if (!currentPage) {
-    triggerFailCallback(options, "currentPage is null");
-    return;
-  }
-  if (options == null ? void 0 : options.dialogPage) {
-    const dialogPage = options == null ? void 0 : options.dialogPage;
-    const parentPage = (_a = dialogPage.getParentPage) == null ? void 0 : _a.call(dialogPage);
-    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.getDialogPages();
-      const index2 = parentDialogPages.indexOf(dialogPage);
-      parentDialogPages.splice(index2, 1);
-      invokeHook(dialogPage.$vm, ON_UNLOAD);
-      if (index2 > 0 && index2 === parentDialogPages.length) {
-        invokeHook(
-          parentDialogPages[parentDialogPages.length - 1].$vm,
-          ON_SHOW
-        );
-      }
-      if (!dialogPage.$disableEscBack) {
-        decrementEscBackPageNum();
-      }
-    } else {
-      triggerFailCallback(options, "dialogPage is not a valid page");
-      return;
-    }
-  } else {
-    const dialogPages = getPageInstanceByVm(
-      currentPage
-    ).$dialogPages.value;
-    for (let i = dialogPages.length - 1; i >= 0; i--) {
-      invokeHook(dialogPages[i].$vm, ON_UNLOAD);
-      if (i > 0) {
-        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
-      }
-      if (!dialogPages[i].$disableEscBack) {
-        decrementEscBackPageNum();
-      }
-    }
-    dialogPages.length = 0;
-  }
-  const successOptions = { errMsg: "closeDialogPage: ok" };
-  (_b = options == null ? void 0 : options.success) == null ? void 0 : _b.call(options, successOptions);
-  (_c = options == null ? void 0 : options.complete) == null ? void 0 : _c.call(options, successOptions);
-};
-function triggerFailCallback(options, errMsg) {
-  var _a, _b;
-  const failOptions = new UniError(
-    "uni-closeDialogPage",
-    4,
-    `closeDialogPage: fail, ${errMsg}`
-  );
-  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
-}
-window.UniResizeObserver = window.ResizeObserver;
-const api = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  $emit,
-  $off,
-  $on,
-  $once,
-  addInterceptor,
-  addPhoneContact,
-  arrayBufferToBase64,
-  base64ToArrayBuffer,
-  canIUse,
-  canvasGetImageData,
-  canvasPutImageData,
-  canvasToTempFilePath,
-  chooseFile,
-  chooseImage,
-  chooseLocation,
-  chooseVideo,
-  clearStorage,
-  clearStorageSync,
-  closeDialogPage,
-  closePreviewImage,
-  closeSocket,
-  connectSocket,
-  createAnimation: createAnimation$1,
-  createCameraContext,
-  createCanvasContext,
-  createCanvasContextAsync,
-  createInnerAudioContext,
-  createIntersectionObserver,
-  createLivePlayerContext,
-  createMapContext,
-  createMediaQueryObserver,
-  createSelectorQuery,
-  createVideoContext,
-  cssBackdropFilter,
-  cssConstant,
-  cssEnv,
-  cssVar,
-  downloadFile,
-  getAppBaseInfo,
-  getClipboardData,
-  getDeviceInfo,
-  getElementById,
-  getEnterOptionsSync,
-  getFileInfo,
-  getImageInfo,
-  getLaunchOptionsSync,
-  getLeftWindowStyle,
-  getLocale,
-  getLocation,
-  getNetworkType,
-  getProvider,
-  getPushClientId,
-  getRecorderManager,
-  getRightWindowStyle,
-  getSavedFileInfo,
-  getSavedFileList,
-  getScreenBrightness,
-  getSelectedTextRange: getSelectedTextRange$1,
-  getStorage,
-  getStorageInfo,
-  getStorageInfoSync,
-  getStorageSync,
-  getSystemInfo,
-  getSystemInfoSync,
-  getTabBarPageId,
-  getTopWindowStyle,
-  getVideoInfo,
-  getWindowInfo,
-  hideActionSheet,
-  hideKeyboard,
-  hideLeftWindow,
-  hideLoading,
-  hideModal,
-  hideNavigationBarLoading,
-  hideRightWindow,
-  hideTabBar,
-  hideTabBarRedDot,
-  hideToast,
-  hideTopWindow,
-  interceptors,
-  invokePushCallback,
-  loadFontFace,
-  login,
-  makePhoneCall,
-  navigateBack,
-  navigateTo,
-  offAccelerometerChange,
-  offAppHide,
-  offAppShow,
-  offCompassChange,
-  offError,
-  offLocationChange,
-  offLocationChangeError,
-  offNetworkStatusChange,
-  offPageNotFound,
-  offPushMessage,
-  offThemeChange,
-  offUnhandledRejection,
-  offWindowResize,
-  onAccelerometerChange,
-  onAppHide,
-  onAppShow,
-  onCompassChange,
-  onCreateVueApp,
-  onError,
-  onGyroscopeChange,
-  onLocaleChange,
-  onLocationChange,
-  onLocationChangeError,
-  onMemoryWarning,
-  onNetworkStatusChange,
-  onPageNotFound,
-  onPushMessage,
-  onSocketClose,
-  onSocketError,
-  onSocketMessage,
-  onSocketOpen,
-  onTabBarMidButtonTap,
-  onThemeChange,
-  onUnhandledRejection,
-  onUserCaptureScreen,
-  onWindowResize,
-  openDialogPage,
-  openDocument,
-  openLocation,
-  pageScrollTo,
-  preloadPage,
-  previewImage,
-  reLaunch,
-  redirectTo,
-  removeAllPages,
-  removeInterceptor,
-  removeLastPage,
-  removeNonTabBarPages,
-  removeSavedFile,
-  removeStorage,
-  removeStorageSync,
-  removeTabBarBadge,
-  request,
-  rpx2px: upx2px,
-  saveFile,
-  saveImageToPhotosAlbum,
-  saveVideoToPhotosAlbum,
-  scanCode,
-  sendSocketMessage,
-  setClipboardData,
-  setKeepScreenOn,
-  setLeftWindowStyle,
-  setLocale,
-  setNavigationBarColor,
-  setNavigationBarTitle,
-  setPageMeta,
-  setRightWindowStyle,
-  setScreenBrightness,
-  setStorage,
-  setStorageSync,
-  setTabBarBadge,
-  setTabBarItem,
-  setTabBarStyle,
-  setTopWindowStyle,
-  showActionSheet,
-  showLeftWindow,
-  showLoading,
-  showModal,
-  showNavigationBarLoading,
-  showRightWindow,
-  showTabBar,
-  showTabBarRedDot,
-  showToast,
-  showTopWindow,
-  startAccelerometer,
-  startCompass,
-  startGyroscope,
-  startLocationUpdate,
-  startPullDownRefresh,
-  stopAccelerometer,
-  stopCompass,
-  stopGyroscope,
-  stopLocationUpdate,
-  stopPullDownRefresh,
-  switchTab,
-  uploadFile,
-  upx2px,
-  vibrateLong,
-  vibrateShort
-}, Symbol.toStringTag, { value: "Module" });
 const CONTEXT_ID = "MAP_LOCATION";
 const MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
@@ -26249,7 +26469,7 @@ function useMap(props2, rootRef, emit2) {
 }
 class UniMapElement extends UniElement {
 }
-const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -26295,7 +26515,7 @@ const props$1 = {
 };
 class UniCoverViewElement extends UniElement {
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
@@ -26348,7 +26568,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniCoverImageElement extends UniElement {
 }
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -26533,7 +26753,7 @@ const props = {
 };
 class UniPickerElement extends UniElement {
 }
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
@@ -27182,941 +27402,1990 @@ function usePickerForm(_resetFormData, _getFormData) {
     });
   }
 }
-const index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad");
-const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
   }
 });
+const openDialogPage = (options) => {
+  var _a, _b, _c, _d;
+  if (!options.url) {
+    triggerFailCallback(options, "url is required");
+    return null;
+  }
+  const { path, query } = parseUrl(options.url);
+  const normalizeUrl = createNormalizeUrl("navigateTo");
+  const errMsg = normalizeUrl(path, {});
+  if (errMsg) {
+    triggerFailCallback(options, errMsg);
+    return null;
+  }
+  const targetRoute = __uniRoutes.find((route) => {
+    return path.indexOf(route.meta.route) !== -1;
+  });
+  const dialogPage = new UniDialogPageImpl({
+    route: path,
+    options: new UTSJSONObject(query),
+    $component: targetRoute.component,
+    getParentPage: () => null,
+    $disableEscBack: options.disableEscBack,
+    $triggerParentHide: !!options.triggerParentHide
+  });
+  let parentPage = options.parentPage;
+  const currentPages = getCurrentPages();
+  if (parentPage) {
+    if (currentPages.indexOf(parentPage) === -1) {
+      triggerFailCallback(options, "parentPage is not a valid page");
+      return null;
+    }
+  }
+  if (!isSystemDialogPage(dialogPage)) {
+    if (!currentPages.length) {
+      homeDialogPages.push(dialogPage);
+    } else {
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1];
+      }
+      dialogPage.getParentPage = () => parentPage;
+      parentPage.getDialogPages().push(dialogPage);
+    }
+    if (!options.disableEscBack) {
+      incrementEscBackPageNum();
+    }
+  } else {
+    if (!currentPages.length) {
+      homeSystemDialogPages.push(dialogPage);
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(homeSystemDialogPages);
+      }
+    } else {
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1];
+      }
+      dialogPage.getParentPage = () => parentPage;
+      (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value.push(
+        dialogPage
+      );
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(
+          (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value
+        );
+      }
+    }
+  }
+  const successOptions = {
+    errMsg: "openDialogPage:ok"
+  };
+  (_c = options.success) == null ? void 0 : _c.call(options, successOptions);
+  (_d = options.complete) == null ? void 0 : _d.call(options, successOptions);
+  return dialogPage;
+};
+function triggerFailCallback(options, errMsg) {
+  var _a, _b;
+  const failOptions = new UniError(
+    "uni-openDialogPage",
+    4,
+    `openDialogPage: fail, ${errMsg}`
+  );
+  (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
+  (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
+}
+function closePreActionSheet(dialogPages) {
+  const actionSheets = dialogPages.filter(
+    (page) => isSystemActionSheetDialogPage(page)
+  );
+  if (actionSheets.length > 1) {
+    setTimeout(() => {
+      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
+    }, 100);
+  }
+}
+const _sfc_main$1 = {
+  data() {
+    return {
+      show: false,
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      title: null,
+      itemList: [],
+      optionCancelText: null,
+      titleColor: null,
+      itemColor: null,
+      cancelColor: null,
+      backgroundColor: null,
+      language: "zh-Hans",
+      theme: "light",
+      isLandscape: false,
+      windowWidth: 0,
+      windowHeight: 0,
+      popover: {},
+      bottomNavigationHeight: 0
+    };
+  },
+  onLoad(options) {
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.successEventName = options["successEventName"];
+    this.failEventName = options["failEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      this.itemList = data["itemList"];
+      if (data["title"] != null) {
+        this.title = data["title"];
+      }
+      if (data["cancelText"] != null) {
+        this.optionCancelText = data["cancelText"];
+      }
+      if (data["titleColor"] != null) {
+        this.titleColor = data["titleColor"];
+      }
+      if (data["itemColor"] != null) {
+        this.itemColor = data["itemColor"];
+      }
+      if (data["cancelColor"] != null) {
+        this.cancelColor = data["cancelColor"];
+      }
+      if (data["backgroundColor"] != null) {
+        this.backgroundColor = data["backgroundColor"];
+      }
+      if (data["popover"] != null) {
+        this.popover = data["popover"];
+      }
+    });
+    uni.$emit(this.readyEventName, {});
+    const systemInfo = uni.getSystemInfoSync();
+    const osLanguage = systemInfo.osLanguage;
+    const appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
+    const osTheme = systemInfo.osTheme;
+    const appTheme = systemInfo.appTheme;
+    if (appTheme != null && appTheme != "auto") {
+      this.theme = appTheme;
+    } else if (osTheme != null) {
+      this.theme = osTheme;
+    }
+    const hostTheme = systemInfo.hostTheme;
+    if (hostTheme != null) {
+      this.theme = hostTheme;
+    }
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+    this.windowHeight = systemInfo.windowHeight;
+    this.windowWidth = systemInfo.windowWidth;
+    window.addEventListener("resize", this.fixSize);
+    const locale = uni.getLocale();
+    this.language = locale;
+    uni.onLocaleChange((res) => {
+      if (res.locale) {
+        this.language = res.locale;
+      }
+    });
+    uni.onThemeChange((res) => {
+      this.theme = res.theme;
+    });
+  },
+  computed: {
+    isWidescreen() {
+      return this.windowHeight >= 500 && this.windowWidth >= 500;
+    },
+    containerStyle() {
+      if (Object.keys(this.popover).length == 0) {
+        return {};
+      }
+      const res = {
+        transform: "none !important"
+      };
+      const top = this.popover.top;
+      const left = this.popover.left;
+      const width = this.popover.width;
+      const height = this.popover.height;
+      const center = left + width / 2;
+      const contentLeft = Math.max(0, center - 300 / 2);
+      res["left"] = `${contentLeft}px`;
+      const vcl = this.windowHeight / 2;
+      if (top + height - vcl > vcl - top) {
+        res["top"] = "auto";
+        res["bottom"] = `${this.windowHeight - top + 6}px`;
+      } else {
+        res["top"] = `${top + height + 6}px`;
+      }
+      return res;
+    },
+    triangleStyle() {
+      if (Object.keys(this.popover).length == 0) {
+        return {};
+      }
+      const res = {};
+      const borderColor = this.backgroundColor || (this.theme == "dark" ? "#2C2C2B" : "#fcfcfd");
+      const top = this.popover.top;
+      const left = this.popover.left;
+      const width = this.popover.width;
+      const height = this.popover.height;
+      const center = left + width / 2;
+      const contentLeft = Math.max(0, center - 300 / 2);
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      res["left"] = `${triangleLeft}px`;
+      const vcl = this.windowHeight / 2;
+      if (top + height - vcl > vcl - top) {
+        res["bottom"] = "-6px";
+        res["border-width"] = "6px 6px 0 6px";
+        res["border-color"] = `${borderColor} transparent transparent transparent`;
+      } else {
+        res["top"] = "-6px";
+        res["border-width"] = "0 6px 6px 6px";
+        res["border-color"] = `transparent transparent ${borderColor} transparent`;
+      }
+      return res;
+    },
+    cancelText() {
+      if (this.optionCancelText != null) {
+        const res = this.optionCancelText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    },
+    computedBackgroundColor() {
+      return this.backgroundColor !== null ? this.backgroundColor : this.theme == "dark" ? "#2C2C2B" : "#ffffff";
+    }
+  },
+  onReady() {
+    this.bottomNavigationHeight = this.$page.safeAreaInsets.bottom;
+    setTimeout(() => {
+      this.show = true;
+    }, 10);
+  },
+  onResize() {
+    const systemInfo = uni.getSystemInfoSync();
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+    window.removeEventListener("resize", this.fixSize);
+  },
+  methods: {
+    fixSize() {
+      const {
+        windowWidth,
+        windowHeight,
+        windowTop
+      } = uni.getSystemInfoSync();
+      this.windowWidth = windowWidth;
+      this.windowHeight = windowHeight + (windowTop || 0);
+    },
+    closeActionSheet() {
+      this.show = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: this.$page
+        });
+      }, 250);
+    },
+    handleMenuItemClick(tapIndex) {
+      this.closeActionSheet();
+      uni.$emit(this.successEventName, tapIndex);
+    },
+    handleCancel() {
+      this.closeActionSheet();
+      uni.$emit(this.failEventName, {});
+    }
+  }
+};
+const _style_0$1 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.25s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_view = __syscom_2;
+  const _component_text = __syscom_0$1;
+  return openBlock(), createBlock(_component_view, null, {
+    default: withCtx(() => [
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-action-sheet_dialog__mask", { "uni-action-sheet_dialog__mask__show": $data.show }]),
+        onClick: $options.handleCancel
+      }, null, 8, ["class", "onClick"]),
+      createVNode(_component_view, {
+        style: normalizeStyle($options.isWidescreen ? $options.containerStyle : {}),
+        class: normalizeClass(["uni-action-sheet_dialog__container", {
+          "uni-action-sheet_dialog__show": $data.show,
+          "uni-action-sheet_dark__mode": $data.theme == "dark",
+          "uni-action-sheet_landscape__mode": $data.isLandscape
+        }])
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
+            class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
+          }, {
+            default: withCtx(() => [
+              $data.title ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
+                createVNode(_component_view, {
+                  class: normalizeClass(["uni-action-sheet_dialog__title", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
+                }, {
+                  default: withCtx(() => [
+                    createVNode(_component_text, {
+                      style: normalizeStyle({ color: $data.titleColor }),
+                      class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                    }, {
+                      default: withCtx(() => [
+                        createTextVNode(toDisplayString($data.title), 1)
+                      ]),
+                      _: 1
+                    }, 8, ["style", "class"])
+                  ]),
+                  _: 1
+                }, 8, ["class"]),
+                createVNode(_component_view, {
+                  class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                }, null, 8, ["class"])
+              ], 64)) : createCommentVNode("", true),
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-action-sheet_dialog__cell__container", { "uni-action-sheet_landscape__mode": $data.isLandscape }])
+              }, {
+                default: withCtx(() => [
+                  (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
+                    return openBlock(), createBlock(_component_view, { key: index2 }, {
+                      default: withCtx(() => [
+                        index2 !== 0 ? (openBlock(), createBlock(_component_view, {
+                          key: 0,
+                          class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                        }, null, 8, ["class"])) : createCommentVNode("", true),
+                        createVNode(_component_view, {
+                          class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
+                          onClick: ($event) => $options.handleMenuItemClick(index2)
+                        }, {
+                          default: withCtx(() => [
+                            createVNode(_component_text, {
+                              style: normalizeStyle({ color: $data.itemColor }),
+                              class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                            }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(item), 1)
+                              ]),
+                              _: 2
+                            }, 1032, ["style", "class"])
+                          ]),
+                          _: 2
+                        }, 1032, ["class", "onClick"])
+                      ]),
+                      _: 2
+                    }, 1024);
+                  }), 128))
+                ]),
+                _: 1
+              }, 8, ["class"])
+            ]),
+            _: 1
+          }, 8, ["style", "class"]),
+          createVNode(_component_view, {
+            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
+            class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
+            onClick: $options.handleCancel
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, {
+                style: normalizeStyle({ color: $data.cancelColor }),
+                class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.cancelText), 1)
+                ]),
+                _: 1
+              }, 8, ["style", "class"])
+            ]),
+            _: 1
+          }, 8, ["style", "class", "onClick"]),
+          !$data.isLandscape ? (openBlock(), createBlock(_component_view, {
+            key: 0,
+            style: normalizeStyle({ height: `${$data.bottomNavigationHeight}px`, backgroundColor: $options.computedBackgroundColor })
+          }, null, 8, ["style"])) : createCommentVNode("", true),
+          $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createBlock(_component_view, {
+            key: 1,
+            style: normalizeStyle($options.triangleStyle),
+            class: "uni-action-sheet_dialog__triangle"
+          }, null, 8, ["style"])) : createCommentVNode("", true)
+        ]),
+        _: 1
+      }, 8, ["style", "class"])
+    ]),
+    _: 1
+  });
+}
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+class ShowActionSheetSuccessImpl {
+  constructor(tapIndex, errMsg = "showActionSheet:ok") {
+    this.errMsg = errMsg;
+    this.tapIndex = tapIndex;
+  }
+}
+class ShowActionSheetFailImpl extends UniError {
+  constructor(errMsg = "showActionSheet:fail cancel", errCode = 4) {
+    super();
+    this.errMsg = errMsg;
+    this.errCode = errCode;
+  }
+}
+const showActionSheet = (options) => {
+  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
+  const baseEventName = `uni_action_sheet_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, options);
+  });
+  uni.$on(successEventName, (index2) => {
+    var _a, _b;
+    const res = new ShowActionSheetSuccessImpl(index2);
+    (_a = options.success) == null ? void 0 : _a.call(options, res);
+    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+  });
+  uni.$on(failEventName, () => {
+    var _a, _b;
+    const res = new ShowActionSheetFailImpl();
+    (_a = options.fail) == null ? void 0 : _a.call(options, res);
+    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+  });
+  uni.openDialogPage({
+    url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    fail(err) {
+      var _a, _b;
+      const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`);
+      (_a = options.fail) == null ? void 0 : _a.call(options, res);
+      (_b = options.complete) == null ? void 0 : _b.call(options, res);
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+};
+const hideActionSheet = () => {
+  var _a;
+  const currentPage = getCurrentPage();
+  if (!currentPage)
+    return;
+  const systemDialogPages = (_a = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+  for (let i = 0; i < systemDialogPages.length; i++) {
+    if (isSystemActionSheetDialogPage(systemDialogPages[i])) {
+      systemDialogPages.splice(i, 1);
+      return;
+    }
+  }
+};
+const defaultPoi = {
+  latitude: 39.908823,
+  longitude: 116.39747
+};
+const languageData = {
+  "en": {
+    "ok": "ok",
+    "cancel": "cancel",
+    "locationLoading": "positioning...",
+    "search": "Search location"
+  },
+  "zh-Hans": {
+    "ok": "确定",
+    "cancel": "取消",
+    "locationLoading": "获取定位中...",
+    "search": "搜索地点"
+  },
+  "zh-Hant": {
+    "ok": "確定",
+    "cancel": "取消",
+    "locationLoading": "獲取定位中...",
+    "search": "蒐索地點"
+  }
+};
+const loadingPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
+const _sfc_main = {
+  data() {
+    const id1 = `UniMap1_${(Math.random() * 1e6).toString(36)}`;
+    const id2 = `UniMap2_${(Math.random() * 1e6).toString(36)}`;
+    const id3 = `UniMap3_${(Math.random() * 1e6).toString(36)}`;
+    return {
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      mapId: id1,
+      mapTargetId: id2,
+      scrollId: id3,
+      isFocus: false,
+      latitude: 0,
+      longitude: 0,
+      locationComplete: false,
+      locationLoading: false,
+      chooseLocationOptions: {},
+      pageIndex: 1,
+      pageSize: 20,
+      pois: [],
+      selected: -1,
+      searchValue: "",
+      safeArea: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+      },
+      icon: {
+        target: "",
+        success: "",
+        position: "",
+        search: ""
+      },
+      lastTime: 0,
+      searchLoading: false,
+      searchLoadingAnimation: false,
+      language: "zh-Hans",
+      scrollTop: 0,
+      isLandscape: false,
+      theme: "light",
+      searchValueChangeTimer: -1,
+      lastPoi: {
+        latitude: null,
+        longitude: null,
+        selected: -1,
+        pois: [],
+        scrollTop: 0
+      },
+      errMsg: "",
+      callUniMapCoErr: false,
+      useUniCloud: true,
+      mapHeight: 350,
+      loadingPath
+    };
+  },
+  onLoad(options) {
+    this.checkUniCloud();
+    this.initPageOptions(options);
+    this.getSystemInfo();
+    this.getLocation();
+  },
+  onReady() {
+    this.getSafeAreaInsets();
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  onResize() {
+    this.getSystemInfo();
+  },
+  methods: {
+    checkUniCloud() {
+      if (typeof uniCloud == "undefined") {
+        this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+        this.useUniCloud = false;
+        console.error(this.errMsg);
+      }
+    },
+    initPageOptions(options) {
+      this.readyEventName = options["readyEventName"];
+      this.optionsEventName = options["optionsEventName"];
+      this.successEventName = options["successEventName"];
+      this.failEventName = options["failEventName"];
+      uni.$on(this.optionsEventName, (data) => {
+        if (data["latitude"] != null) {
+          this.chooseLocationOptions.latitude = data["latitude"];
+        }
+        if (data["longitude"] != null) {
+          this.chooseLocationOptions.longitude = data["longitude"];
+        }
+        if (data["keyword"] != null) {
+          let keyword = data["keyword"];
+          this.chooseLocationOptions.keyword = keyword;
+          this.searchValue = keyword;
+        } else {
+          this.chooseLocationOptions.keyword = "";
+        }
+        if (data["payload"] != null) {
+          this.chooseLocationOptions.payload = data["payload"];
+        }
+      });
+      uni.$emit(this.readyEventName, {});
+    },
+    getLocation() {
+      if (this.chooseLocationOptions.latitude != null && this.chooseLocationOptions.longitude != null) {
+        this.latitude = this.chooseLocationOptions.latitude;
+        this.longitude = this.chooseLocationOptions.longitude;
+        this.locationComplete = true;
+        this.getPoi("getLocation");
+      } else {
+        this.locationLoading = true;
+        uni.getLocation({
+          type: "gcj02",
+          success: (res) => {
+            this.latitude = res.latitude;
+            this.longitude = res.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          },
+          fail: (err) => {
+            console.error("getLocationErr: ", err);
+            this.latitude = defaultPoi.latitude;
+            this.longitude = defaultPoi.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          }
+        });
+      }
+    },
+    distanceHandle(distance) {
+      if (distance < 1e3) {
+        return distance + "m";
+      } else {
+        return parseFloat((distance / 1e3).toFixed(2)) + "km";
+      }
+    },
+    poiHandle(pois) {
+      let list2 = pois.map((item, index2) => {
+        const location2 = item["location"];
+        let distance = item["distance"];
+        let latitude = location2["lat"];
+        let longitude = location2["lng"];
+        if (distance == 0) {
+          latitude = this.latitude;
+          longitude = this.longitude;
+        }
+        return {
+          title: item["title"],
+          address: item["address"],
+          distance,
+          distanceStr: this.distanceHandle(distance),
+          location: {
+            latitude,
+            longitude
+          }
+        };
+      });
+      let pageIndex = this.pageIndex;
+      if (pageIndex == 1) {
+        this.pois = list2;
+        this.updateScrollTop(0);
+      } else {
+        this.pois = this.pois.concat(list2);
+      }
+    },
+    callUniMapCo(action, data) {
+      let promise = new Promise((resolve, reject) => {
+        if (this.useUniCloud == false) {
+          reject(this.errMsg);
+          return;
+        }
+        this.errMsg = "";
+        const uniMapCo = uniCloud.importObject("uni-map-co", {
+          customUI: true
+        });
+        let chooseLocationData = {
+          action,
+          data
+        };
+        if (this.chooseLocationOptions.payload != null) {
+          chooseLocationData["payload"] = this.chooseLocationOptions.payload;
+        }
+        uniMapCo.chooseLocation(chooseLocationData).then((res) => {
+          resolve(res);
+        }).catch((err) => {
+          if (err instanceof UniCloudError) {
+            const cloudError = err;
+            const errCode = cloudError.errCode;
+            const errMsg = cloudError.errMsg;
+            const errSubject = cloudError.errSubject;
+            if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
+              this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+              console.error(this.errMsg);
+            } else {
+              this.errMsg = errMsg;
+              console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg, errSubject }));
+            }
+          }
+          reject(err);
+        });
+      });
+      promise.then((res) => {
+        this.callUniMapCoErr = false;
+      }).catch((err) => {
+        this.callUniMapCoErr = true;
+      });
+      return promise;
+    },
+    getPoi(type) {
+      let searchValue = this.searchValue;
+      let latitude = this.latitude;
+      let longitude = this.longitude;
+      let pageIndex = this.pageIndex;
+      let pageSize = this.pageSize;
+      if (["searchValueChange"].indexOf(type) == -1) {
+        this.searchLoading = true;
+      }
+      if (searchValue != "" && searchValue.length > 0) {
+        this.callUniMapCo("search", {
+          keyword: searchValue,
+          location: {
+            lat: latitude,
+            lng: longitude
+          },
+          radius: 5e3,
+          auto_extend: 1,
+          orderby: "weight",
+          page_index: pageIndex,
+          page_size: pageSize
+        }).then((res) => {
+          var _a, _b;
+          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
+          this.poiHandle(pois);
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      } else {
+        this.callUniMapCo("location2address", {
+          location: `${latitude},${longitude}`,
+          get_poi: 1,
+          poi_options: {
+            radius: 3e3,
+            policy: pageIndex == 1 ? 3 : 4,
+            roadlevel: 1,
+            homeorcorp: 1,
+            page_index: pageIndex,
+            page_size: pageSize
+          }
+        }).then((res) => {
+          var _a, _b;
+          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
+          this.poiHandle(pois);
+          if (this.pois.length > 0 && pageIndex == 1) {
+            let poi = this.pois[0];
+            if (poi.distance > 0) {
+              let poi1 = poi.location;
+              let poi2 = {
+                latitude: this.latitude,
+                longitude: this.longitude
+              };
+              let distance = poi.distance;
+              let direction2 = this.calcDirection(poi1, poi2);
+              if (poi.address.indexOf("米") == -1) {
+                let suffix = `向${direction2}${distance}米`;
+                let newPoi = {
+                  title: `${poi.title}${suffix}`,
+                  address: `${poi.address}${suffix}`,
+                  distance: 0,
+                  distanceStr: this.distanceHandle(distance),
+                  location: poi2
+                };
+                this.pois.unshift(newPoi);
+              }
+            }
+            if (this.selected == -1) {
+              this.selected = 0;
+              this.lastPoi.latitude = this.latitude;
+              this.lastPoi.longitude = this.longitude;
+              this.lastPoi.selected = this.selected;
+              this.lastPoi.pois = this.pois;
+            }
+          }
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      }
+    },
+    calcDirection(poi1, poi2) {
+      const toRadians = (angle2) => angle2 * (Math.PI / 180);
+      const toDegrees = (angle2) => angle2 * (180 / Math.PI);
+      const lat1 = toRadians(poi1.latitude);
+      const lon1 = toRadians(poi1.longitude);
+      const lat2 = toRadians(poi2.latitude);
+      const lon2 = toRadians(poi2.longitude);
+      const dLon = lon2 - lon1;
+      const y = Math.sin(dLon) * Math.cos(lat2);
+      const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+      const angleRadians = Math.atan2(y, x);
+      let angle = toDegrees(angleRadians);
+      angle = (angle + 360) % 360;
+      if (angle < 22.5 || angle >= 337.5) {
+        return "北";
+      } else if (angle >= 22.5 && angle < 67.5) {
+        return "东北";
+      } else if (angle >= 67.5 && angle < 112.5) {
+        return "东";
+      } else if (angle >= 112.5 && angle < 157.5) {
+        return "东南";
+      } else if (angle >= 157.5 && angle < 202.5) {
+        return "南";
+      } else if (angle >= 202.5 && angle < 247.5) {
+        return "西南";
+      } else if (angle >= 247.5 && angle < 292.5) {
+        return "西";
+      } else {
+        return "西北";
+      }
+    },
+    getSafeAreaInsets() {
+      const info = uni.getWindowInfo();
+      this.safeArea.top = info.safeAreaInsets.top;
+      this.safeArea.bottom = info.safeAreaInsets.bottom;
+      this.safeArea.left = info.safeAreaInsets.left;
+      this.safeArea.right = info.safeAreaInsets.right;
+    },
+    getSystemInfo() {
+      const info = uni.getWindowInfo();
+      this.safeArea.top = info.safeAreaInsets.top;
+      this.safeArea.bottom = info.safeAreaInsets.bottom;
+      this.safeArea.left = info.safeAreaInsets.left;
+      this.safeArea.right = info.safeAreaInsets.right;
+      let screenHeight = info.screenHeight;
+      this.mapHeight = (screenHeight - this.safeArea.top - this.safeArea.bottom) * 0.6;
+      const systemInfo = uni.getSystemInfoSync();
+      const appLanguage = systemInfo.appLanguage;
+      this.language = appLanguage;
+      const osTheme = systemInfo.osTheme;
+      const appTheme = systemInfo.appTheme;
+      if (appTheme != null && appTheme != "auto") {
+        this.theme = appTheme;
+      } else if (osTheme != null) {
+        this.theme = osTheme;
+      }
+      this.isLandscape = systemInfo.windowWidth >= 900 ? true : false;
+      const hostTheme = systemInfo.hostTheme;
+      if (hostTheme != null) {
+        this.theme = hostTheme;
+      }
+      const locale = uni.getLocale();
+      this.language = locale;
+    },
+    getMapContext() {
+      return uni.createMapContext(this.mapId, this);
+    },
+    regionchange(e2) {
+      let causedBy = e2.causedBy;
+      if (!causedBy) {
+        causedBy = e2.detail.causedBy;
+      }
+      if (e2.type !== "end" || causedBy != "drag" || this.locationComplete == false) {
+        return;
+      }
+      const mapContext = this.getMapContext();
+      if (mapContext != null) {
+        mapContext.getCenterLocation({
+          success: (res) => {
+            let latitudeDiff = Math.abs(res.latitude - this.latitude);
+            let longitudeDiff = Math.abs(res.longitude - this.longitude);
+            if (latitudeDiff > 1e-6 || longitudeDiff > 1e-6) {
+              this.latitude = parseFloat(res.latitude.toFixed(6));
+              this.longitude = parseFloat(res.longitude.toFixed(6));
+              this.searchValue = "";
+              this.selected = -1;
+              this.pageIndex = 1;
+              this.getPoi("regionchange");
+              const element = this.$refs[this.mapTargetId];
+              if (element != null) {
+                const duration = 250;
+                element.style.setProperty("transition-duration", `${duration}ms`);
+                element.style.setProperty("transform", "translateY(0px)");
+                element.style.setProperty("transform", "translateY(-15px)");
+                setTimeout(() => {
+                  element.style.setProperty("transform", "translateY(0px)");
+                }, duration);
+              }
+            }
+          }
+        });
+      }
+    },
+    clearSearchValueChangeTimer() {
+      if (this.searchValueChangeTimer != -1) {
+        clearTimeout(this.searchValueChangeTimer);
+        this.searchValueChangeTimer = -1;
+      }
+    },
+    searchValueChange(e2) {
+      this.clearSearchValueChangeTimer();
+      this.searchValueChangeTimer = setTimeout(() => {
+        this.poiSearch("searchValueChange");
+      }, 200);
+    },
+    poiSearch(type) {
+      this.clearSearchValueChangeTimer();
+      this.pageIndex = 1;
+      this.selected = -1;
+      this.getPoi(type);
+    },
+    cancelSearch() {
+      this.isFocus = false;
+      this.searchValue = "";
+      if (this.lastPoi.latitude != null) {
+        this.latitude = this.lastPoi.latitude;
+      }
+      if (this.lastPoi.longitude != null) {
+        this.longitude = this.lastPoi.longitude;
+      }
+      if (this.lastPoi.pois.length - 1 > this.lastPoi.selected) {
+        this.pois = this.lastPoi.pois;
+        this.selected = this.lastPoi.selected;
+        this.updateScrollTop(this.lastPoi.scrollTop);
+      } else {
+        this.poiSearch("cancelSearch");
+      }
+    },
+    updateScrollTop(scrollTop) {
+      setTimeout(() => {
+        this.scrollTop = scrollTop;
+      }, 10);
+    },
+    selectPoi(item, index2) {
+      this.isFocus = false;
+      this.selected = index2;
+      this.latitude = item.location.latitude;
+      this.longitude = item.location.longitude;
+      if (this.searchValue == this.chooseLocationOptions.keyword) {
+        this.lastPoi.latitude = this.latitude;
+        this.lastPoi.longitude = this.longitude;
+        this.lastPoi.selected = this.selected;
+        this.lastPoi.pois = this.pois;
+        const scrollElement = this.$refs[this.scrollId];
+        if (scrollElement != null) {
+          const scrollTop = scrollElement.scrollTop;
+          this.lastPoi.scrollTop = scrollTop;
+          this.scrollTop = scrollTop;
+        }
+      }
+    },
+    scrolltolower() {
+      this.pageIndex++;
+      this.getPoi("scrolltolower");
+    },
+    mapReset() {
+      this.isFocus = false;
+      this.pageIndex = 1;
+      this.getLocation();
+    },
+    closeDialogPage() {
+      uni.closeDialogPage({
+        dialogPage: this.$page
+      });
+    },
+    back() {
+      uni.$emit(this.failEventName, 1);
+      this.closeDialogPage();
+    },
+    confirm() {
+      if (this.selected < 0) {
+        if (this.callUniMapCoErr) {
+          uni.$emit(this.successEventName, {
+            name: "",
+            address: "",
+            latitude: parseFloat(this.latitude.toFixed(6)),
+            longitude: parseFloat(this.longitude.toFixed(6))
+          });
+          this.closeDialogPage();
+        }
+        return;
+      }
+      let item = this.pois[this.selected];
+      let res = {
+        name: item.title,
+        address: item.address,
+        latitude: item.location.latitude,
+        longitude: item.location.longitude
+      };
+      uni.$emit(this.successEventName, res);
+      this.closeDialogPage();
+    }
+  },
+  watch: {
+    searchLoading(val) {
+      if (val) {
+        setTimeout(() => {
+          this.searchLoadingAnimation = true;
+        }, 50);
+      } else {
+        this.searchLoadingAnimation = false;
+      }
+    }
+  },
+  computed: {
+    languageCom() {
+      const textInfo = languageData[this.language] != null ? languageData[this.language] : languageData["zh-Hans"];
+      return textInfo;
+    },
+    uniChooseLocationClassCom() {
+      let list2 = [];
+      if (this.theme == "dark") {
+        list2.push("uni-choose-location-dark");
+      } else {
+        list2.push("uni-choose-location-light");
+      }
+      return list2.join(" ");
+    },
+    landscapeClassCom() {
+      return this.isLandscape ? "uni-choose-location-landscape" : "uni-choose-location-vertical";
+    },
+    mapBoxStyleCom() {
+      let list2 = [];
+      if (!this.useUniCloud) {
+        list2.push(`flex: 1;`);
+      }
+      if (!this.isLandscape) {
+        let top = this.isFocus ? (300 - this.mapHeight) / 2 : 0;
+        list2.push(`transform:translateY(${top}px);`);
+        list2.push(`height:${this.mapHeight}px;`);
+      }
+      return list2.join("");
+    },
+    poiBoxStyleCom() {
+      let list2 = [];
+      if (!this.isLandscape) {
+        let top = this.isFocus ? 300 : this.mapHeight;
+        list2.push(`top:${top}px;`);
+      }
+      return list2.join("");
+    },
+    resetStyleCom() {
+      let list2 = [];
+      if (!this.isLandscape) {
+        let bottom = this.isFocus ? (this.mapHeight - 300) / 2 + 300 - this.mapHeight : 0;
+        list2.push(`transform:translateY(${bottom}px);`);
+      }
+      return list2.join("");
+    }
+  }
+};
+const _style_0 = `
+@font-face {\r
+    font-family: UniChooseLocationFontFamily;\r
+    src: url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuUB/iAAAAPAAAACsGhlYWQp23fyAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAG+AAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZwAAADS3Bvc3RLRtf0AAAJvAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAIZo1N5fDzz1AAsEAAAAAADjXhn6AAAAAONeGfoAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFYAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAwYeAj4BNC4CDgEBwCU1JiY1JWoGBEAEB0d1ISIpJ0RFokVEJykiIXX9AiRATEImJT9KQCdUEhkZIxkZAXH+iAQGBgQBeApTP0FJUUVEJykpJ0RFUUlBP1MBIiZDJwImQks/JQEjPQAAABIA3gABAAAAAAAAABMAAAABAAAAAAABABsAEwABAAAAAAACAAcALgABAAAAAAADABsANQABAAAAAAAEABsAUAABAAAAAAAFAAsAawABAAAAAAAGABsAdgABAAAAAAAKACsAkQABAAAAAAALABMAvAADAAEECQAAACYAzwADAAEECQABADYA9QADAAEECQACAA4BKwADAAEECQADADYBOQADAAEECQAEADYBbwADAAEECQAFABYBpQADAAEECQAGADYBuwADAAEECQAKAFYB8QADAAEECQALACYCR0NyZWF0ZWQgYnkgaWNvbmZvbnRVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlSZWd1bGFyVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VmVyc2lvbiAxLjBVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlHZW5lcmF0ZWQgYnkgc3ZnMnR0ZiBmcm9tIEZvbnRlbGxvIHByb2plY3QuaHR0cDovL2ZvbnRlbGxvLmNvbQBDAHIAZQBhAHQAZQBkACAAYgB5ACAAaQBjAG8AbgBmAG8AbgB0AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFIAZQBnAHUAbABhAHIAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVgBlAHIAcwBpAG8AbgAgADEALgAwAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AEcAZQBuAGUAcgBhAHQAZQBkACAAYgB5ACAAcwB2AGcAMgB0AHQAZgAgAGYAcgBvAG0AIABGAG8AbgB0AGUAbABsAG8AIABwAHIAbwBqAGUAYwB0AC4AaAB0AHQAcAA6AC8ALwBmAG8AbgB0AGUAbABsAG8ALgBjAG8AbQAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAQIBAwEEAQUBBgAGc291c3VvB2dvdXh1YW4HZGluZ3dlaQtkaXR1LXR1ZGluZwAAAAA=') format('truetype');
+}
+.uni-choose-location-icons {\r
+    font-family: "UniChooseLocationFontFamily";\r
+    font-size: 16px;\r
+    font-style: normal;
+}
+.uni-choose-location {\r
+    position: relative;\r
+    left: 0;\r
+    top: 0;\r
+    width: 100%;\r
+    height: 100%;\r
+    background: #f8f8f8;\r
+    z-index: 999;
+}
+.uni-choose-location-map-box {\r
+    position: relative;\r
+    width: 100%;\r
+    height: 350px;
+}
+.uni-choose-location-map-box.uni-choose-location-vertical {\r
+    transition-property: transform;\r
+    transition-duration: 0.25s;\r
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-map {\r
+    width: 100%;\r
+    height: 100%;
+}
+.uni-choose-location-map-target {\r
+    position: absolute;\r
+    left: 50%;\r
+    bottom: 50%;\r
+    width: 50px;\r
+    height: 50px;\r
+    margin-left: -25px;\r
+    transition-property: transform;\r
+    transition-duration: 0.25s;\r
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-map-target-icon {\r
+    font-size: 50px;\r
+    color: #f0493e;
+}\r
+\r
+  /* #1aad19; #f0493e; #007aff;*/
+.uni-choose-location-map-reset {\r
+    position: absolute;\r
+    left: 20px;\r
+    bottom: 40px;\r
+    width: 40px;\r
+    height: 40px;\r
+    box-sizing: border-box;\r
+    background-color: #fff;\r
+    border-radius: 20px;\r
+    pointer-events: auto;\r
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
+    z-index: 9;\r
+    display: flex;\r
+    justify-content: center;\r
+    align-items: center;
+}
+.uni-choose-location-map-reset.uni-choose-location-vertical {\r
+    transition-property: transform;\r
+    transition-duration: 0.25s;\r
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-map-reset-icon {\r
+    font-size: 26px;\r
+    text-align: center;\r
+    line-height: 40px;
+}
+.uni-choose-location-nav {\r
+    position: absolute;\r
+    top: 0;\r
+    left: 0;\r
+    width: 100%;\r
+    height: 60px;\r
+    background-color: rgba(0, 0, 0, 0);\r
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0));
+}
+.uni-choose-location-nav-btn {\r
+    position: absolute;\r
+    top: 5px;\r
+    left: 5px;\r
+    width: 64px;\r
+    height: 44px;\r
+    padding: 5px;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {\r
+    left: auto;\r
+    right: 5px;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {\r
+    background-color: #007aff;\r
+    border-radius: 5px;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {\r
+    opacity: 0.7;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {\r
+    opacity: 0.4;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {\r
+    color: #fff;
+}
+.uni-choose-location-nav-text {\r
+    padding: 8px 0px;\r
+    font-size: 14px;\r
+    text-align: center;\r
+\r
+    letter-spacing: 0.1em;\r
+\r
+    color: #fff;\r
+    text-align: center;
+}
+.uni-choose-location-poi {\r
+    position: absolute;\r
+    top: 350px;\r
+    width: 100%;\r
+    bottom: 0;\r
+    background-color: #fff;\r
+    z-index: 10
+}
+.uni-choose-location-poi.uni-choose-location-vertical {\r
+    transition-property: top;\r
+    transition-duration: 0.25s;\r
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-poi-search {\r
+    display: flex;\r
+    flex-direction: row;\r
+    align-items: center;\r
+    justify-content: center;\r
+    height: 50px;\r
+    padding: 8px;\r
+    background-color: #fff;
+}
+.uni-choose-location-poi-search-box {\r
+    display: flex;\r
+    flex-direction: row;\r
+    align-items: center;\r
+    justify-content: center;\r
+    height: 32px;\r
+    flex: 1;\r
+    border-radius: 5px;\r
+    padding: 0 15px;\r
+    background-color: #ededed;
+}
+.uni-choose-location-poi-search-input {\r
+    flex: 1;\r
+    height: 100%;\r
+    border-radius: 5px;\r
+    padding: 0 5px;\r
+    background: #ededed;
+}
+.uni-choose-location-poi-search-cancel {\r
+    margin-left: 5px;\r
+    color: #007aff;\r
+    font-size: 15px;\r
+    text-align: center;
+}
+.uni-choose-location-poi-list {\r
+    flex: 1;
+}
+.uni-choose-location-poi-search-loading {\r
+    display: flex;\r
+    align-items: center;\r
+    padding: 10px 0px;
+}
+.uni-choose-location-poi-search-loading-text {\r
+    color: #191919;
+}
+.uni-choose-location-poi-search-error {\r
+    display: flex;\r
+    align-items: center;\r
+    padding: 10px;
+}
+.uni-choose-location-poi-search-error-text {\r
+    color: #191919;\r
+    font-size: 14px;
+}
+.uni-choose-location-poi-item {\r
+    position: relative;\r
+    padding: 15px 10px;\r
+    padding-right: 40px;
+}
+.uni-choose-location-poi-item-title-text {\r
+    font-size: 14px;\r
+    overflow: hidden;\r
+    white-space: nowrap;\r
+    text-overflow: ellipsis;\r
+    color: #191919;
+}
+.uni-choose-location-poi-item-detail-text {\r
+    font-size: 12px;\r
+    margin-top: 5px;\r
+    color: #b2b2b2;\r
+    overflow: hidden;\r
+    white-space: nowrap;\r
+    text-overflow: ellipsis;
+}
+.uni-choose-location-poi-item-selected-icon {\r
+    position: absolute;\r
+    top: 50%;\r
+    right: 10px;\r
+    width: 26px;\r
+    height: 26px;\r
+    margin-top: -13px;\r
+    color: #007aff;\r
+    font-size: 24px;
+}
+.uni-choose-location-poi-item-after {\r
+    position: absolute;\r
+    height: 1px;\r
+    left: 10px;\r
+    bottom: 0px;\r
+    right: 10px;\r
+    width: auto;\r
+    border-bottom: 1px solid #f8f8f8;
+}
+.uni-choose-location-search-icon {\r
+    color: #808080;\r
+    padding-left: 5px;
+}
+.uni-choose-location-poi-search-loading-start {\r
+    transform: rotate(60000deg)
+}
+.uni-choose-location-poi-search-loading-image {\r
+    width: 28px;\r
+    height: 28px;\r
+    transition-property: transform;\r
+    transition-duration: 120s;\r
+    transition-timing-function: linear;
+}\r
+\r
+  /* 横屏样式开始 */
+.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {\r
+    height: 100%;
+}
+.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {\r
+    position: absolute;\r
+    top: 80px;\r
+    right: 25px;\r
+    width: 300px;\r
+    bottom: 20px;\r
+    max-height: 600px;\r
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
+    border-radius: 5px;
+}
+.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {\r
+    left: 40px;\r
+    bottom: 40px;
+}
+.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {\r
+    padding: 10px;
+}
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {\r
+    top: 10px;\r
+    left: 20px;
+}
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {\r
+    left: auto;\r
+    right: 20px;
+}\r
+\r
+  /* 横屏样式结束 */\r
+\r
+  /* 暗黑模式样式开始 */
+.uni-choose-location-dark .uni-choose-location-map-reset {\r
+    background-color: #111111;\r
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
+}
+.uni-choose-location-dark .uni-choose-location-poi-search-box {\r
+    background-color: #111111;
+}
+.uni-choose-location-dark .uni-choose-location-search-icon {\r
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {\r
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-search {\r
+    background-color: #181818
+}
+.uni-choose-location-dark .uni-choose-location-poi-search-input {\r
+    background: #111111;\r
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-item-title-text {\r
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {\r
+    color: #595959;
+}
+.uni-choose-location-dark .uni-choose-location-poi {\r
+    background-color: #181818
+}
+.uni-choose-location-dark .uni-choose-location-poi-item-after {\r
+    border-bottom: 1px solid #1e1e1e;
+}
+.uni-choose-location-dark .uni-choose-location-map-reset-icon {\r
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-search-error-text {\r
+    color: #d1d1d1;
+}\r
+\r
+  /* 暗黑模式样式结束 */
+uni-image {\r
+    display: inline-block;\r
+    overflow: hidden;\r
+    position: relative;
+}
+uni-image[hidden] {\r
+    display: none;
+}
+uni-image > div {\r
+    width: 100%;\r
+    height: 100%;\r
+    background-repeat:no-repeat;
+}
+uni-image > img {\r
+    -webkit-touch-callout: none;\r
+    user-select: none;\r
+    display: block;\r
+    position: absolute;\r
+    top: 0;\r
+    left: 0;\r
+    width: 100%;\r
+    height: 100%;\r
+    opacity: 0;
+}
+uni-image > .uni-image-will-change {\r
+    will-change: transform;
+}\r
+\r
+`;
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_map = __syscom_0;
+  const _component_text = __syscom_0$1;
+  const _component_view = __syscom_2;
+  const _component_input = __syscom_3;
+  const _component_image = __syscom_4;
+  const _component_scroll_view = __syscom_5;
+  return openBlock(), createBlock(_component_view, {
+    class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
+  }, {
+    default: withCtx(() => [
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-choose-location-map-box", [$options.landscapeClassCom]]),
+        style: normalizeStyle($options.mapBoxStyleCom)
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_map, {
+            class: "uni-choose-location-map",
+            id: $data.mapId,
+            ref: $data.mapId,
+            latitude: $data.latitude,
+            longitude: $data.longitude,
+            "layer-style": $data.theme == "dark" ? "2" : "1",
+            "show-compass": false,
+            "enable-zoom": true,
+            "enable-scroll": true,
+            "enable-rotate": false,
+            "enable-poi": true,
+            "show-location": true,
+            onRegionchange: $options.regionchange
+          }, null, 8, ["id", "latitude", "longitude", "layer-style", "onRegionchange"]),
+          createVNode(_component_view, {
+            class: "uni-choose-location-map-target",
+            ref: $data.mapTargetId,
+            id: $data.mapTargetId
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-target-icon" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($data.icon.target), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["id"]),
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
+            onClick: $options.mapReset,
+            style: normalizeStyle($options.resetStyleCom)
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-reset-icon" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($data.icon.position), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["class", "onClick", "style"])
+        ]),
+        _: 1
+      }, 8, ["class", "style"]),
+      createVNode(_component_view, {
+        class: "uni-choose-location-nav",
+        style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [$options.landscapeClassCom]]),
+            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : "")
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, {
+                class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
+                onClick: $options.back
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["cancel"]), 1)
+                ]),
+                _: 1
+              }, 8, ["onClick"])
+            ]),
+            _: 1
+          }, 8, ["class", "style"]),
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 && !$data.callUniMapCoErr ? "disable" : "active"]]),
+            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
+            onClick: $options.confirm
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["ok"]), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["class", "style", "onClick"])
+        ]),
+        _: 1
+      }, 8, ["style"]),
+      $data.useUniCloud ? (openBlock(), createBlock(_component_view, {
+        key: 0,
+        class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
+        style: normalizeStyle($options.poiBoxStyleCom)
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, { class: "uni-choose-location-poi-search" }, {
+            default: withCtx(() => [
+              createVNode(_component_view, { class: "uni-choose-location-poi-search-box" }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-search-icon" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.icon.search), 1)
+                    ]),
+                    _: 1
+                  }),
+                  createVNode(_component_input, {
+                    modelValue: $data.searchValue,
+                    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.searchValue = $event),
+                    type: "text",
+                    placeholder: $options.languageCom["search"],
+                    class: "uni-choose-location-poi-search-input uni-choose-location-icons",
+                    onFocus: _cache[1] || (_cache[1] = ($event) => $data.isFocus = true),
+                    onConfirm: _cache[2] || (_cache[2] = ($event) => $options.poiSearch("poiSearch")),
+                    onInput: $options.searchValueChange
+                  }, null, 8, ["modelValue", "placeholder", "onInput"])
+                ]),
+                _: 1
+              }),
+              $data.isFocus || $data.searchValue != "" ? (openBlock(), createBlock(_component_text, {
+                key: 0,
+                class: "uni-choose-location-poi-search-cancel",
+                onClick: $options.cancelSearch
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["cancel"]), 1)
+                ]),
+                _: 1
+              }, 8, ["onClick"])) : createCommentVNode("", true)
+            ]),
+            _: 1
+          }),
+          createVNode(_component_scroll_view, {
+            id: $data.scrollId,
+            ref: $data.scrollId,
+            "scroll-with-animation": false,
+            direction: "vertical",
+            "scroll-top": $data.scrollTop,
+            "lower-threshold": 50,
+            onScrolltolower: $options.scrolltolower,
+            class: "uni-choose-location-poi-list"
+          }, {
+            default: withCtx(() => [
+              $data.errMsg != "" ? (openBlock(), createBlock(_component_view, {
+                key: 0,
+                class: "uni-choose-location-poi-search-error"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-error-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.errMsg), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : $data.locationLoading ? (openBlock(), createBlock(_component_view, {
+                key: 1,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-loading-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($options.languageCom["locationLoading"]), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createBlock(_component_view, {
+                key: 2,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_image, {
+                    src: $data.loadingPath,
+                    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
+                    mode: "widthFix"
+                  }, null, 8, ["src", "class"])
+                ]),
+                _: 1
+              })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList($data.pois, (item, index2) => {
+                return openBlock(), createBlock(_component_view, {
+                  key: index2,
+                  class: normalizeClass(["uni-choose-location-poi-item", [$options.landscapeClassCom]]),
+                  onClick: ($event) => $options.selectPoi(item, index2)
+                }, {
+                  default: withCtx(() => [
+                    createVNode(_component_view, null, {
+                      default: withCtx(() => [
+                        createVNode(_component_view, null, {
+                          default: withCtx(() => [
+                            createVNode(_component_text, { class: "uni-choose-location-poi-item-title-text" }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(item.title), 1)
+                              ]),
+                              _: 2
+                            }, 1024)
+                          ]),
+                          _: 2
+                        }, 1024),
+                        createVNode(_component_view, null, {
+                          default: withCtx(() => [
+                            createVNode(_component_text, { class: "uni-choose-location-poi-item-detail-text" }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)
+                              ]),
+                              _: 2
+                            }, 1024)
+                          ]),
+                          _: 2
+                        }, 1024)
+                      ]),
+                      _: 2
+                    }, 1024),
+                    $data.selected == index2 ? (openBlock(), createBlock(_component_text, {
+                      key: 0,
+                      class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
+                    }, {
+                      default: withCtx(() => [
+                        createTextVNode(toDisplayString($data.icon.success), 1)
+                      ]),
+                      _: 1
+                    })) : createCommentVNode("", true),
+                    createVNode(_component_view, { class: "uni-choose-location-poi-item-after" })
+                  ]),
+                  _: 2
+                }, 1032, ["class", "onClick"]);
+              }), 128)),
+              $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createBlock(_component_view, {
+                key: 4,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_image, {
+                    src: $data.loadingPath,
+                    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
+                    mode: "widthFix"
+                  }, null, 8, ["src", "class"])
+                ]),
+                _: 1
+              })) : createCommentVNode("", true)
+            ]),
+            _: 1
+          }, 8, ["id", "scroll-top", "onScrolltolower"])
+        ]),
+        _: 1
+      }, 8, ["class", "style"])) : createCommentVNode("", true)
+    ]),
+    _: 1
+  }, 8, ["class"]);
+}
+const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+class ChooseLocationFailImpl extends UniError {
+  constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
+    super();
+    this.errCode = errCode;
+    this.errMsg = errMsg;
+  }
+}
+const chooseLocation = (options) => {
+  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
+  const baseEventName = `uni_choose_location_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
+  });
+  uni.$on(successEventName, (result) => {
+    var _a, _b;
+    (_a = options.success) == null ? void 0 : _a.call(options, result);
+    (_b = options.complete) == null ? void 0 : _b.call(options, result);
+  });
+  uni.$on(failEventName, () => {
+    var _a, _b;
+    (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl());
+    (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl());
+  });
+  uni.openDialogPage({
+    url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    triggerParentHide: true,
+    fail(err) {
+      var _a, _b;
+      (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
+      (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+};
+window.UniResizeObserver = window.ResizeObserver;
+const api = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  $emit,
+  $off,
+  $on,
+  $once,
+  __f__,
+  addInterceptor,
+  addPhoneContact,
+  arrayBufferToBase64,
+  base64ToArrayBuffer,
+  canIUse,
+  canvasGetImageData,
+  canvasPutImageData,
+  canvasToTempFilePath,
+  chooseFile,
+  chooseImage,
+  chooseLocation,
+  chooseVideo,
+  clearStorage,
+  clearStorageSync,
+  closeDialogPage,
+  closePreviewImage,
+  closeSocket,
+  connectSocket,
+  createAnimation: createAnimation$1,
+  createCameraContext,
+  createCanvasContext,
+  createCanvasContextAsync,
+  createInnerAudioContext,
+  createIntersectionObserver,
+  createLivePlayerContext,
+  createMapContext,
+  createMediaQueryObserver,
+  createSelectorQuery,
+  createVideoContext,
+  cssBackdropFilter,
+  cssConstant,
+  cssEnv,
+  cssVar,
+  downloadFile,
+  getAppBaseInfo,
+  getClipboardData,
+  getDeviceInfo,
+  getElementById,
+  getEnterOptionsSync,
+  getFileInfo,
+  getImageInfo,
+  getLaunchOptionsSync,
+  getLeftWindowStyle,
+  getLocale,
+  getLocation,
+  getNetworkType,
+  getProvider,
+  getPushClientId,
+  getRecorderManager,
+  getRightWindowStyle,
+  getSavedFileInfo,
+  getSavedFileList,
+  getScreenBrightness,
+  getSelectedTextRange: getSelectedTextRange$1,
+  getStorage,
+  getStorageInfo,
+  getStorageInfoSync,
+  getStorageSync,
+  getSystemInfo,
+  getSystemInfoSync,
+  getTabBarPageId,
+  getTopWindowStyle,
+  getVideoInfo,
+  getWindowInfo,
+  hideActionSheet,
+  hideKeyboard,
+  hideLeftWindow,
+  hideLoading,
+  hideModal,
+  hideNavigationBarLoading,
+  hideRightWindow,
+  hideTabBar,
+  hideTabBarRedDot,
+  hideToast,
+  hideTopWindow,
+  interceptors,
+  invokePushCallback,
+  loadFontFace,
+  login,
+  makePhoneCall,
+  navigateBack,
+  navigateTo,
+  offAccelerometerChange,
+  offAppHide,
+  offAppShow,
+  offCompassChange,
+  offError,
+  offHostThemeChange,
+  offLocationChange,
+  offLocationChangeError,
+  offNetworkStatusChange,
+  offPageNotFound,
+  offPushMessage,
+  offThemeChange,
+  offUnhandledRejection,
+  offWindowResize,
+  onAccelerometerChange,
+  onAppHide,
+  onAppShow,
+  onCompassChange,
+  onCreateVueApp,
+  onError,
+  onGyroscopeChange,
+  onHostThemeChange,
+  onLocaleChange,
+  onLocationChange,
+  onLocationChangeError,
+  onMemoryWarning,
+  onNetworkStatusChange,
+  onPageNotFound,
+  onPushMessage,
+  onSocketClose,
+  onSocketError,
+  onSocketMessage,
+  onSocketOpen,
+  onTabBarMidButtonTap,
+  onThemeChange,
+  onUnhandledRejection,
+  onUserCaptureScreen,
+  onWindowResize,
+  openDialogPage,
+  openDocument,
+  openLocation,
+  pageScrollTo,
+  preloadPage,
+  previewImage,
+  reLaunch,
+  redirectTo,
+  removeAllPages,
+  removeInterceptor,
+  removeLastPage,
+  removeNonTabBarPages,
+  removeSavedFile,
+  removeStorage,
+  removeStorageSync,
+  removeTabBarBadge,
+  request,
+  rpx2px: upx2px,
+  saveFile,
+  saveImageToPhotosAlbum,
+  saveVideoToPhotosAlbum,
+  scanCode,
+  sendSocketMessage,
+  setClipboardData,
+  setKeepScreenOn,
+  setLeftWindowStyle,
+  setLocale,
+  setNavigationBarColor,
+  setNavigationBarTitle,
+  setPageMeta,
+  setRightWindowStyle,
+  setScreenBrightness,
+  setStorage,
+  setStorageSync,
+  setTabBarBadge,
+  setTabBarItem,
+  setTabBarStyle,
+  setTopWindowStyle,
+  showActionSheet,
+  showLeftWindow,
+  showLoading,
+  showNavigationBarLoading,
+  showRightWindow,
+  showTabBar,
+  showTabBarRedDot,
+  showToast,
+  showTopWindow,
+  startAccelerometer,
+  startCompass,
+  startGyroscope,
+  startLocationUpdate,
+  startPullDownRefresh,
+  stopAccelerometer,
+  stopCompass,
+  stopGyroscope,
+  stopLocationUpdate,
+  stopPullDownRefresh,
+  switchTab,
+  uploadFile,
+  upx2px,
+  vibrateLong,
+  vibrateShort
+}, Symbol.toStringTag, { value: "Module" });
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
   publishHandler(event, args, pageId) {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-function updateBackgroundColorContent(backgroundColorContent) {
-  if (backgroundColorContent) {
-    document.body.style.setProperty(
-      "--background-color-content",
-      backgroundColorContent
-    );
-  } else {
-    document.body.style.removeProperty("--background-color-content");
-  }
-}
-function useBackgroundColorContent(pageMeta) {
-  function update() {
-    if (pageMeta.backgroundColorContent) {
-      updateBackgroundColorContent(
-        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
-      );
-    }
-  }
-  onThemeChange$2(update);
-  watchEffect(update);
-  onActivated(update);
-}
-function usePageHeadTransparentBackgroundColor(backgroundColor) {
-  const { r, g: g2, b } = hexToRgba(backgroundColor);
-  return `rgba(${r},${g2},${b},0)`;
-}
-function usePageHeadTransparent(headRef, {
-  id: id2,
-  navigationBar: { titleColor, coverage, backgroundColor }
-}) {
-  let A = 0;
-  const rgb = computed(() => hexToRgba(backgroundColor));
-  const offset = parseInt(coverage);
-  let titleElem;
-  let transparentElemStyle;
-  const iconElemsPaths = [];
-  const borderRadiusElemsStyles = [];
-  const oldColors = [];
-  onMounted(() => {
-    const $el = headRef.value;
-    transparentElemStyle = $el.style;
-    titleElem = $el.querySelector(".uni-page-head__title");
-    const borderRadiusElems = $el.querySelectorAll(
-      ".uni-page-head-btn"
-    );
-    const iconSvgElems = $el.querySelectorAll(
-      "svg path"
-    );
-    for (let i = 0; i < iconSvgElems.length; i++) {
-      iconElemsPaths.push(iconSvgElems[i]);
-    }
-    for (let i = 0; i < borderRadiusElems.length; i++) {
-      const borderRadiusElem = borderRadiusElems[i];
-      oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
-      borderRadiusElemsStyles.push(borderRadiusElem.style);
-    }
-  });
-  useOn(id2 + ".onPageScroll", ({ scrollTop }) => {
-    const alpha = Math.min(scrollTop / offset, 1);
-    if (alpha === 1 && A === 1) {
-      return;
-    }
-    if (alpha > 0.5 && A <= 0.5) {
-      iconElemsPaths.forEach(function(iconElemPath) {
-        iconElemPath.setAttribute("fill", titleColor);
-      });
-    } else if (alpha <= 0.5 && A > 0.5) {
-      iconElemsPaths.forEach(function(iconElemPath) {
-        iconElemPath.setAttribute("fill", "#fff");
-      });
-    }
-    A = alpha;
-    if (titleElem) {
-      titleElem.style.opacity = alpha;
-    }
-    const bg = rgb.value;
-    transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`;
-    borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
-      const oldColor = oldColors[index2];
-      const rgba = oldColor.match(/[\d+\.]+/g);
-      rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
-      borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
-    });
-  });
-}
-const ICON_PATHS = {
-  none: "",
-  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-  back: ICON_PATH_BACK,
-  select: ICON_PATH_BACK,
-  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: ICON_PATH_CLOSE
-};
-const PageHead = /* @__PURE__ */ defineSystemComponent({
-  name: "PageHead",
-  setup() {
-    const headRef = ref(null);
-    const pageMeta = usePageMeta();
-    const navigationBar = useTheme(pageMeta.navigationBar, () => {
-      const _navigationBar = parseTheme(pageMeta.navigationBar);
-      navigationBar.backgroundColor = _navigationBar.backgroundColor;
-      navigationBar.titleColor = _navigationBar.titleColor;
-    });
-    const {
-      clazz: clazz2,
-      style
-    } = usePageHead(navigationBar);
-    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
-    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
-    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
-      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
-      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
-      const type = navigationBar.type || "default";
-      const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
-        "class": {
-          "uni-placeholder": true,
-          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
-        }
-      }, null, 2);
-      return createVNode("uni-page-head", {
-        "uni-page-head-type": type
-      }, [createVNode("div", {
-        "ref": headRef,
-        "class": clazz2.value,
-        "style": style.value
-      }, [createVNode("div", {
-        "class": "uni-page-head-hd"
-      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
-        "class": "uni-page-head-ft"
-      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
-    };
-  }
-});
-function createBackButtonTsx(navigationBar, isQuit) {
-  if (!isQuit) {
-    return createVNode("div", {
-      "class": "uni-page-head-btn",
-      "onClick": onPageHeadBackButton
-    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
-  }
-}
-function createButtonsTsx(btns) {
-  return btns.map(({
-    onClick,
-    btnClass,
-    btnStyle,
-    btnText,
-    btnIconPath,
-    badgeText,
-    iconStyle,
-    btnSelect
-  }, index2) => {
-    return createVNode("div", {
-      "key": index2,
-      "class": btnClass,
-      "style": btnStyle,
-      "onClick": onClick,
-      "badge-text": badgeText
-    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
-      "style": iconStyle
-    }, [createVNode("i", {
-      "class": "uni-btn-icon",
-      "innerHTML": btnText
-    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : createVNode("i", {
-      "class": "uni-btn-icon",
-      "style": iconStyle,
-      "innerHTML": btnText
-    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
-  });
-}
-function createPageHeadBdTsx(navigationBar, searchInput) {
-  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
-    return createPageHeadTitleTextTsx(navigationBar);
-  }
-  return createPageHeadSearchInputTsx(navigationBar, searchInput);
-}
-function createPageHeadTitleTextTsx({
-  type,
-  loading,
-  titleSize,
-  titleText,
-  titleImage
-}) {
-  return createVNode("div", {
-    "class": "uni-page-head-bd"
-  }, [createVNode("div", {
-    "style": {
-      fontSize: titleSize,
-      opacity: type === "transparent" ? 0 : 1
-    },
-    "class": "uni-page-head__title"
-  }, [loading ? createVNode("i", {
-    "class": "uni-loading"
-  }, null) : titleImage ? createVNode("img", {
-    "src": titleImage,
-    "class": "uni-page-head__title_image"
-  }, null, 8, ["src"]) : titleText], 4)]);
-}
-function createPageHeadSearchInputTsx(navigationBar, {
-  text: text2,
-  focus,
-  composing,
-  onBlur,
-  onFocus,
-  onInput,
-  onConfirm,
-  onClick
-}) {
-  const {
-    color,
-    align: align2,
-    autoFocus,
-    disabled,
-    borderRadius,
-    backgroundColor,
-    placeholder,
-    placeholderColor
-  } = navigationBar.searchInput;
-  const searchStyle = {
-    borderRadius,
-    backgroundColor
-  };
-  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
-  return createVNode("div", {
-    "class": "uni-page-head-search",
-    "style": searchStyle
-  }, [createVNode("div", {
-    "style": {
-      color: placeholderColor
-    },
-    "class": placeholderClass
-  }, [createVNode("div", {
-    "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(Input, {
-    "disabled": true,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(Input, {
-    "focus": autoFocus,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onFocus": onFocus,
-    "onBlur": onBlur,
-    "onInput": onInput,
-    "onConfirm": onConfirm
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
-}
-function onPageHeadBackButton() {
-  if (getCurrentPages().length === 1) {
-    uni.reLaunch({
-      url: "/"
-    });
-  } else {
-    uni.navigateBack({
-      from: "backbutton",
-      success() {
-      }
-      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
-    });
-  }
-}
-function usePageHead(navigationBar) {
-  const clazz2 = computed(() => {
-    const {
-      type,
-      titlePenetrate,
-      shadowColorType
-    } = navigationBar;
-    const clazz3 = {
-      "uni-page-head": true,
-      "uni-page-head-transparent": type === "transparent",
-      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-      "uni-page-head-shadow": !!shadowColorType
-    };
-    if (shadowColorType) {
-      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
-    }
-    return clazz3;
-  });
-  const style = computed(() => {
-    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
-    return {
-      backgroundColor,
-      color: navigationBar.titleColor,
-      transitionDuration: navigationBar.duration,
-      transitionTimingFunction: navigationBar.timingFunc
-    };
-  });
-  return {
-    clazz: clazz2,
-    style
-  };
-}
-function usePageHeadButtons({
-  id: id2,
-  navigationBar
-}) {
-  const left = [];
-  const right = [];
-  const {
-    buttons
-  } = navigationBar;
-  if (isArray(buttons)) {
-    const {
-      type
-    } = navigationBar;
-    const isTransparent = type === "transparent";
-    const fonts = /* @__PURE__ */ Object.create(null);
-    buttons.forEach((btn, index2) => {
-      if (btn.fontSrc && !btn.fontFamily) {
-        const fontSrc = getRealPath(btn.fontSrc);
-        let fontFamily = fonts[fontSrc];
-        if (!fontFamily) {
-          fontFamily = `font${Date.now()}`;
-          fonts[fontSrc] = fontFamily;
-          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
-        }
-        btn.fontFamily = fontFamily;
-      }
-      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-      if (btn.float === "left") {
-        left.push(pageHeadBtn);
-      } else {
-        right.push(pageHeadBtn);
-      }
-    });
-  }
-  return {
-    left,
-    right
-  };
-}
-function usePageHeadButton(pageId, index2, btn, isTransparent) {
-  const iconStyle = {
-    color: btn.color,
-    fontSize: btn.fontSize,
-    fontWeight: btn.fontWeight
-  };
-  if (btn.fontFamily) {
-    iconStyle.fontFamily = btn.fontFamily;
-  }
-  return new Proxy({
-    btnClass: {
-      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
-      "uni-page-head-btn": true,
-      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-      "uni-page-head-btn-select": !!btn.select
-    },
-    btnStyle: {
-      backgroundColor: isTransparent ? btn.background : "transparent",
-      width: btn.width
-    },
-    btnText: "",
-    btnIconPath: ICON_PATHS[btn.type],
-    badgeText: btn.badgeText,
-    iconStyle,
-    onClick() {
-      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
-        index: index2
-      }, btn));
-    },
-    btnSelect: btn.select
-  }, {
-    get(target, key, receiver) {
-      if (["btnText"].includes(key)) {
-        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-      } else {
-        return Reflect.get(target, key, receiver);
-      }
-    }
-  });
-}
-function usePageHeadSearchInput({
-  id: id2,
-  navigationBar: {
-    searchInput
-  }
-}) {
-  const focus = ref(false);
-  const text2 = ref("");
-  const composing = ref(false);
-  const {
-    disabled
-  } = searchInput;
-  if (disabled) {
-    const onClick = () => {
-      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-    };
-    return {
-      focus,
-      text: text2,
-      composing,
-      onClick
-    };
-  }
-  const onFocus = () => {
-    focus.value = true;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: true
-    });
-  };
-  const onBlur = () => {
-    focus.value = false;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: false
-    });
-  };
-  const onInput = (evt) => {
-    text2.value = evt.detail.value;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
-      text: text2.value
-    });
-  };
-  const onConfirm = (evt) => {
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-      text: text2.value
-    });
-  };
-  return {
-    focus,
-    text: text2,
-    composing,
-    onFocus,
-    onBlur,
-    onInput,
-    onConfirm
-  };
-}
-const _sfc_main = {
-  name: "PageRefresh",
-  setup() {
-    const { pullToRefresh } = usePageMeta();
-    return {
-      offset: pullToRefresh.offset,
-      color: pullToRefresh.color
-    };
-  }
-};
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-const _hoisted_1 = { class: "uni-page-refresh-inner" };
-const _hoisted_2 = ["fill"];
-const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
-const _hoisted_4 = /* @__PURE__ */ createElementVNode("path", {
-  d: "M0 0h24v24H0z",
-  fill: "none"
-}, null, -1);
-const _hoisted_5 = [
-  _hoisted_3,
-  _hoisted_4
-];
-const _hoisted_6 = {
-  class: "uni-page-refresh__spinner",
-  width: "24",
-  height: "24",
-  viewBox: "25 25 50 50"
-};
-const _hoisted_7 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("uni-page-refresh", null, [
-    createElementVNode("div", {
-      style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
-      class: "uni-page-refresh"
-    }, [
-      createElementVNode("div", _hoisted_1, [
-        (openBlock(), createElementBlock("svg", {
-          fill: $setup.color,
-          class: "uni-page-refresh__icon",
-          width: "24",
-          height: "24",
-          viewBox: "0 0 24 24"
-        }, _hoisted_5, 8, _hoisted_2)),
-        (openBlock(), createElementBlock("svg", _hoisted_6, [
-          createElementVNode("circle", {
-            stroke: $setup.color,
-            class: "uni-page-refresh__path",
-            cx: "50",
-            cy: "50",
-            r: "20",
-            fill: "none",
-            "stroke-width": "4",
-            "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_7)
-        ]))
-      ])
-    ], 4)
-  ]);
-}
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-function processDeltaY(ev, identifier, startY) {
-  const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
-  if (!touch) {
-    return false;
-  }
-  ev.deltaY = touch.pageY - startY;
-  return true;
-}
-const PULLING = "pulling";
-const REACHED = "reached";
-const ABORTING = "aborting";
-const REFRESHING = "refreshing";
-const RESTORING = "restoring";
-function usePageRefresh(refreshRef) {
-  const pageMeta = usePageMeta();
-  const { id: id2, pullToRefresh } = pageMeta;
-  const { range, height } = pullToRefresh;
-  let refreshContainerElem;
-  let refreshControllerElem;
-  let refreshControllerElemStyle;
-  let refreshInnerElemStyle;
-  useSubscribe(
-    () => {
-      if (!pageMeta.enablePullDownRefresh) {
-        return;
-      }
-      if (!state2) {
-        state2 = REFRESHING;
-        addClass();
-        setTimeout(() => {
-          refreshing();
-        }, 50);
-      }
-    },
-    API_START_PULL_DOWN_REFRESH,
-    false,
-    id2
-  );
-  useSubscribe(
-    () => {
-      if (!pageMeta.enablePullDownRefresh) {
-        return;
-      }
-      if (state2 === REFRESHING) {
-        removeClass();
-        state2 = RESTORING;
-        addClass();
-        restoring(() => {
-          removeClass();
-          state2 = distance2 = offset = null;
-        });
-      }
-    },
-    API_STOP_PULL_DOWN_REFRESH,
-    false,
-    id2
-  );
-  function initElement() {
-    refreshContainerElem = refreshRef.value.$el;
-    refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
-    refreshControllerElemStyle = refreshControllerElem.style;
-    refreshInnerElemStyle = refreshControllerElem.querySelector(
-      ".uni-page-refresh-inner"
-    ).style;
-  }
-  onMounted(() => {
-    initElement();
-  });
-  {
-    watch(
-      () => pageMeta.enablePullDownRefresh,
-      (enablePullDownRefresh) => {
-        if (enablePullDownRefresh) {
-          nextTick(() => {
-            initElement();
-          });
-        }
-      }
-    );
-  }
-  let touchId;
-  let startY;
-  let canRefresh;
-  let state2;
-  let distance2 = null;
-  let offset = null;
-  function toggleClass(type) {
-    if (!state2) {
-      return;
-    }
-    if (refreshContainerElem) {
-      refreshContainerElem.classList[type]("uni-page-refresh--" + state2);
-    }
-  }
-  function addClass() {
-    toggleClass("add");
-  }
-  function removeClass() {
-    toggleClass("remove");
-  }
-  function pulling(deltaY) {
-    if (!refreshControllerElem) {
-      return;
-    }
-    let rotate = deltaY / range;
-    if (rotate > 1) {
-      rotate = 1;
-    } else {
-      rotate = rotate * rotate * rotate;
-    }
-    const y = Math.round(deltaY / (range / height)) || 0;
-    refreshInnerElemStyle.transform = "rotate(" + 360 * rotate + "deg)";
-    refreshControllerElemStyle.clip = "rect(" + (45 - y) + "px,45px,45px,-5px)";
-    refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
-  }
-  const onTouchstartPassive = withWebEvent((ev) => {
-    if (!pageMeta.enablePullDownRefresh) {
-      return;
-    }
-    const touch = ev.changedTouches[0];
-    touchId = touch.identifier;
-    startY = touch.pageY;
-    if ([ABORTING, REFRESHING, RESTORING].indexOf(state2) >= 0) {
-      canRefresh = false;
-    } else {
-      canRefresh = true;
-    }
-  });
-  const onTouchmove = withWebEvent((ev) => {
-    if (!pageMeta.enablePullDownRefresh) {
-      return;
-    }
-    if (!canRefresh) {
-      return;
-    }
-    if (!processDeltaY(ev, touchId, startY)) {
-      return;
-    }
-    let { deltaY } = ev;
-    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
-      touchId = null;
-      return;
-    }
-    if (deltaY < 0 && !state2) {
-      return;
-    }
-    if (ev.cancelable) {
-      ev.preventDefault();
-    }
-    if (distance2 === null) {
-      offset = deltaY;
-      state2 = PULLING;
-      addClass();
-    }
-    deltaY = deltaY - offset;
-    if (deltaY < 0) {
-      deltaY = 0;
-    }
-    distance2 = deltaY;
-    const isReached = deltaY >= range && state2 !== REACHED;
-    const isPulling = deltaY < range && state2 !== PULLING;
-    if (isReached || isPulling) {
-      removeClass();
-      state2 = state2 === REACHED ? PULLING : REACHED;
-      addClass();
-    }
-    pulling(deltaY);
-  });
-  const onTouchend = withWebEvent((ev) => {
-    if (!pageMeta.enablePullDownRefresh) {
-      return;
-    }
-    if (!processDeltaY(ev, touchId, startY)) {
-      return;
-    }
-    if (state2 === null) {
-      return;
-    }
-    if (state2 === PULLING) {
-      removeClass();
-      state2 = ABORTING;
-      addClass();
-      aborting(() => {
-        removeClass();
-        state2 = distance2 = offset = null;
-      });
-    } else if (state2 === REACHED) {
-      removeClass();
-      state2 = REFRESHING;
-      addClass();
-      refreshing();
-    }
-  });
-  function aborting(callback) {
-    if (!refreshControllerElem) {
-      return;
-    }
-    if (refreshControllerElemStyle.transform) {
-      refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
-      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
-      const abortTransitionEnd = function() {
-        timeout && clearTimeout(timeout);
-        refreshControllerElem.removeEventListener(
-          "webkitTransitionEnd",
-          abortTransitionEnd
-        );
-        refreshControllerElemStyle.transition = "";
-        callback();
-      };
-      refreshControllerElem.addEventListener(
-        "webkitTransitionEnd",
-        abortTransitionEnd
-      );
-      const timeout = setTimeout(abortTransitionEnd, 350);
-    } else {
-      callback();
-    }
-  }
-  function refreshing() {
-    if (!refreshControllerElem) {
-      return;
-    }
-    refreshControllerElemStyle.transition = "-webkit-transform 0.2s";
-    refreshControllerElemStyle.transform = "translate3d(-50%, " + height + "px, 0)";
-    invokeHook(id2, ON_PULL_DOWN_REFRESH);
-  }
-  function restoring(callback) {
-    if (!refreshControllerElem) {
-      return;
-    }
-    refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
-    refreshControllerElemStyle.transform += " scale(0.01)";
-    const restoreTransitionEnd = function() {
-      timeout && clearTimeout(timeout);
-      refreshControllerElem.removeEventListener(
-        "webkitTransitionEnd",
-        restoreTransitionEnd
-      );
-      refreshControllerElemStyle.transition = "";
-      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
-      callback();
-    };
-    refreshControllerElem.addEventListener(
-      "webkitTransitionEnd",
-      restoreTransitionEnd
-    );
-    const timeout = setTimeout(restoreTransitionEnd, 350);
-  }
-  return {
-    onTouchstartPassive,
-    onTouchmove,
-    onTouchend,
-    onTouchcancel: onTouchend
-  };
-}
-const PageBody = /* @__PURE__ */ defineSystemComponent({
-  name: "PageBody",
-  setup(props2, ctx) {
-    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
-    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
-    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
-    const pageRefresh = ref(null);
-    watch(() => {
-      return pageMeta.enablePullDownRefresh;
-    }, () => {
-      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
-    }, {
-      immediate: true
-    });
-    return () => {
-      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh.value, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
-    };
-  }
-});
-function createPageRefreshTsx(refreshRef, pageMeta) {
-  return createVNode(PageRefresh, {
-    "ref": refreshRef
-  }, null, 512);
-}
-const index = /* @__PURE__ */ defineSystemComponent({
-  name: "Page",
-  setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId());
-    const navigationBar = pageMeta.navigationBar;
-    const pageStyle = {};
-    useDocumentTitle(pageMeta);
-    const currentInstance = getCurrentInstance();
-    currentInstance.$dialogPages = ref([]);
-    {
-      useBackgroundColorContent(pageMeta);
-      if (ctx.attrs.type === "dialog") {
-        navigationBar.style = "custom";
-        pageMeta.route = ctx.attrs.route;
-        const parentInstance = inject(
-          "parentInstance"
-        );
-        if (currentInstance && parentInstance) {
-          currentInstance.$parentInstance = parentInstance;
-          const parentDialogPages = parentInstance.$dialogPages.value;
-          currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
-        }
-      } else {
-        provide("parentInstance", currentInstance);
-      }
-    }
-    return () => createVNode(
-      "uni-page",
-      {
-        "data-page": pageMeta.route,
-        style: pageStyle
-      },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        createVNode(PageHead),
-        createPageBodyVNode(ctx),
-        createDialogPageVNode(currentInstance.$dialogPages)
-      ] : [
-        createPageBodyVNode(ctx),
-        createDialogPageVNode(currentInstance.$dialogPages)
-      ]
-    );
-  }
-});
-function createPageBodyVNode(ctx) {
-  return openBlock(), createBlock(
-    PageBody,
-    { key: 0 },
-    {
-      default: withCtx(() => [renderSlot(ctx.slots, "page")]),
-      _: 3
-    }
-  );
-}
-function createDialogPageVNode(dialogPages) {
-  return openBlock(true), createElementBlock(
-    Fragment,
-    null,
-    renderList(dialogPages.value, (dialogPage) => {
-      return openBlock(), createBlock(
-        createVNode(
-          dialogPage.$component,
-          {
-            key: dialogPage.route,
-            style: {
-              position: "fixed",
-              "z-index": 999,
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0
-            },
-            type: "dialog",
-            route: dialogPage.route
-          },
-          null
-        )
-      );
-    })
-  );
-}
 export {
   $emit,
   $off,
   $on,
   $once,
-  index$6 as Ad,
-  index$5 as AdContentPage,
-  index$4 as AdDraw,
+  index$5 as Ad,
+  index$4 as AdContentPage,
+  index$3 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$w as Button,
-  index$3 as Camera,
+  index$r as Button,
+  index$2 as Camera,
   indexX$4 as Canvas,
-  index$u as Checkbox,
-  index$v as CheckboxGroup,
-  index$8 as CoverImage,
-  index$9 as CoverView,
-  index$s as Editor,
-  index$y as Form,
-  index$r as Icon,
-  index$q as Image,
-  Input,
-  index$x as Label,
+  index$p as Checkbox,
+  index$q as CheckboxGroup,
+  index$7 as CoverImage,
+  index$8 as CoverView,
+  index$n as Editor,
+  index$t as Form,
+  index$m as Icon,
+  __syscom_4 as Image,
+  __syscom_3 as Input,
+  index$s as Label,
   LayoutComponent,
-  index$h as ListItem,
-  index$i as ListView,
-  index$2 as LivePlayer,
-  index$1 as LivePusher,
-  Map$1 as Map,
+  index$g as ListItem,
+  index$h as ListView,
+  index$1 as LivePlayer,
+  index as LivePusher,
+  __syscom_0 as Map,
   MovableArea,
   MovableView,
-  index$p as Navigator,
-  index as PageComponent,
-  index$7 as Picker,
+  index$l as Navigator,
+  PageComponent,
+  index$6 as Picker,
   PickerView,
   PickerViewColumn,
-  index$o as Progress,
+  index$k as Progress,
   indexX$3 as Radio,
-  index$n as RadioGroup,
+  index$j as RadioGroup,
   ResizeSensor,
-  index$m as RichText,
-  ScrollView,
+  index$i as RichText,
+  __syscom_5 as ScrollView,
   indexX$2 as Slider,
-  index$f as StickyHeader,
-  index$g as StickySection,
+  index$e as StickyHeader,
+  index$f as StickySection,
   Swiper,
   SwiperItem,
   indexX$1 as Switch,
-  index$l as Text,
-  index$k as Textarea,
+  __syscom_0$1 as Text,
+  __syscom_1 as Textarea,
   UniButtonElement,
   UniCanvasElement,
   UniCheckboxElement,
@@ -28158,9 +29427,10 @@ export {
   UniViewElement,
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
-  index$c as Video,
-  index$j as View,
+  index$b as Video,
+  __syscom_2 as View,
   indexX as WebView,
+  __f__,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,
@@ -28251,6 +29521,7 @@ export {
   offAppShow,
   offCompassChange,
   offError,
+  offHostThemeChange,
   offLocationChange,
   offLocationChangeError,
   offNetworkStatusChange,
@@ -28266,6 +29537,7 @@ export {
   onCreateVueApp2 as onCreateVueApp,
   onError,
   onGyroscopeChange,
+  onHostThemeChange,
   onLocaleChange,
   onLocationChange,
   onLocationChangeError,
@@ -28286,7 +29558,7 @@ export {
   openDocument,
   openLocation,
   pageScrollTo,
-  index$d as plugin,
+  index$c as plugin,
   preloadPage,
   previewImage,
   reLaunch,
@@ -28327,7 +29599,6 @@ export {
   showActionSheet,
   showLeftWindow,
   showLoading,
-  showModal,
   showNavigationBarLoading,
   showRightWindow,
   showTabBar,

@@ -7,14 +7,13 @@ import {
   initService,
   initView,
 } from '@dcloudio/uni-core'
-import { EventBus } from '@dcloudio/uni-api'
-import type { UniApp } from '@dcloudio/uni-app-x/types/app'
 import { getCurrentBasePages } from './page'
+import type { UniApp } from '@dcloudio/uni-app-x/types/app'
 
 let appVm: ComponentPublicInstance
 let $uniApp: UniApp
 if (__X__) {
-  class UniAppImpl extends EventBus implements UniApp {
+  class UniAppImpl implements UniApp {
     get vm() {
       return appVm
     }

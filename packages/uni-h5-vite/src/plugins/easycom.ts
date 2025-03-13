@@ -65,9 +65,12 @@ interface UniEasycomPluginOptions {
   exclude?: FilterPattern
 }
 
+let componentDepsCss: ReturnType<typeof COMPONENT_DEPS_CSS>
+
 export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   let needCombineBuiltInCss = false
+  componentDepsCss = COMPONENT_DEPS_CSS(process.env.UNI_APP_X === 'true')
   return {
     name: 'uni:h5-easycom',
     configResolved(config) {
@@ -152,7 +155,9 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
       }
       return {
         code,
-        map: null,
+        map: {
+          mappings: '',
+        },
       }
     },
   }
@@ -170,7 +175,8 @@ function resolveBuiltInCssImport(name: string) {
   } else {
     cssImports.push(H5_COMPONENTS_STYLE_PATH + name + '.css')
   }
-  const deps = COMPONENT_DEPS_CSS[name as keyof typeof COMPONENT_DEPS_CSS]
+
+  const deps = componentDepsCss[name as keyof typeof componentDepsCss]
   deps && deps.forEach((dep) => cssImports.push(dep))
   return cssImports
 }

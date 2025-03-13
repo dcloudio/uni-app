@@ -16,6 +16,7 @@ import {
 import type { NormalizedStyle } from '@vue/shared'
 import { isBuiltInComponent } from './tags'
 import { SLOT_DEFAULT_NAME } from './constants'
+import { getGlobal } from './utils'
 
 export function isComponentInternalInstance(
   vm: unknown
@@ -93,7 +94,14 @@ export function customizeEvent(str: string) {
 export function normalizeStyle(
   value: unknown
 ): NormalizedStyle | string | undefined {
-  if (value instanceof Map) {
+  const g = getGlobal()
+  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+    const styleObject: NormalizedStyle = {}
+    g.UTSJSONObject.keys(value).forEach((key: string) => {
+      styleObject[key] = (value as Record<string, any>)[key]
+    })
+    return vueNormalizeStyle(styleObject)
+  } else if (value instanceof Map) {
     const styleObject: NormalizedStyle = {}
     value.forEach((value, key) => {
       styleObject[key] = value
@@ -122,8 +130,15 @@ export function normalizeStyle(
 
 export function normalizeClass(value: unknown): string {
   let res = ''
-  if (value instanceof Map) {
-    value.forEach((value, key) => {
+  const g = getGlobal()
+  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+    g.UTSJSONObject.keys(value).forEach((key: string) => {
+      if ((value as Record<string, any>)[key]) {
+        res += key + ' '
+      }
+    })
+  } else if (value instanceof Map) {
+    ;(value as Map<string, any>).forEach((value, key) => {
       if (value) {
         res += key + ' '
       }

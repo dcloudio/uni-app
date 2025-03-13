@@ -119,8 +119,11 @@ function isImplementationOf(leftType, rightType, visited = []) {
     });
 }
 function isInstanceOf(value, type) {
+    if (type === UTSValueIterable) {
+        return value && value[Symbol.iterator];
+    }
     const isNativeInstanceofType = value instanceof type;
-    if (isNativeInstanceofType || typeof value !== 'object') {
+    if (isNativeInstanceofType || typeof value !== 'object' || value === null) {
         return isNativeInstanceofType;
     }
     const proto = Object.getPrototypeOf(value).constructor;
@@ -152,6 +155,7 @@ function normalizeGenericValue(value, genericType, isJSONParse = false) {
 class UTSType {
     static get$UTSMetadata$(...args) {
         return {
+            name: '',
             kind: UTS_CLASS_METADATA_KIND.TYPE,
             interfaces: [],
             fields: {},
@@ -241,17 +245,17 @@ class UTSType {
             }
             if (isUTSType(type)) {
                 // 带有泛型的数组会走此分支
-                // @ts-ignore
-                obj[key] = new type(options[realKey], undefined, isJSONParse);
+                obj[key] = isJSONParse
+                    ? // @ts-ignore
+                        new type(options[realKey], undefined, isJSONParse)
+                    : options[realKey];
             }
             else if (type === Array) {
                 // 不带泛型的数组会走此分支
                 if (!Array.isArray(options[realKey])) {
                     throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
                 }
-                obj[key] = options[realKey].map((item) => {
-                    return item == null ? null : item;
-                });
+                obj[key] = options[realKey];
             }
             else {
                 obj[key] = options[realKey];
@@ -262,12 +266,35 @@ class UTSType {
 }
 
 const OriginalJSON = JSON;
+function createUTSJSONObject(obj) {
+    const result = new UTSJSONObject({});
+    for (const key in obj) {
+        const value = obj[key];
+        if (isPlainObject(value)) {
+            result[key] = createUTSJSONObject(value);
+        }
+        else if (getType(value) === 'array') {
+            result[key] = value.map((item) => {
+                if (isPlainObject(item)) {
+                    return createUTSJSONObject(item);
+                }
+                else {
+                    return item;
+                }
+            });
+        }
+        else {
+            result[key] = value;
+        }
+    }
+    return result;
+}
 function parseObjectOrArray(object, utsType) {
     const objectType = getType(object);
     if (object === null || (objectType !== 'object' && objectType !== 'array')) {
         return object;
     }
-    if (utsType || utsType === UTSJSONObject) {
+    if (utsType && utsType !== UTSJSONObject) {
         try {
             return new utsType(object, undefined, true);
         }
@@ -282,7 +309,7 @@ function parseObjectOrArray(object, utsType) {
         });
     }
     else if (objectType === 'object') {
-        return new UTSJSONObject(object);
+        return createUTSJSONObject(object);
     }
     return object;
 }
@@ -457,24 +484,6 @@ function initUTSJSONObjectProperties(obj) {
     }
     Object.defineProperties(obj, propertyDescriptorMap);
 }
-function setUTSJSONObjectValue(obj, key, value) {
-    if (isPlainObject(value)) {
-        obj[key] = new UTSJSONObject$1(value);
-    }
-    else if (getType(value) === 'array') {
-        obj[key] = value.map((item) => {
-            if (isPlainObject(item)) {
-                return new UTSJSONObject$1(item);
-            }
-            else {
-                return item;
-            }
-        });
-    }
-    else {
-        obj[key] = value;
-    }
-}
 let UTSJSONObject$1 = class UTSJSONObject {
     static keys(obj) {
         return Object.keys(obj);
@@ -491,14 +500,13 @@ let UTSJSONObject$1 = class UTSJSONObject {
     constructor(content = {}) {
         if (content instanceof Map) {
             content.forEach((value, key) => {
-                setUTSJSONObjectValue(this, key, value);
+                this[key] = value;
             });
         }
         else {
             for (const key in content) {
                 if (Object.prototype.hasOwnProperty.call(content, key)) {
-                    const value = content[key];
-                    setUTSJSONObjectValue(this, key, value);
+                    this[key] = content[key];
                 }
             }
         }
@@ -569,19 +577,20 @@ let UTSJSONObject$1 = class UTSJSONObject {
         }
         return keyPathArr;
     }
-    _getValue(keyPath) {
+    _getValue(keyPath, defaultValue) {
         const keyPathArr = this._resolveKeyPath(keyPath);
+        const realDefaultValue = defaultValue === void 0 ? null : defaultValue;
         if (keyPathArr.length === 0) {
-            return null;
+            return realDefaultValue;
         }
         let value = this;
         for (let i = 0; i < keyPathArr.length; i++) {
             const key = keyPathArr[i];
             if (value instanceof Object) {
-                value = value[key];
+                value = key in value ? value[key] : realDefaultValue;
             }
             else {
-                return null;
+                return realDefaultValue;
             }
         }
         return value;
@@ -592,11 +601,11 @@ let UTSJSONObject$1 = class UTSJSONObject {
     set(key, value) {
         this[key] = value;
     }
-    getAny(key) {
-        return this._getValue(key);
+    getAny(key, defaultValue) {
+        return this._getValue(key, defaultValue);
     }
-    getString(key) {
-        const value = this._getValue(key);
+    getString(key, defaultValue) {
+        const value = this._getValue(key, defaultValue);
         if (typeof value === 'string') {
             return value;
         }
@@ -604,8 +613,8 @@ let UTSJSONObject$1 = class UTSJSONObject {
             return null;
         }
     }
-    getNumber(key) {
-        const value = this._getValue(key);
+    getNumber(key, defaultValue) {
+        const value = this._getValue(key, defaultValue);
         if (typeof value === 'number') {
             return value;
         }
@@ -613,8 +622,8 @@ let UTSJSONObject$1 = class UTSJSONObject {
             return null;
         }
     }
-    getBoolean(key) {
-        const boolean = this._getValue(key);
+    getBoolean(key, defaultValue) {
+        const boolean = this._getValue(key, defaultValue);
         if (typeof boolean === 'boolean') {
             return boolean;
         }
@@ -622,17 +631,17 @@ let UTSJSONObject$1 = class UTSJSONObject {
             return null;
         }
     }
-    getJSON(key) {
-        let value = this._getValue(key);
+    getJSON(key, defaultValue) {
+        let value = this._getValue(key, defaultValue);
         if (value instanceof Object) {
-            return new UTSJSONObject(value);
+            return value;
         }
         else {
             return null;
         }
     }
-    getArray(key) {
-        let value = this._getValue(key);
+    getArray(key, defaultValue) {
+        let value = this._getValue(key, defaultValue);
         if (value instanceof Array) {
             return value;
         }
@@ -652,6 +661,9 @@ let UTSJSONObject$1 = class UTSJSONObject {
             callback(this[key], key);
         }
     }
+};
+
+let UTSValueIterable$1 = class UTSValueIterable {
 };
 
 // @ts-nocheck
@@ -685,5 +697,6 @@ const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError;
 realGlobal.UTS = UTS;
+realGlobal.UTSValueIterable = UTSValueIterable$1;
 
 export { UTSJSONObject$1 as UTSJSONObject, UniError };

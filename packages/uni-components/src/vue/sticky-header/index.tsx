@@ -1,8 +1,8 @@
-import { Ref, ref, onMounted, computed, nextTick, inject } from 'vue'
-import type { PropType, ComputedRef } from 'vue'
+import { type Ref, computed, inject, nextTick, onMounted, ref } from 'vue'
+import type { ComputedRef, PropType } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
-import { StickyHeaderStatus } from '../list-view/types'
+import type { StickyHeaderStatus } from '../list-view/types'
 
 export class UniStickyHeaderElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -34,7 +34,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
     const status: StickyHeaderStatus = {
       type: 'StickyHeader',
-      cachedSize: 0,
+      cachedSize: inject('__listViewDefaultHeaderSize') as number,
+      cachedSizeUpdated: false,
     }
     expose({
       __listViewChildStatus: status,
@@ -45,12 +46,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       rootElement.attachVmProps(props)
     })
     //#endif
+    onMounted(() => {
+      const rootEl = rootRef.value! as HTMLElement
+      const rect = rootEl.getBoundingClientRect()
+      status.cachedSize = isVertical ? rect.height : rect.width
+      status.cachedSizeUpdated = true
+    })
     return () => {
-      nextTick(() => {
-        const rootEl = rootRef.value! as HTMLElement
-        const rect = rootEl.getBoundingClientRect()
-        status.cachedSize = isVertical ? rect.height : rect.width
-      })
       return (
         <uni-sticky-header ref={rootRef} style={style.value}>
           {slots.default?.()}

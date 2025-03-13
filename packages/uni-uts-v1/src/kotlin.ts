@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import path, { join } from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
-import { hasOwn, isArray } from '@vue/shared'
+import { isArray } from '@vue/shared'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
@@ -17,16 +17,20 @@ import {
   type RunOptions,
   type RunProdOptions,
   type ToKotlinOptions,
-  copyPlatformFiles,
+  addPluginInjectApis,
+  copyPlatformNativeLanguageFiles,
   genComponentsCode,
+  genCustomElementsCode,
   genUTSPlatformResource,
   getCompilerServer,
   getUTSCompiler,
   isColorSupported,
+  isEnableGenericsParameterDefaults,
+  isEnableInlineReified,
+  isEnableUTSNumber,
   moveRootIndexSourceMap,
   normalizeUTSResult,
   parseExtApiDefaultParameters,
-  parseInjectModules,
   parseKotlinPackageWithPluginId,
   resolveAndroidDir,
   resolveBundleInputFileName,
@@ -37,6 +41,7 @@ import {
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
   shouldAutoImportUniCloud,
+  updateManifestModules,
 } from './utils'
 import type { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
@@ -47,10 +52,12 @@ import {
   hbuilderFormatter,
 } from './stacktrace/kotlin'
 import { uvueOutDir } from './uvue'
+import { storeIndexKt } from './manifest/dex'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
   getDefaultJar(arg?: any): string[]
+  getCompilerJar?: (userJars: string[], version?: number) => string[]
   compile(
     options: {
       kotlinc: string[]
@@ -89,30 +96,6 @@ function parseKotlinPackage(filename: string) {
   }
 }
 
-const pluginInjectApis = new Set<string>()
-
-export function addInjectApis(apis: string[]) {
-  apis.forEach((api) => {
-    pluginInjectApis.add(api)
-  })
-}
-
-export function getInjectApis() {
-  return [...pluginInjectApis]
-}
-
-const pluginInjectComponents = new Set<string>()
-
-export function addInjectComponents(components: string[]) {
-  components.forEach((component) => {
-    pluginInjectComponents.add(component)
-  })
-}
-
-export function getInjectComponents() {
-  return [...pluginInjectComponents]
-}
-
 function isAppIOS(filename: string) {
   return normalizePath(filename).includes('/utssdk/app-ios/')
 }
@@ -122,6 +105,7 @@ export async function runKotlinProd(
   {
     outFilename,
     components,
+    customElements,
     uniModuleId,
     isPlugin,
     isModule,
@@ -146,6 +130,7 @@ export async function runKotlinProd(
     outputDir,
     sourceMap: !!sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -178,7 +163,7 @@ export async function runKotlinProd(
     } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
       updateManifestModules(inputDir, result.inject_apis, extApis)
     } else {
-      addInjectApis(result.inject_apis)
+      addPluginInjectApis(result.inject_apis)
     }
   }
   // module 模式，不需要处理资源
@@ -191,6 +176,7 @@ export async function runKotlinProd(
       platform: 'app-android',
       extname: '.kt',
       components,
+      customElements,
       package: parseKotlinPackage(filename).package + '.',
       hookClass,
       result,
@@ -200,40 +186,6 @@ export async function runKotlinProd(
   }
 
   return result
-}
-
-function updateManifestModules(
-  inputDir: string,
-  inject_apis: string[],
-  localExtApis: Record<string, [string, string]> = {}
-) {
-  const filename = path.resolve(inputDir, 'manifest.json')
-  if (fs.existsSync(filename)) {
-    const content = fs.readFileSync(filename, 'utf8')
-    try {
-      const json = JSON.parse(content)
-      if (!json.app) {
-        json.app = {}
-      }
-      if (!json.app.distribute) {
-        json.app.distribute = {}
-      }
-      if (!json.app.distribute.modules) {
-        json.app.distribute.modules = {}
-      }
-      const modules = json.app.distribute.modules
-      let updated = false
-      parseInjectModules(inject_apis, localExtApis, []).forEach((name) => {
-        if (!hasOwn(modules, name)) {
-          modules[name] = {}
-          updated = true
-        }
-      })
-      if (updated) {
-        fs.outputFileSync(filename, JSON.stringify(json, null, 2))
-      }
-    } catch (e) {}
-  }
 }
 
 export type RunKotlinDevResult = UTSResult & {
@@ -266,6 +218,7 @@ export async function runKotlinDev(
   filename: string,
   {
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -277,6 +230,7 @@ export async function runKotlinDev(
     transform,
     sourceMap,
     uniModules,
+    rewriteConsoleExpr,
   }: RunDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -290,6 +244,7 @@ export async function runKotlinDev(
     outputDir,
     sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -313,7 +268,6 @@ export async function runKotlinDev(
     outputDir,
     platform: 'app-android',
     extname: '.kt',
-    components,
     package: '',
     result,
   })
@@ -370,15 +324,16 @@ export async function runKotlinDev(
           .concat(getUniModulesJars(outputDir, uniModules)) // cli版本插件jar（没有指定cache的时候,也不应该需要了，默认cache目录即可）
       : []
 
-    const platformFiles = copyPlatformFiles(
+    const { srcFiles, destFiles } = copyPlatformNativeLanguageFiles(
       path.resolve(inputDir, pluginRelativeDir, 'utssdk', 'app-android'),
       path.resolve(outputDir, pluginRelativeDir, 'utssdk', 'app-android'),
-      ['.kt', '.java']
+      ['.kt', '.java'],
+      rewriteConsoleExpr!
     )
 
-    kotlinFiles.push(...platformFiles)
+    kotlinFiles.push(...destFiles)
 
-    result.deps = [...(result.deps || []), ...platformFiles]
+    result.deps = [...(result.deps || []), ...srcFiles]
 
     const { code, msg } = await compileAndroidDex(
       isX,
@@ -414,6 +369,10 @@ export async function runKotlinDev(
           outputDir,
           is_uni_modules
         )
+        if (newDexFile && cacheDir) {
+          // 缓存index.kt文件
+          storeIndexKt(kotlinFile, pluginRelativeDir, cacheDir)
+        }
         result.changed = [
           normalizePath(path.relative(outputDir, newDexFile || dexFile)),
         ]
@@ -440,14 +399,14 @@ export async function compileAndroidDex(
   stderrListener: (data: string) => void
 ) {
   const inputDir = process.env.UNI_INPUT_DIR
-  const { getDefaultJar, getKotlincHome, compile: compileDex } = compilerServer
+  const { getKotlincHome, compile: compileDex } = compilerServer
   const options = {
     pageCount: 0,
     kotlinc: resolveKotlincArgs(
       kotlinFiles,
       jarFile,
       getKotlincHome(),
-      (isX ? getDefaultJar(2) : getDefaultJar()).concat(depJars)
+      getKotlinCompileJars(isX, depJars, compilerServer)
     ),
     d8: resolveD8Args(jarFile),
     sourceRoot: inputDir,
@@ -458,6 +417,17 @@ export async function compileAndroidDex(
   const result = await compileDex(options, inputDir)
   // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
   return result
+}
+
+function getKotlinCompileJars(
+  isX: boolean,
+  depJars: string[],
+  { getDefaultJar, getCompilerJar }: KotlinCompilerServer
+) {
+  if (getCompilerJar) {
+    return getCompilerJar(depJars, isX ? 2 : undefined)
+  }
+  return getDefaultJar(isX ? 2 : undefined).concat(depJars)
 }
 
 function checkDeps(
@@ -584,6 +554,7 @@ export async function compile(
     outputDir,
     sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -623,7 +594,13 @@ export async function compile(
     // 本地 provider 的时候，不要引入 io.dcloud.uniapp.extapi.*，因为里边包含了相同的类型定义
     imports.push('io.dcloud.uniapp.extapi.*')
   }
-  const componentsCode = genComponentsCode(filename, components, isX)
+  let componentsCode = genComponentsCode(filename, components, isX)
+  if (customElements) {
+    const customElementsCode = genCustomElementsCode(filename, customElements)
+    if (customElementsCode) {
+      componentsCode = componentsCode + '\n' + customElementsCode
+    }
+  }
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: UTSInputOptions = {
     root: resolveBundleInputRoot('app-android', inputDir),
@@ -632,6 +609,7 @@ export async function compile(
     paths: {
       vue: 'io.dcloud.uniapp.vue',
       '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
+      '@dcloudio/uni-runtime': 'io.dcloud.uniapp.framework.runtime',
     },
     uniModules,
   }
@@ -678,6 +656,10 @@ export async function compile(
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
+        enableUtsNumber: isEnableUTSNumber(),
+        enableNarrowType: false, // 这里的启用是把部分typeof转换成instanceof，这样确实好一点，但会引发一些kotlin之类的警告，暂不开启
+        enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
+        enableInlineReified: isEnableInlineReified(),
         ...transform,
       },
     },
@@ -691,7 +673,6 @@ export async function compile(
       outputDir,
       platform: 'app-android',
       extname: '.kt',
-      components,
       package: '',
       result,
     })

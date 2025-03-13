@@ -1,6 +1,6 @@
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
-import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, formatLog, parseNVueDataset, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
 
 /*
  * base64-arraybuffer
@@ -515,8 +515,20 @@ function invokeSuccess(id, name, res) {
     return invokeCallback(id, extend((res || {}), result));
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
-    const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
-    delete errRes.errCode;
+    const errMsgPrefix = name + ':fail';
+    let apiErrMsg = '';
+    if (!errMsg) {
+        apiErrMsg = errMsgPrefix;
+    }
+    else if (errMsg.indexOf(errMsgPrefix) === 0) {
+        apiErrMsg = errMsg;
+    }
+    else {
+        apiErrMsg = errMsgPrefix + ' ' + errMsg;
+    }
+    {
+        delete errRes.errCode;
+    }
     let res = extend({ errMsg: apiErrMsg }, errRes);
     return invokeCallback(id, res);
 }
@@ -578,7 +590,10 @@ function parseErrMsg(errMsg) {
         return errMsg;
     }
     if (errMsg.stack) {
-        console.error(errMsg.message + '\n' + errMsg.stack);
+        // 此处同时被鸿蒙arkts和jsvm使用，暂时使用运行时判断鸿蒙jsvm环境，注意此用法仅内部使用
+        if ((typeof globalThis === 'undefined' || !globalThis.harmonyChannel)) {
+            console.error(errMsg.message + '\n' + errMsg.stack);
+        }
         return errMsg.message;
     }
     return errMsg;
@@ -666,87 +681,6 @@ function getBaseSystemInfo() {
         pixelRatio: plus.screen.scale,
         windowWidth: Math.round(resolutionWidth),
     };
-}
-
-function requestComponentInfo(pageVm, reqs, callback) {
-    if (pageVm.$page.meta.isNVue) {
-        requestNVueComponentInfo(pageVm, reqs, callback);
-    }
-    else {
-        requestVueComponentInfo(pageVm, reqs, callback);
-    }
-}
-function requestVueComponentInfo(pageVm, reqs, callback) {
-    UniServiceJSBridge.invokeViewMethod('requestComponentInfo', {
-        reqs: reqs.map((req) => {
-            if (req.component) {
-                req.component = req.component.$el.nodeId;
-            }
-            return req;
-        }),
-    }, pageVm.$page.id, callback);
-}
-function requestNVueComponentInfo(pageVm, reqs, callback) {
-    const ids = findNVueElementIds(reqs);
-    const nvueElementInfos = new Array(ids.length);
-    findNVueElementInfos(ids, pageVm.$el, nvueElementInfos);
-    findComponentRectAll(pageVm.$requireNativePlugin('dom'), nvueElementInfos, 0, [], (result) => {
-        callback(result);
-    });
-}
-function findNVueElementIds(reqs) {
-    const ids = [];
-    for (let i = 0; i < reqs.length; i++) {
-        const selector = reqs[i].selector;
-        if (selector.indexOf('#') === 0) {
-            ids.push(selector.substring(1));
-        }
-    }
-    return ids;
-}
-function findNVueElementInfos(ids, elm, infos) {
-    const nodes = elm.children;
-    if (!isArray(nodes)) {
-        return false;
-    }
-    for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
-        if (node.attr) {
-            const index = ids.indexOf(node.attr.id);
-            if (index >= 0) {
-                infos[index] = {
-                    id: ids[index],
-                    ref: node.ref,
-                    dataset: parseNVueDataset(node.attr),
-                };
-                if (ids.length === 1) {
-                    break;
-                }
-            }
-        }
-        if (node.children) {
-            findNVueElementInfos(ids, node, infos);
-        }
-    }
-}
-function findComponentRectAll(dom, nvueElementInfos, index, result, callback) {
-    const attr = nvueElementInfos[index];
-    dom.getComponentRect(attr.ref, (option) => {
-        option.size.id = attr.id;
-        option.size.dataset = attr.dataset;
-        result.push(option.size);
-        index += 1;
-        if (index < nvueElementInfos.length) {
-            findComponentRectAll(dom, nvueElementInfos, index, result, callback);
-        }
-        else {
-            callback(result);
-        }
-    });
-}
-
-function setCurrentPageMeta(page, options) {
-    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, page.$page.id);
 }
 
 const isObject = (val) => val !== null && typeof val === 'object';
@@ -1511,18 +1445,21 @@ function rpx2pxWithReplace(str) {
         return uni.upx2px(parseFloat(b)) + 'px';
     });
 }
+function get$pageByPage(page) {
+    return page.$page;
+}
 
 function getPageIdByVm(instance) {
     const vm = resolveComponentInstance(instance);
     if (vm.$page) {
-        return vm.$page.id;
+        return getPageProxyId(vm);
     }
     if (!vm.$) {
         return;
     }
     const rootProxy = vm.$.root.proxy;
     if (rootProxy && rootProxy.$page) {
-        return rootProxy.$page.id;
+        return getPageProxyId(rootProxy);
     }
 }
 function getCurrentPage() {
@@ -1533,9 +1470,10 @@ function getCurrentPage() {
     }
 }
 function getCurrentPageMeta() {
-    const page = getCurrentPage();
-    if (page) {
-        return page.$page.meta;
+    var _c;
+    const $page = (_c = getCurrentPage()) === null || _c === void 0 ? void 0 : _c.$page;
+    if ($page) {
+        return $page.meta;
     }
 }
 function getCurrentPageId() {
@@ -1597,6 +1535,10 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
         statusBarStyle: titleColor === '#ffffff' ? 'light' : 'dark',
     };
 }
+function getPageProxyId(proxy) {
+    var _a, _b;
+    return ((_a = proxy.$page) === null || _a === void 0 ? void 0 : _a.id) || ((_b = proxy.$basePage) === null || _b === void 0 ? void 0 : _b.id);
+}
 
 function removeHook(vm, name, hook) {
     const hooks = vm.$[name];
@@ -1614,7 +1556,7 @@ function invokeHook(vm, name, args) {
         vm = getCurrentPageVm();
     }
     else if (typeof vm === 'number') {
-        const page = getCurrentPages().find((page) => page.$page.id === vm);
+        const page = getCurrentPages().find((page) => get$pageByPage(page).id === vm);
         if (page) {
             vm = page.$vm;
         }
@@ -1636,13 +1578,14 @@ function invokeHook(vm, name, args) {
 }
 
 function normalizeRoute(toRoute) {
-    if (toRoute.indexOf('/') === 0) {
+    // 支持 uni:showActionSheet 这种内置页面形式
+    if (toRoute.indexOf('/') === 0 || toRoute.indexOf('uni:') === 0) {
         return toRoute;
     }
     let fromRoute = '';
     const pages = getCurrentPages();
     if (pages.length) {
-        fromRoute = pages[pages.length - 1].$page.route;
+        fromRoute = get$pageByPage(pages[pages.length - 1]).route;
     }
     return getRealRoute(fromRoute, toRoute);
 }
@@ -1711,17 +1654,17 @@ function getPageId() {
 }
 let channel;
 let globalEvent$1;
-const callbacks$3 = {};
+const callbacks$2 = {};
 function onPlusMessage$1(res) {
     const message = res.data && res.data.__message;
     if (!message || !message.__page) {
         return;
     }
     const pageId = message.__page;
-    const callback = callbacks$3[pageId];
+    const callback = callbacks$2[pageId];
     callback && callback(message);
     if (!message.keep) {
-        delete callbacks$3[pageId];
+        delete callbacks$2[pageId];
     }
 }
 function addEventListener(pageId, callback) {
@@ -1740,7 +1683,7 @@ function addEventListener(pageId, callback) {
         // @ts-expect-error
         window.__plusMessage = onPlusMessage$1;
     }
-    callbacks$3[pageId] = callback;
+    callbacks$2[pageId] = callback;
 }
 class Page {
     constructor(webview) {
@@ -1881,7 +1824,8 @@ function initOn() {
     on(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
 function onResize(res) {
-    invokeHook(getCurrentPage(), ON_RESIZE, res);
+    const page = getCurrentPage();
+    invokeHook(page, ON_RESIZE, res);
     UniServiceJSBridge.invokeOnCallback('onWindowResize', res); // API
 }
 function onAppEnterForeground(enterOptions) {
@@ -1891,7 +1835,7 @@ function onAppEnterForeground(enterOptions) {
 }
 function onAppEnterBackground() {
     invokeHook((getApp()), ON_HIDE);
-    invokeHook(getCurrentPage(), ON_HIDE);
+    invokeHook((getCurrentPage()), ON_HIDE);
 }
 
 const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
@@ -1958,6 +1902,186 @@ function defineGlobalData(app, defaultGlobalData) {
             options.globalData = newGlobalData;
         },
     });
+}
+
+let vueApp;
+function getVueApp() {
+    return vueApp;
+}
+function initVueApp(appVm) {
+    const internalInstance = appVm.$;
+    // 定制 App 的 $children 为 devtools 服务 false
+    Object.defineProperty(internalInstance.ctx, '$children', {
+        get() {
+            return getAllPages().map((page) => page.$vm);
+        },
+    });
+    const appContext = internalInstance.appContext;
+    vueApp = extend(appContext.app, {
+        mountPage(pageComponent, pageProps, pageContainer) {
+            const vnode = createVNode(pageComponent, pageProps);
+            // store app context on the root VNode.
+            // this will be set on the root instance on initial mount.
+            vnode.appContext = appContext;
+            vnode.__page_container__ = pageContainer;
+            render(vnode, pageContainer);
+            const publicThis = vnode.component.proxy;
+            publicThis.__page_container__ = pageContainer;
+            return publicThis;
+        },
+        unmountPage: (pageInstance) => {
+            const { __page_container__ } = pageInstance;
+            if (__page_container__) {
+                __page_container__.isUnmounted = true;
+                render(null, __page_container__);
+            }
+        },
+    });
+}
+
+function getPage$BasePage(page) {
+    return page.$page;
+}
+const pages = [];
+function addCurrentPage(page) {
+    const $page = getPage$BasePage(page);
+    if (!$page.meta.isNVue) {
+        return pages.push(page);
+    }
+    // 开发阶段热刷新需要移除旧的相同 id 的 page
+    const index = pages.findIndex((p) => getPage$BasePage(p).id === $page.id);
+    if (index > -1) {
+        pages.splice(index, 1, page);
+    }
+    else {
+        pages.push(page);
+    }
+}
+function getPageById(id) {
+    return pages.find((page) => getPage$BasePage(page).id === id);
+}
+function getAllPages() {
+    return pages;
+}
+function getCurrentPages$1() {
+    const curPages = getCurrentBasePages();
+    return curPages;
+}
+function getCurrentBasePages() {
+    const curPages = [];
+    pages.forEach((page) => {
+        if (page.$.__isTabBar) {
+            if (page.$.__isActive) {
+                curPages.push(page);
+            }
+        }
+        else {
+            curPages.push(page);
+        }
+    });
+    return curPages;
+}
+function removeCurrentPage() {
+    const page = getCurrentPage();
+    if (!page) {
+        return;
+    }
+    removePage(page);
+}
+function removePage(curPage) {
+    const index = pages.findIndex((page) => page === curPage);
+    if (index === -1) {
+        return;
+    }
+    const $basePage = getPage$BasePage(curPage);
+    if (!$basePage.meta.isNVue) {
+        getVueApp().unmountPage(curPage);
+    }
+    pages.splice(index, 1);
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog('removePage', $basePage));
+    }
+}
+
+function requestComponentInfo(pageVm, reqs, callback) {
+    if (getPage$BasePage(pageVm).meta.isNVue) {
+        requestNVueComponentInfo(pageVm, reqs, callback);
+    }
+    else {
+        requestVueComponentInfo(pageVm, reqs, callback);
+    }
+}
+function requestVueComponentInfo(pageVm, reqs, callback) {
+    UniServiceJSBridge.invokeViewMethod('requestComponentInfo', {
+        reqs: reqs.map((req) => {
+            if (req.component) {
+                req.component = req.component.$el.nodeId;
+            }
+            return req;
+        }),
+    }, getPage$BasePage(pageVm).id, callback);
+}
+function requestNVueComponentInfo(pageVm, reqs, callback) {
+    const ids = findNVueElementIds(reqs);
+    const nvueElementInfos = new Array(ids.length);
+    findNVueElementInfos(ids, pageVm.$el, nvueElementInfos);
+    findComponentRectAll(pageVm.$requireNativePlugin('dom'), nvueElementInfos, 0, [], (result) => {
+        callback(result);
+    });
+}
+function findNVueElementIds(reqs) {
+    const ids = [];
+    for (let i = 0; i < reqs.length; i++) {
+        const selector = reqs[i].selector;
+        if (selector.indexOf('#') === 0) {
+            ids.push(selector.substring(1));
+        }
+    }
+    return ids;
+}
+function findNVueElementInfos(ids, elm, infos) {
+    const nodes = elm.children;
+    if (!isArray(nodes)) {
+        return false;
+    }
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        if (node.attr) {
+            const index = ids.indexOf(node.attr.id);
+            if (index >= 0) {
+                infos[index] = {
+                    id: ids[index],
+                    ref: node.ref,
+                    dataset: parseNVueDataset(node.attr),
+                };
+                if (ids.length === 1) {
+                    break;
+                }
+            }
+        }
+        if (node.children) {
+            findNVueElementInfos(ids, node, infos);
+        }
+    }
+}
+function findComponentRectAll(dom, nvueElementInfos, index, result, callback) {
+    const attr = nvueElementInfos[index];
+    dom.getComponentRect(attr.ref, (option) => {
+        option.size.id = attr.id;
+        option.size.dataset = attr.dataset;
+        result.push(option.size);
+        index += 1;
+        if (index < nvueElementInfos.length) {
+            findComponentRectAll(dom, nvueElementInfos, index, result, callback);
+        }
+        else {
+            callback(result);
+        }
+    });
+}
+
+function setCurrentPageMeta(page, options) {
+    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, getPage$BasePage(page).id);
 }
 
 function getRealPath(filepath) {
@@ -2115,97 +2239,6 @@ function normalizeCallback(method, callbacks) {
     };
 }
 
-let vueApp;
-function getVueApp() {
-    return vueApp;
-}
-function initVueApp(appVm) {
-    const internalInstance = appVm.$;
-    // 定制 App 的 $children 为 devtools 服务 false
-    Object.defineProperty(internalInstance.ctx, '$children', {
-        get() {
-            return getAllPages().map((page) => page.$vm);
-        },
-    });
-    const appContext = internalInstance.appContext;
-    vueApp = extend(appContext.app, {
-        mountPage(pageComponent, pageProps, pageContainer) {
-            const vnode = createVNode(pageComponent, pageProps);
-            // store app context on the root VNode.
-            // this will be set on the root instance on initial mount.
-            vnode.appContext = appContext;
-            vnode.__page_container__ = pageContainer;
-            render(vnode, pageContainer);
-            const publicThis = vnode.component.proxy;
-            publicThis.__page_container__ = pageContainer;
-            return publicThis;
-        },
-        unmountPage: (pageInstance) => {
-            const { __page_container__ } = pageInstance;
-            if (__page_container__) {
-                __page_container__.isUnmounted = true;
-                render(null, __page_container__);
-            }
-        },
-    });
-}
-
-const pages = [];
-function addCurrentPage(page) {
-    const $page = page.$page;
-    if (!$page.meta.isNVue) {
-        return pages.push(page);
-    }
-    // 开发阶段热刷新需要移除旧的相同 id 的 page
-    const index = pages.findIndex((p) => p.$page.id === page.$page.id);
-    if (index > -1) {
-        pages.splice(index, 1, page);
-    }
-    else {
-        pages.push(page);
-    }
-}
-function getPageById(id) {
-    return pages.find((page) => page.$page.id === id);
-}
-function getAllPages() {
-    return pages;
-}
-function getCurrentPages$1() {
-    const curPages = [];
-    pages.forEach((page) => {
-        if (page.$.__isTabBar) {
-            if (page.$.__isActive) {
-                curPages.push(page);
-            }
-        }
-        else {
-            curPages.push(page);
-        }
-    });
-    return curPages;
-}
-function removeCurrentPage() {
-    const page = getCurrentPage();
-    if (!page) {
-        return;
-    }
-    removePage(page);
-}
-function removePage(curPage) {
-    const index = pages.findIndex((page) => page === curPage);
-    if (index === -1) {
-        return;
-    }
-    if (!curPage.$page.meta.isNVue) {
-        getVueApp().unmountPage(curPage);
-    }
-    pages.splice(index, 1);
-    if ((process.env.NODE_ENV !== 'production')) {
-        console.log(formatLog('removePage', curPage.$page));
-    }
-}
-
 const METHODS$1 = {
     play(ctx) {
         return invokeVmMethodWithoutArgs(ctx, 'play');
@@ -2240,7 +2273,7 @@ const METHODS$1 = {
 };
 function operateVideoPlayer(videoId, pageId, type, data) {
     const page = getPageById(pageId);
-    if (page === null || page === void 0 ? void 0 : page.$page.meta.isNVue) {
+    if (page && getPage$BasePage(page).meta.isNVue) {
         const pageVm = page.$vm;
         return METHODS$1[type](findElmById(videoId, pageVm), data);
     }
@@ -2309,7 +2342,7 @@ const METHODS = {
 };
 function operateMap(id, pageId, type, data, operateMapCallback) {
     const page = getPageById(pageId);
-    if (page === null || page === void 0 ? void 0 : page.$page.meta.isNVue) {
+    if (page && getPage$BasePage(page).meta.isNVue) {
         const pageVm = page.$vm;
         return METHODS[type](findElmById(id, pageVm), data);
     }
@@ -3108,7 +3141,7 @@ function copy_block(s, buf, len, header)
 {
   bi_windup(s);        /* align on byte boundary */
 
-  if (header) {
+  {
     put_short(s, len);
     put_short(s, ~len);
   }
@@ -3606,7 +3639,7 @@ function _tr_stored_block(s, buf, stored_len, last)
 //int last;         /* one if this is the last block for a file */
 {
   send_bits(s, (STORED_BLOCK << 1) + (last ? 1 : 0), 3);    /* send block type */
-  copy_block(s, buf, stored_len, true); /* with header */
+  copy_block(s, buf, stored_len); /* with header */
 }
 
 
@@ -9216,7 +9249,7 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -9357,7 +9390,7 @@ const OffProtocol = [
     },
     {
         name: 'callback',
-        type: Function,
+        type: [Function, Number],
     },
 ];
 const API_EMIT = '$emit';
@@ -9374,10 +9407,10 @@ class EventBus {
         this.$emitter = new Emitter();
     }
     on(name, callback) {
-        this.$emitter.on(name, callback);
+        return this.$emitter.on(name, callback);
     }
     once(name, callback) {
-        this.$emitter.once(name, callback);
+        return this.$emitter.once(name, callback);
     }
     off(name, callback) {
         if (!name) {
@@ -9403,7 +9436,9 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
     // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
         name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+        eventBus.off(n, callback);
+    });
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     eventBus.emit(name, ...args);
@@ -10740,7 +10775,8 @@ const createIntersectionObserver = defineSyncApi('createIntersectionObserver', (
 let reqComponentObserverId = 1;
 class ServiceMediaQueryObserver {
     constructor(component) {
-        this._pageId = component.$page && component.$page.id;
+        this._pageId =
+            component.$page && component.$page.id;
         this._component = component;
     }
     observe(options, callback) {
@@ -12998,7 +13034,7 @@ function isTabBarPage(path = '') {
     }
     try {
         if (!path) {
-            const pages = getCurrentPages();
+            const pages = getCurrentBasePages();
             if (!pages.length) {
                 return false;
             }
@@ -13006,7 +13042,7 @@ function isTabBarPage(path = '') {
             if (!page) {
                 return false;
             }
-            return page.$page.meta.isTabBar;
+            return getPage$BasePage(page).meta.isTabBar;
         }
         if (!/^\//.test(path)) {
             path = addLeadingSlash(path);
@@ -13316,7 +13352,7 @@ function setStatusBarStyle(statusBarStyle) {
         if (!page) {
             return;
         }
-        statusBarStyle = page.$page.statusBarStyle;
+        statusBarStyle = getPage$BasePage(page).statusBarStyle;
         if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
             return;
         }
@@ -13349,7 +13385,7 @@ function changePagesNavigatorStyle() {
         setStatusBarStyle(theme);
         const pages = getAllPages();
         pages.forEach((page) => {
-            page.$page.statusBarStyle = theme;
+            getPage$BasePage(page).statusBarStyle = theme;
         });
     }
 }
@@ -13773,7 +13809,7 @@ function weexGetSystemInfoSync() {
 }
 const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
-    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, } = systemInfo;
+    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, osLanguage, osTheme, romName, romVersion, } = systemInfo;
     const brand = deviceBrand.toLowerCase();
     const _osName = osName.toLowerCase();
     return {
@@ -13787,11 +13823,17 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
         model: deviceModel,
         platform: _osName,
         system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+        osName,
+        osVersion,
+        osLanguage,
+        osTheme,
+        romName,
+        romVersion,
     };
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, uniCompileVersion, uniRuntimeVersion, uniPlatform, } = systemInfo;
     return {
         appId,
         appName,
@@ -13811,6 +13853,11 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         SDKVersion: '',
         theme: getTheme(),
         version: plus.runtime.innerVersion,
+        isUniAppX: false,
+        uniPlatform,
+        uniRuntimeVersion,
+        uniCompileVersion,
+        uniCompilerVersion: uniCompileVersion,
     };
 });
 const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
@@ -14657,7 +14704,7 @@ const Recorder = {
         }
     },
 };
-const callbacks$2 = {
+const callbacks$1 = {
     pause: null,
     resume: null,
     start: null,
@@ -14668,29 +14715,29 @@ function onRecorderStateChange(res) {
     const state = res.state;
     delete res.state;
     delete res.errMsg;
-    if (state && isFunction(callbacks$2[state])) {
-        callbacks$2[state](res);
+    if (state && isFunction(callbacks$1[state])) {
+        callbacks$1[state](res);
     }
 }
 class RecorderManager {
     constructor() { }
     onError(callback) {
-        callbacks$2.error = callback;
+        callbacks$1.error = callback;
     }
     onFrameRecorded(callback) { }
     onInterruptionBegin(callback) { }
     onInterruptionEnd(callback) { }
     onPause(callback) {
-        callbacks$2.pause = callback;
+        callbacks$1.pause = callback;
     }
     onResume(callback) {
-        callbacks$2.resume = callback;
+        callbacks$1.resume = callback;
     }
     onStart(callback) {
-        callbacks$2.start = callback;
+        callbacks$1.start = callback;
     }
     onStop(callback) {
-        callbacks$2.stop = callback;
+        callbacks$1.stop = callback;
     }
     pause() {
         Recorder.pause();
@@ -15813,7 +15860,7 @@ const eventNames = [
     'error',
     'waiting',
 ];
-const callbacks$1 = {
+const callbacks = {
     canplay: [],
     play: [],
     pause: [],
@@ -16002,7 +16049,7 @@ function operateBackgroundAudio({ operationType, src, startTime, currentTime, })
     });
 }
 function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
-    callbacks$1[state].forEach((callback) => {
+    callbacks[state].forEach((callback) => {
         if (isFunction(callback)) {
             callback(state === 'error'
                 ? {
@@ -16017,7 +16064,7 @@ const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
     eventNames.forEach((item) => {
         BackgroundAudioManager.prototype[`on${capitalize(item)}`] =
             function (callback) {
-                callbacks$1[item].push(callback);
+                callbacks[item].push(callback);
             };
     });
 });
@@ -16222,6 +16269,38 @@ const createLivePusherContext = defineSyncApi(API_CREATE_LIVE_PUSHER_CONTEXT, (i
     return new LivePusherContextVue(id, vm.$page.id);
 }, CreateLivePusherContextProtocol);
 
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
+
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
 const PI = 3.1415926535897932384626;
 const a = 6378245.0;
 const ee = 0.00669342162296594323;
@@ -16349,8 +16428,578 @@ const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type = 'wgs84', geocode 
         coordsType: type,
     });
 }, GetLocationProtocol, GetLocationOptions);
+function subscribeGetLocation() {
+    registerServiceMethod(API_GET_LOCATION, (args, resolve) => {
+        /**
+         * 如果开发者使用了腾讯定位，则不能直接调用上面的getLocation方法。
+         * 必须使用uni.getLocation
+         */
+        uni.getLocation({
+            type: args.type,
+            altitude: args.altitude,
+            highAccuracyExpireTime: args.highAccuracyExpireTime,
+            isHighAccuracy: args.isHighAccuracy,
+            success(res) {
+                resolve({
+                    latitude: res.latitude,
+                    longitude: res.longitude,
+                    speed: res.speed,
+                    accuracy: res.accuracy,
+                    altitude: res.altitude,
+                    verticalAccuracy: res.verticalAccuracy,
+                    horizontalAccuracy: res.horizontalAccuracy,
+                });
+            },
+            fail(err) {
+                resolve({
+                    errMsg: err.errMsg || 'getLocation:fail',
+                });
+            },
+        });
+    });
+}
+
+const VD_SYNC = 'vdSync';
+const APP_SERVICE_ID = '__uniapp__service';
+const ON_WEBVIEW_READY = 'onWebviewReady';
+const ACTION_TYPE_DICT = 0;
+const WEBVIEW_INSERTED = 'webviewInserted';
+const WEBVIEW_REMOVED = 'webviewRemoved';
+
+class UniPageNode extends UniNode {
+    constructor(pageId, options, setup = false) {
+        super(NODE_TYPE_PAGE, '#page', null);
+        this._id = 1;
+        this._created = false;
+        this._updating = false;
+        this._createActionMap = new Map();
+        this.updateActions = [];
+        this.dicts = [];
+        this.nodeId = 0;
+        this.pageId = pageId;
+        this.pageNode = this;
+        this.options = options;
+        this.isUnmounted = false;
+        this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
+        this.createdAction = [ACTION_TYPE_PAGE_CREATED];
+        this.normalizeDict = this._normalizeDict.bind(this);
+        this._update = this.update.bind(this);
+        setup && this.setup();
+    }
+    _normalizeDict(value, normalizeValue = true) {
+        if (!isPlainObject(value)) {
+            return this.addDict(value);
+        }
+        const dictArray = [];
+        Object.keys(value).forEach((n) => {
+            const dict = [this.addDict(n)];
+            const v = value[n];
+            if (normalizeValue) {
+                dict.push(this.addDict(v));
+            }
+            else {
+                dict.push(v);
+            }
+            dictArray.push(dict);
+        });
+        return dictArray;
+    }
+    addDict(value) {
+        const { dicts } = this;
+        const index = dicts.indexOf(value);
+        if (index > -1) {
+            return index;
+        }
+        return dicts.push(value) - 1;
+    }
+    onInjectHook(hook) {
+        if ((hook === ON_PAGE_SCROLL || hook === ON_REACH_BOTTOM) &&
+            !this.scrollAction) {
+            this.scrollAction = [
+                ACTION_TYPE_PAGE_SCROLL,
+                this.options.onReachBottomDistance,
+            ];
+            this.push(this.scrollAction);
+        }
+    }
+    onCreate(thisNode, nodeName) {
+        pushCreateAction(this, thisNode.nodeId, nodeName);
+        return thisNode;
+    }
+    onInsertBefore(thisNode, newChild, refChild) {
+        pushInsertAction(this, newChild, thisNode.nodeId, (refChild && refChild.nodeId) || -1);
+        return newChild;
+    }
+    onRemoveChild(oldChild) {
+        pushRemoveAction(this, oldChild.nodeId);
+        return oldChild;
+    }
+    onAddEvent(thisNode, name, flag) {
+        if (thisNode.parentNode) {
+            pushAddEventAction(this, thisNode.nodeId, name, flag);
+        }
+    }
+    onAddWxsEvent(thisNode, name, wxsEvent, flag) {
+        if (thisNode.parentNode) {
+            pushAddWxsEventAction(this, thisNode.nodeId, name, wxsEvent, flag);
+        }
+    }
+    onRemoveEvent(thisNode, name) {
+        if (thisNode.parentNode) {
+            pushRemoveEventAction(this, thisNode.nodeId, name);
+        }
+    }
+    onSetAttribute(thisNode, qualifiedName, value) {
+        if (thisNode.parentNode) {
+            pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value);
+        }
+    }
+    onRemoveAttribute(thisNode, qualifiedName) {
+        if (thisNode.parentNode) {
+            pushRemoveAttributeAction(this, thisNode.nodeId, qualifiedName);
+        }
+    }
+    onTextContent(thisNode, text) {
+        if (thisNode.parentNode) {
+            pushSetTextAction(this, thisNode.nodeId, text);
+        }
+    }
+    onNodeValue(thisNode, val) {
+        if (thisNode.parentNode) {
+            pushSetTextAction(this, thisNode.nodeId, val);
+        }
+    }
+    genId() {
+        return this._id++;
+    }
+    push(action, extras) {
+        if (this.isUnmounted) {
+            if ((process.env.NODE_ENV !== 'production')) {
+                console.log(formatLog('PageNode', 'push.prevent', action));
+            }
+            return;
+        }
+        switch (action[0]) {
+            case ACTION_TYPE_CREATE:
+                this._createActionMap.set(action[1], action);
+                break;
+            case ACTION_TYPE_INSERT:
+                const createAction = this._createActionMap.get(action[1]);
+                if (createAction) {
+                    createAction[3] = action[2]; // parentNodeId
+                    createAction[4] = action[3]; // anchorId
+                    if (extras) {
+                        createAction[5] = extras;
+                    }
+                }
+                else {
+                    // 部分手机上，create 和 insert 可能不在同一批次，被分批发送
+                    if (extras) {
+                        action[4] = extras;
+                    }
+                    this.updateActions.push(action);
+                    // if ((process.env.NODE_ENV !== 'production')) {
+                    //   console.error(formatLog(`Insert`, action, 'not found createAction'))
+                    // }
+                }
+                break;
+        }
+        // insert 被合并进 create
+        if (action[0] !== ACTION_TYPE_INSERT) {
+            this.updateActions.push(action);
+        }
+        if (!this._updating) {
+            this._updating = true;
+            queuePostFlushCb(this._update);
+        }
+    }
+    restore() {
+        this.clear();
+        // createAction 需要单独发送，因为 view 层需要现根据 create 来设置 page 的 ready
+        this.setup();
+        if (this.scrollAction) {
+            this.push(this.scrollAction);
+        }
+        const restoreNode = (node) => {
+            this.onCreate(node, node.nodeName);
+            this.onInsertBefore(node.parentNode, node, null);
+            node.childNodes.forEach((childNode) => {
+                restoreNode(childNode);
+            });
+        };
+        this.childNodes.forEach((childNode) => restoreNode(childNode));
+        this.push(this.createdAction);
+    }
+    setup() {
+        this.send([this.createAction]);
+    }
+    update() {
+        const { dicts, updateActions, _createActionMap } = this;
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
+        }
+        // 首次
+        if (!this._created) {
+            this._created = true;
+            updateActions.push(this.createdAction);
+        }
+        if (updateActions.length) {
+            if (dicts.length) {
+                updateActions.unshift([ACTION_TYPE_DICT, dicts]);
+            }
+            this.send(updateActions);
+        }
+        this.clear();
+    }
+    clear() {
+        this.dicts.length = 0;
+        this.updateActions.length = 0;
+        this._updating = false;
+        this._createActionMap.clear();
+    }
+    send(action) {
+        UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId);
+    }
+    fireEvent(id, evt) {
+        const node = findNodeById(id, this);
+        if (node) {
+            node.dispatchEvent(evt);
+        }
+        else if ((process.env.NODE_ENV !== 'production')) {
+            console.error(formatLog('PageNode', 'fireEvent', id, 'not found', evt));
+        }
+    }
+}
+function getPageNode(pageId) {
+    const page = getPageById(pageId);
+    if (!page)
+        return null;
+    return page.__page_container__;
+}
+function findNode(name, value, uniNode) {
+    if (typeof uniNode === 'number') {
+        uniNode = getPageNode(uniNode);
+    }
+    if (uniNode[name] === value) {
+        return uniNode;
+    }
+    const { childNodes } = uniNode;
+    for (let i = 0; i < childNodes.length; i++) {
+        const uniNode = findNode(name, value, childNodes[i]);
+        if (uniNode) {
+            return uniNode;
+        }
+    }
+    return null;
+}
+function findNodeById(nodeId, uniNode) {
+    return findNode('nodeId', nodeId, uniNode);
+}
+function findNodeByTagName(tagName, uniNode) {
+    return findNode('nodeName', tagName.toUpperCase(), uniNode);
+}
+function pushCreateAction(pageNode, nodeId, nodeName) {
+    pageNode.push([
+        ACTION_TYPE_CREATE,
+        nodeId,
+        pageNode.addDict(nodeName),
+        -1,
+        -1,
+    ]);
+}
+function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
+    const nodeJson = newChild.toJSON({
+        attr: true,
+        normalize: pageNode.normalizeDict,
+    });
+    pageNode.push([ACTION_TYPE_INSERT, newChild.nodeId, parentNodeId, refChildId], Object.keys(nodeJson).length ? nodeJson : undefined);
+}
+function pushRemoveAction(pageNode, nodeId) {
+    pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
+}
+function pushAddEventAction(pageNode, nodeId, name, value) {
+    pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value]);
+}
+function pushAddWxsEventAction(pageNode, nodeId, name, wxsEvent, value) {
+    pageNode.push([
+        ACTION_TYPE_ADD_WXS_EVENT,
+        nodeId,
+        pageNode.addDict(name),
+        pageNode.addDict(wxsEvent),
+        value,
+    ]);
+}
+function pushRemoveEventAction(pageNode, nodeId, name) {
+    pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);
+}
+function normalizeAttrValue(pageNode, name, value) {
+    return name === 'style' && isPlainObject(value)
+        ? pageNode.normalizeDict(value)
+        : pageNode.addDict(value);
+}
+function pushSetAttributeAction(pageNode, nodeId, name, value) {
+    pageNode.push([
+        ACTION_TYPE_SET_ATTRIBUTE,
+        nodeId,
+        pageNode.addDict(name),
+        normalizeAttrValue(pageNode, name, value),
+    ]);
+}
+function pushRemoveAttributeAction(pageNode, nodeId, name) {
+    pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, pageNode.addDict(name)]);
+}
+function pushSetTextAction(pageNode, nodeId, text) {
+    pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, pageNode.addDict(text)]);
+}
+function createPageNode(pageId, pageOptions, setup) {
+    return new UniPageNode(pageId, pageOptions, setup);
+}
+
+function setupPage(component) {
+    const oldSetup = component.setup;
+    component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
+    component.setup = (props, ctx) => {
+        const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.log(formatLog(__pagePath, 'setup'));
+        }
+        const instance = getCurrentInstance();
+        const pageVm = instance.proxy;
+        initPageVm(pageVm, __pageInstance);
+        {
+            addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
+            onMounted(() => {
+                nextTick(() => {
+                    // onShow被延迟，故onReady也同时延迟
+                    invokeHook(pageVm, ON_READY);
+                });
+                // TODO preloadSubPackages
+            });
+            onBeforeUnmount(() => {
+                invokeHook(pageVm, ON_UNLOAD);
+            });
+        }
+        if (oldSetup) {
+            return oldSetup(props, ctx);
+        }
+    };
+    return component;
+}
+function initScope(pageId, vm, pageInstance) {
+    {
+        const $getAppWebview = () => {
+            return plus.webview.getWebviewById(pageId + '');
+        };
+        vm.$getAppWebview = $getAppWebview;
+        vm.$.ctx.$scope = {
+            $getAppWebview,
+        };
+    }
+    vm.getOpenerEventChannel = () => {
+        if (!pageInstance.eventChannel) {
+            pageInstance.eventChannel = new EventChannel(pageId);
+        }
+        return pageInstance.eventChannel;
+    };
+    return vm;
+}
+function addCurrentPageWithInitScope(pageId, pageVm, pageInstance) {
+    addCurrentPage(initScope(pageId, pageVm, pageInstance));
+}
+
+function isVuePageAsyncComponent(component) {
+    return isFunction(component);
+}
+const pagesMap = new Map();
+function definePage(pagePath, asyncComponent) {
+    pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+}
+function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
+    const pageNode = createPageNode(__pageId, pageOptions, true);
+    const app = getVueApp();
+    const component = pagesMap.get(__pagePath)();
+    const mountPage = (component) => app.mountPage(component, extend({
+        __pageId,
+        __pagePath,
+        __pageQuery,
+        __pageInstance,
+    }, __pageQuery), pageNode);
+    if (isPromise(component)) {
+        return component.then((component) => mountPage(component));
+    }
+    return mountPage(component);
+}
+function createFactory(component) {
+    return () => {
+        if (isVuePageAsyncComponent(component)) {
+            return component().then((component) => setupPage(component));
+        }
+        return setupPage(component);
+    };
+}
+
+function tencentMapPlaceSearch(options) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // @ts-expect-error access uni
+        const cloud = uni.__uniCloud;
+        if (!cloud) {
+            throw new Error('使用uni.chooseLocation且使用腾讯地图时，需搭配uniCloud使用，详情请参考：https://uniapp.dcloud.net.cn/api/location/location.html#chooselocation');
+        }
+        const { keyword, latitude, longitude, pageIndex, pageSize, secure } = options;
+        const obj = cloud.importObject('uni-map-co', {
+            customUI: true,
+            secretMethods: secure
+                ? {
+                    chooseLocation: 'both',
+                }
+                : {},
+        });
+        let pois = [];
+        if (keyword) {
+            const res = yield obj.chooseLocation({
+                action: 'search',
+                data: {
+                    keyword,
+                    location: {
+                        lat: latitude,
+                        lng: longitude,
+                    },
+                    radius: 1000,
+                    auto_extend: 1,
+                    get_subpois: 0,
+                    orderby: 'weight',
+                    page_index: pageIndex,
+                    page_size: pageSize,
+                },
+                provider: 'qqmap',
+                needOriginalResult: true,
+            });
+            pois = res.result.data || [];
+        }
+        else {
+            const res = yield obj.chooseLocation({
+                action: 'location2address',
+                data: {
+                    location: `${latitude},${longitude}`,
+                    get_poi: 1,
+                    poi_options: {
+                        page_index: pageIndex,
+                        page_size: pageSize,
+                    },
+                },
+                provider: 'qqmap',
+                needOriginalResult: true,
+            });
+            pois = res.result.result.pois || [];
+        }
+        return pois;
+    });
+}
+function subscribeMapPlaceSearch() {
+    registerServiceMethod('mapPlaceSearch', (args, resolve) => {
+        tencentMapPlaceSearch(args)
+            .then(resolve)
+            .catch((err) => {
+            console.error(err);
+            resolve({ errMsg: 'mapPlaceSearch:fail' });
+        });
+    });
+}
+const LocationPickerPage = {
+    data() {
+        return {
+            keyword: '',
+            latitude: 0,
+            longitude: 0,
+            useSecureNetwork: false,
+            loaded: false,
+            channel: void 0,
+            closed: false,
+        };
+    },
+    onLoad(e) {
+        this.latitude = e.latitude;
+        this.longitude = e.longitude;
+        this.keyword = e.keyword;
+        this.useSecureNetwork = e.useSecureNetwork === 'true';
+        this.loaded = true;
+        this.channel = this.getOpenerEventChannel();
+    },
+    onUnload() {
+        if (this.closed) {
+            return;
+        }
+        this.channel.emit('close', {});
+    },
+    methods: {
+        onClose(e) {
+            this.closed = true;
+            this.channel.emit('close', e.detail);
+            uni.navigateBack();
+        },
+    },
+    render: function (_ctx, _cache, $props, $setup, $data, $options) {
+        return $data.loaded
+            ? (openBlock(),
+                createElementBlock('location-picker', {
+                    key: 0,
+                    style: { width: '100%', height: '100%' },
+                    latitude: $data.latitude,
+                    longitude: $data.longitude,
+                    keyword: $data.keyword,
+                    useSecureNetwork: $data.useSecureNetwork,
+                    onClose: _cache[0] ||
+                        (_cache[0] = (...args) => $options.onClose && $options.onClose(...args)),
+                }, null, 40, ['latitude', 'longitude', 'keyword']))
+            : createCommentVNode('v-if', true);
+    },
+};
+const ROUTE_LOCATION_PICKER_PAGE = '__uniappchooselocation';
+const initLocationPickerPageOnce = once(() => {
+    definePage(ROUTE_LOCATION_PICKER_PAGE, LocationPickerPage);
+    __uniRoutes.push({
+        meta: {
+            navigationBar: {
+                style: 'custom',
+            },
+            isNVue: false,
+            route: ROUTE_LOCATION_PICKER_PAGE,
+        },
+        path: '/' + ROUTE_LOCATION_PICKER_PAGE,
+    });
+});
 
 const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, reject }) => {
+    if (__uniConfig.qqMapKey) {
+        initLocationPickerPageOnce();
+        const { keyword = '', latitude = '', longitude = '', useSecureNetwork = false, } = options || {};
+        uni.navigateTo({
+            url: '/' +
+                ROUTE_LOCATION_PICKER_PAGE +
+                '?keyword=' +
+                keyword +
+                '&latitude=' +
+                latitude +
+                '&longitude=' +
+                longitude +
+                '&useSecureNetwork=' +
+                useSecureNetwork,
+            events: {
+                close: (res) => {
+                    if (res && res.latitude) {
+                        resolve(res);
+                    }
+                    else {
+                        reject('cancel');
+                    }
+                },
+            },
+            fail: (err) => {
+                reject(err.errMsg || 'cancel');
+            },
+        });
+        return;
+    }
     const statusBarStyle = getStatusBarStyle();
     const isDark = statusBarStyle !== 'light';
     let result;
@@ -16391,7 +17040,250 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
     }
 }, ChooseLocationProtocol);
 
+// @ts-nocheck
+// TODO 优化此处代码，此页面无对应的css
+const localizationTemplate = {
+    en: {
+        'map.title.amap': 'AutoNavi Maps',
+        'map.title.baidu': 'Baidu Maps',
+        'map.title.tencent': 'Tencent Maps',
+        'map.title.apple': 'Apple Maps',
+        'map.title.google': 'Google Maps',
+        'location.title': 'My Location',
+        'select.cancel': 'Cancel',
+        'location.destination': 'Destination',
+    },
+    zh: {
+        'map.title.amap': '\u9AD8\u5FB7\u5730\u56FE',
+        'map.title.baidu': '\u767E\u5EA6\u5730\u56FE',
+        'map.title.tencent': '\u817E\u8BAF\u5730\u56FE',
+        'map.title.apple': '\u82F9\u679C\u5730\u56FE',
+        'map.title.google': '\u8C37\u6B4C\u5730\u56FE',
+        'location.title': '\u6211\u7684\u4F4D\u7F6E',
+        'select.cancel': '\u53D6\u6D88',
+        'location.destination': '目标地点',
+    },
+};
+let language = '';
+function initLanguageOnce() {
+    if (language) {
+        return;
+    }
+    language = plus.os.language.toLowerCase().replace('_', '-').split('-')[0];
+}
+function localize(key) {
+    initLanguageOnce();
+    return ((localizationTemplate[language] && localizationTemplate[language][key]) ||
+        key);
+}
+function openSysMap(e, t, a, n) {
+    let o = weex.requireModule('mapSearch');
+    var s = [
+        {
+            title: localize('map.title.tencent'),
+            getUrl: function () {
+                var A;
+                return ((A =
+                    'https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=' +
+                        encodeURIComponent(a) +
+                        '&tocoord=' +
+                        encodeURIComponent(e + ',' + t) +
+                        '&referer=APP'),
+                    A);
+            },
+        },
+        {
+            title: localize('map.title.google'),
+            getUrl: function () {
+                var A;
+                return ((A =
+                    'https://www.google.com/maps/?daddr=' +
+                        encodeURIComponent(a) +
+                        '&sll=' +
+                        encodeURIComponent(e + ',' + t)),
+                    A);
+            },
+        },
+    ], r = [
+        {
+            title: localize('map.title.amap'),
+            pname: 'com.autonavi.minimap',
+            action: n ? 'iosamap://' : 'amapuri://',
+            getUrl: function () {
+                var A;
+                return (n ? (A = 'iosamap://path') : (A = 'amapuri://route/plan/'),
+                    (A +=
+                        '?sourceApplication=APP&dname=' +
+                            encodeURIComponent(a) +
+                            '&dlat=' +
+                            e +
+                            '&dlon=' +
+                            t +
+                            '&dev=0'),
+                    A);
+            },
+        },
+        {
+            title: localize('map.title.baidu'),
+            pname: 'com.baidu.BaiduMap',
+            action: 'baidumap://',
+            getUrl: function () {
+                var A = 'baidumap://map/direction?destination=' +
+                    encodeURIComponent('latlng:' + e + ',' + t + '|name:' + a) +
+                    '&mode=driving&src=APP&coord_type=gcj02';
+                return A;
+            },
+        },
+        {
+            title: localize('map.title.tencent'),
+            pname: 'com.tencent.map',
+            action: 'qqmap://',
+            getUrl: () => {
+                var A;
+                return ((A =
+                    'qqmap://map/routeplan?type=drive' +
+                        (n
+                            ? '&from=' + encodeURIComponent(localize('location.title'))
+                            : '') +
+                        '&to=' +
+                        encodeURIComponent(a) +
+                        '&tocoord=' +
+                        encodeURIComponent(e + ',' + t) +
+                        '&referer=APP'),
+                    A);
+            },
+        },
+        {
+            title: localize('map.title.google'),
+            pname: 'com.google.android.apps.maps',
+            action: 'comgooglemapsurl://',
+            getUrl: function () {
+                var A;
+                return (n
+                    ? (A = 'comgooglemapsurl://maps.google.com/')
+                    : (A = 'https://www.google.com/maps/'),
+                    (A +=
+                        '?daddr=' +
+                            encodeURIComponent(a) +
+                            '&sll=' +
+                            encodeURIComponent(e + ',' + t)),
+                    A);
+            },
+        },
+    ], l = [];
+    r.forEach(function (A) {
+        var g = plus.runtime.isApplicationExist({
+            pname: A.pname,
+            action: A.action,
+        });
+        g && l.push(A);
+    }),
+        n &&
+            l.unshift({
+                title: localize('map.title.apple'),
+                navigateTo: function () {
+                    o.openSystemMapNavigation({ longitude: t, latitude: e, name: a });
+                },
+            }),
+        l.length === 0 && (l = l.concat(s)),
+        plus.nativeUI.actionSheet({
+            cancel: localize('select.cancel'),
+            buttons: l,
+        }, function (A) {
+            var g = A.index, c;
+            g > 0 &&
+                ((c = l[g - 1]),
+                    c.navigateTo
+                        ? c.navigateTo()
+                        : plus.runtime.openURL(c.getUrl(), function () { }, c.pname));
+        });
+}
+const LocationViewPage = {
+    data() {
+        return {
+            latitude: 0,
+            longitude: 0,
+            name: '',
+            loaded: false,
+            showNav: false,
+        };
+    },
+    onLoad(e) {
+        this.latitude = e.latitude;
+        this.longitude = e.longitude;
+        this.name = e.name;
+        this.loaded = true;
+    },
+    onBackPress() {
+        if (this.showNav) {
+            this.showNav = false;
+            return true;
+        }
+    },
+    methods: {
+        onClose(e) {
+            uni.navigateBack();
+        },
+        onNavClick() {
+            const isIOS = weex.config.env.platform === 'iOS';
+            openSysMap(this.latitude, this.longitude, this.name || localize('location.destination'), isIOS);
+        },
+    },
+    render: function (_ctx, _cache, $props, $setup, $data, $options) {
+        return $data.loaded
+            ? (openBlock(),
+                createElementBlock('location-view', {
+                    key: 0,
+                    style: { width: '100%', height: '100%' },
+                    latitude: $data.latitude,
+                    longitude: $data.longitude,
+                    showNav: $data.showNav,
+                    name: $data.name,
+                    onClose: _cache[0] ||
+                        (_cache[0] = (...args) => $options.onClose && $options.onClose(...args)),
+                    onNavClick: _cache[1] ||
+                        (_cache[1] = (...args) => $options.onNavClick && $options.onNavClick(...args)),
+                }, null, 40, ['latitude', 'longitude', 'showNav']))
+            : createCommentVNode('v-if', true);
+    },
+};
+const ROUTE_LOCATION_VIEW_PAGE = '__uniappopenlocation';
+const initLocationViewPageOnce = once(() => {
+    definePage(ROUTE_LOCATION_VIEW_PAGE, LocationViewPage);
+    __uniRoutes.push({
+        meta: {
+            navigationBar: {
+                style: 'custom',
+            },
+            isNVue: false,
+            route: ROUTE_LOCATION_VIEW_PAGE,
+        },
+        path: '/' + ROUTE_LOCATION_VIEW_PAGE,
+    });
+});
+
 const openLocation = defineAsyncApi(API_OPEN_LOCATION, (data, { resolve, reject }) => {
+    if (__uniConfig.qqMapKey) {
+        initLocationViewPageOnce();
+        const { latitude = '', longitude = '', name = '' } = data || {};
+        uni.navigateTo({
+            url: '/' +
+                ROUTE_LOCATION_VIEW_PAGE +
+                '?latitude=' +
+                latitude +
+                '&longitude=' +
+                longitude +
+                '&name=' +
+                name,
+            success: (res) => {
+                resolve();
+            },
+            fail: (err) => {
+                reject(err.errMsg || 'cancel');
+            },
+        });
+        return;
+    }
     showPage({
         url: '__uniappopenlocation',
         data: extend({}, data, {
@@ -16766,13 +17658,6 @@ const hideTabBarRedDot = defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, ({ index }, { 
     setTabBarBadgeNone(index);
     resolve();
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
-
-const VD_SYNC = 'vdSync';
-const APP_SERVICE_ID = '__uniapp__service';
-const ON_WEBVIEW_READY = 'onWebviewReady';
-const ACTION_TYPE_DICT = 0;
-const WEBVIEW_INSERTED = 'webviewInserted';
-const WEBVIEW_REMOVED = 'webviewRemoved';
 
 const EVENT_TYPE_NAME = 'UniAppSubNVue';
 class SubNvue {
@@ -17421,9 +18306,9 @@ function normalizeLog(type, filename, args) {
 // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 let callbackId = 1;
 let proxy;
-const callbacks = {};
+const keepAliveCallbacks = {};
 function isUniElement(obj) {
-    return typeof (obj === null || obj === void 0 ? void 0 : obj.getNodeId) === 'function' && (obj === null || obj === void 0 ? void 0 : obj.pageId);
+    return obj && typeof obj.getNodeId === 'function' && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
@@ -17432,40 +18317,88 @@ function parseElement(obj) {
     if (isUniElement(obj)) {
         return obj;
     }
-    else if (isComponentPublicInstance(obj)) {
+}
+function parseComponentPublicInstance(obj) {
+    if (isComponentPublicInstance(obj)) {
         return obj.$el;
     }
+}
+function serializeArrayBuffer(obj) {
+    // @ts-expect-error ios 提供了 ArrayBufferWrapper 类来处理 ArrayBuffer 的传递
+    if (typeof ArrayBufferWrapper !== 'undefined') {
+        // @ts-expect-error
+        return { __type__: 'ArrayBuffer', value: new ArrayBufferWrapper(obj) };
+    }
+    return { __type__: 'ArrayBuffer', value: obj };
+}
+// 序列化 UniElement | ComponentPublicInstance
+function serializeUniElement(el, type) {
+    let nodeId = '';
+    let pageId = '';
+    // 非 x 可能不存在 getNodeId 方法？
+    if (el && el.getNodeId) {
+        pageId = el.pageId;
+        nodeId = el.getNodeId();
+    }
+    return { __type__: type, pageId, nodeId };
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
     return raw ? toRaw(raw) : observed;
 }
-function normalizeArg(arg) {
+function normalizeArg(arg, callbacks, keepAlive, context) {
     arg = toRaw(arg);
     if (typeof arg === 'function') {
-        // 查找该函数是否已缓存
-        const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
-        const id = oldId ? parseInt(oldId) : callbackId++;
-        callbacks[id] = arg;
-        return id;
-    }
-    else if (isPlainObject(arg) || isUniElement(arg)) {
-        // 判断值是否为元素
-        const el = parseElement(arg);
-        if (el) {
-            let nodeId = '';
-            let pageId = '';
-            // 非 x 可能不存在 getNodeId 方法？
-            if (el && el.getNodeId) {
-                pageId = el.pageId;
-                nodeId = el.getNodeId();
-            }
-            return { pageId, nodeId };
+        let id;
+        if (keepAlive) {
+            // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+            const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+            id = oldId ? parseInt(oldId) : callbackId++;
+            callbacks[id] = arg;
         }
         else {
+            id = callbackId++;
+            callbacks[id] = arg;
+        }
+        return id;
+    }
+    else if (isArray(arg)) {
+        context.depth++;
+        return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
+        // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
+    }
+    else if (arg instanceof ArrayBuffer) {
+        if (context.depth > 0) {
+            context.nested = true;
+        }
+        return serializeArrayBuffer(arg);
+    }
+    else if (isPlainObject(arg) || isUniElement(arg)) {
+        const uniElement = parseElement(arg);
+        const componentPublicInstanceUniElement = !uniElement
+            ? parseComponentPublicInstance(arg)
+            : undefined;
+        const el = uniElement || componentPublicInstanceUniElement;
+        if (el) {
+            if (context.depth > 0) {
+                context.nested = true;
+            }
+            return serializeUniElement(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
+        }
+        else {
+            // 必须复制，否则会污染原始对象，比如：
+            // const obj = {
+            //   a: 1,
+            //   b: () => {}
+            // }
+            // const newObj = normalizeArg(obj, {}, false)
+            // newObj.a = 2 // 这会污染原始对象 obj
+            const newArg = {};
             Object.keys(arg).forEach((name) => {
-                arg[name] = normalizeArg(arg[name]);
+                context.depth++;
+                newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context);
             });
+            return newArg;
         }
     }
     return arg;
@@ -17530,23 +18463,13 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
-    const keepAlive = methodName.indexOf('on') === 0 &&
-        methodParams.length === 1 &&
-        methodParams[0].type === 'UTSCallback';
-    // const throws = async
-    const invokeCallback = ({ id, name, params }) => {
-        const callback = callbacks[id];
-        if (callback) {
-            callback(...params);
-            if (!keepAlive) {
-                delete callbacks[id];
-            }
-        }
-        else {
-            console.error(`${pkg}${cls}.${methodName} ${name} is not found`);
-        }
-    };
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+    if (!keepAlive) {
+        keepAlive =
+            (methodName.indexOf('on') === 0 || methodName.indexOf('off') === 0) &&
+                methodParams.length === 1 &&
+                methodParams[0].type === 'UTSCallback';
+    }
     const baseArgs = instanceId
         ? {
             moduleName,
@@ -17555,8 +18478,8 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             name: methodName,
             method: methodParams,
+            nested: false,
             keepAlive,
-            // throws,
         }
         : {
             moduleName,
@@ -17567,16 +18490,36 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             companion,
             method: methodParams,
+            nested: false,
             keepAlive,
-            // throws,
         };
     return (...args) => {
         if (errMsg) {
             throw new Error(errMsg);
         }
+        // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+        // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+        const callbacks = keepAlive ? keepAliveCallbacks : {};
+        const invokeCallback = ({ id, name, params }) => {
+            const callback = callbacks[id];
+            if (callback) {
+                callback(...params);
+                if (!keepAlive) {
+                    delete callbacks[id];
+                }
+            }
+            else {
+                console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
+            }
+        };
+        const context = {
+            depth: 0,
+            nested: false,
+        };
         const invokeArgs = extend({}, baseArgs, {
-            params: args.map((arg) => normalizeArg(arg)),
+            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context)),
         });
+        invokeArgs.nested = context.nested;
         if (async) {
             return new Promise((resolve, reject) => {
                 if ((process.env.NODE_ENV !== 'production')) {
@@ -17671,7 +18614,11 @@ function initUTSProxyClass(options) {
             // 初始化实例 ID
             if (!isProxyInterface) {
                 // 初始化未指定时，每次都要创建instanceId
-                this.__instanceId = initProxyFunction('constructor', false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                this.__instanceId = initProxyFunction('constructor', false, extend({
+                    name: 'constructor',
+                    keepAlive: false,
+                    params: constructorParams,
+                }, baseOptions), 0).apply(null, params);
             }
             else if (typeof instanceId === 'number') {
                 this.__instanceId = instanceId;
@@ -17690,9 +18637,10 @@ function initUTSProxyClass(options) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
                         if (hasOwn$1(methods, name)) {
-                            const { async, params, return: returnOptions } = methods[name];
+                            const { async, keepAlive, params, return: returnOptions, } = methods[name];
                             target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
+                                keepAlive,
                                 params,
                                 return: returnOptions,
                             }, baseOptions), instance.__instanceId, proxy);
@@ -17705,7 +18653,7 @@ function initUTSProxyClass(options) {
                                 id: instance.__instanceId,
                                 type: 'getter',
                                 keepAlive: false,
-                                // throws: false,
+                                nested: false,
                                 name: name,
                                 errMsg,
                             });
@@ -17721,6 +18669,7 @@ function initUTSProxyClass(options) {
                             if (param) {
                                 target[setter] = initProxyFunction('setter', false, extend({
                                     name: name,
+                                    keepAlive: false,
                                     params: [param],
                                 }, baseOptions), instance.__instanceId, proxy);
                             }
@@ -17731,21 +18680,22 @@ function initUTSProxyClass(options) {
                     return false;
                 },
             });
-            return proxy;
+            return Object.freeze(proxy);
         }
     };
     const staticPropSetterCache = {};
     const staticMethodCache = {};
-    return new Proxy(ProxyClass, {
+    return Object.freeze(new Proxy(ProxyClass, {
         get(target, name, receiver) {
             name = parseClassMethodName(name, staticMethods);
             if (hasOwn$1(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
-                    const { async, params, return: returnOptions } = staticMethods[name];
+                    const { async, keepAlive, params, return: returnOptions, } = staticMethods[name];
                     // 静态方法
                     staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
                         name,
                         companion: true,
+                        keepAlive,
                         params,
                         return: returnOptions,
                     }, baseOptions));
@@ -17770,6 +18720,7 @@ function initUTSProxyClass(options) {
                     if (param) {
                         staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
                             name: name,
+                            keepAlive: false,
                             params: [param],
                         }, baseOptions), 0);
                     }
@@ -17779,7 +18730,7 @@ function initUTSProxyClass(options) {
             }
             return false;
         },
-    });
+    }));
 }
 function isUTSAndroid() {
     return typeof plus !== 'undefined' && plus.os.name === 'Android';
@@ -18558,7 +19509,8 @@ function onWebviewClose(webview) {
  */
 function isDirectPage(page) {
     return (__uniConfig.realEntryPagePath &&
-        page.$page.route === __uniConfig.entryPagePath);
+        getPage$BasePage(page).route ===
+            __uniConfig.entryPagePath);
 }
 /**
  * 重新启动到首页
@@ -18576,10 +19528,13 @@ function onWebviewPopGesture(webview) {
     webview.addEventListener('popGesture', (e) => {
         if (e.type === 'start') {
             // 设置下一个页面的 statusBarStyle
-            const pages = getCurrentPages();
+            const pages = getCurrentBasePages();
             const page = pages[pages.length - 2];
             popStartStatusBarStyle = lastStatusBarStyle;
-            const statusBarStyle = page && page.$page.statusBarStyle;
+            let statusBarStyle;
+            if (page) {
+                statusBarStyle = getPage$BasePage(page).statusBarStyle;
+            }
             statusBarStyle && setStatusBarStyle(statusBarStyle);
         }
         else if (e.type === 'end' && !e.result) {
@@ -18953,7 +19908,7 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     }
     uni.hideToast();
     uni.hideLoading();
-    if (page.$page.meta.isQuit) {
+    if (getPage$BasePage(page).meta.isQuit) {
         quit();
     }
     else if (isDirectPage(page)) {
@@ -18980,7 +19935,7 @@ function quit() {
     }
 }
 function back(delta, animationType, animationDuration) {
-    const pages = getCurrentPages();
+    const pages = getCurrentBasePages();
     const len = pages.length;
     const currentPage = pages[len - 1];
     if (delta > 1) {
@@ -18989,7 +19944,7 @@ function back(delta, animationType, animationDuration) {
             .slice(len - delta, len - 1)
             .reverse()
             .forEach((deltaPage) => {
-            closeWebview(plus.webview.getWebviewById(deltaPage.$page.id + ''), 'none', 0);
+            closeWebview(plus.webview.getWebviewById(`${getPage$BasePage(deltaPage).id}`), 'none', 0);
         });
     }
     const backPage = function (webview) {
@@ -18997,7 +19952,7 @@ function back(delta, animationType, animationDuration) {
             closeWebview(webview, animationType, animationDuration || ANI_DURATION);
         }
         else {
-            if (currentPage.$page.openType === 'redirectTo') {
+            if (getPage$BasePage(currentPage).openType === 'redirectTo') {
                 // 如果是 redirectTo 跳转的，需要指定 back 动画
                 closeWebview(webview, ANI_CLOSE, ANI_DURATION);
             }
@@ -19012,385 +19967,13 @@ function back(delta, animationType, animationDuration) {
         // 前一个页面触发 onShow
         invokeHook(ON_SHOW);
     };
-    const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
+    const webview = plus.webview.getWebviewById(`${getPage$BasePage(currentPage).id}`);
     if (!currentPage.__uniapp_webview) {
         return backPage(webview);
     }
     backWebview(webview, () => {
         backPage(webview);
     });
-}
-
-class UniPageNode extends UniNode {
-    constructor(pageId, options, setup = false) {
-        super(NODE_TYPE_PAGE, '#page', null);
-        this._id = 1;
-        this._created = false;
-        this._updating = false;
-        this._createActionMap = new Map();
-        this.updateActions = [];
-        this.dicts = [];
-        this.nodeId = 0;
-        this.pageId = pageId;
-        this.pageNode = this;
-        this.options = options;
-        this.isUnmounted = false;
-        this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
-        this.createdAction = [ACTION_TYPE_PAGE_CREATED];
-        this.normalizeDict = this._normalizeDict.bind(this);
-        this._update = this.update.bind(this);
-        setup && this.setup();
-    }
-    _normalizeDict(value, normalizeValue = true) {
-        if (!isPlainObject(value)) {
-            return this.addDict(value);
-        }
-        const dictArray = [];
-        Object.keys(value).forEach((n) => {
-            const dict = [this.addDict(n)];
-            const v = value[n];
-            if (normalizeValue) {
-                dict.push(this.addDict(v));
-            }
-            else {
-                dict.push(v);
-            }
-            dictArray.push(dict);
-        });
-        return dictArray;
-    }
-    addDict(value) {
-        const { dicts } = this;
-        const index = dicts.indexOf(value);
-        if (index > -1) {
-            return index;
-        }
-        return dicts.push(value) - 1;
-    }
-    onInjectHook(hook) {
-        if ((hook === ON_PAGE_SCROLL || hook === ON_REACH_BOTTOM) &&
-            !this.scrollAction) {
-            this.scrollAction = [
-                ACTION_TYPE_PAGE_SCROLL,
-                this.options.onReachBottomDistance,
-            ];
-            this.push(this.scrollAction);
-        }
-    }
-    onCreate(thisNode, nodeName) {
-        pushCreateAction(this, thisNode.nodeId, nodeName);
-        return thisNode;
-    }
-    onInsertBefore(thisNode, newChild, refChild) {
-        pushInsertAction(this, newChild, thisNode.nodeId, (refChild && refChild.nodeId) || -1);
-        return newChild;
-    }
-    onRemoveChild(oldChild) {
-        pushRemoveAction(this, oldChild.nodeId);
-        return oldChild;
-    }
-    onAddEvent(thisNode, name, flag) {
-        if (thisNode.parentNode) {
-            pushAddEventAction(this, thisNode.nodeId, name, flag);
-        }
-    }
-    onAddWxsEvent(thisNode, name, wxsEvent, flag) {
-        if (thisNode.parentNode) {
-            pushAddWxsEventAction(this, thisNode.nodeId, name, wxsEvent, flag);
-        }
-    }
-    onRemoveEvent(thisNode, name) {
-        if (thisNode.parentNode) {
-            pushRemoveEventAction(this, thisNode.nodeId, name);
-        }
-    }
-    onSetAttribute(thisNode, qualifiedName, value) {
-        if (thisNode.parentNode) {
-            pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value);
-        }
-    }
-    onRemoveAttribute(thisNode, qualifiedName) {
-        if (thisNode.parentNode) {
-            pushRemoveAttributeAction(this, thisNode.nodeId, qualifiedName);
-        }
-    }
-    onTextContent(thisNode, text) {
-        if (thisNode.parentNode) {
-            pushSetTextAction(this, thisNode.nodeId, text);
-        }
-    }
-    onNodeValue(thisNode, val) {
-        if (thisNode.parentNode) {
-            pushSetTextAction(this, thisNode.nodeId, val);
-        }
-    }
-    genId() {
-        return this._id++;
-    }
-    push(action, extras) {
-        if (this.isUnmounted) {
-            if ((process.env.NODE_ENV !== 'production')) {
-                console.log(formatLog('PageNode', 'push.prevent', action));
-            }
-            return;
-        }
-        switch (action[0]) {
-            case ACTION_TYPE_CREATE:
-                this._createActionMap.set(action[1], action);
-                break;
-            case ACTION_TYPE_INSERT:
-                const createAction = this._createActionMap.get(action[1]);
-                if (createAction) {
-                    createAction[3] = action[2]; // parentNodeId
-                    createAction[4] = action[3]; // anchorId
-                    if (extras) {
-                        createAction[5] = extras;
-                    }
-                }
-                else {
-                    // 部分手机上，create 和 insert 可能不在同一批次，被分批发送
-                    if (extras) {
-                        action[4] = extras;
-                    }
-                    this.updateActions.push(action);
-                    // if ((process.env.NODE_ENV !== 'production')) {
-                    //   console.error(formatLog(`Insert`, action, 'not found createAction'))
-                    // }
-                }
-                break;
-        }
-        // insert 被合并进 create
-        if (action[0] !== ACTION_TYPE_INSERT) {
-            this.updateActions.push(action);
-        }
-        if (!this._updating) {
-            this._updating = true;
-            queuePostFlushCb(this._update);
-        }
-    }
-    restore() {
-        this.clear();
-        // createAction 需要单独发送，因为 view 层需要现根据 create 来设置 page 的 ready
-        this.setup();
-        if (this.scrollAction) {
-            this.push(this.scrollAction);
-        }
-        const restoreNode = (node) => {
-            this.onCreate(node, node.nodeName);
-            this.onInsertBefore(node.parentNode, node, null);
-            node.childNodes.forEach((childNode) => {
-                restoreNode(childNode);
-            });
-        };
-        this.childNodes.forEach((childNode) => restoreNode(childNode));
-        this.push(this.createdAction);
-    }
-    setup() {
-        this.send([this.createAction]);
-    }
-    update() {
-        const { dicts, updateActions, _createActionMap } = this;
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
-        }
-        // 首次
-        if (!this._created) {
-            this._created = true;
-            updateActions.push(this.createdAction);
-        }
-        if (updateActions.length) {
-            if (dicts.length) {
-                updateActions.unshift([ACTION_TYPE_DICT, dicts]);
-            }
-            this.send(updateActions);
-        }
-        this.clear();
-    }
-    clear() {
-        this.dicts.length = 0;
-        this.updateActions.length = 0;
-        this._updating = false;
-        this._createActionMap.clear();
-    }
-    send(action) {
-        UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId);
-    }
-    fireEvent(id, evt) {
-        const node = findNodeById(id, this);
-        if (node) {
-            node.dispatchEvent(evt);
-        }
-        else if ((process.env.NODE_ENV !== 'production')) {
-            console.error(formatLog('PageNode', 'fireEvent', id, 'not found', evt));
-        }
-    }
-}
-function getPageNode(pageId) {
-    const page = getPageById(pageId);
-    if (!page)
-        return null;
-    return page.__page_container__;
-}
-function findNode(name, value, uniNode) {
-    if (typeof uniNode === 'number') {
-        uniNode = getPageNode(uniNode);
-    }
-    if (uniNode[name] === value) {
-        return uniNode;
-    }
-    const { childNodes } = uniNode;
-    for (let i = 0; i < childNodes.length; i++) {
-        const uniNode = findNode(name, value, childNodes[i]);
-        if (uniNode) {
-            return uniNode;
-        }
-    }
-    return null;
-}
-function findNodeById(nodeId, uniNode) {
-    return findNode('nodeId', nodeId, uniNode);
-}
-function findNodeByTagName(tagName, uniNode) {
-    return findNode('nodeName', tagName.toUpperCase(), uniNode);
-}
-function pushCreateAction(pageNode, nodeId, nodeName) {
-    pageNode.push([
-        ACTION_TYPE_CREATE,
-        nodeId,
-        pageNode.addDict(nodeName),
-        -1,
-        -1,
-    ]);
-}
-function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
-    const nodeJson = newChild.toJSON({
-        attr: true,
-        normalize: pageNode.normalizeDict,
-    });
-    pageNode.push([ACTION_TYPE_INSERT, newChild.nodeId, parentNodeId, refChildId], Object.keys(nodeJson).length ? nodeJson : undefined);
-}
-function pushRemoveAction(pageNode, nodeId) {
-    pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
-}
-function pushAddEventAction(pageNode, nodeId, name, value) {
-    pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value]);
-}
-function pushAddWxsEventAction(pageNode, nodeId, name, wxsEvent, value) {
-    pageNode.push([
-        ACTION_TYPE_ADD_WXS_EVENT,
-        nodeId,
-        pageNode.addDict(name),
-        pageNode.addDict(wxsEvent),
-        value,
-    ]);
-}
-function pushRemoveEventAction(pageNode, nodeId, name) {
-    pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);
-}
-function normalizeAttrValue(pageNode, name, value) {
-    return name === 'style' && isPlainObject(value)
-        ? pageNode.normalizeDict(value)
-        : pageNode.addDict(value);
-}
-function pushSetAttributeAction(pageNode, nodeId, name, value) {
-    pageNode.push([
-        ACTION_TYPE_SET_ATTRIBUTE,
-        nodeId,
-        pageNode.addDict(name),
-        normalizeAttrValue(pageNode, name, value),
-    ]);
-}
-function pushRemoveAttributeAction(pageNode, nodeId, name) {
-    pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, pageNode.addDict(name)]);
-}
-function pushSetTextAction(pageNode, nodeId, text) {
-    pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, pageNode.addDict(text)]);
-}
-function createPageNode(pageId, pageOptions, setup) {
-    return new UniPageNode(pageId, pageOptions, setup);
-}
-
-function setupPage(component) {
-    const oldSetup = component.setup;
-    component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
-    component.setup = (props, ctx) => {
-        const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.log(formatLog(__pagePath, 'setup'));
-        }
-        const instance = getCurrentInstance();
-        instance.$dialogPages = [];
-        const pageVm = instance.proxy;
-        initPageVm(pageVm, __pageInstance);
-        if (pageVm.$page.openType !== 'openDialogPage') {
-            addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
-        }
-        {
-            onMounted(() => {
-                nextTick(() => {
-                    // onShow被延迟，故onReady也同时延迟
-                    invokeHook(pageVm, ON_READY);
-                });
-                // TODO preloadSubPackages
-            });
-            onBeforeUnmount(() => {
-                invokeHook(pageVm, ON_UNLOAD);
-            });
-        }
-        if (oldSetup) {
-            return oldSetup(props, ctx);
-        }
-    };
-    return component;
-}
-function initScope(pageId, vm, pageInstance) {
-    {
-        const $getAppWebview = () => {
-            return plus.webview.getWebviewById(pageId + '');
-        };
-        vm.$getAppWebview = $getAppWebview;
-        vm.$.ctx.$scope = {
-            $getAppWebview,
-        };
-    }
-    vm.getOpenerEventChannel = () => {
-        if (!pageInstance.eventChannel) {
-            pageInstance.eventChannel = new EventChannel(pageId);
-        }
-        return pageInstance.eventChannel;
-    };
-    return vm;
-}
-
-function isVuePageAsyncComponent(component) {
-    return isFunction(component);
-}
-const pagesMap = new Map();
-function definePage(pagePath, asyncComponent) {
-    pagesMap.set(pagePath, once(createFactory(asyncComponent)));
-}
-function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
-    const pageNode = createPageNode(__pageId, pageOptions, true);
-    const app = getVueApp();
-    const component = pagesMap.get(__pagePath)();
-    const mountPage = (component) => app.mountPage(component, extend({
-        __pageId,
-        __pagePath,
-        __pageQuery,
-        __pageInstance,
-    }, __pageQuery), pageNode);
-    if (isPromise(component)) {
-        return component.then((component) => mountPage(component));
-    }
-    return mountPage(component);
-}
-function createFactory(component) {
-    return () => {
-        if (isVuePageAsyncComponent(component)) {
-            return component().then((component) => setupPage(component));
-        }
-        return setupPage(component);
-    };
 }
 
 let isInitEntryPage = false;
@@ -19475,7 +20058,7 @@ function closePreloadWebview({ url }) {
     const webview = preloadWebviews[url];
     if (webview) {
         if (webview.__page__) {
-            if (!getCurrentPages().find((page) => page === webview.__page__)) {
+            if (!getCurrentBasePages().find((page) => page === webview.__page__)) {
                 // 未使用
                 webview.close('none');
             }
@@ -19517,7 +20100,7 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
         const _webview = webview;
         if (_webview.__page__) {
             // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
-            if (getCurrentPages().find((page) => page === _webview.__page__)) {
+            if (getCurrentBasePages().find((page) => page === _webview.__page__)) {
                 if ((process.env.NODE_ENV !== 'production')) {
                     console.log(formatLog('uni-app', `preloadWebview(${path},${_webview.id}) already in use`));
                 }
@@ -19525,7 +20108,7 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
             }
             else {
                 if (eventChannel) {
-                    _webview.__page__.$page.eventChannel = eventChannel;
+                    getPage$BasePage(_webview.__page__).eventChannel = eventChannel;
                 }
                 if (openType === 'launch') {
                     // 热更 preloadPage
@@ -19814,7 +20397,7 @@ const $switchTab = (args, { resolve, reject }) => {
 const switchTab = defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
 function _switchTab({ url, path, query, }) {
     tabBarInstance.switchTab(path.slice(1));
-    const pages = getCurrentPages();
+    const pages = getCurrentBasePages();
     const len = pages.length;
     let callOnHide = false;
     let callOnShow = false;
@@ -19836,7 +20419,7 @@ function _switchTab({ url, path, query, }) {
             removePage(currentPage);
             // 延迟执行避免iOS应用退出
             setTimeout(() => {
-                if (currentPage.$page.openType === 'redirectTo') {
+                if (getPage$BasePage(currentPage).openType === 'redirectTo') {
                     closeWebview(currentPage.$getAppWebview(), ANI_CLOSE, ANI_DURATION);
                 }
                 else {
@@ -20160,6 +20743,7 @@ var uni$1 = {
   stopCompass: stopCompass,
   stopLocationUpdate: stopLocationUpdate,
   stopPullDownRefresh: stopPullDownRefresh,
+  subscribeGetLocation: subscribeGetLocation,
   switchTab: switchTab,
   syncDataToGlobal: syncDataToGlobal,
   unPreloadPage: unPreloadPage,
@@ -20623,6 +21207,8 @@ function initSubscribeHandlers() {
             // 防止首页 webview 初始化过早， service 还未开始监听
             publishHandler(ON_WEBVIEW_READY, {}, 1);
         }
+        subscribeGetLocation();
+        subscribeMapPlaceSearch();
     }
 }
 

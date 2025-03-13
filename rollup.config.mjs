@@ -10,6 +10,9 @@ import alias from '@rollup/plugin-alias'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import { getBabelOutputPlugin } from '@rollup/plugin-babel'
+import terser from '@rollup/plugin-terser'
+import generate from "@babel/generator";
+import { parse } from '@babel/parser'
 
 if (!process.env.TARGET) {
   throw new Error('TARGET package must be specified via --environment flag.')
@@ -30,13 +33,14 @@ const configs = []
 
 let buildOptions = require(resolve(`build.json`))
 
-function normalizeOutput(file, output = {}) {
+function normalizeOutput (file, output = {}) {
   return Object.assign(
     {
       file,
       format: file.includes('.cjs.') ? 'cjs' : 'es',
       exports: 'auto',
-      interop: 'auto'
+      interop: 'auto',
+      sourcemap: process.env.ENABLE_SOURCEMAP === 'true',
     },
     output
   )
@@ -72,7 +76,7 @@ buildOptions.forEach((buildOption) => {
 
 export default configs
 
-function resolveTsconfigJson() {
+function resolveTsconfigJson () {
   const tsconfigJsonPath = resolve('tsconfig.json')
   if (
     fs.existsSync(tsconfigJsonPath)
@@ -84,27 +88,27 @@ function resolveTsconfigJson() {
   return path.resolve(__dirname, 'tsconfig.json')
 }
 
-function parseExternal(external) {
+function parseExternal (external) {
   const parsed = external === false
-  ? []
-  : Array.isArray(external)
-    ? external
-    : [
-      'vue',
-      '@vue/shared',
-      ...Object.keys(pkg.dependencies || {}),
-      ...Object.keys(pkg.peerDependencies || {}),
-      ...(external || []),
-    ]
+    ? []
+    : Array.isArray(external)
+      ? external
+      : [
+        'vue',
+        '@vue/shared',
+        ...Object.keys(pkg.dependencies || {}),
+        ...Object.keys(pkg.peerDependencies || {}),
+        ...(external || []),
+      ]
   return parsed.map((id) => {
-    if(typeof id === 'string') {
+    if (typeof id === 'string') {
       return id
     }
     return new RegExp(id.source, id.flags)
   })
 }
 
-function createConfig(entryFile, output, buildOption) {
+function createConfig (entryFile, output, buildOption) {
   const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
   const tsOptions = {
     check: !process.env.TRANSPILE_ONLY &&
@@ -122,6 +126,8 @@ function createConfig(entryFile, output, buildOption) {
       exclude: ['**/__tests__', 'test-dts'],
     },
     useTsconfigDeclarationDir: true,
+    clean: false,
+    verbosity: 0
   }
   const tsPlugin = ts(tsOptions)
 
@@ -131,7 +137,12 @@ function createConfig(entryFile, output, buildOption) {
   hasTSChecked = true
 
   const external = parseExternal(buildOption.external)
-  const isX = process.env.UNI_APP_X === 'true'
+  let isX = process.env.UNI_APP_X === 'true'
+  if (!isX && buildOption.replacements) {
+    if (buildOption.replacements.__X__ === 'true') {
+      isX = true
+    }
+  }
   const plugins = [
     createAliasPlugin(buildOption),
     nodeResolve(),
@@ -142,6 +153,9 @@ function createConfig(entryFile, output, buildOption) {
     tsPlugin,
     createReplacePlugin(buildOption, output.format),
   ]
+  if (buildOption.output?.compact) {
+    plugins.push(terser())
+  }
   if (process.env.TARGET !== 'uni-push' && process.env.TARGET !== 'uni-stat') {
     plugins.unshift(jscc({
       values: {
@@ -166,7 +180,7 @@ function createConfig(entryFile, output, buildOption) {
     const replacements = buildOption.replaceAfterBundled
     plugins.push({
       name: 'replace-after-bundled',
-      generateBundle(_options, bundles) {
+      generateBundle (_options, bundles) {
         Object.keys(bundles).forEach((name) => {
           const bundle = bundles[name]
           if (!bundle.code) {
@@ -180,6 +194,145 @@ function createConfig(entryFile, output, buildOption) {
           })
         })
       },
+    })
+  }
+
+  if (buildOption.importReplacements && buildOption.importReplacements.length > 0) {
+    /**
+     * importReplacements: [{
+     *   module: '@vue/shared',
+     *   specifiers: [{
+     *     name: 'isIntergerKey',
+     *     replaceModule: '@dcloudio/uni-shared', // default is module
+     *     replaceName: 'isIntergerKey', // default is name
+     *   }],
+     * }]
+     */
+    const importReplacements = buildOption.importReplacements
+    plugins.push({
+      name: 'replace-import',
+      transform (code, id) {
+        if (!id.endsWith('.js')) {
+          return
+        }
+        const { program } = parse(code, {
+          sourceType: 'module',
+        })
+        const replacementList = []
+        program.body.forEach((node, importIndex) => {
+          if (node.type !== 'ImportDeclaration') {
+            return
+          }
+          const importSource = node.source.value
+          const replacement = importReplacements.find((replacement) => replacement.module === importSource)
+          if (!replacement) {
+            return
+          }
+          const specifiers = node.specifiers
+          const replacementSpecifiers = replacement.specifiers
+          specifiers.forEach((specifier, specifierIndex) => {
+            if (specifier.type !== 'ImportSpecifier') {
+              return
+            }
+            const replacementSpecifier = replacementSpecifiers.find((replacementSpecifier) => replacementSpecifier.name === specifier.imported.name)
+            if (!replacementSpecifier) {
+              return
+            }
+            replacementList.push({
+              module: importSource,
+              importIndex,
+              replacementSpecifier,
+              specifiers,
+              specifier,
+              specifierIndex
+            })
+          })
+        })
+        if (replacementList.length === 0) {
+          return
+        }
+        replacementList.reverse().forEach((replacement) => {
+          const {
+            module,
+            importIndex,
+            replacementSpecifier,
+            specifiers,
+            specifier,
+            specifierIndex,
+          } = replacement
+          specifiers.splice(specifierIndex, 1)
+          const {
+            name,
+            replaceName,
+            replaceModule
+          } = replacementSpecifier
+          program.body.splice(importIndex, 0, {
+            type: 'ImportDeclaration',
+            specifiers: [
+              {
+                type: 'ImportSpecifier',
+                local: specifier.local,
+                imported: {
+                  type: 'Identifier',
+                  name: replaceName || name
+                }
+              }
+            ],
+            source: {
+              type: 'StringLiteral',
+              value: replaceModule || module,
+              raw: replaceModule
+            }
+          })
+        })
+        return {
+          code: generate.default(program).code,
+          map: null
+        }
+      }
+    })
+  }
+
+  if (buildOption.textReplacements && buildOption.textReplacements.length > 0) {
+    const textReplacements = buildOption.textReplacements
+    if (textReplacements.some(textReplacement => !textReplacement.file)) {
+      throw new Error('textReplacements must have file field for security reasons')
+    }
+    plugins.push({
+      name: 'replace-text',
+      transform (code, id) {
+        if (!id.endsWith('.js')) {
+          return
+        }
+        let newCode = code
+        textReplacements.forEach(textReplacement => {
+          const {
+            file,
+            find,
+            replace
+          } = textReplacement
+          const fileFull = require.resolve(file)
+          if (path.normalize(id) !== path.normalize(fileFull)) {
+            return
+          }
+          if (typeof find === 'string') {
+            if (newCode.indexOf(find) === -1) {
+              throw new Error('textReplacement not found: ' + find)
+            }
+            newCode = newCode.replace(find, replace)
+          } else {
+            const regExp = new RegExp(find.source, find.flags)
+            if (!regExp.test(newCode)) {
+              throw new Error('textReplacement not found: ' + JSON.stringify(find))
+            }
+            newCode = newCode.replace(regExp, replace)
+          }
+        })
+        return {
+          code: newCode,
+          map: null
+        }
+      }
     })
   }
 
@@ -197,7 +350,7 @@ function createConfig(entryFile, output, buildOption) {
       buildOption.treeshake === false
         ? false
         : {
-          moduleSideEffects(id) {
+          moduleSideEffects (id) {
             if (id.endsWith('polyfill.ts')) {
               console.log('[WARN]:sideEffects[' + id + ']')
               return true
@@ -208,11 +361,11 @@ function createConfig(entryFile, output, buildOption) {
   }
 }
 
-function createAliasPlugin(buildOption) {
+function createAliasPlugin (buildOption) {
   return alias(buildOption.alias || {})
 }
 
-function createReplacePlugin(buildOption, format) {
+function createReplacePlugin (buildOption, format) {
   const replacements = {
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,
@@ -223,6 +376,15 @@ function createReplacePlugin(buildOption, format) {
   // }
   if (buildOption.replacements) {
     Object.assign(replacements, buildOption.replacements)
+  }
+
+  // 注入 __UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE__
+  if ('process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE' in replacements) {
+    replacements['process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE'] = () => {
+      return JSON.stringify(
+        fs.readFileSync(resolve('dist/__uniwebview.js'), 'utf-8')
+      )
+    }
   }
 
   Object.keys(replacements).forEach((key) => {

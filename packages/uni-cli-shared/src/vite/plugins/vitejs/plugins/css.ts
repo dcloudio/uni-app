@@ -180,6 +180,11 @@ function wrapResolve(
     return
   }
 }
+
+const depMap = new Map<string, Set<string>>()
+export function getCssDepMap() {
+  return depMap
+}
 /**
  * Plugin applied before user plugins
  */
@@ -279,8 +284,16 @@ export function cssPlugin(
 
       // track deps for build watch mode
       if (config.command === 'build' && config.build.watch && deps) {
+        const normalizedId = normalizePath(id.split('?')[0])
         for (const file of deps) {
           this.addWatchFile(file)
+          if (options.isAndroidX) {
+            const normalizedFile = normalizePath(file.split('?')[0])
+            if (!depMap.has(normalizedFile)) {
+              depMap.set(normalizedFile, new Set())
+            }
+            depMap.get(normalizedFile)!.add(normalizedId)
+          }
         }
       }
 
@@ -391,7 +404,9 @@ export function cssPostPlugin(
         if (filename) {
           if (
             platform === 'app' &&
-            (filename === 'app.css' || filename.startsWith('App.style'))
+            (filename === 'app.css' ||
+              filename.startsWith('App.style') ||
+              filename.startsWith('App.uvue.style'))
           ) {
             // 获取 unocss 的样式文件信息
             const ids = Object.keys(chunk.modules).filter(
@@ -422,11 +437,15 @@ export function cssPostPlugin(
           if (filename) {
             const ids = findCssModuleIds.call(this, id, includeComponentCss)
             if (cssChunks.has(filename)) {
-              cssChunks.get(filename)!.forEach((id) => {
-                ids.add(id)
+              const oldIds = cssChunks.get(filename)!
+              ids.forEach((id) => {
+                if (!oldIds.includes(id)) {
+                  oldIds.push(id)
+                }
               })
+            } else {
+              cssChunks.set(filename, Array.from(ids))
             }
-            cssChunks.set(filename, [...ids])
           }
         })
       }
@@ -584,7 +603,12 @@ async function compileCSS(
     !needInlineImport &&
     !hasUrl
   ) {
-    return { code, map: null }
+    return {
+      code,
+      map: {
+        mappings: '',
+      },
+    }
   }
 
   let preprocessorMap: ExistingRawSourceMap | undefined

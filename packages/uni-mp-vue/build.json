@@ -1,20 +1,38 @@
-{
-  "input": {
-    "src/index.ts": "dist/vue.runtime.esm.js"
+[
+  {
+    "input": {
+      "src/index.ts": "dist/vue.runtime.esm.js"
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "@dcloudio/uni-mp-vue/lib/vue.runtime.esm.js"
+        }
+      ]
+    },
+    "external": ["@vue/shared", "@dcloudio/uni-shared"],
+    "replacements": {
+      "__X__": "false",
+      "__PLATFORM__": "\"mp-weixin\""
+    }
   },
-  "alias": {
-    "entries": [
-      {
-        "find": "vue",
-        "replacement": "@dcloudio/uni-mp-vue/lib/vue.runtime.esm.js"
-      }
-    ]
-  },
-  "external": [
-    "@vue/shared",
-    "@dcloudio/uni-shared"
-  ],
-  "replacements": {
-    "__PLATFORM__": "\"mp-weixin\""
+  {
+    "input": {
+      "src/index.ts": "dist-x/vue.runtime.esm.js"
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "@dcloudio/uni-mp-vue/lib/vue.runtime.esm.js"
+        }
+      ]
+    },
+    "external": ["@vue/shared", "@dcloudio/uni-shared"],
+    "replacements": {
+      "__X__": "true",
+      "__PLATFORM__": "\"mp-weixin\""
+    }
   }
-}
+]

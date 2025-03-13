@@ -354,10 +354,24 @@ function useAutoFocus(props: Props, fieldRef: Ref<HTMLFieldElement | null>) {
         setTimeout(focus, timeout)
         return
       }
-      field.focus()
-      // 无用户交互的 webview 需主动显示键盘（安卓）
-      if (!userActionState.userAction) {
-        plus.key.showSoftKeybord()
+      // @ts-expect-error plus类型
+      if (plus.os.name === 'HarmonyOS') {
+        // 无用户交互的 webview 需主动显示键盘（鸿蒙）
+        if (!userActionState.userAction) {
+          // 鸿蒙需要先显示键盘再focus，否则键盘类型、confirmType等设置无效
+          plus.key.showSoftKeybord()
+          setTimeout(() => {
+            field.focus()
+          }, 100)
+        } else {
+          field.focus()
+        }
+      } else {
+        field.focus()
+        // 无用户交互的 webview 需主动显示键盘（安卓）
+        if (!userActionState.userAction) {
+          plus.key.showSoftKeybord()
+        }
       }
     }
   }

@@ -5,6 +5,7 @@
       "name": "width",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -22,6 +23,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -43,6 +55,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -64,6 +87,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -85,6 +119,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -105,6 +150,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -117,7 +173,8 @@
     {
       "name": "min-width",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length>",
       "values": [
@@ -134,6 +191,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -155,6 +223,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -176,6 +255,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -197,6 +287,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -218,6 +319,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -238,6 +350,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -253,7 +376,8 @@
     {
       "name": "max-width",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length>",
       "values": [
@@ -270,6 +394,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -291,6 +426,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -312,6 +458,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -333,6 +490,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -354,6 +522,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -374,6 +553,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -387,6 +577,7 @@
       "name": "height",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -404,6 +595,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -425,6 +627,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -446,6 +659,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -467,6 +691,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -487,6 +722,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -499,7 +745,8 @@
     {
       "name": "min-height",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length>",
       "values": [
@@ -516,6 +763,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -537,6 +795,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -558,6 +827,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -579,6 +859,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -600,6 +891,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -620,6 +922,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -635,7 +948,8 @@
     {
       "name": "max-height",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length>",
       "values": [
@@ -652,6 +966,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -673,6 +998,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -694,6 +1030,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -715,6 +1062,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -736,6 +1094,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -756,6 +1125,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -785,6 +1165,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -806,6 +1197,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -827,6 +1229,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -848,6 +1261,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -869,6 +1293,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -889,6 +1324,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -919,6 +1365,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -936,6 +1393,7 @@
       "name": "top",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -953,6 +1411,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -973,6 +1442,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -986,6 +1466,7 @@
       "name": "bottom",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1003,6 +1484,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1023,6 +1515,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1036,6 +1539,7 @@
       "name": "left",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1053,6 +1557,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1073,6 +1588,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1086,6 +1612,7 @@
       "name": "right",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1103,6 +1630,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1123,6 +1661,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1152,6 +1701,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1173,6 +1733,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1194,6 +1765,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1215,6 +1797,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1235,6 +1828,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1247,6 +1851,7 @@
         "scroll-view",
         "list-item",
         "swiper-item",
+        "flow-item",
         "navigator"
       ],
       "defaultValue": {
@@ -1263,7 +1868,7 @@
       "values": [
         {
           "name": "center",
-          "description": "元素紧密地排列在主轴方向居中对齐",
+          "description": "元素紧密地排列在主轴方向居中对齐。第一个元素到主轴首的距离将与最后一个元素到主轴尾的距离相同",
           "uniPlatform": {
             "app": {
               "android": {
@@ -1275,6 +1880,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1297,6 +1913,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1319,6 +1946,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1329,7 +1967,7 @@
         },
         {
           "name": "space-between",
-          "description": "在主轴上均匀分配元素。相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐",
+          "description": "在主轴上均匀分配元素，相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐",
           "uniPlatform": {
             "app": {
               "android": {
@@ -1341,6 +1979,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1351,7 +2000,7 @@
         },
         {
           "name": "space-around",
-          "description": "元素沿着主轴均匀分布在容器中。相邻项之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样",
+          "description": "元素沿着主轴均匀分布在容器中，相邻元素间距离相同。主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，是相邻元素之间距离的一半",
           "uniPlatform": {
             "app": {
               "android": {
@@ -1363,6 +2012,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1383,6 +2043,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1395,6 +2066,7 @@
         "scroll-view",
         "list-view",
         "list-item",
+        "flow-item",
         "swiper-item",
         "navigator"
       ],
@@ -1423,6 +2095,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1444,6 +2127,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1465,6 +2159,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1485,6 +2190,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1496,6 +2212,7 @@
         "view",
         "scroll-view",
         "list-item",
+        "flow-item",
         "swiper-item",
         "navigator"
       ],
@@ -1521,6 +2238,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1542,6 +2270,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1563,6 +2302,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1584,6 +2334,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1605,6 +2366,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1625,6 +2397,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1637,6 +2420,7 @@
         "scroll-view",
         "list-view",
         "list-item",
+        "flow-item",
         "swiper-item",
         "navigator"
       ],
@@ -1665,6 +2449,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1686,6 +2481,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1707,6 +2513,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1728,6 +2545,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1749,6 +2577,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1770,6 +2609,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1790,6 +2640,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1820,6 +2681,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1841,6 +2713,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1862,6 +2745,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1883,6 +2777,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1904,6 +2809,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1925,6 +2841,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1945,6 +2872,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1957,6 +2895,7 @@
         "scroll-view",
         "list-view",
         "list-item",
+        "flow-item",
         "swiper-item",
         "navigator"
       ],
@@ -1971,6 +2910,7 @@
       "restrictions": [
         "number",
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]",
@@ -1988,6 +2928,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2009,6 +2960,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2030,6 +2992,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2050,6 +3023,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2079,6 +3063,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2105,6 +3100,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2122,6 +3128,7 @@
       "restrictions": [
         "number",
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -2139,6 +3146,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2160,6 +3178,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2180,6 +3209,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2210,6 +3250,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2231,6 +3282,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2252,6 +3314,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2273,6 +3346,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2294,6 +3378,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2315,6 +3410,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2336,6 +3442,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2356,6 +3473,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2368,6 +3496,7 @@
         "scroll-view",
         "list-view",
         "list-item",
+        "flow-item",
         "swiper-item",
         "navigator"
       ]
@@ -2393,6 +3522,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2414,6 +3554,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2434,6 +3585,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2467,6 +3629,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2488,6 +3661,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2509,6 +3693,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2530,6 +3725,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2551,6 +3757,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2571,6 +3788,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2603,6 +3831,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2624,6 +3863,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2644,6 +3894,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2670,6 +3931,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2699,6 +3971,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2720,6 +4003,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2740,6 +4034,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2773,6 +4078,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2794,6 +4110,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2815,6 +4142,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2836,6 +4174,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2856,6 +4205,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2881,6 +4241,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2910,6 +4281,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2931,6 +4313,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.27"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2951,6 +4344,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2979,6 +4383,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3000,6 +4415,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3021,6 +4447,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3041,6 +4478,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3055,6 +4503,7 @@
       "shorthand": true,
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "[ <length> | <percentage> ]{1,4}",
@@ -3069,6 +4518,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3081,6 +4541,7 @@
       "name": "padding-left",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -3095,6 +4556,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3108,6 +4580,7 @@
       "name": "padding-top",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -3122,6 +4595,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3135,6 +4619,7 @@
       "name": "padding-right",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -3149,6 +4634,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3162,6 +4658,7 @@
       "name": "padding-bottom",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -3176,6 +4673,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3190,6 +4698,7 @@
       "shorthand": true,
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "[ <length> | <percentage> | auto ]{1,4}",
@@ -3207,6 +4716,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3227,6 +4747,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3240,6 +4771,7 @@
       "name": "margin-left",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -3257,6 +4789,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3277,6 +4820,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3290,6 +4844,7 @@
       "name": "margin-top",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -3307,6 +4862,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3327,6 +4893,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3340,6 +4917,7 @@
       "name": "margin-right",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -3357,6 +4935,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3377,6 +4966,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3390,6 +4990,7 @@
       "name": "margin-bottom",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "description": "margin-bottom 属性设置与元素相关联的盒子模型的下外边距。可以为负值",
@@ -3408,6 +5009,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3428,6 +5040,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3441,6 +5064,7 @@
       "name": "border",
       "restrictions": [
         "length",
+        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -3458,6 +5082,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3489,6 +5124,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3510,6 +5156,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3531,6 +5188,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3552,6 +5220,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3572,6 +5251,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3600,6 +5290,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3621,6 +5322,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3642,6 +5354,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3663,6 +5386,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3683,6 +5417,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3711,6 +5456,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3732,6 +5488,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3753,6 +5520,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3774,6 +5552,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3794,6 +5583,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3822,6 +5622,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3843,6 +5654,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3864,6 +5686,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3885,6 +5718,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3905,6 +5749,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3933,6 +5788,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3954,6 +5820,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3975,6 +5852,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3996,6 +5884,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4016,6 +5915,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4028,6 +5938,7 @@
       "name": "border-width",
       "restrictions": [
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "<line-width>{1,4}",
@@ -4045,6 +5956,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4066,6 +5988,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4087,6 +6020,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4107,6 +6051,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4120,6 +6075,7 @@
       "name": "border-left-width",
       "restrictions": [
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -4137,6 +6093,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4158,6 +6125,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4179,6 +6157,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4199,6 +6188,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4212,6 +6212,7 @@
       "name": "border-top-width",
       "restrictions": [
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -4229,6 +6230,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4250,6 +6262,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4271,6 +6294,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4291,6 +6325,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4304,6 +6349,7 @@
       "name": "border-right-width",
       "restrictions": [
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -4321,6 +6367,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4342,6 +6399,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4363,6 +6431,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4383,6 +6462,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4396,6 +6486,7 @@
       "name": "border-bottom-width",
       "restrictions": [
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -4413,6 +6504,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4434,6 +6536,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4455,6 +6568,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4475,6 +6599,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4501,6 +6636,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4526,6 +6672,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4551,6 +6708,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4576,6 +6744,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4601,6 +6780,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4612,7 +6802,8 @@
     {
       "name": "border-radius",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length-percentage>{1,4} [ / <length-percentage>{1,4} ]?",
       "uniPlatform": {
@@ -4626,6 +6817,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4637,7 +6839,8 @@
     {
       "name": "border-top-left-radius",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -4651,6 +6854,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4662,7 +6876,8 @@
     {
       "name": "border-top-right-radius",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -4676,6 +6891,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4687,7 +6913,8 @@
     {
       "name": "border-bottom-left-radius",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -4701,6 +6928,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4712,7 +6950,8 @@
     {
       "name": "border-bottom-right-radius",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -4726,6 +6965,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4738,6 +6988,7 @@
       "name": "border-top",
       "restrictions": [
         "length",
+        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -4754,6 +7005,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4767,6 +7029,7 @@
       "name": "border-bottom",
       "restrictions": [
         "length",
+        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -4783,6 +7046,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4796,6 +7070,7 @@
       "name": "border-left",
       "restrictions": [
         "length",
+        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -4812,6 +7087,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4825,6 +7111,7 @@
       "name": "border-right",
       "restrictions": [
         "length",
+        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -4841,6 +7128,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4868,6 +7166,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4890,7 +7199,8 @@
       "name": "font-size",
       "description": "font-size CSS 属性设置字体大小。更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<absolute-size> | <relative-size> | <length-percentage>",
       "uniPlatform": {
@@ -4904,6 +7214,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4942,6 +7263,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4963,6 +7295,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4983,6 +7326,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4992,7 +7346,9 @@
       },
       "unixTags": [
         "text",
-        "button"
+        "button",
+        "input",
+        "textarea"
       ],
       "defaultValue": "normal"
     },
@@ -5016,6 +7372,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5037,6 +7404,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5058,6 +7436,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5079,6 +7468,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5099,6 +7499,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5119,7 +7530,8 @@
       "restrictions": [
         "enum",
         "color",
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<'text-decoration-line'> || <'text-decoration-style'> || <'text-decoration-color'> || <'text-decoration-thickness'>",
       "uniPlatform": {
@@ -5133,6 +7545,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5165,6 +7588,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5186,6 +7620,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5207,6 +7652,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5227,6 +7683,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5257,6 +7724,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5289,6 +7767,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5310,6 +7799,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5331,6 +7831,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5352,6 +7863,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5372,6 +7894,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5387,7 +7920,8 @@
     {
       "name": "text-decoration-thickness",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "auto | from-font | <length> | <percentage> ",
       "uniPlatform": {
@@ -5401,6 +7935,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5433,6 +7978,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5454,6 +8010,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5475,6 +8042,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5495,6 +8073,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5534,6 +8123,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5555,6 +8155,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5576,6 +8187,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5597,6 +8219,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5618,11 +8251,49 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "uni-icon",
+          "description": "uni-app x 内置字体图标 uni-icon",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "x",
+                "unixVer": "4.33"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "x",
+                "unixVer": "4.33"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "web": {
+              "uniVer": "x",
+              "unixVer": "x"
             }
           }
         }
@@ -5638,6 +8309,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5672,6 +8354,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5693,6 +8386,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5713,6 +8417,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5730,6 +8445,7 @@
       "name": "line-height",
       "restrictions": [
         "length",
+        "length-function",
         "number"
       ],
       "syntax": "normal | <number> | <length> | <percentage>",
@@ -5744,6 +8460,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5779,6 +8506,11 @@
             "osVer": "12.0",
             "uniVer": "x",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
           }
         },
         "web": {
@@ -5797,7 +8529,8 @@
     {
       "name": "letter-spacing",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "normal | <length>",
       "uniPlatform": {
@@ -5811,6 +8544,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5847,6 +8591,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5868,6 +8623,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5888,6 +8654,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5906,6 +8683,7 @@
       "restrictions": [
         "enum",
         "length",
+        "length-function",
         "color"
       ],
       "syntax": "none | <shadow>#",
@@ -5923,6 +8701,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5944,6 +8733,17 @@
                 "osVer": "x",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5964,6 +8764,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5979,7 +8790,7 @@
         "enum"
       ],
       "syntax": "<single-transition>#",
-      "values":[
+      "values": [
         {
           "name": "all",
           "uniPlatform": {
@@ -5993,6 +8804,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.13"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6014,6 +8836,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.13"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6034,6 +8867,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6062,6 +8906,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.13"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6083,6 +8938,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.13"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6104,6 +8970,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6125,6 +9002,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6146,6 +9034,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6167,6 +9066,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6188,6 +9098,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6209,6 +9130,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6230,6 +9162,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6251,6 +9194,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6272,6 +9226,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6293,6 +9258,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6314,6 +9290,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6335,6 +9322,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6356,6 +9354,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6377,6 +9386,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6398,6 +9418,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6419,6 +9450,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6440,6 +9482,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6461,6 +9514,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6482,6 +9546,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6503,6 +9578,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6524,6 +9610,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6545,6 +9642,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6566,6 +9674,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6587,6 +9706,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6607,6 +9737,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6637,6 +9778,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6666,6 +9818,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6687,6 +9850,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6708,6 +9882,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6729,6 +9914,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6750,6 +9946,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6771,6 +9978,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6791,6 +10009,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6817,6 +10046,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6846,6 +10086,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6867,6 +10118,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6888,6 +10150,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6909,6 +10182,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6930,6 +10214,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6951,6 +10246,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6972,6 +10278,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6993,6 +10310,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7014,6 +10342,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7035,6 +10374,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7055,6 +10405,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7068,6 +10429,7 @@
       "shorthand": true,
       "restrictions": [
         "length",
+        "length-function",
         "percentage",
         "enum"
       ],
@@ -7086,6 +10448,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7107,6 +10480,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7128,6 +10512,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7149,6 +10544,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7170,6 +10576,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7190,6 +10607,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7223,6 +10651,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7244,6 +10683,17 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7264,6 +10714,17 @@
             "osVer": "12.0",
             "uniVer": "x",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7288,6 +10749,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7309,6 +10781,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.61"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7330,6 +10813,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7352,6 +10846,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7374,6 +10879,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7395,6 +10911,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7417,6 +10944,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7438,6 +10976,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7460,6 +11009,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7481,6 +11041,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7502,6 +11073,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7523,6 +11105,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7544,6 +11137,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7565,6 +11169,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7586,6 +11201,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7607,6 +11233,17 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
           }
         },
         "web": {

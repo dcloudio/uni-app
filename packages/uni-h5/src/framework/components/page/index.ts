@@ -23,31 +23,75 @@ import PageHead from './pageHead'
 import PageBody from './pageBody'
 import { providePageMeta } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
+import { stringifyQuery } from '@dcloudio/uni-shared'
+//#if _X_
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+import {
+  DIALOG_TAG,
+  SYSTEM_DIALOG_TAG,
+  isDialogPageInstance,
+  isNormalDialogPageInstance,
+  isSystemDialogPageInstance,
+} from '../../../x/framework/helpers/utils'
+//#endif
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'Page',
   setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId())
+    let pageMeta = providePageMeta(getStateId())
     const navigationBar = pageMeta.navigationBar
     const pageStyle = {} as Record<string, any>
     useDocumentTitle(pageMeta)
     const currentInstance = getCurrentInstance()
-    currentInstance!.$dialogPages = ref<UniDialogPage[]>([])
     if (__X__) {
-      useBackgroundColorContent(pageMeta)
-      if (ctx.attrs.type === 'dialog') {
-        navigationBar.style = 'custom'
+      currentInstance!.$dialogPages = ref<UniDialogPage[]>([])
+      currentInstance!.$systemDialogPages = ref<UniDialogPage[]>([])
+      if (isDialogPageInstance(ctx as unknown as ComponentInternalInstance)) {
+        // pageMeta 是通过 route 取到的，需要更新为 dialogPage 的 meta
         pageMeta.route = ctx.attrs.route as string
+        const routePageMeta = __uniRoutes.find(
+          (route) => route.path === pageMeta.route.split('?')[0]
+        )?.meta
+        if (routePageMeta) {
+          routePageMeta.navigationBar = Object.assign(
+            navigationBar,
+            routePageMeta.navigationBar
+          )
+          pageMeta = Object.assign(pageMeta, routePageMeta)
+        }
+        if (!routePageMeta?.backgroundColorContent) {
+          pageMeta.backgroundColorContent = 'transparent'
+        }
+        if (!routePageMeta?.navigationBar.style) {
+          pageMeta.navigationBar.style = 'custom'
+        }
         const parentInstance = inject(
           'parentInstance'
         ) as ComponentInternalInstance
         if (currentInstance && parentInstance) {
           currentInstance.$parentInstance = parentInstance
-          const parentDialogPages = parentInstance.$dialogPages.value
-          currentInstance.$dialogPage =
-            parentDialogPages[parentDialogPages.length - 1]
+          if (
+            isNormalDialogPageInstance(
+              ctx as unknown as ComponentInternalInstance
+            )
+          ) {
+            const parentDialogPages = parentInstance.$dialogPages!.value
+            currentInstance.$dialogPage =
+              parentDialogPages[parentDialogPages.length - 1]
+          }
+          if (
+            isSystemDialogPageInstance(
+              ctx as unknown as ComponentInternalInstance
+            )
+          ) {
+            const parentSystemDialogPages =
+              parentInstance.$systemDialogPages!.value
+            currentInstance.$dialogPage =
+              parentSystemDialogPages[parentSystemDialogPages.length - 1]
+          }
         }
       } else {
+        useBackgroundColorContent(pageMeta)
         provide('parentInstance', currentInstance)
       }
     }
@@ -63,13 +107,19 @@ export default /*#__PURE__*/ defineSystemComponent({
               createVNode(PageHead),
               createPageBodyVNode(ctx),
               __X__
-                ? createDialogPageVNode(currentInstance!.$dialogPages)
+                ? createDialogPageVNode(
+                    currentInstance!.$dialogPages!,
+                    currentInstance!.$systemDialogPages!
+                  )
                 : null,
             ]
           : [
               createPageBodyVNode(ctx),
               __X__
-                ? createDialogPageVNode(currentInstance!.$dialogPages)
+                ? createDialogPageVNode(
+                    currentInstance!.$dialogPages!,
+                    currentInstance!.$systemDialogPages!
+                  )
                 : null,
             ]
       )
@@ -90,20 +140,32 @@ function createPageBodyVNode(ctx: SetupContext) {
   )
 }
 
-function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
+function createDialogPageVNode(
+  normalDialogPages: Ref<UniDialogPage[]>,
+  systemDialogPages: Ref<UniDialogPage[]>
+) {
+  const dialogPages = [
+    ...normalDialogPages.value.map((page) => ({ page, type: DIALOG_TAG })),
+    ...systemDialogPages.value.map((page) => ({
+      page,
+      type: SYSTEM_DIALOG_TAG,
+    })),
+  ]
   return (
     openBlock(true),
     createElementBlock(
       Fragment,
       null,
-      renderList(dialogPages.value, (dialogPage) => {
+      renderList(dialogPages, (dialogPage) => {
+        const { type, page } = dialogPage
+        const fullUrl = `${page.route}${stringifyQuery(page.options)}`
         return (
           openBlock(),
           createBlock(
             createVNode(
-              dialogPage.$component,
+              page.$component,
               {
-                key: dialogPage.route,
+                key: fullUrl,
                 style: {
                   position: 'fixed',
                   'z-index': 999,
@@ -112,8 +174,8 @@ function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
                   bottom: 0,
                   left: 0,
                 },
-                type: 'dialog',
-                route: dialogPage.route,
+                'data-type': type,
+                route: fullUrl,
               },
               null
             )

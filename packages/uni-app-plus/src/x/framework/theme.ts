@@ -1,8 +1,9 @@
-import { extend, isArray, isString } from '@vue/shared'
+import { isArray, isPlainObject, isString } from '@vue/shared'
 import { getAllPages } from '../../service/framework/page/getCurrentPages'
-import { fixBorderStyle, getTabBar } from './app/tabBar'
+import { getTabBar } from './app/tabBar'
 import { parsePageStyle } from './page/register'
 import { initRouteOptions } from '../../service/framework/page/routeOptions'
+import { fixBorderStyle } from './app/utils'
 
 const APP_THEME_AUTO = 'auto'
 export const THEME_KEY_PREFIX = '@'
@@ -65,7 +66,7 @@ export const onThemeChange = function (themeMode: IThemeMode) {
       const routeOptions = initRouteOptions(page.$basePage.path, '')
       const style = parsePageStyle(routeOptions)
 
-      ;(page.$page as UniPage).setPageStyle(new Map(Object.entries(style)))
+      ;(page.$page as UniPage).setPageStyle(new UTSJSONObject(style))
     })
   }
 
@@ -75,12 +76,11 @@ export const onThemeChange = function (themeMode: IThemeMode) {
   const handleTabBar = () => {
     const tabBar = getTabBar()
     if (tabBar !== null) {
-      const tabBarConfig = extend({}, __uniConfig.tabBar!)
+      const tabBarConfig = __uniConfig.getTabBarConfig()
 
       normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode)
 
       const tabBarStyle = new Map<string, any | null>()
-      const tabBarItemUpdateConfig = ['iconPath', 'selectedIconPath']
       const tabBarConfigKeys = Object.keys(tabBarConfig)
 
       tabBarConfigKeys.forEach((key) => {
@@ -93,7 +93,7 @@ export const onThemeChange = function (themeMode: IThemeMode) {
           valueAsArray.forEach((item) => {
             const tabBarItemMap = new Map<string, any | null>()
             tabBarItemMap.set('index', index)
-            tabBarItemUpdateConfig.forEach((tabBarItemkey) => {
+            Object.keys(item).forEach((tabBarItemkey) => {
               if (item[tabBarItemkey] != null) {
                 tabBarItemMap.set(tabBarItemkey, item[tabBarItemkey])
               }
@@ -148,6 +148,8 @@ function normalizeStyles(
       valueAsArray.forEach((item) => {
         normalizeStyles(item, themeMap)
       })
+    } else if (isPlainObject(value)) {
+      normalizeStyles(value, themeMap)
     }
   })
 }

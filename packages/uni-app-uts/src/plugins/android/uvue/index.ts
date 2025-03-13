@@ -1,3 +1,4 @@
+import path from 'path'
 import fs from 'fs-extra'
 
 import type { Plugin } from 'vite'
@@ -112,10 +113,16 @@ export function uniAppUVuePlugin(): Plugin {
           if (process.env.UNI_APP_X_TSC === 'true') {
             fileName = fileName.replace('.ts', '')
           }
-          const classNameComment = `/*${genUTSClassName(
-            fileName,
-            options.classNamePrefix
-          )}Styles*/`
+          const className =
+            process.env.UNI_COMPILE_TARGET === 'ext-api'
+              ? // components/map/map.vue => UniMap
+                genUTSClassName(
+                  path.basename(fileName),
+                  options.classNamePrefix
+                )
+              : genUTSClassName(fileName, options.classNamePrefix)
+
+          const classNameComment = `/*${className}Styles*/`
           if (file.source.includes(classNameComment)) {
             const styleAssetName = fileName + '.style.uts'
             const styleAsset = bundle[styleAssetName]

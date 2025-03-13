@@ -36,11 +36,28 @@ export const ATTR_VUE_PROPS = 'u-p'
 export const ATTR_VUE_REF = 'u-' + VUE_REF
 export const ATTR_VUE_REF_IN_FOR = 'u-' + VUE_REF_IN_FOR
 export const ATTR_COM_TYPE = 'u-t'
+export const ATTR_ELEMENT_ID = 'u-e'
+
+export const ATTR_ELEMENT_TAG = 'u-t'
+
+export const ATTR_SET_ELEMENT_STYLE = 'eS' // 不能使用连字符e-s
+export const ATTR_SET_ELEMENT_ANIMATION = 'eA' // 不能使用连字符e-a
+
+export const FILTER_MODULE_NAME = 'uV' // uniView
+export const FILTER_MODULE_FILE_NAME = 'uniView'
+
+export const FILTER_SET_ELEMENT_STYLE = 'sS' // setStyle
+export const FILTER_SET_ELEMENT_ANIMATION = 'sA' // setAnimation
 
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 
-export const VIRTUAL_HOST_STYLE = 'virtualHostStyle'
-export const VIRTUAL_HOST_CLASS = 'virtualHostClass'
+export function filterObserverName(name: string) {
+  return 'change:' + name
+}
+
+export function filterName(name: string) {
+  return FILTER_MODULE_NAME + '.' + name
+}
 
 export function rewriteSpreadElement(
   name: symbol,

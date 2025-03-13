@@ -1,4 +1,4 @@
-import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n'
+import { getLocaleLanguage } from '../runtime/util'
 import { isFunction } from '@vue/shared'
 
 export const getLocale: typeof uni.getLocale = () => {
@@ -7,7 +7,7 @@ export const getLocale: typeof uni.getLocale = () => {
   if (app && app.$vm) {
     return app.$vm.$locale
   }
-  return normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+  return getLocaleLanguage()
 }
 
 export const setLocale: typeof uni.setLocale = (locale) => {

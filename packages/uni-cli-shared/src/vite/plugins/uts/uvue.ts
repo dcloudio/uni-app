@@ -32,3 +32,32 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
     },
   }
 }
+
+/**
+ * 将 <script> 标签中的 lang="uts" 替换为 lang="ts"
+ * 主要是当前功能内部使用 x.vite.config.ts 配置
+ * @param options
+ * @returns
+ */
+export function uniUVueTypeScriptPlugin(options = {}): Plugin {
+  return {
+    name: 'uni:uvue-ts',
+    enforce: 'pre',
+    transform(code, id) {
+      if (!isVueSfcFile(id)) {
+        return
+      }
+      return {
+        code: code.replace(/<script([^>]*)>/gi, (match, attributes) => {
+          // 如果 <script> 标签中没有 lang 属性，添加 lang="uts"
+          if (!/lang=["']?[^"']*["']?/.test(attributes)) {
+            return `<script${attributes} lang="ts">`
+          }
+          // 否则，将现有的 lang 属性替换为 lang="uts"
+          return match.replace(/lang=["']?uts["']?/, 'lang="ts"')
+        }),
+        map: { mappings: '' },
+      }
+    },
+  }
+}

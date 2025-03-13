@@ -1,5 +1,8 @@
+import { extend } from '@vue/shared'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { addLeadingSlash, parseUrl } from '@dcloudio/uni-shared'
+
+import { definePage } from '../../../service/framework/page'
 
 export function hasLeadingSlash(str: string): boolean {
   return str.indexOf('/') == 0
@@ -26,4 +29,28 @@ export function getRealPath(path: string, fix: boolean = false): string {
     }
   }
   return addLeadingSlash(currentPathArray.concat(resultArray).join('/'))
+}
+export const systemRoutes: UniApp.UniRoute[] = []
+export function registerSystemRoute(
+  route: string,
+  page: any,
+  meta: Partial<UniApp.PageRouteMeta> = {}
+) {
+  if (systemRoutes.find((r) => r.path === route)) {
+    return
+  }
+  systemRoutes.push({
+    path: route,
+    meta: extend(
+      {
+        isQuit: false,
+        isEntry: false,
+        route,
+        navigationBar: {},
+      },
+      meta
+    ),
+  })
+
+  definePage(route, page)
 }

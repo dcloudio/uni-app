@@ -126,11 +126,10 @@ export {
   offUnhandledRejection,
   // 内部使用
   invokePushCallback,
+  __f__,
 } from '@dcloudio/uni-api'
 //#endif
 
 //#if !_NODE_JS_ && _X_
 export * from './context/createCanvasContextAsync'
-export * from './ui/openDialogPage'
-export * from './ui/closeDialogPage'
 //#endif

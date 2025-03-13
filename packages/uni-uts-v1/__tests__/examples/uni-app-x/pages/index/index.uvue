@@ -1,6 +1,7 @@
 <template>
     <button @click="click">测试</button>
     <button @click="click1">测试1</button>
+    <button @click="click2">测试2</button>
 </template>
 <script>
     import { test } from './test'
@@ -19,6 +20,9 @@
             },
             click1() {
                 test()
+            },
+            click2() {
+                throw new Error('click2')
             }
         }
     }

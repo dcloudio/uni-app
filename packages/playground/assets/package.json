@@ -1,5 +1,5 @@
 {
-  "name": "uni_modules",
+  "name": "assets",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -60,8 +60,5 @@
     "@dcloudio/uni-uts-v1": "../../uni-uts-v1",
     "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
     "vite": "^5.2.8"
-  },
-  "resolutions": {
-    "@dcloudio/uni-app-vite": "../../uni-app-vite"
   }
 }

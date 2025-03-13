@@ -1,55 +1,56 @@
 import {
-  get_time,
-  set_page_residence_time,
   get_first_visit_time,
   get_last_visit_time,
-  get_total_visit_count,
   get_page_residence_time,
-  set_first_time,
   get_residence_time,
+  get_time,
+  get_total_visit_count,
+  set_first_time,
+  set_page_residence_time,
 } from '../utils/pageTime.js'
 
 import {
-  stat_config,
-  get_uuid,
-  get_odid,
-  get_platform_name,
-  get_pack_name,
-  get_scene,
-  get_version,
-  get_channel,
-  get_splicing,
-  get_page_route,
-  get_route,
-  handle_data,
   calibration,
-  get_page_name,
-  is_report_data,
-  get_sgin,
+  get_channel,
   get_encodeURIComponent_options,
+  get_odid,
+  get_pack_name,
+  get_page_name,
+  get_page_route,
   get_page_vm,
-  is_debug,
-  log,
+  get_platform_name,
   get_report_Interval,
-  is_handle_device
+  get_route,
+  get_scene,
+  get_sgin,
+  get_splicing,
+  get_uuid,
+  get_version,
+  handle_data,
+  is_debug,
+  is_handle_device,
+  is_report_data,
+  log,
+  stat_config,
 } from '../utils/pageInfo.js'
 
 import { sys } from '../utils/util.js'
 
 import {
-  STAT_VERSION,
   OPERATING_TIME,
-  STAT_URL,
   STAT_H5_URL,
+  STAT_URL,
+  STAT_VERSION,
 } from '../config.ts'
 
-import { dbSet, dbGet, dbRemove } from '../utils/db.js'
+import { dbGet, dbRemove, dbSet } from '../utils/db.js'
 const eport_Interval = get_report_Interval(OPERATING_TIME)
+
 // 统计数据默认值
 let statData = {
   uuid: get_uuid(), // 设备标识
   ak: stat_config.appid, // uni-app 应用 Appid
-  p: sys.platform === 'android' ? 'a' : 'i', // 手机系统
+  p: '', // 手机系统，客户端平台
   ut: get_platform_name(), // 平台类型
   mpn: get_pack_name(), // 原生平台包名、小程序 appid
   usv: STAT_VERSION, // 统计 sdk 版本
@@ -62,7 +63,7 @@ let statData = {
   tt: '',
   brand: sys.brand || '', // 手机品牌
   md: sys.model, // 手机型号
-  sv: sys.system.replace(/(Android|iOS)\s/, ''), // 手机系统版本
+  sv: '', // 手机系统版本
   mpsdk: sys.SDKVersion || '', // x程序 sdk version
   mpv: sys.version || '', // 小程序平台版本 ，如微信、支付宝
   lang: sys.language, // 语言
@@ -71,6 +72,26 @@ let statData = {
   wh: sys.windowHeight, // windowHeight 可使用窗口高度
   sw: sys.screenWidth, // screenWidth 屏幕宽度
   sh: sys.screenHeight, // screenHeight 屏幕高度
+}
+
+// 客户端平台，只有app平台平台可以用到
+if(sys.platform){
+  switch (sys.platform) {
+    case 'android':
+      statData.p = 'a'
+      break
+    case 'ios':
+      statData.p = 'i'
+      break
+    case 'harmonyos': 
+      statData.p = 'h'
+      break
+  }
+}
+
+// 获取手机版本
+if (sys.system){
+  statData.sv = sys.system.replace(/(Android|iOS)\s/, '')
 }
 export default class Report {
   constructor() {
@@ -193,6 +214,19 @@ export default class Report {
           cst: 2,
         }
         this.sendReportRequest(options)
+      } else {
+        // 在没有超过时限的时候 ，判断场景值 ，如果是场景值发生了变化，则需要上报应用启动数据
+        // 目前只有微信小程序生效
+        const scene = get_scene()
+        if (scene !== this.statData.sc) {
+          let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')
+          let options = {
+            path: lastPageRoute,
+            scene: scene,
+            cst: 2,
+          }
+          this.sendReportRequest(options)
+        }
       }
       // 状态重置
       this.__licationHide = false
@@ -299,7 +333,7 @@ export default class Report {
     let query = is_opt ? '?' + JSON.stringify(options.query) : ''
     const last_time = get_last_visit_time()
     // 非老用户
-    if(last_time !== 0 || !last_time){
+    if (last_time !== 0 || !last_time) {
       const odid = get_odid()
       // 1.0 处理规则
       if (__STAT_VERSION__ === '1') {
@@ -310,7 +344,7 @@ export default class Report {
       if (__STAT_VERSION__ === '2') {
         const have_device = is_handle_device()
         // 如果没有上报过设备信息 ，则需要上报设备信息
-        if(!have_device) {
+        if (!have_device) {
           this.statData.odid = odid
         }
       }

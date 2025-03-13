@@ -17,36 +17,29 @@
     "noImplicitAny": false,
     "jsx": "preserve",
     "lib": ["esnext", "dom"],
-    "types": ["jest", "@dcloudio/types", "miniprogram-api-typings"],
+    "types": [
+      "jest",
+      "node",
+      "vue-router",
+      "@dcloudio/types",
+      "miniprogram-api-typings"
+    ],
     "rootDir": ".",
     "paths": {
-      "types/alias": ["packages/uni-cli-shared/types/alias.d.ts"],
       "@dcloudio/*": ["packages/*/src"],
       "@dcloudio/uni-app-plus/*": ["packages/uni-app-plus/src/*"],
       "@dcloudio/uni-h5/*": ["packages/uni-h5/src/*"],
       "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"],
-      "@ohos.*": ["packages/uni-app-harmony/types/ohos/api/@ohos.*.d.ts"],
-      "@kit.*": ["packages/uni-app-harmony/types/ohos/kits/@kit.*.d.ts"],
-      "@hms.*": ["packages/uni-app-harmony/types/ohos/hms/@hms.*.d.ts"]
+      "@dcloudio/uni-ext-api": ["uni-ext-api/uni_modules/*"]
     }
   },
-  "include": [
-    "packages/global.d.ts",
-    "packages/shims-node.d.ts",
-    "packages/shims-uni-app.d.ts",
-    "packages/shims-vue-runtime.d.ts",
-    "packages/shims-vue.d.ts",
-    "packages/uni-app-x.d.ts",
-    "packages/*/src",
-    "packages/*/__tests__",
-    "test-dts",
-    "packages/uni-h5/types",
-    "packages/uni-app-vite/types",
-    "packages/uni-cli-shared/types",
-    "node_modules/mini-types/types/api/index.d.ts",
-    "node_modules/mini-types/types/page.d.ts",
-    "node_modules/mini-types/types/component.d.ts",
-    "node_modules/mini-types/types/event.d.ts"
-  ],
-  "exclude": ["packages/uni-uts-v1/__tests__/tsc"]
+  "files": [
+    "./packages/global.d.ts",
+    "./packages/shims-api.d.ts",
+    "./packages/shims-node.d.ts",
+    "./packages/shims-uni-app.d.ts",
+    "./packages/shims-vue-runtime.d.ts",
+    "./packages/shims-vue.d.ts",
+    "./node_modules/@dcloudio/uni-app-x/types/native-global/index.d.ts"
+  ]
 }

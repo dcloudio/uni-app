@@ -7,6 +7,7 @@ import {
   parseJson,
   parseUniXFlexDirection,
   parseUniXSplashScreen,
+  parseUniXUniStatistics,
   validateThemeValue,
 } from '@dcloudio/uni-cli-shared'
 import { ENTRY_FILENAME, stringifyMap } from './utils'
@@ -47,7 +48,12 @@ export function uniAppManifestPlugin(): Plugin {
           path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
         )
         manifestJson = parseJson(code)
-        return `export default 'manifest.json'`
+        return {
+          code: `export default 'manifest.json'`,
+          map: {
+            mappings: '',
+          },
+        }
       }
     },
     generateBundle(_, bundle) {
@@ -65,6 +71,13 @@ export function uniAppManifestPlugin(): Plugin {
           splashScreen && Object.keys(splashScreen).length > 0
             ? `override splashScreen: Map<string, any> | null = ${stringifyMap(
                 splashScreen
+              )}`
+            : ''
+        const uniStatistics = parseUniXUniStatistics(manifestJson)
+        const uniStatisticsCode =
+          uniStatistics && Object.keys(uniStatistics).length > 0
+            ? `override uniStatistics: UTSJSONObject | null = ${JSON.stringify(
+                uniStatistics
               )}`
             : ''
 
@@ -85,6 +98,7 @@ export function uniAppManifestPlugin(): Plugin {
           flexDirCode,
           splashScreenCode,
           defaultAppThemeCode,
+          uniStatisticsCode,
         ]
           .filter(Boolean)
           .join('\n')

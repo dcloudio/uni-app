@@ -15,6 +15,8 @@ import { onPlusMessage } from '../initGlobalEvent'
 import { subscribeAd } from './ad'
 import { subscribeNavigator } from './navigator'
 import { subscribeWebviewReady } from './webviewReady'
+import { subscribeGetLocation } from '../../../api/location/getLocation'
+import { subscribeMapPlaceSearch } from '../../../api/location/LoctaionPickerPage'
 import { onWebviewInserted, onWebviewRemoved } from './webviewLifecycle'
 import {
   type WebInvokeAppService,
@@ -57,5 +59,7 @@ export function initSubscribeHandlers() {
       // 防止首页 webview 初始化过早， service 还未开始监听
       publishHandler(ON_WEBVIEW_READY, {}, 1)
     }
+    subscribeGetLocation()
+    subscribeMapPlaceSearch()
   }
 }

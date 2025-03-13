@@ -23,6 +23,7 @@ import {
 import { initEasycom } from '../utils/easycom'
 import { runUVueAndroidBuild, runUVueAndroidDev } from './uvue'
 import type { FSWatcher } from 'chokidar'
+import { initLogger } from '../configResolved'
 
 export async function runDev(options: CliOptions & ServerOptions) {
   extend(options, {
@@ -63,9 +64,14 @@ export async function runDev(options: CliOptions & ServerOptions) {
           event.result.close()
           if (isFirstEnd) {
             // 首次全量同步
+            if (
+              options.platform === 'app' ||
+              options.platform === 'app-harmony'
+            ) {
+              process.env.UNI_APP_CHANGED_FILES = ''
+            }
             if (options.platform === 'app') {
               process.env.UNI_APP_CHANGED_PAGES = ''
-              process.env.UNI_APP_CHANGED_FILES = ''
               process.env.UNI_APP_UTS_CHANGED_FILES = ''
             }
             isFirstEnd = false
@@ -115,6 +121,14 @@ export async function runDev(options: CliOptions & ServerOptions) {
                 )
               )
             }
+          } else if (options.platform === 'app-harmony') {
+            const files = process.env.UNI_APP_CHANGED_FILES
+            if (files) {
+              return output(
+                'log',
+                M['dev.watching.end.files'].replace('{files}', files)
+              )
+            }
           }
           return output('log', M['dev.watching.end'])
         } else if (event.code === 'END') {
@@ -157,11 +171,21 @@ export async function runBuild(options: CliOptions & BuildOptions) {
       showRunPrompt(options.platform as PLATFORM)
     }
     // 开发者可能用了三方插件，三方插件有可能阻止退出，导致HBuilderX打包状态识别不正确
-    if (isInHBuilderX()) {
+    if (
+      isInHBuilderX() ||
+      /* 需要排查为什么ext-api编译时没有自动结束 */ process.env
+        .UNI_COMPILE_TARGET === 'ext-api'
+    ) {
       process.exit(0)
     }
   } catch (e: any) {
-    console.error(e)
+    if (isInHBuilderX()) {
+      initLogger({
+        logger: createLogger(options.logLevel),
+      }).error(e.message || e)
+    } else {
+      console.error(e.message || e)
+    }
     console.error(`Build failed with errors.`)
     process.exit(1)
   }

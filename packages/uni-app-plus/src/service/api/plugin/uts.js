@@ -1,11 +1,11 @@
-import { isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared';
+import { isArray, isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared';
 
 // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 let callbackId = 1;
 let proxy;
-const callbacks = {};
+const keepAliveCallbacks = {};
 function isUniElement(obj) {
-    return typeof (obj === null || obj === void 0 ? void 0 : obj.getNodeId) === 'function' && (obj === null || obj === void 0 ? void 0 : obj.pageId);
+    return obj && typeof obj.getNodeId === 'function' && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
@@ -14,40 +14,88 @@ function parseElement(obj) {
     if (isUniElement(obj)) {
         return obj;
     }
-    else if (isComponentPublicInstance(obj)) {
+}
+function parseComponentPublicInstance(obj) {
+    if (isComponentPublicInstance(obj)) {
         return obj.$el;
     }
+}
+function serializeArrayBuffer(obj) {
+    // @ts-expect-error ios 提供了 ArrayBufferWrapper 类来处理 ArrayBuffer 的传递
+    if (typeof ArrayBufferWrapper !== 'undefined') {
+        // @ts-expect-error
+        return { __type__: 'ArrayBuffer', value: new ArrayBufferWrapper(obj) };
+    }
+    return { __type__: 'ArrayBuffer', value: obj };
+}
+// 序列化 UniElement | ComponentPublicInstance
+function serializeUniElement(el, type) {
+    let nodeId = '';
+    let pageId = '';
+    // 非 x 可能不存在 getNodeId 方法？
+    if (el && el.getNodeId) {
+        pageId = el.pageId;
+        nodeId = el.getNodeId();
+    }
+    return { __type__: type, pageId, nodeId };
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
     return raw ? toRaw(raw) : observed;
 }
-function normalizeArg(arg) {
+function normalizeArg(arg, callbacks, keepAlive, context) {
     arg = toRaw(arg);
     if (typeof arg === 'function') {
-        // 查找该函数是否已缓存
-        const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
-        const id = oldId ? parseInt(oldId) : callbackId++;
-        callbacks[id] = arg;
-        return id;
-    }
-    else if (isPlainObject(arg) || isUniElement(arg)) {
-        // 判断值是否为元素
-        const el = parseElement(arg);
-        if (el) {
-            let nodeId = '';
-            let pageId = '';
-            // 非 x 可能不存在 getNodeId 方法？
-            if (el && el.getNodeId) {
-                pageId = el.pageId;
-                nodeId = el.getNodeId();
-            }
-            return { pageId, nodeId };
+        let id;
+        if (keepAlive) {
+            // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+            const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+            id = oldId ? parseInt(oldId) : callbackId++;
+            callbacks[id] = arg;
         }
         else {
+            id = callbackId++;
+            callbacks[id] = arg;
+        }
+        return id;
+    }
+    else if (isArray(arg)) {
+        context.depth++;
+        return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
+        // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
+    }
+    else if (arg instanceof ArrayBuffer) {
+        if (context.depth > 0) {
+            context.nested = true;
+        }
+        return serializeArrayBuffer(arg);
+    }
+    else if (isPlainObject(arg) || isUniElement(arg)) {
+        const uniElement = parseElement(arg);
+        const componentPublicInstanceUniElement = !uniElement
+            ? parseComponentPublicInstance(arg)
+            : undefined;
+        const el = uniElement || componentPublicInstanceUniElement;
+        if (el) {
+            if (context.depth > 0) {
+                context.nested = true;
+            }
+            return serializeUniElement(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
+        }
+        else {
+            // 必须复制，否则会污染原始对象，比如：
+            // const obj = {
+            //   a: 1,
+            //   b: () => {}
+            // }
+            // const newObj = normalizeArg(obj, {}, false)
+            // newObj.a = 2 // 这会污染原始对象 obj
+            const newArg = {};
             Object.keys(arg).forEach((name) => {
-                arg[name] = normalizeArg(arg[name]);
+                context.depth++;
+                newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context);
             });
+            return newArg;
         }
     }
     return arg;
@@ -112,23 +160,13 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
-    const keepAlive = methodName.indexOf('on') === 0 &&
-        methodParams.length === 1 &&
-        methodParams[0].type === 'UTSCallback';
-    // const throws = async
-    const invokeCallback = ({ id, name, params }) => {
-        const callback = callbacks[id];
-        if (callback) {
-            callback(...params);
-            if (!keepAlive) {
-                delete callbacks[id];
-            }
-        }
-        else {
-            console.error(`${pkg}${cls}.${methodName} ${name} is not found`);
-        }
-    };
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+    if (!keepAlive) {
+        keepAlive =
+            (methodName.indexOf('on') === 0 || methodName.indexOf('off') === 0) &&
+                methodParams.length === 1 &&
+                methodParams[0].type === 'UTSCallback';
+    }
     const baseArgs = instanceId
         ? {
             moduleName,
@@ -137,8 +175,8 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             name: methodName,
             method: methodParams,
+            nested: false,
             keepAlive,
-            // throws,
         }
         : {
             moduleName,
@@ -149,16 +187,36 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             companion,
             method: methodParams,
+            nested: false,
             keepAlive,
-            // throws,
         };
     return (...args) => {
         if (errMsg) {
             throw new Error(errMsg);
         }
+        // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+        // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+        const callbacks = keepAlive ? keepAliveCallbacks : {};
+        const invokeCallback = ({ id, name, params }) => {
+            const callback = callbacks[id];
+            if (callback) {
+                callback(...params);
+                if (!keepAlive) {
+                    delete callbacks[id];
+                }
+            }
+            else {
+                console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
+            }
+        };
+        const context = {
+            depth: 0,
+            nested: false,
+        };
         const invokeArgs = extend({}, baseArgs, {
-            params: args.map((arg) => normalizeArg(arg)),
+            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context)),
         });
+        invokeArgs.nested = context.nested;
         if (async) {
             return new Promise((resolve, reject) => {
                 if ((process.env.NODE_ENV !== 'production')) {
@@ -253,7 +311,11 @@ function initUTSProxyClass(options) {
             // 初始化实例 ID
             if (!isProxyInterface) {
                 // 初始化未指定时，每次都要创建instanceId
-                this.__instanceId = initProxyFunction('constructor', false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                this.__instanceId = initProxyFunction('constructor', false, extend({
+                    name: 'constructor',
+                    keepAlive: false,
+                    params: constructorParams,
+                }, baseOptions), 0).apply(null, params);
             }
             else if (typeof instanceId === 'number') {
                 this.__instanceId = instanceId;
@@ -272,9 +334,10 @@ function initUTSProxyClass(options) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
                         if (hasOwn(methods, name)) {
-                            const { async, params, return: returnOptions } = methods[name];
+                            const { async, keepAlive, params, return: returnOptions, } = methods[name];
                             target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
+                                keepAlive,
                                 params,
                                 return: returnOptions,
                             }, baseOptions), instance.__instanceId, proxy);
@@ -287,7 +350,7 @@ function initUTSProxyClass(options) {
                                 id: instance.__instanceId,
                                 type: 'getter',
                                 keepAlive: false,
-                                // throws: false,
+                                nested: false,
                                 name: name,
                                 errMsg,
                             });
@@ -303,6 +366,7 @@ function initUTSProxyClass(options) {
                             if (param) {
                                 target[setter] = initProxyFunction('setter', false, extend({
                                     name: name,
+                                    keepAlive: false,
                                     params: [param],
                                 }, baseOptions), instance.__instanceId, proxy);
                             }
@@ -313,21 +377,22 @@ function initUTSProxyClass(options) {
                     return false;
                 },
             });
-            return proxy;
+            return Object.freeze(proxy);
         }
     };
     const staticPropSetterCache = {};
     const staticMethodCache = {};
-    return new Proxy(ProxyClass, {
+    return Object.freeze(new Proxy(ProxyClass, {
         get(target, name, receiver) {
             name = parseClassMethodName(name, staticMethods);
             if (hasOwn(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
-                    const { async, params, return: returnOptions } = staticMethods[name];
+                    const { async, keepAlive, params, return: returnOptions, } = staticMethods[name];
                     // 静态方法
                     staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
                         name,
                         companion: true,
+                        keepAlive,
                         params,
                         return: returnOptions,
                     }, baseOptions));
@@ -352,6 +417,7 @@ function initUTSProxyClass(options) {
                     if (param) {
                         staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
                             name: name,
+                            keepAlive: false,
                             params: [param],
                         }, baseOptions), 0);
                     }
@@ -361,7 +427,7 @@ function initUTSProxyClass(options) {
             }
             return false;
         },
-    });
+    }));
 }
 function isUTSAndroid() {
     return typeof plus !== 'undefined' && plus.os.name === 'Android';

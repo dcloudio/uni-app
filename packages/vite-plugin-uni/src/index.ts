@@ -16,6 +16,7 @@ import {
   initAutoImportOptions,
   initModuleAlias,
   isInHBuilderX,
+  isNormalCompileTarget,
   parseUniExtApisOnce,
   resolveSourceMapPath,
   rewriteExistsSyncHasRootFile,
@@ -125,23 +126,28 @@ export default function uniPlugin(
 function createPlugins(options: VitePluginUniResolvedOptions) {
   const plugins: Plugin[] = []
 
-  // uni x 需要插入到指定位置，此插件执行太早，又会引发 vue 文件的不支持，该插件是解析ast的，所以必须是合法的js或ts代码
-  if (
-    process.env.UNI_APP_X === 'true' &&
-    // iOS 暂不使用该机制
-    process.env.UNI_UTS_PLATFORM !== 'app-ios'
-  ) {
-    plugins.push(uniUTSExtApiReplace())
-  } else {
-    const injects = parseUniExtApisOnce(
-      true,
-      process.env.UNI_UTS_PLATFORM,
-      process.env.UNI_UTS_TARGET_LANGUAGE
-    )
-    if (Object.keys(injects).length) {
-      plugins.push(
-        uniViteInjectPlugin('uni:ext-api-inject', injects as InjectOptions)
+  // 框架 ext-api 不需要 inject 本地 ext-api
+  if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
+    // uni x 需要插入到指定位置，此插件执行太早，又会引发 vue 文件的不支持，该插件是解析ast的，所以必须是合法的js或ts代码
+    if (
+      process.env.UNI_APP_X === 'true' &&
+      // iOS 暂不使用该机制
+      process.env.UNI_UTS_PLATFORM !== 'app-ios' &&
+      // harmony 同 iOS
+      process.env.UNI_UTS_PLATFORM !== 'app-harmony'
+    ) {
+      plugins.push(uniUTSExtApiReplace())
+    } else {
+      const injects = parseUniExtApisOnce(
+        true,
+        process.env.UNI_UTS_PLATFORM,
+        process.env.UNI_UTS_TARGET_LANGUAGE
       )
+      if (Object.keys(injects).length) {
+        plugins.push(
+          uniViteInjectPlugin('uni:ext-api-inject', injects as InjectOptions)
+        )
+      }
     }
   }
 
@@ -219,7 +225,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       addCopyPlugin = true
     }
   }
-  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+  if (!isNormalCompileTarget()) {
     addCopyPlugin = false
   }
   if (addCopyPlugin) {
@@ -290,7 +296,7 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
     process.env.NODE_ENV = process.env.UNI_NODE_ENV
   }
 
-  if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+  if (isNormalCompileTarget()) {
     plugins.push(
       uniCopyPlugin({
         outputDir: process.env.UNI_OUTPUT_DIR,

@@ -44,6 +44,8 @@ export const ON_LAUNCH = 'onLaunch'
 export const ON_ERROR = 'onError'
 export const ON_THEME_CHANGE = 'onThemeChange'
 export const OFF_THEME_CHANGE = 'offThemeChange'
+export const ON_HOST_THEME_CHANGE = 'onHostThemeChange'
+export const OFF_HOST_THEME_CHANGE = 'offHostThemeChange'
 export const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange'
 export const ON_PAGE_NOT_FOUND = 'onPageNotFound'
 export const ON_UNHANDLE_REJECTION = 'onUnhandledRejection'
@@ -65,6 +67,7 @@ export const ON_REACH_BOTTOM = 'onReachBottom'
 export const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh'
 
 export const ON_SHARE_TIMELINE = 'onShareTimeline'
+export const ON_SHARE_CHAT = 'onShareChat' // xhs-share
 export const ON_ADD_TO_FAVORITES = 'onAddToFavorites'
 export const ON_SHARE_APP_MESSAGE = 'onShareAppMessage'
 // navigationBar
@@ -85,3 +88,9 @@ export const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground'
 export const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground'
 export const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService'
 export const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod'
+
+// mergeVirtualHostAttributes
+export const VIRTUAL_HOST_STYLE = 'virtualHostStyle'
+export const VIRTUAL_HOST_CLASS = 'virtualHostClass'
+export const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden'
+export const VIRTUAL_HOST_ID = 'virtualHostId'

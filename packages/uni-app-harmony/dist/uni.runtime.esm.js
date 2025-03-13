@@ -1,3 +1,7 @@
+import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, debounce, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_BACK_PRESS, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
+export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared';
+import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
+export { extend, hasOwn, isArray, isFunction, isPlainObject, isString } from '@vue/shared';
 import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
 
 /*
@@ -20,7 +24,7 @@ var lookup = /*#__PURE__*/ (function () {
   return lookup
 })();
 
-function encode$2(arraybuffer) {
+function encode$1(arraybuffer) {
   var bytes = new Uint8Array(arraybuffer),
     i,
     len = bytes.length,
@@ -42,7 +46,7 @@ function encode$2(arraybuffer) {
   return base64
 }
 
-function decode$1(base64) {
+function decode(base64) {
   var bufferLength = base64.length * 0.75,
     len = base64.length,
     i,
@@ -75,56 +79,6 @@ function decode$1(base64) {
 
   return arraybuffer
 }
-
-/**
-* @vue/shared v3.4.21
-* (c) 2018-present Yuxi (Evan) You and Vue contributors
-* @license MIT
-**/
-function makeMap(str, expectsLowerCase) {
-  const set = new Set(str.split(","));
-  return expectsLowerCase ? (val) => set.has(val.toLowerCase()) : (val) => set.has(val);
-}
-const extend = Object.assign;
-const remove = (arr, el) => {
-  const i = arr.indexOf(el);
-  if (i > -1) {
-    arr.splice(i, 1);
-  }
-};
-const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
-const isArray = Array.isArray;
-const isFunction = (val) => typeof val === "function";
-const isString = (val) => typeof val === "string";
-const isObject$1 = (val) => val !== null && typeof val === "object";
-const isPromise = (val) => {
-  return (isObject$1(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
-};
-const objectToString = Object.prototype.toString;
-const toTypeString = (value) => objectToString.call(value);
-const toRawType = (value) => {
-  return toTypeString(value).slice(8, -1);
-};
-const isPlainObject = (val) => toTypeString(val) === "[object Object]";
-const cacheStringFunction$1 = (fn) => {
-  const cache = /* @__PURE__ */ Object.create(null);
-  return (str) => {
-    const hit = cache[str];
-    return hit || (cache[str] = fn(str));
-  };
-};
-const camelizeRE = /-(\w)/g;
-const camelize = cacheStringFunction$1((str) => {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
-});
-const hyphenateRE = /\B([A-Z])/g;
-const hyphenate = cacheStringFunction$1(
-  (str) => str.replace(hyphenateRE, "-$1").toLowerCase()
-);
-const capitalize = cacheStringFunction$1((str) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-});
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -536,7 +490,17 @@ function invokeSuccess(id, name, res) {
     return invokeCallback(id, extend((res || {}), result));
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
-    const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
+    const errMsgPrefix = name + ':fail';
+    let apiErrMsg = '';
+    if (!errMsg) {
+        apiErrMsg = errMsgPrefix;
+    }
+    else if (errMsg.indexOf(errMsgPrefix) === 0) {
+        apiErrMsg = errMsg;
+    }
+    else {
+        apiErrMsg = errMsgPrefix + ' ' + errMsg;
+    }
     {
         delete errRes.errCode;
     }
@@ -601,7 +565,10 @@ function parseErrMsg(errMsg) {
         return errMsg;
     }
     if (errMsg.stack) {
-        console.error(errMsg.message + '\n' + errMsg.stack);
+        // 此处同时被鸿蒙arkts和jsvm使用，暂时使用运行时判断鸿蒙jsvm环境，注意此用法仅内部使用
+        if ((typeof globalThis === 'undefined' || !globalThis.harmonyChannel)) {
+            console.error(errMsg.message + '\n' + errMsg.stack);
+        }
         return errMsg.message;
     }
     return errMsg;
@@ -665,10 +632,10 @@ const ArrayBufferToBase64Protocol = [
 ];
 
 const base64ToArrayBuffer = defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
-    return decode$1(base64);
+    return decode(base64);
 }, Base64ToArrayBufferProtocol);
 const arrayBufferToBase64 = defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
-    return encode$2(arrayBuffer);
+    return encode$1(arrayBuffer);
 }, ArrayBufferToBase64Protocol);
 
 /**
@@ -1355,7 +1322,7 @@ function copy_block(s, buf, len, header)
 {
   bi_windup(s);        /* align on byte boundary */
 
-  if (header) {
+  {
     put_short(s, len);
     put_short(s, ~len);
   }
@@ -1853,7 +1820,7 @@ function _tr_stored_block(s, buf, stored_len, last)
 //int last;         /* one if this is the last block for a file */
 {
   send_bits(s, (STORED_BLOCK << 1) + (last ? 1 : 0), 3);    /* send block type */
-  copy_block(s, buf, stored_len, true); /* with header */
+  copy_block(s, buf, stored_len); /* with header */
 }
 
 
@@ -7445,654 +7412,6 @@ assign(pako, deflate, inflate, constants);
 
 var pako_1 = pako;
 
-const TABBAR_HEIGHT = 50;
-const ON_REACH_BOTTOM_DISTANCE = 50;
-const I18N_JSON_DELIMITERS = ['%', '%'];
-const SCHEME_RE = /^([a-z-]+:)?\/\//i;
-const DATA_RE = /^data:.*,.*/;
-const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
-// lifecycle
-// App and Page
-const ON_SHOW = 'onShow';
-const ON_HIDE = 'onHide';
-//App
-const ON_LAUNCH = 'onLaunch';
-const ON_ERROR = 'onError';
-const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
-const ON_PAGE_NOT_FOUND = 'onPageNotFound';
-const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-const ON_RESIZE = 'onResize';
-const ON_BACK_PRESS = 'onBackPress';
-const ON_PAGE_SCROLL = 'onPageScroll';
-const ON_TAB_ITEM_TAP = 'onTabItemTap';
-const ON_REACH_BOTTOM = 'onReachBottom';
-const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-// navigationBar
-const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
-// framework
-const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
-const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
-const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
-
-function isComponentInternalInstance(vm) {
-    return !!vm.appContext;
-}
-function resolveComponentInstance(instance) {
-    return (instance &&
-        (isComponentInternalInstance(instance) ? instance.proxy : instance));
-}
-
-let lastLogTime = 0;
-function formatLog(module, ...args) {
-    const now = Date.now();
-    const diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    return `[${now}][${diff}ms][${module}]：${args
-        .map((arg) => JSON.stringify(arg))
-        .join(' ')}`;
-}
-
-function cache(fn) {
-    const cache = Object.create(null);
-    return (str) => {
-        const hit = cache[str];
-        return hit || (cache[str] = fn(str));
-    };
-}
-function cacheStringFunction(fn) {
-    return cache(fn);
-}
-function getLen(str = '') {
-    return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
-}
-function hasLeadingSlash(str) {
-    return str.indexOf('/') === 0;
-}
-function addLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str : '/' + str;
-}
-function removeLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str.slice(1) : str;
-}
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
-function once(fn, ctx = null) {
-    let res;
-    return ((...args) => {
-        if (fn) {
-            res = fn.apply(ctx, args);
-            fn = null;
-        }
-        return res;
-    });
-}
-function callOptions(options, data) {
-    options = options || {};
-    if (isString(data)) {
-        data = {
-            errMsg: data,
-        };
-    }
-    if (/:ok$/.test(data.errMsg)) {
-        if (isFunction(options.success)) {
-            options.success(data);
-        }
-    }
-    else {
-        if (isFunction(options.fail)) {
-            options.fail(data);
-        }
-    }
-    if (isFunction(options.complete)) {
-        options.complete(data);
-    }
-}
-
-const encode$1 = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode$1) {
-    const res = obj
-        ? Object.keys(obj)
-            .map((key) => {
-            let val = obj[key];
-            if (typeof val === undefined || val === null) {
-                val = '';
-            }
-            else if (isPlainObject(val)) {
-                val = JSON.stringify(val);
-            }
-            return encodeStr(key) + '=' + encodeStr(val);
-        })
-            .filter((x) => x.length > 0)
-            .join('&')
-        : null;
-    return res ? `?${res}` : '';
-}
-/**
- * Decode text using `decodeURIComponent`. Returns the original text if it
- * fails.
- *
- * @param text - string to decode
- * @returns decoded string
- */
-function decode(text) {
-    try {
-        return decodeURIComponent('' + text);
-    }
-    catch (err) { }
-    return '' + text;
-}
-const PLUS_RE = /\+/g; // %2B
-/**
- * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts
- * @internal
- *
- * @param search - search string to parse
- * @returns a query object
- */
-function parseQuery(search) {
-    const query = {};
-    // avoid creating an object with an empty key and empty value
-    // because of split('&')
-    if (search === '' || search === '?')
-        return query;
-    const hasLeadingIM = search[0] === '?';
-    const searchParams = (hasLeadingIM ? search.slice(1) : search).split('&');
-    for (let i = 0; i < searchParams.length; ++i) {
-        // pre decode the + into space
-        const searchParam = searchParams[i].replace(PLUS_RE, ' ');
-        // allow the = character
-        let eqPos = searchParam.indexOf('=');
-        let key = decode(eqPos < 0 ? searchParam : searchParam.slice(0, eqPos));
-        let value = eqPos < 0 ? null : decode(searchParam.slice(eqPos + 1));
-        if (key in query) {
-            // an extra variable for ts types
-            let currentValue = query[key];
-            if (!isArray(currentValue)) {
-                currentValue = query[key] = [currentValue];
-            }
-            currentValue.push(value);
-        }
-        else {
-            query[key] = value;
-        }
-    }
-    return query;
-}
-
-function parseUrl(url) {
-    const [path, querystring] = url.split('?', 2);
-    return {
-        path,
-        query: parseQuery(querystring || ''),
-    };
-}
-
-function parseNVueDataset(attr) {
-    const dataset = {};
-    if (attr) {
-        Object.keys(attr).forEach((key) => {
-            if (key.indexOf('data-') === 0) {
-                dataset[key.replace('data-', '')] = attr[key];
-            }
-        });
-    }
-    return dataset;
-}
-
-class DOMException extends Error {
-    constructor(message) {
-        super(message);
-        this.name = 'DOMException';
-    }
-}
-
-function normalizeEventType(type, options) {
-    if (options) {
-        if (options.capture) {
-            type += 'Capture';
-        }
-        if (options.once) {
-            type += 'Once';
-        }
-        if (options.passive) {
-            type += 'Passive';
-        }
-    }
-    return `on${capitalize(camelize(type))}`;
-}
-class UniEvent {
-    constructor(type, opts) {
-        this.defaultPrevented = false;
-        this.timeStamp = Date.now();
-        this._stop = false;
-        this._end = false;
-        this.type = type;
-        this.bubbles = !!opts.bubbles;
-        this.cancelable = !!opts.cancelable;
-    }
-    preventDefault() {
-        this.defaultPrevented = true;
-    }
-    stopImmediatePropagation() {
-        this._end = this._stop = true;
-    }
-    stopPropagation() {
-        this._stop = true;
-    }
-}
-function createUniEvent(evt) {
-    if (evt instanceof UniEvent) {
-        return evt;
-    }
-    const [type] = parseEventName(evt.type);
-    const uniEvent = new UniEvent(type, {
-        bubbles: false,
-        cancelable: false,
-    });
-    extend(uniEvent, evt);
-    return uniEvent;
-}
-class UniEventTarget {
-    constructor() {
-        this.listeners = Object.create(null);
-    }
-    dispatchEvent(evt) {
-        const listeners = this.listeners[evt.type];
-        if (!listeners) {
-            if (('production' !== 'production')) {
-                console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
-            }
-            return false;
-        }
-        // 格式化事件类型
-        const event = createUniEvent(evt);
-        const len = listeners.length;
-        for (let i = 0; i < len; i++) {
-            listeners[i].call(this, event);
-            if (event._end) {
-                break;
-            }
-        }
-        return event.cancelable && event.defaultPrevented;
-    }
-    addEventListener(type, listener, options) {
-        type = normalizeEventType(type, options);
-        (this.listeners[type] || (this.listeners[type] = [])).push(listener);
-    }
-    removeEventListener(type, callback, options) {
-        type = normalizeEventType(type, options);
-        const listeners = this.listeners[type];
-        if (!listeners) {
-            return;
-        }
-        const index = listeners.indexOf(callback);
-        if (index > -1) {
-            listeners.splice(index, 1);
-        }
-    }
-}
-const optionsModifierRE = /(?:Once|Passive|Capture)$/;
-function parseEventName(name) {
-    let options;
-    if (optionsModifierRE.test(name)) {
-        options = {};
-        let m;
-        while ((m = name.match(optionsModifierRE))) {
-            name = name.slice(0, name.length - m[0].length);
-            options[m[0].toLowerCase()] = true;
-        }
-    }
-    return [hyphenate(name.slice(2)), options];
-}
-
-const NODE_TYPE_PAGE = 0;
-const NODE_TYPE_ELEMENT = 1;
-function sibling(node, type) {
-    const { parentNode } = node;
-    if (!parentNode) {
-        return null;
-    }
-    const { childNodes } = parentNode;
-    return childNodes[childNodes.indexOf(node) + (type === 'n' ? 1 : -1)] || null;
-}
-function removeNode(node) {
-    const { parentNode } = node;
-    if (parentNode) {
-        const { childNodes } = parentNode;
-        const index = childNodes.indexOf(node);
-        if (index > -1) {
-            node.parentNode = null;
-            childNodes.splice(index, 1);
-        }
-    }
-}
-function checkNodeId(node) {
-    if (!node.nodeId && node.pageNode) {
-        node.nodeId = node.pageNode.genId();
-    }
-}
-// 为优化性能，各平台不使用proxy来实现node的操作拦截，而是直接通过pageNode定制
-class UniNode extends UniEventTarget {
-    constructor(nodeType, nodeName, container) {
-        super();
-        this.pageNode = null;
-        this.parentNode = null;
-        this._text = null;
-        if (container) {
-            const { pageNode } = container;
-            if (pageNode) {
-                this.pageNode = pageNode;
-                this.nodeId = pageNode.genId();
-                !pageNode.isUnmounted && pageNode.onCreate(this, nodeName);
-            }
-        }
-        this.nodeType = nodeType;
-        this.nodeName = nodeName;
-        this.childNodes = [];
-    }
-    get firstChild() {
-        return this.childNodes[0] || null;
-    }
-    get lastChild() {
-        const { childNodes } = this;
-        const length = childNodes.length;
-        return length ? childNodes[length - 1] : null;
-    }
-    get nextSibling() {
-        return sibling(this, 'n');
-    }
-    get nodeValue() {
-        return null;
-    }
-    set nodeValue(_val) { }
-    get textContent() {
-        return this._text || '';
-    }
-    set textContent(text) {
-        this._text = text;
-        if (this.pageNode && !this.pageNode.isUnmounted) {
-            this.pageNode.onTextContent(this, text);
-        }
-    }
-    get parentElement() {
-        const { parentNode } = this;
-        if (parentNode && parentNode.nodeType === NODE_TYPE_ELEMENT) {
-            return parentNode;
-        }
-        return null;
-    }
-    get previousSibling() {
-        return sibling(this, 'p');
-    }
-    appendChild(newChild) {
-        return this.insertBefore(newChild, null);
-    }
-    cloneNode(deep) {
-        const cloned = extend(Object.create(Object.getPrototypeOf(this)), this);
-        const { attributes } = cloned;
-        if (attributes) {
-            cloned.attributes = extend({}, attributes);
-        }
-        if (deep) {
-            cloned.childNodes = cloned.childNodes.map((childNode) => childNode.cloneNode(true));
-        }
-        return cloned;
-    }
-    insertBefore(newChild, refChild) {
-        // 先从现在的父节点移除（注意：不能触发onRemoveChild，否则会生成先remove该 id，再 insert）
-        removeNode(newChild);
-        newChild.pageNode = this.pageNode;
-        newChild.parentNode = this;
-        checkNodeId(newChild);
-        const { childNodes } = this;
-        if (refChild) {
-            const index = childNodes.indexOf(refChild);
-            if (index === -1) {
-                throw new DOMException(`Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`);
-            }
-            childNodes.splice(index, 0, newChild);
-        }
-        else {
-            childNodes.push(newChild);
-        }
-        return this.pageNode && !this.pageNode.isUnmounted
-            ? this.pageNode.onInsertBefore(this, newChild, refChild)
-            : newChild;
-    }
-    removeChild(oldChild) {
-        const { childNodes } = this;
-        const index = childNodes.indexOf(oldChild);
-        if (index === -1) {
-            throw new DOMException(`Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.`);
-        }
-        oldChild.parentNode = null;
-        childNodes.splice(index, 1);
-        return this.pageNode && !this.pageNode.isUnmounted
-            ? this.pageNode.onRemoveChild(oldChild)
-            : oldChild;
-    }
-}
-
-const ACTION_TYPE_PAGE_CREATE = 1;
-const ACTION_TYPE_PAGE_CREATED = 2;
-const ACTION_TYPE_CREATE = 3;
-const ACTION_TYPE_INSERT = 4;
-const ACTION_TYPE_REMOVE = 5;
-const ACTION_TYPE_SET_ATTRIBUTE = 6;
-const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
-const ACTION_TYPE_ADD_EVENT = 8;
-const ACTION_TYPE_REMOVE_EVENT = 9;
-const ACTION_TYPE_SET_TEXT = 10;
-const ACTION_TYPE_ADD_WXS_EVENT = 12;
-const ACTION_TYPE_PAGE_SCROLL = 15;
-const ACTION_TYPE_EVENT = 20;
-
-/**
- * 需要手动传入 timer,主要是解决 App 平台的定制 timer
- */
-function debounce(fn, delay, { clearTimeout, setTimeout }) {
-    let timeout;
-    const newFn = function () {
-        clearTimeout(timeout);
-        const timerFn = () => fn.apply(this, arguments);
-        timeout = setTimeout(timerFn, delay);
-    };
-    newFn.cancel = function () {
-        clearTimeout(timeout);
-    };
-    return newFn;
-}
-
-class EventChannel {
-    constructor(id, events) {
-        this.id = id;
-        this.listener = {};
-        this.emitCache = [];
-        if (events) {
-            Object.keys(events).forEach((name) => {
-                this.on(name, events[name]);
-            });
-        }
-    }
-    emit(eventName, ...args) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return this.emitCache.push({
-                eventName,
-                args,
-            });
-        }
-        fns.forEach((opt) => {
-            opt.fn.apply(opt.fn, args);
-        });
-        this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
-    }
-    on(eventName, fn) {
-        this._addListener(eventName, 'on', fn);
-        this._clearCache(eventName);
-    }
-    once(eventName, fn) {
-        this._addListener(eventName, 'once', fn);
-        this._clearCache(eventName);
-    }
-    off(eventName, fn) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return;
-        }
-        if (fn) {
-            for (let i = 0; i < fns.length;) {
-                if (fns[i].fn === fn) {
-                    fns.splice(i, 1);
-                    i--;
-                }
-                i++;
-            }
-        }
-        else {
-            delete this.listener[eventName];
-        }
-    }
-    _clearCache(eventName) {
-        for (let index = 0; index < this.emitCache.length; index++) {
-            const cache = this.emitCache[index];
-            const _name = eventName
-                ? cache.eventName === eventName
-                    ? eventName
-                    : null
-                : cache.eventName;
-            if (!_name)
-                continue;
-            const location = this.emit.apply(this, [_name, ...cache.args]);
-            if (typeof location === 'number') {
-                this.emitCache.pop();
-                continue;
-            }
-            this.emitCache.splice(index, 1);
-            index--;
-        }
-    }
-    _addListener(eventName, type, fn) {
-        (this.listener[eventName] || (this.listener[eventName] = [])).push({
-            fn,
-            type,
-        });
-    }
-}
-
-const E = function () {
-    // Keep this empty so it's easier to inherit from
-    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
-};
-E.prototype = {
-    on: function (name, callback, ctx) {
-        var e = this.e || (this.e = {});
-        (e[name] || (e[name] = [])).push({
-            fn: callback,
-            ctx: ctx,
-        });
-        return this;
-    },
-    once: function (name, callback, ctx) {
-        var self = this;
-        function listener() {
-            self.off(name, listener);
-            callback.apply(ctx, arguments);
-        }
-        listener._ = callback;
-        return this.on(name, listener, ctx);
-    },
-    emit: function (name) {
-        var data = [].slice.call(arguments, 1);
-        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-        var i = 0;
-        var len = evtArr.length;
-        for (i; i < len; i++) {
-            evtArr[i].fn.apply(evtArr[i].ctx, data);
-        }
-        return this;
-    },
-    off: function (name, callback) {
-        var e = this.e || (this.e = {});
-        var evts = e[name];
-        var liveEvents = [];
-        if (evts && callback) {
-            for (var i = evts.length - 1; i >= 0; i--) {
-                if (evts[i].fn === callback || evts[i].fn._ === callback) {
-                    evts.splice(i, 1);
-                    break;
-                }
-            }
-            liveEvents = evts;
-        }
-        // Remove event from queue to prevent memory leak
-        // Suggested by https://github.com/lazd
-        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
-        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
-        return this;
-    },
-};
-var Emitter = E;
-
-const borderStyles = {
-    black: 'rgba(0,0,0,0.4)',
-    white: 'rgba(255,255,255,0.4)',
-};
-function normalizeTabBarStyles(borderStyle) {
-    if (borderStyle && borderStyle in borderStyles) {
-        return borderStyles[borderStyle];
-    }
-    return borderStyle;
-}
-function normalizeTitleColor(titleColor) {
-    return titleColor === 'black' ? '#000000' : '#ffffff';
-}
-function resolveStringStyleItem(modeStyle, styleItem, key) {
-    if (isString(styleItem) && styleItem.startsWith('@')) {
-        const _key = styleItem.replace('@', '');
-        let _styleItem = modeStyle[_key] || styleItem;
-        switch (key) {
-            case 'titleColor':
-                _styleItem = normalizeTitleColor(_styleItem);
-                break;
-            case 'borderStyle':
-                _styleItem = normalizeTabBarStyles(_styleItem);
-                break;
-        }
-        return _styleItem;
-    }
-    return styleItem;
-}
-function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
-    const modeStyle = themeConfig[mode];
-    const styles = {};
-    if (typeof modeStyle === 'undefined' || !pageStyle)
-        return pageStyle;
-    Object.keys(pageStyle).forEach((key) => {
-        const styleItem = pageStyle[key]; // Object Array String
-        const parseStyleItem = () => {
-            if (isPlainObject(styleItem))
-                return normalizeStyles(styleItem, themeConfig, mode);
-            if (isArray(styleItem))
-                return styleItem.map((item) => {
-                    if (typeof item === 'object')
-                        return normalizeStyles(item, themeConfig, mode);
-                    return resolveStringStyleItem(modeStyle, item);
-                });
-            return resolveStringStyleItem(modeStyle, styleItem, key);
-        };
-        styles[key] = parseStyleItem();
-    });
-    return styles;
-}
-
 /**
  * 主要文件路径分为如下四种
  * - 安装文件路径（仅能访问rawfile）鸿蒙$rawfile('index.html')对应一个Resource对象，为方便拼接路径，使用`resource://`协议表示
@@ -8656,11 +7975,14 @@ function rpx2pxWithReplace(str) {
         return uni.upx2px(parseFloat(b)) + 'px';
     });
 }
+function get$pageByPage(page) {
+    return page.$page;
+}
 
 function getPageIdByVm(instance) {
     const vm = resolveComponentInstance(instance);
     if (vm.$page) {
-        return vm.$page.id;
+        return getPageProxyId(vm);
     }
     if (!vm.$) {
         return;
@@ -8678,9 +8000,9 @@ function getCurrentPage() {
     }
 }
 function getCurrentPageMeta() {
-    const page = getCurrentPage();
-    if (page) {
-        return page.$page.meta;
+    const $page = getCurrentPage()?.$page;
+    if ($page) {
+        return $page.meta;
     }
 }
 function getCurrentPageId() {
@@ -8743,6 +8065,15 @@ function getPageProxyId(proxy) {
     return proxy.$page?.id || proxy.$basePage?.id;
 }
 
+function removeHook(vm, name, hook) {
+    const hooks = vm.$[name];
+    if (!isArray(hooks)) {
+        return;
+    }
+    if (hook.__weh) {
+        remove(hooks, hook.__weh);
+    }
+}
 function invokeHook(vm, name, args) {
     if (isString(vm)) {
         args = name;
@@ -8750,7 +8081,7 @@ function invokeHook(vm, name, args) {
         vm = getCurrentPageVm();
     }
     else if (typeof vm === 'number') {
-        const page = getCurrentPages().find((page) => page.$page.id === vm);
+        const page = getCurrentPages().find((page) => get$pageByPage(page).id === vm);
         if (page) {
             vm = page.$vm;
         }
@@ -8772,13 +8103,14 @@ function invokeHook(vm, name, args) {
 }
 
 function normalizeRoute(toRoute) {
-    if (toRoute.indexOf('/') === 0) {
+    // 支持 uni:showActionSheet 这种内置页面形式
+    if (toRoute.indexOf('/') === 0 || toRoute.indexOf('uni:') === 0) {
         return toRoute;
     }
     let fromRoute = '';
     const pages = getCurrentPages();
     if (pages.length) {
-        fromRoute = pages[pages.length - 1].$page.route;
+        fromRoute = get$pageByPage(pages[pages.length - 1]).route;
     }
     return getRealRoute(fromRoute, toRoute);
 }
@@ -8892,7 +8224,8 @@ function initOn() {
     on(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
 function onResize(res) {
-    invokeHook(getCurrentPage(), ON_RESIZE, res);
+    const page = getCurrentPage();
+    invokeHook(page, ON_RESIZE, res);
     UniServiceJSBridge.invokeOnCallback('onWindowResize', res); // API
 }
 function onAppEnterForeground(enterOptions) {
@@ -9070,7 +8403,7 @@ function addCurrentPage(page) {
         return pages.push(page);
     }
     // 开发阶段热刷新需要移除旧的相同 id 的 page
-    const index = pages.findIndex((p) => getPage$BasePage(page).id === $page.id);
+    const index = pages.findIndex((p) => getPage$BasePage(p).id === $page.id);
     if (index > -1) {
         pages.splice(index, 1, page);
     }
@@ -9253,6 +8586,13 @@ function getLaunchOptions() {
 function getEnterOptions() {
     return extend({}, enterOptions);
 }
+function initEnterOptions({ path, query, referrerInfo, }) {
+    extend(enterOptions, {
+        path,
+        query: query ? parseQuery(query) : {},
+        referrerInfo: referrerInfo || {},
+    });
+}
 function initLaunchOptions({ path, query, referrerInfo, }) {
     extend(launchOptions, {
         path,
@@ -9264,6 +8604,25 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
     });
     extend(enterOptions, launchOptions);
     return enterOptions;
+}
+function parseRedirectInfo() {
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+        const { path, query, extraData, userAction, fromAppid } = weexPlus.getRedirectInfo() || {};
+        const referrerInfo = {
+            appId: fromAppid,
+            extraData: {},
+        };
+        if (extraData) {
+            referrerInfo.extraData = extraData;
+        }
+        return {
+            path: path || '',
+            query: query ? '?' + query : '',
+            referrerInfo,
+            userAction,
+        };
+    }
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
@@ -9282,6 +8641,75 @@ function operateMap(id, pageId, type, data, operateMapCallback) {
         data,
     }, pageId, operateMapCallback);
 }
+
+function setCurrentPageMeta(page, options) {
+    const pageId = getPageIdByVm(page);
+    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, pageId);
+}
+
+const API_UPX2PX = 'upx2px';
+const Upx2pxProtocol = [
+    {
+        name: 'upx',
+        type: [Number, String],
+        required: true,
+    },
+];
+
+const EPS = 1e-4;
+const BASE_DEVICE_WIDTH = 750;
+let isIOS = false;
+let deviceWidth = 0;
+let deviceDPR = 0;
+let maxWidth = 960;
+let baseWidth = 375;
+let includeWidth = 750;
+function checkDeviceWidth() {
+    const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
+    deviceWidth = windowWidth;
+    deviceDPR = pixelRatio;
+    isIOS = platform === 'ios';
+}
+function checkValue(value, defaultValue) {
+    const newValue = Number(value);
+    return isNaN(newValue) ? defaultValue : newValue;
+}
+function checkMaxWidth() {
+    const config = __uniConfig.globalStyle || {};
+    maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+    baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+    includeWidth = checkValue(config.rpxCalcBaseDeviceWidth, 750);
+}
+const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+    if (deviceWidth === 0) {
+        checkDeviceWidth();
+        {
+            checkMaxWidth();
+        }
+    }
+    number = Number(number);
+    if (number === 0) {
+        return 0;
+    }
+    let width = newDeviceWidth || deviceWidth;
+    {
+        width = number === includeWidth || width <= maxWidth ? width : baseWidth;
+    }
+    let result = (number / BASE_DEVICE_WIDTH) * width;
+    if (result < 0) {
+        result = -result;
+    }
+    result = Math.floor(result + EPS);
+    if (result === 0) {
+        if (deviceDPR === 1 || !isIOS) {
+            result = 1;
+        }
+        else {
+            result = 0.5;
+        }
+    }
+    return number < 0 ? -result : result;
+}, Upx2pxProtocol);
 
 const API_ADD_INTERCEPTOR = 'addInterceptor';
 const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
@@ -9354,6 +8782,83 @@ const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interce
     }
 }, RemoveInterceptorProtocol);
 const interceptors = {};
+
+const API_ON = '$on';
+const OnProtocol = [
+    {
+        name: 'event',
+        type: String,
+        required: true,
+    },
+    {
+        name: 'callback',
+        type: Function,
+        required: true,
+    },
+];
+const API_ONCE = '$once';
+const OnceProtocol = OnProtocol;
+const API_OFF = '$off';
+const OffProtocol = [
+    {
+        name: 'event',
+        type: [String, Array],
+    },
+    {
+        name: 'callback',
+        type: [Function, Number],
+    },
+];
+const API_EMIT = '$emit';
+const EmitProtocol = [
+    {
+        name: 'event',
+        type: String,
+        required: true,
+    },
+];
+
+class EventBus {
+    constructor() {
+        this.$emitter = new Emitter();
+    }
+    on(name, callback) {
+        return this.$emitter.on(name, callback);
+    }
+    once(name, callback) {
+        return this.$emitter.once(name, callback);
+    }
+    off(name, callback) {
+        if (!name) {
+            this.$emitter.e = {};
+            return;
+        }
+        this.$emitter.off(name, callback);
+    }
+    emit(name, ...args) {
+        this.$emitter.emit(name, ...args);
+    }
+}
+const eventBus = new EventBus();
+const $on = defineSyncApi(API_ON, (name, callback) => {
+    eventBus.on(name, callback);
+    return () => eventBus.off(name, callback);
+}, OnProtocol);
+const $once = defineSyncApi(API_ONCE, (name, callback) => {
+    eventBus.once(name, callback);
+    return () => eventBus.off(name, callback);
+}, OnceProtocol);
+const $off = defineSyncApi(API_OFF, (name, callback) => {
+    // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
+    if (!isArray(name))
+        name = name ? [name] : [];
+    name.forEach((n) => {
+        eventBus.off(n, callback);
+    });
+}, OffProtocol);
+const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
+    eventBus.emit(name, ...args);
+}, EmitProtocol);
 
 const validator = [
     {
@@ -10029,8 +9534,8 @@ class CanvasContext {
                 if (typeof callback === 'function') {
                     const webview = plus.webview.getLaunchWebview();
                     // @ts-expect-error evalJSASync 后新增，和 plus 签名不匹配，暂时忽略 ts 报错
-                    if (webview && typeof webview.evalJSASync === 'function') {
-                        webview.evalJSASync(`(function measureText(text, font) {
+                    if (webview && typeof webview.evalJSAsync === 'function') {
+                        webview.evalJSAsync(`(function measureText(text, font) {
   const canvas = document.createElement('canvas')
   const c2d = canvas.getContext('2d')
   c2d.font = font
@@ -11016,8 +10521,12 @@ const createAnimation = defineSyncApi(API_CREATE_ANIMATION, (option) => {
 }, CreateAnimationProtocol, CreateAnimationOptions);
 
 const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap';
+const onTabBarMidButtonTap = defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
+    // noop
+});
 
 const API_ON_WINDOW_RESIZE = 'onWindowResize';
+const API_OFF_WINDOW_RESIZE = 'offWindowResize';
 
 /**
  * 监听窗口大小变化
@@ -11025,6 +10534,12 @@ const API_ON_WINDOW_RESIZE = 'onWindowResize';
 const onWindowResize = defineOnApi(API_ON_WINDOW_RESIZE, () => {
     // 生命周期包括onResize，框架直接监听resize
     // window.addEventListener('resize', onResize)
+});
+/**
+ * 取消监听窗口大小变化
+ */
+const offWindowResize = defineOffApi(API_OFF_WINDOW_RESIZE, () => {
+    // window.removeEventListener('resize', onResize)
 });
 
 const API_SET_LOCALE = 'setLocale';
@@ -11061,6 +10576,25 @@ const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
     return false;
 });
 
+const API_SET_PAGE_META = 'setPageMeta';
+const setPageMeta = defineAsyncApi(API_SET_PAGE_META, (options, { resolve }) => {
+    resolve(setCurrentPageMeta(getCurrentPageVm(), options));
+});
+
+const API_SET_BACKGROUND_COLOR = 'setBackgroundColor';
+const SetBackgroundColorProtocol = {
+    backgroundColor: {
+        type: String,
+    },
+};
+const API_SET_BACKGROUND_TEXT_STYLE = 'setBackgroundTextStyle';
+const SetBackgroundTextStyleProtocol = {
+    textStyle: {
+        type: String,
+        required: true,
+    },
+};
+
 const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
 
 const getSelectedTextRange = defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
@@ -11082,12 +10616,56 @@ const appHooks = {
     [ON_SHOW]: [],
     [ON_HIDE]: [],
 };
+function onAppHook(type, hook) {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return injectHook(type, hook, app.$vm.$);
+    }
+    appHooks[type].push(hook);
+}
 function injectAppHooks(appInstance) {
     Object.keys(appHooks).forEach((type) => {
         appHooks[type].forEach((hook) => {
             injectHook(type, hook, appInstance);
         });
     });
+}
+function offAppHook(type, hook) {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return removeHook(app.$vm, type, hook);
+    }
+    remove(appHooks[type], hook);
+}
+function onUnhandledRejection(hook) {
+    onAppHook(ON_UNHANDLE_REJECTION, hook);
+}
+function offUnhandledRejection(hook) {
+    offAppHook(ON_UNHANDLE_REJECTION, hook);
+}
+function onPageNotFound(hook) {
+    onAppHook(ON_PAGE_NOT_FOUND, hook);
+}
+function offPageNotFound(hook) {
+    offAppHook(ON_PAGE_NOT_FOUND, hook);
+}
+function onError(hook) {
+    onAppHook(ON_ERROR, hook);
+}
+function offError(hook) {
+    offAppHook(ON_ERROR, hook);
+}
+function onAppShow(hook) {
+    onAppHook(ON_SHOW, hook);
+}
+function offAppShow(hook) {
+    offAppHook(ON_SHOW, hook);
+}
+function onAppHide(hook) {
+    onAppHook(ON_HIDE, hook);
+}
+function offAppHide(hook) {
+    offAppHook(ON_HIDE, hook);
 }
 const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
 const getEnterOptionsSync = defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
@@ -11962,6 +11540,41 @@ const setNavigationBarColor = defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, ({ __
     }
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
 
+const setBackgroundColor = defineAsyncApi(API_SET_BACKGROUND_COLOR, ({ __page__, backgroundColor }, { resolve, reject }) => {
+    if (isString(backgroundColor)) {
+        const webview = getWebview(__page__);
+        if (webview) {
+            webview.setStyle({
+                background: backgroundColor,
+            });
+            resolve();
+        }
+        else {
+            reject();
+        }
+    }
+    else {
+        reject('options backgroundColor must be a string');
+    }
+}, SetBackgroundColorProtocol);
+const setBackgroundTextStyle = defineAsyncApi(API_SET_BACKGROUND_TEXT_STYLE, ({ __page__, textStyle }, { resolve, reject }) => {
+    if (isString(textStyle)) {
+        const webview = getWebview(__page__);
+        if (webview) {
+            webview.setStyle({
+                backgroundTextStyle: textStyle,
+            });
+            resolve();
+        }
+        else {
+            reject();
+        }
+    }
+    else {
+        reject('options textStyle must be a string');
+    }
+}, SetBackgroundTextStyleProtocol);
+
 function onKeyboardHeightChangeCallback(res) {
     UniServiceJSBridge.invokeOnCallback(ON_KEYBOARD_HEIGHT_CHANGE, res);
 }
@@ -12255,7 +11868,7 @@ function initDebugRefresh(isTab, path, query) {
     };
 }
 
-const downgrade = 'HarmonyOS' === 'Android' ;
+const downgrade = 'HarmonyOS' === 'Android';
 const ANI_SHOW = 'pop-in';
 const ANI_DURATION = 300;
 const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
@@ -12737,13 +12350,10 @@ function setupPage(component) {
             console.log(formatLog(__pagePath, 'setup'));
         }
         const instance = getCurrentInstance();
-        instance.$dialogPages = [];
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
-        if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
-            addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
-        }
         {
+            addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
             onMounted(() => {
                 nextTick(() => {
                     // onShow被延迟，故onReady也同时延迟
@@ -12778,6 +12388,9 @@ function initScope(pageId, vm, pageInstance) {
         return pageInstance.eventChannel;
     };
     return vm;
+}
+function addCurrentPageWithInitScope(pageId, pageVm, pageInstance) {
+    addCurrentPage(initScope(pageId, pageVm, pageInstance));
 }
 
 function isVuePageAsyncComponent(component) {
@@ -12956,6 +12569,54 @@ function initPageOptions({ meta }) {
     };
 }
 
+let isInitEntryPage = false;
+function initEntry() {
+    if (isInitEntryPage) {
+        return;
+    }
+    isInitEntryPage = true;
+    let entryPagePath;
+    let entryPageQuery;
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+        const { path, query, referrerInfo } = parseRedirectInfo();
+        if (path) {
+            entryPagePath = path;
+            entryPageQuery = query;
+        }
+        __uniConfig.referrerInfo = referrerInfo;
+    }
+    else {
+        const argsJsonStr = plus.runtime.arguments;
+        if (!argsJsonStr) {
+            return;
+        }
+        try {
+            const args = JSON.parse(argsJsonStr);
+            entryPagePath = args.path || args.pathName;
+            entryPageQuery = args.query ? '?' + args.query : '';
+        }
+        catch (e) { }
+    }
+    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+        if (entryPageQuery) {
+            __uniConfig.entryPageQuery = entryPageQuery;
+        }
+        return;
+    }
+    const entryRoute = addLeadingSlash(entryPagePath);
+    const routeOptions = getRouteOptions(entryRoute);
+    if (!routeOptions) {
+        return;
+    }
+    if (!routeOptions.meta.isTabBar) {
+        __uniConfig.realEntryPagePath =
+            __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+    }
+    __uniConfig.entryPagePath = entryPagePath;
+    __uniConfig.entryPageQuery = entryPageQuery;
+}
+
 function initAnimation(path, animationType, animationDuration) {
     const { globalStyle } = __uniConfig;
     const meta = getRouteMeta(path);
@@ -12977,7 +12638,7 @@ const $navigateTo = (args, { resolve, reject }) => {
     const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
     navigate(path, () => {
         _navigateTo({
-            url,
+            url: url,
             path,
             query,
             events,
@@ -12997,7 +12658,7 @@ function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     return new Promise((resolve) => {
         showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
             resolve({ eventChannel });
-        });
+        }, 0);
         setStatusBarStyle();
     });
 }
@@ -13033,14 +12694,16 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     if (!page) {
         return reject(`getCurrentPages is empty`);
     }
+    const from = args.from || 'navigateBack';
     if (invokeHook(page, ON_BACK_PRESS, {
-        from: args.from || 'navigateBack',
+        from,
     })) {
         return resolve();
     }
-    if (uni.hideToast) {
-        uni.hideToast();
-    }
+    // TODO 鸿蒙不支持hideToast方法
+    // if (uni.hideToast) {
+    //   uni.hideToast()
+    // }
     if (uni.hideLoading) {
         uni.hideLoading();
     }
@@ -13052,7 +12715,7 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     }
     else {
         const { delta, animationType, animationDuration } = args;
-        back(delta, animationType, animationDuration);
+        back(delta, animationType, animationDuration, from);
     }
     return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
@@ -13070,7 +12733,7 @@ function quit() {
         plus.runtime.quit();
     }
 }
-function back(delta, animationType, animationDuration) {
+function back(delta, animationType, animationDuration, from) {
     const pages = getCurrentPages();
     const len = pages.length;
     const currentPage = pages[len - 1];
@@ -13104,7 +12767,7 @@ function back(delta, animationType, animationDuration) {
         invokeHook(ON_SHOW);
     };
     const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
-    if (!currentPage.__uniapp_webview) {
+    if (!currentPage.__uniapp_webview || from === 'navigateBack') {
         return backPage(webview);
     }
     backWebview(webview, () => {
@@ -13116,7 +12779,7 @@ const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }
     const { path, query } = parseUrl(url);
     navigate(path, () => {
         _redirectTo({
-            url,
+            url: url,
             path,
             query,
         })
@@ -13201,7 +12864,7 @@ const $switchTab = (args, { resolve, reject }) => {
     const { path, query } = parseUrl(url);
     navigate(path, () => {
         _switchTab({
-            url,
+            url: url,
             path,
             query,
         })
@@ -13391,15 +13054,31 @@ const LocationViewPage = {
         return {
             latitude: 0,
             longitude: 0,
+            name: '',
             loaded: false,
+            showNav: false,
         };
     },
     onLoad(e) {
         this.latitude = e.latitude;
         this.longitude = e.longitude;
+        this.name = e.name;
         this.loaded = true;
     },
-    methods: {},
+    onBackPress() {
+        if (this.showNav) {
+            this.showNav = false;
+            return true;
+        }
+    },
+    methods: {
+        onClose(e) {
+            uni.navigateBack();
+        },
+        onNavChange(event) {
+            this.showNav = event.detail.showNav;
+        },
+    },
     render: function (_ctx, _cache, $props, $setup, $data, $options) {
         return $data.loaded
             ? (openBlock(),
@@ -13408,7 +13087,13 @@ const LocationViewPage = {
                     style: { width: '100%', height: '100%' },
                     latitude: $data.latitude,
                     longitude: $data.longitude,
-                }, null, 40, ['latitude', 'longitude']))
+                    showNav: $data.showNav,
+                    name: $data.name,
+                    onClose: _cache[0] ||
+                        (_cache[0] = (...args) => $options.onClose && $options.onClose(...args)),
+                    onNavChange: _cache[1] ||
+                        (_cache[1] = (...args) => $options.onNavChange && $options.onNavChange(...args)),
+                }, null, 40, ['latitude', 'longitude', 'showNav']))
             : createCommentVNode('v-if', true);
     },
 };
@@ -13429,14 +13114,16 @@ const initLocationViewPageOnce = once(() => {
 
 const openLocation = defineAsyncApi(API_OPEN_LOCATION, (args, { resolve, reject }) => {
     initLocationViewPageOnce();
-    const { latitude = '', longitude = '' } = args;
+    const { latitude = '', longitude = '', name = '' } = args;
     uni.navigateTo({
         url: '/' +
             ROUTE_LOCATION_VIEW_PAGE +
             '?latitude=' +
             latitude +
             '&longitude=' +
-            longitude,
+            longitude +
+            '&name=' +
+            name,
         success: (res) => {
             resolve();
         },
@@ -13521,9 +13208,32 @@ const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (options, 
                 });
             }, {
                 coordsType: options?.type,
+                enableHighAccuracy: true,
             });
     setTimeout(resolve, 100);
 }, StartLocationUpdateProtocol, StartLocationUpdateOptions);
+const startLocationUpdateBackground = defineAsyncApi('startLocationUpdateBackground', (options, { resolve, reject }) => {
+    watchId =
+        watchId ||
+            plus.geolocation.watchPosition((res) => {
+                started = true;
+                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
+            }, (error) => {
+                if (!started) {
+                    reject(error.message);
+                    started = true;
+                }
+                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+                    errMsg: `onLocationChange:fail ${error.message}`,
+                });
+            }, {
+                coordsType: options?.type,
+                enableHighAccuracy: true,
+                // @ts-expect-error 增加background参数
+                background: true,
+            });
+    setTimeout(resolve, 100);
+});
 const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
     if (watchId) {
         plus.geolocation.clearWatch(watchId);
@@ -13548,8 +13258,14 @@ function createWebviewContext(id, componentInstance) {
     const pageId = getPageIdByVm(componentInstance);
     if (pageId) {
         return {
+            evalJS(jsCode) {
+                operateWebView(id, pageId, 'evalJS', {
+                    jsCode,
+                });
+            },
             evalJs(jsCode) {
-                operateWebView(id, pageId, 'evalJs', {
+                console.warn('The method evalJs is deprecated, please use evalJS instead');
+                operateWebView(id, pageId, 'evalJS', {
                     jsCode,
                 });
             },
@@ -13579,6 +13295,10 @@ const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) =
 
 var uni$1 = {
   __proto__: null,
+  $emit: $emit,
+  $off: $off,
+  $on: $on,
+  $once: $once,
   addInterceptor: addInterceptor,
   arrayBufferToBase64: arrayBufferToBase64,
   base64ToArrayBuffer: base64ToArrayBuffer,
@@ -13607,13 +13327,26 @@ var uni$1 = {
   loadFontFace: loadFontFace,
   navigateBack: navigateBack,
   navigateTo: navigateTo,
+  offAppHide: offAppHide,
+  offAppShow: offAppShow,
+  offError: offError,
   offKeyboardHeightChange: offKeyboardHeightChange,
   offLocationChange: offLocationChange,
   offLocationChangeError: offLocationChangeError,
+  offPageNotFound: offPageNotFound,
+  offUnhandledRejection: offUnhandledRejection,
+  offWindowResize: offWindowResize,
+  onAppHide: onAppHide,
+  onAppShow: onAppShow,
+  onCreateVueApp: onCreateVueApp,
+  onError: onError,
   onKeyboardHeightChange: onKeyboardHeightChange,
   onLocaleChange: onLocaleChange,
   onLocationChange: onLocationChange,
   onLocationChangeError: onLocationChangeError,
+  onPageNotFound: onPageNotFound,
+  onTabBarMidButtonTap: onTabBarMidButtonTap,
+  onUnhandledRejection: onUnhandledRejection,
   onWindowResize: onWindowResize,
   openLocation: openLocation,
   pageScrollTo: pageScrollTo,
@@ -13621,9 +13354,12 @@ var uni$1 = {
   redirectTo: redirectTo,
   removeInterceptor: removeInterceptor,
   removeTabBarBadge: removeTabBarBadge,
+  setBackgroundColor: setBackgroundColor,
+  setBackgroundTextStyle: setBackgroundTextStyle,
   setLocale: setLocale,
   setNavigationBarColor: setNavigationBarColor,
   setNavigationBarTitle: setNavigationBarTitle,
+  setPageMeta: setPageMeta,
   setTabBarBadge: setTabBarBadge,
   setTabBarItem: setTabBarItem,
   setTabBarStyle: setTabBarStyle,
@@ -13631,8 +13367,10 @@ var uni$1 = {
   showTabBar: showTabBar,
   showTabBarRedDot: showTabBarRedDot,
   startLocationUpdate: startLocationUpdate,
+  startLocationUpdateBackground: startLocationUpdateBackground,
   stopLocationUpdate: stopLocationUpdate,
-  switchTab: switchTab
+  switchTab: switchTab,
+  upx2px: upx2px
 };
 
 const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
@@ -13900,7 +13638,10 @@ function initGlobalEvent() {
         emit(ON_APP_ENTER_BACKGROUND);
     });
     plusGlobalEvent.addEventListener('resume', () => {
-        // TODO options
+        const info = parseRedirectInfo();
+        if (info && info.userAction) {
+            initEnterOptions(info);
+        }
         emit(ON_APP_ENTER_FOREGROUND, {});
     });
     plusGlobalEvent.addEventListener('KeyboardHeightChange', function (event) {
@@ -13979,6 +13720,7 @@ function registerApp(appVm) {
     extend(appCtx, defaultApp); // 拷贝默认实现
     defineGlobalData(appCtx, defaultApp.globalData);
     initService();
+    initEntry();
     initTabBar();
     initGlobalEvent();
     initSubscribeHandlers();
@@ -14020,4 +13762,4 @@ var index = {
     UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
-export { Emitter, UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, addIntersectionObserver, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, disableEnumerable, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, getType, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString, registerServiceMethod, removeIntersectionObserver, requestComponentInfo, resolveComponentInstance, setUniRuntime };
+export { UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, addIntersectionObserver, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, disableEnumerable, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, getType, registerServiceMethod, removeIntersectionObserver, requestComponentInfo, setUniRuntime };

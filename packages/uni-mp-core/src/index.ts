@@ -1,12 +1,3 @@
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $vm: ComponentPublicInstance
-    globalData: Record<string, any>
-    $callHook: (hook: string, args?: unknown, extras?: unknown) => unknown
-    $callCreatedHook: () => void
-  }
-}
-
 export { initCreateApp, initCreateSubpackageApp } from './runtime/app'
 export { initCreatePage } from './runtime/page'
 export { initCreateComponent, ParseComponentOptions } from './runtime/component'
@@ -16,6 +7,11 @@ export { fixSetDataEnd, fixSetDataStart } from './runtime/fixSetData'
 
 export { initUni } from './api/index'
 export { initGetProvider } from './api/shims'
+export { isSyncApi } from './api/promise'
+
+// #if _X_
+export { parseXReturnValue } from './api/protocols/x'
+// #endif
 
 // mp-alipay
 export {
@@ -29,6 +25,7 @@ export {
   initProps,
   initFormField,
   initPageProps,
+  resolvePropValue,
 } from './runtime/componentProps'
 export {
   initHooks,
@@ -65,6 +62,10 @@ export {
   getAppBaseInfo,
   getWindowInfo,
   getAppAuthorizeSetting,
+  onError,
+  offError,
+  onSocketOpen,
+  onSocketMessage,
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'

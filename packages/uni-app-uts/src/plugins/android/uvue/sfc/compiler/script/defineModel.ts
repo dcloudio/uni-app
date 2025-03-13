@@ -107,7 +107,19 @@ export function processDefineModel(
               (p.key.type === 'StringLiteral' && p.key.value === 'type'))
         ) as ObjectProperty
         if (type) {
-          runtimeType = ctx.getString(type.value)
+          if (type.value.type === 'TSAsExpression') {
+            // Array as PropType<string[]>
+            if (
+              type.value.typeAnnotation.type === 'TSTypeReference' &&
+              type.value.typeAnnotation.typeParameters
+            ) {
+              runtimeType = ctx.getString(
+                type.value.typeAnnotation.typeParameters.params[0]
+              )
+            }
+          } else {
+            runtimeType = ctx.getString(type.value)
+          }
         }
       }
 
@@ -149,24 +161,19 @@ export function processDefineModel(
 export function genModelProps(ctx: ScriptCompileContext) {
   if (!ctx.hasDefineModelCall) return
 
-  const isProd = !!ctx.options.isProd
   let modelPropsDecl = ''
   for (const [name, { type, options }] of Object.entries(ctx.modelDecls)) {
     let skipCheck = false
 
-    let runtimeTypes = type && inferRuntimeType(ctx, type, 'defineModel')
+    let runtimeTypes = type && inferRuntimeType(ctx, type, 'defineProps')
     if (runtimeTypes) {
       const hasUnknownType = runtimeTypes.includes(UNKNOWN_TYPE)
-
       runtimeTypes = runtimeTypes.filter((el) => {
         if (el === UNKNOWN_TYPE) return false
-        return isProd
-          ? el === 'Boolean' || (el === 'Function' && options)
-          : true
+        return true
       })
-      skipCheck = !isProd && hasUnknownType && runtimeTypes.length > 0
+      skipCheck = hasUnknownType && runtimeTypes.length > 0
     }
-
     let runtimeType =
       (runtimeTypes &&
         runtimeTypes.length > 0 &&

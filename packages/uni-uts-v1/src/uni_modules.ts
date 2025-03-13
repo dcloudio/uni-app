@@ -4,6 +4,7 @@ import fg from 'fast-glob'
 import { type UniXCompiler, createUniXCompiler } from './tsc/compiler'
 import type { CompilerOptions } from 'typescript'
 import { isInHBuilderX, normalizePath, once } from './shared'
+import { isCustomElementsSupported } from './utils'
 
 type TargetLanguage = Parameters<typeof createUniXCompiler>[1]
 
@@ -202,20 +203,90 @@ export async function syncUniModuleFilesByCompiler(
     )
     files.push(...vueFiles)
   }
+
+  // 如果是 customElements，且没有utssdk入口文件，需要自动生成一个
+  const customElementsDir = path.resolve(pluginDir, 'customElements')
+  if (fs.existsSync(customElementsDir)) {
+    const customElements = resolveCustomElements(customElementsDir)
+    if (customElements.length) {
+      const pluginId = path.basename(pluginDir)
+      const customElementsCodes = customElements.map(
+        (name) =>
+          `export * from '@/uni_modules/${pluginId}/customElements/${name}/${name}.uts'`
+      )
+
+      const indexFileName = resolveTscUniModuleIndexFileName(
+        platform,
+        pluginDir
+      )
+      if (!indexFileName) {
+        const indexFileName = path.resolve(
+          resolveOutputPluginDir(
+            platform,
+            process.env.UNI_INPUT_DIR,
+            pluginDir
+          ),
+          `utssdk/${platform}/index.uts.ts`
+        )
+        fs.outputFileSync(indexFileName, customElementsCodes.join('\n'))
+      } else {
+        const indexFileContent = fs.readFileSync(indexFileName, 'utf-8')
+        customElementsCodes.forEach((code) => {
+          if (!indexFileContent.includes(code)) {
+            fs.appendFileSync(indexFileName, code)
+          }
+        })
+      }
+    }
+  }
+
   compiler.debug(
     `${path.basename(pluginDir)} sync files(${files.length})`,
     Date.now() - start
   )
+}
+const isDir = (path: string) => {
+  const stat = fs.lstatSync(path)
+  if (stat.isDirectory()) {
+    return true
+  } else if (stat.isSymbolicLink()) {
+    return fs.lstatSync(fs.realpathSync(path)).isDirectory()
+  }
+  return false
+}
+
+function resolveCustomElements(customElementsDir: string) {
+  const pluginDir = path.resolve(customElementsDir, '..')
+  if (!isCustomElementsSupported(pluginDir)) {
+    return []
+  }
+  const customElements: string[] = []
+  fs.readdirSync(customElementsDir).forEach((name) => {
+    const folder = path.resolve(customElementsDir, name)
+    if (!isDir(folder)) {
+      return
+    }
+    const files = fs.readdirSync(folder)
+    // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+    // customElements 的文件名是 uts 后缀
+    const ext = '.uts'
+    if (files.includes(name + ext)) {
+      customElements.push(name)
+    }
+  })
+  return customElements
 }
 
 function resolveUniModuleGlobs() {
   const extname = `.{uts,ts,json}`
   const globs = [
     `*.uts`,
+    `customElements/**/*${extname}`,
     // test-uts/common/**/*
     `common/**/*${extname}`,
     `utssdk/**/*${extname}`,
-    `components/**/*`,
+    // 不copy components目录了，不单独编译，启用vite走完整流程编译
+    // `components/**/*`,
   ]
   return globs
 }

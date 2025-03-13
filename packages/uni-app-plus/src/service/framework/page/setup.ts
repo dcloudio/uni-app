@@ -13,11 +13,8 @@ import {
   onMounted,
 } from 'vue'
 import type { VuePageComponent } from './define'
-import {
-  UniPageImpl,
-  addCurrentPage,
-  getPage$BasePage,
-} from './getCurrentPages'
+import { addCurrentPage } from './getCurrentPages'
+import { setupXPage } from '../../../x/framework/page/setup'
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
@@ -30,28 +27,22 @@ export function setupPage(component: VuePageComponent) {
       console.log(formatLog(__pagePath as string, 'setup'))
     }
     const instance = getCurrentInstance()!
-    instance.$dialogPages = []
     const pageVm = instance.proxy!
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     if (__X__) {
-      const uniPage = new UniPageImpl({
-        route: pageVm.$page.route,
-        options: new Map(Object.entries(pageVm.$page.options)),
-        vm: pageVm,
-      })
-      pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
-      pageVm.$page = uniPage
-    }
-    if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
-      addCurrentPage(
-        initScope(
-          __pageId as number,
-          pageVm,
-          __pageInstance as Page.PageInstance['$page']
-        )
+      setupXPage(
+        instance,
+        __pageInstance as Page.PageInstance['$page'],
+        pageVm,
+        __pageId as number,
+        __pagePath as string
       )
-    }
-    if (!__X__) {
+    } else {
+      addCurrentPageWithInitScope(
+        __pageId as number,
+        pageVm,
+        __pageInstance as Page.PageInstance['$page']
+      )
       onMounted(() => {
         nextTick(() => {
           // onShow被延迟，故onReady也同时延迟
@@ -99,16 +90,6 @@ export function initScope(
         return vm.$nativePage!.setPageStyle.bind(vm.$nativePage!)
       },
     })
-    Object.defineProperty(vm, 'getDialogPages', {
-      get() {
-        return () => vm.$.$dialogPages
-      },
-    })
-    Object.defineProperty(vm, 'getParentPage', {
-      get() {
-        return () => null
-      },
-    })
   }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {
@@ -117,4 +98,12 @@ export function initScope(
     return pageInstance.eventChannel as EventChannel
   }
   return vm
+}
+
+export function addCurrentPageWithInitScope(
+  pageId: number,
+  pageVm: ComponentPublicInstance,
+  pageInstance: Page.PageInstance['$page']
+) {
+  addCurrentPage(initScope(pageId, pageVm, pageInstance))
 }

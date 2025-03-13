@@ -1,0 +1,1 @@
+{"version":3,"file":"test.js","sources":["pages/index/test.uts"],"sourcesContent":["export function test() {\n    const arr = [1]\n    console.log(arr[1])\n}"],"names":["uni"],"mappings":";;SAAgB,OAAI;AAChB,QAAM,MAAM,CAAC,CAAC;AACdA,gBAAY,MAAA,MAAA,OAAA,6BAAA,IAAI,CAAC,CAAC;AACtB;;"}

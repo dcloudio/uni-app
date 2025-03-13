@@ -11,6 +11,8 @@ export type DefineOptions = {
         js?: boolean
         kotlin?: boolean
         swift?: boolean
+        arkts?: boolean
+        ['x-arkts']?: boolean
       }
   [key: string]: any
 }
@@ -238,11 +240,12 @@ export function parseInjects(
       platform !== 'app-ios' &&
       platform !== 'app-harmony'
     ) {
-      if (fs.existsSync(platformIndexFileName)) {
-        source = `${source}/utssdk/${platform}/index.uts`
-      } else if (fs.existsSync(rootIndexFileName)) {
-        source = `${source}/utssdk/index.uts`
-      }
+      // uts2js 已经处理了类型信息，无需再处理，否则还要考虑各种文件后缀，比如.ts,.js
+      // if (fs.existsSync(platformIndexFileName)) {
+      //   source = `${source}/utssdk/${platform}/index.uts`
+      // } else if (fs.existsSync(rootIndexFileName)) {
+      //   source = `${source}/utssdk/index.uts`
+      // }
     } else if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
       if (
         fs.existsSync(

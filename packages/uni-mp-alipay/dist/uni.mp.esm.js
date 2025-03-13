@@ -1,7 +1,59 @@
-import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
+import { VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isString } from '@vue/shared';
-import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
+import { injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function findVmByVueId(instance, vuePid) {
+    // 标准 vue3 中 没有 $children，定制了内核
+    const $children = instance.$children;
+    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+    for (let i = $children.length - 1; i >= 0; i--) {
+        const childVm = $children[i];
+        if (childVm.$scope._$vueId === vuePid) {
+            return childVm;
+        }
+    }
+    // 反向递归查找
+    let parentVm;
+    for (let i = $children.length - 1; i >= 0; i--) {
+        parentVm = findVmByVueId($children[i], vuePid);
+        if (parentVm) {
+            return parentVm;
+        }
+    }
+}
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        localeLanguage =
+            normalizeLocale(my.getSystemInfoSync().language) || LOCALE_EN;
+    }
+    return localeLanguage;
+}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -34,6 +86,19 @@ function initBaseInstance(instance, options) {
     ctx.$mpType = options.mpType;
     ctx.$mpPlatform = "mp-alipay";
     ctx.$scope = options.mpInstance;
+    {
+        // mergeVirtualHostAttributes
+        Object.defineProperties(ctx, {
+            // only id
+            [VIRTUAL_HOST_ID]: {
+                get() {
+                    const id = this.$scope.data[VIRTUAL_HOST_ID];
+                    // props in page can be undefined
+                    return id === undefined ? '' : id;
+                },
+            },
+        });
+    }
     // TODO @deprecated
     ctx.$mp = {};
     if (__VUE_OPTIONS_API__) {
@@ -197,8 +262,9 @@ function parseApp(instance, parseAppOptions) {
         onLaunch(options) {
             this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
-            if (this.$vm && ctx.$scope) {
+            if (this.$vm && ctx.$scope && ctx.$callHook) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
+                // $scope值在微信小程序混合分包情况下存在，额外用$callHook兼容判断处理
                 return;
             }
             initBaseInstance(internalInstance, {
@@ -210,11 +276,12 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, options);
         },
     };
-    const { onError } = internalInstance;
-    if (onError) {
-        internalInstance.appContext.config.errorHandler = (err) => {
-            instance.$callHook(ON_ERROR, err);
-        };
+    const onErrorHandlers = my.$onErrorHandlers;
+    if (onErrorHandlers) {
+        onErrorHandlers.forEach((fn) => {
+            injectHook(ON_ERROR, fn, internalInstance);
+        });
+        onErrorHandlers.length = 0;
     }
     initLocale(instance);
     const vueOptions = instance.$.type;
@@ -282,7 +349,7 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(my.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(getLocaleLanguage());
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;
@@ -291,50 +358,6 @@ function initLocale(appVm) {
             locale.value = v;
         },
     });
-}
-
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function findVmByVueId(instance, vuePid) {
-    // 标准 vue3 中 没有 $children，定制了内核
-    const $children = instance.$children;
-    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-    for (let i = $children.length - 1; i >= 0; i--) {
-        const childVm = $children[i];
-        if (childVm.$scope._$vueId === vuePid) {
-            return childVm;
-        }
-    }
-    // 反向递归查找
-    let parentVm;
-    for (let i = $children.length - 1; i >= 0; i--) {
-        parentVm = findVmByVueId($children[i], vuePid);
-        if (parentVm) {
-            return parentVm;
-        }
-    }
 }
 
 const builtInProps = [
@@ -365,20 +388,23 @@ function initDefaultProps(options, isBehavior = false) {
             };
         });
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+        function observerSlots(newVal) {
+            const $slots = Object.create(null);
+            newVal &&
+                newVal.forEach((slotName) => {
+                    $slots[slotName] = true;
+                });
+            this.setData({
+                $slots,
+            });
+        }
         properties.uS = {
             type: null,
             value: [],
-            observer: function (newVal) {
-                const $slots = Object.create(null);
-                newVal &&
-                    newVal.forEach((slotName) => {
-                        $slots[slotName] = true;
-                    });
-                this.setData({
-                    $slots,
-                });
-            },
         };
+        {
+            properties.uS.observer = observerSlots;
+        }
     }
     if (options.behaviors) {
         // wx://form-field
@@ -403,11 +429,19 @@ function initVirtualHostProps(options) {
     const properties = {};
     {
         {
-            properties.virtualHostStyle = {
+            properties[VIRTUAL_HOST_STYLE] = {
                 type: null,
                 value: '',
             };
-            properties.virtualHostClass = {
+            properties[VIRTUAL_HOST_CLASS] = {
+                type: null,
+                value: '',
+            };
+            properties[VIRTUAL_HOST_HIDDEN] = {
+                type: null,
+                value: '',
+            };
+            properties[VIRTUAL_HOST_ID] = {
                 type: null,
                 value: '',
             };
@@ -424,23 +458,26 @@ function initProps(mpComponentOptions) {
     if (!mpComponentOptions.properties) {
         mpComponentOptions.properties = {};
     }
-    extend(mpComponentOptions.properties, initDefaultProps(mpComponentOptions), initVirtualHostProps(mpComponentOptions.options));
+    extend(mpComponentOptions.properties, initDefaultProps(mpComponentOptions), initVirtualHostProps());
 }
 function findPropsData(properties, isPage) {
     return ((isPage
         ? findPagePropsData(properties)
-        : findComponentPropsData(properties.uP)) || {});
+        : findComponentPropsData(resolvePropValue(properties.uP))) || {});
 }
 function findPagePropsData(properties) {
     const propsData = {};
     if (isPlainObject(properties)) {
         Object.keys(properties).forEach((name) => {
             if (builtInProps.indexOf(name) === -1) {
-                propsData[name] = properties[name];
+                propsData[name] = resolvePropValue(properties[name]);
             }
         });
     }
     return propsData;
+}
+function resolvePropValue(prop) {
+    return prop;
 }
 
 function initData(_) {
@@ -796,7 +833,9 @@ function initCreatePage() {
         vueOptions = vueOptions.default || vueOptions;
         const pageOptions = {
             onLoad(query) {
-                this.options = query;
+                {
+                    this.options = query;
+                }
                 this.$page = {
                     fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
                 };

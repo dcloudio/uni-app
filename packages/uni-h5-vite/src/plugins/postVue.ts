@@ -36,7 +36,9 @@ export function uniPostVuePlugin(): Plugin {
       )
       return {
         code: code, // 暂不提供sourcemap,意义不大
-        map: null,
+        map: {
+          mappings: '',
+        },
       }
     },
   }

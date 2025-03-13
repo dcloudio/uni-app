@@ -1,9 +1,16 @@
 import { camelize } from '@vue/shared'
+import { createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared'
+
+const rpx2Unit = createRpx2Unit(
+  defaultRpx2Unit.unit,
+  defaultRpx2Unit.unitRatio,
+  defaultRpx2Unit.unitPrecision
+)
 
 function transformRpx(value: string) {
   if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
     return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`
+      return rpx2Unit(num + 'rpx')
     })
   }
   return value
@@ -11,6 +18,9 @@ function transformRpx(value: string) {
 
 export class UniElement extends HTMLElement {
   private _props: Record<string, any> = {}
+  //#if _X_
+  _page: UniPage | null = null
+  //#endif
   public __isUniElement: boolean
   constructor() {
     super()
@@ -23,10 +33,45 @@ export class UniElement extends HTMLElement {
 
   getAttribute(qualifiedName: string): string | null {
     const name = camelize(qualifiedName)
-    return name in this._props
-      ? this._props[name] + ''
-      : super.getAttribute(qualifiedName) || null
+    const attr =
+      name in this._props
+        ? this._props[name] + ''
+        : super.getAttribute(qualifiedName)
+    return attr === undefined ? null : attr
   }
+  //#if _X_
+  getPage() {
+    if (this._page) {
+      return this._page
+    }
+    let parent = this.parentNode as UniElement | null
+    while (parent && !parent._page) {
+      parent = parent.parentNode as UniElement | null
+    }
+    return parent?._page || null
+  }
+
+  getBoundingClientRectAsync(callback) {
+    if (callback) {
+      const domRect = this.getBoundingClientRect()
+      try {
+        callback.success?.(domRect)
+      } catch (error) {
+        console.error(error)
+      }
+      try {
+        callback.complete?.(domRect)
+      } catch (error) {
+        console.error(error)
+      }
+      return
+    }
+    return new Promise((resolve, reject) => {
+      const domRect = this.getBoundingClientRect()
+      resolve(domRect)
+    })
+  }
+  //#endif
 
   get style() {
     const originalStyle = super.style

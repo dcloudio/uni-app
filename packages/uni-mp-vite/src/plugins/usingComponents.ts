@@ -1,8 +1,9 @@
 import path from 'path'
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin } from 'vite'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
   EXTNAME_VUE,
+  enableSourceMap,
   isAppVue,
   isMiniProgramPageFile,
   parseMainDescriptor,
@@ -15,7 +16,6 @@ import {
   updateMiniProgramComponentsByMainFilename,
   updateMiniProgramComponentsByScriptFilename,
   updateMiniProgramComponentsByTemplateFilename,
-  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from './entry'
 import type { CustomPluginOptions, ResolvedId } from 'rollup'
@@ -34,19 +34,15 @@ export function uniUsingComponentsPlugin(
     })
   }
   const inputDir = process.env.UNI_INPUT_DIR
-  let resolvedConfig: ResolvedConfig
   return {
     name: 'uni:mp-using-component',
     enforce: 'post',
-    configResolved(config) {
-      resolvedConfig = config
-    },
     async transform(source, id) {
       const { filename, query } = parseVueRequest(id)
       if (isAppVue(filename)) {
         return null
       }
-      const sourceMap = withSourcemap(resolvedConfig)
+      const sourceMap = enableSourceMap()
       const dynamicImportOptions = {
         id,
         sourceMap,

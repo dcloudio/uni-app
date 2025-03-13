@@ -1,12 +1,20 @@
 import {
   type DirectiveNode,
   NodeTypes,
+  type SimpleExpressionNode,
   createCompoundExpression,
+  createSimpleExpression,
   isSlotOutlet,
 } from '@vue/compiler-core'
 
 import type { NodeTransform } from '../transform'
-import { ATTR_VUE_SLOTS, rewriteExpression } from './utils'
+import {
+  ATTR_ELEMENT_ID,
+  ATTR_SET_ELEMENT_ANIMATION,
+  ATTR_SET_ELEMENT_STYLE,
+  ATTR_VUE_SLOTS,
+  rewriteExpression,
+} from './utils'
 import {
   createVirtualHostClass,
   findStaticClassIndex,
@@ -19,6 +27,18 @@ import {
   isStyleBinding,
   rewriteStyle,
 } from './transformStyle'
+import {
+  createVirtualHostHidden,
+  findStaticHiddenIndex,
+  isHiddenBinding,
+  rewriteHidden,
+} from './transformHidden'
+import {
+  createVirtualHostId,
+  findStaticIdIndex,
+  isIdBinding,
+  rewriteId,
+} from './transformId'
 import { TO_DISPLAY_STRING } from '../runtimeHelpers'
 import { rewriteSlot } from './transformSlot'
 import { rewriteVSlot } from './vSlot'
@@ -28,8 +48,12 @@ import {
   rewriteBinding,
   rewritePropsBinding,
 } from './transformComponent'
-import { isUserComponent } from '@dcloudio/uni-cli-shared'
+import {
+  isSimpleExpressionNode,
+  isUserComponent,
+} from '@dcloudio/uni-cli-shared'
 import { isString, isSymbol } from '@vue/shared'
+import { rewriteId as rewriteIdX } from './transformUniElement'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
@@ -59,12 +83,8 @@ export const transformIdentifier: NodeTransform = (node, context) => {
     } else if (node.type === NodeTypes.ELEMENT) {
       let hasClassBinding = false
       let hasStyleBinding = false
-
-      rewriteRef(node, context)
-
-      if (isUserComponent(node, context)) {
-        rewriteBinding(node, context)
-      }
+      let hasHiddenBinding = false
+      let hasIdBinding = false
 
       const { props } = node
       const virtualHost = !!(
@@ -72,7 +92,61 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         context.rootNode === node
       )
 
+      rewriteRef(node, context)
+
+      if (context.isX) {
+        if (virtualHost) {
+          for (let i = 0; i < props.length; i++) {
+            const dir = props[i]
+            if (dir.type === NodeTypes.DIRECTIVE) {
+              if (isIdBinding(dir)) {
+                hasIdBinding = true
+                rewriteId(i, dir, props, virtualHost, context, true)
+              }
+            }
+          }
+          if (!hasIdBinding) {
+            hasIdBinding = true
+            props.push(createVirtualHostId(props, context, true))
+          }
+          const staticIdIndex = findStaticIdIndex(props)
+          if (staticIdIndex > -1) {
+            props.splice(staticIdIndex, 1)
+          }
+        }
+        rewriteIdX(node, context)
+      }
+
+      if (isUserComponent(node, context)) {
+        rewriteBinding(node, context)
+      }
+
+      let elementId: string = ''
+      let skipIndex: number[] = []
+      // 第一步：在 x 中，先处理 id 属性，用于提前获取 elementId 对应的变量名
+      if (context.isX) {
+        for (let i = 0; i < props.length; i++) {
+          const dir = props[i]
+          if (dir.type === NodeTypes.DIRECTIVE) {
+            const { arg, exp } = dir
+            if (arg && exp && isSimpleExpressionNode(arg)) {
+              if (arg.content === 'id' || arg.content === ATTR_ELEMENT_ID) {
+                dir.exp = rewriteExpression(exp, context)
+                elementId = (dir.exp as SimpleExpressionNode).content
+                skipIndex.push(i)
+              }
+            }
+          }
+        }
+      }
+
       for (let i = 0; i < props.length; i++) {
+        if (context.isX) {
+          // 已经处理过了
+          if (skipIndex.includes(i)) {
+            continue
+          }
+        }
         const dir = props[i]
         if (dir.type === NodeTypes.DIRECTIVE) {
           const arg = dir.arg
@@ -98,11 +172,32 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               rewriteClass(i, dir, props, virtualHost, context)
             } else if (isStyleBinding(dir)) {
               hasStyleBinding = true
-              rewriteStyle(i, dir, props, virtualHost, context)
+              rewriteStyle(i, dir, props, virtualHost, context, elementId)
+            } else if (isHiddenBinding(dir)) {
+              hasHiddenBinding = true
+              rewriteHidden(i, dir, props, virtualHost, context)
+            } else if (isIdBinding(dir)) {
+              hasIdBinding = true
+              rewriteId(i, dir, props, virtualHost, context)
             } else if (isPropsBinding(dir)) {
               rewritePropsBinding(dir, node, context)
             } else {
-              dir.exp = rewriteExpression(exp, context)
+              if (
+                context.isX &&
+                elementId &&
+                arg &&
+                isSimpleExpressionNode(arg)
+              ) {
+                if (arg.content === ATTR_SET_ELEMENT_STYLE) {
+                  dir.exp = createSimpleExpression(`$eS[${elementId}]`)
+                } else if (arg.content === ATTR_SET_ELEMENT_ANIMATION) {
+                  dir.exp = createSimpleExpression(`$eA[${elementId}]`)
+                } else {
+                  dir.exp = rewriteExpression(exp, context)
+                }
+              } else {
+                dir.exp = rewriteExpression(exp, context)
+              }
             }
           }
         }
@@ -116,6 +211,14 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           hasStyleBinding = true
           props.push(createVirtualHostStyle(props, context))
         }
+        if (!hasHiddenBinding) {
+          hasHiddenBinding = true
+          props.push(createVirtualHostHidden(props, context))
+        }
+        if (!hasIdBinding) {
+          hasIdBinding = true
+          props.push(createVirtualHostId(props, context))
+        }
       }
       if (hasClassBinding) {
         const staticClassIndex = findStaticClassIndex(props)
@@ -127,6 +230,18 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         const staticStyleIndex = findStaticStyleIndex(props)
         if (staticStyleIndex > -1) {
           props.splice(staticStyleIndex, 1)
+        }
+      }
+      if (hasHiddenBinding) {
+        const staticHiddenIndex = findStaticHiddenIndex(props)
+        if (staticHiddenIndex > -1) {
+          props.splice(staticHiddenIndex, 1)
+        }
+      }
+      if (hasIdBinding) {
+        const staticIdIndex = findStaticIdIndex(props)
+        if (staticIdIndex > -1) {
+          props.splice(staticIdIndex, 1)
         }
       }
     }

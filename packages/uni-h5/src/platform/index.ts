@@ -31,3 +31,6 @@ export const getEnv: (() => Env) | undefined = () => ({
   CACHE_PATH: '',
   USER_DATA_PATH: '',
 })
+//#if _X_
+export { registerSystemRoute } from '../x/framework/route'
+//#endif

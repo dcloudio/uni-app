@@ -1,6 +1,10 @@
 import MagicString from 'magic-string'
 import type { BindingMetadata, SFCDescriptor } from '@vue/compiler-sfc'
-import { addUniModulesExtApiComponents } from '@dcloudio/uni-cli-shared'
+import {
+  addUTSEasyComAutoImports,
+  addUniModulesExtApiComponents,
+  enableSourceMap,
+} from '@dcloudio/uni-cli-shared'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
 import type { ScriptCompileContext } from './context'
 import { hasConsole, rewriteConsole } from './rewriteConsole'
@@ -11,6 +15,7 @@ import { resolveDefineCode } from './utils'
 import { resolveGenTemplateCodeOptions } from '../../template'
 import { addExtApiComponents } from '../../../../../utils'
 import { genTemplateCode } from '../../../code/template'
+import type { TransformPluginContext } from 'rollup'
 
 export function processNormalScript(
   ctx: ScriptCompileContext,
@@ -106,7 +111,8 @@ export function processTemplate(
     bindingMetadata?: BindingMetadata
     className: string
     rootDir: string
-  }
+  },
+  pluginContext?: TransformPluginContext
 ) {
   const options = resolveGenTemplateCodeOptions(
     relativeFilename,
@@ -117,13 +123,18 @@ export function processTemplate(
       inline: !!sfc.scriptSetup,
       className,
       rootDir,
-      sourceMap:
-        process.env.NODE_ENV === 'development' &&
-        process.env.UNI_COMPILE_TARGET !== 'uni_modules',
+      sourceMap: enableSourceMap(),
       bindingMetadata,
-    }
+    },
+    pluginContext
   )
-  const { code, preamble, elements, map } = genTemplateCode(sfc, options)
+  const { code, preamble, elements, map, easyComponentAutoImports } =
+    genTemplateCode(sfc, options)
+  if (easyComponentAutoImports) {
+    Object.keys(easyComponentAutoImports).forEach((source) => {
+      addUTSEasyComAutoImports(source, easyComponentAutoImports[source])
+    })
+  }
 
   if (process.env.NODE_ENV === 'production') {
     const components = elements.filter((element) => {

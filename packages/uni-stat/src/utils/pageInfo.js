@@ -1,6 +1,6 @@
 import { sys } from './util.js'
 
-import { STAT_URL, STAT_VERSION, DIFF_TIME } from '../config.ts'
+import { DIFF_TIME, STAT_URL, STAT_VERSION } from '../config.ts'
 import {
 	dbGet,
 	dbSet,
@@ -141,6 +141,8 @@ export const get_platform_name = () => {
   const platformList = {
     app: 'n',
     'app-plus': 'n',
+    'app-harmony':'n',
+    'mp-harmony':'mhm',
     h5: 'h5',
     'mp-weixin': 'wx',
     [aliArr.reverse().join('')]: 'ali',
@@ -151,6 +153,7 @@ export const get_platform_name = () => {
     'mp-kuaishou': 'ks',
     'mp-lark': 'lark',
     'quickapp-webview': 'qw',
+    'mp-xhs': 'xhs'
   }
   if (platformList[process.env.VUE_APP_PLATFORM] === 'ali') {
     if (my && my.env) {
@@ -160,7 +163,7 @@ export const get_platform_name = () => {
       // TODO 缺少 ali 下的其他平台
     }
   }
-  return platformList[process.env.VUE_APP_PLATFORM]
+  return platformList[process.env.VUE_APP_PLATFORM] || process.env.VUE_APP_PLATFORM
 }
 
 /**
@@ -476,13 +479,16 @@ export const uni_cloud_config = () => {
 export const get_space = (config) => {
   const uniCloudConfig = uni_cloud_config()
   const { spaceId, provider, clientSecret ,secretKey,secretId} = uniCloudConfig
-  const space_type = ['tcb', 'tencent', 'aliyun','alipay']
+  const space_type = ['tcb', 'tencent', 'aliyun','alipay','private','dcloud']
   const is_provider = space_type.indexOf(provider) !== -1
   const is_aliyun = provider === 'aliyun' && spaceId && clientSecret
   const is_tcb = (provider === 'tcb' || provider === 'tencent') && spaceId
   const is_alipay = provider === 'alipay' && spaceId && secretKey && secretId
 
-  if (is_provider && (is_aliyun || is_tcb || is_alipay)) {
+  const is_private = provider === 'private' && spaceId && clientSecret
+  const is_dcloud = provider === 'dcloud' && spaceId && clientSecret
+
+  if (is_provider && (is_aliyun || is_tcb || is_alipay || is_private || is_dcloud)) {
     return uniCloudConfig
   } else {
     if (config && config.spaceId) {

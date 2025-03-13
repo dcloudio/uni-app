@@ -62,6 +62,10 @@ export const miniProgram: MiniProgramCompilerOptions = {
     vShow: COMPONENT_CUSTOM_HIDDEN,
     getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
   },
+  filter: {
+    lang: 'wxs',
+    setStyle: true,
+  },
 }
 
 export const options: UniMiniProgramPluginOptions = {

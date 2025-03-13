@@ -1,5 +1,4 @@
 export * from './ui/index'
-export * from './ui/index'
 export * from './keyboard/keyboard'
 export { canIUse } from './base/canIUse'
 export { navigateTo } from './route/navigateTo'
@@ -12,6 +11,7 @@ export { openLocation } from './location/openLocation/index'
 export { getLocation } from './location/getLocation'
 export {
   startLocationUpdate,
+  startLocationUpdateBackground,
   stopLocationUpdate,
   onLocationChange,
   offLocationChange,
@@ -34,6 +34,7 @@ export {
   createVideoContext,
   getSelectedTextRange,
   onWindowResize,
+  offWindowResize,
   createAnimation,
   createSelectorQuery,
   createIntersectionObserver,
@@ -42,5 +43,23 @@ export {
   getEnterOptionsSync,
   base64ToArrayBuffer,
   arrayBufferToBase64,
+  onTabBarMidButtonTap,
+  upx2px,
+  onCreateVueApp,
+  setPageMeta,
+  onAppHide,
+  onAppShow,
+  onError,
+  onPageNotFound,
+  onUnhandledRejection,
+  offAppHide,
+  offAppShow,
+  offError,
+  offPageNotFound,
+  offUnhandledRejection,
+  $emit,
+  $on,
+  $off,
+  $once,
 } from '@dcloudio/uni-api'
 export { pageScrollTo } from '@dcloudio/uni-app-plus/service/api'

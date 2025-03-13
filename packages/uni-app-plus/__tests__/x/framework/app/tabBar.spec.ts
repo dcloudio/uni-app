@@ -1,4 +1,4 @@
-import { fixBorderStyle } from '../../../../src/x/framework/app/tabBar'
+import { fixBorderStyle } from '../../../../src/x/framework/app/utils'
 
 describe('test tabBar', () => {
   it('定义存在', () => {
@@ -44,12 +44,12 @@ describe('test tabBar', () => {
     expect(tabBarConfig4.get('borderStyle')).toBe('blue')
   })
 
-  it('都不设置', () => {
+  it('都不设置 回退半透明黑', () => {
     const tabBarConfig6 = new Map([
       ['borderStyle', undefined],
       ['borderColor', undefined],
     ])
     fixBorderStyle(tabBarConfig6)
-    expect(tabBarConfig6.get('borderStyle')).toBe(undefined)
+    expect(tabBarConfig6.get('borderStyle')).toBe('rgba(0, 0, 0, 0.33)')
   })
 })

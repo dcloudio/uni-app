@@ -6,6 +6,7 @@ import {
   cssPostPlugin,
   getPlatformManifestJsonOnce,
   initPostcssPlugin,
+  isNormalCompileTarget,
   isUniPageSfcFile,
   isVueSfcFile,
   normalizePath,
@@ -71,10 +72,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
               return 'app.css'
             } else if (isUniPageSfcFile(id, inputDir)) {
               return normalizeCssChunkFilename(id)
-            } else if (
-              process.env.UNI_COMPILE_TARGET === 'uni_modules' &&
-              isVueSfcFile(id)
-            ) {
+            } else if (!isNormalCompileTarget() && isVueSfcFile(id)) {
               return normalizeCssChunkFilename(id)
             }
           },
@@ -100,7 +98,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
       },
     }),
     generateBundle(_, bundle) {
-      if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+      if (isNormalCompileTarget()) {
         this.emitFile({
           fileName: '__uniappview.html',
           source: genViewHtml(bundle),
@@ -120,13 +118,15 @@ function genViewHtml(bundle: OutputBundle) {
     process.env.UNI_INPUT_DIR,
     process.env.UNI_PLATFORM
   )
-  const { darkmode = false } = getPlatformManifestJsonOnce()
+  const platformConfig = getPlatformManifestJsonOnce()
+  const { darkmode = false } = platformConfig
   const __uniConfig = {
     globalStyle: {
       rpxCalcMaxDeviceWidth: (globalStyle as any).rpxCalcMaxDeviceWidth,
       rpxCalcBaseDeviceWidth: (globalStyle as any).rpxCalcBaseDeviceWidth,
     },
     darkmode,
+    qqMapKey: platformConfig?.distribute?.sdkConfigs?.maps?.tencent?.key,
   }
   const wxsCode = bundle[APP_WXS_JS]
     ? `<script src="${APP_WXS_JS}"></script>`

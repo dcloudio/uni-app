@@ -1,7 +1,108 @@
-import { SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
-import { isArray, hasOwn, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
-import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+import { VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
+import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
+import { injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
+
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+const EXTRAS = ['externalClasses'];
+function initExtraOptions(miniProgramComponentOptions, vueOptions) {
+    EXTRAS.forEach((name) => {
+        if (hasOwn(vueOptions, name)) {
+            miniProgramComponentOptions[name] = vueOptions[name];
+        }
+    });
+}
+const WORKLET_RE = /_(.*)_worklet_factory_/;
+function initWorkletMethods(mpMethods, vueMethods) {
+    if (vueMethods) {
+        Object.keys(vueMethods).forEach((name) => {
+            const matches = name.match(WORKLET_RE);
+            if (matches) {
+                const workletName = matches[1];
+                mpMethods[name] = vueMethods[name];
+                mpMethods[workletName] = vueMethods[workletName];
+            }
+        });
+    }
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function selectAllComponents(mpInstance, selector, $refs) {
+    const components = mpInstance.selectAllComponents(selector);
+    components.forEach((component) => {
+        const ref = component.properties.uR;
+        $refs[ref] = component.$vm || component;
+    });
+}
+function initRefs(instance, mpInstance) {
+    Object.defineProperty(instance, 'refs', {
+        get() {
+            const $refs = {};
+            selectAllComponents(mpInstance, '.r', $refs);
+            const forComponents = mpInstance.selectAllComponents('.r-i-f');
+            forComponents.forEach((component) => {
+                const ref = component.properties.uR;
+                if (!ref) {
+                    return;
+                }
+                if (!$refs[ref]) {
+                    $refs[ref] = [];
+                }
+                $refs[ref].push(component.$vm || component);
+            });
+            return $refs;
+        },
+    });
+}
+function findVmByVueId(instance, vuePid) {
+    // 标准 vue3 中 没有 $children，定制了内核
+    const $children = instance.$children;
+    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+    for (let i = $children.length - 1; i >= 0; i--) {
+        const childVm = $children[i];
+        if (childVm.$scope._$vueId === vuePid) {
+            return childVm;
+        }
+    }
+    // 反向递归查找
+    let parentVm;
+    for (let i = $children.length - 1; i >= 0; i--) {
+        parentVm = findVmByVueId($children[i], vuePid);
+        if (parentVm) {
+            return parentVm;
+        }
+    }
+}
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        const appBaseInfo = wx.getAppBaseInfo();
+        const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
+        localeLanguage = normalizeLocale(language) || LOCALE_EN;
+    }
+    return localeLanguage;
+}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -28,6 +129,19 @@ function initBaseInstance(instance, options) {
     ctx.$mpType = options.mpType;
     ctx.$mpPlatform = "mp-weixin";
     ctx.$scope = options.mpInstance;
+    {
+        // mergeVirtualHostAttributes
+        Object.defineProperties(ctx, {
+            // only id
+            [VIRTUAL_HOST_ID]: {
+                get() {
+                    const id = this.$scope.data[VIRTUAL_HOST_ID];
+                    // props in page can be undefined
+                    return id === undefined ? '' : id;
+                },
+            },
+        });
+    }
     // TODO @deprecated
     ctx.$mp = {};
     if (__VUE_OPTIONS_API__) {
@@ -196,8 +310,9 @@ function parseApp(instance, parseAppOptions) {
         onLaunch(options) {
             this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
-            if (this.$vm && ctx.$scope) {
+            if (this.$vm && ctx.$scope && ctx.$callHook) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
+                // $scope值在微信小程序混合分包情况下存在，额外用$callHook兼容判断处理
                 return;
             }
             initBaseInstance(internalInstance, {
@@ -209,11 +324,12 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, options);
         },
     };
-    const { onError } = internalInstance;
-    if (onError) {
-        internalInstance.appContext.config.errorHandler = (err) => {
-            instance.$callHook(ON_ERROR, err);
-        };
+    const onErrorHandlers = wx.$onErrorHandlers;
+    if (onErrorHandlers) {
+        onErrorHandlers.forEach((fn) => {
+            injectHook(ON_ERROR, fn, internalInstance);
+        });
+        onErrorHandlers.length = 0;
     }
     initLocale(instance);
     const vueOptions = instance.$.type;
@@ -223,19 +339,16 @@ function parseApp(instance, parseAppOptions) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
     }
-    if (parseAppOptions) {
-        parseAppOptions.parse(appOptions);
-    }
     return appOptions;
 }
 function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
-        return App(parseApp(vm, parseAppOptions));
+        return App(parseApp(vm));
     };
 }
 function initCreateSubpackageApp(parseAppOptions) {
     return function createApp(vm) {
-        const appOptions = parseApp(vm, parseAppOptions);
+        const appOptions = parseApp(vm);
         const app = isFunction(getApp) &&
             getApp({
                 allowDefault: true,
@@ -281,7 +394,7 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(getLocaleLanguage());
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;
@@ -290,98 +403,6 @@ function initLocale(appVm) {
             locale.value = v;
         },
     });
-}
-
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-const EXTRAS = ['externalClasses'];
-function initExtraOptions(miniProgramComponentOptions, vueOptions) {
-    EXTRAS.forEach((name) => {
-        if (hasOwn(vueOptions, name)) {
-            miniProgramComponentOptions[name] = vueOptions[name];
-        }
-    });
-}
-const WORKLET_RE = /_(.*)_worklet_factory_/;
-function initWorkletMethods(mpMethods, vueMethods) {
-    if (vueMethods) {
-        Object.keys(vueMethods).forEach((name) => {
-            const matches = name.match(WORKLET_RE);
-            if (matches) {
-                const workletName = matches[1];
-                mpMethods[name] = vueMethods[name];
-                mpMethods[workletName] = vueMethods[workletName];
-            }
-        });
-    }
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function selectAllComponents(mpInstance, selector, $refs) {
-    const components = mpInstance.selectAllComponents(selector);
-    components.forEach((component) => {
-        const ref = component.properties.uR;
-        $refs[ref] = component.$vm || component;
-    });
-}
-function initRefs(instance, mpInstance) {
-    Object.defineProperty(instance, 'refs', {
-        get() {
-            const $refs = {};
-            selectAllComponents(mpInstance, '.r', $refs);
-            const forComponents = mpInstance.selectAllComponents('.r-i-f');
-            forComponents.forEach((component) => {
-                const ref = component.properties.uR;
-                if (!ref) {
-                    return;
-                }
-                if (!$refs[ref]) {
-                    $refs[ref] = [];
-                }
-                $refs[ref].push(component.$vm || component);
-            });
-            return $refs;
-        },
-    });
-}
-function findVmByVueId(instance, vuePid) {
-    // 标准 vue3 中 没有 $children，定制了内核
-    const $children = instance.$children;
-    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-    for (let i = $children.length - 1; i >= 0; i--) {
-        const childVm = $children[i];
-        if (childVm.$scope._$vueId === vuePid) {
-            return childVm;
-        }
-    }
-    // 反向递归查找
-    let parentVm;
-    for (let i = $children.length - 1; i >= 0; i--) {
-        parentVm = findVmByVueId($children[i], vuePid);
-        if (parentVm) {
-            return parentVm;
-        }
-    }
 }
 
 const builtInProps = [
@@ -412,20 +433,23 @@ function initDefaultProps(options, isBehavior = false) {
             };
         });
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+        function observerSlots(newVal) {
+            const $slots = Object.create(null);
+            newVal &&
+                newVal.forEach((slotName) => {
+                    $slots[slotName] = true;
+                });
+            this.setData({
+                $slots,
+            });
+        }
         properties.uS = {
             type: null,
             value: [],
-            observer: function (newVal) {
-                const $slots = Object.create(null);
-                newVal &&
-                    newVal.forEach((slotName) => {
-                        $slots[slotName] = true;
-                    });
-                this.setData({
-                    $slots,
-                });
-            },
         };
+        {
+            properties.uS.observer = observerSlots;
+        }
     }
     if (options.behaviors) {
         // wx://form-field
@@ -450,11 +474,19 @@ function initVirtualHostProps(options) {
     const properties = {};
     {
         if ((options && options.virtualHost)) {
-            properties.virtualHostStyle = {
+            properties[VIRTUAL_HOST_STYLE] = {
                 type: null,
                 value: '',
             };
-            properties.virtualHostClass = {
+            properties[VIRTUAL_HOST_CLASS] = {
+                type: null,
+                value: '',
+            };
+            properties[VIRTUAL_HOST_HIDDEN] = {
+                type: null,
+                value: '',
+            };
+            properties[VIRTUAL_HOST_ID] = {
                 type: null,
                 value: '',
             };
@@ -527,14 +559,14 @@ function initPageProps({ properties }, rawProps) {
 function findPropsData(properties, isPage) {
     return ((isPage
         ? findPagePropsData(properties)
-        : findComponentPropsData(properties.uP)) || {});
+        : findComponentPropsData(resolvePropValue(properties.uP))) || {});
 }
 function findPagePropsData(properties) {
     const propsData = {};
     if (isPlainObject(properties)) {
         Object.keys(properties).forEach((name) => {
             if (builtInProps.indexOf(name) === -1) {
-                propsData[name] = properties[name];
+                propsData[name] = resolvePropValue(properties[name]);
             }
         });
     }
@@ -556,6 +588,9 @@ function initFormField(vm) {
         });
     }
 }
+function resolvePropValue(prop) {
+    return prop;
+}
 
 function initData(_) {
     return {};
@@ -567,11 +602,11 @@ function initPropsObserver(componentOptions) {
             return;
         }
         if (this.$vm) {
-            updateComponentProps(up, this.$vm.$);
+            updateComponentProps(resolvePropValue(up), this.$vm.$);
         }
-        else if (this.properties.uT === 'm') {
+        else if (resolvePropValue(this.properties.uT) === 'm') {
             // 小程序组件
-            updateMiniProgramComponentProperties(up, this);
+            updateMiniProgramComponentProperties(resolvePropValue(up), this);
         }
     };
     {
@@ -650,7 +685,7 @@ function applyOptions(componentOptions, vueOptions) {
     componentOptions.behaviors = initBehaviors(vueOptions);
 }
 
-function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handleLink, initLifetimes, }) {
+function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, initRelation, handleLink, initLifetimes, }) {
     vueOptions = vueOptions.default || vueOptions;
     const options = {
         multipleSlots: true,
@@ -739,6 +774,7 @@ function parsePage(vueOptions, parseOptions) {
     const miniProgramPageOptions = parseComponent(vueOptions, {
         mocks,
         isPage,
+        isPageInProject: true,
         initRelation,
         handleLink,
         initLifetimes,
@@ -746,7 +782,9 @@ function parsePage(vueOptions, parseOptions) {
     initPageProps(miniProgramPageOptions, (vueOptions.default || vueOptions).props);
     const methods = miniProgramPageOptions.methods;
     methods.onLoad = function (query) {
-        this.options = query;
+        {
+            this.options = query;
+        }
         this.$page = {
             fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
         };
@@ -769,7 +807,7 @@ function initCreatePage(parseOptions) {
 
 function initCreatePluginApp(parseAppOptions) {
     return function createApp(vm) {
-        initAppLifecycle(parseApp(vm, parseAppOptions), vm);
+        initAppLifecycle(parseApp(vm), vm);
         if (process.env.UNI_MP_PLUGIN) {
             wx.$vm = vm;
         }
@@ -781,7 +819,10 @@ const MPComponent = Component;
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
     const newTriggerEvent = function (event, ...args) {
-        return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
+        return oldTriggerEvent.apply(mpInstance, [
+            customizeEvent(event),
+            ...args,
+        ]);
     };
     // 京东小程序triggerEvent为只读属性
     try {
@@ -849,11 +890,23 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                     initComponentInstance(instance, options);
                 },
             });
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' +
+                    Date.now() +
+                    '][' +
+                    (mpInstance.is || mpInstance.route) +
+                    '][' +
+                    this.$vm.$.uid +
+                    ']attached');
+            }
             if (!isMiniProgramPage) {
                 initFormField(this.$vm);
             }
         },
         ready() {
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
+            }
             // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
             // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
             if (this.$vm) {

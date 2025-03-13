@@ -8,7 +8,6 @@ import type {
   ResolvedConfig,
 } from 'vite'
 import {
-  genEncryptEasyComModuleIndex,
   initCheckEnv,
   parseUniModulesWithComponents,
 } from '../uni_modules.cloud'
@@ -138,6 +137,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
             type: 'asset',
             fileName: pkg,
             name: pkg,
+            originalFileName: null,
             needsCodeReference: false,
             source: genUniModulesPackageJson(
               uniModuleId,
@@ -237,6 +237,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         if (result) {
           const apis = result.inject_apis
           const scopedSlots = result.scoped_slots
+          const customElements = result.custom_elements
           const components = getUniModulesExtApiComponents(uniModule)
           const modules = resolveUTSCompiler().parseInjectModules(
             apis,
@@ -256,6 +257,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
               components,
               modules,
               scopedSlots,
+              customElements,
             })
           )
         }
@@ -302,6 +304,10 @@ function createExternal(config: ResolvedConfig) {
     if (path.isAbsolute(source)) {
       return false
     }
+    // 'virtual:uno.css'
+    if (source.includes(':')) {
+      return false
+    }
     // android 系统库，三方库，iOS 的库呢？一般不包含.
     if (source.includes('.')) {
       return true
@@ -319,16 +325,11 @@ function initEncryptUniModulesAlias(): AliasOptions {
   ]
 }
 
-const indexFiles = ['index.uts', 'index.ts', 'index.js']
-function hasIndexFile(uniModuleDir: string) {
-  return fs.readdirSync(uniModuleDir).some((file) => indexFiles.includes(file))
-}
-
 function initEncryptUniModulesBuildOptions(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string
 ): BuildOptions {
-  const modules = parseUniModulesWithComponents(inputDir)
+  const modules = parseUniModulesWithComponents(inputDir, platform)
   const moduleNames = Object.keys(modules)
   if (!moduleNames.length) {
     throw new Error('No encrypt uni_modules found')
@@ -338,16 +339,8 @@ function initEncryptUniModulesBuildOptions(
   moduleNames.forEach((module) => {
     const moduleDir = path.resolve(inputDir, 'uni_modules', module)
     const indexEncryptFile = path.resolve(moduleDir, 'index.module.uts')
-    const codes: string[] = []
-    if (hasIndexFile(moduleDir)) {
-      codes.push(`export * from './index'`)
-    }
-    // easyCom
-    if (modules[module] && Object.keys(modules[module]).length) {
-      codes.push(genEncryptEasyComModuleIndex(platform, modules[module]))
-    }
-    if (codes.length) {
-      fs.writeFileSync(indexEncryptFile, codes.join(`\n`))
+    if (modules[module]) {
+      fs.writeFileSync(indexEncryptFile, modules[module])
       // 输出 xxx.module ，确保相对路径的准确性，因为真正引用的时候，是从 @/uni_modules/xxx 引入的
       input[module + '.module'] = indexEncryptFile
     }

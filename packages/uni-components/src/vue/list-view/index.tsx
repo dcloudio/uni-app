@@ -36,13 +36,6 @@ export function isHTMlElement(node: Node | null): node is HTMLElement {
   return !!(node && node.nodeType === 1)
 }
 
-export type ListViewItemStatus = {
-  itemId: 'ListItem' | 'StickySection' | 'StickyHeader'
-  visible: Ref<boolean>
-  cachedSize: number
-  seen: Ref<boolean>
-}
-
 function getChildren(root: VNode): VNode[] {
   const children: VNode[] = []
   if (root) {
@@ -185,22 +178,57 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     provide('__listViewIsVertical', isVertical)
     provide('__listViewDefaultItemSize', state.defaultItemSize)
+    provide('__listViewDefaultHeaderSize', state.defaultHeaderSize)
 
-    const onItemChange = debounce(
+    const rearrangeDebounce = debounce(
       () => {
         nextTick(() => {
           _rearrange()
         })
       },
-      10,
+      5,
       { clearTimeout, setTimeout }
     )
-    provide('__listViewRegisterItem', (status: ListViewItemStatus) => {
-      onItemChange()
+    const childStatus: ListItemStatus[] = []
+    provide('__listViewRegisterItem', (status: ListItemStatus) => {
+      childStatus.push(status)
+      rearrangeDebounce()
     })
-    provide('__listViewUnregisterItem', (status: ListViewItemStatus) => {
-      onItemChange()
+    provide('__listViewUnregisterItem', (status: ListItemStatus) => {
+      const index = childStatus.indexOf(status)
+      childStatus.splice(index, 1)
+      rearrangeDebounce()
     })
+    let firstItemRendered = false
+    provide('__listViewFirstItemRendered', (status: ListItemStatus) => {
+      if (firstItemRendered) {
+        return
+      }
+      state.defaultItemSize = status.cachedSize
+      state.defaultItemSizeUpdated = true
+    })
+    watch(
+      () => {
+        return state.defaultHeaderSize
+      },
+      (value) => {
+        rearrangeDebounce()
+      }
+    )
+    watch(
+      () => {
+        return state.defaultItemSize
+      },
+      () => {
+        childStatus.forEach((status) => {
+          if (status.cachedSizeUpdated) {
+            return
+          }
+          status.cachedSize = state.defaultItemSize
+        })
+        rearrangeDebounce()
+      }
+    )
 
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
@@ -224,6 +252,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       state.containerSize = isVertical.value
         ? containerEl.clientHeight
         : containerEl.clientWidth
+      rearrangeDebounce()
     }
 
     watch(isVertical, () => {
@@ -342,47 +371,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       //#endif
     })
 
-    // 列表整体刷新，谨慎使用
-    function forceRearrange() {
-      traverseAllItems(visibleVNode!, (child) => {
-        const exposed = child.component!.exposed
-        if (exposed?.__listViewChildStatus.seen.value) {
-          exposed.__listViewChildStatus.seen.value = false
-        }
-      })
-      nextTick(() => {
-        nextTick(() => {
-          _rearrange()
-        })
-      })
-    }
-
     function onResize() {
-      resetContainerSize()
-      forceRearrange()
-    }
-
-    function traverseAllItems(
-      visibleVNode: VNode,
-      callback: (child: VNode) => void
-    ) {
-      traverseListView(visibleVNode, (child) => {
-        const childType = child.component?.type.name
-        if (childType === 'StickySection') {
-          traverseStickySection(child, function () {
-            const childType = child.component?.type.name
-            if (childType === 'ListItem') {
-              callback(child)
-            }
-          })
-        } else if (childType === 'ListItem') {
-          callback(child)
-        } else if (childType === 'StickyHeader') {
-          // do nothing
-        } else if (child.component && child.component.subTree) {
-          traverseAllItems(child.component.subTree, callback)
-        }
+      childStatus.forEach((status) => {
+        status.cachedSizeUpdated = false
       })
+      resetContainerSize()
     }
 
     // 计算需要显示的item
@@ -400,9 +393,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return `${
         props.direction === 'none'
           ? 'overflow: hidden;'
+          : props.direction === 'all'
+          ? 'overflow: auto;'
           : isVertical.value
-          ? 'overflow-y: auto;'
-          : 'overflow-x: auto;'
+          ? 'overflow: hidden auto;'
+          : 'overflow: auto hidden;'
       }scroll-behavior: ${props.scrollWithAnimation ? 'smooth' : 'auto'};`
     })
     const contentStyle = computed(() => {
@@ -473,6 +468,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
 interface State {
   defaultItemSize: number
+  defaultItemSizeUpdated: boolean
+  defaultHeaderSize: number
+  defaultHeaderSizeUpdated: boolean
   totalSize: number
   placehoderSize: number
   visibleSize: number
@@ -489,12 +487,15 @@ function useListViewState(props: Props) {
   })
   const state: State = reactive({
     defaultItemSize: 40,
+    defaultItemSizeUpdated: false,
+    defaultHeaderSize: 40,
+    defaultHeaderSizeUpdated: false,
     totalSize: 0,
     placehoderSize: 0,
     visibleSize: 0,
     containerSize: 0,
-    cacheScreenCount: 5,
-    loadScreenThreshold: 3,
+    cacheScreenCount: 10,
+    loadScreenThreshold: 8,
     refresherHeight: 0,
     refreshState: '',
   })
@@ -554,7 +555,6 @@ function rearrange(
   let tempPlaceholderSize = 0
   let start = false,
     end = false
-
   function callback(child: VNode) {
     const childType = child.component?.type.name
     const status = child.component?.exposed?.__listViewChildStatus
@@ -564,8 +564,16 @@ function rearrange(
       traverseStickySection(child, callback)
       tempTotalSize += tailSize.value
     } else if (childType === 'ListItem') {
-      const { cachedSize } = status as ListItemStatus
-      const itemSize = cachedSize
+      const { cachedSize, cachedSizeUpdated } = status as ListItemStatus
+      if (
+        cachedSizeUpdated &&
+        cachedSize > 0 &&
+        !state.defaultItemSizeUpdated
+      ) {
+        state.defaultItemSize = cachedSize
+        state.defaultItemSizeUpdated = true
+      }
+      const itemSize = cachedSize || state.defaultItemSize
       tempTotalSize += itemSize
       if (!start && tempTotalSize > offsetMin) {
         start = true
@@ -583,8 +591,16 @@ function rearrange(
         end = true
       }
     } else if (childType === 'StickyHeader') {
-      const { cachedSize } = status as StickyHeaderStatus
-      tempTotalSize += cachedSize
+      const { cachedSize, cachedSizeUpdated } = status as StickyHeaderStatus
+      if (
+        cachedSizeUpdated &&
+        cachedSize > 0 &&
+        !state.defaultHeaderSizeUpdated
+      ) {
+        state.defaultHeaderSize = cachedSize
+        state.defaultHeaderSizeUpdated = true
+      }
+      tempTotalSize += cachedSize || state.defaultHeaderSize
       tempVisibleSize += cachedSize
     }
   }

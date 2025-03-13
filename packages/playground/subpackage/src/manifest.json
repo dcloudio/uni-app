@@ -1,0 +1,8 @@
+{
+    "name" : "static",
+    "appid" : "__UNI__XXXXXXX",
+    "description" : "",
+    "versionName" : "1.0.0",
+    "versionCode" : "100",
+    "vueVersion" : "3"
+}

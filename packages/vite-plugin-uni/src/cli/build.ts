@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import type { BuildOptions, InlineConfig, ServerOptions } from 'vite'
 import { extend } from '@vue/shared'
 import {
+  isNormalCompileTarget,
   normalizeAppManifestJson,
   parseManifestJsonOnce,
   parsePagesJsonOnce,
@@ -152,7 +153,7 @@ export async function buildApp(
       initBuildOptions(options, cleanOptions(options) as BuildOptions)
     )
   )
-  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+  if (!isNormalCompileTarget()) {
     // 不需要 nvue 编译器
     return vueBuilder as RollupWatcher
   }

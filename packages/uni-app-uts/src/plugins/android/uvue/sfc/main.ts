@@ -67,7 +67,11 @@ export async function transformMain(
     return null
   }
 
-  const className = genUTSClassName(relativeFilename, options.classNamePrefix)
+  const className =
+    process.env.UNI_COMPILE_TARGET === 'ext-api'
+      ? // components/map/map.vue => UniMapRender
+        genUTSClassName(path.basename(filename), options.classNamePrefix)
+      : genUTSClassName(relativeFilename, options.classNamePrefix)
 
   // script
   const scriptOptions = {
@@ -88,12 +92,16 @@ export async function transformMain(
     // template
     const isInline = !!descriptor.scriptSetup
     if (!isInline) {
-      const { code, map, preamble } = processTemplate(descriptor, {
-        relativeFilename,
-        bindingMetadata: bindingMetadata,
-        rootDir: options.root,
-        className,
-      })
+      const { code, map, preamble } = processTemplate(
+        descriptor,
+        {
+          relativeFilename,
+          bindingMetadata: bindingMetadata,
+          rootDir: options.root,
+          className,
+        },
+        pluginContext
+      )
       templateCode = code
       templateMap = map
       templatePreambleCode = preamble || ''
@@ -385,7 +393,7 @@ function createTryResolve(
           startPos.column = startPos.column + 1
           endPos.column = endPos.column + 1
           throw createResolveError(
-            consumer.sourceContentFor(startPos.source),
+            consumer.sourceContentFor(startPos.source) ?? '',
             createResolveErrorMsg(source, importer),
             startPos as unknown as Position,
             endPos as unknown as Position

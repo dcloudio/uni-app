@@ -503,10 +503,14 @@ function parseGlobalComponents(ast: Program) {
       }
       const [name, value] = args
       if (!isStringLiteral(name)) {
-        return console.warn(M['mp.component.args[0]'])
+        return console.warn(
+          M['mp.component.args[0]'].replace('{0}', 'app.component')
+        )
       }
       if (!isIdentifier(value)) {
-        return console.warn(M['mp.component.args[1]'])
+        return console.warn(
+          M['mp.component.args[1]'].replace('{0}', 'app.component')
+        )
       }
       bindingComponents[value.name] = {
         tag: name.value,
@@ -609,11 +613,18 @@ export async function transformDynamicImports(
     sourceMap?: boolean
     dynamicImport: (name: string, source: string) => string
   }
-) {
+): Promise<{
+  code: string
+  map: {
+    mappings: ''
+  }
+}> {
   if (!imports.length) {
     return {
       code,
-      map: null,
+      map: {
+        mappings: '',
+      },
     }
   }
   const s = new MagicString(code)
@@ -632,6 +643,8 @@ export async function transformDynamicImports(
   }
   return {
     code: s.toString(),
-    map: null,
+    map: {
+      mappings: '',
+    },
   }
 }

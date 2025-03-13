@@ -1,0 +1,100 @@
+import { UIButton, UIControl } from "UIKit"
+import { INativeButtonContext, CreateNativeButtonContext } from "../interface.uts"
+import { CGFloat } from 'CoreFoundation';
+
+
+export class NativeButton {
+
+	element : UniNativeViewElement;
+	button : UIButton | null;
+
+	constructor(element : UniNativeViewElement) {
+    // 接收组件传递过来的UniNativeViewElement
+		this.element = element;
+		super.init()
+		this.bindView();
+	}
+
+	// element 绑定原生view
+	bindView() {
+    // 初始化原生 UIButton
+    this.button = new UIButton(type=UIButton.ButtonType.system)
+    // 构建方法选择器
+    const method = Selector("buttonClickAction")
+    // button 绑定点击回调方法
+    button?.addTarget(this, action = method, for = UIControl.Event.touchUpInside)
+    // UniNativeViewElement 绑定原生 view
+		this.element.bindIOSView(this.button!);
+	}
+
+	updateText(text : string) {
+    // 更新 button 显示文字
+		this.button?.setTitle(text, for = UIControl.State.normal)
+	}
+
+	/**
+	 * 按钮点击回调方法
+	 * 在 swift 中，所有target-action (例如按钮的点击事件，NotificationCenter 的通知事件等)对应的 action 函数前面都要使用 @objc 进行标记。
+	 */
+	@objc buttonClickAction() {
+    //构建自定义 UniNativeViewEvent 对象
+		let event = new UniNativeViewEvent("customClick")
+    //触发自定义事件
+		this.element.dispatchEvent(event)
+	}
+
+	destroy() {
+    // 释放 UTS 实例对象，避免内存泄露
+		UTSiOS.destroyInstance(this)
+	}
+}
+
+
+function getNativeViewElemet(element: UniElement | null): UniNativeViewElement | null {
+	if (element == null) {
+		return null;
+	}
+	if (element instanceof UniNativeViewElement) {
+		return element as UniNativeViewElement
+	}
+	for (item in element!.children) {
+		let tmp = getNativeViewElemet(item)
+		if (tmp != null) {
+			return tmp
+		}
+	}
+	return null
+}
+
+
+export const createNativeButtonContext: CreateNativeButtonContext =  function (id : string, component ?: ComponentPublicInstance | null) : INativeButtonContext | null {
+	let element : UniNativeViewElement | null = null;
+	let e: UniElement | null = null;
+	if (component == null) {
+		e = uni.getElementById(id)
+	} else {
+		e = component?.$el as UniElement | null;
+	}
+	if (e instanceof UniNativeViewElement) {
+		element = e as UniNativeViewElement | null
+	}else {
+		element =  getNativeViewElemet(e)
+	}
+
+	if (element == null) return null;
+	return new NativeButtonContextImpl(element!);
+}
+
+
+class NativeButtonContextImpl implements INativeButtonContext {
+	btn: UIButton | null
+	constructor(element : UniNativeViewElement) {
+		let view = element.getIOSView()
+		if (view != null) {
+			this.btn = view as UIButton
+		}
+	}
+	updateText(title: string) : void {
+		this.btn?.setTitle(title, for = UIControl.State.normal)
+	}
+}

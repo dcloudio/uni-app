@@ -20,7 +20,7 @@ import { normalizeAppXUniConfig } from './uniConfig'
 import { offsetToLineColumn } from '../../vite/plugins/vitejs/utils'
 import { preUVueJson } from '../../preprocess'
 
-export { parseUniXFlexDirection, parseUniXSplashScreen } from './manifest'
+export * from './manifest'
 interface CheckPagesJsonError extends CompilerError {
   offsetStart: number
   offsetEnd: number
@@ -252,13 +252,22 @@ export function normalizeUniAppXAppConfig(
   pagesJson: UniApp.PagesJson,
   manifestJson: Record<string, any>
 ) {
-  return `const __uniConfig = ${normalizeAppXUniConfig(
-    pagesJson,
-    manifestJson
-  )};
+  const uniConfig = normalizeAppXUniConfig(pagesJson, manifestJson)
+  const tabBar = uniConfig.tabBar
+  delete uniConfig.tabBar
+  let appConfigJs = `const __uniConfig = ${JSON.stringify(uniConfig)};
+__uniConfig.getTabBarConfig = () =>  {return ${
+    tabBar ? JSON.stringify(tabBar) : 'undefined'
+  }};
+__uniConfig.tabBar = __uniConfig.getTabBarConfig();
 const __uniRoutes = ${normalizeAppUniRoutes(
     pagesJson
-  )}.map(uniRoute=>(uniRoute.meta.route=uniRoute.path,__uniConfig.pages.push(uniRoute.path),uniRoute.path='/'+uniRoute.path,uniRoute));
+  )}.map(uniRoute=>(uniRoute.meta.route=uniRoute.path,__uniConfig.pages.push(uniRoute.path),uniRoute.path='/'+uniRoute.path,uniRoute)).concat(typeof __uniSystemRoutes !== 'undefined' ? __uniSystemRoutes : []);
 
 `
+  if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+    appConfigJs += `globalThis.__uniConfig = __uniConfig;
+globalThis.__uniRoutes = __uniRoutes;`
+  }
+  return appConfigJs
 }

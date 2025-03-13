@@ -1,0 +1,38 @@
+{
+    "PreLoginOptions": {
+        "name":"UniVerifyPreLoginOptions",
+        "url":"https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html#typechange"
+    },
+    "LoginOptions": {
+        "name":"UniVerifyLoginOptions",
+        "url":"https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html#typechange"
+    },
+    "CustomLoginOptions": {
+        "name":"UniVerifyCustomLoginOptions",
+        "url":"https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html#typechange"
+    },
+    "PreLoginSuccess": {
+        "name":"UniVerifyPreLoginSuccess",
+        "url":"https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html#typechange"
+    },
+    "PreLoginFail": {
+        "name":"UniVerifyPreLoginFail",
+        "url":"https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html#typechange"
+    },
+    "PreLoginComplete": {
+        "name":"UniVerifyPreLoginComplete",
+        "url":"https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html#typechange"
+    },
+    "LoginSuccess": {
+        "name":"UniVerifyLoginSuccess",
+        "url":"https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html#typechange"
+    },
+    "LoginFail": {
+        "name":"UniVerifyLoginFail",
+        "url":"https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html#typechange"
+    },
+    "LoginComplete": {
+        "name":"UniVerifyLoginComplete",
+        "url":"https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html#typechange"
+    }
+}

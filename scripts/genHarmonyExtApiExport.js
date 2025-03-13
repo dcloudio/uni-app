@@ -3,17 +3,19 @@ const path = require('path')
 const parser = require("@babel/parser")
 const BLACKLIST = [
   'initUniExtApi',
+  'initUniComponentExtApi'
 ]
 
-const harmonyDistDir = path.resolve(__dirname, '../packages/uni-app-harmony/dist')
-const autoImportMap = {
-  '@dcloudio/uni-app-runtime': path.resolve(harmonyDistDir, 'uni.api.ets')
-}
-
-function initAutoImportMap() {
+function initAutoImportMap (isUniAppX = false) {
+  const harmonyDistDir = path.resolve(__dirname, '../packages/uni-app-harmony', isUniAppX ? 'dist-x' : 'dist')
+  const autoImportMap = isUniAppX ? {
+    [path.resolve(harmonyDistDir, 'uni.api.ets')]: '@dcloudio/uni-app-x-runtime'
+  } : {
+    [path.resolve(harmonyDistDir, 'uni.api.ets')]: '@dcloudio/uni-app-runtime'
+  }
   const ohpmPageckageDir = path.resolve(harmonyDistDir, 'packages')
   if (!fs.existsSync(ohpmPageckageDir)) {
-    return
+    return autoImportMap
   }
   const packages = fs.readdirSync(ohpmPageckageDir)
   packages.forEach(package => {
@@ -21,11 +23,12 @@ function initAutoImportMap() {
     if (!fs.existsSync(packageEntryFilePath)) {
       return
     }
-    autoImportMap[`@uni_modules/${package}`] = packageEntryFilePath
+    autoImportMap[packageEntryFilePath] = `@uni_modules/${package.toLowerCase()}`
   })
+  return autoImportMap
 }
 
-function getExportList(filePath) {
+function getExportList (filePath) {
   const file = fs.readFileSync(filePath, 'utf-8')
   const ast = parser.parse(file, {
     sourceType: 'module',
@@ -37,22 +40,30 @@ function getExportList(filePath) {
       if (node.specifiers && node.specifiers.length) {
         node.specifiers.forEach(specifier => {
           if (specifier.exported) {
-            exportNames.push([specifier.exported.name])
+            const exportName = specifier.exported.name
+            if (!BLACKLIST.includes(exportName)) {
+              exportNames.push([exportName])
+            }
           }
         })
       } else if (node.declaration) {
-        exportNames.push([node.declaration.id.name])
+        const exportName = node.declaration.id.name
+        if (!BLACKLIST.includes(exportName)) {
+          exportNames.push([exportName])
+        }
       }
     }
   })
-  return exportNames.filter(name => !BLACKLIST.includes(name))
+  return exportNames
 }
 
-exports.genHarmonyExtApiExport = function () {
-  initAutoImportMap()
+exports.genHarmonyExtApiExport = function (isUniAppX = false) {
+  const autoImportMap = initAutoImportMap(isUniAppX)
   const result = {}
-  Object.keys(autoImportMap).forEach(key => {
-    result[key] = getExportList(autoImportMap[key])
-  })
+  for (const fileName in autoImportMap) {
+    const packageName = autoImportMap[fileName]
+    result[packageName] = result[packageName] || []
+    result[packageName].push(...getExportList(fileName))
+  }
   return result
 }

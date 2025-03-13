@@ -6,8 +6,9 @@ import type {
   MPProtocolObject,
   MPProtocols,
 } from './protocols'
+import { shouldKeepReturnValue } from './protocols/x'
 
-import { isContextApi, isSyncApi } from './promise'
+import { isContextApi, isSyncApi, isTaskApi } from './promise'
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete']
 
@@ -69,6 +70,9 @@ export function initWrapper(protocols: MPProtocols) {
       }
       return toArgs
     } else if (isFunction(fromArgs)) {
+      if (isFunction(argsOption)) {
+        argsOption(fromArgs, {})
+      }
       fromArgs = processCallback(methodName, fromArgs, returnValue)
     }
     return fromArgs
@@ -84,28 +88,47 @@ export function initWrapper(protocols: MPProtocols) {
       // 处理通用 returnValue
       res = protocols.returnValue(methodName, res)
     }
+    const realKeepReturnValue =
+      keepReturnValue || (__X__ && shouldKeepReturnValue(methodName))
     return processArgs(
       methodName,
       res,
       returnValue as MPProtocolArgs,
       {},
-      keepReturnValue
+      realKeepReturnValue
     )
   }
   return function wrapper(methodName: string, method: unknown) {
-    if (!hasOwn(protocols, methodName)) {
+    /**
+     * 注意：
+     * - 此处method为原始全局对象上的uni方法名对应的属性值，比如method值可能为my.login，即undefined
+     * - uni.env并非方法，但是也会被传入wrapper
+     * - 开发者自定义的方法属性也会进入此方法，此时method为undefined，应返回undefined
+     */
+
+    const hasProtocol = hasOwn(protocols, methodName)
+    if (!hasProtocol && typeof __GLOBAL__[methodName] !== 'function') {
       return method
     }
-    const protocol = protocols[methodName] as MPProtocolObject
-    if (!protocol) {
+    const needWrapper =
+      hasProtocol ||
+      isFunction(protocols.returnValue) ||
+      isContextApi(methodName) ||
+      isTaskApi(methodName)
+    const hasMethod = hasProtocol || isFunction(method)
+    if (!hasProtocol && !method) {
       // 暂不支持的 api
       return function () {
         console.error(`__PLATFORM_TITLE__ 暂不支持${methodName}`)
       }
     }
+    if (!needWrapper || !hasMethod) {
+      return method
+    }
+    const protocol = protocols[methodName] as MPProtocolObject
     return function (arg1: unknown, arg2: unknown) {
       // 目前 api 最多两个参数
-      let options = protocol
+      let options = protocol || {}
       if (isFunction(protocol)) {
         options = protocol(arg1)
       }
@@ -120,6 +143,11 @@ export function initWrapper(protocols: MPProtocols) {
         __GLOBAL__,
         args
       )
+      if (isContextApi(methodName) || isTaskApi(methodName)) {
+        if (returnValue && !returnValue.__v_skip) {
+          returnValue.__v_skip = true
+        }
+      }
       if (isSyncApi(methodName)) {
         // 同步 api
         return processReturnValue(

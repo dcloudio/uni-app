@@ -1,18 +1,23 @@
 import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
 import type { RollupError } from 'rollup'
 import type { CompilerError } from '@vue/compiler-sfc'
-import { extend } from '@vue/shared'
+import { extend, hasOwn } from '@vue/shared'
 import { codeFrameColumns } from '@babel/code-frame'
 import { offsetToStartAndEnd } from '../plugins/vitejs/utils'
+import { enableSourceMap } from '../../utils'
 
 export function withSourcemap(config: ResolvedConfig) {
-  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
-    return false
+  if (!process.env.UNI_APP_SOURCEMAP) {
+    if (config.build && hasOwn(config.build, 'sourcemap')) {
+      if (!!config.build.sourcemap) {
+        process.env.UNI_APP_SOURCEMAP = 'true'
+      } else {
+        // vite 的 build 模式默认是false，而非web端的dev也是用build模式，所以不能这样判断
+        // process.env.UNI_APP_SOURCEMAP = 'false'
+      }
+    }
   }
-  if (config.command === 'serve') {
-    return true
-  }
-  return !!config.build.sourcemap
+  return enableSourceMap()
 }
 
 export function isInHybridNVue(config: UserConfig | ResolvedConfig): boolean {

@@ -63,3 +63,15 @@ jobs:
           browser: chrome
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          install: false
+          start: npm run dev:ssr
+          working-directory: ./packages/playground/ssr-x
+          wait-on: 'http://localhost:5174'
+          wait-on-timeout: 480
+          browser: chrome
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

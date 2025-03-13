@@ -4,8 +4,10 @@ import {
   type RunDevOptions,
   type RunProdOptions,
   type ToSwiftOptions,
-  copyPlatformFiles,
+  addPluginInjectApis,
+  copyPlatformNativeLanguageFiles,
   genComponentsCode,
+  genCustomElementsCode,
   genUTSPlatformResource,
   getCompilerServer,
   getUTSCompiler,
@@ -20,6 +22,8 @@ import {
   resolvePackage,
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
+  shouldAutoImportUniCloud,
+  updateManifestModules,
 } from './utils'
 import { parseJson } from './shared'
 import type {
@@ -48,8 +52,10 @@ export async function runSwiftProd(
   filename: string,
   {
     components,
+    customElements,
     uniModuleId,
     isPlugin,
+    isModule,
     isX,
     isSingleThread,
     isExtApi,
@@ -71,6 +77,7 @@ export async function runSwiftProd(
     outputDir,
     sourceMap: !!sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -85,6 +92,26 @@ export async function runSwiftProd(
   if (result.error) {
     throw parseUTSSyntaxError(result.error, inputDir)
   }
+
+  const autoImportUniCloud = shouldAutoImportUniCloud()
+  const useUniCloudApi =
+    result.inject_apis &&
+    result.inject_apis.find((api) => api.startsWith('uniCloud.'))
+  if (autoImportUniCloud && !useUniCloudApi) {
+    result.inject_apis = result.inject_apis || []
+    result.inject_apis.push('uniCloud.importObject')
+  }
+
+  if (result.inject_apis && result.inject_apis.length) {
+    if (isModule) {
+      // noop
+    } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
+      updateManifestModules(inputDir, result.inject_apis, extApis)
+    } else {
+      addPluginInjectApis(result.inject_apis)
+    }
+  }
+
   genUTSPlatformResource(filename, {
     isX,
     pluginId: uniModuleId,
@@ -93,6 +120,7 @@ export async function runSwiftProd(
     platform: 'app-ios',
     extname: '.swift',
     components,
+    customElements,
     package: parseSwiftPackage(filename).namespace,
     hookClass,
     result,
@@ -114,6 +142,7 @@ export async function runSwiftDev(
   filename: string,
   {
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -122,6 +151,7 @@ export async function runSwiftDev(
     transform,
     sourceMap,
     uniModules,
+    rewriteConsoleExpr,
   }: RunDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
@@ -153,6 +183,7 @@ export async function runSwiftDev(
     outputDir,
     sourceMap: !!sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -176,7 +207,6 @@ export async function runSwiftDev(
     outputDir,
     platform: 'app-ios',
     extname: '.swift',
-    components,
     package: '',
     result,
   })
@@ -191,10 +221,11 @@ export async function runSwiftDev(
 
     const { id, is_uni_modules } = resolvePackage(filename)!
 
-    const platformFiles = copyPlatformFiles(
+    const { srcFiles } = copyPlatformNativeLanguageFiles(
       path.resolve(inputDir, 'uni_modules', id, 'utssdk', 'app-ios'),
       path.resolve(outputDir, 'uni_modules', id, 'utssdk', 'app-ios'),
-      ['.swift']
+      ['.swift'],
+      rewriteConsoleExpr!
     )
 
     const { code, msg } = await compilerServer.compile({
@@ -205,7 +236,7 @@ export async function runSwiftDev(
       utsPath: resolveCompilerUTSPath(inputDir, is_uni_modules),
       swiftPath: resolveCompilerSwiftPath(outputDir, is_uni_modules),
     })
-    result.deps = [...(result.deps || []), ...platformFiles]
+    result.deps = [...(result.deps || []), ...srcFiles]
     result.code = code
     result.msg = msg
     result.changed = [swiftFile]
@@ -235,6 +266,7 @@ export async function compile(
     outputDir,
     sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -246,7 +278,13 @@ export async function compile(
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
-  const componentsCode = genComponentsCode(filename, components, isX)
+  let componentsCode = genComponentsCode(filename, components, isX)
+  if (customElements) {
+    const customElementsCode = genCustomElementsCode(filename, customElements)
+    if (customElementsCode) {
+      componentsCode = componentsCode + '\n' + customElementsCode
+    }
+  }
   const { namespace, id: pluginId } = parseSwiftPackage(filename)
   const input: UTSInputOptions = {
     root: resolveBundleInputRoot('app-ios', inputDir),
@@ -309,7 +347,6 @@ export async function compile(
       outputDir,
       platform: 'app-ios',
       extname: '.swift',
-      components,
       package: '',
       result,
     })

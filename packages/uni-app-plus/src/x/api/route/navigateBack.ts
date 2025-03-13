@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance } from 'vue'
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import {
   API_NAVIGATE_BACK,
   type API_TYPE_NAVIGATE_BACK,
@@ -19,7 +19,7 @@ import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import { getNativeApp } from '../../framework/app/app'
 import { setStatusBarStyle } from '../../statusBar'
 import { isDirectPage, reLaunchEntryPage } from './direct'
-import { closeNativeDialogPage } from './utils'
+import closeNativeDialogPage from './closeNativeDialogPage'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
@@ -40,7 +40,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
         }
       )
       if (onBackPressRes !== true) {
-        const dialogPages = page.getDialogPages()
+        const dialogPages = page.$page.getDialogPages()
         if (dialogPages.length > 0) {
           const dialogPage = dialogPages[dialogPages.length - 1]
           onBackPressRes = invokeHook(dialogPage.$vm, ON_BACK_PRESS, {
@@ -95,7 +95,7 @@ function back(
         const dialogPages = (deltaPage.$page as UniPage).getDialogPages()
         for (let i = dialogPages.length - 1; i >= 0; i--) {
           const dialogPage = dialogPages[i]
-          closeNativeDialogPage(dialogPage, 'none')
+          closeNativeDialogPage(dialogPage)
         }
         closeWebview(
           getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + '')!,
@@ -133,10 +133,23 @@ function back(
   const dialogPages = (currentPage.$page as UniPage).getDialogPages()
   for (let i = dialogPages.length - 1; i >= 0; i--) {
     const dialogPage = dialogPages[i]
-    closeNativeDialogPage(dialogPage, 'none')
+    closeNativeDialogPage(dialogPage)
     if (i > 0) {
-      invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
+      invokeHook(dialogPages[i - 1].vm!, ON_SHOW)
     }
+  }
+  if (
+    (currentPage as unknown as ComponentInternalInstance).$systemDialogPages
+  ) {
+    const systemDialogPages = (
+      currentPage as unknown as ComponentInternalInstance
+    ).$systemDialogPages!.value
+    for (let i = 0; i < systemDialogPages.length; i++) {
+      closeNativeDialogPage(systemDialogPages[i])
+    }
+    ;(
+      currentPage as unknown as ComponentInternalInstance
+    ).$systemDialogPages!.value = []
   }
   // TODO 处理子 view
   backPage(webview)

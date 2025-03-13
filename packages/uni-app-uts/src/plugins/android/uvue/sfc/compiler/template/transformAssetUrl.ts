@@ -113,6 +113,16 @@ export const transformAssetUrl: NodeTransform = (
         return
       }
 
+      // 该transform是vue标准的，但是因为android的编译分多部，编译到.uvue时，不会copy所有static目录
+      // 所以绝对路径的static资源，需要直接返回，不能变成import语句，而其他端，因为历史原因，会变成import语句
+      // 又不太敢直接移除标准vue的transformAssetUrl，担心出现兼容性问题，故先对android特殊处理。
+      // fixed by xxxxxx 区分 static 资源
+      const isStaticAsset = attr.value.content.indexOf('/static/') > -1
+      // 绝对路径的静态资源不作处理
+      if (isStaticAsset && !isRelativeUrl(attr.value.content)) {
+        return
+      }
+
       const url = parseUrl(attr.value.content)
       if (options.base && attr.value.content[0] === '.') {
         // explicit base - directly rewrite relative urls into absolute url

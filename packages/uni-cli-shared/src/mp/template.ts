@@ -1,6 +1,10 @@
 import path from 'path'
 import type { EmittedAsset } from 'rollup'
-import type { ElementNode } from '@vue/compiler-core'
+import type {
+  AttributeNode,
+  DirectiveNode,
+  ElementNode,
+} from '@vue/compiler-core'
 import { LINEFEED } from '@dcloudio/uni-shared'
 
 import { normalizeMiniProgramFilename } from '../utils'
@@ -17,6 +21,14 @@ type LazyElementFn = (
     }
   | boolean
 export interface MiniProgramCompilerOptions {
+  /**
+   * 检查属性名称是否符合平台要求，比如华为快应用不允许使用 key 属性等
+   */
+  checkPropName?: (
+    name: string,
+    prop: AttributeNode | DirectiveNode,
+    node: ElementNode
+  ) => boolean
   /**
    * 需要延迟渲染的组件，通常是某个组件的某个事件会立刻触发，需要延迟到首次 render 之后，比如微信 editor 的 ready 事件，快手 switch 的 change
    */
@@ -54,8 +66,17 @@ export interface MiniProgramCompilerOptions {
   }
   filter?: {
     lang: string
+    /**
+     * 是否支持 setStyle
+     */
+    setStyle?: boolean
+    generate?: Parameters<typeof findMiniProgramTemplateFiles>[0]
   }
   component?: {
+    /**
+     * 是否支持 :host 伪类
+     */
+    ':host'?: boolean
     /**
      * 平台自定义组件目录，如 wxcomponents
      */

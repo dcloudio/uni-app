@@ -25,7 +25,7 @@ export const styles = {
     'box-sizing': 'content-box',
   },
   ['uni-icon']: {
-    'font-family': 'uniappx_components',
+    'font-family': 'uni-icon',
     'font-size': '16px',
     width: '16px',
     height: '16px',

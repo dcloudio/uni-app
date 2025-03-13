@@ -9,3 +9,12 @@ export const createSSRApp = createApp
 export * from './helpers'
 // @ts-expect-error
 export * from 'vue'
+// #if _X_
+export { UniElement, UniElement as UniElementImpl } from './dom/UniElement'
+export {
+  pruneUniElements,
+  destroyUniElements,
+  findUniElement,
+  registerCustomElement,
+} from './dom/utils'
+// #endif

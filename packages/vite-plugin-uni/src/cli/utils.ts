@@ -11,24 +11,29 @@ import {
   initModulePaths,
   initPreContext,
   isInHBuilderX,
+  isNormalCompileTarget,
   output,
   parseManifestJsonOnce,
   parseScripts,
+  runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 
 import type { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
 import { initUVueEnv } from './uvue'
 
+// uni -p
 export const PLATFORMS = [
   'app',
   'h5',
   'mp-alipay',
   'mp-baidu',
-  'mp-qq',
+  'mp-kuaishou',
   'mp-lark',
+  'mp-qq',
   'mp-toutiao',
   'mp-weixin',
+  'mp-xhs',
   'quickapp-webview',
   'quickapp-webview-huawei',
   'quickapp-webview-union',
@@ -43,19 +48,19 @@ export type PLATFORM =
   | 'mp-qq'
   | 'mp-toutiao'
   | 'mp-weixin'
+  | 'mp-xhs'
   | 'quickapp-webview'
   | 'quickapp-webview-huawei'
   | 'quickapp-webview-union'
 
 function resolveConfigFile() {
-  const viteConfigJs = path.resolve(process.env.UNI_INPUT_DIR, 'vite.config.js')
-  const viteConfigTs = path.resolve(process.env.UNI_INPUT_DIR, 'vite.config.ts')
-
-  if (fs.existsSync(viteConfigTs)) {
-    return viteConfigTs
-  }
-  if (fs.existsSync(viteConfigJs)) {
-    return viteConfigJs
+  const extname = ['.js', '.ts', '.mjs', '.mts'].find((ext) => {
+    return fs.existsSync(
+      path.resolve(process.env.UNI_INPUT_DIR, 'vite.config' + ext)
+    )
+  })
+  if (extname) {
+    return path.resolve(process.env.UNI_INPUT_DIR, 'vite.config' + extname)
   }
   return path.resolve(process.env.UNI_CLI_CONTEXT, 'vite.config.js')
 }
@@ -84,7 +89,7 @@ export function initEnv(
     options.platform = 'h5'
   }
   if (options.plugin) {
-    process.env.UNI_MP_PLUGIN = 'true'
+    process.env.UNI_MP_PLUGIN = options.plugin
   }
   // TODO 需要识别 mode
   if (type === 'dev') {
@@ -93,7 +98,7 @@ export function initEnv(
     if ((options as BuildOptions).watch) {
       process.env.NODE_ENV = 'development'
     } else {
-      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+      if (!isNormalCompileTarget()) {
         if (!process.env.NODE_ENV) {
           process.env.NODE_ENV = 'production'
         }
@@ -138,13 +143,6 @@ export function initEnv(
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 
   if (process.env.UNI_PLATFORM === 'app-harmony') {
-    if (!process.env.UNI_APP_HARMONY_PROJECT_PATH) {
-      const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-      const projectPath = manifestJson['app-harmony']?.projectPath
-      if (projectPath) {
-        process.env.UNI_APP_HARMONY_PROJECT_PATH = path.resolve(projectPath)
-      }
-    }
     if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
       // 先通过原始outputDir设置，因为下边会修改原始的outputDir到鸿蒙项目里，而这些临时目录不应该影响到鸿蒙项目
       process.env.UNI_APP_X_TSC_DIR = path.resolve(
@@ -186,6 +184,15 @@ export function initEnv(
     }
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
   }
+
+  // 编译为插件、分包时，需提前计算缓存目录位置
+  process.env.UNI_APP_X_CACHE_DIR =
+    process.env.UNI_APP_X_CACHE_DIR ||
+    path.resolve(
+      process.env.UNI_OUTPUT_DIR,
+      '../cache/.' + path.basename(process.env.UNI_OUTPUT_DIR)
+    )
+
   // 兼容 HBuilderX 旧参数
   if (process.env.UNI_SUBPACKGE) {
     options.subpackage = process.env.UNI_SUBPACKGE
@@ -198,15 +205,22 @@ export function initEnv(
         path.resolve(process.env.UNI_OUTPUT_DIR, options.subpackage)
     }
   }
+
+  if (options.plugin) {
+    if (!hasOutputDir) {
+      // 未指定，则自动补充
+      process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir =
+        path.resolve(process.env.UNI_OUTPUT_DIR, options.plugin)
+    }
+  }
+
   const baseOutDir = path.basename(process.env.UNI_OUTPUT_DIR)
 
-  process.env.UNI_APP_X_CACHE_DIR =
-    process.env.UNI_APP_X_CACHE_DIR ||
-    path.resolve(process.env.UNI_OUTPUT_DIR, '../cache/.' + baseOutDir)
-
-  process.env.HX_DEPENDENCIES_DIR =
-    process.env.HX_DEPENDENCIES_DIR ||
-    path.resolve(process.env.UNI_OUTPUT_DIR, '../hx/' + baseOutDir)
+  if (isNormalCompileTarget()) {
+    process.env.HX_DEPENDENCIES_DIR =
+      process.env.HX_DEPENDENCIES_DIR ||
+      path.resolve(process.env.UNI_OUTPUT_DIR, '../hx/' + baseOutDir)
+  }
 
   process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = path.resolve(
     process.env.UNI_APP_X_CACHE_DIR,
@@ -217,14 +231,17 @@ export function initEnv(
 
   // 默认开启 tsc
   process.env.UNI_APP_X_TSC = 'true'
-  const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-  // 留个开关
-  if (
-    manifestJson['app']?.['utsCompilerVersion'] === 'v1' ||
-    manifestJson['app-plus']?.['utsCompilerVersion'] === 'v1'
-  ) {
-    process.env.UNI_APP_X_TSC = 'false'
-  }
+  try {
+    // 部分模式下缺少manifest.json，比如内部编译ext-api时
+    const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+    // 留个开关
+    if (
+      manifestJson['app']?.['utsCompilerVersion'] === 'v1' ||
+      manifestJson['app-plus']?.['utsCompilerVersion'] === 'v1'
+    ) {
+      process.env.UNI_APP_X_TSC = 'false'
+    }
+  } catch (e) {}
 
   if (!process.env.UNI_APP_X_TSC_DIR) {
     process.env.UNI_APP_X_TSC_DIR = path.resolve(
@@ -296,7 +313,8 @@ export function initEnv(
   if (
     process.env.UNI_PLATFORM === 'app' ||
     process.env.UNI_PLATFORM === 'web' ||
-    process.env.UNI_PLATFORM === 'h5'
+    process.env.UNI_PLATFORM === 'h5' ||
+    process.env.UNI_PLATFORM === 'app-harmony'
   ) {
     console.log(
       M['app.compiler.version'].replace(
@@ -465,7 +483,7 @@ function initCustomScripts(options: CliOptions) {
 }
 
 export function showRunPrompt(platform: PLATFORM) {
-  if (!isInHBuilderX()) {
+  if (!runByHBuilderX()) {
     const devtools = getPlatformDevtools(getOriginalPlatform(platform))
     const outputDir = path.relative(
       process.env.UNI_CLI_CONTEXT,

@@ -7,7 +7,7 @@ import {
   output,
   parseManifestJsonOnce,
   resetOutput,
-  resolveComponentsLibPath,
+  resolveComponentsLibDirs,
 } from '@dcloudio/uni-cli-shared'
 import type { RollupWatcher } from 'rollup'
 
@@ -97,7 +97,7 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
 export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
   try {
     initEasycomsOnce(process.env.UNI_INPUT_DIR, {
-      dirs: [resolveComponentsLibPath()],
+      dirs: resolveComponentsLibDirs(),
       platform: process.env.UNI_PLATFORM,
       isX: true,
     })
@@ -111,7 +111,7 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
       process.exit(0)
     }
   } catch (e: any) {
-    console.error(e)
+    console.error(e.message || e)
     console.error(`Build failed with errors.`)
     process.exit(1)
   }

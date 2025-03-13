@@ -46,11 +46,17 @@ import { usePageMeta, usePageRoute } from './provide'
 import {
   getEnterOptions,
   getPageInstanceByChild,
-  getPageInstanceByVm,
   initLaunchOptions,
 } from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
+import { handleBeforeEntryPageRoutes } from '../../service/api/route/utils'
+//#if _X_
+import { isDialogPageInstance } from '../../x/framework/helpers/utils'
+import { useBackgroundColorContent } from '../../x/framework/setup/page'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/UniPage'
+import { dialogPageTriggerParentHide } from '@dcloudio/uni-core'
+//#endif
 
 interface SetupComponentOptions {
   clone?: boolean
@@ -123,7 +129,7 @@ export function setupPage(comp: any) {
       instance.attrs.__pageQuery = query
       if (__X__) {
         const pageInstance = getPageInstanceByChild(instance)
-        if (pageInstance.attrs.type === 'dialog') {
+        if (isDialogPageInstance(pageInstance)) {
           instance.attrs.__pageQuery = decodedQuery(
             parseQuery((pageInstance.attrs.route as string).split('?')[1] || '')
           )
@@ -141,7 +147,10 @@ export function setupPage(comp: any) {
       watch(
         [instance.onReachBottom, instance.onPageScroll],
         () => {
-          if (instance.proxy === getCurrentPage()) {
+          const currentPage = __X__
+            ? (getCurrentPage() as unknown as UniPage).vm
+            : getCurrentPage()
+          if (instance.proxy === currentPage) {
             initPageScrollListener(instance, pageMeta)
           }
         },
@@ -152,22 +161,27 @@ export function setupPage(comp: any) {
       })
       onMounted(() => {
         if (__X__) {
+          if (instance.subTree.el) {
+            instance.subTree.el._page = instance.proxy?.$page as UniPage
+          }
           const pageInstance = getPageInstanceByChild(instance)
-          if (pageInstance.attrs.type === 'dialog') {
+          if (isDialogPageInstance(pageInstance)) {
             const parentPage = (
               instance.proxy?.$page as UniPage
             ).getParentPage()
-            const parentPageInstance = parentPage
-              ? getPageInstanceByVm(parentPage.vm)
-              : null
+            const parentPageInstance = parentPage?.vm.$pageLayoutInstance
             if (parentPageInstance) {
               const dialogPages = parentPageInstance.$dialogPages.value
               if (dialogPages.length > 1) {
                 const preDialogPage = dialogPages[dialogPages.length - 2]
-                const { onHide } = preDialogPage.$vm.$
-                onHide && invokeArrayFns(onHide)
+                if (preDialogPage.vm) {
+                  const { onHide } = preDialogPage.vm.$
+                  onHide && invokeArrayFns(onHide)
+                }
               }
             }
+            dialogPageTriggerParentHide(instance.proxy?.$page as UniDialogPage)
+            useBackgroundColorContent(instance.proxy)
           }
         }
         onPageReady(instance)
@@ -191,7 +205,7 @@ export function setupPage(comp: any) {
           instance.__isVisible = false
           if (__X__) {
             const pageInstance = getPageInstanceByChild(instance)
-            if (pageInstance.attrs.type !== 'dialog') {
+            if (!isDialogPageInstance(pageInstance)) {
               const { onHide } = instance
               onHide && invokeArrayFns(onHide)
             }
@@ -205,6 +219,11 @@ export function setupPage(comp: any) {
       subscribeViewMethod(pageMeta.id!)
       onBeforeUnmount(() => {
         unsubscribeViewMethod(pageMeta.id!)
+        if (__X__) {
+          if (instance.subTree.el) {
+            instance.subTree.el._page = null
+          }
+        }
       })
 
       return query
@@ -226,7 +245,7 @@ export function setupApp(comp: any) {
       }
       const onLaunch = () => {
         injectAppHooks(instance)
-        const { onLaunch, onShow, onPageNotFound, onError } = instance
+        const { onLaunch, onShow, onPageNotFound } = instance
         const path = route.path.slice(1)
         const launchOptions = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
@@ -243,13 +262,9 @@ export function setupApp(comp: any) {
               query: {},
               scene: 1001,
             }
+            handleBeforeEntryPageRoutes()
             onPageNotFound &&
               invokeArrayFns(onPageNotFound, pageNotFoundOptions)
-          }
-        }
-        if (onError) {
-          instance.appContext.config.errorHandler = (err) => {
-            invokeArrayFns(onError, err)
           }
         }
       }

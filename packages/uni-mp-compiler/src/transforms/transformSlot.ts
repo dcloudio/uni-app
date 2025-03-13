@@ -185,7 +185,7 @@ function createScopedSlotDirectiveNode(
   return dir
 }
 
-function parseVForKeyAlias(context: TransformContext) {
+export function parseVForKeyAlias(context: TransformContext) {
   let { currentScope } = context
   const keys: string[] = []
   while (currentScope) {

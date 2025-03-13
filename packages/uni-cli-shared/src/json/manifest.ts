@@ -8,11 +8,12 @@ import {
 } from '@dcloudio/uni-shared'
 
 import { parseJson } from './json'
+import { isNormalCompileTarget } from '../utils'
 
 export const parseManifestJson = (inputDir: string) => {
   const manifestFilename = path.join(inputDir, 'manifest.json')
   if (!fs.existsSync(manifestFilename)) {
-    if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+    if (!isNormalCompileTarget()) {
       return {}
     }
   }

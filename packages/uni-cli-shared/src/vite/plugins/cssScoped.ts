@@ -5,6 +5,7 @@ import { EXTNAME_VUE } from '../../constants'
 import { preHtml, preJs } from '../../preprocess'
 import { parseVueCode } from '../../vue/parse'
 import { isAppVue } from '../../utils'
+import { isVueSfcFile } from '../../vue/utils'
 
 const debugScoped = debug('uni:scoped')
 
@@ -31,17 +32,19 @@ interface UniCssScopedPluginOptions {
 }
 
 export function uniRemoveCssScopedPlugin(
-  { filter }: UniCssScopedPluginOptions = { filter: () => false }
+  _: UniCssScopedPluginOptions = { filter: () => false }
 ): Plugin {
   return {
     name: 'uni:css-remove-scoped',
     enforce: 'pre',
     transform(code, id) {
-      if (!filter(id)) return null
+      if (!isVueSfcFile(id)) return null
       debugScoped(id)
       return {
         code: removeScoped(code),
-        map: null,
+        map: {
+          mappings: '',
+        },
       }
     },
   }
@@ -58,7 +61,9 @@ export function uniCssScopedPlugin(
       debugScoped(id)
       return {
         code: addScoped(code),
-        map: null,
+        map: {
+          mappings: '',
+        },
       }
     },
     // 仅 h5

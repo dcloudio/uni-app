@@ -3,6 +3,10 @@ declare namespace HBuilderX {
   type PageURIString = string
   type ColorString = string
 }
+declare namespace string {
+  type PageURIString = string
+  type ColorString = string
+}
 declare namespace Page {
   interface PageInstance {
     $page: {
@@ -45,6 +49,9 @@ declare namespace UniNamespace {
   interface UniConfig {
     conditionUrl?: string
     ready?: boolean
+
+    getTabBarConfig: () => Record<string, any>
+
     router?: {
       strict: boolean
       base: string
@@ -199,6 +206,7 @@ declare namespace UniNamespace {
     'app-harmony'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
     'mp-baidu'?: PagesJsonPageStyle
+    'mp-harmony'?: PagesJsonPageStyle
     'mp-qq'?: PagesJsonPageStyle
     'mp-toutiao'?: PagesJsonPageStyle
     'mp-weixin'?: PagesJsonPageStyle
@@ -228,6 +236,7 @@ declare namespace UniNamespace {
     pageOrientation?: 'auto' | 'portrait' | 'landscape'
     backgroundColor?: string
     backgroundColorContent?: string
+    navigationStyle?: 'default' | 'custom'
     maxWidth?: string | number
     // app-plus
     scrollIndicator?: 'none'
@@ -236,6 +245,7 @@ declare namespace UniNamespace {
     subNVues?: PagesJsonPageStyleSubNVue[]
     disableSwipeBack?: Boolean
     popGesture?: 'close' | 'none'
+    enableUcssReset?: boolean
   }
   interface PageRouteMeta extends PagesJsonPageStyle {
     id?: number
@@ -541,3 +551,61 @@ declare namespace UniNamespace {
 }
 
 import UniApp = UniNamespace
+
+interface FontFaceDescriptors {
+  variant?: string
+}
+
+declare class UniNormalPageImpl implements UniPage {
+  vm: ComponentPublicInstance
+  $vm: ComponentPublicInstance
+  route: string
+  options: UTSJSONObject
+  pageBody: UniPageBody
+  safeAreaInsets: UniSafeAreaInsets
+  getParentPage: () => UniPage | null
+  getParentPageByJS: () => UniPage | null
+  getDialogPages(): UniDialogPage[]
+  getPageStyle(): UTSJSONObject
+  $getPageStyle(): UTSJSONObject
+  getPageStyleByJS(): UTSJSONObject
+  setPageStyle(style: UTSJSONObject): void
+  $setPageStyle(style: UTSJSONObject): void
+  setPageStyleByJS(style: UTSJSONObject): void
+  getElementById(id: string.IDString | string): UniElement | null
+  getAndroidView(): null
+  getIOSView(): null
+  getHTMLElement(): null
+}
+
+declare class UniDialogPageImpl implements UniPage {
+  vm: ComponentPublicInstance
+  $vm: ComponentPublicInstance
+  route: string
+  options: UTSJSONObject
+  innerWidth: number
+  innerHeight: number
+  pageBody: UniPageBody
+  safeAreaInsets: UniSafeAreaInsets
+  getParentPage: () => UniPage | null
+  getParentPageByJS: () => UniPage | null
+  getDialogPages(): UniDialogPage[]
+  getPageStyle(): UTSJSONObject
+  $getPageStyle(): UTSJSONObject
+  getPageStyleByJS(): UTSJSONObject
+  setPageStyle(style: UTSJSONObject): void
+  $setPageStyle(style: UTSJSONObject): void
+  setPageStyleByJS(style: UTSJSONObject): void
+  getElementById(id: string.IDString | string): UniElement | null
+  getAndroidView(): null
+  getIOSView(): null
+  getHTMLElement(): null
+  $component: any | null
+  $disableEscBack: boolean
+  $triggerParentHide: boolean
+}
+
+declare function __registerWebViewUniConsole(
+  getEvalJSCode: () => string,
+  sendConsoleData: (data: string) => void
+): void

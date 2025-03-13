@@ -1,8 +1,24 @@
 import type { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
-import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
-import type { IPage } from '@dcloudio/uni-app-x/types/native'
+import type {
+  ComponentCustomProperties,
+  ComponentInternalInstance,
+  Ref,
+} from 'vue'
+import type {
+  IPage,
+  UniElement,
+  ViewToTempFilePathOptions,
+} from '@dcloudio/uni-app-x/types/native'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 declare module '@vue/runtime-core' {
+  // 小程序
+  interface ComponentCustomProperties {
+    $vm: ComponentPublicInstance
+    globalData: Record<string, any>
+    $callHook: (hook: string, args?: unknown, extras?: unknown) => unknown
+    $callCreatedHook: () => void
+  }
   interface ComponentCustomOptions {
     rootElement?:
       | {
@@ -17,6 +33,8 @@ declare module '@vue/runtime-core' {
     route: string
     options?: Page.PageInstance['$page']['options']
     $scope: {
+      is?: string
+      route?: string
       $getAppWebview?: () => PlusWebviewWebviewObject
       setData(data: Record<string, unknown>, callback?: () => void): void
     }
@@ -29,9 +47,12 @@ declare module '@vue/runtime-core' {
     // X iOS end
     $requireNativePlugin?: (name: string) => unknown
     getOpenerEventChannel: () => EventChannel | undefined
-    $page: Page.PageInstance['$page'] | UniPage
+    $page: Page.PageInstance['$page'] | UniPage | UniDialogPage
     // X web start
     $basePage: Page.PageInstance['$page']
+    $dialogPage?: UniDialogPage
+    $triggerParentHide?: boolean
+    $pageLayoutInstance: ComponentInternalInstance | null
     // X web end
     $mpType?: 'app' | 'page'
     $locale?: string
@@ -49,7 +70,11 @@ declare module '@vue/runtime-core' {
     __isTabBar?: boolean
     // mp
     $updateScopedSlots: () => void
-    $scopedSlotsData?: { path: string; index: number; data: Data }[]
+    $scopedSlotsData?: {
+      path: string
+      index: number
+      data: Record<string, unknown>
+    }[]
     $currentSlotComponentInstance?: ComponentInternalInstance
     // h5 | app
     $wxsModules?: string[]
@@ -57,11 +82,24 @@ declare module '@vue/runtime-core' {
     $pageInstance: ComponentInternalInstance
     // x
     $waitNativeRender: (fn: () => void) => void
-    $dialogPages: Ref<UniDialogPage[]>
     $pageVm: ComponentPublicInstance | null
     $parentInstance?: ComponentInternalInstance
     $dialogPages?: Ref<UniDialogPage[]>
+    $systemDialogPages?: Ref<UniDialogPage[]>
     $dialogPage?: UniDialogPage
+    $uniElements: Map<string, UniElement>
+    $uniElementIds: Map<string, { name: string }>
+    $templateUniElementRefs: {
+      i: string // id
+      r: VNodeRef
+      k?: string // setup ref key
+      f?: boolean // refInFor marker
+      v: null | UniElement | Array<UniElement | null>
+    }[]
+    // 模板绑定的 style ，key 为 elementId，值为 style 字符串，最终会合并到 $eS 中
+    $templateUniElementStyles: Record<string, string>
+    // 元素 style ，key 为 elementId，值为 style 字符串
+    $eS: Record<string, string>
   }
 
   export const onBeforeActivate: (fn: () => void) => void
@@ -70,7 +108,19 @@ declare module '@vue/runtime-core' {
     type: string,
     hook: Function,
     target: ComponentInternalInstance | null,
-    prepend: boolean = false
+    prepend?: boolean
   ) => Function | undefined
   export const isInSSRComponentSetup: boolean
+
+  export const logError: (
+    err: unknown,
+    type: string,
+    contextVNode: VNode | null,
+    throwInDev?: boolean
+  ) => void
+
+  export function registerCustomElement(
+    tagName: string,
+    elementClass: unknown
+  ): void
 }

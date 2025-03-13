@@ -246,4 +246,39 @@ describe('mp-weixin: transform component', () => {
 }`
     )
   })
+
+  test('static ref with unicloud-db', () => {
+    assert(
+      `<unicloud-db ref="udb"/>`,
+      `<unicloud-db class="r" u-r="udb" u-i="2a9ec0b0-0" bind:__l="__l" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[b]}}" change:eA="{{uV.sA}}" eA="{{$eA[b]}}" u-p="{{c||''}}"/>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _sr('udb', '2a9ec0b0-0'), b: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), c: _p({ id: 'r0-2a9ec0b0' }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+      }
+    )
+  })
+
+  test('input 不填写闭合标签，会自动处理', () => {
+    assert(
+      `<input>`,
+      `<input></input>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
+  // 暂不上线，先注释掉
+  //   test('input > keyboard-accessory', () => {
+  //     assert(
+  //       `<input><keyboard-accessory/></input>`,
+  //       `<input><keyboard-accessory/></input>`,
+  //       `(_ctx, _cache) => {
+  //   return {}
+  // }`
+  //     )
+  //   })
 })

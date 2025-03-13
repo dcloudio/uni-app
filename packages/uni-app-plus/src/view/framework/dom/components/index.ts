@@ -23,6 +23,8 @@ import { UniLabel } from './UniLabel'
 import { UniLivePlayer } from './UniLivePlayer'
 import { UniLivePusher } from './UniLivePusher'
 import { UniMap } from './UniMap'
+import { UniLocationPicker } from './UniLocationPicker'
+import { UniLocationView } from './UniLocationView'
 import { UniMovableArea } from './UniMovableArea'
 import { UniMovableView } from './UniMovableView'
 import { UniNavigator } from './UniNavigator'
@@ -88,6 +90,8 @@ export const BuiltInComponents = {
   'LIVE-PLAYER': UniLivePlayer,
   'LIVE-PUSHER': UniLivePusher,
   MAP: UniMap,
+  'LOCATION-PICKER': UniLocationPicker,
+  'LOCATION-VIEW': UniLocationView,
   'MOVABLE-AREA': UniMovableArea,
   'MOVABLE-VIEW': UniMovableView,
   'OFFICIAL-ACCOUNT': UniOfficialAccount,

@@ -9,8 +9,12 @@ import {
   injectAssetPlugin,
   injectCssPlugin,
   injectCssPostPlugin,
+  isMiniProgramPageFile,
   normalizeMiniProgramFilename,
   normalizePath,
+  parseManifestJsonOnce,
+  parsePagesJsonOnce,
+  parseUniXFlexDirection,
   relativeFile,
   removeExt,
   resolveMainPathOnce,
@@ -27,6 +31,7 @@ import {
 
 const debugNVueCss = debug('uni:nvue-css')
 const cssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}`
+const uvueCssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px;--uni-safe-area-inset-top:0px;--uni-safe-area-inset-left:0px;--uni-safe-area-inset-right:0px;--uni-safe-area-inset-bottom:0px;}`
 
 const genShadowCss = (cdn: number) => {
   const url = createShadowImageUrl(cdn, 'grey')
@@ -92,6 +97,7 @@ export function createConfigResolved({
           }
         },
         chunkCssCode(filename, cssCode) {
+          const isX = process.env.UNI_APP_X === 'true'
           cssCode = transformScopedCss(cssCode)
           if (filename === 'app' + cssExtname) {
             const componentCustomHiddenCss =
@@ -99,18 +105,67 @@ export function createConfigResolved({
                 component.vShow &&
                 genComponentCustomHiddenCss(component.vShow)) ||
               ''
+            const realCssVars = isX ? uvueCssVars : cssVars
             if (config.isProduction) {
               return (
                 cssCode +
                 genShadowCss(cdn || 0) +
-                cssVars +
+                realCssVars +
                 componentCustomHiddenCss
               )
             } else {
-              return cssCode + cssVars + componentCustomHiddenCss
+              return cssCode + realCssVars + componentCustomHiddenCss
             }
           }
 
+          if (isX) {
+            if (component?.[':host']) {
+              const flexDirection = parseUniXFlexDirection(
+                parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+              )
+              cssCode = `:host{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
+            }
+
+            if (!isMiniProgramPageFile(filename)) {
+              return cssCode
+            }
+
+            /**
+             * 此方法将subPackages中的页面合并到了pages内
+             */
+            const pagesJson = parsePagesJsonOnce(
+              process.env.UNI_INPUT_DIR,
+              process.env.UNI_PLATFORM
+            )
+            const page = pagesJson.pages.find(
+              (page) => page.path === removeExt(filename)
+            )
+            if (!page) {
+              return cssCode
+            }
+            /**
+             * 何时不重置样式？
+             * - page.style.enabelUcssReset为false
+             * - page.style.enableUcssReset为空，pagesJson.globalStyle.enableUcssReset为false
+             * - page.style.enableUcssReset为空，pagesJson.globalStyle.enableUcssReset为空，page.style.renderer为skyline
+             */
+            const shouldNotResetStyle =
+              page.style.enableUcssReset === false ||
+              (page.style.enableUcssReset == null &&
+                pagesJson.globalStyle.enableUcssReset === false) ||
+              (page.style.enableUcssReset == null &&
+                pagesJson.globalStyle.enableUcssReset == null &&
+                (page.style as any).renderer === 'skyline')
+
+            if (!shouldNotResetStyle) {
+              /**
+               * 兼容发布为小程序分包模式
+               */
+              const uvueCssPath = relativeFile(filename, `uvue${extname}`)
+              cssCode = `@import "${uvueCssPath}";\n` + cssCode
+            }
+            return cssCode
+          }
           const nvueCssPaths = getNVueCssPaths(config)
           if (!nvueCssPaths || !nvueCssPaths.length) {
             return cssCode

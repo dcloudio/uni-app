@@ -1,7 +1,9 @@
 [
   {
     "input": {
-      "src/service/index.ts": ["dist/vue.runtime.esm.dev.js"]
+      "src/service/index.ts": [
+        "dist/vue.runtime.esm.dev.js"
+      ]
     },
     "output": {
       "freeze": false
@@ -13,12 +15,18 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
+    "external": [
+      "@vue/shared",
+      "@vue/reactivity",
+      "@dcloudio/uni-shared"
+    ],
     "babel": true
   },
   {
     "input": {
-      "src/service/index.ts": ["dist/vue.runtime.esm.prod.js"]
+      "src/service/index.ts": [
+        "dist/vue.runtime.esm.prod.js"
+      ]
     },
     "output": {
       "freeze": false
@@ -30,12 +38,18 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
+    "external": [
+      "@vue/shared",
+      "@vue/reactivity",
+      "@dcloudio/uni-shared"
+    ],
     "babel": true
   },
   {
     "input": {
-      "src/view/index.ts": ["dist/view.runtime.esm.js"]
+      "src/view/index.ts": [
+        "dist/view.runtime.esm.js"
+      ]
     },
     "replacements": {
       "__X__": "false",
@@ -43,11 +57,15 @@
       "__VUE_PROD_DEVTOOLS__": "false",
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false"
     },
-    "external": ["@vue/shared"]
+    "external": [
+      "@vue/shared"
+    ]
   },
   {
     "input": {
-      "src/nvue/index.ts": ["dist/nvue.runtime.esm.dev.js"]
+      "src/nvue/index.ts": [
+        "dist/nvue.runtime.esm.dev.js"
+      ]
     },
     "output": {
       "freeze": false
@@ -59,12 +77,18 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
+    "external": [
+      "@vue/shared",
+      "@vue/reactivity",
+      "@dcloudio/uni-shared"
+    ],
     "babel": true
   },
   {
     "input": {
-      "src/nvue/index.ts": ["dist/nvue.runtime.esm.prod.js"]
+      "src/nvue/index.ts": [
+        "dist/nvue.runtime.esm.prod.js"
+      ]
     },
     "output": {
       "freeze": false
@@ -76,12 +100,18 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": ["@vue/shared", "@vue/reactivity", "@dcloudio/uni-shared"],
+    "external": [
+      "@vue/shared",
+      "@vue/reactivity",
+      "@dcloudio/uni-shared"
+    ],
     "babel": true
   },
   {
     "input": {
-      "src/uvue/index.ts": ["dist/uvue.runtime.esm.dev.js"]
+      "src/uvue/index.ts": [
+        "dist/uvue.runtime.esm.dev.js"
+      ]
     },
     "output": {
       "freeze": false
@@ -93,12 +123,16 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": ["@dcloudio/uni-nvue-styler"],
+    "external": [
+      "@dcloudio/uni-nvue-styler"
+    ],
     "babel": true
   },
   {
     "input": {
-      "src/uvue/index.ts": ["dist/uvue.runtime.esm.prod.js"]
+      "src/uvue/index.ts": [
+        "dist/uvue.runtime.esm.prod.js"
+      ]
     },
     "output": {
       "freeze": false
@@ -110,7 +144,90 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": ["@dcloudio/uni-nvue-styler"],
+    "external": [
+      "@dcloudio/uni-nvue-styler"
+    ],
+    "babel": true
+  },
+  {
+    "input": {
+      "src/uvue/index.ts": [
+        "dist/uvue.runtime.harmony.esm.dev.js"
+      ]
+    },
+    "output": {
+      "freeze": false
+    },
+    "replacements": {
+      "__X__": "true",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
+      "process.env.NODE_ENV": "\"development\""
+    },
+    "importReplacements": [
+      {
+        "module": "@vue/shared",
+        "specifiers": [
+          {
+            "name": "isIntegerKey",
+            "replaceModule": "@dcloudio/uni-shared",
+            "replaceName": "isIntegerKey"
+          }
+        ]
+      }
+    ],
+    "textReplacements": [
+      {
+        "find": "const res = toRaw(this)[key].apply(this, args);",
+        "replace": "const raw = toRaw(this);if (raw.length > 0) {raw[0] = raw[0]};const res = raw[key].apply(this, args);",
+        "file": "@vue/reactivity/dist/reactivity.esm-bundler.js",
+        "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250303114146089/comment"
+      }
+    ],
+    "external": [
+      "@dcloudio/uni-nvue-styler"
+    ],
+    "babel": true
+  },
+  {
+    "input": {
+      "src/uvue/index.ts": [
+        "dist/uvue.runtime.harmony.esm.prod.js"
+      ]
+    },
+    "output": {
+      "freeze": false
+    },
+    "replacements": {
+      "__X__": "true",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
+      "process.env.NODE_ENV": "\"production\""
+    },
+    "importReplacements": [
+      {
+        "module": "@vue/shared",
+        "specifiers": [
+          {
+            "name": "isIntegerKey",
+            "replaceModule": "@dcloudio/uni-shared",
+            "replaceName": "isIntegerKey"
+          }
+        ]
+      }
+    ],
+    "textReplacements": [
+      {
+        "find": "const res = toRaw(this)[key].apply(this, args);",
+        "replace": "const res = toRaw(this)[key](...args);",
+        "file": "@vue/reactivity/dist/reactivity.esm-bundler.js"
+      }
+    ],
+    "external": [
+      "@dcloudio/uni-nvue-styler"
+    ],
     "babel": true
   }
 ]

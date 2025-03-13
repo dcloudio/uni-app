@@ -8,6 +8,7 @@ import type {
 } from '../../lib/uni-x/dist/compiler'
 import { originalPositionForSync } from '../sourceMap'
 import { normalizePath } from '../shared'
+import { isEnableGenericsParameterDefaults } from '../utils'
 
 export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
 
@@ -78,7 +79,12 @@ export function createUniXCompiler(
     hxLanguageServiceDir,
     originalPositionForSync,
     watchFile,
-    incremental: true,
+    incremental: mode === 'development',
+    transformOptions: {
+      enableUTSNumber: false,
+      enableNarrowType: true, // 默认开启
+      enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
+    },
     ...options,
   }
   const { UniXCompiler } = require('../../lib/uni-x/dist/compiler')

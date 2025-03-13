@@ -10,6 +10,8 @@ export * from './uts/uvue'
 export * from './uts/ext-api'
 export * from './easycom'
 export * from './json'
+export * from './pre'
+export * from './sourceMap'
 export { uniViteSfcSrcImportPlugin } from './sfc'
 
 export { assetPlugin, parseAssets, getAssetHash } from './vitejs/plugins/asset'
@@ -21,6 +23,7 @@ export {
   cssLangRE,
   commonjsProxyRE,
   rewriteScssReadFileSync,
+  getCssDepMap,
 } from './vitejs/plugins/css'
 
 export {

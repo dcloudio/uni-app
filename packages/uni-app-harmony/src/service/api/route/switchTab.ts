@@ -34,12 +34,12 @@ export const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (
   { resolve, reject }
 ) => {
   const { url } = args
-  const { path, query } = parseUrl(url)
+  const { path, query } = parseUrl(url as string)
   navigate(
     path,
     () => {
       _switchTab({
-        url,
+        url: url as string,
         path,
         query,
       })

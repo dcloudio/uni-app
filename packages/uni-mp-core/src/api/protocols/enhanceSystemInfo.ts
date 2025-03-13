@@ -35,6 +35,27 @@ export function addSafeAreaInsets(
   }
 }
 
+export function getOSInfo(system: string, platform?: string) {
+  let osName = ''
+  let osVersion = ''
+
+  if (
+    platform &&
+    (__PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu')
+  ) {
+    osName = platform
+    osVersion = system
+  } else {
+    osName = system.split(' ')[0] || ''
+    osVersion = system.split(' ')[1] || ''
+  }
+
+  return {
+    osName: osName.toLocaleLowerCase(),
+    osVersion,
+  }
+}
+
 export function populateParameters(
   fromRes: any,
   toRes: UniApp.GetSystemInfoResult
@@ -55,15 +76,7 @@ export function populateParameters(
   // const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
 
   // osName osVersion
-  let osName = ''
-  let osVersion = ''
-  if (__PLATFORM__ === 'mp-alipay') {
-    osName = platform
-    osVersion = system
-  } else {
-    osName = system.split(' ')[0] || ''
-    osVersion = system.split(' ')[1] || ''
-  }
+  const { osName, osVersion } = getOSInfo(system, platform)
   let hostVersion = version
   // host 枚举值 https://smartprogram.baidu.com/docs/develop/api/device_sys/hostlist/
   if (__PLATFORM__ === 'mp-baidu') {
@@ -101,17 +114,18 @@ export function populateParameters(
   }
 
   // hostLanguage
-  const hostLanguage = language.replace(/_/g, '-')
+  const hostLanguage = (language || '').replace(/_/g, '-')
 
   // wx.getAccountInfoSync
 
-  const parameters = {
+  const parameters: Record<string, string | number | boolean | undefined> = {
     appId: process.env.UNI_APP_ID,
     appName: process.env.UNI_APP_NAME,
     appVersion: process.env.UNI_APP_VERSION_NAME,
     appVersionCode: process.env.UNI_APP_VERSION_CODE,
     appLanguage: getAppLanguage(hostLanguage),
     uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+    uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
     uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
     uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
     deviceBrand,
@@ -119,7 +133,7 @@ export function populateParameters(
     deviceType,
     devicePixelRatio: _devicePixelRatio,
     deviceOrientation: _deviceOrientation,
-    osName: osName.toLocaleLowerCase(),
+    osName,
     osVersion,
     hostTheme: theme,
     hostVersion,
@@ -136,6 +150,22 @@ export function populateParameters(
     hostPackageName: undefined,
     browserName: undefined,
     browserVersion: undefined,
+    isUniAppX: __X__,
+  }
+
+  if (__PLATFORM__ === 'mp-harmony') {
+    parameters.romName = 'HarmonyOS'
+  }
+
+  if (__X__) {
+    try {
+      parameters.uniCompilerVersionCode = parseFloat(
+        process.env.UNI_COMPILER_VERSION
+      )
+      parameters.uniRuntimeVersionCode = parseFloat(
+        process.env.UNI_COMPILER_VERSION
+      )
+    } catch (error) {}
   }
 
   extend(toRes, parameters)
@@ -181,7 +211,11 @@ export function getAppLanguage(defaultLanguage: string) {
 
 export function getHostName(fromRes: any) {
   const _platform =
-    __PLATFORM__ === 'mp-weixin' ? 'WeChat' : __PLATFORM__.split('-')[1]
+    __PLATFORM__ === 'mp-weixin'
+      ? 'WeChat'
+      : __PLATFORM__ === 'mp-harmony'
+      ? 'HarmonyOS'
+      : __PLATFORM__.split('-')[1]
   let _hostName = fromRes.hostName || _platform // mp-jd
   if (__PLATFORM__ === 'mp-weixin') {
     if (fromRes.environment) {

@@ -1,0 +1,4 @@
+<template>
+    <map />
+    <canvas />
+</template>

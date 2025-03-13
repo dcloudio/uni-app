@@ -12,7 +12,6 @@ import {
   type CreateScrollListenerOptions,
   createScrollListener,
   disableScrollListener,
-  getCurrentPage,
   initPageInternalInstance,
   initPageVm,
   invokeHook,
@@ -22,7 +21,6 @@ import {
   ON_REACH_BOTTOM,
   ON_REACH_BOTTOM_DISTANCE,
   ON_UNLOAD,
-  normalizeTitleColor,
 } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
 import {
@@ -32,116 +30,21 @@ import {
 } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
-import { getPageInstanceByVm } from './utils'
-import { EventBus } from '@dcloudio/uni-api'
-import type { UniBasePage } from '@dcloudio/uni-app-x/types/page'
+//#if _X_ && !_NODE_JS_
+import { closeDialogPage } from '../../x/service/api/route/closeDialogPage'
+//#endif
+//#if _X_
+import { initXPage } from '../../x/framework/setup/page'
+//#endif
 
 const SEP = '$$'
 
-const currentPagesMap = new Map<string, ComponentPublicInstance>()
-export const homeDialogPages: UniDialogPage[] = []
-
-export class UniBasePageImpl extends EventBus implements UniBasePage {
-  route: string
-  options: Map<string, string | null>
-  getParentPage: () => UniPage | null = () => null
-  getDialogPages(): UniDialogPage[] {
-    return []
-  }
-  constructor({
-    route,
-    options,
-  }: {
-    route: string
-    options: Map<string, string | null>
-  }) {
-    super()
-    this.route = route
-    this.options = options
-  }
-}
-
-export class UniPageImpl extends UniBasePageImpl implements UniPage {
-  vm: ComponentPublicInstance
-  $vm: ComponentPublicInstance
-  getPageStyle(): UTSJSONObject {
-    return new UTSJSONObject({})
-  }
-  setPageStyle(style: UTSJSONObject): void {}
-  getElementById(id: string.IDString | string): UniElement | null {
-    const currentPage = getCurrentPage() as unknown as UniPage
-    if (currentPage !== this) {
-      return null
-    }
-    const uniPageBody = document.querySelector('uni-page-body')
-    return uniPageBody
-      ? (uniPageBody.querySelector(`#${id}`) as unknown as UniElement)
-      : null
-  }
-  getParentPage = (): UniPage | null => {
-    return null
-  }
-  getDialogPages(): UniDialogPage[] {
-    return getPageInstanceByVm(this.vm)?.$dialogPages.value || []
-  }
-  getAndroidView() {
-    return null
-  }
-  getHTMLElement() {
-    const currentPage = getCurrentPage() as unknown as UniPage
-    if (currentPage !== this) {
-      return null
-    }
-    return document.querySelector('uni-page-body') as unknown as UniElement
-  }
-  constructor({
-    route,
-    options,
-    vm,
-  }: {
-    route: string
-    options: Map<string, string | null>
-    vm: ComponentPublicInstance
-  }) {
-    super({ route, options })
-    this.vm = vm
-    this.$vm = vm
-  }
-}
+export const currentPagesMap = new Map<string, ComponentPublicInstance>()
 
 export function getPage$BasePage(
   page: ComponentPublicInstance
 ): Page.PageInstance['$page'] {
   return __X__ ? page.$basePage : (page.$page as Page.PageInstance['$page'])
-}
-
-export class UniDialogPageImpl
-  extends UniBasePageImpl
-  implements UniDialogPage
-{
-  vm: ComponentPublicInstance | null = null
-  $vm: ComponentPublicInstance | null = null
-  $component: any | null = null
-  $disableEscBack: boolean = false
-
-  constructor({
-    route,
-    options,
-    $component,
-    getParentPage,
-    $disableEscBack = false,
-  }: {
-    route: string
-    options: Map<string, string | null>
-    $component: any
-    getParentPage: () => UniPage | null
-    $disableEscBack?: boolean
-  }) {
-    super({ route, options })
-    this.$component = $component
-    this.getParentPage = getParentPage
-    this.$disableEscBack = $disableEscBack
-  }
 }
 
 export const entryPageState = {
@@ -171,31 +74,6 @@ export const navigateToPagesBeforeEntryPages: NavigateToPage[] = []
 export const switchTabPagesBeforeEntryPages: SwitchTabPage[] = []
 export const redirectToPagesBeforeEntryPages: RedirectToPage[] = []
 export const reLaunchPagesBeforeEntryPages: ReLaunchPage[] = []
-let escBackPageNum = 0
-function handleEscKeyPress(event) {
-  if (event.key === 'Escape') {
-    const currentPage = getCurrentPage()
-    // @ts-expect-error
-    const dialogPages = currentPage.getDialogPages()
-    const dialogPage = dialogPages[dialogPages.length - 1]
-    if (!dialogPage.$disableEscBack) {
-      // @ts-expect-error
-      uni.closeDialogPage({ dialogPage })
-    }
-  }
-}
-export function incrementEscBackPageNum() {
-  escBackPageNum++
-  if (escBackPageNum === 1) {
-    document.addEventListener('keydown', handleEscKeyPress)
-  }
-}
-export function decrementEscBackPageNum() {
-  escBackPageNum--
-  if (escBackPageNum === 0) {
-    document.removeEventListener('keydown', handleEscKeyPress)
-  }
-}
 
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id) => {
@@ -242,11 +120,15 @@ function removeRouteCache(routeKey: string) {
 
 export function removePage(routeKey: string, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
-  if (__X__) {
+  if (__X__ && !__NODE_JS__) {
     const dialogPages = (pageVm.$page as UniPage).getDialogPages()
     for (let i = dialogPages.length - 1; i >= 0; i--) {
-      // @ts-expect-error
-      uni.closeDialogPage({ dialogPage: dialogPages[i] })
+      closeDialogPage({ dialogPage: dialogPages[i] })
+    }
+    const systemDialogPages =
+      pageVm.$pageLayoutInstance?.$systemDialogPages.value
+    if (systemDialogPages) {
+      systemDialogPages.length = 0
     }
   }
   pageVm.$.__isUnload = true
@@ -264,28 +146,20 @@ export function createPageState(type: NavigateType, __id__?: number) {
   }
 }
 
-function initPublicPage(route: RouteLocationNormalizedLoaded) {
+export function initPublicPage(route: RouteLocationNormalizedLoaded) {
   const meta = usePageMeta()
 
   if (!__UNI_FEATURE_PAGES__) {
     return initPageInternalInstance('navigateTo', __uniRoutes[0].path, {}, meta)
   }
   let fullPath = route.fullPath
-  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
+  if (
+    route.meta.isEntry &&
+    fullPath.indexOf(route.meta.route as string) === -1
+  ) {
     fullPath = '/' + route.meta.route + fullPath.replace('/', '')
   }
   return initPageInternalInstance('navigateTo', fullPath, {}, meta)
-}
-
-type PageStyle = {
-  navigationBarBackgroundColor?: string
-  navigationBarTextStyle?: string
-  navigationBarTitleText?: string
-  titleImage?: string
-  navigationStyle?: 'default' | 'custom'
-  disableScroll?: boolean
-  enablePullDownRefresh?: boolean
-  onReachBottomDistance?: number
 }
 
 export function initPage(vm: ComponentPublicInstance) {
@@ -293,96 +167,15 @@ export function initPage(vm: ComponentPublicInstance) {
   const page = initPublicPage(route)
   initPageVm(vm, page)
   if (__X__) {
-    vm.$basePage = vm.$page as Page.PageInstance['$page']
-    const uniPage = new UniPageImpl({
-      route: route.path,
-      options: new Map(
-        Object.entries(route.query as Record<string, any | null>)
-      ),
-      vm,
-    })
-    vm.$page = uniPage
-
-    const pageMeta = page.meta
-    uniPage.setPageStyle = (style: PageStyle) => {
-      // TODO uni-cli-shared内处理样式的逻辑移至uni-shared内并复用
-      for (const key in style) {
-        switch (key) {
-          case 'navigationBarBackgroundColor':
-            pageMeta.navigationBar.backgroundColor = style[key]
-            break
-          case 'navigationBarTextStyle':
-            const textStyle = style[key]
-            if (textStyle == null) {
-              continue
-            }
-            // TODO titleColor属性类型定义问题
-            pageMeta.navigationBar.titleColor = ['black', 'white'].includes(
-              textStyle
-            )
-              ? normalizeTitleColor(textStyle || '')
-              : (textStyle as any)
-            break
-          case 'navigationBarTitleText':
-            pageMeta.navigationBar.titleText = style[key]
-            break
-          case 'titleImage':
-            pageMeta.navigationBar.titleImage = style[key]
-            break
-          case 'navigationStyle':
-            pageMeta.navigationBar.style = style[key]
-            break
-          default:
-            pageMeta[key] = style[key]
-            break
-        }
-      }
+    initXPage(vm, route, page)
+  } else {
+    currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
+    if (currentPagesMap.size === 1) {
+      // 通过异步保证首页生命周期触发
+      setTimeout(() => {
+        handleBeforeEntryPageRoutes()
+      }, 0)
     }
-    uniPage.getPageStyle = () =>
-      new UTSJSONObject({
-        navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-        navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-        navigationBarTitleText: pageMeta.navigationBar.titleText,
-        titleImage: pageMeta.navigationBar.titleImage || '',
-        navigationStyle: pageMeta.navigationBar.style || 'default',
-        disableScroll: pageMeta.disableScroll || false,
-        enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-        onReachBottomDistance:
-          pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-        backgroundColorContent: pageMeta.backgroundColorContent,
-      })
-    // @ts-expect-error
-    vm.$dialogPage = getPageInstanceByVm(vm)?.$dialogPage
-  }
-
-  if (__X__) {
-    const pageInstance = getPageInstanceByVm(vm)
-    if (pageInstance?.attrs.type !== 'dialog') {
-      currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
-      if (currentPagesMap.size === 1) {
-        // 通过异步保证首页生命周期触发
-        setTimeout(() => {
-          handleBeforeEntryPageRoutes()
-        }, 0)
-        if (homeDialogPages.length) {
-          homeDialogPages.forEach((dialogPage) => {
-            dialogPage.getParentPage = () => vm.$page as UniPage
-            pageInstance!.$dialogPages.value.push(dialogPage)
-          })
-          homeDialogPages.length = 0
-        }
-      }
-    } else {
-      pageInstance.$dialogPage!.$vm = vm
-    }
-    return
-  }
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
-  if (currentPagesMap.size === 1) {
-    // 通过异步保证首页生命周期触发
-    setTimeout(() => {
-      handleBeforeEntryPageRoutes()
-    }, 0)
   }
 }
 

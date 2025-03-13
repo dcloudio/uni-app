@@ -1,91 +1,63 @@
-import type { ComponentPublicInstance } from 'vue'
-import type { MPComponentInstance } from '@dcloudio/uni-mp-core'
+import type {
+  MPComponentInstance,
+  RelationOptions,
+} from '@dcloudio/uni-mp-core'
 
-import {
-  initInjections,
-  initProvide,
-  instances,
-} from '@dcloudio/uni-mp-toutiao'
-import { ON_READY } from '@dcloudio/uni-shared'
+import { extend } from '@vue/shared'
+import { instances } from '@dcloudio/uni-mp-toutiao'
 
-export { mocks, isPage } from '@dcloudio/uni-mp-baidu'
+export { mocks } from '@dcloudio/uni-mp-baidu'
 
+export function isPage(mpInstance: MPComponentInstance) {
+  return (
+    !!mpInstance.route ||
+    !!((mpInstance._methods || mpInstance.methods || mpInstance) as any).onLoad
+  )
+}
 export {
   parseComponent as parse,
   initComponentLifetimes as initLifetimes,
 } from '@dcloudio/uni-mp-toutiao'
 
-interface RelationOptions {
-  nodeId: string
-  webviewId: string
-}
-
-export function initRelation(mpInstance: MPComponentInstance) {
-  // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
+export function initRelation(
+  mpInstance: MPComponentInstance,
+  relationOptions: RelationOptions
+) {
   const nodeId = mpInstance.nodeId + ''
   const webviewId = (mpInstance as any).pageinstance.__pageId__ + ''
-  instances[webviewId + '_' + nodeId] = mpInstance.$vm!
-  mpInstance.triggerEvent('__l', {
+  // 存储的是当前mpInstance，而不是$vm，因为$vm还没有创建
+  instances[webviewId + '_' + nodeId] = mpInstance
+  // 不使用 triggerEvent 是因为时机太晚，应该同步建立父子关系，确保setup中的provide/inject正常
+  // 当前平台有ownerId可以查找父子关系
+  extend(relationOptions, {
     nodeId,
     webviewId,
+  })
+  handleLink.call(mpInstance, {
+    detail: relationOptions,
   })
 }
 
 export function handleLink(
   this: MPComponentInstance,
   {
-    detail: { nodeId, webviewId },
+    detail,
   }: {
     detail: RelationOptions
   }
 ) {
-  const vm = instances[webviewId + '_' + nodeId] as ComponentPublicInstance & {
-    _$childVues?: [Function, Function][]
-  }
-  if (!vm) {
+  const { nodeId, webviewId } = detail
+  const mpInstance = instances[webviewId + '_' + nodeId] as MPComponentInstance
+  if (!mpInstance) {
     return
   }
-  let parentVm = instances[
-    webviewId + '_' + (vm.$scope as any).ownerId
-  ] as ComponentPublicInstance & {
-    _$childVues?: [Function, Function][]
-  }
+  let parentVm = (
+    instances[webviewId + '_' + mpInstance.ownerId] as MPComponentInstance
+  )?.$vm
+
   if (!parentVm) {
     parentVm = this.$vm!
   }
 
-  vm.$.parent = parentVm.$
-
-  const createdVm = function () {
-    if (__VUE_OPTIONS_API__) {
-      ;(parentVm as any).$children.push(vm)
-      const parent = parentVm.$ as any
-      ;(vm.$ as any).provides = parent
-        ? parent.provides
-        : Object.create(parent.appContext.provides)
-      initInjections(vm)
-      initProvide(vm)
-    }
-    vm.$callCreatedHook()
-  }
-  const mountedVm = function () {
-    // 处理当前 vm 子
-    if (vm._$childVues) {
-      vm._$childVues.forEach(([createdVm]) => createdVm())
-      vm._$childVues.forEach(([, mountedVm]) => mountedVm())
-      delete vm._$childVues
-    }
-    vm.$callHook('mounted')
-    vm.$callHook(ON_READY)
-  }
-  // 当 parentVm 已经 mounted 时，直接触发，否则延迟
-  if (!parentVm || parentVm.$.isMounted) {
-    createdVm()
-    mountedVm()
-  } else {
-    ;(parentVm._$childVues || (parentVm._$childVues = [])).push([
-      createdVm,
-      mountedVm,
-    ])
-  }
+  detail.parent = parentVm
 }

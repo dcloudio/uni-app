@@ -1,6 +1,18 @@
 /// <reference path="../../uts/index.d.ts" />
 /// <reference path="../vue.d.ts" />
 declare global {
+  interface Byte{}
+  interface UByte{}
+  interface Short{}
+  interface UShort{}
+  interface Int{}
+  interface UInt{}
+  interface Long{}
+  interface ULong{}
+  interface Float{}
+  interface Double{}
+}
+declare global {
   const CSS_VAR_WINDOW_TOP: number
   const CSS_VAR_WINDOW_BOTTOM: number
   const CSS_VAR_STATUS_BAR_HEIGHT: number
@@ -142,6 +154,7 @@ declare global {
   }
   type UniConfigOnReadyCallback = () => void
 
+  const GenUniApp: any
   type UniConfig = {
     realEntryPagePath: string
     entryPagePath: string
@@ -153,6 +166,7 @@ declare global {
     _ready: boolean
     callbacks: UniConfigOnReadyCallback[]
     onReady(callback: UniConfigOnReadyCallback): void
+    getTabBarConfig: () => Map<string, any> | null
     get ready(): boolean
     set ready(value: boolean)
   }
@@ -172,10 +186,10 @@ declare global {
   class UTSSourceMapPosition<
     name = string,
     fileName = string,
-    line = number,
-    column = number
+    line = Int,
+    column = Int
   > {
-    constructor(name: name, fileName: fileName, line: line, column: column)
+    constructor(name: name, fileName: fileName, line: Int, column: Int)
   }
   namespace uts {
     namespace sdk {

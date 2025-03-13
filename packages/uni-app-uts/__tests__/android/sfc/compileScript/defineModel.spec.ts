@@ -120,6 +120,8 @@ describe('defineModel()', () => {
       const count = defineModel<number>('count')
       const disabled = defineModel<number>('disabled', { required: false })
       const any = defineModel<any | boolean>('any')
+      const arr = defineModel<string[]>('arr')
+      const arr1 = defineModel('arr1', { type: Array as PropType<string[]> })
       </script>
       `,
       { defineModel: true }
@@ -131,8 +133,10 @@ describe('defineModel()', () => {
       '"disabled": { type: Number, ...{ required: false } }'
     )
     expect(content).toMatch('"any": { type: [Object, Boolean] }')
+    expect(content).toMatch('"arr": { type: Array as PropType<string[]> }')
+    expect(content).toMatch('"arr1": { type: Array as PropType<string[]> }')
     expect(content).toMatch(
-      'emits: ["update:modelValue", "update:count", "update:disabled", "update:any"]'
+      'emits: ["update:modelValue", "update:count", "update:disabled", "update:any", "update:arr", "update:arr1"]'
     )
 
     expect(content).toMatch(
@@ -145,12 +149,20 @@ describe('defineModel()', () => {
       `const disabled = useModel<number>(__ins.props, "disabled")`
     )
     expect(content).toMatch(`const any = useModel<any>(__ins.props, "any")`)
+    expect(content).toMatch(
+      `const arr = useModel<string[]>(__ins.props, "arr")`
+    )
+    expect(content).toMatch(
+      `const arr1 = useModel<string[]>(__ins.props, "arr1")`
+    )
 
     expect(bindings).toStrictEqual({
       modelValue: BindingTypes.SETUP_REF,
       count: BindingTypes.SETUP_REF,
       disabled: BindingTypes.SETUP_REF,
       any: BindingTypes.SETUP_REF,
+      arr: BindingTypes.SETUP_REF,
+      arr1: BindingTypes.SETUP_REF,
     })
   })
 
@@ -169,19 +181,23 @@ describe('defineModel()', () => {
     )
     assertCode(content)
     expect(content).toMatch('"modelValue": { type: Boolean }')
-    expect(content).toMatch('"fn": {}')
+    expect(content).toMatch('"fn": { type: Function as PropType<() => void> }')
     expect(content).toMatch(
-      '"fnWithDefault": { type: Function, ...{ default: () => null } },'
+      '"fnWithDefault": { type: Function as PropType<() => void>, ...{ default: () => null } },'
     )
-    expect(content).toMatch('"str": {}')
-    expect(content).toMatch('"optional": { required: false }')
+    expect(content).toMatch('"str": { type: String }')
+    expect(content).toMatch(
+      '"optional": { type: String, ...{ required: false } }'
+    )
     expect(content).toMatch(
       'emits: ["update:modelValue", "update:fn", "update:fnWithDefault", "update:str", "update:optional"]'
     )
     expect(content).toMatch(
       `const modelValue = useModel<boolean>(__ins.props, "modelValue")`
     )
-    expect(content).toMatch(`const fn = useModel<Function>(__ins.props, "fn")`)
+    expect(content).toMatch(
+      `const fn = useModel<() => void>(__ins.props, "fn")`
+    )
     expect(content).toMatch(`const str = useModel<string>(__ins.props, "str")`)
     expect(bindings).toStrictEqual({
       modelValue: BindingTypes.SETUP_REF,

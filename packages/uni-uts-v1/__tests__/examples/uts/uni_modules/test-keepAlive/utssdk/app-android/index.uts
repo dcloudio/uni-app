@@ -1,0 +1,47 @@
+import { ITestKeepAlive } from "../interface.uts"
+
+export function test1(callback : (msg : string) => void) {
+    callback("a")
+    callback("b")
+}
+@UTSJS.keepAlive
+export function test2(callback : (msg : string) => void) {
+    callback("a")
+    callback("b")
+}
+export class Test {
+    test1(callback : (msg : string) => void) {
+        callback("a")
+        callback("b")
+    }
+    @UTSJS.keepAlive
+    test2(callback : (msg : string) => void) {
+        callback("a")
+        callback("b")
+    }
+    static test3(callback : (msg : string) => void) {
+        callback("a")
+        callback("b")
+    }
+    @UTSJS.keepAlive
+    static test4(callback : (msg : string) => void) {
+        callback("a")
+        callback("b")
+    }
+}
+
+class Test2 implements ITestKeepAlive {
+    test1(callback: (msg: string) => void) {
+        callback("a")
+        callback("b")
+    }
+    @UTSJS.keepAlive
+    test2(callback: (msg: string) => void) {
+        callback("a")
+        callback("b")
+    }
+}
+
+export function createTest2():ITestKeepAlive {
+    return new Test2()
+}

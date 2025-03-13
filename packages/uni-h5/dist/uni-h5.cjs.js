@@ -313,6 +313,12 @@ function rpx2pxWithReplace(str) {
     return str;
   }
 }
+function get$pageByPage(page) {
+  return page.$page;
+}
+function isBuiltInElement(target) {
+  return target.tagName.indexOf("UNI-") === 0;
+}
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
 const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
@@ -351,7 +357,7 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 function useCurrentPageId() {
   {
     const { $pageInstance } = vue.getCurrentInstance();
-    return $pageInstance && $pageInstance.proxy.$page.id;
+    return $pageInstance && getPageProxyId($pageInstance.proxy);
   }
 }
 function getCurrentPage() {
@@ -362,9 +368,10 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
+  var _c;
+  const $page = (_c = getCurrentPage()) == null ? void 0 : _c.$page;
+  if ($page) {
+    return $page.meta;
   }
 }
 function getCurrentPageId() {
@@ -425,13 +432,19 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
 }
+function getPageProxyId(proxy) {
+  var _a, _b;
+  return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
+}
 function invokeHook(vm, name, args) {
   if (shared.isString(vm)) {
     args = name;
     name = vm;
     vm = getCurrentPageVm();
   } else if (typeof vm === "number") {
-    const page = getCurrentPages().find((page2) => page2.$page.id === vm);
+    const page = getCurrentPages().find(
+      (page2) => get$pageByPage(page2).id === vm
+    );
     if (page) {
       vm = page.$vm;
     } else {
@@ -471,7 +484,7 @@ function getRouteOptions(path, alias = false) {
   return __uniRoutes.find((route) => route.path === path);
 }
 function findUniTarget(target) {
-  while (target && target.tagName.indexOf("UNI-") !== 0) {
+  while (!isBuiltInElement(target)) {
     target = target.parentElement;
   }
   return target;
@@ -479,10 +492,12 @@ function findUniTarget(target) {
 function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
   let realTarget, realCurrentTarget;
-  realTarget = uniShared.normalizeTarget(
-    htmlElement ? target : findUniTarget(target)
-  );
-  realCurrentTarget = uniShared.normalizeTarget(currentTarget);
+  {
+    realTarget = uniShared.normalizeTarget(
+      htmlElement ? target : findUniTarget(target)
+    );
+    realCurrentTarget = uniShared.normalizeTarget(currentTarget);
+  }
   const event = {
     type,
     timeStamp,
@@ -498,7 +513,9 @@ function createNativeEvent(evt, htmlElement = false) {
     event.changedTouches = evt.changedTouches;
   }
   {
-    wrapperEvent(event, evt);
+    {
+      wrapperEvent(event, evt);
+    }
   }
   return event;
 }
@@ -734,7 +751,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   let target;
   target = uniShared.normalizeTarget(el);
   return {
-    type: detail.type || name,
+    type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
@@ -849,6 +866,11 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
+uniShared.createRpx2Unit(
+  uniShared.defaultRpx2Unit.unit,
+  uniShared.defaultRpx2Unit.unitRatio,
+  uniShared.defaultRpx2Unit.unitPrecision
+);
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -1037,37 +1059,98 @@ const index$A = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function addBase(filePath) {
-  const { base: baseUrl } = __uniConfig.router;
-  if (uniShared.addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
-    return uniShared.addLeadingSlash(filePath);
-  }
-  return baseUrl + filePath;
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
+function usePageMeta() {
+  return vue.inject(pageMetaKey);
 }
-function getRealPath(filePath) {
-  const { base, assets } = __uniConfig.router;
-  if (base === "./") {
-    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
-      filePath = filePath.slice(1);
-    }
+function providePageMeta(id2) {
+  const pageMeta = initPageMeta(id2);
+  vue.provide(pageMetaKey, pageMeta);
+  return pageMeta;
+}
+function usePageRoute() {
+  if (__UNI_FEATURE_PAGES__) {
+    return vueRouter.useRoute();
   }
-  if (filePath.indexOf("/") === 0) {
-    if (filePath.indexOf("//") === 0) {
-      filePath = "https:" + filePath;
-    } else {
-      return addBase(filePath.slice(1));
-    }
-  }
-  if (uniShared.SCHEME_RE.test(filePath) || uniShared.DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
-    return filePath;
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    return addBase(
-      getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1)
+  const url = location.href;
+  const searchPos = url.indexOf("?");
+  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
+  let query = {};
+  if (searchPos > -1) {
+    query = uniShared.parseQuery(
+      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
     );
   }
-  return filePath;
+  const { meta } = __uniRoutes[0];
+  const path = uniShared.addLeadingSlash(meta.route);
+  return {
+    meta,
+    query,
+    path,
+    matched: [{ path }]
+  };
+}
+function initPageMeta(id2) {
+  if (__UNI_FEATURE_PAGES__) {
+    return vue.reactive(
+      normalizePageMeta(
+        JSON.parse(
+          JSON.stringify(
+            initRouteMeta(
+              vueRouter.useRoute().meta,
+              id2
+            )
+          )
+        )
+      )
+    );
+  }
+  return vue.reactive(
+    normalizePageMeta(
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
+    )
+  );
+}
+function normalizePageMeta(pageMeta) {
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const { enablePullDownRefresh, navigationBar } = pageMeta;
+    if (enablePullDownRefresh) {
+      const pullToRefresh = normalizePullToRefreshRpx(
+        shared.extend(
+          {
+            support: true,
+            color: "#2BD009",
+            style: "circle",
+            height: 70,
+            range: 150,
+            offset: 0
+          },
+          pageMeta.pullToRefresh
+        )
+      );
+      const { type, style } = navigationBar;
+      if (style !== "custom" && type !== "transparent") {
+        pullToRefresh.offset += uniShared.NAVBAR_HEIGHT + 0;
+      }
+      pageMeta.pullToRefresh = pullToRefresh;
+    }
+  }
+  if (__UNI_FEATURE_NAVIGATIONBAR__ || __UNI_FEATURE_I18N_LOCALE__) {
+    const { navigationBar } = pageMeta;
+    const { titleSize, titleColor, backgroundColor } = navigationBar;
+    navigationBar.titleText = navigationBar.titleText || "";
+    navigationBar.type = navigationBar.type || "default";
+    navigationBar.titleSize = titleSize || "16px";
+    navigationBar.titleColor = titleColor || "#000000";
+    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
+    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
+  }
+  return pageMeta;
+}
+function getStateId() {
+  {
+    return 1;
+  }
 }
 const HTTP_METHODS = [
   "GET",
@@ -1455,8 +1538,18 @@ function invokeSuccess(id2, name, res) {
   return invokeCallback(id2, shared.extend(res || {}, result));
 }
 function invokeFail(id2, name, errMsg, errRes = {}) {
-  const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
-  delete errRes.errCode;
+  const errMsgPrefix = name + ":fail";
+  let apiErrMsg = "";
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix;
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg;
+  } else {
+    apiErrMsg = errMsgPrefix + " " + errMsg;
+  }
+  {
+    delete errRes.errCode;
+  }
   let res = shared.extend({ errMsg: apiErrMsg }, errRes);
   return invokeCallback(id2, res);
 }
@@ -1480,7 +1573,9 @@ function parseErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
+    if (typeof globalThis === "undefined" || !globalThis.harmonyChannel) {
+      console.error(errMsg.message + "\n" + errMsg.stack);
+    }
     return errMsg.message;
   }
   return errMsg;
@@ -1674,6 +1769,314 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
+function removeNonTabBarPages() {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    if (!page.$.__isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = false;
+    }
+  }
+  if (curTabBarPageVm.$.__isTabBar) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, uniShared.ON_HIDE);
+  }
+}
+function isSamePage(url, $page) {
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = getPage$BasePage(page);
+    if (isSamePage(url, $page)) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+function removeLastPage() {
+  const page = getCurrentPage();
+  if (!page) {
+    return;
+  }
+  const $page = getPage$BasePage(page);
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
+function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
+  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
+    console.warn(
+      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
+    );
+  }
+  const router = getApp().$router;
+  const { path, query } = uniShared.parseUrl(url);
+  return new Promise((resolve, reject) => {
+    const state = createPageState(type, __id__);
+    router[type === "navigateTo" ? "push" : "replace"]({
+      path,
+      query,
+      state,
+      force: true
+    }).then((failure) => {
+      if (vueRouter.isNavigationFailure(failure)) {
+        return reject(failure.message);
+      }
+      if (type === "switchTab") {
+        router.currentRoute.value.meta.tabBarText = tabBarText;
+      }
+      if (type === "navigateTo") {
+        const meta = router.currentRoute.value.meta;
+        if (!meta.eventChannel) {
+          meta.eventChannel = new uniShared.EventChannel(state.__id__, events);
+        } else if (events) {
+          Object.keys(events).forEach((eventName) => {
+            meta.eventChannel._addListener(
+              eventName,
+              "on",
+              events[eventName]
+            );
+          });
+          meta.eventChannel._clearCache();
+        }
+        return isAutomatedTesting ? resolve({
+          __id__: state.__id__
+        }) : resolve({
+          eventChannel: meta.eventChannel
+        });
+      }
+      return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
+    });
+  });
+}
+function handleBeforeEntryPageRoutes() {
+  if (entryPageState.handledBeforeEntryPageRoutes) {
+    return;
+  }
+  entryPageState.handledBeforeEntryPageRoutes = true;
+  const navigateToPages = [...navigateToPagesBeforeEntryPages];
+  navigateToPagesBeforeEntryPages.length = 0;
+  navigateToPages.forEach(
+    ({ args, resolve, reject }) => (
+      // @ts-expect-error
+      navigate(args).then(resolve).catch(reject)
+    )
+  );
+  const switchTabPages = [...switchTabPagesBeforeEntryPages];
+  switchTabPagesBeforeEntryPages.length = 0;
+  switchTabPages.forEach(
+    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
+  );
+  const redirectToPages = [...redirectToPagesBeforeEntryPages];
+  redirectToPagesBeforeEntryPages.length = 0;
+  redirectToPages.forEach(
+    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
+  );
+  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
+  reLaunchPagesBeforeEntryPages.length = 0;
+  reLaunchPages.forEach(
+    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
+  );
+}
+let tabBar;
+function useTabBar() {
+  if (!tabBar) {
+    tabBar = __uniConfig.tabBar && vue.reactive(initTabBarI18n(__uniConfig.tabBar));
+  }
+  return tabBar;
+}
+const envMethod = /* @__PURE__ */ (() => "env")();
+function normalizeWindowBottom(windowBottom) {
+  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+}
+const SEP = "$$";
+const currentPagesMap = /* @__PURE__ */ new Map();
+function getPage$BasePage(page) {
+  return page.$page;
+}
+const entryPageState = {
+  handledBeforeEntryPageRoutes: false
+};
+const navigateToPagesBeforeEntryPages = [];
+const switchTabPagesBeforeEntryPages = [];
+const redirectToPagesBeforeEntryPages = [];
+const reLaunchPagesBeforeEntryPages = [];
+function pruneCurrentPages() {
+  currentPagesMap.forEach((page, id2) => {
+    if (page.$.isUnmounted) {
+      currentPagesMap.delete(id2);
+    }
+  });
+}
+function getCurrentPagesMap() {
+  return currentPagesMap;
+}
+function getCurrentPages$1() {
+  const curPages = getCurrentBasePages();
+  return curPages;
+}
+function getCurrentBasePages() {
+  const curPages = [];
+  const pages = currentPagesMap.values();
+  for (const page of pages) {
+    if (page.$.__isTabBar) {
+      if (page.$.__isActive) {
+        curPages.push(page);
+      }
+    } else {
+      curPages.push(page);
+    }
+  }
+  return curPages;
+}
+function removeRouteCache(routeKey) {
+  const vnode = pageCacheMap.get(routeKey);
+  if (vnode) {
+    pageCacheMap.delete(routeKey);
+    routeCache.pruneCacheEntry(vnode);
+  }
+}
+function removePage(routeKey, removeRouteCaches = true) {
+  const pageVm = currentPagesMap.get(routeKey);
+  pageVm.$.__isUnload = true;
+  invokeHook(pageVm, uniShared.ON_UNLOAD);
+  currentPagesMap.delete(routeKey);
+  removeRouteCaches && removeRouteCache(routeKey);
+}
+let id = /* @__PURE__ */ getStateId();
+function createPageState(type, __id__) {
+  return {
+    __id__: __id__ || ++id,
+    __type__: type
+  };
+}
+function initPublicPage(route) {
+  const meta = usePageMeta();
+  if (!__UNI_FEATURE_PAGES__) {
+    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
+  }
+  let fullPath = route.fullPath;
+  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
+    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
+  }
+  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
+}
+function initPage(vm) {
+  const route = vm.$route;
+  const page = initPublicPage(route);
+  initPageVm(vm, page);
+  {
+    currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+    if (currentPagesMap.size === 1) {
+      setTimeout(() => {
+        handleBeforeEntryPageRoutes();
+      }, 0);
+    }
+  }
+}
+function normalizeRouteKey(path, id2) {
+  return path + SEP + id2;
+}
+function useKeepAliveRoute() {
+  const route = vueRouter.useRoute();
+  const routeKey = vue.computed(
+    () => normalizeRouteKey("/" + route.meta.route, getStateId())
+  );
+  const isTabBar = vue.computed(() => route.meta.isTabBar);
+  return {
+    routeKey,
+    isTabBar,
+    routeCache
+  };
+}
+const pageCacheMap = /* @__PURE__ */ new Map();
+const routeCache = {
+  get(key) {
+    return pageCacheMap.get(key);
+  },
+  set(key, value) {
+    pruneRouteCache(key);
+    pageCacheMap.set(key, value);
+  },
+  delete(key) {
+    const vnode = pageCacheMap.get(key);
+    if (!vnode) {
+      return;
+    }
+    pageCacheMap.delete(key);
+  },
+  forEach(fn) {
+    pageCacheMap.forEach(fn);
+  }
+};
+function isTabBarVNode(vnode) {
+  return vnode.props.type === "tabBar";
+}
+function pruneRouteCache(key) {
+  const pageId = parseInt(key.split(SEP)[1]);
+  if (!pageId) {
+    return;
+  }
+  routeCache.forEach((vnode, key2) => {
+    const cPageId = parseInt(key2.split(SEP)[1]);
+    if (cPageId && cPageId > pageId) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+        return;
+      }
+      routeCache.delete(key2);
+      routeCache.pruneCacheEntry(vnode);
+      vue.nextTick(() => pruneCurrentPages());
+    }
+  });
+}
+function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
+  if (uniShared.addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
+    return uniShared.addLeadingSlash(filePath);
+  }
+  return baseUrl + filePath;
+}
+function getRealPath(filePath) {
+  const { base, assets } = __uniConfig.router;
+  if (base === "./") {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
+      filePath = filePath.slice(1);
+    }
+  }
+  if (filePath.indexOf("/") === 0) {
+    if (filePath.indexOf("//") === 0) {
+      filePath = "https:" + filePath;
+    } else {
+      return addBase(filePath.slice(1));
+    }
+  }
+  if (uniShared.SCHEME_RE.test(filePath) || uniShared.DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+    return filePath;
+  }
+  const pages = getCurrentBasePages();
+  if (pages.length) {
+    return addBase(
+      getRealRoute(
+        getPage$BasePage(pages[pages.length - 1]).route,
+        filePath
+      ).slice(1)
+    );
+  }
+  return filePath;
+}
 function saveImage(base64, dirname, callback) {
   callback(null, base64);
 }
@@ -1685,9 +2088,6 @@ function urlToFile(url, local) {
   }
   if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
     return Promise.resolve(base64ToFile(url));
-  }
-  if (local) {
-    return Promise.reject(new Error("not find"));
   }
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -3165,10 +3565,9 @@ function getValueString(value, type, maxlength) {
     value = "";
   }
   const valueStr = value === null || value === void 0 ? "" : String(value);
-  if (maxlength == void 0) {
+  {
     return valueStr;
   }
-  return valueStr.slice(0, maxlength);
 }
 const INPUT_MODES = [
   "none",
@@ -4318,7 +4717,7 @@ const movableViewProps = {
   },
   scaleMin: {
     type: [Number, String],
-    default: 0.5
+    default: 0.1
   },
   scaleMax: {
     type: [Number, String],
@@ -4524,9 +4923,6 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     };
   }
   function FAandSFACancel() {
-    if (_FA) {
-      _FA.cancel();
-    }
     if (_SFA) {
       _SFA.cancel();
     }
@@ -4659,7 +5055,7 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
 function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA) {
   const scaleMinNumber = vue.computed(() => {
     let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
+    return isNaN(val) ? 0.1 : val;
   });
   const scaleMaxNumber = vue.computed(() => {
     let val = Number(props2.scaleMax);
@@ -4725,7 +5121,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     _oldScale.value = scale;
   }
   function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.max(0.1, scaleMinNumber.value, scale);
     scale = Math.min(10, scaleMaxNumber.value, scale);
     return scale;
   }
@@ -5431,7 +5827,7 @@ function useProvideRadioGroup(props2, trigger) {
     },
     radioChange($event, field) {
       const index2 = fields2.indexOf(field);
-      _resetRadioGroupValue(index2, true);
+      _resetRadioGroupValue(index2);
       trigger("change", $event, {
         value: getFieldsValue()
       });
@@ -5462,17 +5858,8 @@ function useProvideRadioGroup(props2, trigger) {
       if (index2 === key) {
         return;
       }
-      if (change) {
+      {
         setFieldChecked(fields2[index2], false);
-      } else {
-        fields2.forEach((v2, i) => {
-          if (index2 >= i) {
-            return;
-          }
-          if (fields2[i].value.radioChecked) {
-            setFieldChecked(fields2[index2], false);
-          }
-        });
       }
     });
   }
@@ -7067,7 +7454,9 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       const defaultSlots = slots.default && slots.default();
-      swiperItems = flatVNode(defaultSlots);
+      {
+        swiperItems = flatVNode(defaultSlots);
+      }
       return vue.createVNode("uni-swiper", {
         "ref": rootRef
       }, [vue.createVNode("div", {
@@ -7608,11 +7997,11 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
         return vue.createVNode("uni-view", vue.mergeProps({
           "class": hovering.value ? hoverClass : "",
           "ref": rootRef
-        }, binding), [slots.default && slots.default()], 16);
+        }, binding), [vue.renderSlot(slots, "default")], 16);
       }
       return vue.createVNode("uni-view", {
         "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      }, [vue.renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -7635,7 +8024,6 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
   }
 }
 function initHooks(options, instance, publicThis) {
-  var _b;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -7662,8 +8050,9 @@ function initHooks(options, instance, publicThis) {
         ;
       invokeHook(publicThis, uniShared.ON_LOAD, query);
       delete instance.attrs.__pageQuery;
+      const $basePage = false ? publicThis.$basePage : publicThis.$page;
       if (true) {
-        if (((_b = publicThis.$page) == null ? void 0 : _b.openType) !== "preloadPage") {
+        if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
           invokeHook(publicThis, uniShared.ON_SHOW);
         }
       }
@@ -7687,16 +8076,21 @@ function $callMethod(method, ...args) {
   return null;
 }
 function createErrorHandler(app) {
-  return function errorHandler(err, instance, _info) {
-    if (!instance) {
-      throw err;
+  const userErrorHandler = app.config.errorHandler;
+  return function errorHandler(err, instance, info) {
+    if (userErrorHandler) {
+      userErrorHandler(err, instance, info);
     }
     const appInstance = app._instance;
     if (!appInstance || !appInstance.proxy) {
       throw err;
     }
-    {
-      invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
+    if (appInstance[uniShared.ON_ERROR]) {
+      {
+        invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
+      }
+    } else {
+      vue.logError(err, info, instance ? instance.$.vnode : null, false);
     }
   };
 }
@@ -7782,7 +8176,7 @@ function uniIdMixin(globalProperties) {
   };
 }
 function initApp$1(app) {
-  const appConfig = app._context.config;
+  const appConfig = app.config;
   appConfig.errorHandler = uniShared.invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
@@ -7799,363 +8193,6 @@ function initApp$1(app) {
   {
     uniShared.invokeCreateVueAppHook(app);
   }
-}
-const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
-function usePageMeta() {
-  return vue.inject(pageMetaKey);
-}
-function providePageMeta(id2) {
-  const pageMeta = initPageMeta(id2);
-  vue.provide(pageMetaKey, pageMeta);
-  return pageMeta;
-}
-function usePageRoute() {
-  if (__UNI_FEATURE_PAGES__) {
-    return vueRouter.useRoute();
-  }
-  const url = location.href;
-  const searchPos = url.indexOf("?");
-  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
-  let query = {};
-  if (searchPos > -1) {
-    query = uniShared.parseQuery(
-      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
-    );
-  }
-  const { meta } = __uniRoutes[0];
-  const path = uniShared.addLeadingSlash(meta.route);
-  return {
-    meta,
-    query,
-    path,
-    matched: [{ path }]
-  };
-}
-function initPageMeta(id2) {
-  if (__UNI_FEATURE_PAGES__) {
-    return vue.reactive(
-      normalizePageMeta(
-        JSON.parse(
-          JSON.stringify(
-            initRouteMeta(
-              vueRouter.useRoute().meta,
-              id2
-            )
-          )
-        )
-      )
-    );
-  }
-  return vue.reactive(
-    normalizePageMeta(
-      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
-    )
-  );
-}
-function normalizePageMeta(pageMeta) {
-  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    const { enablePullDownRefresh, navigationBar } = pageMeta;
-    if (enablePullDownRefresh) {
-      const pullToRefresh = normalizePullToRefreshRpx(
-        shared.extend(
-          {
-            support: true,
-            color: "#2BD009",
-            style: "circle",
-            height: 70,
-            range: 150,
-            offset: 0
-          },
-          pageMeta.pullToRefresh
-        )
-      );
-      const { type, style } = navigationBar;
-      if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += uniShared.NAVBAR_HEIGHT + 0;
-      }
-      pageMeta.pullToRefresh = pullToRefresh;
-    }
-  }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
-    const { navigationBar } = pageMeta;
-    const { titleSize, titleColor, backgroundColor } = navigationBar;
-    navigationBar.titleText = navigationBar.titleText || "";
-    navigationBar.type = navigationBar.type || "default";
-    navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#000000";
-    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
-    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
-  }
-  return pageMeta;
-}
-function getStateId() {
-  {
-    return 1;
-  }
-}
-function removeNonTabBarPages() {
-  const curTabBarPageVm = getCurrentPageVm();
-  if (!curTabBarPageVm) {
-    return;
-  }
-  const pagesMap = getCurrentPagesMap();
-  const keys = pagesMap.keys();
-  for (const routeKey of keys) {
-    const page = pagesMap.get(routeKey);
-    if (!page.$.__isTabBar) {
-      removePage(routeKey);
-    } else {
-      page.$.__isActive = false;
-    }
-  }
-  if (curTabBarPageVm.$.__isTabBar) {
-    curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, uniShared.ON_HIDE);
-  }
-}
-function isSamePage(url, $page) {
-  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
-}
-function getTabBarPageId(url) {
-  const pages = getCurrentPagesMap().values();
-  for (const page of pages) {
-    const $page = page.$page;
-    if (isSamePage(url, $page)) {
-      page.$.__isActive = true;
-      return $page.id;
-    }
-  }
-}
-function removeLastPage() {
-  const page = getCurrentPage();
-  if (!page) {
-    return;
-  }
-  const $page = page.$page;
-  removePage(normalizeRouteKey($page.path, $page.id));
-}
-function removeAllPages() {
-  const keys = getCurrentPagesMap().keys();
-  for (const routeKey of keys) {
-    removePage(routeKey);
-  }
-}
-function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
-  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
-    console.warn(
-      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
-    );
-  }
-  const router = getApp().$router;
-  const { path, query } = uniShared.parseUrl(url);
-  return new Promise((resolve, reject) => {
-    const state = createPageState(type, __id__);
-    router[type === "navigateTo" ? "push" : "replace"]({
-      path,
-      query,
-      state,
-      force: true
-    }).then((failure) => {
-      if (vueRouter.isNavigationFailure(failure)) {
-        return reject(failure.message);
-      }
-      if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
-      }
-      if (type === "navigateTo") {
-        const meta = router.currentRoute.value.meta;
-        if (!meta.eventChannel) {
-          meta.eventChannel = new uniShared.EventChannel(state.__id__, events);
-        } else if (events) {
-          Object.keys(events).forEach((eventName) => {
-            meta.eventChannel._addListener(
-              eventName,
-              "on",
-              events[eventName]
-            );
-          });
-          meta.eventChannel._clearCache();
-        }
-        return isAutomatedTesting ? resolve({
-          __id__: state.__id__
-        }) : resolve({
-          eventChannel: meta.eventChannel
-        });
-      }
-      return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
-    });
-  });
-}
-function handleBeforeEntryPageRoutes() {
-  if (entryPageState.handledBeforeEntryPageRoutes) {
-    return;
-  }
-  entryPageState.handledBeforeEntryPageRoutes = true;
-  const navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach(
-    ({ args, resolve, reject }) => (
-      // @ts-expect-error
-      navigate(args).then(resolve).catch(reject)
-    )
-  );
-  const switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
-  const redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
-}
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && vue.reactive(initTabBarI18n(__uniConfig.tabBar));
-  }
-  return tabBar;
-}
-const envMethod = /* @__PURE__ */ (() => "env")();
-function normalizeWindowBottom(windowBottom) {
-  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
-}
-const SEP = "$$";
-const currentPagesMap = /* @__PURE__ */ new Map();
-const entryPageState = {
-  handledBeforeEntryPageRoutes: false
-};
-const navigateToPagesBeforeEntryPages = [];
-const switchTabPagesBeforeEntryPages = [];
-const redirectToPagesBeforeEntryPages = [];
-const reLaunchPagesBeforeEntryPages = [];
-function pruneCurrentPages() {
-  currentPagesMap.forEach((page, id2) => {
-    if (page.$.isUnmounted) {
-      currentPagesMap.delete(id2);
-    }
-  });
-}
-function getCurrentPagesMap() {
-  return currentPagesMap;
-}
-function getCurrentPages$1() {
-  const curPages = [];
-  const pages = currentPagesMap.values();
-  for (const page of pages) {
-    if (page.$.__isTabBar) {
-      if (page.$.__isActive) {
-        curPages.push(page);
-      }
-    } else {
-      curPages.push(page);
-    }
-  }
-  return curPages;
-}
-function removeRouteCache(routeKey) {
-  const vnode = pageCacheMap.get(routeKey);
-  if (vnode) {
-    pageCacheMap.delete(routeKey);
-    routeCache.pruneCacheEntry(vnode);
-  }
-}
-function removePage(routeKey, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey);
-  pageVm.$.__isUnload = true;
-  invokeHook(pageVm, uniShared.ON_UNLOAD);
-  currentPagesMap.delete(routeKey);
-  removeRouteCaches && removeRouteCache(routeKey);
-}
-let id = /* @__PURE__ */ getStateId();
-function createPageState(type, __id__) {
-  return {
-    __id__: __id__ || ++id,
-    __type__: type
-  };
-}
-function initPublicPage(route) {
-  const meta = usePageMeta();
-  if (!__UNI_FEATURE_PAGES__) {
-    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
-  }
-  let fullPath = route.fullPath;
-  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
-    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
-  }
-  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
-}
-function initPage(vm) {
-  const route = vm.$route;
-  const page = initPublicPage(route);
-  initPageVm(vm, page);
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-  if (currentPagesMap.size === 1) {
-    setTimeout(() => {
-      handleBeforeEntryPageRoutes();
-    }, 0);
-  }
-}
-function normalizeRouteKey(path, id2) {
-  return path + SEP + id2;
-}
-function useKeepAliveRoute() {
-  const route = vueRouter.useRoute();
-  const routeKey = vue.computed(
-    () => normalizeRouteKey("/" + route.meta.route, getStateId())
-  );
-  const isTabBar = vue.computed(() => route.meta.isTabBar);
-  return {
-    routeKey,
-    isTabBar,
-    routeCache
-  };
-}
-const pageCacheMap = /* @__PURE__ */ new Map();
-const routeCache = {
-  get(key) {
-    return pageCacheMap.get(key);
-  },
-  set(key, value) {
-    pruneRouteCache(key);
-    pageCacheMap.set(key, value);
-  },
-  delete(key) {
-    const vnode = pageCacheMap.get(key);
-    if (!vnode) {
-      return;
-    }
-    pageCacheMap.delete(key);
-  },
-  forEach(fn) {
-    pageCacheMap.forEach(fn);
-  }
-};
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
-}
-function pruneRouteCache(key) {
-  const pageId = parseInt(key.split(SEP)[1]);
-  if (!pageId) {
-    return;
-  }
-  routeCache.forEach((vnode, key2) => {
-    const cPageId = parseInt(key2.split(SEP)[1]);
-    if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
-        return;
-      }
-      routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
-      vue.nextTick(() => pruneCurrentPages());
-    }
-  });
 }
 function initRouter(app) {
   const router = vueRouter.createRouter(createRouterOptions());
@@ -8281,7 +8318,7 @@ function initApp(vm) {
   appVm = vm;
   Object.defineProperty(appVm.$.ctx, "$children", {
     get() {
-      return getCurrentPages().map((page) => page.$vm);
+      return getCurrentBasePages().map((page) => page.$vm);
     }
   });
   const app = appVm.$.appContext.app;
@@ -8319,9 +8356,11 @@ function setupComponent(comp, options) {
 function setupWindow(comp, id2) {
   return setupComponent(comp, {
     init: (vm) => {
-      vm.$page = {
-        id: id2
-      };
+      {
+        vm.$page = {
+          id: id2
+        };
+      }
     },
     setup(instance) {
       instance.$pageInstance = instance;
@@ -8341,7 +8380,7 @@ function setupPage(comp) {
       const route = usePageRoute();
       const query = uniShared.decodedQuery(route.query);
       instance.attrs.__pageQuery = query;
-      instance.proxy.$page.options = query;
+      getPage$BasePage(instance.proxy).options = query;
       instance.proxy.options = query;
       {
         return query;
@@ -8391,6 +8430,7 @@ function formatTime(val) {
 }
 function useGesture(props2, videoRef, fullscreenState) {
   const state = vue.reactive({
+    seeking: false,
     gestureType: "none",
     volumeOld: 0,
     volumeNew: 0,
@@ -8407,7 +8447,6 @@ function useGesture(props2, videoRef, fullscreenState) {
     touchStartOrigin.y = toucher.pageY;
     state.gestureType = "none";
     state.volumeOld = 0;
-    state.currentTimeOld = state.currentTimeNew = 0;
   }
   function onTouchmove(event) {
     function stop() {
@@ -8428,6 +8467,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     const video = videoRef.value;
     if (gestureType === "progress") {
       changeProgress(pageX - origin.x);
+      state.seeking = true;
     } else if (gestureType === "volume") {
       changeVolume(pageY - origin.y);
     }
@@ -8581,7 +8621,8 @@ function useVideo(props2, attrs, trigger) {
     duration: 0,
     progress: 0,
     buffered: 0,
-    muted
+    muted,
+    pauseUpdatingCurrentTime: false
   });
   vue.watch(() => src.value, () => {
     state.playing = false;
@@ -8643,7 +8684,10 @@ function useVideo(props2, attrs, trigger) {
   }
   function onTimeUpdate($event) {
     const video = $event.target;
-    const currentTime = state.currentTime = video.currentTime;
+    if (!state.pauseUpdatingCurrentTime) {
+      state.currentTime = video.currentTime;
+    }
+    const currentTime = video.currentTime;
     trigger("timeupdate", $event, {
       currentTime,
       duration: video.duration
@@ -8701,13 +8745,14 @@ function useVideo(props2, attrs, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek) {
+function useControls(props2, videoState, seek, seeking) {
   const progressRef = vue.ref(null);
   const ballRef = vue.ref(null);
   const centerPlayBtnShow = vue.computed(() => props2.showCenterPlayBtn && !videoState.start);
   const controlsVisible = vue.ref(true);
   const controlsShow = vue.computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
   const state = vue.reactive({
+    seeking: false,
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -8749,13 +8794,6 @@ function useControls(props2, videoState, seek) {
       autoHideStart();
     } else {
       autoHideEnd();
-    }
-  });
-  vue.watch([() => videoState.currentTime, () => {
-    props2.duration;
-  }], function updateProgress() {
-    if (!state.touching) {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
     }
   });
   return {
@@ -8850,6 +8888,25 @@ function useDanmu(props2, videoState) {
 function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
   useContextInfo();
   useSubscribe();
+}
+function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
+  const progressing = vue.computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  vue.watch(progressing, (val) => {
+    videoState.pauseUpdatingCurrentTime = val;
+    controlsState.controlsTouching = val;
+    if (gestureState.gestureType === "progress" && val) {
+      controlsState.controlsVisible = val;
+    }
+  });
+  vue.watch([() => videoState.currentTime, () => {
+    props$9.duration;
+  }], () => {
+    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  });
+  vue.watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
+    videoState.currentTime = currentTimeNew;
+  });
+  return progressing;
 }
 const props$9 = {
   id: {
@@ -9004,9 +9061,12 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
     } = useControls(props2, videoState, seek);
     useContext();
+    const progressing = useProgressing(videoState, gestureState, controlsState);
     return () => {
       return vue.createVNode("uni-video", {
         "ref": rootRef,
@@ -9058,6 +9118,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-controls"
       }, [vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
@@ -9070,30 +9131,44 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-progress-container",
         "onClick": vue.withModifiers(clickProgress, ["stop"])
       }, [vue.createVNode("div", {
-        "class": "uni-video-progress"
+        "class": {
+          "uni-video-progress": true,
+          "uni-video-progress-progressing": progressing.value
+        }
       }, [vue.createVNode("div", {
         "style": {
-          width: videoState.buffered + "%"
+          width: videoState.buffered - videoState.progress + "%",
+          left: videoState.progress + "%"
         },
         "class": "uni-video-progress-buffered"
+      }, null, 4), vue.createVNode("div", {
+        "style": {
+          width: videoState.progress + "%"
+        },
+        "class": "uni-video-progress-played"
       }, null, 4), vue.createVNode("div", {
         "ref": ballRef,
         "style": {
           left: videoState.progress + "%"
         },
-        "class": "uni-video-ball"
+        "class": {
+          "uni-video-ball": true,
+          "uni-video-ball-progressing": progressing.value
+        }
       }, [vue.createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
+      }, null)], 6)], 2)], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
         "onClick": vue.withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vue.vShow, props2.danmuBtn]]), vue.withDirectives(vue.createVNode("div", {
+      }, null, 10, ["onClick"]), [[vue.vShow, props2.danmuBtn]]), vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
@@ -9107,11 +9182,9 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": vue.withModifiers(() => {
         }, ["stop"])
       }, [vue.createVNode("div", {
-        "class": "uni-video-cover-play-button",
+        "class": "uni-video-cover-play-button uni-video-icon",
         "onClick": vue.withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), vue.createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), vue.createVNode("div", {
+      }, null, 8, ["onClick"])], 8, ["onClick"]), vue.createVNode("div", {
         "class": {
           "uni-video-toast": true,
           "uni-video-toast-volume": gestureState.gestureType === "volume"
@@ -9141,11 +9214,13 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       }, null))])], 4)])], 2), vue.createVNode("div", {
         "class": {
           "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
+          "uni-video-toast-progress": progressing.value
         }
       }, [vue.createVNode("div", {
         "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), vue.createVNode("div", {
+      }, [vue.createVNode("span", {
+        "class": "uni-video-toast-title-current-time"
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -11674,21 +11749,20 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       osname,
       osversion
     } = browserInfo;
-    return shared.extend(
-      {
-        brand,
-        deviceBrand,
-        deviceModel,
-        devicePixelRatio: 1,
-        deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
-        deviceOrientation,
-        deviceType,
-        model,
-        platform,
-        system
-      },
-      {}
-    );
+    return shared.extend({
+      brand,
+      deviceBrand,
+      deviceModel,
+      devicePixelRatio: 1,
+      deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
+      deviceOrientation,
+      deviceType,
+      model,
+      platform,
+      system,
+      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osVersion: osversion
+    });
   }
 );
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
@@ -11714,7 +11788,12 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         language,
         SDKVersion: "",
         theme,
-        version: ""
+        version: "",
+        uniPlatform: "web",
+        isUniAppX: false,
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniCompilerVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion
       },
       {}
     );
@@ -12202,11 +12281,11 @@ function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
   function checkMaxWidth() {
     const windowWidth = document.body.clientWidth;
-    const pages = getCurrentPages();
+    const pages = getCurrentBasePages();
     let meta = {};
     if (pages.length > 0) {
       const curPage = pages[pages.length - 1];
-      meta = curPage.$page.meta;
+      meta = getPage$BasePage(curPage).meta;
     } else {
       const routeOptions = getRouteOptions(route.path, true);
       if (routeOptions) {
@@ -12392,6 +12471,9 @@ function useTopWindow(layoutState) {
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
+  vue.watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   vue.watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => vue.nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
@@ -12411,6 +12493,9 @@ function useLeftWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
+  vue.watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   vue.watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => vue.nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
@@ -12430,6 +12515,9 @@ function useRightWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
+  vue.watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   vue.watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => vue.nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {
@@ -12932,6 +13020,7 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && vue.ref(null);
+    const wrapperRef = vue.ref(null);
     const _pageRefresh = null;
     const pageRefresh = vue.ref(null);
     vue.watch(() => {
@@ -12943,7 +13032,10 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
     });
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", pageRefresh.value, [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")])], 16)]);
+      const pageResizeSensor = null;
+      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", vue.mergeProps({
+        "ref": wrapperRef
+      }, pageRefresh.value), [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
     };
   }
 });
@@ -12958,12 +13050,11 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 const index = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId());
+    let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
-    const currentInstance = vue.getCurrentInstance();
-    currentInstance.$dialogPages = vue.ref([]);
+    vue.getCurrentInstance();
     return () => vue.createVNode(
       "uni-page",
       {

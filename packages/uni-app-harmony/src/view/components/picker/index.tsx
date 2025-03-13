@@ -1,4 +1,4 @@
-import { type ExtractPropTypes, ref } from 'vue'
+import { type ExtractPropTypes, ref, watch } from 'vue'
 import {
   type EmitEvent,
   defineBuiltInComponent,
@@ -30,7 +30,7 @@ function getDefaultStartValue(props: any) {
     const year = new Date().getFullYear() - 100
     switch ((props as Props).fields) {
       case fields.YEAR:
-        return year
+        return year + ''
       case fields.MONTH:
         return year + '-01'
       default:
@@ -47,7 +47,7 @@ function getDefaultEndValue(props: any) {
     const year = new Date().getFullYear() + 100
     switch ((props as Props).fields) {
       case fields.YEAR:
-        return year
+        return year + ''
       case fields.MONTH:
         return year + '-12'
       default:
@@ -123,13 +123,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     function onChange(event: CustomEvent<any>) {
       trigger('change', event, event.detail)
     }
+    if (props.mode === mode.MULTISELECTOR) {
+      watch(
+        () => props.range,
+        (range) => {
+          // @ts-expect-error
+          embedRef.value!.updateRange(range)
+        }
+      )
+    }
     return () => (
       <uni-picker ref={rootRef}>
         <Embed
           ref={embedRef}
           tag="picker"
           options={props}
-          methods={['show']}
+          methods={['show', 'updateRange']}
           onChange={onChange}
           onColumnchange={onColumnchange}
           onCancel={onCancel}

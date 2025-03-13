@@ -17,3 +17,11 @@ export function parseUniXSplashScreen(manifestJson: Record<string, any>) {
   }
   return false
 }
+
+export function parseUniXUniStatistics(manifestJson: Record<string, any>) {
+  const uniStatistics = manifestJson?.['app']?.['uniStatistics']
+  if (isPlainObject(uniStatistics)) {
+    return uniStatistics
+  }
+  return false
+}

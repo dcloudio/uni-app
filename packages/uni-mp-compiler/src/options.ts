@@ -14,6 +14,7 @@ import type {
 import type {
   MiniProgramCompilerOptions,
   MiniProgramComponentsType,
+  MiniProgramFilterOptions,
 } from '@dcloudio/uni-cli-shared'
 import type {
   BindingMetadata,
@@ -52,6 +53,7 @@ interface ParserOptions {
 interface SharedTransformCodegenOptions {
   inline?: boolean
   isTS?: boolean
+  isX?: boolean
   root?: string
   filename?: string
   bindingMetadata?: BindingMetadata
@@ -105,12 +107,14 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
   generatorOpts?: GeneratorOptions
 }
 
-export interface TemplateCodegenOptions
-  extends Omit<MiniProgramCompilerOptions, 'filter'> {
+export interface TemplateCodegenOptions extends MiniProgramCompilerOptions {
+  isX?: boolean
   scopeId?: string | null
   filename: string
+  autoImportFilters: Array<Omit<MiniProgramFilterOptions, 'code'>>
   isBuiltInComponent: Required<TransformOptions>['isBuiltInComponent']
   isMiniProgramComponent(name: string): MiniProgramComponentsType | undefined
+  checkPropName?: MiniProgramCompilerOptions['checkPropName']
 }
 
 export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions

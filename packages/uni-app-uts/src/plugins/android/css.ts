@@ -15,6 +15,8 @@ import {
   parseAssets,
   parseVueRequest,
   preUVueCss,
+  removePlugins,
+  resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
@@ -25,24 +27,31 @@ import {
 } from './uvue/descriptorCache'
 import { isVue } from './utils'
 
-export function uniAppCssPlugin(): Plugin {
-  let resolvedConfig: ResolvedConfig
-  const name = 'uni:app-uvue-css'
+export function uniAppCssPrePlugin(): Plugin {
+  const name = 'uni:app-uvue-css-pre'
   const descriptorOptions: ResolvedOptions = {
     ...getResolvedOptions(),
     sourceMap: false,
   }
+  const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   return {
     name,
+    // 需要提前，因为unocss会在configResolved读取vite:css-post插件
+    // 所以需要在它之前做替换
+    enforce: 'pre',
     apply: 'build',
     configResolved(config) {
-      resolvedConfig = config
+      removePlugins(['vite:css', 'vite:css-post'], config)
       const uvueCssPostPlugin = cssPostPlugin(config, {
         isJsCode: true,
         platform: process.env.UNI_PLATFORM,
         includeComponentCss: false,
         chunkCssFilename(id: string) {
           const { filename } = parseVueRequest(id)
+          if (filename === mainPath) {
+            // 合并到App
+            return `App.uvue.style.uts`
+          }
           if (isVue(filename)) {
             return normalizeNodeModules(
               (path.isAbsolute(filename)
@@ -52,7 +61,7 @@ export function uniAppCssPlugin(): Plugin {
           }
         },
         async chunkCssCode(filename, cssCode) {
-          cssCode = parseAssets(resolvedConfig, cssCode)
+          cssCode = parseAssets(config, cssCode)
           const { code, messages } = await parse(cssCode, {
             filename,
             logLevel: 'ERROR',
@@ -72,12 +81,20 @@ export function uniAppCssPlugin(): Plugin {
                 }).replace(/\t/g, ' ')}`
               }
               msg += `\n${formatAtFilename(filename)}`
-              resolvedConfig.logger.error(colors.red(msg))
+              config.logger.error(colors.red(msg))
             }
           })
-          return `export const ${genUTSClassName(
-            filename.replace('.style.uts', '')
-          )}Styles = ${code}`
+          const fileName = filename.replace('.style.uts', '')
+          const className =
+            process.env.UNI_COMPILE_TARGET === 'ext-api'
+              ? // components/map/map.vue => UniMap
+                genUTSClassName(
+                  path.basename(fileName),
+                  descriptorOptions.classNamePrefix
+                )
+              : genUTSClassName(fileName, descriptorOptions.classNamePrefix)
+
+          return `export const ${className}Styles = ${code}`
         },
       })
       // 增加 css plugins
@@ -85,11 +102,6 @@ export function uniAppCssPlugin(): Plugin {
       insertBeforePlugin(
         cssPlugin(config, {
           isAndroidX: true,
-          // android 不处理 css url
-          // createUrlReplacer:
-          //   process.env.UNI_COMPILE_TARGET === 'uni_modules'
-          //     ? createEncryptCssUrlReplacer
-          //     : undefined,
           getDescriptor: (filename) => {
             return getDescriptor(filename, descriptorOptions, false)
           },
@@ -101,8 +113,22 @@ export function uniAppCssPlugin(): Plugin {
       const index = plugins.findIndex((p) => p.name === 'uni:app-uvue')
       plugins.splice(index, 0, uvueCssPostPlugin)
     },
+  }
+}
+
+export function uniAppCssPlugin(): Plugin {
+  let resolvedConfig: ResolvedConfig
+  return {
+    name: 'uni:app-uvue-css',
+    apply: 'build',
+    configResolved(config) {
+      resolvedConfig = config
+    },
     async transform(source, filename) {
       if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
+        return
+      }
+      if (filename.endsWith('__uno.css')) {
         return
       }
       if (source.includes('#endif')) {
@@ -136,7 +162,12 @@ export function uniAppCssPlugin(): Plugin {
           resolvedConfig.logger.warn(msg)
         }
       })
-      return { code: source }
+      return {
+        code: source,
+        map: {
+          mappings: '',
+        },
+      }
     },
   }
 }

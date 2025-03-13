@@ -13,18 +13,18 @@ const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
 
 export const TestUTSComponent = {}
 
-registerUTSInterface('RequestTaskOptions',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'RequestTaskByJsProxy', is_uni_modules) }, {"methods":{"startByJs":{"async":false,"params":[],"return":{}},"abortByJs":{"async":false,"params":[],"return":{"type":"interface","options":"RequestTaskOptions"}}},"props":[],"setters":{}} ))
-export const onMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarningByJs', params: [{"name":"callback","type":"UTSCallback"}], return: ""})
-export const offMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarningByJs', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}], return: ""})
-export default /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'UserByJs', is_uni_modules) }, {"constructor":{"params":[]},"methods":{"registerByJs":{"async":false,"params":[],"returnOptions":{}},"loginByJs":{"async":false,"params":[],"returnOptions":{}}},"staticMethods":{},"props":[],"staticProps":[],"setters":{},"staticSetters":{}} ))
+registerUTSInterface('RequestTaskOptions',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'RequestTaskByJsProxy', is_uni_modules) }, {"methods":{"startByJs":{"async":false,"keepAlive":false,"params":[]},"abortByJs":{"async":false,"keepAlive":false,"params":[],"return":{"type":"interface","options":"RequestTaskOptions"}}},"props":[],"setters":{}} ))
+export const onMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarningByJs', keepAlive: false, params: [{"name":"callback","type":"UTSCallback"}], return: ""})
+export const offMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarningByJs', keepAlive: false, params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}], return: ""})
+export default /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'UserByJs', is_uni_modules) }, {"constructor":{"params":[]},"methods":{"registerByJs":{"async":false,"keepAlive":false,"params":[]},"loginByJs":{"async":false,"keepAlive":false,"params":[]}},"staticMethods":{},"props":[],"staticProps":[],"setters":{},"staticSetters":{}} ))
 export const a = 1
-export const showToast1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1ByJs', params: [{"name":"msg","type":"string"}], return: ""})
-export const showToast2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2ByJs', params: [{"name":"msg","type":"string"}], return: ""})
-export const request = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'requestByJs', params: [], return: {"type":"interface","options":"RequestTaskOptions"}})
-export const addUsers1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers1ByJs', params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
-export const addUsers2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers2ByJs', params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
-export const addUsers3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers3ByJs', params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
-export const addUsers4 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers4ByJs', params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
+export const showToast1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1ByJs', keepAlive: false, params: [{"name":"msg","type":"string"}], return: ""})
+export const showToast2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2ByJs', keepAlive: false, params: [{"name":"msg","type":"string"}], return: ""})
+export const request = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'requestByJs', keepAlive: false, params: [], return: {"type":"interface","options":"RequestTaskOptions"}})
+export const addUsers1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers1ByJs', keepAlive: false, params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
+export const addUsers2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers2ByJs', keepAlive: false, params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
+export const addUsers3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers3ByJs', keepAlive: false, params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
+export const addUsers4 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers4ByJs', keepAlive: false, params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
 "
 `;
 
@@ -33,6 +33,7 @@ exports[`code genProxyCode 2`] = `
   "components": [
     "TestUTS",
   ],
+  "customElements": [],
   "exports": {
     "RequestTask": {
       "type": "interface",
@@ -134,6 +135,7 @@ exports[`code genProxyCode 2`] = `
     "RequestTask": "interface",
     "ShowToast": "function",
     "TestUTSElement": "class",
+    "uni": [],
   },
 }
 `;
@@ -143,6 +145,8 @@ exports[`code genProxyCode 3`] = `
   "alias": {},
   "class": {
     "User1": {
+      "interfaces": [],
+      "keepAliveMethods": [],
       "typeParams": false,
     },
   },
@@ -309,6 +313,7 @@ exports[`code genProxyCode 3`] = `
       "returned": true,
     },
   },
+  "uni": [],
 }
 `;
 
@@ -327,19 +332,19 @@ const exports = { __esModule: true }
 
 exports.TestUTSComponent = {}
 
-registerUTSInterface('RequestTaskOptions',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'RequestTaskByJsProxy', is_uni_modules) }, {"methods":{"startByJs":{"async":false,"params":[],"return":{}},"abortByJs":{"async":false,"params":[],"return":{"type":"interface","options":"RequestTaskOptions"}}},"props":[],"setters":{}} ))
-exports.onMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarningByJs', params: [{"name":"callback","type":"UTSCallback"}], return: ""})
-exports.offMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarningByJs', params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}], return: ""})
-exports.default = initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'UserByJs', is_uni_modules) }, {"constructor":{"params":[]},"methods":{"registerByJs":{"async":false,"params":[],"returnOptions":{}},"loginByJs":{"async":false,"params":[],"returnOptions":{}}},"staticMethods":{},"props":[],"staticProps":[],"setters":{},"staticSetters":{}} ))
+registerUTSInterface('RequestTaskOptions',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'RequestTaskByJsProxy', is_uni_modules) }, {"methods":{"startByJs":{"async":false,"keepAlive":false,"params":[]},"abortByJs":{"async":false,"keepAlive":false,"params":[],"return":{"type":"interface","options":"RequestTaskOptions"}}},"props":[],"setters":{}} ))
+exports.onMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'onMemoryWarningByJs', keepAlive: false, params: [{"name":"callback","type":"UTSCallback"}], return: ""})
+exports.offMemoryWarning = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'offMemoryWarningByJs', keepAlive: false, params: [{"name":"callback","type":"UTSCallback","default":"UTSNull"}], return: ""})
+exports.default = initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'UserByJs', is_uni_modules) }, {"constructor":{"params":[]},"methods":{"registerByJs":{"async":false,"keepAlive":false,"params":[]},"loginByJs":{"async":false,"keepAlive":false,"params":[]}},"staticMethods":{},"props":[],"staticProps":[],"setters":{},"staticSetters":{}} ))
 const a = 1
 exports.a = a
-exports.showToast1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1ByJs', params: [{"name":"msg","type":"string"}], return: ""})
-exports.showToast2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2ByJs', params: [{"name":"msg","type":"string"}], return: ""})
-exports.request = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'requestByJs', params: [], return: {"type":"interface","options":"RequestTaskOptions"}})
-exports.addUsers1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers1ByJs', params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
-exports.addUsers2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers2ByJs', params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
-exports.addUsers3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers3ByJs', params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
-exports.addUsers4 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers4ByJs', params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
+exports.showToast1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast1ByJs', keepAlive: false, params: [{"name":"msg","type":"string"}], return: ""})
+exports.showToast2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'showToast2ByJs', keepAlive: false, params: [{"name":"msg","type":"string"}], return: ""})
+exports.request = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'requestByJs', keepAlive: false, params: [], return: {"type":"interface","options":"RequestTaskOptions"}})
+exports.addUsers1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers1ByJs', keepAlive: false, params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
+exports.addUsers2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers2ByJs', keepAlive: false, params: [{"name":"users","type":"uts.sdk.testUTSUser1JSONObject"}], return: ""})
+exports.addUsers3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers3ByJs', keepAlive: false, params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
+exports.addUsers4 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'addUsers4ByJs', keepAlive: false, params: [{"name":"user","type":"uts.sdk.testUTSUser1JSONObject"},{"name":"name","type":"string"}], return: ""})
 uni.registerUTSPlugin('utssdk/test-uts', exports)
 "
 `;
@@ -358,8 +363,29 @@ const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
 
 
 registerUTSInterface('ITestOptions',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'ITestByJsProxy', is_uni_modules) }, {"methods":{},"props":["name"],"setters":{"name":{"name":"name","type":"string"}}} ))
-export const createTest = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'createTestByJs', params: [], return: {"type":"interface","options":"ITestOptions"}})
-registerUTSInterface('A12Options',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'A12ByJsProxy', is_uni_modules) }, {"methods":{"test2ByJs":{"async":false,"params":[],"return":{}},"test1ByJs":{"async":false,"params":[],"return":{}},"test0ByJs":{"async":false,"params":[],"return":{}}},"props":[],"setters":{}} ))
-export const testA3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'testA3ByJs', params: [], return: {"type":"interface","options":"A12Options"}})
+export const createTest = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'createTestByJs', keepAlive: false, params: [], return: {"type":"interface","options":"ITestOptions"}})
+registerUTSInterface('A12Options',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'A12ByJsProxy', is_uni_modules) }, {"methods":{"test2ByJs":{"async":false,"keepAlive":false,"params":[]},"test1ByJs":{"async":false,"keepAlive":false,"params":[]},"test0ByJs":{"async":false,"keepAlive":false,"params":[]}},"props":[],"setters":{}} ))
+export const testA3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'testA3ByJs', keepAlive: false, params: [], return: {"type":"interface","options":"A12Options"}})
+"
+`;
+
+exports[`code genProxyCode uni_modules keepAlive 1`] = `
+"
+const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
+const name = 'test-keepAlive'
+const moduleName = ''
+const moduleType = ''
+const errMsg = \`\`
+const is_uni_modules = true
+const pkg = /*#__PURE__*/ initUTSPackageName(name, is_uni_modules)
+const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
+
+
+
+registerUTSInterface('ITestKeepAliveOptions',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'ITestKeepAliveByJsProxy', is_uni_modules) }, {"methods":{"test1ByJs":{"async":false,"keepAlive":false,"params":[{"name":"callback","type":"UTSCallback"}]},"test2ByJs":{"async":false,"keepAlive":true,"params":[{"name":"callback","type":"UTSCallback"}]}},"props":[],"setters":{}} ))
+export const test1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'test1ByJs', keepAlive: false, params: [{"name":"callback","type":"UTSCallback"}], return: ""})
+export const test2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'test2ByJs', keepAlive: true, params: [{"name":"callback","type":"UTSCallback"}], return: ""})
+export const Test = /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'TestByJs', is_uni_modules) }, {"constructor":{"params":[]},"methods":{"test1ByJs":{"async":false,"keepAlive":false,"params":[{"name":"callback","type":"UTSCallback"}]},"test2ByJs":{"async":false,"keepAlive":true,"params":[{"name":"callback","type":"UTSCallback"}]}},"staticMethods":{"test3ByJs":{"async":false,"keepAlive":false,"params":[{"name":"callback","type":"UTSCallback"}]},"test4ByJs":{"async":false,"keepAlive":true,"params":[{"name":"callback","type":"UTSCallback"}]}},"props":[],"staticProps":[],"setters":{},"staticSetters":{}} ))
+export const createTest2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'createTest2ByJs', keepAlive: false, params: [], return: {"type":"interface","options":"ITestKeepAliveOptions"}})
 "
 `;

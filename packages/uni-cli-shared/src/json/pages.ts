@@ -7,7 +7,7 @@ import {
   normalizeTitleColor,
   once,
 } from '@dcloudio/uni-shared'
-import { normalizePath, removeExt } from '../utils'
+import { isNormalCompileTarget, normalizePath, removeExt } from '../utils'
 import { parseJson } from './json'
 import { isVueSfcFile } from '../vue/utils'
 import { parseVueRequest } from '../vite'
@@ -25,6 +25,16 @@ export function isUniPageFile(
     file = normalizePath(path.relative(inputDir, file))
   }
   return pagesCacheSet.has(removeExt(file))
+}
+
+export function isUniPageSetupAndUts(file: string) {
+  const { filename, query } = parseVueRequest(file)
+  return !!(
+    query.vue &&
+    query.setup &&
+    hasOwn(query, 'lang.uts') &&
+    EXTNAME_VUE_RE.test(filename)
+  )
 }
 
 export function isUniPageSetupAndTs(file: string) {
@@ -57,7 +67,7 @@ export const parsePagesJson = (
 ) => {
   const pagesFilename = path.join(inputDir, 'pages.json')
   if (!fs.existsSync(pagesFilename)) {
-    if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+    if (!isNormalCompileTarget()) {
       return {
         pages: [],
         globalStyle: { navigationBar: {} },

@@ -173,12 +173,16 @@ function PolySymbol(name) {
 function useCurrentPageId() {
   let pageId;
   try {
-    pageId = getCurrentInstance().root.proxy.$page.id;
+    pageId = getPageProxyId(getCurrentInstance().root.proxy);
   } catch {
     const webviewId = plus.webview.currentWebview().id;
     pageId = isNaN(Number(webviewId)) ? webviewId : Number(webviewId);
   }
   return pageId;
+}
+function getPageProxyId(proxy) {
+  var _a, _b;
+  return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
 }
 let plus_;
 let weex_;
@@ -1459,7 +1463,7 @@ const movableViewProps = {
   },
   scaleMin: {
     type: [Number, String],
-    default: 0.5
+    default: 0.1
   },
   scaleMax: {
     type: [Number, String],
@@ -1641,7 +1645,7 @@ function useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContex
   });
   const scaleMinNumber = computed(() => {
     let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
+    return isNaN(val) ? 0.1 : val;
   });
   const scaleMaxNumber = computed(() => {
     let val = Number(props2.scaleMax);
@@ -1703,14 +1707,14 @@ function useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContex
     if (!props2.scale) {
       return false;
     }
-    _updateScale(_scale, true);
+    _updateScale(_scale);
   }
   function _setScaleValue(scale) {
     if (!props2.scale) {
       return false;
     }
     scale = _adjustScale(scale);
-    _updateScale(scale, true);
+    _updateScale(scale);
     return scale;
   }
   function __handleTouchStart() {
@@ -1897,17 +1901,13 @@ function useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContex
       const limitXY = _getLimitXY(_translateX, _translateY);
       const x = limitXY.x;
       const y = limitXY.y;
-      if (animat) {
+      {
         _animationTo(x, y, scale, "", true, true);
-      } else {
-        _requestAnimationFrame(function() {
-          _setTransform(x, y, scale, "", true, true);
-        });
       }
     }
   }
   function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.max(0.1, scaleMinNumber.value, scale);
     scale = Math.min(10, scaleMaxNumber.value, scale);
     return scale;
   }

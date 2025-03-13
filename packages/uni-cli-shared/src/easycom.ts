@@ -9,7 +9,12 @@ import { once } from '@dcloudio/uni-shared'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
-import { initUTSComponents } from './uts'
+import {
+  clearUTSComponents,
+  clearUTSCustomElements,
+  initUTSComponents,
+  initUTSCustomElements,
+} from './uts'
 import { genUTSClassName } from './utsUtils'
 
 interface EasycomOption {
@@ -76,7 +81,11 @@ export function initEasycoms(
     debugEasycom(easycomOptions)
     return easycomOptions
   }
-  const options = initEasycomOptions(parsePagesJsonOnce(inputDir, platform))
+
+  const easyComOptions = initEasycomOptions(
+    parsePagesJsonOnce(inputDir, platform)
+  )
+
   const initUTSEasycom = () => {
     initUTSComponents(inputDir, platform).forEach((item) => {
       const index = easycoms.findIndex((easycom) => item.name === easycom.name)
@@ -90,17 +99,37 @@ export function initEasycoms(
       ;(globalThis as any).uts2jsSourceCodeMap.initUts2jsEasycom(easycoms)
     }
   }
-  initEasycom(options)
-  initUTSEasycom()
+
+  const initUTSEasycomCustomElements = () => {
+    initUTSCustomElements(inputDir, platform).forEach((item) => {
+      const index = easycoms.findIndex((easycom) => item.name === easycom.name)
+      if (index > -1) {
+        easycoms.splice(index, 1, item)
+      } else {
+        easycoms.push(item)
+      }
+    })
+  }
+
+  // ext-api 模式下，不存在 easycom 特性
+  if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
+    clearEasycom()
+    clearUTSComponents()
+    clearUTSCustomElements()
+    initEasycom(easyComOptions)
+    initUTSEasycomCustomElements()
+    initUTSEasycom()
+  }
   const componentExtNames = isX ? 'uvue|vue' : 'vue'
   const res = {
-    options,
+    easyComOptions,
     filter: createFilter(
       [
         'components/*/*.(' + componentExtNames + '|jsx|tsx)',
         'uni_modules/*/components/*/*.(' + componentExtNames + '|jsx|tsx)',
         'utssdk/*/**/*.(' + componentExtNames + ')',
         'uni_modules/*/utssdk/*/*.(' + componentExtNames + ')',
+        'uni_modules/*/customElements/*/*.uts',
       ],
       [],
       {
@@ -108,9 +137,15 @@ export function initEasycoms(
       }
     ),
     refresh() {
-      res.options = initEasycomOptions()
-      initEasycom(res.options)
-      initUTSEasycom()
+      res.easyComOptions = initEasycomOptions()
+      if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
+        clearEasycom()
+        clearUTSComponents()
+        clearUTSCustomElements()
+        initEasycom(easyComOptions)
+        initUTSEasycomCustomElements()
+        initUTSEasycom()
+      }
     },
     easycoms,
   }
@@ -119,7 +154,10 @@ export function initEasycoms(
 
 export const initEasycomsOnce = once(initEasycoms)
 
-function initUniModulesEasycomDirs(uniModulesDir: string) {
+function initUniModulesEasycomDirs(
+  uniModulesDir: string,
+  componentsDir: string = 'components'
+) {
   if (!fs.existsSync(uniModulesDir)) {
     return []
   }
@@ -129,7 +167,7 @@ function initUniModulesEasycomDirs(uniModulesDir: string) {
       const uniModuleComponentsDir = path.resolve(
         uniModulesDir,
         uniModuleDir,
-        'components'
+        componentsDir
       )
       if (fs.existsSync(uniModuleComponentsDir)) {
         return uniModuleComponentsDir
@@ -145,7 +183,6 @@ function initEasycom({
   custom,
   extensions,
 }: EasycomOption) {
-  clearEasycom()
   rootDir = normalizePath(rootDir)
   const easycomsObj = Object.create(null)
   if (dirs && dirs.length && rootDir) {
@@ -235,12 +272,14 @@ function initAutoScanEasycom(
   }
   const is_uni_modules =
     path.basename(path.resolve(dir, '../..')) === 'uni_modules'
-  const is_encrypt_uni_modules = // uni_modules模式不需要此逻辑
+  const is_easycom_encrypt_uni_modules = // uni_modules模式不需要此逻辑
     process.env.UNI_COMPILE_TARGET !== 'uni_modules' &&
     is_uni_modules &&
-    fs.existsSync(path.resolve(dir, '../encrypt'))
+    // 前端加密插件，不能包含utssdk目录
+    fs.existsSync(path.resolve(dir, '../encrypt')) &&
+    !fs.existsSync(path.resolve(dir, '../utssdk'))
   const uni_modules_plugin_id =
-    is_encrypt_uni_modules && path.basename(path.resolve(dir, '..'))
+    is_easycom_encrypt_uni_modules && path.basename(path.resolve(dir, '..'))
   fs.readdirSync(dir).forEach((name) => {
     const folder = path.resolve(dir, name)
     if (!isDir(folder)) {
@@ -252,7 +291,7 @@ function initAutoScanEasycom(
     for (let i = 0; i < extensions.length; i++) {
       const ext = extensions[i]
       if (files.includes(name + ext)) {
-        easycoms[`^${name}$`] = is_encrypt_uni_modules
+        easycoms[`^${name}$`] = is_easycom_encrypt_uni_modules
           ? normalizePath(
               path.join(
                 rootDir,
@@ -328,10 +367,13 @@ function createImportDeclaration(
   source: string,
   imported?: string
 ) {
-  if (imported) {
+  if (imported && local) {
     return `import { ${imported} as ${local} } from '${source}';`
   }
-  return `import ${local} from '${source}';`
+  if (local) {
+    return `import ${local} from '${source}';`
+  }
+  return `import '${source}';`
 }
 
 const RESOLVE_EASYCOM_IMPORT_CODE = `import { resolveDynamicComponent as __resolveDynamicComponent } from 'vue';import { resolveEasycom } from '@dcloudio/uni-app';`

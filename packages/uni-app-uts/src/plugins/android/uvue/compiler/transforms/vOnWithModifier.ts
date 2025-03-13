@@ -52,7 +52,7 @@ const resolveModifiers = (
         onModifierWarn(modifier, context, loc)
       } else {
         if (isNonKeyModifier(modifier)) {
-          if (modifier !== 'stop') {
+          if (modifier !== 'stop' && modifier !== 'prevent') {
             onModifierWarn(modifier, context, loc)
           } else {
             nonKeyModifiers.push(modifier)

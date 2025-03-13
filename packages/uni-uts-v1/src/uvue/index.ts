@@ -4,6 +4,7 @@ import fs from 'fs-extra'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
+  UTSOutputOptions,
   UTSResult,
 } from '@dcloudio/uts'
 
@@ -12,10 +13,7 @@ import {
   type KotlinCompilerServer,
   type RunKotlinBuildResult,
   type RunKotlinDevResult,
-  addInjectComponents,
   createStderrListener,
-  getInjectApis,
-  getInjectComponents,
   getUniModulesCacheJars,
   getUniModulesEncryptCacheJars,
   getUniModulesJars,
@@ -26,8 +24,12 @@ import {
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
+  addPluginInjectComponents,
   getCompilerServer,
+  getPluginInjectApis,
+  getPluginInjectComponents,
   getUTSCompiler,
+  isEnableInlineReified,
   parseExtApiDefaultParameters,
   parseInjectModules,
   resolveUniAppXSourceMapPath,
@@ -64,6 +66,7 @@ type UniCloudObjectInfo = {
 export interface CompileAppOptions {
   inputDir: string
   outputDir: string
+  outFilename?: string
   package: string
   sourceMap: boolean
   uni_modules: string[]
@@ -84,6 +87,7 @@ export interface CompileAppOptions {
     declaration: string
   }[]
   env?: Record<string, unknown>
+  transform?: UTSOutputOptions['transform']
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -111,6 +115,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     paths: {
       vue: 'io.dcloud.uniapp.vue',
       '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
+      '@dcloudio/uni-runtime': 'io.dcloud.uniapp.framework.runtime',
     },
     uniModules: uni_modules,
     globals: {
@@ -139,7 +144,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       outDir: isProd
         ? kotlinSrcDir(path.resolve(outputDir, '.uniappx/android/'))
         : kotlinSrcDir(kotlinDir(outputDir)),
-      outFilename: 'index.kt', // 强制 main.kt => index.kt 因为云端，真机运行识别的都是 index.kt
+      outFilename: options.outFilename || 'index.kt', // 强制 main.kt => index.kt 因为云端，真机运行识别的都是 index.kt
       package: pkg,
       sourceMap:
         sourceMap !== false
@@ -164,6 +169,10 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
         uniModulesArtifacts: options.uniModulesArtifacts,
+        enableUtsNumber: false,
+        enableNarrowType: false, // 这里的启用是把部分typeof转换成instanceof，这样确实好一点，但会引发一些kotlin之类的警告，暂不开启
+        enableInlineReified: isEnableInlineReified(),
+        ...options.transform,
       },
     },
   }
@@ -219,7 +228,7 @@ export function tscOutDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
   return path.join(process.env.UNI_APP_X_TSC_DIR, platform)
 }
 
-function kotlinSrcDir(kotlinDir: string) {
+export function kotlinSrcDir(kotlinDir: string) {
   return path.resolve(kotlinDir, 'src')
 }
 
@@ -427,11 +436,11 @@ async function runKotlinDev(
 
 async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
   ;(result as RunKotlinBuildResult).type = 'kotlin'
-  addInjectComponents(options.extApiComponents)
+  addPluginInjectComponents(options.extApiComponents)
   ;(result as RunKotlinBuildResult).inject_modules = parseInjectModules(
-    (result.inject_apis || []).concat(getInjectApis()),
+    (result.inject_apis || []).concat(getPluginInjectApis()),
     options.extApis || {},
-    getInjectComponents()
+    getPluginInjectComponents()
   )
   ;(result as RunKotlinBuildResult).kotlinc = false
   return result as RunKotlinBuildResult

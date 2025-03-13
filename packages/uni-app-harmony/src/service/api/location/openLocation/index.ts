@@ -14,7 +14,7 @@ export const openLocation = defineAsyncApi<API_TYPE_OPEN_LOCATION>(
   API_OPEN_LOCATION,
   (args, { resolve, reject }) => {
     initLocationViewPageOnce()
-    const { latitude = '', longitude = '' } = args
+    const { latitude = '', longitude = '', name = '' } = args
     uni.navigateTo({
       url:
         '/' +
@@ -22,7 +22,9 @@ export const openLocation = defineAsyncApi<API_TYPE_OPEN_LOCATION>(
         '?latitude=' +
         latitude +
         '&longitude=' +
-        longitude,
+        longitude +
+        '&name=' +
+        name,
       success: (res) => {
         resolve()
       },

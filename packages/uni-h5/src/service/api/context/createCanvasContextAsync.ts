@@ -7,8 +7,31 @@ import type {
   CreateCanvasContextAsyncOptions,
   RequestAnimationFrameCallback,
 } from '@dcloudio/uni-app-x/types/uni'
+import type {
+  SelectorQueryNodeInfo,
+  SelectorQueryRequest,
+} from '@dcloudio/uni-api'
+import { getRealPath } from '@dcloudio/uni-platform'
 import { getCurrentBasePages } from '../../../framework/setup/page'
-import type { ComponentPublicInstance } from 'vue'
+import { requestComponentInfo } from '../ui/requestComponentInfo'
+import { type ComponentPublicInstance, nextTick } from 'vue'
+
+// 不支持使用Proxy拦截
+class CanvasImage extends Image {
+  _src = ''
+
+  constructor() {
+    super()
+  }
+
+  get src() {
+    return this._src
+  }
+  set src(value) {
+    this._src = value
+    super.src = getRealPath(value)
+  }
+}
 
 class CanvasContextImpl implements CanvasContext {
   _element: UniCanvasElement
@@ -42,7 +65,7 @@ class CanvasContextImpl implements CanvasContext {
 
   // @ts-expect-error TODO 类型不匹配?
   createImage(): Image {
-    return new Image()
+    return new CanvasImage()
   }
 
   createPath2D(): Path2D {
@@ -61,29 +84,36 @@ class CanvasContextImpl implements CanvasContext {
 export const createCanvasContextAsync = function (
   options: CreateCanvasContextAsyncOptions
 ) {
-  const pages = getCurrentBasePages()
-  const currentPage: ComponentPublicInstance =
-    options.component ?? pages[pages.length - 1]
-  if (currentPage != null) {
-    const element = currentPage.$el?.querySelector('#' + options.id)
-    if (element != null) {
-      const canvas = element as UniCanvasElement
-      options.success?.(new CanvasContextImpl(canvas))
-    } else {
-      const uniError = new UniError(
-        'uni-createCanvasContextAsync',
-        -1,
-        'canvas id invalid.'
-      )
-      options.fail?.(uniError)
-    }
-  } else {
-    const uniError = new UniError(
-      'uni-createCanvasContextAsync',
-      -1,
-      'No found current page.'
+  nextTick(() => {
+    const pages = getCurrentBasePages()
+    const currentPage: ComponentPublicInstance =
+      options.component ?? pages[pages.length - 1]
+    requestComponentInfo(
+      currentPage,
+      [
+        {
+          component: currentPage,
+          selector: '#' + options.id,
+          single: true,
+          fields: {
+            node: true,
+          },
+        } as SelectorQueryRequest,
+      ],
+      (result: Array<SelectorQueryNodeInfo | null>) => {
+        if (result.length > 0) {
+          const canvas = result[0]!.node as UniCanvasElement
+          options.success?.(new CanvasContextImpl(canvas))
+        } else {
+          const uniError = new UniError(
+            'uni-createCanvasContextAsync',
+            -1,
+            'canvas id invalid.'
+          )
+          options.fail?.(uniError)
+        }
+        options.complete?.()
+      }
     )
-    options.fail?.(uniError)
-  }
-  options.complete?.()
+  })
 }

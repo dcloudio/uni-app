@@ -1,8 +1,16 @@
 import { hyphenate, isFunction, isPlainObject } from '@vue/shared'
-import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
+import {
+  SLOT_DEFAULT_NAME,
+  VIRTUAL_HOST_CLASS,
+  VIRTUAL_HOST_HIDDEN,
+  VIRTUAL_HOST_ID,
+  VIRTUAL_HOST_STYLE,
+  dynamicSlotName,
+} from '@dcloudio/uni-shared'
 import {
   type MiniProgramCompilerOptions,
   formatMiniProgramEvent,
+  getEscaper,
   isAttributeNode,
   isElementNode,
   isUserComponent,
@@ -30,13 +38,10 @@ import { type ForElementNode, isForElementNode } from '../transforms/vFor'
 import { type IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
 import type { TransformContext } from '../transform'
-import {
-  ATTR_VUE_PROPS,
-  VIRTUAL_HOST_CLASS,
-  VIRTUAL_HOST_STYLE,
-} from '../transforms/utils'
+import { ATTR_ELEMENT_ID, ATTR_VUE_PROPS } from '../transforms/utils'
 
 export interface TemplateCodegenContext {
+  isX?: boolean
   code: string
   directive: string
   scopeId?: string | null
@@ -47,7 +52,27 @@ export interface TemplateCodegenContext {
   isBuiltInComponent: TransformContext['isBuiltInComponent']
   isMiniProgramComponent: TransformContext['isMiniProgramComponent']
   push(code: string): void
+  checkPropName: TemplateCodegenOptions['checkPropName']
 }
+
+/**
+ * 注意此处的 escapeText 并未解决用户代码内的实体字符与产物内的不一致的Bug。
+ * vue编译器在tokenize阶段会将实体字符转义为对应的字符，因此在codegen阶段无法做到完美还原用户代码。
+ * 但是在uni-app-x依然要做反转义，主要考虑以下几点：
+ * - 用户源码&gt;原产物为>，导致wxml解析错误
+ * - 用户源码内不会出现>字符。虽然emsp等字符可以出现在用户的源码里面，但是一般不会有人这么做。因此无论用户写的是&emsp;还是\u2003，都被转义为&emsp;对用户而言影响不大
+ */
+const mpEscapeText = getEscaper(
+  /[<>\u2009\u00A0\u2002\u2003]/g,
+  new Map([
+    [60, '&lt;'],
+    [62, '&gt;'],
+    [0x2009, '&thinsp;'],
+    [0xa0, '&nbsp;'],
+    [0x2002, '&ensp;'],
+    [0x2003, '&emsp;'],
+  ])
+)
 
 export function generate(
   { children }: RootNode,
@@ -61,7 +86,11 @@ export function generate(
     lazyElement,
     isBuiltInComponent,
     isMiniProgramComponent,
+    checkPropName,
     component,
+    autoImportFilters,
+    filter,
+    isX,
   }: TemplateCodegenOptions
 ) {
   const context: TemplateCodegenContext = {
@@ -74,13 +103,26 @@ export function generate(
     component,
     isBuiltInComponent,
     isMiniProgramComponent,
+    checkPropName,
     push(code) {
       context.code += code
     },
+    isX,
   }
   children.forEach((node) => {
     genNode(node, context)
   })
+  if (filter && filter.generate && autoImportFilters.length) {
+    autoImportFilters.forEach((autoImportFilter) => {
+      context.code +=
+        filter.generate!(
+          autoImportFilter as any,
+          (process.env.UNI_SUBPACKAGE
+            ? `/${process.env.UNI_SUBPACKAGE}/common/`
+            : '/common/') + autoImportFilter.id
+        ) + '\n'
+    })
+  }
   emitFile!({ type: 'asset', fileName: filename, source: context.code })
 }
 
@@ -111,8 +153,12 @@ export function genNode(
   }
 }
 
-function genText(node: TextNode, { push }: TemplateCodegenContext) {
-  push(node.content)
+function genText(node: TextNode, { push, isX }: TemplateCodegenContext) {
+  if (isX) {
+    push(mpEscapeText(node.content))
+  } else {
+    push(node.content)
+  }
 }
 
 function genExpression(node: ExpressionNode, { push }: TemplateCodegenContext) {
@@ -187,7 +233,7 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
       }
     }
   }
-  if (name.includes('-')) {
+  if (name.includes('-') || /^\d/.test(name)) {
     genVIf(`$slots['${name}']`, context)
   } else {
     genVIf(`$slots.${name}`, context)
@@ -432,6 +478,8 @@ function checkVirtualHostProps(name: string, virtualHost: boolean): string[] {
     const obj: { [key: string]: string } = {
       style: VIRTUAL_HOST_STYLE,
       class: VIRTUAL_HOST_CLASS,
+      hidden: VIRTUAL_HOST_HIDDEN,
+      id: VIRTUAL_HOST_ID,
     }
     if (name in obj) {
       // TODO 支付宝平台移除原有属性（支付宝小程序自定义组件外部属性始终无效）
@@ -449,6 +497,12 @@ export function genElementProps(
 ) {
   node.props.forEach((prop) => {
     if (prop.type === NodeTypes.ATTRIBUTE) {
+      if (
+        context.checkPropName &&
+        !context.checkPropName(prop.name, prop, node)
+      ) {
+        return
+      }
       const { value } = prop
       if (value) {
         checkVirtualHostProps(prop.name, virtualHost).forEach((name) => {
@@ -459,6 +513,12 @@ export function genElementProps(
       }
     } else {
       const { name } = prop
+      if (
+        context.checkPropName &&
+        !context.checkPropName(prop.name, prop, node)
+      ) {
+        return
+      }
       if (name === 'on') {
         genOn(prop, node, context)
       } else {
@@ -472,6 +532,9 @@ function genOn(
   node: ElementNode,
   { push, event, isBuiltInComponent }: TemplateCodegenContext
 ) {
+  if (!prop.arg) {
+    return
+  }
   const arg = (prop.arg as SimpleExpressionNode).content
   const exp = prop.exp as SimpleExpressionNode
   const modifiers = prop.modifiers
@@ -509,14 +572,23 @@ function genDirectiveNode(
     }
   } else if (prop.name === 'show') {
     let hiddenPropName = 'hidden'
-    if (isUserComponent(node, context) && component && component.vShow) {
-      hiddenPropName = component.vShow
+    const value = `"{{!${(prop.exp as SimpleExpressionNode).content}}}"`
+    if (isUserComponent(node, context)) {
+      if (component && component.vShow) {
+        hiddenPropName = component.vShow
+      }
+      if (virtualHost) {
+        // TODO use checkVirtualHostProps
+        push(` ${VIRTUAL_HOST_HIDDEN}=${value}`)
+      }
     }
-    push(
-      ` ${hiddenPropName}="{{!${(prop.exp as SimpleExpressionNode).content}}}"`
-    )
+    push(` ${hiddenPropName}=${value}`)
   } else if (prop.arg && prop.exp) {
     const arg = (prop.arg as SimpleExpressionNode).content
+    if (arg === ATTR_ELEMENT_ID) {
+      // 模板忽略生成 u-e，只需要 render 中生成
+      return
+    }
     const exp = (prop.exp as SimpleExpressionNode).content
     checkVirtualHostProps(arg, virtualHost).forEach((arg) => {
       push(` ${arg}="{{${exp}}}"`)

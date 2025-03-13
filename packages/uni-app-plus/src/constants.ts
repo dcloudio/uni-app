@@ -22,4 +22,3 @@ export const WEBVIEW_ID_PREFIX = 'webviewId'
 export const INIT_PAGE_SCROLL = 'initPageScroll'
 
 export const API_SET_LOCALE = 'setLocale'
-export const BASE64_TO_TEMP_FILE_PATH = 'base64ToTempFilePath'

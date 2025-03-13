@@ -3,26 +3,29 @@
 export const RADIO_NAME = 'Radio'
 export const RADIO_ROOT_ELEMENT = 'uni-radio-element'
 
-export class UniRadioElement extends UniElementImpl {
-  constructor(data: INodeData, pageNode: PageNode) {
-    super(data, pageNode)
-  }
-
-  override tagName = 'RADIO'
-  override nodeName = this.tagName
-
-  override getAnyAttribute(key: string): string {
-    const value = this._getAttribute(key)
-    if (value != null) {
-      return value
+export const UniRadioElement = /* @__PURE__ */ (() =>
+  class extends UniElementImpl {
+    constructor(data: INodeData, pageNode: PageNode) {
+      super(data, pageNode)
     }
-    return super.getAnyAttribute(key)
-  }
 
-  _getAttribute = (key: string): string | null => {
-    return null
-  }
-}
+    override tagName = 'RADIO'
+    override nodeName = this.tagName
+
+    override getAnyAttribute(key: string): string {
+      const value = this._getAttribute(key)
+      if (value != null) {
+        return value
+      }
+      return super.getAnyAttribute(key)
+    }
+
+    _getAttribute = (key: string): string | null => {
+      return null
+    }
+  })()
+
+export type UniRadioElement = InstanceType<typeof UniRadioElement>
 
 // UniElementImpl
 

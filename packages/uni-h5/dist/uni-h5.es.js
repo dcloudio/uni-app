@@ -1,6 +1,6 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, LINEFEED, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, createRouter, createWebHistory, createWebHashHistory, useRouter, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -608,7 +608,7 @@ function normalizeViewMethodName(pageId, name) {
 function subscribeViewMethod(pageId, wrapper2) {
   UniViewJSBridge.subscribe(
     normalizeViewMethodName(pageId, INVOKE_VIEW_API),
-    wrapper2 ? wrapper2(onInvokeViewMethod) : onInvokeViewMethod
+    onInvokeViewMethod
   );
 }
 function unsubscribeViewMethod(pageId) {
@@ -730,13 +730,6 @@ function useRem() {
   document.addEventListener("DOMContentLoaded", updateRem);
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
-}
-function initView() {
-  useRem();
-  initCustomDatasetOnce();
-  if (__UNI_FEATURE_LONGPRESS__) {
-    initLongPress();
-  }
 }
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
@@ -1025,6 +1018,12 @@ function rpx2pxWithReplace(str) {
     return uni.upx2px(parseFloat(b)) + "px";
   });
 }
+function get$pageByPage(page) {
+  return page.$page;
+}
+function isBuiltInElement(target) {
+  return target.tagName.indexOf("UNI-") === 0;
+}
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
 const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
@@ -1064,20 +1063,26 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 function useCurrentPageId() {
   {
     const { $pageInstance } = getCurrentInstance();
-    return $pageInstance && $pageInstance.proxy.$page.id;
+    return $pageInstance && getPageProxyId($pageInstance.proxy);
   }
 }
 function getPageIdByVm(instance2) {
   const vm = resolveComponentInstance(instance2);
   if (vm.$page) {
-    return vm.$page.id;
+    return getPageProxyId(vm);
   }
   if (!vm.$) {
     return;
   }
   {
     const { $pageInstance } = vm.$;
-    return $pageInstance && $pageInstance.proxy.$page.id;
+    if ($pageInstance) {
+      return getPageProxyId($pageInstance.proxy);
+    }
+  }
+  const rootProxy = vm.$.root.proxy;
+  if (rootProxy && rootProxy.$page) {
+    return getPageProxyId(rootProxy);
   }
 }
 function getCurrentPage() {
@@ -1088,9 +1093,10 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
+  var _c;
+  const $page = (_c = getCurrentPage()) == null ? void 0 : _c.$page;
+  if ($page) {
+    return $page.meta;
   }
 }
 function getCurrentPageId() {
@@ -1151,6 +1157,10 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
 }
+function getPageProxyId(proxy) {
+  var _a, _b;
+  return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
+}
 function removeHook(vm, name, hook) {
   const hooks = vm.$[name];
   if (!isArray(hooks)) {
@@ -1166,7 +1176,9 @@ function invokeHook(vm, name, args) {
     name = vm;
     vm = getCurrentPageVm();
   } else if (typeof vm === "number") {
-    const page = getCurrentPages().find((page2) => page2.$page.id === vm);
+    const page = getCurrentPages().find(
+      (page2) => get$pageByPage(page2).id === vm
+    );
     if (page) {
       vm = page.$vm;
     } else {
@@ -1238,13 +1250,13 @@ function createScrollListener({
   };
 }
 function normalizeRoute(toRoute) {
-  if (toRoute.indexOf("/") === 0) {
+  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
     return toRoute;
   }
   let fromRoute = "";
   const pages = getCurrentPages();
   if (pages.length) {
-    fromRoute = pages[pages.length - 1].$page.route;
+    fromRoute = get$pageByPage(pages[pages.length - 1]).route;
   }
   return getRealRoute(fromRoute, toRoute);
 }
@@ -1290,6 +1302,13 @@ function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
     if (tabBar2 && tabBar2.list && tabBar2.list[index2]) {
       tabBar2.list[index2].pagePath = removeLeadingSlash(newPagePath);
     }
+  }
+}
+function initView() {
+  useRem();
+  initCustomDatasetOnce(isBuiltInElement);
+  if (__UNI_FEATURE_LONGPRESS__) {
+    initLongPress();
   }
 }
 class ComponentDescriptor {
@@ -1521,7 +1540,7 @@ function $nne(evt, eventValue, instance2) {
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return [evt];
   }
-  const isHTMLTarget = currentTarget.tagName.indexOf("UNI-") !== 0;
+  const isHTMLTarget = !isBuiltInElement(currentTarget);
   {
     if (isHTMLTarget) {
       return wrapperH5WxsEvent(
@@ -1534,23 +1553,28 @@ function $nne(evt, eventValue, instance2) {
     }
   }
   const res = createNativeEvent(evt, isHTMLTarget);
-  if (isClickEvent(evt)) {
-    normalizeClickEvent(res, evt);
-  } else if (isMouseEvent(evt)) {
-    normalizeMouseEvent(res, evt);
-  } else if (isTouchEvent(evt)) {
-    const top = getWindowTop();
-    res.touches = normalizeTouchEvent(evt.touches, top);
-    res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
-  } else if (isKeyboardEvent(evt)) {
-    const proxyKeys = ["key", "code"];
-    proxyKeys.forEach((key) => {
-      Object.defineProperty(res, key, {
-        get() {
-          return evt[key];
-        }
+  {
+    if (isClickEvent(evt)) {
+      normalizeClickEvent(res, evt);
+    } else if (isMouseEvent(evt)) {
+      normalizeMouseEvent(res, evt);
+    } else if (isTouchEvent(evt)) {
+      const top = getWindowTop();
+      res.touches = normalizeTouchEvent(evt.touches, top);
+      res.changedTouches = normalizeTouchEvent(
+        evt.changedTouches,
+        top
+      );
+    } else if (isKeyboardEvent(evt)) {
+      const proxyKeys = ["key", "code"];
+      proxyKeys.forEach((key) => {
+        Object.defineProperty(res, key, {
+          get() {
+            return evt[key];
+          }
+        });
       });
-    });
+    }
   }
   {
     return wrapperH5WxsEvent(
@@ -1561,7 +1585,7 @@ function $nne(evt, eventValue, instance2) {
   }
 }
 function findUniTarget(target) {
-  while (target && target.tagName.indexOf("UNI-") !== 0) {
+  while (!isBuiltInElement(target)) {
     target = target.parentElement;
   }
   return target;
@@ -1569,10 +1593,12 @@ function findUniTarget(target) {
 function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
   let realTarget, realCurrentTarget;
-  realTarget = normalizeTarget(
-    htmlElement ? target : findUniTarget(target)
-  );
-  realCurrentTarget = normalizeTarget(currentTarget);
+  {
+    realTarget = normalizeTarget(
+      htmlElement ? target : findUniTarget(target)
+    );
+    realCurrentTarget = normalizeTarget(currentTarget);
+  }
   const event = {
     type,
     timeStamp,
@@ -1588,7 +1614,9 @@ function createNativeEvent(evt, htmlElement = false) {
     event.changedTouches = evt.changedTouches;
   }
   {
-    wrapperEvent(event, evt);
+    {
+      wrapperEvent(event, evt);
+    }
   }
   return event;
 }
@@ -1629,14 +1657,7 @@ function createTouchEvent(evt, top) {
 function normalizeTouchEvent(touches, top) {
   const res = [];
   for (let i = 0; i < touches.length; i++) {
-    const {
-      identifier,
-      pageX,
-      pageY,
-      clientX,
-      clientY,
-      force
-    } = touches[i];
+    const { identifier, pageX, pageY, clientX, clientY, force } = touches[i];
     res.push({
       identifier,
       pageX,
@@ -1702,7 +1723,8 @@ function initOn() {
   on2(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
 function onResize$1(res) {
-  invokeHook(getCurrentPage(), ON_RESIZE, res);
+  const page = getCurrentPage();
+  invokeHook(page, ON_RESIZE, res);
   UniServiceJSBridge.invokeOnCallback("onWindowResize", res);
 }
 function onAppEnterForeground(enterOptions2) {
@@ -1719,7 +1741,10 @@ function onAppEnterBackground() {
     getApp(),
     ON_HIDE
   );
-  invokeHook(getCurrentPage(), ON_HIDE);
+  invokeHook(
+    getCurrentPage(),
+    ON_HIDE
+  );
 }
 const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
 function initSubscribe() {
@@ -1801,7 +1826,9 @@ function getOpenerEventChannel() {
     if (this.$route) {
       const meta = this.$route.meta;
       if (!meta.eventChannel) {
-        meta.eventChannel = new EventChannel(this.$page.id);
+        meta.eventChannel = new EventChannel(
+          this.$page.id
+        );
       }
       return meta.eventChannel;
     }
@@ -1994,7 +2021,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   let target;
   target = normalizeTarget(el);
   return {
-    type: detail.type || name,
+    type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
@@ -2109,6 +2136,11 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
+createRpx2Unit(
+  defaultRpx2Unit.unit,
+  defaultRpx2Unit.unitRatio,
+  defaultRpx2Unit.unitPrecision
+);
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -2361,253 +2393,116 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const TEMP_PATH = "";
-function findElem(vm) {
-  return vm.$el;
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
+function usePageMeta() {
+  return inject(pageMetaKey);
 }
-function addBase(filePath) {
-  const { base: baseUrl } = __uniConfig.router;
-  if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
-    return addLeadingSlash(filePath);
-  }
-  return baseUrl + filePath;
+function providePageMeta(id2) {
+  const pageMeta = initPageMeta(id2);
+  provide(pageMetaKey, pageMeta);
+  return pageMeta;
 }
-function getRealPath(filePath) {
-  const { base, assets } = __uniConfig.router;
-  if (base === "./") {
-    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
-      filePath = filePath.slice(1);
-    }
+function usePageRoute() {
+  if (__UNI_FEATURE_PAGES__) {
+    return useRoute();
   }
-  if (filePath.indexOf("/") === 0) {
-    if (filePath.indexOf("//") === 0) {
-      filePath = "https:" + filePath;
-    } else {
-      return addBase(filePath.slice(1));
-    }
-  }
-  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
-    return filePath;
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    return addBase(
-      getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1)
+  const url = location.href;
+  const searchPos = url.indexOf("?");
+  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
+  let query = {};
+  if (searchPos > -1) {
+    query = parseQuery(
+      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
     );
   }
-  return filePath;
-}
-const ua = navigator.userAgent;
-const isAndroid = /* @__PURE__ */ /android/i.test(ua);
-const isIOS$1 = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
-const isIPadOS = isMac && navigator.maxTouchPoints > 0;
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
-}
-function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
+  const { meta } = __uniRoutes[0];
+  const path = addLeadingSlash(meta.route);
   return {
-    platform: isIOS$1 ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
+    meta,
+    query,
+    path,
+    matched: [{ path }]
   };
 }
-function operateVideoPlayer(videoId, pageId, type, data) {
-  UniServiceJSBridge.invokeViewMethod(
-    "video." + videoId,
-    {
-      videoId,
-      type,
-      data
-    },
-    pageId
-  );
-}
-function operateMap(id2, pageId, type, data, operateMapCallback2) {
-  UniServiceJSBridge.invokeViewMethod(
-    "map." + id2,
-    {
-      type,
-      data
-    },
-    pageId,
-    operateMapCallback2
-  );
-}
-function getRootInfo(fields2) {
-  const info = {};
-  if (fields2.id) {
-    info.id = "";
-  }
-  if (fields2.dataset) {
-    info.dataset = {};
-  }
-  if (fields2.rect) {
-    info.left = 0;
-    info.right = 0;
-    info.top = 0;
-    info.bottom = 0;
-  }
-  if (fields2.size) {
-    info.width = document.documentElement.clientWidth;
-    info.height = document.documentElement.clientHeight;
-  }
-  if (fields2.scrollOffset) {
-    const documentElement2 = document.documentElement;
-    const body = document.body;
-    info.scrollLeft = documentElement2.scrollLeft || body.scrollLeft || 0;
-    info.scrollTop = documentElement2.scrollTop || body.scrollTop || 0;
-    info.scrollHeight = documentElement2.scrollHeight || body.scrollHeight || 0;
-    info.scrollWidth = documentElement2.scrollWidth || body.scrollWidth || 0;
-  }
-  return info;
-}
-function getNodeInfo(el, fields2) {
-  const info = {};
-  const { top, topWindowHeight } = getWindowOffset();
-  if (fields2.node) {
-    const tagName = el.tagName.split("-")[1];
-    if (tagName) {
-      info.node = el.querySelector(tagName);
-    }
-  }
-  if (fields2.id) {
-    info.id = el.id;
-  }
-  if (fields2.dataset) {
-    info.dataset = getCustomDataset(el);
-  }
-  if (fields2.rect || fields2.size) {
-    const rect = el.getBoundingClientRect();
-    if (fields2.rect) {
-      info.left = rect.left;
-      info.right = rect.right;
-      info.top = rect.top - top - topWindowHeight;
-      info.bottom = rect.bottom - top - topWindowHeight;
-    }
-    if (fields2.size) {
-      info.width = rect.width;
-      info.height = rect.height;
-    }
-  }
-  if (isArray(fields2.properties)) {
-    fields2.properties.forEach((prop) => {
-      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
-        return t2.toUpperCase();
-      });
-    });
-  }
-  if (fields2.scrollOffset) {
-    if (el.tagName === "UNI-SCROLL-VIEW") {
-      const scroll = el.children[0].children[0];
-      info.scrollLeft = scroll.scrollLeft;
-      info.scrollTop = scroll.scrollTop;
-      info.scrollHeight = scroll.scrollHeight;
-      info.scrollWidth = scroll.scrollWidth;
-    } else {
-      info.scrollLeft = 0;
-      info.scrollTop = 0;
-      info.scrollHeight = 0;
-      info.scrollWidth = 0;
-    }
-  }
-  if (isArray(fields2.computedStyle)) {
-    const sytle = getComputedStyle(el);
-    fields2.computedStyle.forEach((name) => {
-      info[name] = sytle[name];
-    });
-  }
-  if (fields2.context) {
-    info.contextInfo = getContextInfo(el);
-  }
-  return info;
-}
-function findElm(component, pageVm) {
-  if (!component) {
-    return pageVm.$el;
-  }
-  return component.$el;
-}
-function matches(element, selectors) {
-  const matches2 = element.matches || element.matchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector || function(selectors2) {
-    const matches3 = this.parentElement.querySelectorAll(
-      selectors2
+function initPageMeta(id2) {
+  if (__UNI_FEATURE_PAGES__) {
+    return reactive(
+      normalizePageMeta(
+        JSON.parse(
+          JSON.stringify(
+            initRouteMeta(
+              useRoute().meta,
+              id2
+            )
+          )
+        )
+      )
     );
-    let i = matches3.length;
-    while (--i >= 0 && matches3.item(i) !== this) {
-    }
-    return i > -1;
-  };
-  return matches2.call(element, selectors);
+  }
+  return reactive(
+    normalizePageMeta(
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
+    )
+  );
 }
-function getNodesInfo(pageVm, component, selector, single, fields2) {
-  const selfElement = findElm(component, pageVm);
-  const parentElement = selfElement.parentElement;
-  if (!parentElement) {
-    return single ? null : [];
+function normalizePageMeta(pageMeta) {
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const { enablePullDownRefresh, navigationBar } = pageMeta;
+    if (enablePullDownRefresh) {
+      const pullToRefresh = normalizePullToRefreshRpx(
+        extend(
+          {
+            support: true,
+            color: "#2BD009",
+            style: "circle",
+            height: 70,
+            range: 150,
+            offset: 0
+          },
+          pageMeta.pullToRefresh
+        )
+      );
+      const { type, style } = navigationBar;
+      if (style !== "custom" && type !== "transparent") {
+        pullToRefresh.offset += NAVBAR_HEIGHT + safeAreaInsets$1.top;
+      }
+      pageMeta.pullToRefresh = pullToRefresh;
+    }
   }
-  const { nodeType } = selfElement;
-  const maybeFragment = nodeType === 3 || nodeType === 8;
-  if (single) {
-    const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
-    if (node) {
-      return getNodeInfo(node, fields2);
-    }
-    return null;
-  } else {
-    let infos = [];
-    const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
-    if (nodeList && nodeList.length) {
-      [].forEach.call(nodeList, (node) => {
-        infos.push(getNodeInfo(node, fields2));
-      });
-    }
-    if (!maybeFragment && matches(selfElement, selector)) {
-      infos.unshift(getNodeInfo(selfElement, fields2));
-    }
-    return infos;
+  if (__UNI_FEATURE_NAVIGATIONBAR__ || __UNI_FEATURE_I18N_LOCALE__) {
+    const { navigationBar } = pageMeta;
+    const { titleSize, titleColor, backgroundColor } = navigationBar;
+    navigationBar.titleText = navigationBar.titleText || "";
+    navigationBar.type = navigationBar.type || "default";
+    navigationBar.titleSize = titleSize || "16px";
+    navigationBar.titleColor = titleColor || "#000000";
+    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
+    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
   }
+  if (__UNI_FEATURE_PAGES__ && history.state) {
+    const type = history.state.__type__;
+    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
+      pageMeta.isEntry = true;
+      pageMeta.isQuit = true;
+    }
+  }
+  return pageMeta;
 }
-function requestComponentInfo(page, reqs, callback) {
-  const result = [];
-  reqs.forEach(({ component, selector, single, fields: fields2 }) => {
-    if (component === null) {
-      result.push(getRootInfo(fields2));
-    } else {
-      result.push(getNodesInfo(page, component, selector, single, fields2));
-    }
-  });
-  callback(result);
+function checkMinWidth(minWidth) {
+  const screen2 = window.screen;
+  const documentElement = document.documentElement;
+  const sizes = [
+    window.outerWidth,
+    window.outerHeight,
+    screen2.width,
+    screen2.height,
+    documentElement.clientWidth,
+    documentElement.clientHeight
+  ];
+  return Math.max.apply(null, sizes) > minWidth;
 }
-function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
-  if (pageStyle) {
-    const pageElm = document.querySelector("uni-page-body") || document.body;
-    pageElm.setAttribute("style", pageStyle);
-  }
-  if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
-    document.documentElement.style.fontSize = rootFontSize;
-  }
+function getStateId() {
+  return history.state && history.state.__id__ || 1;
 }
 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 var lookup = /* @__PURE__ */ function() {
@@ -3078,8 +2973,18 @@ function invokeSuccess(id2, name, res) {
   return invokeCallback(id2, extend(res || {}, result));
 }
 function invokeFail(id2, name, errMsg, errRes = {}) {
-  const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
-  delete errRes.errCode;
+  const errMsgPrefix = name + ":fail";
+  let apiErrMsg = "";
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix;
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg;
+  } else {
+    apiErrMsg = errMsgPrefix + " " + errMsg;
+  }
+  {
+    delete errRes.errCode;
+  }
   let res = extend({ errMsg: apiErrMsg }, errRes);
   return invokeCallback(id2, res);
 }
@@ -3141,7 +3046,9 @@ function parseErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
+    if (typeof globalThis === "undefined" || !globalThis.harmonyChannel) {
+      console.error(errMsg.message + "\n" + errMsg.stack);
+    }
     return errMsg.message;
   }
   return errMsg;
@@ -3251,17 +3158,17 @@ const Upx2pxProtocol = [
 ];
 const EPS = 1e-4;
 const BASE_DEVICE_WIDTH = 750;
-let isIOS = false;
+let isIOS$1 = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-  const { platform, pixelRatio: pixelRatio2, windowWidth } = getBaseSystemInfo();
+  const { windowWidth, pixelRatio: pixelRatio2, platform } = getBaseSystemInfo();
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio2;
-  isIOS = platform === "ios";
+  isIOS$1 = platform === "ios";
 }
 function checkValue(value, defaultValue) {
   const newValue = Number(value);
@@ -3296,7 +3203,7 @@ const upx2px = /* @__PURE__ */ defineSyncApi(
     }
     result = Math.floor(result + EPS);
     if (result === 0) {
-      if (deviceDPR === 1 || !isIOS) {
+      if (deviceDPR === 1 || !isIOS$1) {
         result = 1;
       } else {
         result = 0.5;
@@ -3404,7 +3311,7 @@ const OffProtocol = [
   },
   {
     name: "callback",
-    type: Function
+    type: [Function, Number]
   }
 ];
 const API_EMIT = "$emit";
@@ -3420,10 +3327,10 @@ class EventBus {
     this.$emitter = new Emitter();
   }
   on(name, callback) {
-    this.$emitter.on(name, callback);
+    return this.$emitter.on(name, callback);
   }
   once(name, callback) {
-    this.$emitter.once(name, callback);
+    return this.$emitter.once(name, callback);
   }
   off(name, callback) {
     if (!name) {
@@ -3458,7 +3365,9 @@ const $off = /* @__PURE__ */ defineSyncApi(
   (name, callback) => {
     if (!isArray(name))
       name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+      eventBus.off(n, callback);
+    });
   },
   OffProtocol
 );
@@ -3469,6 +3378,12 @@ const $emit = /* @__PURE__ */ defineSyncApi(
   },
   EmitProtocol
 );
+function __f__(type, filename, ...args) {
+  if (filename) {
+    args.push(filename);
+  }
+  console[type].apply(console, args);
+}
 const validator = [
   {
     name: "id",
@@ -5683,8 +5598,13 @@ const ChooseFileOptions = {
       if (extension instanceof Array && extension.length === 0) {
         return "param extension should not be empty.";
       }
-      if (!extension)
-        params.extension = [""];
+      if (!extension) {
+        if (params.type === "all" || !params.type) {
+          params.extension = [""];
+        } else {
+          params.extension = ["*"];
+        }
+      }
     }
   }
 };
@@ -6795,14 +6715,14 @@ const initIntersectionObserverPolyfill = function() {
   }
   function addEvent(node, event, fn, opt_useCapture) {
     if (typeof node.addEventListener == "function") {
-      node.addEventListener(event, fn, opt_useCapture || false);
+      node.addEventListener(event, fn, opt_useCapture);
     } else if (typeof node.attachEvent == "function") {
       node.attachEvent("on" + event, fn);
     }
   }
   function removeEvent(node, event, fn, opt_useCapture) {
     if (typeof node.removeEventListener == "function") {
-      node.removeEventListener(event, fn, opt_useCapture || false);
+      node.removeEventListener(event, fn, opt_useCapture);
     } else if (typeof node.detatchEvent == "function") {
       node.detatchEvent("on" + event, fn);
     }
@@ -6971,6 +6891,714 @@ function requestComponentObserver($el, options, callback) {
     }
   }
   return intersectionObserver;
+}
+function removeNonTabBarPages() {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    if (!page.$.__isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = false;
+    }
+  }
+  if (curTabBarPageVm.$.__isTabBar) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, ON_HIDE);
+  }
+}
+function isSamePage(url, $page) {
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = getPage$BasePage(page);
+    if (isSamePage(url, $page)) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+const switchTab = /* @__PURE__ */ defineAsyncApi(
+  API_SWITCH_TAB,
+  // @ts-expect-error
+  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      switchTabPagesBeforeEntryPages.push({
+        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return removeNonTabBarPages(), navigate(
+      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+      getTabBarPageId(url)
+    ).then(resolve).catch(reject);
+  },
+  SwitchTabProtocol,
+  SwitchTabOptions
+);
+function removeLastPage() {
+  const page = getCurrentPage();
+  if (!page) {
+    return;
+  }
+  const $page = getPage$BasePage(page);
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
+const redirectTo = /* @__PURE__ */ defineAsyncApi(
+  API_REDIRECT_TO,
+  // @ts-expect-error
+  ({ url, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      redirectToPagesBeforeEntryPages.push({
+        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return (
+      // TODO exists 属性未实现
+      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
+    );
+  },
+  RedirectToProtocol,
+  RedirectToOptions
+);
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
+const reLaunch = /* @__PURE__ */ defineAsyncApi(
+  API_RE_LAUNCH,
+  // @ts-expect-error
+  ({ url, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      reLaunchPagesBeforeEntryPages.push({
+        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  ReLaunchProtocol,
+  ReLaunchOptions
+);
+function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
+  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
+    console.warn(
+      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
+    );
+  }
+  const router = getApp().$router;
+  const { path, query } = parseUrl(url);
+  return new Promise((resolve, reject) => {
+    const state2 = createPageState(type, __id__);
+    router[type === "navigateTo" ? "push" : "replace"]({
+      path,
+      query,
+      state: state2,
+      force: true
+    }).then((failure) => {
+      if (isNavigationFailure(failure)) {
+        return reject(failure.message);
+      }
+      if (type === "switchTab") {
+        router.currentRoute.value.meta.tabBarText = tabBarText;
+      }
+      if (type === "navigateTo") {
+        const meta = router.currentRoute.value.meta;
+        if (!meta.eventChannel) {
+          meta.eventChannel = new EventChannel(state2.__id__, events);
+        } else if (events) {
+          Object.keys(events).forEach((eventName) => {
+            meta.eventChannel._addListener(
+              eventName,
+              "on",
+              events[eventName]
+            );
+          });
+          meta.eventChannel._clearCache();
+        }
+        return isAutomatedTesting ? resolve({
+          __id__: state2.__id__
+        }) : resolve({
+          eventChannel: meta.eventChannel
+        });
+      }
+      return isAutomatedTesting ? resolve({ __id__: state2.__id__ }) : resolve();
+    });
+  });
+}
+function handleBeforeEntryPageRoutes() {
+  if (entryPageState.handledBeforeEntryPageRoutes) {
+    return;
+  }
+  entryPageState.handledBeforeEntryPageRoutes = true;
+  const navigateToPages = [...navigateToPagesBeforeEntryPages];
+  navigateToPagesBeforeEntryPages.length = 0;
+  navigateToPages.forEach(
+    ({ args, resolve, reject }) => (
+      // @ts-expect-error
+      navigate(args).then(resolve).catch(reject)
+    )
+  );
+  const switchTabPages = [...switchTabPagesBeforeEntryPages];
+  switchTabPagesBeforeEntryPages.length = 0;
+  switchTabPages.forEach(
+    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
+  );
+  const redirectToPages = [...redirectToPagesBeforeEntryPages];
+  redirectToPagesBeforeEntryPages.length = 0;
+  redirectToPages.forEach(
+    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
+  );
+  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
+  reLaunchPagesBeforeEntryPages.length = 0;
+  reLaunchPages.forEach(
+    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
+  );
+}
+let tabBar;
+function useTabBar() {
+  if (!tabBar) {
+    tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
+  }
+  return tabBar;
+}
+function cssSupports(css) {
+  const supports = window.CSS && window.CSS.supports;
+  return supports && (supports(css) || supports.apply(window.CSS, css.split(":")));
+}
+const cssVar = /* @__PURE__ */ cssSupports("--a:0");
+const cssEnv = /* @__PURE__ */ cssSupports("top:env(a)");
+const cssConstant = /* @__PURE__ */ cssSupports("top:constant(a)");
+const cssBackdropFilter = /* @__PURE__ */ cssSupports("backdrop-filter:blur(10px)");
+const SCHEMA_CSS = {
+  "css.var": cssVar,
+  "css.env": cssEnv,
+  "css.constant": cssConstant,
+  "css.backdrop-filter": cssBackdropFilter
+};
+const canIUse = /* @__PURE__ */ defineSyncApi(
+  API_CAN_I_USE,
+  (schema) => {
+    if (hasOwn(SCHEMA_CSS, schema)) {
+      return SCHEMA_CSS[schema];
+    }
+    return true;
+  },
+  CanIUseProtocol
+);
+const envMethod = /* @__PURE__ */ (() => cssEnv ? "env" : cssConstant ? "constant" : "")();
+function updateCurPageCssVar(pageMeta) {
+  let windowTopValue = 0;
+  let windowBottomValue = 0;
+  if (__UNI_FEATURE_NAVIGATIONBAR__ && pageMeta.navigationBar.style !== "custom" && ["default", "float"].indexOf(pageMeta.navigationBar.type) > -1) {
+    windowTopValue = NAVBAR_HEIGHT;
+  }
+  if (__UNI_FEATURE_TABBAR__ && pageMeta.isTabBar) {
+    const tabBar2 = useTabBar();
+    tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
+  }
+  updatePageCssVar({
+    "--window-top": normalizeWindowTop(windowTopValue),
+    "--window-bottom": normalizeWindowBottom(windowBottomValue)
+  });
+}
+function normalizeWindowTop(windowTop) {
+  return envMethod ? `calc(${windowTop}px + ${envMethod}(safe-area-inset-top))` : `${windowTop}px`;
+}
+function normalizeWindowBottom(windowBottom) {
+  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+}
+const SEP = "$$";
+const currentPagesMap = /* @__PURE__ */ new Map();
+function getPage$BasePage(page) {
+  return page.$page;
+}
+const entryPageState = {
+  handledBeforeEntryPageRoutes: false
+};
+const navigateToPagesBeforeEntryPages = [];
+const switchTabPagesBeforeEntryPages = [];
+const redirectToPagesBeforeEntryPages = [];
+const reLaunchPagesBeforeEntryPages = [];
+function pruneCurrentPages() {
+  currentPagesMap.forEach((page, id2) => {
+    if (page.$.isUnmounted) {
+      currentPagesMap.delete(id2);
+    }
+  });
+}
+function getCurrentPagesMap() {
+  return currentPagesMap;
+}
+function getCurrentPages$1() {
+  const curPages = getCurrentBasePages();
+  return curPages;
+}
+function getCurrentBasePages() {
+  const curPages = [];
+  const pages = currentPagesMap.values();
+  for (const page of pages) {
+    if (page.$.__isTabBar) {
+      if (page.$.__isActive) {
+        curPages.push(page);
+      }
+    } else {
+      curPages.push(page);
+    }
+  }
+  return curPages;
+}
+function removeRouteCache(routeKey) {
+  const vnode = pageCacheMap.get(routeKey);
+  if (vnode) {
+    pageCacheMap.delete(routeKey);
+    routeCache.pruneCacheEntry(vnode);
+  }
+}
+function removePage(routeKey, removeRouteCaches = true) {
+  const pageVm = currentPagesMap.get(routeKey);
+  pageVm.$.__isUnload = true;
+  invokeHook(pageVm, ON_UNLOAD);
+  currentPagesMap.delete(routeKey);
+  removeRouteCaches && removeRouteCache(routeKey);
+}
+let id = /* @__PURE__ */ getStateId();
+function createPageState(type, __id__) {
+  return {
+    __id__: __id__ || ++id,
+    __type__: type
+  };
+}
+function initPublicPage(route) {
+  const meta = usePageMeta();
+  if (!__UNI_FEATURE_PAGES__) {
+    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
+  }
+  let fullPath = route.fullPath;
+  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
+    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
+  }
+  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
+}
+function initPage(vm) {
+  const route = vm.$route;
+  const page = initPublicPage(route);
+  initPageVm(vm, page);
+  {
+    currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+    if (currentPagesMap.size === 1) {
+      setTimeout(() => {
+        handleBeforeEntryPageRoutes();
+      }, 0);
+    }
+  }
+}
+function normalizeRouteKey(path, id2) {
+  return path + SEP + id2;
+}
+function useKeepAliveRoute() {
+  const route = useRoute();
+  const routeKey = computed(
+    () => normalizeRouteKey("/" + route.meta.route, getStateId())
+  );
+  const isTabBar = computed(() => route.meta.isTabBar);
+  return {
+    routeKey,
+    isTabBar,
+    routeCache
+  };
+}
+const pageCacheMap = /* @__PURE__ */ new Map();
+const routeCache = {
+  get(key) {
+    return pageCacheMap.get(key);
+  },
+  set(key, value) {
+    pruneRouteCache(key);
+    pageCacheMap.set(key, value);
+  },
+  delete(key) {
+    const vnode = pageCacheMap.get(key);
+    if (!vnode) {
+      return;
+    }
+    pageCacheMap.delete(key);
+  },
+  forEach(fn) {
+    pageCacheMap.forEach(fn);
+  }
+};
+function isTabBarVNode(vnode) {
+  return vnode.props.type === "tabBar";
+}
+function pruneRouteCache(key) {
+  const pageId = parseInt(key.split(SEP)[1]);
+  if (!pageId) {
+    return;
+  }
+  routeCache.forEach((vnode, key2) => {
+    const cPageId = parseInt(key2.split(SEP)[1]);
+    if (cPageId && cPageId > pageId) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+        return;
+      }
+      routeCache.delete(key2);
+      routeCache.pruneCacheEntry(vnode);
+      nextTick(() => pruneCurrentPages());
+    }
+  });
+}
+function updateCurPageAttrs(pageMeta) {
+  {
+    const nvueDirKey = "nvue-dir-" + __uniConfig.nvue["flex-direction"];
+    if (pageMeta.isNVue) {
+      document.body.setAttribute("nvue", "");
+      document.body.setAttribute(nvueDirKey, "");
+    } else {
+      document.body.removeAttribute("nvue");
+      document.body.removeAttribute(nvueDirKey);
+    }
+  }
+}
+function onPageShow(instance2, pageMeta) {
+  updateBodyScopeId(instance2);
+  updateCurPageCssVar(pageMeta);
+  updateCurPageAttrs(pageMeta);
+  initPageScrollListener(instance2, pageMeta);
+}
+function onPageReady(instance2) {
+  const scopeId = getScopeId(instance2);
+  scopeId && updateCurPageBodyScopeId(scopeId);
+}
+function updateCurPageBodyScopeId(scopeId) {
+  const pageBodyEl = document.querySelector("uni-page-body");
+  if (pageBodyEl) {
+    pageBodyEl.setAttribute(scopeId, "");
+  } else if (process.env.NODE_ENV !== "production") {
+    console.warn("uni-page-body not found");
+  }
+}
+function getScopeId(instance2) {
+  return instance2.type.__scopeId;
+}
+let curScopeId;
+function updateBodyScopeId(instance2) {
+  const scopeId = getScopeId(instance2);
+  const { body } = document;
+  curScopeId && body.removeAttribute(curScopeId);
+  scopeId && body.setAttribute(scopeId, "");
+  curScopeId = scopeId;
+}
+let curScrollListener;
+function initPageScrollListener(instance2, pageMeta) {
+  document.removeEventListener("touchmove", disableScrollListener);
+  if (curScrollListener) {
+    document.removeEventListener("scroll", curScrollListener);
+  }
+  if (pageMeta.disableScroll) {
+    return document.addEventListener("touchmove", disableScrollListener);
+  }
+  const { onPageScroll, onReachBottom } = instance2;
+  const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
+  if (!(onPageScroll == null ? void 0 : onPageScroll.length) && !(onReachBottom == null ? void 0 : onReachBottom.length) && !navigationBarTransparent) {
+    return;
+  }
+  const opts = {};
+  const pageId = getPage$BasePage(instance2.proxy).id;
+  if (onPageScroll || navigationBarTransparent) {
+    opts.onPageScroll = createOnPageScroll(
+      pageId,
+      onPageScroll,
+      navigationBarTransparent
+    );
+  }
+  if (onReachBottom == null ? void 0 : onReachBottom.length) {
+    opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
+    opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
+  }
+  curScrollListener = createScrollListener(opts);
+  requestAnimationFrame(
+    () => document.addEventListener("scroll", curScrollListener)
+  );
+}
+function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
+  return (scrollTop) => {
+    if (onPageScroll) {
+      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop }, pageId);
+    }
+    if (navigationBarTransparent) {
+      UniViewJSBridge.emit(pageId + "." + ON_PAGE_SCROLL, {
+        scrollTop
+      });
+    }
+  };
+}
+function findElem(vm) {
+  return vm.$el;
+}
+function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
+  if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
+    return addLeadingSlash(filePath);
+  }
+  return baseUrl + filePath;
+}
+function getRealPath(filePath) {
+  const { base, assets } = __uniConfig.router;
+  if (base === "./") {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
+      filePath = filePath.slice(1);
+    }
+  }
+  if (filePath.indexOf("/") === 0) {
+    if (filePath.indexOf("//") === 0) {
+      filePath = "https:" + filePath;
+    } else {
+      return addBase(filePath.slice(1));
+    }
+  }
+  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+    return filePath;
+  }
+  const pages = getCurrentBasePages();
+  if (pages.length) {
+    return addBase(
+      getRealRoute(
+        getPage$BasePage(pages[pages.length - 1]).route,
+        filePath
+      ).slice(1)
+    );
+  }
+  return filePath;
+}
+const ua = navigator.userAgent;
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(
+    window.innerWidth,
+    document.documentElement.clientWidth,
+    screenWidth
+  ) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(
+    getScreenWidth(screenFix, isLandscape(screenFix))
+  );
+  return {
+    platform: isIOS ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
+function operateVideoPlayer(videoId, pageId, type, data) {
+  UniServiceJSBridge.invokeViewMethod(
+    "video." + videoId,
+    {
+      videoId,
+      type,
+      data
+    },
+    pageId
+  );
+}
+function operateMap(id2, pageId, type, data, operateMapCallback2) {
+  UniServiceJSBridge.invokeViewMethod(
+    "map." + id2,
+    {
+      type,
+      data
+    },
+    pageId,
+    operateMapCallback2
+  );
+}
+function getRootInfo(fields2) {
+  const info = {};
+  if (fields2.id) {
+    info.id = "";
+  }
+  if (fields2.dataset) {
+    info.dataset = {};
+  }
+  if (fields2.rect) {
+    info.left = 0;
+    info.right = 0;
+    info.top = 0;
+    info.bottom = 0;
+  }
+  if (fields2.size) {
+    info.width = document.documentElement.clientWidth;
+    info.height = document.documentElement.clientHeight;
+  }
+  if (fields2.scrollOffset) {
+    const documentElement = document.documentElement;
+    const body = document.body;
+    info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
+    info.scrollTop = documentElement.scrollTop || body.scrollTop || 0;
+    info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0;
+    info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0;
+  }
+  return info;
+}
+function getNodeInfo(el, fields2) {
+  const info = {};
+  const { top, topWindowHeight } = getWindowOffset();
+  if (fields2.node) {
+    const tagName = el.tagName.split("-")[1] || el.tagName;
+    if (tagName) {
+      info.node = el.querySelector(tagName);
+    }
+  }
+  if (fields2.id) {
+    info.id = el.id;
+  }
+  if (fields2.dataset) {
+    info.dataset = getCustomDataset(el);
+  }
+  if (fields2.rect || fields2.size) {
+    const rect = el.getBoundingClientRect();
+    if (fields2.rect) {
+      info.left = rect.left;
+      info.right = rect.right;
+      info.top = rect.top - top - topWindowHeight;
+      info.bottom = rect.bottom - top - topWindowHeight;
+    }
+    if (fields2.size) {
+      info.width = rect.width;
+      info.height = rect.height;
+    }
+  }
+  if (isArray(fields2.properties)) {
+    fields2.properties.forEach((prop) => {
+      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
+        return t2.toUpperCase();
+      });
+    });
+  }
+  if (fields2.scrollOffset) {
+    if (el.tagName === "UNI-SCROLL-VIEW" || false) {
+      const scroll = el.children[0].children[0];
+      info.scrollLeft = scroll.scrollLeft;
+      info.scrollTop = scroll.scrollTop;
+      info.scrollHeight = scroll.scrollHeight;
+      info.scrollWidth = scroll.scrollWidth;
+    } else {
+      info.scrollLeft = 0;
+      info.scrollTop = 0;
+      info.scrollHeight = 0;
+      info.scrollWidth = 0;
+    }
+  }
+  if (isArray(fields2.computedStyle)) {
+    const sytle = getComputedStyle(el);
+    fields2.computedStyle.forEach((name) => {
+      info[name] = sytle[name];
+    });
+  }
+  if (fields2.context) {
+    info.contextInfo = getContextInfo(el);
+  }
+  return info;
+}
+function findElm(component, pageVm) {
+  if (!component) {
+    return pageVm.$el;
+  }
+  return component.$el;
+}
+function matches(element, selectors) {
+  const matches2 = element.matches || element.matchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector || function(selectors2) {
+    const matches3 = this.parentElement.querySelectorAll(
+      selectors2
+    );
+    let i = matches3.length;
+    while (--i >= 0 && matches3.item(i) !== this) {
+    }
+    return i > -1;
+  };
+  return matches2.call(element, selectors);
+}
+function getNodesInfo(pageVm, component, selector, single, fields2) {
+  const selfElement = findElm(component, pageVm);
+  const parentElement = selfElement.parentElement;
+  if (!parentElement) {
+    return single ? null : [];
+  }
+  const { nodeType } = selfElement;
+  const maybeFragment = nodeType === 3 || nodeType === 8;
+  if (single) {
+    const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
+    if (node) {
+      return getNodeInfo(node, fields2);
+    }
+    return null;
+  } else {
+    let infos = [];
+    const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
+    if (nodeList && nodeList.length) {
+      [].forEach.call(nodeList, (node) => {
+        infos.push(getNodeInfo(node, fields2));
+      });
+    }
+    if (!maybeFragment && matches(selfElement, selector)) {
+      infos.unshift(getNodeInfo(selfElement, fields2));
+    }
+    return infos;
+  }
+}
+function requestComponentInfo(page, reqs, callback) {
+  const result = [];
+  reqs.forEach(({ component, selector, single, fields: fields2 }) => {
+    if (component === null) {
+      result.push(getRootInfo(fields2));
+    } else {
+      result.push(getNodesInfo(page, component, selector, single, fields2));
+    }
+  });
+  callback(result);
+}
+function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
+  if (pageStyle) {
+    const pageElm = document.querySelector("uni-page-body") || document.body;
+    pageElm.setAttribute("style", pageStyle);
+  }
+  if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
+    document.documentElement.style.fontSize = rootFontSize;
+  }
 }
 function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
   const $el = findElem(component);
@@ -9434,10 +10062,9 @@ function getValueString(value, type, maxlength) {
     value = "";
   }
   const valueStr = value === null || value === void 0 ? "" : String(value);
-  if (maxlength == void 0) {
+  {
     return valueStr;
   }
-  return valueStr.slice(0, maxlength);
 }
 const INPUT_MODES = [
   "none",
@@ -10749,7 +11376,7 @@ const movableViewProps = {
   },
   scaleMin: {
     type: [Number, String],
-    default: 0.5
+    default: 0.1
   },
   scaleMax: {
     type: [Number, String],
@@ -11090,7 +11717,7 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
 function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA) {
   const scaleMinNumber = computed(() => {
     let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
+    return isNaN(val) ? 0.1 : val;
   });
   const scaleMaxNumber = computed(() => {
     let val = Number(props2.scaleMax);
@@ -11156,7 +11783,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     _oldScale.value = scale;
   }
   function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.max(0.1, scaleMinNumber.value, scale);
     scale = Math.min(10, scaleMaxNumber.value, scale);
     return scale;
   }
@@ -14737,7 +15364,9 @@ const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       const defaultSlots = slots.default && slots.default();
-      swiperItems = flatVNode(defaultSlots);
+      {
+        swiperItems = flatVNode(defaultSlots);
+      }
       return createVNode("uni-swiper", {
         "ref": rootRef
       }, [createVNode("div", {
@@ -15327,11 +15956,11 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         return createVNode("uni-view", mergeProps({
           "class": hovering.value ? hoverClass : "",
           "ref": rootRef
-        }, binding), [slots.default && slots.default()], 16);
+        }, binding), [renderSlot(slots, "default")], 16);
       }
       return createVNode("uni-view", {
         "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      }, [renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -15411,7 +16040,6 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
   }
 }
 function initHooks(options, instance2, publicThis) {
-  var _b;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -15438,8 +16066,9 @@ function initHooks(options, instance2, publicThis) {
         ;
       invokeHook(publicThis, ON_LOAD, query);
       delete instance2.attrs.__pageQuery;
+      const $basePage = false ? publicThis.$basePage : publicThis.$page;
       if (true) {
-        if (((_b = publicThis.$page) == null ? void 0 : _b.openType) !== "preloadPage") {
+        if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
           invokeHook(publicThis, ON_SHOW);
         }
       }
@@ -15463,16 +16092,21 @@ function $callMethod(method, ...args) {
   return null;
 }
 function createErrorHandler(app) {
-  return function errorHandler(err, instance2, _info) {
-    if (!instance2) {
-      throw err;
+  const userErrorHandler = app.config.errorHandler;
+  return function errorHandler(err, instance2, info) {
+    if (userErrorHandler) {
+      userErrorHandler(err, instance2, info);
     }
     const appInstance = app._instance;
     if (!appInstance || !appInstance.proxy) {
       throw err;
     }
-    {
-      invokeHook(appInstance.proxy, ON_ERROR, err);
+    if (appInstance[ON_ERROR]) {
+      {
+        invokeHook(appInstance.proxy, ON_ERROR, err);
+      }
+    } else {
+      logError(err, info, instance2 ? instance2.$.vnode : null, false);
     }
   };
 }
@@ -15558,7 +16192,7 @@ function uniIdMixin(globalProperties) {
   };
 }
 function initApp$1(app) {
-  const appConfig = app._context.config;
+  const appConfig = app.config;
   appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
@@ -15575,565 +16209,6 @@ function initApp$1(app) {
   {
     invokeCreateVueAppHook(app);
   }
-}
-const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
-function usePageMeta() {
-  return inject(pageMetaKey);
-}
-function providePageMeta(id2) {
-  const pageMeta = initPageMeta(id2);
-  provide(pageMetaKey, pageMeta);
-  return pageMeta;
-}
-function usePageRoute() {
-  if (__UNI_FEATURE_PAGES__) {
-    return useRoute();
-  }
-  const url = location.href;
-  const searchPos = url.indexOf("?");
-  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
-  let query = {};
-  if (searchPos > -1) {
-    query = parseQuery(
-      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
-    );
-  }
-  const { meta } = __uniRoutes[0];
-  const path = addLeadingSlash(meta.route);
-  return {
-    meta,
-    query,
-    path,
-    matched: [{ path }]
-  };
-}
-function initPageMeta(id2) {
-  if (__UNI_FEATURE_PAGES__) {
-    return reactive(
-      normalizePageMeta(
-        JSON.parse(
-          JSON.stringify(
-            initRouteMeta(
-              useRoute().meta,
-              id2
-            )
-          )
-        )
-      )
-    );
-  }
-  return reactive(
-    normalizePageMeta(
-      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
-    )
-  );
-}
-function normalizePageMeta(pageMeta) {
-  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    const { enablePullDownRefresh, navigationBar } = pageMeta;
-    if (enablePullDownRefresh) {
-      const pullToRefresh = normalizePullToRefreshRpx(
-        extend(
-          {
-            support: true,
-            color: "#2BD009",
-            style: "circle",
-            height: 70,
-            range: 150,
-            offset: 0
-          },
-          pageMeta.pullToRefresh
-        )
-      );
-      const { type, style } = navigationBar;
-      if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += NAVBAR_HEIGHT + safeAreaInsets$1.top;
-      }
-      pageMeta.pullToRefresh = pullToRefresh;
-    }
-  }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
-    const { navigationBar } = pageMeta;
-    const { titleSize, titleColor, backgroundColor } = navigationBar;
-    navigationBar.titleText = navigationBar.titleText || "";
-    navigationBar.type = navigationBar.type || "default";
-    navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#000000";
-    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
-    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
-  }
-  if (__UNI_FEATURE_PAGES__ && history.state) {
-    const type = history.state.__type__;
-    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
-      pageMeta.isEntry = true;
-      pageMeta.isQuit = true;
-    }
-  }
-  return pageMeta;
-}
-const screen$1 = window.screen;
-const documentElement = document.documentElement;
-function checkMinWidth(minWidth) {
-  const sizes = [
-    window.outerWidth,
-    window.outerHeight,
-    screen$1.width,
-    screen$1.height,
-    documentElement.clientWidth,
-    documentElement.clientHeight
-  ];
-  return Math.max.apply(null, sizes) > minWidth;
-}
-function getStateId() {
-  return history.state && history.state.__id__ || 1;
-}
-function removeNonTabBarPages() {
-  const curTabBarPageVm = getCurrentPageVm();
-  if (!curTabBarPageVm) {
-    return;
-  }
-  const pagesMap = getCurrentPagesMap();
-  const keys = pagesMap.keys();
-  for (const routeKey of keys) {
-    const page = pagesMap.get(routeKey);
-    if (!page.$.__isTabBar) {
-      removePage(routeKey);
-    } else {
-      page.$.__isActive = false;
-    }
-  }
-  if (curTabBarPageVm.$.__isTabBar) {
-    curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, ON_HIDE);
-  }
-}
-function isSamePage(url, $page) {
-  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
-}
-function getTabBarPageId(url) {
-  const pages = getCurrentPagesMap().values();
-  for (const page of pages) {
-    const $page = page.$page;
-    if (isSamePage(url, $page)) {
-      page.$.__isActive = true;
-      return $page.id;
-    }
-  }
-}
-const switchTab = /* @__PURE__ */ defineAsyncApi(
-  API_SWITCH_TAB,
-  // @ts-expect-error
-  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      switchTabPagesBeforeEntryPages.push({
-        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return removeNonTabBarPages(), navigate(
-      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-      getTabBarPageId(url)
-    ).then(resolve).catch(reject);
-  },
-  SwitchTabProtocol,
-  SwitchTabOptions
-);
-function removeLastPage() {
-  const page = getCurrentPage();
-  if (!page) {
-    return;
-  }
-  const $page = page.$page;
-  removePage(normalizeRouteKey($page.path, $page.id));
-}
-const redirectTo = /* @__PURE__ */ defineAsyncApi(
-  API_REDIRECT_TO,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      redirectToPagesBeforeEntryPages.push({
-        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return (
-      // TODO exists 属性未实现
-      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
-    );
-  },
-  RedirectToProtocol,
-  RedirectToOptions
-);
-function removeAllPages() {
-  const keys = getCurrentPagesMap().keys();
-  for (const routeKey of keys) {
-    removePage(routeKey);
-  }
-}
-const reLaunch = /* @__PURE__ */ defineAsyncApi(
-  API_RE_LAUNCH,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      reLaunchPagesBeforeEntryPages.push({
-        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  ReLaunchProtocol,
-  ReLaunchOptions
-);
-function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
-  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
-    console.warn(
-      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
-    );
-  }
-  const router = getApp().$router;
-  const { path, query } = parseUrl(url);
-  return new Promise((resolve, reject) => {
-    const state2 = createPageState(type, __id__);
-    router[type === "navigateTo" ? "push" : "replace"]({
-      path,
-      query,
-      state: state2,
-      force: true
-    }).then((failure) => {
-      if (isNavigationFailure(failure)) {
-        return reject(failure.message);
-      }
-      if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
-      }
-      if (type === "navigateTo") {
-        const meta = router.currentRoute.value.meta;
-        if (!meta.eventChannel) {
-          meta.eventChannel = new EventChannel(state2.__id__, events);
-        } else if (events) {
-          Object.keys(events).forEach((eventName) => {
-            meta.eventChannel._addListener(
-              eventName,
-              "on",
-              events[eventName]
-            );
-          });
-          meta.eventChannel._clearCache();
-        }
-        return isAutomatedTesting ? resolve({
-          __id__: state2.__id__
-        }) : resolve({
-          eventChannel: meta.eventChannel
-        });
-      }
-      return isAutomatedTesting ? resolve({ __id__: state2.__id__ }) : resolve();
-    });
-  });
-}
-function handleBeforeEntryPageRoutes() {
-  if (entryPageState.handledBeforeEntryPageRoutes) {
-    return;
-  }
-  entryPageState.handledBeforeEntryPageRoutes = true;
-  const navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach(
-    ({ args, resolve, reject }) => (
-      // @ts-expect-error
-      navigate(args).then(resolve).catch(reject)
-    )
-  );
-  const switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
-  const redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
-}
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
-  }
-  return tabBar;
-}
-const supports = window.CSS && window.CSS.supports;
-function cssSupports(css) {
-  return supports && (supports(css) || supports.apply(window.CSS, css.split(":")));
-}
-const cssVar = /* @__PURE__ */ cssSupports("--a:0");
-const cssEnv = /* @__PURE__ */ cssSupports("top:env(a)");
-const cssConstant = /* @__PURE__ */ cssSupports("top:constant(a)");
-const cssBackdropFilter = /* @__PURE__ */ cssSupports("backdrop-filter:blur(10px)");
-const SCHEMA_CSS = {
-  "css.var": cssVar,
-  "css.env": cssEnv,
-  "css.constant": cssConstant,
-  "css.backdrop-filter": cssBackdropFilter
-};
-const canIUse = /* @__PURE__ */ defineSyncApi(
-  API_CAN_I_USE,
-  (schema) => {
-    if (hasOwn(SCHEMA_CSS, schema)) {
-      return SCHEMA_CSS[schema];
-    }
-    return true;
-  },
-  CanIUseProtocol
-);
-const envMethod = /* @__PURE__ */ (() => cssEnv ? "env" : cssConstant ? "constant" : "")();
-function updateCurPageCssVar(pageMeta) {
-  let windowTopValue = 0;
-  let windowBottomValue = 0;
-  if (__UNI_FEATURE_NAVIGATIONBAR__ && pageMeta.navigationBar.style !== "custom" && ["default", "float"].indexOf(pageMeta.navigationBar.type) > -1) {
-    windowTopValue = NAVBAR_HEIGHT;
-  }
-  if (__UNI_FEATURE_TABBAR__ && pageMeta.isTabBar) {
-    const tabBar2 = useTabBar();
-    tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
-  }
-  updatePageCssVar({
-    "--window-top": normalizeWindowTop(windowTopValue),
-    "--window-bottom": normalizeWindowBottom(windowBottomValue)
-  });
-}
-function normalizeWindowTop(windowTop) {
-  return envMethod ? `calc(${windowTop}px + ${envMethod}(safe-area-inset-top))` : `${windowTop}px`;
-}
-function normalizeWindowBottom(windowBottom) {
-  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
-}
-const SEP = "$$";
-const currentPagesMap = /* @__PURE__ */ new Map();
-const entryPageState = {
-  handledBeforeEntryPageRoutes: false
-};
-const navigateToPagesBeforeEntryPages = [];
-const switchTabPagesBeforeEntryPages = [];
-const redirectToPagesBeforeEntryPages = [];
-const reLaunchPagesBeforeEntryPages = [];
-function pruneCurrentPages() {
-  currentPagesMap.forEach((page, id2) => {
-    if (page.$.isUnmounted) {
-      currentPagesMap.delete(id2);
-    }
-  });
-}
-function getCurrentPagesMap() {
-  return currentPagesMap;
-}
-function getCurrentPages$1() {
-  const curPages = [];
-  const pages = currentPagesMap.values();
-  for (const page of pages) {
-    if (page.$.__isTabBar) {
-      if (page.$.__isActive) {
-        curPages.push(page);
-      }
-    } else {
-      curPages.push(page);
-    }
-  }
-  return curPages;
-}
-function removeRouteCache(routeKey) {
-  const vnode = pageCacheMap.get(routeKey);
-  if (vnode) {
-    pageCacheMap.delete(routeKey);
-    routeCache.pruneCacheEntry(vnode);
-  }
-}
-function removePage(routeKey, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey);
-  pageVm.$.__isUnload = true;
-  invokeHook(pageVm, ON_UNLOAD);
-  currentPagesMap.delete(routeKey);
-  removeRouteCaches && removeRouteCache(routeKey);
-}
-let id = /* @__PURE__ */ getStateId();
-function createPageState(type, __id__) {
-  return {
-    __id__: __id__ || ++id,
-    __type__: type
-  };
-}
-function initPublicPage(route) {
-  const meta = usePageMeta();
-  if (!__UNI_FEATURE_PAGES__) {
-    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
-  }
-  let fullPath = route.fullPath;
-  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
-    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
-  }
-  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
-}
-function initPage(vm) {
-  const route = vm.$route;
-  const page = initPublicPage(route);
-  initPageVm(vm, page);
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-  if (currentPagesMap.size === 1) {
-    setTimeout(() => {
-      handleBeforeEntryPageRoutes();
-    }, 0);
-  }
-}
-function normalizeRouteKey(path, id2) {
-  return path + SEP + id2;
-}
-function useKeepAliveRoute() {
-  const route = useRoute();
-  const routeKey = computed(
-    () => normalizeRouteKey("/" + route.meta.route, getStateId())
-  );
-  const isTabBar = computed(() => route.meta.isTabBar);
-  return {
-    routeKey,
-    isTabBar,
-    routeCache
-  };
-}
-const pageCacheMap = /* @__PURE__ */ new Map();
-const routeCache = {
-  get(key) {
-    return pageCacheMap.get(key);
-  },
-  set(key, value) {
-    pruneRouteCache(key);
-    pageCacheMap.set(key, value);
-  },
-  delete(key) {
-    const vnode = pageCacheMap.get(key);
-    if (!vnode) {
-      return;
-    }
-    pageCacheMap.delete(key);
-  },
-  forEach(fn) {
-    pageCacheMap.forEach(fn);
-  }
-};
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
-}
-function pruneRouteCache(key) {
-  const pageId = parseInt(key.split(SEP)[1]);
-  if (!pageId) {
-    return;
-  }
-  routeCache.forEach((vnode, key2) => {
-    const cPageId = parseInt(key2.split(SEP)[1]);
-    if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
-        return;
-      }
-      routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
-      nextTick(() => pruneCurrentPages());
-    }
-  });
-}
-function updateCurPageAttrs(pageMeta) {
-  {
-    const nvueDirKey = "nvue-dir-" + __uniConfig.nvue["flex-direction"];
-    if (pageMeta.isNVue) {
-      document.body.setAttribute("nvue", "");
-      document.body.setAttribute(nvueDirKey, "");
-    } else {
-      document.body.removeAttribute("nvue");
-      document.body.removeAttribute(nvueDirKey);
-    }
-  }
-}
-function onPageShow(instance2, pageMeta) {
-  updateBodyScopeId(instance2);
-  updateCurPageCssVar(pageMeta);
-  updateCurPageAttrs(pageMeta);
-  initPageScrollListener(instance2, pageMeta);
-}
-function onPageReady(instance2) {
-  const scopeId = getScopeId(instance2);
-  scopeId && updateCurPageBodyScopeId(scopeId);
-}
-function updateCurPageBodyScopeId(scopeId) {
-  const pageBodyEl = document.querySelector("uni-page-body");
-  if (pageBodyEl) {
-    pageBodyEl.setAttribute(scopeId, "");
-  } else if (process.env.NODE_ENV !== "production") {
-    console.warn("uni-page-body not found");
-  }
-}
-function getScopeId(instance2) {
-  return instance2.type.__scopeId;
-}
-let curScopeId;
-function updateBodyScopeId(instance2) {
-  const scopeId = getScopeId(instance2);
-  const { body } = document;
-  curScopeId && body.removeAttribute(curScopeId);
-  scopeId && body.setAttribute(scopeId, "");
-  curScopeId = scopeId;
-}
-let curScrollListener;
-function initPageScrollListener(instance2, pageMeta) {
-  document.removeEventListener("touchmove", disableScrollListener);
-  if (curScrollListener) {
-    document.removeEventListener("scroll", curScrollListener);
-  }
-  if (pageMeta.disableScroll) {
-    return document.addEventListener("touchmove", disableScrollListener);
-  }
-  const { onPageScroll, onReachBottom } = instance2;
-  const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
-  if (!(onPageScroll == null ? void 0 : onPageScroll.length) && !(onReachBottom == null ? void 0 : onReachBottom.length) && !navigationBarTransparent) {
-    return;
-  }
-  const opts = {};
-  const pageId = instance2.proxy.$page.id;
-  if (onPageScroll || navigationBarTransparent) {
-    opts.onPageScroll = createOnPageScroll(
-      pageId,
-      onPageScroll,
-      navigationBarTransparent
-    );
-  }
-  if (onReachBottom == null ? void 0 : onReachBottom.length) {
-    opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
-    opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
-  }
-  curScrollListener = createScrollListener(opts);
-  requestAnimationFrame(
-    () => document.addEventListener("scroll", curScrollListener)
-  );
-}
-function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
-  return (scrollTop) => {
-    if (onPageScroll) {
-      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop }, pageId);
-    }
-    if (navigationBarTransparent) {
-      UniViewJSBridge.emit(pageId + "." + ON_PAGE_SCROLL, {
-        scrollTop
-      });
-    }
-  };
 }
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
@@ -16182,11 +16257,11 @@ function createRouterOptions() {
   };
 }
 function removeCurrentPages(delta = 1) {
-  const keys = getCurrentPages$1();
+  const keys = getCurrentBasePages();
   const start = keys.length - 1;
   const end = start - delta;
   for (let i = start; i > end; i--) {
-    const page = keys[i].$page;
+    const page = getPage$BasePage(keys[i]);
     removePage(normalizeRouteKey(page.path, page.id), false);
   }
 }
@@ -16274,7 +16349,7 @@ function initApp(vm) {
   appVm = vm;
   Object.defineProperty(appVm.$.ctx, "$children", {
     get() {
-      return getCurrentPages().map((page) => page.$vm);
+      return getCurrentBasePages().map((page) => page.$vm);
     }
   });
   const app = appVm.$.appContext.app;
@@ -16314,9 +16389,11 @@ function setupComponent(comp, options) {
 function setupWindow(comp, id2) {
   return setupComponent(comp, {
     init: (vm) => {
-      vm.$page = {
-        id: id2
-      };
+      {
+        vm.$page = {
+          id: id2
+        };
+      }
     },
     setup(instance2) {
       instance2.$pageInstance = instance2;
@@ -16336,7 +16413,7 @@ function setupPage(comp) {
       const route = usePageRoute();
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
-      instance2.proxy.$page.options = query;
+      getPage$BasePage(instance2.proxy).options = query;
       instance2.proxy.options = query;
       const pageMeta = usePageMeta();
       instance2.onReachBottom = reactive([]);
@@ -16344,7 +16421,8 @@ function setupPage(comp) {
       watch(
         [instance2.onReachBottom, instance2.onPageScroll],
         () => {
-          if (instance2.proxy === getCurrentPage()) {
+          const currentPage = getCurrentPage();
+          if (instance2.proxy === currentPage) {
             initPageScrollListener(instance2, pageMeta);
           }
         },
@@ -16397,7 +16475,7 @@ function setupApp(comp) {
       const route = usePageRoute();
       const onLaunch = () => {
         injectAppHooks(instance2);
-        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2, onError: onError2 } = instance2;
+        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2 } = instance2;
         const path = route.path.slice(1);
         const launchOptions2 = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
@@ -16414,13 +16492,9 @@ function setupApp(comp) {
               query: {},
               scene: 1001
             };
+            handleBeforeEntryPageRoutes();
             onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
           }
-        }
-        if (onError2) {
-          instance2.appContext.config.errorHandler = (err) => {
-            invokeArrayFns$1(onError2, err);
-          };
         }
       };
       if (__UNI_FEATURE_PAGES__) {
@@ -16529,6 +16603,7 @@ function formatTime(val) {
 }
 function useGesture(props2, videoRef, fullscreenState) {
   const state2 = reactive({
+    seeking: false,
     gestureType: "none",
     volumeOld: 0,
     volumeNew: 0,
@@ -16545,7 +16620,6 @@ function useGesture(props2, videoRef, fullscreenState) {
     touchStartOrigin.y = toucher.pageY;
     state2.gestureType = "none";
     state2.volumeOld = 0;
-    state2.currentTimeOld = state2.currentTimeNew = 0;
   }
   function onTouchmove(event) {
     function stop() {
@@ -16566,6 +16640,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     const video = videoRef.value;
     if (gestureType === "progress") {
       changeProgress(pageX - origin.x);
+      state2.seeking = true;
     } else if (gestureType === "volume") {
       changeVolume(pageY - origin.y);
     }
@@ -16720,7 +16795,8 @@ function useVideo(props2, attrs2, trigger) {
     duration: 0,
     progress: 0,
     buffered: 0,
-    muted
+    muted,
+    pauseUpdatingCurrentTime: false
   });
   watch(() => src.value, () => {
     state2.playing = false;
@@ -16782,7 +16858,10 @@ function useVideo(props2, attrs2, trigger) {
   }
   function onTimeUpdate($event) {
     const video = $event.target;
-    const currentTime = state2.currentTime = video.currentTime;
+    if (!state2.pauseUpdatingCurrentTime) {
+      state2.currentTime = video.currentTime;
+    }
+    const currentTime = video.currentTime;
     trigger("timeupdate", $event, {
       currentTime,
       duration: video.duration
@@ -16840,13 +16919,14 @@ function useVideo(props2, attrs2, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek) {
+function useControls(props2, videoState, seek, seeking) {
   const progressRef = ref(null);
   const ballRef = ref(null);
   const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
   const controlsVisible = ref(true);
   const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
   const state2 = reactive({
+    seeking: false,
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -16895,13 +16975,6 @@ function useControls(props2, videoState, seek) {
       autoHideEnd();
     }
   });
-  watch([() => videoState.currentTime, () => {
-    props2.duration;
-  }], function updateProgress() {
-    if (!state2.touching) {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
-    }
-  });
   onMounted(() => {
     const passiveOptions2 = passive(false);
     let originX;
@@ -16927,6 +17000,8 @@ function useControls(props2, videoState, seek) {
         progress = 100;
       }
       videoState.progress = progress;
+      seeking == null ? void 0 : seeking(videoState.duration * progress / 100);
+      state2.seeking = true;
       event.preventDefault();
       event.stopPropagation();
     }
@@ -17073,6 +17148,25 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
       methods[type](options);
     }
   }, id2, true);
+}
+function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
+  const progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  watch(progressing, (val) => {
+    videoState.pauseUpdatingCurrentTime = val;
+    controlsState.controlsTouching = val;
+    if (gestureState.gestureType === "progress" && val) {
+      controlsState.controlsVisible = val;
+    }
+  });
+  watch([() => videoState.currentTime, () => {
+    props$g.duration;
+  }], () => {
+    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  });
+  watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
+    videoState.currentTime = currentTimeNew;
+  });
+  return progressing;
 }
 const props$g = {
   id: {
@@ -17227,9 +17321,14 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls
-    } = useControls(props2, videoState, seek);
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
+    } = useControls(props2, videoState, seek, (currentTimeNew) => {
+      gestureState.currentTimeNew = currentTimeNew;
+    });
     useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    const progressing = useProgressing(videoState, gestureState, controlsState);
     return () => {
       return createVNode("uni-video", {
         "ref": rootRef,
@@ -17281,6 +17380,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-controls"
       }, [withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
@@ -17293,30 +17393,44 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-progress-container",
         "onClick": withModifiers(clickProgress, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-progress"
+        "class": {
+          "uni-video-progress": true,
+          "uni-video-progress-progressing": progressing.value
+        }
       }, [createVNode("div", {
         "style": {
-          width: videoState.buffered + "%"
+          width: videoState.buffered - videoState.progress + "%",
+          left: videoState.progress + "%"
         },
         "class": "uni-video-progress-buffered"
+      }, null, 4), createVNode("div", {
+        "style": {
+          width: videoState.progress + "%"
+        },
+        "class": "uni-video-progress-played"
       }, null, 4), createVNode("div", {
         "ref": ballRef,
         "style": {
           left: videoState.progress + "%"
         },
-        "class": "uni-video-ball"
+        "class": {
+          "uni-video-ball": true,
+          "uni-video-ball-progressing": progressing.value
+        }
       }, [createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+      }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
         "onClick": withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+      }, null, 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
@@ -17330,11 +17444,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": withModifiers(() => {
         }, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-cover-play-button",
+        "class": "uni-video-cover-play-button uni-video-icon",
         "onClick": withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+      }, null, 8, ["onClick"])], 8, ["onClick"]), createVNode("div", {
         "class": {
           "uni-video-toast": true,
           "uni-video-toast-volume": gestureState.gestureType === "volume"
@@ -17364,11 +17476,13 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       }, null))])], 4)])], 2), createVNode("div", {
         "class": {
           "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
+          "uni-video-toast-progress": progressing.value
         }
       }, [createVNode("div", {
         "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+      }, [createVNode("span", {
+        "class": "uni-video-toast-title-current-time"
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -18845,7 +18959,7 @@ function getBrowserInfo() {
   let model = "";
   let deviceType = "phone";
   const language = navigator.language;
-  if (isIOS$1) {
+  if (isIOS) {
     osname = "iOS";
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
     if (osversionFind) {
@@ -19064,21 +19178,20 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       osname,
       osversion
     } = browserInfo;
-    return extend(
-      {
-        brand,
-        deviceBrand,
-        deviceModel,
-        devicePixelRatio: window.devicePixelRatio,
-        deviceId: deviceId$1(),
-        deviceOrientation,
-        deviceType,
-        model,
-        platform,
-        system
-      },
-      {}
-    );
+    return extend({
+      brand,
+      deviceBrand,
+      deviceModel,
+      devicePixelRatio: window.devicePixelRatio,
+      deviceId: deviceId$1(),
+      deviceOrientation,
+      deviceType,
+      model,
+      platform,
+      system,
+      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osVersion: osversion
+    });
   }
 );
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
@@ -19104,7 +19217,12 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         language,
         SDKVersion: "",
         theme,
-        version: ""
+        version: "",
+        uniPlatform: "web",
+        isUniAppX: false,
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniCompilerVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion
       },
       {}
     );
@@ -22603,9 +22721,9 @@ function setProperties(item, props2, propsData) {
 function setTabBar(type, args, resolve, reject) {
   var _a;
   let isTabBar = false;
-  const pages = getCurrentPages();
+  const pages = getCurrentBasePages();
   if (pages.length) {
-    if (pages[pages.length - 1].$page.meta.isTabBar) {
+    if (getPage$BasePage(pages[pages.length - 1]).meta.isTabBar) {
       isTabBar = true;
     }
   }
@@ -23109,11 +23227,11 @@ function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
   function checkMaxWidth2() {
     const windowWidth = document.body.clientWidth;
-    const pages = getCurrentPages();
+    const pages = getCurrentBasePages();
     let meta = {};
     if (pages.length > 0) {
       const curPage = pages[pages.length - 1];
-      meta = curPage.$page.meta;
+      meta = getPage$BasePage(curPage).meta;
     } else {
       const routeOptions = getRouteOptions(route.path, true);
       if (routeOptions) {
@@ -23310,7 +23428,9 @@ function useTopWindow(layoutState) {
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
@@ -23330,7 +23450,9 @@ function useLeftWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
@@ -23350,7 +23472,9 @@ function useRightWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {
@@ -23646,6 +23770,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   $off,
   $on,
   $once,
+  __f__,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,
@@ -26071,6 +26196,7 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
+    const wrapperRef = ref(null);
     const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || false) ? usePageRefresh(refreshRef) : null;
     const pageRefresh = ref(null);
     watch(() => {
@@ -26082,7 +26208,10 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
     });
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh.value, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+      const pageResizeSensor = null;
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", mergeProps({
+        "ref": wrapperRef
+      }, pageRefresh.value), [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
     };
   }
 });
@@ -26097,12 +26226,11 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 const index = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId());
+    let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
-    const currentInstance = getCurrentInstance();
-    currentInstance.$dialogPages = ref([]);
+    getCurrentInstance();
     return () => createVNode(
       "uni-page",
       {
@@ -26181,6 +26309,7 @@ export {
   index$d as Video,
   index$g as View,
   index$c as WebView,
+  __f__,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,

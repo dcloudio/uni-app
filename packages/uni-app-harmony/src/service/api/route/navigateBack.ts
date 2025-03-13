@@ -33,16 +33,18 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     if (!page) {
       return reject(`getCurrentPages is empty`)
     }
+    const from = (args as any).from || 'navigateBack'
     if (
       invokeHook(page as ComponentPublicInstance, ON_BACK_PRESS, {
-        from: (args as any).from || 'navigateBack',
+        from,
       })
     ) {
       return resolve()
     }
-    if (uni.hideToast) {
-      uni.hideToast()
-    }
+    // TODO 鸿蒙不支持hideToast方法
+    // if (uni.hideToast) {
+    //   uni.hideToast()
+    // }
     if (uni.hideLoading) {
       uni.hideLoading()
     }
@@ -52,7 +54,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       reLaunchEntryPage()
     } else {
       const { delta, animationType, animationDuration } = args!
-      back(delta!, animationType, animationDuration)
+      back(delta!, animationType, animationDuration, from)
     }
     return resolve()
   },
@@ -78,7 +80,8 @@ function quit() {
 function back(
   delta: number,
   animationType?: string,
-  animationDuration?: number
+  animationDuration?: number,
+  from?: string
 ) {
   const pages = getCurrentPages()
   const len = pages.length
@@ -118,7 +121,7 @@ function back(
   }
 
   const webview = plus.webview.getWebviewById(currentPage.$page.id + '')
-  if (!(currentPage as any).__uniapp_webview) {
+  if (!(currentPage as any).__uniapp_webview || from === 'navigateBack') {
     return backPage(webview)
   }
   backWebview(webview, () => {

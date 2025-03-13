@@ -1,9 +1,16 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-import { Emitter, sortObject, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
+import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { injectHook } from 'vue';
 
-function getBaseSystemInfo() {
-    return wx.getSystemInfoSync();
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        const appBaseInfo = wx.getAppBaseInfo();
+        const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
+        localeLanguage = normalizeLocale(language) || LOCALE_EN;
+    }
+    return localeLanguage;
 }
 
 function validateProtocolFail(name, msg) {
@@ -351,29 +358,9 @@ function promisify$1(name, fn) {
 }
 
 function formatApiArgs(args, options) {
-    const params = args[0];
-    if (!options ||
-        !options.formatArgs ||
-        (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
+    args[0];
+    {
         return;
-    }
-    const formatArgs = options.formatArgs;
-    const keys = Object.keys(formatArgs);
-    for (let i = 0; i < keys.length; i++) {
-        const name = keys[i];
-        const formatterOrDefaultValue = formatArgs[name];
-        if (isFunction(formatterOrDefaultValue)) {
-            const errMsg = formatterOrDefaultValue(args[0][name], params);
-            if (isString(errMsg)) {
-                return errMsg;
-            }
-        }
-        else {
-            // defaultValue
-            if (!hasOwn(params, name)) {
-                params[name] = formatterOrDefaultValue;
-            }
-        }
     }
 }
 function invokeSuccess(id, name, res) {
@@ -383,8 +370,20 @@ function invokeSuccess(id, name, res) {
     return invokeCallback(id, extend((res || {}), result));
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
-    const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
-    delete errRes.errCode;
+    const errMsgPrefix = name + ':fail';
+    let apiErrMsg = '';
+    if (!errMsg) {
+        apiErrMsg = errMsgPrefix;
+    }
+    else if (errMsg.indexOf(errMsgPrefix) === 0) {
+        apiErrMsg = errMsg;
+    }
+    else {
+        apiErrMsg = errMsgPrefix + ' ' + errMsg;
+    }
+    {
+        delete errRes.errCode;
+    }
     let res = extend({ errMsg: apiErrMsg }, errRes);
     return invokeCallback(id, res);
 }
@@ -392,13 +391,7 @@ function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
         validateProtocols(name, args, protocol);
     }
-    if (options && options.beforeInvoke) {
-        const errMsg = options.beforeInvoke(args);
-        if (isString(errMsg)) {
-            return errMsg;
-        }
-    }
-    const errMsg = formatApiArgs(args, options);
+    const errMsg = formatApiArgs(args);
     if (errMsg) {
         return errMsg;
     }
@@ -408,7 +401,10 @@ function parseErrMsg(errMsg) {
         return errMsg;
     }
     if (errMsg.stack) {
-        console.error(errMsg.message + '\n' + errMsg.stack);
+        // 此处同时被鸿蒙arkts和jsvm使用，暂时使用运行时判断鸿蒙jsvm环境，注意此用法仅内部使用
+        if ((typeof globalThis === 'undefined' || !globalThis.harmonyChannel)) {
+            console.error(errMsg.message + '\n' + errMsg.stack);
+        }
         return errMsg.message;
     }
     return errMsg;
@@ -416,7 +412,7 @@ function parseErrMsg(errMsg) {
 function wrapperTaskApi(name, fn, protocol, options) {
     return (args) => {
         const id = createAsyncApiCallback(name, args, options);
-        const errMsg = beforeInvokeApi(name, [args], protocol, options);
+        const errMsg = beforeInvokeApi(name, [args], protocol);
         if (errMsg) {
             return invokeFail(id, name, errMsg);
         }
@@ -428,7 +424,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
 }
 function wrapperSyncApi(name, fn, protocol, options) {
     return (...args) => {
-        const errMsg = beforeInvokeApi(name, args, protocol, options);
+        const errMsg = beforeInvokeApi(name, args, protocol);
         if (errMsg) {
             throw new Error(errMsg);
         }
@@ -439,7 +435,7 @@ function wrapperAsyncApi(name, fn, protocol, options) {
     return wrapperTaskApi(name, fn, protocol, options);
 }
 function defineSyncApi(name, fn, protocol, options) {
-    return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
+    return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined);
 }
 function defineAsyncApi(name, fn, protocol, options) {
     return promisify$1(name, wrapperAsyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
@@ -460,7 +456,10 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    const { windowWidth, pixelRatio, platform } = Object.assign({}, wx.getWindowInfo(), {
+            platform: wx.getDeviceInfo().platform,
+        })
+        ;
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -489,6 +488,13 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     }
     return number < 0 ? -result : result;
 }, Upx2pxProtocol);
+
+function __f__(type, filename, ...args) {
+    if (filename) {
+        args.push(filename);
+    }
+    console[type].apply(console, args);
+}
 
 const API_ADD_INTERCEPTOR = 'addInterceptor';
 const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
@@ -585,7 +591,7 @@ const OffProtocol = [
     },
     {
         name: 'callback',
-        type: Function,
+        type: [Function, Number],
     },
 ];
 const API_EMIT = '$emit';
@@ -602,10 +608,10 @@ class EventBus {
         this.$emitter = new Emitter();
     }
     on(name, callback) {
-        this.$emitter.on(name, callback);
+        return this.$emitter.on(name, callback);
     }
     once(name, callback) {
-        this.$emitter.once(name, callback);
+        return this.$emitter.once(name, callback);
     }
     off(name, callback) {
         if (!name) {
@@ -631,7 +637,9 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
     // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
         name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+        eventBus.off(n, callback);
+    });
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     eventBus.emit(name, ...args);
@@ -730,10 +738,11 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
+const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|rpx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
+const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 // 同步例外情况
 const ASYNC_API = ['createBLEConnection'];
 const CALLBACK_API_RE = /^on|^off/;
@@ -745,6 +754,9 @@ function isSyncApi(name) {
 }
 function isCallbackApi(name) {
     return CALLBACK_API_RE.test(name) && name !== 'onPush';
+}
+function isTaskApi(name) {
+    return TASK_APIS.indexOf(name) !== -1;
 }
 function shouldPromise(name) {
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
@@ -831,6 +843,9 @@ function initWrapper(protocols) {
             return toArgs;
         }
         else if (isFunction(fromArgs)) {
+            if (isFunction(argsOption)) {
+                argsOption(fromArgs, {});
+            }
             fromArgs = processCallback(methodName, fromArgs, returnValue);
         }
         return fromArgs;
@@ -840,22 +855,38 @@ function initWrapper(protocols) {
             // 处理通用 returnValue
             res = protocols.returnValue(methodName, res);
         }
-        return processArgs(methodName, res, returnValue, {}, keepReturnValue);
+        const realKeepReturnValue = keepReturnValue || (false);
+        return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if (!hasOwn(protocols, methodName)) {
+        /**
+         * 注意：
+         * - 此处method为原始全局对象上的uni方法名对应的属性值，比如method值可能为my.login，即undefined
+         * - uni.env并非方法，但是也会被传入wrapper
+         * - 开发者自定义的方法属性也会进入此方法，此时method为undefined，应返回undefined
+         */
+        const hasProtocol = hasOwn(protocols, methodName);
+        if (!hasProtocol && typeof wx[methodName] !== 'function') {
             return method;
         }
-        const protocol = protocols[methodName];
-        if (!protocol) {
+        const needWrapper = hasProtocol ||
+            isFunction(protocols.returnValue) ||
+            isContextApi(methodName) ||
+            isTaskApi(methodName);
+        const hasMethod = hasProtocol || isFunction(method);
+        if (!hasProtocol && !method) {
             // 暂不支持的 api
             return function () {
                 console.error(`微信小程序 暂不支持${methodName}`);
             };
         }
+        if (!needWrapper || !hasMethod) {
+            return method;
+        }
+        const protocol = protocols[methodName];
         return function (arg1, arg2) {
             // 目前 api 最多两个参数
-            let options = protocol;
+            let options = protocol || {};
             if (isFunction(protocol)) {
                 options = protocol(arg1);
             }
@@ -865,6 +896,11 @@ function initWrapper(protocols) {
                 args.push(arg2);
             }
             const returnValue = wx[options.name || methodName].apply(wx, args);
+            if (isContextApi(methodName) || isTaskApi(methodName)) {
+                if (returnValue && !returnValue.__v_skip) {
+                    returnValue.__v_skip = true;
+                }
+            }
             if (isSyncApi(methodName)) {
                 // 同步 api
                 return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName));
@@ -880,7 +916,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
+    return getLocaleLanguage();
 };
 const setLocale = (locale) => {
     const app = isFunction(getApp) && getApp();
@@ -931,16 +967,28 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
+function getOSInfo(system, platform) {
+    let osName = '';
+    let osVersion = '';
+    if (platform &&
+        ("mp-weixin" === 'mp-baidu')) {
+        osName = platform;
+        osVersion = system;
+    }
+    else {
+        osName = system.split(' ')[0] || '';
+        osVersion = system.split(' ')[1] || '';
+    }
+    return {
+        osName: osName.toLocaleLowerCase(),
+        osVersion,
+    };
+}
 function populateParameters(fromRes, toRes) {
     const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // const isQuickApp = "mp-weixin".indexOf('quickapp-webview') !== -1
     // osName osVersion
-    let osName = '';
-    let osVersion = '';
-    {
-        osName = system.split(' ')[0] || '';
-        osVersion = system.split(' ')[1] || '';
-    }
+    const { osName, osVersion } = getOSInfo(system, platform);
     let hostVersion = version;
     // deviceType
     let deviceType = getGetDeviceType(fromRes, model);
@@ -955,7 +1003,7 @@ function populateParameters(fromRes, toRes) {
     // SDKVersion
     let _SDKVersion = SDKVersion;
     // hostLanguage
-    const hostLanguage = language.replace(/_/g, '-');
+    const hostLanguage = (language || '').replace(/_/g, '-');
     // wx.getAccountInfoSync
     const parameters = {
         appId: process.env.UNI_APP_ID,
@@ -964,6 +1012,7 @@ function populateParameters(fromRes, toRes) {
         appVersionCode: process.env.UNI_APP_VERSION_CODE,
         appLanguage: getAppLanguage(hostLanguage),
         uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+        uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
         uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
         uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
         deviceBrand,
@@ -971,7 +1020,7 @@ function populateParameters(fromRes, toRes) {
         deviceType,
         devicePixelRatio: _devicePixelRatio,
         deviceOrientation: _deviceOrientation,
-        osName: osName.toLocaleLowerCase(),
+        osName,
         osVersion,
         hostTheme: theme,
         hostVersion,
@@ -988,6 +1037,7 @@ function populateParameters(fromRes, toRes) {
         hostPackageName: undefined,
         browserName: undefined,
         browserVersion: undefined,
+        isUniAppX: false,
     };
     extend(toRes, parameters);
 }
@@ -1024,7 +1074,8 @@ function getAppLanguage(defaultLanguage) {
     return getLocale ? getLocale() : defaultLanguage;
 }
 function getHostName(fromRes) {
-    const _platform = 'WeChat' ;
+    const _platform = 'WeChat'
+        ;
     let _hostName = fromRes.hostName || _platform; // mp-jd
     {
         if (fromRes.environment) {
@@ -1091,14 +1142,17 @@ const showActionSheet = {
 
 const getDeviceInfo = {
     returnValue: (fromRes, toRes) => {
-        const { brand, model } = fromRes;
+        const { brand, model, system = '', platform = '' } = fromRes;
         let deviceType = getGetDeviceType(fromRes, model);
         let deviceBrand = getDeviceBrand(brand);
         useDeviceId()(fromRes, toRes);
+        const { osName, osVersion } = getOSInfo(system, platform);
         toRes = sortObject(extend(toRes, {
             deviceType,
             deviceBrand,
             deviceModel: model,
+            osName,
+            osVersion,
         }));
     },
 };
@@ -1107,8 +1161,8 @@ const getAppBaseInfo = {
     returnValue: (fromRes, toRes) => {
         const { version, language, SDKVersion, theme } = fromRes;
         let _hostName = getHostName(fromRes);
-        let hostLanguage = language.replace(/_/g, '-');
-        toRes = sortObject(extend(toRes, {
+        let hostLanguage = (language || '').replace(/_/g, '-');
+        const parameters = {
             hostVersion: version,
             hostLanguage,
             hostName: _hostName,
@@ -1119,7 +1173,13 @@ const getAppBaseInfo = {
             appVersion: process.env.UNI_APP_VERSION_NAME,
             appVersionCode: process.env.UNI_APP_VERSION_CODE,
             appLanguage: getAppLanguage(hostLanguage),
-        }));
+            isUniAppX: false,
+            uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+            uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+            uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
+            uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
+        };
+        extend(toRes, parameters);
     },
 };
 
@@ -1146,12 +1206,64 @@ const getAppAuthorizeSetting = {
     },
 };
 
+const onError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!wx.$onErrorHandlers) {
+                wx.$onErrorHandlers = [];
+            }
+            wx.$onErrorHandlers.push(fromArgs);
+        }
+        else {
+            injectHook(ON_ERROR, fromArgs, app.$vm.$);
+        }
+    },
+};
+const offError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!wx.$onErrorHandlers) {
+                return;
+            }
+            const index = wx.$onErrorHandlers.findIndex((fn) => fn === fromArgs);
+            if (index !== -1) {
+                wx.$onErrorHandlers.splice(index, 1);
+            }
+        }
+        else if (fromArgs.__weh) {
+            const onErrors = app.$vm.$[ON_ERROR];
+            if (onErrors) {
+                const index = onErrors.indexOf(fromArgs.__weh);
+                if (index > -1) {
+                    onErrors.splice(index, 1);
+                }
+            }
+        }
+    },
+};
+
+const onSocketOpen = {
+    args() {
+        if (wx.__uni_console__) {
+            if (wx.__uni_console_warned__) {
+                return;
+            }
+            wx.__uni_console_warned__ = true;
+            console.warn(`开发模式下小程序日志回显会使用 socket 连接，为了避免冲突，建议使用 SocketTask 的方式去管理 WebSocket 或手动关闭日志回显功能。[详情](https://uniapp.dcloud.net.cn/tutorial/run/mp-log.html)`);
+        }
+    },
+};
+const onSocketMessage = onSocketOpen;
+
 const baseApis = {
     $on,
     $off,
     $once,
     $emit,
     upx2px,
+    rpx2px: upx2px,
     interceptors,
     addInterceptor,
     removeInterceptor,
@@ -1164,6 +1276,7 @@ const baseApis = {
     onPushMessage,
     offPushMessage,
     invokePushCallback,
+    __f__,
 };
 function initUni(api, protocols, platform = wx) {
     const wrapper = initWrapper(protocols);
@@ -1270,11 +1383,24 @@ function createSelectorQuery() {
     const query = wx$2.createSelectorQuery();
     const oldIn = query.in;
     query.in = function newIn(component) {
+        if (component.$scope) {
+            // fix skyline 微信小程序内部无法读取component导致报错
+            return oldIn.call(this, component.$scope);
+        }
         return oldIn.call(this, initComponentMocks(component));
     };
     return query;
 }
 const wx$2 = initWx();
+if (!wx$2.canIUse('getAppBaseInfo')) {
+    wx$2.getAppBaseInfo = wx$2.getSystemInfoSync;
+}
+if (!wx$2.canIUse('getWindowInfo')) {
+    wx$2.getWindowInfo = wx$2.getSystemInfoSync;
+}
+if (!wx$2.canIUse('getDeviceInfo')) {
+    wx$2.getDeviceInfo = wx$2.getSystemInfoSync;
+}
 let baseInfo = wx$2.getAppBaseInfo && wx$2.getAppBaseInfo();
 if (!baseInfo) {
     baseInfo = wx$2.getSystemInfoSync();
@@ -1316,6 +1442,10 @@ var protocols = /*#__PURE__*/Object.freeze({
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getWindowInfo: getWindowInfo,
+  offError: offError,
+  onError: onError,
+  onSocketMessage: onSocketMessage,
+  onSocketOpen: onSocketOpen,
   previewImage: previewImage,
   redirectTo: redirectTo,
   showActionSheet: showActionSheet

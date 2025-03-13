@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs-extra'
 import type { Plugin } from 'vite'
 import { extend, isArray, isFunction, isString } from '@vue/shared'
 import {
@@ -13,6 +14,7 @@ import type { VitePluginUniResolvedOptions } from '..'
 interface PluginConfig {
   id: string
   name: string
+  pluginPath: string
   apply?: UniApp.PLATFORM | UniApp.PLATFORM[]
   uvue?: boolean
   config: {
@@ -92,20 +94,24 @@ export function initExtraPlugins(
 ) {
   return initPlugins(
     cliRoot,
-    resolvePlugins(cliRoot, platform, options.uvue),
+    process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+      process.env.UNI_APP_NEXT_WORKSPACE
+      ? resolvePluginsByWorkSpace(
+          process.env.UNI_APP_NEXT_WORKSPACE,
+          platform,
+          options.uvue
+        )
+      : resolvePluginsByCliRoot(cliRoot, platform, options.uvue),
     options
   )
 }
 
 function initPlugin(
-  cliRoot: string,
-  { id, config: { main } }: PluginConfig,
+  _cliRoot: string,
+  { pluginPath, config: { main } }: PluginConfig,
   options: VitePluginUniResolvedOptions
 ): Plugin | void {
-  let plugin = require(require.resolve(
-    path.join(id, main || '/lib/uni.plugin.js'),
-    { paths: [cliRoot] }
-  ))
+  let plugin = require(path.join(pluginPath, main || '/lib/uni.plugin.js'))
   plugin = plugin.default || plugin
   if (isFunction(plugin)) {
     plugin = plugin(options)
@@ -131,20 +137,73 @@ function initPlugins(
     .flat()
 }
 
-function resolvePlugins(
+interface Pkg {
+  name: string
+  pluginPath: string
+  'uni-app'?: PluginConfig
+}
+
+function resolvePluginsByCliRoot(
   cliRoot: string,
   platform: UniApp.PLATFORM,
   uvue: boolean = false
 ) {
   const pkg = require(path.join(cliRoot, 'package.json'))
-  return Object.keys(pkg.devDependencies || {})
-    .concat(Object.keys(pkg.dependencies || {}))
-    .map<PluginConfig | void>((id) => {
+  return resolvePlugins(
+    Object.keys(pkg.devDependencies || {})
+      .concat(Object.keys(pkg.dependencies || {}))
+      .map((id) => {
+        try {
+          const pkgFileName = require.resolve(id + '/package.json', {
+            paths: [cliRoot],
+          })
+          const pkg = require(pkgFileName)
+          return {
+            ...pkg,
+            pluginPath: path.dirname(pkgFileName),
+          }
+        } catch (e) {}
+      })
+      .filter<Pkg>(Boolean as any),
+    platform,
+    uvue
+  )
+}
+
+function resolvePluginsByWorkSpace(
+  workspaceFolder: string,
+  platform: UniApp.PLATFORM,
+  uvue: boolean = false
+) {
+  const pkgDirs = path.resolve(workspaceFolder, 'packages')
+  return resolvePlugins(
+    fs
+      .readdirSync(pkgDirs)
+      .map((dir) => {
+        const pluginPath = path.join(pkgDirs, dir)
+        const pkgFileName = path.join(pluginPath, 'package.json')
+        if (fs.existsSync(pkgFileName)) {
+          return {
+            ...require(pkgFileName),
+            pluginPath,
+          } as Pkg
+        }
+      })
+      .filter<Pkg>(Boolean as any),
+    platform,
+    uvue
+  )
+}
+
+function resolvePlugins(
+  pkgs: Pkg[],
+  platform: UniApp.PLATFORM,
+  uvue: boolean = false
+) {
+  return pkgs
+    .map<PluginConfig | void>((pkg) => {
       try {
-        const pluginPkg = require(require.resolve(id + '/package.json', {
-          paths: [cliRoot],
-        }))
-        const config = pluginPkg['uni-app'] as PluginConfig
+        const config = pkg['uni-app'] as PluginConfig
         if (!config || !config.name) {
           return
         }
@@ -165,8 +224,9 @@ function resolvePlugins(
           return
         }
         return {
-          id,
+          id: pkg.name,
           name: config.name,
+          pluginPath: pkg.pluginPath,
           config,
         }
       } catch (e) {}

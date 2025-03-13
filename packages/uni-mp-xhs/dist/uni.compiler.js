@@ -131,6 +131,7 @@ const options = {
                     src: [
                         'sitemap.json',
                         'project.private.config.json',
+                        'ext.json',
                         projectConfigFilename,
                     ],
                     get dest() {

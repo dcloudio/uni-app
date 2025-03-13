@@ -5,7 +5,7 @@ import { camelize, capitalize, normalizePath, requireUniHelpers } from './utils'
 import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
 
-export function genEncryptEasyComModuleIndex(
+function genEncryptEasyComModuleIndex(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   components: Record<string, '.vue' | '.uvue'>
 ) {
@@ -28,17 +28,54 @@ export function genEncryptEasyComModuleIndex(
     )
   })
   return `
-  ${imports.join('\n')}
-  export { 
-    ${ids.join(',\n  ')} 
-  }
+${imports.join('\n')}
+export { 
+  ${ids.join(',\n  ')} 
+}
   `
 }
 
+// easyCom
+export function genEncryptEasyComModuleCode(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  components: Record<string, '.vue' | '.uvue'>
+) {
+  // easyCom
+  if (components && Object.keys(components).length) {
+    return genEncryptEasyComModuleIndex(platform, components)
+  }
+  return ''
+}
+
+export function genEncryptUTSModuleCode(
+  module: string,
+  inputDir: string,
+  platform: typeof process.env.UNI_UTS_PLATFORM
+) {
+  const utssdkDir = path.resolve(inputDir, 'uni_modules', module, 'utssdk')
+  let indexUTSFile = ''
+  const platformIndexUTSFile = path.resolve(utssdkDir, platform, 'index.uts')
+  if (fs.existsSync(platformIndexUTSFile)) {
+    indexUTSFile = `./utssdk/${platform}/index.uts`
+  } else {
+    const rootIndexUTSFile = path.resolve(utssdkDir, 'index.uts')
+    if (fs.existsSync(rootIndexUTSFile)) {
+      indexUTSFile = `./utssdk/index.uts`
+    }
+  }
+  if (indexUTSFile) {
+    return `export * from '${indexUTSFile}'`
+  }
+  return ''
+}
+
 // 目前该函数仅在云端使用（目前仅限iOS/web），云端编译时，提交上来的uni_modules是过滤好的
-export function parseUniModulesWithComponents(inputDir: string) {
+export function parseUniModulesWithComponents(
+  inputDir: string,
+  platform: typeof process.env.UNI_UTS_PLATFORM
+) {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
-  const uniModules: Record<string, Record<string, '.vue' | '.uvue'>> = {}
+  const uniModules: Record<string, string> = {}
   if (fs.existsSync(modulesDir)) {
     fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
       if (
@@ -46,12 +83,33 @@ export function parseUniModulesWithComponents(inputDir: string) {
       ) {
         return
       }
-      // 解析加密的 easyCom 插件列表
-      const components = parseEasyComComponents(uniModuleDir, inputDir, false)
-      uniModules[uniModuleDir] = components
+      let code = genEncryptUTSModuleCode(uniModuleDir, inputDir, platform)
+      if (code) {
+        // uts插件
+        uniModules[uniModuleDir] = code
+      } else {
+        const codes: string[] = []
+        // 前端组件插件
+        if (hasIndexFile(path.resolve(inputDir, 'uni_modules', uniModuleDir))) {
+          codes.push(`export * from './index'`)
+        }
+        // 解析加密的 easyCom 插件列表
+        const components = parseEasyComComponents(uniModuleDir, inputDir, false)
+        if (Object.keys(components).length) {
+          codes.push(genEncryptEasyComModuleCode(platform, components))
+        }
+        if (codes.length) {
+          uniModules[uniModuleDir] = codes.join(`\n`)
+        }
+      }
     })
   }
   return uniModules
+}
+
+const indexFiles = ['index.uts', 'index.ts', 'index.js']
+function hasIndexFile(uniModuleDir: string) {
+  return fs.readdirSync(uniModuleDir).some((file) => indexFiles.includes(file))
 }
 
 /**
@@ -102,7 +160,11 @@ export function parseEasyComComponents(
 }
 
 // 查找所有普通加密插件 uni_modules
-export function findEncryptUniModules(inputDir: string, cacheDir: string = '') {
+export function findEncryptUniModules(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  inputDir: string,
+  cacheDir: string = ''
+) {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
   const uniModules: Record<string, EncryptPackageJson | undefined> = {}
   if (fs.existsSync(modulesDir)) {
@@ -111,10 +173,14 @@ export function findEncryptUniModules(inputDir: string, cacheDir: string = '') {
       if (!fs.existsSync(path.resolve(uniModuleRootDir, 'encrypt'))) {
         return
       }
+      // 只有 app-android 和 app-ios 不需要云编译 utssdk 插件，而是需要自定义基座
+      // 目前还未完整支持web、小程序，暂时屏蔽
+      // if (platform === 'app-android' || platform === 'app-ios') {
       // 仅扫描普通加密插件，无需依赖
       if (fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))) {
         return
       }
+      // }
       const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
       uniModules[uniModuleDir] = findEncryptUniModuleCache(
         uniModuleDir,
@@ -189,7 +255,7 @@ function isEnvExpired(
   return false
 }
 
-interface EncryptPackageJson {
+export interface EncryptPackageJson {
   id: string
   version: string
   uni_modules: {
@@ -201,6 +267,7 @@ interface EncryptPackageJson {
       apis: string[]
       components: string[]
       scopedSlots: string[]
+      customElements: { name: string; class: string }[]
       declaration: string
     }
   }
@@ -226,7 +293,8 @@ function findEncryptUniModuleCache(
     // 插件版本以及各种环境一致
     if (
       pkg.version === options.version &&
-      !isEnvExpired(pkg.uni_modules?.artifacts?.env || {}, options.env)
+      (options.env.compilerVersion === '4.17-test' ||
+        !isEnvExpired(pkg.uni_modules?.artifacts?.env || {}, options.env))
     ) {
       const declaration = path.resolve(
         uniModuleCacheDir,
@@ -321,7 +389,10 @@ export function resolveEncryptUniModule(
   if (index !== -1) {
     const uniModuleId = parts[index + 1]
     if (uniModuleId in encryptUniModules) {
-      if (parts[index + 2]) {
+      if (
+        parts[index + 2] &&
+        (platform === 'app-android' || platform === 'app-ios')
+      ) {
         console.warn(
           M['uni_modules.import']
             .replace('{0}', uniModuleId)
@@ -356,6 +427,7 @@ export async function checkEncryptUniModules(
 ) {
   // 扫描加密插件云编译
   encryptUniModules = findEncryptUniModules(
+    params.platform,
     inputDir,
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
   )
@@ -433,6 +505,7 @@ export async function checkEncryptUniModules(
     }
   }
   encryptUniModules = findEncryptUniModules(
+    params.platform,
     inputDir,
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
   )

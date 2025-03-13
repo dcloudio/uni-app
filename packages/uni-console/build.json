@@ -1,0 +1,96 @@
+[
+  {
+    "input": {
+      "src/compiler/index.ts": "lib/uni.plugin.js"
+    },
+    "output": {
+      "format": "cjs"
+    },
+    "external": ["@dcloudio/uni-cli-shared", "fs-extra"],
+    "compilerOptions": {
+      "target": "es2018"
+    }
+  },
+  {
+    "input": {
+      "src/runtime/index.ts": "dist/index.esm.js"
+    },
+    "replacements": {
+      "__HARMONY__": "false",
+      "__DEV__": "process.env.UNI_DEBUG",
+      "process.env.UNI_CONSOLE_WEBVIEW": false,
+      "_APP_ANDROID_": "false",
+      "__PLATFORM__": "'other'"
+    },
+    "compilerOptions": {
+      "target": "es6",
+      "declaration": false
+    }
+  },
+  {
+    "input": {
+      "src/runtime/index.ts": "dist/mp.esm.js"
+    },
+    "replacements": {
+      "__HARMONY__": "false",
+      "__DEV__": "process.env.UNI_DEBUG",
+      "process.env.UNI_CONSOLE_WEBVIEW": false,
+      "_APP_ANDROID_": "false",
+      "__PLATFORM__": "'mp'"
+    },
+    "compilerOptions": {
+      "target": "es6",
+      "declaration": false
+    }
+  },
+  {
+    "input": {
+      "src/runtime/webview/index.ts": "dist/__uniwebview.dev.js"
+    },
+    "output": {
+      "format": "iife"
+    },
+    "replacements": {
+      "__HARMONY__": "false",
+      "process.env.UNI_CONSOLE_KEEP_ORIGINAL": true,
+      "process.env.UNI_CONSOLE_WEBVIEW": true
+    },
+    "compilerOptions": {
+      "target": "es5",
+      "declaration": false
+    }
+  },
+  {
+    "input": {
+      "src/runtime/webview/index.ts": "dist/__uniwebview.js"
+    },
+    "output": {
+      "format": "iife",
+      "compact": true
+    },
+    "replacements": {
+      "__HARMONY__": "false",
+      "process.env.UNI_CONSOLE_KEEP_ORIGINAL": true,
+      "process.env.UNI_CONSOLE_WEBVIEW": true
+    },
+    "compilerOptions": {
+      "target": "es5",
+      "declaration": false
+    }
+  },
+  {
+    "input": {
+      "src/runtime/app/index.ts": "dist/app.esm.js"
+    },
+    "replacements": {
+      "__HARMONY__": "false",
+      "__DEV__": "process.env.UNI_DEBUG",
+      "process.env.UNI_CONSOLE_WEBVIEW": false,
+      "process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE": "''"
+    },
+    "compilerOptions": {
+      "target": "es6",
+      "declaration": false
+    }
+  }
+]
