@@ -109,8 +109,13 @@
       super(data, pageNode)
     }
   //#endif
-  //#ifdef WEB || APP-IOS || MP || APP-HARMONY
+  //#ifdef WEB || APP-IOS || MP
   const RealUniElementImpl = typeof UniElementImpl === 'undefined' ? class {} : UniElementImpl
+  //#endif
+  //#ifdef APP-HARMONY
+  const RealUniElementImpl = typeof UniViewElementImpl === 'undefined' ? class {} : UniViewElementImpl
+  //#endif
+  //#ifdef WEB || APP-IOS || MP || APP-HARMONY
   export class UniCloudDBElement extends RealUniElementImpl {
     constructor(data : INodeData, pageNode : PageNode) {
       super(data, pageNode);
