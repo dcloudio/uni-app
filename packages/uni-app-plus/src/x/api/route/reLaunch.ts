@@ -8,7 +8,11 @@ import {
 } from '@dcloudio/uni-api'
 import { parseUrl } from '@dcloudio/uni-shared'
 import type { RouteOptions } from '../../../service/api/route/utils'
-import { getTabIndex, switchSelect } from '../../framework/app/tabBar'
+import {
+  getTabBar,
+  getTabIndex,
+  switchSelect,
+} from '../../framework/app/tabBar'
 import { showWebview } from './webview'
 import { registerPage } from '../../framework/page/register'
 import { getAllPages } from '../../../service/framework/page/getCurrentPages'
@@ -18,6 +22,7 @@ import {
   entryPageState,
   reLaunchPagesBeforeEntryPages,
 } from '../../framework/app'
+import { getPageManager } from '../../framework/app/app'
 
 interface ReLaunchOptions extends RouteOptions {}
 
@@ -47,6 +52,9 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
     const pages = getAllPages().slice(0)
     let selected: number = getTabIndex(path)
     function callback() {
+      getPageManager()
+        .findPageById((getTabBar() as any).pageId)
+        ?.close()
       pages.forEach((page) => closePage(page, 'none'))
       resolve(undefined)
       setStatusBarStyle()
