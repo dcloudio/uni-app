@@ -379,6 +379,10 @@ async function buildArkTS (target, buildJson) {
               'export class RequestSuccess<T>',
               'export class RequestSuccess<T = Object>'
             )
+            .replace(/export\s+class\s+\w+Options(?:\W.*)?\s+extends\s+UTSObject\s*{[\s\S]*?\n}/g, (match) => {
+              // 规避鸿蒙Object类型Bug，https://issuereporter.developer.huawei.com/detail/250311164558046/comment
+              return match.replaceAll(/(?<!\w)Object\s+\|\s+null/g, 'ESObject | null')
+            })
         fs.writeFileSync(filePath, fileContent)
       })
     }
