@@ -87,6 +87,7 @@ export {
   parseUTSKotlinRuntimeStacktrace,
   parseUTSJavaScriptRuntimeStacktrace,
   parseUTSArkTSPluginStacktrace,
+  resolveUTSKotlinFilenameByClassName,
 } from './stacktrace'
 
 export { compile as toKotlin } from './kotlin'
