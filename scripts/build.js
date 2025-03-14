@@ -274,7 +274,7 @@ async function postBuildArkTS (isX = false) {
   const extApiExportJsonPath = path.resolve(
     __dirname,
     '../packages/uni-uts-v1/lib/arkts',
-    isX ? 'uni-api-export-x.json' : 'uni-api-export.json'
+    isX ? 'uni-api-exports-x.json' : 'uni-api-exports.json'
   )
   const extApiExport = genHarmonyExtApiExport(isX)
   fs.outputJSONSync(extApiExportJsonPath, extApiExport, { spaces: 2 })
