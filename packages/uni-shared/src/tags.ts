@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag } from '@vue/shared'
+import { isHTMLTag, isSVGTag, isVoidTag } from '@vue/shared'
 
 export const BUILT_IN_TAG_NAMES = [
   'ad',
@@ -356,4 +356,10 @@ export const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX
 export const enum SetUniElementIdTagType {
   BuiltInComponent = 1, // 如：unicloud-db
   BuiltInRootElement = 2, // 如：uni-cloud-db-element
+}
+
+// TODO 是否还存在其他需要特殊处理的 void 标签？
+const APP_VOID_TAGS = ['textarea']
+export function isAppVoidTag(tag: string) {
+  return APP_VOID_TAGS.includes(tag) || isVoidTag(tag)
 }
