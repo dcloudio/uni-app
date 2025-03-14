@@ -196,6 +196,14 @@ export interface GenerateAppAndroidKotlinRuntimeCodeFrameOptions
   platform: 'app-android'
 }
 
+export function resolveUTSKotlinFilenameByClassName(
+  className: string,
+  { cacheDir }: { cacheDir: string }
+) {
+  updateUTSKotlinSourceMapManifestCache(cacheDir)
+  return parseFilenameByClassName(className)
+}
+
 export function parseUTSKotlinRuntimeStacktrace(
   stacktrace: string,
   options: GenerateKotlinRuntimeCodeFrameOptions

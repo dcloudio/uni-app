@@ -23,6 +23,7 @@ export { parseUTSArkTSPluginStacktrace } from './arkts'
 export {
   parseUTSKotlinStacktrace,
   parseUTSKotlinRuntimeStacktrace,
+  resolveUTSKotlinFilenameByClassName,
 } from './kotlin'
 
 export { parseUTSJavaScriptRuntimeStacktrace } from './js'
