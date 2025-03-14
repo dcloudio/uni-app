@@ -550,4 +550,32 @@ zIndex: 4;
     })
     expect(res2.messages.length).toBe(0)
   })
+
+  test('css var --status-bar-height', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  height: var(--status-bar-height);
+}
+.bar {
+  height: var(
+  --status-bar-height, 
+  
+  10px);
+}
+`)
+
+    expect(json).toEqual({
+      foo: {
+        '': {
+          height: 'var(--status-bar-height)',
+        },
+      },
+      bar: {
+        '': {
+          height: 'var(--status-bar-height,10px)',
+        },
+      },
+    })
+    expect(messages.length).toBe(0)
+  })
 })
