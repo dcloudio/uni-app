@@ -24,7 +24,12 @@ export default {
     return {
       src: process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC,
       webviewElement: null as UniWebViewElement | null,
+      // #ifndef APP-HARMONY
       webviewContext: null as WebviewContext | null,
+      // #endif
+      // #ifdef APP-HARMONY
+      webviewContext: null as UniWebViewElement | null,
+      // #endif
       webviewStyles: {
         progress: false
       },
@@ -37,7 +42,12 @@ export default {
     this.statusBarHeight = windowInfo.statusBarHeight
     this.safeAreaTop = windowInfo.safeAreaInsets.top
     this.webviewElement = this.$refs['webview'] as UniWebViewElement
+    // #ifndef APP-HARMONY
     this.webviewContext = uni.createWebviewContext('webview', this)
+    // #endif
+    // #ifdef APP-HARMONY
+    this.webviewContext = uni.getElementById('webview') as UniWebViewElement
+    // #endif
   },
   methods: {
     initAutomator() {
@@ -57,11 +67,19 @@ export default {
       const action = dataObj.getString("action")!
       const args = dataObj.get("args")
       // #endif
-      // #ifndef APP-ANDROID
+      // #ifdef WEB || MP || APP-IOS
       const data = msg.detail.data.length ? msg.detail.data[0].data : msg.detail.data
       const id = data["id"] as number
       const type = data["type"] as string
       const dataObj = data["data"]
+      const action = dataObj["action"]!
+      const args = dataObj["args"]
+      // #endif
+      // #ifdef APP-HARMONY
+      const data = msg.detail.data[0];
+      const id = data["id"] as number
+      const type = data["type"] as string
+      const dataObj = data["data"] as UTSJSONObject
       const action = dataObj["action"]!
       const args = dataObj["args"]
       // #endif
