@@ -245,6 +245,12 @@
         ],
         [
           "UniCustomEventOptions"
+        ],
+        [
+          "UniWebViewElement"
+        ],
+        [
+          "UniWebViewElementImpl"
         ]
       ]
     },

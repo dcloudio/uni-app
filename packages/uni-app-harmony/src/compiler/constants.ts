@@ -58,4 +58,5 @@ export const ExtApiBlackList = [
   'uni-getElementById',
   'uni-document',
   'uni-navigationBar',
+  'uni-createWebviewContext',
 ]
