@@ -13767,7 +13767,7 @@
           if (args[3] && typeof args[3] === "number") {
             args[3] *= pixelRatio;
           }
-          var font2 = this.font;
+          var font2 = this.__font__ || this.font;
           this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
             return m * pixelRatio + u;
           });
@@ -13786,7 +13786,7 @@
           if (args[3] && typeof args[3] === "number") {
             args[3] *= pixelRatio;
           }
-          var font2 = this.font;
+          var font2 = this.__font__ || this.font;
           this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
             return m * pixelRatio + u;
           });
