@@ -25,6 +25,9 @@
       "ClosePreviewImageSuccessCallback"
     ],
     [
+      "CreateCanvasContextAsync"
+    ],
+    [
       "CreateCanvasContextAsyncCompleteCallback"
     ],
     [
@@ -41,6 +44,9 @@
     ],
     [
       "Danmu"
+    ],
+    [
+      "HideActionSheet"
     ],
     [
       "IPreviewImageError"
