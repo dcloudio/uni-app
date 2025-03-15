@@ -75,6 +75,7 @@ declare class UniXCompiler implements IUTSCompiler {
     close(): Promise<void>;
     wait(timeout?: number): Promise<void>;
     getRootFiles(): string[];
+    hasRootFile(fileName: string): boolean;
     addRootFile(fileName: string, timeout?: number): Promise<void>;
     addRootFiles(fileNames: string[], timeout?: number): Promise<void>;
     getDiagnostics(): tsTypes__default.Diagnostic[];
