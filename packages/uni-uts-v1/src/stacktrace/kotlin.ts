@@ -293,6 +293,8 @@ const TYPE_MISMATCH_RE =
   /Type mismatch: inferred type is (.*) but (.*) was expected/
 
 function normalizeType(type: string) {
+  type = type.replace(/\b(Unit)\b/g, 'Unit \x1b[90m/* = void */\x1b[39m')
+
   if (type.endsWith('?')) {
     let nonOptional = type.slice(0, -1)
     if (nonOptional.startsWith('(') && nonOptional.endsWith(')')) {
@@ -402,6 +404,21 @@ function formatKotlinError(
   codes: string[],
   formatters: Formatter[]
 ): string {
+  // 替换响应式类型为标准类型，使用对象映射提高可维护性
+  const typeReplacements: Record<string, string> = {
+    UTSReactiveJSONObject: 'UTSJSONObject',
+    UTSReactiveSet: 'Set',
+    UTSReactiveMap: 'Map',
+    UTSReactiveArray: 'Array',
+  }
+
+  Object.entries(typeReplacements).forEach(([reactiveType, standardType]) => {
+    error = error.replace(
+      new RegExp(`\\b${reactiveType}\\b`, 'g'),
+      standardType
+    )
+  })
+
   for (const formatter of formatters) {
     const err = formatter.format(error, codes)
     if (err) {

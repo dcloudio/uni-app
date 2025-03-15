@@ -1,5 +1,8 @@
 import path from 'path'
-import { resolveUTSKotlinFilenameByClassName } from '../src/stacktrace/kotlin'
+import {
+  hbuilderFormatter,
+  resolveUTSKotlinFilenameByClassName,
+} from '../src/stacktrace/kotlin'
 
 describe('uts:kotlin', () => {
   test('resolveUTSKotlinFileByClassName', () => {
@@ -15,5 +18,52 @@ describe('uts:kotlin', () => {
         cacheDir,
       })
     ).toBe('index.kt')
+  })
+  test('formatKotlinError', () => {
+    expect(
+      hbuilderFormatter({
+        type: 'error',
+        message:
+          'Type mismatch: inferred type is () -> Unit but () -> String was expected',
+      })
+    ).toBe(
+      '\u200Cerror: 类型不匹配: 推断类型是() -> Unit \x1b[90m/* = void */\x1b[39m，但预期的是() -> String。\u200C'
+    )
+    expect(
+      hbuilderFormatter({
+        type: 'error',
+        message:
+          'java.lang.ClassCastException: io.dcloud.uniapp.vue.UTSReactiveJSONObject cannot be cast to uni.UNIXXXXXXX.A‌',
+      })
+    ).toBe(
+      '\u200Cerror: java.lang.ClassCastException: io.dcloud.uniapp.vue.UTSJSONObject cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
+    )
+    expect(
+      hbuilderFormatter({
+        type: 'error',
+        message:
+          'java.lang.ClassCastException: UTSReactiveSet cannot be cast to uni.UNIXXXXXXX.A‌',
+      })
+    ).toBe(
+      '\u200Cerror: java.lang.ClassCastException: Set cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
+    )
+    expect(
+      hbuilderFormatter({
+        type: 'error',
+        message:
+          'java.lang.ClassCastException: UTSReactiveMap cannot be cast to uni.UNIXXXXXXX.A‌',
+      })
+    ).toBe(
+      '\u200Cerror: java.lang.ClassCastException: Map cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
+    )
+    expect(
+      hbuilderFormatter({
+        type: 'error',
+        message:
+          'java.lang.ClassCastException: UTSReactiveArray cannot be cast to uni.UNIXXXXXXX.A‌',
+      })
+    ).toBe(
+      '\u200Cerror: java.lang.ClassCastException: Array cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
+    )
   })
 })
