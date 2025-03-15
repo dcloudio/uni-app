@@ -4,7 +4,7 @@ import {
   getPreVueContext,
 } from './context'
 /* eslint-disable no-restricted-globals */
-const { preprocess } = require('../../lib/preprocess')
+const { preprocess: preprocessLib } = require('../../lib/preprocess')
 
 export { initPreContext } from './context'
 
@@ -46,3 +46,36 @@ export function preUVueHtml(htmlCode: string) {
 
 export const preUVueCss = preUVueJs
 export const preUVueJson = preUVueJs
+
+const ERRORS = {
+  html: `条件编译失败\n参考示例(注意 ifdef 与 endif 必须配对使用):
+<!--  #ifdef  %PLATFORM% -->
+模板代码
+<!--  #endif -->
+`,
+  js: `条件编译失败\n参考示例(注意 ifdef 与 endif 必须配对使用):
+// #ifdef  %PLATFORM%
+代码
+// #endif
+`,
+  css: `条件编译失败\n参考示例(注意 ifdef 与 endif 必须配对使用):
+/*  #ifdef  %PLATFORM%  */
+代码
+/*  #endif  */
+`,
+}
+
+function preprocess(
+  code: string,
+  context: any,
+  options: { type: 'html' | 'js' | 'css' }
+) {
+  try {
+    return preprocessLib(code, context, options)
+  } catch (e) {
+    if (ERRORS[options.type]) {
+      throw new Error(ERRORS[options.type])
+    }
+    throw e
+  }
+}
