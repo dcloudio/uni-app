@@ -2,8 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const parser = require("@babel/parser")
 const BLACKLIST = [
-  'initUniExtApi',
-  'initUniComponentExtApi'
+  'UniExtApi',
+  'initUniExtApi'
 ]
 
 function initAutoImportMap (isUniAppX = false) {

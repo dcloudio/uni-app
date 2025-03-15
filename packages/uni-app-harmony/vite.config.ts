@@ -221,7 +221,7 @@ function parseExtApiInjects(uniModulesDir: string) {
     '',
     uniModulesDir,
     require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-      'uni-ext-api'
+    'uni-ext-api'
     ] || {}
   )
 }
@@ -363,7 +363,7 @@ async function generateExtApiSource({
     extApiIndex,
     `${importExtApis.join('\n')}
   ${exportExtApis.join('\n')}
-  interface UniExtApi {
+  export interface UniExtApi {
     ${uniExtApis.join(',\n  ')}
   }
   export default {
