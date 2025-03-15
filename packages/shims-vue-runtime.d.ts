@@ -75,6 +75,7 @@ declare module '@vue/runtime-core' {
       index: number
       data: Record<string, unknown>
     }[]
+    $currentSlotComponentInstance?: ComponentInternalInstance
     // h5 | app
     $wxsModules?: string[]
     // 暂定 h5
