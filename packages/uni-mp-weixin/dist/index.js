@@ -36,7 +36,7 @@ function b64DecodeUnicode (str) {
 }
 
 function getCurrentUserInfo () {
-  const token = ( wx).getStorageSync('uni_id_token') || '';
+  const token = (wx).getStorageSync('uni_id_token') || '';
   const tokenArr = token.split('.');
   if (!token || tokenArr.length !== 3) {
     return {
@@ -321,6 +321,10 @@ const promiseInterceptor = {
     }
     return new Promise((resolve, reject) => {
       res.then(res => {
+        if (!res) {
+          resolve(res);
+          return
+        }
         if (res[0]) {
           reject(res[0]);
         } else {
@@ -410,11 +414,10 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 
 function checkDeviceWidth () {
-  const {
-    platform,
-    pixelRatio,
-    windowWidth
-  } = wx.getSystemInfoSync(); // uni=>wx runtime 编译目标是 uni 对象，内部不允许直接使用 uni
+  const { windowWidth, pixelRatio, platform } = Object.assign({}, wx.getWindowInfo(), {
+        platform: wx.getDeviceInfo().platform,
+      })
+    ; // uni=>wx runtime 编译目标是 uni 对象，内部不允许直接使用 uni
 
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
@@ -456,7 +459,7 @@ const messages = {};
 let locale;
 
 {
-  locale = normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
+  locale = normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN;
 }
 
 function initI18nMessages () {
@@ -481,10 +484,10 @@ initI18nMessages();
 
 const i18n = initVueI18n(
   locale,
-   {}
+  {}
 );
 const t = i18n.t;
-const i18nMixin = (i18n.mixin = {
+(i18n.mixin = {
   beforeCreate () {
     const unwatch = i18n.i18n.watchLocale(() => {
       this.$forceUpdate();
@@ -499,8 +502,8 @@ const i18nMixin = (i18n.mixin = {
     }
   }
 });
-const setLocale = i18n.setLocale;
-const getLocale = i18n.getLocale;
+i18n.setLocale;
+i18n.getLocale;
 
 function initAppLocale (Vue, appVm, locale) {
   const state = Vue.observable({
@@ -572,7 +575,7 @@ function normalizeLocale (locale, messages) {
 //   }
 // }
 
-function getLocale$1 () {
+function getLocale () {
   // 优先使用 $locale
   if (isFn(getApp)) {
     const app = getApp({
@@ -582,10 +585,10 @@ function getLocale$1 () {
       return app.$vm.$locale
     }
   }
-  return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN
+  return normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
 }
 
-function setLocale$1 (locale) {
+function setLocale (locale) {
   const app = isFn(getApp) ? getApp() : false;
   if (!app) {
     return false
@@ -609,7 +612,7 @@ function onLocaleChange (fn) {
 }
 
 if (typeof global !== 'undefined') {
-  global.getLocale = getLocale$1;
+  global.getLocale = getLocale;
 }
 
 const interceptors = {
@@ -619,8 +622,8 @@ const interceptors = {
 var baseApi = /*#__PURE__*/Object.freeze({
   __proto__: null,
   upx2px: upx2px,
-  getLocale: getLocale$1,
-  setLocale: setLocale$1,
+  getLocale: getLocale,
+  setLocale: setLocale,
   onLocaleChange: onLocaleChange,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor,
@@ -769,6 +772,7 @@ function populateParameters (result) {
     appVersionCode: process.env.UNI_APP_VERSION_CODE,
     appLanguage: getAppLanguage(hostLanguage),
     uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+    uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
     uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
     uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
     deviceBrand,
@@ -792,7 +796,8 @@ function populateParameters (result) {
     ua: undefined,
     hostPackageName: undefined,
     browserName: undefined,
-    browserVersion: undefined
+    browserVersion: undefined,
+    isUniAppX: false
   };
 
   Object.assign(result, parameters, extraParam);
@@ -828,13 +833,13 @@ function getDeviceBrand (brand) {
 }
 
 function getAppLanguage (defaultLanguage) {
-  return getLocale$1
-    ? getLocale$1()
+  return getLocale
+    ? getLocale()
     : defaultLanguage
 }
 
 function getHostName (result) {
-  const _platform =  'WeChat' ;
+  const _platform = 'WeChat' ;
   let _hostName = result.hostName || _platform; // mp-jd
   {
     if (result.environment) {
@@ -881,7 +886,12 @@ var getAppBaseInfo = {
       hostLanguage,
       hostName: _hostName,
       hostSDKVersion: SDKVersion,
-      hostTheme: theme
+      hostTheme: theme,
+      isUniAppX: false,
+      uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+      uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+      uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
+      uniRuntimeVersion: process.env.UNI_COMPILER_VERSION
     }));
   }
 };
@@ -1011,7 +1021,7 @@ function processReturnValue (methodName, res, returnValue, keepReturnValue = fal
   return processArgs(methodName, res, returnValue, {}, keepReturnValue)
 }
 
-function wrapper (methodName, method) {
+function wrapper$1 (methodName, method) {
   if (hasOwn(protocols, methodName)) {
     const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
@@ -1481,7 +1491,7 @@ function initTriggerEvent (mpInstance) {
   }
 }
 
-function initHook (name, options, isComponent) {
+function initHook$1 (name, options, isComponent) {
   const oldHook = options[name];
   options[name] = function (...args) {
     markMPComponent(this);
@@ -1494,13 +1504,13 @@ function initHook (name, options, isComponent) {
 if (!MPPage.__$wrappered) {
   MPPage.__$wrappered = true;
   Page = function (options = {}) {
-    initHook('onLoad', options);
+    initHook$1('onLoad', options);
     return MPPage(options)
   };
   Page.after = MPPage.after;
 
   Component = function (options = {}) {
-    initHook('created', options);
+    initHook$1('created', options);
     return MPComponent(options)
   };
 }
@@ -1568,7 +1578,7 @@ function initHooks (mpOptions, hooks, vueOptions) {
 }
 
 function initUnknownHooks (mpOptions, vueOptions, excludes = []) {
-  findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
+  findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes));
 }
 
 function findHooks (vueOptions, hooks = []) {
@@ -1582,7 +1592,7 @@ function findHooks (vueOptions, hooks = []) {
   return hooks
 }
 
-function initHook$1 (mpOptions, hook, excludes) {
+function initHook (mpOptions, hook, excludes) {
   if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
     mpOptions[hook] = function (args) {
       return this.$vm && this.$vm.__call_hook(hook, args)
@@ -1735,7 +1745,7 @@ function initProperties (props, isBehavior = false, file = '', options) {
       value: ''
     };
     {
-      if ( options.virtualHost) {
+      if (options.virtualHost) {
         properties.virtualHostStyle = {
           type: null,
           value: ''
@@ -1800,7 +1810,7 @@ function initProperties (props, isBehavior = false, file = '', options) {
   return properties
 }
 
-function wrapper$1 (event) {
+function wrapper (event) {
   // TODO 又得兼容 mpvue 的 mp 对象
   try {
     event.mp = JSON.parse(JSON.stringify(event));
@@ -1995,7 +2005,7 @@ function getContextVm (vm) {
 }
 
 function handleEvent (event) {
-  event = wrapper$1(event);
+  event = wrapper(event);
 
   // [['tap',[['handle',[1,2,a]],['handle1',[1,2,a]]]]]
   const dataset = (event.currentTarget || event.target).dataset;
@@ -2090,7 +2100,7 @@ function getEventChannel (id) {
   return eventChannel
 }
 
-const hooks = [
+const hooks$1 = [
   'onShow',
   'onHide',
   'onError',
@@ -2220,7 +2230,7 @@ function parseBaseApp (vm, {
       delete this.$options.mpType;
       delete this.$options.mpInstance;
       if (
-        ( this.mpType === 'page') &&
+        (this.mpType === 'page') &&
         typeof getApp === 'function'
       ) { // hack vue-i18n
         const app = getApp();
@@ -2273,9 +2283,10 @@ function parseBaseApp (vm, {
     });
   }
 
-  initAppLocale(Vue, vm, normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
+  initAppLocale(Vue, vm, normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
+      );
 
-  initHooks(appOptions, hooks);
+  initHooks(appOptions, hooks$1);
   initUnknownHooks(appOptions, vm.$options);
 
   return appOptions
@@ -2446,18 +2457,18 @@ function parseComponent (vueComponentOptions, needVueOptions) {
   }, needVueOptions)
 }
 
-const hooks$1 = [
+const hooks = [
   'onShow',
   'onHide',
   'onUnload'
 ];
 
-hooks$1.push(...PAGE_EVENT_HOOKS);
+hooks.push(...PAGE_EVENT_HOOKS);
 
 function parseBasePage (vuePageOptions) {
   const [pageOptions, vueOptions] = parseComponent(vuePageOptions, true);
 
-  initHooks(pageOptions.methods, hooks$1, vueOptions);
+  initHooks(pageOptions.methods, hooks, vueOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
@@ -2587,7 +2598,7 @@ if (typeof Proxy !== 'undefined' && "mp-weixin" !== 'app-plus') {
       if (eventApi[name]) {
         return eventApi[name]
       }
-      return promisify(name, wrapper(name, wx[name]))
+      return promisify(name, wrapper$1(name, wx[name]))
     },
     set (target, name, value) {
       target[name] = value;
@@ -2618,7 +2629,7 @@ if (typeof Proxy !== 'undefined' && "mp-weixin" !== 'app-plus') {
 
   Object.keys(wx).forEach(name => {
     if (hasOwn(wx, name) || hasOwn(protocols, name)) {
-      uni[name] = promisify(name, wrapper(name, wx[name]));
+      uni[name] = promisify(name, wrapper$1(name, wx[name]));
     }
   });
 }
@@ -2631,5 +2642,4 @@ wx.createPlugin = createPlugin;
 
 var uni$1 = uni;
 
-export default uni$1;
-export { createApp, createComponent, createPage, createPlugin, createSubpackageApp };
+export { createApp, createComponent, createPage, createPlugin, createSubpackageApp, uni$1 as default };

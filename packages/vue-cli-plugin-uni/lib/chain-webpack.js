@@ -171,7 +171,14 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
       'process.env.UNI_STAT_DEBUG': process.env.UNI_STAT_DEBUG,
       'process.env.UNI_COMPILER_VERSION': JSON.stringify(process.env.UNI_COMPILER_VERSION),
       'process.env.UNI_APP_VERSION_NAME': JSON.stringify(process.env.UNI_APP_VERSION_NAME),
-      'process.env.UNI_APP_VERSION_CODE': JSON.stringify(process.env.UNI_APP_VERSION_CODE)
+      'process.env.UNI_APP_VERSION_CODE': JSON.stringify(process.env.UNI_APP_VERSION_CODE),
+      __UNI_SOCKET_HOSTS__: JSON.stringify(process.env.UNI_SOCKET_HOSTS || ''),
+      __UNI_SOCKET_PORT__: JSON.stringify(process.env.UNI_SOCKET_PORT || ''),
+      __UNI_SOCKET_ID__: JSON.stringify(process.env.UNI_SOCKET_ID || ''),
+      __UNI_CONSOLE_KEEP_ORIGINAL__: JSON.stringify(
+        !(process.env.UNI_PLATFORM === 'mp-harmony' ||
+        process.env.UNI_PLATFORM === 'app-harmony')
+      )
     }
     if (process.env.UNI_USING_VUE3) {
       Object.assign(defines, {

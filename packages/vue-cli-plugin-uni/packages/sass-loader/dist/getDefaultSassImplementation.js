@@ -6,6 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 function getDefaultSassImplementation() {
+  if (process.env.UNI_SASS_IMPLEMENTATION_NAME === 'dart-sass') {
+    if (require('@dcloudio/uni-cli-shared').isInHBuilderX) {
+      return require('sass');
+    }
+  }
   let sassImplPkg = 'node-sass';
 
   try {

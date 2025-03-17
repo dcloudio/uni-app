@@ -32,9 +32,14 @@ export const chooseFile = {
   },
   extension: {
     type: Array,
-    default: [''],
     validator (extension, params) {
-      if (extension.length === 0) { return 'param extension should not be empty.' }
+      if (!extension) {
+        if (params.type === 'all' || params.type === '*' || !params.type) {
+          params.extension = ['']
+        } else {
+          params.extension = ['*']
+        }
+      } else if (extension.length === 0) { return 'param extension should not be empty.' }
     }
   }
 }

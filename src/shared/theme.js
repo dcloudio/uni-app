@@ -1,4 +1,4 @@
-import { isPlainObject, isString } from './util'
+import { isPlainObject, isString, isArray } from './util'
 
 const borderStyles = {
   black: 'rgba(0,0,0,0.4)',
@@ -40,7 +40,7 @@ export function normalizeStyles (pageStyle, themeConfig = {}, mode = 'light') {
   const modeStyle = themeConfig[mode]
   const styles = {}
 
-  if (typeof modeStyle === 'undefined') return pageStyle
+  if (typeof modeStyle === 'undefined' || !pageStyle) return pageStyle
 
   Object.keys(pageStyle).forEach(key => {
     const styleItem = pageStyle[key] // Object Array String
@@ -48,9 +48,9 @@ export function normalizeStyles (pageStyle, themeConfig = {}, mode = 'light') {
     const parseStyleItem = () => {
       if (isPlainObject(styleItem)) { return normalizeStyles(styleItem, themeConfig, mode) }
 
-      if (Array.isArray(styleItem)) {
+      if (isArray(styleItem)) {
         return styleItem.map(item => {
-          if (typeof item === 'object') { return normalizeStyles(item, themeConfig, mode) }
+          if (isPlainObject(item)) { return normalizeStyles(item, themeConfig, mode) }
           return resolveStringStyleItem(modeStyle, item)
         })
       }

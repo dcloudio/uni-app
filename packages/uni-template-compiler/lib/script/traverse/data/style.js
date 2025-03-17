@@ -126,13 +126,22 @@ module.exports = function processStyle (paths, path, state) {
   if (stylePath) {
     const styleValuePath = stylePath.get('value')
     if (styleValuePath.isObjectExpression()) {
-      styleValuePath.replaceWith(
-        processStaticStyle(
-          processStyleObjectExpression(styleValuePath),
-          staticStylePath,
-          state
-        )
+      // {} {...{}} {...{color}}
+      const hasDynamicContent = styleValuePath.node.properties.some(prop =>
+        !t.isObjectProperty(prop) && !t.isObjectExpression(prop.value)
       )
+      const isEmptyObject = styleValuePath.node.properties.length === 0
+      if (hasDynamicContent || isEmptyObject) {
+        generateGetStyle(stylePath, styleValuePath, staticStylePath, state)
+      } else {
+        styleValuePath.replaceWith(
+          processStaticStyle(
+            processStyleObjectExpression(styleValuePath),
+            staticStylePath,
+            state
+          )
+        )
+      }
     } else if (styleValuePath.isArrayExpression()) { // array
       const elementPaths = styleValuePath.get('elements')
       const dynamicStyle = elementPaths.find(elementPath => !elementPath.isObjectExpression())

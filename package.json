@@ -13,6 +13,7 @@
     "build:app:service": "cross-env UNI_PLATFORM=app-plus rollup -c build/rollup.config.app.js",
     "build:app:view": "cross-env NODE_ENV=production UNI_WATCH=false UNI_PLATFORM=app-plus UNI_VIEW=true node build/build.js",
     "dev:app:view": "cross-env NODE_ENV=development UNI_WATCH=true UNI_PLATFORM=app-plus UNI_VIEW=true node build/build.js",
+    "build:mp": "npm run build:mp-weixin && npm run build:mp-qq && npm run build:mp-alipay && npm run build:mp-baidu && npm run build:mp-toutiao && npm run build:mp-jd && npm run build:mp-xhs && npm run build:mp-kuaishou && npm run build:mp-lark && npm run build:mp-jd",
     "build:mp-qq": "cross-env UNI_PLATFORM=mp-qq rollup -c build/rollup.config.mp.js",
     "build:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin rollup -c build/rollup.config.mp.js",
     "build:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu rollup -c build/rollup.config.mp.js",
@@ -43,6 +44,7 @@
     "base64-arraybuffer": "^0.2.0",
     "intersection-observer": "^0.7.0",
     "pako": "^1.0.11",
+    "postcss-urlrewrite": "^0.3.0",
     "safe-area-insets": "^1.4.1"
   },
   "private": true,

@@ -45,6 +45,23 @@ process.env.UNI_APP_VERSION_NAME = manifestJsonObj.versionName
 process.env.UNI_APP_VERSION_CODE = manifestJsonObj.versionCode
 process.env.VUE_APP_DARK_MODE = (manifestJsonObj[process.env.UNI_PLATFORM] || {}).darkmode || false
 
+// 如果配置了 dart-sass 或者是 Mac Arm 版本
+
+const {
+  isInHBuilderX
+} = require('@dcloudio/uni-cli-shared/lib/util')
+if (isInHBuilderX) {
+  const isMacArm = process.platform === 'darwin' && process.arch === 'arm64'
+  if (isMacArm && manifestJsonObj.sassImplementationName === 'node-sass') {
+    console.warn('HBuilderX Mac Arm 版本 manifest.json->sassImplementationName 仅支持 dart-sass')
+  }
+  if (manifestJsonObj.sassImplementationName !== 'node-sass' || isMacArm) {
+    process.env.UNI_SASS_IMPLEMENTATION_NAME = 'dart-sass'
+    moduleAlias.addAlias('sass', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,
+      'compile-dart-sass/node_modules/sass'))
+  }
+}
+
 // 小程序 vue3 标记
 if (process.env.UNI_PLATFORM.indexOf('mp-') === 0) {
   if (manifestJsonObj.vueVersion === '3' || manifestJsonObj.vueVersion === 3) {
@@ -180,9 +197,9 @@ process.env.VUE_APP_PLATFORM = process.env.UNI_PLATFORM
 process.env.UNI_OUTPUT_DIR = process.env.UNI_OUTPUT_DIR || process.env.UNI_OUTPUT_DEFAULT_DIR
 
 process.env.UNI_APP_X_TSC = 'true'
-if (manifestJsonObj['app-plus']?.['utsCompilerVersion'] === 'v1') {
-  process.env.UNI_APP_X_TSC = 'false'
-}
+// if (manifestJsonObj['app-plus']?.['utsCompilerVersion'] === 'v1') {
+//   process.env.UNI_APP_X_TSC = 'false'
+// }
 const baseOutDir = path.basename(process.env.UNI_OUTPUT_DIR)
 process.env.UNI_APP_X_CACHE_DIR =
   process.env.UNI_APP_X_CACHE_DIR ||
