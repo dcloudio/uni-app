@@ -150,7 +150,8 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
     platformOptions.chainWebpack(webpackConfig, vueOptions, api)
     // define
     const deferredCreated = process.env.UNI_PLATFORM === 'mp-toutiao' ||
-      process.env.UNI_PLATFORM === 'quickapp-webview'
+      process.env.UNI_PLATFORM === 'quickapp-webview' ||
+      process.env.UNI_PLATFORM === 'mp-harmony'
     const defines = {
       // UNI_ENV好像没用
       __UNI_FEATURE_PROMISE__: JSON.stringify(false),

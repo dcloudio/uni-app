@@ -75,6 +75,7 @@ function initExtends (name, plugin, plugins) {
       process.exit(0)
     }
     if (!plugin) {
+      console.log(444)
       console.error(uniI18n.__('cliShared.noFoundPlatformPlugin', { 0: extendsPlatform }))
       process.exit(0)
     }
@@ -102,6 +103,7 @@ module.exports = {
     const plugins = resolvePlugins()
     const plugin = plugins.find(plugin => plugin.name === process.env.UNI_PLATFORM)
     if (!plugin) {
+      console.log(555,process.env.UNI_CLI_CONTEXT)
       console.error(uniI18n.__('cliShared.noFoundPlatformPlugin', { 0: process.env.UNI_PLATFORM }))
       process.exit(0)
     }
