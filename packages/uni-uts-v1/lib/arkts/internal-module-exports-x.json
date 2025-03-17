@@ -1,7 +1,16 @@
 {
   "@dcloudio/uni-app-x-runtime": [
     [
+      "Anchor"
+    ],
+    [
+      "Bounds"
+    ],
+    [
       "CanvasContext"
+    ],
+    [
+      "Circle"
     ],
     [
       "ClosePreviewImage"
@@ -25,6 +34,12 @@
       "ClosePreviewImageSuccessCallback"
     ],
     [
+      "Control"
+    ],
+    [
+      "ControlPosition"
+    ],
+    [
       "CreateCanvasContextAsync"
     ],
     [
@@ -40,6 +55,9 @@
       "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
+      "CreateMapContext"
+    ],
+    [
       "CreateVideoContext"
     ],
     [
@@ -52,6 +70,9 @@
       "IPreviewImageError"
     ],
     [
+      "LocationObject"
+    ],
+    [
       "LongPressActionsFailResult"
     ],
     [
@@ -59,6 +80,72 @@
     ],
     [
       "LongPressActionsSuccessResult"
+    ],
+    [
+      "MapContext"
+    ],
+    [
+      "MapContextAddGroundOverlayOptions"
+    ],
+    [
+      "MapContextAddMarkersOptions"
+    ],
+    [
+      "MapContextFail"
+    ],
+    [
+      "MapContextGetCenterLocationOptions"
+    ],
+    [
+      "MapContextGetRegionOptions"
+    ],
+    [
+      "MapContextGetRegionResult"
+    ],
+    [
+      "MapContextGetScaleOptions"
+    ],
+    [
+      "MapContextGetScaleResult"
+    ],
+    [
+      "MapContextIncludePointsOptions"
+    ],
+    [
+      "MapContextMoveAlongOptions"
+    ],
+    [
+      "MapContextMoveToLocationOptions"
+    ],
+    [
+      "MapContextRemoveGroundOverlayOptions"
+    ],
+    [
+      "MapContextRemoveMarkersOptions"
+    ],
+    [
+      "MapContextTranslateMarkerOptions"
+    ],
+    [
+      "MapContextUpdateGroundOverlayOptions"
+    ],
+    [
+      "MapErrorCode"
+    ],
+    [
+      "MapMarkerCallout"
+    ],
+    [
+      "MapMarkerLabel"
+    ],
+    [
+      "Marker"
+    ],
+    [
+      "Polygon"
+    ],
+    [
+      "Polyline"
     ],
     [
       "Popover"
