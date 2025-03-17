@@ -44,6 +44,10 @@ const PLATFORMS = {
     prefix: 'qa',
     title: '快应用(Webview)版'
   },
+  'mp-harmony': {
+    prefix: 'has',
+    title: '鸿蒙元服务'
+  },
   'app-plus': {
     prefix: 'wx',
     title: 'app-plus'
