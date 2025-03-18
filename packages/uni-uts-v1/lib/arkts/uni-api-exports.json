@@ -235,6 +235,9 @@
       "FileSystemManager"
     ],
     [
+      "FileSystemManagerFail"
+    ],
+    [
       "GetAppBaseInfoResult"
     ],
     [
@@ -628,10 +631,19 @@
       "ConnectSocketOptions"
     ],
     [
+      "SendSocketMessageErrorCode"
+    ],
+    [
+      "SendSocketMessageFail"
+    ],
+    [
       "SendSocketMessageOptions"
     ],
     [
       "CloseSocketOptions"
+    ],
+    [
+      "OnSocketOpenCallbackResult"
     ],
     [
       "OnSocketMessageCallbackResult"
@@ -640,7 +652,22 @@
       "SocketTask"
     ],
     [
+      "OnSocketOpenCallback"
+    ],
+    [
       "OnSocketErrorCallbackResult"
+    ],
+    [
+      "OnSocketErrorCallback"
+    ],
+    [
+      "OnSocketMessageCallback"
+    ],
+    [
+      "OnSocketCloseCallbackResult"
+    ],
+    [
+      "OnSocketCloseCallback"
     ]
   ]
 }
