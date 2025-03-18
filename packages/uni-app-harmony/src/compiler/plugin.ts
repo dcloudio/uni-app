@@ -293,7 +293,7 @@ function getRelatedModules(inputDir: string): string[] {
       const manifestModuleInfo = manifestModules[manifestModuleName]
       for (const provider in manifestModuleInfo) {
         const manifestPlugin = manifestModuleName + '-' + provider
-        const providerConf = manifestModuleInfo[manifestPlugin]
+        const providerConf = manifestModuleInfo[provider]
         if (!isHarmonyOSProvider(providerConf)) {
           continue
         }
@@ -401,6 +401,7 @@ function genAppHarmonyUniModules(
           )
           extApiCodes.push(`globalThis.UniMapElement = UniMapElement`)
           const ident = camelize(module)
+          importCodes.push(`import * as ${ident} from '${harmonyModuleName}'`)
           registerCodes.push(
             `uni.registerUTSPlugin('uni_modules/${module}', ${ident})`
           )
