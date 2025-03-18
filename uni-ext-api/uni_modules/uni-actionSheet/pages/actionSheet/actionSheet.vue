@@ -306,8 +306,8 @@
         setTimeout(() => {
           // #ifdef APP-ANDROID
           uni.closeDialogPage({
-              dialogPage: this.$page
-            } as io.dcloud.uniapp.framework.extapi.CloseDialogPageOptions)
+            dialogPage: this.$page
+          })
           // #endif
           // #ifndef APP-ANDROID
           uni.closeDialogPage({

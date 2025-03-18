@@ -8137,6 +8137,9 @@ class UniPageImpl {
     options,
     vm
   }) {
+    this.width = 0;
+    this.height = 0;
+    this.statusBarHeight = safeAreaInsets$1.top;
     this.getParentPage = () => null;
     this.route = route;
     this.options = options;
@@ -8401,6 +8404,34 @@ function decrementEscBackPageNum() {
     document.removeEventListener("keydown", handleEscKeyPress);
   }
 }
+function triggerDialogPageOnHide(instance2) {
+  var _a, _b;
+  const parentPage = ((_a = instance2.proxy) == null ? void 0 : _a.$page).getParentPage();
+  const parentPageInstance = parentPage == null ? void 0 : parentPage.vm.$pageLayoutInstance;
+  if (parentPageInstance) {
+    const dialogPages = parentPageInstance.$dialogPages.value;
+    if (dialogPages.length > 1) {
+      const preDialogPage = dialogPages[dialogPages.length - 2];
+      if (preDialogPage.vm) {
+        const { onHide } = preDialogPage.vm.$;
+        onHide && invokeArrayFns(onHide);
+      }
+    }
+  }
+  dialogPageTriggerParentHide((_b = instance2.proxy) == null ? void 0 : _b.$page);
+}
+function initPageWidthHeight(instance2) {
+  if (!instance2.proxy) {
+    return;
+  }
+  const pageEl = document.querySelector(
+    `uni-page[data-page="${instance2.proxy.$vm.route}"]`
+  );
+  if (pageEl) {
+    instance2.proxy.width = pageEl.offsetWidth;
+    instance2.proxy.height = pageEl.offsetHeight;
+  }
+}
 const closeDialogPage = (options) => {
   var _a, _b;
   const currentPages = getCurrentPages();
@@ -8521,14 +8552,14 @@ function removeRouteCache(routeKey) {
   }
 }
 function removePage(routeKey, removeRouteCaches = true) {
-  var _a;
+  var _a, _b;
   const pageVm = currentPagesMap.get(routeKey);
   {
     const dialogPages = pageVm.$page.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       closeDialogPage({ dialogPage: dialogPages[i] });
     }
-    const systemDialogPages = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+    const systemDialogPages = (_b = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages) == null ? void 0 : _b.value;
     if (systemDialogPages) {
       systemDialogPages.length = 0;
     }
@@ -9427,26 +9458,15 @@ function setupPage(comp) {
         onPageShow(instance2, pageMeta);
       });
       onMounted(() => {
-        var _a, _b, _c;
+        var _a;
         {
+          initPageWidthHeight(instance2);
           if (instance2.subTree.el) {
             instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
           }
           const pageInstance = getPageInstanceByChild(instance2);
           if (isDialogPageInstance(pageInstance)) {
-            const parentPage = ((_b = instance2.proxy) == null ? void 0 : _b.$page).getParentPage();
-            const parentPageInstance = parentPage == null ? void 0 : parentPage.vm.$pageLayoutInstance;
-            if (parentPageInstance) {
-              const dialogPages = parentPageInstance.$dialogPages.value;
-              if (dialogPages.length > 1) {
-                const preDialogPage = dialogPages[dialogPages.length - 2];
-                if (preDialogPage.vm) {
-                  const { onHide } = preDialogPage.vm.$;
-                  onHide && invokeArrayFns$1(onHide);
-                }
-              }
-            }
-            dialogPageTriggerParentHide((_c = instance2.proxy) == null ? void 0 : _c.$page);
+            triggerDialogPageOnHide(instance2);
             useBackgroundColorContent$1(instance2.proxy);
           }
         }

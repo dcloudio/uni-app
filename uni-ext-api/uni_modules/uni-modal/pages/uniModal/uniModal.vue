@@ -1,20 +1,25 @@
 <template>
-	<view class="uni-modal_dialog__mask" :class="{ 'uni-modal_dialog__mask__show': showAnim }">
+	<view class="uni-modal_dialog__mask" :class="{ 'uni-modal_dialog__mask__show': showAnim }" >
 		
-		<view class="uni-modal_dialog__container" :class="{'uni-modal_dialog__show': showAnim,  'uni-modal_dark__mode': theme == 'dark'}">
+		<view class="uni-modal_dialog__container" 
+			id="modal_content"
+			:style="{bottom:inputBottom}"
+			:class="{'uni-modal_dialog__show': showAnim,  'uni-modal_dark__mode': theme == 'dark'}">
 			<!--ios need -->
-			<view style="width: 100%;height: 100%; border-radius: 8px;">
+			<view class="uni-modal_dialog__container__wrapper" :class="{'uni-modal_dark__mode': theme == 'dark'}">
 				
 				<text class="uni-modal_dialog__title__text" :class="{'uni-modal_dark__mode': theme == 'dark'}" v-if="title">
 					{{ title }}
 				</text>
-					
+				
 				<view class="uni-modal_dialog__content">
 					
 					<textarea v-if="editable" v-model="content" 
 						class="uni-modal_dialog__content__textarea"
 						placeholder-class="modalContent_content_edit_placeholder"
 						:class="{ 'uni-modal_dark__mode': theme == 'dark'}" 
+						:adjust-position="false" 
+						@blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange"
 						id="textarea_content_input"
 						ref="ref_textarea_content_input"
 						:auto-height="isAutoHeight"
@@ -53,15 +58,12 @@
 	</view>
 </template>
 <script lang='ts'>
-	// #ifdef APP-ANDROID
-	import EditText from 'android.widget.EditText'
-	// #endif
+
 	export default {
 		data() {
 			return {
 				inputLineHeight : 32,
 				theme: 'light',
-				show: false,
 				readyEventName: '',
 				optionsEventName: '',
 				successEventName: '',
@@ -75,6 +77,7 @@
 				cancelText: '取消',
 				cancelColor: '#000000',
 				confirmColor: '#4A5E86',
+				inputBottom: '0px',
 				inputCancelColor: null as string | null,
 				inputConfirmColor: null as string | null,
 				hoverClassName:"uni-modal_dialog__content__bottom__button__hover",
@@ -82,18 +85,8 @@
 				isAutoHeight:true
 			}
 		},
+		
 		onReady() {
-			
-			// #ifdef APP-ANDROID
-			/**
-			 * 隐藏滚动条
-			 */
-			let editElement = this.$page.getElementById("textarea_content_input")
-			if(editElement != null){
-				let androidEditText = editElement.getAndroidView()! as EditText
-				androidEditText.isVerticalScrollBarEnabled = false
-			}
-			// #endif
 			
 			setTimeout(() => {
 				this.showAnim = true
@@ -184,6 +177,21 @@
 		
 		
 		methods: {
+			onInputBlur(e:UniTextareaBlurEvent) {
+				// 退出编辑状态
+				setTimeout(() => {
+					this.inputBottom = '0px';
+				}, 220)
+				
+			},
+			onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
+				// 进入编辑状态，设置content 向上偏移键盘高度的 1/2
+				let keyBoardHeight = e.detail.height
+				if(keyBoardHeight > 0){
+					let calcBottom = (keyBoardHeight) / 2
+					this.inputBottom = `${calcBottom}px`;
+				}
+			},
 			
 			isValidColor(inputColor:string|null){
 				const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
@@ -233,17 +241,10 @@
 			
 			closeModal() {
 				this.showAnim = false
-				setTimeout(() => {
-					// #ifdef APP-ANDROID
-					uni.closeDialogPage({
-							dialogPage: this.$page
-						} as io.dcloud.uniapp.framework.extapi.CloseDialogPageOptions)
-					// #endif
-					// #ifndef APP-ANDROID
+				setTimeout(() => {		
 					uni.closeDialogPage({
 						dialogPage: this.$page
 					})
-					// #endif
 				}, 300)
 			},
 			handleCancel() {
@@ -285,13 +286,8 @@
 	 */
 	.uni-modal_dialog__container {
 		width: 300px;
-		padding-top: 10px;
 		background-color: white;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		overflow: hidden;
 		border-radius: 8px;
 		/**
 		 * anim
@@ -310,7 +306,19 @@
 	.uni-modal_dialog__container.uni-modal_dark__mode {
 		background-color: #272727;
 	}
-
+	
+	.uni-modal_dialog__container__wrapper {
+		width: 100%;
+		height: 100%; 
+		padding-top: 10px;
+		background-color: white;
+		border-radius: 8px;
+	}
+	
+	.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {
+		background-color: #272727;
+	}
+	
 	.uni-modal_dialog__title__text {
 		font-size: 16px;
 		font-weight: bold;
@@ -320,6 +328,12 @@
 		padding-left: 20px;
 		padding-right: 20px;
 		lines: 2;
+		/* #ifdef WEB */
+		display: -webkit-box;
+		-webkit-line-clamp: 2; /* 限制显示两行 */
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		/* #endif */
 	}
 
 	.uni-modal_dialog__title__text.uni-modal_dark__mode {
@@ -341,6 +355,13 @@
 		lines: 6;
 		width: 100%;
 		text-overflow: ellipsis;
+		/* #ifdef WEB */
+		display: -webkit-box;
+		-webkit-line-clamp: 6;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		word-break: break-word;
+		/* #endif */
 	}
 
 	.uni-modal_dialog__content__textarea {
@@ -418,6 +439,7 @@
 		font-weight: bold;
 		text-align: center;
 		lines : 1;
+		white-space: nowrap;
 	}
 
 	.uni-modal_dialog__content__bottom__button__text__sure {
@@ -425,6 +447,7 @@
 		font-size: 16px;
 		font-weight: bold;
 		lines : 1;
+		white-space: nowrap;
 		text-align: center;
 		color: #4A5E86;
 	}

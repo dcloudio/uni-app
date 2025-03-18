@@ -457,7 +457,7 @@ export interface Uni {
   showActionSheet(options: ShowActionSheetOptions): void;
 
   /**
-   * @description 关闭操作菜单
+   * @description 关闭栈顶页面操作菜单
    * @example
    * ```typescript
    *	uni.hideActionSheet();
@@ -552,3 +552,5 @@ export class ShowActionSheetFailImpl extends UniError implements ShowActionSheet
     this.errCode = errCode
   }
 }
+
+export type HideActionSheet = () => void
