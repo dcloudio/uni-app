@@ -11,8 +11,12 @@
  */
 interface IExternalModule {
   name: string
-  type: 'extapi' | 'provider' | 'component'
+  type: ExternalModuleType
+  // subType?: ExternalModuleSubType
 }
+
+type ExternalModuleType = 'extapi' | 'provider'
+// type ExternalModuleSubType = 'customElements' | 'components' | 'pages' | 'utssdk'
 
 export const ExternalModules: IExternalModule[] = [
   {
@@ -50,13 +54,16 @@ export const ExternalModules: IExternalModule[] = [
   {
     name: 'uni-map-tencent',
     type: 'extapi',
+    // subType: 'components',
   },
 ]
-
 export const ExternalModulesX = ExternalModules
 
-export const ExtApiBlackListX = ['uni-pullDownRefresh', 'uni-map-tencent']
+// TODO 未来component类型的provider需要重构，比如uni-map-tencent需要依赖内置基础模块uni-map，先基于现状实现。
+export const ComponentsWithProvider = []
+export const ComponentsWithProviderX = ['uni-map']
 
+export const ExtApiBlackListX = ['uni-pullDownRefresh', 'uni-map-tencent']
 export const ExtApiBlackList = [
   'uni-loadFontFace',
   'uni-getElementById',

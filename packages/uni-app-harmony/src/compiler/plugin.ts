@@ -16,6 +16,7 @@ import {
 import type { OutputChunk, PluginContext } from 'rollup'
 import ExternalModuls from './external-modules.json'
 import ExternalModulsX from './external-modules-x.json'
+import { ComponentsWithProvider, ComponentsWithProviderX } from './constants'
 
 const isX = process.env.UNI_APP_X === 'true'
 const StandaloneExtApis = isX ? ExternalModulsX : ExternalModuls
@@ -28,6 +29,20 @@ const Providers = StandaloneExtApis.filter(
   service: string
   version: string
 }[]
+const ComponentWithProviderList = isX
+  ? ComponentsWithProviderX
+  : ComponentsWithProvider
+
+if (isX) {
+  Providers.push({
+    type: 'provider',
+    plugin: 'uni-map',
+    provider: 'tencent',
+    service: 'map',
+    version: '1.0.0',
+  })
+}
+
 const ApiModules = StandaloneExtApis.filter(
   (item) => item.type === 'extapi'
 ) as {
@@ -218,6 +233,7 @@ function getManifestModules(inputDir: string) {
 
 /**
  * 获取manifest.json中勾选的provider
+ * 仅处理payment等参数内包含provider的api，地图模块不在此处理
  */
 function getRelatedProviders(
   inputDir: string,
@@ -239,11 +255,7 @@ function getRelatedProviders(
       if (!providerConf) {
         continue
       }
-      if (
-        providerConf.__platform__ &&
-        Array.isArray(providerConf.__platform__) &&
-        !providerConf.__platform__.includes('harmonyos')
-      ) {
+      if (!isHarmonyOSProvider(providerConf)) {
         continue
       }
       const plugin = uniModule + '-' + name
@@ -261,6 +273,14 @@ function getRelatedProviders(
   return relatedProviders
 }
 
+function isHarmonyOSProvider(providerConf: Record<string, any>) {
+  return (
+    !providerConf.__platform__ ||
+    !Array.isArray(providerConf.__platform__) ||
+    providerConf.__platform__.includes('harmonyos')
+  )
+}
+
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir: string): string[] {
   const modules: string[] = []
@@ -268,12 +288,31 @@ function getRelatedModules(inputDir: string): string[] {
   if (!manifestModules) {
     return modules
   }
-  for (const manifestModule in manifestModules) {
-    const apiModule = ApiModules.find((item) => item.plugin === manifestModule)
+  for (const manifestModuleName in manifestModules) {
+    if (ComponentWithProviderList.includes(manifestModuleName)) {
+      const manifestModuleInfo = manifestModules[manifestModuleName]
+      for (const provider in manifestModuleInfo) {
+        const manifestPlugin = manifestModuleName + '-' + provider
+        const providerConf = manifestModuleInfo[manifestPlugin]
+        if (!isHarmonyOSProvider(providerConf)) {
+          continue
+        }
+        const apiModule = ApiModules.find(
+          (item) => item.plugin === manifestPlugin
+        )
+        if (apiModule) {
+          modules.push(manifestPlugin)
+        }
+        continue
+      }
+    }
+    const apiModule = ApiModules.find(
+      (item) => item.plugin === manifestModuleName
+    )
     if (!apiModule) {
       continue
     }
-    modules.push(manifestModule)
+    modules.push(manifestModuleName)
   }
   return modules
 }
@@ -355,6 +394,17 @@ function genAppHarmonyUniModules(
           importCodes.push(`import { ${apiName} } from '${harmonyModuleName}'`)
           extApiCodes.push(`uni.${apiName} = ${apiName}`)
         })
+        if (module.startsWith('uni-map-')) {
+          // TODO 临时处理，后续需要内置基础uni-map模块并优化此问题
+          importCodes.push(
+            `import { UniMapElement } from '${harmonyModuleName}'`
+          )
+          extApiCodes.push(`globalThis.UniMapElement = UniMapElement`)
+          const ident = camelize(module)
+          registerCodes.push(
+            `uni.registerUTSPlugin('uni_modules/${module}', ${ident})`
+          )
+        }
       }
     }
   })
