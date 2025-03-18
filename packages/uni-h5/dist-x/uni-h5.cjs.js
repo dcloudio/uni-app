@@ -9299,7 +9299,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       rearrange(visibleVNode, containerRef, isVertical, state);
     }
     const containerStyle = vue.computed(() => {
-      return `${props2.direction === "none" ? "overflow: hidden;" : isVertical.value ? "overflow-y: auto;" : "overflow-x: auto;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
+      return `${props2.direction === "none" ? "overflow: hidden;" : props2.direction === "all" ? "overflow: auto;" : isVertical.value ? "overflow: hidden auto;" : "overflow: auto hidden;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
     });
     const contentStyle = vue.computed(() => {
       return `position: relative; ${isVertical.value ? "height" : "width"}: ${state.totalSize}px;`;

@@ -2339,6 +2339,8 @@ function _reLaunch(_ref3) {
     var pages2 = getAllPages().slice(0);
     var selected = getTabIndex(path);
     function callback() {
+      var _getPageManager$findP;
+      (_getPageManager$findP = getPageManager().findPageById(getTabBar().pageId)) === null || _getPageManager$findP === void 0 || _getPageManager$findP.close();
       pages2.forEach((page) => closePage(page, "none"));
       resolve(void 0);
       setStatusBarStyle();
@@ -7637,7 +7639,7 @@ var _hoisted_5$1 = {
 var _hoisted_6$1 = {
   class: "uni-choose-location-poi-search-box"
 };
-var _hoisted_7$1 = {
+var _hoisted_7 = {
   class: "uni-choose-location-icons uni-choose-location-search-icon"
 };
 var _hoisted_8 = ["placeholder"];
@@ -7732,7 +7734,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     key: 0,
     class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
     style: normalizeStyle($options.poiBoxStyleCom)
-  }, [createElementVNode("view", _hoisted_5$1, [createElementVNode("view", _hoisted_6$1, [createElementVNode("text", _hoisted_7$1, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
+  }, [createElementVNode("view", _hoisted_5$1, [createElementVNode("view", _hoisted_6$1, [createElementVNode("text", _hoisted_7, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
     "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $data.searchValue = $event),
     type: "text",
     placeholder: $options.languageCom["search"],
@@ -7783,7 +7785,6 @@ const _sfc_main$3 = {
     return {
       inputLineHeight: 32,
       theme: "light",
-      show: false,
       readyEventName: "",
       optionsEventName: "",
       successEventName: "",
@@ -7797,6 +7798,7 @@ const _sfc_main$3 = {
       cancelText: "取消",
       cancelColor: "#000000",
       confirmColor: "#4A5E86",
+      inputBottom: "0px",
       inputCancelColor: null,
       inputConfirmColor: null,
       hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
@@ -7862,6 +7864,18 @@ const _sfc_main$3 = {
     uni.$off(this.failEventName, null);
   },
   methods: {
+    onInputBlur(e) {
+      setTimeout(() => {
+        this.inputBottom = "0px";
+      }, 220);
+    },
+    onInputKeyboardChange(e) {
+      var keyBoardHeight = e.detail.height;
+      if (keyBoardHeight > 0) {
+        var calcBottom = keyBoardHeight / 2;
+        this.inputBottom = "".concat(calcBottom, "px");
+      }
+    },
     isValidColor(inputColor) {
       var hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
       if (inputColor == null) {
@@ -7937,13 +7951,8 @@ const _style_0$3 = {
   "uni-modal_dialog__container": {
     "": {
       "width": 300,
-      "paddingTop": 10,
       "backgroundColor": "#FFFFFF",
       "boxShadow": "0 0 10px rgba(0, 0, 0, 0.1)",
-      "display": "flex",
-      "justifyContent": "center",
-      "alignItems": "center",
-      "overflow": "hidden",
       "borderTopLeftRadius": 8,
       "borderTopRightRadius": 8,
       "borderBottomRightRadius": 8,
@@ -7956,6 +7965,21 @@ const _style_0$3 = {
     ".uni-modal_dialog__show": {
       "opacity": 1,
       "transform": "scale(1)"
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#272727"
+    }
+  },
+  "uni-modal_dialog__container__wrapper": {
+    "": {
+      "width": "100%",
+      "height": "100%",
+      "paddingTop": 10,
+      "backgroundColor": "#FFFFFF",
+      "borderTopLeftRadius": 8,
+      "borderTopRightRadius": 8,
+      "borderBottomRightRadius": 8,
+      "borderBottomLeftRadius": 8
     },
     ".uni-modal_dark__mode": {
       "backgroundColor": "#272727"
@@ -8077,7 +8101,8 @@ const _style_0$3 = {
       "fontSize": 16,
       "fontWeight": "bold",
       "textAlign": "center",
-      "lines": 1
+      "lines": 1,
+      "whiteSpace": "nowrap"
     }
   },
   "uni-modal_dialog__content__bottom__button__text__sure": {
@@ -8086,6 +8111,7 @@ const _style_0$3 = {
       "fontSize": 16,
       "fontWeight": "bold",
       "lines": 1,
+      "whiteSpace": "nowrap",
       "textAlign": "center",
       "color": "#4A5E86"
     }
@@ -8112,25 +8138,18 @@ const _style_0$3 = {
   }
 };
 var _hoisted_1$2 = {
-  style: {
-    "width": "100%",
-    "height": "100%",
-    "border-radius": "8px"
-  }
-};
-var _hoisted_2$2 = {
   class: "uni-modal_dialog__content"
 };
-var _hoisted_3$2 = ["auto-height", "placeholder"];
-var _hoisted_4$1 = {
+var _hoisted_2$2 = ["auto-height", "placeholder"];
+var _hoisted_3$2 = {
   key: 1,
   class: "uni-modal_dialog__content__text"
 };
-var _hoisted_5 = {
+var _hoisted_4$1 = {
   class: "uni-modal_dialog__content__bottom"
 };
+var _hoisted_5 = ["hover-class"];
 var _hoisted_6 = ["hover-class"];
-var _hoisted_7 = ["hover-class"];
 function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", {
     class: normalizeClass(["uni-modal_dialog__mask", {
@@ -8140,34 +8159,49 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-modal_dialog__container", {
       "uni-modal_dialog__show": $data.showAnim,
       "uni-modal_dark__mode": $data.theme == "dark"
+    }]),
+    id: "modal_content",
+    style: normalizeStyle({
+      bottom: $data.inputBottom
+    })
+  }, [createElementVNode("view", {
+    class: normalizeClass(["uni-modal_dialog__container__wrapper", {
+      "uni-modal_dark__mode": $data.theme == "dark"
     }])
-  }, [createElementVNode("view", _hoisted_1$2, [$data.title ? (openBlock(), createElementBlock("text", {
+  }, [$data.title ? (openBlock(), createElementBlock("text", {
     key: 0,
     class: normalizeClass(["uni-modal_dialog__title__text", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($data.title), 3)) : createCommentVNode("", true), createElementVNode("view", _hoisted_2$2, [$data.editable ? withDirectives((openBlock(), createElementBlock("textarea", {
+  }, toDisplayString($data.title), 3)) : createCommentVNode("", true), createElementVNode("view", _hoisted_1$2, [$data.editable ? withDirectives((openBlock(), createElementBlock("textarea", {
     key: 0,
     "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.content = $event),
     class: normalizeClass(["uni-modal_dialog__content__textarea", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }]),
     "placeholder-class": "modalContent_content_edit_placeholder",
+    "adjust-position": false,
+    onBlur: _cache[1] || (_cache[1] = function() {
+      return $options.onInputBlur && $options.onInputBlur(...arguments);
+    }),
+    onKeyboardheightchange: _cache[2] || (_cache[2] = function() {
+      return $options.onInputKeyboardChange && $options.onInputKeyboardChange(...arguments);
+    }),
     id: "textarea_content_input",
     ref: "ref_textarea_content_input",
     "auto-height": $data.isAutoHeight,
     placeholder: $data.placeholderText
-  }, null, 10, _hoisted_3$2)), [[vModelText, $data.content]]) : (openBlock(), createElementBlock("text", _hoisted_4$1, toDisplayString($data.content), 1))]), createElementVNode("view", {
+  }, null, 42, _hoisted_2$2)), [[vModelText, $data.content]]) : (openBlock(), createElementBlock("text", _hoisted_3$2, toDisplayString($data.content), 1))]), createElementVNode("view", {
     class: normalizeClass(["uni-modal_dialog__content__topline", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }])
-  }, null, 2), createElementVNode("view", _hoisted_5, [$data.showCancel ? (openBlock(), createElementBlock("view", {
+  }, null, 2), createElementVNode("view", _hoisted_4$1, [$data.showCancel ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }]),
     "hover-class": $data.hoverClassName,
-    onClick: _cache[1] || (_cache[1] = function() {
+    onClick: _cache[3] || (_cache[3] = function() {
       return $options.handleCancel && $options.handleCancel(...arguments);
     })
   }, [createElementVNode("text", {
@@ -8175,7 +8209,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       color: $data.cancelColor
     }),
     class: "uni-modal_dialog__content__bottom__button__text"
-  }, toDisplayString($data.cancelText), 5)], 10, _hoisted_6)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
+  }, toDisplayString($data.cancelText), 5)], 10, _hoisted_5)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
     key: 1,
     class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", {
       "uni-modal_dark__mode": $data.theme == "dark"
@@ -8185,7 +8219,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       "uni-modal_dark__mode": $data.theme == "dark"
     }]),
     "hover-class": $data.hoverClassName,
-    onClick: _cache[2] || (_cache[2] = function() {
+    onClick: _cache[4] || (_cache[4] = function() {
       return $options.handleSure && $options.handleSure(...arguments);
     })
   }, [createElementVNode("text", {
@@ -8193,7 +8227,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       color: $data.confirmColor
     }),
     class: "uni-modal_dialog__content__bottom__button__text__sure"
-  }, toDisplayString($data.confirmText), 5)], 10, _hoisted_7)])])], 2)], 2);
+  }, toDisplayString($data.confirmText), 5)], 10, _hoisted_6)])], 2)], 6)], 2);
 }
 const UniUniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
 class Friction {

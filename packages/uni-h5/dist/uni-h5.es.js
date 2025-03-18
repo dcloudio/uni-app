@@ -4204,7 +4204,8 @@ class CanvasContext {
     var self = this;
     this.state.font = value;
     var fontFormat = value.match(
-      /^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
+      // 支持小数点 github #5329
+      /^(([\w\-]+\s)*)(\d+\.?\d*r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
     );
     if (fontFormat) {
       var style = fontFormat[1].trim().split(/\s/);
@@ -4218,7 +4219,7 @@ class CanvasContext {
             data: [value2]
           });
           self.state.fontStyle = value2;
-        } else if (["bold", "normal"].indexOf(value2) > -1) {
+        } else if (["bold", "normal", "lighter", "bolder"].indexOf(value2) > -1 || /^\d+$/.test(value2)) {
           actions.push({
             method: "setFontWeight",
             data: [value2]
@@ -7952,7 +7953,7 @@ function initHidpi() {
         if (args[3] && typeof args[3] === "number") {
           args[3] *= pixelRatio;
         }
-        var font2 = this.font;
+        var font2 = this.__font__ || this.font;
         this.font = font2.replace(
           /(\d+\.?\d*)(px|em|rem|pt)/g,
           function(w, m, u) {
@@ -7974,7 +7975,7 @@ function initHidpi() {
         if (args[3] && typeof args[3] === "number") {
           args[3] *= pixelRatio;
         }
-        var font2 = this.font;
+        var font2 = this.__font__ || this.font;
         this.font = font2.replace(
           /(\d+\.?\d*)(px|em|rem|pt)/g,
           function(w, m, u) {

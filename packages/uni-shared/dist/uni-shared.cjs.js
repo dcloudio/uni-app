@@ -323,6 +323,11 @@ function isComponentTag(tag) {
 }
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
 const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
+// TODO 是否还存在其他需要特殊处理的 void 标签？
+const APP_VOID_TAGS = ['textarea'];
+function isAppVoidTag(tag) {
+    return APP_VOID_TAGS.includes(tag) || shared.isVoidTag(tag);
+}
 
 const LINEFEED = '\n';
 const NAVBAR_HEIGHT = 44;
@@ -1891,6 +1896,7 @@ exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
 exports.isAppUVueBuiltInEasyComponent = isAppUVueBuiltInEasyComponent;
 exports.isAppUVueNativeTag = isAppUVueNativeTag;
+exports.isAppVoidTag = isAppVoidTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
