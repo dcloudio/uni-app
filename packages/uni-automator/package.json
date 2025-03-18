@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "2.0.0-32920211029001",
+  "version": "2.0.2-alpha-4060120250318001",
   "description": "uni-app automator",
   "main": "dist/index.js",
   "repository": {
@@ -17,14 +17,14 @@
     "address": "^1.1.2",
     "debug": "^4.1.1",
     "default-gateway": "^6.0.0",
-    "kill-port": "^1.6.0",
+    "jimp": "^0.10.1",
     "jsonc-parser": "^3.2.0",
+    "kill-port": "^1.6.0",
     "licia": "^1.21.0",
     "postcss-selector-parser": "^6.0.2",
     "qrcode-reader": "^1.0.4",
     "qrcode-terminal": "^0.12.0",
-    "ws": "^7.2.3",
-    "jimp": "^0.10.1"
+    "ws": "^7.2.3"
   },
   "peerDependencies": {
     "adbkit": "^2.11.1",
@@ -33,4 +33,3 @@
   },
   "gitHead": "9e2d0f8e244724fcd64880316c57d837d1778cf8"
 }
-
