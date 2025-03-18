@@ -6,7 +6,9 @@ import { output, resetOutput } from '../../logs'
 import { debounce } from '@dcloudio/uni-shared'
 
 export type UniViteCopyPluginTarget = Omit<FileWatcherOptions, 'verbose'> & {
-  watchOptions?: WatchOptions
+  watchOptions?: WatchOptions & {
+    readyTimeout?: number
+  }
 }
 export interface UniViteCopyPluginOptions {
   targets: UniViteCopyPluginTarget[]
