@@ -98,6 +98,14 @@ var ExternalModulesX = [
 		version: "1.0.0"
 	},
 	{
+		type: "extapi",
+		plugin: "uni-map-tencent",
+		apis: [
+			"createMapContext"
+		],
+		version: "1.0.0"
+	},
+	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
@@ -148,9 +156,30 @@ var ExternalModulesX = [
 	}
 ];
 
+/**
+ * uni-app内部extapi发行到ohpm的uni_modules组织下的包列表
+ * 注意此列表会同时被框架编译器和用户项目编译器引用
+ */
+// type ExternalModuleSubType = 'customElements' | 'components' | 'pages' | 'utssdk'
+// TODO 未来component类型的provider需要重构，比如uni-map-tencent需要依赖内置基础模块uni-map，先基于现状实现。
+const ComponentsWithProvider = [];
+const ComponentsWithProviderX = ['uni-map'];
+
 const isX = process.env.UNI_APP_X === 'true';
 const StandaloneExtApis = isX ? ExternalModulesX : ExternalModuls;
 const Providers = StandaloneExtApis.filter((item) => item.type === 'provider');
+const ComponentWithProviderList = isX
+    ? ComponentsWithProviderX
+    : ComponentsWithProvider;
+if (isX) {
+    Providers.push({
+        type: 'provider',
+        plugin: 'uni-map',
+        provider: 'tencent',
+        service: 'map',
+        version: '1.0.0',
+    });
+}
 const ApiModules = StandaloneExtApis.filter((item) => item.type === 'extapi');
 const commandGlobals = {
     vue: 'Vue',
@@ -281,6 +310,7 @@ function getManifestModules(inputDir) {
 }
 /**
  * 获取manifest.json中勾选的provider
+ * 仅处理payment等参数内包含provider的api，地图模块不在此处理
  */
 function getRelatedProviders(inputDir, allProviders) {
     const relatedProviders = [];
@@ -299,9 +329,7 @@ function getRelatedProviders(inputDir, allProviders) {
             if (!providerConf) {
                 continue;
             }
-            if (providerConf.__platform__ &&
-                Array.isArray(providerConf.__platform__) &&
-                !providerConf.__platform__.includes('harmonyos')) {
+            if (!isHarmonyOSProvider(providerConf)) {
                 continue;
             }
             const plugin = uniModule + '-' + name;
@@ -318,6 +346,11 @@ function getRelatedProviders(inputDir, allProviders) {
     }
     return relatedProviders;
 }
+function isHarmonyOSProvider(providerConf) {
+    return (!providerConf.__platform__ ||
+        !Array.isArray(providerConf.__platform__) ||
+        providerConf.__platform__.includes('harmonyos'));
+}
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir) {
     const modules = [];
@@ -325,12 +358,27 @@ function getRelatedModules(inputDir) {
     if (!manifestModules) {
         return modules;
     }
-    for (const manifestModule in manifestModules) {
-        const apiModule = ApiModules.find((item) => item.plugin === manifestModule);
+    for (const manifestModuleName in manifestModules) {
+        if (ComponentWithProviderList.includes(manifestModuleName)) {
+            const manifestModuleInfo = manifestModules[manifestModuleName];
+            for (const provider in manifestModuleInfo) {
+                const manifestPlugin = manifestModuleName + '-' + provider;
+                const providerConf = manifestModuleInfo[manifestPlugin];
+                if (!isHarmonyOSProvider(providerConf)) {
+                    continue;
+                }
+                const apiModule = ApiModules.find((item) => item.plugin === manifestPlugin);
+                if (apiModule) {
+                    modules.push(manifestPlugin);
+                }
+                continue;
+            }
+        }
+        const apiModule = ApiModules.find((item) => item.plugin === manifestModuleName);
         if (!apiModule) {
             continue;
         }
-        modules.push(manifestModule);
+        modules.push(manifestModuleName);
     }
     return modules;
 }
@@ -379,6 +427,13 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
                     importCodes.push(`import { ${apiName} } from '${harmonyModuleName}'`);
                     extApiCodes.push(`uni.${apiName} = ${apiName}`);
                 });
+                if (module.startsWith('uni-map-')) {
+                    // TODO 临时处理，后续需要内置基础uni-map模块并优化此问题
+                    importCodes.push(`import { UniMapElement } from '${harmonyModuleName}'`);
+                    extApiCodes.push(`globalThis.UniMapElement = UniMapElement`);
+                    const ident = uniCliShared.camelize(module);
+                    registerCodes.push(`uni.registerUTSPlugin('uni_modules/${module}', ${ident})`);
+                }
             }
         }
     });

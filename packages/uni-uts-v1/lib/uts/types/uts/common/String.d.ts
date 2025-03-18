@@ -119,9 +119,11 @@ interface String {
 
 
   /**
+
      返回包含此字符串的字符的[kotlin.CharArray]。
      @return 字符数组
      @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/string.html#toCharArray
+     @deprecated
      @uniPlatform {
         "app": {
             "android": {
@@ -138,6 +140,11 @@ interface String {
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             }
+        },
+        "harmony": {
+            "osVer": "x",
+            "uniVer": "x",
+            "unixVer": "x"
         },
         "web": {
             "uniVer": "x",

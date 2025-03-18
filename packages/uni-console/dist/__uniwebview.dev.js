@@ -466,6 +466,10 @@
                         sendErrorMessages([arg.slice(startIndex, endIndex)]);
                         return;
                     }
+                    else if (arg instanceof Error) {
+                        sendErrorMessages([arg]);
+                        return;
+                    }
                 }
                 sendConsoleMessages([formatMessage(type, args)]);
             };

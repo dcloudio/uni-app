@@ -363,11 +363,11 @@ declare function encodeURIComponent(uriComponent : string) : string | null;
         "unixUtsPlugin": "4.25"
       },
       "ios": {
-        "osVer": "x",
-        "uniVer": "x",
-        "uniUtsPlugin": "x",
-        "unixVer": "x",
-        "unixUtsPlugin": "x"
+        "osVer": "12.0",
+        "uniVer": "4.61",
+        "uniUtsPlugin": "4.61",
+        "unixVer": "4.61",
+        "unixUtsPlugin": "4.61"
       }
     },
     "web": {
@@ -395,11 +395,11 @@ declare function atob(encodedData : string) : string
         "unixUtsPlugin": "4.25"
       },
       "ios": {
-        "osVer": "x",
-        "uniVer": "x",
-        "uniUtsPlugin": "x",
-        "unixVer": "x",
-        "unixUtsPlugin": "x"
+        "osVer": "12.0",
+        "uniVer": "4.61",
+        "uniUtsPlugin": "4.61",
+        "unixVer": "4.61",
+        "unixUtsPlugin": "4.61"
       }
     },
     "web": {

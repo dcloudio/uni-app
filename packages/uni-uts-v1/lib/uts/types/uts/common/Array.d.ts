@@ -70,9 +70,14 @@ interface Array<T> {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x"
             }
-        }
+        },
+        "harmony": {
+            "osVer": "x",
+            "uniVer": "x",
+            "unixVer": "x"
+        },
      }
    */
   toKotlinList() : kotlin.collections.List<any>
@@ -82,6 +87,7 @@ interface Array<T> {
      @param item 添加到数组的元素。
      @return 是否成功添加
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#add
+     @deprecated
      @uniPlatform {
         "app": {
             "android": {
@@ -98,14 +104,21 @@ interface Array<T> {
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             }
+        },
+        "harmony": {
+            "osVer": "x",
+            "uniVer": "x",
+            "unixVer": "x"
         }
      }
    */
   add(item : T) : boolean
 
   /**
+
      toLocaleString() 方法返回一个字符串，表示数组中的所有元素。每个元素通过调用它们自己的 toLocaleString 方法转换为字符串，并且使用特定于语言环境的字符串（例如逗号“,”）分隔开。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#toLocaleString
+     @deprecated
      @uniPlatform {
         "app": {
             "android": {
@@ -121,6 +134,11 @@ interface Array<T> {
                 "unixVer": "x"
             }
         },
+        "harmony": {
+            "osVer": "x",
+            "uniVer": "x",
+            "unixVer": "x"
+        },
         "web": {
             "uniVer": "√",
             "unixVer": "4.0"
@@ -134,6 +152,7 @@ interface Array<T> {
      @param separator 分隔符
      @return 拼接完成的字符串
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#joinToString
+     @deprecated
      @uniPlatform {
         "app": {
             "android": {
@@ -148,7 +167,12 @@ interface Array<T> {
                "uniVer": "x",
                 "unixVer": "x"
             }
-        }
+        },harmony
+        "harmony": {
+            "osVer": "x",
+            "uniVer": "x",
+            "unixVer": "x"
+        },
      }
    */
   joinToString(separator : string) : string
