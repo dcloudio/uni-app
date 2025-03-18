@@ -232,6 +232,9 @@
       "UniFormSubmitEvent"
     ],
     [
+      "UniMapElement"
+    ],
+    [
       "UniNavigatorElement"
     ],
     [
@@ -272,6 +275,9 @@
     ],
     [
       "UniVideoControlsToggleEventDetail"
+    ],
+    [
+      "UniVideoElement"
     ],
     [
       "UniVideoErrorEvent"
