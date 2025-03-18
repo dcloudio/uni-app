@@ -47,11 +47,15 @@ export const ExternalModules: IExternalModule[] = [
     name: 'uni-verify',
     type: 'extapi',
   },
+  {
+    name: 'uni-map-tencent',
+    type: 'extapi',
+  },
 ]
 
 export const ExternalModulesX = ExternalModules
 
-export const ExtApiBlackListX = ['uni-pullDownRefresh']
+export const ExtApiBlackListX = ['uni-pullDownRefresh', 'uni-map-tencent']
 
 export const ExtApiBlackList = [
   'uni-loadFontFace',
