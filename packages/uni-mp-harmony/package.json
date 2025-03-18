@@ -34,6 +34,7 @@
     "@dcloudio/uni-mp-vite": "workspace:*",
     "@dcloudio/uni-mp-vue": "workspace:*",
     "@dcloudio/uni-quickapp-webview": "workspace:*",
+    "@dcloudio/uni-mp-toutiao": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
     "@vue/shared": "3.4.21"
   }

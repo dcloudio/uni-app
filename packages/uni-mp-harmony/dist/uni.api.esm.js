@@ -3,6 +3,15 @@ import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { injectHook } from 'vue';
 import { Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        localeLanguage =
+            normalizeLocale(has.getSystemInfoSync().language) || LOCALE_EN;
+    }
+    return localeLanguage;
+}
+
 function getBaseSystemInfo() {
     return has.getSystemInfoSync();
 }
@@ -628,7 +637,9 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
     // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
         name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+        eventBus.off(n, callback);
+    });
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     eventBus.emit(name, ...args);
@@ -727,7 +738,7 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
+const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|rpx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -848,27 +859,31 @@ function initWrapper(protocols) {
         return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
-            const oldMethod = method;
-            method = function (...args) {
-                const contextOrTask = oldMethod.apply(this, args);
-                if (contextOrTask) {
-                    contextOrTask.__v_skip = true;
-                }
-                return contextOrTask;
-            };
-        }
-        if ((!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) ||
-            !isFunction(method)) {
+        /**
+         * 注意：
+         * - 此处method为原始全局对象上的uni方法名对应的属性值，比如method值可能为my.login，即undefined
+         * - uni.env并非方法，但是也会被传入wrapper
+         * - 开发者自定义的方法属性也会进入此方法，此时method为undefined，应返回undefined
+         */
+        const hasProtocol = hasOwn(protocols, methodName);
+        if (!hasProtocol && typeof has[methodName] !== 'function') {
             return method;
         }
-        const protocol = protocols[methodName];
-        if (!protocol && !isFunction(protocols.returnValue)) {
+        const needWrapper = hasProtocol ||
+            isFunction(protocols.returnValue) ||
+            isContextApi(methodName) ||
+            isTaskApi(methodName);
+        const hasMethod = hasProtocol || isFunction(method);
+        if (!hasProtocol && !method) {
             // 暂不支持的 api
             return function () {
                 console.error(`鸿蒙元服务 暂不支持${methodName}`);
             };
         }
+        if (!needWrapper || !hasMethod) {
+            return method;
+        }
+        const protocol = protocols[methodName];
         return function (arg1, arg2) {
             // 目前 api 最多两个参数
             let options = protocol || {};
@@ -901,7 +916,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return normalizeLocale(has.getSystemInfoSync().language) || LOCALE_EN;
+    return getLocaleLanguage();
 };
 const setLocale = (locale) => {
     const app = isFunction(getApp) && getApp();
@@ -1192,6 +1207,7 @@ const baseApis = {
     $once,
     $emit,
     upx2px,
+    rpx2px: upx2px,
     interceptors,
     addInterceptor,
     removeInterceptor,
