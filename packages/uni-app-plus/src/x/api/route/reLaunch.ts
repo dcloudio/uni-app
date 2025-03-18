@@ -52,9 +52,12 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
     const pages = getAllPages().slice(0)
     let selected: number = getTabIndex(path)
     function callback() {
-      getPageManager()
-        .findPageById((getTabBar() as any).pageId)
-        ?.close()
+      const hasTabBar = getTabBar() !== null
+      if (hasTabBar) {
+        getPageManager()
+          .findPageById((getTabBar() as any).pageId)
+          ?.close()
+      }
       pages.forEach((page) => closePage(page, 'none'))
       resolve(undefined)
       setStatusBarStyle()
