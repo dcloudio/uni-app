@@ -16,14 +16,6 @@
     "version": "1.0.0"
   },
   {
-    "type": "extapi",
-    "plugin": "uni-map-tencent",
-    "apis": [
-      "createMapContext"
-    ],
-    "version": "1.0.0"
-  },
-  {
     "type": "provider",
     "plugin": "uni-oauth-huawei",
     "provider": "huawei",
