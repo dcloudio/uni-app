@@ -126,6 +126,11 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniScrollToUpperEvent'],
       ['DOMRect'],
       ['DrawableContext'],
+      ['UniResizeObserver'],
+      ['UniResizeObserverEntry'],
+      ['UniBorderBoxSize'],
+      ['UniContentBoxSize'],
+      ['UniDevicePixelContentBoxSize'],
 
       // element
       ['UniViewElementImpl'],
