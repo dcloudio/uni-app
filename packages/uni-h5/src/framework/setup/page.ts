@@ -126,7 +126,7 @@ export function removePage(routeKey: string, removeRouteCaches = true) {
       closeDialogPage({ dialogPage: dialogPages[i] })
     }
     const systemDialogPages =
-      pageVm.$pageLayoutInstance?.$systemDialogPages.value
+      pageVm.$pageLayoutInstance?.$systemDialogPages?.value
     if (systemDialogPages) {
       systemDialogPages.length = 0
     }
