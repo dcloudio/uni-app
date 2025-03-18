@@ -349,18 +349,6 @@
       "ChooseImage"
     ],
     [
-      "ClosePreviewImageFail"
-    ],
-    [
-      "ClosePreviewImageSuccessCallback"
-    ],
-    [
-      "ClosePreviewImageFailCallback"
-    ],
-    [
-      "ClosePreviewImageCompleteCallback"
-    ],
-    [
       "GetImageInfo"
     ],
     [
@@ -751,13 +739,28 @@
       "UniPaymentProvider"
     ],
     [
+      "RequestPaymentErrorCode"
+    ],
+    [
       "RequestPayment"
     ],
     [
       "RequestPaymentSuccess"
     ],
     [
+      "RequestPaymentSuccessCallback"
+    ],
+    [
       "RequestPaymentFail"
+    ],
+    [
+      "RequestPaymentFailCallback"
+    ],
+    [
+      "RequestPaymentComplete"
+    ],
+    [
+      "RequestPaymentCompleteCallback"
     ],
     [
       "RequestPaymentOptions"

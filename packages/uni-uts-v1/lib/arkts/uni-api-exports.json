@@ -745,13 +745,28 @@
       "UniPaymentProvider"
     ],
     [
+      "RequestPaymentErrorCode"
+    ],
+    [
       "RequestPayment"
     ],
     [
       "RequestPaymentSuccess"
     ],
     [
+      "RequestPaymentSuccessCallback"
+    ],
+    [
       "RequestPaymentFail"
+    ],
+    [
+      "RequestPaymentFailCallback"
+    ],
+    [
+      "RequestPaymentComplete"
+    ],
+    [
+      "RequestPaymentCompleteCallback"
     ],
     [
       "RequestPaymentOptions"
