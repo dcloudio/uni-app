@@ -223,7 +223,7 @@ export default function parseBaseApp (vm, {
   return appOptions
 }
 
-function getLocaleLanguage() {
+function getLocaleLanguage () {
   let localeLanguage = ''
   if (__PLATFORM__ === 'mp-weixin') {
     const appBaseInfo = __GLOBAL__.getAppBaseInfo()

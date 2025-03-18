@@ -1,4 +1,4 @@
-import { getLocaleLanguage } from "../helpers/i18n/index"
+import { getLocaleLanguage } from '../helpers/i18n/index'
 import { isFn } from 'uni-shared'
 
 export function getLocale () {

@@ -34,7 +34,7 @@ if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus') {
   })
 }
 
-export function getLocaleLanguage() {
+export function getLocaleLanguage () {
   let localeLanguage = ''
   if (__PLATFORM__ === 'mp-weixin') {
     const appBaseInfo = __GLOBAL__.getAppBaseInfo()
@@ -268,4 +268,3 @@ export function normalizeLocale (locale, messages) {
 //     )
 //   }
 // }
-
