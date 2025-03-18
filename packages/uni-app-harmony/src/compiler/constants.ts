@@ -63,11 +63,12 @@ export const ExternalModulesX = ExternalModules
 export const ComponentsWithProvider = []
 export const ComponentsWithProviderX = ['uni-map']
 
-export const ExtApiBlackListX = ['uni-pullDownRefresh', 'uni-map-tencent']
+export const ExtApiBlackListX = ['uni-pullDownRefresh']
 export const ExtApiBlackList = [
   'uni-loadFontFace',
   'uni-getElementById',
   'uni-document',
   'uni-navigationBar',
   'uni-createWebviewContext',
+  'uni-map-tencent',
 ]
