@@ -1,15 +1,6 @@
 {
   "@dcloudio/uni-app-x-runtime": [
     [
-      "ChooseMediaSuccess"
-    ],
-    [
-      "ChooseMediaOptions"
-    ],
-    [
-      "ChooseMedia"
-    ],
-    [
       "SetClipboardData"
     ],
     [
@@ -325,7 +316,31 @@
       "MakePhoneCallOptions"
     ],
     [
+      "ChooseImageTempFile"
+    ],
+    [
       "ChooseImageSuccess"
+    ],
+    [
+      "ChooseImageFail"
+    ],
+    [
+      "ChooseImageSuccessCallback"
+    ],
+    [
+      "ChooseImageFailCallback"
+    ],
+    [
+      "ChooseImageCompleteCallback"
+    ],
+    [
+      "ChooseImageCropOptions"
+    ],
+    [
+      "ChooseImagePageOrientation"
+    ],
+    [
+      "ChooseImageAlbumMode"
     ],
     [
       "ChooseImageOptions"
@@ -334,10 +349,34 @@
       "ChooseImage"
     ],
     [
+      "ClosePreviewImageFail"
+    ],
+    [
+      "ClosePreviewImageSuccessCallback"
+    ],
+    [
+      "ClosePreviewImageFailCallback"
+    ],
+    [
+      "ClosePreviewImageCompleteCallback"
+    ],
+    [
       "GetImageInfo"
     ],
     [
       "GetImageInfoSuccess"
+    ],
+    [
+      "GetImageInfoFail"
+    ],
+    [
+      "GetImageInfoSuccessCallback"
+    ],
+    [
+      "GetImageInfoFailCallback"
+    ],
+    [
+      "GetImageInfoCompleteCallback"
     ],
     [
       "GetImageInfoOptions"
@@ -349,10 +388,61 @@
       "SaveImageToPhotosAlbumSuccess"
     ],
     [
+      "SaveImageToPhotosAlbumFail"
+    ],
+    [
+      "SaveImageToPhotosAlbumSuccessCallback"
+    ],
+    [
+      "SaveImageToPhotosAlbumFailCallback"
+    ],
+    [
+      "SaveImageToPhotosAlbumCompleteCallback"
+    ],
+    [
       "SaveImageToPhotosAlbumOptions"
     ],
     [
+      "CompressImage"
+    ],
+    [
+      "CompressImageSuccess"
+    ],
+    [
+      "CompressImageFail"
+    ],
+    [
+      "CompressImageSuccessCallback"
+    ],
+    [
+      "CompressImageFailCallback"
+    ],
+    [
+      "CompressImageCompleteCallback"
+    ],
+    [
+      "CompressImageOptions"
+    ],
+    [
       "ChooseVideoSuccess"
+    ],
+    [
+      "ChooseVideoFail"
+    ],
+    [
+      "ChooseVideoSuccessCallback"
+    ],
+    [
+      "ChooseVideoFailCallback"
+    ],
+    [
+      "ChooseVideoCompleteCallback"
+    ],
+    [
+      "ChooseVideoPageOrientation"
+    ],
+    [
+      "ChooseVideoAlbumMode"
     ],
     [
       "ChooseVideoOptions"
@@ -364,6 +454,18 @@
       "GetVideoInfoSuccess"
     ],
     [
+      "GetVideoInfoFail"
+    ],
+    [
+      "GetVideoInfoSuccessCallback"
+    ],
+    [
+      "GetVideoInfoFailCallback"
+    ],
+    [
+      "GetVideoInfoCompleteCallback"
+    ],
+    [
       "GetVideoInfoOptions"
     ],
     [
@@ -373,6 +475,18 @@
       "SaveVideoToPhotosAlbumSuccess"
     ],
     [
+      "SaveVideoToPhotosAlbumFail"
+    ],
+    [
+      "SaveVideoToPhotosAlbumSuccessCallback"
+    ],
+    [
+      "SaveVideoToPhotosAlbumFailCallback"
+    ],
+    [
+      "SaveVideoToPhotosAlbumCompleteCallback"
+    ],
+    [
       "SaveVideoToPhotosAlbumOptions"
     ],
     [
@@ -380,6 +494,18 @@
     ],
     [
       "CompressVideoSuccess"
+    ],
+    [
+      "CompressVideoFail"
+    ],
+    [
+      "CompressVideoSuccessCallback"
+    ],
+    [
+      "CompressVideoFailCallback"
+    ],
+    [
+      "CompressVideoCompleteCallback"
     ],
     [
       "CompressVideoOptions"
@@ -392,6 +518,24 @@
     ],
     [
       "ChooseFileSuccess"
+    ],
+    [
+      "ChooseFileTempFile"
+    ],
+    [
+      "ChooseFileSuccessCallback"
+    ],
+    [
+      "ChooseFileFail"
+    ],
+    [
+      "ChooseFileFailCallback"
+    ],
+    [
+      "ChooseFileComplete"
+    ],
+    [
+      "ChooseFileCompleteCallback"
     ],
     [
       "ChooseFileOptions"
@@ -442,7 +586,22 @@
       "RequestSuccess"
     ],
     [
+      "RequestMethod"
+    ],
+    [
+      "RequestErrorCode"
+    ],
+    [
       "RequestFail"
+    ],
+    [
+      "RequestSuccessCallback"
+    ],
+    [
+      "RequestFailCallback"
+    ],
+    [
+      "RequestCompleteCallback"
     ],
     [
       "RequestTask"
@@ -451,13 +610,31 @@
       "UploadFile"
     ],
     [
+      "UploadFileOptionFiles"
+    ],
+    [
       "UploadFileSuccess"
+    ],
+    [
+      "UploadFileSuccessCallback"
+    ],
+    [
+      "UploadFileFail"
+    ],
+    [
+      "UploadFileFailCallback"
+    ],
+    [
+      "UploadFileCompleteCallback"
     ],
     [
       "UploadFileOptions"
     ],
     [
       "OnProgressUpdateResult"
+    ],
+    [
+      "UploadFileProgressUpdateCallback"
     ],
     [
       "UploadTask"
@@ -469,10 +646,28 @@
       "DownloadFileSuccess"
     ],
     [
+      "DownloadFileSuccessCallback"
+    ],
+    [
+      "DownloadFileFail"
+    ],
+    [
+      "DownloadFileFailCallback"
+    ],
+    [
+      "DownloadFileComplete"
+    ],
+    [
+      "DownloadFileCompleteCallback"
+    ],
+    [
       "DownloadFileOptions"
     ],
     [
       "OnProgressDownloadResult"
+    ],
+    [
+      "DownloadFileProgressUpdateCallback"
     ],
     [
       "DownloadTask"
@@ -481,7 +676,25 @@
       "ConfigMTLS"
     ],
     [
+      "Certificate"
+    ],
+    [
       "ConfigMTLSSuccess"
+    ],
+    [
+      "ConfigMTLSSuccessCallback"
+    ],
+    [
+      "ConfigMTLSFail"
+    ],
+    [
+      "ConfigMTLSFailCallback"
+    ],
+    [
+      "ConfigMTLSComplete"
+    ],
+    [
+      "ConfigMTLSCompleteCallback"
     ],
     [
       "ConfigMTLSOptions"
