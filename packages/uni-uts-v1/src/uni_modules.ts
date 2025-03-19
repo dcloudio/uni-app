@@ -5,6 +5,7 @@ import { type UniXCompiler, createUniXCompiler } from './tsc/compiler'
 import type { CompilerOptions } from 'typescript'
 import { isInHBuilderX, normalizePath, once } from './shared'
 import { isCustomElementsSupported } from './utils'
+import { camelize, capitalize } from '@vue/shared'
 
 type TargetLanguage = Parameters<typeof createUniXCompiler>[1]
 
@@ -210,10 +211,21 @@ export async function syncUniModuleFilesByCompiler(
     const customElements = resolveCustomElements(customElementsDir)
     if (customElements.length) {
       const pluginId = path.basename(pluginDir)
-      const customElementsCodes = customElements.map(
-        (name) =>
-          `export * from '@/uni_modules/${pluginId}/customElements/${name}/${name}.uts'`
-      )
+      const customElementsCodes = customElements.map((name) => {
+        if (platform === 'app-harmony') {
+          // 鸿蒙不需要，在入口 index.generated.ets 中 define 了
+          return `export * from '@/uni_modules/${pluginId}/customElements/${name}/${name}.uts'`
+        } else {
+          // 自动生成 customElements.define 代码，rust 那里会根据 define 来生成注册代码
+          const codes: string[] = []
+          const source = `@/uni_modules/${pluginId}/customElements/${name}/${name}.uts`
+          const className = capitalize(camelize(name))
+          const elementClassName = `${className}Element`
+          codes.push(`import { ${elementClassName} } from '${source}'`)
+          codes.push(`customElements.define('${name}', ${elementClassName})`)
+          return codes.join('\n')
+        }
+      })
 
       const indexFileName = resolveTscUniModuleIndexFileName(
         platform,
