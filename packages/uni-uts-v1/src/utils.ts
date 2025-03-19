@@ -592,6 +592,14 @@ export function genCustomElementsCode(
   Object.keys(customElements).forEach((name) => {
     const source = normalizePath(path.relative(dirname, customElements[name]))
     const className = capitalize(camelize(name))
+    // 自动生成 customElements.define 代码，rust 那里会根据 define 来生成注册代码
+    codes.push(
+      `import { ${className}Element } from '${
+        source.startsWith('.') ? source : './' + source
+      }'`
+    )
+    codes.push(`customElements.define('${name}', ${className}Element)`)
+    // 自动生成 export 代码
     codes.push(
       `export { ${className}Element } from '${
         source.startsWith('.') ? source : './' + source
