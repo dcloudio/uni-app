@@ -71,4 +71,6 @@ export const ExtApiBlackList = [
   'uni-navigationBar',
   'uni-createWebviewContext',
   'uni-map-tencent',
+  'uni-arrayBufferToBase64',
+  'uni-base64ToArrayBuffer',
 ]
