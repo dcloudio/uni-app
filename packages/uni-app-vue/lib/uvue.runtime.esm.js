@@ -6904,7 +6904,7 @@ const isTeleport = (type) => type.__isTeleport;
 const isTeleportDisabled = (props) => props && (props.disabled || props.disabled === "");
 const isTargetSVG = (target) => typeof SVGElement !== "undefined" && target instanceof SVGElement;
 const isTargetMathML = (target) => typeof MathMLElement === "function" && target instanceof MathMLElement;
-const resolveTarget = (props, select) => {
+const resolveTarget = (props, select, parentComponent) => {
   const targetSelector = props && props.to;
   if (isString(targetSelector)) {
     if (!select) {
@@ -6913,7 +6913,7 @@ const resolveTarget = (props, select) => {
       );
       return null;
     } else {
-      const target = select(targetSelector);
+      const target = select(targetSelector, parentComponent);
       if (!target) {
         !!(process.env.NODE_ENV !== "production") && warn$1(
           `Failed to locate Teleport target with selector "${targetSelector}". Note the target element must exist before the component is mounted - i.e. the target cannot be rendered by the component itself, and ideally should be outside of the entire Vue component tree.`
@@ -6961,7 +6961,11 @@ const TeleportImpl = {
       );
       insert(placeholder, container, anchor);
       insert(mainAnchor, container, anchor);
-      const target = n2.target = resolveTarget(n2.props, querySelector);
+      const target = n2.target = resolveTarget(
+        n2.props,
+        querySelector,
+        parentComponent
+      );
       const targetAnchor = n2.targetAnchor = createText("");
       if (target) {
         insert(targetAnchor, target);
@@ -7047,7 +7051,8 @@ const TeleportImpl = {
         if ((n2.props && n2.props.to) !== (n1.props && n1.props.to)) {
           const nextTarget = n2.target = resolveTarget(
             n2.props,
-            querySelector
+            querySelector,
+            parentComponent
           );
           if (nextTarget) {
             moveTeleport(
@@ -7130,7 +7135,8 @@ function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScope
 }, hydrateChildren) {
   const target = vnode.target = resolveTarget(
     vnode.props,
-    querySelector
+    querySelector,
+    parentComponent
   );
   if (target) {
     const targetNode = target._lpa || target.firstChild;
@@ -8707,7 +8713,15 @@ const nodeOps = {
     el.setAttribute("value", text);
   },
   parentNode: (node) => node.parentNode,
-  nextSibling: (node) => node.nextSibling
+  nextSibling: (node) => node.nextSibling,
+  querySelector: (selector, parentComponent) => {
+    var _a, _b;
+    const document = (_b = (_a = parentComponent == null ? void 0 : parentComponent.proxy) == null ? void 0 : _a.$nativePage) == null ? void 0 : _b.document;
+    if (document) {
+      return document.querySelector(selector);
+    }
+    return null;
+  }
 };
 function updateChildrenClassStyle(el) {
   if (el !== null) {

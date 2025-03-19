@@ -6933,13 +6933,13 @@ var isTeleport = type => type.__isTeleport;
 var isTeleportDisabled = props => props && (props.disabled || props.disabled === "");
 var isTargetSVG = target => typeof SVGElement !== "undefined" && target instanceof SVGElement;
 var isTargetMathML = target => typeof MathMLElement === "function" && target instanceof MathMLElement;
-var resolveTarget = (props, select) => {
+var resolveTarget = (props, select, parentComponent) => {
   var targetSelector = props && props.to;
   if (isString(targetSelector)) {
     if (!select) {
       return null;
     } else {
-      var target = select(targetSelector);
+      var target = select(targetSelector, parentComponent);
       return target;
     }
   } else {
@@ -6976,7 +6976,7 @@ var TeleportImpl = {
       createText("");
       insert(placeholder, container, anchor);
       insert(mainAnchor, container, anchor);
-      var target = n2.target = resolveTarget(n2.props, querySelector);
+      var target = n2.target = resolveTarget(n2.props, querySelector, parentComponent);
       var targetAnchor = n2.targetAnchor = createText("");
       if (target) {
         insert(targetAnchor, target);
@@ -7025,7 +7025,7 @@ var TeleportImpl = {
         }
       } else {
         if ((n2.props && n2.props.to) !== (n1.props && n1.props.to)) {
-          var nextTarget = n2.target = resolveTarget(n2.props, querySelector);
+          var nextTarget = n2.target = resolveTarget(n2.props, querySelector, parentComponent);
           if (nextTarget) {
             moveTeleport(n2, nextTarget, null, internals, 0);
           }
@@ -7107,7 +7107,7 @@ function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScope
       querySelector
     }
   } = _ref19;
-  var target = vnode.target = resolveTarget(vnode.props, querySelector);
+  var target = vnode.target = resolveTarget(vnode.props, querySelector, parentComponent);
   if (target) {
     var targetNode = target._lpa || target.firstChild;
     if (vnode.shapeFlag & 16) {
@@ -8304,7 +8304,15 @@ var nodeOps = {
     el.setAttribute("value", text);
   },
   parentNode: node => node.parentNode,
-  nextSibling: node => node.nextSibling
+  nextSibling: node => node.nextSibling,
+  querySelector: (selector, parentComponent) => {
+    var _a, _b;
+    var document = (_b = (_a = parentComponent == null ? void 0 : parentComponent.proxy) == null ? void 0 : _a.$nativePage) == null ? void 0 : _b.document;
+    if (document) {
+      return document.querySelector(selector);
+    }
+    return null;
+  }
 };
 function updateChildrenClassStyle(el) {
   if (el !== null) {
