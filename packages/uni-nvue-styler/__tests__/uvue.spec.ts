@@ -188,4 +188,17 @@ describe('uvue-style', () => {
     )
     expect(code).toMatchSnapshot()
   })
+
+  test('support css text-shadow', async () => {
+    const { code, messages } = await parse(
+      `
+        .content {
+            text-shadow: 1px 1px 1px #000;
+        }
+        `,
+      { type: 'uvue', platform: 'app-android', map: true, ts: true }
+    )
+    expect(code).toMatchSnapshot()
+    expect(messages).toHaveLength(0)
+  })
 })

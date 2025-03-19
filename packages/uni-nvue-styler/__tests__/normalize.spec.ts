@@ -578,4 +578,17 @@ zIndex: 4;
     })
     expect(messages.length).toBe(0)
   })
+
+  // text-shadow nvue 不支持,uvue 支持
+  test('text-shadow', async () => {
+    const { messages } = await objectifierRule(`
+.foo {
+  text-shadow: 1px 1px 1px #000;
+}
+`)
+    expect(messages).toHaveLength(1)
+    expect(messages[0].text).toBe(
+      'WARNING: `text-shadow` is not a standard property name (may not be supported)'
+    )
+  })
 })

@@ -174,11 +174,13 @@ const NVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
   },
 }
 
+// 特定属性
 const uvueNormalizeMap: Record<string, Normalize> = {
   transform: normalizeTransform,
   fontFamily: normalizeString,
   textDecoration: normalizeDefault,
   boxShadow: normalizeDefault,
+  textShadow: normalizeDefault,
   transitionProperty: normalizeProperty,
   transitionTimingFunction: normalizeTimingFunction,
 }
@@ -249,6 +251,7 @@ function getUVueNormalizeMap() {
   return result
 }
 
+// 读取 css.json 的 restrictions
 function getNormalizes(property: Property) {
   const normalizes: Normalize[] = []
   const { restrictions } = property
