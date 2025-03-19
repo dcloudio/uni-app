@@ -90,9 +90,9 @@ export const openDialogPage = (
     }
     setCurrentSystemDialogPage(dialogPage)
   }
-  // @ts-expect-error
   const [aniType, aniDuration] = initAnimation(
     path,
+    // @ts-expect-error
     animationType,
     animationDuration
   )

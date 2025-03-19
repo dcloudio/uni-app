@@ -27,12 +27,14 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       if (parentPage && currentPages.indexOf(parentPage) !== -1) {
         const parentDialogPages = parentPage.getDialogPages()
         const index = parentDialogPages.indexOf(dialogPage)
-        parentDialogPages.splice(index, 1)
         closeNativeDialogPage(
           dialogPage,
           options?.animationType || 'auto',
           options?.animationDuration || ANI_DURATION
         )
+        // harmony 端该数组即 getDialogPages 返回的数组
+        // 调整删除 dialogPage 时机，以便 dialogPage onUnload 时处理父页面生命周期获取到的数组符合预期
+        parentDialogPages.splice(index, 1)
         if (index > 0 && index === parentDialogPages.length) {
           invokeHook(
             parentDialogPages[parentDialogPages.length - 1].vm!,
