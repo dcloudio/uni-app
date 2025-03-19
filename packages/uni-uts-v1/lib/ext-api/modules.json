@@ -54,7 +54,7 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       }
     }
@@ -67,7 +67,7 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       }
     }
