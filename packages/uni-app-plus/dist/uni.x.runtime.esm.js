@@ -1751,8 +1751,8 @@ var closeDialogPage = (options) => {
       if (parentPage && currentPages.indexOf(parentPage) !== -1) {
         var parentDialogPages = parentPage.getDialogPages();
         var index2 = parentDialogPages.indexOf(dialogPage);
-        parentDialogPages.splice(index2, 1);
         closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
+        parentDialogPages.splice(index2, 1);
         if (index2 > 0 && index2 === parentDialogPages.length) {
           invokeHook(parentDialogPages[parentDialogPages.length - 1].vm, ON_SHOW);
         }
@@ -2339,8 +2339,11 @@ function _reLaunch(_ref3) {
     var pages2 = getAllPages().slice(0);
     var selected = getTabIndex(path);
     function callback() {
-      var _getPageManager$findP;
-      (_getPageManager$findP = getPageManager().findPageById(getTabBar().pageId)) === null || _getPageManager$findP === void 0 || _getPageManager$findP.close();
+      var hasTabBar = getTabBar() !== null;
+      if (hasTabBar) {
+        var _getPageManager$findP;
+        (_getPageManager$findP = getPageManager().findPageById(getTabBar().pageId)) === null || _getPageManager$findP === void 0 || _getPageManager$findP.close();
+      }
       pages2.forEach((page) => closePage(page, "none"));
       resolve(void 0);
       setStatusBarStyle();
@@ -2538,24 +2541,25 @@ function initOn(app) {
       var MAX_TIMEOUT = 200;
       function getNewIntent() {
         return new Promise((resolve, reject) => {
+          var callbackWrapper = null;
           var handleNewIntent = (newIntent) => {
             var _newIntent$appScheme, _newIntent$appLink;
             clearTimeout(timeout);
-            app2.removeEventListener("onNewIntent", handleNewIntent);
+            app2.removeEventListener("onNewIntent", callbackWrapper);
             resolve({
               appScheme: (_newIntent$appScheme = newIntent.appScheme) !== null && _newIntent$appScheme !== void 0 ? _newIntent$appScheme : null,
               appLink: (_newIntent$appLink = newIntent.appLink) !== null && _newIntent$appLink !== void 0 ? _newIntent$appLink : null
             });
           };
+          callbackWrapper = app2.addEventListener("onNewIntent", handleNewIntent);
           var timeout = setTimeout(() => {
-            app2.removeEventListener("onNewIntent", handleNewIntent);
+            app2.removeEventListener("onNewIntent", callbackWrapper);
             var appLink = {
               appScheme: null,
               appLink: null
             };
             resolve(appLink);
           }, MAX_TIMEOUT);
-          app2.addEventListener("onNewIntent", handleNewIntent);
         });
       }
       var schemaLink = yield getNewIntent();
@@ -2948,7 +2952,12 @@ var openDialogPage = (options) => {
     }
     setCurrentSystemDialogPage(dialogPage);
   }
-  var [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
+  var [aniType, aniDuration] = initAnimation(
+    path,
+    // @ts-expect-error
+    animationType,
+    animationDuration
+  );
   var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
     showWebview(page2, aniType, aniDuration, () => {
@@ -4364,9 +4373,12 @@ function registerUTSPlugin(name, define) {
   pluginDefines[name] = define;
 }
 function requireUTSPlugin(name) {
+  var silent = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
   var define = pluginDefines[name];
   if (!define) {
-    console.error("".concat(name, " is not found"));
+    if (!silent) {
+      console.error("".concat(name, " is not found"));
+    }
   }
   return define;
 }
