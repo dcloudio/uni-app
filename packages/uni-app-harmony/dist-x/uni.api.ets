@@ -55,6 +55,7 @@ import { audio } from '@kit.AudioKit';
 import { avSession } from '@kit.AVSessionKit';
 import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
 import buffer1 from '@ohos.buffer';
+import buffer2 from '@ohos.buffer';
 import { bundleManager } from '@kit.AbilityKit';
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import bundleManager2 from '@ohos.bundle.bundleManager';
@@ -71,6 +72,7 @@ import cryptoFramework1 from '@ohos.security.cryptoFramework';
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
 import { display } from '@kit.ArkUI';
+import { document as uniDocument } from "@dcloudio/uni-runtime-harmony";
 import { fileIo as fileIo1 } from '@kit.CoreFileKit';
 import { fileIo as fileIo2 } from '@kit.CoreFileKit';
 import { fileIo as fileIo3 } from '@kit.CoreFileKit';
@@ -379,6 +381,7 @@ type CreateInnerAudioContextErrorCode = 1107601 | 1107602 | 1107603 | 1107604 | 
 interface ICreateInnerAudioContextFail extends IUniError {
     errCode: CreateInnerAudioContextErrorCode;
 }
+type CreateElement = (tagName: string) => UniElement;
 type $OnCallback = Function;
 type $On = (eventName: string, callback: $OnCallback) => number;
 type $OnceCallback = Function;
@@ -1077,9 +1080,9 @@ interface RecorderManager {
     onStop(options: (result: RecorderManagerOnStopResult) => void): void;
     onFrameRecorded(options: (result: Object) => void): void;
     onError(options: (result: Object) => void): void;
-    onResume?: (options: (result: Object) => void) => void;
-    onInterruptionBegin?: (options: (result: Object) => void) => void;
-    onInterruptionEnd?: (options: (result: Object) => void) => void;
+    onResume(options: (result: Object) => void): void;
+    onInterruptionBegin(options: (result: Object) => void): void;
+    onInterruptionEnd(options: (result: Object) => void): void;
 }
 type RecorderState = 'pause' | 'resume' | 'start' | 'stop' | 'error' | 'frameRecorded' | 'interruptionBegin' | 'interruptionEnd';
 interface Callbacks {
@@ -1299,38 +1302,6 @@ export class ChooseImageOptions extends UTSObject {
     complete: (ChooseImageCompleteCallback) | null = null;
 }
 export type ChooseImage = (options: ChooseImageOptions) => void;
-export class PreviewImageSuccess extends UTSObject {
-    errSubject!: string;
-    errMsg!: string;
-}
-type PreviewImageFail = IMediaError;
-type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void;
-type PreviewImageFailCallback = (callback: PreviewImageFail) => void;
-type PreviewImageCompleteCallback = ChooseImageCompleteCallback;
-export class PreviewImageOptions extends UTSObject {
-    current: Object | null = null;
-    urls!: Array<string.ImageURIString>;
-    showmenu: boolean | null = null;
-    indicator: 'default' | 'number' | 'none' | null = null;
-    loop: boolean | null = null;
-    success: (PreviewImageSuccessCallback) | null = null;
-    fail: (PreviewImageFailCallback) | null = null;
-    complete: (PreviewImageCompleteCallback) | null = null;
-}
-export type PreviewImage = (options: PreviewImageOptions) => void;
-export type ClosePreviewImage = (options: ClosePreviewImageOptions) => void;
-export class ClosePreviewImageSuccess extends UTSObject {
-    errMsg!: string;
-}
-type ClosePreviewImageFail = IMediaError;
-type ClosePreviewImageSuccessCallback = (callback: ClosePreviewImageSuccess) => void;
-type ClosePreviewImageFailCallback = (callback: ClosePreviewImageFail) => void;
-type ClosePreviewImageCompleteCallback = ChooseImageCompleteCallback;
-export class ClosePreviewImageOptions extends UTSObject {
-    success: (ClosePreviewImageSuccessCallback) | null = null;
-    fail: (ClosePreviewImageFailCallback) | null = null;
-    complete: (ClosePreviewImageCompleteCallback) | null = null;
-}
 export type GetImageInfo = (options: GetImageInfoOptions) => void;
 export class GetImageInfoSuccess extends UTSObject {
     width!: number;
@@ -2191,6 +2162,7 @@ interface UniExtApi {
     getClipboardData: GetClipboardData;
     setClipboardData: SetClipboardData;
     createInnerAudioContext: CreateInnerAudioContext;
+    createElement: CreateElement;
     $on: $On;
     $once: $Once;
     $off: $Off;
@@ -3744,6 +3716,10 @@ export function initUniExtApi() {
         const audioId = createAudioInstance();
         return AUDIOS[audioId];
     }) as CreateInnerAudioContext;
+    const API_CREATE_ELEMENT = 'createElement';
+    const createElement: CreateElement = defineSyncApi<UniElement>(API_CREATE_ELEMENT, (tagName: string): UniElement =>{
+        return uniDocument.createElement(tagName) as UniElement;
+    }) as CreateElement;
     const API_$_ON = '$on';
     const API_$_ONCE = '$once';
     const API_$_OFF = '$off';
@@ -7167,6 +7143,7 @@ export function initUniExtApi() {
     const MAX_DURATION = 60000 * 10;
     const DEFAULT_FORMAT = 'aac';
     class RecorderManagerImpl implements RecorderManager {
+        __v_skip: boolean = true;
         start(options: RecorderManagerStartOptions | null = null): void {
             if (options == null) options = {} as RecorderManagerStartOptions;
             if (!options.format) options.format = DEFAULT_FORMAT;
@@ -9325,7 +9302,11 @@ export function initUniExtApi() {
                 totalBytesExpectedToSend: totalSize
             } as OnProgressUpdateResult);
         });
-        httpRequest.request(parseUrl(url), {
+        const bufs = [] as buffer2.Buffer[];
+        httpRequest.on('dataReceive', (data)=>{
+            bufs.push(buffer2.from(data));
+        });
+        httpRequest.requestInStream(parseUrl(url), {
             header: headers,
             method: http2.RequestMethod.POST,
             connectTimeout: timeout ? timeout : undefined,
@@ -9333,13 +9314,14 @@ export function initUniExtApi() {
             multiFormDataList,
             expectDataType: http2.HttpDataType.STRING,
             clientCert: getClientCertificate(url)
-        } as http2.HttpRequestOptions, (err, res)=>{
+        } as http2.HttpRequestOptions, (err, statusCode)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
+                const responseData = buffer2.concat(bufs);
                 exec.resolve({
-                    data: res.result as string,
-                    statusCode: res.responseCode
+                    data: responseData.toString('utf8'),
+                    statusCode
                 } as UploadFileSuccess);
             }
             uploadTask.offHeadersReceived();
@@ -10549,6 +10531,7 @@ export function initUniExtApi() {
         getClipboardData,
         setClipboardData,
         createInnerAudioContext,
+        createElement,
         $on,
         $once,
         $off,
