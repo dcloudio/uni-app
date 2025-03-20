@@ -204,13 +204,10 @@ interface ProviderInfo {
   version: undefined | string
 }
 
-/**
- * 鸿蒙getLocation system支持gcj02和地理位置解析，按理说没有使用其他provider的需求，因此system内置
- */
 const DefaultModule = {
-  'uni-getLocation': {
-    system: {},
-  },
+  // 'uni-getLocation': {
+  //   system: {},
+  // },
 }
 
 function getManifestModules(inputDir: string) {
