@@ -223,6 +223,7 @@ export async function syncUniModuleFilesByCompiler(
           const elementClassName = `${className}Element`
           codes.push(`import { ${elementClassName} } from '${source}'`)
           codes.push(`customElements.define('${name}', ${elementClassName})`)
+          codes.push(`export * from '${source}'`)
           return codes.join('\n')
         }
       })
@@ -245,7 +246,7 @@ export async function syncUniModuleFilesByCompiler(
         const indexFileContent = fs.readFileSync(indexFileName, 'utf-8')
         customElementsCodes.forEach((code) => {
           if (!indexFileContent.includes(code)) {
-            fs.appendFileSync(indexFileName, code)
+            fs.appendFileSync(indexFileName, '\n' + code)
           }
         })
       }
