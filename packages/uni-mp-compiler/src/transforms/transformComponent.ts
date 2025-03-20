@@ -177,7 +177,8 @@ export function rewriteBinding(
     isMiniProgramComponent === 'plugin' ||
     isMiniProgramComponent === 'dynamicLib' ||
     isMiniProgramComponent === 'xr-frame' ||
-    isMiniProgramComponent === 'ext'
+    isMiniProgramComponent === 'ext' ||
+    isMiniProgramComponent === 'weui'
   ) {
     // 因无法介入插件类型组件内部实现，故保留原始属性
     return
