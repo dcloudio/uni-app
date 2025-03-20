@@ -402,6 +402,9 @@ export const callUniMethod = (
         },
       })
       break
+    case 'getWindowInfo':
+      success(uni.getWindowInfo())
+      break
     default:
       callback(null, { errMsg: 'uni.' + method + ' not exists.' })
       break

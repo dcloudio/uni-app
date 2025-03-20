@@ -1,7 +1,7 @@
 <template>
   <view style="flex: 1;">
     <!-- #ifdef APP-ANDROID -->
-    <view :style="{ height: `${statusBarHeight}px` }"></view>
+    <view :style="{ height: `${safeAreaTop}px` }"></view>
     <!-- #endif -->
     <web-view
       ref="webview"
@@ -28,13 +28,11 @@ export default {
       webviewStyles: {
         progress: false
       },
-      statusBarHeight: 0,
       safeAreaTop: 0
     }
   },
   onReady() {
     const windowInfo = uni.getWindowInfo()
-    this.statusBarHeight = windowInfo.statusBarHeight
     this.safeAreaTop = windowInfo.safeAreaInsets.top
     this.webviewElement = this.$refs['webview'] as UniWebViewElement
     this.webviewContext = uni.createWebviewContext('webview', this)
