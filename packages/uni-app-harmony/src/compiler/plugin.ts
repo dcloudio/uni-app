@@ -278,6 +278,10 @@ function isHarmonyOSProvider(providerConf: Record<string, any>) {
   )
 }
 
+const ModuleAlias = {
+  'uni-facialRecognitionVerify': 'uni-facialVerify',
+}
+
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir: string): string[] {
   const modules: string[] = []
@@ -285,7 +289,7 @@ function getRelatedModules(inputDir: string): string[] {
   if (!manifestModules) {
     return modules
   }
-  for (const manifestModuleName in manifestModules) {
+  for (let manifestModuleName in manifestModules) {
     if (ComponentWithProviderList.includes(manifestModuleName)) {
       const manifestModuleInfo = manifestModules[manifestModuleName]
       for (const provider in manifestModuleInfo) {
@@ -302,6 +306,9 @@ function getRelatedModules(inputDir: string): string[] {
         }
         continue
       }
+    }
+    if (ModuleAlias[manifestModuleName]) {
+      manifestModuleName = ModuleAlias[manifestModuleName]
     }
     const apiModule = ApiModules.find(
       (item) => item.plugin === manifestModuleName
