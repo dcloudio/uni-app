@@ -22419,6 +22419,13 @@
       }, attrs2), null, 16, ["el-id", "src"]);
     }
   });
+  var HarmonyNativeMethodMap = {
+    evalJS: "runJavaScript",
+    back: "backward",
+    forward: "forward",
+    reload: "refresh",
+    stop: "stop"
+  };
   function useMethods(embedRef) {
     var MethodList = ["evalJS", "back", "forward", "reload", "stop"];
     var methods = {};
@@ -22429,7 +22436,7 @@
         if (methodName === "evalJS") {
           return resolve(embed["runJavaScript"]((data || {}).jsCode || ""));
         } else {
-          resolve(embed[methodName]());
+          resolve(embed[HarmonyNativeMethodMap[methodName]]());
         }
       };
     };
@@ -22497,7 +22504,7 @@
           updateTitle: props2.updateTitle,
           webviewStyles: props2.webviewStyles
         },
-        "methods": ["runJavaScript", "back", "forward", "reload", "stop"],
+        "methods": ["runJavaScript", "backward", "forward", "refresh", "stop"],
         "style": "width:100%;height:100%"
       }, null, 8, ["options"])], 10, ["id"]);
     }

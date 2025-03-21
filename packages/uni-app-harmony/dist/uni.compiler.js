@@ -15,7 +15,7 @@ var path__default = /*#__PURE__*/_interopDefault(path);
 var ExternalModuls = [
 	{
 		type: "extapi",
-		plugin: "uni-facialRecognitionVerify",
+		plugin: "uni-facialVerify",
 		apis: [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
@@ -83,7 +83,7 @@ var ExternalModuls = [
 var ExternalModulesX = [
 	{
 		type: "extapi",
-		plugin: "uni-facialRecognitionVerify",
+		plugin: "uni-facialVerify",
 		apis: [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
@@ -286,13 +286,10 @@ function uniAppHarmonyPlugin() {
 function getProviders(module, allProviders) {
     return allProviders.filter((item) => item.plugin.startsWith(module + '-'));
 }
-/**
- * 鸿蒙getLocation system支持gcj02和地理位置解析，按理说没有使用其他provider的需求，因此system内置
- */
 const DefaultModule = {
-    'uni-getLocation': {
-        system: {},
-    },
+// 'uni-getLocation': {
+//   system: {},
+// },
 };
 function getManifestModules(inputDir) {
     const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
@@ -363,7 +360,7 @@ function getRelatedModules(inputDir) {
             const manifestModuleInfo = manifestModules[manifestModuleName];
             for (const provider in manifestModuleInfo) {
                 const manifestPlugin = manifestModuleName + '-' + provider;
-                const providerConf = manifestModuleInfo[manifestPlugin];
+                const providerConf = manifestModuleInfo[provider];
                 if (!isHarmonyOSProvider(providerConf)) {
                     continue;
                 }
@@ -432,6 +429,7 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
                     importCodes.push(`import { UniMapElement } from '${harmonyModuleName}'`);
                     extApiCodes.push(`globalThis.UniMapElement = UniMapElement`);
                     const ident = uniCliShared.camelize(module);
+                    importCodes.push(`import * as ${ident} from '${harmonyModuleName}'`);
                     registerCodes.push(`uni.registerUTSPlugin('uni_modules/${module}', ${ident})`);
                 }
             }

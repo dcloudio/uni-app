@@ -908,24 +908,6 @@
     ],
     [
       "OnSocketCloseCallback"
-    ],
-    [
-      "FacialRecognitionVerifyErrorCode"
-    ],
-    [
-      "StartFacialRecognitionVerifyScreenOrientation"
-    ],
-    [
-      "StartFacialRecognitionVerifySuccess"
-    ],
-    [
-      "StartFacialRecognitionVerifyOptions"
-    ],
-    [
-      "GetFacialRecognitionMetaInfo"
-    ],
-    [
-      "StartFacialRecognitionVerify"
     ]
   ]
 }
