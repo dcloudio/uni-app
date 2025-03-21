@@ -1,14 +1,5 @@
 [
   {
-    "type": "extapi",
-    "plugin": "uni-facialRecognitionVerify",
-    "apis": [
-      "startFacialRecognitionVerify",
-      "getFacialRecognitionMetaInfo"
-    ],
-    "version": "1.0.3"
-  },
-  {
     "type": "provider",
     "plugin": "uni-getLocation-system",
     "provider": "system",
