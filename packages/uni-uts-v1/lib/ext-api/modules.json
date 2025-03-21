@@ -290,7 +290,7 @@
       }
     }
   },
-  "uni-facialRecognitionVerify": {
+  "uni-facialVerify": {
     "uni": [
       "startFacialRecognitionVerify",
       "getFacialRecognitionMetaInfo"
