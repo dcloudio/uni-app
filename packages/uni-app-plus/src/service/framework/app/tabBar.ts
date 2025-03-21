@@ -154,6 +154,14 @@ export default {
     tabBar &&
       tabBar.onClick(({ index }: { index: number }) => {
         clickCallback(config.list[index], index)
+        const currentPage = getCurrentPages()[getCurrentPages().length - 1]
+        if (currentPage.route !== config.list[index].pagePath) {
+          // 拦截器调整
+          const activeIndex = config.selectedIndex
+          if (activeIndex) {
+            tabBar.switchTab(config.list[activeIndex].pagePath)
+          }
+        }
       })
     tabBar &&
       tabBar.onMidButtonClick(() => {

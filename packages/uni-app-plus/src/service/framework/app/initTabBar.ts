@@ -16,6 +16,11 @@ export function initTabBar() {
     (page) => page.pagePath === entryPagePath
   )
 
+  if (selected !== -1) {
+    // 取当前 tab 索引值
+    tabBar!.selectedIndex = selected
+  }
+
   tabBarInstance.init(
     tabBar!,
     (item: UniApp.TabBarItemOptions, index: number) => {
@@ -35,8 +40,6 @@ export function initTabBar() {
   )
 
   if (selected !== -1) {
-    // 取当前 tab 索引值
-    tabBar!.selectedIndex = selected
     selected !== 0 && tabBarInstance.switchTab(entryPagePath!)
   }
 }
