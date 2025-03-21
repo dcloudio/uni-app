@@ -1,4 +1,36 @@
 {
+  "@dcloudio/uni-facialVerify": [
+    [
+      "FacialRecognitionVerifyErrorCode"
+    ],
+    [
+      "GetFacialRecognitionMetaInfo"
+    ],
+    [
+      "IFacialRecognitionVerifyError"
+    ],
+    [
+      "StartFacialRecognitionVerify"
+    ],
+    [
+      "StartFacialRecognitionVerifyCompleteCallback"
+    ],
+    [
+      "StartFacialRecognitionVerifyFailCallback"
+    ],
+    [
+      "StartFacialRecognitionVerifyOptions"
+    ],
+    [
+      "StartFacialRecognitionVerifyScreenOrientation"
+    ],
+    [
+      "StartFacialRecognitionVerifySuccess"
+    ],
+    [
+      "StartFacialRecognitionVerifySuccessCallback"
+    ]
+  ],
   "@dcloudio/uni-getLocation-system": [
     [
       "UniLocationSystemProvider"
