@@ -40,7 +40,7 @@ export const ExternalModules: IExternalModule[] = [
     type: 'provider',
   },
   {
-    name: 'uni-facialRecognitionVerify',
+    name: 'uni-facialVerify',
     type: 'extapi',
   },
   {
