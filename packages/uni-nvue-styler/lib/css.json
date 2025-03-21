@@ -1864,7 +1864,7 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "center | flex-start | flex-end | space-between | space-around",
+      "syntax": "center | flex-start | flex-end | space-between | space-around | space-evenly",
       "values": [
         {
           "name": "center",
@@ -2017,6 +2017,39 @@
                 "osVer": "5.0.0",
                 "uniVer": "4.23",
                 "unixVer": "4.61"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "space-evenly",
+          "description": "元素都沿着主轴均匀分布在指定的对齐容器中。相邻项之间的间距，主轴起始位置到第一个项的间距，主轴结束位置到最后一个项的间距，都完全一样",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.61"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.61"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
