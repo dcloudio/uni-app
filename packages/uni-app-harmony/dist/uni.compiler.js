@@ -348,6 +348,9 @@ function isHarmonyOSProvider(providerConf) {
         !Array.isArray(providerConf.__platform__) ||
         providerConf.__platform__.includes('harmonyos'));
 }
+const ModuleAlias = {
+    'uni-facialRecognitionVerify': 'uni-facialVerify'
+};
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir) {
     const modules = [];
@@ -355,7 +358,7 @@ function getRelatedModules(inputDir) {
     if (!manifestModules) {
         return modules;
     }
-    for (const manifestModuleName in manifestModules) {
+    for (let manifestModuleName in manifestModules) {
         if (ComponentWithProviderList.includes(manifestModuleName)) {
             const manifestModuleInfo = manifestModules[manifestModuleName];
             for (const provider in manifestModuleInfo) {
@@ -370,6 +373,9 @@ function getRelatedModules(inputDir) {
                 }
                 continue;
             }
+        }
+        if (ModuleAlias[manifestModuleName]) {
+            manifestModuleName = ModuleAlias[manifestModuleName];
         }
         const apiModule = ApiModules.find((item) => item.plugin === manifestModuleName);
         if (!apiModule) {
