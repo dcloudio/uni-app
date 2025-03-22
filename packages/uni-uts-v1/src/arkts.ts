@@ -93,14 +93,15 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     ['UTSJSONObject'],
     ['SourceError'],
     ['UTSHarmony'],
-    ['UniElement'],
     ['resolveInOperator'],
+    ['IJSONStringify'],
   ]
   if (isX) {
     runtimeExports.push(
       // uni-app-x-runtime ets
       ['customElements'],
       ['UniCustomElement'],
+      ['UniElement'],
       ['UniElementImpl'],
       ['document'],
       ['UniPageImpl'],

@@ -79,6 +79,12 @@
         ],
         [
           "SourceError"
+        ],
+        [
+          "resolveInOperator"
+        ],
+        [
+          "IJSONStringify"
         ]
       ],
       "@dcloudio/uni-mp-sdk": [
@@ -119,6 +125,12 @@
         ],
         [
           "UTSJSONObject"
+        ],
+        [
+          "resolveInOperator"
+        ],
+        [
+          "IJSONStringify"
         ]
       ]
     },
@@ -210,6 +222,12 @@
         ],
         [
           "SourceError"
+        ],
+        [
+          "resolveInOperator"
+        ],
+        [
+          "IJSONStringify"
         ]
       ],
       "@dcloudio/uni-runtime-harmony": [
@@ -286,6 +304,12 @@
         ],
         [
           "UTSJSONObject"
+        ],
+        [
+          "resolveInOperator"
+        ],
+        [
+          "IJSONStringify"
         ]
       ]
     },
