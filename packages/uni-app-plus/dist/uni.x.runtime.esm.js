@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, renderList, resolveComponent, withDirectives, vModelText } from "vue";
+import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -6141,7 +6141,7 @@ const index = /* @__PURE__ */ Object.defineProperty({
   Radio: radio$1,
   RadioGroup: radioGroup$1
 }, Symbol.toStringTag, { value: "Module" });
-const _sfc_main$1 = {
+const _sfc_main$4 = {
   data() {
     return {
       show: false,
@@ -6206,14 +6206,17 @@ const _sfc_main$1 = {
     }
     var osTheme = systemInfo.osTheme;
     var appTheme = systemInfo.appTheme;
-    if (appTheme != null) {
+    if (appTheme != null && appTheme != "auto") {
       this.theme = appTheme;
     } else if (osTheme != null) {
       this.theme = osTheme;
     }
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
     uni.onAppThemeChange((res) => {
-      this.theme = res.appTheme;
+      var appTheme2 = res.appTheme;
+      if (appTheme2 != null && appTheme2 != "auto") {
+        this.theme = appTheme2;
+      }
     });
     uni.onOsThemeChange((res) => {
       this.theme = res.osTheme;
@@ -6269,7 +6272,7 @@ const _sfc_main$1 = {
         uni.closeDialogPage({
           dialogPage: this.$page
         });
-      }, 300);
+      }, 250);
     },
     handleMenuItemClick(tapIndex) {
       this.closeActionSheet();
@@ -6281,7 +6284,7 @@ const _sfc_main$1 = {
     }
   }
 };
-const _style_0$1 = {
+const _style_0$4 = {
   "uni-action-sheet_dialog__mask": {
     "": {
       "position": "fixed",
@@ -6309,15 +6312,13 @@ const _style_0$1 = {
       "bottom": 0,
       "zIndex": 999,
       "transform": "translate(0, 100%)",
-      "opacity": 0,
-      "transitionProperty": "transform,opacity",
-      "transitionDuration": "0.3s",
+      "transitionProperty": "transform",
+      "transitionDuration": "0.25s",
       "backgroundColor": "#f7f7f7",
       "borderTopLeftRadius": 12,
       "borderTopRightRadius": 12
     },
     ".uni-action-sheet_dialog__show": {
-      "opacity": 1,
       "transform": "translate(0, 0)"
     },
     ".uni-action-sheet_dark__mode": {
@@ -6335,9 +6336,7 @@ const _style_0$1 = {
       "borderTopLeftRadius": 5,
       "borderTopRightRadius": 5,
       "borderBottomLeftRadius": 5,
-      "borderBottomRightRadius": 5,
-      "transitionProperty": "opacity",
-      "transitionDuration": "0.3s"
+      "borderBottomRightRadius": 5
     }
   },
   "uni-action-sheet_dialog__menu": {
@@ -6363,15 +6362,7 @@ const _style_0$1 = {
       "paddingTop": 16,
       "paddingRight": 16,
       "paddingBottom": 16,
-      "paddingLeft": 16,
-      "borderBottomWidth": 1,
-      "borderBottomStyle": "solid",
-      "borderBottomColor": "#e5e5e5"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "borderBottomWidth": 1,
-      "borderBottomStyle": "solid",
-      "borderBottomColor": "#2F3131"
+      "paddingLeft": 16
     },
     ".uni-action-sheet_landscape__mode": {
       "paddingTop": 10,
@@ -6385,15 +6376,7 @@ const _style_0$1 = {
       "paddingTop": 16,
       "paddingRight": 16,
       "paddingBottom": 16,
-      "paddingLeft": 16,
-      "borderTopWidth": 1,
-      "borderTopStyle": "solid",
-      "borderTopColor": "#e5e5e5"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "borderTopWidth": 1,
-      "borderTopStyle": "solid",
-      "borderTopColor": "#2F3131"
+      "paddingLeft": 16
     },
     ".uni-action-sheet_landscape__mode": {
       "paddingTop": 10,
@@ -6469,14 +6452,24 @@ const _style_0$1 = {
       "maxHeight": 260
     }
   },
+  "divider": {
+    "": {
+      "height": 1,
+      "backgroundColor": "#e5e5e5",
+      "transform": "scaleY(0.5)"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "backgroundColor": "#2F3131"
+    }
+  },
   "@TRANSITION": {
     "uni-action-sheet_dialog__mask": {
       "property": "opacity",
       "duration": "0.1s"
     },
     "uni-action-sheet_dialog__container": {
-      "property": "opacity",
-      "duration": "0.3s"
+      "property": "transform",
+      "duration": "0.25s"
     }
   }
 };
@@ -6487,8 +6480,8 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-var _hoisted_1$1 = ["onClick"];
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$3 = ["onClick"];
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", null, [createElementVNode("view", {
     class: normalizeClass(["uni-action-sheet_dialog__mask", {
       "uni-action-sheet_dialog__mask__show": $data.show
@@ -6510,8 +6503,9 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
       "uni-action-sheet_dark__mode": $data.theme == "dark",
       "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
-  }, [$data.title ? (openBlock(), createElementBlock("view", {
-    key: 0,
+  }, [$data.title ? (openBlock(), createElementBlock(Fragment, {
+    key: 0
+  }, [createElementVNode("view", {
     class: normalizeClass(["uni-action-sheet_dialog__title", {
       "uni-action-sheet_dark__mode": $data.theme == "dark",
       "uni-action-sheet_landscape__mode": $data.isLandscape
@@ -6523,20 +6517,27 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-action-sheet_dialog__title__text", {
       "uni-action-sheet_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($data.title), 7)], 2)) : createCommentVNode("", true), createElementVNode("scroll-view", {
+  }, toDisplayString($data.title), 7)], 2), createElementVNode("view", {
+    class: normalizeClass(["divider", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark"
+    }])
+  }, null, 2)], 64)) : createCommentVNode("", true), createElementVNode("scroll-view", {
     class: normalizeClass(["uni-action-sheet_dialog__cell__container", {
       "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
   }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
     return openBlock(), createElementBlock("view", {
-      style: normalizeStyle(index2 == 0 ? {
-        borderTop: "none"
-      } : {}),
+      key: index2
+    }, [index2 !== 0 ? (openBlock(), createElementBlock("view", {
+      key: 0,
+      class: normalizeClass(["divider", {
+        "uni-action-sheet_dark__mode": $data.theme == "dark"
+      }])
+    }, null, 2)) : createCommentVNode("", true), createElementVNode("view", {
       class: normalizeClass(["uni-action-sheet_dialog__cell", {
         "uni-action-sheet_dark__mode": $data.theme == "dark",
         "uni-action-sheet_landscape__mode": $data.isLandscape
       }]),
-      key: index2,
       onClick: ($event) => $options.handleMenuItemClick(index2)
     }, [createElementVNode("text", {
       style: normalizeStyle({
@@ -6545,7 +6546,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
       class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
         "uni-action-sheet_dark__mode": $data.theme == "dark"
       }])
-    }, toDisplayString(item), 7)], 14, _hoisted_1$1);
+    }, toDisplayString(item), 7)], 10, _hoisted_1$3)]);
   }), 128))], 2)], 6), createElementVNode("view", {
     style: normalizeStyle($data.backgroundColor != null ? {
       backgroundColor: $data.backgroundColor
@@ -6564,14 +6565,15 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-action-sheet_dialog__action__text", {
       "uni-action-sheet_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($options.cancelText), 7)], 6), createElementVNode("view", {
+  }, toDisplayString($options.cancelText), 7)], 6), !$data.isLandscape ? (openBlock(), createElementBlock("view", {
+    key: 0,
     style: normalizeStyle({
       height: "".concat($data.bottomNavigationHeight, "px"),
       backgroundColor: $options.computedBackgroundColor
     })
-  }, null, 4)], 2)]);
+  }, null, 4)) : createCommentVNode("", true)], 2)]);
 }
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
 var defaultPoi = {
   latitude: 39.908823,
   longitude: 116.39747
@@ -6597,7 +6599,7 @@ var languageData = {
   }
 };
 var loadingPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
-const _sfc_main = {
+const _sfc_main$3 = {
   data() {
     var id1 = "UniMap1_".concat((Math.random() * 1e6).toString(36));
     var id2 = "UniMap2_".concat((Math.random() * 1e6).toString(36));
@@ -7151,7 +7153,7 @@ const _sfc_main = {
     }
   }
 };
-const _style_0 = {
+const _style_0$3 = {
   "uni-choose-location-icons": {
     "": {
       "fontFamily": "UniChooseLocationFontFamily",
@@ -7588,14 +7590,14 @@ const _style_0 = {
     }
   }
 };
-var _hoisted_1 = ["id"];
-var _hoisted_2 = {
+var _hoisted_1$2 = ["id"];
+var _hoisted_2$2 = {
   class: "uni-choose-location-icons uni-choose-location-map-target-icon"
 };
-var _hoisted_3 = {
+var _hoisted_3$2 = {
   class: "uni-choose-location-icons uni-choose-location-map-reset-icon"
 };
-var _hoisted_4 = {
+var _hoisted_4$1 = {
   class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text"
 };
 var _hoisted_5 = {
@@ -7647,7 +7649,7 @@ var _hoisted_21 = {
   class: "uni-choose-location-poi-search-loading"
 };
 var _hoisted_22 = ["src"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_map = resolveComponent("map");
   return openBlock(), createElementBlock("view", {
     class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
@@ -7672,13 +7674,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     class: "uni-choose-location-map-target",
     ref: $data.mapTargetId,
     id: $data.mapTargetId
-  }, [createElementVNode("text", _hoisted_2, toDisplayString($data.icon.target), 1)], 8, _hoisted_1), createElementVNode("view", {
+  }, [createElementVNode("text", _hoisted_2$2, toDisplayString($data.icon.target), 1)], 8, _hoisted_1$2), createElementVNode("view", {
     class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
     onClick: _cache[0] || (_cache[0] = function() {
       return $options.mapReset && $options.mapReset(...arguments);
     }),
     style: normalizeStyle($options.resetStyleCom)
-  }, [createElementVNode("text", _hoisted_3, toDisplayString($data.icon.position), 1)], 6)], 6), createElementVNode("view", {
+  }, [createElementVNode("text", _hoisted_3$2, toDisplayString($data.icon.position), 1)], 6)], 6), createElementVNode("view", {
     class: "uni-choose-location-nav",
     style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
   }, [createElementVNode("view", {
@@ -7695,7 +7697,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function() {
       return $options.confirm && $options.confirm(...arguments);
     })
-  }, [createElementVNode("text", _hoisted_4, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
+  }, [createElementVNode("text", _hoisted_4$1, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
     style: normalizeStyle($options.poiBoxStyleCom)
@@ -7744,12 +7746,1019 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     mode: "widthFix"
   }, null, 10, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9)], 6)) : createCommentVNode("", true)], 2);
 }
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
+class Friction {
+  // 构造函数，初始化物体的质量（m）、摩擦力大小（f，这里假设是牛顿单位的力，但乘以1000可能是为了转换为某种特定单位）
+  constructor(mass, frictionForce) {
+    this.endPosition = null;
+    this.lastTimeElapsed = null;
+    this.totalTimeToStop = 0;
+    this.mass = mass;
+    this.frictionForce = 1e3 * frictionForce;
+    this.startTime = 0;
+    this.velocity = {
+      x: 0,
+      y: 0
+    };
+    this.acceleration = {
+      x: 0,
+      y: 0
+    };
+    this.startPosition = {
+      x: 0,
+      y: 0
+    };
+    this.endPosition = null;
+    this.lastTimeElapsed = null;
+  }
+  // 设置物体的速度
+  setVelocity(x, y) {
+    var speed = Math.sqrt(x * x + y * y);
+    this.velocity = {
+      x,
+      y
+    };
+    this.acceleration = {
+      x: -this.frictionForce * x / speed,
+      y: -this.frictionForce * y / speed
+    };
+    this.totalTimeToStop = Math.abs(x / this.acceleration.x);
+    if (Number.isNaN(this.totalTimeToStop)) {
+      this.totalTimeToStop = Math.abs(y / this.acceleration.y);
+    }
+    if (Number.isNaN(this.totalTimeToStop)) {
+      this.totalTimeToStop = 0;
+    }
+    this.startTime = Date.now();
+    this.lastTimeElapsed = null;
+  }
+  // 设置物体的起始位置
+  setStartPosition(x, y) {
+    this.startPosition = {
+      x,
+      y
+    };
+  }
+  // 设置物体的结束位置
+  setEndPosition(x, y) {
+    this.endPosition = {
+      x,
+      y
+    };
+  }
+  // 计算并返回物体在时间 t 时的位置
+  positionAtTime(t) {
+    if (t == null) {
+      t = (Date.now() - this.startTime) / 1e3;
+    }
+    if (t > this.totalTimeToStop) {
+      t = this.totalTimeToStop;
+      this.lastTimeElapsed = t;
+    }
+    var x = this.velocity.x * t + 0.5 * this.acceleration.x * t * t + this.startPosition.x;
+    var y = this.velocity.y * t + 0.5 * this.acceleration.y * t * t + this.startPosition.y;
+    if (this.acceleration.x > 0 && x < this.endPosition.x || this.acceleration.x < 0 && x > this.endPosition.x) {
+      x = this.endPosition.x;
+    }
+    if (this.acceleration.y > 0 && y < this.endPosition.y || this.acceleration.y < 0 && y > this.endPosition.y) {
+      y = this.endPosition.y;
+    }
+    return {
+      x,
+      y
+    };
+  }
+  // 计算并返回物体在时间 t 时的速度
+  velocityAtTime(t) {
+    if (t == null) {
+      t = (Date.now() - this.startTime) / 1e3;
+    }
+    if (t > this.totalTimeToStop) {
+      t = this.totalTimeToStop;
+    }
+    return {
+      dx: this.velocity.x + this.acceleration.x * t,
+      dy: this.velocity.y + this.acceleration.y * t
+    };
+  }
+  // 计算物体停止前的位移量（这里的方法名可能不准确，因为 delta 通常表示变化量）
+  // 注意：这个方法可能是错误的，因为它基于一个不准确的加速度公式
+  displacement() {
+    var tx = -1.5 * Math.pow(this.velocity.x, 2) / this.acceleration.x;
+    if (Number.isNaN(tx)) {
+      tx = 0;
+    }
+    var ty = -1.5 * Math.pow(this.velocity.y, 2) / this.acceleration.y;
+    if (Number.isNaN(ty)) {
+      ty = 0;
+    }
+    return {
+      x: tx,
+      y: ty
+    };
+  }
+  // 计算物体停止所需的时间（这个方法实际上是多余的，因为已经在 setVelocity 中计算过了）
+  timeToStop() {
+    return -this.velocity.x / this.acceleration.x;
+  }
+  // 检查物体是否已经停止或到达结束位置
+  isDone() {
+    var currentPosition = this.positionAtTime(null);
+    return currentPosition.x === this.endPosition.x && currentPosition.y === this.endPosition.y || this.lastTimeElapsed === this.totalTimeToStop;
+  }
+  // 重新配置物体的质量和摩擦力大小
+  reconfigure(mass, frictionForce) {
+    this.mass = mass;
+    this.frictionForce = 1e3 * frictionForce;
+  }
+}
+var easeInOutCubic = (t) => {
+  return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+};
+var elId = 0;
+const _sfc_main$2 = {
+  name: "loading-circle",
+  props: {
+    speed: {
+      type: Number,
+      default: 16
+    },
+    size: {
+      type: Number,
+      default: 20
+    },
+    color: {
+      type: String,
+      default: "#666"
+    }
+  },
+  data() {
+    elId += 1;
+    var elID = "Uni_Load_Circle_".concat(elId);
+    return {
+      elId: elID,
+      timer: 0
+    };
+  },
+  computed: {
+    iconsSize() {
+      return this.size / 10 - 3;
+    }
+  },
+  mounted() {
+    this.init();
+  },
+  unmounted() {
+    clearInterval(this.timer);
+  },
+  methods: {
+    /**
+     * 初始化圆环
+     */
+    init() {
+      var refs = this.$refs[this.elId];
+      var ctx = refs.getDrawableContext();
+      this.build_circular(ctx);
+    },
+    /**
+     * 构建圆环动画
+     */
+    build_circular(ctx) {
+      var startAngle = 0;
+      var rotate = 0;
+      var ARC_LENGTH = 359;
+      var center = this.size / 2;
+      var lineWidth = Math.floor(this.size / 12);
+      var duration = 1200;
+      var interval = this.speed;
+      var ARC_MAX = 358;
+      var startTime = 0;
+      var foreward_end = 0;
+      var reversal_end = ARC_MAX;
+      function pogress_time() {
+        var currentTime = Date.now();
+        var elapsedTime = currentTime - startTime;
+        var progress2 = elapsedTime / duration;
+        var easedProgress = easeInOutCubic(progress2);
+        return easedProgress;
+      }
+      var draw = () => {
+        ctx.reset();
+        ctx.beginPath();
+        if (reversal_end == ARC_MAX) {
+          foreward_end = Math.min(pogress_time() * ARC_LENGTH, ARC_LENGTH);
+          if (foreward_end >= ARC_MAX) {
+            reversal_end = 0;
+            foreward_end = ARC_MAX;
+            startTime = Date.now();
+          }
+        }
+        if (foreward_end == ARC_MAX) {
+          reversal_end = Math.min(pogress_time() * ARC_LENGTH, ARC_LENGTH);
+          if (reversal_end >= ARC_MAX) {
+            reversal_end = ARC_MAX;
+            foreward_end = 0;
+            startTime = Date.now();
+          }
+        }
+        ctx.arc(center, center, center - lineWidth, startAngle + rotate + reversal_end * Math.PI / 180, startAngle + rotate + foreward_end * Math.PI / 180);
+        ctx.lineWidth = lineWidth;
+        var fillColor = (this.color !== "" ? this.color : "#666").toString();
+        ctx.strokeStyle = fillColor;
+        ctx.stroke();
+        ctx.update();
+        rotate += 0.05;
+      };
+      this.timer = setInterval(() => draw(), interval);
+    }
+  }
+};
+const _style_0$2 = {
+  "uni-preview-image-block": {
+    "": {
+      "width": 50,
+      "height": 50
+    }
+  }
+};
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("view", {
+    ref: $data.elId,
+    class: "uni-preview-image-block",
+    style: normalizeStyle({
+      width: $props.size + "px",
+      height: $props.size + "px"
+    })
+  }, null, 4);
+}
+const loadingCircle = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$2]]]);
+var DEFAULT_DISTANCE = 4;
+var FAST_SLIDE_LENGTH = 10;
+const _sfc_main$1 = {
+  components: {
+    loadingCircle
+  },
+  data() {
+    return {
+      imageMode: "aspectFit",
+      lastTouchEndTime: 0,
+      srcPath: "",
+      imageView: null,
+      screenWidth: 0,
+      screenHeight: 0,
+      /* 放大系数 */
+      scaleSize: 1,
+      /* 上次触摸事件 */
+      lastSlideTouch: null,
+      /* 图片竖向滑动的距离 */
+      imageTop: 0,
+      /* 图片横向滑动的距离 */
+      imageMarginTop: 0,
+      imageLeft: 0,
+      /* 是否需要动画 */
+      withAnimation: false,
+      imageHeight: 0,
+      historyX: [0, 0],
+      historyY: [0, 0],
+      historyT: [0, 0],
+      _friction: new Friction(1, 2),
+      requestId: -1,
+      needExecLongPress: false,
+      androidView: null,
+      downPoint: null,
+      longPressActionTimeoutId: -1,
+      inScaleMode: false,
+      inDoubleTapMode: false,
+      startTimestamp: 0,
+      clickTimeoutId: -1,
+      transformOrigin: [0, 0],
+      loadingFinished: false
+    };
+  },
+  props: {
+    "src": {
+      type: String,
+      default: ""
+    },
+    "index": {
+      type: Number,
+      default: -1
+    },
+    "longPressAction": {
+      type: Object
+    }
+  },
+  watch: {
+    "src": {
+      handler(newValue, oldValue) {
+        if (newValue != "")
+          this.getSrcLocalPath(newValue);
+      },
+      immediate: true
+    }
+  },
+  mounted() {
+    this.imageView = this.$refs["imageView"];
+    this.getImageBound();
+  },
+  methods: {
+    previewImageError(e) {
+      uni.showToast({
+        title: e.detail.errMsg,
+        position: "bottom"
+      });
+      this.loadingFinished = true;
+    },
+    isNetPath(url) {
+      if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("rtmp://") || url.startsWith("rtsp://")) {
+        return true;
+      }
+      return false;
+    },
+    getSrcLocalPath(url) {
+      if (!this.isNetPath(url)) {
+        this.srcPath = url;
+        this.getImageBound();
+        this.loadingFinished = true;
+        return;
+      }
+      var realPath = uni.getStorageSync(url);
+      if (realPath != null && realPath != "") {
+        uni.getFileSystemManager().getFileInfo({
+          filePath: realPath,
+          success: (e) => {
+            this.srcPath = realPath;
+            this.getImageBound();
+            this.loadingFinished = true;
+          },
+          fail: () => {
+            uni.downloadFile({
+              timeout: 5e3,
+              url,
+              filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
+              success: (e) => {
+                this.srcPath = e.tempFilePath;
+                this.loadingFinished = true;
+                uni.setStorage({
+                  key: url,
+                  data: e.tempFilePath
+                });
+                this.getImageBound();
+              },
+              fail: (e) => {
+              }
+            });
+          }
+        });
+      } else {
+        uni.downloadFile({
+          timeout: 5e3,
+          url,
+          filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
+          success: (e) => {
+            this.srcPath = e.tempFilePath;
+            this.loadingFinished = true;
+            uni.setStorage({
+              key: url,
+              data: e.tempFilePath
+            });
+            this.getImageBound();
+          },
+          fail: (e) => {
+          }
+        });
+      }
+    },
+    onstart(e) {
+      this.inScaleMode = false;
+      this.withAnimation = false;
+      cancelAnimationFrame(this.requestId);
+      clearTimeout(this.clickTimeoutId);
+      this.lastSlideTouch = e.touches;
+      this.historyX = [0, 0];
+      this.historyY = [0, 0];
+      this.historyT = [0, 0];
+      this.downPoint = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY
+      };
+      this.inDoubleTapMode = false;
+      this.startTimestamp = e.timeStamp;
+      this.needExecLongPress = true;
+      this.longPressActionTimeoutId = setTimeout(() => {
+        if (this.needExecLongPress) {
+          this.onLongPressAction();
+        }
+      }, 350);
+    },
+    onmove(e) {
+      if (e.touches.length == 1) {
+        var currentSlideTouch = e.touches[0];
+        if (this.lastSlideTouch != null) {
+          var slideX = currentSlideTouch.clientX - this.lastSlideTouch[0].clientX;
+          var slideY = currentSlideTouch.clientY - this.lastSlideTouch[0].clientY;
+          var downX = Math.abs(currentSlideTouch.clientX - this.downPoint.x);
+          var downY = Math.abs(currentSlideTouch.clientY - this.downPoint.y);
+          if (downX > DEFAULT_DISTANCE || downY > DEFAULT_DISTANCE) {
+            if (this.scaleSize > 1 || this.imageHeight > this.screenHeight) {
+              this.imageLeft = this.imageLeft + slideX;
+              this.imageTop = this.imageTop + slideY;
+              this.updateStyle(e, currentSlideTouch.clientX, currentSlideTouch.clientY);
+            } else {
+              this.needExecLongPress = true;
+              this.onInterceptTouchEvent(e);
+            }
+            this.historyX.shift();
+            this.historyX.push(this.imageLeft);
+            this.historyY.shift();
+            this.historyY.push(this.imageTop);
+            this.historyT.shift();
+            this.historyT.push(e.timeStamp);
+            this.lastSlideTouch = e.touches;
+            this.needExecLongPress = false;
+          } else {
+            this.needExecLongPress = true;
+          }
+        } else {
+          this.lastSlideTouch = e.touches;
+        }
+      } else if (e.touches.length >= 2) {
+        this.inScaleMode = true;
+        var currentFirstTouch = e.touches[0];
+        var currentSecondTouch = e.touches[1];
+        var currentXSlideLength = currentFirstTouch.clientX - currentSecondTouch.clientX;
+        var currentYSlideLength = currentFirstTouch.clientY - currentSecondTouch.clientY;
+        var currentLongSideLength = Math.sqrt(currentXSlideLength * currentXSlideLength + currentYSlideLength * currentYSlideLength);
+        if (this.lastSlideTouch != null && this.lastSlideTouch.length >= 2) {
+          var lastFirstTouch = this.lastSlideTouch[0];
+          var lastSecondTouch = this.lastSlideTouch[1];
+          var lastXSlideLength = lastFirstTouch.clientX - lastSecondTouch.clientX;
+          var lastYSlideLength = lastFirstTouch.clientY - lastSecondTouch.clientY;
+          var lastLongSideLength = Math.sqrt(lastXSlideLength * lastXSlideLength + lastYSlideLength * lastYSlideLength);
+          if (currentLongSideLength != lastLongSideLength) {
+            this.scaleSize = this.scaleSize * (currentLongSideLength / lastLongSideLength);
+            this.updateStyle(e, NaN, NaN);
+          }
+        }
+        this.preventDefaultScall(e);
+        this.needExecLongPress = false;
+        this.lastSlideTouch = e.touches;
+      }
+    },
+    onend(e) {
+      this.needExecLongPress = false;
+      clearTimeout(this.longPressActionTimeoutId);
+      var current = Date.now();
+      if (this.historyY[0] == 0 && this.historyY[1] == 0 && this.historyX[0] == 0 && this.historyX[1] == 0) {
+        this.withAnimation = true;
+        if (current - this.lastTouchEndTime < 350) {
+          if (this.lastSlideTouch != null && this.lastSlideTouch.length > 0) {
+            var downX = Math.abs(this.lastSlideTouch[0].clientX - this.downPoint.x);
+            var downY = Math.abs(this.lastSlideTouch[0].clientY - this.downPoint.y);
+            if (downX > FAST_SLIDE_LENGTH || downY > FAST_SLIDE_LENGTH) {
+              this.lastSlideTouch = null;
+              return;
+            }
+          }
+          if (this.scaleSize > 1) {
+            this.scaleSize = 1;
+            this.imageLeft = 0;
+            this.updateStyle(e, NaN, NaN);
+          } else if (this.scaleSize == 1) {
+            this.scaleSize = 2;
+            this.inDoubleTapMode = true;
+            this.updateStyle(e, NaN, NaN);
+          }
+        } else if (e.touches.length == 0) {
+          if (this.lastSlideTouch != null && this.lastSlideTouch.length == 1) {
+            if (e.timeStamp - this.startTimestamp < 160) {
+              if (this.lastSlideTouch != null) {
+                var downX = Math.abs(this.lastSlideTouch[0].clientX - this.downPoint.x);
+                var downY = Math.abs(this.lastSlideTouch[0].clientY - this.downPoint.y);
+                if (downX < FAST_SLIDE_LENGTH && downY < FAST_SLIDE_LENGTH) {
+                  this.clickTimeoutId = setTimeout(() => {
+                    uni.$emit("__UNIPREVIEWIMAGECLOSE");
+                  }, 200);
+                }
+              } else {
+                this.clickTimeoutId = setTimeout(() => {
+                  uni.$emit("__UNIPREVIEWIMAGECLOSE");
+                }, 200);
+              }
+            }
+          }
+          if (this.scaleSize > 3) {
+            this.scaleSize = 3;
+            this.updateStyle(e, NaN, NaN);
+          } else if (this.scaleSize < 1) {
+            this.scaleSize = 1;
+            this.imageLeft = 0;
+            this.updateStyle(e, NaN, NaN);
+          }
+          this.lastTouchEndTime = current;
+        }
+      } else {
+        if (this.inScaleMode) {
+          if (this.scaleSize > 3) {
+            this.scaleSize = 3;
+            this.updateStyle(e, NaN, NaN);
+          } else if (this.scaleSize < 1) {
+            this.scaleSize = 1;
+            this.imageLeft = 0;
+            this.updateStyle(e, NaN, NaN);
+          }
+          this.lastTouchEndTime = current;
+        }
+        var xv = 1e3 * (this.historyX[1] - this.historyX[0]) / (this.historyT[1] - this.historyT[0]);
+        var yv = 1e3 * (this.historyY[1] - this.historyY[0]) / (this.historyT[1] - this.historyT[0]);
+        this._friction.setVelocity(xv, yv);
+        this._friction.setStartPosition(this.imageLeft, this.imageTop);
+        var x0 = this._friction.displacement().x;
+        var y0 = this._friction.displacement().y;
+        var x = this.imageLeft;
+        if (!Number.isNaN(x0))
+          x = x0 + this.imageLeft;
+        var y = this.imageTop;
+        if (!Number.isNaN(y0))
+          y = y0 + this.imageTop;
+        this._friction.setEndPosition(x, y);
+        this.doTransform(() => {
+          var p = this._friction.positionAtTime(null);
+          if (Number.isNaN(p.x) && Number.isNaN(p.y)) {
+            cancelAnimationFrame(this.requestId);
+          }
+          if (!Number.isNaN(p.x))
+            this.imageLeft = p.x;
+          if (!Number.isNaN(p.y))
+            this.imageTop = p.y;
+          this.updateStyle(e, NaN, NaN);
+        });
+      }
+      this.lastSlideTouch = null;
+    },
+    oncancel(e) {
+      this.onend(e);
+      clearTimeout(this.clickTimeoutId);
+    },
+    doTransform(callback) {
+      this.requestId = requestAnimationFrame(() => {
+        callback();
+        if (!this._friction.isDone())
+          this.doTransform(callback);
+      });
+    },
+    updateStyle(e, xDistance, yDistance) {
+      var _this$imageView, _this$imageView2, _this$imageView3;
+      this.caculatorTransformOrigin(e);
+      if (1 < this.scaleSize) {
+        var scrollWidthLength = this.screenWidth * (this.scaleSize - 1);
+        var scrollRadio = this.transformOrigin[0] / this.screenWidth;
+        if (this.imageLeft > scrollWidthLength * scrollRadio) {
+          this.imageLeft = scrollWidthLength * scrollRadio;
+          this.onInterceptTouchEvent(e);
+        } else if (this.imageLeft < -(scrollWidthLength * (1 - scrollRadio))) {
+          this.imageLeft = -(scrollWidthLength * (1 - scrollRadio));
+          this.onInterceptTouchEvent(e);
+        } else {
+          this.preventDefaultScall(e);
+        }
+      } else {
+        this.imageLeft = 0;
+        this.onInterceptTouchEvent(e);
+      }
+      if (this.screenHeight < this.imageHeight * this.scaleSize) {
+        var topMargin = (this.transformOrigin[1] - (this.imageMarginTop > 0 ? this.imageMarginTop : 0)) * this.scaleSize - this.transformOrigin[1];
+        var bottomMargin = (this.imageHeight + (this.imageMarginTop > 0 ? this.imageMarginTop : 0) - this.transformOrigin[1]) * this.scaleSize - (this.screenHeight - this.transformOrigin[1]);
+        if (this.imageTop > topMargin) {
+          this.imageTop = topMargin;
+        } else if (this.imageTop < -bottomMargin) {
+          this.imageTop = -bottomMargin;
+        } else {
+          if (!Number.isNaN(yDistance) && Math.abs(yDistance - this.downPoint.y) > DEFAULT_DISTANCE) {
+            this.preventDefaultScall(e);
+          }
+        }
+      } else {
+        if (!this.inScaleMode) {
+          this.imageTop = 0;
+          if (!Number.isNaN(yDistance) && Math.abs(yDistance - this.downPoint.y) > DEFAULT_DISTANCE) {
+            this.preventDefaultScall(e);
+          }
+        } else {
+          this.preventDefaultScall(e);
+        }
+      }
+      (_this$imageView = this.imageView) === null || _this$imageView === void 0 || _this$imageView.style.setProperty("transition-duration", this.withAnimation ? "200ms" : "0ms");
+      (_this$imageView2 = this.imageView) === null || _this$imageView2 === void 0 || _this$imageView2.style.setProperty("transform-origin", this.transformOrigin[0] + "px " + this.transformOrigin[1] + "px");
+      (_this$imageView3 = this.imageView) === null || _this$imageView3 === void 0 || _this$imageView3.style.setProperty("transform", "translate(" + this.imageLeft + "px," + this.imageTop + "px) scale(" + this.scaleSize + ")");
+    },
+    onLongPressAction() {
+      if (this.longPressAction != null && this.longPressAction.itemList.length > 0) {
+        uni.showActionSheet({
+          itemList: this.longPressAction.itemList,
+          itemColor: this.longPressAction.itemColor,
+          success: (e) => {
+            uni.$emit("__UNIPREVIEWLONGPRESS", {
+              type: "success",
+              tapIndex: e.tapIndex,
+              index: this.index
+            });
+          },
+          fail() {
+            uni.$emit("__UNIPREVIEWLONGPRESS", {
+              type: "fail",
+              tapIndex: -1,
+              index: -1
+            });
+          }
+        });
+      }
+    },
+    onImageLoad(e) {
+    },
+    caculatorImageSize(imageWidth, imageHeight) {
+      var scaleImageSize = imageHeight / (imageWidth / this.screenWidth);
+      if (scaleImageSize > this.screenHeight) {
+        var _this$imageView4;
+        this.imageHeight = scaleImageSize;
+        this.imageMode = "aspectFill";
+        (_this$imageView4 = this.imageView) === null || _this$imageView4 === void 0 || _this$imageView4.style.setProperty("height", scaleImageSize + "px");
+      } else {
+        this.imageMode = "aspectFit";
+      }
+      this.imageMarginTop = (this.screenHeight - scaleImageSize) / 2;
+      this.imageHeight = scaleImageSize;
+    },
+    getImageBound() {
+      if (this.imageHeight > 0) {
+        return;
+      }
+      uni.createSelectorQuery().in(this).select(".uni-preview-image-item").boundingClientRect().exec((ret) => {
+        if (ret.length == 1) {
+          var rect = this.imageView.getBoundingClientRect();
+          this.screenHeight = rect.height;
+          this.screenWidth = rect.width;
+          if (this.srcPath != "") {
+            uni.getImageInfo({
+              src: this.srcPath,
+              success: (e) => {
+                this.caculatorImageSize(e.width, e.height);
+              },
+              fail: () => {
+              }
+            });
+          }
+        }
+      });
+    },
+    preventDefaultScall(e) {
+      e === null || e === void 0 || e.preventDefault();
+      e === null || e === void 0 || e.stopPropagation();
+    },
+    onInterceptTouchEvent(e) {
+      if (this.inScaleMode) {
+        this.preventDefaultScall(e);
+        return;
+      }
+      clearTimeout(this.clickTimeoutId);
+    },
+    // 计算transform-origin主要代码
+    caculatorTransformOrigin(e) {
+      var originalCenterX;
+      var originalCenterY;
+      if (e != null) {
+        if (e.touches.length >= 2) {
+          var point1 = e.touches[0];
+          var point2 = e.touches[1];
+          originalCenterX = (point1.clientX + point2.clientX) / 2;
+          originalCenterY = (point1.clientY + point2.clientY) / 2;
+          if (this.scaleSize * this.imageHeight < this.screenHeight) {
+            originalCenterY = this.screenHeight / 2;
+          }
+          if (this.imageHeight > this.screenHeight && this.scaleSize >= 1) {
+            originalCenterY = originalCenterY - this.imageTop / this.scaleSize;
+          }
+          var oldTransformOrigin = [this.transformOrigin[0], this.transformOrigin[1]];
+          this.transformOrigin = [originalCenterX, originalCenterY];
+          if (oldTransformOrigin[0] != 0 && oldTransformOrigin[1] != 1) {
+            this.imageLeft = this.imageLeft + (this.scaleSize - 1) * (originalCenterX - oldTransformOrigin[0]);
+            this.imageTop = this.imageTop + (this.scaleSize - 1) * (originalCenterY - oldTransformOrigin[1]);
+          }
+        } else if (e.type == "touchend") {
+          if (this.inDoubleTapMode && this.scaleSize == 2 && this.lastSlideTouch != null && this.lastSlideTouch.length == 1) {
+            originalCenterX = this.lastSlideTouch[0].clientX;
+            originalCenterY = this.lastSlideTouch[0].clientY;
+            if (this.scaleSize * this.imageHeight < this.screenHeight) {
+              originalCenterY = this.screenHeight / 2;
+            }
+            if (this.imageHeight > this.screenHeight) {
+              originalCenterY = originalCenterY - this.imageTop;
+            }
+            this.transformOrigin = [originalCenterX, originalCenterY];
+            this.imageLeft = this.imageLeft + (this.scaleSize - 1) * (originalCenterX - this.transformOrigin[0]);
+            this.imageTop = this.imageTop + (this.scaleSize - 1) * (originalCenterY - this.transformOrigin[1]);
+          }
+        }
+      }
+    }
+  }
+};
+const _style_0$1 = {
+  "uni-preview-image-item": {
+    "": {
+      "width": "100%",
+      "height": "100%",
+      "transitionProperty": "transform",
+      "transitionDuration": "0ms"
+    }
+  },
+  "uni-preview-image-patch": {
+    "": {
+      "width": "100%",
+      "height": "100%",
+      "backgroundColor": "rgba(0,0,0,0)",
+      "position": "absolute"
+    }
+  },
+  "uni-preview-image-loading": {
+    "": {
+      "position": "absolute",
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "pointerEvents": "none"
+    }
+  },
+  "@TRANSITION": {
+    "uni-preview-image-item": {
+      "property": "transform",
+      "duration": "0ms"
+    }
+  }
+};
+var _hoisted_1$1 = {
+  style: {
+    "flex": "1",
+    "background-color": "black"
+  }
+};
+var _hoisted_2$1 = ["mode", "src"];
+var _hoisted_3$1 = {
+  key: 0,
+  class: "uni-preview-image-loading"
+};
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_loadingCircle = resolveComponent("loadingCircle");
+  return openBlock(), createElementBlock("view", _hoisted_1$1, [createElementVNode("image", {
+    ref: "imageView",
+    mode: $data.imageMode,
+    class: "uni-preview-image-item",
+    src: $data.srcPath,
+    onError: _cache[0] || (_cache[0] = function() {
+      return $options.previewImageError && $options.previewImageError(...arguments);
+    }),
+    onLoad: _cache[1] || (_cache[1] = function() {
+      return $options.onImageLoad && $options.onImageLoad(...arguments);
+    })
+  }, null, 40, _hoisted_2$1), createElementVNode("view", {
+    ref: "mask",
+    class: "uni-preview-image-patch",
+    onTouchstart: _cache[2] || (_cache[2] = function() {
+      return $options.onstart && $options.onstart(...arguments);
+    }),
+    onTouchmove: _cache[3] || (_cache[3] = function() {
+      return $options.onmove && $options.onmove(...arguments);
+    }),
+    onTouchend: _cache[4] || (_cache[4] = function() {
+      return $options.onend && $options.onend(...arguments);
+    }),
+    onTouchcancel: _cache[5] || (_cache[5] = function() {
+      return $options.oncancel && $options.oncancel(...arguments);
+    })
+  }, null, 544), !$data.loadingFinished ? (openBlock(), createElementBlock("view", _hoisted_3$1, [createVNode(_component_loadingCircle, {
+    style: {
+      "margin": "auto"
+    },
+    speed: 16,
+    size: 54,
+    color: "#d3d3d3"
+  })])) : createCommentVNode("", true)]);
+}
+const uniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+const _sfc_main = {
+  components: {
+    uniPreviewImageItem
+  },
+  data() {
+    return {
+      urls: null,
+      current: 0,
+      loop: false,
+      disableTouch: false,
+      numberIndicator: "",
+      indicator: "number",
+      longPressAction: null
+    };
+  },
+  onLoad() {
+    uni.$once("__onPreviewLoadCallback", this.__onPreviewLoadCallback);
+    uni.$emit("__onPreviewLoad", null);
+    uni.$on("__UNIPREVIEWIMAGE", this.setDisableTouch);
+    uni.$on("__UNIPREVIEWIMAGECLOSE", this.closePreviewPage);
+    uni.$on("__CLOSEPREVIEWIMAGE", () => {
+      this.closePreviewPage();
+    });
+  },
+  onReady() {
+    var _this$$refs$numberInd, _this$$refs$defaultIn;
+    var windowInfo = uni.getWindowInfo();
+    (_this$$refs$numberInd = this.$refs["numberIndicator"]) === null || _this$$refs$numberInd === void 0 || _this$$refs$numberInd.style.setProperty("top", windowInfo.statusBarHeight + 8 + "px");
+    (_this$$refs$defaultIn = this.$refs["defaultIndicator"]) === null || _this$$refs$defaultIn === void 0 || _this$$refs$defaultIn.style.setProperty("bottom", windowInfo.screenHeight - windowInfo.safeArea.bottom + 8 + "px");
+  },
+  onUnload() {
+    uni.$off("__UNIPREVIEWIMAGE");
+    uni.$off("__UNIPREVIEWIMAGECLOSE");
+    uni.$off("__UNIPREVIEWLONGPRESS");
+    uni.$off("__CLOSEPREVIEWIMAGE");
+  },
+  onBackPress(options) {
+    return false;
+  },
+  methods: {
+    __onPreviewLoadCallback(result) {
+      this.urls = result["urls"];
+      if (result["current"] != null) {
+        var c = result["current"];
+        if (typeof c == "number") {
+          var d = c;
+          if (d < 0 || d > this.urls.length)
+            d = 0;
+          this.current = d;
+        } else if (typeof c == "string") {
+          var index2 = this.urls.indexOf(c);
+          if (index2 < 0) {
+            index2 = 0;
+          }
+          this.current = index2;
+        }
+      }
+      if (result["indicator"] != null) {
+        this.indicator = result["indicator"];
+      }
+      if (result["longPressActions"] != null) {
+        this.longPressAction = {
+          itemList: result["longPressActions"]["itemList"],
+          itemColor: result["longPressActions"]["itemColor"]
+        };
+      }
+      if (result["loop"] != null) {
+        this.loop = result["loop"];
+      }
+      this.numberIndicator = this.current + 1 + " / " + this.urls.length;
+    },
+    onPreviewImageChanged(e) {
+      var _this$urls;
+      this.numberIndicator = e.detail.current + 1 + " / " + ((_this$urls = this.urls) === null || _this$urls === void 0 ? void 0 : _this$urls.length);
+      this.current = e.detail.current;
+    },
+    setDisableTouch(isDisable) {
+    },
+    closePreviewPage() {
+      uni.closeDialogPage({
+        dialogPage: this.$page,
+        animationType: "fade-out"
+      });
+    }
+  }
+};
+const _style_0 = {
+  "uni-preview-image-indicator-style": {
+    "": {
+      "width": 9,
+      "height": 9,
+      "borderTopStyle": "solid",
+      "borderRightStyle": "solid",
+      "borderBottomStyle": "solid",
+      "borderLeftStyle": "solid",
+      "borderTopLeftRadius": 9,
+      "borderTopRightRadius": 9,
+      "borderBottomRightRadius": 9,
+      "borderBottomLeftRadius": 9,
+      "marginTop": 2,
+      "marginRight": 3,
+      "marginBottom": 2,
+      "marginLeft": 3,
+      "borderTopWidth": 0.1,
+      "borderRightWidth": 0.1,
+      "borderBottomWidth": 0.1,
+      "borderLeftWidth": 0.1,
+      "borderTopColor": "#AAAAAA",
+      "borderRightColor": "#AAAAAA",
+      "borderBottomColor": "#AAAAAA",
+      "borderLeftColor": "#AAAAAA"
+    }
+  },
+  "uni-preview-image-default-indicator": {
+    "": {
+      "flexDirection": "row",
+      "position": "absolute",
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "justifyContent": "center"
+    }
+  },
+  "uni-preview-image-number-indicator": {
+    "": {
+      "position": "absolute",
+      "left": 0,
+      "right": 0
+    }
+  },
+  "uni-preview-image-number-indicator-text": {
+    "": {
+      "color": "#FFFFFF",
+      "fontSize": 16,
+      "marginTop": "auto",
+      "marginRight": "auto",
+      "marginBottom": "auto",
+      "marginLeft": "auto",
+      "paddingTop": 8,
+      "paddingRight": 20,
+      "paddingBottom": 8,
+      "paddingLeft": 20,
+      "backgroundColor": "rgba(0,0,0,0.3)",
+      "lineHeight": 1,
+      "borderTopStyle": "solid",
+      "borderRightStyle": "solid",
+      "borderBottomStyle": "solid",
+      "borderLeftStyle": "solid",
+      "borderTopWidth": 0,
+      "borderRightWidth": 0,
+      "borderBottomWidth": 0,
+      "borderLeftWidth": 0,
+      "borderTopLeftRadius": 32,
+      "borderTopRightRadius": 32,
+      "borderBottomRightRadius": 32,
+      "borderBottomLeftRadius": 32
+    }
+  }
+};
+var _hoisted_1 = ["circular", "current", "disable-touch"];
+var _hoisted_2 = {
+  key: 0,
+  ref: "numberIndicator",
+  class: "uni-preview-image-number-indicator"
+};
+var _hoisted_3 = {
+  class: "uni-preview-image-number-indicator-text"
+};
+var _hoisted_4 = {
+  key: 1,
+  ref: "defaultIndicator",
+  class: "uni-preview-image-default-indicator"
+};
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_uniPreviewImageItem = resolveComponent("uniPreviewImageItem");
+  return openBlock(), createElementBlock(Fragment, null, [createElementVNode("swiper", {
+    style: {
+      "flex": "1",
+      "background-color": "black"
+    },
+    "indicator-dots": false,
+    circular: $data.loop,
+    current: $data.current,
+    onChange: _cache[0] || (_cache[0] = function() {
+      return $options.onPreviewImageChanged && $options.onPreviewImageChanged(...arguments);
+    }),
+    "disable-touch": $data.disableTouch
+  }, [$data.urls != null ? (openBlock(true), createElementBlock(Fragment, {
+    key: 0
+  }, renderList($data.urls, (item, index2) => {
+    return openBlock(), createElementBlock("swiper-item", null, [createVNode(_component_uniPreviewImageItem, {
+      index: index2,
+      src: item,
+      longPressAction: $data.longPressAction
+    }, null, 8, ["index", "src", "longPressAction"])]);
+  }), 256)) : createCommentVNode("", true)], 40, _hoisted_1), $data.indicator == "number" ? (openBlock(), createElementBlock("view", _hoisted_2, [createElementVNode("text", _hoisted_3, toDisplayString($data.numberIndicator), 1)], 512)) : createCommentVNode("", true), $data.indicator == "default" ? withDirectives((openBlock(), createElementBlock("view", _hoisted_4, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.urls.length, (i) => {
+    return openBlock(), createElementBlock("view", {
+      class: "uni-preview-image-indicator-style",
+      style: normalizeStyle({
+        backgroundColor: $data.current + 1 == i ? "#ffffff" : "#AAAAAA"
+      })
+    }, null, 4);
+  }), 256))], 512)), [[vShow, $data.urls != null]]) : createCommentVNode("", true)], 64);
+}
+const UniPreviewImagePage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
 function registerSystemPages() {
   registerSystemRoute("uni:actionSheet", UniActionSheetPage, {
     disableSwipeBack: false
   });
   registerSystemRoute("uni:chooseLocation", UniChooseLocationPage, {
+    disableSwipeBack: false
+  });
+  registerSystemRoute("uni:previewImage", UniPreviewImagePage, {
     disableSwipeBack: false
   });
 }

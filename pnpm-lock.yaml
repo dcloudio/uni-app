@@ -1697,6 +1697,34 @@ importers:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.2)
 
+  packages/uni-mp-harmony:
+    dependencies:
+      '@dcloudio/uni-cli-shared':
+        specifier: workspace:*
+        version: link:../uni-cli-shared
+      '@dcloudio/uni-mp-toutiao':
+        specifier: workspace:*
+        version: link:../uni-mp-toutiao
+      '@dcloudio/uni-mp-vite':
+        specifier: workspace:*
+        version: link:../uni-mp-vite
+      '@dcloudio/uni-mp-vue':
+        specifier: workspace:*
+        version: link:../uni-mp-vue
+      '@dcloudio/uni-quickapp-webview':
+        specifier: workspace:*
+        version: link:../uni-quickapp-webview
+      '@dcloudio/uni-shared':
+        specifier: workspace:*
+        version: link:../uni-shared
+      '@vue/shared':
+        specifier: 3.4.21
+        version: 3.4.21
+    devDependencies:
+      '@dcloudio/uni-mp-compiler':
+        specifier: workspace:*
+        version: link:../uni-mp-compiler
+
   packages/uni-mp-jd:
     dependencies:
       '@dcloudio/uni-cli-shared':
@@ -2911,7 +2939,7 @@ packages:
     resolution: {integrity: sha512-VolQeZfTh8pQFsr2IlfIVX93blfvGTuBoJuZUc7iWOqtHV8gDrq6fXLhzsVlgZyuhhRZLOxlo33rkEqnY+ucAw==}
 
   '@dcloudio/uni-app-x@0.7.44':
-    resolution: {integrity: sha512-5oIWrijlUDmUcCBm4OlauseP9RSqjKK7j+HOjvpLr/Zi9I24CKy1A+PXZ6+ya8SCwq+M+EEO1eow4eFyYUGxlA==, tarball: https://registry.npmjs.org/@dcloudio/uni-app-x/-/uni-app-x-0.7.44.tgz}
+    resolution: {integrity: sha512-5oIWrijlUDmUcCBm4OlauseP9RSqjKK7j+HOjvpLr/Zi9I24CKy1A+PXZ6+ya8SCwq+M+EEO1eow4eFyYUGxlA==}
 
   '@dcloudio/uni-ui@1.5.6':
     resolution: {integrity: sha512-jmb98PasFvZkrIDXGh94GbdWg2/jyhgs1HUG+bU8eyL7Ltias/5XBz4q8w9RXyWUfqepJRqapPA2IIQpLCuTIg==}
