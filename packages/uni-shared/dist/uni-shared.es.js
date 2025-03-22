@@ -267,7 +267,7 @@ function isAppIOSUVueNativeTag(tag) {
 }
 function isAppHarmonyUVueNativeTag(tag) {
     // video 目前是easycom实现的
-    if (tag === 'video') {
+    if (tag === 'video' || tag === 'map') {
         return false;
     }
     // 前端实现的内置组件都会注册一个根组件

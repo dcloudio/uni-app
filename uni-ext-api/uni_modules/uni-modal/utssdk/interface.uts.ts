@@ -90,7 +90,60 @@ export type ShowModalOptions = {
   complete?: UniShowModalCompleteCallback | null
 }
 
-export type ShowModal = (options: ShowModalOptions) => void;
+export type ShowModal = (options: ShowModalOptions) => ModalPage;
+
+export type ModalPage = UniPage;
+
+/**
+ * HideModal 数据结构定义
+ */
+export type UniHideModalResult =  {
+	
+}
+
+export type UniHideModalErrorCode = 4
+
+export interface UniHideModalFail extends IUniError {
+  errCode: UniHideModalErrorCode
+}
+
+export class UniHideModalFailImpl extends UniError implements UniHideModalFail {
+  override errCode: UniHideModalErrorCode
+  constructor(errMsg: string = 'hideModal:fail cancel', errCode: UniHideModalErrorCode = 4) {
+    super()
+    this.errMsg = errMsg
+    this.errCode = errCode
+  }
+}
+
+type UniHideModalFailCallback = (result: UniHideModalFail) => void
+
+type UniHideModalSuccessCallback = (result: UniHideModalResult) => void
+
+type UniHideModalCompleteCallback = (result: any) => void
+
+
+export type HideModalOptions = {
+  /**
+   * 期望隐藏的目标modal 如果为null 会关闭当前栈顶全部modal
+   */
+  modalPage?: ModalPage | null,
+  /**
+   * 接口调用成功的回调函数
+   */
+  success?: UniHideModalSuccessCallback | null,
+  /**
+   * 接口调用失败的回调函数
+   */
+  fail?: UniHideModalFailCallback | null,
+  /**
+   * 接口调用结束的回调函数（调用成功、失败都会执行）
+   */
+  complete?: UniHideModalCompleteCallback | null
+}
+
+export type HideModal = (options: HideModalOptions | null) => void;
+
 
 export interface Uni {
 	
@@ -184,7 +237,50 @@ export interface Uni {
 	    }
 	  }
 	 */
-	showModal(options: ShowModalOptions): void,
+	showModal(options: ShowModalOptions): ModalPage,
 	
+	/**
+	 * @description 隐藏已弹出的对话框实例，如果 `modalPage` 参数为空，则隐藏当前栈顶全部对话框
+	 * @example
+	  ```typescript
+		uni.hideModal({
+			modalPage:null,
+			success: function (res) {
+			}
+		});
+	  ```
+	 * @tutorial-uni-app https://uniapp.dcloud.net.cn/api/ui/prompt.html#hidemodal
+	 * @tutorial-uni-app-x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hidemodal
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hidemodal
+	 * @uniPlatform
+	  {
+	    "app": {
+	      "android": {
+	        "osVer": "5.0",
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61"
+	      },
+	      "ios": {
+	        "osVer": "12.0",
+	        "uniVer": "x",
+	        "uniUtsPlugin": "x",
+	        "unixVer": "4.61",
+	        "unixUtsPlugin": "4.61"
+	      },
+	      "harmony": {
+	        "osVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      }
+	    },
+	    "web": {
+	      "uniVer": "x",
+	      "unixVer": "4.61"
+	    }
+	  }
+	 */
+	hideModal(options: HideModalOptions | null):void
 }
 

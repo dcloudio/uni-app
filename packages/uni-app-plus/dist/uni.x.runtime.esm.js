@@ -7875,6 +7875,14 @@ const _sfc_main$3 = {
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
   },
+  onBackPress(_) {
+    var ret = {
+      cancel: false,
+      confirm: false
+    };
+    uni.$emit(this.successEventName, JSON.stringify(ret));
+    return false;
+  },
   methods: {
     onInputBlur(e) {
       setTimeout(() => {
@@ -7933,11 +7941,20 @@ const _sfc_main$3 = {
     },
     handleCancel() {
       this.closeModal();
-      uni.$emit(this.successEventName, null);
+      var ret = {
+        cancel: true,
+        confirm: false
+      };
+      uni.$emit(this.successEventName, JSON.stringify(ret));
     },
     handleSure() {
       this.closeModal();
-      uni.$emit(this.successEventName, this.content);
+      var ret = {
+        cancel: false,
+        confirm: true,
+        content: this.editable ? this.content : null
+      };
+      uni.$emit(this.successEventName, JSON.stringify(ret));
     }
   }
 };

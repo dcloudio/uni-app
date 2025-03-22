@@ -48,7 +48,16 @@
     				"swift": true,
     				"arkts": false
     			}
-    		}
+    		},
+			"hideModal": {
+				"name": "hideModal",
+				"app": {
+					"js": false,
+					"kotlin": true,
+					"swift": true,
+					"arkts": false
+				}
+			}
     	}
     },
     "encrypt": [],

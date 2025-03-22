@@ -93,6 +93,7 @@
 			}, 10)
 			
 		},
+		
 		onLoad(options) {
 			
 			/**
@@ -175,6 +176,15 @@
 			uni.$off(this.failEventName, null)
 		},
 		
+		onBackPress(_):boolean|null {
+			
+			let ret = {
+				cancel : false,
+				confirm : false,
+			}
+			uni.$emit(this.successEventName, JSON.stringify(ret))
+			return false
+		},
 		
 		methods: {
 			onInputBlur(e:UniTextareaBlurEvent) {
@@ -249,11 +259,20 @@
 			},
 			handleCancel() {
 				this.closeModal()
-				uni.$emit(this.successEventName, null)
+				let ret = {
+					cancel : true,
+					confirm : false,
+				}
+				uni.$emit(this.successEventName, JSON.stringify(ret))
 			},
 			handleSure() {
 				this.closeModal()
-				uni.$emit(this.successEventName, this.content)
+				let ret = {
+					cancel : false,
+					confirm : true,
+					content : this.editable ? this.content : null
+				}
+				uni.$emit(this.successEventName, JSON.stringify(ret))
 			}
 		}
 	}

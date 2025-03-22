@@ -168,7 +168,7 @@
         this.theme = res.theme
       });
       // #endif
-      // #ifdef APP
+      // #ifdef APP-ANDROID || APP-IOS
       uni.onAppThemeChange((res: AppThemeChangeResult) => {
         const appTheme = res.appTheme
         if (appTheme != null && appTheme != "auto") {

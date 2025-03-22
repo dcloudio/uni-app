@@ -95,7 +95,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "4.61"
+     *        "unixVer": "x"
      *      }
      *    },
      *    "web": {
@@ -122,7 +122,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "4.61"
+     *        "unixVer": "x"
      *      }
      *    },
      *    "web": {
@@ -149,7 +149,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "4.61"
+     *        "unixVer": "x"
      *      }
      *    },
      *    "web": {
@@ -176,7 +176,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "4.61"
+     *        "unixVer": "x"
      *      }
      *    },
      *    "web": {
@@ -203,7 +203,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "4.61"
+     *        "unixVer": "x"
      *      }
      *    },
      *    "web": {
@@ -230,7 +230,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "4.61"
+     *        "unixVer": "x"
      *      }
      *    },
      *    "web": {
@@ -257,7 +257,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "4.61"
+     *        "unixVer": "x"
      *      }
      *    },
      *    "web": {
@@ -289,7 +289,7 @@ export type ChooseLocationOptions = {
  *    "harmony": {
  *      "osVer": "3.0",
  *      "uniVer": "4.23",
- *      "unixVer": "4.61"
+ *      "unixVer": "x"
  *    }
  *    },
  *    "web": {
@@ -333,7 +333,7 @@ export interface Uni {
      *    "harmony": {
      *      "osVer": "3.0",
      *      "uniVer": "4.23",
-     *      "unixVer": "4.61"
+     *      "unixVer": "x"
      *    }
      *  },
      *  "mp": {

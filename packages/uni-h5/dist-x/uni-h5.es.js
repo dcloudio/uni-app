@@ -27745,7 +27745,7 @@ const _sfc_main$2 = {
     }
   }
 };
-const _style_0$2 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.25s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
+const _style_0$2 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.25s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
 function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_view = __syscom_2;
   const _component_text = __syscom_0$1;
@@ -29242,6 +29242,14 @@ const _sfc_main = {
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
   },
+  onBackPress(_) {
+    let ret = {
+      cancel: false,
+      confirm: false
+    };
+    uni.$emit(this.successEventName, JSON.stringify(ret));
+    return false;
+  },
   methods: {
     onInputBlur(e2) {
       setTimeout(() => {
@@ -29300,11 +29308,20 @@ const _sfc_main = {
     },
     handleCancel() {
       this.closeModal();
-      uni.$emit(this.successEventName, null);
+      let ret = {
+        cancel: true,
+        confirm: false
+      };
+      uni.$emit(this.successEventName, JSON.stringify(ret));
     },
     handleSure() {
       this.closeModal();
-      uni.$emit(this.successEventName, this.content);
+      let ret = {
+        cancel: false,
+        confirm: true,
+        content: this.editable ? this.content : null
+      };
+      uni.$emit(this.successEventName, JSON.stringify(ret));
     }
   }
 };
@@ -29430,6 +29447,13 @@ class UniShowModalFailImpl extends UniError {
     this.errCode = errCode;
   }
 }
+class UniHideModalFailImpl extends UniError {
+  constructor(errMsg = "hideModal:fail cancel", errCode = 4) {
+    super();
+    this.errMsg = errMsg;
+    this.errCode = errCode;
+  }
+}
 const showModal = (options) => {
   registerSystemRoute("uni:uniModal", UniModalPage);
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
@@ -29441,12 +29465,13 @@ const showModal = (options) => {
   uni.$on(readyEventName, () => {
     uni.$emit(optionsEventName, options);
   });
-  uni.$on(successEventName, (content) => {
+  uni.$on(successEventName, (inputParamStr) => {
     var _a, _b;
+    let inputParam = JSON.parse(inputParamStr);
     let res = {
-      cancel: false,
-      confirm: true,
-      content
+      cancel: inputParam["cancel"],
+      confirm: inputParam["confirm"],
+      content: inputParam["content"]
     };
     (_a = options.success) == null ? void 0 : _a.call(options, res);
     (_b = options.complete) == null ? void 0 : _b.call(options, res);
@@ -29457,7 +29482,7 @@ const showModal = (options) => {
     (_a = options.fail) == null ? void 0 : _a.call(options, res);
     (_b = options.complete) == null ? void 0 : _b.call(options, res);
   });
-  uni.openDialogPage({
+  return uni.openDialogPage({
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a, _b;
@@ -29470,6 +29495,56 @@ const showModal = (options) => {
     }
   });
 };
+const hideModal = function(options) {
+  var _a, _b, _c, _d, _e;
+  const currentPage = getCurrentPage();
+  if (!currentPage) {
+    const res2 = new UniHideModalFailImpl();
+    (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
+    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
+    return;
+  }
+  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
+  console.log("systemDialogPages", systemDialogPages.length);
+  let shallClosePages = [];
+  for (let perPage of systemDialogPages) {
+    if (isSystemModalDialogPage(perPage)) {
+      if ((options == null ? void 0 : options.modalPage) == null) {
+        shallClosePages.push(perPage);
+      } else {
+        if (perPage.options["optionsEventName"] === options.modalPage.options["optionsEventName"]) {
+          shallClosePages.push(perPage);
+          break;
+        }
+      }
+    }
+  }
+  console.log("shallClosePages", shallClosePages.length);
+  shallClosePages.forEach((item) => {
+    const index2 = systemDialogPages.indexOf(item);
+    if (index2 > -1) {
+      notifyClosedDialog(systemDialogPages[index2]);
+      systemDialogPages.splice(index2, 1);
+    }
+  });
+  let res = {};
+  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
+  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
+};
+function notifyClosedDialog(perPage) {
+  console.log("notifyClosedDialog", perPage);
+  let ret = {
+    cancel: false,
+    confirm: false
+  };
+  if (perPage.options["successEventName"] != null) {
+    uni.$emit(perPage.options["successEventName"], JSON.stringify(ret));
+  }
+}
+function isSystemModalDialogPage(page) {
+  console.log("page", page.route);
+  return page.route.startsWith("uni:uniModal");
+}
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -29546,6 +29621,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
+  hideModal,
   hideNavigationBarLoading,
   hideRightWindow,
   hideTabBar,
@@ -29833,6 +29909,7 @@ export {
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
+  hideModal,
   hideNavigationBarLoading,
   hideRightWindow,
   hideTabBar,
