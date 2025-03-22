@@ -16,9 +16,9 @@ function normalizeFilename(filename?: string) {
       const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
       filename = normalizePath(filename.split('?')[0])
       if (filename.startsWith(inputDir)) {
-        return normalizePath(path.relative(inputDir, filename))
+        return 'at ' + normalizePath(path.relative(inputDir, filename)) + ':1'
       }
-      return filename
+      return 'at ' + filename + ':1'
     }
   }
 }
@@ -81,20 +81,23 @@ export const preUVueCss = preUVueJs
 export const preUVueJson = preUVueJs
 
 const ERRORS = {
-  html: `条件编译失败\n参考示例(注意 ifdef 与 endif 必须配对使用):
+  html: `条件编译失败
 %FILENAME%
+参考示例(注意 ifdef 与 endif 必须配对使用):
 <!--  #ifdef  %PLATFORM% -->
 模板代码
 <!--  #endif -->
 `,
-  js: `条件编译失败\n参考示例(注意 ifdef 与 endif 必须配对使用):
+  js: `条件编译失败
 %FILENAME%
+参考示例(注意 ifdef 与 endif 必须配对使用):
 // #ifdef  %PLATFORM%
 代码
 // #endif
 `,
-  css: `条件编译失败\n参考示例(注意 ifdef 与 endif 必须配对使用):
+  css: `条件编译失败
 %FILENAME%
+参考示例(注意 ifdef 与 endif 必须配对使用):
 /*  #ifdef  %PLATFORM%  */
 代码
 /*  #endif  */
@@ -111,8 +114,10 @@ function preprocess(
   } catch (e) {
     const msg = ERRORS[options.type]
     if (msg) {
-      throw new Error(msg.replace('%FILENAME%', options.filename?.() || ''))
+      console.error(msg.replace('%FILENAME%', options.filename?.() || ''))
+    } else {
+      throw e
     }
-    throw e
   }
+  return code
 }
