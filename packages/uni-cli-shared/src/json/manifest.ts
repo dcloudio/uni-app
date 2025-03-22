@@ -18,7 +18,9 @@ export const parseManifestJson = (inputDir: string) => {
     }
   }
   return parseJson(
-    fs.readFileSync(path.join(inputDir, 'manifest.json'), 'utf8')
+    fs.readFileSync(manifestFilename, 'utf8'),
+    false,
+    manifestFilename
   )
 }
 

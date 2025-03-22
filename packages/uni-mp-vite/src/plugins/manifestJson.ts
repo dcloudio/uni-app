@@ -52,7 +52,9 @@ export function uniManifestJsonPlugin(
           if (userProjectFilename) {
             this.addWatchFile(userProjectFilename)
             projectJson = parseJson(
-              fs.readFileSync(userProjectFilename, 'utf8')
+              fs.readFileSync(userProjectFilename, 'utf8'),
+              false,
+              userProjectFilename
             )
           } else {
             const template = options.project.source

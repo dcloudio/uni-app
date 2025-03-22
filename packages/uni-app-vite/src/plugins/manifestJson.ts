@@ -25,7 +25,7 @@ export function uniManifestJsonPlugin(): Plugin {
           this.addWatchFile(filepath)
         })
         const manifestJson = normalizeAppManifestJson(
-          parseJson(code),
+          parseJson(code, false, id),
           parsePagesJsonOnce(inputDir, process.env.UNI_PLATFORM)
         )
 

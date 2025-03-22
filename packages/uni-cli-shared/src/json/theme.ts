@@ -20,7 +20,7 @@ export const parseThemeJson = (themeLocation: string = 'theme.json') => {
     return {}
   }
   const jsonStr = fs.readFileSync(themeLocation, 'utf8')
-  return parseJson(jsonStr, true) as UniApp.ThemeJson
+  return parseJson(jsonStr, true, themeLocation) as UniApp.ThemeJson
 }
 
 const SCHEME_RE = /^([a-z-]+:)?\/\//i
@@ -95,7 +95,7 @@ const getPagesJson = (inputDir: string) => {
     } as UniApp.PagesJson
   }
   const jsonStr = fs.readFileSync(pagesFilename, 'utf8')
-  return parseJson(jsonStr, true) as UniApp.PagesJson
+  return parseJson(jsonStr, true, pagesFilename) as UniApp.PagesJson
 }
 
 export const normalizeThemeConfigOnce = once(

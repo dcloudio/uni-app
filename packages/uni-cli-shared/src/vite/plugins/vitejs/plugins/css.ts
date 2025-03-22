@@ -1316,9 +1316,13 @@ const sass: SassStylePreprocessor = (
     isNVue
   )
 
-function preprocessCss(content: string, isNVue: boolean = false) {
+function preprocessCss(
+  content: string,
+  isNVue: boolean = false,
+  filename: string
+) {
   if (content.includes('#endif')) {
-    return isNVue ? preNVueCss(content) : preCss(content)
+    return isNVue ? preNVueCss(content, filename) : preCss(content, filename)
   }
   return content
 }
@@ -1336,7 +1340,7 @@ async function rebaseUrls(
   file = path.resolve(file) // ensure os-specific flashes
 
   // fixed by xxxxxx 条件编译
-  let contents = preprocessCss(fs.readFileSync(file, 'utf-8'), isNVue)
+  let contents = preprocessCss(fs.readFileSync(file, 'utf-8'), isNVue, file)
 
   // in the same dir, no need to rebase
   const fileDir = path.dirname(file)
@@ -1665,7 +1669,7 @@ export function rewriteScssReadFileSync() {
       if (ignoreAppNVue && content.includes('APP-NVUE')) {
         return content
       }
-      return preCss(content)
+      return preCss(content, filepath)
     }
     return content
   }) as (typeof nodeFs)['readFileSync']

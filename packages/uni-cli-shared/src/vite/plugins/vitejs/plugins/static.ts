@@ -10,7 +10,8 @@ export function createIsStaticFile() {
   if (fs.existsSync(pagesFilename)) {
     const pagesJson = parseJson(
       fs.readFileSync(pagesFilename, 'utf8'),
-      true
+      true,
+      pagesFilename
     ) as UniApp.PagesJson
     subPackageStatics = (pagesJson.subPackages || pagesJson.subpackages || [])
       .filter((subPackage) => subPackage.root)

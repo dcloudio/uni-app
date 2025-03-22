@@ -87,7 +87,10 @@ export function getDescriptor(
   if (createIfNotFound) {
     const { descriptor, errors } = createDescriptor(
       filename,
-      preUVueJs(preUVueHtml(fs.readFileSync(filename, 'utf-8'))),
+      preUVueJs(
+        preUVueHtml(fs.readFileSync(filename, 'utf-8'), filename),
+        filename
+      ),
       options
     )
     if (errors.length) {

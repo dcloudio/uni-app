@@ -38,7 +38,7 @@ export function uniManifestJsonPlugin(): Plugin {
         if (!opts.filter(id)) {
           return
         }
-        const manifest = parseJson(code)
+        const manifest = parseJson(code, false, id)
         const { debug } = manifest
         const h5 = getPlatformManifestJson(manifest, 'h5')
         const router = {

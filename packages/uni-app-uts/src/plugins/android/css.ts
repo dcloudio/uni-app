@@ -132,7 +132,7 @@ export function uniAppCssPlugin(): Plugin {
         return
       }
       if (source.includes('#endif')) {
-        source = preUVueCss(source)
+        source = preUVueCss(source, filename)
       }
       source = parseAssets(resolvedConfig, source)
       // 仅做校验使用

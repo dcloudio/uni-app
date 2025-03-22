@@ -235,8 +235,9 @@ export function initPluginVueOptions(
         return fsExtra.existsSync(resolveFile(file))
       },
       readFile(file) {
+        const filename = resolveFile(file)
         // 需要走条件编译
-        return preJs(fsExtra.readFileSync(resolveFile(file), 'utf-8'))
+        return preJs(fsExtra.readFileSync(filename, 'utf-8'), filename)
       },
       realpath(file) {
         return resolveFile(file)

@@ -10,7 +10,7 @@ export const copyMiniProgramPluginJson: UniViteCopyPluginTarget = {
     return process.env.UNI_OUTPUT_DIR
   },
   transform(source) {
-    const pluginJson = parseJson(source.toString(), true)
+    const pluginJson = parseJson(source.toString(), true, 'plugin.json')
     if (process.env.UNI_APP_X === 'true') {
       const pluginMainJs = pluginJson.main
       if (pluginMainJs && pluginMainJs.endsWith('.uts')) {
@@ -39,7 +39,11 @@ export const copyMiniProgramThemeJson: () => UniViteCopyPluginTarget[] = () => {
           return process.env.UNI_OUTPUT_DIR
         },
         transform(source) {
-          return JSON.stringify(parseJson(source.toString(), true), null, 2)
+          return JSON.stringify(
+            parseJson(source.toString(), true, themeLocation),
+            null,
+            2
+          )
         },
       },
     ]

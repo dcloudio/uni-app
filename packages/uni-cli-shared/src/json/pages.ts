@@ -78,7 +78,7 @@ export const parsePagesJson = (
   if (normalize) {
     return normalizePagesJson(jsonStr, platform)
   }
-  return parseJson(jsonStr, true) as UniApp.PagesJson
+  return parseJson(jsonStr, true, pagesFilename) as UniApp.PagesJson
 }
 /**
  * 该方法解析出来的是不支持 subpackages，会被合并入 pages
@@ -108,7 +108,7 @@ export function normalizePagesJson(
   }
   // preprocess
   try {
-    pagesJson = parseJson(jsonStr, true)
+    pagesJson = parseJson(jsonStr, true, 'pages.json')
   } catch (e) {
     console.error(`[vite] Error: pages.json parse failed.\n`, jsonStr, e)
   }

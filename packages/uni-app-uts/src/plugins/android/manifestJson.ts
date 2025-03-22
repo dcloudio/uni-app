@@ -47,7 +47,7 @@ export function uniAppManifestPlugin(): Plugin {
         this.addWatchFile(
           path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
         )
-        manifestJson = parseJson(code)
+        manifestJson = parseJson(code, false, id)
         return {
           code: `export default 'manifest.json'`,
           map: {
