@@ -104,6 +104,7 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniElement'],
       ['UniElementImpl'],
       ['document'],
+      ['UniPage'],
       ['UniPageImpl'],
       ['UniPointerEvent'],
       ['UniTouchEvent'],
