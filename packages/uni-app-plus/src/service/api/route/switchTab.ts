@@ -62,12 +62,7 @@ function _switchTab({
   path,
   query,
 }: SwitchTabOptions): Promise<undefined> {
-  const canSwitchTab = tabBar.switchTab(path.slice(1))
-
-  if (__uniConfig.tabBar && canSwitchTab) {
-    const index = tabBar.indexOf(path.slice(1))
-    __uniConfig.tabBar.selectedIndex = index
-  }
+  tabBar.switchTab(path.slice(1))
 
   const pages = getCurrentBasePages() as ComponentPublicInstance[]
   const len = pages.length
