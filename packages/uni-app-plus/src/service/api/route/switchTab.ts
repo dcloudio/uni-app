@@ -63,7 +63,6 @@ function _switchTab({
   query,
 }: SwitchTabOptions): Promise<undefined> {
   tabBar.switchTab(path.slice(1))
-
   const pages = getCurrentBasePages() as ComponentPublicInstance[]
   const len = pages.length
   let callOnHide = false
