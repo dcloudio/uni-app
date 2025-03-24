@@ -95,13 +95,14 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     ['UTSHarmony'],
     ['resolveInOperator'],
     ['IJSONStringify'],
+    ['UniElement'], // 注意非uni-app-x也有导出此类型，目前仅为了兼容uni-verify
   ]
   if (isX) {
     runtimeExports.push(
       // uni-app-x-runtime ets
       ['customElements'],
       ['UniCustomElement'],
-      ['UniElement'],
+      // ['UniElement'],
       ['UniElementImpl'],
       ['document'],
       ['UniPage'],
