@@ -1,10 +1,10 @@
-import { Ref, ref, watch, onBeforeUnmount } from 'vue'
+import { type Ref, onBeforeUnmount, ref, watch } from 'vue'
 import {
+  type EmitEvent,
   defineBuiltInComponent,
-  useCustomEvent,
-  EmitEvent,
+  type useCustomEvent,
 } from '@dcloudio/uni-components'
-import { useNativeAttrs, useNative } from '../../../helpers/useNative'
+import { useNative, useNativeAttrs } from '../../../helpers/useNative'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Ad',
@@ -97,6 +97,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           ({ code, data, message }) => {
             if (code === 0) {
               adView.renderingBind(data)
+              trigger('load', {} as Event, {})
             } else {
               trigger('error', {} as Event, {
                 errMsg: message,
