@@ -2,7 +2,7 @@ import { type Ref, onBeforeUnmount, ref, watch } from 'vue'
 import {
   type EmitEvent,
   defineBuiltInComponent,
-  type useCustomEvent,
+  useCustomEvent,
 } from '@dcloudio/uni-components'
 import { useNative, useNativeAttrs } from '../../../helpers/useNative'
 
