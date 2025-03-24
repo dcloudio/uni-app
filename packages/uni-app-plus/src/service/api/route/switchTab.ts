@@ -62,10 +62,10 @@ function _switchTab({
   path,
   query,
 }: SwitchTabOptions): Promise<undefined> {
-  tabBar.switchTab(path.slice(1))
+  const canSwitchTab = tabBar.switchTab(path.slice(1))
 
-  const index = tabBar.indexOf(path.slice(1))
-  if (__uniConfig.tabBar) {
+  if (__uniConfig.tabBar && canSwitchTab) {
+    const index = tabBar.indexOf(path.slice(1))
     __uniConfig.tabBar.selectedIndex = index
   }
 

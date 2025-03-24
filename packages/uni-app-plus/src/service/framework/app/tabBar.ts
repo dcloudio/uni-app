@@ -158,7 +158,7 @@ export default {
         if (currentPage.route !== config.list[index].pagePath) {
           // 拦截器调整
           const activeIndex = config.selectedIndex
-          if (activeIndex) {
+          if (activeIndex && activeIndex > -1) {
             tabBar.switchTab(config.list[activeIndex].pagePath)
           }
         }
