@@ -128,6 +128,9 @@ export function registerPage(
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const pageStyle = parsePageStyle(routeOptions)
+  if (openType === 'reLaunch') {
+    pageStyle.set('disableSwipeBack', true)
+  }
   const nativePage = getPageManager().createPage(url, id.toString(), pageStyle)
   if (onCreated) {
     onCreated(nativePage)
