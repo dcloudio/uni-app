@@ -314,29 +314,8 @@ ${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
 
     webpackConfig.plugin('extract-css')
       .init((Plugin, args) => new Plugin({
-        filename: '[name]' + styleExt,
-        // mini-css-extract-plugin 2.3.0 版本以上可用
-        // https://github.com/webpack-contrib/mini-css-extract-plugin/releases/tag/v2.3.0
-        runtime: false,
+        filename: '[name]' + styleExt
       }))
-    // 去除 mini-css-extract-plugin 2.3.0 以下版本的 css runtime
-    // https://github.com/webpack-contrib/mini-css-extract-plugin/blob/e200b083e5a437026d6021262d4ac56088b39e65/src/index.js#L273
-    if(require('semver').lt(require('mini-css-extract-plugin/package.json').version, '2.3.0')) {
-      const pluginName = 'skip-mini-css-extract-runtime'
-      webpackConfig.plugin(pluginName).use(
-        class SkipMiniCssExtractRuntimePlugin {
-          apply(compiler) {
-            compiler.hooks.thisCompilation.tap(pluginName, compilation => {
-              const { mainTemplate } = compilation
-              const reg = /\/\/ mini-css-extract-plugin CSS loading[\s\S]*installedCssChunks\[chunkId\] = 0;\s*\}\)\);\s*\}/
-              mainTemplate.hooks.requireEnsure.tap(pluginName, (source, chunk) => {
-                return reg.test(source) ? source.replace(reg, ''): source
-              });
-            });
-          }
-        }
-      )
-    }
 
     if (
       process.env.NODE_ENV === 'production' &&
