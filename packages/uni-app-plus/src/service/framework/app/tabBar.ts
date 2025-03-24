@@ -153,14 +153,12 @@ export default {
     })
     tabBar &&
       tabBar.onClick(({ index }: { index: number }) => {
+        const fromIndex = config.selectedIndex!
         clickCallback(config.list[index], index)
-        const currentPage = getCurrentPages()[getCurrentPages().length - 1]
-        if (currentPage.route !== config.list[index].pagePath) {
+        const toIndex = config.selectedIndex
+        if (fromIndex !== toIndex) {
           // 拦截器调整
-          const activeIndex = config.selectedIndex
-          if (activeIndex && activeIndex > -1) {
-            tabBar.switchTab(config.list[activeIndex].pagePath)
-          }
+          tabBar.switchTab(config.list[fromIndex].pagePath)
         }
       })
     tabBar &&
@@ -194,6 +192,7 @@ export default {
         tabBar.switchSelect({
           index,
         })
+      tabBar.selectedIndex = index
       return true
     }
     return false
