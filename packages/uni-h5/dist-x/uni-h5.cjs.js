@@ -4081,18 +4081,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         );
         if (currentInstance && parentInstance) {
           currentInstance.$parentInstance = parentInstance;
-          if (isNormalDialogPageInstance(
-            ctx
-          )) {
-            const parentDialogPages = parentInstance.$dialogPages.value;
-            currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
-          }
-          if (isSystemDialogPageInstance(
-            ctx
-          )) {
-            const parentSystemDialogPages = parentInstance.$systemDialogPages.value;
-            currentInstance.$dialogPage = parentSystemDialogPages[parentSystemDialogPages.length - 1];
-          }
+          assignDialogPage(ctx, parentInstance, currentInstance);
         }
       } else {
         useBackgroundColorContent(pageMeta);
@@ -4122,6 +4111,25 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
     );
   }
 });
+function assignDialogPage(ctx, parentInstance, currentInstance) {
+  let parentDialogPages = [];
+  if (isNormalDialogPageInstance(ctx)) {
+    parentDialogPages = parentInstance.$dialogPages.value;
+  }
+  if (isSystemDialogPageInstance(ctx)) {
+    parentDialogPages = parentInstance.$systemDialogPages.value;
+  }
+  if (!parentDialogPages.length)
+    return;
+  for (let i = 0; i < parentDialogPages.length; i++) {
+    const dialogPage = parentDialogPages[i];
+    if (!dialogPage.$assigned) {
+      dialogPage.$assigned = true;
+      currentInstance.$dialogPage = dialogPage;
+      break;
+    }
+  }
+}
 function createPageBodyVNode(ctx) {
   return vue.openBlock(), vue.createBlock(
     PageBody,

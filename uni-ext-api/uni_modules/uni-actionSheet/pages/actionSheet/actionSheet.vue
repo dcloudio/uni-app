@@ -353,7 +353,7 @@
     z-index: 999;
     transform: translate(0, 100%);
     transition-property: transform;
-    transition-duration: 0.25s;
+    transition-duration: 0.15s;
     background-color: #f7f7f7;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
