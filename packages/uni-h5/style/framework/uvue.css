@@ -55,9 +55,20 @@ uni-app uni-view {
   text-align: left;
 }
 
-/* 修正box-sizing: border-box;负面效果 */
+/* input 布局对齐 App 端 */
 uni-app uni-input {
   height: auto;
+  display: flex;
+}
+
+uni-app uni-input>.uni-input-wrapper {
+  height: auto;
+  flex: 1;
+}
+
+uni-app uni-input>.uni-input-wrapper>.uni-input-input {
+  height: auto;
+  flex: 1;
 }
 
 /* 文字容器 */
