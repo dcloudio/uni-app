@@ -998,14 +998,17 @@ function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandl
   }
   var existingProxy = proxyMap.get(target);
   if (existingProxy) {
-    return existingProxy;
+    var deref = existingProxy.deref();
+    if (deref) {
+      return deref;
+    }
   }
   var targetType = getTargetType(target);
   if (targetType === 0 /* INVALID */) {
     return target;
   }
   var proxy = new Proxy(target, targetType === 2 /* COLLECTION */ ? collectionHandlers : baseHandlers);
-  proxyMap.set(target, proxy);
+  proxyMap.set(target, new WeakRef(proxy));
   return proxy;
 }
 function isReactive(value) {
