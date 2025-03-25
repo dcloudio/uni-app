@@ -73,6 +73,12 @@
       "HideActionSheet"
     ],
     [
+      "HideModal"
+    ],
+    [
+      "HideModalOptions"
+    ],
+    [
       "IPreviewImageError"
     ],
     [
@@ -83,6 +89,9 @@
     ],
     [
       "LongPressActionsSuccessResult"
+    ],
+    [
+      "ModalPage"
     ],
     [
       "Popover"
@@ -142,6 +151,12 @@
       "ShowActionSheetSuccessImpl"
     ],
     [
+      "ShowModal"
+    ],
+    [
+      "ShowModalOptions"
+    ],
+    [
       "UniButtonElement"
     ],
     [
@@ -169,6 +184,18 @@
       "UniFormSubmitEvent"
     ],
     [
+      "UniHideModalErrorCode"
+    ],
+    [
+      "UniHideModalFail"
+    ],
+    [
+      "UniHideModalFailImpl"
+    ],
+    [
+      "UniHideModalResult"
+    ],
+    [
       "UniNavigatorElement"
     ],
     [
@@ -194,6 +221,18 @@
     ],
     [
       "UniRadioGroupElement"
+    ],
+    [
+      "UniShowModalErrorCode"
+    ],
+    [
+      "UniShowModalFail"
+    ],
+    [
+      "UniShowModalFailImpl"
+    ],
+    [
+      "UniShowModalResult"
     ],
     [
       "UniSliderChangeEvent"
