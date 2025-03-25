@@ -120,7 +120,6 @@ class PerformanceEntryStatusLayout extends PerformanceEntryStatus {
 
     const innerPage = super.getCurrentInnerPage()
     if (innerPage != null) {
-      // @ts-expect-error
       this._entryData.duration = innerPage.getFirstPageLayoutDuration()
     }
   }
@@ -143,7 +142,6 @@ class PerformanceEntryStatusRender extends PerformanceEntryStatus {
 
     const innerPage = super.getCurrentInnerPage()
     if (innerPage != null) {
-      // @ts-expect-error
       this._entryData.duration = innerPage.getFirstPageRenderDuration()
     }
   }
@@ -167,7 +165,6 @@ class PerformanceEntryStatusNavigation extends PerformanceEntryStatus {
     if (innerPage != null) {
       this._entryData.duration = Date.now() - this._entryData.startTime
       if (this._entryData.name == APP_LAUNCH) {
-        // @ts-expect-error
         this._entryData.duration += getNativeApp().getAppStartDuration()
       }
     }
