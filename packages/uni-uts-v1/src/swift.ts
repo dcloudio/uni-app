@@ -7,7 +7,6 @@ import {
   addPluginInjectApis,
   copyPlatformNativeLanguageFiles,
   genComponentsCode,
-  genCustomElementsCode,
   genUTSPlatformResource,
   getCompilerServer,
   getUTSCompiler,
@@ -278,13 +277,7 @@ export async function compile(
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
-  let componentsCode = genComponentsCode(filename, components, isX)
-  if (customElements) {
-    const customElementsCode = genCustomElementsCode(filename, customElements)
-    if (customElementsCode) {
-      componentsCode = componentsCode + '\n' + customElementsCode
-    }
-  }
+  const componentsCode = genComponentsCode(filename, components, isX)
   const { namespace, id: pluginId } = parseSwiftPackage(filename)
   const input: UTSInputOptions = {
     root: resolveBundleInputRoot('app-ios', inputDir),

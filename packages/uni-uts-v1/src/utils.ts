@@ -583,32 +583,6 @@ export function genComponentsCode(
   return codes.join('\n')
 }
 
-export function genCustomElementsCode(
-  filename: string,
-  customElements: Record<string, string>
-) {
-  const codes: string[] = []
-  const dirname = path.dirname(filename)
-  Object.keys(customElements).forEach((name) => {
-    const source = normalizePath(path.relative(dirname, customElements[name]))
-    const className = capitalize(camelize(name))
-    // 自动生成 customElements.define 代码，rust 那里会根据 define 来生成注册代码
-    codes.push(
-      `import { ${className}Element } from '${
-        source.startsWith('.') ? source : './' + source
-      }'`
-    )
-    codes.push(`customElements.define('${name}', ${className}Element)`)
-    // 自动生成 export 代码
-    codes.push(
-      `export { ${className}Element } from '${
-        source.startsWith('.') ? source : './' + source
-      }'`
-    )
-  })
-  return codes.join('\n')
-}
-
 export function genConfigJson(
   platform: 'app-android' | 'app-ios',
   isX: boolean,
@@ -741,10 +715,10 @@ function genCustomElementsConfigJson(
     const normalized = capitalize(camelize(name))
     const options: (typeof res)[0] = {
       name,
-      class: namespace + normalized + 'CustomElement',
+      class: namespace + normalized + 'Element',
     }
     if (isX && platform === 'app-ios') {
-      options['delegateClass'] = normalized + 'CustomElementRegister'
+      options['delegateClass'] = normalized + 'ElementRegister'
     }
     res.push(options)
   })

@@ -20,7 +20,6 @@ import {
   addPluginInjectApis,
   copyPlatformNativeLanguageFiles,
   genComponentsCode,
-  genCustomElementsCode,
   genUTSPlatformResource,
   getCompilerServer,
   getUTSCompiler,
@@ -594,13 +593,7 @@ export async function compile(
     // 本地 provider 的时候，不要引入 io.dcloud.uniapp.extapi.*，因为里边包含了相同的类型定义
     imports.push('io.dcloud.uniapp.extapi.*')
   }
-  let componentsCode = genComponentsCode(filename, components, isX)
-  if (customElements) {
-    const customElementsCode = genCustomElementsCode(filename, customElements)
-    if (customElementsCode) {
-      componentsCode = componentsCode + '\n' + customElementsCode
-    }
-  }
+  const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: UTSInputOptions = {
     root: resolveBundleInputRoot('app-android', inputDir),
