@@ -4,6 +4,30 @@
       "CanvasContext"
     ],
     [
+      "ChooseLocation"
+    ],
+    [
+      "ChooseLocationComplete"
+    ],
+    [
+      "ChooseLocationErrorCode"
+    ],
+    [
+      "ChooseLocationFail"
+    ],
+    [
+      "ChooseLocationFailImpl"
+    ],
+    [
+      "ChooseLocationOptions"
+    ],
+    [
+      "ChooseLocationSuccess"
+    ],
+    [
+      "ChooseLocationSuccessImpl"
+    ],
+    [
       "ClosePreviewImage"
     ],
     [
