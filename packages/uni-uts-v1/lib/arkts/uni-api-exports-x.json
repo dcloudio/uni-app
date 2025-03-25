@@ -766,6 +766,36 @@
       "RequestPaymentOptions"
     ],
     [
+      "ShowToastSuccess"
+    ],
+    [
+      "ShowToastFail"
+    ],
+    [
+      "ShowToastOptions"
+    ],
+    [
+      "ShowToast"
+    ],
+    [
+      "HideToast"
+    ],
+    [
+      "ShowLoadingSuccess"
+    ],
+    [
+      "ShowLoadingFail"
+    ],
+    [
+      "ShowLoadingOptions"
+    ],
+    [
+      "ShowLoading"
+    ],
+    [
+      "HideLoading"
+    ],
+    [
       "Rpx2px"
     ],
     [

@@ -772,6 +772,60 @@
       "RequestPaymentOptions"
     ],
     [
+      "ShowToastSuccess"
+    ],
+    [
+      "ShowToastFail"
+    ],
+    [
+      "ShowToastOptions"
+    ],
+    [
+      "ShowToast"
+    ],
+    [
+      "HideToast"
+    ],
+    [
+      "ShowLoadingSuccess"
+    ],
+    [
+      "ShowLoadingFail"
+    ],
+    [
+      "ShowLoadingOptions"
+    ],
+    [
+      "ShowLoading"
+    ],
+    [
+      "HideLoading"
+    ],
+    [
+      "ShowModalSuccess"
+    ],
+    [
+      "ShowModalFail"
+    ],
+    [
+      "ShowModalOptions"
+    ],
+    [
+      "ShowModal"
+    ],
+    [
+      "ShowActionSheetSuccess"
+    ],
+    [
+      "ShowActionSheetFail"
+    ],
+    [
+      "ShowActionSheetOptions"
+    ],
+    [
+      "ShowActionSheet"
+    ],
+    [
       "StartPullDownRefreshOptions"
     ],
     [
