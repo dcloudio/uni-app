@@ -90,7 +90,7 @@ export type ShowModalOptions = {
   complete?: UniShowModalCompleteCallback | null
 }
 
-export type ShowModal = (options: ShowModalOptions) => ModalPage;
+export type ShowModal = (options: ShowModalOptions) => ModalPage | null;
 
 export type ModalPage = UniPage;
 
@@ -237,7 +237,7 @@ export interface Uni {
 	    }
 	  }
 	 */
-	showModal(options: ShowModalOptions): ModalPage,
+	showModal(options: ShowModalOptions): ModalPage | null,
 	
 	/**
 	 * @description 隐藏已弹出的对话框实例，如果 `modalPage` 参数为空，则隐藏当前栈顶全部对话框

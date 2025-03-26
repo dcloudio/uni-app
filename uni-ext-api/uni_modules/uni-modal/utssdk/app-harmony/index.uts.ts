@@ -1,6 +1,5 @@
 import { ShowModal, ShowModalOptions,ModalPage,UniShowModalResult,UniShowModalFailImpl } from "../interface.uts";
 import { HideModal, HideModalOptions,UniHideModalResult,UniHideModalFailImpl} from "../interface.uts";
-import { getCurrentPage} from "@dcloudio/uni-runtime";
 
 export const showModal: ShowModal = function (
   options: ShowModalOptions
@@ -18,11 +17,11 @@ export const showModal: ShowModal = function (
 	})
 	uni.$on(successEventName, (inputParamStr: string) => {
 		
-		let inputParam = JSON.parseObject(inputParamStr)!
+		let inputParam : UTSJSONObject = JSON.parse(inputParamStr)!
 		let res = {
-			cancel : inputParam.getBoolean("cancel")!,
-			confirm : inputParam.getBoolean("confirm")!,
-			content : inputParam.getString("content")
+			cancel : inputParam["cancel"] as boolean,
+			confirm : inputParam["confirm"] as boolean,
+			content : inputParam["content"] as string
 		} as UniShowModalResult
 		
 		options.success?.(res)
@@ -36,10 +35,10 @@ export const showModal: ShowModal = function (
 	  
 	})
 	
-	let openRet = uni.openDialogPage({
+	let openRet:UniPage = uni.openDialogPage({
 	  url: `/uni_modules/uni-modal/pages/uniModal/uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
 	  fail(err) {
-	    const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`)
+	    const res = new UniShowModalFailImpl(`showModal failed, ${err}`)
 	    options.fail?.(res)
 	    options.complete?.(res)
 	    uni.$off(readyEventName, null)
@@ -48,11 +47,11 @@ export const showModal: ShowModal = function (
 	  }
 	})
 	
-	if(openRet instanceof ModalPage){
+	if(openRet != null){
 		return openRet as ModalPage
 	}else{
 		/**
-		 * 返回null 或者 类型不匹配等不应该存在的情况，返回未知错误码-4
+		 * 返回null 或者 类型不匹配等不应该存在的情况，返回未知错误码
 		 */
 		const res = new UniShowModalFailImpl()
 		options.fail?.(res)
@@ -70,15 +69,31 @@ export const hideModal: HideModal = function (
 ) {
 	
 	
-	const currentPageInstance = getCurrentPage()
-	
-	if (currentPageInstance == null){
+	const pages:Array<UniPage> = getCurrentPages()
+	if (pages.length < 1){
 		const res = new UniHideModalFailImpl()
 		options?.fail?.(res)
 		options?.complete?.(res)
 		return
 	}
-	const dialogPages = currentPageInstance.$systemDialogPages
+	
+	const currentPage:UniPage = pages[pages.length - 1]
+	if(currentPage == null) {
+		const res = new UniHideModalFailImpl()
+		options?.fail?.(res)
+		options?.complete?.(res)
+		return
+	}
+	
+	if(currentPage.vm.$systemDialogPages == null) {
+		const res = new UniHideModalFailImpl()
+		options?.fail?.(res)
+		options?.complete?.(res)
+		return
+	}
+	
+	const dialogPages:Array<UniPage> = currentPage.vm.$systemDialogPages.value
+	console.log("dialogPages",dialogPages.length)
 	/**
 	 * 查找需要关闭的dialog实例
 	 */
@@ -99,6 +114,7 @@ export const hideModal: HideModal = function (
 			}
 		}
 	}
+	console.log("shallClosePages",shallClosePages)
 	/**
 	 * 集中处理待关闭的page
 	 */
@@ -135,3 +151,19 @@ export const hideModal: HideModal = function (
 function isSystemModalDialogPage(page: UniPage):boolean {	
 	return page.route.startsWith("uni:uniModal")
 }
+
+export {
+    UniShowModalFail,
+    UniHideModalFail,
+    UniShowModalResult,
+    UniShowModalFailImpl,
+    ShowModalOptions,
+    UniHideModalResult,
+    UniHideModalFailImpl,
+    HideModalOptions,
+    ShowModal,
+    HideModal,
+    UniShowModalErrorCode,
+    ModalPage,
+    UniHideModalErrorCode,
+} from '../interface.uts'

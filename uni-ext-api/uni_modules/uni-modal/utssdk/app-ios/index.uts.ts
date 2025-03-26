@@ -3,7 +3,7 @@ import { HideModal, HideModalOptions,UniHideModalResult,UniHideModalFailImpl} fr
 
 export const showModal: ShowModal = function (
   options: ShowModalOptions
-):ModalPage {
+):ModalPage | null {
 	
 	const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
 	const baseEventName = `uni_modal_${uuid}`
@@ -35,8 +35,7 @@ export const showModal: ShowModal = function (
 	  options.complete?.(res)
 	  
 	})
-
-	return uni.openDialogPage({
+	let openRet = uni.openDialogPage({
 		url: `/uni_modules/uni-modal/pages/uniModal/uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
 		fail: function (err) {
 			const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`)
@@ -46,7 +45,19 @@ export const showModal: ShowModal = function (
 			uni.$off(successEventName, null)
 			uni.$off(failEventName, null)
 		},
-	}) as ModalPage
+	})
+	
+	if(openRet instanceof ModalPage){
+		return openRet as ModalPage
+	}else{
+		/**
+		 * 返回null 或者 类型不匹配等不应该存在的情况，返回未知错误码-4
+		 */
+		const res = new UniShowModalFailImpl()
+		options.fail?.(res)
+		options.complete?.(res)
+		return null
+	}
 	
 }
 

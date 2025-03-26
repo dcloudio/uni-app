@@ -25,9 +25,10 @@
 						:auto-height="isAutoHeight"
 						:placeholder="placeholderText" />
 						
-					<text v-else class="uni-modal_dialog__content__text">
+					<text v-if="!editable && content.length > 0" class="uni-modal_dialog__content__text">
 						{{ content }}
 					</text>
+					
 				</view>
 
 				<view class="uni-modal_dialog__content__topline" :class="{ 'uni-modal_dark__mode': theme == 'dark'}"></view>
@@ -362,13 +363,16 @@
 	.uni-modal_dialog__content {
 		justify-content: center;
 		align-items: center;
-		padding: 20px;
+		padding: 18px;
 	}
 
 	.uni-modal_dialog__content__text {
 		font-size: 16px;
 		font-weight: normal;
-		margin-bottom: 10px;
+		margin-top: 2px;
+		margin-left: 2px;
+		margin-right: 2px;
+		margin-bottom: 12px;
 		text-align: center;
 		color: #747474;
 		lines: 6;
@@ -388,6 +392,8 @@
 		color: #000000;
 		width: 96%;
 		padding: 5px;
+		margin-top: 2px;
+		margin-bottom: 7px;
 		max-height: 192px;
 		/* #ifdef WEB */
 		word-break: break-word;

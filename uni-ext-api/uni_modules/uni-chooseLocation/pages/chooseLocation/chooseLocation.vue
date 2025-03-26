@@ -35,7 +35,7 @@
         <view class="uni-choose-location-poi-search-loading" v-else-if="locationLoading"><text
             class="uni-choose-location-poi-search-loading-text">{{ languageCom['locationLoading'] }}</text></view>
         <view class="uni-choose-location-poi-search-loading" v-else-if="searchLoading && pageIndex == 1">
-          <image :src="loadingPath" class="uni-choose-location-poi-search-loading-image" mode="widthFix" :class="[searchLoadingAnimation ? 'uni-choose-location-poi-search-loading-start' : '']"></image>
+          <image :src="loadingPath" class="uni-choose-location-poi-search-loading-image" mode="widthFix" :style="'transform: rotate('+loadingRotate+'deg)'"></image>
         </view>
         <template v-else>
           <view v-for="(item,index) in pois" :key="index" class="uni-choose-location-poi-item" :class="[landscapeClassCom]" @click="selectPoi(item, index)">
@@ -49,7 +49,7 @@
           </view>
         </template>
         <view class="uni-choose-location-poi-search-loading" v-if="searchLoading && pageIndex > 1">
-          <image :src="loadingPath" class="uni-choose-location-poi-search-loading-image" mode="widthFix" :class="[searchLoadingAnimation ? 'uni-choose-location-poi-search-loading-start' : '']"></image>
+          <image :src="loadingPath" class="uni-choose-location-poi-search-loading-image" mode="widthFix" :style="'transform: rotate('+loadingRotate+'deg)'"></image>
         </view>
       </scroll-view>
     </view>
@@ -137,17 +137,20 @@
   };
 
   // #ifdef APP-ANDROID
+  // @ts-ignore
   class CloudObjectUniMapCo extends InternalUniCloudCloudObjectCaller {
+    // @ts-ignore
     constructor(obj : InternalUniCloudCloudObject) {
       super(obj)
     }
     chooseLocation(...do_not_transform_spread : Array<any | null>) : Promise<UTSJSONObject> {
+      // @ts-ignore
       return this._obj.callMethod('chooseLocation', this._getArgs(...do_not_transform_spread))
     }
   }
   // #endif
-  
-   const loadingPath = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg=='
+
+  const loadingPath = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg=='
 
   export default {
     data() {
@@ -187,7 +190,6 @@
         } as IconPath,
         lastTime: 0,
         searchLoading: false,
-        searchLoadingAnimation: false,
         language: "zh-Hans",
         scrollTop: 0,
         isLandscape: false,
@@ -204,7 +206,9 @@
         callUniMapCoErr: false,
         useUniCloud: true,
         mapHeight: 350,
-        loadingPath: loadingPath
+        loadingPath: loadingPath,
+        loadingRotate: 0,
+        loadingTimer: -1
       }
     },
     onLoad(options : UTSJSONObject) {
@@ -263,7 +267,14 @@
           this.latitude = this.chooseLocationOptions.latitude as number;
           this.longitude = this.chooseLocationOptions.longitude as number;
           this.locationComplete = true;
+          // #ifdef APP-HARMONY
+          setTimeout(() => {
+            this.getPoi('getLocation');
+          }, 100);
+          // #endif
+          // #ifndef APP-HARMONY
           this.getPoi('getLocation');
+          // #endif
         } else {
           this.locationLoading = true;
           uni.getLocation({
@@ -330,6 +341,7 @@
           }
           this.errMsg = "";
           // #ifdef APP-ANDROID
+          // @ts-ignore
           const uniCloudInstance = uniCloud as UniCloud;
           // @ts-ignore
           const uniMapCo = uniCloudInstance.importObject("uni-map-co", {
@@ -347,7 +359,7 @@
             action: action,
             data: data
           } as UTSJSONObject;
-          
+
           if (this.chooseLocationOptions.payload != null) {
             chooseLocationData['payload'] = this.chooseLocationOptions.payload;
           }
@@ -373,9 +385,9 @@
         promise.then((res) => {
           this.callUniMapCoErr = false;
         })
-        .catch((err) => {
-          this.callUniMapCoErr = true;
-        });
+          .catch((err) => {
+            this.callUniMapCoErr = true;
+          });
         return promise as Promise<UTSJSONObject>;
       },
       getPoi(type : string) {
@@ -444,7 +456,15 @@
                 }
               }
               if (this.selected == -1) {
+                // #ifdef APP-HARMONY
+                this.selected = -1;
+                setTimeout(() => {
+                  this.selected = 0;
+                }, 100);
+                // #endif
+                // #ifndef APP-HARMONY
                 this.selected = 0;
+                // #endif
                 this.lastPoi.latitude = this.latitude;
                 this.lastPoi.longitude = this.longitude;
                 this.lastPoi.selected = this.selected;
@@ -657,6 +677,7 @@
         uni.closeDialogPage({
           dialogPage: this.$page,
           animationType: 'zoom-fade-out',
+          // @ts-ignore
         } as io.dcloud.uniapp.framework.extapi.CloseDialogPageOptions)
         // #endif
         // #ifndef APP-ANDROID
@@ -698,12 +719,17 @@
     },
     watch: {
       searchLoading(val : boolean) {
+        if (this.loadingTimer != -1) {
+          clearInterval(this.loadingTimer);
+          this.loadingTimer = -1;
+        }
         if (val) {
-          setTimeout(() => {
-            this.searchLoadingAnimation = true;
-          }, 50);
+          this.loadingRotate += 100;
+          this.loadingTimer = setInterval(() => {
+            this.loadingRotate += 100;
+          }, 200);
         } else {
-          this.searchLoadingAnimation = false;
+          this.loadingRotate = 0;
         }
       }
     },
@@ -830,7 +856,7 @@
     justify-content: center;
     align-items: center;
   }
-  
+
   .uni-choose-location-map-reset.uni-choose-location-vertical {
     transition-property: transform;
     transition-duration: 0.25s;
@@ -892,7 +918,6 @@
     letter-spacing: 0.1em;
     /* #endif */
     color: #fff;
-    text-align: center;
   }
 
   .uni-choose-location-poi {
@@ -1020,16 +1045,12 @@
     color: #808080;
     padding-left: 5px;
   }
-  
-  .uni-choose-location-poi-search-loading-start {
-    transform: rotate(60000deg)
-  }
-  
+
   .uni-choose-location-poi-search-loading-image {
     width: 28px;
     height: 28px;
     transition-property: transform;
-    transition-duration: 120s;
+    transition-duration: 0.2s;
     transition-timing-function: linear;
   }
 
@@ -1118,30 +1139,30 @@
   .uni-choose-location-dark .uni-choose-location-map-reset-icon {
     color: #d1d1d1;
   }
-  
+
   .uni-choose-location-dark .uni-choose-location-poi-search-error-text {
     color: #d1d1d1;
   }
 
   /* 暗黑模式样式结束 */
-	
+
   /* #ifdef WEB */
   uni-image {
     display: inline-block;
     overflow: hidden;
     position: relative;
   }
-  
+
   uni-image[hidden] {
     display: none;
   }
-  
+
   uni-image > div {
     width: 100%;
     height: 100%;
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
   }
-  
+
   uni-image > img {
     -webkit-touch-callout: none;
     user-select: none;
@@ -1153,9 +1174,10 @@
     height: 100%;
     opacity: 0;
   }
-  
+
   uni-image > .uni-image-will-change {
     will-change: transform;
   }
+
   /* #endif */
 </style>

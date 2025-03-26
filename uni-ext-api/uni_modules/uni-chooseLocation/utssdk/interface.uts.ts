@@ -19,7 +19,7 @@ export type ChooseLocationErrorCode =
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
@@ -46,7 +46,7 @@ export type ChooseLocationErrorCode =
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
@@ -95,7 +95,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
@@ -122,7 +122,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
@@ -149,7 +149,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
@@ -176,7 +176,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
@@ -203,7 +203,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
@@ -230,7 +230,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
@@ -257,7 +257,7 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
@@ -289,7 +289,7 @@ export type ChooseLocationOptions = {
  *    "harmony": {
  *      "osVer": "3.0",
  *      "uniVer": "4.23",
- *      "unixVer": "x"
+ *      "unixVer": "4.61"
  *    }
  *    },
  *    "web": {
@@ -333,7 +333,7 @@ export interface Uni {
      *    "harmony": {
      *      "osVer": "3.0",
      *      "uniVer": "4.23",
-     *      "unixVer": "x"
+     *      "unixVer": "4.61"
      *    }
      *  },
      *  "mp": {

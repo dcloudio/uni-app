@@ -34,7 +34,7 @@ export const showModal: ShowModal = (options: ShowModalOptions) => {
 	  options.complete?.(res)
 	  
 	})
-	return uni.openDialogPage({
+	let openRet = uni.openDialogPage({
 		url: `/uni_modules/uni-modal/pages/uniModal/uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
 		fail(err) {
 			const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`)
@@ -44,7 +44,19 @@ export const showModal: ShowModal = (options: ShowModalOptions) => {
 			uni.$off(successEventName)
 			uni.$off(failEventName)
 		}
-	}) as ModalPage
+	})
+	
+	if(openRet != null){
+		return openRet as ModalPage
+	}else{
+		/**
+		 * 返回null 或者 类型不匹配等不应该存在的情况，返回未知错误码-4
+		 */
+		const res = new UniShowModalFailImpl()
+		options.fail?.(res)
+		options.complete?.(res)
+		return null
+	}
 };
 
 
@@ -62,8 +74,6 @@ export const hideModal: HideModal = function (
 	}
 	
 	const systemDialogPages = currentPage.vm.$pageLayoutInstance?.$systemDialogPages.value
-	
-	console.log("systemDialogPages",systemDialogPages.length)
 	
 	
 	let shallClosePages:Array<UniPage> = []
@@ -87,7 +97,6 @@ export const hideModal: HideModal = function (
 		}
 	}
 	
-	console.log("shallClosePages",shallClosePages.length)
 	
 	shallClosePages.forEach(item => {
 		const index = systemDialogPages.indexOf(item);
@@ -108,8 +117,6 @@ export const hideModal: HideModal = function (
 
 function notifyClosedDialog(perPage:UniPage){
 	
-	console.log("notifyClosedDialog",perPage)
-	
 	let ret = {
 		cancel : false,
 		confirm : false,
@@ -126,7 +133,6 @@ function notifyClosedDialog(perPage:UniPage){
  * 根据路径判断page是否是modal类型
  */
 function isSystemModalDialogPage(page: UniPage):boolean {
-	console.log("page",page.route)
     return page.route.startsWith("uni:uniModal")
 }
 

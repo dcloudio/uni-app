@@ -1608,7 +1608,6 @@ function registerThemeChange(callback) {
       callback(appThemeMode);
     });
   } catch (e) {
-    console.warn("监听 OS 主题变化", e);
   }
 }
 var onThemeChange = function(themeMode) {
@@ -1716,8 +1715,8 @@ function setStatusBarStyle() {
     }
   }
   if (page) {
-    var nativePage2 = page.$nativePage;
-    nativePage2.applyStatusBarStyle();
+    var nativePage = page.$nativePage;
+    nativePage.applyStatusBarStyle();
   }
 }
 function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
@@ -1854,11 +1853,14 @@ function registerPage(_ref, onCreated) {
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = parsePageStyle(routeOptions);
-  var nativePage2 = getPageManager().createPage(url, id2.toString(), pageStyle);
-  if (onCreated) {
-    onCreated(nativePage2);
+  if (openType === "reLaunch") {
+    pageStyle.set("disableSwipeBack", true);
   }
-  routeOptions.meta.id = parseInt(nativePage2.pageId);
+  var nativePage = getPageManager().createPage(url, id2.toString(), pageStyle);
+  if (onCreated) {
+    onCreated(nativePage);
+  }
+  routeOptions.meta.id = parseInt(nativePage.pageId);
   var route = path.slice(1);
   var pageInstance = initPageInternalInstance(
     openType,
@@ -1870,13 +1872,15 @@ function registerPage(_ref, onCreated) {
     "light"
   );
   function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
     var pages2 = getCurrentPages();
     if (pages2.length === 1) {
       if (homeDialogPages.length) {
         var homePage = pages2[0];
+        var dialogPages = homePage.getDialogPages();
         homePage.vm.$.$dialogPages.value = homeDialogPages.map((dialogPage) => {
           dialogPage.getParentPage = () => homePage;
+          dialogPages.push(dialogPage);
           return dialogPage;
         });
         homeDialogPages.length = 0;
@@ -1893,35 +1897,35 @@ function registerPage(_ref, onCreated) {
         homeDialogPages.length = 0;
       }
     }
-    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
+    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
         fail(e2) {
           if (e2.errMsg.endsWith("cancel")) {
-            nativePage2.show();
+            nativePage.show();
           }
         }
       });
     });
-    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD);
     });
-    nativePage2.addPageEventListener(ON_READY, (_) => {
+    nativePage.addPageEventListener(ON_READY, (_) => {
       invokePageReadyHooks(page);
       invokeHook(page, ON_READY);
     });
-    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
       invokeHook(page, ON_PAGE_SCROLL, {
         scrollTop: arg.scrollTop
       });
     });
-    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
       invokeHook(page, ON_PULL_DOWN_REFRESH);
     });
-    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
       invokeHook(page, ON_REACH_BOTTOM);
     });
-    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+    nativePage.addPageEventListener(ON_RESIZE, (arg) => {
       var args = {
         deviceOrientation: arg.deviceOrientation,
         size: {
@@ -1933,14 +1937,14 @@ function registerPage(_ref, onCreated) {
       };
       invokeHook(page, ON_RESIZE, args);
     });
-    nativePage2.startRender();
+    nativePage.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
   } else {
     fn();
   }
-  return nativePage2;
+  return nativePage;
 }
 function registerDialogPage(_ref2, dialogPage, onCreated) {
   var _uniRoutes$find;
@@ -1968,7 +1972,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var parentPage = dialogPage.getParentPage();
   var createDialogPage = getPageManager().createDialogPage;
   var isHarmony = createDialogPage.length === 6;
-  var nativePage2 = isHarmony ? createDialogPage(url, id2.toString(), pageStyle, parentPage === null || parentPage === void 0 ? void 0 : parentPage.getNativePage()) : createDialogPage(
+  var nativePage = isHarmony ? createDialogPage(url, id2.toString(), pageStyle, parentPage === null || parentPage === void 0 ? void 0 : parentPage.getNativePage()) : createDialogPage(
     // @ts-expect-error
     parentPage ? parentPage.__nativePageId : "",
     id2.toString(),
@@ -1976,9 +1980,9 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     pageStyle
   );
   if (onCreated) {
-    onCreated(nativePage2);
+    onCreated(nativePage);
   }
-  routeOptions.meta.id = parseInt(nativePage2.pageId);
+  routeOptions.meta.id = parseInt(nativePage.pageId);
   var route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER) ? path : path.slice(1);
   var pageInstance = initPageInternalInstance(
     openType,
@@ -1990,30 +1994,30 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     "light"
   );
   function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
-    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
+    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
       closeDialogPage({
         dialogPage
       });
     });
-    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD);
       dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
     });
-    nativePage2.addPageEventListener(ON_READY, (_) => {
+    nativePage.addPageEventListener(ON_READY, (_) => {
       invokePageReadyHooks(page);
       invokeHook(page, ON_READY);
     });
-    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
       invokeHook(page, ON_PAGE_SCROLL, arg);
     });
-    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
       invokeHook(page, ON_PULL_DOWN_REFRESH);
     });
-    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
       invokeHook(page, ON_REACH_BOTTOM);
     });
-    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+    nativePage.addPageEventListener(ON_RESIZE, (arg) => {
       var args = {
         deviceOrientation: arg.deviceOrientation,
         size: {
@@ -2025,17 +2029,17 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
       };
       invokeHook(page, ON_RESIZE, args);
     });
-    nativePage2.startRender();
+    nativePage.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
   } else {
     fn();
   }
-  return nativePage2;
+  return nativePage;
 }
-function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage2) {
-  var pageNode = nativePage2.document.body;
+function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage) {
+  var pageNode = nativePage.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
   var mountPage = (component2) => app.mountPage(component2, {
@@ -2339,11 +2343,6 @@ function _reLaunch(_ref3) {
     var pages2 = getAllPages().slice(0);
     var selected = getTabIndex(path);
     function callback() {
-      var hasTabBar = getTabBar() !== null;
-      if (hasTabBar) {
-        var _getPageManager$findP;
-        (_getPageManager$findP = getPageManager().findPageById(getTabBar().pageId)) === null || _getPageManager$findP === void 0 || _getPageManager$findP.close();
-      }
       pages2.forEach((page) => closePage(page, "none"));
       resolve(void 0);
       setStatusBarStyle();
@@ -3576,9 +3575,6 @@ var ENTRY_TYPE_RENDER = "render";
 var ENTRY_TYPE_NAVIGATION = "navigation";
 var RENDER_TYPE_FIRST_LAYOUT = "firstLayout";
 var RENDER_TYPE_FIRST_RENDER = "firstRender";
-var AppStartDuration = 1;
-var PageFirstPageRenderDuration = 7;
-var PageFirstPageLayoutDuration = 8;
 class PerformanceEntryStatus {
   constructor(entryType, name) {
     this._state = PerformanceEntryStatus.STATE_EMPTY;
@@ -3646,7 +3642,7 @@ class PerformanceEntryStatusLayout extends PerformanceEntryStatus {
     super.executeReady();
     var innerPage = super.getCurrentInnerPage();
     if (innerPage != null) {
-      this._entryData.duration = nativePage.getDuration(innerPage.pageId, PageFirstPageLayoutDuration);
+      this._entryData.duration = innerPage.getFirstPageLayoutDuration();
     }
   }
 }
@@ -3662,7 +3658,7 @@ class PerformanceEntryStatusRender extends PerformanceEntryStatus {
     super.executeReady();
     var innerPage = super.getCurrentInnerPage();
     if (innerPage != null) {
-      this._entryData.duration = nativePage.getDuration(innerPage.pageId, PageFirstPageRenderDuration);
+      this._entryData.duration = innerPage.getFirstPageRenderDuration();
     }
   }
 }
@@ -3680,7 +3676,7 @@ class PerformanceEntryStatusNavigation extends PerformanceEntryStatus {
     if (innerPage != null) {
       this._entryData.duration = Date.now() - this._entryData.startTime;
       if (this._entryData.name == APP_LAUNCH) {
-        this._entryData.duration += nativePage.getDuration(AppStartDuration);
+        this._entryData.duration += getNativeApp().getAppStartDuration();
       }
     }
   }
@@ -6358,7 +6354,7 @@ const _style_0$5 = {
       "zIndex": 999,
       "transform": "translate(0, 100%)",
       "transitionProperty": "transform",
-      "transitionDuration": "0.25s",
+      "transitionDuration": "0.15s",
       "backgroundColor": "#f7f7f7",
       "borderTopLeftRadius": 12,
       "borderTopRightRadius": 12
@@ -6514,7 +6510,7 @@ const _style_0$5 = {
     },
     "uni-action-sheet_dialog__container": {
       "property": "transform",
-      "duration": "0.25s"
+      "duration": "0.15s"
     }
   }
 };
@@ -6682,7 +6678,6 @@ const _sfc_main$4 = {
       },
       lastTime: 0,
       searchLoading: false,
-      searchLoadingAnimation: false,
       language: "zh-Hans",
       scrollTop: 0,
       isLandscape: false,
@@ -6699,7 +6694,9 @@ const _sfc_main$4 = {
       callUniMapCoErr: false,
       useUniCloud: true,
       mapHeight: 350,
-      loadingPath
+      loadingPath,
+      loadingRotate: 0,
+      loadingTimer: -1
     };
   },
   onLoad(options) {
@@ -7142,12 +7139,17 @@ const _sfc_main$4 = {
   },
   watch: {
     searchLoading(val) {
+      if (this.loadingTimer != -1) {
+        clearInterval(this.loadingTimer);
+        this.loadingTimer = -1;
+      }
       if (val) {
-        setTimeout(() => {
-          this.searchLoadingAnimation = true;
-        }, 50);
+        this.loadingRotate += 100;
+        this.loadingTimer = setInterval(() => {
+          this.loadingRotate += 100;
+        }, 200);
       } else {
-        this.searchLoadingAnimation = false;
+        this.loadingRotate = 0;
       }
     }
   },
@@ -7589,17 +7591,12 @@ const _style_0$4 = {
       "color": "#d1d1d1"
     }
   },
-  "uni-choose-location-poi-search-loading-start": {
-    "": {
-      "transform": "rotate(60000deg)"
-    }
-  },
   "uni-choose-location-poi-search-loading-image": {
     "": {
       "width": 28,
       "height": 28,
       "transitionProperty": "transform",
-      "transitionDuration": "120s",
+      "transitionDuration": "0.2s",
       "transitionTimingFunction": "linear"
     }
   },
@@ -7630,7 +7627,7 @@ const _style_0$4 = {
     },
     "uni-choose-location-poi-search-loading-image": {
       "property": "transform",
-      "duration": "120s",
+      "duration": "0.2s",
       "timingFunction": "linear"
     }
   }
@@ -7775,9 +7772,10 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     class: "uni-choose-location-poi-list"
   }, [$data.errMsg != "" ? (openBlock(), createElementBlock("view", _hoisted_10, [createElementVNode("text", _hoisted_11, toDisplayString($data.errMsg), 1)])) : $data.locationLoading ? (openBlock(), createElementBlock("view", _hoisted_12, [createElementVNode("text", _hoisted_13, toDisplayString($options.languageCom["locationLoading"]), 1)])) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createElementBlock("view", _hoisted_14, [createElementVNode("image", {
     src: $data.loadingPath,
-    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
-    mode: "widthFix"
-  }, null, 10, _hoisted_15)])) : (openBlock(true), createElementBlock(Fragment, {
+    class: "uni-choose-location-poi-search-loading-image",
+    mode: "widthFix",
+    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
+  }, null, 12, _hoisted_15)])) : (openBlock(true), createElementBlock(Fragment, {
     key: 3
   }, renderList($data.pois, (item, index2) => {
     return openBlock(), createElementBlock("view", {
@@ -7787,9 +7785,10 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     }, [createElementVNode("view", null, [createElementVNode("view", null, [createElementVNode("text", _hoisted_17, toDisplayString(item.title), 1)]), createElementVNode("view", null, [createElementVNode("text", _hoisted_18, toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)])]), $data.selected == index2 ? (openBlock(), createElementBlock("text", _hoisted_19, toDisplayString($data.icon.success), 1)) : createCommentVNode("", true), _hoisted_20], 10, _hoisted_16);
   }), 128)), $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createElementBlock("view", _hoisted_21, [createElementVNode("image", {
     src: $data.loadingPath,
-    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
-    mode: "widthFix"
-  }, null, 10, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9)], 6)) : createCommentVNode("", true)], 2);
+    class: "uni-choose-location-poi-search-loading-image",
+    mode: "widthFix",
+    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
+  }, null, 12, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9)], 6)) : createCommentVNode("", true)], 2);
 }
 const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
 const _sfc_main$3 = {
@@ -8033,17 +8032,20 @@ const _style_0$3 = {
     "": {
       "justifyContent": "center",
       "alignItems": "center",
-      "paddingTop": 20,
-      "paddingRight": 20,
-      "paddingBottom": 20,
-      "paddingLeft": 20
+      "paddingTop": 18,
+      "paddingRight": 18,
+      "paddingBottom": 18,
+      "paddingLeft": 18
     }
   },
   "uni-modal_dialog__content__text": {
     "": {
       "fontSize": 16,
       "fontWeight": "normal",
-      "marginBottom": 10,
+      "marginTop": 2,
+      "marginLeft": 2,
+      "marginRight": 2,
+      "marginBottom": 12,
       "textAlign": "center",
       "color": "#747474",
       "lines": 6,
@@ -8060,6 +8062,8 @@ const _style_0$3 = {
       "paddingRight": 5,
       "paddingBottom": 5,
       "paddingLeft": 5,
+      "marginTop": 2,
+      "marginBottom": 7,
       "maxHeight": 192
     },
     ".uni-modal_dark__mode": {
@@ -8220,7 +8224,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     ref: "ref_textarea_content_input",
     "auto-height": $data.isAutoHeight,
     placeholder: $data.placeholderText
-  }, null, 42, _hoisted_2$2)), [[vModelText, $data.content]]) : (openBlock(), createElementBlock("text", _hoisted_3$2, toDisplayString($data.content), 1))]), createElementVNode("view", {
+  }, null, 42, _hoisted_2$2)), [[vModelText, $data.content]]) : createCommentVNode("", true), !$data.editable && $data.content.length > 0 ? (openBlock(), createElementBlock("text", _hoisted_3$2, toDisplayString($data.content), 1)) : createCommentVNode("", true)]), createElementVNode("view", {
     class: normalizeClass(["uni-modal_dialog__content__topline", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }])
