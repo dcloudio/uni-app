@@ -78,7 +78,7 @@ export const options: UniMiniProgramPluginOptions = {
       assets: [COMPONENTS_DIR],
       targets: [
         {
-          src: ['ext.json'],
+          src: ['ext.json', 'package.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },
