@@ -338,43 +338,45 @@ function genAppHarmonyUniModules(
     version?: string
   }[] = []
 
-  utsPlugins.forEach((plugin) => {
-    const injects = parseUniExtApi(
-      path.resolve(uniModulesDir, plugin),
-      plugin,
-      true,
-      'app-harmony',
-      'arkts'
-    )
-    const harmonyPackageName = `@uni_modules/${plugin.toLowerCase()}`
-    if (injects) {
-      Object.keys(injects).forEach((key) => {
-        const inject = injects[key]
-        if (Array.isArray(inject) && inject.length > 1) {
-          const apiName = inject[1]
-          importCodes.push(
-            `import { ${inject[1]} } from '${harmonyPackageName}'`
-          )
-          extApiCodes.push(`uni.${apiName} = ${apiName}`)
-        }
-      })
-    }
-    const ident = camelize(plugin)
-    importCodes.push(`import * as ${ident} from '${harmonyPackageName}'`)
-    registerCodes.push(
-      `uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`
-    )
+  Array.from(utsPlugins)
+    .sort()
+    .forEach((plugin) => {
+      const injects = parseUniExtApi(
+        path.resolve(uniModulesDir, plugin),
+        plugin,
+        true,
+        'app-harmony',
+        'arkts'
+      )
+      const harmonyPackageName = `@uni_modules/${plugin.toLowerCase()}`
+      if (injects) {
+        Object.keys(injects).forEach((key) => {
+          const inject = injects[key]
+          if (Array.isArray(inject) && inject.length > 1) {
+            const apiName = inject[1]
+            importCodes.push(
+              `import { ${inject[1]} } from '${harmonyPackageName}'`
+            )
+            extApiCodes.push(`uni.${apiName} = ${apiName}`)
+          }
+        })
+      }
+      const ident = camelize(plugin)
+      importCodes.push(`import * as ${ident} from '${harmonyPackageName}'`)
+      registerCodes.push(
+        `uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`
+      )
 
-    projectDeps.push({
-      moduleSpecifier: harmonyPackageName,
-      plugin,
-      source: 'local',
+      projectDeps.push({
+        moduleSpecifier: harmonyPackageName,
+        plugin,
+        source: 'local',
+      })
     })
-  })
 
   const relatedModules = getRelatedModules(inputDir)
 
-  relatedModules.forEach((module) => {
+  relatedModules.sort().forEach((module) => {
     const harmonyModuleName = `@uni_modules/${module.toLowerCase()}`
     if (utsPlugins.has(module)) {
       // 不用处理
@@ -443,7 +445,7 @@ function genAppHarmonyUniModules(
   })
 
   const relatedProviders = getRelatedProviders(inputDir, allProviders)
-  relatedProviders.forEach((relatedProvider) => {
+  relatedProviders.sort().forEach((relatedProvider) => {
     const provider = allProviders.find(
       (item) =>
         item.service === relatedProvider.service &&
@@ -472,27 +474,29 @@ function genAppHarmonyUniModules(
   }
 
   const pluginCustomElements = getUTSPluginCustomElements()
-  Object.keys(pluginCustomElements).forEach((pluginId) => {
-    if (!utsPlugins.has(pluginId)) {
-      // 可能没使用，没编译
-      return
-    }
-    const elements = [...pluginCustomElements[pluginId]]
-    if (elements.length) {
-      importCodes.push(
-        `import { ${elements
-          .map((name) => capitalize(camelize(name)) + 'Element')
-          .join(', ')} } from '@uni_modules/${pluginId.toLowerCase()}'`
-      )
-      elements.forEach((element) => {
-        registerCodes.push(
-          `customElements.define('${element.replace('uni-', '')}', ${
-            capitalize(camelize(element)) + 'Element'
-          })`
+  Object.keys(pluginCustomElements)
+    .sort()
+    .forEach((pluginId) => {
+      if (!utsPlugins.has(pluginId)) {
+        // 可能没使用，没编译
+        return
+      }
+      const elements = [...pluginCustomElements[pluginId]]
+      if (elements.length) {
+        importCodes.push(
+          `import { ${elements
+            .map((name) => capitalize(camelize(name)) + 'Element')
+            .join(', ')} } from '@uni_modules/${pluginId.toLowerCase()}'`
         )
-      })
-    }
-  })
+        elements.forEach((element) => {
+          registerCodes.push(
+            `customElements.define('${element.replace('uni-', '')}', ${
+              capitalize(camelize(element)) + 'Element'
+            })`
+          )
+        })
+      }
+    })
 
   const importIds: string[] = []
   if (relatedProviders.length) {
