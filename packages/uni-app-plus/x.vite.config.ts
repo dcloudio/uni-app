@@ -1,5 +1,5 @@
 import path from 'path'
-import { type UserConfig, defineConfig } from 'vite'
+import { defineConfig } from 'vite'
 import jscc from 'rollup-plugin-jscc'
 import replace from '@rollup/plugin-replace'
 import vue from '@vitejs/plugin-vue'
@@ -14,7 +14,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
-import { replacePagePaths, syncPagesFile, uts2ts } from '../../scripts/ext-api'
+import { uts2ts, syncPagesFile, replacePagePaths } from '../../scripts/ext-api'
 
 import { initUniAppJsEngineCssPlugin } from '@dcloudio/uni-app-uts'
 import { OutputChunk } from 'rollup'
@@ -74,125 +74,118 @@ const rollupPlugins = [
   }),
 ]
 
-function createConfig(platform: 'app-harmony' | 'app-android' | 'app-ios'): UserConfig {
-  return {
-    root: __dirname,
-    define: {
-      __DEV__: false,
-      __TEST__: false,
-      __PLATFORM__: JSON.stringify('app'),
-      __NODE_JS__: false,
-      __APP_VIEW__: false,
-      __UNI_FEATURE_I18N_EN__: true,
-      __UNI_FEATURE_I18N_ES__: true,
-      __UNI_FEATURE_I18N_FR__: true,
-      __UNI_FEATURE_I18N_ZH_HANS__: true,
-      __UNI_FEATURE_I18N_ZH_HANT__: true,
-      __X__: true,
-    },
-    resolve: {
-      alias: [
-        {
-          find: 'vue',
-          replacement: resolve('../uni-app-vue/src/uvue/index.ts'),
-        },
-        {
-          find: '@dcloudio/uni-api',
-          replacement: resolve('../uni-api/src/index.ts'),
-        },
-        {
-          find: '@dcloudio/uni-vue',
-          replacement: resolve('../uni-vue/src/index.ts'),
-        },
-        {
-          find: '@dcloudio/uni-core',
-          replacement: resolve('../uni-core/src'),
-        },
-        {
-          find: '@dcloudio/uni-components/style',
-          replacement: resolve('../uni-components/style'),
-        },
-        {
-          find: '@dcloudio/uni-components',
-          replacement: resolve('../uni-components/src/index.ts'),
-        },
-        {
-          find: '@dcloudio/uni-platform',
-          replacement: resolve('./src/platform/index.ts'),
-        },
-      ],
-      extensions: ['.tsx', '.ts', '.jsx', '.mjs', '.js', '.json', '.vue'],
-    },
-    css: {
-      postcss: {
-        plugins: [
-          autoprefixer({
-            overrideBrowserslist: ['Android > 4.4', 'iOS >= 10'],
-          }),
-        ],
-      },
-    },
-    plugins: [
-      uniPrePlugin({} as any, { include: ['**/*.vue'] }),
-      uniUVueTypeScriptPlugin(),
-      uniRemoveCssScopedPlugin(),
+export default defineConfig({
+  root: __dirname,
+  define: {
+    __DEV__: false,
+    __TEST__: false,
+    __PLATFORM__: JSON.stringify('app'),
+    __NODE_JS__: false,
+    __APP_VIEW__: false,
+    __UNI_FEATURE_I18N_EN__: true,
+    __UNI_FEATURE_I18N_ES__: true,
+    __UNI_FEATURE_I18N_FR__: true,
+    __UNI_FEATURE_I18N_ZH_HANS__: true,
+    __UNI_FEATURE_I18N_ZH_HANT__: true,
+    __X__: true,
+  },
+  resolve: {
+    alias: [
       {
-        name: 'uni-x:ios',
-        configResolved(config) {
-          initUniAppJsEngineCssPlugin(config)
-        },
+        find: 'vue',
+        replacement: resolve('../uni-app-vue/src/uvue/index.ts'),
       },
-      uts2ts({ target: 'uni-app-plus', platform: 'app-js' }),
-      vue({
-        customElement: true,
-        template: {
-          compilerOptions: {
-            isNativeTag: isAppIOSUVueNativeTag,
-            expressionPlugins: ['typescript'],
-          },
-        },
-        script: {
-          babelParserPlugins: ['typescript'],
-        },
-      }),
-      vueJsx({ optimize: true, isCustomElement: isAppIOSUVueNativeTag }),
-      replacePagePaths(systemPagePaths),
+      {
+        find: '@dcloudio/uni-api',
+        replacement: resolve('../uni-api/src/index.ts'),
+      },
+      {
+        find: '@dcloudio/uni-vue',
+        replacement: resolve('../uni-vue/src/index.ts'),
+      },
+      {
+        find: '@dcloudio/uni-core',
+        replacement: resolve('../uni-core/src'),
+      },
+      {
+        find: '@dcloudio/uni-components/style',
+        replacement: resolve('../uni-components/style'),
+      },
+      {
+        find: '@dcloudio/uni-components',
+        replacement: resolve('../uni-components/src/index.ts'),
+      },
+      {
+        find: '@dcloudio/uni-platform',
+        replacement: resolve('./src/platform/index.ts'),
+      },
     ],
-    build: {
-      emptyOutDir: false,
-      target: 'modules',
-      cssTarget,
-      minify: 'terser',
-      cssCodeSplit: false,
-      lib: {
-        fileName: 'uni.x.runtime',
-        entry: path.resolve(__dirname, 'src/x/index.ts'),
-        formats: ['es'],
-      },
-      polyfillModulePreload: false,
-      modulePreload: false,
-      assetsDir: '.',
-      rollupOptions: {
-        treeshake: 'smallest',
-        output: {
-          dir: 'dist',
-          freeze: false,
-          entryFileNames: platform === 'app-harmony' ? 'uni.x.runtime.harmony.esm.js' : 'uni.x.runtime.esm.js',
-        },
-        preserveEntrySignatures: 'strict',
-        plugins: rollupPlugins,
-        onwarn: (msg, warn) => {
-          if (!String(msg).includes('external module "vue" but never used')) {
-            warn(msg)
-          }
-        },
-        external: ['vue', '@vue/shared', '@dcloudio/uni-shared'],
+    extensions: ['.tsx', '.ts', '.jsx', '.mjs', '.js', '.json', '.vue'],
+  },
+  css: {
+    postcss: {
+      plugins: [
+        autoprefixer({
+          overrideBrowserslist: ['Android > 4.4', 'iOS >= 10'],
+        }),
+      ],
+    },
+  },
+  plugins: [
+    uniPrePlugin({} as any, { include: ['**/*.vue'] }),
+    uniUVueTypeScriptPlugin(),
+    uniRemoveCssScopedPlugin(),
+    {
+      name: 'uni-x:ios',
+      configResolved(config) {
+        initUniAppJsEngineCssPlugin(config)
       },
     },
-  }
-}
-
-export default [
-  defineConfig(createConfig('app-ios')),
-  defineConfig(createConfig('app-harmony'))
-]
+    uts2ts({ target: 'uni-app-plus', platform: 'app-js' }),
+    vue({
+      customElement: true,
+      template: {
+        compilerOptions: {
+          isNativeTag: isAppIOSUVueNativeTag,
+          expressionPlugins: ['typescript'],
+        },
+      },
+      script: {
+        babelParserPlugins: ['typescript'],
+      },
+    }),
+    vueJsx({ optimize: true, isCustomElement: isAppIOSUVueNativeTag }),
+    replacePagePaths(systemPagePaths),
+  ],
+  build: {
+    emptyOutDir: false,
+    target: 'modules',
+    cssTarget,
+    minify: 'terser',
+    cssCodeSplit: false,
+    lib: {
+      fileName: 'uni.x.runtime',
+      entry: path.resolve(__dirname, 'src/x/index.ts'),
+      formats: ['es'],
+    },
+    polyfillModulePreload: false,
+    modulePreload: false,
+    assetsDir: '.',
+    rollupOptions: {
+      treeshake: 'smallest',
+      output: {
+        dir: 'dist',
+        freeze: false,
+        entryFileNames: 'uni.x.runtime.esm.js',
+      },
+      preserveEntrySignatures: 'strict',
+      plugins: rollupPlugins,
+      onwarn: (msg, warn) => {
+        if (!String(msg).includes('external module "vue" but never used')) {
+          warn(msg)
+        }
+      },
+      external: ['vue', '@vue/shared', '@dcloudio/uni-shared'],
+    },
+  },
+})
