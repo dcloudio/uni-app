@@ -63,7 +63,6 @@
 	export default {
 		data() {
 			return {
-				inputLineHeight : 32,
 				theme: 'light',
 				readyEventName: '',
 				optionsEventName: '',
@@ -113,7 +112,7 @@
 				this.updateUI()
 			});
 			// #endif
-			// #ifdef APP
+			// #ifdef APP-ANDROID || APP-IOS
 			const appTheme = systemInfo.appTheme
 			if (appTheme != null) {
 				this.theme = appTheme

@@ -6253,15 +6253,6 @@ const _sfc_main$5 = {
       this.theme = osTheme;
     }
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
-    uni.onAppThemeChange((res) => {
-      var appTheme2 = res.appTheme;
-      if (appTheme2 != null && appTheme2 != "auto") {
-        this.theme = appTheme2;
-      }
-    });
-    uni.onOsThemeChange((res) => {
-      this.theme = res.osTheme;
-    });
   },
   computed: {
     cancelText() {
@@ -7105,8 +7096,7 @@ const _sfc_main$4 = {
     },
     closeDialogPage() {
       uni.closeDialogPage({
-        dialogPage: this.$page,
-        animationType: "zoom-fade-out"
+        dialogPage: this.$page
       });
     },
     back() {
@@ -7822,15 +7812,7 @@ const _sfc_main$3 = {
     }, 10);
   },
   onLoad(options) {
-    var systemInfo = uni.getSystemInfoSync();
-    var appTheme = systemInfo.appTheme;
-    if (appTheme != null) {
-      this.theme = appTheme;
-    }
-    uni.onAppThemeChange((res) => {
-      this.theme = res.appTheme;
-      this.updateUI();
-    });
+    uni.getSystemInfoSync();
     this.readyEventName = options["readyEventName"];
     this.optionsEventName = options["optionsEventName"];
     this.successEventName = options["successEventName"];
@@ -8610,6 +8592,7 @@ const _sfc_main$1 = {
       };
       this.inDoubleTapMode = false;
       this.startTimestamp = e.timeStamp;
+      e.preventDefault();
       this.needExecLongPress = true;
       this.longPressActionTimeoutId = setTimeout(() => {
         if (this.needExecLongPress) {

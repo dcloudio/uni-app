@@ -17,15 +17,16 @@ import autoprefixer from 'autoprefixer'
 import { replacePagePaths, syncPagesFile, uts2ts } from '../../scripts/ext-api'
 
 import { initUniAppJsEngineCssPlugin } from '@dcloudio/uni-app-uts'
-import { OutputChunk } from 'rollup'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
 }
 
+declare const process: any
+
 process.env.UNI_APP_X = 'true'
-process.env.UNI_UTS_PLATFORM = 'app-ios'
-initPreContext('app', {}, 'app-ios', true)
+process.env.UNI_UTS_PLATFORM = process.env.X_RUNTIME_PLATFORM || 'app-ios'
+initPreContext('app', {}, process.env.UNI_UTS_PLATFORM, true)
 
 const apiDirs: string[] = []
 if (process.env.UNI_APP_EXT_API_DIR) {
@@ -179,7 +180,10 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
         output: {
           dir: 'dist',
           freeze: false,
-          entryFileNames: platform === 'app-harmony' ? 'uni.x.runtime.harmony.esm.js' : 'uni.x.runtime.esm.js',
+          entryFileNames:
+            platform === 'app-harmony'
+              ? 'uni.x.runtime.harmony.esm.js'
+              : 'uni.x.runtime.esm.js',
         },
         preserveEntrySignatures: 'strict',
         plugins: rollupPlugins,
@@ -194,4 +198,9 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
   }
 }
 
-export default defineConfig(createConfig((process.env as Record<string, string>).X_RUNTIME_PLATFORM as X_RUNTIME_PLATFORM))
+export default defineConfig(
+  createConfig(
+    (process.env as Record<string, string>)
+      .X_RUNTIME_PLATFORM as X_RUNTIME_PLATFORM
+  )
+)

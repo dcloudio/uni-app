@@ -84,7 +84,7 @@ export const hideModal: HideModal = function (
 		options?.complete?.(res)
 		return
 	}
-	
+	console.log("currentPage.vm.$systemDialogPages",currentPage.vm.$systemDialogPages)
 	if(currentPage.vm.$systemDialogPages == null) {
 		const res = new UniHideModalFailImpl()
 		options?.fail?.(res)
