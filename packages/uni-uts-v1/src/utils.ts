@@ -728,15 +728,25 @@ function genCustomElementsConfigJson(
   customElements: Record<string, string>,
   namespace: string
 ) {
-  const res: { name: string; class: string; delegateClass?: string }[] = []
+  const res: {
+    name: string
+    class: string
+    delegateClass?: string
+    method?: string
+  }[] = []
   Object.keys(customElements).forEach((name) => {
     const normalized = capitalize(camelize(name))
     const options: (typeof res)[0] = {
       name,
       class: namespace + normalized + 'Element',
     }
-    if (isX && platform === 'app-ios') {
-      options['delegateClass'] = normalized + 'ElementRegister'
+    if (isX) {
+      if (platform === 'app-ios') {
+        options['delegateClass'] = normalized + 'ElementRegister'
+      } else {
+        options.class = options.class + 'Register'
+        options.method = 'register'
+      }
     }
     res.push(options)
   })
