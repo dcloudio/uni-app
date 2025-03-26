@@ -659,27 +659,30 @@ function copyConfigJson(
       )
     }
     if (hasCustomElements) {
-      if (!configJson.components) {
-        configJson.components = []
-      }
-      genCustomElementsConfigJson(
-        platform,
-        isX,
-        customElementsObj,
-        namespace
-      ).forEach((item) => {
-        // customElement优先级高于组件
-        const index = configJson.components.findIndex(
-          (component: any) => component.name === item.name
-        )
-        if (index > -1) {
-          configJson.components.splice(index, 1)
+      function addCustomElements(key: 'components' | 'easycom') {
+        if (!configJson[key]) {
+          configJson[key] = []
         }
-        configJson.components.push({
-          type: 'customElement',
-          ...item,
+        genCustomElementsConfigJson(
+          platform,
+          isX,
+          customElementsObj!,
+          namespace
+        ).forEach((item) => {
+          // customElement优先级高于组件
+          const index = configJson[key].findIndex(
+            (component: any) => component.name === item.name
+          )
+          if (index > -1) {
+            configJson[key].splice(index, 1)
+          }
+          configJson[key].push({
+            type: 'customElement',
+            ...item,
+          })
         })
-      })
+      }
+      addCustomElements(platform === 'app-android' ? 'easycom' : 'components')
     }
     if (hasHookClass) {
       configJson.hooksClass = hookClass
