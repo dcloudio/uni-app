@@ -170,8 +170,11 @@ export function registerPage(
     if (pages.length === 1) {
       if (homeDialogPages.length) {
         const homePage = pages[0] as unknown as UniPage
+        // harmony manage dialogPages in framework
+        const dialogPages = homePage.getDialogPages()
         homePage.vm.$.$dialogPages.value = homeDialogPages.map((dialogPage) => {
           dialogPage.getParentPage = () => homePage
+          dialogPages.push(dialogPage)
           return dialogPage
         })
         homeDialogPages.length = 0
