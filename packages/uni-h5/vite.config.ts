@@ -73,6 +73,7 @@ const rollupPlugins = [
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
       _X_: isX ? 1 : 0,
     },
+    exclude: [normalizePath(path.resolve(__dirname, '../../uni-ext-api/**/*'))],
   }),
 ]
 if (FORMAT === 'cjs') {
