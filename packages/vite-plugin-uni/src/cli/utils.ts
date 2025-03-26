@@ -142,6 +142,9 @@ export function initEnv(
 
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 
+  // 需要提前初始化
+  initUVueEnv()
+
   if (process.env.UNI_PLATFORM === 'app-harmony') {
     if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
       // 先通过原始outputDir设置，因为下边会修改原始的outputDir到鸿蒙项目里，而这些临时目录不应该影响到鸿蒙项目
@@ -290,8 +293,6 @@ export function initEnv(
   }
 
   initModulePaths()
-
-  initUVueEnv()
 
   const pkg = require('../../package.json')
 

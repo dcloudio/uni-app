@@ -606,14 +606,15 @@ export async function compile(
     },
     uniModules,
   }
-  const isUTSFileExists = fs.existsSync(filename)
+  // 必须判断input.filename，因为input.filename可能跟filename不一样（可能会变成.uvue目录的文件）
+  const isUTSFileExists = fs.existsSync(input.filename)
   if (componentsCode) {
     if (!isUTSFileExists) {
       input.fileContent = componentsCode
     } else {
       input.fileContent =
         fs.readFileSync(
-          resolveBundleInputFileName('app-android', filename),
+          resolveBundleInputFileName('app-android', input.filename),
           'utf8'
         ) +
         `\n` +
