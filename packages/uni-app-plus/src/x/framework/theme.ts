@@ -52,7 +52,7 @@ export function registerThemeChange(callback: (themeMode: IThemeMode) => void) {
       callback(appThemeMode)
     })
   } catch (e) {
-    console.warn(e)
+    // console.warn(e)
   }
 }
 
