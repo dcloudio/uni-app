@@ -68,6 +68,7 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
   const runtimePackageName = getRuntimePackageName(isX)
   const runtimeExports: [string][] = [
     // uts basic
+    ['UTS'],
     ['defineAsyncApi'],
     ['defineSyncApi'],
     ['defineTaskApi'],

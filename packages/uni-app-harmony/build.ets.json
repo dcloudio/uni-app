@@ -12,6 +12,9 @@
     "autoImports": {
       "./shared": [
         [
+          "UTS"
+        ],
+        [
           "IUTSObject"
         ],
         [
@@ -154,6 +157,9 @@
     ],
     "autoImports": {
       "./shared": [
+        [
+          "UTS"
+        ],
         [
           "IUTSObject"
         ],

@@ -6,6 +6,9 @@
     "autoImports": {
       "@dcloudio/uni-app-harmony": [
         [
+          "UTS"
+        ],
+        [
           "IUTSObject"
         ],
         [
