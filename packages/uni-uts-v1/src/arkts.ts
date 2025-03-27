@@ -18,6 +18,7 @@ interface ArkTSCompilerOptions {
   isExtApi?: boolean
   isOhpmPackage?: boolean
   sourceMap?: boolean
+  uni_modules?: string[]
   rewriteConsoleExpr?: (fileName: string, content: string) => string
   transform?: {
     uniExtApiProviderName?: string
@@ -338,6 +339,7 @@ export async function compileArkTSExtApi(
     isX,
     isOhpmPackage = false,
     sourceMap,
+    uni_modules,
     rewriteConsoleExpr,
   }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
@@ -373,6 +375,7 @@ export async function compileArkTSExtApi(
       paths: {
         '@dcloudio/uni-runtime': runtimePackageName,
       },
+      uniModules: uni_modules,
       parseOptions: {
         tsx: true,
         noEarlyErrors: true,
@@ -447,7 +450,10 @@ export async function compileArkTSExtApi(
     main: 'utssdk/app-harmony/index.ets',
     author: '',
     license: '',
-    dependencies: {},
+    dependencies: (uni_modules || []).reduce((acc, dep) => {
+      acc['@uni_modules/' + dep] = '../' + dep
+      return acc
+    }, {} as Record<string, string>),
   }
 
   if (isOhpmPackage) {

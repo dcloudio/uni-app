@@ -484,6 +484,7 @@ export function uniUTSAppUniModulesPlugin(
         isExtApi,
         sourceMap: enableSourceMap(),
         rewriteConsoleExpr: appendUniModulesConsoleExpr,
+        uni_modules: deps,
         transform: {
           uniExtApiProviderName: extApiProvider?.name,
           uniExtApiProviderService: extApiProvider?.service,
