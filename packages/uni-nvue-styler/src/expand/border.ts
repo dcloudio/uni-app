@@ -4,29 +4,28 @@ import { transformBorderColor } from './borderColor'
 import { transformBorderStyle } from './borderStyle'
 import { transformBorderWidth } from './borderWidth'
 
-const borderWidth = (): string => {
-  if (__NODE_JS__) {
-    return '-width'
-  }
-  return 'Width'
-}
-const borderStyle = (): string => {
-  if (__NODE_JS__) {
-    return '-style'
-  }
-  return 'Style'
-}
-const borderColor = (): string => {
-  if (__NODE_JS__) {
-    return '-color'
-  }
-  return 'Color'
-}
-
 export function createTransformBorder(
   options: NormalizeOptions
 ): TransformDecl {
   return (decl: Declaration): Declaration[] => {
+    const borderWidth = (): string => {
+      if (__NODE_JS__) {
+        return '-width'
+      }
+      return 'Width'
+    }
+    const borderStyle = (): string => {
+      if (__NODE_JS__) {
+        return '-style'
+      }
+      return 'Style'
+    }
+    const borderColor = (): string => {
+      if (__NODE_JS__) {
+        return '-color'
+      }
+      return 'Color'
+    }
     const { prop, value, important, raws, source } = decl
     const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
     const result: Array<string | null> = [
@@ -139,6 +138,10 @@ export function createTransformBorderNvue(
   options: NormalizeOptions
 ): TransformDecl {
   return (decl) => {
+    const borderWidth = __NODE_JS__ ? '-width' : 'Width'
+    const borderStyle = __NODE_JS__ ? '-style' : 'Style'
+    const borderColor = __NODE_JS__ ? '-color' : 'Color'
+
     const { prop, value, important, raws, source } = decl
     const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
     const result = [
@@ -155,14 +158,14 @@ export function createTransformBorderNvue(
     return [
       createDecl(
         prop + borderWidth,
-        (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(),
+        (result[0] || '0').trim(),
         important,
         raws,
         source
       ),
       createDecl(
         prop + borderStyle,
-        (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(),
+        (result[1] || 'solid').trim(),
         important,
         raws,
         source
