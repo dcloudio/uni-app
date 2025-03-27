@@ -12,7 +12,7 @@ async function objectifierRule(input: string, isUVue = false) {
   }
 }
 
-describe('nvue-styler: normalize', () => {
+describe('nvue-styler: parse nvue', () => {
   test('basic', async () => {
     const { json, messages } = await objectifierRule(`.foo{
 color: #FF0000;
@@ -590,5 +590,100 @@ zIndex: 4;
     expect(messages[0].text).toBe(
       'WARNING: `text-shadow` is not a standard property name (may not be supported)'
     )
+  })
+})
+
+describe('nvue 部分 CSS 不参与改动', () => {
+  test('border', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  border: 1px solid red;
+}
+.a{
+border-top:1px solid red;
+}
+.b{
+border-width:1px;
+border-style: solid;
+border-color: red;
+}
+.c{
+border-top-width:1px;
+border-top-color: red;
+border-top-style: solid;
+}
+`)
+    expect(json).toEqual({
+      foo: {
+        '': { borderColor: '#FF0000', borderStyle: 'solid', borderWidth: 1 },
+      },
+      a: {
+        '': {
+          borderTopColor: '#FF0000',
+          borderTopStyle: 'solid',
+          borderTopWidth: 1,
+        },
+      },
+      b: {
+        '': {
+          borderColor: '#FF0000',
+          borderStyle: 'solid',
+          borderWidth: 1,
+        },
+      },
+      c: {
+        '': {
+          borderTopColor: '#FF0000',
+          borderTopStyle: 'solid',
+          borderTopWidth: 1,
+        },
+      },
+    })
+    expect(messages[0].text).toBe(
+      'NOTE: property value `red` is autofixed to `#FF0000`'
+    )
+  })
+
+  test('background', async () => {
+    const { json, messages } = await objectifierRule(`
+.a {
+  background: #ffffff;
+}
+.b {
+  background: rgba(255,255,255,1);
+}
+.c {
+  background: rgb(255,255,255);
+}
+.d {
+  background: linear-gradient(#e66465, #9198e5);
+}
+`)
+
+    expect(json).toEqual({
+      a: { '': { backgroundColor: '#ffffff' } },
+      b: { '': { backgroundColor: 'rgba(255,255,255,1)' } },
+      c: { '': { backgroundColor: 'rgb(255,255,255)' } },
+      d: { '': { backgroundImage: 'linear-gradient(#e66465, #9198e5)' } },
+    })
+    expect(messages.length).toBe(0)
+  })
+
+  test.only('css class', async () => {
+    const { json, messages } = await objectifierRule(`
+ .content {
+            top: calc(var(--window-top) + 10px);
+            bottom: calc(10px - var(--window-bottom));
+            height: calc(var(--status-bar-height) * 2);
+        }
+`)
+    expect(json).toEqual({
+      content: {
+        '': {
+          height: 'calc(var(--status-bar-height) * 2)',
+        },
+      },
+    })
+    expect(messages.length).toBe(0)
   })
 })
