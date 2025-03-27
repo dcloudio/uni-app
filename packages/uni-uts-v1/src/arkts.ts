@@ -451,7 +451,7 @@ export async function compileArkTSExtApi(
     author: '',
     license: '',
     dependencies: (uni_modules || []).reduce((acc, dep) => {
-      acc['@uni_modules/' + dep] = '../' + dep
+      acc['@uni_modules/' + dep.toLowerCase()] = '../' + dep
       return acc
     }, {} as Record<string, string>),
   }
