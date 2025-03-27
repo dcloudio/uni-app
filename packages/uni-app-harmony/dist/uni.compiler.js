@@ -349,7 +349,7 @@ function isHarmonyOSProvider(providerConf) {
         providerConf.__platform__.includes('harmonyos'));
 }
 const ModuleAlias = {
-    'uni-facialRecognitionVerify': 'uni-facialVerify'
+    'uni-facialRecognitionVerify': 'uni-facialVerify',
 };
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir) {
@@ -391,7 +391,9 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
     const extApiCodes = [];
     const registerCodes = [];
     const projectDeps = [];
-    utsPlugins.forEach((plugin) => {
+    Array.from(utsPlugins)
+        .sort()
+        .forEach((plugin) => {
         const injects = uniCliShared.parseUniExtApi(path__default.default.resolve(uniModulesDir, plugin), plugin, true, 'app-harmony', 'arkts');
         const harmonyPackageName = `@uni_modules/${plugin.toLowerCase()}`;
         if (injects) {
@@ -414,7 +416,7 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
         });
     });
     const relatedModules = getRelatedModules(inputDir);
-    relatedModules.forEach((module) => {
+    relatedModules.sort().forEach((module) => {
         const harmonyModuleName = `@uni_modules/${module.toLowerCase()}`;
         if (utsPlugins.has(module)) ;
         else {
@@ -468,7 +470,7 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
         });
     });
     const relatedProviders = getRelatedProviders(inputDir, allProviders);
-    relatedProviders.forEach((relatedProvider) => {
+    relatedProviders.sort().forEach((relatedProvider) => {
         const provider = allProviders.find((item) => item.service === relatedProvider.service &&
             item.name === relatedProvider.name);
         if (!provider) {
@@ -489,7 +491,9 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
         extApiCodes.push(...registerProviderCodes);
     }
     const pluginCustomElements = uniCliShared.getUTSPluginCustomElements();
-    Object.keys(pluginCustomElements).forEach((pluginId) => {
+    Object.keys(pluginCustomElements)
+        .sort()
+        .forEach((pluginId) => {
         if (!utsPlugins.has(pluginId)) {
             // 可能没使用，没编译
             return;
