@@ -10750,7 +10750,11 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         );
         if (currentInstance && parentInstance) {
           currentInstance.$parentInstance = parentInstance;
-          assignDialogPage(ctx, parentInstance, currentInstance);
+          assignDialogPage(
+            ctx,
+            parentInstance,
+            currentInstance
+          );
         }
       } else {
         useBackgroundColorContent(pageMeta);
@@ -27996,7 +28000,6 @@ const _sfc_main$1 = {
       },
       lastTime: 0,
       searchLoading: false,
-      searchLoadingAnimation: false,
       language: "zh-Hans",
       scrollTop: 0,
       isLandscape: false,
@@ -28013,7 +28016,9 @@ const _sfc_main$1 = {
       callUniMapCoErr: false,
       useUniCloud: true,
       mapHeight: 350,
-      loadingPath
+      loadingPath,
+      loadingRotate: 0,
+      loadingTimer: -1
     };
   },
   onLoad(options) {
@@ -28036,7 +28041,7 @@ const _sfc_main$1 = {
   },
   methods: {
     checkUniCloud() {
-      if (typeof uniCloud == "undefined") {
+      if (typeof uniCloud == "undefined" || typeof uniCloud.config == "undefined" || uniCloud.config.spaceId == "") {
         this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
         this.useUniCloud = false;
         console.error(this.errMsg);
@@ -28460,12 +28465,17 @@ const _sfc_main$1 = {
   },
   watch: {
     searchLoading(val) {
+      if (this.loadingTimer != -1) {
+        clearInterval(this.loadingTimer);
+        this.loadingTimer = -1;
+      }
       if (val) {
-        setTimeout(() => {
-          this.searchLoadingAnimation = true;
-        }, 50);
+        this.loadingRotate += 100;
+        this.loadingTimer = setInterval(() => {
+          this.loadingRotate += 100;
+        }, 200);
       } else {
-        this.searchLoadingAnimation = false;
+        this.loadingRotate = 0;
       }
     }
   },
@@ -28517,346 +28527,343 @@ const _sfc_main$1 = {
   }
 };
 const _style_0$1 = `
-@font-face {\r
-    font-family: UniChooseLocationFontFamily;\r
+@font-face {
+    font-family: UniChooseLocationFontFamily;
     src: url('data:font/ttf;charset=utf-8;base64,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') format('truetype');
 }
-.uni-choose-location-icons {\r
-    font-family: "UniChooseLocationFontFamily";\r
-    font-size: 16px;\r
+.uni-choose-location-icons {
+    font-family: "UniChooseLocationFontFamily";
+    font-size: 16px;
     font-style: normal;
 }
-.uni-choose-location {\r
-    position: relative;\r
-    left: 0;\r
-    top: 0;\r
-    width: 100%;\r
-    height: 100%;\r
-    background: #f8f8f8;\r
+.uni-choose-location {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #f8f8f8;
     z-index: 999;
 }
-.uni-choose-location-map-box {\r
-    position: relative;\r
-    width: 100%;\r
+.uni-choose-location-map-box {
+    position: relative;
+    width: 100%;
     height: 350px;
 }
-.uni-choose-location-map-box.uni-choose-location-vertical {\r
-    transition-property: transform;\r
-    transition-duration: 0.25s;\r
+.uni-choose-location-map-box.uni-choose-location-vertical {
+    transition-property: transform;
+    transition-duration: 0.25s;
     transition-timing-function: ease-out;
 }
-.uni-choose-location-map {\r
-    width: 100%;\r
+.uni-choose-location-map {
+    width: 100%;
     height: 100%;
 }
-.uni-choose-location-map-target {\r
-    position: absolute;\r
-    left: 50%;\r
-    bottom: 50%;\r
-    width: 50px;\r
-    height: 50px;\r
-    margin-left: -25px;\r
-    transition-property: transform;\r
-    transition-duration: 0.25s;\r
+.uni-choose-location-map-target {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+    transition-property: transform;
+    transition-duration: 0.25s;
     transition-timing-function: ease-out;
 }
-.uni-choose-location-map-target-icon {\r
-    font-size: 50px;\r
+.uni-choose-location-map-target-icon {
+    font-size: 50px;
     color: #f0493e;
-}\r
-\r
+}
+
   /* #1aad19; #f0493e; #007aff;*/
-.uni-choose-location-map-reset {\r
-    position: absolute;\r
-    left: 20px;\r
-    bottom: 40px;\r
-    width: 40px;\r
-    height: 40px;\r
-    box-sizing: border-box;\r
-    background-color: #fff;\r
-    border-radius: 20px;\r
-    pointer-events: auto;\r
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
-    z-index: 9;\r
-    display: flex;\r
-    justify-content: center;\r
+.uni-choose-location-map-reset {
+    position: absolute;
+    left: 20px;
+    bottom: 40px;
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 20px;
+    pointer-events: auto;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    z-index: 9;
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
-.uni-choose-location-map-reset.uni-choose-location-vertical {\r
-    transition-property: transform;\r
-    transition-duration: 0.25s;\r
+.uni-choose-location-map-reset.uni-choose-location-vertical {
+    transition-property: transform;
+    transition-duration: 0.25s;
     transition-timing-function: ease-out;
 }
-.uni-choose-location-map-reset-icon {\r
-    font-size: 26px;\r
-    text-align: center;\r
+.uni-choose-location-map-reset-icon {
+    font-size: 26px;
+    text-align: center;
     line-height: 40px;
 }
-.uni-choose-location-nav {\r
-    position: absolute;\r
-    top: 0;\r
-    left: 0;\r
-    width: 100%;\r
-    height: 60px;\r
-    background-color: rgba(0, 0, 0, 0);\r
+.uni-choose-location-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0);
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0));
 }
-.uni-choose-location-nav-btn {\r
-    position: absolute;\r
-    top: 5px;\r
-    left: 5px;\r
-    width: 64px;\r
-    height: 44px;\r
+.uni-choose-location-nav-btn {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 64px;
+    height: 44px;
     padding: 5px;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {\r
-    left: auto;\r
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+    left: auto;
     right: 5px;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {\r
-    background-color: #007aff;\r
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {
+    background-color: #007aff;
     border-radius: 5px;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {\r
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {
     opacity: 0.7;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {\r
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
     opacity: 0.4;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {\r
+.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {
     color: #fff;
 }
-.uni-choose-location-nav-text {\r
-    padding: 8px 0px;\r
-    font-size: 14px;\r
-    text-align: center;\r
-\r
-    letter-spacing: 0.1em;\r
-\r
-    color: #fff;\r
+.uni-choose-location-nav-text {
+    padding: 8px 0px;
+    font-size: 14px;
     text-align: center;
+
+    letter-spacing: 0.1em;
+
+    color: #fff;
 }
-.uni-choose-location-poi {\r
-    position: absolute;\r
-    top: 350px;\r
-    width: 100%;\r
-    bottom: 0;\r
-    background-color: #fff;\r
+.uni-choose-location-poi {
+    position: absolute;
+    top: 350px;
+    width: 100%;
+    bottom: 0;
+    background-color: #fff;
     z-index: 10
 }
-.uni-choose-location-poi.uni-choose-location-vertical {\r
-    transition-property: top;\r
-    transition-duration: 0.25s;\r
+.uni-choose-location-poi.uni-choose-location-vertical {
+    transition-property: top;
+    transition-duration: 0.25s;
     transition-timing-function: ease-out;
 }
-.uni-choose-location-poi-search {\r
-    display: flex;\r
-    flex-direction: row;\r
-    align-items: center;\r
-    justify-content: center;\r
-    height: 50px;\r
-    padding: 8px;\r
+.uni-choose-location-poi-search {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 8px;
     background-color: #fff;
 }
-.uni-choose-location-poi-search-box {\r
-    display: flex;\r
-    flex-direction: row;\r
-    align-items: center;\r
-    justify-content: center;\r
-    height: 32px;\r
-    flex: 1;\r
-    border-radius: 5px;\r
-    padding: 0 15px;\r
+.uni-choose-location-poi-search-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    flex: 1;
+    border-radius: 5px;
+    padding: 0 15px;
     background-color: #ededed;
 }
-.uni-choose-location-poi-search-input {\r
-    flex: 1;\r
-    height: 100%;\r
-    border-radius: 5px;\r
-    padding: 0 5px;\r
+.uni-choose-location-poi-search-input {
+    flex: 1;
+    height: 100%;
+    border-radius: 5px;
+    padding: 0 5px;
     background: #ededed;
 }
-.uni-choose-location-poi-search-cancel {\r
-    margin-left: 5px;\r
-    color: #007aff;\r
-    font-size: 15px;\r
+.uni-choose-location-poi-search-cancel {
+    margin-left: 5px;
+    color: #007aff;
+    font-size: 15px;
     text-align: center;
 }
-.uni-choose-location-poi-list {\r
+.uni-choose-location-poi-list {
     flex: 1;
 }
-.uni-choose-location-poi-search-loading {\r
-    display: flex;\r
-    align-items: center;\r
+.uni-choose-location-poi-search-loading {
+    display: flex;
+    align-items: center;
     padding: 10px 0px;
 }
-.uni-choose-location-poi-search-loading-text {\r
+.uni-choose-location-poi-search-loading-text {
     color: #191919;
 }
-.uni-choose-location-poi-search-error {\r
-    display: flex;\r
-    align-items: center;\r
+.uni-choose-location-poi-search-error {
+    display: flex;
+    align-items: center;
     padding: 10px;
 }
-.uni-choose-location-poi-search-error-text {\r
-    color: #191919;\r
+.uni-choose-location-poi-search-error-text {
+    color: #191919;
     font-size: 14px;
 }
-.uni-choose-location-poi-item {\r
-    position: relative;\r
-    padding: 15px 10px;\r
+.uni-choose-location-poi-item {
+    position: relative;
+    padding: 15px 10px;
     padding-right: 40px;
 }
-.uni-choose-location-poi-item-title-text {\r
-    font-size: 14px;\r
-    overflow: hidden;\r
-    white-space: nowrap;\r
-    text-overflow: ellipsis;\r
+.uni-choose-location-poi-item-title-text {
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     color: #191919;
 }
-.uni-choose-location-poi-item-detail-text {\r
-    font-size: 12px;\r
-    margin-top: 5px;\r
-    color: #b2b2b2;\r
-    overflow: hidden;\r
-    white-space: nowrap;\r
+.uni-choose-location-poi-item-detail-text {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #b2b2b2;
+    overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
 }
-.uni-choose-location-poi-item-selected-icon {\r
-    position: absolute;\r
-    top: 50%;\r
-    right: 10px;\r
-    width: 26px;\r
-    height: 26px;\r
-    margin-top: -13px;\r
-    color: #007aff;\r
+.uni-choose-location-poi-item-selected-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    margin-top: -13px;
+    color: #007aff;
     font-size: 24px;
 }
-.uni-choose-location-poi-item-after {\r
-    position: absolute;\r
-    height: 1px;\r
-    left: 10px;\r
-    bottom: 0px;\r
-    right: 10px;\r
-    width: auto;\r
+.uni-choose-location-poi-item-after {
+    position: absolute;
+    height: 1px;
+    left: 10px;
+    bottom: 0px;
+    right: 10px;
+    width: auto;
     border-bottom: 1px solid #f8f8f8;
 }
-.uni-choose-location-search-icon {\r
-    color: #808080;\r
+.uni-choose-location-search-icon {
+    color: #808080;
     padding-left: 5px;
 }
-.uni-choose-location-poi-search-loading-start {\r
-    transform: rotate(60000deg)
-}
-.uni-choose-location-poi-search-loading-image {\r
-    width: 28px;\r
-    height: 28px;\r
-    transition-property: transform;\r
-    transition-duration: 120s;\r
+.uni-choose-location-poi-search-loading-image {
+    width: 28px;
+    height: 28px;
+    transition-property: transform;
+    transition-duration: 0.2s;
     transition-timing-function: linear;
-}\r
-\r
+}
+
   /* 横屏样式开始 */
-.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {\r
+.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {
     height: 100%;
 }
-.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {\r
-    position: absolute;\r
-    top: 80px;\r
-    right: 25px;\r
-    width: 300px;\r
-    bottom: 20px;\r
-    max-height: 600px;\r
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
+.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {
+    position: absolute;
+    top: 80px;
+    right: 25px;
+    width: 300px;
+    bottom: 20px;
+    max-height: 600px;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
     border-radius: 5px;
 }
-.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {\r
-    left: 40px;\r
+.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {
+    left: 40px;
     bottom: 40px;
 }
-.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {\r
+.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {
     padding: 10px;
 }
-.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {\r
-    top: 10px;\r
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {
+    top: 10px;
     left: 20px;
 }
-.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {\r
-    left: auto;\r
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
+    left: auto;
     right: 20px;
-}\r
-\r
-  /* 横屏样式结束 */\r
-\r
+}
+
+  /* 横屏样式结束 */
+
   /* 暗黑模式样式开始 */
-.uni-choose-location-dark .uni-choose-location-map-reset {\r
-    background-color: #111111;\r
+.uni-choose-location-dark .uni-choose-location-map-reset {
+    background-color: #111111;
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-box {\r
+.uni-choose-location-dark .uni-choose-location-poi-search-box {
     background-color: #111111;
 }
-.uni-choose-location-dark .uni-choose-location-search-icon {\r
+.uni-choose-location-dark .uni-choose-location-search-icon {
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {\r
+.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-search {\r
+.uni-choose-location-dark .uni-choose-location-poi-search {
     background-color: #181818
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-input {\r
-    background: #111111;\r
+.uni-choose-location-dark .uni-choose-location-poi-search-input {
+    background: #111111;
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-item-title-text {\r
+.uni-choose-location-dark .uni-choose-location-poi-item-title-text {
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {\r
+.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {
     color: #595959;
 }
-.uni-choose-location-dark .uni-choose-location-poi {\r
+.uni-choose-location-dark .uni-choose-location-poi {
     background-color: #181818
 }
-.uni-choose-location-dark .uni-choose-location-poi-item-after {\r
+.uni-choose-location-dark .uni-choose-location-poi-item-after {
     border-bottom: 1px solid #1e1e1e;
 }
-.uni-choose-location-dark .uni-choose-location-map-reset-icon {\r
+.uni-choose-location-dark .uni-choose-location-map-reset-icon {
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-error-text {\r
+.uni-choose-location-dark .uni-choose-location-poi-search-error-text {
     color: #d1d1d1;
-}\r
-\r
+}
+
   /* 暗黑模式样式结束 */
-uni-image {\r
-    display: inline-block;\r
-    overflow: hidden;\r
+uni-image {
+    display: inline-block;
+    overflow: hidden;
     position: relative;
 }
-uni-image[hidden] {\r
+uni-image[hidden] {
     display: none;
 }
-uni-image > div {\r
-    width: 100%;\r
-    height: 100%;\r
-    background-repeat:no-repeat;
+uni-image > div {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
 }
-uni-image > img {\r
-    -webkit-touch-callout: none;\r
-    user-select: none;\r
-    display: block;\r
-    position: absolute;\r
-    top: 0;\r
-    left: 0;\r
-    width: 100%;\r
-    height: 100%;\r
+uni-image > img {
+    -webkit-touch-callout: none;
+    user-select: none;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     opacity: 0;
 }
-uni-image > .uni-image-will-change {\r
+uni-image > .uni-image-will-change {
     will-change: transform;
-}\r
-\r
+}
+
+
 `;
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_map = __syscom_0;
@@ -29048,9 +29055,10 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
                 default: withCtx(() => [
                   createVNode(_component_image, {
                     src: $data.loadingPath,
-                    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
-                    mode: "widthFix"
-                  }, null, 8, ["src", "class"])
+                    class: "uni-choose-location-poi-search-loading-image",
+                    mode: "widthFix",
+                    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
+                  }, null, 8, ["src", "style"])
                 ]),
                 _: 1
               })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList($data.pois, (item, index2) => {
@@ -29108,9 +29116,10 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
                 default: withCtx(() => [
                   createVNode(_component_image, {
                     src: $data.loadingPath,
-                    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
-                    mode: "widthFix"
-                  }, null, 8, ["src", "class"])
+                    class: "uni-choose-location-poi-search-loading-image",
+                    mode: "widthFix",
+                    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
+                  }, null, 8, ["src", "style"])
                 ]),
                 _: 1
               })) : createCommentVNode("", true)
@@ -29169,7 +29178,6 @@ const chooseLocation = (options) => {
 const _sfc_main = {
   data() {
     return {
-      inputLineHeight: 32,
       theme: "light",
       readyEventName: "",
       optionsEventName: "",
@@ -29333,7 +29341,7 @@ const _sfc_main = {
     }
   }
 };
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n	\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n		opacity: 0;\n		transform: scale(0.9);\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%; \n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 20px;\n}\n.uni-modal_dialog__content__text {\n		font-size: 16px;\n		font-weight: normal;\n		margin-bottom: 10px;\n		text-align: center;\n		color: #747474;\n		lines: 6;\n		width: 100%;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 6;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 1px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 1px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n	\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n		opacity: 0;\n		transform: scale(0.9);\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%; \n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__text {\n		font-size: 16px;\n		font-weight: normal;\n		margin-top: 2px;\n		margin-left: 2px;\n		margin-right: 2px;\n		margin-bottom: 12px;\n		text-align: center;\n		color: #747474;\n		lines: 6;\n		width: 100%;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 6;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 1px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 1px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_text = __syscom_0$1;
   const _component_textarea = __syscom_1;
@@ -29376,7 +29384,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                     ref: "ref_textarea_content_input",
                     "auto-height": $data.isAutoHeight,
                     placeholder: $data.placeholderText
-                  }, null, 8, ["modelValue", "class", "onBlur", "onKeyboardheightchange", "auto-height", "placeholder"])) : (openBlock(), createBlock(_component_text, {
+                  }, null, 8, ["modelValue", "class", "onBlur", "onKeyboardheightchange", "auto-height", "placeholder"])) : createCommentVNode("", true),
+                  !$data.editable && $data.content.length > 0 ? (openBlock(), createBlock(_component_text, {
                     key: 1,
                     class: "uni-modal_dialog__content__text"
                   }, {
@@ -29384,7 +29393,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                       createTextVNode(toDisplayString($data.content), 1)
                     ]),
                     _: 1
-                  }))
+                  })) : createCommentVNode("", true)
                 ]),
                 _: 1
               }),
@@ -29463,6 +29472,7 @@ class UniHideModalFailImpl extends UniError {
   }
 }
 const showModal = (options) => {
+  var _a, _b;
   registerSystemRoute("uni:uniModal", UniModalPage);
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_modal_${uuid}`;
@@ -29474,34 +29484,42 @@ const showModal = (options) => {
     uni.$emit(optionsEventName, options);
   });
   uni.$on(successEventName, (inputParamStr) => {
-    var _a, _b;
+    var _a2, _b2;
     let inputParam = JSON.parse(inputParamStr);
     let res = {
       cancel: inputParam["cancel"],
       confirm: inputParam["confirm"],
       content: inputParam["content"]
     };
-    (_a = options.success) == null ? void 0 : _a.call(options, res);
-    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+    (_a2 = options.success) == null ? void 0 : _a2.call(options, res);
+    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
   });
   uni.$on(failEventName, () => {
-    var _a, _b;
+    var _a2, _b2;
     const res = new UniShowModalFailImpl();
-    (_a = options.fail) == null ? void 0 : _a.call(options, res);
-    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+    (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
+    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
   });
-  return uni.openDialogPage({
+  let openRet = uni.openDialogPage({
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
-      var _a, _b;
+      var _a2, _b2;
       const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`);
-      (_a = options.fail) == null ? void 0 : _a.call(options, res);
-      (_b = options.complete) == null ? void 0 : _b.call(options, res);
+      (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
+      (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
     }
   });
+  if (openRet != null) {
+    return openRet;
+  } else {
+    const res = new UniShowModalFailImpl();
+    (_a = options.fail) == null ? void 0 : _a.call(options, res);
+    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+    return null;
+  }
 };
 const hideModal = function(options) {
   var _a, _b, _c, _d, _e;
@@ -29513,7 +29531,6 @@ const hideModal = function(options) {
     return;
   }
   const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
-  console.log("systemDialogPages", systemDialogPages.length);
   let shallClosePages = [];
   for (let perPage of systemDialogPages) {
     if (isSystemModalDialogPage(perPage)) {
@@ -29527,7 +29544,6 @@ const hideModal = function(options) {
       }
     }
   }
-  console.log("shallClosePages", shallClosePages.length);
   shallClosePages.forEach((item) => {
     const index2 = systemDialogPages.indexOf(item);
     if (index2 > -1) {
@@ -29540,7 +29556,6 @@ const hideModal = function(options) {
   (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
 };
 function notifyClosedDialog(perPage) {
-  console.log("notifyClosedDialog", perPage);
   let ret = {
     cancel: false,
     confirm: false
@@ -29550,7 +29565,6 @@ function notifyClosedDialog(perPage) {
   }
 }
 function isSystemModalDialogPage(page) {
-  console.log("page", page.route);
   return page.route.startsWith("uni:uniModal");
 }
 window.UniResizeObserver = window.ResizeObserver;

@@ -4081,7 +4081,11 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         );
         if (currentInstance && parentInstance) {
           currentInstance.$parentInstance = parentInstance;
-          assignDialogPage(ctx, parentInstance, currentInstance);
+          assignDialogPage(
+            ctx,
+            parentInstance,
+            currentInstance
+          );
         }
       } else {
         useBackgroundColorContent(pageMeta);

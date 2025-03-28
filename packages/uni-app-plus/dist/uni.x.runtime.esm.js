@@ -6727,7 +6727,7 @@ const _sfc_main$4 = {
   },
   methods: {
     checkUniCloud() {
-      if (typeof uniCloud == "undefined") {
+      if (typeof uniCloud == "undefined" || typeof uniCloud.config == "undefined" || uniCloud.config.spaceId == "") {
         this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
         this.useUniCloud = false;
         console.error(this.errMsg);
@@ -7647,7 +7647,7 @@ var _hoisted_2$3 = {
 var _hoisted_3$3 = {
   class: "uni-choose-location-icons uni-choose-location-map-reset-icon"
 };
-var _hoisted_4$2 = {
+var _hoisted_4$3 = {
   class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text"
 };
 var _hoisted_5$1 = {
@@ -7747,7 +7747,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function() {
       return $options.confirm && $options.confirm(...arguments);
     })
-  }, [createElementVNode("text", _hoisted_4$2, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
+  }, [createElementVNode("text", _hoisted_4$3, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
     style: normalizeStyle($options.poiBoxStyleCom)
@@ -8185,7 +8185,7 @@ var _hoisted_3$2 = {
   key: 1,
   class: "uni-modal_dialog__content__text"
 };
-var _hoisted_4$1 = {
+var _hoisted_4$2 = {
   class: "uni-modal_dialog__content__bottom"
 };
 var _hoisted_5 = ["hover-class"];
@@ -8235,7 +8235,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-modal_dialog__content__topline", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }])
-  }, null, 2), createElementVNode("view", _hoisted_4$1, [$data.showCancel ? (openBlock(), createElementBlock("view", {
+  }, null, 2), createElementVNode("view", _hoisted_4$2, [$data.showCancel ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
       "uni-modal_dark__mode": $data.theme == "dark"
@@ -8519,6 +8519,20 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
 const loadingCircle = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$2]]]);
 var DEFAULT_DISTANCE = 4;
 var FAST_SLIDE_LENGTH = 10;
+var LANGUAGE = {
+  "en": {
+    error: "Image loading failed",
+    retry: "Retry"
+  },
+  "zh-Hans": {
+    error: "图片加载失败",
+    retry: "重试"
+  },
+  "zh-Hant": {
+    error: "圖片加載失敗",
+    retry: "重試"
+  }
+};
 const _sfc_main$1 = {
   components: {
     loadingCircle
@@ -8557,7 +8571,10 @@ const _sfc_main$1 = {
       startTimestamp: 0,
       clickTimeoutId: -1,
       transformOrigin: [0, 0],
-      loadingFinished: false
+      loadingFinished: false,
+      devicePixelRatio: 0,
+      loadError: false,
+      language: "zh-Hans"
     };
   },
   props: {
@@ -8570,6 +8587,9 @@ const _sfc_main$1 = {
       default: -1
     },
     "longPressAction": {
+      type: Object
+    },
+    "tips": {
       type: Object
     }
   },
@@ -8584,15 +8604,31 @@ const _sfc_main$1 = {
   },
   mounted() {
     this.imageView = this.$refs["imageView"];
-    this.getImageBound();
+    var dpr = uni.getDeviceInfo({
+      filter: ["devicePixelRatio"]
+    }).devicePixelRatio;
+    if (dpr == null) {
+      this.devicePixelRatio = 1;
+    } else {
+      this.devicePixelRatio = dpr;
+    }
+    var systemInfo = uni.getSystemInfoSync();
+    this.language = systemInfo.appLanguage;
   },
   methods: {
+    getLanguageString(name) {
+      var object = LANGUAGE[this.language];
+      if (object != null) {
+        return object[name];
+      } else {
+        return LANGUAGE["en"][name];
+      }
+    },
     previewImageError(e) {
-      uni.showToast({
-        title: e.detail.errMsg,
-        position: "bottom"
-      });
+      var _this$$refs$mask;
+      (_this$$refs$mask = this.$refs["mask"]) === null || _this$$refs$mask === void 0 || _this$$refs$mask.style.setProperty("point-events", "none");
       this.loadingFinished = true;
+      this.loadError = true;
     },
     isNetPath(url) {
       if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("rtmp://") || url.startsWith("rtsp://")) {
@@ -8849,9 +8885,16 @@ const _sfc_main$1 = {
       }
     },
     onImageLoad(e) {
-      if (this.screenHeight > 0 && this.screenWidth > 0) {
-        this.caculatorImageSize(e.detail.width, e.detail.height);
-      }
+      var _this$$refs$mask2;
+      (_this$$refs$mask2 = this.$refs["mask"]) === null || _this$$refs$mask2 === void 0 || _this$$refs$mask2.style.setProperty("point-events", "none");
+      uni.createSelectorQuery().in(this).select(".uni-preview-image-item").boundingClientRect().exec((ret) => {
+        if (ret.length == 1) {
+          var rect = this.imageView.getBoundingClientRect();
+          this.screenHeight = rect.height;
+          this.screenWidth = rect.width;
+          this.caculatorImageSize(e.detail.width / this.devicePixelRatio, e.detail.height / this.devicePixelRatio);
+        }
+      });
       this.loadingFinished = true;
     },
     caculatorImageSize(imageWidth, imageHeight) {
@@ -8867,28 +8910,6 @@ const _sfc_main$1 = {
       this.imageMarginTop = (this.screenHeight - scaleImageSize) / 2;
       this.imageHeight = scaleImageSize;
     },
-    getImageBound() {
-      if (this.imageHeight > 0) {
-        return;
-      }
-      uni.createSelectorQuery().in(this).select(".uni-preview-image-item").boundingClientRect().exec((ret) => {
-        if (ret.length == 1) {
-          var rect = this.imageView.getBoundingClientRect();
-          this.screenHeight = rect.height;
-          this.screenWidth = rect.width;
-          if (this.srcPath != "") {
-            uni.getImageInfo({
-              src: this.srcPath,
-              success: (e) => {
-                this.caculatorImageSize(e.width, e.height);
-              },
-              fail: () => {
-              }
-            });
-          }
-        }
-      });
-    },
     preventDefaultScall(e) {
       e === null || e === void 0 || e.preventDefault();
       e === null || e === void 0 || e.stopPropagation();
@@ -8899,6 +8920,21 @@ const _sfc_main$1 = {
         return;
       }
       clearTimeout(this.clickTimeoutId);
+    },
+    reloadImage(e) {
+      var _this$$refs$mask3;
+      (_this$$refs$mask3 = this.$refs["mask"]) === null || _this$$refs$mask3 === void 0 || _this$$refs$mask3.style.setProperty("point-events", "none");
+      this.loadingFinished = false;
+      this.loadError = false;
+      var tempPath = this.srcPath + "";
+      this.srcPath = "";
+      setTimeout(() => {
+        this.srcPath = tempPath;
+      }, 100);
+      e.stopPropagation();
+    },
+    closePreviewImage() {
+      uni.$emit("__UNIPREVIEWIMAGECLOSE");
     },
     // 计算transform-origin主要代码
     caculatorTransformOrigin(e) {
@@ -8968,6 +9004,26 @@ const _style_0$1 = {
       "pointerEvents": "none"
     }
   },
+  "uni-preview-image-item-background": {
+    "": {
+      "backgroundColor": "#000000"
+    }
+  },
+  "uni-preview-image-tips-retry": {
+    "": {
+      "color": "#0000FF",
+      "fontSize": 18,
+      "marginTop": 16,
+      "WebkitTextDecorationLine": "underline",
+      "textDecorationLine": "underline"
+    }
+  },
+  "uni-preview-image-tips-error": {
+    "": {
+      "fontSize": 18,
+      "color": "#FF0000"
+    }
+  },
   "@TRANSITION": {
     "uni-preview-image-item": {
       "property": "transform",
@@ -8977,16 +9033,20 @@ const _style_0$1 = {
 };
 var _hoisted_1$1 = {
   style: {
-    "flex": "1",
-    "background-color": "black"
-  }
+    "flex": "1"
+  },
+  class: "uni-preview-image-item-background"
 };
 var _hoisted_2$1 = ["mode", "src"];
 var _hoisted_3$1 = {
   key: 0,
   class: "uni-preview-image-loading"
 };
+var _hoisted_4$1 = {
+  class: "uni-preview-image-tips-error"
+};
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  var _$props$tips, _$props$tips2, _$props$tips3, _$props$tips4;
   var _component_loadingCircle = resolveComponent("loadingCircle");
   return openBlock(), createElementBlock("view", _hoisted_1$1, [createElementVNode("image", {
     ref: "imageView",
@@ -9021,7 +9081,26 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     speed: 16,
     size: 54,
     color: "#d3d3d3"
-  })])) : createCommentVNode("", true)]);
+  })])) : createCommentVNode("", true), $data.loadError ? (openBlock(), createElementBlock("view", {
+    key: 1,
+    style: {
+      "align-items": "center",
+      "justify-content": "center",
+      "position": "absolute",
+      "top": "0",
+      "bottom": "0",
+      "left": "0",
+      "right": "0"
+    },
+    onClick: _cache[7] || (_cache[7] = function() {
+      return $options.closePreviewImage && $options.closePreviewImage(...arguments);
+    })
+  }, [createElementVNode("text", _hoisted_4$1, toDisplayString($props.tips == null || ((_$props$tips = $props.tips) === null || _$props$tips === void 0 ? void 0 : _$props$tips["error"]) == null ? $options.getLanguageString("error") : (_$props$tips2 = $props.tips) === null || _$props$tips2 === void 0 ? void 0 : _$props$tips2["error"]), 1), createElementVNode("text", {
+    class: "uni-preview-image-tips-retry",
+    onClick: _cache[6] || (_cache[6] = function() {
+      return $options.reloadImage && $options.reloadImage(...arguments);
+    })
+  }, toDisplayString($props.tips == null || ((_$props$tips3 = $props.tips) === null || _$props$tips3 === void 0 ? void 0 : _$props$tips3["retry"]) == null ? $options.getLanguageString("retry") : (_$props$tips4 = $props.tips) === null || _$props$tips4 === void 0 ? void 0 : _$props$tips4["retry"]), 1)])) : createCommentVNode("", true)]);
 }
 const uniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
 const _sfc_main = {
@@ -9036,7 +9115,8 @@ const _sfc_main = {
       disableTouch: false,
       numberIndicator: "",
       indicator: "number",
-      longPressAction: null
+      longPressAction: null,
+      tips: null
     };
   },
   onLoad() {
@@ -9084,6 +9164,9 @@ const _sfc_main = {
       if (result["indicator"] != null) {
         this.indicator = result["indicator"];
       }
+      if (result["tips"] != null) {
+        this.tips = result["tips"];
+      }
       if (result["longPressActions"] != null) {
         this.longPressAction = {
           itemList: result["longPressActions"]["itemList"],
@@ -9111,7 +9194,7 @@ const _sfc_main = {
   }
 };
 const _style_0 = {
-  "uni-preview-image-indicator-style": {
+  "uni-preview-image-default-indicator": {
     "": {
       "width": 9,
       "height": 9,
@@ -9137,7 +9220,17 @@ const _style_0 = {
       "borderLeftColor": "#AAAAAA"
     }
   },
-  "uni-preview-image-default-indicator": {
+  "uni-preview-image-default-indicator-default": {
+    "": {
+      "backgroundColor": "#AAAAAA"
+    }
+  },
+  "uni-preview-image-default-indicator-active": {
+    "": {
+      "backgroundColor": "#ffffff"
+    }
+  },
+  "uni-preview-image-default-indicator-layout": {
     "": {
       "flexDirection": "row",
       "position": "absolute",
@@ -9147,14 +9240,14 @@ const _style_0 = {
       "justifyContent": "center"
     }
   },
-  "uni-preview-image-number-indicator": {
+  "uni-preview-image-number-indicator-layout": {
     "": {
       "position": "absolute",
       "left": 0,
       "right": 0
     }
   },
-  "uni-preview-image-number-indicator-text": {
+  "uni-preview-image-number-indicator": {
     "": {
       "color": "#FFFFFF",
       "fontSize": 16,
@@ -9187,15 +9280,15 @@ var _hoisted_1 = ["circular", "current", "disable-touch"];
 var _hoisted_2 = {
   key: 0,
   ref: "numberIndicator",
-  class: "uni-preview-image-number-indicator"
+  class: "uni-preview-image-number-indicator-layout"
 };
 var _hoisted_3 = {
-  class: "uni-preview-image-number-indicator-text"
+  class: "uni-preview-image-number-indicator"
 };
 var _hoisted_4 = {
   key: 1,
   ref: "defaultIndicator",
-  class: "uni-preview-image-default-indicator"
+  class: "uni-preview-image-default-indicator-layout"
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_uniPreviewImageItem = resolveComponent("uniPreviewImageItem");
@@ -9217,15 +9310,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     return openBlock(), createElementBlock("swiper-item", null, [createVNode(_component_uniPreviewImageItem, {
       index: index2,
       src: item,
-      longPressAction: $data.longPressAction
-    }, null, 8, ["index", "src", "longPressAction"])]);
+      longPressAction: $data.longPressAction,
+      tips: $data.tips
+    }, null, 8, ["index", "src", "longPressAction", "tips"])]);
   }), 256)) : createCommentVNode("", true)], 40, _hoisted_1), $data.indicator == "number" ? (openBlock(), createElementBlock("view", _hoisted_2, [createElementVNode("text", _hoisted_3, toDisplayString($data.numberIndicator), 1)], 512)) : createCommentVNode("", true), $data.indicator == "default" ? withDirectives((openBlock(), createElementBlock("view", _hoisted_4, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.urls.length, (i) => {
     return openBlock(), createElementBlock("view", {
-      class: "uni-preview-image-indicator-style",
-      style: normalizeStyle({
-        backgroundColor: $data.current + 1 == i ? "#ffffff" : "#AAAAAA"
-      })
-    }, null, 4);
+      class: normalizeClass(["uni-preview-image-default-indicator", $data.current + 1 == i ? "uni-preview-image-default-indicator-active" : "uni-preview-image-default-indicator-default"])
+    }, null, 2);
   }), 256))], 512)), [[vShow, $data.urls != null]]) : createCommentVNode("", true)], 64);
 }
 const UniPreviewImagePage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
