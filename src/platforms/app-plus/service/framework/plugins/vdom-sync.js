@@ -26,7 +26,7 @@ import {
   registerVdSync
 } from '../subscribe-handlers/on-vd-sync'
 
-import {
+import onVdSyncCallback, {
   vdSyncCallbacks
 } from '../subscribe-handlers/on-vd-sync-callback'
 
@@ -193,6 +193,7 @@ export class VDomSync {
       return true
     })
     this.batchData.length = 0
+    // 检查有无数据变更
     if (batchData.length) {
       UniServiceJSBridge.publishHandler(VD_SYNC, {
         data: batchData,
@@ -200,6 +201,9 @@ export class VDomSync {
           timestamp: Date.now()
         }
       }, [this.pageId])
+    } else {
+      // 没有数据变更，则触发回调, ask206600
+      onVdSyncCallback()
     }
   }
 

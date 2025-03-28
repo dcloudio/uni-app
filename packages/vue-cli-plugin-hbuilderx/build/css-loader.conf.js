@@ -36,7 +36,9 @@ const plugins = [
   require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
 ]
 if (webpack.version[0] > 4) {
-  options.postcssOptions = { plugins }
+  options.postcssOptions = {
+    plugins
+  }
 } else {
   options.parser = require('postcss-comment')
   options.plugins = plugins
@@ -51,11 +53,19 @@ const isSass = fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'uni.sass')
 const isScss = fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'uni.scss'))
 let sassData = isSass ? getPlatformSass() : getPlatformScss()
 
-if (isSass) {
-  sassData = '@import "@/uni.sass"'
-} else if (isScss) {
-  sassData = `${sassData}
-  @import "@/uni.scss";`
+if (process.env.UNI_SASS_IMPLEMENTATION_NAME === 'dart-sass') {
+  if (isSass) {
+    sassData = '@use "@/uni.sass" as *'
+  } else if (isScss) {
+    sassData = '@use "@/uni.scss" as *;'
+  }
+} else {
+  if (isSass) {
+    sassData = '@import "@/uni.sass"'
+  } else if (isScss) {
+    sassData = `${sassData}
+    @import "@/uni.scss";`
+  }
 }
 
 const scssLoader = {
