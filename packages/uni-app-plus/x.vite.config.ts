@@ -32,10 +32,14 @@ const apiDirs: string[] = []
 if (process.env.UNI_APP_EXT_API_DIR) {
   apiDirs.push(process.env.UNI_APP_EXT_API_DIR)
 }
+if (process.env.UNI_APP_EXT_COMPONENT_DIR) {
+  apiDirs.push(process.env.UNI_APP_EXT_COMPONENT_DIR)
+}
 if (process.env.UNI_APP_EXT_API_DCLOUD_DIR) {
   apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
 }
-const systemPagePaths = syncPagesFile(apiDirs, 'app-ios')
+const systemPagePathsIOS = syncPagesFile(apiDirs, 'app-ios')
+const systemPagePathsHarmony = syncPagesFile(apiDirs, 'app-harmony')
 
 const rollupPlugins = [
   replace({
@@ -55,6 +59,8 @@ const rollupPlugins = [
       // 该插件限制了不能以__开头
       _NODE_JS_: 0,
       _X_: 1,
+      _APP_IOS_: process.env.X_RUNTIME_PLATFORM === 'app-ios' ? 1 : 0,
+      _APP_HARMONY_: process.env.X_RUNTIME_PLATFORM === 'app-harmony' ? 1 : 0,
     },
     // 忽略 pako 内部条件编译
     exclude: [/pako/ as unknown as string],
@@ -159,7 +165,9 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
         },
       }),
       vueJsx({ optimize: true, isCustomElement: isAppIOSUVueNativeTag }),
-      replacePagePaths(systemPagePaths),
+      replacePagePaths(
+        platform === 'app-ios' ? systemPagePathsIOS : systemPagePathsHarmony
+      ),
     ],
     build: {
       emptyOutDir: false,
