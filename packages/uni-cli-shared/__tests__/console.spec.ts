@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { getTypeScript } from '@dcloudio/uni-uts-v1'
 import { appendConsoleExpr, rewriteConsoleExpr } from '../src/logs/console'
 const filename = 'foo.vue'
 const METHOD = '__f__'
@@ -58,6 +59,8 @@ console.log(a,b,c);
   test('appendConsoleExpr', () => {
     const filename = path.resolve(__dirname, 'examples/console/test.ts')
     const content = fs.readFileSync(filename, 'utf-8')
-    expect(appendConsoleExpr('test.ts', content)).toMatchSnapshot()
+    expect(
+      appendConsoleExpr('test.ts', content, getTypeScript())
+    ).toMatchSnapshot()
   })
 })

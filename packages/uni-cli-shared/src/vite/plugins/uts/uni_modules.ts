@@ -65,6 +65,15 @@ export function rewriteUniModulesConsoleExpr(
   return content
 }
 
+let ts: typeof import('typescript') | undefined
+
+function getTs() {
+  if (!ts) {
+    ts = resolveUTSCompiler().getTypeScript()
+  }
+  return ts!
+}
+
 function appendUniModulesConsoleExpr(fileName: string, content: string) {
   // 仅开发模式补充console.log的at信息
   if (process.env.NODE_ENV !== 'development') {
@@ -75,7 +84,8 @@ function appendUniModulesConsoleExpr(fileName: string, content: string) {
       normalizePath(
         path.relative(process.env.UNI_INPUT_DIR, fileName.split('?')[0])
       ),
-      content
+      content,
+      ts || getTs()
     )
   }
   return content

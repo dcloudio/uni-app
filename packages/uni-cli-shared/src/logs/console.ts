@@ -1,5 +1,6 @@
 import MagicString from 'magic-string'
 import type { TransformResult } from 'vite'
+import type * as tsTypes from 'typescript'
 import { normalizePath } from '../utils'
 
 export function rewriteConsoleExpr(
@@ -64,28 +65,44 @@ function getLocator(source: string) {
   }
 }
 
-export function appendConsoleExpr(filename: string, code: string) {
-  filename = normalizePath(filename)
-  // 使用更复杂的正则来匹配可能包含换行、括号等的参数
-  const re =
-    /(console\.(log|info|debug|warn|error))\s*\(([\s\S]*?)(?=\)[;\n]|\)$)/g
-  const locate = getLocator(code)
-  const s = new MagicString(code)
-  let match: RegExpExecArray | null
-
-  while ((match = re.exec(code))) {
-    const [full, _, type, args] = match
-    const endPos = match.index + full.length + 1 // +1 to include the closing parenthesis
-    s.overwrite(
-      match.index,
-      endPos,
-      // 重要，需要用双引号，因为混编的kt，swift，java不能用单引号（char类型）
-      `console.${type}(${args.trim()}, " at ${filename}:${
-        locate(match.index).line + 1
-      }")`
-    )
+const methods = ['log', 'info', 'debug', 'warn', 'error']
+export function appendConsoleExpr(
+  filename: string,
+  code: string,
+  ts: typeof tsTypes
+) {
+  if (!ts) {
+    return code
   }
-
+  const s = new MagicString(code)
+  const sourceFile = ts.createSourceFile(filename, code, ts.ScriptTarget.Latest)
+  // 遍历sourceFile，查找console的方法调用
+  const traverse = (node: tsTypes.Node) => {
+    ts.forEachChild(node, (node) => traverse(node))
+    if (
+      ts.isCallExpression(node) &&
+      node.arguments.length > 0 &&
+      ts.isPropertyAccessExpression(node.expression)
+    ) {
+      const propertyAccess = node.expression
+      if (
+        ts.isIdentifier(propertyAccess.expression) &&
+        propertyAccess.expression.text === 'console' &&
+        ts.isIdentifier(propertyAccess.name) &&
+        methods.includes(propertyAccess.name.text)
+      ) {
+        const lastArg = node.arguments[node.arguments.length - 1]
+        if (lastArg) {
+          const { line } = sourceFile.getLineAndCharacterOfPosition(
+            propertyAccess.name.end
+          )
+          // 重要，需要用双引号，因为混编的kt，swift，java不能用单引号（char类型）
+          s.prependRight(lastArg.getEnd(), `, " at ${filename}:${line + 1}"`)
+        }
+      }
+    }
+  }
+  traverse(sourceFile)
   if (s.hasChanged()) {
     return s.toString()
   }
