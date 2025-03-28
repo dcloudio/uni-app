@@ -772,30 +772,6 @@
       "RequestPaymentOptions"
     ],
     [
-      "OnPrivacyAuthorizationChange"
-    ],
-    [
-      "OffPrivacyAuthorizationChange"
-    ],
-    [
-      "OnPrivacyAuthorizationChangeCallback"
-    ],
-    [
-      "PrivacyChangeResult"
-    ],
-    [
-      "GetPrivacySetting"
-    ],
-    [
-      "ResetPrivacyAuthorization"
-    ],
-    [
-      "GetPrivacySettingSuccessResult"
-    ],
-    [
-      "GetPrivacySettingOptions"
-    ],
-    [
       "ShowToastSuccess"
     ],
     [
