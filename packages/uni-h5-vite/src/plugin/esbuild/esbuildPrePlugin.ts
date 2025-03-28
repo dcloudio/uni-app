@@ -15,7 +15,7 @@ export function esbuildPrePlugin(): Plugin {
         if (fs.existsSync(id)) {
           let contents = fs.readFileSync(id, 'utf-8')
           if (contents.includes('#endif')) {
-            contents = preJs(contents)
+            contents = preJs(contents, id)
           }
           return {
             loader: ext as Loader,

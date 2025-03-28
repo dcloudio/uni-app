@@ -52,14 +52,20 @@ export function createBuildOptions(
     sourcemap: isEnableConsole() && enableSourceMap(),
     // target: ['chrome53'], // 由小程序自己启用 es6 编译
     emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
-    lib: {
-      // 必须使用 lib 模式，否则会生成 preload 等代码
-      fileName: 'app.js',
-      entry: resolveMainPathOnce(inputDir),
-      formats: ['cjs'],
-    },
+    lib:
+      process.env.UNI_COMPILE_TARGET === 'uni_modules'
+        ? false
+        : {
+            // 必须使用 lib 模式，否则会生成 preload 等代码
+            fileName: 'app.js',
+            entry: resolveMainPathOnce(inputDir),
+            formats: ['cjs'],
+          },
     rollupOptions: {
-      input: parseRollupInput(inputDir, platform),
+      input:
+        process.env.UNI_COMPILE_TARGET === 'uni_modules'
+          ? {}
+          : parseRollupInput(inputDir, platform),
       output: {
         sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
           const result = sourcemapPathTransform(

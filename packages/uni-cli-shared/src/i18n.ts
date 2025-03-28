@@ -52,7 +52,7 @@ export function isUniAppLocaleFile(filepath: string) {
 }
 
 function parseLocaleJson(filepath: string) {
-  let jsonObj = parseJson(fs.readFileSync(filepath, 'utf8'))
+  let jsonObj = parseJson(fs.readFileSync(filepath, 'utf8'), false, filepath)
   if (isUniAppLocaleFile(filepath)) {
     jsonObj = jsonObj.common || {}
   }

@@ -128,6 +128,9 @@ export function registerPage(
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const pageStyle = parsePageStyle(routeOptions)
+  if (openType === 'reLaunch') {
+    pageStyle.set('disableSwipeBack', true)
+  }
   const nativePage = getPageManager().createPage(url, id.toString(), pageStyle)
   if (onCreated) {
     onCreated(nativePage)
@@ -167,8 +170,11 @@ export function registerPage(
     if (pages.length === 1) {
       if (homeDialogPages.length) {
         const homePage = pages[0] as unknown as UniPage
+        // harmony manage dialogPages in framework
+        const dialogPages = homePage.getDialogPages()
         homePage.vm.$.$dialogPages.value = homeDialogPages.map((dialogPage) => {
           dialogPage.getParentPage = () => homePage
+          dialogPages.push(dialogPage)
           return dialogPage
         })
         homeDialogPages.length = 0
@@ -262,13 +268,23 @@ export function registerDialogPage(
     pageStyle.set('disableSwipeBack', true)
   }
   const parentPage = dialogPage.getParentPage()
-  const nativePage = (getPageManager() as any).createDialogPage(
-    // @ts-expect-error
-    parentPage ? parentPage.__nativePageId : '',
-    id.toString(),
-    url,
-    pageStyle
-  )
+  const createDialogPage = (getPageManager() as any).createDialogPage
+  // 鸿蒙的API与Android保持一致，参数均为6个
+  const isHarmony = createDialogPage.length === 6
+  const nativePage = isHarmony
+    ? createDialogPage(
+        url,
+        id.toString(),
+        pageStyle,
+        (parentPage as any)?.getNativePage()
+      )
+    : createDialogPage(
+        // @ts-expect-error
+        parentPage ? parentPage.__nativePageId : '',
+        id.toString(),
+        url,
+        pageStyle
+      )
   if (onCreated) {
     onCreated(nativePage)
   }
@@ -362,10 +378,12 @@ function createVuePage(
   pageOptions: PageNodeOptions,
   nativePage: IPage
 ) {
-  const pageNode = nativePage.document.body
+  const document = nativePage.document
+  const body = document.body
   const app = getVueApp()
   const component = pagesMap.get(__pagePath)!()
   const mountPage = (component: VuePageComponent) =>
+    // TODO x
     app.mountPage(
       component,
       {
@@ -374,7 +392,8 @@ function createVuePage(
         __pageQuery,
         __pageInstance,
       },
-      pageNode as unknown as UniNode
+      body as unknown as UniNode,
+      document
     )
   if (isPromise(component)) {
     return component.then((component) => mountPage(component))

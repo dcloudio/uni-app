@@ -1,6 +1,7 @@
 import { initRuntimeSocket } from './socket'
-import { originalConsole, rewriteConsole, setSendConsole } from './console'
+import { rewriteConsole, setSendConsole } from './console'
 import { initOnError, setSendError } from './error'
+import { originalConsole } from './console/utils'
 
 export function initRuntimeSocketService(): Promise<boolean> {
   const hosts: string = process.env.UNI_SOCKET_HOSTS
@@ -25,15 +26,21 @@ export function initRuntimeSocketService(): Promise<boolean> {
         originalConsole.error(
           wrapError('开发模式下日志通道建立 socket 连接失败。')
         )
-        originalConsole.error(
-          wrapError('如果是小程序平台，请勾选不校验合法域名配置。')
-        )
+        // @ts-expect-error
+        if (__PLATFORM__ === 'mp') {
+          originalConsole.error(
+            wrapError('小程序平台，请勾选不校验合法域名配置。')
+          )
+        }
         originalConsole.error(
           wrapError('如果是运行到真机，请确认手机与电脑处于同一网络。')
         )
         return false
       }
-      initMiniProgramGlobalFlag()
+      // @ts-expect-error
+      if (__PLATFORM__ === 'mp') {
+        initMiniProgramGlobalFlag()
+      }
       socket.onClose(() => {
         if (process.env.UNI_DEBUG) {
           originalConsole.log(
@@ -41,11 +48,21 @@ export function initRuntimeSocketService(): Promise<boolean> {
             'connect close and restore'
           )
         }
-        originalConsole.error(
-          wrapError(
-            '开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。'
+        // @ts-expect-error
+        if (__PLATFORM__ === 'mp') {
+          originalConsole.error(
+            wrapError(
+              '开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。'
+            )
           )
-        )
+        } else {
+          originalConsole.error(
+            wrapError(
+              '手机端日志通道 socket 连接已断开，请重启基座应用或重新运行。'
+            )
+          )
+        }
+
         restoreError()
         restoreConsole()
       })

@@ -3,6 +3,7 @@ import path from 'path'
 import {
   isAppNVueNativeTag as baseIsAppNVueNativeTag,
   isAppNativeTag,
+  isAppVoidTag,
 } from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import {
@@ -61,6 +62,7 @@ export function uniOptions(
     },
     compilerOptions: {
       isNativeTag: isNVueCompiler ? isAppNVueNativeTag : isAppNativeTag,
+      isVoidTag: isAppVoidTag,
       nodeTransforms: [
         ...(isNVueCompiler ? initNVueNodeTransforms() : [transformWxsProps]),
         transformTapToClick,

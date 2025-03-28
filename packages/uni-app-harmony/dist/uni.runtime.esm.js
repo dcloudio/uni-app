@@ -8626,9 +8626,6 @@ function parseRedirectInfo() {
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
-function setCurrentPageMeta(page, options) {
-    // TODO: Implement
-}
 
 function operateVideoPlayer(videoId, pageId, type, data) {
     UniServiceJSBridge.invokeViewMethod('video.' + videoId, {
@@ -8643,6 +8640,11 @@ function operateMap(id, pageId, type, data, operateMapCallback) {
         type,
         data,
     }, pageId, operateMapCallback);
+}
+
+function setCurrentPageMeta(page, options) {
+    const pageId = getPageIdByVm(page);
+    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, pageId);
 }
 
 const API_UPX2PX = 'upx2px';
@@ -9702,7 +9704,10 @@ class CanvasContext {
         var self = this;
         this.state.font = value;
         // eslint-disable-next-line
-        var fontFormat = value.match(/^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/);
+        var fontFormat = value.match(
+        // 支持小数点 github #5329
+        /^(([\w\-]+\s)*)(\d+\.?\d*r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/);
+        //
         if (fontFormat) {
             var style = fontFormat[1].trim().split(/\s/);
             var fontSize = parseFloat(fontFormat[3]);
@@ -9716,7 +9721,8 @@ class CanvasContext {
                     });
                     self.state.fontStyle = value;
                 }
-                else if (['bold', 'normal'].indexOf(value) > -1) {
+                else if (['bold', 'normal', 'lighter', 'bolder'].indexOf(value) > -1 ||
+                    /^\d+$/.test(value)) {
                     actions.push({
                         method: 'setFontWeight',
                         data: [value],
@@ -10576,7 +10582,7 @@ const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
 
 const API_SET_PAGE_META = 'setPageMeta';
 const setPageMeta = defineAsyncApi(API_SET_PAGE_META, (options, { resolve }) => {
-    resolve(setCurrentPageMeta(getCurrentPageVm()));
+    resolve(setCurrentPageMeta(getCurrentPageVm(), options));
 });
 
 const API_SET_BACKGROUND_COLOR = 'setBackgroundColor';

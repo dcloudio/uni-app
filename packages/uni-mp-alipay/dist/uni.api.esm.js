@@ -1425,9 +1425,18 @@ function returnValue(methodName, res = {}) {
     }
     return res;
 }
+/**
+ * 区别：
+ * 支付宝 request 钉钉 httpRequest
+ * 钉钉 header Content-Type，鸿蒙上大小写敏感
+ * 支付宝 header content-type 小写
+ * 支付宝 json+data 不需要额外处理，直接传对象，但是会自动转成字符串，服务端需要兼容
+ * 钉钉 json+data 需要手动 JSON.stringify
+ */
 const request = {
     name: my.canIUse('request') ? 'request' : 'httpRequest',
     args(fromArgs) {
+        const isDingDing = my.canIUse('saveFileToDingTalk');
         const method = fromArgs.method || 'GET';
         if (!fromArgs.header) {
             // 默认增加 header 参数，方便格式化 content-type
@@ -1448,13 +1457,14 @@ const request = {
             },
             data(data) {
                 // 钉钉小程序在content-type为application/json时需上传字符串形式data，使用my.dd在真机运行钉钉小程序时不能正确判断
-                if (my.canIUse('saveFileToDingTalk') &&
+                if (isDingDing &&
                     method.toUpperCase() === 'POST' &&
-                    headers['content-type'].indexOf('application/json') === 0 &&
-                    isPlainObject(data)) {
+                    headers['content-type'].indexOf('application/json') === 0) {
+                    // 鸿蒙钉钉 data 强制传递 #ask 205230
+                    const _data = isPlainObject(data) ? JSON.stringify(data) : '{}';
                     return {
                         name: 'data',
-                        value: JSON.stringify(data),
+                        value: _data,
                     };
                 }
                 return {
@@ -1471,6 +1481,9 @@ const request = {
         headers: 'header',
     },
 };
+/**
+ * 钉钉小程序 setNavigationBarColor 不支持 frontColor
+ */
 const setNavigationBarColor = {
     name: 'setNavigationBar',
     args: {
@@ -1481,13 +1494,23 @@ const setNavigationBarColor = {
 const setNavigationBarTitle = {
     name: 'setNavigationBar',
 };
+/**
+ * Note:
+ * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
+ */
 function showModal({ showCancel = true } = {}) {
+    const canIUseShowModal = my.canIUse('showModal');
+    if (canIUseShowModal) {
+        return {
+            name: 'showModal',
+        };
+    }
     if (showCancel) {
         return {
             name: 'confirm',
             args: {
-                cancelColor: false,
                 confirmColor: false,
+                cancelColor: false,
                 cancelText: 'cancelButtonText',
                 confirmText: 'confirmButtonText',
             },

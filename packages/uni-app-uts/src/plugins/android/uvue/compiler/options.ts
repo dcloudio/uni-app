@@ -55,6 +55,23 @@ interface SharedTransformCodegenOptions {
       }
     | undefined
     | void
+  /**
+   * 解析 uts customElements 组件
+   * @param name
+   * @param type
+   * @returns
+   */
+  parseUTSCustomElement?: (
+    name: string,
+    type: 'kotlin' | 'swift'
+  ) =>
+    | {
+        className: string
+        namespace: string
+        source: string
+      }
+    | undefined
+    | void
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   inMap?: RawSourceMap

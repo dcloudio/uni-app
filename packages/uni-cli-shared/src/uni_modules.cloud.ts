@@ -255,7 +255,7 @@ function isEnvExpired(
   return false
 }
 
-interface EncryptPackageJson {
+export interface EncryptPackageJson {
   id: string
   version: string
   uni_modules: {
@@ -267,6 +267,7 @@ interface EncryptPackageJson {
       apis: string[]
       components: string[]
       scopedSlots: string[]
+      customElements: { name: string; class: string }[]
       declaration: string
     }
   }
@@ -292,7 +293,8 @@ function findEncryptUniModuleCache(
     // 插件版本以及各种环境一致
     if (
       pkg.version === options.version &&
-      !isEnvExpired(pkg.uni_modules?.artifacts?.env || {}, options.env)
+      (options.env.compilerVersion === '4.17-test' ||
+        !isEnvExpired(pkg.uni_modules?.artifacts?.env || {}, options.env))
     ) {
       const declaration = path.resolve(
         uniModuleCacheDir,
@@ -387,7 +389,10 @@ export function resolveEncryptUniModule(
   if (index !== -1) {
     const uniModuleId = parts[index + 1]
     if (uniModuleId in encryptUniModules) {
-      if (parts[index + 2]) {
+      if (
+        parts[index + 2] &&
+        (platform === 'app-android' || platform === 'app-ios')
+      ) {
         console.warn(
           M['uni_modules.import']
             .replace('{0}', uniModuleId)

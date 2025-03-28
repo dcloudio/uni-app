@@ -5801,14 +5801,17 @@ function hasIdProp(_ctx) {
         _ctx.$.propsOptions[0] &&
         'id' in _ctx.$.propsOptions[0]);
 }
+function getVirtualHostId(_ctx) {
+    return _ctx.$scope.virtualHostId;
+}
 function hasVirtualHostId(_ctx) {
-    return _ctx.$scope.virtualHostId !== '';
+    return !!getVirtualHostId(_ctx);
 }
 function genIdWithVirtualHost(_ctx, idBinding) {
     if (!hasVirtualHostId(_ctx) || hasIdProp(_ctx)) {
         return idBinding;
     }
-    return _ctx.virtualHostId;
+    return getVirtualHostId(_ctx);
 }
 function genUniElementId(_ctx, idBinding, genId) {
     return genIdWithVirtualHost(_ctx, idBinding) || genId || '';

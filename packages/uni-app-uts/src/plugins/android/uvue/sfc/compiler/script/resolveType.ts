@@ -921,7 +921,7 @@ export function fileToScope(
   // }
   // fs should be guaranteed to exist here
   const fs = resolveFS(ctx)!
-  const source = preUVueJs(fs.readFile(filename) || '')
+  const source = preUVueJs(fs.readFile(filename) || '', filename)
   const body = parseFile(filename, source, ctx.options.babelParserPlugins)
   const scope = new TypeScope(filename, source, 0, recordImports(body))
   recordTypes(ctx, body, scope, asGlobal)

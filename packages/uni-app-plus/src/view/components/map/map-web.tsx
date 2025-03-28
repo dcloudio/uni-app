@@ -357,18 +357,30 @@ function useMap(
         trigger('tap', {} as Event, {})
         trigger('click', {} as Event, {})
       })
+      /**
+       * regionchange事件在微信规范下比较特殊，其type为begin和end，通用的规范下type应为regionchange。
+       * 目前在app端强行使用了通用规范，要改造为微信规范动静比较大
+       */
       // @ts-expect-error
       map.addEventListener('dragstart', () => {
-        trigger('regionchange', {} as Event, {
-          type: 'begin',
-          causedBy: 'gesture',
-        })
+        trigger(
+          'regionchange',
+          {
+            __evName: 'regionchange',
+          } as unknown as Event,
+          {
+            type: 'begin',
+            causedBy: 'gesture',
+          }
+        )
       })
       // @ts-expect-error
       map.addEventListener('dragend', () => {
         trigger(
           'regionchange',
-          {} as Event,
+          {
+            __evName: 'regionchange',
+          } as unknown as Event,
           extend(
             {
               type: 'end',
@@ -393,15 +405,23 @@ function useMap(
         trigger('click', {} as Event, {})
       })
       event.addListener(map, 'dragstart', () => {
-        trigger('regionchange', {} as Event, {
-          type: 'begin',
-          causedBy: 'gesture',
-        })
+        trigger(
+          'regionchange',
+          {
+            __evName: 'regionchange',
+          } as unknown as Event,
+          {
+            type: 'begin',
+            causedBy: 'gesture',
+          }
+        )
       })
       event.addListener(map, 'dragend', () => {
         trigger(
           'regionchange',
-          {} as Event,
+          {
+            __evName: 'regionchange',
+          } as unknown as Event,
           extend(
             {
               type: 'end',
@@ -416,7 +436,9 @@ function useMap(
         emit('update:scale', map.getZoom())
         trigger(
           'regionchange',
-          {} as Event,
+          {
+            __evName: 'regionchange',
+          } as unknown as Event,
           extend(
             {
               type: 'end',

@@ -1,0 +1,117 @@
+{
+	"id": "uni-previewImage",
+	"displayName": "previewImage图片预览",
+	"version": "1.0.3",
+	"description": "previewImage图片预览",
+	"keywords": [
+		"图片预览,previewImage"
+	],
+	"repository": "",
+	"engines": {
+		"HBuilderX": "^3.99"
+	},
+	"dcloudext": {
+		"type": "uts",
+		"sale": {
+			"regular": {
+				"price": "0.00"
+			},
+			"sourcecode": {
+				"price": "0.00"
+			}
+		},
+		"contact": {
+			"qq": ""
+		},
+		"declaration": {
+			"ads": "无",
+			"data": "无",
+			"permissions": "无"
+		},
+		"npmurl": ""
+	},
+	"uni_modules": {
+		"uni-ext-api": {
+			"uni": {
+				"previewImage": {
+					"name": "previewImage",
+					"app": {
+						"js": false,
+						"kotlin": true,
+						"swift": true
+					}
+				},
+				"closePreviewImage": {
+					"name": "closePreviewImage",
+					"app": {
+						"js": false,
+						"kotlin": true,
+						"swift": true
+					}
+				}
+			}
+		},
+		"dependencies": [
+			"uni-framework",
+			"uni-media",
+			"uni-network",
+			"uni-fileSystemManager",
+			"uni-getSystemInfo",
+			"uni-storage",
+			"uni-prompt",
+			"uni-modal",
+			"uni-actionSheet",
+			"app-ios:uni-dialogPage",
+			"app-ios:uni-event"
+		],
+		"encrypt": [],
+		"platforms": {
+			"cloud": {
+				"tcb": "y",
+				"aliyun": "y",
+				"alipay": "y"
+			},
+			"client": {
+				"Vue": {
+					"vue2": "n",
+					"vue3": "y"
+				},
+				"App": {
+					"app-android": {
+						"minVersion": "21"
+					},
+					"app-ios": "n",
+					"app-harmony": "n"
+				},
+				"H5-mobile": {
+					"Safari": "y",
+					"Android Browser": "y",
+					"微信浏览器(Android)": "y",
+					"QQ浏览器(Android)": "y"
+				},
+				"H5-pc": {
+					"Chrome": "n",
+					"IE": "n",
+					"Edge": "n",
+					"Firefox": "n",
+					"Safari": "n"
+				},
+				"小程序": {
+					"微信": "n",
+					"阿里": "n",
+					"百度": "n",
+					"字节跳动": "n",
+					"QQ": "n",
+					"钉钉": "n",
+					"快手": "n",
+					"飞书": "n",
+					"京东": "n"
+				},
+				"快应用": {
+					"华为": "n",
+					"联盟": "n"
+				}
+			}
+		}
+	}
+}

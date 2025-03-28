@@ -132,7 +132,8 @@ html {
     background-color: var(--UI-BG-0);
     color: var(--UI-FG-0);
   }
-  uni-page[data-type] uni-page-body {
-    background-color: transparent;
-  }
+}
+
+uni-page[data-type] uni-page-body {
+  background-color: transparent;
 }

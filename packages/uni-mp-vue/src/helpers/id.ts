@@ -6,20 +6,24 @@ function hasIdProp(_ctx: any): boolean {
   )
 }
 
-function hasVirtualHostId(_ctx: any): boolean {
+function getVirtualHostId(_ctx: any): string {
   // #if _X_
-  return _ctx.virtualHostId !== ''
+  return _ctx.virtualHostId
   // #endif
   // #if !_X_
-  return _ctx.$scope.virtualHostId !== ''
+  return _ctx.$scope.virtualHostId
   // #endif
+}
+
+function hasVirtualHostId(_ctx: any): boolean {
+  return !!getVirtualHostId(_ctx)
 }
 
 function genIdWithVirtualHost(_ctx: any, idBinding: string): string {
   if (!hasVirtualHostId(_ctx) || hasIdProp(_ctx)) {
     return idBinding
   }
-  return _ctx.virtualHostId
+  return getVirtualHostId(_ctx)
 }
 
 export function genUniElementId(

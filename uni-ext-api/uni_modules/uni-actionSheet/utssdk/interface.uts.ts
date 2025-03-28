@@ -81,7 +81,7 @@ export type ShowActionSheetOptions = {
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "x"
+   *      "unixVer": "4.61"
    *    }
    *  },
    *  "mp": {
@@ -154,7 +154,7 @@ export type ShowActionSheetOptions = {
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "x"
+   *      "unixVer": "4.61"
    *    }
    *  },
    *  "mp": {
@@ -227,7 +227,7 @@ export type ShowActionSheetOptions = {
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "x"
+   *      "unixVer": "4.61"
    *    }
    *  },
    *  "mp": {
@@ -300,7 +300,7 @@ export type ShowActionSheetOptions = {
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "x"
+   *      "unixVer": "4.61"
    *    }
    *  },
    *  "mp": {
@@ -403,7 +403,7 @@ export interface Uni {
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "x"
+   *      "unixVer": "4.61"
    *    }
    *  },
    *  "mp": {
@@ -457,7 +457,7 @@ export interface Uni {
   showActionSheet(options: ShowActionSheetOptions): void;
 
   /**
-   * @description 关闭操作菜单
+   * @description 关闭栈顶页面操作菜单
    * @example
    * ```typescript
    *	uni.hideActionSheet();
@@ -482,7 +482,7 @@ export interface Uni {
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "x"
+   *      "unixVer": "4.61"
    *    }
    *  },
    *  "mp": {
@@ -552,3 +552,5 @@ export class ShowActionSheetFailImpl extends UniError implements ShowActionSheet
     this.errCode = errCode
   }
 }
+
+export type HideActionSheet = () => void

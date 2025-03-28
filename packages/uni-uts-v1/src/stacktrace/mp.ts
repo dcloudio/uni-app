@@ -3,9 +3,9 @@ import fs from 'fs-extra'
 import path from 'path'
 import crypto from 'crypto'
 
-import type { GenerateJavaScriptRuntimeCodeFrameOptions } from './js'
 import {
   COLORS,
+  type GenerateRuntimeCodeFrameOptions,
   generateCodeFrame,
   lineColumnToStartEnd,
   resolveSourceMapFileBySourceFile,
@@ -16,9 +16,10 @@ import { normalizePath, resolveSourceMapPath } from '../shared'
 
 const debugSourceMap = debug('uni:sourcemap')
 export interface GenerateMiniProgramRuntimeCodeFrameOptions
-  extends GenerateJavaScriptRuntimeCodeFrameOptions {
+  extends GenerateRuntimeCodeFrameOptions {
   outputDir: string
   platform: 'mp-weixin' | 'mp-baidu' | 'mp-alipay' | 'mp-toutiao'
+  language: 'javascript'
 }
 
 function parseFileNameAndLine(lineStr: string) {

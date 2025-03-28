@@ -15,6 +15,7 @@ import type {
   PerformanceObserverOptions,
 } from '@dcloudio/uni-app-x/types/uni'
 import { onAfterRoute, onBeforeRoute, onPageReady } from '../route/performance'
+import { getNativeApp } from '../../framework/app/app'
 
 // TODO
 const APP_LAUNCH = 'appLaunch'
@@ -28,15 +29,15 @@ const ENTRY_TYPE_NAVIGATION = 'navigation'
 const RENDER_TYPE_FIRST_LAYOUT = 'firstLayout'
 const RENDER_TYPE_FIRST_RENDER = 'firstRender'
 
-const AppStartDuration = 1
+// const AppStartDuration = 1
 // const PageRenderDuration = 1
 // const PageLayoutDuration = 2
 // const PageRenderCount = 3
 // const PageLayoutCount = 4
 // const PageFirstRenderStartTime = 5
 // const PageFirstLayoutStartTime = 6
-const PageFirstPageRenderDuration = 7
-const PageFirstPageLayoutDuration = 8
+// const PageFirstPageRenderDuration = 7
+// const PageFirstPageLayoutDuration = 8
 
 /// status machine
 class PerformanceEntryStatus {
@@ -119,11 +120,7 @@ class PerformanceEntryStatusLayout extends PerformanceEntryStatus {
 
     const innerPage = super.getCurrentInnerPage()
     if (innerPage != null) {
-      // @ts-expect-error
-      this._entryData.duration = nativePage.getDuration(
-        innerPage.pageId,
-        PageFirstPageLayoutDuration
-      )
+      this._entryData.duration = innerPage.getFirstPageLayoutDuration()
     }
   }
 }
@@ -145,11 +142,7 @@ class PerformanceEntryStatusRender extends PerformanceEntryStatus {
 
     const innerPage = super.getCurrentInnerPage()
     if (innerPage != null) {
-      // @ts-expect-error
-      this._entryData.duration = nativePage.getDuration(
-        innerPage.pageId,
-        PageFirstPageRenderDuration
-      )
+      this._entryData.duration = innerPage.getFirstPageRenderDuration()
     }
   }
 }
@@ -172,8 +165,7 @@ class PerformanceEntryStatusNavigation extends PerformanceEntryStatus {
     if (innerPage != null) {
       this._entryData.duration = Date.now() - this._entryData.startTime
       if (this._entryData.name == APP_LAUNCH) {
-        // @ts-expect-error
-        this._entryData.duration += nativePage.getDuration(AppStartDuration)
+        this._entryData.duration += getNativeApp().getAppStartDuration()
       }
     }
   }

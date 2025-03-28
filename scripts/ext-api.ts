@@ -3,7 +3,8 @@ import path from 'path'
 import type { Plugin } from 'vite'
 import execa from 'execa'
 import { sync } from 'fast-glob'
-import { capitalize } from '@vue/shared'
+import { camelize, capitalize } from '@vue/shared'
+import { OutputChunk } from 'rollup'
 
 type Target = 'uni-h5' | 'uni-app-plus'
 
@@ -21,6 +22,20 @@ if (!process.env.UNI_APP_EXT_API_DIR) {
   if (fs.existsSync(extApiDir)) {
     process.env.UNI_APP_EXT_API_DIR = extApiDir
     console.log('UNI_APP_EXT_API_DIR', extApiDir)
+  }
+}
+
+if (!process.env.UNI_APP_EXT_COMPONENT_DIR) {
+  const extComponentDir = path.resolve(
+    __dirname,
+    '..',
+    '..',
+    'uni-app',
+    'component'
+  )
+  if (fs.existsSync(extComponentDir)) {
+    process.env.UNI_APP_EXT_COMPONENT_DIR = extComponentDir
+    console.log('UNI_APP_EXT_COMPONENT_DIR', extComponentDir)
   }
 }
 
@@ -137,6 +152,12 @@ async function checkExtApiDir(target: Target, name: string) {
   }
   let extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR!)
   if (
+    process.env.UNI_APP_EXT_COMPONENT_DIR &&
+    !fs.existsSync(path.resolve(extApiDir, name))
+  ) {
+    extApiDir = path.resolve(process.env.UNI_APP_EXT_COMPONENT_DIR!)
+  }
+  if (
     process.env.UNI_APP_EXT_API_DCLOUD_DIR &&
     !fs.existsSync(path.resolve(extApiDir, name))
   ) {
@@ -174,10 +195,14 @@ async function checkExtApiTypes(target: Target) {
   })
 }
 
-export function syncPagesFile(apiDirs: string[]) {
+export function syncPagesFile(
+  apiDirs: string[],
+  platform: 'web' | 'app-ios' | 'app-harmony'
+) {
   const systemPagePaths: Record<string, string> = {}
   const importCodes: string[] = []
   const registerCodes: string[] = []
+  const webExportCodes: string[] = []
   apiDirs.forEach((apiDir) => {
     if (apiDir && fs.existsSync(apiDir)) {
       fs.readdirSync(apiDir).forEach((module) => {
@@ -186,27 +211,63 @@ export function syncPagesFile(apiDirs: string[]) {
           fs.readdirSync(pagesDir).forEach((page) => {
             if (fs.existsSync(path.resolve(pagesDir, page, page + '.uvue'))) {
               const utssdkDir = path.resolve(apiDir, module, 'utssdk')
-              const hasIOS =
-                fs.existsSync(path.resolve(utssdkDir, 'index.uts')) ||
-                fs.existsSync(path.resolve(utssdkDir, 'app-ios', 'index.uts'))
-              if (!hasIOS) {
-                return
-              }
-              importCodes.push(
-                `import Uni${capitalize(
-                  page
-                )}Page from '@dcloudio/uni-ext-api/${module}/pages/${page}/${page}.vue'`
+              const hasRootIndex = fs.existsSync(
+                path.resolve(utssdkDir, 'index.uts')
               )
-              registerCodes.push(
-                `  registerSystemRoute('uni:${page}', Uni${capitalize(
-                  page
-                )}Page, {
+              if (platform === 'web') {
+                const hasWeb =
+                  hasRootIndex ||
+                  fs.existsSync(path.resolve(utssdkDir, 'web', 'index.uts'))
+
+                if (hasWeb) {
+                  webExportCodes.push(
+                    `// @ts-expect-error\nexport * from '@dcloudio/uni-ext-api/${module}'`
+                  )
+                }
+                systemPagePaths[
+                  `/uni_modules/${module}/pages/${page}/${page}`
+                ] = `uni:${page}`
+              } else if (platform === 'app-ios' || platform === 'app-harmony') {
+                // 有customElements目录，比如picker
+                const hasCustomElements = fs.existsSync(
+                  path.resolve(utssdkDir, '..', 'customElements')
+                )
+                const hasPlatform =
+                  hasRootIndex ||
+                  fs.existsSync(
+                    path.resolve(utssdkDir, platform, 'index.uts')
+                  ) ||
+                  hasCustomElements
+                if (!hasPlatform) {
+                  return
+                }
+                if (hasCustomElements) {
+                  const packageJson = require(path.resolve(
+                    utssdkDir,
+                    '..',
+                    'package.json'
+                  ))
+                  // 当前 pages 平台禁用
+                  if (packageJson.uni_modules?.pages?.[platform] === false) {
+                    return
+                  }
+                }
+                importCodes.push(
+                  `import Uni${capitalize(
+                    page
+                  )}Page from '@dcloudio/uni-ext-api/${module}/pages/${page}/${page}.vue'`
+                )
+                registerCodes.push(
+                  `  registerSystemRoute('uni:${page}', Uni${capitalize(
+                    page
+                  )}Page, {
     disableSwipeBack: false,
   })`
-              )
-              systemPagePaths[
-                `/uni_modules/${module}/pages/${page}/${page}`
-              ] = `uni:${page}`
+                )
+                systemPagePaths[
+                  `/uni_modules/${module}/pages/${page}/${page}`
+                ] = `uni:${page}`
+              }
             }
           })
         }
@@ -214,14 +275,20 @@ export function syncPagesFile(apiDirs: string[]) {
     }
   })
   if (importCodes.length) {
-    fs.writeFileSync(
+    fs.outputFileSync(
       path.resolve(
         path.resolve(__dirname, '..', 'packages', 'uni-app-plus'),
         'src',
         'x',
-        'pages.ts'
+        platform === 'web'
+          ? 'pages.ts'
+          : platform === 'app-ios'
+          ? 'pages.ios.ts'
+          : 'pages.harmony.ts'
       ),
-      `${importCodes.join('\n')}
+      `// This file is automatically generated.
+// Do not modify this file -- YOUR CHANGES WILL BE ERASED!
+${importCodes.join('\n')}
 import { registerSystemRoute } from './framework/route'
 
 export function registerSystemPages() {
@@ -230,5 +297,93 @@ ${registerCodes.join('\n')}
 `
     )
   }
+  if (webExportCodes.length) {
+    fs.outputFileSync(
+      path.resolve(
+        path.resolve(__dirname, '..', 'packages', 'uni-h5'),
+        'src',
+        'x',
+        'service',
+        'api',
+        'pages.ts'
+      ),
+      `// This file is automatically generated.
+// Do not modify this file -- YOUR CHANGES WILL BE ERASED!
+${webExportCodes.join('\n')}
+`
+    )
+  }
   return systemPagePaths
+}
+
+export function replacePagePaths(
+  systemPagePaths: Record<string, string>
+): Plugin {
+  return {
+    name: 'uni:replace-page-paths',
+    generateBundle(_, bundle) {
+      if (Object.keys(systemPagePaths).length) {
+        Object.keys(bundle).forEach((key) => {
+          if (key.endsWith('.js')) {
+            const chunk = bundle[key] as OutputChunk
+            let newCode = chunk.code
+            Object.keys(systemPagePaths).forEach((path) => {
+              if (newCode.includes(path)) {
+                newCode = newCode.replace(
+                  new RegExp(path, 'g'),
+                  systemPagePaths[path]
+                )
+              }
+            })
+            chunk.code = newCode
+          }
+        })
+      }
+    },
+  }
+}
+
+export function syncEasyComFile(apiDirs: string[]) {
+  const easyComCodes: string[] = []
+  apiDirs.forEach((apiDir) => {
+    if (apiDir && fs.existsSync(apiDir)) {
+      fs.readdirSync(apiDir).forEach((module) => {
+        const moduleDir = path.resolve(apiDir, module)
+        // 目前仅限web端编译，所以没有utssdk目录
+        if (!fs.existsSync(path.resolve(moduleDir, 'utssdk'))) {
+          const componentsDir = path.resolve(moduleDir, 'components')
+          if (fs.existsSync(componentsDir)) {
+            fs.readdirSync(componentsDir).forEach((component) => {
+              if (
+                fs.existsSync(
+                  path.resolve(componentsDir, component, component + '.vue')
+                )
+              ) {
+                easyComCodes.push(
+                  `export { default as ${capitalize(
+                    camelize(component)
+                  )} } from '@dcloudio/uni-ext-api/${module}/components/${component}/${component}.vue'`
+                )
+              }
+            })
+          }
+        }
+      })
+    }
+  })
+
+  fs.outputFileSync(
+    path.resolve(
+      path.resolve(__dirname, '..', 'packages', 'uni-h5'),
+      'src',
+      'x',
+      'view',
+      'components',
+      'easycom.ts'
+    ),
+    `// This file is automatically generated.
+// Do not modify this file -- YOUR CHANGES WILL BE ERASED!
+${easyComCodes.length ? easyComCodes.join('\n') : ''}
+`
+  )
 }

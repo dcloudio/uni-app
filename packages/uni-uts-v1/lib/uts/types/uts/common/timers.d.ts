@@ -13,8 +13,10 @@
             },
             "ios": {
                "osVer": "12.0",
-               "uniVer": "3.9",
-                "unixVer": "4.11"
+               "uniVer": "√",
+               "unixVer": "4.11",
+               "uniUtsPlugin": "3.90",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -38,8 +40,10 @@ declare function setInterval(handler: string | Function, timeout?: number, ...ar
             },
             "ios": {
                "osVer": "12.0",
-               "uniVer": "3.9",
-                "unixVer": "4.11"
+               "uniVer": "√",
+               "unixVer": "4.11",
+               "uniUtsPlugin": "3.90",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -63,8 +67,10 @@ declare function setTimeout(handler:  string | Function, timeout?: number, ...ar
             },
             "ios": {
                "osVer": "12.0",
-               "uniVer": "3.9",
-                "unixVer": "4.11"
+               "uniVer": "√",
+               "unixVer": "4.11",
+               "uniUtsPlugin": "3.90",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -89,8 +95,10 @@ declare function clearInterval(id: number | undefined): void;
             },
             "ios": {
                "osVer": "12.0",
-               "uniVer": "3.9",
-                "unixVer": "4.11"
+               "uniVer": "√",
+               "unixVer": "4.11",
+               "uniUtsPlugin": "3.90",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {

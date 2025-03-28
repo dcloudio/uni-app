@@ -45,6 +45,108 @@ function tryConnectSocket(host, port, id) {
     });
 }
 
+const CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'];
+const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce((methods, type) => {
+    methods[type] = console[type].bind(console);
+    return methods;
+}, {});
+
+let sendError = null;
+// App.onError会监听到两类错误，一类是小程序自身抛出的，一类是 vue 的 errorHandler 触发的
+// uni.onError 和 App.onError 会同时监听到错误(主要是App.onError监听之前的错误)，所以需要用 Set 来去重
+// uni.onError 会在 App.onError 上边同时增加监听，因为要监听 vue 的errorHandler
+// 目前 vue 的 errorHandler 仅会callHook('onError')，所以需要把uni.onError的也挂在 App.onError 上
+const errorQueue = new Set();
+const errorExtra = {};
+function sendErrorMessages(errors) {
+    if (sendError == null) {
+        errors.forEach((error) => {
+            errorQueue.add(error);
+        });
+        return;
+    }
+    const data = errors
+        .map((err) => {
+        if (typeof err === 'string') {
+            return err;
+        }
+        const isPromiseRejection = err && 'promise' in err && 'reason' in err;
+        const prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : '';
+        if (isPromiseRejection) {
+            err = err.reason;
+        }
+        if (err instanceof Error && err.stack) {
+            if (err.message && !err.stack.includes(err.message)) {
+                return `${prefix}${err.message}
+${err.stack}`;
+            }
+            return `${prefix}${err.stack}`;
+        }
+        if (typeof err === 'object' && err !== null) {
+            try {
+                return prefix + JSON.stringify(err);
+            }
+            catch (err) {
+                return prefix + String(err);
+            }
+        }
+        return prefix + String(err);
+    })
+        .filter(Boolean);
+    if (data.length > 0) {
+        sendError(JSON.stringify(Object.assign({
+            type: 'error',
+            data,
+        }, errorExtra)));
+    }
+}
+function setSendError(value, extra = {}) {
+    sendError = value;
+    Object.assign(errorExtra, extra);
+    if (value != null && errorQueue.size > 0) {
+        const errors = Array.from(errorQueue);
+        errorQueue.clear();
+        sendErrorMessages(errors);
+    }
+}
+function initOnError() {
+    function onError(error) {
+        try {
+            // 小红书小程序 socket.send 时，会报错，onError错误信息为：
+            // Cannot create property 'errMsg' on string 'taskId'
+            // 导致陷入死循环
+            if (typeof PromiseRejectionEvent !== 'undefined' &&
+                error instanceof PromiseRejectionEvent &&
+                error.reason instanceof Error &&
+                error.reason.message &&
+                error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
+                return;
+            }
+            if (process.env.UNI_CONSOLE_KEEP_ORIGINAL) {
+                originalConsole.error(error);
+            }
+            sendErrorMessages([error]);
+        }
+        catch (err) {
+            originalConsole.error(err);
+        }
+    }
+    if (typeof uni.onError === 'function') {
+        uni.onError(onError);
+    }
+    if (typeof uni.onUnhandledRejection === 'function') {
+        uni.onUnhandledRejection(onError);
+    }
+    return function offError() {
+        if (typeof uni.offError === 'function') {
+            uni.offError(onError);
+        }
+        if (typeof uni.offUnhandledRejection === 'function') {
+            uni.offUnhandledRejection(onError);
+        }
+    };
+}
+
 function formatMessage(type, args) {
     try {
         return {
@@ -79,7 +181,20 @@ function formatArg(arg, depth = 0) {
         case 'boolean':
             return formatBoolean(arg);
         case 'object':
-            return formatObject(arg, depth);
+            try {
+                // 鸿蒙里边 object 可能包含 nativePtr 指针，该指针 typeof 是 object
+                // 但是又不能访问上边的任意属性，否则会报：TypeError: Can not get Prototype on non ECMA Object
+                // 所以这里需要捕获异常，防止报错
+                return formatObject(arg, depth);
+            }
+            catch (e) {
+                return {
+                    type: 'object',
+                    value: {
+                        properties: [],
+                    },
+                };
+            }
         case 'undefined':
             return formatUndefined();
         case 'function':
@@ -228,13 +343,20 @@ function formatObject(value, depth) {
             }
         }
     }
+    let entries = Object.entries(value);
+    if (isHarmonyBuilderParams(value)) {
+        entries = entries.filter(([key]) => key !== 'modifier' && key !== 'nodeContent');
+    }
     return {
         type: 'object',
         className,
         value: {
-            properties: Object.entries(value).map((entry) => formatObjectProperty(entry[0], entry[1], depth + 1)),
+            properties: entries.map((entry) => formatObjectProperty(entry[0], entry[1], depth + 1)),
         },
     };
+}
+function isHarmonyBuilderParams(value) {
+    return value.modifier && value.modifier._attribute && value.nodeContent;
 }
 function isComponentPublicInstance(value) {
     return value.$ && isComponentInternalInstance(value.$);
@@ -318,10 +440,11 @@ function formatMapEntry(value, depth) {
     };
 }
 
-const CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'];
 let sendConsole = null;
 const messageQueue = [];
 const messageExtra = {};
+const EXCEPTION_BEGIN_MARK = '---BEGIN:EXCEPTION---';
+const EXCEPTION_END_MARK = '---END:EXCEPTION---';
 function sendConsoleMessages(messages) {
     if (sendConsole == null) {
         messageQueue.push(...messages);
@@ -341,10 +464,6 @@ function setSendConsole(value, extra = {}) {
         sendConsoleMessages(messages);
     }
 }
-const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce((methods, type) => {
-    methods[type] = console[type].bind(console);
-    return methods;
-}, {});
 const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/;
 function rewriteConsole() {
     function wrapConsole(type) {
@@ -359,6 +478,19 @@ function rewriteConsole() {
             }
             if (process.env.UNI_CONSOLE_KEEP_ORIGINAL) {
                 originalConsole[type](...originalArgs);
+            }
+            if (type === 'error' && args.length === 1) {
+                const arg = args[0];
+                if (typeof arg === 'string' && arg.startsWith(EXCEPTION_BEGIN_MARK)) {
+                    const startIndex = EXCEPTION_BEGIN_MARK.length;
+                    const endIndex = arg.length - EXCEPTION_END_MARK.length;
+                    sendErrorMessages([arg.slice(startIndex, endIndex)]);
+                    return;
+                }
+                else if (arg instanceof Error) {
+                    sendErrorMessages([arg]);
+                    return;
+                }
             }
             sendConsoleMessages([formatMessage(type, args)]);
         };
@@ -411,99 +543,6 @@ function isConsoleWritable() {
     return isWritable;
 }
 
-let sendError = null;
-// App.onError会监听到两类错误，一类是小程序自身抛出的，一类是 vue 的 errorHandler 触发的
-// uni.onError 和 App.onError 会同时监听到错误(主要是App.onError监听之前的错误)，所以需要用 Set 来去重
-// uni.onError 会在 App.onError 上边同时增加监听，因为要监听 vue 的errorHandler
-// 目前 vue 的 errorHandler 仅会callHook('onError')，所以需要把uni.onError的也挂在 App.onError 上
-const errorQueue = new Set();
-const errorExtra = {};
-function sendErrorMessages(errors) {
-    if (sendError == null) {
-        errors.forEach((error) => {
-            errorQueue.add(error);
-        });
-        return;
-    }
-    const data = errors
-        .map((err) => {
-        const isPromiseRejection = err && 'promise' in err && 'reason' in err;
-        const prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : '';
-        if (isPromiseRejection) {
-            err = err.reason;
-        }
-        if (err instanceof Error && err.stack) {
-            if (err.message && !err.stack.includes(err.message)) {
-                return `${prefix}${err.message}
-${err.stack}`;
-            }
-            return `${prefix}${err.stack}`;
-        }
-        if (typeof err === 'object' && err !== null) {
-            try {
-                return prefix + JSON.stringify(err);
-            }
-            catch (err) {
-                return prefix + String(err);
-            }
-        }
-        return prefix + String(err);
-    })
-        .filter(Boolean);
-    if (data.length > 0) {
-        sendError(JSON.stringify(Object.assign({
-            type: 'error',
-            data,
-        }, errorExtra)));
-    }
-}
-function setSendError(value, extra = {}) {
-    sendError = value;
-    Object.assign(errorExtra, extra);
-    if (value != null && errorQueue.size > 0) {
-        const errors = Array.from(errorQueue);
-        errorQueue.clear();
-        sendErrorMessages(errors);
-    }
-}
-function initOnError() {
-    function onError(error) {
-        try {
-            // 小红书小程序 socket.send 时，会报错，onError错误信息为：
-            // Cannot create property 'errMsg' on string 'taskId'
-            // 导致陷入死循环
-            if (typeof PromiseRejectionEvent !== 'undefined' &&
-                error instanceof PromiseRejectionEvent &&
-                error.reason instanceof Error &&
-                error.reason.message &&
-                error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
-                return;
-            }
-            if (process.env.UNI_CONSOLE_KEEP_ORIGINAL) {
-                originalConsole.error(error);
-            }
-            sendErrorMessages([error]);
-        }
-        catch (err) {
-            originalConsole.error(err);
-        }
-    }
-    if (typeof uni.onError === 'function') {
-        uni.onError(onError);
-    }
-    if (typeof uni.onUnhandledRejection === 'function') {
-        uni.onUnhandledRejection(onError);
-    }
-    return function offError() {
-        if (typeof uni.offError === 'function') {
-            uni.offError(onError);
-        }
-        if (typeof uni.offUnhandledRejection === 'function') {
-            uni.offUnhandledRejection(onError);
-        }
-    };
-}
-
 function initRuntimeSocketService() {
     const hosts = process.env.UNI_SOCKET_HOSTS;
     const port = process.env.UNI_SOCKET_PORT;
@@ -526,16 +565,17 @@ function initRuntimeSocketService() {
                 restoreError();
                 restoreConsole();
                 originalConsole.error(wrapError('开发模式下日志通道建立 socket 连接失败。'));
-                originalConsole.error(wrapError('如果是小程序平台，请勾选不校验合法域名配置。'));
                 originalConsole.error(wrapError('如果是运行到真机，请确认手机与电脑处于同一网络。'));
                 return false;
             }
-            initMiniProgramGlobalFlag();
             socket.onClose(() => {
                 if (process.env.UNI_DEBUG) {
                     originalConsole.log(`uni-app:[${Date.now()}][socket]`, 'connect close and restore');
                 }
-                originalConsole.error(wrapError('开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。'));
+                // @ts-expect-error
+                {
+                    originalConsole.error(wrapError('手机端日志通道 socket 连接已断开，请重启基座应用或重新运行。'));
+                }
                 restoreError();
                 restoreConsole();
             });
@@ -562,41 +602,6 @@ function initRuntimeSocketService() {
 const ERROR_CHAR = '\u200C';
 function wrapError(error) {
     return `${ERROR_CHAR}${error}${ERROR_CHAR}`;
-}
-function initMiniProgramGlobalFlag() {
-    if (typeof wx !== 'undefined') {
-        // @ts-expect-error
-        wx.__uni_console__ = true;
-        // @ts-expect-error
-    }
-    else if (typeof my !== 'undefined') {
-        // @ts-expect-error
-        my.__uni_console__ = true;
-    }
-    else if (typeof tt !== 'undefined') {
-        tt.__uni_console__ = true;
-    }
-    else if (typeof swan !== 'undefined') {
-        swan.__uni_console__ = true;
-    }
-    else if (typeof qq !== 'undefined') {
-        qq.__uni_console__ = true;
-    }
-    else if (typeof ks !== 'undefined') {
-        ks.__uni_console__ = true;
-    }
-    else if (typeof jd !== 'undefined') {
-        jd.__uni_console__ = true;
-    }
-    else if (typeof xhs !== 'undefined') {
-        xhs.__uni_console__ = true;
-    }
-    else if (typeof has !== 'undefined') {
-        has.__uni_console__ = true;
-    }
-    else if (typeof qa !== 'undefined') {
-        qa.__uni_console__ = true;
-    }
 }
 initRuntimeSocketService();
 

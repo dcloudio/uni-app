@@ -12,10 +12,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -37,10 +39,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -65,7 +69,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -90,7 +96,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -115,7 +123,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -140,7 +150,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -165,7 +177,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -187,10 +201,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -213,10 +229,12 @@ interface Date {
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -241,7 +259,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -264,10 +284,12 @@ interface Date {
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -293,7 +315,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -316,10 +340,12 @@ interface Date {
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -345,7 +371,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -368,10 +396,12 @@ interface Date {
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -397,7 +427,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -420,10 +452,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -449,7 +483,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -472,10 +508,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -501,7 +539,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -524,10 +564,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -553,7 +595,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -575,10 +619,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -604,7 +650,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -630,7 +678,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -654,10 +704,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -681,10 +733,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -711,7 +765,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -735,10 +791,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -764,7 +822,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -787,10 +847,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -817,7 +879,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -840,10 +904,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -870,7 +936,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -893,10 +961,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -922,7 +992,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -946,10 +1018,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -976,7 +1050,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -999,10 +1075,12 @@ interface Date {
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -1028,7 +1106,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -1052,7 +1132,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -1076,7 +1158,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -1100,7 +1184,9 @@ interface Date {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -1128,7 +1214,9 @@ interface DateConstructor {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -1153,7 +1241,9 @@ interface DateConstructor {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -1182,10 +1272,12 @@ interface DateConstructor {
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -1212,10 +1304,12 @@ interface DateConstructor {
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -1249,7 +1343,9 @@ interface DateConstructor {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -1271,10 +1367,12 @@ interface DateConstructor {
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
-              "ios": {
+            "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {

@@ -30,7 +30,7 @@ function getDefaultStartValue(props: any) {
     const year = new Date().getFullYear() - 100
     switch ((props as Props).fields) {
       case fields.YEAR:
-        return year
+        return year + ''
       case fields.MONTH:
         return year + '-01'
       default:
@@ -47,7 +47,7 @@ function getDefaultEndValue(props: any) {
     const year = new Date().getFullYear() + 100
     switch ((props as Props).fields) {
       case fields.YEAR:
-        return year
+        return year + ''
       case fields.MONTH:
         return year + '-12'
       default:

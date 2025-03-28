@@ -444,7 +444,12 @@ function useTopWindow(layoutState: LayoutState): WindowComponentInfo {
     const height = el.getBoundingClientRect().height
     layoutState.topWindowHeight = height
   }
-  onMounted(updateWindow)
+  watch(
+    () => windowRef.value,
+    () => {
+      updateWindow()
+    }
+  )
   watch(
     () => layoutState.showTopWindow || layoutState.apiShowTopWindow,
     () => nextTick(updateWindow)
@@ -464,7 +469,12 @@ function useLeftWindow(layoutState: LayoutState): WindowComponentInfo {
     const width = el.getBoundingClientRect().width
     layoutState.leftWindowWidth = width
   }
-  onMounted(updateWindow)
+  watch(
+    () => windowRef.value,
+    () => {
+      updateWindow()
+    }
+  )
   watch(
     () => layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
     () => nextTick(updateWindow)
@@ -484,7 +494,12 @@ function useRightWindow(layoutState: LayoutState): WindowComponentInfo {
     const width = el.getBoundingClientRect().width
     layoutState.rightWindowWidth = width
   }
-  onMounted(updateWindow)
+  watch(
+    () => windowRef.value,
+    () => {
+      updateWindow()
+    }
+  )
   watch(
     () => layoutState.showRightWindow || layoutState.apiShowRightWindow,
     () => nextTick(updateWindow)

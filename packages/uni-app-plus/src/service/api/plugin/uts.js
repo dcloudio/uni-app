@@ -461,10 +461,12 @@ const pluginDefines = {};
 function registerUTSPlugin(name, define) {
     pluginDefines[name] = define;
 }
-function requireUTSPlugin(name) {
+function requireUTSPlugin(name, silent = false) {
     const define = pluginDefines[name];
     if (!define) {
-        console.error(`${name} is not found`);
+        if (!silent) {
+            console.error(`${name} is not found`);
+        }
     }
     return define;
 }

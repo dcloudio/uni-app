@@ -104,7 +104,8 @@ export async function tryResolveTemplateSrc(
         }
       } else {
         descriptor.template.content = preUVueHtml(
-          fs.readFileSync(filename, 'utf-8')
+          fs.readFileSync(filename, 'utf-8'),
+          filename
         )
       }
     }

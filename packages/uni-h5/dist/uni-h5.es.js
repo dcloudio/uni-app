@@ -2021,7 +2021,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   let target;
   target = normalizeTarget(el);
   return {
-    type: detail.type || name,
+    type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
@@ -4204,7 +4204,8 @@ class CanvasContext {
     var self = this;
     this.state.font = value;
     var fontFormat = value.match(
-      /^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
+      // 支持小数点 github #5329
+      /^(([\w\-]+\s)*)(\d+\.?\d*r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
     );
     if (fontFormat) {
       var style = fontFormat[1].trim().split(/\s/);
@@ -4218,7 +4219,7 @@ class CanvasContext {
             data: [value2]
           });
           self.state.fontStyle = value2;
-        } else if (["bold", "normal"].indexOf(value2) > -1) {
+        } else if (["bold", "normal", "lighter", "bolder"].indexOf(value2) > -1 || /^\d+$/.test(value2)) {
           actions.push({
             method: "setFontWeight",
             data: [value2]
@@ -7952,7 +7953,7 @@ function initHidpi() {
         if (args[3] && typeof args[3] === "number") {
           args[3] *= pixelRatio;
         }
-        var font2 = this.font;
+        var font2 = this.__font__ || this.font;
         this.font = font2.replace(
           /(\d+\.?\d*)(px|em|rem|pt)/g,
           function(w, m, u) {
@@ -7974,7 +7975,7 @@ function initHidpi() {
         if (args[3] && typeof args[3] === "number") {
           args[3] *= pixelRatio;
         }
-        var font2 = this.font;
+        var font2 = this.__font__ || this.font;
         this.font = font2.replace(
           /(\d+\.?\d*)(px|em|rem|pt)/g,
           function(w, m, u) {
@@ -16603,6 +16604,7 @@ function formatTime(val) {
 }
 function useGesture(props2, videoRef, fullscreenState) {
   const state2 = reactive({
+    seeking: false,
     gestureType: "none",
     volumeOld: 0,
     volumeNew: 0,
@@ -16619,7 +16621,6 @@ function useGesture(props2, videoRef, fullscreenState) {
     touchStartOrigin.y = toucher.pageY;
     state2.gestureType = "none";
     state2.volumeOld = 0;
-    state2.currentTimeOld = state2.currentTimeNew = 0;
   }
   function onTouchmove(event) {
     function stop() {
@@ -16640,6 +16641,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     const video = videoRef.value;
     if (gestureType === "progress") {
       changeProgress(pageX - origin.x);
+      state2.seeking = true;
     } else if (gestureType === "volume") {
       changeVolume(pageY - origin.y);
     }
@@ -16794,7 +16796,8 @@ function useVideo(props2, attrs2, trigger) {
     duration: 0,
     progress: 0,
     buffered: 0,
-    muted
+    muted,
+    pauseUpdatingCurrentTime: false
   });
   watch(() => src.value, () => {
     state2.playing = false;
@@ -16856,7 +16859,10 @@ function useVideo(props2, attrs2, trigger) {
   }
   function onTimeUpdate($event) {
     const video = $event.target;
-    const currentTime = state2.currentTime = video.currentTime;
+    if (!state2.pauseUpdatingCurrentTime) {
+      state2.currentTime = video.currentTime;
+    }
+    const currentTime = video.currentTime;
     trigger("timeupdate", $event, {
       currentTime,
       duration: video.duration
@@ -16914,13 +16920,14 @@ function useVideo(props2, attrs2, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek) {
+function useControls(props2, videoState, seek, seeking) {
   const progressRef = ref(null);
   const ballRef = ref(null);
   const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
   const controlsVisible = ref(true);
   const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
   const state2 = reactive({
+    seeking: false,
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -16969,13 +16976,6 @@ function useControls(props2, videoState, seek) {
       autoHideEnd();
     }
   });
-  watch([() => videoState.currentTime, () => {
-    props2.duration;
-  }], function updateProgress() {
-    if (!state2.touching) {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
-    }
-  });
   onMounted(() => {
     const passiveOptions2 = passive(false);
     let originX;
@@ -17001,6 +17001,8 @@ function useControls(props2, videoState, seek) {
         progress = 100;
       }
       videoState.progress = progress;
+      seeking == null ? void 0 : seeking(videoState.duration * progress / 100);
+      state2.seeking = true;
       event.preventDefault();
       event.stopPropagation();
     }
@@ -17147,6 +17149,25 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
       methods[type](options);
     }
   }, id2, true);
+}
+function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
+  const progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  watch(progressing, (val) => {
+    videoState.pauseUpdatingCurrentTime = val;
+    controlsState.controlsTouching = val;
+    if (gestureState.gestureType === "progress" && val) {
+      controlsState.controlsVisible = val;
+    }
+  });
+  watch([() => videoState.currentTime, () => {
+    props$g.duration;
+  }], () => {
+    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  });
+  watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
+    videoState.currentTime = currentTimeNew;
+  });
+  return progressing;
 }
 const props$g = {
   id: {
@@ -17301,9 +17322,14 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls
-    } = useControls(props2, videoState, seek);
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
+    } = useControls(props2, videoState, seek, (currentTimeNew) => {
+      gestureState.currentTimeNew = currentTimeNew;
+    });
     useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    const progressing = useProgressing(videoState, gestureState, controlsState);
     return () => {
       return createVNode("uni-video", {
         "ref": rootRef,
@@ -17355,6 +17381,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-controls"
       }, [withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
@@ -17367,30 +17394,44 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-progress-container",
         "onClick": withModifiers(clickProgress, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-progress"
+        "class": {
+          "uni-video-progress": true,
+          "uni-video-progress-progressing": progressing.value
+        }
       }, [createVNode("div", {
         "style": {
-          width: videoState.buffered + "%"
+          width: videoState.buffered - videoState.progress + "%",
+          left: videoState.progress + "%"
         },
         "class": "uni-video-progress-buffered"
+      }, null, 4), createVNode("div", {
+        "style": {
+          width: videoState.progress + "%"
+        },
+        "class": "uni-video-progress-played"
       }, null, 4), createVNode("div", {
         "ref": ballRef,
         "style": {
           left: videoState.progress + "%"
         },
-        "class": "uni-video-ball"
+        "class": {
+          "uni-video-ball": true,
+          "uni-video-ball-progressing": progressing.value
+        }
       }, [createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+      }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
         "onClick": withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+      }, null, 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
@@ -17404,11 +17445,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": withModifiers(() => {
         }, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-cover-play-button",
+        "class": "uni-video-cover-play-button uni-video-icon",
         "onClick": withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+      }, null, 8, ["onClick"])], 8, ["onClick"]), createVNode("div", {
         "class": {
           "uni-video-toast": true,
           "uni-video-toast-volume": gestureState.gestureType === "volume"
@@ -17438,11 +17477,13 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       }, null))])], 4)])], 2), createVNode("div", {
         "class": {
           "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
+          "uni-video-toast-progress": progressing.value
         }
       }, [createVNode("div", {
         "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+      }, [createVNode("span", {
+        "class": "uni-video-toast-title-current-time"
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -23388,7 +23429,9 @@ function useTopWindow(layoutState) {
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
@@ -23408,7 +23451,9 @@ function useLeftWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
@@ -23428,7 +23473,9 @@ function useRightWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {

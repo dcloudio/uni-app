@@ -45,11 +45,11 @@ export function uniPrePlugin(
         return
       }
       if (isHtml) {
-        code = preHtmlFile(code)
+        code = preHtmlFile(code, id)
         debugPreHtml(id)
       }
       if (isJs) {
-        code = preJsFile(code)
+        code = preJsFile(code, id)
         debugPreJs(id)
       }
       return {

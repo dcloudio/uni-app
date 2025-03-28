@@ -14,7 +14,7 @@ function resolveAdditionalData(inputDir: string, config: UserConfig) {
 
   let content = fs.readFileSync(uniScssFile, 'utf8')
   if (content.includes('#endif')) {
-    content = preCss(content)
+    content = preCss(content, uniScssFile)
   }
   return content + '\n' + userAdditionalData
 }

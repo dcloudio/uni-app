@@ -1,3 +1,4 @@
+type MessageType1 = 'log' | 'warn' | 'error' | 'info' | 'debug';
 interface NormalizeResult {
     name?: string;
     type: string;
@@ -37,12 +38,11 @@ interface MapResultValue {
 interface MapResult extends NormalizeResult {
     value: MapResultValue;
 }
-type MessageType = 'log' | 'warn' | 'error' | 'info' | 'debug';
 interface Message {
-    type: MessageType;
+    type: MessageType1;
     args: Array<Object>;
 }
-function formatMessage(type: MessageType, args: Array<Object | null>): Message {
+function formatMessage(type: MessageType1, args: Array<Object | null>): Message {
     try {
         return {
             type,
@@ -73,7 +73,16 @@ function formatArg(arg: Object | null, depth: number = 0): NormalizeResult {
         case 'boolean':
             return formatBoolean(arg as boolean);
         case 'object':
-            return formatObject(arg as object, depth);
+            try {
+                return formatObject(arg as object, depth);
+            } catch (e) {
+                return {
+                    type: 'object',
+                    value: {
+                        properties: []
+                    }
+                };
+            }
         case 'undefined':
             return formatUndefined();
         case 'function':
@@ -196,13 +205,23 @@ function formatObject(value: object, depth: number): NormalizeResult {
         };
     }
     let className: string | undefined = undefined;
+    let entries = Object.entries(value);
+    if (isHarmonyBuilderParams(value)) {
+        entries = entries.filter((ref)=>{
+            let key = ref[0];
+            return key !== 'modifier' && key !== 'nodeContent';
+        });
+    }
     return {
         type: 'object',
         className,
         value: {
-            properties: Object.entries(value).map((entry: [string, Object | null]): NormalizeResult =>formatObjectProperty(entry[0], entry[1], depth + 1))
+            properties: entries.map((entry: [string, Object | null]): NormalizeResult =>formatObjectProperty(entry[0], entry[1], depth + 1))
         }
     } as ObjectResult;
+}
+function isHarmonyBuilderParams(value: Object) {
+    return value.modifier && value.modifier._attribute && value.nodeContent;
 }
 function formatObjectProperty(name: string, value: Object | null, depth: number) {
     const result = formatArg(value, depth);

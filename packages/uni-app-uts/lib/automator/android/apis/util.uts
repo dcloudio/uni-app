@@ -196,7 +196,7 @@ export function getValidComponentsOrNodes(
     } else {
       list.push({
         // @ts-expect-error
-        elementId: (vnode.el as UniElementImpl).id,
+        elementId: (vnode.el as UniElementImpl).__id,
         tagName: vnode.el!.tagName,
       })
     }

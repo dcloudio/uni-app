@@ -5,7 +5,7 @@ import {
   type RunProdOptions,
   type ToSwiftOptions,
   addPluginInjectApis,
-  copyPlatformFiles,
+  copyPlatformNativeLanguageFiles,
   genComponentsCode,
   genUTSPlatformResource,
   getCompilerServer,
@@ -51,6 +51,7 @@ export async function runSwiftProd(
   filename: string,
   {
     components,
+    customElements,
     uniModuleId,
     isPlugin,
     isModule,
@@ -75,6 +76,7 @@ export async function runSwiftProd(
     outputDir,
     sourceMap: !!sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -117,6 +119,7 @@ export async function runSwiftProd(
     platform: 'app-ios',
     extname: '.swift',
     components,
+    customElements,
     package: parseSwiftPackage(filename).namespace,
     hookClass,
     result,
@@ -138,6 +141,7 @@ export async function runSwiftDev(
   filename: string,
   {
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -146,6 +150,7 @@ export async function runSwiftDev(
     transform,
     sourceMap,
     uniModules,
+    rewriteConsoleExpr,
   }: RunDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
@@ -177,6 +182,7 @@ export async function runSwiftDev(
     outputDir,
     sourceMap: !!sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -200,7 +206,6 @@ export async function runSwiftDev(
     outputDir,
     platform: 'app-ios',
     extname: '.swift',
-    components,
     package: '',
     result,
   })
@@ -215,10 +220,11 @@ export async function runSwiftDev(
 
     const { id, is_uni_modules } = resolvePackage(filename)!
 
-    const platformFiles = copyPlatformFiles(
+    const { srcFiles } = copyPlatformNativeLanguageFiles(
       path.resolve(inputDir, 'uni_modules', id, 'utssdk', 'app-ios'),
       path.resolve(outputDir, 'uni_modules', id, 'utssdk', 'app-ios'),
-      ['.swift']
+      ['.swift'],
+      rewriteConsoleExpr!
     )
 
     const { code, msg } = await compilerServer.compile({
@@ -229,7 +235,7 @@ export async function runSwiftDev(
       utsPath: resolveCompilerUTSPath(inputDir, is_uni_modules),
       swiftPath: resolveCompilerSwiftPath(outputDir, is_uni_modules),
     })
-    result.deps = [...(result.deps || []), ...platformFiles]
+    result.deps = [...(result.deps || []), ...srcFiles]
     result.code = code
     result.msg = msg
     result.changed = [swiftFile]
@@ -259,6 +265,7 @@ export async function compile(
     outputDir,
     sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -279,14 +286,15 @@ export async function compile(
     paths: {},
     uniModules,
   }
-  const isUTSFileExists = fs.existsSync(filename)
+  // 必须判断input.filename，因为input.filename可能跟filename不一样（可能会变成.uvue目录的文件）
+  const isUTSFileExists = fs.existsSync(input.filename)
   if (componentsCode) {
     if (!isUTSFileExists) {
       input.fileContent = componentsCode
     } else {
       input.fileContent =
         fs.readFileSync(
-          resolveBundleInputFileName('app-ios', filename),
+          resolveBundleInputFileName('app-ios', input.filename),
           'utf8'
         ) +
         `\n` +
@@ -333,7 +341,6 @@ export async function compile(
       outputDir,
       platform: 'app-ios',
       extname: '.swift',
-      components,
       package: '',
       result,
     })

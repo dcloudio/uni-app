@@ -33,6 +33,71 @@
         return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
     };
 
+    var CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'];
+    var originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce(function (methods, type) {
+        methods[type] = console[type].bind(console);
+        return methods;
+    }, {});
+
+    var sendError = null;
+    // App.onError会监听到两类错误，一类是小程序自身抛出的，一类是 vue 的 errorHandler 触发的
+    // uni.onError 和 App.onError 会同时监听到错误(主要是App.onError监听之前的错误)，所以需要用 Set 来去重
+    // uni.onError 会在 App.onError 上边同时增加监听，因为要监听 vue 的errorHandler
+    // 目前 vue 的 errorHandler 仅会callHook('onError')，所以需要把uni.onError的也挂在 App.onError 上
+    var errorQueue = new Set();
+    var errorExtra = {};
+    function sendErrorMessages(errors) {
+        if (sendError == null) {
+            errors.forEach(function (error) {
+                errorQueue.add(error);
+            });
+            return;
+        }
+        var data = errors
+            .map(function (err) {
+            if (typeof err === 'string') {
+                return err;
+            }
+            var isPromiseRejection = err && 'promise' in err && 'reason' in err;
+            var prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : '';
+            if (isPromiseRejection) {
+                err = err.reason;
+            }
+            if (err instanceof Error && err.stack) {
+                if (err.message && !err.stack.includes(err.message)) {
+                    return "".concat(prefix).concat(err.message, "\n").concat(err.stack);
+                }
+                return "".concat(prefix).concat(err.stack);
+            }
+            if (typeof err === 'object' && err !== null) {
+                try {
+                    return prefix + JSON.stringify(err);
+                }
+                catch (err) {
+                    return prefix + String(err);
+                }
+            }
+            return prefix + String(err);
+        })
+            .filter(Boolean);
+        if (data.length > 0) {
+            sendError(JSON.stringify(Object.assign({
+                type: 'error',
+                data: data,
+            }, errorExtra)));
+        }
+    }
+    function setSendError(value, extra) {
+        if (extra === void 0) { extra = {}; }
+        sendError = value;
+        Object.assign(errorExtra, extra);
+        if (value != null && errorQueue.size > 0) {
+            var errors = Array.from(errorQueue);
+            errorQueue.clear();
+            sendErrorMessages(errors);
+        }
+    }
+
     function formatMessage(type, args) {
         try {
             return {
@@ -68,7 +133,20 @@
             case 'boolean':
                 return formatBoolean(arg);
             case 'object':
-                return formatObject(arg, depth);
+                try {
+                    // 鸿蒙里边 object 可能包含 nativePtr 指针，该指针 typeof 是 object
+                    // 但是又不能访问上边的任意属性，否则会报：TypeError: Can not get Prototype on non ECMA Object
+                    // 所以这里需要捕获异常，防止报错
+                    return formatObject(arg, depth);
+                }
+                catch (e) {
+                    return {
+                        type: 'object',
+                        value: {
+                            properties: [],
+                        },
+                    };
+                }
             case 'undefined':
                 return formatUndefined();
             case 'function':
@@ -219,15 +297,25 @@
                 }
             }
         }
+        var entries = Object.entries(value);
+        if (isHarmonyBuilderParams(value)) {
+            entries = entries.filter(function (_a) {
+                var key = _a[0];
+                return key !== 'modifier' && key !== 'nodeContent';
+            });
+        }
         return {
             type: 'object',
             className: className,
             value: {
-                properties: Object.entries(value).map(function (entry) {
+                properties: entries.map(function (entry) {
                     return formatObjectProperty(entry[0], entry[1], depth + 1);
                 }),
             },
         };
+    }
+    function isHarmonyBuilderParams(value) {
+        return value.modifier && value.modifier._attribute && value.nodeContent;
     }
     function isComponentPublicInstance(value) {
         return value.$ && isComponentInternalInstance(value.$);
@@ -326,10 +414,11 @@
         };
     }
 
-    var CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'];
     var sendConsole = null;
     var messageQueue = [];
     var messageExtra = {};
+    var EXCEPTION_BEGIN_MARK = '---BEGIN:EXCEPTION---';
+    var EXCEPTION_END_MARK = '---END:EXCEPTION---';
     function sendConsoleMessages(messages) {
         if (sendConsole == null) {
             messageQueue.push.apply(messageQueue, messages);
@@ -350,10 +439,6 @@
             sendConsoleMessages(messages);
         }
     }
-    var originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce(function (methods, type) {
-        methods[type] = console[type].bind(console);
-        return methods;
-    }, {});
     var atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/;
     function rewriteConsole() {
         function wrapConsole(type) {
@@ -372,6 +457,19 @@
                 }
                 {
                     originalConsole[type].apply(originalConsole, originalArgs);
+                }
+                if (type === 'error' && args.length === 1) {
+                    var arg = args[0];
+                    if (typeof arg === 'string' && arg.startsWith(EXCEPTION_BEGIN_MARK)) {
+                        var startIndex = EXCEPTION_BEGIN_MARK.length;
+                        var endIndex = arg.length - EXCEPTION_END_MARK.length;
+                        sendErrorMessages([arg.slice(startIndex, endIndex)]);
+                        return;
+                    }
+                    else if (arg instanceof Error) {
+                        sendErrorMessages([arg]);
+                        return;
+                    }
                 }
                 sendConsoleMessages([formatMessage(type, args)]);
             };
@@ -403,62 +501,6 @@
         var isWritable = console.log === sym;
         console.log = value;
         return isWritable;
-    }
-
-    var sendError = null;
-    // App.onError会监听到两类错误，一类是小程序自身抛出的，一类是 vue 的 errorHandler 触发的
-    // uni.onError 和 App.onError 会同时监听到错误(主要是App.onError监听之前的错误)，所以需要用 Set 来去重
-    // uni.onError 会在 App.onError 上边同时增加监听，因为要监听 vue 的errorHandler
-    // 目前 vue 的 errorHandler 仅会callHook('onError')，所以需要把uni.onError的也挂在 App.onError 上
-    var errorQueue = new Set();
-    var errorExtra = {};
-    function sendErrorMessages(errors) {
-        if (sendError == null) {
-            errors.forEach(function (error) {
-                errorQueue.add(error);
-            });
-            return;
-        }
-        var data = errors
-            .map(function (err) {
-            var isPromiseRejection = err && 'promise' in err && 'reason' in err;
-            var prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : '';
-            if (isPromiseRejection) {
-                err = err.reason;
-            }
-            if (err instanceof Error && err.stack) {
-                if (err.message && !err.stack.includes(err.message)) {
-                    return "".concat(prefix).concat(err.message, "\n").concat(err.stack);
-                }
-                return "".concat(prefix).concat(err.stack);
-            }
-            if (typeof err === 'object' && err !== null) {
-                try {
-                    return prefix + JSON.stringify(err);
-                }
-                catch (err) {
-                    return prefix + String(err);
-                }
-            }
-            return prefix + String(err);
-        })
-            .filter(Boolean);
-        if (data.length > 0) {
-            sendError(JSON.stringify(Object.assign({
-                type: 'error',
-                data: data,
-            }, errorExtra)));
-        }
-    }
-    function setSendError(value, extra) {
-        if (extra === void 0) { extra = {}; }
-        sendError = value;
-        Object.assign(errorExtra, extra);
-        if (value != null && errorQueue.size > 0) {
-            var errors = Array.from(errorQueue);
-            errorQueue.clear();
-            sendErrorMessages(errors);
-        }
     }
 
     function initUniWebviewRuntimeService() {

@@ -105,7 +105,11 @@ export function resolveBuiltIn(module: string) {
     process.env.UNI_APP_NEXT_WORKSPACE &&
     module.startsWith('@dcloudio/')
   ) {
-    return path.resolve(process.env.UNI_APP_NEXT_WORKSPACE, 'packages', module)
+    return path.resolve(
+      process.env.UNI_APP_NEXT_WORKSPACE,
+      'packages',
+      module.replace('@dcloudio/', '')
+    )
   }
   return require.resolve(module, { paths: getBuiltInPaths() })
 }

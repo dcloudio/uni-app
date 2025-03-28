@@ -19,14 +19,14 @@ export type ChooseLocationErrorCode =
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.34"
      *    }
-     * } 
+     * }
      */
     1 |
     /**
@@ -46,14 +46,14 @@ export type ChooseLocationErrorCode =
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.34"
      *    }
-     * } 
+     * }
      */
     4;
 
@@ -95,14 +95,14 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
      *    }
-     * } 
+     * }
      */
     latitude?: number | null,
     /**
@@ -122,14 +122,14 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
      *    }
-     * } 
+     * }
      */
     longitude?: number | null,
     /**
@@ -149,14 +149,14 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
      *    }
-     * } 
+     * }
      */
     keyword?: string | null,
     /**
@@ -176,14 +176,14 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.35"
      *    }
-     * } 
+     * }
      */
     payload?: UTSJSONObject | null,
     /**
@@ -203,14 +203,14 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
      *    }
-     * } 
+     * }
      */
     success?: ChooseLocationSuccessCallback | null,
     /**
@@ -230,14 +230,14 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
      *    }
-     * } 
+     * }
      */
     fail?: ChooseLocationFailCallback | null,
     /**
@@ -257,14 +257,14 @@ export type ChooseLocationOptions = {
      *      "harmony": {
      *        "osVer": "3.0",
      *        "uniVer": "4.23",
-     *        "unixVer": "x"
+     *        "unixVer": "4.61"
      *      }
      *    },
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
      *    }
-     * } 
+     * }
      */
     complete?: ChooseLocationCompleteCallback | null
 };
@@ -289,7 +289,7 @@ export type ChooseLocationOptions = {
  *    "harmony": {
  *      "osVer": "3.0",
  *      "uniVer": "4.23",
- *      "unixVer": "x"
+ *      "unixVer": "4.61"
  *    }
  *    },
  *    "web": {
@@ -333,7 +333,7 @@ export interface Uni {
      *    "harmony": {
      *      "osVer": "3.0",
      *      "uniVer": "4.23",
-     *      "unixVer": "x"
+     *      "unixVer": "4.61"
      *    }
      *  },
      *  "mp": {

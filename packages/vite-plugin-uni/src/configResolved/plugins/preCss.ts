@@ -35,7 +35,7 @@ export function uniPreCssPlugin(
       }
       debugPre(id)
       return {
-        code: preJsFile(code),
+        code: preJsFile(code, id),
         map: withSourcemap(config) ? this.getCombinedSourcemap() : null,
       }
     },

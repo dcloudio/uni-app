@@ -71,7 +71,7 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
     debugHmr('define', define)
     if (isPagesJson) {
       const easycom = pagesJson.easycom || {}
-      const { options, refresh } = initEasycomsOnce(inputDir, {
+      const { easyComOptions, refresh } = initEasycomsOnce(inputDir, {
         dirs: resolveComponentsLibDirs(),
         platform,
         isX: process.env.UNI_APP_X === 'true',
@@ -79,7 +79,10 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
       if (
         !equal(
           { autoscan: easycom.autoscan, custom: easycom.custom },
-          { autoscan: options.autoscan, custom: options.custom }
+          {
+            autoscan: easyComOptions.autoscan,
+            custom: easyComOptions.custom,
+          }
         )
       ) {
         refresh()

@@ -134,6 +134,8 @@ async function resolvePluginCommonFiles(
   if (is_uni_modules) {
     patterns.push('utssdk/*.uts')
     patterns.push('utssdk/common/**/*')
+    // TODO 还需要处理非平台目录的其他目录文件
+    // 比如 utssdk/lib/**/* lib不是其他平台目录
   } else {
     patterns.push('common/**/*')
   }

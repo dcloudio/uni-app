@@ -393,9 +393,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return `${
         props.direction === 'none'
           ? 'overflow: hidden;'
+          : props.direction === 'all'
+          ? 'overflow: auto;'
           : isVertical.value
-          ? 'overflow-y: auto;'
-          : 'overflow-x: auto;'
+          ? 'overflow: hidden auto;'
+          : 'overflow: auto hidden;'
       }scroll-behavior: ${props.scrollWithAnimation ? 'smooth' : 'auto'};`
     })
     const contentStyle = computed(() => {

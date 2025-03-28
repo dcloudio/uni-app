@@ -20,6 +20,14 @@ export type OperateWebViewType =
   | 'reload'
   | 'stop'
 
+const HarmonyNativeMethodMap = {
+  evalJS: 'runJavaScript',
+  back: 'backward',
+  forward: 'forward',
+  reload: 'refresh',
+  stop: 'stop',
+}
+
 function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
   const MethodList = ['evalJS', 'back', 'forward', 'reload', 'stop']
   const methods = {} as Record<OperateWebViewType, Function>
@@ -34,7 +42,7 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
       if (methodName === 'evalJS') {
         return resolve(embed['runJavaScript']((data || {}).jsCode || ''))
       } else {
-        resolve(embed[methodName]())
+        resolve(embed[HarmonyNativeMethodMap[methodName]]())
       }
     }
   }
@@ -117,7 +125,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             updateTitle: props.updateTitle,
             webviewStyles: props.webviewStyles,
           }}
-          methods={['runJavaScript', 'back', 'forward', 'reload', 'stop']}
+          methods={['runJavaScript', 'backward', 'forward', 'refresh', 'stop']}
           style="width:100%;height:100%"
         />
       </uni-web-view>

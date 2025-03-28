@@ -11,8 +11,12 @@
  */
 interface IExternalModule {
   name: string
-  type: 'extapi' | 'provider' | 'component'
+  type: ExternalModuleType
+  // subType?: ExternalModuleSubType
 }
+
+type ExternalModuleType = 'extapi' | 'provider'
+// type ExternalModuleSubType = 'customElements' | 'components' | 'pages' | 'utssdk'
 
 export const ExternalModules: IExternalModule[] = [
   {
@@ -28,7 +32,15 @@ export const ExternalModules: IExternalModule[] = [
     type: 'provider',
   },
   {
-    name: 'uni-facialRecognitionVerify',
+    name: 'uni-payment-wxpay',
+    type: 'provider',
+  },
+  {
+    name: 'uni-getLocation-system',
+    type: 'provider',
+  },
+  {
+    name: 'uni-facialVerify',
     type: 'extapi',
   },
   {
@@ -39,19 +51,26 @@ export const ExternalModules: IExternalModule[] = [
     name: 'uni-verify',
     type: 'extapi',
   },
+  {
+    name: 'uni-map-tencent',
+    type: 'extapi',
+    // subType: 'components',
+  },
 ]
-
 export const ExternalModulesX = ExternalModules
 
-export const ExtApiBlackListX = [
-  'uni-pullDownRefresh',
-  // 'uni-prompt',
-  // 'uni-media',
-  // 'uni-chooseMedia',
-]
+// TODO 未来component类型的provider需要重构，比如uni-map-tencent需要依赖内置基础模块uni-map，先基于现状实现。
+export const ComponentsWithProvider = []
+export const ComponentsWithProviderX = ['uni-map']
 
+export const ExtApiBlackListX = ['uni-pullDownRefresh']
 export const ExtApiBlackList = [
   'uni-loadFontFace',
   'uni-getElementById',
   'uni-document',
+  'uni-navigationBar',
+  'uni-createWebviewContext',
+  'uni-map-tencent',
+  'uni-arrayBufferToBase64',
+  'uni-base64ToArrayBuffer',
 ]

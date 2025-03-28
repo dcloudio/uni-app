@@ -7,7 +7,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "hideActionSheet": {
@@ -16,7 +16,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     }
@@ -54,7 +54,7 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       }
     }
@@ -67,10 +67,26 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       }
     }
+  },
+  "uni-camera": {
+    "uni": {
+      "createCameraContext": {
+        "name": "createCameraContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    },
+    "easycom": [
+      "camera"
+    ]
   },
   "uni-canvas": {
     "uni": {
@@ -81,7 +97,7 @@
           "x-js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       }
     }
@@ -94,7 +110,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     }
@@ -274,7 +290,7 @@
       }
     }
   },
-  "uni-facialRecognitionVerify": {
+  "uni-facialVerify": {
     "uni": [
       "startFacialRecognitionVerify",
       "getFacialRecognitionMetaInfo"
@@ -285,9 +301,9 @@
       "getFileSystemManager": {
         "name": "getFileSystemManager",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }
@@ -389,7 +405,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -468,7 +485,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }
@@ -535,7 +552,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     },
@@ -560,7 +577,8 @@
           "js": false,
           "kotlin": false,
           "swift": false,
-          "arkts": true
+          "arkts": true,
+          "x-arkts": false
         }
       },
       "closePreviewImage": {
@@ -569,7 +587,8 @@
           "js": false,
           "kotlin": false,
           "swift": false,
-          "arkts": true
+          "arkts": true,
+          "x-arkts": false
         }
       },
       "getImageInfo": {
@@ -641,6 +660,28 @@
           "js": false,
           "kotlin": true,
           "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-modal": {
+    "uni": {
+      "showModal": {
+        "name": "showModal",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "hideModal": {
+        "name": "hideModal",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": true
         }
       }
@@ -753,7 +794,8 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "offPrivacyAuthorizationChange": {
@@ -761,7 +803,8 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getPrivacySetting": {
@@ -769,7 +812,8 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "resetPrivacyAuthorization": {
@@ -777,7 +821,8 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -822,7 +867,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "x-arkts": false
         }
       },
       "showActionSheet": {
@@ -830,7 +876,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "x-arkts": false
         }
       }
     }
@@ -898,6 +945,19 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      }
+    }
+  },
+  "uni-requestMerchantTransfer": {
+    "uni": {
+      "requestMerchantTransfer": {
+        "name": "requestMerchantTransfer",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
         }
       }
     }
@@ -1144,7 +1204,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "getUniVerifyManager": {
@@ -1153,7 +1213,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     }
@@ -1170,6 +1230,9 @@
       }
     },
     "components": [
+      "video"
+    ],
+    "easycom": [
       "video"
     ]
   },

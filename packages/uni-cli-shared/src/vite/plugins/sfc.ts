@@ -102,7 +102,10 @@ export function uniViteSfcSrcImportPlugin(
           const filename = resolved.id
           const srcDescriptor = createDescriptor(
             filename,
-            preUVueJs(preUVueHtml(fs.readFileSync(filename, 'utf-8'))),
+            preUVueJs(
+              preUVueHtml(fs.readFileSync(filename, 'utf-8'), filename),
+              filename
+            ),
             from
           )
           cache.set(src, srcDescriptor)

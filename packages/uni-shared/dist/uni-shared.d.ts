@@ -275,6 +275,8 @@ export declare function isAppUVueBuiltInEasyComponent(tag: string): boolean;
 
 export declare function isAppUVueNativeTag(tag: string): boolean;
 
+export declare function isAppVoidTag(tag: string): boolean;
+
 export declare function isBuiltInComponent(tag: string): boolean;
 
 export declare function isComponentInternalInstance(vm: unknown): vm is ComponentInternalInstance;

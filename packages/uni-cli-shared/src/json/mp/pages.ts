@@ -87,7 +87,7 @@ function parsePagesJson(
   let pageJsons: Record<string, PageWindowOptions> = {}
   let nvuePages: string[] = []
   // preprocess
-  const pagesJson = parseJson(jsonStr, true) as UniApp.PagesJson
+  const pagesJson = parseJson(jsonStr, true, 'pages.json') as UniApp.PagesJson
   if (!pagesJson) {
     throw new Error(`[vite] Error: pages.json parse failed.\n`)
   }

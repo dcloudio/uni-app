@@ -277,4 +277,43 @@ at t (http://127.0.0.1:7046/core/3.46.0.17/tma-core.js:2:15565)`,
       )
     ).toMatchSnapshot()
   })
+
+  test('parseHarmonyRuntimeStacktrace', async () => {
+    const cacheDir = path.resolve(
+      __dirname,
+      'examples/uni-app-x/output/cache/app-harmony'
+    )
+    const inputDir = normalizePath(
+      path.resolve(__dirname, 'examples/uni-app-x')
+    )
+    const outputDir = normalizePath(
+      path.resolve(__dirname, 'examples/uni-app-x/output/dist/dev/app-harmony')
+    )
+    // 运行时js错误堆栈解析
+    expect(
+      await parseRuntimeStacktrace(
+        `aaa
+at testArr (entry/src/main/resources/resfile/uni-app-x/apps/HBuilder/www/app-service.js:9:1)`,
+        {
+          platform: 'app-harmony',
+          cacheDir: cacheDir,
+          inputDir,
+          outputDir,
+        }
+      )
+    ).toMatchSnapshot()
+    // 运行时ets错误堆栈解析
+    expect(
+      await parseRuntimeStacktrace(
+        `aaa
+at test (uni_modules/test-error/utssdk/app-harmony/index.ets:2:11)`,
+        {
+          platform: 'app-harmony',
+          cacheDir: cacheDir,
+          inputDir,
+          outputDir,
+        }
+      )
+    ).toMatchSnapshot()
+  })
 })

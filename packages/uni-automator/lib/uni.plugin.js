@@ -29,7 +29,8 @@ exports.default = [
                 if (opts.filter(id)) {
                     const platform = process.env.UNI_PLATFORM;
                     // 仅 app-android
-                    if (platform === 'app' && process.env.UNI_APP_X === 'true') {
+                    if ((platform === 'app' || platform === 'app-harmony') &&
+                        process.env.UNI_APP_X === 'true') {
                         // app-webview，不增加 initAutomator
                         if (process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
                             return null;
@@ -45,7 +46,8 @@ exports.default = [
                                 },
                             };
                         }
-                        else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+                        else if (process.env.UNI_UTS_PLATFORM === 'app-ios' ||
+                            process.env.UNI_UTS_PLATFORM === 'app-harmony') {
                             const automatorPath = (0, uni_cli_shared_1.normalizePath)((0, uni_cli_shared_1.resolveBuiltIn)(`@dcloudio/uni-app-uts/lib/automator/ios/automator.js`));
                             return {
                                 code: code + `;\nimport '${automatorPath}';`,

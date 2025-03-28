@@ -56,6 +56,40 @@ describe('uts:sourceMap', () => {
     ).toBe(sourceMapFile)
   })
 
+  test('resolveUTSPluginSourceMapFile with uni_modules uts=>arkts', () => {
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
+      'arkts',
+      resolve(inputDir, uniModulesPluginDir, 'utssdk/app-harmony/index.uts'),
+      inputDir,
+      outputDir
+    )
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'uni_modules/test-uniplugin/utssdk/app-harmony/index.ets.map'
+      )
+    ).toBe(true)
+    expect(
+      resolveUTSPluginSourceMapFile(
+        'arkts',
+        resolve(inputDir, uniModulesPluginDir, 'utssdk/index.uts'),
+        inputDir,
+        outputDir
+      )
+    ).toBe(sourceMapFile)
+    expect(
+      resolveUTSPluginSourceMapFile(
+        'arkts',
+        resolve(
+          inputDir,
+          uniModulesPluginDir,
+          'utssdk/app-harmony/utils/utils.uts'
+        ),
+        inputDir,
+        outputDir
+      )
+    ).toBe(sourceMapFile)
+  })
+
   test('resolveUTSPluginSourceMapFile with uni_modules uts=>swift', () => {
     const sourceMapFile = resolveUTSPluginSourceMapFile(
       'swift',
@@ -190,6 +224,34 @@ describe('uts:sourceMap', () => {
       ),
       relativeSource: 'uni_modules/test-uniplugin/utssdk/app-android/index.kt',
     })
+  })
+  test('generatedPositionFor with uvue file', async () => {
+    process.env.UNI_APP_X_CACHE_DIR = resolve(uniAppXCacheDir, '.app-android')
+    const filename = resolve(inputDir, 'pages/index/index.uvue')
+    const sourceMapFile = resolveUTSSourceMapFile(
+      'kotlin',
+      filename,
+      inputDir,
+      outputDir
+    )
+    const res = await generatedPositionFor({
+      sourceMapFile,
+      filename,
+      line: 5,
+      column: 0,
+      outputDir,
+    })
+    expect(res).toEqual({
+      line: 21,
+      column: 12,
+      lastColumn: 19,
+      source: resolve(
+        process.env.UNI_APP_X_CACHE_DIR,
+        'src/pages/index/index.kt'
+      ),
+      relativeSource: 'pages/index/index.kt',
+    })
+    process.env.UNI_APP_X_CACHE_DIR = ''
   })
   test('originalPositionFor', async () => {
     const filename = resolve(

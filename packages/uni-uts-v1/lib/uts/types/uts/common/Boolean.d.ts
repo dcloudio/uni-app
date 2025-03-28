@@ -18,7 +18,9 @@ interface BooleanConstructor {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-               "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -42,7 +44,9 @@ interface BooleanConstructor {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-               "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {

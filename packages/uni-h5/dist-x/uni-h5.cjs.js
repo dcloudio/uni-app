@@ -1317,7 +1317,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   let target;
   target = uniShared.normalizeTarget(el);
   return {
-    type: detail.type || name,
+    type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
@@ -2779,6 +2779,9 @@ class UniPageImpl {
     options,
     vm
   }) {
+    this.width = 0;
+    this.height = 0;
+    this.statusBarHeight = safeAreaInsets$1.top;
     this.getParentPage = () => null;
     this.route = route;
     this.options = options;
@@ -3888,18 +3891,11 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         );
         if (currentInstance && parentInstance) {
           currentInstance.$parentInstance = parentInstance;
-          if (isNormalDialogPageInstance(
-            ctx
-          )) {
-            const parentDialogPages = parentInstance.$dialogPages.value;
-            currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
-          }
-          if (isSystemDialogPageInstance(
-            ctx
-          )) {
-            const parentSystemDialogPages = parentInstance.$systemDialogPages.value;
-            currentInstance.$dialogPage = parentSystemDialogPages[parentSystemDialogPages.length - 1];
-          }
+          assignDialogPage(
+            ctx,
+            parentInstance,
+            currentInstance
+          );
         }
       } else {
         useBackgroundColorContent(pageMeta);
@@ -3929,6 +3925,25 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
     );
   }
 });
+function assignDialogPage(ctx, parentInstance, currentInstance) {
+  let parentDialogPages = [];
+  if (isNormalDialogPageInstance(ctx)) {
+    parentDialogPages = parentInstance.$dialogPages.value;
+  }
+  if (isSystemDialogPageInstance(ctx)) {
+    parentDialogPages = parentInstance.$systemDialogPages.value;
+  }
+  if (!parentDialogPages.length)
+    return;
+  for (let i = 0; i < parentDialogPages.length; i++) {
+    const dialogPage = parentDialogPages[i];
+    if (!dialogPage.$assigned) {
+      dialogPage.$assigned = true;
+      currentInstance.$dialogPage = dialogPage;
+      break;
+    }
+  }
+}
 function createPageBodyVNode(ctx) {
   return vue.openBlock(), vue.createBlock(
     PageBody,
@@ -9299,7 +9314,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       rearrange(visibleVNode, containerRef, isVertical, state);
     }
     const containerStyle = vue.computed(() => {
-      return `${props2.direction === "none" ? "overflow: hidden;" : isVertical.value ? "overflow-y: auto;" : "overflow-x: auto;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
+      return `${props2.direction === "none" ? "overflow: hidden;" : props2.direction === "all" ? "overflow: auto;" : isVertical.value ? "overflow: hidden auto;" : "overflow: auto hidden;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
     });
     const contentStyle = vue.computed(() => {
       return `position: relative; ${isVertical.value ? "height" : "width"}: ${state.totalSize}px;`;
@@ -9928,6 +9943,7 @@ function formatTime(val) {
 }
 function useGesture(props2, videoRef, fullscreenState) {
   const state = vue.reactive({
+    seeking: false,
     gestureType: "none",
     volumeOld: 0,
     volumeNew: 0,
@@ -9944,7 +9960,6 @@ function useGesture(props2, videoRef, fullscreenState) {
     touchStartOrigin.y = toucher.pageY;
     state.gestureType = "none";
     state.volumeOld = 0;
-    state.currentTimeOld = state.currentTimeNew = 0;
   }
   function onTouchmove(event) {
     function stop() {
@@ -9965,6 +9980,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     const video = videoRef.value;
     if (gestureType === "progress") {
       changeProgress(pageX - origin.x);
+      state.seeking = true;
     } else if (gestureType === "volume") {
       changeVolume(pageY - origin.y);
     }
@@ -10118,7 +10134,8 @@ function useVideo(props2, attrs, trigger) {
     duration: 0,
     progress: 0,
     buffered: 0,
-    muted
+    muted,
+    pauseUpdatingCurrentTime: false
   });
   vue.watch(() => src.value, () => {
     state.playing = false;
@@ -10180,7 +10197,10 @@ function useVideo(props2, attrs, trigger) {
   }
   function onTimeUpdate($event) {
     const video = $event.target;
-    const currentTime = state.currentTime = video.currentTime;
+    if (!state.pauseUpdatingCurrentTime) {
+      state.currentTime = video.currentTime;
+    }
+    const currentTime = video.currentTime;
     trigger("timeupdate", $event, {
       currentTime,
       duration: video.duration
@@ -10238,13 +10258,14 @@ function useVideo(props2, attrs, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek) {
+function useControls(props2, videoState, seek, seeking) {
   const progressRef = vue.ref(null);
   const ballRef = vue.ref(null);
   const centerPlayBtnShow = vue.computed(() => props2.showCenterPlayBtn && !videoState.start);
   const controlsVisible = vue.ref(true);
   const controlsShow = vue.computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
   const state = vue.reactive({
+    seeking: false,
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -10286,13 +10307,6 @@ function useControls(props2, videoState, seek) {
       autoHideStart();
     } else {
       autoHideEnd();
-    }
-  });
-  vue.watch([() => videoState.currentTime, () => {
-    props2.duration;
-  }], function updateProgress() {
-    if (!state.touching) {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
     }
   });
   return {
@@ -10387,6 +10401,25 @@ function useDanmu(props2, videoState) {
 function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
   useContextInfo();
   useSubscribe();
+}
+function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
+  const progressing = vue.computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  vue.watch(progressing, (val) => {
+    videoState.pauseUpdatingCurrentTime = val;
+    controlsState.controlsTouching = val;
+    if (gestureState.gestureType === "progress" && val) {
+      controlsState.controlsVisible = val;
+    }
+  });
+  vue.watch([() => videoState.currentTime, () => {
+    props$9.duration;
+  }], () => {
+    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  });
+  vue.watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
+    videoState.currentTime = currentTimeNew;
+  });
+  return progressing;
 }
 const props$9 = {
   id: {
@@ -10541,9 +10574,12 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
     } = useControls(props2, videoState, seek);
     useContext();
+    const progressing = useProgressing(videoState, gestureState, controlsState);
     return () => {
       return vue.createVNode("uni-video", {
         "ref": rootRef,
@@ -10595,6 +10631,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-controls"
       }, [vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
@@ -10607,30 +10644,44 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-progress-container",
         "onClick": vue.withModifiers(clickProgress, ["stop"])
       }, [vue.createVNode("div", {
-        "class": "uni-video-progress"
+        "class": {
+          "uni-video-progress": true,
+          "uni-video-progress-progressing": progressing.value
+        }
       }, [vue.createVNode("div", {
         "style": {
-          width: videoState.buffered + "%"
+          width: videoState.buffered - videoState.progress + "%",
+          left: videoState.progress + "%"
         },
         "class": "uni-video-progress-buffered"
+      }, null, 4), vue.createVNode("div", {
+        "style": {
+          width: videoState.progress + "%"
+        },
+        "class": "uni-video-progress-played"
       }, null, 4), vue.createVNode("div", {
         "ref": ballRef,
         "style": {
           left: videoState.progress + "%"
         },
-        "class": "uni-video-ball"
+        "class": {
+          "uni-video-ball": true,
+          "uni-video-ball-progressing": progressing.value
+        }
       }, [vue.createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
+      }, null)], 6)], 2)], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
         "onClick": vue.withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vue.vShow, props2.danmuBtn]]), vue.withDirectives(vue.createVNode("div", {
+      }, null, 10, ["onClick"]), [[vue.vShow, props2.danmuBtn]]), vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
@@ -10644,11 +10695,9 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": vue.withModifiers(() => {
         }, ["stop"])
       }, [vue.createVNode("div", {
-        "class": "uni-video-cover-play-button",
+        "class": "uni-video-cover-play-button uni-video-icon",
         "onClick": vue.withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), vue.createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), vue.createVNode("div", {
+      }, null, 8, ["onClick"])], 8, ["onClick"]), vue.createVNode("div", {
         "class": {
           "uni-video-toast": true,
           "uni-video-toast-volume": gestureState.gestureType === "volume"
@@ -10678,11 +10727,13 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       }, null))])], 4)])], 2), vue.createVNode("div", {
         "class": {
           "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
+          "uni-video-toast-progress": progressing.value
         }
       }, [vue.createVNode("div", {
         "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), vue.createVNode("div", {
+      }, [vue.createVNode("span", {
+        "class": "uni-video-toast-title-current-time"
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -13848,6 +13899,9 @@ function useTopWindow(layoutState) {
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
+  vue.watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   vue.watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => vue.nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
@@ -13867,6 +13921,9 @@ function useLeftWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
+  vue.watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   vue.watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => vue.nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
@@ -13886,6 +13943,9 @@ function useRightWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
+  vue.watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   vue.watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => vue.nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {

@@ -40,7 +40,7 @@ export function parseMiniProgramProjectJson(
   { template, pagesJson }: ParseMiniProgramProjectJsonOptions
 ) {
   const projectJson = JSON.parse(JSON.stringify(template)) as ProjectConfig
-  const manifestJson = parseJson(jsonStr)
+  const manifestJson = parseJson(jsonStr, false, '')
   if (manifestJson) {
     projectJson.projectname = manifestJson.name
     // 用户的平台配置

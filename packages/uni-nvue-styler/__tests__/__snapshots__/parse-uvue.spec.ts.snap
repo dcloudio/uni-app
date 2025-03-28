@@ -16,6 +16,8 @@ exports[`uvue-style css var 1`] = `"new Map<string, Map<string, Map<string, any>
 
 exports[`uvue-style js 1`] = `"new Map([["content", new Map([["", new Map([["display", "flex"]])]])], ["logo", new Map([[".content ", new Map([["width", "200rpx"], ["height", "200rpx"]])]])], ["text-area", new Map([["", new Map([["fontSize", "36rpx"]])]])], ["title", new Map([["", new Map([["fontSize", "36rpx"]])]])]])"`;
 
+exports[`uvue-style support css text-shadow 1`] = `"new Map<string, Map<string, Map<string, any>>>([["content", new Map<string, any>([["", new Map<string, any>([["textShadow", "1px 1px 1px #000"]])]])]])"`;
+
 exports[`uvue-style support env 1`] = `"new Map<string, Map<string, Map<string, any>>>([["top", new Map<string, any>([["", new Map<string, any>([["paddingTop", "env(safe-area-inset-top, 20px)"], ["paddingLeft", "env(\\n      safe-area-inset-top,\\n      20px\\n    )"]])]])]])"`;
 
 exports[`uvue-style ts 1`] = `"new Map<string, Map<string, Map<string, any>>>([["content", new Map<string, any>([["", new Map<string, any>([["display", "flex"]])]])], ["logo", new Map<string, any>([[".content ", new Map<string, any>([["width", "200rpx"], ["height", "200rpx"]])]])], ["text-area", new Map<string, any>([["", new Map<string, any>([["fontSize", "36rpx"]])]])], ["title", new Map<string, any>([["", new Map<string, any>([["fontSize", "36rpx"]])]])]])"`;

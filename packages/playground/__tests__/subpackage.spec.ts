@@ -41,7 +41,7 @@ describe('subpackage playground', () => {
         ]
         files.forEach((file) => {
           const filePath = path.resolve(outDir, file)
-          console.log(filePath)
+          // console.log(filePath)
           expect(fs.existsSync(filePath)).toBe(true)
           expect(fs.readFileSync(filePath, 'utf-8')).toMatchSnapshot(
             `${type} ${script} ${file}`

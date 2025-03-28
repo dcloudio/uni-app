@@ -119,6 +119,7 @@ export interface UTSResult {
   changed?: string[]
   inject_apis?: string[]
   scoped_slots?: string[]
+  custom_elements?: Record<string, string>
   exports?: string[]
   time?: number
   error?: Error

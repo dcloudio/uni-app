@@ -13,7 +13,7 @@
           "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
-          "unixVer": "4.41",
+          "unixVer": "x",
           "unixUtsPlugin": "4.41"
         }
       },
@@ -42,7 +42,7 @@ type UTSIteratorResult<T> = {
           "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
-          "unixVer": "4.41",
+          "unixVer": "x",
           "unixUtsPlugin": "4.41"
         }
       },
@@ -71,7 +71,7 @@ type UTSIterator<T> = {
           "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
-          "unixVer": "4.41",
+          "unixVer": "x",
           "unixUtsPlugin": "4.41"
         }
       },
@@ -99,7 +99,7 @@ interface UTSValueIterable<T> {
           "osVer": "12.0",
           "uniVer": "x",
           "uniUtsPlugin": "4.41",
-          "unixVer": "4.41",
+          "unixVer": "x",
           "unixUtsPlugin": "4.41"
         }
       },

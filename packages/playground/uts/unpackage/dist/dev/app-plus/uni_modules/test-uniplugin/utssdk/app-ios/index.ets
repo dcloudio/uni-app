@@ -10,11 +10,11 @@ class GetBatteryInfoOptions extends UTSObject {
 }
 function getBatteryInfo(options: GetBatteryInfoOptions) {
     new UIAlertController(title = title, message = message, preferredStyle = UIAlertController.Style.alert);
-    const res = {
+    const res = new UTSJSONObject({
         errMsg: 'getBatteryInfo:ok',
         level: UIDevice.current.batteryLevel * 100,
         isCharging: UIDevice.current.batteryState == UIDevice.BatteryState.charging
-    } as UTSJSONObject;
+    });
     if (options.success != null) {
         options.success!(res);
     }
@@ -25,7 +25,7 @@ function getBatteryInfo(options: GetBatteryInfoOptions) {
 function test1(callback: () => void): string {
     uni.__log__("log", {
         "a": "b"
-    } as UTSJSONObject, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33");
+    } as __log__Options, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33");
     uni.__log__("log", 'test1', " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:34");
     uni.__log__("log", 'ndef android', " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:42");
     uni.__log__("log", 'ndef ios', " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:45");

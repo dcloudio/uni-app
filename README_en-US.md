@@ -19,17 +19,19 @@ Developers use `Vue` syntax to write code, and `uni-app` framework compiles it i
 
 ## Scan code experience
 
-Develop once, compile to 3 platforms. Scan 3 QR codes in sequence to experience the most comprehensive cross-platform effect for yourself!
+Develop once, and compile it on 14 platforms. Scan 14 QR codes one by one, and personally experience the most comprehensive cross-platform effect!
 
 <div align="center">
   <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/3cca21df-a9af-48f8-b808-0b795acb2580.jpg"/>
 </div>
 
+*Note: Some platforms cannot submit simple demos, so we've added some other features.*
+
 ## quick start
 
 `uni-app` supports two ways to quickly create projects through the `vue-cli` command line and the `HBuilderX` visual interface:
 
-- [vue-cli command line mode](https://uniapp.dcloud.io/quickstart?id=_2-%E9%80%9A%E8%BF%87vue-cli%E5%91%BD%E4%BB%A4%E8%A1%8C): not limited to IDE, suitable for developers familiar with node, extended reading: [Developing uni-app in vscode](https://ask.dcloud.net.cn/article/36286 ), [Developing uni-app in WebStorm](https://ask.dcloud.net.cn/article/36307)
+- [vue-cli command line mode](https://uniapp.dcloud.io/quickstart?id=_2-%E9%80%9A%E8%BF%87vue-cli%E5%91%BD%E4%BB%A4%E8%A1%8C): not limited to IDE, suitable for developers familiar with node, extended reading: [Developing uni-app in vscode](https://ask.dcloud.net.cn/article/36286), [Developing uni-app in WebStorm](https://ask.dcloud.net.cn/article/36307)
 - [HBuilderX visual interface](https://uniapp.dcloud.io/quickstart?id=_1-%E9%80%9A%E8%BF%87-hbuilderx-%E5%8F%AF%E8%A7%86%E5%8C%96%E7%95%8C%E9%9D%A2): dedicated IDE, built-in related environment, out-of-the-box, and higher development efficiency.
 
 ## Project cases
@@ -68,10 +70,8 @@ In addition to many third-party ui libraries, the official also provides uni-ui,
 - Q: Different terminals have different needs and features, and login and payment are also different. How to unify?
 - A: The difference part uses conditional compilation. uni-app provides flexible and powerful [conditional compilation](https://uniapp.dcloud.io/platform). Can perfectly handle the multiplexed part and the difference part. A real set of project source code. When the business is upgraded, multi-terminal maintenance is no longer required. If there is multi-end maintenance, it is often delayed because the traffic on some ends is not large, so that those users cannot enjoy the latest services. In addition, the login payment in the client part has been unified into the same api by uni-app.
 
-
 - Q: Is multi-terminal a compromise and will it cause performance degradation?
 - A: good question. It's really hard to be multi-terminal without compromising performance, but uni-app does it. On the h5 side, its performance and package size are consistent with those developed directly using vue.js; on the applet side, its performance is better than most development frameworks. It is better for the user to manually write setdata, just as it is more efficient to use vue.js to update the interface than to manually write js to modify the dom; in App, uni-app supports dual engines for webview rendering and native rendering. When native rendering is enabled, css writing is limited, However, the performance is very close to the effect of native development. In the current mobile phone environment, applications with less than ten million daily activities will not encounter any pressure when using uni-app in the App. Of course, it is also possible to change some pages to uni-app in the native app that has already been done; in addition, we will complete a lot of cross-end processing at the compile time, which will reduce the efficiency impact on the runtime.
-
 
 - Q: Do you not need uni-app if you don't do multi-end?
 - A: No. A large number of developers use uni-app as only one end, see [Case](https://uniapp.dcloud.io/case) for details. For developers, with an excellent tool in hand, there is nothing to worry about.
@@ -81,6 +81,11 @@ In addition to many third-party ui libraries, the official also provides uni-ui,
 
 ## more info
 
-- Evaluation: [App cross-platform framework VS native development depth evaluation 2023 edition](https://juejin.cn/post/7317091780826497075)
-- Evaluation: [In-depth testing for a week, mainstream multi-terminal frameworks compete](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
-- [Comparison between uni-App x and flutter on app side](https://doc.dcloud.net.cn/uni-app-x/select.html)
+- Review: [In-Depth Comparison of Cross-Platform Frameworks and Native Development for Apps - 2023 Edition](https://juejin.cn/post/7317091780826497075)
+- Review: [In-depth comparison of cross-platform development frameworks in 2020 version](https://juejin.cn/post/6844904118901817351)
+- Review: [In-depth testing for a week, a big competition among mainstream multi-terminal frameworks in 2019 version](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
+- [Comparison between uni-app x in the App client and Flutter](https://doc.dcloud.net.cn/uni-app-x/select.html)
+
+## Guidelines for Contribution
+
+If you want to contribute a contribution, please first read the [Contribution Guide](.github/CONTRIBUTING.md).

@@ -246,6 +246,8 @@ exports[`assets playground uni-app-x build:h5: assets/pages-sub-test-test.js 1`]
 
 exports[`assets playground uni-app-x build:h5: assets/uni_modules-test-com-static_shuijiao-B0f5FEMg.jpg 1`] = `"uni_modules-test-com-static_shuijiao-B0f5FEMg.jpg"`;
 
+exports[`assets playground uni-app-x build:h5: assets/uni-icon-DVfW-Dc-.ttf 1`] = `"uni-icon-DVfW-Dc-.ttf"`;
+
 exports[`assets playground uni-app-x build:h5: pages/sub/static/pages-sub-static_2.jpg 1`] = `"pages-sub-static_2.jpg"`;
 
 exports[`assets playground uni-app-x build:h5: static/static_logo.png 1`] = `"static_logo.png"`;

@@ -8,7 +8,11 @@ import {
 } from '@dcloudio/uni-api'
 import { parseUrl } from '@dcloudio/uni-shared'
 import type { RouteOptions } from '../../../service/api/route/utils'
-import { getTabIndex, switchSelect } from '../../framework/app/tabBar'
+import {
+  getTabBar,
+  getTabIndex,
+  switchSelect,
+} from '../../framework/app/tabBar'
 import { showWebview } from './webview'
 import { registerPage } from '../../framework/page/register'
 import { getAllPages } from '../../../service/framework/page/getCurrentPages'
@@ -18,6 +22,7 @@ import {
   entryPageState,
   reLaunchPagesBeforeEntryPages,
 } from '../../framework/app'
+import { getPageManager } from '../../framework/app/app'
 
 interface ReLaunchOptions extends RouteOptions {}
 

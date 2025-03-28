@@ -1,0 +1,103 @@
+name: 'Bug uni-app 问题反馈'
+description: '反馈使用 uni-app 过程中遇到的问题'
+labels: ['uni-app']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        DCloud 产品不会有明显的bug，所以你遇到的问题大都是在特定环境下才能重现的问题，请仔细描述你的环境和重现方式，否则DCloud很难排查解决你的问题 |
+
+        注意：uni-app x 和 HBuilderX 产品相关的Bug，请直接在HBuilderX的“帮助“=>”Bug反馈”菜单中提交。对应 Bug 的处理进度，可前往 https://issues.dcloud.net.cn/ 查看。
+
+  - type: dropdown
+    id: distribution
+    attributes:
+      label: 发行方式
+      description: 你的应用使用什么方式分发？
+      options:
+        - App
+        - H5
+        - 小程序
+        - 快应用、鸿蒙、元服务
+
+  - type: textarea
+    id: platform
+    attributes:
+      label: 具体平台
+      description: 请详细说明您使用的具体平台版本（如 iOS 15.4、Android 12、微信小程序 8.0.5 等）
+      placeholder: 例如：iOS 15.4、Android 12、微信小程序 8.0.5、Chrome 96.0.4664.110 等
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: 开发环境
+      description: 你使用的操作系统是？
+      options:
+        - Windows
+        - macOS
+        - Linux
+
+  - type: dropdown
+    id: project-creation
+    attributes:
+      label: 项目创建方式
+      description: 你如何创建的项目？
+      options:
+        - HBuilderX
+        - CLI命令行
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: 依赖版本
+      description: 请列出项目中使用的主要依赖及其版本号
+      placeholder: |
+        例如： HBuilderX 的具体版本号、uniapp 在 package.json 里的依赖版本
+
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 请详细描述你遇到的问题
+      placeholder: 描述你遇到的问题...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 重现步骤
+      description: 如何重现这个问题？
+      placeholder: |
+        1. 前往 '...'
+        2. 点击 '....'
+        3. 滚动到 '....'
+        4. 出现错误
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+      description: 你期望发生什么？
+      placeholder: 描述你期望发生的情况
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 实际上发生了什么？
+      placeholder: 描述实际发生的情况
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图或录屏
+      description: 如果适用，添加截图或录屏来帮助说明你的问题
+      placeholder: 拖放图片或视频录屏到这里

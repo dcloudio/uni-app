@@ -70,25 +70,11 @@ export default /*#__PURE__*/ defineSystemComponent({
         ) as ComponentInternalInstance
         if (currentInstance && parentInstance) {
           currentInstance.$parentInstance = parentInstance
-          if (
-            isNormalDialogPageInstance(
-              ctx as unknown as ComponentInternalInstance
-            )
-          ) {
-            const parentDialogPages = parentInstance.$dialogPages!.value
-            currentInstance.$dialogPage =
-              parentDialogPages[parentDialogPages.length - 1]
-          }
-          if (
-            isSystemDialogPageInstance(
-              ctx as unknown as ComponentInternalInstance
-            )
-          ) {
-            const parentSystemDialogPages =
-              parentInstance.$systemDialogPages!.value
-            currentInstance.$dialogPage =
-              parentSystemDialogPages[parentSystemDialogPages.length - 1]
-          }
+          assignDialogPage(
+            ctx as unknown as ComponentInternalInstance,
+            parentInstance,
+            currentInstance
+          )
         }
       } else {
         useBackgroundColorContent(pageMeta)
@@ -125,6 +111,33 @@ export default /*#__PURE__*/ defineSystemComponent({
       )
   },
 })
+
+function assignDialogPage(
+  ctx: ComponentInternalInstance,
+  parentInstance: ComponentInternalInstance,
+  currentInstance: ComponentInternalInstance
+) {
+  let parentDialogPages: UniDialogPage[] = []
+  if (isNormalDialogPageInstance(ctx)) {
+    parentDialogPages = parentInstance.$dialogPages!.value
+  }
+  if (isSystemDialogPageInstance(ctx)) {
+    parentDialogPages = parentInstance.$systemDialogPages!.value
+  }
+  if (!parentDialogPages.length) return
+
+  // 当同时打开多个 dialogPage 时，将父页面 dialogPages 最后一项赋值给 currentInstance.$dialogPage 会导致 $page 指向不符合预期
+  for (let i = 0; i < parentDialogPages.length; i++) {
+    const dialogPage = parentDialogPages[i]
+    // @ts-expect-error
+    if (!dialogPage.$assigned) {
+      // @ts-expect-error
+      dialogPage.$assigned = true
+      currentInstance.$dialogPage = dialogPage
+      break
+    }
+  }
+}
 
 function createPageBodyVNode(ctx: SetupContext) {
   return (

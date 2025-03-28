@@ -10285,7 +10285,10 @@ class CanvasContext {
         var self = this;
         this.state.font = value;
         // eslint-disable-next-line
-        var fontFormat = value.match(/^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/);
+        var fontFormat = value.match(
+        // 支持小数点 github #5329
+        /^(([\w\-]+\s)*)(\d+\.?\d*r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/);
+        //
         if (fontFormat) {
             var style = fontFormat[1].trim().split(/\s/);
             var fontSize = parseFloat(fontFormat[3]);
@@ -10299,7 +10302,8 @@ class CanvasContext {
                     });
                     self.state.fontStyle = value;
                 }
-                else if (['bold', 'normal'].indexOf(value) > -1) {
+                else if (['bold', 'normal', 'lighter', 'bolder'].indexOf(value) > -1 ||
+                    /^\d+$/.test(value)) {
                     actions.push({
                         method: 'setFontWeight',
                         data: [value],
@@ -13578,7 +13582,16 @@ var tabBarInstance = {
         });
         tabBar &&
             tabBar.onClick(({ index }) => {
+                const fromIndex = config.selectedIndex;
                 clickCallback(config.list[index], index);
+                const toIndex = config.selectedIndex;
+                if (index !== toIndex) {
+                    // 拦截器调整
+                    // tabBar.switchTab(config.list[fromIndex].pagePath)
+                    tabBar.switchSelect({
+                        index: fromIndex,
+                    });
+                }
             });
         tabBar &&
             tabBar.onMidButtonClick(() => {
@@ -13606,6 +13619,7 @@ var tabBarInstance = {
                 tabBar.switchSelect({
                     index,
                 });
+            this.config.selectedIndex = index;
             return true;
         }
         return false;
@@ -18764,10 +18778,12 @@ const pluginDefines = {};
 function registerUTSPlugin(name, define) {
     pluginDefines[name] = define;
 }
-function requireUTSPlugin(name) {
+function requireUTSPlugin(name, silent = false) {
     const define = pluginDefines[name];
     if (!define) {
-        console.error(`${name} is not found`);
+        if (!silent) {
+            console.error(`${name} is not found`);
+        }
     }
     return define;
 }

@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-compiler",
-  "version": "3.0.0-alpha-4050720250320001",
+  "version": "3.0.0-alpha-4060120250328001",
   "description": "uni-mp-compiler",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

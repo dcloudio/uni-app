@@ -134,6 +134,7 @@ export function createTransformContext(
     onError = defaultOnError,
     onWarn = defaultOnWarn,
     parseUTSComponent = NOOP,
+    parseUTSCustomElement = NOOP,
   }: TransformOptions
 ): TransformContext {
   const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
@@ -157,6 +158,7 @@ export function createTransformContext(
     onError,
     onWarn,
     parseUTSComponent,
+    parseUTSCustomElement,
     // state
     root,
     helpers: new Map(),

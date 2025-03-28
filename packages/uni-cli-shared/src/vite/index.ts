@@ -28,6 +28,7 @@ interface UniVitePluginUniOptions {
       emitFile?: (emittedFile: EmittedAsset) => string
     }
     isNativeTag?: ParserOptions['isNativeTag']
+    isVoidTag?: ParserOptions['isVoidTag']
     isCustomElement?: ParserOptions['isCustomElement']
     directiveTransforms?: CompilerOptions['directiveTransforms']
     nodeTransforms?: CompilerOptions['nodeTransforms']

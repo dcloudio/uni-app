@@ -13,9 +13,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -44,9 +44,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -75,9 +75,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -110,9 +110,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -145,9 +145,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -179,9 +179,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -214,9 +214,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -249,9 +249,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -283,9 +283,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -318,9 +318,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -353,9 +353,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -389,9 +389,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -425,9 +425,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -460,9 +460,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -496,9 +496,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -532,9 +532,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -567,9 +567,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -603,9 +603,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -639,9 +639,9 @@ interface DataView {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -678,9 +678,9 @@ interface DataViewConstructor {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",

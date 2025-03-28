@@ -38,7 +38,7 @@ export const showActionSheet: ShowActionSheet = function (
       uni.$off(successEventName, null)
       uni.$off(failEventName, null)
     }
-  } as io.dcloud.uniapp.framework.extapi.OpenDialogPageOptions)
+  })
 };
 
 export const hideActionSheet = function () {

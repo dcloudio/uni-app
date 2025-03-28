@@ -73,11 +73,7 @@ function getTargetGroup (targets) {
 async function buildAll (targets) {
   if (!multiProcess) {
     for (const target of targets) {
-      try {
-        await build(target)
-      } catch (e) {
-        console.error(e)
-      }
+      await build(target)
     }
     return
   }
@@ -202,7 +198,16 @@ async function build (target) {
         ['build', '--config', path.resolve(pkgDir, 'x.vite.config.ts')],
         {
           stdio: 'inherit',
-          env: Object.assign({ FORMAT: 'es' }, process.env, env),
+          env: Object.assign({ FORMAT: 'es', X_RUNTIME_PLATFORM: 'app-ios' }, process.env, env),
+          cwd: pkgDir,
+        }
+      )
+      await execa(
+        'vite',
+        ['build', '--config', path.resolve(pkgDir, 'x.vite.config.ts')],
+        {
+          stdio: 'inherit',
+          env: Object.assign({ FORMAT: 'es', X_RUNTIME_PLATFORM: 'app-harmony' }, process.env, env),
           cwd: pkgDir,
         }
       )
@@ -274,48 +279,14 @@ async function build (target) {
 }
 
 async function postBuildArkTS (isX = false) {
-  const projectDir = path.resolve(__dirname, '../packages/uni-app-harmony')
-  const { compileArkTSExtApi } = require('../packages/uni-uts-v1/dist')
   // 先生成一遍提供给ohpm包使用
   const extApiExportJsonPath = path.resolve(
     __dirname,
     '../packages/uni-uts-v1/lib/arkts',
-    isX ? 'ext-api-export-x.json' : 'ext-api-export.json'
+    isX ? 'uni-api-exports-x.json' : 'uni-api-exports.json'
   )
   const extApiExport = genHarmonyExtApiExport(isX)
   fs.outputJSONSync(extApiExportJsonPath, extApiExport, { spaces: 2 })
-
-  const harBuildJson = require(path.resolve(
-    projectDir,
-    'temp',
-    isX ? 'uni-ext-api-x' : 'uni-ext-api',
-    'build.har.json'
-  ))
-  if (isX) {
-    harBuildJson.push(...require(path.resolve(
-      projectDir,
-      'temp',
-      'uni-ext-component-x',
-      'build.har.json'
-    )))
-  }
-  for (let i = 0; i < harBuildJson.length; i++) {
-    const { input, output } = harBuildJson[i]
-    await compileArkTSExtApi(path.resolve(input, '..'), input, output, {
-      isExtApi: true,
-      isX,
-      isOhpmPackage: true,
-      transform: {},
-    })
-    let version = '1.0.0'
-    const packageJsonPath = path.resolve(input, 'package.json')
-    if (fs.existsSync(packageJsonPath)) {
-      const packageJson = fs.readJSONSync(packageJsonPath)
-      version = packageJson.version || '1.0.0'
-    }
-  }
-  const extApiExportWithHar = genHarmonyExtApiExport(isX)
-  fs.outputJSONSync(extApiExportJsonPath, extApiExportWithHar, { spaces: 2 })
 }
 
 async function buildArkTS (target, buildJson) {
@@ -391,8 +362,7 @@ async function buildArkTS (target, buildJson) {
         console.log(colors.green('bundle[' + buildOptions.output.outFilename + ']: ' + (Date.now() - start) + 'ms'))
         if (
           input !== 'temp/uni-ext-api/index.uts' &&
-          input !== 'temp/uni-ext-api-x/index.uts' &&
-          input !== 'temp/uni-ext-component-x/index.uts'
+          input !== 'temp/uni-ext-api-x/index.uts'
         ) {
           if (options.banner) {
             fs.writeFileSync(
@@ -418,6 +388,10 @@ async function buildArkTS (target, buildJson) {
               'export class RequestSuccess<T>',
               'export class RequestSuccess<T = Object>'
             )
+            .replace(/(?<=export\s+class\s+\w+Options(?:\W.*)?\s+extends\s+UTSObject\s*{)([\s\S]*?\n)(?=})/g, (match) => {
+              // 规避鸿蒙Object类型Bug，https://issuereporter.developer.huawei.com/detail/250311164558046/comment
+              return match.replaceAll(/(?<!\w)Object(?!\w)/g, 'ESObject')
+            })
         fs.writeFileSync(filePath, fileContent)
       })
     }
@@ -430,8 +404,10 @@ async function buildArkTS (target, buildJson) {
   await postBuildArkTS(false)
 }
 
+let startTime = Date.now()
 async function sleep (ms) {
   global.gc && global.gc()
-  console.log('gc sleep')
+  console.log('gc sleep', (Date.now() - startTime) / 1000, 's')
+  startTime = Date.now()
   return new Promise((resolve) => setTimeout(resolve, ms))
 }

@@ -138,3 +138,4 @@ export type MiniProgramComponentsType =
   | 'dynamicLib'
   | 'ext'
   | 'xr-frame'
+  | 'weui'

@@ -12,6 +12,7 @@ import {
   createTransformTag,
   initI18nOptions,
   injectAssetPlugin,
+  isUTSCustomElement,
   matchUTSComponent,
   normalizeNodeModules,
   normalizePath,
@@ -63,6 +64,7 @@ export function createUniOptions(
         ? {
             isNativeTag(tag) {
               return (
+                isUTSCustomElement(tag) ||
                 matchUTSComponent(tag) ||
                 (platform === 'app-ios'
                   ? isAppIOSUVueNativeTag

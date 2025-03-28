@@ -630,10 +630,14 @@ function createArrayInstrumentations() {
     instrumentations[key] = function () {
       pauseTracking();
       pauseScheduling();
+      var raw = toRaw(this);
+      if (raw.length > 0) {
+        raw[0] = raw[0];
+      }
       for (var _len3 = arguments.length, args = new Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
         args[_key4] = arguments[_key4];
       }
-      var res = toRaw(this)[key].apply(this, args);
+      var res = raw[key].apply(this, args);
       resetScheduling();
       resetTracking();
       return res;
@@ -1088,14 +1092,17 @@ function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandl
   }
   var existingProxy = proxyMap.get(target);
   if (existingProxy) {
-    return existingProxy;
+    var deref = existingProxy.deref();
+    if (deref) {
+      return deref;
+    }
   }
   var targetType = getTargetType(target);
   if (targetType === 0 /* INVALID */) {
     return target;
   }
   var proxy = new Proxy(target, targetType === 2 /* COLLECTION */ ? collectionHandlers : baseHandlers);
-  proxyMap.set(target, proxy);
+  proxyMap.set(target, new WeakRef(proxy));
   return proxy;
 }
 function isReactive(value) {
@@ -4322,7 +4329,7 @@ function getTransitionRawChildren(children) {
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
-function defineComponent(options, extraOptions) {
+function defineComponent$1(options, extraOptions) {
   return isFunction(options) ?
   // #8326: extend call and options.name access are considered side-effects
   // by Rollup, so we have to wrap it in a pure-annotated IIFE.
@@ -4390,7 +4397,7 @@ function defineAsyncComponent(source) {
       return comp;
     }));
   };
-  return defineComponent({
+  return defineComponent$1({
     name: "AsyncComponentWrapper",
     __asyncLoader: load,
     get __asyncResolved() {
@@ -5775,7 +5782,7 @@ function createAppAPI(render, hydrate) {
         context.directives[name] = directive;
         return app;
       },
-      mount(rootContainer, isHydrate, namespace) {
+      mount(document, rootContainer, isHydrate, namespace) {
         if (!isMounted) {
           if (rootContainer.__vue_app__) {
             warn$1("There is already an app instance mounted on the host container.\n If you want to mount another app on the same host container, you need to unmount the previous app by calling `app.unmount()` first.");
@@ -5789,13 +5796,13 @@ function createAppAPI(render, hydrate) {
           }
           {
             context.reload = () => {
-              render(cloneVNode(vnode), rootContainer, namespace);
+              render(document, cloneVNode(vnode), rootContainer, namespace);
             };
           }
           if (isHydrate && hydrate) {
             hydrate(vnode, rootContainer);
           } else {
-            render(vnode, rootContainer, namespace);
+            render(document, vnode, rootContainer, namespace);
           }
           isMounted = true;
           app._container = rootContainer;
@@ -5809,9 +5816,9 @@ function createAppAPI(render, hydrate) {
           warn$1("App has already been mounted.\nIf you want to remount the same app, move your app creation logic into a factory function and create fresh app instances for each mount - e.g. `const createMyApp = () => createApp(App)`");
         }
       },
-      unmount() {
+      unmount(document) {
         if (isMounted) {
-          render(null, app._container);
+          render(document, null, app._container);
           {
             app._instance = null;
             devtoolsUnmountApp(app);
@@ -6974,13 +6981,13 @@ function baseCreateRenderer(options, createHydrationFns) {
     setScopeId: hostSetScopeId = NOOP,
     insertStaticContent: hostInsertStaticContent
   } = options;
-  var patch = function (n1, n2, container) {
-    var anchor = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-    var parentComponent = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
-    var parentSuspense = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
-    var namespace = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : void 0;
-    var slotScopeIds = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : null;
-    var optimized = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : isHmrUpdating ? false : !!n2.dynamicChildren;
+  var patch = function (document, n1, n2, container) {
+    var anchor = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
+    var parentComponent = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
+    var parentSuspense = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : null;
+    var namespace = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : void 0;
+    var slotScopeIds = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : null;
+    var optimized = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : isHmrUpdating ? false : !!n2.dynamicChildren;
     if (n1 === n2) {
       return;
     }
@@ -7000,10 +7007,10 @@ function baseCreateRenderer(options, createHydrationFns) {
     } = n2;
     switch (type) {
       case Text:
-        processText(n1, n2, container, anchor);
+        processText(document, n1, n2, container, anchor);
         break;
       case Comment:
-        processCommentNode(n1, n2, container, anchor);
+        processCommentNode(document, n1, n2, container, anchor);
         break;
       case Static:
         if (n1 == null) {
@@ -7013,13 +7020,13 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
         break;
       case Fragment:
-        processFragment(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        processFragment(document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         break;
       default:
         if (shapeFlag & 1) {
-          processElement(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          processElement(document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         } else if (shapeFlag & 6) {
-          processComponent(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          processComponent(document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         } else if (shapeFlag & 64) {
           type.process(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, internals);
         } else if (shapeFlag & 128) {
@@ -7032,9 +7039,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       setRef(ref, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
     }
   };
-  var processText = (n1, n2, container, anchor) => {
+  var processText = (document, n1, n2, container, anchor) => {
     if (n1 == null) {
-      hostInsert(n2.el = hostCreateText(n2.children, container),
+      hostInsert(n2.el = hostCreateText(document, n2.children, container),
       // fixed by xxxxxx
       container, anchor);
     } else {
@@ -7044,9 +7051,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
     }
   };
-  var processCommentNode = (n1, n2, container, anchor) => {
+  var processCommentNode = (document, n1, n2, container, anchor) => {
     if (n1 == null) {
-      hostInsert(n2.el = hostCreateComment(n2.children || "", container),
+      hostInsert(n2.el = hostCreateComment(document, n2.children || "", container),
       // fixed by xxxxxx
       container, anchor);
     } else {
@@ -7092,19 +7099,19 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     hostRemove(anchor);
   };
-  var processElement = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var processElement = (document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     if (n2.type === "svg") {
       namespace = "svg";
     } else if (n2.type === "math") {
       namespace = "mathml";
     }
     if (n1 == null) {
-      mountElement(n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+      mountElement(document, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
     } else {
-      patchElement(n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+      patchElement(document, n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
     }
   };
-  var mountElement = (vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var mountElement = (document, vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     var el;
     var vnodeHook;
     var {
@@ -7113,13 +7120,13 @@ function baseCreateRenderer(options, createHydrationFns) {
       transition,
       dirs
     } = vnode;
-    el = vnode.el = hostCreateElement(vnode.type,
+    el = vnode.el = hostCreateElement(document, vnode.type,
     // fixed by xxxxxx
     container);
     if (shapeFlag & 8) {
-      hostSetElementText(el, vnode.children);
+      hostSetElementText(document, el, vnode.children);
     } else if (shapeFlag & 16) {
-      mountChildren(vnode.children, el, null, parentComponent, parentSuspense, resolveChildrenNamespace(vnode, namespace), slotScopeIds, optimized);
+      mountChildren(document, vnode.children, el, null, parentComponent, parentSuspense, resolveChildrenNamespace(vnode, namespace), slotScopeIds, optimized);
     }
     if (dirs) {
       invokeDirectiveHook(vnode, null, parentComponent, "created");
@@ -7188,14 +7195,14 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
     }
   };
-  var mountChildren = function (children, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) {
-    var start = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : 0;
+  var mountChildren = function (document, children, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) {
+    var start = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : 0;
     for (var i = start; i < children.length; i++) {
       var child = children[i] = optimized ? cloneIfMounted(children[i]) : normalizeVNode(children[i]);
-      patch(null, child, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+      patch(document, null, child, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
     }
   };
-  var patchElement = (n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var patchElement = (document, n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     var el = n2.el = n1.el;
     var {
       patchFlag,
@@ -7220,12 +7227,12 @@ function baseCreateRenderer(options, createHydrationFns) {
       dynamicChildren = null;
     }
     if (dynamicChildren) {
-      patchBlockChildren(n1.dynamicChildren, dynamicChildren, el, parentComponent, parentSuspense, resolveChildrenNamespace(n2, namespace), slotScopeIds);
+      patchBlockChildren(document, n1.dynamicChildren, dynamicChildren, el, parentComponent, parentSuspense, resolveChildrenNamespace(n2, namespace), slotScopeIds);
       {
         traverseStaticChildren(n1, n2);
       }
     } else if (!optimized) {
-      patchChildren(n1, n2, el, null, parentComponent, parentSuspense, resolveChildrenNamespace(n2, namespace), slotScopeIds, false);
+      patchChildren(document, n1, n2, el, null, parentComponent, parentSuspense, resolveChildrenNamespace(n2, namespace), slotScopeIds, false);
     }
     if (patchFlag > 0) {
       if (patchFlag & 16) {
@@ -7261,7 +7268,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
       if (patchFlag & 1) {
         if (n1.children !== n2.children) {
-          hostSetElementText(el, n2.children);
+          hostSetElementText(document, el, n2.children);
         }
       }
     } else if (!optimized && dynamicChildren == null) {
@@ -7274,7 +7281,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       }, parentSuspense);
     }
   };
-  var patchBlockChildren = (oldChildren, newChildren, fallbackContainer, parentComponent, parentSuspense, namespace, slotScopeIds) => {
+  var patchBlockChildren = (document, oldChildren, newChildren, fallbackContainer, parentComponent, parentSuspense, namespace, slotScopeIds) => {
     for (var i = 0; i < newChildren.length; i++) {
       var oldVNode = oldChildren[i];
       var newVNode = newChildren[i];
@@ -7293,7 +7300,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       // In other cases, the parent container is not actually used so we
       // just pass the block element here to avoid a DOM parentNode call.
       fallbackContainer;
-      patch(oldVNode, newVNode, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, true);
+      patch(document, oldVNode, newVNode, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, true);
     }
   };
   var patchProps = (el, vnode, oldProps, newProps, parentComponent, parentSuspense, namespace) => {
@@ -7324,9 +7331,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
     }
   };
-  var processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
-    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText("", container, true);
-    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText("", container, true);
+  var processFragment = (document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText(document, "", container, true);
+    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText(document, "", container, true);
     var {
       patchFlag,
       dynamicChildren,
@@ -7345,7 +7352,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     if (n1 == null) {
       hostInsert(fragmentStartAnchor, container, anchor);
       hostInsert(fragmentEndAnchor, container, anchor);
-      mountChildren(
+      mountChildren(document,
       // #10007
       // such fragment like `<></>` will be compiled into
       // a fragment which doesn't have a children.
@@ -7356,28 +7363,28 @@ function baseCreateRenderer(options, createHydrationFns) {
       // #2715 the previous fragment could've been a BAILed one as a result
       // of renderSlot() with no valid children
       n1.dynamicChildren) {
-        patchBlockChildren(n1.dynamicChildren, dynamicChildren, container, parentComponent, parentSuspense, namespace, slotScopeIds);
+        patchBlockChildren(document, n1.dynamicChildren, dynamicChildren, container, parentComponent, parentSuspense, namespace, slotScopeIds);
         {
           traverseStaticChildren(n1, n2);
         }
       } else {
-        patchChildren(n1, n2, container, fragmentEndAnchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        patchChildren(document, n1, n2, container, fragmentEndAnchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
       }
     }
   };
-  var processComponent = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var processComponent = (document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     n2.slotScopeIds = slotScopeIds;
     if (n1 == null) {
       if (n2.shapeFlag & 512) {
         parentComponent.ctx.activate(n2, container, anchor, namespace, optimized);
       } else {
-        mountComponent(n2, container, anchor, parentComponent, parentSuspense, namespace, optimized);
+        mountComponent(document, n2, container, anchor, parentComponent, parentSuspense, namespace, optimized);
       }
     } else {
       updateComponent(n1, n2, optimized);
     }
   };
-  var mountComponent = (initialVNode, container, anchor, parentComponent, parentSuspense, namespace, optimized) => {
+  var mountComponent = (document, initialVNode, container, anchor, parentComponent, parentSuspense, namespace, optimized) => {
     var instance = initialVNode.component = createComponentInstance(initialVNode, parentComponent, parentSuspense);
     if (instance.type.__hmrId) {
       registerHMR(instance);
@@ -7402,10 +7409,10 @@ function baseCreateRenderer(options, createHydrationFns) {
       parentSuspense && parentSuspense.registerDep(instance, setupRenderEffect);
       if (!initialVNode.el) {
         var placeholder = instance.subTree = createVNode(Comment);
-        processCommentNode(null, placeholder, container, anchor);
+        processCommentNode(document, null, placeholder, container, anchor);
       }
     } else {
-      setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, namespace, optimized);
+      setupRenderEffect(document, instance, initialVNode, container, anchor, parentSuspense, namespace, optimized);
     }
     {
       popWarningContext();
@@ -7435,7 +7442,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       instance.vnode = n2;
     }
   };
-  var setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
+  var setupRenderEffect = (document, instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
     var componentUpdateFn = () => {
       if (!instance.isMounted) {
         var vnodeHook;
@@ -7495,7 +7502,7 @@ function baseCreateRenderer(options, createHydrationFns) {
           {
             startMeasure(instance, "patch");
           }
-          patch(null, subTree, container, anchor, instance, parentSuspense, namespace);
+          patch(document, null, subTree, container, anchor, instance, parentSuspense, namespace);
           {
             endMeasure(instance, "patch");
           }
@@ -7570,7 +7577,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         {
           startMeasure(instance, "patch");
         }
-        patch(prevTree, nextTree,
+        patch(document, prevTree, nextTree,
         // parent may have changed if it's in a teleport
         hostParentNode(prevTree.el),
         // anchor may have changed if it's in a fragment
@@ -7624,8 +7631,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     flushPreFlushCbs(instance);
     resetTracking();
   };
-  var patchChildren = function (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds) {
-    var optimized = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : false;
+  var patchChildren = function (document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds) {
+    var optimized = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : false;
     var c1 = n1 && n1.children;
     var prevShapeFlag = n1 ? n1.shapeFlag : 0;
     var c2 = n2.children;
@@ -7635,10 +7642,10 @@ function baseCreateRenderer(options, createHydrationFns) {
     } = n2;
     if (patchFlag > 0) {
       if (patchFlag & 128) {
-        patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        patchKeyedChildren(document, c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         return;
       } else if (patchFlag & 256) {
-        patchUnkeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        patchUnkeyedChildren(document, c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         return;
       }
     }
@@ -7647,26 +7654,26 @@ function baseCreateRenderer(options, createHydrationFns) {
         unmountChildren(c1, parentComponent, parentSuspense);
       }
       if (c2 !== c1) {
-        hostSetElementText(container, c2);
+        hostSetElementText(document, container, c2);
       }
     } else {
       if (prevShapeFlag & 16) {
         if (shapeFlag & 16) {
-          patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          patchKeyedChildren(document, c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         } else {
           unmountChildren(c1, parentComponent, parentSuspense, true);
         }
       } else {
         if (prevShapeFlag & 8) {
-          hostSetElementText(container, "");
+          hostSetElementText(document, container, "");
         }
         if (shapeFlag & 16) {
-          mountChildren(c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          mountChildren(document, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         }
       }
     }
   };
-  var patchUnkeyedChildren = (c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var patchUnkeyedChildren = (document, c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     c1 = c1 || EMPTY_ARR;
     c2 = c2 || EMPTY_ARR;
     var oldLength = c1.length;
@@ -7675,15 +7682,15 @@ function baseCreateRenderer(options, createHydrationFns) {
     var i;
     for (i = 0; i < commonLength; i++) {
       var nextChild = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
-      patch(c1[i], nextChild, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+      patch(document, c1[i], nextChild, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
     }
     if (oldLength > newLength) {
       unmountChildren(c1, parentComponent, parentSuspense, true, false, commonLength);
     } else {
-      mountChildren(c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, commonLength);
+      mountChildren(document, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, commonLength);
     }
   };
-  var patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var patchKeyedChildren = (document, c1, c2, container, parentAnchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     var i = 0;
     var l2 = c2.length;
     var e1 = c1.length - 1;
@@ -7692,7 +7699,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       var n1 = c1[i];
       var n2 = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
       if (isSameVNodeType(n1, n2)) {
-        patch(n1, n2, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        patch(document, n1, n2, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
       } else {
         break;
       }
@@ -7702,7 +7709,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       var _n = c1[e1];
       var _n2 = c2[e2] = optimized ? cloneIfMounted(c2[e2]) : normalizeVNode(c2[e2]);
       if (isSameVNodeType(_n, _n2)) {
-        patch(_n, _n2, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        patch(document, _n, _n2, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
       } else {
         break;
       }
@@ -7714,7 +7721,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         var nextPos = e2 + 1;
         var anchor = nextPos < l2 ? c2[nextPos].el : parentAnchor;
         while (i <= e2) {
-          patch(null, c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]), container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          patch(document, null, c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]), container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
           i++;
         }
       }
@@ -7771,7 +7778,7 @@ function baseCreateRenderer(options, createHydrationFns) {
           } else {
             moved = true;
           }
-          patch(prevChild, c2[newIndex], container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          patch(document, prevChild, c2[newIndex], container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
           patched++;
         }
       }
@@ -7782,7 +7789,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         var _nextChild = c2[nextIndex];
         var _anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : parentAnchor;
         if (newIndexToOldIndexMap[i] === 0) {
-          patch(null, _nextChild, container, _anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          patch(document, null, _nextChild, container, _anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         } else if (moved) {
           if (j < 0 || i !== increasingNewIndexSequence[j]) {
             move(_nextChild, container, _anchor, 2);
@@ -8019,13 +8026,13 @@ function baseCreateRenderer(options, createHydrationFns) {
     return hostNextSibling(vnode.anchor || vnode.el);
   };
   var isFlushing = false;
-  var render = (vnode, container, namespace) => {
+  var render = (document, vnode, container, namespace) => {
     if (vnode == null) {
       if (container._vnode) {
         unmount(container._vnode, null, null, true);
       }
     } else {
-      patch(container._vnode || null, vnode, container, null, null, null, namespace);
+      patch(document, container._vnode || null, vnode, container, null, null, null, namespace);
     }
     if (!isFlushing) {
       isFlushing = true;
@@ -8153,14 +8160,14 @@ var isTeleport = type => type.__isTeleport;
 var isTeleportDisabled = props => props && (props.disabled || props.disabled === "");
 var isTargetSVG = target => typeof SVGElement !== "undefined" && target instanceof SVGElement;
 var isTargetMathML = target => typeof MathMLElement === "function" && target instanceof MathMLElement;
-var resolveTarget = (props, select) => {
+var resolveTarget = (props, select, parentComponent) => {
   var targetSelector = props && props.to;
   if (isString(targetSelector)) {
     if (!select) {
       warn$1("Current renderer does not support string target for Teleports. (missing querySelector renderer option)");
       return null;
     } else {
-      var target = select(targetSelector);
+      var target = select(targetSelector, parentComponent);
       if (!target) {
         warn$1("Failed to locate Teleport target with selector \"".concat(targetSelector, "\". Note the target element must exist before the component is mounted - i.e. the target cannot be rendered by the component itself, and ideally should be outside of the entire Vue component tree."));
       }
@@ -8207,7 +8214,7 @@ var TeleportImpl = {
       createComment("teleport end");
       insert(placeholder, container, anchor);
       insert(mainAnchor, container, anchor);
-      var target = n2.target = resolveTarget(n2.props, querySelector);
+      var target = n2.target = resolveTarget(n2.props, querySelector, parentComponent);
       var targetAnchor = n2.targetAnchor = createText("");
       if (target) {
         insert(targetAnchor, target);
@@ -8258,7 +8265,7 @@ var TeleportImpl = {
         }
       } else {
         if ((n2.props && n2.props.to) !== (n1.props && n1.props.to)) {
-          var nextTarget = n2.target = resolveTarget(n2.props, querySelector);
+          var nextTarget = n2.target = resolveTarget(n2.props, querySelector, parentComponent);
           if (nextTarget) {
             moveTeleport(n2, nextTarget, null, internals, 0);
           } else {
@@ -8342,7 +8349,7 @@ function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScope
       querySelector
     }
   } = _ref19;
-  var target = vnode.target = resolveTarget(vnode.props, querySelector);
+  var target = vnode.target = resolveTarget(vnode.props, querySelector, parentComponent);
   if (target) {
     var targetNode = target._lpa || target.firstChild;
     if (vnode.shapeFlag & 16) {
@@ -9728,16 +9735,6 @@ function updateClassStyles(el) {
   }
   el.updateStyle(styles);
 }
-var rootDocument;
-function getDocument() {
-  return rootDocument;
-}
-function setDocument(document) {
-  rootDocument = document;
-}
-function isInDocument(parent) {
-  return !!parent.pageId;
-}
 function updateTextNode(node) {
   var childNode = getExtraChildNode(node);
   if (childNode !== null) {
@@ -9765,7 +9762,7 @@ var nodeOps = {
     } else {
       parent.insertBefore(el, anchor);
     }
-    if (isInDocument(parent)) {
+    if (parent.isConnected) {
       updateClassStyles(el);
       updateChildrenClassStyle(el);
     }
@@ -9784,20 +9781,20 @@ var nodeOps = {
       parent.removeChild(child);
     }
   },
-  createElement: (tag, container) => {
-    return getDocument().createElement(tag);
+  createElement: (document, tag, container) => {
+    return document.createElement(tag);
   },
-  createText: (text, container, isAnchor) => {
+  createText: (document, text, container, isAnchor) => {
     if (isAnchor) {
-      return getDocument().createComment(text);
+      return document.createComment(text);
     }
-    var textNode = getDocument().createElement("text");
+    var textNode = document.createElement("text");
     textNode.setAttribute("value", text);
     setExtraIsTextNode(textNode, true);
     return textNode;
   },
-  createComment: (text, container) => {
-    return getDocument().createComment(text);
+  createComment: (document, text, container) => {
+    return document.createComment(text);
   },
   setText: (node, text) => {
     node.setAttribute("value", text);
@@ -9806,12 +9803,12 @@ var nodeOps = {
       updateTextNode(parent);
     }
   },
-  setElementText: (el, text) => {
+  setElementText: (document, el, text) => {
     if (el.tagName !== "TEXT") {
       var childNodes = el.childNodes;
       var textNode = childNodes.find(node => node.tagName === "TEXT");
       if (!textNode) {
-        var textNode2 = nodeOps.createText(text, el);
+        var textNode2 = nodeOps.createText(document, text, el);
         el.appendChild(textNode2);
         return;
       }
@@ -9820,7 +9817,10 @@ var nodeOps = {
     el.setAttribute("value", text);
   },
   parentNode: node => node.parentNode,
-  nextSibling: node => node.nextSibling
+  nextSibling: node => node.nextSibling,
+  querySelector: (document, selector) => {
+    return document.querySelector(selector);
+  }
 };
 function updateChildrenClassStyle(el) {
   if (el !== null) {
@@ -10265,10 +10265,16 @@ var createApp = function () {
   var {
     mount
   } = app;
-  app.mount = container => {
-    setDocument(container);
-    return mount(container.body);
+  app.mount = document => {
+    return mount(document, document.body);
   };
   return app;
+};
+var defineComponent = options => {
+  var rootElement = options.rootElement;
+  if (rootElement && typeof customElements !== 'undefined') {
+    customElements.define(rootElement.name, rootElement.class, rootElement.options);
+  }
+  return defineComponent$1(options);
 };
 export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle$1 as normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

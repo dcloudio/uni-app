@@ -1316,9 +1316,13 @@ const sass: SassStylePreprocessor = (
     isNVue
   )
 
-function preprocessCss(content: string, isNVue: boolean = false) {
+function preprocessCss(
+  content: string,
+  isNVue: boolean = false,
+  filename: string
+) {
   if (content.includes('#endif')) {
-    return isNVue ? preNVueCss(content) : preCss(content)
+    return isNVue ? preNVueCss(content, filename) : preCss(content, filename)
   }
   return content
 }
@@ -1336,7 +1340,7 @@ async function rebaseUrls(
   file = path.resolve(file) // ensure os-specific flashes
 
   // fixed by xxxxxx 条件编译
-  let contents = preprocessCss(fs.readFileSync(file, 'utf-8'), isNVue)
+  let contents = preprocessCss(fs.readFileSync(file, 'utf-8'), isNVue, file)
 
   // in the same dir, no need to rebase
   const fileDir = path.dirname(file)
@@ -1644,7 +1648,7 @@ function isPreProcessor(lang: any): lang is PreprocessLang {
 const preCssExtNames = ['.scss', '.sass', '.styl', '.stylus']
 /**
  * 重写 readFileSync
- * 目前主要解决 scss 文件被 @import 的条件编译
+ * 目前主要解决 scss 文件被 @import 的条件编译，如果用~@/方式导入，会走自定义importer，不需要通过重写readFileSync来过滤，所以nvue的问题，可以让开发者调整导入写法
  */
 export function rewriteScssReadFileSync() {
   // 目前 1.0 App 端，只要包含了APP-NVUE条件编译，就不pre，因为区分不出来APP-NVUE
@@ -1665,7 +1669,7 @@ export function rewriteScssReadFileSync() {
       if (ignoreAppNVue && content.includes('APP-NVUE')) {
         return content
       }
-      return preCss(content)
+      return preCss(content, filepath)
     }
     return content
   }) as (typeof nodeFs)['readFileSync']

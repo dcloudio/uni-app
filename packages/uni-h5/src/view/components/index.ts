@@ -40,3 +40,6 @@ export {
   UniPickerElement,
   //#endif
 }
+//#if _X_
+export * from '../../x/view/components/easycom'
+//#endif

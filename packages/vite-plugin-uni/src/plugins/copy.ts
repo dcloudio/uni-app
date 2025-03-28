@@ -7,6 +7,7 @@ import {
   PUBLIC_DIR,
   type UniViteCopyPluginTarget,
   getPlatforms,
+  isWindows,
   normalizePath,
   parseSubpackagesRootOnce,
   uniViteCopyPlugin,
@@ -62,6 +63,7 @@ export function uniCopyPlugin({
       src: assets,
       dest: outputDir,
       watchOptions: {
+        readyTimeout: getReadyTimeout(),
         ignored(path: string) {
           const normalizedPath = normalizePath(path)
           if (
@@ -116,4 +118,16 @@ function checkIgnoreStatic(ignoreStatic: string[][]) {
         '。详见：https://uniapp.dcloud.net.cn/tutorial/platform.html#static'
     )
   }
+}
+
+function getReadyTimeout() {
+  // chokidar 在部分 windows 上 ready 会触发较早，导致文件还没被全部 copy 过去
+  if (!isWindows) {
+    return 1000
+  }
+  if (process.env.NODE_ENV === 'development') {
+    return 1000
+  }
+  // 仅在生产环境使用
+  return 4000
 }
