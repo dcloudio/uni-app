@@ -2286,7 +2286,7 @@ var flushIndex = 0;
 var pendingPostFlushCbs = [];
 var activePostFlushCbs = null;
 var postFlushIndex = 0;
-var isIOS = "nativeApp" in getGlobalThis();
+var isIOS = true;
 var resolvedPromise = /* @__PURE__ */(isIOS ? PromisePolyfill : Promise).resolve();
 var currentFlushPromise = null;
 function nextTick(fn) {
