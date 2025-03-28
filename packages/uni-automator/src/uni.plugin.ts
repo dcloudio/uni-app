@@ -53,9 +53,7 @@ export default [
                 code:
                   // 增加个换行，避免最后是注释且无换行
                   code + `;\nimport { initAutomator } from '${automatorPath}';`,
-                map: {
-                  mappings: '',
-                },
+                map: null,
               }
             } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
               const automatorPath = normalizePath(
@@ -65,9 +63,7 @@ export default [
               )
               return {
                 code: code + `;\nimport '${automatorPath}';`,
-                map: {
-                  mappings: '',
-                },
+                map: null,
               }
             }
           }
@@ -80,9 +76,7 @@ export default [
           )
           return {
             code: code + `;\nimport '${automatorPath}';`,
-            map: {
-              mappings: '',
-            },
+            map: null,
           }
         }
       },

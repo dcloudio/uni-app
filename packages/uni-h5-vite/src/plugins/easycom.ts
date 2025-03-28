@@ -155,9 +155,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
       }
       return {
         code,
-        map: {
-          mappings: '',
-        },
+        map: null,
       }
     },
   }

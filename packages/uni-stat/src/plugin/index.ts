@@ -126,9 +126,7 @@ export default () => [
               `;import '@dcloudio/uni${
                 statVersion === '2' ? '-cloud' : ''
               }-stat';`,
-            map: {
-              mappings: '',
-            },
+            map: null,
           }
         }
       },

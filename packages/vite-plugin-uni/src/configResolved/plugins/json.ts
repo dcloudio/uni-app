@@ -23,9 +23,7 @@ export function uniJsonPlugin(options: VitePluginUniResolvedOptions): Plugin {
       }
       return {
         code: JSON.stringify(jsonObj),
-        map: {
-          mappings: '',
-        },
+        map: null,
       }
     },
   }

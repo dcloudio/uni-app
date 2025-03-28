@@ -603,12 +603,7 @@ async function compileCSS(
     !needInlineImport &&
     !hasUrl
   ) {
-    return {
-      code,
-      map: {
-        mappings: '',
-      },
-    }
+    return { code, map: null }
   }
 
   let preprocessorMap: ExistingRawSourceMap | undefined
