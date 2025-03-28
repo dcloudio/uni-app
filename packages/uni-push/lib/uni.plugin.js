@@ -70,9 +70,7 @@ var index = () => [
                 if (isEnableV1 || isEnableV2) {
                     return {
                         code: `import '@dcloudio/uni-push';` + code,
-                        map: {
-                            mappings: '',
-                        },
+                        map: null,
                     };
                 }
             },

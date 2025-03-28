@@ -41,9 +41,7 @@ exports.default = [
                                 code: 
                                 // 增加个换行，避免最后是注释且无换行
                                 code + `;\nimport { initAutomator } from '${automatorPath}';`,
-                                map: {
-                                    mappings: '',
-                                },
+                                map: null,
                             };
                         }
                         else if (process.env.UNI_UTS_PLATFORM === 'app-ios' ||
@@ -51,18 +49,14 @@ exports.default = [
                             const automatorPath = (0, uni_cli_shared_1.normalizePath)((0, uni_cli_shared_1.resolveBuiltIn)(`@dcloudio/uni-app-uts/lib/automator/ios/automator.js`));
                             return {
                                 code: code + `;\nimport '${automatorPath}';`,
-                                map: {
-                                    mappings: '',
-                                },
+                                map: null,
                             };
                         }
                     }
                     const automatorPath = (0, uni_cli_shared_1.normalizePath)((0, uni_cli_shared_1.resolveBuiltIn)(`@dcloudio/uni-${platform === 'app' ? 'app-plus' : platform}/lib/automator.js`));
                     return {
                         code: code + `;\nimport '${automatorPath}';`,
-                        map: {
-                            mappings: '',
-                        },
+                        map: null,
                     };
                 }
             },

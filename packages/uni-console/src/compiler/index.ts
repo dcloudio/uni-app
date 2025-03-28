@@ -98,9 +98,7 @@ export default () => {
           return {
             // 采用绝对路径引入，此时，tsc失效，代码里需要自己处理好各种类型问题
             code: `import '${normalizePath(uniConsolePath)}';${code}`,
-            map: {
-              mappings: '',
-            },
+            map: null,
           }
         },
       }
