@@ -794,7 +794,8 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "offPrivacyAuthorizationChange": {
@@ -802,7 +803,8 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getPrivacySetting": {
@@ -810,7 +812,8 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "resetPrivacyAuthorization": {
@@ -818,7 +821,8 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
