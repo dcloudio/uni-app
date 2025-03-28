@@ -157,9 +157,6 @@
       "ShowModalOptions"
     ],
     [
-      "TipsOptions"
-    ],
-    [
       "UniButtonElement"
     ],
     [
@@ -202,21 +199,6 @@
       "UniNavigatorElement"
     ],
     [
-      "UniPickerCancelEvent"
-    ],
-    [
-      "UniPickerColumnChangeEvent"
-    ],
-    [
-      "UniPickerElement"
-    ],
-    [
-      "UniPickerSelectorCancelEvent"
-    ],
-    [
-      "UniPickerTimeCancelEvent"
-    ],
-    [
       "UniPickerViewChangeEvent"
     ],
     [
@@ -224,9 +206,6 @@
     ],
     [
       "UniPickerViewElement"
-    ],
-    [
-      "UniPickermultiSelectorCancelEvent"
     ],
     [
       "UniProgressActiveendEvent"
