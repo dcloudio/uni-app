@@ -36,9 +36,7 @@ export function uniPreVuePlugin(): Plugin {
       )
       return {
         code: parseVueCode(code, isNVue).code, // 暂不提供sourcemap,意义不大
-        map: {
-          mappings: '',
-        },
+        map: null,
       }
     },
   }

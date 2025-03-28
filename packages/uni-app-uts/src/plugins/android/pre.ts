@@ -53,9 +53,6 @@ export function uniPrePlugin(options: UniPrePluginOptions = {}): Plugin {
       }
       return {
         code,
-        map: {
-          mappings: '',
-        },
       }
     },
   }

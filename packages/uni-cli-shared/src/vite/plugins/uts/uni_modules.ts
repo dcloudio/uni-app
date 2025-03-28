@@ -686,9 +686,7 @@ export function uniUTSAppUniModulesPlugin(
             })
             return {
               code: result.code,
-              map: {
-                mappings: '',
-              },
+              map: null,
               syntheticNamedExports: result.encrypt,
               meta: result.meta,
             }
@@ -706,9 +704,7 @@ export function uniUTSAppUniModulesPlugin(
         })
         return {
           code: result.code,
-          map: {
-            mappings: '',
-          },
+          map: null,
           syntheticNamedExports: result.encrypt,
           meta: result.meta,
         }
