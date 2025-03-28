@@ -97,6 +97,7 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     ['UTSHarmony'],
     ['resolveInOperator'],
     ['IJSONStringify'],
+    ['IUTSDefaultGenericParent'],
     ['UniElement'], // 注意非uni-app-x也有导出此类型，目前仅为了兼容uni-verify
   ]
   if (isX) {
