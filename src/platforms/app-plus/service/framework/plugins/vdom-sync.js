@@ -7,8 +7,6 @@ import {
   wrapperMPEvent
 } from 'uni-helpers/patch'
 
-import onVdSyncCallback from './on-vd-sync-callback'
-
 import {
   VD_SYNC,
   UI_EVENT,
@@ -28,7 +26,7 @@ import {
   registerVdSync
 } from '../subscribe-handlers/on-vd-sync'
 
-import {
+import onVdSyncCallback, {
   vdSyncCallbacks
 } from '../subscribe-handlers/on-vd-sync-callback'
 
