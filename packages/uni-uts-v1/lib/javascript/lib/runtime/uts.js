@@ -484,9 +484,6 @@ function initUTSJSONObjectProperties(obj) {
     }
     Object.defineProperties(obj, propertyDescriptorMap);
 }
-function getRealDefaultValue(defaultValue) {
-    return defaultValue === void 0 ? null : defaultValue;
-}
 let UTSJSONObject$1 = class UTSJSONObject {
     static keys(obj) {
         return Object.keys(obj);
@@ -582,7 +579,7 @@ let UTSJSONObject$1 = class UTSJSONObject {
     }
     _getValue(keyPath, defaultValue) {
         const keyPathArr = this._resolveKeyPath(keyPath);
-        const realDefaultValue = getRealDefaultValue(defaultValue);
+        const realDefaultValue = defaultValue === void 0 ? null : defaultValue;
         if (keyPathArr.length === 0) {
             return realDefaultValue;
         }
@@ -590,12 +587,7 @@ let UTSJSONObject$1 = class UTSJSONObject {
         for (let i = 0; i < keyPathArr.length; i++) {
             const key = keyPathArr[i];
             if (value instanceof Object) {
-                if (key in value) {
-                    value = value[key];
-                }
-                else {
-                    return realDefaultValue;
-                }
+                value = key in value ? value[key] : realDefaultValue;
             }
             else {
                 return realDefaultValue;
@@ -610,57 +602,51 @@ let UTSJSONObject$1 = class UTSJSONObject {
         this[key] = value;
     }
     getAny(key, defaultValue) {
-        const realDefaultValue = getRealDefaultValue(defaultValue);
-        return this._getValue(key, realDefaultValue);
+        return this._getValue(key, defaultValue);
     }
     getString(key, defaultValue) {
-        const realDefaultValue = getRealDefaultValue(defaultValue);
-        const value = this._getValue(key, realDefaultValue);
+        const value = this._getValue(key, defaultValue);
         if (typeof value === 'string') {
             return value;
         }
         else {
-            return realDefaultValue;
+            return null;
         }
     }
     getNumber(key, defaultValue) {
-        const realDefaultValue = getRealDefaultValue(defaultValue);
-        const value = this._getValue(key, realDefaultValue);
+        const value = this._getValue(key, defaultValue);
         if (typeof value === 'number') {
             return value;
         }
         else {
-            return realDefaultValue;
+            return null;
         }
     }
     getBoolean(key, defaultValue) {
-        const realDefaultValue = getRealDefaultValue(defaultValue);
-        const boolean = this._getValue(key, realDefaultValue);
+        const boolean = this._getValue(key, defaultValue);
         if (typeof boolean === 'boolean') {
             return boolean;
         }
         else {
-            return realDefaultValue;
+            return null;
         }
     }
     getJSON(key, defaultValue) {
-        const realDefaultValue = getRealDefaultValue(defaultValue);
-        let value = this._getValue(key, realDefaultValue);
+        let value = this._getValue(key, defaultValue);
         if (value instanceof Object) {
             return value;
         }
         else {
-            return realDefaultValue;
+            return null;
         }
     }
     getArray(key, defaultValue) {
-        const realDefaultValue = getRealDefaultValue(defaultValue);
-        let value = this._getValue(key, realDefaultValue);
+        let value = this._getValue(key, defaultValue);
         if (value instanceof Array) {
             return value;
         }
         else {
-            return realDefaultValue;
+            return null;
         }
     }
     toMap() {
