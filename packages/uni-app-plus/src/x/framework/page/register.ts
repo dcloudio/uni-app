@@ -378,12 +378,10 @@ function createVuePage(
   pageOptions: PageNodeOptions,
   nativePage: IPage
 ) {
-  const document = nativePage.document
-  const body = document.body
+  const pageNode = nativePage.document.body
   const app = getVueApp()
   const component = pagesMap.get(__pagePath)!()
   const mountPage = (component: VuePageComponent) =>
-    // TODO x
     app.mountPage(
       component,
       {
@@ -392,8 +390,7 @@ function createVuePage(
         __pageQuery,
         __pageInstance,
       },
-      body as unknown as UniNode,
-      document
+      pageNode as unknown as UniNode
     )
   if (isPromise(component)) {
     return component.then((component) => mountPage(component))
