@@ -353,7 +353,10 @@ export function syncEasyComFile(apiDirs: string[]) {
         // 目前仅限web端编译，所以没有utssdk目录
         if (!fs.existsSync(path.resolve(moduleDir, 'utssdk'))) {
           const componentsDir = path.resolve(moduleDir, 'components')
-          if (fs.existsSync(componentsDir)) {
+          if (
+            fs.existsSync(componentsDir) &&
+            fs.existsSync(path.resolve(moduleDir, 'package.json'))
+          ) {
             const packageJson = require(path.resolve(moduleDir, 'package.json'))
             // 当前 easycom 平台禁用
             if (packageJson.uni_modules?.easycom?.web === false) {
