@@ -12,7 +12,10 @@ import {
   uniRemoveCssScopedPlugin,
   uniUVueTypeScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
-import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
+import {
+  isAppIOSUVueNativeTag,
+  isAppHarmonyUVueNativeTag,
+} from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
 import { replacePagePaths, syncPagesFile, uts2ts } from '../../scripts/ext-api'
 
@@ -84,6 +87,8 @@ const rollupPlugins = [
 type X_RUNTIME_PLATFORM = 'app-harmony' | 'app-ios'
 
 function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
+  const isNativeTag =
+    platform === 'app-ios' ? isAppIOSUVueNativeTag : isAppHarmonyUVueNativeTag
   return {
     root: __dirname,
     define: {
@@ -156,7 +161,7 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
         customElement: true,
         template: {
           compilerOptions: {
-            isNativeTag: isAppIOSUVueNativeTag,
+            isNativeTag,
             expressionPlugins: ['typescript'],
           },
         },
@@ -164,7 +169,7 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
           babelParserPlugins: ['typescript'],
         },
       }),
-      vueJsx({ optimize: true, isCustomElement: isAppIOSUVueNativeTag }),
+      vueJsx({ optimize: true, isCustomElement: isNativeTag }),
       replacePagePaths(
         platform === 'app-ios' ? systemPagePathsIOS : systemPagePathsHarmony
       ),
