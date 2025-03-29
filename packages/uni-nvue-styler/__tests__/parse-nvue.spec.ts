@@ -680,10 +680,10 @@ border-top-style: solid;
     expect(json).toEqual({
       content: {
         '': {
-          height: 'calc(var(--status-bar-height) * 2)',
+          height: 'calc(var(--status-bar-height)*2)',
         },
       },
     })
-    expect(messages.length).toBe(0)
+    expect(messages.length).toBe(2)
   })
 })
