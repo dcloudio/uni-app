@@ -162,7 +162,12 @@ export function uniAppCssPlugin(): Plugin {
           resolvedConfig.logger.warn(msg)
         }
       })
-      return { code: source }
+      return {
+        code: source,
+        map: {
+          mappings: '',
+        },
+      }
     },
   }
 }
