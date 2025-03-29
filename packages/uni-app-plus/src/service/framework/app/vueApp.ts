@@ -8,29 +8,20 @@ import {
 } from 'vue'
 import type { VuePageComponent } from '../page/define'
 import { getAllPages } from '../page/getCurrentPages'
-import type { UniDocument } from '@dcloudio/uni-app-x/types/native'
 
 interface VueApp extends App {
   mountPage: (
     pageComponent: VuePageComponent,
     pageProps: Record<string, any>,
-    pageContainer: UniNode,
-    document?: UniDocument
+    pageContainer: UniNode
   ) => ComponentPublicInstance
-  unmountPage: (
-    pageInstance: ComponentPublicInstance,
-    document?: UniDocument
-  ) => void
+  unmountPage: (pageInstance: ComponentPublicInstance) => void
 }
 
 let vueApp: VueApp
 
 export function getVueApp() {
   return vueApp
-}
-
-export function setVueApp(app: VueApp) {
-  vueApp = app
 }
 
 export function initVueApp(appVm: ComponentPublicInstance) {
