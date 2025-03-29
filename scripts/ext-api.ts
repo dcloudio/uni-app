@@ -214,6 +214,11 @@ export function syncPagesFile(
               const hasRootIndex = fs.existsSync(
                 path.resolve(utssdkDir, 'index.uts')
               )
+              const pagePath = `/uni_modules/${module}/pages/${page}/${page}`
+              // 为啥服务器上会有重复？
+              if (systemPagePaths[pagePath]) {
+                return
+              }
               if (platform === 'web') {
                 const hasWeb =
                   hasRootIndex ||
@@ -224,9 +229,7 @@ export function syncPagesFile(
                     `// @ts-expect-error\nexport * from '@dcloudio/uni-ext-api/${module}'`
                   )
                 }
-                systemPagePaths[
-                  `/uni_modules/${module}/pages/${page}/${page}`
-                ] = `uni:${page}`
+                systemPagePaths[pagePath] = `uni:${page}`
               } else if (platform === 'app-ios' || platform === 'app-harmony') {
                 // 有customElements目录，比如picker
                 const hasCustomElements = fs.existsSync(
@@ -264,9 +267,7 @@ export function syncPagesFile(
     disableSwipeBack: false,
   })`
                 )
-                systemPagePaths[
-                  `/uni_modules/${module}/pages/${page}/${page}`
-                ] = `uni:${page}`
+                systemPagePaths[pagePath] = `uni:${page}`
               }
             }
           })
