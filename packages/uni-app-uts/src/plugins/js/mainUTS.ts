@@ -23,7 +23,9 @@ export function uniAppJsEngineMainPlugin(): Plugin {
           ${code}
           createApp().app.mount("#app");
           `,
-          map: null,
+          map: {
+            mappings: '',
+          },
         }
       }
     },
