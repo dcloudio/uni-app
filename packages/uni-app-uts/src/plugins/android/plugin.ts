@@ -197,7 +197,12 @@ export function uniAppPlugin(): UniVitePlugin {
         code,
         createTryResolve(id, this.resolve.bind(this))
       )
-      return code
+      return {
+        code,
+        map: {
+          mappings: '',
+        },
+      }
     },
     generateBundle(_, bundle) {
       if (!isNormalCompileTarget()) {
