@@ -613,12 +613,7 @@ export async function compile(
       input.fileContent = componentsCode
     } else {
       input.fileContent =
-        fs.readFileSync(
-          resolveBundleInputFileName('app-android', input.filename),
-          'utf8'
-        ) +
-        `\n` +
-        componentsCode
+        fs.readFileSync(input.filename, 'utf8') + `\n` + componentsCode
     }
   } else {
     // uts文件不存在，且也无组件
