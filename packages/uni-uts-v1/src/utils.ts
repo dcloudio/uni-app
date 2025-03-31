@@ -1069,7 +1069,7 @@ export function resolveBundleInputFileName(
     // 云端uni_modules编译，传入的已经是真实地址 uni-cli-shared/vite/cloud.ts:190
     (isNormalCompileTarget() || process.env.UNI_COMPILE_TARGET === 'ext-api')
   ) {
-    const uvueDir = uvueOutDir(platform)
+    const uvueDir = normalizePath(uvueOutDir(platform))
     if (!fileName.startsWith(uvueDir)) {
       return normalizePath(
         path.resolve(
