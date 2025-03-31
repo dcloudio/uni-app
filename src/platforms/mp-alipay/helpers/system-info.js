@@ -17,8 +17,9 @@ function addUuid (result) {
 
 function normalizePlatform (result) {
   let platform = result.platform ? result.platform.toLowerCase() : 'devtools'
-  if (!~['android', 'ios'].indexOf(platform)) {
-    platform = 'devtools'
+  if (my.canIUse('isIDE')) {
+    // @ts-expect-error Property 'isIDE' does not exist on type 'typeof my'
+    platform = my.isIDE ? 'devtools' : platform
   }
   result.platform = platform
 }
@@ -36,7 +37,7 @@ export default {
     reviseScreenSize(result)
     addUuid(result)
     addSafeAreaInsets(result)
-    normalizePlatform(result)
     populateParameters(result)
+    normalizePlatform(result)
   }
 }
