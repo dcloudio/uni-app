@@ -129,6 +129,7 @@ export function populateParameters(
   // SDKVersion
   let _SDKVersion = SDKVersion
   if (__PLATFORM__ === 'mp-alipay') {
+    // @ts-expect-error
     _SDKVersion = my.SDKVersion
   }
 
