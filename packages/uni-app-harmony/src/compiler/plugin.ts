@@ -212,7 +212,7 @@ const DefaultModule = {
 
 function getManifestModules(inputDir: string) {
   const manifest = parseManifestJsonOnce(inputDir)
-  const modules = manifest?.[isX ? 'app' : 'app-harmony']?.distribute?.modules
+  const modules = manifest?.['app-harmony']?.distribute?.modules
   const realModules = {}
   for (const moduleName in modules) {
     if (DefaultModule[moduleName]) {
