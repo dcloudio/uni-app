@@ -65,10 +65,6 @@ function handleSystemInfo(
   if (my.canIUse('isIDE')) {
     // @ts-expect-error Property 'isIDE' does not exist on type 'typeof my'
     platform = my.isIDE ? 'devtools' : platform
-  } else {
-    if (!~['android', 'ios'].indexOf(platform)) {
-      platform = 'devtools'
-    }
   }
   toRes.platform = platform
 }
