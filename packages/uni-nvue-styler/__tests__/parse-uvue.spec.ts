@@ -167,7 +167,7 @@ describe('uvue-style', () => {
             height: calc(var(--status-bar-height) * 2);
         }
         `,
-      { type: 'uvue', map: true, ts: true }
+      { type: 'uvue', platform: 'app-android', map: true, ts: true }
     )
     expect(messages).toHaveLength(0)
     expect(code).toMatchSnapshot()
@@ -201,6 +201,66 @@ describe('uvue-style', () => {
     )
     expect(code).toMatchSnapshot()
     expect(messages).toHaveLength(0)
+  })
+
+  test('css var --uni-safe-area-inset-[postion]', async () => {
+    const { code, messages } = await parse(
+      `
+.foo {
+  padding-top: var(
+  --uni-safe-area-inset-top,
+  10px);
+}
+.bar {
+  padding-top: var(--uni-safe-area-inset-top);
+}
+
+`,
+      { type: 'uvue', platform: 'app-android' }
+    )
+
+    expect(JSON.parse(code)).toEqual({
+      foo: {
+        '': {
+          paddingTop: 'var(--uni-safe-area-inset-top,10px)',
+        },
+      },
+      bar: {
+        '': {
+          paddingTop: 'var(--uni-safe-area-inset-top)',
+        },
+      },
+    })
+    expect(messages.length).toBe(0)
+  })
+
+  test('css var and calc', async () => {
+    const { code, messages } = await parse(
+      `.foo {
+        margin-top: var(--window-top);
+        margin-left: var(--window-bottom);
+        margin-right: var(--window-top);
+        padding-top: calc(var(--window-top) - 1px);
+        padding-left: calc(var(--window-bottom) - 1px);
+        height: calc(100vh - var(--window-top) - var(--status-bar-height) - 80px - 46px);
+      }
+  `,
+      { type: 'uvue', platform: 'app-android' }
+    )
+    expect(JSON.parse(code)).toEqual({
+      foo: {
+        '': {
+          height:
+            'calc(100vh - CSS_VAR_WINDOW_TOP - CSS_VAR_STATUS_BAR_HEIGHT - 80px - 46px)',
+          marginTop: 'var(--window-top)',
+          marginRight: 'var(--window-top)',
+          marginLeft: 'var(--window-bottom)',
+          paddingLeft: 'calc(CSS_VAR_WINDOW_BOTTOM - 1px)',
+          paddingTop: 'calc(CSS_VAR_WINDOW_TOP - 1px)',
+        },
+      },
+    })
+    expect(messages.length).toBe(0)
   })
 })
 

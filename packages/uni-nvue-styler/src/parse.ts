@@ -53,9 +53,9 @@ export async function parse(input: string, options: ParseOptions = {}) {
   let code = JSON.stringify(obj)
   if (options.type === 'uvue') {
     // TODO 暂时仅简易转换 CSS 变量
-    code = code.replace(/\:\s*"(.+?)"/g, function (str, p1) {
-      return isExpr(p1) ? `:${p1}` : str
-    })
+    // code = code.replace(/\:\s*"(.+?)"/g, function (str, p1) {
+    //   return isExpr(p1) ? `:${p1}` : str
+    // })
   }
   return { code, messages }
 }

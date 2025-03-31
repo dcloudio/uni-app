@@ -98,7 +98,8 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
   const normalize = getNormalizeMap(options)[name]
 
   if (options.type === 'uvue') {
-    if (hasCssVar(value)) {
+    // calc 函数沿用大写字符串
+    if (hasCalc(value)) {
       return {
         value: normalizeCssVar(value),
         log,
@@ -139,8 +140,8 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
   }
 }
 
-function hasCssVar(value: string) {
-  return value.includes('var(')
+function hasCalc(value: string) {
+  return value.includes('calc(')
 }
 
 function normalizeCssVar(value: string) {

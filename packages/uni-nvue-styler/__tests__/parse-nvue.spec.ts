@@ -505,14 +505,10 @@ zIndex: 4;
 }
 `)
 
-    expect(json).toEqual({
-      foo: {
-        '': {
-          paddingTop: 'env(safe-area-inset-top,20px)',
-        },
-      },
-    })
-    expect(messages.length).toBe(0)
+    // not support
+    expect(json).toEqual({})
+    expect(messages.length).toBe(1)
+    expect(messages[0].text.includes('not supported')).toBe(true)
   })
 
   test('css var --uni-safe-area-inset-[postion]', async () => {
@@ -524,15 +520,9 @@ zIndex: 4;
 }
 `)
 
-    expect(json).toEqual({
-      foo: {
-        '': {
-          paddingTop: 'var(--uni-safe-area-inset-top,10px)',
-        },
-      },
-    })
-    expect(messages.length).toBe(0)
-
+    expect(json).toEqual({})
+    expect(messages.length).toBe(1)
+    expect(messages[0].text.includes('not supported')).toBe(true)
     const res2 = await objectifierRule(`
 .foo {
   padding-top: var(
@@ -541,14 +531,9 @@ zIndex: 4;
 }
 `)
 
-    expect(res2.json).toEqual({
-      foo: {
-        '': {
-          paddingTop: 'var(--uni-safe-area-inset-top)',
-        },
-      },
-    })
-    expect(res2.messages.length).toBe(0)
+    expect(res2.json).toEqual({})
+    expect(messages.length).toBe(1)
+    expect(messages[0].text.includes('not supported')).toBe(true)
   })
 
   test('css var --status-bar-height', async () => {
@@ -564,19 +549,10 @@ zIndex: 4;
 }
 `)
 
-    expect(json).toEqual({
-      foo: {
-        '': {
-          height: 'var(--status-bar-height)',
-        },
-      },
-      bar: {
-        '': {
-          height: 'var(--status-bar-height,10px)',
-        },
-      },
-    })
-    expect(messages.length).toBe(0)
+    expect(json).toEqual({})
+    expect(messages.length).toBe(2)
+    expect(messages[0].text.includes('not supported')).toBe(true)
+    expect(messages[1].text.includes('not supported')).toBe(true)
   })
 
   // text-shadow nvue 不支持,uvue 支持
@@ -669,21 +645,17 @@ border-top-style: solid;
     expect(messages.length).toBe(0)
   })
 
-  test.only('css class', async () => {
+  test('css class', async () => {
     const { json, messages } = await objectifierRule(`
  .content {
             top: calc(var(--window-top) + 10px);
             bottom: calc(10px - var(--window-bottom));
             height: calc(var(--status-bar-height) * 2);
+            width: var(--window-width);
+            height: var(--window-width, 1px);
         }
 `)
-    expect(json).toEqual({
-      content: {
-        '': {
-          height: 'calc(var(--status-bar-height)*2)',
-        },
-      },
-    })
-    expect(messages.length).toBe(2)
+    expect(json).toEqual({})
+    expect(messages.length).toBe(5)
   })
 })
