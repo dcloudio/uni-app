@@ -86,12 +86,7 @@ export async function transformStyle(
   options: ResolvedOptions,
   pluginContext: TransformPluginContext,
   filename: string
-): Promise<{
-  code: string
-  map: {
-    mappings: ''
-  }
-} | null> {
+) {
   const block = descriptor.styles[index]
   // vite already handles pre-processors and CSS module so this is only
   // applying SFC-specific transforms like scoped mode and CSS vars rewrite (v-bind(var))
@@ -118,8 +113,6 @@ export async function transformStyle(
 
   return {
     code: result.code,
-    map: {
-      mappings: '',
-    },
+    map: null,
   }
 }
