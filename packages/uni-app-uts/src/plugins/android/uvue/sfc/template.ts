@@ -72,8 +72,8 @@ export function resolveGenTemplateCodeOptions(
       }
       return source
     },
-    onWarn(warning) {
-      if (pluginContext) {
+    onWarn(warning: CompilerError & { errorType?: 'css' }) {
+      if (pluginContext && warning.errorType !== 'css') {
         pluginContext.warn(
           createRollupError(
             '',
@@ -92,8 +92,8 @@ export function resolveGenTemplateCodeOptions(
         )
       }
     },
-    onError(error) {
-      if (pluginContext) {
+    onError(error: CompilerError & { errorType?: 'css' }) {
+      if (pluginContext && error.errorType !== 'css') {
         pluginContext.error(
           createRollupError(
             '',
@@ -118,7 +118,7 @@ function onTemplateLog(
   relativeFileName: string,
   templateStartLine: number
 ) {
-  console.error(type + ': ' + error.message)
+  console[type](type + ': ' + error.message)
   if (error.loc) {
     const start = error.loc.start
     console.log(
