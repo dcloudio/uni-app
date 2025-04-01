@@ -241,21 +241,6 @@
       "GetDeviceInfo"
     ],
     [
-      "GetLocationFail"
-    ],
-    [
-      "GetLocation"
-    ],
-    [
-      "GetLocationSuccess"
-    ],
-    [
-      "GetLocationOptions"
-    ],
-    [
-      "UniLocationProvider"
-    ],
-    [
       "GetProviderSuccess"
     ],
     [
@@ -305,6 +290,21 @@
     ],
     [
       "HideKeyboardOptions"
+    ],
+    [
+      "GetLocationFail"
+    ],
+    [
+      "GetLocation"
+    ],
+    [
+      "GetLocationSuccess"
+    ],
+    [
+      "GetLocationOptions"
+    ],
+    [
+      "UniLocationProvider"
     ],
     [
       "MakePhoneCall"
