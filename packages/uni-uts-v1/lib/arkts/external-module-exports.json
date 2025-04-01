@@ -1,5 +1,5 @@
 {
-  "@dcloudio/uni-facialVerify": [
+  "@uni_modules/uni-facialverify": [
     [
       "FacialRecognitionVerifyErrorCode"
     ],
@@ -31,32 +31,27 @@
       "StartFacialRecognitionVerifySuccessCallback"
     ]
   ],
-  "@dcloudio/uni-getLocation-system": [
-    [
-      "UniLocationSystemProvider"
-    ]
-  ],
-  "@dcloudio/uni-oauth-huawei": [
+  "@uni_modules/uni-oauth-huawei": [
     [
       "UniOAuthHuaweiProvider"
     ]
   ],
-  "@dcloudio/uni-payment-alipay": [
+  "@uni_modules/uni-payment-alipay": [
     [
       "UniPaymentAlipayProvider"
     ]
   ],
-  "@dcloudio/uni-payment-huawei": [
+  "@uni_modules/uni-payment-huawei": [
     [
       "UniPaymentHuaweiProvider"
     ]
   ],
-  "@dcloudio/uni-payment-wxpay": [
+  "@uni_modules/uni-payment-wxpay": [
     [
       "UniPaymentWxpayProvider"
     ]
   ],
-  "@dcloudio/uni-push": [
+  "@uni_modules/uni-push": [
     [
       "BadgeOptions"
     ],
@@ -136,7 +131,7 @@
       "SetPushChannelOptions"
     ]
   ],
-  "@dcloudio/uni-verify": [
+  "@uni_modules/uni-verify": [
     [
       "GetUniVerifyManager"
     ],
