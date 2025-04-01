@@ -24,7 +24,7 @@ var ExternalModuls = [
 	},
 	{
 		type: "provider",
-		plugin: "uni-getLocation-system",
+		plugin: "uni-location-system",
 		provider: "system",
 		service: "location",
 		version: "1.0.0"
@@ -92,7 +92,7 @@ var ExternalModulesX = [
 	},
 	{
 		type: "provider",
-		plugin: "uni-getLocation-system",
+		plugin: "uni-location-system",
 		provider: "system",
 		service: "location",
 		version: "1.0.0"
@@ -293,7 +293,7 @@ const DefaultModule = {
 };
 function getManifestModules(inputDir) {
     const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
-    const modules = manifest?.[isX ? 'app' : 'app-harmony']?.distribute?.modules;
+    const modules = manifest?.['app-harmony']?.distribute?.modules;
     const realModules = {};
     for (const moduleName in modules) {
         if (DefaultModule[moduleName]) {

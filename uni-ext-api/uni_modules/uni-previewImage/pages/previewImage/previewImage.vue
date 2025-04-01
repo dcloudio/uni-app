@@ -1,25 +1,25 @@
 <template>
-	<swiper style="flex: 1;background-color: black;" :indicator-dots="false" :circular="loop" :current="current" @change="onPreviewImageChanged" :disable-touch="disableTouch">
+	<swiper style="flex: 1;background-color: black;" :indicator-dots="false" :circular="loop" :current="current"
+		@change="onPreviewImageChanged" :disable-touch="disableTouch">
 		<swiper-item v-if="urls != null" v-for="(item,index) in urls">
-			<uniPreviewImageItem :index="index" :src="item" :longPressAction="longPressAction"></uniPreviewImageItem>
+			<uniPreviewImageItem :index="index" :src="item" :longPressAction="longPressAction" :tips="tips">
+			</uniPreviewImageItem>
 		</swiper-item>
 	</swiper>
-	<view ref="numberIndicator" v-if="indicator == 'number'" class="uni-preview-image-number-indicator">
-		<text class="uni-preview-image-number-indicator-text">{{numberIndicator}}</text>
+	<view ref="numberIndicator" v-if="indicator == 'number'" class="uni-preview-image-number-indicator-layout">
+		<text class="uni-preview-image-number-indicator">{{numberIndicator}}</text>
 	</view>
-	<view ref="defaultIndicator" class="uni-preview-image-default-indicator" v-if="indicator == 'default'" v-show="urls!=null">
-		<view v-for="i in urls!.length" class="uni-preview-image-indicator-style" :style="{backgroundColor:((current+1) == i) ? '#ffffff':'#AAAAAA'}">
+	<view ref="defaultIndicator" class="uni-preview-image-default-indicator-layout" v-if="indicator == 'default'"
+		v-show="urls!=null">
+		<view v-for="i in urls!.length" class="uni-preview-image-default-indicator" :class="((current+1) == i) ?'uni-preview-image-default-indicator-active' : 'uni-preview-image-default-indicator-default'">
 		</view>
 	</view>
 </template>
 
 <script>
-	// #ifdef WEB
-	import { LongPressActionsOptions } from '@/uni_modules/uni-previewImage';
-	// #endif
 	import uniPreviewImageItem from "../../components/uni-previewImageItem/uni-previewImageItem.vue"
 	export default {
-		components:{
+		components: {
 			uniPreviewImageItem
 		},
 		data() {
@@ -35,7 +35,8 @@
 				// #endif
 				numberIndicator: "",
 				indicator: "number",
-				longPressAction: null as LongPressActionsOptions | null
+				longPressAction: null as LongPressActionsOptions | null,
+				tips: null as UTSJSONObject | null
 			}
 		},
 		onLoad() {
@@ -90,6 +91,9 @@
 				if (result["indicator"] != null) {
 					this.indicator = result["indicator"] as string
 				}
+				if (result["tips"] != null) {
+					this.tips = result["tips"] as UTSJSONObject | null
+				}
 				if (result["longPressActions"] != null) {
 					this.longPressAction = {
 						itemList: (result["longPressActions"] as UTSJSONObject)["itemList"] as string[],
@@ -118,7 +122,7 @@
 	}
 </script>
 <style>
-	.uni-preview-image-indicator-style {
+	.uni-preview-image-default-indicator {
 		width: 9px;
 		height: 9px;
 		border-style: solid;
@@ -127,8 +131,16 @@
 		border-width: .1px;
 		border-color: #AAAAAA;
 	}
+	
+	.uni-preview-image-default-indicator-default {
+		background-color: #AAAAAA;
+	}
+	
+	.uni-preview-image-default-indicator-active {
+		background-color: #ffffff;
+	}
 
-	.uni-preview-image-default-indicator {
+	.uni-preview-image-default-indicator-layout {
 		flex-direction: row;
 		position: absolute;
 		bottom: 0px;
@@ -137,13 +149,13 @@
 		justify-content: center;
 	}
 
-	.uni-preview-image-number-indicator {
+	.uni-preview-image-number-indicator-layout {
 		position: absolute;
 		left: 0;
 		right: 0;
 	}
 
-	.uni-preview-image-number-indicator-text {
+	.uni-preview-image-number-indicator {
 		color: white;
 		font-size: 16px;
 		margin: auto;

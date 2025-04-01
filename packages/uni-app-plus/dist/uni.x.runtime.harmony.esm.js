@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, createVNode, render, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
+import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -615,8 +615,34 @@ var vueApp;
 function getVueApp() {
   return vueApp;
 }
-function setVueApp(app) {
-  vueApp = app;
+function initVueApp(appVm) {
+  var internalInstance = appVm.$;
+  Object.defineProperty(internalInstance.ctx, "$children", {
+    get() {
+      return getAllPages().map((page) => page.$vm);
+    }
+  });
+  var appContext = internalInstance.appContext;
+  vueApp = extend(appContext.app, {
+    mountPage(pageComponent, pageProps, pageContainer) {
+      var vnode = createVNode(pageComponent, pageProps);
+      vnode.appContext = appContext;
+      vnode.__page_container__ = pageContainer;
+      render(vnode, pageContainer);
+      var publicThis = vnode.component.proxy;
+      publicThis.__page_container__ = pageContainer;
+      return publicThis;
+    },
+    unmountPage: (pageInstance) => {
+      var {
+        __page_container__
+      } = pageInstance;
+      if (__page_container__) {
+        __page_container__.isUnmounted = true;
+        render(null, __page_container__);
+      }
+    }
+  });
 }
 function getPage$BasePage(page) {
   return page.$basePage;
@@ -2013,19 +2039,15 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   return nativePage;
 }
 function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage) {
-  var document = nativePage.document;
-  var body = document.body;
+  var pageNode = nativePage.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
-  var mountPage = (component2) => (
-    // TODO x
-    app.mountPage(component2, {
-      __pageId,
-      __pagePath,
-      __pageQuery,
-      __pageInstance
-    }, body, document)
-  );
+  var mountPage = (component2) => app.mountPage(component2, {
+    __pageId,
+    __pagePath,
+    __pageQuery,
+    __pageInstance
+  }, pageNode);
   if (isPromise(component)) {
     return component.then((component2) => mountPage(component2));
   }
@@ -2486,36 +2508,6 @@ function onLaunchWebviewReady() {
 }
 function initSubscribeHandlers() {
   subscribeWebviewReady();
-}
-function initVueApp(appVm) {
-  var internalInstance = appVm.$;
-  Object.defineProperty(internalInstance.ctx, "$children", {
-    get() {
-      return getAllPages().map((page) => page.$vm);
-    }
-  });
-  var appContext = internalInstance.appContext;
-  var vueApp2 = extend(appContext.app, {
-    mountPage(pageComponent, pageProps, pageContainer, document) {
-      var vnode = createVNode(pageComponent, pageProps);
-      vnode.appContext = appContext;
-      vnode.__page_container__ = pageContainer;
-      render(document, vnode, pageContainer);
-      var publicThis = vnode.component.proxy;
-      publicThis.__page_container__ = pageContainer;
-      return publicThis;
-    },
-    unmountPage: (pageInstance, document) => {
-      var {
-        __page_container__
-      } = pageInstance;
-      if (__page_container__) {
-        __page_container__.isUnmounted = true;
-        render(document, null, __page_container__);
-      }
-    }
-  });
-  setVueApp(vueApp2);
 }
 function asyncGeneratorStep(n, t, e, r, o, a, c) {
   try {
@@ -6190,7 +6182,7 @@ const index = /* @__PURE__ */ Object.defineProperty({
   Radio: radio$1,
   RadioGroup: radioGroup$1
 }, Symbol.toStringTag, { value: "Module" });
-const _sfc_main$5 = {
+const _sfc_main$6 = {
   data() {
     return {
       show: false,
@@ -6324,7 +6316,7 @@ const _sfc_main$5 = {
     }
   }
 };
-const _style_0$5 = {
+const _style_0$6 = {
   "uni-action-sheet_dialog__mask": {
     "": {
       "position": "fixed",
@@ -6520,8 +6512,8 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-var _hoisted_1$4 = ["onClick"];
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$5 = ["onClick"];
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", null, [createElementVNode("view", {
     class: normalizeClass(["uni-action-sheet_dialog__mask", {
       "uni-action-sheet_dialog__mask__show": $data.show
@@ -6586,7 +6578,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
       class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
         "uni-action-sheet_dark__mode": $data.theme == "dark"
       }])
-    }, toDisplayString(item), 7)], 10, _hoisted_1$4)]);
+    }, toDisplayString(item), 7)], 10, _hoisted_1$5)]);
   }), 128))], 2)], 6), createElementVNode("view", {
     style: normalizeStyle($data.backgroundColor != null ? {
       backgroundColor: $data.backgroundColor
@@ -6613,7 +6605,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     })
   }, null, 4)) : createCommentVNode("", true)], 2)]);
 }
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["styles", [_style_0$5]]]);
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6], ["styles", [_style_0$6]]]);
 var defaultPoi = {
   latitude: 39.908823,
   longitude: 116.39747
@@ -6639,7 +6631,7 @@ var languageData = {
   }
 };
 var loadingPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
-const _sfc_main$4 = {
+const _sfc_main$5 = {
   data() {
     var id1 = "UniMap1_".concat((Math.random() * 1e6).toString(36));
     var id2 = "UniMap2_".concat((Math.random() * 1e6).toString(36));
@@ -6927,15 +6919,17 @@ const _sfc_main$4 = {
                 this.pois.unshift(newPoi);
               }
             }
+            this.searchLoading = false;
             if (this.selected == -1) {
-              this.selected = 0;
+              setTimeout(() => {
+                this.selected = 0;
+              }, 20);
               this.lastPoi.latitude = this.latitude;
               this.lastPoi.longitude = this.longitude;
               this.lastPoi.selected = this.selected;
               this.lastPoi.pois = this.pois;
             }
           }
-          this.searchLoading = false;
         }).catch((err) => {
           this.searchLoading = false;
         });
@@ -7198,7 +7192,7 @@ const _sfc_main$4 = {
     }
   }
 };
-const _style_0$4 = {
+const _style_0$5 = {
   "uni-choose-location-icons": {
     "": {
       "fontFamily": "UniChooseLocationFontFamily",
@@ -7630,32 +7624,32 @@ const _style_0$4 = {
     }
   }
 };
-var _hoisted_1$3 = ["id"];
-var _hoisted_2$3 = {
+var _hoisted_1$4 = ["id"];
+var _hoisted_2$4 = {
   class: "uni-choose-location-icons uni-choose-location-map-target-icon"
 };
-var _hoisted_3$3 = {
+var _hoisted_3$4 = {
   class: "uni-choose-location-icons uni-choose-location-map-reset-icon"
 };
-var _hoisted_4$3 = {
+var _hoisted_4$4 = {
   class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text"
 };
-var _hoisted_5$1 = {
+var _hoisted_5$2 = {
   class: "uni-choose-location-poi-search"
 };
-var _hoisted_6$1 = {
+var _hoisted_6$2 = {
   class: "uni-choose-location-poi-search-box"
 };
-var _hoisted_7 = {
+var _hoisted_7$1 = {
   class: "uni-choose-location-icons uni-choose-location-search-icon"
 };
-var _hoisted_8 = ["placeholder"];
-var _hoisted_9 = ["id", "scroll-top"];
-var _hoisted_10 = {
+var _hoisted_8$1 = ["placeholder"];
+var _hoisted_9$1 = ["id", "scroll-top"];
+var _hoisted_10$1 = {
   key: 0,
   class: "uni-choose-location-poi-search-error"
 };
-var _hoisted_11 = {
+var _hoisted_11$1 = {
   class: "uni-choose-location-poi-search-error-text"
 };
 var _hoisted_12 = {
@@ -7689,7 +7683,7 @@ var _hoisted_21 = {
   class: "uni-choose-location-poi-search-loading"
 };
 var _hoisted_22 = ["src"];
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_map = resolveComponent("map");
   return openBlock(), createElementBlock("view", {
     class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
@@ -7714,13 +7708,13 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     class: "uni-choose-location-map-target",
     ref: $data.mapTargetId,
     id: $data.mapTargetId
-  }, [createElementVNode("text", _hoisted_2$3, toDisplayString($data.icon.target), 1)], 8, _hoisted_1$3), createElementVNode("view", {
+  }, [createElementVNode("text", _hoisted_2$4, toDisplayString($data.icon.target), 1)], 8, _hoisted_1$4), createElementVNode("view", {
     class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
     onClick: _cache[0] || (_cache[0] = function() {
       return $options.mapReset && $options.mapReset(...arguments);
     }),
     style: normalizeStyle($options.resetStyleCom)
-  }, [createElementVNode("text", _hoisted_3$3, toDisplayString($data.icon.position), 1)], 6)], 6), createElementVNode("view", {
+  }, [createElementVNode("text", _hoisted_3$4, toDisplayString($data.icon.position), 1)], 6)], 6), createElementVNode("view", {
     class: "uni-choose-location-nav",
     style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
   }, [createElementVNode("view", {
@@ -7737,11 +7731,11 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function() {
       return $options.confirm && $options.confirm(...arguments);
     })
-  }, [createElementVNode("text", _hoisted_4$3, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
+  }, [createElementVNode("text", _hoisted_4$4, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
     style: normalizeStyle($options.poiBoxStyleCom)
-  }, [createElementVNode("view", _hoisted_5$1, [createElementVNode("view", _hoisted_6$1, [createElementVNode("text", _hoisted_7, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
+  }, [createElementVNode("view", _hoisted_5$2, [createElementVNode("view", _hoisted_6$2, [createElementVNode("text", _hoisted_7$1, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
     "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $data.searchValue = $event),
     type: "text",
     placeholder: $options.languageCom["search"],
@@ -7751,7 +7745,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     onInput: _cache[6] || (_cache[6] = function() {
       return $options.searchValueChange && $options.searchValueChange(...arguments);
     })
-  }, null, 40, _hoisted_8), [[vModelText, $data.searchValue]])]), $data.isFocus || $data.searchValue != "" ? (openBlock(), createElementBlock("text", {
+  }, null, 40, _hoisted_8$1), [[vModelText, $data.searchValue]])]), $data.isFocus || $data.searchValue != "" ? (openBlock(), createElementBlock("text", {
     key: 0,
     class: "uni-choose-location-poi-search-cancel",
     onClick: _cache[7] || (_cache[7] = function() {
@@ -7768,7 +7762,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.scrolltolower && $options.scrolltolower(...arguments);
     }),
     class: "uni-choose-location-poi-list"
-  }, [$data.errMsg != "" ? (openBlock(), createElementBlock("view", _hoisted_10, [createElementVNode("text", _hoisted_11, toDisplayString($data.errMsg), 1)])) : $data.locationLoading ? (openBlock(), createElementBlock("view", _hoisted_12, [createElementVNode("text", _hoisted_13, toDisplayString($options.languageCom["locationLoading"]), 1)])) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createElementBlock("view", _hoisted_14, [createElementVNode("image", {
+  }, [$data.errMsg != "" ? (openBlock(), createElementBlock("view", _hoisted_10$1, [createElementVNode("text", _hoisted_11$1, toDisplayString($data.errMsg), 1)])) : $data.locationLoading ? (openBlock(), createElementBlock("view", _hoisted_12, [createElementVNode("text", _hoisted_13, toDisplayString($options.languageCom["locationLoading"]), 1)])) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createElementBlock("view", _hoisted_14, [createElementVNode("image", {
     src: $data.loadingPath,
     class: "uni-choose-location-poi-search-loading-image",
     mode: "widthFix",
@@ -7786,10 +7780,10 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     class: "uni-choose-location-poi-search-loading-image",
     mode: "widthFix",
     style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
-  }, null, 12, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9)], 6)) : createCommentVNode("", true)], 2);
+  }, null, 12, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9$1)], 6)) : createCommentVNode("", true)], 2);
 }
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
-const _sfc_main$3 = {
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["styles", [_style_0$5]]]);
+const _sfc_main$4 = {
   data() {
     return {
       theme: "light",
@@ -7946,7 +7940,7 @@ const _sfc_main$3 = {
     }
   }
 };
-const _style_0$3 = {
+const _style_0$4 = {
   "uni-modal_dialog__mask": {
     "": {
       "display": "flex",
@@ -7974,10 +7968,10 @@ const _style_0$3 = {
       "borderTopRightRadius": 8,
       "borderBottomRightRadius": 8,
       "borderBottomLeftRadius": 8,
-      "transitionDuration": "0.1s",
-      "transitionProperty": "opacity,transform",
       "opacity": 0,
-      "transform": "scale(0.9)"
+      "transform": "scale(0.9)",
+      "transitionDuration": "0.1s",
+      "transitionProperty": "opacity,transform"
     },
     ".uni-modal_dialog__show": {
       "opacity": 1,
@@ -8159,20 +8153,20 @@ const _style_0$3 = {
     }
   }
 };
-var _hoisted_1$2 = {
+var _hoisted_1$3 = {
   class: "uni-modal_dialog__content"
 };
-var _hoisted_2$2 = ["auto-height", "placeholder"];
-var _hoisted_3$2 = {
+var _hoisted_2$3 = ["auto-height", "placeholder"];
+var _hoisted_3$3 = {
   key: 1,
   class: "uni-modal_dialog__content__text"
 };
-var _hoisted_4$2 = {
+var _hoisted_4$3 = {
   class: "uni-modal_dialog__content__bottom"
 };
-var _hoisted_5 = ["hover-class"];
-var _hoisted_6 = ["hover-class"];
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_5$1 = ["hover-class"];
+var _hoisted_6$1 = ["hover-class"];
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", {
     class: normalizeClass(["uni-modal_dialog__mask", {
       "uni-modal_dialog__mask__show": $data.showAnim
@@ -8195,7 +8189,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-modal_dialog__title__text", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($data.title), 3)) : createCommentVNode("", true), createElementVNode("view", _hoisted_1$2, [$data.editable ? withDirectives((openBlock(), createElementBlock("textarea", {
+  }, toDisplayString($data.title), 3)) : createCommentVNode("", true), createElementVNode("view", _hoisted_1$3, [$data.editable ? withDirectives((openBlock(), createElementBlock("textarea", {
     key: 0,
     "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.content = $event),
     class: normalizeClass(["uni-modal_dialog__content__textarea", {
@@ -8213,11 +8207,11 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     ref: "ref_textarea_content_input",
     "auto-height": $data.isAutoHeight,
     placeholder: $data.placeholderText
-  }, null, 42, _hoisted_2$2)), [[vModelText, $data.content]]) : createCommentVNode("", true), !$data.editable && $data.content.length > 0 ? (openBlock(), createElementBlock("text", _hoisted_3$2, toDisplayString($data.content), 1)) : createCommentVNode("", true)]), createElementVNode("view", {
+  }, null, 42, _hoisted_2$3)), [[vModelText, $data.content]]) : createCommentVNode("", true), !$data.editable && $data.content.length > 0 ? (openBlock(), createElementBlock("text", _hoisted_3$3, toDisplayString($data.content), 1)) : createCommentVNode("", true)]), createElementVNode("view", {
     class: normalizeClass(["uni-modal_dialog__content__topline", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }])
-  }, null, 2), createElementVNode("view", _hoisted_4$2, [$data.showCancel ? (openBlock(), createElementBlock("view", {
+  }, null, 2), createElementVNode("view", _hoisted_4$3, [$data.showCancel ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
       "uni-modal_dark__mode": $data.theme == "dark"
@@ -8231,7 +8225,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       color: $data.cancelColor
     }),
     class: "uni-modal_dialog__content__bottom__button__text"
-  }, toDisplayString($data.cancelText), 5)], 10, _hoisted_5)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
+  }, toDisplayString($data.cancelText), 5)], 10, _hoisted_5$1)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
     key: 1,
     class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", {
       "uni-modal_dark__mode": $data.theme == "dark"
@@ -8249,9 +8243,9 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       color: $data.confirmColor
     }),
     class: "uni-modal_dialog__content__bottom__button__text__sure"
-  }, toDisplayString($data.confirmText), 5)], 10, _hoisted_6)])], 2)], 6)], 2);
+  }, toDisplayString($data.confirmText), 5)], 10, _hoisted_6$1)])], 2)], 6)], 2);
 }
-const UniUniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
+const UniUniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
 class Friction {
   // 构造函数，初始化物体的质量（m）、摩擦力大小（f，这里假设是牛顿单位的力，但乘以1000可能是为了转换为某种特定单位）
   constructor(mass, frictionForce) {
@@ -8381,7 +8375,7 @@ var easeInOutCubic = (t) => {
   return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 };
 var elId = 0;
-const _sfc_main$2 = {
+const _sfc_main$3 = {
   name: "loading-circle",
   props: {
     speed: {
@@ -8480,7 +8474,7 @@ const _sfc_main$2 = {
     }
   }
 };
-const _style_0$2 = {
+const _style_0$3 = {
   "uni-loading-block": {
     "": {
       "width": 50,
@@ -8488,7 +8482,7 @@ const _style_0$2 = {
     }
   }
 };
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", {
     ref: $data.elId,
     class: "uni-loading-block",
@@ -8498,7 +8492,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     })
   }, null, 4);
 }
-const loadingCircle = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$2]]]);
+const loadingCircle = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
 var DEFAULT_DISTANCE = 4;
 var FAST_SLIDE_LENGTH = 10;
 var LANGUAGE = {
@@ -8515,7 +8509,7 @@ var LANGUAGE = {
     retry: "重試"
   }
 };
-const _sfc_main$1 = {
+const _sfc_main$2 = {
   components: {
     loadingCircle
   },
@@ -8960,7 +8954,7 @@ const _sfc_main$1 = {
     }
   }
 };
-const _style_0$1 = {
+const _style_0$2 = {
   "uni-preview-image-item": {
     "": {
       "width": "100%",
@@ -9014,24 +9008,24 @@ const _style_0$1 = {
     }
   }
 };
-var _hoisted_1$1 = {
+var _hoisted_1$2 = {
   style: {
     "flex": "1"
   },
   class: "uni-preview-image-item-background"
 };
-var _hoisted_2$1 = ["mode", "src"];
-var _hoisted_3$1 = {
+var _hoisted_2$2 = ["mode", "src"];
+var _hoisted_3$2 = {
   key: 0,
   class: "uni-preview-image-loading"
 };
-var _hoisted_4$1 = {
+var _hoisted_4$2 = {
   class: "uni-preview-image-tips-error"
 };
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   var _$props$tips, _$props$tips2, _$props$tips3, _$props$tips4;
   var _component_loadingCircle = resolveComponent("loadingCircle");
-  return openBlock(), createElementBlock("view", _hoisted_1$1, [createElementVNode("image", {
+  return openBlock(), createElementBlock("view", _hoisted_1$2, [createElementVNode("image", {
     ref: "imageView",
     mode: $data.imageMode,
     class: "uni-preview-image-item",
@@ -9042,7 +9036,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     onLoad: _cache[1] || (_cache[1] = function() {
       return $options.onImageLoad && $options.onImageLoad(...arguments);
     })
-  }, null, 40, _hoisted_2$1), createElementVNode("view", {
+  }, null, 40, _hoisted_2$2), createElementVNode("view", {
     ref: "mask",
     class: "uni-preview-image-patch",
     onTouchstart: _cache[2] || (_cache[2] = function() {
@@ -9057,7 +9051,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     onTouchcancel: _cache[5] || (_cache[5] = function() {
       return $options.oncancel && $options.oncancel(...arguments);
     })
-  }, null, 544), !$data.loadingFinished ? (openBlock(), createElementBlock("view", _hoisted_3$1, [createVNode(_component_loadingCircle, {
+  }, null, 544), !$data.loadingFinished ? (openBlock(), createElementBlock("view", _hoisted_3$2, [createVNode(_component_loadingCircle, {
     style: {
       "margin": "auto"
     },
@@ -9078,15 +9072,15 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[7] || (_cache[7] = function() {
       return $options.closePreviewImage && $options.closePreviewImage(...arguments);
     })
-  }, [createElementVNode("text", _hoisted_4$1, toDisplayString($props.tips == null || ((_$props$tips = $props.tips) === null || _$props$tips === void 0 ? void 0 : _$props$tips["error"]) == null ? $options.getLanguageString("error") : (_$props$tips2 = $props.tips) === null || _$props$tips2 === void 0 ? void 0 : _$props$tips2["error"]), 1), createElementVNode("text", {
+  }, [createElementVNode("text", _hoisted_4$2, toDisplayString($props.tips == null || ((_$props$tips = $props.tips) === null || _$props$tips === void 0 ? void 0 : _$props$tips["error"]) == null ? $options.getLanguageString("error") : (_$props$tips2 = $props.tips) === null || _$props$tips2 === void 0 ? void 0 : _$props$tips2["error"]), 1), createElementVNode("text", {
     class: "uni-preview-image-tips-retry",
     onClick: _cache[6] || (_cache[6] = function() {
       return $options.reloadImage && $options.reloadImage(...arguments);
     })
   }, toDisplayString($props.tips == null || ((_$props$tips3 = $props.tips) === null || _$props$tips3 === void 0 ? void 0 : _$props$tips3["retry"]) == null ? $options.getLanguageString("retry") : (_$props$tips4 = $props.tips) === null || _$props$tips4 === void 0 ? void 0 : _$props$tips4["retry"]), 1)])) : createCommentVNode("", true)]);
 }
-const uniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
-const _sfc_main = {
+const uniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$2]]]);
+const _sfc_main$1 = {
   components: {
     uniPreviewImageItem
   },
@@ -9176,7 +9170,7 @@ const _sfc_main = {
     }
   }
 };
-const _style_0 = {
+const _style_0$1 = {
   "uni-preview-image-default-indicator": {
     "": {
       "width": 9,
@@ -9259,21 +9253,21 @@ const _style_0 = {
     }
   }
 };
-var _hoisted_1 = ["circular", "current", "disable-touch"];
-var _hoisted_2 = {
+var _hoisted_1$1 = ["circular", "current", "disable-touch"];
+var _hoisted_2$1 = {
   key: 0,
   ref: "numberIndicator",
   class: "uni-preview-image-number-indicator-layout"
 };
-var _hoisted_3 = {
+var _hoisted_3$1 = {
   class: "uni-preview-image-number-indicator"
 };
-var _hoisted_4 = {
+var _hoisted_4$1 = {
   key: 1,
   ref: "defaultIndicator",
   class: "uni-preview-image-default-indicator-layout"
 };
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_uniPreviewImageItem = resolveComponent("uniPreviewImageItem");
   return openBlock(), createElementBlock(Fragment, null, [createElementVNode("swiper", {
     style: {
@@ -9296,13 +9290,596 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       longPressAction: $data.longPressAction,
       tips: $data.tips
     }, null, 8, ["index", "src", "longPressAction", "tips"])]);
-  }), 256)) : createCommentVNode("", true)], 40, _hoisted_1), $data.indicator == "number" ? (openBlock(), createElementBlock("view", _hoisted_2, [createElementVNode("text", _hoisted_3, toDisplayString($data.numberIndicator), 1)], 512)) : createCommentVNode("", true), $data.indicator == "default" ? withDirectives((openBlock(), createElementBlock("view", _hoisted_4, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.urls.length, (i) => {
+  }), 256)) : createCommentVNode("", true)], 40, _hoisted_1$1), $data.indicator == "number" ? (openBlock(), createElementBlock("view", _hoisted_2$1, [createElementVNode("text", _hoisted_3$1, toDisplayString($data.numberIndicator), 1)], 512)) : createCommentVNode("", true), $data.indicator == "default" ? withDirectives((openBlock(), createElementBlock("view", _hoisted_4$1, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.urls.length, (i) => {
     return openBlock(), createElementBlock("view", {
       class: normalizeClass(["uni-preview-image-default-indicator", $data.current + 1 == i ? "uni-preview-image-default-indicator-active" : "uni-preview-image-default-indicator-default"])
     }, null, 2);
   }), 256))], 512)), [[vShow, $data.urls != null]]) : createCommentVNode("", true)], 64);
 }
-const UniPreviewImagePage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+const UniPreviewImagePage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+const _sfc_main = {
+  data() {
+    return {
+      show: false,
+      readyEventName: "",
+      optionsEventName: "",
+      cancelEventName: "",
+      selectorChangeEventName: "",
+      multiSelectorChangeEventName: "",
+      timeChangeEventName: "",
+      columnChangeEventName: "",
+      headerText: "",
+      mode: "selector",
+      disabled: false,
+      range: [],
+      rangeKey: "",
+      value: [],
+      eventValue: [],
+      time: [],
+      prevMultiValue: [],
+      selected: {
+        year: (/* @__PURE__ */ new Date()).getFullYear(),
+        month: (/* @__PURE__ */ new Date()).getMonth() + 1,
+        day: (/* @__PURE__ */ new Date()).getDate()
+      },
+      years: [],
+      months: Array.from({
+        length: 12
+      }, (_, i) => i + 1),
+      days: [],
+      fields: "day",
+      start: [],
+      end: [],
+      yearRange: [],
+      monthRange: [],
+      dayRange: [],
+      indicatorStyle: "border-top:1px #f5f5f5 solid;border-bottom:1px #f5f5f5 solid;background:rgba(255,255,255,0);"
+    };
+  },
+  onLoad(options) {
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.cancelEventName = options["cancelEventName"];
+    this.selectorChangeEventName = options["selectorChangeEventName"];
+    this.multiSelectorChangeEventName = options["multiSelectorChangeEventName"];
+    this.timeChangeEventName = options["timeChangeEventName"];
+    this.columnChangeEventName = options["columnChangeEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      if (data["headerText"] != null) {
+        this.headerText = data["headerText"];
+      }
+      if (data["mode"] != null) {
+        this.mode = data["mode"];
+      }
+      if (data["range"] != null) {
+        this.range = data["range"];
+      }
+      if (data["rangeKey"] != null) {
+        this.rangeKey = data["rangeKey"];
+      }
+      if (data["selectorValue"] != null) {
+        this.value = [data["selectorValue"]];
+      }
+      if (data["multiSelectorValue"] != null) {
+        var multiSelectorValue = data["multiSelectorValue"];
+        var len = this.range.length;
+        var arr = Array.from({
+          length: len
+        }, () => 0);
+        arr.forEach((_, index2) => {
+          var _multiSelectorValue$i;
+          var val = (_multiSelectorValue$i = multiSelectorValue[index2]) !== null && _multiSelectorValue$i !== void 0 ? _multiSelectorValue$i : 0;
+          this.value.push(val);
+        });
+        this.prevMultiValue = this.value.slice();
+      }
+      if (data["timeValue"] != null) {
+        var time = data["timeValue"];
+        this.start = data["start"];
+        this.end = data["end"];
+        this.value = this.initTimeValue(time);
+      }
+      if (data["dateValue"] != null) {
+        var _parseInt, _parseInt2, _parseInt3;
+        var dateValue = data["dateValue"];
+        var year = dateValue[0];
+        var month = dateValue[1];
+        var day = dateValue[2];
+        this.fields = data["fields"];
+        this.start = data["start"] || ["1970", "01", "01"];
+        this.end = data["end"] || ["2099", "12", "31"];
+        this.selected = {
+          year: (_parseInt = parseInt(year)) !== null && _parseInt !== void 0 ? _parseInt : (/* @__PURE__ */ new Date()).getFullYear(),
+          month: (_parseInt2 = parseInt(month)) !== null && _parseInt2 !== void 0 ? _parseInt2 : 1,
+          day: (_parseInt3 = parseInt(day)) !== null && _parseInt3 !== void 0 ? _parseInt3 : 1
+        };
+        this.selected.year = Math.max(parseInt(this.start[0]), Math.min(parseInt(this.end[0]), this.selected.year));
+        this.selected.month = Math.max(1, Math.min(12, this.selected.month));
+        this.selected.day = Math.max(1, Math.min(new Date(this.selected.year, this.selected.month, 0).getDate(), this.selected.day));
+        this.updateDateColumns();
+        var yIdx = this.years.findIndex((y) => y == this.selected.year);
+        var mIdx = this.months.findIndex((m) => m == this.selected.month);
+        var dIdx = this.days.findIndex((d) => d == this.selected.day);
+        switch (this.fields) {
+          case "year":
+            this.value = [yIdx];
+            break;
+          case "month":
+            this.value = [yIdx, mIdx];
+            break;
+          case "day":
+            this.value = [yIdx, mIdx, dIdx];
+            break;
+        }
+      }
+      this.eventValue = this.value;
+      this.calculateRanges();
+    });
+    uni.$emit(this.readyEventName);
+  },
+  computed: {
+    hours() {
+      return Array.from({
+        length: 24
+      }, (_, i) => String(i).padStart(2, "0"));
+    },
+    minutes() {
+      return Array.from({
+        length: 60
+      }, (_, i) => String(i).padStart(2, "0"));
+    },
+    selectedDate() {
+      var {
+        year,
+        month,
+        day
+      } = this.selected;
+      if (this.fields == "year") {
+        return "".concat(year);
+      }
+      if (this.fields == "month") {
+        return "".concat(year, "-").concat(this.formatSingle(month));
+      }
+      if (this.fields == "day") {
+        return "".concat(year, "-").concat(this.formatSingle(month), "-").concat(this.formatSingle(day));
+      }
+      return "".concat(year, "-").concat(this.formatSingle(month), "-").concat(this.formatSingle(day));
+    }
+  },
+  onReady() {
+    setTimeout(() => {
+      this.show = true;
+    }, 10);
+  },
+  onResize() {
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.cancelEventName, null);
+  },
+  methods: {
+    /**
+     * picker确定事件
+     */
+    confirm() {
+      var value = this.eventValue;
+      var mode = this.mode;
+      switch (mode) {
+        case "selector":
+          uni.$emit(this.selectorChangeEventName, value[0]);
+          break;
+        case "multiSelector":
+          uni.$emit(this.multiSelectorChangeEventName, value);
+          break;
+        case "time":
+          var h = this.hours[value[0]];
+          var m = this.minutes[value[1]];
+          uni.$emit(this.timeChangeEventName, "".concat(h, ":").concat(m));
+          break;
+        case "date":
+          uni.$emit(this.timeChangeEventName, this.selectedDate);
+          break;
+      }
+      var dialogPages = this.$page;
+      uni.closeDialogPage({
+        dialogPage: dialogPages
+      });
+    },
+    /**
+     * picker关闭
+     */
+    close() {
+      var dialogPages = this.$page;
+      uni.$emit(this.cancelEventName);
+      uni.closeDialogPage({
+        dialogPage: dialogPages
+      });
+    },
+    /**
+     * 处理列滚动
+     */
+    handleChange(e) {
+      var value = e.detail.value;
+      if (this.mode == "date") {
+        var _value$, _value$2;
+        var yIdx = value[0];
+        var mIdx = (_value$ = value[1]) !== null && _value$ !== void 0 ? _value$ : 0;
+        var dIdx = (_value$2 = value[2]) !== null && _value$2 !== void 0 ? _value$2 : 0;
+        yIdx = Math.max(this.yearRange[0], Math.min(this.yearRange[1], yIdx));
+        var year = this.years[yIdx];
+        if (year === parseInt(this.start[0])) {
+          mIdx = Math.max(this.monthRange[0], mIdx);
+        }
+        if (year === parseInt(this.end[0])) {
+          mIdx = Math.min(this.monthRange[1], mIdx);
+        }
+        var month = this.months[mIdx];
+        var maxDay = new Date(year, month, 0).getDate();
+        dIdx = Math.min(dIdx, maxDay - 1);
+        if (year === parseInt(this.start[0]) && month === parseInt(this.start[1])) {
+          dIdx = Math.max(this.dayRange[0], dIdx);
+        }
+        if (year === parseInt(this.end[0]) && month === parseInt(this.end[1])) {
+          dIdx = Math.min(this.dayRange[1], dIdx);
+        }
+        this.value = [yIdx, mIdx, dIdx];
+        this.selected.year = this.years[yIdx];
+        this.selected.month = this.months[mIdx];
+        this.selected.day = this.days[dIdx];
+        this.eventValue = [...this.value];
+      } else if (this.mode == "time") {
+        var h_idx = value[0];
+        var m_idx = value[1];
+        var h = parseInt(this.hours[h_idx]);
+        var m = parseInt(this.minutes[m_idx]);
+        var adjusted = this.adjustTime(h, m);
+        h = adjusted.h;
+        m = adjusted.m;
+        var hStr = h.toString().padStart(2, "0");
+        var mStr = m.toString().padStart(2, "0");
+        var newHIdx = this.hours.findIndex((e2) => e2 == hStr);
+        var newMIdx = this.minutes.findIndex((e2) => e2 == mStr);
+        if (newHIdx != h_idx || newMIdx != m_idx) {
+          this.value = [newHIdx, newMIdx];
+          this.eventValue = this.value.slice();
+        } else {
+          this.eventValue = value;
+        }
+      } else if (this.mode == "multiSelector") {
+        var newValue = value;
+        var oldValue = this.prevMultiValue;
+        newValue.forEach((val, column) => {
+          if (oldValue[column] !== val) {
+            uni.$emit(this.columnChangeEventName, column, val);
+          }
+        });
+        this.prevMultiValue = [...newValue];
+        this.eventValue = [...newValue];
+      } else {
+        this.eventValue = value;
+      }
+    },
+    /**
+     * 计算范围的方法
+     */
+    calculateRanges() {
+      var startYear = parseInt(this.start[0]);
+      var endYear = parseInt(this.end[0]);
+      this.yearRange = [this.years.findIndex((y) => y >= startYear), this.years.findIndex((y) => y >= endYear)];
+      var startMonth = parseInt(this.start[1]);
+      var endMonth = parseInt(this.end[1]);
+      this.monthRange = [startMonth - 1, endMonth - 1];
+      var startDay = parseInt(this.start[2]);
+      var endDay = parseInt(this.end[2]);
+      this.dayRange = [startDay - 1, endDay - 1];
+    },
+    /**
+     * 生成动态年份范围（根据 start/end）
+     */
+    getYears() {
+      var startYear = parseInt("1900");
+      var endYear = parseInt("2100");
+      return Array.from({
+        length: endYear - startYear + 1
+      }, (_, i) => startYear + i);
+    },
+    /**
+     * 生成动态月份范围（根据当前年份和 start/end）
+     */
+    getMonths() {
+      var startMonth = 1;
+      var endMonth = 12;
+      return Array.from({
+        length: endMonth - startMonth + 1
+      }, (_, i) => startMonth + i);
+    },
+    /**
+     * 生成动态日期范围（根据当前年月和 start/end）
+     */
+    getDays(currentYear, currentMonth) {
+      var startDay = 1;
+      var endDay = new Date(currentYear, currentMonth, 0).getDate();
+      return Array.from({
+        length: endDay - startDay + 1
+      }, (_, i) => startDay + i);
+    },
+    /**
+     * 更新日期列 级联更新
+     */
+    updateDateColumns() {
+      this.years = this.getYears();
+      this.months = this.getMonths();
+      this.days = this.getDays(this.selected.year, this.selected.month);
+    },
+    /**
+     * 调整时间到允许范围内
+     */
+    adjustTime(h, m) {
+      var _this$start, _this$end;
+      if (!((_this$start = this.start) !== null && _this$start !== void 0 && _this$start.length) || !((_this$end = this.end) !== null && _this$end !== void 0 && _this$end.length))
+        return {
+          h,
+          m
+        };
+      var startHour = parseInt(this.start[0]);
+      var startMinute = parseInt(this.start[1]);
+      var endHour = parseInt(this.end[0]);
+      var endMinute = parseInt(this.end[1]);
+      var current = h * 60 + m;
+      var startTotal = startHour * 60 + startMinute;
+      var endTotal = endHour * 60 + endMinute;
+      if (current < startTotal) {
+        return {
+          h: startHour,
+          m: startMinute
+        };
+      } else if (current > endTotal) {
+        return {
+          h: endHour,
+          m: endMinute
+        };
+      } else {
+        if (h == startHour && m < startMinute)
+          return {
+            h,
+            m: startMinute
+          };
+        if (h == endHour && m > endMinute)
+          return {
+            h,
+            m: endMinute
+          };
+        return {
+          h,
+          m
+        };
+      }
+    },
+    /**
+     * 初始化时处理默认时间
+     */
+    initTimeValue(time) {
+      var h = parseInt(time[0]);
+      var m = parseInt(time[1]);
+      var adjusted = this.adjustTime(h, m);
+      var hStr = adjusted.h.toString().padStart(2, "0");
+      var mStr = adjusted.m.toString().padStart(2, "0");
+      return [this.hours.findIndex((e) => e == hStr), this.minutes.findIndex((e) => e == mStr)];
+    },
+    /**
+     * 更新当月天数
+     */
+    updateDays() {
+      var daysInMonth = new Date(this.selected.year, this.selected.month, 0).getDate();
+      this.days = Array.from({
+        length: daysInMonth
+      }, (_, i) => i + 1);
+    },
+    /**
+     *  补零函数（1 → "01"）
+     */
+    formatSingle(num) {
+      return num.toString().padStart(2, "0");
+    }
+  }
+};
+const _style_0 = {
+  "uni-picker__container": {
+    "": {
+      "flex": 1
+    }
+  },
+  "uni-picer__mask": {
+    "": {
+      "flex": 1,
+      "backgroundColor": "rgba(0,0,0,0.3)",
+      "opacity": 0,
+      "transitionProperty": "opacity",
+      "transitionDuration": "0.3s"
+    }
+  },
+  "picker__ani-show": {
+    "": {
+      "opacity": 1
+    }
+  },
+  "uni-picker__inner-box": {
+    "": {
+      "position": "absolute",
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "height": 350,
+      "backgroundColor": "#ffffff",
+      "transform": "translateY(100%)",
+      "transitionProperty": "transform",
+      "transitionDuration": "0.2s"
+    }
+  },
+  "picker__ani-box-show": {
+    "": {
+      "transform": "translateY(0%)"
+    }
+  },
+  "uni-picker__header-btn": {
+    "": {
+      "display": "flex",
+      "flexDirection": "row",
+      "justifyContent": "space-between",
+      "paddingTop": 15,
+      "paddingRight": 15,
+      "paddingBottom": 15,
+      "paddingLeft": 15,
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#f7f7f7"
+    }
+  },
+  "uni-picker__header-btn-cannel": {
+    "": {
+      "fontSize": 14
+    }
+  },
+  "uni-picker__header-btn-ok": {
+    "": {
+      "fontSize": 14,
+      "color": "#007aff"
+    }
+  },
+  "uni-picker__view": {
+    "": {
+      "flex": 1
+    }
+  },
+  "uni-picker__view-item": {
+    "": {
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "height": 50
+    }
+  },
+  "@TRANSITION": {
+    "uni-picer__mask": {
+      "property": "opacity",
+      "duration": "0.3s"
+    },
+    "uni-picker__inner-box": {
+      "property": "transform",
+      "duration": "0.2s"
+    }
+  }
+};
+var _hoisted_1 = {
+  class: "uni-picker__container"
+};
+var _hoisted_2 = {
+  class: "uni-picker__header-btn"
+};
+var _hoisted_3 = {
+  class: "uni-picker__view"
+};
+var _hoisted_4 = ["indicatorStyle", "value"];
+var _hoisted_5 = {
+  key: 0
+};
+var _hoisted_6 = {
+  key: 0
+};
+var _hoisted_7 = {
+  key: 1
+};
+var _hoisted_8 = {
+  key: 0
+};
+var _hoisted_9 = {
+  key: 1
+};
+var _hoisted_10 = {
+  key: 0
+};
+var _hoisted_11 = {
+  key: 1
+};
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("view", _hoisted_1, [createElementVNode("view", {
+    class: normalizeClass(["uni-picer__mask", {
+      "picker__ani-show": $data.show
+    }]),
+    onClick: _cache[0] || (_cache[0] = function() {
+      return $options.close && $options.close(...arguments);
+    })
+  }, null, 2), createElementVNode("view", {
+    class: normalizeClass(["uni-picker__inner-box", {
+      "picker__ani-box-show": $data.show
+    }])
+  }, [createElementVNode("view", _hoisted_2, [createElementVNode("text", {
+    class: "uni-picker__header-btn-cannel",
+    onClick: _cache[1] || (_cache[1] = function() {
+      return $options.close && $options.close(...arguments);
+    })
+  }, "取消"), createElementVNode("text", {
+    class: "uni-picker__header-btn-ok",
+    onClick: _cache[2] || (_cache[2] = function() {
+      return $options.confirm && $options.confirm(...arguments);
+    })
+  }, "确定")]), createElementVNode("view", _hoisted_3, [createElementVNode("picker-view", {
+    style: {
+      "flex": "1"
+    },
+    onChange: _cache[3] || (_cache[3] = function() {
+      return $options.handleChange && $options.handleChange(...arguments);
+    }),
+    indicatorStyle: $data.indicatorStyle,
+    value: $data.value
+  }, [$data.mode == "selector" ? (openBlock(), createElementBlock("picker-view-column", _hoisted_5, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.range, (item, selectorIdx) => {
+    return openBlock(), createElementBlock("view", {
+      key: selectorIdx,
+      class: "uni-picker__view-item"
+    }, [$data.rangeKey ? (openBlock(), createElementBlock("text", _hoisted_6, toDisplayString(item[$data.rangeKey]), 1)) : (openBlock(), createElementBlock("text", _hoisted_7, toDisplayString(item), 1))]);
+  }), 128))])) : createCommentVNode("", true), $data.mode == "multiSelector" ? (openBlock(true), createElementBlock(Fragment, {
+    key: 1
+  }, renderList($data.range, (item, multiIdx) => {
+    return openBlock(), createElementBlock("picker-view-column", {
+      key: multiIdx
+    }, [(openBlock(true), createElementBlock(Fragment, null, renderList(item, (column, colIdx) => {
+      return openBlock(), createElementBlock("view", {
+        key: colIdx,
+        class: "uni-picker__view-item"
+      }, [$data.rangeKey ? (openBlock(), createElementBlock("text", _hoisted_8, toDisplayString(column[$data.rangeKey]), 1)) : (openBlock(), createElementBlock("text", _hoisted_9, toDisplayString(column), 1))]);
+    }), 128))]);
+  }), 128)) : createCommentVNode("", true), $data.mode == "time" ? (openBlock(), createElementBlock(Fragment, {
+    key: 2
+  }, [createElementVNode("picker-view-column", null, [(openBlock(true), createElementBlock(Fragment, null, renderList($options.hours, (h, hIdx) => {
+    return openBlock(), createElementBlock("view", {
+      key: hIdx,
+      class: "uni-picker__view-item"
+    }, [createElementVNode("text", null, toDisplayString(h), 1)]);
+  }), 128))]), createElementVNode("picker-view-column", null, [(openBlock(true), createElementBlock(Fragment, null, renderList($options.minutes, (m, mIdx) => {
+    return openBlock(), createElementBlock("view", {
+      key: mIdx,
+      class: "uni-picker__view-item"
+    }, [createElementVNode("text", null, toDisplayString(m), 1)]);
+  }), 128))])], 64)) : createCommentVNode("", true), $data.mode == "date" ? (openBlock(), createElementBlock(Fragment, {
+    key: 3
+  }, [createElementVNode("picker-view-column", null, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.years, (year) => {
+    return openBlock(), createElementBlock("view", {
+      key: year,
+      class: "uni-picker__view-item"
+    }, [createElementVNode("text", null, toDisplayString(year) + "年", 1)]);
+  }), 128))]), $data.fields != "year" ? (openBlock(), createElementBlock("picker-view-column", _hoisted_10, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.months, (month) => {
+    return openBlock(), createElementBlock("view", {
+      key: month,
+      class: "uni-picker__view-item"
+    }, toDisplayString($options.formatSingle(month)) + "月", 1);
+  }), 128))])) : createCommentVNode("", true), $data.fields == "day" ? (openBlock(), createElementBlock("picker-view-column", _hoisted_11, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.days, (day) => {
+    return openBlock(), createElementBlock("view", {
+      key: day,
+      class: "uni-picker__view-item"
+    }, toDisplayString($options.formatSingle(day)) + "日", 1);
+  }), 128))])) : createCommentVNode("", true)], 64)) : createCommentVNode("", true)], 40, _hoisted_4)])], 2)]);
+}
+const UniPickerPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
 function registerSystemPages() {
   registerSystemRoute("uni:actionSheet", UniActionSheetPage, {
     disableSwipeBack: false
@@ -9314,6 +9891,9 @@ function registerSystemPages() {
     disableSwipeBack: false
   });
   registerSystemRoute("uni:previewImage", UniPreviewImagePage, {
+    disableSwipeBack: false
+  });
+  registerSystemRoute("uni:picker", UniPickerPage, {
     disableSwipeBack: false
   });
 }

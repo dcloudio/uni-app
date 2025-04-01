@@ -12,6 +12,10 @@ declare class UTSTaskDispatcher {
   async(action : (action : any | null) => void, param ?: any | null) : void
 }
 
+/**
+ * 监听隐私协议状态改变回调函数参数
+ * @internal
+ */
 declare class PrivacyOption {
   /**
      是否同意用户隐私协议
@@ -742,6 +746,8 @@ interface UTSAndroid {
   /**
      当前应用是否已取得用户同意隐私协议
      @return true 用户已同意 false 用户未同意
+     @deprecated 注意：已废弃，请使用 `uni.getPrivacySetting` 替代
+     @internal
      @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#isPrivacyAgree
      @uniPlatform {
         "app": {
@@ -766,6 +772,8 @@ interface UTSAndroid {
   /**
      设置当前应用是否已取得用户同意隐私协议
      @param state true 用户已同意 false 用户未同意
+     @deprecated 注意：已废弃，请使用 `button` 组件设置 open-type 为 agreePrivacyAuthorization 替代
+     @internal
      @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#setPrivacyAgree
      @uniPlatform {
         "app": {
@@ -789,6 +797,8 @@ interface UTSAndroid {
 
   /**
      重置当前应用至用户未同意隐私协议
+     @deprecated 注意：已废弃，请使用 `uni.resetPrivacyAuthorization` 替代
+     @internal
      @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#resetPrivacyAgree
      @uniPlatform {
         "app": {
@@ -1067,8 +1077,10 @@ interface UTSAndroid {
 
 
   /**
-     注册监听隐私协议更改回调
+     监听隐私协议状态改变
 
+     @deprecated 注意：已废弃，请使用 `uni.onPrivacyAuthorizationChange` 替代
+     @internal
      @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#onPrivacyAgreeChange
      @param callback 回调方法
      @uniPlatform {
@@ -1091,8 +1103,10 @@ interface UTSAndroid {
   onPrivacyAgreeChange(callback : (option : PrivacyOption) => void) : void;
 
   /**
-     onPrivacyAgreeChange对应的反注册函数
+     取消监听隐私协议状态改变
 
+     @deprecated 注意：已废弃，请使用 `uni.offPrivacyAuthorizationChange` 替代
+     @internal
      @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#offPrivacyAgreeChange
      @param callback onPrivacyAgreeChange中传入的callback
      @uniPlatform {
@@ -1375,4 +1389,7 @@ interface UTSAndroid {
 }
 
 
-declare var UTSAndroid : UTSAndroid;
+declare global {
+  var UTSAndroid : UTSAndroid;
+}
+

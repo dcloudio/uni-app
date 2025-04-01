@@ -1,22 +1,10 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
-import { nextTick, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+import * as parsePageOptions from '@dcloudio/uni-quickapp-webview/src/runtime/parsePageOptions';
+import * as parseComponentOptions from '@dcloudio/uni-quickapp-webview/src/runtime/parseComponentOptions';
 
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
 const EXTRAS = ['externalClasses'];
 function initExtraOptions(miniProgramComponentOptions, vueOptions) {
     EXTRAS.forEach((name) => {
@@ -34,46 +22,6 @@ function initWxsCallMethods(methods, wxsCallMethods) {
             return this.$vm[callMethod](args);
         };
     });
-}
-function selectAllComponents(mpInstance, selector, $refs) {
-    const components = mpInstance.selectAllComponents(selector);
-    components.forEach((component) => {
-        const ref = component.properties.uR;
-        $refs[ref] = component.$vm || component;
-    });
-}
-function initRefs(instance, mpInstance) {
-    Object.defineProperty(instance, 'refs', {
-        get() {
-            const $refs = {};
-            selectAllComponents(mpInstance, '.r', $refs);
-            const forComponents = mpInstance.selectAllComponents('.r-i-f');
-            forComponents.forEach((component) => {
-                const ref = component.properties.uR;
-                if (!ref) {
-                    return;
-                }
-                if (!$refs[ref]) {
-                    $refs[ref] = [];
-                }
-                $refs[ref].push(component.$vm || component);
-            });
-            return $refs;
-        },
-    });
-}
-function nextSetDataTick(mpInstance, fn) {
-    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
-    {
-        mpInstance.setData({ r1: 1 }, () => fn());
-    }
-}
-function initSetRef(mpInstance) {
-    if (!mpInstance._$setRef) {
-        mpInstance._$setRef = (fn) => {
-            nextTick(() => nextSetDataTick(mpInstance, fn));
-        };
-    }
 }
 let triggerEventId = 0;
 const triggerEventDetails = {};
@@ -96,12 +44,6 @@ function getLocaleLanguage() {
     return localeLanguage;
 }
 
-const MP_METHODS = [
-    'createSelectorQuery',
-    'createIntersectionObserver',
-    'selectAllComponents',
-    'selectComponent',
-];
 function createEmitFn(oldEmit, ctx) {
     return function emit(event, ...args) {
         const scope = ctx.$scope;
@@ -149,26 +91,6 @@ function initBaseInstance(instance, options) {
     ctx.$callHook = callHook;
     // $emit
     instance.emit = createEmitFn(instance.emit, ctx);
-}
-function initComponentInstance(instance, options) {
-    initBaseInstance(instance, options);
-    const ctx = instance.ctx;
-    MP_METHODS.forEach((method) => {
-        ctx[method] = function (...args) {
-            const mpInstance = ctx.$scope;
-            if (mpInstance && mpInstance[method]) {
-                return mpInstance[method].apply(mpInstance, args);
-            }
-        };
-    });
-}
-function initMocks(instance, mpInstance, mocks) {
-    const ctx = instance.ctx;
-    mocks.forEach((mock) => {
-        if (hasOwn(mpInstance, mock)) {
-            instance[mock] = ctx[mock] = mpInstance[mock];
-        }
-    });
 }
 function hasHook(name) {
     const hooks = this.$[name];
@@ -530,38 +452,6 @@ function initPageProps({ properties }, rawProps) {
         });
     }
 }
-function findPropsData(properties, isPage) {
-    return ((isPage
-        ? findPagePropsData(properties)
-        : findComponentPropsData(resolvePropValue(properties.uP))) || {});
-}
-function findPagePropsData(properties) {
-    const propsData = {};
-    if (isPlainObject(properties)) {
-        Object.keys(properties).forEach((name) => {
-            if (builtInProps.indexOf(name) === -1) {
-                propsData[name] = resolvePropValue(properties[name]);
-            }
-        });
-    }
-    return propsData;
-}
-function initFormField(vm) {
-    // 同步 form-field 的 name,value 值
-    const vueOptions = vm.$options;
-    if (isArray(vueOptions.behaviors) &&
-        vueOptions.behaviors.includes('uni://form-field')) {
-        vm.$watch('modelValue', () => {
-            vm.$scope &&
-                vm.$scope.setData({
-                    name: vm.name,
-                    value: vm.modelValue,
-                });
-        }, {
-            immediate: true,
-        });
-    }
-}
 function resolvePropValue(prop) {
     {
         if (isPlainObject(prop) && hasOwn(prop, 'value')) {
@@ -721,30 +611,6 @@ function initCreateComponent(parseOptions) {
         return Component(parseComponent(vueComponentOptions, parseOptions));
     };
 }
-let $createComponentFn;
-let $destroyComponentFn;
-function getAppVm() {
-    if (process.env.UNI_MP_PLUGIN) {
-        return has.$vm;
-    }
-    if (process.env.UNI_SUBPACKAGE) {
-        return has.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
-    }
-    return getApp().$vm;
-}
-function $createComponent(initialVNode, options) {
-    if (!$createComponentFn) {
-        $createComponentFn = getAppVm().$createComponent;
-    }
-    const proxy = $createComponentFn(initialVNode, options);
-    return getExposeProxy(proxy.$) || proxy;
-}
-function $destroyComponent(instance) {
-    if (!$destroyComponentFn) {
-        $destroyComponentFn = getAppVm().$destroyComponent;
-    }
-    return $destroyComponentFn(instance);
-}
 
 function parsePage(vueOptions, parseOptions) {
     const { parse, mocks, isPage, initRelation, handleLink, initLifetimes } = parseOptions;
@@ -836,165 +702,6 @@ Component = function (options) {
     }
     return MPComponent(options);
 };
-
-// @ts-expect-error
-function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
-    function attached() {
-        initSetRef(this);
-        const properties = this.properties;
-        initVueIds(resolvePropValue(properties.uI), this);
-        const relationOptions = {
-            vuePid: this._$vuePid,
-        };
-        {
-            // 处理父子关系
-            initRelation(this, relationOptions);
-        }
-        // 初始化 vue 实例
-        const mpInstance = this;
-        const mpType = isPage(mpInstance) ? 'page' : 'component';
-        if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
-            mpInstance.route = mpInstance.__route__;
-        }
-        const props = findPropsData(properties, mpType === 'page');
-        this.$vm = $createComponent({
-            type: vueOptions,
-            props,
-        }, {
-            mpType,
-            mpInstance,
-            slots: resolvePropValue(properties.uS) || {}, // vueSlots
-            parentComponent: relationOptions.parent && relationOptions.parent.$,
-            onBeforeSetup(instance, options) {
-                initRefs(instance, mpInstance);
-                initMocks(instance, mpInstance, mocks);
-                initComponentInstance(instance, options);
-            },
-        });
-        if (process.env.UNI_DEBUG) {
-            console.log('uni-app:[' +
-                Date.now() +
-                '][' +
-                (mpInstance.is || mpInstance.route) +
-                '][' +
-                this.$vm.$.uid +
-                ']attached');
-        }
-        if (mpType === 'component') {
-            initFormField(this.$vm);
-        }
-    }
-    function ready() {
-        if (process.env.UNI_DEBUG) {
-            console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
-        }
-        if (this.$vm) {
-            if (isPage(this)) {
-                if (this.pageinstance) {
-                    this.__webviewId__ = this.pageinstance.__pageId__;
-                }
-                nextSetDataTick(this, () => {
-                    this.$vm.$callHook('mounted');
-                    this.$vm.$callHook(ON_READY);
-                });
-            }
-            else {
-                {
-                    this.$vm.$callHook('mounted');
-                    this.$vm.$callHook(ON_READY);
-                }
-            }
-        }
-        else {
-            this.is && console.warn(this.is + ' is not ready');
-        }
-    }
-    function detached() {
-        if (this.$vm) {
-            pruneComponentPropsCache(this.$vm.$.uid);
-            $destroyComponent(this.$vm);
-        }
-    }
-    {
-        return { attached, ready, detached };
-    }
-}
-
-const instances = Object.create(null);
-function parse(componentOptions, { handleLink }) {
-    componentOptions.methods.__l = handleLink;
-}
-
-function initLifetimes(lifetimesOptions) {
-    return extend(initLifetimes$1(lifetimesOptions), {
-        detached() {
-            this.$vm && $destroyComponent(this.$vm);
-            // 清理
-            const webviewId = this.__webviewId__;
-            webviewId &&
-                Object.keys(instances).forEach((key) => {
-                    if (key.indexOf(webviewId + '_') === 0) {
-                        delete instances[key];
-                    }
-                });
-        },
-    });
-}
-
-const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
-
-function isPage(mpInstance) {
-    return (!!mpInstance.route ||
-        !!(mpInstance._methods || mpInstance.methods || mpInstance).onLoad);
-}
-function initRelation(mpInstance, relationOptions) {
-    const nodeId = mpInstance.nodeId + '';
-    const webviewId = mpInstance.pageinstance.__pageId__ + '';
-    // 存储的是当前mpInstance，而不是$vm，因为$vm还没有创建
-    instances[webviewId + '_' + nodeId] = mpInstance;
-    // 不使用 triggerEvent 是因为时机太晚，应该同步建立父子关系，确保setup中的provide/inject正常
-    // 当前平台有ownerId可以查找父子关系
-    extend(relationOptions, {
-        nodeId,
-        webviewId,
-    });
-    handleLink.call(mpInstance, {
-        detail: relationOptions,
-    });
-}
-function handleLink({ detail, }) {
-    var _a;
-    const { nodeId, webviewId } = detail;
-    const mpInstance = instances[webviewId + '_' + nodeId];
-    if (!mpInstance) {
-        return;
-    }
-    let parentVm = (_a = instances[webviewId + '_' + mpInstance.ownerId]) === null || _a === void 0 ? void 0 : _a.$vm;
-    if (!parentVm) {
-        parentVm = this.$vm;
-    }
-    detail.parent = parentVm;
-}
-
-var parseComponentOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  handleLink: handleLink,
-  initLifetimes: initLifetimes$1,
-  initRelation: initRelation,
-  isPage: isPage,
-  mocks: mocks,
-  parse: parse
-});
-
-var parsePageOptions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  handleLink: handleLink,
-  initLifetimes: initLifetimes,
-  initRelation: initRelation,
-  isPage: isPage,
-  mocks: mocks,
-  parse: parse
-});
 
 const createApp = initCreateApp();
 const createPage = initCreatePage(parsePageOptions);

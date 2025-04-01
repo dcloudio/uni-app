@@ -311,10 +311,10 @@
 		/**
 		 * anim
 		 */
-		transition-duration: 0.1s;
-		transition-property: opacity,transform;
 		opacity: 0;
 		transform: scale(0.9);
+		transition-duration: 0.1s;
+		transition-property: opacity,transform;
 	}
 	
 	.uni-modal_dialog__container.uni-modal_dialog__show {

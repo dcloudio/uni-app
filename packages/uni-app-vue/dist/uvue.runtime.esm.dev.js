@@ -1824,42 +1824,61 @@ function createDecl(prop, value, important, raws, source) {
 }
 var backgroundColor = 'backgroundColor';
 var backgroundImage = 'backgroundImage';
+var handleTransformBackground = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  } else if (value == '') {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  }
+  return [decl];
+};
+var handleTransformBackgroundNvue = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source)];
+  } else if (value == '') {
+    return [decl];
+  }
+  return [decl];
+};
 function createTransformBackground(options) {
   return decl => {
-    var {
-      value,
-      important,
-      raws,
-      source
-    } = decl;
     // nvue 平台维持原有逻辑不变
     var isUvuePlatform = options.type === 'uvue';
     if (isUvuePlatform) {
-      if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
-      } else if (/^linear-gradient(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, value, important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
-      } else if (value == '') {
-        return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
-      }
-      return [decl];
+      return handleTransformBackground(decl);
     } else {
-      if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-        return [createDecl(backgroundColor, value, important, raws, source)];
-      } else if (/^linear-gradient(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, value, important, raws, source)];
-      } else if (value == '') {
-        return [decl];
-      }
-      return [decl];
+      return handleTransformBackgroundNvue(decl);
     }
   };
 }
-var borderTop = 'borderTop';
-var borderRight = 'borderRight';
-var borderBottom = 'borderBottom';
-var borderLeft = 'borderLeft';
-// const position = ['top', 'right', 'bottom', 'left']
+function borderTop() {
+  return 'borderTop';
+}
+function borderRight() {
+  return 'borderRight';
+}
+function borderBottom() {
+  return 'borderBottom';
+}
+function borderLeft() {
+  return 'borderLeft';
+}
 var transformBorderColor = decl => {
   var {
     prop,
@@ -1879,11 +1898,10 @@ var transformBorderColor = decl => {
       if (_property_split.length === 3) {
         // border-top-width
         return [decl];
-      } else {
-        // border-width
-        splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
-        break;
       }
+      // border-width
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
     case 2:
       splitResult.push(splitResult[0], splitResult[1]);
       break;
@@ -1891,7 +1909,7 @@ var transformBorderColor = decl => {
       splitResult.push(splitResult[1]);
       break;
   }
-  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
+  return [createDecl(borderTop() + property, splitResult[0], important, raws, source), createDecl(borderRight() + property, splitResult[1], important, raws, source), createDecl(borderBottom() + property, splitResult[2], important, raws, source), createDecl(borderLeft() + property, splitResult[3], important, raws, source)];
 };
 var transformBorderColorNvue = decl => {
   var {
@@ -1922,11 +1940,17 @@ var transformBorderStyle = transformBorderColor;
 var transformBorderStyleNvue = transformBorderColorNvue;
 var transformBorderWidth = transformBorderColor;
 var transformBorderWidthNvue = transformBorderColorNvue;
-var borderWidth = 'Width';
-var borderStyle = 'Style';
-var borderColor = 'Color';
 function createTransformBorder(options) {
   return decl => {
+    var borderWidth = () => {
+      return 'Width';
+    };
+    var borderStyle = () => {
+      return 'Style';
+    };
+    var borderColor = () => {
+      return 'Color';
+    };
     var {
       prop,
       value,
@@ -1939,9 +1963,9 @@ function createTransformBorder(options) {
       var index = splitResult.findIndex(str => item.test(str));
       return index < 0 ? null : splitResult.splice(index, 1)[0];
     });
-    var isUvuePlatform = options.type === 'uvue';
+    var isUvuePlatform = options.type == 'uvue';
     if (isUvuePlatform) {
-      if (splitResult.length > 0 && value !== '') {
+      if (splitResult.length > 0 && value != '') {
         return [decl];
       }
     } else {
@@ -1950,16 +1974,42 @@ function createTransformBorder(options) {
         return [decl];
       }
     }
-    if (isUvuePlatform) {
-      return [...transformBorderWidth(createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source))];
-    } else {
+    var defaultWidth = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      if (options.type == 'uvue') {
+        return 'medium';
+      }
+      return '0';
+    };
+    var defaultStyle = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      if (options.type == 'uvue') {
+        return 'none';
+      }
+      return 'solid';
+    };
+    var defaultColor = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      return '#000000';
+    };
+    if (!isUvuePlatform) {
       // nvue 维持不变
-      return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+      return [createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source), createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source), createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source)];
     }
+    return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
   };
 }
 function createTransformBorderNvue(options) {
   return decl => {
+    var borderWidth = 'Width';
+    var borderStyle = 'Style';
+    var borderColor = 'Color';
     var {
       prop,
       value,
@@ -1975,7 +2025,7 @@ function createTransformBorderNvue(options) {
     if (splitResult.length) {
       return [decl];
     }
-    return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+    return [createDecl(prop + borderWidth, (result[0] || '0').trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || 'solid').trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
   };
 }
 var borderTopLeftRadius = 'borderTopLeftRadius';
@@ -2110,7 +2160,7 @@ var transformTransition = decl => {
   return result;
 };
 function getDeclTransforms(options) {
-  var transformBorder = options.type == 'uvue' ? createTransformBorder(options) : createTransformBorderNvue(options);
+  var transformBorder = options.type == 'uvue' ? createTransformBorder(options) : createTransformBorderNvue();
   var styleMap = _objectSpread({
     transition: transformTransition,
     border: transformBorder,
@@ -2418,8 +2468,7 @@ var flushIndex = 0;
 var pendingPostFlushCbs = [];
 var activePostFlushCbs = null;
 var postFlushIndex = 0;
-var isIOS = "nativeApp" in getGlobalThis();
-var resolvedPromise = /* @__PURE__ */(isIOS ? PromisePolyfill : Promise).resolve();
+var resolvedPromise = /* @__PURE__ */PromisePolyfill.resolve();
 var currentFlushPromise = null;
 var RECURSION_LIMIT = 100;
 function nextTick(fn) {
@@ -3316,7 +3365,7 @@ function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense
       createElement
     }
   } = rendererInternals;
-  var hiddenContainer = createElement("div");
+  var hiddenContainer = createElement("div", container);
   var suspense = vnode.suspense = createSuspenseBoundary(vnode, parentSuspense, parentComponent, container, hiddenContainer, anchor, namespace, slotScopeIds, optimized, rendererInternals);
   patch(null, suspense.pendingBranch = vnode.ssContent, hiddenContainer, null, parentComponent, suspense, namespace, slotScopeIds);
   if (suspense.deps > 0) {
@@ -3373,7 +3422,7 @@ function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, sl
       }
       suspense.deps = 0;
       suspense.effects.length = 0;
-      suspense.hiddenContainer = createElement("div");
+      suspense.hiddenContainer = createElement("div", container);
       if (isInFallback) {
         patch(null, newBranch, suspense.hiddenContainer, null, parentComponent, suspense, namespace, slotScopeIds, optimized);
         if (suspense.deps <= 0) {
@@ -5774,7 +5823,7 @@ function createAppAPI(render, hydrate) {
         context.directives[name] = directive;
         return app;
       },
-      mount(document, rootContainer, isHydrate, namespace) {
+      mount(rootContainer, isHydrate, namespace) {
         if (!isMounted) {
           if (rootContainer.__vue_app__) {
             warn$1("There is already an app instance mounted on the host container.\n If you want to mount another app on the same host container, you need to unmount the previous app by calling `app.unmount()` first.");
@@ -5788,13 +5837,13 @@ function createAppAPI(render, hydrate) {
           }
           {
             context.reload = () => {
-              render(document, cloneVNode(vnode), rootContainer, namespace);
+              render(cloneVNode(vnode), rootContainer, namespace);
             };
           }
           if (isHydrate && hydrate) {
             hydrate(vnode, rootContainer);
           } else {
-            render(document, vnode, rootContainer, namespace);
+            render(vnode, rootContainer, namespace);
           }
           isMounted = true;
           app._container = rootContainer;
@@ -5808,9 +5857,9 @@ function createAppAPI(render, hydrate) {
           warn$1("App has already been mounted.\nIf you want to remount the same app, move your app creation logic into a factory function and create fresh app instances for each mount - e.g. `const createMyApp = () => createApp(App)`");
         }
       },
-      unmount(document) {
+      unmount() {
         if (isMounted) {
-          render(document, null, app._container);
+          render(null, app._container);
           {
             app._instance = null;
             devtoolsUnmountApp(app);
@@ -6973,13 +7022,13 @@ function baseCreateRenderer(options, createHydrationFns) {
     setScopeId: hostSetScopeId = NOOP,
     insertStaticContent: hostInsertStaticContent
   } = options;
-  var patch = function (document, n1, n2, container) {
-    var anchor = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
-    var parentComponent = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
-    var parentSuspense = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : null;
-    var namespace = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : void 0;
-    var slotScopeIds = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : null;
-    var optimized = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : isHmrUpdating ? false : !!n2.dynamicChildren;
+  var patch = function (n1, n2, container) {
+    var anchor = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    var parentComponent = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
+    var parentSuspense = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
+    var namespace = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : void 0;
+    var slotScopeIds = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : null;
+    var optimized = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : isHmrUpdating ? false : !!n2.dynamicChildren;
     if (n1 === n2) {
       return;
     }
@@ -6999,10 +7048,10 @@ function baseCreateRenderer(options, createHydrationFns) {
     } = n2;
     switch (type) {
       case Text:
-        processText(document, n1, n2, container, anchor);
+        processText(n1, n2, container, anchor);
         break;
       case Comment:
-        processCommentNode(document, n1, n2, container, anchor);
+        processCommentNode(n1, n2, container, anchor);
         break;
       case Static:
         if (n1 == null) {
@@ -7012,13 +7061,13 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
         break;
       case Fragment:
-        processFragment(document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        processFragment(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         break;
       default:
         if (shapeFlag & 1) {
-          processElement(document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          processElement(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         } else if (shapeFlag & 6) {
-          processComponent(document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          processComponent(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         } else if (shapeFlag & 64) {
           type.process(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, internals);
         } else if (shapeFlag & 128) {
@@ -7031,9 +7080,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       setRef(ref, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
     }
   };
-  var processText = (document, n1, n2, container, anchor) => {
+  var processText = (n1, n2, container, anchor) => {
     if (n1 == null) {
-      hostInsert(n2.el = hostCreateText(document, n2.children, container),
+      hostInsert(n2.el = hostCreateText(n2.children, container),
       // fixed by xxxxxx
       container, anchor);
     } else {
@@ -7043,9 +7092,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
     }
   };
-  var processCommentNode = (document, n1, n2, container, anchor) => {
+  var processCommentNode = (n1, n2, container, anchor) => {
     if (n1 == null) {
-      hostInsert(n2.el = hostCreateComment(document, n2.children || "", container),
+      hostInsert(n2.el = hostCreateComment(n2.children || "", container),
       // fixed by xxxxxx
       container, anchor);
     } else {
@@ -7091,19 +7140,19 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     hostRemove(anchor);
   };
-  var processElement = (document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var processElement = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     if (n2.type === "svg") {
       namespace = "svg";
     } else if (n2.type === "math") {
       namespace = "mathml";
     }
     if (n1 == null) {
-      mountElement(document, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+      mountElement(n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
     } else {
-      patchElement(document, n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+      patchElement(n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
     }
   };
-  var mountElement = (document, vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var mountElement = (vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     var el;
     var vnodeHook;
     var {
@@ -7112,13 +7161,13 @@ function baseCreateRenderer(options, createHydrationFns) {
       transition,
       dirs
     } = vnode;
-    el = vnode.el = hostCreateElement(document, vnode.type,
+    el = vnode.el = hostCreateElement(vnode.type,
     // fixed by xxxxxx
     container);
     if (shapeFlag & 8) {
-      hostSetElementText(document, el, vnode.children);
+      hostSetElementText(el, vnode.children);
     } else if (shapeFlag & 16) {
-      mountChildren(document, vnode.children, el, null, parentComponent, parentSuspense, resolveChildrenNamespace(vnode, namespace), slotScopeIds, optimized);
+      mountChildren(vnode.children, el, null, parentComponent, parentSuspense, resolveChildrenNamespace(vnode, namespace), slotScopeIds, optimized);
     }
     if (dirs) {
       invokeDirectiveHook(vnode, null, parentComponent, "created");
@@ -7187,14 +7236,14 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
     }
   };
-  var mountChildren = function (document, children, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) {
-    var start = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : 0;
+  var mountChildren = function (children, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) {
+    var start = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : 0;
     for (var i = start; i < children.length; i++) {
       var child = children[i] = optimized ? cloneIfMounted(children[i]) : normalizeVNode(children[i]);
-      patch(document, null, child, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+      patch(null, child, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
     }
   };
-  var patchElement = (document, n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var patchElement = (n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     var el = n2.el = n1.el;
     var {
       patchFlag,
@@ -7219,12 +7268,12 @@ function baseCreateRenderer(options, createHydrationFns) {
       dynamicChildren = null;
     }
     if (dynamicChildren) {
-      patchBlockChildren(document, n1.dynamicChildren, dynamicChildren, el, parentComponent, parentSuspense, resolveChildrenNamespace(n2, namespace), slotScopeIds);
+      patchBlockChildren(n1.dynamicChildren, dynamicChildren, el, parentComponent, parentSuspense, resolveChildrenNamespace(n2, namespace), slotScopeIds);
       {
         traverseStaticChildren(n1, n2);
       }
     } else if (!optimized) {
-      patchChildren(document, n1, n2, el, null, parentComponent, parentSuspense, resolveChildrenNamespace(n2, namespace), slotScopeIds, false);
+      patchChildren(n1, n2, el, null, parentComponent, parentSuspense, resolveChildrenNamespace(n2, namespace), slotScopeIds, false);
     }
     if (patchFlag > 0) {
       if (patchFlag & 16) {
@@ -7260,7 +7309,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
       if (patchFlag & 1) {
         if (n1.children !== n2.children) {
-          hostSetElementText(document, el, n2.children);
+          hostSetElementText(el, n2.children);
         }
       }
     } else if (!optimized && dynamicChildren == null) {
@@ -7273,7 +7322,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       }, parentSuspense);
     }
   };
-  var patchBlockChildren = (document, oldChildren, newChildren, fallbackContainer, parentComponent, parentSuspense, namespace, slotScopeIds) => {
+  var patchBlockChildren = (oldChildren, newChildren, fallbackContainer, parentComponent, parentSuspense, namespace, slotScopeIds) => {
     for (var i = 0; i < newChildren.length; i++) {
       var oldVNode = oldChildren[i];
       var newVNode = newChildren[i];
@@ -7292,7 +7341,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       // In other cases, the parent container is not actually used so we
       // just pass the block element here to avoid a DOM parentNode call.
       fallbackContainer;
-      patch(document, oldVNode, newVNode, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, true);
+      patch(oldVNode, newVNode, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, true);
     }
   };
   var patchProps = (el, vnode, oldProps, newProps, parentComponent, parentSuspense, namespace) => {
@@ -7323,9 +7372,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
     }
   };
-  var processFragment = (document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
-    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText(document, "", container, true);
-    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText(document, "", container, true);
+  var processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText("", container, true);
+    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText("", container, true);
     var {
       patchFlag,
       dynamicChildren,
@@ -7344,7 +7393,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     if (n1 == null) {
       hostInsert(fragmentStartAnchor, container, anchor);
       hostInsert(fragmentEndAnchor, container, anchor);
-      mountChildren(document,
+      mountChildren(
       // #10007
       // such fragment like `<></>` will be compiled into
       // a fragment which doesn't have a children.
@@ -7355,28 +7404,28 @@ function baseCreateRenderer(options, createHydrationFns) {
       // #2715 the previous fragment could've been a BAILed one as a result
       // of renderSlot() with no valid children
       n1.dynamicChildren) {
-        patchBlockChildren(document, n1.dynamicChildren, dynamicChildren, container, parentComponent, parentSuspense, namespace, slotScopeIds);
+        patchBlockChildren(n1.dynamicChildren, dynamicChildren, container, parentComponent, parentSuspense, namespace, slotScopeIds);
         {
           traverseStaticChildren(n1, n2);
         }
       } else {
-        patchChildren(document, n1, n2, container, fragmentEndAnchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        patchChildren(n1, n2, container, fragmentEndAnchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
       }
     }
   };
-  var processComponent = (document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var processComponent = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     n2.slotScopeIds = slotScopeIds;
     if (n1 == null) {
       if (n2.shapeFlag & 512) {
         parentComponent.ctx.activate(n2, container, anchor, namespace, optimized);
       } else {
-        mountComponent(document, n2, container, anchor, parentComponent, parentSuspense, namespace, optimized);
+        mountComponent(n2, container, anchor, parentComponent, parentSuspense, namespace, optimized);
       }
     } else {
       updateComponent(n1, n2, optimized);
     }
   };
-  var mountComponent = (document, initialVNode, container, anchor, parentComponent, parentSuspense, namespace, optimized) => {
+  var mountComponent = (initialVNode, container, anchor, parentComponent, parentSuspense, namespace, optimized) => {
     var instance = initialVNode.component = createComponentInstance(initialVNode, parentComponent, parentSuspense);
     if (instance.type.__hmrId) {
       registerHMR(instance);
@@ -7401,10 +7450,10 @@ function baseCreateRenderer(options, createHydrationFns) {
       parentSuspense && parentSuspense.registerDep(instance, setupRenderEffect);
       if (!initialVNode.el) {
         var placeholder = instance.subTree = createVNode(Comment);
-        processCommentNode(document, null, placeholder, container, anchor);
+        processCommentNode(null, placeholder, container, anchor);
       }
     } else {
-      setupRenderEffect(document, instance, initialVNode, container, anchor, parentSuspense, namespace, optimized);
+      setupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, namespace, optimized);
     }
     {
       popWarningContext();
@@ -7434,7 +7483,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       instance.vnode = n2;
     }
   };
-  var setupRenderEffect = (document, instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
+  var setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
     var componentUpdateFn = () => {
       if (!instance.isMounted) {
         var vnodeHook;
@@ -7494,7 +7543,7 @@ function baseCreateRenderer(options, createHydrationFns) {
           {
             startMeasure(instance, "patch");
           }
-          patch(document, null, subTree, container, anchor, instance, parentSuspense, namespace);
+          patch(null, subTree, container, anchor, instance, parentSuspense, namespace);
           {
             endMeasure(instance, "patch");
           }
@@ -7569,7 +7618,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         {
           startMeasure(instance, "patch");
         }
-        patch(document, prevTree, nextTree,
+        patch(prevTree, nextTree,
         // parent may have changed if it's in a teleport
         hostParentNode(prevTree.el),
         // anchor may have changed if it's in a fragment
@@ -7623,8 +7672,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     flushPreFlushCbs(instance);
     resetTracking();
   };
-  var patchChildren = function (document, n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds) {
-    var optimized = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : false;
+  var patchChildren = function (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds) {
+    var optimized = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : false;
     var c1 = n1 && n1.children;
     var prevShapeFlag = n1 ? n1.shapeFlag : 0;
     var c2 = n2.children;
@@ -7634,10 +7683,10 @@ function baseCreateRenderer(options, createHydrationFns) {
     } = n2;
     if (patchFlag > 0) {
       if (patchFlag & 128) {
-        patchKeyedChildren(document, c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         return;
       } else if (patchFlag & 256) {
-        patchUnkeyedChildren(document, c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        patchUnkeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         return;
       }
     }
@@ -7646,26 +7695,26 @@ function baseCreateRenderer(options, createHydrationFns) {
         unmountChildren(c1, parentComponent, parentSuspense);
       }
       if (c2 !== c1) {
-        hostSetElementText(document, container, c2);
+        hostSetElementText(container, c2);
       }
     } else {
       if (prevShapeFlag & 16) {
         if (shapeFlag & 16) {
-          patchKeyedChildren(document, c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         } else {
           unmountChildren(c1, parentComponent, parentSuspense, true);
         }
       } else {
         if (prevShapeFlag & 8) {
-          hostSetElementText(document, container, "");
+          hostSetElementText(container, "");
         }
         if (shapeFlag & 16) {
-          mountChildren(document, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          mountChildren(c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         }
       }
     }
   };
-  var patchUnkeyedChildren = (document, c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var patchUnkeyedChildren = (c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     c1 = c1 || EMPTY_ARR;
     c2 = c2 || EMPTY_ARR;
     var oldLength = c1.length;
@@ -7674,15 +7723,15 @@ function baseCreateRenderer(options, createHydrationFns) {
     var i;
     for (i = 0; i < commonLength; i++) {
       var nextChild = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
-      patch(document, c1[i], nextChild, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+      patch(c1[i], nextChild, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
     }
     if (oldLength > newLength) {
       unmountChildren(c1, parentComponent, parentSuspense, true, false, commonLength);
     } else {
-      mountChildren(document, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, commonLength);
+      mountChildren(c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, commonLength);
     }
   };
-  var patchKeyedChildren = (document, c1, c2, container, parentAnchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+  var patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     var i = 0;
     var l2 = c2.length;
     var e1 = c1.length - 1;
@@ -7691,7 +7740,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       var n1 = c1[i];
       var n2 = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
       if (isSameVNodeType(n1, n2)) {
-        patch(document, n1, n2, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        patch(n1, n2, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
       } else {
         break;
       }
@@ -7701,7 +7750,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       var _n = c1[e1];
       var _n2 = c2[e2] = optimized ? cloneIfMounted(c2[e2]) : normalizeVNode(c2[e2]);
       if (isSameVNodeType(_n, _n2)) {
-        patch(document, _n, _n2, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+        patch(_n, _n2, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
       } else {
         break;
       }
@@ -7713,7 +7762,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         var nextPos = e2 + 1;
         var anchor = nextPos < l2 ? c2[nextPos].el : parentAnchor;
         while (i <= e2) {
-          patch(document, null, c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]), container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          patch(null, c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]), container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
           i++;
         }
       }
@@ -7770,7 +7819,7 @@ function baseCreateRenderer(options, createHydrationFns) {
           } else {
             moved = true;
           }
-          patch(document, prevChild, c2[newIndex], container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          patch(prevChild, c2[newIndex], container, null, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
           patched++;
         }
       }
@@ -7781,7 +7830,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         var _nextChild = c2[nextIndex];
         var _anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : parentAnchor;
         if (newIndexToOldIndexMap[i] === 0) {
-          patch(document, null, _nextChild, container, _anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
+          patch(null, _nextChild, container, _anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
         } else if (moved) {
           if (j < 0 || i !== increasingNewIndexSequence[j]) {
             move(_nextChild, container, _anchor, 2);
@@ -8018,13 +8067,13 @@ function baseCreateRenderer(options, createHydrationFns) {
     return hostNextSibling(vnode.anchor || vnode.el);
   };
   var isFlushing = false;
-  var render = (document, vnode, container, namespace) => {
+  var render = (vnode, container, namespace) => {
     if (vnode == null) {
       if (container._vnode) {
         unmount(container._vnode, null, null, true);
       }
     } else {
-      patch(document, container._vnode || null, vnode, container, null, null, null, namespace);
+      patch(container._vnode || null, vnode, container, null, null, null, namespace);
     }
     if (!isFlushing) {
       isFlushing = true;
@@ -8199,15 +8248,15 @@ var TeleportImpl = {
     }
     if (n1 == null) {
       var placeholder = n2.el =
-      // @ts-expect-error  fixed by xxxxxx
-      createComment("teleport start");
+      // fixed by xxxxxx
+      createComment("teleport start", container);
       var mainAnchor = n2.anchor =
-      // @ts-expect-error  fixed by xxxxxx
-      createComment("teleport end");
+      // fixed by xxxxxx
+      createComment("teleport end", container);
       insert(placeholder, container, anchor);
       insert(mainAnchor, container, anchor);
       var target = n2.target = resolveTarget(n2.props, querySelector, parentComponent);
-      var targetAnchor = n2.targetAnchor = createText("");
+      var targetAnchor = n2.targetAnchor = createText("", container);
       if (target) {
         insert(targetAnchor, target);
         if (namespace === "svg" || isTargetSVG(target)) {
@@ -9727,6 +9776,13 @@ function updateClassStyles(el) {
   }
   el.updateStyle(styles);
 }
+var rootDocument;
+function getDocument() {
+  return rootDocument;
+}
+function setDocument(document) {
+  rootDocument = document;
+}
 function updateTextNode(node) {
   var childNode = getExtraChildNode(node);
   if (childNode !== null) {
@@ -9773,10 +9829,16 @@ var nodeOps = {
       parent.removeChild(child);
     }
   },
-  createElement: (document, tag, container) => {
-    return document.createElement(tag);
+  createElement: (tag, container) => {
+    if (!container) {
+      return getDocument().createElement(tag);
+    } else {
+      var _document = container.uniPage.document;
+      return _document.createElement(tag);
+    }
   },
-  createText: (document, text, container, isAnchor) => {
+  createText: (text, container, isAnchor) => {
+    var document = container.uniPage.document;
     if (isAnchor) {
       return document.createComment(text);
     }
@@ -9785,7 +9847,8 @@ var nodeOps = {
     setExtraIsTextNode(textNode, true);
     return textNode;
   },
-  createComment: (document, text, container) => {
+  createComment: (text, container) => {
+    var document = container.uniPage.document;
     return document.createComment(text);
   },
   setText: (node, text) => {
@@ -9795,12 +9858,12 @@ var nodeOps = {
       updateTextNode(parent);
     }
   },
-  setElementText: (document, el, text) => {
+  setElementText: (el, text) => {
     if (el.tagName !== "TEXT") {
       var childNodes = el.childNodes;
       var textNode = childNodes.find(node => node.tagName === "TEXT");
       if (!textNode) {
-        var textNode2 = nodeOps.createText(document, text, el);
+        var textNode2 = nodeOps.createText(text, el);
         el.appendChild(textNode2);
         return;
       }
@@ -9810,8 +9873,13 @@ var nodeOps = {
   },
   parentNode: node => node.parentNode,
   nextSibling: node => node.nextSibling,
-  querySelector: (document, selector) => {
-    return document.querySelector(selector);
+  querySelector: (selector, parentComponent) => {
+    var _a, _b;
+    var document = (_b = (_a = parentComponent == null ? void 0 : parentComponent.proxy) == null ? void 0 : _a.$nativePage) == null ? void 0 : _b.document;
+    if (document) {
+      return document.querySelector(selector);
+    }
+    return null;
   }
 };
 function updateChildrenClassStyle(el) {
@@ -10257,8 +10325,9 @@ var createApp = function () {
   var {
     mount
   } = app;
-  app.mount = document => {
-    return mount(document, document.body);
+  app.mount = container => {
+    setDocument(container);
+    return mount(container.body);
   };
   return app;
 };

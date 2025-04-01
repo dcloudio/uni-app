@@ -1077,11 +1077,29 @@ function getOSInfo(system, platform) {
         osVersion = system;
     }
     else {
-        osName = system.split(' ')[0] || '';
+        osName = system.split(' ')[0] || platform;
         osVersion = system.split(' ')[1] || '';
     }
+    osName = osName.toLocaleLowerCase();
+    switch (osName) {
+        case 'harmony': // alipay
+        case 'ohos': // weixin
+        case 'openharmony': // feishu
+            osName = 'harmonyos';
+            break;
+        case 'iphone os': // alipay
+            osName = 'ios';
+            break;
+        case 'mac': // weixin qq
+        case 'darwin': // feishu
+            osName = 'macos';
+            break;
+        case 'windows_nt': // feishu
+            osName = 'windows';
+            break;
+    }
     return {
-        osName: osName.toLocaleLowerCase(),
+        osName,
         osVersion,
     };
 }

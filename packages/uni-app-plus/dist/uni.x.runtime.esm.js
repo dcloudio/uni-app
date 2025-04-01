@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, createVNode, render, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
+import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -615,8 +615,34 @@ var vueApp;
 function getVueApp() {
   return vueApp;
 }
-function setVueApp(app) {
-  vueApp = app;
+function initVueApp(appVm) {
+  var internalInstance = appVm.$;
+  Object.defineProperty(internalInstance.ctx, "$children", {
+    get() {
+      return getAllPages().map((page) => page.$vm);
+    }
+  });
+  var appContext = internalInstance.appContext;
+  vueApp = extend(appContext.app, {
+    mountPage(pageComponent, pageProps, pageContainer) {
+      var vnode = createVNode(pageComponent, pageProps);
+      vnode.appContext = appContext;
+      vnode.__page_container__ = pageContainer;
+      render(vnode, pageContainer);
+      var publicThis = vnode.component.proxy;
+      publicThis.__page_container__ = pageContainer;
+      return publicThis;
+    },
+    unmountPage: (pageInstance) => {
+      var {
+        __page_container__
+      } = pageInstance;
+      if (__page_container__) {
+        __page_container__.isUnmounted = true;
+        render(null, __page_container__);
+      }
+    }
+  });
 }
 function getPage$BasePage(page) {
   return page.$basePage;
@@ -2013,19 +2039,15 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   return nativePage;
 }
 function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage) {
-  var document = nativePage.document;
-  var body = document.body;
+  var pageNode = nativePage.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
-  var mountPage = (component2) => (
-    // TODO x
-    app.mountPage(component2, {
-      __pageId,
-      __pagePath,
-      __pageQuery,
-      __pageInstance
-    }, body, document)
-  );
+  var mountPage = (component2) => app.mountPage(component2, {
+    __pageId,
+    __pagePath,
+    __pageQuery,
+    __pageInstance
+  }, pageNode);
   if (isPromise(component)) {
     return component.then((component2) => mountPage(component2));
   }
@@ -2486,36 +2508,6 @@ function onLaunchWebviewReady() {
 }
 function initSubscribeHandlers() {
   subscribeWebviewReady();
-}
-function initVueApp(appVm) {
-  var internalInstance = appVm.$;
-  Object.defineProperty(internalInstance.ctx, "$children", {
-    get() {
-      return getAllPages().map((page) => page.$vm);
-    }
-  });
-  var appContext = internalInstance.appContext;
-  var vueApp2 = extend(appContext.app, {
-    mountPage(pageComponent, pageProps, pageContainer, document) {
-      var vnode = createVNode(pageComponent, pageProps);
-      vnode.appContext = appContext;
-      vnode.__page_container__ = pageContainer;
-      render(document, vnode, pageContainer);
-      var publicThis = vnode.component.proxy;
-      publicThis.__page_container__ = pageContainer;
-      return publicThis;
-    },
-    unmountPage: (pageInstance, document) => {
-      var {
-        __page_container__
-      } = pageInstance;
-      if (__page_container__) {
-        __page_container__.isUnmounted = true;
-        render(document, null, __page_container__);
-      }
-    }
-  });
-  setVueApp(vueApp2);
 }
 function asyncGeneratorStep(n, t, e, r, o, a, c) {
   try {
@@ -6936,15 +6928,17 @@ const _sfc_main$4 = {
                 this.pois.unshift(newPoi);
               }
             }
+            this.searchLoading = false;
             if (this.selected == -1) {
-              this.selected = 0;
+              setTimeout(() => {
+                this.selected = 0;
+              }, 20);
               this.lastPoi.latitude = this.latitude;
               this.lastPoi.longitude = this.longitude;
               this.lastPoi.selected = this.selected;
               this.lastPoi.pois = this.pois;
             }
           }
-          this.searchLoading = false;
         }).catch((err) => {
           this.searchLoading = false;
         });
@@ -7992,10 +7986,10 @@ const _style_0$3 = {
       "borderTopRightRadius": 8,
       "borderBottomRightRadius": 8,
       "borderBottomLeftRadius": 8,
-      "transitionDuration": "0.1s",
-      "transitionProperty": "opacity,transform",
       "opacity": 0,
-      "transform": "scale(0.9)"
+      "transform": "scale(0.9)",
+      "transitionDuration": "0.1s",
+      "transitionProperty": "opacity,transform"
     },
     ".uni-modal_dialog__show": {
       "opacity": 1,

@@ -35,9 +35,8 @@
       "uni-framework",
       "uni-theme",
       "uni-getSystemInfo",
-      "uni-getLocation",
+      "uni-location",
       "uni-cloud-client",
-      "uni-getLocation",
       "uni-map-tencent",
       "app-ios:uni-dialogPage",
       "app-ios:uni-event"

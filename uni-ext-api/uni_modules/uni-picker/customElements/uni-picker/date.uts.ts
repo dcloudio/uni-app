@@ -1,0 +1,1 @@
+export const yearData = Array<number>(2101 - 1900).fill(0).map((_:number, i:number) => 1900 + i)

@@ -231,7 +231,7 @@
     },
     methods: {
       checkUniCloud() {
-        if (typeof uniCloud == 'undefined') {
+        if (typeof uniCloud == 'undefined' || typeof uniCloud.config == 'undefined' || uniCloud.config.spaceId == '') {
           this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
           this.useUniCloud = false;
           console.error(this.errMsg);
@@ -455,23 +455,18 @@
                   this.pois.unshift(newPoi);
                 }
               }
+              this.searchLoading = false;
               if (this.selected == -1) {
-                // #ifdef APP-HARMONY
-                this.selected = -1;
+                // 延迟修改 selected ,否则会导致鸿蒙在一开始的时候不显示
                 setTimeout(() => {
                   this.selected = 0;
-                }, 100);
-                // #endif
-                // #ifndef APP-HARMONY
-                this.selected = 0;
-                // #endif
+                }, 20);
                 this.lastPoi.latitude = this.latitude;
                 this.lastPoi.longitude = this.longitude;
                 this.lastPoi.selected = this.selected;
                 this.lastPoi.pois = this.pois;
               }
             }
-            this.searchLoading = false;
           }).catch((err) => {
             this.searchLoading = false;
           })
