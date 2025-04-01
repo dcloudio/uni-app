@@ -78,6 +78,9 @@ export const uploadFile = defineTaskApi<API_TYPE_UPLOAD_FILE>(
     }
     var uploadTask = new UploadTask()
     if (!isArray(files) || !files.length) {
+      if (!filePath) {
+        reject<Partial<UploadFileFail>>('file error')
+      }
       files = [
         {
           name,
