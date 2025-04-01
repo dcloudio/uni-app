@@ -395,36 +395,6 @@
       }
     }
   },
-  "uni-getLocation": {
-    "provider": {
-      "service": "location"
-    },
-    "uni": {
-      "getLocation": {
-        "name": "getLocation",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": true
-        }
-      }
-    }
-  },
-  "uni-getLocation-system": {
-    "provider": {
-      "service": "location",
-      "name": "system",
-      "servicePlugin": "uni-getLocation"
-    }
-  },
-  "uni-getLocation-tencent": {
-    "provider": {
-      "service": "location",
-      "name": "tencent",
-      "servicePlugin": "uni-getLocation"
-    }
-  },
   "uni-getNetworkType": {
     "uni": {
       "getNetworkType": {
@@ -542,6 +512,36 @@
           "swift": false
         }
       }
+    }
+  },
+  "uni-location": {
+    "provider": {
+      "service": "location"
+    },
+    "uni": {
+      "getLocation": {
+        "name": "getLocation",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-location-system": {
+    "provider": {
+      "service": "location",
+      "name": "system",
+      "servicePlugin": "uni-location"
+    }
+  },
+  "uni-location-tencent": {
+    "provider": {
+      "service": "location",
+      "name": "tencent",
+      "servicePlugin": "uni-location"
     }
   },
   "uni-map-tencent": {
