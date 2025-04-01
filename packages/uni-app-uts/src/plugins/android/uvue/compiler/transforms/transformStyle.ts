@@ -27,7 +27,7 @@ export const transformStyle: NodeTransform = (node, context) => {
         }).then(({ messages }) => {
           messages.forEach((message) => {
             const error = createCompilerError(100, p.loc, {
-              100: message.text,
+              100: message.text.replace('ERROR: ', '').replace('WARNING: ', ''),
             })
             error.errorType = 'css'
             context.onWarn(error)
