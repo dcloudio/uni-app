@@ -167,27 +167,34 @@ describe('uvue-style', () => {
             height: calc(var(--status-bar-height) * 2);
         }
         `,
-      { type: 'uvue', map: true, ts: true }
+      { type: 'uvue', platform: 'app-android', map: true, ts: true }
     )
     expect(messages).toHaveLength(0)
     expect(code).toMatchSnapshot()
   })
 
   test('support env', async () => {
-    const {
-      code,
-      // messages
-    } = await parse(
+    const { code, messages } = await parse(
       `.top {
-    padding-top: env(safe-area-inset-top, 20px);
+    padding-right: env(safe-area-inset-top, 20px);
+    padding-top: env(safe-area-inset-top);
     padding-left: env(
       safe-area-inset-top,
       20px
     );
   }`,
-      { type: 'uvue', map: true, ts: true }
+      { type: 'uvue', platform: 'app-android' }
     )
-    expect(code).toMatchSnapshot()
+    expect(JSON.parse(code)).toEqual({
+      top: {
+        '': {
+          paddingLeft: 'env(safe-area-inset-top,20px)',
+          paddingRight: 'env(safe-area-inset-top,20px)',
+          paddingTop: 'env(safe-area-inset-top)',
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
   })
 
   test('support css text-shadow', async () => {
@@ -201,6 +208,29 @@ describe('uvue-style', () => {
     )
     expect(code).toMatchSnapshot()
     expect(messages).toHaveLength(0)
+  })
+
+  test('css var --uni-safe-area-inset-[postion]', async () => {
+    const { code, messages } = await parse(
+      `
+.bar {
+  padding-top: var(--uni-safe-area-inset-top);
+  padding-left: var(--uni-safe-area-inset-top, 10px);
+}
+
+`,
+      { type: 'uvue', platform: 'app-android' }
+    )
+
+    expect(JSON.parse(code)).toEqual({
+      bar: {
+        '': {
+          paddingTop: 'var(--uni-safe-area-inset-top)',
+          paddingLeft: 'var(--uni-safe-area-inset-top, 10px)',
+        },
+      },
+    })
+    expect(messages.length).toBe(0)
   })
 })
 
