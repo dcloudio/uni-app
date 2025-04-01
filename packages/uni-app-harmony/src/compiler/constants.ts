@@ -40,6 +40,10 @@ export const ExternalModules: IExternalModule[] = [
     type: 'provider',
   },
   {
+    name: 'uni-location-system',
+    type: 'provider',
+  },
+  {
     name: 'uni-facialVerify',
     type: 'extapi',
   },
