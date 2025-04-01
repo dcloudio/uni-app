@@ -26,7 +26,6 @@ import {
   isColorSupported,
   isEnableGenericsParameterDefaults,
   isEnableInlineReified,
-  isEnableUTSNumber,
   moveRootIndexSourceMap,
   normalizeUTSResult,
   parseExtApiDefaultParameters,
@@ -645,7 +644,6 @@ export async function compile(
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
-        enableUtsNumber: isEnableUTSNumber(),
         enableNarrowType: false, // 这里的启用是把部分typeof转换成instanceof，这样确实好一点，但会引发一些kotlin之类的警告，暂不开启
         enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
         enableInlineReified: isEnableInlineReified(),

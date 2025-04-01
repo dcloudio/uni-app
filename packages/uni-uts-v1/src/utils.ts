@@ -1167,14 +1167,6 @@ function isEnableUTSFeature(feature: EnableKeys) {
   return getUTSConfig()[feature]
 }
 
-export function isEnableUTSNumber() {
-  return isEnableUTSFeature('enableUtsNumber')
-}
-
-export function isEnableNarrowType() {
-  return isEnableUTSFeature('enableNarrowType')
-}
-
 export function isEnableGenericsParameterDefaults() {
   return isEnableUTSFeature('enableGenericsParameterDefaults')
 }
