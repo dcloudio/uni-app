@@ -448,19 +448,6 @@
       }
     }
   },
-  "uni-getRecorderManager": {
-    "uni": {
-      "getRecorderManager": {
-        "name": "getRecorderManager",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": true
-        }
-      }
-    }
-  },
   "uni-getSystemInfo": {
     "uni": {
       "getSystemInfo": {
@@ -940,6 +927,19 @@
       },
       "setAppBadgeNumber": {
         "name": "setAppBadgeNumber",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-recorder": {
+    "uni": {
+      "getRecorderManager": {
+        "name": "getRecorderManager",
         "app": {
           "js": false,
           "kotlin": true,
