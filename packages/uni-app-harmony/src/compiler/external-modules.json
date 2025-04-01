@@ -10,7 +10,7 @@
   },
   {
     "type": "provider",
-    "plugin": "uni-getLocation-system",
+    "plugin": "uni-location-system",
     "provider": "system",
     "service": "location",
     "version": "1.0.0"
