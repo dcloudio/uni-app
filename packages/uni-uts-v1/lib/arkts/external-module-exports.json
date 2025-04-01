@@ -31,6 +31,11 @@
       "StartFacialRecognitionVerifySuccessCallback"
     ]
   ],
+  "@uni_modules/uni-location-system": [
+    [
+      "UniLocationSystemProvider"
+    ]
+  ],
   "@uni_modules/uni-oauth-huawei": [
     [
       "UniOAuthHuaweiProvider"
