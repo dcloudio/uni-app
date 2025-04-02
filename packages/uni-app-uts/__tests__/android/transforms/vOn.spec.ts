@@ -165,6 +165,12 @@ _ctx.bar()
   onClick: () => _ctx.foo()
 }), null, 8 /* PROPS */, ["onClick"])`
     )
+    assert(
+      `<input @input="$emit('update:modelValue', $event.detail.value)" />`,
+      `createElementVNode("input", utsMapOf({
+  onInput: ($event: UniInputEvent) => {_ctx.$emit('update:modelValue', $event.detail.value)}
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["onInput"])`
+    )
   })
   test('object syntax', () => {
     assert(
@@ -190,6 +196,12 @@ _ctx.bar()
       `createElementVNode(\"text\", utsMapOf({
   onClick: (e: any) => _ctx.click(e)
 }), null, 8 /* PROPS */, [\"onClick\"])`
+    )
+    assert(
+      `<textarea @input="(e: any) => input(e)" />`,
+      `createElementVNode(\"textarea\", utsMapOf({
+  onInput: (e: any) => _ctx.input(e)
+}), null, 40 /* PROPS, NEED_HYDRATION */, [\"onInput\"])`
     )
   })
 
