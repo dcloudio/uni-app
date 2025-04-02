@@ -26,7 +26,8 @@ module.exports = {
     const copyOptions = [
       // 'sitemap.json',
       // 'ext.json',
-      'custom-tab-bar'
+      'custom-tab-bar',
+      'project.config.json'
     ]
     const workers = platformOptions.workers
     workers && copyOptions.push(typeof workers === 'object' ? workers.path : workers)
