@@ -227,7 +227,7 @@ function getEventName(dir: DirectiveNode): string {
 }
 
 function getEventParamsType(dir: DirectiveNode): string {
-  return withLazy(dir) ? 'InputBlurEvent' : 'InputEvent'
+  return withLazy(dir) ? 'UniInputBlurEvent' : 'UniInputEvent'
 }
 
 function withLazy(dir: DirectiveNode): boolean {

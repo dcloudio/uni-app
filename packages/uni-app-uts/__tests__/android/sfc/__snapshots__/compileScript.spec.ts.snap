@@ -700,15 +700,15 @@ return (): any | null => {
   return createElementVNode(Fragment, null, [
     createElementVNode("input", utsMapOf({
       modelValue: count.value,
-      onInput: ($event: InputEvent) => {(count).value = $event.detail.value}
+      onInput: ($event: UniInputEvent) => {(count).value = $event.detail.value}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"]),
     createElementVNode("input", utsMapOf({
       modelValue: unref(maybe),
-      onInput: ($event: InputEvent) => {trySetRefValue(maybe, $event.detail.value)}
+      onInput: ($event: UniInputEvent) => {trySetRefValue(maybe, $event.detail.value)}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue"]),
     createElementVNode("input", utsMapOf({
       modelValue: unref(lett),
-      onInput: ($event: InputEvent) => {lett = trySetRefValue(lett, $event.detail.value)}
+      onInput: ($event: UniInputEvent) => {lett = trySetRefValue(lett, $event.detail.value)}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue"])
   ], 64 /* STABLE_FRAGMENT */)
 }
