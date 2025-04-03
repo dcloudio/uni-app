@@ -12,6 +12,10 @@ const outputDir = resolve(
   __dirname,
   '../../playground/uts/unpackage/dist/dev/app-plus'
 )
+const outputAppHarmonyDir = resolve(
+  __dirname,
+  '../../playground/uts/unpackage/dist/dev/.app-harmony'
+)
 const uniAppXCacheDir = resolve(
   __dirname,
   '../../playground/uts/unpackage/cache'
@@ -61,7 +65,7 @@ describe('uts:sourceMap', () => {
       'arkts',
       resolve(inputDir, uniModulesPluginDir, 'utssdk/app-harmony/index.uts'),
       inputDir,
-      outputDir
+      outputAppHarmonyDir
     )
     expect(
       normalizePath(sourceMapFile).endsWith(
@@ -85,7 +89,7 @@ describe('uts:sourceMap', () => {
           'utssdk/app-harmony/utils/utils.uts'
         ),
         inputDir,
-        outputDir
+        outputAppHarmonyDir
       )
     ).toBe(sourceMapFile)
   })
