@@ -8718,6 +8718,41 @@
         "length"
       ],
       "syntax": "none | [ <color>? && <length>{2,3} ]#",
+      "defaultValue": "none",
+      "values": [
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.61"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.61"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "x",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
