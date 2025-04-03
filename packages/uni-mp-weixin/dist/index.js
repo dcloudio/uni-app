@@ -734,6 +734,46 @@ function addSafeAreaInsets (result) {
   }
 }
 
+function getOSInfo (system, platform) {
+  let osName = '';
+  let osVersion = '';
+
+  if (
+    platform &&
+    ( "mp-weixin" === 'mp-baidu')
+  ) {
+    osName = platform;
+    osVersion = system;
+  } else {
+    osName = system.split(' ')[0] || platform;
+    osVersion = system.split(' ')[1] || '';
+  }
+
+  osName = osName.toLocaleLowerCase();
+  switch (osName) {
+    case 'harmony': // alipay
+    case 'ohos': // weixin
+    case 'openharmony': // feishu
+      osName = 'harmonyos';
+      break
+    case 'iphone os': // alipay
+      osName = 'ios';
+      break
+    case 'mac': // weixin qq
+    case 'darwin': // feishu
+      osName = 'macos';
+      break
+    case 'windows_nt': // feishu
+      osName = 'windows';
+      break
+  }
+
+  return {
+    osName,
+    osVersion
+  }
+}
+
 function populateParameters (result) {
   const {
     brand = '', model = '', system = '',
@@ -746,12 +786,7 @@ function populateParameters (result) {
   const extraParam = {};
 
   // osName osVersion
-  let osName = '';
-  let osVersion = '';
-  {
-    osName = system.split(' ')[0] || '';
-    osVersion = system.split(' ')[1] || '';
-  }
+  const { osName, osVersion } = getOSInfo(system, platform);
   let hostVersion = version;
 
   // deviceType
@@ -851,7 +886,9 @@ function getAppLanguage (defaultLanguage) {
 }
 
 function getHostName (result) {
-  const _platform =  'WeChat' ;
+  const _platform =
+     'WeChat'
+      ;
   let _hostName = result.hostName || _platform; // mp-jd
   {
     if (result.environment) {
@@ -910,15 +947,19 @@ var getAppBaseInfo = {
 
 var getDeviceInfo = {
   returnValue: function (result) {
-    const { brand, model } = result;
+    const { brand, model, system = '', platform = '' } = result;
     const deviceType = getGetDeviceType(result, model);
     const deviceBrand = getDeviceBrand(brand);
     useDeviceId(result);
 
+    const { osName, osVersion } = getOSInfo(system, platform);
+
     result = sortObject(Object.assign(result, {
       deviceType,
       deviceBrand,
-      deviceModel: model
+      deviceModel: model,
+      osName,
+      osVersion
     }));
   }
 };

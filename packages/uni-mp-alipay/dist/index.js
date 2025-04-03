@@ -792,6 +792,46 @@ function addSafeAreaInsets (result) {
   }
 }
 
+function getOSInfo (system, platform) {
+  let osName = '';
+  let osVersion = '';
+
+  if (
+    platform &&
+    ("mp-alipay" === 'mp-alipay' )
+  ) {
+    osName = platform;
+    osVersion = system;
+  } else {
+    osName = system.split(' ')[0] || platform;
+    osVersion = system.split(' ')[1] || '';
+  }
+
+  osName = osName.toLocaleLowerCase();
+  switch (osName) {
+    case 'harmony': // alipay
+    case 'ohos': // weixin
+    case 'openharmony': // feishu
+      osName = 'harmonyos';
+      break
+    case 'iphone os': // alipay
+      osName = 'ios';
+      break
+    case 'mac': // weixin qq
+    case 'darwin': // feishu
+      osName = 'macos';
+      break
+    case 'windows_nt': // feishu
+      osName = 'windows';
+      break
+  }
+
+  return {
+    osName,
+    osVersion
+  }
+}
+
 function populateParameters (result) {
   const {
     brand = '', model = '', system = '',
@@ -804,13 +844,7 @@ function populateParameters (result) {
   const extraParam = {};
 
   // osName osVersion
-  let osName = '';
-  let osVersion = '';
-  {
-    my.canIUse('isIDE') && my.isIDE && (extraParam.platform = 'devtools');
-    osName = platform;
-    osVersion = system;
-  }
+  const { osName, osVersion } = getOSInfo(system, platform);
   let hostVersion = version;
 
   // deviceType
@@ -911,7 +945,8 @@ function getAppLanguage (defaultLanguage) {
 }
 
 function getHostName (result) {
-  const _platform =  "mp-alipay".split('-')[1];
+  const _platform =
+      "mp-alipay".split('-')[1];
   let _hostName = result.hostName || _platform; // mp-jd
   _hostName = result.app;
 
@@ -934,8 +969,9 @@ function addUuid (result) {
 
 function normalizePlatform (result) {
   let platform = result.platform ? result.platform.toLowerCase() : 'devtools';
-  if (!~['android', 'ios'].indexOf(platform)) {
-    platform = 'devtools';
+  if (my.canIUse('isIDE')) {
+    // @ts-expect-error Property 'isIDE' does not exist on type 'typeof my'
+    platform = my.isIDE ? 'devtools' : platform;
   }
   result.platform = platform;
 }
@@ -953,8 +989,8 @@ var getSystemInfo = {
     reviseScreenSize(result);
     addUuid(result);
     addSafeAreaInsets(result);
-    normalizePlatform(result);
     populateParameters(result);
+    normalizePlatform(result);
   }
 };
 
