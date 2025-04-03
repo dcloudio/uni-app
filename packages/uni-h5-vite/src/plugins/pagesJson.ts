@@ -236,8 +236,9 @@ function generatePagesDefineCode(
     if(async.error){
       AsyncComponentOptions.errorComponent = {
         name:'SystemAsyncError',
+        props:['error'],
         render(){
-          return createVNode(resolveComponent(async.error))
+          return createVNode(resolveComponent(async.error), { error: this.error })
         }
       }
     }
