@@ -19,7 +19,7 @@ import {
   resolveUniAppXSourceMapPath,
 } from './utils'
 import { kotlinSrcDir } from './uvue'
-import { once } from './shared'
+import { once, resolveSourceMapPath } from './shared'
 import {
   parseFilenameByClassName,
   updateUTSKotlinSourceMapManifestCache,
@@ -307,7 +307,11 @@ export async function generatedPositionFor({
   line,
   column,
   outputDir,
-}: PositionFor & { outputDir?: string }): Promise<
+  platform,
+}: PositionFor & {
+  outputDir?: string
+  platform?: 'app-harmony' | 'app' | 'app-android' | 'app-ios'
+}): Promise<
   NullablePosition & { source: string | null; relativeSource: string | null }
 > {
   return resolveSourceMapConsumer(sourceMapFile).then((consumer) => {
@@ -325,12 +329,26 @@ export async function generatedPositionFor({
     if (outputDir) {
       // 根据 sourceMapFile 和 outputDir，计算出生成后的文件路径
       const normalizedSourceMapFile = normalizePath(sourceMapFile)
+      if (!platform) {
+        // 默认 app，目前硬编码识别
+        platform = normalizedSourceMapFile.includes('/.sourcemap/app-harmony/')
+          ? 'app-harmony'
+          : 'app'
+      }
       const sourceMapRootDirs = [
         {
-          sourceMapRootDir: normalizePath(join(outputDir, '../.sourcemap/app')),
+          sourceMapRootDir: normalizePath(
+            resolveSourceMapPath(
+              outputDir,
+              platform === 'app-android' || platform === 'app-ios'
+                ? 'app'
+                : platform
+            )
+          ),
           outputDir: outputDir,
         },
       ]
+      // 理论上以下逻辑需要 app-android 下生效，但目前可能没传platform，所以默认也生效
       const kotlinOutDir = kotlinDir(outputDir)
       if (kotlinOutDir) {
         sourceMapRootDirs.push({
