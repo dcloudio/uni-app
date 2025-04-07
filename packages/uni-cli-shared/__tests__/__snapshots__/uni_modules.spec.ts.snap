@@ -62,21 +62,21 @@ export {
 }
 `;
 
-exports[`uni_modules:uni-ext-api findEncryptUniModules(app-android) 1`] = `
+exports[`uni_modules:uni-ext-api findCloudEncryptUniModules(app-android) 1`] = `
 {
   "test-com1": undefined,
   "test-com2": undefined,
 }
 `;
 
-exports[`uni_modules:uni-ext-api findEncryptUniModules(app-ios) 1`] = `
+exports[`uni_modules:uni-ext-api findCloudEncryptUniModules(app-ios) 1`] = `
 {
   "test-com1": undefined,
   "test-com2": undefined,
 }
 `;
 
-exports[`uni_modules:uni-ext-api findEncryptUniModules(web) 1`] = `
+exports[`uni_modules:uni-ext-api findCloudEncryptUniModules(web) 1`] = `
 {
   "test-com1": undefined,
   "test-com2": undefined,

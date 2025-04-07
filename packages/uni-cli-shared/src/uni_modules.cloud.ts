@@ -159,8 +159,8 @@ export function parseEasyComComponents(
   return components
 }
 
-// 查找所有普通加密插件 uni_modules
-export function findEncryptUniModules(
+// 查找所有需要云编译的加密插件 uni_modules
+export function findCloudEncryptUniModules(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string,
   cacheDir: string = ''
@@ -176,7 +176,7 @@ export function findEncryptUniModules(
       // 只有 app-android 和 app-ios 不需要云编译 utssdk 插件，而是需要自定义基座
       // 目前还未完整支持web、小程序，暂时屏蔽
       // if (platform === 'app-android' || platform === 'app-ios') {
-      // 仅扫描普通加密插件，无需依赖
+      // utssdk插件不支持云编译
       if (fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))) {
         return
       }
@@ -377,7 +377,7 @@ function findLastIndex<T>(
   return -1
 }
 
-let encryptUniModules: ReturnType<typeof findEncryptUniModules> = {}
+let encryptUniModules: ReturnType<typeof findCloudEncryptUniModules> = {}
 
 export function resolveEncryptUniModule(
   id: string,
@@ -426,7 +426,7 @@ export async function checkEncryptUniModules(
   }
 ) {
   // 扫描加密插件云编译
-  encryptUniModules = findEncryptUniModules(
+  encryptUniModules = findCloudEncryptUniModules(
     params.platform,
     inputDir,
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
@@ -504,7 +504,7 @@ export async function checkEncryptUniModules(
       })
     }
   }
-  encryptUniModules = findEncryptUniModules(
+  encryptUniModules = findCloudEncryptUniModules(
     params.platform,
     inputDir,
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
