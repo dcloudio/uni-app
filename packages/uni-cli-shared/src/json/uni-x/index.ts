@@ -11,6 +11,8 @@ import {
 import { parseJson } from '../json'
 import {
   filterPlatformPages,
+  isUniPageFile,
+  pagesCacheSet,
   removePlatformStyle,
   validatePages,
 } from '../pages'
@@ -204,6 +206,11 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   }
   // 是否应该用 process.env.UNI_UTS_PLATFORM
   filterPlatformPages(process.env.UNI_PLATFORM, pagesJson)
+
+  // 缓存页面列表
+  pagesCacheSet.clear()
+  pagesJson.pages.forEach((page) => pagesCacheSet.add(page.path))
+
   return pagesJson
 }
 
@@ -270,4 +277,22 @@ const __uniRoutes = ${normalizeAppUniRoutes(
 globalThis.__uniRoutes = __uniRoutes;`
   }
   return appConfigJs
+}
+
+export function isUniXPageFile(
+  source: string,
+  importer: string,
+  inputDir = process.env.UNI_INPUT_DIR
+) {
+  if (source.startsWith('@/')) {
+    return isUniPageFile(source.slice(2), inputDir)
+  }
+  if (source.startsWith('.')) {
+    return isUniPageFile(path.resolve(path.dirname(importer), source), inputDir)
+  }
+  return false
+}
+
+export function getUniXPagePaths() {
+  return Array.from(pagesCacheSet)
 }

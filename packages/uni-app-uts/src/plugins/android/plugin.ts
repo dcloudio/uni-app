@@ -11,6 +11,7 @@ import {
   getCssDepMap,
   getCurrentCompiledUTSPlugins,
   getUniExtApiProviderRegisters,
+  getUniXPagePaths,
   initUTSKotlinAutoImportsOnce,
   isNormalCompileTarget,
   normalizeEmitAssetFileName,
@@ -266,6 +267,7 @@ export function uniAppPlugin(): UniVitePlugin {
               ),
               sourceMap: false,
               uni_modules: [process.env.UNI_COMPILE_EXT_API_PLUGIN_ID!],
+              pages: getUniXPagePaths(),
               extApiComponents: [],
               uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
               transform: {
@@ -322,6 +324,7 @@ export function uniAppPlugin(): UniVitePlugin {
           'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
         sourceMap: enableSourceMap(),
         uni_modules: [...getCurrentCompiledUTSPlugins()],
+        pages: getUniXPagePaths(),
         extApis: parseUniExtApiNamespacesOnce(
           process.env.UNI_UTS_PLATFORM,
           process.env.UNI_UTS_TARGET_LANGUAGE
