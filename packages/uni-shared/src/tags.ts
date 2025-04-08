@@ -161,6 +161,7 @@ export const UVUE_IOS_BUILT_IN_TAGS = [
 export const UVUE_HARMONY_BUILT_IN_TAGS = [
   // TODO 列出完整列表
   ...BUILT_IN_TAG_NAMES,
+  'volume-panel',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
