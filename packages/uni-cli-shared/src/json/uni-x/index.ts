@@ -294,5 +294,8 @@ export function isUniXPageFile(
 }
 
 export function getUniXPagePaths() {
+  if (process.env.UNI_COMPILE_EXT_API_PAGE_PATHS) {
+    return JSON.parse(process.env.UNI_COMPILE_EXT_API_PAGE_PATHS)
+  }
   return Array.from(pagesCacheSet)
 }
