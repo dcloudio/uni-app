@@ -69,6 +69,13 @@ exports[`uni_modules:uni-ext-api findCloudEncryptUniModules(app-android) 1`] = `
 }
 `;
 
+exports[`uni_modules:uni-ext-api findCloudEncryptUniModules(app-harmony) 1`] = `
+{
+  "test-com1": undefined,
+  "test-com2": undefined,
+}
+`;
+
 exports[`uni_modules:uni-ext-api findCloudEncryptUniModules(app-ios) 1`] = `
 {
   "test-com1": undefined,
@@ -76,10 +83,20 @@ exports[`uni_modules:uni-ext-api findCloudEncryptUniModules(app-ios) 1`] = `
 }
 `;
 
+exports[`uni_modules:uni-ext-api findCloudEncryptUniModules(mp-weixin) 1`] = `
+{
+  "test-com1": undefined,
+  "test-com2": undefined,
+  "test-uts1": undefined,
+}
+`;
+
 exports[`uni_modules:uni-ext-api findCloudEncryptUniModules(web) 1`] = `
 {
   "test-com1": undefined,
   "test-com2": undefined,
+  "test-uts1": undefined,
+  "test-uts2": undefined,
 }
 `;
 
@@ -102,6 +119,23 @@ exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(app-android) 1
 ]
 `;
 
+exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(app-harmony) 1`] = `
+[
+  "uni_modules/test-com1/encrypt",
+  "uni_modules/test-com1/index.module.uts",
+  "uni_modules/test-com1/package.json",
+  "uni_modules/test-com1/components/test-com1-1/test-com1-1.vue",
+  "uni_modules/test-com1/components/test-com1-2/test-com1-2.vue",
+  "uni_modules/test-com2/encrypt",
+  "uni_modules/test-com2/index.module.uts",
+  "uni_modules/test-com2/index.uts",
+  "uni_modules/test-com2/package.json",
+  "uni_modules/test-com2/utils/index.uts",
+  "uni_modules/test-com2/components/test-com2-1/test-com2-1.vue",
+  "uni_modules/test-com2/components/test-com2-2/test-com2-2.vue",
+]
+`;
+
 exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(app-ios) 1`] = `
 [
   "uni_modules/test-com1/encrypt",
@@ -119,6 +153,26 @@ exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(app-ios) 1`] =
 ]
 `;
 
+exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(mp-weixin) 1`] = `
+[
+  "uni_modules/test-com1/encrypt",
+  "uni_modules/test-com1/index.module.uts",
+  "uni_modules/test-com1/package.json",
+  "uni_modules/test-com1/components/test-com1-1/test-com1-1.vue",
+  "uni_modules/test-com1/components/test-com1-2/test-com1-2.vue",
+  "uni_modules/test-com2/encrypt",
+  "uni_modules/test-com2/index.module.uts",
+  "uni_modules/test-com2/index.uts",
+  "uni_modules/test-com2/package.json",
+  "uni_modules/test-com2/utils/index.uts",
+  "uni_modules/test-com2/components/test-com2-1/test-com2-1.vue",
+  "uni_modules/test-com2/components/test-com2-2/test-com2-2.vue",
+  "uni_modules/test-uts1/encrypt",
+  "uni_modules/test-uts1/package.json",
+  "uni_modules/test-uts1/utssdk/index.uts",
+]
+`;
+
 exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(web) 1`] = `
 [
   "uni_modules/test-com1/encrypt",
@@ -133,5 +187,11 @@ exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(web) 1`] = `
   "uni_modules/test-com2/utils/index.uts",
   "uni_modules/test-com2/components/test-com2-1/test-com2-1.vue",
   "uni_modules/test-com2/components/test-com2-2/test-com2-2.vue",
+  "uni_modules/test-uts1/encrypt",
+  "uni_modules/test-uts1/package.json",
+  "uni_modules/test-uts1/utssdk/index.uts",
+  "uni_modules/test-uts2/encrypt",
+  "uni_modules/test-uts2/package.json",
+  "uni_modules/test-uts2/utssdk/web/index.uts",
 ]
 `;

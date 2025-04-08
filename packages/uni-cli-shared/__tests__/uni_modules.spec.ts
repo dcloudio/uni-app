@@ -6,7 +6,13 @@ import {
 } from '../src/uni_modules.cloud'
 import { normalizePath } from '../src/utils'
 
-const platforms = ['app-android', 'app-ios', 'web'] as const
+const platforms = [
+  'app-android',
+  'app-ios',
+  'web',
+  'app-harmony',
+  'mp-weixin',
+] as const
 describe('uni_modules:uni-ext-api', () => {
   const inputDir = path.resolve(__dirname, '../../playground/uni_modules/src')
 
