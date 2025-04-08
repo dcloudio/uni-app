@@ -44,6 +44,7 @@
     "chokidar": "^3.5.3",
     "compare-versions": "^3.6.0",
     "debug": "^4.3.3",
+    "entities": "^4.5.0",
     "es-module-lexer": "^1.2.1",
     "esbuild": "^0.20.1",
     "estree-walker": "^2.0.2",

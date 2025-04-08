@@ -1271,6 +1271,9 @@ importers:
       debug:
         specifier: ^4.3.3
         version: 4.3.7(supports-color@8.1.1)
+      entities:
+        specifier: ^4.5.0
+        version: 4.5.0
       es-module-lexer:
         specifier: ^1.2.1
         version: 1.5.4
