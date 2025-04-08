@@ -9341,6 +9341,7 @@ function reload() {
 }
 const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncError",
+  props: ["error"],
   setup() {
     initI18nAsyncMsgsOnce();
     const {
@@ -27578,7 +27579,10 @@ const _sfc_main$2 = {
       windowWidth: 0,
       windowHeight: 0,
       popover: {},
-      bottomNavigationHeight: 0
+      bottomNavigationHeight: 0,
+      appTheme: null,
+      osTheme: null,
+      hostTheme: null
     };
   },
   onLoad(options) {
@@ -27622,15 +27626,22 @@ const _sfc_main$2 = {
     const osTheme = systemInfo.osTheme;
     const appTheme = systemInfo.appTheme;
     if (appTheme != null && appTheme != "auto") {
-      this.theme = appTheme;
-    } else if (osTheme != null) {
-      this.theme = osTheme;
+      this.appTheme = appTheme;
+      this.handleThemeChange();
+    }
+    if (osTheme != null) {
+      this.osTheme = osTheme;
+      this.handleThemeChange();
     }
     const hostTheme = systemInfo.hostTheme;
     if (hostTheme != null) {
-      this.theme = hostTheme;
+      this.hostTheme = hostTheme;
+      this.handleThemeChange();
     }
-    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+    uni.onHostThemeChange((res) => {
+      this.hostTheme = res.theme;
+      this.handleThemeChange();
+    });
     this.windowHeight = systemInfo.windowHeight;
     this.windowWidth = systemInfo.windowWidth;
     window.addEventListener("resize", this.fixSize);
@@ -27641,9 +27652,7 @@ const _sfc_main$2 = {
         this.language = res.locale;
       }
     });
-    uni.onThemeChange((res) => {
-      this.theme = res.theme;
-    });
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
   },
   computed: {
     isWidescreen() {
@@ -27767,6 +27776,15 @@ const _sfc_main$2 = {
     handleCancel() {
       this.closeActionSheet();
       uni.$emit(this.failEventName, {});
+    },
+    handleThemeChange() {
+      if (this.hostTheme != null) {
+        this.theme = this.hostTheme;
+      } else if (this.appTheme != null) {
+        this.theme = this.appTheme;
+      } else if (this.osTheme != null) {
+        this.theme = this.osTheme;
+      }
     }
   }
 };
@@ -29194,6 +29212,21 @@ const _sfc_main = {
   data() {
     return {
       theme: "light",
+      language: "zh-Hans",
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      i18nConfirmText: {
+        en: "OK",
+        es: "Confirmar",
+        fr: "Confirmer",
+        "zh-Hans": "确定",
+        "zh-Hant": "確定"
+      },
       readyEventName: "",
       optionsEventName: "",
       successEventName: "",
@@ -29203,8 +29236,8 @@ const _sfc_main = {
       showCancel: true,
       editable: false,
       placeholderText: null,
-      confirmText: "确定",
-      cancelText: "取消",
+      inputConfirmText: null,
+      inputCancelText: null,
       cancelColor: "#000000",
       confirmColor: "#4A5E86",
       inputBottom: "0px",
@@ -29220,8 +29253,61 @@ const _sfc_main = {
       this.showAnim = true;
     }, 10);
   },
+  computed: {
+    cancelText() {
+      if (this.inputCancelText != null) {
+        const res = this.inputCancelText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    },
+    confirmText() {
+      if (this.inputConfirmText != null) {
+        const res = this.inputConfirmText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nConfirmText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nConfirmText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nConfirmText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nConfirmText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nConfirmText["zh-Hant"];
+      }
+      return "确定";
+    }
+  },
   onLoad(options) {
     const systemInfo = uni.getSystemInfoSync();
+    const osLanguage = systemInfo.osLanguage;
+    const appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
     const hostTheme = systemInfo.hostTheme;
     if (hostTheme != null) {
       this.theme = hostTheme;
@@ -29230,6 +29316,13 @@ const _sfc_main = {
     uni.onThemeChange((res) => {
       this.theme = res.theme;
       this.updateUI();
+    });
+    const locale = uni.getLocale();
+    this.language = locale;
+    uni.onLocaleChange((res) => {
+      if (res.locale) {
+        this.language = res.locale;
+      }
     });
     this.readyEventName = options["readyEventName"];
     this.optionsEventName = options["optionsEventName"];
@@ -29252,10 +29345,10 @@ const _sfc_main = {
         this.placeholderText = data["placeholderText"];
       }
       if (data["confirmText"] != null) {
-        this.confirmText = data["confirmText"];
+        this.inputConfirmText = data["confirmText"];
       }
       if (data["cancelText"] != null) {
-        this.cancelText = data["cancelText"];
+        this.inputCancelText = data["cancelText"];
       }
       if (data["confirmColor"] != null) {
         this.inputConfirmColor = data["confirmColor"];
@@ -29429,7 +29522,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                         class: "uni-modal_dialog__content__bottom__button__text"
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString($data.cancelText), 1)
+                          createTextVNode(toDisplayString($options.cancelText), 1)
                         ]),
                         _: 1
                       }, 8, ["style"])
@@ -29451,7 +29544,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                         class: "uni-modal_dialog__content__bottom__button__text__sure"
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString($data.confirmText), 1)
+                          createTextVNode(toDisplayString($options.confirmText), 1)
                         ]),
                         _: 1
                       }, 8, ["style"])

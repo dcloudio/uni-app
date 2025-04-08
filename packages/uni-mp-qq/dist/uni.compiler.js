@@ -149,7 +149,7 @@ const options = {
             assets: [COMPONENTS_DIR],
             targets: [
                 {
-                    src: ['custom-tab-bar'],
+                    src: ['custom-tab-bar', 'project.config.json'],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },

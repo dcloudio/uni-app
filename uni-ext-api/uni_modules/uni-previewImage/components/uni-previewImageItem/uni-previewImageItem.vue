@@ -9,10 +9,8 @@
 		</view>
 		<view style="align-items: center;justify-content: center;position: absolute;top: 0;bottom: 0;left: 0;right: 0;"
 			v-if="loadError" @click="closePreviewImage">
-			<text
-				class="uni-preview-image-tips-error">{{(tips == null || (tips as UTSJSONObject|null)?.["error"] == null)? getLanguageString("error") : ((tips as UTSJSONObject|null)?.["error"] as string)}}</text>
-			<text class="uni-preview-image-tips-retry"
-				@click="reloadImage">{{(tips == null || (tips as UTSJSONObject|null)?.["retry"] == null)? getLanguageString("retry") : ((tips as UTSJSONObject|null)?.["retry"] as string)}}</text>
+			<image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAMAAADQmBKKAAAAilBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////2N2iNAAAALXRSTlMAf/kN/BOp7IxPBsMz9NzMRi0h4L7Q5pFjnhfVmIN3WUo6W6NUPrVtJ0yhcR84ApfrAAADTElEQVR42u3b3XaiMBSG4V1CABFBhFr/f1q1Tmf2/d/eHJoYrNJvu1a6Vp7zzrwthAAJFARBEARBEARBEPxmqtiuk3bZTJmnzbJN1ttC0SNeSJ76k71yhyrbqbs9LF4zG8Z8U9TO1Pc9wkG7JOI7Rh/jb3pkg96X/JBqcKtHNGhW8sOW284eyaD9K/cyrN0ewSA9577iTDk9YkGDlH+gOVo9ckH5G/9MvHF7mGCTin/spK978KAiZUA5sXvwoPGIO8XVfDM4TxZEi0k92HzdGoTTwuzBg7ZR5//yNlDOQDysUu4wOlo9DPbE7Ihuzg354RSzI2a5oHHk/sLZgr5xnrs/IhdUjNyrnb47KJOnBU3SrvngvnH5nKC8Ylv0iVxJ8aDrf7Us6GGHVD5owLZW9TrcpXSQTtmS5NTLohIOmrNlRX2pRjRoz5aEenth0SB7ampzrAcPmtnjS4E9eJA1RqIC7MGD3tn0ifbgQUtrvkB78KCddcBqtAcPStiQoT14kIrM+x8t28PomM/gHjxoaJ5BC7QHD1IxX3zAPXjQHzaM4R48KDOfd8R7GJtX38R7GDuFBnAPHlTwRazFexiaWCvywNoImpMHzIlsQx4YWue0B8xRX5MHGiNoQh5IjSBNHoiMoJw84F2Qd4fMu5Pau2Hv3YXRu6nDu8nVu9sP5wYNpmNz4MK3sLiD9dQA3+TjVnxxIvgxCDflixeSfVCEX+4cCX2Ulr2wpUT4ywbQv8i+sOGvY0AZO6MWfWEF0SPziOX4UecMHfPOVQR/6QmoYzacyQC/FoYHCLdkwV+c97dh045M+NJCf3UE/KnhxReXbhi46qPLU668ZeAMghfwXAkDo1V+iZO+2LImBL4InCdsKXMC4MvkumVLfCQAvpGgKNm2IQC81YI+I7adCABvRqmHfKXRBAC36+gs4ivpmQDYhqbFeuT+yJ4AyJYvOnZtJo6AORXZFKfGqyl3GDn5z942qCf14O/qNeZOKXS85DdWNjUB5LeetppA+OZc4AHh6duXkdNZfoM3rxQBxLfAV8j0Lv+RQHkggPxnFDMCSH9oEid7Akh/inOaaQKIfqwUV28HRTD8c660aYYf6/e9oiAIgiAIgiAIguAX+w9i21DdU9TtnwAAAABJRU5ErkJggg==" @click="reloadImage"
+				mode="aspectFit" style="width: 70px;height: 70px;"></image>
 		</view>
 	</view>
 </template>
@@ -117,8 +115,12 @@
 		watch: {
 			"src": {
 				handler(newValue : string, oldValue : string) {
-					if (newValue != "")
+					if (newValue != "") {
 						this.getSrcLocalPath(newValue)
+					} else {
+						this.loadingFinished = true
+						this.loadError = true
+					}
 				},
 				immediate: true
 			}
@@ -141,9 +143,9 @@
 			// #endif
 		},
 		methods: {
-			getLanguageString(name:string):string{
+			getLanguageString(name : string) : string {
 				var object = LANGUAGE[this.language];
-				if(object != null) {
+				if (object != null) {
 					return (object as UTSJSONObject)[name] as string
 				} else {
 					return (LANGUAGE["en"] as UTSJSONObject)[name] as string;
@@ -453,6 +455,16 @@
 				// #endif
 			},
 			reloadImage(e : UniPointerEvent) {
+				if (this.srcPath == "") {
+					this.loadingFinished = false
+					this.loadError = false
+					setTimeout(() => {
+						this.loadError = true
+						this.loadingFinished = true
+					}, 1000)
+					e.stopPropagation()
+					return
+				}
 				(this.$refs["mask"] as UniElement | null)?.style.setProperty("point-events", "none")
 				this.loadingFinished = false
 				this.loadError = false

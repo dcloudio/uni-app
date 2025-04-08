@@ -79,12 +79,6 @@ export type LongPressActionsOptions = {
 	 */
 	complete : ((result : any) => void) | null
 };
-
-export type TipsOptions = {
-	error ?: string | null,
-	retry ?: string | null
-}
-
 export type PreviewImageOptions = {
 	/**
 	 * current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。APP平台仅支持索引值。
@@ -304,76 +298,6 @@ export type PreviewImageOptions = {
 	 * }
 	 */
 	longPressActions ?: LongPressActionsOptions | null,
-	/**
-		 * 长按图片显示操作菜单。
-		 * @uniPlatform {
-		 *	 "app": {
-		 *		"android": {
-		 *			"osVer": "5.0",
-		 *			"uniVer": "√",
-		 *			"unixVer": "4.61"
-		 *		},
-		 *     "ios": {
-		 *			"osVer": "5.0",
-		 *			"uniVer": "√",
-		 *			"unixVer": "4.61"
-		 *		},
-	*    "harmony": {
-	*      "osVer": "x",
-	*      "uniVer": "x",
-	*      "unixVer": "x"
-	*    }
-		 *	},
-		 *    "web": {
-		 *      "osVer": "x",
-		 *      "uniVer": "x",
-		 *      "unixVer": "x"
-		 *    },
-		*  "mp": {
-		*    "weixin": {
-		*        "hostVer": "√",
-		*        "uniVer": "√",
-		*        "unixVer": "4.41"
-		*    },
-		*    "alipay": {
-		*        "hostVer": "√",
-		*        "uniVer": "√",
-		*        "unixVer": "x"
-		*    },
-		*    "baidu": {
-		*        "hostVer": "√",
-		*        "uniVer": "√",
-		*        "unixVer": "x"
-		*    },
-		*    "toutiao": {
-		*        "hostVer": "√",
-		*        "uniVer": "√",
-		*        "unixVer": "x"
-		*    },
-		*    "lark": {
-		*        "hostVer": "√",
-		*        "uniVer": "√",
-		*        "unixVer": "x"
-		*    },
-		*    "qq": {
-		*        "hostVer": "√",
-		*        "uniVer": "√",
-		*        "unixVer": "x"
-		*    },
-		*    "kuaishou": {
-		*        "hostVer": "√",
-		*        "uniVer": "√",
-		*        "unixVer": "x"
-		*    },
-		*    "jd": {
-		*        "hostVer": "√",
-		*        "uniVer": "√",
-		*        "unixVer": "x"
-		*    }
-		*  }
-		 * }
-		 */
-	tips ?: TipsOptions| null,
 	/**
 	 * 接口调用成功的回调函数
 	 */

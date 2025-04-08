@@ -47,8 +47,8 @@ export type ShowModalOptions = {
    */
   content?: string | null,
   /**
-   * @default true
-   * 是否显示取消按钮，默认为 true
+	 * 是否显示取消按钮，默认为 true
+   * @defaultValue true
    */
   showCancel?: boolean | null,
   /**
@@ -68,8 +68,8 @@ export type ShowModalOptions = {
    */
   confirmColor?: string.ColorString | null,
   /**
-   * @default false
    * 是否显示输入框
+   * @defaultValue false
    */
   editable?: boolean | null,
   /**
@@ -98,7 +98,7 @@ export type ModalPage = UniPage;
  * HideModal 数据结构定义
  */
 export type UniHideModalResult =  {
-	
+
 }
 
 export type UniHideModalErrorCode = 4
@@ -146,7 +146,7 @@ export type HideModal = (options: HideModalOptions | null) => void;
 
 
 export interface Uni {
-	
+
 	/**
 	 * @description 显示模态弹窗，可以只有一个确定按钮，也可以同时有确定和取消按钮。类似于一个API整合了 html 中：alert、confirm。
 	 * @example
@@ -238,7 +238,7 @@ export interface Uni {
 	  }
 	 */
 	showModal(options: ShowModalOptions): ModalPage | null,
-	
+
 	/**
 	 * @description 隐藏已弹出的对话框实例，如果 `modalPage` 参数为空，则隐藏当前栈顶全部对话框
 	 * @example
@@ -283,4 +283,3 @@ export interface Uni {
 	 */
 	hideModal(options: HideModalOptions | null):void
 }
-

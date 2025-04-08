@@ -8297,6 +8297,7 @@ function reload() {
 }
 const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncError",
+  props: ["error"],
   setup() {
     initI18nAsyncMsgsOnce();
     const {

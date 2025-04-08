@@ -1,14 +1,10 @@
 
 type UniPickerCancelEventDetail = {}
-type UniPickerSelectorChangeEventDetail = {
-	value : number
+
+type UniPickerChangeEventDetail = {
+	value : number | string | number[]
 }
-type UniPickerMultiSelectorChangeEventDetail = {
-	value : number[]
-}
-type UniPickerTimeChangeEventDetail = {
-	value : string
-}
+
 type UniPickerColumnChangeEventDetail = {
 	value : number
 	column : number
@@ -26,40 +22,15 @@ export class UniPickerCancelEvent extends UniCustomEvent<UniPickerCancelEventDet
 }
 
 /**
- * 单列 change 事件触发
+ * change 事件触发
  */
-export class UniPickerSelectorCancelEvent extends UniCustomEvent<UniPickerSelectorChangeEventDetail> {
-	constructor(value : number) {
+export class UniPickerChangeEvent extends UniCustomEvent<UniPickerChangeEventDetail> {
+	constructor(value : number | string | number[]) {
 		super('change', {
-			detail: { value } as UniPickerSelectorChangeEventDetail
-		} as UniCustomEventOptions<UniPickerSelectorChangeEventDetail>)
+			detail: { value } as UniPickerChangeEventDetail
+		} as UniCustomEventOptions<UniPickerChangeEventDetail>)
 	}
 }
-
-
-/**
- * 多列change事件触发
- */
-export class UniPickermultiSelectorCancelEvent extends UniCustomEvent<UniPickerMultiSelectorChangeEventDetail> {
-	constructor(value : number[]) {
-		super('change', {
-			detail: { value } as UniPickerMultiSelectorChangeEventDetail
-		} as UniCustomEventOptions<UniPickerMultiSelectorChangeEventDetail>)
-	}
-}
-
-
-/**
- * 时间日期 change 事件触发
- */
-export class UniPickerTimeCancelEvent extends UniCustomEvent<UniPickerTimeChangeEventDetail> {
-	constructor(value : string) {
-		super('change', {
-			detail: { value } as UniPickerTimeChangeEventDetail
-		} as UniCustomEventOptions<UniPickerTimeChangeEventDetail>)
-	}
-}
-
 
 /**
  * 列改变 columnchange 事件触发
@@ -108,7 +79,7 @@ export class UniPickerElement extends UniFormControlElement<any> implements UniC
 
 		this.addEventListener('click', () => {
 			// 禁用picker
-			if(this.disabledType) return
+			if (this.disabledType) return
 			uni.openDialogPage({
 				url: `/uni_modules/uni-picker/pages/picker/picker?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&cancelEventName=${cancelEventName}&selectorChangeEventName=${selectorChangeEventName}&multiSelectorChangeEventName=${multiSelectorChangeEventName}&timeChangeEventName=${timeChangeEventName}&columnChangeEventName=${columnChangeEventName}`,
 				success() { },
@@ -132,19 +103,19 @@ export class UniPickerElement extends UniFormControlElement<any> implements UniC
 		// 单列change触发
 		uni.$on(selectorChangeEventName, (value : number) => {
 			this._value = value
-			this.dispatchEvent(new UniPickerSelectorCancelEvent(value))
+			this.dispatchEvent(new UniPickerChangeEvent(value))
 		})
 
 		// 多列change触发
 		uni.$on(multiSelectorChangeEventName, (value : number[]) => {
 			this._value = value
-			this.dispatchEvent(new UniPickermultiSelectorCancelEvent(value))
+			this.dispatchEvent(new UniPickerChangeEvent(value))
 		})
 
 		// 日期时间change触发
 		uni.$on(timeChangeEventName, (value : string) => {
 			this._value = value
-			this.dispatchEvent(new UniPickerTimeCancelEvent(value))
+			this.dispatchEvent(new UniPickerChangeEvent(value))
 		})
 
 		// 列滚动columnchange 触发

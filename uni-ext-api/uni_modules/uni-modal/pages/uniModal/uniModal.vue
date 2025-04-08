@@ -64,6 +64,21 @@
 		data() {
 			return {
 				theme: 'light',
+				language: 'zh-Hans',
+				i18nCancelText: {
+				  en: 'Cancel',
+				  es: 'Cancelar',
+				  fr: 'Annuler',
+				  'zh-Hans': '取消',
+				  'zh-Hant': '取消',
+				},
+				i18nConfirmText: {
+				  en: 'OK',
+				  es: 'Confirmar',
+				  fr: 'Confirmer',
+				  'zh-Hans': '确定',
+				  'zh-Hant': '確定',
+				},
 				readyEventName: '',
 				optionsEventName: '',
 				successEventName: '',
@@ -73,8 +88,8 @@
 				showCancel: true,
 				editable: false,
 				placeholderText: null as string | null,
-				confirmText: '确定',
-				cancelText: '取消',
+				inputConfirmText: null as string | null,
+				inputCancelText: null as string | null,
 				cancelColor: '#000000',
 				confirmColor: '#4A5E86',
 				inputBottom: '0px',
@@ -94,13 +109,68 @@
 			
 		},
 		
+		computed: {
+			cancelText(): string {
+			  if (this.inputCancelText != null) {
+				const res = this.inputCancelText!
+			    return res
+			  }
+			  if (this.language.startsWith('en')) {
+			    return this.i18nCancelText['en'] as string
+			  }
+			  if (this.language.startsWith('es')) {
+			    return this.i18nCancelText['es'] as string
+			  }
+			  if (this.language.startsWith('fr')) {
+			    return this.i18nCancelText['fr'] as string
+			  }
+			  if (this.language.startsWith('zh-Hans')) {
+			    return this.i18nCancelText['zh-Hans'] as string
+			  }
+			  if (this.language.startsWith('zh-Hant')) {
+			    return this.i18nCancelText['zh-Hant'] as string
+			  }
+			  return '取消'
+			},
+			confirmText(): string {
+			  if (this.inputConfirmText != null) {
+				const res = this.inputConfirmText!
+			    return res
+			  }
+			  if (this.language.startsWith('en')) {
+			    return this.i18nConfirmText['en'] as string
+			  }
+			  if (this.language.startsWith('es')) {
+			    return this.i18nConfirmText['es'] as string
+			  }
+			  if (this.language.startsWith('fr')) {
+			    return this.i18nConfirmText['fr'] as string
+			  }
+			  if (this.language.startsWith('zh-Hans')) {
+			    return this.i18nConfirmText['zh-Hans'] as string
+			  }
+			  if (this.language.startsWith('zh-Hant')) {
+			    return this.i18nConfirmText['zh-Hant'] as string
+			  }
+			  return '确定'
+			},
+		},
 		onLoad(options) {
 			
 			/**
 			 * show modal 不需要对内置文案进行i18n适配。（参考微信）
 			 */
 			const systemInfo = uni.getSystemInfoSync()
-			
+			const osLanguage = systemInfo.osLanguage
+			/**
+			 * add since 2025-04-03 目前暂不支持设置app language
+			 */
+			const appLanguage = systemInfo.appLanguage
+			if (appLanguage != null) {
+			  this.language = appLanguage
+			} else if (osLanguage != null) {
+			  this.language = osLanguage
+			}
 			// #ifdef WEB
 			const hostTheme = systemInfo.hostTheme
 			if (hostTheme != null) {
@@ -111,6 +181,14 @@
 				this.theme = res.theme
 				this.updateUI()
 			});
+			// 监听浏览器的语言设置
+			const locale = uni.getLocale()
+			this.language = locale
+			uni.onLocaleChange((res) => {
+			  if (res.locale) {
+			    this.language = res.locale
+			  }
+			})
 			// #endif
 			// #ifdef APP-ANDROID || APP-IOS
 			const appTheme = systemInfo.appTheme
@@ -147,10 +225,10 @@
 				}
 
 				if (data['confirmText'] != null) {
-					this.confirmText = data['confirmText'] as string
+					this.inputConfirmText = data['confirmText'] as string
 				}
 				if (data['cancelText'] != null) {
-					this.cancelText = data['cancelText'] as string
+					this.inputCancelText = data['cancelText'] as string
 				}
 				
 				if (data['confirmColor'] != null) {

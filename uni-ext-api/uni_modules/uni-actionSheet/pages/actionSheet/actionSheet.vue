@@ -93,7 +93,10 @@
         windowHeight: 0,
         popover: {},
         // #endif
-        bottomNavigationHeight: 0
+        bottomNavigationHeight: 0,
+        appTheme: null as string | null,
+        osTheme: null as string | null,
+        hostTheme: null as string | null,
       }
     },
     onLoad(options) {
@@ -140,19 +143,23 @@
       const osTheme = systemInfo.osTheme
       const appTheme = systemInfo.appTheme
       if (appTheme != null && appTheme != "auto") {
-        this.theme = appTheme
-      } else if (osTheme != null) {
-        this.theme = osTheme
+        this.appTheme = appTheme
+        this.handleThemeChange()
+      }
+      if (osTheme != null) {
+        this.osTheme = osTheme
+        this.handleThemeChange()
       }
       // #ifdef WEB
       const hostTheme = systemInfo.hostTheme
       if (hostTheme != null) {
-        this.theme = hostTheme
+        this.hostTheme = hostTheme
+        this.handleThemeChange()
       } 
-      // #endif
-      this.isLandscape = systemInfo.deviceOrientation == 'landscape'
-
-      // #ifdef WEB
+      uni.onHostThemeChange((res) => {
+        this.hostTheme = res.theme
+        this.handleThemeChange()
+      });
       this.windowHeight = systemInfo.windowHeight
       this.windowWidth = systemInfo.windowWidth
       window.addEventListener('resize', this.fixSize)
@@ -164,19 +171,19 @@
           this.language = res.locale
         }
       })
-      uni.onThemeChange((res) => {
-        this.theme = res.theme
-      });
       // #endif
+      this.isLandscape = systemInfo.deviceOrientation == 'landscape'
       // #ifdef APP-ANDROID || APP-IOS
       uni.onAppThemeChange((res: AppThemeChangeResult) => {
         const appTheme = res.appTheme
         if (appTheme != null && appTheme != "auto") {
-          this.theme = appTheme
+          this.appTheme = appTheme
+          this.handleThemeChange()
         }
       })
       uni.onOsThemeChange((res: OsThemeChangeResult) => {
-        this.theme = res.osTheme
+        this.osTheme = res.osTheme
+        this.handleThemeChange()
       })
       // #endif
     },
@@ -323,6 +330,15 @@
       handleCancel() {
         this.closeActionSheet()
         uni.$emit(this.failEventName, {})
+      },
+      handleThemeChange() {
+        if(this.hostTheme != null){
+          this.theme = this.hostTheme!
+        } else if(this.appTheme != null){
+          this.theme = this.appTheme!
+        } else if(this.osTheme != null){
+          this.theme = this.osTheme!
+        }
       }
     }
   }

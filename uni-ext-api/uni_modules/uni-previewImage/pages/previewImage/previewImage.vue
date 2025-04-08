@@ -91,9 +91,6 @@
 				if (result["indicator"] != null) {
 					this.indicator = result["indicator"] as string
 				}
-				if (result["tips"] != null) {
-					this.tips = result["tips"] as UTSJSONObject | null
-				}
 				if (result["longPressActions"] != null) {
 					this.longPressAction = {
 						itemList: (result["longPressActions"] as UTSJSONObject)["itemList"] as string[],

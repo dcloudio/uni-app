@@ -429,6 +429,11 @@ declare function btoa(stringToEncode : string) : string
         "uniUtsPlugin": "x",
         "unixVer": "4.25",
         "unixUtsPlugin": "x"
+      },
+      "harmony": {
+        "osVer": "5.0.0",
+        "uniVer": "x",
+        "unixVer": "4.61"
       }
     },
     "web": {
@@ -458,6 +463,11 @@ declare function requestAnimationFrame(callback : RequestAnimationFrameCallback)
         "uniUtsPlugin": "x",
         "unixVer": "4.25",
         "unixUtsPlugin": "x"
+      },
+      "harmony": {
+        "osVer": "5.0.0",
+        "uniVer": "x",
+        "unixVer": "4.61"
       }
     },
     "web": {

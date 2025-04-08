@@ -6207,7 +6207,10 @@ const _sfc_main$5 = {
       language: "zh-Hans",
       theme: "light",
       isLandscape: false,
-      bottomNavigationHeight: 0
+      bottomNavigationHeight: 0,
+      appTheme: null,
+      osTheme: null,
+      hostTheme: null
     };
   },
   onLoad(options) {
@@ -6248,19 +6251,24 @@ const _sfc_main$5 = {
     var osTheme = systemInfo.osTheme;
     var appTheme = systemInfo.appTheme;
     if (appTheme != null && appTheme != "auto") {
-      this.theme = appTheme;
-    } else if (osTheme != null) {
-      this.theme = osTheme;
+      this.appTheme = appTheme;
+      this.handleThemeChange();
+    }
+    if (osTheme != null) {
+      this.osTheme = osTheme;
+      this.handleThemeChange();
     }
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
     uni.onAppThemeChange((res) => {
       var appTheme2 = res.appTheme;
       if (appTheme2 != null && appTheme2 != "auto") {
-        this.theme = appTheme2;
+        this.appTheme = appTheme2;
+        this.handleThemeChange();
       }
     });
     uni.onOsThemeChange((res) => {
-      this.theme = res.osTheme;
+      this.osTheme = res.osTheme;
+      this.handleThemeChange();
     });
   },
   computed: {
@@ -6322,6 +6330,15 @@ const _sfc_main$5 = {
     handleCancel() {
       this.closeActionSheet();
       uni.$emit(this.failEventName, {});
+    },
+    handleThemeChange() {
+      if (this.hostTheme != null) {
+        this.theme = this.hostTheme;
+      } else if (this.appTheme != null) {
+        this.theme = this.appTheme;
+      } else if (this.osTheme != null) {
+        this.theme = this.osTheme;
+      }
     }
   }
 };
@@ -7641,7 +7658,7 @@ var _hoisted_2$3 = {
 var _hoisted_3$3 = {
   class: "uni-choose-location-icons uni-choose-location-map-reset-icon"
 };
-var _hoisted_4$3 = {
+var _hoisted_4$2 = {
   class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text"
 };
 var _hoisted_5$1 = {
@@ -7741,7 +7758,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function() {
       return $options.confirm && $options.confirm(...arguments);
     })
-  }, [createElementVNode("text", _hoisted_4$3, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
+  }, [createElementVNode("text", _hoisted_4$2, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
     style: normalizeStyle($options.poiBoxStyleCom)
@@ -7797,6 +7814,21 @@ const _sfc_main$3 = {
   data() {
     return {
       theme: "light",
+      language: "zh-Hans",
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      i18nConfirmText: {
+        en: "OK",
+        es: "Confirmar",
+        fr: "Confirmer",
+        "zh-Hans": "确定",
+        "zh-Hant": "確定"
+      },
       readyEventName: "",
       optionsEventName: "",
       successEventName: "",
@@ -7806,8 +7838,8 @@ const _sfc_main$3 = {
       showCancel: true,
       editable: false,
       placeholderText: null,
-      confirmText: "确定",
-      cancelText: "取消",
+      inputConfirmText: null,
+      inputCancelText: null,
       cancelColor: "#000000",
       confirmColor: "#4A5E86",
       inputBottom: "0px",
@@ -7823,8 +7855,61 @@ const _sfc_main$3 = {
       this.showAnim = true;
     }, 10);
   },
+  computed: {
+    cancelText() {
+      if (this.inputCancelText != null) {
+        var res = this.inputCancelText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    },
+    confirmText() {
+      if (this.inputConfirmText != null) {
+        var res = this.inputConfirmText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nConfirmText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nConfirmText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nConfirmText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nConfirmText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nConfirmText["zh-Hant"];
+      }
+      return "确定";
+    }
+  },
   onLoad(options) {
     var systemInfo = uni.getSystemInfoSync();
+    var osLanguage = systemInfo.osLanguage;
+    var appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
     var appTheme = systemInfo.appTheme;
     if (appTheme != null) {
       this.theme = appTheme;
@@ -7854,10 +7939,10 @@ const _sfc_main$3 = {
         this.placeholderText = data["placeholderText"];
       }
       if (data["confirmText"] != null) {
-        this.confirmText = data["confirmText"];
+        this.inputConfirmText = data["confirmText"];
       }
       if (data["cancelText"] != null) {
-        this.cancelText = data["cancelText"];
+        this.inputCancelText = data["cancelText"];
       }
       if (data["confirmColor"] != null) {
         this.inputConfirmColor = data["confirmColor"];
@@ -8179,7 +8264,7 @@ var _hoisted_3$2 = {
   key: 1,
   class: "uni-modal_dialog__content__text"
 };
-var _hoisted_4$2 = {
+var _hoisted_4$1 = {
   class: "uni-modal_dialog__content__bottom"
 };
 var _hoisted_5 = ["hover-class"];
@@ -8229,7 +8314,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-modal_dialog__content__topline", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }])
-  }, null, 2), createElementVNode("view", _hoisted_4$2, [$data.showCancel ? (openBlock(), createElementBlock("view", {
+  }, null, 2), createElementVNode("view", _hoisted_4$1, [$data.showCancel ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
       "uni-modal_dark__mode": $data.theme == "dark"
@@ -8243,7 +8328,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       color: $data.cancelColor
     }),
     class: "uni-modal_dialog__content__bottom__button__text"
-  }, toDisplayString($data.cancelText), 5)], 10, _hoisted_5)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
+  }, toDisplayString($options.cancelText), 5)], 10, _hoisted_5)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
     key: 1,
     class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", {
       "uni-modal_dark__mode": $data.theme == "dark"
@@ -8261,7 +8346,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       color: $data.confirmColor
     }),
     class: "uni-modal_dialog__content__bottom__button__text__sure"
-  }, toDisplayString($data.confirmText), 5)], 10, _hoisted_6)])], 2)], 6)], 2);
+  }, toDisplayString($options.confirmText), 5)], 10, _hoisted_6)])], 2)], 6)], 2);
 }
 const UniUniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
 class Friction {
@@ -8590,8 +8675,12 @@ const _sfc_main$1 = {
   watch: {
     "src": {
       handler(newValue, oldValue) {
-        if (newValue != "")
+        if (newValue != "") {
           this.getSrcLocalPath(newValue);
+        } else {
+          this.loadingFinished = true;
+          this.loadError = true;
+        }
       },
       immediate: true
     }
@@ -8917,6 +9006,16 @@ const _sfc_main$1 = {
     },
     reloadImage(e) {
       var _this$$refs$mask3;
+      if (this.srcPath == "") {
+        this.loadingFinished = false;
+        this.loadError = false;
+        setTimeout(() => {
+          this.loadError = true;
+          this.loadingFinished = true;
+        }, 1e3);
+        e.stopPropagation();
+        return;
+      }
       (_this$$refs$mask3 = this.$refs["mask"]) === null || _this$$refs$mask3 === void 0 || _this$$refs$mask3.style.setProperty("point-events", "none");
       this.loadingFinished = false;
       this.loadError = false;
@@ -9036,11 +9135,7 @@ var _hoisted_3$1 = {
   key: 0,
   class: "uni-preview-image-loading"
 };
-var _hoisted_4$1 = {
-  class: "uni-preview-image-tips-error"
-};
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  var _$props$tips, _$props$tips2, _$props$tips3, _$props$tips4;
   var _component_loadingCircle = resolveComponent("loadingCircle");
   return openBlock(), createElementBlock("view", _hoisted_1$1, [createElementVNode("image", {
     ref: "imageView",
@@ -9089,12 +9184,17 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[7] || (_cache[7] = function() {
       return $options.closePreviewImage && $options.closePreviewImage(...arguments);
     })
-  }, [createElementVNode("text", _hoisted_4$1, toDisplayString($props.tips == null || ((_$props$tips = $props.tips) === null || _$props$tips === void 0 ? void 0 : _$props$tips["error"]) == null ? $options.getLanguageString("error") : (_$props$tips2 = $props.tips) === null || _$props$tips2 === void 0 ? void 0 : _$props$tips2["error"]), 1), createElementVNode("text", {
-    class: "uni-preview-image-tips-retry",
+  }, [createElementVNode("image", {
+    src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAMAAADQmBKKAAAAilBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////2N2iNAAAALXRSTlMAf/kN/BOp7IxPBsMz9NzMRi0h4L7Q5pFjnhfVmIN3WUo6W6NUPrVtJ0yhcR84ApfrAAADTElEQVR42u3b3XaiMBSG4V1CABFBhFr/f1q1Tmf2/d/eHJoYrNJvu1a6Vp7zzrwthAAJFARBEARBEARBEPxmqtiuk3bZTJmnzbJN1ttC0SNeSJ76k71yhyrbqbs9LF4zG8Z8U9TO1Pc9wkG7JOI7Rh/jb3pkg96X/JBqcKtHNGhW8sOW284eyaD9K/cyrN0ewSA9577iTDk9YkGDlH+gOVo9ckH5G/9MvHF7mGCTin/spK978KAiZUA5sXvwoPGIO8XVfDM4TxZEi0k92HzdGoTTwuzBg7ZR5//yNlDOQDysUu4wOlo9DPbE7Ihuzg354RSzI2a5oHHk/sLZgr5xnrs/IhdUjNyrnb47KJOnBU3SrvngvnH5nKC8Ylv0iVxJ8aDrf7Us6GGHVD5owLZW9TrcpXSQTtmS5NTLohIOmrNlRX2pRjRoz5aEenth0SB7ampzrAcPmtnjS4E9eJA1RqIC7MGD3tn0ifbgQUtrvkB78KCddcBqtAcPStiQoT14kIrM+x8t28PomM/gHjxoaJ5BC7QHD1IxX3zAPXjQHzaM4R48KDOfd8R7GJtX38R7GDuFBnAPHlTwRazFexiaWCvywNoImpMHzIlsQx4YWue0B8xRX5MHGiNoQh5IjSBNHoiMoJw84F2Qd4fMu5Pau2Hv3YXRu6nDu8nVu9sP5wYNpmNz4MK3sLiD9dQA3+TjVnxxIvgxCDflixeSfVCEX+4cCX2Ulr2wpUT4ywbQv8i+sOGvY0AZO6MWfWEF0SPziOX4UecMHfPOVQR/6QmoYzacyQC/FoYHCLdkwV+c97dh045M+NJCf3UE/KnhxReXbhi46qPLU668ZeAMghfwXAkDo1V+iZO+2LImBL4InCdsKXMC4MvkumVLfCQAvpGgKNm2IQC81YI+I7adCABvRqmHfKXRBAC36+gs4ivpmQDYhqbFeuT+yJ4AyJYvOnZtJo6AORXZFKfGqyl3GDn5z942qCf14O/qNeZOKXS85DdWNjUB5LeetppA+OZc4AHh6duXkdNZfoM3rxQBxLfAV8j0Lv+RQHkggPxnFDMCSH9oEid7Akh/inOaaQKIfqwUV28HRTD8c660aYYf6/e9oiAIgiAIgiAIguAX+w9i21DdU9TtnwAAAABJRU5ErkJggg==",
     onClick: _cache[6] || (_cache[6] = function() {
       return $options.reloadImage && $options.reloadImage(...arguments);
-    })
-  }, toDisplayString($props.tips == null || ((_$props$tips3 = $props.tips) === null || _$props$tips3 === void 0 ? void 0 : _$props$tips3["retry"]) == null ? $options.getLanguageString("retry") : (_$props$tips4 = $props.tips) === null || _$props$tips4 === void 0 ? void 0 : _$props$tips4["retry"]), 1)])) : createCommentVNode("", true)]);
+    }),
+    mode: "aspectFit",
+    style: {
+      "width": "70px",
+      "height": "70px"
+    }
+  })])) : createCommentVNode("", true)]);
 }
 const uniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
 const _sfc_main = {
@@ -9157,9 +9257,6 @@ const _sfc_main = {
       }
       if (result["indicator"] != null) {
         this.indicator = result["indicator"];
-      }
-      if (result["tips"] != null) {
-        this.tips = result["tips"];
       }
       if (result["longPressActions"] != null) {
         this.longPressAction = {
