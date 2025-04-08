@@ -501,6 +501,46 @@
       }
     }
   },
+  "uni-keyboard": {
+    "uni": {
+      "hideKeyboard": {
+        "name": "hideKeyboard",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onKeyboardHeightChange": {
+        "name": "onKeyboardHeightChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "offKeyboardHeightChange": {
+        "name": "offKeyboardHeightChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "getSelectedTextRange": {
+        "name": "getSelectedTextRange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-location": {
     "provider": {
       "service": "location"
