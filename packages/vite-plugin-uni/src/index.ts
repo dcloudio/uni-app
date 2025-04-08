@@ -14,7 +14,6 @@ import {
   type InjectOptions,
   emptyDir,
   initAutoImportOptions,
-  initModuleAlias,
   isInHBuilderX,
   isNormalCompileTarget,
   parseUniExtApisOnce,
@@ -48,8 +47,6 @@ import { uniUVuePlugin } from './uvue/plugins'
 export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 
 // const debugUni = debug('uni:plugin')
-
-initModuleAlias()
 
 export interface VitePluginUniOptions {
   uvue?: boolean

@@ -5,6 +5,7 @@
 **/
 import { isString, NOOP, isObject, NO, extend, isSymbol, isArray, capitalize, camelize, EMPTY_OBJ, PatchFlagNames, slotFlagsText, isOn, isBuiltInDirective, isReservedProp, toHandlerKey } from '@vue/shared';
 export { generateCodeFrame } from '@vue/shared';
+import { parseExpression } from '@babel/parser';
 
 const FRAGMENT = Symbol(!!(process.env.NODE_ENV !== "production") ? `Fragment` : ``);
 const TELEPORT = Symbol(!!(process.env.NODE_ENV !== "production") ? `Teleport` : ``);
@@ -5372,7 +5373,14 @@ const transformModel = (dir, node, context) => {
     );
     return createTransformProps();
   }
-  const rawExp = exp.loc.source;
+  let rawExp = exp.loc.source;
+  if (rawExp.includes(" as ")) {
+    const ast = parseExpression(rawExp, {
+      plugins: context.expressionPlugins
+    });
+    const unwrapped = unwrapTSNode(ast);
+    rawExp = rawExp.slice(unwrapped.start, unwrapped.end);
+  }
   const expString = exp.type === 4 ? exp.content : rawExp;
   const bindingType = context.bindingMetadata[rawExp];
   if (bindingType === "props" || bindingType === "props-aliased") {

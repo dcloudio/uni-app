@@ -6162,7 +6162,14 @@ const transformModel = (dir, node, context) => {
     );
     return createTransformProps();
   }
-  const rawExp = exp.loc.source;
+  let rawExp = exp.loc.source;
+  if (rawExp.includes(" as ")) {
+    const ast = parser.parseExpression(rawExp, {
+      plugins: context.expressionPlugins
+    });
+    const unwrapped = unwrapTSNode(ast);
+    rawExp = rawExp.slice(unwrapped.start, unwrapped.end);
+  }
   const expString = exp.type === 4 ? exp.content : rawExp;
   const bindingType = context.bindingMetadata[rawExp];
   if (bindingType === "props" || bindingType === "props-aliased") {

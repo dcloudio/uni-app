@@ -106,6 +106,11 @@ export function createConfig(options: {
           external: isSsr(env.command, config) ? external : [],
           output: {
             chunkFileNames(chunkInfo) {
+              const hash =
+                // 为了测试额外加的逻辑，避免因为环境不一致导致hash有变化
+                process.env.UNI_WEB_DISABLE_CHUNK_HASH === 'true'
+                  ? ''
+                  : '.[hash]'
               const { assetsDir } = options.resolvedConfig!.build
               if (chunkInfo.facadeModuleId) {
                 const dirname = path.relative(
@@ -116,11 +121,11 @@ export function createConfig(options: {
                   return path.posix.join(
                     assetsDir,
                     normalizePath(dirname).replace(/\//g, '-') +
-                      '-[name].[hash].js'
+                      `-[name]${hash}.js`
                   )
                 }
               }
-              return path.posix.join(assetsDir, '[name].[hash].js')
+              return path.posix.join(assetsDir, `[name]${hash}.js`)
             },
           },
         },

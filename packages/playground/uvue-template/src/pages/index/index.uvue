@@ -1,0 +1,6 @@
+<template>
+  <input v-model="value as string" />
+</template>
+<script setup lang="ts">
+const value = ref('')
+</script>
