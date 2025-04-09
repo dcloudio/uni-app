@@ -9793,10 +9793,9 @@ const _sfc_main = {
           }
         } else {
           if (this.minutes.length != 60) {
-            var _parseInt4;
             var nowMinutes = this.minutes[newMIdx];
             this.minutes = this.getMinutes(h);
-            newMIdx = (_parseInt4 = parseInt(nowMinutes)) !== null && _parseInt4 !== void 0 ? _parseInt4 : 0;
+            newMIdx = parseInt(nowMinutes);
           }
         }
         if (newHIdx != h_idx || newMIdx != m_idx) {
@@ -9850,12 +9849,12 @@ const _sfc_main = {
       var startMonth = 1;
       var endMonth = 12;
       if (year == parseInt(this.start[0])) {
-        var _parseInt5;
-        startMonth = (_parseInt5 = parseInt(this.start[1])) !== null && _parseInt5 !== void 0 ? _parseInt5 : 1;
+        var _parseInt4;
+        startMonth = (_parseInt4 = parseInt(this.start[1])) !== null && _parseInt4 !== void 0 ? _parseInt4 : 1;
       }
       if (year == parseInt(this.end[0])) {
-        var _parseInt6;
-        endMonth = (_parseInt6 = parseInt(this.end[1])) !== null && _parseInt6 !== void 0 ? _parseInt6 : 12;
+        var _parseInt5;
+        endMonth = (_parseInt5 = parseInt(this.end[1])) !== null && _parseInt5 !== void 0 ? _parseInt5 : 12;
       }
       return Array.from({
         length: endMonth - startMonth + 1
@@ -9950,12 +9949,12 @@ const _sfc_main = {
       var startMinute = 0;
       var endMinute = 59;
       if (hour == parseInt(this.start[0])) {
-        var _parseInt7;
-        startMinute = (_parseInt7 = parseInt(this.start[1])) !== null && _parseInt7 !== void 0 ? _parseInt7 : 1;
+        var _parseInt6;
+        startMinute = (_parseInt6 = parseInt(this.start[1])) !== null && _parseInt6 !== void 0 ? _parseInt6 : 1;
       }
       if (hour == parseInt(this.end[0])) {
-        var _parseInt8;
-        endMinute = (_parseInt8 = parseInt(this.end[1])) !== null && _parseInt8 !== void 0 ? _parseInt8 : 12;
+        var _parseInt7;
+        endMinute = (_parseInt7 = parseInt(this.end[1])) !== null && _parseInt7 !== void 0 ? _parseInt7 : 12;
       }
       return Array.from({
         length: endMinute - startMinute + 1

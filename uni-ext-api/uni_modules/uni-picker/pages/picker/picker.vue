@@ -206,7 +206,7 @@
 					// 解析起止日期
 					this.start = (data['start'] ?? ['1970', '01', '01']) as string[]
 					this.end = (data['end'] ?? ['2099', '12', '31']) as string[]
-
+					
 					this.selected = {
 						year: parseInt(year) ?? new Date().getFullYear(),
 						month: parseInt(month) ?? 1,
@@ -463,7 +463,7 @@
 							const nowMonth = this.months[mIdx]
 							this.months = this.getMonths(currentYear)
 							this.calculateRanges()
-							mIdx = nowMonth - 1 ?? 0
+							mIdx = nowMonth - 1
 						}
 					}
 
@@ -535,7 +535,7 @@
 						if (this.minutes.length != 60) {
 							const nowMinutes = this.minutes[newMIdx]
 							this.minutes = this.getMinutes(h)
-							newMIdx = parseInt(nowMinutes) ?? 0
+							newMIdx = parseInt(nowMinutes) 
 						}
 					}
 
