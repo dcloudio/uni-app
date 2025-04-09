@@ -37,6 +37,7 @@ import { UniCoverImage } from './UniCoverImage'
 import { UniCoverView } from './UniCoverView'
 import { UniLivePlayer } from './UniLivePlayer'
 import { UniAd } from './UniAd'
+import { UniEmbed } from './UniEmbed'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -78,4 +79,5 @@ export const BuiltInComponents = {
   'COVER-IMAGE': UniCoverImage,
   'COVER-VIEW': UniCoverView,
   'LIVE-PLAYER': UniLivePlayer,
+  EMBED: UniEmbed,
 }

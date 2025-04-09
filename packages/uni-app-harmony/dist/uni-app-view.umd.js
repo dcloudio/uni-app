@@ -26130,6 +26130,11 @@
       super(id2, "uni-ad", Ad, parentNodeId, refNodeId, nodeJson);
     }
   }
+  class UniEmbed extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-embed", Embed, parentNodeId, refNodeId, nodeJson);
+    }
+  }
   var BuiltInComponents = {
     "#text": UniTextNode,
     "#comment": UniComment,
@@ -26169,7 +26174,8 @@
     "LOCATION-VIEW": UniLocationView,
     "COVER-IMAGE": UniCoverImage,
     "COVER-VIEW": UniCoverView,
-    "LIVE-PLAYER": UniLivePlayer
+    "LIVE-PLAYER": UniLivePlayer,
+    EMBED: UniEmbed
   };
   function createElement(id2, tag, parentNodeId, refNodeId) {
     var nodeJson = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : {};
