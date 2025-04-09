@@ -26,6 +26,9 @@ export function uniResolveIdPlugin(
   options: VitePluginUniResolvedOptions
 ): Plugin {
   const resolveCache: Record<string, string> = {}
+  if (process.env.UNI_APP_X === 'true') {
+    BUILT_IN_MODULES['@dcloudio/uni-app'] = 'dist-x/uni-app.es.js'
+  }
   return {
     name: 'uni:resolve-id',
     resolveId(id, importer) {

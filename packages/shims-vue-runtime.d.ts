@@ -68,6 +68,7 @@ declare module '@vue/runtime-core' {
     __isVisible: boolean
     __isActive?: boolean // tabBar
     __isTabBar?: boolean
+    renderer?: 'page' | 'component' | null
     // mp
     $updateScopedSlots: () => void
     $scopedSlotsData?: {

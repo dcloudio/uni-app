@@ -14,13 +14,21 @@
   },
   {
     "input": {
-      "src/index.ts": [
-        "dist/uni-app.es.js",
-        "dist/uni-app.cjs.js"
-      ]
+      "src/index.ts": ["dist/uni-app.es.js", "dist/uni-app.cjs.js"]
     },
     "compilerOptions": {
       "declaration": true
+    },
+    "replacements": {
+      "__X__": "false"
+    }
+  },
+  {
+    "input": {
+      "src/index.ts": ["dist-x/uni-app.es.js", "dist-x/uni-app.cjs.js"]
+    },
+    "replacements": {
+      "__X__": "true"
     }
   }
 ]

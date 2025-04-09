@@ -8839,6 +8839,13 @@ function createComponentInstance(vnode, parent, suspense) {
     type,
     parent,
     appContext,
+    // fixed by xxxxxx
+    get renderer() {
+      if (this.$pageInstance) {
+        return this.$pageInstance == instance ? "page" : "component";
+      }
+      return;
+    },
     root: null,
     // to be immediately set
     next: null,

@@ -6,7 +6,8 @@
   "module": "./dist/uni-app.es.js",
   "types": "./dist/uni-app.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "dist-x"
   ],
   "sideEffects": false,
   "repository": {

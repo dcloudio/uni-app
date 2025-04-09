@@ -103,7 +103,18 @@ function resolveEasycom(component, easycom) {
 }
 
 /// <reference types="@dcloudio/types" />
+function isUniPage(target) {
+    return (target === null || target === void 0 ? void 0 : target.renderer) === 'page';
+}
 const createHook = (lifecycle, flag = 0 /* HookFlags.UNKNOWN */) => (hook, target = vue.getCurrentInstance()) => {
+    {
+        // 如果只是页面生命周期，排除与App公用的，比如onShow、onHide
+        if (flag === 2 /* HookFlags.PAGE */) {
+            if (!isUniPage(target)) {
+                return;
+            }
+        }
+    }
     // post-create lifecycle registrations are noops during SSR
     !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
 };
