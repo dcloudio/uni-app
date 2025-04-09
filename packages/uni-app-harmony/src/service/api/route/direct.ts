@@ -1,4 +1,5 @@
 import { addLeadingSlash } from '@dcloudio/uni-shared'
+import { getCurrentPages } from '@dcloudio/uni-app-plus/service/framework/page'
 
 /**
  * 是否处于直达页面
@@ -8,7 +9,8 @@ import { addLeadingSlash } from '@dcloudio/uni-shared'
 export function isDirectPage(page: Page.PageInstance) {
   return (
     __uniConfig.realEntryPagePath &&
-    page.$page.route === __uniConfig.entryPagePath
+    // page.$page.route === __uniConfig.entryPagePath &&
+    getCurrentPages()[0] === page
   )
 }
 /**
