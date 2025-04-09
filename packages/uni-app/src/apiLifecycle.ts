@@ -57,7 +57,10 @@ export const enum HookFlags {
 }
 
 function isUniPage(target: ComponentInternalInstance | null): boolean {
-  return target?.renderer === 'page'
+  if (target && 'renderer' in target) {
+    return target.renderer === 'page'
+  }
+  return true
 }
 
 const createHook =

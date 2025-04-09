@@ -75,7 +75,10 @@ function resolveEasycom(component, easycom) {
 
 /// <reference types="@dcloudio/types" />
 function isUniPage(target) {
-    return (target === null || target === void 0 ? void 0 : target.renderer) === 'page';
+    if (target && 'renderer' in target) {
+        return target.renderer === 'page';
+    }
+    return true;
 }
 const createHook = (lifecycle, flag = 0 /* HookFlags.UNKNOWN */) => (hook, target = getCurrentInstance()) => {
     {
