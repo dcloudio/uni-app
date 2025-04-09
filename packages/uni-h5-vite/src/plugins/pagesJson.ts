@@ -253,9 +253,13 @@ function generatePageRoute(
   const { isEntry } = meta
   const alias = isEntry ? `\n  alias:'/${path}',` : ''
   // 目前单页面未处理 query=>props
+  const queryCode =
+    process.env.UNI_APP_X === 'true'
+      ? 'app && app.vm && app.vm.$route && app.vm.$route.query || {};'
+      : 'app && app.$route && app.$route.query || {};'
   return `{
   path:'/${isEntry ? '' : path}',${alias}
-  component:{setup(){ const app = getApp(); const query = app && app.$route && app.$route.query || {}; return ()=>renderPage(${normalizeIdentifier(
+  component:{setup(){ const app = getApp(); const query = ${queryCode} return ()=>renderPage(${normalizeIdentifier(
     path
   )},query)}},
   loader: ${normalizeIdentifier(path)}Loader,
