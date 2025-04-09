@@ -669,6 +669,7 @@ function copyConfigJson(
           customElementsObj!,
           namespace
         ).forEach((item) => {
+          const name = item.name.replace('uni-', '')
           // customElement优先级高于组件
           const index = configJson[key].findIndex(
             (component: any) => component.name === item.name
@@ -679,6 +680,7 @@ function copyConfigJson(
           configJson[key].push({
             type: 'customElement',
             ...item,
+            name,
           })
         })
       }

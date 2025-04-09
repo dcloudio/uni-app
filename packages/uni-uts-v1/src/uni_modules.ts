@@ -222,7 +222,12 @@ export async function syncUniModuleFilesByCompiler(
           const className = capitalize(camelize(name))
           const elementClassName = `${className}Element`
           codes.push(`import { ${elementClassName} } from '${source}'`)
-          codes.push(`customElements.define('${name}', ${elementClassName})`)
+          codes.push(
+            `customElements.define('${name.replace(
+              'uni-',
+              ''
+            )}', ${elementClassName})`
+          )
           codes.push(`export * from '${source}'`)
           return codes.join('\n')
         }
