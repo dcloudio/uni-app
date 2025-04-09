@@ -310,7 +310,7 @@ export function initEnv(
     process.env.UNI_UTS_PLATFORM,
     process.env.UNI_APP_X === 'true'
   )
-
+  // 应该全平台都显示吧，当初为啥只在部分平台显示？
   if (
     process.env.UNI_PLATFORM === 'app' ||
     process.env.UNI_PLATFORM === 'web' ||
