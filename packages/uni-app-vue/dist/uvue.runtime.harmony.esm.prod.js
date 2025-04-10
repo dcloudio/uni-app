@@ -3,179 +3,8 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
-* @vue/shared v3.4.21
-* (c) 2018-present Yuxi (Evan) You and Vue contributors
-* @license MIT
-**/
-function makeMap(str, expectsLowerCase) {
-  var set = new Set(str.split(","));
-  return val => set.has(val);
-}
-var EMPTY_OBJ = {};
-var EMPTY_ARR = [];
-var NOOP = () => {};
-var NO = () => false;
-var isOn = key => key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && (
-// uppercase letter
-key.charCodeAt(2) > 122 || key.charCodeAt(2) < 97);
-var isModelListener = key => key.startsWith("onUpdate:");
-var extend$1 = Object.assign;
-var remove = (arr, el) => {
-  var i = arr.indexOf(el);
-  if (i > -1) {
-    arr.splice(i, 1);
-  }
-};
-var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-var hasOwn = (val, key) => hasOwnProperty$1.call(val, key);
-var isArray$1 = Array.isArray;
-var isMap = val => toTypeString(val) === "[object Map]";
-var isSet = val => toTypeString(val) === "[object Set]";
-var isRegExp = val => toTypeString(val) === "[object RegExp]";
-var isFunction = val => typeof val === "function";
-var isString = val => typeof val === "string";
-var isSymbol = val => typeof val === "symbol";
-var isObject = val => val !== null && typeof val === "object";
-var isPromise = val => {
-  return (isObject(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
-};
-var objectToString = Object.prototype.toString;
-var toTypeString = value => objectToString.call(value);
-var toRawType = value => {
-  return toTypeString(value).slice(8, -1);
-};
-var isPlainObject = val => toTypeString(val) === "[object Object]";
-var isReservedProp = /* @__PURE__ */makeMap(
-// the leading comma is intentional so empty string "" is also included
-",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
-var cacheStringFunction = fn => {
-  var cache = /* @__PURE__ */Object.create(null);
-  return str => {
-    var hit = cache[str];
-    return hit || (cache[str] = fn(str));
-  };
-};
-var camelizeRE = /-(\w)/g;
-var camelize = cacheStringFunction(str => {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
-});
-var hyphenateRE = /\B([A-Z])/g;
-var hyphenate = cacheStringFunction(str => str.replace(hyphenateRE, "-$1").toLowerCase());
-var capitalize = cacheStringFunction(str => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-});
-var toHandlerKey = cacheStringFunction(str => {
-  var s = str ? "on".concat(capitalize(str)) : "";
-  return s;
-});
-var hasChanged = (value, oldValue) => !Object.is(value, oldValue);
-var invokeArrayFns = (fns, arg) => {
-  for (var i = 0; i < fns.length; i++) {
-    fns[i](arg);
-  }
-};
-var def = (obj, key, value) => {
-  Object.defineProperty(obj, key, {
-    configurable: true,
-    enumerable: false,
-    value
-  });
-};
-var looseToNumber = val => {
-  var n = parseFloat(val);
-  return isNaN(n) ? val : n;
-};
-var toNumber = val => {
-  var n = isString(val) ? Number(val) : NaN;
-  return isNaN(n) ? val : n;
-};
-var _globalThis;
-var getGlobalThis = () => {
-  return _globalThis || (_globalThis = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {});
-};
-var GLOBALS_ALLOWED = "Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error";
-var isGloballyAllowed = /* @__PURE__ */makeMap(GLOBALS_ALLOWED);
-function normalizeStyle$2(value) {
-  if (isArray$1(value)) {
-    var res = {};
-    for (var i = 0; i < value.length; i++) {
-      var item = value[i];
-      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$2(item);
-      if (normalized) {
-        for (var key in normalized) {
-          res[key] = normalized[key];
-        }
-      }
-    }
-    return res;
-  } else if (isString(value) || isObject(value)) {
-    return value;
-  }
-}
-var listDelimiterRE = /;(?![^(]*\))/g;
-var propertyDelimiterRE = /:([^]+)/;
-var styleCommentRE = /\/\*[^]*?\*\//g;
-function parseStringStyle(cssText) {
-  var ret = {};
-  cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach(item => {
-    if (item) {
-      var tmp = item.split(propertyDelimiterRE);
-      tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
-    }
-  });
-  return ret;
-}
-function normalizeClass$1(value) {
-  var res = "";
-  if (isString(value)) {
-    res = value;
-  } else if (isArray$1(value)) {
-    for (var i = 0; i < value.length; i++) {
-      var normalized = normalizeClass$1(value[i]);
-      if (normalized) {
-        res += normalized + " ";
-      }
-    }
-  } else if (isObject(value)) {
-    for (var name in value) {
-      if (value[name]) {
-        res += name + " ";
-      }
-    }
-  }
-  return res.trim();
-}
-var toDisplayString = val => {
-  return isString(val) ? val : val == null ? "" : isArray$1(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
-};
-var replacer = (_key, val) => {
-  if (val && val.__v_isRef) {
-    return replacer(_key, val.value);
-  } else if (isMap(val)) {
-    return {
-      ["Map(".concat(val.size, ")")]: [...val.entries()].reduce((entries, _ref, i) => {
-        var [key, val2] = _ref;
-        entries[stringifySymbol(key, i) + " =>"] = val2;
-        return entries;
-      }, {})
-    };
-  } else if (isSet(val)) {
-    return {
-      ["Set(".concat(val.size, ")")]: [...val.values()].map(v => stringifySymbol(v))
-    };
-  } else if (isSymbol(val)) {
-    return stringifySymbol(val);
-  } else if (isObject(val) && !isArray$1(val) && !isPlainObject(val)) {
-    return String(val);
-  }
-  return val;
-};
-var stringifySymbol = function (v) {
-  var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
-  var _a;
-  return isSymbol(v) ? "Symbol(".concat((_a = v.description) != null ? _a : i, ")") : v;
-};
+import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, hasOwn, isMap, makeMap, normalizeStyle as normalizeStyle$2, isString, parseStringStyle, normalizeClass as normalizeClass$1, hyphenate, capitalize, isPromise, camelize, EMPTY_OBJ, remove, toHandlerKey, getGlobalThis, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, looseToNumber, isGloballyAllowed, NO } from '@vue/shared';
+export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 var isStringIntegerKey = key => typeof key === 'string' && key !== 'NaN' && key[0] !== '-' && '' + parseInt(key, 10) === key;
 var isNumberIntegerKey = key => typeof key === 'number' && !isNaN(key) && key >= 0 && parseInt(key + '', 10) === key;
 /**
@@ -395,7 +224,7 @@ function effect(fn, options) {
     }
   });
   if (options) {
-    extend$1(_effect, options);
+    extend(_effect, options);
     if (options.scope) recordEffectScope(_effect, options.scope);
   }
   if (!options || !options.lazy) {
@@ -2123,10 +1952,10 @@ function warn$1(msg) {
     callWithErrorHandling(appWarnHandler, instance, 11, [msg + args.map(a => {
       var _a, _b;
       return (_b = (_a = a.toString) == null ? void 0 : _a.call(a)) != null ? _b : JSON.stringify(a);
-    }).join(""), instance && instance.proxy, trace.map(_ref2 => {
+    }).join(""), instance && instance.proxy, trace.map(_ref => {
       var {
         vnode
-      } = _ref2;
+      } = _ref;
       return "at <".concat(formatComponentName(instance, vnode.type), ">");
     }).join("\n"), trace]);
   } else {
@@ -2168,11 +1997,11 @@ function formatTrace(trace) {
   });
   return logs;
 }
-function formatTraceEntry(_ref3) {
+function formatTraceEntry(_ref2) {
   var {
     vnode,
     recurseCount
-  } = _ref3;
+  } = _ref2;
   var postfix = recurseCount > 0 ? "... (".concat(recurseCount, " recursive calls)") : "";
   var isRoot = vnode.component ? vnode.component.parent == null : false;
   var open = " at <".concat(formatComponentName(vnode.component, vnode.type, isRoot));
@@ -2471,11 +2300,11 @@ function setDevtoolsHook$1(hook, target) {
   devtools$1 = hook;
   if (devtools$1) {
     devtools$1.enabled = true;
-    buffer.forEach(_ref4 => {
+    buffer.forEach(_ref3 => {
       var {
         event,
         args
-      } = _ref4;
+      } = _ref3;
       return devtools$1.emit(event, ...args);
     });
     buffer = [];
@@ -2560,7 +2389,7 @@ function normalizeEmitsOptions(comp, appContext) {
       var normalizedFromExtend = normalizeEmitsOptions(raw2, appContext, true);
       if (normalizedFromExtend) {
         hasExtends = true;
-        extend$1(normalized, normalizedFromExtend);
+        extend(normalized, normalizedFromExtend);
       }
     };
     if (!asMixin && appContext.mixins.length) {
@@ -2582,7 +2411,7 @@ function normalizeEmitsOptions(comp, appContext) {
   if (isArray$1(raw)) {
     raw.forEach(key => normalized[key] = null);
   } else {
-    extend$1(normalized, raw);
+    extend(normalized, raw);
   }
   if (isObject(comp)) {
     cache.set(comp, normalized);
@@ -2825,11 +2654,11 @@ function hasPropsChanged(prevProps, nextProps, emitsOptions) {
   }
   return false;
 }
-function updateHOCHostEl(_ref5, el) {
+function updateHOCHostEl(_ref4, el) {
   var {
     vnode,
     parent
-  } = _ref5;
+  } = _ref4;
   while (parent) {
     var root = parent.subTree;
     if (root.suspense && root.suspense.activeBranch === vnode) {
@@ -2940,14 +2769,14 @@ function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense
     suspense.resolve(false, true);
   }
 }
-function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, slotScopeIds, optimized, _ref6) {
+function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, slotScopeIds, optimized, _ref5) {
   var {
     p: patch,
     um: unmount,
     o: {
       createElement
     }
-  } = _ref6;
+  } = _ref5;
   var suspense = n2.suspense = n1.suspense;
   suspense.vnode = n2;
   n2.el = n1.el;
@@ -3610,10 +3439,10 @@ var BaseTransitionPropsValidators = {
 var BaseTransitionImpl = {
   name: "BaseTransition",
   props: BaseTransitionPropsValidators,
-  setup(props, _ref7) {
+  setup(props, _ref6) {
     var {
       slots
-    } = _ref7;
+    } = _ref6;
     var instance = getCurrentInstance();
     var state = useTransitionState();
     return () => {
@@ -3867,7 +3696,7 @@ function defineComponent$1(options, extraOptions) {
   // #8326: extend call and options.name access are considered side-effects
   // by Rollup, so we have to wrap it in a pure-annotated IIFE.
   /* @__PURE__ */
-  (() => extend$1({
+  (() => extend({
     name: options.name
   }, extraOptions, {
     setup: options
@@ -4015,10 +3844,10 @@ var KeepAliveImpl = {
     exclude: [String, RegExp, Array],
     max: [String, Number]
   },
-  setup(props, _ref8) {
+  setup(props, _ref7) {
     var {
       slots
-    } = _ref8;
+    } = _ref7;
     var instance = getCurrentInstance();
     var sharedContext = instance.ctx;
     if (!sharedContext.renderer) {
@@ -4093,8 +3922,8 @@ var KeepAliveImpl = {
       cache.delete(key);
       keys.delete(key);
     }
-    watch(() => [props.include, props.exclude], _ref9 => {
-      var [include, exclude] = _ref9;
+    watch(() => [props.include, props.exclude], _ref8 => {
+      var [include, exclude] = _ref8;
       include && pruneCache(name => matches(include, name));
       exclude && pruneCache(name => !matches(exclude, name));
     },
@@ -4397,7 +4226,7 @@ var publicPropertiesMap =
 // Move PURE marker to new line to workaround compiler discarding it
 // due to type annotation
 /* @__PURE__ */
-extend$1(/* @__PURE__ */Object.create(null), {
+extend(/* @__PURE__ */Object.create(null), {
   $: i => i,
   $el: i => i.vnode.el,
   $data: i => i.data,
@@ -4437,10 +4266,10 @@ publicPropertiesMap.$callMethod = i => {
 };
 var hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
 var PublicInstanceProxyHandlers = {
-  get(_ref10, key) {
+  get(_ref9, key) {
     var {
       _: instance
-    } = _ref10;
+    } = _ref9;
     var {
       ctx,
       setupState,
@@ -4505,10 +4334,10 @@ var PublicInstanceProxyHandlers = {
       }
     } else ;
   },
-  set(_ref11, key, value) {
+  set(_ref10, key, value) {
     var {
       _: instance
-    } = _ref11;
+    } = _ref10;
     var {
       data,
       setupState,
@@ -4532,7 +4361,7 @@ var PublicInstanceProxyHandlers = {
     }
     return true;
   },
-  has(_ref12, key) {
+  has(_ref11, key) {
     var {
       _: {
         data,
@@ -4542,7 +4371,7 @@ var PublicInstanceProxyHandlers = {
         appContext,
         propsOptions
       }
-    } = _ref12;
+    } = _ref11;
     var normalizedProps;
     return !!accessCache[key] || data !== EMPTY_OBJ && hasOwn(data, key) || hasSetupBinding(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key);
   },
@@ -4555,7 +4384,7 @@ var PublicInstanceProxyHandlers = {
     return Reflect.defineProperty(target, key, descriptor);
   }
 };
-var RuntimeCompiledPublicInstanceProxyHandlers = /* @__PURE__ */extend$1({}, PublicInstanceProxyHandlers, {
+var RuntimeCompiledPublicInstanceProxyHandlers = /* @__PURE__ */extend({}, PublicInstanceProxyHandlers, {
   get(target, key) {
     if (key === Symbol.unscopables) {
       return;
@@ -4623,7 +4452,7 @@ function mergeDefaults(raw, defaults) {
 function mergeModels(a, b) {
   if (!a || !b) return a || b;
   if (isArray$1(a) && isArray$1(b)) return a.concat(b);
-  return extend$1({}, normalizePropsOrEmits(a), normalizePropsOrEmits(b));
+  return extend({}, normalizePropsOrEmits(a), normalizePropsOrEmits(b));
 }
 function createPropsRestProxy(props, excludedKeys) {
   var ret = {};
@@ -4941,7 +4770,7 @@ function mergeDataFn(to, from) {
     return from;
   }
   return function mergedDataFn() {
-    return extend$1(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
+    return extend(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
   };
 }
 function mergeInject(to, from) {
@@ -4961,14 +4790,14 @@ function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
 }
 function mergeObjectOptions(to, from) {
-  return to ? extend$1(/* @__PURE__ */Object.create(null), to, from) : from;
+  return to ? extend(/* @__PURE__ */Object.create(null), to, from) : from;
 }
 function mergeEmitsOrPropsOptions(to, from) {
   if (to) {
     if (isArray$1(to) && isArray$1(from)) {
       return [... /* @__PURE__ */new Set([...to, ...from])];
     }
-    return extend$1(/* @__PURE__ */Object.create(null), normalizePropsOrEmits(to), normalizePropsOrEmits(from != null ? from : {}));
+    return extend(/* @__PURE__ */Object.create(null), normalizePropsOrEmits(to), normalizePropsOrEmits(from != null ? from : {}));
   } else {
     return from;
   }
@@ -4976,7 +4805,7 @@ function mergeEmitsOrPropsOptions(to, from) {
 function mergeWatchOptions(to, from) {
   if (!to) return from;
   if (!from) return to;
-  var merged = extend$1(/* @__PURE__ */Object.create(null), to);
+  var merged = extend(/* @__PURE__ */Object.create(null), to);
   for (var key in from) {
     merged[key] = mergeAsArray(to[key], from[key]);
   }
@@ -5008,7 +4837,7 @@ function createAppAPI(render, hydrate) {
   return function createApp(rootComponent) {
     var rootProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     if (!isFunction(rootComponent)) {
-      rootComponent = extend$1({}, rootComponent);
+      rootComponent = extend({}, rootComponent);
     }
     if (rootProps != null && !isObject(rootProps)) {
       rootProps = null;
@@ -5320,7 +5149,7 @@ function normalizePropsOptions(comp, appContext) {
     var extendProps = raw2 => {
       hasExtends = true;
       var [props, keys] = normalizePropsOptions(raw2, appContext, true);
-      extend$1(normalized, props);
+      extend(normalized, props);
       if (keys) needCastKeys.push(...keys);
     };
     if (!asMixin && appContext.mixins.length) {
@@ -5353,7 +5182,7 @@ function normalizePropsOptions(comp, appContext) {
         var opt = raw[key];
         var prop = normalized[_normalizedKey] = isArray$1(opt) || isFunction(opt) ? {
           type: opt
-        } : extend$1({}, opt);
+        } : extend({}, opt);
         if (prop) {
           var booleanIndex = getTypeIndex(Boolean, prop.type);
           var stringIndex = getTypeIndex(String, prop.type);
@@ -5463,7 +5292,7 @@ var updateSlots = (instance, children, optimized) => {
       if (optimized && type === 1) {
         needDeletionCheck = false;
       } else {
-        extend$1(slots, children);
+        extend(slots, children);
         if (!optimized && type === 1) {
           delete slots._;
         }
@@ -5979,11 +5808,11 @@ function baseCreateRenderer(options, createHydrationFns) {
   var mountStaticNode = (n2, container, anchor, namespace) => {
     [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, namespace, n2.el, n2.anchor);
   };
-  var moveStaticNode = (_ref13, container, nextSibling) => {
+  var moveStaticNode = (_ref12, container, nextSibling) => {
     var {
       el,
       anchor
-    } = _ref13;
+    } = _ref12;
     var next;
     while (el && el !== anchor) {
       next = hostNextSibling(el);
@@ -5992,11 +5821,11 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     hostInsert(anchor, container, nextSibling);
   };
-  var removeStaticNode = _ref14 => {
+  var removeStaticNode = _ref13 => {
     var {
       el,
       anchor
-    } = _ref14;
+    } = _ref13;
     var next;
     while (el && el !== anchor) {
       next = hostNextSibling(el);
@@ -6856,18 +6685,18 @@ function baseCreateRenderer(options, createHydrationFns) {
     createApp: createAppAPI(render, hydrate)
   };
 }
-function resolveChildrenNamespace(_ref15, currentNamespace) {
+function resolveChildrenNamespace(_ref14, currentNamespace) {
   var {
     type,
     props
-  } = _ref15;
+  } = _ref14;
   return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props && props.encoding && props.encoding.includes("html") ? void 0 : currentNamespace;
 }
-function toggleRecurse(_ref16, allowed) {
+function toggleRecurse(_ref15, allowed) {
   var {
     effect,
     update
-  } = _ref16;
+  } = _ref15;
   effect.allowRecurse = update.allowRecurse = allowed;
 }
 function needTransition(parentSuspense, transition) {
@@ -7051,13 +6880,13 @@ var TeleportImpl = {
     }
     updateCssVars(n2);
   },
-  remove(vnode, parentComponent, parentSuspense, optimized, _ref17, doRemove) {
+  remove(vnode, parentComponent, parentSuspense, optimized, _ref16, doRemove) {
     var {
       um: unmount,
       o: {
         remove: hostRemove
       }
-    } = _ref17;
+    } = _ref16;
     var {
       shapeFlag,
       children,
@@ -7081,13 +6910,13 @@ var TeleportImpl = {
   move: moveTeleport,
   hydrate: hydrateTeleport
 };
-function moveTeleport(vnode, container, parentAnchor, _ref18) {
+function moveTeleport(vnode, container, parentAnchor, _ref17) {
   var {
     o: {
       insert
     },
     m: move
-  } = _ref18;
+  } = _ref17;
   var moveType = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
   if (moveType === 0) {
     insert(vnode.targetAnchor, container, parentAnchor);
@@ -7114,14 +6943,14 @@ function moveTeleport(vnode, container, parentAnchor, _ref18) {
     insert(anchor, container, parentAnchor);
   }
 }
-function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, _ref19, hydrateChildren) {
+function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, _ref18, hydrateChildren) {
   var {
     o: {
       nextSibling,
       parentNode,
       querySelector
     }
-  } = _ref19;
+  } = _ref18;
   var target = vnode.target = resolveTarget(vnode.props, querySelector, parentComponent);
   if (target) {
     var targetNode = target._lpa || target.firstChild;
@@ -7199,18 +7028,18 @@ function isSameVNodeType(n1, n2) {
 }
 function transformVNodeArgs(transformer) {}
 var InternalObjectKey = "__vInternal";
-var normalizeKey = _ref20 => {
+var normalizeKey = _ref19 => {
   var {
     key
-  } = _ref20;
+  } = _ref19;
   return key != null ? key : null;
 };
-var normalizeRef = _ref21 => {
+var normalizeRef = _ref20 => {
   var {
     ref,
     ref_key,
     ref_for
-  } = _ref21;
+  } = _ref20;
   if (typeof ref === "number") {
     ref = "" + ref;
   }
@@ -7330,7 +7159,7 @@ function _createVNode(type) {
     }
     if (isObject(style)) {
       if (isProxy(style) && !isArray$1(style)) {
-        style = extend$1({}, style);
+        style = extend({}, style);
       }
       props.style = normalizeStyle$1(style);
     }
@@ -7340,7 +7169,7 @@ function _createVNode(type) {
 }
 function guardReactiveProps(props) {
   if (!props) return null;
-  return isProxy(props) || InternalObjectKey in props ? extend$1({}, props) : props;
+  return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
 }
 function cloneVNode(vnode, extraProps) {
   var mergeRef = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -7518,7 +7347,11 @@ function createComponentInstance(vnode, parent, suspense) {
     appContext,
     // fixed by xxxxxx 页面的vnode会多一个__page_container__属性，通过它来判断
     // @ts-expect-error
-    renderer: vnode.__page_container__ ? "page" : "component",
+    renderer:
+    // @ts-expect-error
+    type.mpType === "app" ? "app" :
+    // @ts-expect-error
+    vnode.__page_container__ ? "page" : "component",
     root: null,
     // to be immediately set
     next: null,
@@ -7725,7 +7558,7 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
           delimiters,
           compilerOptions: componentCompilerOptions
         } = Component;
-        var finalCompilerOptions = extend$1(extend$1({
+        var finalCompilerOptions = extend(extend({
           isCustomElement,
           delimiters
         }, compilerOptions), componentCompilerOptions);
@@ -8074,11 +7907,11 @@ function isMatchParentSelector(parentSelector, el) {
   return true;
 }
 var WEIGHT_IMPORTANT = 1e3;
-function parseClassName(_ref22, parentStyles, el) {
+function parseClassName(_ref21, parentStyles, el) {
   var {
     styles,
     weights
-  } = _ref22;
+  } = _ref21;
   each(parentStyles).forEach(parentSelector => {
     if (parentSelector && el) {
       if (!isMatchParentSelector(parentSelector, el)) {
@@ -8140,12 +7973,12 @@ function parseClassList(classList, instance) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
 }
-function parseStyleSheet(_ref23) {
+function parseStyleSheet(_ref22) {
   var {
     type,
     appContext,
     root
-  } = _ref23;
+  } = _ref22;
   var component = type;
   var pageInstance = root;
   if (!pageInstance.componentStylesCache) {
@@ -8174,14 +8007,14 @@ function parseStyleSheet(_ref23) {
   }
   return cache;
 }
-function extend(a, b) {
+function extendMap(a, b) {
   b.forEach((value, key) => {
     a.set(key, value);
   });
   return a;
 }
 function toStyle(el, classStyle, classStyleWeights) {
-  var res = extend(/* @__PURE__ */new Map(), classStyle);
+  var res = extendMap(/* @__PURE__ */new Map(), classStyle);
   var style = getExtraStyle(el);
   if (style != null) {
     style.forEach((value, key) => {
@@ -8701,13 +8534,13 @@ var withKeys = (fn, modifiers) => {
   };
 };
 var vShow = {
-  beforeMount(el, _ref24, _ref25) {
+  beforeMount(el, _ref23, _ref24) {
     var {
       value
-    } = _ref24;
+    } = _ref23;
     var {
       transition
-    } = _ref25;
+    } = _ref24;
     el._vod = el.style.getPropertyValue("display") === "none" ? "" : "flex";
     if (transition && value) {
       transition.beforeEnter(el);
@@ -8715,25 +8548,25 @@ var vShow = {
       setDisplay(el, value);
     }
   },
-  mounted(el, _ref26, _ref27) {
+  mounted(el, _ref25, _ref26) {
     var {
       value
-    } = _ref26;
+    } = _ref25;
     var {
       transition
-    } = _ref27;
+    } = _ref26;
     if (transition && value) {
       transition.enter(el);
     }
   },
-  updated(el, _ref28, _ref29) {
+  updated(el, _ref27, _ref28) {
     var {
       value,
       oldValue
-    } = _ref28;
+    } = _ref27;
     var {
       transition
-    } = _ref29;
+    } = _ref28;
     if (!value === !oldValue) return;
     if (transition) {
       if (value) {
@@ -8749,10 +8582,10 @@ var vShow = {
       setDisplay(el, value);
     }
   },
-  beforeUnmount(el, _ref30) {
+  beforeUnmount(el, _ref29) {
     var {
       value
-    } = _ref30;
+    } = _ref29;
     setDisplay(el, value);
   }
 };
@@ -8760,7 +8593,7 @@ function setDisplay(el, value) {
   el.style.setProperty("display", value ? el._vod : "none");
   el._vsh = !value;
 }
-var rendererOptions = extend$1({
+var rendererOptions = extend({
   patchProp
 }, nodeOps);
 var renderer;
@@ -8788,4 +8621,4 @@ var defineComponent = options => {
   }
   return defineComponent$1(options);
 };
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle$1 as normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle$1 as normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
