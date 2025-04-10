@@ -455,15 +455,6 @@ function sendConsoleMessages(messages) {
         data: messages,
     }, messageExtra)));
 }
-{
-    if (typeof UTSProxyObject === 'object' &&
-        UTSProxyObject !== null &&
-        typeof UTSProxyObject.invokeSync === 'function') {
-        UTSProxyObject.invokeSync('__UniConsole', 'setSendConsoleMessages', [
-            sendConsoleMessages,
-        ]);
-    }
-}
 function setSendConsole(value, extra = {}) {
     sendConsole = value;
     Object.assign(messageExtra, extra);
@@ -475,6 +466,15 @@ function setSendConsole(value, extra = {}) {
 }
 const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/;
 function rewriteConsole() {
+    {
+        if (typeof UTSProxyObject === 'object' &&
+            UTSProxyObject !== null &&
+            typeof UTSProxyObject.invokeSync === 'function') {
+            UTSProxyObject.invokeSync('__UniConsole', 'setSendConsoleMessages', [
+                sendConsoleMessages,
+            ]);
+        }
+    }
     function wrapConsole(type) {
         return function (...args) {
             const originalArgs = [...args];
@@ -534,7 +534,15 @@ function rewriteConsole() {
             }
         }
     }
-    return function restoreConsole() { };
+    return function restoreConsole() {
+        {
+            if (typeof UTSProxyObject === 'object' &&
+                UTSProxyObject !== null &&
+                typeof UTSProxyObject.invokeSync === 'function') {
+                UTSProxyObject.invokeSync('__UniConsole', 'restoreConsole', []);
+            }
+        }
+    };
 }
 function isConsoleWritable() {
     const value = console.log;

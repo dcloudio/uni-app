@@ -485,7 +485,8 @@
                 });
             };
         }
-        return function restoreConsole() { };
+        return function restoreConsole() {
+        };
     }
     function isConsoleWritable() {
         var value = console.log;
