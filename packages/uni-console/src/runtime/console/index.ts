@@ -30,18 +30,6 @@ function sendConsoleMessages(messages: Message[]) {
   )
 }
 
-if (__HARMONY_JSVM__) {
-  if (
-    typeof UTSProxyObject === 'object' &&
-    UTSProxyObject !== null &&
-    typeof UTSProxyObject.invokeSync === 'function'
-  ) {
-    UTSProxyObject.invokeSync('__UniConsole', 'setSendConsoleMessages', [
-      sendConsoleMessages,
-    ])
-  }
-}
-
 export function setSendConsole(value: SendFn, extra: Record<string, any> = {}) {
   sendConsole = value
   Object.assign(messageExtra, extra)
@@ -55,6 +43,17 @@ export function setSendConsole(value: SendFn, extra: Record<string, any> = {}) {
 const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/
 
 export function rewriteConsole() {
+  if (__HARMONY_JSVM__) {
+    if (
+      typeof UTSProxyObject === 'object' &&
+      UTSProxyObject !== null &&
+      typeof UTSProxyObject.invokeSync === 'function'
+    ) {
+      UTSProxyObject.invokeSync('__UniConsole', 'setSendConsoleMessages', [
+        sendConsoleMessages,
+      ])
+    }
+  }
   function wrapConsole(type: MessageType) {
     return function (...args: any[]) {
       const originalArgs = [...args]
@@ -113,7 +112,17 @@ export function rewriteConsole() {
       }
     }
   }
-  return function restoreConsole() {}
+  return function restoreConsole() {
+    if (__HARMONY_JSVM__) {
+      if (
+        typeof UTSProxyObject === 'object' &&
+        UTSProxyObject !== null &&
+        typeof UTSProxyObject.invokeSync === 'function'
+      ) {
+        UTSProxyObject.invokeSync('__UniConsole', 'restoreConsole', [])
+      }
+    }
+  }
 }
 
 function isConsoleWritable() {
