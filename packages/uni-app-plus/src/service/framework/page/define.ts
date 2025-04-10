@@ -15,13 +15,13 @@ function isVuePageAsyncComponent(
   return isFunction(component)
 }
 
-export const pagesMap = new Map<string, ReturnType<typeof createFactory>>()
+export const pagesMap = new Map<string, ReturnType<typeof createPageFactory>>()
 
 export function definePage(
   pagePath: string,
   asyncComponent: VuePageAsyncComponent | VuePageComponent
 ) {
-  pagesMap.set(pagePath, once(createFactory(asyncComponent)))
+  pagesMap.set(pagePath, once(createPageFactory(asyncComponent)))
 }
 
 interface PageProps {
@@ -61,11 +61,20 @@ export function createVuePage(
   return mountPage(component)
 }
 
-function createFactory(component: VuePageAsyncComponent | VuePageComponent) {
+function createPageFactory(
+  component: VuePageAsyncComponent | VuePageComponent
+) {
   return () => {
     if (isVuePageAsyncComponent(component)) {
-      return component().then((component) => setupPage(component))
+      return component().then((component) =>
+        setupPage(clonedPageComponent(component))
+      )
     }
-    return setupPage(component)
+    return setupPage(clonedPageComponent(component))
   }
+}
+
+function clonedPageComponent(component: VuePageComponent) {
+  // 页面可能作为组件渲染，需要clone一份定义出来，不然会互相干扰
+  return extend({}, component) as VuePageComponent
 }
