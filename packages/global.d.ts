@@ -79,6 +79,10 @@ declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
 declare var __id__: string
 // uni-console
 declare var __HARMONY__: boolean
+declare var __HARMONY_JSVM__: boolean
+declare var UTSProxyObject: {
+  invokeSync: (name: string, method: string, args: any[]) => void
+}
 // TODO X 引入真实类型
 declare class UTSJSONObject {
   constructor(obj: Record<string, any>)

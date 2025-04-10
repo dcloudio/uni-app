@@ -82,6 +82,12 @@ export default () => {
             path.join('@dcloudio/uni-console', 'dist/app.esm.js')
           )
         }
+      } else {
+        if (process.env.UNI_PLATFORM === 'app-harmony') {
+          uniConsolePath = resolveBuiltIn(
+            path.join('@dcloudio/uni-console', 'dist/harmony.jsvm.esm.js')
+          )
+        }
       }
       return {
         name: 'uni:console-main-js',

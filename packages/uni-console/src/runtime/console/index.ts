@@ -30,6 +30,18 @@ function sendConsoleMessages(messages: Message[]) {
   )
 }
 
+if (__HARMONY_JSVM__) {
+  if (
+    typeof UTSProxyObject === 'object' &&
+    UTSProxyObject !== null &&
+    typeof UTSProxyObject.invokeSync === 'function'
+  ) {
+    UTSProxyObject.invokeSync('__UniConsole', 'setSendConsoleMessages', [
+      sendConsoleMessages,
+    ])
+  }
+}
+
 export function setSendConsole(value: SendFn, extra: Record<string, any> = {}) {
   sendConsole = value
   Object.assign(messageExtra, extra)
