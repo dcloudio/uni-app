@@ -3,17 +3,10 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, hasOwn, isMap, makeMap, capitalize, normalizeStyle as normalizeStyle$2, isString, parseStringStyle, normalizeClass as normalizeClass$1, hyphenate, isPromise, getGlobalThis, camelize, EMPTY_OBJ, remove, toHandlerKey, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isBuiltInDirective, isReservedProp, looseToNumber, isGloballyAllowed, NO, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue } from '@vue/shared';
+import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, hasOwn, isMap, makeMap, capitalize, hyphenate, isPromise, getGlobalThis, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isBuiltInDirective, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$2, looseToNumber, isGloballyAllowed, NO, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
-var isStringIntegerKey = key => typeof key === 'string' && key !== 'NaN' && key[0] !== '-' && '' + parseInt(key, 10) === key;
-var isNumberIntegerKey = key => typeof key === 'number' && !isNaN(key) && key >= 0 && parseInt(key + '', 10) === key;
-/**
- * 用于替代@vue/shared的isIntegerKey，原始方法在鸿蒙arkts中会引发bug。根本原因是arkts的数组的key是数字而不是字符串。
- * 目前这个方法使用的地方都和数组有关，切记不能挪作他用。
- * @param key
- * @returns
- */
-var isIntegerKey = key => isNumberIntegerKey(key) || isStringIntegerKey(key);
+import { isIntegerKey, isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1 } from '@dcloudio/uni-shared';
+export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 function warn$2(msg) {
   for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
     args[_key2 - 1] = arguments[_key2];
@@ -1163,149 +1156,6 @@ var TriggerOpTypes = {
   "DELETE": "delete",
   "CLEAR": "clear"
 };
-
-// lifecycle
-// App and Page
-var ON_SHOW = 'onShow';
-var ON_HIDE = 'onHide';
-//Page
-var ON_LOAD = 'onLoad';
-var ON_UNLOAD = 'onUnload';
-// 百度特有
-var ON_INIT = 'onInit';
-// 微信特有
-var ON_SAVE_EXIT_STATE = 'onSaveExitState';
-var ON_BACK_PRESS = 'onBackPress';
-var ON_PAGE_SCROLL = 'onPageScroll';
-var ON_TAB_ITEM_TAP = 'onTabItemTap';
-var ON_REACH_BOTTOM = 'onReachBottom';
-var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-var ON_SHARE_TIMELINE = 'onShareTimeline';
-var ON_SHARE_CHAT = 'onShareChat'; // xhs-share
-var ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-var ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
-// navigationBar
-var ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
-function getGlobalOnce() {
-  if (typeof globalThis !== 'undefined') {
-    return globalThis;
-  }
-  // worker
-  if (typeof self !== 'undefined') {
-    return self;
-  }
-  // browser
-  if (typeof window !== 'undefined') {
-    return window;
-  }
-  // nodejs
-  // if (typeof global !== 'undefined') {
-  //   return global
-  // }
-  function g() {
-    return this;
-  }
-  if (typeof g() !== 'undefined') {
-    return g();
-  }
-  return function () {
-    return new Function('return this')();
-  }();
-}
-var g = undefined;
-function getGlobal() {
-  if (g) {
-    return g;
-  }
-  g = getGlobalOnce();
-  return g;
-}
-function normalizeStyle$1(value) {
-  var g = getGlobal();
-  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
-    var styleObject = {};
-    g.UTSJSONObject.keys(value).forEach(key => {
-      styleObject[key] = value[key];
-    });
-    return normalizeStyle$2(styleObject);
-  } else if (value instanceof Map) {
-    var _styleObject = {};
-    value.forEach((value, key) => {
-      _styleObject[key] = value;
-    });
-    return normalizeStyle$2(_styleObject);
-  } else if (isString(value)) {
-    return parseStringStyle(value);
-  } else if (isArray$1(value)) {
-    var res = {};
-    for (var i = 0; i < value.length; i++) {
-      var item = value[i];
-      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$1(item);
-      if (normalized) {
-        for (var key in normalized) {
-          res[key] = normalized[key];
-        }
-      }
-    }
-    return res;
-  } else {
-    return normalizeStyle$2(value);
-  }
-}
-function normalizeClass(value) {
-  var res = '';
-  var g = getGlobal();
-  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
-    g.UTSJSONObject.keys(value).forEach(key => {
-      if (value[key]) {
-        res += key + ' ';
-      }
-    });
-  } else if (value instanceof Map) {
-    value.forEach((value, key) => {
-      if (value) {
-        res += key + ' ';
-      }
-    });
-  } else if (isArray$1(value)) {
-    for (var i = 0; i < value.length; i++) {
-      var normalized = normalizeClass(value[i]);
-      if (normalized) {
-        res += normalized + ' ';
-      }
-    }
-  } else {
-    res = normalizeClass$1(value);
-  }
-  return res.trim();
-}
-function normalizeProps(props) {
-  if (!props) return null;
-  var {
-    class: klass,
-    style
-  } = props;
-  if (klass && !isString(klass)) {
-    props.class = normalizeClass(klass);
-  }
-  if (style) {
-    props.style = normalizeStyle$1(style);
-  }
-  return props;
-}
-var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
-function isRootImmediateHook(name) {
-  var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
-  return PAGE_SYNC_HOOKS.indexOf(name) > -1;
-}
-// isRootImmediateHookX deprecated
-function isRootHook(name) {
-  return PAGE_HOOKS.indexOf(name) > -1;
-}
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
@@ -8722,10 +8572,10 @@ var getCurrentInstance = () => currentInstance || currentRenderingInstance;
 var internalSetCurrentInstance;
 var setInSSRSetupState;
 {
-  var _g = getGlobalThis();
+  var g = getGlobalThis();
   var registerGlobalSetter = (key, setter) => {
     var setters;
-    if (!(setters = _g[key])) setters = _g[key] = [];
+    if (!(setters = g[key])) setters = g[key] = [];
     setters.push(setter);
     return v => {
       if (setters.length > 1) setters.forEach(set => set(v));else setters[0](v);
@@ -10153,4 +10003,4 @@ var defineComponent = options => {
   }
   return defineComponent$1(options);
 };
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle$1 as normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

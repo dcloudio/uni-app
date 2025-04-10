@@ -93,7 +93,11 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": ["@vue/shared", "@dcloudio/uni-nvue-styler"],
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
     "babel": true
   },
   {
@@ -110,7 +114,11 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": ["@vue/shared", "@dcloudio/uni-nvue-styler"],
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
     "babel": true
   },
   {
@@ -159,7 +167,11 @@
         "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250324175207068/comment"
       }
     ],
-    "external": ["@vue/shared", "@dcloudio/uni-nvue-styler"],
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
     "babel": true
   },
   {
@@ -205,7 +217,11 @@
         "file": "@vue/reactivity/dist/reactivity.esm-bundler.js"
       }
     ],
-    "external": ["@vue/shared", "@dcloudio/uni-nvue-styler"],
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
     "babel": true
   }
 ]
