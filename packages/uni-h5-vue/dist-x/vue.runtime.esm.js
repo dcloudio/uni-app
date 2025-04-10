@@ -8840,11 +8840,15 @@ function createComponentInstance(vnode, parent, suspense) {
     parent,
     appContext,
     // fixed by xxxxxx
+    // @ts-expect-error
     get renderer() {
+      if (type.mpType === "app") {
+        return "app";
+      }
       if (this.$pageInstance) {
         return this.$pageInstance == instance ? "page" : "component";
       }
-      return;
+      return "component";
     },
     root: null,
     // to be immediately set

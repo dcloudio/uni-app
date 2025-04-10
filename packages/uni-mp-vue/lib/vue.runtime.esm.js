@@ -4890,7 +4890,7 @@ function warnRef(ref) {
 const queuePostRenderEffect = queuePostFlushCb;
 function mountComponent(initialVNode, options) {
   const instance = initialVNode.component = createComponentInstance(initialVNode, options.parentComponent, null);
-  instance.renderer = options.mpType === "page" ? "page" : "component";
+  instance.renderer = options.mpType ? options.mpType : "component";
   if (__VUE_OPTIONS_API__) {
     instance.ctx.$onApplyOptions = onApplyOptions;
     instance.ctx.$children = [];

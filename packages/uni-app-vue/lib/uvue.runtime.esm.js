@@ -7580,7 +7580,13 @@ function createComponentInstance(vnode, parent, suspense) {
     appContext,
     // fixed by xxxxxx 页面的vnode会多一个__page_container__属性，通过它来判断
     // @ts-expect-error
-    renderer: vnode.__page_container__ ? "page" : "component",
+    renderer: (
+      // @ts-expect-error
+      type.mpType === "app" ? "app" : (
+        // @ts-expect-error
+        vnode.__page_container__ ? "page" : "component"
+      )
+    ),
     root: null,
     // to be immediately set
     next: null,
