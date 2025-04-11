@@ -5,6 +5,7 @@ import {
   $destroyComponent,
   initBehaviors,
   initData,
+  initPageInstance,
   initProps,
   initVueIds,
   initWxsCallMethods,
@@ -71,6 +72,7 @@ function initVm(
     if (__X__) {
       mpInstance.vm = mpInstance.$vm
     }
+    initPageInstance(mpInstance as any)
   } else {
     // 处理父子关系
     initRelation(mpInstance, relationOptions)
@@ -81,6 +83,7 @@ function initVm(
       if (__X__) {
         mpInstance.vm = mpInstance.$vm
       }
+      initPageInstance(mpInstance as any)
       handleRef.call(relationOptions.parent.$scope as any, mpInstance)
       initChildVues(mpInstance)
       mpInstance.$vm.$callHook('mounted')

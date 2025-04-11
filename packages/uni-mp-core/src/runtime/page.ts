@@ -10,6 +10,7 @@ import {
 
 import {
   type CustomComponentInstanceProperty,
+  type MPComponentInstance,
   type ParseComponentOptions,
   parseComponent,
 } from './component'
@@ -79,5 +80,23 @@ declare let Component: WechatMiniprogram.Component.Constructor
 export function initCreatePage(parseOptions: ParseComponentOptions) {
   return function createPage(vuePageOptions: ComponentOptions) {
     return Component(parsePage(vuePageOptions, parseOptions))
+  }
+}
+
+export function initPageInstance(mpPageInstance: MPComponentInstance) {
+  if (__X__) {
+    Object.assign(mpPageInstance, {
+      get width(): number {
+        return __GLOBAL__.getWindowInfo().windowWidth
+      },
+      get height(): number {
+        const windowInfo = __GLOBAL__.getWindowInfo()
+        // 某些版本的微信小程序开发工具获取tabBar页面的screenTop不对，其数值包含了tabBar高度及底部安全区，如果有开发者问起让他使用真机测试即可。
+        return windowInfo.windowHeight + windowInfo.screenTop
+      },
+      get statusBarHeight(): number {
+        return __GLOBAL__.getWindowInfo().statusBarHeight
+      },
+    })
   }
 }
