@@ -507,7 +507,7 @@
         "name": "hideKeyboard",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true,
           "arkts": true
         }
@@ -516,7 +516,7 @@
         "name": "onKeyboardHeightChange",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true,
           "arkts": false
         }
@@ -525,7 +525,7 @@
         "name": "offKeyboardHeightChange",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true,
           "arkts": false
         }
@@ -534,7 +534,7 @@
         "name": "getSelectedTextRange",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true,
           "arkts": false
         }
