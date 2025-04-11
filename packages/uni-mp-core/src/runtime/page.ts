@@ -97,6 +97,32 @@ export function initPageInstance(mpPageInstance: MPComponentInstance) {
       get statusBarHeight(): number {
         return __GLOBAL__.getWindowInfo().statusBarHeight
       },
+      get safeAreaInsets() {
+        const windowInfo = __GLOBAL__.getWindowInfo()
+        const screenBottom =
+          windowInfo.screenHeight -
+          windowInfo.screenTop -
+          windowInfo.windowHeight
+        const safeAreaBottom =
+          windowInfo.screenHeight - windowInfo.safeArea.bottom
+        return {
+          top: Math.max(0, windowInfo.statusBarHeight - windowInfo.screenTop),
+          left: 0,
+          right: 0,
+          bottom: Math.max(0, safeAreaBottom - screenBottom), // 无法计算，
+        }
+      },
+      get pageBody() {
+        const windowInfo = __GLOBAL__.getWindowInfo()
+        return {
+          top: windowInfo.screenTop,
+          left: 0,
+          right: windowInfo.windowWidth,
+          bottom: windowInfo.windowHeight + windowInfo.screenTop,
+          width: windowInfo.windowWidth,
+          height: windowInfo.windowHeight,
+        }
+      },
     })
   }
 }
