@@ -60,6 +60,11 @@ var index = () => {
                     uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/app.esm.js'));
                 }
             }
+            else {
+                if (process.env.UNI_PLATFORM === 'app-harmony') {
+                    uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/harmony.jsvm.esm.js'));
+                }
+            }
             return {
                 name: 'uni:console-main-js',
                 enforce: 

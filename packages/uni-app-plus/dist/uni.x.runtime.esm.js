@@ -3566,7 +3566,8 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
 var env = {
   USER_DATA_PATH: "unifile://usr/",
   CACHE_PATH: "unifile://cache/",
-  SANDBOX_PATH: "unifile://sandbox/"
+  SANDBOX_PATH: "unifile://sandbox/",
+  TEMP_PATH: "unifile://temp/"
 };
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";

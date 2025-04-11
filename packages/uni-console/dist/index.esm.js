@@ -525,7 +525,8 @@ function rewriteConsole() {
             }
         }
     }
-    return function restoreConsole() { };
+    return function restoreConsole() {
+    };
 }
 function isConsoleWritable() {
     const value = console.log;
