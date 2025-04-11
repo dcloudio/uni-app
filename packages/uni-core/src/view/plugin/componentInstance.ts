@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance } from 'vue'
-import { extend, isFunction } from '@vue/shared'
+import { extend, isFunction, isPlainObject } from '@vue/shared'
 import { normalizeTarget } from '@dcloudio/uni-shared'
 import { getWindowTop, isBuiltInElement } from '../../helpers'
 import { wrapperH5WxsEvent } from './componentWxs'
@@ -109,6 +109,10 @@ export function createNativeEvent(
     target: realTarget,
     detail: {},
     currentTarget: realCurrentTarget,
+  }
+  // 允许自定义事件传递数据（仅限对象）
+  if (evt instanceof CustomEvent && isPlainObject(evt.detail)) {
+    event.detail = evt.detail
   }
   // merge stopImmediatePropagation
   if ((evt as any)._stopped) {

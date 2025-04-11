@@ -505,6 +505,9 @@ function createNativeEvent(evt, htmlElement = false) {
     detail: {},
     currentTarget: realCurrentTarget
   };
+  if (evt instanceof CustomEvent && shared.isPlainObject(evt.detail)) {
+    event.detail = evt.detail;
+  }
   if (evt._stopped) {
     event._stopped = true;
   }
