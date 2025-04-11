@@ -54,7 +54,6 @@ import { handleBeforeEntryPageRoutes } from '../../service/api/route/utils'
 //#if _X_
 import { isDialogPageInstance } from '../../x/framework/helpers/utils'
 import {
-  initPageWidthHeight,
   triggerDialogPageOnHide,
   useBackgroundColorContent,
 } from '../../x/framework/setup/page'
@@ -163,7 +162,6 @@ export function setupPage(comp: any) {
       })
       onMounted(() => {
         if (__X__) {
-          initPageWidthHeight(instance)
           if (instance.subTree.el) {
             instance.subTree.el._page = instance.proxy?.$page as UniPage
           }
