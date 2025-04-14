@@ -8438,12 +8438,34 @@ function useGesture(props2, videoRef, fullscreenState) {
     volumeOld: 0,
     volumeNew: 0,
     currentTimeOld: 0,
-    currentTimeNew: 0
+    currentTimeNew: 0,
+    toastThin: false
   });
   const touchStartOrigin = {
     x: 0,
     y: 0
   };
+  let changeToastThinTimer = null;
+  const changeToastThin = () => {
+    if (state.gestureType !== "none" && changeToastThinTimer != null)
+      return;
+    changeToastThinTimer = setTimeout(() => {
+      state.toastThin = true;
+    }, 500);
+  };
+  let showToastTimer = void 0;
+  function changeShowToast() {
+    if (showToastTimer != void 0)
+      return;
+    showToastTimer = setTimeout(() => {
+      state.toastThin = false;
+      showToastTimer = void 0;
+    }, 1e3);
+  }
+  function clearChangeShowToast() {
+    clearTimeout(showToastTimer);
+    showToastTimer = void 0;
+  }
   function onTouchstart(event) {
     const toucher = event.targetTouches[0];
     touchStartOrigin.x = toucher.pageX;
@@ -8488,10 +8510,11 @@ function useGesture(props2, videoRef, fullscreenState) {
         stop();
       }
     } else {
-      if (!props2.pageGesture) {
+      if (!props2.pageGesture && !props2.vslideGesture) {
         state.gestureType = "stop";
         return;
       }
+      changeToastThin();
       state.gestureType = "volume";
       state.volumeOld = video.volume;
       if (!fullscreenState.fullscreen) {
@@ -8532,6 +8555,8 @@ function useGesture(props2, videoRef, fullscreenState) {
       } else if (value > 1) {
         value = 1;
       }
+      clearChangeShowToast();
+      changeShowToast();
       video.volume = value;
       state.volumeNew = value;
     }
@@ -8982,6 +9007,10 @@ const props$9 = {
     type: [Boolean, String],
     default: false
   },
+  vslideGesture: {
+    type: [Boolean, String],
+    default: false
+  },
   enableProgressGesture: {
     type: [Boolean, String],
     default: true
@@ -9015,9 +9044,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    const {
-      t: t2
-    } = useI18n();
+    useI18n();
     initI18nVideoMsgsOnce();
     const {
       videoRef,
@@ -9188,33 +9215,25 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-cover-play-button uni-video-icon",
         "onClick": vue.withModifiers(play, ["stop"])
       }, null, 8, ["onClick"])], 8, ["onClick"]), vue.createVNode("div", {
+        "class": "uni-video-loading"
+      }, [gestureState.gestureType === "volume" ? vue.createVNode("div", {
         "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-volume": gestureState.gestureType === "volume"
-        }
-      }, [vue.createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [t2("uni.video.volume")]), vue.createVNode("svg", {
-        "class": "uni-video-toast-icon",
-        "width": "200px",
-        "height": "200px",
-        "viewBox": "0 0 1024 1024",
-        "version": "1.1",
-        "xmlns": "http://www.w3.org/2000/svg"
-      }, [vue.createVNode("path", {
-        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
-      }, null)]), vue.createVNode("div", {
-        "class": "uni-video-toast-value"
-      }, [vue.createVNode("div", {
-        "style": {
-          width: gestureState.volumeNew * 100 + "%"
+          "uni-video-toast-container": true,
+          "uni-video-toast-container-thin": gestureState.toastThin
         },
-        "class": "uni-video-toast-value-content"
-      }, [vue.createVNode("div", {
-        "class": "uni-video-toast-volume-grids"
-      }, [vue.renderList(10, () => vue.createVNode("div", {
-        "class": "uni-video-toast-volume-grids-item"
-      }, null))])], 4)])], 2), vue.createVNode("div", {
+        "style": {
+          marginTop: `5px`
+        }
+      }, [!gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume" ? vue.createVNode("text", {
+        "class": "uni-video-icon uni-video-toast-icon"
+      }, [""]) : !gestureState.toastThin && vue.createVNode("text", {
+        "class": "uni-video-icon uni-video-toast-icon"
+      }, [""]), vue.createVNode("div", {
+        "class": "uni-video-toast-draw",
+        "style": {
+          width: `${gestureState.volumeNew * 100}%`
+        }
+      }, null)], 2) : null]), vue.createVNode("div", {
         "class": {
           "uni-video-toast": true,
           "uni-video-toast-progress": progressing.value

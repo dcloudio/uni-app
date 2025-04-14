@@ -2774,7 +2774,9 @@ function initAnimation$1(path, animationType, animationDuration) {
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function isDirectPage(page) {
-  return !!__uniConfig.realEntryPagePath && getRealPath(page.$basePage.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
+  return !!__uniConfig.realEntryPagePath && // getRealPath(page.$basePage.route, true) ===
+  // getRealPath(parseUrl(__uniConfig.entryPagePath!).path, true) &&
+  getCurrentPages$1()[0] === page;
 }
 function reLaunchEntryPage() {
   var _uniConfig$entryPage;

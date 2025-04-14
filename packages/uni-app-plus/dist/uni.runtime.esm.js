@@ -1,5 +1,5 @@
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, formatLog, parseNVueDataset, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, formatLog, parseNVueDataset, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, ON_REACH_BOTTOM_DISTANCE, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
 
 /*
@@ -19518,15 +19518,293 @@ function onWebviewClose(webview) {
     });
 }
 
+let isInitEntryPage = false;
+function initEntry() {
+    if (isInitEntryPage) {
+        return;
+    }
+    isInitEntryPage = true;
+    let entryPagePath;
+    let entryPageQuery;
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+        const { path, query, referrerInfo } = parseRedirectInfo();
+        if (path) {
+            entryPagePath = path;
+            entryPageQuery = query;
+        }
+        __uniConfig.referrerInfo = referrerInfo;
+    }
+    else {
+        const argsJsonStr = plus.runtime.arguments;
+        if (!argsJsonStr) {
+            return;
+        }
+        try {
+            const args = JSON.parse(argsJsonStr);
+            entryPagePath = args.path || args.pathName;
+            entryPageQuery = args.query ? '?' + args.query : '';
+        }
+        catch (e) { }
+    }
+    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+        if (entryPageQuery) {
+            __uniConfig.entryPageQuery = entryPageQuery;
+        }
+        return;
+    }
+    const entryRoute = addLeadingSlash(entryPagePath);
+    const routeOptions = getRouteOptions(entryRoute);
+    if (!routeOptions) {
+        return;
+    }
+    if (!routeOptions.meta.isTabBar) {
+        __uniConfig.realEntryPagePath =
+            __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+    }
+    __uniConfig.entryPagePath = entryPagePath;
+    __uniConfig.entryPageQuery = entryPageQuery;
+}
+
+function initRouteOptions(path, openType) {
+    // 需要序列化一遍
+    const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
+    routeOptions.meta = initRouteMeta(routeOptions.meta);
+    if (openType !== 'preloadPage' &&
+        !__uniConfig.realEntryPagePath &&
+        (openType === 'reLaunch' || getCurrentPages().length === 0) // redirectTo
+    ) {
+        routeOptions.meta.isQuit = true;
+    }
+    else if (!routeOptions.meta.isTabBar) {
+        routeOptions.meta.isQuit = false;
+    }
+    // TODO
+    //   if (routeOptions.meta.isTabBar) {
+    //     routeOptions.meta.visible = true
+    //   }
+    return routeOptions;
+}
+
+const preloadWebviews = {};
+function removePreloadWebview(webview) {
+    const url = Object.keys(preloadWebviews).find((url) => preloadWebviews[url].id === webview.id);
+    if (url) {
+        if (process.env.NODE_ENV !== 'production') {
+            console.log(`[uni-app] removePreloadWebview(${webview.id})`);
+        }
+        delete preloadWebviews[url];
+    }
+}
+function closePreloadWebview({ url }) {
+    const webview = preloadWebviews[url];
+    if (webview) {
+        if (webview.__page__) {
+            if (!getCurrentBasePages().find((page) => page === webview.__page__)) {
+                // 未使用
+                webview.close('none');
+            }
+            else {
+                // 被使用
+                webview.__preload__ = false;
+            }
+        }
+        else {
+            // 未使用
+            webview.close('none');
+        }
+        delete preloadWebviews[url];
+    }
+    return webview;
+}
+function preloadWebview({ url, path, query, }) {
+    if (!preloadWebviews[url]) {
+        const routeOptions = initRouteOptions(path, 'preloadPage');
+        preloadWebviews[url] = createWebview({
+            path,
+            routeOptions,
+            query,
+            webviewExtras: {
+                __preload__: true,
+            },
+        });
+    }
+    return preloadWebviews[url];
+}
+
+function registerPage({ url, path, query, openType, webview, nvuePageVm, eventChannel, }) {
+    // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
+    if (webview) {
+        initEntry();
+    }
+    if (preloadWebviews[url]) {
+        webview = preloadWebviews[url];
+        const _webview = webview;
+        if (_webview.__page__) {
+            // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
+            if (getCurrentBasePages().find((page) => page === _webview.__page__)) {
+                if ((process.env.NODE_ENV !== 'production')) {
+                    console.log(formatLog('uni-app', `preloadWebview(${path},${_webview.id}) already in use`));
+                }
+                webview = undefined;
+            }
+            else {
+                if (eventChannel) {
+                    getPage$BasePage(_webview.__page__).eventChannel = eventChannel;
+                }
+                if (openType === 'launch') {
+                    // 热更 preloadPage
+                    updatePreloadPageVm(url, path, query, _webview, nvuePageVm, eventChannel);
+                }
+                else {
+                    addCurrentPage(_webview.__page__);
+                }
+                if ((process.env.NODE_ENV !== 'production')) {
+                    console.log(formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`));
+                }
+                return _webview;
+            }
+        }
+    }
+    const routeOptions = initRouteOptions(path, openType);
+    if (!webview) {
+        webview = createWebview({ path, routeOptions, query });
+    }
+    else {
+        webview = plus.webview.getWebviewById(webview.id);
+        webview.nvue = routeOptions.meta.isNVue;
+    }
+    routeOptions.meta.id = parseInt(webview.id);
+    const isTabBar = !!routeOptions.meta.isTabBar;
+    if (isTabBar) {
+        tabBarInstance.append(webview);
+    }
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog('registerPage', path, webview.id));
+    }
+    initWebview(webview, path, query, routeOptions.meta);
+    const route = path.slice(1);
+    webview.__uniapp_route = route;
+    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light'));
+    const id = parseInt(webview.id);
+    if (webview.nvue) {
+        if (nvuePageVm) {
+            // 首页或者开发时热刷
+            initNVuePage(id, nvuePageVm, pageInstance);
+        }
+        else {
+            // 正常路由跳转
+            createNVuePage(id, webview, pageInstance);
+        }
+    }
+    else {
+        createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions));
+    }
+    return webview;
+}
+function updatePreloadPageVm(url, path, query, webview, nvuePageVm, eventChannel) {
+    const routeOptions = initRouteOptions(path, 'preloadPage');
+    routeOptions.meta.id = parseInt(webview.id);
+    const pageInstance = initPageInternalInstance('preloadPage', url, query, routeOptions.meta, eventChannel, (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light'));
+    initPageVm(nvuePageVm, pageInstance);
+    webview.__page__ = nvuePageVm;
+}
+function initPageOptions({ meta }) {
+    const statusbarHeight = getStatusbarHeight();
+    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    return {
+        css: true,
+        route: meta.route,
+        version: 1,
+        locale: '',
+        platform,
+        pixelRatio,
+        windowWidth,
+        disableScroll: meta.disableScroll === true,
+        onPageScroll: false,
+        onPageReachBottom: false,
+        onReachBottomDistance: hasOwn$1(meta, 'onReachBottomDistance')
+            ? meta.onReachBottomDistance
+            : ON_REACH_BOTTOM_DISTANCE,
+        statusbarHeight,
+        windowTop: meta.navigationBar.type === 'float' ? statusbarHeight + NAVBAR_HEIGHT : 0,
+        windowBottom: tabBarInstance.indexOf(meta.route) >= 0 && tabBarInstance.cover ? tabBarInstance.height : 0,
+    };
+}
+function initNVuePage(id, nvuePageVm, pageInstance) {
+    initPageVm(nvuePageVm, pageInstance);
+    addCurrentPage(initScope(id, nvuePageVm, pageInstance));
+    if (id === 1) {
+        // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
+        if (__uniConfig.splashscreen &&
+            __uniConfig.splashscreen.autoclose &&
+            !__uniConfig.splashscreen.alwaysShowBeforeRender) {
+            plus.navigator.closeSplashscreen();
+        }
+        __uniConfig.onReady(function () {
+            navigateFinish();
+        });
+    }
+}
+function createNVuePage(pageId, webview, pageInstance) {
+    const fakeNVueVm = {
+        $: {},
+        $getAppWebview() {
+            return webview;
+        },
+        getOpenerEventChannel() {
+            if (!pageInstance.eventChannel) {
+                pageInstance.eventChannel = new EventChannel(pageId);
+            }
+            return pageInstance.eventChannel;
+        },
+        __setup(vm, curFakeNVueVm) {
+            vm.$getAppWebview = () => webview;
+            vm.getOpenerEventChannel = curFakeNVueVm.getOpenerEventChannel;
+            // 替换真实的 nvue 的 vm
+            initPageVm(vm, pageInstance);
+            if (webview.__preload__) {
+                webview.__page__ = vm;
+            }
+            const pages = getAllPages();
+            const index = pages.findIndex((p) => p === curFakeNVueVm);
+            if (index > -1) {
+                pages.splice(index, 1, vm);
+            }
+        },
+    };
+    initPageVm(fakeNVueVm, pageInstance);
+    if (webview.__preload__) {
+        webview.__page__ = fakeNVueVm;
+        webview.addEventListener('show', () => {
+            invokeHook(webview.__page__, ON_SHOW);
+        });
+        webview.addEventListener('hide', () => {
+            invokeHook(webview.__page__, ON_HIDE);
+        });
+    }
+    else {
+        addCurrentPage(fakeNVueVm);
+    }
+}
+
 /**
- * 是否处于直达页面
+ * 是否处于直达页面，仅适用于返回时判断是否应打开首页，不可挪作他用
+ * 考虑如下场景
+ * 1. 直达page2 redirectTo page3 此时 page3 也需要被认为是直达页面
+ * 2. 直达page2 navigateTo page2 此时仅第一个 page2 应被认为是直达页面，第二个 page2 不应被认为是直达页面
  * @param page
  * @returns
  */
 function isDirectPage(page) {
     return (__uniConfig.realEntryPagePath &&
-        getPage$BasePage(page).route ===
-            __uniConfig.entryPagePath);
+        // getPage$BasePage(page as ComponentPublicInstance).route ===
+        // __uniConfig.entryPagePath &&
+        getCurrentPages$1()[0] === page);
 }
 /**
  * 重新启动到首页
@@ -19990,280 +20268,6 @@ function back(delta, animationType, animationDuration) {
     backWebview(webview, () => {
         backPage(webview);
     });
-}
-
-let isInitEntryPage = false;
-function initEntry() {
-    if (isInitEntryPage) {
-        return;
-    }
-    isInitEntryPage = true;
-    let entryPagePath;
-    let entryPageQuery;
-    const weexPlus = weex.requireModule('plus');
-    if (weexPlus.getRedirectInfo) {
-        const { path, query, referrerInfo } = parseRedirectInfo();
-        if (path) {
-            entryPagePath = path;
-            entryPageQuery = query;
-        }
-        __uniConfig.referrerInfo = referrerInfo;
-    }
-    else {
-        const argsJsonStr = plus.runtime.arguments;
-        if (!argsJsonStr) {
-            return;
-        }
-        try {
-            const args = JSON.parse(argsJsonStr);
-            entryPagePath = args.path || args.pathName;
-            entryPageQuery = args.query ? '?' + args.query : '';
-        }
-        catch (e) { }
-    }
-    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
-        if (entryPageQuery) {
-            __uniConfig.entryPageQuery = entryPageQuery;
-        }
-        return;
-    }
-    const entryRoute = addLeadingSlash(entryPagePath);
-    const routeOptions = getRouteOptions(entryRoute);
-    if (!routeOptions) {
-        return;
-    }
-    if (!routeOptions.meta.isTabBar) {
-        __uniConfig.realEntryPagePath =
-            __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
-    }
-    __uniConfig.entryPagePath = entryPagePath;
-    __uniConfig.entryPageQuery = entryPageQuery;
-}
-
-function initRouteOptions(path, openType) {
-    // 需要序列化一遍
-    const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
-    routeOptions.meta = initRouteMeta(routeOptions.meta);
-    if (openType !== 'preloadPage' &&
-        !__uniConfig.realEntryPagePath &&
-        (openType === 'reLaunch' || getCurrentPages().length === 0) // redirectTo
-    ) {
-        routeOptions.meta.isQuit = true;
-    }
-    else if (!routeOptions.meta.isTabBar) {
-        routeOptions.meta.isQuit = false;
-    }
-    // TODO
-    //   if (routeOptions.meta.isTabBar) {
-    //     routeOptions.meta.visible = true
-    //   }
-    return routeOptions;
-}
-
-const preloadWebviews = {};
-function removePreloadWebview(webview) {
-    const url = Object.keys(preloadWebviews).find((url) => preloadWebviews[url].id === webview.id);
-    if (url) {
-        if (process.env.NODE_ENV !== 'production') {
-            console.log(`[uni-app] removePreloadWebview(${webview.id})`);
-        }
-        delete preloadWebviews[url];
-    }
-}
-function closePreloadWebview({ url }) {
-    const webview = preloadWebviews[url];
-    if (webview) {
-        if (webview.__page__) {
-            if (!getCurrentBasePages().find((page) => page === webview.__page__)) {
-                // 未使用
-                webview.close('none');
-            }
-            else {
-                // 被使用
-                webview.__preload__ = false;
-            }
-        }
-        else {
-            // 未使用
-            webview.close('none');
-        }
-        delete preloadWebviews[url];
-    }
-    return webview;
-}
-function preloadWebview({ url, path, query, }) {
-    if (!preloadWebviews[url]) {
-        const routeOptions = initRouteOptions(path, 'preloadPage');
-        preloadWebviews[url] = createWebview({
-            path,
-            routeOptions,
-            query,
-            webviewExtras: {
-                __preload__: true,
-            },
-        });
-    }
-    return preloadWebviews[url];
-}
-
-function registerPage({ url, path, query, openType, webview, nvuePageVm, eventChannel, }) {
-    // fast 模式，nvue 首页时，会在nvue中主动调用registerPage并传入首页webview，此时初始化一下首页（因为此时可能还未调用registerApp）
-    if (webview) {
-        initEntry();
-    }
-    if (preloadWebviews[url]) {
-        webview = preloadWebviews[url];
-        const _webview = webview;
-        if (_webview.__page__) {
-            // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
-            if (getCurrentBasePages().find((page) => page === _webview.__page__)) {
-                if ((process.env.NODE_ENV !== 'production')) {
-                    console.log(formatLog('uni-app', `preloadWebview(${path},${_webview.id}) already in use`));
-                }
-                webview = undefined;
-            }
-            else {
-                if (eventChannel) {
-                    getPage$BasePage(_webview.__page__).eventChannel = eventChannel;
-                }
-                if (openType === 'launch') {
-                    // 热更 preloadPage
-                    updatePreloadPageVm(url, path, query, _webview, nvuePageVm, eventChannel);
-                }
-                else {
-                    addCurrentPage(_webview.__page__);
-                }
-                if ((process.env.NODE_ENV !== 'production')) {
-                    console.log(formatLog('uni-app', `reuse preloadWebview(${path},${_webview.id})`));
-                }
-                return _webview;
-            }
-        }
-    }
-    const routeOptions = initRouteOptions(path, openType);
-    if (!webview) {
-        webview = createWebview({ path, routeOptions, query });
-    }
-    else {
-        webview = plus.webview.getWebviewById(webview.id);
-        webview.nvue = routeOptions.meta.isNVue;
-    }
-    routeOptions.meta.id = parseInt(webview.id);
-    const isTabBar = !!routeOptions.meta.isTabBar;
-    if (isTabBar) {
-        tabBarInstance.append(webview);
-    }
-    if ((process.env.NODE_ENV !== 'production')) {
-        console.log(formatLog('registerPage', path, webview.id));
-    }
-    initWebview(webview, path, query, routeOptions.meta);
-    const route = path.slice(1);
-    webview.__uniapp_route = route;
-    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, (__uniConfig.darkmode
-        ? plus.navigator.getUIStyle()
-        : 'light'));
-    const id = parseInt(webview.id);
-    if (webview.nvue) {
-        if (nvuePageVm) {
-            // 首页或者开发时热刷
-            initNVuePage(id, nvuePageVm, pageInstance);
-        }
-        else {
-            // 正常路由跳转
-            createNVuePage(id, webview, pageInstance);
-        }
-    }
-    else {
-        createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions));
-    }
-    return webview;
-}
-function updatePreloadPageVm(url, path, query, webview, nvuePageVm, eventChannel) {
-    const routeOptions = initRouteOptions(path, 'preloadPage');
-    routeOptions.meta.id = parseInt(webview.id);
-    const pageInstance = initPageInternalInstance('preloadPage', url, query, routeOptions.meta, eventChannel, (__uniConfig.darkmode
-        ? plus.navigator.getUIStyle()
-        : 'light'));
-    initPageVm(nvuePageVm, pageInstance);
-    webview.__page__ = nvuePageVm;
-}
-function initPageOptions({ meta }) {
-    const statusbarHeight = getStatusbarHeight();
-    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
-    return {
-        css: true,
-        route: meta.route,
-        version: 1,
-        locale: '',
-        platform,
-        pixelRatio,
-        windowWidth,
-        disableScroll: meta.disableScroll === true,
-        onPageScroll: false,
-        onPageReachBottom: false,
-        onReachBottomDistance: hasOwn$1(meta, 'onReachBottomDistance')
-            ? meta.onReachBottomDistance
-            : ON_REACH_BOTTOM_DISTANCE,
-        statusbarHeight,
-        windowTop: meta.navigationBar.type === 'float' ? statusbarHeight + NAVBAR_HEIGHT : 0,
-        windowBottom: tabBarInstance.indexOf(meta.route) >= 0 && tabBarInstance.cover ? tabBarInstance.height : 0,
-    };
-}
-function initNVuePage(id, nvuePageVm, pageInstance) {
-    initPageVm(nvuePageVm, pageInstance);
-    addCurrentPage(initScope(id, nvuePageVm, pageInstance));
-    if (id === 1) {
-        // 首页是 nvue 时，在 registerPage 时，执行路由堆栈
-        if (__uniConfig.splashscreen &&
-            __uniConfig.splashscreen.autoclose &&
-            !__uniConfig.splashscreen.alwaysShowBeforeRender) {
-            plus.navigator.closeSplashscreen();
-        }
-        __uniConfig.onReady(function () {
-            navigateFinish();
-        });
-    }
-}
-function createNVuePage(pageId, webview, pageInstance) {
-    const fakeNVueVm = {
-        $: {},
-        $getAppWebview() {
-            return webview;
-        },
-        getOpenerEventChannel() {
-            if (!pageInstance.eventChannel) {
-                pageInstance.eventChannel = new EventChannel(pageId);
-            }
-            return pageInstance.eventChannel;
-        },
-        __setup(vm, curFakeNVueVm) {
-            vm.$getAppWebview = () => webview;
-            vm.getOpenerEventChannel = curFakeNVueVm.getOpenerEventChannel;
-            // 替换真实的 nvue 的 vm
-            initPageVm(vm, pageInstance);
-            if (webview.__preload__) {
-                webview.__page__ = vm;
-            }
-            const pages = getAllPages();
-            const index = pages.findIndex((p) => p === curFakeNVueVm);
-            if (index > -1) {
-                pages.splice(index, 1, vm);
-            }
-        },
-    };
-    initPageVm(fakeNVueVm, pageInstance);
-    if (webview.__preload__) {
-        webview.__page__ = fakeNVueVm;
-        webview.addEventListener('show', () => {
-            invokeHook(webview.__page__, ON_SHOW);
-        });
-        webview.addEventListener('hide', () => {
-            invokeHook(webview.__page__, ON_HIDE);
-        });
-    }
-    else {
-        addCurrentPage(fakeNVueVm);
-    }
 }
 
 const $navigateTo =  (args, { resolve, reject }) => {
