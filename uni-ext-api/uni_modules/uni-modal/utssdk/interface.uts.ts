@@ -47,8 +47,9 @@ export type ShowModalOptions = {
    */
   content?: string | null,
   /**
-	 * 是否显示取消按钮，默认为 true
    * @defaultValue true
+   * @default true
+   * 是否显示取消按钮，默认为 true
    */
   showCancel?: boolean | null,
   /**

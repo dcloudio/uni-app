@@ -2976,30 +2976,51 @@ function isSystemDialogPageInstance(vm) {
 }
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
+function getPageElement(page) {
+  {
+    throw new Error("Not support get page element in non-browser environment");
+  }
+}
 class UniPageImpl {
   constructor({
     route,
     options,
     vm
   }) {
-    this.width = 0;
-    this.height = 0;
-    this.statusBarHeight = safeAreaInsets$1.top;
     this.getParentPage = () => null;
     this.route = route;
     this.options = options;
     this.vm = vm;
     this.$vm = vm;
   }
+  get statusBarHeight() {
+    return safeAreaInsets$1.top;
+  }
+  get width() {
+    return this.pageBody.width;
+  }
+  get height() {
+    const pageEle = getPageElement();
+    const pageHead = pageEle.querySelector("uni-page-head");
+    return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0);
+  }
   get pageBody() {
-    {
-      throw new Error("Not support pageBody in non-browser environment");
-    }
+    const pageEle = getPageElement();
+    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageWrapperInfo = getPageWrapperInfo(pageBody);
+    return {
+      top: pageWrapperInfo.top,
+      left: pageWrapperInfo.left,
+      right: pageWrapperInfo.left + pageWrapperInfo.width,
+      bottom: pageWrapperInfo.top + pageWrapperInfo.height,
+      width: pageWrapperInfo.width,
+      height: pageWrapperInfo.height
+    };
   }
   get safeAreaInsets() {
-    {
-      throw new Error("Not support safeAreaInsets in non-browser environment");
-    }
+    const pageEle = getPageElement();
+    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
     var _a;
@@ -9877,7 +9898,8 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks(options, instance, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component") {
+  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
+  mpType === "page" && instance.renderer === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {

@@ -492,7 +492,7 @@
 	
 	.uni-modal_dialog__content__topline {
 		width: 100%;
-		height: 1px;
+		height: 0.5px;
 		background-color: #E0E0E0;
 	}
 	
@@ -555,7 +555,7 @@
 	}
 
 	.uni-modal_dialog__content__bottom__splitline {
-		width: 1px;
+		width: 0.5px;
 		height: 100%;
 		background-color: #E3E3E3;
 	}

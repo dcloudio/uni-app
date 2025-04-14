@@ -8144,8 +8144,27 @@ function isSystemDialogPageInstance(vm) {
 let escBackPageNum = 0;
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
-function isDialogPageImpl(page) {
-  return page instanceof UniDialogPageImpl;
+function getPageElement(page) {
+  var _a;
+  const currentPage = getCurrentPage();
+  if (page !== currentPage) {
+    const dialogPages = currentPage.getDialogPages();
+    const dialogPage = dialogPages[dialogPages.length - 1];
+    if (dialogPage !== page) {
+      const systemDialogPages = currentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
+      const systemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+      if (systemDialogPage !== page) {
+        throw new Error("Can't get element of other page");
+      }
+    }
+  }
+  const pageEle = document.querySelector(
+    `uni-page[data-page="${(_a = page.vm) == null ? void 0 : _a.route}"]`
+  );
+  if (!pageEle) {
+    throw new Error("page not found");
+  }
+  return pageEle;
 }
 class UniPageImpl {
   constructor({
@@ -8153,31 +8172,26 @@ class UniPageImpl {
     options,
     vm
   }) {
-    this.width = 0;
-    this.height = 0;
-    this.statusBarHeight = safeAreaInsets$1.top;
     this.getParentPage = () => null;
     this.route = route;
     this.options = options;
     this.vm = vm;
     this.$vm = vm;
   }
+  get statusBarHeight() {
+    return safeAreaInsets$1.top;
+  }
+  get width() {
+    return this.pageBody.width;
+  }
+  get height() {
+    const pageEle = getPageElement(this);
+    const pageHead = pageEle.querySelector("uni-page-head");
+    return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0);
+  }
   get pageBody() {
-    var _a;
-    const currentPage = getCurrentPage();
-    let container = document;
-    if (isDialogPageImpl(this)) {
-      const dialogPage = document.querySelector(
-        `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"]`
-      );
-      if (!dialogPage) {
-        throw new Error("dialogPage not found");
-      }
-      container = dialogPage;
-    } else if (this !== currentPage) {
-      throw new Error("Can't get pageBody of other page");
-    }
-    const pageBody = container.querySelector("uni-page-wrapper");
+    const pageEle = getPageElement(this);
+    const pageBody = pageEle.querySelector("uni-page-wrapper");
     const pageWrapperInfo = getPageWrapperInfo(pageBody);
     return {
       top: pageWrapperInfo.top,
@@ -8189,21 +8203,8 @@ class UniPageImpl {
     };
   }
   get safeAreaInsets() {
-    var _a;
-    const currentPage = getCurrentPage();
-    let container = document;
-    if (isDialogPageImpl(this)) {
-      const dialogPage = document.querySelector(
-        `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"]`
-      );
-      if (!dialogPage) {
-        throw new Error("dialogPage not found");
-      }
-      container = dialogPage;
-    } else if (this !== currentPage) {
-      throw new Error("Can't get safeAreaInsets of other page");
-    }
-    const pageBody = container.querySelector("uni-page-wrapper");
+    const pageEle = getPageElement(this);
+    const pageBody = pageEle.querySelector("uni-page-wrapper");
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
@@ -8435,18 +8436,6 @@ function triggerDialogPageOnHide(instance2) {
     }
   }
   dialogPageTriggerParentHide((_b = instance2.proxy) == null ? void 0 : _b.$page);
-}
-function initPageWidthHeight(instance2) {
-  if (!instance2.proxy) {
-    return;
-  }
-  const pageEl = document.querySelector(
-    `uni-page[data-page="${instance2.proxy.$vm.route}"]`
-  );
-  if (pageEl) {
-    instance2.proxy.width = pageEl.offsetWidth;
-    instance2.proxy.height = pageEl.offsetHeight;
-  }
 }
 const closeDialogPage = (options) => {
   var _a, _b;
@@ -9477,7 +9466,6 @@ function setupPage(comp) {
       onMounted(() => {
         var _a;
         {
-          initPageWidthHeight(instance2);
           if (instance2.subTree.el) {
             instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
           }
@@ -18804,11 +18792,23 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
+    let lastScrollLeft = 0;
+    let lastScrollTop = 0;
+    onActivated(() => {
+      if (containerRef.value) {
+        containerRef.value.scrollLeft = lastScrollLeft;
+        containerRef.value.scrollTop = lastScrollTop;
+      }
+    });
     onMounted(() => {
       resetContainerSize();
       let lastScrollOffset = 0;
       containerRef.value.addEventListener("scroll", function($event) {
         const target = $event.target;
+        if (isHTMlElement(target)) {
+          lastScrollLeft = target.scrollLeft;
+          lastScrollTop = target.scrollTop;
+        }
         trigger("scroll", $event, {
           scrollLeft: target.scrollLeft,
           scrollTop: target.scrollTop,
@@ -19441,7 +19441,8 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
 }
 function initHooks(options, instance2, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component") {
+  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
+  mpType === "page" && instance2.renderer === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
@@ -29452,7 +29453,7 @@ const _sfc_main = {
     }
   }
 };
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n	\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%; \n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__text {\n		font-size: 16px;\n		font-weight: normal;\n		margin-top: 2px;\n		margin-left: 2px;\n		margin-right: 2px;\n		margin-bottom: 12px;\n		text-align: center;\n		color: #747474;\n		lines: 6;\n		width: 100%;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 6;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 1px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 1px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n	\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%; \n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__text {\n		font-size: 16px;\n		font-weight: normal;\n		margin-top: 2px;\n		margin-left: 2px;\n		margin-right: 2px;\n		margin-bottom: 12px;\n		text-align: center;\n		color: #747474;\n		lines: 6;\n		width: 100%;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 6;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_text = __syscom_0$1;
   const _component_textarea = __syscom_1;
