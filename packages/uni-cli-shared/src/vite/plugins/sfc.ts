@@ -163,7 +163,7 @@ export function uniViteSfcSrcImportPlugin(
 
       return {
         code: s.toString(),
-        map: sourceMap ? s.generateMap({ hires: true }) : { mappings: '' },
+        map: sourceMap ? s.generateMap({ hires: true }) : null,
       }
     },
   }

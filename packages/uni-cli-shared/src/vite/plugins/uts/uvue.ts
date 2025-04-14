@@ -27,7 +27,7 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
           // 否则，将现有的 lang 属性替换为 lang="uts"
           return match.replace(/lang=["']?ts["']?/, 'lang="uts"')
         }),
-        map: { mappings: '' },
+        map: null,
       }
     },
   }
@@ -56,7 +56,7 @@ export function uniUVueTypeScriptPlugin(options = {}): Plugin {
           // 否则，将现有的 lang 属性替换为 lang="uts"
           return match.replace(/lang=["']?uts["']?/, 'lang="ts"')
         }),
-        map: { mappings: '' },
+        map: null,
       }
     },
   }

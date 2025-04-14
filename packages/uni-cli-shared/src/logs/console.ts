@@ -26,10 +26,10 @@ export function rewriteConsoleExpr(
   if (s.hasChanged()) {
     return {
       code: s.toString(),
-      map: sourceMap ? s.generateMap({ hires: true }) : { mappings: '' },
+      map: sourceMap ? s.generateMap({ hires: true }) : null,
     }
   }
-  return { code, map: { mappings: '' } }
+  return { code, map: null }
 }
 
 export function restoreConsoleExpr(code: string): string {
