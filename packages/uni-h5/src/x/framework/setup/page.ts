@@ -59,7 +59,16 @@ function getPageElement(page: UniPage): HTMLElement {
   }
   const currentPage = getCurrentPage() as unknown as UniPage
   if (page !== currentPage) {
-    throw new Error("Can't get element of other page")
+    const dialogPages = currentPage.getDialogPages()
+    const dialogPage = dialogPages[dialogPages.length - 1]
+    if (dialogPage !== page) {
+      const systemDialogPages =
+        currentPage.vm.$pageLayoutInstance!.$systemDialogPages.value
+      const systemDialogPage = systemDialogPages[systemDialogPages.length - 1]
+      if (systemDialogPage !== page) {
+        throw new Error("Can't get element of other page")
+      }
+    }
   }
   const pageEle = document.querySelector(
     `uni-page[data-page="${page.vm?.route}"]`
