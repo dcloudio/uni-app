@@ -1,4 +1,4 @@
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig, TransformResult } from 'vite'
 import MagicString from 'magic-string'
 import { isVueSfcFile } from '../../../vue'
 import { withSourcemap } from '../../utils/utils'
@@ -7,7 +7,7 @@ export function replaceScriptLang(
   id: string,
   code: string,
   sourcemap: boolean
-) {
+): TransformResult | undefined {
   const magicString = new MagicString(code)
   magicString.replace(/<script([^>]*)>/gi, (match, attributes) => {
     // 如果 <script> 标签中没有 lang 属性，添加 lang="uts"
@@ -21,11 +21,7 @@ export function replaceScriptLang(
   if (magicString.hasChanged()) {
     return {
       code: magicString.toString(),
-      map: sourcemap
-        ? magicString.generateMap({
-            hires: true,
-          })
-        : null,
+      map: sourcemap ? { mappings: '' } : null,
     }
   }
 }
