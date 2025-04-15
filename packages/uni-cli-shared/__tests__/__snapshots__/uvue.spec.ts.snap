@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`uvue replaceScriptLang add lang="uts" if no lang attribute 1`] = `
+{
+  "code": "<template></template>
+  <script lang="uts">
+  export default {}
+  </script>
+  <style>
+  </style>
+  ",
+  "map": null,
+}
+`;
+
+exports[`uvue replaceScriptLang replace lang="ts" to lang="uts" 1`] = `
+{
+  "code": "<template></template>
+  <script lang="uts">
+  export default {}
+  </script>
+  ",
+  "map": null,
+}
+`;
+
+exports[`uvue replaceScriptLang with lang="uts" not change 1`] = `undefined`;
