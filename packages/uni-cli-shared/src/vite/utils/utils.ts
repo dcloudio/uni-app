@@ -6,7 +6,7 @@ import { codeFrameColumns } from '@babel/code-frame'
 import { offsetToStartAndEnd } from '../plugins/vitejs/utils'
 import { enableSourceMap } from '../../utils'
 
-export function withSourcemap(config: ResolvedConfig) {
+export function withSourcemap(config: ResolvedConfig | UserConfig) {
   if (!process.env.UNI_APP_SOURCEMAP) {
     if (config.build && hasOwn(config.build, 'sourcemap')) {
       if (!!config.build.sourcemap) {

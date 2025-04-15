@@ -7,13 +7,13 @@ import {
   buildUniExtApis,
   createEncryptCssUrlReplacer,
   emptyDir,
-  enableSourceMap,
   injectCssPlugin,
   injectCssPostPlugin,
   normalizePath,
   resolveMainPathOnce,
   tscOutDir,
   uvueOutDir,
+  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
@@ -65,11 +65,12 @@ export function createUniAppJsEnginePlugin(
       name: 'uni:app-uts',
       apply: 'build',
       uni: createUniOptions(platform),
-      config() {
+      config(config) {
+        const sourcemap = withSourcemap(config)
         return {
           base: '/', // 强制 base
           build: {
-            sourcemap: enableSourceMap(), //enableSourceMap() ? 'hidden' : false,
+            sourcemap,
             emptyOutDir: false,
             assetsInlineLimit: 0,
             target:
