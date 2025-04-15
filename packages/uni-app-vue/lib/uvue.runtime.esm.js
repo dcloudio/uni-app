@@ -8686,12 +8686,12 @@ const nodeOps = {
     if (!container) {
       return getDocument().createElement(tag);
     } else {
-      const document = container.uniPage.document;
+      const document = container.page.document;
       return document.createElement(tag);
     }
   },
   createText: (text, container, isAnchor) => {
-    const document = container.uniPage.document;
+    const document = container.page.document;
     if (isAnchor) {
       return document.createComment(text);
     }
@@ -8701,7 +8701,7 @@ const nodeOps = {
     return textNode;
   },
   createComment: (text, container) => {
-    const document = container.uniPage.document;
+    const document = container.page.document;
     return document.createComment(text);
   },
   setText: (node, text) => {
