@@ -283,56 +283,6 @@ uni-video[hidden] {
   display: none;
 }
 
-.uni-video-toast.uni-video-toast-volume {
-  width: 100px;
-  height: 100px;
-  display: block;
-}
-
-.uni-video-toast-volume .uni-video-toast-title {
-  width: 100%;
-  font-size: 12px;
-  line-height: 16px;
-  text-align: center;
-  margin-top: 10px;
-  display: block;
-}
-
-.uni-video-toast-volume .uni-video-toast-icon {
-  fill: #000000;
-  width: 50%;
-  height: 50%;
-  margin-left: 25%;
-  display: block;
-}
-
-.uni-video-toast-volume .uni-video-toast-value {
-  width: 80px;
-  height: 5px;
-  margin-top: 5px;
-  margin-left: 10px;
-}
-
-.uni-video-toast-volume .uni-video-toast-value>.uni-video-toast-value-content {
-  overflow: hidden;
-}
-
-.uni-video-toast-volume-grids {
-  width: 80px;
-  height: 5px;
-}
-
-.uni-video-toast-volume-grids-item {
-  float: left;
-  width: 7.1px;
-  height: 5px;
-  background-color: #000000;
-}
-
-.uni-video-toast-volume-grids-item:not(:first-child) {
-  margin-left: 1px;
-}
-
 .uni-video-toast.uni-video-toast-progress {
   display: block;
   background-color: rgba(0, 0, 0, .5);
