@@ -58,7 +58,9 @@ export function uniRuntimeHooksPlugin(): Plugin {
       }
       return {
         code: source,
-        map: enableSourceMap() ? new MagicString(source).generateMap() : null,
+        map: enableSourceMap()
+          ? new MagicString(source).generateMap()
+          : { mappings: '' },
       }
     },
   }
