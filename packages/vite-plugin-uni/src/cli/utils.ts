@@ -285,11 +285,16 @@ export function initEnv(
     )
   }
 
+  // 兼容旧版本 SOURCEMAP 参数
+  if (process.env.SOURCEMAP) {
+    process.env.UNI_APP_SOURCEMAP = process.env.SOURCEMAP
+  }
+
   if (
     (options as BuildOptions).sourcemap &&
-    process.env.NODE_ENV === 'production'
+    process.env.NODE_ENV !== 'development'
   ) {
-    process.env.SOURCEMAP = 'true'
+    process.env.UNI_APP_SOURCEMAP = 'true'
   }
 
   initModulePaths()

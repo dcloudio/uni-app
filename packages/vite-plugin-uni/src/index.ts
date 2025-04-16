@@ -234,7 +234,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
     )
   }
 
-  if (process.env.SOURCEMAP === 'true') {
+  if (process.env.UNI_APP_SOURCEMAP === 'true') {
     // 清空之前的 sourcemap 目录
     const sourceMapPath = resolveSourceMapPath()
     if (isFirst) {

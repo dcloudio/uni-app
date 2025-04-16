@@ -18,7 +18,9 @@ export function createBuild(
   })
   const rollupOutputOption = config.build?.rollupOptions?.output
   const sourcemap =
-    process.env.SOURCEMAP === 'true' ? 'hidden' : config.build?.sourcemap
+    process.env.UNI_APP_SOURCEMAP === 'true'
+      ? 'hidden'
+      : config.build?.sourcemap
   return {
     sourcemap,
     cssTarget,
@@ -54,7 +56,7 @@ export function createBuild(
           !isArray(rollupOutputOption) &&
           rollupOutputOption?.sourcemapExcludeSources === false
             ? false
-            : process.env.SOURCEMAP === 'true',
+            : process.env.UNI_APP_SOURCEMAP === 'true',
       },
     },
   }

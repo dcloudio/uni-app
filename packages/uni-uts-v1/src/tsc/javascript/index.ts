@@ -5,11 +5,12 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   inputDir: string
   version: string
   modules: Record<string, any>
+  sourceMap?: boolean
 }
 type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 
 export const uts2js: uts2js = (options) => {
-  extend(options, createBasicUtsOptions(options.inputDir))
+  extend(options, createBasicUtsOptions(options.inputDir, !!options.sourceMap))
   extend(options.tsconfigOverride.compilerOptions, {
     downlevelIteration: true,
   })

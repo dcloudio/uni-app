@@ -1,6 +1,7 @@
 import * as path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
+  enableSourceMap,
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
@@ -50,6 +51,7 @@ export function init() {
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
+      sourceMap: enableSourceMap(),
       modules: {
         vueCompilerDom,
         uniCliShared,
