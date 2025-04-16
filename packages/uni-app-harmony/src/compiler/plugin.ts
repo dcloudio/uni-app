@@ -345,17 +345,17 @@ function getTreeshakeModules(context: PluginContext) {
   pluginInjectApis.forEach((api) => {
     uniExtApis.add(api)
   })
-  const modules = new Set<IApiModule>()
+  const modules = new Set<string>()
   uniExtApis.forEach((api) => {
     const uniApiName = api.replace(/^uni./, '')
     const moduleInfo = ApiModules.find((item) => {
       return item.apis && item.apis.includes(uniApiName)
     })
     if (moduleInfo) {
-      modules.add(moduleInfo)
+      modules.add(moduleInfo.plugin)
     }
   })
-  return modules
+  return Array.from(modules)
 }
 
 function genAppHarmonyUniModules(
@@ -411,29 +411,18 @@ function genAppHarmonyUniModules(
       })
     })
 
+  const relatedModules = getRelatedModules(inputDir)
+  let relatedModulesAndUsedModules = relatedModules
   if (isX) {
-    const treeshakeModules = getTreeshakeModules(context)
-    treeshakeModules.forEach((moduleInfo) => {
-      if (utsPlugins.has(moduleInfo.plugin)) {
-        return
-      }
-      const harmonyPackageName = `@uni_modules/${moduleInfo.plugin.toLowerCase()}`
-      moduleInfo.apis.forEach((apiName) => {
-        importCodes.push(`import { ${apiName} } from '${harmonyPackageName}'`)
-        extApiCodes.push(`uni.${apiName} = ${apiName}`)
-      })
-      projectDeps.push({
-        moduleSpecifier: harmonyPackageName,
-        plugin: moduleInfo.plugin,
-        source: 'ohpm',
-        version: '*',
-      })
-    })
+    relatedModulesAndUsedModules = Array.from(
+      new Set([
+        ...relatedModulesAndUsedModules,
+        ...getTreeshakeModules(context),
+      ])
+    )
   }
 
-  const relatedModules = getRelatedModules(inputDir)
-
-  relatedModules.sort().forEach((module) => {
+  relatedModulesAndUsedModules.sort().forEach((module) => {
     const harmonyModuleName = `@uni_modules/${module.toLowerCase()}`
     if (utsPlugins.has(module)) {
       // 不用处理
