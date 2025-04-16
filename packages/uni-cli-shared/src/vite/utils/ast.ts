@@ -15,8 +15,10 @@ import {
   type CompoundExpressionNode,
   type DirectiveNode,
   type ElementNode,
+  ElementTypes,
   type Node,
   NodeTypes,
+  type PlainElementNode,
   type SimpleExpressionNode,
 } from '@vue/compiler-core'
 import { parse } from '@vue/compiler-dom'
@@ -97,6 +99,10 @@ export function parseVue(code: string, errors: SyntaxError[]) {
 
 export function isElementNode(node: Node): node is ElementNode {
   return node.type === NodeTypes.ELEMENT
+}
+
+export function isPlainElementNode(node: Node): node is PlainElementNode {
+  return isElementNode(node) && node.tagType === ElementTypes.ELEMENT
 }
 
 export function isAttributeNode(node: Node): node is AttributeNode {
