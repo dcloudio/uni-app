@@ -905,6 +905,21 @@ function readExtApiModulesJson() {
     json['uni-canvas'] = {}
   }
   json['uni-canvas']['components'] = ['canvas']
+  const isXHarmony =
+    process.env.UNi_APP_X === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-harmony'
+  if (isXHarmony) {
+    let modules = JSON.parse(JSON.stringify(json)) // 拷贝一份操作
+    const harmonyModules = Object.keys(
+      require('../lib/arkts/external-module-exports-x.json')
+    )
+    for (const key in modules) {
+      if (!harmonyModules.includes('@uni_modules/' + key.toLowerCase())) {
+        delete modules[key]
+      }
+    }
+    return modules
+  }
   return json
 }
 

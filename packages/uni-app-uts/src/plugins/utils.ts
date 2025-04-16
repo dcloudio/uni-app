@@ -197,6 +197,30 @@ export function normalizeManifestJson(userManifestJson: Record<string, any>) {
   }
 }
 
+export function updateHarmonyManifestModules(
+  manifest: Record<string, any>,
+  modules: string[]
+) {
+  let appHarmony = manifest['app-harmony']
+  if (!appHarmony) {
+    appHarmony = manifest['app-harmony'] = {}
+  }
+  if (!appHarmony.distribute) {
+    appHarmony.distribute = {}
+  }
+  if (!appHarmony.distribute.modules) {
+    appHarmony.distribute.modules = {}
+  }
+  if (modules) {
+    modules.forEach((name) => {
+      const value = appHarmony.distribute.modules[name]
+      appHarmony.distribute.modules[name] =
+        typeof value === 'object' && value !== null ? value : {}
+    })
+  }
+  return manifest
+}
+
 export function updateManifestModules(
   manifest: Record<string, any>,
   modules: string[]

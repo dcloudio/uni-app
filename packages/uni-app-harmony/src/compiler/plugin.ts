@@ -12,6 +12,7 @@ import {
   isNormalCompileTarget,
   parseManifestJsonOnce,
   parseUniExtApi,
+  resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputChunk, PluginContext } from 'rollup'
 import ExternalModuls from './external-modules.json'
@@ -43,13 +44,15 @@ if (isX) {
   })
 }
 
-const ApiModules = StandaloneExtApis.filter(
-  (item) => item.type === 'extapi'
-) as {
+interface IApiModule {
   type: 'extapi'
   plugin: string
   apis: string[]
-}[]
+}
+
+const ApiModules = StandaloneExtApis.filter(
+  (item) => item.type === 'extapi'
+) as IApiModule[]
 
 const commandGlobals: Record<string, string> = {
   vue: 'Vue',
@@ -321,6 +324,40 @@ function getRelatedModules(inputDir: string): string[] {
   return modules
 }
 
+function getTreeshakeModules(context: PluginContext) {
+  const ids = Array.from(context.getModuleIds())
+  const uniExtApis = new Set<string>()
+  ids.forEach((id) => {
+    const moduleInfo = context.getModuleInfo(id)
+    if (
+      moduleInfo &&
+      moduleInfo.meta &&
+      Array.isArray(moduleInfo.meta.uniExtApis)
+    ) {
+      moduleInfo.meta.uniExtApis.forEach((api) => {
+        uniExtApis.add(api)
+      })
+    }
+  })
+  const { getPluginInjectApis } = resolveUTSCompiler()
+  // uts 插件里使用的 ext api 和组件
+  const pluginInjectApis = getPluginInjectApis()
+  pluginInjectApis.forEach((api) => {
+    uniExtApis.add(api)
+  })
+  const modules = new Set<IApiModule>()
+  uniExtApis.forEach((api) => {
+    const uniApiName = api.replace(/^uni./, '')
+    const moduleInfo = ApiModules.find((item) => {
+      return item.apis && item.apis.includes(uniApiName)
+    })
+    if (moduleInfo) {
+      modules.add(moduleInfo)
+    }
+  })
+  return modules
+}
+
 function genAppHarmonyUniModules(
   context: PluginContext,
   inputDir: string,
@@ -373,6 +410,26 @@ function genAppHarmonyUniModules(
         source: 'local',
       })
     })
+
+  if (isX) {
+    const treeshakeModules = getTreeshakeModules(context)
+    treeshakeModules.forEach((moduleInfo) => {
+      if (utsPlugins.has(moduleInfo.plugin)) {
+        return
+      }
+      const harmonyPackageName = `@uni_modules/${moduleInfo.plugin.toLowerCase()}`
+      moduleInfo.apis.forEach((apiName) => {
+        importCodes.push(`import { ${apiName} } from '${harmonyPackageName}'`)
+        extApiCodes.push(`uni.${apiName} = ${apiName}`)
+      })
+      projectDeps.push({
+        moduleSpecifier: harmonyPackageName,
+        plugin: moduleInfo.plugin,
+        source: 'ohpm',
+        version: '*',
+      })
+    })
+  }
 
   const relatedModules = getRelatedModules(inputDir)
 
