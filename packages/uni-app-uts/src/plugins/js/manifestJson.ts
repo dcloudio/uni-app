@@ -16,6 +16,10 @@ import {
 
 let outputManifestJson: Record<string, any> | undefined = undefined
 
+const isXHarmony =
+  process.env.UNI_APP_X === 'true' &&
+  process.env.UNI_UTS_PLATFORM === 'app-harmony'
+
 export function getOutputManifestJson() {
   return outputManifestJson
 }
@@ -61,9 +65,6 @@ export function uniAppManifestPlugin(): Plugin {
       outputManifestJson = normalizeManifestJson(manifestJson)
 
       const manifest = outputManifestJson
-      const isXHarmony =
-        process.env.UNI_APP_X === 'true' &&
-        process.env.UNI_UTS_PLATFORM === 'app-harmony'
       if (process.env.NODE_ENV !== 'development' || isXHarmony) {
         // 生产模式，记录使用到的modules
         const ids = Array.from(this.getModuleIds())
