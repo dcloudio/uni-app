@@ -53,7 +53,7 @@ export function uniUTSExtApiReplace(): Plugin {
       })
       return {
         code,
-        map: null,
+        map: { mappings: '' },
       }
     },
   }
