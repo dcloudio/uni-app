@@ -10,6 +10,7 @@ import {
   getExtApiComponents,
   isManifest,
   normalizeManifestJson,
+  updateHarmonyManifestModules,
   updateManifestModules,
 } from '../utils'
 
@@ -60,7 +61,10 @@ export function uniAppManifestPlugin(): Plugin {
       outputManifestJson = normalizeManifestJson(manifestJson)
 
       const manifest = outputManifestJson
-      if (process.env.NODE_ENV !== 'development') {
+      const isXHarmony =
+        process.env.UNI_APP_X === 'true' &&
+        process.env.UNI_UTS_PLATFORM === 'app-harmony'
+      if (process.env.NODE_ENV !== 'development' || isXHarmony) {
         // 生产模式，记录使用到的modules
         const ids = Array.from(this.getModuleIds())
         const uniExtApis = new Set<string>()
@@ -98,7 +102,11 @@ export function uniAppManifestPlugin(): Plugin {
           )
           if (modules.length) {
             // 执行了摇树逻辑，就需要设置 modules 节点
-            updateManifestModules(manifest, modules)
+            if (isXHarmony) {
+              updateHarmonyManifestModules(manifest, modules)
+            } else {
+              updateManifestModules(manifest, modules)
+            }
           }
         }
       }

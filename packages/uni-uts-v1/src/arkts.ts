@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { UTSBundleOptions } from '@dcloudio/uts'
 import {
+  addPluginInjectApis,
   getUTSCompiler,
   normalizeUTSResult,
   resolveBundleInputFileName,
@@ -578,6 +579,11 @@ export default {
       deps.push(...result.deps)
     }
   }
+
+  if (result.inject_apis && result.inject_apis.length) {
+    addPluginInjectApis(result.inject_apis)
+  }
+
   return {
     code: requireUTSPluginCode(pluginId, !!isExtApi),
     deps,
