@@ -309,10 +309,9 @@ export default {
       })
 
       this._wxRewardedAd.onClose(res => {
-        if (res.isEnded) {
+        this._dispatchEvent(EventType.Close, res)
+        if (res.isEnded && this._hasCallback()) {
           this._callServer()
-        } else {
-          this._dispatchEvent(EventType.Close, res)
         }
       })
 
