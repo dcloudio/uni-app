@@ -571,6 +571,19 @@
       "servicePlugin": "uni-location"
     }
   },
+  "uni-makePhoneCall": {
+    "uni": {
+      "makePhoneCall": {
+        "name": "makePhoneCall",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-map-tencent": {
     "uni": {
       "createMapContext": {
