@@ -237,8 +237,6 @@ export async function compile(
   } catch (e) {}
   const proxyCodeOptions: GenProxyCodeOptions = extend(
     {
-      isX,
-      platform: utsPlatform,
       androidComponents,
       iosComponents,
       customElements,

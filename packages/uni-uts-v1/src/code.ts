@@ -102,9 +102,7 @@ interface Meta {
   }
 }
 export interface GenProxyCodeOptions {
-  isX: boolean
   is_uni_modules: boolean
-  platform: typeof process.env.UNI_UTS_PLATFORM
   id: string
   name: string
   extname: string
@@ -202,14 +200,6 @@ export async function genProxyCode(
 
   normalizeInterfaceKeepAlive(decls, options.types)
 
-  let customElementsRegisterCode = ''
-  if (options.isX && options.platform === 'app-ios') {
-    if (options.customElements && Object.keys(options.customElements).length) {
-      customElementsRegisterCode = genCustomElementsRegisterCode(
-        options.customElements
-      )
-    }
-  }
   return `
 const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
@@ -230,11 +220,9 @@ ${genComponentsCode(
   format,
   options.androidComponents || {},
   options.iosComponents || {}
-)}
+)}${genCustomElementsCode(format, options.customElements || {})}
 
 ${genModuleCode(decls, format, options.pluginRelativeDir!, options.meta!)}
-
-${customElementsRegisterCode}
 `
 }
 
@@ -309,18 +297,16 @@ function genComponentsCode(
   return codes.join('\n')
 }
 
-// @ts-expect-error 暂时没用
-function _genCustomElementsCode(
+function genCustomElementsCode(
   format: FORMATS = FORMATS.ES,
   customElements: Record<string, string>
 ) {
   const codes: string[] = []
   Object.keys(customElements).forEach((name) => {
-    const className = capitalize(camelize(name)) + 'Element'
     if (format === FORMATS.CJS) {
-      codes.push(`exports.${className} = {}`)
+      codes.push(`exports.${capitalize(camelize(name))}Element = {}`)
     } else {
-      codes.push(`export const ${className} = {}`)
+      codes.push(`export const ${capitalize(camelize(name))}Element = {}`)
     }
   })
   if (codes.length) {
@@ -329,25 +315,7 @@ function _genCustomElementsCode(
   return codes.join('\n')
 }
 
-function genCustomElementsRegisterCode(customElements: Record<string, string>) {
-  const codes: string[] = []
-  Object.keys(customElements).forEach((name) => {
-    codes.push(
-      `customElements.define('${name.replace('uni-', '')}', ${capitalize(
-        camelize(name)
-      )}Element)`
-    )
-  })
-  if (codes.length) {
-    codes.unshift('\n')
-  }
-  return codes.join('\n')
-}
-
-export function resolveRootIndex(
-  module: string,
-  options: Pick<GenProxyCodeOptions, 'is_uni_modules' | 'extname'>
-) {
+export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
   const filename = path.resolve(
     module,
     options.is_uni_modules ? 'utssdk' : '',
@@ -371,7 +339,7 @@ export function resolveRootInterface(
 export function resolvePlatformIndexFilename(
   platform: 'app-android' | 'app-ios',
   module: string,
-  options: Pick<GenProxyCodeOptions, 'is_uni_modules' | 'extname'>
+  options: GenProxyCodeOptions
 ) {
   return path.resolve(
     module,
@@ -384,7 +352,7 @@ export function resolvePlatformIndexFilename(
 export function resolvePlatformIndex(
   platform: 'app-android' | 'app-ios',
   module: string,
-  options: Pick<GenProxyCodeOptions, 'is_uni_modules' | 'extname'>
+  options: GenProxyCodeOptions
 ) {
   const filename = resolvePlatformIndexFilename(platform, module, options)
   return fs.existsSync(filename) ? filename : ''
