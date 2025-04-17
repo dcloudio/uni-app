@@ -9498,12 +9498,12 @@ var nodeOps = {
     if (!container) {
       return getDocument().createElement(tag);
     } else {
-      var _document = container.uniPage.document;
+      var _document = container.page.document;
       return _document.createElement(tag);
     }
   },
   createText: (text, container, isAnchor) => {
-    var document = container.uniPage.document;
+    var document = container.page.document;
     if (isAnchor) {
       return document.createComment(text);
     }
@@ -9513,7 +9513,7 @@ var nodeOps = {
     return textNode;
   },
   createComment: (text, container) => {
-    var document = container.uniPage.document;
+    var document = container.page.document;
     return document.createComment(text);
   },
   setText: (node, text) => {

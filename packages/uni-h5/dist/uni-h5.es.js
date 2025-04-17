@@ -18012,7 +18012,11 @@ function translateCoordinateSystem(type, coords, skip) {
       });
     });
   }
-  return Promise.reject(new Error("translate coordinate system faild"));
+  return Promise.reject(
+    new Error(
+      "translate coordinate system faild, map provider not configured or not supported"
+    )
+  );
 }
 const props$e = {
   id: {

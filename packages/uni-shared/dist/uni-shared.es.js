@@ -154,7 +154,7 @@ const UVUE_IOS_BUILT_IN_TAGS = [
 const UVUE_HARMONY_BUILT_IN_TAGS = [
     // TODO 列出完整列表
     ...BUILT_IN_TAG_NAMES,
-    'volume-panel'
+    'volume-panel',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',

@@ -19207,8 +19207,14 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup(props2, {
     slots,
-    expose
+    expose,
+    attrs: attrs2
   }) {
+    if (attrs2.slot === "refresher") {
+      return () => {
+        return createVNode("uni-list-item", null, [slots.default && slots.default()]);
+      };
+    }
     const rootRef = ref(null);
     const isVertical = inject("__listViewIsVertical");
     const visible = ref(false);
@@ -21282,7 +21288,11 @@ function translateCoordinateSystem(type, coords, skip) {
       });
     });
   }
-  return Promise.reject(new Error("translate coordinate system faild"));
+  return Promise.reject(
+    new Error(
+      "translate coordinate system faild, map provider not configured or not supported"
+    )
+  );
 }
 const props$b = {
   id: {

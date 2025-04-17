@@ -4888,7 +4888,7 @@ function warnRef(ref) {
 const queuePostRenderEffect = queuePostFlushCb;
 function mountComponent(initialVNode, options) {
   const instance = initialVNode.component = createComponentInstance(initialVNode, options.parentComponent, null);
-  instance.renderer = options.mpType === "page" ? "page" : "component";
+  instance.renderer = options.mpType ? options.mpType : "component";
   if (__VUE_OPTIONS_API__) {
     instance.ctx.$onApplyOptions = onApplyOptions;
     instance.ctx.$children = [];
@@ -5280,7 +5280,10 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks(options, instance, publicThis) {
     const mpType = options.mpType || publicThis.$mpType;
-    if (!mpType || mpType === 'component') {
+    if (!mpType ||
+        mpType === 'component' ||
+        // instance.renderer 标识页面是否作为组件渲染
+        (mpType === 'page' && instance.renderer === 'component')) {
         // 仅 App,Page 类型支持在 options 中配置 on 生命周期，组件可以使用组合式 API 定义页面生命周期
         return;
     }

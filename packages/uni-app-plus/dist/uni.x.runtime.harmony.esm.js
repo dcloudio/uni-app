@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
+import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -855,15 +855,18 @@ function isVuePageAsyncComponent(component) {
 }
 var pagesMap = /* @__PURE__ */ new Map();
 function definePage(pagePath, asyncComponent) {
-  pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+  pagesMap.set(pagePath, once(createPageFactory(asyncComponent)));
 }
-function createFactory(component) {
+function createPageFactory(component) {
   return () => {
     if (isVuePageAsyncComponent(component)) {
-      return component().then((component2) => setupPage(component2));
+      return component().then((component2) => setupPage(clonedPageComponent(component2)));
     }
-    return setupPage(component);
+    return setupPage(clonedPageComponent(component));
   };
+}
+function clonedPageComponent(component) {
+  return extend({}, component);
 }
 function initRouteOptions(path, openType) {
   var routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
@@ -2042,12 +2045,12 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   var pageNode = nativePage.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
-  var mountPage = (component2) => app.mountPage(component2, {
+  var mountPage = (component2) => app.mountPage(component2, extend({
     __pageId,
     __pagePath,
     __pageQuery,
     __pageInstance
-  }, pageNode);
+  }, __pageQuery), pageNode);
   if (isPromise(component)) {
     return component.then((component2) => mountPage(component2));
   }
@@ -2774,7 +2777,9 @@ function initAnimation$1(path, animationType, animationDuration) {
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function isDirectPage(page) {
-  return !!__uniConfig.realEntryPagePath && getRealPath(page.$basePage.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
+  return !!__uniConfig.realEntryPagePath && // getRealPath(page.$basePage.route, true) ===
+  // getRealPath(parseUrl(__uniConfig.entryPagePath!).path, true) &&
+  getCurrentPages$1()[0] === page;
 }
 function reLaunchEntryPage() {
   var _uniConfig$entryPage;
@@ -3566,7 +3571,8 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
 var env = {
   USER_DATA_PATH: "unifile://usr/",
   CACHE_PATH: "unifile://cache/",
-  SANDBOX_PATH: "unifile://sandbox/"
+  SANDBOX_PATH: "unifile://sandbox/",
+  TEMP_PATH: "unifile://temp/"
 };
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";
@@ -4730,11 +4736,6 @@ var styles = {
     height: "16px"
   }
 };
-var createHook = (lifecycle) => function(hook) {
-  var target = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : getCurrentInstance();
-  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-};
-var onUnload = /* @__PURE__ */ createHook(ON_UNLOAD);
 const checkbox = /* @__PURE__ */ defineBuiltInComponent({
   name: CHECKBOX_NAME,
   rootElement: {
@@ -4836,7 +4837,7 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
         };
       });
     });
-    onUnload(() => {
+    onBeforeUnmount(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
       $dispatch(ctx, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
         setCheckboxChecked,
@@ -8148,7 +8149,7 @@ const _style_0$4 = {
   "uni-modal_dialog__content__topline": {
     "": {
       "width": "100%",
-      "height": 1,
+      "height": 0.5,
       "backgroundColor": "#E0E0E0"
     },
     ".uni-modal_dark__mode": {
@@ -8217,7 +8218,7 @@ const _style_0$4 = {
   },
   "uni-modal_dialog__content__bottom__splitline": {
     "": {
-      "width": 1,
+      "width": 0.5,
       "height": "100%",
       "backgroundColor": "#E3E3E3"
     },

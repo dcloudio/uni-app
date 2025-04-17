@@ -385,6 +385,37 @@ function getRelatedModules(inputDir) {
     }
     return modules;
 }
+function getTreeshakeModules(context) {
+    const ids = Array.from(context.getModuleIds());
+    const uniExtApis = new Set();
+    ids.forEach((id) => {
+        const moduleInfo = context.getModuleInfo(id);
+        if (moduleInfo &&
+            moduleInfo.meta &&
+            Array.isArray(moduleInfo.meta.uniExtApis)) {
+            moduleInfo.meta.uniExtApis.forEach((api) => {
+                uniExtApis.add(api);
+            });
+        }
+    });
+    const { getPluginInjectApis } = uniCliShared.resolveUTSCompiler();
+    // uts 插件里使用的 ext api 和组件
+    const pluginInjectApis = getPluginInjectApis();
+    pluginInjectApis.forEach((api) => {
+        uniExtApis.add(api);
+    });
+    const modules = new Set();
+    uniExtApis.forEach((api) => {
+        const uniApiName = api.replace(/^uni./, '');
+        const moduleInfo = ApiModules.find((item) => {
+            return item.apis && item.apis.includes(uniApiName);
+        });
+        if (moduleInfo) {
+            modules.add(moduleInfo.plugin);
+        }
+    });
+    return Array.from(modules);
+}
 function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
     const uniModulesDir = path__default.default.resolve(inputDir, 'uni_modules');
     const importCodes = [];
@@ -416,7 +447,14 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
         });
     });
     const relatedModules = getRelatedModules(inputDir);
-    relatedModules.sort().forEach((module) => {
+    let relatedModulesAndUsedModules = relatedModules;
+    if (isX) {
+        relatedModulesAndUsedModules = Array.from(new Set([
+            ...relatedModulesAndUsedModules,
+            ...getTreeshakeModules(context),
+        ]));
+    }
+    relatedModulesAndUsedModules.sort().forEach((module) => {
         const harmonyModuleName = `@uni_modules/${module.toLowerCase()}`;
         if (utsPlugins.has(module)) ;
         else {

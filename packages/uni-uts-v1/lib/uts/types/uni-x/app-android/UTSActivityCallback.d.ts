@@ -1,7 +1,29 @@
+import Activity from 'android.app.Activity'
 /**
  * 公共返回参数
  */
 declare class UniActivityParams {
+  /**
+     页面路由地址
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-current-pages.html#getcurrentpages
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5.0",
+               "uniVer": "x",
+               "unixVer": "4.62",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "4.62"
+            },
+            "ios": {
+               "osVer": "x",
+               "uniVer": "x",
+               "unixVer": "x"
+            }
+        }
+     }
+   */
+  activity : Activity;
   /**
      页面路由地址
      @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-current-pages.html#getcurrentpages

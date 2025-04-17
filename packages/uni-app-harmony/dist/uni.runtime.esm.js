@@ -1,4 +1,4 @@
-import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, debounce, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_BACK_PRESS, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
+import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, debounce, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_BACK_PRESS, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
 export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared';
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 export { extend, hasOwn, isArray, isFunction, isPlainObject, isString } from '@vue/shared';
@@ -11898,164 +11898,6 @@ function createPreloadWebview() {
     return preloadWebview;
 }
 
-/**
- * 是否处于直达页面
- * @param page
- * @returns
- */
-function isDirectPage(page) {
-    return (__uniConfig.realEntryPagePath &&
-        getPage$BasePage(page).route ===
-            __uniConfig.entryPagePath);
-}
-/**
- * 重新启动到首页
- */
-function reLaunchEntryPage() {
-    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
-    delete __uniConfig.realEntryPagePath;
-    uni.reLaunch({
-        url: addLeadingSlash(__uniConfig.entryPagePath),
-    });
-}
-
-function onWebviewResize(webview) {
-    const { emit } = UniServiceJSBridge;
-    const onResize = function ({ width, height, }) {
-        const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
-        const res = {
-            deviceOrientation: landscape ? 'landscape' : 'portrait',
-            size: {
-                windowWidth: Math.ceil(width),
-                windowHeight: Math.ceil(height),
-            },
-        };
-        emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
-    };
-    webview.addEventListener('resize', debounce(onResize, 50, { setTimeout, clearTimeout }));
-}
-
-function onWebviewReady(pageId, callback) {
-    UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
-}
-
-function closeWebview$1(webview, animationType, animationDuration) {
-    webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
-}
-function showWebview(webview, animationType, animationDuration, showCallback, delay) {
-    if (typeof delay === 'undefined') {
-        delay = webview.nvue ? 0 : 100;
-    }
-    if (('production' !== 'production')) {
-        console.log(formatLog('showWebview', 'delay', delay));
-    }
-    const execShowCallback = function () {
-        if (execShowCallback._called) {
-            if (('production' !== 'production')) {
-                console.log(formatLog('execShowCallback', 'prevent'));
-            }
-            return;
-        }
-        execShowCallback._called = true;
-        showCallback && showCallback();
-        navigateFinish();
-    };
-    execShowCallback._called = false;
-    setTimeout(() => {
-        const timer = setTimeout(() => {
-            if (('production' !== 'production')) {
-                console.log(formatLog('showWebview', 'callback', 'timer'));
-            }
-            execShowCallback();
-        }, animationDuration + 150);
-        webview.show(animationType, animationDuration, () => {
-            if (('production' !== 'production')) {
-                console.log(formatLog('showWebview', 'callback'));
-            }
-            if (!execShowCallback._called) {
-                clearTimeout(timer);
-            }
-            execShowCallback();
-        });
-    }, delay);
-}
-
-let pendingNavigator = false;
-function getPendingNavigator() {
-    return pendingNavigator;
-}
-function setPendingNavigator(path, callback, msg) {
-    pendingNavigator = {
-        path,
-        nvue: getRouteMeta(path).isNVue,
-        callback,
-    };
-    if (('production' !== 'production')) {
-        console.log(formatLog('setPendingNavigator', path, msg));
-    }
-}
-function closePage(page, animationType, animationDuration) {
-    removePage(page);
-    closeWebview$1(page.$getAppWebview(), animationType, animationDuration);
-}
-function pendingNavigate() {
-    if (!pendingNavigator) {
-        return;
-    }
-    const { callback } = pendingNavigator;
-    if (('production' !== 'production')) {
-        console.log(formatLog('pendingNavigate', pendingNavigator.path));
-    }
-    pendingNavigator = false;
-    return callback();
-}
-function navigateFinish() {
-    if (__uniConfig.renderer === 'native') {
-        if (!pendingNavigator) {
-            return;
-        }
-        if (pendingNavigator.nvue) {
-            return pendingNavigate();
-        }
-        return;
-    }
-    // 创建预加载
-    const preloadWebview = createPreloadWebview();
-    if (('production' !== 'production')) {
-        console.log(formatLog('navigateFinish', 'preloadWebview', preloadWebview.id));
-    }
-    if (!pendingNavigator) {
-        return;
-    }
-    if (pendingNavigator.nvue) {
-        return pendingNavigate();
-    }
-    preloadWebview.loaded
-        ? pendingNavigator.callback()
-        : onWebviewReady(preloadWebview.id, pendingNavigate);
-}
-
-function navigate(path, callback, isAppLaunch) {
-    const pendingNavigator = getPendingNavigator();
-    if (!isAppLaunch && pendingNavigator) {
-        return console.error(`Waiting to navigate to: ${pendingNavigator.path}, do not operate continuously: ${path}.`);
-    }
-    // 未创建 preloadWebview 或 preloadWebview 已被使用
-    const preloadWebview = getPreloadWebview();
-    const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
-    // 已创建未 loaded
-    const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
-    if (waitPreloadWebview || waitPreloadWebviewReady) {
-        setPendingNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
-    }
-    else {
-        callback();
-    }
-    if (waitPreloadWebviewReady) {
-        onWebviewReady(preloadWebview.id, pendingNavigate);
-    }
-}
-
 class UniPageNode extends UniNode {
     constructor(pageId, options, setup = false) {
         super(NODE_TYPE_PAGE, '#page', null);
@@ -12402,7 +12244,7 @@ function isVuePageAsyncComponent(component) {
 }
 const pagesMap = new Map();
 function definePage(pagePath, asyncComponent) {
-    pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+    pagesMap.set(pagePath, once(createPageFactory(asyncComponent)));
 }
 function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
     const pageNode = createPageNode(__pageId, pageOptions, true);
@@ -12419,13 +12261,65 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
     }
     return mountPage(component);
 }
-function createFactory(component) {
+function createPageFactory(component) {
     return () => {
         if (isVuePageAsyncComponent(component)) {
-            return component().then((component) => setupPage(component));
+            return component().then((component) => setupPage(clonedPageComponent(component)));
         }
-        return setupPage(component);
+        return setupPage(clonedPageComponent(component));
     };
+}
+function clonedPageComponent(component) {
+    // 页面可能作为组件渲染，需要clone一份定义出来，不然会互相干扰
+    return extend({}, component);
+}
+
+let isInitEntryPage = false;
+function initEntry() {
+    if (isInitEntryPage) {
+        return;
+    }
+    isInitEntryPage = true;
+    let entryPagePath;
+    let entryPageQuery;
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+        const { path, query, referrerInfo } = parseRedirectInfo();
+        if (path) {
+            entryPagePath = path;
+            entryPageQuery = query;
+        }
+        __uniConfig.referrerInfo = referrerInfo;
+    }
+    else {
+        const argsJsonStr = plus.runtime.arguments;
+        if (!argsJsonStr) {
+            return;
+        }
+        try {
+            const args = JSON.parse(argsJsonStr);
+            entryPagePath = args.path || args.pathName;
+            entryPageQuery = args.query ? '?' + args.query : '';
+        }
+        catch (e) { }
+    }
+    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+        if (entryPageQuery) {
+            __uniConfig.entryPageQuery = entryPageQuery;
+        }
+        return;
+    }
+    const entryRoute = addLeadingSlash(entryPagePath);
+    const routeOptions = getRouteOptions(entryRoute);
+    if (!routeOptions) {
+        return;
+    }
+    if (!routeOptions.meta.isTabBar) {
+        __uniConfig.realEntryPagePath =
+            __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+    }
+    __uniConfig.entryPagePath = entryPagePath;
+    __uniConfig.entryPageQuery = entryPageQuery;
 }
 
 function initRouteOptions(path, openType) {
@@ -12446,6 +12340,168 @@ function initRouteOptions(path, openType) {
     //     routeOptions.meta.visible = true
     //   }
     return routeOptions;
+}
+
+/**
+ * 是否处于直达页面，仅适用于返回时判断是否应打开首页，不可挪作他用
+ * 考虑如下场景
+ * 1. 直达page2 redirectTo page3 此时 page3 也需要被认为是直达页面
+ * 2. 直达page2 navigateTo page2 此时仅第一个 page2 应被认为是直达页面，第二个 page2 不应被认为是直达页面
+ * @param page
+ * @returns
+ */
+function isDirectPage(page) {
+    return (__uniConfig.realEntryPagePath &&
+        // getPage$BasePage(page as ComponentPublicInstance).route ===
+        // __uniConfig.entryPagePath &&
+        getCurrentPages$1()[0] === page);
+}
+/**
+ * 重新启动到首页
+ */
+function reLaunchEntryPage() {
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+    delete __uniConfig.realEntryPagePath;
+    uni.reLaunch({
+        url: addLeadingSlash(__uniConfig.entryPagePath),
+    });
+}
+
+function onWebviewResize(webview) {
+    const { emit } = UniServiceJSBridge;
+    const onResize = function ({ width, height, }) {
+        const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
+        const res = {
+            deviceOrientation: landscape ? 'landscape' : 'portrait',
+            size: {
+                windowWidth: Math.ceil(width),
+                windowHeight: Math.ceil(height),
+            },
+        };
+        emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
+    };
+    webview.addEventListener('resize', debounce(onResize, 50, { setTimeout, clearTimeout }));
+}
+
+function onWebviewReady(pageId, callback) {
+    UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
+}
+
+function closeWebview$1(webview, animationType, animationDuration) {
+    webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
+}
+function showWebview(webview, animationType, animationDuration, showCallback, delay) {
+    if (typeof delay === 'undefined') {
+        delay = webview.nvue ? 0 : 100;
+    }
+    if (('production' !== 'production')) {
+        console.log(formatLog('showWebview', 'delay', delay));
+    }
+    const execShowCallback = function () {
+        if (execShowCallback._called) {
+            if (('production' !== 'production')) {
+                console.log(formatLog('execShowCallback', 'prevent'));
+            }
+            return;
+        }
+        execShowCallback._called = true;
+        showCallback && showCallback();
+        navigateFinish();
+    };
+    execShowCallback._called = false;
+    setTimeout(() => {
+        const timer = setTimeout(() => {
+            if (('production' !== 'production')) {
+                console.log(formatLog('showWebview', 'callback', 'timer'));
+            }
+            execShowCallback();
+        }, animationDuration + 150);
+        webview.show(animationType, animationDuration, () => {
+            if (('production' !== 'production')) {
+                console.log(formatLog('showWebview', 'callback'));
+            }
+            if (!execShowCallback._called) {
+                clearTimeout(timer);
+            }
+            execShowCallback();
+        });
+    }, delay);
+}
+
+let pendingNavigator = false;
+function getPendingNavigator() {
+    return pendingNavigator;
+}
+function setPendingNavigator(path, callback, msg) {
+    pendingNavigator = {
+        path,
+        nvue: getRouteMeta(path).isNVue,
+        callback,
+    };
+    if (('production' !== 'production')) {
+        console.log(formatLog('setPendingNavigator', path, msg));
+    }
+}
+function closePage(page, animationType, animationDuration) {
+    removePage(page);
+    closeWebview$1(page.$getAppWebview(), animationType, animationDuration);
+}
+function pendingNavigate() {
+    if (!pendingNavigator) {
+        return;
+    }
+    const { callback } = pendingNavigator;
+    if (('production' !== 'production')) {
+        console.log(formatLog('pendingNavigate', pendingNavigator.path));
+    }
+    pendingNavigator = false;
+    return callback();
+}
+function navigateFinish() {
+    if (__uniConfig.renderer === 'native') {
+        if (!pendingNavigator) {
+            return;
+        }
+        if (pendingNavigator.nvue) {
+            return pendingNavigate();
+        }
+        return;
+    }
+    // 创建预加载
+    const preloadWebview = createPreloadWebview();
+    if (('production' !== 'production')) {
+        console.log(formatLog('navigateFinish', 'preloadWebview', preloadWebview.id));
+    }
+    if (!pendingNavigator) {
+        return;
+    }
+    if (pendingNavigator.nvue) {
+        return pendingNavigate();
+    }
+    preloadWebview.loaded
+        ? pendingNavigator.callback()
+        : onWebviewReady(preloadWebview.id, pendingNavigate);
+}
+
+function navigate(path, callback, isAppLaunch) {
+    const pendingNavigator = getPendingNavigator();
+    if (!isAppLaunch && pendingNavigator) {
+        return console.error(`Waiting to navigate to: ${pendingNavigator.path}, do not operate continuously: ${path}.`);
+    }
+    // 未创建 preloadWebview 或 preloadWebview 已被使用
+    const preloadWebview = getPreloadWebview();
+    const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
+    // 已创建未 loaded
+    const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
+    if (waitPreloadWebview || waitPreloadWebviewReady) {
+        setPendingNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
+    }
+    else {
+        callback();
+    }
+    if (waitPreloadWebviewReady) {
+        onWebviewReady(preloadWebview.id, pendingNavigate);
+    }
 }
 
 function initWebviewStyle(webview, path, query, routeMeta) {
@@ -12571,54 +12627,6 @@ function initPageOptions({ meta }) {
             ? __uniConfig.nvue['flex-direction']
             : undefined,
     };
-}
-
-let isInitEntryPage = false;
-function initEntry() {
-    if (isInitEntryPage) {
-        return;
-    }
-    isInitEntryPage = true;
-    let entryPagePath;
-    let entryPageQuery;
-    const weexPlus = weex.requireModule('plus');
-    if (weexPlus.getRedirectInfo) {
-        const { path, query, referrerInfo } = parseRedirectInfo();
-        if (path) {
-            entryPagePath = path;
-            entryPageQuery = query;
-        }
-        __uniConfig.referrerInfo = referrerInfo;
-    }
-    else {
-        const argsJsonStr = plus.runtime.arguments;
-        if (!argsJsonStr) {
-            return;
-        }
-        try {
-            const args = JSON.parse(argsJsonStr);
-            entryPagePath = args.path || args.pathName;
-            entryPageQuery = args.query ? '?' + args.query : '';
-        }
-        catch (e) { }
-    }
-    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
-        if (entryPageQuery) {
-            __uniConfig.entryPageQuery = entryPageQuery;
-        }
-        return;
-    }
-    const entryRoute = addLeadingSlash(entryPagePath);
-    const routeOptions = getRouteOptions(entryRoute);
-    if (!routeOptions) {
-        return;
-    }
-    if (!routeOptions.meta.isTabBar) {
-        __uniConfig.realEntryPagePath =
-            __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
-    }
-    __uniConfig.entryPagePath = entryPagePath;
-    __uniConfig.entryPageQuery = entryPageQuery;
 }
 
 function initAnimation(path, animationType, animationDuration) {

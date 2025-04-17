@@ -9753,8 +9753,14 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
   props: {},
   setup(props2, {
     slots,
-    expose
+    expose,
+    attrs: attrs2
   }) {
+    if (attrs2.slot === "refresher") {
+      return () => {
+        return vue.createVNode("uni-list-item", null, [slots.default && slots.default()]);
+      };
+    }
     const rootRef = vue.ref(null);
     const isVertical = vue.inject("__listViewIsVertical");
     const visible = vue.ref(false);
