@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`uni-stacktracey parse arkts stacktrace 1`] = `
+"at uni_modules/native-button/utssdk/app-harmony/index.uts:91:47
+
+Argument of type 'UniNativeViewElement | null' is not assignable to parameter of type 'UniNativeViewElement'.
+Type 'null' is not assignable to type 'UniNativeViewElement'."
+`;
+
+exports[`uni-stacktracey parse arkts stacktrace 2`] = `
+"at uni_modules/native-button/utssdk/app-harmony/builder.ets:8:9
+
+Cannot find name 'param'. Did you mean 'params'?"
+`;
+
+exports[`uni-stacktracey parse arkts stacktrace 3`] = `
+"at D:/demo-projects/demo-app-x/unpackage/debug/app-harmony-fde54b25/oh_modules/.ohpm/@dcloudio+uni-app-x-runtime@8kwvevyo0ovlx9ebtjtkdkzydpkx+j5qpbuuwz5vjge=/oh_modules/@dcloudio/uni-app-x-runtime/src/main/ets/runtime/dom/NamedNodeMap.ets:16:45
+"
+`;
+
+exports[`uni-stacktracey parse kotlin stacktrace 1`] = `
+"Error:
+at uni_modules/test-uts/app-android/index.uts:82:52
+error: unresolved reference: UTSJSONObject
+open suspend fun testClassAsync(opts: AsyncOptions): Deferred<UTSJSONObject> = CoroutineScope(Dispatchers.Default).async {
+^
+"
+`;
+
+exports[`uni-stacktracey parse swift stacktrace 1`] = `
+"at uni_modules/test-uts1/utssdk/app-ios/index.uts:2:10
+error: cannot convert return expression of type 'Int' to return type 'String'
+at uni_modules/test-uts1/utssdk/app-ios/index.uts:5:10
+error: cannot convert return expression of type 'Int' to return type 'String'
+"
+`;
+
+exports[`uni-stacktracey parse web stacktrace 1`] = `
+"Error: Sentry Error
+at   src/pages/index/index.vue:44:0
+at   src/pages/index/index.vue?be58:12:17
+at   node_modules/@sentry/browser/esm/helpers.js:74:22
+at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:1864:25
+at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:2189:13
+at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:1864:25
+at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:2185:8
+at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:7076:24"
+`;

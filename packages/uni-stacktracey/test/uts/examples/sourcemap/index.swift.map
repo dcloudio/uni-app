@@ -1,0 +1,1 @@
+{"version":3,"sources":["/Users/fxy/DCloud/test-uts/uni_modules/test-uts1/utssdk/app-ios/index.uts"],"sourcesContent":["export function test(): string {\n  return 1;\n}\nexport function test1(): string {\n  return 1;\n}\n"],"names":[],"mappings":";AAAO,KAAS,UAAQ,MAAM,CAAC;IAC7B,OAAO,CAAC;AACV;AACO,KAAS,WAAS,MAAM,CAAC;IAC9B,OAAO,CAAC;AACV;;;;mCALwB,MAAM;eAAd;;oCAGS,MAAM;eAAf"}
