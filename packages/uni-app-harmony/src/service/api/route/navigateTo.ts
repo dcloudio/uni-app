@@ -67,7 +67,6 @@ function _navigateTo({
 }: NavigateToOptions): Promise<void | { eventChannel: EventChannel }> {
   // 当前页面触发 onHide
   invokeHook(ON_HIDE)
-  invokeHook(ON_HIDE)
   const eventChannel = new EventChannel(getWebviewId() + 1, events)
   return new Promise((resolve) => {
     showWebview(
