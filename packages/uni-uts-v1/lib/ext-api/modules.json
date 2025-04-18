@@ -577,7 +577,7 @@
         "name": "makePhoneCall",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true,
           "arkts": true
         }
