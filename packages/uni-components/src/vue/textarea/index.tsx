@@ -199,7 +199,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           <textarea
             key="textarea"
             ref={fieldRef}
-            value={state.value}
+            v-model={state.value}
             disabled={!!props.disabled}
             maxlength={state.maxlength}
             enterkeyhint={props.confirmType}
