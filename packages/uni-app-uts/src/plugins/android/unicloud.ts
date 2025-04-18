@@ -52,8 +52,12 @@ export class UniCloudConfig extends io.dcloud.unicloud.InternalUniCloudConfig {
     override debuggerInfo ?: string = ${JSON.stringify(
       process.env.UNICLOUD_DEBUG || null
     )}
-    override secureNetworkEnable : boolean = false
-    override secureNetworkConfig ?: string = ""
+    override secureNetworkEnable : boolean = ${JSON.stringify(
+      process.env.UNI_SECURE_NETWORK_ENABLE || false
+    )}
+    override secureNetworkConfig ?: string = ${JSON.stringify(
+      process.env.UNI_SECURE_NETWORK_CONFIG || null
+    )}
     constructor() { super() }
 }
 `
