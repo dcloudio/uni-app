@@ -28,6 +28,7 @@ export function uniResolveIdPlugin(
   const resolveCache: Record<string, string> = {}
   if (process.env.UNI_APP_X === 'true') {
     BUILT_IN_MODULES['@dcloudio/uni-app'] = 'dist-x/uni-app.es.js'
+    BUILT_IN_MODULES['@dcloudio/uni-cloud'] = 'dist/uni-cloud-x.es.js'
   }
   return {
     name: 'uni:resolve-id',
