@@ -11,7 +11,7 @@
     />
     <!-- #ifdef MP-WEIXIN -->
     <ad-custom v-if="userwx" :unit-id="userUnitId" class="uni-ad-custom" :class="[customFullscreen]"></ad-custom>
-    <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" @error="_onwxchannelerror"></uniad-plugin-wx>
+    <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" @load="_onmpload" @error="_onwxchannelerror"></uniad-plugin-wx>
     <!-- #endif -->
   </view>
 </template>
