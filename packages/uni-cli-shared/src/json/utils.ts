@@ -12,6 +12,7 @@ import {
 import { normalizePath } from '../utils'
 
 import { offsetToLineColumn } from '../vite/plugins/vitejs/utils'
+import { M } from '../messages'
 
 interface CheckPagesJsonError extends CompilerError {
   offsetStart: number
@@ -67,7 +68,7 @@ export function checkPagesJson(jsonStr: string, inputDir: string) {
       throw {
         name: 'CompilerError',
         code: 'CompilerError',
-        message: `The page path "${pagePath}" does not exist`,
+        message: M['pages.json.page.notfound'].replace('{pagePath}', pagePath),
         loc: {
           start: { line, column },
         },

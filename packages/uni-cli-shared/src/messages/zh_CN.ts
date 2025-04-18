@@ -59,4 +59,6 @@ export default {
     '本次代码变更，编译结果未发生变化，跳过同步手机端程序文件。',
   'uni_modules.import':
     '插件[{0}]仅支持 @/uni_modules/{1} 方式引入，不支持直接导入内部文件 {2}。',
+  'pages.json.page.notfound':
+    '页面"{pagePath}"不存在，请确保填写的页面路径不包含文件后缀，且必须与真实的文件路径大小写保持一致。',
 } as const
