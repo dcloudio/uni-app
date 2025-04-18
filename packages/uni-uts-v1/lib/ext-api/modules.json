@@ -128,6 +128,28 @@
       }
     }
   },
+  "uni-clipboard": {
+    "uni": {
+      "getClipboardData": {
+        "name": "getClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "setClipboardData": {
+        "name": "setClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-crash": {
     "uni": {
       "__onAppCrash": {
@@ -523,15 +545,6 @@
       },
       "offKeyboardHeightChange": {
         "name": "offKeyboardHeightChange",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": false
-        }
-      },
-      "getSelectedTextRange": {
-        "name": "getSelectedTextRange",
         "app": {
           "js": false,
           "kotlin": true,
