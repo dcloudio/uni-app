@@ -498,6 +498,8 @@ export declare const ON_INIT = "onInit";
 
 export declare const ON_KEYBOARD_HEIGHT_CHANGE = "onKeyboardHeightChange";
 
+export declare const ON_LAST_PAGE_BACK_PRESS = "onLastPageBackPress";
+
 export declare const ON_LAUNCH = "onLaunch";
 
 export declare const ON_LOAD = "onLoad";

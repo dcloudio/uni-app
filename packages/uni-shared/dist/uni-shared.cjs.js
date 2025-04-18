@@ -369,6 +369,7 @@ const OFF_HOST_THEME_CHANGE = 'offHostThemeChange';
 const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+const ON_LAST_PAGE_BACK_PRESS = 'onLastPageBackPress';
 const ON_EXIT = 'onExit';
 //Page
 const ON_LOAD = 'onLoad';
@@ -1800,6 +1801,7 @@ exports.ON_HIDE = ON_HIDE;
 exports.ON_HOST_THEME_CHANGE = ON_HOST_THEME_CHANGE;
 exports.ON_INIT = ON_INIT;
 exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
+exports.ON_LAST_PAGE_BACK_PRESS = ON_LAST_PAGE_BACK_PRESS;
 exports.ON_LAUNCH = ON_LAUNCH;
 exports.ON_LOAD = ON_LOAD;
 exports.ON_NAVIGATION_BAR_BUTTON_TAP = ON_NAVIGATION_BAR_BUTTON_TAP;
