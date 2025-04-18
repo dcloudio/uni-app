@@ -7,7 +7,11 @@ import {
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
-import { ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
+import {
+  ON_BACK_PRESS,
+  ON_LAST_PAGE_BACK_PRESS,
+  ON_SHOW,
+} from '@dcloudio/uni-shared'
 import { ANI_CLOSE, ANI_DURATION } from '../../../service/constants'
 import {
   getCurrentBasePages,
@@ -60,7 +64,10 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       console.warn(error)
     }
     if (getPage$BasePage(page).meta.isQuit) {
-      // TODO quit()
+      invokeHook(
+        getApp().vm as ComponentPublicInstance,
+        ON_LAST_PAGE_BACK_PRESS
+      )
     }
     // TODO isDirectPage
     else {
