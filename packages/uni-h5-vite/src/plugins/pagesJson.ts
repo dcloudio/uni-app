@@ -1,4 +1,5 @@
 import type { Plugin, ResolvedConfig } from 'vite'
+import path from 'path'
 import {
   API_DEPS_CSS,
   BASE_COMPONENTS_STYLE_PATH,
@@ -29,16 +30,19 @@ export function uniPagesJsonPlugin(): Plugin {
           const ssr = isSSR(opt)
           if (process.env.UNI_APP_X === 'true') {
             // 调整换行符，确保 parseTree 的loc正确
-            code = code.replace(/\r\n/g, '\n')
+            const jsonCode = code.replace(/\r\n/g, '\n')
             try {
-              checkPagesJson(preUVueJson(code, id), process.env.UNI_INPUT_DIR)
+              checkPagesJson(
+                preUVueJson(jsonCode, 'pages.json'),
+                process.env.UNI_INPUT_DIR
+              )
             } catch (err: any) {
               if (err.loc) {
                 const error = createRollupError(
-                  'uni:app-pages',
-                  'pages.json',
+                  'uni:h5-pages-json',
+                  path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
                   err,
-                  code
+                  jsonCode
                 )
                 this.error(error)
               } else {

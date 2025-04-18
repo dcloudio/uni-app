@@ -3,12 +3,15 @@ import fs from 'fs-extra'
 import {
   APP_CONFIG,
   PAGES_JSON_UTS,
+  checkPagesJson,
+  createRollupError,
   normalizeAppPagesJson,
   normalizePath,
   normalizeUniAppXAppConfig,
   normalizeUniAppXAppPagesJson,
   parseManifestJsonOnce,
   parseVueRequest,
+  preUVueJson,
   removeExt,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
@@ -26,7 +29,7 @@ export function uniAppPagesPlugin(): Plugin {
   let allPagePaths: string[] = []
   let isFirst = true
   return {
-    name: 'uni:app-pages',
+    name: 'uni:app-pages-json',
     apply: 'build',
     resolveId(id) {
       if (isPages(id)) {
@@ -61,6 +64,27 @@ export function uniAppPagesPlugin(): Plugin {
         }
       }
       if (isPages(id)) {
+        // 调整换行符，确保 parseTree 的loc正确
+        const jsonCode = code.replace(/\r\n/g, '\n')
+        try {
+          checkPagesJson(
+            preUVueJson(jsonCode, 'pages.json'),
+            process.env.UNI_INPUT_DIR
+          )
+        } catch (err: any) {
+          if (err.loc) {
+            const error = createRollupError(
+              'uni:app-pages',
+              pagesJsonPath,
+              err,
+              jsonCode
+            )
+            this.error(error)
+          } else {
+            throw err
+          }
+        }
+
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
         // dark mode
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))

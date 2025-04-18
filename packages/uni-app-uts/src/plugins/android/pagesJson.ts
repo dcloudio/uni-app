@@ -29,7 +29,7 @@ export function uniAppPagesPlugin(): Plugin {
   let themeConfig = ''
   const codes: string[] = []
   return {
-    name: 'uni:app-pages',
+    name: 'uni:app-pages-json',
     apply: 'build',
     resolveId(id) {
       if (isPages(id)) {
@@ -58,7 +58,7 @@ export function uniAppPagesPlugin(): Plugin {
         } catch (err: any) {
           if (err.loc) {
             const error = createRollupError(
-              'uni:app-pages',
+              'uni:app-pages-json',
               pagesJsonPath,
               err,
               code

@@ -9,7 +9,7 @@ import { normalizePath } from '../../utils'
 import { isMiniProgramProjectJsonKey, projectKeys } from './project'
 import { getPlatformManifestJsonOnce } from '../manifest'
 import { hasThemeJson, initTheme } from '../theme'
-import { checkPagesJson } from '../uni-x'
+import { checkPagesJson } from '../utils'
 
 interface ParsePagesJsonOptions {
   debug?: boolean
