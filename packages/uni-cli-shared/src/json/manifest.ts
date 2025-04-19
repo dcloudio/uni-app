@@ -109,7 +109,11 @@ export function isEnableSecureNetwork(
   const manifest = parseManifestJsonOnce(inputDir)
   const platformManifest = getPlatformManifestJson(manifest, platform)
   if (platform === 'app') {
-    return !!platformManifest?.modules?.SecureNetwork
+    if (process.env.UNI_APP_X === 'true') {
+      return !!platformManifest?.distribute?.modules?.['uni-secure-network']
+    } else {
+      return !!platformManifest?.modules?.SecureNetwork
+    }
   }
   return platformManifest?.secureNetwork?.enable === true
 }
@@ -150,12 +154,25 @@ export function getDevServerOptions(manifestJson: Record<string, any>) {
 
 export function getPlatformManifestJson(
   manifestJson: any,
-  platform?: UniApp.PLATFORM
+  platform?: UniApp.PLATFORM | 'app-ios' | 'app-android' | 'app-harmony'
 ) {
+  const isX = process.env.UNI_APP_X === 'true'
   if (!platform) {
-    platform = process.env.UNI_PLATFORM
+    if (isX) {
+      platform = process.env.UNI_UTS_PLATFORM!
+    } else {
+      platform = process.env.UNI_PLATFORM
+    }
+  }
+  if (isX) {
+    if (platform === 'app-android' || platform === 'app-ios') {
+      return manifestJson[platform] || manifestJson['app'] || {}
+    }
   }
   if (platform === 'app') {
+    if (isX) {
+      return manifestJson.app || {}
+    }
     return manifestJson['app-plus'] || manifestJson['plus'] || {}
   }
   if (platform === 'h5') {
