@@ -29,7 +29,10 @@ export function handlePromise(promise: Promise<unknown>) {
 export function promisify(name: string, fn: Function) {
   return (args = {}, ...rest: unknown[]) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest))
+      return wrapperReturnValue(
+        name,
+        invokeApi(name, fn, extend({}, args), rest)
+      )
     }
     return wrapperReturnValue(
       name,
@@ -38,7 +41,7 @@ export function promisify(name: string, fn: Function) {
           invokeApi(
             name,
             fn,
-            extend(args, { success: resolve, fail: reject }),
+            extend({}, args, { success: resolve, fail: reject }),
             rest
           )
         })
