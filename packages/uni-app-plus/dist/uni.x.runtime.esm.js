@@ -449,10 +449,10 @@ function promisify(name, fn) {
       rest[_key - 1] = arguments[_key];
     }
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-      invokeApi(name, fn, extend(args, {
+      invokeApi(name, fn, extend({}, args, {
         success: resolve,
         fail: reject
       }), rest);
@@ -884,6 +884,9 @@ function getWebviewId() {
 }
 function genWebviewId() {
   return id++;
+}
+function resetWebviewId() {
+  id = 1;
 }
 var ANI_SHOW = "pop-in";
 var ANI_DURATION = 300;
@@ -1467,6 +1470,11 @@ function init() {
   });
   page.startRender();
   page.show(null);
+}
+function clearTabBarStatus() {
+  tabBar0 = null;
+  selected0 = -1;
+  tabs.clear();
 }
 function removeTabBarPage(page) {
   var pagePath = getRealPath(page.route, true);
@@ -2592,6 +2600,9 @@ function initOn(app) {
   });
   app.addEventListener(ON_EXIT, function() {
     clearWebviewReady();
+    resetWebviewId();
+    getAllPages().forEach((page) => closePage(page, "none"));
+    clearTabBarStatus();
     invokeHook(getApp().vm, ON_EXIT);
   });
 }
