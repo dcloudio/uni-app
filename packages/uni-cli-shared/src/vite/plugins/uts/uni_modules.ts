@@ -457,12 +457,12 @@ export function uniUTSAppUniModulesPlugin(
     const compiler = resolveUTSCompiler()
     // 处理依赖的 uts 插件
     // TODO 当本地有ext-api时，也应该自动加入deps，不然uts内部使用了该api，也会导致编译失败
-    const deps =
-      // 框架内部编译不需要处理依赖
-      process.env.UNI_COMPILE_TARGET === 'ext-api'
-        ? []
-        : parseUTSModuleDeps(pkgJson.uni_modules?.dependencies || [], inputDir)
-    if (deps.length) {
+    const deps = parseUTSModuleDeps(
+      pkgJson.uni_modules?.dependencies || [],
+      inputDir
+    )
+    // 仅处理非ext-api框架编译的依赖
+    if (deps.length && process.env.UNI_COMPILE_TARGET !== 'ext-api') {
       for (const dep of deps) {
         if (dep) {
           const depPluginDir = normalizePath(path.resolve(uniModulesDir, dep))
