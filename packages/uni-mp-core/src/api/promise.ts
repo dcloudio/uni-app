@@ -81,7 +81,10 @@ export function promisify(name: string, api: unknown) {
       isFunction(options.fail) ||
       isFunction(options.complete)
     ) {
-      return wrapperReturnValue(name, invokeApi(name, api, options, rest))
+      return wrapperReturnValue(
+        name,
+        invokeApi(name, api, extend({}, options), rest)
+      )
     }
     return wrapperReturnValue(
       name,
