@@ -64,7 +64,11 @@ function createDeclarationProcessor(options: NormalizeOptions) {
     if ((decl as any)[normalized]) {
       return
     }
-    decl.prop = camelize(decl.prop)
+    if (decl.prop.startsWith('--')) {
+      return
+    } else {
+      decl.prop = camelize(decl.prop)
+    }
     const { value, log } = normalizeDecl(decl, options)
     if (isString(value) || isNumber(value)) {
       decl.value = value

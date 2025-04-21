@@ -669,4 +669,25 @@ border-top-style: solid;
     expect(messages[1].text.includes('not supported')).toBe(true)
     expect(messages[2].text.includes('not supported')).toBe(true)
   })
+  test('nvue 不支持 css var 的复合写法', async () => {
+    const { json, messages } = await objectifierRule(`
+.a1{
+  --color1: red;
+  --width1: 1px;
+  --style1: solid;
+  border:  var(--width1) var(--style1) var(--color1)
+}
+`)
+    expect(json).toEqual({
+      a1: {
+        '': {
+          '--color1': 'red',
+          '--style1': 'solid',
+          '--width1': '1px',
+          border: 'var(--width1) var(--style1) var(--color1)',
+        },
+      },
+    })
+    expect(messages.length).toBe(1)
+  })
 })
