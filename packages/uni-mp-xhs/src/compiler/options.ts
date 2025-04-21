@@ -24,6 +24,8 @@ export const compilerOptions: CompilerOptions = {
 
 const COMPONENTS_DIR = 'xhscomponents'
 
+export const customElements = ['post-note-button']
+
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
     array: false,
@@ -108,6 +110,7 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
+    customElements,
     filter: {
       extname: '.sjs',
       lang: 'sjs',
