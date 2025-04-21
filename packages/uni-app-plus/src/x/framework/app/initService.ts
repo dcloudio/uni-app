@@ -1,11 +1,15 @@
 import type { IApp } from '@dcloudio/uni-app-x/types/native'
 import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
-import { ON_HIDE, ON_SHOW, ON_EXIT } from '@dcloudio/uni-shared'
+import { ON_EXIT, ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
 import type { ComponentPublicInstance } from 'vue'
 import { setEnterOptionsSync } from '../../api/base/getEnterOptionsSync'
 import { getNativeApp } from './app'
 import { extend } from '@vue/shared'
 import { clearWebviewReady } from './subscriber/webviewReady'
+import { resetWebviewId } from '../../../service/framework/webview/utils'
+import { getAllPages } from '../../../service/framework/page/getCurrentPages'
+import { closePage } from '../../api/route/utils'
+import { clearTabBarStatus } from './tabBar'
 
 export function initOn(app: IApp) {
   app.addEventListener(ON_SHOW, async function (event) {
@@ -67,7 +71,10 @@ export function initOn(app: IApp) {
   })
   app.addEventListener(ON_EXIT, function () {
     clearWebviewReady()
-    // TODO clear
+    resetWebviewId()
+    getAllPages().forEach((page) => closePage(page, 'none'))
+    clearTabBarStatus()
+    // TODO clear routes/vue
     invokeHook(getApp().vm as ComponentPublicInstance, ON_EXIT)
   })
 }
