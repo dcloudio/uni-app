@@ -244,17 +244,17 @@ export function syncPagesFile(
                 if (!hasPlatform) {
                   return
                 }
-                if (hasCustomElements) {
-                  const packageJson = require(path.resolve(
-                    utssdkDir,
-                    '..',
-                    'package.json'
-                  ))
-                  // 当前 pages 平台禁用
-                  if (packageJson.uni_modules?.pages?.[platform] === false) {
-                    return
-                  }
+
+                const packageJson = require(path.resolve(
+                  utssdkDir,
+                  '..',
+                  'package.json'
+                ))
+                // 当前 pages 平台禁用
+                if (packageJson.uni_modules?.pages?.[platform] === false) {
+                  return
                 }
+
                 importCodes.push(
                   `import Uni${capitalize(
                     page
