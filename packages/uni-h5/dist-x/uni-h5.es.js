@@ -233,182 +233,6 @@ class UTSType {
     return obj;
   }
 }
-const OriginalJSON = JSON;
-function createUTSJSONObject(obj) {
-  const result = new UTSJSONObject({});
-  for (const key in obj) {
-    const value = obj[key];
-    if (isPlainObject(value)) {
-      result[key] = createUTSJSONObject(value);
-    } else if (getType$1(value) === "array") {
-      result[key] = value.map((item) => {
-        if (isPlainObject(item)) {
-          return createUTSJSONObject(item);
-        } else {
-          return item;
-        }
-      });
-    } else {
-      result[key] = value;
-    }
-  }
-  return result;
-}
-function parseObjectOrArray(object, utsType) {
-  const objectType = getType$1(object);
-  if (object === null || objectType !== "object" && objectType !== "array") {
-    return object;
-  }
-  if (utsType && utsType !== UTSJSONObject) {
-    try {
-      return new utsType(object, void 0, true);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-  if (objectType === "array") {
-    return object.map((value) => {
-      return parseObjectOrArray(value);
-    });
-  } else if (objectType === "object") {
-    return createUTSJSONObject(object);
-  }
-  return object;
-}
-const UTSJSON = {
-  parse: (text2, reviver, utsType) => {
-    if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject)) {
-      utsType = reviver;
-      reviver = void 0;
-    }
-    try {
-      const parseResult = OriginalJSON.parse(text2, reviver);
-      return parseObjectOrArray(parseResult, utsType);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  parseArray(text2, utsType) {
-    try {
-      const parseResult = OriginalJSON.parse(text2);
-      if (Array.isArray(parseResult)) {
-        return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : void 0);
-      }
-      return null;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  parseObject(text2, utsType) {
-    try {
-      const parseResult = OriginalJSON.parse(text2);
-      if (Array.isArray(parseResult)) {
-        return null;
-      }
-      return parseObjectOrArray(parseResult, utsType);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  stringify: (value) => {
-    return OriginalJSON.stringify(value);
-  }
-};
-function mapGet(map, key) {
-  if (!map.has(key)) {
-    return null;
-  }
-  return map.get(key);
-}
-function stringCodePointAt(str, pos) {
-  if (pos < 0 || pos >= str.length) {
-    return null;
-  }
-  return str.codePointAt(pos);
-}
-function stringAt(str, pos) {
-  if (pos < -str.length || pos >= str.length) {
-    return null;
-  }
-  return str.at(pos);
-}
-function weakMapGet(map, key) {
-  if (!map.has(key)) {
-    return null;
-  }
-  return map.get(key);
-}
-const UTS$1 = {
-  arrayAt,
-  arrayFind,
-  arrayFindLast,
-  arrayPop,
-  arrayShift,
-  isInstanceOf,
-  UTSType,
-  mapGet,
-  stringAt,
-  stringCodePointAt,
-  weakMapGet,
-  JSON: UTSJSON
-};
-let UniError$1 = class UniError2 extends Error {
-  constructor(errSubject, errCode, errMsg) {
-    let options = {};
-    const argsLength = Array.from(arguments).length;
-    switch (argsLength) {
-      case 0:
-        errSubject = "";
-        errMsg = "";
-        errCode = 0;
-        break;
-      case 1:
-        errMsg = errSubject;
-        errSubject = "";
-        errCode = 0;
-        break;
-      case 2:
-        errMsg = errSubject;
-        options = errCode;
-        errCode = options.errCode || 0;
-        errSubject = options.errSubject || "";
-        break;
-    }
-    super(errMsg);
-    this.name = "UniError";
-    this.errSubject = errSubject;
-    this.errCode = errCode;
-    this.errMsg = errMsg;
-    if (options.data) {
-      this.data = options.data;
-    }
-    if (options.cause) {
-      this.cause = options.cause;
-    }
-  }
-  set errMsg(msg) {
-    this.message = msg;
-  }
-  get errMsg() {
-    return this.message;
-  }
-  toString() {
-    return this.errMsg;
-  }
-  toJSON() {
-    return {
-      errSubject: this.errSubject,
-      errCode: this.errCode,
-      errMsg: this.errMsg,
-      data: this.data,
-      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
-    };
-  }
-};
 function initUTSJSONObjectProperties(obj) {
   const propertyList = [
     "_resolveKeyPath",
@@ -610,6 +434,173 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     for (let key in this) {
       callback(this[key], key);
     }
+  }
+};
+const OriginalJSON = JSON;
+function createUTSJSONObjectOrArray(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => {
+      return createUTSJSONObjectOrArray(item);
+    });
+  } else if (isPlainObject(obj)) {
+    const result = new UTSJSONObject$1({});
+    for (const key in obj) {
+      const value = obj[key];
+      result[key] = createUTSJSONObjectOrArray(value);
+    }
+    return result;
+  }
+  return obj;
+}
+function parseObjectOrArray(object, utsType) {
+  const objectType = getType$1(object);
+  if (object === null || objectType !== "object" && objectType !== "array") {
+    return object;
+  }
+  if (utsType && utsType !== UTSJSONObject$1) {
+    try {
+      return new utsType(object, void 0, true);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+  if (objectType === "array" || objectType === "object") {
+    return createUTSJSONObjectOrArray(object);
+  }
+  return object;
+}
+const UTSJSON = {
+  parse: (text2, reviver, utsType) => {
+    if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject$1)) {
+      utsType = reviver;
+      reviver = void 0;
+    }
+    try {
+      const parseResult = OriginalJSON.parse(text2, reviver);
+      return parseObjectOrArray(parseResult, utsType);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  parseArray(text2, utsType) {
+    try {
+      const parseResult = OriginalJSON.parse(text2);
+      if (Array.isArray(parseResult)) {
+        return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : void 0);
+      }
+      return null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  parseObject(text2, utsType) {
+    try {
+      const parseResult = OriginalJSON.parse(text2);
+      if (Array.isArray(parseResult)) {
+        return null;
+      }
+      return parseObjectOrArray(parseResult, utsType);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  stringify: (value) => {
+    return OriginalJSON.stringify(value);
+  }
+};
+function mapGet(map, key) {
+  if (!map.has(key)) {
+    return null;
+  }
+  return map.get(key);
+}
+function stringCodePointAt(str, pos) {
+  if (pos < 0 || pos >= str.length) {
+    return null;
+  }
+  return str.codePointAt(pos);
+}
+function stringAt(str, pos) {
+  if (pos < -str.length || pos >= str.length) {
+    return null;
+  }
+  return str.at(pos);
+}
+function weakMapGet(map, key) {
+  if (!map.has(key)) {
+    return null;
+  }
+  return map.get(key);
+}
+const UTS$1 = {
+  arrayAt,
+  arrayFind,
+  arrayFindLast,
+  arrayPop,
+  arrayShift,
+  isInstanceOf,
+  UTSType,
+  mapGet,
+  stringAt,
+  stringCodePointAt,
+  weakMapGet,
+  JSON: UTSJSON
+};
+let UniError$1 = class UniError2 extends Error {
+  constructor(errSubject, errCode, errMsg) {
+    let options = {};
+    const argsLength = Array.from(arguments).length;
+    switch (argsLength) {
+      case 0:
+        errSubject = "";
+        errMsg = "";
+        errCode = 0;
+        break;
+      case 1:
+        errMsg = errSubject;
+        errSubject = "";
+        errCode = 0;
+        break;
+      case 2:
+        errMsg = errSubject;
+        options = errCode;
+        errCode = options.errCode || 0;
+        errSubject = options.errSubject || "";
+        break;
+    }
+    super(errMsg);
+    this.name = "UniError";
+    this.errSubject = errSubject;
+    this.errCode = errCode;
+    this.errMsg = errMsg;
+    if (options.data) {
+      this.data = options.data;
+    }
+    if (options.cause) {
+      this.cause = options.cause;
+    }
+  }
+  set errMsg(msg) {
+    this.message = msg;
+  }
+  get errMsg() {
+    return this.message;
+  }
+  toString() {
+    return this.errMsg;
+  }
+  toJSON() {
+    return {
+      errSubject: this.errSubject,
+      errCode: this.errCode,
+      errMsg: this.errMsg,
+      data: this.data,
+      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
+    };
   }
 };
 let UTSValueIterable$1 = class UTSValueIterable2 {
@@ -3951,7 +3942,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(
+        name,
+        invokeApi(name, fn, extend({}, args), rest)
+      );
     }
     return wrapperReturnValue(
       name,
@@ -3960,7 +3954,7 @@ function promisify(name, fn) {
           invokeApi(
             name,
             fn,
-            extend(args, { success: resolve, fail: reject }),
+            extend({}, args, { success: resolve, fail: reject }),
             rest
           );
         })
@@ -8073,7 +8067,10 @@ const canIUse = /* @__PURE__ */ defineSyncApi(
     if (hasOwn(SCHEMA_CSS, schema)) {
       return SCHEMA_CSS[schema];
     }
-    return true;
+    if (hasOwn(uni, schema)) {
+      return true;
+    }
+    return false;
   },
   CanIUseProtocol
 );

@@ -6229,7 +6229,9 @@ const _sfc_main$5 = {
       bottomNavigationHeight: 0,
       appTheme: null,
       osTheme: null,
-      hostTheme: null
+      hostTheme: null,
+      appThemeChangeCallbackId: -1,
+      osThemeChangeCallbackId: -1
     };
   },
   onLoad(options) {
@@ -6278,14 +6280,14 @@ const _sfc_main$5 = {
       this.handleThemeChange();
     }
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
-    uni.onAppThemeChange((res) => {
+    this.appThemeChangeCallbackId = uni.onAppThemeChange((res) => {
       var appTheme2 = res.appTheme;
       if (appTheme2 != null && appTheme2 != "auto") {
         this.appTheme = appTheme2;
         this.handleThemeChange();
       }
     });
-    uni.onOsThemeChange((res) => {
+    this.osThemeChangeCallbackId = uni.onOsThemeChange((res) => {
       this.osTheme = res.osTheme;
       this.handleThemeChange();
     });
@@ -6332,6 +6334,8 @@ const _sfc_main$5 = {
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
+    uni.offAppThemeChange(this.appThemeChangeCallbackId);
+    uni.offOsThemeChange(this.osThemeChangeCallbackId);
   },
   methods: {
     closeActionSheet() {
@@ -7866,7 +7870,8 @@ const _sfc_main$3 = {
       inputConfirmColor: null,
       hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
       showAnim: false,
-      isAutoHeight: true
+      isAutoHeight: true,
+      appThemeChangeCallbackId: -1
     };
   },
   onReady() {
@@ -7933,7 +7938,7 @@ const _sfc_main$3 = {
     if (appTheme != null) {
       this.theme = appTheme;
     }
-    uni.onAppThemeChange((res) => {
+    this.appThemeChangeCallbackId = uni.onAppThemeChange((res) => {
       this.theme = res.appTheme;
       this.updateUI();
     });
@@ -7978,6 +7983,7 @@ const _sfc_main$3 = {
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
+    uni.offAppThemeChange(this.appThemeChangeCallbackId);
   },
   onBackPress(_) {
     var ret = {

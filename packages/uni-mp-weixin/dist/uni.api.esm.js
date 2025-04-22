@@ -349,10 +349,10 @@ function handlePromise(promise) {
 function promisify$1(name, fn) {
     return (args = {}, ...rest) => {
         if (hasCallback(args)) {
-            return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+            return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-            invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
+            invokeApi(name, fn, extend({}, args, { success: resolve, fail: reject }), rest);
         })));
     };
 }
@@ -784,7 +784,7 @@ function promisify(name, api) {
         if (isFunction(options.success) ||
             isFunction(options.fail) ||
             isFunction(options.complete)) {
-            return wrapperReturnValue(name, invokeApi(name, api, options, rest));
+            return wrapperReturnValue(name, invokeApi(name, api, extend({}, options), rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
             invokeApi(name, api, extend({}, options, {

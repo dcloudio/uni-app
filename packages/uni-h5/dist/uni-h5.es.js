@@ -2930,7 +2930,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(
+        name,
+        invokeApi(name, fn, extend({}, args), rest)
+      );
     }
     return wrapperReturnValue(
       name,
@@ -2939,7 +2942,7 @@ function promisify(name, fn) {
           invokeApi(
             name,
             fn,
-            extend(args, { success: resolve, fail: reject }),
+            extend({}, args, { success: resolve, fail: reject }),
             rest
           );
         })
@@ -7102,7 +7105,10 @@ const canIUse = /* @__PURE__ */ defineSyncApi(
     if (hasOwn(SCHEMA_CSS, schema)) {
       return SCHEMA_CSS[schema];
     }
-    return true;
+    if (hasOwn(uni, schema)) {
+      return true;
+    }
+    return false;
   },
   CanIUseProtocol
 );

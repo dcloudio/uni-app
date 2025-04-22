@@ -97,6 +97,10 @@
         appTheme: null as string | null,
         osTheme: null as string | null,
         hostTheme: null as string | null,
+        // #ifdef APP-ANDROID || APP-IOS
+        appThemeChangeCallbackId: -1,
+        osThemeChangeCallbackId: -1,
+        // #endif
       }
     },
     onLoad(options) {
@@ -174,14 +178,14 @@
       // #endif
       this.isLandscape = systemInfo.deviceOrientation == 'landscape'
       // #ifdef APP-ANDROID || APP-IOS
-      uni.onAppThemeChange((res: AppThemeChangeResult) => {
+      this.appThemeChangeCallbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
         const appTheme = res.appTheme
         if (appTheme != null && appTheme != "auto") {
           this.appTheme = appTheme
           this.handleThemeChange()
         }
       })
-      uni.onOsThemeChange((res: OsThemeChangeResult) => {
+      this.osThemeChangeCallbackId = uni.onOsThemeChange((res: OsThemeChangeResult) => {
         this.osTheme = res.osTheme
         this.handleThemeChange()
       })
@@ -294,6 +298,10 @@
       uni.$off(this.failEventName, null)
       // #ifdef WEB
       window.removeEventListener('resize', this.fixSize)
+      // #endif
+      // #ifdef APP-ANDROID || APP-IOS
+      uni.offAppThemeChange(this.appThemeChangeCallbackId)
+      uni.offOsThemeChange(this.osThemeChangeCallbackId)
       // #endif
     },
     methods: {

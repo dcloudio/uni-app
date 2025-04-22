@@ -449,10 +449,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
     return (args = {}, ...rest) => {
         if (hasCallback(args)) {
-            return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+            return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-            invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
+            invokeApi(name, fn, extend({}, args, { success: resolve, fail: reject }), rest);
         })));
     };
 }
@@ -12664,7 +12664,6 @@ const $navigateTo = (args, { resolve, reject }) => {
 const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     // 当前页面触发 onHide
-    invokeHook(ON_HIDE);
     invokeHook(ON_HIDE);
     const eventChannel = new EventChannel(getWebviewId() + 1, events);
     return new Promise((resolve) => {

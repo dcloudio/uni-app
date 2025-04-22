@@ -3,7 +3,7 @@
 exports[`SFC compile template template with html 1`] = `
 "const msg = ''
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -20,7 +20,7 @@ return (): any | null => {
 exports[`SFC compile template template with pug 1`] = `
 "const msg = ''
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;

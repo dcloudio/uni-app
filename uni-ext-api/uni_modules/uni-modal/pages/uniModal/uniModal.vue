@@ -97,7 +97,11 @@
 				inputConfirmColor: null as string | null,
 				hoverClassName:"uni-modal_dialog__content__bottom__button__hover",
 				showAnim: false,
-				isAutoHeight:true
+				isAutoHeight:true,
+				// #ifdef APP-ANDROID || APP-IOS
+				appThemeChangeCallbackId: -1,
+				// #endif
+
 			}
 		},
 		
@@ -195,7 +199,7 @@
 			if (appTheme != null) {
 				this.theme = appTheme
 			} 
-			uni.onAppThemeChange((res: AppThemeChangeResult) => {
+			this.appThemeChangeCallbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
 				this.theme = res.appTheme
 				this.updateUI()
 			})
@@ -252,6 +256,9 @@
 			uni.$off(this.readyEventName, null)
 			uni.$off(this.successEventName, null)
 			uni.$off(this.failEventName, null)
+			// #ifdef APP-ANDROID || APP-IOS
+			uni.offAppThemeChange(this.appThemeChangeCallbackId)
+			// #endif
 		},
 		
 		onBackPress(_):boolean|null {

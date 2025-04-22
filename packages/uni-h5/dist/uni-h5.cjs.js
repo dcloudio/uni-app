@@ -1495,7 +1495,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(
+        name,
+        invokeApi(name, fn, shared.extend({}, args), rest)
+      );
     }
     return wrapperReturnValue(
       name,
@@ -1504,7 +1507,7 @@ function promisify(name, fn) {
           invokeApi(
             name,
             fn,
-            shared.extend(args, { success: resolve, fail: reject }),
+            shared.extend({}, args, { success: resolve, fail: reject }),
             rest
           );
         })

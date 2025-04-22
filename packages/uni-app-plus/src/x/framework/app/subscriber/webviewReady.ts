@@ -33,7 +33,7 @@ function onLaunchWebviewReady() {
     url: entryPagePath + (__uniConfig.entryPageQuery || ''),
     openType: 'appLaunch',
   }
-  const handler = { resolve() { }, reject() { } }
+  const handler = { resolve() {}, reject() {} }
   if (routeOptions.meta.isTabBar) {
     return $switchTab(args, handler)
   }

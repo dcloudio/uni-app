@@ -2920,7 +2920,9 @@ function utsStracktraceyPreset(opts) {
                     return;
                 }
                 if (matches[2] === 'ets') {
-                    matches[1] = (matches[0].match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] || matches[1];
+                    matches[1] =
+                        (matches[0].match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] ||
+                            matches[1];
                 }
                 const fileName = matches[1].replace(/^.*(\\|\/|\:)/, '');
                 return {
