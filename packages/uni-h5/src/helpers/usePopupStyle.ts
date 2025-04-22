@@ -25,7 +25,7 @@ export type popupStyleType = {
   }
 }
 
-export function usePopupStyle(props: Data, dynamicWidth = false) {
+export function usePopupStyle(props: Data) {
   const popupWidth = ref(0)
   const popupHeight = ref(0)
 
@@ -63,16 +63,14 @@ export function usePopupStyle(props: Data, dynamicWidth = false) {
         'border-style': 'solid',
       })
       const popoverLeft = getNumber(popover.left)
-      const popoverWidth = dynamicWidth
-        ? getNumber(popover.width ? popover.width : 300)
-        : 300
+      const popoverWidth = getNumber(popover.width ? popover.width : 300)
       const popoverTop = getNumber(popover.top)
       const popoverHeight = getNumber(popover.height)
       const center = popoverLeft + popoverWidth / 2
       contentStyle.transform = 'none !important'
       const contentLeft = Math.max(0, center - popoverWidth / 2)
       contentStyle.left = `${contentLeft}px`
-      if (dynamicWidth) {
+      if (popover.width) {
         contentStyle.width = `${popoverWidth}px`
       }
       let triangleLeft = Math.max(12, center - contentLeft)
