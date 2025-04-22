@@ -1,5 +1,5 @@
 import path from 'path'
-import { checkPagesJson } from '../src/json/uni-x'
+import { checkPagesJson } from '../src/json/utils'
 import { generateCodeFrame } from '../src/vite/plugins/vitejs/utils'
 
 describe('pages.json', () => {
