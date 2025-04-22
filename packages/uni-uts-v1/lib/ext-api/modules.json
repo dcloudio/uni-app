@@ -1041,6 +1041,19 @@
       }
     }
   },
+  "uni-scanCode": {
+    "uni": {
+      "scanCode": {
+        "name": "scanCode",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-secure-network": {
     "uni": {
       "__getSecureNetworkManager": {
