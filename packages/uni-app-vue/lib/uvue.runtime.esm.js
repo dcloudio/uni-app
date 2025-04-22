@@ -8954,12 +8954,14 @@ function patchStyle(el, prev, next) {
       const value = next[key];
       const prevValue = prev[key];
       if (!isSame(prevValue, value)) {
-        parseStyleDecl(camelize(key), value).forEach(
-          (value2, key2) => {
-            batchedStyles.set(key2, value2);
-            style == null ? void 0 : style.set(key2, value2);
-          }
-        );
+        let _key = key;
+        if (!key.startsWith("--")) {
+          _key = camelize(key);
+        }
+        parseStyleDecl(_key, value).forEach((value2, key2) => {
+          batchedStyles.set(key2, value2);
+          style == null ? void 0 : style.set(key2, value2);
+        });
       }
     }
   } else {

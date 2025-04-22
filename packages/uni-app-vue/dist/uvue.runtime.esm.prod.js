@@ -1537,20 +1537,20 @@ function createTransformBorder(options) {
       source
     } = decl;
     var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
-    var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
-      var index = splitResult.findIndex(str => item.test(str));
-      return index < 0 ? null : splitResult.splice(index, 1)[0];
-    });
-    var isUvuePlatform = options.type == 'uvue';
-    if (isUvuePlatform) {
-      if (splitResult.length > 0 && value != '') {
-        return [decl];
-      }
+    var havVar = splitResult.some(str => str.startsWith('var('));
+    var result = [];
+    // 包含 var ，直接视为 width/style/color 都使用默认值
+    if (havVar) {
+      result = splitResult;
+      splitResult = [];
     } else {
-      // nvue 维持不变
-      if (splitResult.length > 0) {
-        return [decl];
-      }
+      result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+        var index = splitResult.findIndex(str => item.test(str));
+        return index < 0 ? null : splitResult.splice(index, 1)[0];
+      });
+    }
+    if (splitResult.length > 0 && value != '') {
+      return [decl];
     }
     var defaultWidth = str => {
       if (str != null) {
@@ -1576,10 +1576,6 @@ function createTransformBorder(options) {
       }
       return '#000000';
     };
-    if (!isUvuePlatform) {
-      // nvue 维持不变
-      return [createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source), createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source), createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source)];
-    }
     return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
   };
 }
@@ -8237,7 +8233,11 @@ function patchStyle(el, prev, next) {
         var _value2 = next[_key15];
         var prevValue = prev[_key15];
         if (!isSame(prevValue, _value2)) {
-          parseStyleDecl(camelize(_key15), _value2).forEach((value2, key2) => {
+          var _key16 = _key15;
+          if (!_key15.startsWith("--")) {
+            _key16 = camelize(_key15);
+          }
+          parseStyleDecl(_key16, _value2).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
             style == null ? void 0 : style.set(key2, value2);
           });
@@ -8373,8 +8373,8 @@ var withModifiers = (fn, modifiers) => {
       var guard = modifierGuards[modifiers[i]];
       if (guard && guard(event, modifiers)) return;
     }
-    for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key16 = 1; _key16 < _len8; _key16++) {
-      args[_key16 - 1] = arguments[_key16];
+    for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key17 = 1; _key17 < _len8; _key17++) {
+      args[_key17 - 1] = arguments[_key17];
     }
     return fn(event, ...args);
   };
