@@ -4,6 +4,51 @@
       "CanvasContext"
     ],
     [
+      "ChooseLocation"
+    ],
+    [
+      "ChooseLocationComplete"
+    ],
+    [
+      "ChooseLocationErrorCode"
+    ],
+    [
+      "ChooseLocationFail"
+    ],
+    [
+      "ChooseLocationFailImpl"
+    ],
+    [
+      "ChooseLocationOptions"
+    ],
+    [
+      "ChooseLocationSuccess"
+    ],
+    [
+      "ChooseLocationSuccessImpl"
+    ],
+    [
+      "ClosePreviewImage"
+    ],
+    [
+      "ClosePreviewImageCompleteCallback"
+    ],
+    [
+      "ClosePreviewImageFail"
+    ],
+    [
+      "ClosePreviewImageFailCallback"
+    ],
+    [
+      "ClosePreviewImageOptions"
+    ],
+    [
+      "ClosePreviewImageSuccess"
+    ],
+    [
+      "ClosePreviewImageSuccessCallback"
+    ],
+    [
       "CreateCanvasContextAsync"
     ],
     [
@@ -25,10 +70,91 @@
       "Danmu"
     ],
     [
+      "HideActionSheet"
+    ],
+    [
+      "HideModal"
+    ],
+    [
+      "HideModalOptions"
+    ],
+    [
+      "IPreviewImageError"
+    ],
+    [
+      "LongPressActionsFailResult"
+    ],
+    [
+      "LongPressActionsOptions"
+    ],
+    [
+      "LongPressActionsSuccessResult"
+    ],
+    [
+      "ModalPage"
+    ],
+    [
+      "Popover"
+    ],
+    [
+      "PreviewImage"
+    ],
+    [
+      "PreviewImageCompleteCallback"
+    ],
+    [
+      "PreviewImageErrorCode"
+    ],
+    [
+      "PreviewImageFail"
+    ],
+    [
+      "PreviewImageFailCallback"
+    ],
+    [
+      "PreviewImageOptions"
+    ],
+    [
+      "PreviewImageSuccess"
+    ],
+    [
+      "PreviewImageSuccessCallback"
+    ],
+    [
       "RequestAnimationFrameCallback"
     ],
     [
       "RequestFullScreenOptions"
+    ],
+    [
+      "ShowActionSheet"
+    ],
+    [
+      "ShowActionSheetComplete"
+    ],
+    [
+      "ShowActionSheetErrorCode"
+    ],
+    [
+      "ShowActionSheetFail"
+    ],
+    [
+      "ShowActionSheetFailImpl"
+    ],
+    [
+      "ShowActionSheetOptions"
+    ],
+    [
+      "ShowActionSheetSuccess"
+    ],
+    [
+      "ShowActionSheetSuccessImpl"
+    ],
+    [
+      "ShowModal"
+    ],
+    [
+      "ShowModalOptions"
     ],
     [
       "UniButtonElement"
@@ -56,6 +182,18 @@
     ],
     [
       "UniFormSubmitEvent"
+    ],
+    [
+      "UniHideModalErrorCode"
+    ],
+    [
+      "UniHideModalFail"
+    ],
+    [
+      "UniHideModalFailImpl"
+    ],
+    [
+      "UniHideModalResult"
     ],
     [
       "UniNavigatorElement"
@@ -95,6 +233,18 @@
     ],
     [
       "UniRadioGroupElement"
+    ],
+    [
+      "UniShowModalErrorCode"
+    ],
+    [
+      "UniShowModalFail"
+    ],
+    [
+      "UniShowModalFailImpl"
+    ],
+    [
+      "UniShowModalResult"
     ],
     [
       "UniSliderChangeEvent"
