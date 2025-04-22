@@ -226,8 +226,11 @@ export async function runSwiftDev(
       ['.swift'],
       (fileName, content) => {
         if (!isX) {
-          // 非 x 平台，需要移除所有 DCloudUniappRuntime 导入
-          content = content.replace(/import\s+DCloudUniappRuntime\s*;?/g, '')
+          // 非 x 平台，需要替换所有 DCloudUniappRuntime 导入为 DCloudUTSFoundation
+          content = content.replace(
+            /DCloudUniappRuntime/g,
+            'DCloudUTSFoundation'
+          )
         }
         return rewriteConsoleExpr
           ? rewriteConsoleExpr(fileName, content)
