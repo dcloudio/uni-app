@@ -153,7 +153,7 @@ export function copyPlatformNativeLanguageFiles(
   utsInputDir: string,
   utsOutputDir: string,
   extnameArr: string[],
-  rewriteConsoleExpr?: (fileName: string, content: string) => string
+  transform?: (fileName: string, content: string) => string
 ) {
   const srcFiles: string[] = []
   const destFiles: string[] = []
@@ -170,9 +170,7 @@ export function copyPlatformNativeLanguageFiles(
       const srcFile = path.resolve(utsInputDir, file)
       const destFile = path.resolve(utsOutputDir, file)
       const content = fs.readFileSync(srcFile, 'utf8')
-      const newContent = rewriteConsoleExpr
-        ? rewriteConsoleExpr(srcFile, content)
-        : content
+      const newContent = transform ? transform(srcFile, content) : content
       fs.outputFileSync(destFile, newContent)
       srcFiles.push(srcFile)
       destFiles.push(destFile)

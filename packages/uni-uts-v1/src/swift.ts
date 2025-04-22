@@ -224,7 +224,15 @@ export async function runSwiftDev(
       path.resolve(inputDir, 'uni_modules', id, 'utssdk', 'app-ios'),
       path.resolve(outputDir, 'uni_modules', id, 'utssdk', 'app-ios'),
       ['.swift'],
-      rewriteConsoleExpr!
+      (fileName, content) => {
+        if (!isX) {
+          // 非 x 平台，需要移除所有 DCloudUniappRuntime 导入
+          content = content.replace(/import\s+DCloudUniappRuntime\s*;?/g, '')
+        }
+        return rewriteConsoleExpr
+          ? rewriteConsoleExpr(fileName, content)
+          : content
+      }
     )
 
     const { code, msg } = await compilerServer.compile({
