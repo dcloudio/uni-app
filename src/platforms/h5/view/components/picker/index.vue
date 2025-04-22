@@ -845,7 +845,7 @@ uni-picker[disabled] {
     background: none;
   }
   .uni-picker-container .uni-picker-custom {
-    width: 300px;
+    width: 300px !important;
     left: 50%;
     right: auto;
     top: 50%;
