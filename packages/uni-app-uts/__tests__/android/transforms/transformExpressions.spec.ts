@@ -189,6 +189,20 @@ describe('compiler: expression transform', () => {
       type: NodeTypes.COMPOUND_EXPRESSION,
       children: [{ content: `Math` }, `.`, { content: `max` }, `(1, 2)`],
     })
+
+    const node2 = parseWithExpressionTransform(
+      `{{ uni.env.USER_DATA_PATH }}`
+    ) as InterpolationNode
+    expect(node2.content).toMatchObject({
+      type: NodeTypes.COMPOUND_EXPRESSION,
+      children: [
+        { content: `uni` },
+        `.`,
+        { content: `env` },
+        `.`,
+        { content: `USER_DATA_PATH` },
+      ],
+    })
   })
 
   test('should not prefix reserved literals', () => {

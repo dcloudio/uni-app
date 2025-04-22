@@ -1747,6 +1747,12 @@ const isNumberIntegerKey = (key) => typeof key === 'number' &&
  */
 const isIntegerKey = (key) => isNumberIntegerKey(key) || isStringIntegerKey(key);
 
+const GLOBALS_ALLOWED = 'Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,' +
+    'decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,' +
+    'Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error,' +
+    'uni';
+const isGloballyAllowed = /*#__PURE__*/ shared.makeMap(GLOBALS_ALLOWED);
+
 exports.ACTION_TYPE_ADD_EVENT = ACTION_TYPE_ADD_EVENT;
 exports.ACTION_TYPE_ADD_WXS_EVENT = ACTION_TYPE_ADD_WXS_EVENT;
 exports.ACTION_TYPE_CREATE = ACTION_TYPE_CREATE;
@@ -1903,6 +1909,7 @@ exports.isAppVoidTag = isAppVoidTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
+exports.isGloballyAllowed = isGloballyAllowed;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
 exports.isIntegerKey = isIntegerKey;
