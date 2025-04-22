@@ -293,6 +293,7 @@ export async function compile(
     pluginId,
     paths: {},
     uniModules,
+    uniModulesPrefix: process.env.UNI_UTS_MODULE_PREFIX || '',
   }
   // 必须判断input.filename，因为input.filename可能跟filename不一样（可能会变成.uvue目录的文件）
   const isUTSFileExists = fs.existsSync(input.filename)
