@@ -14,6 +14,7 @@ export type popupStyleType = {
     left: string
     top: string
     bottom: string
+    width?: string
   }
   triangle: {
     'border-width': string
@@ -69,6 +70,9 @@ export function usePopupStyle(props: Data) {
       contentStyle.transform = 'none !important'
       const contentLeft = Math.max(0, center - 300 / 2)
       contentStyle.left = `${contentLeft}px`
+      if (popoverWidth) {
+        contentStyle.width = `${popoverWidth}px`
+      }
       let triangleLeft = Math.max(12, center - contentLeft)
       triangleLeft = Math.min(300 - 12, triangleLeft)
       triangleStyle.left = `${triangleLeft}px`
