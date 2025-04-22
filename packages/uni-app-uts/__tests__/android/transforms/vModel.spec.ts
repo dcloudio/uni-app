@@ -135,6 +135,20 @@ foo
   "onUpdate:modelValue": ($event: string) => {(_ctx.model) = $event}
 }), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
     )
+    assert(
+      `<Foo v-model="(model as string)" />`,
+      `createVNode(_component_Foo, utsMapOf({
+  modelValue: _ctx.model,
+  "onUpdate:modelValue": ($event: string) => {(_ctx.model) = $event}
+}), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
+    )
+    assert(
+      `<Foo v-model=" (model as string) " />`,
+      `createVNode(_component_Foo, utsMapOf({
+  modelValue: _ctx.model,
+  "onUpdate:modelValue": ($event: string) => {(_ctx.model) = $event}
+}), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
+    )
   })
   test('complex expressions wrapped in ()', () => {
     assert(

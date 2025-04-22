@@ -1,7 +1,6 @@
 import { camelize } from '@vue/shared'
 import {
   BindingTypes,
-  type CompoundExpressionNode,
   ConstantTypes,
   type DirectiveNode,
   ElementTypes,
@@ -31,19 +30,6 @@ const INPUT_TAGS = ['input', 'textarea']
 const AS = ' as '
 
 export const transformModel: DirectiveTransform = (dir, node, context) => {
-  // 组件 v-model 绑定了复杂表达式，且没有手动 as 类型
-  if (
-    node.tagType === ElementTypes.COMPONENT &&
-    (dir.exp as CompoundExpressionNode)?.children?.length > 1 &&
-    !dir.loc.source.includes(AS)
-  ) {
-    context.onError(
-      createCompilerError(100, dir.loc, {
-        100: `When custom components use "v-model" to bind complex expressions, you must specify the type using "as", 详见：https://uniapp.dcloud.net.cn/uni-app-x/component/#v-model-complex-expression`,
-      })
-    )
-  }
-
   const { exp, arg } = dir
   if (!exp) {
     context.onError(
@@ -58,6 +44,7 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
   if (isCompoundExpressionNode(exp)) {
     if (rawExp.includes(AS)) {
       // 目前简单处理(a as string)
+      rawExp = rawExp.trim()
       if (rawExp.startsWith('(') && rawExp.endsWith(')')) {
         rawExp = rawExp.slice(1, -1)
       }
