@@ -69,7 +69,7 @@ open suspend fun testClassAsync(opts: AsyncOptions): Deferred<UTSJSONObject> = C
          Type 'null' is not assignable to type 'UniNativeViewElement'.`,
         {
           preset: utsStracktraceyPreset({
-            inputRoot: '/Users/lxh/DCloud/git_projects/uni-app-next',
+            inputRoot: '',
             outputRoot: path.resolve(
               utsProjectDir,
               'unpackage/debug/app-harmony-9ed02395/'
@@ -114,9 +114,10 @@ open suspend fun testClassAsync(opts: AsyncOptions): Deferred<UTSJSONObject> = C
         `1 WARN: ArkTS:WARN File: D:/demo-projects/demo-app-x/unpackage/debug/app-harmony-fde54b25/oh_modules/.ohpm/@dcloudio+uni-app-x-runtime@8kwvevyo0ovlx9ebtjtkdkzydpkx+j5qpbuuwz5vjge=/oh_modules/@dcloudio/uni-app-x-runtime/src/main/ets/runtime/dom/NamedNodeMap.ets:16:45`,
         {
           preset: utsStracktraceyPreset({
-            inputDir: 'D:/demo-projects/demo-app-x/',
-            outputDir:
-              'D:/demo-projects/demo-app-x/unpackage/dist/dev/app-harmony',
+            inputRoot:
+              'D:/demo-projects/demo-app-x/unpackage/debug/app-harmony-fde54b25',
+            outputRoot:
+              'D:/demo-projects/demo-app-x/unpackage/debug/app-harmony-fde54b25',
             sourceMapRoot: path.resolve(
               __dirname,
               'uts/unpackage/dist/dev/.sourcemap/app-harmony'
