@@ -127,6 +127,30 @@
       "RequestFullScreenOptions"
     ],
     [
+      "ScanCode"
+    ],
+    [
+      "ScanCodeCompleteCallback"
+    ],
+    [
+      "ScanCodeFail"
+    ],
+    [
+      "ScanCodeFailCallback"
+    ],
+    [
+      "ScanCodeOptions"
+    ],
+    [
+      "ScanCodeSuccess"
+    ],
+    [
+      "ScanCodeSuccessCallback"
+    ],
+    [
+      "ScanCodeSupportedTypes"
+    ],
+    [
       "ShowActionSheet"
     ],
     [
