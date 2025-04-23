@@ -1,13 +1,13 @@
-let nativeApp: IApp
+let nativeApp: IApp | undefined
 
 export function getNativeApp() {
-  return nativeApp
+  return nativeApp!
 }
 
-export function setNativeApp(app: IApp) {
+export function setNativeApp(app: IApp | undefined) {
   nativeApp = app
 }
 
 export function getPageManager() {
-  return nativeApp.pageManager
+  return nativeApp!.pageManager
 }

@@ -8684,7 +8684,11 @@ const nodeOps = {
   },
   createElement: (tag, container) => {
     if (!container) {
-      return getDocument().createElement(tag);
+      const document = getDocument();
+      if (!document) {
+        throw new Error("document is not defined");
+      }
+      return document.createElement(tag);
     } else {
       const document = container.page.document;
       return document.createElement(tag);
@@ -9165,10 +9169,14 @@ const render = (...args) => {
 };
 const createApp = (...args) => {
   const app = ensureRenderer().createApp(...args);
-  const { mount } = app;
+  const { mount, unmount } = app;
   app.mount = (container) => {
     setDocument(container);
     return mount(container.body);
+  };
+  app.unmount = () => {
+    setDocument(void 0);
+    unmount();
   };
   return app;
 };
