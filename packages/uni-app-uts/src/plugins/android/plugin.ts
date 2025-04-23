@@ -94,6 +94,15 @@ export function uniAppPlugin(): UniVitePlugin {
       : null
   const changedFiles: { fileName: string; event: ChangeEvent }[] = []
 
+  const uniExtApiUniModulesDeps: string[] =
+    process.env.UNI_COMPILE_TARGET === 'ext-api'
+      ? JSON.parse(process.env.UNI_COMPILE_EXT_API_UNI_MODULES_DEPS || '[]')
+      : []
+
+  const uniExtApiUniModulesExternals = uniExtApiUniModulesDeps.map(
+    (dep) => `@/uni_modules/${dep}`
+  )
+
   return {
     name: 'uni:app-uts',
     apply: 'build',
@@ -118,6 +127,12 @@ export function uniAppPlugin(): UniVitePlugin {
                 ['vue', 'vuex', 'pinia', '@dcloudio/uni-app'].includes(source)
               ) {
                 return true
+              }
+              if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
+                // 比如 uni-scanCode 依赖了 uni-camera
+                if (uniExtApiUniModulesExternals.includes(source)) {
+                  return true
+                }
               }
               // 相对目录
               if (source.startsWith('@/') || source.startsWith('.')) {
@@ -266,7 +281,7 @@ export function uniAppPlugin(): UniVitePlugin {
                 true
               ),
               sourceMap: false,
-              uni_modules: [process.env.UNI_COMPILE_EXT_API_PLUGIN_ID!],
+              uni_modules: uniExtApiUniModulesDeps,
               pages: getUniXPagePaths(),
               extApiComponents: [],
               uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
