@@ -66,7 +66,7 @@ export function uniPagesJsonPlugin(
                   console.log(
                     `当前工程${
                       allPagePaths.length
-                    }个页面，正在编译${vueFilename}...${'\u200b'}`
+                    }个页面，正在编译${vueFilename}...${'\u200D'}`
                   )
                 }
                 // }
