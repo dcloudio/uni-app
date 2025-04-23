@@ -120,6 +120,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       '@dcloudio/uni-runtime': 'io.dcloud.uniapp.framework.runtime',
     },
     uniModules: uni_modules,
+    uniModulesPrefix: process.env.UNI_UTS_MODULE_PREFIX || '',
     uniXPages: pages,
     globals: {
       envs: {
