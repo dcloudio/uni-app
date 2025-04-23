@@ -11,7 +11,7 @@ import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import { closePage } from '../../api/route/utils'
 import { clearTabBarStatus } from './tabBar'
 
-export function initOn(app: IApp) {
+export function initOn(app: IApp, unregisterApp: () => void) {
   app.addEventListener(ON_SHOW, async function (event) {
     const app = getNativeApp()
     const MAX_TIMEOUT = 200
@@ -70,15 +70,17 @@ export function initOn(app: IApp) {
     }
   })
   app.addEventListener(ON_EXIT, function () {
+    const appInstance = getApp().vm as ComponentPublicInstance
     clearWebviewReady()
     resetWebviewId()
     getAllPages().forEach((page) => closePage(page, 'none'))
     clearTabBarStatus()
     // TODO clear routes/vue
-    invokeHook(getApp().vm as ComponentPublicInstance, ON_EXIT)
+    unregisterApp()
+    invokeHook(appInstance, ON_EXIT)
   })
 }
 
-export function initService(app: IApp) {
-  initOn(app)
+export function initService(app: IApp, unregisterApp: () => void) {
+  initOn(app, unregisterApp)
 }

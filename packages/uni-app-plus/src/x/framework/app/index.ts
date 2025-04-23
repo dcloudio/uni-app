@@ -22,10 +22,7 @@ import type {
 } from '@dcloudio/uni-app-x/types/uni'
 import type { UniApp } from '@dcloudio/uni-app-x/types/app'
 
-let appCtx: ComponentPublicInstance
-const defaultApp = {
-  globalData: {},
-}
+let appCtx: ComponentPublicInstance | undefined
 
 export const entryPageState = {
   isReady: false,
@@ -75,7 +72,7 @@ export function initUniApp(uniApp: UniApp) {
   uniApp.$vm = appCtx
   Object.defineProperty(uniApp, 'globalData', {
     get: () => {
-      return appCtx.globalData || {}
+      return appCtx!.globalData || {}
     },
   })
 }
@@ -114,11 +111,15 @@ export function registerApp(
   initAppVm(appCtx)
   initUniApp(uniApp)
 
+  const defaultApp = {
+    globalData: {},
+  }
+
   extend(appCtx, defaultApp) // 拷贝默认实现
 
   defineGlobalData(appCtx, defaultApp.globalData)
 
-  initService(nativeApp)
+  initService(nativeApp, unregisterApp)
 
   // initEntry()
   // initTabBar()
@@ -138,6 +139,13 @@ export function registerApp(
   __uniConfig.ready = true
 
   // nav
+}
+
+export function unregisterApp() {
+  setNativeApp(undefined)
+  appCtx!.$.appContext.app.unmount()
+  appCtx = undefined
+  __uniConfig.ready = false
 }
 
 export function initApp(app: App) {
