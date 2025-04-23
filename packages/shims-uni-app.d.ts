@@ -125,14 +125,14 @@ declare namespace UniNamespace {
 
   interface PageNavigationBarButton {
     type:
-      | 'none'
-      | 'forward'
-      | 'back'
-      | 'share'
-      | 'favorite'
-      | 'home'
-      | 'menu'
-      | 'close'
+    | 'none'
+    | 'forward'
+    | 'back'
+    | 'share'
+    | 'favorite'
+    | 'home'
+    | 'menu'
+    | 'close'
     color: string
     background?: string
     badgeText?: string
@@ -203,6 +203,8 @@ declare namespace UniNamespace {
     web?: PagesJsonPageStyle
     app?: PagesJsonPageStyle
     'app-plus'?: PagesJsonPageStyle
+    'app-android'?: PagesJsonPageStyle
+    'app-ios'?: PagesJsonPageStyle
     'app-harmony'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
     'mp-baidu'?: PagesJsonPageStyle
@@ -381,7 +383,7 @@ declare namespace UniNamespace {
     shown: boolean
   }
 
-  interface ComponentDescriptor {}
+  interface ComponentDescriptor { }
 
   type OnApiLike = (callback: (result: unknown) => void) => void
   type CallbackFunction = (...args: any[]) => void

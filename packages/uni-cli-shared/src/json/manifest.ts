@@ -152,27 +152,30 @@ export function getDevServerOptions(manifestJson: Record<string, any>) {
   return extend({}, platformManifest?.devServer)
 }
 
+/**
+ * 非 uni-app-x 支持 app、app-plus、app-harmony
+ * uni-app-x 支持 app、app-android、app-ios、app-harmony
+ * UNI_PLATFORM仅包含app不细分平台
+ * UNI_UTS_PLATFORM细分了app-android、app-ios、app-harmony
+ */
 export function getPlatformManifestJson(
   manifestJson: any,
-  platform?: UniApp.PLATFORM | 'app-ios' | 'app-android' | 'app-harmony'
+  platform?: UniApp.PLATFORM
 ) {
   const isX = process.env.UNI_APP_X === 'true'
   if (!platform) {
-    if (isX) {
-      platform = process.env.UNI_UTS_PLATFORM!
-    } else {
-      platform = process.env.UNI_PLATFORM
-    }
+    platform = process.env.UNI_PLATFORM
   }
   if (isX) {
     if (platform === 'app-android' || platform === 'app-ios') {
       return manifestJson[platform] || manifestJson['app'] || {}
+    } else if (platform === 'app') {
+      return (
+        manifestJson[process.env.UNI_UTS_PLATFORM!] || manifestJson['app'] || {}
+      )
     }
   }
   if (platform === 'app') {
-    if (isX) {
-      return manifestJson.app || {}
-    }
     return manifestJson['app-plus'] || manifestJson['plus'] || {}
   }
   if (platform === 'h5') {
