@@ -2546,7 +2546,7 @@ function _asyncToGenerator(n) {
     });
   };
 }
-function initOn(app) {
+function initOn(app, unregisterApp2) {
   app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
     var _ref = _asyncToGenerator(function* (event) {
       var _getCurrentPage;
@@ -2599,15 +2599,17 @@ function initOn(app) {
     }
   });
   app.addEventListener(ON_EXIT, function() {
+    var appInstance = getApp().vm;
     clearWebviewReady();
     resetWebviewId();
     getAllPages().forEach((page) => closePage(page, "none"));
     clearTabBarStatus();
-    invokeHook(getApp().vm, ON_EXIT);
+    unregisterApp2();
+    invokeHook(appInstance, ON_EXIT);
   });
 }
-function initService(app) {
-  initOn(app);
+function initService(app, unregisterApp2) {
+  initOn(app, unregisterApp2);
 }
 function initComponentInstance(app) {
   app.mixin({
@@ -2635,9 +2637,6 @@ function initComponentInstance(app) {
   });
 }
 var appCtx;
-var defaultApp = {
-  globalData: {}
-};
 var entryPageState = {
   isReady: false,
   handledBeforeEntryPageRoutes: false
@@ -2666,14 +2665,23 @@ function registerApp(appVm, nativeApp2, uniApp) {
   appCtx = appVm;
   initAppVm(appCtx);
   initUniApp(uniApp);
+  var defaultApp = {
+    globalData: {}
+  };
   extend(appCtx, defaultApp);
   defineGlobalData(appCtx, defaultApp.globalData);
-  initService(nativeApp2);
+  initService(nativeApp2, unregisterApp);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
   initAppError(appVm, nativeApp2);
   initSubscribeHandlers();
   __uniConfig.ready = true;
+}
+function unregisterApp() {
+  setNativeApp(void 0);
+  appCtx.$.appContext.app.unmount();
+  appCtx = void 0;
+  __uniConfig.ready = false;
 }
 function initApp(app) {
   initComponentInstance(app);
