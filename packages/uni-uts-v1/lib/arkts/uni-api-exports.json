@@ -910,6 +910,33 @@
       "ClearStorageSync"
     ],
     [
+      "OsThemeChangeResult"
+    ],
+    [
+      "AppThemeChangeResult"
+    ],
+    [
+      "OnOsThemeChangeCallback"
+    ],
+    [
+      "OnAppThemeChangeCallback"
+    ],
+    [
+      "SetAppThemeSuccessResult"
+    ],
+    [
+      "SetAppThemeOptions"
+    ],
+    [
+      "AppThemeFail"
+    ],
+    [
+      "OnHostThemeChangeCallbackResult"
+    ],
+    [
+      "OnHostThemeChangeCallback"
+    ],
+    [
       "ConnectSocket"
     ],
     [

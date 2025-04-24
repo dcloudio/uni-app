@@ -1,4 +1,4 @@
-import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, debounce, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_BACK_PRESS, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
+import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, debounce, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_BACK_PRESS, ON_THEME_CHANGE, OFF_THEME_CHANGE, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
 export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared';
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 export { extend, hasOwn, isArray, isFunction, isPlainObject, isString } from '@vue/shared';
@@ -13299,6 +13299,16 @@ function createWebviewContext(id, componentInstance) {
     }
 }
 
+const themeChangeCallBack = (res) => {
+    UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
+};
+const onThemeChange = defineOnApi(ON_THEME_CHANGE, () => {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
+});
+const offThemeChange = defineOffApi(OFF_THEME_CHANGE, () => {
+    UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
+});
+
 const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) => {
     const pageId = getPageIdByVm(getCurrentPageVm());
     UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, resolve);
@@ -13345,6 +13355,7 @@ var uni$1 = {
   offLocationChange: offLocationChange,
   offLocationChangeError: offLocationChangeError,
   offPageNotFound: offPageNotFound,
+  offThemeChange: offThemeChange,
   offUnhandledRejection: offUnhandledRejection,
   offWindowResize: offWindowResize,
   onAppHide: onAppHide,
@@ -13357,6 +13368,7 @@ var uni$1 = {
   onLocationChangeError: onLocationChangeError,
   onPageNotFound: onPageNotFound,
   onTabBarMidButtonTap: onTabBarMidButtonTap,
+  onThemeChange: onThemeChange,
   onUnhandledRejection: onUnhandledRejection,
   onWindowResize: onWindowResize,
   openLocation: openLocation,
@@ -13659,6 +13671,15 @@ function initGlobalEvent() {
         emit(ON_KEYBOARD_HEIGHT_CHANGE, {
             height: event.height,
         });
+    });
+    plusGlobalEvent.addEventListener('uistylechange', function (event) {
+        const args = {
+            theme: event.uistyle,
+        };
+        emit(ON_THEME_CHANGE, args);
+        // TODO 框架 UI 适配 darkmode
+        /* publishHandler(ON_THEME_CHANGE, args, getCurrentPageId())
+        changePagesNavigatorStyle() */
     });
     plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
 }
