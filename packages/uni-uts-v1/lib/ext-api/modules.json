@@ -1194,7 +1194,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "offOsThemeChange": {
@@ -1202,7 +1203,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "setAppTheme": {
@@ -1210,7 +1212,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "onAppThemeChange": {
@@ -1218,7 +1221,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "offAppThemeChange": {
@@ -1226,7 +1230,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "onThemeChange": {
@@ -1258,7 +1263,7 @@
           "x-js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": false,
+          "arkts": true,
           "mp-weixin": true
         }
       },
@@ -1269,7 +1274,7 @@
           "x-js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": false,
+          "arkts": true,
           "mp-weixin": true
         }
       }
