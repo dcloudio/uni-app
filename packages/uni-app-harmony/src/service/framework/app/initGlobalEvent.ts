@@ -11,10 +11,12 @@ import {
   initEnterOptions,
   parseRedirectInfo,
 } from '@dcloudio/uni-app-plus/service/framework/app/utils'
+import { changePagesNavigatorStyle } from '@dcloudio/uni-app-plus/service/theme'
+import { getCurrentPageId } from '@dcloudio/uni-core'
 
 export function initGlobalEvent() {
   const plusGlobalEvent = (plus as any).globalEvent
-  const { emit } = UniServiceJSBridge
+  const { emit, publishHandler } = UniServiceJSBridge
 
   plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener)
 
@@ -46,9 +48,8 @@ export function initGlobalEvent() {
         theme: event.uistyle,
       }
       emit(ON_THEME_CHANGE, args)
-      // TODO 框架 UI 适配 darkmode
-      /* publishHandler(ON_THEME_CHANGE, args, getCurrentPageId())
-      changePagesNavigatorStyle() */
+      publishHandler(ON_THEME_CHANGE, args, getCurrentPageId())
+      changePagesNavigatorStyle()
     }
   )
 
