@@ -46,6 +46,10 @@ export const chooseImage = defineAsyncApi<API_TYPE_CHOOSE_IMAGE>(
     })
     document.body.appendChild(imageInput)
 
+    imageInput.addEventListener('cancel', () => {
+      reject('chooseImage:fail cancel')
+    })
+
     imageInput.addEventListener('change', function (event) {
       const eventTarget = event.target as HTMLInputElement
 

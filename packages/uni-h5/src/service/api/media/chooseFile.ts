@@ -47,6 +47,10 @@ export const chooseFile = defineAsyncApi<API_TYPE_CHOOSE_FILE>(
     })
     document.body.appendChild(fileInput)
 
+    fileInput.addEventListener('cancel', () => {
+      reject('chooseFile:fail cancel')
+    })
+
     fileInput.addEventListener('change', function (event: Event) {
       const eventTarget = event.target as HTMLInputElement
 
