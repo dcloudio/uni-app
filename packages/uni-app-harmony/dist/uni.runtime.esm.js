@@ -11872,6 +11872,51 @@ function initDebugRefresh(isTab, path, query) {
     };
 }
 
+let lastStatusBarStyle$1;
+let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+function newSetStatusBarStyle(style) {
+    lastStatusBarStyle$1 = style;
+    oldSetStatusBarStyle(style);
+}
+plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+function setStatusBarStyle$1(statusBarStyle) {
+    if (!statusBarStyle) {
+        const page = getCurrentPage();
+        if (!page) {
+            return;
+        }
+        statusBarStyle = getPage$BasePage(page).statusBarStyle;
+        if (!statusBarStyle || statusBarStyle === lastStatusBarStyle$1) {
+            return;
+        }
+    }
+    if (statusBarStyle === lastStatusBarStyle$1) {
+        return;
+    }
+    if (('production' !== 'production')) {
+        console.log(formatLog('setStatusBarStyle', statusBarStyle));
+    }
+    lastStatusBarStyle$1 = statusBarStyle;
+    plus.navigator.setStatusBarStyle(statusBarStyle);
+}
+
+function getNavigatorStyle() {
+    return getTheme() === 'dark' ? 'light' : 'dark';
+}
+function getTheme() {
+    return plus.navigator.getUIStyle();
+}
+function changePagesNavigatorStyle() {
+    if (__uniConfig.darkmode) {
+        const theme = getNavigatorStyle();
+        setStatusBarStyle$1(theme);
+        const pages = getAllPages();
+        pages.forEach((page) => {
+            getPage$BasePage(page).statusBarStyle = theme;
+        });
+    }
+}
+
 const downgrade = 'HarmonyOS' === 'Android';
 const ANI_SHOW = 'pop-in';
 const ANI_DURATION = 300;
@@ -13655,7 +13700,7 @@ function initSubscribeHandlers() {
 
 function initGlobalEvent() {
     const plusGlobalEvent = plus.globalEvent;
-    const { emit } = UniServiceJSBridge;
+    const { emit, publishHandler } = UniServiceJSBridge;
     plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
     plusGlobalEvent.addEventListener('pause', () => {
         emit(ON_APP_ENTER_BACKGROUND);
@@ -13677,9 +13722,8 @@ function initGlobalEvent() {
             theme: event.uistyle,
         };
         emit(ON_THEME_CHANGE, args);
-        // TODO 框架 UI 适配 darkmode
-        /* publishHandler(ON_THEME_CHANGE, args, getCurrentPageId())
-        changePagesNavigatorStyle() */
+        publishHandler(ON_THEME_CHANGE, args, getCurrentPageId());
+        changePagesNavigatorStyle();
     });
     plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
 }
