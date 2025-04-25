@@ -8388,6 +8388,9 @@ function initVueApp(appVm) {
             if (__page_container__) {
                 __page_container__.isUnmounted = true;
                 render(null, __page_container__);
+                delete pageInstance.__page_container__;
+                const vnode = pageInstance.$.vnode;
+                delete vnode.__page_container__;
             }
         },
     });
