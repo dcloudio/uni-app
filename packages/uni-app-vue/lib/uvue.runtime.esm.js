@@ -9177,6 +9177,9 @@ const createApp = (...args) => {
   app.unmount = () => {
     setDocument(void 0);
     unmount();
+    app._container = null;
+    app._context.reload = () => {
+    };
   };
   return app;
 };
