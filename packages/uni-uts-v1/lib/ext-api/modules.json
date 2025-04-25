@@ -792,6 +792,19 @@
       }
     }
   },
+  "uni-openDocument": {
+    "uni": {
+      "openDocument": {
+        "name": "openDocument",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-payment": {
     "provider": {
       "service": "payment"
