@@ -56,19 +56,13 @@ export function createTransformBorder(
       if (str != null) {
         return str.trim()
       }
-      if (options.type == 'uvue') {
-        return 'medium'
-      }
-      return '0'
+      return 'medium'
     }
     const defaultStyle = (str: string | null): string => {
       if (str != null) {
         return str.trim()
       }
-      if (options.type == 'uvue') {
-        return 'none'
-      }
-      return 'solid'
+      return 'none'
     }
     const defaultColor = (str: string | null): string => {
       if (str != null) {

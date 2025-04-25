@@ -8945,8 +8945,8 @@ function patchStyle(el, prev, next) {
     const classStyle = getExtraClassStyle(el);
     const style = getExtraStyle(el);
     for (const key in prev) {
-      const _key = camelize(key);
       if (next[key] == null) {
+        const _key = key.startsWith("--") ? key : camelize(key);
         const value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
         parseStyleDecl(_key, value).forEach((value2, key2) => {
           batchedStyles.set(key2, value2);
@@ -8958,10 +8958,7 @@ function patchStyle(el, prev, next) {
       const value = next[key];
       const prevValue = prev[key];
       if (!isSame(prevValue, value)) {
-        let _key = key;
-        if (!key.startsWith("--")) {
-          _key = camelize(key);
-        }
+        const _key = key.startsWith("--") ? key : camelize(key);
         parseStyleDecl(_key, value).forEach((value2, key2) => {
           batchedStyles.set(key2, value2);
           style == null ? void 0 : style.set(key2, value2);
@@ -8971,7 +8968,8 @@ function patchStyle(el, prev, next) {
   } else {
     for (const key in next) {
       const value = next[key];
-      setBatchedStyles(batchedStyles, camelize(key), value);
+      const _key = key.startsWith("--") ? key : camelize(key);
+      setBatchedStyles(batchedStyles, _key, value);
     }
     setExtraStyle(el, batchedStyles);
   }
