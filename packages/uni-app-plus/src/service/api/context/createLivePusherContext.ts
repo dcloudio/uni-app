@@ -142,12 +142,12 @@ export const createLivePusherContext =
   defineSyncApi<API_TYPE_CREATE_LIVE_PUSHER_CONTEXT>(
     API_CREATE_LIVE_PUSHER_CONTEXT,
     (id, vm) => {
+      if (!vm) {
+        return console.warn(
+          'uni.createLivePusherContext: 2 arguments required, but only 1 present'
+        )
+      }
       if (vm.$page.meta.isNVue) {
-        if (!vm) {
-          return console.warn(
-            'uni.createLivePusherContext: 2 arguments required, but only 1 present'
-          )
-        }
         const elm = findElmById(id, vm)
         if (!elm) {
           return console.warn('Can not find `' + id + '`')
