@@ -4,8 +4,8 @@ import {
   camelize,
   computed,
   getCurrentInstance,
+  onBeforeUnmount,
   onMounted,
-  onUnmounted,
   ref,
   watch,
   watchEffect,
@@ -164,7 +164,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       )
     })
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       const ctx = instance?.proxy
       $dispatch(
         ctx,

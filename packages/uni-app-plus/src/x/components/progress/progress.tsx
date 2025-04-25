@@ -10,8 +10,8 @@ import {
   camelize,
   computed,
   getCurrentInstance,
+  onBeforeUnmount,
   onMounted,
-  onUnmounted,
   reactive,
   watch,
 } from 'vue'
@@ -129,10 +129,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         _animate()
       })
     })
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       clearTimer()
     })
-    // onUnload(() => {})
 
     return () => {
       return (
