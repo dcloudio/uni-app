@@ -1617,38 +1617,32 @@ function createTransformBorder(options) {
       source
     } = decl;
     var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
-    var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
-      var index = splitResult.findIndex(str => item.test(str));
-      return index < 0 ? null : splitResult.splice(index, 1)[0];
-    });
-    var isUvuePlatform = options.type == 'uvue';
-    if (isUvuePlatform) {
-      if (splitResult.length > 0 && value != '') {
-        return [decl];
-      }
+    var havVar = splitResult.some(str => str.startsWith('var('));
+    var result = [];
+    // 包含 var ，直接视为 width/style/color 都使用默认值
+    if (havVar) {
+      result = splitResult;
+      splitResult = [];
     } else {
-      // nvue 维持不变
-      if (splitResult.length > 0) {
-        return [decl];
-      }
+      result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+        var index = splitResult.findIndex(str => item.test(str));
+        return index < 0 ? null : splitResult.splice(index, 1)[0];
+      });
+    }
+    if (splitResult.length > 0 && value != '') {
+      return [decl];
     }
     var defaultWidth = str => {
       if (str != null) {
         return str.trim();
       }
-      if (options.type == 'uvue') {
-        return 'medium';
-      }
-      return '0';
+      return 'medium';
     };
     var defaultStyle = str => {
       if (str != null) {
         return str.trim();
       }
-      if (options.type == 'uvue') {
-        return 'none';
-      }
-      return 'solid';
+      return 'none';
     };
     var defaultColor = str => {
       if (str != null) {
@@ -1656,10 +1650,6 @@ function createTransformBorder(options) {
       }
       return '#000000';
     };
-    if (!isUvuePlatform) {
-      // nvue 维持不变
-      return [createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source), createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source), createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source)];
-    }
     return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
   };
 }
@@ -1818,7 +1808,7 @@ var transformTransition = decl => {
   return result;
 };
 function getDeclTransforms(options) {
-  var transformBorder = options.type == 'uvue' ? createTransformBorder(options) : createTransformBorderNvue();
+  var transformBorder = options.type == 'uvue' ? createTransformBorder() : createTransformBorderNvue();
   var styleMap = _objectSpread({
     transition: transformTransition,
     border: transformBorder,
@@ -9749,8 +9739,8 @@ function patchStyle(el, prev, next) {
       var classStyle = getExtraClassStyle(el);
       var style = getExtraStyle(el);
       for (var key in prev) {
-        var _key = camelize(key);
         if (next[key] == null) {
+          var _key = key.startsWith("--") ? key : camelize(key);
           var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
           parseStyleDecl(_key, value).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
@@ -9762,10 +9752,7 @@ function patchStyle(el, prev, next) {
         var _value2 = next[_key22];
         var prevValue = prev[_key22];
         if (!isSame(prevValue, _value2)) {
-          var _key23 = _key22;
-          if (!_key22.startsWith("--")) {
-            _key23 = camelize(_key22);
-          }
+          var _key23 = _key22.startsWith("--") ? _key22 : camelize(_key22);
           parseStyleDecl(_key23, _value2).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
             style == null ? void 0 : style.set(key2, value2);
@@ -9776,7 +9763,8 @@ function patchStyle(el, prev, next) {
   } else {
     for (var key in next) {
       var value = next[key];
-      setBatchedStyles(batchedStyles, camelize(key), value);
+      var _key = key.startsWith("--") ? key : camelize(key);
+      setBatchedStyles(batchedStyles, _key, value);
     }
     setExtraStyle(el, batchedStyles);
   }
