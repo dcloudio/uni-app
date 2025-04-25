@@ -640,6 +640,9 @@ function initVueApp(appVm) {
       if (__page_container__) {
         __page_container__.isUnmounted = true;
         render(null, __page_container__);
+        delete pageInstance.__page_container__;
+        var vnode = pageInstance.$.vnode;
+        delete vnode.__page_container__;
       }
     }
   });
@@ -2600,12 +2603,13 @@ function initOn(app, unregisterApp2) {
   });
   app.addEventListener(ON_EXIT, function() {
     var appInstance = getApp().vm;
+    var pages2 = getAllPages().slice(0);
+    pages2.forEach((page) => closePage(page, "none"));
+    clearTabBarStatus();
     clearWebviewReady();
     resetWebviewId();
-    getAllPages().forEach((page) => closePage(page, "none"));
-    clearTabBarStatus();
-    unregisterApp2();
     invokeHook(appInstance, ON_EXIT);
+    unregisterApp2();
   });
 }
 function initService(app, unregisterApp2) {
@@ -2678,9 +2682,9 @@ function registerApp(appVm, nativeApp2, uniApp) {
   __uniConfig.ready = true;
 }
 function unregisterApp() {
-  setNativeApp(void 0);
   appCtx.$.appContext.app.unmount();
   appCtx = void 0;
+  setNativeApp(void 0);
   __uniConfig.ready = false;
 }
 function initApp(app) {

@@ -1530,20 +1530,20 @@ function createTransformBorder(options) {
       source
     } = decl;
     var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
-    var havVar = splitResult.some(str => str.startsWith('var('));
-    var result = [];
-    // 包含 var ，直接视为 width/style/color 都使用默认值
-    if (havVar) {
-      result = splitResult;
-      splitResult = [];
+    var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+      var index = splitResult.findIndex(str => item.test(str));
+      return index < 0 ? null : splitResult.splice(index, 1)[0];
+    });
+    var isUvuePlatform = options.type == 'uvue';
+    if (isUvuePlatform) {
+      if (splitResult.length > 0 && value != '') {
+        return [decl];
+      }
     } else {
-      result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
-        var index = splitResult.findIndex(str => item.test(str));
-        return index < 0 ? null : splitResult.splice(index, 1)[0];
-      });
-    }
-    if (splitResult.length > 0 && value != '') {
-      return [decl];
+      // nvue 维持不变
+      if (splitResult.length > 0) {
+        return [decl];
+      }
     }
     var defaultWidth = str => {
       if (str != null) {
@@ -1569,6 +1569,10 @@ function createTransformBorder(options) {
       }
       return '#000000';
     };
+    if (!isUvuePlatform) {
+      // nvue 维持不变
+      return [createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source), createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source), createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source)];
+    }
     return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
   };
 }
@@ -8470,6 +8474,8 @@ var createApp = function () {
   app.unmount = () => {
     setDocument(void 0);
     unmount();
+    app._container = null;
+    app._context.reload = () => {};
   };
   return app;
 };
