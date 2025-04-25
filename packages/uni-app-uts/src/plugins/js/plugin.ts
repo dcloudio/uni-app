@@ -92,10 +92,6 @@ export function createUniAppJsEnginePlugin(
               output: {
                 name: 'AppService',
                 banner: ``,
-                footer:
-                  process.env.UNI_UTS_PLATFORM === 'app-harmony'
-                    ? 'const mount = globalThis.__mount__;delete globalThis.__mount__;export { mount };'
-                    : '',
                 format: 'iife',
                 entryFileNames: APP_SERVICE_FILENAME,
                 globals: {
