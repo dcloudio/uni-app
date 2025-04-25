@@ -369,7 +369,7 @@ function useAutoFocus(props: Props, fieldRef: Ref<HTMLFieldElement | null>) {
       } else {
         field.focus()
         // 无用户交互的 webview 需主动显示键盘（安卓）
-        if (!userActionState.userAction) {
+        if (!userActionState.userAction && props.inputmode !== 'none') {
           plus.key.showSoftKeybord()
         }
       }
