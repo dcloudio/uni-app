@@ -142,9 +142,9 @@ export function registerApp(
 }
 
 export function unregisterApp() {
-  setNativeApp(undefined)
   appCtx!.$.appContext.app.unmount()
   appCtx = undefined
+  setNativeApp(undefined)
   __uniConfig.ready = false
 }
 

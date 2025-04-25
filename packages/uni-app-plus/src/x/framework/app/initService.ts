@@ -71,13 +71,13 @@ export function initOn(app: IApp, unregisterApp: () => void) {
   })
   app.addEventListener(ON_EXIT, function () {
     const appInstance = getApp().vm as ComponentPublicInstance
+    const pages = getAllPages().slice(0)
+    pages.forEach((page) => closePage(page, 'none'))
+    clearTabBarStatus()
     clearWebviewReady()
     resetWebviewId()
-    getAllPages().forEach((page) => closePage(page, 'none'))
-    clearTabBarStatus()
-    // TODO clear routes/vue
-    unregisterApp()
     invokeHook(appInstance, ON_EXIT)
+    unregisterApp()
   })
 }
 
