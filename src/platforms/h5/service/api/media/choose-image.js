@@ -29,6 +29,12 @@ export function chooseImage ({
     type: 'image'
   })
   document.body.appendChild(imageInput)
+  imageInput.addEventListener('cancel', function () {
+    const res = {
+      errMsg: 'chooseImage:fail cancel'
+    }
+    invoke(callbackId, res)
+  })
   imageInput.addEventListener('change', function (event) {
     const tempFiles = []
     const fileCount = event.target.files.length
