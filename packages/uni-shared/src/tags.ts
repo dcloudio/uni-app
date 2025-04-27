@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag } from '@vue/shared'
+import { isHTMLTag, isSVGTag, isVoidTag } from '@vue/shared'
 
 export const BUILT_IN_TAG_NAMES = [
   'ad',
@@ -161,6 +161,7 @@ export const UVUE_IOS_BUILT_IN_TAGS = [
 export const UVUE_HARMONY_BUILT_IN_TAGS = [
   // TODO 列出完整列表
   ...BUILT_IN_TAG_NAMES,
+  'volume-panel',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
@@ -240,7 +241,7 @@ const NVUE_CUSTOM_COMPONENTS = [
 ]
 
 // 内置的easycom组件
-const UVUE_BUILT_IN_EASY_COMPONENTS = ['map']
+const UVUE_BUILT_IN_EASY_COMPONENTS = ['map', 'camera']
 
 export function isAppUVueBuiltInEasyComponent(tag: string) {
   return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag)
@@ -290,6 +291,10 @@ export function isAppIOSUVueNativeTag(tag: string) {
 }
 
 export function isAppHarmonyUVueNativeTag(tag: string) {
+  // video 目前是easycom实现的
+  if (tag === 'video' || tag === 'map') {
+    return false
+  }
   // 前端实现的内置组件都会注册一个根组件
   if (tag.startsWith('uni-') && tag.endsWith('-element')) {
     return true
@@ -352,4 +357,10 @@ export const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX
 export const enum SetUniElementIdTagType {
   BuiltInComponent = 1, // 如：unicloud-db
   BuiltInRootElement = 2, // 如：uni-cloud-db-element
+}
+
+// TODO 是否还存在其他需要特殊处理的 void 标签？
+const APP_VOID_TAGS = ['textarea']
+export function isAppVoidTag(tag: string) {
+  return APP_VOID_TAGS.includes(tag) || isVoidTag(tag)
 }

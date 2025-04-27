@@ -93,9 +93,7 @@ export default () => {
           }
           return {
             code: devtoolsCode + code,
-            map: {
-              mappings: '',
-            },
+            map: null,
           }
         },
       }

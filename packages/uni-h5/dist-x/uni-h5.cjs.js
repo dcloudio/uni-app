@@ -430,6 +430,9 @@ function initUTSJSONObjectProperties(obj) {
   }
   Object.defineProperties(obj, propertyDescriptorMap);
 }
+function getRealDefaultValue(defaultValue) {
+  return defaultValue === void 0 ? null : defaultValue;
+}
 let UTSJSONObject$1 = class UTSJSONObject2 {
   static keys(obj) {
     return Object.keys(obj);
@@ -517,7 +520,7 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
   }
   _getValue(keyPath, defaultValue) {
     const keyPathArr = this._resolveKeyPath(keyPath);
-    const realDefaultValue = defaultValue === void 0 ? null : defaultValue;
+    const realDefaultValue = getRealDefaultValue(defaultValue);
     if (keyPathArr.length === 0) {
       return realDefaultValue;
     }
@@ -525,7 +528,11 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     for (let i = 0; i < keyPathArr.length; i++) {
       const key = keyPathArr[i];
       if (value instanceof Object) {
-        value = key in value ? value[key] : realDefaultValue;
+        if (key in value) {
+          value = value[key];
+        } else {
+          return realDefaultValue;
+        }
       } else {
         return realDefaultValue;
       }
@@ -539,46 +546,52 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     this[key] = value;
   }
   getAny(key, defaultValue) {
-    return this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    return this._getValue(key, realDefaultValue);
   }
   getString(key, defaultValue) {
-    const value = this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    const value = this._getValue(key, realDefaultValue);
     if (typeof value === "string") {
       return value;
     } else {
-      return null;
+      return realDefaultValue;
     }
   }
   getNumber(key, defaultValue) {
-    const value = this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    const value = this._getValue(key, realDefaultValue);
     if (typeof value === "number") {
       return value;
     } else {
-      return null;
+      return realDefaultValue;
     }
   }
   getBoolean(key, defaultValue) {
-    const boolean = this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    const boolean = this._getValue(key, realDefaultValue);
     if (typeof boolean === "boolean") {
       return boolean;
     } else {
-      return null;
+      return realDefaultValue;
     }
   }
   getJSON(key, defaultValue) {
-    let value = this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    let value = this._getValue(key, realDefaultValue);
     if (value instanceof Object) {
       return value;
     } else {
-      return null;
+      return realDefaultValue;
     }
   }
   getArray(key, defaultValue) {
-    let value = this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    let value = this._getValue(key, realDefaultValue);
     if (value instanceof Array) {
       return value;
     } else {
-      return null;
+      return realDefaultValue;
     }
   }
   toMap() {
@@ -900,6 +913,196 @@ const ViewJSBridge = /* @__PURE__ */ shared.extend(
     invokeServiceMethod
   }
 );
+function getDefaultExportFromCjs(x) {
+  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+}
+var attrs = ["top", "left", "right", "bottom"];
+var inited;
+var elementComputedStyle = {};
+var support;
+function getSupport() {
+  if (!("CSS" in window) || typeof CSS.supports != "function") {
+    support = "";
+  } else if (CSS.supports("top: env(safe-area-inset-top)")) {
+    support = "env";
+  } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
+    support = "constant";
+  } else {
+    support = "";
+  }
+  return support;
+}
+function init() {
+  support = typeof support === "string" ? support : getSupport();
+  if (!support) {
+    attrs.forEach(function(attr2) {
+      elementComputedStyle[attr2] = 0;
+    });
+    return;
+  }
+  function setStyle(el, style) {
+    var elStyle = el.style;
+    Object.keys(style).forEach(function(key) {
+      var val = style[key];
+      elStyle[key] = val;
+    });
+  }
+  var cbs = [];
+  function parentReady(callback) {
+    if (callback) {
+      cbs.push(callback);
+    } else {
+      cbs.forEach(function(cb) {
+        cb();
+      });
+    }
+  }
+  var passiveEvents = false;
+  try {
+    var opts = Object.defineProperty({}, "passive", {
+      get: function() {
+        passiveEvents = { passive: true };
+      }
+    });
+    window.addEventListener("test", null, opts);
+  } catch (e2) {
+  }
+  function addChild(parent, attr2) {
+    var a1 = document.createElement("div");
+    var a2 = document.createElement("div");
+    var a1Children = document.createElement("div");
+    var a2Children = document.createElement("div");
+    var W = 100;
+    var MAX = 1e4;
+    var aStyle = {
+      position: "absolute",
+      width: W + "px",
+      height: "200px",
+      boxSizing: "border-box",
+      overflow: "hidden",
+      paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
+    };
+    setStyle(a1, aStyle);
+    setStyle(a2, aStyle);
+    setStyle(a1Children, {
+      transition: "0s",
+      animation: "none",
+      width: "400px",
+      height: "400px"
+    });
+    setStyle(a2Children, {
+      transition: "0s",
+      animation: "none",
+      width: "250%",
+      height: "250%"
+    });
+    a1.appendChild(a1Children);
+    a2.appendChild(a2Children);
+    parent.appendChild(a1);
+    parent.appendChild(a2);
+    parentReady(function() {
+      a1.scrollTop = a2.scrollTop = MAX;
+      var a1LastScrollTop = a1.scrollTop;
+      var a2LastScrollTop = a2.scrollTop;
+      function onScroll() {
+        if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
+          return;
+        }
+        a1.scrollTop = a2.scrollTop = MAX;
+        a1LastScrollTop = a1.scrollTop;
+        a2LastScrollTop = a2.scrollTop;
+        attrChange(attr2);
+      }
+      a1.addEventListener("scroll", onScroll, passiveEvents);
+      a2.addEventListener("scroll", onScroll, passiveEvents);
+    });
+    var computedStyle = getComputedStyle(a1);
+    Object.defineProperty(elementComputedStyle, attr2, {
+      configurable: true,
+      get: function() {
+        return parseFloat(computedStyle.paddingBottom);
+      }
+    });
+  }
+  var parentDiv = document.createElement("div");
+  setStyle(parentDiv, {
+    position: "absolute",
+    left: "0",
+    top: "0",
+    width: "0",
+    height: "0",
+    zIndex: "-1",
+    overflow: "hidden",
+    visibility: "hidden"
+  });
+  attrs.forEach(function(key) {
+    addChild(parentDiv, key);
+  });
+  document.body.appendChild(parentDiv);
+  parentReady();
+  inited = true;
+}
+function getAttr(attr2) {
+  if (!inited) {
+    init();
+  }
+  return elementComputedStyle[attr2];
+}
+var changeAttrs = [];
+function attrChange(attr2) {
+  if (!changeAttrs.length) {
+    setTimeout(function() {
+      var style = {};
+      changeAttrs.forEach(function(attr3) {
+        style[attr3] = elementComputedStyle[attr3];
+      });
+      changeAttrs.length = 0;
+      callbacks.forEach(function(callback) {
+        callback(style);
+      });
+    }, 0);
+  }
+  changeAttrs.push(attr2);
+}
+var callbacks = [];
+function onChange(callback) {
+  if (!getSupport()) {
+    return;
+  }
+  if (!inited) {
+    init();
+  }
+  if (typeof callback === "function") {
+    callbacks.push(callback);
+  }
+}
+function offChange(callback) {
+  var index2 = callbacks.indexOf(callback);
+  if (index2 >= 0) {
+    callbacks.splice(index2, 1);
+  }
+}
+var safeAreaInsets = {
+  get support() {
+    return (typeof support === "string" ? support : getSupport()).length != 0;
+  },
+  get top() {
+    return getAttr("top");
+  },
+  get left() {
+    return getAttr("left");
+  },
+  get right() {
+    return getAttr("right");
+  },
+  get bottom() {
+    return getAttr("bottom");
+  },
+  onChange,
+  offChange
+};
+var out = safeAreaInsets;
+const safeAreaInsets$1 = /* @__PURE__ */ getDefaultExportFromCjs(out);
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ vue.withModifiers(
@@ -1317,7 +1520,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   let target;
   target = uniShared.normalizeTarget(el);
   return {
-    type: detail.type || name,
+    type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
@@ -2779,6 +2982,9 @@ class UniPageImpl {
     options,
     vm
   }) {
+    this.width = 0;
+    this.height = 0;
+    this.statusBarHeight = safeAreaInsets$1.top;
     this.getParentPage = () => null;
     this.route = route;
     this.options = options;
@@ -3190,7 +3396,7 @@ function initApp$1(vm) {
   initAppVm(appVm);
   defineGlobalData(appVm);
 }
-function wrapperComponentSetup(comp, { clone, init, setup, before }) {
+function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
   if (clone) {
     comp = shared.extend({}, comp);
   }
@@ -3198,7 +3404,7 @@ function wrapperComponentSetup(comp, { clone, init, setup, before }) {
   const oldSetup = comp.setup;
   comp.setup = (props2, ctx) => {
     const instance = vue.getCurrentInstance();
-    init(instance.proxy);
+    init2(instance.proxy);
     setup(instance);
     if (oldSetup) {
       return oldSetup(props2, ctx);
@@ -3888,18 +4094,11 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         );
         if (currentInstance && parentInstance) {
           currentInstance.$parentInstance = parentInstance;
-          if (isNormalDialogPageInstance(
-            ctx
-          )) {
-            const parentDialogPages = parentInstance.$dialogPages.value;
-            currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
-          }
-          if (isSystemDialogPageInstance(
-            ctx
-          )) {
-            const parentSystemDialogPages = parentInstance.$systemDialogPages.value;
-            currentInstance.$dialogPage = parentSystemDialogPages[parentSystemDialogPages.length - 1];
-          }
+          assignDialogPage(
+            ctx,
+            parentInstance,
+            currentInstance
+          );
         }
       } else {
         useBackgroundColorContent(pageMeta);
@@ -3929,6 +4128,25 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
     );
   }
 });
+function assignDialogPage(ctx, parentInstance, currentInstance) {
+  let parentDialogPages = [];
+  if (isNormalDialogPageInstance(ctx)) {
+    parentDialogPages = parentInstance.$dialogPages.value;
+  }
+  if (isSystemDialogPageInstance(ctx)) {
+    parentDialogPages = parentInstance.$systemDialogPages.value;
+  }
+  if (!parentDialogPages.length)
+    return;
+  for (let i = 0; i < parentDialogPages.length; i++) {
+    const dialogPage = parentDialogPages[i];
+    if (!dialogPage.$assigned) {
+      dialogPage.$assigned = true;
+      currentInstance.$dialogPage = dialogPage;
+      break;
+    }
+  }
+}
 function createPageBodyVNode(ctx) {
   return vue.openBlock(), vue.createBlock(
     PageBody,
@@ -4075,10 +4293,10 @@ function HTMLParser(html, handler) {
       stack.push(tagName);
     }
     if (handler.start) {
-      var attrs = [];
+      var attrs2 = [];
       rest.replace(attr, function(match2, name) {
         var value = arguments[2] ? arguments[2] : arguments[3] ? arguments[3] : arguments[4] ? arguments[4] : fillAttrs[name] ? name : "";
-        attrs.push({
+        attrs2.push({
           name,
           value,
           escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
@@ -4086,7 +4304,7 @@ function HTMLParser(html, handler) {
         });
       });
       if (handler.start) {
-        handler.start(tagName, attrs, unary);
+        handler.start(tagName, attrs2, unary);
       }
     }
   }
@@ -5172,7 +5390,7 @@ const LISTENER_PREFIX = /^on[A-Z]+/;
 const useAttrs = (params = {}) => {
   const { excludeListeners = false, excludeKeys = [] } = params;
   const instance = vue.getCurrentInstance();
-  const attrs = vue.shallowRef({});
+  const attrs2 = vue.shallowRef({});
   const listeners = vue.shallowRef({});
   const excludeAttrs = vue.shallowRef({});
   const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
@@ -5198,11 +5416,11 @@ const useAttrs = (params = {}) => {
         listeners: {}
       }
     );
-    attrs.value = res.attrs;
+    attrs2.value = res.attrs;
     listeners.value = res.listeners;
     excludeAttrs.value = res.exclude;
   });
-  return { $attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs };
+  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
 function flatVNode(nodes) {
   const array = [];
@@ -7175,14 +7393,14 @@ function processClickEvent(node, triggerItemClick) {
     };
   }
 }
-function normalizeAttrs(tagName, attrs) {
-  if (!shared.isPlainObject(attrs))
+function normalizeAttrs(tagName, attrs2) {
+  if (!shared.isPlainObject(attrs2))
     return;
-  for (const key in attrs) {
-    if (shared.hasOwn(attrs, key)) {
-      const value = attrs[key];
+  for (const key in attrs2) {
+    if (shared.hasOwn(attrs2, key)) {
+      const value = attrs2[key];
       if (tagName === "img" && key === "src")
-        attrs[key] = getRealPath(value);
+        attrs2[key] = getRealPath(value);
     }
   }
 }
@@ -7219,8 +7437,8 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
-function parseAttrs(attrs) {
-  return attrs.reduce(function(pre, attr2) {
+function parseAttrs(attrs2) {
+  return attrs2.reduce(function(pre, attr2) {
     let value = attr2.value;
     const name = attr2.name;
     if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
@@ -7246,12 +7464,12 @@ function parseHtml(html) {
     children: []
   };
   HTMLParser(html, {
-    start: function(tag, attrs, unary) {
+    start: function(tag, attrs2, unary) {
       const node = {
         name: tag
       };
-      if (attrs.length !== 0) {
-        node.attrs = parseAttrs(attrs);
+      if (attrs2.length !== 0) {
+        node.attrs = parseAttrs(attrs2);
       }
       if (unary) {
         const parent = stacks[0] || results;
@@ -9299,7 +9517,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       rearrange(visibleVNode, containerRef, isVertical, state);
     }
     const containerStyle = vue.computed(() => {
-      return `${props2.direction === "none" ? "overflow: hidden;" : isVertical.value ? "overflow-y: auto;" : "overflow-x: auto;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
+      return `${props2.direction === "none" ? "overflow: hidden;" : props2.direction === "all" ? "overflow: auto;" : isVertical.value ? "overflow: hidden auto;" : "overflow: auto hidden;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
     });
     const contentStyle = vue.computed(() => {
       return `position: relative; ${isVertical.value ? "height" : "width"}: ${state.totalSize}px;`;
@@ -9928,23 +10146,45 @@ function formatTime(val) {
 }
 function useGesture(props2, videoRef, fullscreenState) {
   const state = vue.reactive({
+    seeking: false,
     gestureType: "none",
     volumeOld: 0,
     volumeNew: 0,
     currentTimeOld: 0,
-    currentTimeNew: 0
+    currentTimeNew: 0,
+    toastThin: false
   });
   const touchStartOrigin = {
     x: 0,
     y: 0
   };
+  let changeToastThinTimer = null;
+  const changeToastThin = () => {
+    if (state.gestureType !== "none" && changeToastThinTimer != null)
+      return;
+    changeToastThinTimer = setTimeout(() => {
+      state.toastThin = true;
+    }, 500);
+  };
+  let showToastTimer = void 0;
+  function changeShowToast() {
+    if (showToastTimer != void 0)
+      return;
+    showToastTimer = setTimeout(() => {
+      state.toastThin = false;
+      showToastTimer = void 0;
+    }, 1e3);
+  }
+  function clearChangeShowToast() {
+    clearTimeout(showToastTimer);
+    showToastTimer = void 0;
+  }
   function onTouchstart(event) {
     const toucher = event.targetTouches[0];
     touchStartOrigin.x = toucher.pageX;
     touchStartOrigin.y = toucher.pageY;
     state.gestureType = "none";
     state.volumeOld = 0;
-    state.currentTimeOld = state.currentTimeNew = 0;
   }
   function onTouchmove(event) {
     function stop() {
@@ -9965,6 +10205,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     const video = videoRef.value;
     if (gestureType === "progress") {
       changeProgress(pageX - origin.x);
+      state.seeking = true;
     } else if (gestureType === "volume") {
       changeVolume(pageY - origin.y);
     }
@@ -9982,10 +10223,11 @@ function useGesture(props2, videoRef, fullscreenState) {
         stop();
       }
     } else {
-      if (!props2.pageGesture) {
+      if (!props2.pageGesture && !props2.vslideGesture) {
         state.gestureType = "stop";
         return;
       }
+      changeToastThin();
       state.gestureType = "volume";
       state.volumeOld = video.volume;
       if (!fullscreenState.fullscreen) {
@@ -10026,6 +10268,8 @@ function useGesture(props2, videoRef, fullscreenState) {
       } else if (value > 1) {
         value = 1;
       }
+      clearChangeShowToast();
+      changeShowToast();
       video.volume = value;
       state.volumeNew = value;
     }
@@ -10106,7 +10350,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
     exitFullScreen
   };
 }
-function useVideo(props2, attrs, trigger) {
+function useVideo(props2, attrs2, trigger) {
   const videoRef = vue.ref(null);
   const src = vue.computed(() => getRealPath(props2.src));
   const muted = vue.computed(() => props2.muted === "true" || props2.muted === true);
@@ -10118,7 +10362,8 @@ function useVideo(props2, attrs, trigger) {
     duration: 0,
     progress: 0,
     buffered: 0,
-    muted
+    muted,
+    pauseUpdatingCurrentTime: false
   });
   vue.watch(() => src.value, () => {
     state.playing = false;
@@ -10180,7 +10425,10 @@ function useVideo(props2, attrs, trigger) {
   }
   function onTimeUpdate($event) {
     const video = $event.target;
-    const currentTime = state.currentTime = video.currentTime;
+    if (!state.pauseUpdatingCurrentTime) {
+      state.currentTime = video.currentTime;
+    }
+    const currentTime = video.currentTime;
     trigger("timeupdate", $event, {
       currentTime,
       duration: video.duration
@@ -10238,13 +10486,14 @@ function useVideo(props2, attrs, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek) {
+function useControls(props2, videoState, seek, seeking) {
   const progressRef = vue.ref(null);
   const ballRef = vue.ref(null);
   const centerPlayBtnShow = vue.computed(() => props2.showCenterPlayBtn && !videoState.start);
   const controlsVisible = vue.ref(true);
   const controlsShow = vue.computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
   const state = vue.reactive({
+    seeking: false,
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -10286,13 +10535,6 @@ function useControls(props2, videoState, seek) {
       autoHideStart();
     } else {
       autoHideEnd();
-    }
-  });
-  vue.watch([() => videoState.currentTime, () => {
-    props2.duration;
-  }], function updateProgress() {
-    if (!state.touching) {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
     }
   });
   return {
@@ -10388,6 +10630,25 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
   useContextInfo();
   useSubscribe();
 }
+function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
+  const progressing = vue.computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  vue.watch(progressing, (val) => {
+    videoState.pauseUpdatingCurrentTime = val;
+    controlsState.controlsTouching = val;
+    if (gestureState.gestureType === "progress" && val) {
+      controlsState.controlsVisible = val;
+    }
+  });
+  vue.watch([() => videoState.currentTime, () => {
+    props$9.duration;
+  }], () => {
+    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  });
+  vue.watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
+    videoState.currentTime = currentTimeNew;
+  });
+  return progressing;
+}
 const props$9 = {
   id: {
     type: String,
@@ -10459,6 +10720,10 @@ const props$9 = {
     type: [Boolean, String],
     default: false
   },
+  vslideGesture: {
+    type: [Boolean, String],
+    default: false
+  },
   enableProgressGesture: {
     type: [Boolean, String],
     default: true
@@ -10478,7 +10743,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
-    attrs,
+    attrs: attrs2,
     slots
   }) {
     const rootRef = vue.ref(null);
@@ -10492,9 +10757,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    const {
-      t: t2
-    } = useI18n();
+    useI18n();
     initI18nVideoMsgsOnce();
     const {
       videoRef,
@@ -10514,7 +10777,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       onPause,
       onEnded,
       onTimeUpdate
-    } = useVideo(props2, attrs, trigger);
+    } = useVideo(props2, attrs2, trigger);
     const {
       state: danmuState,
       danmuRef,
@@ -10541,9 +10804,12 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
     } = useControls(props2, videoState, seek);
     useContext();
+    const progressing = useProgressing(videoState, gestureState, controlsState);
     return () => {
       return vue.createVNode("uni-video", {
         "ref": rootRef,
@@ -10595,6 +10861,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-controls"
       }, [vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
@@ -10607,30 +10874,44 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-progress-container",
         "onClick": vue.withModifiers(clickProgress, ["stop"])
       }, [vue.createVNode("div", {
-        "class": "uni-video-progress"
+        "class": {
+          "uni-video-progress": true,
+          "uni-video-progress-progressing": progressing.value
+        }
       }, [vue.createVNode("div", {
         "style": {
-          width: videoState.buffered + "%"
+          width: videoState.buffered - videoState.progress + "%",
+          left: videoState.progress + "%"
         },
         "class": "uni-video-progress-buffered"
+      }, null, 4), vue.createVNode("div", {
+        "style": {
+          width: videoState.progress + "%"
+        },
+        "class": "uni-video-progress-played"
       }, null, 4), vue.createVNode("div", {
         "ref": ballRef,
         "style": {
           left: videoState.progress + "%"
         },
-        "class": "uni-video-ball"
+        "class": {
+          "uni-video-ball": true,
+          "uni-video-ball-progressing": progressing.value
+        }
       }, [vue.createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
+      }, null)], 6)], 2)], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
         "onClick": vue.withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vue.vShow, props2.danmuBtn]]), vue.withDirectives(vue.createVNode("div", {
+      }, null, 10, ["onClick"]), [[vue.vShow, props2.danmuBtn]]), vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
@@ -10644,45 +10925,37 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": vue.withModifiers(() => {
         }, ["stop"])
       }, [vue.createVNode("div", {
-        "class": "uni-video-cover-play-button",
+        "class": "uni-video-cover-play-button uni-video-icon",
         "onClick": vue.withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), vue.createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), vue.createVNode("div", {
+      }, null, 8, ["onClick"])], 8, ["onClick"]), vue.createVNode("div", {
+        "class": "uni-video-loading"
+      }, [gestureState.gestureType === "volume" ? vue.createVNode("div", {
         "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-volume": gestureState.gestureType === "volume"
-        }
-      }, [vue.createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [t2("uni.video.volume")]), vue.createVNode("svg", {
-        "class": "uni-video-toast-icon",
-        "width": "200px",
-        "height": "200px",
-        "viewBox": "0 0 1024 1024",
-        "version": "1.1",
-        "xmlns": "http://www.w3.org/2000/svg"
-      }, [vue.createVNode("path", {
-        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
-      }, null)]), vue.createVNode("div", {
-        "class": "uni-video-toast-value"
-      }, [vue.createVNode("div", {
-        "style": {
-          width: gestureState.volumeNew * 100 + "%"
+          "uni-video-toast-container": true,
+          "uni-video-toast-container-thin": gestureState.toastThin
         },
-        "class": "uni-video-toast-value-content"
-      }, [vue.createVNode("div", {
-        "class": "uni-video-toast-volume-grids"
-      }, [vue.renderList(10, () => vue.createVNode("div", {
-        "class": "uni-video-toast-volume-grids-item"
-      }, null))])], 4)])], 2), vue.createVNode("div", {
+        "style": {
+          marginTop: `5px`
+        }
+      }, [!gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume" ? vue.createVNode("text", {
+        "class": "uni-video-icon uni-video-toast-icon"
+      }, [""]) : !gestureState.toastThin && vue.createVNode("text", {
+        "class": "uni-video-icon uni-video-toast-icon"
+      }, [""]), vue.createVNode("div", {
+        "class": "uni-video-toast-draw",
+        "style": {
+          width: `${gestureState.volumeNew * 100}%`
+        }
+      }, null)], 2) : null]), vue.createVNode("div", {
         "class": {
           "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
+          "uni-video-toast-progress": progressing.value
         }
       }, [vue.createVNode("div", {
         "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), vue.createVNode("div", {
+      }, [vue.createVNode("span", {
+        "class": "uni-video-toast-title-current-time"
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -13848,6 +14121,9 @@ function useTopWindow(layoutState) {
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
+  vue.watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   vue.watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => vue.nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
@@ -13867,6 +14143,9 @@ function useLeftWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
+  vue.watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   vue.watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => vue.nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
@@ -13886,6 +14165,9 @@ function useRightWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
+  vue.watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   vue.watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => vue.nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {

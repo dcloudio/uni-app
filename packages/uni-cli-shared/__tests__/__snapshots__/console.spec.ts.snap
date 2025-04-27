@@ -1,5 +1,137 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`console appendConsoleExpr 1`] = `
+"// 基础测试用例
+console.log('简单字符串', " at test.ts:2")
+console.info('双引号字符串', " at test.ts:3")
+console.warn(\`模板字符串\`, " at test.ts:4")
+console.error('带分号的', " at test.ts:5")
+console.debug('不带分号的', " at test.ts:6")
+
+// 多参数测试
+console.log('参数1', '参数2', '参数3', " at test.ts:9")
+console.info(1, true, null, undefined, " at test.ts:10")
+console.warn('混合类型', 123, true, null, " at test.ts:11")
+
+// 对象和数组测试
+console.log({ name: 'test', age: 18 }, " at test.ts:14")
+console.log(['a', 'b', 'c'], " at test.ts:15")
+console.log({ a: 1 }, ['x', 'y'], { b: 2 }, " at test.ts:16")
+
+// 表达式测试
+console.log(1 + 2, " at test.ts:19")
+console.log(foo(), " at test.ts:20")
+console.log(a ? b : c, " at test.ts:21")
+console.log(obj.method(), " at test.ts:22")
+
+// 模板字符串测试
+console.log(\`Hello \${name}\`, " at test.ts:25")
+console.log(\`多行
+模板字符串
+测试\`, " at test.ts:26")
+console.log(\`\${obj.method()} 和 \${arr[0]}\`, " at test.ts:29")
+
+// 多行格式测试
+console.log('多行参数1', '多行参数2', '多行参数3', " at test.ts:32")
+
+console.log({
+  name: 'test',
+  age: 18,
+  nested: {
+    a: 1,
+    b: 2,
+  },
+}, " at test.ts:34")
+
+// 嵌套括号测试
+console.log(getData('test'), " at test.ts:44")
+console.log(outer(inner()), " at test.ts:45")
+console.log((a + b) * c, " at test.ts:46")
+
+// 函数调用测试
+console.log(foo.bar(), " at test.ts:49")
+console.log(new Date(), " at test.ts:50")
+console.log(Array.from(set), " at test.ts:51")
+
+// 复杂混合测试
+console.log(
+  \`用户 \${user.name}\`,
+  {
+    id: user.id,
+    time: new Date(),
+    data: getData(user.id),
+  },
+  process.env.NODE_ENV === 'development' && '开发环境', " at test.ts:54"
+)
+
+// 注释和特殊字符测试
+console.log("包含'单引号'", " at test.ts:65")
+console.log('包含"双引号"', " at test.ts:66")
+console.log(\`包含\\\`反引号\\\`\`, " at test.ts:67")
+console.log('包含/正斜杠/', " at test.ts:68")
+console.log('包含\\\\反斜杠\\\\', " at test.ts:69")
+
+// 正则表达式测试
+console.log(/test/g, " at test.ts:72")
+console.log(new RegExp('test', 'g'), " at test.ts:73")
+
+// 特殊语法测试
+console.log(...args, " at test.ts:76")
+console.log?.('optional chaining', " at test.ts:77")
+
+// 带注释的测试
+console.log(
+  'test', // 行尾注释
+  /* 块注释 */ 'test2',
+  'test3', " at test.ts:80" /* 行内块注释 */
+)
+
+// 空参数测试
+console.log()
+console.log('', " at test.ts:88")
+console.log()
+
+// 连续调用测试
+console.log('test1', " at test.ts:92")
+console.log('test2', " at test.ts:93")
+console.log('test1', " at test.ts:94")
+console.log('test2', " at test.ts:95")
+
+// 条件语句中的测试
+if (true) console.log('条件语句', " at test.ts:98")
+if (true) {
+  console.log('条件语句块', " at test.ts:100")
+}
+
+// 箭头函数中的测试
+const fn = () => console.log('箭头函数', " at test.ts:104")
+const fn2 = () => {
+  console.log('箭头函数块', " at test.ts:106")
+}
+
+console.log(\`console.log('test')\`, " at test.ts:109")
+
+export const test = {
+  mounted: {
+    type: 'JSFunction',
+    value: "function () {\\n    console.log('did mount');\\n  }",
+    mounted2: {
+      type: 'JSFunction',
+      value: "function () {\\n    console.log('did mount');\\n  }",
+    },
+  },
+  beforeMount: {
+    type: 'JSFunction',
+    value: "function () {\\n    console.log('will unmount');\\n  }",
+  },
+  beforeDestroy: {
+    type: 'JSFunction',
+    value: "function () {\\n    console.log('will unmount');\\n  }",
+  },
+}
+"
+`;
+
 exports[`console console.debug 1`] = `"__f__('info','at foo.vue:1',a,b,c);"`;
 
 exports[`console console.error 1`] = `"__f__('info','at foo.vue:1',a,b,c);"`;

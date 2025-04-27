@@ -14,7 +14,9 @@ interface Map<K, V> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -42,7 +44,9 @@ interface Map<K, V> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -72,7 +76,9 @@ interface Map<K, V> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -102,7 +108,9 @@ interface Map<K, V> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -129,7 +137,9 @@ interface Map<K, V> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -158,7 +168,9 @@ interface Map<K, V> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -183,7 +195,9 @@ interface Map<K, V> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -211,7 +225,9 @@ interface MapConstructor {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -237,7 +253,9 @@ interface MapConstructor {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {

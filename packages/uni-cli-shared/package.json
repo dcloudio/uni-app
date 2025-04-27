@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-shared",
-  "version": "3.0.0-4050720250324001",
+  "version": "3.0.0-alpha-4060320250423001",
   "description": "@dcloudio/uni-cli-shared",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -66,7 +66,8 @@
     "resolve": "^1.22.1",
     "source-map-js": "^1.0.2",
     "tapable": "^2.2.0",
-    "unplugin-auto-import": "^0.18.2",
+    "unimport": "4.1.1",
+    "unplugin-auto-import": "19.1.0",
     "xregexp": "3.1.0"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
@@ -87,7 +88,6 @@
     "@types/stylus": "^0.48.36",
     "code-frame": "link:@types/@babel/code-frame",
     "postcss": "^8.4.21",
-    "unimport": "^3.11.1",
     "vue": "3.4.21"
   }
 }

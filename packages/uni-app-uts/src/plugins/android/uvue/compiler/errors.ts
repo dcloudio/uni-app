@@ -3,6 +3,7 @@ import type { SourceLocation } from '@vue/compiler-core'
 export interface CompilerError extends SyntaxError {
   code: number | string
   loc?: SourceLocation
+  errorType?: 'css'
 }
 
 export interface CoreCompilerError extends CompilerError {

@@ -45,10 +45,10 @@ describe('compiler-dom: transform v-on', () => {
       type: NodeTypes.JS_PROPERTY,
       value: {
         callee: V_ON_WITH_MODIFIERS,
-        arguments: [{ content: '_ctx.test' }, '["stop"]'],
+        arguments: [{ content: '_ctx.test' }, '["stop","prevent"]'],
       },
     })
-    expect(warnings).toEqual(['.prevent is not supported'])
+    expect(warnings).toEqual([])
   })
 
   it('should support multiple events and modifiers options w/ prefixIdentifiers: true', () => {

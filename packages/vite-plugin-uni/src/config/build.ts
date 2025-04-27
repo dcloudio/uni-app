@@ -31,6 +31,11 @@ export function createBuild(
         : false,
     rollupOptions: {
       onwarn(warning, warn) {
+        if (warning.code === 'EMPTY_BUNDLE') {
+          // 忽略空包警告，通常是条件编译之类导致的
+          // Generated an empty chunk:
+          return
+        }
         if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
           const { message } = warning
           // ignore

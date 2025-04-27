@@ -1,4 +1,10 @@
 {
+  "uni-createIntersectionObserver": {
+    "createIntersectionObserver": [
+      null,
+      "null"
+    ]
+  },
   "uni-createWebviewContext": {
     "createWebviewContext": [
       null,

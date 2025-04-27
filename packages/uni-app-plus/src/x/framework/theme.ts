@@ -52,7 +52,7 @@ export function registerThemeChange(callback: (themeMode: IThemeMode) => void) {
       callback(appThemeMode)
     })
   } catch (e) {
-    console.warn('监听 OS 主题变化', e)
+    // console.warn(e)
   }
 }
 

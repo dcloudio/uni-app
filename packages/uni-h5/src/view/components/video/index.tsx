@@ -45,6 +45,8 @@ function formatTime(val: number): string {
 }
 type GestureType = 'none' | 'stop' | 'volume' | 'progress'
 interface GestureState {
+  seeking: boolean
+  toastThin: boolean
   gestureType: GestureType
   volumeOld: number
   volumeNew: number
@@ -55,28 +57,52 @@ function useGesture(
   props: {
     enableProgressGesture: boolean | string
     pageGesture: boolean | string
+    vslideGesture: boolean | string
   },
   videoRef: Ref<HTMLVideoElement | null>,
   fullscreenState: FullscreenState
 ) {
   const state: GestureState = reactive({
+    seeking: false,
     gestureType: 'none',
     volumeOld: 0,
     volumeNew: 0,
     currentTimeOld: 0,
     currentTimeNew: 0,
+    toastThin: false,
   })
   const touchStartOrigin = {
     x: 0,
     y: 0,
   }
+
+  let changeToastThinTimer: ReturnType<typeof setTimeout> | null = null
+  const changeToastThin = () => {
+    if (state.gestureType !== 'none' && changeToastThinTimer != null) return
+    changeToastThinTimer = setTimeout(() => {
+      state.toastThin = true
+    }, 500)
+  }
+  let showToastTimer: ReturnType<typeof setTimeout> | undefined = undefined
+  function changeShowToast() {
+    if (showToastTimer != undefined) return
+    showToastTimer = setTimeout(() => {
+      state.toastThin = false
+      showToastTimer = undefined
+    }, 1000)
+  }
+  function clearChangeShowToast() {
+    clearTimeout(showToastTimer)
+    showToastTimer = undefined
+  }
+
   function onTouchstart(event: TouchEvent) {
     const toucher = event.targetTouches[0]
     touchStartOrigin.x = toucher.pageX
     touchStartOrigin.y = toucher.pageY
     state.gestureType = 'none'
     state.volumeOld = 0
-    state.currentTimeOld = state.currentTimeNew = 0
+    // state.currentTimeOld = state.currentTimeNew = 0
   }
   function onTouchmove(event: TouchEvent) {
     function stop() {
@@ -97,6 +123,7 @@ function useGesture(
     const video = videoRef.value as HTMLVideoElement
     if (gestureType === 'progress') {
       changeProgress(pageX - origin.x)
+      state.seeking = true
     } else if (gestureType === 'volume') {
       changeVolume(pageY - origin.y)
     }
@@ -114,10 +141,11 @@ function useGesture(
         stop()
       }
     } else {
-      if (!props.pageGesture) {
+      if (!props.pageGesture && !props.vslideGesture) {
         state.gestureType = 'stop'
         return
       }
+      changeToastThin()
       state.gestureType = 'volume'
       state.volumeOld = video.volume
       if (!fullscreenState.fullscreen) {
@@ -161,6 +189,8 @@ function useGesture(
       } else if (value > 1) {
         value = 1
       }
+      clearChangeShowToast()
+      changeShowToast()
       video.volume = value
       state.volumeNew = value
     }
@@ -289,6 +319,7 @@ interface VideoState {
   progress: number
   buffered: number
   muted: boolean
+  pauseUpdatingCurrentTime: boolean
 }
 function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
   const videoRef: Ref<HTMLVideoElement | null> = ref(null)
@@ -303,6 +334,7 @@ function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
     progress: 0,
     buffered: 0,
     muted,
+    pauseUpdatingCurrentTime: false,
   })
   watch(
     () => src.value,
@@ -372,7 +404,10 @@ function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
   }
   function onTimeUpdate($event: Event) {
     const video = $event.target as HTMLVideoElement
-    const currentTime = (state.currentTime = video.currentTime)
+    if (!state.pauseUpdatingCurrentTime) {
+      state.currentTime = video.currentTime
+    }
+    const currentTime = video.currentTime
     trigger('timeupdate', $event, {
       currentTime,
       duration: video.duration,
@@ -432,6 +467,7 @@ function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
 }
 
 interface ControlsState {
+  seeking: boolean
   touching: boolean
   controlsTouching: boolean
   centerPlayBtnShow: boolean
@@ -441,7 +477,8 @@ interface ControlsState {
 function useControls(
   props: { controls: any; showCenterPlayBtn: any; duration: any },
   videoState: VideoState,
-  seek: Function
+  seek: Function,
+  seeking?: (currentTimeNew: number) => void
 ) {
   const progressRef: Ref<HTMLElement | null> = ref(null)
   const ballRef: Ref<HTMLElement | null> = ref(null)
@@ -453,6 +490,7 @@ function useControls(
     () => !centerPlayBtnShow.value && props.controls && controlsVisible.value
   )
   const state: ControlsState = reactive({
+    seeking: false,
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -504,20 +542,6 @@ function useControls(
       }
     }
   )
-  watch(
-    [
-      () => videoState.currentTime,
-      () => {
-        props.duration
-      },
-    ],
-    function updateProgress() {
-      if (!state.touching) {
-        videoState.progress =
-          (videoState.currentTime / videoState.duration) * 100
-      }
-    }
-  )
   onMounted(() => {
     const passiveOptions = passive(false)
     let originX: number
@@ -543,6 +567,8 @@ function useControls(
         progress = 100
       }
       videoState.progress = progress
+      seeking?.((videoState.duration * progress) / 100)
+      state.seeking = true
       event.preventDefault()
       event.stopPropagation()
     }
@@ -726,6 +752,44 @@ function useContext(
   )
 }
 
+function useProgressing(
+  videoState: VideoState,
+  gestureState: GestureState,
+  controlsState: ControlsState,
+  autoHideEnd: () => void,
+  autoHideStart: () => void
+) {
+  const progressing = computed(
+    () => gestureState.gestureType === 'progress' || controlsState.touching
+  )
+  watch(progressing, (val) => {
+    videoState.pauseUpdatingCurrentTime = val
+    controlsState.controlsTouching = val
+    if (gestureState.gestureType === 'progress' && val) {
+      controlsState.controlsVisible = val
+    }
+  })
+  watch(
+    [
+      () => videoState.currentTime,
+      () => {
+        props.duration
+      },
+    ],
+    () => {
+      videoState.progress = (videoState.currentTime / videoState.duration) * 100
+    }
+  )
+  watch(
+    () => gestureState.currentTimeNew,
+    (currentTimeNew) => {
+      videoState.currentTime = currentTimeNew
+    }
+  )
+
+  return progressing
+}
+
 const props = {
   id: {
     type: String,
@@ -794,6 +858,10 @@ const props = {
     default: true,
   },
   pageGesture: {
+    type: [Boolean, String],
+    default: false,
+  },
+  vslideGesture: {
     type: [Boolean, String],
     default: false,
   },
@@ -891,7 +959,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       ballRef,
       clickProgress,
       toggleControls,
-    } = useControls(props, videoState, seek)
+      autoHideEnd,
+      autoHideStart,
+    } = useControls(props, videoState, seek, (currentTimeNew) => {
+      gestureState.currentTimeNew = currentTimeNew
+    })
     useContext(
       play,
       pause,
@@ -901,6 +973,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       playbackRate,
       requestFullScreen,
       exitFullScreen
+    )
+    const progressing = useProgressing(
+      videoState,
+      gestureState,
+      controlsState,
+      autoHideEnd,
+      autoHideStart
     )
 
     //#if _X_ && !_NODE_JS_
@@ -974,6 +1053,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                 <div
                   v-show={props.showPlayBtn}
                   class={{
+                    'uni-video-icon': true,
                     'uni-video-control-button': true,
                     'uni-video-control-button-play': !videoState.playing,
                     'uni-video-control-button-pause': videoState.playing,
@@ -989,15 +1069,30 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   onClick={withModifiers(clickProgress, ['stop'])}
                   v-show={props.showProgress}
                 >
-                  <div class="uni-video-progress">
+                  <div
+                    class={{
+                      'uni-video-progress': true,
+                      'uni-video-progress-progressing': progressing.value,
+                    }}
+                  >
                     <div
-                      style={{ width: videoState.buffered + '%' }}
+                      style={{
+                        width: videoState.buffered - videoState.progress + '%',
+                        left: videoState.progress + '%',
+                      }}
                       class="uni-video-progress-buffered"
+                    />
+                    <div
+                      style={{ width: videoState.progress + '%' }}
+                      class="uni-video-progress-played"
                     />
                     <div
                       ref={ballRef}
                       style={{ left: videoState.progress + '%' }}
-                      class="uni-video-ball"
+                      class={{
+                        'uni-video-ball': true,
+                        'uni-video-ball-progressing': progressing.value,
+                      }}
                     >
                       <div class="uni-video-inner" />
                     </div>
@@ -1010,16 +1105,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               <div
                 v-show={props.danmuBtn}
                 class={{
+                  'uni-video-icon': true,
                   'uni-video-danmu-button': true,
                   'uni-video-danmu-button-active': danmuState.enable,
                 }}
                 onClick={withModifiers(toggleDanmu, ['stop'])}
               >
-                {t('uni.video.danmu')}
+                {/* {t('uni.video.danmu')} */}
               </div>
               <div
                 v-show={props.showFullscreenBtn}
                 class={{
+                  'uni-video-icon': true,
                   'uni-video-fullscreen': true,
                   'uni-video-type-fullscreen': fullscreenState.fullscreen,
                 }}
@@ -1027,7 +1124,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   () => toggleFullscreen(!fullscreenState.fullscreen),
                   ['stop']
                 )}
-              />
+              ></div>
             </div>
             <div
               v-show={videoState.start && danmuState.enable}
@@ -1041,55 +1138,57 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                 onClick={withModifiers(() => {}, ['stop'])}
               >
                 <div
-                  class="uni-video-cover-play-button"
+                  class="uni-video-cover-play-button uni-video-icon"
                   onClick={withModifiers(play, ['stop'])}
                 />
-                <p class="uni-video-cover-duration">
+                {/* <p class="uni-video-cover-duration">
                   {formatTime(Number(props.duration) || videoState.duration)}
-                </p>
+                </p> */}
               </div>
             )}
-            <div
-              class={{
-                'uni-video-toast': true,
-                'uni-video-toast-volume': gestureState.gestureType === 'volume',
-              }}
-            >
-              <div class="uni-video-toast-title">{t('uni.video.volume')}</div>
-              <svg
-                class="uni-video-toast-icon"
-                width="200px"
-                height="200px"
-                viewBox="0 0 1024 1024"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z" />
-              </svg>
-              <div class="uni-video-toast-value">
+            <div class="uni-video-loading">
+              {gestureState.gestureType === 'volume' ? (
                 <div
-                  style={{ width: gestureState.volumeNew * 100 + '%' }}
-                  class="uni-video-toast-value-content"
+                  class={{
+                    'uni-video-toast-container': true,
+                    'uni-video-toast-container-thin': gestureState.toastThin,
+                  }}
+                  style={{ marginTop: `5px` }}
                 >
-                  <div class="uni-video-toast-volume-grids">
-                    {renderList(10, () => (
-                      <div class="uni-video-toast-volume-grids-item" />
-                    ))}
-                  </div>
+                  {!gestureState.toastThin &&
+                  gestureState.volumeNew > 0 &&
+                  gestureState.gestureType === 'volume' ? (
+                    <text class="uni-video-icon uni-video-toast-icon">
+                      {'\uea30'}
+                    </text>
+                  ) : (
+                    !gestureState.toastThin && (
+                      <text class="uni-video-icon uni-video-toast-icon">
+                        {'\uea31'}
+                      </text>
+                    )
+                  )}
+                  <div
+                    class="uni-video-toast-draw"
+                    style={{
+                      width: `${gestureState.volumeNew * 100}%`,
+                    }}
+                  ></div>
                 </div>
-              </div>
+              ) : null}
             </div>
             <div
               class={{
                 'uni-video-toast': true,
-                'uni-video-toast-progress':
-                  gestureState.gestureType === 'progress',
+                'uni-video-toast-progress': progressing.value,
               }}
             >
               <div class="uni-video-toast-title">
-                {formatTime(gestureState.currentTimeNew)}
+                <span class="uni-video-toast-title-current-time">
+                  {formatTime(gestureState.currentTimeNew)}
+                </span>
                 {' / '}
-                {formatTime(videoState.duration)}
+                {Number(props.duration) || formatTime(videoState.duration)}
               </div>
             </div>
             <div class="uni-video-slots">

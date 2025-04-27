@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app",
-  "version": "3.0.0-4050720250324001",
+  "version": "3.0.0-alpha-4060320250423001",
   "description": "@dcloudio/uni-app",
   "main": "./dist/uni-app.cjs.js",
   "module": "./dist/uni-app.es.js",

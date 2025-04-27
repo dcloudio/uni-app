@@ -1,12 +1,19 @@
 [
   {
     "type": "extapi",
-    "plugin": "uni-facialRecognitionVerify",
+    "plugin": "uni-facialVerify",
     "apis": [
       "startFacialRecognitionVerify",
       "getFacialRecognitionMetaInfo"
     ],
     "version": "1.0.3"
+  },
+  {
+    "type": "provider",
+    "plugin": "uni-location-system",
+    "provider": "system",
+    "service": "location",
+    "version": "1.0.0"
   },
   {
     "type": "provider",
@@ -30,6 +37,13 @@
     "version": "1.0.0"
   },
   {
+    "type": "provider",
+    "plugin": "uni-payment-wxpay",
+    "provider": "wxpay",
+    "service": "payment",
+    "version": "1.0.0"
+  },
+  {
     "type": "extapi",
     "plugin": "uni-push",
     "apis": [
@@ -44,7 +58,10 @@
   {
     "type": "extapi",
     "plugin": "uni-verify",
-    "apis": [],
+    "apis": [
+      "getUniverifyManager",
+      "getUniVerifyManager"
+    ],
     "version": "1.0.0"
   }
 ]

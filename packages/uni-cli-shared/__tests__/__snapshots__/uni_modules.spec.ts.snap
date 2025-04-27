@@ -80,7 +80,6 @@ exports[`uni_modules:uni-ext-api findEncryptUniModules(web) 1`] = `
 {
   "test-com1": undefined,
   "test-com2": undefined,
-  "test-uts1": undefined,
 }
 `;
 
@@ -134,8 +133,5 @@ exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(web) 1`] = `
   "uni_modules/test-com2/utils/index.uts",
   "uni_modules/test-com2/components/test-com2-1/test-com2-1.vue",
   "uni_modules/test-com2/components/test-com2-2/test-com2-2.vue",
-  "uni_modules/test-uts1/encrypt",
-  "uni_modules/test-uts1/package.json",
-  "uni_modules/test-uts1/utssdk/index.uts",
 ]
 `;

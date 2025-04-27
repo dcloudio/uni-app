@@ -1,4 +1,30 @@
 interface IJSONStringify {
+  /**
+   * 支持开发者自定义class序列化结果，此函数的返回值就是实现了此接口的class的序列化返回值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parse
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5.0",
+               "uniVer": "x",
+               "unixVer": "4.53",
+               "uniUtsPlugin": "4.53",
+               "unixUtsPlugin": "4.53"
+            },
+            "ios": {
+               "osVer": "x",
+               "uniVer": "x",
+               "uniUtsPlugin": "x",
+               "unixVer": "x",
+               "unixUtsPlugin": "x"
+            }
+        },
+        "web": {
+            "uniVer": "x",
+            "unixVer": "x"
+        }
+     }
+   */
   toJSON() : any
 }
 
@@ -21,6 +47,7 @@ interface JSON {
          "ios": {
            "osVer": "x",
            "uniVer": "x",
+           "uniUtsPlugin": "x",
            "unixVer": "x",
            "unixUtsPlugin": "x"
          },
@@ -49,7 +76,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -107,7 +136,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "3.9+",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "3.9+",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -146,7 +177,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -180,7 +213,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "3.9+",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "3.9+",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -210,7 +245,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -241,7 +278,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -269,7 +308,9 @@ interface JSON {
         "ios": {
           "osVer": "12.0",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "4.11",
+          "uniUtsPlugin": "x",
+          "unixUtsPlugin": "x"
         }
       },
       "web": {
@@ -290,7 +331,9 @@ interface JSON {
         "ios": {
           "osVer": "12.0",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "4.11",
+          "uniUtsPlugin": "x",
+          "unixUtsPlugin": "x"
         }
       },
       "web": {
@@ -311,7 +354,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {

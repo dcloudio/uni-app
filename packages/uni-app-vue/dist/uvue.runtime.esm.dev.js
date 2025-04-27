@@ -1824,42 +1824,61 @@ function createDecl(prop, value, important, raws, source) {
 }
 var backgroundColor = 'backgroundColor';
 var backgroundImage = 'backgroundImage';
+var handleTransformBackground = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  } else if (value == '') {
+    return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+  }
+  return [decl];
+};
+var handleTransformBackgroundNvue = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source)];
+  } else if (value == '') {
+    return [decl];
+  }
+  return [decl];
+};
 function createTransformBackground(options) {
   return decl => {
-    var {
-      value,
-      important,
-      raws,
-      source
-    } = decl;
     // nvue 平台维持原有逻辑不变
     var isUvuePlatform = options.type === 'uvue';
     if (isUvuePlatform) {
-      if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
-      } else if (/^linear-gradient(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, value, important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
-      } else if (value == '') {
-        return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
-      }
-      return [decl];
+      return handleTransformBackground(decl);
     } else {
-      if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-        return [createDecl(backgroundColor, value, important, raws, source)];
-      } else if (/^linear-gradient(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, value, important, raws, source)];
-      } else if (value == '') {
-        return [decl];
-      }
-      return [decl];
+      return handleTransformBackgroundNvue(decl);
     }
   };
 }
-var borderTop = 'borderTop';
-var borderRight = 'borderRight';
-var borderBottom = 'borderBottom';
-var borderLeft = 'borderLeft';
-// const position = ['top', 'right', 'bottom', 'left']
+function borderTop() {
+  return 'borderTop';
+}
+function borderRight() {
+  return 'borderRight';
+}
+function borderBottom() {
+  return 'borderBottom';
+}
+function borderLeft() {
+  return 'borderLeft';
+}
 var transformBorderColor = decl => {
   var {
     prop,
@@ -1879,11 +1898,10 @@ var transformBorderColor = decl => {
       if (_property_split.length === 3) {
         // border-top-width
         return [decl];
-      } else {
-        // border-width
-        splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
-        break;
       }
+      // border-width
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
     case 2:
       splitResult.push(splitResult[0], splitResult[1]);
       break;
@@ -1891,7 +1909,7 @@ var transformBorderColor = decl => {
       splitResult.push(splitResult[1]);
       break;
   }
-  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
+  return [createDecl(borderTop() + property, splitResult[0], important, raws, source), createDecl(borderRight() + property, splitResult[1], important, raws, source), createDecl(borderBottom() + property, splitResult[2], important, raws, source), createDecl(borderLeft() + property, splitResult[3], important, raws, source)];
 };
 var transformBorderColorNvue = decl => {
   var {
@@ -1922,11 +1940,17 @@ var transformBorderStyle = transformBorderColor;
 var transformBorderStyleNvue = transformBorderColorNvue;
 var transformBorderWidth = transformBorderColor;
 var transformBorderWidthNvue = transformBorderColorNvue;
-var borderWidth = 'Width';
-var borderStyle = 'Style';
-var borderColor = 'Color';
 function createTransformBorder(options) {
   return decl => {
+    var borderWidth = () => {
+      return 'Width';
+    };
+    var borderStyle = () => {
+      return 'Style';
+    };
+    var borderColor = () => {
+      return 'Color';
+    };
     var {
       prop,
       value,
@@ -1939,9 +1963,9 @@ function createTransformBorder(options) {
       var index = splitResult.findIndex(str => item.test(str));
       return index < 0 ? null : splitResult.splice(index, 1)[0];
     });
-    var isUvuePlatform = options.type === 'uvue';
+    var isUvuePlatform = options.type == 'uvue';
     if (isUvuePlatform) {
-      if (splitResult.length > 0 && value !== '') {
+      if (splitResult.length > 0 && value != '') {
         return [decl];
       }
     } else {
@@ -1950,16 +1974,42 @@ function createTransformBorder(options) {
         return [decl];
       }
     }
-    if (isUvuePlatform) {
-      return [...transformBorderWidth(createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source))];
-    } else {
+    var defaultWidth = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      if (options.type == 'uvue') {
+        return 'medium';
+      }
+      return '0';
+    };
+    var defaultStyle = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      if (options.type == 'uvue') {
+        return 'none';
+      }
+      return 'solid';
+    };
+    var defaultColor = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      return '#000000';
+    };
+    if (!isUvuePlatform) {
       // nvue 维持不变
-      return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+      return [createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source), createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source), createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source)];
     }
+    return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
   };
 }
 function createTransformBorderNvue(options) {
   return decl => {
+    var borderWidth = 'Width';
+    var borderStyle = 'Style';
+    var borderColor = 'Color';
     var {
       prop,
       value,
@@ -1975,7 +2025,7 @@ function createTransformBorderNvue(options) {
     if (splitResult.length) {
       return [decl];
     }
-    return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+    return [createDecl(prop + borderWidth, (result[0] || '0').trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || 'solid').trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
   };
 }
 var borderTopLeftRadius = 'borderTopLeftRadius';
@@ -2110,7 +2160,7 @@ var transformTransition = decl => {
   return result;
 };
 function getDeclTransforms(options) {
-  var transformBorder = options.type == 'uvue' ? createTransformBorder(options) : createTransformBorderNvue(options);
+  var transformBorder = options.type == 'uvue' ? createTransformBorder(options) : createTransformBorderNvue();
   var styleMap = _objectSpread({
     transition: transformTransition,
     border: transformBorder,
@@ -2418,8 +2468,7 @@ var flushIndex = 0;
 var pendingPostFlushCbs = [];
 var activePostFlushCbs = null;
 var postFlushIndex = 0;
-var isIOS = "nativeApp" in getGlobalThis();
-var resolvedPromise = /* @__PURE__ */(isIOS ? PromisePolyfill : Promise).resolve();
+var resolvedPromise = /* @__PURE__ */PromisePolyfill.resolve();
 var currentFlushPromise = null;
 var RECURSION_LIMIT = 100;
 function nextTick(fn) {
@@ -3316,7 +3365,7 @@ function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense
       createElement
     }
   } = rendererInternals;
-  var hiddenContainer = createElement("div");
+  var hiddenContainer = createElement("div", container);
   var suspense = vnode.suspense = createSuspenseBoundary(vnode, parentSuspense, parentComponent, container, hiddenContainer, anchor, namespace, slotScopeIds, optimized, rendererInternals);
   patch(null, suspense.pendingBranch = vnode.ssContent, hiddenContainer, null, parentComponent, suspense, namespace, slotScopeIds);
   if (suspense.deps > 0) {
@@ -3373,7 +3422,7 @@ function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, sl
       }
       suspense.deps = 0;
       suspense.effects.length = 0;
-      suspense.hiddenContainer = createElement("div");
+      suspense.hiddenContainer = createElement("div", container);
       if (isInFallback) {
         patch(null, newBranch, suspense.hiddenContainer, null, parentComponent, suspense, namespace, slotScopeIds, optimized);
         if (suspense.deps <= 0) {
@@ -4321,7 +4370,7 @@ function getTransitionRawChildren(children) {
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
-function defineComponent(options, extraOptions) {
+function defineComponent$1(options, extraOptions) {
   return isFunction(options) ?
   // #8326: extend call and options.name access are considered side-effects
   // by Rollup, so we have to wrap it in a pure-annotated IIFE.
@@ -4389,7 +4438,7 @@ function defineAsyncComponent(source) {
       return comp;
     }));
   };
-  return defineComponent({
+  return defineComponent$1({
     name: "AsyncComponentWrapper",
     __asyncLoader: load,
     get __asyncResolved() {
@@ -8152,14 +8201,14 @@ var isTeleport = type => type.__isTeleport;
 var isTeleportDisabled = props => props && (props.disabled || props.disabled === "");
 var isTargetSVG = target => typeof SVGElement !== "undefined" && target instanceof SVGElement;
 var isTargetMathML = target => typeof MathMLElement === "function" && target instanceof MathMLElement;
-var resolveTarget = (props, select) => {
+var resolveTarget = (props, select, parentComponent) => {
   var targetSelector = props && props.to;
   if (isString(targetSelector)) {
     if (!select) {
       warn$1("Current renderer does not support string target for Teleports. (missing querySelector renderer option)");
       return null;
     } else {
-      var target = select(targetSelector);
+      var target = select(targetSelector, parentComponent);
       if (!target) {
         warn$1("Failed to locate Teleport target with selector \"".concat(targetSelector, "\". Note the target element must exist before the component is mounted - i.e. the target cannot be rendered by the component itself, and ideally should be outside of the entire Vue component tree."));
       }
@@ -8199,15 +8248,15 @@ var TeleportImpl = {
     }
     if (n1 == null) {
       var placeholder = n2.el =
-      // @ts-expect-error  fixed by xxxxxx
-      createComment("teleport start");
+      // fixed by xxxxxx
+      createComment("teleport start", container);
       var mainAnchor = n2.anchor =
-      // @ts-expect-error  fixed by xxxxxx
-      createComment("teleport end");
+      // fixed by xxxxxx
+      createComment("teleport end", container);
       insert(placeholder, container, anchor);
       insert(mainAnchor, container, anchor);
-      var target = n2.target = resolveTarget(n2.props, querySelector);
-      var targetAnchor = n2.targetAnchor = createText("");
+      var target = n2.target = resolveTarget(n2.props, querySelector, parentComponent);
+      var targetAnchor = n2.targetAnchor = createText("", container);
       if (target) {
         insert(targetAnchor, target);
         if (namespace === "svg" || isTargetSVG(target)) {
@@ -8257,7 +8306,7 @@ var TeleportImpl = {
         }
       } else {
         if ((n2.props && n2.props.to) !== (n1.props && n1.props.to)) {
-          var nextTarget = n2.target = resolveTarget(n2.props, querySelector);
+          var nextTarget = n2.target = resolveTarget(n2.props, querySelector, parentComponent);
           if (nextTarget) {
             moveTeleport(n2, nextTarget, null, internals, 0);
           } else {
@@ -8341,7 +8390,7 @@ function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScope
       querySelector
     }
   } = _ref19;
-  var target = vnode.target = resolveTarget(vnode.props, querySelector);
+  var target = vnode.target = resolveTarget(vnode.props, querySelector, parentComponent);
   if (target) {
     var targetNode = target._lpa || target.firstChild;
     if (vnode.shapeFlag & 16) {
@@ -9734,9 +9783,6 @@ function getDocument() {
 function setDocument(document) {
   rootDocument = document;
 }
-function isInDocument(parent) {
-  return !!parent.pageId;
-}
 function updateTextNode(node) {
   var childNode = getExtraChildNode(node);
   if (childNode !== null) {
@@ -9764,7 +9810,7 @@ var nodeOps = {
     } else {
       parent.insertBefore(el, anchor);
     }
-    if (isInDocument(parent)) {
+    if (parent.isConnected) {
       updateClassStyles(el);
       updateChildrenClassStyle(el);
     }
@@ -9784,19 +9830,26 @@ var nodeOps = {
     }
   },
   createElement: (tag, container) => {
-    return getDocument().createElement(tag);
+    if (!container) {
+      return getDocument().createElement(tag);
+    } else {
+      var _document = container.uniPage.document;
+      return _document.createElement(tag);
+    }
   },
   createText: (text, container, isAnchor) => {
+    var document = container.uniPage.document;
     if (isAnchor) {
-      return getDocument().createComment(text);
+      return document.createComment(text);
     }
-    var textNode = getDocument().createElement("text");
+    var textNode = document.createElement("text");
     textNode.setAttribute("value", text);
     setExtraIsTextNode(textNode, true);
     return textNode;
   },
   createComment: (text, container) => {
-    return getDocument().createComment(text);
+    var document = container.uniPage.document;
+    return document.createComment(text);
   },
   setText: (node, text) => {
     node.setAttribute("value", text);
@@ -9819,7 +9872,15 @@ var nodeOps = {
     el.setAttribute("value", text);
   },
   parentNode: node => node.parentNode,
-  nextSibling: node => node.nextSibling
+  nextSibling: node => node.nextSibling,
+  querySelector: (selector, parentComponent) => {
+    var _a, _b;
+    var document = (_b = (_a = parentComponent == null ? void 0 : parentComponent.proxy) == null ? void 0 : _a.$nativePage) == null ? void 0 : _b.document;
+    if (document) {
+      return document.querySelector(selector);
+    }
+    return null;
+  }
 };
 function updateChildrenClassStyle(el) {
   if (el !== null) {
@@ -10269,5 +10330,12 @@ var createApp = function () {
     return mount(container.body);
   };
   return app;
+};
+var defineComponent = options => {
+  var rootElement = options.rootElement;
+  if (rootElement && typeof customElements !== 'undefined') {
+    customElements.define(rootElement.name, rootElement.class, rootElement.options);
+  }
+  return defineComponent$1(options);
 };
 export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle$1 as normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

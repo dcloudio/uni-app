@@ -908,10 +908,12 @@ export function registerUTSPlugin(
   pluginDefines[name] = define
 }
 
-export function requireUTSPlugin(name: string) {
+export function requireUTSPlugin(name: string, silent = false) {
   const define = pluginDefines[name]
   if (!define) {
-    console.error(`${name} is not found`)
+    if (!silent) {
+      console.error(`${name} is not found`)
+    }
   }
   return define
 }

@@ -18,7 +18,7 @@ import {
   type RunProdOptions,
   type ToKotlinOptions,
   addPluginInjectApis,
-  copyPlatformFiles,
+  copyPlatformNativeLanguageFiles,
   genComponentsCode,
   genUTSPlatformResource,
   getCompilerServer,
@@ -51,6 +51,7 @@ import {
   hbuilderFormatter,
 } from './stacktrace/kotlin'
 import { uvueOutDir } from './uvue'
+import { storeIndexKt } from './manifest/dex'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
@@ -103,6 +104,7 @@ export async function runKotlinProd(
   {
     outFilename,
     components,
+    customElements,
     uniModuleId,
     isPlugin,
     isModule,
@@ -127,6 +129,7 @@ export async function runKotlinProd(
     outputDir,
     sourceMap: !!sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -172,6 +175,7 @@ export async function runKotlinProd(
       platform: 'app-android',
       extname: '.kt',
       components,
+      customElements,
       package: parseKotlinPackage(filename).package + '.',
       hookClass,
       result,
@@ -213,6 +217,7 @@ export async function runKotlinDev(
   filename: string,
   {
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -224,6 +229,7 @@ export async function runKotlinDev(
     transform,
     sourceMap,
     uniModules,
+    rewriteConsoleExpr,
   }: RunDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -237,6 +243,7 @@ export async function runKotlinDev(
     outputDir,
     sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -260,7 +267,6 @@ export async function runKotlinDev(
     outputDir,
     platform: 'app-android',
     extname: '.kt',
-    components,
     package: '',
     result,
   })
@@ -317,15 +323,16 @@ export async function runKotlinDev(
           .concat(getUniModulesJars(outputDir, uniModules)) // cli版本插件jar（没有指定cache的时候,也不应该需要了，默认cache目录即可）
       : []
 
-    const platformFiles = copyPlatformFiles(
+    const { srcFiles, destFiles } = copyPlatformNativeLanguageFiles(
       path.resolve(inputDir, pluginRelativeDir, 'utssdk', 'app-android'),
       path.resolve(outputDir, pluginRelativeDir, 'utssdk', 'app-android'),
-      ['.kt', '.java']
+      ['.kt', '.java'],
+      rewriteConsoleExpr!
     )
 
-    kotlinFiles.push(...platformFiles)
+    kotlinFiles.push(...destFiles)
 
-    result.deps = [...(result.deps || []), ...platformFiles]
+    result.deps = [...(result.deps || []), ...srcFiles]
 
     const { code, msg } = await compileAndroidDex(
       isX,
@@ -361,6 +368,10 @@ export async function runKotlinDev(
           outputDir,
           is_uni_modules
         )
+        if (newDexFile && cacheDir) {
+          // 缓存index.kt文件
+          storeIndexKt(kotlinFile, pluginRelativeDir, cacheDir)
+        }
         result.changed = [
           normalizePath(path.relative(outputDir, newDexFile || dexFile)),
         ]
@@ -542,6 +553,7 @@ export async function compile(
     outputDir,
     sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -594,18 +606,14 @@ export async function compile(
     },
     uniModules,
   }
-  const isUTSFileExists = fs.existsSync(filename)
+  // 必须判断input.filename，因为input.filename可能跟filename不一样（可能会变成.uvue目录的文件）
+  const isUTSFileExists = fs.existsSync(input.filename)
   if (componentsCode) {
     if (!isUTSFileExists) {
       input.fileContent = componentsCode
     } else {
       input.fileContent =
-        fs.readFileSync(
-          resolveBundleInputFileName('app-android', filename),
-          'utf8'
-        ) +
-        `\n` +
-        componentsCode
+        fs.readFileSync(input.filename, 'utf8') + `\n` + componentsCode
     }
   } else {
     // uts文件不存在，且也无组件
@@ -654,7 +662,6 @@ export async function compile(
       outputDir,
       platform: 'app-android',
       extname: '.kt',
-      components,
       package: '',
       result,
     })

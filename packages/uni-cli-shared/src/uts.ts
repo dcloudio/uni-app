@@ -2,6 +2,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import glob from 'fast-glob'
+import { type Import, type Unimport, createUnimport } from 'unimport'
 import type * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
@@ -63,6 +64,10 @@ export function resolveUTSAppModule(
       if (fs.existsSync(path.resolve(id, basedir, 'index.uts'))) {
         return id
       }
+      // customElements 组件
+      if (fs.existsSync(path.resolve(id, 'customElements'))) {
+        return id
+      }
       const fileName = id.split('?')[0]
       const resolvePlatformDir = (p: typeof process.env.UNI_UTS_PLATFORM) => {
         return path.resolve(fileName, basedir, p)
@@ -113,14 +118,39 @@ export function resolveUTSModule(
       let index = resolveUTSFile(
         resolvePlatformDir(process.env.UNI_UTS_PLATFORM)
       )
+      const pluginId =
+        parentDir === 'uni_modules' ? parts[parts.length - 1] : ''
       if (index) {
-        return index
+        return resolveUTSEncryptFile(pluginId, index) || index
       }
       index = path.resolve(id, basedir, 'index.uts')
       if (fs.existsSync(index)) {
-        return index
+        return resolveUTSEncryptFile(pluginId, index) || index
       }
     }
+  }
+}
+
+function resolveUTSEncryptFile(pluginId: string, index: string) {
+  if (!pluginId) {
+    return
+  }
+  const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+  if (!cacheDir) {
+    return
+  }
+  // 仅支持 uts 加密解析
+  if (!index.endsWith('.uts')) {
+    return
+  }
+  const cacheFile = path.resolve(
+    cacheDir,
+    'uni_modules',
+    pluginId,
+    'index.module.js'
+  )
+  if (fs.existsSync(cacheFile)) {
+    return cacheFile
   }
 }
 
@@ -198,10 +228,59 @@ interface UTSComponentMeta {
   swiftModule: string
 }
 
+interface UTSCustomElementMeta extends UTSComponentMeta {
+  exports: [string][]
+}
+
 const utsComponents = new Map<string, UTSComponentMeta>()
+const utsCustomElements = new Map<string, UTSComponentMeta>()
+const utsCustomElementsExports = new Map<string, UTSCustomElementMeta>()
+
+export function getUTSCustomElementsExports() {
+  return utsCustomElementsExports
+}
+
+export function clearUTSComponents() {
+  utsComponents.clear()
+}
 
 export function isUTSComponent(name: string) {
   return utsComponents.has(name)
+}
+
+export function clearUTSCustomElements() {
+  utsCustomElements.clear()
+}
+
+export function getUTSCustomElements() {
+  return utsCustomElements
+}
+
+export function getUTSPluginCustomElements() {
+  const pluginCustomElements: Record<string, Set<string>> = {}
+  for (const [key, value] of utsCustomElements.entries()) {
+    const parts = value.source.split('?')[0].split('/')
+    const pluginId = parts[parts.length - 1]
+    if (!pluginId) {
+      continue
+    }
+    if (!pluginCustomElements[pluginId]) {
+      pluginCustomElements[pluginId] = new Set()
+    }
+    pluginCustomElements[pluginId].add(key)
+  }
+  return pluginCustomElements
+}
+
+export function isUTSCustomElement(name: string) {
+  // 支持内置CustomElement的本地注册开发，
+  // 内置组件目录：customElements/uni-progress/uni-progress.uts
+  // 实际使用时是：progress，所以需要自动补充uni-前缀做判断
+  return utsCustomElements.has(name) || utsCustomElements.has('uni-' + name)
+}
+
+export function getUTSCustomElement(name: string) {
+  return utsCustomElements.get(name) || utsCustomElements.get('uni-' + name)
 }
 
 export function getUTSComponentAutoImports(language: 'kotlin' | 'swift') {
@@ -222,6 +301,21 @@ export function getUTSComponentAutoImports(language: 'kotlin' | 'swift') {
   return utsComponentAutoImports
 }
 
+export function getUTSCustomElementAutoImports(language: 'kotlin' | 'swift') {
+  const utsCustomElementAutoImports: Record<string, [string][]> = {}
+  utsCustomElementsExports.forEach(
+    ({ exports, kotlinPackage, swiftModule }) => {
+      const source = language === 'kotlin' ? kotlinPackage : swiftModule
+      if (!utsCustomElementAutoImports[source]) {
+        utsCustomElementAutoImports[source] = exports
+      } else {
+        utsCustomElementAutoImports[source].push(...exports)
+      }
+    }
+  )
+  return utsCustomElementAutoImports
+}
+
 export function parseUTSComponent(name: string, type: 'kotlin' | 'swift') {
   const meta = utsComponents.get(name)
   if (meta) {
@@ -236,11 +330,24 @@ export function parseUTSComponent(name: string, type: 'kotlin' | 'swift') {
   }
 }
 
+export function parseUTSCustomElement(name: string, type: 'kotlin' | 'swift') {
+  const meta = getUTSCustomElement(name)
+  if (meta) {
+    const namespace =
+      meta[type === 'swift' ? 'swiftModule' : 'kotlinPackage'] || ''
+    const className = capitalize(camelize(name)) + 'Element'
+    return {
+      className,
+      namespace,
+      source: meta.source,
+    }
+  }
+}
+
 export function initUTSComponents(
   inputDir: string,
   platform: UniApp.PLATFORM
 ): EasycomMatcher[] {
-  utsComponents.clear()
   const components: EasycomMatcher[] = []
   const isApp = platform === 'app' || platform === 'app-plus'
   const easycomsObj: Record<
@@ -340,6 +447,93 @@ function resolveUTSComponentDirs(inputDir: string) {
         })
       : []
   )
+}
+
+export function initUTSCustomElements(
+  inputDir: string,
+  platform: UniApp.PLATFORM
+): EasycomMatcher[] {
+  const isApp =
+    platform === 'app' || platform === 'app-plus' || platform === 'app-harmony'
+
+  const dirs = resolveUTSCustomElementsDirs(inputDir)
+  const unimport = createUnimport({})
+  dirs.forEach((dir) => {
+    fs.readdirSync(dir).forEach((name) => {
+      const folder = path.resolve(dir, name)
+      if (!isDir(folder)) {
+        return
+      }
+      const files = fs.readdirSync(folder)
+      // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+      // customElements 的文件名是 uts 后缀
+      const ext = '.uts'
+      if (files.includes(name + ext)) {
+        const filePath = path.resolve(folder, name + ext)
+        const pluginId = path.basename(path.dirname(dir))
+        const source =
+          '@/' +
+          normalizePath(
+            isApp
+              ? path.relative(inputDir, path.dirname(dir))
+              : path.relative(inputDir, filePath)
+          )
+        const importSource = isApp ? `${source}?uts-proxy` : source
+        const meta: UTSComponentMeta = {
+          source: importSource,
+          kotlinPackage: parseKotlinPackageWithPluginId(pluginId, true),
+          swiftModule: parseSwiftPackageWithPluginId(pluginId, true),
+        }
+        utsCustomElements.set(name, meta)
+        parseCustomElementExports(filePath, unimport).then((exports_) => {
+          const prefix = capitalize(camelize(name))
+          const customElementExports: [string][] = exports_
+            .filter((item: Import) => item.name.startsWith(prefix))
+            .map((item: Import) => [item.name])
+          if (utsCustomElementsExports.has(importSource)) {
+            utsCustomElementsExports
+              .get(importSource)!
+              .exports.push(...customElementExports)
+          } else {
+            utsCustomElementsExports.set(importSource, {
+              ...meta,
+              exports: customElementExports,
+            })
+          }
+        })
+      }
+    })
+  })
+  // 不需要easycom匹配
+  return []
+}
+
+export function parseCustomElementExports(
+  filePath: string,
+  unimport: Unimport = createUnimport({})
+) {
+  return unimport.scanImportsFromFile(filePath, true)
+}
+
+const isDir = (path: string) => {
+  const stat = fs.lstatSync(path)
+  if (stat.isDirectory()) {
+    return true
+  } else if (stat.isSymbolicLink()) {
+    return fs.lstatSync(fs.realpathSync(path)).isDirectory()
+  }
+  return false
+}
+
+function resolveUTSCustomElementsDirs(inputDir: string) {
+  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
+  return fs.existsSync(uniModulesDir)
+    ? glob.sync('*/customElements', {
+        cwd: uniModulesDir,
+        absolute: true,
+        onlyDirectories: true,
+      })
+    : []
 }
 
 const nameRE = /name\s*:\s*['|"](.*)['|"]/
@@ -513,6 +707,15 @@ async function initUTSAutoImports(
       autoImports[source].push(...utsComponents[source])
     } else {
       autoImports[source] = utsComponents[source]
+    }
+  })
+
+  const utsCustomElements = getUTSCustomElementAutoImports(language)
+  Object.keys(utsCustomElements).forEach((source) => {
+    if (autoImports[source]) {
+      autoImports[source].push(...utsCustomElements[source])
+    } else {
+      autoImports[source] = utsCustomElements[source]
     }
   })
 

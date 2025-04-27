@@ -1,7 +1,7 @@
 <template>
   <view style="flex: 1;">
     <!-- #ifdef APP-ANDROID -->
-    <view :style="{ height: `${statusBarHeight}px` }"></view>
+    <view :style="{ height: `${safeAreaTop}px` }"></view>
     <!-- #endif -->
     <web-view
       ref="webview"
@@ -28,13 +28,11 @@ export default {
       webviewStyles: {
         progress: false
       },
-      statusBarHeight: 0,
       safeAreaTop: 0
     }
   },
   onReady() {
     const windowInfo = uni.getWindowInfo()
-    this.statusBarHeight = windowInfo.statusBarHeight
     this.safeAreaTop = windowInfo.safeAreaInsets.top
     this.webviewElement = this.$refs['webview'] as UniWebViewElement
     this.webviewContext = uni.createWebviewContext('webview', this)
@@ -57,11 +55,19 @@ export default {
       const action = dataObj.getString("action")!
       const args = dataObj.get("args")
       // #endif
-      // #ifndef APP-ANDROID
+      // #ifdef WEB || MP || APP-IOS
       const data = msg.detail.data.length ? msg.detail.data[0].data : msg.detail.data
       const id = data["id"] as number
       const type = data["type"] as string
       const dataObj = data["data"]
+      const action = dataObj["action"]!
+      const args = dataObj["args"]
+      // #endif
+      // #ifdef APP-HARMONY
+      const data = msg.detail.data[0];
+      const id = data["id"] as number
+      const type = data["type"] as string
+      const dataObj = data["data"] as UTSJSONObject
       const action = dataObj["action"]!
       const args = dataObj["args"]
       // #endif

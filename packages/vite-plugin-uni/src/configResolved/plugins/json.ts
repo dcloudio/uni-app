@@ -15,7 +15,7 @@ export function uniJsonPlugin(options: VitePluginUniResolvedOptions): Plugin {
       if (id.endsWith('.json.js')) return null
       // preprocess
       if (code.includes('#endif')) {
-        code = preJs(code)
+        code = preJs(code, id)
       }
       let jsonObj = parse(code)
       if (isUniAppLocaleFile(id)) {
@@ -23,9 +23,7 @@ export function uniJsonPlugin(options: VitePluginUniResolvedOptions): Plugin {
       }
       return {
         code: JSON.stringify(jsonObj),
-        map: {
-          mappings: '',
-        },
+        map: null,
       }
     },
   }

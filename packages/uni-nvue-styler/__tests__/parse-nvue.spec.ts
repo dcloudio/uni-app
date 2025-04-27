@@ -12,7 +12,7 @@ async function objectifierRule(input: string, isUVue = false) {
   }
 }
 
-describe('nvue-styler: normalize', () => {
+describe('nvue-styler: parse nvue', () => {
   test('basic', async () => {
     const { json, messages } = await objectifierRule(`.foo{
 color: #FF0000;
@@ -495,24 +495,19 @@ zIndex: 4;
     )
   })
 
-  test('env', async () => {
+  test('env不支持', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {
   padding-top: env(safe-area-inset-top, 
   20px
   );
-
 }
 `)
 
-    expect(json).toEqual({
-      foo: {
-        '': {
-          paddingTop: 'env(safe-area-inset-top,20px)',
-        },
-      },
-    })
-    expect(messages.length).toBe(0)
+    // not support
+    expect(json).toEqual({})
+    expect(messages.length).toBe(1)
+    expect(messages[0].text.includes('not supported')).toBe(true)
   })
 
   test('css var --uni-safe-area-inset-[postion]', async () => {
@@ -524,15 +519,9 @@ zIndex: 4;
 }
 `)
 
-    expect(json).toEqual({
-      foo: {
-        '': {
-          paddingTop: 'var(--uni-safe-area-inset-top,10px)',
-        },
-      },
-    })
-    expect(messages.length).toBe(0)
-
+    expect(json).toEqual({})
+    expect(messages.length).toBe(1)
+    expect(messages[0].text.includes('not supported')).toBe(true)
     const res2 = await objectifierRule(`
 .foo {
   padding-top: var(
@@ -541,13 +530,143 @@ zIndex: 4;
 }
 `)
 
-    expect(res2.json).toEqual({
+    expect(res2.json).toEqual({})
+    expect(messages.length).toBe(1)
+    expect(messages[0].text.includes('not supported')).toBe(true)
+  })
+
+  test('css var --status-bar-height', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  height: var(--status-bar-height);
+}
+.bar {
+  height: var(
+  --status-bar-height, 
+  
+  10px);
+}
+`)
+
+    expect(json).toEqual({})
+    expect(messages.length).toBe(2)
+    expect(messages[0].text.includes('not supported')).toBe(true)
+    expect(messages[1].text.includes('not supported')).toBe(true)
+  })
+
+  // text-shadow nvue 不支持,uvue 支持
+  test('text-shadow', async () => {
+    const { messages } = await objectifierRule(`
+.foo {
+  text-shadow: 1px 1px 1px #000;
+}
+`)
+    expect(messages).toHaveLength(1)
+    expect(messages[0].text).toBe(
+      'WARNING: `text-shadow` is not a standard property name (may not be supported)'
+    )
+  })
+})
+
+describe('nvue 部分 CSS 不参与改动', () => {
+  test('border', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  border: 1px solid red;
+}
+.a{
+border-top:1px solid red;
+}
+.b{
+border-width:1px;
+border-style: solid;
+border-color: red;
+}
+.c{
+border-top-width:1px;
+border-top-color: red;
+border-top-style: solid;
+}
+`)
+    expect(json).toEqual({
       foo: {
+        '': { borderColor: '#FF0000', borderStyle: 'solid', borderWidth: 1 },
+      },
+      a: {
         '': {
-          paddingTop: 'var(--uni-safe-area-inset-top)',
+          borderTopColor: '#FF0000',
+          borderTopStyle: 'solid',
+          borderTopWidth: 1,
+        },
+      },
+      b: {
+        '': {
+          borderColor: '#FF0000',
+          borderStyle: 'solid',
+          borderWidth: 1,
+        },
+      },
+      c: {
+        '': {
+          borderTopColor: '#FF0000',
+          borderTopStyle: 'solid',
+          borderTopWidth: 1,
         },
       },
     })
-    expect(res2.messages.length).toBe(0)
+    expect(messages[0].text).toBe(
+      'NOTE: property value `red` is autofixed to `#FF0000`'
+    )
+  })
+
+  test('background', async () => {
+    const { json, messages } = await objectifierRule(`
+.a {
+  background: #ffffff;
+}
+.b {
+  background: rgba(255,255,255,1);
+}
+.c {
+  background: rgb(255,255,255);
+}
+.d {
+  background: linear-gradient(#e66465, #9198e5);
+}
+`)
+
+    expect(json).toEqual({
+      a: { '': { backgroundColor: '#ffffff' } },
+      b: { '': { backgroundColor: 'rgba(255,255,255,1)' } },
+      c: { '': { backgroundColor: 'rgb(255,255,255)' } },
+      d: { '': { backgroundImage: 'linear-gradient(#e66465, #9198e5)' } },
+    })
+    expect(messages.length).toBe(0)
+  })
+
+  test('css class', async () => {
+    const { json, messages } = await objectifierRule(`
+        .content {
+            width: var(--window-width);
+            height: var(--window-width, 1px);
+        }
+`)
+    expect(json).toEqual({})
+    expect(messages.length).toBe(2)
+  })
+
+  test('nvue 不支持 calc', async () => {
+    const { json, messages } = await objectifierRule(`
+        .content {
+            top: calc(var(--window-top) + 10px);
+            bottom: calc(10px - var(--window-bottom));
+            height: calc(var(--status-bar-height) * 2);
+        }
+`)
+    expect(json).toEqual({})
+    expect(messages.length).toBe(3)
+    expect(messages[0].text.includes('not supported')).toBe(true)
+    expect(messages[1].text.includes('not supported')).toBe(true)
+    expect(messages[2].text.includes('not supported')).toBe(true)
   })
 })

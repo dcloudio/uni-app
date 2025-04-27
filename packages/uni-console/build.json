@@ -6,7 +6,10 @@
     "output": {
       "format": "cjs"
     },
-    "external": ["@dcloudio/uni-cli-shared", "fs-extra"],
+    "external": [
+      "@dcloudio/uni-cli-shared",
+      "fs-extra"
+    ],
     "compilerOptions": {
       "target": "es2018"
     }
@@ -19,7 +22,43 @@
       "__HARMONY__": "false",
       "__DEV__": "process.env.UNI_DEBUG",
       "process.env.UNI_CONSOLE_WEBVIEW": false,
-      "_APP_ANDROID_": "false"
+      "_APP_ANDROID_": "false",
+      "__PLATFORM__": "'other'",
+      "__HARMONY_JSVM__": "false"
+    },
+    "compilerOptions": {
+      "target": "es6",
+      "declaration": false
+    }
+  },
+  {
+    "input": {
+      "src/runtime/index.ts": "dist/index.esm.js"
+    },
+    "replacements": {
+      "__HARMONY__": "false",
+      "__DEV__": "process.env.UNI_DEBUG",
+      "process.env.UNI_CONSOLE_WEBVIEW": false,
+      "_APP_ANDROID_": "false",
+      "__PLATFORM__": "'other'",
+      "__HARMONY_JSVM__": "false"
+    },
+    "compilerOptions": {
+      "target": "es6",
+      "declaration": false
+    }
+  },
+  {
+    "input": {
+      "src/runtime/index.ts": "dist/mp.esm.js"
+    },
+    "replacements": {
+      "__HARMONY__": "false",
+      "__DEV__": "process.env.UNI_DEBUG",
+      "process.env.UNI_CONSOLE_WEBVIEW": false,
+      "_APP_ANDROID_": "false",
+      "__PLATFORM__": "'mp'",
+      "__HARMONY_JSVM__": "false"
     },
     "compilerOptions": {
       "target": "es6",
@@ -36,7 +75,8 @@
     "replacements": {
       "__HARMONY__": "false",
       "process.env.UNI_CONSOLE_KEEP_ORIGINAL": true,
-      "process.env.UNI_CONSOLE_WEBVIEW": true
+      "process.env.UNI_CONSOLE_WEBVIEW": true,
+      "__HARMONY_JSVM__": "false"
     },
     "compilerOptions": {
       "target": "es5",
@@ -54,7 +94,8 @@
     "replacements": {
       "__HARMONY__": "false",
       "process.env.UNI_CONSOLE_KEEP_ORIGINAL": true,
-      "process.env.UNI_CONSOLE_WEBVIEW": true
+      "process.env.UNI_CONSOLE_WEBVIEW": true,
+      "__HARMONY_JSVM__": "false"
     },
     "compilerOptions": {
       "target": "es5",
@@ -69,7 +110,38 @@
       "__HARMONY__": "false",
       "__DEV__": "process.env.UNI_DEBUG",
       "process.env.UNI_CONSOLE_WEBVIEW": false,
-      "process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE": "''"
+      "process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE": "''",
+      "__HARMONY_JSVM__": "false"
+    },
+    "compilerOptions": {
+      "target": "es6",
+      "declaration": false
+    }
+  },
+  {
+    "input": {
+      "src/runtime/ets.ts": "dist/uni-console-format.js"
+    },
+    "replacements": {
+      "__HARMONY__": "true",
+      "__DEV__": "false"
+    },
+    "compilerOptions": {
+      "target": "es6",
+      "declaration": true
+    }
+  },
+  {
+    "input": {
+      "src/runtime/index.ts": "dist/harmony.jsvm.esm.js"
+    },
+    "replacements": {
+      "__HARMONY__": "false",
+      "__DEV__": "process.env.UNI_DEBUG",
+      "process.env.UNI_CONSOLE_WEBVIEW": false,
+      "_APP_ANDROID_": "false",
+      "__PLATFORM__": "'other'",
+      "__HARMONY_JSVM__": "true"
     },
     "compilerOptions": {
       "target": "es6",

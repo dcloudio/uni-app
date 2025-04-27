@@ -222,6 +222,8 @@ function findMiniProgramUsingComponent(
         res[name] = 'xr-frame'
       } else if (componentsDir && path.includes(componentsDir + '/')) {
         res[name] = 'component'
+      } else if (path.startsWith('weui-miniprogram')) {
+        res[name] = 'weui'
       }
       return res
     },

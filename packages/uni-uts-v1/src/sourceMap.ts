@@ -19,7 +19,7 @@ import {
   resolveUniAppXSourceMapPath,
 } from './utils'
 import { kotlinSrcDir } from './uvue'
-import { once } from './shared'
+import { once, resolveSourceMapPath } from './shared'
 import {
   parseFilenameByClassName,
   updateUTSKotlinSourceMapManifestCache,
@@ -28,11 +28,13 @@ import {
 const EXTNAME = {
   kotlin: '.kt',
   swift: '.swift',
+  arkts: '.ets',
 }
 
 const PLATFORM_DIR = {
   kotlin: 'app-android',
   swift: 'app-ios',
+  arkts: 'app-harmony',
 }
 
 const uniModulesUTSPackagePrefix = 'uts.sdk.modules.'
@@ -166,7 +168,7 @@ export function resolveUTSSourceMapFile(
 }
 
 export function resolveUTSPluginSourceMapFile(
-  target: 'kotlin' | 'swift',
+  target: 'kotlin' | 'swift' | 'arkts',
   filename: string,
   inputDir: string,
   outputDir: string
@@ -174,18 +176,28 @@ export function resolveUTSPluginSourceMapFile(
   inputDir = normalizePath(inputDir)
   outputDir = normalizePath(outputDir)
   filename = normalizePath(filename)
-  const pluginDir = resolvePluginDir(inputDir, outputDir, filename)
+  const pluginDir = resolvePluginDir(target, inputDir, outputDir, filename)
   if (!pluginDir) {
     throw `plugin dir not found`
   }
   const is_uni_modules = basename(dirname(pluginDir)) === 'uni_modules'
-  const sourceMapFile = join(
-    join(outputDir, '../.sourcemap/app'),
-    relative(inputDir, pluginDir),
-    is_uni_modules ? 'utssdk' : '',
-    PLATFORM_DIR[target],
-    `index${EXTNAME[target]}.map`
-  )
+  const sourceMapFile =
+    target === 'arkts'
+      ? join(
+          outputDir,
+          '../.sourcemap/app-harmony',
+          relative(inputDir, pluginDir),
+          is_uni_modules ? 'utssdk' : '',
+          PLATFORM_DIR[target],
+          `index${EXTNAME[target]}.map`
+        )
+      : join(
+          join(outputDir, '../.sourcemap/app'),
+          relative(inputDir, pluginDir),
+          is_uni_modules ? 'utssdk' : '',
+          PLATFORM_DIR[target],
+          `index${EXTNAME[target]}.map`
+        )
   if (!existsSync(sourceMapFile)) {
     throw `${sourceMapFile} not found`
   }
@@ -195,11 +207,22 @@ export function resolveUTSPluginSourceMapFile(
 export const resolveUtsPluginSourceMapFile = resolveUTSPluginSourceMapFile
 
 function resolvePluginDir(
+  target: 'kotlin' | 'swift' | 'arkts',
   inputDir: string,
   outputDir: string,
   filename: string
 ) {
-  // 目标文件是编译后 kt 或 swift
+  if (target === 'arkts') {
+    const parts = normalizePath(filename).split('/uni_modules/')
+    if (parts.length > 1) {
+      return join(
+        inputDir,
+        'uni_modules',
+        parts[parts.length - 1].split('/')[0]
+      )
+    }
+  }
+  // 目标文件是编译后 kt 或 swift 或 ets
   if (filename.startsWith(outputDir)) {
     const relativePath = relative(outputDir, filename)
     const hasSrc = normalizePath(relativePath).includes('/src/')
@@ -284,7 +307,11 @@ export async function generatedPositionFor({
   line,
   column,
   outputDir,
-}: PositionFor & { outputDir?: string }): Promise<
+  platform,
+}: PositionFor & {
+  outputDir?: string
+  platform?: 'app-harmony' | 'app' | 'app-android' | 'app-ios'
+}): Promise<
   NullablePosition & { source: string | null; relativeSource: string | null }
 > {
   return resolveSourceMapConsumer(sourceMapFile).then((consumer) => {
@@ -302,16 +329,36 @@ export async function generatedPositionFor({
     if (outputDir) {
       // 根据 sourceMapFile 和 outputDir，计算出生成后的文件路径
       const normalizedSourceMapFile = normalizePath(sourceMapFile)
+      if (!platform) {
+        // 默认 app，目前硬编码识别
+        platform = normalizedSourceMapFile.includes('/.sourcemap/app-harmony/')
+          ? 'app-harmony'
+          : 'app'
+      }
       const sourceMapRootDirs = [
-        normalizePath(join(outputDir, '../.sourcemap/app')),
+        {
+          sourceMapRootDir: normalizePath(
+            resolveSourceMapPath(
+              outputDir,
+              platform === 'app-android' || platform === 'app-ios'
+                ? 'app'
+                : platform
+            )
+          ),
+          outputDir: outputDir,
+        },
       ]
+      // 理论上以下逻辑需要 app-android 下生效，但目前可能没传platform，所以默认也生效
       const kotlinOutDir = kotlinDir(outputDir)
       if (kotlinOutDir) {
-        sourceMapRootDirs.push(
-          normalizePath(resolveUniAppXSourceMapPath(kotlinOutDir))
-        )
+        sourceMapRootDirs.push({
+          sourceMapRootDir: normalizePath(
+            resolveUniAppXSourceMapPath(kotlinOutDir)
+          ),
+          outputDir: join(kotlinOutDir, 'src'),
+        })
       }
-      for (const sourceMapRootDir of sourceMapRootDirs) {
+      for (const { sourceMapRootDir, outputDir } of sourceMapRootDirs) {
         if (normalizedSourceMapFile.startsWith(sourceMapRootDir)) {
           relativeSource = normalizePath(
             relative(sourceMapRootDir, sourceMapFile).replace('.map', '')
@@ -371,7 +418,7 @@ export async function originalPositionFor(
  */
 export function originalPositionForSync(
   generatedPosition: Omit<PositionFor, 'filename'> & { inputDir?: string }
-): MappedPosition & { sourceContent?: string } {
+): MappedPosition & { sourceContent?: string; sourceRoot?: string | null } {
   const consumer = resolveSourceMapConsumerSync(
     generatedPosition.sourceMapFile
   ) as SourceMapConsumerSync
@@ -392,6 +439,7 @@ export function originalPositionForSync(
   ) {
     return Object.assign(res, {
       sourceContent: consumer.sourceContentFor(res.source, true) ?? '',
+      sourceRoot: consumer.sourceRoot,
     })
   }
   if (res.source && generatedPosition.inputDir) {

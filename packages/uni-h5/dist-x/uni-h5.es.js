@@ -435,6 +435,9 @@ function initUTSJSONObjectProperties(obj) {
   }
   Object.defineProperties(obj, propertyDescriptorMap);
 }
+function getRealDefaultValue(defaultValue) {
+  return defaultValue === void 0 ? null : defaultValue;
+}
 let UTSJSONObject$1 = class UTSJSONObject2 {
   static keys(obj) {
     return Object.keys(obj);
@@ -522,7 +525,7 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
   }
   _getValue(keyPath, defaultValue) {
     const keyPathArr = this._resolveKeyPath(keyPath);
-    const realDefaultValue = defaultValue === void 0 ? null : defaultValue;
+    const realDefaultValue = getRealDefaultValue(defaultValue);
     if (keyPathArr.length === 0) {
       return realDefaultValue;
     }
@@ -530,7 +533,11 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     for (let i = 0; i < keyPathArr.length; i++) {
       const key = keyPathArr[i];
       if (value instanceof Object) {
-        value = key in value ? value[key] : realDefaultValue;
+        if (key in value) {
+          value = value[key];
+        } else {
+          return realDefaultValue;
+        }
       } else {
         return realDefaultValue;
       }
@@ -544,46 +551,52 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     this[key] = value;
   }
   getAny(key, defaultValue) {
-    return this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    return this._getValue(key, realDefaultValue);
   }
   getString(key, defaultValue) {
-    const value = this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    const value = this._getValue(key, realDefaultValue);
     if (typeof value === "string") {
       return value;
     } else {
-      return null;
+      return realDefaultValue;
     }
   }
   getNumber(key, defaultValue) {
-    const value = this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    const value = this._getValue(key, realDefaultValue);
     if (typeof value === "number") {
       return value;
     } else {
-      return null;
+      return realDefaultValue;
     }
   }
   getBoolean(key, defaultValue) {
-    const boolean = this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    const boolean = this._getValue(key, realDefaultValue);
     if (typeof boolean === "boolean") {
       return boolean;
     } else {
-      return null;
+      return realDefaultValue;
     }
   }
   getJSON(key, defaultValue) {
-    let value = this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    let value = this._getValue(key, realDefaultValue);
     if (value instanceof Object) {
       return value;
     } else {
-      return null;
+      return realDefaultValue;
     }
   }
   getArray(key, defaultValue) {
-    let value = this._getValue(key, defaultValue);
+    const realDefaultValue = getRealDefaultValue(defaultValue);
+    let value = this._getValue(key, realDefaultValue);
     if (value instanceof Array) {
       return value;
     } else {
-      return null;
+      return realDefaultValue;
     }
   }
   toMap() {
@@ -853,45 +866,6 @@ const initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
       normalizeMessages(name, keys, [
         "請注意 showLoading 與 hideLoading 必須配對使用"
       ]),
-      false
-    );
-  }
-});
-const initI18nShowModalMsgsOnce = /* @__PURE__ */ once(() => {
-  const name = "uni.showModal.";
-  const keys = ["cancel", "confirm"];
-  if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(
-      LOCALE_EN,
-      normalizeMessages(name, keys, ["Cancel", "OK"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(
-      LOCALE_ES,
-      normalizeMessages(name, keys, ["Cancelar", "OK"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(
-      LOCALE_FR,
-      normalizeMessages(name, keys, ["Annuler", "OK"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(
-      LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["取消", "确定"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(
-      LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["取消", "確定"]),
       false
     );
   }
@@ -2196,6 +2170,9 @@ function createNativeEvent(evt, htmlElement = false) {
     detail: {},
     currentTarget: realCurrentTarget
   };
+  if (evt instanceof CustomEvent && isPlainObject$1(evt.detail)) {
+    event.detail = evt.detail;
+  }
   if (evt._stopped) {
     event._stopped = true;
   }
@@ -2591,7 +2568,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   let target;
   target = el;
   return {
-    type: detail.type || name,
+    type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
@@ -2791,7 +2768,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2861,7 +2838,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -3004,7 +2981,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -3069,7 +3046,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$w = {
+const props$v = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -3105,7 +3082,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$w,
+  props: props$v,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -3128,7 +3105,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$v = {
+const props$u = {
   name: {
     type: String,
     default: ""
@@ -3136,9 +3113,9 @@ const props$v = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$v,
+  props: props$u,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -3198,7 +3175,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$u = {
+const props$t = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3247,9 +3224,9 @@ const props$u = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$u,
+  props: props$t,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -3390,7 +3367,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$t = {
+const props$s = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -5257,7 +5234,8 @@ class CanvasContext {
     var self2 = this;
     this.state.font = value;
     var fontFormat = value.match(
-      /^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
+      // 支持小数点 github #5329
+      /^(([\w\-]+\s)*)(\d+\.?\d*r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
     );
     if (fontFormat) {
       var style = fontFormat[1].trim().split(/\s/);
@@ -5271,7 +5249,7 @@ class CanvasContext {
             data: [value2]
           });
           self2.state.fontStyle = value2;
-        } else if (["bold", "normal"].indexOf(value2) > -1) {
+        } else if (["bold", "normal", "lighter", "bolder"].indexOf(value2) > -1 || /^\d+$/.test(value2)) {
           actions.push({
             method: "setFontWeight",
             data: [value2]
@@ -5791,13 +5769,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$p = 0;
+let index$o = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$p++);
+    const callbackId = String(index$o++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -7141,43 +7119,6 @@ const ShowLoadingOptions = {
     mask: false
   }
 };
-const API_SHOW_MODAL = "showModal";
-const ShowModalProtocol = {
-  title: String,
-  content: String,
-  showCancel: Boolean,
-  cancelText: String,
-  cancelColor: String,
-  confirmText: String,
-  confirmColor: String
-};
-const ShowModalOptions = {
-  beforeInvoke() {
-    initI18nShowModalMsgsOnce();
-  },
-  formatArgs: {
-    title: "",
-    content: "",
-    placeholderText: "",
-    showCancel: true,
-    editable: false,
-    cancelText(_value, params) {
-      if (!hasOwn(params, "cancelText")) {
-        const { t: t2 } = useI18n();
-        params.cancelText = t2("uni.showModal.cancel");
-      }
-    },
-    cancelColor: "#000",
-    confirmText(_value, params) {
-      if (!hasOwn(params, "confirmText")) {
-        const { t: t2 } = useI18n();
-        params.confirmText = t2("uni.showModal.confirm");
-      }
-    },
-    //@ts-expect-error
-    confirmColor: "#576b95"
-  }
-};
 const API_SHOW_TOAST = "showToast";
 const SHOW_TOAST_ICON = [
   "success",
@@ -8212,6 +8153,9 @@ class UniPageImpl {
     options,
     vm
   }) {
+    this.width = 0;
+    this.height = 0;
+    this.statusBarHeight = safeAreaInsets$1.top;
     this.getParentPage = () => null;
     this.route = route;
     this.options = options;
@@ -8476,6 +8420,34 @@ function decrementEscBackPageNum() {
     document.removeEventListener("keydown", handleEscKeyPress);
   }
 }
+function triggerDialogPageOnHide(instance2) {
+  var _a, _b;
+  const parentPage = ((_a = instance2.proxy) == null ? void 0 : _a.$page).getParentPage();
+  const parentPageInstance = parentPage == null ? void 0 : parentPage.vm.$pageLayoutInstance;
+  if (parentPageInstance) {
+    const dialogPages = parentPageInstance.$dialogPages.value;
+    if (dialogPages.length > 1) {
+      const preDialogPage = dialogPages[dialogPages.length - 2];
+      if (preDialogPage.vm) {
+        const { onHide } = preDialogPage.vm.$;
+        onHide && invokeArrayFns(onHide);
+      }
+    }
+  }
+  dialogPageTriggerParentHide((_b = instance2.proxy) == null ? void 0 : _b.$page);
+}
+function initPageWidthHeight(instance2) {
+  if (!instance2.proxy) {
+    return;
+  }
+  const pageEl = document.querySelector(
+    `uni-page[data-page="${instance2.proxy.$vm.route}"]`
+  );
+  if (pageEl) {
+    instance2.proxy.width = pageEl.offsetWidth;
+    instance2.proxy.height = pageEl.offsetHeight;
+  }
+}
 const closeDialogPage = (options) => {
   var _a, _b;
   const currentPages = getCurrentPages();
@@ -8596,14 +8568,14 @@ function removeRouteCache(routeKey) {
   }
 }
 function removePage(routeKey, removeRouteCaches = true) {
-  var _a;
+  var _a, _b;
   const pageVm = currentPagesMap.get(routeKey);
   {
     const dialogPages = pageVm.$page.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       closeDialogPage({ dialogPage: dialogPages[i] });
     }
-    const systemDialogPages = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+    const systemDialogPages = (_b = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages) == null ? void 0 : _b.value;
     if (systemDialogPages) {
       systemDialogPages.length = 0;
     }
@@ -9502,26 +9474,15 @@ function setupPage(comp) {
         onPageShow(instance2, pageMeta);
       });
       onMounted(() => {
-        var _a, _b, _c;
+        var _a;
         {
+          initPageWidthHeight(instance2);
           if (instance2.subTree.el) {
             instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
           }
           const pageInstance = getPageInstanceByChild(instance2);
           if (isDialogPageInstance(pageInstance)) {
-            const parentPage = ((_b = instance2.proxy) == null ? void 0 : _b.$page).getParentPage();
-            const parentPageInstance = parentPage == null ? void 0 : parentPage.vm.$pageLayoutInstance;
-            if (parentPageInstance) {
-              const dialogPages = parentPageInstance.$dialogPages.value;
-              if (dialogPages.length > 1) {
-                const preDialogPage = dialogPages[dialogPages.length - 2];
-                if (preDialogPage.vm) {
-                  const { onHide } = preDialogPage.vm.$;
-                  onHide && invokeArrayFns$1(onHide);
-                }
-              }
-            }
-            dialogPageTriggerParentHide((_c = instance2.proxy) == null ? void 0 : _c.$page);
+            triggerDialogPageOnHide(instance2);
             useBackgroundColorContent$1(instance2.proxy);
           }
         }
@@ -10401,7 +10362,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main$2 = {
+const _sfc_main$3 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -10436,7 +10397,7 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("uni-page-refresh", null, [
     createElementVNode("div", {
       style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
@@ -10466,7 +10427,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3]]);
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -10805,18 +10766,11 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         );
         if (currentInstance && parentInstance) {
           currentInstance.$parentInstance = parentInstance;
-          if (isNormalDialogPageInstance(
-            ctx
-          )) {
-            const parentDialogPages = parentInstance.$dialogPages.value;
-            currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
-          }
-          if (isSystemDialogPageInstance(
-            ctx
-          )) {
-            const parentSystemDialogPages = parentInstance.$systemDialogPages.value;
-            currentInstance.$dialogPage = parentSystemDialogPages[parentSystemDialogPages.length - 1];
-          }
+          assignDialogPage(
+            ctx,
+            parentInstance,
+            currentInstance
+          );
         }
       } else {
         useBackgroundColorContent(pageMeta);
@@ -10846,6 +10800,25 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
     );
   }
 });
+function assignDialogPage(ctx, parentInstance, currentInstance) {
+  let parentDialogPages = [];
+  if (isNormalDialogPageInstance(ctx)) {
+    parentDialogPages = parentInstance.$dialogPages.value;
+  }
+  if (isSystemDialogPageInstance(ctx)) {
+    parentDialogPages = parentInstance.$systemDialogPages.value;
+  }
+  if (!parentDialogPages.length)
+    return;
+  for (let i = 0; i < parentDialogPages.length; i++) {
+    const dialogPage = parentDialogPages[i];
+    if (!dialogPage.$assigned) {
+      dialogPage.$assigned = true;
+      currentInstance.$dialogPage = dialogPage;
+      break;
+    }
+  }
+}
 function createPageBodyVNode(ctx) {
   return openBlock(), createBlock(
     PageBody,
@@ -11731,7 +11704,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$s = /* @__PURE__ */ extend({}, props$t, {
+const props$r = /* @__PURE__ */ extend({}, props$s, {
   id: {
     type: String,
     default: ""
@@ -11759,9 +11732,9 @@ const props$s = /* @__PURE__ */ extend({}, props$t, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$s,
+  props: props$r,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   rootElement: {
     name: "uni-editor",
@@ -11831,7 +11804,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -11937,7 +11910,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$r = {
+const props$q = {
   src: {
     type: String,
     default: ""
@@ -11978,7 +11951,7 @@ class UniImageElement extends UniElement {
 }
 const __syscom_4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$r,
+  props: props$q,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -12341,7 +12314,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$q = /* @__PURE__ */ extend(
+const props$p = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -12431,7 +12404,7 @@ const props$q = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$t
+  props$s
 );
 const emit = [
   "input",
@@ -12681,7 +12654,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$p = /* @__PURE__ */ extend({}, props$q, {
+const props$o = /* @__PURE__ */ extend({}, props$p, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -12758,7 +12731,7 @@ class UniInputElement extends UniElement {
 }
 const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$p,
+  props: props$o,
   emits: ["confirm", ...emit],
   rootElement: {
     name: "uni-input",
@@ -14518,7 +14491,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -15685,7 +15658,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -15793,7 +15766,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$o = {
+const props$n = {
   name: {
     type: String,
     default: ""
@@ -15801,9 +15774,9 @@ const props$o = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$o,
+  props: props$n,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -15895,7 +15868,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$n = {
+const props$m = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -15946,7 +15919,7 @@ class UniRadioElement extends UniElement {
 }
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$n,
+  props: props$m,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -16337,7 +16310,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$m = {
+const props$l = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -16347,12 +16320,12 @@ const props$m = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$m,
+  props: props$l,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -16493,7 +16466,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$l = {
+const props$k = {
   direction: {
     type: [String],
     default: "vertical"
@@ -16566,7 +16539,7 @@ const __syscom_5 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$l,
+  props: props$k,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   rootElement: {
     name: "uni-scroll-view",
@@ -17063,7 +17036,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$k = {
+const props$j = {
   name: {
     type: String,
     default: ""
@@ -17172,7 +17145,7 @@ class UniSliderElement extends UniElement {
 }
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$k,
+  props: props$j,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -17322,7 +17295,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$j = {
+const props$i = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -17825,7 +17798,7 @@ class UniSwiperElement extends UniElement {
 }
 const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$j,
+  props: props$i,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -18057,7 +18030,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$i = {
+const props$h = {
   itemId: {
     type: String,
     default: ""
@@ -18067,7 +18040,7 @@ class UniSwiperItemElement extends UniElement {
 }
 const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$i,
+  props: props$h,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -18124,7 +18097,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$h = {
+const props$g = {
   name: {
     type: String,
     default: ""
@@ -18170,7 +18143,7 @@ class UniSwitchElement extends UniElement {
 }
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$h,
+  props: props$g,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -18327,7 +18300,7 @@ function parseText(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -18390,7 +18363,7 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = /* @__PURE__ */ extend({}, props$q, {
+const props$f = /* @__PURE__ */ extend({}, props$p, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -18419,9 +18392,9 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$g,
+  props: props$f,
   emits: ["confirm", "linechange", ...emit],
   rootElement: {
     name: "uni-textarea",
@@ -18662,7 +18635,7 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
-const props$f = {
+const props$e = {
   direction: {
     type: String,
     default: "vertical",
@@ -18724,7 +18697,7 @@ class UniListViewElement extends UniElement {
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: props$f,
+  props: props$e,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -18913,7 +18886,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       return shouldRearrange(containerRef, isVertical, state2);
     }
     const containerStyle = computed(() => {
-      return `${props2.direction === "none" ? "overflow: hidden;" : isVertical.value ? "overflow-y: auto;" : "overflow-x: auto;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
+      return `${props2.direction === "none" ? "overflow: hidden;" : props2.direction === "all" ? "overflow: auto;" : isVertical.value ? "overflow: hidden auto;" : "overflow: auto hidden;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
     });
     const contentStyle = computed(() => {
       return `position: relative; ${isVertical.value ? "height" : "width"}: ${state2.totalSize}px;`;
@@ -19755,13 +19728,6 @@ function useKeyboard() {
     disable
   };
 }
-const VNODE_MASK = /* @__PURE__ */ createVNode(
-  "div",
-  { class: "uni-mask" },
-  null,
-  -1
-  /* HOISTED */
-);
 function createRootApp(component, rootState, callback) {
   rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
   return createApp(
@@ -19811,194 +19777,9 @@ function usePopup(props2, {
   });
   return visible;
 }
-const ModalTheme = {
-  light: {
-    cancelColor: "#000000"
-  },
-  dark: {
-    cancelColor: "rgb(170, 170, 170)"
-  }
-};
-const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
-const props$e = {
-  title: {
-    type: String,
-    default: ""
-  },
-  content: {
-    type: String,
-    default: ""
-  },
-  showCancel: {
-    type: Boolean,
-    default: true
-  },
-  cancelText: {
-    type: String,
-    default: "Cancel"
-  },
-  cancelColor: {
-    type: String,
-    default: "#000000"
-  },
-  confirmText: {
-    type: String,
-    default: "OK"
-  },
-  confirmColor: {
-    type: String,
-    default: "#576b95"
-  },
-  visible: {
-    type: Boolean
-  },
-  editable: {
-    type: Boolean,
-    default: false
-  },
-  placeholderText: {
-    type: String,
-    default: ""
-  }
-};
-const modal = /* @__PURE__ */ defineComponent({
-  props: props$e,
-  setup(props2, {
-    emit: emit2
-  }) {
-    const editContent = ref("");
-    const close = () => visible.value = false;
-    const cancel = () => (close(), emit2("close", "cancel"));
-    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
-    const visible = usePopup(props2, {
-      onEsc: cancel,
-      onEnter: () => {
-        !props2.editable && confirm();
-      }
-    });
-    const cancelColor = useOnThemeChange(props2);
-    return () => {
-      const {
-        title,
-        content,
-        showCancel,
-        confirmText,
-        confirmColor,
-        editable,
-        placeholderText
-      } = props2;
-      editContent.value = content;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-modal", {
-          "onTouchmove": onEventPrevent
-        }, [VNODE_MASK, createVNode("div", {
-          "class": "uni-modal"
-        }, [title || true ? createVNode("div", {
-          "class": "uni-modal__hd"
-        }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title || ""
-        }, null, 8, ["textContent"])]) : null, editable ? createVNode("div", {
-          "class": "uni-modal__bd",
-          "key": "uni-modal-bd-editable"
-        }, [createVNode("textarea", {
-          "class": "uni-modal__textarea",
-          "rows": "2",
-          "placeholder": placeholderText,
-          "value": content,
-          "onInput": (e2) => editContent.value = e2.target.value
-        }, null, 40, ["placeholder", "value", "onInput"])]) : createVNode("div", {
-          "class": "uni-modal__bd",
-          "onTouchmovePassive": onEventStop,
-          "textContent": content
-        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          "class": "uni-modal__ft"
-        }, [showCancel && createVNode("div", {
-          "style": {
-            color: cancelColor.value
-          },
-          "class": "uni-modal__btn uni-modal__btn_default",
-          "onClick": cancel
-        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          "style": {
-            color: confirmColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_primary",
-          "onClick": confirm
-        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
-      });
-    };
-  }
-});
-function useOnThemeChange(props2) {
-  const cancelColor = ref(props2.cancelColor);
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setCancelColor(theme, cancelColor);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      cancelColor.value = props2.cancelColor;
-      if (props2.cancelColor === "#000") {
-        if (getTheme() === "dark")
-          _onThemeChange({
-            theme: "dark"
-          });
-        onThemeChange$1(_onThemeChange);
-      }
-    } else {
-      offThemeChange$1(_onThemeChange);
-    }
-  });
-  return cancelColor;
-}
-let showModalState;
-const onHidePopupOnce = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
-});
-let currentShowModalResolve;
-function onModalClose(type, content) {
-  const isConfirm = type === "confirm";
-  const res = {
-    confirm: isConfirm,
-    cancel: type === "cancel"
-  };
-  isConfirm && showModalState.editable && (res.content = content);
-  currentShowModalResolve && currentShowModalResolve(res);
-}
-const hideModal = () => {
-  if (showModalState) {
-    showModalState.visible = false;
-  }
-};
-const showModal = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_MODAL,
-  (args, { resolve }) => {
-    onHidePopupOnce();
-    currentShowModalResolve = resolve;
-    if (!showModalState) {
-      showModalState = reactive(args);
-      nextTick(
-        () => (createRootApp(modal, showModalState, onModalClose).mount(
-          ensureRoot("u-a-m")
-        ), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showModalState.visible = true))
-      );
-    } else {
-      extend(showModalState, args);
-      showModalState.visible = true;
-    }
-  },
-  ShowModalProtocol,
-  ShowModalOptions
-);
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
-    hideModal();
     uni.hideToast();
     uni.hideLoading();
   });
@@ -20115,23 +19896,45 @@ function formatTime(val) {
 }
 function useGesture(props2, videoRef, fullscreenState) {
   const state2 = reactive({
+    seeking: false,
     gestureType: "none",
     volumeOld: 0,
     volumeNew: 0,
     currentTimeOld: 0,
-    currentTimeNew: 0
+    currentTimeNew: 0,
+    toastThin: false
   });
   const touchStartOrigin = {
     x: 0,
     y: 0
   };
+  let changeToastThinTimer = null;
+  const changeToastThin = () => {
+    if (state2.gestureType !== "none" && changeToastThinTimer != null)
+      return;
+    changeToastThinTimer = setTimeout(() => {
+      state2.toastThin = true;
+    }, 500);
+  };
+  let showToastTimer = void 0;
+  function changeShowToast() {
+    if (showToastTimer != void 0)
+      return;
+    showToastTimer = setTimeout(() => {
+      state2.toastThin = false;
+      showToastTimer = void 0;
+    }, 1e3);
+  }
+  function clearChangeShowToast() {
+    clearTimeout(showToastTimer);
+    showToastTimer = void 0;
+  }
   function onTouchstart(event) {
     const toucher = event.targetTouches[0];
     touchStartOrigin.x = toucher.pageX;
     touchStartOrigin.y = toucher.pageY;
     state2.gestureType = "none";
     state2.volumeOld = 0;
-    state2.currentTimeOld = state2.currentTimeNew = 0;
   }
   function onTouchmove(event) {
     function stop() {
@@ -20152,6 +19955,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     const video = videoRef.value;
     if (gestureType === "progress") {
       changeProgress(pageX - origin.x);
+      state2.seeking = true;
     } else if (gestureType === "volume") {
       changeVolume(pageY - origin.y);
     }
@@ -20169,10 +19973,11 @@ function useGesture(props2, videoRef, fullscreenState) {
         stop();
       }
     } else {
-      if (!props2.pageGesture) {
+      if (!props2.pageGesture && !props2.vslideGesture) {
         state2.gestureType = "stop";
         return;
       }
+      changeToastThin();
       state2.gestureType = "volume";
       state2.volumeOld = video.volume;
       if (!fullscreenState.fullscreen) {
@@ -20213,6 +20018,8 @@ function useGesture(props2, videoRef, fullscreenState) {
       } else if (value > 1) {
         value = 1;
       }
+      clearChangeShowToast();
+      changeShowToast();
       video.volume = value;
       state2.volumeNew = value;
     }
@@ -20306,7 +20113,8 @@ function useVideo(props2, attrs2, trigger) {
     duration: 0,
     progress: 0,
     buffered: 0,
-    muted
+    muted,
+    pauseUpdatingCurrentTime: false
   });
   watch(() => src.value, () => {
     state2.playing = false;
@@ -20368,7 +20176,10 @@ function useVideo(props2, attrs2, trigger) {
   }
   function onTimeUpdate($event) {
     const video = $event.target;
-    const currentTime = state2.currentTime = video.currentTime;
+    if (!state2.pauseUpdatingCurrentTime) {
+      state2.currentTime = video.currentTime;
+    }
+    const currentTime = video.currentTime;
     trigger("timeupdate", $event, {
       currentTime,
       duration: video.duration
@@ -20426,13 +20237,14 @@ function useVideo(props2, attrs2, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek) {
+function useControls(props2, videoState, seek, seeking) {
   const progressRef = ref(null);
   const ballRef = ref(null);
   const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
   const controlsVisible = ref(true);
   const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
   const state2 = reactive({
+    seeking: false,
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -20481,13 +20293,6 @@ function useControls(props2, videoState, seek) {
       autoHideEnd();
     }
   });
-  watch([() => videoState.currentTime, () => {
-    props2.duration;
-  }], function updateProgress() {
-    if (!state2.touching) {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
-    }
-  });
   onMounted(() => {
     const passiveOptions2 = passive(false);
     let originX;
@@ -20513,6 +20318,8 @@ function useControls(props2, videoState, seek) {
         progress = 100;
       }
       videoState.progress = progress;
+      seeking == null ? void 0 : seeking(videoState.duration * progress / 100);
+      state2.seeking = true;
       event.preventDefault();
       event.stopPropagation();
     }
@@ -20660,6 +20467,25 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
     }
   }, id2, true);
 }
+function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
+  const progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  watch(progressing, (val) => {
+    videoState.pauseUpdatingCurrentTime = val;
+    controlsState.controlsTouching = val;
+    if (gestureState.gestureType === "progress" && val) {
+      controlsState.controlsVisible = val;
+    }
+  });
+  watch([() => videoState.currentTime, () => {
+    props$d.duration;
+  }], () => {
+    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  });
+  watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
+    videoState.currentTime = currentTimeNew;
+  });
+  return progressing;
+}
 const props$d = {
   id: {
     type: String,
@@ -20731,6 +20557,10 @@ const props$d = {
     type: [Boolean, String],
     default: false
   },
+  vslideGesture: {
+    type: [Boolean, String],
+    default: false
+  },
   enableProgressGesture: {
     type: [Boolean, String],
     default: true
@@ -20770,9 +20600,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    const {
-      t: t2
-    } = useI18n();
+    useI18n();
     initI18nVideoMsgsOnce();
     const {
       videoRef,
@@ -20819,9 +20647,14 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls
-    } = useControls(props2, videoState, seek);
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
+    } = useControls(props2, videoState, seek, (currentTimeNew) => {
+      gestureState.currentTimeNew = currentTimeNew;
+    });
     useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    const progressing = useProgressing(videoState, gestureState, controlsState);
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.assign(rootElement, {
@@ -20887,6 +20720,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-controls"
       }, [withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
@@ -20899,30 +20733,44 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-progress-container",
         "onClick": withModifiers(clickProgress, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-progress"
+        "class": {
+          "uni-video-progress": true,
+          "uni-video-progress-progressing": progressing.value
+        }
       }, [createVNode("div", {
         "style": {
-          width: videoState.buffered + "%"
+          width: videoState.buffered - videoState.progress + "%",
+          left: videoState.progress + "%"
         },
         "class": "uni-video-progress-buffered"
+      }, null, 4), createVNode("div", {
+        "style": {
+          width: videoState.progress + "%"
+        },
+        "class": "uni-video-progress-played"
       }, null, 4), createVNode("div", {
         "ref": ballRef,
         "style": {
           left: videoState.progress + "%"
         },
-        "class": "uni-video-ball"
+        "class": {
+          "uni-video-ball": true,
+          "uni-video-ball-progressing": progressing.value
+        }
       }, [createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+      }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
         "onClick": withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+      }, null, 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
@@ -20936,45 +20784,37 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": withModifiers(() => {
         }, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-cover-play-button",
+        "class": "uni-video-cover-play-button uni-video-icon",
         "onClick": withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+      }, null, 8, ["onClick"])], 8, ["onClick"]), createVNode("div", {
+        "class": "uni-video-loading"
+      }, [gestureState.gestureType === "volume" ? createVNode("div", {
         "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-volume": gestureState.gestureType === "volume"
-        }
-      }, [createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [t2("uni.video.volume")]), createVNode("svg", {
-        "class": "uni-video-toast-icon",
-        "width": "200px",
-        "height": "200px",
-        "viewBox": "0 0 1024 1024",
-        "version": "1.1",
-        "xmlns": "http://www.w3.org/2000/svg"
-      }, [createVNode("path", {
-        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
-      }, null)]), createVNode("div", {
-        "class": "uni-video-toast-value"
-      }, [createVNode("div", {
-        "style": {
-          width: gestureState.volumeNew * 100 + "%"
+          "uni-video-toast-container": true,
+          "uni-video-toast-container-thin": gestureState.toastThin
         },
-        "class": "uni-video-toast-value-content"
-      }, [createVNode("div", {
-        "class": "uni-video-toast-volume-grids"
-      }, [renderList(10, () => createVNode("div", {
-        "class": "uni-video-toast-volume-grids-item"
-      }, null))])], 4)])], 2), createVNode("div", {
+        "style": {
+          marginTop: `5px`
+        }
+      }, [!gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume" ? createVNode("text", {
+        "class": "uni-video-icon uni-video-toast-icon"
+      }, [""]) : !gestureState.toastThin && createVNode("text", {
+        "class": "uni-video-icon uni-video-toast-icon"
+      }, [""]), createVNode("div", {
+        "class": "uni-video-toast-draw",
+        "style": {
+          width: `${gestureState.volumeNew * 100}%`
+        }
+      }, null)], 2) : null]), createVNode("div", {
         "class": {
           "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
+          "uni-video-toast-progress": progressing.value
         }
       }, [createVNode("div", {
         "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+      }, [createVNode("span", {
+        "class": "uni-video-toast-title-current-time"
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -25682,7 +25522,9 @@ function useTopWindow(layoutState) {
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
@@ -25702,7 +25544,9 @@ function useLeftWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
@@ -25722,7 +25566,9 @@ function useRightWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {
@@ -27726,7 +27572,7 @@ function closePreActionSheet(dialogPages) {
     }, 100);
   }
 }
-const _sfc_main$1 = {
+const _sfc_main$2 = {
   data() {
     return {
       show: false,
@@ -27754,7 +27600,10 @@ const _sfc_main$1 = {
       windowWidth: 0,
       windowHeight: 0,
       popover: {},
-      bottomNavigationHeight: 0
+      bottomNavigationHeight: 0,
+      appTheme: null,
+      osTheme: null,
+      hostTheme: null
     };
   },
   onLoad(options) {
@@ -27798,15 +27647,22 @@ const _sfc_main$1 = {
     const osTheme = systemInfo.osTheme;
     const appTheme = systemInfo.appTheme;
     if (appTheme != null && appTheme != "auto") {
-      this.theme = appTheme;
-    } else if (osTheme != null) {
-      this.theme = osTheme;
+      this.appTheme = appTheme;
+      this.handleThemeChange();
+    }
+    if (osTheme != null) {
+      this.osTheme = osTheme;
+      this.handleThemeChange();
     }
     const hostTheme = systemInfo.hostTheme;
     if (hostTheme != null) {
-      this.theme = hostTheme;
+      this.hostTheme = hostTheme;
+      this.handleThemeChange();
     }
-    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+    uni.onHostThemeChange((res) => {
+      this.hostTheme = res.theme;
+      this.handleThemeChange();
+    });
     this.windowHeight = systemInfo.windowHeight;
     this.windowWidth = systemInfo.windowWidth;
     window.addEventListener("resize", this.fixSize);
@@ -27817,9 +27673,7 @@ const _sfc_main$1 = {
         this.language = res.locale;
       }
     });
-    uni.onThemeChange((res) => {
-      this.theme = res.theme;
-    });
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
   },
   computed: {
     isWidescreen() {
@@ -27943,13 +27797,22 @@ const _sfc_main$1 = {
     handleCancel() {
       this.closeActionSheet();
       uni.$emit(this.failEventName, {});
+    },
+    handleThemeChange() {
+      if (this.hostTheme != null) {
+        this.theme = this.hostTheme;
+      } else if (this.appTheme != null) {
+        this.theme = this.appTheme;
+      } else if (this.osTheme != null) {
+        this.theme = this.osTheme;
+      }
     }
   }
 };
-const _style_0$1 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.25s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+const _style_0$2 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_view = __syscom_2;
-  const _component_text = __syscom_1;
+  const _component_text = __syscom_0$1;
   return openBlock(), createBlock(_component_view, null, {
     default: withCtx(() => [
       createVNode(_component_view, {
@@ -28063,7 +27926,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   });
 }
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$2]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {
     this.errMsg = errMsg;
@@ -28151,7 +28014,7 @@ const languageData = {
   }
 };
 const loadingPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
-const _sfc_main = {
+const _sfc_main$1 = {
   data() {
     const id1 = `UniMap1_${(Math.random() * 1e6).toString(36)}`;
     const id2 = `UniMap2_${(Math.random() * 1e6).toString(36)}`;
@@ -28189,7 +28052,6 @@ const _sfc_main = {
       },
       lastTime: 0,
       searchLoading: false,
-      searchLoadingAnimation: false,
       language: "zh-Hans",
       scrollTop: 0,
       isLandscape: false,
@@ -28206,7 +28068,9 @@ const _sfc_main = {
       callUniMapCoErr: false,
       useUniCloud: true,
       mapHeight: 350,
-      loadingPath
+      loadingPath,
+      loadingRotate: 0,
+      loadingTimer: -1
     };
   },
   onLoad(options) {
@@ -28229,7 +28093,7 @@ const _sfc_main = {
   },
   methods: {
     checkUniCloud() {
-      if (typeof uniCloud == "undefined") {
+      if (typeof uniCloud == "undefined" || typeof uniCloud.config == "undefined" || uniCloud.config.spaceId == "") {
         this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
         this.useUniCloud = false;
         console.error(this.errMsg);
@@ -28434,15 +28298,17 @@ const _sfc_main = {
                 this.pois.unshift(newPoi);
               }
             }
+            this.searchLoading = false;
             if (this.selected == -1) {
-              this.selected = 0;
+              setTimeout(() => {
+                this.selected = 0;
+              }, 20);
               this.lastPoi.latitude = this.latitude;
               this.lastPoi.longitude = this.longitude;
               this.lastPoi.selected = this.selected;
               this.lastPoi.pois = this.pois;
             }
           }
-          this.searchLoading = false;
         }).catch((err) => {
           this.searchLoading = false;
         });
@@ -28653,12 +28519,17 @@ const _sfc_main = {
   },
   watch: {
     searchLoading(val) {
+      if (this.loadingTimer != -1) {
+        clearInterval(this.loadingTimer);
+        this.loadingTimer = -1;
+      }
       if (val) {
-        setTimeout(() => {
-          this.searchLoadingAnimation = true;
-        }, 50);
+        this.loadingRotate += 100;
+        this.loadingTimer = setInterval(() => {
+          this.loadingRotate += 100;
+        }, 200);
       } else {
-        this.searchLoadingAnimation = false;
+        this.loadingRotate = 0;
       }
     }
   },
@@ -28709,7 +28580,7 @@ const _sfc_main = {
     }
   }
 };
-const _style_0 = `
+const _style_0$1 = `
 @font-face {\r
     font-family: UniChooseLocationFontFamily;\r
     src: url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuUB/iAAAAPAAAACsGhlYWQp23fyAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAG+AAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZwAAADS3Bvc3RLRtf0AAAJvAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAIZo1N5fDzz1AAsEAAAAAADjXhn6AAAAAONeGfoAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFYAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAwYeAj4BNC4CDgEBwCU1JiY1JWoGBEAEB0d1ISIpJ0RFokVEJykiIXX9AiRATEImJT9KQCdUEhkZIxkZAXH+iAQGBgQBeApTP0FJUUVEJykpJ0RFUUlBP1MBIiZDJwImQks/JQEjPQAAABIA3gABAAAAAAAAABMAAAABAAAAAAABABsAEwABAAAAAAACAAcALgABAAAAAAADABsANQABAAAAAAAEABsAUAABAAAAAAAFAAsAawABAAAAAAAGABsAdgABAAAAAAAKACsAkQABAAAAAAALABMAvAADAAEECQAAACYAzwADAAEECQABADYA9QADAAEECQACAA4BKwADAAEECQADADYBOQADAAEECQAEADYBbwADAAEECQAFABYBpQADAAEECQAGADYBuwADAAEECQAKAFYB8QADAAEECQALACYCR0NyZWF0ZWQgYnkgaWNvbmZvbnRVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlSZWd1bGFyVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VmVyc2lvbiAxLjBVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlHZW5lcmF0ZWQgYnkgc3ZnMnR0ZiBmcm9tIEZvbnRlbGxvIHByb2plY3QuaHR0cDovL2ZvbnRlbGxvLmNvbQBDAHIAZQBhAHQAZQBkACAAYgB5ACAAaQBjAG8AbgBmAG8AbgB0AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFIAZQBnAHUAbABhAHIAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVgBlAHIAcwBpAG8AbgAgADEALgAwAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AEcAZQBuAGUAcgBhAHQAZQBkACAAYgB5ACAAcwB2AGcAMgB0AHQAZgAgAGYAcgBvAG0AIABGAG8AbgB0AGUAbABsAG8AIABwAHIAbwBqAGUAYwB0AC4AaAB0AHQAcAA6AC8ALwBmAG8AbgB0AGUAbABsAG8ALgBjAG8AbQAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAQIBAwEEAQUBBgAGc291c3VvB2dvdXh1YW4HZGluZ3dlaQtkaXR1LXR1ZGluZwAAAAA=') format('truetype');
@@ -28826,8 +28697,7 @@ const _style_0 = `
 \r
     letter-spacing: 0.1em;\r
 \r
-    color: #fff;\r
-    text-align: center;
+    color: #fff;
 }
 .uni-choose-location-poi {\r
     position: absolute;\r
@@ -28938,14 +28808,11 @@ const _style_0 = `
     color: #808080;\r
     padding-left: 5px;
 }
-.uni-choose-location-poi-search-loading-start {\r
-    transform: rotate(60000deg)
-}
 .uni-choose-location-poi-search-loading-image {\r
     width: 28px;\r
     height: 28px;\r
     transition-property: transform;\r
-    transition-duration: 120s;\r
+    transition-duration: 0.2s;\r
     transition-timing-function: linear;
 }\r
 \r
@@ -29033,7 +28900,7 @@ uni-image[hidden] {\r
 uni-image > div {\r
     width: 100%;\r
     height: 100%;\r
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
 }
 uni-image > img {\r
     -webkit-touch-callout: none;\r
@@ -29050,10 +28917,11 @@ uni-image > .uni-image-will-change {\r
     will-change: transform;
 }\r
 \r
+\r
 `;
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_map = __syscom_0;
-  const _component_text = __syscom_1;
+  const _component_text = __syscom_0$1;
   const _component_view = __syscom_2;
   const _component_input = __syscom_3;
   const _component_image = __syscom_4;
@@ -29241,9 +29109,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                 default: withCtx(() => [
                   createVNode(_component_image, {
                     src: $data.loadingPath,
-                    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
-                    mode: "widthFix"
-                  }, null, 8, ["src", "class"])
+                    class: "uni-choose-location-poi-search-loading-image",
+                    mode: "widthFix",
+                    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
+                  }, null, 8, ["src", "style"])
                 ]),
                 _: 1
               })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList($data.pois, (item, index2) => {
@@ -29301,9 +29170,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                 default: withCtx(() => [
                   createVNode(_component_image, {
                     src: $data.loadingPath,
-                    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
-                    mode: "widthFix"
-                  }, null, 8, ["src", "class"])
+                    class: "uni-choose-location-poi-search-loading-image",
+                    mode: "widthFix",
+                    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
+                  }, null, 8, ["src", "style"])
                 ]),
                 _: 1
               })) : createCommentVNode("", true)
@@ -29317,7 +29187,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   }, 8, ["class"]);
 }
-const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
 class ChooseLocationFailImpl extends UniError {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
@@ -29359,6 +29229,398 @@ const chooseLocation = (options) => {
     }
   });
 };
+const _sfc_main = {
+  data() {
+    return {
+      theme: "light",
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      title: "",
+      content: "",
+      showCancel: true,
+      editable: false,
+      placeholderText: null,
+      confirmText: "确定",
+      cancelText: "取消",
+      cancelColor: "#000000",
+      confirmColor: "#4A5E86",
+      inputBottom: "0px",
+      inputCancelColor: null,
+      inputConfirmColor: null,
+      hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
+      showAnim: false,
+      isAutoHeight: true
+    };
+  },
+  onReady() {
+    setTimeout(() => {
+      this.showAnim = true;
+    }, 10);
+  },
+  onLoad(options) {
+    const systemInfo = uni.getSystemInfoSync();
+    const hostTheme = systemInfo.hostTheme;
+    if (hostTheme != null) {
+      this.theme = hostTheme;
+      this.updateUI();
+    }
+    uni.onThemeChange((res) => {
+      this.theme = res.theme;
+      this.updateUI();
+    });
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.successEventName = options["successEventName"];
+    this.failEventName = options["failEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      if (data["title"] != null) {
+        this.title = data["title"];
+      }
+      if (data["content"] != null) {
+        this.content = data["content"];
+      }
+      if (data["showCancel"] != null) {
+        this.showCancel = data["showCancel"];
+      }
+      if (data["editable"] != null) {
+        this.editable = data["editable"];
+      }
+      if (data["placeholderText"] != null) {
+        this.placeholderText = data["placeholderText"];
+      }
+      if (data["confirmText"] != null) {
+        this.confirmText = data["confirmText"];
+      }
+      if (data["cancelText"] != null) {
+        this.cancelText = data["cancelText"];
+      }
+      if (data["confirmColor"] != null) {
+        this.inputConfirmColor = data["confirmColor"];
+      }
+      if (data["cancelColor"] != null) {
+        this.inputCancelColor = data["cancelColor"];
+      }
+      this.updateUI();
+    });
+    uni.$emit(this.readyEventName, {});
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  onBackPress(_) {
+    let ret = {
+      cancel: false,
+      confirm: false
+    };
+    uni.$emit(this.successEventName, JSON.stringify(ret));
+    return false;
+  },
+  methods: {
+    onInputBlur(e2) {
+      setTimeout(() => {
+        this.inputBottom = "0px";
+      }, 220);
+    },
+    onInputKeyboardChange(e2) {
+      let keyBoardHeight = e2.detail.height;
+      if (keyBoardHeight > 0) {
+        let calcBottom = keyBoardHeight / 2;
+        this.inputBottom = `${calcBottom}px`;
+      }
+    },
+    isValidColor(inputColor) {
+      const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+      if (inputColor == null) {
+        return false;
+      }
+      return hexColorRegex.test(inputColor);
+    },
+    /**
+     * update ui when theme change.
+     */
+    updateUI() {
+      if (this.isValidColor(this.inputConfirmColor)) {
+        this.confirmColor = this.inputConfirmColor;
+      } else {
+        if (this.theme == "dark") {
+          this.confirmColor = "#7388a2";
+        } else {
+          this.confirmColor = "#4A5E86";
+        }
+      }
+      if (this.isValidColor(this.inputCancelColor)) {
+        this.cancelColor = this.inputCancelColor;
+      } else {
+        if (this.theme == "dark") {
+          this.cancelColor = "#a5a5a5";
+        } else {
+          this.cancelColor = "#000000";
+        }
+      }
+      if (this.theme == "dark") {
+        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
+      } else {
+        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover";
+      }
+    },
+    closeModal() {
+      this.showAnim = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: this.$page
+        });
+      }, 300);
+    },
+    handleCancel() {
+      this.closeModal();
+      let ret = {
+        cancel: true,
+        confirm: false
+      };
+      uni.$emit(this.successEventName, JSON.stringify(ret));
+    },
+    handleSure() {
+      this.closeModal();
+      let ret = {
+        cancel: false,
+        confirm: true,
+        content: this.editable ? this.content : null
+      };
+      uni.$emit(this.successEventName, JSON.stringify(ret));
+    }
+  }
+};
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n	\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%; \n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__text {\n		font-size: 16px;\n		font-weight: normal;\n		margin-top: 2px;\n		margin-left: 2px;\n		margin-right: 2px;\n		margin-bottom: 12px;\n		text-align: center;\n		color: #747474;\n		lines: 6;\n		width: 100%;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 6;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 1px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 1px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_text = __syscom_0$1;
+  const _component_textarea = __syscom_1;
+  const _component_view = __syscom_2;
+  return openBlock(), createBlock(_component_view, {
+    class: normalizeClass(["uni-modal_dialog__mask", { "uni-modal_dialog__mask__show": $data.showAnim }])
+  }, {
+    default: withCtx(() => [
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-modal_dialog__container", { "uni-modal_dialog__show": $data.showAnim, "uni-modal_dark__mode": $data.theme == "dark" }]),
+        id: "modal_content",
+        style: normalizeStyle({ bottom: $data.inputBottom })
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-modal_dialog__container__wrapper", { "uni-modal_dark__mode": $data.theme == "dark" }])
+          }, {
+            default: withCtx(() => [
+              $data.title ? (openBlock(), createBlock(_component_text, {
+                key: 0,
+                class: normalizeClass(["uni-modal_dialog__title__text", { "uni-modal_dark__mode": $data.theme == "dark" }])
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($data.title), 1)
+                ]),
+                _: 1
+              }, 8, ["class"])) : createCommentVNode("", true),
+              createVNode(_component_view, { class: "uni-modal_dialog__content" }, {
+                default: withCtx(() => [
+                  $data.editable ? (openBlock(), createBlock(_component_textarea, {
+                    key: 0,
+                    modelValue: $data.content,
+                    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.content = $event),
+                    class: normalizeClass(["uni-modal_dialog__content__textarea", { "uni-modal_dark__mode": $data.theme == "dark" }]),
+                    "placeholder-class": "modalContent_content_edit_placeholder",
+                    "adjust-position": false,
+                    onBlur: $options.onInputBlur,
+                    onKeyboardheightchange: $options.onInputKeyboardChange,
+                    id: "textarea_content_input",
+                    ref: "ref_textarea_content_input",
+                    "auto-height": $data.isAutoHeight,
+                    placeholder: $data.placeholderText
+                  }, null, 8, ["modelValue", "class", "onBlur", "onKeyboardheightchange", "auto-height", "placeholder"])) : createCommentVNode("", true),
+                  !$data.editable && $data.content.length > 0 ? (openBlock(), createBlock(_component_text, {
+                    key: 1,
+                    class: "uni-modal_dialog__content__text"
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.content), 1)
+                    ]),
+                    _: 1
+                  })) : createCommentVNode("", true)
+                ]),
+                _: 1
+              }),
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-modal_dialog__content__topline", { "uni-modal_dark__mode": $data.theme == "dark" }])
+              }, null, 8, ["class"]),
+              createVNode(_component_view, { class: "uni-modal_dialog__content__bottom" }, {
+                default: withCtx(() => [
+                  $data.showCancel ? (openBlock(), createBlock(_component_view, {
+                    key: 0,
+                    class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": $data.theme == "dark" }]),
+                    "hover-class": $data.hoverClassName,
+                    onClick: $options.handleCancel
+                  }, {
+                    default: withCtx(() => [
+                      createVNode(_component_text, {
+                        style: normalizeStyle({ color: $data.cancelColor }),
+                        class: "uni-modal_dialog__content__bottom__button__text"
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode(toDisplayString($data.cancelText), 1)
+                        ]),
+                        _: 1
+                      }, 8, ["style"])
+                    ]),
+                    _: 1
+                  }, 8, ["class", "hover-class", "onClick"])) : createCommentVNode("", true),
+                  $data.showCancel ? (openBlock(), createBlock(_component_view, {
+                    key: 1,
+                    class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", { "uni-modal_dark__mode": $data.theme == "dark" }])
+                  }, null, 8, ["class"])) : createCommentVNode("", true),
+                  createVNode(_component_view, {
+                    class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": $data.theme == "dark" }]),
+                    "hover-class": $data.hoverClassName,
+                    onClick: $options.handleSure
+                  }, {
+                    default: withCtx(() => [
+                      createVNode(_component_text, {
+                        style: normalizeStyle({ color: $data.confirmColor }),
+                        class: "uni-modal_dialog__content__bottom__button__text__sure"
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode(toDisplayString($data.confirmText), 1)
+                        ]),
+                        _: 1
+                      }, 8, ["style"])
+                    ]),
+                    _: 1
+                  }, 8, ["class", "hover-class", "onClick"])
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["class"])
+        ]),
+        _: 1
+      }, 8, ["style", "class"])
+    ]),
+    _: 1
+  }, 8, ["class"]);
+}
+const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+class UniShowModalFailImpl extends UniError {
+  constructor(errMsg = "showModal:fail cancel", errCode = 4) {
+    super();
+    this.errMsg = errMsg;
+    this.errCode = errCode;
+  }
+}
+class UniHideModalFailImpl extends UniError {
+  constructor(errMsg = "hideModal:fail cancel", errCode = 4) {
+    super();
+    this.errMsg = errMsg;
+    this.errCode = errCode;
+  }
+}
+const showModal = (options) => {
+  var _a, _b;
+  registerSystemRoute("uni:uniModal", UniModalPage);
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
+  const baseEventName = `uni_modal_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, options);
+  });
+  uni.$on(successEventName, (inputParamStr) => {
+    var _a2, _b2;
+    let inputParam = JSON.parse(inputParamStr);
+    let res = {
+      cancel: inputParam["cancel"],
+      confirm: inputParam["confirm"],
+      content: inputParam["content"]
+    };
+    (_a2 = options.success) == null ? void 0 : _a2.call(options, res);
+    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+  });
+  uni.$on(failEventName, () => {
+    var _a2, _b2;
+    const res = new UniShowModalFailImpl();
+    (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
+    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+  });
+  let openRet = uni.openDialogPage({
+    url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    fail(err) {
+      var _a2, _b2;
+      const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`);
+      (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
+      (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+  if (openRet != null) {
+    return openRet;
+  } else {
+    const res = new UniShowModalFailImpl();
+    (_a = options.fail) == null ? void 0 : _a.call(options, res);
+    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+    return null;
+  }
+};
+const hideModal = function(options) {
+  var _a, _b, _c, _d, _e;
+  const currentPage = getCurrentPage();
+  if (!currentPage) {
+    const res2 = new UniHideModalFailImpl();
+    (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
+    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
+    return;
+  }
+  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
+  let shallClosePages = [];
+  for (let perPage of systemDialogPages) {
+    if (isSystemModalDialogPage(perPage)) {
+      if ((options == null ? void 0 : options.modalPage) == null) {
+        shallClosePages.push(perPage);
+      } else {
+        if (perPage.options["optionsEventName"] === options.modalPage.options["optionsEventName"]) {
+          shallClosePages.push(perPage);
+          break;
+        }
+      }
+    }
+  }
+  shallClosePages.forEach((item) => {
+    const index2 = systemDialogPages.indexOf(item);
+    if (index2 > -1) {
+      notifyClosedDialog(systemDialogPages[index2]);
+      systemDialogPages.splice(index2, 1);
+    }
+  });
+  let res = {};
+  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
+  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
+};
+function notifyClosedDialog(perPage) {
+  let ret = {
+    cancel: false,
+    confirm: false
+  };
+  if (perPage.options["successEventName"] != null) {
+    uni.$emit(perPage.options["successEventName"], JSON.stringify(ret));
+  }
+}
+function isSystemModalDialogPage(page) {
+  return page.route.startsWith("uni:uniModal");
+}
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -29567,19 +29829,19 @@ export {
   index$3 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$s as Button,
+  index$r as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
-  index$q as Checkbox,
-  index$r as CheckboxGroup,
+  index$p as Checkbox,
+  index$q as CheckboxGroup,
   index$7 as CoverImage,
   index$8 as CoverView,
-  index$o as Editor,
-  index$u as Form,
-  index$n as Icon,
+  index$n as Editor,
+  index$t as Form,
+  index$m as Icon,
   __syscom_4 as Image,
   __syscom_3 as Input,
-  index$t as Label,
+  index$s as Label,
   LayoutComponent,
   index$g as ListItem,
   index$h as ListView,
@@ -29588,16 +29850,16 @@ export {
   __syscom_0 as Map,
   MovableArea,
   MovableView,
-  index$m as Navigator,
+  index$l as Navigator,
   PageComponent,
   index$6 as Picker,
   PickerView,
   PickerViewColumn,
-  index$l as Progress,
+  index$k as Progress,
   indexX$3 as Radio,
-  index$k as RadioGroup,
+  index$j as RadioGroup,
   ResizeSensor,
-  index$j as RichText,
+  index$i as RichText,
   __syscom_5 as ScrollView,
   indexX$2 as Slider,
   index$e as StickyHeader,
@@ -29605,8 +29867,8 @@ export {
   Swiper,
   SwiperItem,
   indexX$1 as Switch,
-  __syscom_1 as Text,
-  index$i as Textarea,
+  __syscom_0$1 as Text,
+  __syscom_1 as Textarea,
   UniButtonElement,
   UniCanvasElement,
   UniCheckboxElement,

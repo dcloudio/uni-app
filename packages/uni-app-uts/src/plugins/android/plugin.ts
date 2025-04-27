@@ -281,13 +281,15 @@ export function uniAppPlugin(): UniVitePlugin {
         return
       }
       if (uniXKotlinCompiler) {
+        // 如果 main.uts.ts 没有被添加到 uniXKotlinCompiler 中，则添加
+        // 有可能首次编译失败，并没有走到这里，二次编译导致了changedFiles有内容
+        const mainFile = path.join(tscOutputDir, 'main.uts.ts')
+        if (!uniXKotlinCompiler.hasRootFile(mainFile)) {
+          await uniXKotlinCompiler.addRootFile(mainFile)
+        }
         if (changedFiles.length) {
           const files = changedFiles.splice(0)
           await uniXKotlinCompiler.invalidate(files)
-        } else if (isFirst) {
-          await uniXKotlinCompiler.addRootFile(
-            path.join(tscOutputDir, 'main.uts.ts')
-          )
         }
       }
       let pageCount = 0

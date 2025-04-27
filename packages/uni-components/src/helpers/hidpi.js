@@ -147,7 +147,10 @@ export function initHidpi() {
           args[3] *= pixelRatio
         }
 
-        var font = this.font
+        // 在 safari 浏览器中设置 canvasCtx.font 再读取会丢失 font-weight
+        // 因此检测与缓存值不一致时回退到缓存值
+        // @see https://github.com/dcloudio/uni-app/issues/5337
+        var font = this.__font__ || this.font
         this.font = font.replace(
           /(\d+\.?\d*)(px|em|rem|pt)/g,
           function (w, m, u) {
@@ -177,7 +180,10 @@ export function initHidpi() {
           args[3] *= pixelRatio
         }
 
-        var font = this.font
+        // 在 safari 浏览器中设置 canvasCtx.font 再读取会丢失 font-weight
+        // 因此检测与缓存值不一致时回退到缓存值
+        // @see https://github.com/dcloudio/uni-app/issues/5337
+        var font = this.__font__ || this.font
         this.font = font.replace(
           /(\d+\.?\d*)(px|em|rem|pt)/g,
           function (w, m, u) {

@@ -12,6 +12,9 @@
     "autoImports": {
       "./shared": [
         [
+          "UTS"
+        ],
+        [
           "IUTSObject"
         ],
         [
@@ -79,6 +82,15 @@
         ],
         [
           "SourceError"
+        ],
+        [
+          "resolveInOperator"
+        ],
+        [
+          "IJSONStringify"
+        ],
+        [
+          "IUTSDefaultGenericParent"
         ]
       ],
       "@dcloudio/uni-mp-sdk": [
@@ -110,7 +122,7 @@
       "@dcloudio/uni-mp-sdk"
     ],
     "autoImports": {
-      "./uts": [
+      "./uts-polyfill": [
         [
           "IUTSObject"
         ],
@@ -119,6 +131,15 @@
         ],
         [
           "UTSJSONObject"
+        ],
+        [
+          "resolveInOperator"
+        ],
+        [
+          "IJSONStringify"
+        ],
+        [
+          "IUTSDefaultGenericParent"
         ]
       ]
     },
@@ -142,6 +163,9 @@
     ],
     "autoImports": {
       "./shared": [
+        [
+          "UTS"
+        ],
         [
           "IUTSObject"
         ],
@@ -210,11 +234,23 @@
         ],
         [
           "SourceError"
+        ],
+        [
+          "resolveInOperator"
+        ],
+        [
+          "IJSONStringify"
+        ],
+        [
+          "IUTSDefaultGenericParent"
         ]
       ],
       "@dcloudio/uni-runtime-harmony": [
         [
           "UTSHarmony"
+        ],
+        [
+          "document"
         ],
         [
           "UniElement"
@@ -229,16 +265,25 @@
           "UniElementImpl"
         ],
         [
-          "document"
-        ],
-        [
           "UniCustomElement"
         ],
         [
           "UniTextElement"
         ],
         [
+          "UniFormControlElement"
+        ],
+        [
           "UniCustomEvent"
+        ],
+        [
+          "UniCustomEventOptions"
+        ],
+        [
+          "UniWebViewElement"
+        ],
+        [
+          "UniWebViewElementImpl"
         ]
       ]
     },
@@ -265,7 +310,7 @@
       "@dcloudio/uni-runtime-harmony"
     ],
     "autoImports": {
-      "./uts": [
+      "./uts-polyfill": [
         [
           "IUTSObject"
         ],
@@ -274,6 +319,15 @@
         ],
         [
           "UTSJSONObject"
+        ],
+        [
+          "resolveInOperator"
+        ],
+        [
+          "IJSONStringify"
+        ],
+        [
+          "IUTSDefaultGenericParent"
         ]
       ]
     },

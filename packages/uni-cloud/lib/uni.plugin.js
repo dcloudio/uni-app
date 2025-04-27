@@ -178,9 +178,7 @@ exports.default = () => [
                 if (uniCloudSpaces.length) {
                     return {
                         code: code + `;\nimport '@dcloudio/uni-cloud';`,
-                        map: {
-                            mappings: '',
-                        },
+                        map: null,
                     };
                 }
             },

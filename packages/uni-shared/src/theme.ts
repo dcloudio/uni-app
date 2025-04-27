@@ -57,7 +57,7 @@ export function normalizeStyles<T extends object>(
 
       if (isArray(styleItem))
         return styleItem.map((item: object | Array<T> | string) => {
-          if (typeof item === 'object')
+          if (isPlainObject(item))
             return normalizeStyles(item, themeConfig, mode)
           return resolveStringStyleItem(modeStyle, item)
         })

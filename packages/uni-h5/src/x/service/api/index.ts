@@ -63,7 +63,7 @@ export * from '../../../service/api/route/reLaunch'
 export * from '../../../service/api/route/switchTab'
 export * from '../../../service/api/route/preloadPage'
 
-export * from '../../../service/api/ui/popup/showModal'
+// export * from '../../../service/api/ui/popup/showModal'
 export * from '../../../service/api/ui/popup/showToast'
 export * from '../../../service/api/ui/loadFontFace'
 export * from '../../../service/api/ui/navigationBar'
@@ -132,10 +132,7 @@ export {
 export * from '../../../service/api/context/createCanvasContextAsync'
 export * from './route/openDialogPage'
 export * from './route/closeDialogPage'
-// @ts-expect-error
-export * from '@dcloudio/uni-ext-api/uni-actionSheet'
-// @ts-expect-error
-export * from '@dcloudio/uni-ext-api/uni-chooseLocation'
+export * from './pages'
 //#endif
 
 // export * from '@dcloudio/uni-ext-api/uni-getLaunchOptionsSync'

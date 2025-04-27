@@ -21,7 +21,7 @@ export function uniUniModulesExtApiPlugin(): Plugin {
         },
       }
       const build: BuildOptions = {}
-      if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+      if (['app-ios', 'app-harmony'].includes(process.env.UNI_UTS_PLATFORM)) {
         build.rollupOptions = rollupOptions
       }
       return {

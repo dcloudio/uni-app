@@ -82,6 +82,7 @@ export function initPluginVueOptions(
     compilerOptions: {
       miniProgram,
       isNativeTag,
+      isVoidTag,
       isCustomElement,
       nodeTransforms,
       directiveTransforms,
@@ -107,6 +108,19 @@ export function initPluginVueOptions(
         return true
       }
       if (userIsNativeTag && userIsNativeTag(tag)) {
+        return true
+      }
+      return false
+    }
+  }
+
+  if (isVoidTag) {
+    const userIsVoidTag = compilerOptions.isVoidTag
+    compilerOptions.isVoidTag = (tag) => {
+      if (isVoidTag(tag)) {
+        return true
+      }
+      if (userIsVoidTag && userIsVoidTag(tag)) {
         return true
       }
       return false
@@ -221,8 +235,9 @@ export function initPluginVueOptions(
         return fsExtra.existsSync(resolveFile(file))
       },
       readFile(file) {
+        const filename = resolveFile(file)
         // 需要走条件编译
-        return preJs(fsExtra.readFileSync(resolveFile(file), 'utf-8'))
+        return preJs(fsExtra.readFileSync(filename, 'utf-8'), filename)
       },
       realpath(file) {
         return resolveFile(file)

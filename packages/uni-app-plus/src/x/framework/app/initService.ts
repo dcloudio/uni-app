@@ -13,17 +13,21 @@ export function initOn(app: IApp) {
 
     function getNewIntent() {
       return new Promise((resolve, reject) => {
+        let callbackWrapper: UniCallbackWrapper | null = null
+
         const handleNewIntent = (newIntent) => {
           clearTimeout(timeout)
-          app.removeEventListener('onNewIntent', handleNewIntent)
+          app.removeEventListener('onNewIntent', callbackWrapper!)
           resolve({
             appScheme: newIntent.appScheme ?? null,
             appLink: newIntent.appLink ?? null,
           })
         }
+        // @ts-expect-error add onNewIntent event
+        callbackWrapper = app.addEventListener('onNewIntent', handleNewIntent)
 
         const timeout = setTimeout(() => {
-          app.removeEventListener('onNewIntent', handleNewIntent)
+          app.removeEventListener('onNewIntent', callbackWrapper!)
           // 等 timeout 无返回值，视为无值
           const appLink = {
             appScheme: null,
@@ -31,8 +35,6 @@ export function initOn(app: IApp) {
           }
           resolve(appLink)
         }, MAX_TIMEOUT)
-
-        ;(app.addEventListener as any)('onNewIntent', handleNewIntent)
       })
     }
 

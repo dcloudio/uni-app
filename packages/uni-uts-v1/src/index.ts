@@ -17,6 +17,7 @@ import {
   genConfigJson,
   resolveAndroidComponents,
   resolveConfigProvider,
+  resolveCustomElements,
   resolveIOSComponents,
   resolvePackage,
 } from './utils'
@@ -52,12 +53,14 @@ import {
   resolveUVueOutputPluginDir,
 } from './uni_modules'
 import { existsSync, readdirSync, rmSync } from 'fs-extra'
+import { restoreDebuggerFiles } from './manifest/dex'
+import { compileArkTS } from './arkts'
 
 export * from './tsc'
 
 export { getPluginInjectApis, getPluginInjectComponents } from './utils'
 
-export { parseExportIdentifiers } from './code'
+export { parseExportIdentifiers, parseInterfaceTypes } from './code'
 
 export {
   compileArkTS,
@@ -83,6 +86,8 @@ export {
   parseUTSRuntimeStacktrace,
   parseUTSKotlinRuntimeStacktrace,
   parseUTSJavaScriptRuntimeStacktrace,
+  parseUTSArkTSPluginStacktrace,
+  resolveUTSKotlinFilenameByClassName,
 } from './stacktrace'
 
 export { compile as toKotlin } from './kotlin'
@@ -108,6 +113,7 @@ export interface CompileResult {
   dir: string
   inject_apis: string[]
   scoped_slots: string[]
+  custom_elements: Record<string, string>
 }
 
 function createResult(
@@ -117,6 +123,7 @@ function createResult(
   deps: string[],
   inject_apis: string[],
   scoped_slots: string[],
+  custom_elements: Record<string, string>,
   meta: unknown
 ): CompileResult {
   return {
@@ -126,6 +133,7 @@ function createResult(
     encrypt: false,
     inject_apis,
     scoped_slots,
+    custom_elements,
     meta,
   }
 }
@@ -147,6 +155,8 @@ export interface UTSPluginCompilerOptions {
   >
   androidPreprocessor?: SyncUniModulesFilePreprocessor
   iosPreprocessor?: SyncUniModulesFilePreprocessor
+  harmonyPreprocessor?: SyncUniModulesFilePreprocessor
+  rewriteConsoleExpr?: (fileName: string, content: string) => string
 }
 
 // 重要：当调整参数时，需要同步调整 vue2 编译器 uni-cli-shared/lib/uts/uts-loader.js
@@ -176,6 +186,7 @@ export async function compile(
     sourceMap,
     isSingleThread,
     uni_modules,
+    rewriteConsoleExpr,
   } = compilerOptions
 
   let isPlugin = compilerOptions.isPlugin
@@ -206,16 +217,19 @@ export async function compile(
     ? {}
     : resolveIOSComponents(pluginDir, pkg.is_uni_modules)
 
+  const customElements = resolveCustomElements(pluginDir)
+
   const env = initCheckOptionsEnv()
   const deps: string[] = []
   const inject_apis: string[] = []
   const scoped_slots: string[] = []
-
+  const custom_elements: Record<string, string> = {}
   const meta = {
     exports: {},
     types: {},
     typeParams: [],
     components: [],
+    customElements: Object.keys(customElements),
   }
   let moduleName = pkg.id
   try {
@@ -225,6 +239,7 @@ export async function compile(
     {
       androidComponents,
       iosComponents,
+      customElements,
       format:
         process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs' ? FORMATS.CJS : FORMATS.ES,
       pluginRelativeDir,
@@ -248,9 +263,12 @@ export async function compile(
     // uts 插件 wgt 模式，本地资源模式不需要编译、ext-api模式也不需要编译（已经有前置编译过了）
     if (
       process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
-      process.env.UNI_COMPILE_TARGET === 'ext-api'
+      // 当编译 ext-api 中的 pages/components 时，不需要编译 utssdk 插件
+      (process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+        (process.env.UNI_COMPILE_EXT_API_TYPE === 'pages' ||
+          process.env.UNI_COMPILE_EXT_API_TYPE === 'components'))
     ) {
-      return createResult(outputPluginDir, errMsg, code, deps, [], [], meta)
+      return createResult(outputPluginDir, errMsg, code, deps, [], [], {}, meta)
     }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
     if (
@@ -262,12 +280,17 @@ export async function compile(
         indexModuleFilename ||
         resolvePlatformIndex('app-android', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
-      if (!filename && Object.keys(androidComponents).length) {
+      if (
+        !filename &&
+        (Object.keys(androidComponents).length ||
+          Object.keys(customElements).length)
+      ) {
         filename = resolvePlatformIndexFilename('app-android', pluginDir, pkg)
       }
       if (filename) {
         const result = await getCompiler('kotlin').runProd(filename, {
           components: androidComponents,
+          customElements,
           uniModuleId: pkg.id,
           isX,
           isSingleThread,
@@ -295,6 +318,10 @@ export async function compile(
           if (result.scoped_slots) {
             scoped_slots.push(...result.scoped_slots)
           }
+          const custom_elements = result.custom_elements || {}
+          Object.keys(custom_elements).forEach((key) => {
+            custom_elements[key] = custom_elements[key]
+          })
         }
         if (!isCompileUniModules && cacheDir) {
           // 存储 sourcemap
@@ -324,12 +351,17 @@ export async function compile(
         indexModuleFilename ||
         resolvePlatformIndex('app-ios', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
-      if (!filename && Object.keys(androidComponents).length) {
+      if (
+        !filename &&
+        (Object.keys(androidComponents).length ||
+          Object.keys(customElements).length)
+      ) {
         filename = resolvePlatformIndexFilename('app-ios', pluginDir, pkg)
       }
       if (filename) {
         const result = await getCompiler('swift').runProd(filename, {
           components: iosComponents,
+          customElements,
           uniModuleId: pkg.id,
           isX,
           isSingleThread,
@@ -381,7 +413,16 @@ export async function compile(
     if (utsPlatform === 'app-ios') {
       if (isWindows) {
         process.env.UNI_UTS_ERRORS = `iOS手机在windows上使用标准基座真机运行无法使用uts插件，如需使用uts插件请提交云端打包自定义基座`
-        return createResult(outputPluginDir, errMsg, code, deps, [], [], meta)
+        return createResult(
+          outputPluginDir,
+          errMsg,
+          code,
+          deps,
+          [],
+          [],
+          {},
+          meta
+        )
       }
     }
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
@@ -413,6 +454,15 @@ export async function compile(
         // console.log('uts插件[' + pkg.id + ']缓存检查耗时：', Date.now() - start)
         if (!res.expired) {
           if (utsPlatform === 'app-android') {
+            // debugger 专用
+            restoreDebuggerFiles(
+              pluginRelativeDir,
+              cacheDir,
+              outputDir,
+              pkg.is_uni_modules,
+              inputDir,
+              rewriteConsoleExpr
+            )
             restoreDex(
               pluginRelativeDir,
               cacheDir,
@@ -437,6 +487,7 @@ export async function compile(
               ? proxyCodeOptions.androidHookClass
               : proxyCodeOptions.iOSHookClass) || '',
             components,
+            customElements,
             pluginRelativeDir,
             pkg.is_uni_modules,
             inputDir,
@@ -460,6 +511,7 @@ export async function compile(
             res.files.map((name) => join(pluginDir, name)),
             [],
             [],
+            {},
             meta
           )
         }
@@ -468,7 +520,10 @@ export async function compile(
         resolvePlatformIndex(utsPlatform, pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
 
-      if (!filename && Object.keys(androidComponents).length) {
+      if (
+        !filename &&
+        (Object.keys(components).length || Object.keys(customElements).length)
+      ) {
         filename = resolvePlatformIndexFilename(utsPlatform, pluginDir, pkg)
       }
 
@@ -487,6 +542,7 @@ export async function compile(
             ? proxyCodeOptions.androidHookClass
             : proxyCodeOptions.iOSHookClass) || '',
           components,
+          customElements,
           pluginRelativeDir,
           pkg.is_uni_modules,
           inputDir,
@@ -495,6 +551,7 @@ export async function compile(
         )
         const res = await getCompiler(compilerType).runDev(filename, {
           components,
+          customElements,
           isX,
           isSingleThread,
           isPlugin,
@@ -502,6 +559,7 @@ export async function compile(
           cacheDir,
           pluginRelativeDir,
           is_uni_modules: pkg.is_uni_modules,
+          rewriteConsoleExpr,
           extApis,
           transform: await initCompilerOptionsTransform(
             compilerType,
@@ -600,6 +658,7 @@ export async function compile(
     deps,
     inject_apis,
     scoped_slots,
+    custom_elements,
     meta
   )
 }
@@ -742,6 +801,23 @@ export async function buildUniModules(
     compilerOptions.androidPreprocessor =
       syncUniModulesFilePreprocessors.android
     compilerOptions.iosPreprocessor = syncUniModulesFilePreprocessors.ios
+    compilerOptions.harmonyPreprocessor =
+      syncUniModulesFilePreprocessors.harmony
+  }
+  if (platform === 'app-harmony') {
+    return compileArkTS(pluginDir, {
+      isX: compilerOptions.isX,
+      isExtApi: compilerOptions.isExtApi,
+      sourceMap: compilerOptions.sourceMap,
+      rewriteConsoleExpr: compilerOptions.rewriteConsoleExpr,
+      transform: {
+        uniExtApiProviderName: compilerOptions.transform?.uniExtApiProviderName,
+        uniExtApiProviderService:
+          compilerOptions.transform?.uniExtApiProviderService,
+        uniExtApiProviderServicePlugin:
+          compilerOptions.transform?.uniExtApiProviderServicePlugin,
+      },
+    })
   }
   return compile(pluginDir, compilerOptions)
 }

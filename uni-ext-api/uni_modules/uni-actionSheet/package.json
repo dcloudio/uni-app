@@ -37,7 +37,7 @@
 			"uni-theme",
 			"uni-getSystemInfo",
 			"app-ios:uni-dialogPage",
-      "app-ios:uni-event"
+			"app-ios:uni-event"
 		],
 		"uni-ext-api": {
 			"uni": {
@@ -47,7 +47,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				},
 				"hideActionSheet": {
@@ -56,7 +56,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": false
+						"arkts": true
 					}
 				}
 			}

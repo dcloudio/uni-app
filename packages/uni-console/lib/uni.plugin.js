@@ -51,13 +51,18 @@ var index = () => {
                     hasRuntimeSocket = false;
                 }
             }
-            let uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/index.esm.js'));
+            let uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', `dist/${(process.env.UNI_PLATFORM || '').startsWith('mp-') ? 'mp' : 'index'}.esm.js`));
             if (isX) {
                 if (process.env.UNI_UTS_PLATFORM === 'app-android') {
                     uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'src/runtime/app/index.ts'));
                 }
                 else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
                     uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/app.esm.js'));
+                }
+            }
+            else {
+                if (process.env.UNI_PLATFORM === 'app-harmony') {
+                    uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/harmony.jsvm.esm.js'));
                 }
             }
             return {
@@ -75,9 +80,7 @@ var index = () => {
                     return {
                         // 采用绝对路径引入，此时，tsc失效，代码里需要自己处理好各种类型问题
                         code: `import '${uniCliShared.normalizePath(uniConsolePath)}';${code}`,
-                        map: {
-                            mappings: '',
-                        },
+                        map: null,
                     };
                 },
             };

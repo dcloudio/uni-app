@@ -86,7 +86,7 @@ function readAppCode(filename: string) {
   }
   const source = fs.readFileSync(filename, 'utf8')
   if (source.includes('#endif')) {
-    return preNVueJs(preNVueHtml(source))
+    return preNVueJs(preNVueHtml(source, filename), filename)
   }
   return source
 }

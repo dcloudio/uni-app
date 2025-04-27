@@ -360,6 +360,9 @@ export function uniStracktraceyPreset(
         }
         if (baseAfter && !!fileRelative.match(/^\w/)) baseAfter += '/'
       }
+      if (!baseAfter.length) {
+        return path.join(base, fileRelative) + '.map'
+      }
       return `${base}${baseAfter}${fileRelative}.map`
     },
     getSourceMapContent(file, fileName, fileRelative) {

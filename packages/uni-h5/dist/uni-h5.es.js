@@ -1,4 +1,4 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -1606,6 +1606,9 @@ function createNativeEvent(evt, htmlElement = false) {
     detail: {},
     currentTarget: realCurrentTarget
   };
+  if (evt instanceof CustomEvent && isPlainObject(evt.detail)) {
+    event.detail = evt.detail;
+  }
   if (evt._stopped) {
     event._stopped = true;
   }
@@ -2021,7 +2024,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   let target;
   target = normalizeTarget(el);
   return {
-    type: detail.type || name,
+    type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
@@ -4204,7 +4207,8 @@ class CanvasContext {
     var self = this;
     this.state.font = value;
     var fontFormat = value.match(
-      /^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
+      // 支持小数点 github #5329
+      /^(([\w\-]+\s)*)(\d+\.?\d*r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
     );
     if (fontFormat) {
       var style = fontFormat[1].trim().split(/\s/);
@@ -4218,7 +4222,7 @@ class CanvasContext {
             data: [value2]
           });
           self.state.fontStyle = value2;
-        } else if (["bold", "normal"].indexOf(value2) > -1) {
+        } else if (["bold", "normal", "lighter", "bolder"].indexOf(value2) > -1 || /^\d+$/.test(value2)) {
           actions.push({
             method: "setFontWeight",
             data: [value2]
@@ -7952,7 +7956,7 @@ function initHidpi() {
         if (args[3] && typeof args[3] === "number") {
           args[3] *= pixelRatio;
         }
-        var font2 = this.font;
+        var font2 = this.__font__ || this.font;
         this.font = font2.replace(
           /(\d+\.?\d*)(px|em|rem|pt)/g,
           function(w, m, u) {
@@ -7974,7 +7978,7 @@ function initHidpi() {
         if (args[3] && typeof args[3] === "number") {
           args[3] *= pixelRatio;
         }
-        var font2 = this.font;
+        var font2 = this.__font__ || this.font;
         this.font = font2.replace(
           /(\d+\.?\d*)(px|em|rem|pt)/g,
           function(w, m, u) {
@@ -16603,23 +16607,45 @@ function formatTime(val) {
 }
 function useGesture(props2, videoRef, fullscreenState) {
   const state2 = reactive({
+    seeking: false,
     gestureType: "none",
     volumeOld: 0,
     volumeNew: 0,
     currentTimeOld: 0,
-    currentTimeNew: 0
+    currentTimeNew: 0,
+    toastThin: false
   });
   const touchStartOrigin = {
     x: 0,
     y: 0
   };
+  let changeToastThinTimer = null;
+  const changeToastThin = () => {
+    if (state2.gestureType !== "none" && changeToastThinTimer != null)
+      return;
+    changeToastThinTimer = setTimeout(() => {
+      state2.toastThin = true;
+    }, 500);
+  };
+  let showToastTimer = void 0;
+  function changeShowToast() {
+    if (showToastTimer != void 0)
+      return;
+    showToastTimer = setTimeout(() => {
+      state2.toastThin = false;
+      showToastTimer = void 0;
+    }, 1e3);
+  }
+  function clearChangeShowToast() {
+    clearTimeout(showToastTimer);
+    showToastTimer = void 0;
+  }
   function onTouchstart(event) {
     const toucher = event.targetTouches[0];
     touchStartOrigin.x = toucher.pageX;
     touchStartOrigin.y = toucher.pageY;
     state2.gestureType = "none";
     state2.volumeOld = 0;
-    state2.currentTimeOld = state2.currentTimeNew = 0;
   }
   function onTouchmove(event) {
     function stop() {
@@ -16640,6 +16666,7 @@ function useGesture(props2, videoRef, fullscreenState) {
     const video = videoRef.value;
     if (gestureType === "progress") {
       changeProgress(pageX - origin.x);
+      state2.seeking = true;
     } else if (gestureType === "volume") {
       changeVolume(pageY - origin.y);
     }
@@ -16657,10 +16684,11 @@ function useGesture(props2, videoRef, fullscreenState) {
         stop();
       }
     } else {
-      if (!props2.pageGesture) {
+      if (!props2.pageGesture && !props2.vslideGesture) {
         state2.gestureType = "stop";
         return;
       }
+      changeToastThin();
       state2.gestureType = "volume";
       state2.volumeOld = video.volume;
       if (!fullscreenState.fullscreen) {
@@ -16701,6 +16729,8 @@ function useGesture(props2, videoRef, fullscreenState) {
       } else if (value > 1) {
         value = 1;
       }
+      clearChangeShowToast();
+      changeShowToast();
       video.volume = value;
       state2.volumeNew = value;
     }
@@ -16794,7 +16824,8 @@ function useVideo(props2, attrs2, trigger) {
     duration: 0,
     progress: 0,
     buffered: 0,
-    muted
+    muted,
+    pauseUpdatingCurrentTime: false
   });
   watch(() => src.value, () => {
     state2.playing = false;
@@ -16856,7 +16887,10 @@ function useVideo(props2, attrs2, trigger) {
   }
   function onTimeUpdate($event) {
     const video = $event.target;
-    const currentTime = state2.currentTime = video.currentTime;
+    if (!state2.pauseUpdatingCurrentTime) {
+      state2.currentTime = video.currentTime;
+    }
+    const currentTime = video.currentTime;
     trigger("timeupdate", $event, {
       currentTime,
       duration: video.duration
@@ -16914,13 +16948,14 @@ function useVideo(props2, attrs2, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek) {
+function useControls(props2, videoState, seek, seeking) {
   const progressRef = ref(null);
   const ballRef = ref(null);
   const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
   const controlsVisible = ref(true);
   const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
   const state2 = reactive({
+    seeking: false,
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -16969,13 +17004,6 @@ function useControls(props2, videoState, seek) {
       autoHideEnd();
     }
   });
-  watch([() => videoState.currentTime, () => {
-    props2.duration;
-  }], function updateProgress() {
-    if (!state2.touching) {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
-    }
-  });
   onMounted(() => {
     const passiveOptions2 = passive(false);
     let originX;
@@ -17001,6 +17029,8 @@ function useControls(props2, videoState, seek) {
         progress = 100;
       }
       videoState.progress = progress;
+      seeking == null ? void 0 : seeking(videoState.duration * progress / 100);
+      state2.seeking = true;
       event.preventDefault();
       event.stopPropagation();
     }
@@ -17148,6 +17178,25 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
     }
   }, id2, true);
 }
+function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
+  const progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  watch(progressing, (val) => {
+    videoState.pauseUpdatingCurrentTime = val;
+    controlsState.controlsTouching = val;
+    if (gestureState.gestureType === "progress" && val) {
+      controlsState.controlsVisible = val;
+    }
+  });
+  watch([() => videoState.currentTime, () => {
+    props$g.duration;
+  }], () => {
+    videoState.progress = videoState.currentTime / videoState.duration * 100;
+  });
+  watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
+    videoState.currentTime = currentTimeNew;
+  });
+  return progressing;
+}
 const props$g = {
   id: {
     type: String,
@@ -17219,6 +17268,10 @@ const props$g = {
     type: [Boolean, String],
     default: false
   },
+  vslideGesture: {
+    type: [Boolean, String],
+    default: false
+  },
   enableProgressGesture: {
     type: [Boolean, String],
     default: true
@@ -17252,9 +17305,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
-    const {
-      t: t2
-    } = useI18n();
+    useI18n();
     initI18nVideoMsgsOnce();
     const {
       videoRef,
@@ -17301,9 +17352,14 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls
-    } = useControls(props2, videoState, seek);
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
+    } = useControls(props2, videoState, seek, (currentTimeNew) => {
+      gestureState.currentTimeNew = currentTimeNew;
+    });
     useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    const progressing = useProgressing(videoState, gestureState, controlsState);
     return () => {
       return createVNode("uni-video", {
         "ref": rootRef,
@@ -17355,6 +17411,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-controls"
       }, [withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
@@ -17367,30 +17424,44 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-progress-container",
         "onClick": withModifiers(clickProgress, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-progress"
+        "class": {
+          "uni-video-progress": true,
+          "uni-video-progress-progressing": progressing.value
+        }
       }, [createVNode("div", {
         "style": {
-          width: videoState.buffered + "%"
+          width: videoState.buffered - videoState.progress + "%",
+          left: videoState.progress + "%"
         },
         "class": "uni-video-progress-buffered"
+      }, null, 4), createVNode("div", {
+        "style": {
+          width: videoState.progress + "%"
+        },
+        "class": "uni-video-progress-played"
       }, null, 4), createVNode("div", {
         "ref": ballRef,
         "style": {
           left: videoState.progress + "%"
         },
-        "class": "uni-video-ball"
+        "class": {
+          "uni-video-ball": true,
+          "uni-video-ball-progressing": progressing.value
+        }
       }, [createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+      }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
         "onClick": withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+      }, null, 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
@@ -17404,45 +17475,37 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": withModifiers(() => {
         }, ["stop"])
       }, [createVNode("div", {
-        "class": "uni-video-cover-play-button",
+        "class": "uni-video-cover-play-button uni-video-icon",
         "onClick": withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+      }, null, 8, ["onClick"])], 8, ["onClick"]), createVNode("div", {
+        "class": "uni-video-loading"
+      }, [gestureState.gestureType === "volume" ? createVNode("div", {
         "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-volume": gestureState.gestureType === "volume"
-        }
-      }, [createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [t2("uni.video.volume")]), createVNode("svg", {
-        "class": "uni-video-toast-icon",
-        "width": "200px",
-        "height": "200px",
-        "viewBox": "0 0 1024 1024",
-        "version": "1.1",
-        "xmlns": "http://www.w3.org/2000/svg"
-      }, [createVNode("path", {
-        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
-      }, null)]), createVNode("div", {
-        "class": "uni-video-toast-value"
-      }, [createVNode("div", {
-        "style": {
-          width: gestureState.volumeNew * 100 + "%"
+          "uni-video-toast-container": true,
+          "uni-video-toast-container-thin": gestureState.toastThin
         },
-        "class": "uni-video-toast-value-content"
-      }, [createVNode("div", {
-        "class": "uni-video-toast-volume-grids"
-      }, [renderList(10, () => createVNode("div", {
-        "class": "uni-video-toast-volume-grids-item"
-      }, null))])], 4)])], 2), createVNode("div", {
+        "style": {
+          marginTop: `5px`
+        }
+      }, [!gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume" ? createVNode("text", {
+        "class": "uni-video-icon uni-video-toast-icon"
+      }, [""]) : !gestureState.toastThin && createVNode("text", {
+        "class": "uni-video-icon uni-video-toast-icon"
+      }, [""]), createVNode("div", {
+        "class": "uni-video-toast-draw",
+        "style": {
+          width: `${gestureState.volumeNew * 100}%`
+        }
+      }, null)], 2) : null]), createVNode("div", {
         "class": {
           "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
+          "uni-video-toast-progress": progressing.value
         }
       }, [createVNode("div", {
         "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+      }, [createVNode("span", {
+        "class": "uni-video-toast-title-current-time"
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -23388,7 +23451,9 @@ function useTopWindow(layoutState) {
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
@@ -23408,7 +23473,9 @@ function useLeftWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
@@ -23428,7 +23495,9 @@ function useRightWindow(layoutState) {
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
-  onMounted(updateWindow);
+  watch(() => windowRef.value, () => {
+    updateWindow();
+  });
   watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {

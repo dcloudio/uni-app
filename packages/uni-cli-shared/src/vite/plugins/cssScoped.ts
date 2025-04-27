@@ -74,7 +74,7 @@ export function uniCssScopedPlugin(
         let code = await oldRead()
         // hotUpdate preprocess
         if (code.includes('#endif')) {
-          code = preJs(preHtml(code))
+          code = preJs(preHtml(code, ctx.file), ctx.file)
         }
         if (scoped) {
           code = addScoped(code)

@@ -1,7 +1,18 @@
-import { type ComponentPublicInstance, markRaw, watchEffect } from 'vue'
-import { getCurrentPage, initPageVm } from '@dcloudio/uni-core'
+import safeAreaInsets from 'safe-area-insets'
+import {
+  type ComponentInternalInstance,
+  type ComponentPublicInstance,
+  markRaw,
+  watchEffect,
+} from 'vue'
+import {
+  dialogPageTriggerParentHide,
+  getCurrentPage,
+  initPageVm,
+} from '@dcloudio/uni-core'
 import {
   ON_REACH_BOTTOM_DISTANCE,
+  invokeArrayFns,
   normalizeTitleColor,
 } from '@dcloudio/uni-shared'
 import { handleBeforeEntryPageRoutes } from '../../../service/api/route/utils'
@@ -51,6 +62,9 @@ class UniPageImpl implements UniPage {
   options: UTSJSONObject
   vm: ComponentPublicInstance | null
   $vm: ComponentPublicInstance | null
+  width: number = 0
+  height: number = 0
+  statusBarHeight: number = safeAreaInsets.top
   get pageBody(): UniPageBody {
     if (__NODE_JS__) {
       throw new Error('Not support pageBody in non-browser environment')
@@ -372,5 +386,35 @@ export function decrementEscBackPageNum() {
   escBackPageNum--
   if (escBackPageNum === 0) {
     document.removeEventListener('keydown', handleEscKeyPress)
+  }
+}
+
+export function triggerDialogPageOnHide(instance: ComponentInternalInstance) {
+  const parentPage = (instance.proxy?.$page as UniPage).getParentPage()
+  const parentPageInstance = parentPage?.vm.$pageLayoutInstance
+  if (parentPageInstance) {
+    const dialogPages = parentPageInstance.$dialogPages.value
+    if (dialogPages.length > 1) {
+      const preDialogPage = dialogPages[dialogPages.length - 2]
+      if (preDialogPage.vm) {
+        const { onHide } = preDialogPage.vm.$
+        onHide && invokeArrayFns(onHide)
+      }
+    }
+  }
+  dialogPageTriggerParentHide(instance.proxy?.$page as UniDialogPage)
+}
+export function initPageWidthHeight(instance: ComponentInternalInstance) {
+  if (!instance.proxy) {
+    return
+  }
+  const pageEl = document.querySelector(
+    `uni-page[data-page="${instance.proxy.$vm.route}"]`
+  ) as HTMLElement
+  if (pageEl) {
+    // @ts-expect-error
+    ;(instance.proxy as UniPage).width = pageEl.offsetWidth
+    // @ts-expect-error
+    ;(instance.proxy as UniPage).height = pageEl.offsetHeight
   }
 }

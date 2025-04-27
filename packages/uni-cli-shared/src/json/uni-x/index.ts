@@ -160,7 +160,7 @@ function walkNode(node: Node, pagePathNodes: Node[]) {
 
 export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   // 先条件编译
-  jsonStr = preUVueJson(jsonStr)
+  jsonStr = preUVueJson(jsonStr, 'pages.json')
   checkPagesJson(jsonStr, process.env.UNI_INPUT_DIR)
   const pagesJson: UniApp.PagesJson = {
     pages: [],
@@ -172,7 +172,7 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   }
   try {
     // 此处不需要条件编译了
-    userPagesJson = parseJson(jsonStr, false)
+    userPagesJson = parseJson(jsonStr, false, 'pages.json')
   } catch (e) {
     console.error(`[vite] Error: pages.json parse failed.\n`, jsonStr, e)
   }

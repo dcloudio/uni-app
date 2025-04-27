@@ -2842,6 +2842,9 @@ function uniStracktraceyPreset(opts) {
                 if (baseAfter && !!fileRelative.match(/^\w/))
                     baseAfter += '/';
             }
+            if (!baseAfter.length) {
+                return path__default.default.join(base, fileRelative) + '.map';
+            }
             return `${base}${baseAfter}${fileRelative}.map`;
         },
         getSourceMapContent(file, fileName, fileRelative) {

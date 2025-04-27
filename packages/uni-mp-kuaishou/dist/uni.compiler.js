@@ -141,6 +141,7 @@ const customElements = [
     'follow-service',
     'payment-list',
     'web-view',
+    'playlet-plugin',
 ];
 const compilerOptions = {
     nodeTransforms,

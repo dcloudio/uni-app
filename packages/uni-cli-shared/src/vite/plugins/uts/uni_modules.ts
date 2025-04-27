@@ -38,7 +38,7 @@ import { parseManifestJsonOnce } from '../../../json'
 import { emptyDir } from '../../../fs'
 import { initScopedPreContext } from '../../../preprocess/context'
 import { isInHBuilderX } from '../../../hbx'
-import { rewriteConsoleExpr } from '../../../logs/console'
+import { appendConsoleExpr, rewriteConsoleExpr } from '../../../logs/console'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
@@ -61,6 +61,32 @@ export function rewriteUniModulesConsoleExpr(
       content,
       false
     ).code
+  }
+  return content
+}
+
+let ts: typeof import('typescript') | undefined
+
+function getTs() {
+  if (!ts) {
+    ts = resolveUTSCompiler().getTypeScript()
+  }
+  return ts!
+}
+
+function appendUniModulesConsoleExpr(fileName: string, content: string) {
+  // 仅开发模式补充console.log的at信息
+  if (process.env.NODE_ENV !== 'development') {
+    return content
+  }
+  if (content.includes('console.')) {
+    return appendConsoleExpr(
+      normalizePath(
+        path.relative(process.env.UNI_INPUT_DIR, fileName.split('?')[0])
+      ),
+      content,
+      ts || getTs()
+    )
   }
   return content
 }
@@ -158,7 +184,11 @@ const createUniAppIosUniModulesSyncFilePreprocessorOnce = once(() => {
 })
 
 const createUniAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
-  return createUniModulesSyncFilePreprocessor('app', 'app-harmony', false)
+  return createUniModulesSyncFilePreprocessor(
+    'app-harmony',
+    'app-harmony',
+    false
+  )
 })
 
 const createUniXAppAndroidUniModulesSyncFilePreprocessorOnce = once(() => {
@@ -170,7 +200,11 @@ const createUniXAppIosUniModulesSyncFilePreprocessorOnce = once(() => {
 })
 
 const createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
-  return createUniModulesSyncFilePreprocessor('app', 'app-harmony', true)
+  return createUniModulesSyncFilePreprocessor(
+    'app-harmony',
+    'app-harmony',
+    true
+  )
 })
 
 const utsModuleCaches = new Map<string, () => Promise<void | CompileResult>>()
@@ -423,15 +457,16 @@ export function uniUTSAppUniModulesPlugin(
     const compiler = resolveUTSCompiler()
     // 处理依赖的 uts 插件
     // TODO 当本地有ext-api时，也应该自动加入deps，不然uts内部使用了该api，也会导致编译失败
-    const deps = parseUTSModuleDeps(
-      pkgJson.uni_modules?.dependencies || [],
-      inputDir
-    )
+    const deps =
+      // 框架内部编译不需要处理依赖
+      process.env.UNI_COMPILE_TARGET === 'ext-api'
+        ? []
+        : parseUTSModuleDeps(pkgJson.uni_modules?.dependencies || [], inputDir)
     if (deps.length) {
       for (const dep of deps) {
         if (dep) {
-          // 本次编译流程中已编译过该插件，直接使用缓存
           const depPluginDir = normalizePath(path.resolve(uniModulesDir, dep))
+          // 本次编译流程中已编译过该插件，直接使用缓存
           if (utsModuleCaches.get(depPluginDir)) {
             await utsModuleCaches.get(depPluginDir)!().then((result) => {
               if (result) {
@@ -439,10 +474,11 @@ export function uniUTSAppUniModulesPlugin(
               }
             })
           } else {
-            await compilePlugin(
-              path.resolve(inputDir, 'uni_modules', dep),
-              pluginContext
-            ).then((result) => {
+            const compile = once(() => {
+              return compilePlugin(depPluginDir, pluginContext)
+            })
+            utsModuleCaches.set(depPluginDir, compile)
+            await compile().then((result) => {
               if (result) {
                 handleCompileResult(result, pluginContext)
               }
@@ -456,6 +492,9 @@ export function uniUTSAppUniModulesPlugin(
       return compiler.compileArkTS(pluginDir, {
         isX: !!options.x,
         isExtApi,
+        sourceMap: enableSourceMap(),
+        rewriteConsoleExpr: appendUniModulesConsoleExpr,
+        uni_modules: deps,
         transform: {
           uniExtApiProviderName: extApiProvider?.name,
           uniExtApiProviderService: extApiProvider?.service,
@@ -488,6 +527,7 @@ export function uniUTSAppUniModulesPlugin(
       extApis: options.extApis,
       sourceMap: enableSourceMap(),
       uni_modules: deps,
+      rewriteConsoleExpr: appendUniModulesConsoleExpr,
       transform: {
         uniExtApiProviderName: extApiProvider?.name,
         uniExtApiProviderService: extApiProvider?.service,
@@ -604,6 +644,9 @@ export function uniUTSAppUniModulesPlugin(
         }
         if (uniXSwiftCompiler) {
           await uniXSwiftCompiler.close()
+        }
+        if (uniXArkTSCompiler) {
+          await uniXArkTSCompiler.close()
         }
       }
     },

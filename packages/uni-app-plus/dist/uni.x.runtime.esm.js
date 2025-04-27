@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
 function get$pageByPage(page) {
@@ -1608,7 +1608,6 @@ function registerThemeChange(callback) {
       callback(appThemeMode);
     });
   } catch (e) {
-    console.warn("监听 OS 主题变化", e);
   }
 }
 var onThemeChange = function(themeMode) {
@@ -1716,8 +1715,8 @@ function setStatusBarStyle() {
     }
   }
   if (page) {
-    var nativePage2 = page.$nativePage;
-    nativePage2.applyStatusBarStyle();
+    var nativePage = page.$nativePage;
+    nativePage.applyStatusBarStyle();
   }
 }
 function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
@@ -1751,8 +1750,8 @@ var closeDialogPage = (options) => {
       if (parentPage && currentPages.indexOf(parentPage) !== -1) {
         var parentDialogPages = parentPage.getDialogPages();
         var index2 = parentDialogPages.indexOf(dialogPage);
-        parentDialogPages.splice(index2, 1);
         closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
+        parentDialogPages.splice(index2, 1);
         if (index2 > 0 && index2 === parentDialogPages.length) {
           invokeHook(parentDialogPages[parentDialogPages.length - 1].vm, ON_SHOW);
         }
@@ -1854,11 +1853,14 @@ function registerPage(_ref, onCreated) {
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = parsePageStyle(routeOptions);
-  var nativePage2 = getPageManager().createPage(url, id2.toString(), pageStyle);
-  if (onCreated) {
-    onCreated(nativePage2);
+  if (openType === "reLaunch") {
+    pageStyle.set("disableSwipeBack", true);
   }
-  routeOptions.meta.id = parseInt(nativePage2.pageId);
+  var nativePage = getPageManager().createPage(url, id2.toString(), pageStyle);
+  if (onCreated) {
+    onCreated(nativePage);
+  }
+  routeOptions.meta.id = parseInt(nativePage.pageId);
   var route = path.slice(1);
   var pageInstance = initPageInternalInstance(
     openType,
@@ -1870,13 +1872,15 @@ function registerPage(_ref, onCreated) {
     "light"
   );
   function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
     var pages2 = getCurrentPages();
     if (pages2.length === 1) {
       if (homeDialogPages.length) {
         var homePage = pages2[0];
+        var dialogPages = homePage.getDialogPages();
         homePage.vm.$.$dialogPages.value = homeDialogPages.map((dialogPage) => {
           dialogPage.getParentPage = () => homePage;
+          dialogPages.push(dialogPage);
           return dialogPage;
         });
         homeDialogPages.length = 0;
@@ -1893,35 +1897,35 @@ function registerPage(_ref, onCreated) {
         homeDialogPages.length = 0;
       }
     }
-    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
+    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
         fail(e2) {
           if (e2.errMsg.endsWith("cancel")) {
-            nativePage2.show();
+            nativePage.show();
           }
         }
       });
     });
-    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD);
     });
-    nativePage2.addPageEventListener(ON_READY, (_) => {
+    nativePage.addPageEventListener(ON_READY, (_) => {
       invokePageReadyHooks(page);
       invokeHook(page, ON_READY);
     });
-    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
       invokeHook(page, ON_PAGE_SCROLL, {
         scrollTop: arg.scrollTop
       });
     });
-    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
       invokeHook(page, ON_PULL_DOWN_REFRESH);
     });
-    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
       invokeHook(page, ON_REACH_BOTTOM);
     });
-    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+    nativePage.addPageEventListener(ON_RESIZE, (arg) => {
       var args = {
         deviceOrientation: arg.deviceOrientation,
         size: {
@@ -1933,14 +1937,14 @@ function registerPage(_ref, onCreated) {
       };
       invokeHook(page, ON_RESIZE, args);
     });
-    nativePage2.startRender();
+    nativePage.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
   } else {
     fn();
   }
-  return nativePage2;
+  return nativePage;
 }
 function registerDialogPage(_ref2, dialogPage, onCreated) {
   var _uniRoutes$find;
@@ -1966,7 +1970,9 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     pageStyle.set("disableSwipeBack", true);
   }
   var parentPage = dialogPage.getParentPage();
-  var nativePage2 = getPageManager().createDialogPage(
+  var createDialogPage = getPageManager().createDialogPage;
+  var isHarmony = createDialogPage.length === 6;
+  var nativePage = isHarmony ? createDialogPage(url, id2.toString(), pageStyle, parentPage === null || parentPage === void 0 ? void 0 : parentPage.getNativePage()) : createDialogPage(
     // @ts-expect-error
     parentPage ? parentPage.__nativePageId : "",
     id2.toString(),
@@ -1974,9 +1980,9 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     pageStyle
   );
   if (onCreated) {
-    onCreated(nativePage2);
+    onCreated(nativePage);
   }
-  routeOptions.meta.id = parseInt(nativePage2.pageId);
+  routeOptions.meta.id = parseInt(nativePage.pageId);
   var route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER) ? path : path.slice(1);
   var pageInstance = initPageInternalInstance(
     openType,
@@ -1988,30 +1994,30 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     "light"
   );
   function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
-    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
+    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
       closeDialogPage({
         dialogPage
       });
     });
-    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD);
       dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
     });
-    nativePage2.addPageEventListener(ON_READY, (_) => {
+    nativePage.addPageEventListener(ON_READY, (_) => {
       invokePageReadyHooks(page);
       invokeHook(page, ON_READY);
     });
-    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
       invokeHook(page, ON_PAGE_SCROLL, arg);
     });
-    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
       invokeHook(page, ON_PULL_DOWN_REFRESH);
     });
-    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
       invokeHook(page, ON_REACH_BOTTOM);
     });
-    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+    nativePage.addPageEventListener(ON_RESIZE, (arg) => {
       var args = {
         deviceOrientation: arg.deviceOrientation,
         size: {
@@ -2023,17 +2029,17 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
       };
       invokeHook(page, ON_RESIZE, args);
     });
-    nativePage2.startRender();
+    nativePage.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
   } else {
     fn();
   }
-  return nativePage2;
+  return nativePage;
 }
-function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage2) {
-  var pageNode = nativePage2.document.body;
+function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage) {
+  var pageNode = nativePage.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
   var mountPage = (component2) => app.mountPage(component2, {
@@ -2049,9 +2055,37 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
 }
 function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
+    var currentPage = getCurrentPage();
+    if (currentPage) {
+      var systemDialogPages = currentPage.vm && currentPage.vm.$systemDialogPages && currentPage.vm.$systemDialogPages.value || [];
+      var dialogPages = currentPage.getDialogPages();
+      if (systemDialogPages.length > 0 || dialogPages.length > 0) {
+        var lastSystemDialog = systemDialogPages[systemDialogPages.length - 1];
+        var lastDialog = dialogPages[dialogPages.length - 1];
+        if (!systemDialogPages.length) {
+          handleDialogPageBack(lastDialog);
+        } else if (!dialogPages.length) {
+          handleDialogPageBack(lastSystemDialog);
+        } else {
+          handleDialogPageBack(parseInt(lastDialog.vm.$nativePage.pageId) > parseInt(lastSystemDialog.vm.$nativePage.pageId) ? lastDialog : lastSystemDialog);
+        }
+        return true;
+      }
+    }
     backbuttonListener();
     return true;
   });
+}
+function handleDialogPageBack(dialogPage) {
+  var onBackPressRes = invokeHook(dialogPage.vm, ON_BACK_PRESS, {
+    from: "navigateBack"
+  });
+  if (onBackPressRes !== true) {
+    closeDialogPage({
+      dialogPage,
+      animationType: "auto"
+    });
+  }
 }
 var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font).+)/;
 function removeUrlWrap(source) {
@@ -2506,24 +2540,25 @@ function initOn(app) {
       var MAX_TIMEOUT = 200;
       function getNewIntent() {
         return new Promise((resolve, reject) => {
+          var callbackWrapper = null;
           var handleNewIntent = (newIntent) => {
             var _newIntent$appScheme, _newIntent$appLink;
             clearTimeout(timeout);
-            app2.removeEventListener("onNewIntent", handleNewIntent);
+            app2.removeEventListener("onNewIntent", callbackWrapper);
             resolve({
               appScheme: (_newIntent$appScheme = newIntent.appScheme) !== null && _newIntent$appScheme !== void 0 ? _newIntent$appScheme : null,
               appLink: (_newIntent$appLink = newIntent.appLink) !== null && _newIntent$appLink !== void 0 ? _newIntent$appLink : null
             });
           };
+          callbackWrapper = app2.addEventListener("onNewIntent", handleNewIntent);
           var timeout = setTimeout(() => {
-            app2.removeEventListener("onNewIntent", handleNewIntent);
+            app2.removeEventListener("onNewIntent", callbackWrapper);
             var appLink = {
               appScheme: null,
               appLink: null
             };
             resolve(appLink);
           }, MAX_TIMEOUT);
-          app2.addEventListener("onNewIntent", handleNewIntent);
         });
       }
       var schemaLink = yield getNewIntent();
@@ -2739,7 +2774,9 @@ function initAnimation$1(path, animationType, animationDuration) {
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function isDirectPage(page) {
-  return !!__uniConfig.realEntryPagePath && getRealPath(page.$basePage.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
+  return !!__uniConfig.realEntryPagePath && // getRealPath(page.$basePage.route, true) ===
+  // getRealPath(parseUrl(__uniConfig.entryPagePath!).path, true) &&
+  getCurrentPages$1()[0] === page;
 }
 function reLaunchEntryPage() {
   var _uniConfig$entryPage;
@@ -2896,6 +2933,7 @@ var openDialogPage = (options) => {
       if (dialogPages.length) {
         invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
       }
+      dialogPages.push(dialogPage);
     }
     setCurrentNormalDialogPage(dialogPage);
   } else {
@@ -2915,7 +2953,12 @@ var openDialogPage = (options) => {
     }
     setCurrentSystemDialogPage(dialogPage);
   }
-  var [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
+  var [aniType, aniDuration] = initAnimation(
+    path,
+    // @ts-expect-error
+    animationType,
+    animationDuration
+  );
   var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
     showWebview(page2, aniType, aniDuration, () => {
@@ -3525,7 +3568,8 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
 var env = {
   USER_DATA_PATH: "unifile://usr/",
   CACHE_PATH: "unifile://cache/",
-  SANDBOX_PATH: "unifile://sandbox/"
+  SANDBOX_PATH: "unifile://sandbox/",
+  TEMP_PATH: "unifile://temp/"
 };
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";
@@ -3534,9 +3578,6 @@ var ENTRY_TYPE_RENDER = "render";
 var ENTRY_TYPE_NAVIGATION = "navigation";
 var RENDER_TYPE_FIRST_LAYOUT = "firstLayout";
 var RENDER_TYPE_FIRST_RENDER = "firstRender";
-var AppStartDuration = 1;
-var PageFirstPageRenderDuration = 7;
-var PageFirstPageLayoutDuration = 8;
 class PerformanceEntryStatus {
   constructor(entryType, name) {
     this._state = PerformanceEntryStatus.STATE_EMPTY;
@@ -3604,7 +3645,7 @@ class PerformanceEntryStatusLayout extends PerformanceEntryStatus {
     super.executeReady();
     var innerPage = super.getCurrentInnerPage();
     if (innerPage != null) {
-      this._entryData.duration = nativePage.getDuration(innerPage.pageId, PageFirstPageLayoutDuration);
+      this._entryData.duration = innerPage.getFirstPageLayoutDuration();
     }
   }
 }
@@ -3620,7 +3661,7 @@ class PerformanceEntryStatusRender extends PerformanceEntryStatus {
     super.executeReady();
     var innerPage = super.getCurrentInnerPage();
     if (innerPage != null) {
-      this._entryData.duration = nativePage.getDuration(innerPage.pageId, PageFirstPageRenderDuration);
+      this._entryData.duration = innerPage.getFirstPageRenderDuration();
     }
   }
 }
@@ -3638,7 +3679,7 @@ class PerformanceEntryStatusNavigation extends PerformanceEntryStatus {
     if (innerPage != null) {
       this._entryData.duration = Date.now() - this._entryData.startTime;
       if (this._entryData.name == APP_LAUNCH) {
-        this._entryData.duration += nativePage.getDuration(AppStartDuration);
+        this._entryData.duration += getNativeApp().getAppStartDuration();
       }
     }
   }
@@ -4331,9 +4372,12 @@ function registerUTSPlugin(name, define) {
   pluginDefines[name] = define;
 }
 function requireUTSPlugin(name) {
+  var silent = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
   var define = pluginDefines[name];
   if (!define) {
-    console.error("".concat(name, " is not found"));
+    if (!silent) {
+      console.error("".concat(name, " is not found"));
+    }
   }
   return define;
 }
@@ -6141,7 +6185,7 @@ const index = /* @__PURE__ */ Object.defineProperty({
   Radio: radio$1,
   RadioGroup: radioGroup$1
 }, Symbol.toStringTag, { value: "Module" });
-const _sfc_main$4 = {
+const _sfc_main$5 = {
   data() {
     return {
       show: false,
@@ -6166,7 +6210,10 @@ const _sfc_main$4 = {
       language: "zh-Hans",
       theme: "light",
       isLandscape: false,
-      bottomNavigationHeight: 0
+      bottomNavigationHeight: 0,
+      appTheme: null,
+      osTheme: null,
+      hostTheme: null
     };
   },
   onLoad(options) {
@@ -6207,19 +6254,24 @@ const _sfc_main$4 = {
     var osTheme = systemInfo.osTheme;
     var appTheme = systemInfo.appTheme;
     if (appTheme != null && appTheme != "auto") {
-      this.theme = appTheme;
-    } else if (osTheme != null) {
-      this.theme = osTheme;
+      this.appTheme = appTheme;
+      this.handleThemeChange();
+    }
+    if (osTheme != null) {
+      this.osTheme = osTheme;
+      this.handleThemeChange();
     }
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
     uni.onAppThemeChange((res) => {
       var appTheme2 = res.appTheme;
       if (appTheme2 != null && appTheme2 != "auto") {
-        this.theme = appTheme2;
+        this.appTheme = appTheme2;
+        this.handleThemeChange();
       }
     });
     uni.onOsThemeChange((res) => {
-      this.theme = res.osTheme;
+      this.osTheme = res.osTheme;
+      this.handleThemeChange();
     });
   },
   computed: {
@@ -6281,10 +6333,19 @@ const _sfc_main$4 = {
     handleCancel() {
       this.closeActionSheet();
       uni.$emit(this.failEventName, {});
+    },
+    handleThemeChange() {
+      if (this.hostTheme != null) {
+        this.theme = this.hostTheme;
+      } else if (this.appTheme != null) {
+        this.theme = this.appTheme;
+      } else if (this.osTheme != null) {
+        this.theme = this.osTheme;
+      }
     }
   }
 };
-const _style_0$4 = {
+const _style_0$5 = {
   "uni-action-sheet_dialog__mask": {
     "": {
       "position": "fixed",
@@ -6313,7 +6374,7 @@ const _style_0$4 = {
       "zIndex": 999,
       "transform": "translate(0, 100%)",
       "transitionProperty": "transform",
-      "transitionDuration": "0.25s",
+      "transitionDuration": "0.15s",
       "backgroundColor": "#f7f7f7",
       "borderTopLeftRadius": 12,
       "borderTopRightRadius": 12
@@ -6469,7 +6530,7 @@ const _style_0$4 = {
     },
     "uni-action-sheet_dialog__container": {
       "property": "transform",
-      "duration": "0.25s"
+      "duration": "0.15s"
     }
   }
 };
@@ -6480,8 +6541,8 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-var _hoisted_1$3 = ["onClick"];
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$4 = ["onClick"];
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", null, [createElementVNode("view", {
     class: normalizeClass(["uni-action-sheet_dialog__mask", {
       "uni-action-sheet_dialog__mask__show": $data.show
@@ -6546,7 +6607,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
       class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
         "uni-action-sheet_dark__mode": $data.theme == "dark"
       }])
-    }, toDisplayString(item), 7)], 10, _hoisted_1$3)]);
+    }, toDisplayString(item), 7)], 10, _hoisted_1$4)]);
   }), 128))], 2)], 6), createElementVNode("view", {
     style: normalizeStyle($data.backgroundColor != null ? {
       backgroundColor: $data.backgroundColor
@@ -6573,7 +6634,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     })
   }, null, 4)) : createCommentVNode("", true)], 2)]);
 }
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["styles", [_style_0$5]]]);
 var defaultPoi = {
   latitude: 39.908823,
   longitude: 116.39747
@@ -6599,7 +6660,7 @@ var languageData = {
   }
 };
 var loadingPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
-const _sfc_main$3 = {
+const _sfc_main$4 = {
   data() {
     var id1 = "UniMap1_".concat((Math.random() * 1e6).toString(36));
     var id2 = "UniMap2_".concat((Math.random() * 1e6).toString(36));
@@ -6637,7 +6698,6 @@ const _sfc_main$3 = {
       },
       lastTime: 0,
       searchLoading: false,
-      searchLoadingAnimation: false,
       language: "zh-Hans",
       scrollTop: 0,
       isLandscape: false,
@@ -6654,7 +6714,9 @@ const _sfc_main$3 = {
       callUniMapCoErr: false,
       useUniCloud: true,
       mapHeight: 350,
-      loadingPath
+      loadingPath,
+      loadingRotate: 0,
+      loadingTimer: -1
     };
   },
   onLoad(options) {
@@ -6677,7 +6739,7 @@ const _sfc_main$3 = {
   },
   methods: {
     checkUniCloud() {
-      if (typeof uniCloud == "undefined") {
+      if (typeof uniCloud == "undefined" || typeof uniCloud.config == "undefined" || uniCloud.config.spaceId == "") {
         this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
         this.useUniCloud = false;
         console.error(this.errMsg);
@@ -6886,15 +6948,17 @@ const _sfc_main$3 = {
                 this.pois.unshift(newPoi);
               }
             }
+            this.searchLoading = false;
             if (this.selected == -1) {
-              this.selected = 0;
+              setTimeout(() => {
+                this.selected = 0;
+              }, 20);
               this.lastPoi.latitude = this.latitude;
               this.lastPoi.longitude = this.longitude;
               this.lastPoi.selected = this.selected;
               this.lastPoi.pois = this.pois;
             }
           }
-          this.searchLoading = false;
         }).catch((err) => {
           this.searchLoading = false;
         });
@@ -7097,12 +7161,17 @@ const _sfc_main$3 = {
   },
   watch: {
     searchLoading(val) {
+      if (this.loadingTimer != -1) {
+        clearInterval(this.loadingTimer);
+        this.loadingTimer = -1;
+      }
       if (val) {
-        setTimeout(() => {
-          this.searchLoadingAnimation = true;
-        }, 50);
+        this.loadingRotate += 100;
+        this.loadingTimer = setInterval(() => {
+          this.loadingRotate += 100;
+        }, 200);
       } else {
-        this.searchLoadingAnimation = false;
+        this.loadingRotate = 0;
       }
     }
   },
@@ -7153,7 +7222,7 @@ const _sfc_main$3 = {
     }
   }
 };
-const _style_0$3 = {
+const _style_0$4 = {
   "uni-choose-location-icons": {
     "": {
       "fontFamily": "UniChooseLocationFontFamily",
@@ -7544,17 +7613,12 @@ const _style_0$3 = {
       "color": "#d1d1d1"
     }
   },
-  "uni-choose-location-poi-search-loading-start": {
-    "": {
-      "transform": "rotate(60000deg)"
-    }
-  },
   "uni-choose-location-poi-search-loading-image": {
     "": {
       "width": 28,
       "height": 28,
       "transitionProperty": "transform",
-      "transitionDuration": "120s",
+      "transitionDuration": "0.2s",
       "transitionTimingFunction": "linear"
     }
   },
@@ -7585,25 +7649,25 @@ const _style_0$3 = {
     },
     "uni-choose-location-poi-search-loading-image": {
       "property": "transform",
-      "duration": "120s",
+      "duration": "0.2s",
       "timingFunction": "linear"
     }
   }
 };
-var _hoisted_1$2 = ["id"];
-var _hoisted_2$2 = {
+var _hoisted_1$3 = ["id"];
+var _hoisted_2$3 = {
   class: "uni-choose-location-icons uni-choose-location-map-target-icon"
 };
-var _hoisted_3$2 = {
+var _hoisted_3$3 = {
   class: "uni-choose-location-icons uni-choose-location-map-reset-icon"
 };
-var _hoisted_4$1 = {
+var _hoisted_4$3 = {
   class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text"
 };
-var _hoisted_5 = {
+var _hoisted_5$1 = {
   class: "uni-choose-location-poi-search"
 };
-var _hoisted_6 = {
+var _hoisted_6$1 = {
   class: "uni-choose-location-poi-search-box"
 };
 var _hoisted_7 = {
@@ -7649,7 +7713,7 @@ var _hoisted_21 = {
   class: "uni-choose-location-poi-search-loading"
 };
 var _hoisted_22 = ["src"];
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_map = resolveComponent("map");
   return openBlock(), createElementBlock("view", {
     class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
@@ -7674,13 +7738,13 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     class: "uni-choose-location-map-target",
     ref: $data.mapTargetId,
     id: $data.mapTargetId
-  }, [createElementVNode("text", _hoisted_2$2, toDisplayString($data.icon.target), 1)], 8, _hoisted_1$2), createElementVNode("view", {
+  }, [createElementVNode("text", _hoisted_2$3, toDisplayString($data.icon.target), 1)], 8, _hoisted_1$3), createElementVNode("view", {
     class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
     onClick: _cache[0] || (_cache[0] = function() {
       return $options.mapReset && $options.mapReset(...arguments);
     }),
     style: normalizeStyle($options.resetStyleCom)
-  }, [createElementVNode("text", _hoisted_3$2, toDisplayString($data.icon.position), 1)], 6)], 6), createElementVNode("view", {
+  }, [createElementVNode("text", _hoisted_3$3, toDisplayString($data.icon.position), 1)], 6)], 6), createElementVNode("view", {
     class: "uni-choose-location-nav",
     style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
   }, [createElementVNode("view", {
@@ -7697,11 +7761,11 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function() {
       return $options.confirm && $options.confirm(...arguments);
     })
-  }, [createElementVNode("text", _hoisted_4$1, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
+  }, [createElementVNode("text", _hoisted_4$3, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
     style: normalizeStyle($options.poiBoxStyleCom)
-  }, [createElementVNode("view", _hoisted_5, [createElementVNode("view", _hoisted_6, [createElementVNode("text", _hoisted_7, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
+  }, [createElementVNode("view", _hoisted_5$1, [createElementVNode("view", _hoisted_6$1, [createElementVNode("text", _hoisted_7, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
     "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $data.searchValue = $event),
     type: "text",
     placeholder: $options.languageCom["search"],
@@ -7730,9 +7794,10 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     class: "uni-choose-location-poi-list"
   }, [$data.errMsg != "" ? (openBlock(), createElementBlock("view", _hoisted_10, [createElementVNode("text", _hoisted_11, toDisplayString($data.errMsg), 1)])) : $data.locationLoading ? (openBlock(), createElementBlock("view", _hoisted_12, [createElementVNode("text", _hoisted_13, toDisplayString($options.languageCom["locationLoading"]), 1)])) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createElementBlock("view", _hoisted_14, [createElementVNode("image", {
     src: $data.loadingPath,
-    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
-    mode: "widthFix"
-  }, null, 10, _hoisted_15)])) : (openBlock(true), createElementBlock(Fragment, {
+    class: "uni-choose-location-poi-search-loading-image",
+    mode: "widthFix",
+    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
+  }, null, 12, _hoisted_15)])) : (openBlock(true), createElementBlock(Fragment, {
     key: 3
   }, renderList($data.pois, (item, index2) => {
     return openBlock(), createElementBlock("view", {
@@ -7742,11 +7807,483 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     }, [createElementVNode("view", null, [createElementVNode("view", null, [createElementVNode("text", _hoisted_17, toDisplayString(item.title), 1)]), createElementVNode("view", null, [createElementVNode("text", _hoisted_18, toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)])]), $data.selected == index2 ? (openBlock(), createElementBlock("text", _hoisted_19, toDisplayString($data.icon.success), 1)) : createCommentVNode("", true), _hoisted_20], 10, _hoisted_16);
   }), 128)), $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createElementBlock("view", _hoisted_21, [createElementVNode("image", {
     src: $data.loadingPath,
-    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
-    mode: "widthFix"
-  }, null, 10, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9)], 6)) : createCommentVNode("", true)], 2);
+    class: "uni-choose-location-poi-search-loading-image",
+    mode: "widthFix",
+    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
+  }, null, 12, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9)], 6)) : createCommentVNode("", true)], 2);
 }
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
+const _sfc_main$3 = {
+  data() {
+    return {
+      theme: "light",
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      title: "",
+      content: "",
+      showCancel: true,
+      editable: false,
+      placeholderText: null,
+      confirmText: "确定",
+      cancelText: "取消",
+      cancelColor: "#000000",
+      confirmColor: "#4A5E86",
+      inputBottom: "0px",
+      inputCancelColor: null,
+      inputConfirmColor: null,
+      hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
+      showAnim: false,
+      isAutoHeight: true
+    };
+  },
+  onReady() {
+    setTimeout(() => {
+      this.showAnim = true;
+    }, 10);
+  },
+  onLoad(options) {
+    var systemInfo = uni.getSystemInfoSync();
+    var appTheme = systemInfo.appTheme;
+    if (appTheme != null) {
+      this.theme = appTheme;
+    }
+    uni.onAppThemeChange((res) => {
+      this.theme = res.appTheme;
+      this.updateUI();
+    });
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.successEventName = options["successEventName"];
+    this.failEventName = options["failEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      if (data["title"] != null) {
+        this.title = data["title"];
+      }
+      if (data["content"] != null) {
+        this.content = data["content"];
+      }
+      if (data["showCancel"] != null) {
+        this.showCancel = data["showCancel"];
+      }
+      if (data["editable"] != null) {
+        this.editable = data["editable"];
+      }
+      if (data["placeholderText"] != null) {
+        this.placeholderText = data["placeholderText"];
+      }
+      if (data["confirmText"] != null) {
+        this.confirmText = data["confirmText"];
+      }
+      if (data["cancelText"] != null) {
+        this.cancelText = data["cancelText"];
+      }
+      if (data["confirmColor"] != null) {
+        this.inputConfirmColor = data["confirmColor"];
+      }
+      if (data["cancelColor"] != null) {
+        this.inputCancelColor = data["cancelColor"];
+      }
+      this.updateUI();
+    });
+    uni.$emit(this.readyEventName, {});
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  onBackPress(_) {
+    var ret = {
+      cancel: false,
+      confirm: false
+    };
+    uni.$emit(this.successEventName, JSON.stringify(ret));
+    return false;
+  },
+  methods: {
+    onInputBlur(e) {
+      setTimeout(() => {
+        this.inputBottom = "0px";
+      }, 220);
+    },
+    onInputKeyboardChange(e) {
+      var keyBoardHeight = e.detail.height;
+      if (keyBoardHeight > 0) {
+        var calcBottom = keyBoardHeight / 2;
+        this.inputBottom = "".concat(calcBottom, "px");
+      }
+    },
+    isValidColor(inputColor) {
+      var hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+      if (inputColor == null) {
+        return false;
+      }
+      return hexColorRegex.test(inputColor);
+    },
+    /**
+     * update ui when theme change.
+     */
+    updateUI() {
+      if (this.isValidColor(this.inputConfirmColor)) {
+        this.confirmColor = this.inputConfirmColor;
+      } else {
+        if (this.theme == "dark") {
+          this.confirmColor = "#7388a2";
+        } else {
+          this.confirmColor = "#4A5E86";
+        }
+      }
+      if (this.isValidColor(this.inputCancelColor)) {
+        this.cancelColor = this.inputCancelColor;
+      } else {
+        if (this.theme == "dark") {
+          this.cancelColor = "#a5a5a5";
+        } else {
+          this.cancelColor = "#000000";
+        }
+      }
+      if (this.theme == "dark") {
+        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
+      } else {
+        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover";
+      }
+    },
+    closeModal() {
+      this.showAnim = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: this.$page
+        });
+      }, 300);
+    },
+    handleCancel() {
+      this.closeModal();
+      var ret = {
+        cancel: true,
+        confirm: false
+      };
+      uni.$emit(this.successEventName, JSON.stringify(ret));
+    },
+    handleSure() {
+      this.closeModal();
+      var ret = {
+        cancel: false,
+        confirm: true,
+        content: this.editable ? this.content : null
+      };
+      uni.$emit(this.successEventName, JSON.stringify(ret));
+    }
+  }
+};
+const _style_0$3 = {
+  "uni-modal_dialog__mask": {
+    "": {
+      "display": "flex",
+      "height": "100%",
+      "width": "100%",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "backgroundColor": "rgba(0,0,0,0.5)",
+      "transitionDuration": "0.1s",
+      "transitionProperty": "opacity",
+      "opacity": 0
+    }
+  },
+  "uni-modal_dialog__mask__show": {
+    "": {
+      "opacity": 1
+    }
+  },
+  "uni-modal_dialog__container": {
+    "": {
+      "width": 300,
+      "backgroundColor": "#FFFFFF",
+      "boxShadow": "0 0 10px rgba(0, 0, 0, 0.1)",
+      "borderTopLeftRadius": 8,
+      "borderTopRightRadius": 8,
+      "borderBottomRightRadius": 8,
+      "borderBottomLeftRadius": 8,
+      "opacity": 0,
+      "transform": "scale(0.9)",
+      "transitionDuration": "0.1s",
+      "transitionProperty": "opacity,transform"
+    },
+    ".uni-modal_dialog__show": {
+      "opacity": 1,
+      "transform": "scale(1)"
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#272727"
+    }
+  },
+  "uni-modal_dialog__container__wrapper": {
+    "": {
+      "width": "100%",
+      "height": "100%",
+      "paddingTop": 10,
+      "backgroundColor": "#FFFFFF",
+      "borderTopLeftRadius": 8,
+      "borderTopRightRadius": 8,
+      "borderBottomRightRadius": 8,
+      "borderBottomLeftRadius": 8
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#272727"
+    }
+  },
+  "uni-modal_dialog__title__text": {
+    "": {
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "textAlign": "center",
+      "marginTop": 20,
+      "textOverflow": "ellipsis",
+      "paddingLeft": 20,
+      "paddingRight": 20,
+      "lines": 2
+    },
+    ".uni-modal_dark__mode": {
+      "color": "#CFCFCF"
+    }
+  },
+  "uni-modal_dialog__content": {
+    "": {
+      "justifyContent": "center",
+      "alignItems": "center",
+      "paddingTop": 18,
+      "paddingRight": 18,
+      "paddingBottom": 18,
+      "paddingLeft": 18
+    }
+  },
+  "uni-modal_dialog__content__text": {
+    "": {
+      "fontSize": 16,
+      "fontWeight": "normal",
+      "marginTop": 2,
+      "marginLeft": 2,
+      "marginRight": 2,
+      "marginBottom": 12,
+      "textAlign": "center",
+      "color": "#747474",
+      "lines": 6,
+      "width": "100%",
+      "textOverflow": "ellipsis"
+    }
+  },
+  "uni-modal_dialog__content__textarea": {
+    "": {
+      "backgroundColor": "#F6F6F6",
+      "color": "#000000",
+      "width": "96%",
+      "paddingTop": 5,
+      "paddingRight": 5,
+      "paddingBottom": 5,
+      "paddingLeft": 5,
+      "marginTop": 2,
+      "marginBottom": 7,
+      "maxHeight": 192
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#3d3d3d",
+      "color": "#CFCFCF"
+    }
+  },
+  "uni-modal_dialog__content__textarea__placeholder": {
+    "": {
+      "color": "#808080"
+    },
+    ".uni-modal_dark__mode": {
+      "color": "#CFCFCF"
+    }
+  },
+  "uni-modal_dialog__content__topline": {
+    "": {
+      "width": "100%",
+      "height": 1,
+      "backgroundColor": "#E0E0E0"
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#303030"
+    }
+  },
+  "uni-modal_dialog__content__bottom": {
+    "": {
+      "display": "flex",
+      "width": "100%",
+      "height": 50,
+      "flexDirection": "row",
+      "overflow": "hidden"
+    }
+  },
+  "uni-modal_dialog__content__bottom__button": {
+    "": {
+      "width": "50%",
+      "height": "100%",
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "flexGrow": 1
+    }
+  },
+  "uni-modal_dialog__content__bottom__button__hover": {
+    "": {
+      "width": "50%",
+      "height": "100%",
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "backgroundColor": "#efefef"
+    }
+  },
+  "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode": {
+    "": {
+      "width": "50%",
+      "height": "100%",
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "backgroundColor": "#1C1C1C"
+    }
+  },
+  "uni-modal_dialog__content__bottom__button__text": {
+    "": {
+      "letterSpacing": 1,
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "textAlign": "center",
+      "lines": 1,
+      "whiteSpace": "nowrap"
+    }
+  },
+  "uni-modal_dialog__content__bottom__button__text__sure": {
+    "": {
+      "letterSpacing": 1,
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "lines": 1,
+      "whiteSpace": "nowrap",
+      "textAlign": "center",
+      "color": "#4A5E86"
+    }
+  },
+  "uni-modal_dialog__content__bottom__splitline": {
+    "": {
+      "width": 1,
+      "height": "100%",
+      "backgroundColor": "#E3E3E3"
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#303030"
+    }
+  },
+  "@TRANSITION": {
+    "uni-modal_dialog__mask": {
+      "duration": "0.1s",
+      "property": "opacity"
+    },
+    "uni-modal_dialog__container": {
+      "duration": "0.1s",
+      "property": "opacity,transform"
+    }
+  }
+};
+var _hoisted_1$2 = {
+  class: "uni-modal_dialog__content"
+};
+var _hoisted_2$2 = ["auto-height", "placeholder"];
+var _hoisted_3$2 = {
+  key: 1,
+  class: "uni-modal_dialog__content__text"
+};
+var _hoisted_4$2 = {
+  class: "uni-modal_dialog__content__bottom"
+};
+var _hoisted_5 = ["hover-class"];
+var _hoisted_6 = ["hover-class"];
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("view", {
+    class: normalizeClass(["uni-modal_dialog__mask", {
+      "uni-modal_dialog__mask__show": $data.showAnim
+    }])
+  }, [createElementVNode("view", {
+    class: normalizeClass(["uni-modal_dialog__container", {
+      "uni-modal_dialog__show": $data.showAnim,
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }]),
+    id: "modal_content",
+    style: normalizeStyle({
+      bottom: $data.inputBottom
+    })
+  }, [createElementVNode("view", {
+    class: normalizeClass(["uni-modal_dialog__container__wrapper", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }])
+  }, [$data.title ? (openBlock(), createElementBlock("text", {
+    key: 0,
+    class: normalizeClass(["uni-modal_dialog__title__text", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }])
+  }, toDisplayString($data.title), 3)) : createCommentVNode("", true), createElementVNode("view", _hoisted_1$2, [$data.editable ? withDirectives((openBlock(), createElementBlock("textarea", {
+    key: 0,
+    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.content = $event),
+    class: normalizeClass(["uni-modal_dialog__content__textarea", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }]),
+    "placeholder-class": "modalContent_content_edit_placeholder",
+    "adjust-position": false,
+    onBlur: _cache[1] || (_cache[1] = function() {
+      return $options.onInputBlur && $options.onInputBlur(...arguments);
+    }),
+    onKeyboardheightchange: _cache[2] || (_cache[2] = function() {
+      return $options.onInputKeyboardChange && $options.onInputKeyboardChange(...arguments);
+    }),
+    id: "textarea_content_input",
+    ref: "ref_textarea_content_input",
+    "auto-height": $data.isAutoHeight,
+    placeholder: $data.placeholderText
+  }, null, 42, _hoisted_2$2)), [[vModelText, $data.content]]) : createCommentVNode("", true), !$data.editable && $data.content.length > 0 ? (openBlock(), createElementBlock("text", _hoisted_3$2, toDisplayString($data.content), 1)) : createCommentVNode("", true)]), createElementVNode("view", {
+    class: normalizeClass(["uni-modal_dialog__content__topline", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }])
+  }, null, 2), createElementVNode("view", _hoisted_4$2, [$data.showCancel ? (openBlock(), createElementBlock("view", {
+    key: 0,
+    class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }]),
+    "hover-class": $data.hoverClassName,
+    onClick: _cache[3] || (_cache[3] = function() {
+      return $options.handleCancel && $options.handleCancel(...arguments);
+    })
+  }, [createElementVNode("text", {
+    style: normalizeStyle({
+      color: $data.cancelColor
+    }),
+    class: "uni-modal_dialog__content__bottom__button__text"
+  }, toDisplayString($data.cancelText), 5)], 10, _hoisted_5)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
+    key: 1,
+    class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }])
+  }, null, 2)) : createCommentVNode("", true), createElementVNode("view", {
+    class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }]),
+    "hover-class": $data.hoverClassName,
+    onClick: _cache[4] || (_cache[4] = function() {
+      return $options.handleSure && $options.handleSure(...arguments);
+    })
+  }, [createElementVNode("text", {
+    style: normalizeStyle({
+      color: $data.confirmColor
+    }),
+    class: "uni-modal_dialog__content__bottom__button__text__sure"
+  }, toDisplayString($data.confirmText), 5)], 10, _hoisted_6)])], 2)], 6)], 2);
+}
+const UniUniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
 class Friction {
   // 构造函数，初始化物体的质量（m）、摩擦力大小（f，这里假设是牛顿单位的力，但乘以1000可能是为了转换为某种特定单位）
   constructor(mass, frictionForce) {
@@ -7909,7 +8446,7 @@ const _sfc_main$2 = {
     this.init();
   },
   unmounted() {
-    clearInterval(this.timer);
+    cancelAnimationFrame(this.timer);
   },
   methods: {
     /**
@@ -7930,7 +8467,6 @@ const _sfc_main$2 = {
       var center = this.size / 2;
       var lineWidth = Math.floor(this.size / 12);
       var duration = 1200;
-      var interval = this.speed;
       var ARC_MAX = 358;
       var startTime = 0;
       var foreward_end = 0;
@@ -7943,6 +8479,9 @@ const _sfc_main$2 = {
         return easedProgress;
       }
       var draw = () => {
+      };
+      draw = () => {
+        this.timer = requestAnimationFrame(draw);
         ctx.reset();
         ctx.beginPath();
         if (reversal_end == ARC_MAX) {
@@ -7969,12 +8508,12 @@ const _sfc_main$2 = {
         ctx.update();
         rotate += 0.05;
       };
-      this.timer = setInterval(() => draw(), interval);
+      this.timer = requestAnimationFrame(draw);
     }
   }
 };
 const _style_0$2 = {
-  "uni-preview-image-block": {
+  "uni-loading-block": {
     "": {
       "width": 50,
       "height": 50
@@ -7984,7 +8523,7 @@ const _style_0$2 = {
 function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", {
     ref: $data.elId,
-    class: "uni-preview-image-block",
+    class: "uni-loading-block",
     style: normalizeStyle({
       width: $props.size + "px",
       height: $props.size + "px"
@@ -7994,6 +8533,20 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
 const loadingCircle = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$2]]]);
 var DEFAULT_DISTANCE = 4;
 var FAST_SLIDE_LENGTH = 10;
+var LANGUAGE = {
+  "en": {
+    error: "Image loading failed",
+    retry: "Retry"
+  },
+  "zh-Hans": {
+    error: "图片加载失败",
+    retry: "重试"
+  },
+  "zh-Hant": {
+    error: "圖片加載失敗",
+    retry: "重試"
+  }
+};
 const _sfc_main$1 = {
   components: {
     loadingCircle
@@ -8032,7 +8585,10 @@ const _sfc_main$1 = {
       startTimestamp: 0,
       clickTimeoutId: -1,
       transformOrigin: [0, 0],
-      loadingFinished: false
+      loadingFinished: false,
+      devicePixelRatio: 0,
+      loadError: false,
+      language: "zh-Hans"
     };
   },
   props: {
@@ -8046,28 +8602,51 @@ const _sfc_main$1 = {
     },
     "longPressAction": {
       type: Object
+    },
+    "tips": {
+      type: Object
     }
   },
   watch: {
     "src": {
       handler(newValue, oldValue) {
-        if (newValue != "")
+        if (newValue != "") {
           this.getSrcLocalPath(newValue);
+        } else {
+          this.loadingFinished = true;
+          this.loadError = true;
+        }
       },
       immediate: true
     }
   },
   mounted() {
     this.imageView = this.$refs["imageView"];
-    this.getImageBound();
+    var dpr = uni.getDeviceInfo({
+      filter: ["devicePixelRatio"]
+    }).devicePixelRatio;
+    if (dpr == null) {
+      this.devicePixelRatio = 1;
+    } else {
+      this.devicePixelRatio = dpr;
+    }
+    var systemInfo = uni.getSystemInfoSync();
+    this.language = systemInfo.appLanguage;
   },
   methods: {
+    getLanguageString(name) {
+      var object = LANGUAGE[this.language];
+      if (object != null) {
+        return object[name];
+      } else {
+        return LANGUAGE["en"][name];
+      }
+    },
     previewImageError(e) {
-      uni.showToast({
-        title: e.detail.errMsg,
-        position: "bottom"
-      });
+      var _this$$refs$mask;
+      (_this$$refs$mask = this.$refs["mask"]) === null || _this$$refs$mask === void 0 || _this$$refs$mask.style.setProperty("point-events", "none");
       this.loadingFinished = true;
+      this.loadError = true;
     },
     isNetPath(url) {
       if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("rtmp://") || url.startsWith("rtsp://")) {
@@ -8076,58 +8655,7 @@ const _sfc_main$1 = {
       return false;
     },
     getSrcLocalPath(url) {
-      if (!this.isNetPath(url)) {
-        this.srcPath = url;
-        this.getImageBound();
-        this.loadingFinished = true;
-        return;
-      }
-      var realPath = uni.getStorageSync(url);
-      if (realPath != null && realPath != "") {
-        uni.getFileSystemManager().getFileInfo({
-          filePath: realPath,
-          success: (e) => {
-            this.srcPath = realPath;
-            this.getImageBound();
-            this.loadingFinished = true;
-          },
-          fail: () => {
-            uni.downloadFile({
-              timeout: 5e3,
-              url,
-              filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
-              success: (e) => {
-                this.srcPath = e.tempFilePath;
-                this.loadingFinished = true;
-                uni.setStorage({
-                  key: url,
-                  data: e.tempFilePath
-                });
-                this.getImageBound();
-              },
-              fail: (e) => {
-              }
-            });
-          }
-        });
-      } else {
-        uni.downloadFile({
-          timeout: 5e3,
-          url,
-          filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
-          success: (e) => {
-            this.srcPath = e.tempFilePath;
-            this.loadingFinished = true;
-            uni.setStorage({
-              key: url,
-              data: e.tempFilePath
-            });
-            this.getImageBound();
-          },
-          fail: (e) => {
-          }
-        });
-      }
+      this.srcPath = url;
     },
     onstart(e) {
       this.inScaleMode = false;
@@ -8375,6 +8903,17 @@ const _sfc_main$1 = {
       }
     },
     onImageLoad(e) {
+      var _this$$refs$mask2;
+      (_this$$refs$mask2 = this.$refs["mask"]) === null || _this$$refs$mask2 === void 0 || _this$$refs$mask2.style.setProperty("point-events", "none");
+      uni.createSelectorQuery().in(this).select(".uni-preview-image-item").boundingClientRect().exec((ret) => {
+        if (ret.length == 1) {
+          var rect = this.imageView.getBoundingClientRect();
+          this.screenHeight = rect.height;
+          this.screenWidth = rect.width;
+          this.caculatorImageSize(e.detail.width / this.devicePixelRatio, e.detail.height / this.devicePixelRatio);
+        }
+      });
+      this.loadingFinished = true;
     },
     caculatorImageSize(imageWidth, imageHeight) {
       var scaleImageSize = imageHeight / (imageWidth / this.screenWidth);
@@ -8389,28 +8928,6 @@ const _sfc_main$1 = {
       this.imageMarginTop = (this.screenHeight - scaleImageSize) / 2;
       this.imageHeight = scaleImageSize;
     },
-    getImageBound() {
-      if (this.imageHeight > 0) {
-        return;
-      }
-      uni.createSelectorQuery().in(this).select(".uni-preview-image-item").boundingClientRect().exec((ret) => {
-        if (ret.length == 1) {
-          var rect = this.imageView.getBoundingClientRect();
-          this.screenHeight = rect.height;
-          this.screenWidth = rect.width;
-          if (this.srcPath != "") {
-            uni.getImageInfo({
-              src: this.srcPath,
-              success: (e) => {
-                this.caculatorImageSize(e.width, e.height);
-              },
-              fail: () => {
-              }
-            });
-          }
-        }
-      });
-    },
     preventDefaultScall(e) {
       e === null || e === void 0 || e.preventDefault();
       e === null || e === void 0 || e.stopPropagation();
@@ -8421,6 +8938,21 @@ const _sfc_main$1 = {
         return;
       }
       clearTimeout(this.clickTimeoutId);
+    },
+    reloadImage(e) {
+      var _this$$refs$mask3;
+      (_this$$refs$mask3 = this.$refs["mask"]) === null || _this$$refs$mask3 === void 0 || _this$$refs$mask3.style.setProperty("point-events", "none");
+      this.loadingFinished = false;
+      this.loadError = false;
+      var tempPath = this.srcPath + "";
+      this.srcPath = "";
+      setTimeout(() => {
+        this.srcPath = tempPath;
+      }, 100);
+      e.stopPropagation();
+    },
+    closePreviewImage() {
+      uni.$emit("__UNIPREVIEWIMAGECLOSE");
     },
     // 计算transform-origin主要代码
     caculatorTransformOrigin(e) {
@@ -8490,6 +9022,26 @@ const _style_0$1 = {
       "pointerEvents": "none"
     }
   },
+  "uni-preview-image-item-background": {
+    "": {
+      "backgroundColor": "#000000"
+    }
+  },
+  "uni-preview-image-tips-retry": {
+    "": {
+      "color": "#0000FF",
+      "fontSize": 18,
+      "marginTop": 16,
+      "WebkitTextDecorationLine": "underline",
+      "textDecorationLine": "underline"
+    }
+  },
+  "uni-preview-image-tips-error": {
+    "": {
+      "fontSize": 18,
+      "color": "#FF0000"
+    }
+  },
   "@TRANSITION": {
     "uni-preview-image-item": {
       "property": "transform",
@@ -8499,16 +9051,20 @@ const _style_0$1 = {
 };
 var _hoisted_1$1 = {
   style: {
-    "flex": "1",
-    "background-color": "black"
-  }
+    "flex": "1"
+  },
+  class: "uni-preview-image-item-background"
 };
 var _hoisted_2$1 = ["mode", "src"];
 var _hoisted_3$1 = {
   key: 0,
   class: "uni-preview-image-loading"
 };
+var _hoisted_4$1 = {
+  class: "uni-preview-image-tips-error"
+};
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  var _$props$tips, _$props$tips2, _$props$tips3, _$props$tips4;
   var _component_loadingCircle = resolveComponent("loadingCircle");
   return openBlock(), createElementBlock("view", _hoisted_1$1, [createElementVNode("image", {
     ref: "imageView",
@@ -8543,7 +9099,26 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     speed: 16,
     size: 54,
     color: "#d3d3d3"
-  })])) : createCommentVNode("", true)]);
+  })])) : createCommentVNode("", true), $data.loadError ? (openBlock(), createElementBlock("view", {
+    key: 1,
+    style: {
+      "align-items": "center",
+      "justify-content": "center",
+      "position": "absolute",
+      "top": "0",
+      "bottom": "0",
+      "left": "0",
+      "right": "0"
+    },
+    onClick: _cache[7] || (_cache[7] = function() {
+      return $options.closePreviewImage && $options.closePreviewImage(...arguments);
+    })
+  }, [createElementVNode("text", _hoisted_4$1, toDisplayString($props.tips == null || ((_$props$tips = $props.tips) === null || _$props$tips === void 0 ? void 0 : _$props$tips["error"]) == null ? $options.getLanguageString("error") : (_$props$tips2 = $props.tips) === null || _$props$tips2 === void 0 ? void 0 : _$props$tips2["error"]), 1), createElementVNode("text", {
+    class: "uni-preview-image-tips-retry",
+    onClick: _cache[6] || (_cache[6] = function() {
+      return $options.reloadImage && $options.reloadImage(...arguments);
+    })
+  }, toDisplayString($props.tips == null || ((_$props$tips3 = $props.tips) === null || _$props$tips3 === void 0 ? void 0 : _$props$tips3["retry"]) == null ? $options.getLanguageString("retry") : (_$props$tips4 = $props.tips) === null || _$props$tips4 === void 0 ? void 0 : _$props$tips4["retry"]), 1)])) : createCommentVNode("", true)]);
 }
 const uniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
 const _sfc_main = {
@@ -8558,7 +9133,8 @@ const _sfc_main = {
       disableTouch: false,
       numberIndicator: "",
       indicator: "number",
-      longPressAction: null
+      longPressAction: null,
+      tips: null
     };
   },
   onLoad() {
@@ -8606,6 +9182,9 @@ const _sfc_main = {
       if (result["indicator"] != null) {
         this.indicator = result["indicator"];
       }
+      if (result["tips"] != null) {
+        this.tips = result["tips"];
+      }
       if (result["longPressActions"] != null) {
         this.longPressAction = {
           itemList: result["longPressActions"]["itemList"],
@@ -8633,7 +9212,7 @@ const _sfc_main = {
   }
 };
 const _style_0 = {
-  "uni-preview-image-indicator-style": {
+  "uni-preview-image-default-indicator": {
     "": {
       "width": 9,
       "height": 9,
@@ -8659,7 +9238,17 @@ const _style_0 = {
       "borderLeftColor": "#AAAAAA"
     }
   },
-  "uni-preview-image-default-indicator": {
+  "uni-preview-image-default-indicator-default": {
+    "": {
+      "backgroundColor": "#AAAAAA"
+    }
+  },
+  "uni-preview-image-default-indicator-active": {
+    "": {
+      "backgroundColor": "#ffffff"
+    }
+  },
+  "uni-preview-image-default-indicator-layout": {
     "": {
       "flexDirection": "row",
       "position": "absolute",
@@ -8669,14 +9258,14 @@ const _style_0 = {
       "justifyContent": "center"
     }
   },
-  "uni-preview-image-number-indicator": {
+  "uni-preview-image-number-indicator-layout": {
     "": {
       "position": "absolute",
       "left": 0,
       "right": 0
     }
   },
-  "uni-preview-image-number-indicator-text": {
+  "uni-preview-image-number-indicator": {
     "": {
       "color": "#FFFFFF",
       "fontSize": 16,
@@ -8709,15 +9298,15 @@ var _hoisted_1 = ["circular", "current", "disable-touch"];
 var _hoisted_2 = {
   key: 0,
   ref: "numberIndicator",
-  class: "uni-preview-image-number-indicator"
+  class: "uni-preview-image-number-indicator-layout"
 };
 var _hoisted_3 = {
-  class: "uni-preview-image-number-indicator-text"
+  class: "uni-preview-image-number-indicator"
 };
 var _hoisted_4 = {
   key: 1,
   ref: "defaultIndicator",
-  class: "uni-preview-image-default-indicator"
+  class: "uni-preview-image-default-indicator-layout"
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_uniPreviewImageItem = resolveComponent("uniPreviewImageItem");
@@ -8739,15 +9328,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     return openBlock(), createElementBlock("swiper-item", null, [createVNode(_component_uniPreviewImageItem, {
       index: index2,
       src: item,
-      longPressAction: $data.longPressAction
-    }, null, 8, ["index", "src", "longPressAction"])]);
+      longPressAction: $data.longPressAction,
+      tips: $data.tips
+    }, null, 8, ["index", "src", "longPressAction", "tips"])]);
   }), 256)) : createCommentVNode("", true)], 40, _hoisted_1), $data.indicator == "number" ? (openBlock(), createElementBlock("view", _hoisted_2, [createElementVNode("text", _hoisted_3, toDisplayString($data.numberIndicator), 1)], 512)) : createCommentVNode("", true), $data.indicator == "default" ? withDirectives((openBlock(), createElementBlock("view", _hoisted_4, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.urls.length, (i) => {
     return openBlock(), createElementBlock("view", {
-      class: "uni-preview-image-indicator-style",
-      style: normalizeStyle({
-        backgroundColor: $data.current + 1 == i ? "#ffffff" : "#AAAAAA"
-      })
-    }, null, 4);
+      class: normalizeClass(["uni-preview-image-default-indicator", $data.current + 1 == i ? "uni-preview-image-default-indicator-active" : "uni-preview-image-default-indicator-default"])
+    }, null, 2);
   }), 256))], 512)), [[vShow, $data.urls != null]]) : createCommentVNode("", true)], 64);
 }
 const UniPreviewImagePage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
@@ -8756,6 +9343,9 @@ function registerSystemPages() {
     disableSwipeBack: false
   });
   registerSystemRoute("uni:chooseLocation", UniChooseLocationPage, {
+    disableSwipeBack: false
+  });
+  registerSystemRoute("uni:uniModal", UniUniModalPage, {
     disableSwipeBack: false
   });
   registerSystemRoute("uni:previewImage", UniPreviewImagePage, {

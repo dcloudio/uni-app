@@ -1536,7 +1536,12 @@ const lifecycle = {
     stat.hide(this);
   },
   onError(e) {
-    stat.error(e);
+    // fix by haotian 避免统计内部错误导致堆栈溢出，造成死循环
+    try {
+      stat.error(e);
+    } catch (error) {
+      console.error('uni-stat error:', error);
+    }
   },
 };
 

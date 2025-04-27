@@ -1,9 +1,10 @@
 {
   "name": "@dcloudio/uni-app-harmony",
-  "version": "3.0.0-4050720250324001",
+  "version": "3.0.0-alpha-4060320250423001",
   "description": "@dcloudio/uni-app-harmony",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "sideEffects": [
     "lib/automator.js"

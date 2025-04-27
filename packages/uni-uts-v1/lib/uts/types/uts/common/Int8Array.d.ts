@@ -13,9 +13,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -44,9 +44,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -76,9 +76,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -108,9 +108,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -140,9 +140,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -176,9 +176,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -210,9 +210,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -246,9 +246,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -280,9 +280,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -314,9 +314,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -348,9 +348,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -381,9 +381,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -416,9 +416,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -450,9 +450,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -484,9 +484,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -519,9 +519,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -555,9 +555,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -589,9 +589,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -623,9 +623,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -658,9 +658,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -692,9 +692,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -726,9 +726,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -761,9 +761,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -794,9 +794,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -859,9 +859,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -894,9 +894,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -927,9 +927,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -960,9 +960,9 @@ interface Int8Array {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -998,9 +998,9 @@ interface Int8ArrayConstructor {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -1031,9 +1031,9 @@ interface Int8ArrayConstructor {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -1066,9 +1066,9 @@ interface Int8ArrayConstructor {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -1098,9 +1098,9 @@ interface Int8ArrayConstructor {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -1131,9 +1131,9 @@ interface Int8ArrayConstructor {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -1165,9 +1165,9 @@ interface Int8ArrayConstructor {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "4.11",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",

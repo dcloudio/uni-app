@@ -9,7 +9,12 @@ import { once } from '@dcloudio/uni-shared'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
-import { initUTSComponents } from './uts'
+import {
+  clearUTSComponents,
+  clearUTSCustomElements,
+  initUTSComponents,
+  initUTSCustomElements,
+} from './uts'
 import { genUTSClassName } from './utsUtils'
 
 interface EasycomOption {
@@ -76,7 +81,11 @@ export function initEasycoms(
     debugEasycom(easycomOptions)
     return easycomOptions
   }
-  const options = initEasycomOptions(parsePagesJsonOnce(inputDir, platform))
+
+  const easyComOptions = initEasycomOptions(
+    parsePagesJsonOnce(inputDir, platform)
+  )
+
   const initUTSEasycom = () => {
     initUTSComponents(inputDir, platform).forEach((item) => {
       const index = easycoms.findIndex((easycom) => item.name === easycom.name)
@@ -90,20 +99,37 @@ export function initEasycoms(
       ;(globalThis as any).uts2jsSourceCodeMap.initUts2jsEasycom(easycoms)
     }
   }
+
+  const initUTSEasycomCustomElements = () => {
+    initUTSCustomElements(inputDir, platform).forEach((item) => {
+      const index = easycoms.findIndex((easycom) => item.name === easycom.name)
+      if (index > -1) {
+        easycoms.splice(index, 1, item)
+      } else {
+        easycoms.push(item)
+      }
+    })
+  }
+
   // ext-api 模式下，不存在 easycom 特性
   if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
-    initEasycom(options)
+    clearEasycom()
+    clearUTSComponents()
+    clearUTSCustomElements()
+    initEasycom(easyComOptions)
+    initUTSEasycomCustomElements()
     initUTSEasycom()
   }
   const componentExtNames = isX ? 'uvue|vue' : 'vue'
   const res = {
-    options,
+    easyComOptions,
     filter: createFilter(
       [
         'components/*/*.(' + componentExtNames + '|jsx|tsx)',
         'uni_modules/*/components/*/*.(' + componentExtNames + '|jsx|tsx)',
         'utssdk/*/**/*.(' + componentExtNames + ')',
         'uni_modules/*/utssdk/*/*.(' + componentExtNames + ')',
+        'uni_modules/*/customElements/*/*.uts',
       ],
       [],
       {
@@ -111,9 +137,13 @@ export function initEasycoms(
       }
     ),
     refresh() {
-      res.options = initEasycomOptions()
+      res.easyComOptions = initEasycomOptions()
       if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
-        initEasycom(res.options)
+        clearEasycom()
+        clearUTSComponents()
+        clearUTSCustomElements()
+        initEasycom(easyComOptions)
+        initUTSEasycomCustomElements()
         initUTSEasycom()
       }
     },
@@ -124,7 +154,10 @@ export function initEasycoms(
 
 export const initEasycomsOnce = once(initEasycoms)
 
-function initUniModulesEasycomDirs(uniModulesDir: string) {
+function initUniModulesEasycomDirs(
+  uniModulesDir: string,
+  componentsDir: string = 'components'
+) {
   if (!fs.existsSync(uniModulesDir)) {
     return []
   }
@@ -134,7 +167,7 @@ function initUniModulesEasycomDirs(uniModulesDir: string) {
       const uniModuleComponentsDir = path.resolve(
         uniModulesDir,
         uniModuleDir,
-        'components'
+        componentsDir
       )
       if (fs.existsSync(uniModuleComponentsDir)) {
         return uniModuleComponentsDir
@@ -150,7 +183,6 @@ function initEasycom({
   custom,
   extensions,
 }: EasycomOption) {
-  clearEasycom()
   rootDir = normalizePath(rootDir)
   const easycomsObj = Object.create(null)
   if (dirs && dirs.length && rootDir) {
@@ -335,10 +367,13 @@ function createImportDeclaration(
   source: string,
   imported?: string
 ) {
-  if (imported) {
+  if (imported && local) {
     return `import { ${imported} as ${local} } from '${source}';`
   }
-  return `import ${local} from '${source}';`
+  if (local) {
+    return `import ${local} from '${source}';`
+  }
+  return `import '${source}';`
 }
 
 const RESOLVE_EASYCOM_IMPORT_CODE = `import { resolveDynamicComponent as __resolveDynamicComponent } from 'vue';import { resolveEasycom } from '@dcloudio/uni-app';`

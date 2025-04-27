@@ -57,7 +57,7 @@ export function uniMainJsPlugin(
 }
 
 function createApp(code: string) {
-  return `${code};createApp().app.mount("#app");`
+  return `${code};\ncreateApp().app.mount("#app");`
 }
 
 function createLegacyApp(code: string) {

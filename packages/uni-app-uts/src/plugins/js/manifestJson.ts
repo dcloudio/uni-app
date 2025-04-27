@@ -10,10 +10,15 @@ import {
   getExtApiComponents,
   isManifest,
   normalizeManifestJson,
+  updateHarmonyManifestModules,
   updateManifestModules,
 } from '../utils'
 
 let outputManifestJson: Record<string, any> | undefined = undefined
+
+const isXHarmony =
+  process.env.UNI_APP_X === 'true' &&
+  process.env.UNI_UTS_PLATFORM === 'app-harmony'
 
 export function getOutputManifestJson() {
   return outputManifestJson
@@ -47,7 +52,7 @@ export function uniAppManifestPlugin(): Plugin {
         this.addWatchFile(
           path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
         )
-        manifestJson = parseJson(code)
+        manifestJson = parseJson(code, false, id)
         return {
           code: `export default ${JSON.stringify(manifestJson)}`,
           map: {
@@ -60,7 +65,7 @@ export function uniAppManifestPlugin(): Plugin {
       outputManifestJson = normalizeManifestJson(manifestJson)
 
       const manifest = outputManifestJson
-      if (process.env.NODE_ENV !== 'development') {
+      if (process.env.NODE_ENV !== 'development' || isXHarmony) {
         // 生产模式，记录使用到的modules
         const ids = Array.from(this.getModuleIds())
         const uniExtApis = new Set<string>()
@@ -98,7 +103,11 @@ export function uniAppManifestPlugin(): Plugin {
           )
           if (modules.length) {
             // 执行了摇树逻辑，就需要设置 modules 节点
-            updateManifestModules(manifest, modules)
+            if (isXHarmony) {
+              updateHarmonyManifestModules(manifest, modules)
+            } else {
+              updateManifestModules(manifest, modules)
+            }
           }
         }
       }

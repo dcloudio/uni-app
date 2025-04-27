@@ -1,0 +1,1 @@
+{"version":3,"sources":["uni_modules/test-error/utssdk/index.uts"],"sourcesContent":["export function test() {\r\n    throw new Error('aaa')\r\n}"],"names":[],"mappings":"AAAM,SAAU,OAAI;IAChB,MAAM,IAAI,MAAM,OAAM;AAC1B;AAFA,SAAgB,QAAA,OAEf"}

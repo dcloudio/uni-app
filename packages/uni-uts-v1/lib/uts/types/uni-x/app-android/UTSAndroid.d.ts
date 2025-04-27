@@ -814,7 +814,7 @@ interface UTSAndroid {
      请求系统权限
      @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#requestSystemPermission
      @param requestPermission 期望请求的权限
-     @param {boolean} [shallUnCheck=false] 是否需要本地错误检查，需要HBuilder X 4.25 之后版本
+     @param {boolean} [shallUnCheck=false] 是否忽略权限检查，需要HBuilder X 4.25 之后版本
      @uniPlatform {
         "app": {
             "android": {

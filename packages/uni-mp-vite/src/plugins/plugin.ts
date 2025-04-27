@@ -49,7 +49,8 @@ function initPluginEntry(): Record<string, string> | void {
   }
   const pluginJson = parseJson(
     fs.readFileSync(pluginJsonFilename, 'utf8'),
-    true
+    true,
+    pluginJsonFilename
   )
   if (!pluginJson.main) {
     return

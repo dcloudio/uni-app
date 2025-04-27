@@ -36,6 +36,9 @@ export function getPlatforms() {
 }
 
 export function getPlatformDir() {
+  if (process.env.UNI_APP_X && process.env.UNI_PLATFORM === 'app') {
+    return process.env.UNI_UTS_PLATFORM
+  }
   return process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM
 }
 

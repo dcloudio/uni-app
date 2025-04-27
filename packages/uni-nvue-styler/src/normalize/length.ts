@@ -25,8 +25,12 @@ function createNormalizeLength({
     const isSafeAreaInset =
       /--uni-safe-area-inset-(top|bottom|left|right)/.test(v) &&
       /var\([^)]+\)/.test(v)
+    // css var --status-bar-height
+    const isStatusBarHeight =
+      /--status-bar-height/.test(v) && /var\([^)]+\)/.test(v)
     const envReg = /env\(([^)]+)\)/.test(v)
-    if (isSafeAreaInset || envReg) {
+    const isUVue = options.type === 'uvue'
+    if (isUVue && (isSafeAreaInset || envReg || isStatusBarHeight)) {
       v = v.replace(/\s/g, '')
       return { value: v }
     }

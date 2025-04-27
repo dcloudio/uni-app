@@ -31,7 +31,7 @@ export function uniPagesJsonPlugin(): Plugin {
             // 调整换行符，确保 parseTree 的loc正确
             code = code.replace(/\r\n/g, '\n')
             try {
-              checkPagesJson(preUVueJson(code), process.env.UNI_INPUT_DIR)
+              checkPagesJson(preUVueJson(code, id), process.env.UNI_INPUT_DIR)
             } catch (err: any) {
               if (err.loc) {
                 const error = createRollupError(
@@ -188,10 +188,12 @@ function generateLayoutComponentsCode(
   Object.keys(windowNames).forEach((name) => {
     const windowConfig = pagesJson[name as keyof typeof windowNames]
     if (windowConfig && windowConfig.path) {
-      importLayoutComponentsCode += `import ${name} from './${windowConfig.path}'\n`
-      defineLayoutComponentsCode += `${globalName}.__uniConfig.${name}.component = setupWindow(${name},${
+      importLayoutComponentsCode += `const ${name} = defineAsyncComponent(()=>import('./${
+        windowConfig.path
+      }').then(com=>setupWindow(com.default || com,${
         windowNames[name as keyof typeof windowNames]
-      })\n`
+      })))\n`
+      defineLayoutComponentsCode += `${globalName}.__uniConfig.${name}.component = ${name}\n`
     }
   })
 

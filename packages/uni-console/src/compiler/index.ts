@@ -65,7 +65,12 @@ export default () => {
         }
       }
       let uniConsolePath = resolveBuiltIn(
-        path.join('@dcloudio/uni-console', 'dist/index.esm.js')
+        path.join(
+          '@dcloudio/uni-console',
+          `dist/${
+            (process.env.UNI_PLATFORM || '').startsWith('mp-') ? 'mp' : 'index'
+          }.esm.js`
+        )
       )
       if (isX) {
         if (process.env.UNI_UTS_PLATFORM === 'app-android') {
@@ -75,6 +80,12 @@ export default () => {
         } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
           uniConsolePath = resolveBuiltIn(
             path.join('@dcloudio/uni-console', 'dist/app.esm.js')
+          )
+        }
+      } else {
+        if (process.env.UNI_PLATFORM === 'app-harmony') {
+          uniConsolePath = resolveBuiltIn(
+            path.join('@dcloudio/uni-console', 'dist/harmony.jsvm.esm.js')
           )
         }
       }
@@ -93,9 +104,7 @@ export default () => {
           return {
             // 采用绝对路径引入，此时，tsc失效，代码里需要自己处理好各种类型问题
             code: `import '${normalizePath(uniConsolePath)}';${code}`,
-            map: {
-              mappings: '',
-            },
+            map: null,
           }
         },
       }

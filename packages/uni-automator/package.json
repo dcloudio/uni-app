@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "3.0.0-4050720250324001",
+  "version": "3.0.0-alpha-4060320250423001",
   "description": "@dcloudio/uni-automator",
   "main": "dist/index.js",
   "files": [
@@ -22,7 +22,8 @@
     "apply": [
       "app",
       "h5",
-      "mp-weixin"
+      "mp-weixin",
+      "app-harmony"
     ],
     "uvue": true
   },

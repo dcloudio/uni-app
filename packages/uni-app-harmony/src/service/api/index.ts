@@ -1,5 +1,4 @@
 export * from './ui/index'
-export * from './ui/index'
 export * from './keyboard/keyboard'
 export { canIUse } from './base/canIUse'
 export { navigateTo } from './route/navigateTo'

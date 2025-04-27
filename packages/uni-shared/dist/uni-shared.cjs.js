@@ -156,6 +156,7 @@ const UVUE_IOS_BUILT_IN_TAGS = [
 const UVUE_HARMONY_BUILT_IN_TAGS = [
     // TODO 列出完整列表
     ...BUILT_IN_TAG_NAMES,
+    'volume-panel',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -222,7 +223,7 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view-column',
 ];
 // 内置的easycom组件
-const UVUE_BUILT_IN_EASY_COMPONENTS = ['map'];
+const UVUE_BUILT_IN_EASY_COMPONENTS = ['map', 'camera'];
 function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
 }
@@ -268,6 +269,10 @@ function isAppIOSUVueNativeTag(tag) {
     return false;
 }
 function isAppHarmonyUVueNativeTag(tag) {
+    // video 目前是easycom实现的
+    if (tag === 'video' || tag === 'map') {
+        return false;
+    }
     // 前端实现的内置组件都会注册一个根组件
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
         return true;
@@ -319,6 +324,11 @@ function isComponentTag(tag) {
 }
 const COMPONENT_SELECTOR_PREFIX = 'uni-';
 const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX;
+// TODO 是否还存在其他需要特殊处理的 void 标签？
+const APP_VOID_TAGS = ['textarea'];
+function isAppVoidTag(tag) {
+    return APP_VOID_TAGS.includes(tag) || shared.isVoidTag(tag);
+}
 
 const LINEFEED = '\n';
 const NAVBAR_HEIGHT = 44;
@@ -1703,7 +1713,7 @@ function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
                 return normalizeStyles(styleItem, themeConfig, mode);
             if (shared.isArray(styleItem))
                 return styleItem.map((item) => {
-                    if (typeof item === 'object')
+                    if (shared.isPlainObject(item))
                         return normalizeStyles(item, themeConfig, mode);
                     return resolveStringStyleItem(modeStyle, item);
                 });
@@ -1887,6 +1897,7 @@ exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
 exports.isAppUVueBuiltInEasyComponent = isAppUVueBuiltInEasyComponent;
 exports.isAppUVueNativeTag = isAppUVueNativeTag;
+exports.isAppVoidTag = isAppVoidTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;

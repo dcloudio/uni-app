@@ -26,11 +26,11 @@ export const transformStyle: NodeTransform = (node, context) => {
           platform: process.env.UNI_UTS_PLATFORM,
         }).then(({ messages }) => {
           messages.forEach((message) => {
-            context.onWarn(
-              createCompilerError(100, p.loc, {
-                100: message.text,
-              })
-            )
+            const error = createCompilerError(100, p.loc, {
+              100: message.text.replace('ERROR: ', '').replace('WARNING: ', ''),
+            })
+            error.errorType = 'css'
+            context.onWarn(error)
           })
         })
       }

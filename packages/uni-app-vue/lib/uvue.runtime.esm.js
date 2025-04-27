@@ -3,7 +3,7 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, isFunction, isPromise, getGlobalThis, isArray, NOOP, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
+import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, shallowReadonly, track, reactive, shallowReactive, trigger, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, customRef, isReadonly } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
@@ -279,8 +279,7 @@ let flushIndex = 0;
 const pendingPostFlushCbs = [];
 let activePostFlushCbs = null;
 let postFlushIndex = 0;
-const isIOS = "nativeApp" in getGlobalThis();
-const resolvedPromise = /* @__PURE__ */ (isIOS ? PromisePolyfill : Promise).resolve();
+const resolvedPromise = /* @__PURE__ */ (PromisePolyfill ).resolve();
 let currentFlushPromise = null;
 const RECURSION_LIMIT = 100;
 function nextTick(fn, instance = getCurrentInstance()) {
@@ -1258,7 +1257,7 @@ function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense
     p: patch,
     o: { createElement }
   } = rendererInternals;
-  const hiddenContainer = createElement("div");
+  const hiddenContainer = createElement("div", container);
   const suspense = vnode.suspense = createSuspenseBoundary(
     vnode,
     parentSuspense,
@@ -1350,7 +1349,7 @@ function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, sl
       }
       suspense.deps = 0;
       suspense.effects.length = 0;
-      suspense.hiddenContainer = createElement("div");
+      suspense.hiddenContainer = createElement("div", container);
       if (isInFallback) {
         patch(
           null,
@@ -6904,7 +6903,7 @@ const isTeleport = (type) => type.__isTeleport;
 const isTeleportDisabled = (props) => props && (props.disabled || props.disabled === "");
 const isTargetSVG = (target) => typeof SVGElement !== "undefined" && target instanceof SVGElement;
 const isTargetMathML = (target) => typeof MathMLElement === "function" && target instanceof MathMLElement;
-const resolveTarget = (props, select) => {
+const resolveTarget = (props, select, parentComponent) => {
   const targetSelector = props && props.to;
   if (isString(targetSelector)) {
     if (!select) {
@@ -6913,7 +6912,7 @@ const resolveTarget = (props, select) => {
       );
       return null;
     } else {
-      const target = select(targetSelector);
+      const target = select(targetSelector, parentComponent);
       if (!target) {
         !!(process.env.NODE_ENV !== "production") && warn$1(
           `Failed to locate Teleport target with selector "${targetSelector}". Note the target element must exist before the component is mounted - i.e. the target cannot be rendered by the component itself, and ideally should be outside of the entire Vue component tree.`
@@ -6946,23 +6945,27 @@ const TeleportImpl = {
     }
     if (n1 == null) {
       const placeholder = n2.el = !!(process.env.NODE_ENV !== "production") ? (
-        // @ts-expect-error  fixed by xxxxxx
-        createComment("teleport start")
+        // fixed by xxxxxx
+        createComment("teleport start", container)
       ) : (
-        // @ts-expect-error  fixed by xxxxxx
-        createText("")
+        // fixed by xxxxxx
+        createText("", container)
       );
       const mainAnchor = n2.anchor = !!(process.env.NODE_ENV !== "production") ? (
-        // @ts-expect-error  fixed by xxxxxx
-        createComment("teleport end")
+        // fixed by xxxxxx
+        createComment("teleport end", container)
       ) : (
-        // @ts-expect-error  fixed by xxxxxx
-        createText("")
+        // fixed by xxxxxx
+        createText("", container)
       );
       insert(placeholder, container, anchor);
       insert(mainAnchor, container, anchor);
-      const target = n2.target = resolveTarget(n2.props, querySelector);
-      const targetAnchor = n2.targetAnchor = createText("");
+      const target = n2.target = resolveTarget(
+        n2.props,
+        querySelector,
+        parentComponent
+      );
+      const targetAnchor = n2.targetAnchor = createText("", container);
       if (target) {
         insert(targetAnchor, target);
         if (namespace === "svg" || isTargetSVG(target)) {
@@ -7047,7 +7050,8 @@ const TeleportImpl = {
         if ((n2.props && n2.props.to) !== (n1.props && n1.props.to)) {
           const nextTarget = n2.target = resolveTarget(
             n2.props,
-            querySelector
+            querySelector,
+            parentComponent
           );
           if (nextTarget) {
             moveTeleport(
@@ -7130,7 +7134,8 @@ function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScope
 }, hydrateChildren) {
   const target = vnode.target = resolveTarget(
     vnode.props,
-    querySelector
+    querySelector,
+    parentComponent
   );
   if (target) {
     const targetNode = target._lpa || target.firstChild;
@@ -8622,9 +8627,6 @@ function getDocument() {
 function setDocument(document) {
   rootDocument = document;
 }
-function isInDocument(parent) {
-  return !!parent.pageId;
-}
 function updateTextNode(node) {
   const childNode = getExtraChildNode(node);
   if (childNode !== null) {
@@ -8652,7 +8654,7 @@ const nodeOps = {
     } else {
       parent.insertBefore(el, anchor);
     }
-    if (isInDocument(parent)) {
+    if (parent.isConnected) {
       updateClassStyles(el);
       updateChildrenClassStyle(el);
     }
@@ -8672,19 +8674,26 @@ const nodeOps = {
     }
   },
   createElement: (tag, container) => {
-    return getDocument().createElement(tag);
+    if (!container) {
+      return getDocument().createElement(tag);
+    } else {
+      const document = container.uniPage.document;
+      return document.createElement(tag);
+    }
   },
   createText: (text, container, isAnchor) => {
+    const document = container.uniPage.document;
     if (isAnchor) {
-      return getDocument().createComment(text);
+      return document.createComment(text);
     }
-    const textNode = getDocument().createElement("text");
+    const textNode = document.createElement("text");
     textNode.setAttribute("value", text);
     setExtraIsTextNode(textNode, true);
     return textNode;
   },
   createComment: (text, container) => {
-    return getDocument().createComment(text);
+    const document = container.uniPage.document;
+    return document.createComment(text);
   },
   setText: (node, text) => {
     node.setAttribute("value", text);
@@ -8707,7 +8716,15 @@ const nodeOps = {
     el.setAttribute("value", text);
   },
   parentNode: (node) => node.parentNode,
-  nextSibling: (node) => node.nextSibling
+  nextSibling: (node) => node.nextSibling,
+  querySelector: (selector, parentComponent) => {
+    var _a, _b;
+    const document = (_b = (_a = parentComponent == null ? void 0 : parentComponent.proxy) == null ? void 0 : _a.$nativePage) == null ? void 0 : _b.document;
+    if (document) {
+      return document.querySelector(selector);
+    }
+    return null;
+  }
 };
 function updateChildrenClassStyle(el) {
   if (el !== null) {

@@ -33,6 +33,7 @@ exports[`code genProxyCode 2`] = `
   "components": [
     "TestUTS",
   ],
+  "customElements": [],
   "exports": {
     "RequestTask": {
       "type": "interface",

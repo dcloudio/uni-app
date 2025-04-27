@@ -360,16 +360,24 @@ function useMap(
       })
       // @ts-expect-error
       map.addEventListener('dragstart', () => {
-        trigger('regionchange', {} as Event, {
-          type: 'begin',
-          causedBy: 'gesture',
-        })
+        trigger(
+          'regionchange',
+          {
+            __evName: 'regionchange',
+          } as unknown as Event,
+          {
+            type: 'begin',
+            causedBy: 'gesture',
+          }
+        )
       })
       // @ts-expect-error
       map.addEventListener('dragend', () => {
         trigger(
           'regionchange',
-          {} as Event,
+          {
+            __evName: 'regionchange',
+          } as unknown as Event,
           extend(
             {
               type: 'end',
@@ -394,15 +402,23 @@ function useMap(
         trigger('click', {} as Event, {})
       })
       event.addListener(map, 'dragstart', () => {
-        trigger('regionchange', {} as Event, {
-          type: 'begin',
-          causedBy: 'gesture',
-        })
+        trigger(
+          'regionchange',
+          {
+            __evName: 'regionchange',
+          } as unknown as Event,
+          {
+            type: 'begin',
+            causedBy: 'gesture',
+          }
+        )
       })
       event.addListener(map, 'dragend', () => {
         trigger(
           'regionchange',
-          {} as Event,
+          {
+            __evName: 'regionchange',
+          } as unknown as Event,
           extend(
             {
               type: 'end',
@@ -417,7 +433,9 @@ function useMap(
         emit('update:scale', map.getZoom())
         trigger(
           'regionchange',
-          {} as Event,
+          {
+            __evName: 'regionchange',
+          } as unknown as Event,
           extend(
             {
               type: 'end',

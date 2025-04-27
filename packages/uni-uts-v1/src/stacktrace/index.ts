@@ -1,12 +1,15 @@
 import { relative } from '../utils'
 import {
+  type GenerateAppHarmonyCodeFrameOptions,
+  parseUTSHarmonyRuntimeStacktrace,
+} from './arkts'
+import {
   type GenerateAppIOSJavaScriptRuntimeCodeFrameOptions,
   type GenerateJavaScriptRuntimeCodeFrameOptions,
   parseUTSJavaScriptRuntimeStacktrace,
 } from './js'
 import {
   type GenerateAppAndroidKotlinRuntimeCodeFrameOptions,
-  type GenerateKotlinRuntimeCodeFrameOptions,
   parseUTSKotlinRuntimeStacktrace,
 } from './kotlin'
 import {
@@ -16,10 +19,11 @@ import {
 } from './mp'
 
 export { parseUTSSwiftPluginStacktrace } from './swift'
-
+export { parseUTSArkTSPluginStacktrace } from './arkts'
 export {
   parseUTSKotlinStacktrace,
   parseUTSKotlinRuntimeStacktrace,
+  resolveUTSKotlinFilenameByClassName,
 } from './kotlin'
 
 export { parseUTSJavaScriptRuntimeStacktrace } from './js'
@@ -29,11 +33,13 @@ export async function parseRuntimeStacktrace(
   options:
     | GenerateAppAndroidKotlinRuntimeCodeFrameOptions
     | GenerateAppIOSJavaScriptRuntimeCodeFrameOptions
+    | GenerateAppHarmonyCodeFrameOptions
     | GenerateMiniProgramRuntimeCodeFrameOptions
 ) {
   if (
     (options.platform === 'app-android' && options.language === 'kotlin') ||
-    (options.platform === 'app-ios' && options.language === 'javascript')
+    (options.platform === 'app-ios' && options.language === 'javascript') ||
+    options.platform === 'app-harmony'
   ) {
     return parseUTSRuntimeStacktrace(stacktrace, options)
   }
@@ -51,10 +57,16 @@ export async function parseRuntimeStacktrace(
 export function parseUTSRuntimeStacktrace(
   stacktrace: string,
   options:
-    | GenerateKotlinRuntimeCodeFrameOptions
+    | GenerateAppAndroidKotlinRuntimeCodeFrameOptions
+    | GenerateAppHarmonyCodeFrameOptions
     | GenerateJavaScriptRuntimeCodeFrameOptions
 ) {
-  if (options.language === 'kotlin') {
+  if (options.platform === 'app-harmony') {
+    return parseUTSHarmonyRuntimeStacktrace(
+      stacktrace,
+      options as GenerateAppHarmonyCodeFrameOptions
+    )
+  } else if (options.language === 'kotlin') {
     return parseUTSKotlinRuntimeStacktrace(stacktrace, options)
   } else if (options.language === 'javascript') {
     return parseUTSJavaScriptRuntimeStacktrace(stacktrace, options)

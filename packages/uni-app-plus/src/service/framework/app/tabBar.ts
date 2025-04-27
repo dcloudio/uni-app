@@ -153,7 +153,16 @@ export default {
     })
     tabBar &&
       tabBar.onClick(({ index }: { index: number }) => {
+        const fromIndex = config.selectedIndex!
         clickCallback(config.list[index], index)
+        const toIndex = config.selectedIndex
+        if (index !== toIndex) {
+          // 拦截器调整
+          // tabBar.switchTab(config.list[fromIndex].pagePath)
+          tabBar.switchSelect({
+            index: fromIndex,
+          })
+        }
       })
     tabBar &&
       tabBar.onMidButtonClick(() => {
@@ -186,6 +195,7 @@ export default {
         tabBar.switchSelect({
           index,
         })
+      this.config.selectedIndex = index
       return true
     }
     return false

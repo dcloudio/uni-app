@@ -12,6 +12,7 @@ import {
   createTransformTag,
   initI18nOptions,
   injectAssetPlugin,
+  isUTSCustomElement,
   matchUTSComponent,
   normalizeNodeModules,
   normalizePath,
@@ -23,6 +24,10 @@ import {
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { ResolvedConfig } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
+
+const isXHarmony =
+  process.env.UNI_APP_X === 'true' &&
+  process.env.UNI_UTS_PLATFORM === 'app-harmony'
 
 export function createUniOptions(
   platform: 'app-android' | 'app-ios' | 'app-harmony'
@@ -63,6 +68,7 @@ export function createUniOptions(
         ? {
             isNativeTag(tag) {
               return (
+                isUTSCustomElement(tag) ||
                 matchUTSComponent(tag) ||
                 (platform === 'app-ios'
                   ? isAppIOSUVueNativeTag
@@ -182,7 +188,7 @@ export function normalizeManifestJson(userManifestJson: Record<string, any>) {
     }
   }
 
-  return {
+  const manifest = {
     id: userManifestJson.appid || '',
     name: userManifestJson.name || '',
     description: userManifestJson.description || '',
@@ -191,8 +197,39 @@ export function normalizeManifestJson(userManifestJson: Record<string, any>) {
       code: userManifestJson.versionCode || '',
     },
     'uni-app-x': x,
-    app,
+    app: undefined as any,
+    'app-harmony': undefined as any,
   }
+  if (isXHarmony) {
+    manifest['app-harmony'] = userManifestJson['app-harmony'] || {}
+  } else {
+    manifest.app = userManifestJson.app || {}
+  }
+  return manifest
+}
+
+export function updateHarmonyManifestModules(
+  manifest: Record<string, any>,
+  modules: string[]
+) {
+  let appHarmony = manifest['app-harmony']
+  if (!appHarmony) {
+    appHarmony = manifest['app-harmony'] = {}
+  }
+  if (!appHarmony.distribute) {
+    appHarmony.distribute = {}
+  }
+  if (!appHarmony.distribute.modules) {
+    appHarmony.distribute.modules = {}
+  }
+  if (modules) {
+    modules.forEach((name) => {
+      const value = appHarmony.distribute.modules[name]
+      appHarmony.distribute.modules[name] =
+        typeof value === 'object' && value !== null ? value : {}
+    })
+  }
+  return manifest
 }
 
 export function updateManifestModules(

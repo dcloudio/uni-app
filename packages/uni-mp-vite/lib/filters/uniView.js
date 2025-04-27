@@ -1,3 +1,17 @@
+
+module.exports = {
+  sS: function (newValue, oldValue, _ownerInstance, instance) {
+    if (newValue) {
+      instance.setStyle(newValue)
+    }
+  },
+  sA: function (newValue, oldValue, _ownerInstance, instance) {
+    if (newValue) {
+      handleStartAnimation(newValue, _ownerInstance, instance)
+    }
+  },
+}
+
 function handleStartAnimation(newValue, _ownerInstance, instance) {
   var info = {}
   info = JSON.parse(newValue)
@@ -78,17 +92,4 @@ function handleStartAnimation(newValue, _ownerInstance, instance) {
   }
 
   instance.requestAnimationFrame(step)
-}
-
-module.exports = {
-  sS: function (newValue, oldValue, _ownerInstance, instance) {
-    if (newValue) {
-      instance.setStyle(newValue)
-    }
-  },
-  sA: function (newValue, oldValue, _ownerInstance, instance) {
-    if (newValue) {
-      handleStartAnimation(newValue, _ownerInstance, instance)
-    }
-  },
 }
