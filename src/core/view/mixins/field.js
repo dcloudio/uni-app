@@ -183,7 +183,7 @@ export default {
         }
         field.focus()
         // 无用户交互的 webview 需主动显示键盘（安卓）
-        if (!this.userInteract) {
+        if (!this.userInteract && this.inputmode !== 'none') {
           plus.key.showSoftKeybord()
         }
       }
