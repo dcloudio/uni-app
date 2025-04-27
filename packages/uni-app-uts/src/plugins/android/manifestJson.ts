@@ -7,7 +7,6 @@ import {
   parseJson,
   parseUniXFlexDirection,
   parseUniXSplashScreen,
-  parseUniXUniStatistics,
   validateThemeValue,
 } from '@dcloudio/uni-cli-shared'
 import { ENTRY_FILENAME, stringifyMap } from './utils'
@@ -73,13 +72,6 @@ export function uniAppManifestPlugin(): Plugin {
                 splashScreen
               )}`
             : ''
-        const uniStatistics = parseUniXUniStatistics(manifestJson)
-        const uniStatisticsCode =
-          uniStatistics && Object.keys(uniStatistics).length > 0
-            ? `override uniStatistics: UTSJSONObject | null = ${JSON.stringify(
-                uniStatistics
-              )}`
-            : ''
 
         const hasAppDefaultAppTheme = validateThemeValue(
           manifestJson.app?.defaultAppTheme
@@ -98,7 +90,6 @@ export function uniAppManifestPlugin(): Plugin {
           flexDirCode,
           splashScreenCode,
           defaultAppThemeCode,
-          uniStatisticsCode,
         ]
           .filter(Boolean)
           .join('\n')

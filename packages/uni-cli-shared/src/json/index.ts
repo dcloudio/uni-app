@@ -9,7 +9,6 @@ export {
   normalizeUniAppXAppConfig,
   parseUniXFlexDirection,
   parseUniXSplashScreen,
-  parseUniXUniStatistics,
   isUniXPageFile,
   getUniXPagePaths,
 } from './uni-x'
