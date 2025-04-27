@@ -51,6 +51,7 @@ import {
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { handleBeforeEntryPageRoutes } from '../../service/api/route/utils'
+import { updateCurPageCssVar } from '../../helpers/cssVar'
 //#if _X_
 import { isDialogPageInstance } from '../../x/framework/helpers/utils'
 import {
@@ -142,6 +143,7 @@ export function setupPage(comp: any) {
         return query
       }
       const pageMeta = usePageMeta()
+      updateCurPageCssVar(pageMeta)
       // 动态监听子组件 onReachBottom, onPageScroll的hook，从而初始化pageScroll逻辑
       instance.onReachBottom = reactive([])
       instance.onPageScroll = reactive([])
