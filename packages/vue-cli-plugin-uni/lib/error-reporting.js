@@ -146,7 +146,7 @@ Object.assign(ErrorReport.prototype, {
 })
 
 function report (type, err) {
-  ErrorReport.instance.report(type, err)
+  // ErrorReport.instance.report(type, err)
 }
 
 global.__error_reporting__ = report
@@ -154,9 +154,9 @@ global.__error_reporting__ = report
 process
   .on('unhandledRejection', (reason, p) => {
     console.log(reason)
-    global.__error_reporting__ && global.__error_reporting__('unhandledRejection', reason)
+    // global.__error_reporting__ && global.__error_reporting__('unhandledRejection', reason)
   })
   .on('uncaughtException', err => {
     console.log(err)
-    global.__error_reporting__ && global.__error_reporting__('uncaughtException', err.stack)
+    // global.__error_reporting__ && global.__error_reporting__('uncaughtException', err.stack)
   })

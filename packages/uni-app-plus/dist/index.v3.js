@@ -700,7 +700,7 @@ var serviceContext = (function () {
     const modeStyle = themeConfig[mode];
     const styles = {};
 
-    if (typeof modeStyle === 'undefined') return pageStyle
+    if (typeof modeStyle === 'undefined' || !pageStyle) return pageStyle
 
     Object.keys(pageStyle).forEach(key => {
       const styleItem = pageStyle[key]; // Object Array String
@@ -708,9 +708,9 @@ var serviceContext = (function () {
       const parseStyleItem = () => {
         if (isPlainObject(styleItem)) { return normalizeStyles(styleItem, themeConfig, mode) }
 
-        if (Array.isArray(styleItem)) {
+        if (isArray(styleItem)) {
           return styleItem.map(item => {
-            if (typeof item === 'object') { return normalizeStyles(item, themeConfig, mode) }
+            if (isPlainObject(item)) { return normalizeStyles(item, themeConfig, mode) }
             return resolveStringStyleItem(modeStyle, item)
           })
         }
@@ -2334,9 +2334,14 @@ var serviceContext = (function () {
     },
     extension: {
       type: Array,
-      default: [''],
       validator (extension, params) {
-        if (extension.length === 0) { return 'param extension should not be empty.' }
+        if (!extension) {
+          if (params.type === 'all' || params.type === '*' || !params.type) {
+            params.extension = [''];
+          } else {
+            params.extension = ['*'];
+          }
+        } else if (extension.length === 0) { return 'param extension should not be empty.' }
       }
     }
   };
@@ -24072,6 +24077,7 @@ var serviceContext = (function () {
         return true
       });
       this.batchData.length = 0;
+      // 检查有无数据变更
       if (batchData.length) {
         UniServiceJSBridge.publishHandler(VD_SYNC, {
           data: batchData,
@@ -24079,6 +24085,9 @@ var serviceContext = (function () {
             timestamp: Date.now()
           }
         }, [this.pageId]);
+      } else {
+        // 没有数据变更，则触发回调, ask206600
+        onVdSyncCallback();
       }
     }
 

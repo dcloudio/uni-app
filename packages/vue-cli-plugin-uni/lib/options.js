@@ -16,7 +16,9 @@ module.exports = function initOptions (options) {
   }
 
   // 增加 src/node_modules 解析
-  options.transpileDependencies.push(pathToRegexp(path.resolve(process.env.UNI_INPUT_DIR, 'node_modules'), { start: true }))
+  options.transpileDependencies.push(pathToRegexp(path.resolve(process.env.UNI_INPUT_DIR, 'node_modules'), {
+    start: true
+  }))
   options.transpileDependencies.push('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   options.transpileDependencies.push('@dcloudio/uni-i18n')
   options.transpileDependencies.push('@dcloudio/uni-stat')
@@ -70,11 +72,19 @@ module.exports = function initOptions (options) {
   const isScss = fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'uni.scss'))
   let sassData = isSass ? getPlatformSass() : getPlatformScss()
 
-  if (isSass) {
-    sassData = '@import "@/uni.sass"'
-  } else if (isScss) {
-    sassData = `${sassData}
-  @import "@/uni.scss";`
+  if (process.env.UNI_SASS_IMPLEMENTATION_NAME === 'dart-sass') {
+    if (isSass) {
+      sassData = '@use "@/uni.sass" as *'
+    } else if (isScss) {
+      sassData = '@use "@/uni.scss" as *;'
+    }
+  } else {
+    if (isSass) {
+      sassData = '@import "@/uni.sass"'
+    } else if (isScss) {
+      sassData = `${sassData}
+    @import "@/uni.scss";`
+    }
   }
 
   if (!options.css.loaderOptions.sass.sassOptions) {
@@ -87,7 +97,8 @@ module.exports = function initOptions (options) {
   }
   options.css.loaderOptions.sass.prependData = sassData
   const userPostcssConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'postcss.config.js')
-  const configPath = fs.existsSync(userPostcssConfigPath) ? userPostcssConfigPath : path.resolve(process.env.UNI_CLI_CONTEXT, 'postcss.config.js')
+  const configPath = fs.existsSync(userPostcssConfigPath) ? userPostcssConfigPath : path.resolve(process.env
+    .UNI_CLI_CONTEXT, 'postcss.config.js')
   if (webpack.version[0] > 4) {
     options.css.loaderOptions.postcss.postcssOptions.config = configPath
   } else {
