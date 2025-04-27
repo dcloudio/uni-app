@@ -16139,8 +16139,9 @@
           setTimeout(focus, timeout);
           return;
         }
+        var isInputModeEnabled = props2.inputmode !== "none";
         {
-          if (!userActionState.userAction) {
+          if (!userActionState.userAction && isInputModeEnabled) {
             plus.key.showSoftKeybord();
             setTimeout(() => {
               field.focus();

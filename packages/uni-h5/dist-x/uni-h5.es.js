@@ -19652,15 +19652,18 @@ function usePopupStyle(props2) {
         "border-style": "solid"
       });
       const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
+      const popoverWidth = getNumber(popover.width ? popover.width : 300);
       const popoverTop = getNumber(popover.top);
       const popoverHeight = getNumber(popover.height);
       const center = popoverLeft + popoverWidth / 2;
       contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
+      const contentLeft = Math.max(0, center - popoverWidth / 2);
       contentStyle.left = `${contentLeft}px`;
+      if (popover.width) {
+        contentStyle.width = `${popoverWidth}px`;
+      }
       let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleLeft = Math.min(popoverWidth - 12, triangleLeft);
       triangleStyle.left = `${triangleLeft}px`;
       const vcl = popupHeight.value / 2;
       if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
@@ -23024,6 +23027,9 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
       extension
     });
     document.body.appendChild(fileInput);
+    fileInput.addEventListener("cancel", () => {
+      reject("chooseFile:fail cancel");
+    });
     fileInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const tempFiles = [];
@@ -23080,6 +23086,9 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
       type: "image"
     });
     document.body.appendChild(imageInput);
+    imageInput.addEventListener("cancel", () => {
+      reject("chooseImage:fail cancel");
+    });
     imageInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const tempFiles = [];
@@ -23399,6 +23408,9 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
       type: "video"
     });
     document.body.appendChild(videoInput);
+    videoInput.addEventListener("cancel", () => {
+      reject("chooseVideo:fail cancel");
+    });
     videoInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const file = eventTarget.files[0];

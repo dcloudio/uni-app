@@ -2666,7 +2666,7 @@ function stacktracey(stacktrace, opts) {
                             file: source,
                             line: sourceLine,
                             column: sourceColumn,
-                            fileShort: sourcePath,
+                            fileShort: sourcePath || source,
                             fileRelative: source,
                             fileName,
                             thirdParty: isThirdParty(sourcePath),

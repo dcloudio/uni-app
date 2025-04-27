@@ -74,21 +74,22 @@ function resolveEasycom(component, easycom) {
 }
 
 /// <reference types="@dcloudio/types" />
-function isUniPage(target) {
-    if (target && 'renderer' in target) {
-        return target.renderer === 'page';
-    }
-    return true;
-}
+// function isUniPage(target: ComponentInternalInstance | null): boolean {
+//   if (target && 'renderer' in target) {
+//     return target.renderer === 'page'
+//   }
+//   return true
+// }
 const createHook = (lifecycle, flag = 0 /* HookFlags.UNKNOWN */) => (hook, target = getCurrentInstance()) => {
-    {
-        // 如果只是页面生命周期，排除与App公用的，比如onShow、onHide
-        if (flag === 2 /* HookFlags.PAGE */) {
-            if (!isUniPage(target)) {
-                return;
-            }
-        }
-    }
+    // 不使用此判断了，因为组件也可以监听页面的生命周期，当页面作为组件渲染时，那监听的页面生成周期是其所在页面的，而不是其自身的
+    // if (true) {
+    //   // 如果只是页面生命周期，排除与App公用的，比如onShow、onHide
+    //   if (flag === HookFlags.PAGE) {
+    //     if (!isUniPage(target)) {
+    //       return
+    //     }
+    //   }
+    // }
     // post-create lifecycle registrations are noops during SSR
     !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };

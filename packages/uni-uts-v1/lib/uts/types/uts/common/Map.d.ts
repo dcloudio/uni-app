@@ -6,7 +6,7 @@ interface Map<K, V> {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -17,7 +17,21 @@ interface Map<K, V> {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -25,7 +39,7 @@ interface Map<K, V> {
         }
      }
    */
-  clear() : void
+  clear(): void
 
   /**
      用于移除 Map 对象中指定的元素。
@@ -36,7 +50,7 @@ interface Map<K, V> {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -47,7 +61,21 @@ interface Map<K, V> {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -55,7 +83,7 @@ interface Map<K, V> {
         }
      }
    */
-  delete(key : K) : boolean
+  delete(key: K): boolean
   /**
      按照插入顺序依次对 Map 中每个键/值对执行一次给定的函数。
      @param callbackfn Map 中每个元素所要执行的函数。它具有如下的参数：
@@ -68,7 +96,7 @@ interface Map<K, V> {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -79,7 +107,21 @@ interface Map<K, V> {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -88,9 +130,9 @@ interface Map<K, V> {
      }
    */
   forEach(
-    callbackfn : (value : V, key : K, map : Map<K, V>) => void,
-    thisArg ?: any
-  ) : void
+    callbackfn: (value: V, key: K, map: Map<K, V>) => void,
+    thisArg?: any
+  ): void
   /**
      从 Map 对象返回指定的元素。如果与所提供的键相关联的值是一个对象，那么你将获得该对象的引用，对该对象所做的任何更改都会有效地在 Map 对象中修改它。
      @param key 从 Map 对象返回的元素的键。
@@ -100,7 +142,7 @@ interface Map<K, V> {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -111,7 +153,21 @@ interface Map<K, V> {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -119,7 +175,7 @@ interface Map<K, V> {
         }
      }
    */
-  get(key : K) : V | null
+  get(key: K): V | null
   /**
      返回一个布尔值，指示具有指定键的元素是否存在。
      @param key 用于测试 Map 对象中是否存在的元素的键。
@@ -129,7 +185,7 @@ interface Map<K, V> {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -140,7 +196,21 @@ interface Map<K, V> {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -148,7 +218,7 @@ interface Map<K, V> {
         }
      }
    */
-  has(key : K) : boolean
+  has(key: K): boolean
 
   /**
      为 Map 对象添加或更新一个指定了键（key）和值（value）的（新）键值对。
@@ -160,7 +230,7 @@ interface Map<K, V> {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -171,7 +241,21 @@ interface Map<K, V> {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -179,7 +263,7 @@ interface Map<K, V> {
         }
      }
    */
-  set(key : K, value : V) : this
+  set(key: K, value: V): this
   /**
      @return Map 对象的成员数量。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/map.html#size
@@ -187,7 +271,7 @@ interface Map<K, V> {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -198,7 +282,21 @@ interface Map<K, V> {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -206,7 +304,7 @@ interface Map<K, V> {
         }
      }
    */
-  readonly size : number
+  readonly size: number
 }
 
 interface MapConstructor {
@@ -217,7 +315,7 @@ interface MapConstructor {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -228,7 +326,21 @@ interface MapConstructor {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -236,7 +348,7 @@ interface MapConstructor {
         }
      }
    */
-  new() : Map<any, any>
+  new(): Map<any, any>
   /**
      @return Map 对象。
      @param entries 元素为键值对的数组，eg: [[key1, value1], [key2, value2]]
@@ -245,7 +357,7 @@ interface MapConstructor {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -256,7 +368,21 @@ interface MapConstructor {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -264,7 +390,7 @@ interface MapConstructor {
         }
      }
    */
-  new <K, V>(entries ?: readonly (readonly [K, V])[] | null) : Map<K, V>
-  readonly prototype : Map<any, any>
+  new <K, V>(entries?: readonly (readonly [K, V])[] | null): Map<K, V>
+  readonly prototype: Map<any, any>
 }
-declare var Map : MapConstructor
+declare var Map: MapConstructor

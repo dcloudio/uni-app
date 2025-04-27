@@ -194,10 +194,11 @@
 			  }
 			})
 			// #endif
-			// #ifdef APP-ANDROID || APP-IOS
+			// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 			const appTheme = systemInfo.appTheme
 			if (appTheme != null) {
-				this.theme = appTheme
+				const osTheme = systemInfo.osTheme??'light'
+				this.theme = ('auto'==appTheme)?osTheme:appTheme
 			} 
 			this.appThemeChangeCallbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
 				this.theme = res.appTheme

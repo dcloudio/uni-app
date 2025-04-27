@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
+import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -5243,7 +5243,7 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
         setRadioChecked
       }, "add");
     });
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
       $dispatch(ctx, "RadioGroup", "_radioGroupUpdateHandler", {
         name: radioValue.value,
@@ -5749,7 +5749,7 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
         _animate();
       });
     });
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       clearTimer();
     });
     return () => {
@@ -6148,7 +6148,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         uniResizeObserver.observe(pickerColumnRef.value);
       });
     });
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
       uniResizeObserver.disconnect();
       $dispatch(ctx, "PickerView", "_pickerViewUpdateHandler", ctx, "remove");
@@ -6241,7 +6241,9 @@ const _sfc_main$5 = {
       bottomNavigationHeight: 0,
       appTheme: null,
       osTheme: null,
-      hostTheme: null
+      hostTheme: null,
+      appThemeChangeCallbackId: -1,
+      osThemeChangeCallbackId: -1
     };
   },
   onLoad(options) {
@@ -6290,14 +6292,14 @@ const _sfc_main$5 = {
       this.handleThemeChange();
     }
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
-    uni.onAppThemeChange((res) => {
+    this.appThemeChangeCallbackId = uni.onAppThemeChange((res) => {
       var appTheme2 = res.appTheme;
       if (appTheme2 != null && appTheme2 != "auto") {
         this.appTheme = appTheme2;
         this.handleThemeChange();
       }
     });
-    uni.onOsThemeChange((res) => {
+    this.osThemeChangeCallbackId = uni.onOsThemeChange((res) => {
       this.osTheme = res.osTheme;
       this.handleThemeChange();
     });
@@ -6344,6 +6346,8 @@ const _sfc_main$5 = {
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
+    uni.offAppThemeChange(this.appThemeChangeCallbackId);
+    uni.offOsThemeChange(this.osThemeChangeCallbackId);
   },
   methods: {
     closeActionSheet() {
@@ -7878,7 +7882,8 @@ const _sfc_main$3 = {
       inputConfirmColor: null,
       hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
       showAnim: false,
-      isAutoHeight: true
+      isAutoHeight: true,
+      appThemeChangeCallbackId: -1
     };
   },
   onReady() {
@@ -7943,9 +7948,11 @@ const _sfc_main$3 = {
     }
     var appTheme = systemInfo.appTheme;
     if (appTheme != null) {
-      this.theme = appTheme;
+      var _systemInfo$osTheme;
+      var osTheme = (_systemInfo$osTheme = systemInfo.osTheme) !== null && _systemInfo$osTheme !== void 0 ? _systemInfo$osTheme : "light";
+      this.theme = "auto" == appTheme ? osTheme : appTheme;
     }
-    uni.onAppThemeChange((res) => {
+    this.appThemeChangeCallbackId = uni.onAppThemeChange((res) => {
       this.theme = res.appTheme;
       this.updateUI();
     });
@@ -7990,6 +7997,7 @@ const _sfc_main$3 = {
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
+    uni.offAppThemeChange(this.appThemeChangeCallbackId);
   },
   onBackPress(_) {
     var ret = {

@@ -18,7 +18,21 @@
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -26,7 +40,7 @@
         }
      }
    */
-declare var NaN : number;
+declare var NaN: number;
 /**
      全局属性 Infinity 是一个数值，表示无穷大。
 
@@ -35,7 +49,7 @@ declare var NaN : number;
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -46,7 +60,21 @@ declare var NaN : number;
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -54,9 +82,9 @@ declare var NaN : number;
         }
      }
    */
-declare var Infinity : number;
+declare var Infinity: number;
 
-declare type RequestAnimationFrameCallback = (task : number) => void
+declare type RequestAnimationFrameCallback = (task: number) => void
 
 
 /**
@@ -79,15 +107,29 @@ declare type RequestAnimationFrameCallback = (task : number) => void
         "unixVer": "x",
         "uniUtsPlugin": "x",
         "unixUtsPlugin": "x"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "x",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "x"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function eval(x : string) : any;
+declare function eval(x: string): any;
 
 
 /**
@@ -112,15 +154,29 @@ declare function eval(x : string) : any;
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "4.61",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "4.61"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function parseInt(string : string, radix ?: number) : number;
+declare function parseInt(string: string, radix?: number): number;
 
 
 /**
@@ -144,15 +200,29 @@ declare function parseInt(string : string, radix ?: number) : number;
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "4.61",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "4.61"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function parseFloat(string : string) : number;
+declare function parseFloat(string: string): number;
 
 
 /**
@@ -176,15 +246,29 @@ declare function parseFloat(string : string) : number;
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "4.61",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "4.61"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function isNaN(number : number) : boolean;
+declare function isNaN(number: number): boolean;
 
 
 /**
@@ -208,15 +292,29 @@ declare function isNaN(number : number) : boolean;
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "4.61",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "4.61"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function isFinite(number : number) : boolean;
+declare function isFinite(number: number): boolean;
 
 
 /**
@@ -240,15 +338,29 @@ declare function isFinite(number : number) : boolean;
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "4.61",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "4.61"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function decodeURI(encodedURI : string) : string | null;
+declare function decodeURI(encodedURI: string): string | null;
 
 
 /**
@@ -272,15 +384,29 @@ declare function decodeURI(encodedURI : string) : string | null;
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "4.61",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "4.61"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function decodeURIComponent(encodedURIComponent : string) : string | null;
+declare function decodeURIComponent(encodedURIComponent: string): string | null;
 
 
 /**
@@ -304,15 +430,29 @@ declare function decodeURIComponent(encodedURIComponent : string) : string | nul
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "4.61",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "4.61"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function encodeURI(uri : string) : string | null;
+declare function encodeURI(uri: string): string | null;
 
 
 /**
@@ -336,15 +476,29 @@ declare function encodeURI(uri : string) : string | null;
         "uniUtsPlugin": "4.11",
         "unixVer": "4.11",
         "unixUtsPlugin": "4.11"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "4.61",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "4.61"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function encodeURIComponent(uriComponent : string) : string | null;
+declare function encodeURIComponent(uriComponent: string): string | null;
 
 
 /**
@@ -368,6 +522,13 @@ declare function encodeURIComponent(uriComponent : string) : string | null;
         "uniUtsPlugin": "4.61",
         "unixVer": "4.61",
         "unixUtsPlugin": "4.61"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "4.61",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "4.61"
       }
     },
     "web": {
@@ -376,7 +537,7 @@ declare function encodeURIComponent(uriComponent : string) : string | null;
     }
   }
  */
-declare function atob(encodedData : string) : string
+declare function atob(encodedData: string): string
 
 
 /**
@@ -400,6 +561,13 @@ declare function atob(encodedData : string) : string
         "uniUtsPlugin": "4.61",
         "unixVer": "4.61",
         "unixUtsPlugin": "4.61"
+      },
+      "harmony": {
+          "osVer": "5.0.0",
+          "uniVer": "√",
+          "unixVer": "4.61",
+          "uniUtsPlugin": "√",
+          "unixUtsPlugin": "4.61"
       }
     },
     "web": {
@@ -408,7 +576,7 @@ declare function atob(encodedData : string) : string
     }
   }
  */
-declare function btoa(stringToEncode : string) : string
+declare function btoa(stringToEncode: string): string
 
 
 /**
@@ -436,13 +604,20 @@ declare function btoa(stringToEncode : string) : string
         "unixVer": "4.61"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function requestAnimationFrame(callback : RequestAnimationFrameCallback) : number;
+declare function requestAnimationFrame(callback: RequestAnimationFrameCallback): number;
 
 
 /**
@@ -470,10 +645,17 @@ declare function requestAnimationFrame(callback : RequestAnimationFrameCallback)
         "unixVer": "4.61"
       }
     },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
     "web": {
       "uniVer": "√",
       "unixVer": "4.0"
     }
   }
  */
-declare function cancelAnimationFrame(taskId : number) : void;
+declare function cancelAnimationFrame(taskId: number): void;

@@ -18,9 +18,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -49,9 +51,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -81,9 +85,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -113,9 +119,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -145,9 +153,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -181,9 +191,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -215,9 +227,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -251,9 +265,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -285,9 +301,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -319,9 +337,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -353,9 +373,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -386,9 +408,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -421,9 +445,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -455,9 +481,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -489,9 +517,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -524,9 +554,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -560,9 +592,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -594,9 +628,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -628,9 +664,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -663,9 +701,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -697,9 +737,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -731,9 +773,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -766,9 +810,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -799,9 +845,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -832,9 +880,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "x"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -864,9 +914,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -899,9 +951,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -932,9 +986,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -965,9 +1021,11 @@ interface Uint8Array {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -1003,9 +1061,11 @@ interface Uint8ArrayConstructor {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -1036,9 +1096,11 @@ interface Uint8ArrayConstructor {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -1071,9 +1133,11 @@ interface Uint8ArrayConstructor {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -1103,9 +1167,11 @@ interface Uint8ArrayConstructor {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -1136,9 +1202,11 @@ interface Uint8ArrayConstructor {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -1170,9 +1238,11 @@ interface Uint8ArrayConstructor {
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {

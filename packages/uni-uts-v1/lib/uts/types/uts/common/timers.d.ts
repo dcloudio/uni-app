@@ -6,7 +6,7 @@
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
@@ -18,6 +18,13 @@
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "4.11"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -33,7 +40,7 @@ declare function setInterval(handler: string | Function, timeout?: number, ...ar
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
@@ -46,13 +53,20 @@ declare function setInterval(handler: string | Function, timeout?: number, ...ar
                "unixUtsPlugin": "4.11"
             }
         },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
         "web": {
             "uniVer": "√",
             "unixVer": "4.0"
         }
      }
    */
-declare function setTimeout(handler:  string | Function, timeout?: number, ...arguments: any[]): number;
+declare function setTimeout(handler: string | Function, timeout?: number, ...arguments: any[]): number;
 /**
      clearInterval() 方法可取消先前通过 setInterval() 设置的重复定时任务。
      @tutorial https://developer.mozilla.org/docs/Web/API/clearInterval
@@ -60,7 +74,7 @@ declare function setTimeout(handler:  string | Function, timeout?: number, ...ar
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
@@ -71,7 +85,21 @@ declare function setTimeout(handler:  string | Function, timeout?: number, ...ar
                "unixVer": "4.11",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -88,7 +116,7 @@ declare function clearInterval(id: number | undefined): void;
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
@@ -99,7 +127,21 @@ declare function clearInterval(id: number | undefined): void;
                "unixVer": "4.11",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
