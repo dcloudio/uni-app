@@ -354,10 +354,12 @@ function useAutoFocus(props: Props, fieldRef: Ref<HTMLFieldElement | null>) {
         setTimeout(focus, timeout)
         return
       }
+      // inputmode为none，focus为true时，不允许自动弹出键盘
+      const isInputModeEnabled = props.inputmode !== 'none'
       // @ts-expect-error plus类型
       if (plus.os.name === 'HarmonyOS') {
         // 无用户交互的 webview 需主动显示键盘（鸿蒙）
-        if (!userActionState.userAction) {
+        if (!userActionState.userAction && isInputModeEnabled) {
           // 鸿蒙需要先显示键盘再focus，否则键盘类型、confirmType等设置无效
           plus.key.showSoftKeybord()
           setTimeout(() => {
@@ -369,7 +371,7 @@ function useAutoFocus(props: Props, fieldRef: Ref<HTMLFieldElement | null>) {
       } else {
         field.focus()
         // 无用户交互的 webview 需主动显示键盘（安卓）
-        if (!userActionState.userAction && props.inputmode !== 'none') {
+        if (!userActionState.userAction && isInputModeEnabled) {
           plus.key.showSoftKeybord()
         }
       }
