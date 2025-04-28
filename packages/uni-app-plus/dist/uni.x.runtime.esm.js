@@ -2291,20 +2291,22 @@ function _redirectTo(_ref3) {
   } = _ref3;
   var lastPage = getCurrentPage().vm;
   return new Promise((resolve) => {
-    invokeAfterRouteHooks(API_REDIRECT_TO);
-    showWebview(registerPage({
-      url,
-      path,
-      query,
-      openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
-    }), "none", 0, () => {
-      if (lastPage) {
-        removePages(lastPage);
-      }
-      resolve(void 0);
-      setStatusBarStyle();
-    });
-    invokeBeforeRouteHooks(API_REDIRECT_TO);
+    setTimeout(() => {
+      invokeAfterRouteHooks(API_REDIRECT_TO);
+      showWebview(registerPage({
+        url,
+        path,
+        query,
+        openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
+      }), "none", 0, () => {
+        if (lastPage) {
+          removePages(lastPage);
+        }
+        resolve(void 0);
+        setStatusBarStyle();
+      });
+      invokeBeforeRouteHooks(API_REDIRECT_TO);
+    }, 0);
   });
 }
 function removePages(currentPage) {
@@ -2354,23 +2356,25 @@ function _reLaunch(_ref3) {
     query
   } = _ref3;
   return new Promise((resolve) => {
-    var pages2 = getAllPages().slice(0);
-    var selected = getTabIndex(path);
-    function callback() {
-      pages2.forEach((page) => closePage(page, "none"));
-      resolve(void 0);
-      setStatusBarStyle();
-    }
-    if (selected === -1) {
-      showWebview(registerPage({
-        url,
-        path,
-        query,
-        openType: "reLaunch"
-      }), "none", 0, callback);
-    } else {
-      switchSelect(selected, path, query, true, callback);
-    }
+    setTimeout(() => {
+      var pages2 = getAllPages().slice(0);
+      var selected = getTabIndex(path);
+      function callback() {
+        pages2.forEach((page) => closePage(page, "none"));
+        resolve(void 0);
+        setStatusBarStyle();
+      }
+      if (selected === -1) {
+        showWebview(registerPage({
+          url,
+          path,
+          query,
+          openType: "reLaunch"
+        }), "none", 0, callback);
+      } else {
+        switchSelect(selected, path, query, true, callback);
+      }
+    }, 0);
   });
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
@@ -2482,15 +2486,19 @@ function _switchTab(_ref2) {
     return Promise.reject("tab ".concat(path, " not found"));
   }
   var pages2 = getCurrentBasePages();
-  switchSelect(selected, path, query);
-  for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
-    var page = pages2[index2];
-    if (isTabPage(page)) {
-      break;
-    }
-    closePage(page, "none");
-  }
-  return Promise.resolve();
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      switchSelect(selected, path, query);
+      for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
+        var page = pages2[index2];
+        if (isTabPage(page)) {
+          break;
+        }
+        closePage(page, "none");
+      }
+      resolve(void 0);
+    }, 0);
+  });
 }
 var isLaunchWebviewReady = false;
 function subscribeWebviewReady(_data, pageId) {
@@ -2769,31 +2777,33 @@ function _navigateTo(_ref2) {
   invokeHook(ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
   return new Promise((resolve) => {
-    var noAnimation = aniType === "none" || aniDuration === 0;
-    function callback(page2) {
-      showWebview(page2, aniType, aniDuration, () => {
-        invokeAfterRouteHooks(currentRouteType);
-        resolve({
-          eventChannel
+    setTimeout(() => {
+      var noAnimation = aniType === "none" || aniDuration === 0;
+      function callback(page2) {
+        showWebview(page2, aniType, aniDuration, () => {
+          invokeAfterRouteHooks(currentRouteType);
+          resolve({
+            eventChannel
+          });
+          setStatusBarStyle();
         });
-        setStatusBarStyle();
-      });
-    }
-    var page = registerPage(
-      {
-        url,
-        path,
-        query,
-        openType: "navigateTo",
-        eventChannel
-      },
-      noAnimation ? void 0 : callback,
-      // 有动画时延迟创建 vm
-      noAnimation ? 0 : 1
-    );
-    if (noAnimation) {
-      callback(page);
-    }
+      }
+      var page = registerPage(
+        {
+          url,
+          path,
+          query,
+          openType: "navigateTo",
+          eventChannel
+        },
+        noAnimation ? void 0 : callback,
+        // 有动画时延迟创建 vm
+        noAnimation ? 0 : 1
+      );
+      if (noAnimation) {
+        callback(page);
+      }
+    }, 0);
   });
 }
 function initAnimation$1(path, animationType, animationDuration) {
