@@ -105,7 +105,7 @@ export async function runSwiftProd(
     if (isModule) {
       // noop
     } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
-      updateManifestModules(inputDir, result.inject_apis, extApis)
+      updateManifestModules('app-ios', inputDir, result.inject_apis, extApis)
     } else {
       addPluginInjectApis(result.inject_apis)
     }

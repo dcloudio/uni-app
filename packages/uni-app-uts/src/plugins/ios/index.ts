@@ -43,7 +43,7 @@ export function init() {
       ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
       : [
           uniAppJsEngineMainPlugin(),
-          uniAppManifestPlugin(),
+          uniAppManifestPlugin('app-ios'),
           uniAppPagesPlugin(),
         ]),
     uniUTSUVueJavaScriptPlugin(),

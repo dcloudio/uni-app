@@ -1193,6 +1193,7 @@ export function isEnableInlineReified() {
 }
 
 export function updateManifestModules(
+  platform: 'app-android' | 'app-ios',
   inputDir: string,
   inject_apis: string[],
   localExtApis: Record<string, [string, string]> = {}
@@ -1202,16 +1203,16 @@ export function updateManifestModules(
     const content = fs.readFileSync(filename, 'utf8')
     try {
       const json = JSON.parse(content)
-      if (!json.app) {
-        json.app = {}
+      if (!json[platform]) {
+        json[platform] = {}
       }
-      if (!json.app.distribute) {
-        json.app.distribute = {}
+      if (!json[platform].distribute) {
+        json[platform].distribute = {}
       }
-      if (!json.app.distribute.modules) {
-        json.app.distribute.modules = {}
+      if (!json[platform].distribute.modules) {
+        json[platform].distribute.modules = {}
       }
-      const modules = json.app.distribute.modules
+      const modules = json[platform].distribute.modules
       let updated = false
       parseInjectModules(inject_apis, localExtApis, []).forEach((name) => {
         if (!hasOwn(modules, name)) {

@@ -378,7 +378,7 @@ export function uniAppPlugin(): UniVitePlugin {
           const manifest = getOutputManifestJson()!
           if (manifest) {
             // 执行了摇树逻辑，就需要设置 modules 节点
-            updateManifestModules(manifest, modules)
+            updateManifestModules('app-android', manifest, modules)
             fs.outputFileSync(
               path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
               JSON.stringify(manifest, null, 2)
