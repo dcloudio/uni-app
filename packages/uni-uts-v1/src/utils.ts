@@ -1205,6 +1205,11 @@ export function updateManifestModules(
       const json = JSON.parse(content)
       if (!json[platform]) {
         json[platform] = {}
+        if (json.app?.distribute?.modules) {
+          json[platform].distribute = {
+            modules: JSON.parse(JSON.stringify(json.app.distribute.modules)),
+          }
+        }
       }
       if (!json[platform].distribute) {
         json[platform].distribute = {}

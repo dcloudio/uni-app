@@ -200,13 +200,17 @@ export function normalizeManifestJson(
       code: userManifestJson.versionCode || '',
     },
     'uni-app-x': x,
-    [platform]: undefined as any,
     'app-harmony': undefined as any,
   }
   if (isXHarmony) {
     manifest['app-harmony'] = userManifestJson['app-harmony'] || {}
   } else {
-    manifest[platform] = userManifestJson[platform] || {}
+    if (userManifestJson[platform]) {
+      manifest[platform] = userManifestJson[platform]
+    } else if (userManifestJson.app) {
+      // @ts-expect-error 旧版本
+      manifest.app = userManifestJson.app
+    }
   }
   return manifest
 }
@@ -241,7 +245,15 @@ export function updateManifestModules(
   modules: string[]
 ) {
   // 执行了摇树逻辑，就需要设置 modules 节点
-  const app = manifest[platform]
+  if (!manifest[platform]) {
+    manifest[platform] = {}
+    if (manifest.app?.distribute?.modules) {
+      manifest[platform].distribute = {
+        modules: JSON.parse(JSON.stringify(manifest.app.distribute.modules)),
+      }
+    }
+  }
+  const app = manifest[platform] || manifest.app
   if (!app.distribute) {
     app.distribute = {}
   }
