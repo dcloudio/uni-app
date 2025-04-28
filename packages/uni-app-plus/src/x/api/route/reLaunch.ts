@@ -44,23 +44,25 @@ export const $reLaunch: DefineAsyncApiFn<API_TYPE_RE_LAUNCH> = (
 
 function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
   return new Promise((resolve) => {
-    const pages = getAllPages().slice(0)
-    let selected: number = getTabIndex(path)
-    function callback() {
-      pages.forEach((page) => closePage(page, 'none'))
-      resolve(undefined)
-      setStatusBarStyle()
-    }
-    if (selected === -1) {
-      showWebview(
-        registerPage({ url, path, query, openType: 'reLaunch' }),
-        'none',
-        0,
-        callback
-      )
-    } else {
-      switchSelect(selected, path, query, true, callback)
-    }
+    setTimeout(() => {
+      const pages = getAllPages().slice(0)
+      let selected: number = getTabIndex(path)
+      function callback() {
+        pages.forEach((page) => closePage(page, 'none'))
+        resolve(undefined)
+        setStatusBarStyle()
+      }
+      if (selected === -1) {
+        showWebview(
+          registerPage({ url, path, query, openType: 'reLaunch' }),
+          'none',
+          0,
+          callback
+        )
+      } else {
+        switchSelect(selected, path, query, true, callback)
+      }
+    }, 0)
   })
 }
 

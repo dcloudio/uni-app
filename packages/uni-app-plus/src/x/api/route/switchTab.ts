@@ -66,13 +66,17 @@ function _switchTab({ url, path, query }: SwitchTabOptions) {
     return Promise.reject(`tab ${path} not found`)
   }
   const pages = getCurrentBasePages()
-  switchSelect(selected, path, query)
-  for (let index = pages.length - 1; index >= 0; index--) {
-    const page = pages[index] as ComponentPublicInstance
-    if (isTabPage(page)) {
-      break
-    }
-    closePage(page, 'none')
-  }
-  return Promise.resolve()
+  return new Promise((resolve: (res: void) => void) => {
+    setTimeout(() => {
+      switchSelect(selected, path, query)
+      for (let index = pages.length - 1; index >= 0; index--) {
+        const page = pages[index] as ComponentPublicInstance
+        if (isTabPage(page)) {
+          break
+        }
+        closePage(page, 'none')
+      }
+      resolve(undefined)
+    }, 0)
+  })
 }
