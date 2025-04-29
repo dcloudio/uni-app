@@ -1080,6 +1080,18 @@
       }
     }
   },
+  "uni-share-weixin": {
+    "provider": {
+      "service": "share",
+      "name": "weixin",
+      "app": {
+        "js": false,
+        "kotlin": false,
+        "swift": false,
+        "arkts": true
+      }
+    }
+  },
   "uni-shareWithSystem": {
     "uni": {
       "shareWithSystem": {
