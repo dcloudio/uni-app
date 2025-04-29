@@ -19,8 +19,8 @@ function checkDeviceWidth() {
   let windowWidth: number, pixelRatio: number, platform: string
 
   if (__PLATFORM__ === 'mp-weixin') {
-    const windowInfo = wx.getWindowInfo?.() ?? wx.getSystemInfoSync()
-    const deviceInfo = wx.getDeviceInfo?.() ?? wx.getSystemInfoSync()
+    const windowInfo = wx.getWindowInfo?.() || wx.getSystemInfoSync()
+    const deviceInfo = wx.getDeviceInfo?.() || wx.getSystemInfoSync()
 
     windowWidth = windowInfo.windowWidth
     pixelRatio = windowInfo.pixelRatio
