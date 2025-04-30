@@ -3171,7 +3171,13 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-  const { windowWidth, pixelRatio: pixelRatio2, platform } = getBaseSystemInfo();
+  let windowWidth, pixelRatio2, platform;
+  {
+    const { windowWidth: w, pixelRatio: p2, platform: pf } = getBaseSystemInfo();
+    windowWidth = w;
+    pixelRatio2 = p2;
+    platform = pf;
+  }
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio2;
   isIOS$1 = platform === "ios";
@@ -16428,6 +16434,7 @@ function setupPage(comp) {
       getPage$BasePage(instance2.proxy).options = query;
       instance2.proxy.options = query;
       const pageMeta = usePageMeta();
+      updateCurPageCssVar(pageMeta);
       instance2.onReachBottom = reactive([]);
       instance2.onPageScroll = reactive([]);
       watch(

@@ -11763,11 +11763,17 @@
   var baseWidth = 375;
   var includeWidth = 750;
   function checkDeviceWidth() {
-    var {
-      windowWidth,
-      pixelRatio: pixelRatio2,
-      platform
-    } = getBaseSystemInfo();
+    var windowWidth, pixelRatio2, platform;
+    {
+      var {
+        windowWidth: w,
+        pixelRatio: p2,
+        platform: pf
+      } = getBaseSystemInfo();
+      windowWidth = w;
+      pixelRatio2 = p2;
+      platform = pf;
+    }
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio2;
     isIOS = platform === "ios";

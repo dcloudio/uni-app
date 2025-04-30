@@ -6250,7 +6250,6 @@ const _sfc_main$5 = {
       isLandscape: false,
       bottomNavigationHeight: 0,
       appTheme: null,
-      osTheme: null,
       hostTheme: null,
       appThemeChangeCallbackId: -1,
       osThemeChangeCallbackId: -1
@@ -6291,14 +6290,14 @@ const _sfc_main$5 = {
     } else if (osLanguage != null) {
       this.language = osLanguage;
     }
-    var osTheme = systemInfo.osTheme;
     var appTheme = systemInfo.appTheme;
     if (appTheme != null && appTheme != "auto") {
       this.appTheme = appTheme;
       this.handleThemeChange();
     }
-    if (osTheme != null) {
-      this.osTheme = osTheme;
+    var osTheme = systemInfo.osTheme;
+    if (osTheme != null && this.appTheme == null) {
+      this.appTheme = osTheme;
       this.handleThemeChange();
     }
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
@@ -6308,10 +6307,6 @@ const _sfc_main$5 = {
         this.appTheme = appTheme2;
         this.handleThemeChange();
       }
-    });
-    this.osThemeChangeCallbackId = uni.onOsThemeChange((res) => {
-      this.osTheme = res.osTheme;
-      this.handleThemeChange();
     });
   },
   computed: {
@@ -6381,8 +6376,6 @@ const _sfc_main$5 = {
         this.theme = this.hostTheme;
       } else if (this.appTheme != null) {
         this.theme = this.appTheme;
-      } else if (this.osTheme != null) {
-        this.theme = this.osTheme;
       }
     }
   }

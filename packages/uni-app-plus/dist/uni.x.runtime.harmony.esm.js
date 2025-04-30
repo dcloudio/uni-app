@@ -6250,7 +6250,6 @@ const _sfc_main$6 = {
       isLandscape: false,
       bottomNavigationHeight: 0,
       appTheme: null,
-      osTheme: null,
       hostTheme: null
     };
   },
@@ -6289,14 +6288,14 @@ const _sfc_main$6 = {
     } else if (osLanguage != null) {
       this.language = osLanguage;
     }
-    var osTheme = systemInfo.osTheme;
     var appTheme = systemInfo.appTheme;
     if (appTheme != null && appTheme != "auto") {
       this.appTheme = appTheme;
       this.handleThemeChange();
     }
-    if (osTheme != null) {
-      this.osTheme = osTheme;
+    var osTheme = systemInfo.osTheme;
+    if (osTheme != null && this.appTheme == null) {
+      this.appTheme = osTheme;
       this.handleThemeChange();
     }
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
@@ -6366,8 +6365,6 @@ const _sfc_main$6 = {
         this.theme = this.hostTheme;
       } else if (this.appTheme != null) {
         this.theme = this.appTheme;
-      } else if (this.osTheme != null) {
-        this.theme = this.osTheme;
       }
     }
   }

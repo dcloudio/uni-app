@@ -4185,7 +4185,13 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-  const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
+  let windowWidth, pixelRatio, platform;
+  {
+    const { windowWidth: w, pixelRatio: p2, platform: pf } = getBaseSystemInfo();
+    windowWidth = w;
+    pixelRatio = p2;
+    platform = pf;
+  }
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
   isIOS$1 = platform === "ios";
@@ -9445,6 +9451,7 @@ function setupPage(comp) {
       getPage$BasePage(instance2.proxy).options = query;
       instance2.proxy.options = query;
       const pageMeta = usePageMeta();
+      updateCurPageCssVar(pageMeta);
       instance2.onReachBottom = reactive([]);
       instance2.onPageScroll = reactive([]);
       watch(
@@ -27623,7 +27630,6 @@ const _sfc_main$2 = {
       popover: {},
       bottomNavigationHeight: 0,
       appTheme: null,
-      osTheme: null,
       hostTheme: null
     };
   },
@@ -27665,14 +27671,14 @@ const _sfc_main$2 = {
     } else if (osLanguage != null) {
       this.language = osLanguage;
     }
-    const osTheme = systemInfo.osTheme;
     const appTheme = systemInfo.appTheme;
     if (appTheme != null && appTheme != "auto") {
       this.appTheme = appTheme;
       this.handleThemeChange();
     }
-    if (osTheme != null) {
-      this.osTheme = osTheme;
+    const osTheme = systemInfo.osTheme;
+    if (osTheme != null && this.appTheme == null) {
+      this.appTheme = osTheme;
       this.handleThemeChange();
     }
     const hostTheme = systemInfo.hostTheme;
@@ -27824,8 +27830,6 @@ const _sfc_main$2 = {
         this.theme = this.hostTheme;
       } else if (this.appTheme != null) {
         this.theme = this.appTheme;
-      } else if (this.osTheme != null) {
-        this.theme = this.osTheme;
       }
     }
   }

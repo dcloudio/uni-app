@@ -9252,7 +9252,13 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-    const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
+    let windowWidth, pixelRatio, platform;
+    {
+        const { windowWidth: w, pixelRatio: p, platform: pf } = getBaseSystemInfo();
+        windowWidth = w;
+        pixelRatio = p;
+        platform = pf;
+    }
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';

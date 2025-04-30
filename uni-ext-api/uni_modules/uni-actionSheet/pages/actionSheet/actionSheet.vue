@@ -95,7 +95,6 @@
         // #endif
         bottomNavigationHeight: 0,
         appTheme: null as string | null,
-        osTheme: null as string | null,
         hostTheme: null as string | null,
         // #ifdef APP-ANDROID || APP-IOS
         appThemeChangeCallbackId: -1,
@@ -144,14 +143,14 @@
       } else if (osLanguage != null) {
         this.language = osLanguage
       }
-      const osTheme = systemInfo.osTheme
       const appTheme = systemInfo.appTheme
       if (appTheme != null && appTheme != "auto") {
         this.appTheme = appTheme
         this.handleThemeChange()
       }
-      if (osTheme != null) {
-        this.osTheme = osTheme
+      const osTheme = systemInfo.osTheme
+      if (osTheme != null && this.appTheme == null) {
+        this.appTheme = osTheme
         this.handleThemeChange()
       }
       // #ifdef WEB
@@ -184,10 +183,6 @@
           this.appTheme = appTheme
           this.handleThemeChange()
         }
-      })
-      this.osThemeChangeCallbackId = uni.onOsThemeChange((res: OsThemeChangeResult) => {
-        this.osTheme = res.osTheme
-        this.handleThemeChange()
       })
       // #endif
     },
@@ -344,8 +339,6 @@
           this.theme = this.hostTheme!
         } else if(this.appTheme != null){
           this.theme = this.appTheme!
-        } else if(this.osTheme != null){
-          this.theme = this.osTheme!
         }
       }
     }
