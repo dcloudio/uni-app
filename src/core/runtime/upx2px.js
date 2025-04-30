@@ -4,26 +4,16 @@ let isIOS = false
 let deviceWidth = 0
 let deviceDPR = 0
 
-function checkDeviceWidth() {
-  let windowWidth, pixelRatio, platform;
+function checkDeviceWidth () {
+  const { windowWidth, pixelRatio, platform } = __PLATFORM__ === 'mp-weixin'
+    ? Object.assign({}, __GLOBAL__.getWindowInfo(), {
+      platform: __GLOBAL__.getDeviceInfo().platform
+    })
+    : __GLOBAL__.getSystemInfoSync() // uni=>__GLOBAL__ runtime 编译目标是 uni 对象，内部不允许直接使用 uni
 
-  if (__PLATFORM__ === 'mp-weixin') {
-    const windowInfo = typeof wx.getWindowInfo === 'function' ? wx.getWindowInfo() : wx.getSystemInfoSync();
-    const deviceInfo = typeof wx.getDeviceInfo === 'function' ? wx.getDeviceInfo() : wx.getSystemInfoSync();
-
-    windowWidth = windowInfo.windowWidth;
-    pixelRatio = windowInfo.pixelRatio;
-    platform = deviceInfo.platform;
-  } else {
-    const baseInfo = getBaseSystemInfo();
-    windowWidth = baseInfo.windowWidth;
-    pixelRatio = baseInfo.pixelRatio;
-    platform = baseInfo.platform;
-  }
-
-  deviceWidth = windowWidth;
-  deviceDPR = pixelRatio;
-  isIOS = platform === 'ios';
+  deviceWidth = windowWidth
+  deviceDPR = pixelRatio
+  isIOS = platform === 'ios'
 }
 
 export function upx2px (number, newDeviceWidth) {
