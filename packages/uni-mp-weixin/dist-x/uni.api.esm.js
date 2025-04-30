@@ -4,9 +4,10 @@ import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook }
 import { findUniElement, injectHook } from 'vue';
 
 function getLocaleLanguage() {
+    var _a;
     let localeLanguage = '';
     {
-        const appBaseInfo = wx.getAppBaseInfo();
+        const appBaseInfo = ((_a = wx.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
         const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
         localeLanguage = normalizeLocale(language) || LOCALE_EN;
     }
@@ -545,10 +546,15 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { windowWidth, pixelRatio, platform } = Object.assign({}, wx.getWindowInfo(), {
-            platform: wx.getDeviceInfo().platform,
-        })
-        ;
+    var _a, _b;
+    let windowWidth, pixelRatio, platform;
+    {
+        const windowInfo = ((_a = wx.getWindowInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
+        const deviceInfo = ((_b = wx.getDeviceInfo) === null || _b === void 0 ? void 0 : _b.call(wx)) || wx.getSystemInfoSync();
+        windowWidth = windowInfo.windowWidth;
+        pixelRatio = windowInfo.pixelRatio;
+        platform = deviceInfo.platform;
+    }
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';

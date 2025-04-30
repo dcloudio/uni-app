@@ -95,9 +95,10 @@ function findVmByVueId(instance, vuePid) {
     }
 }
 function getLocaleLanguage() {
+    var _a;
     let localeLanguage = '';
     {
-        const appBaseInfo = wx.getAppBaseInfo();
+        const appBaseInfo = ((_a = wx.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
         const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
         localeLanguage = normalizeLocale(language) || LOCALE_EN;
     }
