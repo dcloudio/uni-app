@@ -304,15 +304,18 @@ export function initXPage(
 ) {
   initPageVm(vm, page)
   // 获取 packages/uni-h5/src/framework/components/page/index.ts defineSystemComponent page currentInstance
-  Object.defineProperty(vm, '$pageLayoutInstance', {
-    get() {
-      let res = vm.$?.parent
-      while (res && res.type?.name !== 'Page') {
-        res = res.parent
-      }
-      return res
-    },
-  })
+  if (!('$pageLayoutInstance' in vm)) {
+    Object.defineProperty(vm, '$pageLayoutInstance', {
+      get() {
+        // @ts-expect-error !('$pageLayoutInstance' in vm)导致vm推断为never，不可使用vm.hasOwnProperty
+        let res = vm.$?.parent
+        while (res && res.type?.name !== 'Page') {
+          res = res.parent
+        }
+        return res
+      },
+    })
+  }
   vm.$basePage = vm.$page as Page.PageInstance['$page']
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
