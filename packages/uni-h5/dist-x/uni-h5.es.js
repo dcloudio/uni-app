@@ -8349,16 +8349,18 @@ class UniDialogPageImpl extends UniPageImpl {
 function initXPage(vm, route, page) {
   var _a, _b;
   initPageVm(vm, page);
-  Object.defineProperty(vm, "$pageLayoutInstance", {
-    get() {
-      var _a2, _b2;
-      let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
-      while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
-        res = res.parent;
+  if (!("$pageLayoutInstance" in vm)) {
+    Object.defineProperty(vm, "$pageLayoutInstance", {
+      get() {
+        var _a2, _b2;
+        let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
+        while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
+          res = res.parent;
+        }
+        return res;
       }
-      return res;
-    }
-  });
+    });
+  }
   vm.$basePage = vm.$page;
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
@@ -27633,7 +27635,9 @@ const _sfc_main$2 = {
       popover: {},
       bottomNavigationHeight: 0,
       appTheme: null,
-      hostTheme: null
+      hostTheme: null,
+      menuItemClicked: false,
+      cancelButtonClicked: false
     };
   },
   onLoad(options) {
@@ -27796,6 +27800,9 @@ const _sfc_main$2 = {
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
   },
   onUnload() {
+    if (!this.menuItemClicked && !this.cancelButtonClicked) {
+      uni.$emit(this.failEventName, {});
+    }
     uni.$off(this.optionsEventName, null);
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
@@ -27821,10 +27828,12 @@ const _sfc_main$2 = {
       }, 250);
     },
     handleMenuItemClick(tapIndex) {
+      this.menuItemClicked = true;
       this.closeActionSheet();
       uni.$emit(this.successEventName, tapIndex);
     },
     handleCancel() {
+      this.cancelButtonClicked = true;
       this.closeActionSheet();
       uni.$emit(this.failEventName, {});
     },

@@ -3107,16 +3107,18 @@ class UniNormalPageImpl extends UniPageImpl {
 function initXPage(vm, route, page) {
   var _a, _b;
   initPageVm(vm, page);
-  Object.defineProperty(vm, "$pageLayoutInstance", {
-    get() {
-      var _a2, _b2;
-      let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
-      while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
-        res = res.parent;
+  if (!("$pageLayoutInstance" in vm)) {
+    Object.defineProperty(vm, "$pageLayoutInstance", {
+      get() {
+        var _a2, _b2;
+        let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
+        while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
+          res = res.parent;
+        }
+        return res;
       }
-      return res;
-    }
-  });
+    });
+  }
   vm.$basePage = vm.$page;
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {

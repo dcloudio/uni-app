@@ -100,6 +100,8 @@
         appThemeChangeCallbackId: -1,
         osThemeChangeCallbackId: -1,
         // #endif
+        menuItemClicked: false,
+        cancelButtonClicked: false,
       }
     },
     onLoad(options) {
@@ -287,6 +289,10 @@
       this.isLandscape = systemInfo.deviceOrientation == 'landscape'
     },
     onUnload() {
+      if (!this.menuItemClicked && !this.cancelButtonClicked) {
+        // 非用户交互导致关闭 actionSheet, 触发 fail 回调
+        uni.$emit(this.failEventName, {})
+      }
       uni.$off(this.optionsEventName, null)
       uni.$off(this.readyEventName, null)
       uni.$off(this.successEventName, null)
@@ -327,10 +333,12 @@
         }, 250)
       },
       handleMenuItemClick(tapIndex: number) {
+        this.menuItemClicked = true
         this.closeActionSheet()
         uni.$emit(this.successEventName, tapIndex)
       },
       handleCancel() {
+        this.cancelButtonClicked = true
         this.closeActionSheet()
         uni.$emit(this.failEventName, {})
       },

@@ -475,6 +475,30 @@ interface UTSAndroid {
    */
   getJavaClass(input : any) : Class;
 
+  /**
+     获取对象的 KClass 实例
+     @param input 任意不为空对象，如果传入一个Class类型，则返回该Class对应的 KClasss实例
+     @return 传入对象所对应的KClass实例
+     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getKotlinClass
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "4.4",
+               "uniVer": "x",
+               "unixVer": "4.65",
+               "uniUtsPlugin": "4.65",
+               "unixUtsPlugin": "4.65"
+            },
+            "ios": {
+               "osVer": "x",
+               "uniVer": "x",
+               "unixVer": "x"
+            }
+        }
+     }
+   */
+  getKotlinClass(input : any) : KClass;
+
 
   /**
      获取app 临时目录。
