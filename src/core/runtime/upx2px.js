@@ -8,8 +8,8 @@ function checkDeviceWidth() {
   let windowWidth, pixelRatio, platform;
 
   if (__PLATFORM__ === 'mp-weixin') {
-    const windowInfo = typeof wx.getWindowInfo === 'function' && wx.getWindowInfo() ? wx.getWindowInfo() : wx.getSystemInfoSync();
-    const deviceInfo = typeof wx.getDeviceInfo === 'function' && wx.getDeviceInfo() ? wx.getDeviceInfo() : wx.getSystemInfoSync();
+    const windowInfo = typeof wx.getWindowInfo === 'function' ? wx.getWindowInfo() : wx.getSystemInfoSync();
+    const deviceInfo = typeof wx.getDeviceInfo === 'function' ? wx.getDeviceInfo() : wx.getSystemInfoSync();
 
     windowWidth = windowInfo.windowWidth;
     pixelRatio = windowInfo.pixelRatio;
@@ -26,7 +26,7 @@ function checkDeviceWidth() {
   isIOS = platform === 'ios';
 }
 
-export function upx2px(number, newDeviceWidth) {
+export function upx2px (number, newDeviceWidth) {
   if (deviceWidth === 0) {
     checkDeviceWidth()
   }
