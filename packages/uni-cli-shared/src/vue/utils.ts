@@ -102,7 +102,10 @@ export function createDirectiveNode(
   }
 }
 
-export function createOnDirectiveNode(name: string, value: string) {
+export function createOnDirectiveNode(
+  name: string,
+  value: string | ExpressionNode
+) {
   return createDirectiveNode('on', name, value)
 }
 
