@@ -413,18 +413,24 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 
-function checkDeviceWidth () {
-  const { windowWidth, pixelRatio, platform } =  Object.assign({}, wx.getWindowInfo(), {
-      platform: wx.getDeviceInfo().platform
-    })
-    ; // uni=>wx runtime 编译目标是 uni 对象，内部不允许直接使用 uni
+function checkDeviceWidth() {
+  let windowWidth, pixelRatio, platform;
+
+  {
+    const windowInfo = typeof wx.getWindowInfo === 'function' && wx.getWindowInfo() ? wx.getWindowInfo() : wx.getSystemInfoSync();
+    const deviceInfo = typeof wx.getDeviceInfo === 'function' && wx.getDeviceInfo() ? wx.getDeviceInfo() : wx.getSystemInfoSync();
+
+    windowWidth = windowInfo.windowWidth;
+    pixelRatio = windowInfo.pixelRatio;
+    platform = deviceInfo.platform;
+  }
 
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
   isIOS = platform === 'ios';
 }
 
-function upx2px (number, newDeviceWidth) {
+function upx2px(number, newDeviceWidth) {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
@@ -459,7 +465,7 @@ const messages = {};
 function getLocaleLanguage () {
   let localeLanguage = '';
   {
-    const appBaseInfo = wx.getAppBaseInfo();
+    const appBaseInfo = typeof wx.getAppBaseInfo === 'function' && wx.getAppBaseInfo() ? wx.getAppBaseInfo() : wx.getSystemInfoSync();
     const language =
       appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
     localeLanguage = normalizeLocale(language) || LOCALE_EN;
