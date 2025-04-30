@@ -2712,6 +2712,9 @@ class UniElement extends HTMLElement {
     }
     return (parent == null ? void 0 : parent._page) || null;
   }
+  get uniPage() {
+    return this.getPage();
+  }
   getBoundingClientRectAsync(callback) {
     var _a, _b;
     if (callback) {
