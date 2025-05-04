@@ -34,6 +34,20 @@ if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus') {
   })
 }
 
+export function getLocaleLanguage () {
+  let localeLanguage = ''
+  if (__PLATFORM__ === 'mp-weixin') {
+    const appBaseInfo = __GLOBAL__.getAppBaseInfo()
+    const language =
+      appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN
+    localeLanguage = normalizeLocale(language) || LOCALE_EN
+  } else {
+    localeLanguage =
+      normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+  }
+  return localeLanguage
+}
+
 let locale
 
 if (__PLATFORM__ === 'h5') {
@@ -45,7 +59,7 @@ if (__PLATFORM__ === 'h5') {
     locale = ''
   }
 } else {
-  locale = normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+  locale = getLocaleLanguage()
 }
 
 function initI18nMessages () {

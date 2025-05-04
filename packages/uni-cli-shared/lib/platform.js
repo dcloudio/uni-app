@@ -38,6 +38,7 @@ const cdns = {
   'mp-jd': 11,
   'mp-xhs': 12,
   'quickapp-webview-huawei': 200,
+  'mp-harmony': 200,
   'quickapp-webview-union': 201
 }
 
@@ -73,6 +74,15 @@ function createShadowImageUrl (cdn, type = 'grey') {
     identStr = ident ? `${ident}/` : ''
   }
   return `https://cdn${cdn || ''}.dcloud.net.cn/${identStr}img/shadow-${type}.png`
+}
+
+function isEnableConsole () {
+  return !!(
+    process.env.NODE_ENV === 'development' &&
+    process.env.UNI_SOCKET_HOSTS &&
+    process.env.UNI_SOCKET_PORT &&
+    process.env.UNI_SOCKET_ID
+  )
 }
 
 // 解决 vue-cli-service lint 时 UNI_PLATFORM 不存在
@@ -239,5 +249,12 @@ module.exports = {
         'classProperties'
       ]
     }
+  },
+  isEnableConsole,
+  getDevUniConsoleCode () {
+    if (isEnableConsole()) {
+      return 'import \'@dcloudio/uni-console\';\n'
+    }
+    return ''
   }
 }

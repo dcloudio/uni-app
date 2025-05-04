@@ -10,6 +10,7 @@ const DEFAULT_KEYS = [
   'APP-ANDROID',
   'APP-IOS',
   'APP-HARMONY',
+  'MP-HARMONY',
   'WEB'
 ]
 
@@ -52,14 +53,14 @@ module.exports = function initPreprocess (name, platforms, userDefines = {}) {
     nvueContext.APP_NVUE = true
     nvueContext.APP_PLUS_NVUE = true
 
-    if (process.env.UNI_APP_PLATFORM === 'android') {
-      defaultContext.APP_ANDROID = true
-    } else if (process.env.UNI_APP_PLATFORM === 'ios') {
-      defaultContext.APP_IOS = true
-    } else {
-      defaultContext.APP_ANDROID = true
-      defaultContext.APP_IOS = true
-    }
+    // if (process.env.UNI_APP_PLATFORM === 'android') {
+    // defaultContext.APP_ANDROID = true
+    // } else if (process.env.UNI_APP_PLATFORM === 'ios') {
+    // defaultContext.APP_IOS = true
+    // } else {
+    // defaultContext.APP_ANDROID = true
+    // defaultContext.APP_IOS = true
+    // }
   }
   if (name === 'h5') {
     defaultContext.WEB = true

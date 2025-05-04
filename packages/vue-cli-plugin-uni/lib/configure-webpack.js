@@ -301,7 +301,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       const useSourceMap = process.env.UNI_PLATFORM.indexOf('mp-') === 0 &&
         process.env.UNI_PLATFORM !== 'mp-baidu' &&
         process.env.UNI_PLATFORM !== 'mp-alipay' &&
-        process.env.UNI_PLATFORM !== 'quickapp-webview' // 目前 ov 的开发工具支持 eval 模式
+        process.env.UNI_PLATFORM !== 'quickapp-webview' &&
+        process.env.UNI_PLATFORM !== 'mp-harmony' // 目前 ov 的开发工具支持 eval 模式
 
       if (process.env.NODE_ENV === 'production') {
         const sourceMapOptions = {
@@ -361,7 +362,8 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
           type: 'stat'
         }),
       vuex: require.resolve('@dcloudio/vue-cli-plugin-uni/packages/vuex3'),
-      '@vue/composition-api': require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/composition-api')
+      '@vue/composition-api': require.resolve('@dcloudio/vue-cli-plugin-uni/packages/@vue/composition-api'),
+      '@dcloudio/uni-console': require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-console/dist/index.esm.js')
     }
 
     if (process.env.UNI_PLATFORM.startsWith('mp')) {

@@ -215,10 +215,24 @@ export default function parseBaseApp (vm, {
     })
   }
 
-  initAppLocale(Vue, vm, normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN)
+  initAppLocale(Vue, vm, getLocaleLanguage())
 
   initHooks(appOptions, hooks)
   initUnknownHooks(appOptions, vm.$options)
 
   return appOptions
+}
+
+function getLocaleLanguage () {
+  let localeLanguage = ''
+  if (__PLATFORM__ === 'mp-weixin') {
+    const appBaseInfo = __GLOBAL__.getAppBaseInfo()
+    const language =
+      appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN
+    localeLanguage = normalizeLocale(language) || LOCALE_EN
+  } else {
+    localeLanguage =
+      normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+  }
+  return localeLanguage
 }

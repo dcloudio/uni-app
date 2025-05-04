@@ -47,3 +47,4 @@ packages/uni-cli-shared/components/unicloud-db.vue
 packages/uni-cli-shared/components/uniad.vue
 packages/uni-cli-shared/lib/uts/uni_modules.js
 packages/uni-cli-shared/lib/uts/uts.js
+packages/vue-cli-plugin-uni/packages/uni-console/**/*

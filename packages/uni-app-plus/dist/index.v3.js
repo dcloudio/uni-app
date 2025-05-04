@@ -414,6 +414,7 @@ var serviceContext = (function () {
   const _toString = Object.prototype.toString;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
 
+  const isArray = Array.isArray;
   const extend = Object.assign;
 
   function isFn (fn) {
@@ -699,7 +700,7 @@ var serviceContext = (function () {
     const modeStyle = themeConfig[mode];
     const styles = {};
 
-    if (typeof modeStyle === 'undefined') return pageStyle
+    if (typeof modeStyle === 'undefined' || !pageStyle) return pageStyle
 
     Object.keys(pageStyle).forEach(key => {
       const styleItem = pageStyle[key]; // Object Array String
@@ -707,9 +708,9 @@ var serviceContext = (function () {
       const parseStyleItem = () => {
         if (isPlainObject(styleItem)) { return normalizeStyles(styleItem, themeConfig, mode) }
 
-        if (Array.isArray(styleItem)) {
+        if (isArray(styleItem)) {
           return styleItem.map(item => {
-            if (typeof item === 'object') { return normalizeStyles(item, themeConfig, mode) }
+            if (isPlainObject(item)) { return normalizeStyles(item, themeConfig, mode) }
             return resolveStringStyleItem(modeStyle, item)
           })
         }
@@ -953,7 +954,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
+    /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -2333,9 +2334,14 @@ var serviceContext = (function () {
     },
     extension: {
       type: Array,
-      default: [''],
       validator (extension, params) {
-        if (extension.length === 0) { return 'param extension should not be empty.' }
+        if (!extension) {
+          if (params.type === 'all' || params.type === '*' || !params.type) {
+            params.extension = [''];
+          } else {
+            params.extension = ['*'];
+          }
+        } else if (extension.length === 0) { return 'param extension should not be empty.' }
       }
     }
   };
@@ -10598,8 +10604,16 @@ var serviceContext = (function () {
           return obj.$el;
       }
   }
+  function serializeArrayBuffer(obj) {
+      // @ts-expect-error ios 提供了 ArrayBufferWrapper 类来处理 ArrayBuffer 的传递
+      if (typeof ArrayBufferWrapper !== 'undefined') {
+          // @ts-expect-error
+          return { __type__: 'ArrayBuffer', value: new ArrayBufferWrapper(obj) };
+      }
+      return { __type__: 'ArrayBuffer', value: obj };
+  }
   // 序列化 UniElement | ComponentPublicInstance
-  function serialize(el, type) {
+  function serializeUniElement(el, type) {
       let nodeId = '';
       let pageId = '';
       // 非 x 可能不存在 getNodeId 方法？
@@ -10607,13 +10621,13 @@ var serviceContext = (function () {
           pageId = el.pageId;
           nodeId = el.getNodeId();
       }
-      return { pageId, nodeId, __type__: type };
+      return { __type__: type, pageId, nodeId };
   }
   function toRaw(observed) {
       const raw = observed && observed.__v_raw;
       return raw ? toRaw(raw) : observed;
   }
-  function normalizeArg(arg, callbacks, keepAlive) {
+  function normalizeArg(arg, callbacks, keepAlive, context) {
       arg = toRaw(arg);
       if (typeof arg === 'function') {
           let id;
@@ -10628,7 +10642,17 @@ var serviceContext = (function () {
               callbacks[id] = arg;
           }
           return id;
+      }
+      else if (isArray(arg)) {
+          context.depth++;
+          return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
           // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
+      }
+      else if (arg instanceof ArrayBuffer) {
+          if (context.depth > 0) {
+              context.nested = true;
+          }
+          return serializeArrayBuffer(arg);
       }
       else if (isPlainObject(arg) || isUniElement(arg)) {
           const uniElement = parseElement(arg);
@@ -10637,7 +10661,10 @@ var serviceContext = (function () {
               : undefined;
           const el = uniElement || componentPublicInstanceUniElement;
           if (el) {
-              return serialize(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
+              if (context.depth > 0) {
+                  context.nested = true;
+              }
+              return serializeUniElement(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
           }
           else {
               // 必须复制，否则会污染原始对象，比如：
@@ -10649,7 +10676,8 @@ var serviceContext = (function () {
               // newObj.a = 2 // 这会污染原始对象 obj
               const newArg = {};
               Object.keys(arg).forEach((name) => {
-                  newArg[name] = normalizeArg(arg[name], callbacks, keepAlive);
+                  context.depth++;
+                  newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context);
               });
               return newArg;
           }
@@ -10719,7 +10747,7 @@ var serviceContext = (function () {
   function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
       if (!keepAlive) {
           keepAlive =
-              methodName.indexOf('on') === 0 &&
+              (methodName.indexOf('on') === 0 || methodName.indexOf('off') === 0) &&
                   methodParams.length === 1 &&
                   methodParams[0].type === 'UTSCallback';
       }
@@ -10731,6 +10759,7 @@ var serviceContext = (function () {
               type,
               name: methodName,
               method: methodParams,
+              nested: false,
               keepAlive,
           }
           : {
@@ -10742,6 +10771,7 @@ var serviceContext = (function () {
               type,
               companion,
               method: methodParams,
+              nested: false,
               keepAlive,
           };
       return (...args) => {
@@ -10763,9 +10793,14 @@ var serviceContext = (function () {
                   console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
               }
           };
+          const context = {
+              depth: 0,
+              nested: false,
+          };
           const invokeArgs = extend({}, baseArgs, {
-              params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
+              params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context)),
           });
+          invokeArgs.nested = context.nested;
           if (async) {
               return new Promise((resolve, reject) => {
                   if ((process.env.NODE_ENV !== 'production')) {
@@ -10899,6 +10934,7 @@ var serviceContext = (function () {
                                   id: instance.__instanceId,
                                   type: 'getter',
                                   keepAlive: false,
+                                  nested: false,
                                   name: name,
                                   errMsg,
                               });
@@ -10925,12 +10961,12 @@ var serviceContext = (function () {
                       return false;
                   },
               });
-              return proxy;
+              return Object.freeze(proxy);
           }
       };
       const staticPropSetterCache = {};
       const staticMethodCache = {};
-      return new Proxy(ProxyClass, {
+      return Object.freeze(new Proxy(ProxyClass, {
           get(target, name, receiver) {
               name = parseClassMethodName(name, staticMethods);
               if (hasOwn(staticMethods, name)) {
@@ -10975,7 +11011,7 @@ var serviceContext = (function () {
               }
               return false;
           },
-      });
+      }));
   }
   function isUTSAndroid() {
       return typeof plus !== 'undefined' && plus.os.name === 'Android';
@@ -22243,6 +22279,18 @@ var serviceContext = (function () {
     uploadFile: uploadFile$1
   });
 
+  function __f__ (
+    type,
+    ...args
+  ) {
+    console[type].apply(console, args);
+  }
+
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    __f__: __f__
+  });
+
   let cid;
   let cidErrMsg;
   let enabled;
@@ -22398,7 +22446,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     invokePushCallback: invokePushCallback,
     getPushClientId: getPushClientId,
@@ -22490,7 +22538,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -22560,7 +22608,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -22607,7 +22655,7 @@ var serviceContext = (function () {
     return new ServiceMediaQueryObserver(getCurrentPageVm('createMediaQueryObserver'), options)
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createMediaQueryObserver: createMediaQueryObserver
   });
@@ -22751,7 +22799,7 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
@@ -22776,7 +22824,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -22819,7 +22867,7 @@ var serviceContext = (function () {
     callbacks$a.push(callbackId);
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getLocale: getLocale$1,
     setLocale: setLocale,
@@ -22834,7 +22882,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -22847,7 +22895,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta$1
   });
@@ -22884,7 +22932,7 @@ var serviceContext = (function () {
     callbacks$b.push(callbackId);
   }
 
-  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -22908,7 +22956,7 @@ var serviceContext = (function () {
     callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_33 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -22941,17 +22989,18 @@ var serviceContext = (function () {
   './network/socket.js': require_context_module_1_19,
   './network/update.js': require_context_module_1_20,
   './network/upload-file.js': require_context_module_1_21,
-  './plugin/push.js': require_context_module_1_22,
-  './ui/create-animation.js': require_context_module_1_23,
-  './ui/create-intersection-observer.js': require_context_module_1_24,
-  './ui/create-media-query-observer.js': require_context_module_1_25,
-  './ui/create-selector-query.js': require_context_module_1_26,
-  './ui/load-font-face.js': require_context_module_1_27,
-  './ui/locale.js': require_context_module_1_28,
-  './ui/page-scroll-to.js': require_context_module_1_29,
-  './ui/set-page-meta.js': require_context_module_1_30,
-  './ui/tab-bar.js': require_context_module_1_31,
-  './ui/window.js': require_context_module_1_32,
+  './plugin/__f__.js': require_context_module_1_22,
+  './plugin/push.js': require_context_module_1_23,
+  './ui/create-animation.js': require_context_module_1_24,
+  './ui/create-intersection-observer.js': require_context_module_1_25,
+  './ui/create-media-query-observer.js': require_context_module_1_26,
+  './ui/create-selector-query.js': require_context_module_1_27,
+  './ui/load-font-face.js': require_context_module_1_28,
+  './ui/locale.js': require_context_module_1_29,
+  './ui/page-scroll-to.js': require_context_module_1_30,
+  './ui/set-page-meta.js': require_context_module_1_31,
+  './ui/tab-bar.js': require_context_module_1_32,
+  './ui/window.js': require_context_module_1_33,
 
       };
       var req = function req(key) {
@@ -24028,6 +24077,7 @@ var serviceContext = (function () {
         return true
       });
       this.batchData.length = 0;
+      // 检查有无数据变更
       if (batchData.length) {
         UniServiceJSBridge.publishHandler(VD_SYNC, {
           data: batchData,
@@ -24035,6 +24085,9 @@ var serviceContext = (function () {
             timestamp: Date.now()
           }
         }, [this.pageId]);
+      } else {
+        // 没有数据变更，则触发回调, ask206600
+        onVdSyncCallback();
       }
     }
 

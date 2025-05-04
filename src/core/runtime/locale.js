@@ -1,4 +1,4 @@
-import { normalizeLocale, LOCALE_EN } from '../helpers/i18n/index'
+import { getLocaleLanguage } from '../helpers/i18n/index'
 import { isFn } from 'uni-shared'
 
 export function getLocale () {
@@ -11,7 +11,7 @@ export function getLocale () {
       return app.$vm.$locale
     }
   }
-  return normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+  return getLocaleLanguage()
 }
 
 export function setLocale (locale) {

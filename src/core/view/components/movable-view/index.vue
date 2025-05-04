@@ -120,7 +120,7 @@ export default {
     },
     scaleMin: {
       type: [Number, String],
-      default: 0.5
+      default: 0.1
     },
     scaleMax: {
       type: [Number, String],
@@ -159,7 +159,7 @@ export default {
     },
     scaleMinNumber () {
       var val = Number(this.scaleMin)
-      return isNaN(val) ? 0.5 : val
+      return isNaN(val) ? 0.1 : val
     },
     scaleMaxNumber () {
       var val = Number(this.scaleMax)
@@ -546,7 +546,7 @@ export default {
       this._oldScale = scale
     },
     _adjustScale: function (scale) {
-      scale = Math.max(0.5, this.scaleMinNumber, scale)
+      scale = Math.max(0.1, this.scaleMinNumber, scale)
       scale = Math.min(10, this.scaleMaxNumber, scale)
       return scale
     },

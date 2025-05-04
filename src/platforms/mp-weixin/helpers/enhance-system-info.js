@@ -26,6 +26,46 @@ export function addSafeAreaInsets (result) {
   }
 }
 
+export function getOSInfo (system, platform) {
+  let osName = ''
+  let osVersion = ''
+
+  if (
+    platform &&
+    (__PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu')
+  ) {
+    osName = platform
+    osVersion = system
+  } else {
+    osName = system.split(' ')[0] || platform
+    osVersion = system.split(' ')[1] || ''
+  }
+
+  osName = osName.toLocaleLowerCase()
+  switch (osName) {
+    case 'harmony': // alipay
+    case 'ohos': // weixin
+    case 'openharmony': // feishu
+      osName = 'harmonyos'
+      break
+    case 'iphone os': // alipay
+      osName = 'ios'
+      break
+    case 'mac': // weixin qq
+    case 'darwin': // feishu
+      osName = 'macos'
+      break
+    case 'windows_nt': // feishu
+      osName = 'windows'
+      break
+  }
+
+  return {
+    osName,
+    osVersion
+  }
+}
+
 export function populateParameters (result) {
   const {
     brand = '', model = '', system = '',
@@ -38,16 +78,7 @@ export function populateParameters (result) {
   const extraParam = {}
 
   // osName osVersion
-  let osName = ''
-  let osVersion = ''
-  if (__PLATFORM__ === 'mp-alipay') {
-    my.canIUse('isIDE') && my.isIDE && (extraParam.platform = 'devtools')
-    osName = platform
-    osVersion = system
-  } else {
-    osName = system.split(' ')[0] || ''
-    osVersion = system.split(' ')[1] || ''
-  }
+  const { osName, osVersion } = getOSInfo(system, platform)
   let hostVersion = version
   // host 枚举值 https://smartprogram.baidu.com/docs/develop/api/device_sys/hostlist/
   if (__PLATFORM__ === 'mp-baidu') {
@@ -79,7 +110,7 @@ export function populateParameters (result) {
   if (__PLATFORM__ === 'mp-alipay') { _SDKVersion = my.SDKVersion }
 
   // hostLanguage
-  const hostLanguage = language.replace(/_/g, '-')
+  const hostLanguage = (language || '').replace(/_/g, '-')
 
   // wx.getAccountInfoSync
 
@@ -157,7 +188,12 @@ export function getAppLanguage (defaultLanguage) {
 }
 
 export function getHostName (result) {
-  const _platform = __PLATFORM__ === 'mp-weixin' ? 'WeChat' : __PLATFORM__.split('-')[1]
+  const _platform =
+    __PLATFORM__ === 'mp-weixin'
+      ? 'WeChat'
+      : __PLATFORM__ === 'mp-harmony'
+        ? 'HarmonyOS'
+        : __PLATFORM__.split('-')[1]
   let _hostName = result.hostName || _platform // mp-jd
   if (__PLATFORM__ === 'mp-weixin') {
     if (result.environment) {
@@ -166,9 +202,13 @@ export function getHostName (result) {
       _hostName = result.host.env
     }
   }
-  if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou') { _hostName = result.host }
+  if (__PLATFORM__ === 'mp-baidu' || __PLATFORM__ === 'mp-kuaishou') {
+    _hostName = result.host
+  }
   if (__PLATFORM__ === 'mp-qq') _hostName = result.AppPlatform
-  if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') { _hostName = result.appName }
+  if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') {
+    _hostName = result.appName
+  }
   if (__PLATFORM__ === 'mp-alipay') _hostName = result.app
 
   return _hostName

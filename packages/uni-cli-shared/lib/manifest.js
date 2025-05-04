@@ -47,7 +47,17 @@ function getH5Options (manifestJson) {
     manifestJson = getManifestJson()
   }
 
-  const h5 = manifestJson[process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM] || {}
+  let h5 = {}
+
+  if (process.env.UNI_SUB_PLATFORM) {
+    h5 = manifestJson[process.env.UNI_SUB_PLATFORM] || {}
+  } else {
+    if (process.env.UNI_PLATFORM === 'h5') {
+      h5 = manifestJson.web || manifestJson.h5 || {}
+    } else {
+      h5 = manifestJson[process.env.UNI_PLATFORM] || {}
+    }
+  }
 
   h5.appid = (manifestJson.appid || '').replace('__UNI__', '')
 

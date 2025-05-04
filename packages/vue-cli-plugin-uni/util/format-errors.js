@@ -22,7 +22,57 @@ function formatMessage (msg) {
 
 const installPreprocessorTips = {}
 
+const isMacArm = process.platform === 'darwin' && process.arch === 'arm64'
+if (process.env.UNI_SASS_IMPLEMENTATION_NAME === 'dart-sass') {
+  let timeout
+  const originalStderrWrite = process.stderr.write
+  process.stderr.write = function (chunk, encoding, callback) {
+    if (typeof chunk === 'string' && chunk.includes('More info and automated migrator')) {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => {
+        console.error(formatDartSassMessage(chunk))
+      }, 10)
+    }
+    return originalStderrWrite.apply(process.stderr, arguments)
+  }
+}
+
+function formatDartSassError (message) {
+  const msgs = []
+  const syntaxMsgs = []
+  // 识别 /deep/ 语法
+  if (message.includes('/deep/')) {
+    syntaxMsgs.push('将深度选择器 /deep/ 调整为 ::v-deep')
+  }
+  // 识别除法
+  if (message.includes('Using / for division is deprecated')) {
+    syntaxMsgs.push('将除法修改为 math.div()')
+  }
+  const address = 'https://uniapp.dcloud.net.cn/tutorial/syntax-css.html#css-preprocessor'
+  const syntaxMsg = syntaxMsgs.length ? `，${syntaxMsgs.join(';')}` : ''
+  msgs.push(
+    `方案1：调整为 dart-sass 支持的语法${syntaxMsg}，详情：${address}`
+  )
+  msgs.push(
+    `方案2：如果您希望继续使用node-sass，${isMacArm ? '需要更换为 HBuilderX Mac Intel 版本，并且' : '您可以'}在 manifest.json 中配置 "sassImplementationName": "node-sass"，详情：${address}`
+  )
+  return msgs.join('\n')
+}
+
+function formatDartSassMessage (message) {
+  const lineBreak = '\n  \n'
+  const dartSassMsg = formatDartSassError(message)
+  return `${lineBreak}Vue2 scss 预编译器默认已由 node-sass 更换为 dart-sass，如果您的代码使用了 dart-sass 不支持的旧语法，可能存在部分不兼容的问题。
+解决方案：
+${dartSassMsg}${lineBreak}`
+}
+
 function ModuleBuildError (err) {
+  if (process.env.UNI_SASS_IMPLEMENTATION_NAME === 'dart-sass') {
+    if (err.message.includes('SassError:')) {
+      err.message = formatDartSassMessage(err.message) + err.message
+    }
+  }
   const lines = err.message.split('\n')
   let firstLineMessage = lines[0]
   if (lines.length > 1) {
@@ -68,6 +118,9 @@ function ModuleBuildError (err) {
       builtinCompile = 'less'
     } else if (~err.message.indexOf('compile-node-sass')) {
       name = 'compile-node-sass'
+      builtinCompile = 'scss/sass'
+    } else if (~err.message.indexOf('compile-dart-sass')) {
+      name = 'compile-dart-sass'
       builtinCompile = 'scss/sass'
     } else if (~err.message.indexOf('compile-stylus')) {
       name = 'compile-stylus'
