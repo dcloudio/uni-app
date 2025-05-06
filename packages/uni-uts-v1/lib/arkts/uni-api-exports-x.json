@@ -229,6 +229,9 @@
       "FileSystemManagerFail"
     ],
     [
+      "IFileSystemManagerFail"
+    ],
+    [
       "GetAppBaseInfoResult"
     ],
     [
@@ -593,6 +596,18 @@
     ],
     [
       "RequestCompleteCallback"
+    ],
+    [
+      "RequestTaskOnChunkReceivedListenerResult"
+    ],
+    [
+      "RequestTaskOnChunkReceivedCallback"
+    ],
+    [
+      "RequestTaskOnHeadersReceivedListenerResult"
+    ],
+    [
+      "RequestTaskOnHeadersReceivedCallback"
     ],
     [
       "RequestTask"
