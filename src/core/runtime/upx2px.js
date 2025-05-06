@@ -4,29 +4,29 @@ let isIOS = false
 let deviceWidth = 0
 let deviceDPR = 0
 
-function checkDeviceWidth() {
-  let windowWidth, pixelRatio, platform;
+function checkDeviceWidth () {
+  let windowWidth, pixelRatio, platform
 
   if (__PLATFORM__ === 'mp-weixin') {
-    const windowInfo = typeof wx.getWindowInfo === 'function' && wx.getWindowInfo() ? wx.getWindowInfo() : wx.getSystemInfoSync();
-    const deviceInfo = typeof wx.getDeviceInfo === 'function' && wx.getDeviceInfo() ? wx.getDeviceInfo() : wx.getSystemInfoSync();
+    const windowInfo = typeof wx.getWindowInfo === 'function' && wx.getWindowInfo() ? wx.getWindowInfo() : wx.getSystemInfoSync()
+    const deviceInfo = typeof wx.getDeviceInfo === 'function' && wx.getDeviceInfo() ? wx.getDeviceInfo() : wx.getSystemInfoSync()
 
-    windowWidth = windowInfo.windowWidth;
-    pixelRatio = windowInfo.pixelRatio;
-    platform = deviceInfo.platform;
+    windowWidth = windowInfo.windowWidth
+    pixelRatio = windowInfo.pixelRatio
+    platform = deviceInfo.platform
   } else {
-    const baseInfo = getBaseSystemInfo();
-    windowWidth = baseInfo.windowWidth;
-    pixelRatio = baseInfo.pixelRatio;
-    platform = baseInfo.platform;
+    const baseInfo = __GLOBAL__.getSystemInfoSync()
+    windowWidth = baseInfo.windowWidth
+    pixelRatio = baseInfo.pixelRatio
+    platform = baseInfo.platform
   }
 
-  deviceWidth = windowWidth;
-  deviceDPR = pixelRatio;
-  isIOS = platform === 'ios';
+  deviceWidth = windowWidth
+  deviceDPR = pixelRatio
+  isIOS = platform === 'ios'
 }
 
-export function upx2px(number, newDeviceWidth) {
+export function upx2px (number, newDeviceWidth) {
   if (deviceWidth === 0) {
     checkDeviceWidth()
   }
