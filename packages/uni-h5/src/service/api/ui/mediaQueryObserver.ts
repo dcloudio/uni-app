@@ -43,10 +43,11 @@ function humpToLine(name: string) {
 }
 
 // 请求媒体查询对象
-export function addMediaQueryObserver(
-  { reqId, component, options, callback }: AddMediaQueryObserverArgs,
-  _pageId?: number
-) {
+export function addMediaQueryObserver({
+  reqId,
+  options,
+  callback,
+}: AddMediaQueryObserverArgs) {
   // 创建一个媒体查询对象
   const mediaQueryObserver = (mediaQueryObservers[reqId] = window.matchMedia(
     handleMediaQueryStr(options)
@@ -59,10 +60,9 @@ export function addMediaQueryObserver(
 }
 
 // 销毁媒体查询对象
-export function removeMediaQueryObserver(
-  { reqId, component }: RemoveMediaQueryObserverArgs,
-  _pageId?: number
-) {
+export function removeMediaQueryObserver({
+  reqId,
+}: RemoveMediaQueryObserverArgs) {
   const listener = listeners[reqId]
   const mediaQueryObserver = mediaQueryObservers[reqId]
   if (mediaQueryObserver) {
