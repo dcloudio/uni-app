@@ -25,7 +25,7 @@ export default {
     }
   },
   watch: {
-    src (val, oldVal) {
+    src () {
       this.iframe && (this.iframe.src = this.$getRealPath(this.src))
     }
   },
@@ -39,6 +39,9 @@ export default {
       document.body.appendChild(this.iframe)
     } else {
       this.$refs.webviewContainer.appendChild(this.iframe)
+    }
+    this.iframe.onload = ($event) => {
+      this.$trigger('load', $event, { src: this.src })
     }
     this._resize()
   },
