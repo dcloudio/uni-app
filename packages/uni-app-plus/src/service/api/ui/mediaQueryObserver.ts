@@ -17,7 +17,7 @@ export function addMediaQueryObserver(
     'addMediaQueryObserver',
     {
       reqId,
-      component: component.$el.nodeId,
+      component: component!.$el.nodeId,
       options,
       eventName,
     },
@@ -34,7 +34,7 @@ export function removeMediaQueryObserver(
     'removeMediaQueryObserver',
     {
       reqId,
-      component: component.$el.nodeId,
+      component: component!.$el.nodeId,
     },
     _pageId
   )
