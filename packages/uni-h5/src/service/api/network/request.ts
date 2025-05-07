@@ -8,6 +8,7 @@ import {
 } from '@dcloudio/uni-api'
 import { LINEFEED } from '@dcloudio/uni-shared'
 import type { RequestFail } from '@dcloudio/uni-app-x/types/uni'
+import { Emitter } from '@dcloudio/uni-shared'
 
 export const request = defineTaskApi<API_TYPE_REQUEST>(
   API_REQUEST,
@@ -19,6 +20,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
       method,
       dataType,
       responseType,
+      enableChunked,
       withCredentials,
       timeout = __uniConfig.networkTimeout.request,
     },
@@ -55,63 +57,184 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
         }
       }
     }
-    const xhr = new XMLHttpRequest()
-    const requestTask = new RequestTask(xhr)
-    xhr.open(method!, url)
-    for (const key in header) {
-      if (hasOwn(header, key)) {
-        xhr.setRequestHeader(key, header[key])
-      }
-    }
-
-    const timer = setTimeout(function () {
-      xhr.onload = xhr.onabort = xhr.onerror = null
-      requestTask.abort()
-      reject<Partial<RequestFail>>('timeout', { errCode: 5 })
-    }, timeout)
-    xhr.responseType = responseType as 'arraybuffer' | 'text'
-    xhr.onload = function () {
-      clearTimeout(timer)
-      const statusCode = xhr.status
-      let res = responseType === 'text' ? xhr.responseText : xhr.response
-      if (responseType === 'text' && dataType === 'json') {
-        try {
-          //#if _X_
-          // @ts-expect-error
-          res = UTS.JSON.parse(res)
-          //#else
-          res = JSON.parse(res)
-          //#endif
-        } catch (error) {
-          // 和微信一致解析失败不抛出错误
-          // invoke(callbackId, {
-          //   errMsg: 'request:fail json parse error'
-          // })
-          // return
+    let requestTask: RequestTask
+    if (!enableChunked) {
+      const xhr = new XMLHttpRequest()
+      requestTask = new RequestTask(xhr)
+      xhr.open(method!, url)
+      for (const key in header) {
+        if (hasOwn(header, key)) {
+          xhr.setRequestHeader(key, header[key])
         }
       }
-      resolve({
-        data: res,
-        statusCode,
-        header: parseHeaders(xhr.getAllResponseHeaders()),
-        cookies: [],
+      const timer = setTimeout(function () {
+        xhr.onload = xhr.onabort = xhr.onerror = null
+        requestTask.abort()
+        reject<Partial<RequestFail>>('timeout', { errCode: 5 })
+      }, timeout)
+      xhr.responseType = responseType as 'arraybuffer' | 'text'
+      xhr.onload = function () {
+        clearTimeout(timer)
+        const statusCode = xhr.status
+        let res = responseType === 'text' ? xhr.responseText : xhr.response
+        if (responseType === 'text') {
+          res = parseResponseText(res, responseType, dataType)
+        }
+        resolve({
+          data: res,
+          statusCode,
+          header: parseHeaders(xhr.getAllResponseHeaders()),
+          cookies: [],
+        })
+      }
+      xhr.onabort = function () {
+        clearTimeout(timer)
+        reject<Partial<RequestFail>>('abort', { errCode: 600003 })
+      }
+      xhr.onerror = function () {
+        clearTimeout(timer)
+        reject<Partial<RequestFail>>(undefined, { errCode: 5 })
+      }
+      xhr.withCredentials = withCredentials!
+      xhr.send(body)
+    } else {
+      /**
+       * chunk模式需要返回ArrayBuffer，而XHR设置只能在onProgress内responseType设为arraybuffer并不能在onprogress内获取到xhr.response
+       * 如果设置responseType为text，onprogress内xhr.response为string
+       * 只能改用fetch实现，至于很多ai web客户端只需要文本流，直接使用xhr就可以了，但是我们要实现微信onChunkReceived规范只能改用fetch
+       */
+      if (
+        typeof window.fetch === undefined ||
+        typeof window.AbortController === undefined
+      ) {
+        throw new Error(
+          'fetch or AbortController is not supported in this environment'
+        )
+      }
+      const controller = new AbortController()
+      const signal = controller.signal
+      requestTask = new RequestTask(controller)
+      const fetchOptions: RequestInit = {
+        method,
+        headers: header,
+        body,
+        signal,
+        credentials: withCredentials ? 'include' : 'same-origin',
+      }
+      const timer = setTimeout(function () {
+        requestTask.abort()
+        reject<Partial<RequestFail>>('timeout', { errCode: 5 })
+      }, timeout)
+      fetchOptions.signal!.addEventListener('abort', function () {
+        clearTimeout(timer)
+        reject<Partial<RequestFail>>('abort', { errCode: 600003 })
       })
+      window.fetch(url, fetchOptions).then(
+        (response) => {
+          const statusCode = response.status
+          const header = response.headers
+          const body = response.body
+          const headerObj: Record<string, string> = {}
+          header.forEach((value, key) => {
+            headerObj[key] = value
+          })
+          const cookies = cookiesParse(headerObj)
+
+          requestTask._emitter.emit('headersReceived', {
+            header: headerObj,
+            statusCode,
+            cookies,
+          })
+          if (!body) {
+            resolve({
+              data: '',
+              statusCode,
+              header: headerObj,
+              cookies,
+            })
+            return
+          }
+          const reader = body.getReader()
+          const bodyBuffers = [] as Uint8Array[]
+
+          const streamReaderRead = () => {
+            reader.read().then(({ done, value }) => {
+              if (done) {
+                const result = concatArrayBuffers(bodyBuffers)
+                let res =
+                  responseType === 'text'
+                    ? new TextDecoder().decode(result)
+                    : result
+                if (responseType === 'text') {
+                  res = parseResponseText(res, responseType, dataType)
+                }
+                resolve({
+                  data: res,
+                  statusCode,
+                  header: headerObj,
+                  cookies,
+                })
+                return
+              }
+              const chunk = value
+              bodyBuffers.push(chunk)
+              requestTask._emitter.emit('chunkReceived', {
+                data: chunk,
+              })
+              streamReaderRead()
+            })
+          }
+          streamReaderRead()
+        },
+        (error) => {
+          reject<Partial<RequestFail>>(error, { errCode: 5 })
+        }
+      )
     }
-    xhr.onabort = function () {
-      clearTimeout(timer)
-      reject<Partial<RequestFail>>('abort', { errCode: 600003 })
-    }
-    xhr.onerror = function () {
-      clearTimeout(timer)
-      reject<Partial<RequestFail>>(undefined, { errCode: 5 })
-    }
-    xhr.withCredentials = withCredentials!
-    xhr.send(body)
     return requestTask
   },
   RequestProtocol,
   RequestOptions
 )
+
+const cookiesParse = (header: Record<string, string>) => {
+  let cookiesStr = header['Set-Cookie'] || header['set-cookie']
+  let cookiesArr: string[] = []
+  if (!cookiesStr) {
+    return []
+  }
+  if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
+    cookiesStr = cookiesStr.slice(1, -1)
+  }
+  const handleCookiesArr = cookiesStr.split(';')
+  for (let i = 0; i < handleCookiesArr.length; i++) {
+    if (
+      handleCookiesArr[i].indexOf('Expires=') !== -1 ||
+      handleCookiesArr[i].indexOf('expires=') !== -1
+    ) {
+      cookiesArr.push(handleCookiesArr[i].replace(',', ''))
+    } else {
+      cookiesArr.push(handleCookiesArr[i])
+    }
+  }
+  cookiesArr = cookiesArr.join(';').split(',')
+
+  return cookiesArr
+}
+
+function concatArrayBuffers(buffers) {
+  // 计算总长度
+  const totalLength = buffers.reduce((acc, buf) => acc + buf.byteLength, 0)
+  // 创建新Buffer和视图
+  const result = new Uint8Array(totalLength)
+  let offset = 0
+  // 逐个复制
+  for (const buffer of buffers) {
+    result.set(new Uint8Array(buffer), offset)
+    offset += buffer.byteLength
+  }
+  return result.buffer // 返回合并后的ArrayBuffer
+}
 
 function normalizeContentType(header: Record<string, string>) {
   const name = Object.keys(header).find(
@@ -136,25 +259,80 @@ function normalizeContentType(header: Record<string, string>) {
   return 'string'
 }
 
+export interface RequestTaskOnChunkReceivedListenerResult {
+  /** 返回的chunk buffer */
+  data: ArrayBuffer
+}
+export type RequestTaskOnChunkReceivedCallback = (
+  result: RequestTaskOnChunkReceivedListenerResult
+) => void
+
+export interface RequestTaskOnHeadersReceivedListenerResult {
+  /** 开发者服务器返回的 cookies，格式为字符串数组 */
+  cookies: string[]
+  /** 开发者服务器返回的 HTTP Response Header */
+  header: UTSJSONObject
+  /** 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） */
+  statusCode: number
+}
+/** HTTP Response Header 事件的监听函数 */
+export type RequestTaskOnHeadersReceivedCallback = (
+  result: RequestTaskOnHeadersReceivedListenerResult
+) => void
+
+interface RequestController {
+  abort: () => void
+}
+
 /**
  * 请求任务类
  */
 class RequestTask implements UniApp.RequestTask {
-  private _xhr?: XMLHttpRequest
-  constructor(xhr: XMLHttpRequest) {
-    this._xhr = xhr
+  private _controller?: RequestController
+  _emitter = new Emitter()
+  constructor(controller: RequestController) {
+    this._controller = controller
   }
   abort() {
-    if (this._xhr) {
-      this._xhr.abort()
-      delete this._xhr
+    if (this._controller) {
+      this._controller.abort()
+      delete this._controller
     }
   }
-  onHeadersReceived(callback: (result: any) => void): void {
-    throw new Error('Method not implemented.')
+  onHeadersReceived(callback: RequestTaskOnHeadersReceivedCallback): void {
+    if (!__X__) {
+      throw new Error('Method not implemented.')
+    }
+    this._emitter.on('headersReceived', callback)
   }
-  offHeadersReceived(callback: (result: any) => void): void {
-    throw new Error('Method not implemented.')
+  offHeadersReceived(
+    callback?: RequestTaskOnHeadersReceivedCallback | null
+  ): void {
+    if (!__X__) {
+      throw new Error('Method not implemented.')
+    }
+    if (callback) {
+      this._emitter.off('headersReceived', callback)
+    } else {
+      this._emitter.off('headersReceived')
+    }
+  }
+
+  onChunkReceived(callback: RequestTaskOnChunkReceivedCallback): void {
+    if (!__X__) {
+      throw new Error('Method not implemented.')
+    }
+    this._emitter.on('chunkReceived', callback)
+  }
+  offChunkReceived(callback?: RequestTaskOnChunkReceivedCallback | null): void {
+    if (!__X__) {
+      throw new Error('Method not implemented.')
+    }
+    if (callback) {
+      this._emitter.off('chunkReceived', callback)
+    } else {
+      this._emitter.off('chunkReceived')
+    }
   }
 }
 
@@ -173,4 +351,29 @@ function parseHeaders(headers: string) {
     headersObject[find[1]] = find[2]
   })
   return headersObject
+}
+
+function parseResponseText(
+  responseText: string,
+  responseType: string | undefined,
+  dataType: string | undefined
+): any {
+  let res = responseText
+  if (responseType === 'text' && dataType === 'json') {
+    try {
+      //#if _X_
+      // @ts-expect-error
+      res = UTS.JSON.parse(res)
+      //#else
+      res = JSON.parse(res)
+      //#endif
+    } catch (error) {
+      // 和微信一致解析失败不抛出错误
+      // invoke(callbackId, {
+      //   errMsg: 'request:fail json parse error'
+      // })
+      // return
+    }
+  }
+  return res
 }
