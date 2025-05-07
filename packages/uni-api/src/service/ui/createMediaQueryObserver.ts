@@ -4,15 +4,18 @@ import {
   addMediaQueryObserver,
   removeMediaQueryObserver,
 } from '@dcloudio/uni-platform'
+import type { ComponentPublicInstance } from 'vue'
 
 export interface AddMediaQueryObserverArgs {
   reqId: number
   options: UniApp.DescriptorOptions
+  component?: ComponentPublicInstance
   callback: WechatMiniprogram.MediaQueryObserverObserveCallback
 }
 
 export interface RemoveMediaQueryObserverArgs {
   reqId: number
+  component?: ComponentPublicInstance
 }
 
 let reqComponentObserverId = 1

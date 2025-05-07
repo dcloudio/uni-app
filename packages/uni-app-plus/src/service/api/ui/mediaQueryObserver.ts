@@ -2,7 +2,6 @@ import type {
   AddMediaQueryObserverArgs,
   RemoveMediaQueryObserverArgs,
 } from '@dcloudio/uni-api'
-import type { ComponentPublicInstance } from 'vue'
 
 function getEventName(reqId: number) {
   const EVENT_NAME = 'MediaQueryObserver'
@@ -10,12 +9,7 @@ function getEventName(reqId: number) {
 }
 
 export function addMediaQueryObserver(
-  {
-    reqId,
-    component,
-    options,
-    callback,
-  }: AddMediaQueryObserverArgs & { component: ComponentPublicInstance },
+  { reqId, component, options, callback }: AddMediaQueryObserverArgs,
   _pageId: number
 ) {
   const eventName = getEventName(reqId)
@@ -23,7 +17,7 @@ export function addMediaQueryObserver(
     'addMediaQueryObserver',
     {
       reqId,
-      component: component.$el.nodeId,
+      component: component!.$el.nodeId,
       options,
       eventName,
     },
@@ -33,17 +27,14 @@ export function addMediaQueryObserver(
 }
 
 export function removeMediaQueryObserver(
-  {
-    reqId,
-    component,
-  }: RemoveMediaQueryObserverArgs & { component: ComponentPublicInstance },
+  { reqId, component }: RemoveMediaQueryObserverArgs,
   _pageId: number
 ) {
   UniServiceJSBridge.invokeViewMethod(
     'removeMediaQueryObserver',
     {
       reqId,
-      component: component.$el.nodeId,
+      component: component!.$el.nodeId,
     },
     _pageId
   )
