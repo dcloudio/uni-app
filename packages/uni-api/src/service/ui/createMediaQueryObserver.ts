@@ -28,8 +28,9 @@ class ServiceMediaQueryObserver {
   private _component: ComponentPublicInstance
 
   constructor(component: ComponentPublicInstance) {
+    // APP 平台 _pageId 不能为空，H5 不处理 _pageId 和 component
     this._pageId =
-      component.$page && (component.$page as Page.PageInstance['$page']).id
+      component?.$page && (component.$page as Page.PageInstance['$page']).id
     this._component = component
   }
 
