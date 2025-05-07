@@ -66,7 +66,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const renderIframe = () => {
       const iframe = document.createElement('iframe')
       iframe.onload = function (event: Event) {
-        trigger('load', event)
+        trigger('load', event, { src: props.src })
       }
       watchEffect(() => {
         for (const key in $attrs.value) {
