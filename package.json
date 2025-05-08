@@ -48,9 +48,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.3",
+    "@babel/generator": "^7.25.6",
     "@babel/parser": "^7.23.9",
     "@babel/preset-env": "^7.20.2",
-    "@babel/generator": "^7.25.6",
     "@dcloudio/types": "3.4.14",
     "@dcloudio/uni-api": "workspace:*",
     "@dcloudio/uni-app": "workspace:*",
@@ -103,6 +103,7 @@
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.4.0",
     "rollup-plugin-typescript2": "0.32.0",
+    "sass": "^1.87.0",
     "semver": "^7.3.5",
     "simple-git-hooks": "^2.8.0",
     "terser": "^5.4.0",
