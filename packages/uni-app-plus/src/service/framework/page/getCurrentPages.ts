@@ -76,10 +76,11 @@ export function removePage(
   if (!$basePage.meta.isNVue) {
     getVueApp().unmountPage(curPage as ComponentPublicInstance)
   }
-  const removePages = pages.splice(index, 1)
+  pages.splice(index, 1)
   if (__X__) {
+    ;(curPage.$page as UniPage).vm = null
     // @ts-expect-error
-    removePages[0].$page = null
+    curPage.$page = null
   }
   if (__DEV__) {
     console.log(formatLog('removePage', $basePage))
