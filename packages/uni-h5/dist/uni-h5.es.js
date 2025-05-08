@@ -7188,7 +7188,7 @@ function removeRouteCache(routeKey) {
   }
 }
 function removePage(routeKey, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey);
+  let pageVm = currentPagesMap.get(routeKey);
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, ON_UNLOAD);
   currentPagesMap.delete(routeKey);

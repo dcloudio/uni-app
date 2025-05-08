@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
+import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -694,9 +694,10 @@ function removePage(curPage) {
   if (!$basePage.meta.isNVue) {
     getVueApp().unmountPage(curPage);
   }
-  var removePages2 = pages.splice(index2, 1);
+  pages.splice(index2, 1);
   {
-    removePages2[0].$page = null;
+    curPage.$page = null;
+    curPage = null;
   }
 }
 function backbuttonListener() {
@@ -2817,9 +2818,7 @@ function initAnimation$1(path, animationType, animationDuration) {
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function isDirectPage(page) {
-  return !!__uniConfig.realEntryPagePath && // getRealPath(page.$basePage.route, true) ===
-  // getRealPath(parseUrl(__uniConfig.entryPagePath!).path, true) &&
-  getCurrentPages$1()[0] === page;
+  return !!__uniConfig.realEntryPagePath && getRealPath(page.$basePage.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
 }
 function reLaunchEntryPage() {
   var _uniConfig$entryPage;
@@ -6497,6 +6496,26 @@ const _style_0$6 = {
       "paddingLeft": 6
     }
   },
+  "border-t": {
+    "": {
+      "borderTopWidth": "1rpx",
+      "borderTopStyle": "solid",
+      "borderTopColor": "#e5e5e5"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "borderTopColor": "#2F3131"
+    }
+  },
+  "border-b": {
+    "": {
+      "borderBottomWidth": "1rpx",
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#e5e5e5"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "borderBottomColor": "#2F3131"
+    }
+  },
   "uni-action-sheet_dialog__title__text": {
     "": {
       "lineHeight": 1.4,
@@ -6544,16 +6563,6 @@ const _style_0$6 = {
       "maxHeight": 260
     }
   },
-  "divider": {
-    "": {
-      "height": 1,
-      "backgroundColor": "#e5e5e5",
-      "transform": "scaleY(0.5)"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "backgroundColor": "#2F3131"
-    }
-  },
   "@TRANSITION": {
     "uni-action-sheet_dialog__mask": {
       "property": "opacity",
@@ -6595,10 +6604,9 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
       "uni-action-sheet_dark__mode": $data.theme == "dark",
       "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
-  }, [$data.title ? (openBlock(), createElementBlock(Fragment, {
-    key: 0
-  }, [createElementVNode("view", {
-    class: normalizeClass(["uni-action-sheet_dialog__title", {
+  }, [$data.title ? (openBlock(), createElementBlock("view", {
+    key: 0,
+    class: normalizeClass(["uni-action-sheet_dialog__title border-b", {
       "uni-action-sheet_dark__mode": $data.theme == "dark",
       "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
@@ -6609,26 +6617,17 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-action-sheet_dialog__title__text", {
       "uni-action-sheet_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($data.title), 7)], 2), createElementVNode("view", {
-    class: normalizeClass(["divider", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
-    }])
-  }, null, 2)], 64)) : createCommentVNode("", true), createElementVNode("scroll-view", {
+  }, toDisplayString($data.title), 7)], 2)) : createCommentVNode("", true), createElementVNode("scroll-view", {
     class: normalizeClass(["uni-action-sheet_dialog__cell__container", {
       "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
   }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
     return openBlock(), createElementBlock("view", {
-      key: index2
-    }, [index2 !== 0 ? (openBlock(), createElementBlock("view", {
-      key: 0,
-      class: normalizeClass(["divider", {
-        "uni-action-sheet_dark__mode": $data.theme == "dark"
-      }])
-    }, null, 2)) : createCommentVNode("", true), createElementVNode("view", {
+      key: index2,
       class: normalizeClass(["uni-action-sheet_dialog__cell", {
         "uni-action-sheet_dark__mode": $data.theme == "dark",
-        "uni-action-sheet_landscape__mode": $data.isLandscape
+        "uni-action-sheet_landscape__mode": $data.isLandscape,
+        "border-t": index2 !== 0
       }]),
       onClick: ($event) => $options.handleMenuItemClick(index2)
     }, [createElementVNode("text", {
@@ -6638,7 +6637,7 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
       class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
         "uni-action-sheet_dark__mode": $data.theme == "dark"
       }])
-    }, toDisplayString(item), 7)], 10, _hoisted_1$5)]);
+    }, toDisplayString(item), 7)], 10, _hoisted_1$5);
   }), 128))], 2)], 6), createElementVNode("view", {
     style: normalizeStyle($data.backgroundColor != null ? {
       backgroundColor: $data.backgroundColor

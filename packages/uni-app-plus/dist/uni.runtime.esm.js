@@ -10788,8 +10788,9 @@ const createIntersectionObserver = defineSyncApi('createIntersectionObserver', (
 let reqComponentObserverId = 1;
 class ServiceMediaQueryObserver {
     constructor(component) {
+        // APP 平台 _pageId 不能为空，H5 不处理 _pageId 和 component
         this._pageId =
-            component.$page && component.$page.id;
+            (component === null || component === void 0 ? void 0 : component.$page) && component.$page.id;
         this._component = component;
     }
     observe(options, callback) {

@@ -8566,7 +8566,7 @@ function removeRouteCache(routeKey) {
 }
 function removePage(routeKey, removeRouteCaches = true) {
   var _a, _b;
-  const pageVm = currentPagesMap.get(routeKey);
+  let pageVm = currentPagesMap.get(routeKey);
   {
     const dialogPages = pageVm.$page.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
@@ -8576,11 +8576,15 @@ function removePage(routeKey, removeRouteCaches = true) {
     if (systemDialogPages) {
       systemDialogPages.length = 0;
     }
+    pageVm.$page = null;
   }
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, ON_UNLOAD);
   currentPagesMap.delete(routeKey);
   removeRouteCaches && removeRouteCache(routeKey);
+  {
+    pageVm = null;
+  }
 }
 let id = /* @__PURE__ */ getStateId();
 function createPageState(type, __id__) {
