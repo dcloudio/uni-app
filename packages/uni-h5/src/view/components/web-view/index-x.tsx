@@ -1,8 +1,10 @@
 import { ref, onMounted, Ref, watchEffect } from 'vue'
 import { hasOwn } from '@vue/shared'
 import {
+  type EmitEvent,
   defineBuiltInComponent,
   useAttrs,
+  useCustomEvent,
   UniElement,
 } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
@@ -27,22 +29,27 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'WebView',
   props,
+  emits: ['load'],
   //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-web-view',
     class: UniWebViewElement,
   },
   //#endif
-  setup(props) {
+  setup(props, { emit }) {
     Invoke()
     const rootRef: RootRef = ref(null)
     const iframeRef: RootRef = ref(null)
     const { $attrs, $excludeAttrs, $listeners } = useAttrs({
       excludeListeners: true,
     })
+    const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
     const renderIframe = () => {
       const iframe = document.createElement('iframe')
+      iframe.onload = function (event: Event) {
+        trigger('load', event, { src: props.src, url: props.src })
+      }
       watchEffect(() => {
         for (const key in $attrs.value) {
           if (hasOwn($attrs.value, key)) {
