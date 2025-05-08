@@ -11,14 +11,16 @@
       <view :style="backgroundColor != null ? {backgroundColor} : {}" class="uni-action-sheet_dialog__menu"
         :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
         <template v-if="title">
-          <view class="uni-action-sheet_dialog__title"
+          <view class="uni-action-sheet_dialog__title border-b"
             :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
             <text :style="{ color: titleColor }" class="uni-action-sheet_dialog__title__text"
               :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
               {{ title }}
             </text>
           </view>
+          <!-- #ifdef WEB -->
           <view class="divider" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"></view>
+          <!-- #endif -->
         </template>
         <!-- #ifdef WEB -->
         <view class="uni-action-sheet_dialog__cell__container"
@@ -28,17 +30,19 @@
           <scroll-view class="uni-action-sheet_dialog__cell__container"
             :class="{'uni-action-sheet_landscape__mode': isLandscape}">
           <!-- #endif -->
-            <view v-for="(item, index) in itemList" :key="index">
-              <view v-if="index !== 0" class="divider" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"></view>
+            <template v-for="(item, index) in itemList" :key="index">
+            <!-- #ifdef WEB -->
+            <view v-if="index !== 0" class="divider" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"></view>
+            <!-- #endif -->
               <view class="uni-action-sheet_dialog__cell"
-                :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }"
+                :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape, 'border-t': index !== 0 }"
                 @click="handleMenuItemClick(index)">
                 <text :style="{color: itemColor}" class="uni-action-sheet_dialog__cell__text"
                   :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
                   {{ item }}
                 </text>
               </view>
-            </view>
+            </template>
           <!-- #ifdef APP -->
           </scroll-view>
           <!-- #endif -->
@@ -398,6 +402,21 @@
   .uni-action-sheet_dialog__action {
     padding: 16px;
   }
+	
+  /* #ifdef APP */
+	.border-t{
+		border-top: 1rpx solid #e5e5e5;
+	}
+  .border-t.uni-action-sheet_dark__mode {
+    border-top-color: #2F3131;
+  }
+  .border-b{
+    border-bottom: 1rpx solid #e5e5e5;
+  }
+  .border-b.uni-action-sheet_dark__mode {
+    border-bottom-color: #2F3131;
+  }
+  /* #endif */
 
   .uni-action-sheet_dialog__title__text,
   .uni-action-sheet_dialog__cell__text,
@@ -433,11 +452,16 @@
     scrollbar-width: none;
     /* #endif */
   }
+  /* #ifdef WEB */
   .divider{
     height: 1px;
     background-color: #e5e5e5;
     transform: scaleY(0.5);
   }
+  .divider.uni-action-sheet_dark__mode {
+    background-color: #2F3131;
+  }
+  /* #endif */
 
   /* dark mode */
   .uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {
@@ -446,9 +470,6 @@
   .uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,
   .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {
     background-color: #2C2C2B;
-  }
-  .divider.uni-action-sheet_dark__mode {
-    background-color: #2F3131;
   }
   .uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {
     color: #999999;
