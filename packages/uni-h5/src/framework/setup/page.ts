@@ -135,6 +135,9 @@ export function removePage(routeKey: string, removeRouteCaches = true) {
   invokeHook(pageVm, ON_UNLOAD)
   currentPagesMap.delete(routeKey)
   removeRouteCaches && removeRouteCache(routeKey)
+  if (__X__ && !__NODE_JS__) {
+    ;(pageVm.$page as UniPage).vm = null
+  }
 }
 
 let id = /*#__PURE__*/ getStateId()
