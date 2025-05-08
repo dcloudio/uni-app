@@ -1,6 +1,11 @@
 import type { ComponentPublicInstance } from 'vue'
 import { getRealRoute } from '@dcloudio/uni-core'
-import { DATA_RE, SCHEME_RE, addLeadingSlash } from '@dcloudio/uni-shared'
+import {
+  DATA_RE,
+  SCHEME_RE,
+  addLeadingSlash,
+  resolveOwnerEl,
+} from '@dcloudio/uni-shared'
 import { getCurrentBasePages, getPage$BasePage } from '../framework/setup/page'
 declare global {
   interface ImportMeta {
@@ -15,7 +20,7 @@ export function findElem(vm: ComponentPublicInstance) {
     // App 端，传入的是 nodeId
     return (window as any).__$__(vm).$
   }
-  return vm.$el
+  return resolveOwnerEl(vm.$, true).length > 1 ? vm.$el.parentNode : vm.$el
 }
 
 // const baseUrl = __IMPORT_META_ENV_BASE_URL__
