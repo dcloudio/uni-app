@@ -9,6 +9,7 @@ import {
   emptyDir,
   injectCssPlugin,
   injectCssPostPlugin,
+  insertBeforePlugin,
   normalizePath,
   resolveMainPathOnce,
   tscOutDir,
@@ -17,6 +18,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
+import { uniAppJsPlugin } from './js'
 
 export function initUniAppJsEngineCssPlugin(config: ResolvedConfig) {
   injectCssPlugin(
@@ -117,6 +119,7 @@ export function createUniAppJsEnginePlugin(
       configResolved(config) {
         configResolved(config)
         initUniAppJsEngineCssPlugin(config)
+        insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
       },
       generateBundle(_, bundle) {
         const APP_SERVICE_FILENAME_MAP = APP_SERVICE_FILENAME + '.map'
