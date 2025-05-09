@@ -80,9 +80,6 @@ importers:
       '@types/react':
         specifier: ^18.2.67
         version: 18.3.5
-      '@types/sass':
-        specifier: ~1.43.1
-        version: 1.43.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.1.1
         version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.3.2))(eslint@8.57.0)(typescript@5.3.2)

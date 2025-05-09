@@ -70,7 +70,6 @@
     "@types/jest": "^29.2.3",
     "@types/node": "^18.16.2",
     "@types/react": "^18.2.67",
-    "@types/sass": "~1.43.1",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
     "@vitejs/plugin-vue": "^5.0.4",
