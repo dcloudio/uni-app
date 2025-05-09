@@ -565,6 +565,10 @@ declare class UniNormalPageImpl implements UniPage {
   options: UTSJSONObject
   pageBody: UniPageBody
   safeAreaInsets: UniSafeAreaInsets
+  readonly fullscreenElement?: UniElement | null
+  readonly width: number
+  readonly height: number
+  readonly statusBarHeight: number
   getParentPage: () => UniPage | null
   getParentPageByJS: () => UniPage | null
   getDialogPages(): UniDialogPage[]
@@ -578,6 +582,9 @@ declare class UniNormalPageImpl implements UniPage {
   getAndroidView(): null
   getIOSView(): null
   getHTMLElement(): null
+  getAndroidActivity(): Activity | null
+  exitFullscreen(options: ExitFullscreenOptions | null): void
+  createElement(tagName: string): UniElement
 }
 
 declare class UniDialogPageImpl implements UniPage {

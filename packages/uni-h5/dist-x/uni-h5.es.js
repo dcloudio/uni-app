@@ -8292,6 +8292,19 @@ class UniPageImpl {
   getDialogPages() {
     return [];
   }
+  getAndroidActivity() {
+    return null;
+  }
+  exitFullscreen() {
+  }
+  createElement() {
+    return new UniElementImpl({
+      id: "",
+      name: "",
+      attrs: /* @__PURE__ */ new Map(),
+      style: /* @__PURE__ */ new Map()
+    });
+  }
 }
 class UniNormalPageImpl extends UniPageImpl {
   getDialogPages() {

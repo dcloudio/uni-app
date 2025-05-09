@@ -15,7 +15,7 @@ import {
   setCurrentNormalDialogPage,
   setCurrentSystemDialogPage,
 } from './dialogPage'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/UniPage'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/native/UniPage'
 
 export function setupXPage(
   instance: ComponentInternalInstance,

@@ -36,7 +36,7 @@ import {
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
-import type { UniPageBody } from '@dcloudio/uni-app-x/types/UniPage'
+import type { UniPageBody } from '@dcloudio/uni-app-x/types/native/UniPage'
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -209,6 +209,18 @@ class UniPageImpl implements UniPage {
   getParentPage: () => UniPage | null = () => null
   getDialogPages(): UniPage[] {
     return []
+  }
+  getAndroidActivity() {
+    return null
+  }
+  exitFullscreen() {}
+  createElement() {
+    return new UniElementImpl({
+      id: '',
+      name: '',
+      attrs: new Map(),
+      style: new Map(),
+    })
   }
   constructor({
     route,

@@ -13224,7 +13224,7 @@ const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type = 'wgs84', geocode 
         reject('getLocation:fail ' + e.message);
     }, {
         geocode: geocode,
-        enableHighAccuracy: isHighAccuracy || altitude,
+        enableHighAccuracy: isHighAccuracy,
         timeout: highAccuracyExpireTime,
         coordsType: type,
     });

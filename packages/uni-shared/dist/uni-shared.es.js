@@ -221,7 +221,7 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view-column',
 ];
 // 内置的easycom组件
-const UVUE_BUILT_IN_EASY_COMPONENTS = ['map', 'camera'];
+const UVUE_BUILT_IN_EASY_COMPONENTS = ['map', 'camera', 'live-player'];
 function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
 }
