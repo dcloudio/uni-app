@@ -241,7 +241,7 @@ const NVUE_CUSTOM_COMPONENTS = [
 ]
 
 // 内置的easycom组件
-const UVUE_BUILT_IN_EASY_COMPONENTS = ['map', 'camera']
+const UVUE_BUILT_IN_EASY_COMPONENTS = ['map', 'camera', 'live-player']
 
 export function isAppUVueBuiltInEasyComponent(tag: string) {
   return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag)
