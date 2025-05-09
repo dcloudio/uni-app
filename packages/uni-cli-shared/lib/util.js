@@ -192,7 +192,8 @@ function showRunPrompt (delay = 300) {
     clearTimeout(runPromptTimer)
   }
   runPromptTimer = setTimeout(() => {
-    if (!isInHBuilderX) {
+    const { runByHBuilderX } = require('./platform')
+    if (!runByHBuilderX) {
       const chalk = require('chalk')
       const outputDir = path.relative(
         process.env.UNI_CLI_CONTEXT,
