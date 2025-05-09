@@ -33,6 +33,12 @@ export function uniAppJsPlugin(resolvedConfig: ResolvedConfig): Plugin {
           }
         },
       })
+      // 强行解除uniCloud对uni-push的依赖关系
+      if (filename.endsWith('uni-cloud-x.es.js')) {
+        uniExtApis.delete('uni.getPushClientId')
+        uniExtApis.delete('uni.onPushMessage')
+        uniExtApis.delete('uni.offPushMessage')
+      }
       return {
         code: source,
         map: { mappings: '' },
