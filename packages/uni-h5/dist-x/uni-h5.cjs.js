@@ -3205,7 +3205,7 @@ function removeRouteCache(routeKey) {
   }
 }
 function removePage(routeKey, removeRouteCaches = true) {
-  let pageVm = currentPagesMap.get(routeKey);
+  const pageVm = currentPagesMap.get(routeKey);
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, uniShared.ON_UNLOAD);
   currentPagesMap.delete(routeKey);
@@ -11004,7 +11004,10 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$8,
-  setup(props2) {
+  emits: ["load"],
+  setup(props2, {
+    emit: emit2
+  }) {
     Invoke();
     const rootRef = vue.ref(null);
     vue.ref(null);

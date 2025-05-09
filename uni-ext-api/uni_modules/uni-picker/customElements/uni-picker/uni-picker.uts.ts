@@ -47,7 +47,7 @@ export class UniPickerElement extends UniFormControlElement<any> implements UniC
 	static get observedAttributes() : Array<string> {
 		return [
 			/* 通用属性 */
-			'headerText',
+			'header-text',
 			'disabled',
 			'mode',
 			'bindcancel',
@@ -56,7 +56,7 @@ export class UniPickerElement extends UniFormControlElement<any> implements UniC
 			// mode 为 selector 或 multiSelector 时，range 有效
 			'range',
 			// 当 range 是一个 Object Array 时，通过 range-key 来指定 Object 中 key 的值作为选择器显示内容
-			'rangeKey',
+			'range-key',
 			'value',
 		]
 	}

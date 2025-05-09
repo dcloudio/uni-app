@@ -696,8 +696,8 @@ function removePage(curPage) {
   }
   pages.splice(index2, 1);
   {
+    curPage.$page.vm = null;
     curPage.$page = null;
-    curPage = null;
   }
 }
 function backbuttonListener() {

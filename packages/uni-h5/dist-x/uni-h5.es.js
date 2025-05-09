@@ -8566,7 +8566,7 @@ function removeRouteCache(routeKey) {
 }
 function removePage(routeKey, removeRouteCaches = true) {
   var _a, _b;
-  let pageVm = currentPagesMap.get(routeKey);
+  const pageVm = currentPagesMap.get(routeKey);
   {
     const dialogPages = pageVm.$page.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
@@ -8576,14 +8576,13 @@ function removePage(routeKey, removeRouteCaches = true) {
     if (systemDialogPages) {
       systemDialogPages.length = 0;
     }
-    pageVm.$page = null;
   }
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, ON_UNLOAD);
   currentPagesMap.delete(routeKey);
   removeRouteCaches && removeRouteCache(routeKey);
   {
-    pageVm = null;
+    pageVm.$page.vm = null;
   }
 }
 let id = /* @__PURE__ */ getStateId();
@@ -20864,11 +20863,14 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$c,
+  emits: ["load"],
   rootElement: {
     name: "uni-web-view",
     class: UniWebViewElement
   },
-  setup(props2) {
+  setup(props2, {
+    emit: emit2
+  }) {
     Invoke();
     const rootRef = ref(null);
     const iframeRef = ref(null);
@@ -20879,8 +20881,15 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
+    const trigger = useCustomEvent(rootRef, emit2);
     const renderIframe = () => {
       const iframe = document.createElement("iframe");
+      iframe.onload = function(event) {
+        trigger("load", event, {
+          src: props2.src,
+          url: props2.src
+        });
+      };
       watchEffect(() => {
         for (const key in $attrs.value) {
           if (hasOwn($attrs.value, key)) {
