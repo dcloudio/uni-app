@@ -31,6 +31,10 @@ export function createBuild(
         : process.env.NODE_ENV === 'production'
         ? 'terser'
         : false,
+    terserOptions:
+      process.env.NODE_ENV !== 'production'
+        ? { compress: { drop_console: false } }
+        : undefined,
     rollupOptions: {
       onwarn(warning, warn) {
         if (warning.code === 'EMPTY_BUNDLE') {
