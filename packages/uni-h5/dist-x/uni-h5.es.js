@@ -8493,6 +8493,7 @@ const closeDialogPage = (options) => {
       const parentSystemDialogPages = parentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
       const index2 = parentSystemDialogPages.indexOf(dialogPage);
       if (index2 > -1) {
+        invokeHook(parentSystemDialogPages[index2].vm, ON_UNLOAD);
         parentSystemDialogPages.splice(index2, 1);
         dialogPageTriggerParentShow(dialogPage, 1);
       } else {
@@ -8587,7 +8588,9 @@ function removePage(routeKey, removeRouteCaches = true) {
     }
     const systemDialogPages = (_b = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages) == null ? void 0 : _b.value;
     if (systemDialogPages) {
-      systemDialogPages.length = 0;
+      for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+        closeDialogPage({ dialogPage: systemDialogPages[i] });
+      }
     }
   }
   pageVm.$.__isUnload = true;
