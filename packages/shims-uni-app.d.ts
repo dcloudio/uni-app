@@ -381,6 +381,9 @@ declare namespace UniNamespace {
     midButton?: TabBarMidButtonOptions
     selectedIndex?: number
     shown: boolean
+    // 支付宝小程序自定义tabBar字段
+    overlay?: boolean
+    customize?: boolean
   }
 
   interface ComponentDescriptor {}
