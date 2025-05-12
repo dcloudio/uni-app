@@ -5,18 +5,18 @@ describe('mp-kuaishou: transform v-on', () => {
     test(`input`, () => {
       assert(
         `<input @input="input"/>`,
-        `<input bindinput="__e" data-e-o="{{a}}"/>`,
+        `<input bindinput="{{a}}"/>`,
         `(_ctx, _cache) => {
-  return { a: { 'input': _o(_ctx.input) } }
+  return { a: _o(_ctx.input) }
 }`
       )
     })
     test(`textarea`, () => {
       assert(
         `<textarea @input="input"></textarea>`,
-        `<textarea bindinput="__e" data-e-o="{{a}}"></textarea>`,
+        `<textarea bindinput="{{a}}"></textarea>`,
         `(_ctx, _cache) => {
-  return { a: { 'input': _o(_ctx.input) } }
+  return { a: _o(_ctx.input) }
 }`
       )
     })
@@ -34,18 +34,18 @@ describe('mp-kuaishou: transform v-on', () => {
     test(`custom event`, () => {
       assert(
         `<custom @click="click"/>`,
-        `<custom bindclick="__e" u-i="2a9ec0b0-0" bind:__l="__l" eO="{{a}}"/>`,
+        `<custom bindclick="{{a}}" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
         `(_ctx, _cache) => {
-  return { a: _j({ 'click': _o(_ctx.click) }) }
+  return { a: _o(_ctx.click) }
 }`
       )
     })
     test(`multi custom event`, () => {
       assert(
         `<custom @unmount="unmount" @custom-mount="mount();created();"/>`,
-        `<custom bindunmount="__e" bindcustomMount="__e" u-i="2a9ec0b0-0" bind:__l="__l" eO="{{a}}"/>`,
+        `<custom bindunmount="{{a}}" bindcustomMount="{{b}}" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
         `(_ctx, _cache) => {
-  return { a: _j({ 'unmount': _o(_ctx.unmount), 'customMount': _o($event => { _ctx.mount(); _ctx.created(); }) }) }
+  return { a: _o(_ctx.unmount), b: _o($event => { _ctx.mount(); _ctx.created(); }) }
 }`
       )
     })
@@ -54,18 +54,18 @@ describe('mp-kuaishou: transform v-on', () => {
     test(`getphonenumber`, () => {
       assert(
         `<button open-type="getPhoneNumber" @getphonenumber="getInfo"></button>`,
-        `<button open-type="getPhoneNumber" bindgetphonenumber="__e" data-e-o="{{a}}"></button>`,
+        `<button open-type="getPhoneNumber" bindgetphonenumber="{{a}}"></button>`,
         `(_ctx, _cache) => {
-  return { a: { 'getphonenumber': _o(_ctx.getInfo) } }
+  return { a: _o(_ctx.getInfo) }
 }`
       )
     })
     test(`getuserextendinfo`, () => {
       assert(
         `<button open-type="getuserextendinfo" @getuserextendinfo="getInfo"></button>`,
-        `<button open-type="getuserextendinfo" bindgetuserextendinfo="__e" data-e-o="{{a}}"></button>`,
+        `<button open-type="getuserextendinfo" bindgetuserextendinfo="{{a}}"></button>`,
         `(_ctx, _cache) => {
-  return { a: { 'getuserextendinfo': _o(_ctx.getInfo) } }
+  return { a: _o(_ctx.getInfo) }
 }`
       )
     })
