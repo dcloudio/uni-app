@@ -79,7 +79,7 @@ export interface ImportItem {
 }
 
 export interface TransformContext
-  extends Required<Omit<TransformOptions, 'filename' | 'className'>> {
+  extends Required<Omit<TransformOptions, 'className'>> {
   inSSR?: false
   selfName: string | null
   root: RootNode
@@ -140,6 +140,7 @@ export function createTransformContext(
   const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
   const context: TransformContext = {
     // options
+    filename,
     mode,
     rootDir,
     targetLanguage,
