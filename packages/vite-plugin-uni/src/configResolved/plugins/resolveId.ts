@@ -1,11 +1,19 @@
 import path from 'path'
 // import debug from 'debug'
+import fs from 'fs-extra'
 import type { Plugin } from 'vite'
 import { resolveBuiltIn, resolveUTSModule } from '@dcloudio/uni-cli-shared'
 
 import type { VitePluginUniResolvedOptions } from '../..'
 
 // const debugResolve = debug('uni:resolve-id')
+
+const isPiniaVersion3 =
+  Number(
+    fs
+      .readJSONSync(resolveBuiltIn(path.join('pinia/package.json')))
+      .version.split('.')[0]
+  ) >= 3
 
 const BUILT_IN_MODULES = {
   'vue-router': 'dist/vue-router.esm-bundler.js',
@@ -17,7 +25,7 @@ const BUILT_IN_MODULES = {
   '@dcloudio/uni-shared': 'dist/uni-shared.es.js',
   '@dcloudio/uni-stacktracey': 'dist/uni-stacktracey.es.js',
   '@vue/shared': 'dist/shared.esm-bundler.js',
-  pinia: 'dist/pinia.mjs',
+  pinia: isPiniaVersion3 ? '' : 'dist/pinia.mjs',
 }
 
 export type BuiltInModulesKey = keyof typeof BUILT_IN_MODULES
