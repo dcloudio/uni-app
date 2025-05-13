@@ -197,6 +197,8 @@ export type RunKotlinDevResult = UTSResult & {
   inject_modules: string[]
   kotlinc: boolean
   kotlincJars?: string[]
+  code: number
+  msg: string
 }
 
 export type RunKotlinBuildResult = UTSResult & {
@@ -352,6 +354,9 @@ export async function runKotlinDev(
         hbuilderFormatter
       )
     )
+
+    result.code = code
+    result.msg = msg
 
     // 等待 stderrListener 执行完毕
     if (waiting.done) {

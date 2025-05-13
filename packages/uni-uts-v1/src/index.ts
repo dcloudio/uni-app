@@ -569,6 +569,9 @@ export async function compile(
           uniModules: uni_modules || [],
         })
         if (res) {
+          if (res.code) {
+            console.error(`uts插件[${pkg.id}]编译失败`)
+          }
           if (isArray(res.deps) && res.deps.length) {
             // 添加其他文件的依赖
             deps.push(...res.deps)
