@@ -67,6 +67,10 @@ const props = {
     type: [Boolean, String],
     default: false,
   },
+  id: {
+    type: String,
+    default: '',
+  },
 }
 
 type SliderProps = ExtractPropTypes<typeof props>
@@ -145,7 +149,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const { setBgColor, setBlockBg, setActiveColor, setBlockStyle } = state
 
       return (
-        <uni-slider ref={sliderRef} onClick={withWebEvent(_onClick)}>
+        <uni-slider
+          ref={sliderRef}
+          id={props.id}
+          onClick={withWebEvent(_onClick)}
+        >
           <div class="uni-slider-wrapper">
             <div class="uni-slider-tap-area">
               <div style={setBgColor.value} class="uni-slider-handle-wrapper">

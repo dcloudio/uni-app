@@ -80,6 +80,10 @@ const props = {
     type: [Boolean, String],
     default: false,
   },
+  id: {
+    type: String,
+    default: '',
+  },
 }
 
 type SliderProps = ExtractPropTypes<typeof props>
@@ -182,7 +186,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       } = state
 
       return (
-        <uni-slider ref={sliderRef}>
+        <uni-slider ref={sliderRef} id={props.id}>
           <div class="uni-slider-wrapper">
             <div class="uni-slider-input">
               <div style={setTrackBgColor.value} class="uni-slider-track">
