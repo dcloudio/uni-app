@@ -22,7 +22,7 @@ import {
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
   shouldAutoImportUniCloud,
-  updateManifestModules,
+  updateManifestModulesByCloud,
 } from './utils'
 import { parseJson } from './shared'
 import type {
@@ -105,7 +105,12 @@ export async function runSwiftProd(
     if (isModule) {
       // noop
     } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
-      updateManifestModules('app-ios', inputDir, result.inject_apis, extApis)
+      updateManifestModulesByCloud(
+        'app-ios',
+        inputDir,
+        result.inject_apis,
+        extApis
+      )
     } else {
       addPluginInjectApis(result.inject_apis)
     }

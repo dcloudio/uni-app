@@ -39,7 +39,7 @@ import {
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
   shouldAutoImportUniCloud,
-  updateManifestModules,
+  updateManifestModulesByCloud,
 } from './utils'
 import type { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
@@ -159,7 +159,7 @@ export async function runKotlinProd(
     if (isModule) {
       // noop
     } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
-      updateManifestModules(
+      updateManifestModulesByCloud(
         'app-android',
         inputDir,
         result.inject_apis,

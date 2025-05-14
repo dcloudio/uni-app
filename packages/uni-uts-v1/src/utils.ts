@@ -1192,7 +1192,7 @@ export function isEnableInlineReified() {
   return isEnableUTSFeature('enableInlineReified')
 }
 
-export function updateManifestModules(
+export function updateManifestModulesByCloud(
   platform: 'app-android' | 'app-ios',
   inputDir: string,
   inject_apis: string[],
