@@ -5,11 +5,21 @@ let deviceWidth = 0
 let deviceDPR = 0
 
 function checkDeviceWidth () {
-  const { windowWidth, pixelRatio, platform } = __PLATFORM__ === 'mp-weixin'
-    ? Object.assign({}, __GLOBAL__.getWindowInfo(), {
-      platform: __GLOBAL__.getDeviceInfo().platform
-    })
-    : __GLOBAL__.getSystemInfoSync() // uni=>__GLOBAL__ runtime 编译目标是 uni 对象，内部不允许直接使用 uni
+  let windowWidth, pixelRatio, platform
+
+  if (__PLATFORM__ === 'mp-weixin') {
+    const windowInfo = typeof wx.getWindowInfo === 'function' && wx.getWindowInfo() ? wx.getWindowInfo() : wx.getSystemInfoSync()
+    const deviceInfo = typeof wx.getDeviceInfo === 'function' && wx.getDeviceInfo() ? wx.getDeviceInfo() : wx.getSystemInfoSync()
+
+    windowWidth = windowInfo.windowWidth
+    pixelRatio = windowInfo.pixelRatio
+    platform = deviceInfo.platform
+  } else {
+    const baseInfo = __GLOBAL__.getSystemInfoSync()
+    windowWidth = baseInfo.windowWidth
+    pixelRatio = baseInfo.pixelRatio
+    platform = baseInfo.platform
+  }
 
   deviceWidth = windowWidth
   deviceDPR = pixelRatio

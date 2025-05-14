@@ -24,7 +24,12 @@ export function chooseVideo ({
     type: 'video'
   })
   document.body.appendChild(videoInput)
-
+  videoInput.addEventListener('cancel', function () {
+    const res = {
+      errMsg: 'chooseVideo:fail cancel'
+    }
+    invoke(callbackId, res)
+  })
   videoInput.addEventListener('change', function (event) {
     const file = event.target.files[0]
     const callbackResult = {
