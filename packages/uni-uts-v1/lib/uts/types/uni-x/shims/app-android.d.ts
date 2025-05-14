@@ -23,7 +23,7 @@ declare global {
   type CreateVueComponent = any
 
   function numberEquals(a: any, b: any): boolean
-  function utsMapOf(obj?: Record<string, any>): any
+  function utsMapOf(obj?: Record<string, unknown>): any
   function padStyleMapOf(style: any): any
 
   function isTrue(value: any): boolean
