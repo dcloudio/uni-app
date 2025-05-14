@@ -582,19 +582,17 @@ export async function compile(
             if (res.code) {
               errMsg = compileErrMsg(pkg.id)
               try {
-                console.error(
-                  `error: ` +
-                    (await parseUTSSwiftPluginStacktrace({
-                      stacktrace: res.msg,
-                      sourceMapFile: resolveUTSPluginSourceMapFile(
-                        'swift',
-                        filename,
-                        inputDir,
-                        outputDir
-                      ),
-                      sourceRoot: inputDir,
-                    }))
-                )
+                const stacktrace = await parseUTSSwiftPluginStacktrace({
+                  stacktrace: res.msg,
+                  sourceMapFile: resolveUTSPluginSourceMapFile(
+                    'swift',
+                    filename,
+                    inputDir,
+                    outputDir
+                  ),
+                  sourceRoot: inputDir,
+                })
+                console.log(stacktrace)
               } catch (e) {
                 console.error(`error: ` + res.msg)
               }

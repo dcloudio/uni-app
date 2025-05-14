@@ -26,7 +26,9 @@ export async function parseUTSSwiftPluginStacktrace({
       sourceRoot
     )
     if (codes && codes.length) {
-      res.push(...codes)
+      const message = codes[0]
+      res.push('\u200Cerror: ' + message + '\u200C')
+      res.push(...codes.slice(1))
     } else {
       res.push(line)
     }
