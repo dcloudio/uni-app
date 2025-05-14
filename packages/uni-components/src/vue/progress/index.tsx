@@ -1,11 +1,12 @@
 import {
-  ref,
-  reactive,
-  watch,
+  type ExtractPropTypes,
   computed,
   onMounted,
-  ExtractPropTypes,
+  reactive,
+  ref,
+  watch,
 } from 'vue'
+import { rpx2px } from '@dcloudio/uni-core'
 
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
@@ -13,7 +14,7 @@ import { UniElement } from '../../helpers/UniElement'
 import { PROGRESS_VALUES, progressProps } from '../../components/progress'
 
 type ProgressProps = ExtractPropTypes<typeof progressProps>
-type ProgerssState = ReturnType<typeof useProgressState>
+type ProgressState = ReturnType<typeof useProgressState>
 
 export class UniProgressElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -95,7 +96,9 @@ function useProgressState(props: ProgressProps) {
 
   const outerBarStyle = computed(
     () =>
-      `background-color: ${props.backgroundColor}; height: ${props.strokeWidth}px;`
+      `background-color: ${props.backgroundColor}; height: ${rpx2px(
+        props.strokeWidth
+      )}px;`
   )
   const innerBarStyle = computed(() => {
     // 兼容下不推荐的属性，activeColor 优先级高于 color。
@@ -135,7 +138,7 @@ function useProgressState(props: ProgressProps) {
   return state
 }
 
-function _activeAnimation(state: ProgerssState, props: ProgressProps) {
+function _activeAnimation(state: ProgressState, props: ProgressProps) {
   if (props.active) {
     state.currentPercent =
       props.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent
