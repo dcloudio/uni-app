@@ -8,12 +8,16 @@ import type { VitePluginUniResolvedOptions } from '../..'
 
 // const debugResolve = debug('uni:resolve-id')
 
-const isPiniaVersion3 =
-  Number(
-    fs
-      .readJSONSync(resolveBuiltIn(path.join('pinia/package.json')))
-      .version.split('.')[0]
-  ) >= 3
+let isPiniaVersion3 = false
+try {
+  const piniaPath = resolveBuiltIn('pinia')
+  isPiniaVersion3 =
+    Number(
+      fs
+        .readJSONSync(path.join(piniaPath, 'package.json'))
+        .version.split('.')[0]
+    ) >= 3
+} catch (error) {}
 
 const BUILT_IN_MODULES = {
   'vue-router': 'dist/vue-router.esm-bundler.js',
