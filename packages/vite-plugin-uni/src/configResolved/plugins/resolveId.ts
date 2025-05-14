@@ -10,11 +10,10 @@ import type { VitePluginUniResolvedOptions } from '../..'
 
 let isPiniaVersion3 = false
 try {
-  const piniaPath = resolveBuiltIn('pinia')
   isPiniaVersion3 =
     Number(
       fs
-        .readJSONSync(path.join(piniaPath, 'package.json'))
+        .readJSONSync(path.join(resolveBuiltIn('pinia/package.json')))
         .version.split('.')[0]
     ) >= 3
 } catch (error) {}
