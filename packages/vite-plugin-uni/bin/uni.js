@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+// 尽可能提前加载 alias
+require('@dcloudio/uni-cli-shared/dist/alias')
+// 尽可能提前加载 polyfill
+require('@dcloudio/uni-cli-shared/dist/polyfill')
+
 // 暂时忽略 cjs 警告
 process.env.VITE_CJS_IGNORE_WARNING = true
 

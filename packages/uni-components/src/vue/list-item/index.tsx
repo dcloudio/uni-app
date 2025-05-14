@@ -32,7 +32,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     class: UniListItemElement,
   },
   //#endif
-  setup(props, { slots, expose }) {
+  setup(props, { slots, expose, attrs }) {
+    if (attrs.slot === 'refresher') {
+      return () => {
+        return <uni-list-item>{slots.default && slots.default()}</uni-list-item>
+      }
+    }
     const rootRef = ref<HTMLElement | Node | null>(null)
     const isVertical = inject('__listViewIsVertical') as ComputedRef<boolean>
 

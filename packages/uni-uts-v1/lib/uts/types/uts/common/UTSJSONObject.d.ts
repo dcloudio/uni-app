@@ -1,7 +1,7 @@
 interface UTSJSONObject {
-  constructor : Function;
+  constructor: Function;
   // 4.41
-  [key : string] : any | null
+  [key: string]: any | null
   /**
      获取一个 属性，返回类型是any 或者 null
      @return 如果属性存在返回结果，不存在返回null
@@ -21,6 +21,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -29,7 +36,7 @@ interface UTSJSONObject {
         }
      }
    */
-  get(key : string) : any | null;
+  get(key: string): any | null;
   /**
      添加或更新一个指定的属性
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#set
@@ -48,6 +55,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -56,7 +70,7 @@ interface UTSJSONObject {
         }
      }
    */
-  set(key : string, value : any) : void;
+  set(key: string, value: any): void;
   /**
      获取一个 属性，返回类型是any 或者 null
      @return 如果属性存在返回结果，不存在返回null
@@ -76,6 +90,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -84,7 +105,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getAny(key : string) : any | null;
+  getAny(key: string): any | null;
   /**
      获取一个 属性，返回类型是any
      @param key 属性值, 可以是keyPath
@@ -106,6 +127,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -114,7 +142,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getAny(key : string, def : any) : any;
+  getAny(key: string, def: any): any;
   /**
      获取一个Boolean属性，返回类型是Boolean 或者 null
      @return 如果属性名存在，且类型为Boolean返回对应的结果，不存在返回null
@@ -134,6 +162,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -142,7 +177,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getBoolean(key : string) : boolean | null;
+  getBoolean(key: string): boolean | null;
   /**
      获取一个Boolean属性，返回类型是Boolean
      @param key 属性值, 可以是keyPath
@@ -164,6 +199,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -172,7 +214,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getBoolean(key : string, def : boolean) : boolean;
+  getBoolean(key: string, def: boolean): boolean;
   /**
      获取一个number属性，返回类型是number 或者 null
      @return 如果属性名存在，且类型为number返回对应的结果，不存在返回null
@@ -192,6 +234,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -200,7 +249,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getNumber(key : string) : number | null;
+  getNumber(key: string): number | null;
   /**
      获取一个number属性，返回类型是number
      @param key 属性值, 可以是keyPath
@@ -222,6 +271,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -230,7 +286,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getNumber(key : string, def : number) : number;
+  getNumber(key: string, def: number): number;
   /**
      获取一个string属性，返回类型是string 或者 null
      @return 如果属性名存在，且类型为string返回对应的结果，不存在返回null
@@ -250,6 +306,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -258,7 +321,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getString(key : string) : string | null;
+  getString(key: string): string | null;
   /**
      获取一个string属性，返回类型是string
      @param key 属性值, 可以是keyPath
@@ -280,6 +343,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -288,7 +358,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getString(key : string, def : string) : string;
+  getString(key: string, def: string): string;
   /**
      获取一个UTSJSONObject属性，返回类型是UTSJSONObject 或者 null
      @return 如果属性名存在，且类型为UTSJSONObject返回对应的结果，不存在返回null
@@ -308,6 +378,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -316,7 +393,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getJSON(key : string) : UTSJSONObject | null;
+  getJSON(key: string): UTSJSONObject | null;
   /**
      获取一个UTSJSONObject属性，返回类型是UTSJSONObject
      @param key 属性值, 可以是keyPath
@@ -338,6 +415,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -346,7 +430,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getJSON(key : string, def : UTSJSONObject) : UTSJSONObject;
+  getJSON(key: string, def: UTSJSONObject): UTSJSONObject;
   /**
      获取一个Array属性，返回类型是Array 或者 null, 数组元素类型由泛型T决定
      @return 如果属性名存在，且类型为Array返回对应的结果，不存在返回null
@@ -368,6 +452,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -376,7 +467,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getArray<T>(key : string) : Array<T> | null;
+  getArray<T>(key: string): Array<T> | null;
   /**
      获取一个Array属性，返回类型是Array, 数组元素类型由泛型T决定
      @param key 属性值, 可以是keyPath
@@ -400,6 +491,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -408,7 +506,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getArray<T>(key : string, def : Array<T>) : Array<T>;
+  getArray<T>(key: string, def: Array<T>): Array<T>;
   /**
      获取一个Array属性，返回类型是Array 或者 null
      @return 如果属性名存在，且类型为Array返回对应的结果，不存在返回null
@@ -428,6 +526,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -436,7 +541,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getArray(key : string) : Array<any> | null;
+  getArray(key: string): Array<any> | null;
   /**
      获取一个Array属性，返回类型是Array
      @param key 属性值, 可以是keyPath
@@ -458,6 +563,13 @@ interface UTSJSONObject {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -466,7 +578,7 @@ interface UTSJSONObject {
         }
      }
    */
-  getArray(key : string, def : Array<any>) : Array<any>;
+  getArray(key: string, def: Array<any>): Array<any>;
   /**
      将当前 UTSJSONObject 实例转换为 Map 实例。
      @return 返回 Map<string, any> 类型的 map
@@ -486,6 +598,13 @@ interface UTSJSONObject {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -494,7 +613,7 @@ interface UTSJSONObject {
         }
      }
    */
-  toMap() : Map<string, any>;
+  toMap(): Map<string, any>;
 
 
   /**
@@ -518,6 +637,13 @@ interface UTSJSONObject {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -526,12 +652,12 @@ interface UTSJSONObject {
         }
      }
    */
-  parse<T>() : T | null;
+  parse<T>(): T | null;
 
 }
 
 interface UTSJSONObjectConstructor {
-  new(value ?: any) : UTSJSONObject;
+  new(value?: any): UTSJSONObject;
   /**
      以数组的形式返回指定UTSJSONObjetc 对象内可枚举属性的名称列表
      @param item 需要检索的UTSJSONObject 实例对象
@@ -552,7 +678,21 @@ interface UTSJSONObjectConstructor {
                "unixVer": "x",
                "uniUtsPlugin": "4.23",
                "unixUtsPlugin": "4.23"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "4.41"
+          }
         },
         "web": {
            "uniVer": "x",
@@ -560,7 +700,7 @@ interface UTSJSONObjectConstructor {
         }
      }
    */
-  keys(item : UTSJSONObject) : Array<string>;
+  keys(item: UTSJSONObject): Array<string>;
 
   /**
      该方法允许输入一个或者多个UTSJSONObject对象，合并后返回一个新的UTSJSONObject，其中包含全部输入对象的属性字段，如果存在同名的属性会以后传入的属性为准
@@ -582,7 +722,21 @@ interface UTSJSONObjectConstructor {
                "unixVer": "x",
                "uniUtsPlugin": "4.23",
                "unixUtsPlugin": "4.23"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "4.41"
+          }
         },
         "web": {
            "uniVer": "x",
@@ -590,7 +744,7 @@ interface UTSJSONObjectConstructor {
         }
      }
    */
-  assign(...items : UTSJSONObject[]) : UTSJSONObject;
+  assign(...items: UTSJSONObject[]): UTSJSONObject;
 
   /**
      该方法允许输入一个或者多个UTSJSONObject对象，合并后返回一个新的泛型对象T，其中包含全部输入对象的属性字段，如果存在同名的属性会以后传入的属性为准
@@ -614,7 +768,21 @@ interface UTSJSONObjectConstructor {
                "unixVer": "x",
                "uniUtsPlugin": "4.23",
                "unixUtsPlugin": "4.23"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "x",
+            "unixVer": "4.41"
+          }
         },
         "web": {
            "uniVer": "x",
@@ -622,7 +790,7 @@ interface UTSJSONObjectConstructor {
         }
      }
    */
-  assign<T>(...items : any[]) : T;
+  assign<T>(...items: any[]): T;
 }
 
-declare var UTSJSONObject : UTSJSONObjectConstructor;
+declare var UTSJSONObject: UTSJSONObjectConstructor;

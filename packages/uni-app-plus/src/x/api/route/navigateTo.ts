@@ -84,24 +84,26 @@ function _navigateTo({
   invokeHook(ON_HIDE)
   const eventChannel = new EventChannel(getWebviewId() + 1, events)
   return new Promise((resolve) => {
-    const noAnimation = aniType === 'none' || aniDuration === 0
-    function callback(page: IPage) {
-      showWebview(page, aniType, aniDuration, () => {
-        invokeAfterRouteHooks(currentRouteType)
-        resolve({ eventChannel })
-        setStatusBarStyle()
-      })
-    }
-    // 有动画时先执行 show
-    const page = registerPage(
-      { url, path, query, openType: 'navigateTo', eventChannel },
-      noAnimation ? undefined : callback,
-      // 有动画时延迟创建 vm
-      noAnimation ? 0 : 1
-    )
-    if (noAnimation) {
-      callback(page)
-    }
+    setTimeout(() => {
+      const noAnimation = aniType === 'none' || aniDuration === 0
+      function callback(page: IPage) {
+        showWebview(page, aniType, aniDuration, () => {
+          invokeAfterRouteHooks(currentRouteType)
+          resolve({ eventChannel })
+          setStatusBarStyle()
+        })
+      }
+      // 有动画时先执行 show
+      const page = registerPage(
+        { url, path, query, openType: 'navigateTo', eventChannel },
+        noAnimation ? undefined : callback,
+        // 有动画时延迟创建 vm
+        noAnimation ? 0 : 1
+      )
+      if (noAnimation) {
+        callback(page)
+      }
+    }, 0)
   })
 }
 

@@ -162,6 +162,25 @@ at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:708
         }
       )
     ).toMatchSnapshot()
+
+    expect(
+      await parseRuntimeStacktrace(
+        `java.lang.ExceptionInInitializerError
+at java.lang.Class.classForName(Native Method)
+Caused by: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean
+at uni.UNIXXXXXXX.GenComponentsTestBooleanTestBoolean.getDisabled1(test-boolean.kt:68)
+at uni.UNIXXXXXXX.GenComponentsTestBooleanTestBoolean$1.invoke(test-boolean.kt:21)
+at java.lang.reflect.Method.invoke(Native Method)
+at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:708)`,
+        {
+          platform: 'app-android',
+          language: 'kotlin',
+          appid: '__UNI__XXXXXXX',
+          cacheDir,
+          logType: 'error',
+        }
+      )
+    ).toMatchSnapshot()
   })
   test('parseUTSJavaScriptRuntimeStacktrace', async () => {
     const cacheDir = path.resolve(

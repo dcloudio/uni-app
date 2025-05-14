@@ -7,7 +7,7 @@ export default defineComponent({
   props: {
   foo: String
 },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -31,7 +31,7 @@ export default defineComponent({
   props: {
     foo: { type: Number, required: false, default: 5.5 }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -50,7 +50,7 @@ exports[`defineProps custom element retains the props type & production mode 1`]
   props: {
     foo: { type: Number, required: true }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -66,7 +66,7 @@ return (): any | null => { return null }
 exports[`defineProps defineProps w/ runtime options 1`] = `
 "export default defineComponent({
   props: { foo: String },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -84,7 +84,7 @@ exports[`defineProps destructure without enabling reactive destructure 1`] = `
   props: {
     foo: { type: Foo, required: true }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -129,7 +129,7 @@ exports[`defineProps should escape names w/ special symbols 1`] = `
     "til~de": { type: Object, required: true },
     "da-sh": { type: Object, required: true }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -145,7 +145,7 @@ return (): any | null => { return null }
 exports[`defineProps w/ TS assertion 1`] = `
 "export default defineComponent({
   props: ['foo'],
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -166,7 +166,7 @@ export default defineComponent({
   props: {
     x: { type: Number, required: false }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -187,7 +187,7 @@ export default defineComponent({
   props: {
     x: { type: Number, required: false }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -207,7 +207,7 @@ export default defineComponent({
   props: {
     x: { type: Number, required: false }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -236,7 +236,7 @@ export default defineComponent({
     y: { type: String, required: true },
     x: { type: Number, required: false }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -257,7 +257,7 @@ export default defineComponent({
   props: {
     x: { type: Number, required: false }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -275,7 +275,7 @@ exports[`defineProps w/ leading code 1`] = `
     
 export default defineComponent({
   props: {},
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -334,7 +334,7 @@ export default defineComponent({
     propType: { type: Object as PropType<()=>string>, required: true, skipCheck: true },
     any: { type: Object, required: false }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -354,7 +354,7 @@ export default defineComponent({
   props: {
     x: { type: Number, required: false }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -377,7 +377,7 @@ export default defineComponent({
   props: {
     a: { type: String, required: false, default: "a" }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -401,7 +401,7 @@ exports[`defineProps withDefaults (static) 1`] = `
     quuxx: { type: Promise<string>, required: false, async default() { return await Promise.resolve('hi') } },
     fred: { type: String, required: false, get default() { return 'fred' } }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -422,7 +422,7 @@ exports[`defineProps withDefaults (static) w/ production mode 1`] = `
     baz: { type: [Boolean, Function as PropType<() => void>], required: true, default: true },
     qux: { type: [String, Number], required: true, default: 'hi' }
   },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;

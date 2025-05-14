@@ -1,6 +1,8 @@
+// 注意：该文件尽可能少依赖其他文件，否则可能会导致还没有alias的时候，就加载了目标模块
+
 import path from 'path'
 import moduleAlias from 'module-alias'
-import { isInHBuilderX } from './env'
+import { isInHBuilderX } from './utils'
 import type { Formatter } from '../logs/format'
 
 const hbxPlugins = {
@@ -12,13 +14,15 @@ const hbxPlugins = {
 } as const
 
 export function initModuleAlias() {
-  const compilerSfcPath = path.resolve(__dirname, '../../lib/@vue/compiler-sfc')
+  const libDir = path.resolve(__dirname, '../../lib')
+  const compilerSfcPath = path.resolve(libDir, '@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
   moduleAlias.addAliases({
     '@vue/shared': require.resolve('@vue/shared'),
     '@vue/shared/dist/shared.esm-bundler.js': require.resolve(
       '@vue/shared/dist/shared.esm-bundler.js'
     ),
+    '@vue/compiler-core': path.resolve(libDir, '@vue/compiler-core'),
     '@vue/compiler-dom': require.resolve('@vue/compiler-dom'),
     '@vue/compiler-sfc': compilerSfcPath,
     '@vue/server-renderer': serverRendererPath,

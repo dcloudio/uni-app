@@ -39,7 +39,10 @@ export const canIUse = defineSyncApi<API_TYPE_CAN_I_USE>(
     if (hasOwn(SCHEMA_CSS, schema)) {
       return SCHEMA_CSS[schema]
     }
-    return true
+    if (hasOwn(uni, schema)) {
+      return true
+    }
+    return false
   },
   CanIUseProtocol
 )

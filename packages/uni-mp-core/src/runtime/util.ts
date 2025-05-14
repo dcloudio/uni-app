@@ -236,7 +236,7 @@ export function getTriggerEventDetail(eventId: number) {
 export function getLocaleLanguage() {
   let localeLanguage = ''
   if (__PLATFORM__ === 'mp-weixin') {
-    const appBaseInfo = __GLOBAL__.getAppBaseInfo()
+    const appBaseInfo = wx.getAppBaseInfo?.() || wx.getSystemInfoSync()
     const language =
       appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN
     localeLanguage = normalizeLocale(language) || LOCALE_EN

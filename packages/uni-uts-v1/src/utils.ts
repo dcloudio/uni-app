@@ -153,7 +153,7 @@ export function copyPlatformNativeLanguageFiles(
   utsInputDir: string,
   utsOutputDir: string,
   extnameArr: string[],
-  rewriteConsoleExpr?: (fileName: string, content: string) => string
+  transform?: (fileName: string, content: string) => string
 ) {
   const srcFiles: string[] = []
   const destFiles: string[] = []
@@ -170,9 +170,7 @@ export function copyPlatformNativeLanguageFiles(
       const srcFile = path.resolve(utsInputDir, file)
       const destFile = path.resolve(utsOutputDir, file)
       const content = fs.readFileSync(srcFile, 'utf8')
-      const newContent = rewriteConsoleExpr
-        ? rewriteConsoleExpr(srcFile, content)
-        : content
+      const newContent = transform ? transform(srcFile, content) : content
       fs.outputFileSync(destFile, newContent)
       srcFiles.push(srcFile)
       destFiles.push(destFile)
@@ -671,6 +669,7 @@ function copyConfigJson(
           customElementsObj!,
           namespace
         ).forEach((item) => {
+          const name = item.name.replace('uni-', '')
           // customElement优先级高于组件
           const index = configJson[key].findIndex(
             (component: any) => component.name === item.name
@@ -681,6 +680,7 @@ function copyConfigJson(
           configJson[key].push({
             type: 'customElement',
             ...item,
+            name,
           })
         })
       }
@@ -1184,14 +1184,6 @@ function isEnableUTSFeature(feature: EnableKeys) {
   return getUTSConfig()[feature]
 }
 
-export function isEnableUTSNumber() {
-  return isEnableUTSFeature('enableUtsNumber')
-}
-
-export function isEnableNarrowType() {
-  return isEnableUTSFeature('enableNarrowType')
-}
-
 export function isEnableGenericsParameterDefaults() {
   return isEnableUTSFeature('enableGenericsParameterDefaults')
 }
@@ -1200,7 +1192,8 @@ export function isEnableInlineReified() {
   return isEnableUTSFeature('enableInlineReified')
 }
 
-export function updateManifestModules(
+export function updateManifestModulesByCloud(
+  platform: 'app-android' | 'app-ios',
   inputDir: string,
   inject_apis: string[],
   localExtApis: Record<string, [string, string]> = {}
@@ -1210,16 +1203,21 @@ export function updateManifestModules(
     const content = fs.readFileSync(filename, 'utf8')
     try {
       const json = JSON.parse(content)
-      if (!json.app) {
-        json.app = {}
+      if (!json[platform]) {
+        json[platform] = {}
+        if (json.app?.distribute?.modules) {
+          json[platform].distribute = {
+            modules: JSON.parse(JSON.stringify(json.app.distribute.modules)),
+          }
+        }
       }
-      if (!json.app.distribute) {
-        json.app.distribute = {}
+      if (!json[platform].distribute) {
+        json[platform].distribute = {}
       }
-      if (!json.app.distribute.modules) {
-        json.app.distribute.modules = {}
+      if (!json[platform].distribute.modules) {
+        json[platform].distribute.modules = {}
       }
-      const modules = json.app.distribute.modules
+      const modules = json[platform].distribute.modules
       let updated = false
       parseInjectModules(inject_apis, localExtApis, []).forEach((name) => {
         if (!hasOwn(modules, name)) {

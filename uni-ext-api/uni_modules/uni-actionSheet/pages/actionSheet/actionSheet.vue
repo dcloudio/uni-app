@@ -11,14 +11,16 @@
       <view :style="backgroundColor != null ? {backgroundColor} : {}" class="uni-action-sheet_dialog__menu"
         :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
         <template v-if="title">
-          <view class="uni-action-sheet_dialog__title"
+          <view class="uni-action-sheet_dialog__title border-b"
             :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
             <text :style="{ color: titleColor }" class="uni-action-sheet_dialog__title__text"
               :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
               {{ title }}
             </text>
           </view>
+          <!-- #ifdef WEB -->
           <view class="divider" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"></view>
+          <!-- #endif -->
         </template>
         <!-- #ifdef WEB -->
         <view class="uni-action-sheet_dialog__cell__container"
@@ -28,17 +30,19 @@
           <scroll-view class="uni-action-sheet_dialog__cell__container"
             :class="{'uni-action-sheet_landscape__mode': isLandscape}">
           <!-- #endif -->
-            <view v-for="(item, index) in itemList" :key="index">
-              <view v-if="index !== 0" class="divider" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"></view>
+            <template v-for="(item, index) in itemList" :key="index">
+            <!-- #ifdef WEB -->
+            <view v-if="index !== 0" class="divider" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"></view>
+            <!-- #endif -->
               <view class="uni-action-sheet_dialog__cell"
-                :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }"
+                :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape, 'border-t': index !== 0 }"
                 @click="handleMenuItemClick(index)">
                 <text :style="{color: itemColor}" class="uni-action-sheet_dialog__cell__text"
                   :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
                   {{ item }}
                 </text>
               </view>
-            </view>
+            </template>
           <!-- #ifdef APP -->
           </scroll-view>
           <!-- #endif -->
@@ -93,7 +97,15 @@
         windowHeight: 0,
         popover: {},
         // #endif
-        bottomNavigationHeight: 0
+        bottomNavigationHeight: 0,
+        appTheme: null as string | null,
+        hostTheme: null as string | null,
+        // #ifdef APP-ANDROID || APP-IOS
+        appThemeChangeCallbackId: -1,
+        osThemeChangeCallbackId: -1,
+        // #endif
+        menuItemClicked: false,
+        cancelButtonClicked: false,
       }
     },
     onLoad(options) {
@@ -137,22 +149,26 @@
       } else if (osLanguage != null) {
         this.language = osLanguage
       }
-      const osTheme = systemInfo.osTheme
       const appTheme = systemInfo.appTheme
       if (appTheme != null && appTheme != "auto") {
-        this.theme = appTheme
-      } else if (osTheme != null) {
-        this.theme = osTheme
+        this.appTheme = appTheme
+        this.handleThemeChange()
+      }
+      const osTheme = systemInfo.osTheme
+      if (osTheme != null && this.appTheme == null) {
+        this.appTheme = osTheme
+        this.handleThemeChange()
       }
       // #ifdef WEB
       const hostTheme = systemInfo.hostTheme
       if (hostTheme != null) {
-        this.theme = hostTheme
+        this.hostTheme = hostTheme
+        this.handleThemeChange()
       } 
-      // #endif
-      this.isLandscape = systemInfo.deviceOrientation == 'landscape'
-
-      // #ifdef WEB
+      uni.onHostThemeChange((res) => {
+        this.hostTheme = res.theme
+        this.handleThemeChange()
+      });
       this.windowHeight = systemInfo.windowHeight
       this.windowWidth = systemInfo.windowWidth
       window.addEventListener('resize', this.fixSize)
@@ -164,19 +180,15 @@
           this.language = res.locale
         }
       })
-      uni.onThemeChange((res) => {
-        this.theme = res.theme
-      });
       // #endif
+      this.isLandscape = systemInfo.deviceOrientation == 'landscape'
       // #ifdef APP-ANDROID || APP-IOS
-      uni.onAppThemeChange((res: AppThemeChangeResult) => {
+      this.appThemeChangeCallbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
         const appTheme = res.appTheme
         if (appTheme != null && appTheme != "auto") {
-          this.theme = appTheme
+          this.appTheme = appTheme
+          this.handleThemeChange()
         }
-      })
-      uni.onOsThemeChange((res: OsThemeChangeResult) => {
-        this.theme = res.osTheme
       })
       // #endif
     },
@@ -281,12 +293,20 @@
       this.isLandscape = systemInfo.deviceOrientation == 'landscape'
     },
     onUnload() {
+      if (!this.menuItemClicked && !this.cancelButtonClicked) {
+        // 非用户交互导致关闭 actionSheet, 触发 fail 回调
+        uni.$emit(this.failEventName, {})
+      }
       uni.$off(this.optionsEventName, null)
       uni.$off(this.readyEventName, null)
       uni.$off(this.successEventName, null)
       uni.$off(this.failEventName, null)
       // #ifdef WEB
       window.removeEventListener('resize', this.fixSize)
+      // #endif
+      // #ifdef APP-ANDROID || APP-IOS
+      uni.offAppThemeChange(this.appThemeChangeCallbackId)
+      uni.offOsThemeChange(this.osThemeChangeCallbackId)
       // #endif
     },
     methods: {
@@ -317,12 +337,21 @@
         }, 250)
       },
       handleMenuItemClick(tapIndex: number) {
+        this.menuItemClicked = true
         this.closeActionSheet()
         uni.$emit(this.successEventName, tapIndex)
       },
       handleCancel() {
+        this.cancelButtonClicked = true
         this.closeActionSheet()
         uni.$emit(this.failEventName, {})
+      },
+      handleThemeChange() {
+        if(this.hostTheme != null){
+          this.theme = this.hostTheme!
+        } else if(this.appTheme != null){
+          this.theme = this.appTheme!
+        }
       }
     }
   }
@@ -373,6 +402,21 @@
   .uni-action-sheet_dialog__action {
     padding: 16px;
   }
+	
+  /* #ifdef APP */
+	.border-t{
+		border-top: 1rpx solid #e5e5e5;
+	}
+  .border-t.uni-action-sheet_dark__mode {
+    border-top-color: #2F3131;
+  }
+  .border-b{
+    border-bottom: 1rpx solid #e5e5e5;
+  }
+  .border-b.uni-action-sheet_dark__mode {
+    border-bottom-color: #2F3131;
+  }
+  /* #endif */
 
   .uni-action-sheet_dialog__title__text,
   .uni-action-sheet_dialog__cell__text,
@@ -408,11 +452,16 @@
     scrollbar-width: none;
     /* #endif */
   }
+  /* #ifdef WEB */
   .divider{
     height: 1px;
     background-color: #e5e5e5;
     transform: scaleY(0.5);
   }
+  .divider.uni-action-sheet_dark__mode {
+    background-color: #2F3131;
+  }
+  /* #endif */
 
   /* dark mode */
   .uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {
@@ -421,9 +470,6 @@
   .uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,
   .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {
     background-color: #2C2C2B;
-  }
-  .divider.uni-action-sheet_dark__mode {
-    background-color: #2F3131;
   }
   .uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {
     color: #999999;

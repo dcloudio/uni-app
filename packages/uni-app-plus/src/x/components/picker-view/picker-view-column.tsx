@@ -5,8 +5,8 @@ import {
   getCurrentInstance,
   inject,
   nextTick,
+  onBeforeUnmount,
   onMounted,
-  onUnmounted,
   reactive,
   ref,
   watch,
@@ -212,7 +212,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
     })
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       const ctx = instance?.proxy
       uniResizeObserver.disconnect()
       $dispatch(ctx, 'PickerView', '_pickerViewUpdateHandler', ctx, 'remove')

@@ -2930,7 +2930,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(
+        name,
+        invokeApi(name, fn, extend({}, args), rest)
+      );
     }
     return wrapperReturnValue(
       name,
@@ -2939,7 +2942,7 @@ function promisify(name, fn) {
           invokeApi(
             name,
             fn,
-            extend(args, { success: resolve, fail: reject }),
+            extend({}, args, { success: resolve, fail: reject }),
             rest
           );
         })
@@ -3168,7 +3171,13 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-  const { windowWidth, pixelRatio: pixelRatio2, platform } = getBaseSystemInfo();
+  let windowWidth, pixelRatio2, platform;
+  {
+    const { windowWidth: w, pixelRatio: p2, platform: pf } = getBaseSystemInfo();
+    windowWidth = w;
+    pixelRatio2 = p2;
+    platform = pf;
+  }
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio2;
   isIOS$1 = platform === "ios";
@@ -4704,7 +4713,7 @@ const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersec
 let reqComponentObserverId = 1;
 class ServiceMediaQueryObserver {
   constructor(component) {
-    this._pageId = component.$page && component.$page.id;
+    this._pageId = (component == null ? void 0 : component.$page) && component.$page.id;
     this._component = component;
   }
   observe(options, callback) {
@@ -7102,7 +7111,10 @@ const canIUse = /* @__PURE__ */ defineSyncApi(
     if (hasOwn(SCHEMA_CSS, schema)) {
       return SCHEMA_CSS[schema];
     }
-    return true;
+    if (hasOwn(uni, schema)) {
+      return true;
+    }
+    return false;
   },
   CanIUseProtocol
 );
@@ -16045,7 +16057,8 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
 }
 function initHooks(options, instance2, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component") {
+  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
+  mpType === "page" && instance2.renderer === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
@@ -16332,6 +16345,7 @@ function reload() {
 }
 const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncError",
+  props: ["error"],
   setup() {
     initI18nAsyncMsgsOnce();
     const {
@@ -16420,6 +16434,7 @@ function setupPage(comp) {
       getPage$BasePage(instance2.proxy).options = query;
       instance2.proxy.options = query;
       const pageMeta = usePageMeta();
+      updateCurPageCssVar(pageMeta);
       instance2.onReachBottom = reactive([]);
       instance2.onPageScroll = reactive([]);
       watch(
@@ -17533,7 +17548,10 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$f,
-  setup(props2) {
+  emits: ["load"],
+  setup(props2, {
+    emit: emit2
+  }) {
     Invoke();
     const rootRef = ref(null);
     const iframeRef = ref(null);
@@ -17544,9 +17562,15 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
+    const trigger = useCustomEvent(rootRef, emit2);
     let _resize;
     const renderIframe = () => {
       const iframe = document.createElement("iframe");
+      iframe.onload = function(event) {
+        trigger("load", event, {
+          src: props2.src
+        });
+      };
       watchEffect(() => {
         for (const key in $attrs.value) {
           if (hasOwn($attrs.value, key)) {
@@ -18010,7 +18034,11 @@ function translateCoordinateSystem(type, coords, skip) {
       });
     });
   }
-  return Promise.reject(new Error("translate coordinate system faild"));
+  return Promise.reject(
+    new Error(
+      "translate coordinate system faild, map provider not configured or not supported"
+    )
+  );
 }
 const props$e = {
   id: {
@@ -19937,6 +19965,9 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
       extension
     });
     document.body.appendChild(fileInput);
+    fileInput.addEventListener("cancel", () => {
+      reject("chooseFile:fail cancel");
+    });
     fileInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const tempFiles = [];
@@ -19993,6 +20024,9 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
       type: "image"
     });
     document.body.appendChild(imageInput);
+    imageInput.addEventListener("cancel", () => {
+      reject("chooseImage:fail cancel");
+    });
     imageInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const tempFiles = [];
@@ -20406,6 +20440,9 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
       type: "video"
     });
     document.body.appendChild(videoInput);
+    videoInput.addEventListener("cancel", () => {
+      reject("chooseVideo:fail cancel");
+    });
     videoInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const file = eventTarget.files[0];
@@ -20465,6 +20502,7 @@ const request = /* @__PURE__ */ defineTaskApi(
     method,
     dataType: dataType2,
     responseType,
+    enableChunked,
     withCredentials,
     timeout = __uniConfig.networkTimeout.request
   }, { resolve, reject }) => {
@@ -20495,52 +20533,162 @@ const request = /* @__PURE__ */ defineTaskApi(
         }
       }
     }
-    const xhr = new XMLHttpRequest();
-    const requestTask = new RequestTask(xhr);
-    xhr.open(method, url);
-    for (const key in header) {
-      if (hasOwn(header, key)) {
-        xhr.setRequestHeader(key, header[key]);
-      }
-    }
-    const timer = setTimeout(function() {
-      xhr.onload = xhr.onabort = xhr.onerror = null;
-      requestTask.abort();
-      reject("timeout", { errCode: 5 });
-    }, timeout);
-    xhr.responseType = responseType;
-    xhr.onload = function() {
-      clearTimeout(timer);
-      const statusCode = xhr.status;
-      let res = responseType === "text" ? xhr.responseText : xhr.response;
-      if (responseType === "text" && dataType2 === "json") {
-        try {
-          res = JSON.parse(res);
-        } catch (error) {
+    let requestTask;
+    if (!enableChunked) {
+      const xhr = new XMLHttpRequest();
+      requestTask = new RequestTask(xhr);
+      xhr.open(method, url);
+      for (const key in header) {
+        if (hasOwn(header, key)) {
+          xhr.setRequestHeader(key, header[key]);
         }
       }
-      resolve({
-        data: res,
-        statusCode,
-        header: parseHeaders(xhr.getAllResponseHeaders()),
-        cookies: []
+      const timer = setTimeout(function() {
+        xhr.onload = xhr.onabort = xhr.onerror = null;
+        requestTask.abort();
+        reject("timeout", { errCode: 5 });
+      }, timeout);
+      xhr.responseType = responseType;
+      xhr.onload = function() {
+        clearTimeout(timer);
+        const statusCode = xhr.status;
+        let res = responseType === "text" ? xhr.responseText : xhr.response;
+        if (responseType === "text") {
+          res = parseResponseText(res, responseType, dataType2);
+        }
+        resolve({
+          data: res,
+          statusCode,
+          header: parseHeaders(xhr.getAllResponseHeaders()),
+          cookies: []
+        });
+      };
+      xhr.onabort = function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
+      };
+      xhr.onerror = function() {
+        clearTimeout(timer);
+        reject(void 0, { errCode: 5 });
+      };
+      xhr.withCredentials = withCredentials;
+      xhr.send(body);
+    } else {
+      if (typeof window.fetch === void 0 || typeof window.AbortController === void 0) {
+        throw new Error(
+          "fetch or AbortController is not supported in this environment"
+        );
+      }
+      const controller = new AbortController();
+      const signal = controller.signal;
+      requestTask = new RequestTask(controller);
+      const fetchOptions = {
+        method,
+        headers: header,
+        body,
+        signal,
+        credentials: withCredentials ? "include" : "same-origin"
+      };
+      const timer = setTimeout(function() {
+        requestTask.abort();
+        reject("timeout", { errCode: 5 });
+      }, timeout);
+      fetchOptions.signal.addEventListener("abort", function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
       });
-    };
-    xhr.onabort = function() {
-      clearTimeout(timer);
-      reject("abort", { errCode: 600003 });
-    };
-    xhr.onerror = function() {
-      clearTimeout(timer);
-      reject(void 0, { errCode: 5 });
-    };
-    xhr.withCredentials = withCredentials;
-    xhr.send(body);
+      window.fetch(url, fetchOptions).then(
+        (response) => {
+          const statusCode = response.status;
+          const header2 = response.headers;
+          const body2 = response.body;
+          const headerObj = {};
+          header2.forEach((value, key) => {
+            headerObj[key] = value;
+          });
+          const cookies = cookiesParse(headerObj);
+          requestTask._emitter.emit("headersReceived", {
+            header: headerObj,
+            statusCode,
+            cookies
+          });
+          if (!body2) {
+            resolve({
+              data: "",
+              statusCode,
+              header: headerObj,
+              cookies
+            });
+            return;
+          }
+          const reader = body2.getReader();
+          const bodyBuffers = [];
+          const streamReaderRead = () => {
+            reader.read().then(({ done, value }) => {
+              if (done) {
+                const result = concatArrayBuffers(bodyBuffers);
+                let res = responseType === "text" ? new TextDecoder().decode(result) : result;
+                if (responseType === "text") {
+                  res = parseResponseText(res, responseType, dataType2);
+                }
+                resolve({
+                  data: res,
+                  statusCode,
+                  header: headerObj,
+                  cookies
+                });
+                return;
+              }
+              const chunk = value;
+              bodyBuffers.push(chunk);
+              requestTask._emitter.emit("chunkReceived", {
+                data: chunk
+              });
+              streamReaderRead();
+            });
+          };
+          streamReaderRead();
+        },
+        (error) => {
+          reject(error, { errCode: 5 });
+        }
+      );
+    }
     return requestTask;
   },
   RequestProtocol,
   RequestOptions
 );
+const cookiesParse = (header) => {
+  let cookiesStr = header["Set-Cookie"] || header["set-cookie"];
+  let cookiesArr = [];
+  if (!cookiesStr) {
+    return [];
+  }
+  if (cookiesStr[0] === "[" && cookiesStr[cookiesStr.length - 1] === "]") {
+    cookiesStr = cookiesStr.slice(1, -1);
+  }
+  const handleCookiesArr = cookiesStr.split(";");
+  for (let i = 0; i < handleCookiesArr.length; i++) {
+    if (handleCookiesArr[i].indexOf("Expires=") !== -1 || handleCookiesArr[i].indexOf("expires=") !== -1) {
+      cookiesArr.push(handleCookiesArr[i].replace(",", ""));
+    } else {
+      cookiesArr.push(handleCookiesArr[i]);
+    }
+  }
+  cookiesArr = cookiesArr.join(";").split(",");
+  return cookiesArr;
+};
+function concatArrayBuffers(buffers) {
+  const totalLength = buffers.reduce((acc, buf) => acc + buf.byteLength, 0);
+  const result = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const buffer of buffers) {
+    result.set(new Uint8Array(buffer), offset);
+    offset += buffer.byteLength;
+  }
+  return result.buffer;
+}
 function normalizeContentType(header) {
   const name = Object.keys(header).find(
     (name2) => name2.toLowerCase() === "content-type"
@@ -20557,20 +20705,35 @@ function normalizeContentType(header) {
   return "string";
 }
 class RequestTask {
-  constructor(xhr) {
-    this._xhr = xhr;
+  constructor(controller) {
+    this._emitter = new Emitter();
+    this._controller = controller;
   }
   abort() {
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
+    if (this._controller) {
+      this._controller.abort();
+      delete this._controller;
     }
   }
   onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
+    {
+      throw new Error("Method not implemented.");
+    }
   }
   offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
+    {
+      throw new Error("Method not implemented.");
+    }
+  }
+  onChunkReceived(callback) {
+    {
+      throw new Error("Method not implemented.");
+    }
+  }
+  offChunkReceived(callback) {
+    {
+      throw new Error("Method not implemented.");
+    }
   }
 }
 function parseHeaders(headers) {
@@ -20583,6 +20746,16 @@ function parseHeaders(headers) {
     headersObject[find[1]] = find[2];
   });
   return headersObject;
+}
+function parseResponseText(responseText, responseType, dataType2) {
+  let res = responseText;
+  if (responseType === "text" && dataType2 === "json") {
+    try {
+      res = JSON.parse(res);
+    } catch (error) {
+    }
+  }
+  return res;
 }
 class DownloadTask {
   constructor(xhr) {
@@ -22238,15 +22411,18 @@ function usePopupStyle(props2) {
         "border-style": "solid"
       });
       const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
+      const popoverWidth = getNumber(popover.width ? popover.width : 300);
       const popoverTop = getNumber(popover.top);
       const popoverHeight = getNumber(popover.height);
       const center = popoverLeft + popoverWidth / 2;
       contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
+      const contentLeft = Math.max(0, center - popoverWidth / 2);
       contentStyle.left = `${contentLeft}px`;
+      if (popover.width) {
+        contentStyle.width = `${popoverWidth}px`;
+      }
       let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleLeft = Math.min(popoverWidth - 12, triangleLeft);
       triangleStyle.left = `${triangleLeft}px`;
       const vcl = popupHeight.value / 2;
       if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {

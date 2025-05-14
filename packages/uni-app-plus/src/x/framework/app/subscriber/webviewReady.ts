@@ -39,3 +39,7 @@ function onLaunchWebviewReady() {
   }
   return $navigateTo(args, handler)
 }
+
+export function clearWebviewReady() {
+  isLaunchWebviewReady = false
+}

@@ -564,4 +564,96 @@ describe('uvue-styler: normalize', () => {
       },
     })
   })
+
+  // test --border-top-color: red
+  test('test --border-top-color: red', async () => {
+    const { json } = await objectifierRule(`
+.test {
+--border-top-color: red;
+border-top-color: var(--border-top-color);
+}
+.foo {
+--default-border: red;
+border-color: var(--default-border);
+}
+.a1{
+  --color1: red;
+  --width1: 1px;
+  --style1: solid;
+  border:  var(--width1) var(--style1) var(--color1)
+}
+.a2{
+  --top-width: 1px;
+  --left-width: 2px;
+  padding: var(--top-width) var(--left-width);
+}
+.a3{
+  --default-border: 1px;
+  border: var(--default-border);
+}
+  `)
+    expect(json).toEqual({
+      test: {
+        '': {
+          '--border-top-color': 'red',
+          borderTopColor: 'var(--border-top-color)',
+        },
+      },
+      foo: {
+        '': {
+          '--default-border': 'red',
+          borderBottomColor: 'var(--default-border)',
+          borderLeftColor: 'var(--default-border)',
+          borderRightColor: 'var(--default-border)',
+          borderTopColor: 'var(--default-border)',
+        },
+      },
+      a1: {
+        '': {
+          '--color1': 'red',
+          '--width1': '1px',
+          '--style1': 'solid',
+          borderBottomColor: 'var(--color1)',
+          borderBottomStyle: 'var(--style1)',
+          borderBottomWidth: 'var(--width1)',
+          borderLeftColor: 'var(--color1)',
+          borderLeftStyle: 'var(--style1)',
+          borderLeftWidth: 'var(--width1)',
+          borderRightColor: 'var(--color1)',
+          borderRightStyle: 'var(--style1)',
+          borderRightWidth: 'var(--width1)',
+          borderTopColor: 'var(--color1)',
+          borderTopStyle: 'var(--style1)',
+          borderTopWidth: 'var(--width1)',
+        },
+      },
+      a2: {
+        '': {
+          '--left-width': '2px',
+          '--top-width': '1px',
+          paddingBottom: 'var(--top-width)',
+          paddingLeft: 'var(--left-width)',
+          paddingRight: 'var(--left-width)',
+          paddingTop: 'var(--top-width)',
+        },
+      },
+      a3: {
+        '': {
+          '--default-border': '1px',
+          borderBottomColor: '#000000',
+          borderBottomStyle: 'none',
+          borderBottomWidth: 'var(--default-border)',
+          borderLeftColor: '#000000',
+          borderLeftStyle: 'none',
+          borderLeftWidth: 'var(--default-border)',
+          borderRightColor: '#000000',
+          borderRightStyle: 'none',
+          borderRightWidth: 'var(--default-border)',
+          borderTopColor: '#000000',
+          borderTopStyle: 'none',
+          borderTopWidth: 'var(--default-border)',
+        },
+      },
+    })
+  })
 })

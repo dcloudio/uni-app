@@ -29,7 +29,7 @@ export function uniAppPagesPlugin(): Plugin {
   let themeConfig = ''
   const codes: string[] = []
   return {
-    name: 'uni:app-pages',
+    name: 'uni:app-pages-json',
     apply: 'build',
     resolveId(id) {
       if (isPages(id)) {
@@ -58,7 +58,7 @@ export function uniAppPagesPlugin(): Plugin {
         } catch (err: any) {
           if (err.loc) {
             const error = createRollupError(
-              'uni:app-pages',
+              'uni:app-pages-json',
               pagesJsonPath,
               err,
               code
@@ -117,9 +117,7 @@ export function uniAppPagesPlugin(): Plugin {
           codes.push(`__uniConfig.themeConfig = ${themeConfig}`)
         }
         return {
-          code: `${imports
-            .map((p) => `import './${p}.uvue?type=page'`)
-            .join('\n')}
+          code: `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
           export default 'pages.json'`,
           map: {
             mappings: '',
@@ -136,7 +134,7 @@ export function uniAppPagesPlugin(): Plugin {
 ${imports
   .map((p) => {
     const className = genUTSClassName(p)
-    return `import ${className}Class from './${p}.uvue?type=page'`
+    return `import ${className}Class from './${p}.uvue'`
   })
   .join('\n')}
 function definePageRoutes() {

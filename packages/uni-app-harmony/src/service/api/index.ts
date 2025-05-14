@@ -62,4 +62,8 @@ export {
   $off,
   $once,
 } from '@dcloudio/uni-api'
-export { pageScrollTo } from '@dcloudio/uni-app-plus/service/api'
+export {
+  pageScrollTo,
+  onThemeChange,
+  offThemeChange,
+} from '@dcloudio/uni-app-plus/service/api'

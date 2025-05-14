@@ -70,6 +70,7 @@ export interface CompileAppOptions {
   package: string
   sourceMap: boolean
   uni_modules: string[]
+  pages: string[]
   extApis?: Record<string, [string, string]>
   split?: boolean
   disableSplitManifest?: boolean
@@ -103,6 +104,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     uni_modules,
     extApis,
     autoImports = {},
+    pages,
   } = options
 
   if (shouldAutoImportUniCloud()) {
@@ -118,6 +120,8 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       '@dcloudio/uni-runtime': 'io.dcloud.uniapp.framework.runtime',
     },
     uniModules: uni_modules,
+    uniModulesPrefix: process.env.UNI_UTS_MODULE_PREFIX || '',
+    uniXPages: pages,
     globals: {
       envs: {
         ...options.env,

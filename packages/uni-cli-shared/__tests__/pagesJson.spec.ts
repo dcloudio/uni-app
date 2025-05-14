@@ -1,7 +1,19 @@
 import path from 'path'
-import { checkPagesJson } from '../src/json/uni-x'
+import { checkPagesJson } from '../src/json/utils'
 import { generateCodeFrame } from '../src/vite/plugins/vitejs/utils'
 
+declare const process: {
+  env: {
+    UNI_HBUILDERX_LANGID?: string
+  }
+}
+
+function checkPagesJsonByEnglish(source: string, inputDir: string) {
+  process.env.UNI_HBUILDERX_LANGID = 'en'
+  const result = checkPagesJson(source, inputDir)
+  delete process.env.UNI_HBUILDERX_LANGID
+  return result
+}
 describe('pages.json', () => {
   const inputDir = path.resolve(__dirname, './examples/check-pages-json')
   test(`pages check`, () => {
@@ -20,7 +32,7 @@ describe('pages.json', () => {
       2
     )
     try {
-      checkPagesJson(source, inputDir)
+      checkPagesJsonByEnglish(source, inputDir)
     } catch (error: any) {
       expect(error).toMatchSnapshot()
       expect(
@@ -50,7 +62,7 @@ describe('pages.json', () => {
       2
     )
     try {
-      checkPagesJson(source, inputDir)
+      checkPagesJsonByEnglish(source, inputDir)
     } catch (error: any) {
       expect(error).toMatchSnapshot()
       expect(
@@ -76,7 +88,7 @@ describe('pages.json', () => {
       ],
     })
     try {
-      checkPagesJson(source, inputDir)
+      checkPagesJsonByEnglish(source, inputDir)
     } catch (error: any) {
       expect(error).toMatchSnapshot()
       expect(

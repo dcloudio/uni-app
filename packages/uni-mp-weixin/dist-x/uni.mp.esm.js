@@ -270,199 +270,6 @@ class UTSType {
     }
 }
 
-const OriginalJSON = JSON;
-function createUTSJSONObject(obj) {
-    const result = new UTSJSONObject({});
-    for (const key in obj) {
-        const value = obj[key];
-        if (isPlainObject(value)) {
-            result[key] = createUTSJSONObject(value);
-        }
-        else if (getType(value) === 'array') {
-            result[key] = value.map((item) => {
-                if (isPlainObject(item)) {
-                    return createUTSJSONObject(item);
-                }
-                else {
-                    return item;
-                }
-            });
-        }
-        else {
-            result[key] = value;
-        }
-    }
-    return result;
-}
-function parseObjectOrArray(object, utsType) {
-    const objectType = getType(object);
-    if (object === null || (objectType !== 'object' && objectType !== 'array')) {
-        return object;
-    }
-    if (utsType && utsType !== UTSJSONObject) {
-        try {
-            return new utsType(object, undefined, true);
-        }
-        catch (error) {
-            console.error(error);
-            return null;
-        }
-    }
-    if (objectType === 'array') {
-        return object.map((value) => {
-            return parseObjectOrArray(value);
-        });
-    }
-    else if (objectType === 'object') {
-        return createUTSJSONObject(object);
-    }
-    return object;
-}
-const UTSJSON = {
-    parse: (text, reviver, utsType) => {
-        // @ts-ignore
-        if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject)) {
-            utsType = reviver;
-            reviver = undefined;
-        }
-        try {
-            const parseResult = OriginalJSON.parse(text, reviver);
-            return parseObjectOrArray(parseResult, utsType);
-        }
-        catch (error) {
-            console.error(error);
-            return null;
-        }
-    },
-    parseArray(text, utsType) {
-        try {
-            const parseResult = OriginalJSON.parse(text);
-            if (Array.isArray(parseResult)) {
-                return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : undefined);
-            }
-            return null;
-        }
-        catch (error) {
-            console.error(error);
-            return null;
-        }
-    },
-    parseObject(text, utsType) {
-        try {
-            const parseResult = OriginalJSON.parse(text);
-            if (Array.isArray(parseResult)) {
-                return null;
-            }
-            return parseObjectOrArray(parseResult, utsType);
-        }
-        catch (error) {
-            console.error(error);
-            return null;
-        }
-    },
-    stringify: (value) => {
-        return OriginalJSON.stringify(value);
-    },
-};
-
-function mapGet(map, key) {
-    if (!map.has(key)) {
-        return null;
-    }
-    return map.get(key);
-}
-
-function stringCodePointAt(str, pos) {
-    if (pos < 0 || pos >= str.length) {
-        return null;
-    }
-    return str.codePointAt(pos);
-}
-function stringAt(str, pos) {
-    if (pos < -str.length || pos >= str.length) {
-        return null;
-    }
-    return str.at(pos);
-}
-
-function weakMapGet(map, key) {
-    if (!map.has(key)) {
-        return null;
-    }
-    return map.get(key);
-}
-
-const UTS = {
-    arrayAt,
-    arrayFind,
-    arrayFindLast,
-    arrayPop,
-    arrayShift,
-    isInstanceOf,
-    UTSType,
-    mapGet,
-    stringAt,
-    stringCodePointAt,
-    weakMapGet,
-    JSON: UTSJSON,
-};
-
-class UniError extends Error {
-    constructor(errSubject, errCode, errMsg) {
-        let options = {};
-        const argsLength = Array.from(arguments).length;
-        switch (argsLength) {
-            case 0:
-                errSubject = '';
-                errMsg = '';
-                errCode = 0;
-                break;
-            case 1:
-                errMsg = errSubject;
-                errSubject = '';
-                errCode = 0;
-                break;
-            case 2:
-                errMsg = errSubject;
-                options = errCode;
-                errCode = options.errCode || 0;
-                errSubject = options.errSubject || '';
-                break;
-        }
-        super(errMsg);
-        this.name = 'UniError';
-        this.errSubject = errSubject;
-        this.errCode = errCode;
-        this.errMsg = errMsg;
-        if (options.data) {
-            this.data = options.data;
-        }
-        if (options.cause) {
-            this.cause = options.cause;
-        }
-    }
-    set errMsg(msg) {
-        this.message = msg;
-    }
-    get errMsg() {
-        return this.message;
-    }
-    toString() {
-        return this.errMsg;
-    }
-    toJSON() {
-        return {
-            errSubject: this.errSubject,
-            errCode: this.errCode,
-            errMsg: this.errMsg,
-            data: this.data,
-            cause: this.cause && typeof this.cause.toJSON === 'function'
-                ? this.cause.toJSON()
-                : this.cause,
-        };
-    }
-}
-
 function initUTSJSONObjectProperties(obj) {
     const propertyList = [
         '_resolveKeyPath',
@@ -682,6 +489,187 @@ let UTSJSONObject$1 = class UTSJSONObject {
     }
 };
 
+const OriginalJSON = JSON;
+function createUTSJSONObjectOrArray(obj) {
+    if (Array.isArray(obj)) {
+        return obj.map((item) => {
+            return createUTSJSONObjectOrArray(item);
+        });
+    }
+    else if (isPlainObject(obj)) {
+        const result = new UTSJSONObject$1({});
+        for (const key in obj) {
+            const value = obj[key];
+            result[key] = createUTSJSONObjectOrArray(value);
+        }
+        return result;
+    }
+    return obj;
+}
+function parseObjectOrArray(object, utsType) {
+    const objectType = getType(object);
+    if (object === null || (objectType !== 'object' && objectType !== 'array')) {
+        return object;
+    }
+    if (utsType && utsType !== UTSJSONObject$1) {
+        try {
+            return new utsType(object, undefined, true);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+    if (objectType === 'array' || objectType === 'object') {
+        return createUTSJSONObjectOrArray(object);
+    }
+    return object;
+}
+const UTSJSON = {
+    parse: (text, reviver, utsType) => {
+        // @ts-ignore
+        if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject$1)) {
+            utsType = reviver;
+            reviver = undefined;
+        }
+        try {
+            const parseResult = OriginalJSON.parse(text, reviver);
+            return parseObjectOrArray(parseResult, utsType);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    parseArray(text, utsType) {
+        try {
+            const parseResult = OriginalJSON.parse(text);
+            if (Array.isArray(parseResult)) {
+                return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : undefined);
+            }
+            return null;
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    parseObject(text, utsType) {
+        try {
+            const parseResult = OriginalJSON.parse(text);
+            if (Array.isArray(parseResult)) {
+                return null;
+            }
+            return parseObjectOrArray(parseResult, utsType);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    stringify: (value) => {
+        return OriginalJSON.stringify(value);
+    },
+};
+
+function mapGet(map, key) {
+    if (!map.has(key)) {
+        return null;
+    }
+    return map.get(key);
+}
+
+function stringCodePointAt(str, pos) {
+    if (pos < 0 || pos >= str.length) {
+        return null;
+    }
+    return str.codePointAt(pos);
+}
+function stringAt(str, pos) {
+    if (pos < -str.length || pos >= str.length) {
+        return null;
+    }
+    return str.at(pos);
+}
+
+function weakMapGet(map, key) {
+    if (!map.has(key)) {
+        return null;
+    }
+    return map.get(key);
+}
+
+const UTS = {
+    arrayAt,
+    arrayFind,
+    arrayFindLast,
+    arrayPop,
+    arrayShift,
+    isInstanceOf,
+    UTSType,
+    mapGet,
+    stringAt,
+    stringCodePointAt,
+    weakMapGet,
+    JSON: UTSJSON,
+};
+
+class UniError extends Error {
+    constructor(errSubject, errCode, errMsg) {
+        let options = {};
+        const argsLength = Array.from(arguments).length;
+        switch (argsLength) {
+            case 0:
+                errSubject = '';
+                errMsg = '';
+                errCode = 0;
+                break;
+            case 1:
+                errMsg = errSubject;
+                errSubject = '';
+                errCode = 0;
+                break;
+            case 2:
+                errMsg = errSubject;
+                options = errCode;
+                errCode = options.errCode || 0;
+                errSubject = options.errSubject || '';
+                break;
+        }
+        super(errMsg);
+        this.name = 'UniError';
+        this.errSubject = errSubject;
+        this.errCode = errCode;
+        this.errMsg = errMsg;
+        if (options.data) {
+            this.data = options.data;
+        }
+        if (options.cause) {
+            this.cause = options.cause;
+        }
+    }
+    set errMsg(msg) {
+        this.message = msg;
+    }
+    get errMsg() {
+        return this.message;
+    }
+    toString() {
+        return this.errMsg;
+    }
+    toJSON() {
+        return {
+            errSubject: this.errSubject,
+            errCode: this.errCode,
+            errMsg: this.errMsg,
+            data: this.data,
+            cause: this.cause && typeof this.cause.toJSON === 'function'
+                ? this.cause.toJSON()
+                : this.cause,
+        };
+    }
+}
+
 let UTSValueIterable$1 = class UTSValueIterable {
 };
 
@@ -820,9 +808,10 @@ function findVmByVueId(instance, vuePid) {
     }
 }
 function getLocaleLanguage() {
+    var _a;
     let localeLanguage = '';
     {
-        const appBaseInfo = wx.getAppBaseInfo();
+        const appBaseInfo = ((_a = wx.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
         const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
         localeLanguage = normalizeLocale(language) || LOCALE_EN;
     }
@@ -1549,6 +1538,47 @@ function initCreatePage(parseOptions) {
         return Component(parsePage(vuePageOptions, parseOptions));
     };
 }
+function initPageInstance(mpPageInstance) {
+    {
+        Object.assign(mpPageInstance, {
+            get width() {
+                return wx.getWindowInfo().windowWidth;
+            },
+            get height() {
+                const windowInfo = wx.getWindowInfo();
+                // 某些版本的微信小程序开发工具获取tabBar页面的screenTop不对，其数值包含了tabBar高度及底部安全区，如果有开发者问起让他使用真机测试即可。
+                return windowInfo.windowHeight + windowInfo.screenTop;
+            },
+            get statusBarHeight() {
+                return wx.getWindowInfo().statusBarHeight;
+            },
+            get safeAreaInsets() {
+                const windowInfo = wx.getWindowInfo();
+                const screenBottom = windowInfo.screenHeight -
+                    windowInfo.screenTop -
+                    windowInfo.windowHeight;
+                const safeAreaBottom = windowInfo.screenHeight - windowInfo.safeArea.bottom;
+                return {
+                    top: Math.max(0, windowInfo.statusBarHeight - windowInfo.screenTop),
+                    left: 0,
+                    right: 0,
+                    bottom: Math.max(0, safeAreaBottom - screenBottom), // 无法计算，
+                };
+            },
+            get pageBody() {
+                const windowInfo = wx.getWindowInfo();
+                return {
+                    top: windowInfo.screenTop,
+                    left: 0,
+                    right: windowInfo.windowWidth,
+                    bottom: windowInfo.windowHeight + windowInfo.screenTop,
+                    width: windowInfo.windowWidth,
+                    height: windowInfo.windowHeight,
+                };
+            },
+        });
+    }
+}
 
 function initCreatePluginApp(parseAppOptions) {
     return function createApp(vm) {
@@ -1638,6 +1668,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             {
                 this.vm = this.$vm;
             }
+            initPageInstance(this);
             if (process.env.UNI_DEBUG) {
                 console.log('uni-app:[' +
                     Date.now() +

@@ -46,7 +46,7 @@ export function buildOptions(
     }
   }
   const sourcemap =
-    process.env.SOURCEMAP === 'true'
+    process.env.UNI_APP_SOURCEMAP === 'true'
       ? 'hidden'
       : userConfig.build?.sourcemap
       ? 'inline'

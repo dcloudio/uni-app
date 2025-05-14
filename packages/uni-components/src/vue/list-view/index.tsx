@@ -1,6 +1,7 @@
 import {
   computed,
   nextTick,
+  onActivated,
   onBeforeUnmount,
   onMounted,
   provide,
@@ -287,11 +288,24 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
     })
 
+    let lastScrollLeft = 0
+    let lastScrollTop = 0
+    onActivated(() => {
+      if (containerRef.value) {
+        containerRef.value.scrollLeft = lastScrollLeft
+        containerRef.value.scrollTop = lastScrollTop
+      }
+    })
+
     onMounted(() => {
       resetContainerSize()
       let lastScrollOffset = 0
       containerRef.value!.addEventListener('scroll', function ($event) {
         const target = $event.target as HTMLElement
+        if (isHTMlElement(target)) {
+          lastScrollLeft = target.scrollLeft
+          lastScrollTop = target.scrollTop
+        }
         trigger('scroll', $event, {
           scrollLeft: target.scrollLeft,
           scrollTop: target.scrollTop,

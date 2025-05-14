@@ -22,6 +22,12 @@ export function __previewImage(option : PreviewImageOptions) {
 				itemColor: option.longPressActions!.itemColor,
 			}
 		}
+		// if (option.tips != null) {
+		// 	object.tips = {
+		// 		error: option.tips!.error,
+		// 		retry: option.tips!.retry
+		// 	}
+		// }
 		uni.$emit("__onPreviewLoadCallback", object)
 	})
 

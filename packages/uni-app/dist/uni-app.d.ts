@@ -27,6 +27,13 @@ export declare function getSsrGlobalData(): any;
 
 export { hasOwn }
 
+export declare const enum HookFlags {
+    UNKNOWN = 0,
+    APP = 1,
+    PAGE = 2,
+    COMPONENT = 4
+}
+
 export { isPlainObject }
 
 declare interface NavigationBarSearchInputFocusChanged {

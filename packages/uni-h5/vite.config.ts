@@ -17,6 +17,7 @@ import {
   stripOptions,
   UNI_EASYCOM_EXCLUDE,
   uniPrePlugin,
+  uniUVueTypeScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniEasycomPlugin } from '@dcloudio/uni-h5-vite/dist/plugins/easycom'
 import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
@@ -143,6 +144,7 @@ export default defineConfig({
   plugins: [
     ...(isNewX
       ? [
+          uniUVueTypeScriptPlugin(),
           // 仅给vue增加条件编译
           uniPrePlugin({} as any, { include: ['**/*.vue'] }),
           uniExtApi(),

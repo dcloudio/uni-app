@@ -1,7 +1,9 @@
 import os from 'os'
 import fs from 'fs'
 import path from 'path'
+import type { SourcemapPathTransformOption } from 'rollup'
 import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
+import { extend, hasOwn } from '@vue/shared'
 import {
   getDevServerOptions,
   initPostcssPlugin,
@@ -11,11 +13,12 @@ import {
   parseManifestJsonOnce,
   parseRpx2UnitOnce,
   resolveMainPathOnce,
+  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { createDefine } from '../utils'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
 import { external } from './configureServer/ssr'
-import { extend, hasOwn } from '@vue/shared'
+
 export function createConfig(options: {
   resolvedConfig: ResolvedConfig | null
 }): Plugin['config'] {
@@ -72,6 +75,16 @@ export function createConfig(options: {
       }
     }
 
+    let sourcemapPathTransform: SourcemapPathTransformOption | undefined =
+      undefined
+    if (
+      // 仅在 uni-app-x 模式下，且非开发模式，且需要 sourcemap 时，才进行 sourcemap 路径转换
+      process.env.UNI_APP_X === 'true' &&
+      process.env.NODE_ENV !== 'development' &&
+      withSourcemap(config)
+    ) {
+      sourcemapPathTransform = transformSourcemapPath
+    }
     return {
       legacy: {
         // 目前先使用旧模式
@@ -105,7 +118,13 @@ export function createConfig(options: {
           // resolveSSRExternal 会判定package.json，hbx 工程可能没有，通过 rollup 来配置
           external: isSsr(env.command, config) ? external : [],
           output: {
+            sourcemapPathTransform,
             chunkFileNames(chunkInfo) {
+              const hash =
+                // 为了测试额外加的逻辑，避免因为环境不一致导致hash有变化
+                process.env.UNI_WEB_DISABLE_CHUNK_HASH === 'true'
+                  ? ''
+                  : '.[hash]'
               const { assetsDir } = options.resolvedConfig!.build
               if (chunkInfo.facadeModuleId) {
                 const dirname = path.relative(
@@ -116,15 +135,31 @@ export function createConfig(options: {
                   return path.posix.join(
                     assetsDir,
                     normalizePath(dirname).replace(/\//g, '-') +
-                      '-[name].[hash].js'
+                      `-[name]${hash}.js`
                   )
                 }
               }
-              return path.posix.join(assetsDir, '[name].[hash].js')
+              return path.posix.join(assetsDir, `[name]${hash}.js`)
             },
           },
         },
       },
     }
   }
+}
+
+function transformSourcemapPath(
+  relativeSourcePath: string,
+  sourcemapPath: string
+) {
+  const sourcePath = normalizePath(
+    path.relative(
+      process.env.UNI_INPUT_DIR,
+      path.resolve(path.dirname(sourcemapPath), relativeSourcePath)
+    )
+  )
+  if (sourcePath.startsWith('..')) {
+    return ''
+  }
+  return sourcePath
 }

@@ -166,7 +166,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               {sliderValue.value}
             </span>
           </div>
-          <slot />
         </uni-slider>
       )
     }

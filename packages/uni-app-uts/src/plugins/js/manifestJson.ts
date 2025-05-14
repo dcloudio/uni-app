@@ -24,7 +24,9 @@ export function getOutputManifestJson() {
   return outputManifestJson
 }
 
-export function uniAppManifestPlugin(): Plugin {
+export function uniAppManifestPlugin(
+  platform: 'app-ios' | 'app-harmony'
+): Plugin {
   const manifestJsonPath = path.resolve(
     process.env.UNI_INPUT_DIR,
     'manifest.json'
@@ -62,7 +64,7 @@ export function uniAppManifestPlugin(): Plugin {
       }
     },
     buildEnd() {
-      outputManifestJson = normalizeManifestJson(manifestJson)
+      outputManifestJson = normalizeManifestJson(platform, manifestJson)
 
       const manifest = outputManifestJson
       if (process.env.NODE_ENV !== 'development' || isXHarmony) {
@@ -106,7 +108,7 @@ export function uniAppManifestPlugin(): Plugin {
             if (isXHarmony) {
               updateHarmonyManifestModules(manifest, modules)
             } else {
-              updateManifestModules(manifest, modules)
+              updateManifestModules(platform, manifest, modules)
             }
           }
         }

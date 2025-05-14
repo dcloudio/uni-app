@@ -50,7 +50,7 @@ describe('compiler: transform v-model', () => {
       `<input v-model="model" />`,
       `createElementVNode("input", utsMapOf({
   modelValue: _ctx.model,
-  onInput: ($event: InputEvent) => {(_ctx.model) = $event.detail.value}
+  onInput: ($event: UniInputEvent) => {(_ctx.model) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])`
     )
   })
@@ -63,7 +63,7 @@ describe('compiler: transform v-model', () => {
   modelValue: \n_ctx.model.
 foo
 ,
-  onInput: ($event: InputEvent) => {(
+  onInput: ($event: UniInputEvent) => {(
 _ctx.model.
 foo
 ) = $event.detail.value}
@@ -76,7 +76,7 @@ foo
       `<input v-model="model[index]" />`,
       `createElementVNode(\"input\", utsMapOf({
   modelValue: _ctx.model[_ctx.index],
-  onInput: ($event: InputEvent) => {(_ctx.model[_ctx.index]) = $event.detail.value}
+  onInput: ($event: UniInputEvent) => {(_ctx.model[_ctx.index]) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )
   })
@@ -105,7 +105,7 @@ foo
       `<input v-model.lazy="model" />`,
       `createElementVNode(\"input\", utsMapOf({
   modelValue: _ctx.model,
-  onBlur: ($event: InputBlurEvent) => {(_ctx.model) = $event.detail.value}
+  onBlur: ($event: UniInputBlurEvent) => {(_ctx.model) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onBlur\"])`
     )
   })
@@ -114,7 +114,7 @@ foo
       `<input v-model.number="model" />`,
       `createElementVNode(\"input\", utsMapOf({
   modelValue: _ctx.model,
-  onInput: ($event: InputEvent) => {(_ctx.model) = looseToNumber($event.detail.value)}
+  onInput: ($event: UniInputEvent) => {(_ctx.model) = looseToNumber($event.detail.value)}
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )
   })
@@ -123,13 +123,27 @@ foo
       `<input v-model.trim="model" />`,
       `createElementVNode(\"input\", utsMapOf({
   modelValue: _ctx.model,
-  onInput: ($event: InputEvent) => {(_ctx.model) = $event.detail.value.trim()}
+  onInput: ($event: UniInputEvent) => {(_ctx.model) = $event.detail.value.trim()}
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )
   })
   test('expression width type', () => {
     assert(
       `<Foo v-model="model as string" />`,
+      `createVNode(_component_Foo, utsMapOf({
+  modelValue: _ctx.model,
+  "onUpdate:modelValue": ($event: string) => {(_ctx.model) = $event}
+}), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
+    )
+    assert(
+      `<Foo v-model="(model as string)" />`,
+      `createVNode(_component_Foo, utsMapOf({
+  modelValue: _ctx.model,
+  "onUpdate:modelValue": ($event: string) => {(_ctx.model) = $event}
+}), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
+    )
+    assert(
+      `<Foo v-model=" (model as string) " />`,
       `createVNode(_component_Foo, utsMapOf({
   modelValue: _ctx.model,
   "onUpdate:modelValue": ($event: string) => {(_ctx.model) = $event}
@@ -177,7 +191,7 @@ foo
       },
       value: {
         children: [
-          '($event: InputEvent) => {(',
+          '($event: UniInputEvent) => {(',
           {
             content: 'model',
             isStatic: false,
@@ -216,7 +230,7 @@ foo
       },
       value: {
         children: [
-          '($event: InputEvent) => {(',
+          '($event: UniInputEvent) => {(',
           {
             content: '_ctx.model',
             isStatic: false,
@@ -254,7 +268,7 @@ foo
       },
       value: {
         children: [
-          '($event: InputEvent) => {(',
+          '($event: UniInputEvent) => {(',
           {
             content: '\n model\n.\nfoo \n',
             isStatic: false,
@@ -291,7 +305,7 @@ foo
       },
       value: {
         children: [
-          '($event: InputEvent) => {(',
+          '($event: UniInputEvent) => {(',
           {
             content: 'model[index]',
             isStatic: false,
@@ -340,7 +354,7 @@ foo
       },
       value: {
         children: [
-          '($event: InputEvent) => {(',
+          '($event: UniInputEvent) => {(',
           {
             children: [
               {
@@ -386,7 +400,7 @@ foo
       },
       value: {
         children: [
-          '($event: InputEvent) => {(',
+          '($event: UniInputEvent) => {(',
           {
             content: 'model',
             isStatic: false,
@@ -488,7 +502,7 @@ foo
               },
               value: {
                 children: [
-                  '($event: InputEvent) => {(',
+                  '($event: UniInputEvent) => {(',
                   {
                     content: '_ctx.model',
                     isStatic: false,

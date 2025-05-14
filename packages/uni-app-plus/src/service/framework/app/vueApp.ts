@@ -56,6 +56,9 @@ export function initVueApp(appVm: ComponentPublicInstance) {
       if (__page_container__) {
         __page_container__.isUnmounted = true
         render(null, __page_container__)
+        delete (pageInstance as any).__page_container__
+        const vnode = pageInstance.$.vnode
+        delete (vnode as any).__page_container__
       }
     },
   })

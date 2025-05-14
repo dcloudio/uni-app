@@ -1,4 +1,4 @@
-import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, debounce, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_BACK_PRESS, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
+import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, debounce, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_BACK_PRESS, ON_THEME_CHANGE, OFF_THEME_CHANGE, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
 export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared';
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 export { extend, hasOwn, isArray, isFunction, isPlainObject, isString } from '@vue/shared';
@@ -449,10 +449,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
     return (args = {}, ...rest) => {
         if (hasCallback(args)) {
-            return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+            return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-            invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
+            invokeApi(name, fn, extend({}, args, { success: resolve, fail: reject }), rest);
         })));
     };
 }
@@ -8388,6 +8388,9 @@ function initVueApp(appVm) {
             if (__page_container__) {
                 __page_container__.isUnmounted = true;
                 render(null, __page_container__);
+                delete pageInstance.__page_container__;
+                const vnode = pageInstance.$.vnode;
+                delete vnode.__page_container__;
             }
         },
     });
@@ -8665,7 +8668,13 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-    const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
+    let windowWidth, pixelRatio, platform;
+    {
+        const { windowWidth: w, pixelRatio: p, platform: pf } = getBaseSystemInfo();
+        windowWidth = w;
+        pixelRatio = p;
+        platform = pf;
+    }
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -10165,8 +10174,9 @@ const createIntersectionObserver = defineSyncApi('createIntersectionObserver', (
 let reqComponentObserverId = 1;
 class ServiceMediaQueryObserver {
     constructor(component) {
+        // APP 平台 _pageId 不能为空，H5 不处理 _pageId 和 component
         this._pageId =
-            component.$page && component.$page.id;
+            component?.$page && component.$page.id;
         this._component = component;
     }
     observe(options, callback) {
@@ -11872,6 +11882,51 @@ function initDebugRefresh(isTab, path, query) {
     };
 }
 
+let lastStatusBarStyle$1;
+let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+function newSetStatusBarStyle(style) {
+    lastStatusBarStyle$1 = style;
+    oldSetStatusBarStyle(style);
+}
+plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+function setStatusBarStyle$1(statusBarStyle) {
+    if (!statusBarStyle) {
+        const page = getCurrentPage();
+        if (!page) {
+            return;
+        }
+        statusBarStyle = getPage$BasePage(page).statusBarStyle;
+        if (!statusBarStyle || statusBarStyle === lastStatusBarStyle$1) {
+            return;
+        }
+    }
+    if (statusBarStyle === lastStatusBarStyle$1) {
+        return;
+    }
+    if (('production' !== 'production')) {
+        console.log(formatLog('setStatusBarStyle', statusBarStyle));
+    }
+    lastStatusBarStyle$1 = statusBarStyle;
+    plus.navigator.setStatusBarStyle(statusBarStyle);
+}
+
+function getNavigatorStyle() {
+    return getTheme() === 'dark' ? 'light' : 'dark';
+}
+function getTheme() {
+    return plus.navigator.getUIStyle();
+}
+function changePagesNavigatorStyle() {
+    if (__uniConfig.darkmode) {
+        const theme = getNavigatorStyle();
+        setStatusBarStyle$1(theme);
+        const pages = getAllPages();
+        pages.forEach((page) => {
+            getPage$BasePage(page).statusBarStyle = theme;
+        });
+    }
+}
+
 const downgrade = 'HarmonyOS' === 'Android';
 const ANI_SHOW = 'pop-in';
 const ANI_DURATION = 300;
@@ -11896,164 +11951,6 @@ function createPreloadWebview() {
         }
     }
     return preloadWebview;
-}
-
-/**
- * 是否处于直达页面
- * @param page
- * @returns
- */
-function isDirectPage(page) {
-    return (__uniConfig.realEntryPagePath &&
-        getPage$BasePage(page).route ===
-            __uniConfig.entryPagePath);
-}
-/**
- * 重新启动到首页
- */
-function reLaunchEntryPage() {
-    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
-    delete __uniConfig.realEntryPagePath;
-    uni.reLaunch({
-        url: addLeadingSlash(__uniConfig.entryPagePath),
-    });
-}
-
-function onWebviewResize(webview) {
-    const { emit } = UniServiceJSBridge;
-    const onResize = function ({ width, height, }) {
-        const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
-        const res = {
-            deviceOrientation: landscape ? 'landscape' : 'portrait',
-            size: {
-                windowWidth: Math.ceil(width),
-                windowHeight: Math.ceil(height),
-            },
-        };
-        emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
-    };
-    webview.addEventListener('resize', debounce(onResize, 50, { setTimeout, clearTimeout }));
-}
-
-function onWebviewReady(pageId, callback) {
-    UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
-}
-
-function closeWebview$1(webview, animationType, animationDuration) {
-    webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
-}
-function showWebview(webview, animationType, animationDuration, showCallback, delay) {
-    if (typeof delay === 'undefined') {
-        delay = webview.nvue ? 0 : 100;
-    }
-    if (('production' !== 'production')) {
-        console.log(formatLog('showWebview', 'delay', delay));
-    }
-    const execShowCallback = function () {
-        if (execShowCallback._called) {
-            if (('production' !== 'production')) {
-                console.log(formatLog('execShowCallback', 'prevent'));
-            }
-            return;
-        }
-        execShowCallback._called = true;
-        showCallback && showCallback();
-        navigateFinish();
-    };
-    execShowCallback._called = false;
-    setTimeout(() => {
-        const timer = setTimeout(() => {
-            if (('production' !== 'production')) {
-                console.log(formatLog('showWebview', 'callback', 'timer'));
-            }
-            execShowCallback();
-        }, animationDuration + 150);
-        webview.show(animationType, animationDuration, () => {
-            if (('production' !== 'production')) {
-                console.log(formatLog('showWebview', 'callback'));
-            }
-            if (!execShowCallback._called) {
-                clearTimeout(timer);
-            }
-            execShowCallback();
-        });
-    }, delay);
-}
-
-let pendingNavigator = false;
-function getPendingNavigator() {
-    return pendingNavigator;
-}
-function setPendingNavigator(path, callback, msg) {
-    pendingNavigator = {
-        path,
-        nvue: getRouteMeta(path).isNVue,
-        callback,
-    };
-    if (('production' !== 'production')) {
-        console.log(formatLog('setPendingNavigator', path, msg));
-    }
-}
-function closePage(page, animationType, animationDuration) {
-    removePage(page);
-    closeWebview$1(page.$getAppWebview(), animationType, animationDuration);
-}
-function pendingNavigate() {
-    if (!pendingNavigator) {
-        return;
-    }
-    const { callback } = pendingNavigator;
-    if (('production' !== 'production')) {
-        console.log(formatLog('pendingNavigate', pendingNavigator.path));
-    }
-    pendingNavigator = false;
-    return callback();
-}
-function navigateFinish() {
-    if (__uniConfig.renderer === 'native') {
-        if (!pendingNavigator) {
-            return;
-        }
-        if (pendingNavigator.nvue) {
-            return pendingNavigate();
-        }
-        return;
-    }
-    // 创建预加载
-    const preloadWebview = createPreloadWebview();
-    if (('production' !== 'production')) {
-        console.log(formatLog('navigateFinish', 'preloadWebview', preloadWebview.id));
-    }
-    if (!pendingNavigator) {
-        return;
-    }
-    if (pendingNavigator.nvue) {
-        return pendingNavigate();
-    }
-    preloadWebview.loaded
-        ? pendingNavigator.callback()
-        : onWebviewReady(preloadWebview.id, pendingNavigate);
-}
-
-function navigate(path, callback, isAppLaunch) {
-    const pendingNavigator = getPendingNavigator();
-    if (!isAppLaunch && pendingNavigator) {
-        return console.error(`Waiting to navigate to: ${pendingNavigator.path}, do not operate continuously: ${path}.`);
-    }
-    // 未创建 preloadWebview 或 preloadWebview 已被使用
-    const preloadWebview = getPreloadWebview();
-    const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
-    // 已创建未 loaded
-    const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
-    if (waitPreloadWebview || waitPreloadWebviewReady) {
-        setPendingNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
-    }
-    else {
-        callback();
-    }
-    if (waitPreloadWebviewReady) {
-        onWebviewReady(preloadWebview.id, pendingNavigate);
-    }
 }
 
 class UniPageNode extends UniNode {
@@ -12402,7 +12299,7 @@ function isVuePageAsyncComponent(component) {
 }
 const pagesMap = new Map();
 function definePage(pagePath, asyncComponent) {
-    pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+    pagesMap.set(pagePath, once(createPageFactory(asyncComponent)));
 }
 function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
     const pageNode = createPageNode(__pageId, pageOptions, true);
@@ -12419,13 +12316,65 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
     }
     return mountPage(component);
 }
-function createFactory(component) {
+function createPageFactory(component) {
     return () => {
         if (isVuePageAsyncComponent(component)) {
-            return component().then((component) => setupPage(component));
+            return component().then((component) => setupPage(clonedPageComponent(component)));
         }
-        return setupPage(component);
+        return setupPage(clonedPageComponent(component));
     };
+}
+function clonedPageComponent(component) {
+    // 页面可能作为组件渲染，需要clone一份定义出来，不然会互相干扰
+    return extend({}, component);
+}
+
+let isInitEntryPage = false;
+function initEntry() {
+    if (isInitEntryPage) {
+        return;
+    }
+    isInitEntryPage = true;
+    let entryPagePath;
+    let entryPageQuery;
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+        const { path, query, referrerInfo } = parseRedirectInfo();
+        if (path) {
+            entryPagePath = path;
+            entryPageQuery = query;
+        }
+        __uniConfig.referrerInfo = referrerInfo;
+    }
+    else {
+        const argsJsonStr = plus.runtime.arguments;
+        if (!argsJsonStr) {
+            return;
+        }
+        try {
+            const args = JSON.parse(argsJsonStr);
+            entryPagePath = args.path || args.pathName;
+            entryPageQuery = args.query ? '?' + args.query : '';
+        }
+        catch (e) { }
+    }
+    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+        if (entryPageQuery) {
+            __uniConfig.entryPageQuery = entryPageQuery;
+        }
+        return;
+    }
+    const entryRoute = addLeadingSlash(entryPagePath);
+    const routeOptions = getRouteOptions(entryRoute);
+    if (!routeOptions) {
+        return;
+    }
+    if (!routeOptions.meta.isTabBar) {
+        __uniConfig.realEntryPagePath =
+            __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+    }
+    __uniConfig.entryPagePath = entryPagePath;
+    __uniConfig.entryPageQuery = entryPageQuery;
 }
 
 function initRouteOptions(path, openType) {
@@ -12446,6 +12395,168 @@ function initRouteOptions(path, openType) {
     //     routeOptions.meta.visible = true
     //   }
     return routeOptions;
+}
+
+/**
+ * 是否处于直达页面，仅适用于返回时判断是否应打开首页，不可挪作他用
+ * 考虑如下场景
+ * 1. 直达page2 redirectTo page3 此时 page3 也需要被认为是直达页面
+ * 2. 直达page2 navigateTo page2 此时仅第一个 page2 应被认为是直达页面，第二个 page2 不应被认为是直达页面
+ * @param page
+ * @returns
+ */
+function isDirectPage(page) {
+    return (__uniConfig.realEntryPagePath &&
+        // getPage$BasePage(page as ComponentPublicInstance).route ===
+        // __uniConfig.entryPagePath &&
+        getCurrentPages$1()[0] === page);
+}
+/**
+ * 重新启动到首页
+ */
+function reLaunchEntryPage() {
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+    delete __uniConfig.realEntryPagePath;
+    uni.reLaunch({
+        url: addLeadingSlash(__uniConfig.entryPagePath),
+    });
+}
+
+function onWebviewResize(webview) {
+    const { emit } = UniServiceJSBridge;
+    const onResize = function ({ width, height, }) {
+        const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
+        const res = {
+            deviceOrientation: landscape ? 'landscape' : 'portrait',
+            size: {
+                windowWidth: Math.ceil(width),
+                windowHeight: Math.ceil(height),
+            },
+        };
+        emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
+    };
+    webview.addEventListener('resize', debounce(onResize, 50, { setTimeout, clearTimeout }));
+}
+
+function onWebviewReady(pageId, callback) {
+    UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
+}
+
+function closeWebview$1(webview, animationType, animationDuration) {
+    webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
+}
+function showWebview(webview, animationType, animationDuration, showCallback, delay) {
+    if (typeof delay === 'undefined') {
+        delay = webview.nvue ? 0 : 100;
+    }
+    if (('production' !== 'production')) {
+        console.log(formatLog('showWebview', 'delay', delay));
+    }
+    const execShowCallback = function () {
+        if (execShowCallback._called) {
+            if (('production' !== 'production')) {
+                console.log(formatLog('execShowCallback', 'prevent'));
+            }
+            return;
+        }
+        execShowCallback._called = true;
+        showCallback && showCallback();
+        navigateFinish();
+    };
+    execShowCallback._called = false;
+    setTimeout(() => {
+        const timer = setTimeout(() => {
+            if (('production' !== 'production')) {
+                console.log(formatLog('showWebview', 'callback', 'timer'));
+            }
+            execShowCallback();
+        }, animationDuration + 150);
+        webview.show(animationType, animationDuration, () => {
+            if (('production' !== 'production')) {
+                console.log(formatLog('showWebview', 'callback'));
+            }
+            if (!execShowCallback._called) {
+                clearTimeout(timer);
+            }
+            execShowCallback();
+        });
+    }, delay);
+}
+
+let pendingNavigator = false;
+function getPendingNavigator() {
+    return pendingNavigator;
+}
+function setPendingNavigator(path, callback, msg) {
+    pendingNavigator = {
+        path,
+        nvue: getRouteMeta(path).isNVue,
+        callback,
+    };
+    if (('production' !== 'production')) {
+        console.log(formatLog('setPendingNavigator', path, msg));
+    }
+}
+function closePage(page, animationType, animationDuration) {
+    removePage(page);
+    closeWebview$1(page.$getAppWebview(), animationType, animationDuration);
+}
+function pendingNavigate() {
+    if (!pendingNavigator) {
+        return;
+    }
+    const { callback } = pendingNavigator;
+    if (('production' !== 'production')) {
+        console.log(formatLog('pendingNavigate', pendingNavigator.path));
+    }
+    pendingNavigator = false;
+    return callback();
+}
+function navigateFinish() {
+    if (__uniConfig.renderer === 'native') {
+        if (!pendingNavigator) {
+            return;
+        }
+        if (pendingNavigator.nvue) {
+            return pendingNavigate();
+        }
+        return;
+    }
+    // 创建预加载
+    const preloadWebview = createPreloadWebview();
+    if (('production' !== 'production')) {
+        console.log(formatLog('navigateFinish', 'preloadWebview', preloadWebview.id));
+    }
+    if (!pendingNavigator) {
+        return;
+    }
+    if (pendingNavigator.nvue) {
+        return pendingNavigate();
+    }
+    preloadWebview.loaded
+        ? pendingNavigator.callback()
+        : onWebviewReady(preloadWebview.id, pendingNavigate);
+}
+
+function navigate(path, callback, isAppLaunch) {
+    const pendingNavigator = getPendingNavigator();
+    if (!isAppLaunch && pendingNavigator) {
+        return console.error(`Waiting to navigate to: ${pendingNavigator.path}, do not operate continuously: ${path}.`);
+    }
+    // 未创建 preloadWebview 或 preloadWebview 已被使用
+    const preloadWebview = getPreloadWebview();
+    const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
+    // 已创建未 loaded
+    const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
+    if (waitPreloadWebview || waitPreloadWebviewReady) {
+        setPendingNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
+    }
+    else {
+        callback();
+    }
+    if (waitPreloadWebviewReady) {
+        onWebviewReady(preloadWebview.id, pendingNavigate);
+    }
 }
 
 function initWebviewStyle(webview, path, query, routeMeta) {
@@ -12573,54 +12684,6 @@ function initPageOptions({ meta }) {
     };
 }
 
-let isInitEntryPage = false;
-function initEntry() {
-    if (isInitEntryPage) {
-        return;
-    }
-    isInitEntryPage = true;
-    let entryPagePath;
-    let entryPageQuery;
-    const weexPlus = weex.requireModule('plus');
-    if (weexPlus.getRedirectInfo) {
-        const { path, query, referrerInfo } = parseRedirectInfo();
-        if (path) {
-            entryPagePath = path;
-            entryPageQuery = query;
-        }
-        __uniConfig.referrerInfo = referrerInfo;
-    }
-    else {
-        const argsJsonStr = plus.runtime.arguments;
-        if (!argsJsonStr) {
-            return;
-        }
-        try {
-            const args = JSON.parse(argsJsonStr);
-            entryPagePath = args.path || args.pathName;
-            entryPageQuery = args.query ? '?' + args.query : '';
-        }
-        catch (e) { }
-    }
-    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
-        if (entryPageQuery) {
-            __uniConfig.entryPageQuery = entryPageQuery;
-        }
-        return;
-    }
-    const entryRoute = addLeadingSlash(entryPagePath);
-    const routeOptions = getRouteOptions(entryRoute);
-    if (!routeOptions) {
-        return;
-    }
-    if (!routeOptions.meta.isTabBar) {
-        __uniConfig.realEntryPagePath =
-            __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
-    }
-    __uniConfig.entryPagePath = entryPagePath;
-    __uniConfig.entryPageQuery = entryPageQuery;
-}
-
 function initAnimation(path, animationType, animationDuration) {
     const { globalStyle } = __uniConfig;
     const meta = getRouteMeta(path);
@@ -12656,7 +12719,6 @@ const $navigateTo = (args, { resolve, reject }) => {
 const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     // 当前页面触发 onHide
-    invokeHook(ON_HIDE);
     invokeHook(ON_HIDE);
     const eventChannel = new EventChannel(getWebviewId() + 1, events);
     return new Promise((resolve) => {
@@ -13162,7 +13224,7 @@ const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type = 'wgs84', geocode 
         reject('getLocation:fail ' + e.message);
     }, {
         geocode: geocode,
-        enableHighAccuracy: isHighAccuracy || altitude,
+        enableHighAccuracy: isHighAccuracy,
         timeout: highAccuracyExpireTime,
         coordsType: type,
     });
@@ -13292,6 +13354,16 @@ function createWebviewContext(id, componentInstance) {
     }
 }
 
+const themeChangeCallBack = (res) => {
+    UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
+};
+const onThemeChange = defineOnApi(ON_THEME_CHANGE, () => {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
+});
+const offThemeChange = defineOffApi(OFF_THEME_CHANGE, () => {
+    UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
+});
+
 const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) => {
     const pageId = getPageIdByVm(getCurrentPageVm());
     UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, resolve);
@@ -13338,6 +13410,7 @@ var uni$1 = {
   offLocationChange: offLocationChange,
   offLocationChangeError: offLocationChangeError,
   offPageNotFound: offPageNotFound,
+  offThemeChange: offThemeChange,
   offUnhandledRejection: offUnhandledRejection,
   offWindowResize: offWindowResize,
   onAppHide: onAppHide,
@@ -13350,6 +13423,7 @@ var uni$1 = {
   onLocationChangeError: onLocationChangeError,
   onPageNotFound: onPageNotFound,
   onTabBarMidButtonTap: onTabBarMidButtonTap,
+  onThemeChange: onThemeChange,
   onUnhandledRejection: onUnhandledRejection,
   onWindowResize: onWindowResize,
   openLocation: openLocation,
@@ -13636,7 +13710,7 @@ function initSubscribeHandlers() {
 
 function initGlobalEvent() {
     const plusGlobalEvent = plus.globalEvent;
-    const { emit } = UniServiceJSBridge;
+    const { emit, publishHandler } = UniServiceJSBridge;
     plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
     plusGlobalEvent.addEventListener('pause', () => {
         emit(ON_APP_ENTER_BACKGROUND);
@@ -13652,6 +13726,14 @@ function initGlobalEvent() {
         emit(ON_KEYBOARD_HEIGHT_CHANGE, {
             height: event.height,
         });
+    });
+    plusGlobalEvent.addEventListener('uistylechange', function (event) {
+        const args = {
+            theme: event.uistyle,
+        };
+        emit(ON_THEME_CHANGE, args);
+        publishHandler(ON_THEME_CHANGE, args, getCurrentPageId());
+        changePagesNavigatorStyle();
     });
     plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
 }

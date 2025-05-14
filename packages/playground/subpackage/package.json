@@ -1,5 +1,5 @@
 {
-  "name": "static",
+  "name": "subpackage",
   "private": true,
   "version": "0.0.0",
   "scripts": {

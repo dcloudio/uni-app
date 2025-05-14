@@ -3,7 +3,7 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
+import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, shallowReadonly, track, reactive, shallowReactive, trigger, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, customRef, isReadonly } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
@@ -550,7 +550,7 @@ function reload(id, newComp) {
   });
 }
 function updateComponentDef(oldComp, newComp) {
-  extend$1(oldComp, newComp);
+  extend(oldComp, newComp);
   for (const key in oldComp) {
     if (key !== "__file" && !(key in newComp)) {
       delete oldComp[key];
@@ -771,7 +771,7 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
       const normalizedFromExtend = normalizeEmitsOptions(raw2, appContext, true);
       if (normalizedFromExtend) {
         hasExtends = true;
-        extend$1(normalized, normalizedFromExtend);
+        extend(normalized, normalizedFromExtend);
       }
     };
     if (!asMixin && appContext.mixins.length) {
@@ -793,7 +793,7 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
   if (isArray(raw)) {
     raw.forEach((key) => normalized[key] = null);
   } else {
-    extend$1(normalized, raw);
+    extend(normalized, raw);
   }
   if (isObject(comp)) {
     cache.set(comp, normalized);
@@ -1813,14 +1813,14 @@ function watchPostEffect(effect, options) {
   return doWatch(
     effect,
     null,
-    !!(process.env.NODE_ENV !== "production") ? extend$1({}, options, { flush: "post" }) : { flush: "post" }
+    !!(process.env.NODE_ENV !== "production") ? extend({}, options, { flush: "post" }) : { flush: "post" }
   );
 }
 function watchSyncEffect(effect, options) {
   return doWatch(
     effect,
     null,
-    !!(process.env.NODE_ENV !== "production") ? extend$1({}, options, { flush: "sync" }) : { flush: "sync" }
+    !!(process.env.NODE_ENV !== "production") ? extend({}, options, { flush: "sync" }) : { flush: "sync" }
   );
 }
 const INITIAL_WATCHER_VALUE = {};
@@ -2462,7 +2462,7 @@ function defineComponent(options, extraOptions) {
   return isFunction(options) ? (
     // #8326: extend call and options.name access are considered side-effects
     // by Rollup, so we have to wrap it in a pure-annotated IIFE.
-    /* @__PURE__ */ (() => extend$1({ name: options.name }, extraOptions, { setup: options }))()
+    /* @__PURE__ */ (() => extend({ name: options.name }, extraOptions, { setup: options }))()
   ) : options;
 }
 
@@ -3045,7 +3045,7 @@ const getPublicInstance = (i) => {
 const publicPropertiesMap = (
   // Move PURE marker to new line to workaround compiler discarding it
   // due to type annotation
-  /* @__PURE__ */ extend$1(/* @__PURE__ */ Object.create(null), {
+  /* @__PURE__ */ extend(/* @__PURE__ */ Object.create(null), {
     $: (i) => i,
     $el: (i) => i.vnode.el,
     $data: (i) => i.data,
@@ -3220,7 +3220,7 @@ if (!!(process.env.NODE_ENV !== "production") && true) {
     return Reflect.ownKeys(target);
   };
 }
-const RuntimeCompiledPublicInstanceProxyHandlers = /* @__PURE__ */ extend$1(
+const RuntimeCompiledPublicInstanceProxyHandlers = /* @__PURE__ */ extend(
   {},
   PublicInstanceProxyHandlers,
   {
@@ -3389,7 +3389,7 @@ function mergeModels(a, b) {
     return a || b;
   if (isArray(a) && isArray(b))
     return a.concat(b);
-  return extend$1({}, normalizePropsOrEmits(a), normalizePropsOrEmits(b));
+  return extend({}, normalizePropsOrEmits(a), normalizePropsOrEmits(b));
 }
 function createPropsRestProxy(props, excludedKeys) {
   const ret = {};
@@ -3788,7 +3788,7 @@ function mergeDataFn(to, from) {
     return from;
   }
   return function mergedDataFn() {
-    return (extend$1)(
+    return (extend)(
       isFunction(to) ? to.call(this, this) : to,
       isFunction(from) ? from.call(this, this) : from
     );
@@ -3811,14 +3811,14 @@ function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
 }
 function mergeObjectOptions(to, from) {
-  return to ? extend$1(/* @__PURE__ */ Object.create(null), to, from) : from;
+  return to ? extend(/* @__PURE__ */ Object.create(null), to, from) : from;
 }
 function mergeEmitsOrPropsOptions(to, from) {
   if (to) {
     if (isArray(to) && isArray(from)) {
       return [.../* @__PURE__ */ new Set([...to, ...from])];
     }
-    return extend$1(
+    return extend(
       /* @__PURE__ */ Object.create(null),
       normalizePropsOrEmits(to),
       normalizePropsOrEmits(from != null ? from : {})
@@ -3832,7 +3832,7 @@ function mergeWatchOptions(to, from) {
     return from;
   if (!from)
     return to;
-  const merged = extend$1(/* @__PURE__ */ Object.create(null), to);
+  const merged = extend(/* @__PURE__ */ Object.create(null), to);
   for (const key in from) {
     merged[key] = mergeAsArray(to[key], from[key]);
   }
@@ -3864,7 +3864,7 @@ let uid$1 = 0;
 function createAppAPI(render, hydrate) {
   return function createApp(rootComponent, rootProps = null) {
     if (!isFunction(rootComponent)) {
-      rootComponent = extend$1({}, rootComponent);
+      rootComponent = extend({}, rootComponent);
     }
     if (rootProps != null && !isObject(rootProps)) {
       !!(process.env.NODE_ENV !== "production") && warn$1(`root props passed to app.mount() must be an object.`);
@@ -4275,7 +4275,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
     const extendProps = (raw2) => {
       hasExtends = true;
       const [props, keys] = normalizePropsOptions(raw2, appContext, true);
-      extend$1(normalized, props);
+      extend(normalized, props);
       if (keys)
         needCastKeys.push(...keys);
     };
@@ -4313,7 +4313,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
       const normalizedKey = camelize(key);
       if (validatePropName(normalizedKey)) {
         const opt = raw[key];
-        const prop = normalized[normalizedKey] = isArray(opt) || isFunction(opt) ? { type: opt } : extend$1({}, opt);
+        const prop = normalized[normalizedKey] = isArray(opt) || isFunction(opt) ? { type: opt } : extend({}, opt);
         if (prop) {
           const booleanIndex = getTypeIndex(Boolean, prop.type);
           const stringIndex = getTypeIndex(String, prop.type);
@@ -4539,12 +4539,12 @@ const updateSlots = (instance, children, optimized) => {
     const type = children._;
     if (type) {
       if (!!(process.env.NODE_ENV !== "production") && isHmrUpdating) {
-        extend$1(slots, children);
+        extend(slots, children);
         trigger(instance, "set", "$slots");
       } else if (optimized && type === 1) {
         needDeletionCheck = false;
       } else {
-        extend$1(slots, children);
+        extend(slots, children);
         if (!optimized && type === 1) {
           delete slots._;
         }
@@ -7374,7 +7374,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
     }
     if (isObject(style)) {
       if (isProxy(style) && !isArray(style)) {
-        style = extend$1({}, style);
+        style = extend({}, style);
       }
       props.style = normalizeStyle$2(style);
     }
@@ -7403,7 +7403,7 @@ Component that was made reactive: `,
 function guardReactiveProps(props) {
   if (!props)
     return null;
-  return isProxy(props) || InternalObjectKey in props ? extend$1({}, props) : props;
+  return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
 }
 function cloneVNode(vnode, extraProps, mergeRef = false) {
   const { props, ref, patchFlag, children } = vnode;
@@ -7578,6 +7578,15 @@ function createComponentInstance(vnode, parent, suspense) {
     type,
     parent,
     appContext,
+    // fixed by xxxxxx 页面的vnode会多一个__page_container__属性，通过它来判断
+    // @ts-expect-error
+    renderer: (
+      // @ts-expect-error
+      type.mpType === "app" ? "app" : (
+        // @ts-expect-error
+        vnode.__page_container__ ? "page" : "component"
+      )
+    ),
     root: null,
     // to be immediately set
     next: null,
@@ -7850,8 +7859,8 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
         }
         const { isCustomElement, compilerOptions } = instance.appContext.config;
         const { delimiters, compilerOptions: componentCompilerOptions } = Component;
-        const finalCompilerOptions = extend$1(
-          extend$1(
+        const finalCompilerOptions = extend(
+          extend(
             {
               isCustomElement,
               delimiters
@@ -8196,7 +8205,7 @@ function initCustomFormatter() {
     return blocks;
   }
   function createInstanceBlock(type, target) {
-    target = extend$1({}, target);
+    target = extend({}, target);
     if (!Object.keys(target).length) {
       return ["span", {}];
     }
@@ -8560,14 +8569,14 @@ function parseStyleSheet({
   }
   return cache;
 }
-function extend(a, b) {
+function extendMap(a, b) {
   b.forEach((value, key) => {
     a.set(key, value);
   });
   return a;
 }
 function toStyle(el, classStyle, classStyleWeights) {
-  const res = extend(/* @__PURE__ */ new Map(), classStyle);
+  const res = extendMap(/* @__PURE__ */ new Map(), classStyle);
   const style = getExtraStyle(el);
   if (style != null) {
     style.forEach((value, key) => {
@@ -8675,14 +8684,18 @@ const nodeOps = {
   },
   createElement: (tag, container) => {
     if (!container) {
-      return getDocument().createElement(tag);
+      const document = getDocument();
+      if (!document) {
+        throw new Error("document is not defined");
+      }
+      return document.createElement(tag);
     } else {
-      const document = container.uniPage.document;
+      const document = container.page.document;
       return document.createElement(tag);
     }
   },
   createText: (text, container, isAnchor) => {
-    const document = container.uniPage.document;
+    const document = container.page.document;
     if (isAnchor) {
       return document.createComment(text);
     }
@@ -8692,7 +8705,7 @@ const nodeOps = {
     return textNode;
   },
   createComment: (text, container) => {
-    const document = container.uniPage.document;
+    const document = container.page.document;
     return document.createComment(text);
   },
   setText: (node, text) => {
@@ -8932,8 +8945,8 @@ function patchStyle(el, prev, next) {
     const classStyle = getExtraClassStyle(el);
     const style = getExtraStyle(el);
     for (const key in prev) {
-      const _key = camelize(key);
       if (next[key] == null) {
+        const _key = key.startsWith("--") ? key : camelize(key);
         const value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
         parseStyleDecl(_key, value).forEach((value2, key2) => {
           batchedStyles.set(key2, value2);
@@ -8945,18 +8958,18 @@ function patchStyle(el, prev, next) {
       const value = next[key];
       const prevValue = prev[key];
       if (!isSame(prevValue, value)) {
-        parseStyleDecl(camelize(key), value).forEach(
-          (value2, key2) => {
-            batchedStyles.set(key2, value2);
-            style == null ? void 0 : style.set(key2, value2);
-          }
-        );
+        const _key = key.startsWith("--") ? key : camelize(key);
+        parseStyleDecl(_key, value).forEach((value2, key2) => {
+          batchedStyles.set(key2, value2);
+          style == null ? void 0 : style.set(key2, value2);
+        });
       }
     }
   } else {
     for (const key in next) {
       const value = next[key];
-      setBatchedStyles(batchedStyles, camelize(key), value);
+      const _key = key.startsWith("--") ? key : camelize(key);
+      setBatchedStyles(batchedStyles, _key, value);
     }
     setExtraStyle(el, batchedStyles);
   }
@@ -9144,7 +9157,7 @@ function setDisplay(el, value) {
   el._vsh = !value;
 }
 
-const rendererOptions = extend$1({ patchProp }, nodeOps);
+const rendererOptions = extend({ patchProp }, nodeOps);
 let renderer;
 function ensureRenderer() {
   return renderer || (renderer = createRenderer(rendererOptions));
@@ -9154,10 +9167,17 @@ const render = (...args) => {
 };
 const createApp = (...args) => {
   const app = ensureRenderer().createApp(...args);
-  const { mount } = app;
+  const { mount, unmount } = app;
   app.mount = (container) => {
     setDocument(container);
     return mount(container.body);
+  };
+  app.unmount = () => {
+    setDocument(void 0);
+    unmount();
+    app._container = null;
+    app._context.reload = () => {
+    };
   };
   return app;
 };

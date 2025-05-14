@@ -60,6 +60,7 @@
 			"uni-storage",
 			"uni-prompt",
 			"uni-modal",
+			"uni-getDeviceInfo",
 			"uni-actionSheet",
 			"app-ios:uni-dialogPage",
 			"app-ios:uni-event"

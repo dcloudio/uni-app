@@ -259,6 +259,9 @@
           "UniPageImpl"
         ],
         [
+          "UniNativeAppImpl"
+        ],
+        [
           "customElements"
         ],
         [

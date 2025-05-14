@@ -1,6 +1,6 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
+import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -449,10 +449,10 @@ function promisify(name, fn) {
       rest[_key - 1] = arguments[_key];
     }
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-      invokeApi(name, fn, extend(args, {
+      invokeApi(name, fn, extend({}, args, {
         success: resolve,
         fail: reject
       }), rest);
@@ -640,6 +640,9 @@ function initVueApp(appVm) {
       if (__page_container__) {
         __page_container__.isUnmounted = true;
         render(null, __page_container__);
+        delete pageInstance.__page_container__;
+        var vnode = pageInstance.$.vnode;
+        delete vnode.__page_container__;
       }
     }
   });
@@ -691,9 +694,10 @@ function removePage(curPage) {
   if (!$basePage.meta.isNVue) {
     getVueApp().unmountPage(curPage);
   }
-  var removePages2 = pages.splice(index2, 1);
+  pages.splice(index2, 1);
   {
-    removePages2[0].$page = null;
+    curPage.$page.vm = null;
+    curPage.$page = null;
   }
 }
 function backbuttonListener() {
@@ -855,15 +859,18 @@ function isVuePageAsyncComponent(component) {
 }
 var pagesMap = /* @__PURE__ */ new Map();
 function definePage(pagePath, asyncComponent) {
-  pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+  pagesMap.set(pagePath, once(createPageFactory(asyncComponent)));
 }
-function createFactory(component) {
+function createPageFactory(component) {
   return () => {
     if (isVuePageAsyncComponent(component)) {
-      return component().then((component2) => setupPage(component2));
+      return component().then((component2) => setupPage(clonedPageComponent(component2)));
     }
-    return setupPage(component);
+    return setupPage(clonedPageComponent(component));
   };
+}
+function clonedPageComponent(component) {
+  return extend({}, component);
 }
 function initRouteOptions(path, openType) {
   var routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
@@ -881,6 +888,9 @@ function getWebviewId() {
 }
 function genWebviewId() {
   return id++;
+}
+function resetWebviewId() {
+  id = 1;
 }
 var ANI_SHOW = "pop-in";
 var ANI_DURATION = 300;
@@ -1465,6 +1475,11 @@ function init() {
   page.startRender();
   page.show(null);
 }
+function clearTabBarStatus() {
+  tabBar0 = null;
+  selected0 = -1;
+  tabs.clear();
+}
 function removeTabBarPage(page) {
   var pagePath = getRealPath(page.route, true);
   if (tabs.get(pagePath) === page) {
@@ -2042,12 +2057,12 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   var pageNode = nativePage.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
-  var mountPage = (component2) => app.mountPage(component2, {
+  var mountPage = (component2) => app.mountPage(component2, extend({
     __pageId,
     __pagePath,
     __pageQuery,
     __pageInstance
-  }, pageNode);
+  }, __pageQuery), pageNode);
   if (isPromise(component)) {
     return component.then((component2) => mountPage(component2));
   }
@@ -2277,20 +2292,22 @@ function _redirectTo(_ref3) {
   } = _ref3;
   var lastPage = getCurrentPage().vm;
   return new Promise((resolve) => {
-    invokeAfterRouteHooks(API_REDIRECT_TO);
-    showWebview(registerPage({
-      url,
-      path,
-      query,
-      openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
-    }), "none", 0, () => {
-      if (lastPage) {
-        removePages(lastPage);
-      }
-      resolve(void 0);
-      setStatusBarStyle();
-    });
-    invokeBeforeRouteHooks(API_REDIRECT_TO);
+    setTimeout(() => {
+      invokeAfterRouteHooks(API_REDIRECT_TO);
+      showWebview(registerPage({
+        url,
+        path,
+        query,
+        openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
+      }), "none", 0, () => {
+        if (lastPage) {
+          removePages(lastPage);
+        }
+        resolve(void 0);
+        setStatusBarStyle();
+      });
+      invokeBeforeRouteHooks(API_REDIRECT_TO);
+    }, 0);
   });
 }
 function removePages(currentPage) {
@@ -2340,23 +2357,25 @@ function _reLaunch(_ref3) {
     query
   } = _ref3;
   return new Promise((resolve) => {
-    var pages2 = getAllPages().slice(0);
-    var selected = getTabIndex(path);
-    function callback() {
-      pages2.forEach((page) => closePage(page, "none"));
-      resolve(void 0);
-      setStatusBarStyle();
-    }
-    if (selected === -1) {
-      showWebview(registerPage({
-        url,
-        path,
-        query,
-        openType: "reLaunch"
-      }), "none", 0, callback);
-    } else {
-      switchSelect(selected, path, query, true, callback);
-    }
+    setTimeout(() => {
+      var pages2 = getAllPages().slice(0);
+      var selected = getTabIndex(path);
+      function callback() {
+        pages2.forEach((page) => closePage(page, "none"));
+        resolve(void 0);
+        setStatusBarStyle();
+      }
+      if (selected === -1) {
+        showWebview(registerPage({
+          url,
+          path,
+          query,
+          openType: "reLaunch"
+        }), "none", 0, callback);
+      } else {
+        switchSelect(selected, path, query, true, callback);
+      }
+    }, 0);
   });
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
@@ -2468,15 +2487,19 @@ function _switchTab(_ref2) {
     return Promise.reject("tab ".concat(path, " not found"));
   }
   var pages2 = getCurrentBasePages();
-  switchSelect(selected, path, query);
-  for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
-    var page = pages2[index2];
-    if (isTabPage(page)) {
-      break;
-    }
-    closePage(page, "none");
-  }
-  return Promise.resolve();
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      switchSelect(selected, path, query);
+      for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
+        var page = pages2[index2];
+        if (isTabPage(page)) {
+          break;
+        }
+        closePage(page, "none");
+      }
+      resolve(void 0);
+    }, 0);
+  });
 }
 var isLaunchWebviewReady = false;
 function subscribeWebviewReady(_data, pageId) {
@@ -2506,6 +2529,9 @@ function onLaunchWebviewReady() {
   }
   return $navigateTo(args, handler);
 }
+function clearWebviewReady() {
+  isLaunchWebviewReady = false;
+}
 function initSubscribeHandlers() {
   subscribeWebviewReady();
 }
@@ -2532,7 +2558,7 @@ function _asyncToGenerator(n) {
     });
   };
 }
-function initOn(app) {
+function initOn(app, unregisterApp2) {
   app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
     var _ref = _asyncToGenerator(function* (event) {
       var _getCurrentPage;
@@ -2584,9 +2610,19 @@ function initOn(app) {
       invokeHook(page, ON_HIDE);
     }
   });
+  app.addEventListener(ON_EXIT, function() {
+    var appInstance = getApp().vm;
+    var pages2 = getAllPages().slice(0);
+    pages2.forEach((page) => closePage(page, "none"));
+    clearTabBarStatus();
+    clearWebviewReady();
+    resetWebviewId();
+    invokeHook(appInstance, ON_EXIT);
+    unregisterApp2();
+  });
 }
-function initService(app) {
-  initOn(app);
+function initService(app, unregisterApp2) {
+  initOn(app, unregisterApp2);
 }
 function initComponentInstance(app) {
   app.mixin({
@@ -2614,9 +2650,6 @@ function initComponentInstance(app) {
   });
 }
 var appCtx;
-var defaultApp = {
-  globalData: {}
-};
 var entryPageState = {
   isReady: false,
   handledBeforeEntryPageRoutes: false
@@ -2645,14 +2678,23 @@ function registerApp(appVm, nativeApp2, uniApp) {
   appCtx = appVm;
   initAppVm(appCtx);
   initUniApp(uniApp);
+  var defaultApp = {
+    globalData: {}
+  };
   extend(appCtx, defaultApp);
   defineGlobalData(appCtx, defaultApp.globalData);
-  initService(nativeApp2);
+  initService(nativeApp2, unregisterApp);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
   initAppError(appVm, nativeApp2);
   initSubscribeHandlers();
   __uniConfig.ready = true;
+}
+function unregisterApp() {
+  appCtx.$.appContext.app.unmount();
+  appCtx = void 0;
+  setNativeApp(void 0);
+  __uniConfig.ready = false;
 }
 function initApp(app) {
   initComponentInstance(app);
@@ -2736,31 +2778,33 @@ function _navigateTo(_ref2) {
   invokeHook(ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
   return new Promise((resolve) => {
-    var noAnimation = aniType === "none" || aniDuration === 0;
-    function callback(page2) {
-      showWebview(page2, aniType, aniDuration, () => {
-        invokeAfterRouteHooks(currentRouteType);
-        resolve({
-          eventChannel
+    setTimeout(() => {
+      var noAnimation = aniType === "none" || aniDuration === 0;
+      function callback(page2) {
+        showWebview(page2, aniType, aniDuration, () => {
+          invokeAfterRouteHooks(currentRouteType);
+          resolve({
+            eventChannel
+          });
+          setStatusBarStyle();
         });
-        setStatusBarStyle();
-      });
-    }
-    var page = registerPage(
-      {
-        url,
-        path,
-        query,
-        openType: "navigateTo",
-        eventChannel
-      },
-      noAnimation ? void 0 : callback,
-      // 有动画时延迟创建 vm
-      noAnimation ? 0 : 1
-    );
-    if (noAnimation) {
-      callback(page);
-    }
+      }
+      var page = registerPage(
+        {
+          url,
+          path,
+          query,
+          openType: "navigateTo",
+          eventChannel
+        },
+        noAnimation ? void 0 : callback,
+        // 有动画时延迟创建 vm
+        noAnimation ? 0 : 1
+      );
+      if (noAnimation) {
+        callback(page);
+      }
+    }, 0);
   });
 }
 function initAnimation$1(path, animationType, animationDuration) {
@@ -2774,9 +2818,7 @@ function initAnimation$1(path, animationType, animationDuration) {
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function isDirectPage(page) {
-  return !!__uniConfig.realEntryPagePath && // getRealPath(page.$basePage.route, true) ===
-  // getRealPath(parseUrl(__uniConfig.entryPagePath!).path, true) &&
-  getCurrentPages$1()[0] === page;
+  return !!__uniConfig.realEntryPagePath && getRealPath(page.$basePage.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
 }
 function reLaunchEntryPage() {
   var _uniConfig$entryPage;
@@ -2821,9 +2863,9 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
   } catch (error) {
     console.warn(error);
   }
-  if (getPage$BasePage(page).meta.isQuit)
-    ;
-  else {
+  if (getPage$BasePage(page).meta.isQuit) {
+    invokeHook(getApp().vm, ON_LAST_PAGE_BACK_PRESS);
+  } else {
     if (isDirectPage(page)) {
       return reLaunchEntryPage();
     } else {
@@ -4733,11 +4775,6 @@ var styles = {
     height: "16px"
   }
 };
-var createHook = (lifecycle) => function(hook) {
-  var target = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : getCurrentInstance();
-  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-};
-var onUnload = /* @__PURE__ */ createHook(ON_UNLOAD);
 const checkbox = /* @__PURE__ */ defineBuiltInComponent({
   name: CHECKBOX_NAME,
   rootElement: {
@@ -4839,7 +4876,7 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
         };
       });
     });
-    onUnload(() => {
+    onBeforeUnmount(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
       $dispatch(ctx, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
         setCheckboxChecked,
@@ -5215,7 +5252,7 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
         setRadioChecked
       }, "add");
     });
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
       $dispatch(ctx, "RadioGroup", "_radioGroupUpdateHandler", {
         name: radioValue.value,
@@ -5721,7 +5758,7 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
         _animate();
       });
     });
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       clearTimer();
     });
     return () => {
@@ -6120,7 +6157,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         uniResizeObserver.observe(pickerColumnRef.value);
       });
     });
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
       uniResizeObserver.disconnect();
       $dispatch(ctx, "PickerView", "_pickerViewUpdateHandler", ctx, "remove");
@@ -6212,8 +6249,9 @@ const _sfc_main$6 = {
       isLandscape: false,
       bottomNavigationHeight: 0,
       appTheme: null,
-      osTheme: null,
-      hostTheme: null
+      hostTheme: null,
+      menuItemClicked: false,
+      cancelButtonClicked: false
     };
   },
   onLoad(options) {
@@ -6251,14 +6289,14 @@ const _sfc_main$6 = {
     } else if (osLanguage != null) {
       this.language = osLanguage;
     }
-    var osTheme = systemInfo.osTheme;
     var appTheme = systemInfo.appTheme;
     if (appTheme != null && appTheme != "auto") {
       this.appTheme = appTheme;
       this.handleThemeChange();
     }
-    if (osTheme != null) {
-      this.osTheme = osTheme;
+    var osTheme = systemInfo.osTheme;
+    if (osTheme != null && this.appTheme == null) {
+      this.appTheme = osTheme;
       this.handleThemeChange();
     }
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
@@ -6301,6 +6339,9 @@ const _sfc_main$6 = {
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
   },
   onUnload() {
+    if (!this.menuItemClicked && !this.cancelButtonClicked) {
+      uni.$emit(this.failEventName, {});
+    }
     uni.$off(this.optionsEventName, null);
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
@@ -6316,10 +6357,12 @@ const _sfc_main$6 = {
       }, 250);
     },
     handleMenuItemClick(tapIndex) {
+      this.menuItemClicked = true;
       this.closeActionSheet();
       uni.$emit(this.successEventName, tapIndex);
     },
     handleCancel() {
+      this.cancelButtonClicked = true;
       this.closeActionSheet();
       uni.$emit(this.failEventName, {});
     },
@@ -6328,8 +6371,6 @@ const _sfc_main$6 = {
         this.theme = this.hostTheme;
       } else if (this.appTheme != null) {
         this.theme = this.appTheme;
-      } else if (this.osTheme != null) {
-        this.theme = this.osTheme;
       }
     }
   }
@@ -6455,6 +6496,26 @@ const _style_0$6 = {
       "paddingLeft": 6
     }
   },
+  "border-t": {
+    "": {
+      "borderTopWidth": "1rpx",
+      "borderTopStyle": "solid",
+      "borderTopColor": "#e5e5e5"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "borderTopColor": "#2F3131"
+    }
+  },
+  "border-b": {
+    "": {
+      "borderBottomWidth": "1rpx",
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#e5e5e5"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "borderBottomColor": "#2F3131"
+    }
+  },
   "uni-action-sheet_dialog__title__text": {
     "": {
       "lineHeight": 1.4,
@@ -6502,16 +6563,6 @@ const _style_0$6 = {
       "maxHeight": 260
     }
   },
-  "divider": {
-    "": {
-      "height": 1,
-      "backgroundColor": "#e5e5e5",
-      "transform": "scaleY(0.5)"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "backgroundColor": "#2F3131"
-    }
-  },
   "@TRANSITION": {
     "uni-action-sheet_dialog__mask": {
       "property": "opacity",
@@ -6553,10 +6604,9 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
       "uni-action-sheet_dark__mode": $data.theme == "dark",
       "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
-  }, [$data.title ? (openBlock(), createElementBlock(Fragment, {
-    key: 0
-  }, [createElementVNode("view", {
-    class: normalizeClass(["uni-action-sheet_dialog__title", {
+  }, [$data.title ? (openBlock(), createElementBlock("view", {
+    key: 0,
+    class: normalizeClass(["uni-action-sheet_dialog__title border-b", {
       "uni-action-sheet_dark__mode": $data.theme == "dark",
       "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
@@ -6567,26 +6617,17 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-action-sheet_dialog__title__text", {
       "uni-action-sheet_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($data.title), 7)], 2), createElementVNode("view", {
-    class: normalizeClass(["divider", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
-    }])
-  }, null, 2)], 64)) : createCommentVNode("", true), createElementVNode("scroll-view", {
+  }, toDisplayString($data.title), 7)], 2)) : createCommentVNode("", true), createElementVNode("scroll-view", {
     class: normalizeClass(["uni-action-sheet_dialog__cell__container", {
       "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
   }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
     return openBlock(), createElementBlock("view", {
-      key: index2
-    }, [index2 !== 0 ? (openBlock(), createElementBlock("view", {
-      key: 0,
-      class: normalizeClass(["divider", {
-        "uni-action-sheet_dark__mode": $data.theme == "dark"
-      }])
-    }, null, 2)) : createCommentVNode("", true), createElementVNode("view", {
+      key: index2,
       class: normalizeClass(["uni-action-sheet_dialog__cell", {
         "uni-action-sheet_dark__mode": $data.theme == "dark",
-        "uni-action-sheet_landscape__mode": $data.isLandscape
+        "uni-action-sheet_landscape__mode": $data.isLandscape,
+        "border-t": index2 !== 0
       }]),
       onClick: ($event) => $options.handleMenuItemClick(index2)
     }, [createElementVNode("text", {
@@ -6596,7 +6637,7 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
       class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
         "uni-action-sheet_dark__mode": $data.theme == "dark"
       }])
-    }, toDisplayString(item), 7)], 10, _hoisted_1$5)]);
+    }, toDisplayString(item), 7)], 10, _hoisted_1$5);
   }), 128))], 2)], 6), createElementVNode("view", {
     style: normalizeStyle($data.backgroundColor != null ? {
       backgroundColor: $data.backgroundColor
@@ -7649,7 +7690,7 @@ var _hoisted_2$4 = {
 var _hoisted_3$4 = {
   class: "uni-choose-location-icons uni-choose-location-map-reset-icon"
 };
-var _hoisted_4$4 = {
+var _hoisted_4$3 = {
   class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text"
 };
 var _hoisted_5$2 = {
@@ -7667,7 +7708,7 @@ var _hoisted_10$1 = {
   key: 0,
   class: "uni-choose-location-poi-search-error"
 };
-var _hoisted_11$1 = {
+var _hoisted_11 = {
   class: "uni-choose-location-poi-search-error-text"
 };
 var _hoisted_12 = {
@@ -7749,7 +7790,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function() {
       return $options.confirm && $options.confirm(...arguments);
     })
-  }, [createElementVNode("text", _hoisted_4$4, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
+  }, [createElementVNode("text", _hoisted_4$3, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
     style: normalizeStyle($options.poiBoxStyleCom)
@@ -7780,7 +7821,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.scrolltolower && $options.scrolltolower(...arguments);
     }),
     class: "uni-choose-location-poi-list"
-  }, [$data.errMsg != "" ? (openBlock(), createElementBlock("view", _hoisted_10$1, [createElementVNode("text", _hoisted_11$1, toDisplayString($data.errMsg), 1)])) : $data.locationLoading ? (openBlock(), createElementBlock("view", _hoisted_12, [createElementVNode("text", _hoisted_13, toDisplayString($options.languageCom["locationLoading"]), 1)])) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createElementBlock("view", _hoisted_14, [createElementVNode("image", {
+  }, [$data.errMsg != "" ? (openBlock(), createElementBlock("view", _hoisted_10$1, [createElementVNode("text", _hoisted_11, toDisplayString($data.errMsg), 1)])) : $data.locationLoading ? (openBlock(), createElementBlock("view", _hoisted_12, [createElementVNode("text", _hoisted_13, toDisplayString($options.languageCom["locationLoading"]), 1)])) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createElementBlock("view", _hoisted_14, [createElementVNode("image", {
     src: $data.loadingPath,
     class: "uni-choose-location-poi-search-loading-image",
     mode: "widthFix",
@@ -7805,6 +7846,21 @@ const _sfc_main$4 = {
   data() {
     return {
       theme: "light",
+      language: "zh-Hans",
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      i18nConfirmText: {
+        en: "OK",
+        es: "Confirmar",
+        fr: "Confirmer",
+        "zh-Hans": "确定",
+        "zh-Hant": "確定"
+      },
       readyEventName: "",
       optionsEventName: "",
       successEventName: "",
@@ -7814,8 +7870,8 @@ const _sfc_main$4 = {
       showCancel: true,
       editable: false,
       placeholderText: null,
-      confirmText: "确定",
-      cancelText: "取消",
+      inputConfirmText: null,
+      inputCancelText: null,
       cancelColor: "#000000",
       confirmColor: "#4A5E86",
       inputBottom: "0px",
@@ -7831,8 +7887,61 @@ const _sfc_main$4 = {
       this.showAnim = true;
     }, 10);
   },
+  computed: {
+    cancelText() {
+      if (this.inputCancelText != null) {
+        var res = this.inputCancelText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    },
+    confirmText() {
+      if (this.inputConfirmText != null) {
+        var res = this.inputConfirmText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nConfirmText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nConfirmText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nConfirmText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nConfirmText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nConfirmText["zh-Hant"];
+      }
+      return "确定";
+    }
+  },
   onLoad(options) {
-    uni.getSystemInfoSync();
+    var systemInfo = uni.getSystemInfoSync();
+    var osLanguage = systemInfo.osLanguage;
+    var appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
     this.readyEventName = options["readyEventName"];
     this.optionsEventName = options["optionsEventName"];
     this.successEventName = options["successEventName"];
@@ -7854,10 +7963,10 @@ const _sfc_main$4 = {
         this.placeholderText = data["placeholderText"];
       }
       if (data["confirmText"] != null) {
-        this.confirmText = data["confirmText"];
+        this.inputConfirmText = data["confirmText"];
       }
       if (data["cancelText"] != null) {
-        this.cancelText = data["cancelText"];
+        this.inputCancelText = data["cancelText"];
       }
       if (data["confirmColor"] != null) {
         this.inputConfirmColor = data["confirmColor"];
@@ -8083,7 +8192,7 @@ const _style_0$4 = {
   "uni-modal_dialog__content__topline": {
     "": {
       "width": "100%",
-      "height": 1,
+      "height": 0.5,
       "backgroundColor": "#E0E0E0"
     },
     ".uni-modal_dark__mode": {
@@ -8152,7 +8261,7 @@ const _style_0$4 = {
   },
   "uni-modal_dialog__content__bottom__splitline": {
     "": {
-      "width": 1,
+      "width": 0.5,
       "height": "100%",
       "backgroundColor": "#E3E3E3"
     },
@@ -8179,7 +8288,7 @@ var _hoisted_3$3 = {
   key: 1,
   class: "uni-modal_dialog__content__text"
 };
-var _hoisted_4$3 = {
+var _hoisted_4$2 = {
   class: "uni-modal_dialog__content__bottom"
 };
 var _hoisted_5$1 = ["hover-class"];
@@ -8229,7 +8338,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-modal_dialog__content__topline", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }])
-  }, null, 2), createElementVNode("view", _hoisted_4$3, [$data.showCancel ? (openBlock(), createElementBlock("view", {
+  }, null, 2), createElementVNode("view", _hoisted_4$2, [$data.showCancel ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
       "uni-modal_dark__mode": $data.theme == "dark"
@@ -8243,7 +8352,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
       color: $data.cancelColor
     }),
     class: "uni-modal_dialog__content__bottom__button__text"
-  }, toDisplayString($data.cancelText), 5)], 10, _hoisted_5$1)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
+  }, toDisplayString($options.cancelText), 5)], 10, _hoisted_5$1)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
     key: 1,
     class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", {
       "uni-modal_dark__mode": $data.theme == "dark"
@@ -8261,7 +8370,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
       color: $data.confirmColor
     }),
     class: "uni-modal_dialog__content__bottom__button__text__sure"
-  }, toDisplayString($data.confirmText), 5)], 10, _hoisted_6$1)])], 2)], 6)], 2);
+  }, toDisplayString($options.confirmText), 5)], 10, _hoisted_6$1)])], 2)], 6)], 2);
 }
 const UniUniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
 class Friction {
@@ -8922,6 +9031,16 @@ const _sfc_main$2 = {
     },
     reloadImage(e) {
       var _this$$refs$mask3;
+      if (this.srcPath == "") {
+        this.loadingFinished = false;
+        this.loadError = false;
+        setTimeout(() => {
+          this.loadError = true;
+          this.loadingFinished = true;
+        }, 1e3);
+        e.stopPropagation();
+        return;
+      }
       (_this$$refs$mask3 = this.$refs["mask"]) === null || _this$$refs$mask3 === void 0 || _this$$refs$mask3.style.setProperty("point-events", "none");
       this.loadingFinished = false;
       this.loadError = false;
@@ -9041,11 +9160,7 @@ var _hoisted_3$2 = {
   key: 0,
   class: "uni-preview-image-loading"
 };
-var _hoisted_4$2 = {
-  class: "uni-preview-image-tips-error"
-};
 function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  var _$props$tips, _$props$tips2, _$props$tips3, _$props$tips4;
   var _component_loadingCircle = resolveComponent("loadingCircle");
   return openBlock(), createElementBlock("view", _hoisted_1$2, [createElementVNode("image", {
     ref: "imageView",
@@ -9094,12 +9209,17 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[7] || (_cache[7] = function() {
       return $options.closePreviewImage && $options.closePreviewImage(...arguments);
     })
-  }, [createElementVNode("text", _hoisted_4$2, toDisplayString($props.tips == null || ((_$props$tips = $props.tips) === null || _$props$tips === void 0 ? void 0 : _$props$tips["error"]) == null ? $options.getLanguageString("error") : (_$props$tips2 = $props.tips) === null || _$props$tips2 === void 0 ? void 0 : _$props$tips2["error"]), 1), createElementVNode("text", {
-    class: "uni-preview-image-tips-retry",
+  }, [createElementVNode("image", {
+    src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAMAAADQmBKKAAAAilBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////2N2iNAAAALXRSTlMAf/kN/BOp7IxPBsMz9NzMRi0h4L7Q5pFjnhfVmIN3WUo6W6NUPrVtJ0yhcR84ApfrAAADTElEQVR42u3b3XaiMBSG4V1CABFBhFr/f1q1Tmf2/d/eHJoYrNJvu1a6Vp7zzrwthAAJFARBEARBEARBEPxmqtiuk3bZTJmnzbJN1ttC0SNeSJ76k71yhyrbqbs9LF4zG8Z8U9TO1Pc9wkG7JOI7Rh/jb3pkg96X/JBqcKtHNGhW8sOW284eyaD9K/cyrN0ewSA9577iTDk9YkGDlH+gOVo9ckH5G/9MvHF7mGCTin/spK978KAiZUA5sXvwoPGIO8XVfDM4TxZEi0k92HzdGoTTwuzBg7ZR5//yNlDOQDysUu4wOlo9DPbE7Ihuzg354RSzI2a5oHHk/sLZgr5xnrs/IhdUjNyrnb47KJOnBU3SrvngvnH5nKC8Ylv0iVxJ8aDrf7Us6GGHVD5owLZW9TrcpXSQTtmS5NTLohIOmrNlRX2pRjRoz5aEenth0SB7ampzrAcPmtnjS4E9eJA1RqIC7MGD3tn0ifbgQUtrvkB78KCddcBqtAcPStiQoT14kIrM+x8t28PomM/gHjxoaJ5BC7QHD1IxX3zAPXjQHzaM4R48KDOfd8R7GJtX38R7GDuFBnAPHlTwRazFexiaWCvywNoImpMHzIlsQx4YWue0B8xRX5MHGiNoQh5IjSBNHoiMoJw84F2Qd4fMu5Pau2Hv3YXRu6nDu8nVu9sP5wYNpmNz4MK3sLiD9dQA3+TjVnxxIvgxCDflixeSfVCEX+4cCX2Ulr2wpUT4ywbQv8i+sOGvY0AZO6MWfWEF0SPziOX4UecMHfPOVQR/6QmoYzacyQC/FoYHCLdkwV+c97dh045M+NJCf3UE/KnhxReXbhi46qPLU668ZeAMghfwXAkDo1V+iZO+2LImBL4InCdsKXMC4MvkumVLfCQAvpGgKNm2IQC81YI+I7adCABvRqmHfKXRBAC36+gs4ivpmQDYhqbFeuT+yJ4AyJYvOnZtJo6AORXZFKfGqyl3GDn5z942qCf14O/qNeZOKXS85DdWNjUB5LeetppA+OZc4AHh6duXkdNZfoM3rxQBxLfAV8j0Lv+RQHkggPxnFDMCSH9oEid7Akh/inOaaQKIfqwUV28HRTD8c660aYYf6/e9oiAIgiAIgiAIguAX+w9i21DdU9TtnwAAAABJRU5ErkJggg==",
     onClick: _cache[6] || (_cache[6] = function() {
       return $options.reloadImage && $options.reloadImage(...arguments);
-    })
-  }, toDisplayString($props.tips == null || ((_$props$tips3 = $props.tips) === null || _$props$tips3 === void 0 ? void 0 : _$props$tips3["retry"]) == null ? $options.getLanguageString("retry") : (_$props$tips4 = $props.tips) === null || _$props$tips4 === void 0 ? void 0 : _$props$tips4["retry"]), 1)])) : createCommentVNode("", true)]);
+    }),
+    mode: "aspectFit",
+    style: {
+      "width": "70px",
+      "height": "70px"
+    }
+  })])) : createCommentVNode("", true)]);
 }
 const uniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$2]]]);
 const _sfc_main$1 = {
@@ -9162,9 +9282,6 @@ const _sfc_main$1 = {
       }
       if (result["indicator"] != null) {
         this.indicator = result["indicator"];
-      }
-      if (result["tips"] != null) {
-        this.tips = result["tips"];
       }
       if (result["longPressActions"] != null) {
         this.longPressAction = {
@@ -9349,13 +9466,63 @@ const _sfc_main = {
         length: 12
       }, (_, i) => i + 1),
       days: [],
+      hours: [],
+      minutes: [],
       fields: "day",
       start: [],
       end: [],
       yearRange: [],
       monthRange: [],
       dayRange: [],
-      indicatorStyle: "border-top:1px #f5f5f5 solid;border-bottom:1px #f5f5f5 solid;background:rgba(255,255,255,0);"
+      timer: 0,
+      // 主题模式
+      theme: "light",
+      maskTopStyle: "background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));",
+      maskBottomStyle: "background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));",
+      i18nText: {
+        // 国际化
+        "en": {
+          "cancel": "Cancel",
+          "confirm": "OK",
+          "year": "",
+          "month": "",
+          "day": "",
+          "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+        },
+        "es": {
+          "cancel": "Cancelar",
+          "confirm": "Aceptar",
+          "year": "",
+          "month": "",
+          "day": "",
+          "months": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        },
+        "fr": {
+          "cancel": "Annuler",
+          "confirm": "Valider",
+          "year": "",
+          "month": "",
+          "day": "",
+          "months": ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"]
+        },
+        "zh-Hans": {
+          "cancel": "取消",
+          "confirm": "确定",
+          "year": "年",
+          "month": "月",
+          "day": "日",
+          "months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+        },
+        "zh-Hant": {
+          "cancel": "取消",
+          "confirm": "確定",
+          "year": "年",
+          "month": "月",
+          "day": "日",
+          "months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+        }
+      },
+      language: "zh-Hans"
     };
   },
   onLoad(options) {
@@ -9399,17 +9566,18 @@ const _sfc_main = {
         var time = data["timeValue"];
         this.start = data["start"];
         this.end = data["end"];
+        this.updateTimeColumns();
         this.value = this.initTimeValue(time);
       }
       if (data["dateValue"] != null) {
-        var _parseInt, _parseInt2, _parseInt3;
+        var _data$start, _data$end, _parseInt, _parseInt2, _parseInt3;
         var dateValue = data["dateValue"];
         var year = dateValue[0];
         var month = dateValue[1];
         var day = dateValue[2];
         this.fields = data["fields"];
-        this.start = data["start"] || ["1970", "01", "01"];
-        this.end = data["end"] || ["2099", "12", "31"];
+        this.start = (_data$start = data["start"]) !== null && _data$start !== void 0 ? _data$start : ["1970", "01", "01"];
+        this.end = (_data$end = data["end"]) !== null && _data$end !== void 0 ? _data$end : ["2099", "12", "31"];
         this.selected = {
           year: (_parseInt = parseInt(year)) !== null && _parseInt !== void 0 ? _parseInt : (/* @__PURE__ */ new Date()).getFullYear(),
           month: (_parseInt2 = parseInt(month)) !== null && _parseInt2 !== void 0 ? _parseInt2 : 1,
@@ -9438,18 +9606,28 @@ const _sfc_main = {
       this.calculateRanges();
     });
     uni.$emit(this.readyEventName);
+    var systemInfo = uni.getDeviceInfo();
+    var appBaseInfo = uni.getAppBaseInfo();
+    var appLanguage = appBaseInfo.appLanguage;
+    var osLanguage = systemInfo.osLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
+    var osTheme = systemInfo.osTheme;
+    if (osTheme != null) {
+      this.theme = osTheme;
+    }
+    if (this.theme == "light") {
+      this.maskTopStyle = "background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));";
+      this.maskBottomStyle = "background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));";
+    } else {
+      this.maskTopStyle = "background-image: linear-gradient(to bottom, rgba(44, 44, 43, 1), rgba(44, 44, 43, 0));";
+      this.maskBottomStyle = "background-image: linear-gradient(to bottom, rgba(44, 44, 43, 0), rgba(44, 44, 43, 1));";
+    }
   },
   computed: {
-    hours() {
-      return Array.from({
-        length: 24
-      }, (_, i) => String(i).padStart(2, "0"));
-    },
-    minutes() {
-      return Array.from({
-        length: 60
-      }, (_, i) => String(i).padStart(2, "0"));
-    },
     selectedDate() {
       var {
         year,
@@ -9466,6 +9644,61 @@ const _sfc_main = {
         return "".concat(year, "-").concat(this.formatSingle(month), "-").concat(this.formatSingle(day));
       }
       return "".concat(year, "-").concat(this.formatSingle(month), "-").concat(this.formatSingle(day));
+    },
+    year_str() {
+      var years = [];
+      this.years.forEach((v) => {
+        years.push(this.formatSingle(v) + "年");
+      });
+      return years.join("\n");
+    },
+    month_str() {
+      var months = [];
+      this.months.forEach((v) => {
+        months.push(this.formatSingle(v) + "月");
+      });
+      return months.join("\n");
+    },
+    day_str() {
+      var days = [];
+      this.days.forEach((v) => {
+        days.push(this.formatSingle(v) + "日");
+      });
+      return days.join("\n");
+    },
+    indicatorStyle() {
+      var basestyle = "height:50px;background:rgba(255,255,255,0);";
+      var color = "#F5F5F5";
+      if (this.theme == "dark") {
+        color = "#3B3B3B";
+      }
+      return basestyle + "border-top:1px ".concat(color, " solid;border-bottom:1px ").concat(color, " solid;");
+    },
+    // 取消文字
+    cancelText() {
+      return this.i18nHandle("cancel", "取消");
+    },
+    confirmText() {
+      return this.i18nHandle("confirm", "确定");
+    },
+    yearText() {
+      return this.i18nHandle("year", "年");
+    },
+    monthText() {
+      return this.i18nHandle("month", "月");
+    },
+    dayText() {
+      return this.i18nHandle("day", "日");
+    },
+    monthsText() {
+      var months = this.months;
+      var i18months = this.i18nHandle("months", this.i18nText["zh-Hans"]["months"]);
+      var arr = [];
+      months.forEach((v) => {
+        var index2 = v - 1;
+        arr.push(i18months[index2].toString().padStart(2, "0"));
+      });
+      return arr;
     }
   },
   onReady() {
@@ -9502,20 +9735,24 @@ const _sfc_main = {
           uni.$emit(this.timeChangeEventName, this.selectedDate);
           break;
       }
-      var dialogPages = this.$page;
-      uni.closeDialogPage({
-        dialogPage: dialogPages
-      });
+      this.closeDialog();
     },
     /**
      * picker关闭
      */
     close() {
-      var dialogPages = this.$page;
       uni.$emit(this.cancelEventName);
-      uni.closeDialogPage({
-        dialogPage: dialogPages
-      });
+      this.closeDialog();
+    },
+    closeDialog() {
+      this.show = false;
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        var dialogPages = this.$page;
+        uni.closeDialogPage({
+          dialogPage: dialogPages
+        });
+      }, 300);
     },
     /**
      * 处理列滚动
@@ -9528,21 +9765,48 @@ const _sfc_main = {
         var mIdx = (_value$ = value[1]) !== null && _value$ !== void 0 ? _value$ : 0;
         var dIdx = (_value$2 = value[2]) !== null && _value$2 !== void 0 ? _value$2 : 0;
         yIdx = Math.max(this.yearRange[0], Math.min(this.yearRange[1], yIdx));
-        var year = this.years[yIdx];
-        if (year === parseInt(this.start[0])) {
-          mIdx = Math.max(this.monthRange[0], mIdx);
+        var currentYear = this.years[yIdx];
+        var sy = parseInt(this.start[0]);
+        var sm = parseInt(this.start[1]);
+        var ey = parseInt(this.end[0]);
+        var em = parseInt(this.end[1]);
+        if (currentYear == sy || currentYear == ey) {
+          var newMonths = this.getMonths(currentYear);
+          if (this.months.length !== newMonths.length) {
+            this.calculateRanges();
+            var originalMonth = this.months[mIdx];
+            mIdx = newMonths.findIndex((month) => month === originalMonth);
+            mIdx = Math.max(0, mIdx);
+            this.months = newMonths;
+          }
+        } else {
+          if (this.months.length != 12) {
+            var nowMonth = this.months[mIdx];
+            this.months = this.getMonths(currentYear);
+            this.calculateRanges();
+            mIdx = nowMonth - 1;
+          }
         }
-        if (year === parseInt(this.end[0])) {
-          mIdx = Math.min(this.monthRange[1], mIdx);
-        }
-        var month = this.months[mIdx];
-        var maxDay = new Date(year, month, 0).getDate();
-        dIdx = Math.min(dIdx, maxDay - 1);
-        if (year === parseInt(this.start[0]) && month === parseInt(this.start[1])) {
-          dIdx = Math.max(this.dayRange[0], dIdx);
-        }
-        if (year === parseInt(this.end[0]) && month === parseInt(this.end[1])) {
-          dIdx = Math.min(this.dayRange[1], dIdx);
+        var months = this.months[mIdx];
+        if (currentYear == sy && months == sm || currentYear == ey && months == em) {
+          var newDays = this.getDays(currentYear, months);
+          if (this.days.length != newDays.length) {
+            this.calculateRanges();
+            var dayIdx = newDays.length - 1;
+            if (currentYear == sy && months == sm) {
+              dIdx = Math.max(0, dIdx - dayIdx);
+            }
+            if (currentYear == ey && months == em) {
+              dIdx = Math.max(0, dayIdx);
+            }
+            this.days = newDays;
+          }
+        } else {
+          var nowDay = this.days[dIdx];
+          this.days = this.getDays(currentYear, months);
+          this.calculateRanges();
+          dIdx = this.days.findIndex((day) => day === nowDay);
+          dIdx = Math.max(0, dIdx);
         }
         this.value = [yIdx, mIdx, dIdx];
         this.selected.year = this.years[yIdx];
@@ -9554,6 +9818,8 @@ const _sfc_main = {
         var m_idx = value[1];
         var h = parseInt(this.hours[h_idx]);
         var m = parseInt(this.minutes[m_idx]);
+        var sh = parseInt(this.start[0]);
+        var eh = parseInt(this.end[0]);
         var adjusted = this.adjustTime(h, m);
         h = adjusted.h;
         m = adjusted.m;
@@ -9561,6 +9827,21 @@ const _sfc_main = {
         var mStr = m.toString().padStart(2, "0");
         var newHIdx = this.hours.findIndex((e2) => e2 == hStr);
         var newMIdx = this.minutes.findIndex((e2) => e2 == mStr);
+        if (h == sh || h == eh) {
+          var newMinutes = this.getMinutes(h);
+          if (this.minutes.length !== newMinutes.length) {
+            var originalMinute = this.minutes[newMIdx];
+            newMIdx = newMinutes.findIndex((m2) => m2 === originalMinute);
+            newMIdx = Math.max(0, newMIdx);
+            this.minutes = newMinutes;
+          }
+        } else {
+          if (this.minutes.length != 60) {
+            var nowMinutes = this.minutes[newMIdx];
+            this.minutes = this.getMinutes(h);
+            newMIdx = parseInt(nowMinutes);
+          }
+        }
         if (newHIdx != h_idx || newMIdx != m_idx) {
           this.value = [newHIdx, newMIdx];
           this.eventValue = this.value.slice();
@@ -9599,8 +9880,8 @@ const _sfc_main = {
      * 生成动态年份范围（根据 start/end）
      */
     getYears() {
-      var startYear = parseInt("1900");
-      var endYear = parseInt("2100");
+      var startYear = parseInt(this.start[0] || "1970");
+      var endYear = parseInt(this.end[0] || "2099");
       return Array.from({
         length: endYear - startYear + 1
       }, (_, i) => startYear + i);
@@ -9608,9 +9889,17 @@ const _sfc_main = {
     /**
      * 生成动态月份范围（根据当前年份和 start/end）
      */
-    getMonths() {
+    getMonths(year) {
       var startMonth = 1;
       var endMonth = 12;
+      if (year == parseInt(this.start[0])) {
+        var _parseInt4;
+        startMonth = (_parseInt4 = parseInt(this.start[1])) !== null && _parseInt4 !== void 0 ? _parseInt4 : 1;
+      }
+      if (year == parseInt(this.end[0])) {
+        var _parseInt5;
+        endMonth = (_parseInt5 = parseInt(this.end[1])) !== null && _parseInt5 !== void 0 ? _parseInt5 : 12;
+      }
       return Array.from({
         length: endMonth - startMonth + 1
       }, (_, i) => startMonth + i);
@@ -9621,6 +9910,12 @@ const _sfc_main = {
     getDays(currentYear, currentMonth) {
       var startDay = 1;
       var endDay = new Date(currentYear, currentMonth, 0).getDate();
+      if (currentYear == parseInt(this.start[0]) && currentMonth == parseInt(this.start[1])) {
+        startDay = parseInt(this.start[2]) || 1;
+      }
+      if (currentYear == parseInt(this.end[0]) && currentMonth == parseInt(this.end[1])) {
+        endDay = Math.min(endDay, parseInt(this.end[2]) || endDay);
+      }
       return Array.from({
         length: endDay - startDay + 1
       }, (_, i) => startDay + i);
@@ -9630,8 +9925,90 @@ const _sfc_main = {
      */
     updateDateColumns() {
       this.years = this.getYears();
-      this.months = this.getMonths();
+      this.months = this.getMonths(this.selected.year);
       this.days = this.getDays(this.selected.year, this.selected.month);
+    },
+    // 日期合法性校验（核心）
+    adjustDate(year, month, day) {
+      var startDate = this.start.map(Number);
+      var sy = startDate[0];
+      var sm = startDate[1];
+      var sd = startDate[2];
+      var endDate = this.end.map(Number);
+      var ey = endDate[0];
+      var em = endDate[1];
+      var ed = endDate[2];
+      if (year < sy)
+        return {
+          year: sy,
+          month: sm,
+          day: sd
+        };
+      if (year > ey)
+        return {
+          year: ey,
+          month: em,
+          day: ed
+        };
+      if (year === sy && month < sm)
+        return {
+          year,
+          month: sm,
+          day: sd
+        };
+      if (year === ey && month > em)
+        return {
+          year,
+          month: em,
+          day: ed
+        };
+      var daysInMonth = new Date(year, month, 0).getDate();
+      if (year === sy && month === sm && day < sd)
+        return {
+          year,
+          month,
+          day: sd
+        };
+      if (year === ey && month === em && day > ed)
+        return {
+          year,
+          month,
+          day: ed
+        };
+      day = Math.max(1, Math.min(day, daysInMonth));
+      return {
+        year,
+        month,
+        day
+      };
+    },
+    getHours() {
+      var sH = parseInt(this.start[0] || "1");
+      var eH = parseInt(this.end[0] || "12");
+      return Array.from({
+        length: eH - sH + 1
+      }, (_, i) => String(sH + i).padStart(2, "0"));
+    },
+    getMinutes(hour) {
+      var startMinute = 0;
+      var endMinute = 59;
+      if (hour == parseInt(this.start[0])) {
+        var _parseInt6;
+        startMinute = (_parseInt6 = parseInt(this.start[1])) !== null && _parseInt6 !== void 0 ? _parseInt6 : 1;
+      }
+      if (hour == parseInt(this.end[0])) {
+        var _parseInt7;
+        endMinute = (_parseInt7 = parseInt(this.end[1])) !== null && _parseInt7 !== void 0 ? _parseInt7 : 12;
+      }
+      return Array.from({
+        length: endMinute - startMinute + 1
+      }, (_, i) => String(startMinute + i).padStart(2, "0"));
+    },
+    updateTimeColumns() {
+      this.hours = this.getHours();
+      var now = /* @__PURE__ */ new Date();
+      var minutes = now.getHours();
+      this.minutes = this.getMinutes(minutes);
     },
     /**
      * 调整时间到允许范围内
@@ -9702,6 +10079,27 @@ const _sfc_main = {
      */
     formatSingle(num) {
       return num.toString().padStart(2, "0");
+    },
+    /**
+     * i18n 处理
+     */
+    i18nHandle(key, defaultVal) {
+      if (this.language.startsWith("en")) {
+        return this.i18nText["en"][key];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nText["es"][key];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nText["fr"][key];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nText["zh-Hans"][key];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nText["zh-Hant"][key];
+      }
+      return defaultVal;
     }
   }
 };
@@ -9732,10 +10130,15 @@ const _style_0 = {
       "left": 0,
       "right": 0,
       "height": 350,
-      "backgroundColor": "#ffffff",
       "transform": "translateY(100%)",
       "transitionProperty": "transform",
       "transitionDuration": "0.2s"
+    },
+    ".uni-picker-theme--light ": {
+      "backgroundColor": "#ffffff"
+    },
+    ".uni-picker-theme--dark ": {
+      "backgroundColor": "#2C2C2B"
     }
   },
   "picker__ani-box-show": {
@@ -9755,11 +10158,24 @@ const _style_0 = {
       "borderBottomWidth": 1,
       "borderBottomStyle": "solid",
       "borderBottomColor": "#f7f7f7"
+    },
+    ".uni-picker-theme--dark ": {
+      "borderTopColor": "#3B3B3B",
+      "borderRightColor": "#3B3B3B",
+      "borderBottomColor": "#3B3B3B",
+      "borderLeftColor": "#3B3B3B"
     }
   },
   "uni-picker__header-btn-cannel": {
     "": {
-      "fontSize": 14
+      "fontSize": 14,
+      "backgroundColor": "rgba(0,0,0,0)"
+    },
+    ".uni-picker-theme--light ": {
+      "color": "#000000"
+    },
+    ".uni-picker-theme--dark ": {
+      "color": "#ffffff"
     }
   },
   "uni-picker__header-btn-ok": {
@@ -9770,15 +10186,54 @@ const _style_0 = {
   },
   "uni-picker__view": {
     "": {
+      "position": "relative",
       "flex": 1
+    }
+  },
+  "uni-picker__inner-mask": {
+    "": {
+      "position": "absolute",
+      "left": 0,
+      "right": 0,
+      "width": "100%",
+      "height": "40%",
+      "zIndex": 2,
+      "pointerEvents": "none"
     }
   },
   "uni-picker__view-item": {
     "": {
-      "display": "flex",
-      "alignItems": "center",
-      "justifyContent": "center",
-      "height": 50
+      "width": "100%",
+      "textAlign": "center",
+      "height": 50,
+      "lineHeight": "50px"
+    },
+    ".uni-picker-theme--dark ": {
+      "color": "#ffffff"
+    }
+  },
+  "picker-top": {
+    ".uni-picker-theme--light ": {
+      "top": 0,
+      "backgroundImage": "linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))",
+      "backgroundColor": "rgba(0,0,0,0)"
+    },
+    ".uni-picker-theme--dark ": {
+      "top": 0,
+      "backgroundImage": "linear-gradient(to bottom, rgba(44, 44, 43, 1), rgba(0, 0, 0, 0))",
+      "backgroundColor": "rgba(0,0,0,0)"
+    }
+  },
+  "picker-bottom": {
+    ".uni-picker-theme--light ": {
+      "bottom": 0,
+      "backgroundImage": "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))",
+      "backgroundColor": "rgba(0,0,0,0)"
+    },
+    ".uni-picker-theme--dark ": {
+      "bottom": 0,
+      "backgroundImage": "linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(44, 44, 43, 1))",
+      "backgroundColor": "rgba(0,0,0,0)"
     }
   },
   "@TRANSITION": {
@@ -9793,38 +10248,41 @@ const _style_0 = {
   }
 };
 var _hoisted_1 = {
-  class: "uni-picker__container"
-};
-var _hoisted_2 = {
   class: "uni-picker__header-btn"
 };
-var _hoisted_3 = {
+var _hoisted_2 = {
   class: "uni-picker__view"
 };
-var _hoisted_4 = ["indicatorStyle", "value"];
-var _hoisted_5 = {
+var _hoisted_3 = ["mask-top-style", "mask-bottom-style", "indicatorStyle", "value"];
+var _hoisted_4 = {
   key: 0
+};
+var _hoisted_5 = {
+  key: 0,
+  class: "uni-picker__view-item"
 };
 var _hoisted_6 = {
-  key: 0
+  key: 1,
+  class: "uni-picker__view-item"
 };
 var _hoisted_7 = {
-  key: 1
+  key: 0,
+  class: "uni-picker__view-item"
 };
 var _hoisted_8 = {
-  key: 0
+  key: 1,
+  class: "uni-picker__view-item"
 };
 var _hoisted_9 = {
-  key: 1
-};
-var _hoisted_10 = {
   key: 0
 };
-var _hoisted_11 = {
+var _hoisted_10 = {
   key: 1
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("view", _hoisted_1, [createElementVNode("view", {
+  return openBlock(), createElementBlock("view", {
+    class: normalizeClass(["uni-picker__container", ["uni-picker-theme--" + $data.theme]])
+  }, [createElementVNode("view", {
     class: normalizeClass(["uni-picer__mask", {
       "picker__ani-show": $data.show
     }]),
@@ -9835,71 +10293,71 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-picker__inner-box", {
       "picker__ani-box-show": $data.show
     }])
-  }, [createElementVNode("view", _hoisted_2, [createElementVNode("text", {
+  }, [createElementVNode("view", _hoisted_1, [createElementVNode("text", {
     class: "uni-picker__header-btn-cannel",
     onClick: _cache[1] || (_cache[1] = function() {
       return $options.close && $options.close(...arguments);
     })
-  }, "取消"), createElementVNode("text", {
+  }, toDisplayString($options.cancelText), 1), createElementVNode("text", {
     class: "uni-picker__header-btn-ok",
     onClick: _cache[2] || (_cache[2] = function() {
       return $options.confirm && $options.confirm(...arguments);
     })
-  }, "确定")]), createElementVNode("view", _hoisted_3, [createElementVNode("picker-view", {
+  }, toDisplayString($options.confirmText), 1)]), createElementVNode("view", _hoisted_2, [createElementVNode("picker-view", {
     style: {
       "flex": "1"
     },
     onChange: _cache[3] || (_cache[3] = function() {
       return $options.handleChange && $options.handleChange(...arguments);
     }),
-    indicatorStyle: $data.indicatorStyle,
+    "mask-top-style": $data.maskTopStyle,
+    "mask-bottom-style": $data.maskBottomStyle,
+    indicatorStyle: $options.indicatorStyle,
     value: $data.value
-  }, [$data.mode == "selector" ? (openBlock(), createElementBlock("picker-view-column", _hoisted_5, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.range, (item, selectorIdx) => {
-    return openBlock(), createElementBlock("view", {
-      key: selectorIdx,
-      class: "uni-picker__view-item"
-    }, [$data.rangeKey ? (openBlock(), createElementBlock("text", _hoisted_6, toDisplayString(item[$data.rangeKey]), 1)) : (openBlock(), createElementBlock("text", _hoisted_7, toDisplayString(item), 1))]);
+  }, [$data.mode == "selector" ? (openBlock(), createElementBlock("picker-view-column", _hoisted_4, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.range, (item, selectorIdx) => {
+    return openBlock(), createElementBlock(Fragment, {
+      key: selectorIdx
+    }, [$data.rangeKey ? (openBlock(), createElementBlock("text", _hoisted_5, toDisplayString(item[$data.rangeKey]), 1)) : (openBlock(), createElementBlock("text", _hoisted_6, toDisplayString(item), 1))], 64);
   }), 128))])) : createCommentVNode("", true), $data.mode == "multiSelector" ? (openBlock(true), createElementBlock(Fragment, {
     key: 1
   }, renderList($data.range, (item, multiIdx) => {
     return openBlock(), createElementBlock("picker-view-column", {
       key: multiIdx
     }, [(openBlock(true), createElementBlock(Fragment, null, renderList(item, (column, colIdx) => {
-      return openBlock(), createElementBlock("view", {
-        key: colIdx,
-        class: "uni-picker__view-item"
-      }, [$data.rangeKey ? (openBlock(), createElementBlock("text", _hoisted_8, toDisplayString(column[$data.rangeKey]), 1)) : (openBlock(), createElementBlock("text", _hoisted_9, toDisplayString(column), 1))]);
+      return openBlock(), createElementBlock(Fragment, {
+        key: colIdx
+      }, [$data.rangeKey ? (openBlock(), createElementBlock("text", _hoisted_7, toDisplayString(column[$data.rangeKey]), 1)) : (openBlock(), createElementBlock("text", _hoisted_8, toDisplayString(column), 1))], 64);
     }), 128))]);
   }), 128)) : createCommentVNode("", true), $data.mode == "time" ? (openBlock(), createElementBlock(Fragment, {
     key: 2
-  }, [createElementVNode("picker-view-column", null, [(openBlock(true), createElementBlock(Fragment, null, renderList($options.hours, (h, hIdx) => {
-    return openBlock(), createElementBlock("view", {
+  }, [createElementVNode("picker-view-column", null, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.hours, (h, hIdx) => {
+    return openBlock(), createElementBlock("text", {
       key: hIdx,
       class: "uni-picker__view-item"
-    }, [createElementVNode("text", null, toDisplayString(h), 1)]);
-  }), 128))]), createElementVNode("picker-view-column", null, [(openBlock(true), createElementBlock(Fragment, null, renderList($options.minutes, (m, mIdx) => {
-    return openBlock(), createElementBlock("view", {
+    }, toDisplayString(h), 1);
+  }), 128))]), createElementVNode("picker-view-column", null, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.minutes, (m, mIdx) => {
+    return openBlock(), createElementBlock("text", {
       key: mIdx,
       class: "uni-picker__view-item"
-    }, [createElementVNode("text", null, toDisplayString(m), 1)]);
+    }, toDisplayString(m), 1);
   }), 128))])], 64)) : createCommentVNode("", true), $data.mode == "date" ? (openBlock(), createElementBlock(Fragment, {
     key: 3
   }, [createElementVNode("picker-view-column", null, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.years, (year) => {
-    return openBlock(), createElementBlock("view", {
+    return openBlock(), createElementBlock("text", {
       key: year,
       class: "uni-picker__view-item"
-    }, [createElementVNode("text", null, toDisplayString(year) + "年", 1)]);
-  }), 128))]), $data.fields != "year" ? (openBlock(), createElementBlock("picker-view-column", _hoisted_10, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.months, (month) => {
-    return openBlock(), createElementBlock("view", {
+    }, toDisplayString(year) + toDisplayString($options.yearText), 1);
+  }), 128))]), $data.fields != "year" ? (openBlock(), createElementBlock("picker-view-column", _hoisted_9, [(openBlock(true), createElementBlock(Fragment, null, renderList($options.monthsText, (month) => {
+    return openBlock(), createElementBlock("text", {
       key: month,
       class: "uni-picker__view-item"
-    }, toDisplayString($options.formatSingle(month)) + "月", 1);
-  }), 128))])) : createCommentVNode("", true), $data.fields == "day" ? (openBlock(), createElementBlock("picker-view-column", _hoisted_11, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.days, (day) => {
-    return openBlock(), createElementBlock("view", {
+    }, toDisplayString($options.formatSingle(month)) + toDisplayString($options.monthText), 1);
+  }), 128))])) : createCommentVNode("", true), $data.fields == "day" ? (openBlock(), createElementBlock("picker-view-column", _hoisted_10, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.days, (day) => {
+    return openBlock(), createElementBlock("text", {
       key: day,
       class: "uni-picker__view-item"
-    }, toDisplayString($options.formatSingle(day)) + "日", 1);
-  }), 128))])) : createCommentVNode("", true)], 64)) : createCommentVNode("", true)], 40, _hoisted_4)])], 2)]);
+    }, toDisplayString($options.formatSingle(day)) + toDisplayString($options.dayText), 1);
+  }), 128))])) : createCommentVNode("", true)], 64)) : createCommentVNode("", true)], 40, _hoisted_3)])], 2)], 2);
 }
 const UniPickerPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
 function registerSystemPages() {

@@ -21,7 +21,11 @@ export function uniAppJsEngineMainPlugin(): Plugin {
           const __global__ = typeof globalThis === 'undefined' ? Function('return this')() : globalThis
           __global__.__uniX = true
           ${code}
-          createApp().app.mount("#app");
+          ${
+            process.env.UNI_UTS_PLATFORM === 'app-harmony'
+              ? '__global__.__mount__ = () => {createApp().app.mount("#app");}'
+              : 'createApp().app.mount("#app");'
+          }
           `,
           map: {
             mappings: '',

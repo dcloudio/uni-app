@@ -5,7 +5,7 @@ exports[`<script> after <script setup> the script content not end with \`\\n\` 1
   const n = 1
 
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -19,7 +19,7 @@ return (): any | null => { return null }
 
 exports[`defineExpose() 1`] = `
 "export default defineComponent({
-  setup(__props, { expose: __expose }: SetupContext): any | null {
+  setup(__props, { expose: __expose }: SetupContext) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;

@@ -1,5 +1,5 @@
 {
-  "name": "uni-stat",
+  "name": "uvue-template",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -7,6 +7,7 @@
     "build:custom": "uni build -p",
     "dev:app": "uni -p app",
     "dev:app-android": "uni -p app-android",
+    "dev:app-harmony": "uni -p app-harmony",
     "dev:app-ios": "uni -p app-ios",
     "dev:h5": "uni",
     "test:h5": "uni dev",
@@ -24,8 +25,10 @@
     "dev:quickapp-webview-union": "uni -p quickapp-webview-union",
     "build:app": "uni build -p app",
     "build:app-android": "uni build -p app-android",
+    "build:app-harmony": "uni build -p app-harmony",
     "build:app-ios": "uni build -p app-ios",
     "build:h5": "uni build",
+    "build:web": "uni build",
     "build:h5:ssr": "uni build --ssr",
     "build:mp-alipay": "uni build -p mp-alipay",
     "build:mp-baidu": "uni build -p mp-baidu",
@@ -40,6 +43,7 @@
   },
   "dependencies": {
     "@dcloudio/uni-app": "../../uni-app",
+    "@dcloudio/uni-app-harmony": "../../uni-app-harmony",
     "@dcloudio/uni-app-plus": "../../uni-app-plus",
     "@dcloudio/uni-components": "../../uni-components",
     "@dcloudio/uni-h5": "../../uni-h5",

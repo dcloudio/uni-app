@@ -40,6 +40,7 @@ module.exports = {
     '<rootDir>/packages/**/*spec.[jt]s?(x)',
   ],
   testPathIgnorePatterns: ['/node_modules/'],
+  modulePathIgnorePatterns: ['lib', '/__tests__/examples/'],
   transform: {
     '^.+\\.[jt]sx?$': [
       'ts-jest',

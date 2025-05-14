@@ -18,7 +18,9 @@ export function createBuild(
   })
   const rollupOutputOption = config.build?.rollupOptions?.output
   const sourcemap =
-    process.env.SOURCEMAP === 'true' ? 'hidden' : config.build?.sourcemap
+    process.env.UNI_APP_SOURCEMAP === 'true'
+      ? 'hidden'
+      : config.build?.sourcemap
   return {
     sourcemap,
     cssTarget,
@@ -29,6 +31,10 @@ export function createBuild(
         : process.env.NODE_ENV === 'production'
         ? 'terser'
         : false,
+    terserOptions:
+      process.env.NODE_ENV !== 'production'
+        ? { compress: { drop_console: false } }
+        : undefined,
     rollupOptions: {
       onwarn(warning, warn) {
         if (warning.code === 'EMPTY_BUNDLE') {
@@ -54,7 +60,7 @@ export function createBuild(
           !isArray(rollupOutputOption) &&
           rollupOutputOption?.sourcemapExcludeSources === false
             ? false
-            : process.env.SOURCEMAP === 'true',
+            : process.env.UNI_APP_SOURCEMAP === 'true',
       },
     },
   }

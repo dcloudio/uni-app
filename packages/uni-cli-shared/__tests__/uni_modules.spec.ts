@@ -1,22 +1,28 @@
 import path from 'path'
 import {
-  findEncryptUniModules,
+  findCloudEncryptUniModules,
   findUploadEncryptUniModulesFiles,
   parseUniModulesWithComponents,
 } from '../src/uni_modules.cloud'
 import { normalizePath } from '../src/utils'
 
-const platforms = ['app-android', 'app-ios', 'web'] as const
+const platforms = [
+  'app-android',
+  'app-ios',
+  'web',
+  'app-harmony',
+  'mp-weixin',
+] as const
 describe('uni_modules:uni-ext-api', () => {
   const inputDir = path.resolve(__dirname, '../../playground/uni_modules/src')
 
   platforms.forEach((platform) => {
-    test(`findEncryptUniModules(${platform})`, () => {
-      expect(findEncryptUniModules(platform, inputDir)).toMatchSnapshot()
+    test(`findCloudEncryptUniModules(${platform})`, () => {
+      expect(findCloudEncryptUniModules(platform, inputDir)).toMatchSnapshot()
     })
     test(`findUploadEncryptUniModulesFiles(${platform})`, () => {
       const modules = findUploadEncryptUniModulesFiles(
-        findEncryptUniModules(platform, inputDir),
+        findCloudEncryptUniModules(platform, inputDir),
         platform,
         inputDir
       )

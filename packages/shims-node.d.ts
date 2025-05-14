@@ -71,7 +71,8 @@ declare namespace NodeJS {
 
     HX_DEPENDENCIES_DIR?: string // 基座缓存目录，如：unpackage/cache/uts_standard_android
     HX_USE_BASE_TYPE?: 'standard' | 'custom' // 基座类型
-    SOURCEMAP?: 'true' | 'false' // 是否生成 sourcemap
+    SOURCEMAP?: 'true' | 'false' // 是否生成 sourcemap (已废弃，请使用 UNI_APP_SOURCEMAP 代替)
+    UNI_APP_SOURCEMAP?: 'true' | 'false' // 是否生成 sourcemap
     UNI_APP_PACK_TYPE?: 'release' | 'debug' // 打包类型
     UNI_APP_PLATFORM?: 'android' | 'ios' | 'harmony' // 运行时，可能传入了 UNI_APP_PLATFORM = 'android'|'ios'|'harmony'
     UNI_APP_PRODUCTION_TYPE?: 'WGT' // 发行类型

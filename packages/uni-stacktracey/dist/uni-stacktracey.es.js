@@ -2462,12 +2462,12 @@ function _factoryBSM(aSourceMap, aSourceMapURL) {
  */
 var SourceMapConsumer = sourceMapConsumer.SourceMapConsumer;
 
-const splitRE = /\r?\n/;
+const splitRE$1 = /\r?\n/;
 const range = 2;
 function posToNumber(source, pos) {
     if (typeof pos === 'number')
         return pos;
-    const lines = source.split(splitRE);
+    const lines = source.split(splitRE$1);
     const { line, column } = pos;
     let start = 0;
     for (let i = 0; i < line - 1; i++) {
@@ -2478,7 +2478,7 @@ function posToNumber(source, pos) {
 function generateCodeFrame(source, start = 0, end) {
     start = posToNumber(source, start);
     end = end || start;
-    const lines = source.split(splitRE);
+    const lines = source.split(splitRE$1);
     let count = 0;
     const res = [];
     for (let i = 0; i < lines.length; i++) {
@@ -2666,7 +2666,7 @@ function stacktracey(stacktrace, opts) {
                             file: source,
                             line: sourceLine,
                             column: sourceColumn,
-                            fileShort: sourcePath,
+                            fileShort: sourcePath || source,
                             fileRelative: source,
                             fileName,
                             thirdParty: isThirdParty(sourcePath),
@@ -2894,8 +2894,9 @@ function uniStracktraceyPreset(opts) {
         lineOffset,
     };
 }
+const splitRE = /\r?\n/;
 function utsStracktraceyPreset(opts) {
-    const { inputRoot, outputRoot, sourceMapRoot } = opts;
+    const { inputRoot = '', outputRoot = '', sourceMapRoot = '' } = opts;
     let errStack = [];
     return {
         parseSourceMapUrl(file, fileName, fileRelative) {
@@ -2906,17 +2907,22 @@ function utsStracktraceyPreset(opts) {
             return Promise.resolve(getSourceMapContent(this.parseSourceMapUrl(file, fileName, fileRelative)));
         },
         parseStacktrace(str) {
-            const lines = (str || '').split('\n');
+            const lines = (str || '').split(splitRE);
             const entries = lines
                 .map((line, index) => {
                 line = line.trim();
-                const matches = line.match(/\s*(.+\.kt):([0-9]+):([0-9]+):\s+(.*)/);
+                const matches = line.match(/\s*(.+\.(kt|swift|ets)):([0-9]+):([0-9]+):?\s*(.*)/);
                 if (matches) {
                     errStack.push('%StacktraceyItem%');
                 }
                 else {
                     errStack.push(line);
                     return;
+                }
+                if (matches[2] === 'ets') {
+                    matches[1] =
+                        (matches[0].match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] ||
+                            matches[1];
                 }
                 const fileName = matches[1].replace(/^.*(\\|\/|\:)/, '');
                 return {
@@ -2925,11 +2931,11 @@ function utsStracktraceyPreset(opts) {
                     index: false,
                     native: false,
                     file: nixSlashes(matches[1]),
-                    line: parseInt(matches[2]),
-                    column: parseInt(matches[3]),
+                    line: parseInt(matches[3]),
+                    column: parseInt(matches[4]),
                     fileName,
                     fileShort: line,
-                    errMsg: matches[4] || '',
+                    errMsg: matches[5] || '',
                     calleeShort: '',
                     fileRelative: '',
                     thirdParty: false,
@@ -2959,4 +2965,4 @@ ${_stack.errMsg}`;
     };
 }
 
-export { SourceMapConsumer, generateCodeFrame, generateCodeFrameSourceMapConsumer, generateCodeFrameWithKotlinStacktrace, generateCodeFrameWithSourceMapPath, generateCodeFrameWithSwiftStacktrace, stacktracey, uniStracktraceyPreset, utsStracktraceyPreset };
+export { SourceMapConsumer, generateCodeFrame, generateCodeFrameSourceMapConsumer, generateCodeFrameWithKotlinStacktrace, generateCodeFrameWithSourceMapPath, generateCodeFrameWithSwiftStacktrace, splitRE, stacktracey, uniStracktraceyPreset, utsStracktraceyPreset };

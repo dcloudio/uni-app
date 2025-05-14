@@ -352,10 +352,10 @@ function handlePromise(promise) {
 function promisify$1(name, fn) {
     return (args = {}, ...rest) => {
         if (hasCallback(args)) {
-            return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+            return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-            invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
+            invokeApi(name, fn, extend({}, args, { success: resolve, fail: reject }), rest);
         })));
     };
 }
@@ -459,7 +459,13 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
+    let windowWidth, pixelRatio, platform;
+    {
+        const { windowWidth: w, pixelRatio: p, platform: pf } = getBaseSystemInfo();
+        windowWidth = w;
+        pixelRatio = p;
+        platform = pf;
+    }
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -784,7 +790,7 @@ function promisify(name, api) {
         if (isFunction(options.success) ||
             isFunction(options.fail) ||
             isFunction(options.complete)) {
-            return wrapperReturnValue(name, invokeApi(name, api, options, rest));
+            return wrapperReturnValue(name, invokeApi(name, api, extend({}, options), rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
             invokeApi(name, api, extend({}, options, {

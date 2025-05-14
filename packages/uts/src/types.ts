@@ -29,6 +29,8 @@ export type UTSInputOptions = UTSParseOptions & {
   paths: Record<string, string>
   externals?: string[]
   uniModules?: string[]
+  uniModulesPrefix?: string
+  uniXPages?: string[]
   globals?: {
     envs?: Record<string, string>
     vars?: Record<string, string>

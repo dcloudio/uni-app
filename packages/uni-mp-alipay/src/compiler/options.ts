@@ -124,6 +124,7 @@ export const options: UniMiniProgramPluginOptions = {
       selectedColor: 'selectedColor',
       backgroundColor: 'backgroundColor',
       items: 'list',
+      overlay: 'overlay',
     },
     tabBarItemOptionsMap: {
       pagePath: 'pagePath',

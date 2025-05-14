@@ -320,6 +320,15 @@ describe('compiler: v-for', () => {
 }), 256 /* UNKEYED_FRAGMENT */)`
     )
   })
+  test('v-for with list-item', () => {
+    assert(
+      `<view v-for="i in list" list-item/>`,
+      `createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, (i, __key, __index, _cached): any => {
+  return createElementVNode("view")
+}, null, null, "/xVKdEEB476nTdgg8k3dRg=="), 256 /* UNKEYED_FRAGMENT */)`
+    )
+  })
+
   describe('transform', () => {
     test('number expression', () => {
       const { node: forNode } = parseWithForTransform(

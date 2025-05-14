@@ -225,7 +225,8 @@ export function parseUTSKotlinRuntimeStacktrace(
         ? COLORS[options.logType as string] || ''
         : ''
       let error =
-        'error: ' + formatKotlinError(res[0], codes, runtimeFormatters)
+        'error: ' +
+        formatKotlinError(resolveCausedBy(res), codes, runtimeFormatters)
       if (color) {
         error = color + error + color
       }
@@ -235,6 +236,16 @@ export function parseUTSKotlinRuntimeStacktrace(
     }
   }
   return ''
+}
+
+function resolveCausedBy(lines: string[]) {
+  // 从最后一行开始，找到第一个Caused by:
+  for (let i = lines.length - 1; i >= 0; i--) {
+    if (lines[i].startsWith('Caused by: ')) {
+      return lines[i].replace('Caused by: ', '')
+    }
+  }
+  return lines[0]
 }
 
 function parseUTSKotlinRuntimeStacktraceLine(

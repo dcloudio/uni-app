@@ -9,7 +9,6 @@ import {
   genResolveEasycomCode,
   matchEasycom,
 } from '../../easycom'
-import { UTS_CUSTOM_ELEMENT_IMPORT_PLACEHOLDER } from '../../vue/transforms/transformUTSComponent'
 import { getUTSCustomElement } from '../../uts'
 
 interface UniEasycomPluginOptions {
@@ -30,26 +29,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
         return
       }
 
-      // 替换 UTS custom element import placeholder
-      // 目前主要是iOS和harmony，Android不需要
-      const hasUTSCustomElementImport = code.includes(
-        UTS_CUSTOM_ELEMENT_IMPORT_PLACEHOLDER
-      )
-      if (hasUTSCustomElementImport) {
-        code = code.replace(
-          new RegExp(`${UTS_CUSTOM_ELEMENT_IMPORT_PLACEHOLDER} from `, 'g'),
-          ''
-        )
-      }
       if (!code.includes('_resolveComponent')) {
-        if (hasUTSCustomElementImport) {
-          return {
-            code,
-            map: {
-              mappings: '',
-            },
-          }
-        }
         return
       }
       let i = 0

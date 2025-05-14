@@ -170,8 +170,11 @@ export function relativeInputDir(filename: string) {
   return filename
 }
 
-export function normalizeManifestJson(userManifestJson: Record<string, any>) {
-  const app = userManifestJson.app || {}
+export function normalizeManifestJson(
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
+  userManifestJson: Record<string, any>
+) {
+  const app = userManifestJson[platform] || userManifestJson.app || {}
   const x = userManifestJson['uni-app-x'] || {}
   x.compilerVersion = process.env.UNI_COMPILER_VERSION || ''
   const pageOrientation = getGlobalPageOrientation()
@@ -197,13 +200,17 @@ export function normalizeManifestJson(userManifestJson: Record<string, any>) {
       code: userManifestJson.versionCode || '',
     },
     'uni-app-x': x,
-    app: undefined as any,
     'app-harmony': undefined as any,
   }
   if (isXHarmony) {
     manifest['app-harmony'] = userManifestJson['app-harmony'] || {}
   } else {
-    manifest.app = userManifestJson.app || {}
+    if (userManifestJson[platform]) {
+      manifest[platform] = userManifestJson[platform]
+    } else if (userManifestJson.app) {
+      // @ts-expect-error 旧版本
+      manifest.app = userManifestJson.app
+    }
   }
   return manifest
 }
@@ -233,11 +240,20 @@ export function updateHarmonyManifestModules(
 }
 
 export function updateManifestModules(
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
   manifest: Record<string, any>,
   modules: string[]
 ) {
   // 执行了摇树逻辑，就需要设置 modules 节点
-  const app = manifest.app
+  if (!manifest[platform]) {
+    manifest[platform] = {}
+    if (manifest.app?.distribute?.modules) {
+      manifest[platform].distribute = {
+        modules: JSON.parse(JSON.stringify(manifest.app.distribute.modules)),
+      }
+    }
+  }
+  const app = manifest[platform] || manifest.app
   if (!app.distribute) {
     app.distribute = {}
   }

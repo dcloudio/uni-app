@@ -26,7 +26,6 @@ import {
   isColorSupported,
   isEnableGenericsParameterDefaults,
   isEnableInlineReified,
-  isEnableUTSNumber,
   moveRootIndexSourceMap,
   normalizeUTSResult,
   parseExtApiDefaultParameters,
@@ -40,7 +39,7 @@ import {
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
   shouldAutoImportUniCloud,
-  updateManifestModules,
+  updateManifestModulesByCloud,
 } from './utils'
 import type { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
@@ -160,7 +159,12 @@ export async function runKotlinProd(
     if (isModule) {
       // noop
     } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
-      updateManifestModules(inputDir, result.inject_apis, extApis)
+      updateManifestModulesByCloud(
+        'app-android',
+        inputDir,
+        result.inject_apis,
+        extApis
+      )
     } else {
       addPluginInjectApis(result.inject_apis)
     }
@@ -193,6 +197,8 @@ export type RunKotlinDevResult = UTSResult & {
   inject_modules: string[]
   kotlinc: boolean
   kotlincJars?: string[]
+  code: number
+  msg: string
 }
 
 export type RunKotlinBuildResult = UTSResult & {
@@ -348,6 +354,9 @@ export async function runKotlinDev(
         hbuilderFormatter
       )
     )
+
+    result.code = code
+    result.msg = msg
 
     // 等待 stderrListener 执行完毕
     if (waiting.done) {
@@ -605,6 +614,7 @@ export async function compile(
       '@dcloudio/uni-runtime': 'io.dcloud.uniapp.framework.runtime',
     },
     uniModules,
+    uniModulesPrefix: process.env.UNI_UTS_MODULE_PREFIX || '',
   }
   // 必须判断input.filename，因为input.filename可能跟filename不一样（可能会变成.uvue目录的文件）
   const isUTSFileExists = fs.existsSync(input.filename)
@@ -645,7 +655,6 @@ export async function compile(
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
-        enableUtsNumber: isEnableUTSNumber(),
         enableNarrowType: false, // 这里的启用是把部分typeof转换成instanceof，这样确实好一点，但会引发一些kotlin之类的警告，暂不开启
         enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
         enableInlineReified: isEnableInlineReified(),

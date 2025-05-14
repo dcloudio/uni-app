@@ -4,9 +4,10 @@ import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook }
 import { injectHook } from 'vue';
 
 function getLocaleLanguage() {
+    var _a;
     let localeLanguage = '';
     {
-        const appBaseInfo = wx.getAppBaseInfo();
+        const appBaseInfo = ((_a = wx.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
         const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
         localeLanguage = normalizeLocale(language) || LOCALE_EN;
     }
@@ -349,10 +350,10 @@ function handlePromise(promise) {
 function promisify$1(name, fn) {
     return (args = {}, ...rest) => {
         if (hasCallback(args)) {
-            return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+            return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-            invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
+            invokeApi(name, fn, extend({}, args, { success: resolve, fail: reject }), rest);
         })));
     };
 }
@@ -456,10 +457,15 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { windowWidth, pixelRatio, platform } = Object.assign({}, wx.getWindowInfo(), {
-            platform: wx.getDeviceInfo().platform,
-        })
-        ;
+    var _a, _b;
+    let windowWidth, pixelRatio, platform;
+    {
+        const windowInfo = ((_a = wx.getWindowInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
+        const deviceInfo = ((_b = wx.getDeviceInfo) === null || _b === void 0 ? void 0 : _b.call(wx)) || wx.getSystemInfoSync();
+        windowWidth = windowInfo.windowWidth;
+        pixelRatio = windowInfo.pixelRatio;
+        platform = deviceInfo.platform;
+    }
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -784,7 +790,7 @@ function promisify(name, api) {
         if (isFunction(options.success) ||
             isFunction(options.fail) ||
             isFunction(options.complete)) {
-            return wrapperReturnValue(name, invokeApi(name, api, options, rest));
+            return wrapperReturnValue(name, invokeApi(name, api, extend({}, options), rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
             invokeApi(name, api, extend({}, options, {

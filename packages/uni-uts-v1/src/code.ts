@@ -861,7 +861,7 @@ async function parseCode(
       types
     )
   } catch (e: any) {
-    console.error(parseUTSSyntaxError(e, inputDir))
+    // console.error(parseUTSSyntaxError(e, inputDir))
   }
   return []
 }

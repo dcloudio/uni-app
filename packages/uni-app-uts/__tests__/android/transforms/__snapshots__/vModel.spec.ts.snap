@@ -3,14 +3,14 @@
 exports[`compiler: transform v-model compound expression (with prefixIdentifiers) 1`] = `
 "createElementVNode("input", utsMapOf({
   modelValue: _ctx.model[_ctx.index],
-  onInput: ($event: InputEvent) => {(_ctx.model[_ctx.index]) = $event.detail.value}
+  onInput: ($event: UniInputEvent) => {(_ctx.model[_ctx.index]) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])"
 `;
 
 exports[`compiler: transform v-model compound expression 1`] = `
 "createElementVNode("input", utsMapOf({
   modelValue: model[index],
-  onInput: ($event: InputEvent) => {(model[index]) = $event.detail.value}
+  onInput: ($event: UniInputEvent) => {(model[index]) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])"
 `;
 
@@ -21,7 +21,7 @@ exports[`compiler: transform v-model simple expression (with multilines) 1`] = `
 .
 foo 
 ,
-  onInput: ($event: InputEvent) => {(
+  onInput: ($event: UniInputEvent) => {(
  model
 .
 foo 
@@ -32,28 +32,28 @@ foo
 exports[`compiler: transform v-model simple expression (with prefixIdentifiers) 1`] = `
 "createElementVNode("input", utsMapOf({
   modelValue: _ctx.model,
-  onInput: ($event: InputEvent) => {(_ctx.model) = $event.detail.value}
+  onInput: ($event: UniInputEvent) => {(_ctx.model) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])"
 `;
 
 exports[`compiler: transform v-model simple expression 1`] = `
 "createElementVNode("input", utsMapOf({
   modelValue: model,
-  onInput: ($event: InputEvent) => {(model) = $event.detail.value}
+  onInput: ($event: UniInputEvent) => {(model) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])"
 `;
 
 exports[`compiler: transform v-model with argument 1`] = `
 "createElementVNode("input", utsMapOf({
   "foo-value": model,
-  "onUpdate:fooValue": ($event: InputEvent) => {(model) = $event.detail.value}
+  "onUpdate:fooValue": ($event: UniInputEvent) => {(model) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["foo-value", "onUpdate:fooValue"])"
 `;
 
 exports[`compiler: transform v-model with dynamic argument (with prefixIdentifiers) 1`] = `
 "createElementVNode("input", normalizeProps(utsMapOf({
   [_ctx.value]: _ctx.model,
-  ["onUpdate:" + _ctx.value]: ($event: InputEvent) => {(_ctx.model) = $event.detail.value}
+  ["onUpdate:" + _ctx.value]: ($event: UniInputEvent) => {(_ctx.model) = $event.detail.value}
 })), null, 16 /* FULL_PROPS */)"
 `;
 

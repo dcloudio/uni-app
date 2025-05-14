@@ -10,18 +10,15 @@ export function parseUniXFlexDirection(manifestJson: Record<string, any>) {
   return 'column'
 }
 
-export function parseUniXSplashScreen(manifestJson: Record<string, any>) {
-  const splashScreen = manifestJson?.['app']?.['splashScreen']
+export function parseUniXSplashScreen(
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
+  manifestJson: Record<string, any>
+) {
+  const splashScreen = (manifestJson?.[platform] || manifestJson?.app)?.[
+    'splashScreen'
+  ]
   if (isPlainObject(splashScreen)) {
     return splashScreen
-  }
-  return false
-}
-
-export function parseUniXUniStatistics(manifestJson: Record<string, any>) {
-  const uniStatistics = manifestJson?.['app']?.['uniStatistics']
-  if (isPlainObject(uniStatistics)) {
-    return uniStatistics
   }
   return false
 }

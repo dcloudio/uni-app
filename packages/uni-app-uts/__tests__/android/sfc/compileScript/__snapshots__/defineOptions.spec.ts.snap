@@ -3,7 +3,7 @@
 exports[`defineOptions() basic usage 1`] = `
 "export default defineComponent({
  name: 'FooApp' ,
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -18,7 +18,7 @@ return (): any | null => { return null }
 
 exports[`defineOptions() empty argument 1`] = `
 "export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;

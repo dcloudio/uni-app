@@ -1,6 +1,7 @@
 import path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
+  enableSourceMap,
   isAppVue,
   isEnableConsole,
   isVueSfcFile,
@@ -37,6 +38,7 @@ export default () => [
         resolveUTSCompiler().uts2js({
           inputDir: process.env.UNI_INPUT_DIR,
           version: process.env.UNI_COMPILER_VERSION,
+          sourceMap: enableSourceMap(),
           cacheRoot: path.resolve(
             process.env.UNI_APP_X_CACHE_DIR,
             '.uts2js/cache'

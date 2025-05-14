@@ -2520,11 +2520,15 @@ const getPublicInstance = (i) => {
     return getExposeProxy(i) || i.proxy;
   return getPublicInstance(i.parent);
 };
+function getComponentInternalInstance(i) {
+  return i;
+}
 const publicPropertiesMap = (
   // Move PURE marker to new line to workaround compiler discarding it
   // due to type annotation
   /* @__PURE__ */ extend(/* @__PURE__ */ Object.create(null), {
-    $: (i) => i,
+    // fixed by xxxxxx
+    $: getComponentInternalInstance,
     // fixed by xxxxxx vue-i18n 在 dev 模式，访问了 $el，故模拟一个假的
     // $el: i => i.vnode.el,
     $el: (i) => i.__$el || (i.__$el = {}),
@@ -4886,6 +4890,7 @@ function warnRef(ref) {
 const queuePostRenderEffect = queuePostFlushCb;
 function mountComponent(initialVNode, options) {
   const instance = initialVNode.component = createComponentInstance(initialVNode, options.parentComponent, null);
+  instance.renderer = options.mpType ? options.mpType : "component";
   if (__VUE_OPTIONS_API__) {
     instance.ctx.$onApplyOptions = onApplyOptions;
     instance.ctx.$children = [];

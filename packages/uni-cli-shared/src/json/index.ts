@@ -7,8 +7,9 @@ export * from './theme'
 export {
   normalizeUniAppXAppPagesJson,
   normalizeUniAppXAppConfig,
-  checkPagesJson,
   parseUniXFlexDirection,
   parseUniXSplashScreen,
-  parseUniXUniStatistics,
+  isUniXPageFile,
+  getUniXPagePaths,
 } from './uni-x'
+export { checkPagesJson } from './utils'

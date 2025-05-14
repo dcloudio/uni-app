@@ -1,5 +1,5 @@
 import { defineSystemComponent } from '@dcloudio/uni-components'
-import { useI18n, initI18nAsyncMsgsOnce } from '@dcloudio/uni-core'
+import { initI18nAsyncMsgsOnce, useI18n } from '@dcloudio/uni-core'
 
 function reload() {
   window.location.reload()
@@ -7,6 +7,7 @@ function reload() {
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'AsyncError',
+  props: ['error'],
   setup() {
     initI18nAsyncMsgsOnce()
     const { t } = useI18n()

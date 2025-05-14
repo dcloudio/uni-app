@@ -10,6 +10,10 @@ export function genWebviewId() {
   return id++
 }
 
+export function resetWebviewId() {
+  id = __X__ ? 1 : 2
+}
+
 function encode(val: Parameters<typeof encodeURIComponent>[0]) {
   return val as string
 }

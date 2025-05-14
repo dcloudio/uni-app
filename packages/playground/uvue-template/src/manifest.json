@@ -1,0 +1,9 @@
+{
+  "name": "uvue-template",
+  "appid": "__UNI__XXXXXXX",
+  "description": "",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "uni-app-x": {}
+}

@@ -283,6 +283,8 @@ export declare function isComponentInternalInstance(vm: unknown): vm is Componen
 
 export declare function isComponentTag(tag: string): boolean;
 
+export declare const isGloballyAllowed: (key: string) => boolean;
+
 export declare function isH5CustomElement(tag: string, isX?: boolean): boolean;
 
 export declare function isH5NativeTag(tag: string): boolean;
@@ -497,6 +499,8 @@ export declare const ON_HOST_THEME_CHANGE = "onHostThemeChange";
 export declare const ON_INIT = "onInit";
 
 export declare const ON_KEYBOARD_HEIGHT_CHANGE = "onKeyboardHeightChange";
+
+export declare const ON_LAST_PAGE_BACK_PRESS = "onLastPageBackPress";
 
 export declare const ON_LAUNCH = "onLaunch";
 

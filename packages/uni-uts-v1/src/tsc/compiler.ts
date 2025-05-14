@@ -58,9 +58,6 @@ export function createUniXCompiler(
   ) => {
     // 仅监听工程目录内的文件
     if (fileName.startsWith(inputDir)) {
-      if (fileName.includes('?type=page')) {
-        fileName = fileName.replace('?type=page', '')
-      }
       return fileWatcher.watchFile(fileName, callback, pollingInterval, options)
     }
     return {

@@ -233,182 +233,6 @@ class UTSType {
     return obj;
   }
 }
-const OriginalJSON = JSON;
-function createUTSJSONObject(obj) {
-  const result = new UTSJSONObject({});
-  for (const key in obj) {
-    const value = obj[key];
-    if (isPlainObject(value)) {
-      result[key] = createUTSJSONObject(value);
-    } else if (getType$1(value) === "array") {
-      result[key] = value.map((item) => {
-        if (isPlainObject(item)) {
-          return createUTSJSONObject(item);
-        } else {
-          return item;
-        }
-      });
-    } else {
-      result[key] = value;
-    }
-  }
-  return result;
-}
-function parseObjectOrArray(object, utsType) {
-  const objectType = getType$1(object);
-  if (object === null || objectType !== "object" && objectType !== "array") {
-    return object;
-  }
-  if (utsType && utsType !== UTSJSONObject) {
-    try {
-      return new utsType(object, void 0, true);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-  if (objectType === "array") {
-    return object.map((value) => {
-      return parseObjectOrArray(value);
-    });
-  } else if (objectType === "object") {
-    return createUTSJSONObject(object);
-  }
-  return object;
-}
-const UTSJSON = {
-  parse: (text2, reviver, utsType) => {
-    if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject)) {
-      utsType = reviver;
-      reviver = void 0;
-    }
-    try {
-      const parseResult = OriginalJSON.parse(text2, reviver);
-      return parseObjectOrArray(parseResult, utsType);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  parseArray(text2, utsType) {
-    try {
-      const parseResult = OriginalJSON.parse(text2);
-      if (Array.isArray(parseResult)) {
-        return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : void 0);
-      }
-      return null;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  parseObject(text2, utsType) {
-    try {
-      const parseResult = OriginalJSON.parse(text2);
-      if (Array.isArray(parseResult)) {
-        return null;
-      }
-      return parseObjectOrArray(parseResult, utsType);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  stringify: (value) => {
-    return OriginalJSON.stringify(value);
-  }
-};
-function mapGet(map, key) {
-  if (!map.has(key)) {
-    return null;
-  }
-  return map.get(key);
-}
-function stringCodePointAt(str, pos) {
-  if (pos < 0 || pos >= str.length) {
-    return null;
-  }
-  return str.codePointAt(pos);
-}
-function stringAt(str, pos) {
-  if (pos < -str.length || pos >= str.length) {
-    return null;
-  }
-  return str.at(pos);
-}
-function weakMapGet(map, key) {
-  if (!map.has(key)) {
-    return null;
-  }
-  return map.get(key);
-}
-const UTS$1 = {
-  arrayAt,
-  arrayFind,
-  arrayFindLast,
-  arrayPop,
-  arrayShift,
-  isInstanceOf,
-  UTSType,
-  mapGet,
-  stringAt,
-  stringCodePointAt,
-  weakMapGet,
-  JSON: UTSJSON
-};
-let UniError$1 = class UniError2 extends Error {
-  constructor(errSubject, errCode, errMsg) {
-    let options = {};
-    const argsLength = Array.from(arguments).length;
-    switch (argsLength) {
-      case 0:
-        errSubject = "";
-        errMsg = "";
-        errCode = 0;
-        break;
-      case 1:
-        errMsg = errSubject;
-        errSubject = "";
-        errCode = 0;
-        break;
-      case 2:
-        errMsg = errSubject;
-        options = errCode;
-        errCode = options.errCode || 0;
-        errSubject = options.errSubject || "";
-        break;
-    }
-    super(errMsg);
-    this.name = "UniError";
-    this.errSubject = errSubject;
-    this.errCode = errCode;
-    this.errMsg = errMsg;
-    if (options.data) {
-      this.data = options.data;
-    }
-    if (options.cause) {
-      this.cause = options.cause;
-    }
-  }
-  set errMsg(msg) {
-    this.message = msg;
-  }
-  get errMsg() {
-    return this.message;
-  }
-  toString() {
-    return this.errMsg;
-  }
-  toJSON() {
-    return {
-      errSubject: this.errSubject,
-      errCode: this.errCode,
-      errMsg: this.errMsg,
-      data: this.data,
-      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
-    };
-  }
-};
 function initUTSJSONObjectProperties(obj) {
   const propertyList = [
     "_resolveKeyPath",
@@ -610,6 +434,173 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     for (let key in this) {
       callback(this[key], key);
     }
+  }
+};
+const OriginalJSON = JSON;
+function createUTSJSONObjectOrArray(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => {
+      return createUTSJSONObjectOrArray(item);
+    });
+  } else if (isPlainObject(obj)) {
+    const result = new UTSJSONObject$1({});
+    for (const key in obj) {
+      const value = obj[key];
+      result[key] = createUTSJSONObjectOrArray(value);
+    }
+    return result;
+  }
+  return obj;
+}
+function parseObjectOrArray(object, utsType) {
+  const objectType = getType$1(object);
+  if (object === null || objectType !== "object" && objectType !== "array") {
+    return object;
+  }
+  if (utsType && utsType !== UTSJSONObject$1) {
+    try {
+      return new utsType(object, void 0, true);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+  if (objectType === "array" || objectType === "object") {
+    return createUTSJSONObjectOrArray(object);
+  }
+  return object;
+}
+const UTSJSON = {
+  parse: (text2, reviver, utsType) => {
+    if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject$1)) {
+      utsType = reviver;
+      reviver = void 0;
+    }
+    try {
+      const parseResult = OriginalJSON.parse(text2, reviver);
+      return parseObjectOrArray(parseResult, utsType);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  parseArray(text2, utsType) {
+    try {
+      const parseResult = OriginalJSON.parse(text2);
+      if (Array.isArray(parseResult)) {
+        return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : void 0);
+      }
+      return null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  parseObject(text2, utsType) {
+    try {
+      const parseResult = OriginalJSON.parse(text2);
+      if (Array.isArray(parseResult)) {
+        return null;
+      }
+      return parseObjectOrArray(parseResult, utsType);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  stringify: (value) => {
+    return OriginalJSON.stringify(value);
+  }
+};
+function mapGet(map, key) {
+  if (!map.has(key)) {
+    return null;
+  }
+  return map.get(key);
+}
+function stringCodePointAt(str, pos) {
+  if (pos < 0 || pos >= str.length) {
+    return null;
+  }
+  return str.codePointAt(pos);
+}
+function stringAt(str, pos) {
+  if (pos < -str.length || pos >= str.length) {
+    return null;
+  }
+  return str.at(pos);
+}
+function weakMapGet(map, key) {
+  if (!map.has(key)) {
+    return null;
+  }
+  return map.get(key);
+}
+const UTS$1 = {
+  arrayAt,
+  arrayFind,
+  arrayFindLast,
+  arrayPop,
+  arrayShift,
+  isInstanceOf,
+  UTSType,
+  mapGet,
+  stringAt,
+  stringCodePointAt,
+  weakMapGet,
+  JSON: UTSJSON
+};
+let UniError$1 = class UniError2 extends Error {
+  constructor(errSubject, errCode, errMsg) {
+    let options = {};
+    const argsLength = Array.from(arguments).length;
+    switch (argsLength) {
+      case 0:
+        errSubject = "";
+        errMsg = "";
+        errCode = 0;
+        break;
+      case 1:
+        errMsg = errSubject;
+        errSubject = "";
+        errCode = 0;
+        break;
+      case 2:
+        errMsg = errSubject;
+        options = errCode;
+        errCode = options.errCode || 0;
+        errSubject = options.errSubject || "";
+        break;
+    }
+    super(errMsg);
+    this.name = "UniError";
+    this.errSubject = errSubject;
+    this.errCode = errCode;
+    this.errMsg = errMsg;
+    if (options.data) {
+      this.data = options.data;
+    }
+    if (options.cause) {
+      this.cause = options.cause;
+    }
+  }
+  set errMsg(msg) {
+    this.message = msg;
+  }
+  get errMsg() {
+    return this.message;
+  }
+  toString() {
+    return this.errMsg;
+  }
+  toJSON() {
+    return {
+      errSubject: this.errSubject,
+      errCode: this.errCode,
+      errMsg: this.errMsg,
+      data: this.data,
+      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
+    };
   }
 };
 let UTSValueIterable$1 = class UTSValueIterable2 {
@@ -2721,6 +2712,9 @@ class UniElement extends HTMLElement {
     }
     return (parent == null ? void 0 : parent._page) || null;
   }
+  get uniPage() {
+    return this.getPage();
+  }
   getBoundingClientRectAsync(callback) {
     var _a, _b;
     if (callback) {
@@ -3951,7 +3945,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(
+        name,
+        invokeApi(name, fn, extend({}, args), rest)
+      );
     }
     return wrapperReturnValue(
       name,
@@ -3960,7 +3957,7 @@ function promisify(name, fn) {
           invokeApi(
             name,
             fn,
-            extend(args, { success: resolve, fail: reject }),
+            extend({}, args, { success: resolve, fail: reject }),
             rest
           );
         })
@@ -4191,7 +4188,13 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-  const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
+  let windowWidth, pixelRatio, platform;
+  {
+    const { windowWidth: w, pixelRatio: p2, platform: pf } = getBaseSystemInfo();
+    windowWidth = w;
+    pixelRatio = p2;
+    platform = pf;
+  }
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
   isIOS$1 = platform === "ios";
@@ -5731,7 +5734,7 @@ const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersec
 let reqComponentObserverId = 1;
 class ServiceMediaQueryObserver {
   constructor(component) {
-    this._pageId = component.$page && component.$page.id;
+    this._pageId = (component == null ? void 0 : component.$page) && component.$page.id;
     this._component = component;
   }
   observe(options, callback) {
@@ -8073,7 +8076,10 @@ const canIUse = /* @__PURE__ */ defineSyncApi(
     if (hasOwn(SCHEMA_CSS, schema)) {
       return SCHEMA_CSS[schema];
     }
-    return true;
+    if (hasOwn(uni, schema)) {
+      return true;
+    }
+    return false;
   },
   CanIUseProtocol
 );
@@ -8144,8 +8150,27 @@ function isSystemDialogPageInstance(vm) {
 let escBackPageNum = 0;
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
-function isDialogPageImpl(page) {
-  return page instanceof UniDialogPageImpl;
+function getPageElement(page) {
+  var _a;
+  const currentPage = getCurrentPage();
+  if (page !== currentPage) {
+    const dialogPages = currentPage.getDialogPages();
+    const dialogPage = dialogPages[dialogPages.length - 1];
+    if (dialogPage !== page) {
+      const systemDialogPages = currentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
+      const systemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+      if (systemDialogPage !== page) {
+        throw new Error("Can't get element of other page");
+      }
+    }
+  }
+  const pageEle = document.querySelector(
+    `uni-page[data-page="${(_a = page.vm) == null ? void 0 : _a.route}"]`
+  );
+  if (!pageEle) {
+    throw new Error("page not found");
+  }
+  return pageEle;
 }
 class UniPageImpl {
   constructor({
@@ -8153,31 +8178,26 @@ class UniPageImpl {
     options,
     vm
   }) {
-    this.width = 0;
-    this.height = 0;
-    this.statusBarHeight = safeAreaInsets$1.top;
     this.getParentPage = () => null;
     this.route = route;
     this.options = options;
     this.vm = vm;
     this.$vm = vm;
   }
+  get statusBarHeight() {
+    return safeAreaInsets$1.top;
+  }
+  get width() {
+    return this.pageBody.width;
+  }
+  get height() {
+    const pageEle = getPageElement(this);
+    const pageHead = pageEle.querySelector("uni-page-head");
+    return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0);
+  }
   get pageBody() {
-    var _a;
-    const currentPage = getCurrentPage();
-    let container = document;
-    if (isDialogPageImpl(this)) {
-      const dialogPage = document.querySelector(
-        `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"]`
-      );
-      if (!dialogPage) {
-        throw new Error("dialogPage not found");
-      }
-      container = dialogPage;
-    } else if (this !== currentPage) {
-      throw new Error("Can't get pageBody of other page");
-    }
-    const pageBody = container.querySelector("uni-page-wrapper");
+    const pageEle = getPageElement(this);
+    const pageBody = pageEle.querySelector("uni-page-wrapper");
     const pageWrapperInfo = getPageWrapperInfo(pageBody);
     return {
       top: pageWrapperInfo.top,
@@ -8189,21 +8209,8 @@ class UniPageImpl {
     };
   }
   get safeAreaInsets() {
-    var _a;
-    const currentPage = getCurrentPage();
-    let container = document;
-    if (isDialogPageImpl(this)) {
-      const dialogPage = document.querySelector(
-        `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"]`
-      );
-      if (!dialogPage) {
-        throw new Error("dialogPage not found");
-      }
-      container = dialogPage;
-    } else if (this !== currentPage) {
-      throw new Error("Can't get safeAreaInsets of other page");
-    }
-    const pageBody = container.querySelector("uni-page-wrapper");
+    const pageEle = getPageElement(this);
+    const pageBody = pageEle.querySelector("uni-page-wrapper");
     return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
@@ -8285,6 +8292,19 @@ class UniPageImpl {
   getDialogPages() {
     return [];
   }
+  getAndroidActivity() {
+    return null;
+  }
+  exitFullscreen() {
+  }
+  createElement() {
+    return new UniElementImpl({
+      id: "",
+      name: "",
+      attrs: /* @__PURE__ */ new Map(),
+      style: /* @__PURE__ */ new Map()
+    });
+  }
 }
 class UniNormalPageImpl extends UniPageImpl {
   getDialogPages() {
@@ -8342,16 +8362,18 @@ class UniDialogPageImpl extends UniPageImpl {
 function initXPage(vm, route, page) {
   var _a, _b;
   initPageVm(vm, page);
-  Object.defineProperty(vm, "$pageLayoutInstance", {
-    get() {
-      var _a2, _b2;
-      let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
-      while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
-        res = res.parent;
+  if (!("$pageLayoutInstance" in vm)) {
+    Object.defineProperty(vm, "$pageLayoutInstance", {
+      get() {
+        var _a2, _b2;
+        let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
+        while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
+          res = res.parent;
+        }
+        return res;
       }
-      return res;
-    }
-  });
+    });
+  }
   vm.$basePage = vm.$page;
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
@@ -8436,18 +8458,6 @@ function triggerDialogPageOnHide(instance2) {
   }
   dialogPageTriggerParentHide((_b = instance2.proxy) == null ? void 0 : _b.$page);
 }
-function initPageWidthHeight(instance2) {
-  if (!instance2.proxy) {
-    return;
-  }
-  const pageEl = document.querySelector(
-    `uni-page[data-page="${instance2.proxy.$vm.route}"]`
-  );
-  if (pageEl) {
-    instance2.proxy.width = pageEl.offsetWidth;
-    instance2.proxy.height = pageEl.offsetHeight;
-  }
-}
 const closeDialogPage = (options) => {
   var _a, _b;
   const currentPages = getCurrentPages();
@@ -8483,6 +8493,7 @@ const closeDialogPage = (options) => {
       const parentSystemDialogPages = parentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
       const index2 = parentSystemDialogPages.indexOf(dialogPage);
       if (index2 > -1) {
+        invokeHook(parentSystemDialogPages[index2].vm, ON_UNLOAD);
         parentSystemDialogPages.splice(index2, 1);
         dialogPageTriggerParentShow(dialogPage, 1);
       } else {
@@ -8577,13 +8588,18 @@ function removePage(routeKey, removeRouteCaches = true) {
     }
     const systemDialogPages = (_b = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages) == null ? void 0 : _b.value;
     if (systemDialogPages) {
-      systemDialogPages.length = 0;
+      for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+        closeDialogPage({ dialogPage: systemDialogPages[i] });
+      }
     }
   }
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, ON_UNLOAD);
   currentPagesMap.delete(routeKey);
   removeRouteCaches && removeRouteCache(routeKey);
+  {
+    pageVm.$page.vm = null;
+  }
 }
 let id = /* @__PURE__ */ getStateId();
 function createPageState(type, __id__) {
@@ -9344,6 +9360,7 @@ function reload() {
 }
 const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncError",
+  props: ["error"],
   setup() {
     initI18nAsyncMsgsOnce();
     const {
@@ -9458,6 +9475,7 @@ function setupPage(comp) {
       getPage$BasePage(instance2.proxy).options = query;
       instance2.proxy.options = query;
       const pageMeta = usePageMeta();
+      updateCurPageCssVar(pageMeta);
       instance2.onReachBottom = reactive([]);
       instance2.onPageScroll = reactive([]);
       watch(
@@ -9476,7 +9494,6 @@ function setupPage(comp) {
       onMounted(() => {
         var _a;
         {
-          initPageWidthHeight(instance2);
           if (instance2.subTree.el) {
             instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
           }
@@ -18803,11 +18820,23 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
+    let lastScrollLeft = 0;
+    let lastScrollTop = 0;
+    onActivated(() => {
+      if (containerRef.value) {
+        containerRef.value.scrollLeft = lastScrollLeft;
+        containerRef.value.scrollTop = lastScrollTop;
+      }
+    });
     onMounted(() => {
       resetContainerSize();
       let lastScrollOffset = 0;
       containerRef.value.addEventListener("scroll", function($event) {
         const target = $event.target;
+        if (isHTMlElement(target)) {
+          lastScrollLeft = target.scrollLeft;
+          lastScrollTop = target.scrollTop;
+        }
         trigger("scroll", $event, {
           scrollLeft: target.scrollLeft,
           scrollTop: target.scrollTop,
@@ -19206,8 +19235,14 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup(props2, {
     slots,
-    expose
+    expose,
+    attrs: attrs2
   }) {
+    if (attrs2.slot === "refresher") {
+      return () => {
+        return createVNode("uni-list-item", null, [slots.default && slots.default()]);
+      };
+    }
     const rootRef = ref(null);
     const isVertical = inject("__listViewIsVertical");
     const visible = ref(false);
@@ -19440,7 +19475,8 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
 }
 function initHooks(options, instance2, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component") {
+  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
+  mpType === "page" && instance2.renderer === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
@@ -19647,15 +19683,18 @@ function usePopupStyle(props2) {
         "border-style": "solid"
       });
       const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
+      const popoverWidth = getNumber(popover.width ? popover.width : 300);
       const popoverTop = getNumber(popover.top);
       const popoverHeight = getNumber(popover.height);
       const center = popoverLeft + popoverWidth / 2;
       contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
+      const contentLeft = Math.max(0, center - popoverWidth / 2);
       contentStyle.left = `${contentLeft}px`;
+      if (popover.width) {
+        contentStyle.width = `${popoverWidth}px`;
+      }
       let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleLeft = Math.min(popoverWidth - 12, triangleLeft);
       triangleStyle.left = `${triangleLeft}px`;
       const vcl = popupHeight.value / 2;
       if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
@@ -20840,11 +20879,14 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$c,
+  emits: ["load"],
   rootElement: {
     name: "uni-web-view",
     class: UniWebViewElement
   },
-  setup(props2) {
+  setup(props2, {
+    emit: emit2
+  }) {
     Invoke();
     const rootRef = ref(null);
     const iframeRef = ref(null);
@@ -20855,8 +20897,15 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
+    const trigger = useCustomEvent(rootRef, emit2);
     const renderIframe = () => {
       const iframe = document.createElement("iframe");
+      iframe.onload = function(event) {
+        trigger("load", event, {
+          src: props2.src,
+          url: props2.src
+        });
+      };
       watchEffect(() => {
         for (const key in $attrs.value) {
           if (hasOwn($attrs.value, key)) {
@@ -21280,7 +21329,11 @@ function translateCoordinateSystem(type, coords, skip) {
       });
     });
   }
-  return Promise.reject(new Error("translate coordinate system faild"));
+  return Promise.reject(
+    new Error(
+      "translate coordinate system faild, map provider not configured or not supported"
+    )
+  );
 }
 const props$b = {
   id: {
@@ -23015,6 +23068,9 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
       extension
     });
     document.body.appendChild(fileInput);
+    fileInput.addEventListener("cancel", () => {
+      reject("chooseFile:fail cancel");
+    });
     fileInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const tempFiles = [];
@@ -23071,6 +23127,9 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
       type: "image"
     });
     document.body.appendChild(imageInput);
+    imageInput.addEventListener("cancel", () => {
+      reject("chooseImage:fail cancel");
+    });
     imageInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const tempFiles = [];
@@ -23390,6 +23449,9 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
       type: "video"
     });
     document.body.appendChild(videoInput);
+    videoInput.addEventListener("cancel", () => {
+      reject("chooseVideo:fail cancel");
+    });
     videoInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const file = eventTarget.files[0];
@@ -23449,6 +23511,7 @@ const request = /* @__PURE__ */ defineTaskApi(
     method,
     dataType: dataType2,
     responseType,
+    enableChunked,
     withCredentials,
     timeout = __uniConfig.networkTimeout.request
   }, { resolve, reject }) => {
@@ -23482,52 +23545,162 @@ const request = /* @__PURE__ */ defineTaskApi(
         }
       }
     }
-    const xhr = new XMLHttpRequest();
-    const requestTask = new RequestTask(xhr);
-    xhr.open(method, url);
-    for (const key in header) {
-      if (hasOwn(header, key)) {
-        xhr.setRequestHeader(key, header[key]);
-      }
-    }
-    const timer = setTimeout(function() {
-      xhr.onload = xhr.onabort = xhr.onerror = null;
-      requestTask.abort();
-      reject("timeout", { errCode: 5 });
-    }, timeout);
-    xhr.responseType = responseType;
-    xhr.onload = function() {
-      clearTimeout(timer);
-      const statusCode = xhr.status;
-      let res = responseType === "text" ? xhr.responseText : xhr.response;
-      if (responseType === "text" && dataType2 === "json") {
-        try {
-          res = UTS.JSON.parse(res);
-        } catch (error) {
+    let requestTask;
+    if (!enableChunked) {
+      const xhr = new XMLHttpRequest();
+      requestTask = new RequestTask(xhr);
+      xhr.open(method, url);
+      for (const key in header) {
+        if (hasOwn(header, key)) {
+          xhr.setRequestHeader(key, header[key]);
         }
       }
-      resolve({
-        data: res,
-        statusCode,
-        header: parseHeaders(xhr.getAllResponseHeaders()),
-        cookies: []
+      const timer = setTimeout(function() {
+        xhr.onload = xhr.onabort = xhr.onerror = null;
+        requestTask.abort();
+        reject("timeout", { errCode: 5 });
+      }, timeout);
+      xhr.responseType = responseType;
+      xhr.onload = function() {
+        clearTimeout(timer);
+        const statusCode = xhr.status;
+        let res = responseType === "text" ? xhr.responseText : xhr.response;
+        if (responseType === "text") {
+          res = parseResponseText(res, responseType, dataType2);
+        }
+        resolve({
+          data: res,
+          statusCode,
+          header: parseHeaders(xhr.getAllResponseHeaders()),
+          cookies: []
+        });
+      };
+      xhr.onabort = function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
+      };
+      xhr.onerror = function() {
+        clearTimeout(timer);
+        reject(void 0, { errCode: 5 });
+      };
+      xhr.withCredentials = withCredentials;
+      xhr.send(body);
+    } else {
+      if (typeof window.fetch === void 0 || typeof window.AbortController === void 0) {
+        throw new Error(
+          "fetch or AbortController is not supported in this environment"
+        );
+      }
+      const controller = new AbortController();
+      const signal = controller.signal;
+      requestTask = new RequestTask(controller);
+      const fetchOptions = {
+        method,
+        headers: header,
+        body,
+        signal,
+        credentials: withCredentials ? "include" : "same-origin"
+      };
+      const timer = setTimeout(function() {
+        requestTask.abort();
+        reject("timeout", { errCode: 5 });
+      }, timeout);
+      fetchOptions.signal.addEventListener("abort", function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
       });
-    };
-    xhr.onabort = function() {
-      clearTimeout(timer);
-      reject("abort", { errCode: 600003 });
-    };
-    xhr.onerror = function() {
-      clearTimeout(timer);
-      reject(void 0, { errCode: 5 });
-    };
-    xhr.withCredentials = withCredentials;
-    xhr.send(body);
+      window.fetch(url, fetchOptions).then(
+        (response) => {
+          const statusCode = response.status;
+          const header2 = response.headers;
+          const body2 = response.body;
+          const headerObj = {};
+          header2.forEach((value, key) => {
+            headerObj[key] = value;
+          });
+          const cookies = cookiesParse(headerObj);
+          requestTask._emitter.emit("headersReceived", {
+            header: headerObj,
+            statusCode,
+            cookies
+          });
+          if (!body2) {
+            resolve({
+              data: "",
+              statusCode,
+              header: headerObj,
+              cookies
+            });
+            return;
+          }
+          const reader = body2.getReader();
+          const bodyBuffers = [];
+          const streamReaderRead = () => {
+            reader.read().then(({ done, value }) => {
+              if (done) {
+                const result = concatArrayBuffers(bodyBuffers);
+                let res = responseType === "text" ? new TextDecoder().decode(result) : result;
+                if (responseType === "text") {
+                  res = parseResponseText(res, responseType, dataType2);
+                }
+                resolve({
+                  data: res,
+                  statusCode,
+                  header: headerObj,
+                  cookies
+                });
+                return;
+              }
+              const chunk = value;
+              bodyBuffers.push(chunk);
+              requestTask._emitter.emit("chunkReceived", {
+                data: chunk
+              });
+              streamReaderRead();
+            });
+          };
+          streamReaderRead();
+        },
+        (error) => {
+          reject(error, { errCode: 5 });
+        }
+      );
+    }
     return requestTask;
   },
   RequestProtocol,
   RequestOptions
 );
+const cookiesParse = (header) => {
+  let cookiesStr = header["Set-Cookie"] || header["set-cookie"];
+  let cookiesArr = [];
+  if (!cookiesStr) {
+    return [];
+  }
+  if (cookiesStr[0] === "[" && cookiesStr[cookiesStr.length - 1] === "]") {
+    cookiesStr = cookiesStr.slice(1, -1);
+  }
+  const handleCookiesArr = cookiesStr.split(";");
+  for (let i = 0; i < handleCookiesArr.length; i++) {
+    if (handleCookiesArr[i].indexOf("Expires=") !== -1 || handleCookiesArr[i].indexOf("expires=") !== -1) {
+      cookiesArr.push(handleCookiesArr[i].replace(",", ""));
+    } else {
+      cookiesArr.push(handleCookiesArr[i]);
+    }
+  }
+  cookiesArr = cookiesArr.join(";").split(",");
+  return cookiesArr;
+};
+function concatArrayBuffers(buffers) {
+  const totalLength = buffers.reduce((acc, buf) => acc + buf.byteLength, 0);
+  const result = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const buffer of buffers) {
+    result.set(new Uint8Array(buffer), offset);
+    offset += buffer.byteLength;
+  }
+  return result.buffer;
+}
 function normalizeContentType(header) {
   const name = Object.keys(header).find(
     (name2) => name2.toLowerCase() === "content-type"
@@ -23544,20 +23717,35 @@ function normalizeContentType(header) {
   return "string";
 }
 class RequestTask {
-  constructor(xhr) {
-    this._xhr = xhr;
+  constructor(controller) {
+    this._emitter = new Emitter();
+    this._controller = controller;
   }
   abort() {
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
+    if (this._controller) {
+      this._controller.abort();
+      delete this._controller;
     }
   }
   onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
+    this._emitter.on("headersReceived", callback);
   }
   offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
+    if (callback) {
+      this._emitter.off("headersReceived", callback);
+    } else {
+      this._emitter.off("headersReceived");
+    }
+  }
+  onChunkReceived(callback) {
+    this._emitter.on("chunkReceived", callback);
+  }
+  offChunkReceived(callback) {
+    if (callback) {
+      this._emitter.off("chunkReceived", callback);
+    } else {
+      this._emitter.off("chunkReceived");
+    }
   }
 }
 function parseHeaders(headers) {
@@ -23570,6 +23758,16 @@ function parseHeaders(headers) {
     headersObject[find[1]] = find[2];
   });
   return headersObject;
+}
+function parseResponseText(responseText, responseType, dataType2) {
+  let res = responseText;
+  if (responseType === "text" && dataType2 === "json") {
+    try {
+      res = UTS.JSON.parse(res);
+    } catch (error) {
+    }
+  }
+  return res;
 }
 class DownloadTask {
   constructor(xhr) {
@@ -27602,8 +27800,9 @@ const _sfc_main$2 = {
       popover: {},
       bottomNavigationHeight: 0,
       appTheme: null,
-      osTheme: null,
-      hostTheme: null
+      hostTheme: null,
+      menuItemClicked: false,
+      cancelButtonClicked: false
     };
   },
   onLoad(options) {
@@ -27644,14 +27843,14 @@ const _sfc_main$2 = {
     } else if (osLanguage != null) {
       this.language = osLanguage;
     }
-    const osTheme = systemInfo.osTheme;
     const appTheme = systemInfo.appTheme;
     if (appTheme != null && appTheme != "auto") {
       this.appTheme = appTheme;
       this.handleThemeChange();
     }
-    if (osTheme != null) {
-      this.osTheme = osTheme;
+    const osTheme = systemInfo.osTheme;
+    if (osTheme != null && this.appTheme == null) {
+      this.appTheme = osTheme;
       this.handleThemeChange();
     }
     const hostTheme = systemInfo.hostTheme;
@@ -27766,6 +27965,9 @@ const _sfc_main$2 = {
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
   },
   onUnload() {
+    if (!this.menuItemClicked && !this.cancelButtonClicked) {
+      uni.$emit(this.failEventName, {});
+    }
     uni.$off(this.optionsEventName, null);
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
@@ -27791,10 +27993,12 @@ const _sfc_main$2 = {
       }, 250);
     },
     handleMenuItemClick(tapIndex) {
+      this.menuItemClicked = true;
       this.closeActionSheet();
       uni.$emit(this.successEventName, tapIndex);
     },
     handleCancel() {
+      this.cancelButtonClicked = true;
       this.closeActionSheet();
       uni.$emit(this.failEventName, {});
     },
@@ -27803,13 +28007,11 @@ const _sfc_main$2 = {
         this.theme = this.hostTheme;
       } else if (this.appTheme != null) {
         this.theme = this.appTheme;
-      } else if (this.osTheme != null) {
-        this.theme = this.osTheme;
       }
     }
   }
 };
-const _style_0$2 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
+const _style_0$2 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
 function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_view = __syscom_2;
   const _component_text = __syscom_0$1;
@@ -27835,7 +28037,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
             default: withCtx(() => [
               $data.title ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
                 createVNode(_component_view, {
-                  class: normalizeClass(["uni-action-sheet_dialog__title", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
+                  class: normalizeClass(["uni-action-sheet_dialog__title border-b", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
                 }, {
                   default: withCtx(() => [
                     createVNode(_component_text, {
@@ -27859,32 +28061,29 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
               }, {
                 default: withCtx(() => [
                   (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
-                    return openBlock(), createBlock(_component_view, { key: index2 }, {
-                      default: withCtx(() => [
-                        index2 !== 0 ? (openBlock(), createBlock(_component_view, {
-                          key: 0,
-                          class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
-                        }, null, 8, ["class"])) : createCommentVNode("", true),
-                        createVNode(_component_view, {
-                          class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
-                          onClick: ($event) => $options.handleMenuItemClick(index2)
-                        }, {
-                          default: withCtx(() => [
-                            createVNode(_component_text, {
-                              style: normalizeStyle({ color: $data.itemColor }),
-                              class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
-                            }, {
-                              default: withCtx(() => [
-                                createTextVNode(toDisplayString(item), 1)
-                              ]),
-                              _: 2
-                            }, 1032, ["style", "class"])
-                          ]),
-                          _: 2
-                        }, 1032, ["class", "onClick"])
-                      ]),
-                      _: 2
-                    }, 1024);
+                    return openBlock(), createElementBlock(Fragment, { key: index2 }, [
+                      index2 !== 0 ? (openBlock(), createBlock(_component_view, {
+                        key: 0,
+                        class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                      }, null, 8, ["class"])) : createCommentVNode("", true),
+                      createVNode(_component_view, {
+                        class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape, "border-t": index2 !== 0 }]),
+                        onClick: ($event) => $options.handleMenuItemClick(index2)
+                      }, {
+                        default: withCtx(() => [
+                          createVNode(_component_text, {
+                            style: normalizeStyle({ color: $data.itemColor }),
+                            class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode(toDisplayString(item), 1)
+                            ]),
+                            _: 2
+                          }, 1032, ["style", "class"])
+                        ]),
+                        _: 2
+                      }, 1032, ["class", "onClick"])
+                    ], 64);
                   }), 128))
                 ]),
                 _: 1
@@ -29233,6 +29432,21 @@ const _sfc_main = {
   data() {
     return {
       theme: "light",
+      language: "zh-Hans",
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      i18nConfirmText: {
+        en: "OK",
+        es: "Confirmar",
+        fr: "Confirmer",
+        "zh-Hans": "确定",
+        "zh-Hant": "確定"
+      },
       readyEventName: "",
       optionsEventName: "",
       successEventName: "",
@@ -29242,8 +29456,8 @@ const _sfc_main = {
       showCancel: true,
       editable: false,
       placeholderText: null,
-      confirmText: "确定",
-      cancelText: "取消",
+      inputConfirmText: null,
+      inputCancelText: null,
       cancelColor: "#000000",
       confirmColor: "#4A5E86",
       inputBottom: "0px",
@@ -29259,8 +29473,61 @@ const _sfc_main = {
       this.showAnim = true;
     }, 10);
   },
+  computed: {
+    cancelText() {
+      if (this.inputCancelText != null) {
+        const res = this.inputCancelText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    },
+    confirmText() {
+      if (this.inputConfirmText != null) {
+        const res = this.inputConfirmText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nConfirmText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nConfirmText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nConfirmText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nConfirmText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nConfirmText["zh-Hant"];
+      }
+      return "确定";
+    }
+  },
   onLoad(options) {
     const systemInfo = uni.getSystemInfoSync();
+    const osLanguage = systemInfo.osLanguage;
+    const appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
     const hostTheme = systemInfo.hostTheme;
     if (hostTheme != null) {
       this.theme = hostTheme;
@@ -29269,6 +29536,13 @@ const _sfc_main = {
     uni.onThemeChange((res) => {
       this.theme = res.theme;
       this.updateUI();
+    });
+    const locale = uni.getLocale();
+    this.language = locale;
+    uni.onLocaleChange((res) => {
+      if (res.locale) {
+        this.language = res.locale;
+      }
     });
     this.readyEventName = options["readyEventName"];
     this.optionsEventName = options["optionsEventName"];
@@ -29291,10 +29565,10 @@ const _sfc_main = {
         this.placeholderText = data["placeholderText"];
       }
       if (data["confirmText"] != null) {
-        this.confirmText = data["confirmText"];
+        this.inputConfirmText = data["confirmText"];
       }
       if (data["cancelText"] != null) {
-        this.cancelText = data["cancelText"];
+        this.inputCancelText = data["cancelText"];
       }
       if (data["confirmColor"] != null) {
         this.inputConfirmColor = data["confirmColor"];
@@ -29395,7 +29669,7 @@ const _sfc_main = {
     }
   }
 };
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n	\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%; \n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__text {\n		font-size: 16px;\n		font-weight: normal;\n		margin-top: 2px;\n		margin-left: 2px;\n		margin-right: 2px;\n		margin-bottom: 12px;\n		text-align: center;\n		color: #747474;\n		lines: 6;\n		width: 100%;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 6;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 1px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 1px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n	\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%; \n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__text {\n		font-size: 16px;\n		font-weight: normal;\n		margin-top: 2px;\n		margin-left: 2px;\n		margin-right: 2px;\n		margin-bottom: 12px;\n		text-align: center;\n		color: #747474;\n		lines: 6;\n		width: 100%;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 6;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_text = __syscom_0$1;
   const _component_textarea = __syscom_1;
@@ -29468,7 +29742,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                         class: "uni-modal_dialog__content__bottom__button__text"
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString($data.cancelText), 1)
+                          createTextVNode(toDisplayString($options.cancelText), 1)
                         ]),
                         _: 1
                       }, 8, ["style"])
@@ -29490,7 +29764,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                         class: "uni-modal_dialog__content__bottom__button__text__sure"
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString($data.confirmText), 1)
+                          createTextVNode(toDisplayString($options.confirmText), 1)
                         ]),
                         _: 1
                       }, 8, ["style"])

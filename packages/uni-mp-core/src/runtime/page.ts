@@ -10,6 +10,7 @@ import {
 
 import {
   type CustomComponentInstanceProperty,
+  type MPComponentInstance,
   type ParseComponentOptions,
   parseComponent,
 } from './component'
@@ -79,5 +80,49 @@ declare let Component: WechatMiniprogram.Component.Constructor
 export function initCreatePage(parseOptions: ParseComponentOptions) {
   return function createPage(vuePageOptions: ComponentOptions) {
     return Component(parsePage(vuePageOptions, parseOptions))
+  }
+}
+
+export function initPageInstance(mpPageInstance: MPComponentInstance) {
+  if (__X__) {
+    Object.assign(mpPageInstance, {
+      get width(): number {
+        return __GLOBAL__.getWindowInfo().windowWidth
+      },
+      get height(): number {
+        const windowInfo = __GLOBAL__.getWindowInfo()
+        // 某些版本的微信小程序开发工具获取tabBar页面的screenTop不对，其数值包含了tabBar高度及底部安全区，如果有开发者问起让他使用真机测试即可。
+        return windowInfo.windowHeight + windowInfo.screenTop
+      },
+      get statusBarHeight(): number {
+        return __GLOBAL__.getWindowInfo().statusBarHeight
+      },
+      get safeAreaInsets() {
+        const windowInfo = __GLOBAL__.getWindowInfo()
+        const screenBottom =
+          windowInfo.screenHeight -
+          windowInfo.screenTop -
+          windowInfo.windowHeight
+        const safeAreaBottom =
+          windowInfo.screenHeight - windowInfo.safeArea.bottom
+        return {
+          top: Math.max(0, windowInfo.statusBarHeight - windowInfo.screenTop),
+          left: 0,
+          right: 0,
+          bottom: Math.max(0, safeAreaBottom - screenBottom), // 无法计算，
+        }
+      },
+      get pageBody() {
+        const windowInfo = __GLOBAL__.getWindowInfo()
+        return {
+          top: windowInfo.screenTop,
+          left: 0,
+          right: windowInfo.windowWidth,
+          bottom: windowInfo.windowHeight + windowInfo.screenTop,
+          width: windowInfo.windowWidth,
+          height: windowInfo.windowHeight,
+        }
+      },
+    })
   }
 }

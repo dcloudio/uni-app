@@ -22,7 +22,7 @@ import {
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
   shouldAutoImportUniCloud,
-  updateManifestModules,
+  updateManifestModulesByCloud,
 } from './utils'
 import { parseJson } from './shared'
 import type {
@@ -105,7 +105,12 @@ export async function runSwiftProd(
     if (isModule) {
       // noop
     } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
-      updateManifestModules(inputDir, result.inject_apis, extApis)
+      updateManifestModulesByCloud(
+        'app-ios',
+        inputDir,
+        result.inject_apis,
+        extApis
+      )
     } else {
       addPluginInjectApis(result.inject_apis)
     }
@@ -224,7 +229,18 @@ export async function runSwiftDev(
       path.resolve(inputDir, 'uni_modules', id, 'utssdk', 'app-ios'),
       path.resolve(outputDir, 'uni_modules', id, 'utssdk', 'app-ios'),
       ['.swift'],
-      rewriteConsoleExpr!
+      (fileName, content) => {
+        if (!isX) {
+          // 非 x 平台，需要替换所有 DCloudUniappRuntime 导入为 DCloudUTSFoundation
+          content = content.replace(
+            /DCloudUniappRuntime/g,
+            'DCloudUTSFoundation'
+          )
+        }
+        return rewriteConsoleExpr
+          ? rewriteConsoleExpr(fileName, content)
+          : content
+      }
     )
 
     const { code, msg } = await compilerServer.compile({
@@ -285,6 +301,7 @@ export async function compile(
     pluginId,
     paths: {},
     uniModules,
+    uniModulesPrefix: process.env.UNI_UTS_MODULE_PREFIX || '',
   }
   // 必须判断input.filename，因为input.filename可能跟filename不一样（可能会变成.uvue目录的文件）
   const isUTSFileExists = fs.existsSync(input.filename)

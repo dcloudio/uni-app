@@ -447,15 +447,16 @@
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i] = arguments[_i];
                 }
-                var originalArgs = __spreadArray([], args, true);
-                if (originalArgs.length) {
-                    var maybeAtFile = originalArgs[originalArgs.length - 1];
-                    // 移除最后的 at pages/index/index.uvue:6
-                    if (typeof maybeAtFile === 'string' && atFileRegex.test(maybeAtFile)) {
-                        originalArgs.pop();
-                    }
-                }
                 {
+                    var originalArgs = __spreadArray([], args, true);
+                    if (originalArgs.length) {
+                        var maybeAtFile = originalArgs[originalArgs.length - 1];
+                        // 移除最后的 at pages/index/index.uvue:6
+                        if (typeof maybeAtFile === 'string' &&
+                            atFileRegex.test(maybeAtFile)) {
+                            originalArgs.pop();
+                        }
+                    }
                     originalConsole[type].apply(originalConsole, originalArgs);
                 }
                 if (type === 'error' && args.length === 1) {

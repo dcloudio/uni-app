@@ -5,38 +5,39 @@ import {
   ElementTypes,
   type NodeTransform,
   NodeTypes,
-  type SimpleExpressionNode,
 } from '@vue/compiler-core'
 import { ErrorCodes, createDOMCompilerError } from '../errors'
-import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
+import {
+  createBindDirectiveNode,
+  isDirectiveNode,
+  isPlainElementNode,
+  isSimpleExpressionNode,
+} from '@dcloudio/uni-cli-shared'
 
 export const transformVHtml: NodeTransform = (node, context) => {
-  if ((node as BaseElementNode).tagType !== ElementTypes.ELEMENT) {
+  if (!isPlainElementNode(node)) {
     return
   }
   // check whether bind v-html
-  if ((node as BaseElementNode).props?.length) {
-    ;(node as BaseElementNode).props.forEach((prop, index) => {
-      if (prop.name === 'html' && prop.loc.source.startsWith('v-html=')) {
-        if (
-          !(prop as DirectiveNode).exp ||
-          !((prop as DirectiveNode).exp as SimpleExpressionNode)?.content.trim()
-        ) {
-          context.onError(
-            createDOMCompilerError(ErrorCodes.X_V_HTML_NO_EXPRESSION, prop.loc)
-          )
-        }
-        if ((node as BaseElementNode).children.length) {
-          context.onError(
-            createDOMCompilerError(ErrorCodes.X_V_HTML_WITH_CHILDREN, prop.loc)
-          )
-        }
-        ;(node as BaseElementNode).children = [
-          createRichText(node as BaseElementNode, prop as DirectiveNode),
-        ]
-        ;(node as BaseElementNode).props.splice(index, 1)
+  for (const [index, prop] of node.props.entries()) {
+    if (isDirectiveNode(prop) && prop.name === 'html') {
+      if (
+        !prop.exp ||
+        (isSimpleExpressionNode(prop.exp) && prop.exp.content.trim() === '')
+      ) {
+        context.onError(
+          createDOMCompilerError(ErrorCodes.X_V_HTML_NO_EXPRESSION, prop.loc)
+        )
       }
-    })
+      if (node.children.length) {
+        context.onError(
+          createDOMCompilerError(ErrorCodes.X_V_HTML_WITH_CHILDREN, prop.loc)
+        )
+      }
+      node.children = [createRichText(node, prop)]
+      node.props.splice(index, 1)
+      break
+    }
   }
 }
 

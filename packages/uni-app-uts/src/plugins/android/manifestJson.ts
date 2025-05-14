@@ -7,7 +7,6 @@ import {
   parseJson,
   parseUniXFlexDirection,
   parseUniXSplashScreen,
-  parseUniXUniStatistics,
   validateThemeValue,
 } from '@dcloudio/uni-cli-shared'
 import { ENTRY_FILENAME, stringifyMap } from './utils'
@@ -66,18 +65,11 @@ export function uniAppManifestPlugin(): Plugin {
         const flexDir = parseUniXFlexDirection(manifestJson)
         const flexDirCode =
           flexDir !== 'column' ? `override flexDirection = "${flexDir}"` : ''
-        const splashScreen = parseUniXSplashScreen(manifestJson)
+        const splashScreen = parseUniXSplashScreen('app-android', manifestJson)
         const splashScreenCode =
           splashScreen && Object.keys(splashScreen).length > 0
             ? `override splashScreen: Map<string, any> | null = ${stringifyMap(
                 splashScreen
-              )}`
-            : ''
-        const uniStatistics = parseUniXUniStatistics(manifestJson)
-        const uniStatisticsCode =
-          uniStatistics && Object.keys(uniStatistics).length > 0
-            ? `override uniStatistics: UTSJSONObject | null = ${JSON.stringify(
-                uniStatistics
               )}`
             : ''
 
@@ -98,7 +90,6 @@ export function uniAppManifestPlugin(): Plugin {
           flexDirCode,
           splashScreenCode,
           defaultAppThemeCode,
-          uniStatisticsCode,
         ]
           .filter(Boolean)
           .join('\n')
@@ -120,7 +111,7 @@ export class UniAppConfig extends io.dcloud.uniapp.appframe.AppConfig {
       }
     },
     writeBundle() {
-      outputManifestJson = normalizeManifestJson(manifestJson)
+      outputManifestJson = normalizeManifestJson('app-android', manifestJson)
       if (process.env.NODE_ENV !== 'production') {
         // 发行模式下，需要等解析ext-api模块
         fs.outputFileSync(

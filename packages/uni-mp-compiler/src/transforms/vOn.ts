@@ -229,10 +229,20 @@ export function wrapperVOn(
       }
     }
   }
-  return createCompoundExpression([
+  const newExpr = createCompoundExpression([
     `${context.helperString(V_ON)}(`,
     value,
     ...keys,
     `)`,
   ])
+  // 严格限制生效范围，仅当有keys时，才保存原始事件表达式
+  if (keys.length) {
+    // @ts-expect-error 内部 parseVOn 时使用
+    newExpr.__withoutKeysVOnExpr = createCompoundExpression([
+      `${context.helperString(V_ON)}(`,
+      value,
+      `)`,
+    ])
+  }
+  return newExpr
 }

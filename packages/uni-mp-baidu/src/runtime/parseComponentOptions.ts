@@ -6,6 +6,7 @@ import {
   fixSetDataStart,
   handleEvent,
   initMocks,
+  initPageInstance,
   nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 import { ON_INIT, ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
@@ -50,6 +51,7 @@ export function parse(componentOptions: MPComponentOptions) {
     if (__X__) {
       this.pageinstance.vm = this.pageinstance.$vm
     }
+    initPageInstance(this.pageinstance)
     this.$vm.$callHook(ON_INIT, query)
   }
   lifetimes.attached = function attached(this: MPComponentInstance) {
@@ -67,6 +69,7 @@ export function parse(componentOptions: MPComponentOptions) {
       if (__X__) {
         pageInstance.vm = pageInstance.$vm
       }
+      initPageInstance(pageInstance)
       if (hasOwn(pageInstance, '_$args')) {
         this.$vm.$callHook(ON_LOAD, pageInstance._$args)
         this.$vm.$callHook(ON_SHOW)

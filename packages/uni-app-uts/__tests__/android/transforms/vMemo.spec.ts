@@ -4,6 +4,7 @@ describe('compiler: v-memo transform', () => {
     return baseCompile(`<view>${content}</view>`, {
       mode: 'module',
       prefixIdentifiers: true,
+      filename: 'pages/index/index.uvue',
       className: 'PagesIndexIndex',
     }).code
   }
@@ -39,6 +40,16 @@ describe('compiler: v-memo transform', () => {
     expect(
       compile(
         `<view v-for="{ x, y } in list" :key="x" v-memo="[x, y === z]">
+          <text>foobar</text>
+        </view>`
+      )
+    ).toMatchSnapshot()
+  })
+
+  test('on v-for with list-item', () => {
+    expect(
+      compile(
+        `<view v-for="{ x, y } in list" :key="x" v-memo="[x, y === z]" list-item>
           <text>foobar</text>
         </view>`
       )

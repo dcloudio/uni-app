@@ -1,4 +1,5 @@
 import type { Plugin, ResolvedConfig } from 'vite'
+import path from 'path'
 import {
   API_DEPS_CSS,
   BASE_COMPONENTS_STYLE_PATH,
@@ -29,16 +30,19 @@ export function uniPagesJsonPlugin(): Plugin {
           const ssr = isSSR(opt)
           if (process.env.UNI_APP_X === 'true') {
             // 调整换行符，确保 parseTree 的loc正确
-            code = code.replace(/\r\n/g, '\n')
+            const jsonCode = code.replace(/\r\n/g, '\n')
             try {
-              checkPagesJson(preUVueJson(code, id), process.env.UNI_INPUT_DIR)
+              checkPagesJson(
+                preUVueJson(jsonCode, 'pages.json'),
+                process.env.UNI_INPUT_DIR
+              )
             } catch (err: any) {
               if (err.loc) {
                 const error = createRollupError(
-                  'uni:app-pages',
-                  'pages.json',
+                  'uni:h5-pages-json',
+                  path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
                   err,
-                  code
+                  jsonCode
                 )
                 this.error(error)
               } else {
@@ -236,8 +240,9 @@ function generatePagesDefineCode(
     if(async.error){
       AsyncComponentOptions.errorComponent = {
         name:'SystemAsyncError',
+        props:['error'],
         render(){
-          return createVNode(resolveComponent(async.error))
+          return createVNode(resolveComponent(async.error), { error: this.error })
         }
       }
     }
@@ -252,9 +257,13 @@ function generatePageRoute(
   const { isEntry } = meta
   const alias = isEntry ? `\n  alias:'/${path}',` : ''
   // 目前单页面未处理 query=>props
+  const queryCode =
+    process.env.UNI_APP_X === 'true'
+      ? 'app && app.vm && app.vm.$route && app.vm.$route.query || {};'
+      : 'app && app.$route && app.$route.query || {};'
   return `{
   path:'/${isEntry ? '' : path}',${alias}
-  component:{setup(){ const app = getApp(); const query = app && app.$route && app.$route.query || {}; return ()=>renderPage(${normalizeIdentifier(
+  component:{setup(){ const app = getApp(); const query = ${queryCode} return ()=>renderPage(${normalizeIdentifier(
     path
   )},query)}},
   loader: ${normalizeIdentifier(path)}Loader,

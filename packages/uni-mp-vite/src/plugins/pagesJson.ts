@@ -6,6 +6,8 @@ import {
   MANIFEST_JSON_JS,
   addMiniProgramAppJson,
   addMiniProgramPageJson,
+  checkPagesJson,
+  createRollupError,
   defineUniPagesJsonPlugin,
   findChangedJsonFiles,
   getLocaleFiles,
@@ -16,6 +18,7 @@ import {
   parseManifestJsonOnce,
   parseMiniProgramPagesJson,
   parseVueRequest,
+  preUVueJson,
   removeExt,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
@@ -63,7 +66,7 @@ export function uniPagesJsonPlugin(
                   console.log(
                     `当前工程${
                       allPagePaths.length
-                    }个页面，正在编译${vueFilename}...${'\u200b'}`
+                    }个页面，正在编译${vueFilename}...${'\u200D'}`
                   )
                 }
                 // }
@@ -73,6 +76,28 @@ export function uniPagesJsonPlugin(
         }
         if (!opts.filter(id)) {
           return null
+        }
+        if (process.env.UNI_APP_X === 'true') {
+          // 调整换行符，确保 parseTree 的loc正确
+          const jsonCode = code.replace(/\r\n/g, '\n')
+          try {
+            checkPagesJson(
+              preUVueJson(jsonCode, 'pages.json'),
+              process.env.UNI_INPUT_DIR
+            )
+          } catch (err: any) {
+            if (err.loc) {
+              const error = createRollupError(
+                'uni:mp-pages-json',
+                path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
+                err,
+                jsonCode
+              )
+              this.error(error)
+            } else {
+              throw err
+            }
+          }
         }
         this.addWatchFile(path.resolve(inputDir, 'pages.json'))
         getLocaleFiles(path.resolve(inputDir, 'locale')).forEach((filepath) => {

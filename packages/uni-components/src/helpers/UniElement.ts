@@ -50,6 +50,9 @@ export class UniElement extends HTMLElement {
     }
     return parent?._page || null
   }
+  get uniPage() {
+    return this.getPage()
+  }
 
   getBoundingClientRectAsync(callback) {
     if (callback) {

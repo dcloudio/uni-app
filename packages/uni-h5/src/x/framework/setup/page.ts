@@ -36,7 +36,7 @@ import {
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
-import type { UniPageBody } from '@dcloudio/uni-app-x/types/UniPage'
+import type { UniPageBody } from '@dcloudio/uni-app-x/types/native/UniPage'
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -53,8 +53,30 @@ type PageStyle = {
 export const homeDialogPages: UniDialogPage[] = []
 export const homeSystemDialogPages: UniDialogPage[] = []
 
-function isDialogPageImpl(page: UniPage): boolean {
-  return page instanceof UniDialogPageImpl
+function getPageElement(page: UniPage): HTMLElement {
+  if (__NODE_JS__) {
+    throw new Error('Not support get page element in non-browser environment')
+  }
+  const currentPage = getCurrentPage() as unknown as UniPage
+  if (page !== currentPage) {
+    const dialogPages = currentPage.getDialogPages()
+    const dialogPage = dialogPages[dialogPages.length - 1]
+    if (dialogPage !== page) {
+      const systemDialogPages =
+        currentPage.vm.$pageLayoutInstance!.$systemDialogPages.value
+      const systemDialogPage = systemDialogPages[systemDialogPages.length - 1]
+      if (systemDialogPage !== page) {
+        throw new Error("Can't get element of other page")
+      }
+    }
+  }
+  const pageEle = document.querySelector(
+    `uni-page[data-page="${page.vm?.route}"]`
+  )
+  if (!pageEle) {
+    throw new Error('page not found')
+  }
+  return pageEle as HTMLElement
 }
 
 class UniPageImpl implements UniPage {
@@ -62,27 +84,24 @@ class UniPageImpl implements UniPage {
   options: UTSJSONObject
   vm: ComponentPublicInstance | null
   $vm: ComponentPublicInstance | null
-  width: number = 0
-  height: number = 0
-  statusBarHeight: number = safeAreaInsets.top
+
+  get statusBarHeight(): number {
+    return safeAreaInsets.top
+  }
+
+  get width(): number {
+    return this.pageBody.width
+  }
+
+  get height(): number {
+    const pageEle = getPageElement(this)
+    const pageHead = pageEle.querySelector('uni-page-head')
+    return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0)
+  }
+
   get pageBody(): UniPageBody {
-    if (__NODE_JS__) {
-      throw new Error('Not support pageBody in non-browser environment')
-    }
-    const currentPage = getCurrentPage() as unknown as UniPage
-    let container: Document | Element = document
-    if (isDialogPageImpl(this)) {
-      const dialogPage = document.querySelector(
-        `uni-page[data-page="${this.vm?.route}"]`
-      )
-      if (!dialogPage) {
-        throw new Error('dialogPage not found')
-      }
-      container = dialogPage
-    } else if (this !== currentPage) {
-      throw new Error("Can't get pageBody of other page")
-    }
-    const pageBody = container.querySelector('uni-page-wrapper') as HTMLElement
+    const pageEle = getPageElement(this)
+    const pageBody = pageEle.querySelector('uni-page-wrapper') as HTMLElement
     const pageWrapperInfo = getPageWrapperInfo(pageBody)
     return {
       top: pageWrapperInfo.top,
@@ -94,23 +113,8 @@ class UniPageImpl implements UniPage {
     }
   }
   get safeAreaInsets(): UniSafeAreaInsets {
-    if (__NODE_JS__) {
-      throw new Error('Not support safeAreaInsets in non-browser environment')
-    }
-    const currentPage = getCurrentPage() as unknown as UniPage
-    let container: Document | Element = document
-    if (isDialogPageImpl(this)) {
-      const dialogPage = document.querySelector(
-        `uni-page[data-page="${this.vm?.route}"]`
-      )
-      if (!dialogPage) {
-        throw new Error('dialogPage not found')
-      }
-      container = dialogPage
-    } else if (this !== currentPage) {
-      throw new Error("Can't get safeAreaInsets of other page")
-    }
-    const pageBody = container.querySelector('uni-page-wrapper') as HTMLElement
+    const pageEle = getPageElement(this)
+    const pageBody = pageEle.querySelector('uni-page-wrapper') as HTMLElement
     return getSafeAreaInsets(pageBody)
   }
   getPageStyle(): UTSJSONObject {
@@ -206,6 +210,18 @@ class UniPageImpl implements UniPage {
   getDialogPages(): UniPage[] {
     return []
   }
+  getAndroidActivity() {
+    return null
+  }
+  exitFullscreen() {}
+  createElement() {
+    return new UniElementImpl({
+      id: '',
+      name: '',
+      attrs: new Map(),
+      style: new Map(),
+    })
+  }
   constructor({
     route,
     options,
@@ -300,15 +316,18 @@ export function initXPage(
 ) {
   initPageVm(vm, page)
   // 获取 packages/uni-h5/src/framework/components/page/index.ts defineSystemComponent page currentInstance
-  Object.defineProperty(vm, '$pageLayoutInstance', {
-    get() {
-      let res = vm.$?.parent
-      while (res && res.type?.name !== 'Page') {
-        res = res.parent
-      }
-      return res
-    },
-  })
+  if (!('$pageLayoutInstance' in vm)) {
+    Object.defineProperty(vm, '$pageLayoutInstance', {
+      get() {
+        // @ts-expect-error !('$pageLayoutInstance' in vm)导致vm推断为never，不可使用vm.hasOwnProperty
+        let res = vm.$?.parent
+        while (res && res.type?.name !== 'Page') {
+          res = res.parent
+        }
+        return res
+      },
+    })
+  }
   vm.$basePage = vm.$page as Page.PageInstance['$page']
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
@@ -403,18 +422,4 @@ export function triggerDialogPageOnHide(instance: ComponentInternalInstance) {
     }
   }
   dialogPageTriggerParentHide(instance.proxy?.$page as UniDialogPage)
-}
-export function initPageWidthHeight(instance: ComponentInternalInstance) {
-  if (!instance.proxy) {
-    return
-  }
-  const pageEl = document.querySelector(
-    `uni-page[data-page="${instance.proxy.$vm.route}"]`
-  ) as HTMLElement
-  if (pageEl) {
-    // @ts-expect-error
-    ;(instance.proxy as UniPage).width = pageEl.offsetWidth
-    // @ts-expect-error
-    ;(instance.proxy as UniPage).height = pageEl.offsetHeight
-  }
 }

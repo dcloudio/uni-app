@@ -1,9 +1,16 @@
 <template>
-	<view style="flex:1;background-color: black;">
-		<image ref="imageView" :mode="imageMode" class="uni-preview-image-item" :src="srcPath" @error="previewImageError" @load="onImageLoad"></image>
-		<view ref="mask" class="uni-preview-image-patch" @touchstart="onstart" @touchmove="onmove" @touchend="onend" @touchcancel="oncancel"></view>
+	<view style="flex:1;" class="uni-preview-image-item-background">
+		<image ref="imageView" :mode="imageMode" class="uni-preview-image-item" :src="srcPath"
+			@error="previewImageError" @load="onImageLoad"></image>
+		<view ref="mask" class="uni-preview-image-patch" @touchstart="onstart" @touchmove="onmove" @touchend="onend"
+			@touchcancel="oncancel"></view>
 		<view class="uni-preview-image-loading" v-if="!loadingFinished">
 			<loadingCircle style="margin: auto;" :speed="16" :size="54" color="#d3d3d3"></loadingCircle>
+		</view>
+		<view style="align-items: center;justify-content: center;position: absolute;top: 0;bottom: 0;left: 0;right: 0;"
+			v-if="loadError" @click="closePreviewImage">
+			<image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAMAAADQmBKKAAAAilBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////2N2iNAAAALXRSTlMAf/kN/BOp7IxPBsMz9NzMRi0h4L7Q5pFjnhfVmIN3WUo6W6NUPrVtJ0yhcR84ApfrAAADTElEQVR42u3b3XaiMBSG4V1CABFBhFr/f1q1Tmf2/d/eHJoYrNJvu1a6Vp7zzrwthAAJFARBEARBEARBEPxmqtiuk3bZTJmnzbJN1ttC0SNeSJ76k71yhyrbqbs9LF4zG8Z8U9TO1Pc9wkG7JOI7Rh/jb3pkg96X/JBqcKtHNGhW8sOW284eyaD9K/cyrN0ewSA9577iTDk9YkGDlH+gOVo9ckH5G/9MvHF7mGCTin/spK978KAiZUA5sXvwoPGIO8XVfDM4TxZEi0k92HzdGoTTwuzBg7ZR5//yNlDOQDysUu4wOlo9DPbE7Ihuzg354RSzI2a5oHHk/sLZgr5xnrs/IhdUjNyrnb47KJOnBU3SrvngvnH5nKC8Ylv0iVxJ8aDrf7Us6GGHVD5owLZW9TrcpXSQTtmS5NTLohIOmrNlRX2pRjRoz5aEenth0SB7ampzrAcPmtnjS4E9eJA1RqIC7MGD3tn0ifbgQUtrvkB78KCddcBqtAcPStiQoT14kIrM+x8t28PomM/gHjxoaJ5BC7QHD1IxX3zAPXjQHzaM4R48KDOfd8R7GJtX38R7GDuFBnAPHlTwRazFexiaWCvywNoImpMHzIlsQx4YWue0B8xRX5MHGiNoQh5IjSBNHoiMoJw84F2Qd4fMu5Pau2Hv3YXRu6nDu8nVu9sP5wYNpmNz4MK3sLiD9dQA3+TjVnxxIvgxCDflixeSfVCEX+4cCX2Ulr2wpUT4ywbQv8i+sOGvY0AZO6MWfWEF0SPziOX4UecMHfPOVQR/6QmoYzacyQC/FoYHCLdkwV+c97dh045M+NJCf3UE/KnhxReXbhi46qPLU668ZeAMghfwXAkDo1V+iZO+2LImBL4InCdsKXMC4MvkumVLfCQAvpGgKNm2IQC81YI+I7adCABvRqmHfKXRBAC36+gs4ivpmQDYhqbFeuT+yJ4AyJYvOnZtJo6AORXZFKfGqyl3GDn5z942qCf14O/qNeZOKXS85DdWNjUB5LeetppA+OZc4AHh6duXkdNZfoM3rxQBxLfAV8j0Lv+RQHkggPxnFDMCSH9oEid7Akh/inOaaQKIfqwUV28HRTD8c660aYYf6/e9oiAIgiAIgiAIguAX+w9i21DdU9TtnwAAAABJRU5ErkJggg==" @click="reloadImage"
+				mode="aspectFit" style="width: 70px;height: 70px;"></image>
 		</view>
 	</view>
 </template>
@@ -11,15 +18,30 @@
 <script>
 	const DEFAULT_DISTANCE = 4
 	const FAST_SLIDE_LENGTH = 10
+	const LANGUAGE = {
+		"en": {
+			error: "Image loading failed",
+			retry: "Retry"
+		},
+		"zh-Hans": {
+			error: "图片加载失败",
+			retry: "重试"
+		},
+		"zh-Hant": {
+			error: "圖片加載失敗",
+			retry: "重試"
+		}
+	}
 	import {
 		Friction
 	} from './Friction'
 	// #ifdef APP-ANDROID
 	import View from "android.view.View"
 	// #endif
-	// #ifdef WEB || APP-IOS
+	// #ifdef APP-IOS
 	import { LongPressActionsOptions, LongPressActionsSuccessResult, LongPressActionsFailResult } from '@/uni_modules/uni-previewImage';
 	// #endif
+
 	// #ifdef APP-ANDROID
 	import { LongPressActionsFailResult } from '@/uni_modules/uni-previewImage';
 	// #endif
@@ -68,7 +90,10 @@
 				startTimestamp: 0,
 				clickTimeoutId: -1,
 				transformOrigin: [0, 0],
-				loadingFinished: false
+				loadingFinished: false,
+				devicePixelRatio: 0,
+				loadError: false,
+				language: "zh-Hans"
 			}
 		},
 		props: {
@@ -82,13 +107,20 @@
 			},
 			"longPressAction": {
 				type: Object as PropType<LongPressActionsOptions | null>
+			},
+			"tips": {
+				type: Object as PropType<UTSJSONObject | null>
 			}
 		},
 		watch: {
 			"src": {
 				handler(newValue : string, oldValue : string) {
-					if (newValue != "")
+					if (newValue != "") {
 						this.getSrcLocalPath(newValue)
+					} else {
+						this.loadingFinished = true
+						this.loadError = true
+					}
 				},
 				immediate: true
 			}
@@ -98,15 +130,31 @@
 			// #ifdef APP-ANDROID
 			this.androidView = (this.$refs["mask"] as UniElement | null)?.getAndroidView() as View | null
 			// #endif
-			this.getImageBound()
+			var dpr = uni.getDeviceInfo({ filter: ["devicePixelRatio"] }).devicePixelRatio
+			if (dpr == null) {
+				this.devicePixelRatio = 1
+			} else {
+				this.devicePixelRatio = dpr
+			}
+			const systemInfo = uni.getSystemInfoSync()
+			this.language = systemInfo.appLanguage
+			// #ifdef WEB
+			this.language = uni.getLocale()
+			// #endif
 		},
 		methods: {
+			getLanguageString(name : string) : string {
+				var object = LANGUAGE[this.language];
+				if (object != null) {
+					return (object as UTSJSONObject)[name] as string
+				} else {
+					return (LANGUAGE["en"] as UTSJSONObject)[name] as string;
+				}
+			},
 			previewImageError(e : UniImageErrorEvent) {
-				uni.showToast({
-					title: e.detail.errMsg,
-					position: 'bottom'
-				})
+				(this.$refs["mask"] as UniElement | null)?.style.setProperty("point-events", "none")
 				this.loadingFinished = true
+				this.loadError = true
 			},
 			isNetPath(url : string) {
 				if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("rtmp://") || url.startsWith("rtsp://")) {
@@ -116,59 +164,6 @@
 			},
 			getSrcLocalPath(url : string) {
 				this.srcPath = url
-				// #ifdef APP
-				// 这需要image和其他api内部处理
-				// if (!this.isNetPath(url)) {
-				// 	this.srcPath = url
-				// 	this.getImageBound()
-				// 	this.loadingFinished = true
-				// 	return
-				// }
-				// var realPath = uni.getStorageSync(url)
-				// if (realPath != null && realPath != "") {
-				// 	uni.getFileSystemManager().getFileInfo({
-				// 		filePath: realPath as string,
-				// 		success: (e) => {
-				// 			this.srcPath = realPath as string
-				// 			this.getImageBound()
-				// 			this.loadingFinished = true
-				// 		},
-				// 		fail: () => {
-				// 			uni.downloadFile({
-				// 				timeout: 5000,
-				// 				url: url,
-				// 				filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
-				// 				success: (e) => {
-				// 					this.srcPath = e.tempFilePath
-				// 					this.loadingFinished = true
-				// 					uni.setStorage({
-				// 						key: url,
-				// 						data: e.tempFilePath
-				// 					})
-				// 					this.getImageBound()
-				// 				},
-				// 				fail: (e) => { }
-				// 			})
-				// 		}
-				// 	} as GetFileInfoOptions)
-				// } else {
-				// 	uni.downloadFile({
-				// 		timeout: 5000,
-				// 		url: url,
-				// 		filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
-				// 		success: (e) => {
-				// 			this.srcPath = e.tempFilePath
-				// 			this.loadingFinished = true
-				// 			uni.setStorage({
-				// 				key: url,
-				// 				data: e.tempFilePath
-				// 			})
-				// 			this.getImageBound()
-				// 		},
-				// 		fail: (e) => { }
-				// 	})
-				// }
-				// #endif
 			},
 			onstart(e : UniTouchEvent) {
 				// #ifdef APP-ANDROID
@@ -413,7 +408,7 @@
 						itemList: (this.longPressAction as LongPressActionsOptions).itemList,
 						itemColor: (this.longPressAction as LongPressActionsOptions).itemColor,
 						success: (e) => {
-							uni.$emit("__UNIPREVIEWLONGPRESS", { type: "success", tapIndex: e.tapIndex!, index: this.index })
+							uni.$emit("__UNIPREVIEWLONGPRESS", { type: "success", tapIndex: e.tapIndex, index: this.index })
 						},
 						fail() {
 							uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 })
@@ -422,9 +417,15 @@
 				}
 			},
 			onImageLoad(e : UniImageLoadEvent) {
-				if (this.screenHeight > 0 && this.screenWidth > 0) {
-					this.caculatorImageSize(e.detail.width, e.detail.height)
-				}
+				(this.$refs["mask"] as UniElement | null)?.style.setProperty("point-events", "none")
+				uni.createSelectorQuery().in(this).select('.uni-preview-image-item').boundingClientRect().exec((ret) => {
+					if (ret.length == 1) {
+						var rect = this.imageView!.getBoundingClientRect()
+						this.screenHeight = rect.height
+						this.screenWidth = rect.width
+						this.caculatorImageSize(e.detail.width / this.devicePixelRatio, e.detail.height / this.devicePixelRatio)
+					}
+				})
 				this.loadingFinished = true
 			},
 			caculatorImageSize(imageWidth : number, imageHeight : number) {
@@ -439,30 +440,6 @@
 				this.imageMarginTop = (this.screenHeight - scaleImageSize) / 2
 				this.imageHeight = scaleImageSize
 			},
-			getImageBound() {
-				if (this.imageHeight > 0) {
-					return
-				}
-				uni.createSelectorQuery().in(this).select('.uni-preview-image-item').boundingClientRect().exec((ret) => {
-					if (ret.length == 1) {
-						var rect = this.imageView!.getBoundingClientRect()
-						this.screenHeight = rect.height
-						this.screenWidth = rect.width
-						// #ifdef APP
-						if (this.srcPath != "") {
-							uni.getImageInfo({
-								src: this.srcPath,
-								success: (e) => {
-									this.caculatorImageSize(e.width, e.height)
-								},
-								fail: () => {
-								}
-							})
-						}
-						// #endif
-					}
-				})
-			},
 			preventDefaultScall(e : UniTouchEvent | null) {
 				e?.preventDefault()
 				e?.stopPropagation()
@@ -476,6 +453,30 @@
 				// #ifdef APP-ANDROID
 				this.androidView?.parent?.requestDisallowInterceptTouchEvent(false)
 				// #endif
+			},
+			reloadImage(e : UniPointerEvent) {
+				if (this.srcPath == "") {
+					this.loadingFinished = false
+					this.loadError = false
+					setTimeout(() => {
+						this.loadError = true
+						this.loadingFinished = true
+					}, 1000)
+					e.stopPropagation()
+					return
+				}
+				(this.$refs["mask"] as UniElement | null)?.style.setProperty("point-events", "none")
+				this.loadingFinished = false
+				this.loadError = false
+				var tempPath = this.srcPath + ""
+				this.srcPath = ""
+				setTimeout(() => {
+					this.srcPath = tempPath
+				}, 100)
+				e.stopPropagation()
+			},
+			closePreviewImage() {
+				uni.$emit("__UNIPREVIEWIMAGECLOSE")
 			},
 			// 计算transform-origin主要代码
 			caculatorTransformOrigin(e : UniTouchEvent | null) {
@@ -543,5 +544,21 @@
 		left: 0;
 		right: 0;
 		pointer-events: none;
+	}
+
+	.uni-preview-image-item-background {
+		background-color: black;
+	}
+
+	.uni-preview-image-tips-retry {
+		color: blue;
+		font-size: 18px;
+		margin-top: 16px;
+		text-decoration-line: underline;
+	}
+
+	.uni-preview-image-tips-error {
+		font-size: 18px;
+		color: red;
 	}
 </style>

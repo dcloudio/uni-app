@@ -569,6 +569,10 @@ export async function compile(
           uniModules: uni_modules || [],
         })
         if (res) {
+          if (res.code) {
+            //重要：该日志会被HBuilderX使用，用于识别uts插件编译是否失败，如果调整文案，需要通知HBuilderX。
+            console.error(`uts插件[${pkg.id}]编译失败`)
+          }
           if (isArray(res.deps) && res.deps.length) {
             // 添加其他文件的依赖
             deps.push(...res.deps)
@@ -578,19 +582,17 @@ export async function compile(
             if (res.code) {
               errMsg = compileErrMsg(pkg.id)
               try {
-                console.error(
-                  `error: ` +
-                    (await parseUTSSwiftPluginStacktrace({
-                      stacktrace: res.msg,
-                      sourceMapFile: resolveUTSPluginSourceMapFile(
-                        'swift',
-                        filename,
-                        inputDir,
-                        outputDir
-                      ),
-                      sourceRoot: inputDir,
-                    }))
-                )
+                const stacktrace = await parseUTSSwiftPluginStacktrace({
+                  stacktrace: res.msg,
+                  sourceMapFile: resolveUTSPluginSourceMapFile(
+                    'swift',
+                    filename,
+                    inputDir,
+                    outputDir
+                  ),
+                  sourceRoot: inputDir,
+                })
+                console.log(stacktrace)
               } catch (e) {
                 console.error(`error: ` + res.msg)
               }

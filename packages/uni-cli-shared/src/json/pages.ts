@@ -15,7 +15,7 @@ import { EXTNAME_VUE_RE, TEXT_STYLE } from '../constants'
 import { initTheme, normalizeThemeConfigOnce } from './theme'
 import { getPlatformManifestJsonOnce } from './manifest'
 
-const pagesCacheSet: Set<string> = new Set()
+export const pagesCacheSet: Set<string> = new Set()
 
 export function isUniPageFile(
   file: string,

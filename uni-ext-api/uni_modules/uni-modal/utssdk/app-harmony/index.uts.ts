@@ -84,7 +84,6 @@ export const hideModal: HideModal = function (
 		options?.complete?.(res)
 		return
 	}
-	console.log("currentPage.vm.$systemDialogPages",currentPage.vm.$systemDialogPages)
 	if(currentPage.vm.$systemDialogPages == null) {
 		const res = new UniHideModalFailImpl()
 		options?.fail?.(res)
@@ -93,7 +92,6 @@ export const hideModal: HideModal = function (
 	}
 	
 	const dialogPages:Array<UniPage> = currentPage.vm.$systemDialogPages.value
-	console.log("dialogPages",dialogPages.length)
 	/**
 	 * 查找需要关闭的dialog实例
 	 */
@@ -107,14 +105,13 @@ export const hideModal: HideModal = function (
 				shallClosePages.push(perPage)
 			}else{
 				// 需要对比当前的page 
-				if(perPage == options!.modalPage){
+				if(perPage.options!["optionsEventName"] === options!.modalPage!.options["optionsEventName"]){
 					shallClosePages.push(perPage)
 					break
 				}
 			}
 		}
 	}
-	console.log("shallClosePages",shallClosePages)
 	/**
 	 * 集中处理待关闭的page
 	 */
