@@ -570,6 +570,7 @@ export async function compile(
         })
         if (res) {
           if (res.code) {
+            //重要：该日志会被HBuilderX使用，用于识别uts插件编译是否失败，如果调整文案，需要通知HBuilderX。
             console.error(`uts插件[${pkg.id}]编译失败`)
           }
           if (isArray(res.deps) && res.deps.length) {
