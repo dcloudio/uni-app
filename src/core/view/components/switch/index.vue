@@ -1,5 +1,6 @@
 <template>
   <uni-switch
+    :id="id"
     :disabled="disabled"
     v-on="$listeners"
     @click="_onClick"
