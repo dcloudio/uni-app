@@ -302,7 +302,8 @@ uni-video[hidden] {
 }
 
 .uni-video-icon {
-  font-family: 'uni-video-icon';
+  /* 解决自定义全局字体会覆盖按钮的问题 */
+  font-family: "uni-video-icon" !important;
   text-align: center;
 }
 
