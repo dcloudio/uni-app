@@ -229,9 +229,6 @@
       "FileSystemManagerFail"
     ],
     [
-      "IFileSystemManagerFail"
-    ],
-    [
       "GetAppBaseInfoResult"
     ],
     [
@@ -604,18 +601,6 @@
       "RequestCompleteCallback"
     ],
     [
-      "RequestTaskOnChunkReceivedListenerResult"
-    ],
-    [
-      "RequestTaskOnChunkReceivedCallback"
-    ],
-    [
-      "RequestTaskOnHeadersReceivedListenerResult"
-    ],
-    [
-      "RequestTaskOnHeadersReceivedCallback"
-    ],
-    [
       "RequestTask"
     ],
     [
@@ -853,19 +838,13 @@
       "Rpx2px"
     ],
     [
-      "Share"
+      "ScanCodeSuccess"
     ],
     [
-      "ShareSuccess"
+      "ScanCodeFail"
     ],
     [
-      "ShareProvider"
-    ],
-    [
-      "ShareOptions"
-    ],
-    [
-      "UniShareProvider"
+      "ScanCodeOptions"
     ],
     [
       "ShareWithSystemSuccess"
@@ -938,33 +917,6 @@
     ],
     [
       "ClearStorageSync"
-    ],
-    [
-      "OsThemeChangeResult"
-    ],
-    [
-      "AppThemeChangeResult"
-    ],
-    [
-      "OnOsThemeChangeCallback"
-    ],
-    [
-      "OnAppThemeChangeCallback"
-    ],
-    [
-      "SetAppThemeSuccessResult"
-    ],
-    [
-      "SetAppThemeOptions"
-    ],
-    [
-      "AppThemeFail"
-    ],
-    [
-      "OnHostThemeChangeCallbackResult"
-    ],
-    [
-      "OnHostThemeChangeCallback"
     ],
     [
       "ConnectSocket"
