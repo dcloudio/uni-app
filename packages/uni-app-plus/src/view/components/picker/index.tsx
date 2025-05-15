@@ -353,7 +353,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     return () => (
       <uni-picker ref={rootRef} onClick={_show}>
-        <slot />
       </uni-picker>
     )
   },
