@@ -1636,13 +1636,19 @@ function createTransformBorder(options) {
       if (str != null) {
         return str.trim();
       }
-      return 'medium';
+      if (options.type == 'uvue') {
+        return 'medium';
+      }
+      return '0';
     };
     var defaultStyle = str => {
       if (str != null) {
         return str.trim();
       }
-      return 'none';
+      if (options.type == 'uvue') {
+        return 'none';
+      }
+      return 'solid';
     };
     var defaultColor = str => {
       if (str != null) {
@@ -1808,7 +1814,7 @@ var transformTransition = decl => {
   return result;
 };
 function getDeclTransforms(options) {
-  var transformBorder = options.type == 'uvue' ? createTransformBorder() : createTransformBorderNvue();
+  var transformBorder = options.type == 'uvue' ? createTransformBorder(options) : createTransformBorderNvue();
   var styleMap = _objectSpread({
     transition: transformTransition,
     border: transformBorder,

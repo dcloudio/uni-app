@@ -232,6 +232,7 @@ const options = {
             selectedColor: 'selectedColor',
             backgroundColor: 'backgroundColor',
             items: 'list',
+            overlay: 'overlay',
         },
         tabBarItemOptionsMap: {
             pagePath: 'pagePath',

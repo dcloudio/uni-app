@@ -19218,7 +19218,7 @@
   });
   function useProgressState(props2) {
     var currentPercent = ref(0);
-    var outerBarStyle = computed(() => "background-color: ".concat(props2.backgroundColor, "; height: ").concat(props2.strokeWidth, "px;"));
+    var outerBarStyle = computed(() => "background-color: ".concat(props2.backgroundColor, "; height: ").concat(rpx2px(props2.strokeWidth), "px;"));
     var innerBarStyle = computed(() => {
       var backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
       return "width: ".concat(currentPercent.value, "%;background-color: ").concat(backgroundColor);
@@ -20534,7 +20534,7 @@
         }, null, 4)], 4)]), withDirectives(createVNode("span", {
           "ref": sliderValueRef,
           "class": "uni-slider-value"
-        }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
+        }, [sliderValue.value], 512), [[vShow, props2.showValue]])])], 8, ["onClick"]);
       };
     }
   });

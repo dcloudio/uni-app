@@ -3,7 +3,6 @@
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
-var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
@@ -104,37 +103,13 @@ var source = {
 	condition: condition
 };
 
-/**
- * 快手小程序的自定义组件，不支持动态事件绑定
- */
-const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn, {
-    match: (name, node, context) => {
-        if (name === 'getphonenumber' || name === 'getuserextendinfo')
-            return true;
-        if (name === 'input' && (node.tag === 'input' || node.tag === 'textarea')) {
-            return true;
-        }
-        return uniCliShared.matchTransformOn(name, node, context);
-    },
-});
-
-/**
- * 快手小程序的自定义组件，不支持动态事件绑定，故 v-model 也需要调整，其中 input、textarea 也不支持
- */
-const transformModel = uniCliShared.createTransformModel(uniMpCompiler.transformModel, {
-    match: (node, context) => {
-        if (node.tag === 'input' || node.tag === 'textarea') {
-            return true;
-        }
-        return uniCliShared.matchTransformModel(node, context);
-    },
-});
-
+// import { transformOn } from './transforms/vOn'
+// import { transformModel } from './transforms/vModel'
 const nodeTransforms = [uniCliShared.transformRef, uniCliShared.transformComponentLink];
-const directiveTransforms = {
-    on: transformOn,
-    model: transformModel,
-};
+// const directiveTransforms = {
+//   on: transformOn,
+//   model: transformModel,
+// }
 const customElements = [
     'playlet',
     'ad',
@@ -145,7 +120,7 @@ const customElements = [
 ];
 const compilerOptions = {
     nodeTransforms,
-    directiveTransforms,
+    // directiveTransforms,
 };
 const COMPONENTS_DIR = 'kscomponents';
 const miniProgram = {
@@ -154,7 +129,7 @@ const miniProgram = {
     },
     slot: {
         fallbackContent: false,
-        dynamicSlotNames: false,
+        dynamicSlotNames: true,
     },
     directive: 'ks:',
     lazyElement: {

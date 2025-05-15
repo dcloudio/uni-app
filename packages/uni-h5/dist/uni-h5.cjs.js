@@ -5751,7 +5751,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useProgressState(props2) {
   const currentPercent = vue.ref(0);
-  const outerBarStyle = vue.computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
+  const outerBarStyle = vue.computed(() => `background-color: ${props2.backgroundColor}; height: ${rpx2px(props2.strokeWidth)}px;`);
   const innerBarStyle = vue.computed(() => {
     const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
@@ -6872,7 +6872,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
       }, null, 4)], 4)]), vue.withDirectives(vue.createVNode("span", {
         "ref": sliderValueRef,
         "class": "uni-slider-value"
-      }, [sliderValue.value], 512), [[vue.vShow, props2.showValue]])]), vue.createVNode("slot", null, null)], 8, ["onClick"]);
+      }, [sliderValue.value], 512), [[vue.vShow, props2.showValue]])])], 8, ["onClick"]);
     };
   }
 });
