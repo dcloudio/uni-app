@@ -151,6 +151,15 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniBorderBoxSize'],
       ['UniContentBoxSize'],
       ['UniDevicePixelContentBoxSize'],
+      ['UniIntersectionObserver'],
+      ['createIntersectionObserver'],
+      ['CreateIntersectionObserverOptions'],
+      ['UniIntersectionObserverMargins'],
+      ['UniIntersectionObserverRectResult'],
+      ['UniIntersectionObserverObserveCallbackResult'],
+      ['UniIntersectionObserverObserveCallback'],
+      ['TextDecoder'],
+      ['TextEncoder'],
 
       // element
       ['UniViewElementImpl'],
