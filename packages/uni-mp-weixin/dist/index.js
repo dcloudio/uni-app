@@ -396,7 +396,7 @@ function promisify (name, api) {
   }
   return function promiseApi (options = {}, ...params) {
     if (isFn(options.success) || isFn(options.fail) || isFn(options.complete)) {
-      return wrapperReturnValue(name, invokeApi(name, api, options, ...params))
+      return wrapperReturnValue(name, invokeApi(name, api, Object.assign({}, options), ...params))
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
       invokeApi(name, api, Object.assign({}, options, {
@@ -414,10 +414,16 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 
 function checkDeviceWidth () {
-  const { windowWidth, pixelRatio, platform } =  Object.assign({}, wx.getWindowInfo(), {
-      platform: wx.getDeviceInfo().platform
-    })
-    ; // uni=>wx runtime 编译目标是 uni 对象，内部不允许直接使用 uni
+  let windowWidth, pixelRatio, platform;
+
+  {
+    const windowInfo = typeof wx.getWindowInfo === 'function' && wx.getWindowInfo() ? wx.getWindowInfo() : wx.getSystemInfoSync();
+    const deviceInfo = typeof wx.getDeviceInfo === 'function' && wx.getDeviceInfo() ? wx.getDeviceInfo() : wx.getSystemInfoSync();
+
+    windowWidth = windowInfo.windowWidth;
+    pixelRatio = windowInfo.pixelRatio;
+    platform = deviceInfo.platform;
+  }
 
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
@@ -459,7 +465,7 @@ const messages = {};
 function getLocaleLanguage () {
   let localeLanguage = '';
   {
-    const appBaseInfo = wx.getAppBaseInfo();
+    const appBaseInfo = typeof wx.getAppBaseInfo === 'function' && wx.getAppBaseInfo() ? wx.getAppBaseInfo() : wx.getSystemInfoSync();
     const language =
       appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
     localeLanguage = normalizeLocale(language) || LOCALE_EN;

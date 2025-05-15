@@ -1020,7 +1020,7 @@ var serviceContext = (function () {
     }
     return function promiseApi (options = {}, ...params) {
       if (isFn(options.success) || isFn(options.fail) || isFn(options.complete)) {
-        return wrapperReturnValue(name, invokeApi(name, api, options, ...params))
+        return wrapperReturnValue(name, invokeApi(name, api, Object.assign({}, options), ...params))
       }
       return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
         invokeApi(name, api, Object.assign({}, options, {

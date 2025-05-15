@@ -37,7 +37,7 @@ if (__PLATFORM__ === 'h5' || __PLATFORM__ === 'app-plus') {
 export function getLocaleLanguage () {
   let localeLanguage = ''
   if (__PLATFORM__ === 'mp-weixin') {
-    const appBaseInfo = typeof wx.getAppBaseInfo === 'function' && wx.getAppBaseInfo() ? wx.getAppBaseInfo() : wx.getSystemInfoSync();
+    const appBaseInfo = typeof wx.getAppBaseInfo === 'function' && wx.getAppBaseInfo() ? wx.getAppBaseInfo() : wx.getSystemInfoSync()
     const language =
       appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN
     localeLanguage = normalizeLocale(language) || LOCALE_EN
