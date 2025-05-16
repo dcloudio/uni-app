@@ -13,6 +13,7 @@ import {
   resolveBuiltIn,
   resolveComponentsLibDirs,
 } from '@dcloudio/uni-cli-shared'
+import isEqual from 'lodash/isEqual'
 
 const debugHmr = debug('uni:hmr')
 
@@ -26,6 +27,19 @@ async function invalidate(file: string, moduleGraph: ModuleGraph) {
   }
 }
 let invalidateFiles: string[]
+const pagesJsonPath = normalizePath(
+  path.join(process.env.UNI_INPUT_DIR, 'pages.json')
+)
+const manifestJsonPath = normalizePath(
+  path.join(process.env.UNI_INPUT_DIR, 'manifest.json')
+)
+const jsonMap: Record<string, Record<string, any>> = {
+  [pagesJsonPath]: parsePagesJson(
+    process.env.UNI_INPUT_DIR,
+    process.env.UNI_PLATFORM
+  ),
+  [manifestJsonPath]: parseManifestJson(process.env.UNI_INPUT_DIR),
+}
 export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
   return async function ({ file, server }) {
     const inputDir = process.env.UNI_INPUT_DIR
@@ -44,14 +58,28 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
         invalidateFiles.push(resolveBuiltIn('vite/dist/client/env.mjs'))
       } catch (e) {}
     }
-    // TODO 目前简单处理，当pages.json,manifest.json发生变化，就直接刷新，理想情况下，应该区分变化的内容，仅必要时做整页面刷新
     const isPagesJson = file.endsWith('pages.json')
     const isManifestJson = file.endsWith('manifest.json')
     if (!isPagesJson && !isManifestJson) {
       return
     }
-    debugHmr(file)
     const pagesJson = parsePagesJson(inputDir, platform)
+    const manifestJson = parseManifestJson(inputDir)
+    if (isPagesJson) {
+      // 对比 pages.json 新旧文件内容，一致则不热更新
+      if (isEqual(jsonMap[pagesJsonPath], pagesJson)) {
+        return
+      }
+      jsonMap[pagesJsonPath] = pagesJson
+    }
+    if (isManifestJson) {
+      // 对比 manifest.json 新旧文件内容，一致则不热更新
+      if (isEqual(jsonMap[manifestJsonPath], manifestJson)) {
+        return
+      }
+      jsonMap[manifestJsonPath] = manifestJson
+    }
+    debugHmr(file)
     // 更新define
     const {
       define,
@@ -64,7 +92,7 @@ export function createHandleHotUpdate(): Plugin['handleHotUpdate'] {
         command: 'serve',
         platform,
         pagesJson,
-        manifestJson: parseManifestJson(inputDir),
+        manifestJson,
         ssr: !!middlewareMode,
       })
     )
