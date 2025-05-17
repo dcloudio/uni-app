@@ -3,12 +3,14 @@ import { customizeEvent } from '@dcloudio/uni-shared'
 import type { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
 
 export const event: MiniProgramCompilerOptions['event'] = {
-  format(name, { isCatch, isComponent }) {
+  format(name, { isCatch, isCapture, isComponent }) {
     if (!isComponent && name === 'click') {
       name = 'tap'
     }
     name = eventMap[name] || name
-    return `${isCatch ? 'catch' : 'on'}${capitalize(customizeEvent(name))}`
+    return `${isCapture ? 'capture-' : ''}${
+      isCatch ? 'catch' : 'on'
+    }${capitalize(customizeEvent(name))}`
   },
 }
 
