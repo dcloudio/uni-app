@@ -650,6 +650,7 @@ export async function compile(
       logFilename: isModule ? false : true,
       noColor: !isColorSupported(),
       split: true,
+      splitClass: false,
       disableSplitManifest: true,
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',

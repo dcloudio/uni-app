@@ -63,6 +63,7 @@ export type UTSOutputOptions = {
   isModule?: boolean
   isExtApi?: boolean
   split?: boolean
+  splitClass?: boolean
   disableSplitManifest?: boolean
   removeImports?: boolean
   dropImports?: string[]
