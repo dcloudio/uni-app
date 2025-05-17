@@ -30,6 +30,7 @@ import {
   getPluginInjectComponents,
   getUTSCompiler,
   isEnableInlineReified,
+  isEnableSplitClass,
   parseExtApiDefaultParameters,
   parseInjectModules,
   resolveUniAppXSourceMapPath,
@@ -159,6 +160,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       logFilename: true,
       noColor: true,
       split,
+      splitClass: isEnableSplitClass(),
       disableSplitManifest: options.disableSplitManifest,
       uniAppX: {
         uvueOutDir: uvueOutDir('app-android'),
