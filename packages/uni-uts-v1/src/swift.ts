@@ -13,6 +13,7 @@ import {
   isColorSupported,
   moveRootIndexSourceMap,
   normalizeUTSResult,
+  parseExtApiDefaultParameters,
   parseSwiftPackageWithPluginId,
   resolveBundleInputFileName,
   resolveBundleInputRoot,
@@ -341,6 +342,7 @@ export async function compile(
       transform: {
         uniExtApiDefaultNamespace: 'DCloudUTSExtAPI',
         uniExtApiNamespaces: extApis,
+        uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
         ...transform,
       },
     },
