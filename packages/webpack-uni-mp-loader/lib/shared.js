@@ -36,9 +36,9 @@ function resolve (source) {
 
 function restoreNodeModules (str) {
   if (process.env.UNI_PLATFORM === 'mp-alipay') {
-    str = str.replace('node-modules/npm-scope-', 'node-modules/@')
+    str = str.replaceAll('node-modules/npm-scope-', 'node-modules/@')
   }
-  str = str.replace('node-modules', 'node_modules')
+  str = str.replaceAll('node-modules', 'node_modules')
   return str
 }
 
