@@ -1,7 +1,10 @@
 {
   "npmClient": "yarn",
-  "useWorkspaces": false,
-  "packages": ["packages/*"],
+  "packages": [
+    "packages/vue-cli-plugin-uni",
+    "packages/uni-cli-shared",
+    "packages/uni-mp-weixin"
+  ],
   "publishConfig": {
     "access": "public"
   },
