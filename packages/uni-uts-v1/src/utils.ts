@@ -1160,7 +1160,10 @@ type ExtractEnableKeys<T> = T extends object
   : never
 
 type EnableKeys = ExtractEnableKeys<NonNullable<UTSOutputOptions['transform']>>
-let utsConfig: Pick<NonNullable<UTSOutputOptions['transform']>, EnableKeys>
+
+let utsConfig: Pick<NonNullable<UTSOutputOptions['transform']>, EnableKeys> & {
+  splitClass?: boolean
+}
 
 function getUTSConfig() {
   if (!utsConfig) {
@@ -1180,8 +1183,12 @@ function getUTSConfig() {
   return utsConfig
 }
 
-function isEnableUTSFeature(feature: EnableKeys) {
+function isEnableUTSFeature(feature: EnableKeys | 'splitClass') {
   return getUTSConfig()[feature]
+}
+
+export function isEnableSplitClass() {
+  return isEnableUTSFeature('splitClass')
 }
 
 export function isEnableGenericsParameterDefaults() {
