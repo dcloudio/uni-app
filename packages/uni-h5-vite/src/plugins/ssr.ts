@@ -33,20 +33,24 @@ export function uniSSRPlugin(): Plugin {
         rewriteSsrVue()
         rewriteSsrNativeTag()
         rewriteSsrRenderStyle(process.env.UNI_INPUT_DIR)
+
+        const alias = [
+          {
+            find: 'vue/server-renderer',
+            replacement: path.dirname(resolveBuiltIn('@vue/server-renderer')),
+          },
+        ]
+        try {
+          const replacement = path.dirname(resolveBuiltIn('vuex/package.json'))
+          alias.push({
+            find: 'vuex',
+            replacement,
+          })
+        } catch (error) {}
+
         return {
           resolve: {
-            alias: [
-              {
-                find: 'vue/server-renderer',
-                replacement: path.dirname(
-                  resolveBuiltIn('@vue/server-renderer')
-                ),
-              },
-              {
-                find: 'vuex',
-                replacement: path.dirname(resolveBuiltIn('vuex/package.json')),
-              },
-            ],
+            alias,
           },
         }
       }
