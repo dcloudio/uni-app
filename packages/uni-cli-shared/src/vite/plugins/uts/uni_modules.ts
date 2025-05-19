@@ -15,7 +15,7 @@ import {
   isUTSProxy,
   isUniHelpers,
   parseKotlinPackageWithPluginId,
-  parseSwiftPackageWithPluginId,
+  parseSwiftModuleWithPluginId,
   resolveUTSAppModule,
   resolveUTSCompiler,
   resolveUTSCompilerVersion,
@@ -545,7 +545,7 @@ export function uniUTSAppUniModulesPlugin(
         return initUTSSwiftAutoImportsOnce().then((autoImports) => {
           return filterAutoImports(
             autoImports,
-            parseSwiftPackageWithPluginId(pluginId, true)
+            parseSwiftModuleWithPluginId(pluginId, true)
           )
         })
       },
