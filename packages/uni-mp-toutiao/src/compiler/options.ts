@@ -28,6 +28,7 @@ export const customElements = [
   'aweme-user-card',
   'rtc-room',
   'clue-order-form',
+  'shop-follow-card',
 ]
 
 const projectConfigFilename = 'project.config.json'
