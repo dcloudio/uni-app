@@ -235,6 +235,12 @@
       "UniRadioGroupElement"
     ],
     [
+      "UniRichTextElement"
+    ],
+    [
+      "UniRichTextItemClickEvent"
+    ],
+    [
       "UniShowModalErrorCode"
     ],
     [
