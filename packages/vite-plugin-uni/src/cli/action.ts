@@ -10,6 +10,7 @@ import {
   M,
   isInHBuilderX,
   output,
+  runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 import type { CliOptions } from '.'
 import { build, buildSSR } from './build'
@@ -137,6 +138,12 @@ export async function runDev(options: CliOptions & ServerOptions) {
               output('log', M['build.failed'])
               process.exit(0)
             }, 2000)
+          }
+        } else if (event.code === 'ERROR') {
+          if (runByHBuilderX()) {
+            setTimeout(() => {
+              console.error(`Build failed with errors.`)
+            })
           }
         }
       })
