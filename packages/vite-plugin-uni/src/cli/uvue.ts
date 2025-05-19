@@ -8,6 +8,7 @@ import {
   parseManifestJsonOnce,
   resetOutput,
   resolveComponentsLibDirs,
+  runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 import type { RollupWatcher } from 'rollup'
 
@@ -90,6 +91,12 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
         )
       }
       return output('log', M['dev.watching.end'])
+    } else if (event.code === 'ERROR') {
+      if (runByHBuilderX()) {
+        setTimeout(() => {
+          console.error(`Build failed with errors.`)
+        })
+      }
     }
   })
 }
