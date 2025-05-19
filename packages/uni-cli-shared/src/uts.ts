@@ -226,6 +226,8 @@ interface UTSComponentMeta {
   source: string
   kotlinPackage: string
   swiftModule: string
+  kotlinNamespace: string
+  swiftNamespace: string
 }
 
 interface UTSCustomElementMeta extends UTSComponentMeta {
@@ -320,7 +322,7 @@ export function parseUTSComponent(name: string, type: 'kotlin' | 'swift') {
   const meta = utsComponents.get(name)
   if (meta) {
     const namespace =
-      meta[type === 'swift' ? 'swiftModule' : 'kotlinPackage'] || ''
+      meta[type === 'swift' ? 'swiftNamespace' : 'kotlinNamespace'] || ''
     const className = capitalize(camelize(name)) + 'Component'
     return {
       className,
@@ -334,7 +336,7 @@ export function parseUTSCustomElement(name: string, type: 'kotlin' | 'swift') {
   const meta = getUTSCustomElement(name)
   if (meta) {
     const namespace =
-      meta[type === 'swift' ? 'swiftModule' : 'kotlinPackage'] || ''
+      meta[type === 'swift' ? 'swiftNamespace' : 'kotlinNamespace'] || ''
     const className = capitalize(camelize(name)) + 'Element'
     return {
       className,
@@ -352,7 +354,13 @@ export function initUTSComponents(
   const isApp = platform === 'app' || platform === 'app-plus'
   const easycomsObj: Record<
     string,
-    { source: string; kotlinPackage: string; swiftModule: string }
+    {
+      source: string
+      kotlinPackage: string
+      swiftModule: string
+      kotlinNamespace: string
+      swiftNamespace: string
+    }
   > = {}
   const dirs = resolveUTSComponentDirs(inputDir)
   dirs.forEach((dir) => {
@@ -395,16 +403,24 @@ export function initUTSComponents(
                   : path.relative(inputDir, file)
               )
 
+            const kotlinPackage = parseKotlinPackageWithPluginId(
+              pluginId,
+              is_uni_modules_utssdk
+            )
+            const swiftModule = parseSwiftModuleWithPluginId(
+              pluginId,
+              is_uni_modules_utssdk
+            )
+            const swiftNamespace = parseSwiftPackageWithPluginId(
+              pluginId,
+              is_uni_modules_utssdk
+            )
             easycomsObj[`^${name}$`] = {
               source: isApp ? `${source}?uts-proxy` : source,
-              kotlinPackage: parseKotlinPackageWithPluginId(
-                pluginId,
-                is_uni_modules_utssdk
-              ),
-              swiftModule: parseSwiftPackageWithPluginId(
-                pluginId,
-                is_uni_modules_utssdk
-              ),
+              kotlinPackage: kotlinPackage,
+              swiftModule: swiftModule,
+              kotlinNamespace: kotlinPackage,
+              swiftNamespace: swiftNamespace,
             }
           }
         })
@@ -422,6 +438,8 @@ export function initUTSComponents(
       source: obj.source,
       kotlinPackage: obj.kotlinPackage,
       swiftModule: obj.swiftModule,
+      kotlinNamespace: obj.kotlinPackage,
+      swiftNamespace: obj.swiftNamespace,
     })
   })
   return components
@@ -479,10 +497,15 @@ export function initUTSCustomElements(
               : path.relative(inputDir, filePath)
           )
         const importSource = isApp ? `${source}?uts-proxy` : source
+        const kotlinPackage = parseKotlinPackageWithPluginId(pluginId, true)
+        const swiftModule = parseSwiftModuleWithPluginId(pluginId, true)
+        const swiftNamespace = parseSwiftPackageWithPluginId(pluginId, true)
         const meta: UTSComponentMeta = {
           source: importSource,
-          kotlinPackage: parseKotlinPackageWithPluginId(pluginId, true),
-          swiftModule: parseSwiftPackageWithPluginId(pluginId, true),
+          kotlinPackage: kotlinPackage,
+          swiftModule: swiftModule,
+          kotlinNamespace: kotlinPackage,
+          swiftNamespace: swiftNamespace,
         }
         utsCustomElements.set(name, meta)
         parseCustomElementExports(filePath, unimport).then((exports_) => {
@@ -573,6 +596,16 @@ export function parseSwiftPackageWithPluginId(
   )
 }
 
+export function parseSwiftModuleWithPluginId(
+  id: string,
+  is_uni_modules: boolean
+) {
+  if (!is_uni_modules) {
+    return parseSwiftPackageWithPluginId(id, is_uni_modules)
+  }
+  return `unimodule` + capitalize(camelize(prefix(id)))
+}
+
 export type UTSTargetLanguage = typeof process.env.UNI_UTS_TARGET_LANGUAGE
 
 async function parseUniExtApiAutoImports(
@@ -637,7 +670,7 @@ async function parseUniExtApiSwiftAutoImportsOnce(extApis: Injects) {
     uniExtApiSwiftAutoImports,
     extApis,
     (pluginId) => {
-      return parseSwiftPackageWithPluginId(pluginId, true)
+      return parseSwiftModuleWithPluginId(pluginId, true)
     }
   )
 }
@@ -656,7 +689,7 @@ export const parseUniExtApiNamespacesOnce = once(
       if (language === 'kotlin') {
         source = parseKotlinPackageWithPluginId(pluginId, true)
       } else if (language === 'swift') {
-        source = parseSwiftPackageWithPluginId(pluginId, true)
+        source = parseSwiftModuleWithPluginId(pluginId, true)
       }
       namespaces[name] = [source, options[1]]
     })
