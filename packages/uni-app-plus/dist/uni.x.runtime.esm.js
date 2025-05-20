@@ -2290,9 +2290,9 @@ function _redirectTo(_ref3) {
     path,
     query
   } = _ref3;
-  var lastPage = getCurrentPage().vm;
   return new Promise((resolve) => {
     setTimeout(() => {
+      var lastPage = getCurrentPage().vm;
       invokeAfterRouteHooks(API_REDIRECT_TO);
       showWebview(registerPage({
         url,
@@ -7887,6 +7887,7 @@ const _sfc_main$3 = {
       cancelColor: "#000000",
       confirmColor: "#4A5E86",
       inputBottom: "0px",
+      maxScrollHeight: "192px",
       inputCancelColor: null,
       inputConfirmColor: null,
       hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
@@ -7949,6 +7950,8 @@ const _sfc_main$3 = {
   onLoad(options) {
     var systemInfo = uni.getSystemInfoSync();
     var osLanguage = systemInfo.osLanguage;
+    var scrollHeight = Math.floor(systemInfo.screenHeight * 0.55);
+    this.maxScrollHeight = scrollHeight + "px";
     var appLanguage = systemInfo.appLanguage;
     if (appLanguage != null) {
       this.language = appLanguage;
@@ -8172,19 +8175,24 @@ const _style_0$3 = {
       "paddingLeft": 18
     }
   },
-  "uni-modal_dialog__content__text": {
+  "uni-modal_dialog__content__scrollview": {
+    "": {
+      "maxHeight": 192,
+      "marginTop": 2,
+      "marginRight": 2,
+      "marginBottom": 2,
+      "marginLeft": 2,
+      "width": "100%"
+    }
+  },
+  "uni-modal_dialog__content__scrollview__text": {
     "": {
       "fontSize": 16,
       "fontWeight": "normal",
-      "marginTop": 2,
-      "marginLeft": 2,
-      "marginRight": 2,
-      "marginBottom": 12,
       "textAlign": "center",
       "color": "#747474",
-      "lines": 6,
       "width": "100%",
-      "textOverflow": "ellipsis"
+      "paddingBottom": 10
     }
   },
   "uni-modal_dialog__content__textarea": {
@@ -8309,8 +8317,7 @@ var _hoisted_1$2 = {
 };
 var _hoisted_2$2 = ["auto-height", "placeholder"];
 var _hoisted_3$2 = {
-  key: 1,
-  class: "uni-modal_dialog__content__text"
+  class: "uni-modal_dialog__content__scrollview__text"
 };
 var _hoisted_4$1 = {
   class: "uni-modal_dialog__content__bottom"
@@ -8358,7 +8365,14 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     ref: "ref_textarea_content_input",
     "auto-height": $data.isAutoHeight,
     placeholder: $data.placeholderText
-  }, null, 42, _hoisted_2$2)), [[vModelText, $data.content]]) : createCommentVNode("", true), !$data.editable && $data.content.length > 0 ? (openBlock(), createElementBlock("text", _hoisted_3$2, toDisplayString($data.content), 1)) : createCommentVNode("", true)]), createElementVNode("view", {
+  }, null, 42, _hoisted_2$2)), [[vModelText, $data.content]]) : createCommentVNode("", true), !$data.editable && $data.content.length > 0 ? (openBlock(), createElementBlock("scroll-view", {
+    key: 1,
+    class: "uni-modal_dialog__content__scrollview",
+    "show-scrollbar": "true",
+    style: normalizeStyle({
+      maxHeight: $data.maxScrollHeight
+    })
+  }, [createElementVNode("text", _hoisted_3$2, toDisplayString($data.content), 1)], 4)) : createCommentVNode("", true)]), createElementVNode("view", {
     class: normalizeClass(["uni-modal_dialog__content__topline", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }])
