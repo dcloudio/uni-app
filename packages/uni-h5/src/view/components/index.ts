@@ -41,5 +41,5 @@ export {
   //#endif
 }
 //#if _X_
-export * from '../../x/view/components/easycom'
+export * from '../../x/view/components/customElements'
 //#endif
