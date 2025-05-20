@@ -52,6 +52,7 @@ const uniPreset = {
     'renderComponentSlot',
   ],
 }
+
 const uniH5Preset = {
   from: '@dcloudio/uni-h5',
   imports: [
@@ -183,6 +184,14 @@ const vuePreset = {
 
     // types 全部全局导入
   ],
+}
+
+if (
+  process.env.UNI_APP_X === 'true' &&
+  process.env.UNI_UTS_PLATFORM === 'app-harmony'
+) {
+  uniPreset.from = '@dcloudio/uni-app-x-runtime'
+  vuePreset.from = '@dcloudio/uni-app-x-runtime'
 }
 
 export function initAutoImportOptions(
