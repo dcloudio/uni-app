@@ -281,11 +281,11 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['requestAnimationFrame'],
       ['cancelAnimationFrame'],
       ['Image'],
-      ['Path2D'][
-        // copy from uni-preset
-        // ssr
-        'ssrRef'
-      ],
+      ['Path2D'],
+
+      // copy from uni-preset
+      // ssr
+      ['ssrRef'],
       ['shallowSsrRef'],
       // uni-app lifecycle
       // App and Page
