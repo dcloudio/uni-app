@@ -29,7 +29,12 @@ declare const process: any
 
 process.env.UNI_APP_X = 'true'
 process.env.UNI_UTS_PLATFORM = process.env.X_RUNTIME_PLATFORM || 'app-ios'
-initPreContext('app', {}, process.env.UNI_UTS_PLATFORM, true)
+initPreContext(
+  process.env.UNI_UTS_PLATFORM === 'app-harmony' ? 'app-harmony' : 'app',
+  {},
+  process.env.UNI_UTS_PLATFORM,
+  true
+)
 
 const apiDirs: string[] = []
 if (process.env.UNI_APP_EXT_API_DIR) {
