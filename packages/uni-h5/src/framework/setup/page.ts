@@ -313,6 +313,25 @@ function updateBodyScopeId(instance: ComponentInternalInstance) {
   curScopeId = scopeId!
 }
 
+let supportsPassive = false
+try {
+  const opts = {} as AddEventListenerOptions
+  Object.defineProperty(opts, 'passive', {
+    get() {
+      /* istanbul ignore next */
+      supportsPassive = true
+    },
+  })
+  // https://github.com/facebook/flow/issues/285
+  window.addEventListener('test-passive', () => {}, opts)
+} catch (e) {}
+
+const passiveOptions = supportsPassive
+  ? {
+      passive: false,
+    }
+  : false
+
 let curScrollListener: (evt: Event) => any
 
 export function initPageScrollListener(
@@ -324,7 +343,11 @@ export function initPageScrollListener(
     document.removeEventListener('scroll', curScrollListener)
   }
   if (pageMeta.disableScroll) {
-    return document.addEventListener('touchmove', disableScrollListener)
+    return document.addEventListener(
+      'touchmove',
+      disableScrollListener,
+      passiveOptions
+    )
   }
 
   const { onPageScroll, onReachBottom } = instance
