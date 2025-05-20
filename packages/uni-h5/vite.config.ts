@@ -24,7 +24,7 @@ import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 import {
   replacePagePaths,
-  syncEasyComFile,
+  syncCustomElementsFile,
   syncPagesFile,
   uts2ts,
 } from '../../scripts/ext-api'
@@ -51,7 +51,9 @@ if (isNewX) {
     apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
   }
   systemPagePaths = syncPagesFile(apiDirs, 'web')
-  syncEasyComFile(apiDirs)
+  if (process.env.UNI_APP_EXT_COMPONENT_DIR) {
+    syncCustomElementsFile([process.env.UNI_APP_EXT_COMPONENT_DIR])
+  }
 }
 
 const rollupPlugins = [

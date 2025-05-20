@@ -3,7 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@dcloudio/*": ["packages/*/src"],
-      "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"]
+      "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"],
+      "@dcloudio/uni-ext-api/*": ["uni-ext-api/uni_modules/*"]
     }
   },
   "include": ["src"]
