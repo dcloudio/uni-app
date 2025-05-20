@@ -281,7 +281,106 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['requestAnimationFrame'],
       ['cancelAnimationFrame'],
       ['Image'],
-      ['Path2D']
+      ['Path2D'][
+        // copy from uni-preset
+        // ssr
+        'ssrRef'
+      ],
+      ['shallowSsrRef'],
+      // uni-app lifecycle
+      // App and Page
+      ['onShow'],
+      ['onHide'],
+      // App
+      ['onLaunch'],
+      ['onError'],
+      ['onThemeChange'],
+      ['onKeyboardHeightChange'],
+      ['onPageNotFound'],
+      ['onUnhandledRejection'],
+      ['onLastPageBackPress'],
+      ['onExit'],
+      // Page
+      ['onPageShow'],
+      ['onPageHide'],
+      ['onLoad'],
+      ['onReady'],
+      ['onUnload'],
+      ['onResize'],
+      ['onBackPress'],
+      ['onPageScroll'],
+      ['onTabItemTap'],
+      ['onReachBottom'],
+      ['onPullDownRefresh'],
+
+      // copy from vue-preset
+      // vue lifecycle
+      ['onActivated'],
+      ['onBeforeMount'],
+      ['onBeforeUnmount'],
+      ['onBeforeUpdate'],
+      ['onErrorCaptured'],
+      ['onDeactivated'],
+      ['onMounted'],
+      ['onServerPrefetch'],
+      ['onUnmounted'],
+      ['onUpdated'],
+
+      // setup helpers
+      ['useAttrs'],
+      ['useSlots'],
+
+      // reactivity,
+      ['computed'],
+      ['customRef'],
+      ['isReadonly'],
+      ['isRef'],
+      ['isProxy'],
+      ['isReactive'],
+      ['markRaw'],
+      ['reactive'],
+      ['readonly'],
+      ['ref'],
+      ['shallowReactive'],
+      ['shallowReadonly'],
+      ['shallowRef'],
+      ['triggerRef'],
+      ['toRaw'],
+      ['toRef'],
+      ['toRefs'],
+      ['toValue'],
+      ['unref'],
+      ['watch'],
+      ['watchEffect'],
+      ['watchPostEffect'],
+      ['watchSyncEffect'],
+
+      // component
+      ['defineComponent'],
+      ['defineAsyncComponent'],
+      ['getCurrentInstance'],
+      ['inject'],
+      ['nextTick'],
+      ['provide'],
+      ['useCssModule'],
+      ['createApp'],
+      ['hasInjectionContext'],
+
+      // render
+      ['h'],
+      ['mergeProps'],
+      ['cloneVNode'],
+      ['isVNode'],
+      ['resolveComponent'],
+      ['resolveDirective'],
+      ['withDirectives'],
+      ['withModifiers'],
+
+      // effect scope
+      ['effectScope'],
+      ['EffectScope'],
+      ['getCurrentScope'],
+      ['onScopeDispose']
     )
   }
 
