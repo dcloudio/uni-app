@@ -19,6 +19,11 @@ export type OperateWebViewType =
   | 'forward'
   | 'reload'
   | 'stop'
+  | 'canBack'
+  | 'canForward'
+  | 'loadData'
+  | 'getPageHeight'
+  | 'clear'
 
 const HarmonyNativeMethodMap = {
   evalJS: 'runJavaScript',
@@ -26,10 +31,26 @@ const HarmonyNativeMethodMap = {
   forward: 'forward',
   reload: 'refresh',
   stop: 'stop',
+  canBack: 'accessBackward',
+  canForward: 'accessForward',
+  loadData: 'loadData',
+  getPageHeight: 'getPageHeight',
+  clear: 'removeCache',
 }
 
 function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
-  const MethodList = ['evalJS', 'back', 'forward', 'reload', 'stop']
+  const MethodList = [
+    'evalJS',
+    'back',
+    'forward',
+    'reload',
+    'stop',
+    'canBack',
+    'canForward',
+    'loadData',
+    'getPageHeight',
+    'clear',
+  ]
   const methods = {} as Record<OperateWebViewType, Function>
 
   for (let i = 0; i < MethodList.length; i++) {
@@ -41,6 +62,17 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
       const embed = embedRef.value!
       if (methodName === 'evalJS') {
         return resolve(embed['runJavaScript']((data || {}).jsCode || ''))
+      } else if (methodName === 'loadData') {
+        resolve(
+          embed[HarmonyNativeMethodMap[methodName]](
+            data.data,
+            data.mimeType,
+            data.encoding,
+            data.baseUrl
+          )
+        )
+      } else if (methodName === 'clear') {
+        resolve(embed[HarmonyNativeMethodMap[methodName]](data.clearRom))
       } else {
         resolve(embed[HarmonyNativeMethodMap[methodName]]())
       }
@@ -125,7 +157,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             updateTitle: props.updateTitle,
             webviewStyles: props.webviewStyles,
           }}
-          methods={['runJavaScript', 'backward', 'forward', 'refresh', 'stop']}
+          methods={[
+            'runJavaScript',
+            'backward',
+            'forward',
+            'refresh',
+            'stop',
+            'accessBackward',
+            'accessForward',
+            'loadData',
+            'getPageHeight',
+            'removeCache',
+          ]}
           style="width:100%;height:100%"
         />
       </uni-web-view>
