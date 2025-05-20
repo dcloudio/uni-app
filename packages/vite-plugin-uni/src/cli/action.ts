@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
 import { extend } from '@vue/shared'
-import type { RollupWatcher } from 'rollup'
 import { type BuildOptions, type ServerOptions, createLogger } from 'vite'
 import {
   APP_CONFIG_SERVICE,
@@ -50,11 +49,10 @@ export async function runDev(options: CliOptions & ServerOptions) {
         : createServer(options))
       initEasycom(server.watcher as FSWatcher)
     } else {
-      const watcher = (await build(options)) as RollupWatcher
       initEasycom()
       let isFirstStart = true
       let isFirstEnd = true
-      watcher.on('event', async (event) => {
+      await build(options, async (event) => {
         if (event.code === 'BUNDLE_START') {
           if (isFirstStart) {
             isFirstStart = false
