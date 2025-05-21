@@ -20,6 +20,8 @@ const closePreviewImageView = () => {
   nextTick(() => {
     imagePreviewInstance?.unmount()
     imagePreviewInstance = null
+    const rootEl = document.getElementById('u-a-p')
+    rootEl && document.body.removeChild(rootEl)
   })
 }
 
