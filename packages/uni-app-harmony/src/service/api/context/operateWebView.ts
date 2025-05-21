@@ -71,8 +71,8 @@ export function createWebviewContext(
           baseUrl: options.baseUrl ?? '',
         })
       },
-      getPageHeight(callback: (res: any) => void) {
-        operateWebView(id, pageId, 'getPageHeight', {}, (height) =>
+      getContentHeight(callback: (res: any) => void) {
+        operateWebView(id, pageId, 'getContentHeight', {}, (height) =>
           callback?.({ height })
         )
       },

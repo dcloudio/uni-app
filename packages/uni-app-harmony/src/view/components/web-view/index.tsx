@@ -22,10 +22,10 @@ export type OperateWebViewType =
   | 'canBack'
   | 'canForward'
   | 'loadData'
-  | 'getPageHeight'
+  | 'getContentHeight'
   | 'clear'
 
-const HarmonyNativeMethodMap = {
+const HarmonyNativeMethodMap: Record<OperateWebViewType, string> = {
   evalJS: 'runJavaScript',
   back: 'backward',
   forward: 'forward',
@@ -34,12 +34,12 @@ const HarmonyNativeMethodMap = {
   canBack: 'accessBackward',
   canForward: 'accessForward',
   loadData: 'loadData',
-  getPageHeight: 'getPageHeight',
+  getContentHeight: 'getPageHeight',
   clear: 'removeCache',
 }
 
 function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
-  const MethodList = [
+  const MethodList: OperateWebViewType[] = [
     'evalJS',
     'back',
     'forward',
@@ -48,7 +48,7 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
     'canBack',
     'canForward',
     'loadData',
-    'getPageHeight',
+    'getContentHeight',
     'clear',
   ]
   const methods = {} as Record<OperateWebViewType, Function>
@@ -60,21 +60,25 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
       resolve: (res: any) => void
     ) {
       const embed = embedRef.value!
-      if (methodName === 'evalJS') {
-        return resolve(embed['runJavaScript']((data || {}).jsCode || ''))
-      } else if (methodName === 'loadData') {
-        resolve(
-          embed[HarmonyNativeMethodMap[methodName]](
-            data.data,
-            data.mimeType,
-            data.encoding,
-            data.baseUrl
+      switch (methodName) {
+        case 'evalJS':
+          return resolve(embed['runJavaScript']((data || {}).jsCode || ''))
+        case 'loadData':
+          resolve(
+            embed[HarmonyNativeMethodMap[methodName]](
+              data.data,
+              data.mimeType,
+              data.encoding,
+              data.baseUrl
+            )
           )
-        )
-      } else if (methodName === 'clear') {
-        resolve(embed[HarmonyNativeMethodMap[methodName]](data.clearRom))
-      } else {
-        resolve(embed[HarmonyNativeMethodMap[methodName]]())
+          break
+        case 'clear':
+          resolve(embed[HarmonyNativeMethodMap[methodName]](data.clearRom))
+          break
+        default:
+          resolve(embed[HarmonyNativeMethodMap[methodName]]())
+          break
       }
     }
   }
