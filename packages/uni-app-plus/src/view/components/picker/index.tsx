@@ -139,7 +139,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Picker',
   props,
   emits: ['change', 'cancel', 'columnchange'],
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     initI18nPickerMsgsOnce()
     const { t, getLocale } = useI18n()
     const rootRef: Ref<HTMLElement | null> = ref(null)
@@ -353,7 +353,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     return () => (
       <uni-picker ref={rootRef} onClick={_show}>
-        <slot />
+        {slots.default && slots.default()}
       </uni-picker>
     )
   },
