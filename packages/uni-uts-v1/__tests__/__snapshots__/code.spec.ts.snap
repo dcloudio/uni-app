@@ -364,6 +364,7 @@ const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
 
 registerUTSInterface('ITestOptions',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'ITestByJsProxy', is_uni_modules) }, {"methods":{},"props":["name"],"setters":{"name":{"name":"name","type":"string"}}} ))
 export const createTest = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'createTestByJs', keepAlive: false, params: [], return: {"type":"interface","options":"ITestOptions"}})
+export const testUnion = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'testUnionByJs', keepAlive: false, params: [{"name":"arg","type":"","default":"UTSNull"}], return: ""})
 registerUTSInterface('A12Options',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'A12ByJsProxy', is_uni_modules) }, {"methods":{"test2ByJs":{"async":false,"keepAlive":false,"params":[]},"test1ByJs":{"async":false,"keepAlive":false,"params":[]},"test0ByJs":{"async":false,"keepAlive":false,"params":[]}},"props":[],"setters":{}} ))
 export const testA3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'testA3ByJs', keepAlive: false, params: [], return: {"type":"interface","options":"A12Options"}})
 "
