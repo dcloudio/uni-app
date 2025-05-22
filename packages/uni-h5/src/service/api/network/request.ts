@@ -100,8 +100,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
     } else {
       /**
        * chunk模式需要返回ArrayBuffer，而XHR设置只能在onProgress内responseType设为arraybuffer并不能在onprogress内获取到xhr.response
-       * 如果设置responseType为text，onprogress内xhr.response为string
-       * 只能改用fetch实现，至于很多ai web客户端只需要文本流，直接使用xhr就可以了，但是我们要实现微信onChunkReceived规范只能改用fetch
+       * 如果设置responseType为text，onprogress内xhr.response为string，只能改用fetch实现
        */
       if (
         typeof window.fetch === undefined ||
@@ -289,6 +288,16 @@ interface RequestController {
  */
 class RequestTask implements UniApp.RequestTask {
   private _controller?: RequestController
+  private _requestOnChunkReceiveCallbackId: number = 0
+  private _requestOnChunkReceiveCallbacks: Map<
+    number,
+    RequestTaskOnChunkReceivedCallback
+  > = new Map()
+  private _requestOnHeadersReceiveCallbackId: number = 0
+  private _requestOnHeadersReceiveCallbacks: Map<
+    number,
+    RequestTaskOnHeadersReceivedCallback
+  > = new Map()
   _emitter = new Emitter()
   constructor(controller: RequestController) {
     this._controller = controller
@@ -299,40 +308,70 @@ class RequestTask implements UniApp.RequestTask {
       delete this._controller
     }
   }
-  onHeadersReceived(callback: RequestTaskOnHeadersReceivedCallback): void {
-    if (!__X__) {
-      throw new Error('Method not implemented.')
-    }
+  onHeadersReceived(callback: RequestTaskOnHeadersReceivedCallback): number {
     this._emitter.on('headersReceived', callback)
+    this._requestOnHeadersReceiveCallbackId++
+    this._requestOnHeadersReceiveCallbacks.set(
+      this._requestOnHeadersReceiveCallbackId,
+      callback
+    )
+    return this._requestOnHeadersReceiveCallbackId
   }
   offHeadersReceived(
-    callback?: RequestTaskOnHeadersReceivedCallback | null
+    callback?: RequestTaskOnHeadersReceivedCallback | number | null
   ): void {
-    if (!__X__) {
-      throw new Error('Method not implemented.')
-    }
-    if (callback) {
-      this._emitter.off('headersReceived', callback)
-    } else {
+    if (callback == null) {
       this._emitter.off('headersReceived')
+      return
     }
+    if (typeof callback === 'function') {
+      this._requestOnHeadersReceiveCallbacks.forEach((cb, id) => {
+        if (cb === callback) {
+          this._requestOnHeadersReceiveCallbacks.delete(id)
+          this._emitter.off('headersReceived', callback)
+        }
+      })
+      return
+    }
+    const callbackFn = this._requestOnHeadersReceiveCallbacks.get(callback)
+    if (!callbackFn) {
+      return
+    }
+    this._requestOnHeadersReceiveCallbacks.delete(callback)
+    this._emitter.off('headersReceived', callbackFn)
   }
 
-  onChunkReceived(callback: RequestTaskOnChunkReceivedCallback): void {
-    if (!__X__) {
-      throw new Error('Method not implemented.')
-    }
+  onChunkReceived(callback: RequestTaskOnChunkReceivedCallback): number {
     this._emitter.on('chunkReceived', callback)
+    this._requestOnChunkReceiveCallbackId++
+    this._requestOnChunkReceiveCallbacks.set(
+      this._requestOnChunkReceiveCallbackId,
+      callback
+    )
+    return this._requestOnChunkReceiveCallbackId
   }
-  offChunkReceived(callback?: RequestTaskOnChunkReceivedCallback | null): void {
-    if (!__X__) {
-      throw new Error('Method not implemented.')
-    }
-    if (callback) {
-      this._emitter.off('chunkReceived', callback)
-    } else {
+  offChunkReceived(
+    callback?: RequestTaskOnChunkReceivedCallback | number | null
+  ): void {
+    if (callback == null) {
       this._emitter.off('chunkReceived')
+      return
     }
+    if (typeof callback === 'function') {
+      this._requestOnChunkReceiveCallbacks.forEach((cb, id) => {
+        if (cb === callback) {
+          this._requestOnChunkReceiveCallbacks.delete(id)
+          this._emitter.off('chunkReceived', callback)
+        }
+      })
+      return
+    }
+    const callbackFn = this._requestOnChunkReceiveCallbacks.get(callback)
+    if (!callbackFn) {
+      return
+    }
+    this._requestOnChunkReceiveCallbacks.delete(callback)
+    this._emitter.off('chunkReceived', callbackFn)
   }
 }
 
