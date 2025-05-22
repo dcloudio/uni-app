@@ -15,3 +15,8 @@ class Test implements ITest {
 export function createTest(): ITest {
   return new Test()
 }
+
+type TestCallback = () => void
+export function testUnion(arg?: number | TestCallback | null): void {
+  console.log(arg)
+}
