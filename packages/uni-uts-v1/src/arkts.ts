@@ -312,6 +312,11 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['onTabItemTap'],
       ['onReachBottom'],
       ['onPullDownRefresh'],
+      ['OnBackPressOptions'],
+      ['OnLaunchOptions'],
+      ['OnLoadOptions'],
+      ['OnPageScrollOptions'],
+      ['OnResizeOptions'],
 
       // copy from vue-preset
       // vue lifecycle
