@@ -1,3 +1,4 @@
+import { once } from '@dcloudio/uni-shared'
 import {
   CREATE_COMMENT,
   CREATE_ELEMENT_VNODE,
@@ -30,27 +31,29 @@ export const TRY_UPDATE_REF_NUMBER = Symbol(`tryUpdateRefNumber`)
 
 export const LOOSE_TO_NUMBER = Symbol(`looseToNumber`)
 
-registerRuntimeHelpers({
-  [IS_TRUE]: 'isTrue',
-  [V_SHOW]: 'vShow',
-  [RENDER_LIST]: 'RenderHelpers.renderList',
-  [FRAGMENT]: 'Fragment',
-  [RESOLVE_COMPONENT]: 'resolveComponent',
-  [RESOLVE_EASY_COMPONENT]: 'resolveEasyComponent',
-  [RESOLVE_DIRECTIVE]: 'resolveDirective',
-  [RENDER_SLOT]: `renderSlot`,
-  [TO_HANDLERS]: `toHandlers`,
-  [V_ON_WITH_MODIFIERS]: `withModifiers`,
-  [WITH_SLOT_CTX]: `withSlotCtx`,
-  [WITH_SCOPED_SLOT_CTX]: `withScopedSlotCtx`,
-  [RESOLVE_CACHE]: `resolveCache`,
-  [TRY_SET_REF_VALUE]: `trySetRefValue`,
-  [TRY_UPDATE_REF_NUMBER]: `tryUpdateRefNumber`,
-  [LOOSE_TO_NUMBER]: `looseToNumber`,
-  [CREATE_VNODE]: `_cV`,
-  [CREATE_ELEMENT_VNODE]: `_cE`,
-  [CREATE_COMMENT]: `_cC`,
-  [TO_DISPLAY_STRING]: `_tD`,
-  [NORMALIZE_CLASS]: `_nC`,
-  [NORMALIZE_STYLE]: `_nS`,
+export const initRuntimeHelpersOnce = once(() => {
+  registerRuntimeHelpers({
+    [IS_TRUE]: 'isTrue',
+    [V_SHOW]: 'vShow',
+    [RENDER_LIST]: 'RenderHelpers.renderList',
+    [FRAGMENT]: 'Fragment',
+    [RESOLVE_COMPONENT]: 'resolveComponent',
+    [RESOLVE_EASY_COMPONENT]: 'resolveEasyComponent',
+    [RESOLVE_DIRECTIVE]: 'resolveDirective',
+    [RENDER_SLOT]: `renderSlot`,
+    [TO_HANDLERS]: `toHandlers`,
+    [V_ON_WITH_MODIFIERS]: `withModifiers`,
+    [WITH_SLOT_CTX]: `withSlotCtx`,
+    [WITH_SCOPED_SLOT_CTX]: `withScopedSlotCtx`,
+    [RESOLVE_CACHE]: `resolveCache`,
+    [TRY_SET_REF_VALUE]: `trySetRefValue`,
+    [TRY_UPDATE_REF_NUMBER]: `tryUpdateRefNumber`,
+    [LOOSE_TO_NUMBER]: `looseToNumber`,
+    [CREATE_VNODE]: `_cV`,
+    [CREATE_ELEMENT_VNODE]: `_cE`,
+    [CREATE_COMMENT]: `_cC`,
+    [TO_DISPLAY_STRING]: `_tD`,
+    [NORMALIZE_CLASS]: `_nC`,
+    [NORMALIZE_STYLE]: `_nS`,
+  })
 })
