@@ -157,7 +157,16 @@ function genText(node: TextNode, { push, isX }: TemplateCodegenContext) {
   if (isX) {
     push(mpEscapeText(node.content))
   } else {
-    push(node.content)
+    // 目前暂时只处理 < 和 >
+    push(
+      getEscaper(
+        /[<>\u2009\u00A0\u2002\u2003]/g,
+        new Map([
+          [60, '&lt;'],
+          [62, '&gt;'],
+        ])
+      )(node.content)
+    )
   }
 }
 
