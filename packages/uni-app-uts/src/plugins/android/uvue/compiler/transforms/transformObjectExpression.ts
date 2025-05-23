@@ -21,7 +21,7 @@ export const transformObjectExpression: NodeTransform = (node, context) => {
         // v-bind="{key: value}"
         if (p.exp.type === NodeTypes.SIMPLE_EXPRESSION) {
           if (p.exp.content.startsWith('{') && p.exp.content.endsWith('}')) {
-            p.exp.content = `utsMapOf(${p.exp.content})`
+            p.exp.content = `_uM(${p.exp.content})`
           }
           // v-bind="x"
         } else if (p.exp.type === NodeTypes.COMPOUND_EXPRESSION) {
@@ -33,7 +33,7 @@ export const transformObjectExpression: NodeTransform = (node, context) => {
             (children[0] as string).startsWith('{') &&
             (children[children.length - 1] as string).endsWith('}')
           ) {
-            children[0] = `utsMapOf(${children[0]}`
+            children[0] = `_uM(${children[0]}`
             children[children.length - 1] = `${
               children[children.length - 1] as string
             })`

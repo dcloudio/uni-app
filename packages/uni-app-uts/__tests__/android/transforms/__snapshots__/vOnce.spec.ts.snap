@@ -3,17 +3,17 @@
 exports[`compiler: v-once transform as root node 1`] = `
 "resolveCache(_cache, 0, (): VNode => {
   setBlockTracking(-1)
-  _cache[0] = createElementVNode("view", utsMapOf({ id: foo }), null, 8 /* PROPS */, ["id"])
+  _cache[0] = _cE("view", _uM({ id: foo }), null, 8 /* PROPS */, ["id"])
   setBlockTracking(1)
   return _cache[0] as VNode
 })"
 `;
 
 exports[`compiler: v-once transform on component 1`] = `
-"createElementVNode("view", null, [
+"_cE("view", null, [
   resolveCache(_cache, 0, (): VNode => {
     setBlockTracking(-1)
-    _cache[0] = createVNode(_component_Comp, utsMapOf({ id: foo }), null, 8 /* PROPS */, ["id"])
+    _cache[0] = _cV(_component_Comp, _uM({ id: foo }), null, 8 /* PROPS */, ["id"])
     setBlockTracking(1)
     return _cache[0] as VNode
   })
@@ -21,10 +21,10 @@ exports[`compiler: v-once transform on component 1`] = `
 `;
 
 exports[`compiler: v-once transform on nested plain element 1`] = `
-"createElementVNode("view", null, [
+"_cE("view", null, [
   resolveCache(_cache, 0, (): VNode => {
     setBlockTracking(-1)
-    _cache[0] = createElementVNode("view", utsMapOf({ id: foo }), null, 8 /* PROPS */, ["id"])
+    _cache[0] = _cE("view", _uM({ id: foo }), null, 8 /* PROPS */, ["id"])
     setBlockTracking(1)
     return _cache[0] as VNode
   })
@@ -32,7 +32,7 @@ exports[`compiler: v-once transform on nested plain element 1`] = `
 `;
 
 exports[`compiler: v-once transform on slot outlet 1`] = `
-"createElementVNode("view", null, [
+"_cE("view", null, [
   resolveCache(_cache, 0, (): VNode => {
     setBlockTracking(-1)
     _cache[0] = renderSlot($slots, "default")

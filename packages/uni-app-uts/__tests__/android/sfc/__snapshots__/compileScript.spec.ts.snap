@@ -11,7 +11,7 @@ const _cache = __ins.renderCache;
 
 return (): any | null => {
 
-  return toDisplayString(a)
+  return _tD(a)
 }
 }
 
@@ -32,7 +32,7 @@ const _cache = __ins.renderCache;
 const a = 1
 return (): any | null => {
 
-  return toDisplayString(a)
+  return _tD(a)
 }
 }
 
@@ -52,7 +52,7 @@ const _cache = __ins.renderCache;
 const a = 1
 return (): any | null => {
 
-  return toDisplayString(a)
+  return _tD(a)
 }
 }
 
@@ -107,14 +107,14 @@ return (): any | null => {
 
 const _component_Comp = resolveComponent("Comp")
 
-  return createElementVNode(Fragment, null, [
-    toDisplayString(a as Foo) + " " + toDisplayString(b<Bar>()) + " " + toDisplayString(unref(Baz)) + " ",
-    createVNode(_component_Comp, null, utsMapOf({
-      default: withScopedSlotCtx(({ data }: Qux): any[] => [toDisplayString(data)]),
+  return _cE(Fragment, null, [
+    _tD(a as Foo) + " " + _tD(b<Bar>()) + " " + _tD(unref(Baz)) + " ",
+    _cV(_component_Comp, null, _uM({
+      default: withScopedSlotCtx(({ data }: Qux): any[] => [_tD(data)]),
       _: 1 /* STABLE */
     })),
-    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list as Fred, ({ z = _ctx.x as Qux }, __key, __index, _cached): any => {
-      return createElementVNode("view")
+    _cE(Fragment, null, RenderHelpers.renderList(_ctx.list as Fred, ({ z = _ctx.x as Qux }, __key, __index, _cached): any => {
+      return _cE("view")
     }), 256 /* UNKEYED_FRAGMENT */)
   ], 64 /* STABLE_FRAGMENT */)
 }
@@ -136,9 +136,9 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode("view", utsMapOf({
-    class: normalizeClass([cond ? '' : unref(bar)(), 'default']),
-    style: normalizeStyle(unref(baz))
+  return _cE("view", _uM({
+    class: _nC([cond ? '' : unref(bar)(), 'default']),
+    style: _nS(unref(baz))
   }), null, 6 /* CLASS, STYLE */)
 }
 }
@@ -159,10 +159,10 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createVNode(unref(FooBaz)),
-    createVNode(unref(FooQux)),
-    createVNode(unref(foo)),
+  return _cE(Fragment, null, [
+    _cV(unref(FooBaz)),
+    _cV(unref(FooQux)),
+    _cV(unref(foo)),
     " FooBar "
   ], 64 /* STABLE_FRAGMENT */)
 }
@@ -183,7 +183,7 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return withDirectives(createElementVNode("view", null, null, 512 /* NEED_PATCH */), [
+  return withDirectives(_cE("view", null, null, 512 /* NEED_PATCH */), [
     [unref(vMyDir)]
   ])
 }
@@ -204,12 +204,12 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createVNode(unref(FooBar)),
-    createVNode(unref(FooBar)),
-    createElementVNode("view", normalizeProps(utsMapOf({ [(unref(bar).attrName) || ""]: 15 })), null, 16 /* FULL_PROPS */),
-    createElementVNode("view", utsMapOf({ unused: "unused" })),
-    createVNode(unref(FooBar))
+  return _cE(Fragment, null, [
+    _cV(unref(FooBar)),
+    _cV(unref(FooBar)),
+    _cE("view", normalizeProps(_uM({ [(unref(bar).attrName) || ""]: 15 })), null, 16 /* FULL_PROPS */),
+    _cE("view", _uM({ unused: "unused" })),
+    _cV(unref(FooBar))
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -229,7 +229,7 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return toDisplayString(\`\${unref(VAR)}VAR2\${unref(VAR3)}\`)
+  return _tD(\`\${unref(VAR)}VAR2\${unref(VAR3)}\`)
 }
 }
 
@@ -248,9 +248,9 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createVNode(unref(FooBaz)),
-    createVNode(unref(Last))
+  return _cE(Fragment, null, [
+    _cV(unref(FooBaz)),
+    _cV(unref(Last))
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -270,13 +270,13 @@ const _cache = __ins.renderCache;
           
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("view", utsMapOf({
+  return _cE(Fragment, null, [
+    _cE("view", _uM({
       ref_key: "foo",
       ref: foo
     }), null, 512 /* NEED_PATCH */),
-    createElementVNode("view", utsMapOf({ ref: "" }), null, 512 /* NEED_PATCH */),
-    createVNode(unref(Baz), utsMapOf({
+    _cE("view", _uM({ ref: "" }), null, 512 /* NEED_PATCH */),
+    _cV(unref(Baz), _uM({
       ref_key: "bar",
       ref: bar
     }), null, 512 /* NEED_PATCH */)
@@ -299,9 +299,9 @@ const _cache = __ins.renderCache;
       
 return (): any | null => {
 
-  return createElementVNode("view", utsMapOf({
+  return _cE("view", _uM({
     id: unref(z) + 'y'
-  }), toDisplayString(unref(x)) + " " + toDisplayString(_ctx.yy) + " " + toDisplayString(unref(x$y)), 9 /* TEXT, PROPS */, ["id"])
+  }), _tD(unref(x)) + " " + _tD(_ctx.yy) + " " + _tD(unref(x$y)), 9 /* TEXT, PROPS */, ["id"])
 }
 }
 
@@ -485,13 +485,13 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createVNode(Foo, null, utsMapOf({
-      default: withSlotCtx((): any[] => [toDisplayString(unref(bar))]),
+  return _cE(Fragment, null, [
+    _cV(Foo, null, _uM({
+      default: withSlotCtx((): any[] => [_tD(unref(bar))]),
       _: 1 /* STABLE */
     })),
-    createElementVNode("view", utsMapOf({ onClick: fn }), toDisplayString(count.value) + " " + toDisplayString(constant) + " " + toDisplayString(unref(maybe)) + " " + toDisplayString(unref(lett)) + " " + toDisplayString(unref(other)), 1 /* TEXT */),
-    " " + toDisplayString(tree.foo())
+    _cE("view", _uM({ onClick: fn }), _tD(count.value) + " " + _tD(constant) + " " + _tD(unref(maybe)) + " " + _tD(unref(lett)) + " " + _tD(unref(other)), 1 /* TEXT */),
+    " " + _tD(tree.foo())
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -513,12 +513,12 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    withDirectives(createElementVNode("view", null, null, 512 /* NEED_PATCH */), [
+  return _cE(Fragment, null, [
+    withDirectives(_cE("view", null, null, 512 /* NEED_PATCH */), [
       [unref(vMyDir)]
     ]),
-    createVNode(ChildComp),
-    createVNode(SomeOtherComp)
+    _cV(ChildComp),
+    _cV(SomeOtherComp)
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -539,9 +539,9 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("view", null, toDisplayString(count.value), 1 /* TEXT */),
-    createElementVNode("view", null, "static")
+  return _cE(Fragment, null, [
+    _cE("view", null, _tD(count.value), 1 /* TEXT */),
+    _cE("view", null, "static")
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -565,29 +565,29 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("view", utsMapOf({
+  return _cE(Fragment, null, [
+    _cE("view", _uM({
       onClick: () => {count.value = 1}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {maybe.value = count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {isRef(lett) ? trySetRefValue(lett, count.value) : lett = count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {isRef(v) ? trySetRefValue(v, unref(v.also((_)=>{ v += 1 }))) : v += 1}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {isRef(v) ? trySetRefValue(v, unref(v.also((_)=>{ v -= 1 }))) : v -= 1}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {
               let a = '' + unref(lett)
               isRef(v) ? trySetRefValue(v, a) : v = a
            }
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {
               // nested scopes
               (()=>{
@@ -624,14 +624,14 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("view", utsMapOf({
+  return _cE(Fragment, null, [
+    _cE("view", _uM({
       onClick: () => {({ count: count.value } = val)}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {[maybe.value] = val}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {({ lett: lett } = val)}
     }), null, 8 /* PROPS */, ["onClick"])
   ], 64 /* STABLE_FRAGMENT */)
@@ -656,23 +656,23 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("view", utsMapOf({
+  return _cE(Fragment, null, [
+    _cE("view", _uM({
       onClick: () => {count.value++}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {--count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {maybe.value++}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {--maybe.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {lett = tryUpdateRefNumber(lett, 1, false)}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {lett = tryUpdateRefNumber(lett, -1, true)}
     }), null, 8 /* PROPS */, ["onClick"])
   ], 64 /* STABLE_FRAGMENT */)
@@ -697,16 +697,16 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("input", utsMapOf({
+  return _cE(Fragment, null, [
+    _cE("input", _uM({
       modelValue: count.value,
       onInput: ($event: UniInputEvent) => {(count).value = $event.detail.value}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"]),
-    createElementVNode("input", utsMapOf({
+    _cE("input", _uM({
       modelValue: unref(maybe),
       onInput: ($event: UniInputEvent) => {trySetRefValue(maybe, $event.detail.value)}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue"]),
-    createElementVNode("input", utsMapOf({
+    _cE("input", _uM({
       modelValue: unref(lett),
       onInput: ($event: UniInputEvent) => {lett = trySetRefValue(lett, $event.detail.value)}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue"])

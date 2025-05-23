@@ -210,12 +210,12 @@ function serialize(obj: unknown, ts = false): string {
       ([key, value]) => `[${serialize(key, ts)},${serialize(value, ts)}]`
     )
     if (entries.length) {
-      return `utsMapOf([${entries.join(',')}])`
+      return `_uM([${entries.join(',')}])`
     }
     if (ts) {
-      return `utsMapOf<string, any | null>()`
+      return `_uM<string, any | null>()`
     }
-    return `utsMapOf()`
+    return `_uM()`
   } else if (isArray(obj)) {
     return `[${obj.map((item) => serialize(item, ts)).join(',')}]`
   } else {

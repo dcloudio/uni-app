@@ -596,7 +596,7 @@ describe('compiler: expression transform', () => {
       )
       expect(code).toMatch(`_ctx.props`)
       expect(code).toMatch(`unref(setup)`)
-      expect(code).toMatch(`toDisplayString(setupConst)`)
+      expect(code).toMatch(`_tD(setupConst)`)
       expect(code).toMatch(`_ctx.data`)
       expect(code).toMatch(`_ctx.options`)
       expect(code).toMatch(`isNaN.value`)
@@ -610,7 +610,7 @@ describe('compiler: expression transform', () => {
           inline: true,
         }
       )
-      expect(code).toMatch(`toDisplayString(literal)`)
+      expect(code).toMatch(`_tD(literal)`)
       // #7973 should skip patch for literal const
       // TODO
       // expect(code).not.toMatch(
@@ -620,7 +620,7 @@ describe('compiler: expression transform', () => {
 
     test('literal const handling， non-inline mode', () => {
       const { code } = compileWithBindingMetadata(`<view>{{ literal }}</view>`)
-      expect(code).toMatch(`toDisplayString(_ctx.literal)`)
+      expect(code).toMatch(`_tD(_ctx.literal)`)
       // #7973 should skip patch for literal const
       // TODO
       // expect(code).not.toMatch(

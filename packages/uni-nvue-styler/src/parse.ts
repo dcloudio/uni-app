@@ -9,6 +9,7 @@ interface ParseOptions extends NormalizeOptions {
   filename?: string
   map?: boolean
   mapOf?: string
+  padStyleMapOf?: string
   ts?: boolean
   chunk?: number
   noCode?: boolean
@@ -45,6 +46,7 @@ export async function parse(input: string, options: ParseOptions = {}) {
         options.ts,
         true,
         options.mapOf,
+        options.padStyleMapOf,
         options.chunk
       ),
       messages,
@@ -65,17 +67,18 @@ function mapToInitStringChunk(
   ts: boolean = false,
   isRoot: boolean = false,
   mapOf = '',
+  padStyleMapOf = '',
   chunk: number = 0
 ): string {
   if (!chunk) {
-    return mapToInitString(map, ts, isRoot, mapOf)
+    return mapToInitString(map, ts, isRoot, mapOf, padStyleMapOf)
   }
   const chunks: string[] = []
   let chunkMap: Map<string, unknown> = new Map()
   let chunkCount = 0
   for (const [key, value] of map) {
     if (chunkCount === chunk) {
-      chunks.push(mapToInitString(chunkMap, ts, isRoot, mapOf))
+      chunks.push(mapToInitString(chunkMap, ts, isRoot, mapOf, padStyleMapOf))
       chunkMap = new Map()
       chunkCount = 0
     }
@@ -83,7 +86,7 @@ function mapToInitStringChunk(
     chunkCount++
   }
   if (chunkCount) {
-    chunks.push(mapToInitString(chunkMap, ts, isRoot, mapOf))
+    chunks.push(mapToInitString(chunkMap, ts, isRoot, mapOf, padStyleMapOf))
   }
   return `[${chunks.join(',')}]`
 }
@@ -92,7 +95,8 @@ function mapToInitString(
   map: Map<string, unknown>,
   ts: boolean = false,
   isRoot: boolean = false,
-  mapOf = ''
+  mapOf = '',
+  padStyleMapOf = ''
 ): string {
   const entries: string[] = []
   for (let [key, value] of map) {
@@ -100,15 +104,24 @@ function mapToInitString(
       // trim
       if (isRoot && !(value.values().next().value instanceof Map)) {
         entries.push(
-          `["${key}", padStyleMapOf(${mapToInitString(
+          `["${key}", ${padStyleMapOf}(${mapToInitString(
             value,
             ts,
             false,
-            mapOf
+            mapOf,
+            padStyleMapOf
           )})]`
         )
       } else {
-        entries.push(`["${key}", ${mapToInitString(value, ts, false, mapOf)}]`)
+        entries.push(
+          `["${key}", ${mapToInitString(
+            value,
+            ts,
+            false,
+            mapOf,
+            padStyleMapOf
+          )}]`
+        )
       }
     } else {
       entries.push(

@@ -10,7 +10,7 @@ const _cache = __ins.renderCache;
 
 return (): any | null => {
 
-  return createElementVNode("view", utsMapOf({ class: "test" }))
+  return _cE("view", _uM({ class: "test" }))
 }
 }
 
@@ -27,7 +27,7 @@ const _cache = __ins.renderCache;
 
 return (): any | null => {
 
-  return createElementVNode("view", utsMapOf({ class: "test" }))
+  return _cE("view", _uM({ class: "test" }))
 }
 }
 

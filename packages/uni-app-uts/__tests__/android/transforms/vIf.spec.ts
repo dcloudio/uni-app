@@ -65,27 +65,27 @@ describe('compiler: v-if', () => {
   test('basic v-if', () => {
     assert(
       `<view v-if="ok"/>`,
-      `isTrue(_ctx.ok)\n  ? createElementVNode("view", utsMapOf({ key: 0 }))\n  : createCommentVNode("v-if", true)`
+      `isTrue(_ctx.ok)\n  ? _cE("view", _uM({ key: 0 }))\n  : _cC("v-if", true)`
     )
   })
   test('template v-if', () => {
     assert(
       `<template v-if="ok"><view/>hello<text/></template>`,
       `isTrue(_ctx.ok)
-  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), [
-      createElementVNode("view"),
+  ? _cE(Fragment, _uM({ key: 0 }), [
+      _cE("view"),
       "hello",
-      createElementVNode("text")
+      _cE("text")
     ], 64 /* STABLE_FRAGMENT */)
-  : createCommentVNode("v-if", true)`
+  : _cC("v-if", true)`
     )
   })
   test('component v-if', () => {
     assert(
       `<Component v-if="ok"></Component>`,
       `isTrue(_ctx.ok)
-  ? createVNode(_component_Component, utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cV(_component_Component, _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
   })
   test('v-if + v-else', () => {
@@ -96,10 +96,10 @@ describe('compiler: v-if', () => {
           <text v-else/>
         </view>
       `,
-      `createElementVNode("view", null, [
+      `_cE("view", null, [
   isTrue(_ctx.ok)
-    ? createElementVNode("text", utsMapOf({ key: 0 }))
-    : createElementVNode("text", utsMapOf({ key: 1 }))
+    ? _cE("text", _uM({ key: 0 }))
+    : _cE("text", _uM({ key: 1 }))
 ])`
     )
   })
@@ -112,12 +112,12 @@ describe('compiler: v-if', () => {
           <text v-else/>
         </view>
       `,
-      `createElementVNode("view", null, [
+      `_cE("view", null, [
   isTrue(_ctx.ok)
-    ? createElementVNode("text", utsMapOf({ key: 0 }))
+    ? _cE("text", _uM({ key: 0 }))
     : isTrue(_ctx.orNot)
-      ? createElementVNode("text", utsMapOf({ key: 1 }))
-      : createElementVNode("text", utsMapOf({ key: 2 }))
+      ? _cE("text", _uM({ key: 1 }))
+      : _cE("text", _uM({ key: 2 }))
 ])`
     )
   })
@@ -130,12 +130,12 @@ describe('compiler: v-if', () => {
           <text v-else>v-else</text>
         </view>
       `,
-      `createElementVNode("view", null, [
+      `_cE("view", null, [
   isTrue(_ctx.ok)
-    ? createElementVNode("text", utsMapOf({ key: 0 }))
+    ? _cE("text", _uM({ key: 0 }))
     : isTrue(_ctx.orNot)
-      ? createElementVNode("text", utsMapOf({ key: 1 }), "v-else-if")
-      : createElementVNode("text", utsMapOf({ key: 2 }), "v-else")
+      ? _cE("text", _uM({ key: 1 }), "v-else-if")
+      : _cE("text", _uM({ key: 2 }), "v-else")
 ])`
     )
   })
@@ -149,53 +149,53 @@ describe('compiler: v-if', () => {
       <text v-else>v-else</text>
     `,
       `isTrue(_ctx.ok)
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
+  ? _cE("view", _uM({ key: 0 }))
   : isTrue(_ctx.orNot)
-    ? createElementVNode("view", utsMapOf({ key: 1 }))
-    : createElementVNode("text", utsMapOf({ key: 2 }), "v-else")`
+    ? _cE("view", _uM({ key: 1 }))
+    : _cE("text", _uM({ key: 2 }), "v-else")`
     )
   })
   test('template v-if w/ single <slot/> child', () => {
     assert(
       `<template v-if="ok"><slot/></template>`,
       `isTrue(_ctx.ok)
-  ? renderSlot(_ctx.$slots, "default", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? renderSlot(_ctx.$slots, "default", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
   })
   test('v-if on <slot/>', () => {
     assert(
       `<slot v-if="ok"></slot>`,
       `isTrue(_ctx.ok)
-  ? renderSlot(_ctx.$slots, "default", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? renderSlot(_ctx.$slots, "default", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
   })
   test('multiple v-if that are sibling nodes should have different keys', () => {
     assert(
       `<view><view v-if="ok"/><view v-if="orNot"/></view>`,
-      `createElementVNode("view", null, [
+      `_cE("view", null, [
   isTrue(_ctx.ok)
-    ? createElementVNode("view", utsMapOf({ key: 0 }))
-    : createCommentVNode("v-if", true),
+    ? _cE("view", _uM({ key: 0 }))
+    : _cC("v-if", true),
   isTrue(_ctx.orNot)
-    ? createElementVNode("view", utsMapOf({ key: 1 }))
-    : createCommentVNode("v-if", true)
+    ? _cE("view", _uM({ key: 1 }))
+    : _cC("v-if", true)
 ])`
     )
   })
   test('increasing key: v-if + v-else-if + v-else', () => {
     assert(
       `<view><view v-if="ok"/><view v-else/><view v-if="another"/><view v-else-if="orNot"/><view v-else/></view>`,
-      `createElementVNode("view", null, [
+      `_cE("view", null, [
   isTrue(_ctx.ok)
-    ? createElementVNode("view", utsMapOf({ key: 0 }))
-    : createElementVNode("view", utsMapOf({ key: 1 })),
+    ? _cE("view", _uM({ key: 0 }))
+    : _cE("view", _uM({ key: 1 })),
   isTrue(_ctx.another)
-    ? createElementVNode("view", utsMapOf({ key: 2 }))
+    ? _cE("view", _uM({ key: 2 }))
     : isTrue(_ctx.orNot)
-      ? createElementVNode("view", utsMapOf({ key: 3 }))
-      : createElementVNode("view", utsMapOf({ key: 4 }))
+      ? _cE("view", _uM({ key: 3 }))
+      : _cE("view", _uM({ key: 4 }))
 ])`
     )
   })
@@ -203,46 +203,46 @@ describe('compiler: v-if', () => {
     assert(
       `<view v-if="ok" v-bind="obj"/>`,
       `isTrue(_ctx.ok)
-  ? createElementVNode("view", normalizeProps(mergeProps(utsMapOf({ key: 0 }), _ctx.obj)), null, 16 /* FULL_PROPS */)
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", normalizeProps(mergeProps(_uM({ key: 0 }), _ctx.obj)), null, 16 /* FULL_PROPS */)
+  : _cC("v-if", true)`
     )
   })
   test('key injection (before v-bind)', () => {
     assert(
       `<view v-if="ok" id="foo" v-bind="obj"/>`,
       `isTrue(_ctx.ok)
-  ? createElementVNode("view", mergeProps(utsMapOf({
+  ? _cE("view", mergeProps(_uM({
       key: 0,
       id: "foo"
     }), _ctx.obj), null, 16 /* FULL_PROPS */)
-  : createCommentVNode("v-if", true)`
+  : _cC("v-if", true)`
     )
   })
   test('key injection (after v-bind)', () => {
     assert(
       `<view v-if="ok" v-bind="obj" id="foo"/>`,
       `isTrue(_ctx.ok)
-  ? createElementVNode("view", mergeProps(utsMapOf({ key: 0 }), _ctx.obj, utsMapOf({ id: "foo" })), null, 16 /* FULL_PROPS */)
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", mergeProps(_uM({ key: 0 }), _ctx.obj, _uM({ id: "foo" })), null, 16 /* FULL_PROPS */)
+  : _cC("v-if", true)`
     )
   })
   test('avoid duplicate keys', () => {
     assert(
       `<view v-if="ok" key="custom_key" v-bind="obj"/>`,
       `isTrue(_ctx.ok)
-  ? createElementVNode("view", mergeProps(utsMapOf({ key: "custom_key" }), _ctx.obj), null, 16 /* FULL_PROPS */)
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", mergeProps(_uM({ key: "custom_key" }), _ctx.obj), null, 16 /* FULL_PROPS */)
+  : _cC("v-if", true)`
     )
   })
   test('with spaces between branches', () => {
     assert(
       `<view><text v-if="ok">1</text> <text v-else-if="orNot">2</text> <text v-else>3</text></view>`,
-      `createElementVNode("view", null, [
+      `_cE("view", null, [
   isTrue(_ctx.ok)
-    ? createElementVNode("text", utsMapOf({ key: 0 }), "1")
+    ? _cE("text", _uM({ key: 0 }), "1")
     : isTrue(_ctx.orNot)
-      ? createElementVNode("text", utsMapOf({ key: 1 }), "2")
-      : createElementVNode("text", utsMapOf({ key: 2 }), "3")
+      ? _cE("text", _uM({ key: 1 }), "2")
+      : _cE("text", _uM({ key: 2 }), "3")
 ])`
     )
   })
@@ -250,8 +250,8 @@ describe('compiler: v-if', () => {
     assert(
       `<view v-on="{ click: clickEvent }" v-if="true">w/ v-if</view>`,
       `true
-  ? createElementVNode("view", mergeProps(utsMapOf({ key: 0 }), toHandlers(utsMapOf({ click: _ctx.clickEvent }), true)), "w/ v-if", 16 /* FULL_PROPS */)
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", mergeProps(_uM({ key: 0 }), toHandlers(_uM({ click: _ctx.clickEvent }), true)), "w/ v-if", 16 /* FULL_PROPS */)
+  : _cC("v-if", true)`
     )
   })
 
@@ -259,82 +259,82 @@ describe('compiler: v-if', () => {
     assert(
       `<view v-if="true"/>`,
       `true
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="false"/>`,
       `false
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="a"/>`,
       `isTrue(_ctx.a)
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="1==1"/>`,
       `1==1
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="a==1"/>`,
       `_ctx.a==1
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="a===1"/>`,
       `_ctx.a===1
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="a!=1"/>`,
       `_ctx.a!=1
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="a!==1"/>`,
       `_ctx.a!==1
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="a<1"/>`,
       `_ctx.a<1
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="a>1"/>`,
       `_ctx.a>1
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="a<=1"/>`,
       `_ctx.a<=1
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="a>=1"/>`,
       `_ctx.a>=1
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)`
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)`
     )
     assert(
       `<view v-if="a>=1"/><view v-else-if="a>=2"/>`,
       `_ctx.a>=1
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
+  ? _cE("view", _uM({ key: 0 }))
   : _ctx.a>=2
-    ? createElementVNode("view", utsMapOf({ key: 1 }))
-    : createCommentVNode("v-if", true)`
+    ? _cE("view", _uM({ key: 1 }))
+    : _cC("v-if", true)`
     )
   })
 

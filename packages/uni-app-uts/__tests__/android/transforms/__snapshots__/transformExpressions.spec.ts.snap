@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`compiler: expression transform bindingMetadata inline mode 1`] = `"createElementVNode("view", null, toDisplayString(_ctx.props) + " " + toDisplayString(unref(setup)) + " " + toDisplayString(setupConst) + " " + toDisplayString(_ctx.data) + " " + toDisplayString(_ctx.options) + " " + toDisplayString(isNaN.value), 1 /* TEXT */)"`;
+exports[`compiler: expression transform bindingMetadata inline mode 1`] = `"_cE("view", null, _tD(_ctx.props) + " " + _tD(unref(setup)) + " " + _tD(setupConst) + " " + _tD(_ctx.data) + " " + _tD(_ctx.options) + " " + _tD(isNaN.value), 1 /* TEXT */)"`;
 
-exports[`compiler: expression transform bindingMetadata non-inline mode 1`] = `"createElementVNode("view", null, toDisplayString(_ctx.props) + " " + toDisplayString(_ctx.setup) + " " + toDisplayString(_ctx.data) + " " + toDisplayString(_ctx.options) + " " + toDisplayString(_ctx.isNaN), 1 /* TEXT */)"`;
+exports[`compiler: expression transform bindingMetadata non-inline mode 1`] = `"_cE("view", null, _tD(_ctx.props) + " " + _tD(_ctx.setup) + " " + _tD(_ctx.data) + " " + _tD(_ctx.options) + " " + _tD(_ctx.isNaN), 1 /* TEXT */)"`;
 
 exports[`compiler: expression transform bindingMetadata should not prefix temp variable of for loop 1`] = `
-"createElementVNode("view", utsMapOf({
+"_cE("view", _uM({
   onClick: () => {
           for (let i = 0; i < _ctx.list.length; i++) {
             _ctx.log(i)
@@ -15,7 +15,7 @@ exports[`compiler: expression transform bindingMetadata should not prefix temp v
 `;
 
 exports[`compiler: expression transform bindingMetadata should not prefix temp variable of for...in 1`] = `
-"createElementVNode("view", utsMapOf({
+"_cE("view", _uM({
   onClick: () => {
           for (const x in _ctx.list) {
             _ctx.log(x)
@@ -25,7 +25,7 @@ exports[`compiler: expression transform bindingMetadata should not prefix temp v
 `;
 
 exports[`compiler: expression transform bindingMetadata should not prefix temp variable of for...of 1`] = `
-"createElementVNode("view", utsMapOf({
+"_cE("view", _uM({
   onClick: () => {
           for (const x of _ctx.list) {
             _ctx.log(x)
