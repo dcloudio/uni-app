@@ -8,7 +8,7 @@ import {
   getBaseNodeTransforms,
   transformTapToClick,
 } from '@dcloudio/uni-cli-shared'
-import './runtimeHelpers'
+import { initRuntimeHelpersOnce } from './runtimeHelpers'
 
 import type { CodegenResult, TemplateCompilerOptions } from './options'
 import { generate } from './codegen'
@@ -89,6 +89,7 @@ export function compile(
   template: string,
   options: TemplateCompilerOptions
 ): CodegenResult {
+  initRuntimeHelpersOnce()
   options.rootDir = options.rootDir || ''
   options.targetLanguage = options.targetLanguage || 'kotlin'
   options.prefixIdentifiers =
