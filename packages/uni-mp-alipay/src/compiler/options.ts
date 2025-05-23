@@ -81,6 +81,7 @@ export const customElements = [
   'lottie',
   'join-group-chat',
   'subscribe-message',
+  'mpass-component',
 ]
 
 export const options: UniMiniProgramPluginOptions = {

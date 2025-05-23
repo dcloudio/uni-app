@@ -59,6 +59,18 @@ describe('mp-alipay: transform component', () => {
       blankScript
     )
   })
+  test('alipay open component - mpass-component', () => {
+    assert(
+      `<mpass-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"/>`,
+      `<mpass-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"/>`,
+      blankScript
+    )
+    assert(
+      `<mpass-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"></mpass-component>`,
+      `<mpass-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"></mpass-component>`,
+      blankScript
+    )
+  })
   test('alipay open component - root-portal', () => {
     assert(
       `<root-portal :enable="true"/>`,
