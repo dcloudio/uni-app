@@ -86,6 +86,10 @@ export function rewriteHidden(
     } else {
       hiddenBindingExpr = virtualHostHiddenPolyfill
     }
+  } else if (expr) {
+    hiddenBindingExpr = identifier(
+      rewriteExpression(bindingProp.exp!, context).content
+    )
   } else {
     // ignore rewrite without virtualHost
     return
