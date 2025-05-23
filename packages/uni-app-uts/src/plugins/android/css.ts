@@ -65,7 +65,8 @@ export function uniAppCssPrePlugin(): Plugin {
           const { code, messages } = await parse(cssCode, {
             filename,
             logLevel: 'ERROR',
-            mapOf: 'utsMapOf',
+            mapOf: '_uM',
+            padStyleMapOf: '_pS',
             chunk: 100,
             type: 'uvue',
             platform: process.env.UNI_UTS_PLATFORM,

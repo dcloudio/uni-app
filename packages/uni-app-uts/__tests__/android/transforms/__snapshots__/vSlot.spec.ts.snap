@@ -1,43 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`compiler: transform component slots dynamically named slots 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   [_ctx.one]: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
-  return [toDisplayString(foo), toDisplayString(_ctx.bar)]}),
+  return [_tD(foo), _tD(_ctx.bar)]}),
   [_ctx.two]: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const bar = slotProps["bar"]
-  return [toDisplayString(_ctx.foo), toDisplayString(bar)]}),
+  return [_tD(_ctx.foo), _tD(bar)]}),
   _: 2 /* DYNAMIC */
 }), 1024 /* DYNAMIC_SLOTS */)"
 `;
 
 exports[`compiler: transform component slots implicit default slot 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   default: withSlotCtx((): any[] => [
-    createElementVNode("view")
+    _cE("view")
   ]),
   _: 1 /* STABLE */
 }))"
 `;
 
 exports[`compiler: transform component slots named slot with v-for w/ prefixIdentifiers: true 1`] = `
-"createVNode(_component_Comp, null, createSlots(utsMapOf({ _: 2 /* DYNAMIC */ }), [
+"_cV(_component_Comp, null, createSlots(_uM({ _: 2 /* DYNAMIC */ }), [
   RenderHelpers.renderList(_ctx.list, (name, __key, __item, _cached): any => {
-    return utsMapOf({
+    return _uM({
       name: name,
-      fn: withSlotCtx((): any[] => [toDisplayString(name)])
+      fn: withSlotCtx((): any[] => [_tD(name)])
     })
   })
 ]), 1024 /* DYNAMIC_SLOTS */)"
 `;
 
 exports[`compiler: transform component slots named slot with v-if + prefixIdentifiers: true 1`] = `
-"createVNode(_component_Comp, null, createSlots(utsMapOf({ _: 2 /* DYNAMIC */ }), [
+"_cV(_component_Comp, null, createSlots(_uM({ _: 2 /* DYNAMIC */ }), [
   isTrue(_ctx.ok)
-    ? utsMapOf({
+    ? _uM({
         name: "one",
-        fn: withScopedSlotCtx((props: Record<string, any | null>): any[] => [toDisplayString(props)]),
+        fn: withScopedSlotCtx((props: Record<string, any | null>): any[] => [_tD(props)]),
         key: "0"
       })
     : null
@@ -45,20 +45,20 @@ exports[`compiler: transform component slots named slot with v-if + prefixIdenti
 `;
 
 exports[`compiler: transform component slots named slot with v-if + v-else-if + v-else 1`] = `
-"createVNode(_component_Comp, null, createSlots(utsMapOf({ _: 2 /* DYNAMIC */ }), [
+"_cV(_component_Comp, null, createSlots(_uM({ _: 2 /* DYNAMIC */ }), [
   isTrue(ok)
-    ? utsMapOf({
+    ? _uM({
         name: "one",
         fn: withSlotCtx((): any[] => ["foo"]),
         key: "0"
       })
     : isTrue(orNot)
-      ? utsMapOf({
+      ? _uM({
           name: "two",
           fn: withScopedSlotCtx((props: Record<string, any | null>): any[] => ["bar"]),
           key: "1"
         })
-      : utsMapOf({
+      : _uM({
           name: "one",
           fn: withSlotCtx((): any[] => ["baz"]),
           key: "2"
@@ -67,9 +67,9 @@ exports[`compiler: transform component slots named slot with v-if + v-else-if + 
 `;
 
 exports[`compiler: transform component slots named slot with v-if 1`] = `
-"createVNode(_component_Comp, null, createSlots(utsMapOf({ _: 2 /* DYNAMIC */ }), [
+"_cV(_component_Comp, null, createSlots(_uM({ _: 2 /* DYNAMIC */ }), [
   isTrue(ok)
-    ? utsMapOf({
+    ? _uM({
         name: "one",
         fn: withSlotCtx((): any[] => ["hello"]),
         key: "0"
@@ -79,88 +79,88 @@ exports[`compiler: transform component slots named slot with v-if 1`] = `
 `;
 
 exports[`compiler: transform component slots named slots w/ implicit default slot 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   one: withSlotCtx((): any[] => ["foo"]),
   default: withSlotCtx((): any[] => [
     "bar",
-    createElementVNode("span")
+    _cE("span")
   ]),
   _: 1 /* STABLE */
 }))"
 `;
 
 exports[`compiler: transform component slots nested slots scoping 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   default: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
   return [
-    createVNode(_component_Inner, null, utsMapOf({
+    _cV(_component_Inner, null, _uM({
       default: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
       const bar = slotProps["bar"]
-      return [toDisplayString(foo), toDisplayString(bar), toDisplayString(_ctx.baz)]}),
+      return [_tD(foo), _tD(bar), _tD(_ctx.baz)]}),
       _: 2 /* DYNAMIC */
     }), 1024 /* DYNAMIC_SLOTS */),
     " ",
-    toDisplayString(foo),
-    toDisplayString(_ctx.bar),
-    toDisplayString(_ctx.baz)
+    _tD(foo),
+    _tD(_ctx.bar),
+    _tD(_ctx.baz)
   ]}),
   _: 1 /* STABLE */
 }))"
 `;
 
 exports[`compiler: transform component slots on component dynamically named slot 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   [_ctx.named]: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
-  return [toDisplayString(foo), toDisplayString(_ctx.bar)]}),
+  return [_tD(foo), _tD(_ctx.bar)]}),
   _: 2 /* DYNAMIC */
 }), 1024 /* DYNAMIC_SLOTS */)"
 `;
 
 exports[`compiler: transform component slots on component named slot 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   named: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
-  return [toDisplayString(foo), toDisplayString(_ctx.bar)]}),
+  return [_tD(foo), _tD(_ctx.bar)]}),
   _: 1 /* STABLE */
 }))"
 `;
 
 exports[`compiler: transform component slots on-component default slot 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   default: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
-  return [toDisplayString(foo), toDisplayString(_ctx.bar)]}),
+  return [_tD(foo), _tD(_ctx.bar)]}),
   _: 1 /* STABLE */
 }))"
 `;
 
 exports[`compiler: transform component slots template named slots 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   one: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
-  return [toDisplayString(foo), toDisplayString(_ctx.bar)]}),
+  return [_tD(foo), _tD(_ctx.bar)]}),
   two: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const bar = slotProps["bar"]
-  return [toDisplayString(_ctx.foo), toDisplayString(bar)]}),
+  return [_tD(_ctx.foo), _tD(bar)]}),
   _: 1 /* STABLE */
 }))"
 `;
 
 exports[`compiler: transform component slots with whitespace: 'preserve' implicit default slot 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   header: withSlotCtx((): any[] => [" Header "]),
   default: withSlotCtx((): any[] => [
     " ",
-    createElementVNode("view")
+    _cE("view")
   ]),
   _: 1 /* STABLE */
 }))"
 `;
 
 exports[`compiler: transform component slots with whitespace: 'preserve' named default slot + implicit whitespace content 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   header: withSlotCtx((): any[] => [" Header "]),
   default: withSlotCtx((): any[] => [" Default "]),
   _: 1 /* STABLE */
@@ -168,7 +168,7 @@ exports[`compiler: transform component slots with whitespace: 'preserve' named d
 `;
 
 exports[`compiler: transform component slots with whitespace: 'preserve' should not generate whitespace only default slot 1`] = `
-"createVNode(_component_Comp, null, utsMapOf({
+"_cV(_component_Comp, null, _uM({
   header: withSlotCtx((): any[] => [" Header "]),
   footer: withSlotCtx((): any[] => [" Footer "]),
   _: 1 /* STABLE */

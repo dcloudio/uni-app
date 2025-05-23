@@ -2,68 +2,68 @@
 
 exports[`compiler: v-if codegen basic v-if 1`] = `
 "isTrue(ok)
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)"
+  ? _cE("view", _uM({ key: 0 }))
+  : _cC("v-if", true)"
 `;
 
 exports[`compiler: v-if codegen increasing key: v-if + v-else-if + v-else 1`] = `
-"createElementVNode(Fragment, null, [
+"_cE(Fragment, null, [
   isTrue(ok)
-    ? createElementVNode("view", utsMapOf({ key: 0 }))
-    : createElementVNode("p", utsMapOf({ key: 1 })),
+    ? _cE("view", _uM({ key: 0 }))
+    : _cE("p", _uM({ key: 1 })),
   isTrue(another)
-    ? createElementVNode("view", utsMapOf({ key: 2 }))
+    ? _cE("view", _uM({ key: 2 }))
     : isTrue(orNot)
-      ? createElementVNode("p", utsMapOf({ key: 3 }))
-      : createElementVNode("p", utsMapOf({ key: 4 }))
+      ? _cE("p", _uM({ key: 3 }))
+      : _cE("p", _uM({ key: 4 }))
 ], 64 /* STABLE_FRAGMENT */)"
 `;
 
 exports[`compiler: v-if codegen multiple v-if that are sibling nodes should have different keys 1`] = `
-"createElementVNode(Fragment, null, [
+"_cE(Fragment, null, [
   isTrue(ok)
-    ? createElementVNode("view", utsMapOf({ key: 0 }))
-    : createCommentVNode("v-if", true),
+    ? _cE("view", _uM({ key: 0 }))
+    : _cC("v-if", true),
   isTrue(orNot)
-    ? createElementVNode("p", utsMapOf({ key: 1 }))
-    : createCommentVNode("v-if", true)
+    ? _cE("p", _uM({ key: 1 }))
+    : _cC("v-if", true)
 ], 64 /* STABLE_FRAGMENT */)"
 `;
 
 exports[`compiler: v-if codegen template v-if 1`] = `
 "isTrue(ok)
-  ? createElementVNode(Fragment, utsMapOf({ key: 0 }), [
-      createElementVNode("view"),
+  ? _cE(Fragment, _uM({ key: 0 }), [
+      _cE("view"),
       "hello",
-      createElementVNode("p")
+      _cE("p")
     ], 64 /* STABLE_FRAGMENT */)
-  : createCommentVNode("v-if", true)"
+  : _cC("v-if", true)"
 `;
 
 exports[`compiler: v-if codegen v-if + v-else 1`] = `
 "isTrue(ok)
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
-  : createElementVNode("p", utsMapOf({ key: 1 }))"
+  ? _cE("view", _uM({ key: 0 }))
+  : _cE("p", _uM({ key: 1 }))"
 `;
 
 exports[`compiler: v-if codegen v-if + v-else-if + v-else 1`] = `
 "isTrue(ok)
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
+  ? _cE("view", _uM({ key: 0 }))
   : isTrue(orNot)
-    ? createElementVNode("p", utsMapOf({ key: 1 }))
-    : createElementVNode(Fragment, utsMapOf({ key: 2 }), ["fine"], 64 /* STABLE_FRAGMENT */)"
+    ? _cE("p", _uM({ key: 1 }))
+    : _cE(Fragment, _uM({ key: 2 }), ["fine"], 64 /* STABLE_FRAGMENT */)"
 `;
 
 exports[`compiler: v-if codegen v-if + v-else-if 1`] = `
 "isTrue(ok)
-  ? createElementVNode("view", utsMapOf({ key: 0 }))
+  ? _cE("view", _uM({ key: 0 }))
   : isTrue(orNot)
-    ? createElementVNode("p", utsMapOf({ key: 1 }))
-    : createCommentVNode("v-if", true)"
+    ? _cE("p", _uM({ key: 1 }))
+    : _cC("v-if", true)"
 `;
 
 exports[`compiler: v-if codegen v-if on <slot/> 1`] = `
 "isTrue(ok)
-  ? renderSlot($slots, "default", utsMapOf({ key: 0 }))
-  : createCommentVNode("v-if", true)"
+  ? renderSlot($slots, "default", _uM({ key: 0 }))
+  : _cC("v-if", true)"
 `;

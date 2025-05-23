@@ -2,16 +2,16 @@ import { assert } from './testUtils'
 
 describe('compiler:codegen', () => {
   test('default', () => {
-    assert(`<view/>`, `createElementVNode("view")`)
+    assert(`<view/>`, `_cE("view")`)
     assert(
       `<view style="width:100px;height:100px;"/>`,
-      `createElementVNode("view", utsMapOf({
-  style: normalizeStyle(utsMapOf({"width":"100px","height":"100px"}))
+      `_cE("view", _uM({
+  style: _nS(_uM({"width":"100px","height":"100px"}))
 }), null, 4 /* STYLE */)`
     )
     assert(
       `<text>{{msg}}</text>`,
-      `createElementVNode("text", null, toDisplayString(_ctx.msg), 1 /* TEXT */)`
+      `_cE("text", null, _tD(_ctx.msg), 1 /* TEXT */)`
     )
   })
   test('remove comments', () => {
@@ -19,7 +19,7 @@ describe('compiler:codegen', () => {
       `<view>
   <!-- comment -->
 </view>`,
-      `createElementVNode("view")`
+      `_cE("view")`
     )
     assert(
       `<view>
@@ -27,8 +27,8 @@ describe('compiler:codegen', () => {
   <text>test</text>
   <!-- comment2 -->
 </view>`,
-      `createElementVNode("view", null, [
-  createElementVNode("text", null, "test")
+      `_cE("view", null, [
+  _cE("text", null, "test")
 ])`
     )
   })
@@ -38,7 +38,7 @@ describe('compiler:codegen', () => {
       `function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
-  return createElementVNode("view")
+  return _cE("view")
 }`,
       {
         mode: 'module',
@@ -52,9 +52,9 @@ const _cache = this.$.renderCache
 function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
-  return createElementVNode("view", null, [
-    createElementVNode(UtsHelloComponent.name),
-    createElementVNode(UtsHelloComponent.name)
+  return _cE("view", null, [
+    _cE(UtsHelloComponent.name),
+    _cE(UtsHelloComponent.name)
   ])
 }`,
       {
@@ -77,10 +77,10 @@ import { UtsHello1Component } from '@/uni_modules/uts-hello'
 function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
-  return createElementVNode("view", null, [
-    createElementVNode(UtsHelloComponent.name),
-    createElementVNode(UtsHelloComponent.name),
-    createElementVNode(UtsHello1Component.name)
+  return _cE("view", null, [
+    _cE(UtsHelloComponent.name),
+    _cE(UtsHelloComponent.name),
+    _cE(UtsHello1Component.name)
   ])
 }`,
       {
@@ -117,12 +117,12 @@ const _component_custom1 = resolveEasyComponent("custom1",_easycom_custom1)
 const _component_index = resolveEasyComponent("index",_easycom_index)
 const _component_index1 = resolveComponent("index1")
 
-  return createElementVNode("view", null, [
-    createVNode(_component_custom),
-    createVNode(_component_custom),
-    createVNode(_component_custom1),
-    createVNode(_component_index),
-    createVNode(_component_index1)
+  return _cE("view", null, [
+    _cV(_component_custom),
+    _cV(_component_custom),
+    _cV(_component_custom1),
+    _cV(_component_index),
+    _cV(_component_index1)
   ])
 }`,
       {
@@ -141,7 +141,7 @@ const _ctx = this
 const _cache = this.$.renderCache
 const _component_index = resolveComponent("index", true)
 
-  return createVNode(_component_index)
+  return _cV(_component_index)
 }`,
       {
         mode: 'module',
@@ -163,14 +163,14 @@ const _component_custom1 = resolveEasyComponent("custom1",_easycom_custom1)
 const _component_index = resolveEasyComponent("index",_easycom_index)
 const _component_index1 = resolveComponent("index1")
 
-  return createElementVNode("view", null, [
-    createElementVNode(UtsHelloComponent.name),
-    createElementVNode(UtsHelloComponent.name),
-    createVNode(_component_custom),
-    createVNode(_component_custom),
-    createVNode(_component_custom1),
-    createVNode(_component_index),
-    createVNode(_component_index1)
+  return _cE("view", null, [
+    _cE(UtsHelloComponent.name),
+    _cE(UtsHelloComponent.name),
+    _cV(_component_custom),
+    _cV(_component_custom),
+    _cV(_component_custom1),
+    _cV(_component_index),
+    _cV(_component_index1)
   ])
 }`,
       {
@@ -199,7 +199,7 @@ const _component_index1 = resolveComponent("index1")
 function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
-  return createElementVNode(\"image\", utsMapOf({ src: _imports_0 }))
+  return _cE(\"image\", _uM({ src: _imports_0 }))
 }`,
       {
         mode: 'module',

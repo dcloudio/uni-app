@@ -1,4 +1,12 @@
-import { registerRuntimeHelpers } from '@vue/compiler-core'
+import {
+  CREATE_COMMENT,
+  CREATE_ELEMENT_VNODE,
+  CREATE_VNODE,
+  NORMALIZE_CLASS,
+  NORMALIZE_STYLE,
+  TO_DISPLAY_STRING,
+  registerRuntimeHelpers,
+} from '@vue/compiler-core'
 export const IS_TRUE = Symbol(`isTrue`)
 export const V_SHOW = Symbol(`vShow`)
 export const RENDER_LIST = Symbol(`renderList`)
@@ -39,4 +47,10 @@ registerRuntimeHelpers({
   [TRY_SET_REF_VALUE]: `trySetRefValue`,
   [TRY_UPDATE_REF_NUMBER]: `tryUpdateRefNumber`,
   [LOOSE_TO_NUMBER]: `looseToNumber`,
+  [CREATE_VNODE]: `_cV`,
+  [CREATE_ELEMENT_VNODE]: `_cE`,
+  [CREATE_COMMENT]: `_cC`,
+  [TO_DISPLAY_STRING]: `_tD`,
+  [NORMALIZE_CLASS]: `_nC`,
+  [NORMALIZE_STYLE]: `_nS`,
 })

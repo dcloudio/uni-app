@@ -46,93 +46,93 @@ describe('compiler: v-bind', () => {
   test('basic', () => {
     assert(
       `<view v-bind:id="id"/>`,
-      `createElementVNode("view", utsMapOf({ id: _ctx.id }), null, 8 /* PROPS */, ["id"])`
+      `_cE("view", _uM({ id: _ctx.id }), null, 8 /* PROPS */, ["id"])`
     )
   })
   test('object expression', () => {
     assert(
       `<view v-bind="{id}"/>`,
-      `createElementVNode("view", normalizeProps(guardReactiveProps(utsMapOf({id: _ctx.id}))), null, 16 /* FULL_PROPS */)`
+      `_cE("view", normalizeProps(guardReactiveProps(_uM({id: _ctx.id}))), null, 16 /* FULL_PROPS */)`
     )
   })
   test('dynamic arg', () => {
     assert(
       `<view v-bind:[id]="id"/>`,
-      `createElementVNode("view", normalizeProps(utsMapOf({ [_ctx.id !== null ? _ctx.id : ""]: _ctx.id })), null, 16 /* FULL_PROPS */)`
+      `_cE("view", normalizeProps(_uM({ [_ctx.id !== null ? _ctx.id : ""]: _ctx.id })), null, 16 /* FULL_PROPS */)`
     )
   })
   test('.camel modifier', () => {
     assert(
       `<view v-bind:foo-bar.camel="id"/>`,
-      `createElementVNode("view", utsMapOf({ fooBar: _ctx.id }), null, 8 /* PROPS */, ["fooBar"])`
+      `_cE("view", _uM({ fooBar: _ctx.id }), null, 8 /* PROPS */, ["fooBar"])`
     )
   })
   test('.camel modifier w/ dynamic arg', () => {
     assert(
       `<view v-bind:[foo].camel="id"/>`,
-      `createElementVNode("view", normalizeProps(utsMapOf({ [camelize(_ctx.foo !== null ? _ctx.foo : "")]: _ctx.id })), null, 16 /* FULL_PROPS */)`
+      `_cE("view", normalizeProps(_uM({ [camelize(_ctx.foo !== null ? _ctx.foo : "")]: _ctx.id })), null, 16 /* FULL_PROPS */)`
     )
   })
   test('.prop modifier', () => {
     assert(
       `<view v-bind:className.prop="className"/>`,
-      `createElementVNode("view", utsMapOf({ ".className": _ctx.className }), null, 40 /* PROPS, NEED_HYDRATION */, [".className"])`
+      `_cE("view", _uM({ ".className": _ctx.className }), null, 40 /* PROPS, NEED_HYDRATION */, [".className"])`
     )
   })
   test('.prop modifier w/ dynamic arg', () => {
     assert(
       `<view v-bind:[fooBar].prop="className"/>`,
-      'createElementVNode("view", normalizeProps(utsMapOf({ [`.${_ctx.fooBar !== null ? _ctx.fooBar : ""}`]: _ctx.className })), null, 48 /* FULL_PROPS, NEED_HYDRATION */)'
+      '_cE("view", normalizeProps(_uM({ [`.${_ctx.fooBar !== null ? _ctx.fooBar : ""}`]: _ctx.className })), null, 48 /* FULL_PROPS, NEED_HYDRATION */)'
     )
   })
   test('.prop modifier (shorthand)', () => {
     assert(
       `<view .className="className"/>`,
-      'createElementVNode("view", utsMapOf({ ".className": _ctx.className }), null, 40 /* PROPS, NEED_HYDRATION */, [".className"])'
+      '_cE("view", _uM({ ".className": _ctx.className }), null, 40 /* PROPS, NEED_HYDRATION */, [".className"])'
     )
   })
   test('.attr modifier', () => {
     assert(
       `<view v-bind:foo-bar.attr="id"/>`,
-      'createElementVNode("view", utsMapOf({ "^foo-bar": _ctx.id }), null, 8 /* PROPS */, ["^foo-bar"])'
+      '_cE("view", _uM({ "^foo-bar": _ctx.id }), null, 8 /* PROPS */, ["^foo-bar"])'
     )
   })
   test('simple expression', () => {
     assert(
       `<view v-bind:class="{'box': true}"></view>`,
-      `createElementVNode("view", utsMapOf({
-  class: normalizeClass(utsMapOf({'box': true}))
+      `_cE("view", _uM({
+  class: _nC(_uM({'box': true}))
 }), null, 2 /* CLASS */)`
     )
   })
   test('simple expression with array', () => {
     assert(
       `<view v-bind:class="[classA, {classB: true, classC: false}]"></view>`,
-      `createElementVNode("view", utsMapOf({
-  class: normalizeClass([_ctx.classA, utsMapOf({classB: true, classC: false})])
+      `_cE("view", _uM({
+  class: _nC([_ctx.classA, _uM({classB: true, classC: false})])
 }), null, 2 /* CLASS */)`
     )
   })
   test('simple expression with array with variable', () => {
     assert(
       `<view v-bind:class="[classA, {[classB]: true, [classC]: false}]"></view>`,
-      `createElementVNode("view", utsMapOf({
-  class: normalizeClass([_ctx.classA, utsMapOf({[_ctx.classB]: true, [_ctx.classC]: false})])
+      `_cE("view", _uM({
+  class: _nC([_ctx.classA, _uM({[_ctx.classB]: true, [_ctx.classC]: false})])
 }), null, 2 /* CLASS */)`
     )
   })
   test('simple expression with object', () => {
     assert(
       `<view :style="{color: true ? 'blue' : 'red'}"></view>`,
-      `createElementVNode("view", utsMapOf({
-  style: normalizeStyle(utsMapOf({color: true ? 'blue' : 'red'}))
+      `_cE("view", _uM({
+  style: _nS(_uM({color: true ? 'blue' : 'red'}))
 }), null, 4 /* STYLE */)`
     )
   })
   test('complex expression', () => {
     assert(
       `<rich-text :nodes="[{'name':'div','attrs':{'class':'div-class','style':'line-height: 60px; color: red; text-align:center;'},'children':[{'type':'text','text':'this is text'}]}]" />`,
-      `createElementVNode("rich-text", utsMapOf({ nodes: [utsMapOf({'name':'div','attrs':utsMapOf({'class':'div-class','style':'line-height: 60px; color: red; text-align:center;'}),'children':[utsMapOf({'type':'text','text':'this is text'})]})] }), null, 8 /* PROPS */, ["nodes"])`
+      `_cE("rich-text", _uM({ nodes: [_uM({'name':'div','attrs':_uM({'class':'div-class','style':'line-height: 60px; color: red; text-align:center;'}),'children':[_uM({'type':'text','text':'this is text'})]})] }), null, 8 /* PROPS */, ["nodes"])`
     )
   })
   test('empty object syntax with \n', () => {
@@ -152,16 +152,16 @@ describe('compiler: v-bind', () => {
     }
   ]"
 />`,
-      `createElementVNode("rich-text", utsMapOf({ nodes: [
-    utsMapOf({
+      `_cE("rich-text", _uM({ nodes: [
+    _uM({
       'name': 'div',
-      'attrs': utsMapOf({
+      'attrs': _uM({
         'class': 'div-class',
         'style': 'line-height: 60px; color: red; text-align:center;'
       }),
       'children': [
-        utsMapOf({ 'type': 'text', 'text': 'this is text' }),
-        utsMapOf({ 'type': 'text', 'text': 'this is text' }),
+        _uM({ 'type': 'text', 'text': 'this is text' }),
+        _uM({ 'type': 'text', 'text': 'this is text' }),
       ]
     })
   ] }), null, 8 /* PROPS */, ["nodes"])`
@@ -171,8 +171,8 @@ describe('compiler: v-bind', () => {
     assert(
       `<text :style="{
     }" />`,
-      `createElementVNode("text", utsMapOf({
-  style: normalizeStyle(utsMapOf<string, any | null>({
+      `_cE("text", _uM({
+  style: _nS(_uM<string, any | null>({
     }))
 }), null, 4 /* STYLE */)`
     )
@@ -181,10 +181,10 @@ describe('compiler: v-bind', () => {
     assert(
       `<view class="search" @click="toSearchPage" :style="{'width':700 +'rpx',
       'top':0 +'px'}" />`,
-      `createElementVNode("view", utsMapOf({
+      `_cE("view", _uM({
   class: "search",
   onClick: _ctx.toSearchPage,
-  style: normalizeStyle(utsMapOf({'width':700 +'rpx',
+  style: _nS(_uM({'width':700 +'rpx',
       'top':0 +'px'}))
 }), null, 12 /* STYLE, PROPS */, ["onClick"])`
     )
@@ -192,37 +192,37 @@ describe('compiler: v-bind', () => {
   test('object value width all number expression', () => {
     assert(
       `<view class="search" @click="toSearchPage" :style="{'opacity': 1 + 1}" />`,
-      `createElementVNode("view", utsMapOf({
+      `_cE("view", _uM({
   class: "search",
   onClick: _ctx.toSearchPage,
-  style: normalizeStyle(utsMapOf({'opacity': 1 + 1}))
+  style: _nS(_uM({'opacity': 1 + 1}))
 }), null, 12 /* STYLE, PROPS */, ["onClick"])`
     )
   })
   test('object value width expression (with data)', () => {
     assert(
       `<view :style="{'opacity': count > 0.3 ? 1 : count * 3, 'color': 'red'}" />`,
-      `createElementVNode("view", utsMapOf({
-  style: normalizeStyle(utsMapOf({'opacity': _ctx.count > 0.3 ? 1 : _ctx.count * 3, 'color': 'red'}))
+      `_cE("view", _uM({
+  style: _nS(_uM({'opacity': _ctx.count > 0.3 ? 1 : _ctx.count * 3, 'color': 'red'}))
 }), null, 4 /* STYLE */)`
     )
   })
   test('prop with type object', () => {
     assert(
       `<Foo :obj="{name: 'name'}" />`,
-      `createVNode(_component_Foo, utsMapOf({ obj: {name: 'name'} }))`
+      `_cV(_component_Foo, _uM({ obj: {name: 'name'} }))`
     )
   })
   test('v-bind all props', () => {
     assert(
       `<Foo v-bind="{name: 'name', age: 18, obj: {key: 'value'}}" />`,
-      `createVNode(_component_Foo, normalizeProps(guardReactiveProps(utsMapOf({name: 'name', age: 18, obj: {key: 'value'}}))), null, 16 /* FULL_PROPS */)`
+      `_cV(_component_Foo, normalizeProps(guardReactiveProps(_uM({name: 'name', age: 18, obj: {key: 'value'}}))), null, 16 /* FULL_PROPS */)`
     )
   })
   test('v-bind all props with variable', () => {
     assert(
       `<Foo v-bind="allProps" />`,
-      `createVNode(_component_Foo, normalizeProps(guardReactiveProps(_ctx.allProps)), null, 16 /* FULL_PROPS */)`
+      `_cV(_component_Foo, normalizeProps(guardReactiveProps(_ctx.allProps)), null, 16 /* FULL_PROPS */)`
     )
   })
 

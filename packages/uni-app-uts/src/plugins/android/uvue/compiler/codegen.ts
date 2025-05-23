@@ -697,10 +697,10 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   const { push, indent, deindent, newline } = context
   const { properties } = node
   if (!properties.length) {
-    push(`utsMapOf()`, node)
+    push(`_uM()`, node)
     return
   }
-  push(`utsMapOf(`)
+  push(`_uM(`)
   const multilines =
     properties.length > 1 ||
     properties.some((p) => p.value.type !== NodeTypes.SIMPLE_EXPRESSION)

@@ -39,31 +39,31 @@ describe('compiler: v-on', () => {
   test('basic', () => {
     assert(
       `<text v-on:click="() => console.log('v-on:click')"/>`,
-      `createElementVNode("text", utsMapOf({
+      `_cE("text", _uM({
   onClick: () => console.log('v-on:click')
 }), null, 8 /* PROPS */, ["onClick"])`
     )
     assert(
       `<text v-on:click="onClick"/>`,
-      `createElementVNode("text", utsMapOf({ onClick: _ctx.onClick }), null, 8 /* PROPS */, ["onClick"])`
+      `_cE("text", _uM({ onClick: _ctx.onClick }), null, 8 /* PROPS */, ["onClick"])`
     )
   })
   test('dynamic arg', () => {
     assert(
       `<text v-on:[event]="handler"/>`,
-      `createElementVNode("text", utsMapOf({ [toHandlerKey(_ctx.event)]: _ctx.handler }), null, 16 /* FULL_PROPS */)`
+      `_cE("text", _uM({ [toHandlerKey(_ctx.event)]: _ctx.handler }), null, 16 /* FULL_PROPS */)`
     )
   })
   test('dynamic arg with complex exp', () => {
     assert(
       `<text v-on:[event(foo)]="handler"/>`,
-      `createElementVNode("text", utsMapOf({ [toHandlerKey(_ctx.event(_ctx.foo))]: _ctx.handler }), null, 16 /* FULL_PROPS */)`
+      `_cE("text", _uM({ [toHandlerKey(_ctx.event(_ctx.foo))]: _ctx.handler }), null, 16 /* FULL_PROPS */)`
     )
   })
   test('shorthand', () => {
     assert(
       `<text @click="() => console.warn('@click')"/>`,
-      `createElementVNode("text", utsMapOf({
+      `_cE("text", _uM({
   onClick: () => console.warn('@click')
 }), null, 8 /* PROPS */, ["onClick"])`
     )
@@ -71,7 +71,7 @@ describe('compiler: v-on', () => {
   test('inline statement handler', () => {
     assert(
       `<text @click="count++"/>`,
-      `createElementVNode("text", utsMapOf({
+      `_cE("text", _uM({
   onClick: () => {_ctx.count++}
 }), null, 8 /* PROPS */, ["onClick"])`
     )
@@ -79,7 +79,7 @@ describe('compiler: v-on', () => {
   test('should handle multi-line statement', () => {
     assert(
       `<text @click="\nfoo();\nbar()\n"/>`,
-      `createElementVNode(\"text\", utsMapOf({
+      `_cE(\"text\", _uM({
   onClick: () => {
 _ctx.foo();
 _ctx.bar()
@@ -88,7 +88,7 @@ _ctx.bar()
     )
     assert(
       `<text @click="a.get('b' + c)()"/>`,
-      `createElementVNode("text", utsMapOf({
+      `_cE("text", _uM({
   onClick: () => {_ctx.a.get('b' + _ctx.c)()}
 }), null, 8 /* PROPS */, [\"onClick\"])`
     )
@@ -96,7 +96,7 @@ _ctx.bar()
   test('inline statement with argument $event', () => {
     assert(
       `<text @click="foo($event as MouseEvent)"/>`,
-      `createElementVNode(\"text\", utsMapOf({
+      `_cE(\"text\", _uM({
   onClick: ($event: any) => {_ctx.foo($event as MouseEvent)}
 }), null, 8 /* PROPS */, [\"onClick\"])`
     )
@@ -104,7 +104,7 @@ _ctx.bar()
   test('should NOT wrap as function if expression is already function expression', () => {
     assert(
       `<text @click="($event: MouseEvent) => foo($event)"/>`,
-      `createElementVNode(\"text\", utsMapOf({
+      `_cE(\"text\", _uM({
   onClick: ($event: MouseEvent) => _ctx.foo($event)
 }), null, 8 /* PROPS */, [\"onClick\"])`
     )
@@ -116,7 +116,7 @@ _ctx.bar()
         foo($event)
       }
     "/>`,
-      `createElementVNode(\"text\", utsMapOf({
+      `_cE(\"text\", _uM({
   onClick: 
       ($event: MouseEvent) => {
         _ctx.foo($event)
@@ -132,7 +132,7 @@ _ctx.bar()
         foo($event)
       }
     "/>`,
-      `createElementVNode(\"text\", utsMapOf({
+      `_cE(\"text\", _uM({
   onClick: 
       function($event: MouseEvent) {
         _ctx.foo($event)
@@ -144,7 +144,7 @@ _ctx.bar()
   test('should NOT wrap as function if expression is complex member expression', () => {
     assert(
       `<text @click="a['b' + c]"/>`,
-      `createElementVNode("text", utsMapOf({
+      `_cE("text", _uM({
   onClick: _ctx.a['b' + _ctx.c]
 }), null, 8 /* PROPS */, [\"onClick\"])`
     )
@@ -152,7 +152,7 @@ _ctx.bar()
   test('case conversion for vnode hooks', () => {
     assert(
       `<text v-on:vue:mounted="onMount" @vue:before-update="onBeforeUpdate" />`,
-      `createElementVNode("text", utsMapOf({
+      `_cE("text", _uM({
   onVnodeMounted: _ctx.onMount,
   onVnodeBeforeUpdate: _ctx.onBeforeUpdate
 }), null, 8 /* PROPS */, ["onVnodeMounted", "onVnodeBeforeUpdate"])`
@@ -161,13 +161,13 @@ _ctx.bar()
   test('inline function expression handler', () => {
     assert(
       `<text v-on:click="() => foo()" />`,
-      `createElementVNode("text", utsMapOf({
+      `_cE("text", _uM({
   onClick: () => _ctx.foo()
 }), null, 8 /* PROPS */, ["onClick"])`
     )
     assert(
       `<input @input="$emit('update:modelValue', $event.detail.value)" />`,
-      `createElementVNode("input", utsMapOf({
+      `_cE("input", _uM({
   onInput: ($event: UniInputEvent) => {_ctx.$emit('update:modelValue', $event.detail.value)}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["onInput"])`
     )
@@ -175,31 +175,31 @@ _ctx.bar()
   test('object syntax', () => {
     assert(
       `<text v-on="{mousedown: doThis, mouseup: doThat}"/>`,
-      `createElementVNode("text", toHandlers(utsMapOf({mousedown: _ctx.doThis, mouseup: _ctx.doThat}), true), null, 16 /* FULL_PROPS */)`
+      `_cE("text", toHandlers(_uM({mousedown: _ctx.doThis, mouseup: _ctx.doThat}), true), null, 16 /* FULL_PROPS */)`
     )
   })
   test('empty object syntax', () => {
     assert(
       `<text v-on="{ }"/>`,
-      `createElementVNode("text", toHandlers(utsMapOf<string, any | null>({ }), true), null, 16 /* FULL_PROPS */)`
+      `_cE("text", toHandlers(_uM<string, any | null>({ }), true), null, 16 /* FULL_PROPS */)`
     )
   })
   test('simple object syntax', () => {
     assert(
       `<text v-on="{'a':'aaa'}"/>`,
-      `createElementVNode("text", toHandlers(utsMapOf({'a':'aaa'}), true), null, 16 /* FULL_PROPS */)`
+      `_cE("text", toHandlers(_uM({'a':'aaa'}), true), null, 16 /* FULL_PROPS */)`
     )
   })
   test('parameter with type', () => {
     assert(
       `<text @click="(e: any) => click(e)" />`,
-      `createElementVNode(\"text\", utsMapOf({
+      `_cE(\"text\", _uM({
   onClick: (e: any) => _ctx.click(e)
 }), null, 8 /* PROPS */, [\"onClick\"])`
     )
     assert(
       `<textarea @input="(e: any) => input(e)" />`,
-      `createElementVNode(\"textarea\", utsMapOf({
+      `_cE(\"textarea\", _uM({
   onInput: (e: any) => _ctx.input(e)
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"onInput\"])`
     )

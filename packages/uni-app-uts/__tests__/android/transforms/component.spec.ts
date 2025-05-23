@@ -9,8 +9,8 @@ const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
 
-  return createElementVNode("view", null, [
-    createVNode(_component_Foo)
+  return _cE("view", null, [
+    _cV(_component_Foo)
   ])
 }`,
       {
