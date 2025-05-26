@@ -6,15 +6,10 @@ import {
 } from '../service/framework/page'
 import * as components from './components'
 
-import { systemRoutes as __uniSystemRoutes } from './framework/route'
-
-//#if _APP_IOS_
-import { registerSystemPages as registerSystemPagesIOS } from './pages.ios'
-//#endif
-
-//#if _APP_HARMONY_
-import { registerSystemPages as registerSystemPagesHarmony } from './pages.harmony'
-//#endif
+import {
+  registerSystemRoute as __registerSystemRoute,
+  systemRoutes as __uniSystemRoutes,
+} from './framework/route'
 
 import {
   defineAsyncApi,
@@ -24,20 +19,13 @@ import {
   defineTaskApi,
 } from '@dcloudio/uni-api'
 
-//#if _APP_IOS_
-registerSystemPagesIOS()
-//#endif
-
-//#if _APP_HARMONY_
-registerSystemPagesHarmony()
-//#endif
-
 export {
   uni,
   getCurrentPages,
   __definePage,
   __registerApp,
   __uniSystemRoutes,
+  __registerSystemRoute,
   initApp,
   components,
   defineAsyncApi,
