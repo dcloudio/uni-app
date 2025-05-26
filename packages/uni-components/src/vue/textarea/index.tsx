@@ -231,7 +231,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <div ref={lineRef} class="uni-textarea-line">
               {' '}
             </div>
-            <div class="uni-textarea-compute">
+            <div
+              class={{
+                'uni-textarea-compute': true,
+                'uni-textarea-compute-auto-height': props.autoHeight,
+              }}
+            >
               {valueCompute.value.map((item) => (
                 <div>{item.trim() ? item : '.'}</div>
               ))}
