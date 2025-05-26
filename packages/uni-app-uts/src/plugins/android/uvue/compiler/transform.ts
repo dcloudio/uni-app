@@ -34,7 +34,7 @@ import {
 } from '@vue/shared'
 import { defaultOnError, defaultOnWarn } from './errors'
 import type { TransformOptions } from './options'
-import { FRAGMENT } from './runtimeHelpers'
+import { FRAGMENT, initRuntimeHelpersOnce } from './runtimeHelpers'
 import type { ParserPlugin } from '@babel/parser'
 
 // There are two types of transforms:
@@ -280,6 +280,7 @@ export function createTransformContext(
 }
 
 export function transform(root: RootNode, options: TransformOptions) {
+  initRuntimeHelpersOnce()
   const context = createTransformContext(root, options)
   traverseNode(root, context)
   createRootCodegen(root, context)
