@@ -198,6 +198,30 @@ describe('uts:sourceMap', () => {
       )
     ).toBe(true)
   })
+
+  test('resolveUTSPluginSourceMapFile with fake map', () => {
+    // 源码工程路径
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
+      'kotlin',
+      resolve(inputDir, uniModulesPluginDir, 'utssdk/app-android/test.kt'),
+      inputDir,
+      outputDir
+    )
+    expect(normalizePath(sourceMapFile)).toBe(
+      'uni_modules/test-uniplugin/utssdk/app-android/test.kt.fake.map'
+    )
+    // 输出目录路径
+    const sourceMapFile1 = resolveUTSPluginSourceMapFile(
+      'kotlin',
+      resolve(outputDir, uniModulesPluginDir, 'utssdk/app-android/test.kt'),
+      inputDir,
+      outputDir
+    )
+    expect(normalizePath(sourceMapFile1)).toBe(
+      'uni_modules/test-uniplugin/utssdk/app-android/test.kt.fake.map'
+    )
+  })
+
   test('generatedPositionFor', async () => {
     const filename = resolve(
       inputDir,
@@ -257,6 +281,66 @@ describe('uts:sourceMap', () => {
     })
     process.env.UNI_APP_X_CACHE_DIR = ''
   })
+  test('generatedPositionFor with kt fake map', async () => {
+    process.env.UNI_APP_X_CACHE_DIR = resolve(uniAppXCacheDir, '.app-android')
+    const filename = resolve(
+      inputDir,
+      uniModulesPluginDir,
+      'utssdk/app-android/test.kt'
+    )
+    const sourceMapFile = resolveUTSSourceMapFile(
+      'kotlin',
+      filename,
+      inputDir,
+      outputDir
+    )
+    const res = await generatedPositionFor({
+      sourceMapFile,
+      filename,
+      line: 5,
+      column: 0,
+      outputDir,
+    })
+    const source = uniModulesPluginDir + '/utssdk/app-android/test.kt'
+    expect(res).toEqual({
+      line: 5,
+      column: 0,
+      lastColumn: 0,
+      source,
+      relativeSource: source,
+    })
+    process.env.UNI_APP_X_CACHE_DIR = ''
+  })
+  test('generatedPositionFor with swift fake map', async () => {
+    process.env.UNI_APP_X_CACHE_DIR = resolve(uniAppXCacheDir, '.app-android')
+    const filename = resolve(
+      inputDir,
+      uniModulesPluginDir,
+      'utssdk/app-ios/test.swift'
+    )
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
+      'swift',
+      filename,
+      inputDir,
+      outputDir
+    )
+    const res = await generatedPositionFor({
+      sourceMapFile,
+      filename,
+      line: 5,
+      column: 0,
+      outputDir,
+    })
+    const source = uniModulesPluginDir + '/utssdk/app-ios/test.swift'
+    expect(res).toEqual({
+      line: 5,
+      column: 0,
+      lastColumn: 0,
+      source,
+      relativeSource: source,
+    })
+    process.env.UNI_APP_X_CACHE_DIR = ''
+  })
   test('originalPositionFor', async () => {
     const filename = resolve(
       outputDir,
@@ -310,6 +394,52 @@ describe('uts:sourceMap', () => {
     expect(line).toBe(19)
     expect(column).toBe(2)
     expect(source).toContain('index.uts')
+  })
+
+  test('originalPositionFor with kt fake map', async () => {
+    const filename = resolve(
+      outputDir,
+      uniModulesPluginDir,
+      'utssdk/app-android/test.kt'
+    )
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
+      'kotlin',
+      filename,
+      inputDir,
+      outputDir
+    )
+    const { line, column, source } = await originalPositionFor({
+      sourceMapFile,
+      line: 51,
+      column: 0,
+    })
+
+    expect(line).toBe(51)
+    expect(column).toBe(0)
+    expect(source).toContain('test.kt')
+  })
+
+  test('originalPositionFor with swift fake map', async () => {
+    const filename = resolve(
+      outputDir,
+      uniModulesPluginDir,
+      'utssdk/app-ios/test.swift'
+    )
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
+      'swift',
+      filename,
+      inputDir,
+      outputDir
+    )
+    const { line, column, source } = await originalPositionFor({
+      sourceMapFile,
+      line: 51,
+      column: 0,
+    })
+
+    expect(line).toBe(51)
+    expect(column).toBe(0)
+    expect(source).toContain('test.swift')
   })
 
   test('resolveUTSSourceMapFile with uvue file', () => {
