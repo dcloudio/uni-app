@@ -107,7 +107,8 @@ const uniMiniProgramPreset = {
 }
 
 const cloudPreset = {
-  '@dcloudio/uni-cloud': ['uniCloud', 'UniCloudError'],
+  from: '@dcloudio/uni-cloud',
+  imports: ['uniCloud', 'UniCloudError'],
 }
 
 const vuePreset = {
@@ -190,7 +191,12 @@ export function initAutoImportOptions(
   { imports = [], ...userOptions }: AutoImportOptions
 ): AutoImportOptions {
   rewriteAutoImportOnce()
-  const autoImport = [uniPreset, cloudPreset, vuePreset]
+  const autoImport = [vuePreset]
+  // 内置框架编译时，不能注入这些内容
+  if (!process.env.UNI_COMPILE_EXT_API_TYPE) {
+    autoImport.push(uniPreset)
+    autoImport.push(cloudPreset)
+  }
   if (platform === 'web') {
     autoImport.push(uniH5Preset)
   } else if (platform.startsWith('mp-')) {
