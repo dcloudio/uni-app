@@ -54,7 +54,7 @@ import {
 } from './uni_modules'
 import { existsSync, readdirSync, rmSync } from 'fs-extra'
 import { restoreDebuggerFiles } from './manifest/dex'
-import { compileArkTS } from './arkts'
+import { compileArkTS, requireUTSPluginCode } from './arkts'
 
 export * from './tsc'
 
@@ -268,7 +268,25 @@ export async function compile(
         (process.env.UNI_COMPILE_EXT_API_TYPE === 'pages' ||
           process.env.UNI_COMPILE_EXT_API_TYPE === 'components'))
     ) {
-      return createResult(outputPluginDir, errMsg, code, deps, [], [], {}, meta)
+      const result = createResult(
+        outputPluginDir,
+        errMsg,
+        code,
+        deps,
+        [],
+        [],
+        {},
+        meta
+      )
+      // 依赖的插件，不需要编译
+      if (
+        process.env.UNI_COMPILE_EXT_API_PLUGIN_ID &&
+        process.env.UNI_COMPILE_EXT_API_PLUGIN_ID !== pkg.id
+      ) {
+        result.code = requireUTSPluginCode(pkg.id, true)
+        result.encrypt = true
+      }
+      return result
     }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
     if (
