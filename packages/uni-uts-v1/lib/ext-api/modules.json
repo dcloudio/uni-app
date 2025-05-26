@@ -1064,33 +1064,6 @@
           "swift": true,
           "arkts": true
         }
-      },
-      "setScanCodeSelectionShowStatus": {
-        "name": "setScanCodeSelectionShowStatus",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": true,
-          "arkts": false
-        }
-      },
-      "utsNativeProcessScanBarCode": {
-        "name": "utsNativeProcessScanBarCode",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": true,
-          "arkts": false
-        }
-      },
-      "utsNativeProcessScanBarCodeWithPhoto": {
-        "name": "utsNativeProcessScanBarCodeWithPhoto",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": true,
-          "arkts": false
-        }
       }
     }
   },
