@@ -16,7 +16,7 @@ fun test() {
 fun login(name: String, pwd: String): UTSJSONObject {
     console.log("login")
     test()
-    return utsObjOf("name" to name, "pwd" to pwd)
+    return _uO("name" to name, "pwd" to pwd)
 }
 interface IUser {
     fun register(name: String)
