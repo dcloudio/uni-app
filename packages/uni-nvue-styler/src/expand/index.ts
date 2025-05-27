@@ -48,12 +48,8 @@ function getDeclTransforms(
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
     padding: transformPadding,
-    /* eslint-disable no-restricted-syntax */
-    ...(options.type !== 'uvue'
-      ? {
-          flexFlow: transformFlexFlow,
-        }
-      : {}),
+
+    flexFlow: transformFlexFlow,
   }
   let result: Record<string, TransformDecl> = {}
   if (__NODE_JS__) {
