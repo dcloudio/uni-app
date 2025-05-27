@@ -1083,6 +1083,9 @@ importers:
 
   packages/uni-app-vue:
     devDependencies:
+      '@dcloudio/uni-app':
+        specifier: workspace:*
+        version: link:../uni-app
       '@dcloudio/uni-shared':
         specifier: workspace:*
         version: link:../uni-shared

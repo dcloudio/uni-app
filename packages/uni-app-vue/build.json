@@ -86,6 +86,14 @@
     "output": {
       "freeze": false
     },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.runtime.esm.js"
+        }
+      ]
+    },
     "replacements": {
       "__X__": "true",
       "__VUE_OPTIONS_API__": "true",
@@ -107,6 +115,14 @@
     "output": {
       "freeze": false
     },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.runtime.esm.js"
+        }
+      ]
+    },
     "replacements": {
       "__X__": "true",
       "__VUE_OPTIONS_API__": "true",
@@ -127,6 +143,14 @@
     },
     "output": {
       "freeze": false
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.runtime.esm.js"
+        }
+      ]
     },
     "replacements": {
       "__X__": "true",
@@ -180,6 +204,14 @@
     },
     "output": {
       "freeze": false
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.runtime.esm.js"
+        }
+      ]
     },
     "replacements": {
       "__X__": "true",

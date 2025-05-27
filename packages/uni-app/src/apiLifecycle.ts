@@ -63,7 +63,7 @@ export const enum HookFlags {
 //   return true
 // }
 
-const createHook =
+const createLifeCycleHook =
   <T extends Function = () => any>(
     lifecycle: (typeof UniLifecycleHooks)[number],
     flag: HookFlags = HookFlags.UNKNOWN
@@ -85,96 +85,106 @@ const createHook =
     !isInSSRComponentSetup && injectHook(lifecycle as any, hook, target)
   }
 
-export const onShow = /*#__PURE__*/ createHook<
+export const onShow = /*#__PURE__*/ createLifeCycleHook<
   Required<App.AppInstance>['onShow'] | Required<Page.PageInstance>['onShow']
 >(ON_SHOW, HookFlags.APP | HookFlags.PAGE)
-export const onHide = /*#__PURE__*/ createHook(
+export const onHide = /*#__PURE__*/ createLifeCycleHook(
   ON_HIDE,
   HookFlags.APP | HookFlags.PAGE
 )
 
-export const onLaunch = /*#__PURE__*/ createHook<
+export const onLaunch = /*#__PURE__*/ createLifeCycleHook<
   Required<App.AppInstance>['onLaunch']
 >(ON_LAUNCH, HookFlags.APP)
-export const onError = /*#__PURE__*/ createHook<
+export const onError = /*#__PURE__*/ createLifeCycleHook<
   Required<App.AppInstance>['onError']
 >(ON_ERROR, HookFlags.APP)
-export const onThemeChange = /*#__PURE__*/ createHook<
+export const onThemeChange = /*#__PURE__*/ createLifeCycleHook<
   Required<App.AppInstance>['onThemeChange']
 >(ON_THEME_CHANGE, HookFlags.APP)
-export const onPageNotFound = /*#__PURE__*/ createHook<
+export const onPageNotFound = /*#__PURE__*/ createLifeCycleHook<
   Required<App.AppInstance>['onPageNotFound']
 >(ON_PAGE_NOT_FOUND, HookFlags.APP)
-export const onUnhandledRejection = /*#__PURE__*/ createHook<
+export const onUnhandledRejection = /*#__PURE__*/ createLifeCycleHook<
   Required<App.AppInstance>['onUnhandledRejection']
 >(ON_UNHANDLE_REJECTION, HookFlags.APP)
 
-export const onExit = /*#__PURE__*/ createHook<() => void>(
+export const onExit = /*#__PURE__*/ createLifeCycleHook<() => void>(
   ON_EXIT,
   HookFlags.APP
 )
 
-export const onInit = /*#__PURE__*/ createHook<
+export const onInit = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onInit']
 >(ON_INIT, HookFlags.PAGE | HookFlags.COMPONENT)
 // 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
-export const onLoad = /*#__PURE__*/ createHook<
+export const onLoad = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onLoad']
 >(ON_LOAD, HookFlags.PAGE)
-export const onReady = /*#__PURE__*/ createHook(ON_READY, HookFlags.PAGE)
-export const onUnload = /*#__PURE__*/ createHook(ON_UNLOAD, HookFlags.PAGE)
+export const onReady = /*#__PURE__*/ createLifeCycleHook(
+  ON_READY,
+  HookFlags.PAGE
+)
+export const onUnload = /*#__PURE__*/ createLifeCycleHook(
+  ON_UNLOAD,
+  HookFlags.PAGE
+)
 
-export const onResize = /*#__PURE__*/ createHook<
+export const onResize = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onResize']
 >(ON_RESIZE, HookFlags.PAGE)
-export const onBackPress = /*#__PURE__*/ createHook<
+export const onBackPress = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onBackPress']
 >(ON_BACK_PRESS, HookFlags.PAGE)
-export const onPageScroll = /*#__PURE__*/ createHook<
+export const onPageScroll = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onPageScroll']
 >(ON_PAGE_SCROLL, HookFlags.PAGE)
-export const onTabItemTap = /*#__PURE__*/ createHook<
+export const onTabItemTap = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onTabItemTap']
 >(ON_TAB_ITEM_TAP, HookFlags.PAGE)
-export const onReachBottom = /*#__PURE__*/ createHook(
+export const onReachBottom = /*#__PURE__*/ createLifeCycleHook(
   ON_REACH_BOTTOM,
   HookFlags.PAGE
 )
-export const onPullDownRefresh = /*#__PURE__*/ createHook(
+export const onPullDownRefresh = /*#__PURE__*/ createLifeCycleHook(
   ON_PULL_DOWN_REFRESH,
   HookFlags.PAGE
 )
-export const onSaveExitState = /*#__PURE__*/ createHook<onSaveExitStateHook>(
-  ON_SAVE_EXIT_STATE,
-  HookFlags.PAGE
-)
+export const onSaveExitState =
+  /*#__PURE__*/ createLifeCycleHook<onSaveExitStateHook>(
+    ON_SAVE_EXIT_STATE,
+    HookFlags.PAGE
+  )
 
-export const onShareTimeline = /*#__PURE__*/ createHook<
+export const onShareTimeline = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onShareTimeline']
 >(ON_SHARE_TIMELINE, HookFlags.PAGE)
-export const onAddToFavorites = /*#__PURE__*/ createHook<
+export const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onAddToFavorites']
 >(ON_ADD_TO_FAVORITES, HookFlags.PAGE)
-export const onShareAppMessage = /*#__PURE__*/ createHook<
+export const onShareAppMessage = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onShareAppMessage']
 >(ON_SHARE_APP_MESSAGE, HookFlags.PAGE)
 
-export const onNavigationBarButtonTap = /*#__PURE__*/ createHook<
+export const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onNavigationBarButtonTap']
 >(ON_NAVIGATION_BAR_BUTTON_TAP, HookFlags.PAGE)
 
-export const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook<
-  Required<Page.PageInstance>['onNavigationBarSearchInputChanged']
->(ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, HookFlags.PAGE)
-export const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook(
-  ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
-  HookFlags.PAGE
-)
-export const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook<
-  Required<Page.PageInstance>['onNavigationBarSearchInputConfirmed']
->(ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, HookFlags.PAGE)
+export const onNavigationBarSearchInputChanged =
+  /*#__PURE__*/ createLifeCycleHook<
+    Required<Page.PageInstance>['onNavigationBarSearchInputChanged']
+  >(ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, HookFlags.PAGE)
+export const onNavigationBarSearchInputClicked =
+  /*#__PURE__*/ createLifeCycleHook(
+    ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
+    HookFlags.PAGE
+  )
+export const onNavigationBarSearchInputConfirmed =
+  /*#__PURE__*/ createLifeCycleHook<
+    Required<Page.PageInstance>['onNavigationBarSearchInputConfirmed']
+  >(ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, HookFlags.PAGE)
 export const onNavigationBarSearchInputFocusChanged =
-  /*#__PURE__*/ createHook<onNavigationBarSearchInputFocusChangedHook>(
+  /*#__PURE__*/ createLifeCycleHook<onNavigationBarSearchInputFocusChangedHook>(
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
     HookFlags.PAGE
   )

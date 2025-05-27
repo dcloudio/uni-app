@@ -11,7 +11,7 @@ import { getUTSCustomElementsExports } from '../uts'
 
 export type AutoImportOptions = Options
 
-const uniPreset = {
+const uniLifeCyclePreset = {
   from: '@dcloudio/uni-app',
   imports: [
     // ssr
@@ -111,6 +111,48 @@ const cloudPreset = {
   imports: ['uniCloud', 'UniCloudError'],
 }
 
+const uniAppLifeCyclePreset = {
+  from: 'vue',
+  imports: [
+    // ssr
+    // ssrRef,
+    // shallowSsrRef,
+    // uni-app lifecycle
+    // App and Page
+    'onShow',
+    'onHide',
+    // App
+    'onLaunch',
+    'onError',
+    'onThemeChange',
+    // onKeyboardHeightChange,
+    'onPageNotFound',
+    'onUnhandledRejection',
+    // onLastPageBackPress,
+    'onExit',
+    // Page
+    'onPageShow',
+    'onPageHide',
+    'onLoad',
+    'onReady',
+    'onUnload',
+    'onResize',
+    'onBackPress',
+    'onPageScroll',
+    'onTabItemTap',
+    'onReachBottom',
+    'onPullDownRefresh',
+
+    // 其他
+    'onShareTimeline',
+    'onShareAppMessage',
+    // onShareChat, // xhs-share
+
+    // 辅助，用于自定义render函数时，开发者可以调用此方法渲染组件的slot
+    'renderComponentSlot',
+  ],
+}
+
 const vuePreset = {
   from: 'vue',
   imports: [
@@ -192,9 +234,14 @@ export function initAutoImportOptions(
 ): AutoImportOptions {
   rewriteAutoImportOnce()
   const autoImport = [vuePreset]
+  // 只有app-ios和app-harmony平台特殊处理
+  if (platform === 'app-ios' || platform === 'app-harmony') {
+    autoImport.push(uniAppLifeCyclePreset)
+  } else {
+    autoImport.push(uniLifeCyclePreset)
+  }
   // 内置框架编译时，不能注入这些内容
   if (!process.env.UNI_COMPILE_EXT_API_TYPE) {
-    autoImport.push(uniPreset)
     autoImport.push(cloudPreset)
   }
   if (platform === 'web') {
