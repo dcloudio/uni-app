@@ -1,5 +1,6 @@
 <template>
   <uni-slider
+    :id="id"
     ref="uni-slider"
     v-on="$listeners"
     @click="_onClick"
@@ -117,6 +118,10 @@ export default {
   mixins: [emitter, listeners, touchtrack],
   props: {
     name: {
+      type: String,
+      default: ''
+    },
+    id: {
       type: String,
       default: ''
     },
