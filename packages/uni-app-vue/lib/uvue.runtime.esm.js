@@ -8997,7 +8997,7 @@ const patchProp = (el, key, prevValue, nextValue, namespace, prevChildren, paren
     if (!isModelListener(key)) {
       patchEvent(el, key, prevValue, nextValue, parentComponent);
     }
-  } else if (key === "modelValue" && vModelTags.includes(el.tagName.toLocaleLowerCase())) {
+  } else if (key === "modelValue" && vModelTags.includes(el.tagName.toLowerCase())) {
     el.setAnyAttribute("modelValue", nextValue);
     el.setAnyAttribute("value", nextValue);
   } else {
