@@ -459,12 +459,12 @@ flexBasis: fill;
 .foo {
   margin: 100px;
   padding: 50px;
-  flexFlow: row nowrap;
+  flex-flow: row nowrap;
 }
 .bar {
   margin: 
     10px auto;
-  flexFlow: row;
+  flex-flow: row;
   padding: 10px auto;
 }
 .baz {
@@ -502,7 +502,8 @@ flexBasis: fill;
           paddingRight: 50,
           paddingTop: 50,
           paddingBottom: 50,
-          flexFlow: 'row nowrap',
+          flexDirection: 'row',
+          flexWrap: 'nowrap',
         },
       },
       bar: {
@@ -513,7 +514,8 @@ flexBasis: fill;
           marginRight: 'auto',
           paddingBottom: 10,
           paddingTop: 10,
-          flexFlow: 'row',
+          flexDirection: 'row',
+          flexWrap: 'nowrap',
         },
       },
       baz: {
@@ -534,52 +536,49 @@ flexBasis: fill;
         },
       },
     })
+    expect(messages.length).toEqual(9)
+
     expect(messages[0]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `row` is not supported for `flex-flow` (both property values must be explicitly defined)',
-      })
-    )
-    expect(messages[1]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `min-content` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
       })
     )
-    expect(messages[2]).toEqual(
+    expect(messages[1]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `2 unset` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
       })
     )
-    expect(messages[3]).toEqual(
+    expect(messages[2]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `1 abc 100px` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
       })
     )
-    expect(messages[4]).toEqual(
+    expect(messages[3]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `auto` is not supported for `padding-right` (supported values are: `number`|`pixel`|`percent`)',
       })
     )
-    expect(messages[5]).toEqual(
+    expect(messages[4]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `auto` is not supported for `padding-left` (supported values are: `number`|`pixel`|`percent`)',
       })
     )
-    expect(messages[6]).toEqual(
+    expect(messages[5]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `abc` is not supported for `margin-top` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
-    expect(messages[7]).toEqual(
+    expect(messages[6]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `abc` is not supported for `margin-right` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
-    expect(messages[8]).toEqual(
+    expect(messages[7]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `abc` is not supported for `margin-bottom` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
-    expect(messages[9]).toEqual(
+    expect(messages[8]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `abc` is not supported for `margin-left` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
