@@ -43,10 +43,6 @@ import {
 import { isWindows } from '../shared'
 
 const DEFAULT_IMPORTS = [
-  'kotlinx.coroutines.async',
-  'kotlinx.coroutines.CoroutineScope',
-  'kotlinx.coroutines.Deferred',
-  'kotlinx.coroutines.Dispatchers',
   'io.dcloud.uts.Map',
   'io.dcloud.uts.Set',
   'io.dcloud.uts.UTSAndroid',
