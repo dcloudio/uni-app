@@ -183,7 +183,7 @@ export function getBrowserInfo() {
   }
 
   const system = `${osname} ${osversion}`
-  const platform = osname.toLocaleLowerCase()
+  const platform = osname.toLowerCase()
 
   let browserName = ''
   let browserVersion = String(IEVersion())
@@ -218,7 +218,7 @@ export function getBrowserInfo() {
     model,
     system,
     platform,
-    browserName: browserName.toLocaleLowerCase(),
+    browserName: browserName.toLowerCase(),
     browserVersion,
     language,
     deviceType,

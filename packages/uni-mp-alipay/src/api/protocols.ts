@@ -104,7 +104,7 @@ export const request = {
       'content-type': 'application/json',
     }
     Object.keys(fromArgs.header).forEach((key) => {
-      headers[key.toLocaleLowerCase()] = fromArgs.header[key]
+      headers[key.toLowerCase()] = fromArgs.header[key]
     })
     return {
       header() {
