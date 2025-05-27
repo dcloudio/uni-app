@@ -313,18 +313,21 @@ function updateBodyScopeId(instance: ComponentInternalInstance) {
   curScopeId = scopeId!
 }
 
-let supportsPassive = false
-try {
-  const opts = {} as AddEventListenerOptions
-  Object.defineProperty(opts, 'passive', {
-    get() {
-      /* istanbul ignore next */
-      supportsPassive = true
-    },
-  })
-  // https://github.com/facebook/flow/issues/285
-  window.addEventListener('test-passive', () => {}, opts)
-} catch (e) {}
+const supportsPassive = /*#__PURE__*/ (() => {
+  let supportsPassive = false
+  try {
+    const opts = {} as AddEventListenerOptions
+    Object.defineProperty(opts, 'passive', {
+      get() {
+        /* istanbul ignore next */
+        supportsPassive = true
+      },
+    })
+    // https://github.com/facebook/flow/issues/285
+    window.addEventListener('test-passive', () => {}, opts)
+  } catch (e) {}
+  return supportsPassive
+})()
 
 const passiveOptions = supportsPassive
   ? {
