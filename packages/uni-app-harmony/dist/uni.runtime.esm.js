@@ -13347,6 +13347,26 @@ function createWebviewContext(id, componentInstance) {
             stop() {
                 operateWebView(id, pageId, 'stop');
             },
+            canBack(callback) {
+                operateWebView(id, pageId, 'canBack', {}, (canBack) => callback?.({ canBack }));
+            },
+            canForward(callback) {
+                operateWebView(id, pageId, 'canForward', {}, (canForward) => callback?.({ canForward }));
+            },
+            loadData(options) {
+                operateWebView(id, pageId, 'loadData', {
+                    data: options.data,
+                    mimeType: options.mimeType ?? 'text/html',
+                    encoding: options.encoding ?? 'UTF-8',
+                    baseUrl: options.baseUrl ?? '',
+                });
+            },
+            getContentHeight(callback) {
+                operateWebView(id, pageId, 'getContentHeight', {}, (height) => callback?.({ height }));
+            },
+            clear() {
+                operateWebView(id, pageId, 'clear', { clearRom: true });
+            },
         };
     }
     else {

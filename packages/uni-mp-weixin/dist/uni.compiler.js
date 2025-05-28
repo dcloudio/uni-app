@@ -153,6 +153,8 @@ const customElements = [
     'store-product',
     'store-home',
     'keyboard-accessory',
+    'open-data-list',
+    'open-data-item',
 ];
 const nodeTransforms = [
     uniCliShared.transformRef,

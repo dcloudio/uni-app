@@ -7974,11 +7974,14 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "ref": lineRef,
         "class": "uni-textarea-line"
       }, [" "], 512), vue.createVNode("div", {
-        "class": "uni-textarea-compute"
+        "class": {
+          "uni-textarea-compute": true,
+          "uni-textarea-compute-auto-height": props2.autoHeight
+        }
       }, [valueCompute.value.map((item) => vue.createVNode("div", null, [item.trim() ? item : "."])), vue.createVNode(ResizeSensor, {
         "initial": true,
         "onResize": onResize
-      }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? vue.createVNode("form", {
+      }, null, 8, ["initial", "onResize"])], 2), props2.confirmType === "search" ? vue.createVNode("form", {
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
@@ -11690,6 +11693,10 @@ function normalizeContentType(header) {
 }
 class RequestTask {
   constructor(controller) {
+    this._requestOnChunkReceiveCallbackId = 0;
+    this._requestOnChunkReceiveCallbacks = /* @__PURE__ */ new Map();
+    this._requestOnHeadersReceiveCallbackId = 0;
+    this._requestOnHeadersReceiveCallbacks = /* @__PURE__ */ new Map();
     this._emitter = new uniShared.Emitter();
     this._controller = controller;
   }
@@ -11700,24 +11707,64 @@ class RequestTask {
     }
   }
   onHeadersReceived(callback) {
-    {
-      throw new Error("Method not implemented.");
-    }
+    this._emitter.on("headersReceived", callback);
+    this._requestOnHeadersReceiveCallbackId++;
+    this._requestOnHeadersReceiveCallbacks.set(
+      this._requestOnHeadersReceiveCallbackId,
+      callback
+    );
+    return this._requestOnHeadersReceiveCallbackId;
   }
   offHeadersReceived(callback) {
-    {
-      throw new Error("Method not implemented.");
+    if (callback == null) {
+      this._emitter.off("headersReceived");
+      return;
     }
+    if (typeof callback === "function") {
+      this._requestOnHeadersReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnHeadersReceiveCallbacks.delete(id2);
+          this._emitter.off("headersReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnHeadersReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnHeadersReceiveCallbacks.delete(callback);
+    this._emitter.off("headersReceived", callbackFn);
   }
   onChunkReceived(callback) {
-    {
-      throw new Error("Method not implemented.");
-    }
+    this._emitter.on("chunkReceived", callback);
+    this._requestOnChunkReceiveCallbackId++;
+    this._requestOnChunkReceiveCallbacks.set(
+      this._requestOnChunkReceiveCallbackId,
+      callback
+    );
+    return this._requestOnChunkReceiveCallbackId;
   }
   offChunkReceived(callback) {
-    {
-      throw new Error("Method not implemented.");
+    if (callback == null) {
+      this._emitter.off("chunkReceived");
+      return;
     }
+    if (typeof callback === "function") {
+      this._requestOnChunkReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnChunkReceiveCallbacks.delete(id2);
+          this._emitter.off("chunkReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnChunkReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnChunkReceiveCallbacks.delete(callback);
+    this._emitter.off("chunkReceived", callbackFn);
   }
 }
 function parseHeaders(headers) {
@@ -11929,7 +11976,7 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       model,
       platform,
       system,
-      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osName: osname ? osname.toLowerCase() : void 0,
       osVersion: osversion
     });
   }

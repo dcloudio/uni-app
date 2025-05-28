@@ -12446,7 +12446,7 @@
       }
     } else {
       intersectionObserver.USE_MUTATION_OBSERVER = false;
-      var el = $el.querySelector(options.selector);
+      var el = $el.matches(options.selector) ? $el : $el.querySelector(options.selector);
       if (!el) {
         console.warn("Node ".concat(options.selector, " is not found. Intersection observer will not trigger."));
       } else {
@@ -21697,11 +21697,14 @@
           "ref": lineRef,
           "class": "uni-textarea-line"
         }, [" "], 512), createVNode("div", {
-          "class": "uni-textarea-compute"
+          "class": {
+            "uni-textarea-compute": true,
+            "uni-textarea-compute-auto-height": props2.autoHeight
+          }
         }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
           "initial": true,
           "onResize": onResize
-        }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
+        }, null, 8, ["initial", "onResize"])], 2), props2.confirmType === "search" ? createVNode("form", {
           "action": "",
           "onSubmit": () => false,
           "class": "uni-input-form"
@@ -22418,19 +22421,32 @@
     back: "backward",
     forward: "forward",
     reload: "refresh",
-    stop: "stop"
+    stop: "stop",
+    canBack: "accessBackward",
+    canForward: "accessForward",
+    loadData: "loadData",
+    getContentHeight: "getPageHeight",
+    clear: "removeCache"
   };
   function useMethods(embedRef) {
-    var MethodList = ["evalJS", "back", "forward", "reload", "stop"];
+    var MethodList = ["evalJS", "back", "forward", "reload", "stop", "canBack", "canForward", "loadData", "getContentHeight", "clear"];
     var methods = {};
     var _loop = function(i3) {
       var methodName = MethodList[i3];
       methods[methodName] = function(data, resolve) {
         var embed = embedRef.value;
-        if (methodName === "evalJS") {
-          return resolve(embed["runJavaScript"]((data || {}).jsCode || ""));
-        } else {
-          resolve(embed[HarmonyNativeMethodMap[methodName]]());
+        switch (methodName) {
+          case "evalJS":
+            return resolve(embed["runJavaScript"]((data || {}).jsCode || ""));
+          case "loadData":
+            resolve(embed[HarmonyNativeMethodMap[methodName]](data.data, data.mimeType, data.encoding, data.baseUrl));
+            break;
+          case "clear":
+            resolve(embed[HarmonyNativeMethodMap[methodName]](data.clearRom));
+            break;
+          default:
+            resolve(embed[HarmonyNativeMethodMap[methodName]]());
+            break;
         }
       };
     };
@@ -22498,7 +22514,7 @@
           updateTitle: props2.updateTitle,
           webviewStyles: props2.webviewStyles
         },
-        "methods": ["runJavaScript", "backward", "forward", "refresh", "stop"],
+        "methods": ["runJavaScript", "backward", "forward", "refresh", "stop", "accessBackward", "accessForward", "loadData", "getPageHeight", "removeCache"],
         "style": "width:100%;height:100%"
       }, null, 8, ["options"])], 10, ["id"]);
     }

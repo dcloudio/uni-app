@@ -56,12 +56,13 @@ function customizeEvent(str) {
 }
 
 const event = {
-    format(name, { isCatch, isComponent }) {
+    format(name, { isCatch, isCapture, isComponent }) {
         if (!isComponent && name === 'click') {
             name = 'tap';
         }
         name = eventMap[name] || name;
-        return `${isCatch ? 'catch' : 'on'}${shared.capitalize(customizeEvent(name))}`;
+        // 处理支付宝支持捕获 https://opendocs.alipay.com/mini/framework/events#%E4%BA%8B%E4%BB%B6%E7%9A%84%E6%8D%95%E8%8E%B7%E9%98%B6%E6%AE%B5
+        return `${isCapture ? 'capture-' : ''}${isCatch ? 'catch' : 'on'}${shared.capitalize(customizeEvent(name))}`;
     },
 };
 const eventMap = {
@@ -188,6 +189,7 @@ const customElements = [
     'lottie',
     'join-group-chat',
     'subscribe-message',
+    'mpass-component',
 ];
 const options = {
     cdn: 2,
