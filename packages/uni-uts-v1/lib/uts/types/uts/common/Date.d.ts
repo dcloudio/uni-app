@@ -129,11 +129,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -170,11 +170,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -211,11 +211,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -252,11 +252,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
+               "osVer": "5.0",
                "uniVer": "√",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -376,11 +376,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
+               "osVer": "5.0",
                "uniVer": "√",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -460,11 +460,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
+               "osVer": "5.0",
                "uniVer": "√",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -544,11 +544,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -628,11 +628,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -712,11 +712,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -796,11 +796,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -880,11 +880,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -963,11 +963,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -1005,11 +1005,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -1134,11 +1134,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -1219,11 +1219,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -1304,11 +1304,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -1389,11 +1389,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -1473,11 +1473,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -1559,11 +1559,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -1643,10 +1643,10 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
                "unixUtsPlugin": "x"
             },
             "ios": {
@@ -1683,11 +1683,11 @@ interface Date {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
             },
             "ios": {
                "osVer": "x",
@@ -1724,7 +1724,7 @@ interface Date {
         "app": {
             "android": {
                "osVer": "4.4",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "4.11",
                "unixUtsPlugin": "4.11"
@@ -1992,12 +1992,12 @@ interface DateConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x",
-               "uniUtsPlugin": "x",
-               "unixUtsPlugin": "x"
-            },
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "4.71",
+               "uniUtsPlugin": "4.71",
+               "unixUtsPlugin": "4.71"
+            },ss
             "ios": {
                "osVer": "x",
                "uniVer": "x",
