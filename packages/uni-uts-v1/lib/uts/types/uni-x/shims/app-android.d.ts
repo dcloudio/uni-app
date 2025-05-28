@@ -25,6 +25,22 @@ declare global {
   function numberEquals(a: any, b: any): boolean
   function utsMapOf(obj?: Record<string, unknown>): any
   function padStyleMapOf(style: any): any
+  function normalizeCssStyles(
+    componentStyles: Map<string, Map<string, Map<string, any>>>[],
+    appStyles?: Map<string, Map<string, Map<string, any>>>[]
+  ): Map<string, Map<string, Map<string, any>>>
+
+  // utsMapOf 简写
+  function _uM(obj?: Record<string, unknown>): any
+  // padStyleMapOf 简写
+  function _pS(style: any): any
+  // normalizeCssStyles 简写
+  function _nCS(
+    componentStyles: Map<string, Map<string, Map<string, any>>>[],
+    appStyles?: Map<string, Map<string, Map<string, any>>>[]
+  ): Map<string, Map<string, Map<string, any>>>
+
+
 
   function isTrue(value: any): boolean
   function looseToNumber(value: any): number

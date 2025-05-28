@@ -15,16 +15,16 @@ interface TextEncoder {
                 "unixUtsPlugin": "4.31"
             },
             "ios": {
-                "osVer": "x",
+                "osVer": "12.0",
                 "uniVer": "x",
                 "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "unixVer": "4.71",
+                "unixUtsPlugin": "4.71"
               },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "osVer": "5.0.2",
+               "uniVer": "√",
+               "unixVer": "4.71"
             }
         },
         "web": {
@@ -48,16 +48,16 @@ interface TextEncoder {
                 "unixUtsPlugin": "4.31"
             },
             "ios": {
-                "osVer": "x",
+                "osVer": "12.0",
                 "uniVer": "x",
                 "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "unixVer": "4.71",
+                "unixUtsPlugin": "4.71"
               },
             "harmony": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "osVer": "5.0.2",
+               "uniVer": "√",
+               "unixVer": "4.71"
             }
         },
         "web": {

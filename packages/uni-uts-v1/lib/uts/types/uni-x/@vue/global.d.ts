@@ -340,4 +340,12 @@ declare global {
   // 自定义
   const defineApp: typeof defineComponentOrigin
   const definePlugin: (plugin: Plugin) => Plugin
+
+  // 简写
+  const _cC: typeof createCommentVNodeOrigin
+  const _cE: typeof createElementVNodeOrigin
+  const _cV: typeof createVNodeOrigin
+  const _tD: typeof toDisplayStringOrigin
+  const _nC: typeof normalizeClassOrigin
+  const _nS: typeof normalizeStyleOrigin
 }
