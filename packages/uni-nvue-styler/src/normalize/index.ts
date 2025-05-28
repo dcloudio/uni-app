@@ -33,9 +33,16 @@ function createRuleProcessor(opts: NormalizeOptions = {}) {
     }
     rule.selector = rule.selectors
       .map((selector) => {
+        const isUvue = opts.type === 'uvue'
+        // 特殊处理 ::v-deep 选择器
+        if (isUvue && selector.includes('::v-deep')) {
+          selector = selector.replace(/::v-deep/g, '')
+        }
+        // 移除组合符周围的空格，合并多个空格
         selector = selector
           .replace(/\s*([\+\~\>])\s*/g, '$1')
           .replace(/\s+/, ' ')
+        // 组合符号
         if (COMBINATORS_RE.test(selector)) {
           return selector
         }
