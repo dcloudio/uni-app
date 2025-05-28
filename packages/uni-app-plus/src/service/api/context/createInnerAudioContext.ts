@@ -271,6 +271,11 @@ const props = [
     name: 'playbackRate',
     cache: true,
   },
+  {
+    name: 'sessionCategory',
+    cache: true,
+    default: AUDIO_DEFAULT_SESSION_CATEGORY,
+  },
 ]
 
 class InnerAudioContext implements UniApp.InnerAudioContext {
