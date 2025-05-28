@@ -157,31 +157,10 @@
       "ShowModalOptions"
     ],
     [
-      "UniButtonElement"
-    ],
-    [
       "UniCanvasElement"
     ],
     [
       "UniCanvasRenderingContext2D"
-    ],
-    [
-      "UniCheckboxElement"
-    ],
-    [
-      "UniCheckboxGroupChangeEvent"
-    ],
-    [
-      "UniCheckboxGroupElement"
-    ],
-    [
-      "UniFormElement"
-    ],
-    [
-      "UniFormResetEvent"
-    ],
-    [
-      "UniFormSubmitEvent"
     ],
     [
       "UniHideModalErrorCode"
@@ -196,45 +175,6 @@
       "UniHideModalResult"
     ],
     [
-      "UniNavigatorElement"
-    ],
-    [
-      "UniPickerCancelEvent"
-    ],
-    [
-      "UniPickerChangeEvent"
-    ],
-    [
-      "UniPickerColumnChangeEvent"
-    ],
-    [
-      "UniPickerElement"
-    ],
-    [
-      "UniPickerViewChangeEvent"
-    ],
-    [
-      "UniPickerViewColumnElement"
-    ],
-    [
-      "UniPickerViewElement"
-    ],
-    [
-      "UniProgressActiveendEvent"
-    ],
-    [
-      "UniProgressElement"
-    ],
-    [
-      "UniRadioElement"
-    ],
-    [
-      "UniRadioGroupChangeEvent"
-    ],
-    [
-      "UniRadioGroupElement"
-    ],
-    [
       "UniShowModalErrorCode"
     ],
     [
@@ -245,18 +185,6 @@
     ],
     [
       "UniShowModalResult"
-    ],
-    [
-      "UniSliderChangeEvent"
-    ],
-    [
-      "UniSliderElement"
-    ],
-    [
-      "UniSwitchChangeEvent"
-    ],
-    [
-      "UniSwitchElement"
     ],
     [
       "UniVideoControlsToggleEvent"
