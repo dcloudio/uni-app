@@ -656,4 +656,57 @@ border-color: var(--default-border);
       },
     })
   })
+
+  test('多次出现 border 不同形式，保证最后一个生效', async () => {
+    const { json } = await objectifierRule(`
+.test {
+		border-left-color: red;
+	}
+
+	.test {
+		width: 100px;
+		height: 100px;
+		border-width: 1px;
+		border-color: blue;
+		/* border-left-color: blue;border-top-color: blue;border-bottom-color: blue;border-right-color: blue; */
+		border-style: solid;
+	}
+`)
+    expect(json).toEqual({
+      test: {
+        '': {
+          borderTopColor: '#0000FF',
+          borderRightColor: '#0000FF',
+          borderBottomColor: '#0000FF',
+          borderLeftColor: '#0000FF',
+          borderTopStyle: 'solid',
+          borderRightStyle: 'solid',
+          borderBottomStyle: 'solid',
+          borderLeftStyle: 'solid',
+          borderTopWidth: 1,
+          borderRightWidth: 1,
+          borderBottomWidth: 1,
+          borderLeftWidth: 1,
+          height: 100,
+          width: 100,
+        },
+      },
+    })
+  })
+
+  test('测试 ::v-deep 的样式', async () => {
+    const { json, messages } = await objectifierRule(`
+.box ::v-deep .text1 {
+  color: #fff000;
+}
+`)
+    expect(messages.length).toBe(0)
+    expect(json).toEqual({
+      text1: {
+        '.box ': {
+          color: '#fff000',
+        },
+      },
+    })
+  })
 })
