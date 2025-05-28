@@ -131,6 +131,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
           }
           return output('log', M['dev.watching.end'])
         } else if (event.code === 'END') {
+          // 重要：1.0 的APP端是自实现的AppWatcher，它是不会触发END事件的，这里边的逻辑只有非1.0的APP端会触发
           if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
             setTimeout(() => {
               output('log', M['build.failed'])
