@@ -85,7 +85,10 @@ export function requestComponentObserver ({
     })
   } else {
     intersectionObserver.USE_MUTATION_OBSERVER = false
-    const el = $el.querySelector(options.selector)
+    // 先查找当前元素是否匹配selector，如果不匹配，则查找子元素中是否匹配
+    const el = $el.matches(options.selector)
+      ? $el
+      : $el.querySelector(options.selector);
     if (!el) {
       console.warn(`Node ${options.selector} is not found. Intersection observer will not trigger.`)
       return
