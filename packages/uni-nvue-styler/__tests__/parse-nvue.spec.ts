@@ -690,4 +690,35 @@ border-top-style: solid;
     })
     expect(messages.length).toBe(1)
   })
+  test('flex-flow', async () => {
+    const { json, messages } = await objectifierRule(`
+.a {
+  flex-flow: row nowrap;
+}
+.b {
+  flex-flow: row wrap;
+}
+`)
+    expect(json).toEqual({
+      a: {
+        '': {
+          flexDirection: 'row',
+          flexWrap: 'nowrap',
+        },
+      },
+      b: {
+        '': {
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+        },
+      },
+    })
+    expect(messages.length).toBe(2)
+    expect(messages[0].text).toBe(
+      'NOTE: property value `nowrap` is the DEFAULT value for `flex-wrap` (could be removed)'
+    )
+    expect(messages[1].text).toBe(
+      'NOTE: the flex-wrap property may have compatibility problem on native'
+    )
+  })
 })
