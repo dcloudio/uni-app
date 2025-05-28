@@ -214,8 +214,7 @@ class AppWatcher {
         this._bundleSecondStart(event)
       } else if (event.code === 'BUNDLE_END') {
         this._bundleSecondEnd(event)
-      } else {
-        // 其他事件直接触发
+      } else if (event.code === 'ERROR') {
         this._callback?.(event)
       }
     })
