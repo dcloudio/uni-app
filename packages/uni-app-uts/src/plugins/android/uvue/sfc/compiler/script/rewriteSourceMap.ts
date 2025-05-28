@@ -115,25 +115,25 @@ export function rewriteSourceMap(
           }", "${fileName}", ${startLine + start.line}, ${start.column + 1}>;`
         )
       } else if (node.type === 'ClassDeclaration') {
-        if (node.implements && node.implements.length > 0) {
-          // 已有接口
-          s.appendRight(startOffset + node.body.start!, `, IUTSSourceMap`)
-        } else {
-          s.appendRight(
-            startOffset + node.body.start!,
-            ` implements IUTSSourceMap`
-          )
-        }
-
-        const start = node.id!.loc!.start
-        s.appendRight(
-          startOffset + node.body.start! + 1,
-          `\n// @ts-expect-error \noverride __$getOriginalPosition(): UTSSourceMapPosition { return new UTSSourceMapPosition("${
-            node.id!.name
-          }", "${fileName}", ${startLine + start.line}, ${
-            start.column + 1
-          });}\n`
-        )
+        // 暂不处理，因为下边带了各种换行，影响sourcemap
+        // if (node.implements && node.implements.length > 0) {
+        //   // 已有接口
+        //   s.appendRight(startOffset + node.body.start!, `, IUTSSourceMap`)
+        // } else {
+        //   s.appendRight(
+        //     startOffset + node.body.start!,
+        //     ` implements IUTSSourceMap`
+        //   )
+        // }
+        // const start = node.id!.loc!.start
+        // s.appendRight(
+        //   startOffset + node.body.start! + 1,
+        //   `// @ts-expect-error \noverride __$getOriginalPosition(): UTSSourceMapPosition { return new UTSSourceMapPosition("${
+        //     node.id!.name
+        //   }", "${fileName}", ${startLine + start.line}, ${
+        //     start.column + 1
+        //   });}`
+        // )
       }
     },
   })
