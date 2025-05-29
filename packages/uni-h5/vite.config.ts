@@ -148,7 +148,7 @@ export default defineConfig({
       ? [
           uniUVueTypeScriptPlugin(),
           // 仅给vue增加条件编译
-          uniPrePlugin({} as any, { include: ['**/*.vue'] }),
+          uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts'] }),
           uniExtApi(),
           uts2ts({ target: 'uni-h5', platform: 'web' }),
         ]
