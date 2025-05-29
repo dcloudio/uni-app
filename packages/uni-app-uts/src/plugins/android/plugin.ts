@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
+import glob from 'fast-glob'
 import type { ResolvedConfig } from 'vite'
 import { extend, isString } from '@vue/shared'
 import type { ChangeEvent } from 'rollup'
@@ -22,6 +23,7 @@ import {
   parseUniModulesArtifacts,
   parseVueRequest,
   resolveMainPathOnce,
+  resolveSourceMapPath,
   resolveUTSCompiler,
   rewriteUniModulesConsoleExpr,
   tscOutDir,
@@ -384,6 +386,24 @@ export function uniAppPlugin(): UniVitePlugin {
               JSON.stringify(manifest, null, 2)
             )
           }
+
+          if (
+            process.env.UNI_APP_SOURCEMAP === 'true' &&
+            process.env.UNI_APP_X_CACHE_DIR
+          ) {
+            try {
+              // 清空之前的 sourcemap 目录
+              const sourceMapPath = resolveSourceMapPath()
+              if (fs.existsSync(sourceMapPath)) {
+                emptyDir(sourceMapPath)
+              }
+              await moveSourceMap(
+                '**/*.kt.map',
+                path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'sourcemap'),
+                sourceMapPath
+              )
+            } catch (e) {}
+          }
         }
       }
       isFirstBundleSuccess = true
@@ -458,4 +478,22 @@ function parseProcessEnv(resolvedConfig: ResolvedConfig) {
     env[key] = value
   })
   return env
+}
+
+async function moveSourceMap(pattern: string, cwd: string, dest: string) {
+  await Promise.all(
+    glob
+      .sync(pattern, {
+        cwd,
+      })
+      .map((filename) => {
+        return fs.move(
+          path.resolve(cwd, filename),
+          path.resolve(dest, filename),
+          {
+            overwrite: true,
+          }
+        )
+      })
+  )
 }

@@ -36,6 +36,7 @@
     "debug": "^4.3.3",
     "es-module-lexer": "^1.2.1",
     "estree-walker": "^2.0.2",
+    "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
     "magic-string": "^0.30.7",
     "picocolors": "^1.0.0",

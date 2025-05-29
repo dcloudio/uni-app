@@ -43,6 +43,7 @@ import {
 } from './vue'
 import { initEnv } from './cli/utils'
 import { uniUVuePlugin } from './uvue/plugins'
+import path from 'path'
 
 export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 
@@ -243,15 +244,32 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       if (fs.existsSync(sourceMapPath)) {
         emptyDir(sourceMapPath)
       }
-      plugins.push(
-        uniMovePlugin({
-          apply: 'build',
-          enforce: 'post',
-          cwd: process.env.UNI_OUTPUT_DIR,
-          pattern: '**/*.js.map',
-          dest: sourceMapPath,
-        })
-      )
+      if (
+        process.env.UNI_APP_X === 'true' &&
+        process.env.UNI_UTS_PLATFORM === 'app-ios' &&
+        process.env.UNI_APP_X_CACHE_DIR &&
+        process.env.NODE_ENV !== 'development'
+      ) {
+        plugins.push(
+          uniMovePlugin({
+            apply: 'build',
+            enforce: 'post',
+            cwd: resolveSourceMapDirByCacheDir(),
+            pattern: '**/*.js.map',
+            dest: sourceMapPath,
+          })
+        )
+      } else {
+        plugins.push(
+          uniMovePlugin({
+            apply: 'build',
+            enforce: 'post',
+            cwd: process.env.UNI_OUTPUT_DIR,
+            pattern: '**/*.js.map',
+            dest: sourceMapPath,
+          })
+        )
+      }
     }
   }
 
@@ -303,4 +321,8 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
   }
 
   return plugins
+}
+
+function resolveSourceMapDirByCacheDir() {
+  return path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'sourcemap')
 }
