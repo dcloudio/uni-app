@@ -23,7 +23,7 @@ declare global {
   type CreateVueComponent = any
 
   function numberEquals(a: any, b: any): boolean
-  function utsMapOf<K = string,T = any>(obj?:any): any
+  function utsMapOf<K = string,T = any>(obj?: Record<string,unknown> | any[]): any
   function padStyleMapOf(style: any): any
   function normalizeCssStyles(
     componentStyles: Map<string, Map<string, Map<string, any>>>[],
@@ -31,7 +31,7 @@ declare global {
   ): Map<string, Map<string, Map<string, any>>>
 
   // utsMapOf 简写
-  function _uM<K = string,T = any>(obj?: any): any
+  function _uM<K = string, T = any>(obj?: Record<string,unknown> | any[]): any
   // padStyleMapOf 简写
   function _pS(style: any): any
   // normalizeCssStyles 简写
