@@ -17,8 +17,8 @@ export const defineComponent = (options: any) => {
 
 export {
   // ssr
-  // ssrRef,
-  // shallowSsrRef,
+  ssrRef,
+  shallowSsrRef,
   // uni-app lifecycle
   // App and Page
   onShow,
