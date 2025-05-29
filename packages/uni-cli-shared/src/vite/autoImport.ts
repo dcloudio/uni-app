@@ -115,8 +115,8 @@ const uniAppLifeCyclePreset = {
   from: 'vue',
   imports: [
     // ssr
-    // ssrRef,
-    // shallowSsrRef,
+    'ssrRef',
+    'shallowSsrRef',
     // uni-app lifecycle
     // App and Page
     'onShow',
