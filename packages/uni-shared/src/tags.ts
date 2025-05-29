@@ -140,6 +140,8 @@ export const UVUE_BUILT_IN_TAGS = [
   'share-element',
   'cover-view',
   'cover-image',
+  // custom element
+  'match-media',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
