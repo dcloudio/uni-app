@@ -1,5 +1,6 @@
 export * from '../../lib/uvue.runtime.esm'
 import type { ComponentCustomOptions } from 'vue'
+import { ref, shallowRef } from '../../lib/uvue.runtime.esm'
 import { defineComponent as origDefineComponent } from '../../lib/uvue.runtime.esm'
 
 export const defineComponent = (options: any) => {
@@ -15,10 +16,14 @@ export const defineComponent = (options: any) => {
   return origDefineComponent(options)
 }
 
+export const ssrRef = ref
+
+export const shallowSsrRef = shallowRef
+
 export {
   // ssr
-  ssrRef,
-  shallowSsrRef,
+  // ssrRef,
+  // shallowSsrRef,
   // uni-app lifecycle
   // App and Page
   onShow,
