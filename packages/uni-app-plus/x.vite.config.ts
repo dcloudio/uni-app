@@ -150,7 +150,7 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
       },
     },
     plugins: [
-      uniPrePlugin({} as any, { include: ['**/*.vue'] }),
+      uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts'] }),
       uniUVueTypeScriptPlugin(),
       uniRemoveCssScopedPlugin(),
       {
