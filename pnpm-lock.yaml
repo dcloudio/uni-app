@@ -994,6 +994,9 @@ importers:
       estree-walker:
         specifier: ^2.0.2
         version: 2.0.2
+      fast-glob:
+        specifier: ^3.2.11
+        version: 3.3.3
       fs-extra:
         specifier: ^10.0.0
         version: 10.1.0
@@ -11448,7 +11451,7 @@ snapshots:
     dependencies:
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.3.2
+      fast-glob: 3.3.3
       ignore: 5.3.2
       merge2: 1.4.1
       slash: 3.0.0
