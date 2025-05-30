@@ -105,6 +105,13 @@ function realIsH5CustomElement(tag: string) {
   return isH5CustomElement(tag, isX)
 }
 
+let prePlugin: any
+if (isNewX) {
+  // 仅给vue,uts.ts增加条件编译
+  prePlugin = uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts.ts'] })
+  prePlugin.enforce = 'pre'
+}
+
 export default defineConfig({
   root: __dirname,
   define: {
@@ -147,8 +154,7 @@ export default defineConfig({
     ...(isNewX
       ? [
           uniUVueTypeScriptPlugin(),
-          // 仅给vue增加条件编译
-          uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts'] }),
+          prePlugin,
           uniExtApi(),
           uts2ts({ target: 'uni-h5', platform: 'web' }),
         ]
