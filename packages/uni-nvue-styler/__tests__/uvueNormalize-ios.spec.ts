@@ -709,4 +709,36 @@ border-color: var(--default-border);
       },
     })
   })
+
+  test('测试 ::v-deep(.xxx) 的样式', async () => {
+    const { json, messages } = await objectifierRule(`
+.box :deep(.text1) {
+  color: #fff000;
+}
+.box :deep(.box2 .text2) {
+  color: #000000;
+}
+.box .box3 .text3 {
+  color: #000000;
+}
+`)
+    expect(messages.length).toBe(0)
+    expect(json).toEqual({
+      text1: {
+        '.box ': {
+          color: '#fff000',
+        },
+      },
+      text2: {
+        '.box .box2 ': {
+          color: '#000000',
+        },
+      },
+      text3: {
+        '.box .box3 ': {
+          color: '#000000',
+        },
+      },
+    })
+  })
 })
