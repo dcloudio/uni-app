@@ -21370,7 +21370,9 @@ var serviceContext = (function () {
       name: 'volume'
     },
     {
-      name: 'sessionCategory'
+      name: 'sessionCategory',
+      cache: true,
+      default: 'playback'
     },
     {
       name: 'playbackRate',

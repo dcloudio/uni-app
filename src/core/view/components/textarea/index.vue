@@ -17,8 +17,8 @@
         class="uni-textarea-line"
         v-text="' '"
       />
-      <div 
-        class="uni-textarea-compute" 
+      <div
+        class="uni-textarea-compute"
         :class="{
           'uni-textarea-compute-auto-height': autoHeight
         }"
