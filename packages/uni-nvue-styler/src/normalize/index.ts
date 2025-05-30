@@ -39,7 +39,7 @@ function createRuleProcessor(opts: NormalizeOptions = {}) {
           const hasVDeep = selector.includes('::v-deep')
           const hasDeepMethod = selector.includes(':deep(')
           if (hasVDeep) {
-            selector = selector.replace('::v-deep', '')
+            selector = selector.replace(/::v-deep/g, '')
           }
           if (hasDeepMethod) {
             selector = selector.replace(/:deep\(([^)]+)\)/g, '$1')
@@ -48,7 +48,7 @@ function createRuleProcessor(opts: NormalizeOptions = {}) {
         // 移除组合符周围的空格，合并多个空格
         selector = selector
           .replace(/\s*([\+\~\>])\s*/g, '$1')
-          .replace(/\s+/, ' ')
+          .replace(/\s+/g, ' ')
         // 组合符号
         if (COMBINATORS_RE.test(selector)) {
           return selector

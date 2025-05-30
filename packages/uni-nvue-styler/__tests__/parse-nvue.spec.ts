@@ -721,4 +721,34 @@ border-top-style: solid;
       'NOTE: the flex-wrap property may have compatibility problem on native'
     )
   })
+  test('nvue 不支持 ::v-deep 和 :deep()', async () => {
+    // 多个空格
+    const { json, messages } = await objectifierRule(`
+.a  .b{
+  color: #ff0000;
+}
+.a ::v-deep .b{
+  color: #00ff00;
+}
+.a ::v-deep .b ::v-deep .c{
+  color: #ff00ff;
+}
+.a :deep(.b){
+
+  color: #0000ff;
+}
+  `)
+    expect(json).toEqual({
+      b: { '.a ': { color: '#ff0000' } },
+    })
+    // console.log(messages)
+    expect(messages.length).toBe(3)
+    expect(
+      messages.every((i) =>
+        i.text.includes(
+          'is not supported. nvue only support classname selector'
+        )
+      )
+    ).toEqual(true)
+  })
 })
