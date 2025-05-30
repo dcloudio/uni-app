@@ -196,6 +196,9 @@
       "UniHideModalResult"
     ],
     [
+      "UniLabelElement"
+    ],
+    [
       "UniNavigatorElement"
     ],
     [
@@ -233,6 +236,12 @@
     ],
     [
       "UniRadioGroupElement"
+    ],
+    [
+      "UniRichTextElement"
+    ],
+    [
+      "UniRichTextItemClickEvent"
     ],
     [
       "UniShowModalErrorCode"
