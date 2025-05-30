@@ -653,7 +653,7 @@ const ViewJSBridge = /* @__PURE__ */ extend(
 );
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
-const passiveOptions$2 = /* @__PURE__ */ passive(true);
+const passiveOptions$3 = /* @__PURE__ */ passive(true);
 let longPressTimer;
 function clearLongPressTimer() {
   if (longPressTimer) {
@@ -697,10 +697,10 @@ function touchmove(evt) {
   }
 }
 function initLongPress() {
-  window.addEventListener("touchstart", touchstart, passiveOptions$2);
-  window.addEventListener("touchmove", touchmove, passiveOptions$2);
-  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
-  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
+  window.addEventListener("touchstart", touchstart, passiveOptions$3);
+  window.addEventListener("touchmove", touchmove, passiveOptions$3);
+  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$3);
+  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$3);
 }
 function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
@@ -7321,6 +7321,24 @@ function updateBodyScopeId(instance2) {
   scopeId && body.setAttribute(scopeId, "");
   curScopeId = scopeId;
 }
+const supportsPassive = /* @__PURE__ */ (() => {
+  let supportsPassive2 = false;
+  try {
+    const opts = {};
+    Object.defineProperty(opts, "passive", {
+      get() {
+        supportsPassive2 = true;
+      }
+    });
+    window.addEventListener("test-passive", () => {
+    }, opts);
+  } catch (e2) {
+  }
+  return supportsPassive2;
+})();
+const passiveOptions$2 = supportsPassive ? {
+  passive: false
+} : false;
 let curScrollListener;
 function initPageScrollListener(instance2, pageMeta) {
   document.removeEventListener("touchmove", disableScrollListener);
@@ -7328,7 +7346,11 @@ function initPageScrollListener(instance2, pageMeta) {
     document.removeEventListener("scroll", curScrollListener);
   }
   if (pageMeta.disableScroll) {
-    return document.addEventListener("touchmove", disableScrollListener);
+    return document.addEventListener(
+      "touchmove",
+      disableScrollListener,
+      passiveOptions$2
+    );
   }
   const { onPageScroll, onReachBottom } = instance2;
   const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
@@ -20706,6 +20728,10 @@ function normalizeContentType(header) {
 }
 class RequestTask {
   constructor(controller) {
+    this._requestOnChunkReceiveCallbackId = 0;
+    this._requestOnChunkReceiveCallbacks = /* @__PURE__ */ new Map();
+    this._requestOnHeadersReceiveCallbackId = 0;
+    this._requestOnHeadersReceiveCallbacks = /* @__PURE__ */ new Map();
     this._emitter = new Emitter();
     this._controller = controller;
   }
@@ -20716,24 +20742,64 @@ class RequestTask {
     }
   }
   onHeadersReceived(callback) {
-    {
-      throw new Error("Method not implemented.");
-    }
+    this._emitter.on("headersReceived", callback);
+    this._requestOnHeadersReceiveCallbackId++;
+    this._requestOnHeadersReceiveCallbacks.set(
+      this._requestOnHeadersReceiveCallbackId,
+      callback
+    );
+    return this._requestOnHeadersReceiveCallbackId;
   }
   offHeadersReceived(callback) {
-    {
-      throw new Error("Method not implemented.");
+    if (callback == null) {
+      this._emitter.off("headersReceived");
+      return;
     }
+    if (typeof callback === "function") {
+      this._requestOnHeadersReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnHeadersReceiveCallbacks.delete(id2);
+          this._emitter.off("headersReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnHeadersReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnHeadersReceiveCallbacks.delete(callback);
+    this._emitter.off("headersReceived", callbackFn);
   }
   onChunkReceived(callback) {
-    {
-      throw new Error("Method not implemented.");
-    }
+    this._emitter.on("chunkReceived", callback);
+    this._requestOnChunkReceiveCallbackId++;
+    this._requestOnChunkReceiveCallbacks.set(
+      this._requestOnChunkReceiveCallbackId,
+      callback
+    );
+    return this._requestOnChunkReceiveCallbackId;
   }
   offChunkReceived(callback) {
-    {
-      throw new Error("Method not implemented.");
+    if (callback == null) {
+      this._emitter.off("chunkReceived");
+      return;
     }
+    if (typeof callback === "function") {
+      this._requestOnChunkReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnChunkReceiveCallbacks.delete(id2);
+          this._emitter.off("chunkReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnChunkReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnChunkReceiveCallbacks.delete(callback);
+    this._emitter.off("chunkReceived", callbackFn);
   }
 }
 function parseHeaders(headers) {

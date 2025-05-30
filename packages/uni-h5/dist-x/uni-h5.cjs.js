@@ -13398,6 +13398,10 @@ function normalizeContentType(header) {
 }
 class RequestTask {
   constructor(controller) {
+    this._requestOnChunkReceiveCallbackId = 0;
+    this._requestOnChunkReceiveCallbacks = /* @__PURE__ */ new Map();
+    this._requestOnHeadersReceiveCallbackId = 0;
+    this._requestOnHeadersReceiveCallbacks = /* @__PURE__ */ new Map();
     this._emitter = new uniShared.Emitter();
     this._controller = controller;
   }
@@ -13409,23 +13413,63 @@ class RequestTask {
   }
   onHeadersReceived(callback) {
     this._emitter.on("headersReceived", callback);
+    this._requestOnHeadersReceiveCallbackId++;
+    this._requestOnHeadersReceiveCallbacks.set(
+      this._requestOnHeadersReceiveCallbackId,
+      callback
+    );
+    return this._requestOnHeadersReceiveCallbackId;
   }
   offHeadersReceived(callback) {
-    if (callback) {
-      this._emitter.off("headersReceived", callback);
-    } else {
+    if (callback == null) {
       this._emitter.off("headersReceived");
+      return;
     }
+    if (typeof callback === "function") {
+      this._requestOnHeadersReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnHeadersReceiveCallbacks.delete(id2);
+          this._emitter.off("headersReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnHeadersReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnHeadersReceiveCallbacks.delete(callback);
+    this._emitter.off("headersReceived", callbackFn);
   }
   onChunkReceived(callback) {
     this._emitter.on("chunkReceived", callback);
+    this._requestOnChunkReceiveCallbackId++;
+    this._requestOnChunkReceiveCallbacks.set(
+      this._requestOnChunkReceiveCallbackId,
+      callback
+    );
+    return this._requestOnChunkReceiveCallbackId;
   }
   offChunkReceived(callback) {
-    if (callback) {
-      this._emitter.off("chunkReceived", callback);
-    } else {
+    if (callback == null) {
       this._emitter.off("chunkReceived");
+      return;
     }
+    if (typeof callback === "function") {
+      this._requestOnChunkReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnChunkReceiveCallbacks.delete(id2);
+          this._emitter.off("chunkReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnChunkReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnChunkReceiveCallbacks.delete(callback);
+    this._emitter.off("chunkReceived", callbackFn);
   }
 }
 function parseHeaders(headers) {

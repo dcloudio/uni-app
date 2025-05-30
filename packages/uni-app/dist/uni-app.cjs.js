@@ -109,7 +109,7 @@ function resolveEasycom(component, easycom) {
 //   }
 //   return true
 // }
-const createHook = (lifecycle, flag = 0 /* HookFlags.UNKNOWN */) => (hook, target = vue.getCurrentInstance()) => {
+const createLifeCycleHook = (lifecycle, flag = 0 /* HookFlags.UNKNOWN */) => (hook, target = vue.getCurrentInstance()) => {
     // 不使用此判断了，因为组件也可以监听页面的生命周期，当页面作为组件渲染时，那监听的页面生成周期是其所在页面的，而不是其自身的
     // if (false) {
     //   // 如果只是页面生命周期，排除与App公用的，比如onShow、onHide
@@ -122,35 +122,39 @@ const createHook = (lifecycle, flag = 0 /* HookFlags.UNKNOWN */) => (hook, targe
     // post-create lifecycle registrations are noops during SSR
     !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
 };
-const onShow = /*#__PURE__*/ createHook(uniShared.ON_SHOW, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
-const onHide = /*#__PURE__*/ createHook(uniShared.ON_HIDE, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
-const onLaunch = /*#__PURE__*/ createHook(uniShared.ON_LAUNCH, 1 /* HookFlags.APP */);
-const onError = /*#__PURE__*/ createHook(uniShared.ON_ERROR, 1 /* HookFlags.APP */);
-const onThemeChange = /*#__PURE__*/ createHook(uniShared.ON_THEME_CHANGE, 1 /* HookFlags.APP */);
-const onPageNotFound = /*#__PURE__*/ createHook(uniShared.ON_PAGE_NOT_FOUND, 1 /* HookFlags.APP */);
-const onUnhandledRejection = /*#__PURE__*/ createHook(uniShared.ON_UNHANDLE_REJECTION, 1 /* HookFlags.APP */);
-const onExit = /*#__PURE__*/ createHook(uniShared.ON_EXIT, 1 /* HookFlags.APP */);
-const onInit = /*#__PURE__*/ createHook(uniShared.ON_INIT, 2 /* HookFlags.PAGE */ | 4 /* HookFlags.COMPONENT */);
+const onShow = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHOW, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
+const onHide = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_HIDE, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
+const onLaunch = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_LAUNCH, 1 /* HookFlags.APP */);
+const onError = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_ERROR, 1 /* HookFlags.APP */);
+const onThemeChange = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_THEME_CHANGE, 1 /* HookFlags.APP */);
+const onPageNotFound = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_PAGE_NOT_FOUND, 1 /* HookFlags.APP */);
+const onUnhandledRejection = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_UNHANDLE_REJECTION, 1 /* HookFlags.APP */);
+const onExit = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_EXIT, 1 /* HookFlags.APP */);
+const onInit = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_INIT, 2 /* HookFlags.PAGE */ | 4 /* HookFlags.COMPONENT */);
 // 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
-const onLoad = /*#__PURE__*/ createHook(uniShared.ON_LOAD, 2 /* HookFlags.PAGE */);
-const onReady = /*#__PURE__*/ createHook(uniShared.ON_READY, 2 /* HookFlags.PAGE */);
-const onUnload = /*#__PURE__*/ createHook(uniShared.ON_UNLOAD, 2 /* HookFlags.PAGE */);
-const onResize = /*#__PURE__*/ createHook(uniShared.ON_RESIZE, 2 /* HookFlags.PAGE */);
-const onBackPress = /*#__PURE__*/ createHook(uniShared.ON_BACK_PRESS, 2 /* HookFlags.PAGE */);
-const onPageScroll = /*#__PURE__*/ createHook(uniShared.ON_PAGE_SCROLL, 2 /* HookFlags.PAGE */);
-const onTabItemTap = /*#__PURE__*/ createHook(uniShared.ON_TAB_ITEM_TAP, 2 /* HookFlags.PAGE */);
-const onReachBottom = /*#__PURE__*/ createHook(uniShared.ON_REACH_BOTTOM, 2 /* HookFlags.PAGE */);
-const onPullDownRefresh = /*#__PURE__*/ createHook(uniShared.ON_PULL_DOWN_REFRESH, 2 /* HookFlags.PAGE */);
-const onSaveExitState = /*#__PURE__*/ createHook(uniShared.ON_SAVE_EXIT_STATE, 2 /* HookFlags.PAGE */);
-const onShareTimeline = /*#__PURE__*/ createHook(uniShared.ON_SHARE_TIMELINE, 2 /* HookFlags.PAGE */);
-const onAddToFavorites = /*#__PURE__*/ createHook(uniShared.ON_ADD_TO_FAVORITES, 2 /* HookFlags.PAGE */);
-const onShareAppMessage = /*#__PURE__*/ createHook(uniShared.ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
-const onNavigationBarButtonTap = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, 2 /* HookFlags.PAGE */);
-const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, 2 /* HookFlags.PAGE */);
-const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, 2 /* HookFlags.PAGE */);
-const onNavigationBarSearchInputConfirmed = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, 2 /* HookFlags.PAGE */);
+const onLoad = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_LOAD, 2 /* HookFlags.PAGE */);
+const onReady = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_READY, 2 /* HookFlags.PAGE */);
+const onUnload = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_UNLOAD, 2 /* HookFlags.PAGE */);
+const onResize = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_RESIZE, 2 /* HookFlags.PAGE */);
+const onBackPress = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_BACK_PRESS, 2 /* HookFlags.PAGE */);
+const onPageScroll = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_PAGE_SCROLL, 2 /* HookFlags.PAGE */);
+const onTabItemTap = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_TAB_ITEM_TAP, 2 /* HookFlags.PAGE */);
+const onReachBottom = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_REACH_BOTTOM, 2 /* HookFlags.PAGE */);
+const onPullDownRefresh = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_PULL_DOWN_REFRESH, 2 /* HookFlags.PAGE */);
+const onSaveExitState = 
+/*#__PURE__*/ createLifeCycleHook(uniShared.ON_SAVE_EXIT_STATE, 2 /* HookFlags.PAGE */);
+const onShareTimeline = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_TIMELINE, 2 /* HookFlags.PAGE */);
+const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_ADD_TO_FAVORITES, 2 /* HookFlags.PAGE */);
+const onShareAppMessage = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
+const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, 2 /* HookFlags.PAGE */);
+const onNavigationBarSearchInputChanged = 
+/*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, 2 /* HookFlags.PAGE */);
+const onNavigationBarSearchInputClicked = 
+/*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, 2 /* HookFlags.PAGE */);
+const onNavigationBarSearchInputConfirmed = 
+/*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, 2 /* HookFlags.PAGE */);
 const onNavigationBarSearchInputFocusChanged = 
-/*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, 2 /* HookFlags.PAGE */);
+/*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, 2 /* HookFlags.PAGE */);
 // for uni-app-x web
 const onPageHide = onHide;
 const onPageShow = onShow;
