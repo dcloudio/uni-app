@@ -710,12 +710,21 @@ border-color: var(--default-border);
 .box ::v-deep .text1 {
   color: #fff000;
 }
+.box1 ::v-deep .box2 ::v-deep  .box3 {
+  color: #000000;
+}
 `)
+    // console.log(messages)
     expect(messages.length).toBe(0)
     expect(json).toEqual({
       text1: {
         '.box ': {
           color: '#fff000',
+        },
+      },
+      box3: {
+        '.box1 .box2 ': {
+          color: '#000000',
         },
       },
     })
@@ -732,6 +741,7 @@ border-color: var(--default-border);
 .box .box3 .text3 {
   color: #000000;
 }
+
 `)
     expect(messages.length).toBe(0)
     expect(json).toEqual({
