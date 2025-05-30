@@ -1610,7 +1610,7 @@ function getPageIdByVm(instance2) {
     return getPageProxyId(rootProxy);
   }
 }
-function getCurrentPage() {
+function getCurrentPage$1() {
   const pages = getCurrentPages();
   const len = pages.length;
   if (len) {
@@ -1619,7 +1619,7 @@ function getCurrentPage() {
 }
 function getCurrentPageMeta() {
   var _a, _b;
-  const $page = (_b = (_a = getCurrentPage()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
+  const $page = (_b = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
   if ($page) {
     return $page.meta;
   }
@@ -1633,7 +1633,7 @@ function getCurrentPageId() {
 }
 function getCurrentPageVm() {
   var _a;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
   if (page) {
     return page.$vm;
   }
@@ -2240,7 +2240,7 @@ function initOn() {
 }
 function onResize$1(res) {
   var _a, _b;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
   invokeHook(page, ON_RESIZE, res);
   {
     const dialogPages = page == null ? void 0 : page.$page.getDialogPages();
@@ -2260,7 +2260,7 @@ function onResize$1(res) {
 }
 function onAppEnterForeground(enterOptions2) {
   var _a;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
   invokeHook(
     getApp().vm,
     ON_SHOW,
@@ -2275,7 +2275,7 @@ function onAppEnterBackground() {
     ON_HIDE
   );
   invokeHook(
-    (_a = getCurrentPage()) == null ? void 0 : _a.vm,
+    (_a = getCurrentPage$1()) == null ? void 0 : _a.vm,
     ON_HIDE
   );
 }
@@ -7927,7 +7927,7 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
 );
 function removeLastPage() {
   var _a;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
   if (!page) {
     return;
   }
@@ -8155,7 +8155,7 @@ const homeDialogPages = [];
 const homeSystemDialogPages = [];
 function getPageElement(page) {
   var _a;
-  const currentPage = getCurrentPage();
+  const currentPage = getCurrentPage$1();
   if (page !== currentPage) {
     const dialogPages = currentPage.getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
@@ -8272,7 +8272,7 @@ class UniPageImpl {
     this.setPageStyle(style);
   }
   getElementById(id2) {
-    const currentPage = getCurrentPage();
+    const currentPage = getCurrentPage$1();
     if (currentPage !== this) {
       return null;
     }
@@ -8286,7 +8286,7 @@ class UniPageImpl {
     return null;
   }
   getHTMLElement() {
-    const currentPage = getCurrentPage();
+    const currentPage = getCurrentPage$1();
     if (currentPage !== this) {
       return null;
     }
@@ -8342,7 +8342,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
   getElementById(id2) {
     var _a;
-    const currentPage = getCurrentPage();
+    const currentPage = getCurrentPage$1();
     if (currentPage !== this.getParentPage()) {
       return null;
     }
@@ -8353,7 +8353,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
   getHTMLElement() {
     var _a;
-    const currentPage = getCurrentPage();
+    const currentPage = getCurrentPage$1();
     if (currentPage !== this.getParentPage()) {
       return null;
     }
@@ -8425,7 +8425,7 @@ function useBackgroundColorContent$1(vm) {
 }
 function handleEscKeyPress(event) {
   if (event.key === "Escape") {
-    const currentPage = getCurrentPage();
+    const currentPage = getCurrentPage$1();
     const dialogPages = currentPage.getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
     if (!dialogPage.$disableEscBack) {
@@ -9506,7 +9506,7 @@ function setupPage(comp) {
       watch(
         [instance2.onReachBottom, instance2.onPageScroll],
         () => {
-          const currentPage = getCurrentPage().vm;
+          const currentPage = getCurrentPage$1().vm;
           if (instance2.proxy === currentPage) {
             initPageScrollListener(instance2, pageMeta);
           }
@@ -24653,7 +24653,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
       canBack = false;
     }
     {
-      const currentPage = getCurrentPage();
+      const currentPage = getCurrentPage$1();
       if (currentPage) {
         const dialogPages = currentPage.getDialogPages();
         const dialogPage = dialogPages[dialogPages.length - 1];
@@ -29488,7 +29488,6 @@ class ChooseLocationFailImpl extends UniError {
   }
 }
 const chooseLocation$1 = (options) => {
-  registerSystemRoute("uni:chooseLocation", UniChooseLocationPage);
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_choose_location_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
@@ -29915,7 +29914,6 @@ class UniHideModalFailImpl extends UniError {
 }
 const showModal$1 = (options) => {
   var _a, _b;
-  registerSystemRoute("uni:uniModal", UniModalPage);
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_modal_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
