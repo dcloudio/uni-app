@@ -6486,6 +6486,7 @@ const OpenDocumentProtocol = {
   fileType: String
 };
 const API_HIDE_KEYBOARD = "hideKeyboard";
+const API_CHOOSE_LOCATION = "chooseLocation";
 const API_GET_LOCATION = "getLocation";
 const coordTypes$1 = ["wgs84", "gcj02"];
 const GetLocationOptions = {
@@ -7111,6 +7112,7 @@ const PageScrollToOptions = {
     duration: 300
   }
 };
+const API_SHOW_ACTION_SHEET = "showActionSheet";
 const API_SHOW_LOADING = "showLoading";
 const ShowLoadingProtocol = {
   title: String,
@@ -7122,6 +7124,7 @@ const ShowLoadingOptions = {
     mask: false
   }
 };
+const API_SHOW_MODAL = "showModal";
 const API_SHOW_TOAST = "showToast";
 const SHOW_TOAST_ICON = [
   "success",
@@ -28216,8 +28219,7 @@ class ShowActionSheetFailImpl extends UniError {
     this.errCode = errCode;
   }
 }
-const showActionSheet = (options) => {
-  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
+const showActionSheet$1 = (options) => {
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_action_sheet_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
@@ -28225,7 +28227,7 @@ const showActionSheet = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options);
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
   });
   uni.$on(successEventName, (index2) => {
     var _a, _b;
@@ -28252,19 +28254,33 @@ const showActionSheet = (options) => {
     }
   });
 };
-const hideActionSheet = () => {
+const hideActionSheet$1 = () => {
   var _a;
-  const currentPage = getCurrentPage();
-  if (!currentPage)
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  if (currentPage == null)
     return;
   const systemDialogPages = (_a = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
-  for (let i = 0; i < systemDialogPages.length; i++) {
-    if (isSystemActionSheetDialogPage(systemDialogPages[i])) {
-      systemDialogPages.splice(i, 1);
-      return;
+  systemDialogPages.forEach((page, index2) => {
+    if (page.route.startsWith("uni:actionSheet")) {
+      systemDialogPages.splice(index2, 1);
     }
-  }
+  });
 };
+const registerActionSheetOnce = /* @__PURE__ */ once(() => {
+  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
+});
+const hideActionSheet = () => {
+  registerActionSheetOnce();
+  hideActionSheet$1();
+};
+const showActionSheet = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_ACTION_SHEET,
+  (args, { resolve, reject }) => {
+    registerActionSheetOnce();
+    showActionSheet$1(args);
+  }
+);
 const defaultPoi = {
   latitude: 39.908823,
   longitude: 116.39747
@@ -29463,7 +29479,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   }, 8, ["class"]);
 }
-const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
 class ChooseLocationFailImpl extends UniError {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
@@ -29471,8 +29487,8 @@ class ChooseLocationFailImpl extends UniError {
     this.errMsg = errMsg;
   }
 }
-const chooseLocation = (options) => {
-  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
+const chooseLocation$1 = (options) => {
+  registerSystemRoute("uni:chooseLocation", UniChooseLocationPage);
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_choose_location_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
@@ -29505,6 +29521,16 @@ const chooseLocation = (options) => {
     }
   });
 };
+const registerChooseLocationOnce = /* @__PURE__ */ once(() => {
+  registerSystemRoute("uni:chooseLocation", UniChooseLocationPage);
+});
+const chooseLocation = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_LOCATION,
+  (args, { resolve, reject }) => {
+    registerChooseLocationOnce();
+    chooseLocation$1(args);
+  }
+);
 const _sfc_main = {
   data() {
     return {
@@ -29887,7 +29913,7 @@ class UniHideModalFailImpl extends UniError {
     this.errCode = errCode;
   }
 }
-const showModal = (options) => {
+const showModal$1 = (options) => {
   var _a, _b;
   registerSystemRoute("uni:uniModal", UniModalPage);
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
@@ -29937,7 +29963,7 @@ const showModal = (options) => {
     return null;
   }
 };
-const hideModal = function(options) {
+const hideModal$1 = function(options) {
   var _a, _b, _c, _d, _e;
   const currentPage = getCurrentPage();
   if (!currentPage) {
@@ -29983,6 +30009,24 @@ function notifyClosedDialog(perPage) {
 function isSystemModalDialogPage(page) {
   return page.route.startsWith("uni:uniModal");
 }
+const API_HIDE_MODAL = "hideModal";
+const registerModalOnce = /* @__PURE__ */ once(() => {
+  registerSystemRoute("uni:uniModal", UniModalPage);
+});
+const hideModal = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_MODAL,
+  (args, { resolve, reject }) => {
+    registerModalOnce();
+    hideModal$1(args);
+  }
+);
+const showModal = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_MODAL,
+  (args, { resolve, reject }) => {
+    registerModalOnce();
+    showModal$1(args);
+  }
+);
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
