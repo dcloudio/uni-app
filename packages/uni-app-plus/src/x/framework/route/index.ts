@@ -30,19 +30,18 @@ export function getRealPath(path: string, fix: boolean = false): string {
   }
   return addLeadingSlash(currentPathArray.concat(resultArray).join('/'))
 }
-// 已经废弃了，不需要了。
+
 export const systemRoutes: UniApp.UniRoute[] = []
 export function registerSystemRoute(
   route: string,
   page: any,
   meta: Partial<UniApp.PageRouteMeta> = {}
 ) {
-  // 已经调整了registerSystemRoute的时机，不能设置到systemRoutes，然后app-config.js中合并到__uniRoutes中了，
-  if (__uniRoutes.find((r) => r.path === route)) {
+  // 框架里会立即注册系统内置页面，而__uniRoutes是app-config.js中声明定义的，框架初始化时还访问不到
+  if (systemRoutes.find((r) => r.path === route)) {
     return
   }
-  // 直接设置到__uniRoutes中
-  __uniRoutes.push({
+  systemRoutes.push({
     path: route,
     meta: extend(
       {
