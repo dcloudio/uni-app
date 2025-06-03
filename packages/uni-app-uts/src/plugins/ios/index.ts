@@ -21,6 +21,7 @@ import { createUniAppJsEnginePlugin } from '../js/plugin'
 import { uniAppJsEngineMainPlugin } from '../js/mainUTS'
 import { uniAppManifestPlugin } from '../js/manifestJson'
 import { uniAppPagesPlugin } from '../js/pagesJson'
+import { replaceExtApiPagePaths } from '../js/extApiPages'
 
 export function init() {
   return [
@@ -57,5 +58,8 @@ export function init() {
         uniCliShared,
       },
     }),
+    ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
+      ? [replaceExtApiPagePaths()]
+      : []),
   ]
 }
