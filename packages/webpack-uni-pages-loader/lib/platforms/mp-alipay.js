@@ -79,7 +79,7 @@ function parseCondition (pagesJson) {
   }
 }
 
-const projectKeys = ['component2', 'enableAppxNg']
+const projectKeys = ['component2', 'enableAppxNg', 'axmlStrictCheck', 'enableParallelLoader', 'enableDistFileMinify']
 
 module.exports = function (pagesJson, manifestJson) {
   const app = {
@@ -134,6 +134,9 @@ module.exports = function (pagesJson, manifestJson) {
   } else {
     project.component2 = hasOwn(platformJson, 'component2') ? platformJson.component2 : true
     project.enableAppxNg = hasOwn(platformJson, 'enableAppxNg') ? platformJson.enableAppxNg : true
+    project.axmlStrictCheck = hasOwn(platformJson, 'axmlStrictCheck') ? platformJson.axmlStrictCheck : false
+    project.enableParallelLoader = hasOwn(platformJson, 'enableParallelLoader') ? platformJson.enableParallelLoader : false
+    project.enableDistFileMinify = hasOwn(platformJson, 'enableDistFileMinify') ? platformJson.enableDistFileMinify : false
   }
 
   parseCondition(pagesJson)
