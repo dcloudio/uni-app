@@ -924,10 +924,10 @@ function getRealPath(path) {
 var systemRoutes = [];
 function registerSystemRoute(route, page) {
   var meta = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
-  if (__uniRoutes.find((r) => r.path === route)) {
+  if (systemRoutes.find((r) => r.path === route)) {
     return;
   }
-  __uniRoutes.push({
+  systemRoutes.push({
     path: route,
     meta: extend({
       isQuit: false,
@@ -3654,7 +3654,8 @@ class PerformanceEntryStatus {
     }
   }
   executeAfter() {
-    var page = getCurrentPage().vm;
+    var _getCurrentPage2;
+    var page = (_getCurrentPage2 = getCurrentPage()) === null || _getCurrentPage2 === void 0 ? void 0 : _getCurrentPage2.vm;
     if (page != null) {
       this._entryData.pageId = parseInt(page.$nativePage.pageId);
       this._entryData.path = page.route;
@@ -3663,7 +3664,8 @@ class PerformanceEntryStatus {
   executeReady() {
   }
   getCurrentInnerPage() {
-    var currentPage = getCurrentPage().vm;
+    var _getCurrentPage3;
+    var currentPage = (_getCurrentPage3 = getCurrentPage()) === null || _getCurrentPage3 === void 0 ? void 0 : _getCurrentPage3.vm;
     if (currentPage == null) {
       return null;
     }
