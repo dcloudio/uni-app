@@ -7,7 +7,7 @@ export function replaceExtApiPagePaths(): Plugin {
   const pagePaths = getUniXPagePaths()
   const systemPagePaths: Record<string, string> = pagePaths.reduce(
     (acc, pagePath) => {
-      acc[pagePath] = `uni:${path.basename(pagePath)}`
+      acc['/' + pagePath] = `uni:${path.basename(pagePath)}`
       return acc
     },
     {} as Record<string, string>
