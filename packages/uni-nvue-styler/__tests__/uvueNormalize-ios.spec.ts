@@ -295,7 +295,7 @@ describe('uvue-styler: normalize', () => {
   })
   test('transition-property', async () => {
     const { json, messages } = await objectifierRule(`
-  .foo {
+.foo {
     transition-property: margin-top
   }
   .bar {
@@ -304,9 +304,12 @@ describe('uvue-styler: normalize', () => {
   .foobar {
     transition-property: margin-top, height
   }
-  .baz {
+   .baz {
     transition-property: abc
   }
+.transition-property-all{
+  transition-property: all
+}
   `)
     expect(json).toEqual({
       '@TRANSITION': {
@@ -318,6 +321,9 @@ describe('uvue-styler: normalize', () => {
         },
         foobar: {
           property: 'marginTop,height',
+        },
+        'transition-property-all': {
+          property: 'all',
         },
       },
       foo: {
@@ -333,6 +339,11 @@ describe('uvue-styler: normalize', () => {
       foobar: {
         '': {
           transitionProperty: 'marginTop,height',
+        },
+      },
+      'transition-property-all': {
+        '': {
+          transitionProperty: 'all',
         },
       },
     })
