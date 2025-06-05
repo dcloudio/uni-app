@@ -178,12 +178,20 @@ describe('parseMiniProgramProjectJson', () => {
 
     expect(projectJson).toEqual({
       appid: userPlatformConfig.appid ?? mpAlipayConfig.appid,
+      axmlStrictCheck:
+        userPlatformConfig.axmlStrictCheck ?? mpAlipayConfig.axmlStrictCheck,
       component2: userPlatformConfig.component2 ?? mpAlipayConfig.component2,
       enableAppxNg:
         userPlatformConfig.enableAppxNg ?? mpAlipayConfig.enableAppxNg,
+      enableDistFileMinify:
+        userPlatformConfig.enableDistFileMinify ??
+        mpAlipayConfig.enableDistFileMinify,
       enableNodeModuleBabelTransform:
         userPlatformConfig.enableNodeModuleBabelTransform ??
         mpAlipayConfig.enableNodeModuleBabelTransform,
+      enableParallelLoader:
+        userPlatformConfig.enableParallelLoader ??
+        mpAlipayConfig.enableParallelLoader,
       projectname: userManifestJSON.name,
     })
     expect(projectJson.hasOwnProperty('mockFeature')).toBe(false)
