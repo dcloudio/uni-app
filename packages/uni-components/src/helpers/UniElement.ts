@@ -1,5 +1,6 @@
 import { camelize } from '@vue/shared'
 import { createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared'
+import { getCurrentPage } from '@dcloudio/uni-core'
 
 const rpx2Unit = createRpx2Unit(
   defaultRpx2Unit.unit,
@@ -25,6 +26,8 @@ export class UniElement extends HTMLElement {
   constructor() {
     super()
     this.__isUniElement = true
+    // TODO 部分组件需要在构造器内访问uniPage属性，是否合理？
+    this._page = getCurrentPage()?.$vm?.$page
   }
 
   attachVmProps(props: Record<string, any>) {

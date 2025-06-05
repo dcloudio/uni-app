@@ -28,6 +28,7 @@ import { uniResolveIdPlugin } from './plugins/resolveId'
 import { uniSetupPlugin } from './plugins/setup'
 import { uniSSRPlugin } from './plugins/ssr'
 import { uniPostSourceMapPlugin } from './plugins/sourcemap'
+import { uniCustomElementPlugin } from './plugins/customElement'
 
 export default () => [
   ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
@@ -69,4 +70,5 @@ export default () => [
     : []),
   uniPostVuePlugin(),
   uniPostSourceMapPlugin(),
+  uniCustomElementPlugin(),
 ]

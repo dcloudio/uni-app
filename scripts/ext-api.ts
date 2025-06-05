@@ -4,7 +4,7 @@ import type { Plugin } from 'vite'
 import execa from 'execa'
 import { sync } from 'fast-glob'
 import { camelize, capitalize } from '@vue/shared'
-import { OutputChunk } from 'rollup'
+import type { OutputChunk } from 'rollup'
 
 type Target = 'uni-h5' | 'uni-app-plus'
 
@@ -311,10 +311,11 @@ export function syncCustomElementsFile(apiDirs: string[]) {
                     `// @ts-expect-error
 import { ${identElement} } from '@dcloudio/uni-ext-api/${module}/customElements/${component}/${component}.uts.ts'`
                   )
+                  const tagName = component.replace(/^uni-/, '')
                   customElementsExportCodes.push(
                     `export const ${capitalize(
                       camelize(component.replace('uni-', ''))
-                    )}0 = /*#__PURE__*/ (() => {
+                    )} = /*#__PURE__*/ (() => {
   // @ts-expect-error
   customElements.define('${component}', ${identElement})
   return '${component}'

@@ -12,10 +12,10 @@ import AutoImport from 'unplugin-auto-import/vite'
 import type { OutputChunk } from 'rollup'
 
 import {
+  UNI_EASYCOM_EXCLUDE,
   initPreContext,
   normalizePath,
   stripOptions,
-  UNI_EASYCOM_EXCLUDE,
   uniPrePlugin,
   uniUVueTypeScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -153,11 +153,11 @@ export default defineConfig({
   plugins: [
     ...(isNewX
       ? [
-          uniUVueTypeScriptPlugin(),
-          prePlugin,
-          uniExtApi(),
-          uts2ts({ target: 'uni-h5', platform: 'web' }),
-        ]
+        uniUVueTypeScriptPlugin(),
+        prePlugin,
+        uniExtApi(),
+        uts2ts({ target: 'uni-h5', platform: 'web' }),
+      ]
       : []),
     vue({
       customElement: isX,
@@ -248,6 +248,14 @@ function uniExtApi() {
           'defineSyncApi',
           'defineAsyncApi',
         ],
+        // TODO 整理autoImport规则或改为全局变量，目前下面的部分仅服务于match-media
+        '@dcloudio/uni-components': [
+          'UniViewElementImpl',
+          'UniViewElement',
+        ],
+        '@dcloudio/uni-app': [
+          'onResize'
+        ]
       },
     ],
   })

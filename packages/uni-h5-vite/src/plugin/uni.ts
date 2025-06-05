@@ -9,21 +9,32 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
 import type { CompilerOptions } from '@vue/compiler-core'
+import { transformCustomElement } from './transforms/transformCustomElement'
 
 function realIsH5CustomElement(tag: string) {
-  return isH5CustomElement(tag, process.env.UNI_APP_X === 'true')
+  // TODO isH5CustomElement目前被多个平台引用，需要传入uni-开头的tagName
+  return isH5CustomElement(
+    tag.startsWith('uni-') ? tag : 'uni-' + tag,
+    process.env.UNI_APP_X === 'true'
+  )
+}
+
+const nodeTransforms = [
+  transformRefresherSlot,
+  transformH5BuiltInComponents,
+  transformTapToClick,
+  transformMatchMedia,
+  transformPageHead,
+]
+
+if (process.env.UNI_APP_X === 'true') {
+  nodeTransforms.push(transformCustomElement)
 }
 
 export const compilerOptions: CompilerOptions = {
   isNativeTag: isH5NativeTag,
   isCustomElement: realIsH5CustomElement,
-  nodeTransforms: [
-    transformRefresherSlot,
-    transformH5BuiltInComponents,
-    transformTapToClick,
-    transformMatchMedia,
-    transformPageHead,
-  ],
+  nodeTransforms,
 }
 
 export function createUni(): UniVitePlugin['uni'] {
