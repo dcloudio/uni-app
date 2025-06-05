@@ -78,6 +78,9 @@ export function updateComponentProps(
     if (hasQueueJob(instance.update)) {
       invalidateJob(instance.update)
     }
+    // 修复列表组件复用时导致的组件动态属性丢失问题
+    // 最小复现demo https://developers.weixin.qq.com/s/ZvNerFmK8y0f
+    instance.effect.dirty = true
     if (
       __PLATFORM__ === 'mp-toutiao' ||
       __PLATFORM__ === 'mp-baidu' ||
