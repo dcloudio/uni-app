@@ -150,6 +150,7 @@ export const UVUE_WEB_BUILT_IN_TAGS = [
   'sticky-section',
   'sticky-header',
   'cloud-db-element',
+  'match-media',
 ].map((tag) => 'uni-' + tag)
 
 export const UVUE_IOS_BUILT_IN_TAGS = [
@@ -178,6 +179,8 @@ export const NVUE_U_BUILT_IN_TAGS = [
   'u-ad-draw',
   'u-rich-text',
 ]
+
+export const UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = ['match-media']
 
 export const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag)
 
