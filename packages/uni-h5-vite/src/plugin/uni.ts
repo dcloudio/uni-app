@@ -7,16 +7,23 @@ import {
   transformTapToClick,
   transformUniH5Jsx,
 } from '@dcloudio/uni-cli-shared'
-import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
+import {
+  UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS,
+  isH5CustomElement,
+  isH5NativeTag,
+} from '@dcloudio/uni-shared'
 import type { CompilerOptions } from '@vue/compiler-core'
 import { transformCustomElement } from './transforms/transformCustomElement'
 
 function realIsH5CustomElement(tag: string) {
-  // TODO isH5CustomElement目前被多个平台引用，需要传入uni-开头的tagName
-  return isH5CustomElement(
-    tag.startsWith('uni-') ? tag : 'uni-' + tag,
-    process.env.UNI_APP_X === 'true'
-  )
+  // TODO isH5CustomElement目前被多个平台引用，重构比较麻烦
+  if (
+    process.env.UNI_APP_X === 'true' &&
+    UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS.includes(tag)
+  ) {
+    return true
+  }
+  return isH5CustomElement(tag, process.env.UNI_APP_X === 'true')
 }
 
 const nodeTransforms = [
