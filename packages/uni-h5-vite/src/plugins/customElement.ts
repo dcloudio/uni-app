@@ -25,7 +25,7 @@ export function uniCustomElementPlugin(): Plugin {
           }
           const elementName = capitalize(camelize(name))
           const localName = '_' + elementName + 'Element'
-          importSpecifiers.push(`${localName} as ${elementName}`)
+          importSpecifiers.push(`${elementName} as ${localName}`)
           return localName
         }
       )
