@@ -56,21 +56,38 @@ const PLATFORMS = {
 
 const platform = PLATFORMS[process.env.UNI_PLATFORM]
 
-let input = 'src/core/runtime/index.js'
-const output = {
-  file: `packages/uni-${process.env.UNI_PLATFORM}/dist/index.js`,
-  format: 'es',
-  sourcemap: process.env.ENABLE_SOURCEMAP === 'true' ? 'inline' : false
-}
+const input = 'src/core/runtime/index.js'
+// const output = {
+//   file: `packages/uni-${process.env.UNI_PLATFORM}/dist/index.js`,
+//   format: 'es',
+//   sourcemap: process.env.ENABLE_SOURCEMAP === 'true' ? 'inline' : false
+// }
 
-if (process.env.UNI_MP) {
-  input = 'src/core/runtime/mp/index.js'
-  output.file = `packages/uni-${process.env.UNI_PLATFORM}/dist/mp.js`
-}
+// if (process.env.UNI_MP) {
+//   input = 'src/core/runtime/mp/index.js'
+//   output.file = `packages/uni-${process.env.UNI_PLATFORM}/dist/mp.js`
+// }
 
 module.exports = {
   input,
-  output,
+  output: process.env.UNI_MP
+    ? {
+      file: `packages/uni-${process.env.UNI_PLATFORM}/dist/mp.js`,
+      format: 'es',
+      sourcemap: process.env.ENABLE_SOURCEMAP === 'true' ? 'inline' : false
+    }
+    : [
+      {
+        file: `packages/uni-${process.env.UNI_PLATFORM}/dist/index.js`,
+        format: 'es',
+        sourcemap: process.env.ENABLE_SOURCEMAP === 'true' ? 'inline' : false
+      },
+      {
+        file: `packages/uni-${process.env.UNI_PLATFORM}/dist/index.common.js`,
+        format: 'cjs',
+        sourcemap: process.env.ENABLE_SOURCEMAP === 'true' ? 'inline' : false
+      }
+    ],
   plugins: [
     alias({
       entries: [

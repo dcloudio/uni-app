@@ -9,6 +9,10 @@ import {
 } from './util'
 
 function getRect (rect) {
+  if (!rect) {
+    return null
+  }
+
   return {
     bottom: rect.bottom,
     height: rect.height,
