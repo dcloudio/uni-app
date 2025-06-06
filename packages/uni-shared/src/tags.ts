@@ -150,7 +150,6 @@ export const UVUE_WEB_BUILT_IN_TAGS = [
   'sticky-section',
   'sticky-header',
   'cloud-db-element',
-  'match-media',
 ].map((tag) => 'uni-' + tag)
 
 export const UVUE_IOS_BUILT_IN_TAGS = [
