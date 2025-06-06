@@ -56,7 +56,7 @@ const PLATFORMS = {
 
 const platform = PLATFORMS[process.env.UNI_PLATFORM]
 
-let input = 'src/core/runtime/index.js'
+const input = 'src/core/runtime/index.js'
 // const output = {
 //   file: `packages/uni-${process.env.UNI_PLATFORM}/dist/index.js`,
 //   format: 'es',

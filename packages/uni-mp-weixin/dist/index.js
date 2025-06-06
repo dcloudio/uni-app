@@ -413,7 +413,7 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 
-function checkDeviceWidth() {
+function checkDeviceWidth () {
   let windowWidth, pixelRatio, platform;
 
   {
@@ -430,7 +430,7 @@ function checkDeviceWidth() {
   isIOS = platform === 'ios';
 }
 
-function upx2px(number, newDeviceWidth) {
+function upx2px (number, newDeviceWidth) {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
@@ -465,7 +465,7 @@ const messages = {};
 function getLocaleLanguage () {
   let localeLanguage = '';
   {
-    const appBaseInfo = typeof wx.getAppBaseInfo === 'function' && wx.getAppBaseInfo() ? wx.getAppBaseInfo() : wx.getSystemInfoSync();
+    const appBaseInfo = wx.getAppBaseInfo();
     const language =
       appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
     localeLanguage = normalizeLocale(language) || LOCALE_EN;
