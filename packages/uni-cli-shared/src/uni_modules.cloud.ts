@@ -160,6 +160,8 @@ export function parseEasyComComponents(
   return components
 }
 
+const uniModulesEncryptTypes: Map<string, 'utssdk' | 'easycom' | ''> = new Map()
+
 /**
  * 查找所有需要云编译的加密插件 uni_modules
  * 支持云编译的插件类型
@@ -176,6 +178,7 @@ export function findCloudEncryptUniModules(
   inputDir: string,
   cacheDir: string = ''
 ) {
+  uniModulesEncryptTypes.clear()
   const uniModules: Record<string, EncryptPackageJson | undefined> = {}
   const modulesDir = path.resolve(inputDir, 'uni_modules')
   if (fs.existsSync(modulesDir)) {
@@ -213,14 +216,15 @@ export function findCloudEncryptUniModules(
         type = 'easycom'
       }
       const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
-      const encryptPkg = findEncryptUniModuleCache(uniModuleDir, cacheDir, {
-        version: pkg.version,
-        env: initCheckEnv(),
-      })
-      if (encryptPkg) {
-        encryptPkg.type = type
-        uniModules[uniModuleDir] = encryptPkg
-      }
+      uniModules[uniModuleDir] = findEncryptUniModuleCache(
+        uniModuleDir,
+        cacheDir,
+        {
+          version: pkg.version,
+          env: initCheckEnv(),
+        }
+      )
+      uniModulesEncryptTypes.set(uniModuleDir, type)
     })
   }
   return uniModules
@@ -292,7 +296,6 @@ function isEnvExpired(
 export interface EncryptPackageJson {
   id: string
   version: string
-  type?: 'utssdk' | 'easycom' | ''
   uni_modules: {
     dependencies: string[]
     artifacts: {
@@ -439,13 +442,10 @@ export function resolveEncryptUniModule(
       // 为了避免兼容性问题，
       // 目前排除 app-android 和 app-ios 平台，其他平台需要判断是否uvue文件，比如web端。加密utssdk插件，但同时easycom使用了非加密组件
       if (platform !== 'app-android' && platform !== 'app-ios') {
-        const encryptPkg = encryptUniModules[uniModuleId]
-        if (encryptPkg) {
-          if (encryptPkg.type === 'utssdk') {
-            // 如果是utssdk加密插件，且是vue文件，则不走uts-proxy
-            if (EXTNAME_VUE_RE.test(id)) {
-              return
-            }
+        if (uniModulesEncryptTypes.get(uniModuleId) === 'utssdk') {
+          // 如果是utssdk加密插件，且是vue文件，则不走uts-proxy
+          if (EXTNAME_VUE_RE.test(id)) {
+            return
           }
         }
       }
