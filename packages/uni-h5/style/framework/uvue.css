@@ -50,6 +50,7 @@ uni-app.uni-app--showtabbar uni-page-wrapper::after {
 uni-app uni-text,
 uni-app uni-input,
 uni-app uni-textarea,
+uni-app uni-match-media,
 uni-app uni-view {
   font-size: 16px;
   text-align: left;
@@ -230,6 +231,7 @@ uni-app uni-top-window .uni-top-window,
 uni-app uni-animation-view,
 uni-app uni-block,
 uni-app uni-view,
+uni-app uni-match-media,
 uni-app uni-label,
 uni-app uni-swiper,
 uni-app uni-swiper-item,
@@ -258,6 +260,7 @@ uni-app uni-left-window .uni-left-window,
 uni-app uni-right-window .uni-right-window,
 uni-app uni-top-window .uni-top-window,
 uni-app uni-view,
+uni-app uni-match-media,
 uni-app uni-label,
 uni-app uni-swiper,
 uni-app uni-swiper-item,
@@ -278,6 +281,7 @@ uni-app uni-sticky-header {
 
 /* 与开发者元素接触的非滚动容器 */
 uni-app uni-view,
+uni-app uni-match-media,
 uni-app uni-label,
 uni-app uni-swiper,
 uni-app uni-swiper-item,
