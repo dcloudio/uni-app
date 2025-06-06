@@ -35,6 +35,7 @@ const nodeTransforms = [
 ]
 
 if (process.env.UNI_APP_X === 'true') {
+  nodeTransforms.splice(nodeTransforms.indexOf(transformMatchMedia), 1)
   nodeTransforms.push(transformCustomElement)
 }
 
