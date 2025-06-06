@@ -41,6 +41,9 @@ const userManifestJSON: any = {
     usingComponents: true,
     enableAppxNg: false,
     component2: false,
+    axmlStrictCheck: true,
+    enableDistFileMinify: true,
+    enableParallelLoader: true,
     enableNodeModuleBabelTransform: false,
     mockFeature: 'enable',
     format: 3,
@@ -213,6 +216,9 @@ describe('parseMiniProgramProjectJson', () => {
       ),
       enableAppxNg:
         userPlatformConfig.enableAppxNg ?? mpAlipayConfig.enableAppxNg,
+      enableDistFileMinify:
+        userPlatformConfig.enableDistFileMinify ??
+        mpAlipayConfig.enableDistFileMinify,
       enableNodeModuleBabelTransform:
         userPlatformConfig.enableNodeModuleBabelTransform ??
         mpAlipayConfig.enableNodeModuleBabelTransform,
