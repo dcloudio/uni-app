@@ -172,6 +172,7 @@ const NVUE_U_BUILT_IN_TAGS = [
     'u-ad-draw',
     'u-rich-text',
 ];
+const UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = ['match-media'];
 const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag);
 function isBuiltInComponent(tag) {
     if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
@@ -1860,6 +1861,7 @@ exports.UNI_UI_CONFLICT_TAGS = UNI_UI_CONFLICT_TAGS;
 exports.UVUE_BUILT_IN_TAGS = UVUE_BUILT_IN_TAGS;
 exports.UVUE_HARMONY_BUILT_IN_TAGS = UVUE_HARMONY_BUILT_IN_TAGS;
 exports.UVUE_IOS_BUILT_IN_TAGS = UVUE_IOS_BUILT_IN_TAGS;
+exports.UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS;
 exports.UVUE_WEB_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
 exports.UniBaseNode = UniBaseNode;
 exports.UniCommentNode = UniCommentNode;

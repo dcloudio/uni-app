@@ -16,11 +16,17 @@ var fs__default = /*#__PURE__*/_interopDefault(fs);
 var appid = "touristappid";
 var component2 = true;
 var enableAppxNg = true;
+var axmlStrictCheck = false;
+var enableDistFileMinify = false;
+var enableParallelLoader = false;
 var enableNodeModuleBabelTransform = true;
 var source = {
 	appid: appid,
 	component2: component2,
 	enableAppxNg: enableAppxNg,
+	axmlStrictCheck: axmlStrictCheck,
+	enableDistFileMinify: enableDistFileMinify,
+	enableParallelLoader: enableParallelLoader,
 	enableNodeModuleBabelTransform: enableNodeModuleBabelTransform
 };
 

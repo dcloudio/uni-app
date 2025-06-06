@@ -23,7 +23,12 @@ export const showActionSheet: ShowActionSheet = (options: ShowActionSheetOptions
 	uni.openDialogPage({
 		url: `/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
 		fail(err) {
+			// #ifndef APP-HARMONY
 			const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`)
+			// #endif
+			// #ifdef APP-HARMONY
+			const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err['errMsg']}`)
+			// #endif
 			options.fail?.(res)
 			options.complete?.(res)
 			uni.$off(readyEventName)
@@ -38,7 +43,7 @@ export const hideActionSheet = () => {
 	const currentPage = pages[pages.length - 1]
 	if (currentPage == null) return
 	// #ifdef APP-ANDROID
-	const systemDialogPages = currentPage.vm.$systemDialogPages
+	const systemDialogPages = currentPage!.vm!.$systemDialogPages
 	// #endif
 	// #ifdef APP-IOS
 	const systemDialogPages = currentPage.getDialogPages('systemDialog')
@@ -46,16 +51,21 @@ export const hideActionSheet = () => {
 	// #ifdef WEB
 	const systemDialogPages = currentPage.vm.$pageLayoutInstance?.$systemDialogPages.value
 	// #endif
+	// #ifdef APP-ANDROID || APP-IOS || WEB
 	systemDialogPages.forEach((page, index) => {
 		if (page.route.startsWith('uni:actionSheet')) {
-			// #ifdef APP-ANDROID || WEB
+			// #ifdef WEB
 			systemDialogPages.splice(index, 1)
+			// #endif
+			// #ifdef APP-ANDROID
+			systemDialogPages[index].vm?.$close(new Map<string, any | null>([['animationType', 'none']]))
 			// #endif
 			// #ifdef APP-IOS
 			page.close(new Map<string, any>())
 			// #endif
 		}
 	})
+	// #endif
 }
 
 export * from './interface.uts'

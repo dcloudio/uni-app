@@ -13,7 +13,7 @@
         <template v-if="title">
           <view class="uni-action-sheet_dialog__title border-b"
             :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
-            <text :style="{ color: titleColor }" class="uni-action-sheet_dialog__title__text"
+            <text :style="titleColor != null ? { color: titleColor } : {}" class="uni-action-sheet_dialog__title__text"
               :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
               {{ title }}
             </text>
@@ -37,7 +37,7 @@
               <view class="uni-action-sheet_dialog__cell"
                 :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape, 'border-t': index !== 0 }"
                 @click="handleMenuItemClick(index)">
-                <text :style="{color: itemColor}" class="uni-action-sheet_dialog__cell__text"
+                <text :style="itemColor != null ? { color: itemColor } : {}" class="uni-action-sheet_dialog__cell__text"
                   :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
                   {{ item }}
                 </text>
@@ -53,7 +53,7 @@
       <view :style="backgroundColor != null ? {backgroundColor} : {}" class="uni-action-sheet_dialog__action"
         :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }"
         @click="handleCancel">
-        <text :style="{ color: cancelColor }" class="uni-action-sheet_dialog__action__text"
+        <text :style="cancelColor != null ? { color: cancelColor } : {}" class="uni-action-sheet_dialog__action__text"
           :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
           {{ cancelText }}
         </text>
