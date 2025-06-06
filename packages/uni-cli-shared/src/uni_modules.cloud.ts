@@ -4,6 +4,7 @@ import { sync } from 'fast-glob'
 import { camelize, capitalize, normalizePath, requireUniHelpers } from './utils'
 import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
+import { EXTNAME_VUE_RE } from './constants'
 
 function genEncryptEasyComModuleIndex(
   platform: typeof process.env.UNI_UTS_PLATFORM,
@@ -184,6 +185,7 @@ export function findCloudEncryptUniModules(
         return
       }
       const utssdkDir = path.resolve(uniModuleRootDir, 'utssdk')
+      let type: 'utssdk' | 'easycom' | '' = ''
       if (fs.existsSync(utssdkDir)) {
         // app-android 和 app-ios 不能云编译 utssdk 插件，而是需要自定义基座
         // app-harmony 平台目前不支持云编译
@@ -201,19 +203,24 @@ export function findCloudEncryptUniModules(
         if (!hasIndexUTSFile) {
           return
         }
+        type = 'utssdk'
       } else {
         // 前端加密组件components
         const componentsDir = path.resolve(uniModuleRootDir, 'components')
         if (!fs.existsSync(componentsDir)) {
           return
         }
+        type = 'easycom'
       }
       const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
-      uniModules[uniModuleDir] = findEncryptUniModuleCache(
-        uniModuleDir,
-        cacheDir,
-        { version: pkg.version, env: initCheckEnv() }
-      )
+      const encryptPkg = findEncryptUniModuleCache(uniModuleDir, cacheDir, {
+        version: pkg.version,
+        env: initCheckEnv(),
+      })
+      if (encryptPkg) {
+        encryptPkg.type = type
+        uniModules[uniModuleDir] = encryptPkg
+      }
     })
   }
   return uniModules
@@ -285,6 +292,7 @@ function isEnvExpired(
 export interface EncryptPackageJson {
   id: string
   version: string
+  type?: 'utssdk' | 'easycom' | ''
   uni_modules: {
     dependencies: string[]
     artifacts: {
@@ -411,7 +419,8 @@ export function resolveEncryptUniModule(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   isX: boolean = true
 ) {
-  const parts = id.split('?', 2)[0].split('/')
+  id = id.split('?', 2)[0]
+  const parts = id.split('/')
   const index = findLastIndex(parts, (part) => part === 'uni_modules')
   if (index !== -1) {
     const uniModuleId = parts[index + 1]
@@ -426,6 +435,19 @@ export function resolveEncryptUniModule(
             .replace('{1}', uniModuleId)
             .replace('{2}', parts.slice(index + 2).join('/'))
         )
+      }
+      // 为了避免兼容性问题，
+      // 目前排除 app-android 和 app-ios 平台，其他平台需要判断是否uvue文件，比如web端。加密utssdk插件，但同时easycom使用了非加密组件
+      if (platform !== 'app-android' && platform !== 'app-ios') {
+        const encryptPkg = encryptUniModules[uniModuleId]
+        if (encryptPkg) {
+          if (encryptPkg.type === 'utssdk') {
+            // 如果是utssdk加密插件，且是vue文件，则不走uts-proxy
+            if (EXTNAME_VUE_RE.test(id)) {
+              return
+            }
+          }
+        }
       }
       // 原生平台走旧的uts-proxy
       return normalizePath(
