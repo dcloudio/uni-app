@@ -4,6 +4,7 @@ import type { ResolvedConfig } from 'vite'
 import {
   APP_SERVICE_FILENAME,
   type UniVitePlugin,
+  buildNonTreeShakingUniModules,
   buildUniExtApis,
   createEncryptCssUrlReplacer,
   emptyDir,
@@ -149,6 +150,7 @@ export function createUniAppJsEnginePlugin(
         // 框架内部编译时，不需要
         if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
           await buildUniExtApis()
+          await buildNonTreeShakingUniModules()
         }
       },
     }

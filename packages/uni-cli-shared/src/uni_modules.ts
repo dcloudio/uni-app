@@ -39,6 +39,76 @@ const extApiProviders: {
 
 const extApiPlugins = new Set<string>()
 
+export function getNonTreeShakingPlugins() {
+  const result: string[] = []
+  if (!process.env.UNI_INPUT_DIR || !process.env.UNI_UTS_PLATFORM) {
+    return result
+  }
+  const uniModulesDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules')
+  if (!fs.existsSync(uniModulesDir)) {
+    return result
+  }
+  const platform = process.env.UNI_UTS_PLATFORM
+  fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
+    const uniModuleRootDir = path.resolve(uniModulesDir, uniModuleDir)
+    const pkgPath = path.resolve(uniModuleRootDir, 'package.json')
+    if (!fs.existsSync(pkgPath)) {
+      return
+    }
+    try {
+      /**
+        "uni_modules": {
+        "treeShaking": {
+            "app": {
+                "android": false,
+                "ios": true,
+                "harmony": false
+            },
+            "web": false
+        }
+      }
+       */
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
+      if (isPlainObject(pkg.uni_modules)) {
+        if (isNonTreeShakingPlugin(platform, pkg.uni_modules)) {
+          result.push(uniModuleDir)
+        }
+      }
+    } catch (e) {}
+  })
+  return result
+}
+
+export function isNonTreeShakingPlugin(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  uni_modules: Record<string, any>
+) {
+  const treeShaking = uni_modules.treeShaking
+  // uni_modules.treeShaking 为 false，表示不进行treeShaking
+  if (treeShaking === false) {
+    return true
+  } else if (isPlainObject(treeShaking)) {
+    // 如果 treeShaking 为对象，则需要根据平台判断是否进行treeShaking
+    // uni_modules.treeShaking.web 为 false，表示不进行treeShaking
+    if (treeShaking[platform] === false) {
+      return true
+    } else {
+      const parts = platform.split('-')
+      if (parts.length === 2) {
+        const [basePlatform, subPlatform] = parts
+        // uni_modules.treeShaking.app 为 false，表示不进行treeShaking
+        if (treeShaking[basePlatform] === false) {
+          return true
+          // uni_modules.treeShaking.app.android 为 false，表示不进行treeShaking
+        } else if (treeShaking[basePlatform]?.[subPlatform] === false) {
+          return true
+        }
+      }
+    }
+  }
+  return false
+}
+
 export function getUniExtApiProviders() {
   return extApiProviders
 }

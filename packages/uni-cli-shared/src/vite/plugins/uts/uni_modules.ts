@@ -23,7 +23,11 @@ import {
   uvueOutDir,
 } from '../../../uts'
 import { parseVueRequest } from '../../utils'
-import { getUniExtApiPlugins, parseUTSModuleDeps } from '../../../uni_modules'
+import {
+  getNonTreeShakingPlugins,
+  getUniExtApiPlugins,
+  parseUTSModuleDeps,
+} from '../../../uni_modules'
 import {
   checkEncryptUniModules,
   resolveEncryptUniModule,
@@ -226,6 +230,7 @@ export function getCurrentCompiledUTSProviders() {
 }
 
 let uniExtApiCompiler = async () => {}
+let nonTreeShakingUniModulesCompiler = async () => {}
 
 function emptyCacheDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
   const uvueOutputDir = uvueOutDir(platform)
@@ -592,6 +597,16 @@ export function uniUTSAppUniModulesPlugin(
     }
   }
 
+  nonTreeShakingUniModulesCompiler = async () => {
+    const nonTreeShakingUniModules = getNonTreeShakingPlugins().filter(
+      (plugin) => !utsPlugins.has(plugin)
+    )
+    for (const plugin of nonTreeShakingUniModules) {
+      const pluginDir = path.resolve(inputDir, 'uni_modules', plugin)
+      await compilePlugin(pluginDir)
+    }
+  }
+
   return {
     name: 'uni:uts-uni_modules',
     apply: 'build',
@@ -715,6 +730,10 @@ export function uniUTSAppUniModulesPlugin(
 
 export async function buildUniExtApis() {
   await uniExtApiCompiler()
+}
+
+export async function buildNonTreeShakingUniModules() {
+  await nonTreeShakingUniModulesCompiler()
 }
 
 export function resolveExtApiProvider(pkg: Record<string, any>) {

@@ -1,6 +1,7 @@
 import path from 'path'
 import {
   type UniVitePlugin,
+  buildNonTreeShakingUniModules,
   buildUniExtApis,
   camelize,
   capitalize,

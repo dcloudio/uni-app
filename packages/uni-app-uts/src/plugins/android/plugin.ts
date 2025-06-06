@@ -6,6 +6,7 @@ import { extend, isString } from '@vue/shared'
 import type { ChangeEvent } from 'rollup'
 import {
   type UniVitePlugin,
+  buildNonTreeShakingUniModules,
   buildUniExtApis,
   emptyDir,
   enableSourceMap,
@@ -324,6 +325,7 @@ export function uniAppPlugin(): UniVitePlugin {
       }
       // x 上暂时编译所有uni ext api，不管代码里是否调用了
       await buildUniExtApis()
+      await buildNonTreeShakingUniModules()
       const uniCloudObjectInfo = getUniCloudObjectInfo(uniCloudSpaceList)
       if (uniCloudObjectInfo.length > 0) {
         process.env.UNI_APP_X_UNICLOUD_OBJECT = 'true'
