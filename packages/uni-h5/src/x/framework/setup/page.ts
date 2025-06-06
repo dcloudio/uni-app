@@ -329,6 +329,13 @@ export function initXPage(
     })
   }
   vm.$basePage = vm.$page as Page.PageInstance['$page']
+
+  // 暂时只在page上加 $waitNativeRender 方法
+  vm.$.$waitNativeRender = (callback: () => void) => {
+    vm.$nextTick(() => {
+      callback && callback()
+    })
+  }
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
