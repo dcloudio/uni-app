@@ -89,7 +89,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           lineCount,
         })
         if (props.autoHeight) {
-          el.style.height = 'auto'
           wrapper.style.height = height + 'px'
         }
       }
@@ -99,13 +98,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     watch(
       () => props.autoHeight,
       (autoHeight) => {
-        const el = rootRef.value as HTMLElement
         const wrapper = wrapperRef.value as HTMLElement
         if (autoHeight) {
-          el.style.height = 'auto'
           wrapper.style.height = heightRef.value + 'px'
         } else {
-          el.style.height = ''
           wrapper.style.height = ''
         }
       }
@@ -218,7 +214,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           />
         )
       return (
-        <uni-textarea ref={rootRef}>
+        <uni-textarea ref={rootRef} auto-height={props.autoHeight}>
           <div ref={wrapperRef} class="uni-textarea-wrapper">
             <div
               v-show={!state.value.length}
