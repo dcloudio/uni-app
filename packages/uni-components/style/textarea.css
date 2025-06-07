@@ -11,6 +11,9 @@ uni-textarea {
 uni-textarea[hidden] {
   display: none;
 }
+uni-textarea[auto-height="true"] {
+  height: auto !important;
+}
 .uni-textarea-wrapper,
 .uni-textarea-placeholder,
 .uni-textarea-line,
