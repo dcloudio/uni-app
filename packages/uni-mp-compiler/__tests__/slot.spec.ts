@@ -56,6 +56,15 @@ describe('compiler: transform slot', () => {
 }`
     )
   })
+  test('fallback content with prop', () => {
+    assert(
+      `<button><slot :foo="foo">Submit</slot></button>`,
+      `<button><block wx:if="{{$slots.d}}"><slot name="d"></slot><slot/></block><block wx:else>Submit</block></button>`,
+      `(_ctx, _cache) => {
+  return { a: _r("d", { foo: _ctx.foo }) }
+}`
+    )
+  })
   test('names slots', () => {
     assert(
       `<button><slot name="text"/></button>`,
