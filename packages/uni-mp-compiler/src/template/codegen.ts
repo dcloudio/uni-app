@@ -249,6 +249,10 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   }
   push(`>`)
   genElement(node, context)
+  // 当存在 <slot name="default" :xxx="xxx">foo<slot> 时，在后面添加 <slot></slot>，使默认插槽生效
+  if (name === SLOT_DEFAULT_NAME && node.props.length) {
+    push(`<slot/>`)
+  }
   push(`</block>`)
   push(`<block`)
   genVElse(context)
