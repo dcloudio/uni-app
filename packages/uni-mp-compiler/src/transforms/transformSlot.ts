@@ -13,7 +13,7 @@ import {
   isStaticArgOf,
   isStaticExp,
 } from '@vue/compiler-core'
-import { camelize, extend } from '@vue/shared'
+import { camelize } from '@vue/shared'
 import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import { RENDER_SLOT } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
@@ -120,26 +120,6 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
         ]),
         context
       )
-
-      const isEmptyDefaultSlot =
-        node.props.some(
-          (p) =>
-            p.type === NodeTypes.ATTRIBUTE &&
-            p.name === 'name' &&
-            p.value?.content === SLOT_DEFAULT_NAME
-        ) && node.children.length === 0
-      // 当存在 <slot name="default" :xxx="xxx"/> 时，在后面添加 <slot></slot>，使默认插槽生效
-      if (isEmptyDefaultSlot && Array.isArray(context.parent?.children)) {
-        context.parent.children.splice(
-          context.childIndex + 1,
-          0,
-          extend({}, node, {
-            props: [],
-            children: [],
-            loc: {},
-          })
-        )
-      }
     } else {
       // 非作用域默认插槽直接移除命名
       if (slotName === `"${SLOT_DEFAULT_NAME}"`) {
