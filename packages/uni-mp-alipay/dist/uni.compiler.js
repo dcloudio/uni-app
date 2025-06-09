@@ -13,21 +13,25 @@ var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgra
 var path__default = /*#__PURE__*/_interopDefault(path);
 var fs__default = /*#__PURE__*/_interopDefault(fs);
 
+var format = 2;
 var appid = "touristappid";
-var component2 = true;
+var compileOptions = {
+	component2: true,
+	enableNodeModuleBabelTransform: true,
+	globalObjectMode: "enable"
+};
 var enableAppxNg = true;
 var axmlStrictCheck = false;
 var enableDistFileMinify = false;
 var enableParallelLoader = false;
-var enableNodeModuleBabelTransform = true;
 var source = {
+	format: format,
 	appid: appid,
-	component2: component2,
+	compileOptions: compileOptions,
 	enableAppxNg: enableAppxNg,
 	axmlStrictCheck: axmlStrictCheck,
 	enableDistFileMinify: enableDistFileMinify,
-	enableParallelLoader: enableParallelLoader,
-	enableNodeModuleBabelTransform: enableNodeModuleBabelTransform
+	enableParallelLoader: enableParallelLoader
 };
 
 function transformRef(node, context) {

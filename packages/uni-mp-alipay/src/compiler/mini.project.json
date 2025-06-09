@@ -1,9 +1,13 @@
 {
+  "format": 2,
   "appid": "touristappid",
-  "component2": true,
+  "compileOptions": {
+    "component2": true,
+    "enableNodeModuleBabelTransform": true,
+    "globalObjectMode": "enable"
+  },
   "enableAppxNg": true,
   "axmlStrictCheck": false,
   "enableDistFileMinify": false,
-  "enableParallelLoader": false,
-  "enableNodeModuleBabelTransform": true
+  "enableParallelLoader": false
 }
