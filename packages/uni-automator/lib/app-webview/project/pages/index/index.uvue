@@ -46,28 +46,19 @@ export default {
       console.log('initRuntimeAutomator...')
     },
     message(msg: UniWebViewMessageEvent) {
-      // #ifdef APP-ANDROID
-      // data 由 对象变更成数组
-      const data = msg.detail.data[0];
-      const id = data.get("id") as number
-      const type = data.get("type") as string
-      const dataObj = data.get("data") as UTSJSONObject
-      const action = dataObj.getString("action")!
-      const args = dataObj.get("args")
-      // #endif
-      // #ifdef WEB || MP || APP-IOS
-      const data = msg.detail.data.length ? msg.detail.data[0].data : msg.detail.data
-      const id = data["id"] as number
-      const type = data["type"] as string
-      const dataObj = data["data"]
-      const action = dataObj["action"]!
-      const args = dataObj["args"]
-      // #endif
-      // #ifdef APP-HARMONY
+      // #ifdef APP
       const data = msg.detail.data[0];
       const id = data["id"] as number
       const type = data["type"] as string
       const dataObj = data["data"] as UTSJSONObject
+      const action = dataObj["action"]!
+      const args = dataObj["args"]
+      // #endif
+      // #ifdef WEB || MP
+      const data = msg.detail.data.length ? msg.detail.data[0].data : msg.detail.data
+      const id = data["id"] as number
+      const type = data["type"] as string
+      const dataObj = data["data"]
       const action = dataObj["action"]!
       const args = dataObj["args"]
       // #endif
