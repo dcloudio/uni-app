@@ -1,8 +1,3 @@
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, isIntegerKey, hasOwn, isMap, makeMap, hyphenate, capitalize, isPromise, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, getGlobalThis, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$2, looseToNumber, isGloballyAllowed, NO } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
@@ -1729,7 +1724,7 @@ var transformTransition = decl => {
 };
 function getDeclTransforms(options) {
   var transformBorder = options.type == 'uvue' ? createTransformBorder() : createTransformBorderNvue();
-  var styleMap = _objectSpread({
+  var styleMap = {
     transition: transformTransition,
     border: transformBorder,
     background: createTransformBackground(options),
@@ -1744,10 +1739,9 @@ function getDeclTransforms(options) {
     // uvue已经支持这些简写属性，不需要展开
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
-    padding: transformPadding
-  }, options.type !== 'uvue' ? {
+    padding: transformPadding,
     flexFlow: transformFlexFlow
-  } : {});
+  };
   var result = {};
   {
     result = styleMap;

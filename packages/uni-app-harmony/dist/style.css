@@ -990,6 +990,10 @@ uni-textarea {
 uni-textarea[hidden] {
   display: none;
 }
+uni-textarea[auto-height="true"] {
+  height: -webkit-fit-content !important;
+  height: fit-content !important;
+}
 .uni-textarea-wrapper,
 .uni-textarea-placeholder,
 .uni-textarea-line,

@@ -9288,18 +9288,14 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         lineCount
       });
       if (props2.autoHeight) {
-        el.style.height = "auto";
         wrapper.style.height = height + "px";
       }
     });
     vue.watch(() => props2.autoHeight, (autoHeight) => {
-      const el = rootRef.value;
       const wrapper = wrapperRef.value;
       if (autoHeight) {
-        el.style.height = "auto";
         wrapper.style.height = heightRef.value + "px";
       } else {
-        el.style.height = "";
         wrapper.style.height = "";
       }
     });
@@ -9381,7 +9377,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "onKeyup": onKeyUpEnter
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
       return vue.createVNode("uni-textarea", {
-        "ref": rootRef
+        "ref": rootRef,
+        "auto-height": props2.autoHeight
       }, [vue.createVNode("div", {
         "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
@@ -9403,7 +9400,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 8, ["auto-height"]);
     };
   }
 });
