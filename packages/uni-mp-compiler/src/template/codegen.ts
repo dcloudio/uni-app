@@ -231,7 +231,16 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
       return prop.arg.content === 'name'
     }
   })
-  if (!node.children.length || context.slot.fallbackContent) {
+  const isDefaultSlot = node.props.some(
+    (p) =>
+      p.type === NodeTypes.ATTRIBUTE &&
+      p.name === 'name' &&
+      p.value?.content === SLOT_DEFAULT_NAME
+  )
+  if (
+    !node.children.length ||
+    (context.slot.fallbackContent && !isDefaultSlot)
+  ) {
     // 无后备内容或支持后备内容
     return genElement(node, context)
   }
@@ -275,9 +284,16 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   push(`<block`)
   genVElse(context)
   push(`>`)
+  // 默认插槽 且支持 fallback，fallback 需要包裹在 <slot> 中
+  if (context.slot.fallbackContent && isDefaultSlot) {
+    push(`<slot>`)
+  }
   children.forEach((node) => {
     genNode(node, context)
   })
+  if (context.slot.fallbackContent && isDefaultSlot) {
+    push(`</slot>`)
+  }
   push(`</block>`)
   if (isVIfSlot) {
     push(`</block>`)
