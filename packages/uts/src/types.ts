@@ -62,12 +62,14 @@ export type UTSOutputOptions = {
   isPlugin?: boolean
   isModule?: boolean
   isExtApi?: boolean
+  isPureSwift?: boolean
   split?: boolean
   splitClass?: boolean
   disableSplitManifest?: boolean
   removeImports?: boolean
   dropImports?: string[]
   returnExportIdent?: boolean
+  forcePreprocess?: boolean
   uniAppX?: {
     uvueOutDir: string
   }
