@@ -38,7 +38,7 @@ describe('compiler: transform scoped slots', () => {
   test('v-for + v-for + scoped slots', () => {
     assert(
       `<view v-for="(item, index) in 4" :key="index"><view v-for="(item, index) in 4"><slot :text="1"></slot></view></view>`,
-      `<view wx:for="{{a}}" wx:for-item="item" wx:key="b"><view wx:for="{{item.a}}" wx:for-item="item"><slot name="{{item.a}}"></slot></view></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="b"><view wx:for="{{item.a}}" wx:for-item="item"><slot name="{{item.a}}"></slot><slot></slot></view></view>`,
       `(_ctx, _cache) => {
   return { a: _f(4, (item, index, i0) => { return { a: _f(4, (item, index, i1) => { return { a: "d-" + i0 + '-' + i1, b: _r("d", { text: 1 }, i0 + '-' + i1) }; }), b: index }; }) }
 }`
@@ -47,7 +47,7 @@ describe('compiler: transform scoped slots', () => {
   test('v-for + v-for + v-for + scoped slots', () => {
     assert(
       `<view v-for="(item, index) in 4" :key="index"><view v-for="(item, index) in 4"><view v-for="(item, index) in 4"><slot :text="1"></slot></view></view></view>`,
-      `<view wx:for="{{a}}" wx:for-item="item" wx:key="b"><view wx:for="{{item.a}}" wx:for-item="item"><view wx:for="{{item.a}}" wx:for-item="item"><slot name="{{item.a}}"></slot></view></view></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="b"><view wx:for="{{item.a}}" wx:for-item="item"><view wx:for="{{item.a}}" wx:for-item="item"><slot name="{{item.a}}"></slot><slot></slot></view></view></view>`,
       `(_ctx, _cache) => {
   return { a: _f(4, (item, index, i0) => { return { a: _f(4, (item, index, i1) => { return { a: _f(4, (item, index, i2) => { return { a: "d-" + i0 + '-' + i1 + '-' + i2, b: _r("d", { text: 1 }, i0 + '-' + i1 + '-' + i2) }; }) }; }), b: index }; }) }
 }`

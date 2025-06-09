@@ -1,4 +1,4 @@
-import { hyphenate, isFunction, isPlainObject } from '@vue/shared'
+import { hyphenate, isFunction, isPlainObject, extend } from '@vue/shared'
 import {
   SLOT_DEFAULT_NAME,
   VIRTUAL_HOST_CLASS,
@@ -141,6 +141,24 @@ export function genNode(
       return genExpression(node.content, context)
     case NodeTypes.ELEMENT:
       if (node.tagType === ElementTypes.SLOT) {
+        const isEmptyDefaultSlot =
+          node.props.some(
+            (p) =>
+              (p.type === NodeTypes.ATTRIBUTE &&
+                p.name === 'name' &&
+                p.value?.content === SLOT_DEFAULT_NAME) ||
+              (p.name === 'bind' &&
+                (p as NameScopedSlotDirectiveNode).slotName ===
+                  SLOT_DEFAULT_NAME)
+          ) && node.children.length === 0
+        // 当存在 <slot name="default" :xxx="xxx"><slot> 时，在后面添加 <slot></slot>，使默认插槽生效
+        if (isEmptyDefaultSlot) {
+          genSlot(node, context)
+          return genSlot(
+            extend({}, node, { props: [], children: [], loc: {} }),
+            context
+          )
+        }
         return genSlot(node, context)
       } else if (node.tagType === ElementTypes.COMPONENT) {
         return genComponent(node, context)
@@ -249,7 +267,7 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   }
   push(`>`)
   genElement(node, context)
-  // 当存在 <slot name="default" :xxx="xxx">foo<slot> 时，在后面添加 <slot></slot>，使默认插槽生效
+  // 当存在 <slot name="default" :xxx="xxx"> fallback <slot> 时，在后面添加 <slot></slot>，使默认插槽生效
   if (name === SLOT_DEFAULT_NAME && node.props.length) {
     push(`<slot/>`)
   }
