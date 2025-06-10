@@ -26,8 +26,6 @@ export class UniElement extends HTMLElement {
   constructor() {
     super()
     this.__isUniElement = true
-    // TODO 部分组件需要在构造器内访问uniPage属性，是否合理？
-    this._page = getCurrentPage()?.$vm?.$page
   }
 
   attachVmProps(props: Record<string, any>) {
