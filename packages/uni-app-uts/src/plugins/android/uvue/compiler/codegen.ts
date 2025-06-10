@@ -112,7 +112,8 @@ function createCodegenContext(
     parseUTSComponent = NOOP,
     parseUTSCustomElement = NOOP,
     originalLineOffset = 0,
-    generatedLineOffset = 0,
+    // 在 inline 模式下，行偏移量需要加 1，因为 inline 模式下会生成一个函数，函数会占用一行？是这样吗？
+    generatedLineOffset = inline ? 1 : 0,
   }: CodegenOptions
 ): CodegenContext {
   const context: CodegenContext = {
