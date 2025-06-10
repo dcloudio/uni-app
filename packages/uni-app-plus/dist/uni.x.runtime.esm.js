@@ -2818,7 +2818,8 @@ function initAnimation$1(path, animationType, animationDuration) {
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function isDirectPage(page) {
-  return !!__uniConfig.realEntryPagePath && getRealPath(page.$basePage.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
+  var _getCurrentPages$;
+  return !!__uniConfig.realEntryPagePath && ((_getCurrentPages$ = getCurrentPages$1()[0]) === null || _getCurrentPages$ === void 0 ? void 0 : _getCurrentPages$.vm) === page;
 }
 function reLaunchEntryPage() {
   var _uniConfig$entryPage;
