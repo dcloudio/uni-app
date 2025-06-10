@@ -34,7 +34,12 @@ global.my = {
   }),
 }
 
-import { request, showModal } from '../src/api/protocols'
+import {
+  request,
+  showLoading,
+  showModal,
+  showToast,
+} from '../src/api/protocols'
 
 describe('api', () => {
   test('api-request base', () => {
@@ -194,5 +199,91 @@ describe('api', () => {
 
     expect(args.cancelColor).toBe(false)
     expect(args.confirmColor).toBe(false)
+  })
+
+  test('api-alipay showLoading', () => {
+    global.my.canIUse = jest.fn().mockImplementation((api) => {
+      if (api === 'showLoading.object.mask') {
+        return true
+      }
+      return true
+    })
+
+    expect(showLoading.args).toEqual({
+      title: 'content',
+      mask: 'mask',
+    })
+  })
+
+  test('api-dingding showLoading', () => {
+    global.my.canIUse = jest.fn().mockImplementation((api) => {
+      if (api === 'showLoading.object.mask') {
+        return false
+      }
+      return true
+    })
+
+    expect(showLoading.args.mask).toBe(false)
+    expect(showLoading.args.title).toBe('content')
+  })
+
+  test('api-alipay showToast', () => {
+    global.my.canIUse = jest.fn().mockImplementation((api) => {
+      if (api === 'showToast') {
+        return true
+      }
+      return true
+    })
+
+    expect(typeof showToast).toBe('function')
+    const loadingArgs = showToast({ icon: 'loading' }) as any
+
+    expect(loadingArgs.name).toEqual('showLoading')
+    expect(loadingArgs.args).toEqual({
+      title: 'content',
+      mask: 'mask',
+    })
+
+    const toastArgs = showToast() as any
+
+    expect(toastArgs.name).toEqual('showToast')
+    expect(toastArgs.args).toEqual({
+      icon: 'type',
+      title: 'content',
+      mask: 'mask',
+      image: 'image',
+    })
+  })
+
+  test('api-dingding showToast', () => {
+    global.my.canIUse = jest.fn().mockImplementation((api) => {
+      if (
+        api === 'showLoading.object.mask' ||
+        api === 'showToast.object.image' ||
+        api === 'showToast.object.mask'
+      ) {
+        return false
+      }
+      return true
+    })
+
+    expect(typeof showToast).toBe('function')
+    const loadingArgs = showToast({ icon: 'loading' }) as any
+
+    expect(loadingArgs.name).toEqual('showLoading')
+    expect(loadingArgs.args).toEqual({
+      title: 'content',
+      mask: false,
+    })
+
+    const toastArgs = showToast() as any
+
+    expect(toastArgs.name).toEqual('showToast')
+    expect(toastArgs.args).toEqual({
+      icon: 'type',
+      title: 'content',
+      mask: false,
+      image: false,
+    })
   })
 })
