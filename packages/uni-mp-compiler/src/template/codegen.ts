@@ -1,4 +1,4 @@
-import { hyphenate, isFunction, isPlainObject, extend } from '@vue/shared'
+import { extend, hyphenate, isFunction, isPlainObject } from '@vue/shared'
 import {
   SLOT_DEFAULT_NAME,
   VIRTUAL_HOST_CLASS,

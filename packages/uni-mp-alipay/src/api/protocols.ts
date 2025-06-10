@@ -1,4 +1,4 @@
-import { hasOwn, isArray, isPlainObject } from '@vue/shared'
+import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
 
 import {
   navigateTo as _navigateTo,
@@ -200,19 +200,22 @@ export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
 export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
   const args = {
     title: 'content',
-    icon: 'type',
-    image: false,
-    mask: false,
   }
   if (icon === 'loading') {
     return {
       name: 'showLoading',
-      args,
+      args: extend(
+        { mask: my.canIUse('showLoading.object.mask') ? 'mask' : false },
+        args
+      ),
     }
   }
   return {
     name: 'showToast',
-    args,
+    args: extend({ icon: 'type' }, args, {
+      mask: my.canIUse('showToast.object.mask') ? 'mask' : false,
+      image: my.canIUse('showToast.object.image') ? 'image' : false,
+    }),
   }
 }
 export const showActionSheet = {
@@ -228,6 +231,7 @@ export const showActionSheet = {
 export const showLoading = {
   args: {
     title: 'content',
+    mask: my.canIUse('showLoading.object.mask') ? 'mask' : false,
   },
 }
 export const uploadFile = {
