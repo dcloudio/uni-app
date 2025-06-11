@@ -55,14 +55,19 @@ async function parseUTSStacktraceLine(
     withSourceContent: true,
   })
 
-  if (originalPosition.source && originalPosition.sourceContent) {
+  if (originalPosition.source) {
     lines.push(`${message}`)
     lines.push(
       `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
         originalPosition.column
       }`
     )
-    if (originalPosition.line !== null && originalPosition.column !== null) {
+    // TODO: 混编的假sourcemap，需要读取源码
+    if (
+      originalPosition.line !== null &&
+      originalPosition.column !== null &&
+      originalPosition.sourceContent
+    ) {
       lines.push(
         generateCodeFrame(originalPosition.sourceContent, {
           line: originalPosition.line,

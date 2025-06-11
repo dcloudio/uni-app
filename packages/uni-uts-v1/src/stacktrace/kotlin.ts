@@ -11,6 +11,7 @@ import {
   resolveSourceMapFileBySourceFile,
   splitRE,
 } from './utils'
+import { normalizePath } from '../shared'
 
 export interface MessageSourceLocation {
   type: 'exception' | 'error' | 'warning' | 'info' | 'logging' | 'output'
@@ -96,7 +97,16 @@ export async function parseUTSKotlinStacktrace(
             withSourceContent: true,
           })
 
-          if (originalPosition.source && originalPosition.sourceContent) {
+          if (originalPosition.source) {
+            // 混编的假sourcemap，需要读取源码
+            if (sourceMapFile.endsWith('.fake.map')) {
+              if (fs.existsSync(m.file)) {
+                originalPosition.sourceContent = fs.readFileSync(
+                  m.file,
+                  'utf-8'
+                )
+              }
+            }
             m.file = originalPosition.source.split('?')[0]
             if (originalPosition.line !== null) {
               m.line = originalPosition.line
@@ -106,7 +116,8 @@ export async function parseUTSKotlinStacktrace(
             }
             if (
               originalPosition.line !== null &&
-              originalPosition.column !== null
+              originalPosition.column !== null &&
+              originalPosition.sourceContent
             ) {
               m.code = generateCodeFrame(originalPosition.sourceContent, {
                 line: originalPosition.line,
@@ -137,6 +148,7 @@ function resolveSourceMapFile(
   if (fs.existsSync(sourceMapFile)) {
     return sourceMapFile
   }
+  return normalizePath(relative(file, inputDir)) + '.fake.map'
 }
 
 const DEFAULT_APPID = '__UNI__uniappx'
