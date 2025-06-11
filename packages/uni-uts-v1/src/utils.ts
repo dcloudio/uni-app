@@ -504,10 +504,34 @@ export function isCustomElementsSupported(pluginDir: string) {
   return true
 }
 
+export function resolveExtApiCustomElementsFilter(
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
+  pluginDir: string
+) {
+  const pkg = require(path.resolve(pluginDir, 'package.json'))
+  const options = pkg.uni_modules?.customElements?.[platform]
+  if (typeof options === 'object') {
+    return (name: string) => {
+      if (Array.isArray(options.include)) {
+        return options.include.includes(name)
+      }
+      if (Array.isArray(options.exclude)) {
+        return !options.exclude.includes(name)
+      }
+      return true
+    }
+  }
+  return (name: string) => true
+}
+
 export function resolveCustomElements(pluginDir: string) {
   if (!isCustomElementsSupported(pluginDir)) {
     return {}
   }
+  const filter = resolveExtApiCustomElementsFilter(
+    process.env.UNI_UTS_PLATFORM as 'app-android' | 'app-ios' | 'app-harmony',
+    pluginDir
+  )
   const customElements: Record<string, string> = {}
   const customElementsDir = path.resolve(pluginDir, 'customElements')
   if (fs.existsSync(customElementsDir)) {
@@ -521,7 +545,9 @@ export function resolveCustomElements(pluginDir: string) {
         const files = fs.readdirSync(folder)
         // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
         if (files.includes(name + ext)) {
-          customElements[name] = path.resolve(folder, name + ext)
+          if (filter(name)) {
+            customElements[name] = path.resolve(folder, name + ext)
+          }
         }
       }
     })
