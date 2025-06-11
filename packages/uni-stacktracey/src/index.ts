@@ -1,5 +1,5 @@
 import fs from 'fs'
-import StackTracey from './stacktracey'
+import StackTrace from './stacktrace'
 import {
   type BasicSourceMapConsumer,
   type IndexedSourceMapConsumer,
@@ -32,14 +32,14 @@ if (__PLATFORM_WEB__) {
 const nixSlashes = (x: string) => x.replace(/\\/g, '/')
 const sourcemapCatch: Record<string, string | Promise<string>> = {}
 
-type StacktraceyItems = StackTracey.Entry & {
+type StacktraceItems = StackTrace.Entry & {
   errMsg?: string
   sourceContent?: string
 }
-type Stacktracey = {
-  items: StacktraceyItems[]
-  itemsHeader: StackTracey['itemsHeader']
-  asTable?: StackTracey['asTable']
+type Stacktrace = {
+  items: StacktraceItems[]
+  itemsHeader: StackTrace['itemsHeader']
+  asTable?: StackTrace['asTable']
 }
 
 type asTableResult =
@@ -49,19 +49,19 @@ type asTableResult =
       thirdParty: string
     }
 
-interface StacktraceyPreset {
+interface StacktracePreset {
   /**
    * 解析错误栈信息
    * @param stacktrace
    */
-  parseStacktrace(stacktrace: string): Stacktracey
+  parseStacktrace(stacktrace: string): Stacktrace
   /**
    * 根据解析后的错误信息重新整合为错误栈信息
    * @param opts
    */
   asTableStacktrace(opts: {
-    stack: Stacktracey
-    maxColumnWidths?: StackTracey.MaxColumnWidths
+    stack: Stacktrace
+    maxColumnWidths?: StackTrace.MaxColumnWidths
     stacktrace: string
   }): asTableResult
   /**
@@ -83,14 +83,14 @@ interface StacktraceyPreset {
   lineOffset?: number
 }
 
-interface StacktraceyOptions {
-  preset: StacktraceyPreset
+interface StacktraceOptions {
+  preset: StacktracePreset
   withSourceContent?: boolean
 }
 
-export function stacktracey(
+export function stacktrace(
   stacktrace: string,
-  opts: StacktraceyOptions
+  opts: StacktraceOptions
 ): Promise<asTableResult> {
   let cancel: boolean = false
 
@@ -100,7 +100,7 @@ export function stacktracey(
 
   stack.items.forEach((item, index) => {
     const fn = (
-      item: StacktraceyItems,
+      item: StacktraceItems,
       index: number
     ): Promise<undefined | void> => {
       const { line = 0, column = 0, file, fileName, fileRelative } = item
@@ -163,7 +163,7 @@ export function stacktracey(
                */
               const curItem = stack.items[index]
               if (
-                (stack as StackTracey).isMP &&
+                (stack as StackTrace).isMP &&
                 curItem.beforeParse.indexOf('app-service') !== -1
               ) {
                 return fn(curItem, index)
@@ -307,7 +307,7 @@ function parseSourceMapContent(
   }
 }
 
-interface UniStracktraceyPresetOptions {
+interface UniStacktracePresetOptions {
   base: string
   sourceRoot: string
   splitThirdParty?: boolean
@@ -325,12 +325,12 @@ function joinItem(item: string[] | string) {
   return `${a}${b}${c}`
 }
 
-export function uniStracktraceyPreset(
-  opts: UniStracktraceyPresetOptions
-): StacktraceyPreset {
+export function uniStacktracePreset(
+  opts: UniStacktracePresetOptions
+): StacktracePreset {
   const { base, sourceRoot, splitThirdParty, uniPlatform, lineOffset } = opts
 
-  let stack: StackTracey
+  let stack: StackTrace
 
   return {
     /**
@@ -373,7 +373,7 @@ export function uniStracktraceyPreset(
       return Promise.resolve(getSourceMapContent(sourcemapUrl))
     },
     parseStacktrace(stacktrace) {
-      stack = new StackTracey(stacktrace, uniPlatform)
+      stack = new StackTrace(stacktrace, uniPlatform)
       return stack
     },
     asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
@@ -421,8 +421,9 @@ export function uniStracktraceyPreset(
     lineOffset,
   }
 }
-export const splitRE = /\r?\n/
-interface UTSStracktraceyPreset {
+export const uniStracktraceyPreset = uniStacktracePreset
+const splitRE = /\r?\n/
+interface UTSStacktracePreset {
   /**
    * 源码根目录
    */
@@ -436,9 +437,9 @@ interface UTSStracktraceyPreset {
    */
   sourceMapRoot: string
 }
-export function utsStracktraceyPreset(
-  opts: UTSStracktraceyPreset
-): StacktraceyPreset {
+export function utsStacktracePreset(
+  opts: UTSStacktracePreset
+): StacktracePreset {
   const { inputRoot = '', outputRoot = '', sourceMapRoot = '' } = opts
 
   let errStack: string[] = []
@@ -502,7 +503,7 @@ export function utsStracktraceyPreset(
         .filter((x) => x !== undefined)
 
       return {
-        items: entries as StackTracey.Entry[],
+        items: entries as StackTrace.Entry[],
         itemsHeader: [],
       }
     },
@@ -525,3 +526,5 @@ ${_stack.errMsg}`
     },
   }
 }
+
+export const utsStracktraceyPreset = utsStacktracePreset
