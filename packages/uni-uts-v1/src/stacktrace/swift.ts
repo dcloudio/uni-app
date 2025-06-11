@@ -1,8 +1,9 @@
+import path from 'path'
+import fs from 'fs-extra'
 import { originalPositionFor } from '../sourceMap'
 import { generateCodeFrame, splitRE } from './utils'
 
-const uniModulesSwiftUTSRe =
-  /(.*)index.swift:([0-9]+):([0-9]+):\s+error:\s+(.*)/
+const uniModulesSwiftUTSRe = /(.*).swift:([0-9]+):([0-9]+):\s+error:\s+(.*)/
 
 interface ParseUTSPluginStacktraceOptions {
   stacktrace: string
@@ -47,7 +48,13 @@ async function parseUTSStacktraceLine(
     return
   }
   const lines: string[] = []
-  const [, , line, column, message] = uniModulesMatches
+  const [, filename, line, column, message] = uniModulesMatches
+  // uts编译出来的入口index.swift
+  if (!filename.endsWith('/app-ios/src/index')) {
+    // 移除 src 目录，混编的假sourcemap，需要读取源码
+    sourceMapFile =
+      filename.replace('/app-ios/src/', '/app-ios/') + '.swift.fake.map'
+  }
   const originalPosition = await originalPositionFor({
     sourceMapFile,
     line: parseInt(line),
@@ -62,7 +69,16 @@ async function parseUTSStacktraceLine(
         originalPosition.column
       }`
     )
-    // TODO: 混编的假sourcemap，需要读取源码
+    // 混编的假sourcemap，需要读取源码
+    if (sourceMapFile.endsWith('.fake.map') && process.env.UNI_INPUT_DIR) {
+      const file = path.join(
+        process.env.UNI_INPUT_DIR,
+        sourceMapFile.replace('.fake.map', '')
+      )
+      if (fs.existsSync(file)) {
+        originalPosition.sourceContent = fs.readFileSync(file, 'utf-8')
+      }
+    }
     if (
       originalPosition.line !== null &&
       originalPosition.column !== null &&
