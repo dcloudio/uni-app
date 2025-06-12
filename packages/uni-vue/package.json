@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-vue",
-  "version": "3.0.0-alpha-4070120250530001",
+  "version": "3.0.0-alpha-4070120250612001",
   "description": "@dcloudio/uni-vue",
   "files": [
     "dist"
