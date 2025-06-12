@@ -67,6 +67,10 @@ export function createUniXCompiler(
     }
   }
 
+  const sourceMap =
+    process.env.UNI_APP_SOURCEMAP === 'true' ||
+    process.env.NODE_ENV === 'development'
+
   const compilerOptions: UniXCompilerOptions = {
     mode,
     targetLanguage: targetLanguage as UniXCompilerOptions['targetLanguage'],
@@ -74,6 +78,8 @@ export function createUniXCompiler(
     paths: options.paths,
     utsLibDir,
     hxLanguageServiceDir,
+    sourceMap,
+    inlineSources: sourceMap,
     originalPositionForSync,
     watchFile,
     incremental: mode === 'development',
