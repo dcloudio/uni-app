@@ -508,7 +508,9 @@ export function resolveExtApiCustomElementsFilter(
   platform: 'app-android' | 'app-ios' | 'app-harmony',
   pluginDir: string
 ) {
-  const pkg = require(path.resolve(pluginDir, 'package.json'))
+  // TODO pluginDir可能是在.uvue目录，此时没有package.json，后续如果该配置对开发者开放，可以考虑将package.json复制到.uvue目录下
+  const pkgPath = path.resolve(pluginDir, 'package.json')
+  const pkg = fs.existsSync(pkgPath) ? require(pkgPath) : {}
   const options = pkg.uni_modules?.customElements?.[platform]
   if (typeof options === 'object') {
     return (name: string) => {
