@@ -440,6 +440,10 @@ function useTopWindow(layoutState: LayoutState): WindowComponentInfo {
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
     const instance = windowRef.value as ComponentPublicInstance
+    if (!instance || !instance.$) {
+      // 目前 top-window、left-window、right-window 是 AsyncComponent，下方的 watch 触发时 instance 可能为 null
+      return
+    }
     const el = resolveOwnerEl(instance.$) as HTMLElement
     const height = el.getBoundingClientRect().height
     layoutState.topWindowHeight = height
@@ -465,6 +469,9 @@ function useLeftWindow(layoutState: LayoutState): WindowComponentInfo {
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
     const instance = windowRef.value as ComponentPublicInstance
+    if (!instance || !instance.$) {
+      return
+    }
     const el = resolveOwnerEl(instance.$) as HTMLElement
     const width = el.getBoundingClientRect().width
     layoutState.leftWindowWidth = width
@@ -490,6 +497,9 @@ function useRightWindow(layoutState: LayoutState): WindowComponentInfo {
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
     const instance = windowRef.value as ComponentPublicInstance
+    if (!instance || !instance.$) {
+      return
+    }
     const el = resolveOwnerEl(instance.$) as HTMLElement
     const width = el.getBoundingClientRect().width
     layoutState.rightWindowWidth = width
