@@ -985,7 +985,7 @@ function getOSInfo(system, platform) {
         osName = system.split(' ')[0] || platform;
         osVersion = system.split(' ')[1] || '';
     }
-    osName = osName.toLocaleLowerCase();
+    osName = osName.toLowerCase();
     switch (osName) {
         case 'harmony': // alipay
         case 'ohos': // weixin
@@ -1079,7 +1079,7 @@ function getGetDeviceType(fromRes, model) {
             mac: 'pc',
         };
         const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
-        const _model = model.toLocaleLowerCase();
+        const _model = model.toLowerCase();
         for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
             const _m = deviceTypeMapsKeys[index];
             if (_model.indexOf(_m) !== -1) {
@@ -1094,7 +1094,7 @@ function getDeviceBrand(brand) {
     // deviceModel
     let deviceBrand = brand;
     if (deviceBrand) {
-        deviceBrand = deviceBrand.toLocaleLowerCase();
+        deviceBrand = deviceBrand.toLowerCase();
     }
     return deviceBrand;
 }
@@ -1466,7 +1466,7 @@ const request = {
             'content-type': 'application/json',
         };
         Object.keys(fromArgs.header).forEach((key) => {
-            headers[key.toLocaleLowerCase()] = fromArgs.header[key];
+            headers[key.toLowerCase()] = fromArgs.header[key];
         });
         return {
             header() {

@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, normalizeClass, toDisplayString, createCommentVNode } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, normalizeClass, toDisplayString, createCommentVNode } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -2234,11 +2234,11 @@ const ServiceJSBridge = /* @__PURE__ */ extend(
 );
 function initOn() {
   const { on: on2 } = UniServiceJSBridge;
-  on2(ON_RESIZE, onResize$1);
+  on2(ON_RESIZE, onResize$2);
   on2(ON_APP_ENTER_FOREGROUND, onAppEnterForeground);
   on2(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
-function onResize$1(res) {
+function onResize$2(res) {
   var _a, _b;
   const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(page, ON_RESIZE, res);
@@ -8375,6 +8375,11 @@ function initXPage(vm, route, page) {
     });
   }
   vm.$basePage = vm.$page;
+  vm.$.$waitNativeRender = (callback) => {
+    vm.$nextTick(() => {
+      callback && callback();
+    });
+  };
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
@@ -9606,7 +9611,7 @@ function setupApp(comp) {
       onMounted(() => {
         window.addEventListener(
           "resize",
-          debounce(onResize, 50, { setTimeout, clearTimeout })
+          debounce(onResize$1, 50, { setTimeout, clearTimeout })
         );
         window.addEventListener("message", onMessage);
         document.addEventListener("visibilitychange", onVisibilityChange);
@@ -9628,7 +9633,7 @@ function setupApp(comp) {
     }
   });
 }
-function onResize() {
+function onResize$1() {
   const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
   const landscape = Math.abs(Number(window.orientation)) === 90;
   const deviceOrientation = landscape ? "landscape" : "portrait";
@@ -9854,7 +9859,7 @@ function getBrowserInfo() {
     deviceType = "unknown";
   }
   const system = `${osname} ${osversion}`;
-  const platform = osname.toLocaleLowerCase();
+  const platform = osname.toLowerCase();
   let browserName = "";
   let browserVersion = String(IEVersion());
   if (browserVersion !== "-1") {
@@ -9882,7 +9887,7 @@ function getBrowserInfo() {
     model,
     system,
     platform,
-    browserName: browserName.toLocaleLowerCase(),
+    browserName: browserName.toLowerCase(),
     browserVersion,
     language,
     deviceType,
@@ -18471,18 +18476,14 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
         lineCount
       });
       if (props2.autoHeight) {
-        el.style.height = "auto";
         wrapper.style.height = height + "px";
       }
     });
     watch(() => props2.autoHeight, (autoHeight) => {
-      const el = rootRef.value;
       const wrapper = wrapperRef.value;
       if (autoHeight) {
-        el.style.height = "auto";
         wrapper.style.height = heightRef.value + "px";
       } else {
-        el.style.height = "";
         wrapper.style.height = "";
       }
     });
@@ -18579,7 +18580,8 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
         "onKeyup": onKeyUpEnter
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
       return createVNode("uni-textarea", {
-        "ref": rootRef
+        "ref": rootRef,
+        "auto-height": props2.autoHeight
       }, [createVNode("div", {
         "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
@@ -18598,7 +18600,7 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 8, ["auto-height"]);
     };
   }
 });
@@ -22332,7 +22334,7 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       model,
       platform,
       system,
-      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osName: osname ? osname.toLowerCase() : void 0,
       osVersion: osversion
     });
   }
@@ -22398,7 +22400,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
         uniCompileVersion: __uniConfig.compilerVersion,
         uniRuntimeVersion: __uniConfig.compilerVersion,
         fontSizeSetting: void 0,
-        osName: osname.toLocaleLowerCase(),
+        osName: osname.toLowerCase(),
         osVersion: osversion,
         osLanguage: void 0,
         osTheme: void 0
@@ -27738,6 +27740,110 @@ const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
 const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
 const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
+  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+};
+const onResize = /* @__PURE__ */ createLifeCycleHook(
+  ON_RESIZE,
+  2
+  /* HookFlags.PAGE */
+);
+const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
+class UniMatchMediaElement extends UniViewElement {
+  constructor() {
+    super();
+    this._experssions = [];
+  }
+  static get observedAttributes() {
+    return [
+      "orientation",
+      "width",
+      "minWidth",
+      "maxWidth",
+      "height",
+      "minHeight",
+      "maxHeight"
+    ];
+  }
+  connectedCallback() {
+    this._experssions = this.getExpressions();
+    this.uniPage.vm.$.$waitNativeRender(() => {
+      this.toggleElement(this.isValid({
+        width: this.uniPage.pageBody.width,
+        height: this.uniPage.pageBody.height,
+        orientation: uni.getDeviceInfo().deviceOrientation
+      }));
+    });
+    onResize((res) => {
+      this.toggleElement(this.isValid({
+        orientation: res.deviceOrientation,
+        width: res.size.windowWidth,
+        height: res.size.windowHeight
+      }));
+    }, this.uniPage.vm.$);
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (this._experssions.length == 0) {
+      return;
+    }
+    const matches2 = name.match(RE_MQ_FEATURE);
+    if (matches2 == null || matches2.length == 0) {
+      return;
+    }
+    const modifier = matches2[1] != null ? matches2[1] : "";
+    const feature = matches2[2] != null ? matches2[2].toLowerCase() : "";
+    const expression = this._experssions.find((expr) => expr.feature == feature && expr.modifier == modifier);
+    if (expression == null) {
+      return;
+    }
+    expression.value = newValue;
+    this.toggleElement(this.isValid({
+      width: this.uniPage.pageBody.width,
+      height: this.uniPage.pageBody.height,
+      orientation: uni.getDeviceInfo().deviceOrientation
+    }));
+  }
+  getExpressions() {
+    const expressions = [];
+    UniMatchMediaElement.observedAttributes.forEach((key) => {
+      const value = this.getAttribute(key);
+      const feature = key.match(RE_MQ_FEATURE);
+      if (value != null && feature != null && feature.length > 0) {
+        expressions.push({
+          modifier: feature[1] != null ? feature[1] : "",
+          feature: feature[2] != null ? feature[2].toLowerCase() : "",
+          value
+        });
+      }
+    });
+    return expressions;
+  }
+  // 显示或者隐藏页面元素
+  toggleElement(show) {
+    this.style.setProperty("display", show ? "flex" : "none");
+  }
+  isValid(values) {
+    return this._experssions.every((expression) => {
+      switch (expression.feature) {
+        case "orientation":
+          return values[expression.feature] === this.getAttribute(expression.feature);
+      }
+      const expressionValue = values[expression.feature];
+      switch (expression.modifier) {
+        case "min":
+          return parseFloat(expression.value) <= expressionValue;
+        case "max":
+          return parseFloat(expression.value) >= expressionValue;
+        default:
+          return parseFloat(expression.value) === expressionValue;
+      }
+    });
+  }
+}
+const MatchMedia = /* @__PURE__ */ (() => {
+  customElements.define("uni-match-media", UniMatchMediaElement);
+  return "uni-match-media";
+})();
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -28107,7 +28213,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
                 }, {
                   default: withCtx(() => [
                     createVNode(_component_text, {
-                      style: normalizeStyle({ color: $data.titleColor }),
+                      style: normalizeStyle($data.titleColor != null ? { color: $data.titleColor } : {}),
                       class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
                     }, {
                       default: withCtx(() => [
@@ -28138,7 +28244,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
                       }, {
                         default: withCtx(() => [
                           createVNode(_component_text, {
-                            style: normalizeStyle({ color: $data.itemColor }),
+                            style: normalizeStyle($data.itemColor != null ? { color: $data.itemColor } : {}),
                             class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
                           }, {
                             default: withCtx(() => [
@@ -28164,7 +28270,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
           }, {
             default: withCtx(() => [
               createVNode(_component_text, {
-                style: normalizeStyle({ color: $data.cancelColor }),
+                style: normalizeStyle($data.cancelColor != null ? { color: $data.cancelColor } : {}),
                 class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
               }, {
                 default: withCtx(() => [
@@ -30199,6 +30305,7 @@ export {
   index$1 as LivePlayer,
   index as LivePusher,
   __syscom_0 as Map,
+  MatchMedia,
   MovableArea,
   MovableView,
   index$l as Navigator,
@@ -30221,44 +30328,75 @@ export {
   __syscom_0$1 as Text,
   __syscom_1 as Textarea,
   UniButtonElement,
+  UniButtonElement as UniButtonElementImpl,
   UniCanvasElement,
+  UniCanvasElement as UniCanvasElementImpl,
   UniCheckboxElement,
+  UniCheckboxElement as UniCheckboxElementImpl,
   UniCheckboxGroupElement,
+  UniCheckboxGroupElement as UniCheckboxGroupElementImpl,
   UniCoverImageElement,
   UniCoverViewElement,
   UniEditorElement,
+  UniEditorElement as UniEditorElementImpl,
   UniElement,
   UniElement as UniElementImpl,
   UniFormElement,
+  UniFormElement as UniFormElementImpl,
   UniIconElement,
+  UniIconElement as UniIconElementImpl,
   UniImageElement,
+  UniImageElement as UniImageElementImpl,
   UniInputElement,
+  UniInputElement as UniInputElementImpl,
   UniLabelElement,
+  UniLabelElement as UniLabelElementImpl,
   UniListItemElement,
+  UniListItemElement as UniListItemElementImpl,
   UniListViewElement,
+  UniListViewElement as UniListViewElementImpl,
   UniMapElement,
   UniMovableAreaElement,
+  UniMovableAreaElement as UniMovableAreaElementImpl,
   UniMovableViewElement,
+  UniMovableViewElement as UniMovableViewElementImpl,
   UniNavigatorElement,
+  UniNavigatorElement as UniNavigatorElementImpl,
   UniPickerElement,
   UniPickerViewColumnElement,
+  UniPickerViewColumnElement as UniPickerViewColumnElementImpl,
   UniPickerViewElement,
+  UniPickerViewElement as UniPickerViewElementImpl,
   UniProgressElement,
+  UniProgressElement as UniProgressElementImpl,
   UniRadioElement,
+  UniRadioElement as UniRadioElementImpl,
   UniRadioGroupElement,
+  UniRadioGroupElement as UniRadioGroupElementImpl,
   UniRichTextElement,
+  UniRichTextElement as UniRichTextElementImpl,
   UniScrollViewElement,
+  UniScrollViewElement as UniScrollViewElementImpl,
   UniServiceJSBridge$1 as UniServiceJSBridge,
   UniSliderElement,
+  UniSliderElement as UniSliderElementImpl,
   UniStickyHeaderElement,
+  UniStickyHeaderElement as UniStickyHeaderElementImpl,
   UniStickySectionElement,
+  UniStickySectionElement as UniStickySectionElementImpl,
   UniSwiperElement,
+  UniSwiperElement as UniSwiperElementImpl,
   UniSwiperItemElement,
+  UniSwiperItemElement as UniSwiperItemElementImpl,
   UniSwitchElement,
+  UniSwitchElement as UniSwitchElementImpl,
   UniTextElement,
+  UniTextElement as UniTextElementImpl,
   UniTextareaElement,
+  UniTextareaElement as UniTextareaElementImpl,
   UniVideoElement,
   UniViewElement,
+  UniViewElement as UniViewElementImpl,
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
   index$b as Video,

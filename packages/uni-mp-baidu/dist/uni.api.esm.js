@@ -985,7 +985,7 @@ function getOSInfo(system, platform) {
         osName = system.split(' ')[0] || platform;
         osVersion = system.split(' ')[1] || '';
     }
-    osName = osName.toLocaleLowerCase();
+    osName = osName.toLowerCase();
     switch (osName) {
         case 'harmony': // alipay
         case 'ohos': // weixin
@@ -1084,7 +1084,7 @@ function getDeviceBrand(brand) {
     // deviceModel
     let deviceBrand = brand;
     if (deviceBrand) {
-        deviceBrand = deviceBrand.toLocaleLowerCase();
+        deviceBrand = deviceBrand.toLowerCase();
     }
     return deviceBrand;
 }

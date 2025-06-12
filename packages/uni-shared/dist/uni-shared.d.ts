@@ -921,6 +921,8 @@ export declare const UVUE_HARMONY_BUILT_IN_TAGS: string[];
 
 export declare const UVUE_IOS_BUILT_IN_TAGS: string[];
 
+export declare const UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS: string[];
+
 export declare const UVUE_WEB_BUILT_IN_TAGS: string[];
 
 export declare const VIRTUAL_HOST_CLASS = "virtualHostClass";

@@ -7881,7 +7881,6 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         lineCount
       });
       if (props2.autoHeight) {
-        el.style.height = "auto";
         wrapper2.style.height = height + "px";
       }
     });
@@ -7963,7 +7962,8 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "onKeyup": onKeyUpEnter
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
       return vue.createVNode("uni-textarea", {
-        "ref": rootRef
+        "ref": rootRef,
+        "auto-height": props2.autoHeight
       }, [vue.createVNode("div", {
         "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
@@ -7982,7 +7982,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 8, ["auto-height"]);
     };
   }
 });
@@ -11973,7 +11973,7 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       model,
       platform,
       system,
-      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osName: osname ? osname.toLowerCase() : void 0,
       osVersion: osversion
     });
   }
