@@ -47,14 +47,16 @@ export function hbuilderFormatter(m: MessageSourceLocation) {
       .replace(/\r\n/g, '\n')
       .split('\n')
       .forEach((m) => {
-        msgs.push('\u200B' + m + '\u200B')
+        // 重要：区块标识需要放到颜色值之后
+        msgs.push('\u200B' + SPECIAL_CHARS.WARN_BLOCK + m + '\u200B')
       })
   } else if (m.type === 'error' || m.type === 'exception') {
     msg
       .replace(/\r\n/g, '\n')
       .split('\n')
       .forEach((m) => {
-        msgs.push('\u200C' + m + '\u200C')
+        // 重要：区块标识需要放到颜色值之后
+        msgs.push('\u200C' + SPECIAL_CHARS.ERROR_BLOCK + m + '\u200C')
       })
   } else {
     msgs.push(msg)
@@ -130,9 +132,9 @@ export async function parseUTSKotlinStacktrace(
       let msg = options.format(m)
       if (msg) {
         if (m.type === 'error' || m.type === 'exception') {
-          msg = SPECIAL_CHARS.ERROR_BLOCK + msg + SPECIAL_CHARS.ERROR_BLOCK
+          msg = msg + SPECIAL_CHARS.ERROR_BLOCK
         } else if (m.type === 'warning') {
-          msg = SPECIAL_CHARS.WARN_BLOCK + msg + SPECIAL_CHARS.WARN_BLOCK
+          msg = msg + SPECIAL_CHARS.WARN_BLOCK
         }
         msgs.push(msg)
       }
