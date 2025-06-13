@@ -144,6 +144,11 @@ const protocols = { // 需要做转换的 API 列表
   showModal ({
     showCancel = true
   } = {}) {
+    if(my.canIUse('showModal')) {
+      return {
+        name: 'showModal'
+      }
+    }
     if (showCancel) {
       return {
         name: 'confirm',
