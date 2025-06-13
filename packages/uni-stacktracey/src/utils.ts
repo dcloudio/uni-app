@@ -1,5 +1,4 @@
 import fs from 'fs'
-import os from 'os'
 import path from 'path'
 import {
   type BasicSourceMapConsumer,
@@ -7,7 +6,7 @@ import {
   SourceMapConsumer,
 } from '../lib/source-map/source-map'
 
-const splitRE = /\r?\n/
+export const splitRE = /\r?\n/
 
 const range: number = 2
 
@@ -80,13 +79,6 @@ interface MessageSourceLocation {
 interface GenerateCodeFrameOptions {
   sourceRoot?: string
   replaceTabsWithSpace?: boolean
-}
-let isWindows = false
-try {
-  isWindows = os.platform() === 'win32'
-} catch (error) {}
-function normalizePath(id: string): string {
-  return isWindows ? id.replace(/\\/g, '/') : id
 }
 
 export function generateCodeFrameSourceMapConsumer(
@@ -273,4 +265,8 @@ ${m.code}
       )
     })
   })
+}
+
+export function normalizePath(id: string): string {
+  return id.replace(/\\/g, '/')
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 const path = require('path')
 const {
   stacktracey,

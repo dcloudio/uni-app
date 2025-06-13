@@ -1,15 +1,9 @@
-import fs from 'fs'
 import StackTrace from './stacktrace'
-import {
-  type BasicSourceMapConsumer,
-  type IndexedSourceMapConsumer,
-  type Position,
-  SourceMapConsumer,
-} from '../lib/source-map/source-map'
 import path from 'path'
-
-export { SourceMapConsumer } from '../lib/source-map/source-map'
-
+import { getSourceMapContent, originalPositionFor } from './sourcemap'
+import { normalizePath, splitRE } from './utils'
+export { SourceMapConsumer } from './sourcemap'
+export { getSourceMapContent, originalPositionFor }
 export {
   generateCodeFrame,
   generateCodeFrameSourceMapConsumer,
@@ -17,20 +11,6 @@ export {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
 } from './utils'
-// @ts-expect-error
-if (__PLATFORM_WEB__) {
-  // @ts-expect-error
-  if (SourceMapConsumer.initialize) {
-    // @ts-expect-error
-    SourceMapConsumer.initialize({
-      'lib/mappings.wasm':
-        'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
-    })
-  }
-}
-
-const nixSlashes = (x: string) => x.replace(/\\/g, '/')
-const sourcemapCatch: Record<string, string | Promise<string>> = {}
 
 type StacktraceItems = StackTrace.Entry & {
   errMsg?: string
@@ -117,16 +97,14 @@ export function stacktrace(
           .getSourceMapContent(file, fileName, fileRelative)
           .then((content) => {
             if (content) {
-              return getConsumer(content).then((consumer) => {
-                return parseSourceMapContent(
-                  consumer,
-                  {
-                    line: line + (opts.preset.lineOffset || 0),
-                    column,
-                  },
-                  !!opts.withSourceContent
-                )
-              })
+              return originalPositionFor(
+                content,
+                {
+                  line: line + (opts.preset.lineOffset || 0),
+                  column,
+                },
+                !!opts.withSourceContent
+              )
             }
           })
       }
@@ -208,103 +186,10 @@ export function stacktrace(
   return _promise
 }
 
+export const stacktracey = stacktrace
+
 function isThirdParty(relativePath: string) {
   return relativePath.indexOf('@dcloudio') !== -1
-}
-
-function getConsumer(
-  content: string
-): Promise<BasicSourceMapConsumer | IndexedSourceMapConsumer> {
-  return new Promise((resolve, reject) => {
-    try {
-      if (SourceMapConsumer.with) {
-        SourceMapConsumer.with(content, null, (consumer) => {
-          resolve(consumer)
-        })
-      } else {
-        // @ts-expect-error
-        const consumer = SourceMapConsumer(content)
-        resolve(consumer)
-      }
-    } catch (error) {
-      reject()
-    }
-  })
-}
-
-function getSourceMapContent(sourcemapUrl: string) {
-  try {
-    return (
-      sourcemapCatch[sourcemapUrl] ||
-      (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
-        try {
-          if (/^[http|https]+:/i.test(sourcemapUrl)) {
-            uni.request({
-              url: sourcemapUrl,
-              success: (res) => {
-                if (res.statusCode === 200) {
-                  sourcemapCatch[sourcemapUrl] = res.data as string
-                  resolve(sourcemapCatch[sourcemapUrl])
-                } else {
-                  resolve((sourcemapCatch[sourcemapUrl] = ''))
-                }
-              },
-              fail() {
-                resolve((sourcemapCatch[sourcemapUrl] = ''))
-              },
-            })
-          } else {
-            sourcemapCatch[sourcemapUrl] = fs.readFileSync(
-              sourcemapUrl,
-              'utf-8'
-            )
-            resolve(sourcemapCatch[sourcemapUrl])
-          }
-        } catch (error) {
-          resolve('')
-        }
-      }))
-    )
-  } catch (error) {
-    return ''
-  }
-}
-
-type SourceMapContent = {
-  source: string
-  sourcePath: string
-  sourceLine: number
-  sourceColumn: number
-  sourceContent?: string
-  fileName?: string
-}
-function parseSourceMapContent(
-  consumer: BasicSourceMapConsumer | IndexedSourceMapConsumer,
-  obj: Position,
-  withSourceContent: boolean
-): SourceMapContent | undefined {
-  // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
-  const {
-    source,
-    line: sourceLine,
-    column: sourceColumn,
-  } = consumer.originalPositionFor(obj)
-  if (source) {
-    const sourcePathSplit = source.split('/')
-    const sourcePath = sourcePathSplit.slice(3).join('/')
-    const fileName = sourcePathSplit.pop()
-
-    return {
-      source,
-      sourcePath,
-      sourceLine: sourceLine === null ? 0 : sourceLine,
-      sourceColumn: sourceColumn === null ? 0 : sourceColumn,
-      fileName,
-      sourceContent: withSourceContent
-        ? consumer.sourceContentFor(source) || ''
-        : '',
-    }
-  }
 }
 
 interface UniStacktracePresetOptions {
@@ -422,7 +307,6 @@ export function uniStacktracePreset(
   }
 }
 export const uniStracktraceyPreset = uniStacktracePreset
-const splitRE = /\r?\n/
 interface UTSStacktracePreset {
   /**
    * 源码根目录
@@ -489,7 +373,7 @@ export function utsStacktracePreset(
             callee: '',
             index: false,
             native: false,
-            file: nixSlashes(matches[1]),
+            file: normalizePath(matches[1]),
             line: parseInt(matches[3]),
             column: parseInt(matches[4]),
             fileName,
@@ -513,7 +397,7 @@ export function utsStacktracePreset(
           if (item === '%StacktraceyItem%') {
             const _stack = stack.items.shift()
             if (_stack) {
-              return `at ${nixSlashes(
+              return `at ${normalizePath(
                 path.relative(inputRoot, _stack.file.replace('\\\\?\\', ''))
               )}:${_stack.line}:${_stack.column}
 ${_stack.errMsg}`
