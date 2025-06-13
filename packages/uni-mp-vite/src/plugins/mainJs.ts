@@ -57,6 +57,7 @@ export function uniMainJsPlugin(
 }
 
 function createApp(code: string) {
+  // 此处换行防止用户代码最后一行是单行注释，导致应用无法启动
   return `${code};\ncreateApp().app.mount("#app");`
 }
 

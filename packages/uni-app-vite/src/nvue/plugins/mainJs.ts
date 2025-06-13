@@ -49,7 +49,7 @@ function createApp(code: string) {
   return `${code.replace(
     'createSSRApp',
     'createVueApp as createSSRApp'
-  )};const {app:__app__,Vuex:__Vuex__,Pinia:__Pinia__}=createApp();uni.Vuex=__Vuex__;uni.Pinia=__Pinia__;__app__._component.mpType='app';__app__._component.render=()=>{};__app__.mount('#app');`
+  )};\nconst {app:__app__,Vuex:__Vuex__,Pinia:__Pinia__}=createApp();uni.Vuex=__Vuex__;uni.Pinia=__Pinia__;__app__._component.mpType='app';__app__._component.render=()=>{};__app__.mount('#app');`
 }
 
 function createLegacyApp(code: string) {
