@@ -1,14 +1,12 @@
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
-var os = require('os');
+var fs = require('fs');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
-var fs__default = /*#__PURE__*/_interopDefault(fs);
 var path__default = /*#__PURE__*/_interopDefault(path);
-var os__default = /*#__PURE__*/_interopDefault(os);
+var fs__default = /*#__PURE__*/_interopDefault(fs);
 
 /*  ------------------------------------------------------------------------ */
 const O = Object, isBrowser = 
@@ -20,7 +18,7 @@ typeof window !== 'undefined' &&
     window.navigator, 
 // @ts-ignore
 nodeRequire = isBrowser ? null : module.require, // to prevent bundlers from expanding the require call
-lastOf = (x) => x[x.length - 1], nixSlashes$1 = (x) => x.replace(/\\/g, '/'), pathRoot = isBrowser ? window.location.href : nixSlashes$1(process.cwd()) + '/';
+lastOf = (x) => x[x.length - 1], nixSlashes = (x) => x.replace(/\\/g, '/'), pathRoot = isBrowser ? window.location.href : nixSlashes(process.cwd()) + '/';
 /*  ------------------------------------------------------------------------ */
 class StackTracey {
     constructor(input, uniPlatform, offset) {
@@ -51,7 +49,7 @@ class StackTracey {
                     .split('\n'), fileLine = rawLines[0].split(':'), line = fileLine.pop(), file = fileLine.join(':');
                 if (file) {
                     input.unshift({
-                        file: nixSlashes$1(file),
+                        file: nixSlashes(file),
                         line: line,
                         column: (rawLines[2] || '').indexOf('^') + 1,
                         sourceLine: rawLines[1],
@@ -96,7 +94,7 @@ class StackTracey {
         result = externalDomainMatch ? externalDomainMatch[3] : result;
         // if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
         return [
-            nixSlashes$1(result).replace(/^.*\:\/\/?\/?/, ''), // cut webpack:/// and webpack:/ things
+            nixSlashes(result).replace(/^.*\:\/\/?\/?/, ''), // cut webpack:/// and webpack:/ things
             externalDomain,
         ];
     }
@@ -157,7 +155,7 @@ class StackTracey {
                 /* eslint-disable */
                 index: isBrowser && fileLineColumn[0] === window.location.href,
                 native: native || false,
-                file: nixSlashes$1(fileLineColumn[0] || ''),
+                file: nixSlashes(fileLineColumn[0] || ''),
                 line: parseInt(fileLineColumn[1] || '', 10) || undefined,
                 column: parseInt(fileLineColumn[2] || '', 10) || undefined,
             };
@@ -2477,12 +2475,101 @@ function _factoryBSM(aSourceMap, aSourceMapURL) {
  */
 var SourceMapConsumer = sourceMapConsumer.SourceMapConsumer;
 
-const splitRE$1 = /\r?\n/;
+function getSourceMapConsumer(content) {
+    return new Promise((resolve, reject) => {
+        try {
+            if (SourceMapConsumer.with) {
+                SourceMapConsumer.with(content, null, (consumer) => {
+                    resolve(consumer);
+                });
+            }
+            else {
+                // @ts-expect-error
+                const consumer = SourceMapConsumer(content);
+                resolve(consumer);
+            }
+        }
+        catch (error) {
+            reject();
+        }
+    });
+}
+function originalPositionFor(sourceMapContent, position, withSourceContent = false) {
+    return getSourceMapConsumer(sourceMapContent).then((consumer) => {
+        if (position.column === 0) {
+            position.bias = 2 /* BIAS.LEAST_UPPER_BOUND */;
+        }
+        // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
+        const { source, line: sourceLine, column: sourceColumn, } = consumer.originalPositionFor(position);
+        if (source) {
+            const sourcePathSplit = source.split('/');
+            const sourcePath = sourcePathSplit.slice(3).join('/');
+            const fileName = sourcePathSplit.pop();
+            return {
+                source,
+                sourcePath,
+                sourceLine: sourceLine === null ? 0 : sourceLine,
+                sourceColumn: sourceColumn === null ? 0 : sourceColumn,
+                fileName,
+                sourceContent: withSourceContent
+                    ? consumer.sourceContentFor(source, true) || ''
+                    : '',
+            };
+        }
+    });
+}
+const sourcemapCatch = {};
+function getSourceMapContent(sourcemapUrl) {
+    try {
+        return (sourcemapCatch[sourcemapUrl]
+            ? Promise.resolve(sourcemapCatch[sourcemapUrl])
+            : (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
+                try {
+                    if (/^[http|https]+:/i.test(sourcemapUrl)) {
+                        uni.request({
+                            url: sourcemapUrl,
+                            success: (res) => {
+                                if (res.statusCode === 200) {
+                                    sourcemapCatch[sourcemapUrl] = res.data;
+                                    resolve(sourcemapCatch[sourcemapUrl]);
+                                }
+                                else {
+                                    resolve((sourcemapCatch[sourcemapUrl] = ''));
+                                }
+                            },
+                            fail() {
+                                resolve((sourcemapCatch[sourcemapUrl] = ''));
+                            },
+                        });
+                    }
+                    else {
+                        fs__default.default.readFile(sourcemapUrl, 'utf-8', (err, data) => {
+                            if (err) {
+                                resolve((sourcemapCatch[sourcemapUrl] = ''));
+                            }
+                            else {
+                                sourcemapCatch[sourcemapUrl] = data;
+                                resolve(sourcemapCatch[sourcemapUrl]);
+                            }
+                        });
+                    }
+                }
+                catch (error) {
+                    resolve((sourcemapCatch[sourcemapUrl] = ''));
+                }
+            })));
+    }
+    catch (error) {
+        return Promise.resolve((sourcemapCatch[sourcemapUrl] = ''));
+    }
+}
+
+const splitRE = /\r?\n/;
 const range = 2;
 function posToNumber(source, pos) {
     if (typeof pos === 'number')
         return pos;
-    const lines = source.split(splitRE$1);
+    const lines = source.split(splitRE);
     const { line, column } = pos;
     let start = 0;
     for (let i = 0; i < line - 1; i++) {
@@ -2493,7 +2580,7 @@ function posToNumber(source, pos) {
 function generateCodeFrame(source, start = 0, end) {
     start = posToNumber(source, start);
     end = end || start;
-    const lines = source.split(splitRE$1);
+    const lines = source.split(splitRE);
     let count = 0;
     const res = [];
     for (let i = 0; i < lines.length; i++) {
@@ -2523,14 +2610,6 @@ function generateCodeFrame(source, start = 0, end) {
         }
     }
     return res.join('\n');
-}
-let isWindows = false;
-try {
-    isWindows = os__default.default.platform() === 'win32';
-}
-catch (error) { }
-function normalizePath(id) {
-    return isWindows ? id.replace(/\\/g, '/') : id;
 }
 function generateCodeFrameSourceMapConsumer(consumer, m, options = {}) {
     if (m.file) {
@@ -2637,10 +2716,11 @@ ${m.code}
         });
     });
 }
+function normalizePath(id) {
+    return id.replace(/\\/g, '/');
+}
 
-const nixSlashes = (x) => x.replace(/\\/g, '/');
-const sourcemapCatch = {};
-function stacktracey(stacktrace, opts) {
+function stacktrace(stacktrace, opts) {
     const stack = opts.preset.parseStacktrace(stacktrace);
     let parseStack = Promise.resolve();
     stack.items.forEach((item, index) => {
@@ -2654,12 +2734,10 @@ function stacktracey(stacktrace, opts) {
                     .getSourceMapContent(file, fileName, fileRelative)
                     .then((content) => {
                     if (content) {
-                        return getConsumer(content).then((consumer) => {
-                            return parseSourceMapContent(consumer, {
-                                line: line + (opts.preset.lineOffset || 0),
-                                column,
-                            }, !!opts.withSourceContent);
-                        });
+                        return originalPositionFor(content, {
+                            line: line + (opts.preset.lineOffset || 0),
+                            column,
+                        }, !!opts.withSourceContent);
                     }
                 });
             }
@@ -2723,82 +2801,9 @@ function stacktracey(stacktrace, opts) {
     });
     return _promise;
 }
+const stacktracey = stacktrace;
 function isThirdParty(relativePath) {
     return relativePath.indexOf('@dcloudio') !== -1;
-}
-function getConsumer(content) {
-    return new Promise((resolve, reject) => {
-        try {
-            if (SourceMapConsumer.with) {
-                SourceMapConsumer.with(content, null, (consumer) => {
-                    resolve(consumer);
-                });
-            }
-            else {
-                // @ts-expect-error
-                const consumer = SourceMapConsumer(content);
-                resolve(consumer);
-            }
-        }
-        catch (error) {
-            reject();
-        }
-    });
-}
-function getSourceMapContent(sourcemapUrl) {
-    try {
-        return (sourcemapCatch[sourcemapUrl] ||
-            (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
-                try {
-                    if (/^[http|https]+:/i.test(sourcemapUrl)) {
-                        uni.request({
-                            url: sourcemapUrl,
-                            success: (res) => {
-                                if (res.statusCode === 200) {
-                                    sourcemapCatch[sourcemapUrl] = res.data;
-                                    resolve(sourcemapCatch[sourcemapUrl]);
-                                }
-                                else {
-                                    resolve((sourcemapCatch[sourcemapUrl] = ''));
-                                }
-                            },
-                            fail() {
-                                resolve((sourcemapCatch[sourcemapUrl] = ''));
-                            },
-                        });
-                    }
-                    else {
-                        sourcemapCatch[sourcemapUrl] = fs__default.default.readFileSync(sourcemapUrl, 'utf-8');
-                        resolve(sourcemapCatch[sourcemapUrl]);
-                    }
-                }
-                catch (error) {
-                    resolve('');
-                }
-            })));
-    }
-    catch (error) {
-        return '';
-    }
-}
-function parseSourceMapContent(consumer, obj, withSourceContent) {
-    // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
-    const { source, line: sourceLine, column: sourceColumn, } = consumer.originalPositionFor(obj);
-    if (source) {
-        const sourcePathSplit = source.split('/');
-        const sourcePath = sourcePathSplit.slice(3).join('/');
-        const fileName = sourcePathSplit.pop();
-        return {
-            source,
-            sourcePath,
-            sourceLine: sourceLine === null ? 0 : sourceLine,
-            sourceColumn: sourceColumn === null ? 0 : sourceColumn,
-            fileName,
-            sourceContent: withSourceContent
-                ? consumer.sourceContentFor(source) || ''
-                : '',
-        };
-    }
 }
 function joinItem(item) {
     if (typeof item === 'string') {
@@ -2809,7 +2814,7 @@ function joinItem(item) {
     const c = item[2] ? ` ${item[2]}` : '';
     return `${a}${b}${c}`;
 }
-function uniStracktraceyPreset(opts) {
+function uniStacktracePreset(opts) {
     const { base, sourceRoot, splitThirdParty, uniPlatform, lineOffset } = opts;
     let stack;
     return {
@@ -2899,8 +2904,8 @@ function uniStracktraceyPreset(opts) {
         lineOffset,
     };
 }
-const splitRE = /\r?\n/;
-function utsStracktraceyPreset(opts) {
+const uniStracktraceyPreset = uniStacktracePreset;
+function utsStacktracePreset(opts) {
     const { inputRoot = '', outputRoot = '', sourceMapRoot = '' } = opts;
     let errStack = [];
     return {
@@ -2935,7 +2940,7 @@ function utsStracktraceyPreset(opts) {
                     callee: '',
                     index: false,
                     native: false,
-                    file: nixSlashes(matches[1]),
+                    file: normalizePath(matches[1]),
                     line: parseInt(matches[3]),
                     column: parseInt(matches[4]),
                     fileName,
@@ -2958,7 +2963,7 @@ function utsStracktraceyPreset(opts) {
                 if (item === '%StacktraceyItem%') {
                     const _stack = stack.items.shift();
                     if (_stack) {
-                        return `at ${nixSlashes(path__default.default.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}
+                        return `at ${normalizePath(path__default.default.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}
 ${_stack.errMsg}`;
                     }
                     return '';
@@ -2969,6 +2974,7 @@ ${_stack.errMsg}`;
         },
     };
 }
+const utsStracktraceyPreset = utsStacktracePreset;
 
 exports.SourceMapConsumer = SourceMapConsumer;
 exports.generateCodeFrame = generateCodeFrame;
@@ -2976,7 +2982,11 @@ exports.generateCodeFrameSourceMapConsumer = generateCodeFrameSourceMapConsumer;
 exports.generateCodeFrameWithKotlinStacktrace = generateCodeFrameWithKotlinStacktrace;
 exports.generateCodeFrameWithSourceMapPath = generateCodeFrameWithSourceMapPath;
 exports.generateCodeFrameWithSwiftStacktrace = generateCodeFrameWithSwiftStacktrace;
-exports.splitRE = splitRE;
+exports.getSourceMapContent = getSourceMapContent;
+exports.originalPositionFor = originalPositionFor;
+exports.stacktrace = stacktrace;
 exports.stacktracey = stacktracey;
+exports.uniStacktracePreset = uniStacktracePreset;
 exports.uniStracktraceyPreset = uniStracktraceyPreset;
+exports.utsStacktracePreset = utsStacktracePreset;
 exports.utsStracktraceyPreset = utsStracktraceyPreset;
