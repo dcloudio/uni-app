@@ -8,6 +8,11 @@ export const EXTNAME_VUE_RE = /\.(vue|nvue|uvue)$/
 export const EXTNAME_JS_RE = /\.(js|jsx|ts|uts|tsx|mjs)$/
 export const EXTNAME_TS_RE = /\.tsx?$/
 
+export const SPECIAL_CHARS = {
+  WARN_BLOCK: '\u202A', // 警告块前后标识
+  ERROR_BLOCK: '\u202B', // 错误块前后标识
+}
+
 const COMMON_EXTENSIONS = [
   '.uts',
   '.mjs',

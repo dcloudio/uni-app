@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { relative } from '../utils'
+import { SPECIAL_CHARS, relative } from '../utils'
 import { originalPositionFor, originalPositionForSync } from '../sourceMap'
 import {
   COLORS,
@@ -127,8 +127,13 @@ export async function parseUTSKotlinStacktrace(
           }
         }
       }
-      const msg = options.format(m)
+      let msg = options.format(m)
       if (msg) {
+        if (m.type === 'error' || m.type === 'exception') {
+          msg = SPECIAL_CHARS.ERROR_BLOCK + msg + SPECIAL_CHARS.ERROR_BLOCK
+        } else if (m.type === 'warning') {
+          msg = SPECIAL_CHARS.WARN_BLOCK + msg + SPECIAL_CHARS.WARN_BLOCK
+        }
         msgs.push(msg)
       }
     }
@@ -242,7 +247,11 @@ export function parseUTSKotlinRuntimeStacktrace(
       if (color) {
         error = color + error + color
       }
-      return [error, ...codes].join('\n')
+      return (
+        SPECIAL_CHARS.ERROR_BLOCK +
+        [error, ...codes].join('\n') +
+        SPECIAL_CHARS.ERROR_BLOCK
+      )
     } else {
       res.push(line)
     }

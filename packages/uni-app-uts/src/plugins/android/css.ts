@@ -3,6 +3,7 @@ import path from 'path'
 import colors from 'picocolors'
 
 import {
+  SPECIAL_CHARS,
   commonjsProxyRE,
   cssLangRE,
   cssPlugin,
@@ -74,7 +75,10 @@ export function uniAppCssPrePlugin(): Plugin {
           })
           messages.forEach((message) => {
             if (message.type === 'error') {
-              console.error(`[plugin:uni:app-uvue-css] ${message.text}`)
+              console.error(
+                SPECIAL_CHARS.ERROR_BLOCK +
+                  `[plugin:uni:app-uvue-css] ${message.text}`
+              )
               let msg = formatAtFilename(filename)
               if (message.line && message.column) {
                 msg += `\n${generateCodeFrame(cssCode, {
@@ -82,7 +86,7 @@ export function uniAppCssPrePlugin(): Plugin {
                   column: message.column,
                 }).replace(/\t/g, ' ')}`
               }
-              console.error(msg)
+              console.error(msg + SPECIAL_CHARS.ERROR_BLOCK)
             }
           })
           const fileName = filename.replace('.style.uts', '')
@@ -150,7 +154,8 @@ export function uniAppCssPlugin(): Plugin {
         if (message.type === 'warning') {
           // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
           console.warn(
-            colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
+            SPECIAL_CHARS.WARN_BLOCK +
+              colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
           )
           let msg = formatAtFilename(filename)
           if (message.line && message.column) {
@@ -159,7 +164,7 @@ export function uniAppCssPlugin(): Plugin {
               column: message.column,
             }).replace(/\t/g, ' ')}\n`
           }
-          console.log(msg)
+          console.log(msg + SPECIAL_CHARS.WARN_BLOCK)
         }
       })
       return {
