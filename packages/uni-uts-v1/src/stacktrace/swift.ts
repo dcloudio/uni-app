@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { originalPositionFor } from '../sourceMap'
 import { generateCodeFrame, splitRE } from './utils'
+import { SPECIAL_CHARS } from '../utils'
 
 const uniModulesSwiftUTSRe = /(.*).swift:([0-9]+):([0-9]+):\s+error:\s+(.*)/
 
@@ -34,7 +35,7 @@ export async function parseUTSSwiftPluginStacktrace({
       res.push(line)
     }
   }
-  return res.join('\n')
+  return SPECIAL_CHARS.ERROR_BLOCK + res.join('\n') + SPECIAL_CHARS.ERROR_BLOCK
 }
 
 async function parseUTSStacktraceLine(

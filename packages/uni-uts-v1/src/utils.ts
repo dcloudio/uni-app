@@ -50,6 +50,11 @@ export type ToSwiftOptions = ToOptions
 
 export const ERR_MSG_PLACEHOLDER = `___ERR_MSG___`
 
+export const SPECIAL_CHARS = {
+  WARN_BLOCK: '\u202A', // 警告块前后标识
+  ERROR_BLOCK: '\u202B', // 错误块前后标识
+}
+
 export interface RunOptions {
   components: Record<string, string>
   customElements?: Record<string, string>

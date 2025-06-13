@@ -7,6 +7,7 @@ import type {
 } from 'vue/compiler-sfc'
 import path from 'path'
 import {
+  SPECIAL_CHARS,
   createRollupError,
   generateCodeFrameColumns,
   matchEasycom,
@@ -118,7 +119,9 @@ function onTemplateLog(
   relativeFileName: string,
   templateStartLine: number
 ) {
-  console[type](type + ': ' + error.message)
+  const char =
+    type === 'warn' ? SPECIAL_CHARS.WARN_BLOCK : SPECIAL_CHARS.ERROR_BLOCK
+  console[type](char + type + ': ' + error.message + (error.loc ? '' : char))
   if (error.loc) {
     const start = error.loc.start
     console.log(
@@ -129,7 +132,7 @@ function onTemplateLog(
         ':' +
         (start.column - 1)
     )
-    console.log(generateCodeFrameColumns(code, error.loc))
+    console.log(generateCodeFrameColumns(code, error.loc) + char)
   }
 }
 
