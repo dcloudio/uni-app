@@ -222,7 +222,9 @@ export const showActionSheet = {
   name: 'showActionSheet',
   args: {
     itemList: 'items',
-    itemColor: false,
+    itemColor: my.canIUse('showActionSheet.object.itemColor')
+      ? 'itemColor'
+      : false,
   },
   returnValue: {
     index: 'tapIndex',
