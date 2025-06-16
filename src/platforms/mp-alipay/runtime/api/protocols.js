@@ -200,7 +200,7 @@ const protocols = { // 需要做转换的 API 列表
     name: 'showActionSheet',
     args: {
       itemList: 'items',
-      itemColor: false
+      itemColor: my.canIUse('showActionSheet.object.itemColor') ? 'itemColor' : false
     },
     returnValue: {
       index: 'tapIndex'
