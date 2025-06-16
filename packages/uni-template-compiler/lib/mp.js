@@ -131,9 +131,12 @@ const tags = {
     'mkt',
     'page-container',
     'page-meta',
+    'root-portal',
+    'share-element',
     'lottie',
     'join-group-chat',
-    'subscribe-message'
+    'subscribe-message',
+    'mpass-component'
   ],
   // 抖音小程序平台独有组件
   'mp-toutiao': [
