@@ -59,6 +59,20 @@ describe('mp-alipay: transform component', () => {
       blankScript
     )
   })
+  test('alipay open component - root-portal', () => {
+    assert(
+      `<root-portal :enable="true"/>`,
+      `<root-portal enable="{{true}}"/>`,
+      blankScript
+    )
+  })
+  test('alipay open component - share-element', () => {
+    assert(
+      `<share-element :duration="400" :transform="true" easing-function="ease-out"/>`,
+      `<share-element duration="{{400}}" transform="{{true}}" easing-function="ease-out"/>`,
+      blankScript
+    )
+  })
   test('alipay open component - subscribe-message', () => {
     // <subscribe-message template-id='xxxxx' onComplete="completeHandler" />
     assert(
