@@ -46,17 +46,27 @@ export function hbuilderFormatter(m: MessageSourceLocation) {
     msg
       .replace(/\r\n/g, '\n')
       .split('\n')
-      .forEach((m) => {
+      .forEach((m, index) => {
         // 重要：区块标识需要放到颜色值之后
-        msgs.push('\u200B' + SPECIAL_CHARS.WARN_BLOCK + m + '\u200B')
+        msgs.push(
+          '\u200B' +
+            (index === 0 ? SPECIAL_CHARS.WARN_BLOCK : '') +
+            m +
+            '\u200B'
+        )
       })
   } else if (m.type === 'error' || m.type === 'exception') {
     msg
       .replace(/\r\n/g, '\n')
       .split('\n')
-      .forEach((m) => {
+      .forEach((m, index) => {
         // 重要：区块标识需要放到颜色值之后
-        msgs.push('\u200C' + SPECIAL_CHARS.ERROR_BLOCK + m + '\u200C')
+        msgs.push(
+          '\u200C' +
+            (index === 0 ? SPECIAL_CHARS.ERROR_BLOCK : '') +
+            m +
+            '\u200C'
+        )
       })
   } else {
     msgs.push(msg)
