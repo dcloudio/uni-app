@@ -23,8 +23,11 @@ export default {
     }
   },
   watch: {
-    nodes (value) {
-      this._renderNodes(value)
+    nodes: {
+      handler(value) {
+        this._renderNodes(value)
+      },
+      deep: true
     }
   },
   mounted () {
