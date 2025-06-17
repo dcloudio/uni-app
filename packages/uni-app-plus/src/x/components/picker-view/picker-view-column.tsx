@@ -150,6 +150,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
       const y = e.detail.scrollTop
       // 考虑 data.indicatorHeight =0 的情况，可能 NaN
+      if (data.indicatorHeight === 0) {
+        return
+      }
       const current = Math.round(y / data.indicatorHeight)
       if (y % data.indicatorHeight != 0) {
         setCurrent(current)
