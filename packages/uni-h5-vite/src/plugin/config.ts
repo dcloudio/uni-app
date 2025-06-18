@@ -13,6 +13,7 @@ import {
   parseManifestJsonOnce,
   parseRpx2UnitOnce,
   resolveMainPathOnce,
+  runByHBuilderX,
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { createDefine } from '../utils'
@@ -32,7 +33,6 @@ export function createConfig(options: {
     }
 
     const server: ServerOptions = {
-      host: true,
       hmr: process.env.UNI_AUTOMATOR_WS_ENDPOINT
         ? false
         : {
@@ -56,6 +56,11 @@ export function createConfig(options: {
         ],
       },
       ...getDevServerOptions(parseManifestJsonOnce(inputDir)),
+    }
+
+    if (runByHBuilderX()) {
+      // 仅在 HBuilderX 中运行时，将 host 设置为 true，cli 项目命令行运行需要自行开启 --host 参数
+      server.host = true
     }
 
     if ((server.port as unknown as string) === '') {
