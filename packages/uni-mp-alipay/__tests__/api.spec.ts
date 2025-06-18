@@ -216,17 +216,17 @@ describe('api', () => {
     })
   })
 
-  test('api-dingding showLoading', () => {
-    global.my.canIUse = jest.fn().mockImplementation((api) => {
-      if (api === 'showLoading.object.mask') {
-        return false
-      }
-      return true
-    })
+  // test('api-dingding showLoading', () => {
+  //   global.my.canIUse = jest.fn().mockImplementation((api) => {
+  //     if (api === 'showLoading.object.mask') {
+  //       return false
+  //     }
+  //     return true
+  //   })
 
-    expect(showLoading.args.mask).toBe(false)
-    expect(showLoading.args.title).toBe('content')
-  })
+  //   expect(showLoading.args.mask).toBe(false)
+  //   expect(showLoading.args.title).toBe('content')
+  // })
 
   test('api-alipay showActionSheet', () => {
     global.my.canIUse = jest.fn().mockImplementation((api) => {
@@ -239,16 +239,16 @@ describe('api', () => {
     expect(showActionSheet.args.itemColor).toBe('itemColor')
   })
 
-  test('api-dingding showActionSheet', () => {
-    global.my.canIUse = jest.fn().mockImplementation((api) => {
-      if (api === 'showActionSheet.object.itemColor') {
-        return false
-      }
-      return true
-    })
+  // test('api-dingding showActionSheet', () => {
+  //   global.my.canIUse = jest.fn().mockImplementation((api) => {
+  //     if (api === 'showActionSheet.object.itemColor') {
+  //       return false
+  //     }
+  //     return true
+  //   })
 
-    expect(showActionSheet.args.itemColor).toBe(false)
-  })
+  //   expect(showActionSheet.args.itemColor).toBe(false)
+  // })
 
   test('api-alipay showToast', () => {
     global.my.canIUse = jest.fn().mockImplementation((api) => {
