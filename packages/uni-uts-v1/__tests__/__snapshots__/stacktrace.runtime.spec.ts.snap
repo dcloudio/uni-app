@@ -34,12 +34,12 @@ at pages/index/index.uvue:19:16
 `;
 
 exports[`uts:stacktrace:runtime parseHarmonyRuntimeStacktrace 2`] = `
-"error: aaa
+"‫error: aaa
 at uni_modules/test-error/utssdk/index.uts:2:10
 1  |  export function test() {
 2  |      throw new Error('aaa')
    |            ^
-3  |  }"
+3  |  }‫"
 `;
 
 exports[`uts:stacktrace:runtime parseToutiaoRuntimeStacktrace 1`] = `
@@ -77,77 +77,77 @@ at pages/index/index.uvue:7:12
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 1`] = `
-"error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
+"‫error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at pages/index/index.uvue:13:12
 11 |          onLoad() {
 12 |              const arr = [1]
 13 |              console.log(arr[1])
    |              ^^^^^^^^^^^^^^^^^^^
 14 |          },
-15 |          methods: {"
+15 |          methods: {‫"
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 2`] = `
-"error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
+"‫error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at pages/index/index.uvue:18:16
 16 |              click() {
 17 |                  const arr = [1]
 18 |                  console.log(arr[1])
    |                  ^^^^^^^^^^^^^^^^^^^
 19 |              },
-20 |              click1() {"
+20 |              click1() {‫"
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 3`] = `
-"error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
+"‫error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at pages/index/test.uts:3:4
 1  |  export function test() {
 2  |      const arr = [1]
 3  |      console.log(arr[1])
    |      ^^^^^^^^^^^^^^^^^^^
-4  |  }"
+4  |  }‫"
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 4`] = `
-"​error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1​
+"‫​error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1​
 at pages/index/test.uts:3:4
 1  |  export function test() {
 2  |      const arr = [1]
 3  |      console.log(arr[1])
    |      ^^^^^^^^^^^^^^^^^^^
-4  |  }"
+4  |  }‫"
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 5`] = `
-"‌error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1‌
+"‫‌error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1‌
 at pages/index/test.uts:3:4
 1  |  export function test() {
 2  |      const arr = [1]
 3  |      console.log(arr[1])
    |      ^^^^^^^^^^^^^^^^^^^
-4  |  }"
+4  |  }‫"
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 6`] = `
-"‌error: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean‌
+"‫‌error: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean‌
 at components/test-boolean/test-boolean.vue:19:12
 17 |          },
 18 |          created(){
 19 |              console.log(this.disabled1)
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 20 |          }
-21 |      }"
+21 |      }‫"
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 7`] = `
-"‌error: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean‌
+"‫‌error: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean‌
 at components/test-boolean/test-boolean.vue:19:12
 17 |          },
 18 |          created(){
 19 |              console.log(this.disabled1)
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 20 |          }
-21 |      }"
+21 |      }‫"
 `;
 
 exports[`uts:stacktrace:runtime parseWeixinRuntimeStacktrace 1`] = `
