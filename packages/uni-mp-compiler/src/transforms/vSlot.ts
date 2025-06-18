@@ -63,6 +63,17 @@ export const transformSlot: NodeTransform = (node, context) => {
   const isMiniProgramComponent = context.isMiniProgramComponent(tag)
   for (let i = 0; i < children.length; i++) {
     const slotElement = children[i]
+    if (
+      slotElement.type === NodeTypes.ELEMENT &&
+      slotElement.tag === 'template' &&
+      slotElement.children.filter((node) => node.type !== NodeTypes.COMMENT)
+        .length === 0
+    ) {
+      // 如果是 template 且 没有子节点 或者 子节点 都是 注释节点，直接移除节点
+      children.splice(i, 1)
+      i -= 1
+      continue
+    }
     let slotDir: DirectiveNode | undefined
     if (
       !isTemplateNode(slotElement) ||
@@ -130,7 +141,6 @@ export const transformSlot: NodeTransform = (node, context) => {
     const slotsArr = [...slots]
     const hasDynamic = slotsArr.find((name) => !isString(name))
     let value: string | ExpressionNode
-
     if (hasDynamic) {
       const children: (string | ExpressionNode)[] = []
       const len = slotsArr.length - 1
