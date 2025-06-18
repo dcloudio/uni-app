@@ -6121,6 +6121,9 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         return;
       }
       var y = e.detail.scrollTop;
+      if (data.indicatorHeight === 0) {
+        return;
+      }
       var current = Math.round(y / data.indicatorHeight);
       if (y % data.indicatorHeight != 0) {
         setCurrent(current);

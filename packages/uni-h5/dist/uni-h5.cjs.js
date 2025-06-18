@@ -6300,7 +6300,8 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
     }
     vue.watch(() => props2.nodes, renderVNode, {
-      immediate: true
+      immediate: true,
+      deep: true
     });
     return () => vue.h("uni-rich-text", {
       ref: rootRef
@@ -12683,6 +12684,9 @@ function useTopWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
@@ -12705,6 +12709,9 @@ function useLeftWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
@@ -12727,6 +12734,9 @@ function useRightWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;

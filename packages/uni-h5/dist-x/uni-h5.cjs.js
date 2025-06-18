@@ -1641,12 +1641,10 @@ function transformRpx(value) {
 }
 class UniElement extends HTMLElement {
   constructor() {
-    var _a, _b;
     super();
     this._props = {};
     this._page = null;
     this.__isUniElement = true;
-    this._page = (_b = (_a = getCurrentPage()) == null ? void 0 : _a.$vm) == null ? void 0 : _b.$page;
   }
   attachVmProps(props2) {
     this._props = props2;
@@ -7678,7 +7676,8 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
     }
     vue.watch(() => props2.nodes, renderVNode, {
-      immediate: true
+      immediate: true,
+      deep: true
     });
     return () => vue.h("uni-rich-text", {
       ref: rootRef
@@ -13275,20 +13274,6 @@ class UniMatchMediaElement extends UniViewElement {
   constructor() {
     super();
     this._experssions = [];
-    this.uniPage.vm.$.$waitNativeRender(() => {
-      this.toggleElement(this.isValid({
-        width: this.uniPage.pageBody.width,
-        height: this.uniPage.pageBody.height,
-        orientation: uni.getDeviceInfo().deviceOrientation
-      }));
-    });
-    onResize((res) => {
-      this.toggleElement(this.isValid({
-        orientation: res.deviceOrientation,
-        width: res.size.windowWidth,
-        height: res.size.windowHeight
-      }));
-    }, this.uniPage.vm.$);
   }
   static get observedAttributes() {
     return [
@@ -13303,6 +13288,20 @@ class UniMatchMediaElement extends UniViewElement {
   }
   connectedCallback() {
     this._experssions = this.getExpressions();
+    this.uniPage.vm.$.$waitNativeRender(() => {
+      this.toggleElement(this.isValid({
+        width: this.uniPage.pageBody.width,
+        height: this.uniPage.pageBody.height,
+        orientation: uni.getDeviceInfo().deviceOrientation
+      }));
+    });
+    onResize((res) => {
+      this.toggleElement(this.isValid({
+        orientation: res.deviceOrientation,
+        width: res.size.windowWidth,
+        height: res.size.windowHeight
+      }));
+    }, this.uniPage.vm.$);
   }
   attributeChangedCallback(name, oldValue, newValue) {
     if (this._experssions.length == 0) {
@@ -14534,6 +14533,9 @@ function useTopWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
@@ -14556,6 +14558,9 @@ function useLeftWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
@@ -14578,6 +14583,9 @@ function useRightWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;

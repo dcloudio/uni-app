@@ -19791,7 +19791,8 @@
         _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
       }
       watch(() => props2.nodes, renderVNode, {
-        immediate: true
+        immediate: true,
+        deep: true
       });
       return () => h("uni-rich-text", {
         ref: rootRef

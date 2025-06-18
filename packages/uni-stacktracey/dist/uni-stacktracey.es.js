@@ -2517,7 +2517,7 @@ function originalPositionFor(sourceMapContent, position, withSourceContent = fal
 const sourcemapCatch = {};
 function getSourceMapContent(sourcemapUrl) {
     try {
-        return (sourcemapCatch[sourcemapUrl]
+        return sourcemapCatch[sourcemapUrl]
             ? Promise.resolve(sourcemapCatch[sourcemapUrl])
             : (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
                 try {
@@ -2553,7 +2553,7 @@ function getSourceMapContent(sourcemapUrl) {
                 catch (error) {
                     resolve((sourcemapCatch[sourcemapUrl] = ''));
                 }
-            })));
+            }));
     }
     catch (error) {
         return Promise.resolve((sourcemapCatch[sourcemapUrl] = ''));

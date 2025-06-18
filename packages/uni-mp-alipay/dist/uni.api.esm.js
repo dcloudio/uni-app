@@ -1555,26 +1555,28 @@ function showModal({ showCancel = true } = {}) {
 function showToast({ icon = 'success' } = {}) {
     const args = {
         title: 'content',
-        icon: 'type',
-        image: false,
-        mask: false,
     };
     if (icon === 'loading') {
         return {
             name: 'showLoading',
-            args,
+            args: extend({ mask: my.canIUse('showLoading.object.mask') ? 'mask' : false }, args),
         };
     }
     return {
         name: 'showToast',
-        args,
+        args: extend({ icon: 'type' }, args, {
+            mask: my.canIUse('showToast.object.mask') ? 'mask' : false,
+            image: my.canIUse('showToast.object.image') ? 'image' : false,
+        }),
     };
 }
 const showActionSheet = {
     name: 'showActionSheet',
     args: {
         itemList: 'items',
-        itemColor: false,
+        itemColor: my.canIUse('showActionSheet.object.itemColor')
+            ? 'itemColor'
+            : false,
     },
     returnValue: {
         index: 'tapIndex',
@@ -1583,6 +1585,7 @@ const showActionSheet = {
 const showLoading = {
     args: {
         title: 'content',
+        mask: my.canIUse('showLoading.object.mask') ? 'mask' : false,
     },
 };
 const uploadFile = {

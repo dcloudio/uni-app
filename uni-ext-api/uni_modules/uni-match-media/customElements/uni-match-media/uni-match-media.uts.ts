@@ -29,6 +29,10 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
 
     constructor() {
         super()
+    }
+
+    override connectedCallback() {
+        this._experssions = this.getExpressions();
 
         this.uniPage.vm!.$.$waitNativeRender(() => {
             this.toggleElement(this.isValid({
@@ -45,10 +49,6 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
                 height: res.size.windowHeight
             }))
 		}, this.uniPage.vm!.$)
-    }
-
-    override connectedCallback() {
-        this._experssions = this.getExpressions();
     }
 
     override attributeChangedCallback(name : string, oldValue : string, newValue : string) {

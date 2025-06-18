@@ -13972,7 +13972,8 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
     }
     watch(() => props2.nodes, renderVNode, {
-      immediate: true
+      immediate: true,
+      deep: true
     });
     return () => h("uni-rich-text", {
       ref: rootRef
@@ -20985,6 +20986,9 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
   }, { resolve, reject }) => {
     var uploadTask = new UploadTask();
     if (!isArray(files2) || !files2.length) {
+      if (!filePath) {
+        reject("file error");
+      }
       files2 = [
         {
           name,
@@ -23700,6 +23704,9 @@ function useTopWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
@@ -23722,6 +23729,9 @@ function useLeftWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
@@ -23744,6 +23754,9 @@ function useRightWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;

@@ -7875,7 +7875,7 @@ function patchClass(el, pre, next) {
   var classList = next ? next.split(" ") : [];
   el.classList = classList;
   setExtraStyles(el, parseStyleSheet(instance));
-  if (instance.parent != null && instance !== instance.root) {
+  if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
     setExtraParentStyles(el, instance.parent.type.styles);
   }
   updateClassStyles(el);

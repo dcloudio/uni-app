@@ -2689,12 +2689,10 @@ function transformRpx(value) {
 }
 class UniElement extends HTMLElement {
   constructor() {
-    var _a, _b;
     super();
     this._props = {};
     this._page = null;
     this.__isUniElement = true;
-    this._page = (_b = (_a = getCurrentPage$1()) == null ? void 0 : _a.$vm) == null ? void 0 : _b.$page;
   }
   attachVmProps(props2) {
     this._props = props2;
@@ -16399,7 +16397,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
     }
     watch(() => props2.nodes, renderVNode, {
-      immediate: true
+      immediate: true,
+      deep: true
     });
     onMounted(() => {
       const rootElement = rootRef.value;
@@ -24010,6 +24009,9 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
     }
     var uploadTask = new UploadTask();
     if (!isArray(files2) || !files2.length) {
+      if (!filePath) {
+        reject("file error");
+      }
       files2 = [
         {
           name,
@@ -25800,6 +25802,9 @@ function useTopWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
     const height = el.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
@@ -25822,6 +25827,9 @@ function useLeftWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
     const width = el.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
@@ -25844,6 +25852,9 @@ function useRightWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
     const width = el.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
@@ -27769,20 +27780,6 @@ class UniMatchMediaElement extends UniViewElement {
   constructor() {
     super();
     this._experssions = [];
-    this.uniPage.vm.$.$waitNativeRender(() => {
-      this.toggleElement(this.isValid({
-        width: this.uniPage.pageBody.width,
-        height: this.uniPage.pageBody.height,
-        orientation: uni.getDeviceInfo().deviceOrientation
-      }));
-    });
-    onResize((res) => {
-      this.toggleElement(this.isValid({
-        orientation: res.deviceOrientation,
-        width: res.size.windowWidth,
-        height: res.size.windowHeight
-      }));
-    }, this.uniPage.vm.$);
   }
   static get observedAttributes() {
     return [
@@ -27797,6 +27794,20 @@ class UniMatchMediaElement extends UniViewElement {
   }
   connectedCallback() {
     this._experssions = this.getExpressions();
+    this.uniPage.vm.$.$waitNativeRender(() => {
+      this.toggleElement(this.isValid({
+        width: this.uniPage.pageBody.width,
+        height: this.uniPage.pageBody.height,
+        orientation: uni.getDeviceInfo().deviceOrientation
+      }));
+    });
+    onResize((res) => {
+      this.toggleElement(this.isValid({
+        orientation: res.deviceOrientation,
+        width: res.size.windowWidth,
+        height: res.size.windowHeight
+      }));
+    }, this.uniPage.vm.$);
   }
   attributeChangedCallback(name, oldValue, newValue) {
     if (this._experssions.length == 0) {

@@ -192,6 +192,8 @@ const customElements = [
     'mkt',
     'page-container',
     'page-meta',
+    'root-portal',
+    'share-element',
     'lottie',
     'join-group-chat',
     'subscribe-message',
