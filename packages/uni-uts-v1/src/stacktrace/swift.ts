@@ -51,7 +51,10 @@ async function parseUTSStacktraceLine(
   const lines: string[] = []
   const [, filename, line, column, message] = uniModulesMatches
   // uts编译出来的入口index.swift
-  if (!filename.endsWith('/app-ios/src/index')) {
+  if (
+    filename.includes('/app-ios/src/') &&
+    !filename.endsWith('/app-ios/src/index')
+  ) {
     // 移除 src 目录，混编的假sourcemap，需要读取源码
     sourceMapFile =
       filename.replace('/app-ios/src/', '/app-ios/') + '.swift.fake.map'
