@@ -1160,7 +1160,7 @@ const protocols = { // 需要做转换的 API 列表
   },
   uploadFile: {
     args: {
-      name: 'fileName'
+      name: my.canIUse('uploadFile.object.name') ? 'name' : 'fileName'
     }
     // 从测试结果看，是有返回对象的，文档上没有说明。
   },
