@@ -6,6 +6,7 @@ import {
   invokeHook,
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
+  normalizeRoute,
 } from '@dcloudio/uni-core'
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
@@ -32,7 +33,8 @@ export const openDialogPage = (
     triggerFailCallback(options, 'url is required')
     return null
   }
-  const { path, query } = parseUrl(url)
+  let { path, query } = parseUrl(url)
+  path = normalizeRoute(path)
   const normalizeUrl = createNormalizeUrl('navigateTo')
   const errMsg = normalizeUrl(path, {})
   if (errMsg) {
