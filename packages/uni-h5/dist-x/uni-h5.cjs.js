@@ -14537,7 +14537,14 @@ function useTopWindow(layoutState) {
       return;
     }
     const el = uniShared.resolveOwnerEl(instance.$);
-    const height = el.getBoundingClientRect().height;
+    if (!el) {
+      return;
+    }
+    const uniTopWindowStyleEl = el.parentElement;
+    if (!uniTopWindowStyleEl) {
+      return;
+    }
+    const height = uniTopWindowStyleEl.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
   vue.watch(() => windowRef.value, () => {
@@ -14562,7 +14569,14 @@ function useLeftWindow(layoutState) {
       return;
     }
     const el = uniShared.resolveOwnerEl(instance.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniLeftWindowStyleEl) {
+      return;
+    }
+    const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
   vue.watch(() => windowRef.value, () => {
@@ -14587,7 +14601,14 @@ function useRightWindow(layoutState) {
       return;
     }
     const el = uniShared.resolveOwnerEl(instance.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniRightWindowStyleEl) {
+      return;
+    }
+    const width = uniRightWindowStyleEl.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
   vue.watch(() => windowRef.value, () => {

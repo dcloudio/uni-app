@@ -25806,7 +25806,14 @@ function useTopWindow(layoutState) {
       return;
     }
     const el = resolveOwnerEl(instance2.$);
-    const height = el.getBoundingClientRect().height;
+    if (!el) {
+      return;
+    }
+    const uniTopWindowStyleEl = el.parentElement;
+    if (!uniTopWindowStyleEl) {
+      return;
+    }
+    const height = uniTopWindowStyleEl.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
   watch(() => windowRef.value, () => {
@@ -25831,7 +25838,14 @@ function useLeftWindow(layoutState) {
       return;
     }
     const el = resolveOwnerEl(instance2.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniLeftWindowStyleEl) {
+      return;
+    }
+    const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
   watch(() => windowRef.value, () => {
@@ -25856,7 +25870,14 @@ function useRightWindow(layoutState) {
       return;
     }
     const el = resolveOwnerEl(instance2.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniRightWindowStyleEl) {
+      return;
+    }
+    const width = uniRightWindowStyleEl.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
   watch(() => windowRef.value, () => {
@@ -27882,7 +27903,8 @@ const openDialogPage = (options) => {
     triggerFailCallback(options, "url is required");
     return null;
   }
-  const { path, query } = parseUrl(options.url);
+  let { path, query } = parseUrl(options.url);
+  path = normalizeRoute(path);
   const normalizeUrl = createNormalizeUrl("navigateTo");
   const errMsg = normalizeUrl(path, {});
   if (errMsg) {
