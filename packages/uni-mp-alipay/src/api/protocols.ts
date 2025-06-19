@@ -161,8 +161,7 @@ export const setNavigationBarTitle = {
  * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
  */
 export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
-  const canIUseShowModal = my.canIUse('showModal')
-  if (canIUseShowModal) {
+  if (my.canIUse('showModal')) {
     return {
       name: 'showModal',
     }
@@ -204,27 +203,18 @@ export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
   if (icon === 'loading') {
     return {
       name: 'showLoading',
-      args: extend(
-        { mask: my.canIUse('showLoading.object.mask') ? 'mask' : false },
-        args
-      ),
+      args,
     }
   }
   return {
     name: 'showToast',
-    args: extend({ icon: 'type' }, args, {
-      mask: my.canIUse('showToast.object.mask') ? 'mask' : false,
-      image: my.canIUse('showToast.object.image') ? 'image' : false,
-    }),
+    args: extend({ icon: 'type' }, args),
   }
 }
 export const showActionSheet = {
   name: 'showActionSheet',
   args: {
     itemList: 'items',
-    itemColor: my.canIUse('showActionSheet.object.itemColor')
-      ? 'itemColor'
-      : false,
   },
   returnValue: {
     index: 'tapIndex',
@@ -233,7 +223,6 @@ export const showActionSheet = {
 export const showLoading = {
   args: {
     title: 'content',
-    mask: my.canIUse('showLoading.object.mask') ? 'mask' : false,
   },
 }
 export const uploadFile = {
