@@ -386,7 +386,7 @@ function promisify (name, api) {
   }
   return function promiseApi (options = {}, ...params) {
     if (isFn(options.success) || isFn(options.fail) || isFn(options.complete)) {
-      return wrapperReturnValue(name, invokeApi(name, api, options, ...params))
+      return wrapperReturnValue(name, invokeApi(name, api, Object.assign({}, options), ...params))
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
       invokeApi(name, api, Object.assign({}, options, {
@@ -404,7 +404,14 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 
 function checkDeviceWidth () {
-  const { windowWidth, pixelRatio, platform } =  my.getSystemInfoSync(); // uni=>my runtime 编译目标是 uni 对象，内部不允许直接使用 uni
+  let windowWidth, pixelRatio, platform;
+
+  {
+    const baseInfo = my.getSystemInfoSync();
+    windowWidth = baseInfo.windowWidth;
+    pixelRatio = baseInfo.pixelRatio;
+    platform = baseInfo.platform;
+  }
 
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
@@ -792,6 +799,46 @@ function addSafeAreaInsets (result) {
   }
 }
 
+function getOSInfo (system, platform) {
+  let osName = '';
+  let osVersion = '';
+
+  if (
+    platform &&
+    ("mp-alipay" === 'mp-alipay' )
+  ) {
+    osName = platform;
+    osVersion = system;
+  } else {
+    osName = system.split(' ')[0] || platform;
+    osVersion = system.split(' ')[1] || '';
+  }
+
+  osName = osName.toLocaleLowerCase();
+  switch (osName) {
+    case 'harmony': // alipay
+    case 'ohos': // weixin
+    case 'openharmony': // feishu
+      osName = 'harmonyos';
+      break
+    case 'iphone os': // alipay
+      osName = 'ios';
+      break
+    case 'mac': // weixin qq
+    case 'darwin': // feishu
+      osName = 'macos';
+      break
+    case 'windows_nt': // feishu
+      osName = 'windows';
+      break
+  }
+
+  return {
+    osName,
+    osVersion
+  }
+}
+
 function populateParameters (result) {
   const {
     brand = '', model = '', system = '',
@@ -804,13 +851,7 @@ function populateParameters (result) {
   const extraParam = {};
 
   // osName osVersion
-  let osName = '';
-  let osVersion = '';
-  {
-    my.canIUse('isIDE') && my.isIDE && (extraParam.platform = 'devtools');
-    osName = platform;
-    osVersion = system;
-  }
+  const { osName, osVersion } = getOSInfo(system, platform);
   let hostVersion = version;
 
   // deviceType
@@ -911,7 +952,8 @@ function getAppLanguage (defaultLanguage) {
 }
 
 function getHostName (result) {
-  const _platform =  "mp-alipay".split('-')[1];
+  const _platform =
+      "mp-alipay".split('-')[1];
   let _hostName = result.hostName || _platform; // mp-jd
   _hostName = result.app;
 
@@ -934,8 +976,9 @@ function addUuid (result) {
 
 function normalizePlatform (result) {
   let platform = result.platform ? result.platform.toLowerCase() : 'devtools';
-  if (!~['android', 'ios'].indexOf(platform)) {
-    platform = 'devtools';
+  if (my.canIUse('isIDE')) {
+    // @ts-expect-error Property 'isIDE' does not exist on type 'typeof my'
+    platform = my.isIDE ? 'devtools' : platform;
   }
   result.platform = platform;
 }
@@ -953,8 +996,8 @@ var getSystemInfo = {
     reviseScreenSize(result);
     addUuid(result);
     addSafeAreaInsets(result);
-    normalizePlatform(result);
     populateParameters(result);
+    normalizePlatform(result);
   }
 };
 
@@ -1096,6 +1139,11 @@ const protocols = { // 需要做转换的 API 列表
   showModal ({
     showCancel = true
   } = {}) {
+    if(my.canIUse('showModal')) {
+      return {
+        name: 'showModal'
+      }
+    }
     if (showCancel) {
       return {
         name: 'confirm',
@@ -1147,7 +1195,6 @@ const protocols = { // 需要做转换的 API 列表
     name: 'showActionSheet',
     args: {
       itemList: 'items',
-      itemColor: false
     },
     returnValue: {
       index: 'tapIndex'
@@ -1160,7 +1207,7 @@ const protocols = { // 需要做转换的 API 列表
   },
   uploadFile: {
     args: {
-      name: my.canIUse('uploadFile.object.name') ? 'name' : 'fileName'
+      name: 'fileName'
     }
     // 从测试结果看，是有返回对象的，文档上没有说明。
   },

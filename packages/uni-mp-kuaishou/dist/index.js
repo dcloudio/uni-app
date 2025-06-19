@@ -386,7 +386,7 @@ function promisify (name, api) {
   }
   return function promiseApi (options = {}, ...params) {
     if (isFn(options.success) || isFn(options.fail) || isFn(options.complete)) {
-      return wrapperReturnValue(name, invokeApi(name, api, options, ...params))
+      return wrapperReturnValue(name, invokeApi(name, api, Object.assign({}, options), ...params))
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
       invokeApi(name, api, Object.assign({}, options, {
@@ -404,7 +404,14 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 
 function checkDeviceWidth () {
-  const { windowWidth, pixelRatio, platform } =  ks.getSystemInfoSync(); // uni=>ks runtime 编译目标是 uni 对象，内部不允许直接使用 uni
+  let windowWidth, pixelRatio, platform;
+
+  {
+    const baseInfo = ks.getSystemInfoSync();
+    windowWidth = baseInfo.windowWidth;
+    pixelRatio = baseInfo.pixelRatio;
+    platform = baseInfo.platform;
+  }
 
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
@@ -821,6 +828,46 @@ function addSafeAreaInsets (result) {
   }
 }
 
+function getOSInfo (system, platform) {
+  let osName = '';
+  let osVersion = '';
+
+  if (
+    platform &&
+    ( "mp-kuaishou" === 'mp-baidu')
+  ) {
+    osName = platform;
+    osVersion = system;
+  } else {
+    osName = system.split(' ')[0] || platform;
+    osVersion = system.split(' ')[1] || '';
+  }
+
+  osName = osName.toLocaleLowerCase();
+  switch (osName) {
+    case 'harmony': // alipay
+    case 'ohos': // weixin
+    case 'openharmony': // feishu
+      osName = 'harmonyos';
+      break
+    case 'iphone os': // alipay
+      osName = 'ios';
+      break
+    case 'mac': // weixin qq
+    case 'darwin': // feishu
+      osName = 'macos';
+      break
+    case 'windows_nt': // feishu
+      osName = 'windows';
+      break
+  }
+
+  return {
+    osName,
+    osVersion
+  }
+}
+
 function populateParameters (result) {
   const {
     brand = '', model = '', system = '',
@@ -833,12 +880,7 @@ function populateParameters (result) {
   const extraParam = {};
 
   // osName osVersion
-  let osName = '';
-  let osVersion = '';
-  {
-    osName = system.split(' ')[0] || '';
-    osVersion = system.split(' ')[1] || '';
-  }
+  const { osName, osVersion } = getOSInfo(system, platform);
   let hostVersion = version;
 
   // deviceType
@@ -938,9 +980,12 @@ function getAppLanguage (defaultLanguage) {
 }
 
 function getHostName (result) {
-  const _platform =  "mp-kuaishou".split('-')[1];
+  const _platform =
+      "mp-kuaishou".split('-')[1];
   let _hostName = result.hostName || _platform; // mp-jd
-  { _hostName = result.host; }
+  {
+    _hostName = result.host;
+  }
 
   return _hostName
 }

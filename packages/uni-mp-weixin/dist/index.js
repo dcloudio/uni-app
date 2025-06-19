@@ -396,7 +396,7 @@ function promisify (name, api) {
   }
   return function promiseApi (options = {}, ...params) {
     if (isFn(options.success) || isFn(options.fail) || isFn(options.complete)) {
-      return wrapperReturnValue(name, invokeApi(name, api, options, ...params))
+      return wrapperReturnValue(name, invokeApi(name, api, Object.assign({}, options), ...params))
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
       invokeApi(name, api, Object.assign({}, options, {
@@ -414,10 +414,16 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 
 function checkDeviceWidth () {
-  const { windowWidth, pixelRatio, platform } =  Object.assign({}, wx.getWindowInfo(), {
-      platform: wx.getDeviceInfo().platform
-    })
-    ; // uni=>wx runtime 编译目标是 uni 对象，内部不允许直接使用 uni
+  let windowWidth, pixelRatio, platform;
+
+  {
+    const windowInfo = typeof wx.getWindowInfo === 'function' && wx.getWindowInfo() ? wx.getWindowInfo() : wx.getSystemInfoSync();
+    const deviceInfo = typeof wx.getDeviceInfo === 'function' && wx.getDeviceInfo() ? wx.getDeviceInfo() : wx.getSystemInfoSync();
+
+    windowWidth = windowInfo.windowWidth;
+    pixelRatio = windowInfo.pixelRatio;
+    platform = deviceInfo.platform;
+  }
 
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
@@ -459,7 +465,7 @@ const messages = {};
 function getLocaleLanguage () {
   let localeLanguage = '';
   {
-    const appBaseInfo = wx.getAppBaseInfo();
+    const appBaseInfo = typeof wx.getAppBaseInfo === 'function' && wx.getAppBaseInfo() ? wx.getAppBaseInfo() : wx.getSystemInfoSync();
     const language =
       appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
     localeLanguage = normalizeLocale(language) || LOCALE_EN;
@@ -734,6 +740,46 @@ function addSafeAreaInsets (result) {
   }
 }
 
+function getOSInfo (system, platform) {
+  let osName = '';
+  let osVersion = '';
+
+  if (
+    platform &&
+    ( "mp-weixin" === 'mp-baidu')
+  ) {
+    osName = platform;
+    osVersion = system;
+  } else {
+    osName = system.split(' ')[0] || platform;
+    osVersion = system.split(' ')[1] || '';
+  }
+
+  osName = osName.toLocaleLowerCase();
+  switch (osName) {
+    case 'harmony': // alipay
+    case 'ohos': // weixin
+    case 'openharmony': // feishu
+      osName = 'harmonyos';
+      break
+    case 'iphone os': // alipay
+      osName = 'ios';
+      break
+    case 'mac': // weixin qq
+    case 'darwin': // feishu
+      osName = 'macos';
+      break
+    case 'windows_nt': // feishu
+      osName = 'windows';
+      break
+  }
+
+  return {
+    osName,
+    osVersion
+  }
+}
+
 function populateParameters (result) {
   const {
     brand = '', model = '', system = '',
@@ -746,12 +792,7 @@ function populateParameters (result) {
   const extraParam = {};
 
   // osName osVersion
-  let osName = '';
-  let osVersion = '';
-  {
-    osName = system.split(' ')[0] || '';
-    osVersion = system.split(' ')[1] || '';
-  }
+  const { osName, osVersion } = getOSInfo(system, platform);
   let hostVersion = version;
 
   // deviceType
@@ -851,7 +892,9 @@ function getAppLanguage (defaultLanguage) {
 }
 
 function getHostName (result) {
-  const _platform =  'WeChat' ;
+  const _platform =
+     'WeChat'
+      ;
   let _hostName = result.hostName || _platform; // mp-jd
   {
     if (result.environment) {
@@ -910,15 +953,19 @@ var getAppBaseInfo = {
 
 var getDeviceInfo = {
   returnValue: function (result) {
-    const { brand, model } = result;
+    const { brand, model, system = '', platform = '' } = result;
     const deviceType = getGetDeviceType(result, model);
     const deviceBrand = getDeviceBrand(brand);
     useDeviceId(result);
 
+    const { osName, osVersion } = getOSInfo(system, platform);
+
     result = sortObject(Object.assign(result, {
       deviceType,
       deviceBrand,
-      deviceModel: model
+      deviceModel: model,
+      osName,
+      osVersion
     }));
   }
 };
