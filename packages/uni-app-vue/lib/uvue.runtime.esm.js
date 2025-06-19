@@ -3,11 +3,11 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
+import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, shallowReadonly, track, reactive, shallowReactive, trigger, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, customRef, isReadonly } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
-import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$2 } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$1 } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 import PromisePolyfill from 'promise-polyfill';
 import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
@@ -5147,7 +5147,7 @@ function propHasMismatch(el, key, clientValue, vnode, instance) {
     }
   } else if (key === "style") {
     actual = el.getAttribute("style");
-    expected = isString(clientValue) ? clientValue : stringifyStyle(normalizeStyle$1(clientValue));
+    expected = isString(clientValue) ? clientValue : stringifyStyle(normalizeStyle(clientValue));
     const actualMap = toStyleMap(actual);
     const expectedMap = toStyleMap(expected);
     if (vnode.dirs) {
@@ -7376,7 +7376,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
       if (isProxy(style) && !isArray(style)) {
         style = extend({}, style);
       }
-      props.style = normalizeStyle$2(style);
+      props.style = normalizeStyle$1(style);
     }
   }
   const shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
@@ -7546,7 +7546,7 @@ function mergeProps(...args) {
           ret.class = normalizeClass$1([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        ret.style = normalizeStyle$2([ret.style, toMerge.style]);
+        ret.style = normalizeStyle$1([ret.style, toMerge.style]);
       } else if (isOn(key)) {
         const existing = ret[key];
         const incoming = toMerge[key];
@@ -8808,7 +8808,7 @@ function transformAttr(el, key, value, instance) {
         const sytle = parseStringStyle(camelize(value));
         return [camelized, sytle];
       }
-      return [camelized, normalizeStyle$1(value)];
+      return [camelized, normalizeStyle(value)];
     }
   }
   return [key, value];
@@ -8886,47 +8886,23 @@ function createInvoker(initialValue, instance) {
   return invoker;
 }
 
-const processDeclaration = expand({ type: "uvue" }).Declaration;
-function createDeclaration(prop, value) {
-  const newValue = value + "";
-  if (newValue.includes("!important")) {
-    return {
-      prop,
-      value: newValue.replace(/\s*!important/, ""),
-      important: true
-    };
-  }
-  return {
+const processDeclaration = expand({
+  type: "uvue"
+}).Declaration;
+function parseStyleDecl(prop, value) {
+  const newValue = String(value);
+  const isImportant = newValue.includes("!important");
+  const decl = {
     prop,
-    value: newValue,
-    important: false
+    value: isImportant ? newValue.replace(/\s*!important/, "") : newValue,
+    important: isImportant,
+    replaceWith(newProps) {
+      props = newProps;
+    }
   };
-}
-function normalizeStyle(name, value) {
-  const decl = Object.assign(
-    {},
-    {
-      replaceWith(newProps) {
-        props = newProps;
-      }
-    },
-    createDeclaration(name, value)
-  );
   let props = [decl];
   processDeclaration(decl);
   return props;
-}
-function setStyle(expandRes) {
-  const resArr = expandRes.map((item) => {
-    return [item.prop, item.value];
-  });
-  const resMap = new Map(resArr);
-  return resMap;
-}
-function parseStyleDecl(prop, value) {
-  const val = normalizeStyle(prop, value);
-  const res = setStyle(val);
-  return res;
 }
 
 function isSame(a, b) {
@@ -8948,9 +8924,9 @@ function patchStyle(el, prev, next) {
       if (next[key] == null) {
         const _key = key.startsWith("--") ? key : camelize(key);
         const value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-        parseStyleDecl(_key, value).forEach((value2, key2) => {
-          batchedStyles.set(key2, value2);
-          style == null ? void 0 : style.delete(key2);
+        parseStyleDecl(_key, value).forEach((item) => {
+          batchedStyles.set(item.prop, item.value);
+          style == null ? void 0 : style.delete(item.prop);
         });
       }
     }
@@ -8959,9 +8935,9 @@ function patchStyle(el, prev, next) {
       const prevValue = prev[key];
       if (!isSame(prevValue, value)) {
         const _key = key.startsWith("--") ? key : camelize(key);
-        parseStyleDecl(_key, value).forEach((value2, key2) => {
-          batchedStyles.set(key2, value2);
-          style == null ? void 0 : style.set(key2, value2);
+        parseStyleDecl(_key, value).forEach((item) => {
+          batchedStyles.set(item.prop, item.value);
+          style == null ? void 0 : style.set(item.prop, item.value);
         });
       }
     }
@@ -8982,8 +8958,8 @@ function patchStyle(el, prev, next) {
   el.updateStyle(batchedStyles);
 }
 function setBatchedStyles(batchedStyles, key, value) {
-  parseStyleDecl(key, value).forEach((value2, key2) => {
-    batchedStyles.set(key2, value2);
+  parseStyleDecl(key, value).forEach((item) => {
+    batchedStyles.set(item.prop, item.value);
   });
 }
 
