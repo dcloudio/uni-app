@@ -202,9 +202,9 @@ function createConfig (entryFile, output, buildOption) {
      * importReplacements: [{
      *   module: '@vue/shared',
      *   specifiers: [{
-     *     name: 'isIntergerKey',
+     *     name: 'isIntegerKey',
      *     replaceModule: '@dcloudio/uni-shared', // default is module
-     *     replaceName: 'isIntergerKey', // default is name
+     *     replaceName: 'isIntegerKey', // default is name
      *   }],
      * }]
      */
