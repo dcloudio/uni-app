@@ -12,6 +12,7 @@ import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import {
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
+  normalizeRoute,
 } from '@dcloudio/uni-core'
 
 export const openDialogPage = (
@@ -22,7 +23,8 @@ export const openDialogPage = (
     return null
   }
 
-  const { path, query } = parseUrl(options.url)
+  let { path, query } = parseUrl(options.url)
+  path = normalizeRoute(path)
   const normalizeUrl = createNormalizeUrl('navigateTo')
   const errMsg = normalizeUrl(path, {})
   if (errMsg) {
