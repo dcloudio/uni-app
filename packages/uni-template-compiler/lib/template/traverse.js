@@ -564,7 +564,8 @@ function traverseRenderList (callExprNode, state) {
     children.type) {
     children.attr = children.attr || {}
     Object.assign(children.attr, attr)
-    return children
+    // 避免 <template v-for><view v-for></view></template> 编译异常
+    return normalizeChildren(children)
   }
   return {
     type: 'block',
