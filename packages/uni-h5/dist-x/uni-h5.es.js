@@ -28419,7 +28419,19 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_ACTION_SHEET,
   (args, { resolve, reject }) => {
     registerActionSheetOnce();
-    showActionSheet$1(args);
+    showActionSheet$1(
+      extend(
+        {
+          success: (res) => {
+            resolve(res);
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        },
+        args
+      )
+    );
   }
 );
 const defaultPoi = {
