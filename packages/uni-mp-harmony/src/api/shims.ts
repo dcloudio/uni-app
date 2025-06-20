@@ -16,3 +16,6 @@ if (has.canIUse('requestPayment')) {
 }
 
 export const getProvider = initGetProvider(providers)
+
+export const navigateToMiniProgram = has.navigateToAtomicService
+export const navigateBackMiniProgram = has.navigateBackAtomicService
