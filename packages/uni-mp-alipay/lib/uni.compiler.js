@@ -70,8 +70,9 @@ module.exports = {
   getEventType (eventType) {
     return EVENTS[eventType] || eventType
   },
-  formatEventType: function (eventName, isCatch) {
-    return `${isCatch ? 'catch' : 'on'}${capitalize(eventName)}`
+  formatEventType: function (eventName, isCatch, isCapture) {
+    // 支付宝支持捕获事件 https://opendocs.alipay.com/mini/framework/events#%E4%BA%8B%E4%BB%B6%E7%9A%84%E6%8D%95%E8%8E%B7%E9%98%B6%E6%AE%B5
+    return `${isCapture ? 'capture-' : ''}${isCatch ? 'catch' : 'on'}${capitalize(eventName)}`
   },
   createScopedSlots (slotName, props, state) {
     const node = {
