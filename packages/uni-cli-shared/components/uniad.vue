@@ -9,8 +9,8 @@
       @nextChannel="_onnextchannel"
     />
     <!-- #ifdef MP-WEIXIN -->
-    <ad-custom v-if="userwx" :unit-id="userUnitId" class="uni-ad-custom" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
-    <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" @load="_onmpload" @error="_onwxchannelerror"></uniad-plugin-wx>
+    <ad-custom v-if="userwx" :unit-id="userUnitId" class="uni-ad-custom" data-com-type="wx" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
+    <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" data-com-type="wx" @load="_onmpload" @error="_onwxchannelerror"></uniad-plugin-wx>
     <!-- #endif -->
   </view>
 </template>
