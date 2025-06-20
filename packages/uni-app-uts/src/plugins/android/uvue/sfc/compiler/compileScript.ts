@@ -1002,18 +1002,15 @@ ${exposeCall}`
       bindingMetadata: ctx.bindingMetadata,
       rootDir: options.root,
       className: options.className,
+      sourceMap: options.sourceMap,
     })
     if (preamble) {
       ctx.s.prepend(preamble)
     }
 
     // 放到最后，以免查找 offset 有问题
-    let offset = map ? (ctx.s.toString().match(/\r?\n/g)?.length ?? 0) + 1 : 1
-    if (options.genDefaultAs) {
-      offset = offset - 2 // 排除 export default __sfc__
-    }
+    let offset = map ? ctx.s.toString().match(/\r?\n/g)?.length ?? 0 : 0
     ctx.s.appendRight(endOffset, `\nreturn ${code}\n}\n\n})`)
-    ctx.s.trim()
     scriptMap =
       options.sourceMap !== false
         ? (ctx.s.generateMap({

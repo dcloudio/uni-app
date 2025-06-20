@@ -9,7 +9,13 @@ import { type RawSourceMap, SourceMapConsumer } from 'source-map-js'
 import type { EncodedSourceMap as TraceEncodedSourceMap } from '@jridgewell/trace-mapping'
 import { TraceMap, eachMapping } from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap as GenEncodedSourceMap } from '@jridgewell/gen-mapping'
-import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
+import {
+  GenMapping,
+  addMapping,
+  fromMap,
+  setSourceContent,
+  toEncodedMap,
+} from '@jridgewell/gen-mapping'
 import {
   createResolveErrorMsg,
   createRollupError,
@@ -99,6 +105,7 @@ export async function transformMain(
           bindingMetadata: bindingMetadata,
           rootDir: options.root,
           className,
+          sourceMap: options.sourceMap,
         },
         pluginContext
       )
@@ -126,15 +133,25 @@ export async function transformMain(
 
   let resolvedMap: RawSourceMap | undefined = undefined
   if (options.sourceMap) {
-    if (scriptMap && templateMap) {
+    // 如果开发者的script是空的，会产生一个默认的scriptCode代码，此时需要构造一个scriptMap
+    if (templateMap && (scriptMap || scriptCode)) {
       // if the template is inlined into the main module (indicated by the presence
       // of templateMap), we need to concatenate the two source maps.
+      let gen: GenMapping
+      if (!scriptMap && scriptCode) {
+        gen = new GenMapping({
+          file: descriptor.relativeFilename,
+          sourceRoot: '',
+        })
+        setSourceContent(gen, descriptor.relativeFilename, descriptor.source)
+      } else {
+        gen = fromMap(
+          // version property of result.map is declared as string
+          // but actually it is `3`
+          scriptMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap
+        )
+      }
 
-      const gen = fromMap(
-        // version property of result.map is declared as string
-        // but actually it is `3`
-        scriptMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap
-      )
       const tracer = new TraceMap(
         // same above
         templateMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap

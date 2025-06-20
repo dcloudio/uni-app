@@ -1,0 +1,476 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SFC sourceMap script-style-template order: script-style-template.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  data() {
+    return {
+      msg: 'Script-Style-Template'
+    }
+  }
+})
+
+export default __sfc__
+function GenPagesScriptStyleTemplateRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(_ctx.msg), 1 /* TEXT */)
+  ])
+}
+/*GenPagesScriptStyleTemplateStyles*/
+
+//# sourceMappingURL=script-style-template.vue.map"
+`;
+
+exports[`SFC sourceMap script-style-template order: script-style-template.vue.map 1`] = `"{"version":3,"file":"pages/script-style-template.vue","names":[],"sources":["pages/script-style-template.vue"],"sourcesContent":["<script lang=\\"ts\\">\\nexport default {\\n  data() {\\n    return {\\n      msg: 'Script-Style-Template'\\n    }\\n  }\\n}\\n</script>\\n\\n<style>\\n.page {\\n  color: purple;\\n}\\n</style>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "],"mappings":";AACA,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;EACb,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;IACL,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;MACL,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;IAC7B;EACF;AACF;;;;;;SAUE,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,QAAG","ignoreList":[]}"`;
+
+exports[`SFC sourceMap script-template order: script-template.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  data() {
+    return {
+      msg: 'Script-Template'
+    }
+  }
+})
+
+export default __sfc__
+function GenPagesScriptTemplateRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", null, [
+    _cE("text", null, _tD(_ctx.msg), 1 /* TEXT */)
+  ])
+}
+/*GenPagesScriptTemplateStyles*/
+
+//# sourceMappingURL=script-template.vue.map"
+`;
+
+exports[`SFC sourceMap script-template order: script-template.vue.map 1`] = `"{"version":3,"file":"pages/script-template.vue","names":[],"sources":["pages/script-template.vue"],"sourcesContent":["<script lang=\\"ts\\">\\nexport default {\\n  data() {\\n    return {\\n      msg: 'Script-Template'\\n    }\\n  }\\n}\\n</script>\\n\\n<template>\\n  <view>\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "],"mappings":";AACA,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;EACb,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;IACL,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;MACL,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;IACvB;EACF;AACF;;;;;;SAIE,IAEO;IADL,IAAsB,kBAAb,QAAG","ignoreList":[]}"`;
+
+exports[`SFC sourceMap script-template-style order: script-template-style.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  data() {
+    return {
+      msg: 'Script-Template-Style'
+    }
+  }
+})
+
+export default __sfc__
+function GenPagesScriptTemplateStyleRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(_ctx.msg), 1 /* TEXT */)
+  ])
+}
+/*GenPagesScriptTemplateStyleStyles*/
+
+//# sourceMappingURL=script-template-style.vue.map"
+`;
+
+exports[`SFC sourceMap script-template-style order: script-template-style.vue.map 1`] = `"{"version":3,"file":"pages/script-template-style.vue","names":[],"sources":["pages/script-template-style.vue"],"sourcesContent":["<script lang=\\"ts\\">\\nexport default {\\n  data() {\\n    return {\\n      msg: 'Script-Template-Style'\\n    }\\n  }\\n}\\n</script>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<style>\\n.page {\\n  color: orange;\\n}\\n</style> "],"mappings":";AACA,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;EACb,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;IACL,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;MACL,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;IAC7B;EACF;AACF;;;;;;SAIE,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,QAAG","ignoreList":[]}"`;
+
+exports[`SFC sourceMap setup-style-template order: setup-style-template.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  __name: 'setup-style-template',
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+const msg = 'Setup-Style-Template'
+
+return (): any | null => {
+
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(msg))
+  ])
+}
+}
+
+})
+export default __sfc__
+/*GenPagesSetupStyleTemplateStyles*/
+
+//# sourceMappingURL=setup-style-template.vue.map"
+`;
+
+exports[`SFC sourceMap setup-style-template order: setup-style-template.vue.map 1`] = `"{"version":3,"sources":["pages/setup-style-template.vue"],"names":[],"mappings":";;;;;;;AAAwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAUhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<script setup lang=\\"ts\\">\\nconst msg = 'Setup-Style-Template'\\n</script>\\n\\n<style>\\n.page {\\n  color: purple;\\n}\\n</style>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "]}"`;
+
+exports[`SFC sourceMap setup-template order: setup-template.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  __name: 'setup-template',
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+const msg = 'Setup-Template'
+
+return (): any | null => {
+
+  return _cE("view", null, [
+    _cE("text", null, _tD(msg))
+  ])
+}
+}
+
+})
+export default __sfc__
+/*GenPagesSetupTemplateStyles*/
+
+//# sourceMappingURL=setup-template.vue.map"
+`;
+
+exports[`SFC sourceMap setup-template order: setup-template.vue.map 1`] = `"{"version":3,"sources":["pages/setup-template.vue"],"names":[],"mappings":";;;;;;;AAAwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAI1B,IAEO;IADL,IAAsB,kBAAb,GAAG","sourcesContent":["<script setup lang=\\"ts\\">\\nconst msg = 'Setup-Template'\\n</script>\\n\\n<template>\\n  <view>\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "]}"`;
+
+exports[`SFC sourceMap setup-template-style order: setup-template-style.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  __name: 'setup-template-style',
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+const msg = 'Setup-Template-Style'
+
+return (): any | null => {
+
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(msg))
+  ])
+}
+}
+
+})
+export default __sfc__
+/*GenPagesSetupTemplateStyleStyles*/
+
+//# sourceMappingURL=setup-template-style.vue.map"
+`;
+
+exports[`SFC sourceMap setup-template-style order: setup-template-style.vue.map 1`] = `"{"version":3,"sources":["pages/setup-template-style.vue"],"names":[],"mappings":";;;;;;;AAAwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAIhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<script setup lang=\\"ts\\">\\nconst msg = 'Setup-Template-Style'\\n</script>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<style>\\n.page {\\n  color: orange;\\n}\\n</style> "]}"`;
+
+exports[`SFC sourceMap style-script-template order: style-script-template.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  data() {
+    return {
+      title: 'Style-Script-Template'
+    }
+  }
+})
+
+export default __sfc__
+function GenPagesStyleScriptTemplateRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(_ctx.title), 1 /* TEXT */)
+  ])
+}
+/*GenPagesStyleScriptTemplateStyles*/
+
+//# sourceMappingURL=style-script-template.vue.map"
+`;
+
+exports[`SFC sourceMap style-script-template order: style-script-template.vue.map 1`] = `"{"version":3,"file":"pages/style-script-template.vue","names":[],"sources":["pages/style-script-template.vue"],"sourcesContent":["<style>\\n.page {\\n  background: blue;\\n}\\n</style>\\n\\n<script lang=\\"ts\\">\\nexport default {\\n  data() {\\n    return {\\n      title: 'Style-Script-Template'\\n    }\\n  }\\n}\\n</script>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ title }}</text>\\n  </view>\\n</template> "],"mappings":";AAOA,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;EACb,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;IACL,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;MACL,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;IAC/B;EACF;AACF;;;;;;SAIE,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAwB,kBAAf,UAAK","ignoreList":[]}"`;
+
+exports[`SFC sourceMap style-setup-template order: style-setup-template.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  __name: 'style-setup-template',
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+const msg = 'Style-Setup-Template'
+
+return (): any | null => {
+
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(msg))
+  ])
+}
+}
+
+})
+export default __sfc__
+/*GenPagesStyleSetupTemplateStyles*/
+
+//# sourceMappingURL=style-setup-template.vue.map"
+`;
+
+exports[`SFC sourceMap style-setup-template order: style-setup-template.vue.map 1`] = `"{"version":3,"sources":["pages/style-setup-template.vue"],"names":[],"mappings":";;;;;;;AAMwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAIhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<style>\\n.page {\\n  color: red;\\n}\\n</style>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Style-Setup-Template'\\n</script>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template> "]}"`;
+
+exports[`SFC sourceMap style-template order: style-template.vue 1`] = `
+"const __sfc__ = defineComponent({})
+export default __sfc__
+function GenPagesStyleTemplateRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", null, [
+    _cE("text", _uM({ class: "title" }), "Style-Template")
+  ])
+}
+/*GenPagesStyleTemplateStyles*/
+
+//# sourceMappingURL=style-template.vue.map"
+`;
+
+exports[`SFC sourceMap style-template order: style-template.vue.map 1`] = `"{"version":3,"file":"pages/style-template.vue","names":[],"sources":["pages/style-template.vue"],"sourcesContent":["<style>\\n.title {\\n  color: red;\\n}\\n</style>\\n\\n<template>\\n  <view>\\n    <text class=\\"title\\">Style-Template</text>\\n  </view>\\n</template> "],"mappings":";;;;;SAOE,IAEO;IADL,IAAyC,cAAnC,KAAK,EAAC,OAAO,KAAC,gBAAc","ignoreList":[]}"`;
+
+exports[`SFC sourceMap style-template-script order: style-template-script.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  data() {
+    return {
+      msg: 'Style-Template-Script'
+    }
+  }
+})
+
+export default __sfc__
+function GenPagesStyleTemplateScriptRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(_ctx.msg), 1 /* TEXT */)
+  ])
+}
+/*GenPagesStyleTemplateScriptStyles*/
+
+//# sourceMappingURL=style-template-script.vue.map"
+`;
+
+exports[`SFC sourceMap style-template-script order: style-template-script.vue.map 1`] = `"{"version":3,"file":"pages/style-template-script.vue","names":[],"sources":["pages/style-template-script.vue"],"sourcesContent":["<style>\\n.page {\\n  color: cyan;\\n}\\n</style>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<script lang=\\"ts\\">\\nexport default {\\n  data() {\\n    return {\\n      msg: 'Style-Template-Script'\\n    }\\n  }\\n}\\n</script> "],"mappings":";AAaA,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;EACb,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;IACL,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;MACL,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;IAC7B;EACF;AACF;;;;;;SAZE,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,QAAG","ignoreList":[]}"`;
+
+exports[`SFC sourceMap style-template-setup order: style-template-setup.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  __name: 'style-template-setup',
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+const msg = 'Style-Template-Setup'
+
+return (): any | null => {
+
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(msg))
+  ])
+}
+}
+
+})
+export default __sfc__
+/*GenPagesStyleTemplateSetupStyles*/
+
+//# sourceMappingURL=style-template-setup.vue.map"
+`;
+
+exports[`SFC sourceMap style-template-setup order: style-template-setup.vue.map 1`] = `"{"version":3,"sources":["pages/style-template-setup.vue"],"names":[],"mappings":";;;;;;;AAYwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SANhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<style>\\n.page {\\n  color: cyan;\\n}\\n</style>\\n\\n<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Style-Template-Setup'\\n</script> "]}"`;
+
+exports[`SFC sourceMap template only: template.vue 1`] = `
+"const __sfc__ = defineComponent({})
+export default __sfc__
+function GenPagesTemplateRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", null, [
+    _cE("text", null, "Template Only")
+  ])
+}
+/*GenPagesTemplateStyles*/
+
+//# sourceMappingURL=template.vue.map"
+`;
+
+exports[`SFC sourceMap template only: template.vue.map 1`] = `"{"version":3,"file":"pages/template.vue","names":[],"sources":["pages/template.vue"],"sourcesContent":["<template>\\n  <view>\\n    <text>Template Only</text>\\n  </view>\\n</template>"],"mappings":";;;;;SACE,IAEO;IADL,IAA0B,cAApB,eAAa","ignoreList":[]}"`;
+
+exports[`SFC sourceMap template with script setup: template-setup.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  __name: 'template-setup',
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+const msg = 'Template-Setup'
+
+return (): any | null => {
+
+  return _cE("view", null, [
+    _cE("text", null, _tD(msg))
+  ])
+}
+}
+
+})
+export default __sfc__
+/*GenPagesTemplateSetupStyles*/
+
+//# sourceMappingURL=template-setup.vue.map"
+`;
+
+exports[`SFC sourceMap template with script setup: template-setup.vue.map 1`] = `"{"version":3,"sources":["pages/template-setup.vue"],"names":[],"mappings":";;;;;;;AAMwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAN1B,IAEO;IADL,IAAsB,kBAAb,GAAG","sourcesContent":["<template>\\n  <view>\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Template-Setup'\\n</script>"]}"`;
+
+exports[`SFC sourceMap template with script: template-script.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  data() {
+    return {
+      title: 'Template-Script'
+    }
+  }
+})
+
+export default __sfc__
+function GenPagesTemplateScriptRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", null, [
+    _cE("text", null, _tD(_ctx.title), 1 /* TEXT */)
+  ])
+}
+/*GenPagesTemplateScriptStyles*/
+
+//# sourceMappingURL=template-script.vue.map"
+`;
+
+exports[`SFC sourceMap template with script: template-script.vue.map 1`] = `"{"version":3,"file":"pages/template-script.vue","names":[],"sources":["pages/template-script.vue"],"sourcesContent":["<template>\\n  <view>\\n    <text>{{ title }}</text>\\n  </view>\\n</template>\\n\\n<script lang=\\"ts\\">\\nexport default {\\n  data() {\\n    return {\\n      title: 'Template-Script'\\n    }\\n  }\\n}\\n</script>"],"mappings":";AAOA,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;EACb,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;IACL,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;MACL,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;IACzB;EACF;AACF;;;;;;SAZE,IAEO;IADL,IAAwB,kBAAf,UAAK","ignoreList":[]}"`;
+
+exports[`SFC sourceMap template with style: template-style.vue 1`] = `
+"const __sfc__ = defineComponent({})
+export default __sfc__
+function GenPagesTemplateStyleRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", _uM({ class: "container" }), [
+    _cE("text", _uM({ class: "title" }), "Template-Style")
+  ])
+}
+/*GenPagesTemplateStyleStyles*/
+
+//# sourceMappingURL=template-style.vue.map"
+`;
+
+exports[`SFC sourceMap template with style: template-style.vue.map 1`] = `"{"version":3,"file":"pages/template-style.vue","names":[],"sources":["pages/template-style.vue"],"sourcesContent":["<template>\\n  <view class=\\"container\\">\\n    <text class=\\"title\\">Template-Style</text>\\n  </view>\\n</template>\\n\\n<style>\\n.container {\\n  padding: 15px;\\n}\\n\\n.title {\\n  color: blue;\\n}\\n</style> "],"mappings":";;;;;SACE,IAEO,cAFD,KAAK,EAAC,WAAW;IACrB,IAAyC,cAAnC,KAAK,EAAC,OAAO,KAAC,gBAAc","ignoreList":[]}"`;
+
+exports[`SFC sourceMap template-script-style order: template-script-style.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  data() {
+    return {
+      message: 'Template-Script-Style'
+    }
+  }
+})
+
+export default __sfc__
+function GenPagesTemplateScriptStyleRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(_ctx.message), 1 /* TEXT */)
+  ])
+}
+/*GenPagesTemplateScriptStyleStyles*/
+
+//# sourceMappingURL=template-script-style.vue.map"
+`;
+
+exports[`SFC sourceMap template-script-style order: template-script-style.vue.map 1`] = `"{"version":3,"file":"pages/template-script-style.vue","names":[],"sources":["pages/template-script-style.vue"],"sourcesContent":["<template>\\n  <view class=\\"page\\">\\n    <text>{{ message }}</text>\\n  </view>\\n</template>\\n\\n<script lang=\\"ts\\">\\nexport default {\\n  data() {\\n    return {\\n      message: 'Template-Script-Style'\\n    }\\n  }\\n}\\n</script>\\n\\n<style>\\n.page {\\n  padding: 10px;\\n}\\n</style> "],"mappings":";AAOA,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;EACb,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;IACL,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;MACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;IACjC;EACF;AACF;;;;;;SAZE,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAA0B,kBAAjB,YAAO","ignoreList":[]}"`;
+
+exports[`SFC sourceMap template-setup-style order: template-setup-style.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  __name: 'template-setup-style',
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+const msg = 'Template-Setup-Style'
+
+return (): any | null => {
+
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(msg))
+  ])
+}
+}
+
+})
+export default __sfc__
+/*GenPagesTemplateSetupStyleStyles*/
+
+//# sourceMappingURL=template-setup-style.vue.map"
+`;
+
+exports[`SFC sourceMap template-setup-style order: template-setup-style.vue.map 1`] = `"{"version":3,"sources":["pages/template-setup-style.vue"],"names":[],"mappings":";;;;;;;AAMwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SANhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Template-Setup-Style'\\n</script>\\n\\n<style>\\n.page {\\n  color: green;\\n}\\n</style> "]}"`;
+
+exports[`SFC sourceMap template-style-script order: template-style-script.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  data() {
+    return {
+      msg: 'Template-Style-Script'
+    }
+  }
+})
+
+export default __sfc__
+function GenPagesTemplateStyleScriptRender(this: InstanceType<typeof __sfc__>): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(_ctx.msg), 1 /* TEXT */)
+  ])
+}
+/*GenPagesTemplateStyleScriptStyles*/
+
+//# sourceMappingURL=template-style-script.vue.map"
+`;
+
+exports[`SFC sourceMap template-style-script order: template-style-script.vue.map 1`] = `"{"version":3,"file":"pages/template-style-script.vue","names":[],"sources":["pages/template-style-script.vue"],"sourcesContent":["<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<style>\\n.page {\\n  color: green;\\n}\\n</style>\\n\\n<script lang=\\"ts\\">\\nexport default {\\n  data() {\\n    return {\\n      msg: 'Template-Style-Script'\\n    }\\n  }\\n}\\n</script> "],"mappings":";AAaA,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;EACb,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;IACL,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE;MACL,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;IAC7B;EACF;AACF;;;;;;SAlBE,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,QAAG","ignoreList":[]}"`;
+
+exports[`SFC sourceMap template-style-setup order: template-style-setup.vue 1`] = `
+"
+const __sfc__ = defineComponent({
+  __name: 'template-style-setup',
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+const msg = 'Template-Style-Setup'
+
+return (): any | null => {
+
+  return _cE("view", _uM({ class: "page" }), [
+    _cE("text", null, _tD(msg))
+  ])
+}
+}
+
+})
+export default __sfc__
+/*GenPagesTemplateStyleSetupStyles*/
+
+//# sourceMappingURL=template-style-setup.vue.map"
+`;
+
+exports[`SFC sourceMap template-style-setup order: template-style-setup.vue.map 1`] = `"{"version":3,"sources":["pages/template-style-setup.vue"],"names":[],"mappings":";;;;;;;AAYwB;AACxB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;;;SAZhC,IAEO,cAFD,KAAK,EAAC,MAAM;IAChB,IAAsB,kBAAb,GAAG","sourcesContent":["<template>\\n  <view class=\\"page\\">\\n    <text>{{ msg }}</text>\\n  </view>\\n</template>\\n\\n<style>\\n.page {\\n  color: blue;\\n}\\n</style>\\n\\n<script setup lang=\\"ts\\">\\nconst msg = 'Template-Style-Setup'\\n</script> "]}"`;

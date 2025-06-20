@@ -3,7 +3,6 @@ import type { BindingMetadata, SFCDescriptor } from '@vue/compiler-sfc'
 import {
   addUTSEasyComAutoImports,
   addUniModulesExtApiComponents,
-  enableSourceMap,
 } from '@dcloudio/uni-cli-shared'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
 import type { ScriptCompileContext } from './context'
@@ -106,11 +105,13 @@ export function processTemplate(
     bindingMetadata,
     className,
     rootDir,
+    sourceMap,
   }: {
     relativeFilename: string
     bindingMetadata?: BindingMetadata
     className: string
     rootDir: string
+    sourceMap?: boolean
   },
   pluginContext?: TransformPluginContext
 ) {
@@ -123,7 +124,7 @@ export function processTemplate(
       inline: !!sfc.scriptSetup,
       className,
       rootDir,
-      sourceMap: enableSourceMap(),
+      sourceMap: !!sourceMap,
       bindingMetadata,
     },
     pluginContext
