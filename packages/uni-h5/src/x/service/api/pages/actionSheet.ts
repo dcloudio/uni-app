@@ -11,6 +11,7 @@ import {
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { registerSystemRoute } from '../../../framework/route'
+import { extend } from '@vue/shared'
 
 const registerActionSheetOnce = /* @__PURE__ */ once(() => {
   registerSystemRoute('uni:actionSheet', UniActionSheetPage)
@@ -25,13 +26,18 @@ export const showActionSheet = defineAsyncApi<API_TYPE_SHOW_ACTION_SHEET>(
   API_SHOW_ACTION_SHEET,
   (args, { resolve, reject }) => {
     registerActionSheetOnce()
-    showActionSheetApi(args, {
-      success: (res) => {
-        resolve(res)
-      },
-      fail: (err) => {
-        reject(err)
-      },
-    })
+    showActionSheetApi(
+      extend(
+        {
+          success: (res) => {
+            resolve(res)
+          },
+          fail: (err) => {
+            reject(err)
+          },
+        },
+        args
+      )
+    )
   }
 )
