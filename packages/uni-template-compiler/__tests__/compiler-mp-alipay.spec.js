@@ -15,10 +15,24 @@ function assertCodegen (template, templateCode, renderCode = 'with(this){}', mpO
 }
 
 describe('mp:compiler-mp-alipay', () => {
+  it('generate template + v-for directive', () => {
+    assertCodegen(
+      '<view><template v-for="(item,index) in items" :key="index">hello</template></view>',
+      '<view><block a:for="{{items}}" a:for-item="item" a:for-index="index">hello</block></view>'
+    )
+  })
+
   it('generate v-for directive', () => {
     assertCodegen(
       '<view><view v-for="(item,index) in items" :key="index"></view></view>',
       '<view><view a:for="{{items}}" a:for-item="item" a:for-index="index" a:key="index"></view></view>'
+    )
+  })
+
+  it('generate v-for + v-for directive', () => {
+    assertCodegen(
+      '<template v-for="item in list"><view v-for="(val, idx) in item.value" :key="idx">{{ item.key }} -- {{ val }}</view></template>',
+      '<block a:for="{{list}}" a:for-item="item" a:for-index="__i0__" a:key="*this"><view a:for="{{item.value}}" a:for-item="val" a:for-index="idx" a:key="idx">{{item.key+" -- "+val}}</view></block>'
     )
   })
 
