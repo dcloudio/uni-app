@@ -257,10 +257,10 @@ export function parseUTSKotlinRuntimeStacktrace(
         'error: ' +
         formatKotlinError(resolveCausedBy(res), codes, runtimeFormatters)
       if (color) {
-        error = color + error + color
+        error = color + SPECIAL_CHARS.ERROR_BLOCK + error + color
       }
       return (
-        SPECIAL_CHARS.ERROR_BLOCK +
+        (color ? '' : SPECIAL_CHARS.ERROR_BLOCK) +
         [error, ...codes].join('\n') +
         SPECIAL_CHARS.ERROR_BLOCK
       )
