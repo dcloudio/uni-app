@@ -45,7 +45,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps custom element retains the props type & production mode 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   __name: 'app.ce',
   props: {
     foo: { type: Number, required: true }
@@ -64,7 +65,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps defineProps w/ runtime options 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: { foo: String },
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -80,7 +82,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps destructure without enabling reactive destructure 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     foo: { type: Foo, required: true }
   },
@@ -98,7 +101,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps should escape names w/ special symbols 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     "spa ce": { type: Object, required: true },
     "exclamation!mark": { type: Object, required: true },
@@ -143,7 +147,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps w/ TS assertion 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: ['foo'],
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -180,7 +185,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps w/ exported interface in normal script 1`] = `
-"export interface Props { x?: number }
+"
+      export interface Props { x?: number }
     
 export default defineComponent({
   __props: Props,
@@ -368,7 +374,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps withDefaults (static) + normal script 1`] = `
-"interface Props {
+"
+      interface Props {
         a?: string;
       }
     
@@ -391,7 +398,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps withDefaults (static) 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     foo: { type: String, required: false, default: 'hi' },
     bar: { type: Number, required: false },
@@ -415,7 +423,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps withDefaults (static) w/ production mode 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     foo: { type: Function as PropType<() => void>, required: true },
     bar: { type: Boolean, required: true },

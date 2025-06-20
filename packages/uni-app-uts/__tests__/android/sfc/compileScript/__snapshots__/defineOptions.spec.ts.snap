@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`defineOptions() basic usage 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
  name: 'FooApp' ,
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -17,7 +18,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineOptions() empty argument 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;

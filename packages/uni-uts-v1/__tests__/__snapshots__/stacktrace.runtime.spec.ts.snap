@@ -109,7 +109,7 @@ at pages/index/test.uts:3:4
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 4`] = `
-"‫​error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1​
+"​‫error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1​
 at pages/index/test.uts:3:4
 1  |  export function test() {
 2  |      const arr = [1]
@@ -119,7 +119,7 @@ at pages/index/test.uts:3:4
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 5`] = `
-"‫‌error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1‌
+"‌‫error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1‌
 at pages/index/test.uts:3:4
 1  |  export function test() {
 2  |      const arr = [1]
@@ -129,7 +129,7 @@ at pages/index/test.uts:3:4
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 6`] = `
-"‫‌error: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean‌
+"‌‫error: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean‌
 at components/test-boolean/test-boolean.vue:19:12
 17 |          },
 18 |          created(){
@@ -140,7 +140,7 @@ at components/test-boolean/test-boolean.vue:19:12
 `;
 
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 7`] = `
-"‫‌error: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean‌
+"‌‫error: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean‌
 at components/test-boolean/test-boolean.vue:19:12
 17 |          },
 18 |          created(){

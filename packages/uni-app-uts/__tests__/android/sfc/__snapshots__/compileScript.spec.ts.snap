@@ -19,7 +19,8 @@ return (): any | null => {
 `;
 
 exports[`SFC analyze <script> bindings auto name inference do not overwrite manual name (call) 1`] = `
-"import { defineComponent } from 'vue'
+"
+        import { defineComponent } from 'vue'
         const __default__ = defineComponent({
           name: 'Baz'
         })
@@ -40,7 +41,8 @@ return (): any | null => {
 `;
 
 exports[`SFC analyze <script> bindings auto name inference do not overwrite manual name (object) 1`] = `
-"const __default__ = {
+"
+        const __default__ = {
           name: 'Baz'
         }
         
@@ -60,7 +62,8 @@ return (): any | null => {
 `;
 
 exports[`SFC analyze <script> bindings defineSlots basic 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   __name: 'FooBar',
   slots: Object as SlotsType<{default: { times: number; name: string }}>,
   setup(__props) {
@@ -77,7 +80,8 @@ return (): any | null => { return null }
 `;
 
 exports[`SFC compile <script setup> binding analysis for destructure 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
@@ -378,7 +382,9 @@ return (): any | null => { return null }
 `;
 
 exports[`SFC compile <script setup> imports import dedupe between <script> and <script setup> 1`] = `
-"import { x } from './x'
+"
+        
+        import { x } from './x'
         
 export default defineComponent({
   setup(__props) {
@@ -450,7 +456,9 @@ return (): any | null => { return null }
 `;
 
 exports[`SFC compile <script setup> imports should support module string names syntax 1`] = `
-"import { "😏" as foo } from './foo'
+"
+      
+        import { "😏" as foo } from './foo'
       
 export default defineComponent({
   setup(__props) {
@@ -718,7 +726,8 @@ return (): any | null => {
 `;
 
 exports[`SFC compile <script setup> inlineTemplate mode with defineExpose() 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   setup(__props, { expose: __expose }: SetupContext) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
@@ -827,7 +836,8 @@ return (): any | null => { return null }
 `;
 
 exports[`SFC compile <script setup> with TypeScript runtime Enum in normal script 1`] = `
-"export enum D { D = "D" }
+"
+          export enum D { D = "D" }
           const enum C { C = "C" }
           enum B { B = "B" }
         
