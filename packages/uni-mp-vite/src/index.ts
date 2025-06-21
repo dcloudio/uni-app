@@ -83,10 +83,17 @@ export default (options: UniMiniProgramPluginOptions) => {
           uniPagesJsonPlugin(options),
         ]),
     uniEntryPlugin(options),
-    uniViteInjectPlugin(
-      'uni:mp-inject',
-      extend({ exclude: [/uni.api.esm/, /uni.mp.esm/] }, options.vite.inject)
-    ),
+    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ? []
+      : [
+          uniViteInjectPlugin(
+            'uni:mp-inject',
+            extend(
+              { exclude: [/uni.api.esm/, /uni.mp.esm/] },
+              options.vite.inject
+            )
+          ),
+        ]),
     uniRenderjsPlugin({ lang: options.template.filter?.lang }),
     uniRuntimeHooksPlugin(),
     uniMiniProgramPlugin(options),

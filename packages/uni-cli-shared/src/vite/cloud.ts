@@ -22,6 +22,8 @@ import {
   createAppHarmonyUniModulesSyncFilePreprocessorOnce,
   createAppIosUniModulesSyncFilePreprocessorOnce,
 } from './plugins/uts/uni_modules'
+import { removePlugins } from './utils'
+import { findChangedJsonFiles } from '../json'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -75,21 +77,32 @@ export function uniEncryptUniModulesAssetsPlugin(): Plugin {
 
 export function uniEncryptUniModulesPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
+  const isMp = process.env.UNI_UTS_PLATFORM.startsWith('mp-')
+  const encryptModuleOutputFiles: string[] = []
   return {
     name: 'uni:encrypt-uni-modules',
     apply: 'build',
     config() {
+      const build = initEncryptUniModulesBuildOptions(
+        process.env.UNI_UTS_PLATFORM,
+        process.env.UNI_INPUT_DIR
+      )
+      Object.keys(build.rollupOptions?.input || {}).forEach((key) => {
+        encryptModuleOutputFiles.push(key + '.js')
+      })
       return {
         resolve: {
           alias: initEncryptUniModulesAlias(),
         },
-        build: initEncryptUniModulesBuildOptions(
-          process.env.UNI_UTS_PLATFORM,
-          process.env.UNI_INPUT_DIR
-        ),
+        build,
       }
     },
     configResolved(config) {
+      const isMp = process.env.UNI_UTS_PLATFORM.startsWith('mp-')
+      if (isMp) {
+        // 云编译时，禁用了lib:false，但默认会生成 preload 等代码，需要主动移除该插件
+        removePlugins(['vite:build-import-analysis'], config)
+      }
       // 编译组件时，禁用内联资源
       config.build.assetsInlineLimit = 0
       config.build.rollupOptions.external = createExternal(config)
@@ -147,8 +160,45 @@ export function uniEncryptUniModulesPlugin(): Plugin {
               }
             ),
           }
+        } else if (fileName.endsWith('.js')) {
+          if (isMp) {
+            const output = bundle[fileName]
+            if (output.type === 'chunk') {
+              // 组件 js 可能会引用 index.module.js，需要替换路径
+              const relativePath = path.relative(
+                path.dirname(fileName),
+                'index.module.js'
+              )
+              let code = output.code
+              encryptModuleOutputFiles.forEach((file) => {
+                const relativeModulePath = relativePath.replace(
+                  'index.module.js',
+                  file
+                )
+                // import { TuiCharts } from "../../../../tui-xechars_2.0.0.module.js";
+                if (code.includes(relativeModulePath)) {
+                  code = code.replaceAll(
+                    relativeModulePath,
+                    relativeModulePath
+                      .replace('../../', '')
+                      .replace(file, 'index.module.js')
+                  )
+                }
+              })
+              output.code = code
+            }
+          }
         }
       })
+      if (isMp) {
+        findChangedJsonFiles(false).forEach((value, key) => {
+          this.emitFile({
+            type: 'asset',
+            fileName: key + '.json',
+            source: value,
+          })
+        })
+      }
     },
     async writeBundle() {
       if (process.env.UNI_UTS_PLATFORM !== 'app-android') {

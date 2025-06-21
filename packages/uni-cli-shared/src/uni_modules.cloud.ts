@@ -5,11 +5,14 @@ import { camelize, capitalize, normalizePath, requireUniHelpers } from './utils'
 import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
 import { EXTNAME_VUE_RE } from './constants'
+import { encodeBase64Url } from './url'
 
 function genEncryptEasyComModuleIndex(
+  pluginId: string,
   platform: typeof process.env.UNI_UTS_PLATFORM,
   components: Record<string, '.vue' | '.uvue'>
 ) {
+  const isMp = platform.startsWith('mp-')
   const imports: string[] = []
   const ids: string[] = []
   Object.keys(components).forEach((component) => {
@@ -22,12 +25,21 @@ function genEncryptEasyComModuleIndex(
       // 类型
       ids.push(instance)
     }
-    imports.push(
-      `import ${id}${
-        instance ? `, { ${instance} }` : ''
-      } from './components/${component}/${component}${components[component]}'`
-    )
+    if (isMp) {
+      const filename = `uni_modules/${pluginId}/components/${component}/${component}${components[component]}`
+      imports.push(`import('${virtualComponentPath(filename)}').length`)
+    } else {
+      imports.push(
+        `import ${id}${
+          instance ? `, { ${instance} }` : ''
+        } from './components/${component}/${component}${components[component]}'`
+      )
+    }
   })
+  if (isMp) {
+    return imports.join('\n')
+  }
+
   return `
 ${imports.join('\n')}
 export { 
@@ -38,12 +50,13 @@ export {
 
 // easyCom
 export function genEncryptEasyComModuleCode(
+  pluginId: string,
   platform: typeof process.env.UNI_UTS_PLATFORM,
   components: Record<string, '.vue' | '.uvue'>
 ) {
   // easyCom
   if (components && Object.keys(components).length) {
-    return genEncryptEasyComModuleIndex(platform, components)
+    return genEncryptEasyComModuleIndex(pluginId, platform, components)
   }
   return ''
 }
@@ -97,7 +110,9 @@ export function parseUniModulesWithComponents(
         // 解析加密的 easyCom 插件列表
         const components = parseEasyComComponents(uniModuleDir, inputDir, false)
         if (Object.keys(components).length) {
-          codes.push(genEncryptEasyComModuleCode(platform, components))
+          codes.push(
+            genEncryptEasyComModuleCode(uniModuleDir, platform, components)
+          )
         }
         if (codes.length) {
           uniModules[uniModuleDir] = codes.join(`\n`)
@@ -579,4 +594,10 @@ export function parseUniModulesArtifacts() {
     }
   })
   return res
+}
+
+const uniComponentPrefix = 'uniComponent://'
+
+export function virtualComponentPath(filepath: string) {
+  return uniComponentPrefix + encodeBase64Url(filepath)
 }
