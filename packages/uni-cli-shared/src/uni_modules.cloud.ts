@@ -14,11 +14,13 @@ function genEncryptEasyComModuleIndex(
 ) {
   const isMp = platform.startsWith('mp-')
   const imports: string[] = []
+  const code: string[] = []
   const ids: string[] = []
   Object.keys(components).forEach((component) => {
     const id = capitalize(camelize(component))
-
-    ids.push(id)
+    if (!isMp) {
+      ids.push(id)
+    }
     let instance = ''
     if (platform === 'app-android') {
       instance = genUTSComponentPublicInstanceIdent(component)
@@ -27,7 +29,12 @@ function genEncryptEasyComModuleIndex(
     }
     if (isMp) {
       const filename = `uni_modules/${pluginId}/components/${component}/${component}${components[component]}`
-      imports.push(`import('${virtualComponentPath(filename)}').length`)
+      // 为了触发json、wxss的生成
+      imports.push(`import ${id} from '${virtualComponentPath(filename)}'`)
+      code.push(`function init${id}(){
+  ${process.env.UNI_MP_GLOBAL}.createComponent(${id})
+}`)
+      ids.push(`init${id}`)
     } else {
       imports.push(
         `import ${id}${
@@ -36,12 +43,10 @@ function genEncryptEasyComModuleIndex(
       )
     }
   })
-  if (isMp) {
-    return imports.join('\n')
-  }
 
   return `
 ${imports.join('\n')}
+${code.join('\n')}
 export { 
   ${ids.join(',\n  ')} 
 }

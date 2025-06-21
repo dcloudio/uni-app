@@ -190,18 +190,20 @@ export function uniMiniProgramPlugin(
       if (template.filter) {
         const extname = template.filter.extname
         if (process.env.UNI_APP_X === 'true') {
-          // 目前 mp-weixin（mp-qq）、mp-alipay（mp-dingtalk）、mp-toutiao（mp-lark）均支持视图层setStyle
-          if (template.filter.setStyle && !autoImportFilterEmitted) {
-            autoImportFilterEmitted = true
-            this.emitFile({
-              type: 'asset',
-              // uniView.wxs文件在分包内的引用路径不对
-              fileName: `common/uniView${extname}`,
-              source: fs.readFileSync(
-                path.resolve(__dirname, '../../lib/filters/uniView.js'),
-                'utf8'
-              ),
-            })
+          if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+            // 目前 mp-weixin（mp-qq）、mp-alipay（mp-dingtalk）、mp-toutiao（mp-lark）均支持视图层setStyle
+            if (template.filter.setStyle && !autoImportFilterEmitted) {
+              autoImportFilterEmitted = true
+              this.emitFile({
+                type: 'asset',
+                // uniView.wxs文件在分包内的引用路径不对
+                fileName: `common/uniView${extname}`,
+                source: fs.readFileSync(
+                  path.resolve(__dirname, '../../lib/filters/uniView.js'),
+                  'utf8'
+                ),
+              })
+            }
           }
         }
         const filterFiles = getFilterFiles(resolvedConfig, this.getModuleInfo)
@@ -222,6 +224,9 @@ export function uniMiniProgramPlugin(
           source: templateFiles[filename],
         })
       })
+      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+        return
+      }
       if (!resetCssEmitted) {
         if (process.env.UNI_APP_X === 'true') {
           resetCssEmitted = true

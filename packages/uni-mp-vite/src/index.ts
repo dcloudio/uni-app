@@ -42,6 +42,8 @@ export default (options: UniMiniProgramPluginOptions) => {
   if (!options.app.plugins) {
     delete process.env.UNI_MP_PLUGIN
   }
+  // 云编译会使用该环境变量
+  process.env.UNI_MP_GLOBAL = options.global
   const normalizeComponentName = options.template.component?.normalizeName
 
   const sourceMapDir = resolveSourceMapPath(

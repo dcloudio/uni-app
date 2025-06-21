@@ -94,6 +94,11 @@ export function createConfigResolved({
               parseVirtualComponentPath(id),
               cssExtname
             )
+          } else if (id.startsWith('uni_modules://')) {
+            return normalizeCssChunkFilename(
+              id.replace('uni_modules://', ''),
+              cssExtname
+            )
           }
         },
         chunkCssCode(filename, cssCode) {
