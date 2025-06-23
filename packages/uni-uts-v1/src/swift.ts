@@ -11,6 +11,8 @@ import {
   getCompilerServer,
   getUTSCompiler,
   isColorSupported,
+  isEnableSwiftUtsArray,
+  isEnableSwiftUtsMap,
   moveRootIndexSourceMap,
   normalizeUTSResult,
   parseExtApiDefaultParameters,
@@ -343,6 +345,9 @@ export async function compile(
         uniExtApiDefaultNamespace: 'DCloudUTSExtAPI',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
+        enableSwiftUtsArray: isEnableSwiftUtsArray(),
+        enableSwiftUtsMap: isEnableSwiftUtsMap(),
+
         ...transform,
       },
     },

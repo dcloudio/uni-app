@@ -1232,6 +1232,14 @@ export function isEnableInlineReified() {
   return isEnableUTSFeature('enableInlineReified')
 }
 
+export function isEnableSwiftUtsArray() {
+  return isEnableUTSFeature('enableSwiftUtsArray')
+}
+
+export function isEnableSwiftUtsMap() {
+  return isEnableUTSFeature('enableSwiftUtsMap')
+}
+
 export function updateManifestModulesByCloud(
   platform: 'app-android' | 'app-ios',
   inputDir: string,
