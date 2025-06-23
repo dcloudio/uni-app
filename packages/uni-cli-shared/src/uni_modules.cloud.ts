@@ -31,10 +31,10 @@ function genEncryptEasyComModuleIndex(
       const filename = `uni_modules/${pluginId}/components/${component}/${component}${components[component]}`
       // 为了触发json、wxss的生成
       imports.push(`import ${id} from '${virtualComponentPath(filename)}'`)
-      code.push(`function init${id}(){
+      code.push(`function defineComponent${id}(){
   ${process.env.UNI_MP_GLOBAL}.createComponent(${id})
 }`)
-      ids.push(`init${id}`)
+      ids.push(`defineComponent${id}`)
     } else {
       imports.push(
         `import ${id}${
@@ -462,10 +462,19 @@ export function resolveEncryptUniModule(
       // 为了避免兼容性问题，
       // 目前排除 app-android 和 app-ios 平台，其他平台需要判断是否uvue文件，比如web端。加密utssdk插件，但同时easycom使用了非加密组件
       if (platform !== 'app-android' && platform !== 'app-ios') {
-        if (uniModulesEncryptTypes.get(uniModuleId) === 'utssdk') {
+        const encryptType = getUniModulesEncryptType(uniModuleId)
+        if (encryptType === 'utssdk') {
           // 如果是utssdk加密插件，且是vue文件，则不走uts-proxy
           if (EXTNAME_VUE_RE.test(id)) {
             return
+          }
+        }
+        // 小程序平台不使用uni_helpers来处理easycom组件，而是用uniEntryPlugin处理
+        if (platform.startsWith('mp-')) {
+          if (encryptType === 'easycom') {
+            if (EXTNAME_VUE_RE.test(id)) {
+              return
+            }
           }
         }
       }
@@ -578,6 +587,10 @@ export async function checkEncryptUniModules(
     inputDir,
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
   )
+}
+
+export function getUniModulesEncryptType(pluginId: string) {
+  return uniModulesEncryptTypes.get(pluginId)
 }
 
 export function parseUniModulesArtifacts() {

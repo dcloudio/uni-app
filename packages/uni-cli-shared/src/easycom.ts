@@ -270,6 +270,7 @@ function initAutoScanEasycom(
   if (!fs.existsSync(dir)) {
     return easycoms
   }
+  const isMp = process.env.UNI_UTS_PLATFORM.startsWith('mp-')
   const is_uni_modules =
     path.basename(path.resolve(dir, '../..')) === 'uni_modules'
   const is_easycom_encrypt_uni_modules = // uni_modules模式不需要此逻辑
@@ -291,20 +292,22 @@ function initAutoScanEasycom(
     for (let i = 0; i < extensions.length; i++) {
       const ext = extensions[i]
       if (files.includes(name + ext)) {
-        easycoms[`^${name}$`] = is_easycom_encrypt_uni_modules
-          ? normalizePath(
-              path.join(
-                rootDir,
-                `uni_modules/${uni_modules_plugin_id}?${
-                  // android 走 proxy
-                  process.env.UNI_APP_X === 'true' &&
-                  process.env.UNI_UTS_PLATFORM === 'app-android'
-                    ? 'uts-proxy'
-                    : 'uni_helpers'
-                }`
+        easycoms[`^${name}$`] =
+          // mp平台，这里不处理，由uniEntryPlugin处理
+          is_easycom_encrypt_uni_modules && !isMp
+            ? normalizePath(
+                path.join(
+                  rootDir,
+                  `uni_modules/${uni_modules_plugin_id}?${
+                    // android 走 proxy
+                    process.env.UNI_APP_X === 'true' &&
+                    process.env.UNI_UTS_PLATFORM === 'app-android'
+                      ? 'uts-proxy'
+                      : 'uni_helpers'
+                  }`
+                )
               )
-            )
-          : `${importDir}/${name}${ext}`
+            : `${importDir}/${name}${ext}`
         break
       }
     }

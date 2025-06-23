@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
 import fs from 'fs-extra'
 import path from 'path'
-import { once } from '@dcloudio/uni-shared'
+import { once, parseUrl } from '@dcloudio/uni-shared'
 import { dataToEsm } from '@rollup/pluginutils'
 import type { ChangeEvent, PluginContext } from 'rollup'
 import type {
@@ -33,6 +33,8 @@ import {
   resolveEncryptUniModule,
 } from '../../../uni_modules.cloud'
 import {
+  camelize,
+  capitalize,
   enableSourceMap,
   installDepTips,
   isNormalCompileTarget,
@@ -756,6 +758,7 @@ export function resolveExtApiProvider(pkg: Record<string, any>) {
 export function uniDecryptUniModulesPlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const isX = process.env.UNI_APP_X === 'true'
+  const isMp = process.env.UNI_UTS_PLATFORM.startsWith('mp-')
   return {
     name: 'uni:uni_modules-d',
     enforce: 'pre',
@@ -790,6 +793,19 @@ export function uniDecryptUniModulesPlugin(): Plugin {
         )
         if (resolvedId) {
           return resolvedId
+        }
+      }
+    },
+    load(id) {
+      if (isMp && isUniHelpers(id)) {
+        const { path: urlPath, query } = parseUrl(id)
+        if (query.component) {
+          const componentId = capitalize(camelize(query.component))
+          return `import { define${componentId} } from '@/uni_modules/${path.basename(
+            urlPath
+          )}?uni_helpers'
+define${componentId}()
+`
         }
       }
     },

@@ -539,11 +539,13 @@ export function cssPostPlugin(
           inlined: false,
           minify: true,
         })
-        this.emitFile({
-          fileName: filename,
-          type: 'asset',
-          source,
-        })
+        if (source.trim()) {
+          this.emitFile({
+            fileName: filename,
+            type: 'asset',
+            source,
+          })
+        }
       }
     },
   }

@@ -34,6 +34,7 @@ export {
   formatExtApiProviderName,
 } from './uni_modules'
 export {
+  getUniModulesEncryptType,
   parseUniModulesArtifacts,
   resolveEncryptUniModule,
 } from './uni_modules.cloud'
