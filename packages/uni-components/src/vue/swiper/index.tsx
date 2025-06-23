@@ -704,7 +704,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
     if (__PLATFORM__ === 'app') {
       useRebuild(() => {
-        swiperItems = (slideFrameRef.value as HTMLElement).children
+        if (
+          slideFrameRef.value &&
+          (slideFrameRef.value as HTMLElement).children
+        ) {
+          swiperItems = (slideFrameRef.value as HTMLElement).children
+        }
         updateSwiperContexts()
       })
     }
