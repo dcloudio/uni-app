@@ -1,6 +1,6 @@
-import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, isIntegerKey, hasOwn, isMap, makeMap, hyphenate, capitalize, isPromise, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, getGlobalThis, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$2, looseToNumber, isGloballyAllowed, NO } from '@vue/shared';
+import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, isIntegerKey, hasOwn, isMap, makeMap, hyphenate, capitalize, isPromise, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, getGlobalThis, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$1, looseToNumber, isGloballyAllowed, NO } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 
 /**
@@ -7002,7 +7002,7 @@ function _createVNode(type) {
       if (isProxy(style) && !isArray$1(style)) {
         style = extend({}, style);
       }
-      props.style = normalizeStyle$1(style);
+      props.style = normalizeStyle(style);
     }
   }
   var shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
@@ -7157,7 +7157,7 @@ function mergeProps() {
           ret.class = normalizeClass([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        ret.style = normalizeStyle$1([ret.style, toMerge.style]);
+        ret.style = normalizeStyle([ret.style, toMerge.style]);
       } else if (isOn(key)) {
         var existing = ret[key];
         var incoming = toMerge[key];
@@ -8083,7 +8083,7 @@ function transformAttr(el, key, value, instance) {
         var sytle = parseStringStyle(camelize(value));
         return [camelized, sytle];
       }
-      return [camelized, normalizeStyle$2(value)];
+      return [camelized, normalizeStyle$1(value)];
     }
   }
   return [key, value];
@@ -8158,42 +8158,20 @@ function createInvoker(initialValue, instance) {
 var processDeclaration = expand({
   type: "uvue"
 }).Declaration;
-function createDeclaration(prop, value) {
-  var newValue = value + "";
-  if (newValue.includes("!important")) {
-    return {
-      prop,
-      value: newValue.replace(/\s*!important/, ""),
-      important: true
-    };
-  }
-  return {
+function parseStyleDecl(prop, value) {
+  var newValue = String(value);
+  var isImportant = newValue.includes("!important");
+  var decl = {
     prop,
-    value: newValue,
-    important: false
-  };
-}
-function normalizeStyle(name, value) {
-  var decl = Object.assign({}, {
+    value: isImportant ? newValue.replace(/\s*!important/, "") : newValue,
+    important: isImportant,
     replaceWith(newProps) {
       props = newProps;
     }
-  }, createDeclaration(name, value));
+  };
   var props = [decl];
   processDeclaration(decl);
   return props;
-}
-function setStyle(expandRes) {
-  var resArr = expandRes.map(item => {
-    return [item.prop, item.value];
-  });
-  var resMap = new Map(resArr);
-  return resMap;
-}
-function parseStyleDecl(prop, value) {
-  var val = normalizeStyle(prop, value);
-  var res = setStyle(val);
-  return res;
 }
 function isSame(a, b) {
   return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
@@ -8215,9 +8193,9 @@ function patchStyle(el, prev, next) {
         if (next[key] == null) {
           var _key = key.startsWith("--") ? key : camelize(key);
           var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-          parseStyleDecl(_key, value).forEach((value2, key2) => {
-            batchedStyles.set(key2, value2);
-            style == null ? void 0 : style.delete(key2);
+          parseStyleDecl(_key, value).forEach(item => {
+            batchedStyles.set(item.prop, item.value);
+            style == null ? void 0 : style.delete(item.prop);
           });
         }
       }
@@ -8226,9 +8204,9 @@ function patchStyle(el, prev, next) {
         var prevValue = prev[_key15];
         if (!isSame(prevValue, _value2)) {
           var _key16 = _key15.startsWith("--") ? _key15 : camelize(_key15);
-          parseStyleDecl(_key16, _value2).forEach((value2, key2) => {
-            batchedStyles.set(key2, value2);
-            style == null ? void 0 : style.set(key2, value2);
+          parseStyleDecl(_key16, _value2).forEach(item => {
+            batchedStyles.set(item.prop, item.value);
+            style == null ? void 0 : style.set(item.prop, item.value);
           });
         }
       }
@@ -8250,8 +8228,8 @@ function patchStyle(el, prev, next) {
   el.updateStyle(batchedStyles);
 }
 function setBatchedStyles(batchedStyles, key, value) {
-  parseStyleDecl(key, value).forEach((value2, key2) => {
-    batchedStyles.set(key2, value2);
+  parseStyleDecl(key, value).forEach(item => {
+    batchedStyles.set(item.prop, item.value);
   });
 }
 var vModelTags = ["u-input", "u-textarea"];
