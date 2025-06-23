@@ -32,7 +32,7 @@ function genEncryptEasyComModuleIndex(
       // 为了触发json、wxss的生成
       imports.push(`import ${id} from '${virtualComponentPath(filename)}'`)
       code.push(`function defineComponent${id}(){
-  ${process.env.UNI_MP_GLOBAL}.createComponent(${id})
+  ${process.env.UNI_MP_GLOBAL || 'uni'}.createComponent(${id})
 }`)
       ids.push(`defineComponent${id}`)
     } else {

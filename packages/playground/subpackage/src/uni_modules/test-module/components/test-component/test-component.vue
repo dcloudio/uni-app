@@ -7,4 +7,7 @@
 <script>
 </script>
 <style>
+.test {
+  background-color: red;
+}
 </style>

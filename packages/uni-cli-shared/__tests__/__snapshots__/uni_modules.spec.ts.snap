@@ -5,6 +5,7 @@ exports[`uni_modules:cloud parseUniModulesWithComponents 1`] = `
   "test-easycom": "
 import TestA, { TestAComponentPublicInstance } from './components/test-a/test-a.vue'
 import TestB, { TestBComponentPublicInstance } from './components/test-b/test-b.vue'
+
 export { 
   TestA,
   TestAComponentPublicInstance,
@@ -22,6 +23,7 @@ exports[`uni_modules:cloud parseUniModulesWithComponents 2`] = `
   "test-easycom": "
 import TestA from './components/test-a/test-a.vue'
 import TestB from './components/test-b/test-b.vue'
+
 export { 
   TestA,
   TestB 
@@ -37,6 +39,7 @@ exports[`uni_modules:cloud parseUniModulesWithComponents 3`] = `
   "test-easycom": "
 import TestA from './components/test-a/test-a.vue'
 import TestB from './components/test-b/test-b.vue'
+
 export { 
   TestA,
   TestB 
@@ -50,11 +53,17 @@ export {
 exports[`uni_modules:cloud parseUniModulesWithComponents 4`] = `
 {
   "test-easycom": "
-import TestA from './components/test-a/test-a.vue'
-import TestB from './components/test-b/test-b.vue'
+import TestA from 'uniComponent://dW5pX21vZHVsZXMvdGVzdC1lYXN5Y29tL2NvbXBvbmVudHMvdGVzdC1hL3Rlc3QtYS52dWU'
+import TestB from 'uniComponent://dW5pX21vZHVsZXMvdGVzdC1lYXN5Y29tL2NvbXBvbmVudHMvdGVzdC1iL3Rlc3QtYi52dWU'
+function defineComponentTestA(){
+  uni.createComponent(TestA)
+}
+function defineComponentTestB(){
+  uni.createComponent(TestB)
+}
 export { 
-  TestA,
-  TestB 
+  defineComponentTestA,
+  defineComponentTestB 
 }
   ",
   "test-uts1": "export * from './utssdk/index.uts'",

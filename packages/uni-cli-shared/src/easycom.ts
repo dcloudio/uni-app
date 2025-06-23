@@ -18,6 +18,7 @@ import {
 import { genUTSClassName } from './utsUtils'
 
 interface EasycomOption {
+  platform: UniApp.PLATFORM
   isX?: boolean
   dirs?: string[]
   rootDir: string
@@ -64,6 +65,7 @@ export function initEasycoms(
     // 初始化时，从once中读取缓存，refresh时，实时读取
     const { easycom } = pagesJson || parsePagesJson(inputDir, platform, false)
     const easycomOptions: EasycomOption = {
+      platform,
       isX,
       dirs:
         easycom && easycom.autoscan === false
@@ -177,6 +179,7 @@ function initUniModulesEasycomDirs(
 }
 
 function initEasycom({
+  platform,
   isX,
   dirs,
   rootDir,
@@ -186,7 +189,12 @@ function initEasycom({
   rootDir = normalizePath(rootDir)
   const easycomsObj = Object.create(null)
   if (dirs && dirs.length && rootDir) {
-    const autoEasyComObj = initAutoScanEasycoms(dirs, rootDir, extensions)
+    const autoEasyComObj = initAutoScanEasycoms(
+      platform,
+      dirs,
+      rootDir,
+      extensions
+    )
     if (isX) {
       Object.keys(autoEasyComObj).forEach((tagName) => {
         let source = autoEasyComObj[tagName]
@@ -259,6 +267,7 @@ const isDir = (path: string) => {
 }
 
 function initAutoScanEasycom(
+  platform: UniApp.PLATFORM,
   dir: string,
   rootDir: string,
   extensions: string[]
@@ -270,7 +279,7 @@ function initAutoScanEasycom(
   if (!fs.existsSync(dir)) {
     return easycoms
   }
-  const isMp = process.env.UNI_UTS_PLATFORM.startsWith('mp-')
+  const isMp = platform.startsWith('mp-')
   const is_uni_modules =
     path.basename(path.resolve(dir, '../..')) === 'uni_modules'
   const is_easycom_encrypt_uni_modules = // uni_modules模式不需要此逻辑
@@ -316,6 +325,7 @@ function initAutoScanEasycom(
 }
 
 function initAutoScanEasycoms(
+  platform: UniApp.PLATFORM,
   dirs: string[],
   rootDir: string,
   extensions: string[]
@@ -323,7 +333,12 @@ function initAutoScanEasycoms(
   const conflict: Record<string, string[]> = {}
   const res = dirs.reduce<Record<string, string>>(
     (easycoms: Record<string, string>, dir: string) => {
-      const curEasycoms = initAutoScanEasycom(dir, rootDir, extensions)
+      const curEasycoms = initAutoScanEasycom(
+        platform,
+        dir,
+        rootDir,
+        extensions
+      )
       Object.keys(curEasycoms).forEach((name) => {
         // Use the first component when name conflict
         const componentPath = easycoms[name]
