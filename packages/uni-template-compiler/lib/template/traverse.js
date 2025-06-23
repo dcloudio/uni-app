@@ -288,7 +288,7 @@ function genSlotNode (slotName, slotNode, fallbackNodes, state, isStaticSlotName
     type: 'block',
     attr: {
       // 移除动态拼接的 index 部分
-      [prefix + 'if']: isStaticSlotName ? '{{$slots.' + slotName + '}}' : '{{$slots[' + slotName.replace(/^{{/, '').replace(/}}$/, '').replace(/\+\('\.'\+\S+?\)$/, '') + ']}}'
+      [prefix + 'if']: isStaticSlotName && !/^\d+$/.test(slotName) ? '{{$slots.' + slotName + '}}' : '{{$slots[' + slotName.replace(/^{{/, '').replace(/}}$/, '').replace(/\+\('\.'\+\S+?\)$/, '') + ']}}'
     },
     children: [].concat(slotNode)
   }, {

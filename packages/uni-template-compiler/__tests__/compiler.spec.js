@@ -203,6 +203,10 @@ describe('mp:compiler', () => {
       '<view><block wx:if="{{$slots[one]}}"><slot name="{{one}}"></slot></block><block wx:else>text</block></view>'
     )
     assertCodegen(
+      '<view><slot name="1">text</slot></view>',
+      '<view><block wx:if="{{$slots[1]}}"><slot name="1"></slot></block><block wx:else>text</block></view>'
+    )
+    assertCodegen(
       '<view><slot :name="one+\'test\'">text</slot></view>',
       '<view><block wx:if="{{$slots[one+\'test\']}}"><slot name="{{one+\'test\'}}"></slot></block><block wx:else>text</block></view>'
     )
