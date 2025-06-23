@@ -97,7 +97,7 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
   test('root node hidden with mergeVirtualHostAttributes', () => {
     assert(
       `<image :hidden="hidden"/>`,
-      `<image hidden=\"{{virtualHostHidden !== '' ? virtualHostHidden || false : a}}\" class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" id=\"{{b}}\"/>`,
+      `<image hidden=\"{{(virtualHostHidden === undefined ? a : virtualHostHidden) || false}}\" class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" id=\"{{b}}\"/>`,
       `(_ctx, _cache) => {
   return { a: _ctx.hidden, b: _gei(_ctx, '') }
 }`,
@@ -105,7 +105,7 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<image :hidden="!show"/>`,
-      `<image hidden=\"{{virtualHostHidden !== '' ? virtualHostHidden || false : a}}\" class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" id=\"{{b}}\"/>`,
+      `<image hidden=\"{{(virtualHostHidden === undefined ? a : virtualHostHidden) || false}}\" class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" id=\"{{b}}\"/>`,
       `(_ctx, _cache) => {
   return { a: !_ctx.show, b: _gei(_ctx, '') }
 }`,
@@ -113,7 +113,7 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<image :hidden="false"/>`,
-      `<image hidden=\"{{virtualHostHidden !== '' ? virtualHostHidden || false : false}}\" class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" id=\"{{a}}\"/>`,
+      `<image hidden=\"{{(virtualHostHidden === undefined ? false : virtualHostHidden) || false}}\" class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" id=\"{{a}}\"/>`,
       `(_ctx, _cache) => {
   return { a: _gei(_ctx, '') }
 }`,
@@ -121,7 +121,7 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<image hidden/>`,
-      `<image class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden !== '' ? virtualHostHidden || false : true}}" id="{{a}}"/>`,
+      `<image class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{(virtualHostHidden === undefined ? true : virtualHostHidden) || false}}" id="{{a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _gei(_ctx, '') }
 }`,
@@ -129,7 +129,7 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<image v-show="show"/>`,
-      `<image class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" hidden=\"{{virtualHostHidden !== '' ? virtualHostHidden || false : !a}}\" id=\"{{b}}\"/>`,
+      `<image class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" hidden=\"{{(virtualHostHidden === undefined ? !a : virtualHostHidden) || false}}\" id=\"{{b}}\"/>`,
       `(_ctx, _cache) => {
   return { a: _ctx.show, b: _gei(_ctx, '') }
 }`,
@@ -224,7 +224,7 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<custom-view v-show="show"><image /></custom-view>`,
-      `<custom-view u-s=\"{{['d']}}\" u-i=\"2a9ec0b0-0\" class=\"{{[virtualHostClass]}}\" virtualHostClass=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" virtualHostStyle=\"{{virtualHostStyle}}\" hidden=\"{{virtualHostHidden !== '' ? virtualHostHidden || false : !a}}\" virtualHostHidden=\"{{virtualHostHidden !== '' ? virtualHostHidden || false : !a}}\" id=\"{{b}}\" virtualHostId=\"{{b}}\"><image/></custom-view>`,
+      `<custom-view u-s=\"{{['d']}}\" u-i=\"2a9ec0b0-0\" class=\"{{[virtualHostClass]}}\" virtualHostClass=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" virtualHostStyle=\"{{virtualHostStyle}}\" hidden=\"{{(virtualHostHidden === undefined ? !a : virtualHostHidden) || false}}\" virtualHostHidden=\"{{(virtualHostHidden === undefined ? !a : virtualHostHidden) || false}}\" id=\"{{b}}\" virtualHostId=\"{{b}}\"><image/></custom-view>`,
       `(_ctx, _cache) => {
   return { a: _ctx.show, b: _gei(_ctx, '') }
 }`,
