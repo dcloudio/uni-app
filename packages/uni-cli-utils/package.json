@@ -21,16 +21,16 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
-    "debug": "^4.3.3",
-    "fast-glob": "^3.2.11",
-    "jsonc-parser": "^3.2.0",
-    "minimatch": "^9.0.3",
-    "resolve": "^1.22.1",
+    "debug": "catalog:",
+    "fast-glob": "catalog:",
+    "jsonc-parser": "catalog:",
+    "minimatch": "catalog:",
+    "resolve": "catalog:",
     "throttle-debounce": "^5.0.0"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7",
-    "@types/resolve": "^1.20.2",
+    "@types/debug": "catalog:",
+    "@types/resolve": "catalog:",
     "@types/throttle-debounce": "^5.0.2"
   }
 }

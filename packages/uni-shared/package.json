@@ -20,9 +20,9 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@vue/runtime-core": "3.4.21"
+    "@vue/runtime-core": "catalog:"
   },
   "dependencies": {
-    "@vue/shared": "3.4.21"
+    "@vue/shared": "catalog:"
   }
 }

@@ -17,6 +17,6 @@
     "@dcloudio/uni-mp-vue": "workspace:*",
     "@dcloudio/uni-i18n": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "safe-area-insets": "^1.4.1"
+    "safe-area-insets": "catalog:"
   }
 }

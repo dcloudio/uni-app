@@ -21,24 +21,24 @@
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@rollup/pluginutils": "^5.0.5",
-    "@vue/compiler-dom": "3.4.21",
-    "@vue/compiler-sfc": "3.4.21",
-    "@vue/server-renderer": "3.4.21",
-    "@vue/shared": "3.4.21",
-    "debug": "^4.3.3",
-    "fs-extra": "^10.0.0",
-    "mime": "^3.0.0",
-    "module-alias": "^2.2.2"
+    "@rollup/pluginutils": "catalog:",
+    "@vue/compiler-dom": "catalog:",
+    "@vue/compiler-sfc": "catalog:",
+    "@vue/server-renderer": "catalog:",
+    "@vue/shared": "catalog:",
+    "debug": "catalog:",
+    "fs-extra": "catalog:",
+    "mime": "catalog:",
+    "module-alias": "catalog:"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7",
-    "@types/fs-extra": "^9.0.13",
-    "@types/mime": "^2.0.3",
-    "@types/module-alias": "^2.0.4",
-    "@types/resolve": "^1.20.2",
-    "@vue/compiler-core": "3.4.21",
-    "esbuild": "^0.20.1",
-    "vue": "3.4.21"
+    "@types/debug": "catalog:",
+    "@types/fs-extra": "catalog:",
+    "@types/mime": "catalog:",
+    "@types/module-alias": "catalog:",
+    "@types/resolve": "catalog:",
+    "@vue/compiler-core": "catalog:",
+    "esbuild": "catalog:",
+    "vue": "catalog:"
   }
 }

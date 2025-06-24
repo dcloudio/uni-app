@@ -28,7 +28,7 @@
   "devDependencies": {
     "@dcloudio/uni-mp-weixin": "workspace:*",
     "@dcloudio/uni-mp-alipay": "workspace:*",
-    "@vue/compiler-core": "3.4.21"
+    "@vue/compiler-core": "catalog:"
   },
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
@@ -36,6 +36,6 @@
     "@dcloudio/uni-mp-vite": "workspace:*",
     "@dcloudio/uni-mp-vue": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@vue/shared": "3.4.21"
+    "@vue/shared": "catalog:"
   }
 }

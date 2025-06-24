@@ -22,9 +22,9 @@
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "debug": "^4.3.3"
+    "debug": "catalog:"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7"
+    "@types/debug": "catalog:"
   }
 }

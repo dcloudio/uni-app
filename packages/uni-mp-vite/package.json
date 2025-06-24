@@ -23,13 +23,13 @@
     "@dcloudio/uni-mp-compiler": "workspace:*",
     "@dcloudio/uni-mp-vue": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@vue/compiler-dom": "3.4.21",
-    "@vue/compiler-sfc": "3.4.21",
-    "@vue/shared": "3.4.21",
-    "debug": "^4.3.3"
+    "@vue/compiler-dom": "catalog:",
+    "@vue/compiler-sfc": "catalog:",
+    "@vue/shared": "catalog:",
+    "debug": "catalog:"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@types/debug": "^4.1.7"
+    "@types/debug": "catalog:"
   }
 }

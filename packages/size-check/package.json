@@ -5,9 +5,9 @@
   "dependencies": {
     "@dcloudio/uni-app": "workspace:*",
     "@dcloudio/uni-h5": "workspace:*",
-    "vue": "3.4.21",
-    "vue-i18n": "9.1.9",
-    "vuex": "^4.1.0"
+    "vue": "catalog:",
+    "vue-i18n": "catalog:",
+    "vuex": "catalog:"
   },
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",

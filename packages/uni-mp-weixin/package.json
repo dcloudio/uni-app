@@ -27,18 +27,18 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@vue/compiler-core": "3.4.21"
+    "@vue/compiler-core": "catalog:"
   },
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
     "@dcloudio/uni-mp-vite": "workspace:*",
     "@dcloudio/uni-mp-vue": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@vue/shared": "3.4.21",
-    "jimp": "^0.10.1",
-    "licia": "^1.29.0",
-    "qrcode-reader": "^1.0.4",
-    "qrcode-terminal": "^0.12.0",
-    "ws": "^8.4.2"
+    "@vue/shared": "catalog:",
+    "jimp": "catalog:",
+    "licia": "catalog:",
+    "qrcode-reader": "catalog:",
+    "qrcode-terminal": "catalog:",
+    "ws": "catalog:"
   }
 }

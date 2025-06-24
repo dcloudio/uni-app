@@ -27,15 +27,15 @@
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
     "@dcloudio/uni-mp-weixin": "workspace:*",
-    "@types/fs-extra": "^9.0.13",
-    "@vue/compiler-core": "3.4.21"
+    "@types/fs-extra": "catalog:",
+    "@vue/compiler-core": "catalog:"
   },
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
     "@dcloudio/uni-mp-vite": "workspace:*",
     "@dcloudio/uni-mp-vue": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@vue/shared": "3.4.21",
-    "fs-extra": "^10.0.0"
+    "@vue/shared": "catalog:",
+    "fs-extra": "catalog:"
   }
 }

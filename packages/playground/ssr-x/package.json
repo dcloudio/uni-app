@@ -13,15 +13,15 @@
     "@dcloudio/uni-components": "../../uni-components",
     "@dcloudio/uni-h5": "../../uni-h5",
     "@dcloudio/uni-shared": "../../uni-shared",
-    "vue": "3.4.21",
-    "vue-router": "^4.3.0",
-    "vuex": "^4.1.0"
+    "vue": "catalog:",
+    "vue-router": "catalog:",
+    "vuex": "catalog:"
   },
   "devDependencies": {
     "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
     "compression": "^1.7.4",
-    "cypress": "^10.7.0",
+    "cypress": "catalog:",
     "serve-static": "^1.15.0",
-    "vite": "^5.2.8"
+    "vite": "catalog:"
   }
 }

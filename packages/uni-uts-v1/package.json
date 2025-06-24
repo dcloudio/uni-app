@@ -18,31 +18,31 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@babel/code-frame": "^7.23.5",
-    "@dcloudio/uni-app-x": "^0.7.60",
+    "@babel/code-frame": "catalog:",
+    "@dcloudio/uni-app-x": "catalog:",
     "@dcloudio/uts": "workspace:*",
-    "@rollup/pluginutils": "^5.0.5",
-    "@vue/shared": "3.4.21",
-    "adm-zip": "^0.5.12",
+    "@rollup/pluginutils": "catalog:",
+    "@vue/shared": "catalog:",
+    "adm-zip": "catalog:",
     "android-versions": "^1.8.1",
     "colors": "^1.4.0",
-    "debug": "^4.3.3",
-    "fast-glob": "^3.2.11",
+    "debug": "catalog:",
+    "fast-glob": "catalog:",
     "find-cache-dir": "^3.3.2",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "catalog:",
     "graphlib": "^2.1.8",
-    "jsonc-parser": "^3.2.0",
+    "jsonc-parser": "catalog:",
     "lodash": "^4.17.21",
     "md5-file": "^5.0.0",
     "object-hash": "^3.0.0",
-    "semver": "^7.5.4",
+    "semver": "catalog:",
     "source-map": "^0.7.4",
-    "source-map-js": "^1.0.2"
+    "source-map-js": "catalog:"
   },
   "devDependencies": {
-    "@types/adm-zip": "^0.5.5",
+    "@types/adm-zip": "catalog:",
     "@types/android-versions": "^1.8.0",
-    "@types/fs-extra": "^9.0.13",
-    "rollup": "^4.21.2"
+    "@types/fs-extra": "catalog:",
+    "rollup": "catalog:"
   }
 }

@@ -32,9 +32,9 @@
     "@dcloudio/uni-push": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
     "@dcloudio/uni-stat": "workspace:*",
-    "@vue/shared": "3.4.21"
+    "@vue/shared": "catalog:"
   },
   "peerDependencies": {
-    "@dcloudio/types": "^3.4.14"
+    "@dcloudio/types": "catalog:"
   }
 }

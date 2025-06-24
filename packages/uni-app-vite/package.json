@@ -23,22 +23,22 @@
     "@dcloudio/uni-i18n": "workspace:*",
     "@dcloudio/uni-nvue-styler": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@rollup/pluginutils": "^5.0.5",
-    "@vitejs/plugin-vue": "5.1.0",
-    "@vue/compiler-dom": "3.4.21",
-    "@vue/compiler-sfc": "3.4.21",
-    "debug": "^4.3.3",
-    "fs-extra": "^10.0.0",
-    "picocolors": "^1.0.0"
+    "@rollup/pluginutils": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vue/compiler-dom": "catalog:",
+    "@vue/compiler-sfc": "catalog:",
+    "debug": "catalog:",
+    "fs-extra": "catalog:",
+    "picocolors": "catalog:"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7",
-    "@types/fs-extra": "^9.0.13",
-    "@vue/compiler-core": "3.4.21",
-    "esbuild": "^0.20.1",
-    "postcss": "^8.4.21",
-    "rollup": "^4.21.2",
-    "vite": "^5.2.8",
-    "vue": "3.4.21"
+    "@types/debug": "catalog:",
+    "@types/fs-extra": "catalog:",
+    "@vue/compiler-core": "catalog:",
+    "esbuild": "catalog:",
+    "postcss": "catalog:",
+    "rollup": "catalog:",
+    "vite": "catalog:",
+    "vue": "catalog:"
   }
 }

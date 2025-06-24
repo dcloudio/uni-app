@@ -32,10 +32,10 @@
     "@dcloudio/uni-app-uts": "workspace:*",
     "@dcloudio/uni-app-vite": "workspace:*",
     "@dcloudio/uni-app-vue": "workspace:*",
-    "debug": "^4.3.3",
-    "fs-extra": "^10.0.0",
-    "licia": "^1.29.0",
-    "postcss-selector-parser": "^6.0.6"
+    "debug": "catalog:",
+    "fs-extra": "catalog:",
+    "licia": "catalog:",
+    "postcss-selector-parser": "catalog:"
   },
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
@@ -43,13 +43,13 @@
     "@dcloudio/uni-h5": "workspace:*",
     "@dcloudio/uni-i18n": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@types/pako": "1.0.2",
-    "@types/google.maps": "^3.45.6",
-    "@amap/amap-jsapi-types": "^0.0.8",
-    "@vue/compiler-sfc": "3.4.21",
-    "autoprefixer": "^10.4.19",
-    "pako": "^1.0.11",
-    "postcss": "^8.4.21",
-    "vue": "3.4.21"
+    "@types/pako": "catalog:",
+    "@types/google.maps": "catalog:",
+    "@amap/amap-jsapi-types": "catalog:",
+    "@vue/compiler-sfc": "catalog:",
+    "autoprefixer": "catalog:",
+    "pako": "catalog:",
+    "postcss": "catalog:",
+    "vue": "catalog:"
   }
 }

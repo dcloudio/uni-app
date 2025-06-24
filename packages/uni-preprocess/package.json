@@ -19,7 +19,7 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
-    "magic-string": "^0.30.7",
+    "magic-string": "catalog:",
     "xregexp": "^5.1.1"
   }
 }

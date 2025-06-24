@@ -23,7 +23,7 @@
     "@dcloudio/uni-cli-shared": "workspace:*",
     "@dcloudio/uni-i18n": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@vue/shared": "3.4.21",
-    "fast-glob": "^3.2.11"
+    "@vue/shared": "catalog:",
+    "fast-glob": "catalog:"
   }
 }

@@ -20,6 +20,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "parse-css-font": "^4.0.0",
-    "postcss": "^8.4.35"
+    "postcss": "catalog:"
   }
 }
