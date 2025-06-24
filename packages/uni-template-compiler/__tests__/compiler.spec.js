@@ -449,7 +449,7 @@ describe('mp:compiler', () => {
   it('generate style with mergeVirtualHostAttributes', () => {
     assertCodegen(
       '<view style="color:red">hello world</view>',
-      '<view class="{{[virtualHostClass]}}" style="{{\'color:red;\'+virtualHostStyle}}">hello world</view>',
+      `<view class="{{[virtualHostClass]}}" style="{{\'color:red;\'+(virtualHostStyle||'')}}">hello world</view>`,
       'with(this){}',
       {
         mergeVirtualHostAttributes: true
