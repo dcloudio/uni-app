@@ -204,6 +204,15 @@
           "swift": true,
           "arkts": true
         }
+      },
+      "setInnerAudioOption": {
+        "name": "setInnerAudioOption",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
       }
     }
   },
@@ -566,6 +575,69 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      },
+      "startLocationUpdate": {
+        "name": "startLocationUpdate",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "stopLocationUpdate": {
+        "name": "stopLocationUpdate",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "onLocationChange": {
+        "name": "onLocationChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "offLocationChange": {
+        "name": "offLocationChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "startLocationUpdateBackground": {
+        "name": "startLocationUpdateBackground",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "onLocationChangeError": {
+        "name": "onLocationChangeError",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "offLocationChangeError": {
+        "name": "offLocationChangeError",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
         }
       }
     }
