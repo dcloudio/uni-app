@@ -18,6 +18,7 @@ import { transformFont } from './font'
 import { transformMargin } from './margin'
 import { transformPadding } from './padding'
 import { transformTransition } from './transition'
+import { transformFlex } from './flex'
 
 function getDeclTransforms(
   options: NormalizeOptions
@@ -50,6 +51,7 @@ function getDeclTransforms(
     padding: transformPadding,
 
     flexFlow: transformFlexFlow,
+    flex: transformFlex,
   }
   let result: Record<string, TransformDecl> = {}
   if (__NODE_JS__) {

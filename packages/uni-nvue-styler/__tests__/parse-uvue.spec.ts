@@ -248,6 +248,27 @@ describe('uvue-style', () => {
     })
     expect(messages.length).toBe(0)
   })
+
+  test('flex', async () => {
+    const { code, messages } = await parse(
+      `
+        .content {
+            flex: 1;
+        }
+        `,
+      { type: 'uvue', platform: 'app-android' }
+    )
+    expect(JSON.parse(code)).toEqual({
+      content: {
+        '': {
+          flexBasis: '0%',
+          flexGrow: 1,
+          flexShrink: 1,
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
+  })
 })
 
 // link: parse-nvue.spec.ts
