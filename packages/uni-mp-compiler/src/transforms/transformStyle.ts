@@ -12,6 +12,7 @@ import {
   isPrivateName,
   isSpreadElement,
   isStringLiteral,
+  logicalExpression,
   stringLiteral,
 } from '@babel/types'
 import {
@@ -123,7 +124,11 @@ export function rewriteStyle(
       ? binaryExpression(
           '+',
           addSemicolon(styleBidingExpr),
-          identifier(VIRTUAL_HOST_STYLE)
+          logicalExpression(
+            '||',
+            identifier(VIRTUAL_HOST_STYLE),
+            stringLiteral('')
+          )
         )
       : identifier(VIRTUAL_HOST_STYLE)
   }
