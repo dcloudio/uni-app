@@ -187,7 +187,7 @@ module.exports = function processStyle (paths, path, state) {
     }
   } else if (staticStylePath) {
     if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
-      const styleNode = processStaticStyle([t.identifier(VIRTUAL_HOST_STYLE)], staticStylePath, state)
+      const styleNode = processStaticStyle([t.logicalExpression('||', t.identifier(VIRTUAL_HOST_STYLE), t.stringLiteral(''))], staticStylePath, state)
       const property = t.objectProperty(t.identifier('style'), styleNode)
       path.node.properties.push(property)
       return []
