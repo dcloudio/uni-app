@@ -204,6 +204,15 @@
           "swift": true,
           "arkts": true
         }
+      },
+      "setInnerAudioOption": {
+        "name": "setInnerAudioOption",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
       }
     }
   },
