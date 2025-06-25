@@ -466,6 +466,15 @@ function setSendConsole(value, extra = {}) {
 }
 const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/;
 function rewriteConsole() {
+    {
+        if (typeof UTSProxyObject === 'object' &&
+            UTSProxyObject !== null &&
+            typeof UTSProxyObject.invokeSync === 'function') {
+            UTSProxyObject.invokeSync('__UniConsole', 'setSendConsoleMessages', [
+                sendConsoleMessages,
+            ]);
+        }
+    }
     function wrapConsole(type) {
         return function (...args) {
             if (process.env.UNI_CONSOLE_KEEP_ORIGINAL) {
@@ -527,6 +536,13 @@ function rewriteConsole() {
         }
     }
     return function restoreConsole() {
+        {
+            if (typeof UTSProxyObject === 'object' &&
+                UTSProxyObject !== null &&
+                typeof UTSProxyObject.invokeSync === 'function') {
+                UTSProxyObject.invokeSync('__UniConsole', 'restoreConsole', []);
+            }
+        }
     };
 }
 function isConsoleWritable() {
