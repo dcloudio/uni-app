@@ -231,7 +231,7 @@ class UniPageImpl implements UniPage {
     options: UTSJSONObject
     vm: ComponentPublicInstance | null
   }) {
-    this.route = route
+    this.route = vm?.route || route
     this.options = options
     this.vm = vm
     this.$vm = vm
@@ -339,7 +339,7 @@ export function initXPage(
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
-      route: route?.path || '',
+      route: route?.path.substring(1) || '',
       options: new UTSJSONObject(route?.query || {}),
       vm,
     })
