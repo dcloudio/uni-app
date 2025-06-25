@@ -14,7 +14,6 @@ import {
 } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
-import { transformSwiper } from './transforms/transformSwiper'
 
 export const customElements = [
   'aweme-data',
@@ -35,7 +34,6 @@ const projectConfigFilename = 'project.config.json'
 
 const nodeTransforms = [
   transformRef,
-  transformSwiper,
   transformMatchMedia,
   transformComponentLink,
 ]
