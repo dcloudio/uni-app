@@ -7,6 +7,7 @@ import {
   findProp,
 } from '@vue/compiler-core'
 
+// swiper 组件不再支持 touchable 参数，故不需要做转化处理，https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/component/view-container/swiper
 export function transformSwiper(node: RootNode | TemplateChildNode) {
   if (node.type !== NodeTypes.ELEMENT || node.tag !== 'swiper') {
     return
