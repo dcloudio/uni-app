@@ -8182,7 +8182,7 @@ class UniPageImpl {
     vm
   }) {
     this.getParentPage = () => null;
-    this.route = route;
+    this.route = (vm == null ? void 0 : vm.route) || route;
     this.options = options;
     this.vm = vm;
     this.$vm = vm;
@@ -8386,7 +8386,7 @@ function initXPage(vm, route, page) {
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
-      route: (route == null ? void 0 : route.path) || "",
+      route: (route == null ? void 0 : route.path.substring(1)) || "",
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
@@ -16211,7 +16211,7 @@ function decodeEntities(htmlString) {
 function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
     return {
-      onClick: (e2) => {
+      onClickCapture: (e2) => {
         if (node.name === "a") {
           triggerItemClick(e2, { href: (node.attrs || {}).href });
         } else {
@@ -27831,7 +27831,7 @@ class UniMatchMediaElement extends UniViewElement {
     }, this.uniPage.vm.$);
   }
   attributeChangedCallback(name, oldValue, newValue) {
-    if (this._experssions.length == 0) {
+    if (this._experssions.length == 0 || newValue == null) {
       return;
     }
     const matches2 = name.match(RE_MQ_FEATURE);
@@ -27915,7 +27915,7 @@ const openDialogPage = (options) => {
     return path.indexOf(route.meta.route) !== -1;
   });
   const dialogPage = new UniDialogPageImpl({
-    route: path,
+    route: path.substring(1),
     options: new UTSJSONObject(query),
     $component: targetRoute.component,
     getParentPage: () => null,

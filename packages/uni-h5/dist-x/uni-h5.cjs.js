@@ -1626,91 +1626,11 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-const rpx2Unit = uniShared.createRpx2Unit(
+uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unit,
   uniShared.defaultRpx2Unit.unitRatio,
   uniShared.defaultRpx2Unit.unitPrecision
 );
-function transformRpx(value) {
-  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
-    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return rpx2Unit(num + "rpx");
-    });
-  }
-  return value;
-}
-class UniElement extends HTMLElement {
-  constructor() {
-    super();
-    this._props = {};
-    this._page = null;
-    this.__isUniElement = true;
-  }
-  attachVmProps(props2) {
-    this._props = props2;
-  }
-  getAttribute(qualifiedName) {
-    const name = shared.camelize(qualifiedName);
-    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
-    return attr2 === void 0 ? null : attr2;
-  }
-  getPage() {
-    if (this._page) {
-      return this._page;
-    }
-    let parent = this.parentNode;
-    while (parent && !parent._page) {
-      parent = parent.parentNode;
-    }
-    return (parent == null ? void 0 : parent._page) || null;
-  }
-  get uniPage() {
-    return this.getPage();
-  }
-  getBoundingClientRectAsync(callback) {
-    var _a, _b;
-    if (callback) {
-      const domRect = this.getBoundingClientRect();
-      try {
-        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
-      } catch (error) {
-        console.error(error);
-      }
-      try {
-        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
-      } catch (error) {
-        console.error(error);
-      }
-      return;
-    }
-    return new Promise((resolve, reject) => {
-      const domRect = this.getBoundingClientRect();
-      resolve(domRect);
-    });
-  }
-  get style() {
-    const originalStyle = super.style;
-    if (originalStyle.__patchRpx__) {
-      return originalStyle;
-    }
-    originalStyle.__patchRpx__ = true;
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
-    super.style.setProperty = function(property, value, priority) {
-      return originalSetProperty(
-        property,
-        value ? transformRpx(value + "") : value,
-        priority || void 0
-      );
-    };
-    return super.style;
-  }
-  get tagName() {
-    return super.tagName.replace(/^UNI-/, "");
-  }
-  get nodeName() {
-    return super.nodeName.replace(/^UNI-/, "");
-  }
-}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -3062,7 +2982,7 @@ class UniPageImpl {
     vm
   }) {
     this.getParentPage = () => null;
-    this.route = route;
+    this.route = (vm == null ? void 0 : vm.route) || route;
     this.options = options;
     this.vm = vm;
     this.$vm = vm;
@@ -3221,7 +3141,7 @@ function initXPage(vm, route, page) {
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
-      route: (route == null ? void 0 : route.path) || "",
+      route: (route == null ? void 0 : route.path.substring(1)) || "",
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
@@ -7496,7 +7416,7 @@ function decodeEntities(htmlString) {
 function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
     return {
-      onClick: (e2) => {
+      onClickCapture: (e2) => {
         if (node.name === "a") {
           triggerItemClick(e2, { href: (node.attrs || {}).href });
         } else {
@@ -9298,7 +9218,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         wrapper.style.height = "";
       }
     });
-    function onResize2({
+    function onResize({
       height
     }) {
       heightRef.value = height;
@@ -9394,7 +9314,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         }
       }, [valueCompute.value.map((item) => vue.createVNode("div", null, [item.trim() ? item : "."])), vue.createVNode(ResizeSensor, {
         "initial": true,
-        "onResize": onResize2
+        "onResize": onResize
       }, null, 8, ["initial", "onResize"])], 2), props2.confirmType === "search" ? vue.createVNode("form", {
         "action": "",
         "onSubmit": () => false,
@@ -9403,8 +9323,6 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniViewElement extends UniElement {
-}
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ shared.extend({}, hoverProps),
@@ -9626,7 +9544,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
-    function onResize2() {
+    function onResize() {
       childStatus.forEach((status) => {
         status.cachedSizeUpdated = false;
       });
@@ -9681,7 +9599,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-list-view-content",
         "style": contentStyle.value
       }, [visibleVNode], 4)], 4), vue.createVNode(ResizeSensor, {
-        "onResize": onResize2
+        "onResize": onResize
       }, null, 8, ["onResize"])], 512);
     };
   }
@@ -13261,110 +13179,6 @@ const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
 const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
 const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
-const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = vue.getCurrentInstance()) => {
-  !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
-};
-const onResize = /* @__PURE__ */ createLifeCycleHook(
-  uniShared.ON_RESIZE,
-  2
-  /* HookFlags.PAGE */
-);
-const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
-class UniMatchMediaElement extends UniViewElement {
-  constructor() {
-    super();
-    this._experssions = [];
-  }
-  static get observedAttributes() {
-    return [
-      "orientation",
-      "width",
-      "minWidth",
-      "maxWidth",
-      "height",
-      "minHeight",
-      "maxHeight"
-    ];
-  }
-  connectedCallback() {
-    this._experssions = this.getExpressions();
-    this.uniPage.vm.$.$waitNativeRender(() => {
-      this.toggleElement(this.isValid({
-        width: this.uniPage.pageBody.width,
-        height: this.uniPage.pageBody.height,
-        orientation: uni.getDeviceInfo().deviceOrientation
-      }));
-    });
-    onResize((res) => {
-      this.toggleElement(this.isValid({
-        orientation: res.deviceOrientation,
-        width: res.size.windowWidth,
-        height: res.size.windowHeight
-      }));
-    }, this.uniPage.vm.$);
-  }
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (this._experssions.length == 0) {
-      return;
-    }
-    const matches = name.match(RE_MQ_FEATURE);
-    if (matches == null || matches.length == 0) {
-      return;
-    }
-    const modifier = matches[1] != null ? matches[1] : "";
-    const feature = matches[2] != null ? matches[2].toLowerCase() : "";
-    const expression = this._experssions.find((expr) => expr.feature == feature && expr.modifier == modifier);
-    if (expression == null) {
-      return;
-    }
-    expression.value = newValue;
-    this.toggleElement(this.isValid({
-      width: this.uniPage.pageBody.width,
-      height: this.uniPage.pageBody.height,
-      orientation: uni.getDeviceInfo().deviceOrientation
-    }));
-  }
-  getExpressions() {
-    const expressions = [];
-    UniMatchMediaElement.observedAttributes.forEach((key) => {
-      const value = this.getAttribute(key);
-      const feature = key.match(RE_MQ_FEATURE);
-      if (value != null && feature != null && feature.length > 0) {
-        expressions.push({
-          modifier: feature[1] != null ? feature[1] : "",
-          feature: feature[2] != null ? feature[2].toLowerCase() : "",
-          value
-        });
-      }
-    });
-    return expressions;
-  }
-  // 显示或者隐藏页面元素
-  toggleElement(show) {
-    this.style.setProperty("display", show ? "flex" : "none");
-  }
-  isValid(values) {
-    return this._experssions.every((expression) => {
-      switch (expression.feature) {
-        case "orientation":
-          return values[expression.feature] === this.getAttribute(expression.feature);
-      }
-      const expressionValue = values[expression.feature];
-      switch (expression.modifier) {
-        case "min":
-          return parseFloat(expression.value) <= expressionValue;
-        case "max":
-          return parseFloat(expression.value) >= expressionValue;
-        default:
-          return parseFloat(expression.value) === expressionValue;
-      }
-    });
-  }
-}
-const MatchMedia = /* @__PURE__ */ (() => {
-  customElements.define("uni-match-media", UniMatchMediaElement);
-  return "uni-match-media";
-})();
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -14703,7 +14517,6 @@ exports.ListView = index$g;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
 exports.Map = index$9;
-exports.MatchMedia = MatchMedia;
 exports.MovableArea = index$s;
 exports.MovableView = index$r;
 exports.Navigator = index$q;

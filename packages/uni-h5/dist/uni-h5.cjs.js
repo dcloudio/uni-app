@@ -6124,7 +6124,7 @@ function decodeEntities(htmlString) {
 function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
     return {
-      onClick: (e2) => {
+      onClickCapture: (e2) => {
         triggerItemClick(e2, { node });
         e2.stopPropagation();
         e2.preventDefault();

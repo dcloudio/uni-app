@@ -51,8 +51,8 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
 		}, this.uniPage.vm!.$)
     }
 
-    override attributeChangedCallback(name : string, oldValue : string, newValue : string) {
-        if (this._experssions.length == 0) {
+    override attributeChangedCallback(name : string, oldValue : any | null, newValue : any | null) {
+        if (this._experssions.length == 0 || newValue == null) {
             return
         }
 
@@ -67,7 +67,7 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
             return
         }
 
-        expression.value = newValue
+        expression.value = newValue as string
         this.toggleElement(this.isValid({
             width: this.uniPage.pageBody.width,
             height: this.uniPage.pageBody.height,
