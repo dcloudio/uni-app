@@ -21213,7 +21213,9 @@
       }
       {
         useRebuild(() => {
-          swiperItems = slideFrameRef.value.children;
+          if (slideFrameRef.value && slideFrameRef.value.children) {
+            swiperItems = slideFrameRef.value.children;
+          }
           updateSwiperContexts();
         });
       }
