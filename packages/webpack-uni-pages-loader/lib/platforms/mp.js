@@ -145,7 +145,8 @@ const platformJson2ProjectJson = {
   packOptions: deepCopy,
   debugOptions: deepCopy,
   scripts: deepCopy,
-  cloudbaseRoot: defaultCopy
+  cloudbaseRoot: defaultCopy,
+  watchOptions: deepCopy
 }
 
 function copyToJson (json, fromJson, options) {
