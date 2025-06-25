@@ -20,7 +20,7 @@ module.exports = {
       'ext.json',
       'sitemap.json',
       'project.private.config.json'
-    ];
+    ]
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/xhscomponents')
     })
