@@ -33,6 +33,9 @@ const userManifestJSON: any = {
     },
     usingComponents: true,
     mockFeature: 'enable',
+    watchOptions: {
+      ignore: ['utils/util.js'],
+    },
   },
   'mp-alipay': {
     usingComponents: true,
@@ -156,6 +159,9 @@ describe('parseMiniProgramProjectJson', () => {
       projectname: userManifestJSON.name,
       libVersion: (userManifestJSON[platfrom] as any)?.libVersion || '',
       condition: mpXhsConfig.condition,
+      watchOptions: {
+        ignore: ['utils/util.js'],
+      },
     })
 
     expect(projectJson.hasOwnProperty('mockFeature')).toBe(false)
