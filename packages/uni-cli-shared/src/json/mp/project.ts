@@ -28,6 +28,7 @@ export const projectKeys = [
   'debugOptions',
   'scripts',
   'cloudbaseRoot',
+  'watchOptions',
 ]
 
 export function isMiniProgramProjectJsonKey(name: string) {
