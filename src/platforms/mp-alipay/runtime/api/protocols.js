@@ -144,7 +144,7 @@ const protocols = { // 需要做转换的 API 列表
   showModal ({
     showCancel = true
   } = {}) {
-    if(my.canIUse('showModal')) {
+    if (my.canIUse('showModal')) {
       return {
         name: 'showModal'
       }
@@ -199,7 +199,7 @@ const protocols = { // 需要做转换的 API 列表
   showActionSheet: {
     name: 'showActionSheet',
     args: {
-      itemList: 'items',
+      itemList: 'items'
     },
     returnValue: {
       index: 'tapIndex'
