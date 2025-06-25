@@ -19,7 +19,6 @@ const compilerModule = require('./module')
 const compilerModuleUniad = require('./module.uniad')
 
 const compilerAlipayModule = require('./module-alipay')
-const compilerToutiaoModule = require('./module-toutiao')
 
 const generateCodeFrame = require('./codeframe')
 
@@ -100,8 +99,6 @@ module.exports = {
 
     if (options.mp.platform === 'mp-alipay') {
       options.modules.push(compilerAlipayModule)
-    } else if (options.mp.platform === 'mp-toutiao' || options.mp.platform === 'mp-lark') {
-      options.modules.push(compilerToutiaoModule)
     }
 
     const res = compileTemplate(source, Object.assign(options, {
