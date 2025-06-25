@@ -74,6 +74,14 @@
       "null"
     ]
   },
+  "uni-location": {
+    "offLocationChange": [
+      "null"
+    ],
+    "offLocationChangeError": [
+      "null"
+    ]
+  },
   "uni-navigationBar": {
     "showNavigationBarLoading": [
       "null"
