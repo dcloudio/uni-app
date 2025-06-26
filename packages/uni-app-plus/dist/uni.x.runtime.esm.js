@@ -2944,6 +2944,7 @@ var openDialogPage = (options) => {
     path,
     query
   } = parseUrl(url);
+  path = normalizeRoute(path);
   var normalizeUrl = createNormalizeUrl("navigateTo");
   var errMsg = normalizeUrl(path, {});
   if (errMsg) {

@@ -3062,7 +3062,7 @@ class UniPageImpl {
     vm
   }) {
     this.getParentPage = () => null;
-    this.route = route;
+    this.route = (vm == null ? void 0 : vm.route) || route;
     this.options = options;
     this.vm = vm;
     this.$vm = vm;
@@ -3221,7 +3221,7 @@ function initXPage(vm, route, page) {
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
-      route: (route == null ? void 0 : route.path) || "",
+      route: (route == null ? void 0 : route.path.substring(1)) || "",
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
