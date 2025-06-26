@@ -315,7 +315,7 @@ export default {
         }
       })
 
-      this._wxRewardedAd.load().then(() => { }).catch((err) => { })
+      this._wxRewardedAd.load().then(() => { }).catch((_) => { })
 
       this.loading = true
     },
@@ -346,7 +346,7 @@ export default {
         this._dispatchEvent(EventType.Close, res)
       })
 
-      this._wxInterstitialAd.load().then(() => { }).catch((err) => { });
+      this._wxInterstitialAd.load().then(() => { }).catch((_) => { })
 
       this.loading = true
     },

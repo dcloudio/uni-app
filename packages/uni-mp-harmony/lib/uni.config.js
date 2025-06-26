@@ -30,7 +30,7 @@ module.exports = {
       filter: '.hjs'
     },
     filterTag: 'hjs',
-    subPackages: true,
+    subPackages: true
   },
   validate (platformOptions, manifestJson) {
     Object.assign(platformOptions, manifestJson['mp-harmony'] || {}, platformOptions)
