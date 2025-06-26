@@ -157,10 +157,10 @@ function genText(node: TextNode, { push, isX }: TemplateCodegenContext) {
   if (isX) {
     push(mpEscapeText(node.content))
   } else {
-    // 目前暂时只处理 < 和 >
+    // 目前暂时只处理 < 和 >，防止微信小程序编译报错 ask 138888
     push(
       getEscaper(
-        /[<>\u2009\u00A0\u2002\u2003]/g,
+        /[<>]/g,
         new Map([
           [60, '&lt;'],
           [62, '&gt;'],
