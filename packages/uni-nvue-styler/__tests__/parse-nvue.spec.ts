@@ -751,4 +751,37 @@ border-top-style: solid;
       )
     ).toEqual(true)
   })
+  test('flex 只支持单个数字值', async () => {
+    const { json, messages } = await objectifierRule(`
+.a {
+  flex:1;
+}
+.b {
+  flex:1 1;
+}
+.c {
+  flex: 1 1 100px;
+}
+.d {
+  flex: auto;
+}
+`)
+    expect(json).toEqual({
+      a: {
+        '': {
+          flex: 1,
+        },
+      },
+    })
+    expect(messages.length).toBe(3)
+    expect(messages[0].text).toBe(
+      'ERROR: property value `1 1` is not supported for `flex` (supported values are: `number`)'
+    )
+    expect(messages[1].text).toBe(
+      'ERROR: property value `1 1 100px` is not supported for `flex` (supported values are: `number`)'
+    )
+    expect(messages[2].text).toBe(
+      'ERROR: property value `auto` is not supported for `flex` (supported values are: `number`)'
+    )
+  })
 })
