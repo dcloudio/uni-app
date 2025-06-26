@@ -122,4 +122,38 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
       { inline: true, mode: 'module', prefixIdentifiers: false, isX: true }
     )
   })
+
+  test('nbsp and other space entities', () => {
+    assert(
+      `<view>&thinsp;hello</view>`,
+      `<view> hello</view>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+
+    assert(
+      `<view>&ensp;hello</view>`,
+      `<view> hello</view>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+
+    assert(
+      `<view>&emsp;hello</view>`,
+      `<view> hello</view>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+
+    assert(
+      `<view>&nbsp;hello</view>`,
+      `<view> hello</view>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
 })
