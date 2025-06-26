@@ -56,7 +56,7 @@ export class UniTextareaElement extends UniElement {
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Textarea',
   props,
-  emits: ['confirm', 'linechange', ...fieldEmit],
+  emits: ['confirm', 'change', 'linechange', ...fieldEmit],
   //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-textarea',
@@ -110,6 +110,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     function onResize({ height }: { height: number }) {
       heightRef.value = height
+    }
+
+    function onChange(event: Event) {
+      if (__X__) {
+        trigger('change', event, {
+          value: state.value,
+        })
+      }
     }
 
     function confirm(event: Event) {
@@ -211,6 +219,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             }}
             onKeydown={onKeyDownEnter}
             onKeyup={onKeyUpEnter}
+            onChange={onChange}
           />
         )
       return (
