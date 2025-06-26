@@ -478,19 +478,8 @@ flexBasis: fill;
 .boo {
   margin: abc;
 }
-.flex {
-  flex: 1;
-  flex: auto;
-  flex: 1 2;
-  flex: 1 2 auto;
-  flex: none;
-}
-.flex1 {
-  flex: min-content;
-  flex: 2 unset;
-  flex: 1 abc 100px;
-}
 `)
+
     expect(json).toEqual({
       foo: {
         '': {
@@ -530,58 +519,84 @@ flexBasis: fill;
           paddingRight: 20,
         },
       },
-      flex: {
-        '': {
-          flex: 'none',
-        },
-      },
     })
-    expect(messages.length).toEqual(9)
+
+    expect(messages.length).toEqual(6)
 
     expect(messages[0]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `min-content` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
-      })
-    )
-    expect(messages[1]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `2 unset` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
-      })
-    )
-    expect(messages[2]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `1 abc 100px` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
-      })
-    )
-    expect(messages[3]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `auto` is not supported for `padding-right` (supported values are: `number`|`pixel`|`percent`)',
       })
     )
-    expect(messages[4]).toEqual(
+    expect(messages[1]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `auto` is not supported for `padding-left` (supported values are: `number`|`pixel`|`percent`)',
       })
     )
-    expect(messages[5]).toEqual(
+    expect(messages[2]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `abc` is not supported for `margin-top` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
-    expect(messages[6]).toEqual(
+    expect(messages[3]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `abc` is not supported for `margin-right` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
-    expect(messages[7]).toEqual(
+    expect(messages[4]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `abc` is not supported for `margin-bottom` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
-    expect(messages[8]).toEqual(
+    expect(messages[5]).toEqual(
       expect.objectContaining({
         text: 'ERROR: property value `abc` is not supported for `margin-left` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
+    )
+  })
+  test('shorthand flex', async () => {
+    const { json, messages } = await objectifierRule(`
+.flex {
+  flex: 1;
+  flex: auto;
+  flex: 1 2;
+  flex: 1 2 auto;
+  flex: none;
+}
+.flex1 {
+  flex: min-content;
+  flex: 2 unset;
+  flex: 1 abc 100px;
+}
+`)
+
+    // expect(Object.keys(json)).toEqual(['flex'])
+    expect(json).toEqual({
+      flex: {
+        '': {
+          flexBasis: 'auto',
+          flexGrow: 0,
+          flexShrink: 0,
+        },
+      },
+      flex1: {
+        '': {
+          flexGrow: 2,
+          flexShrink: 1,
+        },
+      },
+    })
+    expect(messages.length).toBe(3)
+
+    expect(messages[0].text).toBe(
+      'ERROR: property value `1 abc 100px` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)'
+    )
+    expect(messages[1].text).toBe(
+      'ERROR: property value `min-content` is not supported for `flex-basis` (supported values are: `number`|`pixel`|`percent`|`auto`)'
+    )
+
+    expect(messages[2].text).toBe(
+      'ERROR: property value `unset` is not supported for `flex-basis` (supported values are: `number`|`pixel`|`percent`|`auto`)'
     )
   })
 
@@ -784,31 +799,38 @@ flexBasis: fill;
         '': {
           width: 200,
           lineHeight: '16px',
-          flex: '30px',
+          flexBasis: '30px',
+          flexGrow: 1,
+          flexShrink: 1,
         },
       },
       bar: {
         '': {
           lineHeight: 1.5,
-          flex: 1,
+          flexBasis: '0%',
+          flexGrow: 1,
+          flexShrink: 1,
         },
       },
       baz: {
         '': {
-          lineHeight: '2em',
           flex: '1 30px 2',
+          lineHeight: '2em',
+        },
+      },
+      boo: {
+        '': {
+          flexGrow: 1,
+          flexShrink: 1,
         },
       },
     })
-    expect(messages[0]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `abc` is not supported for `line-height` (supported values are: `number`|`pixel`)',
-      })
+    expect(messages.length).toEqual(2)
+    expect(messages[0].text).toBe(
+      'ERROR: property value `abc` is not supported for `line-height` (supported values are: `number`|`pixel`)'
     )
-    expect(messages[1]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `1 abc` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
-      })
+    expect(messages[1].text).toBe(
+      'ERROR: property value `abc` is not supported for `flex-basis` (supported values are: `number`|`pixel`|`percent`|`auto`)'
     )
   })
   test('current platform unsupported', async () => {
