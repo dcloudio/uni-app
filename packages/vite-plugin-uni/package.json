@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vite-plugin-uni",
-  "version": "3.0.0-alpha-4070220250618001",
+  "version": "3.0.0-alpha-4070320250627001",
   "description": "uni-app vite plugin",
   "bin": {
     "uni": "bin/uni.js"
