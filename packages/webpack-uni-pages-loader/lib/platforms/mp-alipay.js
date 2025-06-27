@@ -79,7 +79,26 @@ function parseCondition (pagesJson) {
   }
 }
 
-const projectKeys = ['component2', 'enableAppxNg', 'axmlStrictCheck', 'enableParallelLoader', 'enableDistFileMinify']
+const projectMap = {
+  component2: true,
+  enableAppxNg: true,
+  axmlStrictCheck: false,
+  enableParallelLoader: false,
+  enableDistFileMinify: false,
+  enableNodeModuleBabelTransform: false,
+  nonLoadingIndicator: true,
+  compileType: 'mini',
+  format: 2,
+  miniprogramRoot: './',
+  pluginRoot: undefined, // pluginRoot 没有默认值
+  compileOptions: {},
+  uploadExclude: [],
+  assetsInclude: [],
+  developOptions: {},
+  pluginResolution: {},
+  scripts: {}
+};
+const projectKeys = Object.keys(projectMap)
 
 module.exports = function (pagesJson, manifestJson) {
   const app = {
@@ -132,11 +151,13 @@ module.exports = function (pagesJson, manifestJson) {
   if (fs.existsSync(projectPath)) {
     project = require(projectPath)
   } else {
-    project.component2 = hasOwn(platformJson, 'component2') ? platformJson.component2 : true
-    project.enableAppxNg = hasOwn(platformJson, 'enableAppxNg') ? platformJson.enableAppxNg : true
-    project.axmlStrictCheck = hasOwn(platformJson, 'axmlStrictCheck') ? platformJson.axmlStrictCheck : false
-    project.enableParallelLoader = hasOwn(platformJson, 'enableParallelLoader') ? platformJson.enableParallelLoader : false
-    project.enableDistFileMinify = hasOwn(platformJson, 'enableDistFileMinify') ? platformJson.enableDistFileMinify : false
+    projectKeys.forEach((key) => {
+      if (hasOwn(platformJson, key)) {
+        project[key] = platformJson[key]
+      } else if (projectMap[key] !== undefined) {
+        project[key] = projectMap[key]
+      }
+    })
   }
 
   parseCondition(pagesJson)
