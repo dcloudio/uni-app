@@ -338,8 +338,13 @@ export function initXPage(
   }
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
+    let targetRoute = route?.path || ''
+    if (targetRoute.startsWith('/')) {
+      targetRoute = targetRoute.substring(1)
+    }
+
     const uniPage = new UniNormalPageImpl({
-      route: route?.path.substring(1) || '',
+      route: targetRoute,
       options: new UTSJSONObject(route?.query || {}),
       vm,
     })
