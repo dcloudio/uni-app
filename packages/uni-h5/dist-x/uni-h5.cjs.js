@@ -13300,7 +13300,7 @@ class UniMatchMediaElement extends UniViewElement {
     }, this.uniPage.vm.$);
   }
   attributeChangedCallback(name, oldValue, newValue) {
-    if (this._experssions.length == 0) {
+    if (this._experssions.length == 0 || newValue == null) {
       return;
     }
     const matches = name.match(RE_MQ_FEATURE);
