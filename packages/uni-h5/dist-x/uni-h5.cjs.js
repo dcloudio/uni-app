@@ -3140,8 +3140,12 @@ function initXPage(vm, route, page) {
   };
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
+    let targetRoute = (route == null ? void 0 : route.path) || "";
+    if (targetRoute.startsWith("/")) {
+      targetRoute = targetRoute.substring(1);
+    }
     const uniPage = new UniNormalPageImpl({
-      route: (route == null ? void 0 : route.path.substring(1)) || "",
+      route: targetRoute,
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
@@ -9174,7 +9178,7 @@ const ConfirmTypes = ["done", "go", "next", "search", "send"];
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
-  emits: ["confirm", "linechange", ...emit],
+  emits: ["confirm", "change", "linechange", ...emit],
   setup(props2, {
     emit: emit2,
     expose
@@ -9222,6 +9226,13 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       height
     }) {
       heightRef.value = height;
+    }
+    function onChange2(event) {
+      {
+        trigger("change", event, {
+          value: state.value
+        });
+      }
     }
     function confirm(event) {
       trigger("confirm", event, {
@@ -9293,8 +9304,9 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
           }
         },
         "onKeydown": onKeyDownEnter,
-        "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
+        "onKeyup": onKeyUpEnter,
+        "onChange": onChange2
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
       return vue.createVNode("uni-textarea", {
         "ref": rootRef,
         "auto-height": props2.autoHeight

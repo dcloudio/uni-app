@@ -174,8 +174,7 @@ export interface Uni {
 	        "osVer": "5.0",
 	        "uniVer": "√",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "3.91",
-	        "unixUtsPlugin": "3.91"
+	        "unixVer": "3.91"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
@@ -260,8 +259,7 @@ export interface Uni {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVer": "4.61"
 	      },
 	      "ios": {
 	        "osVer": "12.0",

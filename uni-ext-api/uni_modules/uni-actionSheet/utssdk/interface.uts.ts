@@ -68,8 +68,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.51",
-   *      "unixUtsPlugin": "4.51"
+   *      "unixVer": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
@@ -141,8 +140,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.51",
-   *      "unixUtsPlugin": "4.51"
+   *      "unixVer": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
@@ -214,8 +212,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.51",
-   *      "unixUtsPlugin": "4.51"
+   *      "unixVer": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
@@ -287,8 +284,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.51",
-   *      "unixUtsPlugin": "4.51"
+   *      "unixVer": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
@@ -392,8 +388,7 @@ export interface Uni {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "3.91",
-   *      "unixUtsPlugin": "3.91"
+   *      "unixVer": "3.91"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
@@ -472,8 +467,7 @@ export interface Uni {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.51",
-   *      "unixUtsPlugin": "4.51"
+   *      "unixVer": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",

@@ -7849,7 +7849,7 @@ const ConfirmTypes = ["done", "go", "next", "search", "send"];
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$a,
-  emits: ["confirm", "linechange", ...emit],
+  emits: ["confirm", "change", "linechange", ...emit],
   setup(props2, {
     emit: emit2,
     expose
@@ -7889,6 +7889,8 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       height
     }) {
       heightRef.value = height;
+    }
+    function onChange(event) {
     }
     function confirm(event) {
       trigger("confirm", event, {
@@ -7960,8 +7962,9 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
           }
         },
         "onKeydown": onKeyDownEnter,
-        "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
+        "onKeyup": onKeyUpEnter,
+        "onChange": onChange
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
       return vue.createVNode("uni-textarea", {
         "ref": rootRef,
         "auto-height": props2.autoHeight
