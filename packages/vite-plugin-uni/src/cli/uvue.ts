@@ -95,7 +95,7 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
       if (runByHBuilderX()) {
         setTimeout(() => {
           console.error(`Build failed with errors.`)
-        })
+        }, 50) // 目前需要延迟50ms执行，因为莫名其妙的这个setTimeout执行会比createStderrListener里边创建的setTimeout更早执行
       }
     }
   })
