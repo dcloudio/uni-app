@@ -602,7 +602,7 @@ function useMap(
 }
 
 export default /*#__PURE__*/ defineBuiltInComponent({
-  name: 'MapWeb',
+  name: 'Map',
   props,
   emits: [
     'markertap',
