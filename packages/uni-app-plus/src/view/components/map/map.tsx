@@ -147,7 +147,7 @@ const props = {
 type Props = ExtractPropTypes<typeof props>
 
 export default /*#__PURE__*/ defineBuiltInComponent({
-  name: 'MapDefault',
+  name: 'Map',
   props,
   emits: ['click', 'regionchange', 'controltap', 'markertap', 'callouttap'],
   setup(props, { emit }) {
