@@ -35,7 +35,7 @@ export const openDialogPage = (
     return path.indexOf(route.meta.route) !== -1
   })
   const dialogPage = new UniDialogPageImpl({
-    route: path.substring(1),
+    route: path.startsWith('/') ? path.substring(1) : path,
     options: new UTSJSONObject(query),
     $component: targetRoute!.component,
     getParentPage: () => null,
