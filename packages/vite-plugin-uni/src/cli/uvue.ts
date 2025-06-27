@@ -82,7 +82,7 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
       if (dex) {
         const files = JSON.parse(dex)
         if (!files.length) {
-          // 本次无变动
+          // 本次无变动，重要：这里的打印信息，HBuilderX也会用到，如果调整了文案，需要同步调整HBuilderX的文案
           return output('log', M['uvue.dev.watching.end.empty'])
         }
         return output(
