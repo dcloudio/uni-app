@@ -5,5 +5,11 @@
   "axmlStrictCheck": false,
   "enableDistFileMinify": false,
   "enableParallelLoader": false,
-  "enableNodeModuleBabelTransform": true
+  "enableNodeModuleBabelTransform": true,
+  "format": 2,
+  "pluginResolution": {},
+  "developOptions": {},
+  "compileOptions": {},
+  "uploadExclude": [],
+  "assetsInclude": []
 }
