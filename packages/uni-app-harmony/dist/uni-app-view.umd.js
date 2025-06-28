@@ -19617,7 +19617,7 @@
   function processClickEvent(node, triggerItemClick) {
     if (["a", "img"].includes(node.name) && triggerItemClick) {
       return {
-        onClick: (e2) => {
+        onClickCapture: (e2) => {
           triggerItemClick(e2, {
             node
           });
@@ -21573,7 +21573,7 @@
   const Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
     props: props$e,
-    emits: ["confirm", "linechange", ...emit],
+    emits: ["confirm", "change", "linechange", ...emit],
     setup(props2, _ref) {
       var {
         emit: emit2,
@@ -21615,6 +21615,8 @@
           height
         } = _ref2;
         heightRef.value = height;
+      }
+      function onChange2(event) {
       }
       function confirm(event) {
         trigger2("confirm", event, {
@@ -21685,8 +21687,9 @@
             caretColor: props2.cursorColor
           }),
           "onKeydown": onKeyDownEnter,
-          "onKeyup": onKeyUpEnter
-        }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
+          "onKeyup": onKeyUpEnter,
+          "onChange": onChange2
+        }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
         return createVNode("uni-textarea", {
           "ref": rootRef,
           "auto-height": props2.autoHeight

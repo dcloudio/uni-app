@@ -64,8 +64,11 @@ export function showLoading(uiContext: UIContext, options: ShowLoadingOptions) {
         alignment: DialogAlignment.Center,
         isModal: options.mask == undefined ? false : options.mask,
         autoCancel: false,
-        onWillDismiss: () => {
-
+        onWillDismiss: (action:DismissDialogAction) => {
+            if(action.reason === DismissReason.PRESS_BACK){
+                promptAction.closeCustomDialog(loading)
+            }
+            return false
         }
     })
 }

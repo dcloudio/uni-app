@@ -2102,27 +2102,6 @@ function handleDialogPageBack(dialogPage) {
     });
   }
 }
-var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font).+)/;
-function removeUrlWrap(source) {
-  if (source.startsWith("url(")) {
-    if (source.split("format(").length > 1) {
-      source = source.split("format(")[0].trim();
-    }
-    source = source.substring(4, source.length - 1);
-  }
-  if (source.startsWith('"') || source.startsWith("'")) {
-    source = source.substring(1, source.length - 1);
-  }
-  return source;
-}
-function checkOptionSource(options, res) {
-  options.source = removeUrlWrap(options.source);
-  if (!SOURCE_REG.test(options.source)) {
-    res.reject("loadFontFace:fail, source is invalid.", 101);
-    return false;
-  }
-  return true;
-}
 function getLoadFontFaceOptions(options, res) {
   return {
     family: options.family,
@@ -2142,11 +2121,9 @@ function getLoadFontFaceOptions(options, res) {
 }
 var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
   if (options.global === true) {
-    if (checkOptionSource(options, res)) {
-      var app = getNativeApp();
-      var fontInfo = getLoadFontFaceOptions(options, res);
-      app.loadFontFace(fontInfo);
-    }
+    var app = getNativeApp();
+    var fontInfo = getLoadFontFaceOptions(options, res);
+    app.loadFontFace(fontInfo);
   } else {
     var page = getCurrentPage().vm;
     if (!page) {
@@ -2156,11 +2133,9 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
     if (page.$fontFamilySet.has(options.family)) {
       return;
     }
-    if (checkOptionSource(options, res)) {
-      page.$fontFamilySet.add(options.family);
-      var _fontInfo = getLoadFontFaceOptions(options, res);
-      page.$nativePage.loadFontFace(_fontInfo);
-    }
+    page.$fontFamilySet.add(options.family);
+    var _fontInfo = getLoadFontFaceOptions(options, res);
+    page.$nativePage.loadFontFace(_fontInfo);
   }
 });
 function loadFontFaceByStyles(styles2, global) {
