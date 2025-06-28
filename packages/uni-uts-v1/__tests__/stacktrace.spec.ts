@@ -3,7 +3,6 @@ import {
   parseUTSArkTSPluginStacktrace,
   parseUTSKotlinStacktrace,
   parseUTSSwiftPluginStacktrace,
-  parseUTSSyntaxError,
 } from '../src/stacktrace'
 import { hbuilderFormatter } from '../src/stacktrace/kotlin'
 import { normalizePath } from '../src/shared'
