@@ -138,6 +138,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     hbxVersion,
     input,
     output: {
+      errorFormat: 'json',
       isX: true,
       isSingleThread: true,
       isApp: true,

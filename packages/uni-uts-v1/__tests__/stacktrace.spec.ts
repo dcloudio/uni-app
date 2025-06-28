@@ -46,7 +46,7 @@ x UTSCallback 已过时，详情查看 https://uniapp.dcloud.net.cn/plugin/uts-p
 31 |`,
       ``
     )
-    expect(msg.match(/at\s/g)?.length).toBe(2)
+    expect((msg as string).match(/at\s/g)?.length).toBe(2)
   })
   test('parseUTSKotlinStacktrace', async () => {
     const inputDir = `/Users/xxx/HBuilderProjects/test-x/unpackage/dist/dev/.kotlin/src`

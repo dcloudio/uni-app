@@ -1,3 +1,6 @@
+import type { RollupError } from 'rollup'
+import path from 'path'
+import fs from 'fs-extra'
 import { relative } from '../utils'
 import {
   type GenerateAppHarmonyCodeFrameOptions,
@@ -17,6 +20,8 @@ import {
   MP_PLATFORMS,
   parseMiniProgramRuntimeStacktrace,
 } from './mp'
+import { originalPositionForSync } from '../sourceMap'
+import { generateCodeFrame } from './utils'
 
 export { parseUTSSwiftPluginStacktrace } from './swift'
 export { parseUTSArkTSPluginStacktrace } from './arkts'
@@ -73,10 +78,21 @@ export function parseUTSRuntimeStacktrace(
   }
 }
 
-export function parseUTSSyntaxError(error: any, inputDir: string): string {
+export function parseUTSSyntaxError(
+  error: any,
+  inputDir: string
+): string | RollupError {
   let errorMsg = error
   if (error instanceof Error) {
     errorMsg = error.message
+    if (errorMsg.trim().startsWith('{')) {
+      try {
+        errorMsg = JSON.parse(errorMsg)
+        return parseUTSSyntaxJsonError(errorMsg, inputDir)
+      } catch (e) {
+        return errorMsg
+      }
+    }
   }
   let msg = String(errorMsg).replace(/\t/g, ' ')
   let res: RegExpExecArray | null = null
@@ -96,4 +112,63 @@ export function parseUTSSyntaxError(error: any, inputDir: string): string {
     return error
   }
   return msg
+}
+
+interface UTSSyntaxJsonError {
+  message: string
+  code: string | null
+  frame: string | null
+  level: string
+  filename: string
+  line: number
+  column: number
+}
+// {"message":"Expression expected","code":null,"level":"error","filename":"/Users/xxx/Documents/HBuilderProjects/test-vue3/unpackage/dist/dev/.uvue/app-android/uni_modules/test-uts/utssdk/index.uts","line":3,"column":4}
+function parseUTSSyntaxJsonError(error: UTSSyntaxJsonError, inputDir: string) {
+  const normalizedError: RollupError = new Error(error.message)
+
+  const sourceMapFilename = error.filename + '.map'
+  if (fs.existsSync(sourceMapFilename)) {
+    const result = originalPositionForSync({
+      sourceMapFile: sourceMapFilename,
+      line: error.line,
+      column: error.column,
+      withSourceContent: true,
+    })
+    if (result) {
+      Object.defineProperty(normalizedError, 'id', {
+        get() {
+          return path.resolve(inputDir, result.source)
+        },
+        set(_v) {},
+      })
+      normalizedError.loc = {
+        file: result.source,
+        line: result.line,
+        column: result.column,
+      }
+      if (result.sourceContent) {
+        normalizedError.frame = generateCodeFrame(result.sourceContent, {
+          line: result.line,
+          column: result.column,
+        }).replace(/\t/g, ' ')
+      }
+      return normalizedError
+    }
+  }
+  // 锁定id，防止rollup修改id
+  Object.defineProperty(normalizedError, 'id', {
+    get() {
+      return error.filename
+    },
+    set(_v) {},
+  })
+  // 解析 sourcemap
+  normalizedError.loc = {
+    file: error.filename,
+    line: error.line,
+    column: error.column,
+  }
+  normalizedError.frame = error.frame || ''
+  return normalizedError
 }

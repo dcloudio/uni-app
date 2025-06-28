@@ -636,6 +636,7 @@ export async function compile(
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input,
     output: {
+      errorFormat: 'json',
       outFilename: outFilename ? outFilename : undefined,
       isX,
       isSingleThread,

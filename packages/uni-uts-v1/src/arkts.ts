@@ -13,6 +13,7 @@ import {
 import type { CompileResult } from '.'
 import { sync } from 'fast-glob'
 import { parseJson } from './shared'
+import { parseUTSSyntaxError } from './stacktrace'
 
 interface ArkTSCompilerOptions {
   isX?: boolean
@@ -516,6 +517,7 @@ export async function compileArkTSExtApi(
       },
     },
     output: {
+      errorFormat: 'json',
       outDir: outputUniModuleDir,
       outFilename: 'utssdk/app-harmony/index.ets',
       package: '',
@@ -702,6 +704,13 @@ export default {
   )
 
   const result = await bundle(UTSTarget.ARKTS, buildOptions)
+
+  if (!result) {
+    return
+  }
+  if (result.error) {
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
+  }
   normalizeUTSResult('app-harmony', result)
   const deps: string[] = [filename, ...depEtsFiles]
   if (process.env.NODE_ENV === 'development') {

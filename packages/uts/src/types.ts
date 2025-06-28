@@ -52,6 +52,7 @@ export type UTSOutputOptions = {
   imports?: string[]
   sourceMap?: boolean | string
   inlineSourcesContent?: boolean
+  errorFormat?: 'pretty' | 'json' // 默认 pretty
   extname: string
   logFilename?: boolean
   noColor?: boolean
