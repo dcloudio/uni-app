@@ -204,7 +204,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   }
 
   if (result.error) {
-    throw parseUTSSyntaxError(result.error, inputDir)
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
   }
   if (isProd) {
     const autoImportUniCloud = shouldAutoImportUniCloud()

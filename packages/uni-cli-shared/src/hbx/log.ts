@@ -161,7 +161,7 @@ function buildErrorMessage(
         // [plugin:vite:vue]  pages/index/index.vue (2:12): v-on="" is not supported
         const locStr = `(${err.loc.line}:${err.loc.column}):`
         if (msg.includes(locStr)) {
-          msg = msg.split(locStr)[1]
+          msg = msg.split(locStr)[1].trim()
         }
       }
       args.push(
@@ -175,6 +175,13 @@ function buildErrorMessage(
         messages.slice(1).forEach((msg) => {
           otherMsgs.push(`[plugin:${msg}`)
         })
+      }
+      if (err.loc) {
+        // [plugin:vite:vue]  pages/index/index.vue (2:12): v-on="" is not supported
+        const locStr = `(${err.loc.line}:${err.loc.column}):`
+        if (err.message.includes(locStr)) {
+          err.message = err.message.split(locStr)[1].trim()
+        }
       }
       args.push(
         `${colors.magenta('[plugin:' + err.plugin + ']')} ${colors.red(

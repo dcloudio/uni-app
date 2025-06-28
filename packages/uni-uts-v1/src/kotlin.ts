@@ -143,7 +143,7 @@ export async function runKotlinProd(
     return
   }
   if (result.error) {
-    throw parseUTSSyntaxError(result.error, inputDir)
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
   }
 
   const autoImportUniCloud = shouldAutoImportUniCloud()
@@ -262,7 +262,7 @@ export async function runKotlinDev(
     return
   }
   if (result.error) {
-    throw parseUTSSyntaxError(result.error, inputDir)
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
   }
   result.type = 'kotlin'
   result.changed = []

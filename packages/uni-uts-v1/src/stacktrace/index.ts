@@ -1,7 +1,6 @@
 import type { RollupError } from 'rollup'
 import path from 'path'
 import fs from 'fs-extra'
-import { relative } from '../utils'
 import {
   type GenerateAppHarmonyCodeFrameOptions,
   parseUTSHarmonyRuntimeStacktrace,
@@ -94,24 +93,7 @@ export function parseUTSSyntaxError(
       }
     }
   }
-  let msg = String(errorMsg).replace(/\t/g, ' ')
-  let res: RegExpExecArray | null = null
-  const syntaxErrorRe = /(,-\[(.*):(\d+):(\d+)\])/g
-  let matched = false
-  while ((res = syntaxErrorRe.exec(msg))) {
-    const [row, filename, line, column] = res.slice(1)
-    msg = msg.replace(
-      row,
-      `at ${relative(filename.split('?')[0], inputDir)}:${
-        parseInt(line) + 3
-      }:${column}`
-    )
-    matched = true
-  }
-  if (!matched) {
-    return error
-  }
-  return msg
+  return String(errorMsg).replace(/\t/g, ' ')
 }
 
 interface UTSSyntaxJsonError {

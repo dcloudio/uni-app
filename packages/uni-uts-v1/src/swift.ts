@@ -92,7 +92,7 @@ export async function runSwiftProd(
     return
   }
   if (result.error) {
-    throw parseUTSSyntaxError(result.error, inputDir)
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
   }
 
   const autoImportUniCloud = shouldAutoImportUniCloud()
@@ -204,7 +204,7 @@ export async function runSwiftDev(
     return
   }
   if (result.error) {
-    throw parseUTSSyntaxError(result.error, inputDir)
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
   }
   result.type = 'swift'
 

@@ -28,26 +28,6 @@ describe('uts:stacktrace', () => {
       `uni_modules/test-uts1/utssdk/app-ios/index.uts:5:10`
     )
   })
-  test('parseUTSSyntaxError', () => {
-    const msg = parseUTSSyntaxError(
-      `Error: 
-x UTSCallback 已过时，详情查看 https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99.
-    ,-[uni_modules/uts-alert/utssdk/app-android/index.uts:29:1]
-29 | 	inputET:EditText
-30 | 	callback:UTSCallback
-    :           ^^^^^^^^^^^
-31 |
-Error: 
-x UTSCallback 已过时，详情查看 https://uniapp.dcloud.net.cn/plugin/uts-plugin.html#%E5%B8%B8%E8%A7%81%E6%8A%A5%E9%94%99.
-    ,-[uni_modules/uts-alert/utssdk/app-android/index.uts:29:1]
-29 | 	inputET:EditText
-30 | 	callback:UTSCallback
-    :           ^^^^^^^^^^^
-31 |`,
-      ``
-    )
-    expect((msg as string).match(/at\s/g)?.length).toBe(2)
-  })
   test('parseUTSKotlinStacktrace', async () => {
     const inputDir = `/Users/xxx/HBuilderProjects/test-x/unpackage/dist/dev/.kotlin/src`
     const sourceMapDir = path.resolve(
