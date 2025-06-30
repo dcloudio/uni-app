@@ -129,7 +129,14 @@ export default {
       })
     })
     tabBar && tabBar.onClick(({ index }) => {
+      const fromIndex = config.selectedIndex
       clickCallback(config.list[index], index)
+      const toIndex = config.selectedIndex
+      if (index !== toIndex) {
+        tabBar.switchSelect({
+          index: fromIndex
+        })
+      }
     })
     tabBar && tabBar.onMidButtonClick(() => {
       publish('onTabBarMidButtonTap', {})
@@ -158,6 +165,7 @@ export default {
       tabBar && tabBar.switchSelect({
         index
       })
+      this.config.selectedIndex = index
       return true
     }
     return false
