@@ -255,7 +255,12 @@ export function parseUTSKotlinRuntimeStacktrace(
         : ''
       let error =
         'error: ' +
-        formatKotlinError(resolveCausedBy(res), codes, runtimeFormatters)
+        formatKotlinError(
+          resolveCausedBy(res),
+          codes,
+          runtimeFormatters,
+          options.appid
+        )
       if (color) {
         error = color + SPECIAL_CHARS.ERROR_BLOCK + error + color
       }
@@ -330,7 +335,7 @@ function parseUTSKotlinRuntimeStacktraceLine(
 }
 
 interface Formatter {
-  format(error: string, codes: string[]): string | undefined
+  format(error: string, codes: string[], appid?: string): string | undefined
 }
 
 const TYPE_MISMATCH_RE =
@@ -377,6 +382,15 @@ const extApiErrorFormatter: Formatter = {
         return `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
       }
     }
+  },
+}
+
+const packageFormatter: Formatter = {
+  format(error, _, appid) {
+    if (appid) {
+      return error.replaceAll(parseUniXAppAndroidPackage(appid) + '.', '')
+    }
+    return error
   },
 }
 
@@ -431,7 +445,7 @@ const compileFormatters: Formatter[] = [
   unresolvedErrorFormatter,
 ]
 
-const runtimeFormatters: Formatter[] = [extApiErrorFormatter]
+const runtimeFormatters: Formatter[] = [extApiErrorFormatter, packageFormatter]
 
 const UNI_API_RE = /(uni\.\w+)/
 const UNI_CLOUD_API_RE = /(uniCloud\.\w+)/
@@ -446,7 +460,8 @@ function findApi(msg: string, re: RegExp) {
 function formatKotlinError(
   error: string,
   codes: string[],
-  formatters: Formatter[]
+  formatters: Formatter[],
+  appid?: string
 ): string {
   // 替换响应式类型为标准类型，使用对象映射提高可维护性
   const typeReplacements: Record<string, string> = {
@@ -464,10 +479,14 @@ function formatKotlinError(
   })
 
   for (const formatter of formatters) {
-    const err = formatter.format(error, codes)
+    const err = formatter.format(error, codes, appid)
     if (err) {
       return err
     }
   }
   return error
+}
+
+function parseUniXAppAndroidPackage(appid: string) {
+  return 'uni.' + appid.replace(/_/g, '')
 }

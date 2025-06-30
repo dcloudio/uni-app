@@ -22,6 +22,7 @@ import {
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
   parseUniModulesArtifacts,
+  parseUniXAppAndroidPackage,
   parseVueRequest,
   resolveMainPathOnce,
   resolveSourceMapPath,
@@ -339,8 +340,9 @@ export function uniAppPlugin(): UniVitePlugin {
         disableSplitManifest: process.env.NODE_ENV !== 'development',
         inputDir: uvueOutputDir,
         outputDir: outputDir,
-        package:
-          'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
+        package: parseUniXAppAndroidPackage(
+          manifestJson.appid || DEFAULT_APPID
+        ),
         sourceMap: enableSourceMap(),
         uni_modules: [...getCurrentCompiledUTSPlugins()],
         pages: getUniXPagePaths(),
