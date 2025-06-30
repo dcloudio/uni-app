@@ -8382,8 +8382,12 @@ function initXPage(vm, route, page) {
   };
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
+    let targetRoute = (route == null ? void 0 : route.path) || "";
+    if (targetRoute.startsWith("/")) {
+      targetRoute = targetRoute.substring(1);
+    }
     const uniPage = new UniNormalPageImpl({
-      route: (route == null ? void 0 : route.path.substring(1)) || "",
+      route: targetRoute,
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
@@ -27820,7 +27824,7 @@ const openDialogPage = (options) => {
     return path.indexOf(route.meta.route) !== -1;
   });
   const dialogPage = new UniDialogPageImpl({
-    route: path.substring(1),
+    route: path.startsWith("/") ? path.substring(1) : path,
     options: new UTSJSONObject(query),
     $component: targetRoute.component,
     getParentPage: () => null,
