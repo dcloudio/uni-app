@@ -206,8 +206,14 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   showLoading: {
-    args: {
-      title: 'content'
+    args(
+      fromArgs,
+      toArgs
+    ) {
+      if (!fromArgs.mask) {
+        toArgs.mask = false
+      }
+      toArgs.content = fromArgs.title
     }
   },
   uploadFile: {
