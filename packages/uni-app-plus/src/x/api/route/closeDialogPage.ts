@@ -3,6 +3,7 @@ import { invokeHook, isSystemDialogPage } from '@dcloudio/uni-core'
 import closeNativeDialogPage from './closeNativeDialogPage'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import { ANI_DURATION } from '../../../service/constants'
+import { isTabPage } from '../../framework/app/tabBar'
 
 export const closeDialogPage = (options?: CloseDialogPageOptions) => {
   const currentPages = getCurrentPages() as UniPage[]
@@ -24,7 +25,10 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
     }
     const parentPage = dialogPage.getParentPage()
     if (!isSystemDialogPage(dialogPage)) {
-      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+      if (
+        parentPage &&
+        (isTabPage(parentPage.vm) || currentPages.indexOf(parentPage) !== -1)
+      ) {
         const parentDialogPages = parentPage.getDialogPages()
         const index = parentDialogPages.indexOf(dialogPage)
         closeNativeDialogPage(

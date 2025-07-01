@@ -20,7 +20,11 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
     const dialogPage = options?.dialogPage! as UniDialogPage
     const parentPage = dialogPage.getParentPage()
     if (!isSystemDialogPage(dialogPage)) {
-      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+      if (
+        parentPage &&
+        (parentPage.vm.$basePage.meta.isTabBar ||
+          currentPages.indexOf(parentPage) !== -1)
+      ) {
         const parentDialogPages = parentPage.getDialogPages()
         const index = parentDialogPages.indexOf(dialogPage)
         parentDialogPages.splice(index, 1)
