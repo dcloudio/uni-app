@@ -563,6 +563,32 @@
       }
     }
   },
+  "uni-live-player": {
+    "uni": {
+      "createLivePlayerContext": {
+        "name": "createLivePlayerContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-live-pusher": {
+    "uni": {
+      "createLivePusherContext": {
+        "name": "createLivePusherContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-location": {
     "provider": {
       "service": "location"
