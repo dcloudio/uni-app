@@ -869,7 +869,11 @@ function noTracking(self, method) {
   var args = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
   pauseTracking();
   startBatch();
-  var res = toRaw(self)[method].apply(self, args);
+  var raw = toRaw(self);
+  if (raw.length > 0) {
+    raw[0] = raw[0];
+  }
+  var res = raw[method].apply(self, args);
   endBatch();
   resetTracking();
   return res;

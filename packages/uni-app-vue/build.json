@@ -185,6 +185,12 @@
     ],
     "textReplacements": [
       {
+        "find": "const res = toRaw(self)[method].apply(self, args);",
+        "replace": "const raw = toRaw(self);if (raw.length > 0) {raw[0] = raw[0]};const res = raw[method].apply(self, args);",
+        "file": "@vue/reactivity/dist/reactivity.esm-bundler.js",
+        "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250303114146089/comment"
+      },
+      {
         "find": "proxyMap.set(target, proxy);",
         "replace": "proxyMap.set(target, new WeakRef(proxy));",
         "file": "@vue/reactivity/dist/reactivity.esm-bundler.js",
@@ -243,6 +249,12 @@
       }
     ],
     "textReplacements": [
+      {
+        "find": "const res = toRaw(self)[method].apply(self, args);",
+        "replace": "const raw = toRaw(self);if (raw.length > 0) {raw[0] = raw[0]};const res = raw[method].apply(self, args);",
+        "file": "@vue/reactivity/dist/reactivity.esm-bundler.js",
+        "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250303114146089/comment"
+      },
       {
         "find": "proxyMap.set(target, proxy);",
         "replace": "proxyMap.set(target, new WeakRef(proxy));",
