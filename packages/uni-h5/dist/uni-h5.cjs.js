@@ -4006,6 +4006,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
+    const inputmode = vue.computed(() => {
+      if (props2.inputmode) {
+        return props2.inputmode;
+      }
+    });
     let cache = useCache(props2, type);
     let resetCache = {
       fn: null
@@ -4113,7 +4118,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": props2.inputmode
+        "inputmode": inputmode.value
       }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef

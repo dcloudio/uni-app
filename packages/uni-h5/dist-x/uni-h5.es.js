@@ -8482,7 +8482,7 @@ const closeDialogPage = (options) => {
     const dialogPage = options == null ? void 0 : options.dialogPage;
     const parentPage = dialogPage.getParentPage();
     if (!isSystemDialogPage(dialogPage)) {
-      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+      if (parentPage && (parentPage.vm.$basePage.meta.isTabBar || currentPages.indexOf(parentPage) !== -1)) {
         const parentDialogPages = parentPage.getDialogPages();
         const index2 = parentDialogPages.indexOf(dialogPage);
         parentDialogPages.splice(index2, 1);
@@ -12715,7 +12715,7 @@ const props$o = /* @__PURE__ */ extend({}, props$p, {
     default: ""
   }
 });
-const resolveDigitDecimalPointDeleteContentBackward = once(() => {
+once(() => {
   {
     const ua2 = navigator.userAgent;
     let osVersion = "";
@@ -12731,34 +12731,6 @@ const resolveDigitDecimalPointDeleteContentBackward = once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
-function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
-  if (cache.value) {
-    if (event.data === ".") {
-      if (cache.value.slice(-1) === ".") {
-        state2.value = input.value = cache.value = cache.value.slice(0, -1);
-        return false;
-      }
-      if (cache.value && !cache.value.includes(".")) {
-        cache.value += ".";
-        if (resetCache) {
-          resetCache.fn = () => {
-            state2.value = input.value = cache.value = cache.value.slice(0, -1);
-            input.removeEventListener("blur", resetCache.fn);
-          };
-          input.addEventListener("blur", resetCache.fn);
-        }
-        return false;
-      }
-    } else if (event.inputType === "deleteContentBackward") {
-      if (resolveDigitDecimalPointDeleteContentBackward()) {
-        if (cache.value.slice(-2, -1) === ".") {
-          cache.value = state2.value = input.value = cache.value.slice(0, -2);
-          return true;
-        }
-      }
-    }
-  }
-}
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
@@ -12821,10 +12793,19 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
+    const inputmode = computed(() => {
+      if (props2.inputmode) {
+        return props2.inputmode;
+      }
+      {
+        const inputmodeMap = {
+          number: "numeric",
+          digit: "decimal"
+        };
+        return Object.values(INPUT_MODES).includes(props2.type) ? props2.type : inputmodeMap[props2.type];
+      }
+    });
     let cache = useCache(props2, type);
-    let resetCache = {
-      fn: null
-    };
     const rootRef = ref(null);
     const {
       fieldRef,
@@ -12833,40 +12814,8 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
       fixDisabledColor,
       trigger
     } = useField(props2, rootRef, emit2, (event, state22) => {
-      const input = event.target;
-      if (type.value === "number") {
-        if (resetCache.fn) {
-          input.removeEventListener("blur", resetCache.fn);
-          resetCache.fn = null;
-        }
-        if (input.validity && !input.validity.valid) {
-          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
-            cache.value = "-";
-            state22.value = "";
-            resetCache.fn = () => {
-              cache.value = input.value = "";
-            };
-            input.addEventListener("blur", resetCache.fn);
-            return false;
-          }
-          const res = resolveDigitDecimalPoint(event, cache, state22, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
-          cache.value = state22.value = input.value = cache.value === "-" ? "" : cache.value;
-          return false;
-        } else {
-          const res = resolveDigitDecimalPoint(event, cache, state22, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
-          cache.value = input.value;
-        }
-        const maxlength = state22.maxlength;
-        if (maxlength > 0 && input.value.length > maxlength) {
-          input.value = input.value.slice(0, maxlength);
-          state22.value = input.value;
-          const modelValue = props2.modelValue !== void 0 && props2.modelValue !== null ? props2.modelValue.toString() : "";
-          return modelValue !== input.value;
-        }
+      {
+        return;
       }
     });
     watch(() => state2.value, (value) => {
@@ -12940,7 +12889,7 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
         } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": props2.inputmode
+        "inputmode": inputmode.value
       }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return createVNode("uni-input", {
         "ref": rootRef
