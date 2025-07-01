@@ -20,6 +20,17 @@ var axmlStrictCheck = false;
 var enableDistFileMinify = false;
 var enableParallelLoader = false;
 var enableNodeModuleBabelTransform = true;
+var format = 2;
+var pluginResolution = {
+};
+var developOptions = {
+};
+var compileOptions = {
+};
+var uploadExclude = [
+];
+var assetsInclude = [
+];
 var source = {
 	appid: appid,
 	component2: component2,
@@ -27,7 +38,13 @@ var source = {
 	axmlStrictCheck: axmlStrictCheck,
 	enableDistFileMinify: enableDistFileMinify,
 	enableParallelLoader: enableParallelLoader,
-	enableNodeModuleBabelTransform: enableNodeModuleBabelTransform
+	enableNodeModuleBabelTransform: enableNodeModuleBabelTransform,
+	format: format,
+	pluginResolution: pluginResolution,
+	developOptions: developOptions,
+	compileOptions: compileOptions,
+	uploadExclude: uploadExclude,
+	assetsInclude: assetsInclude
 };
 
 function transformRef(node, context) {

@@ -36,6 +36,7 @@
             <!-- #endif -->
               <view class="uni-action-sheet_dialog__cell"
                 :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape, 'border-t': index !== 0 }"
+                :hover-class="hoverClass"
                 @click="handleMenuItemClick(index)">
                 <text :style="itemColor != null ? { color: itemColor } : {}" class="uni-action-sheet_dialog__cell__text"
                   :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
@@ -52,6 +53,7 @@
       </view>
       <view :style="backgroundColor != null ? {backgroundColor} : {}" class="uni-action-sheet_dialog__action"
         :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }"
+        :hover-class="hoverClass"
         @click="handleCancel">
         <text :style="cancelColor != null ? { color: cancelColor } : {}" class="uni-action-sheet_dialog__action__text"
           :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
@@ -274,6 +276,9 @@
       },
       computedBackgroundColor(): string {
         return this.backgroundColor !== null ? this.backgroundColor! : (this.theme == 'dark' ? '#2C2C2B' : '#ffffff')
+      },
+      hoverClass(): string {
+        return this.theme == 'dark' ? 'uni-action-sheet_dialog__hover__dark__mode' : 'uni-action-sheet_dialog__hover'
       }
     },
     onReady() {
@@ -324,16 +329,9 @@
       closeActionSheet() {
         this.show = false
         setTimeout(() => {
-          // #ifdef APP-ANDROID
           uni.closeDialogPage({
             dialogPage: this.$page
           })
-          // #endif
-          // #ifndef APP-ANDROID
-          uni.closeDialogPage({
-            dialogPage: this.$page
-          })
-          // #endif
         }, 250)
       },
       handleMenuItemClick(tapIndex: number) {
@@ -452,6 +450,13 @@
     scrollbar-width: none;
     /* #endif */
   }
+
+  .uni-action-sheet_dialog__hover {
+		background-color: #efefef;
+	}
+	.uni-action-sheet_dialog__hover__dark__mode {
+		background-color: #1c1c1c;
+	}
   /* #ifdef WEB */
   .divider{
     height: 1px;
