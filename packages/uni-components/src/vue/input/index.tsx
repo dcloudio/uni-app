@@ -3,7 +3,6 @@ import { once } from '@dcloudio/uni-shared'
 import {
   type ComputedRef,
   type ExtractPropTypes,
-  type HTMLAttributes,
   type Ref,
   computed,
   onMounted,
@@ -13,6 +12,8 @@ import {
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import {
+  type INPUT_MODE,
+  INPUT_MODES,
   type State,
   emit as fieldEmit,
   props as fieldProps,
@@ -188,13 +189,30 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           : 0
       return AUTOCOMPLETES[index]
     })
+    const inputmode = computed(() => {
+      if (props.inputmode) {
+        return props.inputmode
+      }
+      if (__X__) {
+        const inputmodeMap = {
+          number: 'numeric',
+          digit: 'decimal',
+        }
+        return Object.values(INPUT_MODES).includes(props.type as INPUT_MODE)
+          ? props.type
+          : inputmodeMap[props.type]
+      }
+    })
     let cache = useCache(props, type)
     let resetCache: ResetCache = { fn: null }
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
       useField(props, rootRef, emit, (event, state) => {
-        const input = event.target as HTMLInputElement
+        if (__X__) {
+          return
+        }
 
+        const input = event.target as HTMLInputElement
         if (type.value === 'number') {
           // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
           if (resetCache.fn) {
@@ -345,7 +363,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             style={props.cursorColor ? { caretColor: props.cursorColor } : {}}
             autocomplete={autocomplete.value}
             onKeyup={onKeyUpEnter}
-            inputmode={props.inputmode as HTMLAttributes['inputmode']}
+            inputmode={inputmode.value}
           />
         )
       return (
