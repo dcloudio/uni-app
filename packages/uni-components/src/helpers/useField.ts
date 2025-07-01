@@ -71,8 +71,8 @@ interface InputEventDetail {
 
 type HTMLFieldElement = HTMLInputElement | HTMLTextAreaElement
 
-type INPUT_MODE = HTMLAttributes['inputmode']
-const INPUT_MODES: INPUT_MODE[] = [
+export type INPUT_MODE = HTMLAttributes['inputmode']
+export const INPUT_MODES: INPUT_MODE[] = [
   'none',
   'text',
   'decimal',
