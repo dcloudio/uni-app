@@ -6,7 +6,7 @@ import {
   homeSystemDialogPages,
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
-import { parseUrl } from '@dcloudio/uni-shared'
+import { parseUrl, removeLeadingSlash } from '@dcloudio/uni-shared'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import {
@@ -35,7 +35,7 @@ export const openDialogPage = (
     return path.indexOf(route.meta.route) !== -1
   })
   const dialogPage = new UniDialogPageImpl({
-    route: path.startsWith('/') ? path.substring(1) : path,
+    route: removeLeadingSlash(path),
     options: new UTSJSONObject(query),
     $component: targetRoute!.component,
     getParentPage: () => null,

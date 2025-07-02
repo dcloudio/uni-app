@@ -14,6 +14,7 @@ import {
   ON_REACH_BOTTOM_DISTANCE,
   invokeArrayFns,
   normalizeTitleColor,
+  removeLeadingSlash,
 } from '@dcloudio/uni-shared'
 import { handleBeforeEntryPageRoutes } from '../../../service/api/route/utils'
 
@@ -338,13 +339,8 @@ export function initXPage(
   }
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
-    let targetRoute = route?.path || ''
-    if (targetRoute.startsWith('/')) {
-      targetRoute = targetRoute.substring(1)
-    }
-
     const uniPage = new UniNormalPageImpl({
-      route: targetRoute,
+      route: removeLeadingSlash(route?.path) || '',
       options: new UTSJSONObject(route?.query || {}),
       vm,
     })
