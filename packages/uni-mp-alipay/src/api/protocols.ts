@@ -221,8 +221,14 @@ export const showActionSheet = {
   },
 }
 export const showLoading = {
-  args: {
-    title: 'content',
+  args(
+    fromArgs: UniApp.ShowLoadingOptions,
+    toArgs: my.IShowLoadingOptions & { mask: boolean } // mini-types feedback.d.ts 未包含 mask
+  ) {
+    if (!fromArgs.mask) {
+      toArgs.mask = false
+    }
+    toArgs.content = fromArgs.title
   },
 }
 export const uploadFile = {
