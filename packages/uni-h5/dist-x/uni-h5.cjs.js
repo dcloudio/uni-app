@@ -3140,12 +3140,8 @@ function initXPage(vm, route, page) {
   };
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
-    let targetRoute = (route == null ? void 0 : route.path) || "";
-    if (targetRoute.startsWith("/")) {
-      targetRoute = targetRoute.substring(1);
-    }
     const uniPage = new UniNormalPageImpl({
-      route: targetRoute,
+      route: uniShared.removeLeadingSlash(route == null ? void 0 : route.path) || "",
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
