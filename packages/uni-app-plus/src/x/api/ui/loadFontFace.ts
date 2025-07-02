@@ -10,6 +10,20 @@ import type {
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { getNativeApp } from '../../framework/app/app'
 
+function removeUrlWrap(source: string): string {
+  // 考虑 url(xxx) format(xxx) 的情况，去掉 format(xxx)
+  if (source.startsWith('url(')) {
+    if (source.split('format(').length > 1) {
+      source = source.split('format(')[0].trim()
+    }
+    source = source.substring(4, source.length - 1)
+  }
+  if (source.startsWith('"') || source.startsWith("'")) {
+    source = source.substring(1, source.length - 1)
+  }
+  return source
+}
+
 function getLoadFontFaceOptions(
   options: LoadFontFaceOptions,
   res: AsyncApiRes<UniNamespace.LoadFontFaceOptions>
@@ -39,6 +53,8 @@ function getLoadFontFaceOptions(
 export const loadFontFace = defineAsyncApi(
   API_LOAD_FONT_FACE,
   (options: LoadFontFaceOptions, res) => {
+    options.source = removeUrlWrap(options.source as string)
+
     if (options.global === true) {
       const app = getNativeApp()
       const fontInfo = getLoadFontFaceOptions(options, res)
