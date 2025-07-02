@@ -59,15 +59,15 @@ describe('mp-alipay: transform component', () => {
       blankScript
     )
   })
-  test('alipay open component - mpass-component', () => {
+  test('alipay open component - mpaas-component', () => {
     assert(
-      `<mpass-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"/>`,
-      `<mpass-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"/>`,
+      `<mpaas-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"/>`,
+      `<mpaas-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"/>`,
       blankScript
     )
     assert(
-      `<mpass-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"></mpass-component>`,
-      `<mpass-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"></mpass-component>`,
+      `<mpaas-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"></mpaas-component>`,
+      `<mpaas-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"></mpaas-component>`,
       blankScript
     )
   })
