@@ -736,6 +736,12 @@
       "GetUserInfoOptions"
     ],
     [
+      "IOauthFail"
+    ],
+    [
+      "OauthErrorCode"
+    ],
+    [
       "OpenAppAuthorizeSetting"
     ],
     [
@@ -850,13 +856,31 @@
       "ScanCodeOptions"
     ],
     [
+      "IShareFail"
+    ],
+    [
+      "ShareErrorCode"
+    ],
+    [
       "Share"
+    ],
+    [
+      "ShareMiniProgramShareType"
     ],
     [
       "ShareSuccess"
     ],
     [
+      "ShareFail"
+    ],
+    [
+      "ShareComplete"
+    ],
+    [
       "ShareProvider"
+    ],
+    [
+      "ShareScene"
     ],
     [
       "ShareOptions"
