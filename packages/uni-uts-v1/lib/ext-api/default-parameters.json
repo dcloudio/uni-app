@@ -123,6 +123,18 @@
       "null"
     ]
   },
+  "uni-live-player": {
+    "createLivePlayerContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-live-pusher": {
+    "createLivePusherContext": [
+      null,
+      "null"
+    ]
+  },
   "uni-map-tencent": {
     "createMapContext": [
       null,
