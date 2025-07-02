@@ -130,6 +130,23 @@
       "UniOAuthHuaweiProvider"
     ]
   ],
+  "@uni_modules/uni-oauth-weixin": [
+    [
+      "AuthResp"
+    ],
+    [
+      "OauthWeixinFail"
+    ],
+    [
+      "UniOAuthWeixinProvider"
+    ],
+    [
+      "WeixinAccessTokenResp"
+    ],
+    [
+      "WeixinUserInfoResp"
+    ]
+  ],
   "@uni_modules/uni-payment-alipay": [
     [
       "UniPaymentAlipayProvider"
@@ -223,6 +240,11 @@
     ],
     [
       "SetPushChannelOptions"
+    ]
+  ],
+  "@uni_modules/uni-share-weixin": [
+    [
+      "UniShareWeixinProvider"
     ]
   ],
   "@uni_modules/uni-verify": [
