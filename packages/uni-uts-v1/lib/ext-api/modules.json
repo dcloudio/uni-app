@@ -878,6 +878,18 @@
       }
     }
   },
+  "uni-oauth-weixin": {
+    "provider": {
+      "service": "oauth",
+      "name": "weixin",
+      "app": {
+        "js": false,
+        "kotlin": false,
+        "swift": false,
+        "arkts": true
+      }
+    }
+  },
   "uni-openAppAuthorizeSetting": {
     "uni": {
       "openAppAuthorizeSetting": {
