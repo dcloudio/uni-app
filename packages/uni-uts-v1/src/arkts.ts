@@ -549,7 +549,7 @@ export async function compileArkTSExtApi(
     .replace(/-/g, '_')
 
   // 拷贝所有ets、har文件
-  const etsFiles = sync('**/*.{ets,js,har}', {
+  const etsFiles = sync('**/*.{ets,js,har,tgz}', {
     cwd: pluginDir,
   })
   const depEtsFiles: string[] = []
