@@ -3141,7 +3141,7 @@ function initXPage(vm, route, page) {
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
-      route: uniShared.removeLeadingSlash(route == null ? void 0 : route.path) || "",
+      route: (route == null ? void 0 : route.path) ? uniShared.removeLeadingSlash(route == null ? void 0 : route.path) : "",
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
