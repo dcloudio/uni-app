@@ -9,7 +9,7 @@ catalog:
   '@babel/core': 7.25.2
   '@babel/parser': 7.25.6
   '@babel/types': 7.25.6
-  '@dcloudio/types': 3.4.14
+  '@dcloudio/types': 3.4.15
   '@dcloudio/uni-app-x': 0.7.60
   '@rollup/pluginutils': 5.1.0
   '@types/adm-zip': 0.5.5
