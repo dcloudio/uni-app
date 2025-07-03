@@ -1,4 +1,4 @@
-import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
+import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 
 import {
   navigateTo as _navigateTo,
@@ -161,7 +161,8 @@ export const setNavigationBarTitle = {
  * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
  */
 export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
-  if (my.canIUse('showModal')) {
+  const canIUseShowModal = my.canIUse('showModal')
+  if (canIUseShowModal) {
     return {
       name: 'showModal',
     }
@@ -199,6 +200,9 @@ export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
 export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
   const args = {
     title: 'content',
+    icon: 'type',
+    image: false,
+    mask: false,
   }
   if (icon === 'loading') {
     return {
@@ -208,13 +212,14 @@ export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
   }
   return {
     name: 'showToast',
-    args: extend({ icon: 'type' }, args),
+    args,
   }
 }
 export const showActionSheet = {
   name: 'showActionSheet',
   args: {
     itemList: 'items',
+    itemColor: false,
   },
   returnValue: {
     index: 'tapIndex',

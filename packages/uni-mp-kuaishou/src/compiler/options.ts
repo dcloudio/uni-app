@@ -62,7 +62,7 @@ export const options: UniMiniProgramPluginOptions = {
       assets: [COMPONENTS_DIR],
       targets: [
         {
-          src: ['ext.json', 'project.private.config.json'],
+          src: ['ext.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },

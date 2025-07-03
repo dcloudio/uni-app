@@ -14,6 +14,7 @@ import {
 } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
+import { transformSwiper } from './transforms/transformSwiper'
 
 export const customElements = [
   'aweme-data',
@@ -27,13 +28,13 @@ export const customElements = [
   'aweme-user-card',
   'rtc-room',
   'clue-order-form',
-  'shop-follow-card',
 ]
 
 const projectConfigFilename = 'project.config.json'
 
 const nodeTransforms = [
   transformRef,
+  transformSwiper,
   transformMatchMedia,
   transformComponentLink,
 ]
@@ -78,7 +79,7 @@ export const options: UniMiniProgramPluginOptions = {
       assets: [COMPONENTS_DIR],
       targets: [
         {
-          src: ['ext.json', 'package.json', 'project.private.config.json'],
+          src: ['ext.json', 'package.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },

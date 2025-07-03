@@ -23,7 +23,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view id="view"/>`,
-      `<view id="{{a}}" style="{{$eS[a] + ';' + (virtualHostStyle || '')}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden || false}}"/>`,
+      `<view id="{{a}}" style="{{$eS[a] + ';' + virtualHostStyle}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden || false}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _sei(_gei(_ctx, 'view'), 'view'), b: _s(_ses(_gei(_ctx, 'view'))) }
   return __returned__
@@ -93,7 +93,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view id="view" style="color:red"/>`,
-      `<view id="{{a}}" style="{{'color:red' + ';' + $eS[a] + ';' + (virtualHostStyle || '')}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden || false}}"/>`,
+      `<view id="{{a}}" style="{{'color:red' + ';' + $eS[a] + ';' + virtualHostStyle}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden || false}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _sei(_gei(_ctx, 'view'), 'view'), b: _s(_ses(_gei(_ctx, 'view'))) }
   return __returned__
@@ -140,7 +140,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view :id="viewId"/>`,
-      `<view id="{{a}}" style="{{$eS[a] + ';' + (virtualHostStyle || '')}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}"/>`,
+      `<view id="{{a}}" style="{{$eS[a] + ';' + virtualHostStyle}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _sei(_gei(_ctx, _ctx.viewId), 'view'), b: _s(_ses(_gei(_ctx, _ctx.viewId))) }
   return __returned__

@@ -6,6 +6,7 @@ import {
   identifier,
   isIdentifier,
   logicalExpression,
+  stringLiteral,
   unaryExpression,
 } from '@babel/types'
 import {
@@ -73,26 +74,18 @@ export function rewriteHidden(
           res = unaryExpression('!', res)
         }
       }
-      hiddenBindingExpr = logicalExpression(
-        '||',
-        conditionalExpression(
-          binaryExpression(
-            '===',
-            identifier(VIRTUAL_HOST_HIDDEN),
-            identifier('undefined')
-          ),
-          res,
-          identifier(VIRTUAL_HOST_HIDDEN)
+      hiddenBindingExpr = conditionalExpression(
+        binaryExpression(
+          '!==',
+          identifier(VIRTUAL_HOST_HIDDEN),
+          stringLiteral('')
         ),
-        booleanLiteral(false)
+        virtualHostHiddenPolyfill,
+        res
       )
     } else {
       hiddenBindingExpr = virtualHostHiddenPolyfill
     }
-  } else if (expr) {
-    hiddenBindingExpr = identifier(
-      rewriteExpression(bindingProp.exp!, context).content
-    )
   } else {
     // ignore rewrite without virtualHost
     return

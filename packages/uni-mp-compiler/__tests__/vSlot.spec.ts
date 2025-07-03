@@ -4,14 +4,14 @@ describe('compiler: transform v-slot', () => {
   test('default slot', () => {
     assert(
       `<custom><template v-slot/></custom>`,
-      `<custom u-i="2a9ec0b0-0"></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view/></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
     )
     assert(
       `<custom><template #default/></custom>`,
-      `<custom u-i="2a9ec0b0-0"></custom>`,
+      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view/></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
@@ -34,7 +34,7 @@ describe('compiler: transform v-slot', () => {
   test('named slots', () => {
     assert(
       `<custom><template v-slot:header/><template v-slot:default/><template v-slot:footer/></custom>`,
-      `<custom u-i="2a9ec0b0-0"></custom>`,
+      `<custom u-s="{{['header','d','footer']}}" u-i="2a9ec0b0-0"><view slot="header"/><view/><view slot="footer"/></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
@@ -132,54 +132,4 @@ describe('compiler: transform v-slot', () => {
 }`
     )
   })
-})
-
-describe('should remove template when it has no any child nodes or all of its child nodes are comment nodes', () => {
-  assert(
-    `<custom><template #header /></custom>`,
-    `<custom u-i="2a9ec0b0-0"></custom>`,
-    `(_ctx, _cache) => {
-  return {}
-}`
-  )
-
-  assert(
-    `<custom><template #header><!-- comment --></template></custom>`,
-    `<custom u-i="2a9ec0b0-0"></custom>`,
-    `(_ctx, _cache) => {
-  return {}
-}`
-  )
-
-  assert(
-    `<custom><template v-slot:header="{}" /></custom>`,
-    `<custom u-i="2a9ec0b0-0"></custom>`,
-    `(_ctx, _cache) => {
-  return {}
-}`
-  )
-
-  assert(
-    `<custom><template /></custom><custom><template #header /></custom>`,
-    `<custom u-i="2a9ec0b0-0"></custom><custom u-i="2a9ec0b0-1"></custom>`,
-    `(_ctx, _cache) => {
-  return {}
-}`
-  )
-
-  assert(
-    `<custom><template>hello</template></custom><custom><template #header /></custom>`,
-    `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><block u-s="{{['d']}}">hello</block></custom><custom u-i="2a9ec0b0-1"></custom>`,
-    `(_ctx, _cache) => {
-  return {}
-}`
-  )
-
-  assert(
-    `<custom><template v-slot:default="slotProps"><view>{{ slotProps.item }}</view></template><template #header /></custom>`,
-    `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view wx:for="{{a}}" wx:for-item="slotProps" wx:key="b" slot="{{slotProps.c}}"><view>{{slotProps.a}}</view></view></custom>`,
-    `(_ctx, _cache) => {
-  return { a: _w((slotProps, s0, i0) => { return { a: _t(slotProps.item), b: i0, c: s0 }; }, { name: 'd', path: 'a', vueId: '2a9ec0b0-0' }) }
-}`
-  )
 })

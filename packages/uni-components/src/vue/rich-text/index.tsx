@@ -42,7 +42,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList as [])
     }
 
-    watch(() => props.nodes, renderVNode, { immediate: true, deep: true })
+    watch(() => props.nodes, renderVNode, { immediate: true })
 
     //#if _X_ && !_NODE_JS_
     onMounted(() => {

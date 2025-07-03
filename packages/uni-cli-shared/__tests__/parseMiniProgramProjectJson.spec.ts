@@ -33,31 +33,13 @@ const userManifestJSON: any = {
     },
     usingComponents: true,
     mockFeature: 'enable',
-    watchOptions: {
-      ignore: ['utils/util.js'],
-    },
   },
   'mp-alipay': {
     usingComponents: true,
     enableAppxNg: false,
     component2: false,
-    axmlStrictCheck: true,
-    enableDistFileMinify: true,
-    enableParallelLoader: true,
     enableNodeModuleBabelTransform: false,
     mockFeature: 'enable',
-    format: 3,
-    pluginResolution: {
-      enable: true,
-    },
-    developOptions: {
-      hotReload: true,
-    },
-    compileOptions: {
-      treeShaking: true,
-    },
-    uploadExclude: ['**/a.js'],
-    assetsInclude: ['**/b.js'],
   },
   'mp-baidu': {
     usingComponents: true,
@@ -174,9 +156,6 @@ describe('parseMiniProgramProjectJson', () => {
       projectname: userManifestJSON.name,
       libVersion: (userManifestJSON[platfrom] as any)?.libVersion || '',
       condition: mpXhsConfig.condition,
-      watchOptions: {
-        ignore: ['utils/util.js'],
-      },
     })
 
     expect(projectJson.hasOwnProperty('mockFeature')).toBe(false)
@@ -199,41 +178,13 @@ describe('parseMiniProgramProjectJson', () => {
 
     expect(projectJson).toEqual({
       appid: userPlatformConfig.appid ?? mpAlipayConfig.appid,
-      assetsInclude:
-        userPlatformConfig.assetsInclude ?? mpAlipayConfig.assetsInclude,
-      axmlStrictCheck:
-        userPlatformConfig.axmlStrictCheck ?? mpAlipayConfig.axmlStrictCheck,
-      compileOptions: recursive(
-        true,
-        mpAlipayConfig.compileOptions,
-        userPlatformConfig.compileOptions
-      ),
       component2: userPlatformConfig.component2 ?? mpAlipayConfig.component2,
-      developOptions: recursive(
-        true,
-        mpAlipayConfig.developOptions,
-        userPlatformConfig.developOptions
-      ),
       enableAppxNg:
         userPlatformConfig.enableAppxNg ?? mpAlipayConfig.enableAppxNg,
-      enableDistFileMinify:
-        userPlatformConfig.enableDistFileMinify ??
-        mpAlipayConfig.enableDistFileMinify,
       enableNodeModuleBabelTransform:
         userPlatformConfig.enableNodeModuleBabelTransform ??
         mpAlipayConfig.enableNodeModuleBabelTransform,
-      enableParallelLoader:
-        userPlatformConfig.enableParallelLoader ??
-        mpAlipayConfig.enableParallelLoader,
-      format: userPlatformConfig.format ?? mpAlipayConfig.format,
-      pluginResolution: recursive(
-        true,
-        mpAlipayConfig.pluginResolution,
-        userPlatformConfig.pluginResolution
-      ),
       projectname: userManifestJSON.name,
-      uploadExclude:
-        userPlatformConfig.uploadExclude ?? mpAlipayConfig.uploadExclude,
     })
     expect(projectJson.hasOwnProperty('mockFeature')).toBe(false)
   })

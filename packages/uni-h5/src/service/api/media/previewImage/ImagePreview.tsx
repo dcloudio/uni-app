@@ -11,7 +11,6 @@ import { StyleValue } from '@vue/runtime-dom'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 import { Swiper, SwiperItem } from '@dcloudio/uni-components'
 import { usePreventScroll } from '../../../../helpers/usePreventScroll'
-import { useKeyboard } from '../../../../helpers/useKeyboard'
 import ImageView from './ImageView'
 import { createSvgIconVNode, ICON_PATH_CLOSE } from '@dcloudio/uni-core'
 
@@ -45,20 +44,11 @@ export default /*#__PURE__*/ defineSystemComponent({
   emits: ['close'],
   setup(props, { emit }) {
     usePreventScroll()
-    const { key } = useKeyboard()
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const indexRef = ref(getIndex(props))
     watch(
       () => props.current,
       () => (indexRef.value = getIndex(props))
-    )
-    watch(
-      () => key.value,
-      (value) => {
-        if (value === 'esc') {
-          onClick()
-        }
-      }
     )
 
     let preventDefault: boolean

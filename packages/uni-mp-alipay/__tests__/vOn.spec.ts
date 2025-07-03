@@ -33,47 +33,6 @@ describe('mp-alipay: transform v-on', () => {
 }`
     )
   })
-  test('event with capture modifier', () => {
-    assert(
-      `<view @click.capture="onClick"/>`,
-      `<view capture-onTap="{{a}}"/>`,
-      `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
-}`
-    )
-  })
-  test('event with stop or prevent modifier', () => {
-    assert(
-      `<view @click.stop="onClick"/>`,
-      `<view catchTap="{{a}}"/>`,
-      `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
-}`
-    )
-    assert(
-      `<view @click.prevent="onClick"/>`,
-      `<view catchTap="{{a}}"/>`,
-      `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
-}`
-    )
-  })
-  test('event with capture modifier and stop or prevent modifier', () => {
-    assert(
-      `<view @touchStart.capture.stop="onClick"/>`,
-      `<view capture-catchTouchStart="{{a}}"/>`,
-      `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
-}`
-    )
-    assert(
-      `<view @touchStart.capture.prevent="onClick"/>`,
-      `<view capture-catchTouchStart="{{a}}"/>`,
-      `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
-}`
-    )
-  })
   test('dynamic arg', () => {
     // <view v-on:[event]="handler"/>
   })
