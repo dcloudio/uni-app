@@ -10,6 +10,8 @@ export const compilerOptions: CompilerOptions = {
   nodeTransforms: [transformRef],
 }
 
+const COMPONENTS_DIR = 'hascomponents'
+
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
     array: true,
@@ -19,6 +21,9 @@ export const miniProgram: MiniProgramCompilerOptions = {
     dynamicSlotNames: true,
   },
   directive: 'has:',
+  component: {
+    dir: COMPONENTS_DIR,
+  },
   checkPropName(name, prop) {
     // 快应用不允许使用 key 属性，应该还有很多其他保留字，目前先简单处理
     // ERROR: Unexpected JavaScript keyword as attribute name: 'key', please change it.
@@ -49,7 +54,9 @@ export const options: UniMiniProgramPluginOptions = {
     alias: {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
-    copyOptions: {},
+    copyOptions: {
+      assets: [COMPONENTS_DIR],
+    },
   },
   global: 'has',
   app: {
