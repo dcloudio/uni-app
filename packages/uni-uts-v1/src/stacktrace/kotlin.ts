@@ -363,7 +363,7 @@ const extApiCompileErrorFormatter: Formatter = {
     if (codes.length && error.includes('Unresolved reference: uni_')) {
       const api = findUniExtApi(codes.join('\n'), UNI_API_RE, '^')
       if (api) {
-        return `请检查 ${api} 的拼写是否正确，或确认当前 HBuilderX 版本是否支持此 API。`
+        return `请检查 ${api} 的拼写是否正确，或确认当前 HBuilderX 版本在当前平台是否支持此 API。`
       }
       return ``
     }
