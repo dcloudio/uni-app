@@ -340,7 +340,7 @@ export function initXPage(
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
-      route: removeLeadingSlash(route?.path) || '',
+      route: route?.path ? removeLeadingSlash(route?.path) : '',
       options: new UTSJSONObject(route?.query || {}),
       vm,
     })
