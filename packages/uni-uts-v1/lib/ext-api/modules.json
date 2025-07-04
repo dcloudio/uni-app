@@ -608,7 +608,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
         }
       },
@@ -617,7 +617,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
         }
       },
@@ -626,7 +626,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
         }
       },
@@ -635,7 +635,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
         }
       },
@@ -644,7 +644,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
         }
       },
@@ -653,7 +653,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
         }
       },
@@ -662,7 +662,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
         }
       }
