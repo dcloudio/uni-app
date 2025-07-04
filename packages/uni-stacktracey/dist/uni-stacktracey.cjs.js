@@ -2475,95 +2475,6 @@ function _factoryBSM(aSourceMap, aSourceMapURL) {
  */
 var SourceMapConsumer = sourceMapConsumer.SourceMapConsumer;
 
-function getSourceMapConsumer(content) {
-    return new Promise((resolve, reject) => {
-        try {
-            if (SourceMapConsumer.with) {
-                SourceMapConsumer.with(content, null, (consumer) => {
-                    resolve(consumer);
-                });
-            }
-            else {
-                // @ts-expect-error
-                const consumer = SourceMapConsumer(content);
-                resolve(consumer);
-            }
-        }
-        catch (error) {
-            reject();
-        }
-    });
-}
-function originalPositionFor(sourceMapContent, position, withSourceContent = false) {
-    return getSourceMapConsumer(sourceMapContent).then((consumer) => {
-        if (position.column === 0) {
-            position.bias = 2 /* BIAS.LEAST_UPPER_BOUND */;
-        }
-        // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
-        const { source, line: sourceLine, column: sourceColumn, } = consumer.originalPositionFor(position);
-        if (source) {
-            const sourcePathSplit = source.split('/');
-            const sourcePath = sourcePathSplit.slice(3).join('/');
-            const fileName = sourcePathSplit.pop();
-            return {
-                source,
-                sourcePath,
-                sourceLine: sourceLine === null ? 0 : sourceLine,
-                sourceColumn: sourceColumn === null ? 0 : sourceColumn,
-                fileName,
-                sourceContent: withSourceContent
-                    ? consumer.sourceContentFor(source, true) || ''
-                    : '',
-            };
-        }
-    });
-}
-const sourcemapCatch = {};
-function getSourceMapContent(sourcemapUrl) {
-    try {
-        return sourcemapCatch[sourcemapUrl]
-            ? Promise.resolve(sourcemapCatch[sourcemapUrl])
-            : (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
-                try {
-                    if (/^[http|https]+:/i.test(sourcemapUrl)) {
-                        uni.request({
-                            url: sourcemapUrl,
-                            success: (res) => {
-                                if (res.statusCode === 200) {
-                                    sourcemapCatch[sourcemapUrl] = res.data;
-                                    resolve(sourcemapCatch[sourcemapUrl]);
-                                }
-                                else {
-                                    resolve((sourcemapCatch[sourcemapUrl] = ''));
-                                }
-                            },
-                            fail() {
-                                resolve((sourcemapCatch[sourcemapUrl] = ''));
-                            },
-                        });
-                    }
-                    else {
-                        fs__default.default.readFile(sourcemapUrl, 'utf-8', (err, data) => {
-                            if (err) {
-                                resolve((sourcemapCatch[sourcemapUrl] = ''));
-                            }
-                            else {
-                                sourcemapCatch[sourcemapUrl] = data;
-                                resolve(sourcemapCatch[sourcemapUrl]);
-                            }
-                        });
-                    }
-                }
-                catch (error) {
-                    resolve((sourcemapCatch[sourcemapUrl] = ''));
-                }
-            }));
-    }
-    catch (error) {
-        return Promise.resolve((sourcemapCatch[sourcemapUrl] = ''));
-    }
-}
-
 const splitRE = /\r?\n/;
 const range = 2;
 function posToNumber(source, pos) {
@@ -2719,84 +2630,210 @@ ${m.code}
 function normalizePath(id) {
     return id.replace(/\\/g, '/');
 }
-
-function stacktrace(stacktrace, opts) {
-    const stack = opts.preset.parseStacktrace(stacktrace);
-    let parseStack = Promise.resolve();
-    stack.items.forEach((item, index) => {
-        const fn = (item, index) => {
-            const { line = 0, column = 0, file, fileName, fileRelative } = item;
-            if (item.thirdParty) {
-                return Promise.resolve();
-            }
-            function _getSourceMapContent(file, fileName, fileRelative) {
-                return opts.preset
-                    .getSourceMapContent(file, fileName, fileRelative)
-                    .then((content) => {
-                    if (content) {
-                        return originalPositionFor(content, {
-                            line: line + (opts.preset.lineOffset || 0),
-                            column,
-                        }, !!opts.withSourceContent);
+function getFileContent(sourcemapUrl) {
+    return new Promise((resolve, reject) => {
+        if (/^[http|https]+:/i.test(sourcemapUrl)) {
+            uni.request({
+                url: sourcemapUrl,
+                success: (res) => {
+                    if (res.statusCode === 200) {
+                        resolve(res.data);
                     }
-                });
-            }
-            try {
-                return _getSourceMapContent(file, fileName, fileRelative).then((sourceMapContent) => {
-                    if (sourceMapContent) {
-                        const { source, sourcePath, sourceLine, sourceColumn, sourceContent, fileName = '', } = sourceMapContent;
-                        stack.items[index] = Object.assign({}, item, {
-                            file: source,
-                            line: sourceLine,
-                            column: sourceColumn,
-                            fileShort: sourcePath || source,
-                            fileRelative: source,
-                            fileName,
-                            thirdParty: isThirdParty(sourcePath),
-                            parsed: true,
-                            sourceContent,
-                        });
-                        /**
-                         * 以 .js 结尾
-                         * 包含 app-service.js 则需要再解析 两次
-                         * 不包含 app-service.js 则无需再解析 一次
-                         */
-                        const curItem = stack.items[index];
-                        if (stack.isMP &&
-                            curItem.beforeParse.indexOf('app-service') !== -1) {
-                            return fn(curItem, index);
-                        }
+                    else {
+                        resolve('');
                     }
-                });
-            }
-            catch (error) {
-                return Promise.resolve();
-            }
-        };
-        parseStack = parseStack.then(() => {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    fn(item, index).then(resolve);
-                }, 0);
-            });
-        });
-    });
-    const _promise = new Promise((resolve, reject) => {
-        parseStack
-            .then(() => {
-            const parseError = opts.preset.asTableStacktrace({
-                stack,
-                maxColumnWidths: {
-                    callee: 999,
-                    file: 999,
-                    sourceLine: 999,
                 },
-                stacktrace,
+                fail() {
+                    resolve('');
+                },
             });
-            resolve(parseError);
-        })
-            .catch(() => {
-            resolve(stacktrace);
+        }
+        else {
+            fs__default.default.readFile(sourcemapUrl, 'utf-8', (err, data) => {
+                if (err) {
+                    resolve('');
+                }
+                else {
+                    resolve(data);
+                }
+            });
+        }
+    });
+}
+
+function getSourceMapConsumer(content) {
+    return new Promise((resolve, reject) => {
+        try {
+            if (SourceMapConsumer.with) {
+                SourceMapConsumer.with(content, null, (consumer) => {
+                    resolve(consumer);
+                });
+            }
+            else {
+                // @ts-expect-error
+                const consumer = SourceMapConsumer(content);
+                resolve(consumer);
+            }
+        }
+        catch (error) {
+            reject();
+        }
+    });
+}
+function originalPositionFor(sourceMapContent, position, withSourceContent = false) {
+    return getSourceMapConsumer(sourceMapContent).then((consumer) => {
+        if (position.column === 0) {
+            position.bias = 2 /* BIAS.LEAST_UPPER_BOUND */;
+        }
+        // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
+        const { source, line: sourceLine, column: sourceColumn, } = consumer.originalPositionFor(position);
+        if (source) {
+            const sourcePathSplit = source.split('/');
+            const sourcePath = sourcePathSplit.slice(3).join('/');
+            const fileName = sourcePathSplit.pop();
+            return {
+                source,
+                sourcePath,
+                sourceLine: sourceLine === null ? 0 : sourceLine,
+                sourceColumn: sourceColumn === null ? 0 : sourceColumn,
+                fileName,
+                sourceContent: withSourceContent
+                    ? consumer.sourceContentFor(source, true) || ''
+                    : '',
+            };
+        }
+    });
+}
+const sourcemapCatch = {};
+function getSourceMapContent(sourcemapUrl) {
+    try {
+        return sourcemapCatch[sourcemapUrl]
+            ? Promise.resolve(sourcemapCatch[sourcemapUrl])
+            : (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
+                try {
+                    getFileContent(sourcemapUrl).then((content) => {
+                        resolve((sourcemapCatch[sourcemapUrl] = content));
+                    });
+                }
+                catch (error) {
+                    resolve((sourcemapCatch[sourcemapUrl] = ''));
+                }
+            }));
+    }
+    catch (error) {
+        return Promise.resolve((sourcemapCatch[sourcemapUrl] = ''));
+    }
+}
+
+let kotlinManifest = {
+    manifest: {},
+};
+function updateUTSKotlinSourceMapManifestCache(url) {
+    return new Promise((resolve, reject) => {
+        const manifestFile = path__default.default.resolve(url, '.manifest.json');
+        try {
+            getFileContent(manifestFile).then((content) => {
+                const { files } = JSON.parse(content);
+                if (files) {
+                    const classManifest = {};
+                    Object.keys(files).forEach((name) => {
+                        const kotlinClass = files[name].class;
+                        if (kotlinClass) {
+                            classManifest[kotlinClass] = name;
+                        }
+                    });
+                    kotlinManifest.manifest = classManifest;
+                }
+                resolve();
+            });
+        }
+        catch (e) { }
+    });
+}
+function parseFilenameByClassName(className) {
+    return kotlinManifest.manifest[className.split('$')[0]] || 'index.kt';
+}
+
+const STACK_ERROR_PLACEHOLDER = '%StacktraceItem%';
+function stacktrace(stacktrace, opts) {
+    const _promise = new Promise((resolve, reject) => {
+        opts.preset.precondition().then(() => {
+            let parseStack = Promise.resolve();
+            const stack = opts.preset.parseStacktrace(stacktrace);
+            stack.items.forEach((item, index) => {
+                const fn = (item, index) => {
+                    const { line = 0, column = 0, file, fileName, fileRelative } = item;
+                    if (item.thirdParty) {
+                        return Promise.resolve();
+                    }
+                    function _getSourceMapContent(file, fileName, fileRelative) {
+                        return opts.preset
+                            .getSourceMapContent(file, fileName, fileRelative)
+                            .then((content) => {
+                            if (content) {
+                                return originalPositionFor(content, {
+                                    line: line + (opts.preset.lineOffset || 0),
+                                    column,
+                                }, !!opts.withSourceContent);
+                            }
+                        });
+                    }
+                    try {
+                        return _getSourceMapContent(file, fileName, fileRelative).then((sourceMapContent) => {
+                            if (sourceMapContent) {
+                                const { source, sourcePath, sourceLine, sourceColumn, sourceContent, fileName = '', } = sourceMapContent;
+                                stack.items[index] = Object.assign({}, item, {
+                                    file: source,
+                                    line: sourceLine,
+                                    column: sourceColumn,
+                                    fileShort: sourcePath || source,
+                                    fileRelative: source,
+                                    fileName,
+                                    thirdParty: isThirdParty(sourcePath),
+                                    parsed: true,
+                                    sourceContent,
+                                });
+                                /**
+                                 * 以 .js 结尾
+                                 * 包含 app-service.js 则需要再解析 两次
+                                 * 不包含 app-service.js 则无需再解析 一次
+                                 */
+                                const curItem = stack.items[index];
+                                if (stack.isMP &&
+                                    curItem.beforeParse.indexOf('app-service') !== -1) {
+                                    return fn(curItem, index);
+                                }
+                            }
+                        });
+                    }
+                    catch (error) {
+                        return Promise.resolve();
+                    }
+                };
+                parseStack = parseStack.then(() => {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            fn(item, index).then(resolve);
+                        }, 0);
+                    });
+                });
+            });
+            parseStack
+                .then(() => {
+                const parseError = opts.preset.asTableStacktrace({
+                    stack,
+                    maxColumnWidths: {
+                        callee: 999,
+                        file: 999,
+                        sourceLine: 999,
+                    },
+                    stacktrace,
+                });
+                resolve(parseError);
+            })
+                .catch(() => {
+                resolve(stacktrace);
+            });
         });
     });
     return _promise;
@@ -2872,7 +2909,7 @@ function uniStacktracePreset(opts) {
                 const { items: stackLines, thirdPartyItems: stackThirdPartyLines } = lines;
                 const userError = stack.itemsHeader
                     .map((item) => {
-                    if (item === '%StacktraceyItem%') {
+                    if (item === STACK_ERROR_PLACEHOLDER) {
                         const _stack = stackLines.shift();
                         return _stack ? joinItem(_stack) : '';
                     }
@@ -2901,15 +2938,22 @@ function uniStacktracePreset(opts) {
                 return errorName;
             }
         },
+        precondition() {
+            return Promise.resolve();
+        },
         lineOffset,
     };
 }
 const uniStracktraceyPreset = uniStacktracePreset;
 function utsStacktracePreset(opts) {
-    const { inputRoot = '', outputRoot = '', sourceMapRoot = '' } = opts;
+    const { inputRoot = '', outputRoot = '', sourceMapRoot = '', base = '' } = opts;
     let errStack = [];
+    let parseKotlin = false;
     return {
         parseSourceMapUrl(file, fileName, fileRelative) {
+            if (parseKotlin) {
+                return path__default.default.resolve(sourceMapRoot, file + '.map');
+            }
             return path__default.default.resolve(sourceMapRoot, path__default.default.relative(outputRoot, file) + '.map');
         },
         getSourceMapContent(file, fileName, fileRelative) {
@@ -2921,31 +2965,43 @@ function utsStacktracePreset(opts) {
             const entries = lines
                 .map((line, index) => {
                 line = line.trim();
-                const matches = line.match(/\s*(.+\.(kt|swift|ets)):([0-9]+):([0-9]+):?\s*(.*)/);
-                if (matches) {
-                    errStack.push('%StacktraceyItem%');
+                let matches = line.match(/\s*(.+\.(kt|swift|ets)):([0-9]+):([0-9]+):?\s*(.*)/);
+                if (!matches) {
+                    parseKotlin = true;
+                    matches = line.match(new RegExp('uni\\.\\w+\\.(.*)\\..*\\(*\\.kt:([0-9]+)\\)'));
                 }
-                else {
-                    errStack.push(line);
+                errStack.push(matches ? STACK_ERROR_PLACEHOLDER : line);
+                if (!matches) {
                     return;
                 }
+                let file = matches[1];
+                let errorLine = matches[3];
+                let column = matches[4];
+                let errMsg = matches[5] || '';
+                let fileShort = line;
+                let fileName = '';
                 if (matches[2] === 'ets') {
-                    matches[1] =
-                        (matches[0].match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] ||
-                            matches[1];
+                    file = (line.match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] || matches[1];
                 }
-                const fileName = matches[1].replace(/^.*(\\|\/|\:)/, '');
+                if (parseKotlin) {
+                    fileName = fileShort = file = parseFilenameByClassName(file);
+                    errorLine = matches[2];
+                    column = '0';
+                }
+                else {
+                    fileName = file.replace(/^.*(\\|\/|\:)/, '');
+                }
                 return {
                     beforeParse: line,
                     callee: '',
                     index: false,
                     native: false,
-                    file: normalizePath(matches[1]),
-                    line: parseInt(matches[3]),
-                    column: parseInt(matches[4]),
+                    file: normalizePath(file),
+                    line: parseInt(errorLine),
+                    column: parseInt(column),
                     fileName,
-                    fileShort: line,
-                    errMsg: matches[5] || '',
+                    fileShort,
+                    errMsg,
                     calleeShort: '',
                     fileRelative: '',
                     thirdParty: false,
@@ -2960,11 +3016,10 @@ function utsStacktracePreset(opts) {
         asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
             return errStack
                 .map((item) => {
-                if (item === '%StacktraceyItem%') {
+                if (item === STACK_ERROR_PLACEHOLDER) {
                     const _stack = stack.items.shift();
                     if (_stack) {
-                        return `at ${normalizePath(path__default.default.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}
-${_stack.errMsg}`;
+                        return `at ${normalizePath(path__default.default[parseKotlin ? 'join' : 'relative'](inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}${_stack.errMsg ? `\n${_stack.errMsg}` : ''}`;
                     }
                     return '';
                 }
@@ -2972,6 +3027,11 @@ ${_stack.errMsg}`;
             })
                 .join('\n');
         },
+        precondition() {
+            return new Promise((resolve, reject) => {
+                updateUTSKotlinSourceMapManifestCache(base).finally(resolve);
+            });
+        }
     };
 }
 const utsStracktraceyPreset = utsStacktracePreset;

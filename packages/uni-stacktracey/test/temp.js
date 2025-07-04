@@ -5,7 +5,7 @@ const {
 } = require('../dist/uni-stacktracey.cjs.js')
 
 getSourceMapContent(
-  '/Users/lxh/Downloads/uts-test/unpackage/cache/.app-android/sourcemap/pages/index/index.kt.map'
+  '/Users/lxh/Downloads/uts-test/unpackage/dist/build/.sourcemap/app-android/pages/index/index.kt.map'
 ).then((content) => {
   originalPositionFor(
     content,
