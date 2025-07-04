@@ -7,6 +7,7 @@ import {
   type GenerateRuntimeCodeFrameOptions,
   generateCodeFrame,
   lineColumnToStartEnd,
+  parseErrorWithRules,
   resolveSourceMapDirByCacheDir,
   resolveSourceMapFileBySourceFile,
   splitRE,
@@ -31,12 +32,16 @@ interface GenerateCodeFrameOptions {
 
 export function hbuilderFormatter(m: MessageSourceLocation) {
   const msgs: string[] = []
+  let isFormatted = false
   if (m.type === 'error' || m.type === 'exception') {
-    m.message = formatKotlinError(
+    const formatted = formatKotlinError(
       m.message,
       m.code?.split('\n') || [],
       compileFormatters
     )
+    // 如果格式化后与原消息不同，则认为格式化成功
+    isFormatted = m.message !== formatted
+    m.message = formatted
   }
   let msg = m.type + ': ' + m.message
   if (m.type === 'warning') {
@@ -84,7 +89,14 @@ export function hbuilderFormatter(m: MessageSourceLocation) {
   if (m.code) {
     msgs.push(m.code)
   }
-  return msgs.join('\n')
+  const result = msgs.join('\n')
+  if (isFormatted) {
+    return result
+  }
+  return parseErrorWithRules(result, {
+    language: 'kotlin',
+    platform: 'app-android',
+  })
 }
 
 export async function parseUTSKotlinStacktrace(
@@ -461,7 +473,6 @@ const unresolvedErrorFormatter: Formatter = {
         return `${error}。[详情](${api.url})`
       }
     }
-    return error
   },
 }
 

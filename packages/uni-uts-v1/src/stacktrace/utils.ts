@@ -118,3 +118,136 @@ export function parseRelativeSourceFile(
   }
   return sourceFile
 }
+
+type ErrorRules = ErrorRule[]
+export type ErrorRuleConfig = {
+  version: string
+  common?: {
+    rules: ErrorRules
+  }
+  kotlin?: {
+    rules: ErrorRules
+  }
+  swift?: {
+    rules: ErrorRules
+  }
+  js?: {
+    rules: ErrorRules
+  }
+  arkts?: {
+    rules: ErrorRules
+  }
+}
+
+export type ErrorRule = {
+  platform?: string[]
+  pattern: string
+  flags?: string
+  message: string
+  suggestions?: string[]
+}
+
+/**
+ * 解析错误信息
+{
+  "version": "1.0.0",
+  "common": {
+    "rules": [
+      {
+        "pattern": "Cannot find module '(.+)'",
+        "flags": "i",
+        "message": "模块错误：找不到模块 '$1'",
+        "suggestions": ["检查模块路径", "确认模块已安装"]
+      }
+    ]
+  },
+  "js":{
+    "rules": [
+      {
+        "platform": ["app-ios"],
+        "pattern": "JS specific error (.+)",
+        "flags": "i",
+        "message": "JS 平台错误：$1",
+        "suggestions": ["检查 JS 配置"]
+      }
+    ]
+  },
+  "kotlin": {
+    "rules": [
+      {
+        "platform": ["app-android"],
+        "pattern": "Android specific error (.+)",
+        "flags": "i",
+        "message": "Android 平台错误：$1",
+        "suggestions": ["检查 Android 构建配置"]
+      }
+    ]
+  },
+  "swift": {
+    "rules": [
+      {
+        "platform": ["app-ios"],
+        "pattern": "iOS specific error (.+)",
+        "flags": "i",
+        "message": "iOS 平台错误：$1",
+        "suggestions": ["检查 Xcode 配置"]
+      }
+    ]
+  }
+} 
+ * @param error 错误信息
+ * @returns 错误规则
+ */
+function normalizeErrorWithRule(error: string, rules: ErrorRule[]) {
+  for (const rule of rules) {
+    const re = new RegExp(rule.pattern, rule.flags)
+    if (re.test(error)) {
+      return error.replace(re, rule.message)
+    }
+  }
+  return error
+}
+
+export function parseErrorWithRules(
+  error: string,
+  options: {
+    language: 'kotlin' | 'swift' | 'js' | 'arkts'
+    platform: 'app-android' | 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
+  }
+) {
+  try {
+    const rules = getErrorRules(options.language, options.platform)
+    if (rules.length === 0) {
+      return error
+    }
+    return normalizeErrorWithRule(error, rules)
+  } catch (e) {}
+  return error
+}
+
+function getErrorRules(
+  language: 'kotlin' | 'swift' | 'js' | 'arkts',
+  platform: 'app-android' | 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
+) {
+  let errorRuleConfig = {} as ErrorRuleConfig // 默认值
+  const filename = process.env.UNI_COMPILER_VALIDATION_RULES_PATH
+  if (filename && fs.existsSync(filename)) {
+    try {
+      errorRuleConfig = JSON.parse(fs.readFileSync(filename, 'utf-8'))
+    } catch (e) {
+      return []
+    }
+  } else {
+    return []
+  }
+  const rules: ErrorRule[] = [...(errorRuleConfig.common?.rules || [])]
+  if (errorRuleConfig[language]) {
+    rules.push(...(errorRuleConfig[language]?.rules || []))
+  }
+  return rules.filter((rule) => {
+    if (rule.platform && rule.platform.length > 0) {
+      return rule.platform.includes(platform)
+    }
+    return true
+  })
+}
