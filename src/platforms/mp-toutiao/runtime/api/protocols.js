@@ -142,11 +142,6 @@ const protocols = {
     args: {
       orderInfo: tt.pay ? 'orderInfo' : 'data'
     }
-  },
-  getFileInfo: {
-    args: {
-      digestAlgorithm: false
-    }
   }
 }
 
