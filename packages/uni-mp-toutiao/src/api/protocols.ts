@@ -47,8 +47,3 @@ export const requestPayment = {
     orderInfo: tt.pay ? 'orderInfo' : 'data',
   },
 }
-export const getFileInfo = {
-  args: {
-    digestAlgorithm: false,
-  },
-}
