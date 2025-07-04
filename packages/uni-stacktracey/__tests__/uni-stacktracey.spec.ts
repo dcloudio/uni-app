@@ -32,14 +32,13 @@ describe('uni-stacktrace', () => {
     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)`,
         {
           preset: utsStacktracePreset({
+            base: '/Users/lxh/Downloads/uts-test/unpackage/dist/build/.sourcemap/app-android',
             inputRoot: '/Users/lxh/Downloads/uts-test',
             outputRoot: path.resolve(
-              utsProjectDir,
-              'unpackage/dist/build/app-android'
+              '/Users/lxh/Downloads/uts-test/unpackage/dist/build/app-android'
             ),
             sourceMapRoot: path.resolve(
-              utsProjectDir,
-              'unpackage/dist/build/.sourcemap/app-android'
+              '/Users/lxh/Downloads/uts-test/unpackage/dist/build/.sourcemap/app-android'
             ),
           }),
         }

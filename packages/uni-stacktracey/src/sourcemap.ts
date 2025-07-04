@@ -1,10 +1,10 @@
-import fs from 'fs'
 import {
   type BasicSourceMapConsumer,
   type IndexedSourceMapConsumer,
   type Position,
   SourceMapConsumer,
 } from '../lib/source-map/source-map'
+import { getFileContent } from './utils'
 export { SourceMapConsumer } from '../lib/source-map/source-map'
 // @ts-expect-error
 if (__PLATFORM_WEB__) {
@@ -91,31 +91,9 @@ export function getSourceMapContent(sourcemapUrl: string) {
       ? Promise.resolve(sourcemapCatch[sourcemapUrl])
       : (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
           try {
-            if (/^[http|https]+:/i.test(sourcemapUrl)) {
-              uni.request({
-                url: sourcemapUrl,
-                success: (res) => {
-                  if (res.statusCode === 200) {
-                    sourcemapCatch[sourcemapUrl] = res.data as string
-                    resolve(sourcemapCatch[sourcemapUrl])
-                  } else {
-                    resolve((sourcemapCatch[sourcemapUrl] = ''))
-                  }
-                },
-                fail() {
-                  resolve((sourcemapCatch[sourcemapUrl] = ''))
-                },
-              })
-            } else {
-              fs.readFile(sourcemapUrl, 'utf-8', (err, data) => {
-                if (err) {
-                  resolve((sourcemapCatch[sourcemapUrl] = ''))
-                } else {
-                  sourcemapCatch[sourcemapUrl] = data
-                  resolve(sourcemapCatch[sourcemapUrl])
-                }
-              })
-            }
+            getFileContent(sourcemapUrl).then((content) => {
+              resolve((sourcemapCatch[sourcemapUrl] = content))
+            })
           } catch (error) {
             resolve((sourcemapCatch[sourcemapUrl] = ''))
           }

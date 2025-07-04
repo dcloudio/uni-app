@@ -270,3 +270,31 @@ ${m.code}
 export function normalizePath(id: string): string {
   return id.replace(/\\/g, '/')
 }
+
+export function getFileContent(sourcemapUrl: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    if (/^[http|https]+:/i.test(sourcemapUrl)) {
+      uni.request({
+        url: sourcemapUrl,
+        success: (res) => {
+          if (res.statusCode === 200) {
+            resolve(res.data as string)
+          } else {
+            resolve('')
+          }
+        },
+        fail() {
+          resolve('')
+        },
+      })
+    } else {
+      fs.readFile(sourcemapUrl, 'utf-8', (err, data) => {
+        if (err) {
+          resolve('')
+        } else {
+          resolve(data)
+        }
+      })
+    }
+  })
+}

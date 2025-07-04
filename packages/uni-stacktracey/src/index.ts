@@ -2,6 +2,10 @@ import StackTrace from './stacktrace'
 import path from 'path'
 import { getSourceMapContent, originalPositionFor } from './sourcemap'
 import { normalizePath, splitRE } from './utils'
+import {
+  parseFilenameByClassName,
+  updateUTSKotlinSourceMapManifestCache,
+} from './kotlin'
 export { SourceMapConsumer } from './sourcemap'
 export { getSourceMapContent, originalPositionFor }
 export {
@@ -61,6 +65,7 @@ interface StacktracePreset {
     fileRelative: string
   ): Promise<string>
   lineOffset?: number
+  precondition(): Promise<void>
 }
 
 interface StacktraceOptions {
@@ -68,119 +73,123 @@ interface StacktraceOptions {
   withSourceContent?: boolean
 }
 
+const STACK_ERROR_PLACEHOLDER = '%StacktraceItem%'
+
 export function stacktrace(
   stacktrace: string,
   opts: StacktraceOptions
 ): Promise<asTableResult> {
   let cancel: boolean = false
 
-  const stack = opts.preset.parseStacktrace(stacktrace)
-
-  let parseStack = Promise.resolve()
-
-  stack.items.forEach((item, index) => {
-    const fn = (
-      item: StacktraceItems,
-      index: number
-    ): Promise<undefined | void> => {
-      const { line = 0, column = 0, file, fileName, fileRelative } = item
-      if (item.thirdParty) {
-        return Promise.resolve()
-      }
-
-      function _getSourceMapContent(
-        file: string,
-        fileName: string,
-        fileRelative: string
-      ) {
-        return opts.preset
-          .getSourceMapContent(file, fileName, fileRelative)
-          .then((content) => {
-            if (content) {
-              return originalPositionFor(
-                content,
-                {
-                  line: line + (opts.preset.lineOffset || 0),
-                  column,
-                },
-                !!opts.withSourceContent
-              )
-            }
-          })
-      }
-
-      try {
-        return _getSourceMapContent(file, fileName, fileRelative).then(
-          (sourceMapContent) => {
-            if (sourceMapContent) {
-              const {
-                source,
-                sourcePath,
-                sourceLine,
-                sourceColumn,
-                sourceContent,
-                fileName = '',
-              } = sourceMapContent
-
-              stack.items[index] = Object.assign({}, item, {
-                file: source,
-                line: sourceLine,
-                column: sourceColumn,
-                fileShort: sourcePath || source,
-                fileRelative: source,
-                fileName,
-                thirdParty: isThirdParty(sourcePath),
-                parsed: true,
-                sourceContent,
-              })
-
-              /**
-               * 以 .js 结尾
-               * 包含 app-service.js 则需要再解析 两次
-               * 不包含 app-service.js 则无需再解析 一次
-               */
-              const curItem = stack.items[index]
-              if (
-                (stack as StackTrace).isMP &&
-                curItem.beforeParse.indexOf('app-service') !== -1
-              ) {
-                return fn(curItem, index)
-              }
-            }
-          }
-        )
-      } catch (error) {
-        return Promise.resolve()
-      }
-    }
-    parseStack = parseStack.then(() => {
-      // TODO cancel
-      if (cancel) return Promise.resolve()
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          fn(item, index).then(resolve)
-        }, 0)
-      })
-    })
-  })
-
   const _promise = new Promise((resolve, reject) => {
-    parseStack
-      .then(() => {
-        const parseError = opts.preset.asTableStacktrace({
-          stack,
-          maxColumnWidths: {
-            callee: 999,
-            file: 999,
-            sourceLine: 999,
-          },
-          stacktrace,
+    opts.preset.precondition().then(() => {
+      let parseStack = Promise.resolve()
+
+      const stack = opts.preset.parseStacktrace(stacktrace)
+
+      stack.items.forEach((item, index) => {
+        const fn = (
+          item: StacktraceItems,
+          index: number
+        ): Promise<undefined | void> => {
+          const { line = 0, column = 0, file, fileName, fileRelative } = item
+          if (item.thirdParty) {
+            return Promise.resolve()
+          }
+
+          function _getSourceMapContent(
+            file: string,
+            fileName: string,
+            fileRelative: string
+          ) {
+            return opts.preset
+              .getSourceMapContent(file, fileName, fileRelative)
+              .then((content) => {
+                if (content) {
+                  return originalPositionFor(
+                    content,
+                    {
+                      line: line + (opts.preset.lineOffset || 0),
+                      column,
+                    },
+                    !!opts.withSourceContent
+                  )
+                }
+              })
+          }
+
+          try {
+            return _getSourceMapContent(file, fileName, fileRelative).then(
+              (sourceMapContent) => {
+                if (sourceMapContent) {
+                  const {
+                    source,
+                    sourcePath,
+                    sourceLine,
+                    sourceColumn,
+                    sourceContent,
+                    fileName = '',
+                  } = sourceMapContent
+
+                  stack.items[index] = Object.assign({}, item, {
+                    file: source,
+                    line: sourceLine,
+                    column: sourceColumn,
+                    fileShort: sourcePath || source,
+                    fileRelative: source,
+                    fileName,
+                    thirdParty: isThirdParty(sourcePath),
+                    parsed: true,
+                    sourceContent,
+                  })
+
+                  /**
+                   * 以 .js 结尾
+                   * 包含 app-service.js 则需要再解析 两次
+                   * 不包含 app-service.js 则无需再解析 一次
+                   */
+                  const curItem = stack.items[index]
+                  if (
+                    (stack as StackTrace).isMP &&
+                    curItem.beforeParse.indexOf('app-service') !== -1
+                  ) {
+                    return fn(curItem, index)
+                  }
+                }
+              }
+            )
+          } catch (error) {
+            return Promise.resolve()
+          }
+        }
+        parseStack = parseStack.then(() => {
+          // TODO cancel
+          if (cancel) return Promise.resolve()
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              fn(item, index).then(resolve)
+            }, 0)
+          })
         })
-        resolve(parseError)
       })
-      .catch(() => {
-        resolve(stacktrace)
-      })
+
+      parseStack
+        .then(() => {
+          const parseError = opts.preset.asTableStacktrace({
+            stack,
+            maxColumnWidths: {
+              callee: 999,
+              file: 999,
+              sourceLine: 999,
+            },
+            stacktrace,
+          })
+          resolve(parseError)
+        })
+        .catch(() => {
+          resolve(stacktrace)
+        })
+    })
   }) as Promise<asTableResult>
 
   return _promise
@@ -272,7 +281,7 @@ export function uniStacktracePreset(
 
         const userError = stack.itemsHeader
           .map((item) => {
-            if (item === '%StacktraceyItem%') {
+            if (item === STACK_ERROR_PLACEHOLDER) {
               const _stack = stackLines.shift()
 
               return _stack ? joinItem(_stack) : ''
@@ -303,11 +312,15 @@ export function uniStacktracePreset(
         return errorName
       }
     },
+    precondition(): Promise<void> {
+      return Promise.resolve()
+    },
     lineOffset,
   }
 }
 export const uniStracktraceyPreset = uniStacktracePreset
 interface UTSStacktracePreset {
+  base: string
   /**
    * 源码根目录
    */
@@ -324,12 +337,21 @@ interface UTSStacktracePreset {
 export function utsStacktracePreset(
   opts: UTSStacktracePreset
 ): StacktracePreset {
-  const { inputRoot = '', outputRoot = '', sourceMapRoot = '' } = opts
+  const {
+    inputRoot = '',
+    outputRoot = '',
+    sourceMapRoot = '',
+    base = '',
+  } = opts
 
   let errStack: string[] = []
+  let parseKotlin = false
 
   return {
     parseSourceMapUrl(file, fileName, fileRelative) {
+      if (parseKotlin) {
+        return path.resolve(sourceMapRoot, file + '.map')
+      }
       return path.resolve(
         sourceMapRoot,
         path.relative(outputRoot, file) + '.map'
@@ -350,35 +372,53 @@ export function utsStacktracePreset(
         .map((line, index) => {
           line = line.trim()
 
-          const matches = line.match(
+          let matches = line.match(
             /\s*(.+\.(kt|swift|ets)):([0-9]+):([0-9]+):?\s*(.*)/
-          ) as string[]
-          if (matches) {
-            errStack.push('%StacktraceyItem%')
-          } else {
-            errStack.push(line)
+          )
+          if (!matches) {
+            parseKotlin = true
+            matches = line.match(
+              new RegExp('uni\\.\\w+\\.(.*)\\..*\\(*\\.kt:([0-9]+)\\)')
+            )
+          }
+
+          errStack.push(matches ? STACK_ERROR_PLACEHOLDER : line)
+
+          if (!matches) {
             return
           }
 
+          let file = matches[1]
+          let errorLine = matches[3]
+          let column = matches[4]
+          let errMsg = matches[5] || ''
+          let fileShort = line
+          let fileName = ''
+
           if (matches[2] === 'ets') {
-            matches[1] =
-              (matches[0].match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] ||
-              matches[1]
+            file =
+              (line.match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] || matches[1]
           }
 
-          const fileName: string = matches[1].replace(/^.*(\\|\/|\:)/, '')
+          if (parseKotlin) {
+            fileName = fileShort = file = parseFilenameByClassName(file)
+            errorLine = matches[2]
+            column = '0'
+          } else {
+            fileName = file.replace(/^.*(\\|\/|\:)/, '')
+          }
 
           return {
             beforeParse: line,
             callee: '',
             index: false,
             native: false,
-            file: normalizePath(matches[1]),
-            line: parseInt(matches[3]),
-            column: parseInt(matches[4]),
+            file: normalizePath(file),
+            line: parseInt(errorLine),
+            column: parseInt(column),
             fileName,
-            fileShort: line,
-            errMsg: matches[5] || '',
+            fileShort,
+            errMsg,
             calleeShort: '',
             fileRelative: '',
             thirdParty: false,
@@ -394,19 +434,28 @@ export function utsStacktracePreset(
     asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
       return errStack
         .map((item) => {
-          if (item === '%StacktraceyItem%') {
+          if (item === STACK_ERROR_PLACEHOLDER) {
             const _stack = stack.items.shift()
             if (_stack) {
               return `at ${normalizePath(
-                path.relative(inputRoot, _stack.file.replace('\\\\?\\', ''))
-              )}:${_stack.line}:${_stack.column}
-${_stack.errMsg}`
+                path[parseKotlin ? 'join' : 'relative'](
+                  inputRoot,
+                  _stack.file.replace('\\\\?\\', '')
+                )
+              )}:${_stack.line}:${_stack.column}${
+                _stack.errMsg ? `\n${_stack.errMsg}` : ''
+              }`
             }
             return ''
           }
           return item
         })
         .join('\n')
+    },
+    precondition(): Promise<void> {
+      return new Promise((resolve, reject) => {
+        updateUTSKotlinSourceMapManifestCache(base).finally(resolve)
+      })
     },
   }
 }
