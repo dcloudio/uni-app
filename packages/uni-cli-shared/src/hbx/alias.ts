@@ -102,6 +102,27 @@ export function initModuleAlias() {
       // }
     }
   }
+
+  if (process.env.UNI_VUE_VAPOR === 'true') {
+    const vuePkgs = [
+      '@vue/compiler-core',
+      '@vue/compiler-dom',
+      '@vue/compiler-sfc',
+      '@vue/compiler-ssr',
+      '@vue/compiler-vapor',
+      '@vue/runtime-core',
+      '@vue/runtime-dom',
+      '@vue/runtime-vapor',
+      '@vue/server-renderer',
+      '@vue/shared',
+    ]
+    vuePkgs.forEach((pkg) => {
+      moduleAlias.addAlias(
+        pkg,
+        path.resolve(libDir, 'vapor', pkg.split('/').pop()!)
+      )
+    })
+  }
 }
 
 function supportAutoInstallPlugin() {
