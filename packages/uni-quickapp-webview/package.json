@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-quickapp-webview",
-  "version": "3.0.0-alpha-4070420250630002",
+  "version": "3.0.0-alpha-4070520250704001",
   "description": "uni-app quickapp-webview",
   "main": "dist/index.js",
   "files": [
