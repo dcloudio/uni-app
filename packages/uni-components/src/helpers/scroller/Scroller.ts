@@ -216,7 +216,7 @@ export class Scroller {
         const e = Date.now()
         const i = (e - this._scroll._startTime) / 1e3
         const r = this._scroll.x(i)
-        this._position = r
+        this._position = r < -this._extent ? -this._extent : r
         this.updatePosition()
         const o = this._scroll.dx(i)
         if (
