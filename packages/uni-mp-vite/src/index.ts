@@ -25,7 +25,7 @@ import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'
 import { uniPagesJsonPlugin } from './plugins/pagesJson'
 import { uniEntryPlugin } from './plugins/entry'
-
+import { uniStatusBarHeightPlugin } from './plugins/statusBarHeight'
 import { uniRenderjsPlugin } from './plugins/renderjs'
 import { uniRuntimeHooksPlugin } from './plugins/runtimeHooks'
 import { uniSubpackagePlugin } from './plugins/subpackage'
@@ -52,6 +52,7 @@ export default (options: UniMiniProgramPluginOptions) => {
   )
 
   return [
+    ...(process.env.UNI_APP_X === 'true' ? [uniStatusBarHeightPlugin()] : []),
     ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
     ...(process.env.UNI_APP_X === 'true'
       ? [
