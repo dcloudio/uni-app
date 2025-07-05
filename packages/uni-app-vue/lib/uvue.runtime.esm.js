@@ -10244,7 +10244,6 @@ let isHydrating = false;
 let currentHydrationNode = null;
 let isOptimized$1 = false;
 function withHydration(container, fn) {
-  adoptTemplate = adoptTemplateImpl;
   locateHydrationNode = locateHydrationNodeImpl;
   if (!isOptimized$1) {
     Comment.prototype.$fs = void 0;
@@ -10258,24 +10257,8 @@ function withHydration(container, fn) {
   isHydrating = false;
   return res;
 }
-let adoptTemplate;
 let locateHydrationNode;
 const isComment = (node, data) => node.nodeType === 8 && node.data === data;
-function adoptTemplateImpl(node, template) {
-  if (!(template[0] === "<" && template[1] === "!")) {
-    while (node.nodeType === 8) node = next(node);
-  }
-  if (!!(process.env.NODE_ENV !== "production")) {
-    const type = node.nodeType;
-    if (type === 8 && !template.startsWith("<!") || type === 1 && !template.startsWith(`<` + node.tagName.toLowerCase()) || type === 3 && template.trim() && !template.startsWith(node.data)) {
-      warn(`adopted: `, node);
-      warn(`template: ${template}`);
-      warn("hydration mismatch!");
-    }
-  }
-  currentHydrationNode = next(node);
-  return node;
-}
 function locateHydrationNodeImpl() {
   let node;
   if (insertionAnchor === 0) {
@@ -11745,29 +11728,15 @@ const vaporInteropPlugin = (app) => {
   };
 };
 
-let t;
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
-function template(html, root) {
-  let node;
+function template(doc, factory, root) {
   return () => {
-    if (isHydrating) {
-      if (!!(process.env.NODE_ENV !== "production") && !currentHydrationNode) {
-        throw new Error("No current hydration node");
-      }
-      return adoptTemplate(currentHydrationNode, html);
+    const el = factory(doc);
+    if (root) {
+      el.ext.set("$root", true);
     }
-    if (html[0] !== "<") {
-      return createTextNode(html);
-    }
-    if (!node) {
-      t = t || document.createElement("template");
-      t.innerHTML = html;
-      node = child(t.content);
-    }
-    const ret = node.cloneNode(true);
-    if (root) ret.$root = true;
-    return ret;
+    return el;
   };
 }
 
