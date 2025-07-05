@@ -23,7 +23,7 @@ catalog:
   '@types/resolve': 1.20.6
   '@types/sass': 1.43.1
   '@vitejs/plugin-legacy': 5.3.2
-  '@vitejs/plugin-vue': 5.1.0
+  '@vitejs/plugin-vue': 5.2.4
   '@vitejs/plugin-vue-jsx': 3.1.0
   '@vue/compiler-core': 3.4.21
   '@vue/compiler-dom': 3.4.21
