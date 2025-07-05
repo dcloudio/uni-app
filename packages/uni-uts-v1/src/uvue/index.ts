@@ -38,7 +38,7 @@ import {
 } from '../utils'
 import {
   type KotlinManifestCache,
-  hbuilderFormatter,
+  hbuilderKotlinCompileErrorFormatter,
 } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
 
@@ -401,7 +401,7 @@ async function runKotlinDev(
           kotlinSrcOutDir,
           resolveUniAppXSourceMapPath(kotlinRootOutDir),
           waiting,
-          hbuilderFormatter
+          hbuilderKotlinCompileErrorFormatter
         ),
       }
       result.kotlinc = true

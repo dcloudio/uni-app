@@ -47,7 +47,7 @@ import type { APP_PLATFORM } from './manifest/utils'
 import { restoreDex } from './manifest'
 import {
   type MessageSourceLocation,
-  hbuilderFormatter,
+  hbuilderKotlinCompileErrorFormatter,
 } from './stacktrace/kotlin'
 import { uvueOutDir } from './uvue'
 import { storeIndexKt } from './manifest/dex'
@@ -351,7 +351,7 @@ export async function runKotlinDev(
         outputDir,
         resolveSourceMapPath(),
         waiting,
-        hbuilderFormatter
+        hbuilderKotlinCompileErrorFormatter
       )
     )
 

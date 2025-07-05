@@ -21,7 +21,7 @@ import { restoreDex } from './manifest'
 import { sync } from 'fast-glob'
 import { resolveDexCacheFile } from './manifest/dex'
 import type { CompileResult } from './index'
-import { hbuilderFormatter } from './stacktrace/kotlin'
+import { hbuilderKotlinCompileErrorFormatter } from './stacktrace/kotlin'
 
 // 手动维护，不依赖uni-cli-shared
 type EncryptArtifacts = {
@@ -283,7 +283,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
             }
           }
         }
-        return hbuilderFormatter(m)
+        return hbuilderKotlinCompileErrorFormatter(m)
       })
     )
     // 等待 stderrListener 执行完毕

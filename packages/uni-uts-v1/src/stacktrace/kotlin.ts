@@ -30,7 +30,7 @@ interface GenerateCodeFrameOptions {
   format: (msg: MessageSourceLocation) => string
 }
 
-export function hbuilderFormatter(m: MessageSourceLocation) {
+export function hbuilderKotlinCompileErrorFormatter(m: MessageSourceLocation) {
   const msgs: string[] = []
   let isFormatted = false
   if (m.type === 'error' || m.type === 'exception') {
