@@ -17,18 +17,39 @@ export function initModuleAlias() {
   const libDir = path.resolve(__dirname, '../../lib')
   const compilerSfcPath = path.resolve(libDir, '@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
-  moduleAlias.addAliases({
-    '@vue/shared': require.resolve('@vue/shared'),
-    '@vue/shared/dist/shared.esm-bundler.js': require.resolve(
-      '@vue/shared/dist/shared.esm-bundler.js'
-    ),
-    '@vue/compiler-core': path.resolve(libDir, '@vue/compiler-core'),
-    '@vue/compiler-dom': require.resolve('@vue/compiler-dom'),
-    '@vue/compiler-sfc': compilerSfcPath,
-    '@vue/server-renderer': serverRendererPath,
-    'vue/compiler-sfc': compilerSfcPath,
-    'vue/server-renderer': serverRendererPath,
-  })
+  if (process.env.UNI_VUE_VAPOR === 'true') {
+    const vuePkgs = [
+      '@vue/compiler-core',
+      '@vue/compiler-dom',
+      '@vue/compiler-sfc',
+      '@vue/compiler-ssr',
+      '@vue/compiler-vapor',
+      '@vue/runtime-core',
+      '@vue/runtime-dom',
+      '@vue/runtime-vapor',
+      '@vue/server-renderer',
+      '@vue/shared',
+    ]
+    vuePkgs.forEach((pkg) => {
+      moduleAlias.addAlias(
+        pkg,
+        path.resolve(libDir, 'vapor', '@vue', pkg.split('/').pop()!)
+      )
+    })
+  } else {
+    moduleAlias.addAliases({
+      '@vue/shared': require.resolve('@vue/shared'),
+      '@vue/shared/dist/shared.esm-bundler.js': require.resolve(
+        '@vue/shared/dist/shared.esm-bundler.js'
+      ),
+      '@vue/compiler-core': path.resolve(libDir, '@vue/compiler-core'),
+      '@vue/compiler-dom': require.resolve('@vue/compiler-dom'),
+      '@vue/compiler-sfc': compilerSfcPath,
+      '@vue/server-renderer': serverRendererPath,
+      'vue/compiler-sfc': compilerSfcPath,
+      'vue/server-renderer': serverRendererPath,
+    })
+  }
   if (process.env.VITEST) {
     moduleAlias.addAliases({
       vue: '@dcloudio/uni-h5-vue',
@@ -101,27 +122,6 @@ export function initModuleAlias() {
       //   return oldSync(id, opts)
       // }
     }
-  }
-
-  if (process.env.UNI_VUE_VAPOR === 'true') {
-    const vuePkgs = [
-      '@vue/compiler-core',
-      '@vue/compiler-dom',
-      '@vue/compiler-sfc',
-      '@vue/compiler-ssr',
-      '@vue/compiler-vapor',
-      '@vue/runtime-core',
-      '@vue/runtime-dom',
-      '@vue/runtime-vapor',
-      '@vue/server-renderer',
-      '@vue/shared',
-    ]
-    vuePkgs.forEach((pkg) => {
-      moduleAlias.addAlias(
-        pkg,
-        path.resolve(libDir, 'vapor', pkg.split('/').pop()!)
-      )
-    })
   }
 }
 
