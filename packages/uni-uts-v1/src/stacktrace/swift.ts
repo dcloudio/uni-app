@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { originalPositionFor } from '../sourceMap'
-import { generateCodeFrame, splitRE } from './utils'
+import { generateCodeFrame, parseErrorWithRules, splitRE } from './utils'
 import { SPECIAL_CHARS } from '../utils'
 
 const uniModulesSwiftUTSRe = /(.*).swift:([0-9]+):([0-9]+):\s+error:\s+(.*)/
@@ -19,6 +19,7 @@ export async function parseUTSSwiftPluginStacktrace({
 }: ParseUTSPluginStacktraceOptions) {
   const res: string[] = []
   const lines = stacktrace.split(splitRE)
+  let colored = false
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     const codes = await parseUTSStacktraceLine(
@@ -29,13 +30,23 @@ export async function parseUTSSwiftPluginStacktrace({
     )
     if (codes && codes.length) {
       const message = codes[0]
-      res.push('\u200Cerror: ' + message + '\u200C')
+      colored = true
+      res.push(
+        '\u200C' + SPECIAL_CHARS.ERROR_BLOCK + 'error: ' + message + '\u200C'
+      )
       res.push(...codes.slice(1))
     } else {
       res.push(line)
     }
   }
-  return SPECIAL_CHARS.ERROR_BLOCK + res.join('\n') + SPECIAL_CHARS.ERROR_BLOCK
+  return (
+    (colored ? '' : SPECIAL_CHARS.ERROR_BLOCK) +
+    parseErrorWithRules(res.join('\n'), {
+      language: 'swift',
+      platform: 'app-ios',
+    }) +
+    SPECIAL_CHARS.ERROR_BLOCK
+  )
 }
 
 async function parseUTSStacktraceLine(

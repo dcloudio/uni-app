@@ -269,20 +269,28 @@ export function parseUTSKotlinRuntimeStacktrace(
       const color = options.logType
         ? COLORS[options.logType as string] || ''
         : ''
-      let error =
-        'error: ' +
-        formatKotlinError(
-          resolveCausedBy(res),
-          codes,
-          runtimeFormatters,
-          options.appid
-        )
+      const message = resolveCausedBy(res)
+      const formatted = formatKotlinError(
+        message,
+        codes,
+        runtimeFormatters,
+        options.appid
+      )
+      let error = 'error: ' + formatted
+      const isFormatted = message !== formatted
       if (color) {
         error = color + SPECIAL_CHARS.ERROR_BLOCK + error + color
       }
+      let errorStr = [error, ...codes].join('\n')
+      if (!isFormatted) {
+        errorStr = parseErrorWithRules(errorStr, {
+          language: 'kotlin',
+          platform: 'app-android',
+        })
+      }
       return (
         (color ? '' : SPECIAL_CHARS.ERROR_BLOCK) +
-        [error, ...codes].join('\n') +
+        errorStr +
         SPECIAL_CHARS.ERROR_BLOCK
       )
     } else {

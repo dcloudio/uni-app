@@ -36,6 +36,17 @@ at uni_modules/native-button/utssdk/app-harmony/index.uts:90:16
 
 exports[`uts:stacktrace parseUTSArkTSPluginStacktrace 4`] = `"1 WARN: ArkTS:WARN File: D:/demo-projects/demo-app-x/unpackage/debug/app-harmony-fde54b25/oh_modules/.ohpm/@dcloudio+uni-app-x-runtime@8kwvevyo0ovlx9ebtjtkdkzydpkx+j5qpbuuwz5vjge=/oh_modules/@dcloudio/uni-app-x-runtime/src/main/ets/runtime/dom/NamedNodeMap.ets:16:45"`;
 
+exports[`uts:stacktrace parseUTSArkTSPluginStacktrace 5`] = `
+"‌⁠error: Cannot find name 'nativeViewElemen'. Did you mean 'nativeViewElement'?‌
+at uni_modules/native-button/utssdk/app-harmony/index.uts:90:16
+88 |          if (ins.$el != null) {
+89 |              const nativeViewElement = iterateElement(ins.$el as UniElement)
+90 |              if (nativeViewElemen != null) {
+   |                  ^
+91 |                  return new NativeButtonContext(nativeViewElement)
+92 |              }⁠"
+`;
+
 exports[`uts:stacktrace parseUTSKotlinStacktrace 1`] = `
 "‌⁠error: Unresolved reference: test‌
 at components/test/test.vue:14:28

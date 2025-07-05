@@ -4,7 +4,7 @@ import {
   parseUTSKotlinStacktrace,
   parseUTSSwiftPluginStacktrace,
 } from '../src/stacktrace'
-import { hbuilderFormatter } from '../src/stacktrace/kotlin'
+import { hbuilderKotlinCompileErrorFormatter } from '../src/stacktrace/kotlin'
 import { normalizePath } from '../src/shared'
 const stacktrace = `/uts-development-ios/dependences/buildFramework/template/xcode_ust_template/unimoduleTestUTS1/src/index.swift:3:12: error: cannot convert return expression of type 'Int' to return type 'String'
 /uts-development-ios/dependences/buildFramework/template/xcode_ust_template/unimoduleTestUTS1/src/index.swift:6:12: error: cannot convert return expression of type 'Int' to return type 'String'
@@ -53,7 +53,7 @@ describe('uts:stacktrace', () => {
           inputDir,
           sourceMapDir,
           replaceTabsWithSpace: true,
-          format: hbuilderFormatter,
+          format: hbuilderKotlinCompileErrorFormatter,
         }
       )
     ).toMatchSnapshot()
@@ -77,7 +77,7 @@ describe('uts:stacktrace', () => {
           inputDir,
           sourceMapDir,
           replaceTabsWithSpace: true,
-          format: hbuilderFormatter,
+          format: hbuilderKotlinCompileErrorFormatter,
         }
       )
     ).toMatchSnapshot()
@@ -125,6 +125,15 @@ describe('uts:stacktrace', () => {
           inputDir: 'D:/demo-projects/demo-app-x/',
           outputDir:
             'D:/demo-projects/demo-app-x/unpackage/dist/dev/app-harmony',
+        }
+      )
+    ).toMatchSnapshot()
+    expect(
+      await parseUTSArkTSPluginStacktrace(
+        `Error Message: Cannot find name 'nativeViewElemen'. Did you mean 'nativeViewElement'?. At File: ${inputDir}/unpackage/debug/app-harmony-9ed02395/uni_modules/native-button/utssdk/app-harmony/index.ets:73:17`,
+        {
+          inputDir,
+          outputDir,
         }
       )
     ).toMatchSnapshot()
