@@ -24,9 +24,6 @@ export function initModuleAlias() {
       '@vue/compiler-sfc',
       '@vue/compiler-ssr',
       '@vue/compiler-vapor',
-      '@vue/runtime-core',
-      '@vue/runtime-dom',
-      '@vue/runtime-vapor',
       '@vue/server-renderer',
       '@vue/shared',
     ]
