@@ -8,6 +8,8 @@ import {
 
 export const splitRE = /\r?\n/
 
+export const STACK_ERROR_PLACEHOLDER = '%StacktraceItem%'
+
 const range: number = 2
 
 function posToNumber(

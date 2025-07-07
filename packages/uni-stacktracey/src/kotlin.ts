@@ -17,16 +17,20 @@ export function updateUTSKotlinSourceMapManifestCache(
     const manifestFile = path.resolve(url, '.manifest.json')
     try {
       getFileContent(manifestFile).then((content) => {
-        const { files } = JSON.parse(content) as KotlinManifestCache
-        if (files) {
-          const classManifest: Record<string, string> = {}
-          Object.keys(files).forEach((name) => {
-            const kotlinClass = files[name].class
-            if (kotlinClass) {
-              classManifest[kotlinClass] = name
-            }
-          })
-          kotlinManifest.manifest = classManifest
+        try {
+          const { files } = JSON.parse(content) as KotlinManifestCache
+          if (files) {
+            const classManifest: Record<string, string> = {}
+            Object.keys(files).forEach((name) => {
+              const kotlinClass = files[name].class
+              if (kotlinClass) {
+                classManifest[kotlinClass] = name
+              }
+            })
+            kotlinManifest.manifest = classManifest
+          }
+        } catch (error) {
+          console.error(`Failed to parse Kotlin manifest file: ${url}`)
         }
         resolve()
       })
