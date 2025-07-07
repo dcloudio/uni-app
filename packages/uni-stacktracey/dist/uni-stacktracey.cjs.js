@@ -1,209 +1,12 @@
 'use strict';
 
-var path = require('path');
 var fs = require('fs');
+var path = require('path');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
-var path__default = /*#__PURE__*/_interopDefault(path);
 var fs__default = /*#__PURE__*/_interopDefault(fs);
-
-/*  ------------------------------------------------------------------------ */
-const O = Object, isBrowser = 
-/* eslint-disable */
-typeof window !== 'undefined' &&
-    /* eslint-disable */
-    window.window === window &&
-    /* eslint-disable */
-    window.navigator, 
-// @ts-ignore
-nodeRequire = isBrowser ? null : module.require, // to prevent bundlers from expanding the require call
-lastOf = (x) => x[x.length - 1], nixSlashes = (x) => x.replace(/\\/g, '/'), pathRoot = isBrowser ? window.location.href : nixSlashes(process.cwd()) + '/';
-/*  ------------------------------------------------------------------------ */
-class StackTracey {
-    constructor(input, uniPlatform, offset) {
-        this.itemsHeader = [];
-        this.isMP = false;
-        const originalInput = input, isParseableSyntaxError = input && input instanceof SyntaxError && !isBrowser;
-        /*  new StackTracey ()            */
-        if (!input) {
-            input = new Error();
-            offset = offset === undefined ? 1 : offset;
-        }
-        /*  new StackTracey (Error)      */
-        if (input instanceof Error) {
-            input = input.stack || '';
-        }
-        /*  new StackTracey (string)     */
-        if (typeof input === 'string') {
-            this.isMP = uniPlatform === 'mp-weixin';
-            input = this.rawParse(input)
-                .slice(offset)
-                .map((x) => this.extractEntryMetadata(x));
-        }
-        /*  new StackTracey (array)      */
-        if (Array.isArray(input)) {
-            if (isParseableSyntaxError) {
-                const rawLines = nodeRequire('util')
-                    .inspect(originalInput)
-                    .split('\n'), fileLine = rawLines[0].split(':'), line = fileLine.pop(), file = fileLine.join(':');
-                if (file) {
-                    input.unshift({
-                        file: nixSlashes(file),
-                        line: line,
-                        column: (rawLines[2] || '').indexOf('^') + 1,
-                        sourceLine: rawLines[1],
-                        callee: '(syntax error)',
-                        syntaxError: true,
-                    });
-                }
-            }
-            this.items = input;
-        }
-        else {
-            this.items = [];
-        }
-    }
-    extractEntryMetadata(e) {
-        const decomposedPath = this.decomposePath(e.file || '');
-        const fileRelative = decomposedPath[0];
-        const externalDomain = decomposedPath[1];
-        return O.assign(e, {
-            calleeShort: e.calleeShort || lastOf((e.callee || '').split('.')),
-            fileRelative: fileRelative,
-            fileShort: this.shortenPath(fileRelative),
-            fileName: lastOf((e.file || '').split('/')),
-            thirdParty: this.isThirdParty(fileRelative, externalDomain) && !e.index,
-            externalDomain: externalDomain,
-        });
-    }
-    shortenPath(relativePath) {
-        return relativePath
-            .replace(/^node_modules\//, '')
-            .replace(/^webpack\/bootstrap\//, '')
-            .replace(/^__parcel_source_root\//, '');
-    }
-    decomposePath(fullPath) {
-        let result = fullPath;
-        if (isBrowser)
-            result = result.replace(pathRoot, '');
-        const externalDomainMatch = result.match(/^(http|https)\:\/\/?([^\/]+)\/{1,}(.*)/);
-        const externalDomain = externalDomainMatch
-            ? externalDomainMatch[2]
-            : undefined;
-        result = externalDomainMatch ? externalDomainMatch[3] : result;
-        // if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
-        return [
-            nixSlashes(result).replace(/^.*\:\/\/?\/?/, ''), // cut webpack:/// and webpack:/ things
-            externalDomain,
-        ];
-    }
-    isThirdParty(relativePath, externalDomain) {
-        if (this.isMP) {
-            if (typeof externalDomain === 'undefined')
-                return false;
-            return externalDomain !== 'usr';
-        }
-        return (
-        // 由于 hello-uniapp web 端报错携带 hellouniapp.dcloud.net.cn
-        // externalDomain ||
-        relativePath[0] === '~' || // webpack-specific heuristic
-            relativePath[0] === '/' || // external source
-            relativePath.indexOf('@dcloudio') !== -1 ||
-            relativePath.indexOf('weex-main-jsfm') !== -1 ||
-            relativePath.indexOf('webpack/bootstrap') === 0);
-    }
-    rawParse(str) {
-        const lines = (str || '').split('\n');
-        const entries = lines.map((line, index) => {
-            line = line.trim();
-            let callee, fileLineColumn = [], native, planA, planB;
-            if (line.indexOf('file:') !== -1) {
-                line = line.replace(/file:\/\/(.*)www/, 'file://');
-            }
-            if ((planA = line.match(/at (.+) \(eval at .+ \((.+)\), .+\)/)) || // eval calls
-                (planA = line.match(/at (.+) \((.+)\)/)) ||
-                (line.slice(0, 3) !== 'at ' && (planA = line.match(/(.*)@(.*)/)))) {
-                this.itemsHeader.push('%StacktraceyItem%');
-                callee = planA[1];
-                native = planA[2] === 'native';
-                fileLineColumn = (planA[2].match(/(.*):(\d+):(\d+)/) ||
-                    planA[2].match(/(.*):(\d+)/) ||
-                    planA[2].match(/\[(.*)\]/) ||
-                    []).slice(1);
-            }
-            else if ((planB = line.match(/^(at\s*)*(.*)\s+(.+):(\d+):(\d+)/))) {
-                this.itemsHeader.push('%StacktraceyItem%');
-                callee = planB[2].trim();
-                fileLineColumn = planB.slice(3);
-            }
-            else {
-                this.itemsHeader.push(line);
-                return undefined;
-            }
-            /*  Detect things like Array.reduce
-                TODO: detect more built-in types            */
-            if (callee && !fileLineColumn[0]) {
-                const type = callee.split('.')[0];
-                if (type === 'Array') {
-                    native = true;
-                }
-            }
-            return {
-                beforeParse: line,
-                callee: callee || '',
-                /* eslint-disable */
-                index: isBrowser && fileLineColumn[0] === window.location.href,
-                native: native || false,
-                file: nixSlashes(fileLineColumn[0] || ''),
-                line: parseInt(fileLineColumn[1] || '', 10) || undefined,
-                column: parseInt(fileLineColumn[2] || '', 10) || undefined,
-            };
-        });
-        return entries.filter((x) => x !== undefined);
-    }
-    maxColumnWidths() {
-        return {
-            callee: 30,
-            file: 60,
-            sourceLine: 80,
-        };
-    }
-    asTable(opts) {
-        const maxColumnWidths = (opts && opts.maxColumnWidths) || this.maxColumnWidths();
-        const trimmed = this
-            .filter((e) => !e.thirdParty)
-            .map((e) => parseItem(e, maxColumnWidths, this.isMP));
-        const trimmedThirdParty = this
-            .filter((e) => e.thirdParty)
-            .map((e) => parseItem(e, maxColumnWidths, this.isMP));
-        return {
-            items: trimmed.items,
-            thirdPartyItems: trimmedThirdParty.items,
-        };
-    }
-}
-const trimEnd = (s, n) => s && (s.length > n ? s.slice(0, n - 1) + '…' : s);
-const trimStart = (s, n) => s && (s.length > n ? '…' + s.slice(-(n - 1)) : s);
-function parseItem(e, maxColumnWidths, isMP) {
-    if (!e.parsed) {
-        return e.beforeParse;
-    }
-    const filePath = (isMP ? e.file && e.file : e.fileShort && e.fileShort) +
-        `${typeof e.line !== 'undefined' ? ':' + e.line : ''}` +
-        `${typeof e.column !== 'undefined' ? ':' + e.column : ''}`;
-    return [
-        'at ' + trimEnd(isMP ? e.callee : e.calleeShort, maxColumnWidths.callee),
-        trimStart(filePath || '', maxColumnWidths.file),
-        trimEnd((e.sourceLine || '').trim() || '', maxColumnWidths.sourceLine),
-    ];
-}
-['map', 'filter', 'slice', 'concat'].forEach((method) => {
-    StackTracey.prototype[method] = function ( /*...args */) {
-        // no support for ...args in Node v4 :(
-        return new StackTracey(this.items[method].apply(this.items, arguments));
-    };
-});
+var path__default = /*#__PURE__*/_interopDefault(path);
 
 var util$1 = {};
 
@@ -2476,6 +2279,7 @@ function _factoryBSM(aSourceMap, aSourceMapURL) {
 var SourceMapConsumer = sourceMapConsumer.SourceMapConsumer;
 
 const splitRE = /\r?\n/;
+const STACK_ERROR_PLACEHOLDER = '%StacktraceItem%';
 const range = 2;
 function posToNumber(source, pos) {
     if (typeof pos === 'number')
@@ -2661,6 +2465,203 @@ function getFileContent(sourcemapUrl) {
     });
 }
 
+/*  ------------------------------------------------------------------------ */
+const O = Object, isBrowser = 
+/* eslint-disable */
+typeof window !== 'undefined' &&
+    /* eslint-disable */
+    window.window === window &&
+    /* eslint-disable */
+    window.navigator, 
+// @ts-ignore
+nodeRequire = isBrowser ? null : module.require, // to prevent bundlers from expanding the require call
+lastOf = (x) => x[x.length - 1], nixSlashes = (x) => x.replace(/\\/g, '/'), pathRoot = isBrowser ? window.location.href : nixSlashes(process.cwd()) + '/';
+/*  ------------------------------------------------------------------------ */
+class StackTracey {
+    constructor(input, uniPlatform, offset) {
+        this.itemsHeader = [];
+        this.isMP = false;
+        const originalInput = input, isParseableSyntaxError = input && input instanceof SyntaxError && !isBrowser;
+        /*  new StackTracey ()            */
+        if (!input) {
+            input = new Error();
+            offset = offset === undefined ? 1 : offset;
+        }
+        /*  new StackTracey (Error)      */
+        if (input instanceof Error) {
+            input = input.stack || '';
+        }
+        /*  new StackTracey (string)     */
+        if (typeof input === 'string') {
+            this.isMP = uniPlatform === 'mp-weixin';
+            input = this.rawParse(input)
+                .slice(offset)
+                .map((x) => this.extractEntryMetadata(x));
+        }
+        /*  new StackTracey (array)      */
+        if (Array.isArray(input)) {
+            if (isParseableSyntaxError) {
+                const rawLines = nodeRequire('util')
+                    .inspect(originalInput)
+                    .split('\n'), fileLine = rawLines[0].split(':'), line = fileLine.pop(), file = fileLine.join(':');
+                if (file) {
+                    input.unshift({
+                        file: nixSlashes(file),
+                        line: line,
+                        column: (rawLines[2] || '').indexOf('^') + 1,
+                        sourceLine: rawLines[1],
+                        callee: '(syntax error)',
+                        syntaxError: true,
+                    });
+                }
+            }
+            this.items = input;
+        }
+        else {
+            this.items = [];
+        }
+    }
+    extractEntryMetadata(e) {
+        const decomposedPath = this.decomposePath(e.file || '');
+        const fileRelative = decomposedPath[0];
+        const externalDomain = decomposedPath[1];
+        return O.assign(e, {
+            calleeShort: e.calleeShort || lastOf((e.callee || '').split('.')),
+            fileRelative: fileRelative,
+            fileShort: this.shortenPath(fileRelative),
+            fileName: lastOf((e.file || '').split('/')),
+            thirdParty: this.isThirdParty(fileRelative, externalDomain) && !e.index,
+            externalDomain: externalDomain,
+        });
+    }
+    shortenPath(relativePath) {
+        return relativePath
+            .replace(/^node_modules\//, '')
+            .replace(/^webpack\/bootstrap\//, '')
+            .replace(/^__parcel_source_root\//, '');
+    }
+    decomposePath(fullPath) {
+        let result = fullPath;
+        if (isBrowser)
+            result = result.replace(pathRoot, '');
+        const externalDomainMatch = result.match(/^(http|https)\:\/\/?([^\/]+)\/{1,}(.*)/);
+        const externalDomain = externalDomainMatch
+            ? externalDomainMatch[2]
+            : undefined;
+        result = externalDomainMatch ? externalDomainMatch[3] : result;
+        // if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
+        return [
+            nixSlashes(result).replace(/^.*\:\/\/?\/?/, ''), // cut webpack:/// and webpack:/ things
+            externalDomain,
+        ];
+    }
+    isThirdParty(relativePath, externalDomain) {
+        if (this.isMP) {
+            if (typeof externalDomain === 'undefined')
+                return false;
+            return externalDomain !== 'usr';
+        }
+        return (
+        // 由于 hello-uniapp web 端报错携带 hellouniapp.dcloud.net.cn
+        // externalDomain ||
+        relativePath[0] === '~' || // webpack-specific heuristic
+            relativePath[0] === '/' || // external source
+            relativePath.indexOf('@dcloudio') !== -1 ||
+            relativePath.indexOf('weex-main-jsfm') !== -1 ||
+            relativePath.indexOf('webpack/bootstrap') === 0);
+    }
+    rawParse(str) {
+        const lines = (str || '').split('\n');
+        const entries = lines.map((line, index) => {
+            line = line.trim();
+            let callee, fileLineColumn = [], native, planA, planB;
+            if (line.indexOf('file:') !== -1) {
+                line = line.replace(/file:\/\/(.*)www/, 'file://');
+            }
+            if ((planA = line.match(/at (.+) \(eval at .+ \((.+)\), .+\)/)) || // eval calls
+                (planA = line.match(/at (.+) \((.+)\)/)) ||
+                (line.slice(0, 3) !== 'at ' && (planA = line.match(/(.*)@(.*)/)))) {
+                this.itemsHeader.push(STACK_ERROR_PLACEHOLDER);
+                callee = planA[1];
+                native = planA[2] === 'native';
+                fileLineColumn = (planA[2].match(/(.*):(\d+):(\d+)/) ||
+                    planA[2].match(/(.*):(\d+)/) ||
+                    planA[2].match(/\[(.*)\]/) ||
+                    []).slice(1);
+            }
+            else if ((planB = line.match(/^(at\s*)*(.*)\s+(.+):(\d+):(\d+)/))) {
+                this.itemsHeader.push(STACK_ERROR_PLACEHOLDER);
+                callee = planB[2].trim();
+                fileLineColumn = planB.slice(3);
+            }
+            else {
+                this.itemsHeader.push(line);
+                return undefined;
+            }
+            /*  Detect things like Array.reduce
+                TODO: detect more built-in types            */
+            if (callee && !fileLineColumn[0]) {
+                const type = callee.split('.')[0];
+                if (type === 'Array') {
+                    native = true;
+                }
+            }
+            return {
+                beforeParse: line,
+                callee: callee || '',
+                /* eslint-disable */
+                index: isBrowser && fileLineColumn[0] === window.location.href,
+                native: native || false,
+                file: nixSlashes(fileLineColumn[0] || ''),
+                line: parseInt(fileLineColumn[1] || '', 10) || undefined,
+                column: parseInt(fileLineColumn[2] || '', 10) || undefined,
+            };
+        });
+        return entries.filter((x) => x !== undefined);
+    }
+    maxColumnWidths() {
+        return {
+            callee: 30,
+            file: 60,
+            sourceLine: 80,
+        };
+    }
+    asTable(opts) {
+        const maxColumnWidths = (opts && opts.maxColumnWidths) || this.maxColumnWidths();
+        const trimmed = this
+            .filter((e) => !e.thirdParty)
+            .map((e) => parseItem(e, maxColumnWidths, this.isMP));
+        const trimmedThirdParty = this
+            .filter((e) => e.thirdParty)
+            .map((e) => parseItem(e, maxColumnWidths, this.isMP));
+        return {
+            items: trimmed.items,
+            thirdPartyItems: trimmedThirdParty.items,
+        };
+    }
+}
+const trimEnd = (s, n) => s && (s.length > n ? s.slice(0, n - 1) + '…' : s);
+const trimStart = (s, n) => s && (s.length > n ? '…' + s.slice(-(n - 1)) : s);
+function parseItem(e, maxColumnWidths, isMP) {
+    if (!e.parsed) {
+        return e.beforeParse;
+    }
+    const filePath = (isMP ? e.file && e.file : e.fileShort && e.fileShort) +
+        `${typeof e.line !== 'undefined' ? ':' + e.line : ''}` +
+        `${typeof e.column !== 'undefined' ? ':' + e.column : ''}`;
+    return [
+        'at ' + trimEnd(isMP ? e.callee : e.calleeShort, maxColumnWidths.callee),
+        trimStart(filePath || '', maxColumnWidths.file),
+        trimEnd((e.sourceLine || '').trim() || '', maxColumnWidths.sourceLine),
+    ];
+}
+['map', 'filter', 'slice', 'concat'].forEach((method) => {
+    StackTracey.prototype[method] = function ( /*...args */) {
+        // no support for ...args in Node v4 :(
+        return new StackTracey(this.items[method].apply(this.items, arguments));
+    };
+});
+
 function getSourceMapConsumer(content) {
     return new Promise((resolve, reject) => {
         try {
@@ -2733,16 +2734,21 @@ function updateUTSKotlinSourceMapManifestCache(url) {
         const manifestFile = path__default.default.resolve(url, '.manifest.json');
         try {
             getFileContent(manifestFile).then((content) => {
-                const { files } = JSON.parse(content);
-                if (files) {
-                    const classManifest = {};
-                    Object.keys(files).forEach((name) => {
-                        const kotlinClass = files[name].class;
-                        if (kotlinClass) {
-                            classManifest[kotlinClass] = name;
-                        }
-                    });
-                    kotlinManifest.manifest = classManifest;
+                try {
+                    const { files } = JSON.parse(content);
+                    if (files) {
+                        const classManifest = {};
+                        Object.keys(files).forEach((name) => {
+                            const kotlinClass = files[name].class;
+                            if (kotlinClass) {
+                                classManifest[kotlinClass] = name;
+                            }
+                        });
+                        kotlinManifest.manifest = classManifest;
+                    }
+                }
+                catch (error) {
+                    console.error(`Failed to parse Kotlin manifest file: ${url}`);
                 }
                 resolve();
             });
@@ -2754,7 +2760,6 @@ function parseFilenameByClassName(className) {
     return kotlinManifest.manifest[className.split('$')[0]] || 'index.kt';
 }
 
-const STACK_ERROR_PLACEHOLDER = '%StacktraceItem%';
 function stacktrace(stacktrace, opts) {
     const _promise = new Promise((resolve, reject) => {
         opts.preset.precondition().then(() => {
@@ -2946,7 +2951,7 @@ function uniStacktracePreset(opts) {
 }
 const uniStracktraceyPreset = uniStacktracePreset;
 function utsStacktracePreset(opts) {
-    const { inputRoot = '', outputRoot = '', sourceMapRoot = '', base = '' } = opts;
+    const { inputRoot = '', outputRoot = '', sourceMapRoot = '', base = '', } = opts;
     let errStack = [];
     let parseKotlin = false;
     return {
@@ -2967,8 +2972,10 @@ function utsStacktracePreset(opts) {
                 line = line.trim();
                 let matches = line.match(/\s*(.+\.(kt|swift|ets)):([0-9]+):([0-9]+):?\s*(.*)/);
                 if (!matches) {
-                    parseKotlin = true;
                     matches = line.match(new RegExp('uni\\.\\w+\\.(.*)\\..*\\(*\\.kt:([0-9]+)\\)'));
+                    if (matches) {
+                        parseKotlin = true;
+                    }
                 }
                 errStack.push(matches ? STACK_ERROR_PLACEHOLDER : line);
                 if (!matches) {
@@ -2981,7 +2988,8 @@ function utsStacktracePreset(opts) {
                 let fileShort = line;
                 let fileName = '';
                 if (matches[2] === 'ets') {
-                    file = (line.match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] || matches[1];
+                    file =
+                        (line.match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] || matches[1];
                 }
                 if (parseKotlin) {
                     fileName = fileShort = file = parseFilenameByClassName(file);
@@ -3029,9 +3037,12 @@ function utsStacktracePreset(opts) {
         },
         precondition() {
             return new Promise((resolve, reject) => {
-                updateUTSKotlinSourceMapManifestCache(base).finally(resolve);
+                if (parseKotlin)
+                    updateUTSKotlinSourceMapManifestCache(base).finally(resolve);
+                else
+                    resolve();
             });
-        }
+        },
     };
 }
 const utsStracktraceyPreset = utsStacktracePreset;
