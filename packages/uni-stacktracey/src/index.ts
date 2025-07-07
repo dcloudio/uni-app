@@ -1,7 +1,7 @@
 import StackTrace from './stacktrace'
 import path from 'path'
 import { getSourceMapContent, originalPositionFor } from './sourcemap'
-import { normalizePath, splitRE } from './utils'
+import { STACK_ERROR_PLACEHOLDER, normalizePath, splitRE } from './utils'
 import {
   parseFilenameByClassName,
   updateUTSKotlinSourceMapManifestCache,
@@ -72,8 +72,6 @@ interface StacktraceOptions {
   preset: StacktracePreset
   withSourceContent?: boolean
 }
-
-const STACK_ERROR_PLACEHOLDER = '%StacktraceItem%'
 
 export function stacktrace(
   stacktrace: string,
@@ -376,10 +374,12 @@ export function utsStacktracePreset(
             /\s*(.+\.(kt|swift|ets)):([0-9]+):([0-9]+):?\s*(.*)/
           )
           if (!matches) {
-            parseKotlin = true
             matches = line.match(
               new RegExp('uni\\.\\w+\\.(.*)\\..*\\(*\\.kt:([0-9]+)\\)')
             )
+            if (matches) {
+              parseKotlin = true
+            }
           }
 
           errStack.push(matches ? STACK_ERROR_PLACEHOLDER : line)
@@ -454,7 +454,9 @@ export function utsStacktracePreset(
     },
     precondition(): Promise<void> {
       return new Promise((resolve, reject) => {
-        updateUTSKotlinSourceMapManifestCache(base).finally(resolve)
+        if (parseKotlin)
+          updateUTSKotlinSourceMapManifestCache(base).finally(resolve)
+        else resolve()
       })
     },
   }

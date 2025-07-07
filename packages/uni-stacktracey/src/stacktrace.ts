@@ -1,5 +1,7 @@
 'use strict'
 
+import { STACK_ERROR_PLACEHOLDER } from './utils'
+
 interface EntryMetadata {
   beforeParse: string
   callee: string
@@ -174,7 +176,7 @@ class StackTracey {
         (planA = line.match(/at (.+) \((.+)\)/)) ||
         (line.slice(0, 3) !== 'at ' && (planA = line.match(/(.*)@(.*)/)))
       ) {
-        this.itemsHeader.push('%StacktraceyItem%')
+        this.itemsHeader.push(STACK_ERROR_PLACEHOLDER)
         callee = planA[1]
         native = planA[2] === 'native'
         fileLineColumn = (
@@ -184,7 +186,7 @@ class StackTracey {
           []
         ).slice(1)
       } else if ((planB = line.match(/^(at\s*)*(.*)\s+(.+):(\d+):(\d+)/))) {
-        this.itemsHeader.push('%StacktraceyItem%')
+        this.itemsHeader.push(STACK_ERROR_PLACEHOLDER)
         callee = planB[2].trim()
         fileLineColumn = planB.slice(3)
       } else {
