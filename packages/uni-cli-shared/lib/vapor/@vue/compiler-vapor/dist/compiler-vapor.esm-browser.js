@@ -23458,7 +23458,7 @@ function generateFactoryCallsInRender(templates, rootIndex, context) {
   const { helper } = context;
   const calls = templates.map((_, index) => {
     const rootParam = index === rootIndex ? ", true" : "";
-    return `const t${index} = ${helper("template")}($doc, f${index}${rootParam})`;
+    return `const t${index} = ${helper("factory")}($doc, f${index}${rootParam})`;
   });
   return calls.join("\n  ");
 }
