@@ -574,7 +574,10 @@
           "arkts": false
         }
       }
-    }
+    },
+    "easycom": [
+      "live-player"
+    ]
   },
   "uni-live-pusher": {
     "uni": {
@@ -587,7 +590,10 @@
           "arkts": false
         }
       }
-    }
+    },
+    "easycom": [
+      "live-pusher"
+    ]
   },
   "uni-location": {
     "provider": {
