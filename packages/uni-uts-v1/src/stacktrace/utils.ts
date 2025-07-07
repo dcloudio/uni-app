@@ -225,21 +225,30 @@ export function parseErrorWithRules(
   return error
 }
 
-function getErrorRules(
-  language: 'kotlin' | 'swift' | 'js' | 'arkts',
-  platform: 'app-android' | 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
-) {
-  let errorRuleConfig = {} as ErrorRuleConfig // 默认值
+let errorRuleConfig: ErrorRuleConfig | null = null
+function getErrorRuleConfig() {
+  if (errorRuleConfig) {
+    return errorRuleConfig
+  }
   const filename = process.env.UNI_COMPILER_VALIDATION_RULES_PATH
   if (filename && fs.existsSync(filename)) {
     try {
       errorRuleConfig = JSON.parse(fs.readFileSync(filename, 'utf-8'))
-    } catch (e) {
-      return []
-    }
-  } else {
-    return []
+    } catch (e) {}
   }
+  if (!errorRuleConfig) {
+    errorRuleConfig = {
+      version: '1.0.0',
+    }
+  }
+  return errorRuleConfig
+}
+
+function getErrorRules(
+  language: 'kotlin' | 'swift' | 'js' | 'arkts',
+  platform: 'app-android' | 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
+) {
+  const errorRuleConfig = getErrorRuleConfig()
   const rules: ErrorRule[] = [...(errorRuleConfig.common?.rules || [])]
   if (errorRuleConfig[language]) {
     rules.push(...(errorRuleConfig[language]?.rules || []))
