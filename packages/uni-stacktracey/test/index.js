@@ -57,8 +57,8 @@ Run with --stacktrace option to get the stack trace. Run with --info or --debug 
 
 BUILD FAILED in 2s
 `
-stacktracey(utsErrorMsg, {
-  preset: utsStracktraceyPreset({
+stacktrace(utsErrorMsg, {
+  preset: utsStacktracePreset({
     base: path.resolve(
       __dirname,
       './nativeplugins-sourceMap/DCloud-UTSPlugin/'
@@ -67,9 +67,9 @@ stacktracey(utsErrorMsg, {
   }),
 }).then((res) => {
   console.log('res :>> ', res)
-}) */
-
-const uniErrorMsg = `Error: Sentry Error
+})
+ */
+/* const uniErrorMsg = `Error: Sentry Error
 at a.throwError(/static/js/pages-index-index.3ab0d0e5.js:1:567)
 at click(/static/js/pages-index-index.3ab0d0e5.js:1:2745)
 at ee(/static/js/chunk-vendors.75525bd5.js:34:11927)
@@ -80,10 +80,11 @@ at HTMLElement.o._wrapper(/static/js/chunk-vendors.75525bd5.js:34:53966)
 at HTMLElement.i(/static/js/chunk-vendors.75525bd5.js:7:609894)`
 stacktrace(uniErrorMsg, {
   preset: uniStacktracePreset({
-    base: path.resolve(__dirname, './__UNI__APPID__/1.0.0/.sourcemap/h5/'),
+    base: path.resolve(__dirname, './__UNI_APPID__/h5/1.0.0'),
     sourceRoot: '',
     // splitThirdParty: true
   }),
 }).then((res) => {
   console.log('res :>> ', res)
 })
+ */

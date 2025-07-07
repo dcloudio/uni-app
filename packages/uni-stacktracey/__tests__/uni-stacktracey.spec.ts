@@ -8,7 +8,7 @@ const {
 const utsProjectDir = path.resolve(__dirname, '../test/uts')
 
 describe('uni-stacktrace', () => {
-  test('abc', async () => {
+  test('parse UTSError', async () => {
     expect(
       await stacktrace(
         `UTSError(name='Error', message='setTimeout ABC', cause='null')
