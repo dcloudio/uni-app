@@ -10960,6 +10960,47 @@ function toStyle(el, classStyle, classStyleWeights) {
   return res;
 }
 
+const vShowOriginalDisplay = Symbol("_vod");
+const vShowHidden = Symbol("_vsh");
+const vShow = {
+  beforeMount(el, { value }, { transition }) {
+    el[vShowOriginalDisplay] = el.style.getPropertyValue("display") === "none" ? "" : "flex";
+    if (transition && value) {
+      transition.beforeEnter(el);
+    } else {
+      setDisplay(el, value);
+    }
+  },
+  mounted(el, { value }, { transition }) {
+    if (transition && value) {
+      transition.enter(el);
+    }
+  },
+  updated(el, { value, oldValue }, { transition }) {
+    if (!value === !oldValue) return;
+    if (transition) {
+      if (value) {
+        transition.beforeEnter(el);
+        setDisplay(el, true);
+        transition.enter(el);
+      } else {
+        transition.leave(el, () => {
+          setDisplay(el, false);
+        });
+      }
+    } else {
+      setDisplay(el, value);
+    }
+  },
+  beforeUnmount(el, { value }) {
+    setDisplay(el, value);
+  }
+};
+function setDisplay(el, value) {
+  el.style.setProperty("display", value ? el[vShowOriginalDisplay] : "none");
+  el[vShowHidden] = !value;
+}
+
 function patchClass(el, pre, next, instance = null) {
   if (!instance) {
     return;
@@ -10994,7 +11035,7 @@ function updateClassStyles(el) {
   if (styles.size == 0) {
     return;
   }
-  if (el._vsh) {
+  if (el[vShowHidden]) {
     styles.set("display", "none");
   }
   el.updateStyle(styles);
@@ -11298,47 +11339,6 @@ function parseStyleDecl(prop, value) {
   const val = normalizeStyle(prop, value);
   const res = setStyle(val);
   return res;
-}
-
-const vShowOriginalDisplay = Symbol("_vod");
-const vShowHidden = Symbol("_vsh");
-const vShow = {
-  beforeMount(el, { value }, { transition }) {
-    el[vShowOriginalDisplay] = el.style.getPropertyValue("display") === "none" ? "" : "flex";
-    if (transition && value) {
-      transition.beforeEnter(el);
-    } else {
-      setDisplay(el, value);
-    }
-  },
-  mounted(el, { value }, { transition }) {
-    if (transition && value) {
-      transition.enter(el);
-    }
-  },
-  updated(el, { value, oldValue }, { transition }) {
-    if (!value === !oldValue) return;
-    if (transition) {
-      if (value) {
-        transition.beforeEnter(el);
-        setDisplay(el, true);
-        transition.enter(el);
-      } else {
-        transition.leave(el, () => {
-          setDisplay(el, false);
-        });
-      }
-    } else {
-      setDisplay(el, value);
-    }
-  },
-  beforeUnmount(el, { value }) {
-    setDisplay(el, value);
-  }
-};
-function setDisplay(el, value) {
-  el.style.setProperty("display", value ? el[vShowOriginalDisplay] : "none");
-  el[vShowHidden] = !value;
 }
 
 function isSame(a, b) {

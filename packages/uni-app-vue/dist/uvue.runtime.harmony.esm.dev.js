@@ -12493,6 +12493,68 @@ function toStyle(el, classStyle, classStyleWeights) {
   }
   return res;
 }
+var vShowOriginalDisplay = Symbol("_vod");
+var vShowHidden = Symbol("_vsh");
+var vShow = {
+  beforeMount(el, _ref28, _ref29) {
+    var {
+      value
+    } = _ref28;
+    var {
+      transition
+    } = _ref29;
+    el[vShowOriginalDisplay] = el.style.getPropertyValue("display") === "none" ? "" : "flex";
+    if (transition && value) {
+      transition.beforeEnter(el);
+    } else {
+      setDisplay(el, value);
+    }
+  },
+  mounted(el, _ref30, _ref31) {
+    var {
+      value
+    } = _ref30;
+    var {
+      transition
+    } = _ref31;
+    if (transition && value) {
+      transition.enter(el);
+    }
+  },
+  updated(el, _ref32, _ref33) {
+    var {
+      value,
+      oldValue
+    } = _ref32;
+    var {
+      transition
+    } = _ref33;
+    if (!value === !oldValue) return;
+    if (transition) {
+      if (value) {
+        transition.beforeEnter(el);
+        setDisplay(el, true);
+        transition.enter(el);
+      } else {
+        transition.leave(el, () => {
+          setDisplay(el, false);
+        });
+      }
+    } else {
+      setDisplay(el, value);
+    }
+  },
+  beforeUnmount(el, _ref34) {
+    var {
+      value
+    } = _ref34;
+    setDisplay(el, value);
+  }
+};
+function setDisplay(el, value) {
+  el.style.setProperty("display", value ? el[vShowOriginalDisplay] : "none");
+  el[vShowHidden] = !value;
+}
 function patchClass(el, pre, next) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
   if (!instance) {
@@ -12525,7 +12587,7 @@ function updateClassStyles(el) {
   if (styles.size == 0) {
     return;
   }
-  if (el._vsh) {
+  if (el[vShowHidden]) {
     styles.set("display", "none");
   }
   el.updateStyle(styles);
@@ -12820,68 +12882,6 @@ function parseStyleDecl(prop, value) {
   var val = normalizeStyle(prop, value);
   var res = setStyle(val);
   return res;
-}
-var vShowOriginalDisplay = Symbol("_vod");
-var vShowHidden = Symbol("_vsh");
-var vShow = {
-  beforeMount(el, _ref28, _ref29) {
-    var {
-      value
-    } = _ref28;
-    var {
-      transition
-    } = _ref29;
-    el[vShowOriginalDisplay] = el.style.getPropertyValue("display") === "none" ? "" : "flex";
-    if (transition && value) {
-      transition.beforeEnter(el);
-    } else {
-      setDisplay(el, value);
-    }
-  },
-  mounted(el, _ref30, _ref31) {
-    var {
-      value
-    } = _ref30;
-    var {
-      transition
-    } = _ref31;
-    if (transition && value) {
-      transition.enter(el);
-    }
-  },
-  updated(el, _ref32, _ref33) {
-    var {
-      value,
-      oldValue
-    } = _ref32;
-    var {
-      transition
-    } = _ref33;
-    if (!value === !oldValue) return;
-    if (transition) {
-      if (value) {
-        transition.beforeEnter(el);
-        setDisplay(el, true);
-        transition.enter(el);
-      } else {
-        transition.leave(el, () => {
-          setDisplay(el, false);
-        });
-      }
-    } else {
-      setDisplay(el, value);
-    }
-  },
-  beforeUnmount(el, _ref34) {
-    var {
-      value
-    } = _ref34;
-    setDisplay(el, value);
-  }
-};
-function setDisplay(el, value) {
-  el.style.setProperty("display", value ? el[vShowOriginalDisplay] : "none");
-  el[vShowHidden] = !value;
 }
 function isSame(a, b) {
   return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
