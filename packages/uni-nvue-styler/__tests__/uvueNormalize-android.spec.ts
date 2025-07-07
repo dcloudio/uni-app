@@ -983,4 +983,17 @@ flexBasis: fill;
       },
     })
   })
+
+  test('@media rules', async () => {
+    const { json, messages } = await objectifierRule(`
+@media (prefers-color-scheme: dark) {
+	.k--root {
+		/* 文本颜色 */
+		--k-text-color-primary: red;
+	}
+}
+`)
+    expect(messages.length).toBe(0)
+    expect(json).toEqual({})
+  })
 })
