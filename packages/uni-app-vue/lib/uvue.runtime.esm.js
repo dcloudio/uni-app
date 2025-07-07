@@ -3,7 +3,7 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, isFunction, EMPTY_OBJ, isPromise, isArray, NOOP, getGlobalThis, extend, isBuiltInDirective, hasOwn, remove as remove$1, def, isOn, isReservedProp, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, getEscapedCssVarName, isObject, isRegExp, invokeArrayFns, toHandlerKey, camelize, capitalize, isSymbol, isGloballyAllowed, NO, hyphenate, makeMap, toRawType, EMPTY_ARR, getSequence, hasChanged, looseToNumber, isModelListener, toNumber, isBuiltInTag, parseStringStyle, isSpecialBooleanAttr, canSetValueDirectly, shouldSetAsAttr, isNativeOn, isSet, looseIndexOf, looseEqual, YES, toDisplayString } from '@vue/shared';
+import { isString, isFunction, EMPTY_OBJ, isPromise, isArray, NOOP, getGlobalThis, extend, isBuiltInDirective, hasOwn, remove as remove$1, def, isOn, isReservedProp, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, getEscapedCssVarName, isObject, isRegExp, invokeArrayFns, toHandlerKey, camelize, capitalize, isSymbol, isGloballyAllowed, NO, hyphenate, makeMap, toRawType, EMPTY_ARR, getSequence, hasChanged, looseToNumber, isModelListener, toNumber, isBuiltInTag, YES, parseStringStyle, canSetValueDirectly, toDisplayString } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, traverse, shallowRef, readonly, isReactive, ref, isShallow, isReadonly, shallowReadArray, toReadonly, toReactive, shallowReadonly, track, reactive, shallowReactive, trigger, ReactiveEffect, watch as watch$1, customRef, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, getCurrentScope, onEffectCleanup, onScopeDispose, unref } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, getCurrentWatcher, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, onWatcherCleanup, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
@@ -1722,7 +1722,7 @@ const getContainerType = (container) => {
   if (isMathMLContainer(container)) return "mathml";
   return void 0;
 };
-const isComment$1 = (node) => node.nodeType === 8;
+const isComment = (node) => node.nodeType === 8;
 function createHydrationFunctions(rendererInternals) {
   const {
     mt: mountComponent,
@@ -1753,7 +1753,7 @@ function createHydrationFunctions(rendererInternals) {
   };
   const hydrateNode = (node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized = false) => {
     optimized = optimized || !!vnode.dynamicChildren;
-    const isFragmentStart = isComment$1(node) && node.data === "[";
+    const isFragmentStart = isComment(node) && node.data === "[";
     const onMismatch = () => handleMismatch(
       node,
       vnode,
@@ -1871,7 +1871,7 @@ function createHydrationFunctions(rendererInternals) {
           const container = parentNode(node);
           if (isFragmentStart) {
             nextNode = locateClosingAnchor(node);
-          } else if (isComment$1(node) && node.data === "teleport start") {
+          } else if (isComment(node) && node.data === "teleport start") {
             nextNode = locateClosingAnchor(node, node.data, "teleport end");
           } else {
             nextNode = nextSibling(node);
@@ -2120,7 +2120,7 @@ Server rendered element contains fewer child nodes than client vdom.`
       slotScopeIds,
       optimized
     );
-    if (next && isComment$1(next) && next.data === "]") {
+    if (next && isComment(next) && next.data === "]") {
       return nextSibling(vnode.anchor = next);
     } else {
       logMismatchError();
@@ -2134,7 +2134,7 @@ Server rendered element contains fewer child nodes than client vdom.`
         `Hydration node mismatch:
 - rendered on server:`,
         node,
-        node.nodeType === 3 ? `(text)` : isComment$1(node) && node.data === "[" ? `(start of fragment)` : ``,
+        node.nodeType === 3 ? `(text)` : isComment(node) && node.data === "[" ? `(start of fragment)` : ``,
         `
 - expected on client:`,
         vnode.type
@@ -2176,7 +2176,7 @@ Server rendered element contains fewer child nodes than client vdom.`
     let match = 0;
     while (node) {
       node = nextSibling(node);
-      if (node && isComment$1(node)) {
+      if (node && isComment(node)) {
         if (node.data === open) match++;
         if (node.data === close) {
           if (match === 0) {
@@ -2427,7 +2427,7 @@ const hydrateOnInteraction = (interactions = []) => (hydrate, forEach) => {
   return teardown;
 };
 function forEachElement(node, cb) {
-  if (isComment$1(node) && node.data === "[") {
+  if (isComment(node) && node.data === "[") {
     let depth = 1;
     let next = node.nextSibling;
     while (next) {
@@ -2436,7 +2436,7 @@ function forEachElement(node, cb) {
         if (result === false) {
           break;
         }
-      } else if (isComment$1(next)) {
+      } else if (isComment(next)) {
         if (next.data === "]") {
           if (--depth === 0) break;
         } else if (next.data === "[") {
@@ -4692,15 +4692,15 @@ const updateSlots = (instance, children, optimized) => {
 
 let supported;
 let perf;
-let cachedNow$1 = 0;
-const p$1 = /* @__PURE__ */ Promise.resolve();
-const getNow$1 = () => cachedNow$1 || (p$1.then(() => cachedNow$1 = 0), cachedNow$1 = isSupported() ? perf.now() : Date.now());
+let cachedNow = 0;
+const p = /* @__PURE__ */ Promise.resolve();
+const getNow = () => cachedNow || (p.then(() => cachedNow = 0), cachedNow = isSupported() ? perf.now() : Date.now());
 function startMeasure(instance, type) {
   if (instance.appContext.config.performance && isSupported()) {
     perf.mark(`vue-${type}-${instance.uid}`);
   }
   if (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_DEVTOOLS__) {
-    devtoolsPerfStart(instance, type, getNow$1());
+    devtoolsPerfStart(instance, type, getNow());
   }
 }
 function endMeasure(instance, type) {
@@ -4717,7 +4717,7 @@ function endMeasure(instance, type) {
     perf.clearMarks(endTag);
   }
   if (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_DEVTOOLS__) {
-    devtoolsPerfEnd(instance, type, getNow$1());
+    devtoolsPerfEnd(instance, type, getNow());
   }
 }
 function isSupported() {
@@ -8767,1443 +8767,6 @@ const resolveFilter = null;
 const compatUtils = null;
 const DeprecationTypes = null;
 
-const NODE_EXT_STYLES = "styles";
-const NODE_EXT_PARENT_STYLES = "parentStyles";
-const NODE_EXT_CLASS_STYLE = "classStyle";
-const NODE_EXT_STYLE = "style";
-const NODE_EXT_IS_TEXT_NODE = "isTextNode";
-const NODE_EXT_CHILD_NODE = "childNode";
-const NODE_EXT_PARENT_NODE = "parentNode";
-const NODE_EXT_CHILD_NODES = "childNodes";
-function setNodeExtraData(el, name, value) {
-  el.ext.set(name, value);
-}
-function getNodeExtraData(el, name) {
-  return el.ext.get(name);
-}
-function getExtraStyles(el) {
-  return getNodeExtraData(el, NODE_EXT_STYLES);
-}
-function setExtraStyles(el, styles) {
-  setNodeExtraData(el, NODE_EXT_STYLES, styles);
-}
-function getExtraParentStyles(el) {
-  return getNodeExtraData(el, NODE_EXT_PARENT_STYLES);
-}
-function setExtraParentStyles(el, styles) {
-  setNodeExtraData(el, NODE_EXT_PARENT_STYLES, styles);
-}
-function getExtraClassStyle(el) {
-  return getNodeExtraData(el, NODE_EXT_CLASS_STYLE);
-}
-function setExtraClassStyle(el, classStyle) {
-  setNodeExtraData(el, NODE_EXT_CLASS_STYLE, classStyle);
-}
-function getExtraStyle(el) {
-  return getNodeExtraData(el, NODE_EXT_STYLE);
-}
-function setExtraStyle(el, style) {
-  setNodeExtraData(el, NODE_EXT_STYLE, style);
-}
-function isCommentNode(node) {
-  return node.nodeName == "#comment";
-}
-function isExtraTextNode(el) {
-  return getNodeExtraData(el, NODE_EXT_IS_TEXT_NODE) === true;
-}
-function setExtraIsTextNode(el, isTextNode) {
-  setNodeExtraData(el, NODE_EXT_IS_TEXT_NODE, isTextNode);
-}
-function isTextElement(value) {
-  return value instanceof UniTextElement;
-}
-function getExtraChildNode(el) {
-  return getNodeExtraData(el, NODE_EXT_CHILD_NODE);
-}
-function setExtraChildNode(el, childNode) {
-  setNodeExtraData(el, NODE_EXT_CHILD_NODE, childNode);
-}
-function setExtraParentNode(el, parentNode) {
-  setNodeExtraData(el, NODE_EXT_PARENT_NODE, parentNode);
-}
-function getExtraChildNodes(el) {
-  return getNodeExtraData(el, NODE_EXT_CHILD_NODES);
-}
-function setExtraChildNodes(el, childNodes) {
-  setNodeExtraData(el, NODE_EXT_CHILD_NODES, childNodes);
-}
-function getExtraParentNode(el) {
-  return getNodeExtraData(el, NODE_EXT_PARENT_NODE);
-}
-
-function each(obj) {
-  return Object.keys(obj);
-}
-function useCssStyles(componentStyles) {
-  const normalized = {};
-  if (!isArray(componentStyles)) {
-    return normalized;
-  }
-  componentStyles.forEach((componentStyle) => {
-    each(componentStyle).forEach((className) => {
-      const parentStyles = componentStyle[className];
-      const normalizedStyles = normalized[className] || (normalized[className] = {});
-      each(parentStyles).forEach((parentSelector) => {
-        const parentStyle = parentStyles[parentSelector];
-        const normalizedStyle = normalizedStyles[parentSelector] || (normalizedStyles[parentSelector] = {});
-        each(parentStyle).forEach((name) => {
-          if (name[0] === "!") {
-            normalizedStyle[name] = parentStyle[name];
-            delete normalizedStyle[name.slice(1)];
-          } else {
-            if (!hasOwn(normalizedStyle, "!" + name)) {
-              normalizedStyle[name] = parentStyle[name];
-            }
-          }
-        });
-      });
-    });
-  });
-  return normalized;
-}
-function hasClass(calssName, el) {
-  const classList = el && el.classList;
-  return classList && classList.includes(calssName);
-}
-const TYPE_RE = /[+~> ]$/;
-const PROPERTY_PARENT_NODE = "parentNode";
-const PROPERTY_PREVIOUS_SIBLING = "previousSibling";
-function isMatchParentSelector(parentSelector, el) {
-  const classArray = parentSelector.split(".");
-  for (let i = classArray.length - 1; i > 0; i--) {
-    const item = classArray[i];
-    const type = item[item.length - 1];
-    const className = item.replace(TYPE_RE, "");
-    if (type === "~" || type === " ") {
-      const property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
-      while (el) {
-        el = el[property];
-        if (hasClass(className, el)) {
-          break;
-        }
-      }
-      if (!el) {
-        return false;
-      }
-    } else {
-      if (type === ">") {
-        el = el && el[PROPERTY_PARENT_NODE];
-      } else if (type === "+") {
-        el = el && el[PROPERTY_PREVIOUS_SIBLING];
-      }
-      if (!hasClass(className, el)) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-const WEIGHT_IMPORTANT = 1e3;
-function parseClassName({ styles, weights }, parentStyles, el) {
-  each(parentStyles).forEach((parentSelector) => {
-    if (parentSelector && el) {
-      if (!isMatchParentSelector(parentSelector, el)) {
-        return;
-      }
-    }
-    const classWeight = parentSelector.split(".").length;
-    const style = parentStyles[parentSelector];
-    each(style).forEach((name) => {
-      const value = style[name];
-      const isImportant = name[0] === "!";
-      if (isImportant) {
-        name = name.slice(1);
-      }
-      const oldWeight = weights[name] || 0;
-      const weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
-      if (weight >= oldWeight) {
-        weights[name] = weight;
-        styles.set(name, value);
-      }
-    });
-  });
-}
-class ParseStyleContext {
-  constructor() {
-    this.styles = /* @__PURE__ */ new Map();
-    this.weights = {};
-  }
-}
-function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheets, el = null) {
-  const context = new ParseStyleContext();
-  classList.forEach((className) => {
-    const parentStyles = stylesheet && stylesheet[className];
-    if (parentStyles) {
-      parseClassName(context, parentStyles, el);
-    }
-  });
-  if (parentStylesheets != null) {
-    classList.forEach((className) => {
-      const parentStylesheet = (parentStylesheets || []).find(
-        (style) => style[className] !== null
-      );
-      const parentStyles = parentStylesheet && parentStylesheet[className];
-      if (parentStyles != null) {
-        parseClassName(context, parentStyles, el);
-      }
-    });
-  }
-  return context;
-}
-function parseClassStyles(el) {
-  const styles = getExtraStyles(el);
-  const parentStyles = getExtraParentStyles(el);
-  if (styles == null && parentStyles == null || el.classList.length == 0) {
-    return new ParseStyleContext();
-  }
-  return parseClassListWithStyleSheet(el.classList, styles, parentStyles, el);
-}
-function parseClassList(classList, instance, el = null) {
-  return parseClassListWithStyleSheet(
-    classList,
-    parseStyleSheet(instance),
-    null,
-    el
-  ).styles;
-}
-function parseStyleSheet({
-  type,
-  appContext,
-  root
-}) {
-  const component = type;
-  const pageInstance = root;
-  if (!pageInstance.componentStylesCache) {
-    pageInstance.componentStylesCache = /* @__PURE__ */ new Map();
-  }
-  let cache = pageInstance.componentStylesCache.get(component);
-  if (!cache) {
-    const __globalStyles = appContext.provides.__globalStyles;
-    if (appContext && isArray(__globalStyles)) {
-      appContext.provides.__globalStyles = useCssStyles(__globalStyles);
-    }
-    const styles = [];
-    if (appContext && __globalStyles) {
-      const globalStyles = isArray(__globalStyles) ? __globalStyles : [__globalStyles];
-      styles.push(...globalStyles);
-    }
-    const page = root.type;
-    if (component !== page && isArray(page.styles)) {
-      styles.push(...page.styles);
-    }
-    if (isArray(component.styles)) {
-      styles.push(...component.styles);
-    }
-    cache = useCssStyles(styles);
-    pageInstance.componentStylesCache.set(component, cache);
-  }
-  return cache;
-}
-function extendMap(a, b) {
-  b.forEach((value, key) => {
-    a.set(key, value);
-  });
-  return a;
-}
-function toStyle(el, classStyle, classStyleWeights) {
-  const res = extendMap(/* @__PURE__ */ new Map(), classStyle);
-  const style = getExtraStyle(el);
-  if (style != null) {
-    style.forEach((value, key) => {
-      const weight = classStyleWeights[key];
-      if (weight == null || weight < WEIGHT_IMPORTANT) {
-        res.set(key, value);
-      }
-    });
-  }
-  return res;
-}
-
-function patchClass$1(el, pre, next, instance = null) {
-  if (!instance) {
-    return;
-  }
-  const classList = next ? next.split(" ") : [];
-  el.classList = classList;
-  setExtraStyles(el, parseStyleSheet(instance));
-  if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
-    setExtraParentStyles(
-      el,
-      instance.parent.type.styles
-    );
-  }
-  updateClassStyles(el);
-}
-function updateClassStyles(el) {
-  if (el.parentNode == null || isCommentNode(el)) {
-    return;
-  }
-  if (getExtraClassStyle(el) == null) {
-    setExtraClassStyle(el, /* @__PURE__ */ new Map());
-  }
-  const oldClassStyle = getExtraClassStyle(el);
-  oldClassStyle.forEach((_value, key) => {
-    oldClassStyle.set(key, "");
-  });
-  const parseClassStylesResult = parseClassStyles(el);
-  parseClassStylesResult.styles.forEach((value, key) => {
-    oldClassStyle.set(key, value);
-  });
-  const styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
-  if (styles.size == 0) {
-    return;
-  }
-  if (el._vsh) {
-    styles.set("display", "none");
-  }
-  el.updateStyle(styles);
-}
-
-let rootDocument;
-function getDocument() {
-  return rootDocument;
-}
-function setDocument(document) {
-  rootDocument = document;
-}
-function updateTextNode(node) {
-  const childNode = getExtraChildNode(node);
-  if (childNode !== null) {
-    const text = childNode.getAttribute("value");
-    node.setAttribute("value", text || "");
-  }
-}
-const nodeOps$1 = {
-  insert: (el, parent, anchor) => {
-    if (isTextElement(parent)) {
-      if (isExtraTextNode(el)) {
-        const childNode = getExtraChildNode(parent);
-        if (childNode !== null) {
-          console.error("Multiple text nodes are not allowed.");
-        } else {
-          setExtraChildNode(parent, el);
-          setExtraParentNode(el, parent);
-          updateTextNode(parent);
-        }
-        return;
-      }
-    }
-    if (!anchor) {
-      parent.appendChild(el);
-    } else {
-      parent.insertBefore(el, anchor);
-    }
-    if (parent.isConnected) {
-      updateClassStyles(el);
-      updateChildrenClassStyle(el);
-    }
-  },
-  remove: (child) => {
-    const parent = child.parentNode;
-    if (parent) {
-      const childNodes = getExtraChildNodes(parent);
-      if (childNodes !== null) {
-        const index = childNodes.indexOf(child);
-        if (index !== -1) {
-          childNodes.splice(index, 1);
-          setExtraChildNodes(parent, childNodes);
-        }
-      }
-      parent.removeChild(child);
-    }
-  },
-  createElement: (tag, container) => {
-    if (!container) {
-      const document = getDocument();
-      if (!document) {
-        throw new Error("document is not defined");
-      }
-      return document.createElement(tag);
-    } else {
-      const document = container.page.document;
-      return document.createElement(tag);
-    }
-  },
-  createText: (text, container, isAnchor) => {
-    const document = container.page.document;
-    if (isAnchor) {
-      return document.createComment(text);
-    }
-    const textNode = document.createElement("text");
-    textNode.setAttribute("value", text);
-    setExtraIsTextNode(textNode, true);
-    return textNode;
-  },
-  createComment: (text, container) => {
-    const document = container.page.document;
-    return document.createComment(text);
-  },
-  setText: (node, text) => {
-    node.setAttribute("value", text);
-    const parent = getExtraParentNode(node);
-    if (parent !== null) {
-      updateTextNode(parent);
-    }
-  },
-  setElementText: (el, text) => {
-    if (el.tagName !== "TEXT") {
-      const childNodes = el.childNodes;
-      let textNode = childNodes.find((node) => node.tagName === "TEXT");
-      if (!textNode) {
-        const textNode2 = nodeOps$1.createText(text, el);
-        el.appendChild(textNode2);
-        return;
-      }
-      el = textNode;
-    }
-    el.setAttribute("value", text);
-  },
-  parentNode: (node) => node.parentNode,
-  nextSibling: (node) => node.nextSibling,
-  querySelector: (selector, parentComponent) => {
-    const proxy = parentComponent && parentComponent.proxy;
-    const document = proxy && proxy.$nativePage && proxy.$nativePage.document;
-    if (document) {
-      return document.querySelector(selector);
-    }
-    return null;
-  }
-};
-function updateChildrenClassStyle(el) {
-  if (el !== null) {
-    el.childNodes.forEach((child) => {
-      updateClassStyles(child);
-      updateChildrenClassStyle(child);
-    });
-  }
-}
-
-function patchAttr$1(el, key, value, instance = null) {
-  if (instance) {
-    [key, value] = transformAttr(el, key, value, instance);
-  }
-  el.setAnyAttribute(key, value);
-}
-const ATTR_HOVER_CLASS = "hoverClass";
-const ATTR_PLACEHOLDER_CLASS = "placeholderClass";
-const ATTR_PLACEHOLDER_STYLE = "placeholderStyle";
-const ATTR_INDICATOR_CLASS = "indicatorClass";
-const ATTR_INDICATOR_STYLE = "indicatorStyle";
-const ATTR_MASK_CLASS = "maskClass";
-const ATTR_MASK_STYLE = "maskStyle";
-const CLASS_AND_STYLES = {
-  view: {
-    class: [ATTR_HOVER_CLASS],
-    style: []
-  },
-  button: {
-    class: [ATTR_HOVER_CLASS],
-    style: []
-  },
-  navigator: {
-    class: [ATTR_HOVER_CLASS],
-    style: []
-  },
-  input: {
-    class: [ATTR_PLACEHOLDER_CLASS],
-    style: [ATTR_PLACEHOLDER_STYLE]
-  },
-  textarea: {
-    class: [ATTR_PLACEHOLDER_CLASS],
-    style: [ATTR_PLACEHOLDER_STYLE]
-  },
-  "picker-view": {
-    class: [ATTR_INDICATOR_CLASS, ATTR_MASK_CLASS],
-    style: [ATTR_INDICATOR_STYLE, ATTR_MASK_STYLE]
-  }
-};
-function transformAttr(el, key, value, instance) {
-  if (!value) {
-    return [key, value];
-  }
-  const opts = CLASS_AND_STYLES[el.tagName.toLowerCase()];
-  if (opts) {
-    const camelized = camelize(key);
-    if (opts["class"].indexOf(camelized) > -1) {
-      const classStyle = parseClassList([value], instance, el);
-      if (el.tagName === "BUTTON") {
-        if (value === "none" || value == "button-hover" && classStyle.size == 0) {
-          return [camelized, value];
-        }
-      }
-      return [camelized, classStyle];
-    }
-    if (opts["style"].indexOf(camelized) > -1) {
-      if (isString(value)) {
-        const sytle = parseStringStyle(camelize(value));
-        return [camelized, sytle];
-      }
-      return [camelized, normalizeStyle$1(value)];
-    }
-  }
-  return [key, value];
-}
-
-function addEventListener$2(el, event, handler, options) {
-  el.addEventListener(event, handler);
-}
-function removeEventListener$1(el, event) {
-  el.removeEventListener(event);
-}
-function patchEvent$1(el, rawName, prevValue, nextValue, instance = null) {
-  const invokers = el._vei || (el._vei = {});
-  const existingInvoker = invokers[rawName];
-  if (nextValue && existingInvoker) {
-    existingInvoker.value = nextValue;
-  } else {
-    const [name, options] = parseName$1(rawName);
-    if (nextValue) {
-      const invoker = invokers[rawName] = createInvoker$1(nextValue, instance);
-      addEventListener$2(el, name, invoker);
-    } else if (existingInvoker) {
-      removeEventListener$1(el, name);
-      invokers[rawName] = void 0;
-    }
-  }
-}
-const optionsModifierRE$1 = /(?:Once|Passive|Capture)$/;
-function formatEventName(name) {
-  if (name === "on-post-message") {
-    return "onPostMessage";
-  }
-  return name;
-}
-function parseName$1(name) {
-  let options;
-  if (optionsModifierRE$1.test(name)) {
-    options = {};
-    let m;
-    while (m = name.match(optionsModifierRE$1)) {
-      name = name.slice(0, name.length - m[0].length);
-      options[m[0].toLowerCase()] = true;
-    }
-  }
-  const event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
-  return [formatEventName(event), options];
-}
-function createInvoker$1(initialValue, instance) {
-  const invoker = (e) => {
-    callWithAsyncErrorHandling(
-      invoker.value,
-      instance,
-      5,
-      [e]
-    );
-  };
-  invoker.value = initialValue;
-  const modifiers = /* @__PURE__ */ new Set();
-  if (isArray(invoker.value)) {
-    invoker.value.forEach((v) => {
-      if (v.modifiers) {
-        v.modifiers.forEach((m) => {
-          modifiers.add(m);
-        });
-      }
-    });
-  } else {
-    if (invoker.value.modifiers) {
-      invoker.value.modifiers.forEach((m) => {
-        modifiers.add(m);
-      });
-    }
-  }
-  invoker.modifiers = [...modifiers];
-  return invoker;
-}
-
-const processDeclaration = expand({ type: "uvue" }).Declaration;
-function createDeclaration(prop, value) {
-  const newValue = value + "";
-  if (newValue.includes("!important")) {
-    return {
-      prop,
-      value: newValue.replace(/\s*!important/, ""),
-      important: true
-    };
-  }
-  return {
-    prop,
-    value: newValue,
-    important: false
-  };
-}
-function normalizeStyle(name, value) {
-  const decl = Object.assign(
-    {},
-    {
-      replaceWith(newProps) {
-        props = newProps;
-      }
-    },
-    createDeclaration(name, value)
-  );
-  let props = [decl];
-  processDeclaration(decl);
-  return props;
-}
-function setStyle$2(expandRes) {
-  const resArr = expandRes.map((item) => {
-    return [item.prop, item.value];
-  });
-  const resMap = new Map(resArr);
-  return resMap;
-}
-function parseStyleDecl(prop, value) {
-  const val = normalizeStyle(prop, value);
-  const res = setStyle$2(val);
-  return res;
-}
-
-function isSame(a, b) {
-  return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
-}
-function patchStyle$1(el, prev, next) {
-  if (!next) {
-    return;
-  }
-  if (isString(next)) {
-    next = parseStringStyle(next);
-  }
-  const batchedStyles = /* @__PURE__ */ new Map();
-  const isPrevObj = prev && !isString(prev);
-  if (isPrevObj) {
-    const classStyle = getExtraClassStyle(el);
-    const style = getExtraStyle(el);
-    for (const key in prev) {
-      if (next[key] == null) {
-        const _key = key.startsWith("--") ? key : camelize(key);
-        const value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-        parseStyleDecl(_key, value).forEach((value2, key2) => {
-          batchedStyles.set(key2, value2);
-          style && style.delete(key2);
-        });
-      }
-    }
-    for (const key in next) {
-      const value = next[key];
-      const prevValue = prev[key];
-      if (!isSame(prevValue, value)) {
-        const _key = key.startsWith("--") ? key : camelize(key);
-        parseStyleDecl(_key, value).forEach((value2, key2) => {
-          batchedStyles.set(key2, value2);
-          style && style.set(key2, value2);
-        });
-      }
-    }
-  } else {
-    for (const key in next) {
-      const value = next[key];
-      const _key = key.startsWith("--") ? key : camelize(key);
-      setBatchedStyles(batchedStyles, _key, value);
-    }
-    setExtraStyle(el, batchedStyles);
-  }
-  if (batchedStyles.size == 0) {
-    return;
-  }
-  if (el._vsh) {
-    batchedStyles.set("display", "none");
-  }
-  el.updateStyle(batchedStyles);
-}
-function setBatchedStyles(batchedStyles, key, value) {
-  parseStyleDecl(key, value).forEach((value2, key2) => {
-    batchedStyles.set(key2, value2);
-  });
-}
-
-const vModelTags = ["u-input", "u-textarea"];
-const patchProp$1 = (el, key, prevValue, nextValue, namespace, parentComponent, hostInstance) => {
-  if (key === "class") {
-    patchClass$1(el, prevValue, nextValue, hostInstance || parentComponent);
-  } else if (key === "style") {
-    patchStyle$1(el, prevValue, nextValue);
-  } else if (isOn(key)) {
-    if (!isModelListener(key)) {
-      patchEvent$1(el, key, prevValue, nextValue, parentComponent);
-    }
-  } else if (key === "modelValue" && vModelTags.includes(el.tagName.toLowerCase())) {
-    el.setAnyAttribute("modelValue", nextValue);
-    el.setAnyAttribute("value", nextValue);
-  } else {
-    patchAttr$1(el, key, nextValue, parentComponent);
-  }
-};
-
-function useCssModule(name = "$style") {
-  {
-    const instance = getCurrentInstance();
-    if (!instance) {
-      !!(process.env.NODE_ENV !== "production") && warn(`useCssModule must be called inside setup()`);
-      return EMPTY_OBJ;
-    }
-    const modules = instance.type.__cssModules;
-    if (!modules) {
-      !!(process.env.NODE_ENV !== "production") && warn(`Current instance does not have CSS modules injected.`);
-      return EMPTY_OBJ;
-    }
-    const mod = modules[name];
-    if (!mod) {
-      !!(process.env.NODE_ENV !== "production") && warn(`Current instance does not have CSS module named "${name}".`);
-      return EMPTY_OBJ;
-    }
-    return mod;
-  }
-}
-
-function useCssVars(getter) {
-  const instance = getCurrentInstance();
-  if (!instance) {
-    !!(process.env.NODE_ENV !== "production") && warn(`useCssVars is called without current active component instance.`);
-    return;
-  }
-  const setVars = () => setVarsOnVNode(instance.subTree, getter(instance.proxy));
-  onMounted(() => watchEffect(setVars, { flush: "post" }));
-  onUpdated(setVars);
-}
-function setVarsOnVNode(vnode, vars) {
-  if (vnode.shapeFlag & 128) {
-    const suspense = vnode.suspense;
-    vnode = suspense.activeBranch;
-    if (suspense.pendingBranch && !suspense.isHydrating) {
-      suspense.effects.push(() => {
-        setVarsOnVNode(suspense.activeBranch, vars);
-      });
-    }
-  }
-  while (vnode.component) {
-    vnode = vnode.component.subTree;
-  }
-  if (vnode.shapeFlag & 1 && vnode.el) {
-    const style = vnode.el.style;
-    for (const key in vars) {
-      style.setProperty(`--${key}`, vars[key]);
-    }
-  } else if (vnode.type === Fragment) {
-    vnode.children.forEach((c) => setVarsOnVNode(c, vars));
-  }
-}
-
-const getModelAssigner = (vnode) => {
-  const fn = vnode.props["onUpdate:modelValue"];
-  return isArray(fn) ? (value) => invokeArrayFns(fn, value) : fn;
-};
-const vModelText = {
-  created(el, _binding, _vnode, _prevVNode) {
-    const trigger = getModelAssigner(_vnode);
-    el.addEventListener("input", (event) => {
-      trigger(event.detail.value);
-    });
-  },
-  mounted(el, _binding, _vnode, _prevVNode) {
-    var _a;
-    el.setAnyAttribute("value", (_a = _binding.value) != null ? _a : "");
-  },
-  beforeUpdate(el, _binding, _vnode, _prevVNode) {
-    var _a;
-    el.setAnyAttribute("value", (_a = _binding.value) != null ? _a : "");
-  }
-};
-const vModelDynamic = vModelText;
-
-const systemModifiers = ["ctrl", "shift", "alt", "meta"];
-const modifierGuards = {
-  stop: (e) => e.stopPropagation(),
-  prevent: (e) => e.preventDefault(),
-  self: (e) => e.target !== e.currentTarget,
-  ctrl: (e) => !e.ctrlKey,
-  shift: (e) => !e.shiftKey,
-  alt: (e) => !e.altKey,
-  meta: (e) => !e.metaKey,
-  left: (e) => "button" in e && e.button !== 0,
-  middle: (e) => "button" in e && e.button !== 1,
-  right: (e) => "button" in e && e.button !== 2,
-  exact: (e, modifiers) => systemModifiers.some((m) => e[`${m}Key`] && !modifiers.includes(m))
-};
-const withModifiers = (fn, modifiers) => {
-  return (event, ...args) => {
-    for (let i = 0; i < modifiers.length; i++) {
-      const guard = modifierGuards[modifiers[i]];
-      if (guard && guard(event, modifiers)) return;
-    }
-    return fn(event, ...args);
-  };
-};
-const withKeys = (fn, modifiers) => {
-  return (event) => {
-    if (!("key" in event)) {
-      return;
-    }
-    const eventKey = hyphenate(event.key);
-    if (modifiers.some((k) => k === eventKey)) {
-      return fn(event);
-    }
-  };
-};
-
-const vShow = {
-  beforeMount(el, { value }, { transition }) {
-    el._vod = el.style.getPropertyValue("display") === "none" ? "" : "flex";
-    if (transition && value) {
-      transition.beforeEnter(el);
-    } else {
-      setDisplay$1(el, value);
-    }
-  },
-  mounted(el, { value }, { transition }) {
-    if (transition && value) {
-      transition.enter(el);
-    }
-  },
-  updated(el, { value, oldValue }, { transition }) {
-    if (!value === !oldValue) return;
-    if (transition) {
-      if (value) {
-        transition.beforeEnter(el);
-        setDisplay$1(el, true);
-        transition.enter(el);
-      } else {
-        transition.leave(el, () => {
-          setDisplay$1(el, false);
-        });
-      }
-    } else {
-      setDisplay$1(el, value);
-    }
-  },
-  beforeUnmount(el, { value }) {
-    setDisplay$1(el, value);
-  }
-};
-function setDisplay$1(el, value) {
-  el.style.setProperty("display", value ? el._vod : "none");
-  el._vsh = !value;
-}
-
-const rendererOptions$1 = extend({ patchProp: patchProp$1 }, nodeOps$1);
-let renderer$1;
-function ensureRenderer$1() {
-  return renderer$1 || (renderer$1 = createRenderer(rendererOptions$1));
-}
-const render = (...args) => {
-  ensureRenderer$1().render(...args);
-};
-const createApp = (...args) => {
-  const app = ensureRenderer$1().createApp(...args);
-  const { mount, unmount } = app;
-  app.mount = (container) => {
-    setDocument(container);
-    return mount(container.body);
-  };
-  app.unmount = () => {
-    setDocument(void 0);
-    unmount();
-    app._container = null;
-    app._context.reload = () => {
-    };
-  };
-  return app;
-};
-
-let policy = void 0;
-const tt = typeof window !== "undefined" && window.trustedTypes;
-if (tt) {
-  try {
-    policy = /* @__PURE__ */ tt.createPolicy("vue", {
-      createHTML: (val) => val
-    });
-  } catch (e) {
-    !!(process.env.NODE_ENV !== "production") && warn(`Error creating trusted types policy: ${e}`);
-  }
-}
-const unsafeToTrustedHTML = policy ? (val) => policy.createHTML(val) : (val) => val;
-const svgNS = "http://www.w3.org/2000/svg";
-const mathmlNS = "http://www.w3.org/1998/Math/MathML";
-const doc = typeof document !== "undefined" ? document : null;
-const templateContainer = doc && /* @__PURE__ */ doc.createElement("template");
-const nodeOps = {
-  insert: (child, parent, anchor) => {
-    parent.insertBefore(child, anchor || null);
-  },
-  remove: (child) => {
-    const parent = child.parentNode;
-    if (parent) {
-      parent.removeChild(child);
-    }
-  },
-  // @ts-expect-error  fixed by xxxxxx
-  createElement: (tag, namespace, is, props) => {
-    const el = namespace === "svg" ? doc.createElementNS(svgNS, tag) : namespace === "mathml" ? doc.createElementNS(mathmlNS, tag) : is ? doc.createElement(tag, { is }) : doc.createElement(tag);
-    if (tag === "select" && props && props.multiple != null) {
-      el.setAttribute("multiple", props.multiple);
-    }
-    return el;
-  },
-  createText: (text) => doc.createTextNode(text),
-  createComment: (text) => doc.createComment(text),
-  setText: (node, text) => {
-    node.nodeValue = text;
-  },
-  setElementText: (el, text) => {
-    el.textContent = text;
-  },
-  parentNode: (node) => node.parentNode,
-  nextSibling: (node) => node.nextSibling,
-  querySelector: (selector) => doc.querySelector(selector),
-  setScopeId(el, id) {
-    el.setAttribute(id, "");
-  },
-  // __UNSAFE__
-  // Reason: innerHTML.
-  // Static content here can only come from compiled templates.
-  // As long as the user only uses trusted templates, this is safe.
-  insertStaticContent(content, parent, anchor, namespace, start, end) {
-    const before = anchor ? anchor.previousSibling : parent.lastChild;
-    if (start && (start === end || start.nextSibling)) {
-      while (true) {
-        parent.insertBefore(start.cloneNode(true), anchor);
-        if (start === end || !(start = start.nextSibling)) break;
-      }
-    } else {
-      templateContainer.innerHTML = unsafeToTrustedHTML(
-        namespace === "svg" ? `<svg>${content}</svg>` : namespace === "mathml" ? `<math>${content}</math>` : content
-      );
-      const template = templateContainer.content;
-      if (namespace === "svg" || namespace === "mathml") {
-        const wrapper = template.firstChild;
-        while (wrapper.firstChild) {
-          template.appendChild(wrapper.firstChild);
-        }
-        template.removeChild(wrapper);
-      }
-      parent.insertBefore(template, anchor);
-    }
-    return [
-      // first
-      before ? before.nextSibling : parent.firstChild,
-      // last
-      anchor ? anchor.previousSibling : parent.lastChild
-    ];
-  }
-};
-
-const vtcKey = Symbol("_vtc");
-
-function patchClass(el, value, isSVG) {
-  const transitionClasses = el[vtcKey];
-  if (transitionClasses) {
-    value = (value ? [value, ...transitionClasses] : [...transitionClasses]).join(" ");
-  }
-  if (value == null) {
-    el.removeAttribute("class");
-  } else if (isSVG) {
-    el.setAttribute("class", value);
-  } else {
-    el.className = value;
-  }
-}
-
-const vShowOriginalDisplay = Symbol("_vod");
-const vShowHidden = Symbol("_vsh");
-if (!!(process.env.NODE_ENV !== "production")) ;
-
-const CSS_VAR_TEXT = Symbol(!!(process.env.NODE_ENV !== "production") ? "CSS_VAR_TEXT" : "");
-
-const displayRE = /(^|;)\s*display\s*:/;
-function patchStyle(el, prev, next) {
-  const style = el.style;
-  const isCssString = isString(next);
-  let hasControlledDisplay = false;
-  if (next && !isCssString) {
-    if (prev) {
-      if (!isString(prev)) {
-        for (const key in prev) {
-          if (next[key] == null) {
-            setStyle$1(style, key, "");
-          }
-        }
-      } else {
-        for (const prevStyle of prev.split(";")) {
-          const key = prevStyle.slice(0, prevStyle.indexOf(":")).trim();
-          if (next[key] == null) {
-            setStyle$1(style, key, "");
-          }
-        }
-      }
-    }
-    for (const key in next) {
-      if (key === "display") {
-        hasControlledDisplay = true;
-      }
-      setStyle$1(style, key, next[key]);
-    }
-  } else {
-    if (isCssString) {
-      if (prev !== next) {
-        const cssVarText = style[CSS_VAR_TEXT];
-        if (cssVarText) {
-          next += ";" + cssVarText;
-        }
-        style.cssText = next;
-        hasControlledDisplay = displayRE.test(next);
-      }
-    } else if (prev) {
-      el.removeAttribute("style");
-    }
-  }
-  if (vShowOriginalDisplay in el) {
-    el[vShowOriginalDisplay] = hasControlledDisplay ? style.display : "";
-    if (el[vShowHidden]) {
-      style.display = "none";
-    }
-  }
-}
-const semicolonRE = /[^\\];\s*$/;
-const importantRE = /\s*!important$/;
-function setStyle$1(style, name, rawVal) {
-  if (isArray(rawVal)) {
-    rawVal.forEach((v) => setStyle$1(style, name, v));
-  } else {
-    const val = rawVal == null ? "" : String(rawVal);
-    if (!!(process.env.NODE_ENV !== "production")) {
-      if (semicolonRE.test(val)) {
-        warn(
-          `Unexpected semicolon at the end of '${name}' style value: '${val}'`
-        );
-      }
-    }
-    if (name.startsWith("--")) {
-      style.setProperty(name, val);
-    } else {
-      const prefixed = autoPrefix(style, name);
-      if (importantRE.test(val)) {
-        style.setProperty(
-          hyphenate(prefixed),
-          val.replace(importantRE, ""),
-          "important"
-        );
-      } else {
-        style[prefixed] = val;
-      }
-    }
-  }
-}
-const prefixes = ["Webkit", "Moz", "ms"];
-const prefixCache = {};
-function autoPrefix(style, rawName) {
-  const cached = prefixCache[rawName];
-  if (cached) {
-    return cached;
-  }
-  let name = camelize(rawName);
-  if (name !== "filter" && name in style) {
-    return prefixCache[rawName] = name;
-  }
-  name = capitalize(name);
-  for (let i = 0; i < prefixes.length; i++) {
-    const prefixed = prefixes[i] + name;
-    if (prefixed in style) {
-      return prefixCache[rawName] = prefixed;
-    }
-  }
-  return rawName;
-}
-
-const xlinkNS = "http://www.w3.org/1999/xlink";
-function patchAttr(el, key, value, isSVG, instance, isBoolean = isSpecialBooleanAttr(key)) {
-  if (isSVG && key.startsWith("xlink:")) {
-    if (value == null) {
-      el.removeAttributeNS(xlinkNS, key.slice(6, key.length));
-    } else {
-      el.setAttributeNS(xlinkNS, key, value);
-    }
-  } else {
-    if (value == null || isBoolean && !includeBooleanAttr(value)) {
-      el.removeAttribute(key);
-    } else {
-      el.setAttribute(
-        key,
-        isBoolean ? "" : isSymbol(value) ? String(value) : value
-      );
-    }
-  }
-}
-
-function patchDOMProp(el, key, value, parentComponent, attrName) {
-  if (key === "innerHTML" || key === "textContent") {
-    if (value != null) {
-      el[key] = key === "innerHTML" ? unsafeToTrustedHTML(value) : value;
-    }
-    return;
-  }
-  const tag = el.tagName;
-  if (key === "value" && canSetValueDirectly(tag)) {
-    const oldValue = tag === "OPTION" ? el.getAttribute("value") || "" : el.value;
-    const newValue = value == null ? (
-      // #11647: value should be set as empty string for null and undefined,
-      // but <input type="checkbox"> should be set as 'on'.
-      el.type === "checkbox" ? "on" : ""
-    ) : String(value);
-    if (oldValue !== newValue || !("_value" in el)) {
-      el.value = newValue;
-    }
-    if (value == null) {
-      el.removeAttribute(key);
-    }
-    el._value = value;
-    return;
-  }
-  let needRemove = false;
-  if (value === "" || value == null) {
-    const type = typeof el[key];
-    if (type === "boolean") {
-      value = includeBooleanAttr(value);
-    } else if (value == null && type === "string") {
-      value = "";
-      needRemove = true;
-    } else if (type === "number") {
-      value = 0;
-      needRemove = true;
-    }
-  }
-  try {
-    el[key] = value;
-  } catch (e) {
-    if (!!(process.env.NODE_ENV !== "production") && !needRemove) {
-      warn(
-        `Failed setting prop "${key}" on <${tag.toLowerCase()}>: value ${value} is invalid.`,
-        e
-      );
-    }
-  }
-  needRemove && el.removeAttribute(attrName || key);
-}
-
-function addEventListener$1(el, event, handler, options) {
-  el.addEventListener(event, handler, options);
-}
-function removeEventListener(el, event, handler, options) {
-  el.removeEventListener(event, handler, options);
-}
-const veiKey = Symbol("_vei");
-function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
-  const invokers = el[veiKey] || (el[veiKey] = {});
-  const existingInvoker = invokers[rawName];
-  if (nextValue && existingInvoker) {
-    existingInvoker.value = !!(process.env.NODE_ENV !== "production") ? sanitizeEventValue(nextValue, rawName) : nextValue;
-  } else {
-    const [name, options] = parseName(rawName);
-    if (nextValue) {
-      const invoker = invokers[rawName] = createInvoker(
-        !!(process.env.NODE_ENV !== "production") ? sanitizeEventValue(nextValue, rawName) : nextValue,
-        instance
-      );
-      addEventListener$1(el, name, invoker, options);
-    } else if (existingInvoker) {
-      removeEventListener(el, name, existingInvoker, options);
-      invokers[rawName] = void 0;
-    }
-  }
-}
-const optionsModifierRE = /(?:Once|Passive|Capture)$/;
-function parseName(name) {
-  let options;
-  if (optionsModifierRE.test(name)) {
-    options = {};
-    let m;
-    while (m = name.match(optionsModifierRE)) {
-      name = name.slice(0, name.length - m[0].length);
-      options[m[0].toLowerCase()] = true;
-    }
-  }
-  const event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
-  return [event, options];
-}
-let cachedNow = 0;
-const p = /* @__PURE__ */ Promise.resolve();
-const getNow = () => cachedNow || (p.then(() => cachedNow = 0), cachedNow = Date.now());
-function createInvoker(initialValue, instance) {
-  const invoker = (e) => {
-    if (!e._vts) {
-      e._vts = Date.now();
-    } else if (e._vts <= invoker.attached) {
-      return;
-    }
-    callWithAsyncErrorHandling(
-      patchStopImmediatePropagation(e, invoker.value),
-      instance,
-      5,
-      [e]
-    );
-  };
-  invoker.value = initialValue;
-  invoker.attached = getNow();
-  return invoker;
-}
-function sanitizeEventValue(value, propName) {
-  if (isFunction(value) || isArray(value)) {
-    return value;
-  }
-  warn(
-    `Wrong type passed as event handler to ${propName} - did you forget @ or : in front of your prop?
-Expected function or array of functions, received type ${typeof value}.`
-  );
-  return NOOP;
-}
-function patchStopImmediatePropagation(e, value) {
-  if (isArray(value)) {
-    const originalStop = e.stopImmediatePropagation;
-    e.stopImmediatePropagation = () => {
-      originalStop.call(e);
-      e._stopped = true;
-    };
-    return value.map(
-      (fn) => (e2) => !e2._stopped && fn && fn(e2)
-    );
-  } else {
-    return value;
-  }
-}
-
-const patchProp = (el, key, prevValue, nextValue, namespace, parentComponent) => {
-  const isSVG = namespace === "svg";
-  if (key === "class") {
-    patchClass(el, nextValue, isSVG);
-  } else if (key === "style") {
-    patchStyle(el, prevValue, nextValue);
-  } else if (isOn(key)) {
-    if (!isModelListener(key)) {
-      patchEvent(el, key, prevValue, nextValue, parentComponent);
-    }
-  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp(el, key, nextValue, isSVG)) {
-    patchDOMProp(el, key, nextValue);
-    if (!el.tagName.includes("-") && (key === "value" || key === "checked" || key === "selected")) {
-      patchAttr(el, key, nextValue, isSVG, parentComponent, key !== "value");
-    }
-  } else if (
-    // #11081 force set props for possible async custom element
-    el._isVueCE && (/[A-Z]/.test(key) || !isString(nextValue))
-  ) {
-    patchDOMProp(el, camelize(key), nextValue, parentComponent, key);
-  } else {
-    if (key === "true-value") {
-      el._trueValue = nextValue;
-    } else if (key === "false-value") {
-      el._falseValue = nextValue;
-    }
-    patchAttr(el, key, nextValue, isSVG);
-  }
-};
-function shouldSetAsProp(el, key, value, isSVG) {
-  if (isSVG) {
-    if (key === "innerHTML" || key === "textContent") {
-      return true;
-    }
-    if (key in el && isNativeOn(key) && isFunction(value)) {
-      return true;
-    }
-    return false;
-  }
-  if (shouldSetAsAttr(el.tagName, key)) {
-    return false;
-  }
-  if (isNativeOn(key) && isString(value)) {
-    return false;
-  }
-  return key in el;
-}
-
-function onCompositionStart(e) {
-  e.target.composing = true;
-}
-function onCompositionEnd(e) {
-  const target = e.target;
-  if (target.composing) {
-    target.composing = false;
-    target.dispatchEvent(new Event("input"));
-  }
-}
-const assignKey = Symbol("_assign");
-const vModelTextInit = (el, trim, number, lazy, set) => {
-  addEventListener$1(el, lazy ? "change" : "input", (e) => {
-    if (e.target.composing) return;
-    let domValue = el.value;
-    if (trim) {
-      domValue = domValue.trim();
-    }
-    if (number || el.type === "number") {
-      domValue = looseToNumber(domValue);
-    }
-    (set || el[assignKey])(domValue);
-  });
-  if (trim) {
-    addEventListener$1(el, "change", () => {
-      el.value = el.value.trim();
-    });
-  }
-  if (!lazy) {
-    addEventListener$1(el, "compositionstart", onCompositionStart);
-    addEventListener$1(el, "compositionend", onCompositionEnd);
-    addEventListener$1(el, "change", onCompositionEnd);
-  }
-};
-const vModelTextUpdate = (el, oldValue, value, trim, number, lazy) => {
-  if (el.composing) return;
-  const elValue = (number || el.type === "number") && !/^0\d/.test(el.value) ? looseToNumber(el.value) : el.value;
-  const newValue = value == null ? "" : value;
-  if (elValue === newValue) {
-    return;
-  }
-  if (document.activeElement === el && el.type !== "range") {
-    if (lazy && value === oldValue) {
-      return;
-    }
-    if (trim && el.value.trim() === newValue) {
-      return;
-    }
-  }
-  el.value = newValue;
-};
-const vModelCheckboxInit = (el, set) => {
-  addEventListener$1(el, "change", () => {
-    const assign = set || el[assignKey];
-    const modelValue = el._modelValue;
-    const elementValue = getValue(el);
-    const checked = el.checked;
-    if (isArray(modelValue)) {
-      const index = looseIndexOf(modelValue, elementValue);
-      const found = index !== -1;
-      if (checked && !found) {
-        assign(modelValue.concat(elementValue));
-      } else if (!checked && found) {
-        const filtered = [...modelValue];
-        filtered.splice(index, 1);
-        assign(filtered);
-      }
-    } else if (isSet(modelValue)) {
-      const cloned = new Set(modelValue);
-      if (checked) {
-        cloned.add(elementValue);
-      } else {
-        cloned.delete(elementValue);
-      }
-      assign(cloned);
-    } else {
-      assign(getCheckboxValue(el, checked));
-    }
-  });
-};
-const vModelCheckboxUpdate = (el, oldValue, value, rawValue = getValue(el)) => {
-  el._modelValue = value;
-  let checked;
-  if (isArray(value)) {
-    checked = looseIndexOf(value, rawValue) > -1;
-  } else if (isSet(value)) {
-    checked = value.has(rawValue);
-  } else {
-    if (value === oldValue) return;
-    checked = looseEqual(value, getCheckboxValue(el, true));
-  }
-  if (el.checked !== checked) {
-    el.checked = checked;
-  }
-};
-const vModelSelectInit = (el, value, number, set) => {
-  const isSetModel = isSet(value);
-  addEventListener$1(el, "change", () => {
-    const selectedVal = Array.prototype.filter.call(el.options, (o) => o.selected).map(
-      (o) => number ? looseToNumber(getValue(o)) : getValue(o)
-    );
-    (set || el[assignKey])(
-      el.multiple ? isSetModel ? new Set(selectedVal) : selectedVal : selectedVal[0]
-    );
-    el._assigning = true;
-    nextTick(() => {
-      el._assigning = false;
-    });
-  });
-};
-const vModelSetSelected = (el, value) => {
-  if (el._assigning) return;
-  const isMultiple = el.multiple;
-  const isArrayValue = isArray(value);
-  if (isMultiple && !isArrayValue && !isSet(value)) {
-    !!(process.env.NODE_ENV !== "production") && warn(
-      `<select multiple v-model> expects an Array or Set value for its binding, but got ${Object.prototype.toString.call(value).slice(8, -1)}.`
-    );
-    return;
-  }
-  for (let i = 0, l = el.options.length; i < l; i++) {
-    const option = el.options[i];
-    const optionValue = getValue(option);
-    if (isMultiple) {
-      if (isArrayValue) {
-        const optionType = typeof optionValue;
-        if (optionType === "string" || optionType === "number") {
-          option.selected = value.some((v) => String(v) === String(optionValue));
-        } else {
-          option.selected = looseIndexOf(value, optionValue) > -1;
-        }
-      } else {
-        option.selected = value.has(optionValue);
-      }
-    } else if (looseEqual(getValue(option), value)) {
-      if (el.selectedIndex !== i) el.selectedIndex = i;
-      return;
-    }
-  }
-  if (!isMultiple && el.selectedIndex !== -1) {
-    el.selectedIndex = -1;
-  }
-};
-function getValue(el) {
-  return "_value" in el ? el._value : el.value;
-}
-function getCheckboxValue(el, checked) {
-  const key = checked ? "_trueValue" : "_falseValue";
-  if (key in el) {
-    return el[key];
-  }
-  const attr = checked ? "true-value" : "false-value";
-  if (el.hasAttribute(attr)) {
-    return el.getAttribute(attr);
-  }
-  return checked;
-}
-
-const rendererOptions = /* @__PURE__ */ extend({ patchProp }, nodeOps);
-let renderer;
-function ensureRenderer() {
-  return renderer || (renderer = createRenderer(rendererOptions));
-}
-function normalizeContainer(container) {
-  if (isString(container)) {
-    const res = document.querySelector(container);
-    if (!!(process.env.NODE_ENV !== "production") && !res) {
-      warn(
-        `Failed to mount app: mount target selector "${container}" returned null.`
-      );
-    }
-    return res;
-  }
-  if (!!(process.env.NODE_ENV !== "production") && window.ShadowRoot && container instanceof window.ShadowRoot && container.mode === "closed") {
-    warn(
-      `mounting on a ShadowRoot with \`{mode: "closed"}\` may lead to unpredictable bugs`
-    );
-  }
-  return container;
-}
-
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
 function createTextNode(value = "") {
@@ -10238,66 +8801,6 @@ function setInsertionState(parent, anchor) {
 }
 function resetInsertionState() {
   insertionParent = insertionAnchor = void 0;
-}
-
-let isHydrating = false;
-let currentHydrationNode = null;
-let isOptimized$1 = false;
-function withHydration(container, fn) {
-  locateHydrationNode = locateHydrationNodeImpl;
-  if (!isOptimized$1) {
-    Comment.prototype.$fs = void 0;
-    isOptimized$1 = true;
-  }
-  isHydrating = true;
-  setInsertionState(container, 0);
-  const res = fn();
-  resetInsertionState();
-  currentHydrationNode = null;
-  isHydrating = false;
-  return res;
-}
-let locateHydrationNode;
-const isComment = (node, data) => node.nodeType === 8 && node.data === data;
-function locateHydrationNodeImpl() {
-  let node;
-  if (insertionAnchor === 0) {
-    node = child(insertionParent);
-  } else {
-    node = insertionAnchor ? insertionAnchor.previousSibling : insertionParent ? insertionParent.lastChild : currentHydrationNode;
-    if (node && isComment(node, "]")) {
-      if (node.$fs) {
-        node = node.$fs;
-      } else {
-        let cur = node;
-        let curFragEnd = node;
-        let fragDepth = 0;
-        node = null;
-        while (cur) {
-          cur = cur.previousSibling;
-          if (cur) {
-            if (isComment(cur, "[")) {
-              curFragEnd.$fs = cur;
-              if (!fragDepth) {
-                node = cur;
-                break;
-              } else {
-                fragDepth--;
-              }
-            } else if (isComment(cur, "]")) {
-              curFragEnd = cur;
-              fragDepth++;
-            }
-          }
-        }
-      }
-    }
-  }
-  if (!!(process.env.NODE_ENV !== "production") && !node) {
-    warn("Hydration mismatch in ", insertionParent);
-  }
-  resetInsertionState();
-  currentHydrationNode = node;
 }
 
 class VaporFragment {
@@ -10357,7 +8860,7 @@ function isValidBlock(block) {
 function insert(block, parent, anchor = null) {
   anchor = anchor === 0 ? parent.firstChild : anchor;
   if (block instanceof Node) {
-    if (!isHydrating) {
+    {
       parent.insertBefore(block, anchor);
     }
   } else if (isVaporComponent(block)) {
@@ -10782,12 +9285,12 @@ const rawPropsProxyHandlers = {
   }
 };
 
-function addEventListener(el, event, handler, options) {
+function addEventListener$1(el, event, handler, options) {
   el.addEventListener(event, handler, options);
   return () => el.removeEventListener(event, handler, options);
 }
 function on(el, event, handler, options = {}) {
-  addEventListener(el, event, handler, options);
+  addEventListener$1(el, event, handler, options);
   if (options.effect) {
     onEffectCleanup(() => {
       el.removeEventListener(event, handler, options);
@@ -10933,7 +9436,7 @@ function setClassIncremental(el, value) {
     }
   }
 }
-function setStyle(el, value) {
+function setStyle$1(el, value) {
   if (el.$root) {
     setStyleIncremental(el, value);
   } else {
@@ -10995,14 +9498,13 @@ function setDynamicProps(el, args) {
   }
 }
 function setDynamicProp(el, key, value) {
-  const isSVG = false;
   if (key === "class") {
     setClass(el, value);
   } else if (key === "style") {
-    setStyle(el, value);
+    setStyle$1(el, value);
   } else if (isOn(key)) {
     on(el, key[2].toLowerCase() + key.slice(3), value, { effect: true });
-  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp(el, key, value, isSVG)) {
+  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp()) {
     if (key === "innerHTML") {
       setHtml(el, value);
     } else if (key === "textContent") {
@@ -11094,9 +9596,7 @@ function getSlot(target, key) {
 function createSlot(name, rawProps, fallback) {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   const instance = currentInstance;
@@ -11136,7 +9636,7 @@ function createSlot(name, rawProps, fallback) {
       renderSlot();
     }
   }
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     insert(fragment, _insertionParent, _insertionAnchor);
   }
   return fragment;
@@ -11175,9 +9675,7 @@ function hmrReload(instance, newComp) {
 function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext = currentInstance && currentInstance.appContext || emptyContext) {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   if (appContext.vapor && !component.__vapor) {
@@ -11186,7 +9684,7 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
       rawProps,
       rawSlots
     );
-    if (!isHydrating && _insertionParent) {
+    if (_insertionParent) {
       insert(frag, _insertionParent, _insertionAnchor);
     }
     return frag;
@@ -11272,7 +9770,7 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
     endMeasure(instance, "init");
   }
   onScopeDispose(() => unmountComponent(instance), true);
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     mountComponent(instance, _insertionParent, _insertionAnchor);
   }
   return instance;
@@ -11352,9 +9850,7 @@ function createComponentWithFallback(comp, rawProps, rawSlots, isSingleRoot) {
   }
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   const el = document.createElement(comp);
@@ -11369,7 +9865,7 @@ function createComponentWithFallback(comp, rawProps, rawSlots, isSingleRoot) {
       insert(getSlot(rawSlots, "default")(), el);
     }
   }
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     insert(el, _insertionParent, _insertionAnchor);
   }
   return el;
@@ -11445,23 +9941,6 @@ const mountApp = (app, container) => {
   flushOnAppMount();
   return instance;
 };
-let _hydrateApp;
-const hydrateApp = (app, container) => {
-  optimizePropertyLookup();
-  let instance;
-  withHydration(container, () => {
-    instance = createComponent(
-      app._component,
-      app._props,
-      null,
-      false,
-      app._context
-    );
-    mountComponent(instance, container);
-    flushOnAppMount();
-  });
-  return instance;
-};
 const unmountApp = (app) => {
   unmountComponent(app._instance, app._container);
 };
@@ -11487,24 +9966,11 @@ function postPrepareApp(app) {
       }
     );
   }
-  const mount = app.mount;
-  app.mount = (container, ...args) => {
-    container = normalizeContainer(container);
-    return mount(container, ...args);
-  };
 }
-const createVaporApp = (comp, props) => {
+const createVaporApp$1 = (comp, props) => {
   prepareApp();
   if (!_createApp) _createApp = createAppAPI(mountApp, unmountApp, getExposed);
   const app = _createApp(comp, props);
-  postPrepareApp(app);
-  return app;
-};
-const createVaporSSRApp = (comp, props) => {
-  prepareApp();
-  if (!_hydrateApp)
-    _hydrateApp = createAppAPI(hydrateApp, unmountApp, getExposed);
-  const app = _hydrateApp(comp, props);
   postPrepareApp(app);
   return app;
 };
@@ -11730,9 +10196,9 @@ const vaporInteropPlugin = (app) => {
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
-function template(doc, factory, root) {
+function factory(doc, factory2, root) {
   return () => {
-    const el = factory(doc);
+    const el = factory2(doc);
     if (root) {
       el.ext.set("$root", true);
     }
@@ -11743,9 +10209,7 @@ function template(doc, factory, root) {
 function createIf(condition, b1, b2, once) {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   let frag;
@@ -11755,7 +10219,7 @@ function createIf(condition, b1, b2, once) {
     frag = !!(process.env.NODE_ENV !== "production") ? new DynamicFragment("if") : new DynamicFragment();
     renderEffect(() => frag.update(condition() ? b1 : b2));
   }
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     insert(frag, _insertionParent, _insertionAnchor);
   }
   return frag;
@@ -11774,9 +10238,7 @@ class ForBlock extends VaporFragment {
 const createFor = (src, renderItem, getKey, flags = 0) => {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   let isMounted = false;
@@ -11977,7 +10439,7 @@ const createFor = (src, renderItem, getKey, flags = 0) => {
   } else {
     renderEffect(renderList);
   }
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     insert(frag, _insertionParent, _insertionAnchor);
   }
   return frag;
@@ -12153,9 +10615,7 @@ const getRefValue = (el) => {
 function createDynamicComponent(getter, rawProps, rawSlots, isSingleRoot) {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   const frag = !!(process.env.NODE_ENV !== "production") ? new DynamicFragment("dynamic-component") : new DynamicFragment();
@@ -12171,7 +10631,7 @@ function createDynamicComponent(getter, rawProps, rawSlots, isSingleRoot) {
       value
     );
   });
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     insert(frag, _insertionParent, _insertionAnchor);
   }
   return frag;
@@ -12188,20 +10648,20 @@ function applyVShow(target, source) {
     const update = target.update;
     target.update = (render, key) => {
       update.call(target, render, key);
-      setDisplay(target, source());
+      setDisplay$1(target, source());
     };
   }
-  renderEffect(() => setDisplay(target, source()));
+  renderEffect(() => setDisplay$1(target, source()));
 }
-function setDisplay(target, value) {
+function setDisplay$1(target, value) {
   if (isVaporComponent(target)) {
-    return setDisplay(target, value);
+    return setDisplay$1(target, value);
   }
   if (isArray(target) && target.length === 1) {
-    return setDisplay(target[0], value);
+    return setDisplay$1(target[0], value);
   }
   if (target instanceof DynamicFragment) {
-    return setDisplay(target.nodes, value);
+    return setDisplay$1(target.nodes, value);
   }
   if (target instanceof Element) {
     const el = target;
@@ -12229,53 +10689,9 @@ const applyTextModel = (el, get, set, { trim, number, lazy } = {}) => {
   ensureMounted(() => {
     let value;
     renderEffect(() => {
-      vModelTextUpdate(el, value, value = get(), trim, number, lazy);
+      vModelTextUpdate(el, value, value = get(), trim, number);
     });
   });
-};
-const applyCheckboxModel = (el, get, set) => {
-  vModelCheckboxInit(el, set);
-  ensureMounted(() => {
-    let value;
-    renderEffect(() => {
-      vModelCheckboxUpdate(
-        el,
-        value,
-        // #4096 array checkboxes need to be deep traversed
-        traverse(value = get())
-      );
-    });
-  });
-};
-const applyRadioModel = (el, get, set) => {
-  addEventListener(el, "change", () => set(getValue(el)));
-  ensureMounted(() => {
-    let value;
-    renderEffect(() => {
-      if (value !== (value = get())) {
-        el.checked = looseEqual(value, getValue(el));
-      }
-    });
-  });
-};
-const applySelectModel = (el, get, set, modifiers) => {
-  vModelSelectInit(el, get(), modifiers && modifiers.number, set);
-  ensureMounted(() => {
-    renderEffect(() => vModelSetSelected(el, traverse(get())));
-  });
-};
-const applyDynamicModel = (el, get, set, modifiers) => {
-  let apply = applyTextModel;
-  if (el.tagName === "SELECT") {
-    apply = applySelectModel;
-  } else if (el.tagName === "TEXTAREA") {
-    apply = applyTextModel;
-  } else if (el.type === "checkbox") {
-    apply = applyCheckboxModel;
-  } else if (el.type === "radio") {
-    apply = applyRadioModel;
-  }
-  apply(el, get, set, modifiers);
 };
 
 function withVaporDirectives(node, dirs) {
@@ -12287,4 +10703,909 @@ function withVaporDirectives(node, dirs) {
   }
 }
 
-export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, Static, Suspense, Teleport, Text$1 as Text, VaporFragment, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, createVaporSSRApp, currentInstance, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, endMeasure, expose, flushOnAppMount, getCurrentInstance, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, popWarningContext, prepend, provide, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, registerHMR, registerRuntimeCompiler, remove, render, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, template, toHandlers, transformVNodeArgs, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelDynamic, vModelText, vShow, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };
+const NODE_EXT_STYLES = "styles";
+const NODE_EXT_PARENT_STYLES = "parentStyles";
+const NODE_EXT_CLASS_STYLE = "classStyle";
+const NODE_EXT_STYLE = "style";
+const NODE_EXT_IS_TEXT_NODE = "isTextNode";
+const NODE_EXT_CHILD_NODE = "childNode";
+const NODE_EXT_PARENT_NODE = "parentNode";
+const NODE_EXT_CHILD_NODES = "childNodes";
+function setNodeExtraData(el, name, value) {
+  el.ext.set(name, value);
+}
+function getNodeExtraData(el, name) {
+  return el.ext.get(name);
+}
+function getExtraStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLES);
+}
+function setExtraStyles(el, styles) {
+  setNodeExtraData(el, NODE_EXT_STYLES, styles);
+}
+function getExtraParentStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_PARENT_STYLES);
+}
+function setExtraParentStyles(el, styles) {
+  setNodeExtraData(el, NODE_EXT_PARENT_STYLES, styles);
+}
+function getExtraClassStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_CLASS_STYLE);
+}
+function setExtraClassStyle(el, classStyle) {
+  setNodeExtraData(el, NODE_EXT_CLASS_STYLE, classStyle);
+}
+function getExtraStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLE);
+}
+function setExtraStyle(el, style) {
+  setNodeExtraData(el, NODE_EXT_STYLE, style);
+}
+function isCommentNode(node) {
+  return node.nodeName == "#comment";
+}
+function isExtraTextNode(el) {
+  return getNodeExtraData(el, NODE_EXT_IS_TEXT_NODE) === true;
+}
+function setExtraIsTextNode(el, isTextNode) {
+  setNodeExtraData(el, NODE_EXT_IS_TEXT_NODE, isTextNode);
+}
+function isTextElement(value) {
+  return value instanceof UniTextElement;
+}
+function getExtraChildNode(el) {
+  return getNodeExtraData(el, NODE_EXT_CHILD_NODE);
+}
+function setExtraChildNode(el, childNode) {
+  setNodeExtraData(el, NODE_EXT_CHILD_NODE, childNode);
+}
+function setExtraParentNode(el, parentNode) {
+  setNodeExtraData(el, NODE_EXT_PARENT_NODE, parentNode);
+}
+function getExtraChildNodes(el) {
+  return getNodeExtraData(el, NODE_EXT_CHILD_NODES);
+}
+function setExtraChildNodes(el, childNodes) {
+  setNodeExtraData(el, NODE_EXT_CHILD_NODES, childNodes);
+}
+function getExtraParentNode(el) {
+  return getNodeExtraData(el, NODE_EXT_PARENT_NODE);
+}
+
+function each(obj) {
+  return Object.keys(obj);
+}
+function useCssStyles(componentStyles) {
+  const normalized = {};
+  if (!isArray(componentStyles)) {
+    return normalized;
+  }
+  componentStyles.forEach((componentStyle) => {
+    each(componentStyle).forEach((className) => {
+      const parentStyles = componentStyle[className];
+      const normalizedStyles = normalized[className] || (normalized[className] = {});
+      each(parentStyles).forEach((parentSelector) => {
+        const parentStyle = parentStyles[parentSelector];
+        const normalizedStyle = normalizedStyles[parentSelector] || (normalizedStyles[parentSelector] = {});
+        each(parentStyle).forEach((name) => {
+          if (name[0] === "!") {
+            normalizedStyle[name] = parentStyle[name];
+            delete normalizedStyle[name.slice(1)];
+          } else {
+            if (!hasOwn(normalizedStyle, "!" + name)) {
+              normalizedStyle[name] = parentStyle[name];
+            }
+          }
+        });
+      });
+    });
+  });
+  return normalized;
+}
+function hasClass(calssName, el) {
+  const classList = el && el.classList;
+  return classList && classList.includes(calssName);
+}
+const TYPE_RE = /[+~> ]$/;
+const PROPERTY_PARENT_NODE = "parentNode";
+const PROPERTY_PREVIOUS_SIBLING = "previousSibling";
+function isMatchParentSelector(parentSelector, el) {
+  const classArray = parentSelector.split(".");
+  for (let i = classArray.length - 1; i > 0; i--) {
+    const item = classArray[i];
+    const type = item[item.length - 1];
+    const className = item.replace(TYPE_RE, "");
+    if (type === "~" || type === " ") {
+      const property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
+      while (el) {
+        el = el[property];
+        if (hasClass(className, el)) {
+          break;
+        }
+      }
+      if (!el) {
+        return false;
+      }
+    } else {
+      if (type === ">") {
+        el = el && el[PROPERTY_PARENT_NODE];
+      } else if (type === "+") {
+        el = el && el[PROPERTY_PREVIOUS_SIBLING];
+      }
+      if (!hasClass(className, el)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+const WEIGHT_IMPORTANT = 1e3;
+function parseClassName({ styles, weights }, parentStyles, el) {
+  each(parentStyles).forEach((parentSelector) => {
+    if (parentSelector && el) {
+      if (!isMatchParentSelector(parentSelector, el)) {
+        return;
+      }
+    }
+    const classWeight = parentSelector.split(".").length;
+    const style = parentStyles[parentSelector];
+    each(style).forEach((name) => {
+      const value = style[name];
+      const isImportant = name[0] === "!";
+      if (isImportant) {
+        name = name.slice(1);
+      }
+      const oldWeight = weights[name] || 0;
+      const weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
+      if (weight >= oldWeight) {
+        weights[name] = weight;
+        styles.set(name, value);
+      }
+    });
+  });
+}
+class ParseStyleContext {
+  constructor() {
+    this.styles = /* @__PURE__ */ new Map();
+    this.weights = {};
+  }
+}
+function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheets, el = null) {
+  const context = new ParseStyleContext();
+  classList.forEach((className) => {
+    const parentStyles = stylesheet && stylesheet[className];
+    if (parentStyles) {
+      parseClassName(context, parentStyles, el);
+    }
+  });
+  if (parentStylesheets != null) {
+    classList.forEach((className) => {
+      const parentStylesheet = (parentStylesheets || []).find(
+        (style) => style[className] !== null
+      );
+      const parentStyles = parentStylesheet && parentStylesheet[className];
+      if (parentStyles != null) {
+        parseClassName(context, parentStyles, el);
+      }
+    });
+  }
+  return context;
+}
+function parseClassStyles(el) {
+  const styles = getExtraStyles(el);
+  const parentStyles = getExtraParentStyles(el);
+  if (styles == null && parentStyles == null || el.classList.length == 0) {
+    return new ParseStyleContext();
+  }
+  return parseClassListWithStyleSheet(el.classList, styles, parentStyles, el);
+}
+function parseClassList(classList, instance, el = null) {
+  return parseClassListWithStyleSheet(
+    classList,
+    parseStyleSheet(instance),
+    null,
+    el
+  ).styles;
+}
+function parseStyleSheet({
+  type,
+  appContext,
+  root
+}) {
+  const component = type;
+  const pageInstance = root;
+  if (!pageInstance.componentStylesCache) {
+    pageInstance.componentStylesCache = /* @__PURE__ */ new Map();
+  }
+  let cache = pageInstance.componentStylesCache.get(component);
+  if (!cache) {
+    const __globalStyles = appContext.provides.__globalStyles;
+    if (appContext && isArray(__globalStyles)) {
+      appContext.provides.__globalStyles = useCssStyles(__globalStyles);
+    }
+    const styles = [];
+    if (appContext && __globalStyles) {
+      const globalStyles = isArray(__globalStyles) ? __globalStyles : [__globalStyles];
+      styles.push(...globalStyles);
+    }
+    const page = root.type;
+    if (component !== page && isArray(page.styles)) {
+      styles.push(...page.styles);
+    }
+    if (isArray(component.styles)) {
+      styles.push(...component.styles);
+    }
+    cache = useCssStyles(styles);
+    pageInstance.componentStylesCache.set(component, cache);
+  }
+  return cache;
+}
+function extendMap(a, b) {
+  b.forEach((value, key) => {
+    a.set(key, value);
+  });
+  return a;
+}
+function toStyle(el, classStyle, classStyleWeights) {
+  const res = extendMap(/* @__PURE__ */ new Map(), classStyle);
+  const style = getExtraStyle(el);
+  if (style != null) {
+    style.forEach((value, key) => {
+      const weight = classStyleWeights[key];
+      if (weight == null || weight < WEIGHT_IMPORTANT) {
+        res.set(key, value);
+      }
+    });
+  }
+  return res;
+}
+
+function patchClass(el, pre, next, instance = null) {
+  if (!instance) {
+    return;
+  }
+  const classList = next ? next.split(" ") : [];
+  el.classList = classList;
+  setExtraStyles(el, parseStyleSheet(instance));
+  if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
+    setExtraParentStyles(
+      el,
+      instance.parent.type.styles
+    );
+  }
+  updateClassStyles(el);
+}
+function updateClassStyles(el) {
+  if (el.parentNode == null || isCommentNode(el)) {
+    return;
+  }
+  if (getExtraClassStyle(el) == null) {
+    setExtraClassStyle(el, /* @__PURE__ */ new Map());
+  }
+  const oldClassStyle = getExtraClassStyle(el);
+  oldClassStyle.forEach((_value, key) => {
+    oldClassStyle.set(key, "");
+  });
+  const parseClassStylesResult = parseClassStyles(el);
+  parseClassStylesResult.styles.forEach((value, key) => {
+    oldClassStyle.set(key, value);
+  });
+  const styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
+  if (styles.size == 0) {
+    return;
+  }
+  if (el._vsh) {
+    styles.set("display", "none");
+  }
+  el.updateStyle(styles);
+}
+
+let rootDocument;
+function getDocument() {
+  return rootDocument;
+}
+function setDocument(document) {
+  rootDocument = document;
+}
+function updateTextNode(node) {
+  const childNode = getExtraChildNode(node);
+  if (childNode !== null) {
+    const text = childNode.getAttribute("value");
+    node.setAttribute("value", text || "");
+  }
+}
+const nodeOps = {
+  insert: (el, parent, anchor) => {
+    if (isTextElement(parent)) {
+      if (isExtraTextNode(el)) {
+        const childNode = getExtraChildNode(parent);
+        if (childNode !== null) {
+          console.error("Multiple text nodes are not allowed.");
+        } else {
+          setExtraChildNode(parent, el);
+          setExtraParentNode(el, parent);
+          updateTextNode(parent);
+        }
+        return;
+      }
+    }
+    if (!anchor) {
+      parent.appendChild(el);
+    } else {
+      parent.insertBefore(el, anchor);
+    }
+    if (parent.isConnected) {
+      updateClassStyles(el);
+      updateChildrenClassStyle(el);
+    }
+  },
+  remove: (child) => {
+    const parent = child.parentNode;
+    if (parent) {
+      const childNodes = getExtraChildNodes(parent);
+      if (childNodes !== null) {
+        const index = childNodes.indexOf(child);
+        if (index !== -1) {
+          childNodes.splice(index, 1);
+          setExtraChildNodes(parent, childNodes);
+        }
+      }
+      parent.removeChild(child);
+    }
+  },
+  createElement: (tag, container) => {
+    if (!container) {
+      const document = getDocument();
+      if (!document) {
+        throw new Error("document is not defined");
+      }
+      return document.createElement(tag);
+    } else {
+      const document = container.page.document;
+      return document.createElement(tag);
+    }
+  },
+  createText: (text, container, isAnchor) => {
+    const document = container.page.document;
+    if (isAnchor) {
+      return document.createComment(text);
+    }
+    const textNode = document.createElement("text");
+    textNode.setAttribute("value", text);
+    setExtraIsTextNode(textNode, true);
+    return textNode;
+  },
+  createComment: (text, container) => {
+    const document = container.page.document;
+    return document.createComment(text);
+  },
+  setText: (node, text) => {
+    node.setAttribute("value", text);
+    const parent = getExtraParentNode(node);
+    if (parent !== null) {
+      updateTextNode(parent);
+    }
+  },
+  setElementText: (el, text) => {
+    if (el.tagName !== "TEXT") {
+      const childNodes = el.childNodes;
+      let textNode = childNodes.find((node) => node.tagName === "TEXT");
+      if (!textNode) {
+        const textNode2 = nodeOps.createText(text, el);
+        el.appendChild(textNode2);
+        return;
+      }
+      el = textNode;
+    }
+    el.setAttribute("value", text);
+  },
+  parentNode: (node) => node.parentNode,
+  nextSibling: (node) => node.nextSibling,
+  querySelector: (selector, parentComponent) => {
+    const proxy = parentComponent && parentComponent.proxy;
+    const document = proxy && proxy.$nativePage && proxy.$nativePage.document;
+    if (document) {
+      return document.querySelector(selector);
+    }
+    return null;
+  }
+};
+function updateChildrenClassStyle(el) {
+  if (el !== null) {
+    el.childNodes.forEach((child) => {
+      updateClassStyles(child);
+      updateChildrenClassStyle(child);
+    });
+  }
+}
+
+function patchAttr(el, key, value, instance = null) {
+  if (instance) {
+    [key, value] = transformAttr(el, key, value, instance);
+  }
+  el.setAnyAttribute(key, value);
+}
+const ATTR_HOVER_CLASS = "hoverClass";
+const ATTR_PLACEHOLDER_CLASS = "placeholderClass";
+const ATTR_PLACEHOLDER_STYLE = "placeholderStyle";
+const ATTR_INDICATOR_CLASS = "indicatorClass";
+const ATTR_INDICATOR_STYLE = "indicatorStyle";
+const ATTR_MASK_CLASS = "maskClass";
+const ATTR_MASK_STYLE = "maskStyle";
+const CLASS_AND_STYLES = {
+  view: {
+    class: [ATTR_HOVER_CLASS],
+    style: []
+  },
+  button: {
+    class: [ATTR_HOVER_CLASS],
+    style: []
+  },
+  navigator: {
+    class: [ATTR_HOVER_CLASS],
+    style: []
+  },
+  input: {
+    class: [ATTR_PLACEHOLDER_CLASS],
+    style: [ATTR_PLACEHOLDER_STYLE]
+  },
+  textarea: {
+    class: [ATTR_PLACEHOLDER_CLASS],
+    style: [ATTR_PLACEHOLDER_STYLE]
+  },
+  "picker-view": {
+    class: [ATTR_INDICATOR_CLASS, ATTR_MASK_CLASS],
+    style: [ATTR_INDICATOR_STYLE, ATTR_MASK_STYLE]
+  }
+};
+function transformAttr(el, key, value, instance) {
+  if (!value) {
+    return [key, value];
+  }
+  const opts = CLASS_AND_STYLES[el.tagName.toLowerCase()];
+  if (opts) {
+    const camelized = camelize(key);
+    if (opts["class"].indexOf(camelized) > -1) {
+      const classStyle = parseClassList([value], instance, el);
+      if (el.tagName === "BUTTON") {
+        if (value === "none" || value == "button-hover" && classStyle.size == 0) {
+          return [camelized, value];
+        }
+      }
+      return [camelized, classStyle];
+    }
+    if (opts["style"].indexOf(camelized) > -1) {
+      if (isString(value)) {
+        const sytle = parseStringStyle(camelize(value));
+        return [camelized, sytle];
+      }
+      return [camelized, normalizeStyle$1(value)];
+    }
+  }
+  return [key, value];
+}
+
+function addEventListener(el, event, handler, options) {
+  el.addEventListener(event, handler);
+}
+function removeEventListener(el, event) {
+  el.removeEventListener(event);
+}
+function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
+  const invokers = el._vei || (el._vei = {});
+  const existingInvoker = invokers[rawName];
+  if (nextValue && existingInvoker) {
+    existingInvoker.value = nextValue;
+  } else {
+    const [name, options] = parseName(rawName);
+    if (nextValue) {
+      const invoker = invokers[rawName] = createInvoker(nextValue, instance);
+      addEventListener(el, name, invoker);
+    } else if (existingInvoker) {
+      removeEventListener(el, name);
+      invokers[rawName] = void 0;
+    }
+  }
+}
+const optionsModifierRE = /(?:Once|Passive|Capture)$/;
+function formatEventName(name) {
+  if (name === "on-post-message") {
+    return "onPostMessage";
+  }
+  return name;
+}
+function parseName(name) {
+  let options;
+  if (optionsModifierRE.test(name)) {
+    options = {};
+    let m;
+    while (m = name.match(optionsModifierRE)) {
+      name = name.slice(0, name.length - m[0].length);
+      options[m[0].toLowerCase()] = true;
+    }
+  }
+  const event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
+  return [formatEventName(event), options];
+}
+function createInvoker(initialValue, instance) {
+  const invoker = (e) => {
+    callWithAsyncErrorHandling(
+      invoker.value,
+      instance,
+      5,
+      [e]
+    );
+  };
+  invoker.value = initialValue;
+  const modifiers = /* @__PURE__ */ new Set();
+  if (isArray(invoker.value)) {
+    invoker.value.forEach((v) => {
+      if (v.modifiers) {
+        v.modifiers.forEach((m) => {
+          modifiers.add(m);
+        });
+      }
+    });
+  } else {
+    if (invoker.value.modifiers) {
+      invoker.value.modifiers.forEach((m) => {
+        modifiers.add(m);
+      });
+    }
+  }
+  invoker.modifiers = [...modifiers];
+  return invoker;
+}
+
+const processDeclaration = expand({ type: "uvue" }).Declaration;
+function createDeclaration(prop, value) {
+  const newValue = value + "";
+  if (newValue.includes("!important")) {
+    return {
+      prop,
+      value: newValue.replace(/\s*!important/, ""),
+      important: true
+    };
+  }
+  return {
+    prop,
+    value: newValue,
+    important: false
+  };
+}
+function normalizeStyle(name, value) {
+  const decl = Object.assign(
+    {},
+    {
+      replaceWith(newProps) {
+        props = newProps;
+      }
+    },
+    createDeclaration(name, value)
+  );
+  let props = [decl];
+  processDeclaration(decl);
+  return props;
+}
+function setStyle(expandRes) {
+  const resArr = expandRes.map((item) => {
+    return [item.prop, item.value];
+  });
+  const resMap = new Map(resArr);
+  return resMap;
+}
+function parseStyleDecl(prop, value) {
+  const val = normalizeStyle(prop, value);
+  const res = setStyle(val);
+  return res;
+}
+
+const vShowOriginalDisplay = Symbol("_vod");
+const vShowHidden = Symbol("_vsh");
+const vShow = {
+  beforeMount(el, { value }, { transition }) {
+    el[vShowOriginalDisplay] = el.style.getPropertyValue("display") === "none" ? "" : "flex";
+    if (transition && value) {
+      transition.beforeEnter(el);
+    } else {
+      setDisplay(el, value);
+    }
+  },
+  mounted(el, { value }, { transition }) {
+    if (transition && value) {
+      transition.enter(el);
+    }
+  },
+  updated(el, { value, oldValue }, { transition }) {
+    if (!value === !oldValue) return;
+    if (transition) {
+      if (value) {
+        transition.beforeEnter(el);
+        setDisplay(el, true);
+        transition.enter(el);
+      } else {
+        transition.leave(el, () => {
+          setDisplay(el, false);
+        });
+      }
+    } else {
+      setDisplay(el, value);
+    }
+  },
+  beforeUnmount(el, { value }) {
+    setDisplay(el, value);
+  }
+};
+function setDisplay(el, value) {
+  el.style.setProperty("display", value ? el[vShowOriginalDisplay] : "none");
+  el[vShowHidden] = !value;
+}
+
+function isSame(a, b) {
+  return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
+}
+function patchStyle(el, prev, next) {
+  if (!next) {
+    return;
+  }
+  if (isString(next)) {
+    next = parseStringStyle(next);
+  }
+  const batchedStyles = /* @__PURE__ */ new Map();
+  const isPrevObj = prev && !isString(prev);
+  if (isPrevObj) {
+    const classStyle = getExtraClassStyle(el);
+    const style = getExtraStyle(el);
+    for (const key in prev) {
+      if (next[key] == null) {
+        const _key = key.startsWith("--") ? key : camelize(key);
+        const value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
+        parseStyleDecl(_key, value).forEach((value2, key2) => {
+          batchedStyles.set(key2, value2);
+          style && style.delete(key2);
+        });
+      }
+    }
+    for (const key in next) {
+      const value = next[key];
+      const prevValue = prev[key];
+      if (!isSame(prevValue, value)) {
+        const _key = key.startsWith("--") ? key : camelize(key);
+        parseStyleDecl(_key, value).forEach((value2, key2) => {
+          batchedStyles.set(key2, value2);
+          style && style.set(key2, value2);
+        });
+      }
+    }
+  } else {
+    for (const key in next) {
+      const value = next[key];
+      const _key = key.startsWith("--") ? key : camelize(key);
+      setBatchedStyles(batchedStyles, _key, value);
+    }
+    setExtraStyle(el, batchedStyles);
+  }
+  if (batchedStyles.size == 0) {
+    return;
+  }
+  if (el[vShowHidden]) {
+    batchedStyles.set("display", "none");
+  }
+  el.updateStyle(batchedStyles);
+}
+function setBatchedStyles(batchedStyles, key, value) {
+  parseStyleDecl(key, value).forEach((value2, key2) => {
+    batchedStyles.set(key2, value2);
+  });
+}
+
+const vModelTags = ["u-input", "u-textarea"];
+const patchProp = (el, key, prevValue, nextValue, namespace, parentComponent, hostInstance) => {
+  if (key === "class") {
+    patchClass(el, prevValue, nextValue, hostInstance || parentComponent);
+  } else if (key === "style") {
+    patchStyle(el, prevValue, nextValue);
+  } else if (isOn(key)) {
+    if (!isModelListener(key)) {
+      patchEvent(el, key, prevValue, nextValue, parentComponent);
+    }
+  } else if (key === "modelValue" && vModelTags.includes(el.tagName.toLowerCase())) {
+    el.setAnyAttribute("modelValue", nextValue);
+    el.setAnyAttribute("value", nextValue);
+  } else {
+    patchAttr(el, key, nextValue, parentComponent);
+  }
+};
+
+function useCssModule(name = "$style") {
+  {
+    const instance = getCurrentInstance();
+    if (!instance) {
+      !!(process.env.NODE_ENV !== "production") && warn(`useCssModule must be called inside setup()`);
+      return EMPTY_OBJ;
+    }
+    const modules = instance.type.__cssModules;
+    if (!modules) {
+      !!(process.env.NODE_ENV !== "production") && warn(`Current instance does not have CSS modules injected.`);
+      return EMPTY_OBJ;
+    }
+    const mod = modules[name];
+    if (!mod) {
+      !!(process.env.NODE_ENV !== "production") && warn(`Current instance does not have CSS module named "${name}".`);
+      return EMPTY_OBJ;
+    }
+    return mod;
+  }
+}
+
+function useCssVars(getter) {
+  const instance = getCurrentInstance();
+  if (!instance) {
+    !!(process.env.NODE_ENV !== "production") && warn(`useCssVars is called without current active component instance.`);
+    return;
+  }
+  const setVars = () => setVarsOnVNode(instance.subTree, getter(instance.proxy));
+  onMounted(() => watchEffect(setVars, { flush: "post" }));
+  onUpdated(setVars);
+}
+function setVarsOnVNode(vnode, vars) {
+  if (vnode.shapeFlag & 128) {
+    const suspense = vnode.suspense;
+    vnode = suspense.activeBranch;
+    if (suspense.pendingBranch && !suspense.isHydrating) {
+      suspense.effects.push(() => {
+        setVarsOnVNode(suspense.activeBranch, vars);
+      });
+    }
+  }
+  while (vnode.component) {
+    vnode = vnode.component.subTree;
+  }
+  if (vnode.shapeFlag & 1 && vnode.el) {
+    const style = vnode.el.style;
+    for (const key in vars) {
+      style.setProperty(`--${key}`, vars[key]);
+    }
+  } else if (vnode.type === Fragment) {
+    vnode.children.forEach((c) => setVarsOnVNode(c, vars));
+  }
+}
+
+const assignKey = Symbol("_assign");
+const getModelAssigner = (vnode) => {
+  const fn = vnode.props["onUpdate:modelValue"];
+  return isArray(fn) ? (value) => invokeArrayFns(fn, value) : fn;
+};
+const vModelText = {
+  created(el, { modifiers: { lazy, trim, number } }, vnode) {
+    el[assignKey] = getModelAssigner(vnode);
+    vModelTextInit(
+      el,
+      trim,
+      number || !!(vnode.props && vnode.props.type === "number"));
+  },
+  mounted(el, _binding, _vnode, _prevVNode) {
+    var _a;
+    el.setAnyAttribute("value", (_a = _binding.value) != null ? _a : "");
+  },
+  beforeUpdate(el, { value, oldValue, modifiers: { lazy, trim, number } }, vnode) {
+    el[assignKey] = getModelAssigner(vnode);
+    vModelTextUpdate(el, oldValue, value, trim, number);
+  }
+};
+const vModelTextInit = (el, trim, number, lazy, set) => {
+  el.addEventListener("input", (event) => {
+    let domValue = event.detail.value;
+    if (trim) {
+      domValue = domValue.trim();
+    }
+    if (number || el.getAttribute("type") === "number") {
+      domValue = looseToNumber(domValue);
+    }
+    (set || el[assignKey])(event.detail.value);
+  });
+};
+const vModelTextUpdate = (el, oldValue, value, trim, number, lazy) => {
+  const elValue = (number || el.getAttribute("type") === "number") && !/^0\d/.test(el.getAnyAttribute("value")) ? looseToNumber(el.getAnyAttribute("value")) : el.getAnyAttribute("value");
+  const newValue = value == null ? "" : value;
+  if (elValue === newValue) {
+    return;
+  }
+  el.setAnyAttribute("value", newValue);
+};
+const vModelDynamic = vModelText;
+function getValue(el) {
+  return "_value" in el ? el._value : el.getAnyAttribute("value");
+}
+const vModelCheckboxInit = (el, set) => {
+};
+const vModelCheckboxUpdate = (el, oldValue, value, rawValue = el.getAnyAttribute("value")) => {
+};
+const vModelSelectInit = (el, value, number, set) => {
+};
+const vModelSetSelected = (el, value) => {
+};
+
+const systemModifiers = ["ctrl", "shift", "alt", "meta"];
+const modifierGuards = {
+  stop: (e) => e.stopPropagation(),
+  prevent: (e) => e.preventDefault(),
+  self: (e) => e.target !== e.currentTarget,
+  ctrl: (e) => !e.ctrlKey,
+  shift: (e) => !e.shiftKey,
+  alt: (e) => !e.altKey,
+  meta: (e) => !e.metaKey,
+  left: (e) => "button" in e && e.button !== 0,
+  middle: (e) => "button" in e && e.button !== 1,
+  right: (e) => "button" in e && e.button !== 2,
+  exact: (e, modifiers) => systemModifiers.some((m) => e[`${m}Key`] && !modifiers.includes(m))
+};
+const withModifiers = (fn, modifiers) => {
+  return (event, ...args) => {
+    for (let i = 0; i < modifiers.length; i++) {
+      const guard = modifierGuards[modifiers[i]];
+      if (guard && guard(event, modifiers)) return;
+    }
+    return fn(event, ...args);
+  };
+};
+const withKeys = (fn, modifiers) => {
+  return (event) => {
+    if (!("key" in event)) {
+      return;
+    }
+    const eventKey = hyphenate(event.key);
+    if (modifiers.some((k) => k === eventKey)) {
+      return fn(event);
+    }
+  };
+};
+
+function shouldSetAsProp(el, key, value, isSVG) {
+  return false;
+}
+
+const rendererOptions = extend({ patchProp }, nodeOps);
+let renderer;
+function ensureRenderer() {
+  return renderer || (renderer = createRenderer(rendererOptions));
+}
+const render = (...args) => {
+  ensureRenderer().render(...args);
+};
+const createApp = (...args) => {
+  const app = ensureRenderer().createApp(...args);
+  app.use(vaporInteropPlugin);
+  const { mount, unmount } = app;
+  app.mount = (container) => {
+    setDocument(container);
+    return mount(container.body);
+  };
+  app.unmount = () => {
+    setDocument(void 0);
+    unmount();
+    app._container = null;
+    app._context.reload = () => {
+    };
+  };
+  return app;
+};
+const createVaporApp = (comp, props) => {
+  const app = createVaporApp$1(comp, props);
+  app.use(vaporInteropPlugin);
+  const { mount, unmount } = app;
+  app.mount = (container) => {
+    setDocument(container);
+    return mount(container.body);
+  };
+  app.unmount = () => {
+    setDocument(void 0);
+    unmount();
+    app._container = null;
+    app._context.reload = () => {
+    };
+  };
+  return app;
+};
+
+export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, Static, Suspense, Teleport, Text$1 as Text, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentInstance, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, registerHMR, registerRuntimeCompiler, remove, render, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle$1 as setStyle, setText, setTransitionHooks, setValue, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, toHandlers, transformVNodeArgs, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };

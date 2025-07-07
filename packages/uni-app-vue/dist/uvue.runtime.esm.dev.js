@@ -1,4 +1,4 @@
-import { extend, isSymbol, isObject, hasOwn, def, hasChanged, isFunction, isArray as isArray$1, toRawType, EMPTY_OBJ, NOOP, remove as remove$1, isSet, isMap, isPlainObject, isIntegerKey, makeMap, capitalize, hyphenate, isPromise, getGlobalThis, isString, toHandlerKey, camelize, isReservedProp, looseToNumber, isOn, isBuiltInTag, invokeArrayFns, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$2, parseStringStyle, canSetValueDirectly, isBuiltInDirective, isRegExp, toNumber, EMPTY_ARR, isModelListener, shouldSetAsAttr, isNativeOn, toDisplayString, NO, getSequence, looseEqual, looseIndexOf, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, getEscapedCssVarName, isGloballyAllowed, YES, isSpecialBooleanAttr } from '@vue/shared';
+import { extend, isSymbol, isObject, hasOwn, def, hasChanged, isFunction, isArray as isArray$1, toRawType, EMPTY_OBJ, NOOP, remove as remove$1, isSet, isMap, isPlainObject, isIntegerKey, makeMap, capitalize, hyphenate, isPromise, getGlobalThis, isString, toHandlerKey, camelize, isReservedProp, looseToNumber, isOn, isBuiltInTag, invokeArrayFns, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$2, parseStringStyle, canSetValueDirectly, isBuiltInDirective, isRegExp, toNumber, EMPTY_ARR, toDisplayString, NO, getSequence, isModelListener, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, getEscapedCssVarName, isGloballyAllowed, YES } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
@@ -4259,7 +4259,7 @@ var getContainerType = container => {
   if (isMathMLContainer(container)) return "mathml";
   return void 0;
 };
-var isComment$1 = node => node.nodeType === 8;
+var isComment = node => node.nodeType === 8;
 function createHydrationFunctions(rendererInternals) {
   var {
     mt: mountComponent,
@@ -4289,7 +4289,7 @@ function createHydrationFunctions(rendererInternals) {
   var hydrateNode = function (node, vnode, parentComponent, parentSuspense, slotScopeIds) {
     var optimized = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
     optimized = optimized || !!vnode.dynamicChildren;
-    var isFragmentStart = isComment$1(node) && node.data === "[";
+    var isFragmentStart = isComment(node) && node.data === "[";
     var onMismatch = () => handleMismatch(node, vnode, parentComponent, parentSuspense, slotScopeIds, isFragmentStart);
     var {
       type,
@@ -4378,7 +4378,7 @@ function createHydrationFunctions(rendererInternals) {
           var container = parentNode(node);
           if (isFragmentStart) {
             nextNode = locateClosingAnchor(node);
-          } else if (isComment$1(node) && node.data === "teleport start") {
+          } else if (isComment(node) && node.data === "teleport start") {
             nextNode = locateClosingAnchor(node, node.data, "teleport end");
           } else {
             nextNode = nextSibling(node);
@@ -4546,7 +4546,7 @@ function createHydrationFunctions(rendererInternals) {
     }
     var container = parentNode(node);
     var next = hydrateChildren(nextSibling(node), vnode, container, parentComponent, parentSuspense, slotScopeIds, optimized);
-    if (next && isComment$1(next) && next.data === "]") {
+    if (next && isComment(next) && next.data === "]") {
       return nextSibling(vnode.anchor = next);
     } else {
       logMismatchError();
@@ -4556,7 +4556,7 @@ function createHydrationFunctions(rendererInternals) {
   };
   var handleMismatch = (node, vnode, parentComponent, parentSuspense, slotScopeIds, isFragment) => {
     if (!isMismatchAllowed(node.parentElement, 1 /* CHILDREN */)) {
-      warn$1("Hydration node mismatch:\n- rendered on server:", node, node.nodeType === 3 ? "(text)" : isComment$1(node) && node.data === "[" ? "(start of fragment)" : "", "\n- expected on client:", vnode.type);
+      warn$1("Hydration node mismatch:\n- rendered on server:", node, node.nodeType === 3 ? "(text)" : isComment(node) && node.data === "[" ? "(start of fragment)" : "", "\n- expected on client:", vnode.type);
       logMismatchError();
     }
     vnode.el = null;
@@ -4587,7 +4587,7 @@ function createHydrationFunctions(rendererInternals) {
     var match = 0;
     while (node) {
       node = nextSibling(node);
-      if (node && isComment$1(node)) {
+      if (node && isComment(node)) {
         if (node.data === open) match++;
         if (node.data === close) {
           if (match === 0) {
@@ -4849,7 +4849,7 @@ var hydrateOnInteraction = function () {
   };
 };
 function forEachElement(node, cb) {
-  if (isComment$1(node) && node.data === "[") {
+  if (isComment(node) && node.data === "[") {
     var depth = 1;
     var _next2 = node.nextSibling;
     while (_next2) {
@@ -4858,7 +4858,7 @@ function forEachElement(node, cb) {
         if (result === false) {
           break;
         }
-      } else if (isComment$1(_next2)) {
+      } else if (isComment(_next2)) {
         if (_next2.data === "]") {
           if (--depth === 0) break;
         } else if (_next2.data === "[") {
@@ -6863,9 +6863,9 @@ function assertType(value, type) {
   if (expectedType === "null") {
     valid = value === null;
   } else if (isSimpleType(expectedType)) {
-    var _t = typeof value;
-    valid = _t === expectedType.toLowerCase();
-    if (!valid && _t === "object") {
+    var t = typeof value;
+    valid = t === expectedType.toLowerCase();
+    if (!valid && t === "object") {
       valid = value instanceof type;
     }
   } else if (expectedType === "Object") {
@@ -7019,15 +7019,15 @@ var updateSlots = (instance, children, optimized) => {
 };
 var supported;
 var perf;
-var cachedNow$1 = 0;
-var p$1 = /* @__PURE__ */Promise.resolve();
-var getNow$1 = () => cachedNow$1 || (p$1.then(() => cachedNow$1 = 0), cachedNow$1 = isSupported() ? perf.now() : Date.now());
+var cachedNow = 0;
+var p = /* @__PURE__ */Promise.resolve();
+var getNow = () => cachedNow || (p.then(() => cachedNow = 0), cachedNow = isSupported() ? perf.now() : Date.now());
 function startMeasure(instance, type) {
   if (instance.appContext.config.performance && isSupported()) {
     perf.mark("vue-".concat(type, "-").concat(instance.uid));
   }
   {
-    devtoolsPerfStart(instance, type, getNow$1());
+    devtoolsPerfStart(instance, type, getNow());
   }
 }
 function endMeasure(instance, type) {
@@ -7040,7 +7040,7 @@ function endMeasure(instance, type) {
     perf.clearMarks(endTag);
   }
   {
-    devtoolsPerfEnd(instance, type, getNow$1());
+    devtoolsPerfEnd(instance, type, getNow());
   }
 }
 function isSupported() {
@@ -10057,8 +10057,8 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
   var Component = instance.type;
   if (!instance.render) {
     if (!isSSR && compile && !Component.render) {
-      var _template = Component.template || resolveMergedOptions(instance).template;
-      if (_template) {
+      var template = Component.template || resolveMergedOptions(instance).template;
+      if (template) {
         {
           startMeasure(instance, "compile");
         }
@@ -10074,7 +10074,7 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
           isCustomElement,
           delimiters
         }, compilerOptions), componentCompilerOptions);
-        Component.render = compile(_template, finalCompilerOptions);
+        Component.render = compile(template, finalCompilerOptions);
         {
           endMeasure(instance, "compile");
         }
@@ -10417,1415 +10417,6 @@ var ssrUtils = null;
 var resolveFilter = null;
 var compatUtils = null;
 var DeprecationTypes = null;
-var NODE_EXT_STYLES = "styles";
-var NODE_EXT_PARENT_STYLES = "parentStyles";
-var NODE_EXT_CLASS_STYLE = "classStyle";
-var NODE_EXT_STYLE = "style";
-var NODE_EXT_IS_TEXT_NODE = "isTextNode";
-var NODE_EXT_CHILD_NODE = "childNode";
-var NODE_EXT_PARENT_NODE = "parentNode";
-var NODE_EXT_CHILD_NODES = "childNodes";
-function setNodeExtraData(el, name, value) {
-  el.ext.set(name, value);
-}
-function getNodeExtraData(el, name) {
-  return el.ext.get(name);
-}
-function getExtraStyles(el) {
-  return getNodeExtraData(el, NODE_EXT_STYLES);
-}
-function setExtraStyles(el, styles) {
-  setNodeExtraData(el, NODE_EXT_STYLES, styles);
-}
-function getExtraParentStyles(el) {
-  return getNodeExtraData(el, NODE_EXT_PARENT_STYLES);
-}
-function setExtraParentStyles(el, styles) {
-  setNodeExtraData(el, NODE_EXT_PARENT_STYLES, styles);
-}
-function getExtraClassStyle(el) {
-  return getNodeExtraData(el, NODE_EXT_CLASS_STYLE);
-}
-function setExtraClassStyle(el, classStyle) {
-  setNodeExtraData(el, NODE_EXT_CLASS_STYLE, classStyle);
-}
-function getExtraStyle(el) {
-  return getNodeExtraData(el, NODE_EXT_STYLE);
-}
-function setExtraStyle(el, style) {
-  setNodeExtraData(el, NODE_EXT_STYLE, style);
-}
-function isCommentNode(node) {
-  return node.nodeName == "#comment";
-}
-function isExtraTextNode(el) {
-  return getNodeExtraData(el, NODE_EXT_IS_TEXT_NODE) === true;
-}
-function setExtraIsTextNode(el, isTextNode) {
-  setNodeExtraData(el, NODE_EXT_IS_TEXT_NODE, isTextNode);
-}
-function isTextElement(value) {
-  return value instanceof UniTextElement;
-}
-function getExtraChildNode(el) {
-  return getNodeExtraData(el, NODE_EXT_CHILD_NODE);
-}
-function setExtraChildNode(el, childNode) {
-  setNodeExtraData(el, NODE_EXT_CHILD_NODE, childNode);
-}
-function setExtraParentNode(el, parentNode) {
-  setNodeExtraData(el, NODE_EXT_PARENT_NODE, parentNode);
-}
-function getExtraChildNodes(el) {
-  return getNodeExtraData(el, NODE_EXT_CHILD_NODES);
-}
-function setExtraChildNodes(el, childNodes) {
-  setNodeExtraData(el, NODE_EXT_CHILD_NODES, childNodes);
-}
-function getExtraParentNode(el) {
-  return getNodeExtraData(el, NODE_EXT_PARENT_NODE);
-}
-function each(obj) {
-  return Object.keys(obj);
-}
-function useCssStyles(componentStyles) {
-  var normalized = {};
-  if (!isArray$1(componentStyles)) {
-    return normalized;
-  }
-  componentStyles.forEach(componentStyle => {
-    each(componentStyle).forEach(className => {
-      var parentStyles = componentStyle[className];
-      var normalizedStyles = normalized[className] || (normalized[className] = {});
-      each(parentStyles).forEach(parentSelector => {
-        var parentStyle = parentStyles[parentSelector];
-        var normalizedStyle = normalizedStyles[parentSelector] || (normalizedStyles[parentSelector] = {});
-        each(parentStyle).forEach(name => {
-          if (name[0] === "!") {
-            normalizedStyle[name] = parentStyle[name];
-            delete normalizedStyle[name.slice(1)];
-          } else {
-            if (!hasOwn(normalizedStyle, "!" + name)) {
-              normalizedStyle[name] = parentStyle[name];
-            }
-          }
-        });
-      });
-    });
-  });
-  return normalized;
-}
-function hasClass(calssName, el) {
-  var classList = el && el.classList;
-  return classList && classList.includes(calssName);
-}
-var TYPE_RE = /[+~> ]$/;
-var PROPERTY_PARENT_NODE = "parentNode";
-var PROPERTY_PREVIOUS_SIBLING = "previousSibling";
-function isMatchParentSelector(parentSelector, el) {
-  var classArray = parentSelector.split(".");
-  for (var i = classArray.length - 1; i > 0; i--) {
-    var item = classArray[i];
-    var type = item[item.length - 1];
-    var className = item.replace(TYPE_RE, "");
-    if (type === "~" || type === " ") {
-      var property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
-      while (el) {
-        el = el[property];
-        if (hasClass(className, el)) {
-          break;
-        }
-      }
-      if (!el) {
-        return false;
-      }
-    } else {
-      if (type === ">") {
-        el = el && el[PROPERTY_PARENT_NODE];
-      } else if (type === "+") {
-        el = el && el[PROPERTY_PREVIOUS_SIBLING];
-      }
-      if (!hasClass(className, el)) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-var WEIGHT_IMPORTANT = 1e3;
-function parseClassName(_ref22, parentStyles, el) {
-  var {
-    styles,
-    weights
-  } = _ref22;
-  each(parentStyles).forEach(parentSelector => {
-    if (parentSelector && el) {
-      if (!isMatchParentSelector(parentSelector, el)) {
-        return;
-      }
-    }
-    var classWeight = parentSelector.split(".").length;
-    var style = parentStyles[parentSelector];
-    each(style).forEach(name => {
-      var value = style[name];
-      var isImportant = name[0] === "!";
-      if (isImportant) {
-        name = name.slice(1);
-      }
-      var oldWeight = weights[name] || 0;
-      var weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
-      if (weight >= oldWeight) {
-        weights[name] = weight;
-        styles.set(name, value);
-      }
-    });
-  });
-}
-class ParseStyleContext {
-  constructor() {
-    this.styles = /* @__PURE__ */new Map();
-    this.weights = {};
-  }
-}
-function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheets) {
-  var el = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  var context = new ParseStyleContext();
-  classList.forEach(className => {
-    var parentStyles = stylesheet && stylesheet[className];
-    if (parentStyles) {
-      parseClassName(context, parentStyles, el);
-    }
-  });
-  if (parentStylesheets != null) {
-    classList.forEach(className => {
-      var parentStylesheet = (parentStylesheets || []).find(style => style[className] !== null);
-      var parentStyles = parentStylesheet && parentStylesheet[className];
-      if (parentStyles != null) {
-        parseClassName(context, parentStyles, el);
-      }
-    });
-  }
-  return context;
-}
-function parseClassStyles(el) {
-  var styles = getExtraStyles(el);
-  var parentStyles = getExtraParentStyles(el);
-  if (styles == null && parentStyles == null || el.classList.length == 0) {
-    return new ParseStyleContext();
-  }
-  return parseClassListWithStyleSheet(el.classList, styles, parentStyles, el);
-}
-function parseClassList(classList, instance) {
-  var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
-}
-function parseStyleSheet(_ref23) {
-  var {
-    type,
-    appContext,
-    root
-  } = _ref23;
-  var component = type;
-  var pageInstance = root;
-  if (!pageInstance.componentStylesCache) {
-    pageInstance.componentStylesCache = /* @__PURE__ */new Map();
-  }
-  var cache = pageInstance.componentStylesCache.get(component);
-  if (!cache) {
-    var __globalStyles = appContext.provides.__globalStyles;
-    if (appContext && isArray$1(__globalStyles)) {
-      appContext.provides.__globalStyles = useCssStyles(__globalStyles);
-    }
-    var styles = [];
-    if (appContext && __globalStyles) {
-      var globalStyles = isArray$1(__globalStyles) ? __globalStyles : [__globalStyles];
-      styles.push(...globalStyles);
-    }
-    var page = root.type;
-    if (component !== page && isArray$1(page.styles)) {
-      styles.push(...page.styles);
-    }
-    if (isArray$1(component.styles)) {
-      styles.push(...component.styles);
-    }
-    cache = useCssStyles(styles);
-    pageInstance.componentStylesCache.set(component, cache);
-  }
-  return cache;
-}
-function extendMap(a, b) {
-  b.forEach((value, key) => {
-    a.set(key, value);
-  });
-  return a;
-}
-function toStyle(el, classStyle, classStyleWeights) {
-  var res = extendMap(/* @__PURE__ */new Map(), classStyle);
-  var style = getExtraStyle(el);
-  if (style != null) {
-    style.forEach((value, key) => {
-      var weight = classStyleWeights[key];
-      if (weight == null || weight < WEIGHT_IMPORTANT) {
-        res.set(key, value);
-      }
-    });
-  }
-  return res;
-}
-function patchClass$1(el, pre, next) {
-  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  if (!instance) {
-    return;
-  }
-  var classList = next ? next.split(" ") : [];
-  el.classList = classList;
-  setExtraStyles(el, parseStyleSheet(instance));
-  if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
-    setExtraParentStyles(el, instance.parent.type.styles);
-  }
-  updateClassStyles(el);
-}
-function updateClassStyles(el) {
-  if (el.parentNode == null || isCommentNode(el)) {
-    return;
-  }
-  if (getExtraClassStyle(el) == null) {
-    setExtraClassStyle(el, /* @__PURE__ */new Map());
-  }
-  var oldClassStyle = getExtraClassStyle(el);
-  oldClassStyle.forEach((_value, key) => {
-    oldClassStyle.set(key, "");
-  });
-  var parseClassStylesResult = parseClassStyles(el);
-  parseClassStylesResult.styles.forEach((value, key) => {
-    oldClassStyle.set(key, value);
-  });
-  var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
-  if (styles.size == 0) {
-    return;
-  }
-  if (el._vsh) {
-    styles.set("display", "none");
-  }
-  el.updateStyle(styles);
-}
-var rootDocument;
-function getDocument() {
-  return rootDocument;
-}
-function setDocument(document) {
-  rootDocument = document;
-}
-function updateTextNode(node) {
-  var childNode = getExtraChildNode(node);
-  if (childNode !== null) {
-    var text = childNode.getAttribute("value");
-    node.setAttribute("value", text || "");
-  }
-}
-var nodeOps$1 = {
-  insert: (el, parent, anchor) => {
-    if (isTextElement(parent)) {
-      if (isExtraTextNode(el)) {
-        var childNode = getExtraChildNode(parent);
-        if (childNode !== null) {
-          console.error("Multiple text nodes are not allowed.");
-        } else {
-          setExtraChildNode(parent, el);
-          setExtraParentNode(el, parent);
-          updateTextNode(parent);
-        }
-        return;
-      }
-    }
-    if (!anchor) {
-      parent.appendChild(el);
-    } else {
-      parent.insertBefore(el, anchor);
-    }
-    if (parent.isConnected) {
-      updateClassStyles(el);
-      updateChildrenClassStyle(el);
-    }
-  },
-  remove: child => {
-    var parent = child.parentNode;
-    if (parent) {
-      var childNodes = getExtraChildNodes(parent);
-      if (childNodes !== null) {
-        var index = childNodes.indexOf(child);
-        if (index !== -1) {
-          childNodes.splice(index, 1);
-          setExtraChildNodes(parent, childNodes);
-        }
-      }
-      parent.removeChild(child);
-    }
-  },
-  createElement: (tag, container) => {
-    if (!container) {
-      var _document = getDocument();
-      if (!_document) {
-        throw new Error("document is not defined");
-      }
-      return _document.createElement(tag);
-    } else {
-      var _document2 = container.page.document;
-      return _document2.createElement(tag);
-    }
-  },
-  createText: (text, container, isAnchor) => {
-    var document = container.page.document;
-    if (isAnchor) {
-      return document.createComment(text);
-    }
-    var textNode = document.createElement("text");
-    textNode.setAttribute("value", text);
-    setExtraIsTextNode(textNode, true);
-    return textNode;
-  },
-  createComment: (text, container) => {
-    var document = container.page.document;
-    return document.createComment(text);
-  },
-  setText: (node, text) => {
-    node.setAttribute("value", text);
-    var parent = getExtraParentNode(node);
-    if (parent !== null) {
-      updateTextNode(parent);
-    }
-  },
-  setElementText: (el, text) => {
-    if (el.tagName !== "TEXT") {
-      var childNodes = el.childNodes;
-      var textNode = childNodes.find(node => node.tagName === "TEXT");
-      if (!textNode) {
-        var textNode2 = nodeOps$1.createText(text, el);
-        el.appendChild(textNode2);
-        return;
-      }
-      el = textNode;
-    }
-    el.setAttribute("value", text);
-  },
-  parentNode: node => node.parentNode,
-  nextSibling: node => node.nextSibling,
-  querySelector: (selector, parentComponent) => {
-    var proxy = parentComponent && parentComponent.proxy;
-    var document = proxy && proxy.$nativePage && proxy.$nativePage.document;
-    if (document) {
-      return document.querySelector(selector);
-    }
-    return null;
-  }
-};
-function updateChildrenClassStyle(el) {
-  if (el !== null) {
-    el.childNodes.forEach(child => {
-      updateClassStyles(child);
-      updateChildrenClassStyle(child);
-    });
-  }
-}
-function patchAttr$1(el, key, value) {
-  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  if (instance) {
-    [key, value] = transformAttr(el, key, value, instance);
-  }
-  el.setAnyAttribute(key, value);
-}
-var ATTR_HOVER_CLASS = "hoverClass";
-var ATTR_PLACEHOLDER_CLASS = "placeholderClass";
-var ATTR_PLACEHOLDER_STYLE = "placeholderStyle";
-var ATTR_INDICATOR_CLASS = "indicatorClass";
-var ATTR_INDICATOR_STYLE = "indicatorStyle";
-var ATTR_MASK_CLASS = "maskClass";
-var ATTR_MASK_STYLE = "maskStyle";
-var CLASS_AND_STYLES = {
-  view: {
-    class: [ATTR_HOVER_CLASS],
-    style: []
-  },
-  button: {
-    class: [ATTR_HOVER_CLASS],
-    style: []
-  },
-  navigator: {
-    class: [ATTR_HOVER_CLASS],
-    style: []
-  },
-  input: {
-    class: [ATTR_PLACEHOLDER_CLASS],
-    style: [ATTR_PLACEHOLDER_STYLE]
-  },
-  textarea: {
-    class: [ATTR_PLACEHOLDER_CLASS],
-    style: [ATTR_PLACEHOLDER_STYLE]
-  },
-  "picker-view": {
-    class: [ATTR_INDICATOR_CLASS, ATTR_MASK_CLASS],
-    style: [ATTR_INDICATOR_STYLE, ATTR_MASK_STYLE]
-  }
-};
-function transformAttr(el, key, value, instance) {
-  if (!value) {
-    return [key, value];
-  }
-  var opts = CLASS_AND_STYLES[el.tagName.toLowerCase()];
-  if (opts) {
-    var camelized = camelize(key);
-    if (opts["class"].indexOf(camelized) > -1) {
-      var classStyle = parseClassList([value], instance, el);
-      if (el.tagName === "BUTTON") {
-        if (value === "none" || value == "button-hover" && classStyle.size == 0) {
-          return [camelized, value];
-        }
-      }
-      return [camelized, classStyle];
-    }
-    if (opts["style"].indexOf(camelized) > -1) {
-      if (isString(value)) {
-        var sytle = parseStringStyle(camelize(value));
-        return [camelized, sytle];
-      }
-      return [camelized, normalizeStyle$2(value)];
-    }
-  }
-  return [key, value];
-}
-function addEventListener$2(el, event, handler, options) {
-  el.addEventListener(event, handler);
-}
-function removeEventListener$1(el, event) {
-  el.removeEventListener(event);
-}
-function patchEvent$1(el, rawName, prevValue, nextValue) {
-  var instance = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
-  var invokers = el._vei || (el._vei = {});
-  var existingInvoker = invokers[rawName];
-  if (nextValue && existingInvoker) {
-    existingInvoker.value = nextValue;
-  } else {
-    var [name, options] = parseName$1(rawName);
-    if (nextValue) {
-      var invoker = invokers[rawName] = createInvoker$1(nextValue, instance);
-      addEventListener$2(el, name, invoker);
-    } else if (existingInvoker) {
-      removeEventListener$1(el, name);
-      invokers[rawName] = void 0;
-    }
-  }
-}
-var optionsModifierRE$1 = /(?:Once|Passive|Capture)$/;
-function formatEventName(name) {
-  if (name === "on-post-message") {
-    return "onPostMessage";
-  }
-  return name;
-}
-function parseName$1(name) {
-  var options;
-  if (optionsModifierRE$1.test(name)) {
-    options = {};
-    var m;
-    while (m = name.match(optionsModifierRE$1)) {
-      name = name.slice(0, name.length - m[0].length);
-      options[m[0].toLowerCase()] = true;
-    }
-  }
-  var event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
-  return [formatEventName(event), options];
-}
-function createInvoker$1(initialValue, instance) {
-  var invoker = e => {
-    callWithAsyncErrorHandling(invoker.value, instance, 5, [e]);
-  };
-  invoker.value = initialValue;
-  var modifiers = /* @__PURE__ */new Set();
-  if (isArray$1(invoker.value)) {
-    invoker.value.forEach(v => {
-      if (v.modifiers) {
-        v.modifiers.forEach(m => {
-          modifiers.add(m);
-        });
-      }
-    });
-  } else {
-    if (invoker.value.modifiers) {
-      invoker.value.modifiers.forEach(m => {
-        modifiers.add(m);
-      });
-    }
-  }
-  invoker.modifiers = [...modifiers];
-  return invoker;
-}
-var processDeclaration = expand({
-  type: "uvue"
-}).Declaration;
-function createDeclaration(prop, value) {
-  var newValue = value + "";
-  if (newValue.includes("!important")) {
-    return {
-      prop,
-      value: newValue.replace(/\s*!important/, ""),
-      important: true
-    };
-  }
-  return {
-    prop,
-    value: newValue,
-    important: false
-  };
-}
-function normalizeStyle(name, value) {
-  var decl = Object.assign({}, {
-    replaceWith(newProps) {
-      props = newProps;
-    }
-  }, createDeclaration(name, value));
-  var props = [decl];
-  processDeclaration(decl);
-  return props;
-}
-function setStyle$2(expandRes) {
-  var resArr = expandRes.map(item => {
-    return [item.prop, item.value];
-  });
-  var resMap = new Map(resArr);
-  return resMap;
-}
-function parseStyleDecl(prop, value) {
-  var val = normalizeStyle(prop, value);
-  var res = setStyle$2(val);
-  return res;
-}
-function isSame(a, b) {
-  return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
-}
-function patchStyle$1(el, prev, next) {
-  if (!next) {
-    return;
-  }
-  if (isString(next)) {
-    next = parseStringStyle(next);
-  }
-  var batchedStyles = /* @__PURE__ */new Map();
-  var isPrevObj = prev && !isString(prev);
-  if (isPrevObj) {
-    (function () {
-      var classStyle = getExtraClassStyle(el);
-      var style = getExtraStyle(el);
-      for (var key in prev) {
-        if (next[key] == null) {
-          var _key = key.startsWith("--") ? key : camelize(key);
-          var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-          parseStyleDecl(_key, value).forEach((value2, key2) => {
-            batchedStyles.set(key2, value2);
-            style && style.delete(key2);
-          });
-        }
-      }
-      for (var _key31 in next) {
-        var _value2 = next[_key31];
-        var prevValue = prev[_key31];
-        if (!isSame(prevValue, _value2)) {
-          var _key32 = _key31.startsWith("--") ? _key31 : camelize(_key31);
-          parseStyleDecl(_key32, _value2).forEach((value2, key2) => {
-            batchedStyles.set(key2, value2);
-            style && style.set(key2, value2);
-          });
-        }
-      }
-    })();
-  } else {
-    for (var key in next) {
-      var value = next[key];
-      var _key = key.startsWith("--") ? key : camelize(key);
-      setBatchedStyles(batchedStyles, _key, value);
-    }
-    setExtraStyle(el, batchedStyles);
-  }
-  if (batchedStyles.size == 0) {
-    return;
-  }
-  if (el._vsh) {
-    batchedStyles.set("display", "none");
-  }
-  el.updateStyle(batchedStyles);
-}
-function setBatchedStyles(batchedStyles, key, value) {
-  parseStyleDecl(key, value).forEach((value2, key2) => {
-    batchedStyles.set(key2, value2);
-  });
-}
-var vModelTags = ["u-input", "u-textarea"];
-var patchProp$1 = (el, key, prevValue, nextValue, namespace, parentComponent, hostInstance) => {
-  if (key === "class") {
-    patchClass$1(el, prevValue, nextValue, hostInstance || parentComponent);
-  } else if (key === "style") {
-    patchStyle$1(el, prevValue, nextValue);
-  } else if (isOn(key)) {
-    if (!isModelListener(key)) {
-      patchEvent$1(el, key, prevValue, nextValue, parentComponent);
-    }
-  } else if (key === "modelValue" && vModelTags.includes(el.tagName.toLowerCase())) {
-    el.setAnyAttribute("modelValue", nextValue);
-    el.setAnyAttribute("value", nextValue);
-  } else {
-    patchAttr$1(el, key, nextValue, parentComponent);
-  }
-};
-function useCssModule() {
-  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "$style";
-  {
-    var instance = getCurrentInstance();
-    if (!instance) {
-      warn("useCssModule must be called inside setup()");
-      return EMPTY_OBJ;
-    }
-    var modules = instance.type.__cssModules;
-    if (!modules) {
-      warn("Current instance does not have CSS modules injected.");
-      return EMPTY_OBJ;
-    }
-    var mod = modules[name];
-    if (!mod) {
-      warn("Current instance does not have CSS module named \"".concat(name, "\"."));
-      return EMPTY_OBJ;
-    }
-    return mod;
-  }
-}
-function useCssVars(getter) {
-  var instance = getCurrentInstance();
-  if (!instance) {
-    warn("useCssVars is called without current active component instance.");
-    return;
-  }
-  var setVars = () => setVarsOnVNode(instance.subTree, getter(instance.proxy));
-  onMounted(() => watchEffect(setVars, {
-    flush: "post"
-  }));
-  onUpdated(setVars);
-}
-function setVarsOnVNode(vnode, vars) {
-  if (vnode.shapeFlag & 128) {
-    var suspense = vnode.suspense;
-    vnode = suspense.activeBranch;
-    if (suspense.pendingBranch && !suspense.isHydrating) {
-      suspense.effects.push(() => {
-        setVarsOnVNode(suspense.activeBranch, vars);
-      });
-    }
-  }
-  while (vnode.component) {
-    vnode = vnode.component.subTree;
-  }
-  if (vnode.shapeFlag & 1 && vnode.el) {
-    var style = vnode.el.style;
-    for (var key in vars) {
-      style.setProperty("--".concat(key), vars[key]);
-    }
-  } else if (vnode.type === Fragment) {
-    vnode.children.forEach(c => setVarsOnVNode(c, vars));
-  }
-}
-var getModelAssigner = vnode => {
-  var fn = vnode.props["onUpdate:modelValue"];
-  return isArray$1(fn) ? value => invokeArrayFns(fn, value) : fn;
-};
-var vModelText = {
-  created(el, _binding, _vnode, _prevVNode) {
-    var trigger = getModelAssigner(_vnode);
-    el.addEventListener("input", event => {
-      trigger(event.detail.value);
-    });
-  },
-  mounted(el, _binding, _vnode, _prevVNode) {
-    var _a;
-    el.setAnyAttribute("value", (_a = _binding.value) != null ? _a : "");
-  },
-  beforeUpdate(el, _binding, _vnode, _prevVNode) {
-    var _a;
-    el.setAnyAttribute("value", (_a = _binding.value) != null ? _a : "");
-  }
-};
-var vModelDynamic = vModelText;
-var systemModifiers = ["ctrl", "shift", "alt", "meta"];
-var modifierGuards = {
-  stop: e => e.stopPropagation(),
-  prevent: e => e.preventDefault(),
-  self: e => e.target !== e.currentTarget,
-  ctrl: e => !e.ctrlKey,
-  shift: e => !e.shiftKey,
-  alt: e => !e.altKey,
-  meta: e => !e.metaKey,
-  left: e => "button" in e && e.button !== 0,
-  middle: e => "button" in e && e.button !== 1,
-  right: e => "button" in e && e.button !== 2,
-  exact: (e, modifiers) => systemModifiers.some(m => e["".concat(m, "Key")] && !modifiers.includes(m))
-};
-var withModifiers = (fn, modifiers) => {
-  return function (event) {
-    for (var i = 0; i < modifiers.length; i++) {
-      var guard = modifierGuards[modifiers[i]];
-      if (guard && guard(event, modifiers)) return;
-    }
-    for (var _len21 = arguments.length, args = new Array(_len21 > 1 ? _len21 - 1 : 0), _key33 = 1; _key33 < _len21; _key33++) {
-      args[_key33 - 1] = arguments[_key33];
-    }
-    return fn(event, ...args);
-  };
-};
-var withKeys = (fn, modifiers) => {
-  return event => {
-    if (!("key" in event)) {
-      return;
-    }
-    var eventKey = hyphenate(event.key);
-    if (modifiers.some(k => k === eventKey)) {
-      return fn(event);
-    }
-  };
-};
-var vShow = {
-  beforeMount(el, _ref24, _ref25) {
-    var {
-      value
-    } = _ref24;
-    var {
-      transition
-    } = _ref25;
-    el._vod = el.style.getPropertyValue("display") === "none" ? "" : "flex";
-    if (transition && value) {
-      transition.beforeEnter(el);
-    } else {
-      setDisplay$1(el, value);
-    }
-  },
-  mounted(el, _ref26, _ref27) {
-    var {
-      value
-    } = _ref26;
-    var {
-      transition
-    } = _ref27;
-    if (transition && value) {
-      transition.enter(el);
-    }
-  },
-  updated(el, _ref28, _ref29) {
-    var {
-      value,
-      oldValue
-    } = _ref28;
-    var {
-      transition
-    } = _ref29;
-    if (!value === !oldValue) return;
-    if (transition) {
-      if (value) {
-        transition.beforeEnter(el);
-        setDisplay$1(el, true);
-        transition.enter(el);
-      } else {
-        transition.leave(el, () => {
-          setDisplay$1(el, false);
-        });
-      }
-    } else {
-      setDisplay$1(el, value);
-    }
-  },
-  beforeUnmount(el, _ref30) {
-    var {
-      value
-    } = _ref30;
-    setDisplay$1(el, value);
-  }
-};
-function setDisplay$1(el, value) {
-  el.style.setProperty("display", value ? el._vod : "none");
-  el._vsh = !value;
-}
-var rendererOptions$1 = extend({
-  patchProp: patchProp$1
-}, nodeOps$1);
-var renderer$1;
-function ensureRenderer$1() {
-  return renderer$1 || (renderer$1 = createRenderer(rendererOptions$1));
-}
-var render = function () {
-  ensureRenderer$1().render(...arguments);
-};
-var createApp = function () {
-  var app = ensureRenderer$1().createApp(...arguments);
-  var {
-    mount,
-    unmount
-  } = app;
-  app.mount = container => {
-    setDocument(container);
-    return mount(container.body);
-  };
-  app.unmount = () => {
-    setDocument(void 0);
-    unmount();
-    app._container = null;
-    app._context.reload = () => {};
-  };
-  return app;
-};
-var policy = void 0;
-var tt = typeof window !== "undefined" && window.trustedTypes;
-if (tt) {
-  try {
-    policy = /* @__PURE__ */tt.createPolicy("vue", {
-      createHTML: val => val
-    });
-  } catch (e) {
-    warn("Error creating trusted types policy: ".concat(e));
-  }
-}
-var unsafeToTrustedHTML = policy ? val => policy.createHTML(val) : val => val;
-var svgNS = "http://www.w3.org/2000/svg";
-var mathmlNS = "http://www.w3.org/1998/Math/MathML";
-var doc = typeof document !== "undefined" ? document : null;
-var templateContainer = doc && /* @__PURE__ */doc.createElement("template");
-var nodeOps = {
-  insert: (child, parent, anchor) => {
-    parent.insertBefore(child, anchor || null);
-  },
-  remove: child => {
-    var parent = child.parentNode;
-    if (parent) {
-      parent.removeChild(child);
-    }
-  },
-  // @ts-expect-error  fixed by xxxxxx
-  createElement: (tag, namespace, is, props) => {
-    var el = namespace === "svg" ? doc.createElementNS(svgNS, tag) : namespace === "mathml" ? doc.createElementNS(mathmlNS, tag) : is ? doc.createElement(tag, {
-      is
-    }) : doc.createElement(tag);
-    if (tag === "select" && props && props.multiple != null) {
-      el.setAttribute("multiple", props.multiple);
-    }
-    return el;
-  },
-  createText: text => doc.createTextNode(text),
-  createComment: text => doc.createComment(text),
-  setText: (node, text) => {
-    node.nodeValue = text;
-  },
-  setElementText: (el, text) => {
-    el.textContent = text;
-  },
-  parentNode: node => node.parentNode,
-  nextSibling: node => node.nextSibling,
-  querySelector: selector => doc.querySelector(selector),
-  setScopeId(el, id) {
-    el.setAttribute(id, "");
-  },
-  // __UNSAFE__
-  // Reason: innerHTML.
-  // Static content here can only come from compiled templates.
-  // As long as the user only uses trusted templates, this is safe.
-  insertStaticContent(content, parent, anchor, namespace, start, end) {
-    var before = anchor ? anchor.previousSibling : parent.lastChild;
-    if (start && (start === end || start.nextSibling)) {
-      while (true) {
-        parent.insertBefore(start.cloneNode(true), anchor);
-        if (start === end || !(start = start.nextSibling)) break;
-      }
-    } else {
-      templateContainer.innerHTML = unsafeToTrustedHTML(namespace === "svg" ? "<svg>".concat(content, "</svg>") : namespace === "mathml" ? "<math>".concat(content, "</math>") : content);
-      var _template2 = templateContainer.content;
-      if (namespace === "svg" || namespace === "mathml") {
-        var wrapper = _template2.firstChild;
-        while (wrapper.firstChild) {
-          _template2.appendChild(wrapper.firstChild);
-        }
-        _template2.removeChild(wrapper);
-      }
-      parent.insertBefore(_template2, anchor);
-    }
-    return [
-    // first
-    before ? before.nextSibling : parent.firstChild,
-    // last
-    anchor ? anchor.previousSibling : parent.lastChild];
-  }
-};
-var vtcKey = Symbol("_vtc");
-function patchClass(el, value, isSVG) {
-  var transitionClasses = el[vtcKey];
-  if (transitionClasses) {
-    value = (value ? [value, ...transitionClasses] : [...transitionClasses]).join(" ");
-  }
-  if (value == null) {
-    el.removeAttribute("class");
-  } else if (isSVG) {
-    el.setAttribute("class", value);
-  } else {
-    el.className = value;
-  }
-}
-var vShowOriginalDisplay = Symbol("_vod");
-var vShowHidden = Symbol("_vsh");
-var CSS_VAR_TEXT = Symbol("CSS_VAR_TEXT");
-var displayRE = /(^|;)\s*display\s*:/;
-function patchStyle(el, prev, next) {
-  var style = el.style;
-  var isCssString = isString(next);
-  var hasControlledDisplay = false;
-  if (next && !isCssString) {
-    if (prev) {
-      if (!isString(prev)) {
-        for (var key in prev) {
-          if (next[key] == null) {
-            setStyle$1(style, key, "");
-          }
-        }
-      } else {
-        for (var prevStyle of prev.split(";")) {
-          var _key34 = prevStyle.slice(0, prevStyle.indexOf(":")).trim();
-          if (next[_key34] == null) {
-            setStyle$1(style, _key34, "");
-          }
-        }
-      }
-    }
-    for (var _key35 in next) {
-      if (_key35 === "display") {
-        hasControlledDisplay = true;
-      }
-      setStyle$1(style, _key35, next[_key35]);
-    }
-  } else {
-    if (isCssString) {
-      if (prev !== next) {
-        var cssVarText = style[CSS_VAR_TEXT];
-        if (cssVarText) {
-          next += ";" + cssVarText;
-        }
-        style.cssText = next;
-        hasControlledDisplay = displayRE.test(next);
-      }
-    } else if (prev) {
-      el.removeAttribute("style");
-    }
-  }
-  if (vShowOriginalDisplay in el) {
-    el[vShowOriginalDisplay] = hasControlledDisplay ? style.display : "";
-    if (el[vShowHidden]) {
-      style.display = "none";
-    }
-  }
-}
-var semicolonRE = /[^\\];\s*$/;
-var importantRE = /\s*!important$/;
-function setStyle$1(style, name, rawVal) {
-  if (isArray$1(rawVal)) {
-    rawVal.forEach(v => setStyle$1(style, name, v));
-  } else {
-    var val = rawVal == null ? "" : String(rawVal);
-    {
-      if (semicolonRE.test(val)) {
-        warn("Unexpected semicolon at the end of '".concat(name, "' style value: '").concat(val, "'"));
-      }
-    }
-    if (name.startsWith("--")) {
-      style.setProperty(name, val);
-    } else {
-      var prefixed = autoPrefix(style, name);
-      if (importantRE.test(val)) {
-        style.setProperty(hyphenate(prefixed), val.replace(importantRE, ""), "important");
-      } else {
-        style[prefixed] = val;
-      }
-    }
-  }
-}
-var prefixes = ["Webkit", "Moz", "ms"];
-var prefixCache = {};
-function autoPrefix(style, rawName) {
-  var cached = prefixCache[rawName];
-  if (cached) {
-    return cached;
-  }
-  var name = camelize(rawName);
-  if (name !== "filter" && name in style) {
-    return prefixCache[rawName] = name;
-  }
-  name = capitalize(name);
-  for (var i = 0; i < prefixes.length; i++) {
-    var prefixed = prefixes[i] + name;
-    if (prefixed in style) {
-      return prefixCache[rawName] = prefixed;
-    }
-  }
-  return rawName;
-}
-var xlinkNS = "http://www.w3.org/1999/xlink";
-function patchAttr(el, key, value, isSVG, instance) {
-  var isBoolean = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : isSpecialBooleanAttr(key);
-  if (isSVG && key.startsWith("xlink:")) {
-    if (value == null) {
-      el.removeAttributeNS(xlinkNS, key.slice(6, key.length));
-    } else {
-      el.setAttributeNS(xlinkNS, key, value);
-    }
-  } else {
-    if (value == null || isBoolean && !includeBooleanAttr(value)) {
-      el.removeAttribute(key);
-    } else {
-      el.setAttribute(key, isBoolean ? "" : isSymbol(value) ? String(value) : value);
-    }
-  }
-}
-function patchDOMProp(el, key, value, parentComponent, attrName) {
-  if (key === "innerHTML" || key === "textContent") {
-    if (value != null) {
-      el[key] = key === "innerHTML" ? unsafeToTrustedHTML(value) : value;
-    }
-    return;
-  }
-  var tag = el.tagName;
-  if (key === "value" && canSetValueDirectly(tag)) {
-    var oldValue = tag === "OPTION" ? el.getAttribute("value") || "" : el.value;
-    var newValue = value == null ?
-    // #11647: value should be set as empty string for null and undefined,
-    // but <input type="checkbox"> should be set as 'on'.
-    el.type === "checkbox" ? "on" : "" : String(value);
-    if (oldValue !== newValue || !("_value" in el)) {
-      el.value = newValue;
-    }
-    if (value == null) {
-      el.removeAttribute(key);
-    }
-    el._value = value;
-    return;
-  }
-  var needRemove = false;
-  if (value === "" || value == null) {
-    var type = typeof el[key];
-    if (type === "boolean") {
-      value = includeBooleanAttr(value);
-    } else if (value == null && type === "string") {
-      value = "";
-      needRemove = true;
-    } else if (type === "number") {
-      value = 0;
-      needRemove = true;
-    }
-  }
-  try {
-    el[key] = value;
-  } catch (e) {
-    if (!needRemove) {
-      warn("Failed setting prop \"".concat(key, "\" on <").concat(tag.toLowerCase(), ">: value ").concat(value, " is invalid."), e);
-    }
-  }
-  needRemove && el.removeAttribute(attrName || key);
-}
-function addEventListener$1(el, event, handler, options) {
-  el.addEventListener(event, handler, options);
-}
-function removeEventListener(el, event, handler, options) {
-  el.removeEventListener(event, handler, options);
-}
-var veiKey = Symbol("_vei");
-function patchEvent(el, rawName, prevValue, nextValue) {
-  var instance = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
-  var invokers = el[veiKey] || (el[veiKey] = {});
-  var existingInvoker = invokers[rawName];
-  if (nextValue && existingInvoker) {
-    existingInvoker.value = sanitizeEventValue(nextValue, rawName);
-  } else {
-    var [name, options] = parseName(rawName);
-    if (nextValue) {
-      var invoker = invokers[rawName] = createInvoker(sanitizeEventValue(nextValue, rawName), instance);
-      addEventListener$1(el, name, invoker, options);
-    } else if (existingInvoker) {
-      removeEventListener(el, name, existingInvoker, options);
-      invokers[rawName] = void 0;
-    }
-  }
-}
-var optionsModifierRE = /(?:Once|Passive|Capture)$/;
-function parseName(name) {
-  var options;
-  if (optionsModifierRE.test(name)) {
-    options = {};
-    var m;
-    while (m = name.match(optionsModifierRE)) {
-      name = name.slice(0, name.length - m[0].length);
-      options[m[0].toLowerCase()] = true;
-    }
-  }
-  var event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
-  return [event, options];
-}
-var cachedNow = 0;
-var p = /* @__PURE__ */Promise.resolve();
-var getNow = () => cachedNow || (p.then(() => cachedNow = 0), cachedNow = Date.now());
-function createInvoker(initialValue, instance) {
-  var invoker = e => {
-    if (!e._vts) {
-      e._vts = Date.now();
-    } else if (e._vts <= invoker.attached) {
-      return;
-    }
-    callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5, [e]);
-  };
-  invoker.value = initialValue;
-  invoker.attached = getNow();
-  return invoker;
-}
-function sanitizeEventValue(value, propName) {
-  if (isFunction(value) || isArray$1(value)) {
-    return value;
-  }
-  warn("Wrong type passed as event handler to ".concat(propName, " - did you forget @ or : in front of your prop?\nExpected function or array of functions, received type ").concat(typeof value, "."));
-  return NOOP;
-}
-function patchStopImmediatePropagation(e, value) {
-  if (isArray$1(value)) {
-    var originalStop = e.stopImmediatePropagation;
-    e.stopImmediatePropagation = () => {
-      originalStop.call(e);
-      e._stopped = true;
-    };
-    return value.map(fn => e2 => !e2._stopped && fn && fn(e2));
-  } else {
-    return value;
-  }
-}
-var patchProp = (el, key, prevValue, nextValue, namespace, parentComponent) => {
-  var isSVG = namespace === "svg";
-  if (key === "class") {
-    patchClass(el, nextValue, isSVG);
-  } else if (key === "style") {
-    patchStyle(el, prevValue, nextValue);
-  } else if (isOn(key)) {
-    if (!isModelListener(key)) {
-      patchEvent(el, key, prevValue, nextValue, parentComponent);
-    }
-  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp(el, key, nextValue, isSVG)) {
-    patchDOMProp(el, key, nextValue);
-    if (!el.tagName.includes("-") && (key === "value" || key === "checked" || key === "selected")) {
-      patchAttr(el, key, nextValue, isSVG, parentComponent, key !== "value");
-    }
-  } else if (
-  // #11081 force set props for possible async custom element
-  el._isVueCE && (/[A-Z]/.test(key) || !isString(nextValue))) {
-    patchDOMProp(el, camelize(key), nextValue, parentComponent, key);
-  } else {
-    if (key === "true-value") {
-      el._trueValue = nextValue;
-    } else if (key === "false-value") {
-      el._falseValue = nextValue;
-    }
-    patchAttr(el, key, nextValue, isSVG);
-  }
-};
-function shouldSetAsProp(el, key, value, isSVG) {
-  if (isSVG) {
-    if (key === "innerHTML" || key === "textContent") {
-      return true;
-    }
-    if (key in el && isNativeOn(key) && isFunction(value)) {
-      return true;
-    }
-    return false;
-  }
-  if (shouldSetAsAttr(el.tagName, key)) {
-    return false;
-  }
-  if (isNativeOn(key) && isString(value)) {
-    return false;
-  }
-  return key in el;
-}
-function onCompositionStart(e) {
-  e.target.composing = true;
-}
-function onCompositionEnd(e) {
-  var target = e.target;
-  if (target.composing) {
-    target.composing = false;
-    target.dispatchEvent(new Event("input"));
-  }
-}
-var assignKey = Symbol("_assign");
-var vModelTextInit = (el, trim, number, lazy, set) => {
-  addEventListener$1(el, lazy ? "change" : "input", e => {
-    if (e.target.composing) return;
-    var domValue = el.value;
-    if (trim) {
-      domValue = domValue.trim();
-    }
-    if (number || el.type === "number") {
-      domValue = looseToNumber(domValue);
-    }
-    (set || el[assignKey])(domValue);
-  });
-  if (trim) {
-    addEventListener$1(el, "change", () => {
-      el.value = el.value.trim();
-    });
-  }
-  if (!lazy) {
-    addEventListener$1(el, "compositionstart", onCompositionStart);
-    addEventListener$1(el, "compositionend", onCompositionEnd);
-    addEventListener$1(el, "change", onCompositionEnd);
-  }
-};
-var vModelTextUpdate = (el, oldValue, value, trim, number, lazy) => {
-  if (el.composing) return;
-  var elValue = (number || el.type === "number") && !/^0\d/.test(el.value) ? looseToNumber(el.value) : el.value;
-  var newValue = value == null ? "" : value;
-  if (elValue === newValue) {
-    return;
-  }
-  if (document.activeElement === el && el.type !== "range") {
-    if (lazy && value === oldValue) {
-      return;
-    }
-    if (trim && el.value.trim() === newValue) {
-      return;
-    }
-  }
-  el.value = newValue;
-};
-var vModelCheckboxInit = (el, set) => {
-  addEventListener$1(el, "change", () => {
-    var assign = set || el[assignKey];
-    var modelValue = el._modelValue;
-    var elementValue = getValue(el);
-    var checked = el.checked;
-    if (isArray$1(modelValue)) {
-      var index = looseIndexOf(modelValue, elementValue);
-      var found = index !== -1;
-      if (checked && !found) {
-        assign(modelValue.concat(elementValue));
-      } else if (!checked && found) {
-        var filtered = [...modelValue];
-        filtered.splice(index, 1);
-        assign(filtered);
-      }
-    } else if (isSet(modelValue)) {
-      var cloned = new Set(modelValue);
-      if (checked) {
-        cloned.add(elementValue);
-      } else {
-        cloned.delete(elementValue);
-      }
-      assign(cloned);
-    } else {
-      assign(getCheckboxValue(el, checked));
-    }
-  });
-};
-var vModelCheckboxUpdate = function (el, oldValue, value) {
-  var rawValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : getValue(el);
-  el._modelValue = value;
-  var checked;
-  if (isArray$1(value)) {
-    checked = looseIndexOf(value, rawValue) > -1;
-  } else if (isSet(value)) {
-    checked = value.has(rawValue);
-  } else {
-    if (value === oldValue) return;
-    checked = looseEqual(value, getCheckboxValue(el, true));
-  }
-  if (el.checked !== checked) {
-    el.checked = checked;
-  }
-};
-var vModelSelectInit = (el, value, number, set) => {
-  var isSetModel = isSet(value);
-  addEventListener$1(el, "change", () => {
-    var selectedVal = Array.prototype.filter.call(el.options, o => o.selected).map(o => number ? looseToNumber(getValue(o)) : getValue(o));
-    (set || el[assignKey])(el.multiple ? isSetModel ? new Set(selectedVal) : selectedVal : selectedVal[0]);
-    el._assigning = true;
-    nextTick(() => {
-      el._assigning = false;
-    });
-  });
-};
-var vModelSetSelected = (el, value) => {
-  if (el._assigning) return;
-  var isMultiple = el.multiple;
-  var isArrayValue = isArray$1(value);
-  if (isMultiple && !isArrayValue && !isSet(value)) {
-    warn("<select multiple v-model> expects an Array or Set value for its binding, but got ".concat(Object.prototype.toString.call(value).slice(8, -1), "."));
-    return;
-  }
-  var _loop7 = function (i, l) {
-    var option = el.options[i];
-    var optionValue = getValue(option);
-    if (isMultiple) {
-      if (isArrayValue) {
-        var optionType = typeof optionValue;
-        if (optionType === "string" || optionType === "number") {
-          option.selected = value.some(v => String(v) === String(optionValue));
-        } else {
-          option.selected = looseIndexOf(value, optionValue) > -1;
-        }
-      } else {
-        option.selected = value.has(optionValue);
-      }
-    } else if (looseEqual(getValue(option), value)) {
-      if (el.selectedIndex !== i) el.selectedIndex = i;
-      return {
-        v: void 0
-      };
-    }
-  };
-  for (var i = 0, l = el.options.length; i < l; i++) {
-    var _ret = _loop7(i, l);
-    if (typeof _ret === "object") return _ret.v;
-  }
-  if (!isMultiple && el.selectedIndex !== -1) {
-    el.selectedIndex = -1;
-  }
-};
-function getValue(el) {
-  return "_value" in el ? el._value : el.value;
-}
-function getCheckboxValue(el, checked) {
-  var key = checked ? "_trueValue" : "_falseValue";
-  if (key in el) {
-    return el[key];
-  }
-  var attr = checked ? "true-value" : "false-value";
-  if (el.hasAttribute(attr)) {
-    return el.getAttribute(attr);
-  }
-  return checked;
-}
-var rendererOptions = /* @__PURE__ */extend({
-  patchProp
-}, nodeOps);
-var renderer;
-function ensureRenderer() {
-  return renderer || (renderer = createRenderer(rendererOptions));
-}
-function normalizeContainer(container) {
-  if (isString(container)) {
-    var res = document.querySelector(container);
-    if (!res) {
-      warn("Failed to mount app: mount target selector \"".concat(container, "\" returned null."));
-    }
-    return res;
-  }
-  if (window.ShadowRoot && container instanceof window.ShadowRoot && container.mode === "closed") {
-    warn("mounting on a ShadowRoot with `{mode: \"closed\"}` may lead to unpredictable bugs");
-  }
-  return container;
-}
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
@@ -11861,84 +10452,6 @@ function setInsertionState(parent, anchor) {
 }
 function resetInsertionState() {
   insertionParent = insertionAnchor = void 0;
-}
-var isHydrating = false;
-var currentHydrationNode = null;
-var isOptimized$1 = false;
-function withHydration(container, fn) {
-  adoptTemplate = adoptTemplateImpl;
-  locateHydrationNode = locateHydrationNodeImpl;
-  if (!isOptimized$1) {
-    Comment.prototype.$fs = void 0;
-    isOptimized$1 = true;
-  }
-  isHydrating = true;
-  setInsertionState(container, 0);
-  var res = fn();
-  resetInsertionState();
-  currentHydrationNode = null;
-  isHydrating = false;
-  return res;
-}
-var adoptTemplate;
-var locateHydrationNode;
-var isComment = (node, data) => node.nodeType === 8 && node.data === data;
-function adoptTemplateImpl(node, template) {
-  if (!(template[0] === "<" && template[1] === "!")) {
-    while (node.nodeType === 8) {
-      node = next(node);
-    }
-  }
-  {
-    var type = node.nodeType;
-    if (type === 8 && !template.startsWith("<!") || type === 1 && !template.startsWith("<" + node.tagName.toLowerCase()) || type === 3 && template.trim() && !template.startsWith(node.data)) {
-      warn("adopted: ", node);
-      warn("template: ".concat(template));
-      warn("hydration mismatch!");
-    }
-  }
-  currentHydrationNode = next(node);
-  return node;
-}
-function locateHydrationNodeImpl() {
-  var node;
-  if (insertionAnchor === 0) {
-    node = child(insertionParent);
-  } else {
-    node = insertionAnchor ? insertionAnchor.previousSibling : insertionParent ? insertionParent.lastChild : currentHydrationNode;
-    if (node && isComment(node, "]")) {
-      if (node.$fs) {
-        node = node.$fs;
-      } else {
-        var cur = node;
-        var curFragEnd = node;
-        var fragDepth = 0;
-        node = null;
-        while (cur) {
-          cur = cur.previousSibling;
-          if (cur) {
-            if (isComment(cur, "[")) {
-              curFragEnd.$fs = cur;
-              if (!fragDepth) {
-                node = cur;
-                break;
-              } else {
-                fragDepth--;
-              }
-            } else if (isComment(cur, "]")) {
-              curFragEnd = cur;
-              fragDepth++;
-            }
-          }
-        }
-      }
-    }
-  }
-  if (!node) {
-    warn("Hydration mismatch in ", insertionParent);
-  }
-  resetInsertionState();
-  currentHydrationNode = node;
 }
 class VaporFragment {
   constructor(nodes) {
@@ -11999,7 +10512,7 @@ function insert(block, parent) {
   var anchor = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   anchor = anchor === 0 ? parent.firstChild : anchor;
   if (block instanceof Node) {
-    if (!isHydrating) {
+    {
       parent.insertBefore(block, anchor);
     }
   } else if (isVaporComponent(block)) {
@@ -12022,8 +10535,8 @@ function insert(block, parent) {
   }
 }
 function prepend(parent) {
-  for (var _len22 = arguments.length, blocks = new Array(_len22 > 1 ? _len22 - 1 : 0), _key36 = 1; _key36 < _len22; _key36++) {
-    blocks[_key36 - 1] = arguments[_key36];
+  for (var _len21 = arguments.length, blocks = new Array(_len21 > 1 ? _len21 - 1 : 0), _key31 = 1; _key31 < _len21; _key31++) {
+    blocks[_key31 - 1] = arguments[_key31];
   }
   var i = blocks.length;
   while (i--) {
@@ -12082,8 +10595,8 @@ function normalizeEmitsOptions(comp) {
   return comp.__emitsOptions = normalized;
 }
 function emit(instance, event) {
-  for (var _len23 = arguments.length, rawArgs = new Array(_len23 > 2 ? _len23 - 2 : 0), _key37 = 2; _key37 < _len23; _key37++) {
-    rawArgs[_key37 - 2] = arguments[_key37];
+  for (var _len22 = arguments.length, rawArgs = new Array(_len22 > 2 ? _len22 - 2 : 0), _key32 = 2; _key32 < _len22; _key32++) {
+    rawArgs[_key32 - 2] = arguments[_key32];
   }
   baseEmit(instance, instance.rawProps || EMPTY_OBJ, propGetter, event, ...rawArgs);
 }
@@ -12291,8 +10804,8 @@ function getKeysFromRawProps(rawProps) {
     var source;
     while (i--) {
       source = resolveSource(dynamicSources[i]);
-      for (var _key38 in source) {
-        keys.push(_key38);
+      for (var _key33 in source) {
+        keys.push(_key33);
       }
     }
   }
@@ -12351,17 +10864,17 @@ function resolveDynamicProps(props) {
     for (var source of props.$) {
       var isDynamic = isFunction(source);
       var resolved = isDynamic ? source() : source;
-      for (var _key39 in resolved) {
-        var value = isDynamic ? resolved[_key39] : resolved[_key39]();
-        if (_key39 === "class" || _key39 === "style") {
-          var existing = mergedRawProps[_key39];
+      for (var _key34 in resolved) {
+        var value = isDynamic ? resolved[_key34] : resolved[_key34]();
+        if (_key34 === "class" || _key34 === "style") {
+          var existing = mergedRawProps[_key34];
           if (isArray$1(existing)) {
             existing.push(value);
           } else {
-            mergedRawProps[_key39] = [existing, value];
+            mergedRawProps[_key34] = [existing, value];
           }
         } else {
-          mergedRawProps[_key39] = value;
+          mergedRawProps[_key34] = value;
         }
       }
     }
@@ -12390,13 +10903,13 @@ var rawPropsProxyHandlers = {
     }
   }
 };
-function addEventListener(el, event, handler, options) {
+function addEventListener$1(el, event, handler, options) {
   el.addEventListener(event, handler, options);
   return () => el.removeEventListener(event, handler, options);
 }
 function on(el, event, handler) {
   var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
-  addEventListener(el, event, handler, options);
+  addEventListener$1(el, event, handler, options);
   if (options.effect) {
     onEffectCleanup(() => {
       el.removeEventListener(event, handler, options);
@@ -12418,8 +10931,8 @@ function delegate(el, event, handler) {
 }
 var delegatedEvents = /* @__PURE__ */Object.create(null);
 var delegateEvents = function () {
-  for (var _len24 = arguments.length, names = new Array(_len24), _key40 = 0; _key40 < _len24; _key40++) {
-    names[_key40] = arguments[_key40];
+  for (var _len23 = arguments.length, names = new Array(_len23), _key35 = 0; _key35 < _len23; _key35++) {
+    names[_key35] = arguments[_key35];
   }
   for (var name of names) {
     if (!delegatedEvents[name]) {
@@ -12543,7 +11056,7 @@ function setClassIncremental(el, value) {
     }
   }
 }
-function setStyle(el, value) {
+function setStyle$1(el, value) {
   if (el.$root) {
     setStyleIncremental(el, value);
   } else {
@@ -12600,21 +11113,20 @@ function setDynamicProps(el, args) {
       }
     }
   }
-  for (var _key41 of el[cacheKey] = Object.keys(props)) {
-    setDynamicProp(el, _key41, props[_key41]);
+  for (var _key36 of el[cacheKey] = Object.keys(props)) {
+    setDynamicProp(el, _key36, props[_key36]);
   }
 }
 function setDynamicProp(el, key, value) {
-  var isSVG = false;
   if (key === "class") {
     setClass(el, value);
   } else if (key === "style") {
-    setStyle(el, value);
+    setStyle$1(el, value);
   } else if (isOn(key)) {
     on(el, key[2].toLowerCase() + key.slice(3), value, {
       effect: true
     });
-  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp(el, key, value, isSVG)) {
+  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp()) {
     if (key === "innerHTML") {
       setHtml(el, value);
     } else if (key === "textContent") {
@@ -12707,9 +11219,7 @@ function getSlot(target, key) {
 function createSlot(name, rawProps, fallback) {
   var _insertionParent = insertionParent;
   var _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   var instance = currentInstance;
@@ -12741,7 +11251,7 @@ function createSlot(name, rawProps, fallback) {
       _renderSlot();
     }
   }
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     insert(fragment, _insertionParent, _insertionAnchor);
   }
   return fragment;
@@ -12774,14 +11284,12 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
   var appContext = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : currentInstance && currentInstance.appContext || emptyContext;
   var _insertionParent = insertionParent;
   var _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   if (appContext.vapor && !component.__vapor) {
     var frag = appContext.vapor.vdomMount(component, rawProps, rawSlots);
-    if (!isHydrating && _insertionParent) {
+    if (_insertionParent) {
       insert(frag, _insertionParent, _insertionAnchor);
     }
     return frag;
@@ -12853,7 +11361,7 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
     endMeasure(instance, "init");
   }
   onScopeDispose(() => unmountComponent(instance), true);
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     mountComponent(instance, _insertionParent, _insertionAnchor);
   }
   return instance;
@@ -12921,9 +11429,7 @@ function createComponentWithFallback(comp, rawProps, rawSlots, isSingleRoot) {
   }
   var _insertionParent = insertionParent;
   var _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   var el = document.createElement(comp);
@@ -12938,7 +11444,7 @@ function createComponentWithFallback(comp, rawProps, rawSlots, isSingleRoot) {
       insert(getSlot(rawSlots, "default")(), el);
     }
   }
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     insert(el, _insertionParent, _insertionAnchor);
   }
   return el;
@@ -12980,10 +11486,10 @@ function getExposed(instance) {
     }));
   }
 }
-function getRootElement(_ref31) {
+function getRootElement(_ref22) {
   var {
     block
-  } = _ref31;
+  } = _ref22;
   if (block instanceof Element) {
     return block;
   }
@@ -13010,17 +11516,6 @@ var mountApp = (app, container) => {
   flushOnAppMount();
   return instance;
 };
-var _hydrateApp;
-var hydrateApp = (app, container) => {
-  optimizePropertyLookup();
-  var instance;
-  withHydration(container, () => {
-    instance = createComponent(app._component, app._props, null, false, app._context);
-    mountComponent(instance, container);
-    flushOnAppMount();
-  });
-  return instance;
-};
 var unmountApp = app => {
   unmountComponent(app._instance, app._container);
 };
@@ -13043,26 +11538,11 @@ function postPrepareApp(app) {
       }
     });
   }
-  var mount = app.mount;
-  app.mount = function (container) {
-    container = normalizeContainer(container);
-    for (var _len25 = arguments.length, args = new Array(_len25 > 1 ? _len25 - 1 : 0), _key42 = 1; _key42 < _len25; _key42++) {
-      args[_key42 - 1] = arguments[_key42];
-    }
-    return mount(container, ...args);
-  };
 }
-var createVaporApp = (comp, props) => {
+var createVaporApp$1 = (comp, props) => {
   prepareApp();
   if (!_createApp) _createApp = createAppAPI(mountApp, unmountApp, getExposed);
   var app = _createApp(comp, props);
-  postPrepareApp(app);
-  return app;
-};
-var createVaporSSRApp = (comp, props) => {
-  prepareApp();
-  if (!_hydrateApp) _hydrateApp = createAppAPI(hydrateApp, unmountApp, getExposed);
-  var app = _hydrateApp(comp, props);
   postPrepareApp(app);
   return app;
 };
@@ -13250,37 +11730,22 @@ var vaporInteropPlugin = app => {
     return mount(...arguments);
   };
 };
-var t;
+
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
-function template(html, root) {
-  var node;
+function factory(doc, factory2, root) {
   return () => {
-    if (isHydrating) {
-      if (!currentHydrationNode) {
-        throw new Error("No current hydration node");
-      }
-      return adoptTemplate(currentHydrationNode, html);
+    var el = factory2(doc);
+    if (root) {
+      el.ext.set("$root", true);
     }
-    if (html[0] !== "<") {
-      return createTextNode(html);
-    }
-    if (!node) {
-      t = t || document.createElement("template");
-      t.innerHTML = html;
-      node = child(t.content);
-    }
-    var ret = node.cloneNode(true);
-    if (root) ret.$root = true;
-    return ret;
+    return el;
   };
 }
 function createIf(condition, b1, b2, once) {
   var _insertionParent = insertionParent;
   var _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   var frag;
@@ -13290,7 +11755,7 @@ function createIf(condition, b1, b2, once) {
     frag = new DynamicFragment("if");
     renderEffect(() => frag.update(condition() ? b1 : b2));
   }
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     insert(frag, _insertionParent, _insertionAnchor);
   }
   return frag;
@@ -13309,9 +11774,7 @@ var createFor = function (src, renderItem, getKey) {
   var flags = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
   var _insertionParent = insertionParent;
   var _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   var isMounted = false;
@@ -13481,12 +11944,12 @@ var createFor = function (src, renderItem, getKey) {
       return true;
     }
   };
-  var update = (_ref32, newItem, newKey, newIndex) => {
+  var update = (_ref23, newItem, newKey, newIndex) => {
     var {
       itemRef,
       keyRef,
       indexRef
-    } = _ref32;
+    } = _ref23;
     if (newItem !== itemRef.value) {
       itemRef.value = newItem;
     }
@@ -13497,11 +11960,11 @@ var createFor = function (src, renderItem, getKey) {
       indexRef.value = newIndex;
     }
   };
-  var unmount = function (_ref33) {
+  var unmount = function (_ref24) {
     var {
       nodes,
       scope
-    } = _ref33;
+    } = _ref24;
     var doRemove = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
     scope && scope.stop();
     doRemove && remove(nodes, parent);
@@ -13511,7 +11974,7 @@ var createFor = function (src, renderItem, getKey) {
   } else {
     renderEffect(renderList);
   }
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     insert(frag, _insertionParent, _insertionAnchor);
   }
   return frag;
@@ -13564,13 +12027,13 @@ function normalizeSource(source) {
     keys
   };
 }
-function getItem(_ref34, idx) {
+function getItem(_ref25, idx) {
   var {
     keys,
     values,
     needsWrap,
     isReadonlySource
-  } = _ref34;
+  } = _ref25;
   var value = needsWrap ? isReadonlySource ? toReadonly(toReactive(values[idx])) : toReactive(values[idx]) : values[idx];
   if (keys) {
     return [value, keys[idx], idx];
@@ -13602,8 +12065,8 @@ function getDefaultValue(val, defaultVal) {
 function createTemplateRefSetter() {
   var instance = currentInstance;
   return function () {
-    for (var _len26 = arguments.length, args = new Array(_len26), _key43 = 0; _key43 < _len26; _key43++) {
-      args[_key43] = arguments[_key43];
+    for (var _len24 = arguments.length, args = new Array(_len24), _key37 = 0; _key37 < _len24; _key37++) {
+      args[_key37] = arguments[_key37];
     }
     return setRef(instance, ...args);
   };
@@ -13696,9 +12159,7 @@ var getRefValue = el => {
 function createDynamicComponent(getter, rawProps, rawSlots, isSingleRoot) {
   var _insertionParent = insertionParent;
   var _insertionAnchor = insertionAnchor;
-  if (isHydrating) {
-    locateHydrationNode();
-  } else {
+  {
     resetInsertionState();
   }
   var frag = new DynamicFragment("dynamic-component");
@@ -13706,7 +12167,7 @@ function createDynamicComponent(getter, rawProps, rawSlots, isSingleRoot) {
     var value = getter();
     frag.update(() => createComponentWithFallback(resolveDynamicComponent(value), rawProps, rawSlots, isSingleRoot), value);
   });
-  if (!isHydrating && _insertionParent) {
+  if (_insertionParent) {
     insert(frag, _insertionParent, _insertionAnchor);
   }
   return frag;
@@ -13722,20 +12183,20 @@ function applyVShow(target, source) {
     var update = target.update;
     target.update = (render, key) => {
       update.call(target, render, key);
-      setDisplay(target, source());
+      setDisplay$1(target, source());
     };
   }
-  renderEffect(() => setDisplay(target, source()));
+  renderEffect(() => setDisplay$1(target, source()));
 }
-function setDisplay(target, value) {
+function setDisplay$1(target, value) {
   if (isVaporComponent(target)) {
-    return setDisplay(target, value);
+    return setDisplay$1(target, value);
   }
   if (isArray$1(target) && target.length === 1) {
-    return setDisplay(target[0], value);
+    return setDisplay$1(target[0], value);
   }
   if (target instanceof DynamicFragment) {
-    return setDisplay(target.nodes, value);
+    return setDisplay$1(target.nodes, value);
   }
   if (target instanceof Element) {
     var el = target;
@@ -13765,50 +12226,9 @@ var applyTextModel = function (el, get, set) {
   ensureMounted(() => {
     var value;
     renderEffect(() => {
-      vModelTextUpdate(el, value, value = get(), trim, number, lazy);
+      vModelTextUpdate(el, value, value = get(), trim, number);
     });
   });
-};
-var applyCheckboxModel = (el, get, set) => {
-  vModelCheckboxInit(el, set);
-  ensureMounted(() => {
-    var value;
-    renderEffect(() => {
-      vModelCheckboxUpdate(el, value,
-      // #4096 array checkboxes need to be deep traversed
-      traverse(value = get()));
-    });
-  });
-};
-var applyRadioModel = (el, get, set) => {
-  addEventListener(el, "change", () => set(getValue(el)));
-  ensureMounted(() => {
-    var value;
-    renderEffect(() => {
-      if (value !== (value = get())) {
-        el.checked = looseEqual(value, getValue(el));
-      }
-    });
-  });
-};
-var applySelectModel = (el, get, set, modifiers) => {
-  vModelSelectInit(el, get(), modifiers && modifiers.number, set);
-  ensureMounted(() => {
-    renderEffect(() => vModelSetSelected(el, traverse(get())));
-  });
-};
-var applyDynamicModel = (el, get, set, modifiers) => {
-  var apply = applyTextModel;
-  if (el.tagName === "SELECT") {
-    apply = applySelectModel;
-  } else if (el.tagName === "TEXTAREA") {
-    apply = applyTextModel;
-  } else if (el.type === "checkbox") {
-    apply = applyCheckboxModel;
-  } else if (el.type === "radio") {
-    apply = applyRadioModel;
-  }
-  apply(el, get, set, modifiers);
 };
 function withVaporDirectives(node, dirs) {
   for (var [dir, value, argument, modifiers] of dirs) {
@@ -13818,6 +12238,935 @@ function withVaporDirectives(node, dirs) {
     }
   }
 }
+var NODE_EXT_STYLES = "styles";
+var NODE_EXT_PARENT_STYLES = "parentStyles";
+var NODE_EXT_CLASS_STYLE = "classStyle";
+var NODE_EXT_STYLE = "style";
+var NODE_EXT_IS_TEXT_NODE = "isTextNode";
+var NODE_EXT_CHILD_NODE = "childNode";
+var NODE_EXT_PARENT_NODE = "parentNode";
+var NODE_EXT_CHILD_NODES = "childNodes";
+function setNodeExtraData(el, name, value) {
+  el.ext.set(name, value);
+}
+function getNodeExtraData(el, name) {
+  return el.ext.get(name);
+}
+function getExtraStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLES);
+}
+function setExtraStyles(el, styles) {
+  setNodeExtraData(el, NODE_EXT_STYLES, styles);
+}
+function getExtraParentStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_PARENT_STYLES);
+}
+function setExtraParentStyles(el, styles) {
+  setNodeExtraData(el, NODE_EXT_PARENT_STYLES, styles);
+}
+function getExtraClassStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_CLASS_STYLE);
+}
+function setExtraClassStyle(el, classStyle) {
+  setNodeExtraData(el, NODE_EXT_CLASS_STYLE, classStyle);
+}
+function getExtraStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLE);
+}
+function setExtraStyle(el, style) {
+  setNodeExtraData(el, NODE_EXT_STYLE, style);
+}
+function isCommentNode(node) {
+  return node.nodeName == "#comment";
+}
+function isExtraTextNode(el) {
+  return getNodeExtraData(el, NODE_EXT_IS_TEXT_NODE) === true;
+}
+function setExtraIsTextNode(el, isTextNode) {
+  setNodeExtraData(el, NODE_EXT_IS_TEXT_NODE, isTextNode);
+}
+function isTextElement(value) {
+  return value instanceof UniTextElement;
+}
+function getExtraChildNode(el) {
+  return getNodeExtraData(el, NODE_EXT_CHILD_NODE);
+}
+function setExtraChildNode(el, childNode) {
+  setNodeExtraData(el, NODE_EXT_CHILD_NODE, childNode);
+}
+function setExtraParentNode(el, parentNode) {
+  setNodeExtraData(el, NODE_EXT_PARENT_NODE, parentNode);
+}
+function getExtraChildNodes(el) {
+  return getNodeExtraData(el, NODE_EXT_CHILD_NODES);
+}
+function setExtraChildNodes(el, childNodes) {
+  setNodeExtraData(el, NODE_EXT_CHILD_NODES, childNodes);
+}
+function getExtraParentNode(el) {
+  return getNodeExtraData(el, NODE_EXT_PARENT_NODE);
+}
+function each(obj) {
+  return Object.keys(obj);
+}
+function useCssStyles(componentStyles) {
+  var normalized = {};
+  if (!isArray$1(componentStyles)) {
+    return normalized;
+  }
+  componentStyles.forEach(componentStyle => {
+    each(componentStyle).forEach(className => {
+      var parentStyles = componentStyle[className];
+      var normalizedStyles = normalized[className] || (normalized[className] = {});
+      each(parentStyles).forEach(parentSelector => {
+        var parentStyle = parentStyles[parentSelector];
+        var normalizedStyle = normalizedStyles[parentSelector] || (normalizedStyles[parentSelector] = {});
+        each(parentStyle).forEach(name => {
+          if (name[0] === "!") {
+            normalizedStyle[name] = parentStyle[name];
+            delete normalizedStyle[name.slice(1)];
+          } else {
+            if (!hasOwn(normalizedStyle, "!" + name)) {
+              normalizedStyle[name] = parentStyle[name];
+            }
+          }
+        });
+      });
+    });
+  });
+  return normalized;
+}
+function hasClass(calssName, el) {
+  var classList = el && el.classList;
+  return classList && classList.includes(calssName);
+}
+var TYPE_RE = /[+~> ]$/;
+var PROPERTY_PARENT_NODE = "parentNode";
+var PROPERTY_PREVIOUS_SIBLING = "previousSibling";
+function isMatchParentSelector(parentSelector, el) {
+  var classArray = parentSelector.split(".");
+  for (var i = classArray.length - 1; i > 0; i--) {
+    var item = classArray[i];
+    var type = item[item.length - 1];
+    var className = item.replace(TYPE_RE, "");
+    if (type === "~" || type === " ") {
+      var property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
+      while (el) {
+        el = el[property];
+        if (hasClass(className, el)) {
+          break;
+        }
+      }
+      if (!el) {
+        return false;
+      }
+    } else {
+      if (type === ">") {
+        el = el && el[PROPERTY_PARENT_NODE];
+      } else if (type === "+") {
+        el = el && el[PROPERTY_PREVIOUS_SIBLING];
+      }
+      if (!hasClass(className, el)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+var WEIGHT_IMPORTANT = 1e3;
+function parseClassName(_ref26, parentStyles, el) {
+  var {
+    styles,
+    weights
+  } = _ref26;
+  each(parentStyles).forEach(parentSelector => {
+    if (parentSelector && el) {
+      if (!isMatchParentSelector(parentSelector, el)) {
+        return;
+      }
+    }
+    var classWeight = parentSelector.split(".").length;
+    var style = parentStyles[parentSelector];
+    each(style).forEach(name => {
+      var value = style[name];
+      var isImportant = name[0] === "!";
+      if (isImportant) {
+        name = name.slice(1);
+      }
+      var oldWeight = weights[name] || 0;
+      var weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
+      if (weight >= oldWeight) {
+        weights[name] = weight;
+        styles.set(name, value);
+      }
+    });
+  });
+}
+class ParseStyleContext {
+  constructor() {
+    this.styles = /* @__PURE__ */new Map();
+    this.weights = {};
+  }
+}
+function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheets) {
+  var el = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  var context = new ParseStyleContext();
+  classList.forEach(className => {
+    var parentStyles = stylesheet && stylesheet[className];
+    if (parentStyles) {
+      parseClassName(context, parentStyles, el);
+    }
+  });
+  if (parentStylesheets != null) {
+    classList.forEach(className => {
+      var parentStylesheet = (parentStylesheets || []).find(style => style[className] !== null);
+      var parentStyles = parentStylesheet && parentStylesheet[className];
+      if (parentStyles != null) {
+        parseClassName(context, parentStyles, el);
+      }
+    });
+  }
+  return context;
+}
+function parseClassStyles(el) {
+  var styles = getExtraStyles(el);
+  var parentStyles = getExtraParentStyles(el);
+  if (styles == null && parentStyles == null || el.classList.length == 0) {
+    return new ParseStyleContext();
+  }
+  return parseClassListWithStyleSheet(el.classList, styles, parentStyles, el);
+}
+function parseClassList(classList, instance) {
+  var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
+}
+function parseStyleSheet(_ref27) {
+  var {
+    type,
+    appContext,
+    root
+  } = _ref27;
+  var component = type;
+  var pageInstance = root;
+  if (!pageInstance.componentStylesCache) {
+    pageInstance.componentStylesCache = /* @__PURE__ */new Map();
+  }
+  var cache = pageInstance.componentStylesCache.get(component);
+  if (!cache) {
+    var __globalStyles = appContext.provides.__globalStyles;
+    if (appContext && isArray$1(__globalStyles)) {
+      appContext.provides.__globalStyles = useCssStyles(__globalStyles);
+    }
+    var styles = [];
+    if (appContext && __globalStyles) {
+      var globalStyles = isArray$1(__globalStyles) ? __globalStyles : [__globalStyles];
+      styles.push(...globalStyles);
+    }
+    var page = root.type;
+    if (component !== page && isArray$1(page.styles)) {
+      styles.push(...page.styles);
+    }
+    if (isArray$1(component.styles)) {
+      styles.push(...component.styles);
+    }
+    cache = useCssStyles(styles);
+    pageInstance.componentStylesCache.set(component, cache);
+  }
+  return cache;
+}
+function extendMap(a, b) {
+  b.forEach((value, key) => {
+    a.set(key, value);
+  });
+  return a;
+}
+function toStyle(el, classStyle, classStyleWeights) {
+  var res = extendMap(/* @__PURE__ */new Map(), classStyle);
+  var style = getExtraStyle(el);
+  if (style != null) {
+    style.forEach((value, key) => {
+      var weight = classStyleWeights[key];
+      if (weight == null || weight < WEIGHT_IMPORTANT) {
+        res.set(key, value);
+      }
+    });
+  }
+  return res;
+}
+function patchClass(el, pre, next) {
+  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  if (!instance) {
+    return;
+  }
+  var classList = next ? next.split(" ") : [];
+  el.classList = classList;
+  setExtraStyles(el, parseStyleSheet(instance));
+  if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
+    setExtraParentStyles(el, instance.parent.type.styles);
+  }
+  updateClassStyles(el);
+}
+function updateClassStyles(el) {
+  if (el.parentNode == null || isCommentNode(el)) {
+    return;
+  }
+  if (getExtraClassStyle(el) == null) {
+    setExtraClassStyle(el, /* @__PURE__ */new Map());
+  }
+  var oldClassStyle = getExtraClassStyle(el);
+  oldClassStyle.forEach((_value, key) => {
+    oldClassStyle.set(key, "");
+  });
+  var parseClassStylesResult = parseClassStyles(el);
+  parseClassStylesResult.styles.forEach((value, key) => {
+    oldClassStyle.set(key, value);
+  });
+  var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
+  if (styles.size == 0) {
+    return;
+  }
+  if (el._vsh) {
+    styles.set("display", "none");
+  }
+  el.updateStyle(styles);
+}
+var rootDocument;
+function getDocument() {
+  return rootDocument;
+}
+function setDocument(document) {
+  rootDocument = document;
+}
+function updateTextNode(node) {
+  var childNode = getExtraChildNode(node);
+  if (childNode !== null) {
+    var text = childNode.getAttribute("value");
+    node.setAttribute("value", text || "");
+  }
+}
+var nodeOps = {
+  insert: (el, parent, anchor) => {
+    if (isTextElement(parent)) {
+      if (isExtraTextNode(el)) {
+        var childNode = getExtraChildNode(parent);
+        if (childNode !== null) {
+          console.error("Multiple text nodes are not allowed.");
+        } else {
+          setExtraChildNode(parent, el);
+          setExtraParentNode(el, parent);
+          updateTextNode(parent);
+        }
+        return;
+      }
+    }
+    if (!anchor) {
+      parent.appendChild(el);
+    } else {
+      parent.insertBefore(el, anchor);
+    }
+    if (parent.isConnected) {
+      updateClassStyles(el);
+      updateChildrenClassStyle(el);
+    }
+  },
+  remove: child => {
+    var parent = child.parentNode;
+    if (parent) {
+      var childNodes = getExtraChildNodes(parent);
+      if (childNodes !== null) {
+        var index = childNodes.indexOf(child);
+        if (index !== -1) {
+          childNodes.splice(index, 1);
+          setExtraChildNodes(parent, childNodes);
+        }
+      }
+      parent.removeChild(child);
+    }
+  },
+  createElement: (tag, container) => {
+    if (!container) {
+      var _document = getDocument();
+      if (!_document) {
+        throw new Error("document is not defined");
+      }
+      return _document.createElement(tag);
+    } else {
+      var _document2 = container.page.document;
+      return _document2.createElement(tag);
+    }
+  },
+  createText: (text, container, isAnchor) => {
+    var document = container.page.document;
+    if (isAnchor) {
+      return document.createComment(text);
+    }
+    var textNode = document.createElement("text");
+    textNode.setAttribute("value", text);
+    setExtraIsTextNode(textNode, true);
+    return textNode;
+  },
+  createComment: (text, container) => {
+    var document = container.page.document;
+    return document.createComment(text);
+  },
+  setText: (node, text) => {
+    node.setAttribute("value", text);
+    var parent = getExtraParentNode(node);
+    if (parent !== null) {
+      updateTextNode(parent);
+    }
+  },
+  setElementText: (el, text) => {
+    if (el.tagName !== "TEXT") {
+      var childNodes = el.childNodes;
+      var textNode = childNodes.find(node => node.tagName === "TEXT");
+      if (!textNode) {
+        var textNode2 = nodeOps.createText(text, el);
+        el.appendChild(textNode2);
+        return;
+      }
+      el = textNode;
+    }
+    el.setAttribute("value", text);
+  },
+  parentNode: node => node.parentNode,
+  nextSibling: node => node.nextSibling,
+  querySelector: (selector, parentComponent) => {
+    var proxy = parentComponent && parentComponent.proxy;
+    var document = proxy && proxy.$nativePage && proxy.$nativePage.document;
+    if (document) {
+      return document.querySelector(selector);
+    }
+    return null;
+  }
+};
+function updateChildrenClassStyle(el) {
+  if (el !== null) {
+    el.childNodes.forEach(child => {
+      updateClassStyles(child);
+      updateChildrenClassStyle(child);
+    });
+  }
+}
+function patchAttr(el, key, value) {
+  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  if (instance) {
+    [key, value] = transformAttr(el, key, value, instance);
+  }
+  el.setAnyAttribute(key, value);
+}
+var ATTR_HOVER_CLASS = "hoverClass";
+var ATTR_PLACEHOLDER_CLASS = "placeholderClass";
+var ATTR_PLACEHOLDER_STYLE = "placeholderStyle";
+var ATTR_INDICATOR_CLASS = "indicatorClass";
+var ATTR_INDICATOR_STYLE = "indicatorStyle";
+var ATTR_MASK_CLASS = "maskClass";
+var ATTR_MASK_STYLE = "maskStyle";
+var CLASS_AND_STYLES = {
+  view: {
+    class: [ATTR_HOVER_CLASS],
+    style: []
+  },
+  button: {
+    class: [ATTR_HOVER_CLASS],
+    style: []
+  },
+  navigator: {
+    class: [ATTR_HOVER_CLASS],
+    style: []
+  },
+  input: {
+    class: [ATTR_PLACEHOLDER_CLASS],
+    style: [ATTR_PLACEHOLDER_STYLE]
+  },
+  textarea: {
+    class: [ATTR_PLACEHOLDER_CLASS],
+    style: [ATTR_PLACEHOLDER_STYLE]
+  },
+  "picker-view": {
+    class: [ATTR_INDICATOR_CLASS, ATTR_MASK_CLASS],
+    style: [ATTR_INDICATOR_STYLE, ATTR_MASK_STYLE]
+  }
+};
+function transformAttr(el, key, value, instance) {
+  if (!value) {
+    return [key, value];
+  }
+  var opts = CLASS_AND_STYLES[el.tagName.toLowerCase()];
+  if (opts) {
+    var camelized = camelize(key);
+    if (opts["class"].indexOf(camelized) > -1) {
+      var classStyle = parseClassList([value], instance, el);
+      if (el.tagName === "BUTTON") {
+        if (value === "none" || value == "button-hover" && classStyle.size == 0) {
+          return [camelized, value];
+        }
+      }
+      return [camelized, classStyle];
+    }
+    if (opts["style"].indexOf(camelized) > -1) {
+      if (isString(value)) {
+        var sytle = parseStringStyle(camelize(value));
+        return [camelized, sytle];
+      }
+      return [camelized, normalizeStyle$2(value)];
+    }
+  }
+  return [key, value];
+}
+function addEventListener(el, event, handler, options) {
+  el.addEventListener(event, handler);
+}
+function removeEventListener(el, event) {
+  el.removeEventListener(event);
+}
+function patchEvent(el, rawName, prevValue, nextValue) {
+  var instance = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
+  var invokers = el._vei || (el._vei = {});
+  var existingInvoker = invokers[rawName];
+  if (nextValue && existingInvoker) {
+    existingInvoker.value = nextValue;
+  } else {
+    var [name, options] = parseName(rawName);
+    if (nextValue) {
+      var invoker = invokers[rawName] = createInvoker(nextValue, instance);
+      addEventListener(el, name, invoker);
+    } else if (existingInvoker) {
+      removeEventListener(el, name);
+      invokers[rawName] = void 0;
+    }
+  }
+}
+var optionsModifierRE = /(?:Once|Passive|Capture)$/;
+function formatEventName(name) {
+  if (name === "on-post-message") {
+    return "onPostMessage";
+  }
+  return name;
+}
+function parseName(name) {
+  var options;
+  if (optionsModifierRE.test(name)) {
+    options = {};
+    var m;
+    while (m = name.match(optionsModifierRE)) {
+      name = name.slice(0, name.length - m[0].length);
+      options[m[0].toLowerCase()] = true;
+    }
+  }
+  var event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
+  return [formatEventName(event), options];
+}
+function createInvoker(initialValue, instance) {
+  var invoker = e => {
+    callWithAsyncErrorHandling(invoker.value, instance, 5, [e]);
+  };
+  invoker.value = initialValue;
+  var modifiers = /* @__PURE__ */new Set();
+  if (isArray$1(invoker.value)) {
+    invoker.value.forEach(v => {
+      if (v.modifiers) {
+        v.modifiers.forEach(m => {
+          modifiers.add(m);
+        });
+      }
+    });
+  } else {
+    if (invoker.value.modifiers) {
+      invoker.value.modifiers.forEach(m => {
+        modifiers.add(m);
+      });
+    }
+  }
+  invoker.modifiers = [...modifiers];
+  return invoker;
+}
+var processDeclaration = expand({
+  type: "uvue"
+}).Declaration;
+function createDeclaration(prop, value) {
+  var newValue = value + "";
+  if (newValue.includes("!important")) {
+    return {
+      prop,
+      value: newValue.replace(/\s*!important/, ""),
+      important: true
+    };
+  }
+  return {
+    prop,
+    value: newValue,
+    important: false
+  };
+}
+function normalizeStyle(name, value) {
+  var decl = Object.assign({}, {
+    replaceWith(newProps) {
+      props = newProps;
+    }
+  }, createDeclaration(name, value));
+  var props = [decl];
+  processDeclaration(decl);
+  return props;
+}
+function setStyle(expandRes) {
+  var resArr = expandRes.map(item => {
+    return [item.prop, item.value];
+  });
+  var resMap = new Map(resArr);
+  return resMap;
+}
+function parseStyleDecl(prop, value) {
+  var val = normalizeStyle(prop, value);
+  var res = setStyle(val);
+  return res;
+}
+var vShowOriginalDisplay = Symbol("_vod");
+var vShowHidden = Symbol("_vsh");
+var vShow = {
+  beforeMount(el, _ref28, _ref29) {
+    var {
+      value
+    } = _ref28;
+    var {
+      transition
+    } = _ref29;
+    el[vShowOriginalDisplay] = el.style.getPropertyValue("display") === "none" ? "" : "flex";
+    if (transition && value) {
+      transition.beforeEnter(el);
+    } else {
+      setDisplay(el, value);
+    }
+  },
+  mounted(el, _ref30, _ref31) {
+    var {
+      value
+    } = _ref30;
+    var {
+      transition
+    } = _ref31;
+    if (transition && value) {
+      transition.enter(el);
+    }
+  },
+  updated(el, _ref32, _ref33) {
+    var {
+      value,
+      oldValue
+    } = _ref32;
+    var {
+      transition
+    } = _ref33;
+    if (!value === !oldValue) return;
+    if (transition) {
+      if (value) {
+        transition.beforeEnter(el);
+        setDisplay(el, true);
+        transition.enter(el);
+      } else {
+        transition.leave(el, () => {
+          setDisplay(el, false);
+        });
+      }
+    } else {
+      setDisplay(el, value);
+    }
+  },
+  beforeUnmount(el, _ref34) {
+    var {
+      value
+    } = _ref34;
+    setDisplay(el, value);
+  }
+};
+function setDisplay(el, value) {
+  el.style.setProperty("display", value ? el[vShowOriginalDisplay] : "none");
+  el[vShowHidden] = !value;
+}
+function isSame(a, b) {
+  return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
+}
+function patchStyle(el, prev, next) {
+  if (!next) {
+    return;
+  }
+  if (isString(next)) {
+    next = parseStringStyle(next);
+  }
+  var batchedStyles = /* @__PURE__ */new Map();
+  var isPrevObj = prev && !isString(prev);
+  if (isPrevObj) {
+    (function () {
+      var classStyle = getExtraClassStyle(el);
+      var style = getExtraStyle(el);
+      for (var key in prev) {
+        if (next[key] == null) {
+          var _key = key.startsWith("--") ? key : camelize(key);
+          var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
+          parseStyleDecl(_key, value).forEach((value2, key2) => {
+            batchedStyles.set(key2, value2);
+            style && style.delete(key2);
+          });
+        }
+      }
+      for (var _key38 in next) {
+        var _value2 = next[_key38];
+        var prevValue = prev[_key38];
+        if (!isSame(prevValue, _value2)) {
+          var _key39 = _key38.startsWith("--") ? _key38 : camelize(_key38);
+          parseStyleDecl(_key39, _value2).forEach((value2, key2) => {
+            batchedStyles.set(key2, value2);
+            style && style.set(key2, value2);
+          });
+        }
+      }
+    })();
+  } else {
+    for (var key in next) {
+      var value = next[key];
+      var _key = key.startsWith("--") ? key : camelize(key);
+      setBatchedStyles(batchedStyles, _key, value);
+    }
+    setExtraStyle(el, batchedStyles);
+  }
+  if (batchedStyles.size == 0) {
+    return;
+  }
+  if (el[vShowHidden]) {
+    batchedStyles.set("display", "none");
+  }
+  el.updateStyle(batchedStyles);
+}
+function setBatchedStyles(batchedStyles, key, value) {
+  parseStyleDecl(key, value).forEach((value2, key2) => {
+    batchedStyles.set(key2, value2);
+  });
+}
+var vModelTags = ["u-input", "u-textarea"];
+var patchProp = (el, key, prevValue, nextValue, namespace, parentComponent, hostInstance) => {
+  if (key === "class") {
+    patchClass(el, prevValue, nextValue, hostInstance || parentComponent);
+  } else if (key === "style") {
+    patchStyle(el, prevValue, nextValue);
+  } else if (isOn(key)) {
+    if (!isModelListener(key)) {
+      patchEvent(el, key, prevValue, nextValue, parentComponent);
+    }
+  } else if (key === "modelValue" && vModelTags.includes(el.tagName.toLowerCase())) {
+    el.setAnyAttribute("modelValue", nextValue);
+    el.setAnyAttribute("value", nextValue);
+  } else {
+    patchAttr(el, key, nextValue, parentComponent);
+  }
+};
+function useCssModule() {
+  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "$style";
+  {
+    var instance = getCurrentInstance();
+    if (!instance) {
+      warn("useCssModule must be called inside setup()");
+      return EMPTY_OBJ;
+    }
+    var modules = instance.type.__cssModules;
+    if (!modules) {
+      warn("Current instance does not have CSS modules injected.");
+      return EMPTY_OBJ;
+    }
+    var mod = modules[name];
+    if (!mod) {
+      warn("Current instance does not have CSS module named \"".concat(name, "\"."));
+      return EMPTY_OBJ;
+    }
+    return mod;
+  }
+}
+function useCssVars(getter) {
+  var instance = getCurrentInstance();
+  if (!instance) {
+    warn("useCssVars is called without current active component instance.");
+    return;
+  }
+  var setVars = () => setVarsOnVNode(instance.subTree, getter(instance.proxy));
+  onMounted(() => watchEffect(setVars, {
+    flush: "post"
+  }));
+  onUpdated(setVars);
+}
+function setVarsOnVNode(vnode, vars) {
+  if (vnode.shapeFlag & 128) {
+    var suspense = vnode.suspense;
+    vnode = suspense.activeBranch;
+    if (suspense.pendingBranch && !suspense.isHydrating) {
+      suspense.effects.push(() => {
+        setVarsOnVNode(suspense.activeBranch, vars);
+      });
+    }
+  }
+  while (vnode.component) {
+    vnode = vnode.component.subTree;
+  }
+  if (vnode.shapeFlag & 1 && vnode.el) {
+    var style = vnode.el.style;
+    for (var key in vars) {
+      style.setProperty("--".concat(key), vars[key]);
+    }
+  } else if (vnode.type === Fragment) {
+    vnode.children.forEach(c => setVarsOnVNode(c, vars));
+  }
+}
+var assignKey = Symbol("_assign");
+var getModelAssigner = vnode => {
+  var fn = vnode.props["onUpdate:modelValue"];
+  return isArray$1(fn) ? value => invokeArrayFns(fn, value) : fn;
+};
+var vModelText = {
+  created(el, _ref35, vnode) {
+    var {
+      modifiers: {
+        lazy,
+        trim,
+        number
+      }
+    } = _ref35;
+    el[assignKey] = getModelAssigner(vnode);
+    vModelTextInit(el, trim, number || !!(vnode.props && vnode.props.type === "number"));
+  },
+  mounted(el, _binding, _vnode, _prevVNode) {
+    var _a;
+    el.setAnyAttribute("value", (_a = _binding.value) != null ? _a : "");
+  },
+  beforeUpdate(el, _ref36, vnode) {
+    var {
+      value,
+      oldValue,
+      modifiers: {
+        lazy,
+        trim,
+        number
+      }
+    } = _ref36;
+    el[assignKey] = getModelAssigner(vnode);
+    vModelTextUpdate(el, oldValue, value, trim, number);
+  }
+};
+var vModelTextInit = (el, trim, number, lazy, set) => {
+  el.addEventListener("input", event => {
+    var domValue = event.detail.value;
+    if (trim) {
+      domValue = domValue.trim();
+    }
+    if (number || el.getAttribute("type") === "number") {
+      domValue = looseToNumber(domValue);
+    }
+    (set || el[assignKey])(event.detail.value);
+  });
+};
+var vModelTextUpdate = (el, oldValue, value, trim, number, lazy) => {
+  var elValue = (number || el.getAttribute("type") === "number") && !/^0\d/.test(el.getAnyAttribute("value")) ? looseToNumber(el.getAnyAttribute("value")) : el.getAnyAttribute("value");
+  var newValue = value == null ? "" : value;
+  if (elValue === newValue) {
+    return;
+  }
+  el.setAnyAttribute("value", newValue);
+};
+var vModelDynamic = vModelText;
+function getValue(el) {
+  return "_value" in el ? el._value : el.getAnyAttribute("value");
+}
+var vModelCheckboxInit = (el, set) => {};
+var vModelCheckboxUpdate = function (el, oldValue, value) {
+  var rawValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : el.getAnyAttribute("value");
+};
+var vModelSelectInit = (el, value, number, set) => {};
+var vModelSetSelected = (el, value) => {};
+var systemModifiers = ["ctrl", "shift", "alt", "meta"];
+var modifierGuards = {
+  stop: e => e.stopPropagation(),
+  prevent: e => e.preventDefault(),
+  self: e => e.target !== e.currentTarget,
+  ctrl: e => !e.ctrlKey,
+  shift: e => !e.shiftKey,
+  alt: e => !e.altKey,
+  meta: e => !e.metaKey,
+  left: e => "button" in e && e.button !== 0,
+  middle: e => "button" in e && e.button !== 1,
+  right: e => "button" in e && e.button !== 2,
+  exact: (e, modifiers) => systemModifiers.some(m => e["".concat(m, "Key")] && !modifiers.includes(m))
+};
+var withModifiers = (fn, modifiers) => {
+  return function (event) {
+    for (var i = 0; i < modifiers.length; i++) {
+      var guard = modifierGuards[modifiers[i]];
+      if (guard && guard(event, modifiers)) return;
+    }
+    for (var _len25 = arguments.length, args = new Array(_len25 > 1 ? _len25 - 1 : 0), _key40 = 1; _key40 < _len25; _key40++) {
+      args[_key40 - 1] = arguments[_key40];
+    }
+    return fn(event, ...args);
+  };
+};
+var withKeys = (fn, modifiers) => {
+  return event => {
+    if (!("key" in event)) {
+      return;
+    }
+    var eventKey = hyphenate(event.key);
+    if (modifiers.some(k => k === eventKey)) {
+      return fn(event);
+    }
+  };
+};
+function shouldSetAsProp(el, key, value, isSVG) {
+  return false;
+}
+var rendererOptions = extend({
+  patchProp
+}, nodeOps);
+var renderer;
+function ensureRenderer() {
+  return renderer || (renderer = createRenderer(rendererOptions));
+}
+var render = function () {
+  ensureRenderer().render(...arguments);
+};
+var createApp = function () {
+  var app = ensureRenderer().createApp(...arguments);
+  app.use(vaporInteropPlugin);
+  var {
+    mount,
+    unmount
+  } = app;
+  app.mount = container => {
+    setDocument(container);
+    return mount(container.body);
+  };
+  app.unmount = () => {
+    setDocument(void 0);
+    unmount();
+    app._container = null;
+    app._context.reload = () => {};
+  };
+  return app;
+};
+var createVaporApp = (comp, props) => {
+  var app = createVaporApp$1(comp, props);
+  app.use(vaporInteropPlugin);
+  var {
+    mount,
+    unmount
+  } = app;
+  app.mount = container => {
+    setDocument(container);
+    return mount(container.body);
+  };
+  app.unmount = () => {
+    setDocument(void 0);
+    unmount();
+    app._container = null;
+    app._context.reload = () => {};
+  };
+  return app;
+};
 
 /// <reference types="@dcloudio/types" />
 // function isUniPage(target: ComponentInternalInstance | null): boolean {
@@ -13882,4 +13231,4 @@ var defineComponent = options => {
 };
 var ssrRef = ref;
 var shallowSsrRef = shallowRef;
-export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, ReactiveEffect, Static, Suspense, Teleport, Text$1 as Text, TrackOpTypes, TriggerOpTypes, VaporFragment, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, createVaporSSRApp, currentInstance, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, effect, effectScope, endMeasure, expose, flushOnAppMount, getCurrentInstance, getCurrentScope, getCurrentWatcher, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseClassList, parseClassStyles, popScopeId, popWarningContext, prepend, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, reactive, readonly, ref, registerHMR, registerRuntimeCompiler, remove, render, renderComponentSlot, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, simpleSetCurrentInstance, ssrContextKey, ssrRef, ssrUtils, startMeasure, stop, template, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelDynamic, vModelText, vShow, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };
+export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, ReactiveEffect, Static, Suspense, Teleport, Text$1 as Text, TrackOpTypes, TriggerOpTypes, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, effect, effectScope, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentInstance, getCurrentScope, getCurrentWatcher, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, reactive, readonly, ref, registerHMR, registerRuntimeCompiler, remove, render, renderComponentSlot, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle$1 as setStyle, setText, setTransitionHooks, setValue, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrRef, ssrUtils, startMeasure, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };
