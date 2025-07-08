@@ -1,5 +1,6 @@
 // 注意：该文件尽可能少依赖其他文件，否则可能会导致还没有alias的时候，就加载了目标模块
 
+import fs from 'fs'
 import path from 'path'
 import moduleAlias from 'module-alias'
 import { isInHBuilderX } from './utils'
@@ -17,6 +18,12 @@ export function initModuleAlias() {
   const libDir = path.resolve(__dirname, '../../lib')
   const compilerSfcPath = path.resolve(libDir, '@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
+  // TODO 临时开关启用vapor
+  if (!process.env.UNI_VUE_VAPOR && process.env.UNI_INPUT_DIR) {
+    if (fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, '.vapor'))) {
+      process.env.UNI_VUE_VAPOR = 'true'
+    }
+  }
   if (process.env.UNI_VUE_VAPOR === 'true') {
     const vuePkgs = [
       '@vue/compiler-core',
