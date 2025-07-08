@@ -46,9 +46,9 @@ function initEnv(
   options: CompileStacktraceOptions | GenerateRuntimeCodeFrameOptions
 ) {
   if (options.env) {
-    if (options.env.COMPILER_VALIDATION_RULES_PATH) {
-      process.env.COMPILER_VALIDATION_RULES_PATH =
-        options.env.COMPILER_VALIDATION_RULES_PATH
+    if (options.env.UNI_COMPILER_VALIDATION_RULES_PATH) {
+      process.env.UNI_COMPILER_VALIDATION_RULES_PATH =
+        options.env.UNI_COMPILER_VALIDATION_RULES_PATH
     }
   }
 }
