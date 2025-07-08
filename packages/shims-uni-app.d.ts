@@ -111,6 +111,8 @@ declare namespace UniNamespace {
     appVersionCode: string
     darkmode: Boolean | ThemeMode
     themeConfig: ThemeJson
+    appScheme?: string
+    appLink?: string
   }
 
   interface UniRoute {

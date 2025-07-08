@@ -26,11 +26,15 @@ export function initEnterOptions({
   path,
   query,
   referrerInfo,
+  appScheme,
+  appLink,
 }: Partial<RedirectInfo>) {
   extend(enterOptions, {
     path,
     query: query ? parseQuery(query) : {},
     referrerInfo: referrerInfo || {},
+    appScheme,
+    appLink,
   })
 }
 
@@ -38,6 +42,8 @@ export function initLaunchOptions({
   path,
   query,
   referrerInfo,
+  appScheme,
+  appLink,
 }: Partial<RedirectInfo>) {
   extend(launchOptions, {
     path,
@@ -46,6 +52,8 @@ export function initLaunchOptions({
     // TODO uni-app x
     channel: __X__ ? undefined : plus.runtime.channel,
     launcher: __X__ ? undefined : plus.runtime.launcher,
+    appScheme,
+    appLink,
   })
   extend(enterOptions, launchOptions)
 
@@ -60,8 +68,15 @@ export interface RedirectInfo extends Omit<LaunchOptions, 'query' | 'scene'> {
 export function parseRedirectInfo(): RedirectInfo | void {
   const weexPlus = weex.requireModule('plus')
   if (weexPlus.getRedirectInfo) {
-    const { path, query, extraData, userAction, fromAppid } =
-      weexPlus.getRedirectInfo() || {}
+    const {
+      path,
+      query,
+      extraData,
+      userAction,
+      fromAppid,
+      appScheme,
+      appLink,
+    } = weexPlus.getRedirectInfo() || {}
     const referrerInfo: UniApp.UniConfig['referrerInfo'] = {
       appId: fromAppid,
       extraData: {},
@@ -74,6 +89,8 @@ export function parseRedirectInfo(): RedirectInfo | void {
       query: query ? '?' + query : '',
       referrerInfo,
       userAction,
+      appScheme,
+      appLink,
     }
   }
 }
