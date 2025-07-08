@@ -30,7 +30,7 @@ export function updateUTSKotlinSourceMapManifestCache(
             kotlinManifest.manifest = classManifest
           }
         } catch (error) {
-          console.error(`Failed to parse Kotlin manifest file: ${url}`)
+          // console.log(`Failed to parse Kotlin manifest file: ${url}`)
         }
         resolve()
       })

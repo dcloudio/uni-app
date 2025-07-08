@@ -2748,7 +2748,7 @@ function updateUTSKotlinSourceMapManifestCache(url) {
                     }
                 }
                 catch (error) {
-                    console.error(`Failed to parse Kotlin manifest file: ${url}`);
+                    // console.log(`Failed to parse Kotlin manifest file: ${url}`)
                 }
                 resolve();
             });
@@ -2951,7 +2951,7 @@ function uniStacktracePreset(opts) {
 }
 const uniStracktraceyPreset = uniStacktracePreset;
 function utsStacktracePreset(opts) {
-    const { inputRoot = '', outputRoot = '', sourceMapRoot = '', base = '', } = opts;
+    const { inputRoot = '', outputRoot = '', sourceMapRoot = '', } = opts;
     let errStack = [];
     let parseKotlin = false;
     return {
@@ -3037,10 +3037,7 @@ function utsStacktracePreset(opts) {
         },
         precondition() {
             return new Promise((resolve, reject) => {
-                if (parseKotlin)
-                    updateUTSKotlinSourceMapManifestCache(base).finally(resolve);
-                else
-                    resolve();
+                updateUTSKotlinSourceMapManifestCache(sourceMapRoot).finally(resolve);
             });
         },
     };

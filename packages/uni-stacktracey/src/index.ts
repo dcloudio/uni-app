@@ -318,7 +318,6 @@ export function uniStacktracePreset(
 }
 export const uniStracktraceyPreset = uniStacktracePreset
 interface UTSStacktracePreset {
-  base: string
   /**
    * 源码根目录
    */
@@ -335,12 +334,7 @@ interface UTSStacktracePreset {
 export function utsStacktracePreset(
   opts: UTSStacktracePreset
 ): StacktracePreset {
-  const {
-    inputRoot = '',
-    outputRoot = '',
-    sourceMapRoot = '',
-    base = '',
-  } = opts
+  const { inputRoot = '', outputRoot = '', sourceMapRoot = '' } = opts
 
   let errStack: string[] = []
   let parseKotlin = false
@@ -454,9 +448,7 @@ export function utsStacktracePreset(
     },
     precondition(): Promise<void> {
       return new Promise((resolve, reject) => {
-        if (parseKotlin)
-          updateUTSKotlinSourceMapManifestCache(base).finally(resolve)
-        else resolve()
+        updateUTSKotlinSourceMapManifestCache(sourceMapRoot).finally(resolve)
       })
     },
   }

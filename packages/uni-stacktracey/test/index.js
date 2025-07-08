@@ -28,13 +28,14 @@ stacktrace(
     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)`,
   {
     preset: utsStacktracePreset({
-      base: '/Users/lxh/Downloads/uts-test/unpackage/dist/build/.sourcemap/app-android',
-      inputRoot: '/Users/lxh/Downloads/uts-test',
+      inputRoot: path.resolve(__dirname, './uts'),
       outputRoot: path.resolve(
-        '/Users/lxh/Downloads/uts-test/unpackage/dist/build/app-android'
+        __dirname,
+        './uts/unpackage/dist/build/app-android'
       ),
       sourceMapRoot: path.resolve(
-        '/Users/lxh/Downloads/uts-test/unpackage/dist/build/.sourcemap/app-android'
+        __dirname,
+        './uts/unpackage/dist/build/.sourcemap/app-android'
       ),
     }),
   }

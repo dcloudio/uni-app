@@ -2,8 +2,8 @@
 
 exports[`uni-stacktrace parse UTSError 1`] = `
 "UTSError(name='Error', message='setTimeout ABC', cause='null')
-at /Users/lxh/Downloads/uts-test/uni_modules/uni-upgrade-center-app/utils/call-check-version.ts:3:1
-at /Users/lxh/Downloads/uts-test/uni_modules/uni-upgrade-center-app/utils/call-check-version.ts:2:10
+at /Users/lxh/DCloud/git_projects/uni-app-next/packages/uni-stacktracey/test/uts/pages/index/index.uvue:67:10
+at /Users/lxh/DCloud/git_projects/uni-app-next/packages/uni-stacktracey/test/uts/pages/index/index.uvue:66:8
 at io.dcloud.uts.UTSTimerKt$setTimeout$runnable$1.doSth(UTSTimer.kt:120)
 at io.dcloud.uts.UTSRunnable.run(UTSTimer.kt:69)
 at android.os.Handler.handleCallback(Handler.java:959)
