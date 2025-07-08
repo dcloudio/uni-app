@@ -6,7 +6,6 @@ import {
   formatLog,
 } from '@dcloudio/uni-shared'
 import {
-  type ComponentInternalInstance,
   type ComponentPublicInstance,
   getCurrentGenericInstance,
   nextTick,
@@ -16,10 +15,6 @@ import {
 import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
 import { setupXPage } from '../../../x/framework/page/setup'
-
-declare module 'vue' {
-  function getCurrentGenericInstance(): ComponentInternalInstance
-}
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup

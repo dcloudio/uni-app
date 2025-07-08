@@ -123,4 +123,21 @@ declare module '@vue/runtime-core' {
     tagName: string,
     elementClass: unknown
   ): void
+
+  interface AppConfig {
+    uniX: {
+      initNativePage: (vm: ComponentPublicInstance) => void
+      initFontFace: (vm: ComponentPublicInstance) => void
+    }
+  }
+  function createMountPage(
+    appContext: AppContext
+  ): (
+    pageComponent: VuePageComponent,
+    pageProps: Record<string, any>,
+    pageContainer: UniNode
+  ) => ComponentPublicInstance
+  function unmountPage(pageInstance: ComponentPublicInstance): void
+  function getCurrentGenericInstance(): ComponentInternalInstance
 }
+

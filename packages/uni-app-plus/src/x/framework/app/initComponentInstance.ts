@@ -23,15 +23,6 @@ export function initFontFace(vm: ComponentPublicInstance) {
   loadFontFaceByStyles(vm.$options.styles ?? [], false)
 }
 
-declare module 'vue' {
-  interface AppConfig {
-    uniX: {
-      initNativePage: (vm: ComponentPublicInstance) => void
-      initFontFace: (vm: ComponentPublicInstance) => void
-    }
-  }
-}
-
 export function initComponentInstance(app: App) {
   // 给 vapor 使用
   app.config.uniX = {

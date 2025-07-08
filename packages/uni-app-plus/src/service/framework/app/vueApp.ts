@@ -2,24 +2,12 @@ import { extend } from '@vue/shared'
 import type { UniNode } from '@dcloudio/uni-shared'
 import {
   type App,
-  type AppContext,
   type ComponentPublicInstance,
   createMountPage,
   unmountPage,
 } from 'vue'
 import type { VuePageComponent } from '../page/define'
 import { getAllPages } from '../page/getCurrentPages'
-
-declare module 'vue' {
-  function createMountPage(
-    appContext: AppContext
-  ): (
-    pageComponent: VuePageComponent,
-    pageProps: Record<string, any>,
-    pageContainer: UniNode
-  ) => ComponentPublicInstance
-  function unmountPage(pageInstance: ComponentPublicInstance): void
-}
 
 interface VueApp extends App {
   mountPage: (

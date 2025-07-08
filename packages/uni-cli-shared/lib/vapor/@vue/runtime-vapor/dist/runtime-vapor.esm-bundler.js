@@ -786,7 +786,7 @@ function setValue(el, value) {
 }
 function setText(el, value) {
   if (el.$txt !== value) {
-    el.nodeValue = el.$txt = value;
+    el.setAttribute("value", el.$txt = value);
   }
 }
 function setElementText(el, value) {
@@ -1070,6 +1070,7 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
     } else {
       instance.devtoolsRawSetupState = setupResult;
       instance.setupState = proxyRefs(setupResult);
+      instance.setupState.$nativePage = instance.proxy.$nativePage;
       devRender(instance);
       if (component.__hmrId) {
         registerHMR(instance);

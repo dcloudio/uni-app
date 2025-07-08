@@ -9564,7 +9564,7 @@ function setValue(el, value) {
 }
 function setText(el, value) {
   if (el.$txt !== value) {
-    el.nodeValue = el.$txt = value;
+    el.setAttribute("value", el.$txt = value);
   }
 }
 function setElementText(el, value) {
@@ -11553,6 +11553,7 @@ function createMountPage(appContext) {
         acc[key] = () => pageProps[key];
         return acc;
       }, {});
+      setInsertionState(pageContainer);
       var instance = createComponent(pageComponent, rawProps, null, false, appContext);
       return instance.proxy;
     }
