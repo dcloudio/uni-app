@@ -57,6 +57,7 @@ export const transformSlot: NodeTransform = (node, context) => {
   }
 
   const { tag, children } = node
+  const slotConditionMap = new Map()
   const slots = new Set<string | ExpressionNode>()
   const onComponentSlot = findDir(node, 'slot', true)
   const implicitDefaultChildren: TemplateChildNode[] = []
@@ -114,6 +115,10 @@ export const transformSlot: NodeTransform = (node, context) => {
 
     if (slotName) {
       slots.add(slotName)
+      const vIfDir = findDir(slotElement, 'if', true)
+      if (vIfDir && vIfDir.exp) {
+        slotConditionMap.set(slotName, vIfDir.exp)
+      }
     }
   }
 
@@ -123,6 +128,15 @@ export const transformSlot: NodeTransform = (node, context) => {
 
   if (implicitDefaultChildren.length) {
     slots.add(SLOT_DEFAULT_NAME)
+    implicitDefaultChildren.forEach((node) => {
+      if (node.type === NodeTypes.ELEMENT) {
+        const vIfDir = findDir(node, 'if', true)
+        if (vIfDir && vIfDir.exp) {
+          slotConditionMap.set(SLOT_DEFAULT_NAME, vIfDir.exp)
+          return
+        }
+      }
+    })
   }
 
   if (onComponentSlot) {
@@ -146,9 +160,29 @@ export const transformSlot: NodeTransform = (node, context) => {
       const len = slotsArr.length - 1
       slotsArr.forEach((name, index) => {
         if (isString(name)) {
-          children.push(`'${dynamicSlotName(name)}'`)
+          children.push(
+            slotConditionMap.get(name)
+              ? createCompoundExpression([
+                  slotConditionMap.get(name),
+                  ' ? ',
+                  createSimpleExpression(dynamicSlotName(name), true),
+                  ' : ',
+                  createSimpleExpression('', true),
+                ])
+              : `'${dynamicSlotName(name)}'`
+          )
         } else {
-          children.push(name)
+          children.push(
+            slotConditionMap.get(name)
+              ? createCompoundExpression([
+                  slotConditionMap.get(name),
+                  ' ? ',
+                  name,
+                  ' : ',
+                  createSimpleExpression('', true),
+                ])
+              : name
+          )
         }
         if (index < len) {
           children.push(',')
@@ -161,7 +195,14 @@ export const transformSlot: NodeTransform = (node, context) => {
       ])
     } else {
       value = `[${slotsArr
-        .map((name) => `'${dynamicSlotName(name as string)}'`)
+        .map((name) => {
+          if (slotConditionMap.get(name)) {
+            return `${genExpr(slotConditionMap.get(name))} ? '${dynamicSlotName(
+              name as string
+            )}' : ''`
+          }
+          return `'${dynamicSlotName(name as string)}'`
+        })
         .join(',')}]`
     }
     node.props.unshift(createBindDirectiveNode(ATTR_VUE_SLOTS, value))
