@@ -255,5 +255,145 @@
       "@dcloudio/uni-nvue-styler"
     ],
     "babel": true
+  },
+  {
+    "input": {
+      "src/uvue/index.vapor.ts": ["dist/uvue.vapor.runtime.harmony.esm.dev.js"]
+    },
+    "output": {
+      "freeze": false
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.vapor.runtime.esm.js"
+        },
+        {
+          "find": "@vue/reactivity",
+          "replacement": "packages/uni-cli-shared/lib/vapor/@vue/reactivity/dist/reactivity.esm-bundler.js"
+        }
+      ]
+    },
+    "replacements": {
+      "__X__": "true",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
+      "process.env.NODE_ENV": "\"development\""
+    },
+    "importReplacements": [
+      {
+        "module": "@vue/shared",
+        "specifiers": [
+          {
+            "name": "isIntegerKey",
+            "replaceModule": "@dcloudio/uni-shared",
+            "replaceName": "isIntegerKey"
+          }
+        ]
+      }
+    ],
+    "textReplacements": [
+      {
+        "find": "const res = toRaw(self)[method].apply(self, args);",
+        "replace": "const raw = toRaw(self);if (raw.length > 0) {raw[0] = raw[0]};const res = raw[method].apply(self, args);",
+        "file": "packages/uni-cli-shared/lib/vapor/@vue/reactivity/dist/reactivity.esm-bundler.js",
+        "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250303114146089/comment"
+      },
+      {
+        "find": "proxyMap.set(target, proxy);",
+        "replace": "proxyMap.set(target, new WeakRef(proxy));",
+        "file": "packages/uni-cli-shared/lib/vapor/@vue/reactivity/dist/reactivity.esm-bundler.js",
+        "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250324175207068/comment"
+      },
+      {
+        "find": "return existingProxy;",
+        "replace": "const deref = existingProxy.deref();\nif(deref){\nreturn deref;\n}",
+        "file": "packages/uni-cli-shared/lib/vapor/@vue/reactivity/dist/reactivity.esm-bundler.js",
+        "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250324175207068/comment"
+      }
+    ],
+    "replaceAfterBundled": {
+      "instanceof Node": "instanceof UniElement",
+      "instanceof Element": "instanceof UniElement",
+      "instanceof Comment": "instanceof UniComment"
+    },
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
+    "babel": true
+  },
+  {
+    "input": {
+      "src/uvue/index.vapor.ts": ["dist/uvue.vapor.runtime.harmony.esm.prod.js"]
+    },
+    "output": {
+      "freeze": false
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.vapor.runtime.esm.js"
+        },
+        {
+          "find": "@vue/reactivity",
+          "replacement": "packages/uni-cli-shared/lib/vapor/@vue/reactivity/dist/reactivity.esm-bundler.js"
+        }
+      ]
+    },
+    "replacements": {
+      "__X__": "true",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
+      "process.env.NODE_ENV": "\"production\""
+    },
+    "importReplacements": [
+      {
+        "module": "@vue/shared",
+        "specifiers": [
+          {
+            "name": "isIntegerKey",
+            "replaceModule": "@dcloudio/uni-shared",
+            "replaceName": "isIntegerKey"
+          }
+        ]
+      }
+    ],
+    "textReplacements": [
+      {
+        "find": "const res = toRaw(self)[method].apply(self, args);",
+        "replace": "const raw = toRaw(self);if (raw.length > 0) {raw[0] = raw[0]};const res = raw[method].apply(self, args);",
+        "file": "packages/uni-cli-shared/lib/vapor/@vue/reactivity/dist/reactivity.esm-bundler.js",
+        "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250303114146089/comment"
+      },
+      {
+        "find": "proxyMap.set(target, proxy);",
+        "replace": "proxyMap.set(target, new WeakRef(proxy));",
+        "file": "packages/uni-cli-shared/lib/vapor/@vue/reactivity/dist/reactivity.esm-bundler.js",
+        "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250324175207068/comment"
+      },
+      {
+        "find": "return existingProxy;",
+        "replace": "const deref = existingProxy.deref();\nif(deref){\nreturn deref;\n}",
+        "file": "packages/uni-cli-shared/lib/vapor/@vue/reactivity/dist/reactivity.esm-bundler.js",
+        "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250324175207068/comment"
+      }
+    ],
+    "replaceAfterBundled": {
+      "instanceof Node": "instanceof UniElement",
+      "instanceof Element": "instanceof UniElement",
+      "instanceof Comment": "instanceof UniComment"
+    },
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
+    "babel": true
   }
 ]

@@ -8050,6 +8050,29 @@ var createApp = function () {
   return app;
 };
 var createSSRApp = createApp;
+function createMountPage(appContext) {
+  return function mountPage(pageComponent, pageProps, pageContainer) {
+    var vnode = createVNode(pageComponent, pageProps);
+    vnode.appContext = appContext;
+    vnode.__page_container__ = pageContainer;
+    render(vnode, pageContainer);
+    var publicThis = vnode.component.proxy;
+    publicThis.__page_container__ = pageContainer;
+    return publicThis;
+  };
+}
+function unmountPage(pageInstance) {
+  var {
+    __page_container__
+  } = pageInstance;
+  if (__page_container__) {
+    __page_container__.isUnmounted = true;
+    render(null, __page_container__);
+    delete pageInstance.__page_container__;
+    var vnode = pageInstance.$.vnode;
+    delete vnode.__page_container__;
+  }
+}
 function injectNativeTagCheck(app) {
   Object.defineProperty(app.config, "isNativeTag", {
     value: tag => isHTMLTag(tag) || isSVGTag(tag),
@@ -8065,4 +8088,4 @@ function wxsProp(prop) {
   return prop;
 }
 var wp = prop => wxsProp(prop);
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createComment, createCommentVNode, createElement, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextNode, createTextVNode, createVNode, createApp as createVueApp, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, devtoolsInitApp, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, wp };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, Static, Suspense, Teleport, Text, Transition, TransitionGroup, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createComment, createCommentVNode, createElement, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextNode, createTextVNode, createVNode, createApp as createVueApp, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, devtoolsInitApp, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, unmountPage, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, wp };

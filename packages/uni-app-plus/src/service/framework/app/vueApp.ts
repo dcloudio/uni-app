@@ -2,12 +2,24 @@ import { extend } from '@vue/shared'
 import type { UniNode } from '@dcloudio/uni-shared'
 import {
   type App,
+  type AppContext,
   type ComponentPublicInstance,
-  createVNode,
-  render,
+  createMountPage,
+  unmountPage,
 } from 'vue'
 import type { VuePageComponent } from '../page/define'
 import { getAllPages } from '../page/getCurrentPages'
+
+declare module 'vue' {
+  function createMountPage(
+    appContext: AppContext
+  ): (
+    pageComponent: VuePageComponent,
+    pageProps: Record<string, any>,
+    pageContainer: UniNode
+  ) => ComponentPublicInstance
+  function unmountPage(pageInstance: ComponentPublicInstance): void
+}
 
 interface VueApp extends App {
   mountPage: (
@@ -35,31 +47,17 @@ export function initVueApp(appVm: ComponentPublicInstance) {
   })
 
   const appContext = internalInstance.appContext
+  const mountPage = createMountPage(appContext)
   vueApp = extend(appContext.app, {
     mountPage(
       pageComponent: VuePageComponent,
       pageProps: Record<string, any>,
       pageContainer: UniNode
     ) {
-      const vnode = createVNode(pageComponent, pageProps)
-      // store app context on the root VNode.
-      // this will be set on the root instance on initial mount.
-      vnode.appContext = appContext
-      ;(vnode as any).__page_container__ = pageContainer
-      render(vnode, pageContainer as unknown as Element)
-      const publicThis = vnode.component!.proxy!
-      ;(publicThis as any).__page_container__ = pageContainer
-      return publicThis
+      return mountPage(pageComponent, pageProps, pageContainer)
     },
     unmountPage: (pageInstance: ComponentPublicInstance) => {
-      const { __page_container__ } = pageInstance as any
-      if (__page_container__) {
-        __page_container__.isUnmounted = true
-        render(null, __page_container__)
-        delete (pageInstance as any).__page_container__
-        const vnode = pageInstance.$.vnode
-        delete (vnode as any).__page_container__
-      }
+      unmountPage(pageInstance)
     },
   })
 }

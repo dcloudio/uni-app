@@ -1,6 +1,6 @@
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
 import { once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, formatLog, parseNVueDataset, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, ON_REACH_BOTTOM_DISTANCE, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
-import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
+import { ref, createMountPage, unmountPage, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
 
 /*
  * base64-arraybuffer
@@ -1917,27 +1917,13 @@ function initVueApp(appVm) {
         },
     });
     const appContext = internalInstance.appContext;
+    const mountPage = createMountPage(appContext);
     vueApp = extend(appContext.app, {
         mountPage(pageComponent, pageProps, pageContainer) {
-            const vnode = createVNode(pageComponent, pageProps);
-            // store app context on the root VNode.
-            // this will be set on the root instance on initial mount.
-            vnode.appContext = appContext;
-            vnode.__page_container__ = pageContainer;
-            render(vnode, pageContainer);
-            const publicThis = vnode.component.proxy;
-            publicThis.__page_container__ = pageContainer;
-            return publicThis;
+            return mountPage(pageComponent, pageProps, pageContainer);
         },
         unmountPage: (pageInstance) => {
-            const { __page_container__ } = pageInstance;
-            if (__page_container__) {
-                __page_container__.isUnmounted = true;
-                render(null, __page_container__);
-                delete pageInstance.__page_container__;
-                const vnode = pageInstance.$.vnode;
-                delete vnode.__page_container__;
-            }
+            unmountPage(pageInstance);
         },
     });
 }

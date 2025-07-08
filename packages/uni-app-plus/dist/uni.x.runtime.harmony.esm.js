@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, reactive, provide, inject, nextTick } from "vue";
+import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, createVNode, reactive, provide, inject, nextTick } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -623,27 +623,13 @@ function initVueApp(appVm) {
     }
   });
   var appContext = internalInstance.appContext;
+  var mountPage = createMountPage(appContext);
   vueApp = extend(appContext.app, {
     mountPage(pageComponent, pageProps, pageContainer) {
-      var vnode = createVNode(pageComponent, pageProps);
-      vnode.appContext = appContext;
-      vnode.__page_container__ = pageContainer;
-      render(vnode, pageContainer);
-      var publicThis = vnode.component.proxy;
-      publicThis.__page_container__ = pageContainer;
-      return publicThis;
+      return mountPage(pageComponent, pageProps, pageContainer);
     },
     unmountPage: (pageInstance) => {
-      var {
-        __page_container__
-      } = pageInstance;
-      if (__page_container__) {
-        __page_container__.isUnmounted = true;
-        render(null, __page_container__);
-        delete pageInstance.__page_container__;
-        var vnode = pageInstance.$.vnode;
-        delete vnode.__page_container__;
-      }
+      unmountPage(pageInstance);
     }
   });
 }
