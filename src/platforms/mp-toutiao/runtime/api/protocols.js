@@ -109,11 +109,6 @@ const protocols = {
       method: false
     }
   },
-  chooseVideo: {
-    args: {
-      camera: false
-    }
-  },
   scanCode: {
     args: {
       onlyFromCamera: false,
