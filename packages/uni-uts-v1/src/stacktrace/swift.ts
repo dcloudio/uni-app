@@ -1,12 +1,18 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { originalPositionFor } from '../sourceMap'
-import { generateCodeFrame, parseErrorWithRules, splitRE } from './utils'
+import {
+  type CompileStacktraceOptions,
+  generateCodeFrame,
+  parseErrorWithRules,
+  splitRE,
+} from './utils'
 import { SPECIAL_CHARS } from '../utils'
 
 const uniModulesSwiftUTSRe = /(.*).swift:([0-9]+):([0-9]+):\s+error:\s+(.*)/
 
-interface ParseUTSPluginStacktraceOptions {
+export interface ParseUTSPluginStacktraceOptions
+  extends CompileStacktraceOptions {
   stacktrace: string
   sourceRoot: string
   sourceMapFile: string

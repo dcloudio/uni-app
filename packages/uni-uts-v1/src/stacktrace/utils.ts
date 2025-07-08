@@ -2,9 +2,14 @@ import fs from 'fs'
 import path, { relative } from 'path'
 import { normalizePath } from '../shared'
 
+export interface CompileStacktraceOptions {
+  env?: Record<string, string>
+}
+
 export interface GenerateRuntimeCodeFrameOptions {
   cacheDir: string
   logType?: 'log' | 'info' | 'warn' | 'debug' | 'error'
+  env?: Record<string, string>
 }
 
 export const COLORS: Record<string, string> = {

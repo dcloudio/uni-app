@@ -1,5 +1,6 @@
 import path from 'path'
 import {
+  parseCompileStacktrace,
   parseUTSArkTSPluginStacktrace,
   parseUTSKotlinStacktrace,
   parseUTSSwiftPluginStacktrace,
@@ -24,6 +25,22 @@ describe('uts:stacktrace', () => {
       `uni_modules/test-uts1/utssdk/app-ios/index.uts:2:10`
     )
     expect(codes).toContain(
+      `uni_modules/test-uts1/utssdk/app-ios/index.uts:5:10`
+    )
+
+    const codes2 = await parseCompileStacktrace(stacktrace, {
+      platform: 'app-ios',
+      language: 'swift',
+      sourceMapFile: path.resolve(
+        __dirname,
+        './examples/sourcemap/index.swift.map'
+      ),
+      sourceRoot: '/Users/xxx/DCloud/test-uts',
+    })
+    expect(codes2).toContain(
+      `uni_modules/test-uts1/utssdk/app-ios/index.uts:2:10`
+    )
+    expect(codes2).toContain(
       `uni_modules/test-uts1/utssdk/app-ios/index.uts:5:10`
     )
   })
@@ -99,10 +116,12 @@ describe('uts:stacktrace', () => {
       )
     ).toMatchSnapshot()
     expect(
-      await parseUTSArkTSPluginStacktrace(
+      await parseCompileStacktrace(
         `2 ERROR: ArkTS:ERROR File: ${inputDir}/unpackage/debug/app-harmony-9ed02395/uni_modules/native-button/utssdk/app-harmony/builder.ets:8:9
  Cannot find name 'param'. Did you mean 'params'?`,
         {
+          platform: 'app-harmony',
+          language: 'arkts',
           inputDir,
           outputDir,
         }

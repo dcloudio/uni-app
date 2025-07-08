@@ -3,6 +3,8 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   type GenerateAppHarmonyCodeFrameOptions,
+  type ParseUTSArkTSPluginStacktraceOptions,
+  parseUTSArkTSPluginStacktrace,
   parseUTSHarmonyRuntimeStacktrace,
 } from './arkts'
 import {
@@ -20,7 +22,15 @@ import {
   parseMiniProgramRuntimeStacktrace,
 } from './mp'
 import { originalPositionForSync } from '../sourceMap'
-import { generateCodeFrame } from './utils'
+import {
+  type CompileStacktraceOptions,
+  type GenerateRuntimeCodeFrameOptions,
+  generateCodeFrame,
+} from './utils'
+import {
+  type ParseUTSPluginStacktraceOptions,
+  parseUTSSwiftPluginStacktrace,
+} from './swift'
 
 export { parseUTSSwiftPluginStacktrace } from './swift'
 export { parseUTSArkTSPluginStacktrace } from './arkts'
@@ -32,6 +42,42 @@ export {
 
 export { parseUTSJavaScriptRuntimeStacktrace } from './js'
 
+function initEnv(
+  options: CompileStacktraceOptions | GenerateRuntimeCodeFrameOptions
+) {
+  if (options.env) {
+    if (options.env.COMPILER_VALIDATION_RULES_PATH) {
+      process.env.COMPILER_VALIDATION_RULES_PATH =
+        options.env.COMPILER_VALIDATION_RULES_PATH
+    }
+  }
+}
+
+export async function parseCompileStacktrace(
+  stacktrace: string,
+  options:
+    | (ParseUTSArkTSPluginStacktraceOptions & {
+        platform: 'app-harmony'
+        language: 'arkts'
+      })
+    | (Omit<ParseUTSPluginStacktraceOptions, 'stacktrace'> & {
+        platform: 'app-ios'
+        language: 'swift'
+      })
+) {
+  initEnv(options)
+  if (options.platform === 'app-harmony' && options.language === 'arkts') {
+    return parseUTSArkTSPluginStacktrace(stacktrace, options)
+  }
+  if (options.platform === 'app-ios' && options.language === 'swift') {
+    return parseUTSSwiftPluginStacktrace({
+      ...options,
+      stacktrace,
+    })
+  }
+  return stacktrace
+}
+
 export async function parseRuntimeStacktrace(
   stacktrace: string,
   options:
@@ -40,6 +86,7 @@ export async function parseRuntimeStacktrace(
     | GenerateAppHarmonyCodeFrameOptions
     | GenerateMiniProgramRuntimeCodeFrameOptions
 ) {
+  initEnv(options)
   if (
     (options.platform === 'app-android' && options.language === 'kotlin') ||
     (options.platform === 'app-ios' && options.language === 'javascript') ||
@@ -75,6 +122,7 @@ export function parseUTSRuntimeStacktrace(
   } else if (options.language === 'javascript') {
     return parseUTSJavaScriptRuntimeStacktrace(stacktrace, options)
   }
+  return stacktrace
 }
 
 export function parseUTSSyntaxError(

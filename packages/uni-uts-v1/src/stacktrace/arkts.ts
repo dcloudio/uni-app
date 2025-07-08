@@ -5,6 +5,7 @@ import {
   resolveUTSPluginSourceMapFile,
 } from '../sourceMap'
 import {
+  type CompileStacktraceOptions,
   type GenerateRuntimeCodeFrameOptions,
   generateCodeFrame,
   parseErrorWithRules,
@@ -17,7 +18,8 @@ import {
   parseUTSJavaScriptRuntimeStacktrace,
 } from './js'
 import { SPECIAL_CHARS } from '../utils'
-export interface ParseUTSArkTSPluginStacktraceOptions {
+export interface ParseUTSArkTSPluginStacktraceOptions
+  extends CompileStacktraceOptions {
   /**
    * 项目输入目录 = process.env.UNI_INPUT_DIR
    */
