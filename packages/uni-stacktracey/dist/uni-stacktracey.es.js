@@ -2947,7 +2947,7 @@ function uniStacktracePreset(opts) {
 }
 const uniStracktraceyPreset = uniStacktracePreset;
 function utsStacktracePreset(opts) {
-    const { inputRoot = '', outputRoot = '', sourceMapRoot = '', } = opts;
+    const { inputRoot = '', outputRoot = '', sourceMapRoot = '' } = opts;
     let errStack = [];
     let parseKotlin = false;
     return {
@@ -3023,7 +3023,8 @@ function utsStacktracePreset(opts) {
                 if (item === STACK_ERROR_PLACEHOLDER) {
                     const _stack = stack.items.shift();
                     if (_stack) {
-                        return `at ${normalizePath(path[parseKotlin ? 'join' : 'relative'](inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}${_stack.errMsg ? `\n${_stack.errMsg}` : ''}`;
+                        return `at ${normalizePath(parseKotlin ? _stack.file :
+                            path.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}${_stack.errMsg ? `\n${_stack.errMsg}` : ''}`;
                     }
                     return '';
                 }

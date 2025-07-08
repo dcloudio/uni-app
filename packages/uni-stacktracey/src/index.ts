@@ -432,10 +432,9 @@ export function utsStacktracePreset(
             const _stack = stack.items.shift()
             if (_stack) {
               return `at ${normalizePath(
-                path[parseKotlin ? 'join' : 'relative'](
-                  inputRoot,
-                  _stack.file.replace('\\\\?\\', '')
-                )
+                parseKotlin
+                  ? _stack.file
+                  : path.relative(inputRoot, _stack.file.replace('\\\\?\\', ''))
               )}:${_stack.line}:${_stack.column}${
                 _stack.errMsg ? `\n${_stack.errMsg}` : ''
               }`
