@@ -2102,6 +2102,18 @@ function handleDialogPageBack(dialogPage) {
     });
   }
 }
+function removeUrlWrap(source) {
+  if (source.startsWith("url(")) {
+    if (source.split("format(").length > 1) {
+      source = source.split("format(")[0].trim();
+    }
+    source = source.substring(4, source.length - 1);
+  }
+  if (source.startsWith('"') || source.startsWith("'")) {
+    source = source.substring(1, source.length - 1);
+  }
+  return source;
+}
 function getLoadFontFaceOptions(options, res) {
   return {
     family: options.family,
@@ -2120,6 +2132,7 @@ function getLoadFontFaceOptions(options, res) {
   };
 }
 var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
+  options.source = removeUrlWrap(options.source);
   if (options.global === true) {
     var app = getNativeApp();
     var fontInfo = getLoadFontFaceOptions(options, res);

@@ -12,6 +12,7 @@ var path__default = /*#__PURE__*/_interopDefault(path);
 const compilerOptions = {
     nodeTransforms: [uniCliShared.transformRef],
 };
+const COMPONENTS_DIR = 'hascomponents';
 const miniProgram = {
     class: {
         array: true,
@@ -21,6 +22,9 @@ const miniProgram = {
         dynamicSlotNames: true,
     },
     directive: 'has:',
+    component: {
+        dir: COMPONENTS_DIR,
+    },
     checkPropName(name, prop) {
         // 快应用不允许使用 key 属性，应该还有很多其他保留字，目前先简单处理
         // ERROR: Unexpected JavaScript keyword as attribute name: 'key', please change it.
@@ -48,7 +52,9 @@ const options = {
         alias: {
             'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
         },
-        copyOptions: {},
+        copyOptions: {
+            assets: [COMPONENTS_DIR],
+        },
     },
     global: 'has',
     app: {

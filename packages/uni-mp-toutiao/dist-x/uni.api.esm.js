@@ -1453,17 +1453,11 @@ const requestPayment = {
         orderInfo: tt.pay ? 'orderInfo' : 'data',
     },
 };
-const getFileInfo = {
-    args: {
-        digestAlgorithm: false,
-    },
-};
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
   chooseVideo: chooseVideo,
   connectSocket: connectSocket,
-  getFileInfo: getFileInfo,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getUserInfo: getUserInfo,

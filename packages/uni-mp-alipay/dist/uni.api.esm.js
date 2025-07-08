@@ -1576,8 +1576,12 @@ const showActionSheet = {
     },
 };
 const showLoading = {
-    args: {
-        title: 'content',
+    args(fromArgs, toArgs // mini-types feedback.d.ts 未包含 mask
+    ) {
+        if (!fromArgs.mask) {
+            toArgs.mask = false;
+        }
+        toArgs.content = fromArgs.title;
     },
 };
 const uploadFile = {

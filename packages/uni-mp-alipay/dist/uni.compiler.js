@@ -214,7 +214,7 @@ const customElements = [
     'lottie',
     'join-group-chat',
     'subscribe-message',
-    'mpass-component',
+    'mpaas-component',
 ];
 const options = {
     cdn: 2,

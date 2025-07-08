@@ -38,6 +38,13 @@ var ExternalModuls = [
 	},
 	{
 		type: "provider",
+		plugin: "uni-oauth-weixin",
+		provider: "weixin",
+		service: "oauth",
+		version: "1.0.0"
+	},
+	{
+		type: "provider",
 		plugin: "uni-payment-alipay",
 		provider: "alipay",
 		service: "payment",
@@ -68,6 +75,13 @@ var ExternalModuls = [
 			"setAppBadgeNumber"
 		],
 		version: "1.0.2"
+	},
+	{
+		type: "provider",
+		plugin: "uni-share-weixin",
+		provider: "weixin",
+		service: "share",
+		version: "1.0.0"
 	},
 	{
 		type: "extapi",
@@ -114,6 +128,13 @@ var ExternalModulesX = [
 	},
 	{
 		type: "provider",
+		plugin: "uni-oauth-weixin",
+		provider: "weixin",
+		service: "oauth",
+		version: "1.0.0"
+	},
+	{
+		type: "provider",
 		plugin: "uni-payment-alipay",
 		provider: "alipay",
 		service: "payment",
@@ -144,6 +165,13 @@ var ExternalModulesX = [
 			"setAppBadgeNumber"
 		],
 		version: "1.0.2"
+	},
+	{
+		type: "provider",
+		plugin: "uni-share-weixin",
+		provider: "weixin",
+		service: "share",
+		version: "1.0.0"
 	},
 	{
 		type: "extapi",
