@@ -19,7 +19,11 @@ export function initModuleAlias() {
   const compilerSfcPath = path.resolve(libDir, '@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
   // TODO 临时开关启用vapor
-  if (!process.env.UNI_VUE_VAPOR && process.env.UNI_INPUT_DIR) {
+  if (
+    !process.env.UNI_VUE_VAPOR &&
+    process.env.UNI_INPUT_DIR &&
+    process.env.UNI_PLATFORM === 'app-harmony'
+  ) {
     if (fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, '.vapor'))) {
       process.env.UNI_VUE_VAPOR = 'true'
     }
