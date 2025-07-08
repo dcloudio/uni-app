@@ -33,6 +33,10 @@ export function initModuleAlias() {
         path.resolve(libDir, 'vapor', '@vue', pkg.split('/').pop()!)
       )
     })
+    moduleAlias.addAlias(
+      '@vitejs/plugin-vue',
+      path.resolve(libDir, 'vapor', '@vitejs', 'plugin-vue')
+    )
   } else {
     moduleAlias.addAliases({
       '@vue/shared': require.resolve('@vue/shared'),
