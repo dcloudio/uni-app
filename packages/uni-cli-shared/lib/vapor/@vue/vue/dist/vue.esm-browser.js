@@ -5525,7 +5525,15 @@ const publicPropertiesMap = (
   // due to type annotation
   /* @__PURE__ */ extend(/* @__PURE__ */ Object.create(null), {
     $: (i) => i,
-    $el: (i) => i.vnode.el,
+    $el: (i) => {
+      if (i.vapor) {
+        if (i.block instanceof Node) {
+          return i.block;
+        }
+        return null;
+      }
+      return i.vnode.el;
+    },
     $data: (i) => i.data,
     $props: (i) => shallowReadonly(i.props) ,
     $attrs: (i) => shallowReadonly(i.attrs) ,

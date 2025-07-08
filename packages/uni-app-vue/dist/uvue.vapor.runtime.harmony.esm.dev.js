@@ -5522,7 +5522,15 @@ var publicPropertiesMap =
 /* @__PURE__ */
 extend(/* @__PURE__ */Object.create(null), {
   $: i => i,
-  $el: i => i.vnode.el,
+  $el: i => {
+    if (i.vapor) {
+      if (i.block instanceof UniElement) {
+        return i.block;
+      }
+      return null;
+    }
+    return i.vnode.el;
+  },
   $data: i => i.data,
   $props: i => shallowReadonly(i.props),
   $attrs: i => shallowReadonly(i.attrs),
