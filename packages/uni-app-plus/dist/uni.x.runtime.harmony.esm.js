@@ -760,7 +760,7 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   });
   uniPage.getElementById = (id2) => {
     var _pageVm$$el;
-    var containerNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el._parent;
+    var containerNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
     if (containerNode == null) {
       console.warn("bodyNode is null");
       return null;
@@ -774,14 +774,14 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   }
   onMounted(() => {
     var _pageVm$$el2;
-    var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2._parent;
+    var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
     if (rootElement) {
       rootElement._page = pageVm.$page;
     }
   });
   onBeforeUnmount(() => {
     var _pageVm$$el3;
-    var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3._parent;
+    var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3.parentElement;
     if (rootElement) {
       rootElement._page = null;
     }
