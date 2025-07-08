@@ -3,9 +3,10 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { warn, baseEmit, currentInstance, queueJob, startMeasure, simpleSetCurrentInstance, queuePostFlushCb, baseNormalizePropsOptions, pushWarningContext, validateProps, popWarningContext, resolvePropValue, isEmitListener, patchStyle, mergeProps, shouldSetAsProp, isRef, callWithErrorHandling, registerHMR, endMeasure, unregisterHMR, nextUid, EffectScope as EffectScope$1, expose, createAppAPI, initFeatureFlags, setDevtoolsHook, flushOnAppMount, ensureRenderer, shallowRef, renderSlot, createVNode, shallowReactive, createInternalObject, onScopeDispose as onScopeDispose$1, resolveDynamicComponent, vShowOriginalDisplay, vShowHidden, vModelTextInit, vModelCheckboxInit, vModelSelectInit, onMounted, vModelTextUpdate, vModelCheckboxUpdate, vModelGetValue, vModelSetSelected } from '@vue/runtime-dom';
-import { isArray, EMPTY_OBJ, hasOwn, invokeArrayFns, EMPTY_ARR, isFunction, camelize, isString, NO, YES, normalizeClass, normalizeStyle, parseStringStyle, isOn, canSetValueDirectly, toDisplayString, getGlobalThis, extend, getSequence, isObject, remove as remove$1, looseEqual } from '@vue/shared';
+import { warn, baseEmit, currentInstance, queueJob, startMeasure, simpleSetCurrentInstance, queuePostFlushCb, baseNormalizePropsOptions, pushWarningContext, validateProps, popWarningContext, resolvePropValue, isEmitListener, patchStyle, mergeProps, shouldSetAsProp, isRef, PublicInstanceProxyHandlers, callWithErrorHandling, registerHMR, endMeasure, unregisterHMR, nextUid, EffectScope as EffectScope$1, expose, createAppAPI, initFeatureFlags, setDevtoolsHook, flushOnAppMount, ensureRenderer, shallowRef, renderSlot, createVNode, shallowReactive, createInternalObject, onScopeDispose as onScopeDispose$1, resolveDynamicComponent, vShowOriginalDisplay, vShowHidden, vModelTextInit, vModelCheckboxInit, vModelSelectInit, onMounted, vModelTextUpdate, vModelCheckboxUpdate, vModelGetValue, vModelSetSelected } from '@vue/runtime-dom';
+import { isArray, EMPTY_OBJ, hasOwn, invokeArrayFns, EMPTY_ARR, isFunction, camelize, isString, NO, YES, parseStringStyle, isOn, canSetValueDirectly, toDisplayString, getGlobalThis, extend, getSequence, isObject, remove as remove$1, looseEqual } from '@vue/shared';
 import { pauseTracking, EffectScope, resetTracking, getCurrentScope, ReactiveEffect, onEffectCleanup, proxyRefs, onScopeDispose, markRaw, unref, isReactive, isShallow, shallowReadArray, isReadonly, toReadonly, toReactive, shallowRef as shallowRef$1, isRef as isRef$1, traverse } from '@vue/reactivity';
+import { normalizeClass, normalizeStyle } from '@dcloudio/uni-shared';
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
@@ -841,7 +842,7 @@ let isOptimized = false;
 function optimizePropertyLookup() {
   if (isOptimized) return;
   isOptimized = true;
-  const proto = Element.prototype;
+  const proto = UniElement.prototype;
   proto.$evtclick = void 0;
   proto.$root = false;
   proto.$html = proto.$txt = proto.$cls = proto.$sty = Text.prototype.$txt = "";
@@ -1039,6 +1040,8 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
   if (!!(process.env.NODE_ENV !== "production")) {
     setupPropsValidation(instance);
   }
+  instance.ctx = { _: instance };
+  instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
   const setupFn = isFunction(component) ? component : component.setup;
   const setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [
     instance.props,
@@ -2128,4 +2131,4 @@ function withVaporDirectives(node, dirs) {
   }
 }
 
-export { VaporFragment, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporComponent, delegate, delegateEvents, factory, getDefaultValue, getRestElement, insert, isFragment, next, nthChild, on, prepend, remove, renderEffect, setAttr, setClass, setDOMProp, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setValue, template, vaporInteropPlugin, withVaporDirectives };
+export { VaporFragment, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporComponent, delegate, delegateEvents, factory, getDefaultValue, getRestElement, insert, isFragment, next, nthChild, on, prepend, remove, renderEffect, setAttr, setClass, setDOMProp, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setValue, template, unmountComponent, vaporInteropPlugin, withVaporDirectives };

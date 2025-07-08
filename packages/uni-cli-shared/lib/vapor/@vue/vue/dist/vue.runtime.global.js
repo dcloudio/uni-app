@@ -12820,6 +12820,7 @@ Make sure to use the production build (*.prod.js) when deploying for production.
   exports.ErrorTypeStrings = ErrorTypeStrings;
   exports.Fragment = Fragment;
   exports.KeepAlive = KeepAlive;
+  exports.PublicInstanceProxyHandlers = PublicInstanceProxyHandlers;
   exports.ReactiveEffect = ReactiveEffect;
   exports.Static = Static;
   exports.Suspense = Suspense;

@@ -12796,6 +12796,7 @@ Expected function or array of functions, received type ${typeof value}.`
   exports.ErrorTypeStrings = ErrorTypeStrings;
   exports.Fragment = Fragment;
   exports.KeepAlive = KeepAlive;
+  exports.PublicInstanceProxyHandlers = PublicInstanceProxyHandlers;
   exports.ReactiveEffect = ReactiveEffect;
   exports.Static = Static;
   exports.Suspense = Suspense;

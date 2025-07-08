@@ -8713,6 +8713,7 @@ exports.ErrorCodes = ErrorCodes;
 exports.ErrorTypeStrings = ErrorTypeStrings;
 exports.Fragment = Fragment;
 exports.KeepAlive = KeepAlive;
+exports.PublicInstanceProxyHandlers = PublicInstanceProxyHandlers;
 exports.Static = Static;
 exports.Suspense = Suspense;
 exports.Teleport = Teleport;
