@@ -13,11 +13,6 @@ export const connectSocket = {
     method: false,
   },
 }
-export const chooseVideo = {
-  args: {
-    camera: false,
-  },
-}
 export const scanCode = {
   args: {
     onlyFromCamera: false,
