@@ -156,7 +156,7 @@ const tags = {
     'payment-list',
     'playlet'
   ],
-  'mp-xhs': ['post-note-button', 'group-chat-card'],
+  'mp-xhs': ['post-note-button', 'group-chat-card']
 }
 
 const baseCompiler = {

@@ -97,7 +97,7 @@ const projectMap = {
   developOptions: {},
   pluginResolution: {},
   scripts: {}
-};
+}
 const projectKeys = Object.keys(projectMap)
 
 module.exports = function (pagesJson, manifestJson) {
