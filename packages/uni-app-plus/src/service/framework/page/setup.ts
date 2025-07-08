@@ -6,8 +6,9 @@ import {
   formatLog,
 } from '@dcloudio/uni-shared'
 import {
+  type ComponentInternalInstance,
   type ComponentPublicInstance,
-  getCurrentInstance,
+  getCurrentGenericInstance,
   nextTick,
   onBeforeUnmount,
   onMounted,
@@ -15,6 +16,10 @@ import {
 import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
 import { setupXPage } from '../../../x/framework/page/setup'
+
+declare module 'vue' {
+  function getCurrentGenericInstance(): ComponentInternalInstance
+}
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
@@ -26,7 +31,7 @@ export function setupPage(component: VuePageComponent) {
     if (__DEV__) {
       console.log(formatLog(__pagePath as string, 'setup'))
     }
-    const instance = getCurrentInstance()!
+    const instance = getCurrentGenericInstance()!
     const pageVm = instance.proxy!
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     if (__X__) {

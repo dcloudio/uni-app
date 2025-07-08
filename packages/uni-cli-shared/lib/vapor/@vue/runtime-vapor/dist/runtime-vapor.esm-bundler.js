@@ -1041,7 +1041,18 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
     setupPropsValidation(instance);
   }
   instance.ctx = { _: instance };
+  instance.data = EMPTY_OBJ;
+  instance.setupState = EMPTY_OBJ;
+  instance.setupContext = null;
+  instance.accessCache = /* @__PURE__ */ Object.create(null);
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
+  const { initNativePage, initFontFace } = appContext.config.uniX || {};
+  if (initNativePage) {
+    initNativePage(instance.proxy);
+  }
+  if (initFontFace) {
+    initFontFace(instance.proxy);
+  }
   const setupFn = isFunction(component) ? component : component.setup;
   const setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [
     instance.props,

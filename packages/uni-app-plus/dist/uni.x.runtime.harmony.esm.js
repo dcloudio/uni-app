@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, createVNode, reactive, provide, inject, nextTick } from "vue";
+import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentGenericInstance, injectHook, defineComponent, warn, getCurrentInstance, watchEffect, watch, computed, camelize, createVNode, reactive, provide, inject, nextTick } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -799,7 +799,7 @@ function setupPage(component) {
         __pageInstance
       }
     } = ctx;
-    var instance = getCurrentInstance();
+    var instance = getCurrentGenericInstance();
     var pageVm = instance.proxy;
     initPageVm(pageVm, __pageInstance);
     {
@@ -2598,28 +2598,36 @@ function initOn(app, unregisterApp2) {
 function initService(app, unregisterApp2) {
   initOn(app, unregisterApp2);
 }
+function initNativePage(vm) {
+  var instance = vm.$;
+  if (instance.type.mpType === "app") {
+    return;
+  }
+  var pageId = instance.root.attrs.__pageId;
+  vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
+  if (vm.$page) {
+    vm.$page.__nativePageId = vm.$nativePage.pageId;
+  }
+}
+function initFontFace(vm) {
+  var _vm$$options$styles;
+  var instance = vm.$;
+  if (instance.type.mpType === "app") {
+    return;
+  }
+  loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
+}
 function initComponentInstance(app) {
+  app.config.uniX = {
+    initNativePage,
+    initFontFace
+  };
   app.mixin({
     beforeCreate() {
-      var vm = this;
-      var instance = vm.$;
-      if (instance.type.mpType === "app") {
-        return;
-      }
-      var pageId = instance.root.attrs.__pageId;
-      vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
-      if (vm.$page) {
-        vm.$page.__nativePageId = vm.$nativePage.pageId;
-      }
+      initNativePage(this);
     },
     beforeMount() {
-      var _vm$$options$styles;
-      var vm = this;
-      var instance = vm.$;
-      if (instance.type.mpType === "app") {
-        return;
-      }
-      loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
+      initFontFace(this);
     }
   });
 }

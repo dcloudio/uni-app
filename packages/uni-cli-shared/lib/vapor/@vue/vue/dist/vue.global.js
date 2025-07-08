@@ -18573,6 +18573,7 @@ ${codeFrame}` : message);
   exports.devtools = devtools;
   exports.effect = effect;
   exports.effectScope = effectScope;
+  exports.getCurrentGenericInstance = getCurrentGenericInstance;
   exports.getCurrentInstance = getCurrentInstance;
   exports.getCurrentScope = getCurrentScope;
   exports.getCurrentWatcher = getCurrentWatcher;

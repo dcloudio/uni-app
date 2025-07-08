@@ -6870,6 +6870,7 @@ exports.defineOptions = defineOptions;
 exports.defineProps = defineProps;
 exports.defineSlots = defineSlots;
 exports.devtools = devtools;
+exports.getCurrentGenericInstance = getCurrentGenericInstance;
 exports.getCurrentInstance = getCurrentInstance;
 exports.getTransitionRawChildren = getTransitionRawChildren;
 exports.guardReactiveProps = guardReactiveProps;
