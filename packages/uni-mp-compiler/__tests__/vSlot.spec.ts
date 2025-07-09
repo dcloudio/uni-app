@@ -43,7 +43,7 @@ describe('compiler: transform v-slot', () => {
       `<unicloud-db v-slot:default="{data, loading, error, options}"><view v-if="error">{{error.message}}</view><view v-else></view></unicloud-db>`,
       `<unicloud-db u-s="{{b}}" u-i="2a9ec0b0-0"><view wx:for="{{a}}" wx:for-item="v0" wx:key="c" slot="{{v0.d}}"><view wx:if="{{v0.a}}">{{v0.b}}</view><view wx:else></view></view></unicloud-db>`,
       `(_ctx, _cache) => {
-  return { a: _w(({ data, loading, error, options }, s0, i0) => { return _e({ a: error }, error ? { b: _t(error.message) } : {}, { c: i0, d: s0 }); }, { name: 'd', path: 'a', vueId: '2a9ec0b0-0' }), b: [_ctx.error ? "d" : "true" ? "d" : "" ? 'd' : ''] }
+  return { a: _w(({ data, loading, error, options }, s0, i0) => { return _e({ a: error }, error ? { b: _t(error.message) } : {}, { c: i0, d: s0 }); }, { name: 'd', path: 'a', vueId: '2a9ec0b0-0' }), b: [_ctx.error ? "d" : "true" ? 'd' : ''] }
 }`
     )
   })
@@ -221,7 +221,7 @@ describe('v-slot + v-if / v-else-if / v-else', () => {
     `<custom><template v-if="a" #header>hello</template><template v-else #footer>hello</template></custom>`,
     `<custom u-s="{{b}}" u-i="2a9ec0b0-0"><view wx:if="{{a}}" slot="header">hello</view><view wx:else slot="footer">hello</view></custom>`,
     `(_ctx, _cache) => {
-  return _e({ a: _ctx.a }, _ctx.a ? {} : {}, { b: [_ctx.a ? 'header' : '', _ctx.a ? "header" : "true" ? "footer" : "" ? 'footer' : ''] })
+  return _e({ a: _ctx.a }, _ctx.a ? {} : {}, { b: [_ctx.a ? 'header' : '', _ctx.a ? "header" : "true" ? 'footer' : ''] })
 }`
   )
 
@@ -229,7 +229,7 @@ describe('v-slot + v-if / v-else-if / v-else', () => {
     `<custom><template v-if="a" #header>hello</template><template v-else>hello</template></custom>`,
     `<custom u-s="{{b}}" u-i="2a9ec0b0-0"><view wx:if="{{a}}" slot="header">hello</view><block wx:else>hello</block></custom>`,
     `(_ctx, _cache) => {
-  return _e({ a: _ctx.a }, _ctx.a ? {} : {}, { b: [_ctx.a ? 'header' : '', _ctx.a ? "header" : "true" ? "d" : "" ? 'd' : ''] })
+  return _e({ a: _ctx.a }, _ctx.a ? {} : {}, { b: [_ctx.a ? 'header' : '', _ctx.a ? "header" : "true" ? 'd' : ''] })
 }`
   )
 
@@ -237,7 +237,7 @@ describe('v-slot + v-if / v-else-if / v-else', () => {
     `<custom><template v-if="a" #header>hello</template><template v-else-if="b" #footer>hello</template></custom>`,
     `<custom u-s="{{c}}" u-i="2a9ec0b0-0"><view wx:if="{{a}}" slot="header">hello</view><view wx:elif="{{b}}" slot="footer">hello</view></custom>`,
     `(_ctx, _cache) => {
-  return _e({ a: _ctx.a }, _ctx.a ? {} : _ctx.b ? {} : {}, { b: _ctx.b, c: [_ctx.a ? 'header' : '', _ctx.a ? "header" : _ctx.b ? "footer" : "" ? 'footer' : ''] })
+  return _e({ a: _ctx.a }, _ctx.a ? {} : _ctx.b ? {} : {}, { b: _ctx.b, c: [_ctx.a ? 'header' : '', _ctx.a ? "header" : _ctx.b ? 'footer' : ''] })
 }`
   )
 
@@ -245,7 +245,7 @@ describe('v-slot + v-if / v-else-if / v-else', () => {
     `<custom><template v-if="a" #header>hello</template><template v-else-if="b" #footer>hello</template><template v-else-if="c" #header2>hello</template></custom>`,
     `<custom u-s="{{d}}" u-i="2a9ec0b0-0"><view wx:if="{{a}}" slot="header">hello</view><view wx:elif="{{b}}" slot="footer">hello</view><view wx:elif="{{c}}" slot="header2">hello</view></custom>`,
     `(_ctx, _cache) => {
-  return _e({ a: _ctx.a }, _ctx.a ? {} : _ctx.b ? {} : _ctx.c ? {} : {}, { b: _ctx.b, c: _ctx.c, d: [_ctx.a ? 'header' : '', _ctx.a ? "header" : _ctx.b ? "footer" : "" ? 'footer' : '', _ctx.a ? "header" : _ctx.b ? "footer" : "" ? "footer" : _ctx.c ? "header2" : "" ? 'header2' : ''] })
+  return _e({ a: _ctx.a }, _ctx.a ? {} : _ctx.b ? {} : _ctx.c ? {} : {}, { b: _ctx.b, c: _ctx.c, d: [_ctx.a ? 'header' : '', _ctx.a ? "header" : _ctx.b ? 'footer' : '', _ctx.a ? "header" : _ctx.b ? "footer" : "" ? "footer" : _ctx.c ? 'header2' : ''] })
 }`
   )
 
@@ -253,7 +253,7 @@ describe('v-slot + v-if / v-else-if / v-else', () => {
     `<custom><template v-if="a" #header>hello</template><template v-else-if="b" #footer>hello</template><template v-if="c" #header2>hello</template></custom>`,
     `<custom u-s="{{d}}" u-i="2a9ec0b0-0"><view wx:if="{{a}}" slot="header">hello</view><view wx:elif="{{b}}" slot="footer">hello</view><view wx:if="{{c}}" slot="header2">hello</view></custom>`,
     `(_ctx, _cache) => {
-  return _e({ a: _ctx.a }, _ctx.a ? {} : _ctx.b ? {} : {}, { b: _ctx.b, c: _ctx.c }, _ctx.c ? {} : {}, { d: [_ctx.a ? 'header' : '', _ctx.a ? "header" : _ctx.b ? "footer" : "" ? 'footer' : '', _ctx.c ? 'header2' : ''] })
+  return _e({ a: _ctx.a }, _ctx.a ? {} : _ctx.b ? {} : {}, { b: _ctx.b, c: _ctx.c }, _ctx.c ? {} : {}, { d: [_ctx.a ? 'header' : '', _ctx.a ? "header" : _ctx.b ? 'footer' : '', _ctx.c ? 'header2' : ''] })
 }`
   )
 
@@ -261,7 +261,7 @@ describe('v-slot + v-if / v-else-if / v-else', () => {
     `<custom><template v-if="a" #header>hello</template><template v-else-if="b" #footer>hello</template><template v-else #footer2>hello</template></custom>`,
     `<custom u-s="{{c}}" u-i="2a9ec0b0-0"><view wx:if="{{a}}" slot="header">hello</view><view wx:elif="{{b}}" slot="footer">hello</view><view wx:else slot="footer2">hello</view></custom>`,
     `(_ctx, _cache) => {
-  return _e({ a: _ctx.a }, _ctx.a ? {} : _ctx.b ? {} : {}, { b: _ctx.b, c: [_ctx.a ? 'header' : '', _ctx.a ? "header" : _ctx.b ? "footer" : "" ? 'footer' : '', _ctx.a ? "header" : _ctx.b ? "footer" : "" ? "footer" : "true" ? "footer2" : "" ? 'footer2' : ''] })
+  return _e({ a: _ctx.a }, _ctx.a ? {} : _ctx.b ? {} : {}, { b: _ctx.b, c: [_ctx.a ? 'header' : '', _ctx.a ? "header" : _ctx.b ? 'footer' : '', _ctx.a ? "header" : _ctx.b ? "footer" : "" ? "footer" : "true" ? 'footer2' : ''] })
 }`
   )
 
@@ -277,7 +277,7 @@ describe('v-slot + v-if / v-else-if / v-else', () => {
     `<custom><template v-if="a" #[header]>hello</template><template v-else>hello</template></custom>`,
     `<custom u-s="{{c}}" u-i="2a9ec0b0-0"><view wx:if="{{a}}" slot="{{b}}">hello</view><block wx:else>hello</block></custom>`,
     `(_ctx, _cache) => {
-  return _e({ a: _ctx.a }, _ctx.a ? { b: _d(_ctx.header) } : {}, { c: _d([_ctx.a ? _ctx.header : "", _ctx.a ? _ctx.header : "true" ? "d" : "" ? "d" : ""]) })
+  return _e({ a: _ctx.a }, _ctx.a ? { b: _d(_ctx.header) } : {}, { c: _d([_ctx.a ? _ctx.header : "", _ctx.a ? _ctx.header : "true" ? "d" : ""]) })
 }`
   )
 })

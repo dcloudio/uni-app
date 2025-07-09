@@ -12,6 +12,7 @@ import {
   type ComponentNode,
   type CompoundExpressionNode,
   type DirectiveNode,
+  type ElementNode,
   ElementTypes,
   ErrorCodes,
   type ExpressionNode,
@@ -125,34 +126,13 @@ export const transformSlot: NodeTransform = (node, context) => {
       slots.add(slotName)
 
       // 处理条件指令
-      const vIfDir = findDir(slotElement, 'if', true)
-      const vElseIfDir = findDir(slotElement, 'else-if', true)
-      const vElseDir = findDir(slotElement, 'else', true)
-
-      if (vIfDir && vIfDir.exp) {
-        // 新的条件链开始
-        currentConditionChain = [{ slotName, condition: vIfDir.exp }]
-        slotConditionMap.set(slotName, vIfDir.exp)
-      } else if (vElseIfDir && vElseIfDir.exp) {
-        // 继续条件链
-        currentConditionChain.push({ slotName, condition: vElseIfDir.exp })
-        // 构建完整的条件表达式
-        const fullCondition = buildConditionExpression(currentConditionChain)
-        slotConditionMap.set(slotName, fullCondition)
-      } else if (vElseDir) {
-        // 条件链结束
-        currentConditionChain.push({
-          slotName,
-          condition: createSimpleExpression('true', true),
-        })
-        // 构建完整的条件表达式
-        const fullCondition = buildConditionExpression(currentConditionChain)
-        slotConditionMap.set(slotName, fullCondition)
-        currentConditionChain = [] // 重置条件链
-      } else if (currentConditionChain.length > 0) {
-        // 如果当前元素没有条件指令但前面有条件链，说明条件链已经结束
-        currentConditionChain = []
-      }
+      const result = processConditionDirectives(
+        slotElement,
+        slotName,
+        currentConditionChain,
+        slotConditionMap
+      )
+      currentConditionChain = result.currentConditionChain
     }
   }
 
@@ -165,31 +145,13 @@ export const transformSlot: NodeTransform = (node, context) => {
     slots.add(SLOT_DEFAULT_NAME)
     implicitDefaultChildren.forEach((node) => {
       if (node.type === NodeTypes.ELEMENT) {
-        const vIfDir = findDir(node, 'if', true)
-        const vElseIfDir = findDir(node, 'else-if', true)
-        const vElseDir = findDir(node, 'else', true)
-
-        if (vIfDir && vIfDir.exp) {
-          currentConditionChain = [
-            { slotName: SLOT_DEFAULT_NAME, condition: vIfDir.exp },
-          ]
-          slotConditionMap.set(SLOT_DEFAULT_NAME, vIfDir.exp)
-        } else if (vElseIfDir && vElseIfDir.exp) {
-          currentConditionChain.push({
-            slotName: SLOT_DEFAULT_NAME,
-            condition: vElseIfDir.exp,
-          })
-          const fullCondition = buildConditionExpression(currentConditionChain)
-          slotConditionMap.set(SLOT_DEFAULT_NAME, fullCondition)
-        } else if (vElseDir) {
-          currentConditionChain.push({
-            slotName: SLOT_DEFAULT_NAME,
-            condition: createSimpleExpression('true', true),
-          })
-          const fullCondition = buildConditionExpression(currentConditionChain)
-          slotConditionMap.set(SLOT_DEFAULT_NAME, fullCondition)
-          currentConditionChain = []
-        }
+        const result = processConditionDirectives(
+          node,
+          SLOT_DEFAULT_NAME,
+          currentConditionChain,
+          slotConditionMap
+        )
+        currentConditionChain = result.currentConditionChain
       }
     })
   }
@@ -214,51 +176,9 @@ export const transformSlot: NodeTransform = (node, context) => {
       const children: (string | ExpressionNode)[] = []
       const len = slotsArr.length - 1
       slotsArr.forEach((name, index) => {
-        if (isString(name)) {
-          children.push(
-            slotConditionMap.get(name)
-              ? (() => {
-                  const conditionExpr = slotConditionMap.get(name)!
-                  // 确保条件表达式经过 processExpression 处理
-                  const processedCondition = context.prefixIdentifiers
-                    ? processExpression(
-                        createSimpleExpression(genExpr(conditionExpr), false),
-                        context
-                      )
-                    : conditionExpr
-                  return createCompoundExpression([
-                    processedCondition,
-                    ' ? ',
-                    createSimpleExpression(dynamicSlotName(name), true),
-                    ' : ',
-                    createSimpleExpression('', true),
-                  ])
-                })()
-              : `'${dynamicSlotName(name)}'`
-          )
-        } else {
-          children.push(
-            slotConditionMap.get(name)
-              ? (() => {
-                  const conditionExpr = slotConditionMap.get(name)!
-                  // 确保条件表达式经过 processExpression 处理
-                  const processedCondition = context.prefixIdentifiers
-                    ? processExpression(
-                        createSimpleExpression(genExpr(conditionExpr), false),
-                        context
-                      )
-                    : conditionExpr
-                  return createCompoundExpression([
-                    processedCondition,
-                    ' ? ',
-                    name,
-                    ' : ',
-                    createSimpleExpression('', true),
-                  ])
-                })()
-              : name
-          )
-        }
+        children.push(
+          createConditionalSlotExpression(name, slotConditionMap, context)
+        )
         if (index < len) {
           children.push(',')
         }
@@ -439,6 +359,37 @@ function findCurrentSlotName(source: ExpressionNode) {
   )
 }
 
+function createConditionalSlotExpression(
+  name: string | ExpressionNode,
+  slotConditionMap: Map<string | ExpressionNode, ExpressionNode>,
+  context: TransformContext
+): string | ExpressionNode {
+  // 没有条件语句
+  const conditionExpr = slotConditionMap.get(name)
+  if (!conditionExpr) {
+    return isString(name) ? `'${dynamicSlotName(name as string)}'` : name
+  }
+
+  // 确保条件表达式经过 processExpression 处理，a && b => $data.a && $data.b
+  const processedCondition = context.prefixIdentifiers
+    ? processExpression(
+        createSimpleExpression(genExpr(conditionExpr), false),
+        context
+      )
+    : conditionExpr
+  const slotValue = isString(name)
+    ? createSimpleExpression(dynamicSlotName(name as string), true)
+    : name
+
+  return createCompoundExpression([
+    processedCondition,
+    ' ? ',
+    slotValue,
+    ' : ',
+    createSimpleExpression('', true),
+  ])
+}
+
 function buildConditionExpression(
   conditionChain: {
     slotName: string | ExpressionNode
@@ -462,17 +413,22 @@ function buildConditionExpression(
       ? createSimpleExpression(dynamicSlotName(slotName), true)
       : slotName
 
-    fullCondition = createCompoundExpression([
+    const expressions = [
       fullCondition,
       ' ? ',
       currentSlotNameExpr,
       ' : ',
       condition,
-      ' ? ',
-      slotNameExpr,
-      ' : ',
-      createSimpleExpression('', true),
-    ])
+    ]
+    if (i < conditionChain.length - 1) {
+      expressions.push(
+        ' ? ',
+        slotNameExpr,
+        ' : ',
+        createSimpleExpression('', true)
+      )
+    }
+    fullCondition = createCompoundExpression(expressions)
     currentSlotName = slotName
   }
 
@@ -574,4 +530,50 @@ export function createVSlotCallExpression(
       ),
     ]),
   ])
+}
+
+function processConditionDirectives(
+  node: ElementNode,
+  slotName: string | ExpressionNode,
+  currentConditionChain: {
+    slotName: string | ExpressionNode
+    condition: ExpressionNode
+  }[],
+  slotConditionMap: Map<string | ExpressionNode, ExpressionNode>
+): {
+  currentConditionChain: {
+    slotName: string | ExpressionNode
+    condition: ExpressionNode
+  }[]
+} {
+  const vIfDir = findDir(node, 'if', true)
+  const vElseIfDir = findDir(node, 'else-if', true)
+  const vElseDir = findDir(node, 'else', true)
+
+  if (vIfDir && vIfDir.exp) {
+    // 新的条件链开始
+    currentConditionChain = [{ slotName, condition: vIfDir.exp }]
+    slotConditionMap.set(slotName, vIfDir.exp)
+  } else if (vElseIfDir && vElseIfDir.exp) {
+    // 继续条件链
+    currentConditionChain.push({ slotName, condition: vElseIfDir.exp })
+    // 构建完整的条件表达式
+    const fullCondition = buildConditionExpression(currentConditionChain)
+    slotConditionMap.set(slotName, fullCondition)
+  } else if (vElseDir) {
+    // 条件链结束
+    currentConditionChain.push({
+      slotName,
+      condition: createSimpleExpression('true', true),
+    })
+    // 构建完整的条件表达式
+    const fullCondition = buildConditionExpression(currentConditionChain)
+    slotConditionMap.set(slotName, fullCondition)
+    currentConditionChain = [] // 重置条件链
+  } else if (currentConditionChain.length > 0) {
+    // 如果当前元素没有条件指令但前面有条件链，说明条件链已经结束
+    currentConditionChain = []
+  }
+
+  return { currentConditionChain }
 }
