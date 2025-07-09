@@ -327,9 +327,11 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   openLocation: {
-    args: {
-      // TODO address 参数在阿里上是必传的
-    }
+    args(fromArgs, toArgs) {
+      if (!fromArgs.scale) {
+        toArgs.scale = 18
+      }
+    },
   },
   getNetworkType: {
     returnValue: _handleNetworkInfo
