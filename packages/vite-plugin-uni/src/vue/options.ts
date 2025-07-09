@@ -82,7 +82,12 @@ export function initPluginVueOptions(
     // 目前禁用事件委托
     ;(compilerOptions as any).disableEventDelegation = true
     // 解析静态样式
-    ;(compilerOptions as any).parseStaticStyle = parseInlineStyleSync
+    ;(compilerOptions as any).parseStaticStyle = (style: string) => {
+      return parseInlineStyleSync(style, {
+        type: 'uvue',
+        platform: process.env.UNI_UTS_PLATFORM,
+      })
+    }
   }
 
   const {
