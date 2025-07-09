@@ -15,12 +15,12 @@ import {
   isExternalUrl,
   normalizePath,
   preJs,
+  resolveUniTypeScript,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
-
+import { parseInlineStyleSync } from '@dcloudio/uni-nvue-styler'
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
-import { resolveUniTypeScript } from '@dcloudio/uni-cli-shared'
 
 const pluginVuePath = require.resolve('@vitejs/plugin-vue')
 const normalizedPluginVuePath = normalizePath(pluginVuePath)
@@ -79,6 +79,10 @@ export function initPluginVueOptions(
   if (process.env.UNI_PLATFORM !== 'web') {
     // 非 web 平台，使用 factory 模式
     ;(compilerOptions as any).templateMode = 'factory'
+    // 目前禁用事件委托
+    ;(compilerOptions as any).disableEventDelegation = true
+    // 解析静态样式
+    ;(compilerOptions as any).parseStaticStyle = parseInlineStyleSync
   }
 
   const {

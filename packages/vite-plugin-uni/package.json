@@ -28,6 +28,7 @@
     "@babel/plugin-syntax-import-meta": "^7.10.4",
     "@babel/plugin-transform-typescript": "^7.23.3",
     "@dcloudio/uni-cli-shared": "workspace:*",
+    "@dcloudio/uni-nvue-styler": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
     "@rollup/pluginutils": "catalog:",
     "@vitejs/plugin-legacy": "catalog:",

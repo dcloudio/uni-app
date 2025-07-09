@@ -2449,6 +2449,9 @@ importers:
       '@dcloudio/uni-cli-shared':
         specifier: workspace:*
         version: link:../uni-cli-shared
+      '@dcloudio/uni-nvue-styler':
+        specifier: workspace:*
+        version: link:../uni-nvue-styler
       '@dcloudio/uni-shared':
         specifier: workspace:*
         version: link:../uni-shared

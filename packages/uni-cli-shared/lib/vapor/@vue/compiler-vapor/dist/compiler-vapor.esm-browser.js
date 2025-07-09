@@ -23443,6 +23443,9 @@ class HtmlParser {
 }
 
 class DomCodeGenerator {
+  constructor(options) {
+    this.parseStaticStyle = options.parseStaticStyle;
+  }
   /**
    * 生成节点构造代码
    */
@@ -23483,9 +23486,12 @@ class DomCodeGenerator {
     if (!attrs || Object.keys(attrs).length === 0) {
       return null;
     }
-    const entries = Object.entries(attrs).map(
-      ([name, value]) => `['${name}', ${JSON.stringify(value)}]`
-    );
+    const entries = Object.entries(attrs).map(([name, value]) => {
+      if (name === "style") {
+        return `['style', ${this.parseStaticStyle(value)}]`;
+      }
+      return `['${name}', ${JSON.stringify(value)}]`;
+    });
     return `new Map([${entries.join(", ")}])`;
   }
   /**
@@ -23500,8 +23506,8 @@ class DomCodeGenerator {
   }
 }
 class TemplateFactoryGenerator {
-  constructor() {
-    this.codeGenerator = new DomCodeGenerator();
+  constructor(options) {
+    this.codeGenerator = new DomCodeGenerator(options);
   }
   /**
    * 生成工厂函数
@@ -23517,7 +23523,7 @@ class TemplateFactoryGenerator {
       if (nodes.length === 1) {
         return this.generateSingleNodeFunction(nodes[0], index);
       }
-      return this.generateMultiNodeFunction(nodes, index);
+      return this.generateEmptyFunction(index);
     } catch (error) {
       return this.generateEmptyFunction(index);
     }
@@ -23539,19 +23545,11 @@ class TemplateFactoryGenerator {
   return ${nodeCode}
 }`;
   }
-  /**
-   * 生成多节点函数
-   * 创建包装元素来容纳多个顶级节点，统一使用 createElement 形式
-   */
-  generateMultiNodeFunction(nodes, index) {
-    const childrenCode = nodes.map((node) => this.codeGenerator.generateNodeCode(node)).join(", ");
-    return `function f${index}(doc: IDocument): UniElement {
-  return doc.createElement('div', null, [${childrenCode}])
-}`;
-  }
 }
 function generateFactoryFunctions(templates, context) {
-  const generator = new TemplateFactoryGenerator();
+  const generator = new TemplateFactoryGenerator({
+    parseStaticStyle: context.options.parseStaticStyle
+  });
   const functions = templates.map(
     (template, index) => generator.generateFactoryFunction(template, index)
   );
@@ -23569,7 +23567,7 @@ function generateFactoryCallsInRender(templates, rootIndex, context) {
 function genTemplates(templates, rootIndex, context) {
   const { helper, options } = context;
   if (options.templateMode === "factory") {
-    const factoryFunctions = generateFactoryFunctions(templates);
+    const factoryFunctions = generateFactoryFunctions(templates, context);
     return factoryFunctions ? factoryFunctions + "\n" : "";
   } else {
     return templates.map(
@@ -23733,9 +23731,10 @@ class CodegenContext {
       inline: false,
       bindingMetadata: {},
       expressionPlugins: [],
-      templateMode: "string",
       // fixed by uts
-      disableEventDelegation: false
+      templateMode: "string",
+      disableEventDelegation: false,
+      parseStaticStyle: (style) => JSON.stringify(style)
     };
     this.options = extend(defaultOptions, options);
     this.block = ir.block;
