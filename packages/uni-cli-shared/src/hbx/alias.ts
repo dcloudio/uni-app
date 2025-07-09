@@ -24,8 +24,12 @@ export function initModuleAlias() {
     process.env.UNI_INPUT_DIR &&
     process.env.UNI_PLATFORM === 'app-harmony'
   ) {
-    if (fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, '.vapor'))) {
+    const vaporConfig = path.resolve(process.env.UNI_INPUT_DIR, '.vapor')
+    if (fs.existsSync(vaporConfig)) {
       process.env.UNI_VUE_VAPOR = 'true'
+      if (fs.readFileSync(vaporConfig, 'utf-8').trim() === '*') {
+        process.env.UNI_VUE_VAPOR_ALL = 'true'
+      }
     }
   }
   if (process.env.UNI_VUE_VAPOR === 'true') {
