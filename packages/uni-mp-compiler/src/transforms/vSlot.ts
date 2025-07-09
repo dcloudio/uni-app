@@ -50,6 +50,7 @@ import {
 } from './utils'
 import { createVForArrowFunctionExpression } from './vFor'
 import { DYNAMIC_SLOT } from '../runtimeHelpers'
+import { processExpression } from './transformExpression'
 
 export const transformSlot: NodeTransform = (node, context) => {
   if (!isUserComponent(node, context as any)) {
@@ -216,25 +217,45 @@ export const transformSlot: NodeTransform = (node, context) => {
         if (isString(name)) {
           children.push(
             slotConditionMap.get(name)
-              ? createCompoundExpression([
-                  slotConditionMap.get(name),
-                  ' ? ',
-                  createSimpleExpression(dynamicSlotName(name), true),
-                  ' : ',
-                  createSimpleExpression('', true),
-                ])
+              ? (() => {
+                  const conditionExpr = slotConditionMap.get(name)!
+                  // 确保条件表达式经过 processExpression 处理
+                  const processedCondition = context.prefixIdentifiers
+                    ? processExpression(
+                        createSimpleExpression(genExpr(conditionExpr), false),
+                        context
+                      )
+                    : conditionExpr
+                  return createCompoundExpression([
+                    processedCondition,
+                    ' ? ',
+                    createSimpleExpression(dynamicSlotName(name), true),
+                    ' : ',
+                    createSimpleExpression('', true),
+                  ])
+                })()
               : `'${dynamicSlotName(name)}'`
           )
         } else {
           children.push(
             slotConditionMap.get(name)
-              ? createCompoundExpression([
-                  slotConditionMap.get(name),
-                  ' ? ',
-                  name,
-                  ' : ',
-                  createSimpleExpression('', true),
-                ])
+              ? (() => {
+                  const conditionExpr = slotConditionMap.get(name)!
+                  // 确保条件表达式经过 processExpression 处理
+                  const processedCondition = context.prefixIdentifiers
+                    ? processExpression(
+                        createSimpleExpression(genExpr(conditionExpr), false),
+                        context
+                      )
+                    : conditionExpr
+                  return createCompoundExpression([
+                    processedCondition,
+                    ' ? ',
+                    name,
+                    ' : ',
+                    createSimpleExpression('', true),
+                  ])
+                })()
               : name
           )
         }
