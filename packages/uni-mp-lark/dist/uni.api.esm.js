@@ -1309,11 +1309,6 @@ const connectSocket = {
         method: false,
     },
 };
-const chooseVideo = {
-    args: {
-        camera: false,
-    },
-};
 const scanCode = {
     args: {
         onlyFromCamera: false,
@@ -1346,7 +1341,6 @@ const requestPayment = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  chooseVideo: chooseVideo,
   connectSocket: connectSocket,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,

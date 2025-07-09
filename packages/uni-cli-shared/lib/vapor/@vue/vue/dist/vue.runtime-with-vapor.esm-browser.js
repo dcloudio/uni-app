@@ -13495,16 +13495,16 @@ function delegate(el, event, handler) {
   }
 }
 const delegatedEvents = /* @__PURE__ */ Object.create(null);
-const delegateEvents = (...names) => {
+const delegateEvents = (doc, ...names) => {
   for (const name of names) {
     if (!delegatedEvents[name]) {
       delegatedEvents[name] = true;
-      document.addEventListener(name, delegatedEventHandler);
+      doc.addEventListener(name, delegatedEventHandler);
     }
   }
 };
 const delegatedEventHandler = (e) => {
-  let node = e.composedPath && e.composedPath()[0] || e.target;
+  let node = e.target;
   if (e.target !== node) {
     Object.defineProperty(e, "target", {
       configurable: true,
@@ -13524,12 +13524,10 @@ const delegatedEventHandler = (e) => {
         for (const handler of handlers) {
           if (!node.disabled) {
             handler(e);
-            if (e.cancelBubble) return;
           }
         }
       } else {
         handlers(e);
-        if (e.cancelBubble) return;
       }
     }
     node = node.host && node.host !== node && node.host instanceof Node ? node.host : node.parentNode;

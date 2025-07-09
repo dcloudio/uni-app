@@ -3027,8 +3027,9 @@ function utsStacktracePreset(opts) {
                 if (item === STACK_ERROR_PLACEHOLDER) {
                     const _stack = stack.items.shift();
                     if (_stack) {
-                        return `at ${normalizePath(parseKotlin ? _stack.file :
-                            path__default.default.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}${_stack.errMsg ? `\n${_stack.errMsg}` : ''}`;
+                        return `at ${normalizePath(parseKotlin
+                            ? _stack.file
+                            : path__default.default.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}${_stack.errMsg ? `\n${_stack.errMsg}` : ''}`;
                     }
                     return '';
                 }

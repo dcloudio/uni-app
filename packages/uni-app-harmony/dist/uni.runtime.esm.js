@@ -2,7 +2,7 @@ import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normaliz
 export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared';
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 export { extend, hasOwn, isArray, isFunction, isPlainObject, isString } from '@vue/shared';
-import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
+import { ref, createMountPage, unmountPage, injectHook, queuePostFlushCb, getCurrentGenericInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
 
 /*
  * base64-arraybuffer
@@ -8371,27 +8371,13 @@ function initVueApp(appVm) {
         },
     });
     const appContext = internalInstance.appContext;
+    const mountPage = createMountPage(appContext);
     vueApp = extend(appContext.app, {
         mountPage(pageComponent, pageProps, pageContainer) {
-            const vnode = createVNode(pageComponent, pageProps);
-            // store app context on the root VNode.
-            // this will be set on the root instance on initial mount.
-            vnode.appContext = appContext;
-            vnode.__page_container__ = pageContainer;
-            render(vnode, pageContainer);
-            const publicThis = vnode.component.proxy;
-            publicThis.__page_container__ = pageContainer;
-            return publicThis;
+            return mountPage(pageComponent, pageProps, pageContainer);
         },
         unmountPage: (pageInstance) => {
-            const { __page_container__ } = pageInstance;
-            if (__page_container__) {
-                __page_container__.isUnmounted = true;
-                render(null, __page_container__);
-                delete pageInstance.__page_container__;
-                const vnode = pageInstance.$.vnode;
-                delete vnode.__page_container__;
-            }
+            unmountPage(pageInstance);
         },
     });
 }
@@ -8589,14 +8575,16 @@ function getLaunchOptions() {
 function getEnterOptions() {
     return extend({}, enterOptions);
 }
-function initEnterOptions({ path, query, referrerInfo, }) {
+function initEnterOptions({ path, query, referrerInfo, appScheme, appLink, }) {
     extend(enterOptions, {
         path,
         query: query ? parseQuery(query) : {},
         referrerInfo: referrerInfo || {},
+        appScheme,
+        appLink,
     });
 }
-function initLaunchOptions({ path, query, referrerInfo, }) {
+function initLaunchOptions({ path, query, referrerInfo, appScheme, appLink, }) {
     extend(launchOptions, {
         path,
         query: query ? parseQuery(query) : {},
@@ -8604,6 +8592,8 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         // TODO uni-app x
         channel: plus.runtime.channel,
         launcher: plus.runtime.launcher,
+        appScheme,
+        appLink,
     });
     extend(enterOptions, launchOptions);
     return enterOptions;
@@ -8611,7 +8601,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
 function parseRedirectInfo() {
     const weexPlus = weex.requireModule('plus');
     if (weexPlus.getRedirectInfo) {
-        const { path, query, extraData, userAction, fromAppid } = weexPlus.getRedirectInfo() || {};
+        const { path, query, extraData, userAction, fromAppid, appScheme, appLink, } = weexPlus.getRedirectInfo() || {};
         const referrerInfo = {
             appId: fromAppid,
             extraData: {},
@@ -8624,6 +8614,8 @@ function parseRedirectInfo() {
             query: query ? '?' + query : '',
             referrerInfo,
             userAction,
+            appScheme,
+            appLink,
         };
     }
 }
@@ -12250,7 +12242,7 @@ function setupPage(component) {
         if (('production' !== 'production')) {
             console.log(formatLog(__pagePath, 'setup'));
         }
-        const instance = getCurrentInstance();
+        const instance = getCurrentGenericInstance();
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
         {
@@ -12339,12 +12331,14 @@ function initEntry() {
     let entryPageQuery;
     const weexPlus = weex.requireModule('plus');
     if (weexPlus.getRedirectInfo) {
-        const { path, query, referrerInfo } = parseRedirectInfo();
+        const { path, query, referrerInfo, appScheme, appLink } = parseRedirectInfo();
         if (path) {
             entryPagePath = path;
             entryPageQuery = query;
         }
         __uniConfig.referrerInfo = referrerInfo;
+        __uniConfig.appScheme = appScheme;
+        __uniConfig.appLink = appLink;
     }
     else {
         const argsJsonStr = plus.runtime.arguments;

@@ -10938,19 +10938,19 @@ function delegate(el, event, handler) {
   }
 }
 var delegatedEvents = /* @__PURE__ */Object.create(null);
-var delegateEvents = function () {
-  for (var _len23 = arguments.length, names = new Array(_len23), _key35 = 0; _key35 < _len23; _key35++) {
-    names[_key35] = arguments[_key35];
+var delegateEvents = function (doc) {
+  for (var _len23 = arguments.length, names = new Array(_len23 > 1 ? _len23 - 1 : 0), _key35 = 1; _key35 < _len23; _key35++) {
+    names[_key35 - 1] = arguments[_key35];
   }
   for (var name of names) {
     if (!delegatedEvents[name]) {
       delegatedEvents[name] = true;
-      document.addEventListener(name, delegatedEventHandler);
+      doc.addEventListener(name, delegatedEventHandler);
     }
   }
 };
 var delegatedEventHandler = e => {
-  var node = e.composedPath && e.composedPath()[0] || e.target;
+  var node = e.target;
   if (e.target !== node) {
     Object.defineProperty(e, "target", {
       configurable: true,
@@ -10970,12 +10970,10 @@ var delegatedEventHandler = e => {
         for (var handler of handlers) {
           if (!node.disabled) {
             handler(e);
-            if (e.cancelBubble) return;
           }
         }
       } else {
         handlers(e);
-        if (e.cancelBubble) return;
       }
     }
     node = node.host && node.host !== node && node.host instanceof UniElement ? node.host : node.parentNode;
@@ -11757,18 +11755,6 @@ var vaporInteropPlugin = app => {
     return mount(...arguments);
   };
 };
-
-/*! #__NO_SIDE_EFFECTS__ */
-// @__NO_SIDE_EFFECTS__
-function factory(doc, factory2, root) {
-  return () => {
-    var el = factory2(doc);
-    if (root) {
-      el.ext.set("$root", true);
-    }
-    return el;
-  };
-}
 function createIf(condition, b1, b2, once) {
   var _insertionParent = insertionParent;
   var _insertionAnchor = insertionAnchor;
@@ -13145,6 +13131,18 @@ var withKeys = (fn, modifiers) => {
 };
 function shouldSetAsProp(el, key, value, isSVG) {
   return false;
+}
+
+/*! #__NO_SIDE_EFFECTS__ */
+// @__NO_SIDE_EFFECTS__
+function factory(doc, factory2, root) {
+  return () => {
+    var el = factory2(doc);
+    if (root) {
+      el.ext.set("$root", true);
+    }
+    return el;
+  };
 }
 var rendererOptions = extend({
   patchProp

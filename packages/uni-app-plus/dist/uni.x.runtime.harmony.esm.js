@@ -703,7 +703,9 @@ function initLaunchOptions(_ref2) {
   var {
     path,
     query,
-    referrerInfo
+    referrerInfo,
+    appScheme,
+    appLink
   } = _ref2;
   extend(launchOptions$1, {
     path,
@@ -711,7 +713,9 @@ function initLaunchOptions(_ref2) {
     referrerInfo: referrerInfo || {},
     // TODO uni-app x
     channel: void 0,
-    launcher: void 0
+    launcher: void 0,
+    appScheme,
+    appLink
   });
   extend(enterOptions$1, launchOptions$1);
   return enterOptions$1;

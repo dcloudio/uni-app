@@ -140,4 +140,3 @@ declare module '@vue/runtime-core' {
   function unmountPage(pageInstance: ComponentPublicInstance): void
   function getCurrentGenericInstance(): ComponentInternalInstance
 }
-

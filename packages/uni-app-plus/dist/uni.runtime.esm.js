@@ -2423,14 +2423,16 @@ function getLaunchOptions() {
 function getEnterOptions() {
     return extend({}, enterOptions);
 }
-function initEnterOptions({ path, query, referrerInfo, }) {
+function initEnterOptions({ path, query, referrerInfo, appScheme, appLink, }) {
     extend(enterOptions, {
         path,
         query: query ? parseQuery(query) : {},
         referrerInfo: referrerInfo || {},
+        appScheme,
+        appLink,
     });
 }
-function initLaunchOptions({ path, query, referrerInfo, }) {
+function initLaunchOptions({ path, query, referrerInfo, appScheme, appLink, }) {
     extend(launchOptions, {
         path,
         query: query ? parseQuery(query) : {},
@@ -2438,6 +2440,8 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         // TODO uni-app x
         channel: plus.runtime.channel,
         launcher: plus.runtime.launcher,
+        appScheme,
+        appLink,
     });
     extend(enterOptions, launchOptions);
     return enterOptions;
@@ -2445,7 +2449,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
 function parseRedirectInfo() {
     const weexPlus = weex.requireModule('plus');
     if (weexPlus.getRedirectInfo) {
-        const { path, query, extraData, userAction, fromAppid } = weexPlus.getRedirectInfo() || {};
+        const { path, query, extraData, userAction, fromAppid, appScheme, appLink, } = weexPlus.getRedirectInfo() || {};
         const referrerInfo = {
             appId: fromAppid,
             extraData: {},
@@ -2458,6 +2462,8 @@ function parseRedirectInfo() {
             query: query ? '?' + query : '',
             referrerInfo,
             userAction,
+            appScheme,
+            appLink,
         };
     }
 }
@@ -19533,12 +19539,14 @@ function initEntry() {
     let entryPageQuery;
     const weexPlus = weex.requireModule('plus');
     if (weexPlus.getRedirectInfo) {
-        const { path, query, referrerInfo } = parseRedirectInfo();
+        const { path, query, referrerInfo, appScheme, appLink } = parseRedirectInfo();
         if (path) {
             entryPagePath = path;
             entryPageQuery = query;
         }
         __uniConfig.referrerInfo = referrerInfo;
+        __uniConfig.appScheme = appScheme;
+        __uniConfig.appLink = appLink;
     }
     else {
         const argsJsonStr = plus.runtime.arguments;
@@ -20905,11 +20913,13 @@ function onPlusMessage(type, callback, once = false) {
 
 function initAppLaunch(appVm) {
     injectAppHooks(appVm.$);
-    const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
+    const { entryPagePath, entryPageQuery, referrerInfo, appScheme, appLink } = __uniConfig;
     const args = initLaunchOptions({
         path: entryPagePath,
         query: entryPageQuery,
         referrerInfo: referrerInfo,
+        appScheme,
+        appLink,
     });
     invokeHook(appVm, ON_LAUNCH, args);
     invokeHook(appVm, ON_SHOW, args);
