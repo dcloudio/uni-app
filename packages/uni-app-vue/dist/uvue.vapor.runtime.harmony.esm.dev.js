@@ -11333,6 +11333,8 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
   instance.setupContext = null;
   instance.accessCache = /* @__PURE__ */Object.create(null);
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
+  var setupFn = isFunction(component) ? component : component.setup;
+  var setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [instance.props, instance]) || EMPTY_OBJ : EMPTY_OBJ;
   var {
     initNativePage,
     initFontFace
@@ -11343,8 +11345,6 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
   if (initFontFace) {
     initFontFace(instance.proxy);
   }
-  var setupFn = isFunction(component) ? component : component.setup;
-  var setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [instance.props, instance]) || EMPTY_OBJ : EMPTY_OBJ;
   if (!isBlock(setupResult)) {
     if (isFunction(component)) {
       warn("Functional vapor component must return a block directly.");

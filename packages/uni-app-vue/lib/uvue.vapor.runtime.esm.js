@@ -9293,75 +9293,16 @@ const rawPropsProxyHandlers = {
   }
 };
 
-function addEventListener$1(el, event, handler, options) {
+function addEventListener$2(el, event, handler, options) {
   el.addEventListener(event, handler, options);
   return () => el.removeEventListener(event, handler, options);
 }
-function on(el, event, handler, options = {}) {
-  addEventListener$1(el, event, handler, options);
+function on$1(el, event, handler, options = {}) {
+  addEventListener$2(el, event, handler, options);
   if (options.effect) {
     onEffectCleanup(() => {
       el.removeEventListener(event, handler, options);
     });
-  }
-}
-function delegate(el, event, handler) {
-  const key = `$evt${event}`;
-  const existing = el[key];
-  if (existing) {
-    if (isArray(existing)) {
-      existing.push(handler);
-    } else {
-      el[key] = [existing, handler];
-    }
-  } else {
-    el[key] = handler;
-  }
-}
-const delegatedEvents = /* @__PURE__ */ Object.create(null);
-const delegateEvents = (...names) => {
-  for (const name of names) {
-    if (!delegatedEvents[name]) {
-      delegatedEvents[name] = true;
-      document.addEventListener(name, delegatedEventHandler);
-    }
-  }
-};
-const delegatedEventHandler = (e) => {
-  let node = e.composedPath && e.composedPath()[0] || e.target;
-  if (e.target !== node) {
-    Object.defineProperty(e, "target", {
-      configurable: true,
-      value: node
-    });
-  }
-  Object.defineProperty(e, "currentTarget", {
-    configurable: true,
-    get() {
-      return node || document;
-    }
-  });
-  while (node !== null) {
-    const handlers = node[`$evt${e.type}`];
-    if (handlers) {
-      if (isArray(handlers)) {
-        for (const handler of handlers) {
-          if (!node.disabled) {
-            handler(e);
-            if (e.cancelBubble) return;
-          }
-        }
-      } else {
-        handlers(e);
-        if (e.cancelBubble) return;
-      }
-    }
-    node = node.host && node.host !== node && node.host instanceof Node ? node.host : node.parentNode;
-  }
-};
-function setDynamicEvents(el, events) {
-  for (const name in events) {
-    on(el, name, events[name], { effect: true });
   }
 }
 
@@ -9511,7 +9452,7 @@ function setDynamicProp(el, key, value) {
   } else if (key === "style") {
     setStyle$1(el, value);
   } else if (isOn(key)) {
-    on(el, key[2].toLowerCase() + key.slice(3), value, { effect: true });
+    on$1(el, key[2].toLowerCase() + key.slice(3), value, { effect: true });
   } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp()) {
     if (key === "innerHTML") {
       setHtml(el, value);
@@ -9731,6 +9672,11 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
   instance.setupContext = null;
   instance.accessCache = /* @__PURE__ */ Object.create(null);
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
+  const setupFn = isFunction(component) ? component : component.setup;
+  const setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [
+    instance.props,
+    instance
+  ]) || EMPTY_OBJ : EMPTY_OBJ;
   const { initNativePage, initFontFace } = appContext.config.uniX || {};
   if (initNativePage) {
     initNativePage(instance.proxy);
@@ -9738,11 +9684,6 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
   if (initFontFace) {
     initFontFace(instance.proxy);
   }
-  const setupFn = isFunction(component) ? component : component.setup;
-  const setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [
-    instance.props,
-    instance
-  ]) || EMPTY_OBJ : EMPTY_OBJ;
   if (!!(process.env.NODE_ENV !== "production") && !isBlock(setupResult)) {
     if (isFunction(component)) {
       warn(`Functional vapor component must return a block directly.`);
@@ -10215,18 +10156,6 @@ const vaporInteropPlugin = (app) => {
     return mount(...args);
   };
 };
-
-/*! #__NO_SIDE_EFFECTS__ */
-// @__NO_SIDE_EFFECTS__
-function factory(doc, factory2, root) {
-  return () => {
-    const el = factory2(doc);
-    if (root) {
-      el.ext.set("$root", true);
-    }
-    return el;
-  };
-}
 
 function createIf(condition, b1, b2, once) {
   const _insertionParent = insertionParent;
@@ -11248,7 +11177,7 @@ function transformAttr(el, key, value, instance) {
   return [key, value];
 }
 
-function addEventListener(el, event, handler, options) {
+function addEventListener$1(el, event, handler, options) {
   el.addEventListener(event, handler);
 }
 function removeEventListener(el, event) {
@@ -11263,7 +11192,7 @@ function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
     const [name, options] = parseName(rawName);
     if (nextValue) {
       const invoker = invokers[rawName] = createInvoker(nextValue, instance);
-      addEventListener(el, name, invoker);
+      addEventListener$1(el, name, invoker);
     } else if (existingInvoker) {
       removeEventListener(el, name);
       invokers[rawName] = void 0;
@@ -11587,6 +11516,88 @@ function shouldSetAsProp(el, key, value, isSVG) {
   return false;
 }
 
+function addEventListener(el, event, handler, options) {
+  el.addEventListener(event, handler, options);
+  return () => el.removeEventListener(event, handler, options);
+}
+function on(el, event, handler, options = {}) {
+  addEventListener(el, event, handler, options);
+  if (options.effect) {
+    onEffectCleanup(() => {
+      el.removeEventListener(event, handler, options);
+    });
+  }
+}
+function delegate(el, event, handler) {
+  const key = `$evt${event}`;
+  const existing = el[key];
+  if (existing) {
+    if (isArray(existing)) {
+      existing.push(handler);
+    } else {
+      el[key] = [existing, handler];
+    }
+  } else {
+    el[key] = handler;
+  }
+}
+const delegatedEvents = /* @__PURE__ */ Object.create(null);
+const delegateEvents = (doc, ...names) => {
+  for (const name of names) {
+    if (!delegatedEvents[name]) {
+      delegatedEvents[name] = true;
+      doc.addEventListener(name, delegatedEventHandler);
+    }
+  }
+};
+const delegatedEventHandler = (e) => {
+  let node = e.target;
+  if (e.target !== node) {
+    Object.defineProperty(e, "target", {
+      configurable: true,
+      value: node
+    });
+  }
+  Object.defineProperty(e, "currentTarget", {
+    configurable: true,
+    get() {
+      return node || document;
+    }
+  });
+  while (node !== null) {
+    const handlers = node[`$evt${e.type}`];
+    if (handlers) {
+      if (isArray(handlers)) {
+        for (const handler of handlers) {
+          if (!node.disabled) {
+            handler(e);
+          }
+        }
+      } else {
+        handlers(e);
+      }
+    }
+    node = node.host && node.host !== node && node.host instanceof Node ? node.host : node.parentNode;
+  }
+};
+function setDynamicEvents(el, events) {
+  for (const name in events) {
+    on(el, name, events[name], { effect: true });
+  }
+}
+
+/*! #__NO_SIDE_EFFECTS__ */
+// @__NO_SIDE_EFFECTS__
+function factory(doc, factory2, root) {
+  return () => {
+    const el = factory2(doc);
+    if (root) {
+      el.ext.set("$root", true);
+    }
+    return el;
+  };
+}
+
 const rendererOptions = extend({ patchProp }, nodeOps);
 let renderer;
 function ensureRenderer() {
@@ -11677,4 +11688,4 @@ function unmountPage(pageInstance) {
   }
 }
 
-export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, Static, Suspense, Teleport, Text$1 as Text, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createMountPage, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, registerHMR, registerRuntimeCompiler, remove, render, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle$1 as setStyle, setText, setTransitionHooks, setValue, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, toHandlers, transformVNodeArgs, unmountPage, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };
+export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, Static, Suspense, Teleport, Text$1 as Text, VaporFragment, addEventListener, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createMountPage, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, registerHMR, registerRuntimeCompiler, remove, render, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle$1 as setStyle, setText, setTransitionHooks, setValue, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, toHandlers, transformVNodeArgs, unmountPage, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };

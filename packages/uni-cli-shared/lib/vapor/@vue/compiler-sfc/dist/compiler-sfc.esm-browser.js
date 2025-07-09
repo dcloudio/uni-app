@@ -31999,6 +31999,8 @@ const defaultOptions = {
   bindingMetadata: EMPTY_OBJ,
   inline: false,
   isTS: false,
+  // fixed by uts
+  disableEventDelegation: false,
   onError: defaultOnError,
   onWarn: defaultOnWarn
 };
@@ -33744,21 +33746,30 @@ function genInsertionState(operation, context) {
   ];
 }
 
+const COMMENT_START = "<!--";
+const COMMENT_END = "-->";
+const DOCTYPE_START = "<!";
+const WHITESPACE_REGEX = /\s/;
+const ATTRIBUTE_NAME_REGEX = /[\s=]/;
+const SELF_CLOSING_REGEX = /\s*\/$/;
 class HtmlParser {
   constructor(html) {
     this.html = html;
     this.length = html.length;
     this.index = 0;
   }
+  /**
+   * Parse HTML string into an array of HTML nodes
+   */
   parse() {
     const nodes = [];
     this.index = 0;
     while (this.index < this.length) {
       if (this.html[this.index] === "<") {
-        const node = this.parseTag();
-        if (node) {
-          nodes.push(node.node);
-          this.index = node.endIndex;
+        const result = this.parseTag();
+        if (result) {
+          nodes.push(result.node);
+          this.index = result.endIndex;
         } else {
           this.index++;
         }
@@ -33771,6 +33782,12 @@ class HtmlParser {
     }
     return nodes;
   }
+  // =============================================================================
+  // Private Methods - Main Parsing Logic
+  // =============================================================================
+  /**
+   * Parse text content until next tag
+   */
   parseText() {
     const start = this.index;
     const nextTag = this.html.indexOf("<", start);
@@ -33780,33 +33797,45 @@ class HtmlParser {
     this.index = end;
     return { type: "text", content };
   }
+  /**
+   * Parse a tag (element, comment, or doctype)
+   */
   parseTag() {
-    if (this.html.substring(this.index, this.index + 4) === "<!--") {
+    if (this.html.startsWith(COMMENT_START, this.index)) {
       return this.parseComment();
     }
-    if (this.html.substring(this.index, this.index + 2) === "<!") {
-      return this.parseShortComment();
+    if (this.html.startsWith(DOCTYPE_START, this.index)) {
+      return this.parseDoctype();
     }
     return this.parseElement();
   }
+  /**
+   * Parse HTML comment
+   */
   parseComment() {
-    const start = this.index + 4;
-    const end = this.html.indexOf("-->", start);
+    const start = this.index + COMMENT_START.length;
+    const end = this.html.indexOf(COMMENT_END, start);
     if (end === -1) return null;
     const content = this.html.substring(start, end);
     return {
       node: { type: "comment", content },
-      endIndex: end + 3
+      endIndex: end + COMMENT_END.length
     };
   }
-  parseShortComment() {
-    const end = this.html.indexOf(">", this.index + 2);
+  /**
+   * Parse DOCTYPE and other declarations
+   */
+  parseDoctype() {
+    const end = this.html.indexOf(">", this.index + DOCTYPE_START.length);
     if (end === -1) return null;
     return {
       node: { type: "comment", content: "" },
       endIndex: end + 1
     };
   }
+  /**
+   * Parse HTML element
+   */
   parseElement() {
     const tagEnd = this.html.indexOf(">", this.index);
     if (tagEnd === -1) return null;
@@ -33826,34 +33855,108 @@ class HtmlParser {
       };
     }
     const innerHtml = this.html.substring(tagEnd + 1, endTagIndex);
-    const children = new HtmlParser(innerHtml).parse();
+    const children = innerHtml ? new HtmlParser(innerHtml).parse() : [];
     return {
       node: { type: "element", tag, attrs, children },
       endIndex: endTagIndex + `</${tag}>`.length
     };
   }
+  // =============================================================================
+  // Private Methods - Tag Content Parsing
+  // =============================================================================
+  /**
+   * Parse tag content to extract tag name, attributes, and self-closing flag
+   */
   parseTagContent(content) {
-    const selfClosing = content.endsWith("/") || content.endsWith(" /");
-    const cleanContent = content.replace(/\s*\/$/, "").trim();
-    const parts = cleanContent.split(/\s+/);
-    const tag = parts[0];
-    const attrs = {};
-    for (let i = 1; i < parts.length; i++) {
-      const attr = parts[i];
-      const eqIndex = attr.indexOf("=");
-      if (eqIndex !== -1) {
-        const name = attr.substring(0, eqIndex);
-        let value = attr.substring(eqIndex + 1);
-        if (value.startsWith('"') && value.endsWith('"') || value.startsWith("'") && value.endsWith("'")) {
-          value = value.slice(1, -1);
-        }
-        attrs[name] = value;
-      } else if (attr) {
-        attrs[attr] = attr;
-      }
+    const selfClosing = SELF_CLOSING_REGEX.test(content);
+    const cleanContent = content.replace(SELF_CLOSING_REGEX, "").trim();
+    if (!cleanContent) {
+      return { tag: "", attrs: {}, selfClosing };
     }
+    const spaceIndex = cleanContent.search(WHITESPACE_REGEX);
+    const tag = spaceIndex === -1 ? cleanContent : cleanContent.substring(0, spaceIndex);
+    if (spaceIndex === -1) {
+      return { tag, attrs: {}, selfClosing };
+    }
+    const attrContent = cleanContent.substring(spaceIndex + 1);
+    const attrs = this.parseAttributes(attrContent);
     return { tag, attrs, selfClosing };
   }
+  /**
+   * Parse attributes from attribute content string
+   */
+  parseAttributes(content) {
+    const attrs = {};
+    let i = 0;
+    const length = content.length;
+    while (i < length) {
+      i = this.skipWhitespace(content, i);
+      if (i >= length) break;
+      const nameStart = i;
+      while (i < length && !ATTRIBUTE_NAME_REGEX.test(content[i])) {
+        i++;
+      }
+      if (i === nameStart) break;
+      const name = content.substring(nameStart, i);
+      i = this.skipWhitespace(content, i);
+      if (i >= length || content[i] !== "=") {
+        attrs[name] = name;
+        continue;
+      }
+      i++;
+      i = this.skipWhitespace(content, i);
+      if (i >= length) {
+        attrs[name] = "";
+        continue;
+      }
+      const value = this.parseAttributeValue(content, i);
+      attrs[name] = value.value;
+      i = value.endIndex;
+    }
+    return attrs;
+  }
+  /**
+   * Parse attribute value (quoted or unquoted)
+   */
+  parseAttributeValue(content, startIndex) {
+    const quote = content[startIndex];
+    if (quote === '"' || quote === "'") {
+      const valueStart = startIndex + 1;
+      let i = valueStart;
+      while (i < content.length && content[i] !== quote) {
+        i++;
+      }
+      const value = content.substring(valueStart, i);
+      return {
+        value,
+        endIndex: i < content.length ? i + 1 : i
+        // Skip closing quote if found
+      };
+    } else {
+      const valueStart = startIndex;
+      let i = valueStart;
+      while (i < content.length && !WHITESPACE_REGEX.test(content[i])) {
+        i++;
+      }
+      const value = content.substring(valueStart, i);
+      return { value, endIndex: i };
+    }
+  }
+  // =============================================================================
+  // Private Methods - Utilities
+  // =============================================================================
+  /**
+   * Skip whitespace characters starting from index
+   */
+  skipWhitespace(content, index) {
+    while (index < content.length && WHITESPACE_REGEX.test(content[index])) {
+      index++;
+    }
+    return index;
+  }
+  /**
+   * Find matching end tag for given tag name
+   */
   findMatchingEndTag(tag, startIndex) {
     const startTag = `<${tag}`;
     const endTag = `</${tag}>`;
@@ -33867,7 +33970,7 @@ class HtmlParser {
         const nextTagEnd = this.html.indexOf(">", nextStart);
         if (nextTagEnd !== -1 && nextTagEnd < nextEnd) {
           const nextTagContent = this.html.substring(nextStart + 1, nextTagEnd);
-          if (!nextTagContent.endsWith("/") && !nextTagContent.endsWith(" /")) {
+          if (!SELF_CLOSING_REGEX.test(nextTagContent)) {
             depth++;
           }
         }
@@ -34175,7 +34278,9 @@ class CodegenContext {
       inline: false,
       bindingMetadata: {},
       expressionPlugins: [],
-      templateMode: "string"
+      templateMode: "string",
+      // fixed by uts
+      disableEventDelegation: false
     };
     this.options = extend(defaultOptions, options);
     this.block = ir.block;
@@ -34223,9 +34328,19 @@ function generate(ir, options = {}) {
       `const ${setTemplateRefIdent} = ${context.helper("createTemplateRefSetter")}()`
     );
   }
+  const codeFragments = genBlockContent(ir.block, context, true);
   if (options.templateMode === "factory") {
-    if (ir.template.length > 0) {
+    if (ir.template.length > 0 || context.delegates.size > 0) {
       push(NEWLINE, `const $doc = _ctx.$nativePage.document`);
+    }
+    if (context.delegates.size) {
+      const delegatesCall = genCall(
+        context.helper("delegateEvents"),
+        ...[`$doc`, ...Array.from(context.delegates).map((v) => `"${v}"`)]
+      ).join("");
+      push(NEWLINE, delegatesCall);
+    }
+    if (ir.template.length > 0) {
       const templateCalls = generateFactoryCallsInRender(
         ir.template,
         ir.rootTemplateIndex,
@@ -34234,7 +34349,7 @@ function generate(ir, options = {}) {
       push(NEWLINE, templateCalls);
     }
   }
-  push(...genBlockContent(ir.block, context, true));
+  push(...codeFragments);
   push(INDENT_END, NEWLINE);
   if (!inline) {
     push("}");
@@ -34259,7 +34374,10 @@ function generate(ir, options = {}) {
     helpers
   };
 }
-function genDelegates({ delegates, helper }) {
+function genDelegates({ delegates, helper, options }) {
+  if (options.templateMode === "factory") {
+    return "";
+  }
   return delegates.size ? genCall(
     helper("delegateEvents"),
     ...Array.from(delegates).map((v) => `"${v}"`)
@@ -34813,7 +34931,7 @@ const transformVOn = (dir, node, context) => {
       handlerModifiers: eventOptionModifiers
     };
   }
-  const delegate = arg.isStatic && !eventOptionModifiers.length && delegatedEvents(arg.content);
+  const delegate = !context.options.disableEventDelegation && arg.isStatic && !eventOptionModifiers.length && delegatedEvents(arg.content);
   const operation = {
     type: 5,
     element: context.reference(),

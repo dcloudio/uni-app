@@ -1046,6 +1046,11 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
   instance.setupContext = null;
   instance.accessCache = /* @__PURE__ */ Object.create(null);
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
+  const setupFn = isFunction(component) ? component : component.setup;
+  const setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [
+    instance.props,
+    instance
+  ]) || EMPTY_OBJ : EMPTY_OBJ;
   const { initNativePage, initFontFace } = appContext.config.uniX || {};
   if (initNativePage) {
     initNativePage(instance.proxy);
@@ -1053,11 +1058,6 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
   if (initFontFace) {
     initFontFace(instance.proxy);
   }
-  const setupFn = isFunction(component) ? component : component.setup;
-  const setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [
-    instance.props,
-    instance
-  ]) || EMPTY_OBJ : EMPTY_OBJ;
   if (!!(process.env.NODE_ENV !== "production") && !isBlock(setupResult)) {
     if (isFunction(component)) {
       warn(`Functional vapor component must return a block directly.`);
@@ -1581,18 +1581,6 @@ function template(html, root) {
     const ret = node.cloneNode(true);
     if (root) ret.$root = true;
     return ret;
-  };
-}
-
-/*! #__NO_SIDE_EFFECTS__ */
-// @__NO_SIDE_EFFECTS__
-function factory(doc, factory2, root) {
-  return () => {
-    const el = factory2(doc);
-    if (root) {
-      el.ext.set("$root", true);
-    }
-    return el;
   };
 }
 
@@ -2143,4 +2131,4 @@ function withVaporDirectives(node, dirs) {
   }
 }
 
-export { VaporFragment, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporComponent, delegate, delegateEvents, factory, getDefaultValue, getRestElement, insert, isFragment, next, nthChild, on, prepend, remove, renderEffect, setAttr, setClass, setDOMProp, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setValue, template, unmountComponent, vaporInteropPlugin, withVaporDirectives };
+export { VaporFragment, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporComponent, delegate, delegateEvents, getDefaultValue, getRestElement, insert, isFragment, next, nthChild, on, prepend, remove, renderEffect, setAttr, setClass, setDOMProp, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setValue, template, unmountComponent, vaporInteropPlugin, withVaporDirectives };
