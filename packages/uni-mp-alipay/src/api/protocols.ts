@@ -364,8 +364,10 @@ export const getLocation = {
   },
 }
 export const openLocation = {
-  args: {
-    // TODO address 参数在阿里上是必传的
+  args(fromArgs: UniApp.OpenLocationOptions, toArgs: my.IOpenLocationOptions) {
+    if (!fromArgs.scale) {
+      toArgs.scale = 18
+    }
   },
 }
 export const getNetworkType = {
