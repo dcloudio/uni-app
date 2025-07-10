@@ -396,7 +396,7 @@ function promisify (name, api) {
   }
   return function promiseApi (options = {}, ...params) {
     if (isFn(options.success) || isFn(options.fail) || isFn(options.complete)) {
-      return wrapperReturnValue(name, invokeApi(name, api, options, ...params))
+      return wrapperReturnValue(name, invokeApi(name, api, Object.assign({}, options), ...params))
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
       invokeApi(name, api, Object.assign({}, options, {
@@ -413,7 +413,7 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 
-function checkDeviceWidth() {
+function checkDeviceWidth () {
   let windowWidth, pixelRatio, platform;
 
   {
@@ -430,7 +430,7 @@ function checkDeviceWidth() {
   isIOS = platform === 'ios';
 }
 
-function upx2px(number, newDeviceWidth) {
+function upx2px (number, newDeviceWidth) {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }

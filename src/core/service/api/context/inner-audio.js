@@ -62,7 +62,9 @@ const props = [
     name: 'volume'
   },
   {
-    name: 'sessionCategory'
+    name: 'sessionCategory',
+    cache: true,
+    default: 'playback'
   },
   {
     name: 'playbackRate',

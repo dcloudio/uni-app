@@ -124,7 +124,8 @@ export default {
         this._bindObjectListeners({
           class: [this.hovering ? this.hoverClass : ''],
           attrs: {
-            disabled: this.disabled
+            disabled: this.disabled,
+            id: this.id
           },
           on: {
             touchstart: this._hoverTouchStart,
@@ -145,7 +146,8 @@ export default {
         this._bindObjectListeners({
           class: [this.hovering ? this.hoverClass : ''],
           attrs: {
-            disabled: this.disabled
+            disabled: this.disabled,
+            id: this.id
           },
           on: {
             click: this._onClick

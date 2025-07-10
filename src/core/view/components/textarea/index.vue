@@ -17,7 +17,12 @@
         class="uni-textarea-line"
         v-text="' '"
       />
-      <div class="uni-textarea-compute">
+      <div
+        class="uni-textarea-compute"
+        :class="{
+          'uni-textarea-compute-auto-height': autoHeight
+        }"
+      >
         <div
           v-for="(item, index) in valueCompute"
           :key="index"
@@ -329,6 +334,10 @@ uni-textarea[hidden] {
 }
 .uni-textarea-line {
   width: 1em;
+}
+.uni-textarea-compute-auto-height {
+  /* 解决全输入符号设置auto-height不会自动增加高度 */
+  overflow-wrap: break-word;
 }
 .uni-textarea-textarea {
   resize: none;

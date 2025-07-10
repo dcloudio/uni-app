@@ -30,7 +30,12 @@ export function chooseFile ({
     extension
   })
   document.body.appendChild(fileInput)
-
+  fileInput.addEventListener('cancel', function () {
+    const res = {
+      errMsg: 'chooseFile:fail cancel'
+    }
+    invoke(callbackId, res)
+  })
   fileInput.addEventListener('change', function (event) {
     const tempFiles = []
     const fileCount = event.target.files.length

@@ -337,6 +337,11 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
       }
     } catch (e) {}
 
+    if (!runByHBuilderX && process.env.UNI_PLATFORM === 'mp-weixin') {
+      const { PreprocessorWebpackPlugin } = require('@dcloudio/uni-cli-shared/lib/preprocessor')
+      plugins.push(new PreprocessorWebpackPlugin())
+    }
+
     const resolveLoaderAlias = {}
     const modules = ['@vue/cli-plugin-babel', '@vue/cli-service']
     modules.forEach(m => {

@@ -112,7 +112,9 @@ const tags = {
     'snapshot',
     // 'span', // todo: 临时移除 span 的支持，后续判断 skyline 环境进行区分 ask 190418
     'sticky-header',
-    'sticky-section'
+    'sticky-section',
+    'open-data-list',
+    'open-data-item'
   ],
   // 支付宝小程序平台独有组件
   'mp-alipay': [
