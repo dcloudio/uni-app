@@ -33336,17 +33336,25 @@ function genCreateComponent(operation, context) {
     },
     []
   );
+  const args = [
+    tag,
+    rawProps,
+    rawSlots,
+    root ? "true" : false,
+    once && "true"
+  ];
+  if (context.options.templateMode === "factory") {
+    if (operation.asset || operation.dynamic && !operation.dynamic.isStatic) {
+      args.unshift(`$doc`);
+    }
+  }
   return [
     NEWLINE,
     ...inlineHandlers,
     `const n${operation.id} = `,
     ...genCall(
       operation.dynamic && !operation.dynamic.isStatic ? helper("createDynamicComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"),
-      tag,
-      rawProps,
-      rawSlots,
-      root ? "true" : false,
-      once && "true"
+      ...args
     ),
     ...genDirectivesForElement(operation.id, context)
   ];
@@ -34331,7 +34339,7 @@ function generate(ir, options = {}) {
   }
   const codeFragments = genBlockContent(ir.block, context, true);
   if (options.templateMode === "factory") {
-    if (ir.template.length > 0 || context.delegates.size > 0) {
+    if (ir.template.length > 0 || context.delegates.size > 0 || context.helpers.has("createDynamicComponent") || context.helpers.has("createComponentWithFallback")) {
       push(
         NEWLINE,
         `const $ins = ${context.helper("getCurrentGenericInstance")}()`

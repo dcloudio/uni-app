@@ -14406,7 +14406,7 @@ class VaporComponentInstance {
 function isVaporComponent(value) {
   return value instanceof VaporComponentInstance;
 }
-function createComponentWithFallback(comp, rawProps, rawSlots, isSingleRoot) {
+function createComponentWithFallback(doc, comp, rawProps, rawSlots, isSingleRoot) {
   if (!isString(comp)) {
     return createComponent(comp, rawProps, rawSlots, isSingleRoot);
   }
@@ -14417,7 +14417,7 @@ function createComponentWithFallback(comp, rawProps, rawSlots, isSingleRoot) {
   } else {
     resetInsertionState();
   }
-  const el = document.createElement(comp);
+  const el = doc.createElement(comp);
   el.$root = isSingleRoot;
   if (rawProps) {
     renderEffect(() => {
@@ -15216,7 +15216,7 @@ const getRefValue = (el) => {
   return el;
 };
 
-function createDynamicComponent(getter, rawProps, rawSlots, isSingleRoot) {
+function createDynamicComponent(doc, getter, rawProps, rawSlots, isSingleRoot) {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
   if (isHydrating) {
@@ -15229,6 +15229,8 @@ function createDynamicComponent(getter, rawProps, rawSlots, isSingleRoot) {
     const value = getter();
     frag.update(
       () => createComponentWithFallback(
+        // fixed by uts
+        doc,
         resolveDynamicComponent(value),
         rawProps,
         rawSlots,
