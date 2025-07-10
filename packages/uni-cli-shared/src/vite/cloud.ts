@@ -284,6 +284,7 @@ function createExternal(config: ResolvedConfig) {
         'pinia',
         'vuex',
         'vue-i18n',
+        'tslib',
       ].includes(source)
     ) {
       return true

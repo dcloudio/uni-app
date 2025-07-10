@@ -5,8 +5,8 @@ import {
   getCurrentInstance,
   inject,
   nextTick,
+  onBeforeUnmount,
   onMounted,
-  onUnmounted,
   reactive,
   ref,
   watch,
@@ -150,6 +150,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
       const y = e.detail.scrollTop
       // 考虑 data.indicatorHeight =0 的情况，可能 NaN
+      if (data.indicatorHeight === 0) {
+        return
+      }
       const current = Math.round(y / data.indicatorHeight)
       if (y % data.indicatorHeight != 0) {
         setCurrent(current)
@@ -212,7 +215,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
     })
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       const ctx = instance?.proxy
       uniResizeObserver.disconnect()
       $dispatch(ctx, 'PickerView', '_pickerViewUpdateHandler', ctx, 'remove')

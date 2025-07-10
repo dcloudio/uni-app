@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-runtime",
-  "version": "3.0.0-4060620250520001",
+  "version": "3.0.0-alpha-4070520250704002",
   "description": "@dcloudio/uni-runtime",
   "sideEffects": false,
   "module": "src/index.ts",

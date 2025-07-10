@@ -5,6 +5,7 @@ import {
   camelize,
   computed,
   getCurrentInstance,
+  onBeforeUnmount,
   onMounted,
   ref,
   watch,
@@ -19,7 +20,6 @@ import {
   checkboxProps,
 } from './model'
 import { styles } from './style'
-import { onUnload } from '@dcloudio/uni-app'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: CHECKBOX_NAME,
@@ -148,7 +148,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
     })
 
-    onUnload(() => {
+    onBeforeUnmount(() => {
       const ctx = instance?.proxy
       $dispatch(
         ctx,

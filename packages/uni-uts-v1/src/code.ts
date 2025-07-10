@@ -861,7 +861,7 @@ async function parseCode(
       types
     )
   } catch (e: any) {
-    console.error(parseUTSSyntaxError(e, inputDir))
+    // console.error(parseUTSSyntaxError(e, inputDir))
   }
   return []
 }
@@ -1119,11 +1119,18 @@ function resolveType(
       resolveTypeReferenceName
     )
   } else if (typeAnnotation.type === 'TsUnionType') {
-    for (const type of typeAnnotation.types) {
-      if (type.type === 'TsKeywordType') {
-        continue
+    const isNullable =
+      typeAnnotation.types.length === 2 &&
+      typeAnnotation.types.some(
+        (type) => type.type === 'TsKeywordType' && type.kind === 'null'
+      )
+    if (isNullable) {
+      for (const type of typeAnnotation.types) {
+        if (type.type === 'TsKeywordType') {
+          continue
+        }
+        return resolveType(types, type, resolveTypeReferenceName)
       }
-      return resolveType(types, type, resolveTypeReferenceName)
     }
   } else if (typeAnnotation.type === 'TsArrayType') {
     return resolveType(types, typeAnnotation.elemType, resolveTypeReferenceName)

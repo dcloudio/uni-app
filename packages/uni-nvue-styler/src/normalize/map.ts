@@ -28,6 +28,7 @@ import { normalizeShorthandProperty } from './shorthandProperty'
 import { normalizeFontFace, normalizeSrc } from './fontFace'
 import { normalizeFlexFlow } from './flexFlow'
 
+// transition-property 不读 css.json
 // 从 property.ts 中移动到 map 里，避免循环依赖
 const normalizeProperty: Normalize = (v, options) => {
   v = (v || '').toString()
@@ -35,6 +36,13 @@ const normalizeProperty: Normalize = (v, options) => {
     .split(/\s*,\s*/)
     .map(camelize)
     .join(',')
+
+  // [all, none] 是特殊值
+  if (options.type === 'uvue') {
+    if (v === 'all' || v === 'none') {
+      return { value: v }
+    }
+  }
 
   if (
     v.split(/\s*,\s*/).every((p: any) => {
@@ -181,6 +189,7 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   textDecoration: normalizeDefault,
   boxShadow: normalizeDefault,
   textShadow: normalizeDefault,
+  // transition-property 支持逗号多值分割
   transitionProperty: normalizeProperty,
   transitionTimingFunction: normalizeTimingFunction,
 }

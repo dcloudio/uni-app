@@ -51,32 +51,34 @@ export function _redirectTo({
   path,
   query,
 }: RedirectToOptions): Promise<undefined> {
-  const lastPage = (getCurrentPage() as unknown as UniPage).vm
   // 与 uni-app x 安卓一致，后移除页面
 
   return new Promise((resolve) => {
-    invokeAfterRouteHooks(API_REDIRECT_TO)
-    showWebview(
-      registerPage({
-        url,
-        path,
-        query,
-        openType:
-          isTabPage(lastPage) || getAllPages().length === 1
-            ? 'reLaunch'
-            : 'redirectTo',
-      }),
-      'none',
-      0,
-      () => {
-        if (lastPage) {
-          removePages(lastPage)
+    setTimeout(() => {
+      const lastPage = (getCurrentPage() as unknown as UniPage).vm
+      invokeAfterRouteHooks(API_REDIRECT_TO)
+      showWebview(
+        registerPage({
+          url,
+          path,
+          query,
+          openType:
+            isTabPage(lastPage) || getAllPages().length === 1
+              ? 'reLaunch'
+              : 'redirectTo',
+        }),
+        'none',
+        0,
+        () => {
+          if (lastPage) {
+            removePages(lastPage)
+          }
+          resolve(undefined)
+          setStatusBarStyle()
         }
-        resolve(undefined)
-        setStatusBarStyle()
-      }
-    )
-    invokeBeforeRouteHooks(API_REDIRECT_TO)
+      )
+      invokeBeforeRouteHooks(API_REDIRECT_TO)
+    }, 0)
   })
 }
 

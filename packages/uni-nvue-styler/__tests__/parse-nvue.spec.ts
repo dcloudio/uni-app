@@ -669,4 +669,86 @@ border-top-style: solid;
     expect(messages[1].text.includes('not supported')).toBe(true)
     expect(messages[2].text.includes('not supported')).toBe(true)
   })
+  test('nvue 不支持 css var 的复合写法', async () => {
+    const { json, messages } = await objectifierRule(`
+.a1{
+  --color1: red;
+  --width1: 1px;
+  --style1: solid;
+  border:  var(--width1) var(--style1) var(--color1)
+}
+`)
+    expect(json).toEqual({
+      a1: {
+        '': {
+          '--color1': 'red',
+          '--style1': 'solid',
+          '--width1': '1px',
+          border: 'var(--width1) var(--style1) var(--color1)',
+        },
+      },
+    })
+    expect(messages.length).toBe(1)
+  })
+  test('flex-flow', async () => {
+    const { json, messages } = await objectifierRule(`
+.a {
+  flex-flow: row nowrap;
+}
+.b {
+  flex-flow: row wrap;
+}
+`)
+    expect(json).toEqual({
+      a: {
+        '': {
+          flexDirection: 'row',
+          flexWrap: 'nowrap',
+        },
+      },
+      b: {
+        '': {
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+        },
+      },
+    })
+    expect(messages.length).toBe(2)
+    expect(messages[0].text).toBe(
+      'NOTE: property value `nowrap` is the DEFAULT value for `flex-wrap` (could be removed)'
+    )
+    expect(messages[1].text).toBe(
+      'NOTE: the flex-wrap property may have compatibility problem on native'
+    )
+  })
+  test('nvue 不支持 ::v-deep 和 :deep()', async () => {
+    // 多个空格
+    const { json, messages } = await objectifierRule(`
+.a  .b{
+  color: #ff0000;
+}
+.a ::v-deep .b{
+  color: #00ff00;
+}
+.a ::v-deep .b ::v-deep .c{
+  color: #ff00ff;
+}
+.a :deep(.b){
+
+  color: #0000ff;
+}
+  `)
+    expect(json).toEqual({
+      b: { '.a ': { color: '#ff0000' } },
+    })
+    // console.log(messages)
+    expect(messages.length).toBe(3)
+    expect(
+      messages.every((i) =>
+        i.text.includes(
+          'is not supported. nvue only support classname selector'
+        )
+      )
+    ).toEqual(true)
+  })
 })

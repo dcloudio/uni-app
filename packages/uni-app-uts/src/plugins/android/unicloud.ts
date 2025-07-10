@@ -3,6 +3,7 @@ import type { Plugin } from 'vite'
 import path from 'path'
 import {
   addUTSEasyComAutoImports,
+  isEnableSecureNetwork,
   normalizePath,
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
@@ -31,7 +32,11 @@ export function uniCloudPlugin(): Plugin {
       if (uniCloudSpaceList.length === 0) {
         return
       }
+
       if (bundle[ENTRY_FILENAME()]) {
+        const inputDir = process.env.UNI_INPUT_DIR!
+        const platform = process.env.UNI_UTS_PLATFORM!
+        const isSecureNetworkEnabled = isEnableSecureNetwork(inputDir, platform)
         const asset = bundle[ENTRY_FILENAME()] as OutputAsset
         asset.source =
           asset.source +
@@ -52,8 +57,12 @@ export class UniCloudConfig extends io.dcloud.unicloud.InternalUniCloudConfig {
     override debuggerInfo ?: string = ${JSON.stringify(
       process.env.UNICLOUD_DEBUG || null
     )}
-    override secureNetworkEnable : boolean = false
-    override secureNetworkConfig ?: string = ""
+    override secureNetworkEnable : boolean = ${JSON.stringify(
+      isSecureNetworkEnabled || false
+    )}
+    override secureNetworkConfig ?: string = ${JSON.stringify(
+      process.env.UNI_SECURE_NETWORK_CONFIG || '[]'
+    )}
     constructor() { super() }
 }
 `

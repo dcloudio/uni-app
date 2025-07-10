@@ -1,4 +1,4 @@
-import { hyphenate, isFunction, isPlainObject } from '@vue/shared'
+import { extend, hyphenate, isFunction, isPlainObject } from '@vue/shared'
 import {
   SLOT_DEFAULT_NAME,
   VIRTUAL_HOST_CLASS,
@@ -141,6 +141,24 @@ export function genNode(
       return genExpression(node.content, context)
     case NodeTypes.ELEMENT:
       if (node.tagType === ElementTypes.SLOT) {
+        const isEmptyDefaultSlot =
+          node.props.some(
+            (p) =>
+              (p.type === NodeTypes.ATTRIBUTE &&
+                p.name === 'name' &&
+                p.value?.content === SLOT_DEFAULT_NAME) ||
+              (p.name === 'bind' &&
+                (p as NameScopedSlotDirectiveNode).slotName ===
+                  SLOT_DEFAULT_NAME)
+          ) && node.children.length === 0
+        // 当存在 <slot name="default" :xxx="xxx"><slot> 时，在后面添加 <slot></slot>，使默认插槽生效
+        if (isEmptyDefaultSlot) {
+          genSlot(node, context)
+          return genSlot(
+            extend({}, node, { props: [], children: [], loc: {} }),
+            context
+          )
+        }
         return genSlot(node, context)
       } else if (node.tagType === ElementTypes.COMPONENT) {
         return genComponent(node, context)
@@ -157,7 +175,16 @@ function genText(node: TextNode, { push, isX }: TemplateCodegenContext) {
   if (isX) {
     push(mpEscapeText(node.content))
   } else {
-    push(node.content)
+    // 目前暂时只处理 < 和 >，防止微信小程序编译报错 ask 138888
+    push(
+      getEscaper(
+        /[<>]/g,
+        new Map([
+          [60, '&lt;'],
+          [62, '&gt;'],
+        ])
+      )(node.content)
+    )
   }
 }
 
@@ -204,7 +231,16 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
       return prop.arg.content === 'name'
     }
   })
-  if (!node.children.length || context.slot.fallbackContent) {
+  const isDefaultSlot = node.props.some(
+    (p) =>
+      p.type === NodeTypes.ATTRIBUTE &&
+      p.name === 'name' &&
+      p.value?.content === SLOT_DEFAULT_NAME
+  )
+  if (
+    !node.children.length ||
+    (context.slot.fallbackContent && !isDefaultSlot)
+  ) {
     // 无后备内容或支持后备内容
     return genElement(node, context)
   }
@@ -240,13 +276,24 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   }
   push(`>`)
   genElement(node, context)
+  // 当存在 <slot name="default" :xxx="xxx"> fallback <slot> 时，在后面添加 <slot></slot>，使默认插槽生效
+  if (isDefaultSlot) {
+    push(`<slot/>`)
+  }
   push(`</block>`)
   push(`<block`)
   genVElse(context)
   push(`>`)
+  // 默认插槽 且支持 fallback，fallback 需要包裹在 <slot> 中
+  if (context.slot.fallbackContent && isDefaultSlot) {
+    push(`<slot>`)
+  }
   children.forEach((node) => {
     genNode(node, context)
   })
+  if (context.slot.fallbackContent && isDefaultSlot) {
+    push(`</slot>`)
+  }
   push(`</block>`)
   if (isVIfSlot) {
     push(`</block>`)

@@ -228,182 +228,6 @@ class UTSType {
     return obj;
   }
 }
-const OriginalJSON = JSON;
-function createUTSJSONObject(obj) {
-  const result = new UTSJSONObject({});
-  for (const key in obj) {
-    const value = obj[key];
-    if (isPlainObject(value)) {
-      result[key] = createUTSJSONObject(value);
-    } else if (getType$1(value) === "array") {
-      result[key] = value.map((item) => {
-        if (isPlainObject(item)) {
-          return createUTSJSONObject(item);
-        } else {
-          return item;
-        }
-      });
-    } else {
-      result[key] = value;
-    }
-  }
-  return result;
-}
-function parseObjectOrArray(object, utsType) {
-  const objectType = getType$1(object);
-  if (object === null || objectType !== "object" && objectType !== "array") {
-    return object;
-  }
-  if (utsType && utsType !== UTSJSONObject) {
-    try {
-      return new utsType(object, void 0, true);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-  if (objectType === "array") {
-    return object.map((value) => {
-      return parseObjectOrArray(value);
-    });
-  } else if (objectType === "object") {
-    return createUTSJSONObject(object);
-  }
-  return object;
-}
-const UTSJSON = {
-  parse: (text, reviver, utsType) => {
-    if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject)) {
-      utsType = reviver;
-      reviver = void 0;
-    }
-    try {
-      const parseResult = OriginalJSON.parse(text, reviver);
-      return parseObjectOrArray(parseResult, utsType);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  parseArray(text, utsType) {
-    try {
-      const parseResult = OriginalJSON.parse(text);
-      if (Array.isArray(parseResult)) {
-        return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : void 0);
-      }
-      return null;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  parseObject(text, utsType) {
-    try {
-      const parseResult = OriginalJSON.parse(text);
-      if (Array.isArray(parseResult)) {
-        return null;
-      }
-      return parseObjectOrArray(parseResult, utsType);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  stringify: (value) => {
-    return OriginalJSON.stringify(value);
-  }
-};
-function mapGet(map, key) {
-  if (!map.has(key)) {
-    return null;
-  }
-  return map.get(key);
-}
-function stringCodePointAt(str, pos) {
-  if (pos < 0 || pos >= str.length) {
-    return null;
-  }
-  return str.codePointAt(pos);
-}
-function stringAt(str, pos) {
-  if (pos < -str.length || pos >= str.length) {
-    return null;
-  }
-  return str.at(pos);
-}
-function weakMapGet(map, key) {
-  if (!map.has(key)) {
-    return null;
-  }
-  return map.get(key);
-}
-const UTS$1 = {
-  arrayAt,
-  arrayFind,
-  arrayFindLast,
-  arrayPop,
-  arrayShift,
-  isInstanceOf,
-  UTSType,
-  mapGet,
-  stringAt,
-  stringCodePointAt,
-  weakMapGet,
-  JSON: UTSJSON
-};
-let UniError$1 = class UniError2 extends Error {
-  constructor(errSubject, errCode, errMsg) {
-    let options = {};
-    const argsLength = Array.from(arguments).length;
-    switch (argsLength) {
-      case 0:
-        errSubject = "";
-        errMsg = "";
-        errCode = 0;
-        break;
-      case 1:
-        errMsg = errSubject;
-        errSubject = "";
-        errCode = 0;
-        break;
-      case 2:
-        errMsg = errSubject;
-        options = errCode;
-        errCode = options.errCode || 0;
-        errSubject = options.errSubject || "";
-        break;
-    }
-    super(errMsg);
-    this.name = "UniError";
-    this.errSubject = errSubject;
-    this.errCode = errCode;
-    this.errMsg = errMsg;
-    if (options.data) {
-      this.data = options.data;
-    }
-    if (options.cause) {
-      this.cause = options.cause;
-    }
-  }
-  set errMsg(msg) {
-    this.message = msg;
-  }
-  get errMsg() {
-    return this.message;
-  }
-  toString() {
-    return this.errMsg;
-  }
-  toJSON() {
-    return {
-      errSubject: this.errSubject,
-      errCode: this.errCode,
-      errMsg: this.errMsg,
-      data: this.data,
-      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
-    };
-  }
-};
 function initUTSJSONObjectProperties(obj) {
   const propertyList = [
     "_resolveKeyPath",
@@ -605,6 +429,173 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     for (let key in this) {
       callback(this[key], key);
     }
+  }
+};
+const OriginalJSON = JSON;
+function createUTSJSONObjectOrArray(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => {
+      return createUTSJSONObjectOrArray(item);
+    });
+  } else if (isPlainObject(obj)) {
+    const result = new UTSJSONObject$1({});
+    for (const key in obj) {
+      const value = obj[key];
+      result[key] = createUTSJSONObjectOrArray(value);
+    }
+    return result;
+  }
+  return obj;
+}
+function parseObjectOrArray(object, utsType) {
+  const objectType = getType$1(object);
+  if (object === null || objectType !== "object" && objectType !== "array") {
+    return object;
+  }
+  if (utsType && utsType !== UTSJSONObject$1) {
+    try {
+      return new utsType(object, void 0, true);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+  if (objectType === "array" || objectType === "object") {
+    return createUTSJSONObjectOrArray(object);
+  }
+  return object;
+}
+const UTSJSON = {
+  parse: (text, reviver, utsType) => {
+    if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject$1)) {
+      utsType = reviver;
+      reviver = void 0;
+    }
+    try {
+      const parseResult = OriginalJSON.parse(text, reviver);
+      return parseObjectOrArray(parseResult, utsType);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  parseArray(text, utsType) {
+    try {
+      const parseResult = OriginalJSON.parse(text);
+      if (Array.isArray(parseResult)) {
+        return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : void 0);
+      }
+      return null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  parseObject(text, utsType) {
+    try {
+      const parseResult = OriginalJSON.parse(text);
+      if (Array.isArray(parseResult)) {
+        return null;
+      }
+      return parseObjectOrArray(parseResult, utsType);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  stringify: (value) => {
+    return OriginalJSON.stringify(value);
+  }
+};
+function mapGet(map, key) {
+  if (!map.has(key)) {
+    return null;
+  }
+  return map.get(key);
+}
+function stringCodePointAt(str, pos) {
+  if (pos < 0 || pos >= str.length) {
+    return null;
+  }
+  return str.codePointAt(pos);
+}
+function stringAt(str, pos) {
+  if (pos < -str.length || pos >= str.length) {
+    return null;
+  }
+  return str.at(pos);
+}
+function weakMapGet(map, key) {
+  if (!map.has(key)) {
+    return null;
+  }
+  return map.get(key);
+}
+const UTS$1 = {
+  arrayAt,
+  arrayFind,
+  arrayFindLast,
+  arrayPop,
+  arrayShift,
+  isInstanceOf,
+  UTSType,
+  mapGet,
+  stringAt,
+  stringCodePointAt,
+  weakMapGet,
+  JSON: UTSJSON
+};
+let UniError$1 = class UniError2 extends Error {
+  constructor(errSubject, errCode, errMsg) {
+    let options = {};
+    const argsLength = Array.from(arguments).length;
+    switch (argsLength) {
+      case 0:
+        errSubject = "";
+        errMsg = "";
+        errCode = 0;
+        break;
+      case 1:
+        errMsg = errSubject;
+        errSubject = "";
+        errCode = 0;
+        break;
+      case 2:
+        errMsg = errSubject;
+        options = errCode;
+        errCode = options.errCode || 0;
+        errSubject = options.errSubject || "";
+        break;
+    }
+    super(errMsg);
+    this.name = "UniError";
+    this.errSubject = errSubject;
+    this.errCode = errCode;
+    this.errMsg = errMsg;
+    if (options.data) {
+      this.data = options.data;
+    }
+    if (options.cause) {
+      this.cause = options.cause;
+    }
+  }
+  set errMsg(msg) {
+    this.message = msg;
+  }
+  get errMsg() {
+    return this.message;
+  }
+  toString() {
+    return this.errMsg;
+  }
+  toJSON() {
+    return {
+      errSubject: this.errSubject,
+      errCode: this.errCode,
+      errMsg: this.errMsg,
+      data: this.data,
+      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
+    };
   }
 };
 let UTSValueIterable$1 = class UTSValueIterable2 {
@@ -1635,11 +1626,91 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-uniShared.createRpx2Unit(
+const rpx2Unit = uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unit,
   uniShared.defaultRpx2Unit.unitRatio,
   uniShared.defaultRpx2Unit.unitPrecision
 );
+function transformRpx(value) {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
+      return rpx2Unit(num + "rpx");
+    });
+  }
+  return value;
+}
+class UniElement extends HTMLElement {
+  constructor() {
+    super();
+    this._props = {};
+    this._page = null;
+    this.__isUniElement = true;
+  }
+  attachVmProps(props2) {
+    this._props = props2;
+  }
+  getAttribute(qualifiedName) {
+    const name = shared.camelize(qualifiedName);
+    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
+    return attr2 === void 0 ? null : attr2;
+  }
+  getPage() {
+    if (this._page) {
+      return this._page;
+    }
+    let parent = this.parentNode;
+    while (parent && !parent._page) {
+      parent = parent.parentNode;
+    }
+    return (parent == null ? void 0 : parent._page) || null;
+  }
+  get uniPage() {
+    return this.getPage();
+  }
+  getBoundingClientRectAsync(callback) {
+    var _a, _b;
+    if (callback) {
+      const domRect = this.getBoundingClientRect();
+      try {
+        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      return;
+    }
+    return new Promise((resolve, reject) => {
+      const domRect = this.getBoundingClientRect();
+      resolve(domRect);
+    });
+  }
+  get style() {
+    const originalStyle = super.style;
+    if (originalStyle.__patchRpx__) {
+      return originalStyle;
+    }
+    originalStyle.__patchRpx__ = true;
+    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
+    super.style.setProperty = function(property, value, priority) {
+      return originalSetProperty(
+        property,
+        value ? transformRpx(value + "") : value,
+        priority || void 0
+      );
+    };
+    return super.style;
+  }
+  get tagName() {
+    return super.tagName.replace(/^UNI-/, "");
+  }
+  get nodeName() {
+    return super.nodeName.replace(/^UNI-/, "");
+  }
+}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -2550,7 +2621,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(
+        name,
+        invokeApi(name, fn, shared.extend({}, args), rest)
+      );
     }
     return wrapperReturnValue(
       name,
@@ -2559,7 +2633,7 @@ function promisify(name, fn) {
           invokeApi(
             name,
             fn,
-            shared.extend(args, { success: resolve, fail: reject }),
+            shared.extend({}, args, { success: resolve, fail: reject }),
             rest
           );
         })
@@ -2976,30 +3050,51 @@ function isSystemDialogPageInstance(vm) {
 }
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
+function getPageElement(page) {
+  {
+    throw new Error("Not support get page element in non-browser environment");
+  }
+}
 class UniPageImpl {
   constructor({
     route,
     options,
     vm
   }) {
-    this.width = 0;
-    this.height = 0;
-    this.statusBarHeight = safeAreaInsets$1.top;
     this.getParentPage = () => null;
-    this.route = route;
+    this.route = (vm == null ? void 0 : vm.route) || route;
     this.options = options;
     this.vm = vm;
     this.$vm = vm;
   }
+  get statusBarHeight() {
+    return safeAreaInsets$1.top;
+  }
+  get width() {
+    return this.pageBody.width;
+  }
+  get height() {
+    const pageEle = getPageElement();
+    const pageHead = pageEle.querySelector("uni-page-head");
+    return this.pageBody.height + (pageHead ? pageHead.clientHeight : 0);
+  }
   get pageBody() {
-    {
-      throw new Error("Not support pageBody in non-browser environment");
-    }
+    const pageEle = getPageElement();
+    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    const pageWrapperInfo = getPageWrapperInfo(pageBody);
+    return {
+      top: pageWrapperInfo.top,
+      left: pageWrapperInfo.left,
+      right: pageWrapperInfo.left + pageWrapperInfo.width,
+      bottom: pageWrapperInfo.top + pageWrapperInfo.height,
+      width: pageWrapperInfo.width,
+      height: pageWrapperInfo.height
+    };
   }
   get safeAreaInsets() {
-    {
-      throw new Error("Not support safeAreaInsets in non-browser environment");
-    }
+    const pageEle = getPageElement();
+    const pageBody = pageEle.querySelector("uni-page-wrapper");
+    return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
     var _a;
@@ -3075,6 +3170,19 @@ class UniPageImpl {
   getDialogPages() {
     return [];
   }
+  getAndroidActivity() {
+    return null;
+  }
+  exitFullscreen() {
+  }
+  createElement() {
+    return new UniElementImpl({
+      id: "",
+      name: "",
+      attrs: /* @__PURE__ */ new Map(),
+      style: /* @__PURE__ */ new Map()
+    });
+  }
 }
 class UniNormalPageImpl extends UniPageImpl {
   getDialogPages() {
@@ -3092,21 +3200,32 @@ class UniNormalPageImpl extends UniPageImpl {
 function initXPage(vm, route, page) {
   var _a, _b;
   initPageVm(vm, page);
-  Object.defineProperty(vm, "$pageLayoutInstance", {
-    get() {
-      var _a2, _b2;
-      let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
-      while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
-        res = res.parent;
+  if (!("$pageLayoutInstance" in vm)) {
+    Object.defineProperty(vm, "$pageLayoutInstance", {
+      get() {
+        var _a2, _b2;
+        let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
+        while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
+          res = res.parent;
+        }
+        return res;
       }
-      return res;
-    }
-  });
+    });
+  }
   vm.$basePage = vm.$page;
+  vm.$.$waitNativeRender = (callback) => {
+    vm.$nextTick(() => {
+      callback && callback();
+    });
+  };
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
+    let targetRoute = (route == null ? void 0 : route.path) || "";
+    if (targetRoute.startsWith("/")) {
+      targetRoute = targetRoute.substring(1);
+    }
     const uniPage = new UniNormalPageImpl({
-      route: (route == null ? void 0 : route.path) || "",
+      route: targetRoute,
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
@@ -3344,6 +3463,7 @@ function reload() {
 }
 const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncError",
+  props: ["error"],
   setup() {
     initI18nAsyncMsgsOnce();
     const {
@@ -7003,7 +7123,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useProgressState(props2) {
   const currentPercent = vue.ref(0);
-  const outerBarStyle = vue.computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
+  const outerBarStyle = vue.computed(() => `background-color: ${props2.backgroundColor}; height: ${rpx2px(props2.strokeWidth)}px;`);
   const innerBarStyle = vue.computed(() => {
     const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
@@ -8162,7 +8282,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
         "ref": sliderValueRef,
         "style": setValueStyle.value,
         "class": "uni-slider-value"
-      }, null, 4), [[vue.vShow, props2.showValue]])]), vue.createVNode("slot", null, null)], 512);
+      }, null, 4), [[vue.vShow, props2.showValue]])])], 512);
     };
   }
 });
@@ -9170,22 +9290,18 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         lineCount
       });
       if (props2.autoHeight) {
-        el.style.height = "auto";
         wrapper.style.height = height + "px";
       }
     });
     vue.watch(() => props2.autoHeight, (autoHeight) => {
-      const el = rootRef.value;
       const wrapper = wrapperRef.value;
       if (autoHeight) {
-        el.style.height = "auto";
         wrapper.style.height = heightRef.value + "px";
       } else {
-        el.style.height = "";
         wrapper.style.height = "";
       }
     });
-    function onResize({
+    function onResize2({
       height
     }) {
       heightRef.value = height;
@@ -9263,7 +9379,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "onKeyup": onKeyUpEnter
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
       return vue.createVNode("uni-textarea", {
-        "ref": rootRef
+        "ref": rootRef,
+        "auto-height": props2.autoHeight
       }, [vue.createVNode("div", {
         "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
@@ -9277,15 +9394,17 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-textarea-compute"
       }, [valueCompute.value.map((item) => vue.createVNode("div", null, [item.trim() ? item : "."])), vue.createVNode(ResizeSensor, {
         "initial": true,
-        "onResize": onResize
+        "onResize": onResize2
       }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? vue.createVNode("form", {
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 8, ["auto-height"]);
     };
   }
 });
+class UniViewElement extends UniElement {
+}
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ shared.extend({}, hoverProps),
@@ -9507,7 +9626,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
-    function onResize() {
+    function onResize2() {
       childStatus.forEach((status) => {
         status.cachedSizeUpdated = false;
       });
@@ -9562,7 +9681,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-list-view-content",
         "style": contentStyle.value
       }, [visibleVNode], 4)], 4), vue.createVNode(ResizeSensor, {
-        "onResize": onResize
+        "onResize": onResize2
       }, null, 8, ["onResize"])], 512);
     };
   }
@@ -9731,8 +9850,14 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
   props: {},
   setup(props2, {
     slots,
-    expose
+    expose,
+    attrs: attrs2
   }) {
+    if (attrs2.slot === "refresher") {
+      return () => {
+        return vue.createVNode("uni-list-item", null, [slots.default && slots.default()]);
+      };
+    }
     const rootRef = vue.ref(null);
     const isVertical = vue.inject("__listViewIsVertical");
     const visible = vue.ref(false);
@@ -9876,7 +10001,8 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks(options, instance, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component") {
+  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
+  mpType === "page" && instance.renderer === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
@@ -10979,7 +11105,10 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$8,
-  setup(props2) {
+  emits: ["load"],
+  setup(props2, {
+    emit: emit2
+  }) {
     Invoke();
     const rootRef = vue.ref(null);
     vue.ref(null);
@@ -12334,15 +12463,18 @@ function usePopupStyle(props2) {
         "border-style": "solid"
       });
       const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
+      const popoverWidth = getNumber(popover.width ? popover.width : 300);
       const popoverTop = getNumber(popover.top);
       const popoverHeight = getNumber(popover.height);
       const center = popoverLeft + popoverWidth / 2;
       contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
+      const contentLeft = Math.max(0, center - popoverWidth / 2);
       contentStyle.left = `${contentLeft}px`;
+      if (popover.width) {
+        contentStyle.width = `${popoverWidth}px`;
+      }
       let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleLeft = Math.min(popoverWidth - 12, triangleLeft);
       triangleStyle.left = `${triangleLeft}px`;
       const vcl = popupHeight.value / 2;
       if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
@@ -13129,6 +13261,110 @@ const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
 const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
 const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = vue.getCurrentInstance()) => {
+  !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
+};
+const onResize = /* @__PURE__ */ createLifeCycleHook(
+  uniShared.ON_RESIZE,
+  2
+  /* HookFlags.PAGE */
+);
+const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
+class UniMatchMediaElement extends UniViewElement {
+  constructor() {
+    super();
+    this._experssions = [];
+  }
+  static get observedAttributes() {
+    return [
+      "orientation",
+      "width",
+      "minWidth",
+      "maxWidth",
+      "height",
+      "minHeight",
+      "maxHeight"
+    ];
+  }
+  connectedCallback() {
+    this._experssions = this.getExpressions();
+    this.uniPage.vm.$.$waitNativeRender(() => {
+      this.toggleElement(this.isValid({
+        width: this.uniPage.pageBody.width,
+        height: this.uniPage.pageBody.height,
+        orientation: uni.getDeviceInfo().deviceOrientation
+      }));
+    });
+    onResize((res) => {
+      this.toggleElement(this.isValid({
+        orientation: res.deviceOrientation,
+        width: res.size.windowWidth,
+        height: res.size.windowHeight
+      }));
+    }, this.uniPage.vm.$);
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (this._experssions.length == 0 || newValue == null) {
+      return;
+    }
+    const matches = name.match(RE_MQ_FEATURE);
+    if (matches == null || matches.length == 0) {
+      return;
+    }
+    const modifier = matches[1] != null ? matches[1] : "";
+    const feature = matches[2] != null ? matches[2].toLowerCase() : "";
+    const expression = this._experssions.find((expr) => expr.feature == feature && expr.modifier == modifier);
+    if (expression == null) {
+      return;
+    }
+    expression.value = newValue;
+    this.toggleElement(this.isValid({
+      width: this.uniPage.pageBody.width,
+      height: this.uniPage.pageBody.height,
+      orientation: uni.getDeviceInfo().deviceOrientation
+    }));
+  }
+  getExpressions() {
+    const expressions = [];
+    UniMatchMediaElement.observedAttributes.forEach((key) => {
+      const value = this.getAttribute(key);
+      const feature = key.match(RE_MQ_FEATURE);
+      if (value != null && feature != null && feature.length > 0) {
+        expressions.push({
+          modifier: feature[1] != null ? feature[1] : "",
+          feature: feature[2] != null ? feature[2].toLowerCase() : "",
+          value
+        });
+      }
+    });
+    return expressions;
+  }
+  // 显示或者隐藏页面元素
+  toggleElement(show) {
+    this.style.setProperty("display", show ? "flex" : "none");
+  }
+  isValid(values) {
+    return this._experssions.every((expression) => {
+      switch (expression.feature) {
+        case "orientation":
+          return values[expression.feature] === this.getAttribute(expression.feature);
+      }
+      const expressionValue = values[expression.feature];
+      switch (expression.modifier) {
+        case "min":
+          return parseFloat(expression.value) <= expressionValue;
+        case "max":
+          return parseFloat(expression.value) >= expressionValue;
+        default:
+          return parseFloat(expression.value) === expressionValue;
+      }
+    });
+  }
+}
+const MatchMedia = /* @__PURE__ */ (() => {
+  customElements.define("uni-match-media", UniMatchMediaElement);
+  return "uni-match-media";
+})();
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -13143,6 +13379,7 @@ const request = /* @__PURE__ */ defineTaskApi(
     method,
     dataType: dataType2,
     responseType,
+    enableChunked,
     withCredentials,
     timeout = __uniConfig.networkTimeout.request
   }, { resolve, reject }) => {
@@ -13176,52 +13413,162 @@ const request = /* @__PURE__ */ defineTaskApi(
         }
       }
     }
-    const xhr = new XMLHttpRequest();
-    const requestTask = new RequestTask(xhr);
-    xhr.open(method, url);
-    for (const key in header) {
-      if (shared.hasOwn(header, key)) {
-        xhr.setRequestHeader(key, header[key]);
-      }
-    }
-    const timer = setTimeout(function() {
-      xhr.onload = xhr.onabort = xhr.onerror = null;
-      requestTask.abort();
-      reject("timeout", { errCode: 5 });
-    }, timeout);
-    xhr.responseType = responseType;
-    xhr.onload = function() {
-      clearTimeout(timer);
-      const statusCode = xhr.status;
-      let res = responseType === "text" ? xhr.responseText : xhr.response;
-      if (responseType === "text" && dataType2 === "json") {
-        try {
-          res = UTS.JSON.parse(res);
-        } catch (error) {
+    let requestTask;
+    if (!enableChunked) {
+      const xhr = new XMLHttpRequest();
+      requestTask = new RequestTask(xhr);
+      xhr.open(method, url);
+      for (const key in header) {
+        if (shared.hasOwn(header, key)) {
+          xhr.setRequestHeader(key, header[key]);
         }
       }
-      resolve({
-        data: res,
-        statusCode,
-        header: parseHeaders(xhr.getAllResponseHeaders()),
-        cookies: []
+      const timer = setTimeout(function() {
+        xhr.onload = xhr.onabort = xhr.onerror = null;
+        requestTask.abort();
+        reject("timeout", { errCode: 5 });
+      }, timeout);
+      xhr.responseType = responseType;
+      xhr.onload = function() {
+        clearTimeout(timer);
+        const statusCode = xhr.status;
+        let res = responseType === "text" ? xhr.responseText : xhr.response;
+        if (responseType === "text") {
+          res = parseResponseText(res, responseType, dataType2);
+        }
+        resolve({
+          data: res,
+          statusCode,
+          header: parseHeaders(xhr.getAllResponseHeaders()),
+          cookies: []
+        });
+      };
+      xhr.onabort = function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
+      };
+      xhr.onerror = function() {
+        clearTimeout(timer);
+        reject(void 0, { errCode: 5 });
+      };
+      xhr.withCredentials = withCredentials;
+      xhr.send(body);
+    } else {
+      if (typeof window.fetch === void 0 || typeof window.AbortController === void 0) {
+        throw new Error(
+          "fetch or AbortController is not supported in this environment"
+        );
+      }
+      const controller = new AbortController();
+      const signal = controller.signal;
+      requestTask = new RequestTask(controller);
+      const fetchOptions = {
+        method,
+        headers: header,
+        body,
+        signal,
+        credentials: withCredentials ? "include" : "same-origin"
+      };
+      const timer = setTimeout(function() {
+        requestTask.abort();
+        reject("timeout", { errCode: 5 });
+      }, timeout);
+      fetchOptions.signal.addEventListener("abort", function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
       });
-    };
-    xhr.onabort = function() {
-      clearTimeout(timer);
-      reject("abort", { errCode: 600003 });
-    };
-    xhr.onerror = function() {
-      clearTimeout(timer);
-      reject(void 0, { errCode: 5 });
-    };
-    xhr.withCredentials = withCredentials;
-    xhr.send(body);
+      window.fetch(url, fetchOptions).then(
+        (response) => {
+          const statusCode = response.status;
+          const header2 = response.headers;
+          const body2 = response.body;
+          const headerObj = {};
+          header2.forEach((value, key) => {
+            headerObj[key] = value;
+          });
+          const cookies = cookiesParse(headerObj);
+          requestTask._emitter.emit("headersReceived", {
+            header: headerObj,
+            statusCode,
+            cookies
+          });
+          if (!body2) {
+            resolve({
+              data: "",
+              statusCode,
+              header: headerObj,
+              cookies
+            });
+            return;
+          }
+          const reader = body2.getReader();
+          const bodyBuffers = [];
+          const streamReaderRead = () => {
+            reader.read().then(({ done, value }) => {
+              if (done) {
+                const result = concatArrayBuffers(bodyBuffers);
+                let res = responseType === "text" ? new TextDecoder().decode(result) : result;
+                if (responseType === "text") {
+                  res = parseResponseText(res, responseType, dataType2);
+                }
+                resolve({
+                  data: res,
+                  statusCode,
+                  header: headerObj,
+                  cookies
+                });
+                return;
+              }
+              const chunk = value;
+              bodyBuffers.push(chunk);
+              requestTask._emitter.emit("chunkReceived", {
+                data: chunk
+              });
+              streamReaderRead();
+            });
+          };
+          streamReaderRead();
+        },
+        (error) => {
+          reject(error, { errCode: 5 });
+        }
+      );
+    }
     return requestTask;
   },
   RequestProtocol,
   RequestOptions
 );
+const cookiesParse = (header) => {
+  let cookiesStr = header["Set-Cookie"] || header["set-cookie"];
+  let cookiesArr = [];
+  if (!cookiesStr) {
+    return [];
+  }
+  if (cookiesStr[0] === "[" && cookiesStr[cookiesStr.length - 1] === "]") {
+    cookiesStr = cookiesStr.slice(1, -1);
+  }
+  const handleCookiesArr = cookiesStr.split(";");
+  for (let i = 0; i < handleCookiesArr.length; i++) {
+    if (handleCookiesArr[i].indexOf("Expires=") !== -1 || handleCookiesArr[i].indexOf("expires=") !== -1) {
+      cookiesArr.push(handleCookiesArr[i].replace(",", ""));
+    } else {
+      cookiesArr.push(handleCookiesArr[i]);
+    }
+  }
+  cookiesArr = cookiesArr.join(";").split(",");
+  return cookiesArr;
+};
+function concatArrayBuffers(buffers) {
+  const totalLength = buffers.reduce((acc, buf) => acc + buf.byteLength, 0);
+  const result = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const buffer of buffers) {
+    result.set(new Uint8Array(buffer), offset);
+    offset += buffer.byteLength;
+  }
+  return result.buffer;
+}
 function normalizeContentType(header) {
   const name = Object.keys(header).find(
     (name2) => name2.toLowerCase() === "content-type"
@@ -13242,20 +13589,79 @@ function normalizeContentType(header) {
   return "string";
 }
 class RequestTask {
-  constructor(xhr) {
-    this._xhr = xhr;
+  constructor(controller) {
+    this._requestOnChunkReceiveCallbackId = 0;
+    this._requestOnChunkReceiveCallbacks = /* @__PURE__ */ new Map();
+    this._requestOnHeadersReceiveCallbackId = 0;
+    this._requestOnHeadersReceiveCallbacks = /* @__PURE__ */ new Map();
+    this._emitter = new uniShared.Emitter();
+    this._controller = controller;
   }
   abort() {
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
+    if (this._controller) {
+      this._controller.abort();
+      delete this._controller;
     }
   }
   onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
+    this._emitter.on("headersReceived", callback);
+    this._requestOnHeadersReceiveCallbackId++;
+    this._requestOnHeadersReceiveCallbacks.set(
+      this._requestOnHeadersReceiveCallbackId,
+      callback
+    );
+    return this._requestOnHeadersReceiveCallbackId;
   }
   offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
+    if (callback == null) {
+      this._emitter.off("headersReceived");
+      return;
+    }
+    if (typeof callback === "function") {
+      this._requestOnHeadersReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnHeadersReceiveCallbacks.delete(id2);
+          this._emitter.off("headersReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnHeadersReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnHeadersReceiveCallbacks.delete(callback);
+    this._emitter.off("headersReceived", callbackFn);
+  }
+  onChunkReceived(callback) {
+    this._emitter.on("chunkReceived", callback);
+    this._requestOnChunkReceiveCallbackId++;
+    this._requestOnChunkReceiveCallbacks.set(
+      this._requestOnChunkReceiveCallbackId,
+      callback
+    );
+    return this._requestOnChunkReceiveCallbackId;
+  }
+  offChunkReceived(callback) {
+    if (callback == null) {
+      this._emitter.off("chunkReceived");
+      return;
+    }
+    if (typeof callback === "function") {
+      this._requestOnChunkReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnChunkReceiveCallbacks.delete(id2);
+          this._emitter.off("chunkReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnChunkReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnChunkReceiveCallbacks.delete(callback);
+    this._emitter.off("chunkReceived", callbackFn);
   }
 }
 function parseHeaders(headers) {
@@ -13268,6 +13674,16 @@ function parseHeaders(headers) {
     headersObject[find[1]] = find[2];
   });
   return headersObject;
+}
+function parseResponseText(responseText, responseType, dataType2) {
+  let res = responseText;
+  if (responseType === "text" && dataType2 === "json") {
+    try {
+      res = UTS.JSON.parse(res);
+    } catch (error) {
+    }
+  }
+  return res;
 }
 const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
@@ -13451,7 +13867,7 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       model,
       platform,
       system,
-      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osName: osname ? osname.toLowerCase() : void 0,
       osVersion: osversion
     });
   }
@@ -14257,6 +14673,7 @@ exports.ListView = index$g;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
 exports.Map = index$9;
+exports.MatchMedia = MatchMedia;
 exports.MovableArea = index$s;
 exports.MovableView = index$r;
 exports.Navigator = index$q;

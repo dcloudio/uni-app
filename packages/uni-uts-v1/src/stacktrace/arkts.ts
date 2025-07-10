@@ -15,6 +15,7 @@ import {
   type GenerateAppHarmonyJavaScriptRuntimeCodeFrameOptions,
   parseUTSJavaScriptRuntimeStacktrace,
 } from './js'
+import { SPECIAL_CHARS } from '../utils'
 export interface ParseUTSArkTSPluginStacktraceOptions {
   /**
    * 项目输入目录 = process.env.UNI_INPUT_DIR
@@ -55,11 +56,13 @@ async function parseUTSArkTSStacktrace(
   const lines = stacktrace.split(splitRE)
   const res: string[] = []
   const errorMessageLines: string[] = []
+  let parsedError = false
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     try {
       const codes = await parseUTSStacktraceLine(line, re, options)
       if (codes && codes.length) {
+        parsedError = true
         res.push(...codes)
         if (type === 'runtime') {
           if (errorMessageLines.length) {
@@ -78,6 +81,11 @@ async function parseUTSArkTSStacktrace(
     res.unshift(...errorMessageLines)
   } else {
     res.push(...errorMessageLines)
+  }
+  if (parsedError) {
+    return (
+      SPECIAL_CHARS.ERROR_BLOCK + res.join('\n') + SPECIAL_CHARS.ERROR_BLOCK
+    )
   }
   return res.join('\n')
 }

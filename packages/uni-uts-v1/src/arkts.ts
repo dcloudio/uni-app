@@ -118,6 +118,20 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniNativeViewElement'],
       ['UniNativeViewEvent'],
       ['UniTextElement'],
+      ['UniWebViewElement'],
+      ['UniWebViewMessageEvent'],
+      ['UniWebViewMessageEventDetail'],
+      ['UniWebViewContentHeightChangeEvent'],
+      ['UniWebViewContentHeightChangeEventDetail'],
+      ['UniWebViewErrorEvent'],
+      ['UniWebViewErrorEventDetail'],
+      ['UniWebViewDownloadEvent'],
+      ['UniWebViewDownloadEventDetail'],
+      ['UniWebViewLoadingEvent'],
+      ['UniWebViewLoadingEventDetail'],
+      ['UniWebViewLoadEvent'],
+      ['UniWebViewLoadEventDetail'],
+      ['UniWebViewElementLoadDataOptions'],
       ['uni'],
       ['UTSHarmony'],
       ['UniCustomEvent'],
@@ -138,6 +152,15 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniBorderBoxSize'],
       ['UniContentBoxSize'],
       ['UniDevicePixelContentBoxSize'],
+      ['UniIntersectionObserver'],
+      ['createIntersectionObserver'],
+      ['CreateIntersectionObserverOptions'],
+      ['UniIntersectionObserverMargins'],
+      ['UniIntersectionObserverRectResult'],
+      ['UniIntersectionObserverObserveCallbackResult'],
+      ['UniIntersectionObserverObserveCallback'],
+      ['TextDecoder'],
+      ['TextEncoder'],
 
       // element
       ['UniViewElementImpl'],
@@ -158,6 +181,7 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniSwiperItemElementImpl'],
       ['UniRichTextElementImpl'],
       ['UniTabsElementImpl'],
+      ['UniWebViewElementImpl'],
 
       // uni-app-x-runtime framwork js
       ['CreateSelectorQuery'],
@@ -257,7 +281,111 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['requestAnimationFrame'],
       ['cancelAnimationFrame'],
       ['Image'],
-      ['Path2D']
+      ['Path2D'],
+
+      // copy from uni-preset
+      // ssr
+      ['ssrRef'],
+      ['shallowSsrRef'],
+      // uni-app lifecycle
+      // App and Page
+      ['onShow'],
+      ['onHide'],
+      // App
+      ['onLaunch'],
+      ['onError'],
+      ['onThemeChange'],
+      ['onKeyboardHeightChange'],
+      ['onPageNotFound'],
+      ['onUnhandledRejection'],
+      ['onLastPageBackPress'],
+      ['onExit'],
+      // Page
+      ['onPageShow'],
+      ['onPageHide'],
+      ['onLoad'],
+      ['onReady'],
+      ['onUnload'],
+      ['onResize'],
+      ['onBackPress'],
+      ['onPageScroll'],
+      ['onTabItemTap'],
+      ['onReachBottom'],
+      ['onPullDownRefresh'],
+      ['OnBackPressOptions'],
+      ['OnLaunchOptions'],
+      ['OnLoadOptions'],
+      ['OnPageScrollOptions'],
+      ['OnResizeOptions'],
+
+      // copy from vue-preset
+      // vue lifecycle
+      ['onActivated'],
+      ['onBeforeMount'],
+      ['onBeforeUnmount'],
+      ['onBeforeUpdate'],
+      ['onErrorCaptured'],
+      ['onDeactivated'],
+      ['onMounted'],
+      ['onServerPrefetch'],
+      ['onUnmounted'],
+      ['onUpdated'],
+
+      // setup helpers
+      ['useAttrs'],
+      ['useSlots'],
+
+      // reactivity,
+      ['computed'],
+      ['customRef'],
+      ['isReadonly'],
+      ['isRef'],
+      ['isProxy'],
+      ['isReactive'],
+      ['markRaw'],
+      ['reactive'],
+      ['readonly'],
+      ['ref'],
+      ['shallowReactive'],
+      ['shallowReadonly'],
+      ['shallowRef'],
+      ['triggerRef'],
+      ['toRaw'],
+      ['toRef'],
+      ['toRefs'],
+      ['toValue'],
+      ['unref'],
+      ['watch'],
+      ['watchEffect'],
+      ['watchPostEffect'],
+      ['watchSyncEffect'],
+
+      // component
+      ['defineComponent'],
+      ['defineAsyncComponent'],
+      ['getCurrentInstance'],
+      ['inject'],
+      ['nextTick'],
+      ['provide'],
+      ['useCssModule'],
+      ['createApp'],
+      ['hasInjectionContext'],
+
+      // render
+      ['h'],
+      ['mergeProps'],
+      ['cloneVNode'],
+      ['isVNode'],
+      ['resolveComponent'],
+      ['resolveDirective'],
+      ['withDirectives'],
+      ['withModifiers'],
+
+      // effect scope
+      ['effectScope'],
+      ['EffectScope'],
+      ['getCurrentScope'],
+      ['onScopeDispose']
     )
   }
 
@@ -609,7 +737,7 @@ export async function compileArkTS(
   )
 }
 
-function requireUTSPluginCode(pluginId: string, _isExtApi: boolean) {
+export function requireUTSPluginCode(pluginId: string, _isExtApi: boolean) {
   // 应该不需要返回uni，全都使用requireUTSPlugin即可，因为extApi也可能导出其他内容自己内部使用，比如map组件+createMapContext
   // UNI_COMPILE_EXT_API_INPUT 是js-framework-next用来编译鸿蒙ext-api插件的js代码
   // 此时不能返回uni，应该返回uni.requireUTSPlugin('uni_modules/${pluginId}')

@@ -13,7 +13,9 @@ export function uniUniModulesExtApiPlugin(): Plugin {
         external: ['vue'],
         output: {
           format: 'iife',
-          entryFileNames: 'components.js',
+          entryFileNames: `${
+            process.env.UNI_COMPILE_EXT_API_OUT_FILE_NAME || 'components'
+          }.js`,
           globals: {
             vue: 'Vue',
             uni: 'uni',

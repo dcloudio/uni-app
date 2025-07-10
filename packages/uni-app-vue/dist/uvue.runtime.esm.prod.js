@@ -1,182 +1,7 @@
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
-* @vue/shared v3.4.21
-* (c) 2018-present Yuxi (Evan) You and Vue contributors
-* @license MIT
-**/
-function makeMap(str, expectsLowerCase) {
-  var set = new Set(str.split(","));
-  return val => set.has(val);
-}
-var EMPTY_OBJ = {};
-var EMPTY_ARR = [];
-var NOOP = () => {};
-var NO = () => false;
-var isOn = key => key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && (
-// uppercase letter
-key.charCodeAt(2) > 122 || key.charCodeAt(2) < 97);
-var isModelListener = key => key.startsWith("onUpdate:");
-var extend$1 = Object.assign;
-var remove = (arr, el) => {
-  var i = arr.indexOf(el);
-  if (i > -1) {
-    arr.splice(i, 1);
-  }
-};
-var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-var hasOwn = (val, key) => hasOwnProperty$1.call(val, key);
-var isArray$1 = Array.isArray;
-var isMap = val => toTypeString(val) === "[object Map]";
-var isSet = val => toTypeString(val) === "[object Set]";
-var isRegExp = val => toTypeString(val) === "[object RegExp]";
-var isFunction = val => typeof val === "function";
-var isString = val => typeof val === "string";
-var isSymbol = val => typeof val === "symbol";
-var isObject = val => val !== null && typeof val === "object";
-var isPromise = val => {
-  return (isObject(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
-};
-var objectToString = Object.prototype.toString;
-var toTypeString = value => objectToString.call(value);
-var toRawType = value => {
-  return toTypeString(value).slice(8, -1);
-};
-var isPlainObject = val => toTypeString(val) === "[object Object]";
-var isIntegerKey = key => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
-var isReservedProp = /* @__PURE__ */makeMap(
-// the leading comma is intentional so empty string "" is also included
-",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
-var cacheStringFunction = fn => {
-  var cache = /* @__PURE__ */Object.create(null);
-  return str => {
-    var hit = cache[str];
-    return hit || (cache[str] = fn(str));
-  };
-};
-var camelizeRE = /-(\w)/g;
-var camelize = cacheStringFunction(str => {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
-});
-var hyphenateRE = /\B([A-Z])/g;
-var hyphenate = cacheStringFunction(str => str.replace(hyphenateRE, "-$1").toLowerCase());
-var capitalize = cacheStringFunction(str => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-});
-var toHandlerKey = cacheStringFunction(str => {
-  var s = str ? "on".concat(capitalize(str)) : "";
-  return s;
-});
-var hasChanged = (value, oldValue) => !Object.is(value, oldValue);
-var invokeArrayFns = (fns, arg) => {
-  for (var i = 0; i < fns.length; i++) {
-    fns[i](arg);
-  }
-};
-var def = (obj, key, value) => {
-  Object.defineProperty(obj, key, {
-    configurable: true,
-    enumerable: false,
-    value
-  });
-};
-var looseToNumber = val => {
-  var n = parseFloat(val);
-  return isNaN(n) ? val : n;
-};
-var toNumber = val => {
-  var n = isString(val) ? Number(val) : NaN;
-  return isNaN(n) ? val : n;
-};
-var _globalThis;
-var getGlobalThis = () => {
-  return _globalThis || (_globalThis = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {});
-};
-var GLOBALS_ALLOWED = "Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error";
-var isGloballyAllowed = /* @__PURE__ */makeMap(GLOBALS_ALLOWED);
-function normalizeStyle$2(value) {
-  if (isArray$1(value)) {
-    var res = {};
-    for (var i = 0; i < value.length; i++) {
-      var item = value[i];
-      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$2(item);
-      if (normalized) {
-        for (var key in normalized) {
-          res[key] = normalized[key];
-        }
-      }
-    }
-    return res;
-  } else if (isString(value) || isObject(value)) {
-    return value;
-  }
-}
-var listDelimiterRE = /;(?![^(]*\))/g;
-var propertyDelimiterRE = /:([^]+)/;
-var styleCommentRE = /\/\*[^]*?\*\//g;
-function parseStringStyle(cssText) {
-  var ret = {};
-  cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach(item => {
-    if (item) {
-      var tmp = item.split(propertyDelimiterRE);
-      tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
-    }
-  });
-  return ret;
-}
-function normalizeClass$1(value) {
-  var res = "";
-  if (isString(value)) {
-    res = value;
-  } else if (isArray$1(value)) {
-    for (var i = 0; i < value.length; i++) {
-      var normalized = normalizeClass$1(value[i]);
-      if (normalized) {
-        res += normalized + " ";
-      }
-    }
-  } else if (isObject(value)) {
-    for (var name in value) {
-      if (value[name]) {
-        res += name + " ";
-      }
-    }
-  }
-  return res.trim();
-}
-var toDisplayString = val => {
-  return isString(val) ? val : val == null ? "" : isArray$1(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
-};
-var replacer = (_key, val) => {
-  if (val && val.__v_isRef) {
-    return replacer(_key, val.value);
-  } else if (isMap(val)) {
-    return {
-      ["Map(".concat(val.size, ")")]: [...val.entries()].reduce((entries, _ref, i) => {
-        var [key, val2] = _ref;
-        entries[stringifySymbol(key, i) + " =>"] = val2;
-        return entries;
-      }, {})
-    };
-  } else if (isSet(val)) {
-    return {
-      ["Set(".concat(val.size, ")")]: [...val.values()].map(v => stringifySymbol(v))
-    };
-  } else if (isSymbol(val)) {
-    return stringifySymbol(val);
-  } else if (isObject(val) && !isArray$1(val) && !isPlainObject(val)) {
-    return String(val);
-  }
-  return val;
-};
-var stringifySymbol = function (v) {
-  var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
-  var _a;
-  return isSymbol(v) ? "Symbol(".concat((_a = v.description) != null ? _a : i, ")") : v;
-};
+import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, isIntegerKey, hasOwn, isMap, makeMap, hyphenate, capitalize, isPromise, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, getGlobalThis, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$2, looseToNumber, isGloballyAllowed, NO } from '@vue/shared';
+export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
+export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 
 /**
 * @vue/reactivity v3.4.21
@@ -394,7 +219,7 @@ function effect(fn, options) {
     }
   });
   if (options) {
-    extend$1(_effect, options);
+    extend(_effect, options);
     if (options.scope) recordEffectScope(_effect, options.scope);
   }
   if (!options || !options.lazy) {
@@ -1246,149 +1071,6 @@ var TriggerOpTypes = {
   "DELETE": "delete",
   "CLEAR": "clear"
 };
-
-// lifecycle
-// App and Page
-var ON_SHOW = 'onShow';
-var ON_HIDE = 'onHide';
-//Page
-var ON_LOAD = 'onLoad';
-var ON_UNLOAD = 'onUnload';
-// 百度特有
-var ON_INIT = 'onInit';
-// 微信特有
-var ON_SAVE_EXIT_STATE = 'onSaveExitState';
-var ON_BACK_PRESS = 'onBackPress';
-var ON_PAGE_SCROLL = 'onPageScroll';
-var ON_TAB_ITEM_TAP = 'onTabItemTap';
-var ON_REACH_BOTTOM = 'onReachBottom';
-var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
-var ON_SHARE_TIMELINE = 'onShareTimeline';
-var ON_SHARE_CHAT = 'onShareChat'; // xhs-share
-var ON_ADD_TO_FAVORITES = 'onAddToFavorites';
-var ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
-// navigationBar
-var ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
-var ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
-function getGlobalOnce() {
-  if (typeof globalThis !== 'undefined') {
-    return globalThis;
-  }
-  // worker
-  if (typeof self !== 'undefined') {
-    return self;
-  }
-  // browser
-  if (typeof window !== 'undefined') {
-    return window;
-  }
-  // nodejs
-  // if (typeof global !== 'undefined') {
-  //   return global
-  // }
-  function g() {
-    return this;
-  }
-  if (typeof g() !== 'undefined') {
-    return g();
-  }
-  return function () {
-    return new Function('return this')();
-  }();
-}
-var g = undefined;
-function getGlobal() {
-  if (g) {
-    return g;
-  }
-  g = getGlobalOnce();
-  return g;
-}
-function normalizeStyle$1(value) {
-  var g = getGlobal();
-  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
-    var styleObject = {};
-    g.UTSJSONObject.keys(value).forEach(key => {
-      styleObject[key] = value[key];
-    });
-    return normalizeStyle$2(styleObject);
-  } else if (value instanceof Map) {
-    var _styleObject = {};
-    value.forEach((value, key) => {
-      _styleObject[key] = value;
-    });
-    return normalizeStyle$2(_styleObject);
-  } else if (isString(value)) {
-    return parseStringStyle(value);
-  } else if (isArray$1(value)) {
-    var res = {};
-    for (var i = 0; i < value.length; i++) {
-      var item = value[i];
-      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$1(item);
-      if (normalized) {
-        for (var key in normalized) {
-          res[key] = normalized[key];
-        }
-      }
-    }
-    return res;
-  } else {
-    return normalizeStyle$2(value);
-  }
-}
-function normalizeClass(value) {
-  var res = '';
-  var g = getGlobal();
-  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
-    g.UTSJSONObject.keys(value).forEach(key => {
-      if (value[key]) {
-        res += key + ' ';
-      }
-    });
-  } else if (value instanceof Map) {
-    value.forEach((value, key) => {
-      if (value) {
-        res += key + ' ';
-      }
-    });
-  } else if (isArray$1(value)) {
-    for (var i = 0; i < value.length; i++) {
-      var normalized = normalizeClass(value[i]);
-      if (normalized) {
-        res += normalized + ' ';
-      }
-    }
-  } else {
-    res = normalizeClass$1(value);
-  }
-  return res.trim();
-}
-function normalizeProps(props) {
-  if (!props) return null;
-  var {
-    class: klass,
-    style
-  } = props;
-  if (klass && !isString(klass)) {
-    props.class = normalizeClass(klass);
-  }
-  if (style) {
-    props.style = normalizeStyle$1(style);
-  }
-  return props;
-}
-var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
-function isRootImmediateHook(name) {
-  var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
-  return PAGE_SYNC_HOOKS.indexOf(name) > -1;
-}
-// isRootImmediateHookX deprecated
-function isRootHook(name) {
-  return PAGE_HOOKS.indexOf(name) > -1;
-}
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
@@ -1850,38 +1532,32 @@ function createTransformBorder(options) {
       source
     } = decl;
     var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
-    var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
-      var index = splitResult.findIndex(str => item.test(str));
-      return index < 0 ? null : splitResult.splice(index, 1)[0];
-    });
-    var isUvuePlatform = options.type == 'uvue';
-    if (isUvuePlatform) {
-      if (splitResult.length > 0 && value != '') {
-        return [decl];
-      }
+    var havVar = splitResult.some(str => str.startsWith('var('));
+    var result = [];
+    // 包含 var ，直接视为 width/style/color 都使用默认值
+    if (havVar) {
+      result = splitResult;
+      splitResult = [];
     } else {
-      // nvue 维持不变
-      if (splitResult.length > 0) {
-        return [decl];
-      }
+      result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+        var index = splitResult.findIndex(str => item.test(str));
+        return index < 0 ? null : splitResult.splice(index, 1)[0];
+      });
+    }
+    if (splitResult.length > 0 && value != '') {
+      return [decl];
     }
     var defaultWidth = str => {
       if (str != null) {
         return str.trim();
       }
-      if (options.type == 'uvue') {
-        return 'medium';
-      }
-      return '0';
+      return 'medium';
     };
     var defaultStyle = str => {
       if (str != null) {
         return str.trim();
       }
-      if (options.type == 'uvue') {
-        return 'none';
-      }
-      return 'solid';
+      return 'none';
     };
     var defaultColor = str => {
       if (str != null) {
@@ -1889,10 +1565,6 @@ function createTransformBorder(options) {
       }
       return '#000000';
     };
-    if (!isUvuePlatform) {
-      // nvue 维持不变
-      return [createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source), createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source), createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source)];
-    }
     return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
   };
 }
@@ -2051,8 +1723,8 @@ var transformTransition = decl => {
   return result;
 };
 function getDeclTransforms(options) {
-  var transformBorder = options.type == 'uvue' ? createTransformBorder(options) : createTransformBorderNvue();
-  var styleMap = _objectSpread({
+  var transformBorder = options.type == 'uvue' ? createTransformBorder() : createTransformBorderNvue();
+  var styleMap = {
     transition: transformTransition,
     border: transformBorder,
     background: createTransformBackground(options),
@@ -2067,10 +1739,9 @@ function getDeclTransforms(options) {
     // uvue已经支持这些简写属性，不需要展开
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
-    padding: transformPadding
-  }, options.type !== 'uvue' ? {
+    padding: transformPadding,
     flexFlow: transformFlexFlow
-  } : {});
+  };
   var result = {};
   {
     result = styleMap;
@@ -2122,10 +1793,10 @@ function warn$1(msg) {
     callWithErrorHandling(appWarnHandler, instance, 11, [msg + args.map(a => {
       var _a, _b;
       return (_b = (_a = a.toString) == null ? void 0 : _a.call(a)) != null ? _b : JSON.stringify(a);
-    }).join(""), instance && instance.proxy, trace.map(_ref2 => {
+    }).join(""), instance && instance.proxy, trace.map(_ref => {
       var {
         vnode
-      } = _ref2;
+      } = _ref;
       return "at <".concat(formatComponentName(instance, vnode.type), ">");
     }).join("\n"), trace]);
   } else {
@@ -2167,11 +1838,11 @@ function formatTrace(trace) {
   });
   return logs;
 }
-function formatTraceEntry(_ref3) {
+function formatTraceEntry(_ref2) {
   var {
     vnode,
     recurseCount
-  } = _ref3;
+  } = _ref2;
   var postfix = recurseCount > 0 ? "... (".concat(recurseCount, " recursive calls)") : "";
   var isRoot = vnode.component ? vnode.component.parent == null : false;
   var open = " at <".concat(formatComponentName(vnode.component, vnode.type, isRoot));
@@ -2470,11 +2141,11 @@ function setDevtoolsHook$1(hook, target) {
   devtools$1 = hook;
   if (devtools$1) {
     devtools$1.enabled = true;
-    buffer.forEach(_ref4 => {
+    buffer.forEach(_ref3 => {
       var {
         event,
         args
-      } = _ref4;
+      } = _ref3;
       return devtools$1.emit(event, ...args);
     });
     buffer = [];
@@ -2559,7 +2230,7 @@ function normalizeEmitsOptions(comp, appContext) {
       var normalizedFromExtend = normalizeEmitsOptions(raw2, appContext, true);
       if (normalizedFromExtend) {
         hasExtends = true;
-        extend$1(normalized, normalizedFromExtend);
+        extend(normalized, normalizedFromExtend);
       }
     };
     if (!asMixin && appContext.mixins.length) {
@@ -2581,7 +2252,7 @@ function normalizeEmitsOptions(comp, appContext) {
   if (isArray$1(raw)) {
     raw.forEach(key => normalized[key] = null);
   } else {
-    extend$1(normalized, raw);
+    extend(normalized, raw);
   }
   if (isObject(comp)) {
     cache.set(comp, normalized);
@@ -2824,11 +2495,11 @@ function hasPropsChanged(prevProps, nextProps, emitsOptions) {
   }
   return false;
 }
-function updateHOCHostEl(_ref5, el) {
+function updateHOCHostEl(_ref4, el) {
   var {
     vnode,
     parent
-  } = _ref5;
+  } = _ref4;
   while (parent) {
     var root = parent.subTree;
     if (root.suspense && root.suspense.activeBranch === vnode) {
@@ -2939,14 +2610,14 @@ function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense
     suspense.resolve(false, true);
   }
 }
-function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, slotScopeIds, optimized, _ref6) {
+function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, slotScopeIds, optimized, _ref5) {
   var {
     p: patch,
     um: unmount,
     o: {
       createElement
     }
-  } = _ref6;
+  } = _ref5;
   var suspense = n2.suspense = n1.suspense;
   suspense.vnode = n2;
   n2.el = n1.el;
@@ -3609,10 +3280,10 @@ var BaseTransitionPropsValidators = {
 var BaseTransitionImpl = {
   name: "BaseTransition",
   props: BaseTransitionPropsValidators,
-  setup(props, _ref7) {
+  setup(props, _ref6) {
     var {
       slots
-    } = _ref7;
+    } = _ref6;
     var instance = getCurrentInstance();
     var state = useTransitionState();
     return () => {
@@ -3866,7 +3537,7 @@ function defineComponent$1(options, extraOptions) {
   // #8326: extend call and options.name access are considered side-effects
   // by Rollup, so we have to wrap it in a pure-annotated IIFE.
   /* @__PURE__ */
-  (() => extend$1({
+  (() => extend({
     name: options.name
   }, extraOptions, {
     setup: options
@@ -4014,10 +3685,10 @@ var KeepAliveImpl = {
     exclude: [String, RegExp, Array],
     max: [String, Number]
   },
-  setup(props, _ref8) {
+  setup(props, _ref7) {
     var {
       slots
-    } = _ref8;
+    } = _ref7;
     var instance = getCurrentInstance();
     var sharedContext = instance.ctx;
     if (!sharedContext.renderer) {
@@ -4092,8 +3763,8 @@ var KeepAliveImpl = {
       cache.delete(key);
       keys.delete(key);
     }
-    watch(() => [props.include, props.exclude], _ref9 => {
-      var [include, exclude] = _ref9;
+    watch(() => [props.include, props.exclude], _ref8 => {
+      var [include, exclude] = _ref8;
       include && pruneCache(name => matches(include, name));
       exclude && pruneCache(name => !matches(exclude, name));
     },
@@ -4396,7 +4067,7 @@ var publicPropertiesMap =
 // Move PURE marker to new line to workaround compiler discarding it
 // due to type annotation
 /* @__PURE__ */
-extend$1(/* @__PURE__ */Object.create(null), {
+extend(/* @__PURE__ */Object.create(null), {
   $: i => i,
   $el: i => i.vnode.el,
   $data: i => i.data,
@@ -4436,10 +4107,10 @@ publicPropertiesMap.$callMethod = i => {
 };
 var hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
 var PublicInstanceProxyHandlers = {
-  get(_ref10, key) {
+  get(_ref9, key) {
     var {
       _: instance
-    } = _ref10;
+    } = _ref9;
     var {
       ctx,
       setupState,
@@ -4504,10 +4175,10 @@ var PublicInstanceProxyHandlers = {
       }
     } else ;
   },
-  set(_ref11, key, value) {
+  set(_ref10, key, value) {
     var {
       _: instance
-    } = _ref11;
+    } = _ref10;
     var {
       data,
       setupState,
@@ -4531,7 +4202,7 @@ var PublicInstanceProxyHandlers = {
     }
     return true;
   },
-  has(_ref12, key) {
+  has(_ref11, key) {
     var {
       _: {
         data,
@@ -4541,7 +4212,7 @@ var PublicInstanceProxyHandlers = {
         appContext,
         propsOptions
       }
-    } = _ref12;
+    } = _ref11;
     var normalizedProps;
     return !!accessCache[key] || data !== EMPTY_OBJ && hasOwn(data, key) || hasSetupBinding(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key);
   },
@@ -4554,7 +4225,7 @@ var PublicInstanceProxyHandlers = {
     return Reflect.defineProperty(target, key, descriptor);
   }
 };
-var RuntimeCompiledPublicInstanceProxyHandlers = /* @__PURE__ */extend$1({}, PublicInstanceProxyHandlers, {
+var RuntimeCompiledPublicInstanceProxyHandlers = /* @__PURE__ */extend({}, PublicInstanceProxyHandlers, {
   get(target, key) {
     if (key === Symbol.unscopables) {
       return;
@@ -4622,7 +4293,7 @@ function mergeDefaults(raw, defaults) {
 function mergeModels(a, b) {
   if (!a || !b) return a || b;
   if (isArray$1(a) && isArray$1(b)) return a.concat(b);
-  return extend$1({}, normalizePropsOrEmits(a), normalizePropsOrEmits(b));
+  return extend({}, normalizePropsOrEmits(a), normalizePropsOrEmits(b));
 }
 function createPropsRestProxy(props, excludedKeys) {
   var ret = {};
@@ -4940,7 +4611,7 @@ function mergeDataFn(to, from) {
     return from;
   }
   return function mergedDataFn() {
-    return extend$1(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
+    return extend(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
   };
 }
 function mergeInject(to, from) {
@@ -4960,14 +4631,14 @@ function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
 }
 function mergeObjectOptions(to, from) {
-  return to ? extend$1(/* @__PURE__ */Object.create(null), to, from) : from;
+  return to ? extend(/* @__PURE__ */Object.create(null), to, from) : from;
 }
 function mergeEmitsOrPropsOptions(to, from) {
   if (to) {
     if (isArray$1(to) && isArray$1(from)) {
       return [... /* @__PURE__ */new Set([...to, ...from])];
     }
-    return extend$1(/* @__PURE__ */Object.create(null), normalizePropsOrEmits(to), normalizePropsOrEmits(from != null ? from : {}));
+    return extend(/* @__PURE__ */Object.create(null), normalizePropsOrEmits(to), normalizePropsOrEmits(from != null ? from : {}));
   } else {
     return from;
   }
@@ -4975,7 +4646,7 @@ function mergeEmitsOrPropsOptions(to, from) {
 function mergeWatchOptions(to, from) {
   if (!to) return from;
   if (!from) return to;
-  var merged = extend$1(/* @__PURE__ */Object.create(null), to);
+  var merged = extend(/* @__PURE__ */Object.create(null), to);
   for (var key in from) {
     merged[key] = mergeAsArray(to[key], from[key]);
   }
@@ -5007,7 +4678,7 @@ function createAppAPI(render, hydrate) {
   return function createApp(rootComponent) {
     var rootProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     if (!isFunction(rootComponent)) {
-      rootComponent = extend$1({}, rootComponent);
+      rootComponent = extend({}, rootComponent);
     }
     if (rootProps != null && !isObject(rootProps)) {
       rootProps = null;
@@ -5319,7 +4990,7 @@ function normalizePropsOptions(comp, appContext) {
     var extendProps = raw2 => {
       hasExtends = true;
       var [props, keys] = normalizePropsOptions(raw2, appContext, true);
-      extend$1(normalized, props);
+      extend(normalized, props);
       if (keys) needCastKeys.push(...keys);
     };
     if (!asMixin && appContext.mixins.length) {
@@ -5352,7 +5023,7 @@ function normalizePropsOptions(comp, appContext) {
         var opt = raw[key];
         var prop = normalized[_normalizedKey] = isArray$1(opt) || isFunction(opt) ? {
           type: opt
-        } : extend$1({}, opt);
+        } : extend({}, opt);
         if (prop) {
           var booleanIndex = getTypeIndex(Boolean, prop.type);
           var stringIndex = getTypeIndex(String, prop.type);
@@ -5462,7 +5133,7 @@ var updateSlots = (instance, children, optimized) => {
       if (optimized && type === 1) {
         needDeletionCheck = false;
       } else {
-        extend$1(slots, children);
+        extend(slots, children);
         if (!optimized && type === 1) {
           delete slots._;
         }
@@ -5978,11 +5649,11 @@ function baseCreateRenderer(options, createHydrationFns) {
   var mountStaticNode = (n2, container, anchor, namespace) => {
     [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, namespace, n2.el, n2.anchor);
   };
-  var moveStaticNode = (_ref13, container, nextSibling) => {
+  var moveStaticNode = (_ref12, container, nextSibling) => {
     var {
       el,
       anchor
-    } = _ref13;
+    } = _ref12;
     var next;
     while (el && el !== anchor) {
       next = hostNextSibling(el);
@@ -5991,11 +5662,11 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     hostInsert(anchor, container, nextSibling);
   };
-  var removeStaticNode = _ref14 => {
+  var removeStaticNode = _ref13 => {
     var {
       el,
       anchor
-    } = _ref14;
+    } = _ref13;
     var next;
     while (el && el !== anchor) {
       next = hostNextSibling(el);
@@ -6855,18 +6526,18 @@ function baseCreateRenderer(options, createHydrationFns) {
     createApp: createAppAPI(render, hydrate)
   };
 }
-function resolveChildrenNamespace(_ref15, currentNamespace) {
+function resolveChildrenNamespace(_ref14, currentNamespace) {
   var {
     type,
     props
-  } = _ref15;
+  } = _ref14;
   return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props && props.encoding && props.encoding.includes("html") ? void 0 : currentNamespace;
 }
-function toggleRecurse(_ref16, allowed) {
+function toggleRecurse(_ref15, allowed) {
   var {
     effect,
     update
-  } = _ref16;
+  } = _ref15;
   effect.allowRecurse = update.allowRecurse = allowed;
 }
 function needTransition(parentSuspense, transition) {
@@ -7050,13 +6721,13 @@ var TeleportImpl = {
     }
     updateCssVars(n2);
   },
-  remove(vnode, parentComponent, parentSuspense, optimized, _ref17, doRemove) {
+  remove(vnode, parentComponent, parentSuspense, optimized, _ref16, doRemove) {
     var {
       um: unmount,
       o: {
         remove: hostRemove
       }
-    } = _ref17;
+    } = _ref16;
     var {
       shapeFlag,
       children,
@@ -7080,13 +6751,13 @@ var TeleportImpl = {
   move: moveTeleport,
   hydrate: hydrateTeleport
 };
-function moveTeleport(vnode, container, parentAnchor, _ref18) {
+function moveTeleport(vnode, container, parentAnchor, _ref17) {
   var {
     o: {
       insert
     },
     m: move
-  } = _ref18;
+  } = _ref17;
   var moveType = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
   if (moveType === 0) {
     insert(vnode.targetAnchor, container, parentAnchor);
@@ -7113,14 +6784,14 @@ function moveTeleport(vnode, container, parentAnchor, _ref18) {
     insert(anchor, container, parentAnchor);
   }
 }
-function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, _ref19, hydrateChildren) {
+function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, _ref18, hydrateChildren) {
   var {
     o: {
       nextSibling,
       parentNode,
       querySelector
     }
-  } = _ref19;
+  } = _ref18;
   var target = vnode.target = resolveTarget(vnode.props, querySelector, parentComponent);
   if (target) {
     var targetNode = target._lpa || target.firstChild;
@@ -7198,18 +6869,18 @@ function isSameVNodeType(n1, n2) {
 }
 function transformVNodeArgs(transformer) {}
 var InternalObjectKey = "__vInternal";
-var normalizeKey = _ref20 => {
+var normalizeKey = _ref19 => {
   var {
     key
-  } = _ref20;
+  } = _ref19;
   return key != null ? key : null;
 };
-var normalizeRef = _ref21 => {
+var normalizeRef = _ref20 => {
   var {
     ref,
     ref_key,
     ref_for
-  } = _ref21;
+  } = _ref20;
   if (typeof ref === "number") {
     ref = "" + ref;
   }
@@ -7329,7 +7000,7 @@ function _createVNode(type) {
     }
     if (isObject(style)) {
       if (isProxy(style) && !isArray$1(style)) {
-        style = extend$1({}, style);
+        style = extend({}, style);
       }
       props.style = normalizeStyle$1(style);
     }
@@ -7339,7 +7010,7 @@ function _createVNode(type) {
 }
 function guardReactiveProps(props) {
   if (!props) return null;
-  return isProxy(props) || InternalObjectKey in props ? extend$1({}, props) : props;
+  return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
 }
 function cloneVNode(vnode, extraProps) {
   var mergeRef = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -7515,6 +7186,13 @@ function createComponentInstance(vnode, parent, suspense) {
     type,
     parent,
     appContext,
+    // fixed by xxxxxx 页面的vnode会多一个__page_container__属性，通过它来判断
+    // @ts-expect-error
+    renderer:
+    // @ts-expect-error
+    type.mpType === "app" ? "app" :
+    // @ts-expect-error
+    vnode.__page_container__ ? "page" : "component",
     root: null,
     // to be immediately set
     next: null,
@@ -7609,10 +7287,10 @@ var getCurrentInstance = () => currentInstance || currentRenderingInstance;
 var internalSetCurrentInstance;
 var setInSSRSetupState;
 {
-  var _g = getGlobalThis();
+  var g = getGlobalThis();
   var registerGlobalSetter = (key, setter) => {
     var setters;
-    if (!(setters = _g[key])) setters = _g[key] = [];
+    if (!(setters = g[key])) setters = g[key] = [];
     setters.push(setter);
     return v => {
       if (setters.length > 1) setters.forEach(set => set(v));else setters[0](v);
@@ -7721,7 +7399,7 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
           delimiters,
           compilerOptions: componentCompilerOptions
         } = Component;
-        var finalCompilerOptions = extend$1(extend$1({
+        var finalCompilerOptions = extend(extend({
           isCustomElement,
           delimiters
         }, compilerOptions), componentCompilerOptions);
@@ -8070,11 +7748,11 @@ function isMatchParentSelector(parentSelector, el) {
   return true;
 }
 var WEIGHT_IMPORTANT = 1e3;
-function parseClassName(_ref22, parentStyles, el) {
+function parseClassName(_ref21, parentStyles, el) {
   var {
     styles,
     weights
-  } = _ref22;
+  } = _ref21;
   each(parentStyles).forEach(parentSelector => {
     if (parentSelector && el) {
       if (!isMatchParentSelector(parentSelector, el)) {
@@ -8136,12 +7814,12 @@ function parseClassList(classList, instance) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
 }
-function parseStyleSheet(_ref23) {
+function parseStyleSheet(_ref22) {
   var {
     type,
     appContext,
     root
-  } = _ref23;
+  } = _ref22;
   var component = type;
   var pageInstance = root;
   if (!pageInstance.componentStylesCache) {
@@ -8170,14 +7848,14 @@ function parseStyleSheet(_ref23) {
   }
   return cache;
 }
-function extend(a, b) {
+function extendMap(a, b) {
   b.forEach((value, key) => {
     a.set(key, value);
   });
   return a;
 }
 function toStyle(el, classStyle, classStyleWeights) {
-  var res = extend(/* @__PURE__ */new Map(), classStyle);
+  var res = extendMap(/* @__PURE__ */new Map(), classStyle);
   var style = getExtraStyle(el);
   if (style != null) {
     style.forEach((value, key) => {
@@ -8281,14 +7959,18 @@ var nodeOps = {
   },
   createElement: (tag, container) => {
     if (!container) {
-      return getDocument().createElement(tag);
-    } else {
-      var _document = container.uniPage.document;
+      var _document = getDocument();
+      if (!_document) {
+        throw new Error("document is not defined");
+      }
       return _document.createElement(tag);
+    } else {
+      var _document2 = container.page.document;
+      return _document2.createElement(tag);
     }
   },
   createText: (text, container, isAnchor) => {
-    var document = container.uniPage.document;
+    var document = container.page.document;
     if (isAnchor) {
       return document.createComment(text);
     }
@@ -8298,7 +7980,7 @@ var nodeOps = {
     return textNode;
   },
   createComment: (text, container) => {
-    var document = container.uniPage.document;
+    var document = container.page.document;
     return document.createComment(text);
   },
   setText: (node, text) => {
@@ -8530,8 +8212,8 @@ function patchStyle(el, prev, next) {
       var classStyle = getExtraClassStyle(el);
       var style = getExtraStyle(el);
       for (var key in prev) {
-        var _key = camelize(key);
         if (next[key] == null) {
+          var _key = key.startsWith("--") ? key : camelize(key);
           var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
           parseStyleDecl(_key, value).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
@@ -8543,7 +8225,8 @@ function patchStyle(el, prev, next) {
         var _value2 = next[_key15];
         var prevValue = prev[_key15];
         if (!isSame(prevValue, _value2)) {
-          parseStyleDecl(camelize(_key15), _value2).forEach((value2, key2) => {
+          var _key16 = _key15.startsWith("--") ? _key15 : camelize(_key15);
+          parseStyleDecl(_key16, _value2).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
             style == null ? void 0 : style.set(key2, value2);
           });
@@ -8553,7 +8236,8 @@ function patchStyle(el, prev, next) {
   } else {
     for (var key in next) {
       var value = next[key];
-      setBatchedStyles(batchedStyles, camelize(key), value);
+      var _key = key.startsWith("--") ? key : camelize(key);
+      setBatchedStyles(batchedStyles, _key, value);
     }
     setExtraStyle(el, batchedStyles);
   }
@@ -8580,7 +8264,7 @@ var patchProp = (el, key, prevValue, nextValue, namespace, prevChildren, parentC
     if (!isModelListener(key)) {
       patchEvent(el, key, prevValue, nextValue, parentComponent);
     }
-  } else if (key === "modelValue" && vModelTags.includes(el.tagName.toLocaleLowerCase())) {
+  } else if (key === "modelValue" && vModelTags.includes(el.tagName.toLowerCase())) {
     el.setAnyAttribute("modelValue", nextValue);
     el.setAnyAttribute("value", nextValue);
   } else {
@@ -8679,8 +8363,8 @@ var withModifiers = (fn, modifiers) => {
       var guard = modifierGuards[modifiers[i]];
       if (guard && guard(event, modifiers)) return;
     }
-    for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key16 = 1; _key16 < _len8; _key16++) {
-      args[_key16 - 1] = arguments[_key16];
+    for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key17 = 1; _key17 < _len8; _key17++) {
+      args[_key17 - 1] = arguments[_key17];
     }
     return fn(event, ...args);
   };
@@ -8697,13 +8381,13 @@ var withKeys = (fn, modifiers) => {
   };
 };
 var vShow = {
-  beforeMount(el, _ref24, _ref25) {
+  beforeMount(el, _ref23, _ref24) {
     var {
       value
-    } = _ref24;
+    } = _ref23;
     var {
       transition
-    } = _ref25;
+    } = _ref24;
     el._vod = el.style.getPropertyValue("display") === "none" ? "" : "flex";
     if (transition && value) {
       transition.beforeEnter(el);
@@ -8711,25 +8395,25 @@ var vShow = {
       setDisplay(el, value);
     }
   },
-  mounted(el, _ref26, _ref27) {
+  mounted(el, _ref25, _ref26) {
     var {
       value
-    } = _ref26;
+    } = _ref25;
     var {
       transition
-    } = _ref27;
+    } = _ref26;
     if (transition && value) {
       transition.enter(el);
     }
   },
-  updated(el, _ref28, _ref29) {
+  updated(el, _ref27, _ref28) {
     var {
       value,
       oldValue
-    } = _ref28;
+    } = _ref27;
     var {
       transition
-    } = _ref29;
+    } = _ref28;
     if (!value === !oldValue) return;
     if (transition) {
       if (value) {
@@ -8745,10 +8429,10 @@ var vShow = {
       setDisplay(el, value);
     }
   },
-  beforeUnmount(el, _ref30) {
+  beforeUnmount(el, _ref29) {
     var {
       value
-    } = _ref30;
+    } = _ref29;
     setDisplay(el, value);
   }
 };
@@ -8756,7 +8440,7 @@ function setDisplay(el, value) {
   el.style.setProperty("display", value ? el._vod : "none");
   el._vsh = !value;
 }
-var rendererOptions = extend$1({
+var rendererOptions = extend({
   patchProp
 }, nodeOps);
 var renderer;
@@ -8769,14 +8453,76 @@ var render = function () {
 var createApp = function () {
   var app = ensureRenderer().createApp(...arguments);
   var {
-    mount
+    mount,
+    unmount
   } = app;
   app.mount = container => {
     setDocument(container);
     return mount(container.body);
   };
+  app.unmount = () => {
+    setDocument(void 0);
+    unmount();
+    app._container = null;
+    app._context.reload = () => {};
+  };
   return app;
 };
+
+/// <reference types="@dcloudio/types" />
+// function isUniPage(target: ComponentInternalInstance | null): boolean {
+//   if (target && 'renderer' in target) {
+//     return target.renderer === 'page'
+//   }
+//   return true
+// }
+var createLifeCycleHook = function (lifecycle) {
+  var flag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  return function (hook) {
+    var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentInstance();
+    // 不使用此判断了，因为组件也可以监听页面的生命周期，当页面作为组件渲染时，那监听的页面生成周期是其所在页面的，而不是其自身的
+    // if (true) {
+    //   // 如果只是页面生命周期，排除与App公用的，比如onShow、onHide
+    //   if (flag === HookFlags.PAGE) {
+    //     if (!isUniPage(target)) {
+    //       return
+    //     }
+    //   }
+    // }
+    // post-create lifecycle registrations are noops during SSR
+    !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+  };
+};
+var onShow = /*#__PURE__*/createLifeCycleHook(ON_SHOW, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
+var onHide = /*#__PURE__*/createLifeCycleHook(ON_HIDE, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
+var onLaunch = /*#__PURE__*/createLifeCycleHook(ON_LAUNCH, 1 /* HookFlags.APP */);
+var onError = /*#__PURE__*/createLifeCycleHook(ON_ERROR, 1 /* HookFlags.APP */);
+var onThemeChange = /*#__PURE__*/createLifeCycleHook(ON_THEME_CHANGE, 1 /* HookFlags.APP */);
+var onPageNotFound = /*#__PURE__*/createLifeCycleHook(ON_PAGE_NOT_FOUND, 1 /* HookFlags.APP */);
+var onUnhandledRejection = /*#__PURE__*/createLifeCycleHook(ON_UNHANDLE_REJECTION, 1 /* HookFlags.APP */);
+var onExit = /*#__PURE__*/createLifeCycleHook(ON_EXIT, 1 /* HookFlags.APP */);
+// 小程序如果想在 setup 的 props 传递页面参数，需要定义 props，故同时暴露 onLoad 吧
+var onLoad = /*#__PURE__*/createLifeCycleHook(ON_LOAD, 2 /* HookFlags.PAGE */);
+var onReady = /*#__PURE__*/createLifeCycleHook(ON_READY, 2 /* HookFlags.PAGE */);
+var onUnload = /*#__PURE__*/createLifeCycleHook(ON_UNLOAD, 2 /* HookFlags.PAGE */);
+var onResize = /*#__PURE__*/createLifeCycleHook(ON_RESIZE, 2 /* HookFlags.PAGE */);
+var onBackPress = /*#__PURE__*/createLifeCycleHook(ON_BACK_PRESS, 2 /* HookFlags.PAGE */);
+var onPageScroll = /*#__PURE__*/createLifeCycleHook(ON_PAGE_SCROLL, 2 /* HookFlags.PAGE */);
+var onTabItemTap = /*#__PURE__*/createLifeCycleHook(ON_TAB_ITEM_TAP, 2 /* HookFlags.PAGE */);
+var onReachBottom = /*#__PURE__*/createLifeCycleHook(ON_REACH_BOTTOM, 2 /* HookFlags.PAGE */);
+var onPullDownRefresh = /*#__PURE__*/createLifeCycleHook(ON_PULL_DOWN_REFRESH, 2 /* HookFlags.PAGE */);
+var onShareTimeline = /*#__PURE__*/createLifeCycleHook(ON_SHARE_TIMELINE, 2 /* HookFlags.PAGE */);
+var onShareAppMessage = /*#__PURE__*/createLifeCycleHook(ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
+// for uni-app-x web
+var onPageHide = onHide;
+var onPageShow = onShow;
+function renderComponentSlot(slots, name) {
+  var props = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  if (slots[name]) {
+    return slots[name](props);
+  }
+  return null;
+}
 var defineComponent = options => {
   var rootElement = options.rootElement;
   if (rootElement && typeof customElements !== 'undefined') {
@@ -8784,4 +8530,6 @@ var defineComponent = options => {
   }
   return defineComponent$1(options);
 };
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle$1 as normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+var ssrRef = ref;
+var shallowSsrRef = shallowRef;
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderComponentSlot, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, ssrContextKey, ssrRef, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

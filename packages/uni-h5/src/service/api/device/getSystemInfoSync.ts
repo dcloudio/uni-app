@@ -48,7 +48,7 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
       model,
       platform,
       system,
-      osName: osname ? osname.toLocaleLowerCase() : undefined,
+      osName: osname ? osname.toLowerCase() : undefined,
       osVersion: osversion,
     })
   }
@@ -131,7 +131,7 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
         uniCompileVersion: __uniConfig.compilerVersion,
         uniRuntimeVersion: __uniConfig.compilerVersion,
         fontSizeSetting: undefined,
-        osName: osname!.toLocaleLowerCase(),
+        osName: osname!.toLowerCase(),
         osVersion: osversion,
         osLanguage: undefined,
         osTheme: undefined,

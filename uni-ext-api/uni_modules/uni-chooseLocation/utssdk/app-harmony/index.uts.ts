@@ -21,6 +21,7 @@ export const chooseLocation : ChooseLocation = function (options : ChooseLocatio
   })
   uni.openDialogPage({
     url: `/uni_modules/uni-chooseLocation/pages/chooseLocation/chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    triggerParentHide: true,
     fail(err) {
       options.fail?.({ errMsg: `chooseLocation:fail`, errCode: 4 } as ChooseLocationFail)
       uni.$off(readyEventName)

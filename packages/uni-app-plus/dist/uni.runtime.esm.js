@@ -474,10 +474,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
     return (args = {}, ...rest) => {
         if (hasCallback(args)) {
-            return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+            return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
         }
         return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-            invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
+            invokeApi(name, fn, extend({}, args, { success: resolve, fail: reject }), rest);
         })));
     };
 }
@@ -1934,6 +1934,9 @@ function initVueApp(appVm) {
             if (__page_container__) {
                 __page_container__.isUnmounted = true;
                 render(null, __page_container__);
+                delete pageInstance.__page_container__;
+                const vnode = pageInstance.$.vnode;
+                delete vnode.__page_container__;
             }
         },
     });
@@ -9249,7 +9252,13 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-    const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
+    let windowWidth, pixelRatio, platform;
+    {
+        const { windowWidth: w, pixelRatio: p, platform: pf } = getBaseSystemInfo();
+        windowWidth = w;
+        pixelRatio = p;
+        platform = pf;
+    }
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -10779,8 +10788,9 @@ const createIntersectionObserver = defineSyncApi('createIntersectionObserver', (
 let reqComponentObserverId = 1;
 class ServiceMediaQueryObserver {
     constructor(component) {
+        // APP 平台 _pageId 不能为空，H5 不处理 _pageId 和 component
         this._pageId =
-            component.$page && component.$page.id;
+            (component === null || component === void 0 ? void 0 : component.$page) && component.$page.id;
         this._component = component;
     }
     observe(options, callback) {
@@ -16826,7 +16836,7 @@ function isVuePageAsyncComponent(component) {
 }
 const pagesMap = new Map();
 function definePage(pagePath, asyncComponent) {
-    pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+    pagesMap.set(pagePath, once(createPageFactory(asyncComponent)));
 }
 function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
     const pageNode = createPageNode(__pageId, pageOptions, true);
@@ -16843,13 +16853,17 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
     }
     return mountPage(component);
 }
-function createFactory(component) {
+function createPageFactory(component) {
     return () => {
         if (isVuePageAsyncComponent(component)) {
-            return component().then((component) => setupPage(component));
+            return component().then((component) => setupPage(clonedPageComponent(component)));
         }
-        return setupPage(component);
+        return setupPage(clonedPageComponent(component));
     };
+}
+function clonedPageComponent(component) {
+    // 页面可能作为组件渲染，需要clone一份定义出来，不然会互相干扰
+    return extend({}, component);
 }
 
 function tencentMapPlaceSearch(options) {

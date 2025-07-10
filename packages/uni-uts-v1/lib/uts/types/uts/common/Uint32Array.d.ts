@@ -17,11 +17,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -48,11 +50,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -80,11 +84,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -112,11 +118,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -144,11 +152,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -180,11 +190,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -214,11 +226,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -250,11 +264,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -284,11 +300,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -318,11 +336,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -352,11 +372,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -385,11 +407,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -420,11 +444,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -454,11 +480,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -488,11 +516,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -523,11 +553,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -559,11 +591,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -593,11 +627,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -627,11 +663,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -662,11 +700,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -696,11 +736,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -730,11 +772,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -765,11 +809,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -798,11 +844,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -831,11 +879,13 @@ interface Uint32Array {
                   "unixVer": "x",
                   "unixUtsPlugin": "x"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -863,11 +913,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -898,11 +950,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -931,11 +985,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -964,11 +1020,13 @@ interface Uint32Array {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -1002,11 +1060,13 @@ interface Uint32ArrayConstructor {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -1035,11 +1095,13 @@ interface Uint32ArrayConstructor {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -1070,11 +1132,13 @@ interface Uint32ArrayConstructor {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -1102,11 +1166,13 @@ interface Uint32ArrayConstructor {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -1135,11 +1201,13 @@ interface Uint32ArrayConstructor {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",
@@ -1169,11 +1237,13 @@ interface Uint32ArrayConstructor {
                   "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
-              "harmony": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                 "unixVer": "x"
-              }
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
           },
           "web": {
              "uniVer": "√",

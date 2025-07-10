@@ -17,16 +17,21 @@ export async function buildByVite(inlineConfig: InlineConfig) {
 }
 
 export async function build(
-  options: CliOptions
-): Promise<RollupWatcher | void> {
+  options: CliOptions,
+  callback?: (event: RollupWatcherEvent) => void
+): Promise<void> {
   if (process.env.UNI_APP_X !== 'true' && options.platform === 'app') {
-    return buildApp(options)
+    await buildApp(options, callback)
+    return
   }
-  return buildByVite(
+  const watcher = await buildByVite(
     addConfigFile(
       initBuildOptions(options, cleanOptions(options) as BuildOptions)
     )
-  ) as Promise<RollupWatcher | void>
+  )
+  if (callback && typeof watcher === 'object' && 'on' in watcher) {
+    watcher.on('event', callback)
+  }
 }
 
 export async function buildSSR(options: CliOptions) {
@@ -105,8 +110,9 @@ function buildManifestJson() {
   )
 }
 
-export async function buildApp(
-  options: CliOptions
+async function buildApp(
+  options: CliOptions,
+  callback?: (event: RollupWatcherEvent) => void
 ): Promise<RollupWatcher | void> {
   if ((options as BuildOptions).manifest) {
     return buildManifestJson()
@@ -114,6 +120,9 @@ export async function buildApp(
   let appWatcher: AppWatcher | undefined
   if ((options as ServerOptions).watch) {
     appWatcher = new AppWatcher()
+    if (callback) {
+      appWatcher.on('event', callback)
+    }
   }
   if (process.env.UNI_RENDERER === 'native') {
     // 纯原生渲染时，main.js + App.vue 需要跟页面分开，独立编译（因为需要包含 Vuex 等共享内容）
@@ -184,7 +193,7 @@ class AppWatcher {
   private _firstEnd: boolean = false
   private _secondStart: boolean = false
   private _secondEnd: boolean = false
-  private _callback!: (event: RollupWatcherEvent) => void
+  private _callback: ((event: RollupWatcherEvent) => void) | undefined
   on(_event: string, callback: (event: RollupWatcherEvent) => void) {
     this._callback = callback
   }
@@ -194,6 +203,8 @@ class AppWatcher {
         this._bundleFirstStart(event)
       } else if (event.code === 'BUNDLE_END') {
         this._bundleFirstEnd(event)
+      } else if (event.code === 'ERROR') {
+        this._callback?.(event)
       }
     })
   }
@@ -203,6 +214,8 @@ class AppWatcher {
         this._bundleSecondStart(event)
       } else if (event.code === 'BUNDLE_END') {
         this._bundleSecondEnd(event)
+      } else if (event.code === 'ERROR') {
+        this._callback?.(event)
       }
     })
   }
@@ -224,12 +237,12 @@ class AppWatcher {
   }
   _bundleStart(event: RollupWatcherEvent) {
     if (this._firstStart && this._secondStart) {
-      this._callback(event)
+      this._callback?.(event)
     }
   }
   _bundleEnd(event: RollupWatcherEvent) {
     if (this._firstEnd && this._secondEnd) {
-      this._callback(event)
+      this._callback?.(event)
     }
   }
 }

@@ -1021,6 +1021,13 @@ function handleLink({ detail: { vuePid, nodeId, webviewId, pageVm }, }) {
     let parentVm;
     if (vuePid) {
         parentVm = findVmByVueId(pageVm || this.$vm, vuePid);
+        // fallback从页面查找，当组件嵌套关系比较复杂时，可能会需要回退到这里，比如: question/207952 开发者自定义组件里引用了uni-grid组件（该组件使用了provide/inject,强依赖父子关系）
+        if (!pageVm) {
+            pageVm = instances[webviewId + '_0'];
+            if (pageVm) {
+                parentVm = findVmByVueId(pageVm, vuePid);
+            }
+        }
     }
     else {
         // 如果 vuePid 不存在，则认为当前组件的父是页面，目前测试来看，页面的 nodeId 是 0

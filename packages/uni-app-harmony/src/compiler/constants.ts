@@ -77,4 +77,5 @@ export const ExtApiBlackList = [
   'uni-map-tencent',
   'uni-arrayBufferToBase64',
   'uni-base64ToArrayBuffer',
+  'uni-privacy',
 ]

@@ -8,6 +8,7 @@ import {
   parseManifestJsonOnce,
   resetOutput,
   resolveComponentsLibDirs,
+  runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 import type { RollupWatcher } from 'rollup'
 
@@ -90,6 +91,12 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
         )
       }
       return output('log', M['dev.watching.end'])
+    } else if (event.code === 'ERROR') {
+      if (runByHBuilderX()) {
+        setTimeout(() => {
+          console.error(`Build failed with errors.`)
+        }, 50) // 目前需要延迟50ms执行，因为莫名其妙的这个setTimeout执行会比createStderrListener里边创建的setTimeout更早执行
+      }
     }
   })
 }

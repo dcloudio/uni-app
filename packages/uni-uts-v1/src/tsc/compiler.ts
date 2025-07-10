@@ -58,9 +58,6 @@ export function createUniXCompiler(
   ) => {
     // 仅监听工程目录内的文件
     if (fileName.startsWith(inputDir)) {
-      if (fileName.includes('?type=page')) {
-        fileName = fileName.replace('?type=page', '')
-      }
       return fileWatcher.watchFile(fileName, callback, pollingInterval, options)
     }
     return {
@@ -70,6 +67,10 @@ export function createUniXCompiler(
     }
   }
 
+  const sourceMap =
+    process.env.UNI_APP_SOURCEMAP === 'true' ||
+    process.env.NODE_ENV === 'development'
+
   const compilerOptions: UniXCompilerOptions = {
     mode,
     targetLanguage: targetLanguage as UniXCompilerOptions['targetLanguage'],
@@ -77,6 +78,8 @@ export function createUniXCompiler(
     paths: options.paths,
     utsLibDir,
     hxLanguageServiceDir,
+    sourceMap,
+    inlineSources: sourceMap,
     originalPositionForSync,
     watchFile,
     incremental: mode === 'development',

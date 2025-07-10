@@ -391,6 +391,7 @@ export const capitalize = cacheStringFunction(
 export function parseUTSModuleDeps(deps: string[], inputDir: string): string[] {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
   return deps.filter((dep) => {
-    return fs.existsSync(path.resolve(modulesDir, dep, 'utssdk'))
+    const depName = dep.includes(':') ? dep.split(':')[1] : dep
+    return fs.existsSync(path.resolve(modulesDir, depName, 'utssdk'))
   })
 }

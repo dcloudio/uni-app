@@ -69,7 +69,12 @@ describe('uvue-style', () => {
             font-size: 36rpx;
         }
         `,
-      { type: 'uvue', mapOf: 'utsMapOf', chunk: 2 }
+      {
+        type: 'uvue',
+        mapOf: 'utsMapOf',
+        padStyleMapOf: 'padStyleMapOf',
+        chunk: 2,
+      }
     )
     expect(code).toMatchSnapshot()
   })
@@ -117,7 +122,12 @@ describe('uvue-style', () => {
             transition-duration: 300ms;
         }
         `,
-      { type: 'uvue', mapOf: 'utsMapOf', chunk: 2 }
+      {
+        type: 'uvue',
+        mapOf: 'utsMapOf',
+        padStyleMapOf: 'padStyleMapOf',
+        chunk: 2,
+      }
     )
     expect(code).toMatchSnapshot()
   })
@@ -141,7 +151,13 @@ describe('uvue-style', () => {
             transition-duration: 300ms;
         }
         `,
-      { type: 'uvue', mapOf: 'utsMapOf', chunk: 2, trim: true }
+      {
+        type: 'uvue',
+        mapOf: 'utsMapOf',
+        padStyleMapOf: 'padStyleMapOf',
+        chunk: 2,
+        trim: true,
+      }
     )
     expect(code).toMatchSnapshot()
   })

@@ -1,6 +1,7 @@
 import path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
+  enableSourceMap,
   isAppVue,
   isEnableConsole,
   isVueSfcFile,
@@ -27,6 +28,7 @@ import { uniResolveIdPlugin } from './plugins/resolveId'
 import { uniSetupPlugin } from './plugins/setup'
 import { uniSSRPlugin } from './plugins/ssr'
 import { uniPostSourceMapPlugin } from './plugins/sourcemap'
+import { uniCustomElementPlugin } from './plugins/customElement'
 
 export default () => [
   ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
@@ -37,6 +39,7 @@ export default () => [
         resolveUTSCompiler().uts2js({
           inputDir: process.env.UNI_INPUT_DIR,
           version: process.env.UNI_COMPILER_VERSION,
+          sourceMap: enableSourceMap(),
           cacheRoot: path.resolve(
             process.env.UNI_APP_X_CACHE_DIR,
             '.uts2js/cache'
@@ -67,4 +70,5 @@ export default () => [
     : []),
   uniPostVuePlugin(),
   uniPostSourceMapPlugin(),
+  uniCustomElementPlugin(),
 ]

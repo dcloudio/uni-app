@@ -28,14 +28,14 @@ describe('compiler: transform v-html', () => {
   test('simple expression', () => {
     assert(
       `<view v-html="html" />`,
-      `createElementVNode(\"view\", null, [
-  createElementVNode(\"rich-text\", utsMapOf({ nodes: _ctx.html }), null, 8 /* PROPS */, [\"nodes\"])
+      `_cE(\"view\", null, [
+  _cE(\"rich-text\", _uM({ nodes: _ctx.html }), null, 8 /* PROPS */, [\"nodes\"])
 ])`
     )
   })
 
   test('Non-Element should be ignored', () => {
-    assert(`<Foo v-html="html" />`, `createVNode(_component_Foo)`)
+    assert(`<Foo v-html="html" />`, `_cV(_component_Foo)`)
   })
 
   test('should throw error when missing expression', () => {

@@ -15,11 +15,18 @@
           "uniUtsPlugin": "4.41",
           "unixVer": "x",
           "unixUtsPlugin": "4.41"
+        },
+        "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.61"
+            "unixUtsPlugin": "x"
         }
       },
       "web": {
         "uniVer": "x",
-        "unixVer": "x"
+        "unixVer": "4.41"
       }
     }
  */
@@ -44,11 +51,18 @@ type UTSIteratorResult<T> = {
           "uniUtsPlugin": "4.41",
           "unixVer": "x",
           "unixUtsPlugin": "4.41"
+        },
+        "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "x",
+            "unixVer": "4.61"
+            "unixUtsPlugin": "x"
         }
       },
       "web": {
         "uniVer": "x",
-        "unixVer": "x"
+        "unixVer": "4.41"
       }
     }
  */
@@ -73,11 +87,18 @@ type UTSIterator<T> = {
           "uniUtsPlugin": "4.41",
           "unixVer": "x",
           "unixUtsPlugin": "4.41"
+        },
+        "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+            "unixUtsPlugin": "x"
         }
       },
       "web": {
         "uniVer": "x",
-        "unixVer": "x"
+        "unixVer": "4.41"
       }
     }
  */
@@ -101,11 +122,18 @@ interface UTSValueIterable<T> {
           "uniUtsPlugin": "4.41",
           "unixVer": "x",
           "unixUtsPlugin": "4.41"
+        },
+        "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "x",
+            "uniUtsPlugin": "x",
+            "unixVer": "x"
+            "unixUtsPlugin": "x"
         }
       },
       "web": {
         "uniVer": "x",
-        "unixVer": "x"
+        "unixVer": "4.41"
       }
     }
  */

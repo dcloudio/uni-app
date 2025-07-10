@@ -10,6 +10,7 @@ import {
   handleEvent,
   initData,
   initHooks,
+  initPageInstance,
   initRuntimeHooks,
   initUnknownHooks,
   initWxsCallMethods,
@@ -50,6 +51,7 @@ export function initCreatePage() {
         if (__X__) {
           this.vm = this.$vm
         }
+        initPageInstance(this)
         initSpecialMethods(this)
         this.$vm.$callHook(ON_LOAD, this.options)
       },

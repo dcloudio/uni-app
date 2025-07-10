@@ -45,7 +45,8 @@ function createTsConfigPaths(
 }
 
 export function createBasicUtsOptions(
-  inputDir: string
+  inputDir: string,
+  sourceMap: boolean
 ): UTS2JavaScriptBaseOptions {
   const isWeb = process.env.UNI_UTS_PLATFORM === 'web'
   const isInHBuilderXBool = isInHBuilderX()
@@ -65,7 +66,7 @@ export function createBasicUtsOptions(
     tsconfigOverride: {
       compilerOptions: {
         rootDir: inputDir,
-        sourceMap: isWeb,
+        sourceMap,
         ignoreDeprecations: '5.0',
         preserveValueImports: true,
         importsNotUsedAsValues: 'preserve',
@@ -74,8 +75,6 @@ export function createBasicUtsOptions(
     },
   } as UTS2JavaScriptBaseOptions
 
-  options.tsconfigOverride.compilerOptions.sourceMap =
-    process.env.NODE_ENV === 'development'
   if (!options.tsconfig) {
     if (isInHBuilderXBool || isUTSCloudCompilerBool || isBuildExtApi) {
       options.tsconfig = path.resolve(

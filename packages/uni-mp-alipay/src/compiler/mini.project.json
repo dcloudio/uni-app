@@ -2,5 +2,14 @@
   "appid": "touristappid",
   "component2": true,
   "enableAppxNg": true,
-  "enableNodeModuleBabelTransform": true
+  "axmlStrictCheck": false,
+  "enableDistFileMinify": false,
+  "enableParallelLoader": false,
+  "enableNodeModuleBabelTransform": true,
+  "format": 2,
+  "pluginResolution": {},
+  "developOptions": {},
+  "compileOptions": {},
+  "uploadExclude": [],
+  "assetsInclude": []
 }

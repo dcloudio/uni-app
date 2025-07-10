@@ -163,7 +163,7 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
         return
       }
       // 1.0 特有逻辑，x 上由其他插件完成
-      if (process.env.UNI_APP_X !== 'true') {
+      if (!isX) {
         // x 上暂时编译所有uni ext api，不管代码里是否调用了
         await buildUniExtApis()
       }
@@ -555,9 +555,7 @@ function genAppHarmonyUniModules(
 
   importCodes.unshift(
     `import { ${importIds.join(', ')} } from '${
-      process.env.UNI_APP_X !== 'true'
-        ? '@dcloudio/uni-app-runtime'
-        : '@dcloudio/uni-app-x-runtime'
+      !isX ? '@dcloudio/uni-app-runtime' : '@dcloudio/uni-app-x-runtime'
     }'`
   )
 
@@ -578,6 +576,19 @@ function initUniExtApi() {
 }
 `,
   })
+
+  if (isX) {
+    context.emitFile({
+      type: 'asset',
+      fileName: 'import/app-config.ets',
+      source: `import '../app-config'`,
+    })
+    context.emitFile({
+      type: 'asset',
+      fileName: 'import/app-service.ets',
+      source: `import '../app-service'`,
+    })
+  }
 
   const dependencies: Record<string, string> = {}
   const modules: { name: string; srcPath: string }[] = []

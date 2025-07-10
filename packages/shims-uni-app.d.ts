@@ -203,6 +203,8 @@ declare namespace UniNamespace {
     web?: PagesJsonPageStyle
     app?: PagesJsonPageStyle
     'app-plus'?: PagesJsonPageStyle
+    'app-android'?: PagesJsonPageStyle
+    'app-ios'?: PagesJsonPageStyle
     'app-harmony'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
     'mp-baidu'?: PagesJsonPageStyle
@@ -379,6 +381,9 @@ declare namespace UniNamespace {
     midButton?: TabBarMidButtonOptions
     selectedIndex?: number
     shown: boolean
+    // 支付宝小程序自定义tabBar字段
+    overlay?: boolean
+    customize?: boolean
   }
 
   interface ComponentDescriptor { }
@@ -563,6 +568,10 @@ declare class UniNormalPageImpl implements UniPage {
   options: UTSJSONObject
   pageBody: UniPageBody
   safeAreaInsets: UniSafeAreaInsets
+  readonly fullscreenElement?: UniElement | null
+  readonly width: number
+  readonly height: number
+  readonly statusBarHeight: number
   getParentPage: () => UniPage | null
   getParentPageByJS: () => UniPage | null
   getDialogPages(): UniDialogPage[]
@@ -576,6 +585,9 @@ declare class UniNormalPageImpl implements UniPage {
   getAndroidView(): null
   getIOSView(): null
   getHTMLElement(): null
+  getAndroidActivity(): Activity | null
+  exitFullscreen(options: ExitFullscreenOptions | null): void
+  createElement(tagName: string): UniElement
 }
 
 declare class UniDialogPageImpl implements UniPage {

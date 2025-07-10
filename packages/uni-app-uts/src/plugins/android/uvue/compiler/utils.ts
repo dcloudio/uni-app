@@ -52,9 +52,7 @@ export function rewriteObjectExpression(
         if (node.type === 'ObjectExpression') {
           s.prependLeft(
             node.start!,
-            node.properties.length > 0
-              ? 'utsMapOf('
-              : 'utsMapOf<string, any | null>('
+            node.properties.length > 0 ? '_uM(' : '_uM<string, any | null>('
           )
           s.prependRight(node.end!, ')')
         }

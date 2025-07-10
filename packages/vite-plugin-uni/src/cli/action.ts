@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
 import { extend } from '@vue/shared'
-import type { RollupWatcher } from 'rollup'
 import { type BuildOptions, type ServerOptions, createLogger } from 'vite'
 import {
   APP_CONFIG_SERVICE,
@@ -10,6 +9,7 @@ import {
   M,
   isInHBuilderX,
   output,
+  runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 import type { CliOptions } from '.'
 import { build, buildSSR } from './build'
@@ -49,11 +49,10 @@ export async function runDev(options: CliOptions & ServerOptions) {
         : createServer(options))
       initEasycom(server.watcher as FSWatcher)
     } else {
-      const watcher = (await build(options)) as RollupWatcher
       initEasycom()
       let isFirstStart = true
       let isFirstEnd = true
-      watcher.on('event', async (event) => {
+      await build(options, async (event) => {
         if (event.code === 'BUNDLE_START') {
           if (isFirstStart) {
             isFirstStart = false
@@ -132,11 +131,18 @@ export async function runDev(options: CliOptions & ServerOptions) {
           }
           return output('log', M['dev.watching.end'])
         } else if (event.code === 'END') {
+          // 重要：1.0 的APP端是自实现的AppWatcher，它是不会触发END事件的，这里边的逻辑只有非1.0的APP端会触发
           if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
             setTimeout(() => {
               output('log', M['build.failed'])
               process.exit(0)
             }, 2000)
+          }
+        } else if (event.code === 'ERROR') {
+          if (runByHBuilderX()) {
+            setTimeout(() => {
+              console.error(`Build failed with errors.`)
+            })
           }
         }
       })

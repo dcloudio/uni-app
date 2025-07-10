@@ -1,5 +1,6 @@
 import { camelize } from '@vue/shared'
 import { createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared'
+import { getCurrentPage } from '@dcloudio/uni-core'
 
 const rpx2Unit = createRpx2Unit(
   defaultRpx2Unit.unit,
@@ -49,6 +50,9 @@ export class UniElement extends HTMLElement {
       parent = parent.parentNode as UniElement | null
     }
     return parent?._page || null
+  }
+  get uniPage() {
+    return this.getPage()
   }
 
   getBoundingClientRectAsync(callback) {

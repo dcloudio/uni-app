@@ -1,4 +1,5 @@
-import { assert } from './testUtils'
+import { BindingTypes } from '@vue/compiler-core'
+import { assert, miniProgram } from './testUtils'
 
 describe('compiler: transform v-model', () => {
   test(`component v-model`, () => {
@@ -105,6 +106,29 @@ describe('compiler: transform v-model', () => {
       `(_ctx, _cache) => {
   return { a: _o([_m($event => _ctx.model = $event.detail.value, { number: true }), _ctx.input]), b: _ctx.model }
 }`
+    )
+  })
+  test(`input v-model + v-for`, () => {
+    assert(
+      `<view v-for="(item,index) in props" :key="index"><input v-model="formData[item]" @input="change" /></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="c"><input bindinput="{{item.a}}" value="{{item.b}}"/></view>`,
+      `(_ctx, _cache) => {
+  return { a: _f(props, (item, index, i0) => { return { a: _o([$event => formData[item] = $event.detail.value, change], index), b: formData[item], c: index }; }) }
+}`,
+      {
+        inline: true,
+        bindingMetadata: {
+          formData: BindingTypes.SETUP_CONST,
+          change: BindingTypes.SETUP_CONST,
+          props: BindingTypes.LITERAL_CONST,
+        },
+        miniProgram: {
+          ...miniProgram,
+          event: {
+            key: true,
+          },
+        },
+      }
     )
   })
 })

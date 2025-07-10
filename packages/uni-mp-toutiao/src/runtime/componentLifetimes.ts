@@ -8,6 +8,7 @@ import {
   type RelationOptions,
   findPropsData,
   initFormField,
+  initPageInstance,
   initSetRef,
   nextSetDataTick,
   resolvePropValue,
@@ -81,6 +82,7 @@ export function initLifetimes({
     if (__X__) {
       this.vm = this.$vm
     }
+    initPageInstance(this)
 
     if (process.env.UNI_DEBUG) {
       console.log(

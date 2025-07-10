@@ -86,6 +86,14 @@
     "output": {
       "freeze": false
     },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.runtime.esm.js"
+        }
+      ]
+    },
     "replacements": {
       "__X__": "true",
       "__VUE_OPTIONS_API__": "true",
@@ -93,7 +101,11 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": ["@dcloudio/uni-nvue-styler"],
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
     "babel": true
   },
   {
@@ -103,6 +115,14 @@
     "output": {
       "freeze": false
     },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.runtime.esm.js"
+        }
+      ]
+    },
     "replacements": {
       "__X__": "true",
       "__VUE_OPTIONS_API__": "true",
@@ -110,7 +130,11 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": ["@dcloudio/uni-nvue-styler"],
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
     "babel": true
   },
   {
@@ -119,6 +143,14 @@
     },
     "output": {
       "freeze": false
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.runtime.esm.js"
+        }
+      ]
     },
     "replacements": {
       "__X__": "true",
@@ -159,7 +191,11 @@
         "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250324175207068/comment"
       }
     ],
-    "external": ["@dcloudio/uni-nvue-styler"],
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
     "babel": true
   },
   {
@@ -168,6 +204,14 @@
     },
     "output": {
       "freeze": false
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.runtime.esm.js"
+        }
+      ]
     },
     "replacements": {
       "__X__": "true",
@@ -205,7 +249,11 @@
         "file": "@vue/reactivity/dist/reactivity.esm-bundler.js"
       }
     ],
-    "external": ["@dcloudio/uni-nvue-styler"],
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
     "babel": true
   }
 ]

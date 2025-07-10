@@ -140,6 +140,8 @@ export const UVUE_BUILT_IN_TAGS = [
   'share-element',
   'cover-view',
   'cover-image',
+  // custom element
+  'match-media',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
@@ -176,6 +178,8 @@ export const NVUE_U_BUILT_IN_TAGS = [
   'u-ad-draw',
   'u-rich-text',
 ]
+
+export const UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = ['match-media']
 
 export const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag)
 
@@ -241,7 +245,12 @@ const NVUE_CUSTOM_COMPONENTS = [
 ]
 
 // 内置的easycom组件
-const UVUE_BUILT_IN_EASY_COMPONENTS = ['map', 'camera']
+const UVUE_BUILT_IN_EASY_COMPONENTS = [
+  'map',
+  'camera',
+  'live-player',
+  'live-pusher',
+]
 
 export function isAppUVueBuiltInEasyComponent(tag: string) {
   return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag)

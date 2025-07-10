@@ -11,10 +11,6 @@ export type PreviewImageErrorCode =
 	 */
 	1101001 |
 	/**
-	 * urls至少包含一张图片地址
-	 */
-	1101002 |
-	/**
 	 * 文件不存在
 	 */
 	1101003 |
@@ -83,7 +79,6 @@ export type LongPressActionsOptions = {
 	 */
 	complete : ((result : any) => void) | null
 };
-
 export type PreviewImageOptions = {
 	/**
 	 * current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。APP平台仅支持索引值。

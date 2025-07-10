@@ -9,7 +9,7 @@ exports[`app-components-tree-shaking playground uni-app-x build:app-android 1`] 
     "name": "1.0.0",
     "code": "100"
   },
-  "app": {
+  "app-android": {
     "distribute": {
       "modules": {
         "uni-map-tencent": {},
@@ -29,7 +29,7 @@ exports[`app-components-tree-shaking playground uni-app-x build:app-ios 1`] = `
     "name": "1.0.0",
     "code": "100"
   },
-  "app": {
+  "app-ios": {
     "distribute": {
       "modules": {
         "uni-map-tencent": {},

@@ -295,7 +295,7 @@ describe('uvue-styler: normalize', () => {
   })
   test('transition-property', async () => {
     const { json, messages } = await objectifierRule(`
-  .foo {
+.foo {
     transition-property: margin-top
   }
   .bar {
@@ -304,9 +304,12 @@ describe('uvue-styler: normalize', () => {
   .foobar {
     transition-property: margin-top, height
   }
-  .baz {
+   .baz {
     transition-property: abc
   }
+.transition-property-all{
+  transition-property: all
+}
   `)
     expect(json).toEqual({
       '@TRANSITION': {
@@ -318,6 +321,9 @@ describe('uvue-styler: normalize', () => {
         },
         foobar: {
           property: 'marginTop,height',
+        },
+        'transition-property-all': {
+          property: 'all',
         },
       },
       foo: {
@@ -333,6 +339,11 @@ describe('uvue-styler: normalize', () => {
       foobar: {
         '': {
           transitionProperty: 'marginTop,height',
+        },
+      },
+      'transition-property-all': {
+        '': {
+          transitionProperty: 'all',
         },
       },
     })
@@ -560,6 +571,193 @@ describe('uvue-styler: normalize', () => {
           borderLeftWidth: 1,
           height: 100,
           width: 100,
+        },
+      },
+    })
+  })
+
+  // test --border-top-color: red
+  test('test --border-top-color: red', async () => {
+    const { json } = await objectifierRule(`
+.test {
+--border-top-color: red;
+border-top-color: var(--border-top-color);
+}
+.foo {
+--default-border: red;
+border-color: var(--default-border);
+}
+.a1{
+  --color1: red;
+  --width1: 1px;
+  --style1: solid;
+  border:  var(--width1) var(--style1) var(--color1)
+}
+.a2{
+  --top-width: 1px;
+  --left-width: 2px;
+  padding: var(--top-width) var(--left-width);
+}
+.a3{
+  --default-border: 1px;
+  border: var(--default-border);
+}
+  `)
+    expect(json).toEqual({
+      test: {
+        '': {
+          '--border-top-color': 'red',
+          borderTopColor: 'var(--border-top-color)',
+        },
+      },
+      foo: {
+        '': {
+          '--default-border': 'red',
+          borderBottomColor: 'var(--default-border)',
+          borderLeftColor: 'var(--default-border)',
+          borderRightColor: 'var(--default-border)',
+          borderTopColor: 'var(--default-border)',
+        },
+      },
+      a1: {
+        '': {
+          '--color1': 'red',
+          '--width1': '1px',
+          '--style1': 'solid',
+          borderBottomColor: 'var(--color1)',
+          borderBottomStyle: 'var(--style1)',
+          borderBottomWidth: 'var(--width1)',
+          borderLeftColor: 'var(--color1)',
+          borderLeftStyle: 'var(--style1)',
+          borderLeftWidth: 'var(--width1)',
+          borderRightColor: 'var(--color1)',
+          borderRightStyle: 'var(--style1)',
+          borderRightWidth: 'var(--width1)',
+          borderTopColor: 'var(--color1)',
+          borderTopStyle: 'var(--style1)',
+          borderTopWidth: 'var(--width1)',
+        },
+      },
+      a2: {
+        '': {
+          '--left-width': '2px',
+          '--top-width': '1px',
+          paddingBottom: 'var(--top-width)',
+          paddingLeft: 'var(--left-width)',
+          paddingRight: 'var(--left-width)',
+          paddingTop: 'var(--top-width)',
+        },
+      },
+      a3: {
+        '': {
+          '--default-border': '1px',
+          borderBottomColor: '#000000',
+          borderBottomStyle: 'none',
+          borderBottomWidth: 'var(--default-border)',
+          borderLeftColor: '#000000',
+          borderLeftStyle: 'none',
+          borderLeftWidth: 'var(--default-border)',
+          borderRightColor: '#000000',
+          borderRightStyle: 'none',
+          borderRightWidth: 'var(--default-border)',
+          borderTopColor: '#000000',
+          borderTopStyle: 'none',
+          borderTopWidth: 'var(--default-border)',
+        },
+      },
+    })
+  })
+
+  test('多次出现 border 不同形式，保证最后一个生效', async () => {
+    const { json } = await objectifierRule(`
+.test {
+		border-left-color: red;
+	}
+
+	.test {
+		width: 100px;
+		height: 100px;
+		border-width: 1px;
+		border-color: blue;
+		/* border-left-color: blue;border-top-color: blue;border-bottom-color: blue;border-right-color: blue; */
+		border-style: solid;
+	}
+`)
+    expect(json).toEqual({
+      test: {
+        '': {
+          borderTopColor: '#0000FF',
+          borderRightColor: '#0000FF',
+          borderBottomColor: '#0000FF',
+          borderLeftColor: '#0000FF',
+          borderTopStyle: 'solid',
+          borderRightStyle: 'solid',
+          borderBottomStyle: 'solid',
+          borderLeftStyle: 'solid',
+          borderTopWidth: 1,
+          borderRightWidth: 1,
+          borderBottomWidth: 1,
+          borderLeftWidth: 1,
+          height: 100,
+          width: 100,
+        },
+      },
+    })
+  })
+
+  test('测试 ::v-deep 的样式', async () => {
+    const { json, messages } = await objectifierRule(`
+.box ::v-deep .text1 {
+  color: #fff000;
+}
+.box1 ::v-deep .box2 ::v-deep  .box3 {
+  color: #000000;
+}
+`)
+    // console.log(messages)
+    expect(messages.length).toBe(0)
+    expect(json).toEqual({
+      text1: {
+        '.box ': {
+          color: '#fff000',
+        },
+      },
+      box3: {
+        '.box1 .box2 ': {
+          color: '#000000',
+        },
+      },
+    })
+  })
+
+  test('测试 ::v-deep(.xxx) 的样式', async () => {
+    const { json, messages } = await objectifierRule(`
+.box :deep(.text1) {
+  color: #fff000;
+}
+.box :deep(.box2 .text2) {
+  color: #000000;
+}
+.box .box3 .text3 {
+  color: #000000;
+}
+
+`)
+    expect(messages.length).toBe(0)
+    expect(json).toEqual({
+      text1: {
+        '.box ': {
+          color: '#fff000',
+        },
+      },
+      text2: {
+        '.box .box2 ': {
+          color: '#000000',
+        },
+      },
+      text3: {
+        '.box .box3 ': {
+          color: '#000000',
         },
       },
     })

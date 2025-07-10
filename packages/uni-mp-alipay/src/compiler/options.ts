@@ -76,9 +76,12 @@ export const customElements = [
   'mkt',
   'page-container',
   'page-meta',
+  'root-portal',
+  'share-element',
   'lottie',
   'join-group-chat',
   'subscribe-message',
+  'mpaas-component',
 ]
 
 export const options: UniMiniProgramPluginOptions = {
@@ -124,6 +127,7 @@ export const options: UniMiniProgramPluginOptions = {
       selectedColor: 'selectedColor',
       backgroundColor: 'backgroundColor',
       items: 'list',
+      overlay: 'overlay',
     },
     tabBarItemOptionsMap: {
       pagePath: 'pagePath',

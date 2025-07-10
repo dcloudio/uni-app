@@ -29,6 +29,8 @@ export type UTSInputOptions = UTSParseOptions & {
   paths: Record<string, string>
   externals?: string[]
   uniModules?: string[]
+  uniModulesPrefix?: string
+  uniXPages?: string[]
   globals?: {
     envs?: Record<string, string>
     vars?: Record<string, string>
@@ -61,6 +63,7 @@ export type UTSOutputOptions = {
   isModule?: boolean
   isExtApi?: boolean
   split?: boolean
+  splitClass?: boolean
   disableSplitManifest?: boolean
   removeImports?: boolean
   dropImports?: string[]

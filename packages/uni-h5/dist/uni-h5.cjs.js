@@ -1495,7 +1495,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(
+        name,
+        invokeApi(name, fn, shared.extend({}, args), rest)
+      );
     }
     return wrapperReturnValue(
       name,
@@ -1504,7 +1507,7 @@ function promisify(name, fn) {
           invokeApi(
             name,
             fn,
-            shared.extend(args, { success: resolve, fail: reject }),
+            shared.extend({}, args, { success: resolve, fail: reject }),
             rest
           );
         })
@@ -5748,7 +5751,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useProgressState(props2) {
   const currentPercent = vue.ref(0);
-  const outerBarStyle = vue.computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
+  const outerBarStyle = vue.computed(() => `background-color: ${props2.backgroundColor}; height: ${rpx2px(props2.strokeWidth)}px;`);
   const innerBarStyle = vue.computed(() => {
     const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
@@ -6869,7 +6872,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
       }, null, 4)], 4)]), vue.withDirectives(vue.createVNode("span", {
         "ref": sliderValueRef,
         "class": "uni-slider-value"
-      }, [sliderValue.value], 512), [[vue.vShow, props2.showValue]])]), vue.createVNode("slot", null, null)], 8, ["onClick"]);
+      }, [sliderValue.value], 512), [[vue.vShow, props2.showValue]])])], 8, ["onClick"]);
     };
   }
 });
@@ -7878,7 +7881,6 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         lineCount
       });
       if (props2.autoHeight) {
-        el.style.height = "auto";
         wrapper2.style.height = height + "px";
       }
     });
@@ -7960,7 +7962,8 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "onKeyup": onKeyUpEnter
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
       return vue.createVNode("uni-textarea", {
-        "ref": rootRef
+        "ref": rootRef,
+        "auto-height": props2.autoHeight
       }, [vue.createVNode("div", {
         "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
@@ -7979,7 +7982,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 8, ["auto-height"]);
     };
   }
 });
@@ -8028,7 +8031,8 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks(options, instance, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component") {
+  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
+  mpType === "page" && instance.renderer === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
@@ -8300,6 +8304,7 @@ function reload() {
 }
 const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncError",
+  props: ["error"],
   setup() {
     initI18nAsyncMsgsOnce();
     const {
@@ -9270,7 +9275,10 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$8,
-  setup(props2) {
+  emits: ["load"],
+  setup(props2, {
+    emit: emit2
+  }) {
     Invoke();
     const rootRef = vue.ref(null);
     vue.ref(null);
@@ -10662,15 +10670,18 @@ function usePopupStyle(props2) {
         "border-style": "solid"
       });
       const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
+      const popoverWidth = getNumber(popover.width ? popover.width : 300);
       const popoverTop = getNumber(popover.top);
       const popoverHeight = getNumber(popover.height);
       const center = popoverLeft + popoverWidth / 2;
       contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
+      const contentLeft = Math.max(0, center - popoverWidth / 2);
       contentStyle.left = `${contentLeft}px`;
+      if (popover.width) {
+        contentStyle.width = `${popoverWidth}px`;
+      }
       let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleLeft = Math.min(popoverWidth - 12, triangleLeft);
       triangleStyle.left = `${triangleLeft}px`;
       const vcl = popupHeight.value / 2;
       if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
@@ -11471,6 +11482,7 @@ const request = /* @__PURE__ */ defineTaskApi(
     method,
     dataType: dataType2,
     responseType,
+    enableChunked,
     withCredentials,
     timeout = __uniConfig.networkTimeout.request
   }, { resolve, reject }) => {
@@ -11501,52 +11513,162 @@ const request = /* @__PURE__ */ defineTaskApi(
         }
       }
     }
-    const xhr = new XMLHttpRequest();
-    const requestTask = new RequestTask(xhr);
-    xhr.open(method, url);
-    for (const key in header) {
-      if (shared.hasOwn(header, key)) {
-        xhr.setRequestHeader(key, header[key]);
-      }
-    }
-    const timer = setTimeout(function() {
-      xhr.onload = xhr.onabort = xhr.onerror = null;
-      requestTask.abort();
-      reject("timeout", { errCode: 5 });
-    }, timeout);
-    xhr.responseType = responseType;
-    xhr.onload = function() {
-      clearTimeout(timer);
-      const statusCode = xhr.status;
-      let res = responseType === "text" ? xhr.responseText : xhr.response;
-      if (responseType === "text" && dataType2 === "json") {
-        try {
-          res = JSON.parse(res);
-        } catch (error) {
+    let requestTask;
+    if (!enableChunked) {
+      const xhr = new XMLHttpRequest();
+      requestTask = new RequestTask(xhr);
+      xhr.open(method, url);
+      for (const key in header) {
+        if (shared.hasOwn(header, key)) {
+          xhr.setRequestHeader(key, header[key]);
         }
       }
-      resolve({
-        data: res,
-        statusCode,
-        header: parseHeaders(xhr.getAllResponseHeaders()),
-        cookies: []
+      const timer = setTimeout(function() {
+        xhr.onload = xhr.onabort = xhr.onerror = null;
+        requestTask.abort();
+        reject("timeout", { errCode: 5 });
+      }, timeout);
+      xhr.responseType = responseType;
+      xhr.onload = function() {
+        clearTimeout(timer);
+        const statusCode = xhr.status;
+        let res = responseType === "text" ? xhr.responseText : xhr.response;
+        if (responseType === "text") {
+          res = parseResponseText(res, responseType, dataType2);
+        }
+        resolve({
+          data: res,
+          statusCode,
+          header: parseHeaders(xhr.getAllResponseHeaders()),
+          cookies: []
+        });
+      };
+      xhr.onabort = function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
+      };
+      xhr.onerror = function() {
+        clearTimeout(timer);
+        reject(void 0, { errCode: 5 });
+      };
+      xhr.withCredentials = withCredentials;
+      xhr.send(body);
+    } else {
+      if (typeof window.fetch === void 0 || typeof window.AbortController === void 0) {
+        throw new Error(
+          "fetch or AbortController is not supported in this environment"
+        );
+      }
+      const controller = new AbortController();
+      const signal = controller.signal;
+      requestTask = new RequestTask(controller);
+      const fetchOptions = {
+        method,
+        headers: header,
+        body,
+        signal,
+        credentials: withCredentials ? "include" : "same-origin"
+      };
+      const timer = setTimeout(function() {
+        requestTask.abort();
+        reject("timeout", { errCode: 5 });
+      }, timeout);
+      fetchOptions.signal.addEventListener("abort", function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
       });
-    };
-    xhr.onabort = function() {
-      clearTimeout(timer);
-      reject("abort", { errCode: 600003 });
-    };
-    xhr.onerror = function() {
-      clearTimeout(timer);
-      reject(void 0, { errCode: 5 });
-    };
-    xhr.withCredentials = withCredentials;
-    xhr.send(body);
+      window.fetch(url, fetchOptions).then(
+        (response) => {
+          const statusCode = response.status;
+          const header2 = response.headers;
+          const body2 = response.body;
+          const headerObj = {};
+          header2.forEach((value, key) => {
+            headerObj[key] = value;
+          });
+          const cookies = cookiesParse(headerObj);
+          requestTask._emitter.emit("headersReceived", {
+            header: headerObj,
+            statusCode,
+            cookies
+          });
+          if (!body2) {
+            resolve({
+              data: "",
+              statusCode,
+              header: headerObj,
+              cookies
+            });
+            return;
+          }
+          const reader = body2.getReader();
+          const bodyBuffers = [];
+          const streamReaderRead = () => {
+            reader.read().then(({ done, value }) => {
+              if (done) {
+                const result = concatArrayBuffers(bodyBuffers);
+                let res = responseType === "text" ? new TextDecoder().decode(result) : result;
+                if (responseType === "text") {
+                  res = parseResponseText(res, responseType, dataType2);
+                }
+                resolve({
+                  data: res,
+                  statusCode,
+                  header: headerObj,
+                  cookies
+                });
+                return;
+              }
+              const chunk = value;
+              bodyBuffers.push(chunk);
+              requestTask._emitter.emit("chunkReceived", {
+                data: chunk
+              });
+              streamReaderRead();
+            });
+          };
+          streamReaderRead();
+        },
+        (error) => {
+          reject(error, { errCode: 5 });
+        }
+      );
+    }
     return requestTask;
   },
   RequestProtocol,
   RequestOptions
 );
+const cookiesParse = (header) => {
+  let cookiesStr = header["Set-Cookie"] || header["set-cookie"];
+  let cookiesArr = [];
+  if (!cookiesStr) {
+    return [];
+  }
+  if (cookiesStr[0] === "[" && cookiesStr[cookiesStr.length - 1] === "]") {
+    cookiesStr = cookiesStr.slice(1, -1);
+  }
+  const handleCookiesArr = cookiesStr.split(";");
+  for (let i = 0; i < handleCookiesArr.length; i++) {
+    if (handleCookiesArr[i].indexOf("Expires=") !== -1 || handleCookiesArr[i].indexOf("expires=") !== -1) {
+      cookiesArr.push(handleCookiesArr[i].replace(",", ""));
+    } else {
+      cookiesArr.push(handleCookiesArr[i]);
+    }
+  }
+  cookiesArr = cookiesArr.join(";").split(",");
+  return cookiesArr;
+};
+function concatArrayBuffers(buffers) {
+  const totalLength = buffers.reduce((acc, buf) => acc + buf.byteLength, 0);
+  const result = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const buffer of buffers) {
+    result.set(new Uint8Array(buffer), offset);
+    offset += buffer.byteLength;
+  }
+  return result.buffer;
+}
 function normalizeContentType(header) {
   const name = Object.keys(header).find(
     (name2) => name2.toLowerCase() === "content-type"
@@ -11567,20 +11689,79 @@ function normalizeContentType(header) {
   return "string";
 }
 class RequestTask {
-  constructor(xhr) {
-    this._xhr = xhr;
+  constructor(controller) {
+    this._requestOnChunkReceiveCallbackId = 0;
+    this._requestOnChunkReceiveCallbacks = /* @__PURE__ */ new Map();
+    this._requestOnHeadersReceiveCallbackId = 0;
+    this._requestOnHeadersReceiveCallbacks = /* @__PURE__ */ new Map();
+    this._emitter = new uniShared.Emitter();
+    this._controller = controller;
   }
   abort() {
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
+    if (this._controller) {
+      this._controller.abort();
+      delete this._controller;
     }
   }
   onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
+    this._emitter.on("headersReceived", callback);
+    this._requestOnHeadersReceiveCallbackId++;
+    this._requestOnHeadersReceiveCallbacks.set(
+      this._requestOnHeadersReceiveCallbackId,
+      callback
+    );
+    return this._requestOnHeadersReceiveCallbackId;
   }
   offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
+    if (callback == null) {
+      this._emitter.off("headersReceived");
+      return;
+    }
+    if (typeof callback === "function") {
+      this._requestOnHeadersReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnHeadersReceiveCallbacks.delete(id2);
+          this._emitter.off("headersReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnHeadersReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnHeadersReceiveCallbacks.delete(callback);
+    this._emitter.off("headersReceived", callbackFn);
+  }
+  onChunkReceived(callback) {
+    this._emitter.on("chunkReceived", callback);
+    this._requestOnChunkReceiveCallbackId++;
+    this._requestOnChunkReceiveCallbacks.set(
+      this._requestOnChunkReceiveCallbackId,
+      callback
+    );
+    return this._requestOnChunkReceiveCallbackId;
+  }
+  offChunkReceived(callback) {
+    if (callback == null) {
+      this._emitter.off("chunkReceived");
+      return;
+    }
+    if (typeof callback === "function") {
+      this._requestOnChunkReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnChunkReceiveCallbacks.delete(id2);
+          this._emitter.off("chunkReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnChunkReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnChunkReceiveCallbacks.delete(callback);
+    this._emitter.off("chunkReceived", callbackFn);
   }
 }
 function parseHeaders(headers) {
@@ -11593,6 +11774,16 @@ function parseHeaders(headers) {
     headersObject[find[1]] = find[2];
   });
   return headersObject;
+}
+function parseResponseText(responseText, responseType, dataType2) {
+  let res = responseText;
+  if (responseType === "text" && dataType2 === "json") {
+    try {
+      res = JSON.parse(res);
+    } catch (error) {
+    }
+  }
+  return res;
 }
 const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
@@ -11782,7 +11973,7 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       model,
       platform,
       system,
-      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osName: osname ? osname.toLowerCase() : void 0,
       osVersion: osversion
     });
   }

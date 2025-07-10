@@ -181,6 +181,36 @@ export function resolveUTSPluginSourceMapFile(
     throw `plugin dir not found`
   }
   const is_uni_modules = basename(dirname(pluginDir)) === 'uni_modules'
+  if (is_uni_modules && (target === 'kotlin' || target === 'swift')) {
+    // 传入的可能是混编文件，该文件路径可能是源码工程路径，也可能是copy后路径
+    const extname = EXTNAME[target]
+    if (extname && filename.endsWith(extname)) {
+      // 重要：必须先判断输出目录，再判断源码目录
+      // 如果是copy后路径，则可能是混编文件
+      if (filename.startsWith(outputDir)) {
+        // 不是index.kt、index.swift、index.ets。那就是混编文件
+        const outputUTSSDKDir = join(
+          outputDir,
+          relative(inputDir, pluginDir),
+          'utssdk',
+          PLATFORM_DIR[target]
+        )
+        if (
+          // 开发时目录
+          filename !==
+            normalizePath(join(outputUTSSDKDir, 'index' + extname)) &&
+          // 发行时目录
+          filename !==
+            normalizePath(join(outputUTSSDKDir, 'src', 'index' + extname))
+        ) {
+          return normalizePath(relative(outputDir, filename)) + '.fake.map'
+        }
+      } else if (filename.startsWith(inputDir)) {
+        // 如果是源码工程路径，则肯定是混编文件
+        return normalizePath(relative(inputDir, filename)) + '.fake.map'
+      }
+    }
+  }
   const sourceMapFile =
     target === 'arkts'
       ? join(
@@ -314,6 +344,16 @@ export async function generatedPositionFor({
 }): Promise<
   NullablePosition & { source: string | null; relativeSource: string | null }
 > {
+  if (sourceMapFile.endsWith('.fake.map')) {
+    const relativeSource = sourceMapFile.replace('.fake.map', '')
+    return Promise.resolve({
+      source: relativeSource,
+      relativeSource,
+      line,
+      column,
+      lastColumn: column,
+    })
+  }
   return resolveSourceMapConsumer(sourceMapFile).then((consumer) => {
     const res = consumer.generatedPositionFor({
       source: resolveSource(
@@ -380,6 +420,19 @@ export async function generatedPositionFor({
 export async function originalPositionFor(
   generatedPosition: Omit<PositionFor, 'filename'> & { inputDir?: string }
 ): Promise<NullableMappedPosition & { sourceContent?: string }> {
+  if (generatedPosition.sourceMapFile.endsWith('.fake.map')) {
+    const relativeSource = generatedPosition.sourceMapFile.replace(
+      '.fake.map',
+      ''
+    )
+    return Promise.resolve({
+      source: relativeSource,
+      relativeSource,
+      line: generatedPosition.line,
+      column: generatedPosition.column,
+      name: null,
+    })
+  }
   return resolveSourceMapConsumer(generatedPosition.sourceMapFile).then(
     (consumer) => {
       const res = (
@@ -419,6 +472,17 @@ export async function originalPositionFor(
 export function originalPositionForSync(
   generatedPosition: Omit<PositionFor, 'filename'> & { inputDir?: string }
 ): MappedPosition & { sourceContent?: string; sourceRoot?: string | null } {
+  if (generatedPosition.sourceMapFile.endsWith('.fake.map')) {
+    const relativeSource = generatedPosition.sourceMapFile.replace(
+      '.fake.map',
+      ''
+    )
+    return {
+      source: relativeSource,
+      line: generatedPosition.line,
+      column: generatedPosition.column,
+    }
+  }
   const consumer = resolveSourceMapConsumerSync(
     generatedPosition.sourceMapFile
   ) as SourceMapConsumerSync

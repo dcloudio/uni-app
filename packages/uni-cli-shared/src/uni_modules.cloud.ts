@@ -4,6 +4,7 @@ import { sync } from 'fast-glob'
 import { camelize, capitalize, normalizePath, requireUniHelpers } from './utils'
 import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
+import { EXTNAME_VUE_RE } from './constants'
 
 function genEncryptEasyComModuleIndex(
   platform: typeof process.env.UNI_UTS_PLATFORM,
@@ -159,34 +160,71 @@ export function parseEasyComComponents(
   return components
 }
 
-// 查找所有普通加密插件 uni_modules
-export function findEncryptUniModules(
+const uniModulesEncryptTypes: Map<string, 'utssdk' | 'easycom' | ''> = new Map()
+
+/**
+ * 查找所有需要云编译的加密插件 uni_modules
+ * 支持云编译的插件类型
+ * 1. 前端加密组件components
+ * 2. 非 app-android/app-ios 平台的 utssdk 插件(app-android/app-ios 平台需要自定义基座，不支持云编译)
+ * 目前 utssdk 插件 和 前端加密组件是互斥的
+ * @param platform
+ * @param inputDir
+ * @param cacheDir
+ * @returns
+ */
+export function findCloudEncryptUniModules(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string,
   cacheDir: string = ''
 ) {
-  const modulesDir = path.resolve(inputDir, 'uni_modules')
+  uniModulesEncryptTypes.clear()
   const uniModules: Record<string, EncryptPackageJson | undefined> = {}
+  const modulesDir = path.resolve(inputDir, 'uni_modules')
   if (fs.existsSync(modulesDir)) {
     fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
       const uniModuleRootDir = path.resolve(modulesDir, uniModuleDir)
       if (!fs.existsSync(path.resolve(uniModuleRootDir, 'encrypt'))) {
         return
       }
-      // 只有 app-android 和 app-ios 不需要云编译 utssdk 插件，而是需要自定义基座
-      // 目前还未完整支持web、小程序，暂时屏蔽
-      // if (platform === 'app-android' || platform === 'app-ios') {
-      // 仅扫描普通加密插件，无需依赖
-      if (fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))) {
-        return
+      const utssdkDir = path.resolve(uniModuleRootDir, 'utssdk')
+      let type: 'utssdk' | 'easycom' | '' = ''
+      if (fs.existsSync(utssdkDir)) {
+        // app-android 和 app-ios 不能云编译 utssdk 插件，而是需要自定义基座
+        // app-harmony 平台目前不支持云编译
+        if (
+          platform === 'app-android' ||
+          platform === 'app-ios' ||
+          platform === 'app-harmony'
+        ) {
+          return
+        }
+        // 其他平台必须有平台index.uts或根目录index.uts
+        const hasIndexUTSFile =
+          fs.existsSync(path.resolve(utssdkDir, platform, 'index.uts')) ||
+          fs.existsSync(path.resolve(utssdkDir, 'index.uts'))
+        if (!hasIndexUTSFile) {
+          return
+        }
+        type = 'utssdk'
+      } else {
+        // 前端加密组件components
+        const componentsDir = path.resolve(uniModuleRootDir, 'components')
+        if (!fs.existsSync(componentsDir)) {
+          return
+        }
+        type = 'easycom'
       }
-      // }
       const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
       uniModules[uniModuleDir] = findEncryptUniModuleCache(
         uniModuleDir,
         cacheDir,
-        { version: pkg.version, env: initCheckEnv() }
+        {
+          version: pkg.version,
+          env: initCheckEnv(),
+        }
       )
+      uniModulesEncryptTypes.set(uniModuleDir, type)
     })
   }
   return uniModules
@@ -377,14 +415,15 @@ function findLastIndex<T>(
   return -1
 }
 
-let encryptUniModules: ReturnType<typeof findEncryptUniModules> = {}
+let encryptUniModules: ReturnType<typeof findCloudEncryptUniModules> = {}
 
 export function resolveEncryptUniModule(
   id: string,
   platform: typeof process.env.UNI_UTS_PLATFORM,
   isX: boolean = true
 ) {
-  const parts = id.split('?', 2)[0].split('/')
+  id = id.split('?', 2)[0]
+  const parts = id.split('/')
   const index = findLastIndex(parts, (part) => part === 'uni_modules')
   if (index !== -1) {
     const uniModuleId = parts[index + 1]
@@ -399,6 +438,16 @@ export function resolveEncryptUniModule(
             .replace('{1}', uniModuleId)
             .replace('{2}', parts.slice(index + 2).join('/'))
         )
+      }
+      // 为了避免兼容性问题，
+      // 目前排除 app-android 和 app-ios 平台，其他平台需要判断是否uvue文件，比如web端。加密utssdk插件，但同时easycom使用了非加密组件
+      if (platform !== 'app-android' && platform !== 'app-ios') {
+        if (uniModulesEncryptTypes.get(uniModuleId) === 'utssdk') {
+          // 如果是utssdk加密插件，且是vue文件，则不走uts-proxy
+          if (EXTNAME_VUE_RE.test(id)) {
+            return
+          }
+        }
       }
       // 原生平台走旧的uts-proxy
       return normalizePath(
@@ -426,7 +475,7 @@ export async function checkEncryptUniModules(
   }
 ) {
   // 扫描加密插件云编译
-  encryptUniModules = findEncryptUniModules(
+  encryptUniModules = findCloudEncryptUniModules(
     params.platform,
     inputDir,
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
@@ -504,7 +553,7 @@ export async function checkEncryptUniModules(
       })
     }
   }
-  encryptUniModules = findEncryptUniModules(
+  encryptUniModules = findCloudEncryptUniModules(
     params.platform,
     inputDir,
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR

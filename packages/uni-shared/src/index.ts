@@ -18,3 +18,4 @@ export * from './theme'
 
 export * from './node/locale'
 export * from './polyfill'
+export * from './globalsAllowList'

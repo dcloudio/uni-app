@@ -4,14 +4,14 @@ exports[`SFC analyze <script> bindings auto name inference basic 1`] = `
 "const a = 1
 export default defineComponent({
   __name: 'FooBar',
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
 return (): any | null => {
 
-  return toDisplayString(a)
+  return _tD(a)
 }
 }
 
@@ -25,14 +25,14 @@ exports[`SFC analyze <script> bindings auto name inference do not overwrite manu
         })
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 const a = 1
 return (): any | null => {
 
-  return toDisplayString(a)
+  return _tD(a)
 }
 }
 
@@ -45,14 +45,14 @@ exports[`SFC analyze <script> bindings auto name inference do not overwrite manu
         }
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 const a = 1
 return (): any | null => {
 
-  return toDisplayString(a)
+  return _tD(a)
 }
 }
 
@@ -63,7 +63,7 @@ exports[`SFC analyze <script> bindings defineSlots basic 1`] = `
 "export default defineComponent({
   __name: 'FooBar',
   slots: Object as SlotsType<{default: { times: number; name: string }}>,
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -78,7 +78,7 @@ return (): any | null => { return null }
 
 exports[`SFC compile <script setup> binding analysis for destructure 1`] = `
 "export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -96,7 +96,7 @@ exports[`SFC compile <script setup> dev mode import usage check TS annotations 1
         const a = 1
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -107,14 +107,14 @@ return (): any | null => {
 
 const _component_Comp = resolveComponent("Comp")
 
-  return createElementVNode(Fragment, null, [
-    toDisplayString(a as Foo) + " " + toDisplayString(b<Bar>()) + " " + toDisplayString(unref(Baz)) + " ",
-    createVNode(_component_Comp, null, utsMapOf({
-      default: withScopedSlotCtx(({ data }: Qux): any[] => [toDisplayString(data)]),
+  return _cE(Fragment, null, [
+    _tD(a as Foo) + " " + _tD(b<Bar>()) + " " + _tD(unref(Baz)) + " ",
+    _cV(_component_Comp, null, _uM({
+      default: withScopedSlotCtx(({ data }: Qux): any[] => [_tD(data)]),
       _: 1 /* STABLE */
     })),
-    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list as Fred, ({ z = _ctx.x as Qux }, __key, __index, _cached): any => {
-      return createElementVNode("view")
+    _cE(Fragment, null, RenderHelpers.renderList(_ctx.list as Fred, ({ z = _ctx.x as Qux }, __key, __index, _cached): any => {
+      return _cE("view")
     }), 256 /* UNKEYED_FRAGMENT */)
   ], 64 /* STABLE_FRAGMENT */)
 }
@@ -128,7 +128,7 @@ exports[`SFC compile <script setup> dev mode import usage check attribute expres
         const cond = true
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -136,9 +136,9 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode("view", utsMapOf({
-    class: normalizeClass([cond ? '' : unref(bar)(), 'default']),
-    style: normalizeStyle(unref(baz))
+  return _cE("view", _uM({
+    class: _nC([cond ? '' : unref(bar)(), 'default']),
+    style: _nS(unref(baz))
   }), null, 6 /* CLASS, STYLE */)
 }
 }
@@ -151,7 +151,7 @@ exports[`SFC compile <script setup> dev mode import usage check components 1`] =
         const fooBar: FooBar = 1
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -159,10 +159,10 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createVNode(unref(FooBaz)),
-    createVNode(unref(FooQux)),
-    createVNode(unref(foo)),
+  return _cE(Fragment, null, [
+    _cV(unref(FooBaz)),
+    _cV(unref(FooQux)),
+    _cV(unref(foo)),
     " FooBar "
   ], 64 /* STABLE_FRAGMENT */)
 }
@@ -175,7 +175,7 @@ exports[`SFC compile <script setup> dev mode import usage check directive 1`] = 
 "import { vMyDir } from './x'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -183,7 +183,7 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return withDirectives(createElementVNode("view", null, null, 512 /* NEED_PATCH */), [
+  return withDirectives(_cE("view", null, null, 512 /* NEED_PATCH */), [
     [unref(vMyDir)]
   ])
 }
@@ -196,7 +196,7 @@ exports[`SFC compile <script setup> dev mode import usage check dynamic argument
 "import { FooBar, foo, bar, unused, baz } from './x'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -204,12 +204,12 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createVNode(unref(FooBar)),
-    createVNode(unref(FooBar)),
-    createElementVNode("view", normalizeProps(utsMapOf({ [(unref(bar).attrName) || ""]: 15 })), null, 16 /* FULL_PROPS */),
-    createElementVNode("view", utsMapOf({ unused: "unused" })),
-    createVNode(unref(FooBar))
+  return _cE(Fragment, null, [
+    _cV(unref(FooBar)),
+    _cV(unref(FooBar)),
+    _cE("view", normalizeProps(_uM({ [(unref(bar).attrName) || ""]: 15 })), null, 16 /* FULL_PROPS */),
+    _cE("view", _uM({ unused: "unused" })),
+    _cV(unref(FooBar))
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -221,7 +221,7 @@ exports[`SFC compile <script setup> dev mode import usage check js template stri
 "import { VAR, VAR2, VAR3 } from './x'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -229,7 +229,7 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return toDisplayString(\`\${unref(VAR)}VAR2\${unref(VAR3)}\`)
+  return _tD(\`\${unref(VAR)}VAR2\${unref(VAR3)}\`)
 }
 }
 
@@ -240,7 +240,7 @@ exports[`SFC compile <script setup> dev mode import usage check last tag 1`] = `
 "import { FooBaz, Last } from './x'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -248,9 +248,9 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createVNode(unref(FooBaz)),
-    createVNode(unref(Last))
+  return _cE(Fragment, null, [
+    _cV(unref(FooBaz)),
+    _cV(unref(Last))
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -262,7 +262,7 @@ exports[`SFC compile <script setup> dev mode import usage check template ref 1`]
 "import { foo, bar, Baz } from './foo'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -270,13 +270,13 @@ const _cache = __ins.renderCache;
           
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("view", utsMapOf({
+  return _cE(Fragment, null, [
+    _cE("view", _uM({
       ref_key: "foo",
       ref: foo
     }), null, 512 /* NEED_PATCH */),
-    createElementVNode("view", utsMapOf({ ref: "" }), null, 512 /* NEED_PATCH */),
-    createVNode(unref(Baz), utsMapOf({
+    _cE("view", _uM({ ref: "" }), null, 512 /* NEED_PATCH */),
+    _cV(unref(Baz), _uM({
       ref_key: "bar",
       ref: bar
     }), null, 512 /* NEED_PATCH */)
@@ -291,7 +291,7 @@ exports[`SFC compile <script setup> dev mode import usage check vue interpolatio
 "import { x, y, z, x$y } from './x'
       
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -299,9 +299,9 @@ const _cache = __ins.renderCache;
       
 return (): any | null => {
 
-  return createElementVNode("view", utsMapOf({
+  return _cE("view", _uM({
     id: unref(z) + 'y'
-  }), toDisplayString(unref(x)) + " " + toDisplayString(_ctx.yy) + " " + toDisplayString(unref(x$y)), 9 /* TEXT, PROPS */, ["id"])
+  }), _tD(unref(x)) + " " + _tD(_ctx.yy) + " " + _tD(unref(x$y)), 9 /* TEXT, PROPS */, ["id"])
 }
 }
 
@@ -320,7 +320,7 @@ export default defineComponent({
   emits: {
           foo: () => bar > 1
         },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -346,7 +346,7 @@ export default defineComponent({
   emits: {
             foo: bar => bar > 1
           },
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -364,7 +364,7 @@ exports[`SFC compile <script setup> imports dedupe between user & helper 1`] = `
 "import { ref } from 'vue'
       
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -381,7 +381,7 @@ exports[`SFC compile <script setup> imports import dedupe between <script> and <
 "import { x } from './x'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -400,7 +400,7 @@ exports[`SFC compile <script setup> imports should allow defineProps/Emit at the
 export default defineComponent({
   props: ['foo'],
   emits: ['bar'],
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -420,7 +420,7 @@ exports[`SFC compile <script setup> imports should extract comment for import or
         import b from 'b'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -437,7 +437,7 @@ exports[`SFC compile <script setup> imports should hoist and expose imports 1`] 
           import 'foo/css'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -453,7 +453,7 @@ exports[`SFC compile <script setup> imports should support module string names s
 "import { "😏" as foo } from './foo'
       
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -472,7 +472,7 @@ exports[`SFC compile <script setup> inlineTemplate mode avoid unref() when neces
         import * as tree from './tree'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -485,13 +485,13 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createVNode(Foo, null, utsMapOf({
-      default: withSlotCtx((): any[] => [toDisplayString(unref(bar))]),
+  return _cE(Fragment, null, [
+    _cV(Foo, null, _uM({
+      default: withSlotCtx((): any[] => [_tD(unref(bar))]),
       _: 1 /* STABLE */
     })),
-    createElementVNode("view", utsMapOf({ onClick: fn }), toDisplayString(count.value) + " " + toDisplayString(constant) + " " + toDisplayString(unref(maybe)) + " " + toDisplayString(unref(lett)) + " " + toDisplayString(unref(other)), 1 /* TEXT */),
-    " " + toDisplayString(tree.foo())
+    _cE("view", _uM({ onClick: fn }), _tD(count.value) + " " + _tD(constant) + " " + _tD(unref(maybe)) + " " + _tD(unref(lett)) + " " + _tD(unref(other)), 1 /* TEXT */),
+    " " + _tD(tree.foo())
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -505,7 +505,7 @@ exports[`SFC compile <script setup> inlineTemplate mode referencing scope compon
         import vMyDir from './my-dir'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -513,12 +513,12 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    withDirectives(createElementVNode("view", null, null, 512 /* NEED_PATCH */), [
+  return _cE(Fragment, null, [
+    withDirectives(_cE("view", null, null, 512 /* NEED_PATCH */), [
       [unref(vMyDir)]
     ]),
-    createVNode(ChildComp),
-    createVNode(SomeOtherComp)
+    _cV(ChildComp),
+    _cV(SomeOtherComp)
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -530,7 +530,7 @@ exports[`SFC compile <script setup> inlineTemplate mode should work 1`] = `
 "import { ref } from 'vue'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -539,9 +539,9 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("view", null, toDisplayString(count.value), 1 /* TEXT */),
-    createElementVNode("view", null, "static")
+  return _cE(Fragment, null, [
+    _cE("view", null, _tD(count.value), 1 /* TEXT */),
+    _cE("view", null, "static")
   ], 64 /* STABLE_FRAGMENT */)
 }
 }
@@ -553,7 +553,7 @@ exports[`SFC compile <script setup> inlineTemplate mode template assignment expr
 "import { ref } from 'vue'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -565,29 +565,29 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("view", utsMapOf({
+  return _cE(Fragment, null, [
+    _cE("view", _uM({
       onClick: () => {count.value = 1}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {maybe.value = count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {isRef(lett) ? trySetRefValue(lett, count.value) : lett = count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {isRef(v) ? trySetRefValue(v, unref(v.also((_)=>{ v += 1 }))) : v += 1}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {isRef(v) ? trySetRefValue(v, unref(v.also((_)=>{ v -= 1 }))) : v -= 1}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {
               let a = '' + unref(lett)
               isRef(v) ? trySetRefValue(v, a) : v = a
            }
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {
               // nested scopes
               (()=>{
@@ -612,7 +612,7 @@ exports[`SFC compile <script setup> inlineTemplate mode template destructure ass
 "import { ref } from 'vue'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -624,14 +624,14 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("view", utsMapOf({
+  return _cE(Fragment, null, [
+    _cE("view", _uM({
       onClick: () => {({ count: count.value } = val)}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {[maybe.value] = val}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {({ lett: lett } = val)}
     }), null, 8 /* PROPS */, ["onClick"])
   ], 64 /* STABLE_FRAGMENT */)
@@ -645,7 +645,7 @@ exports[`SFC compile <script setup> inlineTemplate mode template update expressi
 "import { ref } from 'vue'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -656,23 +656,23 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("view", utsMapOf({
+  return _cE(Fragment, null, [
+    _cE("view", _uM({
       onClick: () => {count.value++}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {--count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {maybe.value++}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {--maybe.value}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {lett = tryUpdateRefNumber(lett, 1, false)}
     }), null, 8 /* PROPS */, ["onClick"]),
-    createElementVNode("view", utsMapOf({
+    _cE("view", _uM({
       onClick: () => {lett = tryUpdateRefNumber(lett, -1, true)}
     }), null, 8 /* PROPS */, ["onClick"])
   ], 64 /* STABLE_FRAGMENT */)
@@ -686,7 +686,7 @@ exports[`SFC compile <script setup> inlineTemplate mode v-model codegen 1`] = `
 "import { ref } from 'vue'
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -697,18 +697,18 @@ const _cache = __ins.renderCache;
         
 return (): any | null => {
 
-  return createElementVNode(Fragment, null, [
-    createElementVNode("input", utsMapOf({
+  return _cE(Fragment, null, [
+    _cE("input", _uM({
       modelValue: count.value,
-      onInput: ($event: InputEvent) => {(count).value = $event.detail.value}
+      onInput: ($event: UniInputEvent) => {(count).value = $event.detail.value}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"]),
-    createElementVNode("input", utsMapOf({
+    _cE("input", _uM({
       modelValue: unref(maybe),
-      onInput: ($event: InputEvent) => {trySetRefValue(maybe, $event.detail.value)}
+      onInput: ($event: UniInputEvent) => {trySetRefValue(maybe, $event.detail.value)}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue"]),
-    createElementVNode("input", utsMapOf({
+    _cE("input", _uM({
       modelValue: unref(lett),
-      onInput: ($event: InputEvent) => {lett = trySetRefValue(lett, $event.detail.value)}
+      onInput: ($event: UniInputEvent) => {lett = trySetRefValue(lett, $event.detail.value)}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue"])
   ], 64 /* STABLE_FRAGMENT */)
 }
@@ -719,7 +719,7 @@ return (): any | null => {
 
 exports[`SFC compile <script setup> inlineTemplate mode with defineExpose() 1`] = `
 "export default defineComponent({
-  setup(__props, { expose: __expose }: SetupContext): any | null {
+  setup(__props, { expose: __expose }: SetupContext) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -738,7 +738,7 @@ exports[`SFC compile <script setup> should compile JS syntax 1`] = `
       const b = 2
       
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -761,7 +761,7 @@ exports[`SFC compile <script setup> should expose top level declarations 1`] = `
       
 
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -781,7 +781,7 @@ exports[`SFC compile <script setup> with TypeScript const Enum 1`] = `
 "const enum Foo { A = 123 }
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -798,7 +798,7 @@ exports[`SFC compile <script setup> with TypeScript hoist type declarations 1`] 
         type Bar = {}
       
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -814,7 +814,7 @@ exports[`SFC compile <script setup> with TypeScript runtime Enum 1`] = `
 "enum Foo { A = 123 }
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -832,7 +832,7 @@ exports[`SFC compile <script setup> with TypeScript runtime Enum in normal scrip
           enum B { B = "B" }
         
 export default defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
@@ -849,7 +849,7 @@ exports[`SFC genDefaultAs <script setup> only 1`] = `
 "const a = 1
       
 const __sfc__ = defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
 const _cache = __ins.renderCache;
@@ -866,7 +866,7 @@ exports[`SFC genDefaultAs <script setup> only w/ ts 1`] = `
 "const a = 1
       
 const __sfc__ = defineComponent({
-  setup(__props): any | null {
+  setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
 const _cache = __ins.renderCache;

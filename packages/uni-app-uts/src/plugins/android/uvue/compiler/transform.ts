@@ -34,7 +34,7 @@ import {
 } from '@vue/shared'
 import { defaultOnError, defaultOnWarn } from './errors'
 import type { TransformOptions } from './options'
-import { FRAGMENT } from './runtimeHelpers'
+import { FRAGMENT, initRuntimeHelpersOnce } from './runtimeHelpers'
 import type { ParserPlugin } from '@babel/parser'
 
 // There are two types of transforms:
@@ -79,7 +79,7 @@ export interface ImportItem {
 }
 
 export interface TransformContext
-  extends Required<Omit<TransformOptions, 'filename' | 'className'>> {
+  extends Required<Omit<TransformOptions, 'className'>> {
   inSSR?: false
   selfName: string | null
   root: RootNode
@@ -140,6 +140,7 @@ export function createTransformContext(
   const nameMatch = filename.replace(/\?.*$/, '').match(/([^/\\]+)\.\w+$/)
   const context: TransformContext = {
     // options
+    filename,
     mode,
     rootDir,
     targetLanguage,
@@ -279,6 +280,7 @@ export function createTransformContext(
 }
 
 export function transform(root: RootNode, options: TransformOptions) {
+  initRuntimeHelpersOnce()
   const context = createTransformContext(root, options)
   traverseNode(root, context)
   createRootCodegen(root, context)

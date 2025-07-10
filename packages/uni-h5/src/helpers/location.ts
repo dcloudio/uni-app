@@ -145,5 +145,9 @@ export function translateCoordinateSystem(
       })
     })
   }
-  return Promise.reject(new Error('translate coordinate system faild'))
+  return Promise.reject(
+    new Error(
+      'translate coordinate system faild, map provider not configured or not supported'
+    )
+  )
 }

@@ -41,7 +41,7 @@ function createApp(code: string) {
   return `import { plugin as __plugin } from '@dcloudio/uni-h5';${code.replace(
     'createSSRApp',
     'createVueApp as createSSRApp'
-  )};createApp().app.use(__plugin).mount("#app");`
+  )};\ncreateApp().app.use(__plugin).mount("#app");`
 }
 
 function createLegacyApp(code: string) {

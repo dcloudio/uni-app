@@ -19,7 +19,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -27,7 +41,7 @@ interface Console {
         }
      }
    */
-  assert(condition ?: boolean, ...data : (any | null)[]) : void;
+  assert(condition?: boolean, ...data: (any | null)[]): void;
   /**
      console.clear() 方法清空控制台，但前提是该控制台允许清空。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#clear
@@ -46,7 +60,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -54,7 +82,7 @@ interface Console {
         }
      }
    */
-  clear() : void;
+  clear(): void;
   /**
      console.count() 方法会记录调用 count() 的次数。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#count
@@ -73,7 +101,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -81,7 +123,7 @@ interface Console {
         }
      }
    */
-  count(label ?: string) : void;
+  count(label?: string): void;
   /**
      重置计数器。此函数有一个可选参数 label。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#countReset
@@ -100,7 +142,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -108,7 +164,7 @@ interface Console {
         }
      }
    */
-  countReset(label ?: string) : void;
+  countReset(label?: string): void;
   /**
      在控制台打印 debug 日志
      @param data 要输出的对象列表。按传参的顺序把对象输出到控制台。
@@ -117,7 +173,7 @@ interface Console {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -128,7 +184,21 @@ interface Console {
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -136,7 +206,7 @@ interface Console {
         }
      }
    */
-  debug(...data : (any | null)[]) : void;
+  debug(...data: (any | null)[]): void;
   /**
      console.dir() 方法可以显示指定 JavaScript 对象的属性列表，并以交互式的形式展现。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#dir
@@ -155,7 +225,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -163,7 +247,7 @@ interface Console {
         }
      }
    */
-  dir(item ?: any | null, options ?: any | null) : void;
+  dir(item?: any | null, options?: any | null): void;
   /**
    显示一个明确的 XML/HTML 元素的包括所有后代元素的交互树。
      非标准: 该特性是非标准的，请尽量不要在生产环境中使用它！
@@ -183,7 +267,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -191,7 +289,7 @@ interface Console {
         }
      }
    */
-  dirxml(...data : (any | null)[]) : void;
+  dirxml(...data: (any | null)[]): void;
   /**
      在控制台打印 error 日志
      @param data 要输出的对象列表。按传参的顺序把对象输出到控制台。
@@ -200,7 +298,7 @@ interface Console {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -211,7 +309,21 @@ interface Console {
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -219,7 +331,7 @@ interface Console {
         }
      }
    */
-  error(...data : (any | null)[]) : void;
+  error(...data: (any | null)[]): void;
   /**
      console.group() 方法在控制台上创建一个新的分组。随后输出到控制台上的内容都会被添加一个缩进，表示该内容属于当前分组，直到调用 console.groupEnd() 之后，当前分组结束。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#group
@@ -238,7 +350,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -246,7 +372,7 @@ interface Console {
         }
      }
    */
-  group(...data : (any | null)[]) : void;
+  group(...data: (any | null)[]): void;
   /**
      console.groupCollapsed() 方法在控制台上创建一个新的分组。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#groupCollapsed
@@ -265,7 +391,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -273,7 +413,7 @@ interface Console {
         }
      }
    */
-  groupCollapsed(...data : (any | null)[]) : void;
+  groupCollapsed(...data: (any | null)[]): void;
   /**
      在控制台中退出一格缩进 (结束分组).
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#groupEnd
@@ -292,7 +432,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -300,7 +454,7 @@ interface Console {
         }
      }
    */
-  groupEnd() : void;
+  groupEnd(): void;
   /**
      在控制台打印 info 日志
      @param data 要输出的对象列表。按传参的顺序把对象输出到控制台。
@@ -309,7 +463,7 @@ interface Console {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -320,7 +474,21 @@ interface Console {
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -328,7 +496,7 @@ interface Console {
         }
      }
    */
-  info(...data : (any | null)[]) : void;
+  info(...data: (any | null)[]): void;
   /**
      在控制台打印 log 日志
      @param data 要输出的对象列表。按传参的顺序把对象输出到控制台。
@@ -337,7 +505,7 @@ interface Console {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -350,13 +518,20 @@ interface Console {
                "unixUtsPlugin": "4.11"
             }
         },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
         "web": {
             "uniVer": "√",
             "unixVer": "4.0"
         }
      }
    */
-  log(...data : (any | null)[]) : void;
+  log(...data: (any | null)[]): void;
   /**
      将数据以表格的形式显示。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#table
@@ -375,7 +550,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -383,7 +572,7 @@ interface Console {
         }
      }
    */
-  table(tabularData ?: any | null, properties ?: string[]) : void;
+  table(tabularData?: any | null, properties?: string[]): void;
   /**
      你可以启动一个计时器来跟踪某一个操作的占用时长。每一个计时器必须拥有唯一的名字，页面中最多能同时运行 10,000 个计时器。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#time
@@ -402,7 +591,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -410,7 +613,7 @@ interface Console {
         }
      }
    */
-  time(label ?: string) : void;
+  time(label?: string): void;
   /**
      停止一个通过 console.time() 启动的计时器
    非标准: 该特性是非标准的，请尽量不要在生产环境中使用它！
@@ -430,7 +633,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -438,7 +655,7 @@ interface Console {
         }
      }
    */
-  timeEnd(label ?: string) : void;
+  timeEnd(label?: string): void;
   /**
      在控制台输出计时器的值，该计时器必须已经通过 console.time() 启动。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#timeLog
@@ -457,7 +674,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -465,7 +696,7 @@ interface Console {
         }
      }
    */
-  timeLog(label ?: string, ...data : (any | null)[]) : void;
+  timeLog(label?: string, ...data: (any | null)[]): void;
   /**
      非标准: 该特性是非标准的，请尽量不要在生产环境中使用它！
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#timeStamp
@@ -484,7 +715,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -492,7 +737,7 @@ interface Console {
         }
      }
    */
-  timeStamp(label ?: string) : void;
+  timeStamp(label?: string): void;
   /**
      向控制台 输出一个堆栈跟踪。
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/console.html#trace
@@ -511,7 +756,21 @@ interface Console {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -519,7 +778,7 @@ interface Console {
         }
      }
    */
-  trace(...data : (any | null)[]) : void;
+  trace(...data: (any | null)[]): void;
   /**
      在控制台打印 warn 日志
      @param data 要输出的对象列表。按传参的顺序把对象输出到控制台。
@@ -541,13 +800,20 @@ interface Console {
                "unixUtsPlugin": "4.11"
             }
         },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
         "web": {
             "uniVer": "√",
             "unixVer": "4.0"
         }
      }
    */
-  warn(...data : (any | null)[]) : void;
+  warn(...data: (any | null)[]): void;
 }
 
-declare var console : Console;
+declare var console: Console;

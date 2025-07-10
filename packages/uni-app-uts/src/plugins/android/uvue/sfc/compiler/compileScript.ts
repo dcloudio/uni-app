@@ -982,7 +982,7 @@ __ins.emit(event, ...do_not_transform_spread)
     `\n${genDefaultAs} ${ctx.helper(
       resolveDefineCode(ctx.options.componentType!)
     )}({${runtimeOptions}\n  ` +
-      `${hasAwait ? `async ` : ``}setup(${args}): any | null {
+      `${hasAwait ? `async ` : ``}setup(${args}) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy${
         options.genDefaultAs

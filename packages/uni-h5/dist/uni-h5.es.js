@@ -653,7 +653,7 @@ const ViewJSBridge = /* @__PURE__ */ extend(
 );
 const LONGPRESS_TIMEOUT = 350;
 const LONGPRESS_THRESHOLD = 10;
-const passiveOptions$2 = /* @__PURE__ */ passive(true);
+const passiveOptions$3 = /* @__PURE__ */ passive(true);
 let longPressTimer;
 function clearLongPressTimer() {
   if (longPressTimer) {
@@ -697,10 +697,10 @@ function touchmove(evt) {
   }
 }
 function initLongPress() {
-  window.addEventListener("touchstart", touchstart, passiveOptions$2);
-  window.addEventListener("touchmove", touchmove, passiveOptions$2);
-  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
-  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
+  window.addEventListener("touchstart", touchstart, passiveOptions$3);
+  window.addEventListener("touchmove", touchmove, passiveOptions$3);
+  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$3);
+  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$3);
 }
 function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
@@ -2930,7 +2930,10 @@ function handlePromise(promise) {
 function promisify(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(
+        name,
+        invokeApi(name, fn, extend({}, args), rest)
+      );
     }
     return wrapperReturnValue(
       name,
@@ -2939,7 +2942,7 @@ function promisify(name, fn) {
           invokeApi(
             name,
             fn,
-            extend(args, { success: resolve, fail: reject }),
+            extend({}, args, { success: resolve, fail: reject }),
             rest
           );
         })
@@ -3168,7 +3171,13 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-  const { windowWidth, pixelRatio: pixelRatio2, platform } = getBaseSystemInfo();
+  let windowWidth, pixelRatio2, platform;
+  {
+    const { windowWidth: w, pixelRatio: p2, platform: pf } = getBaseSystemInfo();
+    windowWidth = w;
+    pixelRatio2 = p2;
+    platform = pf;
+  }
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio2;
   isIOS$1 = platform === "ios";
@@ -4704,7 +4713,7 @@ const createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersec
 let reqComponentObserverId = 1;
 class ServiceMediaQueryObserver {
   constructor(component) {
-    this._pageId = component.$page && component.$page.id;
+    this._pageId = (component == null ? void 0 : component.$page) && component.$page.id;
     this._component = component;
   }
   observe(options, callback) {
@@ -7102,7 +7111,10 @@ const canIUse = /* @__PURE__ */ defineSyncApi(
     if (hasOwn(SCHEMA_CSS, schema)) {
       return SCHEMA_CSS[schema];
     }
-    return true;
+    if (hasOwn(uni, schema)) {
+      return true;
+    }
+    return false;
   },
   CanIUseProtocol
 );
@@ -7309,6 +7321,24 @@ function updateBodyScopeId(instance2) {
   scopeId && body.setAttribute(scopeId, "");
   curScopeId = scopeId;
 }
+const supportsPassive = /* @__PURE__ */ (() => {
+  let supportsPassive2 = false;
+  try {
+    const opts = {};
+    Object.defineProperty(opts, "passive", {
+      get() {
+        supportsPassive2 = true;
+      }
+    });
+    window.addEventListener("test-passive", () => {
+    }, opts);
+  } catch (e2) {
+  }
+  return supportsPassive2;
+})();
+const passiveOptions$2 = supportsPassive ? {
+  passive: false
+} : false;
 let curScrollListener;
 function initPageScrollListener(instance2, pageMeta) {
   document.removeEventListener("touchmove", disableScrollListener);
@@ -7316,7 +7346,11 @@ function initPageScrollListener(instance2, pageMeta) {
     document.removeEventListener("scroll", curScrollListener);
   }
   if (pageMeta.disableScroll) {
-    return document.addEventListener("touchmove", disableScrollListener);
+    return document.addEventListener(
+      "touchmove",
+      disableScrollListener,
+      passiveOptions$2
+    );
   }
   const { onPageScroll, onReachBottom } = instance2;
   const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
@@ -13364,7 +13398,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useProgressState(props2) {
   const currentPercent = ref(0);
-  const outerBarStyle = computed(() => `background-color: ${props2.backgroundColor}; height: ${props2.strokeWidth}px;`);
+  const outerBarStyle = computed(() => `background-color: ${props2.backgroundColor}; height: ${rpx2px(props2.strokeWidth)}px;`);
   const innerBarStyle = computed(() => {
     const backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
@@ -14671,7 +14705,7 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       }, null, 4)], 4)]), withDirectives(createVNode("span", {
         "ref": sliderValueRef,
         "class": "uni-slider-value"
-      }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
+      }, [sliderValue.value], 512), [[vShow, props2.showValue]])])], 8, ["onClick"]);
     };
   }
 });
@@ -15835,7 +15869,6 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         lineCount
       });
       if (props2.autoHeight) {
-        el.style.height = "auto";
         wrapper2.style.height = height + "px";
       }
     });
@@ -15920,7 +15953,8 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "onKeyup": onKeyUpEnter
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
       return createVNode("uni-textarea", {
-        "ref": rootRef
+        "ref": rootRef,
+        "auto-height": props2.autoHeight
       }, [createVNode("div", {
         "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
@@ -15939,7 +15973,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
-      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
+      }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 8, ["auto-height"]);
     };
   }
 });
@@ -16045,7 +16079,8 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
 }
 function initHooks(options, instance2, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component") {
+  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
+  mpType === "page" && instance2.renderer === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
@@ -16332,6 +16367,7 @@ function reload() {
 }
 const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   name: "AsyncError",
+  props: ["error"],
   setup() {
     initI18nAsyncMsgsOnce();
     const {
@@ -16420,6 +16456,7 @@ function setupPage(comp) {
       getPage$BasePage(instance2.proxy).options = query;
       instance2.proxy.options = query;
       const pageMeta = usePageMeta();
+      updateCurPageCssVar(pageMeta);
       instance2.onReachBottom = reactive([]);
       instance2.onPageScroll = reactive([]);
       watch(
@@ -17533,7 +17570,10 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$f,
-  setup(props2) {
+  emits: ["load"],
+  setup(props2, {
+    emit: emit2
+  }) {
     Invoke();
     const rootRef = ref(null);
     const iframeRef = ref(null);
@@ -17544,9 +17584,15 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
     } = useAttrs({
       excludeListeners: true
     });
+    const trigger = useCustomEvent(rootRef, emit2);
     let _resize;
     const renderIframe = () => {
       const iframe = document.createElement("iframe");
+      iframe.onload = function(event) {
+        trigger("load", event, {
+          src: props2.src
+        });
+      };
       watchEffect(() => {
         for (const key in $attrs.value) {
           if (hasOwn($attrs.value, key)) {
@@ -18010,7 +18056,11 @@ function translateCoordinateSystem(type, coords, skip) {
       });
     });
   }
-  return Promise.reject(new Error("translate coordinate system faild"));
+  return Promise.reject(
+    new Error(
+      "translate coordinate system faild, map provider not configured or not supported"
+    )
+  );
 }
 const props$e = {
   id: {
@@ -19098,7 +19148,7 @@ function getBrowserInfo() {
     deviceType = "unknown";
   }
   const system = `${osname} ${osversion}`;
-  const platform = osname.toLocaleLowerCase();
+  const platform = osname.toLowerCase();
   let browserName = "";
   let browserVersion = String(IEVersion());
   if (browserVersion !== "-1") {
@@ -19126,7 +19176,7 @@ function getBrowserInfo() {
     model,
     system,
     platform,
-    browserName: browserName.toLocaleLowerCase(),
+    browserName: browserName.toLowerCase(),
     browserVersion,
     language,
     deviceType,
@@ -19212,7 +19262,7 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       model,
       platform,
       system,
-      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osName: osname ? osname.toLowerCase() : void 0,
       osVersion: osversion
     });
   }
@@ -19274,7 +19324,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
         uniCompileVersion: __uniConfig.compilerVersion,
         uniRuntimeVersion: __uniConfig.compilerVersion,
         fontSizeSetting: void 0,
-        osName: osname.toLocaleLowerCase(),
+        osName: osname.toLowerCase(),
         osVersion: osversion,
         osLanguage: void 0,
         osTheme: void 0
@@ -19937,6 +19987,9 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
       extension
     });
     document.body.appendChild(fileInput);
+    fileInput.addEventListener("cancel", () => {
+      reject("chooseFile:fail cancel");
+    });
     fileInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const tempFiles = [];
@@ -19993,6 +20046,9 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
       type: "image"
     });
     document.body.appendChild(imageInput);
+    imageInput.addEventListener("cancel", () => {
+      reject("chooseImage:fail cancel");
+    });
     imageInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const tempFiles = [];
@@ -20406,6 +20462,9 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
       type: "video"
     });
     document.body.appendChild(videoInput);
+    videoInput.addEventListener("cancel", () => {
+      reject("chooseVideo:fail cancel");
+    });
     videoInput.addEventListener("change", function(event) {
       const eventTarget = event.target;
       const file = eventTarget.files[0];
@@ -20465,6 +20524,7 @@ const request = /* @__PURE__ */ defineTaskApi(
     method,
     dataType: dataType2,
     responseType,
+    enableChunked,
     withCredentials,
     timeout = __uniConfig.networkTimeout.request
   }, { resolve, reject }) => {
@@ -20495,52 +20555,162 @@ const request = /* @__PURE__ */ defineTaskApi(
         }
       }
     }
-    const xhr = new XMLHttpRequest();
-    const requestTask = new RequestTask(xhr);
-    xhr.open(method, url);
-    for (const key in header) {
-      if (hasOwn(header, key)) {
-        xhr.setRequestHeader(key, header[key]);
-      }
-    }
-    const timer = setTimeout(function() {
-      xhr.onload = xhr.onabort = xhr.onerror = null;
-      requestTask.abort();
-      reject("timeout", { errCode: 5 });
-    }, timeout);
-    xhr.responseType = responseType;
-    xhr.onload = function() {
-      clearTimeout(timer);
-      const statusCode = xhr.status;
-      let res = responseType === "text" ? xhr.responseText : xhr.response;
-      if (responseType === "text" && dataType2 === "json") {
-        try {
-          res = JSON.parse(res);
-        } catch (error) {
+    let requestTask;
+    if (!enableChunked) {
+      const xhr = new XMLHttpRequest();
+      requestTask = new RequestTask(xhr);
+      xhr.open(method, url);
+      for (const key in header) {
+        if (hasOwn(header, key)) {
+          xhr.setRequestHeader(key, header[key]);
         }
       }
-      resolve({
-        data: res,
-        statusCode,
-        header: parseHeaders(xhr.getAllResponseHeaders()),
-        cookies: []
+      const timer = setTimeout(function() {
+        xhr.onload = xhr.onabort = xhr.onerror = null;
+        requestTask.abort();
+        reject("timeout", { errCode: 5 });
+      }, timeout);
+      xhr.responseType = responseType;
+      xhr.onload = function() {
+        clearTimeout(timer);
+        const statusCode = xhr.status;
+        let res = responseType === "text" ? xhr.responseText : xhr.response;
+        if (responseType === "text") {
+          res = parseResponseText(res, responseType, dataType2);
+        }
+        resolve({
+          data: res,
+          statusCode,
+          header: parseHeaders(xhr.getAllResponseHeaders()),
+          cookies: []
+        });
+      };
+      xhr.onabort = function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
+      };
+      xhr.onerror = function() {
+        clearTimeout(timer);
+        reject(void 0, { errCode: 5 });
+      };
+      xhr.withCredentials = withCredentials;
+      xhr.send(body);
+    } else {
+      if (typeof window.fetch === void 0 || typeof window.AbortController === void 0) {
+        throw new Error(
+          "fetch or AbortController is not supported in this environment"
+        );
+      }
+      const controller = new AbortController();
+      const signal = controller.signal;
+      requestTask = new RequestTask(controller);
+      const fetchOptions = {
+        method,
+        headers: header,
+        body,
+        signal,
+        credentials: withCredentials ? "include" : "same-origin"
+      };
+      const timer = setTimeout(function() {
+        requestTask.abort();
+        reject("timeout", { errCode: 5 });
+      }, timeout);
+      fetchOptions.signal.addEventListener("abort", function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
       });
-    };
-    xhr.onabort = function() {
-      clearTimeout(timer);
-      reject("abort", { errCode: 600003 });
-    };
-    xhr.onerror = function() {
-      clearTimeout(timer);
-      reject(void 0, { errCode: 5 });
-    };
-    xhr.withCredentials = withCredentials;
-    xhr.send(body);
+      window.fetch(url, fetchOptions).then(
+        (response) => {
+          const statusCode = response.status;
+          const header2 = response.headers;
+          const body2 = response.body;
+          const headerObj = {};
+          header2.forEach((value, key) => {
+            headerObj[key] = value;
+          });
+          const cookies = cookiesParse(headerObj);
+          requestTask._emitter.emit("headersReceived", {
+            header: headerObj,
+            statusCode,
+            cookies
+          });
+          if (!body2) {
+            resolve({
+              data: "",
+              statusCode,
+              header: headerObj,
+              cookies
+            });
+            return;
+          }
+          const reader = body2.getReader();
+          const bodyBuffers = [];
+          const streamReaderRead = () => {
+            reader.read().then(({ done, value }) => {
+              if (done) {
+                const result = concatArrayBuffers(bodyBuffers);
+                let res = responseType === "text" ? new TextDecoder().decode(result) : result;
+                if (responseType === "text") {
+                  res = parseResponseText(res, responseType, dataType2);
+                }
+                resolve({
+                  data: res,
+                  statusCode,
+                  header: headerObj,
+                  cookies
+                });
+                return;
+              }
+              const chunk = value;
+              bodyBuffers.push(chunk);
+              requestTask._emitter.emit("chunkReceived", {
+                data: chunk
+              });
+              streamReaderRead();
+            });
+          };
+          streamReaderRead();
+        },
+        (error) => {
+          reject(error, { errCode: 5 });
+        }
+      );
+    }
     return requestTask;
   },
   RequestProtocol,
   RequestOptions
 );
+const cookiesParse = (header) => {
+  let cookiesStr = header["Set-Cookie"] || header["set-cookie"];
+  let cookiesArr = [];
+  if (!cookiesStr) {
+    return [];
+  }
+  if (cookiesStr[0] === "[" && cookiesStr[cookiesStr.length - 1] === "]") {
+    cookiesStr = cookiesStr.slice(1, -1);
+  }
+  const handleCookiesArr = cookiesStr.split(";");
+  for (let i = 0; i < handleCookiesArr.length; i++) {
+    if (handleCookiesArr[i].indexOf("Expires=") !== -1 || handleCookiesArr[i].indexOf("expires=") !== -1) {
+      cookiesArr.push(handleCookiesArr[i].replace(",", ""));
+    } else {
+      cookiesArr.push(handleCookiesArr[i]);
+    }
+  }
+  cookiesArr = cookiesArr.join(";").split(",");
+  return cookiesArr;
+};
+function concatArrayBuffers(buffers) {
+  const totalLength = buffers.reduce((acc, buf) => acc + buf.byteLength, 0);
+  const result = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const buffer of buffers) {
+    result.set(new Uint8Array(buffer), offset);
+    offset += buffer.byteLength;
+  }
+  return result.buffer;
+}
 function normalizeContentType(header) {
   const name = Object.keys(header).find(
     (name2) => name2.toLowerCase() === "content-type"
@@ -20557,20 +20727,79 @@ function normalizeContentType(header) {
   return "string";
 }
 class RequestTask {
-  constructor(xhr) {
-    this._xhr = xhr;
+  constructor(controller) {
+    this._requestOnChunkReceiveCallbackId = 0;
+    this._requestOnChunkReceiveCallbacks = /* @__PURE__ */ new Map();
+    this._requestOnHeadersReceiveCallbackId = 0;
+    this._requestOnHeadersReceiveCallbacks = /* @__PURE__ */ new Map();
+    this._emitter = new Emitter();
+    this._controller = controller;
   }
   abort() {
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
+    if (this._controller) {
+      this._controller.abort();
+      delete this._controller;
     }
   }
   onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
+    this._emitter.on("headersReceived", callback);
+    this._requestOnHeadersReceiveCallbackId++;
+    this._requestOnHeadersReceiveCallbacks.set(
+      this._requestOnHeadersReceiveCallbackId,
+      callback
+    );
+    return this._requestOnHeadersReceiveCallbackId;
   }
   offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
+    if (callback == null) {
+      this._emitter.off("headersReceived");
+      return;
+    }
+    if (typeof callback === "function") {
+      this._requestOnHeadersReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnHeadersReceiveCallbacks.delete(id2);
+          this._emitter.off("headersReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnHeadersReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnHeadersReceiveCallbacks.delete(callback);
+    this._emitter.off("headersReceived", callbackFn);
+  }
+  onChunkReceived(callback) {
+    this._emitter.on("chunkReceived", callback);
+    this._requestOnChunkReceiveCallbackId++;
+    this._requestOnChunkReceiveCallbacks.set(
+      this._requestOnChunkReceiveCallbackId,
+      callback
+    );
+    return this._requestOnChunkReceiveCallbackId;
+  }
+  offChunkReceived(callback) {
+    if (callback == null) {
+      this._emitter.off("chunkReceived");
+      return;
+    }
+    if (typeof callback === "function") {
+      this._requestOnChunkReceiveCallbacks.forEach((cb, id2) => {
+        if (cb === callback) {
+          this._requestOnChunkReceiveCallbacks.delete(id2);
+          this._emitter.off("chunkReceived", callback);
+        }
+      });
+      return;
+    }
+    const callbackFn = this._requestOnChunkReceiveCallbacks.get(callback);
+    if (!callbackFn) {
+      return;
+    }
+    this._requestOnChunkReceiveCallbacks.delete(callback);
+    this._emitter.off("chunkReceived", callbackFn);
   }
 }
 function parseHeaders(headers) {
@@ -20583,6 +20812,16 @@ function parseHeaders(headers) {
     headersObject[find[1]] = find[2];
   });
   return headersObject;
+}
+function parseResponseText(responseText, responseType, dataType2) {
+  let res = responseText;
+  if (responseType === "text" && dataType2 === "json") {
+    try {
+      res = JSON.parse(res);
+    } catch (error) {
+    }
+  }
+  return res;
 }
 class DownloadTask {
   constructor(xhr) {
@@ -22238,15 +22477,18 @@ function usePopupStyle(props2) {
         "border-style": "solid"
       });
       const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
+      const popoverWidth = getNumber(popover.width ? popover.width : 300);
       const popoverTop = getNumber(popover.top);
       const popoverHeight = getNumber(popover.height);
       const center = popoverLeft + popoverWidth / 2;
       contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
+      const contentLeft = Math.max(0, center - popoverWidth / 2);
       contentStyle.left = `${contentLeft}px`;
+      if (popover.width) {
+        contentStyle.width = `${popoverWidth}px`;
+      }
       let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleLeft = Math.min(popoverWidth - 12, triangleLeft);
       triangleStyle.left = `${triangleLeft}px`;
       const vcl = popupHeight.value / 2;
       if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {

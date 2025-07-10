@@ -1,4 +1,4 @@
-import { hasOwn, isArray, isPlainObject } from '@vue/shared'
+import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
 
 import {
   navigateTo as _navigateTo,
@@ -104,7 +104,7 @@ export const request = {
       'content-type': 'application/json',
     }
     Object.keys(fromArgs.header).forEach((key) => {
-      headers[key.toLocaleLowerCase()] = fromArgs.header[key]
+      headers[key.toLowerCase()] = fromArgs.header[key]
     })
     return {
       header() {
@@ -161,8 +161,7 @@ export const setNavigationBarTitle = {
  * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
  */
 export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
-  const canIUseShowModal = my.canIUse('showModal')
-  if (canIUseShowModal) {
+  if (my.canIUse('showModal')) {
     return {
       name: 'showModal',
     }
@@ -200,9 +199,6 @@ export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
 export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
   const args = {
     title: 'content',
-    icon: 'type',
-    image: false,
-    mask: false,
   }
   if (icon === 'loading') {
     return {
@@ -212,14 +208,13 @@ export function showToast({ icon = 'success' }: UniApp.ShowToastOptions = {}) {
   }
   return {
     name: 'showToast',
-    args,
+    args: extend({ icon: 'type' }, args),
   }
 }
 export const showActionSheet = {
   name: 'showActionSheet',
   args: {
     itemList: 'items',
-    itemColor: false,
   },
   returnValue: {
     index: 'tapIndex',

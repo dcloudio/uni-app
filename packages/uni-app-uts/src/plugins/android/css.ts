@@ -3,6 +3,7 @@ import path from 'path'
 import colors from 'picocolors'
 
 import {
+  SPECIAL_CHARS,
   commonjsProxyRE,
   cssLangRE,
   cssPlugin,
@@ -65,7 +66,8 @@ export function uniAppCssPrePlugin(): Plugin {
           const { code, messages } = await parse(cssCode, {
             filename,
             logLevel: 'ERROR',
-            mapOf: 'utsMapOf',
+            mapOf: '_uM',
+            padStyleMapOf: '_pS',
             chunk: 100,
             type: 'uvue',
             platform: process.env.UNI_UTS_PLATFORM,
@@ -73,15 +75,18 @@ export function uniAppCssPrePlugin(): Plugin {
           })
           messages.forEach((message) => {
             if (message.type === 'error') {
-              let msg = `[plugin:uni:app-uvue-css] ${message.text}`
+              console.error(
+                SPECIAL_CHARS.ERROR_BLOCK +
+                  `[plugin:uni:app-uvue-css] ${message.text}`
+              )
+              let msg = formatAtFilename(filename)
               if (message.line && message.column) {
                 msg += `\n${generateCodeFrame(cssCode, {
                   line: message.line,
                   column: message.column,
                 }).replace(/\t/g, ' ')}`
               }
-              msg += `\n${formatAtFilename(filename)}`
-              config.logger.error(colors.red(msg))
+              console.error(msg + SPECIAL_CHARS.ERROR_BLOCK)
             }
           })
           const fileName = filename.replace('.style.uts', '')
@@ -148,18 +153,18 @@ export function uniAppCssPlugin(): Plugin {
       messages.forEach((message) => {
         if (message.type === 'warning') {
           // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
-          resolvedConfig.logger.warn(
-            colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
+          console.warn(
+            SPECIAL_CHARS.WARN_BLOCK +
+              colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
           )
-          let msg = ''
+          let msg = formatAtFilename(filename)
           if (message.line && message.column) {
             msg += `\n${generateCodeFrame(source, {
               line: message.line,
               column: message.column,
             }).replace(/\t/g, ' ')}\n`
           }
-          msg += `${formatAtFilename(filename)}`
-          resolvedConfig.logger.warn(msg)
+          console.log(msg + SPECIAL_CHARS.WARN_BLOCK)
         }
       })
       return {

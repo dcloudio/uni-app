@@ -1,0 +1,1 @@
+1. 处理 transformExpression，将模板中的 ts 语句正确移除，比如 v-model="value as string"，否则发行模式可能编译出来的代码有问题。

@@ -6,9 +6,12 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const UniViewElement: typeof import('@dcloudio/uni-components')['UniViewElement']
+  const UniViewElementImpl: typeof import('@dcloudio/uni-components')['UniViewElementImpl']
   const defineAsyncApi: typeof import('../uni-api')['defineAsyncApi']
   const defineOffApi: typeof import('../uni-api')['defineOffApi']
   const defineOnApi: typeof import('../uni-api')['defineOnApi']
   const defineSyncApi: typeof import('../uni-api')['defineSyncApi']
   const defineTaskApi: typeof import('../uni-api')['defineTaskApi']
+  const onResize: typeof import('@dcloudio/uni-app')['onResize']
 }

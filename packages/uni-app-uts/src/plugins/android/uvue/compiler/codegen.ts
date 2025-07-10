@@ -112,7 +112,8 @@ function createCodegenContext(
     parseUTSComponent = NOOP,
     parseUTSCustomElement = NOOP,
     originalLineOffset = 0,
-    generatedLineOffset = 0,
+    // 在 inline 模式下，行偏移量需要加 1，因为 inline 模式下会生成一个函数，函数会占用一行？是这样吗？
+    generatedLineOffset = inline ? 1 : 0,
   }: CodegenOptions
 ): CodegenContext {
   const context: CodegenContext = {
@@ -697,10 +698,10 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
   const { push, indent, deindent, newline } = context
   const { properties } = node
   if (!properties.length) {
-    push(`utsMapOf()`, node)
+    push(`_uM()`, node)
     return
   }
-  push(`utsMapOf(`)
+  push(`_uM(`)
   const multilines =
     properties.length > 1 ||
     properties.some((p) => p.value.type !== NodeTypes.SIMPLE_EXPRESSION)

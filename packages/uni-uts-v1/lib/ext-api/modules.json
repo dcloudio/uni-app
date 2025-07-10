@@ -128,6 +128,28 @@
       }
     }
   },
+  "uni-clipboard": {
+    "uni": {
+      "getClipboardData": {
+        "name": "getClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "setClipboardData": {
+        "name": "setClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-crash": {
     "uni": {
       "__onAppCrash": {
@@ -181,6 +203,15 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      },
+      "setInnerAudioOption": {
+        "name": "setInnerAudioOption",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
         }
       }
     }
@@ -501,6 +532,37 @@
       }
     }
   },
+  "uni-keyboard": {
+    "uni": {
+      "hideKeyboard": {
+        "name": "hideKeyboard",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onKeyboardHeightChange": {
+        "name": "onKeyboardHeightChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "offKeyboardHeightChange": {
+        "name": "offKeyboardHeightChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-location": {
     "provider": {
       "service": "location"
@@ -735,6 +797,19 @@
           "js": false,
           "kotlin": true,
           "swift": true
+        }
+      }
+    }
+  },
+  "uni-openDocument": {
+    "uni": {
+      "openDocument": {
+        "name": "openDocument",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -988,6 +1063,19 @@
       }
     }
   },
+  "uni-scanCode": {
+    "uni": {
+      "scanCode": {
+        "name": "scanCode",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-secure-network": {
     "uni": {
       "__getSecureNetworkManager": {
@@ -998,6 +1086,18 @@
           "swift": true,
           "arkts": false
         }
+      }
+    }
+  },
+  "uni-share-weixin": {
+    "provider": {
+      "service": "share",
+      "name": "weixin",
+      "app": {
+        "js": false,
+        "kotlin": false,
+        "swift": false,
+        "arkts": true
       }
     }
   },
@@ -1128,7 +1228,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "offOsThemeChange": {
@@ -1136,7 +1237,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "setAppTheme": {
@@ -1144,7 +1246,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "onAppThemeChange": {
@@ -1152,7 +1255,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "offAppThemeChange": {
@@ -1160,7 +1264,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "onThemeChange": {
@@ -1192,7 +1297,7 @@
           "x-js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": false,
+          "arkts": true,
           "mp-weixin": true
         }
       },
@@ -1203,7 +1308,7 @@
           "x-js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": false,
+          "arkts": true,
           "mp-weixin": true
         }
       }

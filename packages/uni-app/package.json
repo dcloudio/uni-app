@@ -1,12 +1,13 @@
 {
   "name": "@dcloudio/uni-app",
-  "version": "3.0.0-4060620250520001",
+  "version": "3.0.0-alpha-4070520250704002",
   "description": "@dcloudio/uni-app",
   "main": "./dist/uni-app.cjs.js",
   "module": "./dist/uni-app.es.js",
   "types": "./dist/uni-app.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "dist-x"
   ],
   "sideEffects": false,
   "repository": {

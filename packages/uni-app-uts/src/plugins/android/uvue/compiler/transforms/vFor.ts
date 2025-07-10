@@ -28,6 +28,7 @@ import {
   // createBlockStatement,
   // createCompoundExpression
 } from '@vue/compiler-core'
+import crypto from 'crypto'
 import { ErrorCodes, createCompilerError } from '../errors'
 import {
   findProp,
@@ -118,6 +119,18 @@ export const transformFor = createStructuralDirectiveTransform(
         false /* isComponent */,
         node.loc
       ) as ForCodegenNode
+
+      let shareStylesVForKey = ''
+      const listItemProp = findProp(node, `list-item`, false, true)
+      if (listItemProp) {
+        // 移除该属性
+        node.props = node.props.filter((p) => p !== listItemProp)
+        if (context.filename) {
+          shareStylesVForKey = createShareStylesVForKey(
+            context.filename + ':' + node.loc.start
+          )
+        }
+      }
 
       return () => {
         // finish the codegen now that all children have been traversed
@@ -237,6 +250,11 @@ export const transformFor = createStructuralDirectiveTransform(
             createSimpleExpression(`_cache`),
             createSimpleExpression(String(context.cached++))
           )
+          if (shareStylesVForKey) {
+            renderExp.arguments.push(
+              createSimpleExpression(shareStylesVForKey, true)
+            )
+          }
         } else {
           renderExp.arguments.push(
             createFunctionExpression(
@@ -248,6 +266,13 @@ export const transformFor = createStructuralDirectiveTransform(
               true /* force newline */
             ) as ForIteratorExpression
           )
+          if (shareStylesVForKey) {
+            renderExp.arguments.push(
+              createSimpleExpression('null'),
+              createSimpleExpression('null'),
+              createSimpleExpression(shareStylesVForKey, true)
+            )
+          }
         }
       }
     })
@@ -493,4 +518,10 @@ function createParamsList(
   return args
     .slice(0, i + 1)
     .map((arg, i) => arg || createSimpleExpression(paramNames[i], false))
+}
+
+function createShareStylesVForKey(source: string) {
+  const hash = crypto.createHash('md5')
+  hash.update(source)
+  return hash.digest('base64').toString()
 }

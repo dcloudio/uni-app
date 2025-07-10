@@ -138,6 +138,8 @@ const UVUE_BUILT_IN_TAGS = [
     'share-element',
     'cover-view',
     'cover-image',
+    // custom element
+    'match-media',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -170,6 +172,7 @@ const NVUE_U_BUILT_IN_TAGS = [
     'u-ad-draw',
     'u-rich-text',
 ];
+const UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = ['match-media'];
 const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag);
 function isBuiltInComponent(tag) {
     if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
@@ -223,7 +226,12 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view-column',
 ];
 // 内置的easycom组件
-const UVUE_BUILT_IN_EASY_COMPONENTS = ['map', 'camera'];
+const UVUE_BUILT_IN_EASY_COMPONENTS = [
+    'map',
+    'camera',
+    'live-player',
+    'live-pusher',
+];
 function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
 }
@@ -369,6 +377,7 @@ const OFF_HOST_THEME_CHANGE = 'offHostThemeChange';
 const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+const ON_LAST_PAGE_BACK_PRESS = 'onLastPageBackPress';
 const ON_EXIT = 'onExit';
 //Page
 const ON_LOAD = 'onLoad';
@@ -1746,6 +1755,12 @@ const isNumberIntegerKey = (key) => typeof key === 'number' &&
  */
 const isIntegerKey = (key) => isNumberIntegerKey(key) || isStringIntegerKey(key);
 
+const GLOBALS_ALLOWED = 'Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,' +
+    'decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,' +
+    'Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error,' +
+    'uni';
+const isGloballyAllowed = /*#__PURE__*/ shared.makeMap(GLOBALS_ALLOWED);
+
 exports.ACTION_TYPE_ADD_EVENT = ACTION_TYPE_ADD_EVENT;
 exports.ACTION_TYPE_ADD_WXS_EVENT = ACTION_TYPE_ADD_WXS_EVENT;
 exports.ACTION_TYPE_CREATE = ACTION_TYPE_CREATE;
@@ -1800,6 +1815,7 @@ exports.ON_HIDE = ON_HIDE;
 exports.ON_HOST_THEME_CHANGE = ON_HOST_THEME_CHANGE;
 exports.ON_INIT = ON_INIT;
 exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
+exports.ON_LAST_PAGE_BACK_PRESS = ON_LAST_PAGE_BACK_PRESS;
 exports.ON_LAUNCH = ON_LAUNCH;
 exports.ON_LOAD = ON_LOAD;
 exports.ON_NAVIGATION_BAR_BUTTON_TAP = ON_NAVIGATION_BAR_BUTTON_TAP;
@@ -1845,6 +1861,7 @@ exports.UNI_UI_CONFLICT_TAGS = UNI_UI_CONFLICT_TAGS;
 exports.UVUE_BUILT_IN_TAGS = UVUE_BUILT_IN_TAGS;
 exports.UVUE_HARMONY_BUILT_IN_TAGS = UVUE_HARMONY_BUILT_IN_TAGS;
 exports.UVUE_IOS_BUILT_IN_TAGS = UVUE_IOS_BUILT_IN_TAGS;
+exports.UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS;
 exports.UVUE_WEB_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
 exports.UniBaseNode = UniBaseNode;
 exports.UniCommentNode = UniCommentNode;
@@ -1901,6 +1918,7 @@ exports.isAppVoidTag = isAppVoidTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
+exports.isGloballyAllowed = isGloballyAllowed;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
 exports.isIntegerKey = isIntegerKey;

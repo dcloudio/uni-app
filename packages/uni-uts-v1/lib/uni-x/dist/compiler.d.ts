@@ -51,6 +51,8 @@ interface PositionFor {
 type UniXCompilerOptions = {
     mode: 'development' | 'production';
     targetLanguage: TargetLanguage;
+    sourceMap?: boolean;
+    inlineSources?: boolean;
     tsFactory: (__utsHacker__: unknown) => typeof tsTypes__default;
     inputDir: string;
     cacheDir: string;

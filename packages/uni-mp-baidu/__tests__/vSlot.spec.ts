@@ -4,7 +4,7 @@ describe('compiler: transform v-slot', () => {
   test('default slot', () => {
     assert(
       `<custom><template v-slot/></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view/></custom>`,
+      `<custom u-i="2a9ec0b0-0"></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`
@@ -20,7 +20,7 @@ describe('compiler: transform v-slot', () => {
   test('named slots', () => {
     assert(
       `<custom><template v-slot:header/><template v-slot:default/><template v-slot:footer/></custom>`,
-      `<custom u-s="{{['header','d','footer']}}" u-i="2a9ec0b0-0"><view slot="header"/><view/><view slot="footer"/></custom>`,
+      `<custom u-i="2a9ec0b0-0"></custom>`,
       `(_ctx, _cache) => {
   return {}
 }`

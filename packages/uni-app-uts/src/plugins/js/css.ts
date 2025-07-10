@@ -2,6 +2,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import colors from 'picocolors'
 
 import {
+  SPECIAL_CHARS,
   commonjsProxyRE,
   cssLangRE,
   formatAtFilename,
@@ -37,7 +38,8 @@ export function uniAppCssPlugin(resolvedConfig: ResolvedConfig): Plugin {
         if (message.type === 'warning') {
           // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
           resolvedConfig.logger.warn(
-            colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
+            SPECIAL_CHARS.WARN_BLOCK +
+              colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
           )
           let msg = ''
           if (message.line && message.column) {
@@ -47,7 +49,7 @@ export function uniAppCssPlugin(resolvedConfig: ResolvedConfig): Plugin {
             }).replace(/\t/g, ' ')}\n`
           }
           msg += `${formatAtFilename(filename)}`
-          resolvedConfig.logger.warn(msg)
+          resolvedConfig.logger.warn(msg + SPECIAL_CHARS.WARN_BLOCK)
         }
       })
       return { code: `export default ${code}`, map: { mappings: '' } }

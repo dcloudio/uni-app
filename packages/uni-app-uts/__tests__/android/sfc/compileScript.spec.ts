@@ -567,9 +567,9 @@ describe('SFC compile <script setup>', () => {
         { inlineTemplate: true }
       )
       // expect(content).toMatch('[_unref(vMyDir)]')
-      expect(content).toMatch('createVNode(ChildComp)')
+      expect(content).toMatch('_cV(ChildComp)')
       // kebab-case component support
-      expect(content).toMatch('createVNode(SomeOtherComp)')
+      expect(content).toMatch('_cV(SomeOtherComp)')
       assertCode(content)
     })
 
@@ -596,7 +596,7 @@ describe('SFC compile <script setup>', () => {
         { inlineTemplate: true }
       )
       // no need to unref vue component import
-      expect(content).toMatch(`createVNode(Foo,`)
+      expect(content).toMatch(`_cV(Foo,`)
       // #2699 should unref named imports from .vue
       expect(content).toMatch(`unref(bar)`)
       // should unref other imports

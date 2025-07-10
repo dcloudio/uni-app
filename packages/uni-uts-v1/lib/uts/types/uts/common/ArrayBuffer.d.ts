@@ -25,8 +25,8 @@ interface ArrayBuffer {
               },
             "harmony": {
                "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "uniVer": "√",
+               "unixVer": "4.61"
             }
         },
         "web": {
@@ -67,8 +67,8 @@ interface ArrayBuffer {
               },
             "harmony": {
                "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "uniVer": "√",
+               "unixVer": "4.61"
             }
         },
         "web": {
@@ -99,8 +99,8 @@ interface ArrayBuffer {
               },
             "harmony": {
                "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "uniVer": "√",
+               "unixVer": "4.61"
             }
         },
         "web": {
@@ -132,8 +132,8 @@ interface ArrayBuffer {
               },
             "harmony": {
                "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "uniVer": "√",
+               "unixVer": "4.61"
             }
         },
         "web": {
@@ -168,8 +168,8 @@ interface ArrayBufferConstructor {
               },
             "harmony": {
                "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "uniVer": "√",
+               "unixVer": "4.61"
             }
         },
         "web": {
@@ -202,8 +202,8 @@ interface ArrayBufferConstructor {
               },
             "harmony": {
                "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "uniVer": "√",
+               "unixVer": "4.61"
             }
         },
         "web": {
@@ -235,8 +235,8 @@ interface ArrayBufferConstructor {
               },
             "harmony": {
                "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "uniVer": "√",
+               "unixVer": "4.61"
             }
         },
         "web": {
@@ -269,8 +269,8 @@ interface ArrayBufferConstructor {
               },
             "harmony": {
                "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "uniVer": "√",
+               "unixVer": "4.61"
             }
         },
         "web": {

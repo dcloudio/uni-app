@@ -1,6 +1,7 @@
 import * as path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
+  enableSourceMap,
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
@@ -20,6 +21,7 @@ import { createUniAppJsEnginePlugin } from '../js/plugin'
 import { uniAppJsEngineMainPlugin } from '../js/mainUTS'
 import { uniAppManifestPlugin } from '../js/manifestJson'
 import { uniAppPagesPlugin } from '../js/pagesJson'
+import { replaceExtApiPagePaths } from '../js/extApiPages'
 
 export function init() {
   return [
@@ -42,7 +44,7 @@ export function init() {
       ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
       : [
           uniAppJsEngineMainPlugin(),
-          uniAppManifestPlugin(),
+          uniAppManifestPlugin('app-harmony'),
           uniAppPagesPlugin(),
         ]),
     uniUTSUVueJavaScriptPlugin(),
@@ -50,10 +52,14 @@ export function init() {
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
+      sourceMap: enableSourceMap(),
       modules: {
         vueCompilerDom,
         uniCliShared,
       },
     }),
+    ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
+      ? [replaceExtApiPagePaths()]
+      : []),
   ]
 }

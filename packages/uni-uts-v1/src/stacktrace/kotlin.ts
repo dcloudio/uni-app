@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { relative } from '../utils'
+import { SPECIAL_CHARS, relative } from '../utils'
 import { originalPositionFor, originalPositionForSync } from '../sourceMap'
 import {
   COLORS,
@@ -11,6 +11,7 @@ import {
   resolveSourceMapFileBySourceFile,
   splitRE,
 } from './utils'
+import { normalizePath } from '../shared'
 
 export interface MessageSourceLocation {
   type: 'exception' | 'error' | 'warning' | 'info' | 'logging' | 'output'
@@ -45,15 +46,27 @@ export function hbuilderFormatter(m: MessageSourceLocation) {
     msg
       .replace(/\r\n/g, '\n')
       .split('\n')
-      .forEach((m) => {
-        msgs.push('\u200B' + m + '\u200B')
+      .forEach((m, index) => {
+        // 重要：区块标识需要放到颜色值之后
+        msgs.push(
+          '\u200B' +
+            (index === 0 ? SPECIAL_CHARS.WARN_BLOCK : '') +
+            m +
+            '\u200B'
+        )
       })
   } else if (m.type === 'error' || m.type === 'exception') {
     msg
       .replace(/\r\n/g, '\n')
       .split('\n')
-      .forEach((m) => {
-        msgs.push('\u200C' + m + '\u200C')
+      .forEach((m, index) => {
+        // 重要：区块标识需要放到颜色值之后
+        msgs.push(
+          '\u200C' +
+            (index === 0 ? SPECIAL_CHARS.ERROR_BLOCK : '') +
+            m +
+            '\u200C'
+        )
       })
   } else {
     msgs.push(msg)
@@ -96,7 +109,16 @@ export async function parseUTSKotlinStacktrace(
             withSourceContent: true,
           })
 
-          if (originalPosition.source && originalPosition.sourceContent) {
+          if (originalPosition.source) {
+            // 混编的假sourcemap，需要读取源码
+            if (sourceMapFile.endsWith('.fake.map')) {
+              if (fs.existsSync(m.file)) {
+                originalPosition.sourceContent = fs.readFileSync(
+                  m.file,
+                  'utf-8'
+                )
+              }
+            }
             m.file = originalPosition.source.split('?')[0]
             if (originalPosition.line !== null) {
               m.line = originalPosition.line
@@ -106,7 +128,8 @@ export async function parseUTSKotlinStacktrace(
             }
             if (
               originalPosition.line !== null &&
-              originalPosition.column !== null
+              originalPosition.column !== null &&
+              originalPosition.sourceContent
             ) {
               m.code = generateCodeFrame(originalPosition.sourceContent, {
                 line: originalPosition.line,
@@ -116,8 +139,13 @@ export async function parseUTSKotlinStacktrace(
           }
         }
       }
-      const msg = options.format(m)
+      let msg = options.format(m)
       if (msg) {
+        if (m.type === 'error' || m.type === 'exception') {
+          msg = msg + SPECIAL_CHARS.ERROR_BLOCK
+        } else if (m.type === 'warning') {
+          msg = msg + SPECIAL_CHARS.WARN_BLOCK
+        }
         msgs.push(msg)
       }
     }
@@ -137,6 +165,7 @@ function resolveSourceMapFile(
   if (fs.existsSync(sourceMapFile)) {
     return sourceMapFile
   }
+  return normalizePath(relative(file, inputDir)) + '.fake.map'
 }
 
 const DEFAULT_APPID = '__UNI__uniappx'
@@ -225,16 +254,31 @@ export function parseUTSKotlinRuntimeStacktrace(
         ? COLORS[options.logType as string] || ''
         : ''
       let error =
-        'error: ' + formatKotlinError(res[0], codes, runtimeFormatters)
+        'error: ' +
+        formatKotlinError(resolveCausedBy(res), codes, runtimeFormatters)
       if (color) {
         error = color + error + color
       }
-      return [error, ...codes].join('\n')
+      return (
+        SPECIAL_CHARS.ERROR_BLOCK +
+        [error, ...codes].join('\n') +
+        SPECIAL_CHARS.ERROR_BLOCK
+      )
     } else {
       res.push(line)
     }
   }
   return ''
+}
+
+function resolveCausedBy(lines: string[]) {
+  // 从最后一行开始，找到第一个Caused by:
+  for (let i = lines.length - 1; i >= 0; i--) {
+    if (lines[i].startsWith('Caused by: ')) {
+      return lines[i].replace('Caused by: ', '')
+    }
+  }
+  return lines[0]
 }
 
 function parseUTSKotlinRuntimeStacktraceLine(

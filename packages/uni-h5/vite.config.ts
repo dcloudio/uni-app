@@ -12,18 +12,19 @@ import AutoImport from 'unplugin-auto-import/vite'
 import type { OutputChunk } from 'rollup'
 
 import {
+  UNI_EASYCOM_EXCLUDE,
   initPreContext,
   normalizePath,
   stripOptions,
-  UNI_EASYCOM_EXCLUDE,
   uniPrePlugin,
+  uniUVueTypeScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniEasycomPlugin } from '@dcloudio/uni-h5-vite/dist/plugins/easycom'
 import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 import {
   replacePagePaths,
-  syncEasyComFile,
+  syncCustomElementsFile,
   syncPagesFile,
   uts2ts,
 } from '../../scripts/ext-api'
@@ -50,7 +51,9 @@ if (isNewX) {
     apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
   }
   systemPagePaths = syncPagesFile(apiDirs, 'web')
-  syncEasyComFile(apiDirs)
+  if (process.env.UNI_APP_EXT_COMPONENT_DIR) {
+    syncCustomElementsFile([process.env.UNI_APP_EXT_COMPONENT_DIR])
+  }
 }
 
 const rollupPlugins = [
@@ -102,6 +105,13 @@ function realIsH5CustomElement(tag: string) {
   return isH5CustomElement(tag, isX)
 }
 
+let prePlugin: any
+if (isNewX) {
+  // 仅给vue,uts.ts增加条件编译
+  prePlugin = uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts.ts'] })
+  prePlugin.enforce = 'pre'
+}
+
 export default defineConfig({
   root: __dirname,
   define: {
@@ -143,11 +153,11 @@ export default defineConfig({
   plugins: [
     ...(isNewX
       ? [
-          // 仅给vue增加条件编译
-          uniPrePlugin({} as any, { include: ['**/*.vue'] }),
-          uniExtApi(),
-          uts2ts({ target: 'uni-h5', platform: 'web' }),
-        ]
+        uniUVueTypeScriptPlugin(),
+        prePlugin,
+        uniExtApi(),
+        uts2ts({ target: 'uni-h5', platform: 'web' }),
+      ]
       : []),
     vue({
       customElement: isX,
@@ -238,6 +248,14 @@ function uniExtApi() {
           'defineSyncApi',
           'defineAsyncApi',
         ],
+        // TODO 整理autoImport规则或改为全局变量，目前下面的部分仅服务于match-media
+        '@dcloudio/uni-components': [
+          'UniViewElementImpl',
+          'UniViewElement',
+        ],
+        '@dcloudio/uni-app': [
+          'onResize'
+        ]
       },
     ],
   })

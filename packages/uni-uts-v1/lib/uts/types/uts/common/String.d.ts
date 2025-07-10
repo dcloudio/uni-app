@@ -18,7 +18,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -37,7 +51,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -48,7 +62,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -67,7 +95,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "4.25",
                "uniUtsPlugin": "4.25",
                "unixUtsPlugin": "4.25"
@@ -78,6 +106,13 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -96,7 +131,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "4.25",
                "uniUtsPlugin": "4.25",
                "unixUtsPlugin": "4.25"
@@ -107,6 +142,13 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -139,6 +181,13 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "harmony": {
@@ -163,7 +212,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -174,7 +223,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -193,7 +256,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -204,7 +267,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -224,7 +301,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -235,7 +312,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -255,7 +346,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -266,7 +357,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -285,7 +390,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -296,7 +401,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -315,7 +434,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "√",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -326,7 +445,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -346,7 +479,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -357,7 +490,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -377,7 +524,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -388,7 +535,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -407,7 +568,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -418,7 +579,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -438,7 +613,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -449,7 +624,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -469,7 +658,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -480,7 +669,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -500,7 +703,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -511,7 +714,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -528,7 +745,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -539,7 +756,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -558,7 +789,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -569,7 +800,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -586,7 +831,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -597,7 +842,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -615,7 +874,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -626,7 +885,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -643,7 +916,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -654,7 +927,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -670,7 +957,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -681,7 +968,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -703,7 +1004,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -714,7 +1015,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -731,7 +1046,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -742,7 +1057,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -762,7 +1091,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -773,7 +1102,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -793,7 +1136,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -804,7 +1147,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -826,7 +1183,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -837,7 +1194,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -857,7 +1228,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -868,7 +1239,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -888,7 +1273,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -899,7 +1284,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -918,7 +1317,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -929,7 +1328,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -948,7 +1361,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -959,7 +1372,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -978,7 +1405,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -989,7 +1416,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1009,7 +1450,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -1020,7 +1461,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1040,7 +1495,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1051,7 +1506,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1070,7 +1539,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1081,7 +1550,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1101,7 +1584,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1112,7 +1595,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1142,7 +1639,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1161,7 +1672,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1172,7 +1683,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1194,7 +1719,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1205,7 +1730,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1225,7 +1764,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1236,7 +1775,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1256,7 +1809,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1267,7 +1820,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1286,7 +1853,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1297,7 +1864,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1317,7 +1898,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1328,7 +1909,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1347,7 +1942,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1358,7 +1953,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1377,7 +1986,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "x",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
@@ -1388,7 +1997,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1418,7 +2041,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1448,7 +2085,21 @@ interface String {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1466,7 +2117,7 @@ interface String {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -1477,7 +2128,21 @@ interface String {
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1506,7 +2171,21 @@ interface StringConstructor {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1532,7 +2211,21 @@ interface StringConstructor {
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -1550,7 +2243,7 @@ interface StringConstructor {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -1561,7 +2254,25 @@ interface StringConstructor {
                "unixVer": "4.11",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
+        "web": {
+            "uniVer": "√",
+            "unixVer": "4.0"
         }
      }
    */

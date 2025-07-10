@@ -73,6 +73,7 @@ const compilerOptions = {
     directiveTransforms,
 };
 const COMPONENTS_DIR = 'xhscomponents';
+const customElements = ['post-note-button'];
 const miniProgram = {
     class: {
         array: false,
@@ -153,7 +154,7 @@ const options = {
         config: ['project.config.json'],
         source,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.sjs',
             lang: 'sjs',
             generate(filter, filename) {

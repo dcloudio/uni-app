@@ -11,6 +11,8 @@ import type { NodeTransform, TransformContext } from '../transform'
 
 import { hasOwn, isArray, isString, makeMap } from '@vue/shared'
 
+import { isGloballyAllowed } from '@dcloudio/uni-shared'
+
 import type {
   AssignmentExpression,
   Identifier,
@@ -40,13 +42,6 @@ import {
 
 import { ErrorCodes, createCompilerError } from '../errors'
 import { TRY_SET_REF_VALUE, TRY_UPDATE_REF_NUMBER } from '../runtimeHelpers'
-
-const GLOBALS_WHITE_LISTED =
-  `Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI` +
-  `,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array` +
-  `,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt` +
-  `,console`
-const isGloballyWhitelisted = /*#__PURE__*/ makeMap(GLOBALS_WHITE_LISTED)
 
 const isLiteralWhitelisted = /*#__PURE__*/ makeMap('true,false,null,this')
 
@@ -232,7 +227,7 @@ export function processExpression(
 
   if (isSimpleIdentifier(rawExp)) {
     const isScopeVarReference = context.identifiers[rawExp]
-    const isAllowedGlobal = isGloballyWhitelisted(rawExp)
+    const isAllowedGlobal = isGloballyAllowed(rawExp)
     const isLiteral = isLiteralWhitelisted(rawExp)
     if (
       !asParams &&
@@ -368,7 +363,7 @@ export function processExpression(
 
 function canPrefix(id: Identifier) {
   // skip whitelisted globals
-  if (isGloballyWhitelisted(id.name)) {
+  if (isGloballyAllowed(id.name)) {
     return false
   }
   // special case for webpack compilation

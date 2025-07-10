@@ -229,6 +229,9 @@
       "FileSystemManagerFail"
     ],
     [
+      "IFileSystemManagerFail"
+    ],
+    [
       "GetAppBaseInfoResult"
     ],
     [
@@ -601,6 +604,18 @@
       "RequestCompleteCallback"
     ],
     [
+      "RequestTaskOnChunkReceivedListenerResult"
+    ],
+    [
+      "RequestTaskOnChunkReceivedCallback"
+    ],
+    [
+      "RequestTaskOnHeadersReceivedListenerResult"
+    ],
+    [
+      "RequestTaskOnHeadersReceivedCallback"
+    ],
+    [
       "RequestTask"
     ],
     [
@@ -775,30 +790,6 @@
       "RequestPaymentOptions"
     ],
     [
-      "OnPrivacyAuthorizationChange"
-    ],
-    [
-      "OffPrivacyAuthorizationChange"
-    ],
-    [
-      "OnPrivacyAuthorizationChangeCallback"
-    ],
-    [
-      "PrivacyChangeResult"
-    ],
-    [
-      "GetPrivacySetting"
-    ],
-    [
-      "ResetPrivacyAuthorization"
-    ],
-    [
-      "GetPrivacySettingSuccessResult"
-    ],
-    [
-      "GetPrivacySettingOptions"
-    ],
-    [
       "ShowToastSuccess"
     ],
     [
@@ -871,6 +862,21 @@
       "ScanCodeOptions"
     ],
     [
+      "Share"
+    ],
+    [
+      "ShareSuccess"
+    ],
+    [
+      "ShareProvider"
+    ],
+    [
+      "ShareOptions"
+    ],
+    [
+      "UniShareProvider"
+    ],
+    [
       "ShareWithSystemSuccess"
     ],
     [
@@ -941,6 +947,33 @@
     ],
     [
       "ClearStorageSync"
+    ],
+    [
+      "OsThemeChangeResult"
+    ],
+    [
+      "AppThemeChangeResult"
+    ],
+    [
+      "OnOsThemeChangeCallback"
+    ],
+    [
+      "OnAppThemeChangeCallback"
+    ],
+    [
+      "SetAppThemeSuccessResult"
+    ],
+    [
+      "SetAppThemeOptions"
+    ],
+    [
+      "AppThemeFail"
+    ],
+    [
+      "OnHostThemeChangeCallbackResult"
+    ],
+    [
+      "OnHostThemeChangeCallback"
     ],
     [
       "ConnectSocket"

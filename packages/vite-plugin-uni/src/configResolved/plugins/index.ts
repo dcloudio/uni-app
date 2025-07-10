@@ -7,6 +7,7 @@ import {
   COMMON_EXCLUDE,
   isNormalCompileTarget,
   requireUniHelpers,
+  runByHBuilderX,
   uniPrePlugin,
 } from '@dcloudio/uni-cli-shared'
 
@@ -81,6 +82,15 @@ export function initPlugins(
         0,
         'pre'
       )
+    } catch (e) {}
+  }
+
+  if (!runByHBuilderX() && process.env.UNI_PLATFORM === 'mp-weixin') {
+    try {
+      const {
+        PreprocessorVitePlugin,
+      } = require('@dcloudio/uni-cli-shared/lib/preprocessor')
+      addPlugin(plugins, PreprocessorVitePlugin(), 0, 'pre')
     } catch (e) {}
   }
 

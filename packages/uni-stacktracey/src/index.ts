@@ -148,7 +148,7 @@ export function stacktracey(
                 file: source,
                 line: sourceLine,
                 column: sourceColumn,
-                fileShort: sourcePath,
+                fileShort: sourcePath || source,
                 fileRelative: source,
                 fileName,
                 thirdParty: isThirdParty(sourcePath),
@@ -421,7 +421,7 @@ export function uniStracktraceyPreset(
     lineOffset,
   }
 }
-
+export const splitRE = /\r?\n/
 interface UTSStracktraceyPreset {
   /**
    * 源码根目录
@@ -439,7 +439,7 @@ interface UTSStracktraceyPreset {
 export function utsStracktraceyPreset(
   opts: UTSStracktraceyPreset
 ): StacktraceyPreset {
-  const { inputRoot, outputRoot, sourceMapRoot } = opts
+  const { inputRoot = '', outputRoot = '', sourceMapRoot = '' } = opts
 
   let errStack: string[] = []
 
@@ -459,20 +459,26 @@ export function utsStracktraceyPreset(
       )
     },
     parseStacktrace(str) {
-      const lines = (str || '').split('\n')
+      const lines = (str || '').split(splitRE)
 
       const entries = lines
         .map((line, index) => {
           line = line.trim()
 
           const matches = line.match(
-            /\s*(.+\.kt):([0-9]+):([0-9]+):\s+(.*)/
+            /\s*(.+\.(kt|swift|ets)):([0-9]+):([0-9]+):?\s*(.*)/
           ) as string[]
           if (matches) {
             errStack.push('%StacktraceyItem%')
           } else {
             errStack.push(line)
             return
+          }
+
+          if (matches[2] === 'ets') {
+            matches[1] =
+              (matches[0].match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] ||
+              matches[1]
           }
 
           const fileName: string = matches[1].replace(/^.*(\\|\/|\:)/, '')
@@ -483,11 +489,11 @@ export function utsStracktraceyPreset(
             index: false,
             native: false,
             file: nixSlashes(matches[1]),
-            line: parseInt(matches[2]),
-            column: parseInt(matches[3]),
+            line: parseInt(matches[3]),
+            column: parseInt(matches[4]),
             fileName,
             fileShort: line,
-            errMsg: matches[4] || '',
+            errMsg: matches[5] || '',
             calleeShort: '',
             fileRelative: '',
             thirdParty: false,

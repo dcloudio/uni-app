@@ -25,7 +25,7 @@ interface IJSONStringify {
         }
      }
    */
-  toJSON() : any
+  toJSON(): any
 }
 
 interface JSON {
@@ -68,7 +68,7 @@ interface JSON {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -79,7 +79,21 @@ interface JSON {
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -87,7 +101,7 @@ interface JSON {
         }
      }
    */
-  parse(text : string, reviver ?: (this : any, key : string, value : any) => any, ignoreError ?: boolean) : any | null;
+  parse(text: string, reviver?: (this: any, key: string, value: any) => any, ignoreError?: boolean): any | null;
 
   /**
      JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的值或者对象，其类型由泛型参数T决定
@@ -109,11 +123,13 @@ interface JSON {
            "unixVer": "x",
            "unixUtsPlugin": "x"
          },
-         "harmony": {
-           "osVer": "x",
-           "uniVer": "x",
-           "unixVer": "x"
-         }
+        "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "√",
+            "uniUtsPlugin": "√",
+            "unixVer": "4.61"
+            "unixUtsPlugin": "4.61"
+        }
        },
        "web": {
          "uniVer": "x",
@@ -128,7 +144,7 @@ interface JSON {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
@@ -139,6 +155,13 @@ interface JSON {
                "uniUtsPlugin": "3.9+",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -147,14 +170,14 @@ interface JSON {
         }
      }
    */
-  parse<T>(text : string, ignoreError ?: boolean) : T | null;
+  parse<T>(text: string, ignoreError?: boolean): T | null;
   /**
    * 目前仅限内部使用，重要：不能标记inline、reified
    * @internal
    * @param text
    * @param typeOfT
    */
-  parse<T>(text : string, typeOfT ?: any) : T | null;
+  parse<T>(text: string, typeOfT?: any): T | null;
 
 
   /**
@@ -169,7 +192,7 @@ interface JSON {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
@@ -180,6 +203,13 @@ interface JSON {
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -188,7 +218,7 @@ interface JSON {
         }
      }
    */
-  parseObject(text : string) : UTSJSONObject | null;
+  parseObject(text: string): UTSJSONObject | null;
 
 
 
@@ -205,7 +235,7 @@ interface JSON {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
@@ -216,6 +246,13 @@ interface JSON {
                "uniUtsPlugin": "3.9+",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -224,7 +261,7 @@ interface JSON {
         }
      }
    */
-  parseObject<T>(text : string) : T | null;
+  parseObject<T>(text: string): T | null;
 
 
   /**
@@ -237,7 +274,7 @@ interface JSON {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
@@ -248,6 +285,13 @@ interface JSON {
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -256,7 +300,7 @@ interface JSON {
         }
      }
    */
-  parseArray(text : string) : Array<any> | null;
+  parseArray(text: string): Array<any> | null;
 
   /**
      JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述的数组。数组元素类型由泛型T决定
@@ -270,7 +314,7 @@ interface JSON {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
@@ -281,6 +325,13 @@ interface JSON {
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
         },
         "web": {
@@ -289,7 +340,7 @@ interface JSON {
         }
      }
    */
-  parseArray<T>(text : string) : Array<T> | null;
+  parseArray<T>(text: string): Array<T> | null;
 
 
   /**
@@ -300,7 +351,7 @@ interface JSON {
       "app": {
         "android": {
             "osVer": "5.0",
-            "uniVer": "x",
+            "uniVer": "√",
             "unixVer": "4.25",
             "uniUtsPlugin": "√",
             "unixUtsPlugin": "4.25"
@@ -311,8 +362,22 @@ interface JSON {
           "unixVer": "4.11",
           "uniUtsPlugin": "x",
           "unixUtsPlugin": "x"
-        }
+        },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
       },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
       "web": {
         "uniVer": "√",
         "unixVer": "4.25"
@@ -323,7 +388,7 @@ interface JSON {
       "app": {
         "android": {
           "osVer": "5.0",
-          "uniVer": "x",
+          "uniVer": "√",
           "unixVer": "4.25",
           "uniUtsPlugin": "√",
           "unixUtsPlugin": "4.25"
@@ -334,8 +399,22 @@ interface JSON {
           "unixVer": "4.11",
           "uniUtsPlugin": "x",
           "unixUtsPlugin": "x"
-        }
+        },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
+            }
       },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
       "web": {
         "uniVer": "√",
         "unixVer": "4.25"
@@ -346,7 +425,7 @@ interface JSON {
         "app": {
             "android": {
                "osVer": "5.0",
-               "uniVer": "x",
+               "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
@@ -357,7 +436,21 @@ interface JSON {
                "uniUtsPlugin": "√",
                "unixVer": "4.11",
                "unixUtsPlugin": "4.11"
+            },
+            "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "√",
+                "unixVer": "4.61"
+                "unixUtsPlugin": "4.61"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "√",
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
         },
         "web": {
             "uniVer": "√",
@@ -365,10 +458,10 @@ interface JSON {
         }
      }
    */
-  stringify(value : any | null, replacer ?: any | null, space ?: any | null) : string;
+  stringify(value: any | null, replacer?: any | null, space?: any | null): string;
 }
 
 /**
  * An intrinsic object that provides functions to convert JavaScript values to and from the JavaScript Object Notation (JSON) format.
  */
-declare var JSON : JSON;
+declare var JSON: JSON;

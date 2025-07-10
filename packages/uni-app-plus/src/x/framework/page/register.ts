@@ -1,4 +1,4 @@
-import { isPromise } from '@vue/shared'
+import { extend, isPromise } from '@vue/shared'
 import { type ComponentPublicInstance, ref } from 'vue'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import type { EventChannel, UniNode } from '@dcloudio/uni-shared'
@@ -384,12 +384,15 @@ function createVuePage(
   const mountPage = (component: VuePageComponent) =>
     app.mountPage(
       component,
-      {
-        __pageId,
-        __pagePath,
-        __pageQuery,
-        __pageInstance,
-      },
+      extend(
+        {
+          __pageId,
+          __pagePath,
+          __pageQuery,
+          __pageInstance,
+        },
+        __pageQuery
+      ),
       pageNode as unknown as UniNode
     )
   if (isPromise(component)) {

@@ -831,6 +831,8 @@ function initCreatePage(parseOptions) {
         return Component(parsePage(vuePageOptions, parseOptions));
     };
 }
+function initPageInstance(mpPageInstance) {
+}
 
 /**
  * 用于延迟调用 setData
@@ -1054,6 +1056,7 @@ function parse$1(componentOptions) {
         fixSetDataStart(this);
         oldAttached.call(this);
         this.pageinstance.$vm = this.$vm;
+        initPageInstance(this.pageinstance);
         this.$vm.$callHook(ON_INIT, query);
     };
     lifetimes.attached = function attached() {

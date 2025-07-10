@@ -2,6 +2,7 @@ import path from 'path'
 import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
+  enableSourceMap,
   isEnableConsole,
   normalizePath,
   resolveSourceMapPath,
@@ -57,6 +58,7 @@ export default (options: UniMiniProgramPluginOptions) => {
           resolveUTSCompiler().uts2js({
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,
+            sourceMap: enableSourceMap(),
             cacheRoot: path.resolve(
               process.env.UNI_APP_X_CACHE_DIR,
               '.uts2js/cache'

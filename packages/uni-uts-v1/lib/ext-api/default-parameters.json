@@ -29,6 +29,9 @@
       null,
       "null"
     ],
+    "offKeyboardHeightChange": [
+      "null"
+    ],
     "__f__": [
       null,
       "null"
@@ -68,6 +71,14 @@
   },
   "uni-keyboard": {
     "hideKeyboard": [
+      "null"
+    ]
+  },
+  "uni-location": {
+    "offLocationChange": [
+      "null"
+    ],
+    "offLocationChangeError": [
       "null"
     ]
   },

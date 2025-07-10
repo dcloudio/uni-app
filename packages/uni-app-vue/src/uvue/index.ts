@@ -1,5 +1,6 @@
 export * from '../../lib/uvue.runtime.esm'
 import type { ComponentCustomOptions } from 'vue'
+import { ref, shallowRef } from '../../lib/uvue.runtime.esm'
 import { defineComponent as origDefineComponent } from '../../lib/uvue.runtime.esm'
 
 export const defineComponent = (options: any) => {
@@ -14,3 +15,46 @@ export const defineComponent = (options: any) => {
   }
   return origDefineComponent(options)
 }
+
+export const ssrRef = ref
+
+export const shallowSsrRef = shallowRef
+
+export {
+  // ssr
+  // ssrRef,
+  // shallowSsrRef,
+  // uni-app lifecycle
+  // App and Page
+  onShow,
+  onHide,
+  // App
+  onLaunch,
+  onError,
+  onThemeChange,
+  // onKeyboardHeightChange,
+  onPageNotFound,
+  onUnhandledRejection,
+  // onLastPageBackPress,
+  onExit,
+  // Page
+  onPageShow,
+  onPageHide,
+  onLoad,
+  onReady,
+  onUnload,
+  onResize,
+  onBackPress,
+  onPageScroll,
+  onTabItemTap,
+  onReachBottom,
+  onPullDownRefresh,
+
+  // 其他
+  onShareTimeline,
+  onShareAppMessage,
+  // onShareChat, // xhs-share
+
+  // 辅助，用于自定义render函数时，开发者可以调用此方法渲染组件的slot
+  renderComponentSlot,
+} from '@dcloudio/uni-app'

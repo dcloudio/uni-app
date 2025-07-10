@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
+import glob from 'fast-glob'
 import type { ResolvedConfig } from 'vite'
 import { extend, isString } from '@vue/shared'
 import type { ChangeEvent } from 'rollup'
@@ -11,6 +12,7 @@ import {
   getCssDepMap,
   getCurrentCompiledUTSPlugins,
   getUniExtApiProviderRegisters,
+  getUniXPagePaths,
   initUTSKotlinAutoImportsOnce,
   isNormalCompileTarget,
   normalizeEmitAssetFileName,
@@ -21,6 +23,7 @@ import {
   parseUniModulesArtifacts,
   parseVueRequest,
   resolveMainPathOnce,
+  resolveSourceMapPath,
   resolveUTSCompiler,
   rewriteUniModulesConsoleExpr,
   tscOutDir,
@@ -93,6 +96,15 @@ export function uniAppPlugin(): UniVitePlugin {
       : null
   const changedFiles: { fileName: string; event: ChangeEvent }[] = []
 
+  const uniExtApiUniModulesDeps: string[] =
+    process.env.UNI_COMPILE_TARGET === 'ext-api'
+      ? JSON.parse(process.env.UNI_COMPILE_EXT_API_UNI_MODULES_DEPS || '[]')
+      : []
+
+  const uniExtApiUniModulesExternals = uniExtApiUniModulesDeps.map(
+    (dep) => `@/uni_modules/${dep}`
+  )
+
   return {
     name: 'uni:app-uts',
     apply: 'build',
@@ -117,6 +129,12 @@ export function uniAppPlugin(): UniVitePlugin {
                 ['vue', 'vuex', 'pinia', '@dcloudio/uni-app'].includes(source)
               ) {
                 return true
+              }
+              if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
+                // 比如 uni-scanCode 依赖了 uni-camera
+                if (uniExtApiUniModulesExternals.includes(source)) {
+                  return true
+                }
               }
               // 相对目录
               if (source.startsWith('@/') || source.startsWith('.')) {
@@ -265,7 +283,8 @@ export function uniAppPlugin(): UniVitePlugin {
                 true
               ),
               sourceMap: false,
-              uni_modules: [process.env.UNI_COMPILE_EXT_API_PLUGIN_ID!],
+              uni_modules: uniExtApiUniModulesDeps,
+              pages: getUniXPagePaths(),
               extApiComponents: [],
               uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
               transform: {
@@ -322,6 +341,7 @@ export function uniAppPlugin(): UniVitePlugin {
           'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
         sourceMap: enableSourceMap(),
         uni_modules: [...getCurrentCompiledUTSPlugins()],
+        pages: getUniXPagePaths(),
         extApis: parseUniExtApiNamespacesOnce(
           process.env.UNI_UTS_PLATFORM,
           process.env.UNI_UTS_TARGET_LANGUAGE
@@ -360,11 +380,29 @@ export function uniAppPlugin(): UniVitePlugin {
           const manifest = getOutputManifestJson()!
           if (manifest) {
             // 执行了摇树逻辑，就需要设置 modules 节点
-            updateManifestModules(manifest, modules)
+            updateManifestModules('app-android', manifest, modules)
             fs.outputFileSync(
               path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
               JSON.stringify(manifest, null, 2)
             )
+          }
+
+          if (
+            process.env.UNI_APP_SOURCEMAP === 'true' &&
+            process.env.UNI_APP_X_CACHE_DIR
+          ) {
+            try {
+              // 清空之前的 sourcemap 目录
+              const sourceMapPath = resolveSourceMapPath()
+              if (fs.existsSync(sourceMapPath)) {
+                emptyDir(sourceMapPath)
+              }
+              await moveSourceMap(
+                '**/*.kt.map',
+                path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'sourcemap'),
+                sourceMapPath
+              )
+            } catch (e) {}
           }
         }
       }
@@ -440,4 +478,22 @@ function parseProcessEnv(resolvedConfig: ResolvedConfig) {
     env[key] = value
   })
   return env
+}
+
+async function moveSourceMap(pattern: string, cwd: string, dest: string) {
+  await Promise.all(
+    glob
+      .sync(pattern, {
+        cwd,
+      })
+      .map((filename) => {
+        return fs.move(
+          path.resolve(cwd, filename),
+          path.resolve(dest, filename),
+          {
+            overwrite: true,
+          }
+        )
+      })
+  )
 }

@@ -59,6 +59,32 @@ describe('mp-alipay: transform component', () => {
       blankScript
     )
   })
+  test('alipay open component - mpaas-component', () => {
+    assert(
+      `<mpaas-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"/>`,
+      `<mpaas-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"/>`,
+      blankScript
+    )
+    assert(
+      `<mpaas-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"></mpaas-component>`,
+      `<mpaas-component class="c111" id="mpass" type="custom_map" latitude="120" longitude="130"></mpaas-component>`,
+      blankScript
+    )
+  })
+  test('alipay open component - root-portal', () => {
+    assert(
+      `<root-portal :enable="true"/>`,
+      `<root-portal enable="{{true}}"/>`,
+      blankScript
+    )
+  })
+  test('alipay open component - share-element', () => {
+    assert(
+      `<share-element :duration="400" :transform="true" easing-function="ease-out"/>`,
+      `<share-element duration="{{400}}" transform="{{true}}" easing-function="ease-out"/>`,
+      blankScript
+    )
+  })
   test('alipay open component - subscribe-message', () => {
     // <subscribe-message template-id='xxxxx' onComplete="completeHandler" />
     assert(

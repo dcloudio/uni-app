@@ -285,11 +285,16 @@ export function initEnv(
     )
   }
 
+  // 兼容旧版本 SOURCEMAP 参数
+  if (process.env.SOURCEMAP) {
+    process.env.UNI_APP_SOURCEMAP = process.env.SOURCEMAP
+  }
+
   if (
     (options as BuildOptions).sourcemap &&
-    process.env.NODE_ENV === 'production'
+    process.env.NODE_ENV !== 'development'
   ) {
-    process.env.SOURCEMAP = 'true'
+    process.env.UNI_APP_SOURCEMAP = 'true'
   }
 
   initModulePaths()
@@ -310,7 +315,7 @@ export function initEnv(
     process.env.UNI_UTS_PLATFORM,
     process.env.UNI_APP_X === 'true'
   )
-
+  // 应该全平台都显示吧，当初为啥只在部分平台显示？
   if (
     process.env.UNI_PLATFORM === 'app' ||
     process.env.UNI_PLATFORM === 'web' ||

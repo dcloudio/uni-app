@@ -1,5 +1,5 @@
 export { initCreateApp, initCreateSubpackageApp } from './runtime/app'
-export { initCreatePage } from './runtime/page'
+export { initCreatePage, initPageInstance } from './runtime/page'
 export { initCreateComponent, ParseComponentOptions } from './runtime/component'
 export { initCreatePluginApp } from './runtime/plugin'
 export { findPropsData } from './runtime/componentProps'

@@ -64,6 +64,7 @@ export default {
     this._loading = false
     this._wxRewardedAd = null
     this._wxInterstitialAd = null
+    this._userInvokeShowFlag = false
     this._providerType = ProviderType.ShanHu
     if (this.preload && this._canCreateAd()) {
       this.load()
@@ -85,6 +86,10 @@ export default {
 
     show (e) {
       this.errorMessage = null
+      if (this.loading) {
+        this._userInvokeShowFlag = true
+        return
+      }
       if (this._providerType == ProviderType.ShanHu) {
         this._showAdInPlugin(this.selectComponent('.uniad-plugin'))
       } else if (this._providerType == ProviderType.WeChat) {
@@ -120,14 +125,21 @@ export default {
     _onmpload (e) {
       this.loading = false
       this._dispatchEvent(EventType.Load, {})
+      if (this._userInvokeShowFlag) {
+        this._userInvokeShowFlag = false
+        setTimeout(() => {
+          this.show();
+        }, 1)
+      }
     },
 
     _onmpclose (e) {
-      this._dispatchEvent(EventType.Close, e.detail)
-      if (e.detail.adsdata) {
-        const adv = e.detail.adv
-        const adsdata = e.detail.adsdata
-        const version = e.detail.version
+      const detail = e.detail || e;
+      this._dispatchEvent(EventType.Close, detail)
+      if (detail.adsdata) {
+        const adv = detail.adv
+        const adsdata = detail.adsdata
+        const version = detail.version
 
         /* eslint-disable no-undef */
         uniCloud.callFunction({
@@ -145,9 +157,9 @@ export default {
           }
         })
 
-        delete e.detail.adv
-        delete e.detail.adsdata
-        delete e.detail.version
+        delete detail.adv
+        delete detail.adsdata
+        delete detail.version
       }
     },
 
@@ -183,6 +195,10 @@ export default {
           }
         } else if (adData.provider == 10018) {
           this._providerType = ProviderType.WeChat
+          if (adData.tmpl_type === 24) {
+            this.customFullscreen = 'uni-ad-custom-fullscreen'
+          }
+          this.loading = true
           this.selectComponent('.uniad-plugin-wx').setConfig(adData)
         }
       })
@@ -190,6 +206,7 @@ export default {
 
     _onwxchannelerror(e) {
       this.wxchannel = false
+      this._dispatchEvent(EventType.Error, e.detail)
       this.$nextTick(() => {
         this._providerType = ProviderType.ShanHu
         this.selectComponent('.uniad-plugin').shanhuChannel()
@@ -312,6 +329,8 @@ export default {
         }
       });
 
+      this._wxRewardedAd.load().then(() => { }).catch((err) => { });
+
       this.loading = true
     },
 
@@ -340,6 +359,8 @@ export default {
       this._wxInterstitialAd.onClose(res => {
         this._dispatchEvent(EventType.Close, res);
       });
+
+      this._wxInterstitialAd.load().then(() => { }).catch((err) => { });
 
       this.loading = true
     },

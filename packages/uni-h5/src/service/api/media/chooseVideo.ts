@@ -36,6 +36,10 @@ export const chooseVideo = defineAsyncApi<API_TYPE_CHOOSE_VIDEO>(
     })
     document.body.appendChild(videoInput)
 
+    videoInput.addEventListener('cancel', () => {
+      reject('chooseVideo:fail cancel')
+    })
+
     videoInput.addEventListener('change', function (event) {
       const eventTarget = event.target as HTMLInputElement
 

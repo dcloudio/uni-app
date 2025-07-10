@@ -17,7 +17,7 @@ import {
   isAppHarmonyUVueNativeTag,
 } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
-import { replacePagePaths, syncPagesFile, uts2ts } from '../../scripts/ext-api'
+import { uts2ts } from '../../scripts/ext-api'
 
 import { initUniAppJsEngineCssPlugin } from '@dcloudio/uni-app-uts'
 
@@ -29,7 +29,12 @@ declare const process: any
 
 process.env.UNI_APP_X = 'true'
 process.env.UNI_UTS_PLATFORM = process.env.X_RUNTIME_PLATFORM || 'app-ios'
-initPreContext('app', {}, process.env.UNI_UTS_PLATFORM, true)
+initPreContext(
+  process.env.UNI_UTS_PLATFORM === 'app-harmony' ? 'app-harmony' : 'app',
+  {},
+  process.env.UNI_UTS_PLATFORM,
+  true
+)
 
 const apiDirs: string[] = []
 if (process.env.UNI_APP_EXT_API_DIR) {
@@ -41,8 +46,6 @@ if (process.env.UNI_APP_EXT_COMPONENT_DIR) {
 if (process.env.UNI_APP_EXT_API_DCLOUD_DIR) {
   apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
 }
-const systemPagePathsIOS = syncPagesFile(apiDirs, 'app-ios')
-const systemPagePathsHarmony = syncPagesFile(apiDirs, 'app-harmony')
 
 const rollupPlugins = [
   replace({
@@ -147,7 +150,7 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
       },
     },
     plugins: [
-      uniPrePlugin({} as any, { include: ['**/*.vue'] }),
+      uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts'] }),
       uniUVueTypeScriptPlugin(),
       uniRemoveCssScopedPlugin(),
       {
@@ -170,9 +173,6 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
         },
       }),
       vueJsx({ optimize: true, isCustomElement: isNativeTag }),
-      replacePagePaths(
-        platform === 'app-ios' ? systemPagePathsIOS : systemPagePathsHarmony
-      ),
     ],
     build: {
       emptyOutDir: false,

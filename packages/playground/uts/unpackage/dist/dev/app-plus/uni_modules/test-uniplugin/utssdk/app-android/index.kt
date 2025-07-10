@@ -16,16 +16,7 @@ fun test() {
 fun login(name: String, pwd: String): UTSJSONObject {
     console.log("login")
     test()
-    return UTSJSONObject(Map<String, Any?>(utsArrayOf(
-        utsArrayOf(
-            "name",
-            name
-        ),
-        utsArrayOf(
-            "pwd",
-            pwd
-        )
-    )))
+    return _uO("name" to name, "pwd" to pwd)
 }
 interface IUser {
     fun register(name: String)

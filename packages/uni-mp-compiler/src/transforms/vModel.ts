@@ -233,6 +233,11 @@ function findDatasetEventOpts(node: ElementNode) {
 }
 
 function parseVOn(exp: ExpressionNode, context: TransformContext) {
+  // @ts-expect-error
+  const rawVOnExpr = exp.__withoutKeysVOnExpr
+  if (rawVOnExpr) {
+    exp = rawVOnExpr
+  }
   return genExpr(exp).slice(context.helperString(V_ON).length + 1, -1)
 }
 
@@ -313,19 +318,24 @@ function transformVModel(
       : onUpdateExpr
   ) as ExpressionNode
 
+  let vOnExpr: ExpressionNode | string = wrapperVOn(
+    modifiers
+      ? wrapperVModelModifiers(vOnValue, modifiers, context, isComponent)
+      : vOnValue,
+    node,
+    context
+  )
+  // @ts-expect-error
+  const rawVOnExpr = vOnExpr.__withoutKeysVOnExpr
+  vOnExpr = formatEventCode(genExpr(vOnExpr))
+  if (rawVOnExpr) {
+    vOnExpr = createSimpleExpression(vOnExpr, false)
+    // @ts-expect-error
+    vOnExpr.__withoutKeysVOnExpr = formatEventCode(genExpr(rawVOnExpr))
+  }
   const vOnUpdate = createOnDirectiveNode(
     event || camelize(onUpdateArg.content.replace('onUpdate:', 'update-')),
-    formatEventCode(
-      genExpr(
-        wrapperVOn(
-          modifiers
-            ? wrapperVModelModifiers(vOnValue, modifiers, context, isComponent)
-            : vOnValue,
-          node,
-          context
-        )
-      )
-    )
+    vOnExpr
   )
   return [vBindModelValue, vOnUpdate]
 }

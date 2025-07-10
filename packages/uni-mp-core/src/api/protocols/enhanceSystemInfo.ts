@@ -50,7 +50,7 @@ export function getOSInfo(system: string, platform: string) {
     osVersion = system.split(' ')[1] || ''
   }
 
-  osName = osName.toLocaleLowerCase()
+  osName = osName.toLowerCase()
   switch (osName) {
     case 'harmony': // alipay
     case 'ohos': // weixin
@@ -204,7 +204,7 @@ export function getGetDeviceType(fromRes: any, model: string) {
     const deviceTypeMapsKeys = Object.keys(
       deviceTypeMaps
     ) as DeviceTypeMapsKeys[]
-    const _model = model.toLocaleLowerCase()
+    const _model = model.toLowerCase()
     for (let index = 0; index < deviceTypeMapsKeys.length; index++) {
       const _m = deviceTypeMapsKeys[index]
       if (_model.indexOf(_m) !== -1) {
@@ -220,7 +220,7 @@ export function getDeviceBrand(brand: string) {
   // deviceModel
   let deviceBrand = brand
   if (deviceBrand) {
-    deviceBrand = deviceBrand.toLocaleLowerCase()
+    deviceBrand = deviceBrand.toLowerCase()
   }
   return deviceBrand
 }

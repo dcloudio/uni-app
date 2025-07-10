@@ -7,16 +7,18 @@ import {
   buildUniExtApis,
   createEncryptCssUrlReplacer,
   emptyDir,
-  enableSourceMap,
   injectCssPlugin,
   injectCssPostPlugin,
+  insertBeforePlugin,
   normalizePath,
   resolveMainPathOnce,
   tscOutDir,
   uvueOutDir,
+  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
+import { uniAppJsPlugin } from './js'
 
 export function initUniAppJsEngineCssPlugin(config: ResolvedConfig) {
   injectCssPlugin(
@@ -65,11 +67,12 @@ export function createUniAppJsEnginePlugin(
       name: 'uni:app-uts',
       apply: 'build',
       uni: createUniOptions(platform),
-      config() {
+      config(config) {
+        const sourcemap = withSourcemap(config)
         return {
           base: '/', // 强制 base
           build: {
-            sourcemap: enableSourceMap(), //enableSourceMap() ? 'hidden' : false,
+            sourcemap,
             emptyOutDir: false,
             assetsInlineLimit: 0,
             target:
@@ -116,6 +119,7 @@ export function createUniAppJsEnginePlugin(
       configResolved(config) {
         configResolved(config)
         initUniAppJsEngineCssPlugin(config)
+        insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
       },
       generateBundle(_, bundle) {
         const APP_SERVICE_FILENAME_MAP = APP_SERVICE_FILENAME + '.map'

@@ -21,7 +21,7 @@ const ZERO_WIDTH_CHAR = {
   NOTE: '',
   WARNING: '\u200B',
   ERROR: '\u200C',
-  backup0: '\u200D',
+  backup0: '\u200D', // 标记换行
   backup1: '\u200E',
   backup2: '\u200F',
   backup3: '\uFEFF',

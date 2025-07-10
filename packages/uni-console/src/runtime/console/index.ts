@@ -56,15 +56,18 @@ export function rewriteConsole() {
   }
   function wrapConsole(type: MessageType) {
     return function (...args: any[]) {
-      const originalArgs = [...args]
-      if (originalArgs.length) {
-        const maybeAtFile = originalArgs[originalArgs.length - 1]
-        // 移除最后的 at pages/index/index.uvue:6
-        if (typeof maybeAtFile === 'string' && atFileRegex.test(maybeAtFile)) {
-          originalArgs.pop()
-        }
-      }
       if (process.env.UNI_CONSOLE_KEEP_ORIGINAL) {
+        const originalArgs = [...args]
+        if (originalArgs.length) {
+          const maybeAtFile = originalArgs[originalArgs.length - 1]
+          // 移除最后的 at pages/index/index.uvue:6
+          if (
+            typeof maybeAtFile === 'string' &&
+            atFileRegex.test(maybeAtFile)
+          ) {
+            originalArgs.pop()
+          }
+        }
         originalConsole[type](...originalArgs)
       }
       if (type === 'error' && args.length === 1) {

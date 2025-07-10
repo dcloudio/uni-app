@@ -85,7 +85,7 @@ class PerformanceEntryStatus {
   }
 
   executeAfter() {
-    const page = (getCurrentPage() as unknown as UniPage).vm
+    const page = (getCurrentPage() as unknown as UniPage)?.vm
     if (page != null) {
       this._entryData.pageId = parseInt(page.$nativePage.pageId)
       this._entryData.path = page.route!
@@ -95,7 +95,7 @@ class PerformanceEntryStatus {
   executeReady() {}
 
   getCurrentInnerPage(): IPage | null {
-    const currentPage = (getCurrentPage() as unknown as UniPage).vm
+    const currentPage = (getCurrentPage() as unknown as UniPage)?.vm
     if (currentPage == null) {
       return null
     }

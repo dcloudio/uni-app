@@ -8,14 +8,14 @@ import {
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
-import { transformOn } from './transforms/vOn'
-import { transformModel } from './transforms/vModel'
+// import { transformOn } from './transforms/vOn'
+// import { transformModel } from './transforms/vModel'
 
 const nodeTransforms = [transformRef, transformComponentLink]
-const directiveTransforms = {
-  on: transformOn,
-  model: transformModel,
-}
+// const directiveTransforms = {
+//   on: transformOn,
+//   model: transformModel,
+// }
 
 export const customElements = [
   'playlet',
@@ -28,7 +28,7 @@ export const customElements = [
 
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
-  directiveTransforms,
+  // directiveTransforms,
 }
 const COMPONENTS_DIR = 'kscomponents'
 export const miniProgram: MiniProgramCompilerOptions = {
@@ -37,7 +37,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   slot: {
     fallbackContent: false,
-    dynamicSlotNames: false,
+    dynamicSlotNames: true,
   },
   directive: 'ks:',
   lazyElement: {
@@ -62,7 +62,7 @@ export const options: UniMiniProgramPluginOptions = {
       assets: [COMPONENTS_DIR],
       targets: [
         {
-          src: ['ext.json'],
+          src: ['ext.json', 'project.private.config.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },

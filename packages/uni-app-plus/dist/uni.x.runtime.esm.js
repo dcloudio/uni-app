@@ -1,6 +1,6 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
+import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, reactive, provide, inject, nextTick } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -449,10 +449,10 @@ function promisify(name, fn) {
       rest[_key - 1] = arguments[_key];
     }
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-      invokeApi(name, fn, extend(args, {
+      invokeApi(name, fn, extend({}, args, {
         success: resolve,
         fail: reject
       }), rest);
@@ -640,6 +640,9 @@ function initVueApp(appVm) {
       if (__page_container__) {
         __page_container__.isUnmounted = true;
         render(null, __page_container__);
+        delete pageInstance.__page_container__;
+        var vnode = pageInstance.$.vnode;
+        delete vnode.__page_container__;
       }
     }
   });
@@ -691,9 +694,10 @@ function removePage(curPage) {
   if (!$basePage.meta.isNVue) {
     getVueApp().unmountPage(curPage);
   }
-  var removePages2 = pages.splice(index2, 1);
+  pages.splice(index2, 1);
   {
-    removePages2[0].$page = null;
+    curPage.$page.vm = null;
+    curPage.$page = null;
   }
 }
 function backbuttonListener() {
@@ -855,15 +859,18 @@ function isVuePageAsyncComponent(component) {
 }
 var pagesMap = /* @__PURE__ */ new Map();
 function definePage(pagePath, asyncComponent) {
-  pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+  pagesMap.set(pagePath, once(createPageFactory(asyncComponent)));
 }
-function createFactory(component) {
+function createPageFactory(component) {
   return () => {
     if (isVuePageAsyncComponent(component)) {
-      return component().then((component2) => setupPage(component2));
+      return component().then((component2) => setupPage(clonedPageComponent(component2)));
     }
-    return setupPage(component);
+    return setupPage(clonedPageComponent(component));
   };
+}
+function clonedPageComponent(component) {
+  return extend({}, component);
 }
 function initRouteOptions(path, openType) {
   var routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
@@ -881,6 +888,9 @@ function getWebviewId() {
 }
 function genWebviewId() {
   return id++;
+}
+function resetWebviewId() {
+  id = 1;
 }
 var ANI_SHOW = "pop-in";
 var ANI_DURATION = 300;
@@ -1465,6 +1475,11 @@ function init() {
   page.startRender();
   page.show(null);
 }
+function clearTabBarStatus() {
+  tabBar0 = null;
+  selected0 = -1;
+  tabs.clear();
+}
 function removeTabBarPage(page) {
   var pagePath = getRealPath(page.route, true);
   if (tabs.get(pagePath) === page) {
@@ -2042,12 +2057,12 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   var pageNode = nativePage.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
-  var mountPage = (component2) => app.mountPage(component2, {
+  var mountPage = (component2) => app.mountPage(component2, extend({
     __pageId,
     __pagePath,
     __pageQuery,
     __pageInstance
-  }, pageNode);
+  }, __pageQuery), pageNode);
   if (isPromise(component)) {
     return component.then((component2) => mountPage(component2));
   }
@@ -2275,22 +2290,24 @@ function _redirectTo(_ref3) {
     path,
     query
   } = _ref3;
-  var lastPage = getCurrentPage().vm;
   return new Promise((resolve) => {
-    invokeAfterRouteHooks(API_REDIRECT_TO);
-    showWebview(registerPage({
-      url,
-      path,
-      query,
-      openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
-    }), "none", 0, () => {
-      if (lastPage) {
-        removePages(lastPage);
-      }
-      resolve(void 0);
-      setStatusBarStyle();
-    });
-    invokeBeforeRouteHooks(API_REDIRECT_TO);
+    setTimeout(() => {
+      var lastPage = getCurrentPage().vm;
+      invokeAfterRouteHooks(API_REDIRECT_TO);
+      showWebview(registerPage({
+        url,
+        path,
+        query,
+        openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
+      }), "none", 0, () => {
+        if (lastPage) {
+          removePages(lastPage);
+        }
+        resolve(void 0);
+        setStatusBarStyle();
+      });
+      invokeBeforeRouteHooks(API_REDIRECT_TO);
+    }, 0);
   });
 }
 function removePages(currentPage) {
@@ -2340,23 +2357,25 @@ function _reLaunch(_ref3) {
     query
   } = _ref3;
   return new Promise((resolve) => {
-    var pages2 = getAllPages().slice(0);
-    var selected = getTabIndex(path);
-    function callback() {
-      pages2.forEach((page) => closePage(page, "none"));
-      resolve(void 0);
-      setStatusBarStyle();
-    }
-    if (selected === -1) {
-      showWebview(registerPage({
-        url,
-        path,
-        query,
-        openType: "reLaunch"
-      }), "none", 0, callback);
-    } else {
-      switchSelect(selected, path, query, true, callback);
-    }
+    setTimeout(() => {
+      var pages2 = getAllPages().slice(0);
+      var selected = getTabIndex(path);
+      function callback() {
+        pages2.forEach((page) => closePage(page, "none"));
+        resolve(void 0);
+        setStatusBarStyle();
+      }
+      if (selected === -1) {
+        showWebview(registerPage({
+          url,
+          path,
+          query,
+          openType: "reLaunch"
+        }), "none", 0, callback);
+      } else {
+        switchSelect(selected, path, query, true, callback);
+      }
+    }, 0);
   });
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
@@ -2468,15 +2487,19 @@ function _switchTab(_ref2) {
     return Promise.reject("tab ".concat(path, " not found"));
   }
   var pages2 = getCurrentBasePages();
-  switchSelect(selected, path, query);
-  for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
-    var page = pages2[index2];
-    if (isTabPage(page)) {
-      break;
-    }
-    closePage(page, "none");
-  }
-  return Promise.resolve();
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      switchSelect(selected, path, query);
+      for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
+        var page = pages2[index2];
+        if (isTabPage(page)) {
+          break;
+        }
+        closePage(page, "none");
+      }
+      resolve(void 0);
+    }, 0);
+  });
 }
 var isLaunchWebviewReady = false;
 function subscribeWebviewReady(_data, pageId) {
@@ -2506,6 +2529,9 @@ function onLaunchWebviewReady() {
   }
   return $navigateTo(args, handler);
 }
+function clearWebviewReady() {
+  isLaunchWebviewReady = false;
+}
 function initSubscribeHandlers() {
   subscribeWebviewReady();
 }
@@ -2532,7 +2558,7 @@ function _asyncToGenerator(n) {
     });
   };
 }
-function initOn(app) {
+function initOn(app, unregisterApp2) {
   app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
     var _ref = _asyncToGenerator(function* (event) {
       var _getCurrentPage;
@@ -2584,9 +2610,19 @@ function initOn(app) {
       invokeHook(page, ON_HIDE);
     }
   });
+  app.addEventListener(ON_EXIT, function() {
+    var appInstance = getApp().vm;
+    var pages2 = getAllPages().slice(0);
+    pages2.forEach((page) => closePage(page, "none"));
+    clearTabBarStatus();
+    clearWebviewReady();
+    resetWebviewId();
+    invokeHook(appInstance, ON_EXIT);
+    unregisterApp2();
+  });
 }
-function initService(app) {
-  initOn(app);
+function initService(app, unregisterApp2) {
+  initOn(app, unregisterApp2);
 }
 function initComponentInstance(app) {
   app.mixin({
@@ -2614,9 +2650,6 @@ function initComponentInstance(app) {
   });
 }
 var appCtx;
-var defaultApp = {
-  globalData: {}
-};
 var entryPageState = {
   isReady: false,
   handledBeforeEntryPageRoutes: false
@@ -2645,14 +2678,23 @@ function registerApp(appVm, nativeApp2, uniApp) {
   appCtx = appVm;
   initAppVm(appCtx);
   initUniApp(uniApp);
+  var defaultApp = {
+    globalData: {}
+  };
   extend(appCtx, defaultApp);
   defineGlobalData(appCtx, defaultApp.globalData);
-  initService(nativeApp2);
+  initService(nativeApp2, unregisterApp);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
   initAppError(appVm, nativeApp2);
   initSubscribeHandlers();
   __uniConfig.ready = true;
+}
+function unregisterApp() {
+  appCtx.$.appContext.app.unmount();
+  appCtx = void 0;
+  setNativeApp(void 0);
+  __uniConfig.ready = false;
 }
 function initApp(app) {
   initComponentInstance(app);
@@ -2736,31 +2778,33 @@ function _navigateTo(_ref2) {
   invokeHook(ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
   return new Promise((resolve) => {
-    var noAnimation = aniType === "none" || aniDuration === 0;
-    function callback(page2) {
-      showWebview(page2, aniType, aniDuration, () => {
-        invokeAfterRouteHooks(currentRouteType);
-        resolve({
-          eventChannel
+    setTimeout(() => {
+      var noAnimation = aniType === "none" || aniDuration === 0;
+      function callback(page2) {
+        showWebview(page2, aniType, aniDuration, () => {
+          invokeAfterRouteHooks(currentRouteType);
+          resolve({
+            eventChannel
+          });
+          setStatusBarStyle();
         });
-        setStatusBarStyle();
-      });
-    }
-    var page = registerPage(
-      {
-        url,
-        path,
-        query,
-        openType: "navigateTo",
-        eventChannel
-      },
-      noAnimation ? void 0 : callback,
-      // 有动画时延迟创建 vm
-      noAnimation ? 0 : 1
-    );
-    if (noAnimation) {
-      callback(page);
-    }
+      }
+      var page = registerPage(
+        {
+          url,
+          path,
+          query,
+          openType: "navigateTo",
+          eventChannel
+        },
+        noAnimation ? void 0 : callback,
+        // 有动画时延迟创建 vm
+        noAnimation ? 0 : 1
+      );
+      if (noAnimation) {
+        callback(page);
+      }
+    }, 0);
   });
 }
 function initAnimation$1(path, animationType, animationDuration) {
@@ -2774,9 +2818,8 @@ function initAnimation$1(path, animationType, animationDuration) {
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function isDirectPage(page) {
-  return !!__uniConfig.realEntryPagePath && // getRealPath(page.$basePage.route, true) ===
-  // getRealPath(parseUrl(__uniConfig.entryPagePath!).path, true) &&
-  getCurrentPages$1()[0] === page;
+  var _getCurrentPages$;
+  return !!__uniConfig.realEntryPagePath && ((_getCurrentPages$ = getCurrentPages$1()[0]) === null || _getCurrentPages$ === void 0 ? void 0 : _getCurrentPages$.vm) === page;
 }
 function reLaunchEntryPage() {
   var _uniConfig$entryPage;
@@ -2821,9 +2864,9 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
   } catch (error) {
     console.warn(error);
   }
-  if (getPage$BasePage(page).meta.isQuit)
-    ;
-  else {
+  if (getPage$BasePage(page).meta.isQuit) {
+    invokeHook(getApp().vm, ON_LAST_PAGE_BACK_PRESS);
+  } else {
     if (isDirectPage(page)) {
       return reLaunchEntryPage();
     } else {
@@ -2901,6 +2944,7 @@ var openDialogPage = (options) => {
     path,
     query
   } = parseUrl(url);
+  path = normalizeRoute(path);
   var normalizeUrl = createNormalizeUrl("navigateTo");
   var errMsg = normalizeUrl(path, {});
   if (errMsg) {
@@ -3612,7 +3656,8 @@ class PerformanceEntryStatus {
     }
   }
   executeAfter() {
-    var page = getCurrentPage().vm;
+    var _getCurrentPage2;
+    var page = (_getCurrentPage2 = getCurrentPage()) === null || _getCurrentPage2 === void 0 ? void 0 : _getCurrentPage2.vm;
     if (page != null) {
       this._entryData.pageId = parseInt(page.$nativePage.pageId);
       this._entryData.path = page.route;
@@ -3621,7 +3666,8 @@ class PerformanceEntryStatus {
   executeReady() {
   }
   getCurrentInnerPage() {
-    var currentPage = getCurrentPage().vm;
+    var _getCurrentPage3;
+    var currentPage = (_getCurrentPage3 = getCurrentPage()) === null || _getCurrentPage3 === void 0 ? void 0 : _getCurrentPage3.vm;
     if (currentPage == null) {
       return null;
     }
@@ -4733,11 +4779,6 @@ var styles = {
     height: "16px"
   }
 };
-var createHook = (lifecycle) => function(hook) {
-  var target = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : getCurrentInstance();
-  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
-};
-var onUnload = /* @__PURE__ */ createHook(ON_UNLOAD);
 const checkbox = /* @__PURE__ */ defineBuiltInComponent({
   name: CHECKBOX_NAME,
   rootElement: {
@@ -4839,7 +4880,7 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
         };
       });
     });
-    onUnload(() => {
+    onBeforeUnmount(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
       $dispatch(ctx, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
         setCheckboxChecked,
@@ -5081,7 +5122,7 @@ var radioProps = {
     default: ""
   }
 };
-var _style_0$1$1 = {
+var _style_0$1 = {
   "uni-radio": {
     "": {
       flexDirection: "row",
@@ -5111,7 +5152,7 @@ var _style_0$1$1 = {
     }
   }
 };
-var styleList = _style_0$1$1;
+var styleList = _style_0$1;
 const radio = /* @__PURE__ */ defineBuiltInComponent({
   name: RADIO_NAME,
   rootElement: {
@@ -5215,7 +5256,7 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
         setRadioChecked
       }, "add");
     });
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
       $dispatch(ctx, "RadioGroup", "_radioGroupUpdateHandler", {
         name: radioValue.value,
@@ -5721,7 +5762,7 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
         _animate();
       });
     });
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       clearTimer();
     });
     return () => {
@@ -6081,6 +6122,9 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         return;
       }
       var y = e.detail.scrollTop;
+      if (data.indicatorHeight === 0) {
+        return;
+      }
       var current = Math.round(y / data.indicatorHeight);
       if (y % data.indicatorHeight != 0) {
         setCurrent(current);
@@ -6120,7 +6164,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         uniResizeObserver.observe(pickerColumnRef.value);
       });
     });
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
       uniResizeObserver.disconnect();
       $dispatch(ctx, "PickerView", "_pickerViewUpdateHandler", ctx, "remove");
@@ -6185,3177 +6229,10 @@ const index = /* @__PURE__ */ Object.defineProperty({
   Radio: radio$1,
   RadioGroup: radioGroup$1
 }, Symbol.toStringTag, { value: "Module" });
-const _sfc_main$5 = {
-  data() {
-    return {
-      show: false,
-      i18nCancelText: {
-        en: "Cancel",
-        es: "Cancelar",
-        fr: "Annuler",
-        "zh-Hans": "取消",
-        "zh-Hant": "取消"
-      },
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      title: null,
-      itemList: [],
-      optionCancelText: null,
-      titleColor: null,
-      itemColor: null,
-      cancelColor: null,
-      backgroundColor: null,
-      language: "zh-Hans",
-      theme: "light",
-      isLandscape: false,
-      bottomNavigationHeight: 0,
-      appTheme: null,
-      osTheme: null,
-      hostTheme: null
-    };
-  },
-  onLoad(options) {
-    this.readyEventName = options["readyEventName"];
-    this.optionsEventName = options["optionsEventName"];
-    this.successEventName = options["successEventName"];
-    this.failEventName = options["failEventName"];
-    uni.$on(this.optionsEventName, (data) => {
-      this.itemList = data["itemList"];
-      if (data["title"] != null) {
-        this.title = data["title"];
-      }
-      if (data["cancelText"] != null) {
-        this.optionCancelText = data["cancelText"];
-      }
-      if (data["titleColor"] != null) {
-        this.titleColor = data["titleColor"];
-      }
-      if (data["itemColor"] != null) {
-        this.itemColor = data["itemColor"];
-      }
-      if (data["cancelColor"] != null) {
-        this.cancelColor = data["cancelColor"];
-      }
-      if (data["backgroundColor"] != null) {
-        this.backgroundColor = data["backgroundColor"];
-      }
-    });
-    uni.$emit(this.readyEventName, {});
-    var systemInfo = uni.getSystemInfoSync();
-    var osLanguage = systemInfo.osLanguage;
-    var appLanguage = systemInfo.appLanguage;
-    if (appLanguage != null) {
-      this.language = appLanguage;
-    } else if (osLanguage != null) {
-      this.language = osLanguage;
-    }
-    var osTheme = systemInfo.osTheme;
-    var appTheme = systemInfo.appTheme;
-    if (appTheme != null && appTheme != "auto") {
-      this.appTheme = appTheme;
-      this.handleThemeChange();
-    }
-    if (osTheme != null) {
-      this.osTheme = osTheme;
-      this.handleThemeChange();
-    }
-    this.isLandscape = systemInfo.deviceOrientation == "landscape";
-    uni.onAppThemeChange((res) => {
-      var appTheme2 = res.appTheme;
-      if (appTheme2 != null && appTheme2 != "auto") {
-        this.appTheme = appTheme2;
-        this.handleThemeChange();
-      }
-    });
-    uni.onOsThemeChange((res) => {
-      this.osTheme = res.osTheme;
-      this.handleThemeChange();
-    });
-  },
-  computed: {
-    cancelText() {
-      if (this.optionCancelText != null) {
-        var res = this.optionCancelText;
-        return res;
-      }
-      if (this.language.startsWith("en")) {
-        return this.i18nCancelText["en"];
-      }
-      if (this.language.startsWith("es")) {
-        return this.i18nCancelText["es"];
-      }
-      if (this.language.startsWith("fr")) {
-        return this.i18nCancelText["fr"];
-      }
-      if (this.language.startsWith("zh-Hans")) {
-        return this.i18nCancelText["zh-Hans"];
-      }
-      if (this.language.startsWith("zh-Hant")) {
-        return this.i18nCancelText["zh-Hant"];
-      }
-      return "取消";
-    },
-    computedBackgroundColor() {
-      return this.backgroundColor !== null ? this.backgroundColor : this.theme == "dark" ? "#2C2C2B" : "#ffffff";
-    }
-  },
-  onReady() {
-    this.bottomNavigationHeight = this.$page.safeAreaInsets.bottom;
-    setTimeout(() => {
-      this.show = true;
-    }, 10);
-  },
-  onResize() {
-    var systemInfo = uni.getSystemInfoSync();
-    this.isLandscape = systemInfo.deviceOrientation == "landscape";
-  },
-  onUnload() {
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-  },
-  methods: {
-    closeActionSheet() {
-      this.show = false;
-      setTimeout(() => {
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        });
-      }, 250);
-    },
-    handleMenuItemClick(tapIndex) {
-      this.closeActionSheet();
-      uni.$emit(this.successEventName, tapIndex);
-    },
-    handleCancel() {
-      this.closeActionSheet();
-      uni.$emit(this.failEventName, {});
-    },
-    handleThemeChange() {
-      if (this.hostTheme != null) {
-        this.theme = this.hostTheme;
-      } else if (this.appTheme != null) {
-        this.theme = this.appTheme;
-      } else if (this.osTheme != null) {
-        this.theme = this.osTheme;
-      }
-    }
-  }
-};
-const _style_0$5 = {
-  "uni-action-sheet_dialog__mask": {
-    "": {
-      "position": "fixed",
-      "zIndex": 999,
-      "top": 0,
-      "right": 0,
-      "left": 0,
-      "bottom": 0,
-      "opacity": 0,
-      "backgroundColor": "rgba(0,0,0,0.6)",
-      "transitionProperty": "opacity",
-      "transitionDuration": "0.1s"
-    }
-  },
-  "uni-action-sheet_dialog__mask__show": {
-    "": {
-      "opacity": 1
-    }
-  },
-  "uni-action-sheet_dialog__container": {
-    "": {
-      "position": "fixed",
-      "width": "100%",
-      "left": 0,
-      "bottom": 0,
-      "zIndex": 999,
-      "transform": "translate(0, 100%)",
-      "transitionProperty": "transform",
-      "transitionDuration": "0.15s",
-      "backgroundColor": "#f7f7f7",
-      "borderTopLeftRadius": 12,
-      "borderTopRightRadius": 12
-    },
-    ".uni-action-sheet_dialog__show": {
-      "transform": "translate(0, 0)"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "backgroundColor": "#1D1E1E"
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "width": 300,
-      "position": "fixed",
-      "left": "50%",
-      "right": "auto",
-      "top": "50%",
-      "bottom": "auto",
-      "zIndex": 999,
-      "transform": "translate(-50%, -50%)",
-      "borderTopLeftRadius": 5,
-      "borderTopRightRadius": 5,
-      "borderBottomLeftRadius": 5,
-      "borderBottomRightRadius": 5
-    }
-  },
-  "uni-action-sheet_dialog__menu": {
-    "": {
-      "borderTopLeftRadius": 12,
-      "borderTopRightRadius": 12,
-      "overflow": "hidden",
-      "backgroundColor": "#ffffff"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "backgroundColor": "#2C2C2B"
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "borderTopLeftRadius": 5,
-      "borderTopRightRadius": 5,
-      "borderBottomLeftRadius": 5,
-      "borderBottomRightRadius": 5,
-      "boxShadow": "0 0 20px 5px rgba(0, 0, 0, 0.3)"
-    }
-  },
-  "uni-action-sheet_dialog__title": {
-    "": {
-      "paddingTop": 16,
-      "paddingRight": 16,
-      "paddingBottom": 16,
-      "paddingLeft": 16
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "paddingTop": 10,
-      "paddingRight": 6,
-      "paddingBottom": 10,
-      "paddingLeft": 6
-    }
-  },
-  "uni-action-sheet_dialog__cell": {
-    "": {
-      "paddingTop": 16,
-      "paddingRight": 16,
-      "paddingBottom": 16,
-      "paddingLeft": 16
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "paddingTop": 10,
-      "paddingRight": 6,
-      "paddingBottom": 10,
-      "paddingLeft": 6
-    }
-  },
-  "uni-action-sheet_dialog__action": {
-    "": {
-      "paddingTop": 16,
-      "paddingRight": 16,
-      "paddingBottom": 16,
-      "paddingLeft": 16,
-      "marginTop": 8,
-      "backgroundColor": "#ffffff"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "backgroundColor": "#2C2C2B"
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "display": "none",
-      "paddingTop": 10,
-      "paddingRight": 6,
-      "paddingBottom": 10,
-      "paddingLeft": 6
-    }
-  },
-  "uni-action-sheet_dialog__title__text": {
-    "": {
-      "lineHeight": 1.4,
-      "textAlign": "center",
-      "whiteSpace": "nowrap",
-      "overflow": "hidden",
-      "textOverflow": "ellipsis",
-      "color": "#666666"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "color": "#999999"
-    }
-  },
-  "uni-action-sheet_dialog__cell__text": {
-    "": {
-      "lineHeight": 1.4,
-      "textAlign": "center",
-      "whiteSpace": "nowrap",
-      "overflow": "hidden",
-      "textOverflow": "ellipsis",
-      "color": "#000000"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "color": "#ffffff"
-    }
-  },
-  "uni-action-sheet_dialog__action__text": {
-    "": {
-      "lineHeight": 1.4,
-      "textAlign": "center",
-      "whiteSpace": "nowrap",
-      "overflow": "hidden",
-      "textOverflow": "ellipsis",
-      "color": "#000000"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "color": "#ffffff"
-    }
-  },
-  "uni-action-sheet_dialog__cell__container": {
-    "": {
-      "maxHeight": 330
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "maxHeight": 260
-    }
-  },
-  "divider": {
-    "": {
-      "height": 1,
-      "backgroundColor": "#e5e5e5",
-      "transform": "scaleY(0.5)"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "backgroundColor": "#2F3131"
-    }
-  },
-  "@TRANSITION": {
-    "uni-action-sheet_dialog__mask": {
-      "property": "opacity",
-      "duration": "0.1s"
-    },
-    "uni-action-sheet_dialog__container": {
-      "property": "transform",
-      "duration": "0.15s"
-    }
-  }
-};
-const _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
-var _hoisted_1$4 = ["onClick"];
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("view", null, [createElementVNode("view", {
-    class: normalizeClass(["uni-action-sheet_dialog__mask", {
-      "uni-action-sheet_dialog__mask__show": $data.show
-    }]),
-    onClick: _cache[0] || (_cache[0] = function() {
-      return $options.handleCancel && $options.handleCancel(...arguments);
-    })
-  }, null, 2), createElementVNode("view", {
-    class: normalizeClass(["uni-action-sheet_dialog__container", {
-      "uni-action-sheet_dialog__show": $data.show,
-      "uni-action-sheet_dark__mode": $data.theme == "dark",
-      "uni-action-sheet_landscape__mode": $data.isLandscape
-    }])
-  }, [createElementVNode("view", {
-    style: normalizeStyle($data.backgroundColor != null ? {
-      backgroundColor: $data.backgroundColor
-    } : {}),
-    class: normalizeClass(["uni-action-sheet_dialog__menu", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark",
-      "uni-action-sheet_landscape__mode": $data.isLandscape
-    }])
-  }, [$data.title ? (openBlock(), createElementBlock(Fragment, {
-    key: 0
-  }, [createElementVNode("view", {
-    class: normalizeClass(["uni-action-sheet_dialog__title", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark",
-      "uni-action-sheet_landscape__mode": $data.isLandscape
-    }])
-  }, [createElementVNode("text", {
-    style: normalizeStyle({
-      color: $data.titleColor
-    }),
-    class: normalizeClass(["uni-action-sheet_dialog__title__text", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
-    }])
-  }, toDisplayString($data.title), 7)], 2), createElementVNode("view", {
-    class: normalizeClass(["divider", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
-    }])
-  }, null, 2)], 64)) : createCommentVNode("", true), createElementVNode("scroll-view", {
-    class: normalizeClass(["uni-action-sheet_dialog__cell__container", {
-      "uni-action-sheet_landscape__mode": $data.isLandscape
-    }])
-  }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
-    return openBlock(), createElementBlock("view", {
-      key: index2
-    }, [index2 !== 0 ? (openBlock(), createElementBlock("view", {
-      key: 0,
-      class: normalizeClass(["divider", {
-        "uni-action-sheet_dark__mode": $data.theme == "dark"
-      }])
-    }, null, 2)) : createCommentVNode("", true), createElementVNode("view", {
-      class: normalizeClass(["uni-action-sheet_dialog__cell", {
-        "uni-action-sheet_dark__mode": $data.theme == "dark",
-        "uni-action-sheet_landscape__mode": $data.isLandscape
-      }]),
-      onClick: ($event) => $options.handleMenuItemClick(index2)
-    }, [createElementVNode("text", {
-      style: normalizeStyle({
-        color: $data.itemColor
-      }),
-      class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
-        "uni-action-sheet_dark__mode": $data.theme == "dark"
-      }])
-    }, toDisplayString(item), 7)], 10, _hoisted_1$4)]);
-  }), 128))], 2)], 6), createElementVNode("view", {
-    style: normalizeStyle($data.backgroundColor != null ? {
-      backgroundColor: $data.backgroundColor
-    } : {}),
-    class: normalizeClass(["uni-action-sheet_dialog__action", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark",
-      "uni-action-sheet_landscape__mode": $data.isLandscape
-    }]),
-    onClick: _cache[1] || (_cache[1] = function() {
-      return $options.handleCancel && $options.handleCancel(...arguments);
-    })
-  }, [createElementVNode("text", {
-    style: normalizeStyle({
-      color: $data.cancelColor
-    }),
-    class: normalizeClass(["uni-action-sheet_dialog__action__text", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
-    }])
-  }, toDisplayString($options.cancelText), 7)], 6), !$data.isLandscape ? (openBlock(), createElementBlock("view", {
-    key: 0,
-    style: normalizeStyle({
-      height: "".concat($data.bottomNavigationHeight, "px"),
-      backgroundColor: $options.computedBackgroundColor
-    })
-  }, null, 4)) : createCommentVNode("", true)], 2)]);
-}
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["styles", [_style_0$5]]]);
-var defaultPoi = {
-  latitude: 39.908823,
-  longitude: 116.39747
-};
-var languageData = {
-  "en": {
-    "ok": "ok",
-    "cancel": "cancel",
-    "locationLoading": "positioning...",
-    "search": "Search location"
-  },
-  "zh-Hans": {
-    "ok": "确定",
-    "cancel": "取消",
-    "locationLoading": "获取定位中...",
-    "search": "搜索地点"
-  },
-  "zh-Hant": {
-    "ok": "確定",
-    "cancel": "取消",
-    "locationLoading": "獲取定位中...",
-    "search": "蒐索地點"
-  }
-};
-var loadingPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
-const _sfc_main$4 = {
-  data() {
-    var id1 = "UniMap1_".concat((Math.random() * 1e6).toString(36));
-    var id2 = "UniMap2_".concat((Math.random() * 1e6).toString(36));
-    var id3 = "UniMap3_".concat((Math.random() * 1e6).toString(36));
-    return {
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      mapId: id1,
-      mapTargetId: id2,
-      scrollId: id3,
-      isFocus: false,
-      latitude: 0,
-      longitude: 0,
-      locationComplete: false,
-      locationLoading: false,
-      chooseLocationOptions: {},
-      pageIndex: 1,
-      pageSize: 20,
-      pois: [],
-      selected: -1,
-      searchValue: "",
-      safeArea: {
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0
-      },
-      icon: {
-        target: "",
-        success: "",
-        position: "",
-        search: ""
-      },
-      lastTime: 0,
-      searchLoading: false,
-      language: "zh-Hans",
-      scrollTop: 0,
-      isLandscape: false,
-      theme: "light",
-      searchValueChangeTimer: -1,
-      lastPoi: {
-        latitude: null,
-        longitude: null,
-        selected: -1,
-        pois: [],
-        scrollTop: 0
-      },
-      errMsg: "",
-      callUniMapCoErr: false,
-      useUniCloud: true,
-      mapHeight: 350,
-      loadingPath,
-      loadingRotate: 0,
-      loadingTimer: -1
-    };
-  },
-  onLoad(options) {
-    this.checkUniCloud();
-    this.initPageOptions(options);
-    this.getSystemInfo();
-    this.getLocation();
-  },
-  onReady() {
-    this.getSafeAreaInsets();
-  },
-  onUnload() {
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-  },
-  onResize() {
-    this.getSystemInfo();
-  },
-  methods: {
-    checkUniCloud() {
-      if (typeof uniCloud == "undefined" || typeof uniCloud.config == "undefined" || uniCloud.config.spaceId == "") {
-        this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
-        this.useUniCloud = false;
-        console.error(this.errMsg);
-      }
-    },
-    initPageOptions(options) {
-      this.readyEventName = options["readyEventName"];
-      this.optionsEventName = options["optionsEventName"];
-      this.successEventName = options["successEventName"];
-      this.failEventName = options["failEventName"];
-      uni.$on(this.optionsEventName, (data) => {
-        if (data["latitude"] != null) {
-          this.chooseLocationOptions.latitude = data["latitude"];
-        }
-        if (data["longitude"] != null) {
-          this.chooseLocationOptions.longitude = data["longitude"];
-        }
-        if (data["keyword"] != null) {
-          var keyword = data["keyword"];
-          this.chooseLocationOptions.keyword = keyword;
-          this.searchValue = keyword;
-        } else {
-          this.chooseLocationOptions.keyword = "";
-        }
-        if (data["payload"] != null) {
-          this.chooseLocationOptions.payload = data["payload"];
-        }
-      });
-      uni.$emit(this.readyEventName, {});
-    },
-    getLocation() {
-      if (this.chooseLocationOptions.latitude != null && this.chooseLocationOptions.longitude != null) {
-        this.latitude = this.chooseLocationOptions.latitude;
-        this.longitude = this.chooseLocationOptions.longitude;
-        this.locationComplete = true;
-        this.getPoi("getLocation");
-      } else {
-        this.locationLoading = true;
-        uni.getLocation({
-          type: "gcj02",
-          success: (res) => {
-            this.latitude = res.latitude;
-            this.longitude = res.longitude;
-            this.locationComplete = true;
-            this.locationLoading = false;
-            this.getPoi("getLocation");
-          },
-          fail: (err) => {
-            console.error("getLocationErr: ", err);
-            this.latitude = defaultPoi.latitude;
-            this.longitude = defaultPoi.longitude;
-            this.locationComplete = true;
-            this.locationLoading = false;
-            this.getPoi("getLocation");
-          }
-        });
-      }
-    },
-    distanceHandle(distance) {
-      if (distance < 1e3) {
-        return distance + "m";
-      } else {
-        return parseFloat((distance / 1e3).toFixed(2)) + "km";
-      }
-    },
-    poiHandle(pois) {
-      var list = pois.map((item, index2) => {
-        var location = item["location"];
-        var distance = item["distance"];
-        var latitude = location["lat"];
-        var longitude = location["lng"];
-        if (distance == 0) {
-          latitude = this.latitude;
-          longitude = this.longitude;
-        }
-        return {
-          title: item["title"],
-          address: item["address"],
-          distance,
-          distanceStr: this.distanceHandle(distance),
-          location: {
-            latitude,
-            longitude
-          }
-        };
-      });
-      var pageIndex = this.pageIndex;
-      if (pageIndex == 1) {
-        this.pois = list;
-        this.updateScrollTop(0);
-      } else {
-        this.pois = this.pois.concat(list);
-      }
-    },
-    callUniMapCo(action, data) {
-      var promise = new Promise((resolve, reject) => {
-        if (this.useUniCloud == false) {
-          reject(this.errMsg);
-          return;
-        }
-        this.errMsg = "";
-        var uniMapCo = uniCloud.importObject("uni-map-co", {
-          customUI: true
-        });
-        var chooseLocationData = {
-          action,
-          data
-        };
-        if (this.chooseLocationOptions.payload != null) {
-          chooseLocationData["payload"] = this.chooseLocationOptions.payload;
-        }
-        uniMapCo.chooseLocation(chooseLocationData).then((res) => {
-          resolve(res);
-        }).catch((err) => {
-          if (err instanceof UniCloudError) {
-            var cloudError = err;
-            var errCode = cloudError.errCode;
-            var errMsg = cloudError.errMsg;
-            var errSubject = cloudError.errSubject;
-            if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
-              this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
-              console.error(this.errMsg);
-            } else {
-              this.errMsg = errMsg;
-              console.error("获取POI信息失败，" + JSON.stringify({
-                errCode,
-                errMsg,
-                errSubject
-              }));
-            }
-          }
-          reject(err);
-        });
-      });
-      promise.then((res) => {
-        this.callUniMapCoErr = false;
-      }).catch((err) => {
-        this.callUniMapCoErr = true;
-      });
-      return promise;
-    },
-    getPoi(type) {
-      var searchValue = this.searchValue;
-      var latitude = this.latitude;
-      var longitude = this.longitude;
-      var pageIndex = this.pageIndex;
-      var pageSize = this.pageSize;
-      if (["searchValueChange"].indexOf(type) == -1) {
-        this.searchLoading = true;
-      }
-      if (searchValue != "" && searchValue.length > 0) {
-        this.callUniMapCo("search", {
-          keyword: searchValue,
-          location: {
-            lat: latitude,
-            lng: longitude
-          },
-          radius: 5e3,
-          auto_extend: 1,
-          orderby: "weight",
-          page_index: pageIndex,
-          page_size: pageSize
-        }).then((res) => {
-          var _res$getJSON;
-          var pois = (_res$getJSON = res.getJSON("result")) === null || _res$getJSON === void 0 || (_res$getJSON = _res$getJSON.getJSON("result")) === null || _res$getJSON === void 0 ? void 0 : _res$getJSON.getArray("data");
-          this.poiHandle(pois);
-          this.searchLoading = false;
-        }).catch((err) => {
-          this.searchLoading = false;
-        });
-      } else {
-        this.callUniMapCo("location2address", {
-          location: "".concat(latitude, ",").concat(longitude),
-          get_poi: 1,
-          poi_options: {
-            radius: 3e3,
-            policy: pageIndex == 1 ? 3 : 4,
-            roadlevel: 1,
-            homeorcorp: 1,
-            page_index: pageIndex,
-            page_size: pageSize
-          }
-        }).then((res) => {
-          var _res$getJSON2;
-          var pois = (_res$getJSON2 = res.getJSON("result")) === null || _res$getJSON2 === void 0 || (_res$getJSON2 = _res$getJSON2.getJSON("result")) === null || _res$getJSON2 === void 0 ? void 0 : _res$getJSON2.getArray("pois");
-          this.poiHandle(pois);
-          if (this.pois.length > 0 && pageIndex == 1) {
-            var poi = this.pois[0];
-            if (poi.distance > 0) {
-              var poi1 = poi.location;
-              var poi2 = {
-                latitude: this.latitude,
-                longitude: this.longitude
-              };
-              var distance = poi.distance;
-              var direction = this.calcDirection(poi1, poi2);
-              if (poi.address.indexOf("米") == -1) {
-                var suffix = "向".concat(direction).concat(distance, "米");
-                var newPoi = {
-                  title: "".concat(poi.title).concat(suffix),
-                  address: "".concat(poi.address).concat(suffix),
-                  distance: 0,
-                  distanceStr: this.distanceHandle(distance),
-                  location: poi2
-                };
-                this.pois.unshift(newPoi);
-              }
-            }
-            this.searchLoading = false;
-            if (this.selected == -1) {
-              setTimeout(() => {
-                this.selected = 0;
-              }, 20);
-              this.lastPoi.latitude = this.latitude;
-              this.lastPoi.longitude = this.longitude;
-              this.lastPoi.selected = this.selected;
-              this.lastPoi.pois = this.pois;
-            }
-          }
-        }).catch((err) => {
-          this.searchLoading = false;
-        });
-      }
-    },
-    calcDirection(poi1, poi2) {
-      var toRadians = (angle2) => angle2 * (Math.PI / 180);
-      var toDegrees = (angle2) => angle2 * (180 / Math.PI);
-      var lat1 = toRadians(poi1.latitude);
-      var lon1 = toRadians(poi1.longitude);
-      var lat2 = toRadians(poi2.latitude);
-      var lon2 = toRadians(poi2.longitude);
-      var dLon = lon2 - lon1;
-      var y = Math.sin(dLon) * Math.cos(lat2);
-      var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-      var angleRadians = Math.atan2(y, x);
-      var angle = toDegrees(angleRadians);
-      angle = (angle + 360) % 360;
-      if (angle < 22.5 || angle >= 337.5) {
-        return "北";
-      } else if (angle >= 22.5 && angle < 67.5) {
-        return "东北";
-      } else if (angle >= 67.5 && angle < 112.5) {
-        return "东";
-      } else if (angle >= 112.5 && angle < 157.5) {
-        return "东南";
-      } else if (angle >= 157.5 && angle < 202.5) {
-        return "南";
-      } else if (angle >= 202.5 && angle < 247.5) {
-        return "西南";
-      } else if (angle >= 247.5 && angle < 292.5) {
-        return "西";
-      } else {
-        return "西北";
-      }
-    },
-    getSafeAreaInsets() {
-      var info = uni.getWindowInfo();
-      this.safeArea.top = info.safeAreaInsets.top;
-      this.safeArea.bottom = info.safeAreaInsets.bottom;
-      this.safeArea.left = info.safeAreaInsets.left;
-      this.safeArea.right = info.safeAreaInsets.right;
-    },
-    getSystemInfo() {
-      var info = uni.getWindowInfo();
-      this.safeArea.top = info.safeAreaInsets.top;
-      this.safeArea.bottom = info.safeAreaInsets.bottom;
-      this.safeArea.left = info.safeAreaInsets.left;
-      this.safeArea.right = info.safeAreaInsets.right;
-      var screenHeight = info.screenHeight;
-      this.mapHeight = (screenHeight - this.safeArea.top - this.safeArea.bottom) * 0.6;
-      var systemInfo = uni.getSystemInfoSync();
-      var appLanguage = systemInfo.appLanguage;
-      this.language = appLanguage;
-      var osTheme = systemInfo.osTheme;
-      var appTheme = systemInfo.appTheme;
-      if (appTheme != null && appTheme != "auto") {
-        this.theme = appTheme;
-      } else if (osTheme != null) {
-        this.theme = osTheme;
-      }
-      this.isLandscape = systemInfo.deviceOrientation == "landscape";
-    },
-    getMapContext() {
-      return uni.createMapContext(this.mapId, this);
-    },
-    regionchange(e) {
-      var causedBy = e.causedBy;
-      if (e.type !== "end" || causedBy != "drag" || this.locationComplete == false) {
-        return;
-      }
-      var mapContext = this.getMapContext();
-      if (mapContext != null) {
-        mapContext.getCenterLocation({
-          success: (res) => {
-            var latitudeDiff = Math.abs(res.latitude - this.latitude);
-            var longitudeDiff = Math.abs(res.longitude - this.longitude);
-            if (latitudeDiff > 1e-6 || longitudeDiff > 1e-6) {
-              this.latitude = parseFloat(res.latitude.toFixed(6));
-              this.longitude = parseFloat(res.longitude.toFixed(6));
-              this.searchValue = "";
-              this.selected = -1;
-              this.pageIndex = 1;
-              this.getPoi("regionchange");
-              var element = this.$refs[this.mapTargetId];
-              if (element != null) {
-                var duration = 250;
-                element.style.setProperty("transition-duration", "".concat(duration, "ms"));
-                element.style.setProperty("transform", "translateY(0px)");
-                element.style.setProperty("transform", "translateY(-15px)");
-                setTimeout(() => {
-                  element.style.setProperty("transform", "translateY(0px)");
-                }, duration);
-              }
-            }
-          }
-        });
-      }
-    },
-    clearSearchValueChangeTimer() {
-      if (this.searchValueChangeTimer != -1) {
-        clearTimeout(this.searchValueChangeTimer);
-        this.searchValueChangeTimer = -1;
-      }
-    },
-    searchValueChange(e) {
-      this.clearSearchValueChangeTimer();
-      this.searchValueChangeTimer = setTimeout(() => {
-        this.poiSearch("searchValueChange");
-      }, 200);
-    },
-    poiSearch(type) {
-      this.clearSearchValueChangeTimer();
-      this.pageIndex = 1;
-      this.selected = -1;
-      this.getPoi(type);
-    },
-    cancelSearch() {
-      this.isFocus = false;
-      this.searchValue = "";
-      if (this.lastPoi.latitude != null) {
-        this.latitude = this.lastPoi.latitude;
-      }
-      if (this.lastPoi.longitude != null) {
-        this.longitude = this.lastPoi.longitude;
-      }
-      if (this.lastPoi.pois.length - 1 > this.lastPoi.selected) {
-        this.pois = this.lastPoi.pois;
-        this.selected = this.lastPoi.selected;
-        this.updateScrollTop(this.lastPoi.scrollTop);
-      } else {
-        this.poiSearch("cancelSearch");
-      }
-    },
-    updateScrollTop(scrollTop) {
-      setTimeout(() => {
-        this.scrollTop = scrollTop;
-      }, 10);
-    },
-    selectPoi(item, index2) {
-      this.isFocus = false;
-      this.selected = index2;
-      this.latitude = item.location.latitude;
-      this.longitude = item.location.longitude;
-      if (this.searchValue == this.chooseLocationOptions.keyword) {
-        this.lastPoi.latitude = this.latitude;
-        this.lastPoi.longitude = this.longitude;
-        this.lastPoi.selected = this.selected;
-        this.lastPoi.pois = this.pois;
-        var scrollElement = this.$refs[this.scrollId];
-        if (scrollElement != null) {
-          var scrollTop = scrollElement.scrollTop;
-          this.lastPoi.scrollTop = scrollTop;
-          this.scrollTop = scrollTop;
-        }
-      }
-    },
-    scrolltolower() {
-      this.pageIndex++;
-      this.getPoi("scrolltolower");
-    },
-    mapReset() {
-      this.isFocus = false;
-      this.pageIndex = 1;
-      this.getLocation();
-    },
-    closeDialogPage() {
-      uni.closeDialogPage({
-        dialogPage: this.$page,
-        animationType: "zoom-fade-out"
-      });
-    },
-    back() {
-      uni.$emit(this.failEventName, 1);
-      this.closeDialogPage();
-    },
-    confirm() {
-      if (this.selected < 0) {
-        if (this.callUniMapCoErr) {
-          uni.$emit(this.successEventName, {
-            name: "",
-            address: "",
-            latitude: parseFloat(this.latitude.toFixed(6)),
-            longitude: parseFloat(this.longitude.toFixed(6))
-          });
-          this.closeDialogPage();
-        }
-        return;
-      }
-      var item = this.pois[this.selected];
-      var res = {
-        name: item.title,
-        address: item.address,
-        latitude: item.location.latitude,
-        longitude: item.location.longitude
-      };
-      uni.$emit(this.successEventName, res);
-      this.closeDialogPage();
-    }
-  },
-  watch: {
-    searchLoading(val) {
-      if (this.loadingTimer != -1) {
-        clearInterval(this.loadingTimer);
-        this.loadingTimer = -1;
-      }
-      if (val) {
-        this.loadingRotate += 100;
-        this.loadingTimer = setInterval(() => {
-          this.loadingRotate += 100;
-        }, 200);
-      } else {
-        this.loadingRotate = 0;
-      }
-    }
-  },
-  computed: {
-    languageCom() {
-      var textInfo = languageData[this.language] != null ? languageData[this.language] : languageData["zh-Hans"];
-      return textInfo;
-    },
-    uniChooseLocationClassCom() {
-      var list = [];
-      if (this.theme == "dark") {
-        list.push("uni-choose-location-dark");
-      } else {
-        list.push("uni-choose-location-light");
-      }
-      return list.join(" ");
-    },
-    landscapeClassCom() {
-      return this.isLandscape ? "uni-choose-location-landscape" : "uni-choose-location-vertical";
-    },
-    mapBoxStyleCom() {
-      var list = [];
-      if (!this.useUniCloud) {
-        list.push("flex: 1;");
-      }
-      if (!this.isLandscape) {
-        var top = this.isFocus ? (300 - this.mapHeight) / 2 : 0;
-        list.push("transform:translateY(".concat(top, "px);"));
-        list.push("height:".concat(this.mapHeight, "px;"));
-      }
-      return list.join("");
-    },
-    poiBoxStyleCom() {
-      var list = [];
-      if (!this.isLandscape) {
-        var top = this.isFocus ? 300 : this.mapHeight;
-        list.push("top:".concat(top, "px;"));
-      }
-      return list.join("");
-    },
-    resetStyleCom() {
-      var list = [];
-      if (!this.isLandscape) {
-        var bottom = this.isFocus ? (this.mapHeight - 300) / 2 + 300 - this.mapHeight : 0;
-        list.push("transform:translateY(".concat(bottom, "px);"));
-      }
-      return list.join("");
-    }
-  }
-};
-const _style_0$4 = {
-  "uni-choose-location-icons": {
-    "": {
-      "fontFamily": "UniChooseLocationFontFamily",
-      "fontSize": 16,
-      "fontStyle": "normal"
-    }
-  },
-  "uni-choose-location": {
-    "": {
-      "position": "relative",
-      "left": 0,
-      "top": 0,
-      "width": "100%",
-      "height": "100%",
-      "backgroundImage": "none",
-      "backgroundColor": "#f8f8f8",
-      "zIndex": 999
-    }
-  },
-  "uni-choose-location-map-box": {
-    "": {
-      "position": "relative",
-      "width": "100%",
-      "height": 350
-    },
-    ".uni-choose-location-vertical": {
-      "transitionProperty": "transform",
-      "transitionDuration": "0.25s",
-      "transitionTimingFunction": "ease-out"
-    },
-    ".uni-choose-location .uni-choose-location-landscape": {
-      "height": "100%"
-    }
-  },
-  "uni-choose-location-map": {
-    "": {
-      "width": "100%",
-      "height": "100%"
-    }
-  },
-  "uni-choose-location-map-target": {
-    "": {
-      "position": "absolute",
-      "left": "50%",
-      "bottom": "50%",
-      "width": 50,
-      "height": 50,
-      "marginLeft": -25,
-      "transitionProperty": "transform",
-      "transitionDuration": "0.25s",
-      "transitionTimingFunction": "ease-out"
-    }
-  },
-  "uni-choose-location-map-target-icon": {
-    "": {
-      "fontSize": 50,
-      "color": "#f0493e"
-    }
-  },
-  "uni-choose-location-map-reset": {
-    "": {
-      "position": "absolute",
-      "left": 20,
-      "bottom": 40,
-      "width": 40,
-      "height": 40,
-      "boxSizing": "border-box",
-      "backgroundColor": "#ffffff",
-      "borderTopLeftRadius": 20,
-      "borderTopRightRadius": 20,
-      "borderBottomRightRadius": 20,
-      "borderBottomLeftRadius": 20,
-      "pointerEvents": "auto",
-      "boxShadow": "0px 0px 20px 2px rgba(0, 0, 0, .3)",
-      "zIndex": 9,
-      "display": "flex",
-      "justifyContent": "center",
-      "alignItems": "center"
-    },
-    ".uni-choose-location-vertical": {
-      "transitionProperty": "transform",
-      "transitionDuration": "0.25s",
-      "transitionTimingFunction": "ease-out"
-    },
-    ".uni-choose-location .uni-choose-location-landscape": {
-      "left": 40,
-      "bottom": 40
-    },
-    ".uni-choose-location-dark ": {
-      "backgroundColor": "#111111",
-      "boxShadow": "0px 0px 5px 1px rgba(0, 0, 0, .3)"
-    }
-  },
-  "uni-choose-location-map-reset-icon": {
-    "": {
-      "fontSize": 26,
-      "textAlign": "center",
-      "lineHeight": "40px"
-    },
-    ".uni-choose-location-dark ": {
-      "color": "#d1d1d1"
-    }
-  },
-  "uni-choose-location-nav": {
-    "": {
-      "position": "absolute",
-      "top": 0,
-      "left": 0,
-      "width": "100%",
-      "height": 60,
-      "backgroundColor": "rgba(0,0,0,0)",
-      "backgroundImage": "linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0))"
-    }
-  },
-  "uni-choose-location-nav-btn": {
-    "": {
-      "position": "absolute",
-      "top": 5,
-      "left": 5,
-      "width": 64,
-      "height": 44,
-      "paddingTop": 5,
-      "paddingRight": 5,
-      "paddingBottom": 5,
-      "paddingLeft": 5
-    },
-    ".uni-choose-location-nav-confirm-btn": {
-      "left": "auto",
-      "right": 5
-    },
-    ".uni-choose-location-nav-confirm-btn.active:active": {
-      "opacity": 0.7
-    },
-    ".uni-choose-location-nav-confirm-btn.disable": {
-      "opacity": 0.4
-    },
-    ".uni-choose-location .uni-choose-location-landscape": {
-      "top": 10,
-      "left": 20
-    },
-    ".uni-choose-location .uni-choose-location-nav-confirm-btn.uni-choose-location-landscape": {
-      "left": "auto",
-      "right": 20
-    }
-  },
-  "uni-choose-location-nav-confirm-text": {
-    ".uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn ": {
-      "backgroundColor": "#007aff",
-      "borderTopLeftRadius": 5,
-      "borderTopRightRadius": 5,
-      "borderBottomRightRadius": 5,
-      "borderBottomLeftRadius": 5
-    }
-  },
-  "uni-choose-location-nav-back-text": {
-    ".uni-choose-location-nav-btn.uni-choose-location-nav-back-btn ": {
-      "color": "#ffffff"
-    }
-  },
-  "uni-choose-location-nav-text": {
-    "": {
-      "paddingTop": 8,
-      "paddingRight": 0,
-      "paddingBottom": 8,
-      "paddingLeft": 0,
-      "fontSize": 14,
-      "textAlign": "center",
-      "color": "#ffffff"
-    }
-  },
-  "uni-choose-location-poi": {
-    "": {
-      "position": "absolute",
-      "top": 350,
-      "width": "100%",
-      "bottom": 0,
-      "backgroundColor": "#ffffff",
-      "zIndex": 10
-    },
-    ".uni-choose-location-vertical": {
-      "transitionProperty": "top",
-      "transitionDuration": "0.25s",
-      "transitionTimingFunction": "ease-out"
-    },
-    ".uni-choose-location .uni-choose-location-landscape": {
-      "position": "absolute",
-      "top": 80,
-      "right": 25,
-      "width": 300,
-      "bottom": 20,
-      "maxHeight": 600,
-      "boxShadow": "0px 0px 20px 2px rgba(0, 0, 0, .3)",
-      "borderTopLeftRadius": 5,
-      "borderTopRightRadius": 5,
-      "borderBottomRightRadius": 5,
-      "borderBottomLeftRadius": 5
-    },
-    ".uni-choose-location-dark ": {
-      "backgroundColor": "#181818"
-    }
-  },
-  "uni-choose-location-poi-search": {
-    "": {
-      "display": "flex",
-      "flexDirection": "row",
-      "alignItems": "center",
-      "justifyContent": "center",
-      "height": 50,
-      "paddingTop": 8,
-      "paddingRight": 8,
-      "paddingBottom": 8,
-      "paddingLeft": 8,
-      "backgroundColor": "#ffffff"
-    },
-    ".uni-choose-location-dark ": {
-      "backgroundColor": "#181818"
-    }
-  },
-  "uni-choose-location-poi-search-box": {
-    "": {
-      "display": "flex",
-      "flexDirection": "row",
-      "alignItems": "center",
-      "justifyContent": "center",
-      "height": 32,
-      "flex": 1,
-      "borderTopLeftRadius": 5,
-      "borderTopRightRadius": 5,
-      "borderBottomRightRadius": 5,
-      "borderBottomLeftRadius": 5,
-      "paddingTop": 0,
-      "paddingRight": 15,
-      "paddingBottom": 0,
-      "paddingLeft": 15,
-      "backgroundColor": "#ededed"
-    },
-    ".uni-choose-location-dark ": {
-      "backgroundColor": "#111111"
-    }
-  },
-  "uni-choose-location-poi-search-input": {
-    "": {
-      "flex": 1,
-      "height": "100%",
-      "borderTopLeftRadius": 5,
-      "borderTopRightRadius": 5,
-      "borderBottomRightRadius": 5,
-      "borderBottomLeftRadius": 5,
-      "paddingTop": 0,
-      "paddingRight": 5,
-      "paddingBottom": 0,
-      "paddingLeft": 5,
-      "backgroundImage": "none",
-      "backgroundColor": "#ededed"
-    },
-    ".uni-choose-location-dark ": {
-      "backgroundImage": "none",
-      "backgroundColor": "#111111",
-      "color": "#d1d1d1"
-    }
-  },
-  "uni-choose-location-poi-search-cancel": {
-    "": {
-      "marginLeft": 5,
-      "color": "#007aff",
-      "fontSize": 15,
-      "textAlign": "center"
-    }
-  },
-  "uni-choose-location-poi-list": {
-    "": {
-      "flex": 1
-    }
-  },
-  "uni-choose-location-poi-search-loading": {
-    "": {
-      "display": "flex",
-      "alignItems": "center",
-      "paddingTop": 10,
-      "paddingRight": 0,
-      "paddingBottom": 10,
-      "paddingLeft": 0
-    }
-  },
-  "uni-choose-location-poi-search-loading-text": {
-    "": {
-      "color": "#191919"
-    },
-    ".uni-choose-location-dark ": {
-      "color": "#d1d1d1"
-    }
-  },
-  "uni-choose-location-poi-search-error": {
-    "": {
-      "display": "flex",
-      "alignItems": "center",
-      "paddingTop": 10,
-      "paddingRight": 10,
-      "paddingBottom": 10,
-      "paddingLeft": 10
-    }
-  },
-  "uni-choose-location-poi-search-error-text": {
-    "": {
-      "color": "#191919",
-      "fontSize": 14
-    },
-    ".uni-choose-location-dark ": {
-      "color": "#d1d1d1"
-    }
-  },
-  "uni-choose-location-poi-item": {
-    "": {
-      "position": "relative",
-      "paddingTop": 15,
-      "paddingRight": 40,
-      "paddingBottom": 15,
-      "paddingLeft": 10
-    },
-    ".uni-choose-location .uni-choose-location-landscape": {
-      "paddingTop": 10,
-      "paddingRight": 10,
-      "paddingBottom": 10,
-      "paddingLeft": 10
-    }
-  },
-  "uni-choose-location-poi-item-title-text": {
-    "": {
-      "fontSize": 14,
-      "overflow": "hidden",
-      "whiteSpace": "nowrap",
-      "textOverflow": "ellipsis",
-      "color": "#191919"
-    },
-    ".uni-choose-location-dark ": {
-      "color": "#d1d1d1"
-    }
-  },
-  "uni-choose-location-poi-item-detail-text": {
-    "": {
-      "fontSize": 12,
-      "marginTop": 5,
-      "color": "#b2b2b2",
-      "overflow": "hidden",
-      "whiteSpace": "nowrap",
-      "textOverflow": "ellipsis"
-    },
-    ".uni-choose-location-dark ": {
-      "color": "#595959"
-    }
-  },
-  "uni-choose-location-poi-item-selected-icon": {
-    "": {
-      "position": "absolute",
-      "top": "50%",
-      "right": 10,
-      "width": 26,
-      "height": 26,
-      "marginTop": -13,
-      "color": "#007aff",
-      "fontSize": 24
-    }
-  },
-  "uni-choose-location-poi-item-after": {
-    "": {
-      "position": "absolute",
-      "height": 1,
-      "left": 10,
-      "bottom": 0,
-      "right": 10,
-      "width": "auto",
-      "borderBottomWidth": 1,
-      "borderBottomStyle": "solid",
-      "borderBottomColor": "#f8f8f8"
-    },
-    ".uni-choose-location-dark ": {
-      "borderBottomWidth": 1,
-      "borderBottomStyle": "solid",
-      "borderBottomColor": "#1e1e1e"
-    }
-  },
-  "uni-choose-location-search-icon": {
-    "": {
-      "color": "#808080",
-      "paddingLeft": 5
-    },
-    ".uni-choose-location-dark ": {
-      "color": "#d1d1d1"
-    }
-  },
-  "uni-choose-location-poi-search-loading-image": {
-    "": {
-      "width": 28,
-      "height": 28,
-      "transitionProperty": "transform",
-      "transitionDuration": "0.2s",
-      "transitionTimingFunction": "linear"
-    }
-  },
-  "@FONT-FACE": [{
-    "fontFamily": "UniChooseLocationFontFamily",
-    "src": "url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuUB/iAAAAPAAAACsGhlYWQp23fyAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAG+AAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZwAAADS3Bvc3RLRtf0AAAJvAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAIZo1N5fDzz1AAsEAAAAAADjXhn6AAAAAONeGfoAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFYAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAwYeAj4BNC4CDgEBwCU1JiY1JWoGBEAEB0d1ISIpJ0RFokVEJykiIXX9AiRATEImJT9KQCdUEhkZIxkZAXH+iAQGBgQBeApTP0FJUUVEJykpJ0RFUUlBP1MBIiZDJwImQks/JQEjPQAAABIA3gABAAAAAAAAABMAAAABAAAAAAABABsAEwABAAAAAAACAAcALgABAAAAAAADABsANQABAAAAAAAEABsAUAABAAAAAAAFAAsAawABAAAAAAAGABsAdgABAAAAAAAKACsAkQABAAAAAAALABMAvAADAAEECQAAACYAzwADAAEECQABADYA9QADAAEECQACAA4BKwADAAEECQADADYBOQADAAEECQAEADYBbwADAAEECQAFABYBpQADAAEECQAGADYBuwADAAEECQAKAFYB8QADAAEECQALACYCR0NyZWF0ZWQgYnkgaWNvbmZvbnRVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlSZWd1bGFyVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VmVyc2lvbiAxLjBVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlHZW5lcmF0ZWQgYnkgc3ZnMnR0ZiBmcm9tIEZvbnRlbGxvIHByb2plY3QuaHR0cDovL2ZvbnRlbGxvLmNvbQBDAHIAZQBhAHQAZQBkACAAYgB5ACAAaQBjAG8AbgBmAG8AbgB0AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFIAZQBnAHUAbABhAHIAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVgBlAHIAcwBpAG8AbgAgADEALgAwAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AEcAZQBuAGUAcgBhAHQAZQBkACAAYgB5ACAAcwB2AGcAMgB0AHQAZgAgAGYAcgBvAG0AIABGAG8AbgB0AGUAbABsAG8AIABwAHIAbwBqAGUAYwB0AC4AaAB0AHQAcAA6AC8ALwBmAG8AbgB0AGUAbABsAG8ALgBjAG8AbQAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAQIBAwEEAQUBBgAGc291c3VvB2dvdXh1YW4HZGluZ3dlaQtkaXR1LXR1ZGluZwAAAAA=') format('truetype')"
-  }],
-  "@TRANSITION": {
-    "uni-choose-location-map-box": {
-      "property": "transform",
-      "duration": "0.25s",
-      "timingFunction": "ease-out"
-    },
-    "uni-choose-location-map-target": {
-      "property": "transform",
-      "duration": "0.25s",
-      "timingFunction": "ease-out"
-    },
-    "uni-choose-location-map-reset": {
-      "property": "transform",
-      "duration": "0.25s",
-      "timingFunction": "ease-out"
-    },
-    "uni-choose-location-poi": {
-      "property": "top",
-      "duration": "0.25s",
-      "timingFunction": "ease-out"
-    },
-    "uni-choose-location-poi-search-loading-image": {
-      "property": "transform",
-      "duration": "0.2s",
-      "timingFunction": "linear"
-    }
-  }
-};
-var _hoisted_1$3 = ["id"];
-var _hoisted_2$3 = {
-  class: "uni-choose-location-icons uni-choose-location-map-target-icon"
-};
-var _hoisted_3$3 = {
-  class: "uni-choose-location-icons uni-choose-location-map-reset-icon"
-};
-var _hoisted_4$3 = {
-  class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text"
-};
-var _hoisted_5$1 = {
-  class: "uni-choose-location-poi-search"
-};
-var _hoisted_6$1 = {
-  class: "uni-choose-location-poi-search-box"
-};
-var _hoisted_7 = {
-  class: "uni-choose-location-icons uni-choose-location-search-icon"
-};
-var _hoisted_8 = ["placeholder"];
-var _hoisted_9 = ["id", "scroll-top"];
-var _hoisted_10 = {
-  key: 0,
-  class: "uni-choose-location-poi-search-error"
-};
-var _hoisted_11 = {
-  class: "uni-choose-location-poi-search-error-text"
-};
-var _hoisted_12 = {
-  key: 1,
-  class: "uni-choose-location-poi-search-loading"
-};
-var _hoisted_13 = {
-  class: "uni-choose-location-poi-search-loading-text"
-};
-var _hoisted_14 = {
-  key: 2,
-  class: "uni-choose-location-poi-search-loading"
-};
-var _hoisted_15 = ["src"];
-var _hoisted_16 = ["onClick"];
-var _hoisted_17 = {
-  class: "uni-choose-location-poi-item-title-text"
-};
-var _hoisted_18 = {
-  class: "uni-choose-location-poi-item-detail-text"
-};
-var _hoisted_19 = {
-  key: 0,
-  class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
-};
-var _hoisted_20 = /* @__PURE__ */ createElementVNode("view", {
-  class: "uni-choose-location-poi-item-after"
-}, null, -1);
-var _hoisted_21 = {
-  key: 4,
-  class: "uni-choose-location-poi-search-loading"
-};
-var _hoisted_22 = ["src"];
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_map = resolveComponent("map");
-  return openBlock(), createElementBlock("view", {
-    class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
-  }, [createElementVNode("view", {
-    class: normalizeClass(["uni-choose-location-map-box", [$options.landscapeClassCom]]),
-    style: normalizeStyle($options.mapBoxStyleCom)
-  }, [createVNode(_component_map, {
-    class: "uni-choose-location-map",
-    id: $data.mapId,
-    ref: $data.mapId,
-    latitude: $data.latitude,
-    longitude: $data.longitude,
-    "layer-style": $data.theme == "dark" ? "2" : "1",
-    "show-compass": false,
-    "enable-zoom": true,
-    "enable-scroll": true,
-    "enable-rotate": false,
-    "enable-poi": true,
-    "show-location": true,
-    onRegionchange: $options.regionchange
-  }, null, 8, ["id", "latitude", "longitude", "layer-style", "onRegionchange"]), createElementVNode("view", {
-    class: "uni-choose-location-map-target",
-    ref: $data.mapTargetId,
-    id: $data.mapTargetId
-  }, [createElementVNode("text", _hoisted_2$3, toDisplayString($data.icon.target), 1)], 8, _hoisted_1$3), createElementVNode("view", {
-    class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
-    onClick: _cache[0] || (_cache[0] = function() {
-      return $options.mapReset && $options.mapReset(...arguments);
-    }),
-    style: normalizeStyle($options.resetStyleCom)
-  }, [createElementVNode("text", _hoisted_3$3, toDisplayString($data.icon.position), 1)], 6)], 6), createElementVNode("view", {
-    class: "uni-choose-location-nav",
-    style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
-  }, [createElementVNode("view", {
-    class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [$options.landscapeClassCom]]),
-    style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : "")
-  }, [createElementVNode("text", {
-    class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
-    onClick: _cache[1] || (_cache[1] = function() {
-      return $options.back && $options.back(...arguments);
-    })
-  }, toDisplayString($options.languageCom["cancel"]), 1)], 6), createElementVNode("view", {
-    class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 && !$data.callUniMapCoErr ? "disable" : "active"]]),
-    style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
-    onClick: _cache[2] || (_cache[2] = function() {
-      return $options.confirm && $options.confirm(...arguments);
-    })
-  }, [createElementVNode("text", _hoisted_4$3, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
-    key: 0,
-    class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
-    style: normalizeStyle($options.poiBoxStyleCom)
-  }, [createElementVNode("view", _hoisted_5$1, [createElementVNode("view", _hoisted_6$1, [createElementVNode("text", _hoisted_7, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
-    "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $data.searchValue = $event),
-    type: "text",
-    placeholder: $options.languageCom["search"],
-    class: "uni-choose-location-poi-search-input uni-choose-location-icons",
-    onFocus: _cache[4] || (_cache[4] = ($event) => $data.isFocus = true),
-    onConfirm: _cache[5] || (_cache[5] = ($event) => $options.poiSearch("poiSearch")),
-    onInput: _cache[6] || (_cache[6] = function() {
-      return $options.searchValueChange && $options.searchValueChange(...arguments);
-    })
-  }, null, 40, _hoisted_8), [[vModelText, $data.searchValue]])]), $data.isFocus || $data.searchValue != "" ? (openBlock(), createElementBlock("text", {
-    key: 0,
-    class: "uni-choose-location-poi-search-cancel",
-    onClick: _cache[7] || (_cache[7] = function() {
-      return $options.cancelSearch && $options.cancelSearch(...arguments);
-    })
-  }, toDisplayString($options.languageCom["cancel"]), 1)) : createCommentVNode("", true)]), createElementVNode("scroll-view", {
-    id: $data.scrollId,
-    ref: $data.scrollId,
-    "scroll-with-animation": false,
-    direction: "vertical",
-    "scroll-top": $data.scrollTop,
-    "lower-threshold": 50,
-    onScrolltolower: _cache[8] || (_cache[8] = function() {
-      return $options.scrolltolower && $options.scrolltolower(...arguments);
-    }),
-    class: "uni-choose-location-poi-list"
-  }, [$data.errMsg != "" ? (openBlock(), createElementBlock("view", _hoisted_10, [createElementVNode("text", _hoisted_11, toDisplayString($data.errMsg), 1)])) : $data.locationLoading ? (openBlock(), createElementBlock("view", _hoisted_12, [createElementVNode("text", _hoisted_13, toDisplayString($options.languageCom["locationLoading"]), 1)])) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createElementBlock("view", _hoisted_14, [createElementVNode("image", {
-    src: $data.loadingPath,
-    class: "uni-choose-location-poi-search-loading-image",
-    mode: "widthFix",
-    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
-  }, null, 12, _hoisted_15)])) : (openBlock(true), createElementBlock(Fragment, {
-    key: 3
-  }, renderList($data.pois, (item, index2) => {
-    return openBlock(), createElementBlock("view", {
-      key: index2,
-      class: normalizeClass(["uni-choose-location-poi-item", [$options.landscapeClassCom]]),
-      onClick: ($event) => $options.selectPoi(item, index2)
-    }, [createElementVNode("view", null, [createElementVNode("view", null, [createElementVNode("text", _hoisted_17, toDisplayString(item.title), 1)]), createElementVNode("view", null, [createElementVNode("text", _hoisted_18, toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)])]), $data.selected == index2 ? (openBlock(), createElementBlock("text", _hoisted_19, toDisplayString($data.icon.success), 1)) : createCommentVNode("", true), _hoisted_20], 10, _hoisted_16);
-  }), 128)), $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createElementBlock("view", _hoisted_21, [createElementVNode("image", {
-    src: $data.loadingPath,
-    class: "uni-choose-location-poi-search-loading-image",
-    mode: "widthFix",
-    style: normalizeStyle("transform: rotate(" + $data.loadingRotate + "deg)")
-  }, null, 12, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9)], 6)) : createCommentVNode("", true)], 2);
-}
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
-const _sfc_main$3 = {
-  data() {
-    return {
-      theme: "light",
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      title: "",
-      content: "",
-      showCancel: true,
-      editable: false,
-      placeholderText: null,
-      confirmText: "确定",
-      cancelText: "取消",
-      cancelColor: "#000000",
-      confirmColor: "#4A5E86",
-      inputBottom: "0px",
-      inputCancelColor: null,
-      inputConfirmColor: null,
-      hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
-      showAnim: false,
-      isAutoHeight: true
-    };
-  },
-  onReady() {
-    setTimeout(() => {
-      this.showAnim = true;
-    }, 10);
-  },
-  onLoad(options) {
-    var systemInfo = uni.getSystemInfoSync();
-    var appTheme = systemInfo.appTheme;
-    if (appTheme != null) {
-      this.theme = appTheme;
-    }
-    uni.onAppThemeChange((res) => {
-      this.theme = res.appTheme;
-      this.updateUI();
-    });
-    this.readyEventName = options["readyEventName"];
-    this.optionsEventName = options["optionsEventName"];
-    this.successEventName = options["successEventName"];
-    this.failEventName = options["failEventName"];
-    uni.$on(this.optionsEventName, (data) => {
-      if (data["title"] != null) {
-        this.title = data["title"];
-      }
-      if (data["content"] != null) {
-        this.content = data["content"];
-      }
-      if (data["showCancel"] != null) {
-        this.showCancel = data["showCancel"];
-      }
-      if (data["editable"] != null) {
-        this.editable = data["editable"];
-      }
-      if (data["placeholderText"] != null) {
-        this.placeholderText = data["placeholderText"];
-      }
-      if (data["confirmText"] != null) {
-        this.confirmText = data["confirmText"];
-      }
-      if (data["cancelText"] != null) {
-        this.cancelText = data["cancelText"];
-      }
-      if (data["confirmColor"] != null) {
-        this.inputConfirmColor = data["confirmColor"];
-      }
-      if (data["cancelColor"] != null) {
-        this.inputCancelColor = data["cancelColor"];
-      }
-      this.updateUI();
-    });
-    uni.$emit(this.readyEventName, {});
-  },
-  onUnload() {
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-  },
-  onBackPress(_) {
-    var ret = {
-      cancel: false,
-      confirm: false
-    };
-    uni.$emit(this.successEventName, JSON.stringify(ret));
-    return false;
-  },
-  methods: {
-    onInputBlur(e) {
-      setTimeout(() => {
-        this.inputBottom = "0px";
-      }, 220);
-    },
-    onInputKeyboardChange(e) {
-      var keyBoardHeight = e.detail.height;
-      if (keyBoardHeight > 0) {
-        var calcBottom = keyBoardHeight / 2;
-        this.inputBottom = "".concat(calcBottom, "px");
-      }
-    },
-    isValidColor(inputColor) {
-      var hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-      if (inputColor == null) {
-        return false;
-      }
-      return hexColorRegex.test(inputColor);
-    },
-    /**
-     * update ui when theme change.
-     */
-    updateUI() {
-      if (this.isValidColor(this.inputConfirmColor)) {
-        this.confirmColor = this.inputConfirmColor;
-      } else {
-        if (this.theme == "dark") {
-          this.confirmColor = "#7388a2";
-        } else {
-          this.confirmColor = "#4A5E86";
-        }
-      }
-      if (this.isValidColor(this.inputCancelColor)) {
-        this.cancelColor = this.inputCancelColor;
-      } else {
-        if (this.theme == "dark") {
-          this.cancelColor = "#a5a5a5";
-        } else {
-          this.cancelColor = "#000000";
-        }
-      }
-      if (this.theme == "dark") {
-        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
-      } else {
-        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover";
-      }
-    },
-    closeModal() {
-      this.showAnim = false;
-      setTimeout(() => {
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        });
-      }, 300);
-    },
-    handleCancel() {
-      this.closeModal();
-      var ret = {
-        cancel: true,
-        confirm: false
-      };
-      uni.$emit(this.successEventName, JSON.stringify(ret));
-    },
-    handleSure() {
-      this.closeModal();
-      var ret = {
-        cancel: false,
-        confirm: true,
-        content: this.editable ? this.content : null
-      };
-      uni.$emit(this.successEventName, JSON.stringify(ret));
-    }
-  }
-};
-const _style_0$3 = {
-  "uni-modal_dialog__mask": {
-    "": {
-      "display": "flex",
-      "height": "100%",
-      "width": "100%",
-      "justifyContent": "center",
-      "alignItems": "center",
-      "backgroundColor": "rgba(0,0,0,0.5)",
-      "transitionDuration": "0.1s",
-      "transitionProperty": "opacity",
-      "opacity": 0
-    }
-  },
-  "uni-modal_dialog__mask__show": {
-    "": {
-      "opacity": 1
-    }
-  },
-  "uni-modal_dialog__container": {
-    "": {
-      "width": 300,
-      "backgroundColor": "#FFFFFF",
-      "boxShadow": "0 0 10px rgba(0, 0, 0, 0.1)",
-      "borderTopLeftRadius": 8,
-      "borderTopRightRadius": 8,
-      "borderBottomRightRadius": 8,
-      "borderBottomLeftRadius": 8,
-      "opacity": 0,
-      "transform": "scale(0.9)",
-      "transitionDuration": "0.1s",
-      "transitionProperty": "opacity,transform"
-    },
-    ".uni-modal_dialog__show": {
-      "opacity": 1,
-      "transform": "scale(1)"
-    },
-    ".uni-modal_dark__mode": {
-      "backgroundColor": "#272727"
-    }
-  },
-  "uni-modal_dialog__container__wrapper": {
-    "": {
-      "width": "100%",
-      "height": "100%",
-      "paddingTop": 10,
-      "backgroundColor": "#FFFFFF",
-      "borderTopLeftRadius": 8,
-      "borderTopRightRadius": 8,
-      "borderBottomRightRadius": 8,
-      "borderBottomLeftRadius": 8
-    },
-    ".uni-modal_dark__mode": {
-      "backgroundColor": "#272727"
-    }
-  },
-  "uni-modal_dialog__title__text": {
-    "": {
-      "fontSize": 16,
-      "fontWeight": "bold",
-      "textAlign": "center",
-      "marginTop": 20,
-      "textOverflow": "ellipsis",
-      "paddingLeft": 20,
-      "paddingRight": 20,
-      "lines": 2
-    },
-    ".uni-modal_dark__mode": {
-      "color": "#CFCFCF"
-    }
-  },
-  "uni-modal_dialog__content": {
-    "": {
-      "justifyContent": "center",
-      "alignItems": "center",
-      "paddingTop": 18,
-      "paddingRight": 18,
-      "paddingBottom": 18,
-      "paddingLeft": 18
-    }
-  },
-  "uni-modal_dialog__content__text": {
-    "": {
-      "fontSize": 16,
-      "fontWeight": "normal",
-      "marginTop": 2,
-      "marginLeft": 2,
-      "marginRight": 2,
-      "marginBottom": 12,
-      "textAlign": "center",
-      "color": "#747474",
-      "lines": 6,
-      "width": "100%",
-      "textOverflow": "ellipsis"
-    }
-  },
-  "uni-modal_dialog__content__textarea": {
-    "": {
-      "backgroundColor": "#F6F6F6",
-      "color": "#000000",
-      "width": "96%",
-      "paddingTop": 5,
-      "paddingRight": 5,
-      "paddingBottom": 5,
-      "paddingLeft": 5,
-      "marginTop": 2,
-      "marginBottom": 7,
-      "maxHeight": 192
-    },
-    ".uni-modal_dark__mode": {
-      "backgroundColor": "#3d3d3d",
-      "color": "#CFCFCF"
-    }
-  },
-  "uni-modal_dialog__content__textarea__placeholder": {
-    "": {
-      "color": "#808080"
-    },
-    ".uni-modal_dark__mode": {
-      "color": "#CFCFCF"
-    }
-  },
-  "uni-modal_dialog__content__topline": {
-    "": {
-      "width": "100%",
-      "height": 1,
-      "backgroundColor": "#E0E0E0"
-    },
-    ".uni-modal_dark__mode": {
-      "backgroundColor": "#303030"
-    }
-  },
-  "uni-modal_dialog__content__bottom": {
-    "": {
-      "display": "flex",
-      "width": "100%",
-      "height": 50,
-      "flexDirection": "row",
-      "overflow": "hidden"
-    }
-  },
-  "uni-modal_dialog__content__bottom__button": {
-    "": {
-      "width": "50%",
-      "height": "100%",
-      "display": "flex",
-      "alignItems": "center",
-      "justifyContent": "center",
-      "flexGrow": 1
-    }
-  },
-  "uni-modal_dialog__content__bottom__button__hover": {
-    "": {
-      "width": "50%",
-      "height": "100%",
-      "display": "flex",
-      "alignItems": "center",
-      "justifyContent": "center",
-      "backgroundColor": "#efefef"
-    }
-  },
-  "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode": {
-    "": {
-      "width": "50%",
-      "height": "100%",
-      "display": "flex",
-      "alignItems": "center",
-      "justifyContent": "center",
-      "backgroundColor": "#1C1C1C"
-    }
-  },
-  "uni-modal_dialog__content__bottom__button__text": {
-    "": {
-      "letterSpacing": 1,
-      "fontSize": 16,
-      "fontWeight": "bold",
-      "textAlign": "center",
-      "lines": 1,
-      "whiteSpace": "nowrap"
-    }
-  },
-  "uni-modal_dialog__content__bottom__button__text__sure": {
-    "": {
-      "letterSpacing": 1,
-      "fontSize": 16,
-      "fontWeight": "bold",
-      "lines": 1,
-      "whiteSpace": "nowrap",
-      "textAlign": "center",
-      "color": "#4A5E86"
-    }
-  },
-  "uni-modal_dialog__content__bottom__splitline": {
-    "": {
-      "width": 1,
-      "height": "100%",
-      "backgroundColor": "#E3E3E3"
-    },
-    ".uni-modal_dark__mode": {
-      "backgroundColor": "#303030"
-    }
-  },
-  "@TRANSITION": {
-    "uni-modal_dialog__mask": {
-      "duration": "0.1s",
-      "property": "opacity"
-    },
-    "uni-modal_dialog__container": {
-      "duration": "0.1s",
-      "property": "opacity,transform"
-    }
-  }
-};
-var _hoisted_1$2 = {
-  class: "uni-modal_dialog__content"
-};
-var _hoisted_2$2 = ["auto-height", "placeholder"];
-var _hoisted_3$2 = {
-  key: 1,
-  class: "uni-modal_dialog__content__text"
-};
-var _hoisted_4$2 = {
-  class: "uni-modal_dialog__content__bottom"
-};
-var _hoisted_5 = ["hover-class"];
-var _hoisted_6 = ["hover-class"];
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("view", {
-    class: normalizeClass(["uni-modal_dialog__mask", {
-      "uni-modal_dialog__mask__show": $data.showAnim
-    }])
-  }, [createElementVNode("view", {
-    class: normalizeClass(["uni-modal_dialog__container", {
-      "uni-modal_dialog__show": $data.showAnim,
-      "uni-modal_dark__mode": $data.theme == "dark"
-    }]),
-    id: "modal_content",
-    style: normalizeStyle({
-      bottom: $data.inputBottom
-    })
-  }, [createElementVNode("view", {
-    class: normalizeClass(["uni-modal_dialog__container__wrapper", {
-      "uni-modal_dark__mode": $data.theme == "dark"
-    }])
-  }, [$data.title ? (openBlock(), createElementBlock("text", {
-    key: 0,
-    class: normalizeClass(["uni-modal_dialog__title__text", {
-      "uni-modal_dark__mode": $data.theme == "dark"
-    }])
-  }, toDisplayString($data.title), 3)) : createCommentVNode("", true), createElementVNode("view", _hoisted_1$2, [$data.editable ? withDirectives((openBlock(), createElementBlock("textarea", {
-    key: 0,
-    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.content = $event),
-    class: normalizeClass(["uni-modal_dialog__content__textarea", {
-      "uni-modal_dark__mode": $data.theme == "dark"
-    }]),
-    "placeholder-class": "modalContent_content_edit_placeholder",
-    "adjust-position": false,
-    onBlur: _cache[1] || (_cache[1] = function() {
-      return $options.onInputBlur && $options.onInputBlur(...arguments);
-    }),
-    onKeyboardheightchange: _cache[2] || (_cache[2] = function() {
-      return $options.onInputKeyboardChange && $options.onInputKeyboardChange(...arguments);
-    }),
-    id: "textarea_content_input",
-    ref: "ref_textarea_content_input",
-    "auto-height": $data.isAutoHeight,
-    placeholder: $data.placeholderText
-  }, null, 42, _hoisted_2$2)), [[vModelText, $data.content]]) : createCommentVNode("", true), !$data.editable && $data.content.length > 0 ? (openBlock(), createElementBlock("text", _hoisted_3$2, toDisplayString($data.content), 1)) : createCommentVNode("", true)]), createElementVNode("view", {
-    class: normalizeClass(["uni-modal_dialog__content__topline", {
-      "uni-modal_dark__mode": $data.theme == "dark"
-    }])
-  }, null, 2), createElementVNode("view", _hoisted_4$2, [$data.showCancel ? (openBlock(), createElementBlock("view", {
-    key: 0,
-    class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
-      "uni-modal_dark__mode": $data.theme == "dark"
-    }]),
-    "hover-class": $data.hoverClassName,
-    onClick: _cache[3] || (_cache[3] = function() {
-      return $options.handleCancel && $options.handleCancel(...arguments);
-    })
-  }, [createElementVNode("text", {
-    style: normalizeStyle({
-      color: $data.cancelColor
-    }),
-    class: "uni-modal_dialog__content__bottom__button__text"
-  }, toDisplayString($data.cancelText), 5)], 10, _hoisted_5)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
-    key: 1,
-    class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", {
-      "uni-modal_dark__mode": $data.theme == "dark"
-    }])
-  }, null, 2)) : createCommentVNode("", true), createElementVNode("view", {
-    class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
-      "uni-modal_dark__mode": $data.theme == "dark"
-    }]),
-    "hover-class": $data.hoverClassName,
-    onClick: _cache[4] || (_cache[4] = function() {
-      return $options.handleSure && $options.handleSure(...arguments);
-    })
-  }, [createElementVNode("text", {
-    style: normalizeStyle({
-      color: $data.confirmColor
-    }),
-    class: "uni-modal_dialog__content__bottom__button__text__sure"
-  }, toDisplayString($data.confirmText), 5)], 10, _hoisted_6)])], 2)], 6)], 2);
-}
-const UniUniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
-class Friction {
-  // 构造函数，初始化物体的质量（m）、摩擦力大小（f，这里假设是牛顿单位的力，但乘以1000可能是为了转换为某种特定单位）
-  constructor(mass, frictionForce) {
-    this.endPosition = null;
-    this.lastTimeElapsed = null;
-    this.totalTimeToStop = 0;
-    this.mass = mass;
-    this.frictionForce = 1e3 * frictionForce;
-    this.startTime = 0;
-    this.velocity = {
-      x: 0,
-      y: 0
-    };
-    this.acceleration = {
-      x: 0,
-      y: 0
-    };
-    this.startPosition = {
-      x: 0,
-      y: 0
-    };
-    this.endPosition = null;
-    this.lastTimeElapsed = null;
-  }
-  // 设置物体的速度
-  setVelocity(x, y) {
-    var speed = Math.sqrt(x * x + y * y);
-    this.velocity = {
-      x,
-      y
-    };
-    this.acceleration = {
-      x: -this.frictionForce * x / speed,
-      y: -this.frictionForce * y / speed
-    };
-    this.totalTimeToStop = Math.abs(x / this.acceleration.x);
-    if (Number.isNaN(this.totalTimeToStop)) {
-      this.totalTimeToStop = Math.abs(y / this.acceleration.y);
-    }
-    if (Number.isNaN(this.totalTimeToStop)) {
-      this.totalTimeToStop = 0;
-    }
-    this.startTime = Date.now();
-    this.lastTimeElapsed = null;
-  }
-  // 设置物体的起始位置
-  setStartPosition(x, y) {
-    this.startPosition = {
-      x,
-      y
-    };
-  }
-  // 设置物体的结束位置
-  setEndPosition(x, y) {
-    this.endPosition = {
-      x,
-      y
-    };
-  }
-  // 计算并返回物体在时间 t 时的位置
-  positionAtTime(t) {
-    if (t == null) {
-      t = (Date.now() - this.startTime) / 1e3;
-    }
-    if (t > this.totalTimeToStop) {
-      t = this.totalTimeToStop;
-      this.lastTimeElapsed = t;
-    }
-    var x = this.velocity.x * t + 0.5 * this.acceleration.x * t * t + this.startPosition.x;
-    var y = this.velocity.y * t + 0.5 * this.acceleration.y * t * t + this.startPosition.y;
-    if (this.acceleration.x > 0 && x < this.endPosition.x || this.acceleration.x < 0 && x > this.endPosition.x) {
-      x = this.endPosition.x;
-    }
-    if (this.acceleration.y > 0 && y < this.endPosition.y || this.acceleration.y < 0 && y > this.endPosition.y) {
-      y = this.endPosition.y;
-    }
-    return {
-      x,
-      y
-    };
-  }
-  // 计算并返回物体在时间 t 时的速度
-  velocityAtTime(t) {
-    if (t == null) {
-      t = (Date.now() - this.startTime) / 1e3;
-    }
-    if (t > this.totalTimeToStop) {
-      t = this.totalTimeToStop;
-    }
-    return {
-      dx: this.velocity.x + this.acceleration.x * t,
-      dy: this.velocity.y + this.acceleration.y * t
-    };
-  }
-  // 计算物体停止前的位移量（这里的方法名可能不准确，因为 delta 通常表示变化量）
-  // 注意：这个方法可能是错误的，因为它基于一个不准确的加速度公式
-  displacement() {
-    var tx = -1.5 * Math.pow(this.velocity.x, 2) / this.acceleration.x;
-    if (Number.isNaN(tx)) {
-      tx = 0;
-    }
-    var ty = -1.5 * Math.pow(this.velocity.y, 2) / this.acceleration.y;
-    if (Number.isNaN(ty)) {
-      ty = 0;
-    }
-    return {
-      x: tx,
-      y: ty
-    };
-  }
-  // 计算物体停止所需的时间（这个方法实际上是多余的，因为已经在 setVelocity 中计算过了）
-  timeToStop() {
-    return -this.velocity.x / this.acceleration.x;
-  }
-  // 检查物体是否已经停止或到达结束位置
-  isDone() {
-    var currentPosition = this.positionAtTime(null);
-    return currentPosition.x === this.endPosition.x && currentPosition.y === this.endPosition.y || this.lastTimeElapsed === this.totalTimeToStop;
-  }
-  // 重新配置物体的质量和摩擦力大小
-  reconfigure(mass, frictionForce) {
-    this.mass = mass;
-    this.frictionForce = 1e3 * frictionForce;
-  }
-}
-var easeInOutCubic = (t) => {
-  return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-};
-var elId = 0;
-const _sfc_main$2 = {
-  name: "loading-circle",
-  props: {
-    speed: {
-      type: Number,
-      default: 16
-    },
-    size: {
-      type: Number,
-      default: 20
-    },
-    color: {
-      type: String,
-      default: "#666"
-    }
-  },
-  data() {
-    elId += 1;
-    var elID = "Uni_Load_Circle_".concat(elId);
-    return {
-      elId: elID,
-      timer: 0
-    };
-  },
-  computed: {
-    iconsSize() {
-      return this.size / 10 - 3;
-    }
-  },
-  mounted() {
-    this.init();
-  },
-  unmounted() {
-    cancelAnimationFrame(this.timer);
-  },
-  methods: {
-    /**
-     * 初始化圆环
-     */
-    init() {
-      var refs = this.$refs[this.elId];
-      var ctx = refs.getDrawableContext();
-      this.build_circular(ctx);
-    },
-    /**
-     * 构建圆环动画
-     */
-    build_circular(ctx) {
-      var startAngle = 0;
-      var rotate = 0;
-      var ARC_LENGTH = 359;
-      var center = this.size / 2;
-      var lineWidth = Math.floor(this.size / 12);
-      var duration = 1200;
-      var ARC_MAX = 358;
-      var startTime = 0;
-      var foreward_end = 0;
-      var reversal_end = ARC_MAX;
-      function pogress_time() {
-        var currentTime = Date.now();
-        var elapsedTime = currentTime - startTime;
-        var progress2 = elapsedTime / duration;
-        var easedProgress = easeInOutCubic(progress2);
-        return easedProgress;
-      }
-      var draw = () => {
-      };
-      draw = () => {
-        this.timer = requestAnimationFrame(draw);
-        ctx.reset();
-        ctx.beginPath();
-        if (reversal_end == ARC_MAX) {
-          foreward_end = Math.min(pogress_time() * ARC_LENGTH, ARC_LENGTH);
-          if (foreward_end >= ARC_MAX) {
-            reversal_end = 0;
-            foreward_end = ARC_MAX;
-            startTime = Date.now();
-          }
-        }
-        if (foreward_end == ARC_MAX) {
-          reversal_end = Math.min(pogress_time() * ARC_LENGTH, ARC_LENGTH);
-          if (reversal_end >= ARC_MAX) {
-            reversal_end = ARC_MAX;
-            foreward_end = 0;
-            startTime = Date.now();
-          }
-        }
-        ctx.arc(center, center, center - lineWidth, startAngle + rotate + reversal_end * Math.PI / 180, startAngle + rotate + foreward_end * Math.PI / 180);
-        ctx.lineWidth = lineWidth;
-        var fillColor = (this.color !== "" ? this.color : "#666").toString();
-        ctx.strokeStyle = fillColor;
-        ctx.stroke();
-        ctx.update();
-        rotate += 0.05;
-      };
-      this.timer = requestAnimationFrame(draw);
-    }
-  }
-};
-const _style_0$2 = {
-  "uni-loading-block": {
-    "": {
-      "width": 50,
-      "height": 50
-    }
-  }
-};
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("view", {
-    ref: $data.elId,
-    class: "uni-loading-block",
-    style: normalizeStyle({
-      width: $props.size + "px",
-      height: $props.size + "px"
-    })
-  }, null, 4);
-}
-const loadingCircle = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$2]]]);
-var DEFAULT_DISTANCE = 4;
-var FAST_SLIDE_LENGTH = 10;
-var LANGUAGE = {
-  "en": {
-    error: "Image loading failed",
-    retry: "Retry"
-  },
-  "zh-Hans": {
-    error: "图片加载失败",
-    retry: "重试"
-  },
-  "zh-Hant": {
-    error: "圖片加載失敗",
-    retry: "重試"
-  }
-};
-const _sfc_main$1 = {
-  components: {
-    loadingCircle
-  },
-  data() {
-    return {
-      imageMode: "aspectFit",
-      lastTouchEndTime: 0,
-      srcPath: "",
-      imageView: null,
-      screenWidth: 0,
-      screenHeight: 0,
-      /* 放大系数 */
-      scaleSize: 1,
-      /* 上次触摸事件 */
-      lastSlideTouch: null,
-      /* 图片竖向滑动的距离 */
-      imageTop: 0,
-      /* 图片横向滑动的距离 */
-      imageMarginTop: 0,
-      imageLeft: 0,
-      /* 是否需要动画 */
-      withAnimation: false,
-      imageHeight: 0,
-      historyX: [0, 0],
-      historyY: [0, 0],
-      historyT: [0, 0],
-      _friction: new Friction(1, 2),
-      requestId: -1,
-      needExecLongPress: false,
-      androidView: null,
-      downPoint: null,
-      longPressActionTimeoutId: -1,
-      inScaleMode: false,
-      inDoubleTapMode: false,
-      startTimestamp: 0,
-      clickTimeoutId: -1,
-      transformOrigin: [0, 0],
-      loadingFinished: false,
-      devicePixelRatio: 0,
-      loadError: false,
-      language: "zh-Hans"
-    };
-  },
-  props: {
-    "src": {
-      type: String,
-      default: ""
-    },
-    "index": {
-      type: Number,
-      default: -1
-    },
-    "longPressAction": {
-      type: Object
-    },
-    "tips": {
-      type: Object
-    }
-  },
-  watch: {
-    "src": {
-      handler(newValue, oldValue) {
-        if (newValue != "") {
-          this.getSrcLocalPath(newValue);
-        } else {
-          this.loadingFinished = true;
-          this.loadError = true;
-        }
-      },
-      immediate: true
-    }
-  },
-  mounted() {
-    this.imageView = this.$refs["imageView"];
-    var dpr = uni.getDeviceInfo({
-      filter: ["devicePixelRatio"]
-    }).devicePixelRatio;
-    if (dpr == null) {
-      this.devicePixelRatio = 1;
-    } else {
-      this.devicePixelRatio = dpr;
-    }
-    var systemInfo = uni.getSystemInfoSync();
-    this.language = systemInfo.appLanguage;
-  },
-  methods: {
-    getLanguageString(name) {
-      var object = LANGUAGE[this.language];
-      if (object != null) {
-        return object[name];
-      } else {
-        return LANGUAGE["en"][name];
-      }
-    },
-    previewImageError(e) {
-      var _this$$refs$mask;
-      (_this$$refs$mask = this.$refs["mask"]) === null || _this$$refs$mask === void 0 || _this$$refs$mask.style.setProperty("point-events", "none");
-      this.loadingFinished = true;
-      this.loadError = true;
-    },
-    isNetPath(url) {
-      if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("rtmp://") || url.startsWith("rtsp://")) {
-        return true;
-      }
-      return false;
-    },
-    getSrcLocalPath(url) {
-      this.srcPath = url;
-    },
-    onstart(e) {
-      this.inScaleMode = false;
-      this.withAnimation = false;
-      cancelAnimationFrame(this.requestId);
-      clearTimeout(this.clickTimeoutId);
-      this.lastSlideTouch = e.touches;
-      this.historyX = [0, 0];
-      this.historyY = [0, 0];
-      this.historyT = [0, 0];
-      this.downPoint = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY
-      };
-      this.inDoubleTapMode = false;
-      this.startTimestamp = e.timeStamp;
-      this.needExecLongPress = true;
-      this.longPressActionTimeoutId = setTimeout(() => {
-        if (this.needExecLongPress) {
-          this.onLongPressAction();
-        }
-      }, 350);
-    },
-    onmove(e) {
-      if (e.touches.length == 1) {
-        var currentSlideTouch = e.touches[0];
-        if (this.lastSlideTouch != null) {
-          var slideX = currentSlideTouch.clientX - this.lastSlideTouch[0].clientX;
-          var slideY = currentSlideTouch.clientY - this.lastSlideTouch[0].clientY;
-          var downX = Math.abs(currentSlideTouch.clientX - this.downPoint.x);
-          var downY = Math.abs(currentSlideTouch.clientY - this.downPoint.y);
-          if (downX > DEFAULT_DISTANCE || downY > DEFAULT_DISTANCE) {
-            if (this.scaleSize > 1 || this.imageHeight > this.screenHeight) {
-              this.imageLeft = this.imageLeft + slideX;
-              this.imageTop = this.imageTop + slideY;
-              this.updateStyle(e, currentSlideTouch.clientX, currentSlideTouch.clientY);
-            } else {
-              this.needExecLongPress = true;
-              this.onInterceptTouchEvent(e);
-            }
-            this.historyX.shift();
-            this.historyX.push(this.imageLeft);
-            this.historyY.shift();
-            this.historyY.push(this.imageTop);
-            this.historyT.shift();
-            this.historyT.push(e.timeStamp);
-            this.lastSlideTouch = e.touches;
-            this.needExecLongPress = false;
-          } else {
-            this.needExecLongPress = true;
-          }
-        } else {
-          this.lastSlideTouch = e.touches;
-        }
-      } else if (e.touches.length >= 2) {
-        this.inScaleMode = true;
-        var currentFirstTouch = e.touches[0];
-        var currentSecondTouch = e.touches[1];
-        var currentXSlideLength = currentFirstTouch.clientX - currentSecondTouch.clientX;
-        var currentYSlideLength = currentFirstTouch.clientY - currentSecondTouch.clientY;
-        var currentLongSideLength = Math.sqrt(currentXSlideLength * currentXSlideLength + currentYSlideLength * currentYSlideLength);
-        if (this.lastSlideTouch != null && this.lastSlideTouch.length >= 2) {
-          var lastFirstTouch = this.lastSlideTouch[0];
-          var lastSecondTouch = this.lastSlideTouch[1];
-          var lastXSlideLength = lastFirstTouch.clientX - lastSecondTouch.clientX;
-          var lastYSlideLength = lastFirstTouch.clientY - lastSecondTouch.clientY;
-          var lastLongSideLength = Math.sqrt(lastXSlideLength * lastXSlideLength + lastYSlideLength * lastYSlideLength);
-          if (currentLongSideLength != lastLongSideLength) {
-            this.scaleSize = this.scaleSize * (currentLongSideLength / lastLongSideLength);
-            this.updateStyle(e, NaN, NaN);
-          }
-        }
-        this.preventDefaultScall(e);
-        this.needExecLongPress = false;
-        this.lastSlideTouch = e.touches;
-      }
-    },
-    onend(e) {
-      this.needExecLongPress = false;
-      clearTimeout(this.longPressActionTimeoutId);
-      var current = Date.now();
-      if (this.historyY[0] == 0 && this.historyY[1] == 0 && this.historyX[0] == 0 && this.historyX[1] == 0) {
-        this.withAnimation = true;
-        if (current - this.lastTouchEndTime < 350) {
-          if (this.lastSlideTouch != null && this.lastSlideTouch.length > 0) {
-            var downX = Math.abs(this.lastSlideTouch[0].clientX - this.downPoint.x);
-            var downY = Math.abs(this.lastSlideTouch[0].clientY - this.downPoint.y);
-            if (downX > FAST_SLIDE_LENGTH || downY > FAST_SLIDE_LENGTH) {
-              this.lastSlideTouch = null;
-              return;
-            }
-          }
-          if (this.scaleSize > 1) {
-            this.scaleSize = 1;
-            this.imageLeft = 0;
-            this.updateStyle(e, NaN, NaN);
-          } else if (this.scaleSize == 1) {
-            this.scaleSize = 2;
-            this.inDoubleTapMode = true;
-            this.updateStyle(e, NaN, NaN);
-          }
-        } else if (e.touches.length == 0) {
-          if (this.lastSlideTouch != null && this.lastSlideTouch.length == 1) {
-            if (e.timeStamp - this.startTimestamp < 160) {
-              if (this.lastSlideTouch != null) {
-                var downX = Math.abs(this.lastSlideTouch[0].clientX - this.downPoint.x);
-                var downY = Math.abs(this.lastSlideTouch[0].clientY - this.downPoint.y);
-                if (downX < FAST_SLIDE_LENGTH && downY < FAST_SLIDE_LENGTH) {
-                  this.clickTimeoutId = setTimeout(() => {
-                    uni.$emit("__UNIPREVIEWIMAGECLOSE");
-                  }, 200);
-                }
-              } else {
-                this.clickTimeoutId = setTimeout(() => {
-                  uni.$emit("__UNIPREVIEWIMAGECLOSE");
-                }, 200);
-              }
-            }
-          }
-          if (this.scaleSize > 3) {
-            this.scaleSize = 3;
-            this.updateStyle(e, NaN, NaN);
-          } else if (this.scaleSize < 1) {
-            this.scaleSize = 1;
-            this.imageLeft = 0;
-            this.updateStyle(e, NaN, NaN);
-          }
-          this.lastTouchEndTime = current;
-        }
-      } else {
-        if (this.inScaleMode) {
-          if (this.scaleSize > 3) {
-            this.scaleSize = 3;
-            this.updateStyle(e, NaN, NaN);
-          } else if (this.scaleSize < 1) {
-            this.scaleSize = 1;
-            this.imageLeft = 0;
-            this.updateStyle(e, NaN, NaN);
-          }
-          this.lastTouchEndTime = current;
-        }
-        var xv = 1e3 * (this.historyX[1] - this.historyX[0]) / (this.historyT[1] - this.historyT[0]);
-        var yv = 1e3 * (this.historyY[1] - this.historyY[0]) / (this.historyT[1] - this.historyT[0]);
-        this._friction.setVelocity(xv, yv);
-        this._friction.setStartPosition(this.imageLeft, this.imageTop);
-        var x0 = this._friction.displacement().x;
-        var y0 = this._friction.displacement().y;
-        var x = this.imageLeft;
-        if (!Number.isNaN(x0))
-          x = x0 + this.imageLeft;
-        var y = this.imageTop;
-        if (!Number.isNaN(y0))
-          y = y0 + this.imageTop;
-        this._friction.setEndPosition(x, y);
-        this.doTransform(() => {
-          var p = this._friction.positionAtTime(null);
-          if (Number.isNaN(p.x) && Number.isNaN(p.y)) {
-            cancelAnimationFrame(this.requestId);
-          }
-          if (!Number.isNaN(p.x))
-            this.imageLeft = p.x;
-          if (!Number.isNaN(p.y))
-            this.imageTop = p.y;
-          this.updateStyle(e, NaN, NaN);
-        });
-      }
-      this.lastSlideTouch = null;
-    },
-    oncancel(e) {
-      this.onend(e);
-      clearTimeout(this.clickTimeoutId);
-    },
-    doTransform(callback) {
-      this.requestId = requestAnimationFrame(() => {
-        callback();
-        if (!this._friction.isDone())
-          this.doTransform(callback);
-      });
-    },
-    updateStyle(e, xDistance, yDistance) {
-      var _this$imageView, _this$imageView2, _this$imageView3;
-      this.caculatorTransformOrigin(e);
-      if (1 < this.scaleSize) {
-        var scrollWidthLength = this.screenWidth * (this.scaleSize - 1);
-        var scrollRadio = this.transformOrigin[0] / this.screenWidth;
-        if (this.imageLeft > scrollWidthLength * scrollRadio) {
-          this.imageLeft = scrollWidthLength * scrollRadio;
-          this.onInterceptTouchEvent(e);
-        } else if (this.imageLeft < -(scrollWidthLength * (1 - scrollRadio))) {
-          this.imageLeft = -(scrollWidthLength * (1 - scrollRadio));
-          this.onInterceptTouchEvent(e);
-        } else {
-          this.preventDefaultScall(e);
-        }
-      } else {
-        this.imageLeft = 0;
-        this.onInterceptTouchEvent(e);
-      }
-      if (this.screenHeight < this.imageHeight * this.scaleSize) {
-        var topMargin = (this.transformOrigin[1] - (this.imageMarginTop > 0 ? this.imageMarginTop : 0)) * this.scaleSize - this.transformOrigin[1];
-        var bottomMargin = (this.imageHeight + (this.imageMarginTop > 0 ? this.imageMarginTop : 0) - this.transformOrigin[1]) * this.scaleSize - (this.screenHeight - this.transformOrigin[1]);
-        if (this.imageTop > topMargin) {
-          this.imageTop = topMargin;
-        } else if (this.imageTop < -bottomMargin) {
-          this.imageTop = -bottomMargin;
-        } else {
-          if (!Number.isNaN(yDistance) && Math.abs(yDistance - this.downPoint.y) > DEFAULT_DISTANCE) {
-            this.preventDefaultScall(e);
-          }
-        }
-      } else {
-        if (!this.inScaleMode) {
-          this.imageTop = 0;
-          if (!Number.isNaN(yDistance) && Math.abs(yDistance - this.downPoint.y) > DEFAULT_DISTANCE) {
-            this.preventDefaultScall(e);
-          }
-        } else {
-          this.preventDefaultScall(e);
-        }
-      }
-      (_this$imageView = this.imageView) === null || _this$imageView === void 0 || _this$imageView.style.setProperty("transition-duration", this.withAnimation ? "200ms" : "0ms");
-      (_this$imageView2 = this.imageView) === null || _this$imageView2 === void 0 || _this$imageView2.style.setProperty("transform-origin", this.transformOrigin[0] + "px " + this.transformOrigin[1] + "px");
-      (_this$imageView3 = this.imageView) === null || _this$imageView3 === void 0 || _this$imageView3.style.setProperty("transform", "translate(" + this.imageLeft + "px," + this.imageTop + "px) scale(" + this.scaleSize + ")");
-    },
-    onLongPressAction() {
-      if (this.longPressAction != null && this.longPressAction.itemList.length > 0) {
-        uni.showActionSheet({
-          itemList: this.longPressAction.itemList,
-          itemColor: this.longPressAction.itemColor,
-          success: (e) => {
-            uni.$emit("__UNIPREVIEWLONGPRESS", {
-              type: "success",
-              tapIndex: e.tapIndex,
-              index: this.index
-            });
-          },
-          fail() {
-            uni.$emit("__UNIPREVIEWLONGPRESS", {
-              type: "fail",
-              tapIndex: -1,
-              index: -1
-            });
-          }
-        });
-      }
-    },
-    onImageLoad(e) {
-      var _this$$refs$mask2;
-      (_this$$refs$mask2 = this.$refs["mask"]) === null || _this$$refs$mask2 === void 0 || _this$$refs$mask2.style.setProperty("point-events", "none");
-      uni.createSelectorQuery().in(this).select(".uni-preview-image-item").boundingClientRect().exec((ret) => {
-        if (ret.length == 1) {
-          var rect = this.imageView.getBoundingClientRect();
-          this.screenHeight = rect.height;
-          this.screenWidth = rect.width;
-          this.caculatorImageSize(e.detail.width / this.devicePixelRatio, e.detail.height / this.devicePixelRatio);
-        }
-      });
-      this.loadingFinished = true;
-    },
-    caculatorImageSize(imageWidth, imageHeight) {
-      var scaleImageSize = imageHeight / (imageWidth / this.screenWidth);
-      if (scaleImageSize > this.screenHeight) {
-        var _this$imageView4;
-        this.imageHeight = scaleImageSize;
-        this.imageMode = "aspectFill";
-        (_this$imageView4 = this.imageView) === null || _this$imageView4 === void 0 || _this$imageView4.style.setProperty("height", scaleImageSize + "px");
-      } else {
-        this.imageMode = "aspectFit";
-      }
-      this.imageMarginTop = (this.screenHeight - scaleImageSize) / 2;
-      this.imageHeight = scaleImageSize;
-    },
-    preventDefaultScall(e) {
-      e === null || e === void 0 || e.preventDefault();
-      e === null || e === void 0 || e.stopPropagation();
-    },
-    onInterceptTouchEvent(e) {
-      if (this.inScaleMode) {
-        this.preventDefaultScall(e);
-        return;
-      }
-      clearTimeout(this.clickTimeoutId);
-    },
-    reloadImage(e) {
-      var _this$$refs$mask3;
-      (_this$$refs$mask3 = this.$refs["mask"]) === null || _this$$refs$mask3 === void 0 || _this$$refs$mask3.style.setProperty("point-events", "none");
-      this.loadingFinished = false;
-      this.loadError = false;
-      var tempPath = this.srcPath + "";
-      this.srcPath = "";
-      setTimeout(() => {
-        this.srcPath = tempPath;
-      }, 100);
-      e.stopPropagation();
-    },
-    closePreviewImage() {
-      uni.$emit("__UNIPREVIEWIMAGECLOSE");
-    },
-    // 计算transform-origin主要代码
-    caculatorTransformOrigin(e) {
-      var originalCenterX;
-      var originalCenterY;
-      if (e != null) {
-        if (e.touches.length >= 2) {
-          var point1 = e.touches[0];
-          var point2 = e.touches[1];
-          originalCenterX = (point1.clientX + point2.clientX) / 2;
-          originalCenterY = (point1.clientY + point2.clientY) / 2;
-          if (this.scaleSize * this.imageHeight < this.screenHeight) {
-            originalCenterY = this.screenHeight / 2;
-          }
-          if (this.imageHeight > this.screenHeight && this.scaleSize >= 1) {
-            originalCenterY = originalCenterY - this.imageTop / this.scaleSize;
-          }
-          var oldTransformOrigin = [this.transformOrigin[0], this.transformOrigin[1]];
-          this.transformOrigin = [originalCenterX, originalCenterY];
-          if (oldTransformOrigin[0] != 0 && oldTransformOrigin[1] != 1) {
-            this.imageLeft = this.imageLeft + (this.scaleSize - 1) * (originalCenterX - oldTransformOrigin[0]);
-            this.imageTop = this.imageTop + (this.scaleSize - 1) * (originalCenterY - oldTransformOrigin[1]);
-          }
-        } else if (e.type == "touchend") {
-          if (this.inDoubleTapMode && this.scaleSize == 2 && this.lastSlideTouch != null && this.lastSlideTouch.length == 1) {
-            originalCenterX = this.lastSlideTouch[0].clientX;
-            originalCenterY = this.lastSlideTouch[0].clientY;
-            if (this.scaleSize * this.imageHeight < this.screenHeight) {
-              originalCenterY = this.screenHeight / 2;
-            }
-            if (this.imageHeight > this.screenHeight) {
-              originalCenterY = originalCenterY - this.imageTop;
-            }
-            this.transformOrigin = [originalCenterX, originalCenterY];
-            this.imageLeft = this.imageLeft + (this.scaleSize - 1) * (originalCenterX - this.transformOrigin[0]);
-            this.imageTop = this.imageTop + (this.scaleSize - 1) * (originalCenterY - this.transformOrigin[1]);
-          }
-        }
-      }
-    }
-  }
-};
-const _style_0$1 = {
-  "uni-preview-image-item": {
-    "": {
-      "width": "100%",
-      "height": "100%",
-      "transitionProperty": "transform",
-      "transitionDuration": "0ms"
-    }
-  },
-  "uni-preview-image-patch": {
-    "": {
-      "width": "100%",
-      "height": "100%",
-      "backgroundColor": "rgba(0,0,0,0)",
-      "position": "absolute"
-    }
-  },
-  "uni-preview-image-loading": {
-    "": {
-      "position": "absolute",
-      "top": 0,
-      "bottom": 0,
-      "left": 0,
-      "right": 0,
-      "pointerEvents": "none"
-    }
-  },
-  "uni-preview-image-item-background": {
-    "": {
-      "backgroundColor": "#000000"
-    }
-  },
-  "uni-preview-image-tips-retry": {
-    "": {
-      "color": "#0000FF",
-      "fontSize": 18,
-      "marginTop": 16,
-      "WebkitTextDecorationLine": "underline",
-      "textDecorationLine": "underline"
-    }
-  },
-  "uni-preview-image-tips-error": {
-    "": {
-      "fontSize": 18,
-      "color": "#FF0000"
-    }
-  },
-  "@TRANSITION": {
-    "uni-preview-image-item": {
-      "property": "transform",
-      "duration": "0ms"
-    }
-  }
-};
-var _hoisted_1$1 = {
-  style: {
-    "flex": "1"
-  },
-  class: "uni-preview-image-item-background"
-};
-var _hoisted_2$1 = ["mode", "src"];
-var _hoisted_3$1 = {
-  key: 0,
-  class: "uni-preview-image-loading"
-};
-var _hoisted_4$1 = {
-  class: "uni-preview-image-tips-error"
-};
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  var _$props$tips, _$props$tips2, _$props$tips3, _$props$tips4;
-  var _component_loadingCircle = resolveComponent("loadingCircle");
-  return openBlock(), createElementBlock("view", _hoisted_1$1, [createElementVNode("image", {
-    ref: "imageView",
-    mode: $data.imageMode,
-    class: "uni-preview-image-item",
-    src: $data.srcPath,
-    onError: _cache[0] || (_cache[0] = function() {
-      return $options.previewImageError && $options.previewImageError(...arguments);
-    }),
-    onLoad: _cache[1] || (_cache[1] = function() {
-      return $options.onImageLoad && $options.onImageLoad(...arguments);
-    })
-  }, null, 40, _hoisted_2$1), createElementVNode("view", {
-    ref: "mask",
-    class: "uni-preview-image-patch",
-    onTouchstart: _cache[2] || (_cache[2] = function() {
-      return $options.onstart && $options.onstart(...arguments);
-    }),
-    onTouchmove: _cache[3] || (_cache[3] = function() {
-      return $options.onmove && $options.onmove(...arguments);
-    }),
-    onTouchend: _cache[4] || (_cache[4] = function() {
-      return $options.onend && $options.onend(...arguments);
-    }),
-    onTouchcancel: _cache[5] || (_cache[5] = function() {
-      return $options.oncancel && $options.oncancel(...arguments);
-    })
-  }, null, 544), !$data.loadingFinished ? (openBlock(), createElementBlock("view", _hoisted_3$1, [createVNode(_component_loadingCircle, {
-    style: {
-      "margin": "auto"
-    },
-    speed: 16,
-    size: 54,
-    color: "#d3d3d3"
-  })])) : createCommentVNode("", true), $data.loadError ? (openBlock(), createElementBlock("view", {
-    key: 1,
-    style: {
-      "align-items": "center",
-      "justify-content": "center",
-      "position": "absolute",
-      "top": "0",
-      "bottom": "0",
-      "left": "0",
-      "right": "0"
-    },
-    onClick: _cache[7] || (_cache[7] = function() {
-      return $options.closePreviewImage && $options.closePreviewImage(...arguments);
-    })
-  }, [createElementVNode("text", _hoisted_4$1, toDisplayString($props.tips == null || ((_$props$tips = $props.tips) === null || _$props$tips === void 0 ? void 0 : _$props$tips["error"]) == null ? $options.getLanguageString("error") : (_$props$tips2 = $props.tips) === null || _$props$tips2 === void 0 ? void 0 : _$props$tips2["error"]), 1), createElementVNode("text", {
-    class: "uni-preview-image-tips-retry",
-    onClick: _cache[6] || (_cache[6] = function() {
-      return $options.reloadImage && $options.reloadImage(...arguments);
-    })
-  }, toDisplayString($props.tips == null || ((_$props$tips3 = $props.tips) === null || _$props$tips3 === void 0 ? void 0 : _$props$tips3["retry"]) == null ? $options.getLanguageString("retry") : (_$props$tips4 = $props.tips) === null || _$props$tips4 === void 0 ? void 0 : _$props$tips4["retry"]), 1)])) : createCommentVNode("", true)]);
-}
-const uniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
-const _sfc_main = {
-  components: {
-    uniPreviewImageItem
-  },
-  data() {
-    return {
-      urls: null,
-      current: 0,
-      loop: false,
-      disableTouch: false,
-      numberIndicator: "",
-      indicator: "number",
-      longPressAction: null,
-      tips: null
-    };
-  },
-  onLoad() {
-    uni.$once("__onPreviewLoadCallback", this.__onPreviewLoadCallback);
-    uni.$emit("__onPreviewLoad", null);
-    uni.$on("__UNIPREVIEWIMAGE", this.setDisableTouch);
-    uni.$on("__UNIPREVIEWIMAGECLOSE", this.closePreviewPage);
-    uni.$on("__CLOSEPREVIEWIMAGE", () => {
-      this.closePreviewPage();
-    });
-  },
-  onReady() {
-    var _this$$refs$numberInd, _this$$refs$defaultIn;
-    var windowInfo = uni.getWindowInfo();
-    (_this$$refs$numberInd = this.$refs["numberIndicator"]) === null || _this$$refs$numberInd === void 0 || _this$$refs$numberInd.style.setProperty("top", windowInfo.statusBarHeight + 8 + "px");
-    (_this$$refs$defaultIn = this.$refs["defaultIndicator"]) === null || _this$$refs$defaultIn === void 0 || _this$$refs$defaultIn.style.setProperty("bottom", windowInfo.screenHeight - windowInfo.safeArea.bottom + 8 + "px");
-  },
-  onUnload() {
-    uni.$off("__UNIPREVIEWIMAGE");
-    uni.$off("__UNIPREVIEWIMAGECLOSE");
-    uni.$off("__UNIPREVIEWLONGPRESS");
-    uni.$off("__CLOSEPREVIEWIMAGE");
-  },
-  onBackPress(options) {
-    return false;
-  },
-  methods: {
-    __onPreviewLoadCallback(result) {
-      this.urls = result["urls"];
-      if (result["current"] != null) {
-        var c = result["current"];
-        if (typeof c == "number") {
-          var d = c;
-          if (d < 0 || d > this.urls.length)
-            d = 0;
-          this.current = d;
-        } else if (typeof c == "string") {
-          var index2 = this.urls.indexOf(c);
-          if (index2 < 0) {
-            index2 = 0;
-          }
-          this.current = index2;
-        }
-      }
-      if (result["indicator"] != null) {
-        this.indicator = result["indicator"];
-      }
-      if (result["tips"] != null) {
-        this.tips = result["tips"];
-      }
-      if (result["longPressActions"] != null) {
-        this.longPressAction = {
-          itemList: result["longPressActions"]["itemList"],
-          itemColor: result["longPressActions"]["itemColor"]
-        };
-      }
-      if (result["loop"] != null) {
-        this.loop = result["loop"];
-      }
-      this.numberIndicator = this.current + 1 + " / " + this.urls.length;
-    },
-    onPreviewImageChanged(e) {
-      var _this$urls;
-      this.numberIndicator = e.detail.current + 1 + " / " + ((_this$urls = this.urls) === null || _this$urls === void 0 ? void 0 : _this$urls.length);
-      this.current = e.detail.current;
-    },
-    setDisableTouch(isDisable) {
-    },
-    closePreviewPage() {
-      uni.closeDialogPage({
-        dialogPage: this.$page,
-        animationType: "fade-out"
-      });
-    }
-  }
-};
-const _style_0 = {
-  "uni-preview-image-default-indicator": {
-    "": {
-      "width": 9,
-      "height": 9,
-      "borderTopStyle": "solid",
-      "borderRightStyle": "solid",
-      "borderBottomStyle": "solid",
-      "borderLeftStyle": "solid",
-      "borderTopLeftRadius": 9,
-      "borderTopRightRadius": 9,
-      "borderBottomRightRadius": 9,
-      "borderBottomLeftRadius": 9,
-      "marginTop": 2,
-      "marginRight": 3,
-      "marginBottom": 2,
-      "marginLeft": 3,
-      "borderTopWidth": 0.1,
-      "borderRightWidth": 0.1,
-      "borderBottomWidth": 0.1,
-      "borderLeftWidth": 0.1,
-      "borderTopColor": "#AAAAAA",
-      "borderRightColor": "#AAAAAA",
-      "borderBottomColor": "#AAAAAA",
-      "borderLeftColor": "#AAAAAA"
-    }
-  },
-  "uni-preview-image-default-indicator-default": {
-    "": {
-      "backgroundColor": "#AAAAAA"
-    }
-  },
-  "uni-preview-image-default-indicator-active": {
-    "": {
-      "backgroundColor": "#ffffff"
-    }
-  },
-  "uni-preview-image-default-indicator-layout": {
-    "": {
-      "flexDirection": "row",
-      "position": "absolute",
-      "bottom": 0,
-      "left": 0,
-      "right": 0,
-      "justifyContent": "center"
-    }
-  },
-  "uni-preview-image-number-indicator-layout": {
-    "": {
-      "position": "absolute",
-      "left": 0,
-      "right": 0
-    }
-  },
-  "uni-preview-image-number-indicator": {
-    "": {
-      "color": "#FFFFFF",
-      "fontSize": 16,
-      "marginTop": "auto",
-      "marginRight": "auto",
-      "marginBottom": "auto",
-      "marginLeft": "auto",
-      "paddingTop": 8,
-      "paddingRight": 20,
-      "paddingBottom": 8,
-      "paddingLeft": 20,
-      "backgroundColor": "rgba(0,0,0,0.3)",
-      "lineHeight": 1,
-      "borderTopStyle": "solid",
-      "borderRightStyle": "solid",
-      "borderBottomStyle": "solid",
-      "borderLeftStyle": "solid",
-      "borderTopWidth": 0,
-      "borderRightWidth": 0,
-      "borderBottomWidth": 0,
-      "borderLeftWidth": 0,
-      "borderTopLeftRadius": 32,
-      "borderTopRightRadius": 32,
-      "borderBottomRightRadius": 32,
-      "borderBottomLeftRadius": 32
-    }
-  }
-};
-var _hoisted_1 = ["circular", "current", "disable-touch"];
-var _hoisted_2 = {
-  key: 0,
-  ref: "numberIndicator",
-  class: "uni-preview-image-number-indicator-layout"
-};
-var _hoisted_3 = {
-  class: "uni-preview-image-number-indicator"
-};
-var _hoisted_4 = {
-  key: 1,
-  ref: "defaultIndicator",
-  class: "uni-preview-image-default-indicator-layout"
-};
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_uniPreviewImageItem = resolveComponent("uniPreviewImageItem");
-  return openBlock(), createElementBlock(Fragment, null, [createElementVNode("swiper", {
-    style: {
-      "flex": "1",
-      "background-color": "black"
-    },
-    "indicator-dots": false,
-    circular: $data.loop,
-    current: $data.current,
-    onChange: _cache[0] || (_cache[0] = function() {
-      return $options.onPreviewImageChanged && $options.onPreviewImageChanged(...arguments);
-    }),
-    "disable-touch": $data.disableTouch
-  }, [$data.urls != null ? (openBlock(true), createElementBlock(Fragment, {
-    key: 0
-  }, renderList($data.urls, (item, index2) => {
-    return openBlock(), createElementBlock("swiper-item", null, [createVNode(_component_uniPreviewImageItem, {
-      index: index2,
-      src: item,
-      longPressAction: $data.longPressAction,
-      tips: $data.tips
-    }, null, 8, ["index", "src", "longPressAction", "tips"])]);
-  }), 256)) : createCommentVNode("", true)], 40, _hoisted_1), $data.indicator == "number" ? (openBlock(), createElementBlock("view", _hoisted_2, [createElementVNode("text", _hoisted_3, toDisplayString($data.numberIndicator), 1)], 512)) : createCommentVNode("", true), $data.indicator == "default" ? withDirectives((openBlock(), createElementBlock("view", _hoisted_4, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.urls.length, (i) => {
-    return openBlock(), createElementBlock("view", {
-      class: normalizeClass(["uni-preview-image-default-indicator", $data.current + 1 == i ? "uni-preview-image-default-indicator-active" : "uni-preview-image-default-indicator-default"])
-    }, null, 2);
-  }), 256))], 512)), [[vShow, $data.urls != null]]) : createCommentVNode("", true)], 64);
-}
-const UniPreviewImagePage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
-function registerSystemPages() {
-  registerSystemRoute("uni:actionSheet", UniActionSheetPage, {
-    disableSwipeBack: false
-  });
-  registerSystemRoute("uni:chooseLocation", UniChooseLocationPage, {
-    disableSwipeBack: false
-  });
-  registerSystemRoute("uni:uniModal", UniUniModalPage, {
-    disableSwipeBack: false
-  });
-  registerSystemRoute("uni:previewImage", UniPreviewImagePage, {
-    disableSwipeBack: false
-  });
-}
-registerSystemPages();
 export {
   definePage as __definePage,
   registerApp as __registerApp,
+  registerSystemRoute as __registerSystemRoute,
   systemRoutes as __uniSystemRoutes,
   index as components,
   defineAsyncApi,

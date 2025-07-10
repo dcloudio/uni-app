@@ -3553,22 +3553,6 @@
     var target = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : currentInstance;
     injectHook("ec", hook, target);
   }
-  function renderList(source, renderItem, cache2, index2) {
-    var ret;
-    var cached = cache2;
-    if (isArray(source) || isString(source)) {
-      ret = new Array(source.length);
-      for (var i2 = 0, l = source.length; i2 < l; i2++) {
-        ret[i2] = renderItem(source[i2], i2, void 0, cached);
-      }
-    } else {
-      ret = new Array(source);
-      for (var _i2 = 0; _i2 < source; _i2++) {
-        ret[_i2] = renderItem(_i2 + 1, _i2, void 0, cached);
-      }
-    }
-    return ret;
-  }
   var getPublicInstance = (i2) => {
     if (!i2)
       return null;
@@ -11779,11 +11763,17 @@
   var baseWidth = 375;
   var includeWidth = 750;
   function checkDeviceWidth() {
-    var {
-      windowWidth,
-      pixelRatio: pixelRatio2,
-      platform
-    } = getBaseSystemInfo();
+    var windowWidth, pixelRatio2, platform;
+    {
+      var {
+        windowWidth: w,
+        pixelRatio: p2,
+        platform: pf
+      } = getBaseSystemInfo();
+      windowWidth = w;
+      pixelRatio2 = p2;
+      platform = pf;
+    }
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio2;
     isIOS = platform === "ios";
@@ -16155,8 +16145,9 @@
           setTimeout(focus, timeout);
           return;
         }
+        var isInputModeEnabled = props2.inputmode !== "none";
         {
-          if (!userActionState.userAction) {
+          if (!userActionState.userAction && isInputModeEnabled) {
             plus.key.showSoftKeybord();
             setTimeout(() => {
               field.focus();
@@ -19227,7 +19218,7 @@
   });
   function useProgressState(props2) {
     var currentPercent = ref(0);
-    var outerBarStyle = computed(() => "background-color: ".concat(props2.backgroundColor, "; height: ").concat(props2.strokeWidth, "px;"));
+    var outerBarStyle = computed(() => "background-color: ".concat(props2.backgroundColor, "; height: ").concat(rpx2px(props2.strokeWidth), "px;"));
     var innerBarStyle = computed(() => {
       var backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
       return "width: ".concat(currentPercent.value, "%;background-color: ").concat(backgroundColor);
@@ -20543,7 +20534,7 @@
         }, null, 4)], 4)]), withDirectives(createVNode("span", {
           "ref": sliderValueRef,
           "class": "uni-slider-value"
-        }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
+        }, [sliderValue.value], 512), [[vShow, props2.showValue]])])], 8, ["onClick"]);
       };
     }
   });
@@ -21222,7 +21213,9 @@
       }
       {
         useRebuild(() => {
-          swiperItems = slideFrameRef.value.children;
+          if (slideFrameRef.value && slideFrameRef.value.children) {
+            swiperItems = slideFrameRef.value.children;
+          }
           updateSwiperContexts();
         });
       }
@@ -21613,7 +21606,6 @@
           lineCount
         });
         if (props2.autoHeight) {
-          el.style.height = "auto";
           wrapper2.style.height = height + "px";
         }
       });
@@ -21695,7 +21687,8 @@
           "onKeyup": onKeyUpEnter
         }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
         return createVNode("uni-textarea", {
-          "ref": rootRef
+          "ref": rootRef,
+          "auto-height": props2.autoHeight
         }, [createVNode("div", {
           "ref": wrapperRef,
           "class": "uni-textarea-wrapper"
@@ -21714,7 +21707,7 @@
           "action": "",
           "onSubmit": () => false,
           "class": "uni-input-form"
-        }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
+        }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 8, ["auto-height"]);
       };
     }
   });
@@ -22543,12 +22536,34 @@
       volumeOld: 0,
       volumeNew: 0,
       currentTimeOld: 0,
-      currentTimeNew: 0
+      currentTimeNew: 0,
+      toastThin: false
     });
     var touchStartOrigin = {
       x: 0,
       y: 0
     };
+    var changeToastThinTimer = null;
+    var changeToastThin = () => {
+      if (state.gestureType !== "none" && changeToastThinTimer != null)
+        return;
+      changeToastThinTimer = setTimeout(() => {
+        state.toastThin = true;
+      }, 500);
+    };
+    var showToastTimer = void 0;
+    function changeShowToast() {
+      if (showToastTimer != void 0)
+        return;
+      showToastTimer = setTimeout(() => {
+        state.toastThin = false;
+        showToastTimer = void 0;
+      }, 1e3);
+    }
+    function clearChangeShowToast() {
+      clearTimeout(showToastTimer);
+      showToastTimer = void 0;
+    }
     function onTouchstart(event) {
       var toucher = event.targetTouches[0];
       touchStartOrigin.x = toucher.pageX;
@@ -22593,10 +22608,11 @@
           stop();
         }
       } else {
-        if (!props2.pageGesture) {
+        if (!props2.pageGesture && !props2.vslideGesture) {
           state.gestureType = "stop";
           return;
         }
+        changeToastThin();
         state.gestureType = "volume";
         state.volumeOld = video.volume;
         if (!fullscreenState.fullscreen) {
@@ -22637,6 +22653,8 @@
         } else if (value > 1) {
           value = 1;
         }
+        clearChangeShowToast();
+        changeShowToast();
         video.volume = value;
         state.volumeNew = value;
       }
@@ -23175,6 +23193,10 @@
       type: [Boolean, String],
       default: false
     },
+    vslideGesture: {
+      type: [Boolean, String],
+      default: false
+    },
     enableProgressGesture: {
       type: [Boolean, String],
       default: true
@@ -23209,9 +23231,7 @@
       } = useAttrs({
         excludeListeners: true
       });
-      var {
-        t: t2
-      } = useI18n();
+      useI18n();
       initI18nVideoMsgsOnce();
       var {
         videoRef,
@@ -23384,33 +23404,25 @@
           "class": "uni-video-cover-play-button uni-video-icon",
           "onClick": withModifiers(play, ["stop"])
         }, null, 8, ["onClick"])], 8, ["onClick"]), createVNode("div", {
+          "class": "uni-video-loading"
+        }, [gestureState.gestureType === "volume" ? createVNode("div", {
           "class": {
-            "uni-video-toast": true,
-            "uni-video-toast-volume": gestureState.gestureType === "volume"
-          }
-        }, [createVNode("div", {
-          "class": "uni-video-toast-title"
-        }, [t2("uni.video.volume")]), createVNode("svg", {
-          "class": "uni-video-toast-icon",
-          "width": "200px",
-          "height": "200px",
-          "viewBox": "0 0 1024 1024",
-          "version": "1.1",
-          "xmlns": "http://www.w3.org/2000/svg"
-        }, [createVNode("path", {
-          "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
-        }, null)]), createVNode("div", {
-          "class": "uni-video-toast-value"
-        }, [createVNode("div", {
-          "style": {
-            width: gestureState.volumeNew * 100 + "%"
+            "uni-video-toast-container": true,
+            "uni-video-toast-container-thin": gestureState.toastThin
           },
-          "class": "uni-video-toast-value-content"
-        }, [createVNode("div", {
-          "class": "uni-video-toast-volume-grids"
-        }, [renderList(10, () => createVNode("div", {
-          "class": "uni-video-toast-volume-grids-item"
-        }, null))])], 4)])], 2), createVNode("div", {
+          "style": {
+            marginTop: "5px"
+          }
+        }, [!gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume" ? createVNode("text", {
+          "class": "uni-video-icon uni-video-toast-icon"
+        }, [""]) : !gestureState.toastThin && createVNode("text", {
+          "class": "uni-video-icon uni-video-toast-icon"
+        }, [""]), createVNode("div", {
+          "class": "uni-video-toast-draw",
+          "style": {
+            width: "".concat(gestureState.volumeNew * 100, "%")
+          }
+        }, null)], 2) : null]), createVNode("div", {
           "class": {
             "uni-video-toast": true,
             "uni-video-toast-progress": progressing.value

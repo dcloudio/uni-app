@@ -40,10 +40,12 @@ export const transformOn: DirectiveTransform = (
   if (!dir.exp && !modifiers.length) {
     context.onError(createCompilerError(ErrorCodes.X_V_ON_NO_EXPRESSION, loc))
   }
+  let eventRawName: string | undefined
   let eventName: ExpressionNode
   if (arg.type === NodeTypes.SIMPLE_EXPRESSION) {
     if (arg.isStatic) {
       let rawName = arg.content
+      eventRawName = rawName
       // TODO deprecate @vnodeXXX usage
       if (rawName.startsWith('vue:')) {
         rawName = `vnode-${rawName.slice(4)}`
@@ -135,7 +137,11 @@ export const transformOn: DirectiveTransform = (
       exp = createCompoundExpression([
         `${
           isInlineStatement
-            ? `${loc.source.includes('$event') ? '($event: any)' : '()'}`
+            ? `${
+                loc.source.includes('$event')
+                  ? `($event: ${getEventType(node.tag, eventRawName)})`
+                  : '()'
+              }`
             : `${``}(...args)`
           // } => ${hasMultipleStatements ? `{` : `(`}`,
         } => ${`{`}`,
@@ -170,4 +176,18 @@ export const transformOn: DirectiveTransform = (
   // mark the key as handler for props normalization check
   ret.props.forEach((p) => (p.key.isHandlerKey = true))
   return ret
+}
+
+// 后续可以通过语法仓库动态生成该配置信息
+const EVENT_TYPES = {
+  input: {
+    input: 'UniInputEvent',
+  },
+}
+
+export function getEventType(tagName: string, eventName?: string) {
+  if (!eventName) {
+    return 'any'
+  }
+  return EVENT_TYPES[tagName]?.[eventName] ?? 'any'
 }

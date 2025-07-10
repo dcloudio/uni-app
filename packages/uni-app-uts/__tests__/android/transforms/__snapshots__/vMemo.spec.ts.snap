@@ -6,8 +6,8 @@ const _ctx = this
 const _cache = this.$.renderCache
 const _component_Comp = resolveComponent("Comp")
 
-  return createElementVNode("view", null, [
-    withMemo([_ctx.x], (): VNode => createVNode(_component_Comp), _cache, 0)
+  return _cE("view", null, [
+    withMemo([_ctx.x], (): VNode => _cV(_component_Comp), _cache, 0)
   ])
 }"
 `;
@@ -16,8 +16,8 @@ exports[`compiler: v-memo transform on normal element 1`] = `
 "function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
-  return createElementVNode("view", null, [
-    withMemo([_ctx.x], (): VNode => createElementVNode("view"), _cache, 0)
+  return _cE("view", null, [
+    withMemo([_ctx.x], (): VNode => _cE("view"), _cache, 0)
   ])
 }"
 `;
@@ -26,7 +26,7 @@ exports[`compiler: v-memo transform on root element 1`] = `
 "function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
-  return withMemo([_ctx.x], (): VNode => createElementVNode("view"), _cache, 0)
+  return withMemo([_ctx.x], (): VNode => _cE("view"), _cache, 0)
 }"
 `;
 
@@ -34,11 +34,11 @@ exports[`compiler: v-memo transform on template v-for 1`] = `
 "function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
-  return createElementVNode("view", null, [
-    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, __key, __index, _cached): any => {
+  return _cE("view", null, [
+    _cE(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, __key, __index, _cached): any => {
       const _memo: Array<any | null> = ([x, y === _ctx.z])
       if (_cached != null && _cached.key === x && isMemoSame(_cached, _memo)) return _cached
-      const _item = createElementVNode("text", utsMapOf({ key: x }), "foobar")
+      const _item = _cE("text", _uM({ key: x }), "foobar")
       _item.memo = _memo
       return _item
     }, _cache, 0), 128 /* KEYED_FRAGMENT */)
@@ -50,16 +50,34 @@ exports[`compiler: v-memo transform on v-for 1`] = `
 "function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
-  return createElementVNode("view", null, [
-    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, __key, __index, _cached): any => {
+  return _cE("view", null, [
+    _cE(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, __key, __index, _cached): any => {
       const _memo: Array<any | null> = ([x, y === _ctx.z])
       if (_cached != null && _cached.key === x && isMemoSame(_cached, _memo)) return _cached
-      const _item = createElementVNode("view", utsMapOf({ key: x }), [
-        createElementVNode("text", null, "foobar")
+      const _item = _cE("view", _uM({ key: x }), [
+        _cE("text", null, "foobar")
       ])
       _item.memo = _memo
       return _item
     }, _cache, 0), 128 /* KEYED_FRAGMENT */)
+  ])
+}"
+`;
+
+exports[`compiler: v-memo transform on v-for with list-item 1`] = `
+"function PagesIndexIndexRender(): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+  return _cE("view", null, [
+    _cE(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, __key, __index, _cached): any => {
+      const _memo: Array<any | null> = ([x, y === _ctx.z])
+      if (_cached != null && _cached.key === x && isMemoSame(_cached, _memo)) return _cached
+      const _item = _cE("view", _uM({ key: x }), [
+        _cE("text", null, "foobar")
+      ])
+      _item.memo = _memo
+      return _item
+    }, _cache, 0, "/xVKdEEB476nTdgg8k3dRg=="), 128 /* KEYED_FRAGMENT */)
   ])
 }"
 `;
@@ -70,13 +88,13 @@ const _ctx = this
 const _cache = this.$.renderCache
 const _component_Comp = resolveComponent("Comp")
 
-  return createElementVNode("view", null, [
+  return _cE("view", null, [
     isTrue(_ctx.ok)
-      ? withMemo([_ctx.x], (): VNode => createElementVNode("view", utsMapOf({ key: 0 }), [
-          createElementVNode("text", null, "foo"),
+      ? withMemo([_ctx.x], (): VNode => _cE("view", _uM({ key: 0 }), [
+          _cE("text", null, "foo"),
           "bar"
         ]), _cache, 0)
-      : withMemo([_ctx.x], (): VNode => createVNode(_component_Comp, utsMapOf({ key: 1 })), _cache, 1)
+      : withMemo([_ctx.x], (): VNode => _cV(_component_Comp, _uM({ key: 1 })), _cache, 1)
   ])
 }"
 `;

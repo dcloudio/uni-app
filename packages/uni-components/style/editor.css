@@ -163,6 +163,19 @@
 .ql-editor ul[data-checked=false] > li::before {
   content: '\2610';
 }
+.ql-editor ol,
+.ql-editor ul {
+  padding-left: 1.5em;
+}
+
+.ql-editor li:not(.ql-direction-rtl)::before {
+  margin-left: -1.5em;
+}
+
+.ql-editor li.ql-direction-rtl::before {
+  margin-right: -1.5em;
+}
+
 .ql-editor li::before {
   display: inline-block;
   white-space: nowrap;

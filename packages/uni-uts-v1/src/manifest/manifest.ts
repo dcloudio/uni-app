@@ -132,6 +132,8 @@ async function resolvePluginCommonFiles(
 ) {
   const patterns = ['*']
   if (is_uni_modules) {
+    patterns.push('common/**/*')
+    patterns.push('customElements/**/*')
     patterns.push('utssdk/*.uts')
     patterns.push('utssdk/common/**/*')
     // TODO 还需要处理非平台目录的其他目录文件

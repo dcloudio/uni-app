@@ -163,7 +163,11 @@ function isVueJs(id: string) {
 
 const chunkFileNameBlackList = ['main', 'pages.json', 'manifest.json']
 
-function createMoveToVendorChunkFn(): GetManualChunk {
+function createMoveToVendorChunkFn(): GetManualChunk | undefined {
+  // 云端编译时，不拆分文件
+  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+    return undefined
+  }
   const cache = new Map<string, boolean>()
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   return (id, { getModuleInfo }) => {

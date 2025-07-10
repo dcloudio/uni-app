@@ -128,13 +128,18 @@ export function removePage(routeKey: string, removeRouteCaches = true) {
     const systemDialogPages =
       pageVm.$pageLayoutInstance?.$systemDialogPages?.value
     if (systemDialogPages) {
-      systemDialogPages.length = 0
+      for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+        closeDialogPage({ dialogPage: systemDialogPages[i] })
+      }
     }
   }
   pageVm.$.__isUnload = true
   invokeHook(pageVm, ON_UNLOAD)
   currentPagesMap.delete(routeKey)
   removeRouteCaches && removeRouteCache(routeKey)
+  if (__X__ && !__NODE_JS__) {
+    ;(pageVm.$page as UniPage).vm = null
+  }
 }
 
 let id = /*#__PURE__*/ getStateId()
@@ -308,6 +313,28 @@ function updateBodyScopeId(instance: ComponentInternalInstance) {
   curScopeId = scopeId!
 }
 
+const supportsPassive = /*#__PURE__*/ (() => {
+  let supportsPassive = false
+  try {
+    const opts = {} as AddEventListenerOptions
+    Object.defineProperty(opts, 'passive', {
+      get() {
+        /* istanbul ignore next */
+        supportsPassive = true
+      },
+    })
+    // https://github.com/facebook/flow/issues/285
+    window.addEventListener('test-passive', () => {}, opts)
+  } catch (e) {}
+  return supportsPassive
+})()
+
+const passiveOptions = supportsPassive
+  ? {
+      passive: false,
+    }
+  : false
+
 let curScrollListener: (evt: Event) => any
 
 export function initPageScrollListener(
@@ -319,7 +346,11 @@ export function initPageScrollListener(
     document.removeEventListener('scroll', curScrollListener)
   }
   if (pageMeta.disableScroll) {
-    return document.addEventListener('touchmove', disableScrollListener)
+    return document.addEventListener(
+      'touchmove',
+      disableScrollListener,
+      passiveOptions
+    )
   }
 
   const { onPageScroll, onReachBottom } = instance
