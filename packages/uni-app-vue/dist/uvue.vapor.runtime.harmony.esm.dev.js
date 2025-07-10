@@ -10685,7 +10685,7 @@ function parseStyleSheet(_ref23) {
       var globalStyles = isArray$1(__globalStyles) ? __globalStyles : [__globalStyles];
       styles.push(...globalStyles);
     }
-    var page = root == null ? void 0 : root.type;
+    var page = root && root.type;
     if (page && component !== page && isArray$1(page.styles)) {
       styles.push(...page.styles);
     }
@@ -10780,7 +10780,6 @@ function setDisplay$1(el, value) {
 }
 function patchClass(el, pre, next) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  var _a;
   if (!instance) {
     return;
   }
@@ -10788,9 +10787,9 @@ function patchClass(el, pre, next) {
   el.classList = classList;
   setExtraStyles(el, parseStyleSheet(instance));
   if (instance.parent != null && instance !== instance.root) {
-    var isRootEl = el === ((_a = instance.subTree) == null ? void 0 : _a.el) ||
+    var isRootEl =
     // @ts-expect-error
-    instance.block === el;
+    instance.block === el || instance.subTree && el === instance.subTree.el;
     if (isRootEl) {
       setExtraParentStyles(el, instance.parent.type.styles);
     }

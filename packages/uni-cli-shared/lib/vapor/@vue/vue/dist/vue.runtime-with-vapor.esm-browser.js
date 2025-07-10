@@ -13179,7 +13179,7 @@ function parseStyleSheet({
       const globalStyles = isArray(__globalStyles) ? __globalStyles : [__globalStyles];
       styles.push(...globalStyles);
     }
-    const page = root == null ? void 0 : root.type;
+    const page = root && root.type;
     if (page && component !== page && isArray(page.styles)) {
       styles.push(...page.styles);
     }
@@ -13214,7 +13214,6 @@ function toStyle(el, classStyle, classStyleWeights) {
 const vShowHidden = Symbol("_vsh");
 
 function patchClass(el, pre, next, instance = null) {
-  var _a;
   if (!instance) {
     return;
   }
@@ -13222,8 +13221,10 @@ function patchClass(el, pre, next, instance = null) {
   el.classList = classList;
   setExtraStyles(el, parseStyleSheet(instance));
   if (instance.parent != null && instance !== instance.root) {
-    const isRootEl = el === ((_a = instance.subTree) == null ? void 0 : _a.el) || // @ts-expect-error
-    instance.block === el;
+    const isRootEl = (
+      // @ts-expect-error
+      instance.block === el || instance.subTree && el === instance.subTree.el
+    );
     if (isRootEl) {
       setExtraParentStyles(
         el,
