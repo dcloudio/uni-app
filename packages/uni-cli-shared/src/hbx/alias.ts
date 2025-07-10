@@ -22,8 +22,10 @@ export function initModuleAlias() {
   if (
     !process.env.UNI_VUE_VAPOR &&
     process.env.UNI_INPUT_DIR &&
-    (process.env.UNI_UTS_PLATFORM === 'app-harmony' ||
-      process.env.UNI_UTS_PLATFORM === 'app-ios')
+    // 该代码执行较早，不能使用UNI_UTS_PLATFORM
+    (process.env.UNI_PLATFORM === 'app-harmony' ||
+      (process.env.UNI_PLATFORM === 'app' &&
+        process.env.UNI_APP_PLATFORM === 'ios'))
   ) {
     const vaporConfig = path.resolve(process.env.UNI_INPUT_DIR, '.vapor')
     if (fs.existsSync(vaporConfig)) {
