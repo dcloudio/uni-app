@@ -9001,6 +9001,374 @@ function setInsertionState(parent, anchor) {
 function resetInsertionState() {
   insertionParent = insertionAnchor = void 0;
 }
+var NODE_EXT_STYLES = "styles";
+var NODE_EXT_PARENT_STYLES = "parentStyles";
+var NODE_EXT_CLASS_STYLE = "classStyle";
+var NODE_EXT_STYLE = "style";
+var NODE_EXT_IS_TEXT_NODE = "isTextNode";
+var NODE_EXT_CHILD_NODE = "childNode";
+var NODE_EXT_PARENT_NODE = "parentNode";
+var NODE_EXT_CHILD_NODES = "childNodes";
+function setNodeExtraData(el, name, value) {
+  el.ext.set(name, value);
+}
+function getNodeExtraData(el, name) {
+  return el.ext.get(name);
+}
+function getExtraStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLES);
+}
+function setExtraStyles(el, styles) {
+  setNodeExtraData(el, NODE_EXT_STYLES, styles);
+}
+function getExtraParentStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_PARENT_STYLES);
+}
+function setExtraParentStyles(el, styles) {
+  setNodeExtraData(el, NODE_EXT_PARENT_STYLES, styles);
+}
+function getExtraClassStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_CLASS_STYLE);
+}
+function setExtraClassStyle(el, classStyle) {
+  setNodeExtraData(el, NODE_EXT_CLASS_STYLE, classStyle);
+}
+function getExtraStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLE);
+}
+function setExtraStyle(el, style) {
+  setNodeExtraData(el, NODE_EXT_STYLE, style);
+}
+function isCommentNode(node) {
+  return node.nodeName == "#comment";
+}
+function isExtraTextNode(el) {
+  return getNodeExtraData(el, NODE_EXT_IS_TEXT_NODE) === true;
+}
+function setExtraIsTextNode(el, isTextNode) {
+  setNodeExtraData(el, NODE_EXT_IS_TEXT_NODE, isTextNode);
+}
+function isTextElement(value) {
+  return value instanceof UniTextElement;
+}
+function getExtraChildNode(el) {
+  return getNodeExtraData(el, NODE_EXT_CHILD_NODE);
+}
+function setExtraChildNode(el, childNode) {
+  setNodeExtraData(el, NODE_EXT_CHILD_NODE, childNode);
+}
+function setExtraParentNode(el, parentNode) {
+  setNodeExtraData(el, NODE_EXT_PARENT_NODE, parentNode);
+}
+function getExtraChildNodes(el) {
+  return getNodeExtraData(el, NODE_EXT_CHILD_NODES);
+}
+function setExtraChildNodes(el, childNodes) {
+  setNodeExtraData(el, NODE_EXT_CHILD_NODES, childNodes);
+}
+function getExtraParentNode(el) {
+  return getNodeExtraData(el, NODE_EXT_PARENT_NODE);
+}
+function each(obj) {
+  return Object.keys(obj);
+}
+function useCssStyles(componentStyles) {
+  var normalized = {};
+  if (!isArray$1(componentStyles)) {
+    return normalized;
+  }
+  componentStyles.forEach(componentStyle => {
+    each(componentStyle).forEach(className => {
+      var parentStyles = componentStyle[className];
+      var normalizedStyles = normalized[className] || (normalized[className] = {});
+      each(parentStyles).forEach(parentSelector => {
+        var parentStyle = parentStyles[parentSelector];
+        var normalizedStyle = normalizedStyles[parentSelector] || (normalizedStyles[parentSelector] = {});
+        each(parentStyle).forEach(name => {
+          if (name[0] === "!") {
+            normalizedStyle[name] = parentStyle[name];
+            delete normalizedStyle[name.slice(1)];
+          } else {
+            if (!hasOwn(normalizedStyle, "!" + name)) {
+              normalizedStyle[name] = parentStyle[name];
+            }
+          }
+        });
+      });
+    });
+  });
+  return normalized;
+}
+function hasClass(calssName, el) {
+  var classList = el && el.classList;
+  return classList && classList.includes(calssName);
+}
+var TYPE_RE = /[+~> ]$/;
+var PROPERTY_PARENT_NODE = "parentNode";
+var PROPERTY_PREVIOUS_SIBLING = "previousSibling";
+function isMatchParentSelector(parentSelector, el) {
+  var classArray = parentSelector.split(".");
+  for (var i = classArray.length - 1; i > 0; i--) {
+    var item = classArray[i];
+    var type = item[item.length - 1];
+    var className = item.replace(TYPE_RE, "");
+    if (type === "~" || type === " ") {
+      var property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
+      while (el) {
+        el = el[property];
+        if (hasClass(className, el)) {
+          break;
+        }
+      }
+      if (!el) {
+        return false;
+      }
+    } else {
+      if (type === ">") {
+        el = el && el[PROPERTY_PARENT_NODE];
+      } else if (type === "+") {
+        el = el && el[PROPERTY_PREVIOUS_SIBLING];
+      }
+      if (!hasClass(className, el)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+var WEIGHT_IMPORTANT = 1e3;
+function parseClassName(_ref22, parentStyles, el) {
+  var {
+    styles,
+    weights
+  } = _ref22;
+  each(parentStyles).forEach(parentSelector => {
+    if (parentSelector && el) {
+      if (!isMatchParentSelector(parentSelector, el)) {
+        return;
+      }
+    }
+    var classWeight = parentSelector.split(".").length;
+    var style = parentStyles[parentSelector];
+    each(style).forEach(name => {
+      var value = style[name];
+      var isImportant = name[0] === "!";
+      if (isImportant) {
+        name = name.slice(1);
+      }
+      var oldWeight = weights[name] || 0;
+      var weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
+      if (weight >= oldWeight) {
+        weights[name] = weight;
+        styles.set(name, value);
+      }
+    });
+  });
+}
+class ParseStyleContext {
+  constructor() {
+    this.styles = /* @__PURE__ */new Map();
+    this.weights = {};
+  }
+}
+function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheets) {
+  var el = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  var context = new ParseStyleContext();
+  classList.forEach(className => {
+    var parentStyles = stylesheet && stylesheet[className];
+    if (parentStyles) {
+      parseClassName(context, parentStyles, el);
+    }
+  });
+  if (parentStylesheets != null) {
+    classList.forEach(className => {
+      var parentStylesheet = (parentStylesheets || []).find(style => style[className] !== null);
+      var parentStyles = parentStylesheet && parentStylesheet[className];
+      if (parentStyles != null) {
+        parseClassName(context, parentStyles, el);
+      }
+    });
+  }
+  return context;
+}
+function parseClassStyles(el) {
+  var styles = getExtraStyles(el);
+  var parentStyles = getExtraParentStyles(el);
+  if (styles == null && parentStyles == null || el.classList.length == 0) {
+    return new ParseStyleContext();
+  }
+  return parseClassListWithStyleSheet(el.classList, styles, parentStyles, el);
+}
+function parseClassList(classList, instance) {
+  var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
+}
+function parseStyleSheet(_ref23) {
+  var {
+    type,
+    appContext,
+    root
+  } = _ref23;
+  var component = type;
+  var pageInstance = root;
+  if (!pageInstance.componentStylesCache) {
+    pageInstance.componentStylesCache = /* @__PURE__ */new Map();
+  }
+  var cache = pageInstance.componentStylesCache.get(component);
+  if (!cache) {
+    var __globalStyles = appContext.provides.__globalStyles;
+    if (appContext && isArray$1(__globalStyles)) {
+      appContext.provides.__globalStyles = useCssStyles(__globalStyles);
+    }
+    var styles = [];
+    if (appContext && __globalStyles) {
+      var globalStyles = isArray$1(__globalStyles) ? __globalStyles : [__globalStyles];
+      styles.push(...globalStyles);
+    }
+    var page = root == null ? void 0 : root.type;
+    if (page && component !== page && isArray$1(page.styles)) {
+      styles.push(...page.styles);
+    }
+    if (isArray$1(component.styles)) {
+      styles.push(...component.styles);
+    }
+    cache = useCssStyles(styles);
+    pageInstance.componentStylesCache.set(component, cache);
+  }
+  return cache;
+}
+function extendMap(a, b) {
+  b.forEach((value, key) => {
+    a.set(key, value);
+  });
+  return a;
+}
+function toStyle(el, classStyle, classStyleWeights) {
+  var res = extendMap(/* @__PURE__ */new Map(), classStyle);
+  var style = getExtraStyle(el);
+  if (style != null) {
+    style.forEach((value, key) => {
+      var weight = classStyleWeights[key];
+      if (weight == null || weight < WEIGHT_IMPORTANT) {
+        res.set(key, value);
+      }
+    });
+  }
+  return res;
+}
+var vShowOriginalDisplay = Symbol("_vod");
+var vShowHidden = Symbol("_vsh");
+var vShow = {
+  beforeMount(el, _ref24, _ref25) {
+    var {
+      value
+    } = _ref24;
+    var {
+      transition
+    } = _ref25;
+    el[vShowOriginalDisplay] = el.style.getPropertyValue("display") === "none" ? "" : "flex";
+    if (transition && value) {
+      transition.beforeEnter(el);
+    } else {
+      setDisplay$1(el, value);
+    }
+  },
+  mounted(el, _ref26, _ref27) {
+    var {
+      value
+    } = _ref26;
+    var {
+      transition
+    } = _ref27;
+    if (transition && value) {
+      transition.enter(el);
+    }
+  },
+  updated(el, _ref28, _ref29) {
+    var {
+      value,
+      oldValue
+    } = _ref28;
+    var {
+      transition
+    } = _ref29;
+    if (!value === !oldValue) return;
+    if (transition) {
+      if (value) {
+        transition.beforeEnter(el);
+        setDisplay$1(el, true);
+        transition.enter(el);
+      } else {
+        transition.leave(el, () => {
+          setDisplay$1(el, false);
+        });
+      }
+    } else {
+      setDisplay$1(el, value);
+    }
+  },
+  beforeUnmount(el, _ref30) {
+    var {
+      value
+    } = _ref30;
+    setDisplay$1(el, value);
+  }
+};
+function setDisplay$1(el, value) {
+  el.style.setProperty("display", value ? el[vShowOriginalDisplay] : "none");
+  el[vShowHidden] = !value;
+}
+function patchClass(el, pre, next) {
+  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  var _a;
+  if (!instance) {
+    return;
+  }
+  var classList = next ? next.split(" ") : [];
+  el.classList = classList;
+  setExtraStyles(el, parseStyleSheet(instance));
+  if (instance.parent != null && instance !== instance.root) {
+    var isRootEl = el === ((_a = instance.subTree) == null ? void 0 : _a.el) ||
+    // @ts-expect-error
+    instance.block === el;
+    if (isRootEl) {
+      setExtraParentStyles(el, instance.parent.type.styles);
+    }
+  }
+  updateClassStyles(el);
+}
+function updateClassStyles(el) {
+  if (el.parentNode == null || isCommentNode(el)) {
+    return;
+  }
+  if (getExtraClassStyle(el) == null) {
+    setExtraClassStyle(el, /* @__PURE__ */new Map());
+  }
+  var oldClassStyle = getExtraClassStyle(el);
+  oldClassStyle.forEach((_value, key) => {
+    oldClassStyle.set(key, "");
+  });
+  var parseClassStylesResult = parseClassStyles(el);
+  parseClassStylesResult.styles.forEach((value, key) => {
+    oldClassStyle.set(key, value);
+  });
+  var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
+  if (styles.size == 0) {
+    return;
+  }
+  if (el[vShowHidden]) {
+    styles.set("display", "none");
+  }
+  el.updateStyle(styles);
+}
+function updateChildrenClassStyle(el) {
+  if (el !== null) {
+    el.childNodes.forEach(child => {
+      updateClassStyles(child);
+      updateChildrenClassStyle(child);
+    });
+  }
+}
 class VaporFragment {
   constructor(nodes) {
     this.nodes = nodes;
@@ -9059,6 +9427,10 @@ function insert(block, parent) {
   if (block instanceof UniElement) {
     {
       parent.insertBefore(block, anchor);
+      if (parent.isConnected) {
+        updateClassStyles(block);
+        updateChildrenClassStyle(block);
+      }
     }
   } else if (isVaporComponent(block)) {
     if (block.isMounted) {
@@ -9392,15 +9764,15 @@ var rawPropsProxyHandlers = {
   }
 };
 function addEventListener$1(el, event, handler, options) {
-  el.addEventListener(event, handler, options);
-  return () => el.removeEventListener(event, handler, options);
+  el.addEventListener(event, handler);
+  return () => el.removeEventListener(event, handler);
 }
 function on(el, event, handler) {
   var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
-  addEventListener$1(el, event, handler, options);
+  addEventListener$1(el, event, handler);
   if (options.effect) {
     onEffectCleanup(() => {
-      el.removeEventListener(event, handler, options);
+      el.removeEventListener(event, handler);
     });
   }
 }
@@ -9466,6 +9838,108 @@ function setDynamicEvents(el, events) {
     });
   }
 }
+var processDeclaration = expand({
+  type: "uvue"
+}).Declaration;
+function createDeclaration(prop, value) {
+  var newValue = value + "";
+  if (newValue.includes("!important")) {
+    return {
+      prop,
+      value: newValue.replace(/\s*!important/, ""),
+      important: true
+    };
+  }
+  return {
+    prop,
+    value: newValue,
+    important: false
+  };
+}
+function normalizeStyle(name, value) {
+  var decl = Object.assign({}, {
+    replaceWith(newProps) {
+      props = newProps;
+    }
+  }, createDeclaration(name, value));
+  var props = [decl];
+  processDeclaration(decl);
+  return props;
+}
+function setStyle$1(expandRes) {
+  var resArr = expandRes.map(item => {
+    return [item.prop, item.value];
+  });
+  var resMap = new Map(resArr);
+  return resMap;
+}
+function parseStyleDecl(prop, value) {
+  var val = normalizeStyle(prop, value);
+  var res = setStyle$1(val);
+  return res;
+}
+function isSame(a, b) {
+  return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
+}
+function patchStyle(el, prev, next) {
+  if (!next) {
+    return;
+  }
+  if (isString(next)) {
+    next = parseStringStyle(next);
+  }
+  var batchedStyles = /* @__PURE__ */new Map();
+  var isPrevObj = prev && !isString(prev);
+  if (isPrevObj) {
+    (function () {
+      var classStyle = getExtraClassStyle(el);
+      var style = getExtraStyle(el);
+      for (var key in prev) {
+        if (next[key] == null) {
+          var _key = key.startsWith("--") ? key : camelize(key);
+          var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
+          parseStyleDecl(_key, value).forEach((value2, key2) => {
+            batchedStyles.set(key2, value2);
+            style && style.delete(key2);
+          });
+        }
+      }
+      for (var _key31 in next) {
+        var _value2 = next[_key31];
+        var prevValue = prev[_key31];
+        if (!isSame(prevValue, _value2)) {
+          var _key32 = _key31.startsWith("--") ? _key31 : camelize(_key31);
+          parseStyleDecl(_key32, _value2).forEach((value2, key2) => {
+            batchedStyles.set(key2, value2);
+            style && style.set(key2, value2);
+          });
+        }
+      }
+    })();
+  } else {
+    for (var key in next) {
+      var value = next[key];
+      var _key = key.startsWith("--") ? key : camelize(key);
+      setBatchedStyles(batchedStyles, _key, value);
+    }
+    setExtraStyle(el, batchedStyles);
+  }
+  if (batchedStyles.size == 0) {
+    return;
+  }
+  if (el[vShowHidden]) {
+    batchedStyles.set("display", "none");
+  }
+  el.updateStyle(batchedStyles);
+}
+function setBatchedStyles(batchedStyles, key, value) {
+  parseStyleDecl(key, value).forEach((value2, key2) => {
+    batchedStyles.set(key2, value2);
+  });
+}
+function shouldSetAsProp(el, key, value, isSVG) {
+  return false;
+}
 var hasFallthroughKey = key => currentInstance.hasFallthrough && key in currentInstance.attrs;
 function setProp(el, key, value) {
   if (key in el) {
@@ -9517,28 +9991,9 @@ function setDOMProp(el, key, value) {
   needRemove && el.removeAttribute(key);
 }
 function setClass(el, value) {
-  if (el.$root) {
-    setClassIncremental(el, value);
-  } else if ((value = normalizeClass(value)) !== el.$cls) {
-    el.className = el.$cls = value;
-  }
+  patchClass(el, null, normalizeClass(value), getCurrentGenericInstance());
 }
-function setClassIncremental(el, value) {
-  var cacheKey = "$clsi".concat(isApplyingFallthroughProps ? "$" : "");
-  var prev = el[cacheKey];
-  if ((value = el[cacheKey] = normalizeClass(value)) !== prev) {
-    var nextList = value.split(/\s+/);
-    if (value) {
-      el.classList.add(...nextList);
-    }
-    if (prev) {
-      for (var cls of prev.split(/\s+/)) {
-        if (!nextList.includes(cls)) el.classList.remove(cls);
-      }
-    }
-  }
-}
-function setStyle$1(el, value) {
+function setStyle(el, value) {
   if (el.$root) {
     setStyleIncremental(el, value);
   } else {
@@ -9575,14 +10030,12 @@ function setText(el, value) {
 }
 function setElementText(el, value) {
   if (el.$txt !== (value = toDisplayString(value))) {
-    el.textContent = el.$txt = value;
+    el.setAttribute("value", el.$txt = value);
   }
 }
 function setHtml(el, value) {
   value = value == null ? "" : value;
-  if (el.$html !== value) {
-    el.innerHTML = el.$html = value;
-  }
+  if (el.$html !== value) ;
 }
 function setDynamicProps(el, args) {
   var props = args.length > 1 ? mergeProps(...args) : args[0];
@@ -9595,15 +10048,15 @@ function setDynamicProps(el, args) {
       }
     }
   }
-  for (var _key31 of el[cacheKey] = Object.keys(props)) {
-    setDynamicProp(el, _key31, props[_key31]);
+  for (var _key33 of el[cacheKey] = Object.keys(props)) {
+    setDynamicProp(el, _key33, props[_key33]);
   }
 }
 function setDynamicProp(el, key, value) {
   if (key === "class") {
     setClass(el, value);
   } else if (key === "style") {
-    setStyle$1(el, value);
+    setStyle(el, value);
   } else if (isOn(key)) {
     on(el, key[2].toLowerCase() + key.slice(3), value, {
       effect: true
@@ -9919,10 +10372,10 @@ function getExposed(instance) {
     }));
   }
 }
-function getRootElement(_ref22) {
+function getRootElement(_ref31) {
   var {
     block
-  } = _ref22;
+  } = _ref31;
   if (block instanceof UniElement) {
     return block;
   }
@@ -10344,12 +10797,12 @@ var createFor = function (src, renderItem, getKey) {
       return true;
     }
   };
-  var update = (_ref23, newItem, newKey, newIndex) => {
+  var update = (_ref32, newItem, newKey, newIndex) => {
     var {
       itemRef,
       keyRef,
       indexRef
-    } = _ref23;
+    } = _ref32;
     if (newItem !== itemRef.value) {
       itemRef.value = newItem;
     }
@@ -10360,11 +10813,11 @@ var createFor = function (src, renderItem, getKey) {
       indexRef.value = newIndex;
     }
   };
-  var unmount = function (_ref24) {
+  var unmount = function (_ref33) {
     var {
       nodes,
       scope
-    } = _ref24;
+    } = _ref33;
     var doRemove = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
     scope && scope.stop();
     doRemove && remove(nodes, parent);
@@ -10424,13 +10877,13 @@ function normalizeSource(source) {
     keys
   };
 }
-function getItem(_ref25, idx) {
+function getItem(_ref34, idx) {
   var {
     keys,
     values,
     needsWrap,
     isReadonlySource
-  } = _ref25;
+  } = _ref34;
   var value = needsWrap ? isReadonlySource ? toReadonly(toReactive(values[idx])) : toReactive(values[idx]) : values[idx];
   if (keys) {
     return [value, keys[idx], idx];
@@ -10462,8 +10915,8 @@ function getDefaultValue(val, defaultVal) {
 function createTemplateRefSetter() {
   var instance = currentInstance;
   return function () {
-    for (var _len20 = arguments.length, args = new Array(_len20), _key32 = 0; _key32 < _len20; _key32++) {
-      args[_key32] = arguments[_key32];
+    for (var _len20 = arguments.length, args = new Array(_len20), _key34 = 0; _key34 < _len20; _key34++) {
+      args[_key34] = arguments[_key34];
     }
     return setRef(instance, ...args);
   };
@@ -10562,20 +11015,20 @@ function applyVShow(target, source) {
     var update = target.update;
     target.update = (render, key) => {
       update.call(target, render, key);
-      setDisplay$1(target, source());
+      setDisplay(target, source());
     };
   }
-  renderEffect(() => setDisplay$1(target, source()));
+  renderEffect(() => setDisplay(target, source()));
 }
-function setDisplay$1(target, value) {
+function setDisplay(target, value) {
   if (isVaporComponent(target)) {
-    return setDisplay$1(target, value);
+    return setDisplay(target, value);
   }
   if (isArray$1(target) && target.length === 1) {
-    return setDisplay$1(target[0], value);
+    return setDisplay(target[0], value);
   }
   if (target instanceof DynamicFragment) {
-    return setDisplay$1(target.nodes, value);
+    return setDisplay(target.nodes, value);
   }
   if (target instanceof UniElement) {
     var el = target;
@@ -10614,360 +11067,6 @@ function withVaporDirectives(node, dirs) {
       if (ret) onScopeDispose(ret);
     }
   }
-}
-var NODE_EXT_STYLES = "styles";
-var NODE_EXT_PARENT_STYLES = "parentStyles";
-var NODE_EXT_CLASS_STYLE = "classStyle";
-var NODE_EXT_STYLE = "style";
-var NODE_EXT_IS_TEXT_NODE = "isTextNode";
-var NODE_EXT_CHILD_NODE = "childNode";
-var NODE_EXT_PARENT_NODE = "parentNode";
-var NODE_EXT_CHILD_NODES = "childNodes";
-function setNodeExtraData(el, name, value) {
-  el.ext.set(name, value);
-}
-function getNodeExtraData(el, name) {
-  return el.ext.get(name);
-}
-function getExtraStyles(el) {
-  return getNodeExtraData(el, NODE_EXT_STYLES);
-}
-function setExtraStyles(el, styles) {
-  setNodeExtraData(el, NODE_EXT_STYLES, styles);
-}
-function getExtraParentStyles(el) {
-  return getNodeExtraData(el, NODE_EXT_PARENT_STYLES);
-}
-function setExtraParentStyles(el, styles) {
-  setNodeExtraData(el, NODE_EXT_PARENT_STYLES, styles);
-}
-function getExtraClassStyle(el) {
-  return getNodeExtraData(el, NODE_EXT_CLASS_STYLE);
-}
-function setExtraClassStyle(el, classStyle) {
-  setNodeExtraData(el, NODE_EXT_CLASS_STYLE, classStyle);
-}
-function getExtraStyle(el) {
-  return getNodeExtraData(el, NODE_EXT_STYLE);
-}
-function setExtraStyle(el, style) {
-  setNodeExtraData(el, NODE_EXT_STYLE, style);
-}
-function isCommentNode(node) {
-  return node.nodeName == "#comment";
-}
-function isExtraTextNode(el) {
-  return getNodeExtraData(el, NODE_EXT_IS_TEXT_NODE) === true;
-}
-function setExtraIsTextNode(el, isTextNode) {
-  setNodeExtraData(el, NODE_EXT_IS_TEXT_NODE, isTextNode);
-}
-function isTextElement(value) {
-  return value instanceof UniTextElement;
-}
-function getExtraChildNode(el) {
-  return getNodeExtraData(el, NODE_EXT_CHILD_NODE);
-}
-function setExtraChildNode(el, childNode) {
-  setNodeExtraData(el, NODE_EXT_CHILD_NODE, childNode);
-}
-function setExtraParentNode(el, parentNode) {
-  setNodeExtraData(el, NODE_EXT_PARENT_NODE, parentNode);
-}
-function getExtraChildNodes(el) {
-  return getNodeExtraData(el, NODE_EXT_CHILD_NODES);
-}
-function setExtraChildNodes(el, childNodes) {
-  setNodeExtraData(el, NODE_EXT_CHILD_NODES, childNodes);
-}
-function getExtraParentNode(el) {
-  return getNodeExtraData(el, NODE_EXT_PARENT_NODE);
-}
-function each(obj) {
-  return Object.keys(obj);
-}
-function useCssStyles(componentStyles) {
-  var normalized = {};
-  if (!isArray$1(componentStyles)) {
-    return normalized;
-  }
-  componentStyles.forEach(componentStyle => {
-    each(componentStyle).forEach(className => {
-      var parentStyles = componentStyle[className];
-      var normalizedStyles = normalized[className] || (normalized[className] = {});
-      each(parentStyles).forEach(parentSelector => {
-        var parentStyle = parentStyles[parentSelector];
-        var normalizedStyle = normalizedStyles[parentSelector] || (normalizedStyles[parentSelector] = {});
-        each(parentStyle).forEach(name => {
-          if (name[0] === "!") {
-            normalizedStyle[name] = parentStyle[name];
-            delete normalizedStyle[name.slice(1)];
-          } else {
-            if (!hasOwn(normalizedStyle, "!" + name)) {
-              normalizedStyle[name] = parentStyle[name];
-            }
-          }
-        });
-      });
-    });
-  });
-  return normalized;
-}
-function hasClass(calssName, el) {
-  var classList = el && el.classList;
-  return classList && classList.includes(calssName);
-}
-var TYPE_RE = /[+~> ]$/;
-var PROPERTY_PARENT_NODE = "parentNode";
-var PROPERTY_PREVIOUS_SIBLING = "previousSibling";
-function isMatchParentSelector(parentSelector, el) {
-  var classArray = parentSelector.split(".");
-  for (var i = classArray.length - 1; i > 0; i--) {
-    var item = classArray[i];
-    var type = item[item.length - 1];
-    var className = item.replace(TYPE_RE, "");
-    if (type === "~" || type === " ") {
-      var property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
-      while (el) {
-        el = el[property];
-        if (hasClass(className, el)) {
-          break;
-        }
-      }
-      if (!el) {
-        return false;
-      }
-    } else {
-      if (type === ">") {
-        el = el && el[PROPERTY_PARENT_NODE];
-      } else if (type === "+") {
-        el = el && el[PROPERTY_PREVIOUS_SIBLING];
-      }
-      if (!hasClass(className, el)) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-var WEIGHT_IMPORTANT = 1e3;
-function parseClassName(_ref26, parentStyles, el) {
-  var {
-    styles,
-    weights
-  } = _ref26;
-  each(parentStyles).forEach(parentSelector => {
-    if (parentSelector && el) {
-      if (!isMatchParentSelector(parentSelector, el)) {
-        return;
-      }
-    }
-    var classWeight = parentSelector.split(".").length;
-    var style = parentStyles[parentSelector];
-    each(style).forEach(name => {
-      var value = style[name];
-      var isImportant = name[0] === "!";
-      if (isImportant) {
-        name = name.slice(1);
-      }
-      var oldWeight = weights[name] || 0;
-      var weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
-      if (weight >= oldWeight) {
-        weights[name] = weight;
-        styles.set(name, value);
-      }
-    });
-  });
-}
-class ParseStyleContext {
-  constructor() {
-    this.styles = /* @__PURE__ */new Map();
-    this.weights = {};
-  }
-}
-function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheets) {
-  var el = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  var context = new ParseStyleContext();
-  classList.forEach(className => {
-    var parentStyles = stylesheet && stylesheet[className];
-    if (parentStyles) {
-      parseClassName(context, parentStyles, el);
-    }
-  });
-  if (parentStylesheets != null) {
-    classList.forEach(className => {
-      var parentStylesheet = (parentStylesheets || []).find(style => style[className] !== null);
-      var parentStyles = parentStylesheet && parentStylesheet[className];
-      if (parentStyles != null) {
-        parseClassName(context, parentStyles, el);
-      }
-    });
-  }
-  return context;
-}
-function parseClassStyles(el) {
-  var styles = getExtraStyles(el);
-  var parentStyles = getExtraParentStyles(el);
-  if (styles == null && parentStyles == null || el.classList.length == 0) {
-    return new ParseStyleContext();
-  }
-  return parseClassListWithStyleSheet(el.classList, styles, parentStyles, el);
-}
-function parseClassList(classList, instance) {
-  var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
-}
-function parseStyleSheet(_ref27) {
-  var {
-    type,
-    appContext,
-    root
-  } = _ref27;
-  var component = type;
-  var pageInstance = root;
-  if (!pageInstance.componentStylesCache) {
-    pageInstance.componentStylesCache = /* @__PURE__ */new Map();
-  }
-  var cache = pageInstance.componentStylesCache.get(component);
-  if (!cache) {
-    var __globalStyles = appContext.provides.__globalStyles;
-    if (appContext && isArray$1(__globalStyles)) {
-      appContext.provides.__globalStyles = useCssStyles(__globalStyles);
-    }
-    var styles = [];
-    if (appContext && __globalStyles) {
-      var globalStyles = isArray$1(__globalStyles) ? __globalStyles : [__globalStyles];
-      styles.push(...globalStyles);
-    }
-    var page = root.type;
-    if (component !== page && isArray$1(page.styles)) {
-      styles.push(...page.styles);
-    }
-    if (isArray$1(component.styles)) {
-      styles.push(...component.styles);
-    }
-    cache = useCssStyles(styles);
-    pageInstance.componentStylesCache.set(component, cache);
-  }
-  return cache;
-}
-function extendMap(a, b) {
-  b.forEach((value, key) => {
-    a.set(key, value);
-  });
-  return a;
-}
-function toStyle(el, classStyle, classStyleWeights) {
-  var res = extendMap(/* @__PURE__ */new Map(), classStyle);
-  var style = getExtraStyle(el);
-  if (style != null) {
-    style.forEach((value, key) => {
-      var weight = classStyleWeights[key];
-      if (weight == null || weight < WEIGHT_IMPORTANT) {
-        res.set(key, value);
-      }
-    });
-  }
-  return res;
-}
-var vShowOriginalDisplay = Symbol("_vod");
-var vShowHidden = Symbol("_vsh");
-var vShow = {
-  beforeMount(el, _ref28, _ref29) {
-    var {
-      value
-    } = _ref28;
-    var {
-      transition
-    } = _ref29;
-    el[vShowOriginalDisplay] = el.style.getPropertyValue("display") === "none" ? "" : "flex";
-    if (transition && value) {
-      transition.beforeEnter(el);
-    } else {
-      setDisplay(el, value);
-    }
-  },
-  mounted(el, _ref30, _ref31) {
-    var {
-      value
-    } = _ref30;
-    var {
-      transition
-    } = _ref31;
-    if (transition && value) {
-      transition.enter(el);
-    }
-  },
-  updated(el, _ref32, _ref33) {
-    var {
-      value,
-      oldValue
-    } = _ref32;
-    var {
-      transition
-    } = _ref33;
-    if (!value === !oldValue) return;
-    if (transition) {
-      if (value) {
-        transition.beforeEnter(el);
-        setDisplay(el, true);
-        transition.enter(el);
-      } else {
-        transition.leave(el, () => {
-          setDisplay(el, false);
-        });
-      }
-    } else {
-      setDisplay(el, value);
-    }
-  },
-  beforeUnmount(el, _ref34) {
-    var {
-      value
-    } = _ref34;
-    setDisplay(el, value);
-  }
-};
-function setDisplay(el, value) {
-  el.style.setProperty("display", value ? el[vShowOriginalDisplay] : "none");
-  el[vShowHidden] = !value;
-}
-function patchClass(el, pre, next) {
-  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  if (!instance) {
-    return;
-  }
-  var classList = next ? next.split(" ") : [];
-  el.classList = classList;
-  setExtraStyles(el, parseStyleSheet(instance));
-  if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
-    setExtraParentStyles(el, instance.parent.type.styles);
-  }
-  updateClassStyles(el);
-}
-function updateClassStyles(el) {
-  if (el.parentNode == null || isCommentNode(el)) {
-    return;
-  }
-  if (getExtraClassStyle(el) == null) {
-    setExtraClassStyle(el, /* @__PURE__ */new Map());
-  }
-  var oldClassStyle = getExtraClassStyle(el);
-  oldClassStyle.forEach((_value, key) => {
-    oldClassStyle.set(key, "");
-  });
-  var parseClassStylesResult = parseClassStyles(el);
-  parseClassStylesResult.styles.forEach((value, key) => {
-    oldClassStyle.set(key, value);
-  });
-  var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
-  if (styles.size == 0) {
-    return;
-  }
-  if (el[vShowHidden]) {
-    styles.set("display", "none");
-  }
-  el.updateStyle(styles);
 }
 var rootDocument;
 function getDocument() {
@@ -11079,14 +11178,6 @@ var nodeOps = {
     return null;
   }
 };
-function updateChildrenClassStyle(el) {
-  if (el !== null) {
-    el.childNodes.forEach(child => {
-      updateClassStyles(child);
-      updateChildrenClassStyle(child);
-    });
-  }
-}
 function patchAttr(el, key, value) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
   if (instance) {
@@ -11219,105 +11310,6 @@ function createInvoker(initialValue, instance) {
   }
   invoker.modifiers = [...modifiers];
   return invoker;
-}
-var processDeclaration = expand({
-  type: "uvue"
-}).Declaration;
-function createDeclaration(prop, value) {
-  var newValue = value + "";
-  if (newValue.includes("!important")) {
-    return {
-      prop,
-      value: newValue.replace(/\s*!important/, ""),
-      important: true
-    };
-  }
-  return {
-    prop,
-    value: newValue,
-    important: false
-  };
-}
-function normalizeStyle(name, value) {
-  var decl = Object.assign({}, {
-    replaceWith(newProps) {
-      props = newProps;
-    }
-  }, createDeclaration(name, value));
-  var props = [decl];
-  processDeclaration(decl);
-  return props;
-}
-function setStyle(expandRes) {
-  var resArr = expandRes.map(item => {
-    return [item.prop, item.value];
-  });
-  var resMap = new Map(resArr);
-  return resMap;
-}
-function parseStyleDecl(prop, value) {
-  var val = normalizeStyle(prop, value);
-  var res = setStyle(val);
-  return res;
-}
-function isSame(a, b) {
-  return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
-}
-function patchStyle(el, prev, next) {
-  if (!next) {
-    return;
-  }
-  if (isString(next)) {
-    next = parseStringStyle(next);
-  }
-  var batchedStyles = /* @__PURE__ */new Map();
-  var isPrevObj = prev && !isString(prev);
-  if (isPrevObj) {
-    (function () {
-      var classStyle = getExtraClassStyle(el);
-      var style = getExtraStyle(el);
-      for (var key in prev) {
-        if (next[key] == null) {
-          var _key = key.startsWith("--") ? key : camelize(key);
-          var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-          parseStyleDecl(_key, value).forEach((value2, key2) => {
-            batchedStyles.set(key2, value2);
-            style && style.delete(key2);
-          });
-        }
-      }
-      for (var _key33 in next) {
-        var _value2 = next[_key33];
-        var prevValue = prev[_key33];
-        if (!isSame(prevValue, _value2)) {
-          var _key34 = _key33.startsWith("--") ? _key33 : camelize(_key33);
-          parseStyleDecl(_key34, _value2).forEach((value2, key2) => {
-            batchedStyles.set(key2, value2);
-            style && style.set(key2, value2);
-          });
-        }
-      }
-    })();
-  } else {
-    for (var key in next) {
-      var value = next[key];
-      var _key = key.startsWith("--") ? key : camelize(key);
-      setBatchedStyles(batchedStyles, _key, value);
-    }
-    setExtraStyle(el, batchedStyles);
-  }
-  if (batchedStyles.size == 0) {
-    return;
-  }
-  if (el[vShowHidden]) {
-    batchedStyles.set("display", "none");
-  }
-  el.updateStyle(batchedStyles);
-}
-function setBatchedStyles(batchedStyles, key, value) {
-  parseStyleDecl(key, value).forEach((value2, key2) => {
-    batchedStyles.set(key2, value2);
-  });
 }
 var vModelTags = ["u-input", "u-textarea"];
 var patchProp = (el, key, prevValue, nextValue, namespace, parentComponent, hostInstance) => {
@@ -11489,9 +11481,6 @@ var withKeys = (fn, modifiers) => {
     }
   };
 };
-function shouldSetAsProp(el, key, value, isSVG) {
-  return false;
-}
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
@@ -11653,4 +11642,4 @@ var defineComponent = options => {
 };
 var ssrRef = ref;
 var shallowSsrRef = shallowRef;
-export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, ReactiveEffect, Static, Suspense, Teleport, Text$1 as Text, TrackOpTypes, TriggerOpTypes, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createMountPage, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, effect, effectScope, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getCurrentWatcher, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, reactive, readonly, ref, registerHMR, registerRuntimeCompiler, remove, render, renderComponentSlot, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle$1 as setStyle, setText, setTransitionHooks, setValue, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrRef, ssrUtils, startMeasure, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };
+export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, ReactiveEffect, Static, Suspense, Teleport, Text$1 as Text, TrackOpTypes, TriggerOpTypes, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createMountPage, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, effect, effectScope, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getCurrentWatcher, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, reactive, readonly, ref, registerHMR, registerRuntimeCompiler, remove, render, renderComponentSlot, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrRef, ssrUtils, startMeasure, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };

@@ -3,9 +3,10 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$1 } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$2 } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 import PromisePolyfill from 'promise-polyfill';
+import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
@@ -121,12 +122,12 @@ function canSetValueDirectly(tagName) {
 const GLOBALS_ALLOWED = "Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error,Symbol";
 const isGloballyAllowed = /* @__PURE__ */ makeMap(GLOBALS_ALLOWED);
 
-function normalizeStyle(value) {
+function normalizeStyle$1(value) {
   if (isArray(value)) {
     const res = {};
     for (let i = 0; i < value.length; i++) {
       const item = value[i];
-      const normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
+      const normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$1(item);
       if (normalized) {
         for (const key in normalized) {
           res[key] = normalized[key];
@@ -4526,7 +4527,7 @@ function propHasMismatch(el, key, clientValue, vnode, instance) {
     }
   } else if (key === "style") {
     actual = el.getAttribute("style") || "";
-    expected = isString(clientValue) ? clientValue : stringifyStyle(normalizeStyle(clientValue));
+    expected = isString(clientValue) ? clientValue : stringifyStyle(normalizeStyle$1(clientValue));
     const actualMap = toStyleMap(actual);
     const expectedMap = toStyleMap(expected);
     if (vnode.dirs) {
@@ -10146,7 +10147,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
       if (isProxy(style) && !isArray(style)) {
         style = extend({}, style);
       }
-      props.style = normalizeStyle$1(style);
+      props.style = normalizeStyle$2(style);
     }
   }
   const shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
@@ -10322,7 +10323,7 @@ function mergeProps(...args) {
           ret.class = normalizeClass$1([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        ret.style = normalizeStyle$1([ret.style, toMerge.style]);
+        ret.style = normalizeStyle$2([ret.style, toMerge.style]);
       } else if (isOn(key)) {
         const existing = ret[key];
         const incoming = toMerge[key];
@@ -11396,7 +11397,7 @@ function forceReflow() {
   return document.body.offsetHeight;
 }
 
-function patchClass(el, value, isSVG) {
+function patchClass$1(el, value, isSVG) {
   const transitionClasses = el[vtcKey];
   if (transitionClasses) {
     value = (value ? [value, ...transitionClasses] : [...transitionClasses]).join(" ");
@@ -11411,7 +11412,7 @@ function patchClass(el, value, isSVG) {
 }
 
 const vShowOriginalDisplay = Symbol("_vod");
-const vShowHidden = Symbol("_vsh");
+const vShowHidden$1 = Symbol("_vsh");
 const vShow = {
   beforeMount(el, { value }, { transition }) {
     el[vShowOriginalDisplay] = el.style.display === "none" ? "" : el.style.display;
@@ -11451,7 +11452,7 @@ const vShow = {
 }
 function setDisplay$1(el, value) {
   el.style.display = value ? el[vShowOriginalDisplay] : "none";
-  el[vShowHidden] = !value;
+  el[vShowHidden$1] = !value;
 }
 
 const CSS_VAR_TEXT = Symbol("CSS_VAR_TEXT" );
@@ -11527,7 +11528,7 @@ function setVarsOnNode(el, vars) {
 }
 
 const displayRE = /(^|;)\s*display\s*:/;
-function patchStyle(el, prev, next) {
+function patchStyle$1(el, prev, next) {
   const style = el.style;
   const isCssString = isString(next);
   let hasControlledDisplay = false;
@@ -11536,14 +11537,14 @@ function patchStyle(el, prev, next) {
       if (!isString(prev)) {
         for (const key in prev) {
           if (next[key] == null) {
-            setStyle$1(style, key, "");
+            setStyle$2(style, key, "");
           }
         }
       } else {
         for (const prevStyle of prev.split(";")) {
           const key = prevStyle.slice(0, prevStyle.indexOf(":")).trim();
           if (next[key] == null) {
-            setStyle$1(style, key, "");
+            setStyle$2(style, key, "");
           }
         }
       }
@@ -11552,7 +11553,7 @@ function patchStyle(el, prev, next) {
       if (key === "display") {
         hasControlledDisplay = true;
       }
-      setStyle$1(style, key, next[key]);
+      setStyle$2(style, key, next[key]);
     }
   } else {
     if (isCssString) {
@@ -11570,16 +11571,16 @@ function patchStyle(el, prev, next) {
   }
   if (vShowOriginalDisplay in el) {
     el[vShowOriginalDisplay] = hasControlledDisplay ? style.display : "";
-    if (el[vShowHidden]) {
+    if (el[vShowHidden$1]) {
       style.display = "none";
     }
   }
 }
 const semicolonRE = /[^\\];\s*$/;
 const importantRE = /\s*!important$/;
-function setStyle$1(style, name, rawVal) {
+function setStyle$2(style, name, rawVal) {
   if (isArray(rawVal)) {
-    rawVal.forEach((v) => setStyle$1(style, name, v));
+    rawVal.forEach((v) => setStyle$2(style, name, v));
   } else {
     const val = rawVal == null ? "" : String(rawVal);
     {
@@ -11785,14 +11786,14 @@ function patchStopImmediatePropagation(e, value) {
 const patchProp = (el, key, prevValue, nextValue, namespace, parentComponent) => {
   const isSVG = namespace === "svg";
   if (key === "class") {
-    patchClass(el, nextValue, isSVG);
+    patchClass$1(el, nextValue, isSVG);
   } else if (key === "style") {
-    patchStyle(el, prevValue, nextValue);
+    patchStyle$1(el, prevValue, nextValue);
   } else if (isOn(key)) {
     if (!isModelListener(key)) {
       patchEvent(el, key, prevValue, nextValue, parentComponent);
     }
-  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp(el, key, nextValue, isSVG)) {
+  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp$1(el, key, nextValue, isSVG)) {
     patchDOMProp(el, key, nextValue);
     if (!el.tagName.includes("-") && (key === "value" || key === "checked" || key === "selected")) {
       patchAttr(el, key, nextValue, isSVG, parentComponent, key !== "value");
@@ -11811,7 +11812,7 @@ const patchProp = (el, key, prevValue, nextValue, namespace, parentComponent) =>
     patchAttr(el, key, nextValue, isSVG);
   }
 };
-function shouldSetAsProp(el, key, value, isSVG) {
+function shouldSetAsProp$1(el, key, value, isSVG) {
   if (isSVG) {
     if (key === "innerHTML" || key === "textContent") {
       return true;
@@ -12992,6 +12993,279 @@ function locateHydrationNodeImpl() {
   currentHydrationNode = node;
 }
 
+const NODE_EXT_STYLES = "styles";
+const NODE_EXT_PARENT_STYLES = "parentStyles";
+const NODE_EXT_CLASS_STYLE = "classStyle";
+const NODE_EXT_STYLE = "style";
+function setNodeExtraData(el, name, value) {
+  el.ext.set(name, value);
+}
+function getNodeExtraData(el, name) {
+  return el.ext.get(name);
+}
+function getExtraStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLES);
+}
+function setExtraStyles(el, styles) {
+  setNodeExtraData(el, NODE_EXT_STYLES, styles);
+}
+function getExtraParentStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_PARENT_STYLES);
+}
+function setExtraParentStyles(el, styles) {
+  setNodeExtraData(el, NODE_EXT_PARENT_STYLES, styles);
+}
+function getExtraClassStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_CLASS_STYLE);
+}
+function setExtraClassStyle(el, classStyle) {
+  setNodeExtraData(el, NODE_EXT_CLASS_STYLE, classStyle);
+}
+function getExtraStyle(el) {
+  return getNodeExtraData(el, NODE_EXT_STYLE);
+}
+function setExtraStyle(el, style) {
+  setNodeExtraData(el, NODE_EXT_STYLE, style);
+}
+function isCommentNode(node) {
+  return node.nodeName == "#comment";
+}
+
+function each(obj) {
+  return Object.keys(obj);
+}
+function useCssStyles(componentStyles) {
+  const normalized = {};
+  if (!isArray(componentStyles)) {
+    return normalized;
+  }
+  componentStyles.forEach((componentStyle) => {
+    each(componentStyle).forEach((className) => {
+      const parentStyles = componentStyle[className];
+      const normalizedStyles = normalized[className] || (normalized[className] = {});
+      each(parentStyles).forEach((parentSelector) => {
+        const parentStyle = parentStyles[parentSelector];
+        const normalizedStyle = normalizedStyles[parentSelector] || (normalizedStyles[parentSelector] = {});
+        each(parentStyle).forEach((name) => {
+          if (name[0] === "!") {
+            normalizedStyle[name] = parentStyle[name];
+            delete normalizedStyle[name.slice(1)];
+          } else {
+            if (!hasOwn(normalizedStyle, "!" + name)) {
+              normalizedStyle[name] = parentStyle[name];
+            }
+          }
+        });
+      });
+    });
+  });
+  return normalized;
+}
+function hasClass(calssName, el) {
+  const classList = el && el.classList;
+  return classList && classList.includes(calssName);
+}
+const TYPE_RE = /[+~> ]$/;
+const PROPERTY_PARENT_NODE = "parentNode";
+const PROPERTY_PREVIOUS_SIBLING = "previousSibling";
+function isMatchParentSelector(parentSelector, el) {
+  const classArray = parentSelector.split(".");
+  for (let i = classArray.length - 1; i > 0; i--) {
+    const item = classArray[i];
+    const type = item[item.length - 1];
+    const className = item.replace(TYPE_RE, "");
+    if (type === "~" || type === " ") {
+      const property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
+      while (el) {
+        el = el[property];
+        if (hasClass(className, el)) {
+          break;
+        }
+      }
+      if (!el) {
+        return false;
+      }
+    } else {
+      if (type === ">") {
+        el = el && el[PROPERTY_PARENT_NODE];
+      } else if (type === "+") {
+        el = el && el[PROPERTY_PREVIOUS_SIBLING];
+      }
+      if (!hasClass(className, el)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+const WEIGHT_IMPORTANT = 1e3;
+function parseClassName({ styles, weights }, parentStyles, el) {
+  each(parentStyles).forEach((parentSelector) => {
+    if (parentSelector && el) {
+      if (!isMatchParentSelector(parentSelector, el)) {
+        return;
+      }
+    }
+    const classWeight = parentSelector.split(".").length;
+    const style = parentStyles[parentSelector];
+    each(style).forEach((name) => {
+      const value = style[name];
+      const isImportant = name[0] === "!";
+      if (isImportant) {
+        name = name.slice(1);
+      }
+      const oldWeight = weights[name] || 0;
+      const weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
+      if (weight >= oldWeight) {
+        weights[name] = weight;
+        styles.set(name, value);
+      }
+    });
+  });
+}
+class ParseStyleContext {
+  constructor() {
+    this.styles = /* @__PURE__ */ new Map();
+    this.weights = {};
+  }
+}
+function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheets, el = null) {
+  const context = new ParseStyleContext();
+  classList.forEach((className) => {
+    const parentStyles = stylesheet && stylesheet[className];
+    if (parentStyles) {
+      parseClassName(context, parentStyles, el);
+    }
+  });
+  if (parentStylesheets != null) {
+    classList.forEach((className) => {
+      const parentStylesheet = (parentStylesheets || []).find(
+        (style) => style[className] !== null
+      );
+      const parentStyles = parentStylesheet && parentStylesheet[className];
+      if (parentStyles != null) {
+        parseClassName(context, parentStyles, el);
+      }
+    });
+  }
+  return context;
+}
+function parseClassStyles(el) {
+  const styles = getExtraStyles(el);
+  const parentStyles = getExtraParentStyles(el);
+  if (styles == null && parentStyles == null || el.classList.length == 0) {
+    return new ParseStyleContext();
+  }
+  return parseClassListWithStyleSheet(el.classList, styles, parentStyles, el);
+}
+function parseStyleSheet({
+  type,
+  appContext,
+  root
+}) {
+  const component = type;
+  const pageInstance = root;
+  if (!pageInstance.componentStylesCache) {
+    pageInstance.componentStylesCache = /* @__PURE__ */ new Map();
+  }
+  let cache = pageInstance.componentStylesCache.get(component);
+  if (!cache) {
+    const __globalStyles = appContext.provides.__globalStyles;
+    if (appContext && isArray(__globalStyles)) {
+      appContext.provides.__globalStyles = useCssStyles(__globalStyles);
+    }
+    const styles = [];
+    if (appContext && __globalStyles) {
+      const globalStyles = isArray(__globalStyles) ? __globalStyles : [__globalStyles];
+      styles.push(...globalStyles);
+    }
+    const page = root == null ? void 0 : root.type;
+    if (page && component !== page && isArray(page.styles)) {
+      styles.push(...page.styles);
+    }
+    if (isArray(component.styles)) {
+      styles.push(...component.styles);
+    }
+    cache = useCssStyles(styles);
+    pageInstance.componentStylesCache.set(component, cache);
+  }
+  return cache;
+}
+function extendMap(a, b) {
+  b.forEach((value, key) => {
+    a.set(key, value);
+  });
+  return a;
+}
+function toStyle(el, classStyle, classStyleWeights) {
+  const res = extendMap(/* @__PURE__ */ new Map(), classStyle);
+  const style = getExtraStyle(el);
+  if (style != null) {
+    style.forEach((value, key) => {
+      const weight = classStyleWeights[key];
+      if (weight == null || weight < WEIGHT_IMPORTANT) {
+        res.set(key, value);
+      }
+    });
+  }
+  return res;
+}
+
+const vShowHidden = Symbol("_vsh");
+
+function patchClass(el, pre, next, instance = null) {
+  var _a;
+  if (!instance) {
+    return;
+  }
+  const classList = next ? next.split(" ") : [];
+  el.classList = classList;
+  setExtraStyles(el, parseStyleSheet(instance));
+  if (instance.parent != null && instance !== instance.root) {
+    const isRootEl = el === ((_a = instance.subTree) == null ? void 0 : _a.el) || // @ts-expect-error
+    instance.block === el;
+    if (isRootEl) {
+      setExtraParentStyles(
+        el,
+        instance.parent.type.styles
+      );
+    }
+  }
+  updateClassStyles(el);
+}
+function updateClassStyles(el) {
+  if (el.parentNode == null || isCommentNode(el)) {
+    return;
+  }
+  if (getExtraClassStyle(el) == null) {
+    setExtraClassStyle(el, /* @__PURE__ */ new Map());
+  }
+  const oldClassStyle = getExtraClassStyle(el);
+  oldClassStyle.forEach((_value, key) => {
+    oldClassStyle.set(key, "");
+  });
+  const parseClassStylesResult = parseClassStyles(el);
+  parseClassStylesResult.styles.forEach((value, key) => {
+    oldClassStyle.set(key, value);
+  });
+  const styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
+  if (styles.size == 0) {
+    return;
+  }
+  if (el[vShowHidden]) {
+    styles.set("display", "none");
+  }
+  el.updateStyle(styles);
+}
+function updateChildrenClassStyle(el) {
+  if (el !== null) {
+    el.childNodes.forEach((child) => {
+      updateClassStyles(child);
+      updateChildrenClassStyle(child);
+    });
+  }
+}
+
 class VaporFragment {
   constructor(nodes) {
     this.nodes = nodes;
@@ -13051,6 +13325,10 @@ function insert(block, parent, anchor = null) {
   if (block instanceof Node) {
     if (!isHydrating) {
       parent.insertBefore(block, anchor);
+      if (parent.isConnected) {
+        updateClassStyles(block);
+        updateChildrenClassStyle(block);
+      }
     }
   } else if (isVaporComponent(block)) {
     if (block.isMounted) {
@@ -13470,14 +13748,14 @@ const rawPropsProxyHandlers = {
 };
 
 function addEventListener(el, event, handler, options) {
-  el.addEventListener(event, handler, options);
-  return () => el.removeEventListener(event, handler, options);
+  el.addEventListener(event, handler);
+  return () => el.removeEventListener(event, handler);
 }
 function on(el, event, handler, options = {}) {
-  addEventListener(el, event, handler, options);
+  addEventListener(el, event, handler);
   if (options.effect) {
     onEffectCleanup(() => {
-      el.removeEventListener(event, handler, options);
+      el.removeEventListener(event, handler);
     });
   }
 }
@@ -13539,6 +13817,111 @@ function setDynamicEvents(el, events) {
   }
 }
 
+const processDeclaration = expand({ type: "uvue" }).Declaration;
+function createDeclaration(prop, value) {
+  const newValue = value + "";
+  if (newValue.includes("!important")) {
+    return {
+      prop,
+      value: newValue.replace(/\s*!important/, ""),
+      important: true
+    };
+  }
+  return {
+    prop,
+    value: newValue,
+    important: false
+  };
+}
+function normalizeStyle(name, value) {
+  const decl = Object.assign(
+    {},
+    {
+      replaceWith(newProps) {
+        props = newProps;
+      }
+    },
+    createDeclaration(name, value)
+  );
+  let props = [decl];
+  processDeclaration(decl);
+  return props;
+}
+function setStyle$1(expandRes) {
+  const resArr = expandRes.map((item) => {
+    return [item.prop, item.value];
+  });
+  const resMap = new Map(resArr);
+  return resMap;
+}
+function parseStyleDecl(prop, value) {
+  const val = normalizeStyle(prop, value);
+  const res = setStyle$1(val);
+  return res;
+}
+
+function isSame(a, b) {
+  return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
+}
+function patchStyle(el, prev, next) {
+  if (!next) {
+    return;
+  }
+  if (isString(next)) {
+    next = parseStringStyle(next);
+  }
+  const batchedStyles = /* @__PURE__ */ new Map();
+  const isPrevObj = prev && !isString(prev);
+  if (isPrevObj) {
+    const classStyle = getExtraClassStyle(el);
+    const style = getExtraStyle(el);
+    for (const key in prev) {
+      if (next[key] == null) {
+        const _key = key.startsWith("--") ? key : camelize(key);
+        const value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
+        parseStyleDecl(_key, value).forEach((value2, key2) => {
+          batchedStyles.set(key2, value2);
+          style && style.delete(key2);
+        });
+      }
+    }
+    for (const key in next) {
+      const value = next[key];
+      const prevValue = prev[key];
+      if (!isSame(prevValue, value)) {
+        const _key = key.startsWith("--") ? key : camelize(key);
+        parseStyleDecl(_key, value).forEach((value2, key2) => {
+          batchedStyles.set(key2, value2);
+          style && style.set(key2, value2);
+        });
+      }
+    }
+  } else {
+    for (const key in next) {
+      const value = next[key];
+      const _key = key.startsWith("--") ? key : camelize(key);
+      setBatchedStyles(batchedStyles, _key, value);
+    }
+    setExtraStyle(el, batchedStyles);
+  }
+  if (batchedStyles.size == 0) {
+    return;
+  }
+  if (el[vShowHidden]) {
+    batchedStyles.set("display", "none");
+  }
+  el.updateStyle(batchedStyles);
+}
+function setBatchedStyles(batchedStyles, key, value) {
+  parseStyleDecl(key, value).forEach((value2, key2) => {
+    batchedStyles.set(key2, value2);
+  });
+}
+
+function shouldSetAsProp(el, key, value, isSVG) {
+  return false;
+}
+
 const hasFallthroughKey = (key) => currentInstance.hasFallthrough && key in currentInstance.attrs;
 function setProp(el, key, value) {
   if (key in el) {
@@ -13597,40 +13980,21 @@ function setDOMProp(el, key, value) {
   needRemove && el.removeAttribute(key);
 }
 function setClass(el, value) {
-  if (el.$root) {
-    setClassIncremental(el, value);
-  } else if ((value = normalizeClass$1(value)) !== el.$cls) {
-    el.className = el.$cls = value;
-  }
-}
-function setClassIncremental(el, value) {
-  const cacheKey = `$clsi${isApplyingFallthroughProps ? "$" : ""}`;
-  const prev = el[cacheKey];
-  if ((value = el[cacheKey] = normalizeClass$1(value)) !== prev) {
-    const nextList = value.split(/\s+/);
-    if (value) {
-      el.classList.add(...nextList);
-    }
-    if (prev) {
-      for (const cls of prev.split(/\s+/)) {
-        if (!nextList.includes(cls)) el.classList.remove(cls);
-      }
-    }
-  }
+  patchClass(el, null, normalizeClass$1(value), getCurrentGenericInstance());
 }
 function setStyle(el, value) {
   if (el.$root) {
     setStyleIncremental(el, value);
   } else {
     const prev = el.$sty;
-    value = el.$sty = normalizeStyle$1(value);
+    value = el.$sty = normalizeStyle$2(value);
     patchStyle(el, prev, value);
   }
 }
 function setStyleIncremental(el, value) {
   const cacheKey = `$styi${isApplyingFallthroughProps ? "$" : ""}`;
   const prev = el[cacheKey];
-  value = el[cacheKey] = isString(value) ? parseStringStyle(value) : normalizeStyle$1(value);
+  value = el[cacheKey] = isString(value) ? parseStringStyle(value) : normalizeStyle$2(value);
   patchStyle(el, prev, value);
   return value;
 }
@@ -13655,14 +14019,12 @@ function setText(el, value) {
 }
 function setElementText(el, value) {
   if (el.$txt !== (value = toDisplayString(value))) {
-    el.textContent = el.$txt = value;
+    el.setAttribute("value", el.$txt = value);
   }
 }
 function setHtml(el, value) {
   value = value == null ? "" : value;
-  if (el.$html !== value) {
-    el.innerHTML = el.$html = value;
-  }
+  if (el.$html !== value) ;
 }
 function setDynamicProps(el, args) {
   const props = args.length > 1 ? mergeProps(...args) : args[0];
@@ -13680,14 +14042,13 @@ function setDynamicProps(el, args) {
   }
 }
 function setDynamicProp(el, key, value) {
-  const isSVG = false;
   if (key === "class") {
     setClass(el, value);
   } else if (key === "style") {
     setStyle(el, value);
   } else if (isOn(key)) {
     on(el, key[2].toLowerCase() + key.slice(3), value, { effect: true });
-  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp(el, key, value, isSVG)) {
+  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp()) {
     if (key === "innerHTML") {
       setHtml(el, value);
     } else if (key === "textContent") {
@@ -13934,7 +14295,6 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
     } else {
       instance.devtoolsRawSetupState = setupResult;
       instance.setupState = proxyRefs(setupResult);
-      instance.setupState.$nativePage = instance.proxy.$nativePage;
       devRender(instance);
       if (component.__hmrId) {
         registerHMR(instance);
@@ -14914,7 +15274,7 @@ function setDisplay(target, value) {
       el[vShowOriginalDisplay] = el.style.display === "none" ? "" : el.style.display;
     }
     el.style.display = value ? el[vShowOriginalDisplay] : "none";
-    el[vShowHidden] = !value;
+    el[vShowHidden$1] = !value;
   } else {
     warn(
       `v-show used on component with non-single-element root node and will be ignored.`
@@ -14992,4 +15352,4 @@ function withVaporDirectives(node, dirs) {
   }
 }
 
-export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, ReactiveEffect, Static, Suspense, Teleport, Text$1 as Text, TrackOpTypes, Transition, TransitionGroup, TriggerOpTypes, VaporFragment, VueElement, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, child, cloneVNode, compatUtils, compile, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createPropsRestProxy, createRenderer, createSSRApp, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, createVaporSSRApp, currentInstance, customRef, defineAsyncComponent, defineComponent, defineCustomElement, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSSRCustomElement, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, effect, effectScope, endMeasure, ensureRenderer, expose, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getCurrentWatcher, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrate, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initDirectivesForSSR, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, normalizeContainer, nthChild, on, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, onWatcherCleanup, openBlock, patchStyle, popScopeId, popWarningContext, prepend, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, reactive, readonly, ref, registerHMR, registerRuntimeCompiler, remove, render, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, shallowReactive, shallowReadonly, shallowRef, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, stop, template, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountComponent, unref, unregisterHMR, useAttrs, useCssModule, useCssVars, useHost, useId, useModel, useSSRContext, useShadowRoot, useSlots, useTemplateRef, useTransitionState, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };
+export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, ReactiveEffect, Static, Suspense, Teleport, Text$1 as Text, TrackOpTypes, Transition, TransitionGroup, TriggerOpTypes, VaporFragment, VueElement, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, child, cloneVNode, compatUtils, compile, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createPropsRestProxy, createRenderer, createSSRApp, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, createVaporSSRApp, currentInstance, customRef, defineAsyncComponent, defineComponent, defineCustomElement, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSSRCustomElement, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, effect, effectScope, endMeasure, ensureRenderer, expose, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getCurrentWatcher, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrate, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initDirectivesForSSR, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, normalizeContainer, nthChild, on, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, onWatcherCleanup, openBlock, patchStyle$1 as patchStyle, popScopeId, popWarningContext, prepend, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, reactive, readonly, ref, registerHMR, registerRuntimeCompiler, remove, render, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, shallowReactive, shallowReadonly, shallowRef, shouldSetAsProp$1 as shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, stop, template, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountComponent, unref, unregisterHMR, useAttrs, useCssModule, useCssVars, useHost, useId, useModel, useSSRContext, useShadowRoot, useSlots, useTemplateRef, useTransitionState, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden$1 as vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };

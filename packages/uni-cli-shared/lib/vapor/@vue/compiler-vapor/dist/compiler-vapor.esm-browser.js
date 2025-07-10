@@ -21456,6 +21456,7 @@ const defaultOptions = {
   isTS: false,
   // fixed by uts
   disableEventDelegation: false,
+  disableClassBinding: false,
   onError: defaultOnError,
   onWarn: defaultOnWarn
 };
@@ -23734,7 +23735,8 @@ class CodegenContext {
       // fixed by uts
       templateMode: "string",
       disableEventDelegation: false,
-      parseStaticStyle: (style) => JSON.stringify(style)
+      parseStaticStyle: (style) => JSON.stringify(style),
+      disableClassBinding: false
     };
     this.options = extend(defaultOptions, options);
     this.block = ir.block;
@@ -23785,7 +23787,12 @@ function generate(ir, options = {}) {
   const codeFragments = genBlockContent(ir.block, context, true);
   if (options.templateMode === "factory") {
     if (ir.template.length > 0 || context.delegates.size > 0) {
-      push(NEWLINE, `const $doc = _ctx.$nativePage.document`);
+      push(
+        NEWLINE,
+        `const $ins = ${context.helper("getCurrentGenericInstance")}()`
+      );
+      push(NEWLINE, `const $proxy = $ins.proxy!`);
+      push(NEWLINE, `const $doc = $proxy.$nativePage.document`);
     }
     if (context.delegates.size) {
       const delegatesCall = genCall(
@@ -24061,6 +24068,21 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
     for (const prop of propsResult[1]) {
       const { key, values } = prop;
       if (key.isStatic && values.length === 1 && values[0].isStatic) {
+        if (context.options.disableClassBinding && key.content === "class") {
+          dynamicProps.push(key.content);
+          context.registerEffect(
+            values,
+            {
+              type: 2,
+              element: context.reference(),
+              prop,
+              root: singleRoot,
+              tag
+            },
+            getEffectIndex
+          );
+          continue;
+        }
         template += ` ${key.content}`;
         if (values[0].content) template += `="${values[0].content}"`;
       } else {

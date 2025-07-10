@@ -81,6 +81,8 @@ export function initPluginVueOptions(
     ;(compilerOptions as any).templateMode = 'factory'
     // 目前禁用事件委托
     ;(compilerOptions as any).disableEventDelegation = true
+    // 禁用 class 绑定，全部编译为 setClass 模式
+    ;(compilerOptions as any).disableClassBinding = true
     // 解析静态样式
     ;(compilerOptions as any).parseStaticStyle = (style: string) => {
       return parseInlineStyleSync(style, {
