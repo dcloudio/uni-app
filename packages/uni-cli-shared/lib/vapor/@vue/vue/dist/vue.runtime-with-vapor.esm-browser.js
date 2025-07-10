@@ -14145,7 +14145,7 @@ function getSlot(target, key) {
     return target[key];
   }
 }
-function createSlot(name, rawProps, fallback) {
+function createSlot(doc, name, rawProps, fallback) {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
   if (isHydrating) {
@@ -14166,7 +14166,10 @@ function createSlot(name, rawProps, fallback) {
       fallback
     );
   } else {
-    fragment = new DynamicFragment("slot") ;
+    fragment = (
+      // fixed by uts
+      new DynamicFragment(doc, "slot")
+    ) ;
     const isDynamicName = isFunction(name);
     const renderSlot = () => {
       const slot = getSlot(rawSlots, isFunction(name) ? name() : name);
@@ -15239,7 +15242,10 @@ function createDynamicComponent(doc, getter, rawProps, rawSlots, isSingleRoot) {
   } else {
     resetInsertionState();
   }
-  const frag = new DynamicFragment("dynamic-component") ;
+  const frag = (
+    // fixed by uts
+    new DynamicFragment(doc, "dynamic-component")
+  ) ;
   renderEffect(() => {
     const value = getter();
     frag.update(

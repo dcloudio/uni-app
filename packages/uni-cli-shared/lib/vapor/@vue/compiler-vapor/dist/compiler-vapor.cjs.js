@@ -1833,15 +1833,18 @@ function genSlotOutlet(oper, context) {
   if (fallback) {
     fallbackArg = genBlock(fallback, context);
   }
+  const slotArgs = [
+    nameExpr,
+    genRawProps(oper.props, context) || "null",
+    fallbackArg
+  ];
+  if (context.options.templateMode === "factory") {
+    slotArgs.unshift(`$doc`);
+  }
   push(
     NEWLINE,
     `const n${id} = `,
-    ...genCall(
-      helper("createSlot"),
-      nameExpr,
-      genRawProps(oper.props, context) || "null",
-      fallbackArg
-    )
+    ...genCall(helper("createSlot"), ...slotArgs)
   );
   return frag;
 }
@@ -2545,7 +2548,7 @@ function generate(ir, options = {}) {
   }
   const codeFragments = genBlockContent(ir.block, context, true);
   if (options.templateMode === "factory") {
-    if (ir.template.length > 0 || context.delegates.size > 0 || context.helpers.has("createDynamicComponent") || context.helpers.has("createComponentWithFallback") || context.helpers.has("createIf") || context.helpers.has("createFor")) {
+    if (ir.template.length > 0 || context.delegates.size > 0 || context.helpers.has("createDynamicComponent") || context.helpers.has("createComponentWithFallback") || context.helpers.has("createIf") || context.helpers.has("createFor") || context.helpers.has("createSlot")) {
       push(
         NEWLINE,
         `const $ins = ${context.helper("getCurrentGenericInstance")}()`

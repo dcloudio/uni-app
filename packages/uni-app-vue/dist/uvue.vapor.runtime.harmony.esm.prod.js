@@ -10153,7 +10153,7 @@ function getSlot(target, key) {
     return target[key];
   }
 }
-function createSlot(name, rawProps, fallback) {
+function createSlot(doc, name, rawProps, fallback) {
   var _insertionParent = insertionParent;
   var _insertionAnchor = insertionAnchor;
   {
@@ -10166,7 +10166,9 @@ function createSlot(name, rawProps, fallback) {
   if (isRef(rawSlots._)) {
     fragment = instance.appContext.vapor.vdomSlot(rawSlots._, name, slotProps, instance, fallback);
   } else {
-    fragment = new DynamicFragment();
+    fragment =
+    // fixed by uts
+    new DynamicFragment(doc);
     var isDynamicName = isFunction(name);
     var _renderSlot = () => {
       var slot = getSlot(rawSlots, isFunction(name) ? name() : name);
@@ -11004,7 +11006,9 @@ function createDynamicComponent(doc, getter, rawProps, rawSlots, isSingleRoot) {
   {
     resetInsertionState();
   }
-  var frag = new DynamicFragment();
+  var frag =
+  // fixed by uts
+  new DynamicFragment(doc);
   renderEffect(() => {
     var value = getter();
     frag.update(() => createComponentWithFallback(

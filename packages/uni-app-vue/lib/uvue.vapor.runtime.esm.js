@@ -10046,7 +10046,7 @@ function getSlot(target, key) {
     return target[key];
   }
 }
-function createSlot(name, rawProps, fallback) {
+function createSlot(doc, name, rawProps, fallback) {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
   {
@@ -10065,7 +10065,13 @@ function createSlot(name, rawProps, fallback) {
       fallback
     );
   } else {
-    fragment = !!(process.env.NODE_ENV !== "production") ? new DynamicFragment("slot") : new DynamicFragment();
+    fragment = !!(process.env.NODE_ENV !== "production") ? (
+      // fixed by uts
+      new DynamicFragment(doc, "slot")
+    ) : (
+      // fixed by uts
+      new DynamicFragment(doc)
+    );
     const isDynamicName = isFunction(name);
     const renderSlot = () => {
       const slot = getSlot(rawSlots, isFunction(name) ? name() : name);
@@ -11086,7 +11092,13 @@ function createDynamicComponent(doc, getter, rawProps, rawSlots, isSingleRoot) {
   {
     resetInsertionState();
   }
-  const frag = !!(process.env.NODE_ENV !== "production") ? new DynamicFragment("dynamic-component") : new DynamicFragment();
+  const frag = !!(process.env.NODE_ENV !== "production") ? (
+    // fixed by uts
+    new DynamicFragment(doc, "dynamic-component")
+  ) : (
+    // fixed by uts
+    new DynamicFragment(doc)
+  );
   renderEffect(() => {
     const value = getter();
     frag.update(
