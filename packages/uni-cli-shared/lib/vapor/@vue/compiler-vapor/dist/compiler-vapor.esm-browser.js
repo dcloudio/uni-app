@@ -23517,6 +23517,7 @@ class DomCodeGenerator {
 class TemplateFactoryGenerator {
   constructor(options) {
     this.codeGenerator = new DomCodeGenerator(options);
+    this.isTs = options.isTs || false;
   }
   /**
    * 生成工厂函数
@@ -23541,7 +23542,9 @@ class TemplateFactoryGenerator {
    * 生成空函数
    */
   generateEmptyFunction(index) {
-    return `function f${index}(doc: IDocument): UniElement {
+    const paramType = this.isTs ? "doc: IDocument" : "doc";
+    const returnType = this.isTs ? ": UniElement" : "";
+    return `function f${index}(${paramType})${returnType} {
   return doc.createTextNode('')
 }`;
   }
@@ -23550,14 +23553,17 @@ class TemplateFactoryGenerator {
    */
   generateSingleNodeFunction(node, index) {
     const nodeCode = this.codeGenerator.generateNodeCode(node);
-    return `function f${index}(doc: IDocument): UniElement {
+    const paramType = this.isTs ? "doc: IDocument" : "doc";
+    const returnType = this.isTs ? ": UniElement" : "";
+    return `function f${index}(${paramType})${returnType} {
   return ${nodeCode}
 }`;
   }
 }
 function generateFactoryFunctions(templates, context) {
   const generator = new TemplateFactoryGenerator({
-    parseStaticStyle: context.options.parseStaticStyle
+    parseStaticStyle: context.options.parseStaticStyle,
+    isTs: context.options.isTS
   });
   const functions = templates.map(
     (template, index) => generator.generateFactoryFunction(template, index)
@@ -23799,7 +23805,7 @@ function generate(ir, options = {}) {
         NEWLINE,
         `const $ins = ${context.helper("getCurrentGenericInstance")}()`
       );
-      push(NEWLINE, `const $proxy = $ins.proxy!`);
+      push(NEWLINE, `const $proxy = $ins.proxy${options.isTS ? "!" : ""}`);
       push(NEWLINE, `const $doc = $proxy.$nativePage.document`);
     }
     if (context.delegates.size) {
