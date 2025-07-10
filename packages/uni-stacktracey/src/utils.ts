@@ -278,6 +278,7 @@ export function getFileContent(sourcemapUrl: string): Promise<string> {
     if (/^[http|https]+:/i.test(sourcemapUrl)) {
       uni.request({
         url: sourcemapUrl,
+        dataType: 'string',
         success: (res) => {
           if (res.statusCode === 200) {
             resolve(res.data as string)

@@ -14,7 +14,12 @@ export function updateUTSKotlinSourceMapManifestCache(
   url: string
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    const manifestFile = path.resolve(url, '.manifest.json')
+    let manifestFile = ''
+    if (/^[http|https]+:/i.test(url)) {
+      manifestFile = url
+    } else {
+      manifestFile = path.resolve(url, '.manifest.json')
+    }
     try {
       getFileContent(manifestFile).then((content) => {
         try {
