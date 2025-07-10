@@ -163,6 +163,11 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
+    "replaceAfterBundled": {
+      "instanceof Node": "instanceof UniElement",
+      "instanceof Element": "instanceof UniElement",
+      "instanceof Comment": "instanceof UniComment"
+    },
     "external": [
       "@vue/shared",
       "@dcloudio/uni-shared",
@@ -195,6 +200,11 @@
       "__VUE_PROD_DEVTOOLS__": "false",
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"production\""
+    },
+    "replaceAfterBundled": {
+      "instanceof Node": "instanceof UniElement",
+      "instanceof Element": "instanceof UniElement",
+      "instanceof Comment": "instanceof UniComment"
     },
     "external": [
       "@vue/shared",
