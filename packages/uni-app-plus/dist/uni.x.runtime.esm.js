@@ -2372,7 +2372,8 @@ function closePage(page, animationType, animationDuration) {
   for (var _i2 = dialogPages.length - 1; _i2 >= 0; _i2--) {
     closeNativeDialogPage(dialogPages[_i2]);
   }
-  closeWebview(page.$nativePage, animationType, animationDuration);
+  var nativePage = page.$nativePage;
+  nativePage && closeWebview(nativePage, animationType, animationDuration);
   removePage(page);
   removeTabBarPage(page);
 }
@@ -2877,7 +2878,10 @@ function back(delta, animationType, animationDuration) {
         var dialogPage2 = dialogPages2[i2];
         closeNativeDialogPage(dialogPage2);
       }
-      closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + ""), "none", 0);
+      var webview2 = getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + "");
+      if (webview2) {
+        closeWebview(webview2, "none", 0);
+      }
     });
   }
   var backPage = function(webview2) {
@@ -2913,7 +2917,7 @@ function back(delta, animationType, animationDuration) {
     }
     currentPage.$systemDialogPages.value = [];
   }
-  backPage(webview);
+  webview && backPage(webview);
 }
 var openDialogPage = (options) => {
   var _options$success, _options$complete;

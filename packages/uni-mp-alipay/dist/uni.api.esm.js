@@ -1700,8 +1700,10 @@ const getLocation = {
     },
 };
 const openLocation = {
-    args: {
-    // TODO address 参数在阿里上是必传的
+    args(fromArgs, toArgs) {
+        if (!fromArgs.scale) {
+            toArgs.scale = 18;
+        }
     },
 };
 const getNetworkType = {
