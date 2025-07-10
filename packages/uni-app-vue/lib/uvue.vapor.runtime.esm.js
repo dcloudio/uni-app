@@ -673,7 +673,7 @@ function setDevtoolsHook$1(hook, target) {
 function devtoolsInitApp(app, version) {
   emit$2("app:init" /* APP_INIT */, app, version, {
     Fragment,
-    Text: Text$1,
+    Text,
     Comment: Comment$1,
     Static
   });
@@ -1775,7 +1775,7 @@ function createHydrationFunctions(rendererInternals) {
     }
     let nextNode = null;
     switch (type) {
-      case Text$1:
+      case Text:
         if (domType !== 3) {
           if (vnode.children === "") {
             insert(vnode.el = createText(""), parentNode(node), node);
@@ -2053,10 +2053,10 @@ Server rendered element contains more child nodes than client vdom.`
     let hasWarned = false;
     for (let i = 0; i < l; i++) {
       const vnode = optimized ? children[i] : children[i] = normalizeVNode(children[i]);
-      const isText = vnode.type === Text$1;
+      const isText = vnode.type === Text;
       if (node) {
         if (isText && !optimized) {
-          if (i + 1 < l && normalizeVNode(children[i + 1]).type === Text$1) {
+          if (i + 1 < l && normalizeVNode(children[i + 1]).type === Text) {
             insert(
               // @ts-expect-error  fixed by xxxxxx
               createText(
@@ -4823,7 +4823,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     const { type, ref, shapeFlag } = n2;
     switch (type) {
-      case Text$1:
+      case Text:
         processText(n1, n2, container, anchor);
         break;
       case Comment$1:
@@ -6405,7 +6405,7 @@ function traverseStaticChildren(n1, n2, shallow = false) {
         if (!shallow && c2.patchFlag !== -2)
           traverseStaticChildren(c1, c2);
       }
-      if (c2.type === Text$1) {
+      if (c2.type === Text) {
         c2.el = c1.el;
       }
       if (c2.type === Comment$1 && !c2.el) {
@@ -7683,7 +7683,7 @@ function isVNodeSuspensible(vnode) {
 }
 
 const Fragment = Symbol.for("v-fgt");
-const Text$1 = Symbol.for("v-txt");
+const Text = Symbol.for("v-txt");
 const Comment$1 = Symbol.for("v-cmt");
 const Static = Symbol.for("v-stc");
 const VaporSlot = Symbol.for("v-vps");
@@ -7965,7 +7965,7 @@ function deepCloneVNode(vnode) {
   return cloned;
 }
 function createTextVNode(text = " ", flag = 0) {
-  return createVNode(Text$1, null, text, flag);
+  return createVNode(Text, null, text, flag);
 }
 function createStaticVNode(content, numberOfNodes) {
   const vnode = createVNode(Static, null, content);
@@ -7988,7 +7988,7 @@ function normalizeVNode(child) {
   } else if (isVNode(child)) {
     return cloneIfMounted(child);
   } else {
-    return createVNode(Text$1, null, String(child));
+    return createVNode(Text, null, String(child));
   }
 }
 function cloneIfMounted(child) {
@@ -8777,13 +8777,13 @@ const DeprecationTypes = null;
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
-function createTextNode(value = "") {
-  return document.createTextNode(value);
+function createTextNode(doc, value = "") {
+  return doc.createTextNode(value);
 }
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
-function createComment(data) {
-  return document.createComment(data);
+function createComment(doc, data) {
+  return doc.createComment(data);
 }
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
@@ -9169,9 +9169,16 @@ class VaporFragment {
   }
 }
 class DynamicFragment extends VaporFragment {
-  constructor(anchorLabel) {
+  // fixed by uts
+  constructor(doc, anchorLabel) {
     super([]);
-    this.anchor = !!(process.env.NODE_ENV !== "production") && anchorLabel ? createComment(anchorLabel) : createTextNode();
+    this.anchor = !!(process.env.NODE_ENV !== "production") && anchorLabel ? (
+      // fixed by uts
+      createComment(doc, anchorLabel)
+    ) : (
+      // fixed by uts
+      createTextNode(doc)
+    );
   }
   update(render, key = render) {
     if (key === this.current) {
@@ -9972,7 +9979,7 @@ function optimizePropertyLookup() {
   const proto = UniElement.prototype;
   proto.$evtclick = void 0;
   proto.$root = false;
-  proto.$html = proto.$txt = proto.$cls = proto.$sty = Text.prototype.$txt = "";
+  proto.$html = proto.$txt = proto.$cls = proto.$sty = "";
 }
 
 const dynamicSlotsProxyHandlers = {
@@ -10449,7 +10456,8 @@ function defineVaporComponent(comp, extraOptions) {
 
 const vaporInteropImpl = {
   mount(vnode, container, anchor, parentComponent) {
-    const selfAnchor = vnode.el = vnode.anchor = createTextNode();
+    const selfAnchor = vnode.el = vnode.anchor = // fixed by uts
+    createTextNode(container.page.document);
     container.insertBefore(selfAnchor, anchor);
     const prev = currentInstance;
     simpleSetCurrentInstance(parentComponent);
@@ -10494,7 +10502,8 @@ const vaporInteropImpl = {
    */
   slot(n1, n2, container, anchor) {
     if (!n1) {
-      const selfAnchor = n2.el = n2.anchor = createTextNode();
+      const selfAnchor = n2.el = n2.anchor = // fixed by uts
+      createTextNode(container.page.document);
       insert(selfAnchor, container, anchor);
       const { slot, fallback } = n2.vs;
       const propsRef = n2.vs.ref = shallowRef(n2.props);
@@ -10653,7 +10662,7 @@ const vaporInteropPlugin = (app) => {
   };
 };
 
-function createIf(condition, b1, b2, once) {
+function createIf(doc, condition, b1, b2, once) {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
   {
@@ -10663,7 +10672,13 @@ function createIf(condition, b1, b2, once) {
   if (once) {
     frag = condition() ? b1() : b2 ? b2() : [];
   } else {
-    frag = !!(process.env.NODE_ENV !== "production") ? new DynamicFragment("if") : new DynamicFragment();
+    frag = !!(process.env.NODE_ENV !== "production") ? (
+      // fixed by uts
+      new DynamicFragment(doc, "if")
+    ) : (
+      // fixed by uts
+      new DynamicFragment(doc)
+    );
     renderEffect(() => frag.update(condition() ? b1 : b2));
   }
   if (_insertionParent) {
@@ -10682,7 +10697,7 @@ class ForBlock extends VaporFragment {
     this.key = renderKey;
   }
 }
-const createFor = (src, renderItem, getKey, flags = 0) => {
+const createFor = (doc, src, renderItem, getKey, flags = 0) => {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
   {
@@ -10692,7 +10707,13 @@ const createFor = (src, renderItem, getKey, flags = 0) => {
   let oldBlocks = [];
   let newBlocks;
   let parent;
-  const parentAnchor = !!(process.env.NODE_ENV !== "production") ? createComment("for") : createTextNode();
+  const parentAnchor = !!(process.env.NODE_ENV !== "production") ? (
+    // fixed by uts
+    createComment(doc, "for")
+  ) : (
+    // fixed by uts
+    createTextNode(doc)
+  );
   const frag = new VaporFragment(oldBlocks);
   const instance = currentInstance;
   const canUseFastRemove = flags & 1;
@@ -11665,4 +11686,4 @@ function unmountPage(pageInstance) {
   }
 }
 
-export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, Static, Suspense, Teleport, Text$1 as Text, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createMountPage, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, registerHMR, registerRuntimeCompiler, remove, render, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, toHandlers, transformVNodeArgs, unmountPage, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };
+export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, Static, Suspense, Teleport, Text, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createMountPage, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, registerHMR, registerRuntimeCompiler, remove, render, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, toHandlers, transformVNodeArgs, unmountPage, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };

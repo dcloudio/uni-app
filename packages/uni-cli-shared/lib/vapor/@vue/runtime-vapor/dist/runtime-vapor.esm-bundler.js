@@ -11,13 +11,13 @@ import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
-function createTextNode(value = "") {
-  return document.createTextNode(value);
+function createTextNode(doc, value = "") {
+  return doc.createTextNode(value);
 }
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
-function createComment(data) {
-  return document.createComment(data);
+function createComment(doc, data) {
+  return doc.createComment(data);
 }
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
@@ -402,9 +402,16 @@ class VaporFragment {
   }
 }
 class DynamicFragment extends VaporFragment {
-  constructor(anchorLabel) {
+  // fixed by uts
+  constructor(doc, anchorLabel) {
     super([]);
-    this.anchor = !!(process.env.NODE_ENV !== "production") && anchorLabel ? createComment(anchorLabel) : createTextNode();
+    this.anchor = !!(process.env.NODE_ENV !== "production") && anchorLabel ? (
+      // fixed by uts
+      createComment(doc, anchorLabel)
+    ) : (
+      // fixed by uts
+      createTextNode(doc)
+    );
   }
   update(render, key = render) {
     if (key === this.current) {
@@ -1158,7 +1165,7 @@ const isInternalObject = (obj) => Object.getPrototypeOf(obj) === internalObjectP
 const isSuspense = (type) => type.__isSuspense;
 
 const Fragment = Symbol.for("v-fgt");
-const Text$1 = Symbol.for("v-txt");
+const Text = Symbol.for("v-txt");
 const Comment$1 = Symbol.for("v-cmt");
 function isVNode(value) {
   return value ? value.__v_isVNode === true : false;
@@ -1356,7 +1363,7 @@ function deepCloneVNode(vnode) {
   return cloned;
 }
 function createTextVNode(text = " ", flag = 0) {
-  return createVNode(Text$1, null, text, flag);
+  return createVNode(Text, null, text, flag);
 }
 function normalizeChildren(vnode, children) {
   let type = 0;
@@ -1785,7 +1792,7 @@ function optimizePropertyLookup() {
   const proto = UniElement.prototype;
   proto.$evtclick = void 0;
   proto.$root = false;
-  proto.$html = proto.$txt = proto.$cls = proto.$sty = Text.prototype.$txt = "";
+  proto.$html = proto.$txt = proto.$cls = proto.$sty = "";
 }
 
 const dynamicSlotsProxyHandlers = {
@@ -2293,7 +2300,8 @@ function defineVaporComponent(comp, extraOptions) {
 
 const vaporInteropImpl = {
   mount(vnode, container, anchor, parentComponent) {
-    const selfAnchor = vnode.el = vnode.anchor = createTextNode();
+    const selfAnchor = vnode.el = vnode.anchor = // fixed by uts
+    createTextNode(container.page.document);
     container.insertBefore(selfAnchor, anchor);
     const prev = currentInstance$1;
     simpleSetCurrentInstance(parentComponent);
@@ -2338,7 +2346,8 @@ const vaporInteropImpl = {
    */
   slot(n1, n2, container, anchor) {
     if (!n1) {
-      const selfAnchor = n2.el = n2.anchor = createTextNode();
+      const selfAnchor = n2.el = n2.anchor = // fixed by uts
+      createTextNode(container.page.document);
       insert(selfAnchor, container, anchor);
       const { slot, fallback } = n2.vs;
       const propsRef = n2.vs.ref = shallowRef(n2.props);
@@ -2523,7 +2532,7 @@ function template(html, root) {
   };
 }
 
-function createIf(condition, b1, b2, once) {
+function createIf(doc, condition, b1, b2, once) {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
   if (isHydrating) {
@@ -2535,7 +2544,13 @@ function createIf(condition, b1, b2, once) {
   if (once) {
     frag = condition() ? b1() : b2 ? b2() : [];
   } else {
-    frag = !!(process.env.NODE_ENV !== "production") ? new DynamicFragment("if") : new DynamicFragment();
+    frag = !!(process.env.NODE_ENV !== "production") ? (
+      // fixed by uts
+      new DynamicFragment(doc, "if")
+    ) : (
+      // fixed by uts
+      new DynamicFragment(doc)
+    );
     renderEffect(() => frag.update(condition() ? b1 : b2));
   }
   if (!isHydrating && _insertionParent) {
@@ -2554,7 +2569,7 @@ class ForBlock extends VaporFragment {
     this.key = renderKey;
   }
 }
-const createFor = (src, renderItem, getKey, flags = 0) => {
+const createFor = (doc, src, renderItem, getKey, flags = 0) => {
   const _insertionParent = insertionParent;
   const _insertionAnchor = insertionAnchor;
   if (isHydrating) {
@@ -2566,7 +2581,13 @@ const createFor = (src, renderItem, getKey, flags = 0) => {
   let oldBlocks = [];
   let newBlocks;
   let parent;
-  const parentAnchor = !!(process.env.NODE_ENV !== "production") ? createComment("for") : createTextNode();
+  const parentAnchor = !!(process.env.NODE_ENV !== "production") ? (
+    // fixed by uts
+    createComment(doc, "for")
+  ) : (
+    // fixed by uts
+    createTextNode(doc)
+  );
   const frag = new VaporFragment(oldBlocks);
   const instance = currentInstance$1;
   const canUseFastRemove = flags & 1;

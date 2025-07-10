@@ -22339,17 +22339,20 @@ function genFor(oper, context) {
   if (once) {
     flags |= 4;
   }
+  const forArgs = [
+    sourceExpr,
+    blockFn,
+    genCallback(keyProp),
+    flags ? String(flags) : void 0
+    // todo: hydrationNode
+  ];
+  if (context.options.templateMode === "factory") {
+    forArgs.unshift(`$doc`);
+  }
   return [
     NEWLINE,
     `const n${id} = `,
-    ...genCall(
-      helper("createFor"),
-      sourceExpr,
-      blockFn,
-      genCallback(keyProp),
-      flags ? String(flags) : void 0
-      // todo: hydrationNode
-    )
+    ...genCall(helper("createFor"), ...forArgs)
   ];
   function parseValueDestructure() {
     const map = /* @__PURE__ */ new Map();
@@ -22477,15 +22480,16 @@ function genIf(oper, context, isNested = false) {
     }
   }
   if (!isNested) push(NEWLINE, `const n${oper.id} = `);
-  push(
-    ...genCall(
-      helper("createIf"),
-      conditionExpr,
-      positiveArg,
-      negativeArg,
-      once && "true"
-    )
-  );
+  const ifArgs = [
+    conditionExpr,
+    positiveArg,
+    negativeArg,
+    once && "true"
+  ];
+  if (context.options.templateMode === "factory") {
+    ifArgs.unshift(`$doc`);
+  }
+  push(...genCall(helper("createIf"), ...ifArgs));
   return frag;
 }
 
@@ -23800,7 +23804,7 @@ function generate(ir, options = {}) {
   }
   const codeFragments = genBlockContent(ir.block, context, true);
   if (options.templateMode === "factory") {
-    if (ir.template.length > 0 || context.delegates.size > 0 || context.helpers.has("createDynamicComponent") || context.helpers.has("createComponentWithFallback")) {
+    if (ir.template.length > 0 || context.delegates.size > 0 || context.helpers.has("createDynamicComponent") || context.helpers.has("createComponentWithFallback") || context.helpers.has("createIf") || context.helpers.has("createFor")) {
       push(
         NEWLINE,
         `const $ins = ${context.helper("getCurrentGenericInstance")}()`
