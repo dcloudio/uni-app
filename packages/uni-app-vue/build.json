@@ -139,6 +139,72 @@
   },
   {
     "input": {
+      "src/uvue/index.vapor.ts": ["dist/uvue.vapor.runtime.esm.dev.js"]
+    },
+    "output": {
+      "freeze": false
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.vapor.runtime.esm.js"
+        },
+        {
+          "find": "@vue/reactivity",
+          "replacement": "packages/uni-cli-shared/lib/vapor/@vue/reactivity/dist/reactivity.esm-bundler.js"
+        }
+      ]
+    },
+    "replacements": {
+      "__X__": "true",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
+      "process.env.NODE_ENV": "\"development\""
+    },
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
+    "babel": true
+  },
+  {
+    "input": {
+      "src/uvue/index.vapor.ts": ["dist/uvue.vapor.runtime.esm.prod.js"]
+    },
+    "output": {
+      "freeze": false
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "vue",
+          "replacement": "packages/uni-app-vue/lib/uvue.vapor.runtime.esm.js"
+        },
+        {
+          "find": "@vue/reactivity",
+          "replacement": "packages/uni-cli-shared/lib/vapor/@vue/reactivity/dist/reactivity.esm-bundler.js"
+        }
+      ]
+    },
+    "replacements": {
+      "__X__": "true",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
+      "process.env.NODE_ENV": "\"production\""
+    },
+    "external": [
+      "@vue/shared",
+      "@dcloudio/uni-shared",
+      "@dcloudio/uni-nvue-styler"
+    ],
+    "babel": true
+  },
+  {
+    "input": {
       "src/uvue/index.ts": ["dist/uvue.runtime.harmony.esm.dev.js"]
     },
     "output": {
