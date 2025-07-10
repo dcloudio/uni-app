@@ -104,11 +104,12 @@ function back(
           const dialogPage = dialogPages[i]
           closeNativeDialogPage(dialogPage)
         }
-        closeWebview(
-          getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + '')!,
-          'none',
-          0
+        const webview = getNativeApp().pageManager.findPageById(
+          deltaPage.$basePage.id + ''
         )
+        if (webview) {
+          closeWebview(webview, 'none', 0)
+        }
       })
   }
 
@@ -136,7 +137,7 @@ function back(
 
   const webview = getNativeApp().pageManager.findPageById(
     currentPage.$basePage.id + ''
-  )!
+  )
   const dialogPages = (currentPage.$page as UniPage).getDialogPages()
   for (let i = dialogPages.length - 1; i >= 0; i--) {
     const dialogPage = dialogPages[i]
@@ -159,5 +160,5 @@ function back(
     ).$systemDialogPages!.value = []
   }
   // TODO 处理子 view
-  backPage(webview)
+  webview && backPage(webview)
 }

@@ -38,7 +38,8 @@ export function closePage(
   for (let i = dialogPages.length - 1; i >= 0; i--) {
     closeNativeDialogPage(dialogPages[i])
   }
-  closeWebview(page.$nativePage!, animationType, animationDuration)
+  const nativePage = page.$nativePage
+  nativePage && closeWebview(nativePage, animationType, animationDuration)
   removePage(page)
   removeTabBarPage(page)
 }
