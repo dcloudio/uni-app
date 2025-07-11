@@ -75,7 +75,7 @@ export function initEasycoms(
               componentsDir,
               ...initUniModulesEasycomDirs(uniModulesDir),
             ],
-      rootDir: inputDir,
+      rootDir: path.resolve(inputDir),
       autoscan: !!(easycom && easycom.autoscan),
       custom: (easycom && easycom.custom) || {},
       extensions: [...(isX ? ['.uvue'] : []), ...['.vue', '.jsx', '.tsx']],
