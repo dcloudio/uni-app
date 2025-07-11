@@ -19,7 +19,7 @@ import {
   normalizeEmitAssetFileName,
   normalizeNodeModules,
 } from '../../../../utils'
-import { getIsStaticFile } from './static'
+import { type IsStaticFile, getIsStaticFile } from './static'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
 
@@ -204,7 +204,7 @@ export function fileToUrl(
   config: ResolvedConfig,
   ctx: PluginContext,
   canInline: boolean = false,
-  isStaticFile: (file: string) => boolean
+  isStaticFile: IsStaticFile
 ): string {
   return fileToBuiltUrl(id, config, ctx, false, canInline, isStaticFile)
 }
@@ -320,7 +320,7 @@ function fileToBuiltUrl(
   pluginContext: PluginContext,
   skipPublicCheck = false,
   canInline = false,
-  isStaticFile: (file: string) => boolean
+  isStaticFile: IsStaticFile
 ): string {
   if (!skipPublicCheck && checkPublicFile(id, config)) {
     return config.base + id.slice(1)
@@ -341,6 +341,14 @@ function fileToBuiltUrl(
     // base64 inlined as a string
     url = `data:${mime.getType(file)};base64,${content.toString('base64')}`
   } else {
+    // 小程序平台如果是子包中的静态资源，跳过Vite默认的哈希处理流程，避免被编译成同一个路径
+    if (
+      process.env.UNI_PLATFORM &&
+      process.env.UNI_PLATFORM.startsWith('mp-') &&
+      isStaticFile(file, true)
+    ) {
+      return config.base + path.relative(process.env.UNI_INPUT_DIR, id)
+    }
     const map = assetHashToFilenameMap.get(config)!
     const contentHash = getAssetHash(content)
     const { search, hash } = parseUrl(id)
@@ -403,7 +411,7 @@ export function urlToBuiltUrl(
   importer: string,
   config: ResolvedConfig,
   pluginContext: PluginContext,
-  isStaticFile: (file: string) => boolean
+  isStaticFile: IsStaticFile
 ): string {
   if (checkPublicFile(url, config)) {
     return config.base + url.slice(1)
