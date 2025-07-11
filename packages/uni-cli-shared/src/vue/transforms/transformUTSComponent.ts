@@ -19,7 +19,11 @@ export const transformUTSComponent: NodeTransform = (node, context) => {
   if (utsCustomElement) {
     context.components.add(node.tag)
   } else if (matchUTSComponent(node.tag)) {
-    if (!context.root.components.includes(node.tag)) {
+    // TODO 待处理 vapor 编译器
+    if (
+      context.root.components &&
+      !context.root.components.includes(node.tag)
+    ) {
       context.components.add(node.tag)
     }
   }
