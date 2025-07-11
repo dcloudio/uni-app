@@ -13,18 +13,19 @@ export const transformUTSComponent: NodeTransform = (node, context) => {
   if (!isElementNode(node)) {
     return
   }
+  // @ts-expect-error 同时兼容 vapor 编译器
+  const components = context.component || context.components
+  if (!components) {
+    return
+  }
   // 1. 增加components，让sfc生成resolveComponent代码
   // 2. easycom插件会根据resolveComponent生成import插件代码触发编译
   const utsCustomElement = getUTSCustomElement(node.tag)
   if (utsCustomElement) {
-    context.components.add(node.tag)
+    components.add(node.tag)
   } else if (matchUTSComponent(node.tag)) {
-    // TODO 待处理 vapor 编译器
-    if (
-      context.root.components &&
-      !context.root.components.includes(node.tag)
-    ) {
-      context.components.add(node.tag)
+    if (components.has(node.tag)) {
+      components.add(node.tag)
     }
   }
 }
