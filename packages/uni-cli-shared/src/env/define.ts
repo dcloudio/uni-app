@@ -7,7 +7,8 @@ export function initDefine(stringifyBoolean: boolean = false) {
   const isRunByHBuilderX = runByHBuilderX()
   const isDebug = !!manifestJson.debug
   const isX = process.env.UNI_APP_X === 'true'
-  const isMP = process.env.UNI_PLATFORM.startsWith('mp')
+  const isMP =
+    process.env.UNI_PLATFORM && process.env.UNI_PLATFORM.startsWith('mp-')
 
   process.env['UNI_APP_ID'] = manifestJson.appid
 
