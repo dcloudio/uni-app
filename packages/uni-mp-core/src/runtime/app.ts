@@ -123,6 +123,8 @@ export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
       })
     if (!app) return
     ;(vm.$ as any).ctx.$scope = app
+    (vm.$ as any).ctx.$hasHook = hasHook
+    (vm.$ as any).ctx.$callHook = callHook
     const globalData = app.globalData
     if (globalData) {
       Object.keys(appOptions.globalData).forEach((name) => {
