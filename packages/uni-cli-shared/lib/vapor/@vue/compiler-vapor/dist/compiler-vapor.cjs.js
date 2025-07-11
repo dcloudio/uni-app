@@ -2199,32 +2199,75 @@ class HtmlParser {
   }
 }
 
+const NODE_TYPE_TEXT = "text";
+const NODE_TYPE_COMMENT = "comment";
+const NODE_TYPE_ELEMENT = "element";
+const VALUE_ATTR = "value";
+const EMPTY_STRING = "";
+const UNKNOWN_COMMENT = "unknown";
 class DomCodeGenerator {
   constructor(options) {
     this.parseStaticStyle = options.parseStaticStyle;
   }
-  /**
-   * 生成节点构造代码
-   */
   generateNodeCode(node) {
     switch (node.type) {
-      case "text":
-        return `doc.createTextNode(${JSON.stringify(node.content || "")})`;
-      case "comment":
-        return `doc.createComment(${JSON.stringify(node.content || "")})`;
-      case "element":
+      case NODE_TYPE_TEXT:
+        return this.createTextNodeCode(node.content || EMPTY_STRING);
+      case NODE_TYPE_COMMENT:
+        return this.createCommentNodeCode(node.content || EMPTY_STRING);
+      case NODE_TYPE_ELEMENT:
         return this.generateElementCode(node);
       default:
-        return `doc.createComment('unknown')`;
+        return this.createCommentNodeCode(UNKNOWN_COMMENT);
     }
   }
-  /**
-   * 生成元素构造代码
-   */
+  createTextNodeCode(content) {
+    return `doc.createTextNode(${JSON.stringify(content)})`;
+  }
+  createCommentNodeCode(content) {
+    return `doc.createComment(${JSON.stringify(content)})`;
+  }
   generateElementCode(node) {
     const { tag, attrs, children } = node;
+    if (tag === NODE_TYPE_TEXT) {
+      return this.generateTextElementCode({ tag, attrs, children });
+    }
+    return this.generateRegularElementCode({ tag, attrs, children });
+  }
+  generateTextElementCode(params) {
+    const { tag, attrs, children } = params;
+    const textContent = this.extractTextContent(children);
+    const finalAttrs = this.mergeTextAttributes(attrs, textContent);
+    return this.buildCreateElementCall(tag, finalAttrs, null);
+  }
+  generateRegularElementCode(params) {
+    const { tag, attrs, children } = params;
     const attrsParam = this.generateAttrsParam(attrs);
-    const childrenParam = this.generateChildrenParam(children);
+    const childrenParam = this.generateChildrenParam(children, tag);
+    return this.buildCreateElementCall(tag, attrsParam, childrenParam);
+  }
+  extractTextContent(children) {
+    if (!children || children.length !== 1 || children[0].type !== NODE_TYPE_TEXT) {
+      return EMPTY_STRING;
+    }
+    return children[0].content || EMPTY_STRING;
+  }
+  mergeTextAttributes(attrs, textContent) {
+    const result = shared.extend({}, attrs);
+    if (textContent) {
+      result[VALUE_ATTR] = textContent;
+    }
+    return result;
+  }
+  buildCreateElementCall(tag, attrsParam, childrenParam) {
+    const finalAttrsParam = this.resolveAttrsParam(attrsParam);
+    const params = this.buildParams(tag, finalAttrsParam, childrenParam);
+    return `doc.createElement(${params.join(", ")})`;
+  }
+  resolveAttrsParam(attrsParam) {
+    return typeof attrsParam === "string" ? attrsParam : this.generateAttrsParam(attrsParam || void 0);
+  }
+  buildParams(tag, attrsParam, childrenParam) {
     const params = [`'${tag}'`];
     if (attrsParam) {
       params.push(attrsParam);
@@ -2234,11 +2277,8 @@ class DomCodeGenerator {
     if (childrenParam) {
       params.push(childrenParam);
     }
-    return `doc.createElement(${params.join(", ")})`;
+    return params;
   }
-  /**
-   * 生成属性参数
-   */
   generateAttrsParam(attrs) {
     if (!attrs || Object.keys(attrs).length === 0) {
       return null;
@@ -2251,11 +2291,11 @@ class DomCodeGenerator {
     });
     return `new Map([${entries.join(", ")}])`;
   }
-  /**
-   * 生成子节点参数
-   */
-  generateChildrenParam(children) {
+  generateChildrenParam(children, parentTag) {
     if (!children || children.length === 0) {
+      return null;
+    }
+    if (parentTag === NODE_TYPE_TEXT) {
       return null;
     }
     const childrenCode = children.map((child) => this.generateNodeCode(child));
@@ -2267,10 +2307,6 @@ class TemplateFactoryGenerator {
     this.codeGenerator = new DomCodeGenerator(options);
     this.isTs = options.isTs || false;
   }
-  /**
-   * 生成工厂函数
-   * 统一使用 createElement(tag, attrs, children) 形式
-   */
   generateFactoryFunction(template, index) {
     try {
       const parser = new HtmlParser(template);
@@ -2286,26 +2322,23 @@ class TemplateFactoryGenerator {
       return this.generateEmptyFunction(index);
     }
   }
-  /**
-   * 生成空函数
-   */
   generateEmptyFunction(index) {
-    const paramType = this.isTs ? "doc: IDocument" : "doc";
-    const returnType = this.isTs ? ": UniElement" : "";
+    const { paramType, returnType } = this.getFunctionSignature();
     return `function f${index}(${paramType})${returnType} {
-  return doc.createTextNode('')
+  return doc.createTextNode(${JSON.stringify(EMPTY_STRING)})
 }`;
   }
-  /**
-   * 生成单节点函数
-   */
   generateSingleNodeFunction(node, index) {
     const nodeCode = this.codeGenerator.generateNodeCode(node);
-    const paramType = this.isTs ? "doc: IDocument" : "doc";
-    const returnType = this.isTs ? ": UniElement" : "";
+    const { paramType, returnType } = this.getFunctionSignature();
     return `function f${index}(${paramType})${returnType} {
   return ${nodeCode}
 }`;
+  }
+  getFunctionSignature() {
+    const paramType = this.isTs ? "doc: IDocument" : "doc";
+    const returnType = this.isTs ? ": UniElement" : "";
+    return { paramType, returnType };
   }
 }
 function generateFactoryFunctions(templates, context) {
@@ -3306,7 +3339,8 @@ function processInterpolation(context) {
     nodes.unshift(prev);
   }
   context.template += " ";
-  const id = context.reference();
+  const isParentText = context.options.templateMode === "factory" && context.parent && context.parent.node.type === 1 && context.parent.node.tag === "text";
+  const id = isParentText ? context.parent.reference() : context.reference();
   const values = nodes.map((node) => createTextLikeExpression(node, context));
   const nonConstantExps = values.filter((v) => !isConstantExpression(v));
   const isStatic = !nonConstantExps.length || nonConstantExps.every(
@@ -3327,6 +3361,11 @@ function processInterpolation(context) {
   }
 }
 function processTextContainer(children, context) {
+  if (context.options.templateMode === "factory") {
+    if (context.node.tag === "text") {
+      return;
+    }
+  }
   const values = children.map((child) => createTextLikeExpression(child, context));
   const literals = values.map(getLiteralExpressionValue);
   if (literals.every((l) => l != null)) {
