@@ -225,6 +225,8 @@ const vuePreset = {
     'onScopeDispose',
 
     // types 全部全局导入
+    // vapor
+    'getCurrentGenericInstance',
   ],
 }
 
