@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentGenericInstance, injectHook, defineComponent, warn, getCurrentInstance, watchEffect, watch, computed, camelize, createVNode, reactive, provide, inject, nextTick } from "vue";
+import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentGenericInstance, injectHook, defineComponent, warn, getCurrentInstance, watchEffect, watch, computed, camelize, createVNode, renderSlot, reactive, provide, inject, nextTick } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -4885,7 +4885,6 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
       checkboxChecked.value = !checkboxChecked.value;
     };
     return () => {
-      var _slots$default;
       return createVNode("uni-checkbox-element", {
         "dataUncType": "uni-checkbox",
         "onClick": _onClick,
@@ -4897,7 +4896,7 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("text", {
         "class": "uni-icon",
         "style": iconStyle.value
-      }, [checkboxChecked.value ? icon : ""], 4)], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 12, ["onClick"]);
+      }, [checkboxChecked.value ? icon : ""], 4)], 4), renderSlot(slots, "default")], 12, ["onClick"]);
     };
   }
 });
@@ -5031,10 +5030,9 @@ const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
       _setValue
     });
     return () => {
-      var _slots$default;
       return createVNode("uni-checkbox-group-element", {
         "ref": uniCheckboxGroupElementRef
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 512);
+      }, [renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -5260,7 +5258,6 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
       radioChecked.value = !radioChecked.value;
     };
     return () => {
-      var _slots$default;
       return createVNode("uni-radio-element", {
         "dataUncType": "uni-radio",
         "class": "uni-radio",
@@ -5273,7 +5270,7 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("text", {
         "class": "uni-radio-input-icon",
         "style": styleUniRadioInputIcon.value
-      }, [radioChecked.value ? icon : ""], 4)], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 12, ["onClick"]);
+      }, [radioChecked.value ? icon : ""], 4)], 4), renderSlot(slots, "default")], 12, ["onClick"]);
     };
   }
 });
@@ -5409,10 +5406,9 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
       _changeHandler
     });
     return () => {
-      var _slots$default;
       return createVNode("uni-radio-group-element", {
         "ref": uniRadioGroupElementRef
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 512);
+      }, [renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -5544,7 +5540,6 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
       }
     };
     return () => {
-      var _slots$default;
       return createVNode("uni-navigator-element", {
         "ref": $uniNavigatorElement,
         "onClick": _onClick,
@@ -5552,7 +5547,7 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
         "hoverStopPropagation": props.hoverStopPropagation,
         "hoverStartTime": props.hoverStartTime,
         "hoverStayTime": props.hoverStayTime
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 8, ["onClick", "hoverClass", "hoverStopPropagation", "hoverStartTime", "hoverStayTime"]);
+      }, [renderSlot(slots, "default")], 8, ["onClick", "hoverClass", "hoverStopPropagation", "hoverStartTime", "hoverStayTime"]);
     };
   }
 });
@@ -6010,7 +6005,6 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
     var styleUniPickerView = _style_picker_view["uni-picker-view"][""];
     var styleUniPickerViewWrapper = _style_picker_view["uni-picker-view-wrapper"][""];
     return () => {
-      var _slots$default;
       return createVNode("uni-picker-view-element", {
         "ref": pickerViewElementRef,
         "class": "uni-picker-view",
@@ -6018,7 +6012,7 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("view", {
         "class": "uni-picker-view-wrapper",
         "style": styleUniPickerViewWrapper
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 4)], 4);
+      }, [renderSlot(slots, "default")], 4)], 4);
     };
   }
 });
@@ -6166,7 +6160,6 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     return () => {
-      var _slots$default;
       return createVNode("uni-picker-view-column-element", {
         "class": "uni-picker-view-column",
         "style": styleUniPickerViewColumn.value,
@@ -6184,7 +6177,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-picker-view-content",
         "style": contentStyle.value,
         "ref": contentRef
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 4)], 44, ["onScrollend", "scroll-with-animation"]), createVNode("view", {
+      }, [renderSlot(slots, "default")], 4)], 44, ["onScrollend", "scroll-with-animation"]), createVNode("view", {
         "userInteractionEnabled": false,
         "class": "uni-picker-view-mask",
         "style": styleViewMask.value
