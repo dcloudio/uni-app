@@ -44,7 +44,6 @@ var IDENTIFIER;
     IDENTIFIER["UTSJSONObject"] = "UTSJSONObject";
     IDENTIFIER["JSON"] = "JSON";
     IDENTIFIER["UTS"] = "UTS";
-    IDENTIFIER["DEFINE_COMPONENT"] = "defineComponent";
     IDENTIFIER["VUE"] = "vue";
     IDENTIFIER["GLOBAL_THIS"] = "globalThis";
     IDENTIFIER["UTS_TYPE"] = "UTSType";
