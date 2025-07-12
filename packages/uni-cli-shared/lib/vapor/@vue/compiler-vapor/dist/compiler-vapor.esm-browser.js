@@ -23509,6 +23509,9 @@ class DomCodeGenerator {
     if (!children || children.length !== 1 || children[0].type !== NODE_TYPE_TEXT) {
       return EMPTY_STRING;
     }
+    if (children[0].content === " ") {
+      return EMPTY_STRING;
+    }
     return children[0].content || EMPTY_STRING;
   }
   mergeTextAttributes(attrs, textContent) {
