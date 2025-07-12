@@ -212,21 +212,24 @@ export function createConfigResolved({
 function adjustCssExtname(extname: string): Plugin {
   return {
     name: 'uni:adjust-css-extname',
-    generateBundle(_, bundle) {
-      const files = Object.keys(bundle)
-      files.forEach((name) => {
-        if (name.endsWith('.css')) {
-          const asset = bundle[name] as EmittedAsset
-          isString(asset.source) &&
-            (asset.source = asset.source.replace(/\*\,/g, 'page,'))
-          this.emitFile({
-            fileName: name.replace('.css', extname),
-            type: 'asset',
-            source: asset.source,
-          })
-          delete bundle[name]
-        }
-      })
+    generateBundle: {
+      order: 'post',
+      handler(_, bundle) {
+        const files = Object.keys(bundle)
+        files.forEach((name) => {
+          if (name.endsWith('.css')) {
+            const asset = bundle[name] as EmittedAsset
+            isString(asset.source) &&
+              (asset.source = asset.source.replace(/\*\,/g, 'page,'))
+            this.emitFile({
+              fileName: name.replace('.css', extname),
+              type: 'asset',
+              source: asset.source,
+            })
+            delete bundle[name]
+          }
+        })
+      },
     },
   }
 }
