@@ -10529,7 +10529,9 @@ var vaporSlotsProxyHandler = {
 };
 function createVDOMComponent(internals, component, rawProps, rawSlots) {
   var frag = new VaporFragment([]);
-  var vnode = createVNode(component, rawProps && new Proxy(rawProps, rawPropsProxyHandlers));
+  var vnode = createVNode(component,
+  // fixed by uts 临时方案，等待修复：https://github.com/vuejs/core/pull/13382
+  rawProps && extend({}, new Proxy(rawProps, rawPropsProxyHandlers)));
   var wrapper = new VaporComponentInstance({
     props: component.props
   }, rawProps, rawSlots);

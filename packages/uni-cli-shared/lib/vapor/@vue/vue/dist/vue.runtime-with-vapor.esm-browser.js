@@ -14680,7 +14680,8 @@ function createVDOMComponent(internals, component, rawProps, rawSlots) {
   const frag = new VaporFragment([]);
   const vnode = createVNode(
     component,
-    rawProps && new Proxy(rawProps, rawPropsProxyHandlers)
+    // fixed by uts 临时方案，等待修复：https://github.com/vuejs/core/pull/13382
+    rawProps && extend({}, new Proxy(rawProps, rawPropsProxyHandlers))
   );
   const wrapper = new VaporComponentInstance(
     { props: component.props },
