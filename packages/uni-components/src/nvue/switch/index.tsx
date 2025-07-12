@@ -1,16 +1,16 @@
 import {
+  type ExtractPropTypes,
+  type Ref,
   defineComponent,
-  Ref,
-  ref,
+  inject,
   onBeforeUnmount,
   onUnmounted,
+  ref,
   watch,
-  inject,
-  ExtractPropTypes,
 } from 'vue'
-import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
-import { uniFormKey, UniFormCtx } from '../../components/form'
-import { uniLabelKey, UniLabelCtx } from '../label'
+import { type EmitEvent, useCustomEvent } from '../../helpers/useNVueEvent'
+import { type UniFormCtx, uniFormKey } from '../../components/form'
+import { type UniLabelCtx, uniLabelKey } from '../label'
 import { useListeners } from '../../helpers/useListeners'
 import { switchProps } from '../../components/switch'
 

@@ -1,24 +1,24 @@
 import {
-  ref,
-  onBeforeUnmount,
-  watch,
+  type ExtractPropTypes,
+  type Ref,
   inject,
+  onBeforeUnmount,
   onMounted,
   onUnmounted,
-  ExtractPropTypes,
-  Ref,
+  ref,
+  watch,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
-import { useCustomEvent, EmitEvent } from '../../helpers/useEvent'
+import { type EmitEvent, useCustomEvent } from '../../helpers/useEvent'
 
-import { UniFormCtx, uniFormKey } from '../form'
-import { UniLabelCtx, uniLabelKey } from '../label'
+import { type UniFormCtx, uniFormKey } from '../form'
+import { type UniLabelCtx, uniLabelKey } from '../label'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniElement } from '../../helpers/UniElement'
 import {
-  createSvgIconVNode,
   ICON_PATH_SUCCESS_NO_CIRCLE,
+  createSvgIconVNode,
 } from '@dcloudio/uni-core'
 
 const props = {
@@ -152,7 +152,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <div
               v-show={type === 'switch'}
               class="uni-switch-input"
-              // @ts-ignore
+              // @ts-expect-error
               class={[switchChecked.value ? 'uni-switch-input-checked' : '']}
               style={switchInputStyle}
             />
@@ -198,7 +198,7 @@ function useSwitchInject(
         //#if _X_ && !_NODE_JS_
         data[1] = (rootRef.value as UniSwitchElement as any).checked
         //#else
-        // @ts-ignore
+        // @ts-expect-error
         data[1] = switchChecked.value
         //#endif
       }

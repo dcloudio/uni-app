@@ -1,7 +1,7 @@
-import { defineComponent, Ref, ref, onMounted, provide } from 'vue'
+import { type Ref, defineComponent, onMounted, provide, ref } from 'vue'
 import { movableAreaProps } from '../../components/movableArea'
 import { flatVNode } from '../../helpers/flatVNode'
-import { TouchtrackEvent } from '../movable-view/useTouchtrack'
+import type { TouchtrackEvent } from '../movable-view/useTouchtrack'
 import { getComponentSize } from '../helpers'
 export interface MovableViewContext {
   setParent: Function

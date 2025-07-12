@@ -1,27 +1,38 @@
-import { ref, Ref, onMounted, inject, computed, watch, onUnmounted } from 'vue'
+import {
+  type Ref,
+  computed,
+  inject,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
-import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
+import { disableScrollBounce, initScrollBounce } from '../../helpers/scroll'
 import { UniElement } from '../../helpers/UniElement'
-import { useTouchtrack, TouchtrackEvent } from '../../helpers/useTouchtrack'
+import {
+  type TouchtrackEvent,
+  useTouchtrack,
+} from '../../helpers/useTouchtrack'
 import ResizeSensor from '../resize-sensor/index'
 import {
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  CustomEventTrigger,
-  EmitEvent,
 } from '../../helpers/useEvent'
 import type {
-  MovableViewContext,
   AddMovableViewContext,
+  MovableViewContext,
   RemoveMovableViewContext,
 } from '../movable-area/index'
 import {
   Decline,
   Friction,
+  type FrictionCallback,
+  type Props,
+  type Record,
   STD,
   movableViewProps,
-  Props,
-  FrictionCallback,
-  Record,
   v,
 } from '../../components/movable-view'
 
@@ -53,7 +64,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     return () => {
       return (
         <uni-movable-view ref={rootRef}>
-          {/* @ts-ignore */}
+          {/* @ts-expect-error */}
           <ResizeSensor onResize={setParent}></ResizeSensor>
           {slots.default && slots.default()}
         </uni-movable-view>

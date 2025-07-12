@@ -1,7 +1,11 @@
-import { defineComponent, provide, ref, VNode } from 'vue'
+import { type VNode, defineComponent, provide, ref } from 'vue'
 import { isArray } from '@vue/shared'
-import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
-import { uniFormKey, UniFormCtx, UniFormFieldCtx } from '../../components/form'
+import { type EmitEvent, useCustomEvent } from '../../helpers/useNVueEvent'
+import {
+  type UniFormCtx,
+  type UniFormFieldCtx,
+  uniFormKey,
+} from '../../components/form'
 
 const NATIVE_COMPONENTS = ['u-input', 'u-textarea']
 

@@ -1,9 +1,9 @@
 import {
+  type ExtractPropTypes,
   Transition,
-  defineComponent,
-  ExtractPropTypes,
   computed,
   createVNode,
+  defineComponent,
   ref,
   watchEffect,
 } from 'vue'
@@ -11,19 +11,19 @@ import { SHOW_TOAST_ICON } from '@dcloudio/uni-api'
 import type { API_TYPE_SHOW_TOAST_ICON } from '@dcloudio/uni-api'
 import { usePopup } from './utils'
 import {
-  onEventPrevent,
-  createSvgIconVNode,
   ICON_PATH_SUCCESS_NO_CIRCLE,
   ICON_PATH_WARN,
+  createSvgIconVNode,
+  onEventPrevent,
 } from '@dcloudio/uni-core'
 import {
-  initI18nShowToastMsgsOnce,
   initI18nShowLoadingMsgsOnce,
+  initI18nShowToastMsgsOnce,
 } from '@dcloudio/uni-core'
 import {
-  onThemeChange,
-  offThemeChange,
   getTheme,
+  offThemeChange,
+  onThemeChange,
 } from '../../../../helpers/theme'
 
 const props = {
@@ -137,7 +137,7 @@ function useToastIcon(props: ToastProps) {
           }
         )
       case 'loading':
-        // @ts-ignore
+        // @ts-expect-error
         return <i class={ToastIconClassName} class="uni-loading"></i>
 
       default:

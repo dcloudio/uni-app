@@ -1,16 +1,16 @@
 import {
+  type ExtractPropTypes,
+  type Ref,
   defineComponent,
-  Ref,
-  ref,
-  reactive,
-  watch,
   onMounted,
-  ExtractPropTypes,
+  reactive,
+  ref,
+  watch,
 } from 'vue'
 import {
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  EmitEvent,
-  CustomEventTrigger,
 } from '../../helpers/useNVueEvent'
 import { getComponentSize } from '../helpers'
 import { adProps, getAdData } from '../../components/ad'

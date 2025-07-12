@@ -1,13 +1,21 @@
-import { ref, reactive, Ref, onMounted, VNode, markRaw, provide } from 'vue'
+import {
+  type Ref,
+  type VNode,
+  markRaw,
+  onMounted,
+  provide,
+  reactive,
+  ref,
+} from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { withWebEvent } from '../../helpers/useEvent'
 import { useAttrs } from '../../helpers/useAttrs'
-import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
+import { disableScrollBounce, initScrollBounce } from '../../helpers/scroll'
 import { UniElement } from '../../helpers/UniElement'
 import ResizeSensor from '../resize-sensor/index'
 import { flatVNode } from '../../helpers/flatVNode'
 import { useRebuild } from '../../helpers/useRebuild'
-import { movableAreaProps, Props } from '../../components/movableArea'
+import { type Props, movableAreaProps } from '../../components/movableArea'
 
 type _TouchEvent = '_onTouchstart' | '_onTouchmove' | '_onTouchend'
 export interface MovableViewContext {

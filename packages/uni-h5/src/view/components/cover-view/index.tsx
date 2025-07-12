@@ -1,4 +1,4 @@
-import { ref, ExtractPropTypes, watch, onMounted } from 'vue'
+import { type ExtractPropTypes, onMounted, ref, watch } from 'vue'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { UniElement } from '@dcloudio/uni-components'
 

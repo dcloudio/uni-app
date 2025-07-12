@@ -1,7 +1,7 @@
-import { provide, ref, onMounted } from 'vue'
+import { onMounted, provide, ref } from 'vue'
 import {
-  CustomEventTrigger,
-  EmitEvent,
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
 } from '@dcloudio/uni-components'
 import { PolySymbol } from '@dcloudio/uni-core'

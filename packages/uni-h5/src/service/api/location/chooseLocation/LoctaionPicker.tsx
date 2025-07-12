@@ -1,25 +1,25 @@
 /// <reference types="google.maps" />
 import { extend } from '@vue/shared'
-import { ref, ExtractPropTypes, reactive, computed, watch } from 'vue'
+import { type ExtractPropTypes, computed, reactive, ref, watch } from 'vue'
 import { debounce } from '@dcloudio/uni-shared'
 import {
-  createSvgIconVNode,
   ICON_PATH_CLOSE,
   ICON_PATH_CONFIRM,
+  createSvgIconVNode,
   initI18nChooseLocationMsgsOnce,
   useI18n,
 } from '@dcloudio/uni-core'
 import {
-  defineSystemComponent,
   Input,
   ScrollView,
+  defineSystemComponent,
 } from '@dcloudio/uni-components'
 import { usePreventScroll } from '../../../../helpers/usePreventScroll'
 import {
-  Point,
   ICON_PATH_LOCTAION,
   ICON_PATH_TARGET,
   MapType,
+  type Point,
   getMapInfo,
 } from '../../../../helpers/location'
 import { Map } from '../../../../view/components'
@@ -382,7 +382,7 @@ export default /*#__PURE__*/ defineSystemComponent({
                 value={state.keyword}
                 class="search-input"
                 placeholder={t('uni.chooseLocation.search')}
-                // @ts-ignore
+                // @ts-expect-error
                 onFocus={() => (state.searching = true)}
                 onInput={onInput}
               />

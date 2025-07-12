@@ -1,41 +1,48 @@
 import { extend, isArray } from '@vue/shared'
 import {
+  type PropType,
+  type Ref,
+  type SetupContext,
   onMounted,
+  provide,
   reactive,
-  Ref,
   ref,
   watch,
-  SetupContext,
-  PropType,
-  provide,
 } from 'vue'
 import {
+  type CustomEventTrigger,
+  UniElement,
   defineBuiltInComponent,
   useContextInfo,
-  useSubscribe,
   useCustomEvent,
-  CustomEventTrigger,
-  UniElement,
+  useSubscribe,
 } from '@dcloudio/uni-components'
 import '@amap/amap-jsapi-types'
 import { callOptions } from '@dcloudio/uni-shared'
-import { Point, getIsBMap, getIsAMap } from '../../../helpers/location'
-import { Maps, Map, loadMaps, LatLng, QQMap, GoogleMap } from './maps'
-import { QQMaps } from './maps/qq/types'
-import { GoogleMaps } from './maps/google/types'
+import { type Point, getIsAMap, getIsBMap } from '../../../helpers/location'
+import {
+  type GoogleMap,
+  type LatLng,
+  type Map,
+  type Maps,
+  type QQMap,
+  loadMaps,
+} from './maps'
+import type { QQMaps } from './maps/qq/types'
+import type { GoogleMaps } from './maps/google/types'
 import MapMarker, {
-  Props as MapMarkerProps,
-  Context as MapMarkerContext,
+  type Context as MapMarkerContext,
+  type Props as MapMarkerProps,
 } from './MapMarker'
-import MapPolyline, { Props as MapPolylineProps } from './MapPolyline'
-import MapCircle, { Props as MapCircleProps } from './MapCircle'
-import MapControl, { Props as MapControlProps } from './MapControl'
+import MapPolyline, { type Props as MapPolylineProps } from './MapPolyline'
+import MapCircle, { type Props as MapCircleProps } from './MapCircle'
+import MapControl, { type Props as MapControlProps } from './MapControl'
 import MapLocation, {
-  Context as MapLocationContext,
   CONTEXT_ID as MAP_LOCATION_CONTEXT_ID,
+  type Context as MapLocationContext,
 } from './MapLocation'
 import MapPolygon from './map-polygon/index'
-import { Polygon } from './map-polygon/interface'
+import type { Polygon } from './map-polygon/interface'
 
 const props = {
   id: {
@@ -325,11 +332,11 @@ function useMap(
       draggable: true,
     })
     if (getIsBMap()) {
-      // @ts-ignore
+      // @ts-expect-error
       map.centerAndZoom(center, Number(props.scale))
-      // @ts-ignore
+      // @ts-expect-error
       map.enableScrollWheelZoom()
-      // @ts-ignore
+      // @ts-expect-error
       map._printLog && map._printLog('uniapp')
     }
     watch(
@@ -347,19 +354,19 @@ function useMap(
     })
     // 需在 bounds_changed 后触发 BoundsReady
     if (getIsBMap()) {
-      // @ts-ignore
+      // @ts-expect-error
       map.addEventListener('click', () => {
         trigger('tap', {} as Event, {})
         trigger('click', {} as Event, {})
       })
-      // @ts-ignore
+      // @ts-expect-error
       map.addEventListener('dragstart', () => {
         trigger('regionchange', {} as Event, {
           type: 'begin',
           causedBy: 'gesture',
         })
       })
-      // @ts-ignore
+      // @ts-expect-error
       map.addEventListener('dragend', () => {
         trigger(
           'regionchange',

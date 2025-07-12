@@ -1,6 +1,10 @@
-import { ref, Ref, onMounted } from 'vue'
+import { type Ref, onMounted, ref } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { useCustomEvent, EmitEvent, UniElement } from '@dcloudio/uni-components'
+import {
+  type EmitEvent,
+  UniElement,
+  useCustomEvent,
+} from '@dcloudio/uni-components'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 
 export class UniCoverImageElement extends UniElement {}

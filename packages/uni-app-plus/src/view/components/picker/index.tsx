@@ -1,17 +1,24 @@
-import { Ref, ref, watch, onBeforeUnmount, ExtractPropTypes, inject } from 'vue'
+import {
+  type ExtractPropTypes,
+  type Ref,
+  inject,
+  onBeforeUnmount,
+  ref,
+  watch,
+} from 'vue'
 import { extend, isArray } from '@vue/shared'
 import {
+  type EmitEvent,
   defineBuiltInComponent,
   useCustomEvent,
-  EmitEvent,
 } from '@dcloudio/uni-components'
 import {
-  useI18n,
+  type Page,
   initI18nPickerMsgsOnce,
   showPage,
-  Page,
+  useI18n,
 } from '@dcloudio/uni-core'
-import { UniFormCtx, uniFormKey } from '@dcloudio/uni-components'
+import { type UniFormCtx, uniFormKey } from '@dcloudio/uni-components'
 import { getNavigationBarHeight } from '../../../helpers/navigationBar'
 import { ON_THEME_CHANGE } from '@dcloudio/uni-shared'
 

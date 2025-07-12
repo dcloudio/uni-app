@@ -1,8 +1,8 @@
-import { Ref, ref, reactive } from 'vue'
+import { type Ref, reactive, ref } from 'vue'
 import {
+  type EmitEvent,
   defineBuiltInComponent,
   useCustomEvent,
-  EmitEvent,
   useRebuild,
 } from '@dcloudio/uni-components'
 import { useCover } from '../../../helpers/useCover'
