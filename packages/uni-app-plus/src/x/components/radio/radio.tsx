@@ -7,6 +7,7 @@ import {
   onBeforeUnmount,
   onMounted,
   ref,
+  renderSlot,
   watch,
   watchEffect,
 } from 'vue'
@@ -201,7 +202,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               {radioChecked.value ? icon : ''}
             </text>
           </view>
-          {slots.default?.()}
+          {renderSlot(slots, 'default')}
         </uni-radio-element>
       )
     }

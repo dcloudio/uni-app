@@ -1,6 +1,6 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { UniNavigatorElement, navigatorProps } from './model'
-import { camelize, getCurrentInstance, onMounted, ref } from 'vue'
+import { camelize, getCurrentInstance, onMounted, ref, renderSlot } from 'vue'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Navigator',
@@ -85,7 +85,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           hoverStartTime={props.hoverStartTime}
           hoverStayTime={props.hoverStayTime}
         >
-          {slots.default?.()}
+          {renderSlot(slots, 'default')}
         </uni-navigator-element>
       )
     }

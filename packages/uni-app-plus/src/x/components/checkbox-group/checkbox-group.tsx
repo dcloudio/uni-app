@@ -8,7 +8,7 @@ import {
   checkboxGroupProps,
 } from './model'
 import type { CheckboxInfo } from './model'
-import { camelize, getCurrentInstance, onMounted, ref } from 'vue'
+import { camelize, getCurrentInstance, onMounted, ref, renderSlot } from 'vue'
 import { initUniCustomEvent } from '../../utils'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -106,7 +106,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     return () => {
       return (
         <uni-checkbox-group-element ref={uniCheckboxGroupElementRef}>
-          {slots.default?.()}
+          {renderSlot(slots, 'default')}
         </uni-checkbox-group-element>
       )
     }

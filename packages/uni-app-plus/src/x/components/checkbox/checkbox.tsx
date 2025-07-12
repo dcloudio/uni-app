@@ -8,6 +8,7 @@ import {
   onBeforeUnmount,
   onMounted,
   ref,
+  renderSlot,
   watch,
   watchEffect,
 } from 'vue'
@@ -182,7 +183,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               {checkboxChecked.value ? icon : ''}
             </text>
           </view>
-          {slots.default?.()}
+          {renderSlot(slots, 'default')}
         </uni-checkbox-element>
       )
     }

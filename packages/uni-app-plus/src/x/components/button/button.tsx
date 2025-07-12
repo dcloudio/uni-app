@@ -1,19 +1,19 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import {
-  onMounted,
-  getCurrentInstance,
+  type ComponentInternalInstance,
   computed,
-  ComponentInternalInstance,
+  getCurrentInstance,
+  onMounted,
+  renderSlot,
 } from 'vue'
 import {
   $dispatch,
   BUTTON_COMPONENT_NAME,
-  buttonProps,
-  hoverStyles,
-  // styleList,
   UNI_BUTTON_ELEMENT_NAME,
   UniButtonElement,
+  buttonProps,
+  hoverStyles,
 } from './model'
 import { styleList } from './style'
 const FORM_TYPES = ['submit', 'reset']
@@ -228,7 +228,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           onTouchmove={touchmove}
           onClick={_onClick}
         >
-          {slots.default?.()}
+          {renderSlot(slots, 'default')}
         </uni-button-element>
       )
     }
