@@ -615,7 +615,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "stopLocationUpdate": {
@@ -624,7 +624,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "onLocationChange": {
@@ -633,7 +633,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "offLocationChange": {
@@ -642,7 +642,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "startLocationUpdateBackground": {
@@ -651,7 +651,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "onLocationChangeError": {
@@ -660,7 +660,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "offLocationChangeError": {
@@ -669,7 +669,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     }
