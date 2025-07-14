@@ -1946,9 +1946,17 @@ function genComplexChildAccess(from, elementIndex, context) {
 }
 
 function genSetText(oper, context) {
-  const { helper } = context;
+  const { helper, options } = context;
   const { element, values, generated, jsx } = oper;
   const texts = combineValues(values, context, jsx);
+  if (options.templateMode === "factory") {
+    return [
+      NEWLINE,
+      `${generated ? "x" : "n"}${element}.setAttribute('value', `,
+      ...texts,
+      ")"
+    ];
+  }
   return [
     NEWLINE,
     ...genCall(helper("setText"), `${generated ? "x" : "n"}${element}`, texts)
