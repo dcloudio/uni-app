@@ -164,6 +164,7 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniIntersectionObserverObserveCallback'],
       ['TextDecoder'],
       ['TextEncoder'],
+      ['ShowModalOptions'],
 
       // element
       ['UniViewElementImpl'],
