@@ -22897,25 +22897,40 @@ const EMPTY_STRING = "";
 const UNKNOWN_COMMENT = "unknown";
 class DomCodeGenerator {
   constructor(options) {
+    this.variableCounter = 0;
+    this.styleCounter = 0;
     this.parseStaticStyle = options.parseStaticStyle;
+  }
+  genNodeStatements(node) {
+    this.variableCounter = 0;
+    this.styleCounter = 0;
+    return this.genNodeCode(node);
   }
   genNodeCode(node) {
     switch (node.type) {
       case NODE_TYPE_TEXT:
-        return this.createTextNodeCode(node.content || EMPTY_STRING);
+        return this.createTextNode(node.content || EMPTY_STRING);
       case NODE_TYPE_COMMENT:
-        return this.createCommentNodeCode(node.content || EMPTY_STRING);
+        return this.createCommentNode(node.content || EMPTY_STRING);
       case NODE_TYPE_ELEMENT:
         return this.genElementCode(node);
       default:
-        return this.createCommentNodeCode(UNKNOWN_COMMENT);
+        return this.createCommentNode(UNKNOWN_COMMENT);
     }
   }
-  createTextNodeCode(content) {
-    return `doc.createTextNode(${JSON.stringify(content)})`;
+  createTextNode(content) {
+    const varName = this.getNextVariableName();
+    const statements = [
+      `const ${varName} = doc.createTextNode(${JSON.stringify(content)})`
+    ];
+    return { variableName: varName, statements };
   }
-  createCommentNodeCode(content) {
-    return `doc.createComment(${JSON.stringify(content)})`;
+  createCommentNode(content) {
+    const varName = this.getNextVariableName();
+    const statements = [
+      `const ${varName} = doc.createComment(${JSON.stringify(content)})`
+    ];
+    return { variableName: varName, statements };
   }
   genElementCode(node) {
     const { tag, attrs, children } = node;
@@ -22928,13 +22943,47 @@ class DomCodeGenerator {
     const { tag, attrs, children } = params;
     const textContent = this.extractTextContent(children);
     const finalAttrs = this.mergeTextAttributes(attrs, textContent);
-    return this.buildCreateElementCall(tag, finalAttrs, null);
+    return this.buildElementStatements(tag, finalAttrs, void 0);
   }
   genRegularElementCode(params) {
     const { tag, attrs, children } = params;
-    const attrsParam = this.genAttrsParam(attrs);
-    const childrenParam = this.genChildrenParam(children, tag);
-    return this.buildCreateElementCall(tag, attrsParam, childrenParam);
+    return this.buildElementStatements(tag, attrs, children);
+  }
+  buildElementStatements(tag, attrs, children) {
+    const varName = this.getNextVariableName();
+    const statements = [];
+    statements.push(`const ${varName} = doc.createElement('${tag}')`);
+    if (attrs && Object.keys(attrs).length > 0) {
+      for (const [name, value] of Object.entries(attrs)) {
+        if (name === "style") {
+          const styleVar = this.getNextStyleVariableName();
+          statements.push(`const ${styleVar} = ${varName}.style`);
+          const styleProperties = this.parseStyleToProperties(value);
+          for (const [prop, val] of styleProperties) {
+            statements.push(
+              `${styleVar}.setProperty("${prop}", ${JSON.stringify(val)})`
+            );
+          }
+        } else {
+          statements.push(
+            `${varName}.setAttribute('${name}', ${JSON.stringify(value)})`
+          );
+        }
+      }
+    }
+    if (children && children.length > 0 && tag !== NODE_TYPE_TEXT) {
+      for (const child of children) {
+        const inlineCode = this.tryInlineChild(child);
+        if (inlineCode) {
+          statements.push(`${varName}.appendChild(${inlineCode})`);
+        } else {
+          const childInfo = this.genNodeCode(child);
+          statements.push(...childInfo.statements);
+          statements.push(`${varName}.appendChild(${childInfo.variableName})`);
+        }
+      }
+    }
+    return { variableName: varName, statements };
   }
   extractTextContent(children) {
     if (!children || children.length !== 1 || children[0].type !== NODE_TYPE_TEXT) {
@@ -22952,47 +23001,57 @@ class DomCodeGenerator {
     }
     return result;
   }
-  buildCreateElementCall(tag, attrsParam, childrenParam) {
-    const finalAttrsParam = this.resolveAttrsParam(attrsParam);
-    const params = this.buildParams(tag, finalAttrsParam, childrenParam);
-    return `doc.createElement(${params.join(", ")})`;
+  getNextVariableName() {
+    return `e${this.variableCounter++}`;
   }
-  resolveAttrsParam(attrsParam) {
-    return typeof attrsParam === "string" ? attrsParam : this.genAttrsParam(attrsParam || void 0);
+  getNextStyleVariableName() {
+    return `s${this.styleCounter++}`;
   }
-  buildParams(tag, attrsParam, childrenParam) {
-    const params = [`'${tag}'`];
-    if (attrsParam) {
-      params.push(attrsParam);
-    } else if (childrenParam) {
-      params.push("null");
+  parseStyleToProperties(style) {
+    if (!style || !style.trim()) {
+      return [];
     }
-    if (childrenParam) {
-      params.push(childrenParam);
-    }
-    return params;
-  }
-  genAttrsParam(attrs) {
-    if (!attrs || Object.keys(attrs).length === 0) {
-      return null;
-    }
-    const entries = Object.entries(attrs).map(([name, value]) => {
-      if (name === "style") {
-        return `['style', ${this.parseStaticStyle(value)}]`;
+    const mapStr = this.parseStaticStyle(style);
+    const regex = /\['([^']+)',\s*([^\]]+)\]/g;
+    const properties = [];
+    let match;
+    while ((match = regex.exec(mapStr)) !== null) {
+      const prop = match[1];
+      let val = match[2].trim();
+      if (val.startsWith('"') && val.endsWith('"') || val.startsWith("'") && val.endsWith("'")) {
+        val = val.slice(1, -1);
       }
-      return `['${name}', ${JSON.stringify(value)}]`;
-    });
-    return `new Map([${entries.join(", ")}])`;
+      properties.push([prop, val]);
+    }
+    return properties;
   }
-  genChildrenParam(children, parentTag) {
-    if (!children || children.length === 0) {
-      return null;
+  tryInlineChild(child) {
+    switch (child.type) {
+      case NODE_TYPE_TEXT:
+        return `doc.createTextNode(${JSON.stringify(child.content || EMPTY_STRING)})`;
+      case NODE_TYPE_COMMENT:
+        return `doc.createComment(${JSON.stringify(child.content || EMPTY_STRING)})`;
+      case NODE_TYPE_ELEMENT:
+        const elementChild = child;
+        if (this.canInlineElement(elementChild)) {
+          return `doc.createElement('${elementChild.tag}')`;
+        }
+        return null;
+      default:
+        return `doc.createComment(${JSON.stringify(UNKNOWN_COMMENT)})`;
     }
-    if (parentTag === NODE_TYPE_TEXT) {
-      return null;
+  }
+  canInlineElement(node) {
+    if (node.tag === NODE_TYPE_TEXT) {
+      return false;
     }
-    const childrenCode = children.map((child) => this.genNodeCode(child));
-    return `[${childrenCode.join(", ")}]`;
+    if (node.attrs && Object.keys(node.attrs).length > 0) {
+      return false;
+    }
+    if (node.children && node.children.length > 0) {
+      return false;
+    }
+    return true;
   }
 }
 class TemplateFactoryGenerator {
@@ -23022,11 +23081,52 @@ class TemplateFactoryGenerator {
 }`;
   }
   genSingleNodeFunction(node, index) {
-    const nodeCode = this.codeGenerator.genNodeCode(node);
     const { paramType, returnType } = this.getFunctionSignature();
-    return `function f${index}(${paramType})${returnType} {
-  return ${nodeCode}
+    const simpleReturn = this.tryGenSimpleReturn(node);
+    if (simpleReturn) {
+      return `function f${index}(${paramType})${returnType} {
+  return ${simpleReturn}
 }`;
+    }
+    const nodeInfo = this.codeGenerator.genNodeStatements(node);
+    const statements = nodeInfo.statements.map((stmt) => `  ${stmt}`).join("\n");
+    const returnStatement = `  return ${nodeInfo.variableName}`;
+    return `function f${index}(${paramType})${returnType} {
+${statements}
+${returnStatement}
+}`;
+  }
+  tryGenSimpleReturn(node) {
+    switch (node.type) {
+      case NODE_TYPE_TEXT:
+        return `doc.createTextNode(${JSON.stringify(node.content || EMPTY_STRING)})`;
+      case NODE_TYPE_COMMENT:
+        return `doc.createComment(${JSON.stringify(node.content || EMPTY_STRING)})`;
+      case NODE_TYPE_ELEMENT:
+        const elementNode = node;
+        if (this.isSimpleElement(elementNode)) {
+          return `doc.createElement('${elementNode.tag}')`;
+        }
+        return null;
+      default:
+        return `doc.createComment(${JSON.stringify(UNKNOWN_COMMENT)})`;
+    }
+  }
+  isSimpleElement(node) {
+    if (node.tag === NODE_TYPE_TEXT) {
+      const textContent = this.extractTextContent(node.children);
+      return !textContent && (!node.attrs || Object.keys(node.attrs).length === 0);
+    }
+    return (!node.attrs || Object.keys(node.attrs).length === 0) && (!node.children || node.children.length === 0);
+  }
+  extractTextContent(children) {
+    if (!children || children.length !== 1 || children[0].type !== NODE_TYPE_TEXT) {
+      return EMPTY_STRING;
+    }
+    if (children[0].content === " ") {
+      return EMPTY_STRING;
+    }
+    return children[0].content || EMPTY_STRING;
   }
   getFunctionSignature() {
     const paramType = this.isTs ? "doc: IDocument" : "doc";

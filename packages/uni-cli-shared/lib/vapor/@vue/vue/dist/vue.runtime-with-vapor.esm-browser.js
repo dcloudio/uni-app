@@ -13279,13 +13279,7 @@ class DynamicFragment extends VaporFragment {
   // fixed by uts
   constructor(doc, anchorLabel) {
     super([]);
-    this.anchor = anchorLabel ? (
-      // fixed by uts
-      createComment(doc, anchorLabel)
-    ) : (
-      // fixed by uts
-      createTextNode(doc)
-    );
+    this.anchor = createComment(doc, anchorLabel || "");
   }
   update(render, key = render) {
     if (key === this.current) {
@@ -13300,8 +13294,13 @@ class DynamicFragment extends VaporFragment {
     }
     if (render) {
       this.scope = new EffectScope();
+      const start = Date.now();
       this.nodes = this.scope.run(render) || [];
+      console.log("[VAPOR] dom create", Date.now() - start);
+      const start2 = Date.now();
       if (parent) insert(this.nodes, parent, this.anchor);
+      console.log("[VAPOR] dom insert", Date.now() - start2);
+      console.log("[VAPOR] dom all", Date.now() - start);
     } else {
       this.scope = void 0;
       this.nodes = [];
@@ -14592,8 +14591,8 @@ function defineVaporComponent(comp, extraOptions) {
 
 const vaporInteropImpl = {
   mount(vnode, container, anchor, parentComponent) {
-    const selfAnchor = vnode.el = vnode.anchor = // fixed by uts
-    createTextNode(container.page.document);
+    const selfAnchor = vnode.el = vnode.anchor = // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
+    createComment(container.page.document, "");
     container.insertBefore(selfAnchor, anchor);
     const prev = currentInstance;
     simpleSetCurrentInstance(parentComponent);
@@ -14638,8 +14637,8 @@ const vaporInteropImpl = {
    */
   slot(n1, n2, container, anchor) {
     if (!n1) {
-      const selfAnchor = n2.el = n2.anchor = // fixed by uts
-      createTextNode(container.page.document);
+      const selfAnchor = n2.el = n2.anchor = // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
+      createComment(container.page.document, "");
       insert(selfAnchor, container, anchor);
       const { slot, fallback } = n2.vs;
       const propsRef = n2.vs.ref = shallowRef(n2.props);
@@ -14871,10 +14870,7 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
   let oldBlocks = [];
   let newBlocks;
   let parent;
-  const parentAnchor = (
-    // fixed by uts
-    createComment(doc, "for")
-  ) ;
+  const parentAnchor = createComment(doc, "for");
   const frag = new VaporFragment(oldBlocks);
   const instance = currentInstance;
   const canUseFastRemove = flags & 1;

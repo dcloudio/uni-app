@@ -8982,6 +8982,11 @@ function createTextNode(doc) {
 }
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
+function createComment(doc, data) {
+  return doc.createComment(data);
+}
+/*! #__NO_SIDE_EFFECTS__ */
+// @__NO_SIDE_EFFECTS__
 function child(node) {
   return node.firstChild;
 }
@@ -9380,9 +9385,7 @@ class DynamicFragment extends VaporFragment {
   // fixed by uts
   constructor(doc, anchorLabel) {
     super([]);
-    this.anchor =
-    // fixed by uts
-    createTextNode(doc);
+    this.anchor = createComment(doc, anchorLabel || "");
   }
   update(render) {
     var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : render;
@@ -9398,8 +9401,13 @@ class DynamicFragment extends VaporFragment {
     }
     if (render) {
       this.scope = new EffectScope();
+      var start = Date.now();
       this.nodes = this.scope.run(render) || [];
+      console.log("[VAPOR] dom create", Date.now() - start);
+      var start2 = Date.now();
       if (parent) insert(this.nodes, parent, this.anchor);
+      console.log("[VAPOR] dom insert", Date.now() - start2);
+      console.log("[VAPOR] dom all", Date.now() - start);
     } else {
       this.scope = void 0;
       this.nodes = [];
@@ -10443,8 +10451,8 @@ function defineVaporComponent(comp, extraOptions) {
 var vaporInteropImpl = {
   mount(vnode, container, anchor, parentComponent) {
     var selfAnchor = vnode.el = vnode.anchor =
-    // fixed by uts
-    createTextNode(container.page.document);
+    // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
+    createComment(container.page.document, "");
     container.insertBefore(selfAnchor, anchor);
     var prev = currentInstance;
     simpleSetCurrentInstance(parentComponent);
@@ -10486,8 +10494,8 @@ var vaporInteropImpl = {
   slot(n1, n2, container, anchor) {
     if (!n1) {
       var selfAnchor = n2.el = n2.anchor =
-      // fixed by uts
-      createTextNode(container.page.document);
+      // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
+      createComment(container.page.document, "");
       insert(selfAnchor, container, anchor);
       var {
         slot,
@@ -10656,9 +10664,7 @@ var createFor = function (doc, src, renderItem, getKey) {
   var oldBlocks = [];
   var newBlocks;
   var parent;
-  var parentAnchor =
-  // fixed by uts
-  createTextNode(doc);
+  var parentAnchor = createComment(doc, "for");
   var frag = new VaporFragment(oldBlocks);
   var canUseFastRemove = flags & 1;
   var isComponent = flags & 2;
