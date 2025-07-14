@@ -5,6 +5,7 @@ import {
   MANIFEST_JSON_UTS,
   parseJson,
   resolveUTSCompiler,
+  validateThemeValue,
 } from '@dcloudio/uni-cli-shared'
 import {
   getExtApiComponents,
@@ -67,6 +68,26 @@ export function uniAppManifestPlugin(
       outputManifestJson = normalizeManifestJson(platform, manifestJson)
 
       const manifest = outputManifestJson
+
+      // 验证和处理主题配置
+      const hasAppDefaultAppTheme = validateThemeValue(
+        manifestJson.app?.defaultAppTheme
+      )
+      const hasDefaultAppTheme = validateThemeValue(
+        manifestJson.defaultAppTheme
+      )
+
+      if (hasAppDefaultAppTheme || hasDefaultAppTheme) {
+        // 记录主题配置的使用，便于调试和日志输出
+        const selectedTheme = hasAppDefaultAppTheme
+          ? manifestJson.app.defaultAppTheme
+          : manifestJson.defaultAppTheme
+
+        // 在开发模式下输出主题配置信息
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`[${platform}] Using app theme: ${selectedTheme}`)
+        }
+      }
       if (process.env.NODE_ENV !== 'development' || isXHarmony) {
         // 生产模式，记录使用到的modules
         const ids = Array.from(this.getModuleIds())
