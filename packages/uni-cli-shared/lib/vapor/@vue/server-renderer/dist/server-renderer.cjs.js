@@ -1,5 +1,5 @@
 /**
-* @vue/server-renderer v3.5.14
+* @vue/server-renderer v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -78,8 +78,22 @@ function ssrRenderStyle(raw) {
   if (shared.isString(raw)) {
     return shared.escapeHtml(raw);
   }
-  const styles = shared.normalizeStyle(raw);
+  const styles = shared.normalizeStyle(ssrResetCssVars(raw));
   return shared.escapeHtml(shared.stringifyStyle(styles));
+}
+function ssrResetCssVars(raw) {
+  if (!shared.isArray(raw) && shared.isObject(raw)) {
+    const res = {};
+    for (const key in raw) {
+      if (key.startsWith(":--")) {
+        res[key.slice(1)] = shared.normalizeCssVarValue(raw[key]);
+      } else {
+        res[key] = raw[key];
+      }
+    }
+    return res;
+  }
+  return raw;
 }
 
 function ssrRenderComponent(comp, props = null, children = null, parentComponent = null, slotScopeId) {
@@ -194,316 +208,13 @@ function ssrInterpolate(value) {
   return shared.escapeHtml(shared.toDisplayString(value));
 }
 
-var SubscriberFlags = /* @__PURE__ */ ((SubscriberFlags2) => {
-  SubscriberFlags2[SubscriberFlags2["Computed"] = 1] = "Computed";
-  SubscriberFlags2[SubscriberFlags2["Effect"] = 2] = "Effect";
-  SubscriberFlags2[SubscriberFlags2["Tracking"] = 4] = "Tracking";
-  SubscriberFlags2[SubscriberFlags2["Recursed"] = 16] = "Recursed";
-  SubscriberFlags2[SubscriberFlags2["Dirty"] = 32] = "Dirty";
-  SubscriberFlags2[SubscriberFlags2["PendingComputed"] = 64] = "PendingComputed";
-  SubscriberFlags2[SubscriberFlags2["Propagated"] = 96] = "Propagated";
-  return SubscriberFlags2;
-})(SubscriberFlags || {});
-function startTracking(sub) {
-  sub.depsTail = void 0;
-  sub.flags = sub.flags & -113 | 4 /* Tracking */;
-}
-function endTracking(sub) {
-  const depsTail = sub.depsTail;
-  if (depsTail !== void 0) {
-    const nextDep = depsTail.nextDep;
-    if (nextDep !== void 0) {
-      clearTracking(nextDep);
-      depsTail.nextDep = void 0;
-    }
-  } else if (sub.deps !== void 0) {
-    clearTracking(sub.deps);
-    sub.deps = void 0;
-  }
-  sub.flags &= -5 /* Tracking */;
-}
-function updateDirtyFlag(sub, flags) {
-  if (checkDirty(sub.deps)) {
-    sub.flags = flags | 32 /* Dirty */;
-    return true;
-  } else {
-    sub.flags = flags & -65 /* PendingComputed */;
-    return false;
-  }
-}
-function checkDirty(current) {
-  let prevLinks;
-  let checkDepth = 0;
-  let dirty;
-  top: do {
-    dirty = false;
-    const dep = current.dep;
-    if (current.sub.flags & 32 /* Dirty */) {
-      dirty = true;
-    } else if ("flags" in dep) {
-      const depFlags = dep.flags;
-      if ((depFlags & (1 /* Computed */ | 32 /* Dirty */)) === (1 /* Computed */ | 32 /* Dirty */)) {
-        if (dep.update()) {
-          const subs = dep.subs;
-          if (subs.nextSub !== void 0) {
-            shallowPropagate(subs);
-          }
-          dirty = true;
-        }
-      } else if ((depFlags & (1 /* Computed */ | 64 /* PendingComputed */)) === (1 /* Computed */ | 64 /* PendingComputed */)) {
-        if (current.nextSub !== void 0 || current.prevSub !== void 0) {
-          prevLinks = { target: current, linked: prevLinks };
-        }
-        current = dep.deps;
-        ++checkDepth;
-        continue;
-      }
-    }
-    if (!dirty && current.nextDep !== void 0) {
-      current = current.nextDep;
-      continue;
-    }
-    while (checkDepth) {
-      --checkDepth;
-      const sub = current.sub;
-      const firstSub = sub.subs;
-      if (dirty) {
-        if (sub.update()) {
-          if (firstSub.nextSub !== void 0) {
-            current = prevLinks.target;
-            prevLinks = prevLinks.linked;
-            shallowPropagate(firstSub);
-          } else {
-            current = firstSub;
-          }
-          continue;
-        }
-      } else {
-        sub.flags &= -65 /* PendingComputed */;
-      }
-      if (firstSub.nextSub !== void 0) {
-        current = prevLinks.target;
-        prevLinks = prevLinks.linked;
-      } else {
-        current = firstSub;
-      }
-      if (current.nextDep !== void 0) {
-        current = current.nextDep;
-        continue top;
-      }
-      dirty = false;
-    }
-    return dirty;
-  } while (true);
-}
-function shallowPropagate(link2) {
-  do {
-    const sub = link2.sub;
-    const subFlags = sub.flags;
-    if ((subFlags & (64 /* PendingComputed */ | 32 /* Dirty */)) === 64 /* PendingComputed */) {
-      sub.flags = subFlags | 32 /* Dirty */;
-    }
-    link2 = link2.nextSub;
-  } while (link2 !== void 0);
-}
-function clearTracking(link2) {
-  do {
-    const dep = link2.dep;
-    const nextDep = link2.nextDep;
-    const nextSub = link2.nextSub;
-    const prevSub = link2.prevSub;
-    if (nextSub !== void 0) {
-      nextSub.prevSub = prevSub;
-    } else {
-      dep.subsTail = prevSub;
-    }
-    if (prevSub !== void 0) {
-      prevSub.nextSub = nextSub;
-    } else {
-      dep.subs = nextSub;
-    }
-    if (dep.subs === void 0 && "deps" in dep) {
-      const depFlags = dep.flags;
-      if (!(depFlags & 32 /* Dirty */)) {
-        dep.flags = depFlags | 32 /* Dirty */;
-      }
-      const depDeps = dep.deps;
-      if (depDeps !== void 0) {
-        link2 = depDeps;
-        dep.depsTail.nextDep = nextDep;
-        dep.deps = void 0;
-        dep.depsTail = void 0;
-        continue;
-      }
-    }
-    link2 = nextDep;
-  } while (link2 !== void 0);
-}
-
-const triggerEventInfos = [];
-function onTrigger(sub) {
-  if (sub.onTrigger) {
-    const debugInfo = triggerEventInfos[triggerEventInfos.length - 1];
-    sub.onTrigger(
-      shared.extend(
-        {
-          effect: sub
-        },
-        debugInfo
-      )
-    );
-  }
-}
-function setupOnTrigger(target) {
-  Object.defineProperty(target.prototype, "onTrigger", {
-    get() {
-      return this._onTrigger;
-    },
-    set(val) {
-      if (val && !this._onTrigger) setupFlagsHandler(this);
-      this._onTrigger = val;
-    }
-  });
-}
-function setupFlagsHandler(target) {
-  target._flags = target.flags;
-  Object.defineProperty(target, "flags", {
-    get() {
-      return target._flags;
-    },
-    set(value) {
-      if (!(target._flags & SubscriberFlags.Propagated) && !!(value & SubscriberFlags.Propagated)) {
-        onTrigger(this);
-      }
-      target._flags = value;
-    }
-  });
-}
-
-function warn$2(msg, ...args) {
-  console.warn(`[Vue warn] ${msg}`, ...args);
-}
-
-class ReactiveEffect {
-  constructor(fn) {
-    this.fn = fn;
-    // Subscriber
-    this.deps = void 0;
-    this.depsTail = void 0;
-    this.flags = SubscriberFlags.Effect;
-    /**
-     * @internal
-     */
-    this.cleanup = void 0;
-  }
-  get active() {
-    return !(this.flags & 1024);
-  }
-  pause() {
-    if (!(this.flags & 256)) {
-      this.flags |= 256;
-    }
-  }
-  resume() {
-    const flags = this.flags;
-    if (flags & 256) {
-      this.flags &= -257;
-    }
-    if (flags & 512) {
-      this.flags &= -513;
-      this.notify();
-    }
-  }
-  notify() {
-    const flags = this.flags;
-    if (!(flags & 256)) {
-      this.scheduler();
-    } else {
-      this.flags |= 512;
-    }
-  }
-  scheduler() {
-    if (this.dirty) {
-      this.run();
-    }
-  }
-  run() {
-    if (!this.active) {
-      return this.fn();
-    }
-    cleanupEffect(this);
-    const prevSub = activeSub;
-    setActiveSub(this);
-    startTracking(this);
-    try {
-      return this.fn();
-    } finally {
-      if (activeSub !== this) {
-        warn$2(
-          "Active effect was not restored correctly - this is likely a Vue internal bug."
-        );
-      }
-      setActiveSub(prevSub);
-      endTracking(this);
-      if (this.flags & SubscriberFlags.Recursed && this.flags & 128) {
-        this.flags &= ~SubscriberFlags.Recursed;
-        this.notify();
-      }
-    }
-  }
-  stop() {
-    if (this.active) {
-      startTracking(this);
-      endTracking(this);
-      cleanupEffect(this);
-      this.onStop && this.onStop();
-      this.flags |= 1024;
-    }
-  }
-  get dirty() {
-    const flags = this.flags;
-    if (flags & SubscriberFlags.Dirty || flags & SubscriberFlags.PendingComputed && updateDirtyFlag(this, flags)) {
-      return true;
-    }
-    return false;
-  }
-}
-{
-  setupOnTrigger(ReactiveEffect);
-}
-const resetTrackingStack = [];
-function pauseTracking() {
-  resetTrackingStack.push(activeSub);
-  activeSub = void 0;
-}
-function resetTracking() {
-  if (resetTrackingStack.length === 0) {
-    warn$2(
-      `resetTracking() was called when there was no active tracking to reset.`
-    );
-  }
-  if (resetTrackingStack.length) {
-    activeSub = resetTrackingStack.pop();
-  } else {
-    activeSub = void 0;
-  }
-}
-function cleanupEffect(e) {
-  const { cleanup } = e;
-  e.cleanup = void 0;
-  if (cleanup !== void 0) {
-    const prevSub = activeSub;
-    activeSub = void 0;
-    try {
-      cleanup();
-    } finally {
-      activeSub = prevSub;
-    }
-  }
-}
 let activeSub = void 0;
 function setActiveSub(sub) {
-  activeSub = sub;
+  try {
+    return activeSub;
+  } finally {
+    activeSub = sub;
+  }
 }
 
 function toRaw(observed) {
@@ -526,7 +237,7 @@ let isWarning = false;
 function warn$1(msg, ...args) {
   if (isWarning) return;
   isWarning = true;
-  pauseTracking();
+  const prevSub = setActiveSub();
   const entry = stack.length ? stack[stack.length - 1] : null;
   const instance = isVNode$2(entry) ? entry.component : entry;
   const appWarnHandler = instance && instance.appContext.config.warnHandler;
@@ -558,7 +269,7 @@ function warn$1(msg, ...args) {
     }
     console.warn(...warnArgs);
   }
-  resetTracking();
+  setActiveSub(prevSub);
   isWarning = false;
 }
 function getComponentTrace() {
@@ -688,13 +399,13 @@ function handleError(err, instance, type, throwInDev = true) {
       cur = cur.parent;
     }
     if (errorHandler) {
-      pauseTracking();
+      const prevSub = setActiveSub();
       callWithErrorHandling(errorHandler, null, 10, [
         err,
         exposedInstance,
         errorInfo
       ]);
-      resetTracking();
+      setActiveSub(prevSub);
       return;
     }
   }

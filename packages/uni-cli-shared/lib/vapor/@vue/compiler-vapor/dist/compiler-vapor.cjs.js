@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-vapor v3.5.14
+* @vue/compiler-vapor v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -11,6 +11,8 @@ var compilerDom = require('@vue/compiler-dom');
 var shared = require('@vue/shared');
 var sourceMapJs = require('source-map-js');
 var parser = require('@babel/parser');
+var types = require('@babel/types');
+var estreeWalker = require('estree-walker');
 
 const newDynamic = () => ({
   flags: 1,
@@ -624,7 +626,7 @@ function canPrefix(name) {
     return false;
   return true;
 }
-function processExpressions(context, expressions) {
+function processExpressions(context, expressions, shouldDeclare) {
   const {
     seenVariable,
     variableToExpMap,
@@ -647,7 +649,11 @@ function processExpressions(context, expressions) {
     updatedVariable,
     expToVariableMap
   );
-  return genDeclarations([...varDeclarations, ...expDeclarations], context);
+  return genDeclarations(
+    [...varDeclarations, ...expDeclarations],
+    context,
+    shouldDeclare
+  );
 }
 function analyzeExpressions(expressions) {
   const seenVariable = /* @__PURE__ */ Object.create(null);
@@ -841,26 +847,35 @@ function processRepeatedExpressions(context, expressions, varDeclarations, updat
   });
   return declarations;
 }
-function genDeclarations(declarations, context) {
+function genDeclarations(declarations, context, shouldDeclare) {
   const [frag, push] = buildCodeFragment();
   const ids = /* @__PURE__ */ Object.create(null);
+  const varNames = /* @__PURE__ */ new Set();
   declarations.forEach(({ name, isIdentifier, value }) => {
     if (isIdentifier) {
       const varName = ids[name] = `_${name}`;
-      push(`const ${varName} = `, ...genExpression(value, context), NEWLINE);
+      varNames.add(varName);
+      if (shouldDeclare) {
+        push(`const `);
+      }
+      push(`${varName} = `, ...genExpression(value, context), NEWLINE);
     }
   });
   declarations.forEach(({ name, isIdentifier, value }) => {
     if (!isIdentifier) {
       const varName = ids[name] = `_${name}`;
+      varNames.add(varName);
+      if (shouldDeclare) {
+        push(`const `);
+      }
       push(
-        `const ${varName} = `,
+        `${varName} = `,
         ...context.withId(() => genExpression(value, context), ids),
         NEWLINE
       );
     }
   });
-  return { ids, frag };
+  return { ids, frag, varNames: [...varNames] };
 }
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -1068,7 +1083,57 @@ function genFor(oper, context) {
     idMap[rawIndex] = `${indexVar}.value`;
     idMap[indexVar] = null;
   }
-  const blockFn = context.withId(() => genBlock(render, context, args), idMap);
+  const { selectorPatterns, keyOnlyBindingPatterns } = matchPatterns(
+    render,
+    keyProp,
+    idMap
+  );
+  const patternFrag = [];
+  for (let i = 0; i < selectorPatterns.length; i++) {
+    const { selector } = selectorPatterns[i];
+    const selectorName = `_selector${id}_${i}`;
+    patternFrag.push(
+      NEWLINE,
+      `const ${selectorName} = `,
+      ...genCall(`n${id}.useSelector`, [
+        `() => `,
+        ...genExpression(selector, context)
+      ])
+    );
+  }
+  const blockFn = context.withId(() => {
+    const frag = [];
+    frag.push("(", ...args, ") => {", INDENT_START);
+    if (selectorPatterns.length || keyOnlyBindingPatterns.length) {
+      frag.push(
+        ...genBlockContent(render, context, false, () => {
+          const patternFrag2 = [];
+          for (let i = 0; i < selectorPatterns.length; i++) {
+            const { effect } = selectorPatterns[i];
+            patternFrag2.push(
+              NEWLINE,
+              `_selector${id}_${i}(() => {`,
+              INDENT_START
+            );
+            for (const oper2 of effect.operations) {
+              patternFrag2.push(...genOperation(oper2, context));
+            }
+            patternFrag2.push(INDENT_END, NEWLINE, `})`);
+          }
+          for (const { effect } of keyOnlyBindingPatterns) {
+            for (const oper2 of effect.operations) {
+              patternFrag2.push(...genOperation(oper2, context));
+            }
+          }
+          return patternFrag2;
+        })
+      );
+    } else {
+      frag.push(...genBlockContent(render, context));
+    }
+    frag.push(INDENT_END, NEWLINE, "}");
+    return frag;
+  }, idMap);
   exitScope();
   let flags = 0;
   if (onlyChild) {
@@ -1093,7 +1158,8 @@ function genFor(oper, context) {
   return [
     NEWLINE,
     `const n${id} = `,
-    ...genCall(helper("createFor"), ...forArgs)
+    ...genCall(helper("createFor"), ...forArgs),
+    ...patternFrag
   ];
   function parseValueDestructure() {
     const map = /* @__PURE__ */ new Map();
@@ -1191,6 +1257,166 @@ function genFor(oper, context) {
     idToPathMap.forEach((_, id2) => idMap2[id2] = null);
     return idMap2;
   }
+}
+function matchPatterns(render, keyProp, idMap) {
+  const selectorPatterns = [];
+  const keyOnlyBindingPatterns = [];
+  render.effect = render.effect.filter((effect) => {
+    if (keyProp !== void 0) {
+      const selector = matchSelectorPattern(effect, keyProp.ast, idMap);
+      if (selector) {
+        selectorPatterns.push(selector);
+        return false;
+      }
+      const keyOnly = matchKeyOnlyBindingPattern(effect, keyProp.ast);
+      if (keyOnly) {
+        keyOnlyBindingPatterns.push(keyOnly);
+        return false;
+      }
+    }
+    return true;
+  });
+  return {
+    keyOnlyBindingPatterns,
+    selectorPatterns
+  };
+}
+function matchKeyOnlyBindingPattern(effect, keyAst) {
+  if (effect.expressions.length === 1) {
+    const ast = effect.expressions[0].ast;
+    if (typeof ast === "object" && ast !== null) {
+      if (isKeyOnlyBinding(ast, keyAst)) {
+        return { effect };
+      }
+    }
+  }
+}
+function matchSelectorPattern(effect, keyAst, idMap) {
+  if (effect.expressions.length === 1) {
+    const ast = effect.expressions[0].ast;
+    if (typeof ast === "object" && ast) {
+      const matcheds = [];
+      estreeWalker.walk(ast, {
+        enter(node) {
+          if (typeof node === "object" && node && node.type === "BinaryExpression" && node.operator === "===" && node.left.type !== "PrivateName") {
+            const { left, right } = node;
+            for (const [a, b] of [
+              [left, right],
+              [right, left]
+            ]) {
+              const aIsKey = isKeyOnlyBinding(a, keyAst);
+              const bIsKey = isKeyOnlyBinding(b, keyAst);
+              const bVars = analyzeVariableScopes(b, idMap);
+              if (aIsKey && !bIsKey && !bVars.locals.length) {
+                matcheds.push([a, b]);
+              }
+            }
+          }
+        }
+      });
+      if (matcheds.length === 1) {
+        const [key, selector] = matcheds[0];
+        const content2 = effect.expressions[0].content;
+        let hasExtraId = false;
+        const parentStackMap = /* @__PURE__ */ new Map();
+        const parentStack = [];
+        compilerDom.walkIdentifiers(
+          ast,
+          (id) => {
+            if (id.start !== key.start && id.start !== selector.start) {
+              hasExtraId = true;
+            }
+            parentStackMap.set(id, parentStack.slice());
+          },
+          false,
+          parentStack
+        );
+        if (!hasExtraId) {
+          const name = content2.slice(selector.start - 1, selector.end - 1);
+          return {
+            effect,
+            // @ts-expect-error
+            selector: {
+              content: name,
+              ast: shared.extend({}, selector, {
+                start: 1,
+                end: name.length + 1
+              }),
+              loc: selector.loc,
+              isStatic: false
+            }
+          };
+        }
+      }
+    }
+    const content = effect.expressions[0].content;
+    if (typeof ast === "object" && ast && ast.type === "ConditionalExpression" && ast.test.type === "BinaryExpression" && ast.test.operator === "===" && ast.test.left.type !== "PrivateName" && compilerDom.isStaticNode(ast.consequent) && compilerDom.isStaticNode(ast.alternate)) {
+      const left = ast.test.left;
+      const right = ast.test.right;
+      for (const [a, b] of [
+        [left, right],
+        [right, left]
+      ]) {
+        const aIsKey = isKeyOnlyBinding(a, keyAst);
+        const bIsKey = isKeyOnlyBinding(b, keyAst);
+        const bVars = analyzeVariableScopes(b, idMap);
+        if (aIsKey && !bIsKey && !bVars.locals.length) {
+          return {
+            effect,
+            // @ts-expect-error
+            selector: {
+              content: content.slice(b.start - 1, b.end - 1),
+              ast: b,
+              loc: b.loc,
+              isStatic: false
+            }
+          };
+        }
+      }
+    }
+  }
+}
+function analyzeVariableScopes(ast, idMap) {
+  let globals = [];
+  let locals = [];
+  const ids = [];
+  const parentStackMap = /* @__PURE__ */ new Map();
+  const parentStack = [];
+  compilerDom.walkIdentifiers(
+    ast,
+    (id) => {
+      ids.push(id);
+      parentStackMap.set(id, parentStack.slice());
+    },
+    false,
+    parentStack
+  );
+  for (const id of ids) {
+    if (shared.isGloballyAllowed(id.name)) {
+      continue;
+    }
+    if (idMap[id.name]) {
+      locals.push(id.name);
+    } else {
+      globals.push(id.name);
+    }
+  }
+  return { globals, locals };
+}
+function isKeyOnlyBinding(expr, keyAst) {
+  let only = true;
+  estreeWalker.walk(expr, {
+    enter(node) {
+      if (types.isNodesEquivalent(node, keyAst)) {
+        this.skip();
+        return;
+      }
+      if (node.type === "Identifier") {
+        only = false;
+      }
+    }
+  });
+  return only;
 }
 
 function genSetHtml(oper, context) {
@@ -2466,15 +2692,17 @@ function genOperation(oper, context) {
       );
   }
 }
-function genEffects(effects, context) {
+function genEffects(effects, context, genExtraFrag) {
   const { helper } = context;
   const expressions = effects.flatMap((effect) => effect.expressions);
   const [frag, push, unshift] = buildCodeFragment();
+  const shouldDeclare = genExtraFrag === void 0;
   let operationsCount = 0;
-  const { ids, frag: declarationFrags } = processExpressions(
-    context,
-    expressions
-  );
+  const {
+    ids,
+    frag: declarationFrags,
+    varNames
+  } = processExpressions(context, expressions, shouldDeclare);
   push(...declarationFrags);
   for (let i = 0; i < effects.length; i++) {
     const effect = effects[i];
@@ -2490,10 +2718,19 @@ function genEffects(effects, context) {
   if (newLineCount > 1 || operationsCount > 1 || declarationFrags.length > 0) {
     unshift(`{`, INDENT_START, NEWLINE);
     push(INDENT_END, NEWLINE, "}");
+    if (!effects.length) {
+      unshift(NEWLINE);
+    }
   }
   if (effects.length) {
     unshift(NEWLINE, `${helper("renderEffect")}(() => `);
     push(`)`);
+  }
+  if (!shouldDeclare && varNames.length) {
+    unshift(NEWLINE, `let `, varNames.join(", "));
+  }
+  if (genExtraFrag) {
+    push(...context.withId(genExtraFrag, ids));
   }
   return frag;
 }
@@ -2593,7 +2830,7 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
   return frag;
 }
 
-function genBlock(oper, context, args = [], root, customReturns) {
+function genBlock(oper, context, args = [], root) {
   return [
     "(",
     ...args,
@@ -2605,7 +2842,7 @@ function genBlock(oper, context, args = [], root, customReturns) {
     "}"
   ];
 }
-function genBlockContent(block, context, root, customReturns) {
+function genBlockContent(block, context, root, genEffectsExtraFrag) {
   const [frag, push] = buildCodeFragment();
   const { dynamic, effect, operation, returns } = block;
   const resetBlock = context.enterBlock(block);
@@ -2634,7 +2871,7 @@ function genBlockContent(block, context, root, customReturns) {
     push(...genChildren(child, context, push, `n${child.id}`));
   }
   push(...genOperations(operation, context));
-  push(...genEffects(effect, context));
+  push(...genEffects(effect, context, genEffectsExtraFrag));
   push(NEWLINE, `return `);
   const returnNodes = returns.map((n) => `n${n}`);
   const returnsCode = returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "null"];

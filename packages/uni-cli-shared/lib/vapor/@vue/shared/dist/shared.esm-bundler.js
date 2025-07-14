@@ -1,5 +1,5 @@
 /**
-* @vue/shared v3.5.14
+* @vue/shared v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -167,7 +167,7 @@ const PatchFlagNames = {
   [512]: `NEED_PATCH`,
   [1024]: `DYNAMIC_SLOTS`,
   [2048]: `DEV_ROOT_FRAGMENT`,
-  [-1]: `HOISTED`,
+  [-1]: `CACHED`,
   [-2]: `BAIL`
 };
 
@@ -595,4 +595,22 @@ function getSequence(arr) {
   return result;
 }
 
-export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isArray, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };
+function normalizeCssVarValue(value) {
+  if (value == null) {
+    return "initial";
+  }
+  if (typeof value === "string") {
+    return value === "" ? " " : value;
+  }
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    if (!!(process.env.NODE_ENV !== "production")) {
+      console.warn(
+        "[Vue warn] Invalid value used for CSS binding. Expected a string or a finite number but received:",
+        value
+      );
+    }
+  }
+  return String(value);
+}
+
+export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isArray, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };

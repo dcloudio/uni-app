@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-ssr v3.5.14
+* @vue/compiler-ssr v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -1086,6 +1086,17 @@ const ssrTransformModel = (dir, node, context) => {
       );
     }
   }
+  const processSelectChildren = (children) => {
+    children.forEach((child) => {
+      if (child.type === 1) {
+        processOption(child);
+      } else if (child.type === 11) {
+        processSelectChildren(child.children);
+      } else if (child.type === 9) {
+        child.branches.forEach((b) => processSelectChildren(b.children));
+      }
+    });
+  };
   function processOption(plainNode) {
     if (plainNode.tag === "option") {
       if (plainNode.props.findIndex((p) => p.name === "selected") === -1) {
@@ -1112,9 +1123,7 @@ const ssrTransformModel = (dir, node, context) => {
         );
       }
     } else if (plainNode.tag === "optgroup") {
-      plainNode.children.forEach(
-        (option) => processOption(option)
-      );
+      processSelectChildren(plainNode.children);
     }
   }
   if (node.tagType === 0) {
@@ -1199,18 +1208,7 @@ const ssrTransformModel = (dir, node, context) => {
       checkDuplicatedValue();
       node.children = [compilerDom.createInterpolation(model, model.loc)];
     } else if (node.tag === "select") {
-      const processChildren = (children) => {
-        children.forEach((child) => {
-          if (child.type === 1) {
-            processOption(child);
-          } else if (child.type === 11) {
-            processChildren(child.children);
-          } else if (child.type === 9) {
-            child.branches.forEach((b) => processChildren(b.children));
-          }
-        });
-      };
-      processChildren(node.children);
+      processSelectChildren(node.children);
     } else {
       context.onError(
         compilerDom.createDOMCompilerError(

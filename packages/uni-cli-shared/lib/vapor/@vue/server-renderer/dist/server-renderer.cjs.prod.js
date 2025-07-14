@@ -1,5 +1,5 @@
 /**
-* @vue/server-renderer v3.5.14
+* @vue/server-renderer v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -78,8 +78,22 @@ function ssrRenderStyle(raw) {
   if (shared.isString(raw)) {
     return shared.escapeHtml(raw);
   }
-  const styles = shared.normalizeStyle(raw);
+  const styles = shared.normalizeStyle(ssrResetCssVars(raw));
   return shared.escapeHtml(shared.stringifyStyle(styles));
+}
+function ssrResetCssVars(raw) {
+  if (!shared.isArray(raw) && shared.isObject(raw)) {
+    const res = {};
+    for (const key in raw) {
+      if (key.startsWith(":--")) {
+        res[key.slice(1)] = shared.normalizeCssVarValue(raw[key]);
+      } else {
+        res[key] = raw[key];
+      }
+    }
+    return res;
+  }
+  return raw;
 }
 
 function ssrRenderComponent(comp, props = null, children = null, parentComponent = null, slotScopeId) {

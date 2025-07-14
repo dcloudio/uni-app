@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-core v3.5.14
+* @vue/compiler-core v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -1063,7 +1063,7 @@ class Tokenizer {
     this.buffer = input;
     while (this.index < this.buffer.length) {
       const c = this.buffer.charCodeAt(this.index);
-      if (c === 10) {
+      if (c === 10 && this.state !== 33) {
         this.newlines.push(this.index);
       }
       switch (this.state) {
@@ -2866,7 +2866,7 @@ function isUpperCase(c) {
   return c > 64 && c < 91;
 }
 const windowsNewlineRE = /\r\n/g;
-function condenseWhitespace(nodes, tag) {
+function condenseWhitespace(nodes) {
   const shouldCondense = currentOptions.whitespace !== "preserve";
   let removedWhitespace = false;
   for (let i = 0; i < nodes.length; i++) {
@@ -3052,12 +3052,12 @@ function cacheStatic(root, context) {
     context,
     // Root node is unfortunately non-hoistable due to potential parent
     // fallthrough attributes.
-    isSingleElementRoot(root, root.children[0])
+    !!getSingleElementRoot(root)
   );
 }
-function isSingleElementRoot(root, child) {
-  const { children } = root;
-  return children.length === 1 && child.type === 1 && !isSlotOutlet(child);
+function getSingleElementRoot(root) {
+  const children = root.children.filter((x) => x.type !== 3);
+  return children.length === 1 && children[0].type === 1 && !isSlotOutlet(children[0]) ? children[0] : null;
 }
 function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
   const { children } = node;
@@ -3554,15 +3554,15 @@ function createRootCodegen(root, context) {
   const { helper } = context;
   const { children } = root;
   if (children.length === 1) {
-    const child = children[0];
-    if (isSingleElementRoot(root, child) && child.codegenNode) {
-      const codegenNode = child.codegenNode;
+    const singleElementRootChild = getSingleElementRoot(root);
+    if (singleElementRootChild && singleElementRootChild.codegenNode) {
+      const codegenNode = singleElementRootChild.codegenNode;
       if (codegenNode.type === 13) {
         convertToBlock(codegenNode, context);
       }
       root.codegenNode = codegenNode;
     } else {
-      root.codegenNode = child;
+      root.codegenNode = children[0];
     }
   } else if (children.length > 1) {
     let patchFlag = 64;
@@ -3731,7 +3731,9 @@ function createCodegenContext(ast, {
               name = content;
             }
           }
-          addMapping(node.loc.start, name);
+          if (node.loc.source) {
+            addMapping(node.loc.start, name);
+          }
         }
         if (newlineIndex === -3) {
           advancePositionWithMutation(context, code);
@@ -3747,7 +3749,7 @@ function createCodegenContext(ast, {
             context.column = code.length - newlineIndex;
           }
         }
-        if (node && node.loc !== locStub) {
+        if (node && node.loc !== locStub && node.loc.source) {
           addMapping(node.loc.end);
         }
       }
@@ -5355,7 +5357,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
       let prev;
       while (j--) {
         prev = children[j];
-        if (prev.type !== 3) {
+        if (prev.type !== 3 && isNonWhitespaceContent(prev)) {
           break;
         }
       }
@@ -5859,9 +5861,8 @@ function buildProps(node, context, props = node.props, isComponent, isDynamicCom
         hasDynamicKeys = true;
         if (exp) {
           if (isVBind) {
-            pushRefVForMarker();
-            pushMergeArg();
             {
+              pushMergeArg();
               {
                 const hasOverridableKeys = mergeArgs.some((arg2) => {
                   if (arg2.type === 15) {
@@ -5891,6 +5892,8 @@ function buildProps(node, context, props = node.props, isComponent, isDynamicCom
                 continue;
               }
             }
+            pushRefVForMarker();
+            pushMergeArg();
             mergeArgs.push(exp);
           } else {
             pushMergeArg({

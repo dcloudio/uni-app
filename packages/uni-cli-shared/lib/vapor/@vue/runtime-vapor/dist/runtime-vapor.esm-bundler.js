@@ -1,23 +1,28 @@
 /**
-* @vue/runtime-vapor v3.5.14
+* @vue/runtime-vapor v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { warn as warn$2, baseEmit, currentInstance as currentInstance$1, queueJob, startMeasure, simpleSetCurrentInstance, queuePostFlushCb, baseNormalizePropsOptions, pushWarningContext as pushWarningContext$1, validateProps, popWarningContext as popWarningContext$1, resolvePropValue, isEmitListener, isRef as isRef$1, PublicInstanceProxyHandlers, callWithErrorHandling as callWithErrorHandling$1, registerHMR, endMeasure, unregisterHMR, nextUid, EffectScope as EffectScope$1, expose, createAppAPI, initFeatureFlags, setDevtoolsHook as setDevtoolsHook$1, flushOnAppMount, ensureRenderer, shallowRef, renderSlot, createVNode as createVNode$1, shallowReactive, createInternalObject, onScopeDispose as onScopeDispose$1, resolveDynamicComponent, vShowOriginalDisplay, vShowHidden as vShowHidden$1, vModelTextInit, vModelCheckboxInit, vModelSelectInit, onMounted, vModelTextUpdate, vModelCheckboxUpdate, vModelGetValue, vModelSetSelected } from '@vue/runtime-dom';
-import { isArray, hasOwn, EMPTY_OBJ, invokeArrayFns, EMPTY_ARR, isFunction, camelize, isString, NO, YES, isOn, isObject, extend, NOOP, parseStringStyle, canSetValueDirectly, toDisplayString, getGlobalThis, getSequence, remove as remove$1, looseEqual } from '@vue/shared';
-import { pauseTracking, EffectScope, resetTracking, getCurrentScope, ReactiveEffect, isRef, toRaw, isProxy, onEffectCleanup, proxyRefs, onScopeDispose, markRaw, unref, isReactive, isShallow, shallowReadArray, isReadonly, toReadonly, toReactive, shallowRef as shallowRef$1, traverse } from '@vue/reactivity';
+import { warn as warn$2, baseEmit, currentInstance as currentInstance$1, startMeasure, setCurrentInstance, queuePostFlushCb, queueJob, baseNormalizePropsOptions, pushWarningContext as pushWarningContext$1, validateProps, popWarningContext as popWarningContext$1, resolvePropValue, isEmitListener, isRef as isRef$1, registerHMR, PublicInstanceProxyHandlers, callWithErrorHandling as callWithErrorHandling$1, endMeasure, unregisterHMR, nextUid, EffectScope as EffectScope$1, expose, createAppAPI, initFeatureFlags, setDevtoolsHook as setDevtoolsHook$1, flushOnAppMount, ensureRenderer, shallowRef, simpleSetCurrentInstance, renderSlot, createVNode as createVNode$1, shallowReactive, createInternalObject, onScopeDispose as onScopeDispose$1, resolveDynamicComponent, vShowOriginalDisplay, vShowHidden as vShowHidden$1, vModelTextInit, vModelCheckboxInit, vModelSelectInit, onMounted, vModelTextUpdate, vModelCheckboxUpdate, vModelGetValue, vModelSetSelected } from '@vue/runtime-dom';
+import { isArray, hasOwn, EMPTY_OBJ, invokeArrayFns, EMPTY_ARR, isFunction, camelize, isString, NO, YES, isOn, isObject, extend, NOOP, parseStringStyle, canSetValueDirectly, toDisplayString, getGlobalThis, remove as remove$1, looseEqual } from '@vue/shared';
+import { setActiveSub, EffectScope, ReactiveEffect, isRef, toRaw, isProxy, onEffectCleanup, proxyRefs, onScopeDispose, markRaw, unref, watch, isReactive, isShallow, shallowReadArray, isReadonly, toReadonly, toReactive, shallowRef as shallowRef$1, traverse } from '@vue/reactivity';
 import { normalizeClass, normalizeStyle as normalizeStyle$1 } from '@dcloudio/uni-shared';
 import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
+
+let insertionParent;
+let insertionAnchor;
+function setInsertionState(parent, anchor) {
+  insertionParent = parent;
+  insertionAnchor = anchor;
+}
+function resetInsertionState() {
+  insertionParent = insertionAnchor = void 0;
+}
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
 function createTextNode(doc, value = "") {
   return doc.createTextNode(value);
-}
-/*! #__NO_SIDE_EFFECTS__ */
-// @__NO_SIDE_EFFECTS__
-function createComment(doc, data) {
-  return doc.createComment(data);
 }
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
@@ -33,16 +38,6 @@ function nthChild(node, i) {
 // @__NO_SIDE_EFFECTS__
 function next(node) {
   return node.nextSibling;
-}
-
-let insertionParent;
-let insertionAnchor;
-function setInsertionState(parent, anchor) {
-  insertionParent = parent;
-  insertionAnchor = anchor;
-}
-function resetInsertionState() {
-  insertionParent = insertionAnchor = void 0;
 }
 
 let isHydrating = false;
@@ -405,14 +400,14 @@ class DynamicFragment extends VaporFragment {
   // fixed by uts
   constructor(doc, anchorLabel) {
     super([]);
-    this.anchor = createComment(doc, anchorLabel || "");
+    this.anchor = doc.createComment(anchorLabel || "");
   }
   update(render, key = render) {
     if (key === this.current) {
       return;
     }
     this.current = key;
-    pauseTracking();
+    const prevSub = setActiveSub();
     const parent = this.anchor.parentNode;
     if (this.scope) {
       this.scope.stop();
@@ -436,7 +431,7 @@ class DynamicFragment extends VaporFragment {
       this.nodes = (this.scope || (this.scope = new EffectScope())).run(this.fallback) || [];
       parent && insert(this.nodes, parent, this.anchor);
     }
-    resetTracking();
+    setActiveSub(prevSub);
   }
 }
 function isFragment(val) {
@@ -565,48 +560,66 @@ function propGetter(rawProps, key) {
   return rawProps[key] && resolveSource(rawProps[key]);
 }
 
-function renderEffect(fn, noLifecycle = false) {
-  const instance = currentInstance$1;
-  const scope = getCurrentScope();
-  if (!!(process.env.NODE_ENV !== "production") && true && !scope && !isVaporComponent(instance)) {
-    warn$2("renderEffect called without active EffectScope or Vapor instance.");
+class RenderEffect extends ReactiveEffect {
+  constructor(render) {
+    super();
+    this.render = render;
+    const instance = currentInstance$1;
+    if (!!(process.env.NODE_ENV !== "production") && true && !this.subs && !isVaporComponent(instance)) {
+      warn$2("renderEffect called without active EffectScope or Vapor instance.");
+    }
+    const job = () => {
+      if (this.dirty) {
+        this.run();
+      }
+    };
+    this.updateJob = () => {
+      instance.isUpdating = false;
+      instance.u && invokeArrayFns(instance.u);
+    };
+    if (instance) {
+      if (!!(process.env.NODE_ENV !== "production")) {
+        this.onTrack = instance.rtc ? (e) => invokeArrayFns(instance.rtc, e) : void 0;
+        this.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
+      }
+      job.i = instance;
+    }
+    this.job = job;
+    this.i = instance;
   }
-  const hasUpdateHooks = instance && (instance.bu || instance.u);
-  const renderEffectFn = noLifecycle ? fn : () => {
+  fn() {
+    const instance = this.i;
+    const scope = this.subs ? this.subs.sub : void 0;
+    const hasUpdateHooks = instance && (instance.bu || instance.u);
     if (!!(process.env.NODE_ENV !== "production") && instance) {
       startMeasure(instance, `renderEffect`);
     }
-    const prev = currentInstance$1;
-    simpleSetCurrentInstance(instance);
-    if (scope) scope.on();
+    const prev = setCurrentInstance(instance, scope);
     if (hasUpdateHooks && instance.isMounted && !instance.isUpdating) {
       instance.isUpdating = true;
       instance.bu && invokeArrayFns(instance.bu);
-      fn();
-      queuePostFlushCb(() => {
-        instance.isUpdating = false;
-        instance.u && invokeArrayFns(instance.u);
-      });
+      this.render();
+      queuePostFlushCb(this.updateJob);
     } else {
-      fn();
+      this.render();
     }
-    if (scope) scope.off();
-    simpleSetCurrentInstance(prev, instance);
+    setCurrentInstance(...prev);
     if (!!(process.env.NODE_ENV !== "production") && instance) {
       startMeasure(instance, `renderEffect`);
     }
-  };
-  const effect = new ReactiveEffect(renderEffectFn);
-  const job = () => effect.dirty && effect.run();
-  if (instance) {
-    if (!!(process.env.NODE_ENV !== "production")) {
-      effect.onTrack = instance.rtc ? (e) => invokeArrayFns(instance.rtc, e) : void 0;
-      effect.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
-    }
-    job.i = instance;
-    job.id = instance.uid;
   }
-  effect.scheduler = () => queueJob(job);
+  notify() {
+    const flags = this.flags;
+    if (!(flags & 256)) {
+      queueJob(this.job, this.i ? this.i.uid : void 0);
+    }
+  }
+}
+function renderEffect(fn, noLifecycle = false) {
+  const effect = new RenderEffect(fn);
+  if (noLifecycle) {
+    effect.fn = fn;
+  }
   effect.run();
 }
 
@@ -731,7 +744,7 @@ function getAttrFromRawProps(rawProps, key) {
       source = dynamicSources[i];
       isDynamic = isFunction(source);
       source = isDynamic ? source() : source;
-      if (hasOwn(source, key)) {
+      if (source && hasOwn(source, key)) {
         const value = isDynamic ? source[key] : source[key]();
         if (merged) {
           merged.push(value);
@@ -795,10 +808,9 @@ function normalizePropsOptions(comp) {
   return comp.__propsOptions = [normalized, needCastKeys];
 }
 function resolveDefault(factory, instance) {
-  const prev = currentInstance$1;
-  simpleSetCurrentInstance(instance);
+  const prev = setCurrentInstance(instance);
   const res = factory.call(null, instance.props);
-  simpleSetCurrentInstance(prev, instance);
+  setCurrentInstance(...prev);
   return res;
 }
 function hasFallthroughAttrs(comp, rawProps) {
@@ -899,7 +911,7 @@ let isWarning = false;
 function warn$1(msg, ...args) {
   if (isWarning) return;
   isWarning = true;
-  pauseTracking();
+  const prevSub = setActiveSub();
   const entry = stack.length ? stack[stack.length - 1] : null;
   const instance = isVNode(entry) ? entry.component : entry;
   const appWarnHandler = instance && instance.appContext.config.warnHandler;
@@ -931,7 +943,7 @@ function warn$1(msg, ...args) {
     }
     console.warn(...warnArgs);
   }
-  resetTracking();
+  setActiveSub(prevSub);
   isWarning = false;
 }
 function getComponentTrace() {
@@ -1061,13 +1073,13 @@ function handleError(err, instance, type, throwInDev = true) {
       cur = cur.parent;
     }
     if (errorHandler) {
-      pauseTracking();
+      const prevSub = setActiveSub();
       callWithErrorHandling(errorHandler, null, 10, [
         err,
         exposedInstance,
         errorInfo
       ]);
-      resetTracking();
+      setActiveSub(prevSub);
       return;
     }
   }
@@ -1100,13 +1112,8 @@ ${err.stack || ""}---END:EXCEPTION---`
 
 let devtools;
 let buffer = [];
-let devtoolsNotInstalled = false;
-let queued = false;
 function setDevtoolsHook(hook, target) {
   var _a, _b;
-  if (devtoolsNotInstalled || queued) {
-    return;
-  }
   devtools = hook;
   if (devtools) {
     devtools.enabled = true;
@@ -1121,7 +1128,6 @@ function setDevtoolsHook(hook, target) {
     // eslint-disable-next-line no-restricted-syntax
     !((_b = (_a = window.navigator) == null ? void 0 : _a.userAgent) == null ? void 0 : _b.includes("jsdom"))
   ) {
-    queued = true;
     const replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
     replay.push((newHook) => {
       setDevtoolsHook(newHook, target);
@@ -1129,12 +1135,10 @@ function setDevtoolsHook(hook, target) {
     setTimeout(() => {
       if (!devtools) {
         target.__VUE_DEVTOOLS_HOOK_REPLAY__ = null;
-        devtoolsNotInstalled = true;
         buffer = [];
       }
     }, 3e3);
   } else {
-    devtoolsNotInstalled = true;
     buffer = [];
   }
 }
@@ -1920,12 +1924,11 @@ function hmrRerender(instance) {
   const parent = normalized[0].parentNode;
   const anchor = normalized[normalized.length - 1].nextSibling;
   remove(instance.block, parent);
-  const prev = currentInstance$1;
-  simpleSetCurrentInstance(instance);
+  const prev = setCurrentInstance(instance);
   pushWarningContext$1(instance);
   devRender(instance);
   popWarningContext$1();
-  simpleSetCurrentInstance(prev, instance);
+  setCurrentInstance(...prev);
   insert(instance.block, parent, anchor);
 }
 function hmrReload(instance, newComp) {
@@ -1933,15 +1936,14 @@ function hmrReload(instance, newComp) {
   const parent = normalized[0].parentNode;
   const anchor = normalized[normalized.length - 1].nextSibling;
   unmountComponent(instance, parent);
-  const prev = currentInstance$1;
-  simpleSetCurrentInstance(instance.parent);
+  const prev = setCurrentInstance(instance.parent);
   const newInstance = createComponent(
     newComp,
     instance.rawProps,
     instance.rawSlots,
     instance.isSingleRoot
   );
-  simpleSetCurrentInstance(prev, instance.parent);
+  setCurrentInstance(...prev);
   mountComponent(newInstance, parent, anchor);
 }
 
@@ -1980,15 +1982,20 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
     rawSlots,
     appContext
   );
+  if (!!(process.env.NODE_ENV !== "production") && component.__hmrId) {
+    registerHMR(instance);
+    instance.isSingleRoot = isSingleRoot;
+    instance.hmrRerender = hmrRerender.bind(null, instance);
+    instance.hmrReload = hmrReload.bind(null, instance);
+  }
   if (!!(process.env.NODE_ENV !== "production")) {
     pushWarningContext$1(instance);
     startMeasure(instance, `init`);
     instance.propsOptions = normalizePropsOptions(component);
     instance.emitsOptions = normalizeEmitsOptions(component);
   }
-  const prev = currentInstance$1;
-  simpleSetCurrentInstance(instance);
-  pauseTracking();
+  const prevInstance = setCurrentInstance(instance);
+  const prevSub = setActiveSub();
   if (!!(process.env.NODE_ENV !== "production")) {
     setupPropsValidation(instance);
   }
@@ -2023,12 +2030,6 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
       instance.devtoolsRawSetupState = setupResult;
       instance.setupState = proxyRefs(setupResult);
       devRender(instance);
-      if (component.__hmrId) {
-        registerHMR(instance);
-        instance.isSingleRoot = isSingleRoot;
-        instance.hmrRerender = hmrRerender.bind(null, instance);
-        instance.hmrReload = hmrReload.bind(null, instance);
-      }
     }
   } else {
     if (!setupFn && component.render) {
@@ -2051,8 +2052,8 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
       });
     }
   }
-  resetTracking();
-  simpleSetCurrentInstance(prev, instance);
+  setActiveSub(prevSub);
+  setCurrentInstance(...prevInstance);
   if (!!(process.env.NODE_ENV !== "production")) {
     popWarningContext$1();
     endMeasure(instance, "init");
@@ -2065,7 +2066,7 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
 }
 let isApplyingFallthroughProps = false;
 function devRender(instance) {
-  instance.block = callWithErrorHandling$1(
+  instance.block = (instance.type.render ? callWithErrorHandling$1(
     instance.type.render,
     instance,
     1,
@@ -2076,7 +2077,20 @@ function devRender(instance) {
       instance.attrs,
       instance.slots
     ]
-  ) || [];
+  ) : callWithErrorHandling$1(
+    isFunction(instance.type) ? instance.type : instance.type.setup,
+    instance,
+    0,
+    [
+      instance.props,
+      {
+        slots: instance.slots,
+        attrs: instance.attrs,
+        emit: instance.emit,
+        expose: instance.expose
+      }
+    ]
+  )) || [];
 }
 const emptyContext = {
   app: null,
@@ -2276,6 +2290,7 @@ function postPrepareApp(app) {
       }
     );
   }
+  app.vapor = true;
 }
 const createVaporApp = (comp, props) => {
   prepareApp();
@@ -2309,7 +2324,7 @@ function defineVaporComponent(comp, extraOptions) {
 const vaporInteropImpl = {
   mount(vnode, container, anchor, parentComponent) {
     const selfAnchor = vnode.el = vnode.anchor = // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
-    createComment(container.page.document, "");
+    container.page.document.createComment("");
     container.insertBefore(selfAnchor, anchor);
     const prev = currentInstance$1;
     simpleSetCurrentInstance(parentComponent);
@@ -2355,7 +2370,7 @@ const vaporInteropImpl = {
   slot(n1, n2, container, anchor) {
     if (!n1) {
       const selfAnchor = n2.el = n2.anchor = // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
-      createComment(container.page.document, "");
+      container.page.document.createComment("");
       insert(selfAnchor, container, anchor);
       const { slot, fallback } = n2.vs;
       const propsRef = n2.vs.ref = shallowRef(n2.props);
@@ -2385,11 +2400,11 @@ const vaporSlotPropsProxyHandler = {
 };
 const vaporSlotsProxyHandler = {
   get(target, key) {
-    if (key === "_vapor") {
-      return target;
-    } else {
-      return target[key];
+    const slot = target[key];
+    if (isFunction(slot)) {
+      slot.__vapor = true;
     }
+    return slot;
   }
 };
 function createVDOMComponent(internals, component, rawProps, rawSlots) {
@@ -2590,11 +2605,13 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
   let oldBlocks = [];
   let newBlocks;
   let parent;
-  const parentAnchor = createComment(doc, "for");
+  let currentKey;
+  const parentAnchor = doc.createComment("for");
   const frag = new VaporFragment(oldBlocks);
   const instance = currentInstance$1;
-  const canUseFastRemove = flags & 1;
-  const isComponent = flags & 2;
+  const canUseFastRemove = !!(flags & 1);
+  const isComponent = !!(flags & 2);
+  const selectors = [];
   if (!!(process.env.NODE_ENV !== "production") && !instance) {
     warn$2("createFor() can only be used inside setup()");
   }
@@ -2603,7 +2620,7 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
     const newLength = source.values.length;
     const oldLength = oldBlocks.length;
     newBlocks = new Array(newLength);
-    pauseTracking();
+    const prevSub = setActiveSub();
     if (!isMounted) {
       isMounted = true;
       for (let i = 0; i < newLength; i++) {
@@ -2616,9 +2633,12 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
           mount(source, i);
         }
       } else if (!newLength) {
+        for (const selector of selectors) {
+          selector.cleanup();
+        }
         const doRemove = !canUseFastRemove;
         for (let i = 0; i < oldLength; i++) {
-          unmount(oldBlocks[i], doRemove);
+          unmount(oldBlocks[i], doRemove, false);
         }
         if (canUseFastRemove) {
           parent.textContent = "";
@@ -2636,88 +2656,140 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
           unmount(oldBlocks[i]);
         }
       } else {
-        let i = 0;
-        let e1 = oldLength - 1;
-        let e2 = newLength - 1;
-        while (i <= e1 && i <= e2) {
-          if (tryPatchIndex(source, i)) {
-            i++;
-          } else {
-            break;
+        const sharedBlockCount = Math.min(oldLength, newLength);
+        const previousKeyIndexPairs = new Array(oldLength);
+        const queuedBlocks = new Array(newLength);
+        let anchorFallback = parentAnchor;
+        let endOffset = 0;
+        let startOffset = 0;
+        let queuedBlocksInsertIndex = 0;
+        let previousKeyIndexInsertIndex = 0;
+        while (endOffset < sharedBlockCount) {
+          const currentIndex = newLength - endOffset - 1;
+          const currentItem = getItem(source, currentIndex);
+          const currentKey2 = getKey(...currentItem);
+          const existingBlock = oldBlocks[oldLength - endOffset - 1];
+          if (existingBlock.key === currentKey2) {
+            update(existingBlock, ...currentItem);
+            newBlocks[currentIndex] = existingBlock;
+            endOffset++;
+            continue;
           }
+          if (endOffset !== 0) {
+            anchorFallback = normalizeAnchor(newBlocks[currentIndex + 1].nodes);
+          }
+          break;
         }
-        while (i <= e1 && i <= e2) {
-          if (tryPatchIndex(source, i)) {
-            e1--;
-            e2--;
+        while (startOffset < sharedBlockCount - endOffset) {
+          const currentItem = getItem(source, startOffset);
+          const currentKey2 = getKey(...currentItem);
+          const previousBlock = oldBlocks[startOffset];
+          const previousKey = previousBlock.key;
+          if (previousKey === currentKey2) {
+            update(newBlocks[startOffset] = previousBlock, currentItem[0]);
           } else {
-            break;
+            queuedBlocks[queuedBlocksInsertIndex++] = [
+              startOffset,
+              currentItem,
+              currentKey2
+            ];
+            previousKeyIndexPairs[previousKeyIndexInsertIndex++] = [
+              previousKey,
+              startOffset
+            ];
           }
+          startOffset++;
         }
-        if (i > e1) {
-          if (i <= e2) {
-            const nextPos = e2 + 1;
-            const anchor = nextPos < newLength ? normalizeAnchor(newBlocks[nextPos].nodes) : parentAnchor;
-            while (i <= e2) {
-              mount(source, i, anchor);
-              i++;
-            }
-          }
-        } else if (i > e2) {
-          while (i <= e1) {
-            unmount(oldBlocks[i]);
-            i++;
+        for (let i = startOffset; i < oldLength - endOffset; i++) {
+          previousKeyIndexPairs[previousKeyIndexInsertIndex++] = [
+            oldBlocks[i].key,
+            i
+          ];
+        }
+        const preparationBlockCount = Math.min(
+          newLength - endOffset,
+          sharedBlockCount
+        );
+        for (let i = startOffset; i < preparationBlockCount; i++) {
+          const blockItem = getItem(source, i);
+          const blockKey = getKey(...blockItem);
+          queuedBlocks[queuedBlocksInsertIndex++] = [i, blockItem, blockKey];
+        }
+        if (!queuedBlocksInsertIndex && !previousKeyIndexInsertIndex) {
+          for (let i = preparationBlockCount; i < newLength - endOffset; i++) {
+            const blockItem = getItem(source, i);
+            const blockKey = getKey(...blockItem);
+            mount(source, i, anchorFallback, blockItem, blockKey);
           }
         } else {
-          const s1 = i;
-          const s2 = i;
-          const keyToNewIndexMap = /* @__PURE__ */ new Map();
-          for (i = s2; i <= e2; i++) {
-            keyToNewIndexMap.set(getKey(...getItem(source, i)), i);
-          }
-          let j;
-          let patched = 0;
-          const toBePatched = e2 - s2 + 1;
-          let moved = false;
-          let maxNewIndexSoFar = 0;
-          const newIndexToOldIndexMap = new Array(toBePatched).fill(0);
-          for (i = s1; i <= e1; i++) {
-            const prevBlock = oldBlocks[i];
-            if (patched >= toBePatched) {
-              unmount(prevBlock);
+          queuedBlocks.length = queuedBlocksInsertIndex;
+          previousKeyIndexPairs.length = previousKeyIndexInsertIndex;
+          const previousKeyIndexMap = new Map(previousKeyIndexPairs);
+          const blocksToMount = [];
+          const relocateOrMountBlock = (blockIndex, blockItem, blockKey, anchorOffset) => {
+            const previousIndex = previousKeyIndexMap.get(blockKey);
+            if (previousIndex !== void 0) {
+              const reusedBlock = newBlocks[blockIndex] = oldBlocks[previousIndex];
+              update(reusedBlock, ...blockItem);
+              insert(
+                reusedBlock,
+                parent,
+                anchorOffset === -1 ? anchorFallback : normalizeAnchor(newBlocks[anchorOffset].nodes)
+              );
+              previousKeyIndexMap.delete(blockKey);
             } else {
-              const newIndex = keyToNewIndexMap.get(prevBlock.key);
-              if (newIndex == null) {
-                unmount(prevBlock);
-              } else {
-                newIndexToOldIndexMap[newIndex - s2] = i + 1;
-                if (newIndex >= maxNewIndexSoFar) {
-                  maxNewIndexSoFar = newIndex;
-                } else {
-                  moved = true;
-                }
-                update(
-                  newBlocks[newIndex] = prevBlock,
-                  ...getItem(source, newIndex)
-                );
-                patched++;
-              }
+              blocksToMount.push([
+                blockIndex,
+                blockItem,
+                blockKey,
+                anchorOffset
+              ]);
+            }
+          };
+          for (let i = queuedBlocks.length - 1; i >= 0; i--) {
+            const [blockIndex, blockItem, blockKey] = queuedBlocks[i];
+            relocateOrMountBlock(
+              blockIndex,
+              blockItem,
+              blockKey,
+              blockIndex < preparationBlockCount - 1 ? blockIndex + 1 : -1
+            );
+          }
+          for (let i = preparationBlockCount; i < newLength - endOffset; i++) {
+            const blockItem = getItem(source, i);
+            const blockKey = getKey(...blockItem);
+            relocateOrMountBlock(i, blockItem, blockKey, -1);
+          }
+          const useFastRemove = blocksToMount.length === newLength;
+          for (const leftoverIndex of previousKeyIndexMap.values()) {
+            unmount(
+              oldBlocks[leftoverIndex],
+              !(useFastRemove && canUseFastRemove),
+              !useFastRemove
+            );
+          }
+          if (useFastRemove) {
+            for (const selector of selectors) {
+              selector.cleanup();
+            }
+            if (canUseFastRemove) {
+              parent.textContent = "";
+              parent.appendChild(parentAnchor);
             }
           }
-          const increasingNewIndexSequence = moved ? getSequence(newIndexToOldIndexMap) : [];
-          j = increasingNewIndexSequence.length - 1;
-          for (i = toBePatched - 1; i >= 0; i--) {
-            const nextIndex = s2 + i;
-            const anchor = nextIndex + 1 < newLength ? normalizeAnchor(newBlocks[nextIndex + 1].nodes) : parentAnchor;
-            if (newIndexToOldIndexMap[i] === 0) {
-              mount(source, nextIndex, anchor);
-            } else if (moved) {
-              if (j < 0 || i !== increasingNewIndexSequence[j]) {
-                insert(newBlocks[nextIndex].nodes, parent, anchor);
-              } else {
-                j--;
-              }
-            }
+          for (const [
+            blockIndex,
+            blockItem,
+            blockKey,
+            anchorOffset
+          ] of blocksToMount) {
+            mount(
+              source,
+              blockIndex,
+              anchorOffset === -1 ? anchorFallback : normalizeAnchor(newBlocks[anchorOffset].nodes),
+              blockItem,
+              blockKey
+            );
           }
         }
       }
@@ -2726,15 +2798,15 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
     if (parentAnchor) {
       frag.nodes.push(parentAnchor);
     }
-    resetTracking();
+    setActiveSub(prevSub);
   };
   const needKey = renderItem.length > 1;
   const needIndex = renderItem.length > 2;
-  const mount = (source, idx, anchor = parentAnchor) => {
-    const [item, key, index] = getItem(source, idx);
+  const mount = (source, idx, anchor = parentAnchor, [item, key, index] = getItem(source, idx), key2 = getKey && getKey(item, key, index)) => {
     const itemRef = shallowRef$1(item);
     const keyRef = needKey ? shallowRef$1(key) : void 0;
     const indexRef = needIndex ? shallowRef$1(index) : void 0;
+    currentKey = key2;
     let nodes;
     let scope;
     if (isComponent) {
@@ -2751,18 +2823,10 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
       itemRef,
       keyRef,
       indexRef,
-      getKey && getKey(item, key, index)
+      key2
     );
     if (parent) insert(block.nodes, parent, anchor);
     return block;
-  };
-  const tryPatchIndex = (source, idx) => {
-    const block = oldBlocks[idx];
-    const [item, key, index] = getItem(source, idx);
-    if (block.key === getKey(item, key, index)) {
-      update(newBlocks[idx] = block, item);
-      return true;
-    }
   };
   const update = ({ itemRef, keyRef, indexRef }, newItem, newKey, newIndex) => {
     if (newItem !== itemRef.value) {
@@ -2775,9 +2839,18 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
       indexRef.value = newIndex;
     }
   };
-  const unmount = ({ nodes, scope }, doRemove = true) => {
-    scope && scope.stop();
-    doRemove && remove(nodes, parent);
+  const unmount = (block, doRemove = true, doDeregister = true) => {
+    if (!isComponent) {
+      block.scope.stop();
+    }
+    if (doRemove) {
+      remove(block.nodes, parent);
+    }
+    if (doDeregister) {
+      for (const selector of selectors) {
+        selector.deregister(block.key);
+      }
+    }
   };
   if (flags & 4) {
     renderList();
@@ -2787,7 +2860,51 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
   if (!isHydrating && _insertionParent) {
     insert(frag, _insertionParent, _insertionAnchor);
   }
+  frag.useSelector = useSelector;
   return frag;
+  function useSelector(source) {
+    let operMap = /* @__PURE__ */ new Map();
+    let activeKey = source();
+    let activeOpers;
+    watch(source, (newValue) => {
+      if (activeOpers !== void 0) {
+        for (const oper of activeOpers) {
+          oper();
+        }
+      }
+      activeOpers = operMap.get(newValue);
+      if (activeOpers !== void 0) {
+        for (const oper of activeOpers) {
+          oper();
+        }
+      }
+    });
+    selectors.push({ deregister, cleanup });
+    return register;
+    function cleanup() {
+      operMap = /* @__PURE__ */ new Map();
+      activeOpers = void 0;
+    }
+    function register(oper) {
+      oper();
+      let opers = operMap.get(currentKey);
+      if (opers !== void 0) {
+        opers.push(oper);
+      } else {
+        opers = [oper];
+        operMap.set(currentKey, opers);
+        if (currentKey === activeKey) {
+          activeOpers = opers;
+        }
+      }
+    }
+    function deregister(key) {
+      operMap.delete(key);
+      if (key === activeKey) {
+        activeOpers = void 0;
+      }
+    }
+  }
 };
 function createForSlots(rawSource, getSlot) {
   const source = normalizeSource(rawSource);
@@ -2926,8 +3043,7 @@ function setRef(instance, el, ref, oldRef, refFor = false) {
           warn$2("Invalid template ref type:", ref, `(${typeof ref})`);
         }
       };
-      doSet.id = -1;
-      queuePostFlushCb(doSet);
+      queuePostFlushCb(doSet, -1);
       onScopeDispose(() => {
         queuePostFlushCb(() => {
           if (isArray(existing)) {
@@ -3102,4 +3218,4 @@ function withVaporDirectives(node, dirs) {
   }
 }
 
-export { VaporFragment, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporComponent, delegate, delegateEvents, getDefaultValue, getRestElement, insert, isFragment, next, nthChild, on, prepend, remove, renderEffect, setAttr, setClass, setDOMProp, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setValue, template, unmountComponent, vaporInteropPlugin, withVaporDirectives };
+export { VaporFragment, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporComponent, delegate, delegateEvents, getDefaultValue, getRestElement, insert, isFragment, isVaporComponent, next, nthChild, on, prepend, remove, renderEffect, setAttr, setClass, setDOMProp, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setValue, template, unmountComponent, vaporInteropPlugin, withVaporDirectives };

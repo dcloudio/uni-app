@@ -1,11 +1,11 @@
 /**
-* @dcloudio/uni-app-nvue v3.5.14
+* @dcloudio/uni-app-nvue v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, isFunction, EMPTY_OBJ, isPromise, isArray, NOOP, getGlobalThis, extend, isBuiltInDirective, hasOwn, remove as remove$1, def, isOn, isReservedProp, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, getEscapedCssVarName, isObject, isRegExp, invokeArrayFns, toHandlerKey, camelize, capitalize, isSymbol, isGloballyAllowed, NO, hyphenate, makeMap, toRawType, EMPTY_ARR, getSequence, hasChanged, looseToNumber, isModelListener, toNumber, isBuiltInTag, YES, parseStringStyle, canSetValueDirectly, toDisplayString } from '@vue/shared';
+import { isString, isFunction, EMPTY_OBJ, isPromise, isArray, getGlobalThis, extend, isBuiltInDirective, hasOwn, remove as remove$1, def, isOn, isReservedProp, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, normalizeCssVarValue, getEscapedCssVarName, isObject, isRegExp, invokeArrayFns, toHandlerKey, capitalize, camelize, isSymbol, NOOP, isGloballyAllowed, NO, hyphenate, makeMap, toRawType, EMPTY_ARR, getSequence, hasChanged, looseToNumber, isModelListener, toNumber, isBuiltInTag, YES, parseStringStyle, canSetValueDirectly, toDisplayString } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
-import { pauseTracking, resetTracking, isRef, toRaw, traverse, shallowRef, readonly, isReactive, ref, isShallow, isReadonly, shallowReadArray, toReadonly, toReactive, track, shallowReadonly, reactive, shallowReactive, trigger, ReactiveEffect, watch as watch$1, customRef, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, getCurrentScope, onEffectCleanup, onScopeDispose, unref } from '@vue/reactivity';
+import { setActiveSub, isRef, toRaw, traverse, shallowRef, readonly, isReactive, ref, isShallow, isReadonly, shallowReadArray, toReadonly, toReactive, track, shallowReadonly, reactive, shallowReactive, trigger, ReactiveEffect, setCurrentScope, WatcherEffect, customRef, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, onEffectCleanup, onScopeDispose, unref, watch as watch$1 } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, getCurrentWatcher, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, onWatcherCleanup, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
 import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$2 } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
@@ -23,7 +23,7 @@ let isWarning = false;
 function warn$1(msg, ...args) {
   if (isWarning) return;
   isWarning = true;
-  pauseTracking();
+  const prevSub = setActiveSub();
   const entry = stack.length ? stack[stack.length - 1] : null;
   const instance = isVNode(entry) ? entry.component : entry;
   const appWarnHandler = instance && instance.appContext.config.warnHandler;
@@ -55,7 +55,7 @@ function warn$1(msg, ...args) {
     }
     console.warn(...warnArgs);
   }
-  resetTracking();
+  setActiveSub(prevSub);
   isWarning = false;
 }
 function getComponentTrace() {
@@ -247,13 +247,13 @@ function handleError(err, instance, type, throwInDev = true) {
       cur = cur.parent;
     }
     if (errorHandler) {
-      pauseTracking();
+      const prevSub = setActiveSub();
       callWithErrorHandling(errorHandler, null, 10, [
         err,
         exposedInstance,
         errorInfo
       ]);
-      resetTracking();
+      setActiveSub(prevSub);
       return;
     }
   }
@@ -284,15 +284,16 @@ ${err.stack || ""}---END:EXCEPTION---`
   }
 }
 
-const queue = [];
-let flushIndex = -1;
-const pendingPostFlushCbs = [];
-let activePostFlushCbs = null;
+const jobs = [];
+let postJobs = [];
+let activePostJobs = null;
+let currentFlushPromise = null;
+let jobsLength = 0;
+let flushIndex = 0;
 let postFlushIndex = 0;
 const resolvedPromise = /* @__PURE__ */ (PromisePolyfill ).resolve();
-let currentFlushPromise = null;
 const RECURSION_LIMIT = 100;
-function nextTick(fn, instance = getCurrentInstance()) {
+function nextTick(fn, instance = getCurrentGenericInstance()) {
   const promise = currentFlushPromise || resolvedPromise;
   const current = currentFlushPromise === null || instance === null ? promise : promise.then(() => {
     return new Promise((resolve) => {
@@ -307,14 +308,10 @@ function nextTick(fn, instance = getCurrentInstance()) {
   });
   return fn ? current.then(this ? fn.bind(this) : fn) : current;
 }
-function findInsertionIndex(id) {
-  let start = flushIndex + 1;
-  let end = queue.length;
+function findInsertionIndex(order, queue, start, end) {
   while (start < end) {
     const middle = start + end >>> 1;
-    const middleJob = queue[middle];
-    const middleJobId = getId(middleJob);
-    if (middleJobId < id || middleJobId === id && middleJob.flags & 2) {
+    if (queue[middle].order <= order) {
       start = middle + 1;
     } else {
       end = middle;
@@ -322,89 +319,108 @@ function findInsertionIndex(id) {
   }
   return start;
 }
-function queueJob(job) {
-  if (!(job.flags & 1)) {
-    const jobId = getId(job);
-    const lastJob = queue[queue.length - 1];
-    if (!lastJob || // fast path when the job id is larger than the tail
-    !(job.flags & 2) && jobId >= getId(lastJob)) {
-      queue.push(job);
-    } else {
-      queue.splice(findInsertionIndex(jobId), 0, job);
-    }
-    job.flags |= 1;
+function queueJob(job, id, isPre = false) {
+  if (queueJobWorker(
+    job,
+    id === void 0 ? isPre ? -2 : Infinity : isPre ? id * 2 : id * 2 + 1,
+    jobs,
+    jobsLength,
+    flushIndex
+  )) {
+    jobsLength++;
     queueFlush();
   }
 }
+function queueJobWorker(job, order, queue, length, flushIndex2) {
+  const flags = job.flags;
+  if (!(flags & 1)) {
+    job.flags = flags | 1;
+    job.order = order;
+    if (flushIndex2 === length || // fast path when the job id is larger than the tail
+    order >= queue[length - 1].order) {
+      queue[length] = job;
+    } else {
+      queue.splice(findInsertionIndex(order, queue, flushIndex2, length), 0, job);
+    }
+    return true;
+  }
+  return false;
+}
+const doFlushJobs = () => {
+  try {
+    flushJobs();
+  } catch (e) {
+    currentFlushPromise = null;
+    throw e;
+  }
+};
 function queueFlush() {
   if (!currentFlushPromise) {
-    currentFlushPromise = resolvedPromise.then(flushJobs).catch((e) => {
-      currentFlushPromise = null;
-      throw e;
-    });
+    currentFlushPromise = resolvedPromise.then(doFlushJobs);
   }
 }
-function queuePostFlushCb(cb) {
-  if (!isArray(cb)) {
-    if (activePostFlushCbs && cb.id === -1) {
-      activePostFlushCbs.splice(postFlushIndex + 1, 0, cb);
-    } else if (!(cb.flags & 1)) {
-      pendingPostFlushCbs.push(cb);
-      cb.flags |= 1;
+function queuePostFlushCb(jobs2, id = Infinity) {
+  if (!isArray(jobs2)) {
+    if (activePostJobs && id === -1) {
+      activePostJobs.splice(postFlushIndex, 0, jobs2);
+    } else {
+      queueJobWorker(jobs2, id, postJobs, postJobs.length, 0);
     }
   } else {
-    pendingPostFlushCbs.push(...cb);
+    for (const job of jobs2) {
+      queueJobWorker(job, id, postJobs, postJobs.length, 0);
+    }
   }
   queueFlush();
 }
-function flushPreFlushCbs(instance, seen, i = flushIndex + 1) {
+function flushPreFlushCbs(instance, seen) {
   if (!!(process.env.NODE_ENV !== "production")) {
     seen = seen || /* @__PURE__ */ new Map();
   }
-  for (; i < queue.length; i++) {
-    const cb = queue[i];
-    if (cb && cb.flags & 2) {
-      if (instance && cb.id !== instance.uid) {
-        continue;
-      }
-      if (!!(process.env.NODE_ENV !== "production") && checkRecursiveUpdates(seen, cb)) {
-        continue;
-      }
-      queue.splice(i, 1);
-      i--;
-      if (cb.flags & 4) {
-        cb.flags &= -2;
-      }
-      cb();
-      if (!(cb.flags & 4)) {
-        cb.flags &= -2;
-      }
+  for (let i = flushIndex; i < jobsLength; i++) {
+    const cb = jobs[i];
+    if (cb.order & 1 || cb.order === Infinity) {
+      continue;
+    }
+    if (instance && cb.order !== instance.uid * 2) {
+      continue;
+    }
+    if (!!(process.env.NODE_ENV !== "production") && checkRecursiveUpdates(seen, cb)) {
+      continue;
+    }
+    jobs.splice(i, 1);
+    i--;
+    jobsLength--;
+    if (cb.flags & 2) {
+      cb.flags &= -2;
+    }
+    cb();
+    if (!(cb.flags & 2)) {
+      cb.flags &= -2;
     }
   }
 }
 function flushPostFlushCbs(seen) {
-  if (pendingPostFlushCbs.length) {
-    const deduped = [...new Set(pendingPostFlushCbs)].sort(
-      (a, b) => getId(a) - getId(b)
-    );
-    pendingPostFlushCbs.length = 0;
-    if (activePostFlushCbs) {
-      activePostFlushCbs.push(...deduped);
+  if (postJobs.length) {
+    if (activePostJobs) {
+      activePostJobs.push(...postJobs);
+      postJobs.length = 0;
       return;
     }
-    activePostFlushCbs = deduped;
+    activePostJobs = postJobs;
+    postJobs = [];
     if (!!(process.env.NODE_ENV !== "production")) {
       seen = seen || /* @__PURE__ */ new Map();
     }
-    for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
-      const cb = activePostFlushCbs[postFlushIndex];
+    while (postFlushIndex < activePostJobs.length) {
+      const cb = activePostJobs[postFlushIndex++];
       if (!!(process.env.NODE_ENV !== "production") && checkRecursiveUpdates(seen, cb)) {
         continue;
       }
-      if (cb.flags & 4) {
+      if (cb.flags & 2) {
         cb.flags &= -2;
       }
-      if (!(cb.flags & 8)) {
+      if (!(cb.flags & 4)) {
         try {
           cb();
         } finally {
@@ -412,7 +428,7 @@ function flushPostFlushCbs(seen) {
         }
       }
     }
-    activePostFlushCbs = null;
+    activePostJobs = null;
     postFlushIndex = 0;
   }
 }
@@ -425,44 +441,46 @@ function flushOnAppMount() {
     isFlushing = false;
   }
 }
-const getId = (job) => job.id == null ? job.flags & 2 ? -1 : Infinity : job.id;
 function flushJobs(seen) {
   if (!!(process.env.NODE_ENV !== "production")) {
-    seen = seen || /* @__PURE__ */ new Map();
+    seen || (seen = /* @__PURE__ */ new Map());
   }
-  const check = !!(process.env.NODE_ENV !== "production") ? (job) => checkRecursiveUpdates(seen, job) : NOOP;
   try {
-    for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
-      const job = queue[flushIndex];
-      if (job && !(job.flags & 8)) {
-        if (!!(process.env.NODE_ENV !== "production") && check(job)) {
+    while (flushIndex < jobsLength) {
+      const job = jobs[flushIndex];
+      jobs[flushIndex++] = void 0;
+      if (!(job.flags & 4)) {
+        if (!!(process.env.NODE_ENV !== "production") && checkRecursiveUpdates(seen, job)) {
           continue;
         }
-        if (job.flags & 4) {
+        if (job.flags & 2) {
           job.flags &= ~1;
         }
-        callWithErrorHandling(
-          job,
-          job.i,
-          job.i ? 15 : 14
-        );
-        if (!(job.flags & 4)) {
-          job.flags &= ~1;
+        try {
+          job();
+        } catch (err) {
+          handleError(
+            err,
+            job.i,
+            job.i ? 15 : 14
+          );
+        } finally {
+          if (!(job.flags & 2)) {
+            job.flags &= ~1;
+          }
         }
       }
     }
   } finally {
-    for (; flushIndex < queue.length; flushIndex++) {
-      const job = queue[flushIndex];
-      if (job) {
-        job.flags &= -2;
-      }
+    while (flushIndex < jobsLength) {
+      jobs[flushIndex].flags &= -2;
+      jobs[flushIndex++] = void 0;
     }
-    flushIndex = -1;
-    queue.length = 0;
+    flushIndex = 0;
+    jobsLength = 0;
     flushPostFlushCbs(seen);
     currentFlushPromise = null;
-    if (queue.length || pendingPostFlushCbs.length) {
+    if (jobsLength || postJobs.length) {
       flushJobs(seen);
     }
   }
@@ -535,7 +553,7 @@ function rerender(id, newRender) {
     } else {
       const i = instance;
       i.renderCache = [];
-      i.update();
+      i.effect.run();
     }
     nextTick(() => {
       isHmrUpdating = false;
@@ -577,7 +595,7 @@ function reload(id, newComp) {
           if (parent.vapor) {
             parent.hmrRerender();
           } else {
-            parent.update();
+            parent.effect.run();
           }
           nextTick(() => {
             isHmrUpdating = false;
@@ -633,12 +651,8 @@ function emit$2(event, ...args) {
     buffer.push({ event, args });
   }
 }
-let queued = false;
 function setDevtoolsHook$1(hook, target) {
   var _a, _b;
-  if (devtoolsNotInstalled || queued) {
-    return;
-  }
   devtools$1 = hook;
   if (devtools$1) {
     devtools$1.enabled = true;
@@ -653,7 +667,6 @@ function setDevtoolsHook$1(hook, target) {
     // eslint-disable-next-line no-restricted-syntax
     !((_b = (_a = window.navigator) == null ? void 0 : _a.userAgent) == null ? void 0 : _b.includes("jsdom"))
   ) {
-    queued = true;
     const replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
     replay.push((newHook) => {
       setDevtoolsHook$1(newHook, target);
@@ -813,14 +826,14 @@ function invokeDirectiveHook(vnode, prevVNode, instance, name) {
     }
     let hook = binding.dir[name];
     if (hook) {
-      pauseTracking();
+      const prevSub = setActiveSub();
       callWithAsyncErrorHandling(hook, instance, 8, [
         vnode.el,
         binding,
         vnode,
         prevVNode
       ]);
-      resetTracking();
+      setActiveSub(prevSub);
     }
   }
 }
@@ -929,30 +942,38 @@ const TeleportImpl = {
         updateCssVars(n2, true);
       }
       if (isTeleportDeferred(n2.props)) {
-        queuePostRenderEffect(() => {
-          mountToTarget();
-          n2.el.__isMounted = true;
-        }, parentSuspense);
+        n2.el.__isMounted = false;
+        queuePostRenderEffect(
+          () => {
+            mountToTarget();
+            delete n2.el.__isMounted;
+          },
+          void 0,
+          parentSuspense
+        );
       } else {
         mountToTarget();
       }
     } else {
-      if (isTeleportDeferred(n2.props) && !n1.el.__isMounted) {
-        queuePostRenderEffect(() => {
-          TeleportImpl.process(
-            n1,
-            n2,
-            container,
-            anchor,
-            parentComponent,
-            parentSuspense,
-            namespace,
-            slotScopeIds,
-            optimized,
-            internals
-          );
-          delete n1.el.__isMounted;
-        }, parentSuspense);
+      if (isTeleportDeferred(n2.props) && n1.el.__isMounted === false) {
+        queuePostRenderEffect(
+          () => {
+            TeleportImpl.process(
+              n1,
+              n2,
+              container,
+              anchor,
+              parentComponent,
+              parentSuspense,
+              namespace,
+              slotScopeIds,
+              optimized,
+              internals
+            );
+          },
+          void 0,
+          parentSuspense
+        );
         return;
       }
       n2.el = n1.el;
@@ -1279,7 +1300,7 @@ const BaseTransitionImpl = {
           state.isLeaving = true;
           leavingHooks.afterLeave = () => {
             state.isLeaving = false;
-            if (!(instance.job.flags & 8)) {
+            if (!(instance.job.flags & 4)) {
               instance.update();
             }
             delete leavingHooks.afterLeave;
@@ -1695,8 +1716,7 @@ function setRef$1(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
         }
       };
       if (value) {
-        doSet.id = -1;
-        queuePostRenderEffect(doSet, parentSuspense);
+        queuePostRenderEffect(doSet, -1, parentSuspense);
       } else {
         doSet();
       }
@@ -1949,6 +1969,8 @@ function createHydrationFunctions(rendererInternals) {
         ) && parentComponent && parentComponent.vnode.props && parentComponent.vnode.props.appear;
         const content = el.content.firstChild;
         if (needCallTransitionHooks) {
+          const cls = content.getAttribute("class");
+          if (cls) content.$cls = cls;
           transition.beforeEnter(content);
         }
         replaceNode(content, el, parentComponent);
@@ -2037,11 +2059,15 @@ Server rendered element contains more child nodes than client vdom.`
         invokeDirectiveHook(vnode, null, parentComponent, "beforeMount");
       }
       if ((vnodeHooks = props && props.onVnodeMounted) || dirs || needCallTransitionHooks) {
-        queueEffectWithSuspense(() => {
-          vnodeHooks && invokeVNodeHook(vnodeHooks, parentComponent, vnode);
-          needCallTransitionHooks && transition.enter(el);
-          dirs && invokeDirectiveHook(vnode, null, parentComponent, "mounted");
-        }, parentSuspense);
+        queueEffectWithSuspense(
+          () => {
+            vnodeHooks && invokeVNodeHook(vnodeHooks, parentComponent, vnode);
+            needCallTransitionHooks && transition.enter(el);
+            dirs && invokeDirectiveHook(vnode, null, parentComponent, "mounted");
+          },
+          void 0,
+          parentSuspense
+        );
       }
     }
     return el.nextSibling;
@@ -2213,7 +2239,12 @@ function propHasMismatch(el, key, clientValue, vnode, instance) {
   let actual;
   let expected;
   if (key === "class") {
-    actual = el.getAttribute("class");
+    if (el.$cls) {
+      actual = el.$cls;
+      delete el.$cls;
+    } else {
+      actual = el.getAttribute("class");
+    }
     expected = normalizeClass(clientValue);
     if (!isSetEqual(toClassSet(actual || ""), toClassSet(expected))) {
       mismatchType = 2 /* CLASS */;
@@ -2317,10 +2348,8 @@ function resolveCssVars(instance, vnode, expectedMap) {
   if (instance.getCssVars && (vnode === root || root && root.type === Fragment && root.children.includes(vnode))) {
     const cssVars = instance.getCssVars();
     for (const key in cssVars) {
-      expectedMap.set(
-        `--${getEscapedCssVarName(key, false)}`,
-        String(cssVars[key])
-      );
+      const value = normalizeCssVarValue(cssVars[key]);
+      expectedMap.set(`--${getEscapedCssVarName(key, false)}`, value);
     }
   }
   if (vnode === root && instance.parent) {
@@ -2355,7 +2384,7 @@ function isMismatchAllowed(el, allowedType) {
     if (allowedType === 0 /* TEXT */ && list.includes("children")) {
       return true;
     }
-    return allowedAttr.split(",").includes(MismatchTypeString[allowedType]);
+    return list.includes(MismatchTypeString[allowedType]);
   }
 }
 
@@ -2512,14 +2541,25 @@ function defineAsyncComponent(source) {
     name: "AsyncComponentWrapper",
     __asyncLoader: load,
     __asyncHydrate(el, instance, hydrate) {
+      let patched = false;
       const doHydrate = hydrateStrategy ? () => {
+        const performHydrate = () => {
+          if (!!(process.env.NODE_ENV !== "production") && patched) {
+            warn$1(
+              `Skipping lazy hydration for component '${getComponentName(resolvedComp)}': it was updated before lazy hydration performed.`
+            );
+            return;
+          }
+          hydrate();
+        };
         const teardown = hydrateStrategy(
-          hydrate,
+          performHydrate,
           (cb) => forEachElement(el, cb)
         );
         if (teardown) {
           (instance.bum || (instance.bum = [])).push(teardown);
         }
+        (instance.u || (instance.u = [])).push(() => patched = true);
       } : hydrate;
       if (resolvedComp) {
         doHydrate();
@@ -2658,16 +2698,20 @@ const KeepAliveImpl = {
         vnode.slotScopeIds,
         optimized
       );
-      queuePostRenderEffect(() => {
-        instance.isDeactivated = false;
-        if (instance.a) {
-          invokeArrayFns(instance.a);
-        }
-        const vnodeHook = vnode.props && vnode.props.onVnodeMounted;
-        if (vnodeHook) {
-          invokeVNodeHook(vnodeHook, instance.parent, vnode);
-        }
-      }, parentSuspense);
+      queuePostRenderEffect(
+        () => {
+          instance.isDeactivated = false;
+          if (instance.a) {
+            invokeArrayFns(instance.a);
+          }
+          const vnodeHook = vnode.props && vnode.props.onVnodeMounted;
+          if (vnodeHook) {
+            invokeVNodeHook(vnodeHook, instance.parent, vnode);
+          }
+        },
+        void 0,
+        parentSuspense
+      );
       if (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_DEVTOOLS__) {
         devtoolsComponentAdded(instance);
       }
@@ -2684,16 +2728,20 @@ const KeepAliveImpl = {
         keepAliveInstance,
         parentSuspense
       );
-      queuePostRenderEffect(() => {
-        if (instance.da) {
-          invokeArrayFns(instance.da);
-        }
-        const vnodeHook = vnode.props && vnode.props.onVnodeUnmounted;
-        if (vnodeHook) {
-          invokeVNodeHook(vnodeHook, instance.parent, vnode);
-        }
-        instance.isDeactivated = true;
-      }, parentSuspense);
+      queuePostRenderEffect(
+        () => {
+          if (instance.da) {
+            invokeArrayFns(instance.da);
+          }
+          const vnodeHook = vnode.props && vnode.props.onVnodeUnmounted;
+          if (vnodeHook) {
+            invokeVNodeHook(vnodeHook, instance.parent, vnode);
+          }
+          instance.isDeactivated = true;
+        },
+        void 0,
+        parentSuspense
+      );
       if (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_DEVTOOLS__) {
         devtoolsComponentAdded(instance);
       }
@@ -2736,12 +2784,16 @@ const KeepAliveImpl = {
     const cacheSubtree = () => {
       if (pendingCacheKey != null) {
         if (isSuspense(keepAliveInstance.subTree.type)) {
-          queuePostRenderEffect(() => {
-            cache.set(
-              pendingCacheKey,
-              getInnerChild(keepAliveInstance.subTree)
-            );
-          }, keepAliveInstance.subTree.suspense);
+          queuePostRenderEffect(
+            () => {
+              cache.set(
+                pendingCacheKey,
+                getInnerChild(keepAliveInstance.subTree)
+              );
+            },
+            void 0,
+            keepAliveInstance.subTree.suspense
+          );
         } else {
           cache.set(pendingCacheKey, getInnerChild(keepAliveInstance.subTree));
         }
@@ -2756,7 +2808,7 @@ const KeepAliveImpl = {
         if (cached.type === vnode.type && cached.key === vnode.key) {
           resetShapeFlag(vnode);
           const da = vnode.component.da;
-          da && queuePostRenderEffect(da, suspense);
+          da && queuePostRenderEffect(da, void 0, suspense);
           return;
         }
         unmount(cached);
@@ -2900,13 +2952,13 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
     }
     const hooks = target[type] || (target[type] = []);
     const wrappedHook = hook.__weh || (hook.__weh = (...args) => {
-      pauseTracking();
-      const reset = setCurrentInstance(target);
+      const prevSub = setActiveSub();
+      const prev = setCurrentInstance(target);
       try {
         return callWithAsyncErrorHandling(hook, target, type, args);
       } finally {
-        reset();
-        resetTracking();
+        setCurrentInstance(...prev);
+        setActiveSub(prevSub);
       }
     });
     if (prepend) {
@@ -3079,7 +3131,7 @@ function createSlots(slots, dynamicSlots) {
 
 function renderSlot(slots, name, props = {}, fallback, noSlotted) {
   let slot = slots[name];
-  if (slot && slots._vapor) {
+  if (slot && slot.__vapor) {
     const ret = (openBlock(), createBlock(VaporSlot, props));
     ret.vs = { slot, fallback };
     return ret;
@@ -3530,7 +3582,7 @@ function withAsyncContext(getAwaitable) {
     );
   }
   let awaitable = getAwaitable();
-  unsetCurrentInstance();
+  setCurrentInstance(null, void 0);
   if (isPromise(awaitable)) {
     awaitable = awaitable.catch((e) => {
       setCurrentInstance(ctx);
@@ -4120,9 +4172,15 @@ If you want to remount the same app, move your app creation logic into a factory
       },
       provide(key, value) {
         if (!!(process.env.NODE_ENV !== "production") && key in context.provides) {
-          warn$1(
-            `App already provides property with key "${String(key)}". It will be overwritten with the new value.`
-          );
+          if (hasOwn(context.provides, key)) {
+            warn$1(
+              `App already provides property with key "${String(key)}". It will be overwritten with the new value.`
+            );
+          } else {
+            warn$1(
+              `App already provides property with key "${String(key)}" inherited from its parent element. It will be overwritten with the new value.`
+            );
+          }
         }
         context.provides[key] = value;
         return app;
@@ -4160,7 +4218,7 @@ function provide(key, value) {
 function inject(key, defaultValue, treatDefaultAsFactory = false) {
   const instance = getCurrentGenericInstance();
   if (instance || currentApp) {
-    const provides = currentApp ? currentApp._context.provides : instance ? instance.parent == null ? instance.appContext && instance.appContext.provides : instance.parent.provides : void 0;
+    let provides = currentApp ? currentApp._context.provides : instance ? instance.parent == null || instance.ce ? instance.appContext && instance.appContext.provides : instance.parent.provides : void 0;
     if (provides && key in provides) {
       return provides[key];
     } else if (arguments.length > 1) {
@@ -4378,13 +4436,13 @@ function resolvePropValue(options, key, value, instance, resolveDefault, isAbsen
 }
 function baseResolveDefault(factory, instance, key) {
   let value;
-  const reset = setCurrentInstance(instance);
+  const prev = setCurrentInstance(instance);
   const props = toRaw(instance.props);
   value = factory.call(
     null,
     props
   );
-  reset();
+  setCurrentInstance(...prev);
   return value;
 }
 const mixinPropsCache = /* @__PURE__ */ new WeakMap();
@@ -4652,6 +4710,8 @@ const assignSlots = (slots, children, optimized) => {
 const initSlots = (instance, children, optimized) => {
   const slots = instance.slots = createInternalObject();
   if (instance.vnode.shapeFlag & 32) {
+    const cacheIndexes = children.__;
+    if (cacheIndexes) def(slots, "__", cacheIndexes, true);
     const type = children._;
     if (type) {
       assignSlots(slots, children, optimized);
@@ -4909,6 +4969,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     if (ref != null && parentComponent) {
       setRef$1(ref, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
+    } else if (ref == null && n1 && n1.ref != null) {
+      setRef$1(n1.ref, null, parentSuspense, n1, true);
     }
   };
   const processText = (n1, n2, container, anchor) => {
@@ -5082,11 +5144,15 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     hostInsert(el, container, anchor);
     if ((vnodeHook = props && props.onVnodeMounted) || needCallTransitionHooks || dirs) {
-      queuePostRenderEffect(() => {
-        vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
-        needCallTransitionHooks && transition.enter(el);
-        dirs && invokeDirectiveHook(vnode, null, parentComponent, "mounted");
-      }, parentSuspense);
+      queuePostRenderEffect(
+        () => {
+          vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
+          needCallTransitionHooks && transition.enter(el);
+          dirs && invokeDirectiveHook(vnode, null, parentComponent, "mounted");
+        },
+        void 0,
+        parentSuspense
+      );
     }
   };
   const setScopeId = (el, vnode, scopeId, slotScopeIds, parentComponent) => {
@@ -5260,10 +5326,14 @@ function baseCreateRenderer(options, createHydrationFns) {
       );
     }
     if ((vnodeHook = newProps.onVnodeUpdated) || dirs) {
-      queuePostRenderEffect(() => {
-        vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, n2, n1);
-        dirs && invokeDirectiveHook(n2, n1, parentComponent, "updated");
-      }, parentSuspense);
+      queuePostRenderEffect(
+        () => {
+          vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, n2, n1);
+          dirs && invokeDirectiveHook(n2, n1, parentComponent, "updated");
+        },
+        void 0,
+        parentSuspense
+      );
     }
   };
   const patchBlockChildren = (oldChildren, newChildren, fallbackContainer, parentComponent, parentSuspense, namespace, slotScopeIds) => {
@@ -5278,7 +5348,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         (oldVNode.type === Fragment || // - In the case of different nodes, there is going to be a replacement
         // which also requires the correct parent container
         !isSameVNodeType(oldVNode, newVNode) || // - In the case of a component, it could contain anything.
-        oldVNode.shapeFlag & (6 | 64)) ? hostParentNode(oldVNode.el) : (
+        oldVNode.shapeFlag & (6 | 64 | 128)) ? hostParentNode(oldVNode.el) : (
           // In other cases, the parent container is not actually used so we
           // just pass the block element here to avoid a DOM parentNode call.
           fallbackContainer
@@ -5522,15 +5592,52 @@ function baseCreateRenderer(options, createHydrationFns) {
         return;
       } else {
         instance.next = n2;
-        instance.update();
+        instance.effect.run();
       }
     } else {
       n2.el = n1.el;
       instance.vnode = n2;
     }
   };
-  const setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
-    const componentUpdateFn = () => {
+  class SetupRenderEffect extends ReactiveEffect {
+    constructor(instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) {
+      const prevScope = setCurrentScope(instance.scope);
+      super();
+      this.instance = instance;
+      this.initialVNode = initialVNode;
+      this.container = container;
+      this.anchor = anchor;
+      this.parentSuspense = parentSuspense;
+      this.namespace = namespace;
+      this.optimized = optimized;
+      setCurrentScope(prevScope);
+      this.job = instance.job = () => {
+        if (this.dirty) {
+          this.run();
+        }
+      };
+      this.job.i = instance;
+      if (!!(process.env.NODE_ENV !== "production")) {
+        this.onTrack = instance.rtc ? (e) => invokeArrayFns(instance.rtc, e) : void 0;
+        this.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
+      }
+    }
+    notify() {
+      if (!(this.flags & 256)) {
+        const job = this.job;
+        queueJob(job, job.i.uid);
+      }
+    }
+    fn() {
+      const {
+        instance,
+        initialVNode,
+        container,
+        anchor,
+        parentSuspense,
+        namespace,
+        optimized
+      } = this;
       if (!instance.isMounted) {
         let vnodeHook;
         const { el, props } = initialVNode;
@@ -5577,7 +5684,8 @@ function baseCreateRenderer(options, createHydrationFns) {
             hydrateSubTree();
           }
         } else {
-          if (root.ce) {
+          if (root.ce && // @ts-expect-error _def is private
+          root.ce._def.shadowRoot !== false) {
             root.ce._injectChildStyle(type);
           }
           if (!!(process.env.NODE_ENV !== "production")) {
@@ -5605,23 +5713,24 @@ function baseCreateRenderer(options, createHydrationFns) {
           initialVNode.el = subTree.el;
         }
         if (m) {
-          queuePostRenderEffect(m, parentSuspense);
+          queuePostRenderEffect(m, void 0, parentSuspense);
         }
         if (!isAsyncWrapperVNode && (vnodeHook = props && props.onVnodeMounted)) {
           const scopedInitialVNode = initialVNode;
           queuePostRenderEffect(
             () => invokeVNodeHook(vnodeHook, parent, scopedInitialVNode),
+            void 0,
             parentSuspense
           );
         }
         if (initialVNode.shapeFlag & 256 || parent && parent.vnode && isAsyncWrapper(parent.vnode) && parent.vnode.shapeFlag & 256) {
-          instance.a && queuePostRenderEffect(instance.a, parentSuspense);
+          instance.a && queuePostRenderEffect(instance.a, void 0, parentSuspense);
         }
         instance.isMounted = true;
         if (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_DEVTOOLS__) {
           devtoolsComponentAdded(instance);
         }
-        initialVNode = container = anchor = null;
+        this.initialVNode = this.container = this.anchor = null;
       } else {
         let { next, bu, u, parent, vnode } = instance;
         {
@@ -5633,7 +5742,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             }
             nonHydratedAsyncRoot.asyncDep.then(() => {
               if (!instance.isUnmounted) {
-                componentUpdateFn();
+                this.fn();
               }
             });
             return;
@@ -5689,11 +5798,12 @@ function baseCreateRenderer(options, createHydrationFns) {
           updateHOCHostEl(instance, nextTree.el);
         }
         if (u) {
-          queuePostRenderEffect(u, parentSuspense);
+          queuePostRenderEffect(u, void 0, parentSuspense);
         }
         if (vnodeHook = next.props && next.props.onVnodeUpdated) {
           queuePostRenderEffect(
             () => invokeVNodeHook(vnodeHook, parent, next, vnode),
+            void 0,
             parentSuspense
           );
         }
@@ -5704,21 +5814,21 @@ function baseCreateRenderer(options, createHydrationFns) {
           popWarningContext();
         }
       }
-    };
-    instance.scope.on();
-    const effect = instance.effect = new ReactiveEffect(componentUpdateFn);
-    instance.scope.off();
-    const update = instance.update = effect.run.bind(effect);
-    const job = instance.job = () => effect.dirty && effect.run();
-    job.i = instance;
-    job.id = instance.uid;
-    effect.scheduler = () => queueJob(job);
-    toggleRecurse(instance, true);
-    if (!!(process.env.NODE_ENV !== "production")) {
-      effect.onTrack = instance.rtc ? (e) => invokeArrayFns(instance.rtc, e) : void 0;
-      effect.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
     }
-    update();
+  }
+  const setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
+    const effect = instance.effect = new SetupRenderEffect(
+      instance,
+      initialVNode,
+      container,
+      anchor,
+      parentSuspense,
+      namespace,
+      optimized
+    );
+    instance.update = effect.run.bind(effect);
+    toggleRecurse(instance, true);
+    effect.run();
   };
   const updateComponentPreRender = (instance, nextVNode, optimized) => {
     nextVNode.component = instance;
@@ -5727,9 +5837,9 @@ function baseCreateRenderer(options, createHydrationFns) {
     instance.next = null;
     updateProps(instance, nextVNode.props, prevProps, optimized);
     updateSlots(instance, nextVNode.children, optimized);
-    pauseTracking();
+    const prevSub = setActiveSub();
     flushPreFlushCbs(instance);
-    resetTracking();
+    setActiveSub(prevSub);
   };
   const patchChildren = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized = false) => {
     const c1 = n1 && n1.children;
@@ -6073,7 +6183,11 @@ function baseCreateRenderer(options, createHydrationFns) {
       if (moveType === 0) {
         transition.beforeEnter(el);
         hostInsert(el, container, anchor);
-        queuePostRenderEffect(() => transition.enter(el), parentSuspense);
+        queuePostRenderEffect(
+          () => transition.enter(el),
+          void 0,
+          parentSuspense
+        );
       } else {
         const { leave, delayLeave, afterLeave } = transition;
         const remove2 = () => {
@@ -6115,9 +6229,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       optimized = false;
     }
     if (ref != null) {
-      pauseTracking();
+      const prevSub = setActiveSub();
       setRef$1(ref, null, parentSuspense, vnode, true);
-      resetTracking();
+      setActiveSub(prevSub);
     }
     if (cacheIndex != null) {
       parentComponent.renderCache[cacheIndex] = void 0;
@@ -6181,10 +6295,14 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
     }
     if (shouldInvokeVnodeHook && (vnodeHook = props && props.onVnodeUnmounted) || shouldInvokeDirs) {
-      queuePostRenderEffect(() => {
-        vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
-        shouldInvokeDirs && invokeDirectiveHook(vnode, null, parentComponent, "unmounted");
-      }, parentSuspense);
+      queuePostRenderEffect(
+        () => {
+          vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
+          shouldInvokeDirs && invokeDirectiveHook(vnode, null, parentComponent, "unmounted");
+        },
+        void 0,
+        parentSuspense
+      );
     }
   };
   const remove = (vnode) => {
@@ -6241,7 +6359,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     const {
       bum,
       scope,
-      job,
+      effect,
       subTree,
       um,
       m,
@@ -6260,16 +6378,18 @@ function baseCreateRenderer(options, createHydrationFns) {
       });
     }
     scope.stop();
-    if (job) {
-      job.flags |= 8;
+    if (effect) {
+      effect.stop();
       unmount(subTree, instance, parentSuspense, doRemove);
     }
     if (um) {
-      queuePostRenderEffect(um, parentSuspense);
+      queuePostRenderEffect(um, void 0, parentSuspense);
     }
-    queuePostRenderEffect(() => {
-      instance.isUnmounted = true;
-    }, parentSuspense);
+    queuePostRenderEffect(
+      () => instance.isUnmounted = true,
+      void 0,
+      parentSuspense
+    );
     if (parentSuspense && parentSuspense.pendingBranch && !parentSuspense.isUnmounted && instance.asyncDep && !instance.asyncResolved && instance.suspenseId === parentSuspense.pendingId) {
       parentSuspense.deps--;
       if (parentSuspense.deps === 0) {
@@ -6380,10 +6500,10 @@ function toggleRecurse({ effect, job, vapor }, allowed) {
   if (!vapor) {
     if (allowed) {
       effect.flags |= 128;
-      job.flags |= 4;
+      job.flags |= 2;
     } else {
       effect.flags &= -129;
-      job.flags &= -5;
+      job.flags &= -3;
     }
   }
 }
@@ -6430,7 +6550,7 @@ function locateNonHydratedAsyncRoot(instance) {
 function invalidateMount(hooks) {
   if (hooks) {
     for (let i = 0; i < hooks.length; i++)
-      hooks[i].flags |= 8;
+      hooks[i].flags |= 4;
   }
 }
 function getVaporInterface(instance, vnode) {
@@ -6486,8 +6606,41 @@ function watch(source, cb, options) {
   }
   return doWatch(source, cb, options);
 }
+class RenderWatcherEffect extends WatcherEffect {
+  constructor(instance, source, cb, options, flush) {
+    super(source, cb, options);
+    this.flush = flush;
+    const job = () => {
+      if (this.dirty) {
+        this.run();
+      }
+    };
+    if (cb) {
+      this.flags |= 128;
+      job.flags |= 2;
+    }
+    if (instance) {
+      job.i = instance;
+    }
+    this.job = job;
+  }
+  notify() {
+    const flags = this.flags;
+    if (!(flags & 256)) {
+      const flush = this.flush;
+      const job = this.job;
+      if (flush === "post") {
+        queuePostRenderEffect(job, void 0, job.i ? job.i.suspense : null);
+      } else if (flush === "pre") {
+        queueJob(job, job.i ? job.i.uid : void 0, true);
+      } else {
+        job();
+      }
+    }
+  }
+}
 function doWatch(source, cb, options = EMPTY_OBJ) {
-  const { immediate, deep, flush, once } = options;
+  const { immediate, deep, flush = "pre", once } = options;
   if (!!(process.env.NODE_ENV !== "production") && !cb) {
     if (immediate !== void 0) {
       warn$1(
@@ -6509,35 +6662,25 @@ function doWatch(source, cb, options = EMPTY_OBJ) {
   if (!!(process.env.NODE_ENV !== "production")) baseWatchOptions.onWarn = warn$1;
   const instance = currentInstance;
   baseWatchOptions.call = (fn, type, args) => callWithAsyncErrorHandling(fn, instance, type, args);
-  let isPre = false;
-  if (flush === "post") {
-    baseWatchOptions.scheduler = (job) => {
-      queuePostRenderEffect(job, instance && instance.suspense);
-    };
-  } else if (flush !== "sync") {
-    isPre = true;
-    baseWatchOptions.scheduler = (job, isFirstRun) => {
-      if (isFirstRun) {
-        job();
-      } else {
-        queueJob(job);
-      }
-    };
+  const effect = new RenderWatcherEffect(
+    instance,
+    source,
+    cb,
+    baseWatchOptions,
+    flush
+  );
+  if (cb) {
+    effect.run(true);
+  } else if (flush === "post") {
+    queuePostRenderEffect(effect.job, void 0, instance && instance.suspense);
+  } else {
+    effect.run(true);
   }
-  baseWatchOptions.augmentJob = (job) => {
-    if (cb) {
-      job.flags |= 4;
-    }
-    if (isPre) {
-      job.flags |= 2;
-      if (instance) {
-        job.id = instance.uid;
-        job.i = instance;
-      }
-    }
-  };
-  const watchHandle = watch$1(source, cb, baseWatchOptions);
-  return watchHandle;
+  const stop = effect.stop.bind(effect);
+  stop.pause = effect.pause.bind(effect);
+  stop.resume = effect.resume.bind(effect);
+  stop.stop = stop;
+  return stop;
 }
 function instanceWatch(source, value, options) {
   const publicThis = this.proxy;
@@ -6549,9 +6692,9 @@ function instanceWatch(source, value, options) {
     cb = value.handler;
     options = value;
   }
-  const reset = setCurrentInstance(this);
+  const prev = setCurrentInstance(this);
   const res = doWatch(getter, cb.bind(publicThis), options);
-  reset();
+  setCurrentInstance(...prev);
   return res;
 }
 function createPathGetter(ctx, path) {
@@ -7652,7 +7795,7 @@ function normalizeSuspenseSlot(s) {
   }
   return s;
 }
-function queueEffectWithSuspense(fn, suspense) {
+function queueEffectWithSuspense(fn, id, suspense) {
   if (suspense && suspense.pendingBranch) {
     if (isArray(fn)) {
       suspense.effects.push(...fn);
@@ -7660,7 +7803,7 @@ function queueEffectWithSuspense(fn, suspense) {
       suspense.effects.push(fn);
     }
   } else {
-    queuePostFlushCb(fn);
+    queuePostFlushCb(fn, id);
   }
 }
 function setActiveBranch(suspense, branch) {
@@ -8075,34 +8218,20 @@ const getCurrentGenericInstance = () => currentInstance || currentRenderingInsta
 const getCurrentInstance = () => currentInstance && !currentInstance.vapor ? currentInstance : currentRenderingInstance;
 let isInSSRComponentSetup = false;
 let setInSSRSetupState;
-let internalSetCurrentInstance;
+let simpleSetCurrentInstance;
 {
-  internalSetCurrentInstance = (i) => {
+  simpleSetCurrentInstance = (i) => {
     currentInstance = i;
   };
   setInSSRSetupState = (v) => {
     isInSSRComponentSetup = v;
   };
 }
-const setCurrentInstance = (instance) => {
-  const prev = currentInstance;
-  internalSetCurrentInstance(instance);
-  instance.scope.on();
-  return () => {
-    instance.scope.off();
-    internalSetCurrentInstance(prev);
-  };
-};
-const unsetCurrentInstance = () => {
-  currentInstance && currentInstance.scope.off();
-  internalSetCurrentInstance(null);
-};
-const simpleSetCurrentInstance = (i, unset) => {
-  currentInstance = i;
-  if (unset) {
-    unset.scope.off();
-  } else if (i) {
-    i.scope.on();
+const setCurrentInstance = (instance, scope = instance !== null ? instance.scope : void 0) => {
+  try {
+    return [currentInstance, setCurrentScope(scope)];
+  } finally {
+    simpleSetCurrentInstance(instance);
   }
 };
 
@@ -8280,9 +8409,9 @@ function setupStatefulComponent(instance, isSSR) {
   }
   const { setup } = Component;
   if (setup) {
-    pauseTracking();
+    const prevSub = setActiveSub();
     const setupContext = instance.setupContext = setup.length > 1 ? createSetupContext(instance) : null;
-    const reset = setCurrentInstance(instance);
+    const prev = setCurrentInstance(instance);
     const setupResult = callWithErrorHandling(
       setup,
       instance,
@@ -8293,12 +8422,15 @@ function setupStatefulComponent(instance, isSSR) {
       ]
     );
     const isAsyncSetup = isPromise(setupResult);
-    resetTracking();
-    reset();
+    setActiveSub(prevSub);
+    setCurrentInstance(...prev);
     if ((isAsyncSetup || instance.sp) && !isAsyncWrapper(instance)) {
       markAsyncBoundary(instance);
     }
     if (isAsyncSetup) {
+      const unsetCurrentInstance = () => {
+        setCurrentInstance(null, void 0);
+      };
       setupResult.then(unsetCurrentInstance, unsetCurrentInstance);
       if (isSSR) {
         return setupResult.then((resolvedResult) => {
@@ -8391,13 +8523,13 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
     }
   }
   if (__VUE_OPTIONS_API__ && true) {
-    const reset = setCurrentInstance(instance);
-    pauseTracking();
+    const prevInstance = setCurrentInstance(instance);
+    const prevSub = setActiveSub();
     try {
       applyOptions(instance);
     } finally {
-      resetTracking();
-      reset();
+      setActiveSub(prevSub);
+      setCurrentInstance(...prevInstance);
     }
   }
   if (!!(process.env.NODE_ENV !== "production") && !Component.render && instance.render === NOOP && !isSSR) {
@@ -8579,9 +8711,9 @@ function initCustomFormatter() {
       if (obj.__isVue) {
         return ["div", vueStyle, `VueInstance`];
       } else if (isRef(obj)) {
-        pauseTracking();
+        const prevSub = setActiveSub();
         const value = obj.value;
-        resetTracking();
+        setActiveSub(prevSub);
         return [
           "div",
           {},
@@ -8768,7 +8900,7 @@ function isMemoSame(cached, memo) {
   return true;
 }
 
-const version = "3.5.14";
+const version = "3.6.0-alpha.1";
 const warn = !!(process.env.NODE_ENV !== "production") ? warn$1 : NOOP;
 const ErrorTypeStrings = ErrorTypeStrings$1 ;
 const devtools = !!(process.env.NODE_ENV !== "production") || true ? devtools$1 : void 0;
@@ -8778,15 +8910,20 @@ const resolveFilter = null;
 const compatUtils = null;
 const DeprecationTypes = null;
 
+let insertionParent;
+let insertionAnchor;
+function setInsertionState(parent, anchor) {
+  insertionParent = parent;
+  insertionAnchor = anchor;
+}
+function resetInsertionState() {
+  insertionParent = insertionAnchor = void 0;
+}
+
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
 function createTextNode(doc, value = "") {
   return doc.createTextNode(value);
-}
-/*! #__NO_SIDE_EFFECTS__ */
-// @__NO_SIDE_EFFECTS__
-function createComment(doc, data) {
-  return doc.createComment(data);
 }
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
@@ -8802,16 +8939,6 @@ function nthChild(node, i) {
 // @__NO_SIDE_EFFECTS__
 function next(node) {
   return node.nextSibling;
-}
-
-let insertionParent;
-let insertionAnchor;
-function setInsertionState(parent, anchor) {
-  insertionParent = parent;
-  insertionAnchor = anchor;
-}
-function resetInsertionState() {
-  insertionParent = insertionAnchor = void 0;
 }
 
 const NODE_EXT_STYLES = "styles";
@@ -9175,14 +9302,14 @@ class DynamicFragment extends VaporFragment {
   // fixed by uts
   constructor(doc, anchorLabel) {
     super([]);
-    this.anchor = createComment(doc, anchorLabel || "");
+    this.anchor = doc.createComment(anchorLabel || "");
   }
   update(render, key = render) {
     if (key === this.current) {
       return;
     }
     this.current = key;
-    pauseTracking();
+    const prevSub = setActiveSub();
     const parent = this.anchor.parentNode;
     if (this.scope) {
       this.scope.stop();
@@ -9206,7 +9333,7 @@ class DynamicFragment extends VaporFragment {
       this.nodes = (this.scope || (this.scope = new EffectScope())).run(this.fallback) || [];
       parent && insert(this.nodes, parent, this.anchor);
     }
-    resetTracking();
+    setActiveSub(prevSub);
   }
 }
 function isFragment(val) {
@@ -9335,48 +9462,66 @@ function propGetter(rawProps, key) {
   return rawProps[key] && resolveSource(rawProps[key]);
 }
 
-function renderEffect(fn, noLifecycle = false) {
-  const instance = currentInstance;
-  const scope = getCurrentScope();
-  if (!!(process.env.NODE_ENV !== "production") && true && !scope && !isVaporComponent(instance)) {
-    warn("renderEffect called without active EffectScope or Vapor instance.");
+class RenderEffect extends ReactiveEffect {
+  constructor(render) {
+    super();
+    this.render = render;
+    const instance = currentInstance;
+    if (!!(process.env.NODE_ENV !== "production") && true && !this.subs && !isVaporComponent(instance)) {
+      warn("renderEffect called without active EffectScope or Vapor instance.");
+    }
+    const job = () => {
+      if (this.dirty) {
+        this.run();
+      }
+    };
+    this.updateJob = () => {
+      instance.isUpdating = false;
+      instance.u && invokeArrayFns(instance.u);
+    };
+    if (instance) {
+      if (!!(process.env.NODE_ENV !== "production")) {
+        this.onTrack = instance.rtc ? (e) => invokeArrayFns(instance.rtc, e) : void 0;
+        this.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
+      }
+      job.i = instance;
+    }
+    this.job = job;
+    this.i = instance;
   }
-  const hasUpdateHooks = instance && (instance.bu || instance.u);
-  const renderEffectFn = noLifecycle ? fn : () => {
+  fn() {
+    const instance = this.i;
+    const scope = this.subs ? this.subs.sub : void 0;
+    const hasUpdateHooks = instance && (instance.bu || instance.u);
     if (!!(process.env.NODE_ENV !== "production") && instance) {
       startMeasure(instance, `renderEffect`);
     }
-    const prev = currentInstance;
-    simpleSetCurrentInstance(instance);
-    if (scope) scope.on();
+    const prev = setCurrentInstance(instance, scope);
     if (hasUpdateHooks && instance.isMounted && !instance.isUpdating) {
       instance.isUpdating = true;
       instance.bu && invokeArrayFns(instance.bu);
-      fn();
-      queuePostFlushCb(() => {
-        instance.isUpdating = false;
-        instance.u && invokeArrayFns(instance.u);
-      });
+      this.render();
+      queuePostFlushCb(this.updateJob);
     } else {
-      fn();
+      this.render();
     }
-    if (scope) scope.off();
-    simpleSetCurrentInstance(prev, instance);
+    setCurrentInstance(...prev);
     if (!!(process.env.NODE_ENV !== "production") && instance) {
       startMeasure(instance, `renderEffect`);
     }
-  };
-  const effect = new ReactiveEffect(renderEffectFn);
-  const job = () => effect.dirty && effect.run();
-  if (instance) {
-    if (!!(process.env.NODE_ENV !== "production")) {
-      effect.onTrack = instance.rtc ? (e) => invokeArrayFns(instance.rtc, e) : void 0;
-      effect.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
-    }
-    job.i = instance;
-    job.id = instance.uid;
   }
-  effect.scheduler = () => queueJob(job);
+  notify() {
+    const flags = this.flags;
+    if (!(flags & 256)) {
+      queueJob(this.job, this.i ? this.i.uid : void 0);
+    }
+  }
+}
+function renderEffect(fn, noLifecycle = false) {
+  const effect = new RenderEffect(fn);
+  if (noLifecycle) {
+    effect.fn = fn;
+  }
   effect.run();
 }
 
@@ -9501,7 +9646,7 @@ function getAttrFromRawProps(rawProps, key) {
       source = dynamicSources[i];
       isDynamic = isFunction(source);
       source = isDynamic ? source() : source;
-      if (hasOwn(source, key)) {
+      if (source && hasOwn(source, key)) {
         const value = isDynamic ? source[key] : source[key]();
         if (merged) {
           merged.push(value);
@@ -9565,10 +9710,9 @@ function normalizePropsOptions(comp) {
   return comp.__propsOptions = [normalized, needCastKeys];
 }
 function resolveDefault(factory, instance) {
-  const prev = currentInstance;
-  simpleSetCurrentInstance(instance);
+  const prev = setCurrentInstance(instance);
   const res = factory.call(null, instance.props);
-  simpleSetCurrentInstance(prev, instance);
+  setCurrentInstance(...prev);
   return res;
 }
 function hasFallthroughAttrs(comp, rawProps) {
@@ -10108,12 +10252,11 @@ function hmrRerender(instance) {
   const parent = normalized[0].parentNode;
   const anchor = normalized[normalized.length - 1].nextSibling;
   remove(instance.block, parent);
-  const prev = currentInstance;
-  simpleSetCurrentInstance(instance);
+  const prev = setCurrentInstance(instance);
   pushWarningContext(instance);
   devRender(instance);
   popWarningContext();
-  simpleSetCurrentInstance(prev, instance);
+  setCurrentInstance(...prev);
   insert(instance.block, parent, anchor);
 }
 function hmrReload(instance, newComp) {
@@ -10121,15 +10264,14 @@ function hmrReload(instance, newComp) {
   const parent = normalized[0].parentNode;
   const anchor = normalized[normalized.length - 1].nextSibling;
   unmountComponent(instance, parent);
-  const prev = currentInstance;
-  simpleSetCurrentInstance(instance.parent);
+  const prev = setCurrentInstance(instance.parent);
   const newInstance = createComponent(
     newComp,
     instance.rawProps,
     instance.rawSlots,
     instance.isSingleRoot
   );
-  simpleSetCurrentInstance(prev, instance.parent);
+  setCurrentInstance(...prev);
   mountComponent(newInstance, parent, anchor);
 }
 
@@ -10166,15 +10308,20 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
     rawSlots,
     appContext
   );
+  if (!!(process.env.NODE_ENV !== "production") && component.__hmrId) {
+    registerHMR(instance);
+    instance.isSingleRoot = isSingleRoot;
+    instance.hmrRerender = hmrRerender.bind(null, instance);
+    instance.hmrReload = hmrReload.bind(null, instance);
+  }
   if (!!(process.env.NODE_ENV !== "production")) {
     pushWarningContext(instance);
     startMeasure(instance, `init`);
     instance.propsOptions = normalizePropsOptions(component);
     instance.emitsOptions = normalizeEmitsOptions(component);
   }
-  const prev = currentInstance;
-  simpleSetCurrentInstance(instance);
-  pauseTracking();
+  const prevInstance = setCurrentInstance(instance);
+  const prevSub = setActiveSub();
   if (!!(process.env.NODE_ENV !== "production")) {
     setupPropsValidation(instance);
   }
@@ -10209,12 +10356,6 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
       instance.devtoolsRawSetupState = setupResult;
       instance.setupState = proxyRefs(setupResult);
       devRender(instance);
-      if (component.__hmrId) {
-        registerHMR(instance);
-        instance.isSingleRoot = isSingleRoot;
-        instance.hmrRerender = hmrRerender.bind(null, instance);
-        instance.hmrReload = hmrReload.bind(null, instance);
-      }
     }
   } else {
     if (!setupFn && component.render) {
@@ -10237,8 +10378,8 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
       });
     }
   }
-  resetTracking();
-  simpleSetCurrentInstance(prev, instance);
+  setActiveSub(prevSub);
+  setCurrentInstance(...prevInstance);
   if (!!(process.env.NODE_ENV !== "production")) {
     popWarningContext();
     endMeasure(instance, "init");
@@ -10251,7 +10392,7 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
 }
 let isApplyingFallthroughProps = false;
 function devRender(instance) {
-  instance.block = callWithErrorHandling(
+  instance.block = (instance.type.render ? callWithErrorHandling(
     instance.type.render,
     instance,
     1,
@@ -10262,7 +10403,20 @@ function devRender(instance) {
       instance.attrs,
       instance.slots
     ]
-  ) || [];
+  ) : callWithErrorHandling(
+    isFunction(instance.type) ? instance.type : instance.type.setup,
+    instance,
+    0,
+    [
+      instance.props,
+      {
+        slots: instance.slots,
+        attrs: instance.attrs,
+        emit: instance.emit,
+        expose: instance.expose
+      }
+    ]
+  )) || [];
 }
 const emptyContext = {
   app: null,
@@ -10443,6 +10597,7 @@ function postPrepareApp(app) {
       }
     );
   }
+  app.vapor = true;
 }
 const createVaporApp$1 = (comp, props) => {
   prepareApp();
@@ -10468,7 +10623,7 @@ function defineVaporComponent(comp, extraOptions) {
 const vaporInteropImpl = {
   mount(vnode, container, anchor, parentComponent) {
     const selfAnchor = vnode.el = vnode.anchor = // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
-    createComment(container.page.document, "");
+    container.page.document.createComment("");
     container.insertBefore(selfAnchor, anchor);
     const prev = currentInstance;
     simpleSetCurrentInstance(parentComponent);
@@ -10514,7 +10669,7 @@ const vaporInteropImpl = {
   slot(n1, n2, container, anchor) {
     if (!n1) {
       const selfAnchor = n2.el = n2.anchor = // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
-      createComment(container.page.document, "");
+      container.page.document.createComment("");
       insert(selfAnchor, container, anchor);
       const { slot, fallback } = n2.vs;
       const propsRef = n2.vs.ref = shallowRef(n2.props);
@@ -10544,11 +10699,11 @@ const vaporSlotPropsProxyHandler = {
 };
 const vaporSlotsProxyHandler = {
   get(target, key) {
-    if (key === "_vapor") {
-      return target;
-    } else {
-      return target[key];
+    const slot = target[key];
+    if (isFunction(slot)) {
+      slot.__vapor = true;
     }
+    return slot;
   }
 };
 function createVDOMComponent(internals, component, rawProps, rawSlots) {
@@ -10719,11 +10874,13 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
   let oldBlocks = [];
   let newBlocks;
   let parent;
-  const parentAnchor = createComment(doc, "for");
+  let currentKey;
+  const parentAnchor = doc.createComment("for");
   const frag = new VaporFragment(oldBlocks);
   const instance = currentInstance;
-  const canUseFastRemove = flags & 1;
-  const isComponent = flags & 2;
+  const canUseFastRemove = !!(flags & 1);
+  const isComponent = !!(flags & 2);
+  const selectors = [];
   if (!!(process.env.NODE_ENV !== "production") && !instance) {
     warn("createFor() can only be used inside setup()");
   }
@@ -10732,7 +10889,7 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
     const newLength = source.values.length;
     const oldLength = oldBlocks.length;
     newBlocks = new Array(newLength);
-    pauseTracking();
+    const prevSub = setActiveSub();
     if (!isMounted) {
       isMounted = true;
       for (let i = 0; i < newLength; i++) {
@@ -10745,9 +10902,12 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
           mount(source, i);
         }
       } else if (!newLength) {
+        for (const selector of selectors) {
+          selector.cleanup();
+        }
         const doRemove = !canUseFastRemove;
         for (let i = 0; i < oldLength; i++) {
-          unmount(oldBlocks[i], doRemove);
+          unmount(oldBlocks[i], doRemove, false);
         }
         if (canUseFastRemove) {
           parent.textContent = "";
@@ -10765,88 +10925,140 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
           unmount(oldBlocks[i]);
         }
       } else {
-        let i = 0;
-        let e1 = oldLength - 1;
-        let e2 = newLength - 1;
-        while (i <= e1 && i <= e2) {
-          if (tryPatchIndex(source, i)) {
-            i++;
-          } else {
-            break;
+        const sharedBlockCount = Math.min(oldLength, newLength);
+        const previousKeyIndexPairs = new Array(oldLength);
+        const queuedBlocks = new Array(newLength);
+        let anchorFallback = parentAnchor;
+        let endOffset = 0;
+        let startOffset = 0;
+        let queuedBlocksInsertIndex = 0;
+        let previousKeyIndexInsertIndex = 0;
+        while (endOffset < sharedBlockCount) {
+          const currentIndex = newLength - endOffset - 1;
+          const currentItem = getItem(source, currentIndex);
+          const currentKey2 = getKey(...currentItem);
+          const existingBlock = oldBlocks[oldLength - endOffset - 1];
+          if (existingBlock.key === currentKey2) {
+            update(existingBlock, ...currentItem);
+            newBlocks[currentIndex] = existingBlock;
+            endOffset++;
+            continue;
           }
+          if (endOffset !== 0) {
+            anchorFallback = normalizeAnchor(newBlocks[currentIndex + 1].nodes);
+          }
+          break;
         }
-        while (i <= e1 && i <= e2) {
-          if (tryPatchIndex(source, i)) {
-            e1--;
-            e2--;
+        while (startOffset < sharedBlockCount - endOffset) {
+          const currentItem = getItem(source, startOffset);
+          const currentKey2 = getKey(...currentItem);
+          const previousBlock = oldBlocks[startOffset];
+          const previousKey = previousBlock.key;
+          if (previousKey === currentKey2) {
+            update(newBlocks[startOffset] = previousBlock, currentItem[0]);
           } else {
-            break;
+            queuedBlocks[queuedBlocksInsertIndex++] = [
+              startOffset,
+              currentItem,
+              currentKey2
+            ];
+            previousKeyIndexPairs[previousKeyIndexInsertIndex++] = [
+              previousKey,
+              startOffset
+            ];
           }
+          startOffset++;
         }
-        if (i > e1) {
-          if (i <= e2) {
-            const nextPos = e2 + 1;
-            const anchor = nextPos < newLength ? normalizeAnchor(newBlocks[nextPos].nodes) : parentAnchor;
-            while (i <= e2) {
-              mount(source, i, anchor);
-              i++;
-            }
-          }
-        } else if (i > e2) {
-          while (i <= e1) {
-            unmount(oldBlocks[i]);
-            i++;
+        for (let i = startOffset; i < oldLength - endOffset; i++) {
+          previousKeyIndexPairs[previousKeyIndexInsertIndex++] = [
+            oldBlocks[i].key,
+            i
+          ];
+        }
+        const preparationBlockCount = Math.min(
+          newLength - endOffset,
+          sharedBlockCount
+        );
+        for (let i = startOffset; i < preparationBlockCount; i++) {
+          const blockItem = getItem(source, i);
+          const blockKey = getKey(...blockItem);
+          queuedBlocks[queuedBlocksInsertIndex++] = [i, blockItem, blockKey];
+        }
+        if (!queuedBlocksInsertIndex && !previousKeyIndexInsertIndex) {
+          for (let i = preparationBlockCount; i < newLength - endOffset; i++) {
+            const blockItem = getItem(source, i);
+            const blockKey = getKey(...blockItem);
+            mount(source, i, anchorFallback, blockItem, blockKey);
           }
         } else {
-          const s1 = i;
-          const s2 = i;
-          const keyToNewIndexMap = /* @__PURE__ */ new Map();
-          for (i = s2; i <= e2; i++) {
-            keyToNewIndexMap.set(getKey(...getItem(source, i)), i);
-          }
-          let j;
-          let patched = 0;
-          const toBePatched = e2 - s2 + 1;
-          let moved = false;
-          let maxNewIndexSoFar = 0;
-          const newIndexToOldIndexMap = new Array(toBePatched).fill(0);
-          for (i = s1; i <= e1; i++) {
-            const prevBlock = oldBlocks[i];
-            if (patched >= toBePatched) {
-              unmount(prevBlock);
+          queuedBlocks.length = queuedBlocksInsertIndex;
+          previousKeyIndexPairs.length = previousKeyIndexInsertIndex;
+          const previousKeyIndexMap = new Map(previousKeyIndexPairs);
+          const blocksToMount = [];
+          const relocateOrMountBlock = (blockIndex, blockItem, blockKey, anchorOffset) => {
+            const previousIndex = previousKeyIndexMap.get(blockKey);
+            if (previousIndex !== void 0) {
+              const reusedBlock = newBlocks[blockIndex] = oldBlocks[previousIndex];
+              update(reusedBlock, ...blockItem);
+              insert(
+                reusedBlock,
+                parent,
+                anchorOffset === -1 ? anchorFallback : normalizeAnchor(newBlocks[anchorOffset].nodes)
+              );
+              previousKeyIndexMap.delete(blockKey);
             } else {
-              const newIndex = keyToNewIndexMap.get(prevBlock.key);
-              if (newIndex == null) {
-                unmount(prevBlock);
-              } else {
-                newIndexToOldIndexMap[newIndex - s2] = i + 1;
-                if (newIndex >= maxNewIndexSoFar) {
-                  maxNewIndexSoFar = newIndex;
-                } else {
-                  moved = true;
-                }
-                update(
-                  newBlocks[newIndex] = prevBlock,
-                  ...getItem(source, newIndex)
-                );
-                patched++;
-              }
+              blocksToMount.push([
+                blockIndex,
+                blockItem,
+                blockKey,
+                anchorOffset
+              ]);
+            }
+          };
+          for (let i = queuedBlocks.length - 1; i >= 0; i--) {
+            const [blockIndex, blockItem, blockKey] = queuedBlocks[i];
+            relocateOrMountBlock(
+              blockIndex,
+              blockItem,
+              blockKey,
+              blockIndex < preparationBlockCount - 1 ? blockIndex + 1 : -1
+            );
+          }
+          for (let i = preparationBlockCount; i < newLength - endOffset; i++) {
+            const blockItem = getItem(source, i);
+            const blockKey = getKey(...blockItem);
+            relocateOrMountBlock(i, blockItem, blockKey, -1);
+          }
+          const useFastRemove = blocksToMount.length === newLength;
+          for (const leftoverIndex of previousKeyIndexMap.values()) {
+            unmount(
+              oldBlocks[leftoverIndex],
+              !(useFastRemove && canUseFastRemove),
+              !useFastRemove
+            );
+          }
+          if (useFastRemove) {
+            for (const selector of selectors) {
+              selector.cleanup();
+            }
+            if (canUseFastRemove) {
+              parent.textContent = "";
+              parent.appendChild(parentAnchor);
             }
           }
-          const increasingNewIndexSequence = moved ? getSequence(newIndexToOldIndexMap) : [];
-          j = increasingNewIndexSequence.length - 1;
-          for (i = toBePatched - 1; i >= 0; i--) {
-            const nextIndex = s2 + i;
-            const anchor = nextIndex + 1 < newLength ? normalizeAnchor(newBlocks[nextIndex + 1].nodes) : parentAnchor;
-            if (newIndexToOldIndexMap[i] === 0) {
-              mount(source, nextIndex, anchor);
-            } else if (moved) {
-              if (j < 0 || i !== increasingNewIndexSequence[j]) {
-                insert(newBlocks[nextIndex].nodes, parent, anchor);
-              } else {
-                j--;
-              }
-            }
+          for (const [
+            blockIndex,
+            blockItem,
+            blockKey,
+            anchorOffset
+          ] of blocksToMount) {
+            mount(
+              source,
+              blockIndex,
+              anchorOffset === -1 ? anchorFallback : normalizeAnchor(newBlocks[anchorOffset].nodes),
+              blockItem,
+              blockKey
+            );
           }
         }
       }
@@ -10855,15 +11067,15 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
     if (parentAnchor) {
       frag.nodes.push(parentAnchor);
     }
-    resetTracking();
+    setActiveSub(prevSub);
   };
   const needKey = renderItem.length > 1;
   const needIndex = renderItem.length > 2;
-  const mount = (source, idx, anchor = parentAnchor) => {
-    const [item, key, index] = getItem(source, idx);
+  const mount = (source, idx, anchor = parentAnchor, [item, key, index] = getItem(source, idx), key2 = getKey && getKey(item, key, index)) => {
     const itemRef = shallowRef(item);
     const keyRef = needKey ? shallowRef(key) : void 0;
     const indexRef = needIndex ? shallowRef(index) : void 0;
+    currentKey = key2;
     let nodes;
     let scope;
     if (isComponent) {
@@ -10880,18 +11092,10 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
       itemRef,
       keyRef,
       indexRef,
-      getKey && getKey(item, key, index)
+      key2
     );
     if (parent) insert(block.nodes, parent, anchor);
     return block;
-  };
-  const tryPatchIndex = (source, idx) => {
-    const block = oldBlocks[idx];
-    const [item, key, index] = getItem(source, idx);
-    if (block.key === getKey(item, key, index)) {
-      update(newBlocks[idx] = block, item);
-      return true;
-    }
   };
   const update = ({ itemRef, keyRef, indexRef }, newItem, newKey, newIndex) => {
     if (newItem !== itemRef.value) {
@@ -10904,9 +11108,18 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
       indexRef.value = newIndex;
     }
   };
-  const unmount = ({ nodes, scope }, doRemove = true) => {
-    scope && scope.stop();
-    doRemove && remove(nodes, parent);
+  const unmount = (block, doRemove = true, doDeregister = true) => {
+    if (!isComponent) {
+      block.scope.stop();
+    }
+    if (doRemove) {
+      remove(block.nodes, parent);
+    }
+    if (doDeregister) {
+      for (const selector of selectors) {
+        selector.deregister(block.key);
+      }
+    }
   };
   if (flags & 4) {
     renderList();
@@ -10916,7 +11129,51 @@ const createFor = (doc, src, renderItem, getKey, flags = 0) => {
   if (_insertionParent) {
     insert(frag, _insertionParent, _insertionAnchor);
   }
+  frag.useSelector = useSelector;
   return frag;
+  function useSelector(source) {
+    let operMap = /* @__PURE__ */ new Map();
+    let activeKey = source();
+    let activeOpers;
+    watch$1(source, (newValue) => {
+      if (activeOpers !== void 0) {
+        for (const oper of activeOpers) {
+          oper();
+        }
+      }
+      activeOpers = operMap.get(newValue);
+      if (activeOpers !== void 0) {
+        for (const oper of activeOpers) {
+          oper();
+        }
+      }
+    });
+    selectors.push({ deregister, cleanup });
+    return register;
+    function cleanup() {
+      operMap = /* @__PURE__ */ new Map();
+      activeOpers = void 0;
+    }
+    function register(oper) {
+      oper();
+      let opers = operMap.get(currentKey);
+      if (opers !== void 0) {
+        opers.push(oper);
+      } else {
+        opers = [oper];
+        operMap.set(currentKey, opers);
+        if (currentKey === activeKey) {
+          activeOpers = opers;
+        }
+      }
+    }
+    function deregister(key) {
+      operMap.delete(key);
+      if (key === activeKey) {
+        activeOpers = void 0;
+      }
+    }
+  }
 };
 function createForSlots(rawSource, getSlot) {
   const source = normalizeSource(rawSource);
@@ -11055,8 +11312,7 @@ function setRef(instance, el, ref, oldRef, refFor = false) {
           warn("Invalid template ref type:", ref, `(${typeof ref})`);
         }
       };
-      doSet.id = -1;
-      queuePostFlushCb(doSet);
+      queuePostFlushCb(doSet, -1);
       onScopeDispose(() => {
         queuePostFlushCb(() => {
           if (isArray(existing)) {
@@ -11698,4 +11954,4 @@ function unmountPage(pageInstance) {
   }
 }
 
-export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, Static, Suspense, Teleport, Text, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createMountPage, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, registerHMR, registerRuntimeCompiler, remove, render, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, toHandlers, transformVNodeArgs, unmountPage, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };
+export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, Static, Suspense, Teleport, Text, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createMountPage, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, registerHMR, registerRuntimeCompiler, remove, render, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setCurrentInstance, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, toHandlers, transformVNodeArgs, unmountPage, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };

@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.5.14
+* @vue/compiler-dom v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -477,6 +477,9 @@ const ignoreSideEffectTags = (node, context) => {
 };
 
 function isValidHTMLNesting(parent, child) {
+  if (parent === "template") {
+    return true;
+  }
   if (parent in onlyValidChildren) {
     return onlyValidChildren[parent].has(child);
   }

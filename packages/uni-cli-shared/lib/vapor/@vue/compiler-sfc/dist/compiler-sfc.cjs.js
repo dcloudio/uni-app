@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.5.14
+* @vue/compiler-sfc v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -129,7 +129,14 @@ const CSS_VARS_HELPER = `useCssVars`;
 function genCssVarsFromList(vars, id, isProd, isSSR = false) {
   return `{
   ${vars.map(
-    (key) => `"${isSSR ? `--` : ``}${genVarName(id, key, isProd, isSSR)}": (${key})`
+    (key) => (
+      // The `:` prefix here is used in `ssrRenderStyle` to distinguish whether
+      // a custom property comes from `ssrCssVars`. If it does, we need to reset
+      // its value to `initial` on the component instance to avoid unintentionally
+      // inheriting the same property value from a different instance of the same
+      // component in the outer scope.
+      `"${isSSR ? `:--` : ``}${genVarName(id, key, isProd, isSSR)}": (${key})`
+    )
   ).join(",\n  ")}
 }`;
 }
@@ -18957,25 +18964,39 @@ function resolveArrayElementType(ctx, node, scope) {
     scope
   );
 }
-function resolveStringType(ctx, node, scope) {
+function resolveStringType(ctx, node, scope, typeParameters) {
   switch (node.type) {
     case "StringLiteral":
       return [node.value];
     case "TSLiteralType":
-      return resolveStringType(ctx, node.literal, scope);
+      return resolveStringType(ctx, node.literal, scope, typeParameters);
     case "TSUnionType":
-      return node.types.map((t) => resolveStringType(ctx, t, scope)).flat();
+      return node.types.map((t) => resolveStringType(ctx, t, scope, typeParameters)).flat();
     case "TemplateLiteral": {
       return resolveTemplateKeys(ctx, node, scope);
     }
     case "TSTypeReference": {
       const resolved = resolveTypeReference(ctx, node, scope);
       if (resolved) {
-        return resolveStringType(ctx, resolved, scope);
+        return resolveStringType(ctx, resolved, scope, typeParameters);
       }
       if (node.typeName.type === "Identifier") {
-        const getParam = (index = 0) => resolveStringType(ctx, node.typeParameters.params[index], scope);
-        switch (node.typeName.name) {
+        const name = node.typeName.name;
+        if (typeParameters && typeParameters[name]) {
+          return resolveStringType(
+            ctx,
+            typeParameters[name],
+            scope,
+            typeParameters
+          );
+        }
+        const getParam = (index = 0) => resolveStringType(
+          ctx,
+          node.typeParameters.params[index],
+          scope,
+          typeParameters
+        );
+        switch (name) {
           case "Extract":
             return getParam(1);
           case "Exclude": {
@@ -19062,7 +19083,8 @@ function resolveBuiltin(ctx, node, name, scope, typeParameters) {
       const picked = resolveStringType(
         ctx,
         node.typeParameters.params[1],
-        scope
+        scope,
+        typeParameters
       );
       const res2 = { props: {}, calls: t.calls };
       for (const key of picked) {
@@ -19074,7 +19096,8 @@ function resolveBuiltin(ctx, node, name, scope, typeParameters) {
       const omitted = resolveStringType(
         ctx,
         node.typeParameters.params[1],
-        scope
+        scope,
+        typeParameters
       );
       const res = { props: {}, calls: t.calls };
       for (const key in t.props) {
@@ -19199,13 +19222,13 @@ function resolveFS(ctx) {
   }
   return ctx.fs = {
     fileExists(file) {
-      if (file.endsWith(".vue.ts")) {
+      if (file.endsWith(".vue.ts") && !file.endsWith(".d.vue.ts")) {
         file = file.replace(/\.ts$/, "");
       }
       return fs.fileExists(file);
     },
     readFile(file) {
-      if (file.endsWith(".vue.ts")) {
+      if (file.endsWith(".vue.ts") && !file.endsWith(".d.vue.ts")) {
         file = file.replace(/\.ts$/, "");
       }
       return fs.readFile(file);
@@ -19338,7 +19361,7 @@ function resolveWithTS(containingFile, source, ts2, fs) {
   );
   if (res.resolvedModule) {
     let filename = res.resolvedModule.resolvedFileName;
-    if (filename.endsWith(".vue.ts")) {
+    if (filename.endsWith(".vue.ts") && !filename.endsWith(".d.vue.ts")) {
       filename = filename.replace(/\.ts$/, "");
     }
     return fs.realpath ? fs.realpath(filename) : filename;
@@ -19382,13 +19405,13 @@ function fileToScope(ctx, filename, asGlobal = false) {
   }
   const fs = resolveFS(ctx);
   const source = fs.readFile(filename) || "";
-  const body = parseFile(filename, source, ctx.options.babelParserPlugins);
+  const body = parseFile(filename, source, fs, ctx.options.babelParserPlugins);
   const scope = new TypeScope(filename, source, 0, recordImports(body));
   recordTypes(ctx, body, scope, asGlobal);
   fileToScopeCache.set(filename, scope);
   return scope;
 }
-function parseFile(filename, content, parserPlugins) {
+function parseFile(filename, content, fs, parserPlugins) {
   const ext = path$1.extname(filename);
   if (ext === ".uts" || ext === ".ts" || ext === ".mts" || ext === ".tsx" || ext === ".mtsx") {
     return parser$1.parse(content, {
@@ -19399,7 +19422,17 @@ function parseFile(filename, content, parserPlugins) {
       ),
       sourceType: "module"
     }).program.body;
-  } else if (ext === ".uvue" || ext === ".nvue" || ext === ".vue") {
+  }
+  const isUnknownTypeSource = !/\.[cm]?[tj]sx?$/.test(filename);
+  const arbitraryTypeSource = `${filename.slice(0, -ext.length)}.d${ext}.ts`;
+  const hasArbitraryTypeDeclaration = isUnknownTypeSource && fs.fileExists(arbitraryTypeSource);
+  if (hasArbitraryTypeDeclaration) {
+    return parser$1.parse(fs.readFile(arbitraryTypeSource), {
+      plugins: resolveParserPlugins("ts", parserPlugins, true),
+      sourceType: "module"
+    }).program.body;
+  }
+  if (ext === ".uvue" || ext === ".nvue" || ext === ".vue") {
     const {
       descriptor: { script, scriptSetup }
     } = parse$1(content);
@@ -19720,6 +19753,9 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
       case "TSTypeReference": {
         const resolved = resolveTypeReference(ctx, node, scope);
         if (resolved) {
+          if (resolved.type === "TSTypeAliasDeclaration" && resolved.typeAnnotation.type === "TSFunctionType") {
+            return ["Function"];
+          }
           return inferRuntimeType(ctx, resolved, resolved._ownerScope, isKeyOf);
         }
         if (node.typeName.type === "Identifier") {
@@ -21252,6 +21288,7 @@ let __temp${any}, __restore${any}
   if (destructureElements.length) {
     args += `, { ${destructureElements.join(", ")} }`;
   }
+  let templateMap;
   let returned;
   if (!options.inlineTemplate || !sfc.template && ctx.hasDefaultExportRender) {
     const allBindings = {
@@ -21280,7 +21317,7 @@ let __temp${any}, __restore${any}
       if (ssr) {
         hasInlinedSsrRenderFn = true;
       }
-      const { code, preamble, tips, errors, helpers } = compileTemplate({
+      const { code, preamble, tips, errors, helpers, map: map2 } = compileTemplate({
         filename,
         ast: sfc.template.ast,
         source: sfc.template.content,
@@ -21298,6 +21335,7 @@ let __temp${any}, __restore${any}
           bindingMetadata: ctx.bindingMetadata
         }
       });
+      templateMap = map2;
       if (tips.length) {
         tips.forEach(warnOnce);
       }
@@ -21422,16 +21460,23 @@ ${exposeCall}`
 `
     );
   }
+  const content = ctx.s.toString();
+  let map = options.sourceMap !== false ? ctx.s.generateMap({
+    source: filename,
+    hires: true,
+    includeContent: true
+  }) : void 0;
+  if (templateMap && map) {
+    const offset = content.indexOf(returned);
+    const templateLineOffset = content.slice(0, offset).split(/\r?\n/).length - 1;
+    map = mergeSourceMaps(map, templateMap, templateLineOffset);
+  }
   return {
     ...scriptSetup,
     bindings: ctx.bindingMetadata,
     imports: ctx.userImports,
-    content: ctx.s.toString(),
-    map: options.sourceMap !== false ? ctx.s.generateMap({
-      source: filename,
-      hires: true,
-      includeContent: true
-    }) : void 0,
+    content,
+    map,
     scriptAst: scriptAst == null ? void 0 : scriptAst.body,
     scriptSetupAst: scriptSetupAst == null ? void 0 : scriptSetupAst.body,
     deps: ctx.deps ? [...ctx.deps] : void 0
@@ -21567,8 +21612,41 @@ function canNeverBeRef(node, userReactiveImport) {
       return false;
   }
 }
+function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
+  const generator = new sourceMapJs.SourceMapGenerator();
+  const addMapping = (map, lineOffset = 0) => {
+    const consumer = new sourceMapJs.SourceMapConsumer(map);
+    consumer.sources.forEach((sourceFile) => {
+      generator._sources.add(sourceFile);
+      const sourceContent = consumer.sourceContentFor(sourceFile);
+      if (sourceContent != null) {
+        generator.setSourceContent(sourceFile, sourceContent);
+      }
+    });
+    consumer.eachMapping((m) => {
+      if (m.originalLine == null) return;
+      generator.addMapping({
+        generated: {
+          line: m.generatedLine + lineOffset,
+          column: m.generatedColumn
+        },
+        original: {
+          line: m.originalLine,
+          column: m.originalColumn
+        },
+        source: m.source,
+        name: m.name
+      });
+    });
+  };
+  addMapping(scriptMap);
+  addMapping(templateMap, templateLineOffset);
+  generator._sourceRoot = scriptMap.sourceRoot;
+  generator._file = scriptMap.file;
+  return generator.toJSON();
+}
 
-const version = "3.5.14";
+const version = "3.6.0-alpha.1";
 const parseCache = parseCache$1;
 const errorMessages = {
   ...CompilerDOM.errorMessages,

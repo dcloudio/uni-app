@@ -1,5 +1,5 @@
 /**
-* @vue/shared v3.5.14
+* @vue/shared v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -171,7 +171,7 @@ const PatchFlagNames = {
   [512]: `NEED_PATCH`,
   [1024]: `DYNAMIC_SLOTS`,
   [2048]: `DEV_ROOT_FRAGMENT`,
-  [-1]: `HOISTED`,
+  [-1]: `CACHED`,
   [-2]: `BAIL`
 };
 
@@ -599,6 +599,16 @@ function getSequence(arr) {
   return result;
 }
 
+function normalizeCssVarValue(value) {
+  if (value == null) {
+    return "initial";
+  }
+  if (typeof value === "string") {
+    return value === "" ? " " : value;
+  }
+  return String(value);
+}
+
 exports.EMPTY_ARR = EMPTY_ARR;
 exports.EMPTY_OBJ = EMPTY_OBJ;
 exports.NO = NO;
@@ -663,6 +673,7 @@ exports.looseIndexOf = looseIndexOf;
 exports.looseToNumber = looseToNumber;
 exports.makeMap = makeMap;
 exports.normalizeClass = normalizeClass;
+exports.normalizeCssVarValue = normalizeCssVarValue;
 exports.normalizeProps = normalizeProps;
 exports.normalizeStyle = normalizeStyle;
 exports.objectToString = objectToString;

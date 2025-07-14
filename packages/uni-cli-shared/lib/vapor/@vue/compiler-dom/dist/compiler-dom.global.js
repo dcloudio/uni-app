@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.5.14
+* @vue/compiler-dom v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -67,7 +67,7 @@ var VueCompilerDOM = (function (exports) {
     [512]: `NEED_PATCH`,
     [1024]: `DYNAMIC_SLOTS`,
     [2048]: `DEV_ROOT_FRAGMENT`,
-    [-1]: `HOISTED`,
+    [-1]: `CACHED`,
     [-2]: `BAIL`
   };
 
@@ -1159,7 +1159,7 @@ var VueCompilerDOM = (function (exports) {
       this.buffer = input;
       while (this.index < this.buffer.length) {
         const c = this.buffer.charCodeAt(this.index);
-        if (c === 10) {
+        if (c === 10 && this.state !== 33) {
           this.newlines.push(this.index);
         }
         switch (this.state) {
@@ -2687,7 +2687,7 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
     return c > 64 && c < 91;
   }
   const windowsNewlineRE = /\r\n/g;
-  function condenseWhitespace(nodes, tag) {
+  function condenseWhitespace(nodes) {
     const shouldCondense = currentOptions.whitespace !== "preserve";
     let removedWhitespace = false;
     for (let i = 0; i < nodes.length; i++) {
@@ -2851,12 +2851,12 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
       context,
       // Root node is unfortunately non-hoistable due to potential parent
       // fallthrough attributes.
-      isSingleElementRoot(root, root.children[0])
+      !!getSingleElementRoot(root)
     );
   }
-  function isSingleElementRoot(root, child) {
-    const { children } = root;
-    return children.length === 1 && child.type === 1 && !isSlotOutlet(child);
+  function getSingleElementRoot(root) {
+    const children = root.children.filter((x) => x.type !== 3);
+    return children.length === 1 && children[0].type === 1 && !isSlotOutlet(children[0]) ? children[0] : null;
   }
   function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
     const { children } = node;
@@ -3325,15 +3325,15 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
     const { helper } = context;
     const { children } = root;
     if (children.length === 1) {
-      const child = children[0];
-      if (isSingleElementRoot(root, child) && child.codegenNode) {
-        const codegenNode = child.codegenNode;
+      const singleElementRootChild = getSingleElementRoot(root);
+      if (singleElementRootChild && singleElementRootChild.codegenNode) {
+        const codegenNode = singleElementRootChild.codegenNode;
         if (codegenNode.type === 13) {
           convertToBlock(codegenNode, context);
         }
         root.codegenNode = codegenNode;
       } else {
-        root.codegenNode = child;
+        root.codegenNode = children[0];
       }
     } else if (children.length > 1) {
       let patchFlag = 64;
@@ -4728,7 +4728,7 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
         let prev;
         while (j--) {
           prev = children[j];
-          if (prev.type !== 3) {
+          if (prev.type !== 3 && isNonWhitespaceContent(prev)) {
             break;
           }
         }
@@ -5162,9 +5162,8 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
           hasDynamicKeys = true;
           if (exp) {
             if (isVBind) {
-              pushRefVForMarker();
-              pushMergeArg();
               {
+                pushMergeArg();
                 {
                   const hasOverridableKeys = mergeArgs.some((arg2) => {
                     if (arg2.type === 15) {
@@ -5194,6 +5193,8 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
                   continue;
                 }
               }
+              pushRefVForMarker();
+              pushMergeArg();
               mergeArgs.push(exp);
             } else {
               pushMergeArg({
@@ -6468,6 +6469,9 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
   };
 
   function isValidHTMLNesting(parent, child) {
+    if (parent === "template") {
+      return true;
+    }
     if (parent in onlyValidChildren) {
       return onlyValidChildren[parent].has(child);
     }

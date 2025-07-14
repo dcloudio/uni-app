@@ -1,5 +1,5 @@
 /**
-* @vue/runtime-dom v3.5.14
+* @vue/runtime-dom v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -798,13 +798,10 @@ class VueElement extends BaseClass {
         this._root = this;
       }
     }
-    if (!this._def.__asyncLoader) {
-      this._resolveProps(this._def);
-    }
   }
   connectedCallback() {
     if (!this.isConnected) return;
-    if (!this.shadowRoot) {
+    if (!this.shadowRoot && !this._resolved) {
       this._parseSlots();
     }
     this._connected = true;
@@ -817,8 +814,7 @@ class VueElement extends BaseClass {
     }
     if (!this._instance) {
       if (this._resolved) {
-        this._setParent();
-        this._update();
+        this._mount(this._def);
       } else {
         if (parent && parent._pendingResolve) {
           this._pendingResolve = parent._pendingResolve.then(() => {
@@ -834,7 +830,15 @@ class VueElement extends BaseClass {
   _setParent(parent = this._parent) {
     if (parent) {
       this._instance.parent = parent._instance;
-      this._instance.provides = parent._instance.provides;
+      this._inheritParentContext(parent);
+    }
+  }
+  _inheritParentContext(parent = this._parent) {
+    if (parent && this._app) {
+      Object.setPrototypeOf(
+        this._app._context.provides,
+        parent._instance.provides
+      );
     }
   }
   disconnectedCallback() {
@@ -884,9 +888,7 @@ class VueElement extends BaseClass {
         }
       }
       this._numberProps = numberProps;
-      if (isAsync) {
-        this._resolveProps(def);
-      }
+      this._resolveProps(def);
       if (this.shadowRoot) {
         this._applyStyles(styles);
       } else if (styles) {
@@ -898,9 +900,10 @@ class VueElement extends BaseClass {
     };
     const asyncDef = this._def.__asyncLoader;
     if (asyncDef) {
-      this._pendingResolve = asyncDef().then(
-        (def) => resolve(this._def = def, true)
-      );
+      this._pendingResolve = asyncDef().then((def) => {
+        def.configureApp = this._def.configureApp;
+        resolve(this._def = def, true);
+      });
     } else {
       resolve(this._def);
     }
@@ -910,6 +913,7 @@ class VueElement extends BaseClass {
       def.name = "VueElement";
     }
     this._app = this._createApp(def);
+    this._inheritParentContext();
     if (def.configureApp) {
       def.configureApp(this._app);
     }
@@ -994,7 +998,9 @@ class VueElement extends BaseClass {
     }
   }
   _update() {
-    render(this._createVNode(), this._root);
+    const vnode = this._createVNode();
+    if (this._app) vnode.appContext = this._app._context;
+    render(vnode, this._root);
   }
   _createVNode() {
     const baseProps = {};

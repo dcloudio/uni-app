@@ -1,5 +1,5 @@
 /**
-* @vue/server-renderer v3.5.14
+* @vue/server-renderer v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -423,143 +423,201 @@ function getSequence(arr) {
   return result;
 }
 
-var SubscriberFlags = /* @__PURE__ */ ((SubscriberFlags2) => {
-  SubscriberFlags2[SubscriberFlags2["Computed"] = 1] = "Computed";
-  SubscriberFlags2[SubscriberFlags2["Effect"] = 2] = "Effect";
-  SubscriberFlags2[SubscriberFlags2["Tracking"] = 4] = "Tracking";
-  SubscriberFlags2[SubscriberFlags2["Recursed"] = 16] = "Recursed";
-  SubscriberFlags2[SubscriberFlags2["Dirty"] = 32] = "Dirty";
-  SubscriberFlags2[SubscriberFlags2["PendingComputed"] = 64] = "PendingComputed";
-  SubscriberFlags2[SubscriberFlags2["Propagated"] = 96] = "Propagated";
-  return SubscriberFlags2;
-})(SubscriberFlags || {});
+function normalizeCssVarValue(value) {
+  if (value == null) {
+    return "initial";
+  }
+  if (typeof value === "string") {
+    return value === "" ? " " : value;
+  }
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    {
+      console.warn(
+        "[Vue warn] Invalid value used for CSS binding. Expected a string or a finite number but received:",
+        value
+      );
+    }
+  }
+  return String(value);
+}
+
+function warn$2(msg, ...args) {
+  console.warn(`[Vue warn] ${msg}`, ...args);
+}
+
+var ReactiveFlags = /* @__PURE__ */ ((ReactiveFlags2) => {
+  ReactiveFlags2[ReactiveFlags2["None"] = 0] = "None";
+  ReactiveFlags2[ReactiveFlags2["Mutable"] = 1] = "Mutable";
+  ReactiveFlags2[ReactiveFlags2["Watching"] = 2] = "Watching";
+  ReactiveFlags2[ReactiveFlags2["RecursedCheck"] = 4] = "RecursedCheck";
+  ReactiveFlags2[ReactiveFlags2["Recursed"] = 8] = "Recursed";
+  ReactiveFlags2[ReactiveFlags2["Dirty"] = 16] = "Dirty";
+  ReactiveFlags2[ReactiveFlags2["Pending"] = 32] = "Pending";
+  return ReactiveFlags2;
+})(ReactiveFlags || {});
 const notifyBuffer = [];
 let batchDepth = 0;
+let activeSub = void 0;
 let notifyIndex = 0;
 let notifyBufferLength = 0;
+function setActiveSub(sub) {
+  try {
+    return activeSub;
+  } finally {
+    activeSub = sub;
+  }
+}
 function startBatch() {
   ++batchDepth;
 }
 function endBatch() {
-  if (!--batchDepth) {
-    processEffectNotifications();
+  if (!--batchDepth && notifyBufferLength) {
+    flush();
   }
 }
 function link(dep, sub) {
-  const currentDep = sub.depsTail;
-  if (currentDep !== void 0 && currentDep.dep === dep) {
+  const prevDep = sub.depsTail;
+  if (prevDep !== void 0 && prevDep.dep === dep) {
     return;
   }
-  const nextDep = currentDep !== void 0 ? currentDep.nextDep : sub.deps;
-  if (nextDep !== void 0 && nextDep.dep === dep) {
-    sub.depsTail = nextDep;
-    return;
-  }
-  const depLastSub = dep.subsTail;
-  if (depLastSub !== void 0 && depLastSub.sub === sub && isValidLink(depLastSub, sub)) {
-    return;
-  }
-  return linkNewDep(dep, sub, nextDep, currentDep);
-}
-function propagate(current) {
-  let next = current.nextSub;
-  let branchs;
-  let branchDepth = 0;
-  let targetFlag = 32 /* Dirty */;
-  top: do {
-    const sub = current.sub;
-    const subFlags = sub.flags;
-    let shouldNotify = false;
-    if (!(subFlags & (4 /* Tracking */ | 16 /* Recursed */ | 96 /* Propagated */))) {
-      sub.flags = subFlags | targetFlag;
-      shouldNotify = true;
-    } else if (subFlags & 16 /* Recursed */ && !(subFlags & 4 /* Tracking */)) {
-      sub.flags = subFlags & -17 /* Recursed */ | targetFlag;
-      shouldNotify = true;
-    } else if (!(subFlags & 96 /* Propagated */) && isValidLink(current, sub)) {
-      sub.flags = subFlags | 16 /* Recursed */ | targetFlag;
-      shouldNotify = sub.subs !== void 0;
+  let nextDep = void 0;
+  const recursedCheck = sub.flags & 4 /* RecursedCheck */;
+  if (recursedCheck) {
+    nextDep = prevDep !== void 0 ? prevDep.nextDep : sub.deps;
+    if (nextDep !== void 0 && nextDep.dep === dep) {
+      sub.depsTail = nextDep;
+      return;
     }
-    if (shouldNotify) {
-      const subSubs = sub.subs;
-      if (subSubs !== void 0) {
-        current = subSubs;
-        if (subSubs.nextSub !== void 0) {
-          branchs = { target: next, linked: branchs };
-          ++branchDepth;
-          next = current.nextSub;
-        }
-        targetFlag = 64 /* PendingComputed */;
-        continue;
+  }
+  const prevSub = dep.subsTail;
+  if (prevSub !== void 0 && prevSub.sub === sub && (!recursedCheck || isValidLink(prevSub, sub))) {
+    return;
+  }
+  const newLink = sub.depsTail = dep.subsTail = {
+    dep,
+    sub,
+    prevDep,
+    nextDep,
+    prevSub,
+    nextSub: void 0
+  };
+  if (nextDep !== void 0) {
+    nextDep.prevDep = newLink;
+  }
+  if (prevDep !== void 0) {
+    prevDep.nextDep = newLink;
+  } else {
+    sub.deps = newLink;
+  }
+  if (prevSub !== void 0) {
+    prevSub.nextSub = newLink;
+  } else {
+    dep.subs = newLink;
+  }
+}
+function unlink(link2, sub = link2.sub) {
+  const dep = link2.dep;
+  const prevDep = link2.prevDep;
+  const nextDep = link2.nextDep;
+  const nextSub = link2.nextSub;
+  const prevSub = link2.prevSub;
+  if (nextDep !== void 0) {
+    nextDep.prevDep = prevDep;
+  } else {
+    sub.depsTail = prevDep;
+  }
+  if (prevDep !== void 0) {
+    prevDep.nextDep = nextDep;
+  } else {
+    sub.deps = nextDep;
+  }
+  if (nextSub !== void 0) {
+    nextSub.prevSub = prevSub;
+  } else {
+    dep.subsTail = prevSub;
+  }
+  if (prevSub !== void 0) {
+    prevSub.nextSub = nextSub;
+  } else if ((dep.subs = nextSub) === void 0) {
+    let toRemove = dep.deps;
+    if (toRemove !== void 0) {
+      do {
+        toRemove = unlink(toRemove, dep);
+      } while (toRemove !== void 0);
+      dep.flags |= 16 /* Dirty */;
+    }
+  }
+  return nextDep;
+}
+function propagate(link2) {
+  let next = link2.nextSub;
+  let stack;
+  top: do {
+    const sub = link2.sub;
+    let flags = sub.flags;
+    if (flags & (1 /* Mutable */ | 2 /* Watching */)) {
+      if (!(flags & (4 /* RecursedCheck */ | 8 /* Recursed */ | 16 /* Dirty */ | 32 /* Pending */))) {
+        sub.flags = flags | 32 /* Pending */;
+      } else if (!(flags & (4 /* RecursedCheck */ | 8 /* Recursed */))) {
+        flags = 0 /* None */;
+      } else if (!(flags & 4 /* RecursedCheck */)) {
+        sub.flags = flags & -9 /* Recursed */ | 32 /* Pending */;
+      } else if (!(flags & (16 /* Dirty */ | 32 /* Pending */)) && isValidLink(link2, sub)) {
+        sub.flags = flags | 8 /* Recursed */ | 32 /* Pending */;
+        flags &= 1 /* Mutable */;
+      } else {
+        flags = 0 /* None */;
       }
-      if (subFlags & 2 /* Effect */) {
+      if (flags & 2 /* Watching */) {
         notifyBuffer[notifyBufferLength++] = sub;
       }
-    } else if (!(subFlags & (4 /* Tracking */ | targetFlag))) {
-      sub.flags = subFlags | targetFlag;
-    } else if (!(subFlags & targetFlag) && subFlags & 96 /* Propagated */ && isValidLink(current, sub)) {
-      sub.flags = subFlags | targetFlag;
+      if (flags & 1 /* Mutable */) {
+        const subSubs = sub.subs;
+        if (subSubs !== void 0) {
+          link2 = subSubs;
+          if (subSubs.nextSub !== void 0) {
+            stack = { value: next, prev: stack };
+            next = link2.nextSub;
+          }
+          continue;
+        }
+      }
     }
-    if ((current = next) !== void 0) {
-      next = current.nextSub;
-      targetFlag = branchDepth ? 64 /* PendingComputed */ : 32 /* Dirty */;
+    if ((link2 = next) !== void 0) {
+      next = link2.nextSub;
       continue;
     }
-    while (branchDepth--) {
-      current = branchs.target;
-      branchs = branchs.linked;
-      if (current !== void 0) {
-        next = current.nextSub;
-        targetFlag = branchDepth ? 64 /* PendingComputed */ : 32 /* Dirty */;
+    while (stack !== void 0) {
+      link2 = stack.value;
+      stack = stack.prev;
+      if (link2 !== void 0) {
+        next = link2.nextSub;
         continue top;
       }
     }
     break;
   } while (true);
-  if (!batchDepth) {
-    processEffectNotifications();
-  }
 }
 function startTracking(sub) {
   sub.depsTail = void 0;
-  sub.flags = sub.flags & -113 | 4 /* Tracking */;
+  sub.flags = sub.flags & -57 | 4 /* RecursedCheck */;
+  return setActiveSub(sub);
 }
-function endTracking(sub) {
+function endTracking(sub, prevSub) {
+  if (activeSub !== sub) {
+    warn$2(
+      "Active effect was not restored correctly - this is likely a Vue internal bug."
+    );
+  }
+  activeSub = prevSub;
   const depsTail = sub.depsTail;
-  if (depsTail !== void 0) {
-    const nextDep = depsTail.nextDep;
-    if (nextDep !== void 0) {
-      clearTracking(nextDep);
-      depsTail.nextDep = void 0;
-    }
-  } else if (sub.deps !== void 0) {
-    clearTracking(sub.deps);
-    sub.deps = void 0;
+  let toRemove = depsTail !== void 0 ? depsTail.nextDep : sub.deps;
+  while (toRemove !== void 0) {
+    toRemove = unlink(toRemove, sub);
   }
-  sub.flags &= -5 /* Tracking */;
+  sub.flags &= -5 /* RecursedCheck */;
 }
-function updateDirtyFlag(sub, flags) {
-  if (checkDirty(sub.deps)) {
-    sub.flags = flags | 32 /* Dirty */;
-    return true;
-  } else {
-    sub.flags = flags & -65 /* PendingComputed */;
-    return false;
-  }
-}
-function processComputedUpdate(computed, flags) {
-  if (flags & 32 /* Dirty */ || checkDirty(computed.deps)) {
-    if (computed.update()) {
-      const subs = computed.subs;
-      if (subs !== void 0) {
-        shallowPropagate(subs);
-      }
-    }
-  } else {
-    computed.flags = flags & -65 /* PendingComputed */;
-  }
-}
-function processEffectNotifications() {
+function flush() {
   while (notifyIndex < notifyBufferLength) {
     const effect = notifyBuffer[notifyIndex];
     notifyBuffer[notifyIndex++] = void 0;
@@ -568,88 +626,60 @@ function processEffectNotifications() {
   notifyIndex = 0;
   notifyBufferLength = 0;
 }
-function linkNewDep(dep, sub, nextDep, depsTail) {
-  const newLink = {
-    dep,
-    sub,
-    nextDep,
-    prevSub: void 0,
-    nextSub: void 0
-  };
-  if (depsTail === void 0) {
-    sub.deps = newLink;
-  } else {
-    depsTail.nextDep = newLink;
-  }
-  if (dep.subs === void 0) {
-    dep.subs = newLink;
-  } else {
-    const oldTail = dep.subsTail;
-    newLink.prevSub = oldTail;
-    oldTail.nextSub = newLink;
-  }
-  sub.depsTail = newLink;
-  dep.subsTail = newLink;
-  return newLink;
-}
-function checkDirty(current) {
-  let prevLinks;
+function checkDirty(link2, sub) {
+  let stack;
   let checkDepth = 0;
-  let dirty;
   top: do {
-    dirty = false;
-    const dep = current.dep;
-    if (current.sub.flags & 32 /* Dirty */) {
+    const dep = link2.dep;
+    const depFlags = dep.flags;
+    let dirty = false;
+    if (sub.flags & 16 /* Dirty */) {
       dirty = true;
-    } else if ("flags" in dep) {
-      const depFlags = dep.flags;
-      if ((depFlags & (1 /* Computed */ | 32 /* Dirty */)) === (1 /* Computed */ | 32 /* Dirty */)) {
-        if (dep.update()) {
-          const subs = dep.subs;
-          if (subs.nextSub !== void 0) {
-            shallowPropagate(subs);
-          }
-          dirty = true;
+    } else if ((depFlags & (1 /* Mutable */ | 16 /* Dirty */)) === (1 /* Mutable */ | 16 /* Dirty */)) {
+      if (dep.update()) {
+        const subs = dep.subs;
+        if (subs.nextSub !== void 0) {
+          shallowPropagate(subs);
         }
-      } else if ((depFlags & (1 /* Computed */ | 64 /* PendingComputed */)) === (1 /* Computed */ | 64 /* PendingComputed */)) {
-        if (current.nextSub !== void 0 || current.prevSub !== void 0) {
-          prevLinks = { target: current, linked: prevLinks };
-        }
-        current = dep.deps;
-        ++checkDepth;
-        continue;
+        dirty = true;
       }
+    } else if ((depFlags & (1 /* Mutable */ | 32 /* Pending */)) === (1 /* Mutable */ | 32 /* Pending */)) {
+      if (link2.nextSub !== void 0 || link2.prevSub !== void 0) {
+        stack = { value: link2, prev: stack };
+      }
+      link2 = dep.deps;
+      sub = dep;
+      ++checkDepth;
+      continue;
     }
-    if (!dirty && current.nextDep !== void 0) {
-      current = current.nextDep;
+    if (!dirty && link2.nextDep !== void 0) {
+      link2 = link2.nextDep;
       continue;
     }
     while (checkDepth) {
       --checkDepth;
-      const sub = current.sub;
       const firstSub = sub.subs;
+      const hasMultipleSubs = firstSub.nextSub !== void 0;
+      if (hasMultipleSubs) {
+        link2 = stack.value;
+        stack = stack.prev;
+      } else {
+        link2 = firstSub;
+      }
       if (dirty) {
         if (sub.update()) {
-          if (firstSub.nextSub !== void 0) {
-            current = prevLinks.target;
-            prevLinks = prevLinks.linked;
+          if (hasMultipleSubs) {
             shallowPropagate(firstSub);
-          } else {
-            current = firstSub;
           }
+          sub = link2.sub;
           continue;
         }
       } else {
-        sub.flags &= -65 /* PendingComputed */;
+        sub.flags &= -33 /* Pending */;
       }
-      if (firstSub.nextSub !== void 0) {
-        current = prevLinks.target;
-        prevLinks = prevLinks.linked;
-      } else {
-        current = firstSub;
-      }
-      if (current.nextDep !== void 0) {
-        current = current.nextDep;
+      sub = link2.sub;
+      if (link2.nextDep !== void 0) {
+        link2 = link2.nextDep;
         continue top;
       }
       dirty = false;
@@ -660,11 +690,12 @@ function checkDirty(current) {
 function shallowPropagate(link2) {
   do {
     const sub = link2.sub;
+    const nextSub = link2.nextSub;
     const subFlags = sub.flags;
-    if ((subFlags & (64 /* PendingComputed */ | 32 /* Dirty */)) === 64 /* PendingComputed */) {
-      sub.flags = subFlags | 32 /* Dirty */;
+    if ((subFlags & (32 /* Pending */ | 16 /* Dirty */)) === 32 /* Pending */) {
+      sub.flags = subFlags | 16 /* Dirty */;
     }
-    link2 = link2.nextSub;
+    link2 = nextSub;
   } while (link2 !== void 0);
 }
 function isValidLink(checkLink, sub) {
@@ -682,39 +713,6 @@ function isValidLink(checkLink, sub) {
     } while (link2 !== void 0);
   }
   return false;
-}
-function clearTracking(link2) {
-  do {
-    const dep = link2.dep;
-    const nextDep = link2.nextDep;
-    const nextSub = link2.nextSub;
-    const prevSub = link2.prevSub;
-    if (nextSub !== void 0) {
-      nextSub.prevSub = prevSub;
-    } else {
-      dep.subsTail = prevSub;
-    }
-    if (prevSub !== void 0) {
-      prevSub.nextSub = nextSub;
-    } else {
-      dep.subs = nextSub;
-    }
-    if (dep.subs === void 0 && "deps" in dep) {
-      const depFlags = dep.flags;
-      if (!(depFlags & 32 /* Dirty */)) {
-        dep.flags = depFlags | 32 /* Dirty */;
-      }
-      const depDeps = dep.deps;
-      if (depDeps !== void 0) {
-        link2 = depDeps;
-        dep.depsTail.nextDep = nextDep;
-        dep.deps = void 0;
-        dep.depsTail = void 0;
-        continue;
-      }
-    }
-    link2 = nextDep;
-  } while (link2 !== void 0);
 }
 
 const triggerEventInfos = [];
@@ -761,268 +759,12 @@ function setupFlagsHandler(target) {
       return target._flags;
     },
     set(value) {
-      if (!(target._flags & SubscriberFlags.Propagated) && !!(value & SubscriberFlags.Propagated)) {
+      if (!(target._flags & (ReactiveFlags.Dirty | ReactiveFlags.Pending)) && !!(value & (ReactiveFlags.Dirty | ReactiveFlags.Pending))) {
         onTrigger(this);
       }
       target._flags = value;
     }
   });
-}
-
-function warn$2(msg, ...args) {
-  console.warn(`[Vue warn] ${msg}`, ...args);
-}
-
-let activeEffectScope;
-class EffectScope {
-  constructor(detached = false, parent = activeEffectScope) {
-    this.detached = detached;
-    // Subscriber: In order to collect orphans computeds
-    this.deps = void 0;
-    this.depsTail = void 0;
-    this.flags = 0;
-    /**
-     * @internal track `on` calls, allow `on` call multiple times
-     */
-    this._on = 0;
-    /**
-     * @internal
-     */
-    this.effects = [];
-    /**
-     * @internal
-     */
-    this.cleanups = [];
-    this.parent = parent;
-    if (!detached && parent) {
-      this.index = (parent.scopes || (parent.scopes = [])).push(this) - 1;
-    }
-  }
-  get active() {
-    return !(this.flags & 1024);
-  }
-  pause() {
-    if (!(this.flags & 256)) {
-      this.flags |= 256;
-      let i, l;
-      if (this.scopes) {
-        for (i = 0, l = this.scopes.length; i < l; i++) {
-          this.scopes[i].pause();
-        }
-      }
-      for (i = 0, l = this.effects.length; i < l; i++) {
-        this.effects[i].pause();
-      }
-    }
-  }
-  /**
-   * Resumes the effect scope, including all child scopes and effects.
-   */
-  resume() {
-    if (this.flags & 256) {
-      this.flags &= -257;
-      let i, l;
-      if (this.scopes) {
-        for (i = 0, l = this.scopes.length; i < l; i++) {
-          this.scopes[i].resume();
-        }
-      }
-      for (i = 0, l = this.effects.length; i < l; i++) {
-        this.effects[i].resume();
-      }
-    }
-  }
-  run(fn) {
-    if (this.active) {
-      const prevEffectScope = activeEffectScope;
-      try {
-        activeEffectScope = this;
-        return fn();
-      } finally {
-        activeEffectScope = prevEffectScope;
-      }
-    } else {
-      warn$2(`cannot run an inactive effect scope.`);
-    }
-  }
-  /**
-   * This should only be called on non-detached scopes
-   * @internal
-   */
-  on() {
-    if (++this._on === 1) {
-      this.prevScope = activeEffectScope;
-      activeEffectScope = this;
-    }
-  }
-  /**
-   * This should only be called on non-detached scopes
-   * @internal
-   */
-  off() {
-    if (this._on > 0 && --this._on === 0) {
-      activeEffectScope = this.prevScope;
-      this.prevScope = void 0;
-    }
-  }
-  stop(fromParent) {
-    if (this.active) {
-      this.flags |= 1024;
-      startTracking(this);
-      endTracking(this);
-      let i, l;
-      for (i = 0, l = this.effects.length; i < l; i++) {
-        this.effects[i].stop();
-      }
-      this.effects.length = 0;
-      for (i = 0, l = this.cleanups.length; i < l; i++) {
-        this.cleanups[i]();
-      }
-      this.cleanups.length = 0;
-      if (this.scopes) {
-        for (i = 0, l = this.scopes.length; i < l; i++) {
-          this.scopes[i].stop(true);
-        }
-        this.scopes.length = 0;
-      }
-      if (!this.detached && this.parent && !fromParent) {
-        const last = this.parent.scopes.pop();
-        if (last && last !== this) {
-          this.parent.scopes[this.index] = last;
-          last.index = this.index;
-        }
-      }
-      this.parent = void 0;
-    }
-  }
-}
-function getCurrentScope() {
-  return activeEffectScope;
-}
-
-class ReactiveEffect {
-  constructor(fn) {
-    this.fn = fn;
-    // Subscriber
-    this.deps = void 0;
-    this.depsTail = void 0;
-    this.flags = SubscriberFlags.Effect;
-    /**
-     * @internal
-     */
-    this.cleanup = void 0;
-    if (activeEffectScope && activeEffectScope.active) {
-      activeEffectScope.effects.push(this);
-    }
-  }
-  get active() {
-    return !(this.flags & 1024);
-  }
-  pause() {
-    if (!(this.flags & 256)) {
-      this.flags |= 256;
-    }
-  }
-  resume() {
-    const flags = this.flags;
-    if (flags & 256) {
-      this.flags &= -257;
-    }
-    if (flags & 512) {
-      this.flags &= -513;
-      this.notify();
-    }
-  }
-  notify() {
-    const flags = this.flags;
-    if (!(flags & 256)) {
-      this.scheduler();
-    } else {
-      this.flags |= 512;
-    }
-  }
-  scheduler() {
-    if (this.dirty) {
-      this.run();
-    }
-  }
-  run() {
-    if (!this.active) {
-      return this.fn();
-    }
-    cleanupEffect(this);
-    const prevSub = activeSub;
-    setActiveSub(this);
-    startTracking(this);
-    try {
-      return this.fn();
-    } finally {
-      if (activeSub !== this) {
-        warn$2(
-          "Active effect was not restored correctly - this is likely a Vue internal bug."
-        );
-      }
-      setActiveSub(prevSub);
-      endTracking(this);
-      if (this.flags & SubscriberFlags.Recursed && this.flags & 128) {
-        this.flags &= ~SubscriberFlags.Recursed;
-        this.notify();
-      }
-    }
-  }
-  stop() {
-    if (this.active) {
-      startTracking(this);
-      endTracking(this);
-      cleanupEffect(this);
-      this.onStop && this.onStop();
-      this.flags |= 1024;
-    }
-  }
-  get dirty() {
-    const flags = this.flags;
-    if (flags & SubscriberFlags.Dirty || flags & SubscriberFlags.PendingComputed && updateDirtyFlag(this, flags)) {
-      return true;
-    }
-    return false;
-  }
-}
-{
-  setupOnTrigger(ReactiveEffect);
-}
-const resetTrackingStack = [];
-function pauseTracking() {
-  resetTrackingStack.push(activeSub);
-  activeSub = void 0;
-}
-function resetTracking() {
-  if (resetTrackingStack.length === 0) {
-    warn$2(
-      `resetTracking() was called when there was no active tracking to reset.`
-    );
-  }
-  if (resetTrackingStack.length) {
-    activeSub = resetTrackingStack.pop();
-  } else {
-    activeSub = void 0;
-  }
-}
-function cleanupEffect(e) {
-  const { cleanup } = e;
-  e.cleanup = void 0;
-  if (cleanup !== void 0) {
-    const prevSub = activeSub;
-    activeSub = void 0;
-    try {
-      cleanup();
-    } finally {
-      activeSub = prevSub;
-    }
-  }
-}
-let activeSub = void 0;
-function setActiveSub(sub) {
-  activeSub = sub;
 }
 
 class Dep {
@@ -1031,6 +773,7 @@ class Dep {
     this.key = key;
     this._subs = void 0;
     this.subsTail = void 0;
+    this.flags = ReactiveFlags.None;
   }
   get subs() {
     return this._subs;
@@ -1090,6 +833,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         });
       }
       propagate(dep.subs);
+      shallowPropagate(dep.subs);
       {
         triggerEventInfos.pop();
       }
@@ -1313,11 +1057,11 @@ function searchProxy(self, method, args) {
   return res;
 }
 function noTracking(self, method, args = []) {
-  pauseTracking();
   startBatch();
+  const prevSub = setActiveSub();
   const res = toRaw(self)[method].apply(self, args);
+  setActiveSub(prevSub);
   endBatch();
-  resetTracking();
   return res;
 }
 
@@ -1363,14 +1107,18 @@ class BaseReactiveHandler {
         return hasOwnProperty;
       }
     }
+    const wasRef = isRef(target);
     const res = Reflect.get(
       target,
       key,
       // if this is a proxy wrapping a ref, return methods using the raw ref
       // as receiver so that we don't have to call `toRaw` on the ref in all
       // its class methods
-      isRef(target) ? target : receiver
+      wasRef ? target : receiver
     );
+    if (wasRef && key !== "value") {
+      return res;
+    }
     if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
       return res;
     }
@@ -1840,6 +1588,199 @@ function proxyRefs(objectWithRefs) {
   return isReactive(objectWithRefs) ? objectWithRefs : new Proxy(objectWithRefs, shallowUnwrapHandlers);
 }
 
+class ReactiveEffect {
+  constructor(fn) {
+    this.deps = void 0;
+    this.depsTail = void 0;
+    this.subs = void 0;
+    this.subsTail = void 0;
+    this.flags = ReactiveFlags.Watching | ReactiveFlags.Dirty;
+    /**
+     * @internal
+     */
+    this.cleanups = [];
+    /**
+     * @internal
+     */
+    this.cleanupsLength = 0;
+    if (fn !== void 0) {
+      this.fn = fn;
+    }
+    if (activeEffectScope) {
+      link(this, activeEffectScope);
+    }
+  }
+  // @ts-expect-error
+  fn() {
+  }
+  get active() {
+    return !(this.flags & 1024);
+  }
+  pause() {
+    this.flags |= 256;
+  }
+  resume() {
+    const flags = this.flags &= -257;
+    if (flags & (ReactiveFlags.Dirty | ReactiveFlags.Pending)) {
+      this.notify();
+    }
+  }
+  notify() {
+    if (!(this.flags & 256) && this.dirty) {
+      this.run();
+    }
+  }
+  run() {
+    if (!this.active) {
+      return this.fn();
+    }
+    cleanup(this);
+    const prevSub = startTracking(this);
+    try {
+      return this.fn();
+    } finally {
+      endTracking(this, prevSub);
+      const flags = this.flags;
+      if ((flags & (ReactiveFlags.Recursed | 128)) === (ReactiveFlags.Recursed | 128)) {
+        this.flags = flags & ~ReactiveFlags.Recursed;
+        this.notify();
+      }
+    }
+  }
+  stop() {
+    if (!this.active) {
+      return;
+    }
+    this.flags = 1024;
+    let dep = this.deps;
+    while (dep !== void 0) {
+      dep = unlink(dep, this);
+    }
+    const sub = this.subs;
+    if (sub !== void 0) {
+      unlink(sub);
+    }
+    cleanup(this);
+  }
+  get dirty() {
+    const flags = this.flags;
+    if (flags & ReactiveFlags.Dirty) {
+      return true;
+    }
+    if (flags & ReactiveFlags.Pending) {
+      if (checkDirty(this.deps, this)) {
+        this.flags = flags | ReactiveFlags.Dirty;
+        return true;
+      } else {
+        this.flags = flags & ~ReactiveFlags.Pending;
+      }
+    }
+    return false;
+  }
+}
+{
+  setupOnTrigger(ReactiveEffect);
+}
+function cleanup(sub) {
+  const l = sub.cleanupsLength;
+  if (l) {
+    for (let i = 0; i < l; i++) {
+      sub.cleanups[i]();
+    }
+    sub.cleanupsLength = 0;
+  }
+}
+
+let activeEffectScope;
+class EffectScope {
+  constructor(detached = false) {
+    this.deps = void 0;
+    this.depsTail = void 0;
+    this.subs = void 0;
+    this.subsTail = void 0;
+    this.flags = 0;
+    /**
+     * @internal
+     */
+    this.cleanups = [];
+    /**
+     * @internal
+     */
+    this.cleanupsLength = 0;
+    if (!detached && activeEffectScope) {
+      link(this, activeEffectScope);
+    }
+  }
+  get active() {
+    return !(this.flags & 1024);
+  }
+  pause() {
+    if (!(this.flags & 256)) {
+      this.flags |= 256;
+      for (let link2 = this.deps; link2 !== void 0; link2 = link2.nextDep) {
+        const dep = link2.dep;
+        if ("pause" in dep) {
+          dep.pause();
+        }
+      }
+    }
+  }
+  /**
+   * Resumes the effect scope, including all child scopes and effects.
+   */
+  resume() {
+    const flags = this.flags;
+    if (flags & 256) {
+      this.flags = flags & -257;
+      for (let link2 = this.deps; link2 !== void 0; link2 = link2.nextDep) {
+        const dep = link2.dep;
+        if ("resume" in dep) {
+          dep.resume();
+        }
+      }
+    }
+  }
+  run(fn) {
+    const prevSub = setActiveSub();
+    const prevScope = activeEffectScope;
+    try {
+      activeEffectScope = this;
+      return fn();
+    } finally {
+      activeEffectScope = prevScope;
+      setActiveSub(prevSub);
+    }
+  }
+  stop() {
+    if (!this.active) {
+      return;
+    }
+    this.flags = 1024;
+    let dep = this.deps;
+    while (dep !== void 0) {
+      const node = dep.dep;
+      if ("stop" in node) {
+        dep = dep.nextDep;
+        node.stop();
+      } else {
+        dep = unlink(dep, this);
+      }
+    }
+    const sub = this.subs;
+    if (sub !== void 0) {
+      unlink(sub);
+    }
+    cleanup(this);
+  }
+}
+function setCurrentScope(scope) {
+  try {
+    return activeEffectScope;
+  } finally {
+    activeEffectScope = scope;
+  }
+}
+
 class ComputedRefImpl {
   constructor(fn, setter) {
     this.fn = fn;
@@ -1848,13 +1789,11 @@ class ComputedRefImpl {
      * @internal
      */
     this._value = void 0;
-    // Dependency
     this.subs = void 0;
     this.subsTail = void 0;
-    // Subscriber
     this.deps = void 0;
     this.depsTail = void 0;
-    this.flags = SubscriberFlags.Computed | SubscriberFlags.Dirty;
+    this.flags = ReactiveFlags.Mutable | ReactiveFlags.Dirty;
     /**
      * @internal
      */
@@ -1876,8 +1815,16 @@ class ComputedRefImpl {
    */
   get _dirty() {
     const flags = this.flags;
-    if (flags & SubscriberFlags.Dirty || flags & SubscriberFlags.PendingComputed && updateDirtyFlag(this, this.flags)) {
+    if (flags & ReactiveFlags.Dirty) {
       return true;
+    }
+    if (flags & ReactiveFlags.Pending) {
+      if (checkDirty(this.deps, this)) {
+        this.flags = flags | ReactiveFlags.Dirty;
+        return true;
+      } else {
+        this.flags = flags & ~ReactiveFlags.Pending;
+      }
     }
     return false;
   }
@@ -1887,15 +1834,22 @@ class ComputedRefImpl {
    */
   set _dirty(v) {
     if (v) {
-      this.flags |= SubscriberFlags.Dirty;
+      this.flags |= ReactiveFlags.Dirty;
     } else {
-      this.flags &= ~(SubscriberFlags.Dirty | SubscriberFlags.PendingComputed);
+      this.flags &= ~(ReactiveFlags.Dirty | ReactiveFlags.Pending);
     }
   }
   get value() {
     const flags = this.flags;
-    if (flags & (SubscriberFlags.Dirty | SubscriberFlags.PendingComputed)) {
-      processComputedUpdate(this, flags);
+    if (flags & ReactiveFlags.Dirty || flags & ReactiveFlags.Pending && checkDirty(this.deps, this)) {
+      if (this.update()) {
+        const subs = this.subs;
+        if (subs !== void 0) {
+          shallowPropagate(subs);
+        }
+      }
+    } else if (flags & ReactiveFlags.Pending) {
+      this.flags = flags & ~ReactiveFlags.Pending;
     }
     if (activeSub !== void 0) {
       {
@@ -1919,9 +1873,7 @@ class ComputedRefImpl {
     }
   }
   update() {
-    const prevSub = activeSub;
-    setActiveSub(this);
-    startTracking(this);
+    const prevSub = startTracking(this);
     try {
       const oldValue = this._value;
       const newValue = this.fn(oldValue);
@@ -1931,8 +1883,7 @@ class ComputedRefImpl {
       }
       return false;
     } finally {
-      setActiveSub(prevSub);
-      endTracking(this);
+      endTracking(this, prevSub);
     }
   }
 }
@@ -1953,174 +1904,143 @@ function computed$1(getterOrOptions, debugOptions, isSSR = false) {
 }
 
 const INITIAL_WATCHER_VALUE = {};
-const cleanupMap = /* @__PURE__ */ new WeakMap();
 let activeWatcher = void 0;
 function onWatcherCleanup(cleanupFn, failSilently = false, owner = activeWatcher) {
   if (owner) {
-    let cleanups = cleanupMap.get(owner);
-    if (!cleanups) cleanupMap.set(owner, cleanups = []);
-    cleanups.push(cleanupFn);
+    const { call } = owner.options;
+    if (call) {
+      owner.cleanups[owner.cleanupsLength++] = () => call(cleanupFn, 4);
+    } else {
+      owner.cleanups[owner.cleanupsLength++] = cleanupFn;
+    }
   } else if (!failSilently) {
     warn$2(
       `onWatcherCleanup() was called when there was no active watcher to associate with.`
     );
   }
 }
-function watch$1(source, cb, options = EMPTY_OBJ) {
-  const { immediate, deep, once, scheduler, augmentJob, call } = options;
-  const warnInvalidSource = (s) => {
-    (options.onWarn || warn$2)(
-      `Invalid watch source: `,
-      s,
-      `A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.`
-    );
-  };
-  const reactiveGetter = (source2) => {
-    if (deep) return source2;
-    if (isShallow(source2) || deep === false || deep === 0)
-      return traverse(source2, 1);
-    return traverse(source2);
-  };
-  let effect;
-  let getter;
-  let cleanup;
-  let boundCleanup;
-  let forceTrigger = false;
-  let isMultiSource = false;
-  if (isRef(source)) {
-    getter = () => source.value;
-    forceTrigger = isShallow(source);
-  } else if (isReactive(source)) {
-    getter = () => reactiveGetter(source);
-    forceTrigger = true;
-  } else if (isArray(source)) {
-    isMultiSource = true;
-    forceTrigger = source.some((s) => isReactive(s) || isShallow(s));
-    getter = () => source.map((s) => {
-      if (isRef(s)) {
-        return s.value;
-      } else if (isReactive(s)) {
-        return reactiveGetter(s);
-      } else if (isFunction(s)) {
-        return call ? call(s, 2) : s();
+class WatcherEffect extends ReactiveEffect {
+  constructor(source, cb, options = EMPTY_OBJ) {
+    const { deep, once, call, onWarn } = options;
+    let getter;
+    let forceTrigger = false;
+    let isMultiSource = false;
+    if (isRef(source)) {
+      getter = () => source.value;
+      forceTrigger = isShallow(source);
+    } else if (isReactive(source)) {
+      getter = () => reactiveGetter(source, deep);
+      forceTrigger = true;
+    } else if (isArray(source)) {
+      isMultiSource = true;
+      forceTrigger = source.some((s) => isReactive(s) || isShallow(s));
+      getter = () => source.map((s) => {
+        if (isRef(s)) {
+          return s.value;
+        } else if (isReactive(s)) {
+          return reactiveGetter(s, deep);
+        } else if (isFunction(s)) {
+          return call ? call(s, 2) : s();
+        } else {
+          warnInvalidSource(s, onWarn);
+        }
+      });
+    } else if (isFunction(source)) {
+      if (cb) {
+        getter = call ? () => call(source, 2) : source;
       } else {
-        warnInvalidSource(s);
-      }
-    });
-  } else if (isFunction(source)) {
-    if (cb) {
-      getter = call ? () => call(source, 2) : source;
-    } else {
-      getter = () => {
-        if (cleanup) {
-          pauseTracking();
-          try {
-            cleanup();
-          } finally {
-            resetTracking();
+        getter = () => {
+          if (this.cleanupsLength) {
+            const prevSub = setActiveSub();
+            try {
+              cleanup(this);
+            } finally {
+              setActiveSub(prevSub);
+            }
           }
-        }
-        const currentEffect = activeWatcher;
-        activeWatcher = effect;
-        try {
-          return call ? call(source, 3, [boundCleanup]) : source(boundCleanup);
-        } finally {
-          activeWatcher = currentEffect;
-        }
+          const currentEffect = activeWatcher;
+          activeWatcher = this;
+          try {
+            return call ? call(source, 3, [
+              this.boundCleanup
+            ]) : source(this.boundCleanup);
+          } finally {
+            activeWatcher = currentEffect;
+          }
+        };
+      }
+    } else {
+      getter = NOOP;
+      warnInvalidSource(source, onWarn);
+    }
+    if (cb && deep) {
+      const baseGetter = getter;
+      const depth = deep === true ? Infinity : deep;
+      getter = () => traverse(baseGetter(), depth);
+    }
+    super(getter);
+    this.cb = cb;
+    this.options = options;
+    this.boundCleanup = (fn) => onWatcherCleanup(fn, false, this);
+    this.forceTrigger = forceTrigger;
+    this.isMultiSource = isMultiSource;
+    if (once && cb) {
+      const _cb = cb;
+      cb = (...args) => {
+        _cb(...args);
+        this.stop();
       };
     }
-  } else {
-    getter = NOOP;
-    warnInvalidSource(source);
-  }
-  if (cb && deep) {
-    const baseGetter = getter;
-    const depth = deep === true ? Infinity : deep;
-    getter = () => traverse(baseGetter(), depth);
-  }
-  const scope = getCurrentScope();
-  const watchHandle = () => {
-    effect.stop();
-    if (scope && scope.active) {
-      remove(scope.effects, effect);
+    this.cb = cb;
+    this.oldValue = isMultiSource ? new Array(source.length).fill(INITIAL_WATCHER_VALUE) : INITIAL_WATCHER_VALUE;
+    {
+      this.onTrack = options.onTrack;
+      this.onTrigger = options.onTrigger;
     }
-  };
-  if (once && cb) {
-    const _cb = cb;
-    cb = (...args) => {
-      _cb(...args);
-      watchHandle();
-    };
   }
-  let oldValue = isMultiSource ? new Array(source.length).fill(INITIAL_WATCHER_VALUE) : INITIAL_WATCHER_VALUE;
-  const job = (immediateFirstRun) => {
-    if (!effect.active || !immediateFirstRun && !effect.dirty) {
+  run(initialRun = false) {
+    const oldValue = this.oldValue;
+    const newValue = this.oldValue = super.run();
+    if (!this.cb) {
       return;
     }
-    if (cb) {
-      const newValue = effect.run();
-      if (deep || forceTrigger || (isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue))) {
-        if (cleanup) {
-          cleanup();
-        }
-        const currentWatcher = activeWatcher;
-        activeWatcher = effect;
-        try {
-          const args = [
-            newValue,
-            // pass undefined as the old value when it's changed for the first time
-            oldValue === INITIAL_WATCHER_VALUE ? void 0 : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE ? [] : oldValue,
-            boundCleanup
-          ];
-          call ? call(cb, 3, args) : (
-            // @ts-expect-error
-            cb(...args)
-          );
-          oldValue = newValue;
-        } finally {
-          activeWatcher = currentWatcher;
-        }
+    const { immediate, deep, call } = this.options;
+    if (initialRun && !immediate) {
+      return;
+    }
+    if (deep || this.forceTrigger || (this.isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue))) {
+      cleanup(this);
+      const currentWatcher = activeWatcher;
+      activeWatcher = this;
+      try {
+        const args = [
+          newValue,
+          // pass undefined as the old value when it's changed for the first time
+          oldValue === INITIAL_WATCHER_VALUE ? void 0 : this.isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE ? [] : oldValue,
+          this.boundCleanup
+        ];
+        call ? call(this.cb, 3, args) : (
+          // @ts-expect-error
+          this.cb(...args)
+        );
+      } finally {
+        activeWatcher = currentWatcher;
       }
-    } else {
-      effect.run();
     }
-  };
-  if (augmentJob) {
-    augmentJob(job);
   }
-  effect = new ReactiveEffect(getter);
-  effect.scheduler = scheduler ? () => scheduler(job, false) : job;
-  boundCleanup = (fn) => onWatcherCleanup(fn, false, effect);
-  cleanup = effect.onStop = () => {
-    const cleanups = cleanupMap.get(effect);
-    if (cleanups) {
-      if (call) {
-        call(cleanups, 4);
-      } else {
-        for (const cleanup2 of cleanups) cleanup2();
-      }
-      cleanupMap.delete(effect);
-    }
-  };
-  {
-    effect.onTrack = options.onTrack;
-    effect.onTrigger = options.onTrigger;
-  }
-  if (cb) {
-    if (immediate) {
-      job(true);
-    } else {
-      oldValue = effect.run();
-    }
-  } else if (scheduler) {
-    scheduler(job.bind(null, true), true);
-  } else {
-    effect.run();
-  }
-  watchHandle.pause = effect.pause.bind(effect);
-  watchHandle.resume = effect.resume.bind(effect);
-  watchHandle.stop = watchHandle;
-  return watchHandle;
+}
+function reactiveGetter(source, deep) {
+  if (deep) return source;
+  if (isShallow(source) || deep === false || deep === 0)
+    return traverse(source, 1);
+  return traverse(source);
+}
+function warnInvalidSource(s, onWarn) {
+  (onWarn || warn$2)(
+    `Invalid watch source: `,
+    s,
+    `A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.`
+  );
 }
 function traverse(value, depth = Infinity, seen) {
   if (depth <= 0 || !isObject(value) || value["__v_skip"]) {
@@ -2166,7 +2086,7 @@ let isWarning = false;
 function warn$1(msg, ...args) {
   if (isWarning) return;
   isWarning = true;
-  pauseTracking();
+  const prevSub = setActiveSub();
   const entry = stack.length ? stack[stack.length - 1] : null;
   const instance = isVNode$2(entry) ? entry.component : entry;
   const appWarnHandler = instance && instance.appContext.config.warnHandler;
@@ -2198,7 +2118,7 @@ function warn$1(msg, ...args) {
     }
     console.warn(...warnArgs);
   }
-  resetTracking();
+  setActiveSub(prevSub);
   isWarning = false;
 }
 function getComponentTrace() {
@@ -2350,13 +2270,13 @@ function handleError(err, instance, type, throwInDev = true) {
       cur = cur.parent;
     }
     if (errorHandler) {
-      pauseTracking();
+      const prevSub = setActiveSub();
       callWithErrorHandling(errorHandler, null, 10, [
         err,
         exposedInstance,
         errorInfo
       ]);
-      resetTracking();
+      setActiveSub(prevSub);
       return;
     }
   }
@@ -2383,15 +2303,16 @@ ${err.stack || ""}---END:EXCEPTION---`
   }
 }
 
-const queue = [];
-let flushIndex = -1;
-const pendingPostFlushCbs = [];
-let activePostFlushCbs = null;
+const jobs = [];
+let postJobs = [];
+let activePostJobs = null;
+let currentFlushPromise = null;
+let jobsLength = 0;
+let flushIndex = 0;
 let postFlushIndex = 0;
 const resolvedPromise = /* @__PURE__ */ (PromisePolyfill ).resolve();
-let currentFlushPromise = null;
 const RECURSION_LIMIT = 100;
-function nextTick(fn, instance = getCurrentInstance()) {
+function nextTick(fn, instance = getCurrentGenericInstance()) {
   const promise = currentFlushPromise || resolvedPromise;
   const current = currentFlushPromise === null || instance === null ? promise : promise.then(() => {
     return new Promise((resolve) => {
@@ -2406,14 +2327,10 @@ function nextTick(fn, instance = getCurrentInstance()) {
   });
   return fn ? current.then(this ? fn.bind(this) : fn) : current;
 }
-function findInsertionIndex(id) {
-  let start = flushIndex + 1;
-  let end = queue.length;
+function findInsertionIndex(order, queue, start, end) {
   while (start < end) {
     const middle = start + end >>> 1;
-    const middleJob = queue[middle];
-    const middleJobId = getId(middleJob);
-    if (middleJobId < id || middleJobId === id && middleJob.flags & 2) {
+    if (queue[middle].order <= order) {
       start = middle + 1;
     } else {
       end = middle;
@@ -2421,89 +2338,108 @@ function findInsertionIndex(id) {
   }
   return start;
 }
-function queueJob(job) {
-  if (!(job.flags & 1)) {
-    const jobId = getId(job);
-    const lastJob = queue[queue.length - 1];
-    if (!lastJob || // fast path when the job id is larger than the tail
-    !(job.flags & 2) && jobId >= getId(lastJob)) {
-      queue.push(job);
-    } else {
-      queue.splice(findInsertionIndex(jobId), 0, job);
-    }
-    job.flags |= 1;
+function queueJob(job, id, isPre = false) {
+  if (queueJobWorker(
+    job,
+    id === void 0 ? isPre ? -2 : Infinity : isPre ? id * 2 : id * 2 + 1,
+    jobs,
+    jobsLength,
+    flushIndex
+  )) {
+    jobsLength++;
     queueFlush();
   }
 }
+function queueJobWorker(job, order, queue, length, flushIndex2) {
+  const flags = job.flags;
+  if (!(flags & 1)) {
+    job.flags = flags | 1;
+    job.order = order;
+    if (flushIndex2 === length || // fast path when the job id is larger than the tail
+    order >= queue[length - 1].order) {
+      queue[length] = job;
+    } else {
+      queue.splice(findInsertionIndex(order, queue, flushIndex2, length), 0, job);
+    }
+    return true;
+  }
+  return false;
+}
+const doFlushJobs = () => {
+  try {
+    flushJobs();
+  } catch (e) {
+    currentFlushPromise = null;
+    throw e;
+  }
+};
 function queueFlush() {
   if (!currentFlushPromise) {
-    currentFlushPromise = resolvedPromise.then(flushJobs).catch((e) => {
-      currentFlushPromise = null;
-      throw e;
-    });
+    currentFlushPromise = resolvedPromise.then(doFlushJobs);
   }
 }
-function queuePostFlushCb(cb) {
-  if (!isArray(cb)) {
-    if (activePostFlushCbs && cb.id === -1) {
-      activePostFlushCbs.splice(postFlushIndex + 1, 0, cb);
-    } else if (!(cb.flags & 1)) {
-      pendingPostFlushCbs.push(cb);
-      cb.flags |= 1;
+function queuePostFlushCb(jobs2, id = Infinity) {
+  if (!isArray(jobs2)) {
+    if (activePostJobs && id === -1) {
+      activePostJobs.splice(postFlushIndex, 0, jobs2);
+    } else {
+      queueJobWorker(jobs2, id, postJobs, postJobs.length, 0);
     }
   } else {
-    pendingPostFlushCbs.push(...cb);
+    for (const job of jobs2) {
+      queueJobWorker(job, id, postJobs, postJobs.length, 0);
+    }
   }
   queueFlush();
 }
-function flushPreFlushCbs(instance, seen, i = flushIndex + 1) {
+function flushPreFlushCbs(instance, seen) {
   {
     seen = seen || /* @__PURE__ */ new Map();
   }
-  for (; i < queue.length; i++) {
-    const cb = queue[i];
-    if (cb && cb.flags & 2) {
-      if (instance && cb.id !== instance.uid) {
-        continue;
-      }
-      if (checkRecursiveUpdates(seen, cb)) {
-        continue;
-      }
-      queue.splice(i, 1);
-      i--;
-      if (cb.flags & 4) {
-        cb.flags &= -2;
-      }
-      cb();
-      if (!(cb.flags & 4)) {
-        cb.flags &= -2;
-      }
+  for (let i = flushIndex; i < jobsLength; i++) {
+    const cb = jobs[i];
+    if (cb.order & 1 || cb.order === Infinity) {
+      continue;
+    }
+    if (instance && cb.order !== instance.uid * 2) {
+      continue;
+    }
+    if (checkRecursiveUpdates(seen, cb)) {
+      continue;
+    }
+    jobs.splice(i, 1);
+    i--;
+    jobsLength--;
+    if (cb.flags & 2) {
+      cb.flags &= -2;
+    }
+    cb();
+    if (!(cb.flags & 2)) {
+      cb.flags &= -2;
     }
   }
 }
 function flushPostFlushCbs(seen) {
-  if (pendingPostFlushCbs.length) {
-    const deduped = [...new Set(pendingPostFlushCbs)].sort(
-      (a, b) => getId(a) - getId(b)
-    );
-    pendingPostFlushCbs.length = 0;
-    if (activePostFlushCbs) {
-      activePostFlushCbs.push(...deduped);
+  if (postJobs.length) {
+    if (activePostJobs) {
+      activePostJobs.push(...postJobs);
+      postJobs.length = 0;
       return;
     }
-    activePostFlushCbs = deduped;
+    activePostJobs = postJobs;
+    postJobs = [];
     {
       seen = seen || /* @__PURE__ */ new Map();
     }
-    for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
-      const cb = activePostFlushCbs[postFlushIndex];
+    while (postFlushIndex < activePostJobs.length) {
+      const cb = activePostJobs[postFlushIndex++];
       if (checkRecursiveUpdates(seen, cb)) {
         continue;
       }
-      if (cb.flags & 4) {
+      if (cb.flags & 2) {
         cb.flags &= -2;
       }
-      if (!(cb.flags & 8)) {
+      if (!(cb.flags & 4)) {
         try {
           cb();
         } finally {
@@ -2511,7 +2447,7 @@ function flushPostFlushCbs(seen) {
         }
       }
     }
-    activePostFlushCbs = null;
+    activePostJobs = null;
     postFlushIndex = 0;
   }
 }
@@ -2524,44 +2460,46 @@ function flushOnAppMount() {
     isFlushing = false;
   }
 }
-const getId = (job) => job.id == null ? job.flags & 2 ? -1 : Infinity : job.id;
 function flushJobs(seen) {
   {
-    seen = seen || /* @__PURE__ */ new Map();
+    seen || (seen = /* @__PURE__ */ new Map());
   }
-  const check = (job) => checkRecursiveUpdates(seen, job) ;
   try {
-    for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
-      const job = queue[flushIndex];
-      if (job && !(job.flags & 8)) {
-        if (check(job)) {
+    while (flushIndex < jobsLength) {
+      const job = jobs[flushIndex];
+      jobs[flushIndex++] = void 0;
+      if (!(job.flags & 4)) {
+        if (checkRecursiveUpdates(seen, job)) {
           continue;
         }
-        if (job.flags & 4) {
+        if (job.flags & 2) {
           job.flags &= ~1;
         }
-        callWithErrorHandling(
-          job,
-          job.i,
-          job.i ? 15 : 14
-        );
-        if (!(job.flags & 4)) {
-          job.flags &= ~1;
+        try {
+          job();
+        } catch (err) {
+          handleError(
+            err,
+            job.i,
+            job.i ? 15 : 14
+          );
+        } finally {
+          if (!(job.flags & 2)) {
+            job.flags &= ~1;
+          }
         }
       }
     }
   } finally {
-    for (; flushIndex < queue.length; flushIndex++) {
-      const job = queue[flushIndex];
-      if (job) {
-        job.flags &= -2;
-      }
+    while (flushIndex < jobsLength) {
+      jobs[flushIndex].flags &= -2;
+      jobs[flushIndex++] = void 0;
     }
-    flushIndex = -1;
-    queue.length = 0;
+    flushIndex = 0;
+    jobsLength = 0;
     flushPostFlushCbs(seen);
     currentFlushPromise = null;
-    if (queue.length || pendingPostFlushCbs.length) {
+    if (jobsLength || postJobs.length) {
       flushJobs(seen);
     }
   }
@@ -2634,7 +2572,7 @@ function rerender(id, newRender) {
     } else {
       const i = instance;
       i.renderCache = [];
-      i.update();
+      i.effect.run();
     }
     nextTick(() => {
       isHmrUpdating = false;
@@ -2676,7 +2614,7 @@ function reload(id, newComp) {
           if (parent.vapor) {
             parent.hmrRerender();
           } else {
-            parent.update();
+            parent.effect.run();
           }
           nextTick(() => {
             isHmrUpdating = false;
@@ -2732,12 +2670,8 @@ function emit$1(event, ...args) {
     buffer.push({ event, args });
   }
 }
-let queued = false;
 function setDevtoolsHook(hook, target) {
   var _a, _b;
-  if (devtoolsNotInstalled || queued) {
-    return;
-  }
   devtools = hook;
   if (devtools) {
     devtools.enabled = true;
@@ -2752,7 +2686,6 @@ function setDevtoolsHook(hook, target) {
     // eslint-disable-next-line no-restricted-syntax
     !((_b = (_a = window.navigator) == null ? void 0 : _a.userAgent) == null ? void 0 : _b.includes("jsdom"))
   ) {
-    queued = true;
     const replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
     replay.push((newHook) => {
       setDevtoolsHook(newHook, target);
@@ -2874,14 +2807,14 @@ function invokeDirectiveHook(vnode, prevVNode, instance, name) {
     }
     let hook = binding.dir[name];
     if (hook) {
-      pauseTracking();
+      const prevSub = setActiveSub();
       callWithAsyncErrorHandling(hook, instance, 8, [
         vnode.el,
         binding,
         vnode,
         prevVNode
       ]);
-      resetTracking();
+      setActiveSub(prevSub);
     }
   }
 }
@@ -3001,8 +2934,7 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
         }
       };
       if (value) {
-        doSet.id = -1;
-        queuePostRenderEffect(doSet, parentSuspense);
+        queuePostRenderEffect(doSet, -1, parentSuspense);
       } else {
         doSet();
       }
@@ -3072,13 +3004,13 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
     }
     const hooks = target[type] || (target[type] = []);
     const wrappedHook = hook.__weh || (hook.__weh = (...args) => {
-      pauseTracking();
-      const reset = setCurrentInstance(target);
+      const prevSub = setActiveSub();
+      const prev = setCurrentInstance(target);
       try {
         return callWithAsyncErrorHandling(hook, target, type, args);
       } finally {
-        reset();
-        resetTracking();
+        setCurrentInstance(...prev);
+        setActiveSub(prevSub);
       }
     });
     if (prepend) {
@@ -3955,9 +3887,15 @@ If you want to remount the same app, move your app creation logic into a factory
       },
       provide(key, value) {
         if (key in context.provides) {
-          warn$1(
-            `App already provides property with key "${String(key)}". It will be overwritten with the new value.`
-          );
+          if (hasOwn(context.provides, key)) {
+            warn$1(
+              `App already provides property with key "${String(key)}". It will be overwritten with the new value.`
+            );
+          } else {
+            warn$1(
+              `App already provides property with key "${String(key)}" inherited from its parent element. It will be overwritten with the new value.`
+            );
+          }
         }
         context.provides[key] = value;
         return app;
@@ -3995,7 +3933,7 @@ function provide(key, value) {
 function inject(key, defaultValue, treatDefaultAsFactory = false) {
   const instance = getCurrentGenericInstance();
   if (instance || currentApp) {
-    const provides = currentApp ? currentApp._context.provides : instance ? instance.parent == null ? instance.appContext && instance.appContext.provides : instance.parent.provides : void 0;
+    let provides = currentApp ? currentApp._context.provides : instance ? instance.parent == null || instance.ce ? instance.appContext && instance.appContext.provides : instance.parent.provides : void 0;
     if (provides && key in provides) {
       return provides[key];
     } else if (arguments.length > 1) {
@@ -4210,13 +4148,13 @@ function resolvePropValue(options, key, value, instance, resolveDefault, isAbsen
 }
 function baseResolveDefault(factory, instance, key) {
   let value;
-  const reset = setCurrentInstance(instance);
+  const prev = setCurrentInstance(instance);
   const props = toRaw(instance.props);
   value = factory.call(
     null,
     props
   );
-  reset();
+  setCurrentInstance(...prev);
   return value;
 }
 const mixinPropsCache = /* @__PURE__ */ new WeakMap();
@@ -4484,6 +4422,8 @@ const assignSlots = (slots, children, optimized) => {
 const initSlots = (instance, children, optimized) => {
   const slots = instance.slots = createInternalObject();
   if (instance.vnode.shapeFlag & 32) {
+    const cacheIndexes = children.__;
+    if (cacheIndexes) def(slots, "__", cacheIndexes, true);
     const type = children._;
     if (type) {
       assignSlots(slots, children, optimized);
@@ -4700,6 +4640,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     if (ref != null && parentComponent) {
       setRef(ref, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
+    } else if (ref == null && n1 && n1.ref != null) {
+      setRef(n1.ref, null, parentSuspense, n1, true);
     }
   };
   const processText = (n1, n2, container, anchor) => {
@@ -4873,11 +4815,15 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     hostInsert(el, container, anchor);
     if ((vnodeHook = props && props.onVnodeMounted) || needCallTransitionHooks || dirs) {
-      queuePostRenderEffect(() => {
-        vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
-        needCallTransitionHooks && transition.enter(el);
-        dirs && invokeDirectiveHook(vnode, null, parentComponent, "mounted");
-      }, parentSuspense);
+      queuePostRenderEffect(
+        () => {
+          vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
+          needCallTransitionHooks && transition.enter(el);
+          dirs && invokeDirectiveHook(vnode, null, parentComponent, "mounted");
+        },
+        void 0,
+        parentSuspense
+      );
     }
   };
   const setScopeId = (el, vnode, scopeId, slotScopeIds, parentComponent) => {
@@ -5051,10 +4997,14 @@ function baseCreateRenderer(options, createHydrationFns) {
       );
     }
     if ((vnodeHook = newProps.onVnodeUpdated) || dirs) {
-      queuePostRenderEffect(() => {
-        vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, n2, n1);
-        dirs && invokeDirectiveHook(n2, n1, parentComponent, "updated");
-      }, parentSuspense);
+      queuePostRenderEffect(
+        () => {
+          vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, n2, n1);
+          dirs && invokeDirectiveHook(n2, n1, parentComponent, "updated");
+        },
+        void 0,
+        parentSuspense
+      );
     }
   };
   const patchBlockChildren = (oldChildren, newChildren, fallbackContainer, parentComponent, parentSuspense, namespace, slotScopeIds) => {
@@ -5069,7 +5019,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         (oldVNode.type === Fragment || // - In the case of different nodes, there is going to be a replacement
         // which also requires the correct parent container
         !isSameVNodeType(oldVNode, newVNode) || // - In the case of a component, it could contain anything.
-        oldVNode.shapeFlag & (6 | 64)) ? hostParentNode(oldVNode.el) : (
+        oldVNode.shapeFlag & (6 | 64 | 128)) ? hostParentNode(oldVNode.el) : (
           // In other cases, the parent container is not actually used so we
           // just pass the block element here to avoid a DOM parentNode call.
           fallbackContainer
@@ -5302,15 +5252,52 @@ function baseCreateRenderer(options, createHydrationFns) {
         return;
       } else {
         instance.next = n2;
-        instance.update();
+        instance.effect.run();
       }
     } else {
       n2.el = n1.el;
       instance.vnode = n2;
     }
   };
-  const setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
-    const componentUpdateFn = () => {
+  class SetupRenderEffect extends ReactiveEffect {
+    constructor(instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) {
+      const prevScope = setCurrentScope(instance.scope);
+      super();
+      this.instance = instance;
+      this.initialVNode = initialVNode;
+      this.container = container;
+      this.anchor = anchor;
+      this.parentSuspense = parentSuspense;
+      this.namespace = namespace;
+      this.optimized = optimized;
+      setCurrentScope(prevScope);
+      this.job = instance.job = () => {
+        if (this.dirty) {
+          this.run();
+        }
+      };
+      this.job.i = instance;
+      {
+        this.onTrack = instance.rtc ? (e) => invokeArrayFns(instance.rtc, e) : void 0;
+        this.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
+      }
+    }
+    notify() {
+      if (!(this.flags & 256)) {
+        const job = this.job;
+        queueJob(job, job.i.uid);
+      }
+    }
+    fn() {
+      const {
+        instance,
+        initialVNode,
+        container,
+        anchor,
+        parentSuspense,
+        namespace,
+        optimized
+      } = this;
       if (!instance.isMounted) {
         let vnodeHook;
         const { el, props } = initialVNode;
@@ -5325,7 +5312,8 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
         toggleRecurse(instance, true);
         {
-          if (root.ce) {
+          if (root.ce && // @ts-expect-error _def is private
+          root.ce._def.shadowRoot !== false) {
             root.ce._injectChildStyle(type);
           }
           {
@@ -5353,23 +5341,24 @@ function baseCreateRenderer(options, createHydrationFns) {
           initialVNode.el = subTree.el;
         }
         if (m) {
-          queuePostRenderEffect(m, parentSuspense);
+          queuePostRenderEffect(m, void 0, parentSuspense);
         }
         if (!isAsyncWrapperVNode && (vnodeHook = props && props.onVnodeMounted)) {
           const scopedInitialVNode = initialVNode;
           queuePostRenderEffect(
             () => invokeVNodeHook(vnodeHook, parent, scopedInitialVNode),
+            void 0,
             parentSuspense
           );
         }
         if (initialVNode.shapeFlag & 256 || parent && parent.vnode && isAsyncWrapper(parent.vnode) && parent.vnode.shapeFlag & 256) {
-          instance.a && queuePostRenderEffect(instance.a, parentSuspense);
+          instance.a && queuePostRenderEffect(instance.a, void 0, parentSuspense);
         }
         instance.isMounted = true;
         {
           devtoolsComponentAdded(instance);
         }
-        initialVNode = container = anchor = null;
+        this.initialVNode = this.container = this.anchor = null;
       } else {
         let { next, bu, u, parent, vnode } = instance;
         {
@@ -5381,7 +5370,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             }
             nonHydratedAsyncRoot.asyncDep.then(() => {
               if (!instance.isUnmounted) {
-                componentUpdateFn();
+                this.fn();
               }
             });
             return;
@@ -5437,11 +5426,12 @@ function baseCreateRenderer(options, createHydrationFns) {
           updateHOCHostEl(instance, nextTree.el);
         }
         if (u) {
-          queuePostRenderEffect(u, parentSuspense);
+          queuePostRenderEffect(u, void 0, parentSuspense);
         }
         if (vnodeHook = next.props && next.props.onVnodeUpdated) {
           queuePostRenderEffect(
             () => invokeVNodeHook(vnodeHook, parent, next, vnode),
+            void 0,
             parentSuspense
           );
         }
@@ -5452,21 +5442,21 @@ function baseCreateRenderer(options, createHydrationFns) {
           popWarningContext$1();
         }
       }
-    };
-    instance.scope.on();
-    const effect = instance.effect = new ReactiveEffect(componentUpdateFn);
-    instance.scope.off();
-    const update = instance.update = effect.run.bind(effect);
-    const job = instance.job = () => effect.dirty && effect.run();
-    job.i = instance;
-    job.id = instance.uid;
-    effect.scheduler = () => queueJob(job);
-    toggleRecurse(instance, true);
-    {
-      effect.onTrack = instance.rtc ? (e) => invokeArrayFns(instance.rtc, e) : void 0;
-      effect.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
     }
-    update();
+  }
+  const setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
+    const effect = instance.effect = new SetupRenderEffect(
+      instance,
+      initialVNode,
+      container,
+      anchor,
+      parentSuspense,
+      namespace,
+      optimized
+    );
+    instance.update = effect.run.bind(effect);
+    toggleRecurse(instance, true);
+    effect.run();
   };
   const updateComponentPreRender = (instance, nextVNode, optimized) => {
     nextVNode.component = instance;
@@ -5475,9 +5465,9 @@ function baseCreateRenderer(options, createHydrationFns) {
     instance.next = null;
     updateProps(instance, nextVNode.props, prevProps, optimized);
     updateSlots(instance, nextVNode.children, optimized);
-    pauseTracking();
+    const prevSub = setActiveSub();
     flushPreFlushCbs(instance);
-    resetTracking();
+    setActiveSub(prevSub);
   };
   const patchChildren = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized = false) => {
     const c1 = n1 && n1.children;
@@ -5821,7 +5811,11 @@ function baseCreateRenderer(options, createHydrationFns) {
       if (moveType === 0) {
         transition.beforeEnter(el);
         hostInsert(el, container, anchor);
-        queuePostRenderEffect(() => transition.enter(el), parentSuspense);
+        queuePostRenderEffect(
+          () => transition.enter(el),
+          void 0,
+          parentSuspense
+        );
       } else {
         const { leave, delayLeave, afterLeave } = transition;
         const remove2 = () => {
@@ -5863,9 +5857,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       optimized = false;
     }
     if (ref != null) {
-      pauseTracking();
+      const prevSub = setActiveSub();
       setRef(ref, null, parentSuspense, vnode, true);
-      resetTracking();
+      setActiveSub(prevSub);
     }
     if (cacheIndex != null) {
       parentComponent.renderCache[cacheIndex] = void 0;
@@ -5929,10 +5923,14 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
     }
     if (shouldInvokeVnodeHook && (vnodeHook = props && props.onVnodeUnmounted) || shouldInvokeDirs) {
-      queuePostRenderEffect(() => {
-        vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
-        shouldInvokeDirs && invokeDirectiveHook(vnode, null, parentComponent, "unmounted");
-      }, parentSuspense);
+      queuePostRenderEffect(
+        () => {
+          vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
+          shouldInvokeDirs && invokeDirectiveHook(vnode, null, parentComponent, "unmounted");
+        },
+        void 0,
+        parentSuspense
+      );
     }
   };
   const remove = (vnode) => {
@@ -5989,7 +5987,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     const {
       bum,
       scope,
-      job,
+      effect,
       subTree,
       um,
       m,
@@ -6008,16 +6006,18 @@ function baseCreateRenderer(options, createHydrationFns) {
       });
     }
     scope.stop();
-    if (job) {
-      job.flags |= 8;
+    if (effect) {
+      effect.stop();
       unmount(subTree, instance, parentSuspense, doRemove);
     }
     if (um) {
-      queuePostRenderEffect(um, parentSuspense);
+      queuePostRenderEffect(um, void 0, parentSuspense);
     }
-    queuePostRenderEffect(() => {
-      instance.isUnmounted = true;
-    }, parentSuspense);
+    queuePostRenderEffect(
+      () => instance.isUnmounted = true,
+      void 0,
+      parentSuspense
+    );
     if (parentSuspense && parentSuspense.pendingBranch && !parentSuspense.isUnmounted && instance.asyncDep && !instance.asyncResolved && instance.suspenseId === parentSuspense.pendingId) {
       parentSuspense.deps--;
       if (parentSuspense.deps === 0) {
@@ -6120,10 +6120,10 @@ function toggleRecurse({ effect, job, vapor }, allowed) {
   if (!vapor) {
     if (allowed) {
       effect.flags |= 128;
-      job.flags |= 4;
+      job.flags |= 2;
     } else {
       effect.flags &= -129;
-      job.flags &= -5;
+      job.flags &= -3;
     }
   }
 }
@@ -6170,7 +6170,7 @@ function locateNonHydratedAsyncRoot(instance) {
 function invalidateMount(hooks) {
   if (hooks) {
     for (let i = 0; i < hooks.length; i++)
-      hooks[i].flags |= 8;
+      hooks[i].flags |= 4;
   }
 }
 function getVaporInterface(instance, vnode) {
@@ -6198,8 +6198,41 @@ function watch(source, cb, options) {
   }
   return doWatch(source, cb, options);
 }
+class RenderWatcherEffect extends WatcherEffect {
+  constructor(instance, source, cb, options, flush) {
+    super(source, cb, options);
+    this.flush = flush;
+    const job = () => {
+      if (this.dirty) {
+        this.run();
+      }
+    };
+    if (cb) {
+      this.flags |= 128;
+      job.flags |= 2;
+    }
+    if (instance) {
+      job.i = instance;
+    }
+    this.job = job;
+  }
+  notify() {
+    const flags = this.flags;
+    if (!(flags & 256)) {
+      const flush = this.flush;
+      const job = this.job;
+      if (flush === "post") {
+        queuePostRenderEffect(job, void 0, job.i ? job.i.suspense : null);
+      } else if (flush === "pre") {
+        queueJob(job, job.i ? job.i.uid : void 0, true);
+      } else {
+        job();
+      }
+    }
+  }
+}
 function doWatch(source, cb, options = EMPTY_OBJ) {
-  const { immediate, deep, flush, once } = options;
+  const { immediate, deep, flush = "pre", once } = options;
   if (!cb) {
     if (immediate !== void 0) {
       warn$1(
@@ -6221,35 +6254,25 @@ function doWatch(source, cb, options = EMPTY_OBJ) {
   baseWatchOptions.onWarn = warn$1;
   const instance = currentInstance;
   baseWatchOptions.call = (fn, type, args) => callWithAsyncErrorHandling(fn, instance, type, args);
-  let isPre = false;
-  if (flush === "post") {
-    baseWatchOptions.scheduler = (job) => {
-      queuePostRenderEffect(job, instance && instance.suspense);
-    };
-  } else if (flush !== "sync") {
-    isPre = true;
-    baseWatchOptions.scheduler = (job, isFirstRun) => {
-      if (isFirstRun) {
-        job();
-      } else {
-        queueJob(job);
-      }
-    };
+  const effect = new RenderWatcherEffect(
+    instance,
+    source,
+    cb,
+    baseWatchOptions,
+    flush
+  );
+  if (cb) {
+    effect.run(true);
+  } else if (flush === "post") {
+    queuePostRenderEffect(effect.job, void 0, instance && instance.suspense);
+  } else {
+    effect.run(true);
   }
-  baseWatchOptions.augmentJob = (job) => {
-    if (cb) {
-      job.flags |= 4;
-    }
-    if (isPre) {
-      job.flags |= 2;
-      if (instance) {
-        job.id = instance.uid;
-        job.i = instance;
-      }
-    }
-  };
-  const watchHandle = watch$1(source, cb, baseWatchOptions);
-  return watchHandle;
+  const stop = effect.stop.bind(effect);
+  stop.pause = effect.pause.bind(effect);
+  stop.resume = effect.resume.bind(effect);
+  stop.stop = stop;
+  return stop;
 }
 function instanceWatch(source, value, options) {
   const publicThis = this.proxy;
@@ -6261,9 +6284,9 @@ function instanceWatch(source, value, options) {
     cb = value.handler;
     options = value;
   }
-  const reset = setCurrentInstance(this);
+  const prev = setCurrentInstance(this);
   const res = doWatch(getter, cb.bind(publicThis), options);
-  reset();
+  setCurrentInstance(...prev);
   return res;
 }
 function createPathGetter(ctx, path) {
@@ -6715,7 +6738,7 @@ function updateHOCHostEl({ vnode, parent }, el) {
 }
 
 const isSuspense = (type) => type.__isSuspense;
-function queueEffectWithSuspense(fn, suspense) {
+function queueEffectWithSuspense(fn, id, suspense) {
   if (suspense && suspense.pendingBranch) {
     if (isArray(fn)) {
       suspense.effects.push(...fn);
@@ -6723,7 +6746,7 @@ function queueEffectWithSuspense(fn, suspense) {
       suspense.effects.push(fn);
     }
   } else {
-    queuePostFlushCb(fn);
+    queuePostFlushCb(fn, id);
   }
 }
 
@@ -7067,27 +7090,21 @@ const getCurrentGenericInstance = () => currentInstance || currentRenderingInsta
 const getCurrentInstance = () => currentInstance && !currentInstance.vapor ? currentInstance : currentRenderingInstance;
 let isInSSRComponentSetup = false;
 let setInSSRSetupState;
-let internalSetCurrentInstance;
+let simpleSetCurrentInstance;
 {
-  internalSetCurrentInstance = (i) => {
+  simpleSetCurrentInstance = (i) => {
     currentInstance = i;
   };
   setInSSRSetupState = (v) => {
     isInSSRComponentSetup = v;
   };
 }
-const setCurrentInstance = (instance) => {
-  const prev = currentInstance;
-  internalSetCurrentInstance(instance);
-  instance.scope.on();
-  return () => {
-    instance.scope.off();
-    internalSetCurrentInstance(prev);
-  };
-};
-const unsetCurrentInstance = () => {
-  currentInstance && currentInstance.scope.off();
-  internalSetCurrentInstance(null);
+const setCurrentInstance = (instance, scope = instance !== null ? instance.scope : void 0) => {
+  try {
+    return [currentInstance, setCurrentScope(scope)];
+  } finally {
+    simpleSetCurrentInstance(instance);
+  }
 };
 
 const emptyAppContext = createAppContext();
@@ -7259,9 +7276,9 @@ function setupStatefulComponent(instance, isSSR) {
   }
   const { setup } = Component;
   if (setup) {
-    pauseTracking();
+    const prevSub = setActiveSub();
     const setupContext = instance.setupContext = setup.length > 1 ? createSetupContext(instance) : null;
-    const reset = setCurrentInstance(instance);
+    const prev = setCurrentInstance(instance);
     const setupResult = callWithErrorHandling(
       setup,
       instance,
@@ -7272,12 +7289,15 @@ function setupStatefulComponent(instance, isSSR) {
       ]
     );
     const isAsyncSetup = isPromise(setupResult);
-    resetTracking();
-    reset();
+    setActiveSub(prevSub);
+    setCurrentInstance(...prev);
     if ((isAsyncSetup || instance.sp) && !isAsyncWrapper(instance)) {
       markAsyncBoundary(instance);
     }
     if (isAsyncSetup) {
+      const unsetCurrentInstance = () => {
+        setCurrentInstance(null, void 0);
+      };
       setupResult.then(unsetCurrentInstance, unsetCurrentInstance);
       if (isSSR) {
         return setupResult.then((resolvedResult) => {
@@ -7333,13 +7353,13 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
     instance.render = Component.render || NOOP;
   }
   {
-    const reset = setCurrentInstance(instance);
-    pauseTracking();
+    const prevInstance = setCurrentInstance(instance);
+    const prevSub = setActiveSub();
     try {
       applyOptions(instance);
     } finally {
-      resetTracking();
-      reset();
+      setActiveSub(prevSub);
+      setCurrentInstance(...prevInstance);
     }
   }
   if (!Component.render && instance.render === NOOP && !isSSR) {
@@ -7471,7 +7491,7 @@ const computed = (getterOrOptions, debugOptions) => {
   return computed$1(getterOrOptions, debugOptions, isInSSRComponentSetup);
 };
 
-const version = "3.5.14";
+const version = "3.6.0-alpha.1";
 const warn = warn$1 ;
 const ssrUtils = null;
 
@@ -8028,8 +8048,22 @@ function ssrRenderStyle(raw) {
   if (isString(raw)) {
     return escapeHtml(raw);
   }
-  const styles = normalizeStyle(raw);
+  const styles = normalizeStyle(ssrResetCssVars(raw));
   return escapeHtml(stringifyStyle(styles));
+}
+function ssrResetCssVars(raw) {
+  if (!isArray(raw) && isObject(raw)) {
+    const res = {};
+    for (const key in raw) {
+      if (key.startsWith(":--")) {
+        res[key.slice(1)] = normalizeCssVarValue(raw[key]);
+      } else {
+        res[key] = raw[key];
+      }
+    }
+    return res;
+  }
+  return raw;
 }
 
 function ssrRenderComponent(comp, props = null, children = null, parentComponent = null, slotScopeId) {

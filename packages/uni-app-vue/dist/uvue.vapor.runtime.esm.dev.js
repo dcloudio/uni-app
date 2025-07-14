@@ -1,154 +1,195 @@
-import { extend, isSymbol, isObject, hasOwn, def, hasChanged, isFunction, isArray as isArray$1, toRawType, EMPTY_OBJ, NOOP, remove as remove$1, isSet, isMap, isPlainObject, isIntegerKey, makeMap, capitalize, hyphenate, isPromise, getGlobalThis, isString, toHandlerKey, camelize, isReservedProp, looseToNumber, isOn, isBuiltInTag, invokeArrayFns, parseStringStyle, canSetValueDirectly, isBuiltInDirective, isRegExp, toNumber, EMPTY_ARR, toDisplayString, NO, getSequence, isModelListener, normalizeStyle as normalizeStyle$2, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, getEscapedCssVarName, isGloballyAllowed, YES } from '@vue/shared';
+import { isSymbol, isObject, hasOwn, def, hasChanged, isFunction, isArray as isArray$1, extend, toRawType, EMPTY_OBJ, isSet, isMap, isPlainObject, isIntegerKey, NOOP, makeMap, capitalize, hyphenate, isPromise, getGlobalThis, isString, remove as remove$1, toHandlerKey, camelize, isReservedProp, looseToNumber, isOn, isBuiltInTag, parseStringStyle, canSetValueDirectly, invokeArrayFns, isBuiltInDirective, isRegExp, toNumber, EMPTY_ARR, toDisplayString, NO, isModelListener, getSequence, normalizeStyle as normalizeStyle$2, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, normalizeCssVarValue, getEscapedCssVarName, isGloballyAllowed, YES } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 
 /**
-* @vue/reactivity v3.5.14
+* @vue/reactivity v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
 
-var SubscriberFlags = /* @__PURE__ */(SubscriberFlags2 => {
-  SubscriberFlags2[SubscriberFlags2["Computed"] = 1] = "Computed";
-  SubscriberFlags2[SubscriberFlags2["Effect"] = 2] = "Effect";
-  SubscriberFlags2[SubscriberFlags2["Tracking"] = 4] = "Tracking";
-  SubscriberFlags2[SubscriberFlags2["Recursed"] = 16] = "Recursed";
-  SubscriberFlags2[SubscriberFlags2["Dirty"] = 32] = "Dirty";
-  SubscriberFlags2[SubscriberFlags2["PendingComputed"] = 64] = "PendingComputed";
-  SubscriberFlags2[SubscriberFlags2["Propagated"] = 96] = "Propagated";
-  return SubscriberFlags2;
-})(SubscriberFlags || {});
+function warn$2(msg) {
+  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
+    args[_key2 - 1] = arguments[_key2];
+  }
+  console.warn("[Vue warn] ".concat(msg), ...args);
+}
+var ReactiveFlags$1 = /* @__PURE__ */(ReactiveFlags2 => {
+  ReactiveFlags2[ReactiveFlags2["None"] = 0] = "None";
+  ReactiveFlags2[ReactiveFlags2["Mutable"] = 1] = "Mutable";
+  ReactiveFlags2[ReactiveFlags2["Watching"] = 2] = "Watching";
+  ReactiveFlags2[ReactiveFlags2["RecursedCheck"] = 4] = "RecursedCheck";
+  ReactiveFlags2[ReactiveFlags2["Recursed"] = 8] = "Recursed";
+  ReactiveFlags2[ReactiveFlags2["Dirty"] = 16] = "Dirty";
+  ReactiveFlags2[ReactiveFlags2["Pending"] = 32] = "Pending";
+  return ReactiveFlags2;
+})(ReactiveFlags$1 || {});
 var notifyBuffer = [];
 var batchDepth = 0;
+var activeSub = void 0;
 var notifyIndex = 0;
 var notifyBufferLength = 0;
+function setActiveSub(sub) {
+  try {
+    return activeSub;
+  } finally {
+    activeSub = sub;
+  }
+}
 function startBatch() {
   ++batchDepth;
 }
 function endBatch() {
-  if (! --batchDepth) {
-    processEffectNotifications();
+  if (! --batchDepth && notifyBufferLength) {
+    flush();
   }
 }
 function link(dep, sub) {
-  var currentDep = sub.depsTail;
-  if (currentDep !== void 0 && currentDep.dep === dep) {
+  var prevDep = sub.depsTail;
+  if (prevDep !== void 0 && prevDep.dep === dep) {
     return;
   }
-  var nextDep = currentDep !== void 0 ? currentDep.nextDep : sub.deps;
-  if (nextDep !== void 0 && nextDep.dep === dep) {
-    sub.depsTail = nextDep;
-    return;
-  }
-  var depLastSub = dep.subsTail;
-  if (depLastSub !== void 0 && depLastSub.sub === sub && isValidLink(depLastSub, sub)) {
-    return;
-  }
-  return linkNewDep(dep, sub, nextDep, currentDep);
-}
-function propagate(current) {
-  var next = current.nextSub;
-  var branchs;
-  var branchDepth = 0;
-  var targetFlag = 32 /* Dirty */;
-  top: do {
-    var sub = current.sub;
-    var subFlags = sub.flags;
-    var shouldNotify = false;
-    if (!(subFlags & (4 /* Tracking */ | 16 /* Recursed */ | 96 /* Propagated */))) {
-      sub.flags = subFlags | targetFlag;
-      shouldNotify = true;
-    } else if (subFlags & 16 /* Recursed */ && !(subFlags & 4 /* Tracking */)) {
-      sub.flags = subFlags & -17 /* Recursed */ | targetFlag;
-      shouldNotify = true;
-    } else if (!(subFlags & 96 /* Propagated */) && isValidLink(current, sub)) {
-      sub.flags = subFlags | 16 /* Recursed */ | targetFlag;
-      shouldNotify = sub.subs !== void 0;
+  var nextDep = void 0;
+  var recursedCheck = sub.flags & 4 /* RecursedCheck */;
+  if (recursedCheck) {
+    nextDep = prevDep !== void 0 ? prevDep.nextDep : sub.deps;
+    if (nextDep !== void 0 && nextDep.dep === dep) {
+      sub.depsTail = nextDep;
+      return;
     }
-    if (shouldNotify) {
-      var subSubs = sub.subs;
-      if (subSubs !== void 0) {
-        current = subSubs;
-        if (subSubs.nextSub !== void 0) {
-          branchs = {
-            target: next,
-            linked: branchs
-          };
-          ++branchDepth;
-          next = current.nextSub;
-        }
-        targetFlag = 64 /* PendingComputed */;
-        continue;
+  }
+  var prevSub = dep.subsTail;
+  if (prevSub !== void 0 && prevSub.sub === sub && (!recursedCheck || isValidLink(prevSub, sub))) {
+    return;
+  }
+  var newLink = sub.depsTail = dep.subsTail = {
+    dep,
+    sub,
+    prevDep,
+    nextDep,
+    prevSub,
+    nextSub: void 0
+  };
+  if (nextDep !== void 0) {
+    nextDep.prevDep = newLink;
+  }
+  if (prevDep !== void 0) {
+    prevDep.nextDep = newLink;
+  } else {
+    sub.deps = newLink;
+  }
+  if (prevSub !== void 0) {
+    prevSub.nextSub = newLink;
+  } else {
+    dep.subs = newLink;
+  }
+}
+function unlink(link2) {
+  var sub = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : link2.sub;
+  var dep = link2.dep;
+  var prevDep = link2.prevDep;
+  var nextDep = link2.nextDep;
+  var nextSub = link2.nextSub;
+  var prevSub = link2.prevSub;
+  if (nextDep !== void 0) {
+    nextDep.prevDep = prevDep;
+  } else {
+    sub.depsTail = prevDep;
+  }
+  if (prevDep !== void 0) {
+    prevDep.nextDep = nextDep;
+  } else {
+    sub.deps = nextDep;
+  }
+  if (nextSub !== void 0) {
+    nextSub.prevSub = prevSub;
+  } else {
+    dep.subsTail = prevSub;
+  }
+  if (prevSub !== void 0) {
+    prevSub.nextSub = nextSub;
+  } else if ((dep.subs = nextSub) === void 0) {
+    var toRemove = dep.deps;
+    if (toRemove !== void 0) {
+      do {
+        toRemove = unlink(toRemove, dep);
+      } while (toRemove !== void 0);
+      dep.flags |= 16 /* Dirty */;
+    }
+  }
+  return nextDep;
+}
+function propagate(link2) {
+  var next = link2.nextSub;
+  var stack;
+  top: do {
+    var sub = link2.sub;
+    var flags = sub.flags;
+    if (flags & (1 /* Mutable */ | 2 /* Watching */)) {
+      if (!(flags & (4 /* RecursedCheck */ | 8 /* Recursed */ | 16 /* Dirty */ | 32 /* Pending */))) {
+        sub.flags = flags | 32 /* Pending */;
+      } else if (!(flags & (4 /* RecursedCheck */ | 8 /* Recursed */))) {
+        flags = 0 /* None */;
+      } else if (!(flags & 4 /* RecursedCheck */)) {
+        sub.flags = flags & -9 /* Recursed */ | 32 /* Pending */;
+      } else if (!(flags & (16 /* Dirty */ | 32 /* Pending */)) && isValidLink(link2, sub)) {
+        sub.flags = flags | 8 /* Recursed */ | 32 /* Pending */;
+        flags &= 1 /* Mutable */;
+      } else {
+        flags = 0 /* None */;
       }
-      if (subFlags & 2 /* Effect */) {
+      if (flags & 2 /* Watching */) {
         notifyBuffer[notifyBufferLength++] = sub;
       }
-    } else if (!(subFlags & (4 /* Tracking */ | targetFlag))) {
-      sub.flags = subFlags | targetFlag;
-    } else if (!(subFlags & targetFlag) && subFlags & 96 /* Propagated */ && isValidLink(current, sub)) {
-      sub.flags = subFlags | targetFlag;
+      if (flags & 1 /* Mutable */) {
+        var subSubs = sub.subs;
+        if (subSubs !== void 0) {
+          link2 = subSubs;
+          if (subSubs.nextSub !== void 0) {
+            stack = {
+              value: next,
+              prev: stack
+            };
+            next = link2.nextSub;
+          }
+          continue;
+        }
+      }
     }
-    if ((current = next) !== void 0) {
-      next = current.nextSub;
-      targetFlag = branchDepth ? 64 /* PendingComputed */ : 32 /* Dirty */;
+    if ((link2 = next) !== void 0) {
+      next = link2.nextSub;
       continue;
     }
-    while (branchDepth--) {
-      current = branchs.target;
-      branchs = branchs.linked;
-      if (current !== void 0) {
-        next = current.nextSub;
-        targetFlag = branchDepth ? 64 /* PendingComputed */ : 32 /* Dirty */;
+    while (stack !== void 0) {
+      link2 = stack.value;
+      stack = stack.prev;
+      if (link2 !== void 0) {
+        next = link2.nextSub;
         continue top;
       }
     }
     break;
   } while (true);
-  if (!batchDepth) {
-    processEffectNotifications();
-  }
 }
 function startTracking(sub) {
   sub.depsTail = void 0;
-  sub.flags = sub.flags & -113 | 4 /* Tracking */;
+  sub.flags = sub.flags & -57 | 4 /* RecursedCheck */;
+  return setActiveSub(sub);
 }
-function endTracking(sub) {
+function endTracking(sub, prevSub) {
+  if (activeSub !== sub) {
+    warn$2("Active effect was not restored correctly - this is likely a Vue internal bug.");
+  }
+  activeSub = prevSub;
   var depsTail = sub.depsTail;
-  if (depsTail !== void 0) {
-    var nextDep = depsTail.nextDep;
-    if (nextDep !== void 0) {
-      clearTracking(nextDep);
-      depsTail.nextDep = void 0;
-    }
-  } else if (sub.deps !== void 0) {
-    clearTracking(sub.deps);
-    sub.deps = void 0;
+  var toRemove = depsTail !== void 0 ? depsTail.nextDep : sub.deps;
+  while (toRemove !== void 0) {
+    toRemove = unlink(toRemove, sub);
   }
-  sub.flags &= -5 /* Tracking */;
+  sub.flags &= -5 /* RecursedCheck */;
 }
-function updateDirtyFlag(sub, flags) {
-  if (checkDirty(sub.deps)) {
-    sub.flags = flags | 32 /* Dirty */;
-    return true;
-  } else {
-    sub.flags = flags & -65 /* PendingComputed */;
-    return false;
-  }
-}
-function processComputedUpdate(computed, flags) {
-  if (flags & 32 /* Dirty */ || checkDirty(computed.deps)) {
-    if (computed.update()) {
-      var subs = computed.subs;
-      if (subs !== void 0) {
-        shallowPropagate(subs);
-      }
-    }
-  } else {
-    computed.flags = flags & -65 /* PendingComputed */;
-  }
-}
-function processEffectNotifications() {
+function flush() {
   while (notifyIndex < notifyBufferLength) {
     var _effect = notifyBuffer[notifyIndex];
     notifyBuffer[notifyIndex++] = void 0;
@@ -157,91 +198,63 @@ function processEffectNotifications() {
   notifyIndex = 0;
   notifyBufferLength = 0;
 }
-function linkNewDep(dep, sub, nextDep, depsTail) {
-  var newLink = {
-    dep,
-    sub,
-    nextDep,
-    prevSub: void 0,
-    nextSub: void 0
-  };
-  if (depsTail === void 0) {
-    sub.deps = newLink;
-  } else {
-    depsTail.nextDep = newLink;
-  }
-  if (dep.subs === void 0) {
-    dep.subs = newLink;
-  } else {
-    var oldTail = dep.subsTail;
-    newLink.prevSub = oldTail;
-    oldTail.nextSub = newLink;
-  }
-  sub.depsTail = newLink;
-  dep.subsTail = newLink;
-  return newLink;
-}
-function checkDirty(current) {
-  var prevLinks;
+function checkDirty(link2, sub) {
+  var stack;
   var checkDepth = 0;
-  var dirty;
   top: do {
-    dirty = false;
-    var dep = current.dep;
-    if (current.sub.flags & 32 /* Dirty */) {
+    var dep = link2.dep;
+    var depFlags = dep.flags;
+    var dirty = false;
+    if (sub.flags & 16 /* Dirty */) {
       dirty = true;
-    } else if ("flags" in dep) {
-      var depFlags = dep.flags;
-      if ((depFlags & (1 /* Computed */ | 32 /* Dirty */)) === (1 /* Computed */ | 32 /* Dirty */)) {
-        if (dep.update()) {
-          var subs = dep.subs;
-          if (subs.nextSub !== void 0) {
-            shallowPropagate(subs);
-          }
-          dirty = true;
+    } else if ((depFlags & (1 /* Mutable */ | 16 /* Dirty */)) === (1 /* Mutable */ | 16 /* Dirty */)) {
+      if (dep.update()) {
+        var subs = dep.subs;
+        if (subs.nextSub !== void 0) {
+          shallowPropagate(subs);
         }
-      } else if ((depFlags & (1 /* Computed */ | 64 /* PendingComputed */)) === (1 /* Computed */ | 64 /* PendingComputed */)) {
-        if (current.nextSub !== void 0 || current.prevSub !== void 0) {
-          prevLinks = {
-            target: current,
-            linked: prevLinks
-          };
-        }
-        current = dep.deps;
-        ++checkDepth;
-        continue;
+        dirty = true;
       }
+    } else if ((depFlags & (1 /* Mutable */ | 32 /* Pending */)) === (1 /* Mutable */ | 32 /* Pending */)) {
+      if (link2.nextSub !== void 0 || link2.prevSub !== void 0) {
+        stack = {
+          value: link2,
+          prev: stack
+        };
+      }
+      link2 = dep.deps;
+      sub = dep;
+      ++checkDepth;
+      continue;
     }
-    if (!dirty && current.nextDep !== void 0) {
-      current = current.nextDep;
+    if (!dirty && link2.nextDep !== void 0) {
+      link2 = link2.nextDep;
       continue;
     }
     while (checkDepth) {
       --checkDepth;
-      var sub = current.sub;
       var firstSub = sub.subs;
+      var hasMultipleSubs = firstSub.nextSub !== void 0;
+      if (hasMultipleSubs) {
+        link2 = stack.value;
+        stack = stack.prev;
+      } else {
+        link2 = firstSub;
+      }
       if (dirty) {
         if (sub.update()) {
-          if (firstSub.nextSub !== void 0) {
-            current = prevLinks.target;
-            prevLinks = prevLinks.linked;
+          if (hasMultipleSubs) {
             shallowPropagate(firstSub);
-          } else {
-            current = firstSub;
           }
+          sub = link2.sub;
           continue;
         }
       } else {
-        sub.flags &= -65 /* PendingComputed */;
+        sub.flags &= -33 /* Pending */;
       }
-      if (firstSub.nextSub !== void 0) {
-        current = prevLinks.target;
-        prevLinks = prevLinks.linked;
-      } else {
-        current = firstSub;
-      }
-      if (current.nextDep !== void 0) {
-        current = current.nextDep;
+      sub = link2.sub;
+      if (link2.nextDep !== void 0) {
+        link2 = link2.nextDep;
         continue top;
       }
       dirty = false;
@@ -252,11 +265,12 @@ function checkDirty(current) {
 function shallowPropagate(link2) {
   do {
     var sub = link2.sub;
+    var nextSub = link2.nextSub;
     var subFlags = sub.flags;
-    if ((subFlags & (64 /* PendingComputed */ | 32 /* Dirty */)) === 64 /* PendingComputed */) {
-      sub.flags = subFlags | 32 /* Dirty */;
+    if ((subFlags & (32 /* Pending */ | 16 /* Dirty */)) === 32 /* Pending */) {
+      sub.flags = subFlags | 16 /* Dirty */;
     }
-    link2 = link2.nextSub;
+    link2 = nextSub;
   } while (link2 !== void 0);
 }
 function isValidLink(checkLink, sub) {
@@ -274,39 +288,6 @@ function isValidLink(checkLink, sub) {
     } while (link2 !== void 0);
   }
   return false;
-}
-function clearTracking(link2) {
-  do {
-    var dep = link2.dep;
-    var nextDep = link2.nextDep;
-    var nextSub = link2.nextSub;
-    var prevSub = link2.prevSub;
-    if (nextSub !== void 0) {
-      nextSub.prevSub = prevSub;
-    } else {
-      dep.subsTail = prevSub;
-    }
-    if (prevSub !== void 0) {
-      prevSub.nextSub = nextSub;
-    } else {
-      dep.subs = nextSub;
-    }
-    if (dep.subs === void 0 && "deps" in dep) {
-      var depFlags = dep.flags;
-      if (!(depFlags & 32 /* Dirty */)) {
-        dep.flags = depFlags | 32 /* Dirty */;
-      }
-      var depDeps = dep.deps;
-      if (depDeps !== void 0) {
-        link2 = depDeps;
-        dep.depsTail.nextDep = nextDep;
-        dep.deps = void 0;
-        dep.depsTail = void 0;
-        continue;
-      }
-    }
-    link2 = nextDep;
-  } while (link2 !== void 0);
 }
 var triggerEventInfos = [];
 function onTrack(sub, debugInfo) {
@@ -342,308 +323,12 @@ function setupFlagsHandler(target) {
       return target._flags;
     },
     set(value) {
-      if (!(target._flags & SubscriberFlags.Propagated) && !!(value & SubscriberFlags.Propagated)) {
+      if (!(target._flags & (ReactiveFlags$1.Dirty | ReactiveFlags$1.Pending)) && !!(value & (ReactiveFlags$1.Dirty | ReactiveFlags$1.Pending))) {
         onTrigger(this);
       }
       target._flags = value;
     }
   });
-}
-function warn$2(msg) {
-  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
-    args[_key2 - 1] = arguments[_key2];
-  }
-  console.warn("[Vue warn] ".concat(msg), ...args);
-}
-var activeEffectScope;
-class EffectScope {
-  constructor() {
-    var detached = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-    var parent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : activeEffectScope;
-    this.detached = detached;
-    // Subscriber: In order to collect orphans computeds
-    this.deps = void 0;
-    this.depsTail = void 0;
-    this.flags = 0;
-    /**
-     * @internal track `on` calls, allow `on` call multiple times
-     */
-    this._on = 0;
-    /**
-     * @internal
-     */
-    this.effects = [];
-    /**
-     * @internal
-     */
-    this.cleanups = [];
-    this.parent = parent;
-    if (!detached && parent) {
-      this.index = (parent.scopes || (parent.scopes = [])).push(this) - 1;
-    }
-  }
-  get active() {
-    return !(this.flags & 1024);
-  }
-  pause() {
-    if (!(this.flags & 256)) {
-      this.flags |= 256;
-      var i, l;
-      if (this.scopes) {
-        for (i = 0, l = this.scopes.length; i < l; i++) {
-          this.scopes[i].pause();
-        }
-      }
-      for (i = 0, l = this.effects.length; i < l; i++) {
-        this.effects[i].pause();
-      }
-    }
-  }
-  /**
-   * Resumes the effect scope, including all child scopes and effects.
-   */
-  resume() {
-    if (this.flags & 256) {
-      this.flags &= -257;
-      var i, l;
-      if (this.scopes) {
-        for (i = 0, l = this.scopes.length; i < l; i++) {
-          this.scopes[i].resume();
-        }
-      }
-      for (i = 0, l = this.effects.length; i < l; i++) {
-        this.effects[i].resume();
-      }
-    }
-  }
-  run(fn) {
-    if (this.active) {
-      var prevEffectScope = activeEffectScope;
-      try {
-        activeEffectScope = this;
-        return fn();
-      } finally {
-        activeEffectScope = prevEffectScope;
-      }
-    } else {
-      warn$2("cannot run an inactive effect scope.");
-    }
-  }
-  /**
-   * This should only be called on non-detached scopes
-   * @internal
-   */
-  on() {
-    if (++this._on === 1) {
-      this.prevScope = activeEffectScope;
-      activeEffectScope = this;
-    }
-  }
-  /**
-   * This should only be called on non-detached scopes
-   * @internal
-   */
-  off() {
-    if (this._on > 0 && --this._on === 0) {
-      activeEffectScope = this.prevScope;
-      this.prevScope = void 0;
-    }
-  }
-  stop(fromParent) {
-    if (this.active) {
-      this.flags |= 1024;
-      startTracking(this);
-      endTracking(this);
-      var i, l;
-      for (i = 0, l = this.effects.length; i < l; i++) {
-        this.effects[i].stop();
-      }
-      this.effects.length = 0;
-      for (i = 0, l = this.cleanups.length; i < l; i++) {
-        this.cleanups[i]();
-      }
-      this.cleanups.length = 0;
-      if (this.scopes) {
-        for (i = 0, l = this.scopes.length; i < l; i++) {
-          this.scopes[i].stop(true);
-        }
-        this.scopes.length = 0;
-      }
-      if (!this.detached && this.parent && !fromParent) {
-        var last = this.parent.scopes.pop();
-        if (last && last !== this) {
-          this.parent.scopes[this.index] = last;
-          last.index = this.index;
-        }
-      }
-      this.parent = void 0;
-    }
-  }
-}
-function effectScope(detached) {
-  return new EffectScope(detached);
-}
-function getCurrentScope() {
-  return activeEffectScope;
-}
-function onScopeDispose(fn) {
-  var failSilently = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  if (activeEffectScope) {
-    activeEffectScope.cleanups.push(fn);
-  } else if (!failSilently) {
-    warn$2("onScopeDispose() is called when there is no active effect scope to be associated with.");
-  }
-}
-class ReactiveEffect {
-  constructor(fn) {
-    this.fn = fn;
-    // Subscriber
-    this.deps = void 0;
-    this.depsTail = void 0;
-    this.flags = SubscriberFlags.Effect;
-    /**
-     * @internal
-     */
-    this.cleanup = void 0;
-    if (activeEffectScope && activeEffectScope.active) {
-      activeEffectScope.effects.push(this);
-    }
-  }
-  get active() {
-    return !(this.flags & 1024);
-  }
-  pause() {
-    if (!(this.flags & 256)) {
-      this.flags |= 256;
-    }
-  }
-  resume() {
-    var flags = this.flags;
-    if (flags & 256) {
-      this.flags &= -257;
-    }
-    if (flags & 512) {
-      this.flags &= -513;
-      this.notify();
-    }
-  }
-  notify() {
-    var flags = this.flags;
-    if (!(flags & 256)) {
-      this.scheduler();
-    } else {
-      this.flags |= 512;
-    }
-  }
-  scheduler() {
-    if (this.dirty) {
-      this.run();
-    }
-  }
-  run() {
-    if (!this.active) {
-      return this.fn();
-    }
-    cleanupEffect(this);
-    var prevSub = activeSub;
-    setActiveSub(this);
-    startTracking(this);
-    try {
-      return this.fn();
-    } finally {
-      if (activeSub !== this) {
-        warn$2("Active effect was not restored correctly - this is likely a Vue internal bug.");
-      }
-      setActiveSub(prevSub);
-      endTracking(this);
-      if (this.flags & SubscriberFlags.Recursed && this.flags & 128) {
-        this.flags &= ~SubscriberFlags.Recursed;
-        this.notify();
-      }
-    }
-  }
-  stop() {
-    if (this.active) {
-      startTracking(this);
-      endTracking(this);
-      cleanupEffect(this);
-      this.onStop && this.onStop();
-      this.flags |= 1024;
-    }
-  }
-  get dirty() {
-    var flags = this.flags;
-    if (flags & SubscriberFlags.Dirty || flags & SubscriberFlags.PendingComputed && updateDirtyFlag(this, flags)) {
-      return true;
-    }
-    return false;
-  }
-}
-{
-  setupOnTrigger(ReactiveEffect);
-}
-function effect(fn, options) {
-  if (fn.effect instanceof ReactiveEffect) {
-    fn = fn.effect.fn;
-  }
-  var e = new ReactiveEffect(fn);
-  if (options) {
-    extend(e, options);
-  }
-  try {
-    e.run();
-  } catch (err) {
-    e.stop();
-    throw err;
-  }
-  var runner = e.run.bind(e);
-  runner.effect = e;
-  return runner;
-}
-function stop(runner) {
-  runner.effect.stop();
-}
-var resetTrackingStack = [];
-function pauseTracking() {
-  resetTrackingStack.push(activeSub);
-  activeSub = void 0;
-}
-function resetTracking() {
-  if (resetTrackingStack.length === 0) {
-    warn$2("resetTracking() was called when there was no active tracking to reset.");
-  }
-  if (resetTrackingStack.length) {
-    activeSub = resetTrackingStack.pop();
-  } else {
-    activeSub = void 0;
-  }
-}
-function onEffectCleanup(fn) {
-  var failSilently = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  if (activeSub instanceof ReactiveEffect) {
-    activeSub.cleanup = fn;
-  } else if (!failSilently) {
-    warn$2("onEffectCleanup() was called when there was no active effect to associate with.");
-  }
-}
-function cleanupEffect(e) {
-  var {
-    cleanup
-  } = e;
-  e.cleanup = void 0;
-  if (cleanup !== void 0) {
-    var prevSub = activeSub;
-    activeSub = void 0;
-    try {
-      cleanup();
-    } finally {
-      activeSub = prevSub;
-    }
-  }
-}
-var activeSub = void 0;
-function setActiveSub(sub) {
-  activeSub = sub;
 }
 class Dep {
   constructor(map, key) {
@@ -651,6 +336,7 @@ class Dep {
     this.key = key;
     this._subs = void 0;
     this.subsTail = void 0;
+    this.flags = ReactiveFlags$1.None;
   }
   get subs() {
     return this._subs;
@@ -704,6 +390,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         });
       }
       propagate(dep.subs);
+      shallowPropagate(dep.subs);
       {
         triggerEventInfos.pop();
       }
@@ -956,11 +643,11 @@ function searchProxy(self, method, args) {
 }
 function noTracking(self, method) {
   var args = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-  pauseTracking();
   startBatch();
+  var prevSub = setActiveSub();
   var res = toRaw(self)[method].apply(self, args);
+  setActiveSub(prevSub);
   endBatch();
-  resetTracking();
   return res;
 }
 var isNonTrackableKeys = /* @__PURE__ */makeMap("__proto__,__v_isRef,__isVue");
@@ -1007,11 +694,15 @@ class BaseReactiveHandler {
         return hasOwnProperty;
       }
     }
+    var wasRef = isRef(target);
     var res = Reflect.get(target, key,
     // if this is a proxy wrapping a ref, return methods using the raw ref
     // as receiver so that we don't have to call `toRaw` on the ref in all
     // its class methods
-    isRef(target) ? target : receiver);
+    wasRef ? target : receiver);
+    if (wasRef && key !== "value") {
+      return res;
+    }
     if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
       return res;
     }
@@ -1415,13 +1106,21 @@ function createRef(rawValue, wrap) {
   return new RefImpl(rawValue, wrap);
 }
 class RefImpl {
+  // TODO isolatedDeclarations "__v_isShallow"
   constructor(value, wrap) {
-    // Dependency
     this.subs = void 0;
     this.subsTail = void 0;
-    this["__v_isRef"] = true;
-    this["__v_isShallow"] = false;
-    this._rawValue = wrap ? toRaw(value) : value;
+    this.flags = ReactiveFlags$1.Mutable;
+    /**
+     * @internal
+     */
+    this.__v_isRef = true;
+    // TODO isolatedDeclarations "__v_isRef"
+    /**
+     * @internal
+     */
+    this.__v_isShallow = false;
+    this._oldValue = this._rawValue = wrap ? toRaw(value) : value;
     this._value = wrap ? wrap(value) : value;
     this._wrap = wrap;
     this["__v_isShallow"] = !wrap;
@@ -1431,6 +1130,12 @@ class RefImpl {
   }
   get value() {
     trackRef(this);
+    if (this.flags & ReactiveFlags$1.Dirty && this.update()) {
+      var subs = this.subs;
+      if (subs !== void 0) {
+        shallowPropagate(subs);
+      }
+    }
     return this._value;
   }
   set value(newValue) {
@@ -1438,28 +1143,43 @@ class RefImpl {
     var useDirectValue = this["__v_isShallow"] || isShallow(newValue) || isReadonly(newValue);
     newValue = useDirectValue ? newValue : toRaw(newValue);
     if (hasChanged(newValue, oldValue)) {
+      this.flags |= ReactiveFlags$1.Dirty;
       this._rawValue = newValue;
-      this._value = this._wrap && !useDirectValue ? this._wrap(newValue) : newValue;
-      {
-        triggerEventInfos.push({
-          target: this,
-          type: "set",
-          key: "value",
-          newValue,
-          oldValue
-        });
-      }
-      triggerRef(this);
-      {
-        triggerEventInfos.pop();
+      this._value = !useDirectValue && this._wrap ? this._wrap(newValue) : newValue;
+      var subs = this.subs;
+      if (subs !== void 0) {
+        {
+          triggerEventInfos.push({
+            target: this,
+            type: "set",
+            key: "value",
+            newValue,
+            oldValue
+          });
+        }
+        propagate(subs);
+        if (!batchDepth) {
+          flush();
+        }
+        {
+          triggerEventInfos.pop();
+        }
       }
     }
+  }
+  update() {
+    this.flags &= ~ReactiveFlags$1.Dirty;
+    return hasChanged(this._oldValue, this._oldValue = this._rawValue);
   }
 }
 function triggerRef(ref2) {
   var dep = ref2.dep;
   if (dep !== void 0 && dep.subs !== void 0) {
     propagate(dep.subs);
+    shallowPropagate(dep.subs);
+    if (!batchDepth) {
+      flush();
+    }
   }
 }
 function trackRef(dep) {
@@ -1497,9 +1217,9 @@ function proxyRefs(objectWithRefs) {
 }
 class CustomRefImpl {
   constructor(factory) {
-    // Dependency
     this.subs = void 0;
     this.subsTail = void 0;
+    this.flags = ReactiveFlags$1.None;
     this["__v_isRef"] = true;
     this._value = void 0;
     var {
@@ -1574,6 +1294,268 @@ function propertyToRef(source, key, defaultValue) {
   var val = source[key];
   return isRef(val) ? val : new ObjectRefImpl(source, key, defaultValue);
 }
+class ReactiveEffect {
+  constructor(fn) {
+    this.deps = void 0;
+    this.depsTail = void 0;
+    this.subs = void 0;
+    this.subsTail = void 0;
+    this.flags = ReactiveFlags$1.Watching | ReactiveFlags$1.Dirty;
+    /**
+     * @internal
+     */
+    this.cleanups = [];
+    /**
+     * @internal
+     */
+    this.cleanupsLength = 0;
+    if (fn !== void 0) {
+      this.fn = fn;
+    }
+    if (activeEffectScope) {
+      link(this, activeEffectScope);
+    }
+  }
+  // @ts-expect-error
+  fn() {}
+  get active() {
+    return !(this.flags & 1024);
+  }
+  pause() {
+    this.flags |= 256;
+  }
+  resume() {
+    var flags = this.flags &= -257;
+    if (flags & (ReactiveFlags$1.Dirty | ReactiveFlags$1.Pending)) {
+      this.notify();
+    }
+  }
+  notify() {
+    if (!(this.flags & 256) && this.dirty) {
+      this.run();
+    }
+  }
+  run() {
+    if (!this.active) {
+      return this.fn();
+    }
+    cleanup(this);
+    var prevSub = startTracking(this);
+    try {
+      return this.fn();
+    } finally {
+      endTracking(this, prevSub);
+      var flags = this.flags;
+      if ((flags & (ReactiveFlags$1.Recursed | 128)) === (ReactiveFlags$1.Recursed | 128)) {
+        this.flags = flags & ~ReactiveFlags$1.Recursed;
+        this.notify();
+      }
+    }
+  }
+  stop() {
+    if (!this.active) {
+      return;
+    }
+    this.flags = 1024;
+    var dep = this.deps;
+    while (dep !== void 0) {
+      dep = unlink(dep, this);
+    }
+    var sub = this.subs;
+    if (sub !== void 0) {
+      unlink(sub);
+    }
+    cleanup(this);
+  }
+  get dirty() {
+    var flags = this.flags;
+    if (flags & ReactiveFlags$1.Dirty) {
+      return true;
+    }
+    if (flags & ReactiveFlags$1.Pending) {
+      if (checkDirty(this.deps, this)) {
+        this.flags = flags | ReactiveFlags$1.Dirty;
+        return true;
+      } else {
+        this.flags = flags & ~ReactiveFlags$1.Pending;
+      }
+    }
+    return false;
+  }
+}
+{
+  setupOnTrigger(ReactiveEffect);
+}
+function effect(fn, options) {
+  if (fn.effect instanceof ReactiveEffect) {
+    fn = fn.effect.fn;
+  }
+  var e = new ReactiveEffect(fn);
+  if (options) {
+    var {
+      onStop,
+      scheduler
+    } = options;
+    if (onStop) {
+      options.onStop = void 0;
+      var stop2 = e.stop.bind(e);
+      e.stop = () => {
+        stop2();
+        onStop();
+      };
+    }
+    if (scheduler) {
+      options.scheduler = void 0;
+      e.notify = () => {
+        if (!(e.flags & 256)) {
+          scheduler();
+        }
+      };
+    }
+    extend(e, options);
+  }
+  try {
+    e.run();
+  } catch (err) {
+    e.stop();
+    throw err;
+  }
+  var runner = e.run.bind(e);
+  runner.effect = e;
+  return runner;
+}
+function stop(runner) {
+  runner.effect.stop();
+}
+function cleanup(sub) {
+  var l = sub.cleanupsLength;
+  if (l) {
+    for (var i = 0; i < l; i++) {
+      sub.cleanups[i]();
+    }
+    sub.cleanupsLength = 0;
+  }
+}
+function onEffectCleanup(fn) {
+  var failSilently = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  if (activeSub instanceof ReactiveEffect) {
+    activeSub.cleanups[activeSub.cleanupsLength++] = () => cleanupEffect(fn);
+  } else if (!failSilently) {
+    warn$2("onEffectCleanup() was called when there was no active effect to associate with.");
+  }
+}
+function cleanupEffect(fn) {
+  var prevSub = setActiveSub();
+  try {
+    fn();
+  } finally {
+    setActiveSub(prevSub);
+  }
+}
+var activeEffectScope;
+class EffectScope {
+  constructor() {
+    var detached = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    this.deps = void 0;
+    this.depsTail = void 0;
+    this.subs = void 0;
+    this.subsTail = void 0;
+    this.flags = 0;
+    /**
+     * @internal
+     */
+    this.cleanups = [];
+    /**
+     * @internal
+     */
+    this.cleanupsLength = 0;
+    if (!detached && activeEffectScope) {
+      link(this, activeEffectScope);
+    }
+  }
+  get active() {
+    return !(this.flags & 1024);
+  }
+  pause() {
+    if (!(this.flags & 256)) {
+      this.flags |= 256;
+      for (var link2 = this.deps; link2 !== void 0; link2 = link2.nextDep) {
+        var dep = link2.dep;
+        if ("pause" in dep) {
+          dep.pause();
+        }
+      }
+    }
+  }
+  /**
+   * Resumes the effect scope, including all child scopes and effects.
+   */
+  resume() {
+    var flags = this.flags;
+    if (flags & 256) {
+      this.flags = flags & -257;
+      for (var link2 = this.deps; link2 !== void 0; link2 = link2.nextDep) {
+        var dep = link2.dep;
+        if ("resume" in dep) {
+          dep.resume();
+        }
+      }
+    }
+  }
+  run(fn) {
+    var prevSub = setActiveSub();
+    var prevScope = activeEffectScope;
+    try {
+      activeEffectScope = this;
+      return fn();
+    } finally {
+      activeEffectScope = prevScope;
+      setActiveSub(prevSub);
+    }
+  }
+  stop() {
+    if (!this.active) {
+      return;
+    }
+    this.flags = 1024;
+    var dep = this.deps;
+    while (dep !== void 0) {
+      var node = dep.dep;
+      if ("stop" in node) {
+        dep = dep.nextDep;
+        node.stop();
+      } else {
+        dep = unlink(dep, this);
+      }
+    }
+    var sub = this.subs;
+    if (sub !== void 0) {
+      unlink(sub);
+    }
+    cleanup(this);
+  }
+}
+function effectScope(detached) {
+  return new EffectScope(detached);
+}
+function getCurrentScope() {
+  return activeEffectScope;
+}
+function setCurrentScope(scope) {
+  try {
+    return activeEffectScope;
+  } finally {
+    activeEffectScope = scope;
+  }
+}
+function onScopeDispose(fn) {
+  var failSilently = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  if (activeEffectScope !== void 0) {
+    activeEffectScope.cleanups[activeEffectScope.cleanupsLength++] = fn;
+  } else if (!failSilently) {
+    warn$2("onScopeDispose() is called when there is no active effect scope to be associated with.");
+  }
+}
 class ComputedRefImpl {
   constructor(fn, setter) {
     this.fn = fn;
@@ -1582,13 +1564,11 @@ class ComputedRefImpl {
      * @internal
      */
     this._value = void 0;
-    // Dependency
     this.subs = void 0;
     this.subsTail = void 0;
-    // Subscriber
     this.deps = void 0;
     this.depsTail = void 0;
-    this.flags = SubscriberFlags.Computed | SubscriberFlags.Dirty;
+    this.flags = ReactiveFlags$1.Mutable | ReactiveFlags$1.Dirty;
     /**
      * @internal
      */
@@ -1610,8 +1590,16 @@ class ComputedRefImpl {
    */
   get _dirty() {
     var flags = this.flags;
-    if (flags & SubscriberFlags.Dirty || flags & SubscriberFlags.PendingComputed && updateDirtyFlag(this, this.flags)) {
+    if (flags & ReactiveFlags$1.Dirty) {
       return true;
+    }
+    if (flags & ReactiveFlags$1.Pending) {
+      if (checkDirty(this.deps, this)) {
+        this.flags = flags | ReactiveFlags$1.Dirty;
+        return true;
+      } else {
+        this.flags = flags & ~ReactiveFlags$1.Pending;
+      }
     }
     return false;
   }
@@ -1621,15 +1609,22 @@ class ComputedRefImpl {
    */
   set _dirty(v) {
     if (v) {
-      this.flags |= SubscriberFlags.Dirty;
+      this.flags |= ReactiveFlags$1.Dirty;
     } else {
-      this.flags &= ~(SubscriberFlags.Dirty | SubscriberFlags.PendingComputed);
+      this.flags &= ~(ReactiveFlags$1.Dirty | ReactiveFlags$1.Pending);
     }
   }
   get value() {
     var flags = this.flags;
-    if (flags & (SubscriberFlags.Dirty | SubscriberFlags.PendingComputed)) {
-      processComputedUpdate(this, flags);
+    if (flags & ReactiveFlags$1.Dirty || flags & ReactiveFlags$1.Pending && checkDirty(this.deps, this)) {
+      if (this.update()) {
+        var subs = this.subs;
+        if (subs !== void 0) {
+          shallowPropagate(subs);
+        }
+      }
+    } else if (flags & ReactiveFlags$1.Pending) {
+      this.flags = flags & ~ReactiveFlags$1.Pending;
     }
     if (activeSub !== void 0) {
       {
@@ -1653,9 +1648,7 @@ class ComputedRefImpl {
     }
   }
   update() {
-    var prevSub = activeSub;
-    setActiveSub(this);
-    startTracking(this);
+    var prevSub = startTracking(this);
     try {
       var oldValue = this._value;
       var newValue = this.fn(oldValue);
@@ -1665,8 +1658,7 @@ class ComputedRefImpl {
       }
       return false;
     } finally {
-      setActiveSub(prevSub);
-      endTracking(this);
+      endTracking(this, prevSub);
     }
   }
 }
@@ -1702,7 +1694,6 @@ var TriggerOpTypes = {
   "CLEAR": "clear"
 };
 var INITIAL_WATCHER_VALUE = {};
-var cleanupMap = /* @__PURE__ */new WeakMap();
 var activeWatcher = void 0;
 function getCurrentWatcher() {
   return activeWatcher;
@@ -1711,169 +1702,152 @@ function onWatcherCleanup(cleanupFn) {
   var failSilently = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var owner = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : activeWatcher;
   if (owner) {
-    var cleanups = cleanupMap.get(owner);
-    if (!cleanups) cleanupMap.set(owner, cleanups = []);
-    cleanups.push(cleanupFn);
+    var {
+      call
+    } = owner.options;
+    if (call) {
+      owner.cleanups[owner.cleanupsLength++] = () => call(cleanupFn, 4);
+    } else {
+      owner.cleanups[owner.cleanupsLength++] = cleanupFn;
+    }
   } else if (!failSilently) {
     warn$2("onWatcherCleanup() was called when there was no active watcher to associate with.");
   }
 }
-function watch$1(source, cb) {
-  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : EMPTY_OBJ;
-  var {
-    immediate,
-    deep,
-    once,
-    scheduler,
-    augmentJob,
-    call
-  } = options;
-  var warnInvalidSource = s => {
-    (options.onWarn || warn$2)("Invalid watch source: ", s, "A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.");
-  };
-  var reactiveGetter = source2 => {
-    if (deep) return source2;
-    if (isShallow(source2) || deep === false || deep === 0) return traverse(source2, 1);
-    return traverse(source2);
-  };
-  var effect;
-  var getter;
-  var cleanup;
-  var boundCleanup;
-  var forceTrigger = false;
-  var isMultiSource = false;
-  if (isRef(source)) {
-    getter = () => source.value;
-    forceTrigger = isShallow(source);
-  } else if (isReactive(source)) {
-    getter = () => reactiveGetter(source);
-    forceTrigger = true;
-  } else if (isArray$1(source)) {
-    isMultiSource = true;
-    forceTrigger = source.some(s => isReactive(s) || isShallow(s));
-    getter = () => source.map(s => {
-      if (isRef(s)) {
-        return s.value;
-      } else if (isReactive(s)) {
-        return reactiveGetter(s);
-      } else if (isFunction(s)) {
-        return call ? call(s, 2) : s();
+class WatcherEffect extends ReactiveEffect {
+  constructor(source, cb) {
+    var _this;
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : EMPTY_OBJ;
+    var {
+      deep,
+      once,
+      call,
+      onWarn
+    } = options;
+    var getter;
+    var forceTrigger = false;
+    var isMultiSource = false;
+    if (isRef(source)) {
+      getter = () => source.value;
+      forceTrigger = isShallow(source);
+    } else if (isReactive(source)) {
+      getter = () => reactiveGetter(source, deep);
+      forceTrigger = true;
+    } else if (isArray$1(source)) {
+      isMultiSource = true;
+      forceTrigger = source.some(s => isReactive(s) || isShallow(s));
+      getter = () => source.map(s => {
+        if (isRef(s)) {
+          return s.value;
+        } else if (isReactive(s)) {
+          return reactiveGetter(s, deep);
+        } else if (isFunction(s)) {
+          return call ? call(s, 2) : s();
+        } else {
+          warnInvalidSource(s, onWarn);
+        }
+      });
+    } else if (isFunction(source)) {
+      if (cb) {
+        getter = call ? () => call(source, 2) : source;
       } else {
-        warnInvalidSource(s);
-      }
-    });
-  } else if (isFunction(source)) {
-    if (cb) {
-      getter = call ? () => call(source, 2) : source;
-    } else {
-      getter = () => {
-        if (cleanup) {
-          pauseTracking();
-          try {
-            cleanup();
-          } finally {
-            resetTracking();
+        getter = () => {
+          if (this.cleanupsLength) {
+            var prevSub = setActiveSub();
+            try {
+              cleanup(this);
+            } finally {
+              setActiveSub(prevSub);
+            }
           }
-        }
-        var currentEffect = activeWatcher;
-        activeWatcher = effect;
-        try {
-          return call ? call(source, 3, [boundCleanup]) : source(boundCleanup);
-        } finally {
-          activeWatcher = currentEffect;
-        }
+          var currentEffect = activeWatcher;
+          activeWatcher = this;
+          try {
+            return call ? call(source, 3, [this.boundCleanup]) : source(this.boundCleanup);
+          } finally {
+            activeWatcher = currentEffect;
+          }
+        };
+      }
+    } else {
+      getter = NOOP;
+      warnInvalidSource(source, onWarn);
+    }
+    if (cb && deep) {
+      var baseGetter = getter;
+      var depth = deep === true ? Infinity : deep;
+      getter = () => traverse(baseGetter(), depth);
+    }
+    super(getter);
+    _this = this;
+    this.cb = cb;
+    this.options = options;
+    this.boundCleanup = fn => onWatcherCleanup(fn, false, this);
+    this.forceTrigger = forceTrigger;
+    this.isMultiSource = isMultiSource;
+    if (once && cb) {
+      var _cb = cb;
+      cb = function () {
+        _cb(...arguments);
+        _this.stop();
       };
     }
-  } else {
-    getter = NOOP;
-    warnInvalidSource(source);
-  }
-  if (cb && deep) {
-    var baseGetter = getter;
-    var depth = deep === true ? Infinity : deep;
-    getter = () => traverse(baseGetter(), depth);
-  }
-  var scope = getCurrentScope();
-  var watchHandle = () => {
-    effect.stop();
-    if (scope && scope.active) {
-      remove$1(scope.effects, effect);
+    this.cb = cb;
+    this.oldValue = isMultiSource ? new Array(source.length).fill(INITIAL_WATCHER_VALUE) : INITIAL_WATCHER_VALUE;
+    {
+      this.onTrack = options.onTrack;
+      this.onTrigger = options.onTrigger;
     }
-  };
-  if (once && cb) {
-    var _cb = cb;
-    cb = function () {
-      _cb(...arguments);
-      watchHandle();
-    };
   }
-  var oldValue = isMultiSource ? new Array(source.length).fill(INITIAL_WATCHER_VALUE) : INITIAL_WATCHER_VALUE;
-  var job = immediateFirstRun => {
-    if (!effect.active || !immediateFirstRun && !effect.dirty) {
+  run() {
+    var initialRun = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var oldValue = this.oldValue;
+    var newValue = this.oldValue = super.run();
+    if (!this.cb) {
       return;
     }
-    if (cb) {
-      var newValue = effect.run();
-      if (deep || forceTrigger || (isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue))) {
-        if (cleanup) {
-          cleanup();
-        }
-        var currentWatcher = activeWatcher;
-        activeWatcher = effect;
-        try {
-          var args = [newValue,
-          // pass undefined as the old value when it's changed for the first time
-          oldValue === INITIAL_WATCHER_VALUE ? void 0 : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE ? [] : oldValue, boundCleanup];
-          call ? call(cb, 3, args) :
-          // @ts-expect-error
-          cb(...args);
-          oldValue = newValue;
-        } finally {
-          activeWatcher = currentWatcher;
-        }
+    var {
+      immediate,
+      deep,
+      call
+    } = this.options;
+    if (initialRun && !immediate) {
+      return;
+    }
+    if (deep || this.forceTrigger || (this.isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue))) {
+      cleanup(this);
+      var currentWatcher = activeWatcher;
+      activeWatcher = this;
+      try {
+        var args = [newValue,
+        // pass undefined as the old value when it's changed for the first time
+        oldValue === INITIAL_WATCHER_VALUE ? void 0 : this.isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE ? [] : oldValue, this.boundCleanup];
+        call ? call(this.cb, 3, args) :
+        // @ts-expect-error
+        this.cb(...args);
+      } finally {
+        activeWatcher = currentWatcher;
       }
-    } else {
-      effect.run();
     }
-  };
-  if (augmentJob) {
-    augmentJob(job);
   }
-  effect = new ReactiveEffect(getter);
-  effect.scheduler = scheduler ? () => scheduler(job, false) : job;
-  boundCleanup = fn => onWatcherCleanup(fn, false, effect);
-  cleanup = effect.onStop = () => {
-    var cleanups = cleanupMap.get(effect);
-    if (cleanups) {
-      if (call) {
-        call(cleanups, 4);
-      } else {
-        for (var cleanup2 of cleanups) {
-          cleanup2();
-        }
-      }
-      cleanupMap.delete(effect);
-    }
-  };
-  {
-    effect.onTrack = options.onTrack;
-    effect.onTrigger = options.onTrigger;
-  }
-  if (cb) {
-    if (immediate) {
-      job(true);
-    } else {
-      oldValue = effect.run();
-    }
-  } else if (scheduler) {
-    scheduler(job.bind(null, true), true);
-  } else {
-    effect.run();
-  }
-  watchHandle.pause = effect.pause.bind(effect);
-  watchHandle.resume = effect.resume.bind(effect);
-  watchHandle.stop = watchHandle;
-  return watchHandle;
+}
+function reactiveGetter(source, deep) {
+  if (deep) return source;
+  if (isShallow(source) || deep === false || deep === 0) return traverse(source, 1);
+  return traverse(source);
+}
+function warnInvalidSource(s, onWarn) {
+  (onWarn || warn$2)("Invalid watch source: ", s, "A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.");
+}
+function watch$1(source, cb) {
+  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : EMPTY_OBJ;
+  var effect = new WatcherEffect(source, cb, options);
+  effect.run(true);
+  var stop = effect.stop.bind(effect);
+  stop.pause = effect.pause.bind(effect);
+  stop.resume = effect.resume.bind(effect);
+  stop.stop = stop;
+  return stop;
 }
 function traverse(value) {
   var depth = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Infinity;
@@ -2684,7 +2658,7 @@ function expand(options) {
 }
 
 /**
-* @dcloudio/uni-app-nvue v3.5.14
+* @dcloudio/uni-app-nvue v3.6.0-alpha.1
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -2700,7 +2674,7 @@ var isWarning = false;
 function warn$1(msg) {
   if (isWarning) return;
   isWarning = true;
-  pauseTracking();
+  var prevSub = setActiveSub();
   var entry = stack.length ? stack[stack.length - 1] : null;
   var instance = isVNode(entry) ? entry.component : entry;
   var appWarnHandler = instance && instance.appContext.config.warnHandler;
@@ -2729,7 +2703,7 @@ function warn$1(msg) {
     }
     console.warn(...warnArgs);
   }
-  resetTracking();
+  setActiveSub(prevSub);
   isWarning = false;
 }
 function getComponentTrace() {
@@ -2924,9 +2898,9 @@ function handleError(err, instance, type) {
       cur = cur.parent;
     }
     if (errorHandler) {
-      pauseTracking();
+      var prevSub = setActiveSub();
       callWithErrorHandling(errorHandler, null, 10, [err, exposedInstance, errorInfo]);
-      resetTracking();
+      setActiveSub(prevSub);
       return;
     }
   }
@@ -2951,16 +2925,17 @@ function logError(err, type, instance) {
     }
   }
 }
-var queue = [];
-var flushIndex = -1;
-var pendingPostFlushCbs = [];
-var activePostFlushCbs = null;
+var jobs = [];
+var postJobs = [];
+var activePostJobs = null;
+var currentFlushPromise = null;
+var jobsLength = 0;
+var flushIndex = 0;
 var postFlushIndex = 0;
 var resolvedPromise = /* @__PURE__ */PromisePolyfill.resolve();
-var currentFlushPromise = null;
 var RECURSION_LIMIT = 100;
 function nextTick(fn) {
-  var instance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentInstance();
+  var instance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentGenericInstance();
   var promise = currentFlushPromise || resolvedPromise;
   var current = currentFlushPromise === null || instance === null ? promise : promise.then(() => {
     return new Promise(resolve => {
@@ -2975,14 +2950,10 @@ function nextTick(fn) {
   });
   return fn ? current.then(this ? fn.bind(this) : fn) : current;
 }
-function findInsertionIndex(id) {
-  var start = flushIndex + 1;
-  var end = queue.length;
+function findInsertionIndex(order, queue, start, end) {
   while (start < end) {
     var middle = start + end >>> 1;
-    var middleJob = queue[middle];
-    var middleJobId = getId(middleJob);
-    if (middleJobId < id || middleJobId === id && middleJob.flags & 2) {
+    if (queue[middle].order <= order) {
       start = middle + 1;
     } else {
       end = middle;
@@ -2990,89 +2961,105 @@ function findInsertionIndex(id) {
   }
   return start;
 }
-function queueJob(job) {
-  if (!(job.flags & 1)) {
-    var jobId = getId(job);
-    var lastJob = queue[queue.length - 1];
-    if (!lastJob ||
-    // fast path when the job id is larger than the tail
-    !(job.flags & 2) && jobId >= getId(lastJob)) {
-      queue.push(job);
-    } else {
-      queue.splice(findInsertionIndex(jobId), 0, job);
-    }
-    job.flags |= 1;
+function queueJob(job, id) {
+  var isPre = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  if (queueJobWorker(job, id === void 0 ? isPre ? -2 : Infinity : isPre ? id * 2 : id * 2 + 1, jobs, jobsLength, flushIndex)) {
+    jobsLength++;
     queueFlush();
   }
 }
+function queueJobWorker(job, order, queue, length, flushIndex2) {
+  var flags = job.flags;
+  if (!(flags & 1)) {
+    job.flags = flags | 1;
+    job.order = order;
+    if (flushIndex2 === length ||
+    // fast path when the job id is larger than the tail
+    order >= queue[length - 1].order) {
+      queue[length] = job;
+    } else {
+      queue.splice(findInsertionIndex(order, queue, flushIndex2, length), 0, job);
+    }
+    return true;
+  }
+  return false;
+}
+var doFlushJobs = () => {
+  try {
+    flushJobs();
+  } catch (e) {
+    currentFlushPromise = null;
+    throw e;
+  }
+};
 function queueFlush() {
   if (!currentFlushPromise) {
-    currentFlushPromise = resolvedPromise.then(flushJobs).catch(e => {
-      currentFlushPromise = null;
-      throw e;
-    });
+    currentFlushPromise = resolvedPromise.then(doFlushJobs);
   }
 }
-function queuePostFlushCb(cb) {
-  if (!isArray$1(cb)) {
-    if (activePostFlushCbs && cb.id === -1) {
-      activePostFlushCbs.splice(postFlushIndex + 1, 0, cb);
-    } else if (!(cb.flags & 1)) {
-      pendingPostFlushCbs.push(cb);
-      cb.flags |= 1;
+function queuePostFlushCb(jobs2) {
+  var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Infinity;
+  if (!isArray$1(jobs2)) {
+    if (activePostJobs && id === -1) {
+      activePostJobs.splice(postFlushIndex, 0, jobs2);
+    } else {
+      queueJobWorker(jobs2, id, postJobs, postJobs.length, 0);
     }
   } else {
-    pendingPostFlushCbs.push(...cb);
+    for (var job of jobs2) {
+      queueJobWorker(job, id, postJobs, postJobs.length, 0);
+    }
   }
   queueFlush();
 }
 function flushPreFlushCbs(instance, seen) {
-  var i = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : flushIndex + 1;
   {
     seen = seen || /* @__PURE__ */new Map();
   }
-  for (; i < queue.length; i++) {
-    var cb = queue[i];
-    if (cb && cb.flags & 2) {
-      if (instance && cb.id !== instance.uid) {
-        continue;
-      }
-      if (checkRecursiveUpdates(seen, cb)) {
-        continue;
-      }
-      queue.splice(i, 1);
-      i--;
-      if (cb.flags & 4) {
-        cb.flags &= -2;
-      }
-      cb();
-      if (!(cb.flags & 4)) {
-        cb.flags &= -2;
-      }
+  for (var i = flushIndex; i < jobsLength; i++) {
+    var cb = jobs[i];
+    if (cb.order & 1 || cb.order === Infinity) {
+      continue;
+    }
+    if (instance && cb.order !== instance.uid * 2) {
+      continue;
+    }
+    if (checkRecursiveUpdates(seen, cb)) {
+      continue;
+    }
+    jobs.splice(i, 1);
+    i--;
+    jobsLength--;
+    if (cb.flags & 2) {
+      cb.flags &= -2;
+    }
+    cb();
+    if (!(cb.flags & 2)) {
+      cb.flags &= -2;
     }
   }
 }
 function flushPostFlushCbs(seen) {
-  if (pendingPostFlushCbs.length) {
-    var deduped = [...new Set(pendingPostFlushCbs)].sort((a, b) => getId(a) - getId(b));
-    pendingPostFlushCbs.length = 0;
-    if (activePostFlushCbs) {
-      activePostFlushCbs.push(...deduped);
+  if (postJobs.length) {
+    if (activePostJobs) {
+      activePostJobs.push(...postJobs);
+      postJobs.length = 0;
       return;
     }
-    activePostFlushCbs = deduped;
+    activePostJobs = postJobs;
+    postJobs = [];
     {
       seen = seen || /* @__PURE__ */new Map();
     }
-    for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
-      var cb = activePostFlushCbs[postFlushIndex];
+    while (postFlushIndex < activePostJobs.length) {
+      var cb = activePostJobs[postFlushIndex++];
       if (checkRecursiveUpdates(seen, cb)) {
         continue;
       }
-      if (cb.flags & 4) {
+      if (cb.flags & 2) {
         cb.flags &= -2;
       }
-      if (!(cb.flags & 8)) {
+      if (!(cb.flags & 4)) {
         try {
           cb();
         } finally {
@@ -3080,7 +3067,7 @@ function flushPostFlushCbs(seen) {
         }
       }
     }
-    activePostFlushCbs = null;
+    activePostJobs = null;
     postFlushIndex = 0;
   }
 }
@@ -3093,40 +3080,42 @@ function flushOnAppMount() {
     isFlushing = false;
   }
 }
-var getId = job => job.id == null ? job.flags & 2 ? -1 : Infinity : job.id;
 function flushJobs(seen) {
   {
-    seen = seen || /* @__PURE__ */new Map();
+    seen || (seen = /* @__PURE__ */new Map());
   }
-  var check = job => checkRecursiveUpdates(seen, job);
   try {
-    for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
-      var job = queue[flushIndex];
-      if (job && !(job.flags & 8)) {
-        if (!!("development" !== "production") && check(job)) {
+    while (flushIndex < jobsLength) {
+      var job = jobs[flushIndex];
+      jobs[flushIndex++] = void 0;
+      if (!(job.flags & 4)) {
+        if (!!("development" !== "production") && checkRecursiveUpdates(seen, job)) {
           continue;
         }
-        if (job.flags & 4) {
+        if (job.flags & 2) {
           job.flags &= ~1;
         }
-        callWithErrorHandling(job, job.i, job.i ? 15 : 14);
-        if (!(job.flags & 4)) {
-          job.flags &= ~1;
+        try {
+          job();
+        } catch (err) {
+          handleError(err, job.i, job.i ? 15 : 14);
+        } finally {
+          if (!(job.flags & 2)) {
+            job.flags &= ~1;
+          }
         }
       }
     }
   } finally {
-    for (; flushIndex < queue.length; flushIndex++) {
-      var _job = queue[flushIndex];
-      if (_job) {
-        _job.flags &= -2;
-      }
+    while (flushIndex < jobsLength) {
+      jobs[flushIndex].flags &= -2;
+      jobs[flushIndex++] = void 0;
     }
-    flushIndex = -1;
-    queue.length = 0;
+    flushIndex = 0;
+    jobsLength = 0;
     flushPostFlushCbs(seen);
     currentFlushPromise = null;
-    if (queue.length || pendingPostFlushCbs.length) {
+    if (jobsLength || postJobs.length) {
       flushJobs(seen);
     }
   }
@@ -3194,7 +3183,7 @@ function rerender(id, newRender) {
     } else {
       var i = instance;
       i.renderCache = [];
-      i.update();
+      i.effect.run();
     }
     nextTick(() => {
       isHmrUpdating = false;
@@ -3236,7 +3225,7 @@ function reload(id, newComp) {
           if (parent.vapor) {
             parent.hmrRerender();
           } else {
-            parent.update();
+            parent.effect.run();
           }
           nextTick(() => {
             isHmrUpdating = false;
@@ -3296,12 +3285,8 @@ function emit$2(event) {
     });
   }
 }
-var queued = false;
 function setDevtoolsHook$1(hook, target) {
   var _a, _b;
-  if (devtoolsNotInstalled || queued) {
-    return;
-  }
   devtools$1 = hook;
   if (devtools$1) {
     devtools$1.enabled = true;
@@ -3323,7 +3308,6 @@ function setDevtoolsHook$1(hook, target) {
   // also exclude jsdom
   // eslint-disable-next-line no-restricted-syntax
   !((_b = (_a = window.navigator) == null ? void 0 : _a.userAgent) == null ? void 0 : _b.includes("jsdom"))) {
-    queued = true;
     var replay = target.__VUE_DEVTOOLS_HOOK_REPLAY__ = target.__VUE_DEVTOOLS_HOOK_REPLAY__ || [];
     replay.push(newHook => {
       setDevtoolsHook$1(newHook, target);
@@ -3470,9 +3454,9 @@ function invokeDirectiveHook(vnode, prevVNode, instance, name) {
     }
     var hook = binding.dir[name];
     if (hook) {
-      pauseTracking();
+      var prevSub = setActiveSub();
       callWithAsyncErrorHandling(hook, instance, 8, [vnode.el, binding, vnode, prevVNode]);
-      resetTracking();
+      setActiveSub(prevSub);
     }
   }
 }
@@ -3562,19 +3546,19 @@ var TeleportImpl = {
         updateCssVars(n2, true);
       }
       if (isTeleportDeferred(n2.props)) {
+        n2.el.__isMounted = false;
         queuePostRenderEffect(() => {
           mountToTarget();
-          n2.el.__isMounted = true;
-        }, parentSuspense);
+          delete n2.el.__isMounted;
+        }, void 0, parentSuspense);
       } else {
         mountToTarget();
       }
     } else {
-      if (isTeleportDeferred(n2.props) && !n1.el.__isMounted) {
+      if (isTeleportDeferred(n2.props) && n1.el.__isMounted === false) {
         queuePostRenderEffect(() => {
           TeleportImpl.process(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, internals);
-          delete n1.el.__isMounted;
-        }, parentSuspense);
+        }, void 0, parentSuspense);
         return;
       }
       n2.el = n1.el;
@@ -3842,7 +3826,7 @@ var BaseTransitionImpl = {
           state.isLeaving = true;
           leavingHooks.afterLeave = () => {
             state.isLeaving = false;
-            if (!(instance.job.flags & 8)) {
+            if (!(instance.job.flags & 4)) {
               instance.update();
             }
             delete leavingHooks.afterLeave;
@@ -4233,8 +4217,7 @@ function setRef$1(rawRef, oldRawRef, parentSuspense, vnode) {
         }
       };
       if (value) {
-        doSet.id = -1;
-        queuePostRenderEffect(doSet, parentSuspense);
+        queuePostRenderEffect(doSet, -1, parentSuspense);
       } else {
         doSet();
       }
@@ -4434,6 +4417,8 @@ function createHydrationFunctions(rendererInternals) {
         transition) && parentComponent && parentComponent.vnode.props && parentComponent.vnode.props.appear;
         var content = el.content.firstChild;
         if (needCallTransitionHooks) {
+          var cls = content.getAttribute("class");
+          if (cls) content.$cls = cls;
           transition.beforeEnter(content);
         }
         replaceNode(content, el, parentComponent);
@@ -4499,7 +4484,7 @@ function createHydrationFunctions(rendererInternals) {
           vnodeHooks && invokeVNodeHook(vnodeHooks, parentComponent, vnode);
           needCallTransitionHooks && transition.enter(el);
           dirs && invokeDirectiveHook(vnode, null, parentComponent, "mounted");
-        }, parentSuspense);
+        }, void 0, parentSuspense);
       }
     }
     return el.nextSibling;
@@ -4624,7 +4609,12 @@ function propHasMismatch(el, key, clientValue, vnode, instance) {
   var actual;
   var expected;
   if (key === "class") {
-    actual = el.getAttribute("class");
+    if (el.$cls) {
+      actual = el.$cls;
+      delete el.$cls;
+    } else {
+      actual = el.getAttribute("class");
+    }
     expected = normalizeClass$1(clientValue);
     if (!isSetEqual(toClassSet(actual || ""), toClassSet(expected))) {
       mismatchType = 2 /* CLASS */;
@@ -4727,7 +4717,8 @@ function resolveCssVars(instance, vnode, expectedMap) {
   if (instance.getCssVars && (vnode === root || root && root.type === Fragment && root.children.includes(vnode))) {
     var cssVars = instance.getCssVars();
     for (var key in cssVars) {
-      expectedMap.set("--".concat(getEscapedCssVarName(key, false)), String(cssVars[key]));
+      var value = normalizeCssVarValue(cssVars[key]);
+      expectedMap.set("--".concat(getEscapedCssVarName(key, false)), value);
     }
   }
   if (vnode === root && instance.parent) {
@@ -4758,7 +4749,7 @@ function isMismatchAllowed(el, allowedType) {
     if (allowedType === 0 /* TEXT */ && list.includes("children")) {
       return true;
     }
-    return allowedAttr.split(",").includes(MismatchTypeString[allowedType]);
+    return list.includes(MismatchTypeString[allowedType]);
   }
 }
 var requestIdleCallback = getGlobalThis().requestIdleCallback || (cb => setTimeout(cb, 1));
@@ -4933,11 +4924,20 @@ function defineAsyncComponent(source) {
     name: "AsyncComponentWrapper",
     __asyncLoader: load,
     __asyncHydrate(el, instance, hydrate) {
+      var patched = false;
       var doHydrate = hydrateStrategy ? () => {
-        var teardown = hydrateStrategy(hydrate, cb => forEachElement(el, cb));
+        var performHydrate = () => {
+          if (patched) {
+            warn$1("Skipping lazy hydration for component '".concat(getComponentName(resolvedComp), "': it was updated before lazy hydration performed."));
+            return;
+          }
+          hydrate();
+        };
+        var teardown = hydrateStrategy(performHydrate, cb => forEachElement(el, cb));
         if (teardown) {
           (instance.bum || (instance.bum = [])).push(teardown);
         }
+        (instance.u || (instance.u = [])).push(() => patched = true);
       } : hydrate;
       if (resolvedComp) {
         doHydrate();
@@ -5070,7 +5070,7 @@ var KeepAliveImpl = {
         if (vnodeHook) {
           invokeVNodeHook(vnodeHook, instance.parent, vnode);
         }
-      }, parentSuspense);
+      }, void 0, parentSuspense);
       {
         devtoolsComponentAdded(instance);
       }
@@ -5089,7 +5089,7 @@ var KeepAliveImpl = {
           invokeVNodeHook(vnodeHook, instance.parent, vnode);
         }
         instance.isDeactivated = true;
-      }, parentSuspense);
+      }, void 0, parentSuspense);
       {
         devtoolsComponentAdded(instance);
       }
@@ -5135,7 +5135,7 @@ var KeepAliveImpl = {
         if (isSuspense(keepAliveInstance.subTree.type)) {
           queuePostRenderEffect(() => {
             cache.set(pendingCacheKey, getInnerChild(keepAliveInstance.subTree));
-          }, keepAliveInstance.subTree.suspense);
+          }, void 0, keepAliveInstance.subTree.suspense);
         } else {
           cache.set(pendingCacheKey, getInnerChild(keepAliveInstance.subTree));
         }
@@ -5153,7 +5153,7 @@ var KeepAliveImpl = {
         if (cached.type === vnode.type && cached.key === vnode.key) {
           resetShapeFlag(vnode);
           var da = vnode.component.da;
-          da && queuePostRenderEffect(da, suspense);
+          da && queuePostRenderEffect(da, void 0, suspense);
           return;
         }
         unmount(cached);
@@ -5291,16 +5291,16 @@ function injectHook(type, hook) {
     }
     var hooks = target[type] || (target[type] = []);
     var wrappedHook = hook.__weh || (hook.__weh = function () {
-      pauseTracking();
-      var reset = setCurrentInstance(target);
+      var prevSub = setActiveSub();
+      var prev = setCurrentInstance(target);
       try {
         for (var _len13 = arguments.length, args = new Array(_len13), _key15 = 0; _key15 < _len13; _key15++) {
           args[_key15] = arguments[_key15];
         }
         return callWithAsyncErrorHandling(hook, target, type, args);
       } finally {
-        reset();
-        resetTracking();
+        setCurrentInstance(...prev);
+        setActiveSub(prevSub);
       }
     });
     if (prepend) {
@@ -5454,7 +5454,7 @@ function renderSlot(slots, name) {
   var fallback = arguments.length > 3 ? arguments[3] : undefined;
   var noSlotted = arguments.length > 4 ? arguments[4] : undefined;
   var slot = slots[name];
-  if (slot && slots._vapor) {
+  if (slot && slot.__vapor) {
     var ret = (openBlock(), createBlock(VaporSlot, props));
     ret.vs = {
       slot,
@@ -5906,7 +5906,7 @@ function withAsyncContext(getAwaitable) {
     warn$1("withAsyncContext called without active current instance. This is likely a bug.");
   }
   var awaitable = getAwaitable();
-  unsetCurrentInstance();
+  setCurrentInstance(null, void 0);
   if (isPromise(awaitable)) {
     awaitable = awaitable.catch(e => {
       setCurrentInstance(ctx);
@@ -6466,7 +6466,11 @@ function createAppAPI(mount, unmount, getPublicInstance, render) {
       },
       provide(key, value) {
         if (key in context.provides) {
-          warn$1("App already provides property with key \"".concat(String(key), "\". It will be overwritten with the new value."));
+          if (hasOwn(context.provides, key)) {
+            warn$1("App already provides property with key \"".concat(String(key), "\". It will be overwritten with the new value."));
+          } else {
+            warn$1("App already provides property with key \"".concat(String(key), "\" inherited from its parent element. It will be overwritten with the new value."));
+          }
         }
         context.provides[key] = value;
         return app;
@@ -6504,7 +6508,7 @@ function inject(key, defaultValue) {
   var treatDefaultAsFactory = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var instance = getCurrentGenericInstance();
   if (instance || currentApp) {
-    var provides = currentApp ? currentApp._context.provides : instance ? instance.parent == null ? instance.appContext && instance.appContext.provides : instance.parent.provides : void 0;
+    var provides = currentApp ? currentApp._context.provides : instance ? instance.parent == null || instance.ce ? instance.appContext && instance.appContext.provides : instance.parent.provides : void 0;
     if (provides && key in provides) {
       return provides[key];
     } else if (arguments.length > 1) {
@@ -6703,10 +6707,10 @@ function resolvePropValue(options, key, value, instance, resolveDefault) {
 }
 function baseResolveDefault(factory, instance, key) {
   var value;
-  var reset = setCurrentInstance(instance);
+  var prev = setCurrentInstance(instance);
   var props = toRaw(instance.props);
   value = factory.call(null, props);
-  reset();
+  setCurrentInstance(...prev);
   return value;
 }
 var mixinPropsCache = /* @__PURE__ */new WeakMap();
@@ -6975,6 +6979,8 @@ var assignSlots = (slots, children, optimized) => {
 var initSlots = (instance, children, optimized) => {
   var slots = instance.slots = createInternalObject();
   if (instance.vnode.shapeFlag & 32) {
+    var cacheIndexes = children.__;
+    if (cacheIndexes) def(slots, "__", cacheIndexes, true);
     var type = children._;
     if (type) {
       assignSlots(slots, children, optimized);
@@ -7172,6 +7178,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     if (ref != null && parentComponent) {
       setRef$1(ref, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
+    } else if (ref == null && n1 && n1.ref != null) {
+      setRef$1(n1.ref, null, parentSuspense, n1, true);
     }
   };
   var processText = (n1, n2, container, anchor) => {
@@ -7303,7 +7311,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
         needCallTransitionHooks && transition.enter(el);
         dirs && invokeDirectiveHook(vnode, null, parentComponent, "mounted");
-      }, parentSuspense);
+      }, void 0, parentSuspense);
     }
   };
   var setScopeId = (el, vnode, scopeId, slotScopeIds, parentComponent) => {
@@ -7419,7 +7427,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       queuePostRenderEffect(() => {
         vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, n2, n1);
         dirs && invokeDirectiveHook(n2, n1, parentComponent, "updated");
-      }, parentSuspense);
+      }, void 0, parentSuspense);
     }
   };
   var patchBlockChildren = (oldChildren, newChildren, fallbackContainer, parentComponent, parentSuspense, namespace, slotScopeIds) => {
@@ -7437,7 +7445,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       // which also requires the correct parent container
       !isSameVNodeType(oldVNode, newVNode) ||
       // - In the case of a component, it could contain anything.
-      oldVNode.shapeFlag & (6 | 64)) ? hostParentNode(oldVNode.el) :
+      oldVNode.shapeFlag & (6 | 64 | 128)) ? hostParentNode(oldVNode.el) :
       // In other cases, the parent container is not actually used so we
       // just pass the block element here to avoid a DOM parentNode call.
       fallbackContainer;
@@ -7579,15 +7587,52 @@ function baseCreateRenderer(options, createHydrationFns) {
         return;
       } else {
         instance.next = n2;
-        instance.update();
+        instance.effect.run();
       }
     } else {
       n2.el = n1.el;
       instance.vnode = n2;
     }
   };
-  var setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
-    var componentUpdateFn = () => {
+  class SetupRenderEffect extends ReactiveEffect {
+    constructor(instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) {
+      var prevScope = setCurrentScope(instance.scope);
+      super();
+      this.instance = instance;
+      this.initialVNode = initialVNode;
+      this.container = container;
+      this.anchor = anchor;
+      this.parentSuspense = parentSuspense;
+      this.namespace = namespace;
+      this.optimized = optimized;
+      setCurrentScope(prevScope);
+      this.job = instance.job = () => {
+        if (this.dirty) {
+          this.run();
+        }
+      };
+      this.job.i = instance;
+      {
+        this.onTrack = instance.rtc ? e => invokeArrayFns(instance.rtc, e) : void 0;
+        this.onTrigger = instance.rtg ? e => invokeArrayFns(instance.rtg, e) : void 0;
+      }
+    }
+    notify() {
+      if (!(this.flags & 256)) {
+        var job = this.job;
+        queueJob(job, job.i.uid);
+      }
+    }
+    fn() {
+      var {
+        instance,
+        initialVNode,
+        container,
+        anchor,
+        parentSuspense,
+        namespace,
+        optimized
+      } = this;
       if (!instance.isMounted) {
         var vnodeHook;
         var {
@@ -7633,7 +7678,9 @@ function baseCreateRenderer(options, createHydrationFns) {
             hydrateSubTree();
           }
         } else {
-          if (root.ce) {
+          if (root.ce &&
+          // @ts-expect-error _def is private
+          root.ce._def.shadowRoot !== false) {
             root.ce._injectChildStyle(type);
           }
           {
@@ -7653,20 +7700,20 @@ function baseCreateRenderer(options, createHydrationFns) {
           initialVNode.el = subTree.el;
         }
         if (m) {
-          queuePostRenderEffect(m, parentSuspense);
+          queuePostRenderEffect(m, void 0, parentSuspense);
         }
         if (!isAsyncWrapperVNode && (vnodeHook = props && props.onVnodeMounted)) {
           var scopedInitialVNode = initialVNode;
-          queuePostRenderEffect(() => invokeVNodeHook(vnodeHook, parent, scopedInitialVNode), parentSuspense);
+          queuePostRenderEffect(() => invokeVNodeHook(vnodeHook, parent, scopedInitialVNode), void 0, parentSuspense);
         }
         if (initialVNode.shapeFlag & 256 || parent && parent.vnode && isAsyncWrapper(parent.vnode) && parent.vnode.shapeFlag & 256) {
-          instance.a && queuePostRenderEffect(instance.a, parentSuspense);
+          instance.a && queuePostRenderEffect(instance.a, void 0, parentSuspense);
         }
         instance.isMounted = true;
         {
           devtoolsComponentAdded(instance);
         }
-        initialVNode = container = anchor = null;
+        this.initialVNode = this.container = this.anchor = null;
       } else {
         var {
           next: _next5,
@@ -7684,7 +7731,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             }
             nonHydratedAsyncRoot.asyncDep.then(() => {
               if (!instance.isUnmounted) {
-                componentUpdateFn();
+                this.fn();
               }
             });
             return;
@@ -7734,10 +7781,10 @@ function baseCreateRenderer(options, createHydrationFns) {
           updateHOCHostEl(instance, nextTree.el);
         }
         if (u) {
-          queuePostRenderEffect(u, parentSuspense);
+          queuePostRenderEffect(u, void 0, parentSuspense);
         }
         if (_vnodeHook = _next5.props && _next5.props.onVnodeUpdated) {
-          queuePostRenderEffect(() => invokeVNodeHook(_vnodeHook, _parent, _next5, vnode), parentSuspense);
+          queuePostRenderEffect(() => invokeVNodeHook(_vnodeHook, _parent, _next5, vnode), void 0, parentSuspense);
         }
         {
           devtoolsComponentUpdated(instance);
@@ -7746,21 +7793,13 @@ function baseCreateRenderer(options, createHydrationFns) {
           popWarningContext();
         }
       }
-    };
-    instance.scope.on();
-    var effect = instance.effect = new ReactiveEffect(componentUpdateFn);
-    instance.scope.off();
-    var update = instance.update = effect.run.bind(effect);
-    var job = instance.job = () => effect.dirty && effect.run();
-    job.i = instance;
-    job.id = instance.uid;
-    effect.scheduler = () => queueJob(job);
-    toggleRecurse(instance, true);
-    {
-      effect.onTrack = instance.rtc ? e => invokeArrayFns(instance.rtc, e) : void 0;
-      effect.onTrigger = instance.rtg ? e => invokeArrayFns(instance.rtg, e) : void 0;
     }
-    update();
+  }
+  var setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
+    var effect = instance.effect = new SetupRenderEffect(instance, initialVNode, container, anchor, parentSuspense, namespace, optimized);
+    instance.update = effect.run.bind(effect);
+    toggleRecurse(instance, true);
+    effect.run();
   };
   var updateComponentPreRender = (instance, nextVNode, optimized) => {
     nextVNode.component = instance;
@@ -7769,9 +7808,9 @@ function baseCreateRenderer(options, createHydrationFns) {
     instance.next = null;
     updateProps(instance, nextVNode.props, prevProps, optimized);
     updateSlots(instance, nextVNode.children, optimized);
-    pauseTracking();
+    var prevSub = setActiveSub();
     flushPreFlushCbs(instance);
-    resetTracking();
+    setActiveSub(prevSub);
   };
   var patchChildren = function (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds) {
     var optimized = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : false;
@@ -7984,7 +8023,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       if (moveType === 0) {
         transition.beforeEnter(el);
         hostInsert(el, container, anchor);
-        queuePostRenderEffect(() => transition.enter(el), parentSuspense);
+        queuePostRenderEffect(() => transition.enter(el), void 0, parentSuspense);
       } else {
         var {
           leave,
@@ -8032,9 +8071,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       optimized = false;
     }
     if (ref != null) {
-      pauseTracking();
+      var prevSub = setActiveSub();
       setRef$1(ref, null, parentSuspense, vnode, true);
-      resetTracking();
+      setActiveSub(prevSub);
     }
     if (cacheIndex != null) {
       parentComponent.renderCache[cacheIndex] = void 0;
@@ -8091,7 +8130,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       queuePostRenderEffect(() => {
         vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
         shouldInvokeDirs && invokeDirectiveHook(vnode, null, parentComponent, "unmounted");
-      }, parentSuspense);
+      }, void 0, parentSuspense);
     }
   };
   var remove = vnode => {
@@ -8156,7 +8195,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     var {
       bum,
       scope,
-      job,
+      effect,
       subTree,
       um,
       m,
@@ -8177,16 +8216,14 @@ function baseCreateRenderer(options, createHydrationFns) {
       });
     }
     scope.stop();
-    if (job) {
-      job.flags |= 8;
+    if (effect) {
+      effect.stop();
       unmount(subTree, instance, parentSuspense, doRemove);
     }
     if (um) {
-      queuePostRenderEffect(um, parentSuspense);
+      queuePostRenderEffect(um, void 0, parentSuspense);
     }
-    queuePostRenderEffect(() => {
-      instance.isUnmounted = true;
-    }, parentSuspense);
+    queuePostRenderEffect(() => instance.isUnmounted = true, void 0, parentSuspense);
     if (parentSuspense && parentSuspense.pendingBranch && !parentSuspense.isUnmounted && instance.asyncDep && !instance.asyncResolved && instance.suspenseId === parentSuspense.pendingId) {
       parentSuspense.deps--;
       if (parentSuspense.deps === 0) {
@@ -8296,10 +8333,10 @@ function toggleRecurse(_ref16, allowed) {
   if (!vapor) {
     if (allowed) {
       effect.flags |= 128;
-      job.flags |= 4;
+      job.flags |= 2;
     } else {
       effect.flags &= -129;
-      job.flags &= -5;
+      job.flags &= -3;
     }
   }
 }
@@ -8346,7 +8383,7 @@ function locateNonHydratedAsyncRoot(instance) {
 function invalidateMount(hooks) {
   if (hooks) {
     for (var i = 0; i < hooks.length; i++) {
-      hooks[i].flags |= 8;
+      hooks[i].flags |= 4;
     }
   }
 }
@@ -8387,12 +8424,45 @@ function watch(source, cb, options) {
   }
   return doWatch(source, cb, options);
 }
+class RenderWatcherEffect extends WatcherEffect {
+  constructor(instance, source, cb, options, flush) {
+    super(source, cb, options);
+    this.flush = flush;
+    var job = () => {
+      if (this.dirty) {
+        this.run();
+      }
+    };
+    if (cb) {
+      this.flags |= 128;
+      job.flags |= 2;
+    }
+    if (instance) {
+      job.i = instance;
+    }
+    this.job = job;
+  }
+  notify() {
+    var flags = this.flags;
+    if (!(flags & 256)) {
+      var _flush = this.flush;
+      var job = this.job;
+      if (_flush === "post") {
+        queuePostRenderEffect(job, void 0, job.i ? job.i.suspense : null);
+      } else if (_flush === "pre") {
+        queueJob(job, job.i ? job.i.uid : void 0, true);
+      } else {
+        job();
+      }
+    }
+  }
+}
 function doWatch(source, cb) {
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : EMPTY_OBJ;
   var {
     immediate,
     deep,
-    flush,
+    flush = "pre",
     once
   } = options;
   if (!cb) {
@@ -8410,35 +8480,19 @@ function doWatch(source, cb) {
   baseWatchOptions.onWarn = warn$1;
   var instance = currentInstance;
   baseWatchOptions.call = (fn, type, args) => callWithAsyncErrorHandling(fn, instance, type, args);
-  var isPre = false;
-  if (flush === "post") {
-    baseWatchOptions.scheduler = job => {
-      queuePostRenderEffect(job, instance && instance.suspense);
-    };
-  } else if (flush !== "sync") {
-    isPre = true;
-    baseWatchOptions.scheduler = (job, isFirstRun) => {
-      if (isFirstRun) {
-        job();
-      } else {
-        queueJob(job);
-      }
-    };
+  var effect = new RenderWatcherEffect(instance, source, cb, baseWatchOptions, flush);
+  if (cb) {
+    effect.run(true);
+  } else if (flush === "post") {
+    queuePostRenderEffect(effect.job, void 0, instance && instance.suspense);
+  } else {
+    effect.run(true);
   }
-  baseWatchOptions.augmentJob = job => {
-    if (cb) {
-      job.flags |= 4;
-    }
-    if (isPre) {
-      job.flags |= 2;
-      if (instance) {
-        job.id = instance.uid;
-        job.i = instance;
-      }
-    }
-  };
-  var watchHandle = watch$1(source, cb, baseWatchOptions);
-  return watchHandle;
+  var stop = effect.stop.bind(effect);
+  stop.pause = effect.pause.bind(effect);
+  stop.resume = effect.resume.bind(effect);
+  stop.stop = stop;
+  return stop;
 }
 function instanceWatch(source, value, options) {
   var publicThis = this.proxy;
@@ -8450,9 +8504,9 @@ function instanceWatch(source, value, options) {
     cb = value.handler;
     options = value;
   }
-  var reset = setCurrentInstance(this);
+  var prev = setCurrentInstance(this);
   var res = doWatch(getter, cb.bind(publicThis), options);
-  reset();
+  setCurrentInstance(...prev);
   return res;
 }
 function createPathGetter(ctx, path) {
@@ -9367,7 +9421,7 @@ function normalizeSuspenseSlot(s) {
   }
   return s;
 }
-function queueEffectWithSuspense(fn, suspense) {
+function queueEffectWithSuspense(fn, id, suspense) {
   if (suspense && suspense.pendingBranch) {
     if (isArray$1(fn)) {
       suspense.effects.push(...fn);
@@ -9375,7 +9429,7 @@ function queueEffectWithSuspense(fn, suspense) {
       suspense.effects.push(fn);
     }
   } else {
-    queuePostFlushCb(fn);
+    queuePostFlushCb(fn, id);
   }
 }
 function setActiveBranch(suspense, branch) {
@@ -9795,34 +9849,21 @@ var getCurrentGenericInstance = () => currentInstance || currentRenderingInstanc
 var getCurrentInstance = () => currentInstance && !currentInstance.vapor ? currentInstance : currentRenderingInstance;
 var isInSSRComponentSetup = false;
 var setInSSRSetupState;
-var internalSetCurrentInstance;
+var simpleSetCurrentInstance;
 {
-  internalSetCurrentInstance = i => {
+  simpleSetCurrentInstance = i => {
     currentInstance = i;
   };
   setInSSRSetupState = v => {
     isInSSRComponentSetup = v;
   };
 }
-var setCurrentInstance = instance => {
-  var prev = currentInstance;
-  internalSetCurrentInstance(instance);
-  instance.scope.on();
-  return () => {
-    instance.scope.off();
-    internalSetCurrentInstance(prev);
-  };
-};
-var unsetCurrentInstance = () => {
-  currentInstance && currentInstance.scope.off();
-  internalSetCurrentInstance(null);
-};
-var simpleSetCurrentInstance = (i, unset) => {
-  currentInstance = i;
-  if (unset) {
-    unset.scope.off();
-  } else if (i) {
-    i.scope.on();
+var setCurrentInstance = function (instance) {
+  var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : instance !== null ? instance.scope : void 0;
+  try {
+    return [currentInstance, setCurrentScope(scope)];
+  } finally {
+    simpleSetCurrentInstance(instance);
   }
 };
 var emptyAppContext = createAppContext();
@@ -10000,17 +10041,20 @@ function setupStatefulComponent(instance, isSSR) {
     setup
   } = Component;
   if (setup) {
-    pauseTracking();
+    var prevSub = setActiveSub();
     var setupContext = instance.setupContext = setup.length > 1 ? createSetupContext(instance) : null;
-    var reset = setCurrentInstance(instance);
+    var prev = setCurrentInstance(instance);
     var setupResult = callWithErrorHandling(setup, instance, 0, [shallowReadonly(instance.props), setupContext]);
     var isAsyncSetup = isPromise(setupResult);
-    resetTracking();
-    reset();
+    setActiveSub(prevSub);
+    setCurrentInstance(...prev);
     if ((isAsyncSetup || instance.sp) && !isAsyncWrapper(instance)) {
       markAsyncBoundary(instance);
     }
     if (isAsyncSetup) {
+      var unsetCurrentInstance = () => {
+        setCurrentInstance(null, void 0);
+      };
       setupResult.then(unsetCurrentInstance, unsetCurrentInstance);
       if (isSSR) {
         return setupResult.then(resolvedResult => {
@@ -10097,13 +10141,13 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
     }
   }
   {
-    var reset = setCurrentInstance(instance);
-    pauseTracking();
+    var prevInstance = setCurrentInstance(instance);
+    var prevSub = setActiveSub();
     try {
       applyOptions(instance);
     } finally {
-      resetTracking();
-      reset();
+      setActiveSub(prevSub);
+      setCurrentInstance(...prevInstance);
     }
   }
   if (!Component.render && instance.render === NOOP && !isSSR) {
@@ -10277,9 +10321,9 @@ function initCustomFormatter() {
       if (obj.__isVue) {
         return ["div", vueStyle, "VueInstance"];
       } else if (isRef(obj)) {
-        pauseTracking();
+        var prevSub = setActiveSub();
         var value = obj.value;
-        resetTracking();
+        setActiveSub(prevSub);
         return ["div", {}, ["span", vueStyle, genRefFlag(obj)], "<", formatValue(value), ">"];
       } else if (isReactive(obj)) {
         return ["div", {}, ["span", vueStyle, isShallow(obj) ? "ShallowReactive" : "Reactive"], "<", formatValue(obj), ">".concat(isReadonly(obj) ? " (readonly)" : "")];
@@ -10419,7 +10463,7 @@ function isMemoSame(cached, memo) {
   }
   return true;
 }
-var version = "3.5.14";
+var version = "3.6.0-alpha.1";
 var warn = warn$1;
 var ErrorTypeStrings = ErrorTypeStrings$1;
 var devtools = devtools$1;
@@ -10428,17 +10472,21 @@ var ssrUtils = null;
 var resolveFilter = null;
 var compatUtils = null;
 var DeprecationTypes = null;
+var insertionParent;
+var insertionAnchor;
+function setInsertionState(parent, anchor) {
+  insertionParent = parent;
+  insertionAnchor = anchor;
+}
+function resetInsertionState() {
+  insertionParent = insertionAnchor = void 0;
+}
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
 function createTextNode(doc) {
   var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
   return doc.createTextNode(value);
-}
-/*! #__NO_SIDE_EFFECTS__ */
-// @__NO_SIDE_EFFECTS__
-function createComment(doc, data) {
-  return doc.createComment(data);
 }
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
@@ -10454,15 +10502,6 @@ function nthChild(node, i) {
 // @__NO_SIDE_EFFECTS__
 function next(node) {
   return node.nextSibling;
-}
-var insertionParent;
-var insertionAnchor;
-function setInsertionState(parent, anchor) {
-  insertionParent = parent;
-  insertionAnchor = anchor;
-}
-function resetInsertionState() {
-  insertionParent = insertionAnchor = void 0;
 }
 var NODE_EXT_STYLES = "styles";
 var NODE_EXT_PARENT_STYLES = "parentStyles";
@@ -10840,7 +10879,7 @@ class DynamicFragment extends VaporFragment {
   // fixed by uts
   constructor(doc, anchorLabel) {
     super([]);
-    this.anchor = createComment(doc, anchorLabel || "");
+    this.anchor = doc.createComment(anchorLabel || "");
   }
   update(render) {
     var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : render;
@@ -10848,7 +10887,7 @@ class DynamicFragment extends VaporFragment {
       return;
     }
     this.current = key;
-    pauseTracking();
+    var prevSub = setActiveSub();
     var parent = this.anchor.parentNode;
     if (this.scope) {
       this.scope.stop();
@@ -10872,7 +10911,7 @@ class DynamicFragment extends VaporFragment {
       this.nodes = (this.scope || (this.scope = new EffectScope())).run(this.fallback) || [];
       parent && insert(this.nodes, parent, this.anchor);
     }
-    resetTracking();
+    setActiveSub(prevSub);
   }
 }
 function isFragment(val) {
@@ -10999,49 +11038,67 @@ function propGetter(rawProps, key) {
   }
   return rawProps[key] && resolveSource(rawProps[key]);
 }
-function renderEffect(fn) {
-  var noLifecycle = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var instance = currentInstance;
-  var scope = getCurrentScope();
-  if (!scope && !isVaporComponent(instance)) {
-    warn("renderEffect called without active EffectScope or Vapor instance.");
+class RenderEffect extends ReactiveEffect {
+  constructor(render) {
+    super();
+    this.render = render;
+    var instance = currentInstance;
+    if (!this.subs && !isVaporComponent(instance)) {
+      warn("renderEffect called without active EffectScope or Vapor instance.");
+    }
+    var job = () => {
+      if (this.dirty) {
+        this.run();
+      }
+    };
+    this.updateJob = () => {
+      instance.isUpdating = false;
+      instance.u && invokeArrayFns(instance.u);
+    };
+    if (instance) {
+      {
+        this.onTrack = instance.rtc ? e => invokeArrayFns(instance.rtc, e) : void 0;
+        this.onTrigger = instance.rtg ? e => invokeArrayFns(instance.rtg, e) : void 0;
+      }
+      job.i = instance;
+    }
+    this.job = job;
+    this.i = instance;
   }
-  var hasUpdateHooks = instance && (instance.bu || instance.u);
-  var renderEffectFn = noLifecycle ? fn : () => {
+  fn() {
+    var instance = this.i;
+    var scope = this.subs ? this.subs.sub : void 0;
+    var hasUpdateHooks = instance && (instance.bu || instance.u);
     if (instance) {
       startMeasure(instance, "renderEffect");
     }
-    var prev = currentInstance;
-    simpleSetCurrentInstance(instance);
-    if (scope) scope.on();
+    var prev = setCurrentInstance(instance, scope);
     if (hasUpdateHooks && instance.isMounted && !instance.isUpdating) {
       instance.isUpdating = true;
       instance.bu && invokeArrayFns(instance.bu);
-      fn();
-      queuePostFlushCb(() => {
-        instance.isUpdating = false;
-        instance.u && invokeArrayFns(instance.u);
-      });
+      this.render();
+      queuePostFlushCb(this.updateJob);
     } else {
-      fn();
+      this.render();
     }
-    if (scope) scope.off();
-    simpleSetCurrentInstance(prev, instance);
+    setCurrentInstance(...prev);
     if (instance) {
       startMeasure(instance, "renderEffect");
     }
-  };
-  var effect = new ReactiveEffect(renderEffectFn);
-  var job = () => effect.dirty && effect.run();
-  if (instance) {
-    {
-      effect.onTrack = instance.rtc ? e => invokeArrayFns(instance.rtc, e) : void 0;
-      effect.onTrigger = instance.rtg ? e => invokeArrayFns(instance.rtg, e) : void 0;
-    }
-    job.i = instance;
-    job.id = instance.uid;
   }
-  effect.scheduler = () => queueJob(job);
+  notify() {
+    var flags = this.flags;
+    if (!(flags & 256)) {
+      queueJob(this.job, this.i ? this.i.uid : void 0);
+    }
+  }
+}
+function renderEffect(fn) {
+  var noLifecycle = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var effect = new RenderEffect(fn);
+  if (noLifecycle) {
+    effect.fn = fn;
+  }
   effect.run();
 }
 function resolveSource(source) {
@@ -11146,7 +11203,7 @@ function getAttrFromRawProps(rawProps, key) {
       source = dynamicSources[i];
       isDynamic = isFunction(source);
       source = isDynamic ? source() : source;
-      if (hasOwn(source, key)) {
+      if (source && hasOwn(source, key)) {
         var value = isDynamic ? source[key] : source[key]();
         if (merged) {
           merged.push(value);
@@ -11210,10 +11267,9 @@ function normalizePropsOptions(comp) {
   return comp.__propsOptions = [normalized, needCastKeys];
 }
 function resolveDefault(factory, instance) {
-  var prev = currentInstance;
-  simpleSetCurrentInstance(instance);
+  var prev = setCurrentInstance(instance);
   var res = factory.call(null, instance.props);
-  simpleSetCurrentInstance(prev, instance);
+  setCurrentInstance(...prev);
   return res;
 }
 function hasFallthroughAttrs(comp, rawProps) {
@@ -11730,12 +11786,11 @@ function hmrRerender(instance) {
   var parent = normalized[0].parentNode;
   var anchor = normalized[normalized.length - 1].nextSibling;
   remove(instance.block, parent);
-  var prev = currentInstance;
-  simpleSetCurrentInstance(instance);
+  var prev = setCurrentInstance(instance);
   pushWarningContext(instance);
   devRender(instance);
   popWarningContext();
-  simpleSetCurrentInstance(prev, instance);
+  setCurrentInstance(...prev);
   insert(instance.block, parent, anchor);
 }
 function hmrReload(instance, newComp) {
@@ -11743,10 +11798,9 @@ function hmrReload(instance, newComp) {
   var parent = normalized[0].parentNode;
   var anchor = normalized[normalized.length - 1].nextSibling;
   unmountComponent(instance, parent);
-  var prev = currentInstance;
-  simpleSetCurrentInstance(instance.parent);
+  var prev = setCurrentInstance(instance.parent);
   var newInstance = createComponent(newComp, instance.rawProps, instance.rawSlots, instance.isSingleRoot);
-  simpleSetCurrentInstance(prev, instance.parent);
+  setCurrentInstance(...prev);
   mountComponent(newInstance, parent, anchor);
 }
 function createComponent(component, rawProps, rawSlots, isSingleRoot) {
@@ -11774,15 +11828,20 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
     }
   }
   var instance = new VaporComponentInstance(component, rawProps, rawSlots, appContext);
+  if (component.__hmrId) {
+    registerHMR(instance);
+    instance.isSingleRoot = isSingleRoot;
+    instance.hmrRerender = hmrRerender.bind(null, instance);
+    instance.hmrReload = hmrReload.bind(null, instance);
+  }
   {
     pushWarningContext(instance);
     startMeasure(instance, "init");
     instance.propsOptions = normalizePropsOptions(component);
     instance.emitsOptions = normalizeEmitsOptions(component);
   }
-  var prev = currentInstance;
-  simpleSetCurrentInstance(instance);
-  pauseTracking();
+  var prevInstance = setCurrentInstance(instance);
+  var prevSub = setActiveSub();
   {
     setupPropsValidation(instance);
   }
@@ -11817,12 +11876,6 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
       instance.devtoolsRawSetupState = setupResult;
       instance.setupState = proxyRefs(setupResult);
       devRender(instance);
-      if (component.__hmrId) {
-        registerHMR(instance);
-        instance.isSingleRoot = isSingleRoot;
-        instance.hmrRerender = hmrRerender.bind(null, instance);
-        instance.hmrReload = hmrReload.bind(null, instance);
-      }
     }
   } else {
     if (!setupFn && component.render) {
@@ -11841,8 +11894,8 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
       });
     }
   }
-  resetTracking();
-  simpleSetCurrentInstance(prev, instance);
+  setActiveSub(prevSub);
+  setCurrentInstance(...prevInstance);
   {
     popWarningContext();
     endMeasure(instance, "init");
@@ -11855,7 +11908,12 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
 }
 var isApplyingFallthroughProps = false;
 function devRender(instance) {
-  instance.block = callWithErrorHandling(instance.type.render, instance, 1, [instance.setupState, instance.props, instance.emit, instance.attrs, instance.slots]) || [];
+  instance.block = (instance.type.render ? callWithErrorHandling(instance.type.render, instance, 1, [instance.setupState, instance.props, instance.emit, instance.attrs, instance.slots]) : callWithErrorHandling(isFunction(instance.type) ? instance.type : instance.type.setup, instance, 0, [instance.props, {
+    slots: instance.slots,
+    attrs: instance.attrs,
+    emit: instance.emit,
+    expose: instance.expose
+  }])) || [];
 }
 var emptyContext = {
   app: null,
@@ -12028,6 +12086,7 @@ function postPrepareApp(app) {
       }
     });
   }
+  app.vapor = true;
 }
 var createVaporApp$1 = (comp, props) => {
   prepareApp();
@@ -12055,7 +12114,7 @@ var vaporInteropImpl = {
   mount(vnode, container, anchor, parentComponent) {
     var selfAnchor = vnode.el = vnode.anchor =
     // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
-    createComment(container.page.document, "");
+    container.page.document.createComment("");
     container.insertBefore(selfAnchor, anchor);
     var prev = currentInstance;
     simpleSetCurrentInstance(parentComponent);
@@ -12098,7 +12157,7 @@ var vaporInteropImpl = {
     if (!n1) {
       var selfAnchor = n2.el = n2.anchor =
       // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
-      createComment(container.page.document, "");
+      container.page.document.createComment("");
       insert(selfAnchor, container, anchor);
       var {
         slot,
@@ -12131,11 +12190,11 @@ var vaporSlotPropsProxyHandler = {
 };
 var vaporSlotsProxyHandler = {
   get(target, key) {
-    if (key === "_vapor") {
-      return target;
-    } else {
-      return target[key];
+    var slot = target[key];
+    if (isFunction(slot)) {
+      slot.__vapor = true;
     }
+    return slot;
   }
 };
 function createVDOMComponent(internals, component, rawProps, rawSlots) {
@@ -12267,11 +12326,13 @@ var createFor = function (doc, src, renderItem, getKey) {
   var oldBlocks = [];
   var newBlocks;
   var parent;
-  var parentAnchor = createComment(doc, "for");
+  var currentKey;
+  var parentAnchor = doc.createComment("for");
   var frag = new VaporFragment(oldBlocks);
   var instance = currentInstance;
-  var canUseFastRemove = flags & 1;
-  var isComponent = flags & 2;
+  var canUseFastRemove = !!(flags & 1);
+  var isComponent = !!(flags & 2);
+  var selectors = [];
   if (!instance) {
     warn("createFor() can only be used inside setup()");
   }
@@ -12280,7 +12341,7 @@ var createFor = function (doc, src, renderItem, getKey) {
     var newLength = source.values.length;
     var oldLength = oldBlocks.length;
     newBlocks = new Array(newLength);
-    pauseTracking();
+    var prevSub = setActiveSub();
     if (!isMounted) {
       isMounted = true;
       for (var i = 0; i < newLength; i++) {
@@ -12293,9 +12354,12 @@ var createFor = function (doc, src, renderItem, getKey) {
           mount(source, _i5);
         }
       } else if (!newLength) {
+        for (var selector of selectors) {
+          selector.cleanup();
+        }
         var doRemove = !canUseFastRemove;
         for (var _i6 = 0; _i6 < oldLength; _i6++) {
-          unmount(oldBlocks[_i6], doRemove);
+          unmount(oldBlocks[_i6], doRemove, false);
         }
         if (canUseFastRemove) {
           parent.textContent = "";
@@ -12313,85 +12377,98 @@ var createFor = function (doc, src, renderItem, getKey) {
           unmount(oldBlocks[_i9]);
         }
       } else {
-        var _i10 = 0;
-        var e1 = oldLength - 1;
-        var e2 = newLength - 1;
-        while (_i10 <= e1 && _i10 <= e2) {
-          if (tryPatchIndex(source, _i10)) {
-            _i10++;
-          } else {
-            break;
+        var sharedBlockCount = Math.min(oldLength, newLength);
+        var previousKeyIndexPairs = new Array(oldLength);
+        var queuedBlocks = new Array(newLength);
+        var anchorFallback = parentAnchor;
+        var endOffset = 0;
+        var startOffset = 0;
+        var queuedBlocksInsertIndex = 0;
+        var previousKeyIndexInsertIndex = 0;
+        while (endOffset < sharedBlockCount) {
+          var currentIndex = newLength - endOffset - 1;
+          var currentItem = getItem(source, currentIndex);
+          var currentKey2 = getKey(...currentItem);
+          var existingBlock = oldBlocks[oldLength - endOffset - 1];
+          if (existingBlock.key === currentKey2) {
+            update(existingBlock, ...currentItem);
+            newBlocks[currentIndex] = existingBlock;
+            endOffset++;
+            continue;
           }
+          if (endOffset !== 0) {
+            anchorFallback = normalizeAnchor(newBlocks[currentIndex + 1].nodes);
+          }
+          break;
         }
-        while (_i10 <= e1 && _i10 <= e2) {
-          if (tryPatchIndex(source, _i10)) {
-            e1--;
-            e2--;
+        while (startOffset < sharedBlockCount - endOffset) {
+          var _currentItem = getItem(source, startOffset);
+          var _currentKey = getKey(..._currentItem);
+          var previousBlock = oldBlocks[startOffset];
+          var previousKey = previousBlock.key;
+          if (previousKey === _currentKey) {
+            update(newBlocks[startOffset] = previousBlock, _currentItem[0]);
           } else {
-            break;
+            queuedBlocks[queuedBlocksInsertIndex++] = [startOffset, _currentItem, _currentKey];
+            previousKeyIndexPairs[previousKeyIndexInsertIndex++] = [previousKey, startOffset];
           }
+          startOffset++;
         }
-        if (_i10 > e1) {
-          if (_i10 <= e2) {
-            var nextPos = e2 + 1;
-            var anchor = nextPos < newLength ? normalizeAnchor(newBlocks[nextPos].nodes) : parentAnchor;
-            while (_i10 <= e2) {
-              mount(source, _i10, anchor);
-              _i10++;
-            }
-          }
-        } else if (_i10 > e2) {
-          while (_i10 <= e1) {
-            unmount(oldBlocks[_i10]);
-            _i10++;
+        for (var _i10 = startOffset; _i10 < oldLength - endOffset; _i10++) {
+          previousKeyIndexPairs[previousKeyIndexInsertIndex++] = [oldBlocks[_i10].key, _i10];
+        }
+        var preparationBlockCount = Math.min(newLength - endOffset, sharedBlockCount);
+        for (var _i11 = startOffset; _i11 < preparationBlockCount; _i11++) {
+          var blockItem = getItem(source, _i11);
+          var blockKey = getKey(...blockItem);
+          queuedBlocks[queuedBlocksInsertIndex++] = [_i11, blockItem, blockKey];
+        }
+        if (!queuedBlocksInsertIndex && !previousKeyIndexInsertIndex) {
+          for (var _i12 = preparationBlockCount; _i12 < newLength - endOffset; _i12++) {
+            var _blockItem = getItem(source, _i12);
+            var _blockKey = getKey(..._blockItem);
+            mount(source, _i12, anchorFallback, _blockItem, _blockKey);
           }
         } else {
-          var s1 = _i10;
-          var s2 = _i10;
-          var keyToNewIndexMap = /* @__PURE__ */new Map();
-          for (_i10 = s2; _i10 <= e2; _i10++) {
-            keyToNewIndexMap.set(getKey(...getItem(source, _i10)), _i10);
-          }
-          var j;
-          var patched = 0;
-          var toBePatched = e2 - s2 + 1;
-          var moved = false;
-          var maxNewIndexSoFar = 0;
-          var newIndexToOldIndexMap = new Array(toBePatched).fill(0);
-          for (_i10 = s1; _i10 <= e1; _i10++) {
-            var prevBlock = oldBlocks[_i10];
-            if (patched >= toBePatched) {
-              unmount(prevBlock);
+          queuedBlocks.length = queuedBlocksInsertIndex;
+          previousKeyIndexPairs.length = previousKeyIndexInsertIndex;
+          var previousKeyIndexMap = new Map(previousKeyIndexPairs);
+          var blocksToMount = [];
+          var relocateOrMountBlock = (blockIndex, blockItem, blockKey, anchorOffset) => {
+            var previousIndex = previousKeyIndexMap.get(blockKey);
+            if (previousIndex !== void 0) {
+              var reusedBlock = newBlocks[blockIndex] = oldBlocks[previousIndex];
+              update(reusedBlock, ...blockItem);
+              insert(reusedBlock, parent, anchorOffset === -1 ? anchorFallback : normalizeAnchor(newBlocks[anchorOffset].nodes));
+              previousKeyIndexMap.delete(blockKey);
             } else {
-              var newIndex = keyToNewIndexMap.get(prevBlock.key);
-              if (newIndex == null) {
-                unmount(prevBlock);
-              } else {
-                newIndexToOldIndexMap[newIndex - s2] = _i10 + 1;
-                if (newIndex >= maxNewIndexSoFar) {
-                  maxNewIndexSoFar = newIndex;
-                } else {
-                  moved = true;
-                }
-                update(newBlocks[newIndex] = prevBlock, ...getItem(source, newIndex));
-                patched++;
-              }
+              blocksToMount.push([blockIndex, blockItem, blockKey, anchorOffset]);
+            }
+          };
+          for (var _i13 = queuedBlocks.length - 1; _i13 >= 0; _i13--) {
+            var [blockIndex, _blockItem2, _blockKey2] = queuedBlocks[_i13];
+            relocateOrMountBlock(blockIndex, _blockItem2, _blockKey2, blockIndex < preparationBlockCount - 1 ? blockIndex + 1 : -1);
+          }
+          for (var _i14 = preparationBlockCount; _i14 < newLength - endOffset; _i14++) {
+            var _blockItem3 = getItem(source, _i14);
+            var _blockKey3 = getKey(..._blockItem3);
+            relocateOrMountBlock(_i14, _blockItem3, _blockKey3, -1);
+          }
+          var useFastRemove = blocksToMount.length === newLength;
+          for (var leftoverIndex of previousKeyIndexMap.values()) {
+            unmount(oldBlocks[leftoverIndex], !(useFastRemove && canUseFastRemove), !useFastRemove);
+          }
+          if (useFastRemove) {
+            for (var _selector of selectors) {
+              _selector.cleanup();
+            }
+            if (canUseFastRemove) {
+              parent.textContent = "";
+              parent.appendChild(parentAnchor);
             }
           }
-          var increasingNewIndexSequence = moved ? getSequence(newIndexToOldIndexMap) : [];
-          j = increasingNewIndexSequence.length - 1;
-          for (_i10 = toBePatched - 1; _i10 >= 0; _i10--) {
-            var nextIndex = s2 + _i10;
-            var _anchor2 = nextIndex + 1 < newLength ? normalizeAnchor(newBlocks[nextIndex + 1].nodes) : parentAnchor;
-            if (newIndexToOldIndexMap[_i10] === 0) {
-              mount(source, nextIndex, _anchor2);
-            } else if (moved) {
-              if (j < 0 || _i10 !== increasingNewIndexSequence[j]) {
-                insert(newBlocks[nextIndex].nodes, parent, _anchor2);
-              } else {
-                j--;
-              }
-            }
+          for (var [_blockIndex, _blockItem4, _blockKey4, anchorOffset] of blocksToMount) {
+            mount(source, _blockIndex, anchorOffset === -1 ? anchorFallback : normalizeAnchor(newBlocks[anchorOffset].nodes), _blockItem4, _blockKey4);
           }
         }
       }
@@ -12400,16 +12477,18 @@ var createFor = function (doc, src, renderItem, getKey) {
     if (parentAnchor) {
       frag.nodes.push(parentAnchor);
     }
-    resetTracking();
+    setActiveSub(prevSub);
   };
   var needKey = renderItem.length > 1;
   var needIndex = renderItem.length > 2;
   var mount = function (source, idx) {
     var anchor = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : parentAnchor;
-    var [item, key, index] = getItem(source, idx);
+    var [item, key, index] = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : getItem(source, idx);
+    var key2 = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : getKey && getKey(item, key, index);
     var itemRef = shallowRef(item);
     var keyRef = needKey ? shallowRef(key) : void 0;
     var indexRef = needIndex ? shallowRef(index) : void 0;
+    currentKey = key2;
     var nodes;
     var scope;
     if (isComponent) {
@@ -12418,17 +12497,9 @@ var createFor = function (doc, src, renderItem, getKey) {
       scope = new EffectScope();
       nodes = scope.run(() => renderItem(itemRef, keyRef, indexRef));
     }
-    var block = newBlocks[idx] = new ForBlock(nodes, scope, itemRef, keyRef, indexRef, getKey && getKey(item, key, index));
+    var block = newBlocks[idx] = new ForBlock(nodes, scope, itemRef, keyRef, indexRef, key2);
     if (parent) insert(block.nodes, parent, anchor);
     return block;
-  };
-  var tryPatchIndex = (source, idx) => {
-    var block = oldBlocks[idx];
-    var [item, key, index] = getItem(source, idx);
-    if (block.key === getKey(item, key, index)) {
-      update(newBlocks[idx] = block, item);
-      return true;
-    }
   };
   var update = (_ref32, newItem, newKey, newIndex) => {
     var {
@@ -12446,14 +12517,20 @@ var createFor = function (doc, src, renderItem, getKey) {
       indexRef.value = newIndex;
     }
   };
-  var unmount = function (_ref33) {
-    var {
-      nodes,
-      scope
-    } = _ref33;
+  var unmount = function (block) {
     var doRemove = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-    scope && scope.stop();
-    doRemove && remove(nodes, parent);
+    var doDeregister = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+    if (!isComponent) {
+      block.scope.stop();
+    }
+    if (doRemove) {
+      remove(block.nodes, parent);
+    }
+    if (doDeregister) {
+      for (var selector of selectors) {
+        selector.deregister(block.key);
+      }
+    }
   };
   if (flags & 4) {
     renderList();
@@ -12463,7 +12540,54 @@ var createFor = function (doc, src, renderItem, getKey) {
   if (_insertionParent) {
     insert(frag, _insertionParent, _insertionAnchor);
   }
+  frag.useSelector = useSelector;
   return frag;
+  function useSelector(source) {
+    var operMap = /* @__PURE__ */new Map();
+    var activeKey = source();
+    var activeOpers;
+    watch$1(source, newValue => {
+      if (activeOpers !== void 0) {
+        for (var oper of activeOpers) {
+          oper();
+        }
+      }
+      activeOpers = operMap.get(newValue);
+      if (activeOpers !== void 0) {
+        for (var _oper of activeOpers) {
+          _oper();
+        }
+      }
+    });
+    selectors.push({
+      deregister,
+      cleanup
+    });
+    return register;
+    function cleanup() {
+      operMap = /* @__PURE__ */new Map();
+      activeOpers = void 0;
+    }
+    function register(oper) {
+      oper();
+      var opers = operMap.get(currentKey);
+      if (opers !== void 0) {
+        opers.push(oper);
+      } else {
+        opers = [oper];
+        operMap.set(currentKey, opers);
+        if (currentKey === activeKey) {
+          activeOpers = opers;
+        }
+      }
+    }
+    function deregister(key) {
+      operMap.delete(key);
+      if (key === activeKey) {
+        activeOpers = void 0;
+      }
+    }
+  }
 };
 function createForSlots(rawSource, getSlot) {
   var source = normalizeSource(rawSource);
@@ -12501,8 +12625,8 @@ function normalizeSource(source) {
     } else {
       keys = Object.keys(source);
       values = new Array(keys.length);
-      for (var _i11 = 0, l = keys.length; _i11 < l; _i11++) {
-        values[_i11] = source[keys[_i11]];
+      for (var _i15 = 0, l = keys.length; _i15 < l; _i15++) {
+        values[_i15] = source[keys[_i15]];
       }
     }
   }
@@ -12513,13 +12637,13 @@ function normalizeSource(source) {
     keys
   };
 }
-function getItem(_ref34, idx) {
+function getItem(_ref33, idx) {
   var {
     keys,
     values,
     needsWrap,
     isReadonlySource
-  } = _ref34;
+  } = _ref33;
   var value = needsWrap ? isReadonlySource ? toReadonly(toReactive(values[idx])) : toReactive(values[idx]) : values[idx];
   if (keys) {
     return [value, keys[idx], idx];
@@ -12612,8 +12736,7 @@ function setRef(instance, el, ref, oldRef) {
           warn("Invalid template ref type:", ref, "(".concat(typeof ref, ")"));
         }
       };
-      doSet.id = -1;
-      queuePostFlushCb(doSet);
+      queuePostFlushCb(doSet, -1);
       onScopeDispose(() => {
         queuePostFlushCb(() => {
           if (isArray$1(existing)) {
@@ -13049,14 +13172,14 @@ var getModelAssigner = vnode => {
   return isArray$1(fn) ? value => invokeArrayFns(fn, value) : fn;
 };
 var vModelText = {
-  created(el, _ref35, vnode) {
+  created(el, _ref34, vnode) {
     var {
       modifiers: {
         lazy,
         trim,
         number
       }
-    } = _ref35;
+    } = _ref34;
     el[assignKey] = getModelAssigner(vnode);
     vModelTextInit(el, trim, number || !!(vnode.props && vnode.props.type === "number"));
   },
@@ -13064,7 +13187,7 @@ var vModelText = {
     var _a;
     el.setAnyAttribute("value", (_a = _binding.value) != null ? _a : "");
   },
-  beforeUpdate(el, _ref36, vnode) {
+  beforeUpdate(el, _ref35, vnode) {
     var {
       value,
       oldValue,
@@ -13073,7 +13196,7 @@ var vModelText = {
         trim,
         number
       }
-    } = _ref36;
+    } = _ref35;
     el[assignKey] = getModelAssigner(vnode);
     vModelTextUpdate(el, oldValue, value, trim, number);
   }
@@ -13306,4 +13429,4 @@ var defineComponent = options => {
 };
 var ssrRef = ref;
 var shallowSsrRef = shallowRef;
-export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createMountPage, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, effect, effectScope, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getCurrentWatcher, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, reactive, readonly, ref, registerHMR, registerRuntimeCompiler, remove, render, renderComponentSlot, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrRef, ssrUtils, startMeasure, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };
+export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, MoveType, PublicInstanceProxyHandlers, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, VaporFragment, applyTextModel, applyVShow, assertNumber, baseEmit, baseNormalizePropsOptions, callWithAsyncErrorHandling, callWithErrorHandling, child, cloneVNode, compatUtils, computed, createApp, createAppAPI, createBlock, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createHydrationRenderer, createIf, createInternalObject, createMountPage, createPropsRestProxy, createRenderer, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, currentInstance, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, defineVaporComponent, delegate, delegateEvents, devtools, effect, effectScope, endMeasure, ensureRenderer, expose, factory, flushOnAppMount, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getCurrentWatcher, getDefaultValue, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initFeatureFlags, inject, injectHook, insert, isEmitListener, isFragment, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, next, nextTick, nextUid, nthChild, on, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseClassList, parseClassStyles, patchStyle, popScopeId, popWarningContext, prepend, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, reactive, readonly, ref, registerHMR, registerRuntimeCompiler, remove, render, renderComponentSlot, renderEffect, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTransitionHooks, setAttr, setBlockTracking, setClass, setCurrentInstance, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setHtml, setInsertionState, setProp, setStyle, setText, setTransitionHooks, setValue, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, shouldSetAsProp, simpleSetCurrentInstance, ssrContextKey, ssrRef, ssrUtils, startMeasure, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, unregisterHMR, useAttrs, useCssModule, useCssStyles, useCssVars, useId, useModel, useSSRContext, useSlots, useTemplateRef, useTransitionState, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId, withVaporDirectives };
