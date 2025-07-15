@@ -24,6 +24,7 @@ export const customElements = [
   'payment-list',
   'web-view',
   'playlet-plugin',
+  'address',
 ]
 
 export const compilerOptions: CompilerOptions = {
