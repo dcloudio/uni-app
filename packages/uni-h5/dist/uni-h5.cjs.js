@@ -9269,7 +9269,23 @@ const onWebInvokeAppService = ({ name, arg }) => {
   if (name === "postMessage")
     ;
   else {
-    uni[name](arg);
+    switch (name) {
+      case "navigateTo":
+        uni.navigateTo(arg);
+        break;
+      case "navigateBack":
+        uni.navigateBack(arg);
+        break;
+      case "switchTab":
+        uni.switchTab(arg);
+        break;
+      case "reLaunch":
+        uni.reLaunch(arg);
+        break;
+      case "redirectTo":
+        uni.redirectTo(arg);
+        break;
+    }
   }
 };
 const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
