@@ -114,7 +114,8 @@ const tags = {
     'sticky-header',
     'sticky-section',
     'open-data-list',
-    'open-data-item'
+    'open-data-item',
+    'selection'
   ],
   // 支付宝小程序平台独有组件
   'mp-alipay': [
