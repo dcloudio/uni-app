@@ -206,12 +206,7 @@ export default {
     },
 
     _onwxchannelerror (e) {
-      this.wxchannel = false
       this._dispatchEvent(EventType.Error, e.detail)
-      this.$nextTick(() => {
-        this._providerType = ProviderType.ShanHu
-        this.selectComponent('.uniad-plugin').shanhuChannel()
-      })
     },
 
     _dispatchEvent (type, data) {
