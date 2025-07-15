@@ -790,7 +790,7 @@ interface UTSJSONObjectConstructor {
         }
      }
    */
-  assign<T>(...items: any[]): T;
+  assign<T>(...items: any[]): T | null;
 }
 
 declare var UTSJSONObject: UTSJSONObjectConstructor;

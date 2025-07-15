@@ -13253,45 +13253,49 @@ function subscribeGetLocation() {
 let started = false;
 let watchId = 0;
 const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (options, { resolve, reject }) => {
-    watchId =
-        watchId ||
-            plus.geolocation.watchPosition((res) => {
+    const watch = () => {
+        const id = plus.geolocation.watchPosition((res) => {
+            started = true;
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
+        }, (error) => {
+            if (!started) {
+                reject(error.message);
                 started = true;
-                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
-            }, (error) => {
-                if (!started) {
-                    reject(error.message);
-                    started = true;
-                }
-                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
-                    errMsg: `onLocationChange:fail ${error.message}`,
-                });
-            }, {
-                coordsType: options?.type,
-                enableHighAccuracy: true,
+            }
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+                errMsg: `onLocationChange:fail ${error.message}`,
             });
+        }, {
+            coordsType: options?.type,
+            enableHighAccuracy: true,
+        });
+        return id === -1 ? watchId : id;
+    };
+    watchId = watchId || watch();
     setTimeout(resolve, 100);
 }, StartLocationUpdateProtocol, StartLocationUpdateOptions);
 const startLocationUpdateBackground = defineAsyncApi('startLocationUpdateBackground', (options, { resolve, reject }) => {
-    watchId =
-        watchId ||
-            plus.geolocation.watchPosition((res) => {
+    const watch = () => {
+        const id = plus.geolocation.watchPosition((res) => {
+            started = true;
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
+        }, (error) => {
+            if (!started) {
+                reject(error.message);
                 started = true;
-                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
-            }, (error) => {
-                if (!started) {
-                    reject(error.message);
-                    started = true;
-                }
-                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
-                    errMsg: `onLocationChange:fail ${error.message}`,
-                });
-            }, {
-                coordsType: options?.type,
-                enableHighAccuracy: true,
-                // @ts-expect-error 增加background参数
-                background: true,
+            }
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+                errMsg: `onLocationChange:fail ${error.message}`,
             });
+        }, {
+            coordsType: options?.type,
+            enableHighAccuracy: true,
+            // @ts-expect-error 增加background参数
+            background: true,
+        });
+        return id === -1 ? watchId : id;
+    };
+    watchId = watchId || watch();
     setTimeout(resolve, 100);
 });
 const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
