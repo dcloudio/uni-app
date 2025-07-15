@@ -121,6 +121,15 @@ export function createUniAppJsEnginePlugin(
         configResolved(config)
         initUniAppJsEngineCssPlugin(config)
         insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
+        // 如果开启了 vapor 模式，则禁用 vue 的 devtools，让 @vitejs/plugin-vue 不管是开发还是发行，均生成发行代码
+        // 理论上非 vapor 也应该禁用，但为了不引发其他问题，暂时只禁用 vapor 模式
+        if (process.env.UNI_VUE_VAPOR === 'true') {
+          const plugin = config.plugins.find((p) => p.name === 'vite:vue')
+          if (plugin?.api?.options) {
+            plugin.api.options.devToolsEnabled = false
+            plugin.api.options.isProduction = true
+          }
+        }
       },
       generateBundle(_, bundle) {
         const APP_SERVICE_FILENAME_MAP = APP_SERVICE_FILENAME + '.map'
