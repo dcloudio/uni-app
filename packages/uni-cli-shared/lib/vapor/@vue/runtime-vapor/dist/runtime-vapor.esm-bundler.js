@@ -2006,17 +2006,16 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
   instance.accessCache = /* @__PURE__ */ Object.create(null);
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
   const setupFn = isFunction(component) ? component : component.setup;
+  const { beforeSetupPage, initNativePage, initFontFace } = appContext.config.uniX || {};
+  if (component.mpType === "page") {
+    beforeSetupPage && beforeSetupPage(instance.props, instance);
+  }
+  initNativePage && initNativePage(instance.proxy);
   const setupResult = setupFn ? callWithErrorHandling$1(setupFn, instance, 0, [
     instance.props,
     instance
   ]) || EMPTY_OBJ : EMPTY_OBJ;
-  const { initNativePage, initFontFace } = appContext.config.uniX || {};
-  if (initNativePage) {
-    initNativePage(instance.proxy);
-  }
-  if (initFontFace) {
-    initFontFace(instance.proxy);
-  }
+  initFontFace && initFontFace(instance.proxy);
   if (!!(process.env.NODE_ENV !== "production") && !isBlock(setupResult)) {
     if (isFunction(component)) {
       warn$2(`Functional vapor component must return a block directly.`);

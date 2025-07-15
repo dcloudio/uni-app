@@ -791,28 +791,33 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
     }
   });
 }
+var beforeSetupPage = (props, ctx) => {
+  var {
+    attrs: {
+      __pageId,
+      __pagePath,
+      /*__pageQuery,*/
+      __pageInstance
+    }
+  } = ctx;
+  var instance = getCurrentGenericInstance();
+  var pageVm = instance.proxy;
+  initPageVm(pageVm, __pageInstance);
+  {
+    setupXPage(instance, __pageInstance, pageVm, __pageId, __pagePath);
+  }
+};
 function setupPage(component) {
-  var oldSetup = component.setup;
-  component.inheritAttrs = false;
-  component.setup = (props, ctx) => {
-    var {
-      attrs: {
-        __pageId,
-        __pagePath,
-        /*__pageQuery,*/
-        __pageInstance
+  if (!component.__vapor) {
+    var oldSetup = component.setup;
+    component.inheritAttrs = false;
+    component.setup = (props, ctx) => {
+      beforeSetupPage(props, ctx);
+      if (oldSetup) {
+        return oldSetup(props, ctx);
       }
-    } = ctx;
-    var instance = getCurrentGenericInstance();
-    var pageVm = instance.proxy;
-    initPageVm(pageVm, __pageInstance);
-    {
-      setupXPage(instance, __pageInstance, pageVm, __pageId, __pagePath);
-    }
-    if (oldSetup) {
-      return oldSetup(props, ctx);
-    }
-  };
+    };
+  }
   return component;
 }
 function initScope(pageId, vm, pageInstance) {
@@ -2624,6 +2629,7 @@ function initFontFace(vm) {
 }
 function initComponentInstance(app) {
   app.config.uniX = {
+    beforeSetupPage,
     initNativePage,
     initFontFace
   };

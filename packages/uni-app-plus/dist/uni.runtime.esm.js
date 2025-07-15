@@ -1,5 +1,5 @@
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, formatLog, parseNVueDataset, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, ON_REACH_BOTTOM_DISTANCE, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, formatLog, parseNVueDataset, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, EventChannel, ON_READY, ON_UNLOAD, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, ON_REACH_BOTTOM_DISTANCE, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, createMountPage, unmountPage, injectHook, queuePostFlushCb, getCurrentGenericInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
 
 /*
@@ -16776,34 +16776,39 @@ function createPageNode(pageId, pageOptions, setup) {
     return new UniPageNode(pageId, pageOptions, setup);
 }
 
+const beforeSetupPage = (props, ctx) => {
+    const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
+    if ((process.env.NODE_ENV !== 'production')) {
+        console.log(formatLog(__pagePath, 'setup'));
+    }
+    const instance = getCurrentGenericInstance();
+    const pageVm = instance.proxy;
+    initPageVm(pageVm, __pageInstance);
+    {
+        addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
+        onMounted(() => {
+            nextTick(() => {
+                // onShow被延迟，故onReady也同时延迟
+                invokeHook(pageVm, ON_READY);
+            });
+            // TODO preloadSubPackages
+        });
+        onBeforeUnmount(() => {
+            invokeHook(pageVm, ON_UNLOAD);
+        });
+    }
+};
 function setupPage(component) {
-    const oldSetup = component.setup;
-    component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
-    component.setup = (props, ctx) => {
-        const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.log(formatLog(__pagePath, 'setup'));
-        }
-        const instance = getCurrentGenericInstance();
-        const pageVm = instance.proxy;
-        initPageVm(pageVm, __pageInstance);
-        {
-            addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
-            onMounted(() => {
-                nextTick(() => {
-                    // onShow被延迟，故onReady也同时延迟
-                    invokeHook(pageVm, ON_READY);
-                });
-                // TODO preloadSubPackages
-            });
-            onBeforeUnmount(() => {
-                invokeHook(pageVm, ON_UNLOAD);
-            });
-        }
-        if (oldSetup) {
-            return oldSetup(props, ctx);
-        }
-    };
+    if (!component.__vapor) {
+        const oldSetup = component.setup;
+        component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
+        component.setup = (props, ctx) => {
+            beforeSetupPage(props, ctx);
+            if (oldSetup) {
+                return oldSetup(props, ctx);
+            }
+        };
+    }
     return component;
 }
 function initScope(pageId, vm, pageInstance) {

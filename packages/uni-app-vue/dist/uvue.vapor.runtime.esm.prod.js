@@ -10297,17 +10297,17 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
   instance.accessCache = /* @__PURE__ */Object.create(null);
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
   var setupFn = isFunction(component) ? component : component.setup;
-  var setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [instance.props, instance]) || EMPTY_OBJ : EMPTY_OBJ;
   var {
+    beforeSetupPage,
     initNativePage,
     initFontFace
   } = appContext.config.uniX || {};
-  if (initNativePage) {
-    initNativePage(instance.proxy);
+  if (component.mpType === "page") {
+    beforeSetupPage && beforeSetupPage(instance.props, instance);
   }
-  if (initFontFace) {
-    initFontFace(instance.proxy);
-  }
+  initNativePage && initNativePage(instance.proxy);
+  var setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [instance.props, instance]) || EMPTY_OBJ : EMPTY_OBJ;
+  initFontFace && initFontFace(instance.proxy);
   {
     if (!setupFn && component.render) {
       instance.block = callWithErrorHandling(component.render, instance, 1);
