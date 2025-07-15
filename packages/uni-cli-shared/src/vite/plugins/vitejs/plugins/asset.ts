@@ -347,7 +347,10 @@ function fileToBuiltUrl(
       process.env.UNI_PLATFORM.startsWith('mp-') &&
       isStaticFile(file, true)
     ) {
-      return config.base + path.relative(process.env.UNI_INPUT_DIR, id)
+      return (
+        config.base +
+        normalizePath(path.relative(process.env.UNI_INPUT_DIR, id))
+      )
     }
     const map = assetHashToFilenameMap.get(config)!
     const contentHash = getAssetHash(content)
