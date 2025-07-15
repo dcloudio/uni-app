@@ -1,6 +1,7 @@
 import type { App, ComponentPublicInstance } from 'vue'
 import { getNativeApp } from './app'
 import { loadFontFaceByStyles } from '../utils'
+import { beforeSetupPage } from '../../../service/framework/page/setup'
 
 export function initNativePage(vm: ComponentPublicInstance) {
   const instance = vm.$
@@ -9,6 +10,7 @@ export function initNativePage(vm: ComponentPublicInstance) {
   }
   const pageId = instance.root.attrs.__pageId
   vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + '')
+  // 必须先执行 setupXPage 之后，才有 $page
   if (vm.$page) {
     // @ts-expect-error
     vm.$page.__nativePageId = vm.$nativePage.pageId
@@ -26,6 +28,7 @@ export function initFontFace(vm: ComponentPublicInstance) {
 export function initComponentInstance(app: App) {
   // 给 vapor 使用
   app.config.uniX = {
+    beforeSetupPage,
     initNativePage,
     initFontFace,
   }

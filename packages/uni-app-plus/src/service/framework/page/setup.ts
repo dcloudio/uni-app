@@ -16,46 +16,55 @@ import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
 import { setupXPage } from '../../../x/framework/page/setup'
 
+export const beforeSetupPage: Required<VuePageComponent>['setup'] = (
+  props,
+  ctx
+) => {
+  const {
+    attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance },
+  } = ctx
+  if (__DEV__) {
+    console.log(formatLog(__pagePath as string, 'setup'))
+  }
+  const instance = getCurrentGenericInstance()!
+  const pageVm = instance.proxy!
+  initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
+  if (__X__) {
+    setupXPage(
+      instance,
+      __pageInstance as Page.PageInstance['$page'],
+      pageVm,
+      __pageId as number,
+      __pagePath as string
+    )
+  } else {
+    addCurrentPageWithInitScope(
+      __pageId as number,
+      pageVm,
+      __pageInstance as Page.PageInstance['$page']
+    )
+    onMounted(() => {
+      nextTick(() => {
+        // onShow被延迟，故onReady也同时延迟
+        invokeHook(pageVm, ON_READY)
+      })
+      // TODO preloadSubPackages
+    })
+    onBeforeUnmount(() => {
+      invokeHook(pageVm, ON_UNLOAD)
+    })
+  }
+}
+
 export function setupPage(component: VuePageComponent) {
-  const oldSetup = component.setup
-  component.inheritAttrs = false // 禁止继承 __pageId 等属性，避免告警
-  component.setup = (props, ctx) => {
-    const {
-      attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance },
-    } = ctx
-    if (__DEV__) {
-      console.log(formatLog(__pagePath as string, 'setup'))
-    }
-    const instance = getCurrentGenericInstance()!
-    const pageVm = instance.proxy!
-    initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
-    if (__X__) {
-      setupXPage(
-        instance,
-        __pageInstance as Page.PageInstance['$page'],
-        pageVm,
-        __pageId as number,
-        __pagePath as string
-      )
-    } else {
-      addCurrentPageWithInitScope(
-        __pageId as number,
-        pageVm,
-        __pageInstance as Page.PageInstance['$page']
-      )
-      onMounted(() => {
-        nextTick(() => {
-          // onShow被延迟，故onReady也同时延迟
-          invokeHook(pageVm, ON_READY)
-        })
-        // TODO preloadSubPackages
-      })
-      onBeforeUnmount(() => {
-        invokeHook(pageVm, ON_UNLOAD)
-      })
-    }
-    if (oldSetup) {
-      return oldSetup(props, ctx)
+  if (!component.__vapor) {
+    const oldSetup = component.setup
+    component.inheritAttrs = false // 禁止继承 __pageId 等属性，避免告警
+    component.setup = (props, ctx) => {
+      beforeSetupPage(props, ctx)
+      if (oldSetup) {
+        return oldSetup(props, ctx)
+      }
     }
   }
   return component

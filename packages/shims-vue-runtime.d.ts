@@ -126,6 +126,7 @@ declare module '@vue/runtime-core' {
 
   interface AppConfig {
     uniX: {
+      beforeSetupPage: (props: any, ctx: any) => void
       initNativePage: (vm: ComponentPublicInstance) => void
       initFontFace: (vm: ComponentPublicInstance) => void
     }
