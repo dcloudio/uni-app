@@ -213,12 +213,6 @@ export function normalizeManifestJson(
     }
   }
 
-  // 保留主题配置
-  if (userManifestJson.defaultAppTheme) {
-    // @ts-expect-error 添加主题配置
-    manifest.defaultAppTheme = userManifestJson.defaultAppTheme
-  }
-
   return manifest
 }
 

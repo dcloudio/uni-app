@@ -1,7 +1,7 @@
 import { validateThemeValue } from '@dcloudio/uni-cli-shared'
 import { normalizeManifestJson } from '../src/plugins/utils'
 
-describe('manifestJson platform differences', () => {
+describe('x-ios x-harmony manifestJson', () => {
   const mockManifestJson = {
     name: 'TestApp',
     appid: '__UNI__TEST123',
@@ -93,7 +93,6 @@ describe('manifestJson platform differences', () => {
       const result = normalizeManifestJson('app-ios', mockManifestJson) as any
       // iOS 平台应该也能访问 theme 配置
       expect(result.app?.defaultAppTheme).toBe('dark')
-      expect((result as any).defaultAppTheme).toBe('light')
     })
   })
 
@@ -122,19 +121,11 @@ describe('manifestJson platform differences', () => {
       const hasAppDefaultAppTheme = validateThemeValue(
         manifest.app?.defaultAppTheme || ''
       )
-      const hasDefaultAppTheme = validateThemeValue(
-        manifest.defaultAppTheme || ''
-      )
 
       expect(hasAppDefaultAppTheme).toBe(true)
-      expect(hasDefaultAppTheme).toBe(true)
 
       // iOS 平台也应该支持主题配置的处理
-      const expectedThemeValue = hasAppDefaultAppTheme
-        ? manifest.app.defaultAppTheme
-        : hasDefaultAppTheme
-        ? manifest.defaultAppTheme
-        : undefined
+      const expectedThemeValue = manifest.app.defaultAppTheme
 
       expect(expectedThemeValue).toBe('dark')
     })
@@ -153,31 +144,19 @@ describe('manifestJson platform differences', () => {
       const hasAppTheme = validateThemeValue(
         manifestWithInvalidTheme.app.defaultAppTheme
       )
-      const hasRootTheme = validateThemeValue(
-        manifestWithInvalidTheme.defaultAppTheme
-      )
 
       expect(hasAppTheme).toBe(false)
-      expect(hasRootTheme).toBe(false)
     })
 
     test('should prioritize app.defaultAppTheme over root defaultAppTheme', () => {
       const hasAppDefaultAppTheme = validateThemeValue(
         mockManifestJson.app?.defaultAppTheme
       )
-      const hasDefaultAppTheme = validateThemeValue(
-        mockManifestJson.defaultAppTheme
-      )
 
       expect(hasAppDefaultAppTheme).toBe(true)
-      expect(hasDefaultAppTheme).toBe(true)
 
       // app.defaultAppTheme 应该优先于 root defaultAppTheme
-      const selectedTheme = hasAppDefaultAppTheme
-        ? mockManifestJson.app.defaultAppTheme
-        : hasDefaultAppTheme
-        ? mockManifestJson.defaultAppTheme
-        : undefined
+      const selectedTheme = mockManifestJson.app.defaultAppTheme
 
       expect(selectedTheme).toBe('dark') // app.defaultAppTheme 优先
     })
