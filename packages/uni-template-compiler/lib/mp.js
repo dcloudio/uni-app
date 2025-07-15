@@ -149,7 +149,9 @@ const tags = {
     'live-preview',
     'aweme-live-book',
     'aweme-user-card',
-    'rtc-room'
+    'rtc-room',
+    'clue-order-form',
+    'shop-follow-card'
   ],
   'mp-kuaishou': [
     'follow-service',
