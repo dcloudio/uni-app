@@ -208,9 +208,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
         init()
 
-        setTimeout(() => {
-          data._isMounted = true
-        }, 1000)
+        data._isMounted = true
 
         uniResizeObserver.observe(pickerColumnRef.value!)
       })
