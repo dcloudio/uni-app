@@ -2545,7 +2545,8 @@ const PublicInstanceProxyHandlers = {
       } else if (
         // only cache other properties when instance has declared (thus stable)
         // props
-        (normalizedProps = instance.propsOptions[0]) && shared.hasOwn(normalizedProps, key)
+        // fixed by uts vapor 发行模式没有 propsOptions ,后续 vapor 移除 getCurrentInstance 支持时，此处代码可还原
+        (normalizedProps = instance.propsOptions && instance.propsOptions[0]) && shared.hasOwn(normalizedProps, key)
       ) {
         accessCache[key] = 3 /* PROPS */;
         return props[key];
