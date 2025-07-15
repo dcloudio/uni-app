@@ -154,7 +154,8 @@ const tags = {
   'mp-kuaishou': [
     'follow-service',
     'payment-list',
-    'playlet'
+    'playlet',
+    'address'
   ],
   'mp-xhs': ['post-note-button', 'group-chat-card']
 }
