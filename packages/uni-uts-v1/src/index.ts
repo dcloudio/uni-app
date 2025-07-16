@@ -82,6 +82,7 @@ export { parseInjectModules, parseExtApiProviders } from './utils'
 export * from './sourceMap'
 
 export {
+  parseCompileStacktrace,
   parseRuntimeStacktrace,
   parseUTSRuntimeStacktrace,
   parseUTSKotlinRuntimeStacktrace,
