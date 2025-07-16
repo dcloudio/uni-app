@@ -6148,9 +6148,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         if (!instance || !pickerColumnRef.value)
           return;
         init2();
-        setTimeout(() => {
-          data._isMounted = true;
-        }, 1e3);
+        data._isMounted = true;
         uniResizeObserver.observe(pickerColumnRef.value);
       });
     });

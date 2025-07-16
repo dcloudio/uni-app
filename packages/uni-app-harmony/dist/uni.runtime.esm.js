@@ -12234,34 +12234,39 @@ function createPageNode(pageId, pageOptions, setup) {
     return new UniPageNode(pageId, pageOptions, setup);
 }
 
+const beforeSetupPage = (props, ctx) => {
+    const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
+    if (('production' !== 'production')) {
+        console.log(formatLog(__pagePath, 'setup'));
+    }
+    const instance = getCurrentGenericInstance();
+    const pageVm = instance.proxy;
+    initPageVm(pageVm, __pageInstance);
+    {
+        addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
+        onMounted(() => {
+            nextTick(() => {
+                // onShow被延迟，故onReady也同时延迟
+                invokeHook(pageVm, ON_READY);
+            });
+            // TODO preloadSubPackages
+        });
+        onBeforeUnmount(() => {
+            invokeHook(pageVm, ON_UNLOAD);
+        });
+    }
+};
 function setupPage(component) {
-    const oldSetup = component.setup;
-    component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
-    component.setup = (props, ctx) => {
-        const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
-        if (('production' !== 'production')) {
-            console.log(formatLog(__pagePath, 'setup'));
-        }
-        const instance = getCurrentGenericInstance();
-        const pageVm = instance.proxy;
-        initPageVm(pageVm, __pageInstance);
-        {
-            addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
-            onMounted(() => {
-                nextTick(() => {
-                    // onShow被延迟，故onReady也同时延迟
-                    invokeHook(pageVm, ON_READY);
-                });
-                // TODO preloadSubPackages
-            });
-            onBeforeUnmount(() => {
-                invokeHook(pageVm, ON_UNLOAD);
-            });
-        }
-        if (oldSetup) {
-            return oldSetup(props, ctx);
-        }
-    };
+    if (!component.__vapor) {
+        const oldSetup = component.setup;
+        component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
+        component.setup = (props, ctx) => {
+            beforeSetupPage(props, ctx);
+            if (oldSetup) {
+                return oldSetup(props, ctx);
+            }
+        };
+    }
     return component;
 }
 function initScope(pageId, vm, pageInstance) {

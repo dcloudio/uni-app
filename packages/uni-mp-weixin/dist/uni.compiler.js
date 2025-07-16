@@ -155,6 +155,7 @@ const customElements = [
     'keyboard-accessory',
     'open-data-list',
     'open-data-item',
+    'selection',
 ];
 const nodeTransforms = [
     uniCliShared.transformRef,

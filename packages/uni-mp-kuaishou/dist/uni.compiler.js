@@ -117,6 +117,7 @@ const customElements = [
     'payment-list',
     'web-view',
     'playlet-plugin',
+    'address',
 ];
 const compilerOptions = {
     nodeTransforms,
