@@ -1,3 +1,4 @@
+import { normalizeCssVar } from '.'
 import {
   LENGTH_REGEXP,
   type Normalize,
@@ -17,22 +18,24 @@ function createNormalizeLength({
 }: NormalizeLengthOptions = {}): Normalize {
   return (v, options) => {
     v = (v || '').toString()
-    // css 变量
-    if (v.includes('CSS_VAR_')) {
-      return { value: v }
-    }
-    // css var --uni-safe-area-inset-[postion]
-    const isSafeAreaInset =
-      /--uni-safe-area-inset-(top|bottom|left|right)/.test(v) &&
-      /var\([^)]+\)/.test(v)
-    // css var --status-bar-height
-    const isStatusBarHeight =
-      /--status-bar-height/.test(v) && /var\([^)]+\)/.test(v)
-    const envReg = /env\(([^)]+)\)/.test(v)
-    const isUVue = options.type === 'uvue'
-    if (isUVue && (isSafeAreaInset || envReg || isStatusBarHeight)) {
-      v = v.replace(/\s/g, '')
-      return { value: v }
+    if (!v.includes('calc(')) {
+      // css var --uni-safe-area-inset-[postion]
+      const isSafeAreaInset =
+        /--uni-safe-area-inset-(top|bottom|left|right)/.test(v) &&
+        /var\([^)]+\)/.test(v)
+      // css var --status-bar-height
+      const isStatusBarHeight =
+        /--status-bar-height/.test(v) && /var\([^)]+\)/.test(v)
+      const isWindowPosition = /--window-(top|bottom)/.test(v)
+      const envReg = /env\(([^)]+)\)/.test(v)
+      const isUVue = options.type === 'uvue'
+      if (
+        isUVue &&
+        (isSafeAreaInset || envReg || isStatusBarHeight || isWindowPosition)
+      ) {
+        v = v.replace(/\s/g, '')
+        return { value: normalizeCssVar(v) }
+      }
     }
 
     const match = v.match(LENGTH_REGEXP)
