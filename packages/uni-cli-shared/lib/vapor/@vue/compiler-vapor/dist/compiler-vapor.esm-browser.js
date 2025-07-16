@@ -35486,8 +35486,12 @@ function generate(ir, options = {}) {
   const signature = (options.isTS ? args.map((arg) => `${arg}: any`) : args).join(
     ", "
   );
+  const shouldWrap = inline && options.templateMode === "factory";
   if (!inline) {
     push(NEWLINE, `export function ${functionName}(${signature}) {`);
+  } else if (shouldWrap) {
+    push(NEWLINE, `return (() => {`);
+    push(NEWLINE, `  'raw js'`);
   }
   push(INDENT_START);
   if (ir.hasTemplateRef) {
@@ -35526,6 +35530,8 @@ function generate(ir, options = {}) {
   push(INDENT_END, NEWLINE);
   if (!inline) {
     push("}");
+  } else if (shouldWrap) {
+    push(`})()`);
   }
   const delegates = genDelegates(context);
   const templates = genTemplates(ir.template, ir.rootTemplateIndex, context);
