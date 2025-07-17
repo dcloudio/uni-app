@@ -416,7 +416,10 @@ export function buildProps(
   const pushMergeArg = (arg?: PropsExpression) => {
     if (properties.length) {
       mergeArgs.push(
-        createObjectExpression(dedupeProperties(properties), elementLoc)
+        createObjectExpression(
+          dedupeProperties(properties, isComponent),
+          elementLoc
+        )
       )
       properties = []
     }
@@ -724,7 +727,7 @@ export function buildProps(
     }
   } else if (properties.length) {
     propsExpression = createObjectExpression(
-      dedupeProperties(properties),
+      dedupeProperties(properties, isComponent),
       elementLoc
     )
   }
@@ -844,7 +847,10 @@ export function buildProps(
 // modifiers. We also need to merge static and dynamic class / style attributes.
 // - onXXX handlers / style: merge into array
 // - class: merge into single expression with concatenation
-function dedupeProperties(properties: Property[]): Property[] {
+function dedupeProperties(
+  properties: Property[],
+  isComponent: boolean
+): Property[] {
   const knownProps: Map<string, Property> = new Map()
   const deduped: Property[] = []
   for (let i = 0; i < properties.length; i++) {
@@ -859,10 +865,12 @@ function dedupeProperties(properties: Property[]): Property[] {
     if (existing) {
       if (name === 'style' || name === 'class' || isOn(name)) {
         mergeAsArray(existing, prop)
-        // @ts-expect-error 记录 keyName 名称，后续会判断如果是 isOn 事件，需要编译为Array<any>类型，因为开发者可能v-model+onInput事件
-        // onInput: [($event: UniInputEvent) => { (_ctx.name) = $event.detail.value; }, _ctx.tosearch]
-        // 当tosearch是一个无参函数时，在kotlin里边，推导Array类型会报错, Function0、Function1不匹配
-        existing.value.__keyName = name
+        if (!isComponent) {
+          // @ts-expect-error 记录 keyName 名称，后续会判断如果是 isOn 事件，需要编译为Array<any>类型，因为开发者可能v-model+onInput事件
+          // onInput: [($event: UniInputEvent) => { (_ctx.name) = $event.detail.value; }, _ctx.tosearch]
+          // 当tosearch是一个无参函数时，在kotlin里边，推导Array类型会报错, Function0、Function1不匹配
+          existing.value.__keyName = name
+        }
       }
       // unexpected duplicate, should have emitted error during parse
     } else {

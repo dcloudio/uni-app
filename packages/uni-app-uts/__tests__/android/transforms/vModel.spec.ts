@@ -60,6 +60,13 @@ describe('compiler: transform v-model', () => {
   onInput: [($event: UniInputEvent) => {(_ctx.model) = $event.detail.value}, _ctx.onInput] as Array<any | null>
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])`
     )
+    assert(
+      `<custom-input v-model="model" @update:modelValue="handleModelValueUpdate"/>`,
+      `_cV(_component_custom_input, _uM({
+  modelValue: _ctx.model,
+  "onUpdate:modelValue": [$event => {(_ctx.model) = $event}, _ctx.handleModelValueUpdate]
+}), null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])`
+    )
   })
 
   // #2426
