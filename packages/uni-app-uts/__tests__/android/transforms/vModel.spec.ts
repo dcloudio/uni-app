@@ -53,6 +53,13 @@ describe('compiler: transform v-model', () => {
   onInput: ($event: UniInputEvent) => {(_ctx.model) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])`
     )
+    assert(
+      `<input v-model="model" @input="onInput" />`,
+      `_cE("input", _uM({
+  modelValue: _ctx.model,
+  onInput: [($event: UniInputEvent) => {(_ctx.model) = $event.detail.value}, _ctx.onInput] as Array<any | null>
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])`
+    )
   })
 
   // #2426

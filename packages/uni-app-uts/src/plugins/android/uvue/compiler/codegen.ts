@@ -39,6 +39,7 @@ import {
   camelize,
   capitalize,
   isArray,
+  isOn,
   isString,
   isSymbol,
 } from '@vue/shared'
@@ -420,7 +421,8 @@ function isText(n: string | CodegenNode) {
 
 function genNodeListAsArray(
   nodes: (string | CodegenNode | TemplateChildNode[])[],
-  context: CodegenContext
+  context: CodegenContext,
+  withAnyNullableType: boolean = false
 ) {
   const multilines =
     nodes.length > 3 || nodes.some((n) => isArray(n) || !isText(n))
@@ -429,6 +431,9 @@ function genNodeListAsArray(
   genNodeList(nodes, context, multilines)
   multilines && context.deindent()
   context.push(`]`)
+  if (withAnyNullableType) {
+    context.push(` as Array<any | null>`)
+  }
 }
 
 function genNodeList(
@@ -725,7 +730,13 @@ function genObjectExpression(node: ObjectExpression, context: CodegenContext) {
 }
 
 function genArrayExpression(node: ArrayExpression, context: CodegenContext) {
-  genNodeListAsArray(node.elements as CodegenNode[], context)
+  // @ts-expect-error
+  const withAnyNullableType = node.__keyName ? isOn(node.__keyName) : false
+  genNodeListAsArray(
+    node.elements as CodegenNode[],
+    context,
+    withAnyNullableType
+  )
 }
 
 function genFunctionExpression(

@@ -859,6 +859,10 @@ function dedupeProperties(properties: Property[]): Property[] {
     if (existing) {
       if (name === 'style' || name === 'class' || isOn(name)) {
         mergeAsArray(existing, prop)
+        // @ts-expect-error 记录 keyName 名称，后续会判断如果是 isOn 事件，需要编译为Array<any>类型，因为开发者可能v-model+onInput事件
+        // onInput: [($event: UniInputEvent) => { (_ctx.name) = $event.detail.value; }, _ctx.tosearch]
+        // 当tosearch是一个无参函数时，在kotlin里边，推导Array类型会报错, Function0、Function1不匹配
+        existing.value.__keyName = name
       }
       // unexpected duplicate, should have emitted error during parse
     } else {
