@@ -27884,7 +27884,7 @@ const openDialogPage = (options) => {
     return null;
   }
   const targetRoute = __uniRoutes.find((route) => {
-    return path.indexOf(route.meta.route) !== -1;
+    return route.path === path || `/${route.meta.route}` === path;
   });
   const dialogPage = new UniDialogPageImpl({
     route: removeLeadingSlash(path),
