@@ -231,6 +231,15 @@ export function resolveUTSPluginSourceMapFile(
   if (!existsSync(sourceMapFile)) {
     throw `${sourceMapFile} not found`
   }
+  if (target === 'swift' && !filename.endsWith(EXTNAME[target])) {
+    // 源文件，比如 uts，需要读取sourceMapFile中是否真的存在该文件，因为可能会不合法的uts文件来换取，比如app-android里边的
+    const consumer = resolveSourceMapConsumerSync(sourceMapFile)
+    const source = resolveSource(consumer, filename)
+    if (!source) {
+      throw `${filename} not found in ${sourceMapFile}`
+    }
+    return sourceMapFile
+  }
   return sourceMapFile
 }
 // 兼容旧版本
@@ -317,7 +326,10 @@ const consumers: Record<
  * @returns
  */
 function resolveSource(
-  consumer: BasicSourceMapConsumer | IndexedSourceMapConsumer,
+  consumer:
+    | BasicSourceMapConsumer
+    | IndexedSourceMapConsumer
+    | SourceMapConsumerSync,
   filename: string
 ) {
   filename = normalizePath(filename)
