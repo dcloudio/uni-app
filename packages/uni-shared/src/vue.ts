@@ -1,8 +1,9 @@
-import type {
-  ComponentInternalInstance,
-  ComponentPublicInstance,
-  RendererNode,
-  VNode,
+import {
+  type ComponentInternalInstance,
+  type ComponentPublicInstance,
+  type RendererNode,
+  type VNode,
+  getCurrentInstance,
 } from 'vue'
 import {
   camelize,
@@ -82,10 +83,25 @@ export function resolveOwnerEl(
 }
 
 export function dynamicSlotName(name: string, key?: string | number) {
-  return (
-    (name === 'default' ? SLOT_DEFAULT_NAME : name) +
-    (key !== undefined ? `-${key}` : '')
-  )
+  const slotName = name === 'default' ? SLOT_DEFAULT_NAME : name
+  if (key === undefined) {
+    return slotName
+  }
+
+  const instance = getCurrentInstance() as ComponentInternalInstance & {
+    ctx: { $scope: { _$vueId: string } }
+  }
+  let isScopedSlot = false
+  let parent = instance.parent
+  while (parent) {
+    const invokers = (parent as any).$ssi
+    if (invokers && invokers[instance.ctx.$scope._$vueId]) {
+      isScopedSlot = true
+      break
+    }
+    parent = parent.parent
+  }
+  return slotName + (isScopedSlot ? `-${key}` : '')
 }
 
 const customizeRE = /:/g
