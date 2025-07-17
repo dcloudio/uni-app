@@ -152,6 +152,8 @@ const customElements = [
     'sticky-section',
     'store-product',
     'store-home',
+    'store-gift',
+    'store-coupon',
     'keyboard-accessory',
     'open-data-list',
     'open-data-item',
