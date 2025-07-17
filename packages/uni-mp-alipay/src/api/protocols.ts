@@ -404,8 +404,10 @@ export const getClipboardData = {
   },
 }
 export const pageScrollTo = {
-  args: {
-    duration: false,
+  args(fromArgs: UniApp.PageScrollToOptions, toArgs: my.IPageScrollToOptions) {
+    if (fromArgs.duration === undefined) {
+      toArgs.duration = 300
+    }
   },
 }
 export const login = {
