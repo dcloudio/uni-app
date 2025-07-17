@@ -73,7 +73,7 @@ declare module '@vue/runtime-core' {
     $updateScopedSlots: () => void
     $scopedSlotsData?: {
       path: string
-      index: number
+      index: number | string
       data: Record<string, unknown>
     }[]
     // h5 | app

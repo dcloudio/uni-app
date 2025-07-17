@@ -36,14 +36,21 @@ describe('compiler: transform slot', () => {
       `<view v-for="(item,index) in 3" :key="index"><slot :name="'title'+index" :content="{name:'name'+index}"></slot></view>`,
       `<view wx:for="{{a}}" wx:for-item="item" wx:key="c"><slot name="{{item.a}}"></slot></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(3, (item, index, i0) => { return { a: _d('title' + index + '-' + i0), b: _r(_d('title' + index), { content: { name: 'name' + index } }, i0), c: index }; }) }
+  return { a: _f(3, (item, index, i0) => { return { a: _d('title' + index, i0), b: _r(_d('title' + index), { content: { name: 'name' + index } }, i0), c: index }; }) }
 }`
     )
     assert(
       `<view v-for="(item,index) in 3" :key="index"><slot :name="item.slot" :content="{name:'name'+index}"></slot></view>`,
       `<view wx:for="{{a}}" wx:for-item="item" wx:key="c"><slot name="{{item.a}}"></slot></view>`,
       `(_ctx, _cache) => {
-  return { a: _f(3, (item, index, i0) => { return { a: _d(item.slot), b: _r(_d(item.slot), { content: { name: 'name' + index } }, i0), c: index }; }) }
+  return { a: _f(3, (item, index, i0) => { return { a: _d(item.slot, i0), b: _r(_d(item.slot), { content: { name: 'name' + index } }, i0), c: index }; }) }
+}`
+    )
+    assert(
+      `<view v-for="(item,index) in 3" :key="index"><view v-for="item in 2"><slot :name="item.slot" :content="{name:'name'+index}"></slot></view></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" wx:key="b"><view wx:for="{{item.a}}" wx:for-item="item"><slot name="{{item.a}}"></slot></view></view>`,
+      `(_ctx, _cache) => {
+  return { a: _f(3, (item, index, i0) => { return { a: _f(2, (item, k1, i1) => { return { a: _d(item.slot, i0 + '-' + i1), b: _r(_d(item.slot), { content: { name: 'name' + index } }, i0 + '-' + i1) }; }), b: index }; }) }
 }`
     )
   })

@@ -31,7 +31,7 @@ export const f: typeof vFor = (
   source: any,
   renderItem: (...args: any[]) => VForItem
 ) => vFor(source, renderItem)
-export const d: typeof dynamicSlot = (names) => dynamicSlot(names)
+export const d: typeof dynamicSlot = (names, key) => dynamicSlot(names, key)
 export const r: typeof renderSlot = (name, props, key) =>
   renderSlot(name, props, key)
 export const w: typeof withScopedSlot = (fn, options) =>

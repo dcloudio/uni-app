@@ -6,7 +6,7 @@ import { getCurrentInstance, onMounted } from 'vue'
 export function renderSlot(
   name: string,
   props: Record<string, unknown> = {},
-  key?: number
+  key?: number | string
 ) {
   const instance = getCurrentInstance() as ComponentInternalInstance & {
     ctx: { $scope: MPComponentInstance }

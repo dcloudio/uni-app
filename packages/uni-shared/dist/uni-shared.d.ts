@@ -173,7 +173,7 @@ export declare const defaultRpx2Unit: {
 
 declare type DictArray = [number, number][];
 
-export declare function dynamicSlotName(name: string): string;
+export declare function dynamicSlotName(name: string, key?: string): string;
 
 export declare interface Emitter {
     e: Record<string, unknown>;

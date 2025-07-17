@@ -5768,11 +5768,11 @@ function createScopedSlotInvoker(instance) {
  * @param names
  * @returns
  */
-function dynamicSlot(names) {
+function dynamicSlot(names, key) {
     if (isString(names)) {
-        return dynamicSlotName(names);
+        return dynamicSlotName(names, key);
     }
-    return names.map((name) => dynamicSlotName(name));
+    return names.map((name) => dynamicSlotName(name, key));
 }
 
 function setRef(ref, id, opts = {}) {
@@ -5831,7 +5831,7 @@ function setupDevtoolsPlugin() {
 
 const o = (value, key) => vOn(value, key);
 const f = (source, renderItem) => vFor(source, renderItem);
-const d = (names) => dynamicSlot(names);
+const d = (names, key) => dynamicSlot(names, key);
 const r = (name, props, key) => renderSlot(name, props, key);
 const w = (fn, options) => withScopedSlot(fn, options);
 const s = (value) => stringifyStyle(value);

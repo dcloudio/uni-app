@@ -595,8 +595,8 @@ function resolveOwnerEl(instance, multi = false) {
     }
     return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
 }
-function dynamicSlotName(name) {
-    return name === 'default' ? SLOT_DEFAULT_NAME : name;
+function dynamicSlotName(name, key) {
+    return ((name === 'default' ? SLOT_DEFAULT_NAME : name) + (key ? `-${key}` : ''));
 }
 const customizeRE = /:/g;
 function customizeEvent(str) {

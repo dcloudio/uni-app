@@ -81,8 +81,10 @@ export function resolveOwnerEl(
   return multi ? (vnode.el ? [vnode.el] : []) : vnode.el
 }
 
-export function dynamicSlotName(name: string) {
-  return name === 'default' ? SLOT_DEFAULT_NAME : name
+export function dynamicSlotName(name: string, key?: string) {
+  return (
+    (name === 'default' ? SLOT_DEFAULT_NAME : name) + (key ? `-${key}` : '')
+  )
 }
 
 const customizeRE = /:/g
