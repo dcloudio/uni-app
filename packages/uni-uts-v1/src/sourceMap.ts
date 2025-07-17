@@ -333,9 +333,7 @@ function resolveSource(
   filename: string
 ) {
   filename = normalizePath(filename)
-  return (
-    consumer.sources.find((source) => filename.endsWith(source)) || filename
-  )
+  return consumer.sources.find((source) => filename.endsWith(source))
 }
 
 /**
@@ -368,10 +366,11 @@ export async function generatedPositionFor({
   }
   return resolveSourceMapConsumer(sourceMapFile).then((consumer) => {
     const res = consumer.generatedPositionFor({
-      source: resolveSource(
-        consumer as BasicSourceMapConsumer | IndexedSourceMapConsumer,
-        filename
-      ),
+      source:
+        resolveSource(
+          consumer as BasicSourceMapConsumer | IndexedSourceMapConsumer,
+          filename
+        ) || normalizePath(filename),
       line,
       column,
       bias: column === 0 ? BIAS.LEAST_UPPER_BOUND : BIAS.GREATEST_LOWER_BOUND,
