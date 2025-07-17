@@ -306,6 +306,38 @@ describe('uvue-style', () => {
       },
     })
     expect(messages).toHaveLength(0)
+
+    const res2 = await parse(
+      `
+        .content {
+            flex: -1;
+        }
+        .content2 {
+            flex: 100px;
+        }
+        .content3 {
+            flex: auto;
+        }
+        `,
+      { type: 'uvue', platform: 'app-android' }
+    )
+    expect(res2.messages).toHaveLength(0)
+    expect(JSON.parse(res2.code)).toEqual({
+      content2: {
+        '': {
+          flexBasis: '100px',
+          flexGrow: 1,
+          flexShrink: 1,
+        },
+      },
+      content3: {
+        '': {
+          flexBasis: 'auto',
+          flexGrow: 1,
+          flexShrink: 1,
+        },
+      },
+    })
   })
 })
 
