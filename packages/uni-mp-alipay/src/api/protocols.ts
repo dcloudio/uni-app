@@ -145,15 +145,32 @@ export const request = {
 /**
  * 钉钉小程序 setNavigationBarColor 不支持 frontColor
  */
-export const setNavigationBarColor = {
-  name: 'setNavigationBar',
-  args: {
-    frontColor: false,
-    animation: false,
-  },
+export function setNavigationBarColor() {
+  if (my.canIUse('setNavigationBarColor')) {
+    return {
+      name: 'setNavigationBarColor',
+      args: {
+        animation: false,
+      },
+    }
+  }
+  return {
+    name: 'setNavigationBar',
+    args: {
+      frontColor: false,
+      animation: false,
+    },
+  }
 }
-export const setNavigationBarTitle = {
-  name: 'setNavigationBar',
+export function setNavigationBarTitle() {
+  if (my.canIUse('setNavigationBarTitle')) {
+    return {
+      name: 'setNavigationBarTitle',
+    }
+  }
+  return {
+    name: 'setNavigationBar',
+  }
 }
 
 /**
