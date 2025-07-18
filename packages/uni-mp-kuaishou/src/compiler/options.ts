@@ -25,6 +25,8 @@ export const customElements = [
   'web-view',
   'playlet-plugin',
   'address',
+  'page-meta',
+  'navigation-bar',
 ]
 
 export const compilerOptions: CompilerOptions = {
