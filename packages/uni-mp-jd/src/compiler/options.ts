@@ -20,6 +20,8 @@ const nodeTransforms = [
   transformComponentLink,
 ]
 
+export const customElements = ['root-portal', 'page-container']
+
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
 }
@@ -107,6 +109,7 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
+    customElements,
     filter: {
       extname: '.jds',
       lang: 'jds',
