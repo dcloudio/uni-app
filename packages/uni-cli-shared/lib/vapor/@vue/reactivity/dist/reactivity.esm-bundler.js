@@ -1,5 +1,5 @@
 /**
-* @vue/reactivity v3.6.0-alpha.1
+* @vue/reactivity v3.6.0-alpha.2
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -54,9 +54,6 @@ function link(dep, sub) {
     }
   }
   const prevSub = dep.subsTail;
-  if (prevSub !== void 0 && prevSub.sub === sub && (!recursedCheck || isValidLink(prevSub, sub))) {
-    return;
-  }
   const newLink = sub.depsTail = dep.subsTail = {
     dep,
     sub,
@@ -1601,14 +1598,12 @@ class EffectScope {
     }
   }
   run(fn) {
-    const prevSub = setActiveSub();
     const prevScope = activeEffectScope;
     try {
       activeEffectScope = this;
       return fn();
     } finally {
       activeEffectScope = prevScope;
-      setActiveSub(prevSub);
     }
   }
   stop() {

@@ -1,5 +1,5 @@
 /**
-* vue v3.6.0-alpha.1
+* vue v3.6.0-alpha.2
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -522,9 +522,6 @@ function link(dep, sub) {
     }
   }
   const prevSub = dep.subsTail;
-  if (prevSub !== void 0 && prevSub.sub === sub && (!recursedCheck || isValidLink(prevSub, sub))) {
-    return;
-  }
   const newLink = sub.depsTail = dep.subsTail = {
     dep,
     sub,
@@ -1998,14 +1995,12 @@ class EffectScope {
     }
   }
   run(fn) {
-    const prevSub = setActiveSub();
     const prevScope = activeEffectScope;
     try {
       activeEffectScope = this;
       return fn();
     } finally {
       activeEffectScope = prevScope;
-      setActiveSub(prevSub);
     }
   }
   stop() {
@@ -2915,7 +2910,7 @@ function reload(id, newComp) {
   newComp = normalizeClassComponent(newComp);
   updateComponentDef(record.initialDef, newComp);
   const instances = [...record.instances];
-  if (newComp.vapor) {
+  if (newComp.__vapor) {
     for (const instance of instances) {
       instance.hmrReload(newComp);
     }
@@ -8821,7 +8816,7 @@ function traverseStaticChildren(n1, n2, shallow = false) {
   }
 }
 function locateNonHydratedAsyncRoot(instance) {
-  const subComponent = instance.subTree.component;
+  const subComponent = instance.vapor ? null : instance.subTree.component;
   if (subComponent) {
     if (subComponent.asyncDep && !subComponent.asyncResolved) {
       return subComponent;
@@ -11166,7 +11161,7 @@ function isMemoSame(cached, memo) {
   return true;
 }
 
-const version = "3.6.0-alpha.1";
+const version = "3.6.0-alpha.2";
 const warn = warn$1 ;
 const ErrorTypeStrings = ErrorTypeStrings$1 ;
 const devtools = devtools$1 ;

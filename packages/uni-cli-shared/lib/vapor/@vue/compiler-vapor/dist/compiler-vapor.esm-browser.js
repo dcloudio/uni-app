@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-vapor v3.6.0-alpha.1
+* @vue/compiler-vapor v3.6.0-alpha.2
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -33616,18 +33616,26 @@ function genFor(oper, context) {
     keyProp,
     idMap
   );
-  const patternFrag = [];
+  const selectorDeclarations = [];
+  const selectorSetup = [];
   for (let i = 0; i < selectorPatterns.length; i++) {
     const { selector } = selectorPatterns[i];
     const selectorName = `_selector${id}_${i}`;
-    patternFrag.push(
+    selectorDeclarations.push(`let ${selectorName}`, NEWLINE);
+    if (i === 0) {
+      selectorSetup.push(`({ createSelector }) => {`, INDENT_START);
+    }
+    selectorSetup.push(
       NEWLINE,
-      `const ${selectorName} = `,
-      ...genCall(`n${id}.useSelector`, [
+      `${selectorName} = `,
+      ...genCall(`createSelector`, [
         `() => `,
         ...genExpression(selector, context)
       ])
     );
+    if (i === selectorPatterns.length - 1) {
+      selectorSetup.push(INDENT_END, NEWLINE, "}");
+    }
   }
   const blockFn = context.withId(() => {
     const frag = [];
@@ -33635,25 +33643,25 @@ function genFor(oper, context) {
     if (selectorPatterns.length || keyOnlyBindingPatterns.length) {
       frag.push(
         ...genBlockContent(render, context, false, () => {
-          const patternFrag2 = [];
+          const patternFrag = [];
           for (let i = 0; i < selectorPatterns.length; i++) {
             const { effect } = selectorPatterns[i];
-            patternFrag2.push(
+            patternFrag.push(
               NEWLINE,
               `_selector${id}_${i}(() => {`,
               INDENT_START
             );
             for (const oper2 of effect.operations) {
-              patternFrag2.push(...genOperation(oper2, context));
+              patternFrag.push(...genOperation(oper2, context));
             }
-            patternFrag2.push(INDENT_END, NEWLINE, `})`);
+            patternFrag.push(INDENT_END, NEWLINE, `})`);
           }
           for (const { effect } of keyOnlyBindingPatterns) {
             for (const oper2 of effect.operations) {
-              patternFrag2.push(...genOperation(oper2, context));
+              patternFrag.push(...genOperation(oper2, context));
             }
           }
-          return patternFrag2;
+          return patternFrag;
         })
       );
     } else {
@@ -33677,7 +33685,8 @@ function genFor(oper, context) {
     sourceExpr,
     blockFn,
     genCallback(keyProp),
-    flags ? String(flags) : void 0
+    flags ? String(flags) : void 0,
+    selectorSetup.length ? selectorSetup : void 0
     // todo: hydrationNode
   ];
   if (context.options.templateMode === "factory") {
@@ -33685,9 +33694,10 @@ function genFor(oper, context) {
   }
   return [
     NEWLINE,
+    ...selectorDeclarations,
     `const n${id} = `,
-    ...genCall(helper("createFor"), ...forArgs),
-    ...patternFrag
+    // fixed by uts
+    ...genCall([helper("createFor"), "null"], ...forArgs)
   ];
   function parseValueDestructure() {
     const map = /* @__PURE__ */ new Map();
@@ -34895,6 +34905,7 @@ function genCreateComponent(operation, context) {
 }
 function getUniqueHandlerName(context, name) {
   const { seenInlineHandlerNames } = context;
+  name = genVarName(name);
   const count = seenInlineHandlerNames[name] || 0;
   seenInlineHandlerNames[name] = count + 1;
   return count === 0 ? name : `${name}${count}`;
@@ -36239,7 +36250,8 @@ const transformText = (node, context) => {
   }
 };
 function processInterpolation(context) {
-  const children = context.parent.node.children;
+  const parentNode = context.parent.node;
+  const children = parentNode.children;
   const nexts = children.slice(context.index);
   const idx = nexts.findIndex((n) => !isTextLike(n));
   const nodes = idx > -1 ? nexts.slice(0, idx) : nexts;
@@ -36247,10 +36259,16 @@ function processInterpolation(context) {
   if (prev && prev.type === 2) {
     nodes.unshift(prev);
   }
+  const values = processTextLikeChildren(nodes, context);
+  if (values.length === 0 && parentNode.type !== 0) {
+    return;
+  }
   context.template += " ";
   const isParentText = context.options.templateMode === "factory" && context.parent && context.parent.node.type === 1 && context.parent.node.tag === "text";
   const id = isParentText ? context.parent.reference() : context.reference();
-  const values = nodes.map((node) => createTextLikeExpression(node, context));
+  if (values.length === 0) {
+    return;
+  }
   const nonConstantExps = values.filter((v) => !isConstantExpression(v));
   const isStatic = !nonConstantExps.length || nonConstantExps.every(
     (e) => isStaticExpression(e, context.options.bindingMetadata)
@@ -36275,7 +36293,7 @@ function processTextContainer(children, context) {
       return;
     }
   }
-  const values = children.map((child) => createTextLikeExpression(child, context));
+  const values = processTextLikeChildren(children, context);
   const literals = values.map(getLiteralExpressionValue);
   if (literals.every((l) => l != null)) {
     context.childrenTemplate = literals.map((l) => String(l));
@@ -36294,13 +36312,19 @@ function processTextContainer(children, context) {
     });
   }
 }
-function createTextLikeExpression(node, context) {
-  markNonTemplate(node, context);
-  if (node.type === 2) {
-    return createSimpleExpression(node.content, true, node.loc);
-  } else {
-    return node.content;
+function processTextLikeChildren(nodes, context) {
+  const exps = [];
+  for (const node of nodes) {
+    let exp;
+    markNonTemplate(node, context);
+    if (node.type === 2) {
+      exp = createSimpleExpression(node.content, true, node.loc);
+    } else {
+      exp = node.content;
+    }
+    if (exp.content) exps.push(exp);
   }
+  return exps;
 }
 function isTextLike(node) {
   return node.type === 5 || node.type === 2;

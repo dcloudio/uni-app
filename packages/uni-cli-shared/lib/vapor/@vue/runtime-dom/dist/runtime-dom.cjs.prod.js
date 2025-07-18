@@ -1,5 +1,5 @@
 /**
-* @vue/runtime-dom v3.6.0-alpha.1
+* @vue/runtime-dom v3.6.0-alpha.2
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/

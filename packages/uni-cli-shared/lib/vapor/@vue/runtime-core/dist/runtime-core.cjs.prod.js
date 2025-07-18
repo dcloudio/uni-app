@@ -1,5 +1,5 @@
 /**
-* @vue/runtime-core v3.6.0-alpha.1
+* @vue/runtime-core v3.6.0-alpha.2
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -5122,7 +5122,7 @@ function traverseStaticChildren(n1, n2, shallow = false) {
   }
 }
 function locateNonHydratedAsyncRoot(instance) {
-  const subComponent = instance.subTree.component;
+  const subComponent = instance.vapor ? null : instance.subTree.component;
   if (subComponent) {
     if (subComponent.asyncDep && !subComponent.asyncResolved) {
       return subComponent;
@@ -6925,7 +6925,7 @@ function isMemoSame(cached, memo) {
   return true;
 }
 
-const version = "3.6.0-alpha.1";
+const version = "3.6.0-alpha.2";
 const warn$1 = shared.NOOP;
 const ErrorTypeStrings = ErrorTypeStrings$1 ;
 const devtools = void 0;
