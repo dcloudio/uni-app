@@ -5,6 +5,7 @@ import {
   resolveUTSPluginSourceMapFile,
 } from '../sourceMap'
 import {
+  COLORS,
   type CompileStacktraceOptions,
   type GenerateRuntimeCodeFrameOptions,
   generateCodeFrame,
@@ -82,7 +83,7 @@ async function parseUTSArkTSStacktrace(
       const codes = await parseUTSStacktraceLine(line, parse, options)
       if (codes && codes.length) {
         parsedError = true
-        colored = codes[0].startsWith('\u200C')
+        colored = codes[0].startsWith(COLORS.error)
         res.push(...codes)
         if (type === 'runtime') {
           if (errorMessageLines.length) {
@@ -139,7 +140,9 @@ async function parseUTSStacktraceLine(
   const { msg, etsFile, line, column } = result
   const lines: string[] = []
   if (msg) {
-    lines.push(`\u200C${SPECIAL_CHARS.ERROR_BLOCK}error: ${msg}\u200C`)
+    lines.push(
+      `${COLORS.error}${SPECIAL_CHARS.ERROR_BLOCK}error: ${msg}${COLORS.error}`
+    )
   }
   // 编译时获取到的是绝对路径
   const filename = isAbsolute(etsFile)

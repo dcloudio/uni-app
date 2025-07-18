@@ -58,10 +58,10 @@ export function hbuilderKotlinCompileErrorFormatter(m: MessageSourceLocation) {
       .forEach((m, index) => {
         // 重要：区块标识需要放到颜色值之后
         msgs.push(
-          '\u200B' +
+          COLORS.warn +
             (index === 0 ? SPECIAL_CHARS.WARN_BLOCK : '') +
             m +
-            '\u200B'
+            COLORS.warn
         )
       })
   } else if (m.type === 'error' || m.type === 'exception') {
@@ -71,10 +71,10 @@ export function hbuilderKotlinCompileErrorFormatter(m: MessageSourceLocation) {
       .forEach((m, index) => {
         // 重要：区块标识需要放到颜色值之后
         msgs.push(
-          '\u200C' +
+          COLORS.error +
             (index === 0 ? SPECIAL_CHARS.ERROR_BLOCK : '') +
             m +
-            '\u200C'
+            COLORS.error
         )
       })
   } else {

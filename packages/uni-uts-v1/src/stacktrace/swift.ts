@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { originalPositionFor } from '../sourceMap'
 import {
+  COLORS,
   type CompileStacktraceOptions,
   generateCodeFrame,
   parseErrorWithRules,
@@ -38,7 +39,11 @@ export async function parseUTSSwiftPluginStacktrace({
       const message = codes[0]
       colored = true
       res.push(
-        '\u200C' + SPECIAL_CHARS.ERROR_BLOCK + 'error: ' + message + '\u200C'
+        COLORS.error +
+          SPECIAL_CHARS.ERROR_BLOCK +
+          'error: ' +
+          message +
+          COLORS.error
       )
       res.push(...codes.slice(1))
     } else {
