@@ -1,5 +1,4 @@
 import { IUTSCompiler } from '@uts/compiler';
-import { MappedPosition } from 'source-map-js';
 import * as tsTypes from 'typescript';
 import tsTypes__default, { CompilerOptions } from 'typescript';
 import * as _uts_transforms_base from '@uts/transforms_base';
@@ -42,13 +41,6 @@ interface TransformOptions {
     };
 }
 type InvalidateEventKind = 'create' | 'update' | 'delete';
-interface PositionFor {
-    sourceMapFile: string;
-    filename: string;
-    line: number;
-    column: number;
-    withSourceContent?: boolean;
-}
 type UniXCompilerOptions = {
     mode: 'development' | 'production';
     targetLanguage: TargetLanguage;
@@ -64,9 +56,6 @@ type UniXCompilerOptions = {
     paths?: CompilerOptions['paths'];
     incremental?: boolean;
     normalizeFileName: (fileName: string) => string;
-    originalPositionForSync?: (generatedPosition: Omit<PositionFor, 'filename'>) => MappedPosition & {
-        sourceContent?: string;
-    };
     watchFile?(path: string, callback: tsTypes__default.FileWatcherCallback, pollingInterval?: number, options?: tsTypes__default.WatchOptions): tsTypes__default.FileWatcher;
     transformOptions?: CreateTransformerOptions;
 };
@@ -75,6 +64,8 @@ declare class UniXCompiler implements IUTSCompiler {
     private _utsCompiler;
     constructor(options: UniXCompilerOptions);
     debug(formatter: any, ...args: any[]): void;
+    getProgram(): tsTypes__default.Program | undefined;
+    getTypeScript(): typeof tsTypes__default;
     close(): Promise<void>;
     wait(timeout?: number): Promise<void>;
     getRootFiles(): string[];

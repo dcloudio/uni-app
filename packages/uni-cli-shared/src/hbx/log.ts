@@ -149,10 +149,14 @@ export const errorFormatter: Formatter<LogErrorOptions> = {
 }
 
 function buildErrorMessage(
-  err: RollupError,
+  err: RollupError & { customPrint?: () => void },
   args: string[] = [],
   includeStack = true
 ): string {
+  if (err.customPrint) {
+    err.customPrint()
+    return ''
+  }
   if (err.plugin) {
     // 避免出现这样的错误：[plugin:vite:vue] [plugin vite:vue]
     if (err.message.startsWith(`[plugin ${err.plugin}]`)) {
