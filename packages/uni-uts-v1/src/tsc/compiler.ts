@@ -210,7 +210,13 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     const throwError = false //diagnostic.code === 2322
     const isDebug = debugCompile.enabled
     if (throwError) {
-      throw createRollupError(formatDiagnostic(diagnostic, formatHost))
+      const error = formatDiagnostic(diagnostic, formatHost)
+      // 仅回源成功的才抛出错误，否则只打印一下
+      if (error.file && error.frame) {
+        throw createRollupError(error)
+      } else {
+        printError(error, COLORS.error, SPECIAL_CHARS.ERROR_BLOCK)
+      }
     }
     if (isDebug) {
       printError(
@@ -300,11 +306,12 @@ export function createRollupError(error: DiagnosticError): RollupError {
 }
 
 function printError(error: DiagnosticError, color: string, block: string) {
-  console.log(`${color}${block}${error.msg}${color}`)
+  const blockContent = error.file && error.frame ? block : ''
+  console.log(color + blockContent + error.msg + color)
   if (error.file) {
     console.log(`at ${error.file}:${error.line}:${error.column}`)
   }
   if (error.frame) {
-    console.log(error.frame)
+    console.log(error.frame + blockContent)
   }
 }
