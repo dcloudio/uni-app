@@ -52,6 +52,7 @@ type UniXCompilerOptions = {
     rootFiles?: string[];
     utsLibDir: string;
     hxLanguageServiceDir?: string;
+    hxPluginDir?: string;
     outputDir: string;
     paths?: CompilerOptions['paths'];
     incremental?: boolean;

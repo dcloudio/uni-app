@@ -78,6 +78,7 @@ export function createUniXCompiler(
     mode,
     targetLanguage: targetLanguage as UniXCompilerOptions['targetLanguage'],
     tsFactory,
+    hxPluginDir: pluginPath,
     paths: options.paths,
     utsLibDir,
     hxLanguageServiceDir,
