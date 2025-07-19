@@ -1740,8 +1740,10 @@ const getClipboardData = {
     },
 };
 const pageScrollTo = {
-    args: {
-        duration: false,
+    args(fromArgs, toArgs) {
+        if (fromArgs.duration === undefined) {
+            toArgs.duration = 300;
+        }
     },
 };
 const login = {

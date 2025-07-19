@@ -47,9 +47,6 @@ function link(dep, sub) {
     }
   }
   var prevSub = dep.subsTail;
-  if (prevSub !== void 0 && prevSub.sub === sub && (!recursedCheck || isValidLink(prevSub, sub))) {
-    return;
-  }
   var newLink = sub.depsTail = dep.subsTail = {
     dep,
     sub,
@@ -1384,14 +1381,12 @@ class EffectScope {
     }
   }
   run(fn) {
-    var prevSub = setActiveSub();
     var prevScope = activeEffectScope;
     try {
       activeEffectScope = this;
       return fn();
     } finally {
       activeEffectScope = prevScope;
-      setActiveSub(prevSub);
     }
   }
   stop() {
@@ -2509,7 +2504,7 @@ function expand(options) {
 }
 
 /**
-* @dcloudio/uni-app-nvue v3.6.0-alpha.1
+* @dcloudio/uni-app-nvue v3.6.0-alpha.2
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -7341,7 +7336,7 @@ function traverseStaticChildren(n1, n2) {
   }
 }
 function locateNonHydratedAsyncRoot(instance) {
-  var subComponent = instance.subTree.component;
+  var subComponent = instance.vapor ? null : instance.subTree.component;
   if (subComponent) {
     if (subComponent.asyncDep && !subComponent.asyncResolved) {
       return subComponent;
@@ -9008,7 +9003,7 @@ function isMemoSame(cached, memo) {
   }
   return true;
 }
-var version = "3.6.0-alpha.1";
+var version = "3.6.0-alpha.2";
 var warn = NOOP;
 var ErrorTypeStrings = ErrorTypeStrings$1;
 var devtools = devtools$1;
@@ -9533,39 +9528,6 @@ function remove(block, parent) {
     }
   }
 }
-function normalizeEmitsOptions(comp) {
-  var cached = comp.__emitsOptions;
-  if (cached) return cached;
-  var raw = comp.emits;
-  if (!raw) return null;
-  var normalized;
-  if (isArray$1(raw)) {
-    normalized = {};
-    for (var key of raw) {
-      normalized[key] = null;
-    }
-  } else {
-    normalized = raw;
-  }
-  return comp.__emitsOptions = normalized;
-}
-function emit(instance, event) {
-  for (var _len18 = arguments.length, rawArgs = new Array(_len18 > 2 ? _len18 - 2 : 0), _key27 = 2; _key27 < _len18; _key27++) {
-    rawArgs[_key27 - 2] = arguments[_key27];
-  }
-  baseEmit(instance, instance.rawProps || EMPTY_OBJ, propGetter, event, ...rawArgs);
-}
-function propGetter(rawProps, key) {
-  var dynamicSources = rawProps.$;
-  if (dynamicSources) {
-    var i = dynamicSources.length;
-    while (i--) {
-      var source = resolveSource(dynamicSources[i]);
-      if (hasOwn(source, key)) return resolveSource(source[key]);
-    }
-  }
-  return rawProps[key] && resolveSource(rawProps[key]);
-}
 class RenderEffect extends ReactiveEffect {
   constructor(render) {
     super();
@@ -9616,222 +9578,6 @@ function renderEffect(fn) {
   }
   effect.run();
 }
-function resolveSource(source) {
-  return isFunction(source) ? source() : source;
-}
-function getPropsProxyHandlers(comp) {
-  if (comp.__propsHandlers) {
-    return comp.__propsHandlers;
-  }
-  var propsOptions = normalizePropsOptions(comp)[0];
-  var emitsOptions = normalizeEmitsOptions(comp);
-  var isProp = propsOptions ? key => isString(key) && hasOwn(propsOptions, camelize(key)) : NO;
-  var isAttr = propsOptions ? key => key !== "$" && !isProp(key) && !isEmitListener(emitsOptions, key) : YES;
-  var getProp = (instance, key) => {
-    if (key === "__v_isReactive") return true;
-    if (!isProp(key)) return;
-    var rawProps = instance.rawProps;
-    var dynamicSources = rawProps.$;
-    if (dynamicSources) {
-      var i = dynamicSources.length;
-      var source, isDynamic, rawKey;
-      while (i--) {
-        source = dynamicSources[i];
-        isDynamic = isFunction(source);
-        source = isDynamic ? source() : source;
-        for (rawKey in source) {
-          if (camelize(rawKey) === key) {
-            return resolvePropValue(propsOptions, key, isDynamic ? source[rawKey] : source[rawKey](), instance, resolveDefault);
-          }
-        }
-      }
-    }
-    for (var _rawKey in rawProps) {
-      if (camelize(_rawKey) === key) {
-        return resolvePropValue(propsOptions, key, rawProps[_rawKey](), instance, resolveDefault);
-      }
-    }
-    return resolvePropValue(propsOptions, key, void 0, instance, resolveDefault, true);
-  };
-  var propsHandlers = propsOptions ? {
-    get: (target, key) => getProp(target, key),
-    has: (_, key) => isProp(key),
-    ownKeys: () => Object.keys(propsOptions),
-    getOwnPropertyDescriptor(target, key) {
-      if (isProp(key)) {
-        return {
-          configurable: true,
-          enumerable: true,
-          get: () => getProp(target, key)
-        };
-      }
-    }
-  } : null;
-  var getAttr = (target, key) => {
-    if (!isProp(key) && !isEmitListener(emitsOptions, key)) {
-      return getAttrFromRawProps(target, key);
-    }
-  };
-  var hasAttr = (target, key) => {
-    if (isAttr(key)) {
-      return hasAttrFromRawProps(target, key);
-    } else {
-      return false;
-    }
-  };
-  var attrsHandlers = {
-    get: (target, key) => getAttr(target.rawProps, key),
-    has: (target, key) => hasAttr(target.rawProps, key),
-    ownKeys: target => getKeysFromRawProps(target.rawProps).filter(isAttr),
-    getOwnPropertyDescriptor(target, key) {
-      if (hasAttr(target.rawProps, key)) {
-        return {
-          configurable: true,
-          enumerable: true,
-          get: () => getAttr(target.rawProps, key)
-        };
-      }
-    }
-  };
-  return comp.__propsHandlers = [propsHandlers, attrsHandlers];
-}
-function getAttrFromRawProps(rawProps, key) {
-  if (key === "$") return;
-  var merged = key === "class" || key === "style" ? [] : void 0;
-  var dynamicSources = rawProps.$;
-  if (dynamicSources) {
-    var i = dynamicSources.length;
-    var source, isDynamic;
-    while (i--) {
-      source = dynamicSources[i];
-      isDynamic = isFunction(source);
-      source = isDynamic ? source() : source;
-      if (source && hasOwn(source, key)) {
-        var value = isDynamic ? source[key] : source[key]();
-        if (merged) {
-          merged.push(value);
-        } else {
-          return value;
-        }
-      }
-    }
-  }
-  if (hasOwn(rawProps, key)) {
-    if (merged) {
-      merged.push(rawProps[key]());
-    } else {
-      return rawProps[key]();
-    }
-  }
-  if (merged && merged.length) {
-    return merged;
-  }
-}
-function hasAttrFromRawProps(rawProps, key) {
-  if (key === "$") return false;
-  var dynamicSources = rawProps.$;
-  if (dynamicSources) {
-    var i = dynamicSources.length;
-    while (i--) {
-      var source = resolveSource(dynamicSources[i]);
-      if (source && hasOwn(source, key)) {
-        return true;
-      }
-    }
-  }
-  return hasOwn(rawProps, key);
-}
-function getKeysFromRawProps(rawProps) {
-  var keys = [];
-  for (var key in rawProps) {
-    if (key !== "$") keys.push(key);
-  }
-  var dynamicSources = rawProps.$;
-  if (dynamicSources) {
-    var i = dynamicSources.length;
-    var source;
-    while (i--) {
-      source = resolveSource(dynamicSources[i]);
-      for (var _key28 in source) {
-        keys.push(_key28);
-      }
-    }
-  }
-  return Array.from(new Set(keys));
-}
-function normalizePropsOptions(comp) {
-  var cached = comp.__propsOptions;
-  if (cached) return cached;
-  var raw = comp.props;
-  if (!raw) return EMPTY_ARR;
-  var normalized = {};
-  var needCastKeys = [];
-  baseNormalizePropsOptions(raw, normalized, needCastKeys);
-  return comp.__propsOptions = [normalized, needCastKeys];
-}
-function resolveDefault(factory, instance) {
-  var prev = setCurrentInstance(instance);
-  var res = factory.call(null, instance.props);
-  setCurrentInstance(...prev);
-  return res;
-}
-function hasFallthroughAttrs(comp, rawProps) {
-  if (rawProps) {
-    if (rawProps.$ || !comp.props) {
-      return true;
-    } else {
-      var propsOptions = normalizePropsOptions(comp)[0];
-      for (var key in rawProps) {
-        if (!hasOwn(propsOptions, camelize(key))) {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
-}
-function resolveDynamicProps(props) {
-  var mergedRawProps = {};
-  for (var key in props) {
-    if (key !== "$") {
-      mergedRawProps[key] = props[key]();
-    }
-  }
-  if (props.$) {
-    for (var source of props.$) {
-      var isDynamic = isFunction(source);
-      var resolved = isDynamic ? source() : source;
-      for (var _key29 in resolved) {
-        var value = isDynamic ? resolved[_key29] : resolved[_key29]();
-        if (_key29 === "class" || _key29 === "style") {
-          var existing = mergedRawProps[_key29];
-          if (isArray$1(existing)) {
-            existing.push(value);
-          } else {
-            mergedRawProps[_key29] = [existing, value];
-          }
-        } else {
-          mergedRawProps[_key29] = value;
-        }
-      }
-    }
-  }
-  return mergedRawProps;
-}
-var rawPropsProxyHandlers = {
-  get: getAttrFromRawProps,
-  has: hasAttrFromRawProps,
-  ownKeys: getKeysFromRawProps,
-  getOwnPropertyDescriptor(target, key) {
-    if (hasAttrFromRawProps(target, key)) {
-      return {
-        configurable: true,
-        enumerable: true,
-        get: () => getAttrFromRawProps(target, key)
-      };
-    }
-  }
-};
 function addEventListener$1(el, event, handler, options) {
   el.addEventListener(event, handler);
   return () => el.removeEventListener(event, handler);
@@ -9860,8 +9606,8 @@ function delegate(el, event, handler) {
 }
 var delegatedEvents = /* @__PURE__ */Object.create(null);
 var delegateEvents = function (doc) {
-  for (var _len19 = arguments.length, names = new Array(_len19 > 1 ? _len19 - 1 : 0), _key30 = 1; _key30 < _len19; _key30++) {
-    names[_key30 - 1] = arguments[_key30];
+  for (var _len18 = arguments.length, names = new Array(_len18 > 1 ? _len18 - 1 : 0), _key27 = 1; _key27 < _len18; _key27++) {
+    names[_key27 - 1] = arguments[_key27];
   }
   for (var name of names) {
     if (!delegatedEvents[name]) {
@@ -9973,12 +9719,12 @@ function patchStyle(el, prev, next) {
           });
         }
       }
-      for (var _key31 in next) {
-        var _value2 = next[_key31];
-        var prevValue = prev[_key31];
+      for (var _key28 in next) {
+        var _value2 = next[_key28];
+        var prevValue = prev[_key28];
         if (!isSame(prevValue, _value2)) {
-          var _key32 = _key31.startsWith("--") ? _key31 : camelize(_key31);
-          parseStyleDecl(_key32, _value2).forEach((value2, key2) => {
+          var _key29 = _key28.startsWith("--") ? _key28 : camelize(_key28);
+          parseStyleDecl(_key29, _value2).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
             style && style.set(key2, value2);
           });
@@ -10117,8 +9863,8 @@ function setDynamicProps(el, args) {
       }
     }
   }
-  for (var _key33 of el[cacheKey] = Object.keys(props)) {
-    setDynamicProp(el, _key33, props[_key33]);
+  for (var _key30 of el[cacheKey] = Object.keys(props)) {
+    setDynamicProp(el, _key30, props[_key30]);
   }
 }
 function setDynamicProp(el, key, value) {
@@ -10154,6 +9900,433 @@ function optimizePropertyLookup() {
   proto.$root = false;
   proto.$html = proto.$txt = proto.$cls = proto.$sty = "";
 }
+var interopKey = Symbol("interop");
+var vaporInteropImpl = {
+  mount(vnode, container, anchor, parentComponent) {
+    var selfAnchor = vnode.el = vnode.anchor =
+    // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
+    container.page.document.createComment("");
+    container.insertBefore(selfAnchor, anchor);
+    var prev = currentInstance;
+    simpleSetCurrentInstance(parentComponent);
+    var propsRef = shallowRef(vnode.props);
+    var slotsRef = shallowRef(vnode.children);
+    var dynamicPropSource = [() => propsRef.value];
+    dynamicPropSource[interopKey] = true;
+    var instance = vnode.component = createComponent(vnode.type, {
+      $: dynamicPropSource
+    }, {
+      _: slotsRef
+      // pass the slots ref
+    });
+    instance.rawPropsRef = propsRef;
+    instance.rawSlotsRef = slotsRef;
+    mountComponent(instance, container, selfAnchor);
+    simpleSetCurrentInstance(prev);
+    return instance;
+  },
+  update(n1, n2, shouldUpdate) {
+    n2.component = n1.component;
+    n2.el = n2.anchor = n1.anchor;
+    if (shouldUpdate) {
+      var instance = n2.component;
+      instance.rawPropsRef.value = n2.props;
+      instance.rawSlotsRef.value = n2.children;
+    }
+  },
+  unmount(vnode, doRemove) {
+    var container = doRemove ? vnode.anchor.parentNode : void 0;
+    if (vnode.component) {
+      unmountComponent(vnode.component, container);
+    } else if (vnode.vb) {
+      remove(vnode.vb, container);
+    }
+    remove(vnode.anchor, container);
+  },
+  /**
+   * vapor slot in vdom
+   */
+  slot(n1, n2, container, anchor) {
+    if (!n1) {
+      var selfAnchor = n2.el = n2.anchor =
+      // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
+      container.page.document.createComment("");
+      insert(selfAnchor, container, anchor);
+      var {
+        slot,
+        fallback
+      } = n2.vs;
+      var propsRef = n2.vs.ref = shallowRef(n2.props);
+      var slotBlock = slot(new Proxy(propsRef, vaporSlotPropsProxyHandler));
+      insert(n2.vb = slotBlock, container, selfAnchor);
+    } else {
+      n2.el = n2.anchor = n1.anchor;
+      n2.vb = n1.vb;
+      (n2.vs.ref = n1.vs.ref).value = n2.props;
+    }
+  },
+  move(vnode, container, anchor) {
+    insert(vnode.vb || vnode.component, container, anchor);
+    insert(vnode.anchor, container, anchor);
+  }
+};
+var vaporSlotPropsProxyHandler = {
+  get(target, key) {
+    return target.value[key];
+  },
+  has(target, key) {
+    return target.value[key];
+  },
+  ownKeys(target) {
+    return Object.keys(target.value);
+  }
+};
+var vaporSlotsProxyHandler = {
+  get(target, key) {
+    var slot = target[key];
+    if (isFunction(slot)) {
+      slot.__vapor = true;
+    }
+    return slot;
+  }
+};
+function createVDOMComponent(internals, component, rawProps, rawSlots) {
+  var frag = new VaporFragment([]);
+  var vnode = createVNode(component,
+  // fixed by uts 临时方案，等待修复：https://github.com/vuejs/core/pull/13382
+  rawProps && extend({}, new Proxy(rawProps, rawPropsProxyHandlers)));
+  var wrapper = new VaporComponentInstance({
+    props: component.props
+  }, rawProps, rawSlots);
+  vnode.vi = instance => {
+    instance.props = shallowReactive(wrapper.props);
+    var attrs = instance.attrs = createInternalObject();
+    for (var key in wrapper.attrs) {
+      if (!isEmitListener(instance.emitsOptions, key)) {
+        attrs[key] = wrapper.attrs[key];
+      }
+    }
+    instance.slots = wrapper.slots === EMPTY_OBJ ? EMPTY_OBJ : new Proxy(wrapper.slots, vaporSlotsProxyHandler);
+  };
+  var isMounted = false;
+  var parentInstance = currentInstance;
+  var unmount = parentNode => {
+    internals.umt(vnode.component, null, !!parentNode);
+  };
+  frag.insert = (parentNode, anchor) => {
+    if (!isMounted) {
+      internals.mt(vnode, parentNode, anchor, parentInstance, null, void 0, false);
+      onScopeDispose(unmount, true);
+      isMounted = true;
+    } else {
+      internals.m(vnode, parentNode, anchor, 2, parentInstance);
+    }
+  };
+  frag.remove = unmount;
+  return frag;
+}
+function renderVDOMSlot(internals, slotsRef, name, props, parentComponent, fallback) {
+  var frag = new VaporFragment([]);
+  var isMounted = false;
+  var fallbackNodes;
+  var oldVNode = null;
+  frag.insert = (parentNode, anchor) => {
+    if (!isMounted) {
+      renderEffect(() => {
+        var vnode = renderSlot(slotsRef.value, isFunction(name) ? name() : name, props);
+        if (vnode.children.length) {
+          if (fallbackNodes) {
+            remove(fallbackNodes, parentNode);
+            fallbackNodes = void 0;
+          }
+          internals.p(oldVNode, vnode, parentNode, anchor, parentComponent);
+          oldVNode = vnode;
+        } else {
+          if (fallback && !fallbackNodes) {
+            if (oldVNode) {
+              internals.um(oldVNode, parentComponent, null, true);
+            }
+            insert(fallbackNodes = fallback(props), parentNode, anchor);
+          }
+          oldVNode = null;
+        }
+      });
+      isMounted = true;
+    } else {
+      internals.m(oldVNode, parentNode, anchor, 2, parentComponent);
+    }
+    frag.remove = parentNode2 => {
+      if (fallbackNodes) {
+        remove(fallbackNodes, parentNode2);
+      } else if (oldVNode) {
+        internals.um(oldVNode, parentComponent, null);
+      }
+    };
+  };
+  return frag;
+}
+var vaporInteropPlugin = app => {
+  var internals = ensureRenderer().internals;
+  app._context.vapor = extend(vaporInteropImpl, {
+    vdomMount: createVDOMComponent.bind(null, internals),
+    vdomUnmount: internals.umt,
+    vdomSlot: renderVDOMSlot.bind(null, internals)
+  });
+  var mount = app.mount;
+  app.mount = function () {
+    optimizePropertyLookup();
+    return mount(...arguments);
+  };
+};
+function normalizeEmitsOptions(comp) {
+  var cached = comp.__emitsOptions;
+  if (cached) return cached;
+  var raw = comp.emits;
+  if (!raw) return null;
+  var normalized;
+  if (isArray$1(raw)) {
+    normalized = {};
+    for (var key of raw) {
+      normalized[key] = null;
+    }
+  } else {
+    normalized = raw;
+  }
+  return comp.__emitsOptions = normalized;
+}
+function emit(instance, event) {
+  for (var _len19 = arguments.length, rawArgs = new Array(_len19 > 2 ? _len19 - 2 : 0), _key31 = 2; _key31 < _len19; _key31++) {
+    rawArgs[_key31 - 2] = arguments[_key31];
+  }
+  baseEmit(instance, instance.rawProps || EMPTY_OBJ, propGetter, event, ...rawArgs);
+}
+function propGetter(rawProps, key) {
+  var dynamicSources = rawProps.$;
+  if (dynamicSources) {
+    var i = dynamicSources.length;
+    while (i--) {
+      var source = resolveSource(dynamicSources[i]);
+      if (hasOwn(source, key)) return dynamicSources[interopKey] ? source[key] : resolveSource(source[key]);
+    }
+  }
+  return rawProps[key] && resolveSource(rawProps[key]);
+}
+function resolveSource(source) {
+  return isFunction(source) ? source() : source;
+}
+function getPropsProxyHandlers(comp) {
+  if (comp.__propsHandlers) {
+    return comp.__propsHandlers;
+  }
+  var propsOptions = normalizePropsOptions(comp)[0];
+  var emitsOptions = normalizeEmitsOptions(comp);
+  var isProp = propsOptions ? key => isString(key) && hasOwn(propsOptions, camelize(key)) : NO;
+  var isAttr = propsOptions ? key => key !== "$" && !isProp(key) && !isEmitListener(emitsOptions, key) : YES;
+  var getProp = (instance, key) => {
+    if (key === "__v_isReactive") return true;
+    if (!isProp(key)) return;
+    var rawProps = instance.rawProps;
+    var dynamicSources = rawProps.$;
+    if (dynamicSources) {
+      var i = dynamicSources.length;
+      var source, isDynamic, rawKey;
+      while (i--) {
+        source = dynamicSources[i];
+        isDynamic = isFunction(source);
+        source = isDynamic ? source() : source;
+        for (rawKey in source) {
+          if (camelize(rawKey) === key) {
+            return resolvePropValue(propsOptions, key, isDynamic ? source[rawKey] : source[rawKey](), instance, resolveDefault);
+          }
+        }
+      }
+    }
+    for (var _rawKey in rawProps) {
+      if (camelize(_rawKey) === key) {
+        return resolvePropValue(propsOptions, key, rawProps[_rawKey](), instance, resolveDefault);
+      }
+    }
+    return resolvePropValue(propsOptions, key, void 0, instance, resolveDefault, true);
+  };
+  var propsHandlers = propsOptions ? {
+    get: (target, key) => getProp(target, key),
+    has: (_, key) => isProp(key),
+    ownKeys: () => Object.keys(propsOptions),
+    getOwnPropertyDescriptor(target, key) {
+      if (isProp(key)) {
+        return {
+          configurable: true,
+          enumerable: true,
+          get: () => getProp(target, key)
+        };
+      }
+    }
+  } : null;
+  var getAttr = (target, key) => {
+    if (!isProp(key) && !isEmitListener(emitsOptions, key)) {
+      return getAttrFromRawProps(target, key);
+    }
+  };
+  var hasAttr = (target, key) => {
+    if (isAttr(key)) {
+      return hasAttrFromRawProps(target, key);
+    } else {
+      return false;
+    }
+  };
+  var attrsHandlers = {
+    get: (target, key) => getAttr(target.rawProps, key),
+    has: (target, key) => hasAttr(target.rawProps, key),
+    ownKeys: target => getKeysFromRawProps(target.rawProps).filter(isAttr),
+    getOwnPropertyDescriptor(target, key) {
+      if (hasAttr(target.rawProps, key)) {
+        return {
+          configurable: true,
+          enumerable: true,
+          get: () => getAttr(target.rawProps, key)
+        };
+      }
+    }
+  };
+  return comp.__propsHandlers = [propsHandlers, attrsHandlers];
+}
+function getAttrFromRawProps(rawProps, key) {
+  if (key === "$") return;
+  var merged = key === "class" || key === "style" ? [] : void 0;
+  var dynamicSources = rawProps.$;
+  if (dynamicSources) {
+    var i = dynamicSources.length;
+    var source, isDynamic;
+    while (i--) {
+      source = dynamicSources[i];
+      isDynamic = isFunction(source);
+      source = isDynamic ? source() : source;
+      if (source && hasOwn(source, key)) {
+        var value = isDynamic ? source[key] : source[key]();
+        if (merged) {
+          merged.push(value);
+        } else {
+          return value;
+        }
+      }
+    }
+  }
+  if (hasOwn(rawProps, key)) {
+    if (merged) {
+      merged.push(rawProps[key]());
+    } else {
+      return rawProps[key]();
+    }
+  }
+  if (merged && merged.length) {
+    return merged;
+  }
+}
+function hasAttrFromRawProps(rawProps, key) {
+  if (key === "$") return false;
+  var dynamicSources = rawProps.$;
+  if (dynamicSources) {
+    var i = dynamicSources.length;
+    while (i--) {
+      var source = resolveSource(dynamicSources[i]);
+      if (source && hasOwn(source, key)) {
+        return true;
+      }
+    }
+  }
+  return hasOwn(rawProps, key);
+}
+function getKeysFromRawProps(rawProps) {
+  var keys = [];
+  for (var key in rawProps) {
+    if (key !== "$") keys.push(key);
+  }
+  var dynamicSources = rawProps.$;
+  if (dynamicSources) {
+    var i = dynamicSources.length;
+    var source;
+    while (i--) {
+      source = resolveSource(dynamicSources[i]);
+      for (var _key32 in source) {
+        keys.push(_key32);
+      }
+    }
+  }
+  return Array.from(new Set(keys));
+}
+function normalizePropsOptions(comp) {
+  var cached = comp.__propsOptions;
+  if (cached) return cached;
+  var raw = comp.props;
+  if (!raw) return EMPTY_ARR;
+  var normalized = {};
+  var needCastKeys = [];
+  baseNormalizePropsOptions(raw, normalized, needCastKeys);
+  return comp.__propsOptions = [normalized, needCastKeys];
+}
+function resolveDefault(factory, instance) {
+  var prev = setCurrentInstance(instance);
+  var res = factory.call(null, instance.props);
+  setCurrentInstance(...prev);
+  return res;
+}
+function hasFallthroughAttrs(comp, rawProps) {
+  if (rawProps) {
+    if (rawProps.$ || !comp.props) {
+      return true;
+    } else {
+      var propsOptions = normalizePropsOptions(comp)[0];
+      for (var key in rawProps) {
+        if (!hasOwn(propsOptions, camelize(key))) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+function resolveDynamicProps(props) {
+  var mergedRawProps = {};
+  for (var key in props) {
+    if (key !== "$") {
+      mergedRawProps[key] = props[key]();
+    }
+  }
+  if (props.$) {
+    for (var source of props.$) {
+      var isDynamic = isFunction(source);
+      var resolved = isDynamic ? source() : source;
+      for (var _key33 in resolved) {
+        var value = isDynamic ? resolved[_key33] : resolved[_key33]();
+        if (_key33 === "class" || _key33 === "style") {
+          var existing = mergedRawProps[_key33];
+          if (isArray$1(existing)) {
+            existing.push(value);
+          } else {
+            mergedRawProps[_key33] = [existing, value];
+          }
+        } else {
+          mergedRawProps[_key33] = value;
+        }
+      }
+    }
+  }
+  return mergedRawProps;
+}
+var rawPropsProxyHandlers = {
+  get: getAttrFromRawProps,
+  has: hasAttrFromRawProps,
+  ownKeys: getKeysFromRawProps,
+  getOwnPropertyDescriptor(target, key) {
+    if (hasAttrFromRawProps(target, key)) {
+      return {
+        configurable: true,
+        enumerable: true,
+        get: () => getAttrFromRawProps(target, key)
+      };
+    }
+  }
+};
 var dynamicSlotsProxyHandlers = {
   get: getSlot,
   has: (target, key) => !!getSlot(target, key),
@@ -10507,181 +10680,6 @@ function defineVaporComponent(comp, extraOptions) {
   comp.__vapor = true;
   return comp;
 }
-var vaporInteropImpl = {
-  mount(vnode, container, anchor, parentComponent) {
-    var selfAnchor = vnode.el = vnode.anchor =
-    // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
-    container.page.document.createComment("");
-    container.insertBefore(selfAnchor, anchor);
-    var prev = currentInstance;
-    simpleSetCurrentInstance(parentComponent);
-    var propsRef = shallowRef(vnode.props);
-    var slotsRef = shallowRef(vnode.children);
-    var instance = vnode.component = createComponent(vnode.type, {
-      $: [() => propsRef.value]
-    }, {
-      _: slotsRef
-      // pass the slots ref
-    });
-    instance.rawPropsRef = propsRef;
-    instance.rawSlotsRef = slotsRef;
-    mountComponent(instance, container, selfAnchor);
-    simpleSetCurrentInstance(prev);
-    return instance;
-  },
-  update(n1, n2, shouldUpdate) {
-    n2.component = n1.component;
-    n2.el = n2.anchor = n1.anchor;
-    if (shouldUpdate) {
-      var instance = n2.component;
-      instance.rawPropsRef.value = n2.props;
-      instance.rawSlotsRef.value = n2.children;
-    }
-  },
-  unmount(vnode, doRemove) {
-    var container = doRemove ? vnode.anchor.parentNode : void 0;
-    if (vnode.component) {
-      unmountComponent(vnode.component, container);
-    } else if (vnode.vb) {
-      remove(vnode.vb, container);
-    }
-    remove(vnode.anchor, container);
-  },
-  /**
-   * vapor slot in vdom
-   */
-  slot(n1, n2, container, anchor) {
-    if (!n1) {
-      var selfAnchor = n2.el = n2.anchor =
-      // fixed by uts 统一使用注释节点作为锚点，优化性能（因为注释节点不会进native层）
-      container.page.document.createComment("");
-      insert(selfAnchor, container, anchor);
-      var {
-        slot,
-        fallback
-      } = n2.vs;
-      var propsRef = n2.vs.ref = shallowRef(n2.props);
-      var slotBlock = slot(new Proxy(propsRef, vaporSlotPropsProxyHandler));
-      insert(n2.vb = slotBlock, container, selfAnchor);
-    } else {
-      n2.el = n2.anchor = n1.anchor;
-      n2.vb = n1.vb;
-      (n2.vs.ref = n1.vs.ref).value = n2.props;
-    }
-  },
-  move(vnode, container, anchor) {
-    insert(vnode.vb || vnode.component, container, anchor);
-    insert(vnode.anchor, container, anchor);
-  }
-};
-var vaporSlotPropsProxyHandler = {
-  get(target, key) {
-    return target.value[key];
-  },
-  has(target, key) {
-    return target.value[key];
-  },
-  ownKeys(target) {
-    return Object.keys(target.value);
-  }
-};
-var vaporSlotsProxyHandler = {
-  get(target, key) {
-    var slot = target[key];
-    if (isFunction(slot)) {
-      slot.__vapor = true;
-    }
-    return slot;
-  }
-};
-function createVDOMComponent(internals, component, rawProps, rawSlots) {
-  var frag = new VaporFragment([]);
-  var vnode = createVNode(component,
-  // fixed by uts 临时方案，等待修复：https://github.com/vuejs/core/pull/13382
-  rawProps && extend({}, new Proxy(rawProps, rawPropsProxyHandlers)));
-  var wrapper = new VaporComponentInstance({
-    props: component.props
-  }, rawProps, rawSlots);
-  vnode.vi = instance => {
-    instance.props = shallowReactive(wrapper.props);
-    var attrs = instance.attrs = createInternalObject();
-    for (var key in wrapper.attrs) {
-      if (!isEmitListener(instance.emitsOptions, key)) {
-        attrs[key] = wrapper.attrs[key];
-      }
-    }
-    instance.slots = wrapper.slots === EMPTY_OBJ ? EMPTY_OBJ : new Proxy(wrapper.slots, vaporSlotsProxyHandler);
-  };
-  var isMounted = false;
-  var parentInstance = currentInstance;
-  var unmount = parentNode => {
-    internals.umt(vnode.component, null, !!parentNode);
-  };
-  frag.insert = (parentNode, anchor) => {
-    if (!isMounted) {
-      internals.mt(vnode, parentNode, anchor, parentInstance, null, void 0, false);
-      onScopeDispose(unmount, true);
-      isMounted = true;
-    } else {
-      internals.m(vnode, parentNode, anchor, 2, parentInstance);
-    }
-  };
-  frag.remove = unmount;
-  return frag;
-}
-function renderVDOMSlot(internals, slotsRef, name, props, parentComponent, fallback) {
-  var frag = new VaporFragment([]);
-  var isMounted = false;
-  var fallbackNodes;
-  var oldVNode = null;
-  frag.insert = (parentNode, anchor) => {
-    if (!isMounted) {
-      renderEffect(() => {
-        var vnode = renderSlot(slotsRef.value, isFunction(name) ? name() : name, props);
-        if (vnode.children.length) {
-          if (fallbackNodes) {
-            remove(fallbackNodes, parentNode);
-            fallbackNodes = void 0;
-          }
-          internals.p(oldVNode, vnode, parentNode, anchor, parentComponent);
-          oldVNode = vnode;
-        } else {
-          if (fallback && !fallbackNodes) {
-            if (oldVNode) {
-              internals.um(oldVNode, parentComponent, null, true);
-            }
-            insert(fallbackNodes = fallback(props), parentNode, anchor);
-          }
-          oldVNode = null;
-        }
-      });
-      isMounted = true;
-    } else {
-      internals.m(oldVNode, parentNode, anchor, 2, parentComponent);
-    }
-    frag.remove = parentNode2 => {
-      if (fallbackNodes) {
-        remove(fallbackNodes, parentNode2);
-      } else if (oldVNode) {
-        internals.um(oldVNode, parentComponent, null);
-      }
-    };
-  };
-  return frag;
-}
-var vaporInteropPlugin = app => {
-  var internals = ensureRenderer().internals;
-  app._context.vapor = extend(vaporInteropImpl, {
-    vdomMount: createVDOMComponent.bind(null, internals),
-    vdomUnmount: internals.umt,
-    vdomSlot: renderVDOMSlot.bind(null, internals)
-  });
-  var mount = app.mount;
-  app.mount = function () {
-    optimizePropertyLookup();
-    return mount(...arguments);
-  };
-};
 function createIf(doc, condition, b1, b2, once) {
   var _insertionParent = insertionParent;
   var _insertionAnchor = insertionAnchor;
@@ -10714,6 +10712,7 @@ class ForBlock extends VaporFragment {
 }
 var createFor = function (doc, src, renderItem, getKey) {
   var flags = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+  var setup = arguments.length > 5 ? arguments[5] : undefined;
   var _insertionParent = insertionParent;
   var _insertionAnchor = insertionAnchor;
   {
@@ -10925,6 +10924,11 @@ var createFor = function (doc, src, renderItem, getKey) {
       }
     }
   };
+  if (setup) {
+    setup({
+      createSelector
+    });
+  }
   if (flags & 4) {
     renderList();
   } else {
@@ -10933,9 +10937,8 @@ var createFor = function (doc, src, renderItem, getKey) {
   if (_insertionParent) {
     insert(frag, _insertionParent, _insertionAnchor);
   }
-  frag.useSelector = useSelector;
   return frag;
-  function useSelector(source) {
+  function createSelector(source) {
     var operMap = /* @__PURE__ */new Map();
     var activeKey = source();
     var activeOpers;

@@ -1,5 +1,6 @@
 'use strict';
 
+var vue = require('vue');
 var shared = require('@vue/shared');
 
 const BUILT_IN_TAG_NAMES = [
@@ -598,7 +599,22 @@ function resolveOwnerEl(instance, multi = false) {
     return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
 }
 function dynamicSlotName(name, key) {
-    return ((name === 'default' ? SLOT_DEFAULT_NAME : name) + (key ? `-${key}` : ''));
+    const slotName = name === 'default' ? SLOT_DEFAULT_NAME : name;
+    if (key === undefined) {
+        return slotName;
+    }
+    const instance = vue.getCurrentInstance();
+    let isScopedSlot = false;
+    let parent = instance.parent;
+    while (parent) {
+        const invokers = parent.$ssi;
+        if (invokers && invokers[instance.ctx.$scope._$vueId]) {
+            isScopedSlot = true;
+            break;
+        }
+        parent = parent.parent;
+    }
+    return slotName + (isScopedSlot ? `-${key}` : '');
 }
 const customizeRE = /:/g;
 function customizeEvent(str) {

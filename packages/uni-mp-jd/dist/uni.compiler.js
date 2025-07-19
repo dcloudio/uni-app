@@ -25,6 +25,7 @@ const nodeTransforms = [
     // transformMatchMedia,
     uniCliShared.transformComponentLink,
 ];
+const customElements = ['root-portal', 'page-container'];
 const compilerOptions = {
     nodeTransforms,
 };
@@ -106,7 +107,7 @@ const options = {
         source,
     },
     // 对模版的编译处理
-    template: Object.assign(Object.assign({}, miniProgram), { filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.jds',
             lang: 'jds',
             generate(filter, filename) {

@@ -1,3 +1,4 @@
+import { getCurrentInstance } from 'vue';
 import { isHTMLTag, isSVGTag, isVoidTag, isString, isFunction, isPlainObject, hyphenate, camelize, normalizeStyle as normalizeStyle$1, parseStringStyle, isArray, normalizeClass as normalizeClass$1, extend, capitalize, makeMap } from '@vue/shared';
 
 const BUILT_IN_TAG_NAMES = [
@@ -596,7 +597,22 @@ function resolveOwnerEl(instance, multi = false) {
     return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
 }
 function dynamicSlotName(name, key) {
-    return ((name === 'default' ? SLOT_DEFAULT_NAME : name) + (key ? `-${key}` : ''));
+    const slotName = name === 'default' ? SLOT_DEFAULT_NAME : name;
+    if (key === undefined) {
+        return slotName;
+    }
+    const instance = getCurrentInstance();
+    let isScopedSlot = false;
+    let parent = instance.parent;
+    while (parent) {
+        const invokers = parent.$ssi;
+        if (invokers && invokers[instance.ctx.$scope._$vueId]) {
+            isScopedSlot = true;
+            break;
+        }
+        parent = parent.parent;
+    }
+    return slotName + (isScopedSlot ? `-${key}` : '');
 }
 const customizeRE = /:/g;
 function customizeEvent(str) {
