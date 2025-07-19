@@ -5,7 +5,7 @@ import { dynamicSlotName } from '@dcloudio/uni-shared'
  * @param names
  * @returns
  */
-export function dynamicSlot(names: string | string[], key?: string) {
+export function dynamicSlot(names: string | string[], key?: string | number) {
   if (isString(names)) {
     return dynamicSlotName(names, key)
   }
