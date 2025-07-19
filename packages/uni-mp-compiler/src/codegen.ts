@@ -80,10 +80,11 @@ export function generate(
     ? args.map((arg) => `${arg}: any`).join(',')
     : args.join(', ')
 
+  const rawJs = options.isX ? ' "raw js"' : ''
   if (isSetupInlined) {
-    push(`(${signature}) => {`)
+    push(`(${signature}) => {${rawJs}`)
   } else {
-    push(`function ${functionName}(${signature}) {`)
+    push(`function ${functionName}(${signature}) {${rawJs}`)
   }
   indent()
 

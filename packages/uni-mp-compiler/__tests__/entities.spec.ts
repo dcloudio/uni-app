@@ -5,7 +5,7 @@ describe('compiler: transform entities', () => {
     assert(
       `<text>&lt;&gt;&thinsp;&nbsp;&ensp;&emsp;</text>`,
       `<text>&lt;&gt;&thinsp;&nbsp;&ensp;&emsp;</text>`,
-      `(_ctx, _cache) => {
+      `(_ctx, _cache) => { "raw js"
   const __returned__ = {}
   return __returned__
 }`,
