@@ -63,6 +63,12 @@ export function createWebviewContext(
           callback?.({ canForward })
         )
       },
+      loadUrl(options: any) {
+        operateWebView(id, pageId, 'loadUrl', {
+          url: options.url,
+          headers: options.headers ?? [],
+        })
+      },
       loadData(options: any) {
         operateWebView(id, pageId, 'loadData', {
           data: options.data,

@@ -24,6 +24,7 @@ export type OperateWebViewType =
   | 'loadData'
   | 'getContentHeight'
   | 'clear'
+  | 'loadUrl'
 
 const HarmonyNativeMethodMap: Record<OperateWebViewType, string> = {
   evalJS: 'runJavaScript',
@@ -36,6 +37,7 @@ const HarmonyNativeMethodMap: Record<OperateWebViewType, string> = {
   loadData: 'loadData',
   getContentHeight: 'getPageHeight',
   clear: 'removeCache',
+  loadUrl: 'loadUrl',
 }
 
 function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
@@ -50,6 +52,7 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
     'loadData',
     'getContentHeight',
     'clear',
+    'loadUrl',
   ]
   const methods = {} as Record<OperateWebViewType, Function>
 
@@ -63,6 +66,11 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
       switch (methodName) {
         case 'evalJS':
           return resolve(embed['runJavaScript']((data || {}).jsCode || ''))
+        case 'loadUrl':
+          resolve(
+            embed[HarmonyNativeMethodMap[methodName]](data.url, data.headers)
+          )
+          break
         case 'loadData':
           resolve(
             embed[HarmonyNativeMethodMap[methodName]](
@@ -172,6 +180,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             'loadData',
             'getPageHeight',
             'removeCache',
+            'loadUrl',
           ]}
           style="width:100%;height:100%"
         />
