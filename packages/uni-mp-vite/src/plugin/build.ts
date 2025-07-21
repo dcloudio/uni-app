@@ -25,6 +25,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import type { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
+  getSubPackages,
   isUniComponentUrl,
   isUniPageUrl,
   parseVirtualComponentPath,
@@ -238,6 +239,29 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
           return chunkFileName
         }
         return
+      }
+      const { hasOptimizationSubPackages, subPackages } = getSubPackages()
+      // 处理子包引用的 node_modules 中的文件
+      if (
+        hasOptimizationSubPackages &&
+        subPackages.length &&
+        filename.startsWith(inputDir) &&
+        filename.includes('node_modules')
+      ) {
+        const moduleInfo = getModuleInfo(id)
+        if (!moduleInfo || !moduleInfo.importers.length) {
+          return
+        }
+        const matchSubPackages = new Set(
+          subPackages.filter((subPackagePath) =>
+            moduleInfo.importers.some((importer) =>
+              importer.startsWith(inputDir + '/' + subPackagePath)
+            )
+          )
+        )
+        if (matchSubPackages.size === 1) {
+          return `${matchSubPackages.values().next().value}common/vendor`
+        }
       }
       // 非项目内的 js 资源，均打包到 vendor
       debugChunk('common/vendor', normalizedId)
