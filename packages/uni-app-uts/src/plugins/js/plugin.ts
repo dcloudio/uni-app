@@ -128,6 +128,8 @@ export function createUniAppJsEnginePlugin(
           if (plugin?.api?.options) {
             plugin.api.options.devToolsEnabled = false
             plugin.api.options.isProduction = true
+            // TODO 临时禁用，目前有bug 等待 https://github.com/vuejs/core/pull/13630 合并
+            plugin.api.options.template.transformAssetUrls = false
           }
         }
       },
