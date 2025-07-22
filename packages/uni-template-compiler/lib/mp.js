@@ -162,7 +162,9 @@ const tags = {
     'follow-service',
     'payment-list',
     'playlet',
-    'address'
+    'address',
+    'page-meta',
+    'navigation-bar'
   ],
   'mp-xhs': ['post-note-button', 'group-chat-card']
 }
