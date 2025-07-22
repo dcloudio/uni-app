@@ -166,7 +166,8 @@ const tags = {
     'page-meta',
     'navigation-bar'
   ],
-  'mp-xhs': ['post-note-button', 'group-chat-card']
+  'mp-xhs': ['post-note-button', 'group-chat-card'],
+  'mp-jd': ['root-portal', 'page-container']
 }
 
 const baseCompiler = {
