@@ -32,7 +32,7 @@ interface GenerateCodeFrameOptions {
 
 export function hbuilderKotlinCompileErrorFormatter(m: MessageSourceLocation) {
   const msgs: string[] = []
-  let isFormatted = false
+  // let isFormatted = false
   if (m.type === 'error' || m.type === 'exception') {
     const formatted = formatKotlinError(
       m.message,
@@ -40,7 +40,7 @@ export function hbuilderKotlinCompileErrorFormatter(m: MessageSourceLocation) {
       compileFormatters
     )
     // 如果格式化后与原消息不同，则认为格式化成功
-    isFormatted = m.message !== formatted
+    // isFormatted = m.message !== formatted
     m.message = formatted
   }
   let msg = m.type + ': ' + m.message
@@ -90,9 +90,9 @@ export function hbuilderKotlinCompileErrorFormatter(m: MessageSourceLocation) {
     msgs.push(m.code)
   }
   const result = msgs.join('\n')
-  if (isFormatted) {
-    return result
-  }
+  // if (isFormatted) {
+  //   return result
+  // }
   return parseErrorWithRules(result, {
     language: 'kotlin',
     platform: 'app-android',
@@ -277,17 +277,15 @@ export function parseUTSKotlinRuntimeStacktrace(
         options.appid
       )
       let error = 'error: ' + formatted
-      const isFormatted = message !== formatted
+      // const isFormatted = message !== formatted
       if (color) {
         error = color + SPECIAL_CHARS.ERROR_BLOCK + error + color
       }
       let errorStr = [error, ...codes].join('\n')
-      if (!isFormatted) {
-        errorStr = parseErrorWithRules(errorStr, {
-          language: 'kotlin',
-          platform: 'app-android',
-        })
-      }
+      errorStr = parseErrorWithRules(errorStr, {
+        language: 'kotlin',
+        platform: 'app-android',
+      })
       return (
         (color ? '' : SPECIAL_CHARS.ERROR_BLOCK) +
         errorStr +
@@ -433,7 +431,9 @@ function findUniExtApi(error: string, re: RegExp, includeStr: string) {
 const packageFormatter: Formatter = {
   format(error, _, appid) {
     if (appid) {
-      return error.replaceAll(parseUniXAppAndroidPackage(appid) + '.', '')
+      return error
+        .replaceAll(parseUniXAppAndroidPackage(appid) + '.', '')
+        .replaceAll('io.dcloud.uts.', '')
     }
     return error
   },
