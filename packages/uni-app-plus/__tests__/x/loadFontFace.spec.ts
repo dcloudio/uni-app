@@ -1,40 +1,28 @@
 // mock
 const defineAsyncApiFn = jest.fn(
   (name: string, fn: Function, protocol?: any) => {
-    // 返回一个函数，这个函数会调用传入的 fn 函数
     return (args: any = {}) => {
-      // 创建 resolve 和 reject 函数
       const res = {
         resolve: jest.fn(),
         reject: jest.fn(),
       }
-
-      // 调用传入的函数
       fn(args, res)
-
-      // 返回一个 Promise 对象
       return Promise.resolve()
     }
   }
 )
 // mock getCurrentPage
+const loadFontFaceFn = jest.fn()
 const mockPage = {
   vm: {
     $fontFamilySet: new Set(),
     $nativePage: {
-      loadFontFace: jest.fn(),
+      loadFontFace: loadFontFaceFn,
     },
   },
 }
 
 const getCurrentPageFn = jest.fn(() => mockPage)
-
-// mock getNativeApp
-// const mockApp = {
-//   loadFontFace: jest.fn(),
-// }
-
-// const getNativeAppFn = jest.fn(() => mockApp)
 
 // mock @dcloudio/uni-api
 jest.mock('@dcloudio/uni-api', () => ({
@@ -46,10 +34,6 @@ jest.mock('@dcloudio/uni-core', () => ({
   getCurrentPage: getCurrentPageFn,
 }))
 
-// mock ../../framework/app/app
-// jest.mock('../../framework/app/app', () => ({
-//   getNativeApp: getNativeAppFn,
-// }))
 import { loadFontFace } from '../../src/x/api/ui/loadFontFace'
 
 const base64Font = 'data:font/ttf;charset=utf-8;base64,AAEAAAAKAIAAAwA'
@@ -58,7 +42,7 @@ describe('loadFontFace', () => {
   it('should be defined', () => {
     expect(loadFontFace).toBeDefined()
   })
-  it('should call defineAsyncApi', () => {
+  it('load base64', () => {
     loadFontFace({
       family: 'UniFontFamily2',
       source: `url(${base64Font})`,
@@ -80,9 +64,37 @@ describe('loadFontFace', () => {
       family: 'UniFontFamily2',
       source: base64Font,
     })
-    expect(mockPage.vm.$nativePage.loadFontFace).toHaveBeenCalledWith({
+
+    expect(loadFontFaceFn).toHaveBeenCalledWith({
       family: 'UniFontFamily2',
       source: base64Font,
+      success: expect.any(Function),
+      fail: expect.any(Function),
+    })
+  })
+  it('load local font', () => {
+    const localPath = '/static/fonts/uni.ttf'
+    const fontFamily = 'UniFontFamily3'
+    loadFontFace({
+      family: fontFamily,
+      source: `url(${localPath})`,
+      success() {
+        console.log('loadFontFace uni.ttf(local file) success')
+      },
+      fail(error) {
+        console.warn('loadFontFace uni.ttf(local file) fail', error.errMsg)
+      },
+    })
+    // 调用 arg[1] 函数，测试 wrap url()
+    const fn = defineAsyncApiFn.mock.calls[0][1]
+    fn({
+      family: fontFamily,
+      source: localPath,
+    })
+
+    expect(loadFontFaceFn).toHaveBeenCalledWith({
+      family: fontFamily,
+      source: localPath,
       success: expect.any(Function),
       fail: expect.any(Function),
     })
