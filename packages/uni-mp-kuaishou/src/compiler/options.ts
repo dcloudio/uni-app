@@ -2,6 +2,7 @@ import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   type MiniProgramCompilerOptions,
+  getNativeTags,
   transformComponentLink,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
@@ -27,6 +28,7 @@ export const customElements = [
   'address',
   'page-meta',
   'navigation-bar',
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
 export const compilerOptions: CompilerOptions = {

@@ -2,6 +2,7 @@ import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   type MiniProgramCompilerOptions,
+  getNativeTags,
   transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
@@ -37,6 +38,7 @@ export const customElements = [
   'talos-na-refresh-control',
   'talos-modal',
   'talos-svg',
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 const nodeTransforms = [transformRef, transformFor, transformMatchMedia]
 const directiveTransforms = {

@@ -7,6 +7,7 @@ import {
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   createTransformComponentLink,
+  getNativeTags,
   transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -82,6 +83,7 @@ export const customElements = [
   'join-group-chat',
   'subscribe-message',
   'mpaas-component',
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
 export const options: UniMiniProgramPluginOptions = {
