@@ -263,6 +263,9 @@ export function generate(
     ast,
     code: context.code,
     preamble: preambleContext.code,
+    preambleMap: preambleContext.map
+      ? (preambleContext.map as any).toJSON()
+      : undefined,
     easyComponentAutoImports: context.easyComponentAutoImports,
     // SourceMapGenerator does have toJSON() method but it's not in the types
     map: context.map ? (context.map as any).toJSON() : undefined,

@@ -91,6 +91,7 @@ export async function transformMain(
   } = await genScriptCode(descriptor, scriptOptions)
 
   let templatePreambleCode = ''
+  let templatePreambleMap: RawSourceMap | undefined = undefined
   let templateCode = ''
   let templateMap: RawSourceMap | undefined = undefined
 
@@ -98,7 +99,7 @@ export async function transformMain(
     // template
     const isInline = !!descriptor.scriptSetup
     if (!isInline) {
-      const { code, map, preamble } = processTemplate(
+      const { code, map, preamble, preambleMap } = processTemplate(
         descriptor,
         {
           relativeFilename,
@@ -112,6 +113,7 @@ export async function transformMain(
       templateCode = code
       templateMap = map
       templatePreambleCode = preamble || ''
+      templatePreambleMap = preambleMap
     }
   }
 
@@ -185,6 +187,20 @@ export async function transformMain(
 
   // handle TS transpilation
   let utsCode = utsOutput.filter(Boolean).join('\n')
+
+  if (templatePreambleCode && templatePreambleMap && pluginContext) {
+    // 尝试解析模板中的import，用于检查错误路径，比如<image src="static/logo.png" />
+    await parseImports(
+      templatePreambleCode,
+      createTryResolve(
+        filename,
+        pluginContext.resolve,
+        templatePreambleMap as RawSourceMap,
+        // 仅需要再解析script中的import，template上边已经加入了
+        (source) => source.includes('/.uvue/') || source.includes('/.tsc/')
+      )
+    )
+  }
 
   const jsCodes = [templatePreambleCode]
 

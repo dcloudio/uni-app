@@ -129,8 +129,14 @@ export function processTemplate(
     },
     pluginContext
   )
-  const { code, preamble, elements, map, easyComponentAutoImports } =
-    genTemplateCode(sfc, options)
+  const {
+    code,
+    preamble,
+    elements,
+    map,
+    easyComponentAutoImports,
+    preambleMap,
+  } = genTemplateCode(sfc, options)
   if (easyComponentAutoImports) {
     Object.keys(easyComponentAutoImports).forEach((source) => {
       addUTSEasyComAutoImports(source, easyComponentAutoImports[source])
@@ -151,5 +157,5 @@ export function processTemplate(
       addExtApiComponents(components)
     }
   }
-  return { code, map, preamble }
+  return { code, map, preamble, preambleMap }
 }

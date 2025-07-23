@@ -150,7 +150,8 @@ export function uniAppPlugin(): UniVitePlugin {
                 return false
               }
               // android 系统库，三方库，iOS 的库呢？一般不包含.
-              if (source.includes('.')) {
+              // static/logo.png
+              if (source.includes('.') && !source.startsWith('static/')) {
                 return true
               }
               return false

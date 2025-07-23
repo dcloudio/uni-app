@@ -167,6 +167,7 @@ export interface CodegenResult {
   ast?: RootNode
   code: string
   preamble?: string
+  preambleMap?: RawSourceMap
   easyComponentAutoImports: Record<string, [string, string]>
   elements: string[]
   map?: RawSourceMap
