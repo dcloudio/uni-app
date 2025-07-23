@@ -4,6 +4,7 @@ import {
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   copyMiniProgramThemeJson,
+  getNativeTags,
   transformComponentLink,
   transformDirection,
   transformMPBuiltInTag,
@@ -60,6 +61,7 @@ export const customElements = [
   'open-data-list',
   'open-data-item',
   'selection',
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
 const nodeTransforms: NodeTransform[] = [

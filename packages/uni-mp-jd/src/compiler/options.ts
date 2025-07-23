@@ -3,6 +3,7 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
   type MiniProgramCompilerOptions,
+  getNativeTags,
   transformComponentLink,
   transformRef,
   // transformMatchMedia,
@@ -20,7 +21,11 @@ const nodeTransforms = [
   transformComponentLink,
 ]
 
-export const customElements = ['root-portal', 'page-container']
+export const customElements = [
+  'root-portal',
+  'page-container',
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+]
 
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,

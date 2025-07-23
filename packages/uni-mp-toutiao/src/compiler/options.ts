@@ -2,6 +2,7 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
   type MiniProgramCompilerOptions,
+  getNativeTags,
   transformComponentLink,
   transformDirection,
   transformMPBuiltInTag,
@@ -28,6 +29,7 @@ export const customElements = [
   'rtc-room',
   'clue-order-form',
   'shop-follow-card',
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
 const projectConfigFilename = 'project.config.json'

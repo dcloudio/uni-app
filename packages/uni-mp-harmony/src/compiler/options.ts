@@ -2,6 +2,7 @@ import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   type MiniProgramCompilerOptions,
+  getNativeTags,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -11,6 +12,10 @@ export const compilerOptions: CompilerOptions = {
 }
 
 const COMPONENTS_DIR = 'hascomponents'
+
+export const customElements = [
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+]
 
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
@@ -67,6 +72,7 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
+    customElements,
     filter: {
       extname: '.hjs',
       lang: 'hjs',
