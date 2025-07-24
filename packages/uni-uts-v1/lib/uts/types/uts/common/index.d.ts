@@ -30,3 +30,4 @@
 /// <reference path="./TextDecoder.d.ts" />
 /// <reference path="./Iterable.d.ts" />
 /// <reference path="./Symbol.d.ts" />
+/// <reference path="./TypedArray.d.ts" />

@@ -1504,16 +1504,33 @@ const request = {
 /**
  * 钉钉小程序 setNavigationBarColor 不支持 frontColor
  */
-const setNavigationBarColor = {
-    name: 'setNavigationBar',
-    args: {
-        frontColor: false,
-        animation: false,
-    },
-};
-const setNavigationBarTitle = {
-    name: 'setNavigationBar',
-};
+function setNavigationBarColor() {
+    if (my.canIUse('setNavigationBarColor')) {
+        return {
+            name: 'setNavigationBarColor',
+            args: {
+                animation: false,
+            },
+        };
+    }
+    return {
+        name: 'setNavigationBar',
+        args: {
+            frontColor: false,
+            animation: false,
+        },
+    };
+}
+function setNavigationBarTitle() {
+    if (my.canIUse('setNavigationBarTitle')) {
+        return {
+            name: 'setNavigationBarTitle',
+        };
+    }
+    return {
+        name: 'setNavigationBar',
+    };
+}
 /**
  * Note:
  * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟

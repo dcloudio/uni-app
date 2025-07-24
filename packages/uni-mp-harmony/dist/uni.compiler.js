@@ -13,6 +13,9 @@ const compilerOptions = {
     nodeTransforms: [uniCliShared.transformRef],
 };
 const COMPONENTS_DIR = 'hascomponents';
+const customElements = [
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+];
 const miniProgram = {
     class: {
         array: true,
@@ -62,7 +65,7 @@ const options = {
         subpackages: true,
         usingComponents: true,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.hjs',
             lang: 'hjs',
             generate(filter, filename) {

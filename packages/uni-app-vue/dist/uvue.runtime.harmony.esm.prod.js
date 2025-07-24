@@ -1728,10 +1728,10 @@ var transformFlex = decl => {
   } = decl;
   var result = [];
   var splitResult = value.trim().split(/\s+/);
-  // 是否 flex-grow 的有效值
+  // 是否 flex-grow 的有效值 <number [0,∞]>
   var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
   var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
-  // const isFlexBasisValid = (v: string) => v === 'auto'
+  var isFlexBasisValid = v => typeof v === 'string' && v.trim() !== '';
   if (splitResult.length === 1) {
     // 关键字处理
     if (value === 'none') {
@@ -1749,11 +1749,16 @@ var transformFlex = decl => {
     var v = splitResult[0];
     // number 视为 flex-grow
     if (isFlexGrowValid(v)) {
+      if (Number(v) < 0) {
+        return [];
+      }
       result.push(createDecl(flexGrow, v, important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, '0%', important, raws, source));
       return result;
-    } else {
+    } else if (isFlexBasisValid(v)) {
       result.push(createDecl(flexGrow, '1', important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, v, important, raws, source));
       return result;
+    } else {
+      return [decl];
     }
   } else if (splitResult.length === 2) {
     var [v1, v2] = splitResult;

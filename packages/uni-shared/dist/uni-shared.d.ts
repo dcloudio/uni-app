@@ -1,10 +1,10 @@
 import type { App } from 'vue';
-import { ComponentInternalInstance } from 'vue';
+import type { ComponentInternalInstance } from 'vue';
 import { ComponentOptionsBase } from 'vue';
 import { ComponentPublicInstance } from 'vue';
 import type { createApp } from 'vue';
 import type { NormalizedStyle } from '@vue/shared';
-import { RendererNode } from 'vue';
+import type { RendererNode } from 'vue';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
 
@@ -173,7 +173,7 @@ export declare const defaultRpx2Unit: {
 
 declare type DictArray = [number, number][];
 
-export declare function dynamicSlotName(name: string, key?: string | number): string;
+export declare function dynamicSlotName(name: string): string;
 
 export declare interface Emitter {
     e: Record<string, unknown>;

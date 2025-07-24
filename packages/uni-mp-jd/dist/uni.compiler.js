@@ -25,7 +25,11 @@ const nodeTransforms = [
     // transformMatchMedia,
     uniCliShared.transformComponentLink,
 ];
-const customElements = ['root-portal', 'page-container'];
+const customElements = [
+    'root-portal',
+    'page-container',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+];
 const compilerOptions = {
     nodeTransforms,
 };

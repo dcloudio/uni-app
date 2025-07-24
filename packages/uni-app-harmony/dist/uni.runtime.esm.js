@@ -13356,6 +13356,12 @@ function createWebviewContext(id, componentInstance) {
             canForward(callback) {
                 operateWebView(id, pageId, 'canForward', {}, (canForward) => callback?.({ canForward }));
             },
+            loadUrl(options) {
+                operateWebView(id, pageId, 'loadUrl', {
+                    url: options.url,
+                    headers: options.headers ?? [],
+                });
+            },
             loadData(options) {
                 operateWebView(id, pageId, 'loadData', {
                     data: options.data,

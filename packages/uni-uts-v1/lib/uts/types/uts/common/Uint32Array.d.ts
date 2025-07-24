@@ -1,4 +1,4 @@
-interface Uint32Array {
+interface Uint32Array extends TypedArray {
     /**
        数组的长度
        @uniPlatform {

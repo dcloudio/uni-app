@@ -158,6 +158,7 @@ const customElements = [
     'open-data-list',
     'open-data-item',
     'selection',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const nodeTransforms = [
     uniCliShared.transformRef,

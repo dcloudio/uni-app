@@ -808,6 +808,872 @@
       return comparefn === void 0 ? $sort.call(toObject(this)) : $sort.call(toObject(this), aFunction$2(comparefn));
     }
   });
+  var LINEFEED = "\n";
+  var PRIMARY_COLOR = "#007aff";
+  var SCHEME_RE = /^([a-z-]+:)?\/\//i;
+  var DATA_RE = /^data:.*,.*/;
+  var WXS_PROTOCOL = "wxs://";
+  var JSON_PROTOCOL = "json://";
+  var WXS_MODULES = "wxsModules";
+  var RENDERJS_MODULES = "renderjsModules";
+  var ON_PAGE_SCROLL = "onPageScroll";
+  var ON_REACH_BOTTOM = "onReachBottom";
+  var ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
+  function cache(fn) {
+    var cache2 = /* @__PURE__ */ Object.create(null);
+    return (str) => {
+      var hit = cache2[str];
+      return hit || (cache2[str] = fn(str));
+    };
+  }
+  function cacheStringFunction(fn) {
+    return cache(fn);
+  }
+  function hasLeadingSlash(str) {
+    return str.indexOf("/") === 0;
+  }
+  function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : "/" + str;
+  }
+  function once(fn) {
+    var ctx2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
+    var res;
+    return function() {
+      if (fn) {
+        for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
+          args[_key2] = arguments[_key2];
+        }
+        res = fn.apply(ctx2, args);
+        fn = null;
+      }
+      return res;
+    };
+  }
+  function getValueByDataPath(obj, path) {
+    if (!isString(path)) {
+      return;
+    }
+    path = path.replace(/\[(\d+)\]/g, ".$1");
+    var parts = path.split(".");
+    var key2 = parts[0];
+    if (!obj) {
+      obj = {};
+    }
+    if (parts.length === 1) {
+      return obj[key2];
+    }
+    return getValueByDataPath(obj[key2], parts.slice(1).join("."));
+  }
+  var lastLogTime = 0;
+  function formatLog(module) {
+    var now = Date.now();
+    var diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
+      args[_key3 - 1] = arguments[_key3];
+    }
+    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
+  }
+  function formatKey(key2) {
+    return camelize(key2.substring(5));
+  }
+  var initCustomDatasetOnce = /* @__PURE__ */ once((isBuiltInElement2) => {
+    isBuiltInElement2 = isBuiltInElement2 || ((el) => el.tagName.startsWith("UNI-"));
+    var prototype = HTMLElement.prototype;
+    var setAttribute = prototype.setAttribute;
+    prototype.setAttribute = function(key2, value) {
+      if (key2.startsWith("data-") && isBuiltInElement2(this)) {
+        var dataset = this.__uniDataset || (this.__uniDataset = {});
+        dataset[formatKey(key2)] = value;
+      }
+      setAttribute.call(this, key2, value);
+    };
+    var removeAttribute = prototype.removeAttribute;
+    prototype.removeAttribute = function(key2) {
+      if (this.__uniDataset && key2.startsWith("data-") && isBuiltInElement2(this)) {
+        delete this.__uniDataset[formatKey(key2)];
+      }
+      removeAttribute.call(this, key2);
+    };
+  });
+  function getCustomDataset(el) {
+    return extend({}, el.dataset, el.__uniDataset);
+  }
+  var unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, "g");
+  function toFixed(number, precision) {
+    var multiplier = Math.pow(10, precision + 1);
+    var wholeNumber = Math.floor(number * multiplier);
+    return Math.round(wholeNumber / 10) * 10 / multiplier;
+  }
+  var defaultRpx2Unit = {
+    unit: "rem",
+    unitRatio: 10 / 320,
+    unitPrecision: 5
+  };
+  function createRpx2Unit(unit2, unitRatio2, unitPrecision2) {
+    return (val) => val.replace(unitRE, (m, $1) => {
+      if (!$1) {
+        return m;
+      }
+      if (unitRatio2 === 1) {
+        return "".concat($1).concat(unit2);
+      }
+      var value = toFixed(parseFloat($1) * unitRatio2, unitPrecision2);
+      return value === 0 ? "0" : "".concat(value).concat(unit2);
+    });
+  }
+  function passive(passive2) {
+    return {
+      passive: passive2
+    };
+  }
+  function normalizeTarget(el) {
+    var {
+      id: id2,
+      offsetTop,
+      offsetLeft
+    } = el;
+    return {
+      id: id2,
+      dataset: getCustomDataset(el),
+      offsetTop,
+      offsetLeft
+    };
+  }
+  function addFont(family, source, desc) {
+    var fonts = document.fonts;
+    if (fonts) {
+      var fontFace = new FontFace(family, source, desc);
+      return fontFace.load().then(() => {
+        fonts.add && fonts.add(fontFace);
+      });
+    }
+    return new Promise((resolve) => {
+      var style = document.createElement("style");
+      var values = [];
+      if (desc) {
+        var {
+          style: style2,
+          weight,
+          stretch,
+          unicodeRange,
+          variant,
+          featureSettings
+        } = desc;
+        style2 && values.push("font-style:".concat(style2));
+        weight && values.push("font-weight:".concat(weight));
+        stretch && values.push("font-stretch:".concat(stretch));
+        unicodeRange && values.push("unicode-range:".concat(unicodeRange));
+        variant && values.push("font-variant:".concat(variant));
+        featureSettings && values.push("font-feature-settings:".concat(featureSettings));
+      }
+      style.innerText = '@font-face{font-family:"'.concat(family, '";src:').concat(source, ";").concat(values.join(";"), "}");
+      document.head.appendChild(style);
+      resolve();
+    });
+  }
+  function scrollTo(scrollTop, duration, isH5) {
+    if (isString(scrollTop)) {
+      var el = document.querySelector(scrollTop);
+      if (el) {
+        var {
+          top
+        } = el.getBoundingClientRect();
+        scrollTop = top + window.pageYOffset;
+        var pageHeader = document.querySelector("uni-page-head");
+        if (pageHeader) {
+          scrollTop -= pageHeader.offsetHeight;
+        }
+      }
+    }
+    if (scrollTop < 0) {
+      scrollTop = 0;
+    }
+    var documentElement = document.documentElement;
+    var {
+      clientHeight,
+      scrollHeight
+    } = documentElement;
+    scrollTop = Math.min(scrollTop, scrollHeight - clientHeight);
+    if (duration === 0) {
+      documentElement.scrollTop = document.body.scrollTop = scrollTop;
+      return;
+    }
+    if (window.scrollY === scrollTop) {
+      return;
+    }
+    var scrollTo2 = (duration2) => {
+      if (duration2 <= 0) {
+        window.scrollTo(0, scrollTop);
+        return;
+      }
+      var distaince = scrollTop - window.scrollY;
+      requestAnimationFrame(function() {
+        window.scrollTo(0, window.scrollY + distaince / duration2 * 10);
+        scrollTo2(duration2 - 10);
+      });
+    };
+    scrollTo2(duration);
+  }
+  function plusReady(callback) {
+    if (!isFunction(callback)) {
+      return;
+    }
+    if (window.plus) {
+      return callback();
+    }
+    document.addEventListener("plusready", callback);
+  }
+  function normalizeEventType(type, options) {
+    if (options) {
+      if (options.capture) {
+        type += "Capture";
+      }
+      if (options.once) {
+        type += "Once";
+      }
+      if (options.passive) {
+        type += "Passive";
+      }
+    }
+    return "on".concat(capitalize(camelize(type)));
+  }
+  var optionsModifierRE$1 = /(?:Once|Passive|Capture)$/;
+  function parseEventName(name) {
+    var options;
+    if (optionsModifierRE$1.test(name)) {
+      options = {};
+      var m;
+      while (m = name.match(optionsModifierRE$1)) {
+        name = name.slice(0, name.length - m[0].length);
+        options[m[0].toLowerCase()] = true;
+      }
+    }
+    return [hyphenate(name.slice(2)), options];
+  }
+  var EventModifierFlags = /* @__PURE__ */ (() => {
+    return {
+      stop: 1,
+      prevent: 1 << 1,
+      self: 1 << 2
+    };
+  })();
+  var ATTR_CLASS = "class";
+  var ATTR_STYLE = "style";
+  var ATTR_INNER_HTML = "innerHTML";
+  var ATTR_TEXT_CONTENT = "textContent";
+  var ATTR_V_SHOW = ".vShow";
+  var ATTR_V_OWNER_ID = ".vOwnerId";
+  var ATTR_V_RENDERJS = ".vRenderjs";
+  var ATTR_CHANGE_PREFIX = "change:";
+  var ACTION_TYPE_PAGE_CREATE = 1;
+  var ACTION_TYPE_PAGE_CREATED = 2;
+  var ACTION_TYPE_CREATE = 3;
+  var ACTION_TYPE_INSERT = 4;
+  var ACTION_TYPE_REMOVE = 5;
+  var ACTION_TYPE_SET_ATTRIBUTE = 6;
+  var ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
+  var ACTION_TYPE_ADD_EVENT = 8;
+  var ACTION_TYPE_REMOVE_EVENT = 9;
+  var ACTION_TYPE_SET_TEXT = 10;
+  var ACTION_TYPE_ADD_WXS_EVENT = 12;
+  var ACTION_TYPE_PAGE_SCROLL = 15;
+  var ACTION_TYPE_EVENT = 20;
+  function debounce(fn, delay, _ref2) {
+    var {
+      clearTimeout: clearTimeout2,
+      setTimeout: setTimeout2
+    } = _ref2;
+    var timeout;
+    var newFn = function() {
+      clearTimeout2(timeout);
+      var timerFn = () => fn.apply(this, arguments);
+      timeout = setTimeout2(timerFn, delay);
+    };
+    newFn.cancel = function() {
+      clearTimeout2(timeout);
+    };
+    return newFn;
+  }
+  var E = function() {
+  };
+  E.prototype = {
+    _id: 1,
+    on: function(name, callback, ctx2) {
+      var e2 = this.e || (this.e = {});
+      (e2[name] || (e2[name] = [])).push({
+        fn: callback,
+        ctx: ctx2,
+        _id: this._id
+      });
+      return this._id++;
+    },
+    once: function(name, callback, ctx2) {
+      var self2 = this;
+      function listener() {
+        self2.off(name, listener);
+        callback.apply(ctx2, arguments);
+      }
+      listener._ = callback;
+      return this.on(name, listener, ctx2);
+    },
+    emit: function(name) {
+      var data = [].slice.call(arguments, 1);
+      var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+      var i2 = 0;
+      var len = evtArr.length;
+      for (i2; i2 < len; i2++) {
+        evtArr[i2].fn.apply(evtArr[i2].ctx, data);
+      }
+      return this;
+    },
+    off: function(name, event) {
+      var e2 = this.e || (this.e = {});
+      var evts = e2[name];
+      var liveEvents = [];
+      if (evts && event) {
+        for (var i2 = evts.length - 1; i2 >= 0; i2--) {
+          if (evts[i2].fn === event || evts[i2].fn._ === event || evts[i2]._id === event) {
+            evts.splice(i2, 1);
+            break;
+          }
+        }
+        liveEvents = evts;
+      }
+      liveEvents.length ? e2[name] = liveEvents : delete e2[name];
+      return this;
+    }
+  };
+  var E$1 = E;
+  var isObject$1 = (val) => val !== null && typeof val === "object";
+  var defaultDelimiters = ["{", "}"];
+  class BaseFormatter {
+    constructor() {
+      this._caches = /* @__PURE__ */ Object.create(null);
+    }
+    interpolate(message, values) {
+      var delimiters = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : defaultDelimiters;
+      if (!values) {
+        return [message];
+      }
+      var tokens = this._caches[message];
+      if (!tokens) {
+        tokens = parse(message, delimiters);
+        this._caches[message] = tokens;
+      }
+      return compile$1(tokens, values);
+    }
+  }
+  var RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
+  var RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
+  function parse(format, _ref) {
+    var [startDelimiter, endDelimiter] = _ref;
+    var tokens = [];
+    var position = 0;
+    var text2 = "";
+    while (position < format.length) {
+      var char = format[position++];
+      if (char === startDelimiter) {
+        if (text2) {
+          tokens.push({
+            type: "text",
+            value: text2
+          });
+        }
+        text2 = "";
+        var sub = "";
+        char = format[position++];
+        while (char !== void 0 && char !== endDelimiter) {
+          sub += char;
+          char = format[position++];
+        }
+        var isClosed = char === endDelimiter;
+        var type = RE_TOKEN_LIST_VALUE.test(sub) ? "list" : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? "named" : "unknown";
+        tokens.push({
+          value: sub,
+          type
+        });
+      } else {
+        text2 += char;
+      }
+    }
+    text2 && tokens.push({
+      type: "text",
+      value: text2
+    });
+    return tokens;
+  }
+  function compile$1(tokens, values) {
+    var compiled = [];
+    var index2 = 0;
+    var mode2 = Array.isArray(values) ? "list" : isObject$1(values) ? "named" : "unknown";
+    if (mode2 === "unknown") {
+      return compiled;
+    }
+    while (index2 < tokens.length) {
+      var token = tokens[index2];
+      switch (token.type) {
+        case "text":
+          compiled.push(token.value);
+          break;
+        case "list":
+          compiled.push(values[parseInt(token.value, 10)]);
+          break;
+        case "named":
+          if (mode2 === "named") {
+            compiled.push(values[token.value]);
+          }
+          break;
+      }
+      index2++;
+    }
+    return compiled;
+  }
+  var LOCALE_ZH_HANS = "zh-Hans";
+  var LOCALE_ZH_HANT = "zh-Hant";
+  var LOCALE_EN = "en";
+  var LOCALE_FR = "fr";
+  var LOCALE_ES = "es";
+  var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+  var hasOwn = (val, key2) => hasOwnProperty$1.call(val, key2);
+  var defaultFormatter = new BaseFormatter();
+  function include(str, parts) {
+    return !!parts.find((part) => str.indexOf(part) !== -1);
+  }
+  function startsWith(str, parts) {
+    return parts.find((part) => str.indexOf(part) === 0);
+  }
+  function normalizeLocale(locale, messages2) {
+    if (!locale) {
+      return;
+    }
+    locale = locale.trim().replace(/_/g, "-");
+    if (messages2 && messages2[locale]) {
+      return locale;
+    }
+    locale = locale.toLowerCase();
+    if (locale === "chinese") {
+      return LOCALE_ZH_HANS;
+    }
+    if (locale.indexOf("zh") === 0) {
+      if (locale.indexOf("-hans") > -1) {
+        return LOCALE_ZH_HANS;
+      }
+      if (locale.indexOf("-hant") > -1) {
+        return LOCALE_ZH_HANT;
+      }
+      if (include(locale, ["-tw", "-hk", "-mo", "-cht"])) {
+        return LOCALE_ZH_HANT;
+      }
+      return LOCALE_ZH_HANS;
+    }
+    var locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
+    if (messages2 && Object.keys(messages2).length > 0) {
+      locales = Object.keys(messages2);
+    }
+    var lang = startsWith(locale, locales);
+    if (lang) {
+      return lang;
+    }
+  }
+  class I18n {
+    constructor(_ref2) {
+      var {
+        locale,
+        fallbackLocale,
+        messages: messages2,
+        watcher,
+        formater: formater2
+      } = _ref2;
+      this.locale = LOCALE_EN;
+      this.fallbackLocale = LOCALE_EN;
+      this.message = {};
+      this.messages = {};
+      this.watchers = [];
+      if (fallbackLocale) {
+        this.fallbackLocale = fallbackLocale;
+      }
+      this.formater = formater2 || defaultFormatter;
+      this.messages = messages2 || {};
+      this.setLocale(locale || LOCALE_EN);
+      if (watcher) {
+        this.watchLocale(watcher);
+      }
+    }
+    setLocale(locale) {
+      var oldLocale = this.locale;
+      this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+      if (!this.messages[this.locale]) {
+        this.messages[this.locale] = {};
+      }
+      this.message = this.messages[this.locale];
+      if (oldLocale !== this.locale) {
+        this.watchers.forEach((watcher) => {
+          watcher(this.locale, oldLocale);
+        });
+      }
+    }
+    getLocale() {
+      return this.locale;
+    }
+    watchLocale(fn) {
+      var index2 = this.watchers.push(fn) - 1;
+      return () => {
+        this.watchers.splice(index2, 1);
+      };
+    }
+    add(locale, message) {
+      var override = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true;
+      var curMessages = this.messages[locale];
+      if (curMessages) {
+        if (override) {
+          Object.assign(curMessages, message);
+        } else {
+          Object.keys(message).forEach((key2) => {
+            if (!hasOwn(curMessages, key2)) {
+              curMessages[key2] = message[key2];
+            }
+          });
+        }
+      } else {
+        this.messages[locale] = message;
+      }
+    }
+    f(message, values, delimiters) {
+      return this.formater.interpolate(message, values, delimiters).join("");
+    }
+    t(key2, locale, values) {
+      var message = this.message;
+      if (typeof locale === "string") {
+        locale = normalizeLocale(locale, this.messages);
+        locale && (message = this.messages[locale]);
+      } else {
+        values = locale;
+      }
+      if (!hasOwn(message, key2)) {
+        console.warn("Cannot translate the value of keypath ".concat(key2, ". Use the value of keypath as default."));
+        return key2;
+      }
+      return this.formater.interpolate(message[key2], values).join("");
+    }
+  }
+  function watchAppLocale(appVm, i18n2) {
+    if (appVm.$watchLocale) {
+      appVm.$watchLocale((newLocale) => {
+        i18n2.setLocale(newLocale);
+      });
+    } else {
+      appVm.$watch(() => appVm.$locale, (newLocale) => {
+        i18n2.setLocale(newLocale);
+      });
+    }
+  }
+  function getDefaultLocale() {
+    if (typeof uni !== "undefined" && uni.getLocale) {
+      return uni.getLocale();
+    }
+    if (typeof window !== "undefined" && window.getLocale) {
+      return window.getLocale();
+    }
+    return LOCALE_EN;
+  }
+  function initVueI18n(locale) {
+    var messages2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+    var fallbackLocale = arguments.length > 2 ? arguments[2] : void 0;
+    var watcher = arguments.length > 3 ? arguments[3] : void 0;
+    if (typeof locale !== "string") {
+      var options = [messages2, locale];
+      locale = options[0];
+      messages2 = options[1];
+    }
+    if (typeof locale !== "string") {
+      locale = getDefaultLocale();
+    }
+    if (typeof fallbackLocale !== "string") {
+      fallbackLocale = typeof __uniConfig !== "undefined" && __uniConfig.fallbackLocale || LOCALE_EN;
+    }
+    var i18n2 = new I18n({
+      locale,
+      fallbackLocale,
+      messages: messages2,
+      watcher
+    });
+    var t2 = (key2, values) => {
+      if (typeof getApp !== "function") {
+        t2 = function(key22, values2) {
+          return i18n2.t(key22, values2);
+        };
+      } else {
+        var isWatchedAppLocale = false;
+        t2 = function(key22, values2) {
+          var appVm = getApp().$vm;
+          if (appVm) {
+            appVm.$locale;
+            if (!isWatchedAppLocale) {
+              isWatchedAppLocale = true;
+              watchAppLocale(appVm, i18n2);
+            }
+          }
+          return i18n2.t(key22, values2);
+        };
+      }
+      return t2(key2, values);
+    };
+    return {
+      i18n: i18n2,
+      f(message, values, delimiters) {
+        return i18n2.f(message, values, delimiters);
+      },
+      t(key2, values) {
+        return t2(key2, values);
+      },
+      add(locale2, message) {
+        var override = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true;
+        return i18n2.add(locale2, message, override);
+      },
+      watch(fn) {
+        return i18n2.watchLocale(fn);
+      },
+      getLocale() {
+        return i18n2.getLocale();
+      },
+      setLocale(newLocale) {
+        return i18n2.setLocale(newLocale);
+      }
+    };
+  }
+  var isEnableLocale = /* @__PURE__ */ once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+  var i18n;
+  function useI18n() {
+    if (!i18n) {
+      var locale;
+      {
+        if (typeof getApp === "function") {
+          locale = weex.requireModule("plus").getLanguage();
+        } else {
+          locale = plus.webview.currentWebview().getStyle().locale;
+        }
+      }
+      i18n = initVueI18n(locale);
+      if (isEnableLocale()) {
+        var localeKeys = Object.keys(__uniConfig.locales || {});
+        if (localeKeys.length) {
+          localeKeys.forEach((locale2) => i18n.add(locale2, __uniConfig.locales[locale2]));
+        }
+        i18n.setLocale(locale);
+      }
+    }
+    return i18n;
+  }
+  function normalizeMessages(module, keys, values) {
+    return keys.reduce((res, name, index2) => {
+      res[module + name] = values[index2];
+      return res;
+    }, {});
+  }
+  var initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
+    var name = "uni.video.";
+    var keys = ["danmu", "volume"];
+    {
+      useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Danmu", "Volumen"]), false);
+    }
+    {
+      useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Danmu", "Le Volume"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["弹幕", "音量"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["彈幕", "音量"]), false);
+    }
+  });
+  var initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
+    var name = "uni.chooseLocation.";
+    var keys = ["search", "cancel"];
+    {
+      useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Find Place", "Cancel"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Encontrar", "Cancelar"]), false);
+    }
+    {
+      useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Trouve", "Annuler"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["搜索地点", "取消"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["搜索地點", "取消"]), false);
+    }
+  });
+  function initBridge(subscribeNamespace) {
+    var emitter = new E$1();
+    return {
+      on(event, callback) {
+        return emitter.on(event, callback);
+      },
+      once(event, callback) {
+        return emitter.once(event, callback);
+      },
+      off(event, callback) {
+        return emitter.off(event, callback);
+      },
+      emit(event) {
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+        return emitter.emit(event, ...args);
+      },
+      subscribe(event, callback) {
+        var once2 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
+        emitter[once2 ? "once" : "on"]("".concat(subscribeNamespace, ".").concat(event), callback);
+      },
+      unsubscribe(event, callback) {
+        emitter.off("".concat(subscribeNamespace, ".").concat(event), callback);
+      },
+      subscribeHandler(event, args, pageId) {
+        emitter.emit("".concat(subscribeNamespace, ".").concat(event), args, pageId);
+      }
+    };
+  }
+  var INVOKE_VIEW_API = "invokeViewApi";
+  var INVOKE_SERVICE_API = "invokeServiceApi";
+  var invokeServiceMethodId = 1;
+  var invokeServiceMethod = (name, args, callback) => {
+    var {
+      subscribe,
+      publishHandler: publishHandler2
+    } = UniViewJSBridge;
+    var id2 = callback ? invokeServiceMethodId++ : 0;
+    callback && subscribe(INVOKE_SERVICE_API + "." + id2, callback, true);
+    publishHandler2(INVOKE_SERVICE_API, {
+      id: id2,
+      name,
+      args
+    });
+  };
+  var viewMethods = /* @__PURE__ */ Object.create(null);
+  function normalizeViewMethodName(pageId, name) {
+    return pageId + "." + name;
+  }
+  function subscribeViewMethod(pageId, wrapper2) {
+    UniViewJSBridge.subscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API), wrapper2 ? wrapper2(onInvokeViewMethod) : onInvokeViewMethod);
+  }
+  function registerViewMethod(pageId, name, fn) {
+    name = normalizeViewMethodName(pageId, name);
+    if (!viewMethods[name]) {
+      viewMethods[name] = fn;
+    }
+  }
+  function unregisterViewMethod(pageId, name) {
+    name = normalizeViewMethodName(pageId, name);
+    delete viewMethods[name];
+  }
+  function onInvokeViewMethod(_ref, pageId) {
+    var {
+      id: id2,
+      name,
+      args
+    } = _ref;
+    name = normalizeViewMethodName(pageId, name);
+    var publish = (res) => {
+      id2 && UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id2, res);
+    };
+    var handler = viewMethods[name];
+    if (handler) {
+      handler(args, publish);
+    } else {
+      publish({});
+    }
+  }
+  var ViewJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("service"), {
+    invokeServiceMethod
+  });
+  var LONGPRESS_TIMEOUT = 350;
+  var LONGPRESS_THRESHOLD = 10;
+  var passiveOptions$2 = /* @__PURE__ */ passive(true);
+  var longPressTimer;
+  function clearLongPressTimer() {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }
+  var startPageX = 0;
+  var startPageY = 0;
+  function touchstart(evt) {
+    clearLongPressTimer();
+    if (evt.touches.length !== 1) {
+      return;
+    }
+    var {
+      pageX,
+      pageY
+    } = evt.touches[0];
+    startPageX = pageX;
+    startPageY = pageY;
+    longPressTimer = setTimeout(function() {
+      var customEvent = new CustomEvent("longpress", {
+        bubbles: true,
+        cancelable: true,
+        // @ts-expect-error
+        target: evt.target,
+        currentTarget: evt.currentTarget
+      });
+      customEvent.touches = evt.touches;
+      customEvent.changedTouches = evt.changedTouches;
+      evt.target.dispatchEvent(customEvent);
+    }, LONGPRESS_TIMEOUT);
+  }
+  function touchmove(evt) {
+    if (!longPressTimer) {
+      return;
+    }
+    if (evt.touches.length !== 1) {
+      return clearLongPressTimer();
+    }
+    var {
+      pageX,
+      pageY
+    } = evt.touches[0];
+    if (Math.abs(pageX - startPageX) > LONGPRESS_THRESHOLD || Math.abs(pageY - startPageY) > LONGPRESS_THRESHOLD) {
+      return clearLongPressTimer();
+    }
+  }
+  function initLongPress() {
+    window.addEventListener("touchstart", touchstart, passiveOptions$2);
+    window.addEventListener("touchmove", touchmove, passiveOptions$2);
+    window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
+    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
+  }
+  function checkValue$1(value, defaultValue) {
+    var newValue = Number(value);
+    return isNaN(newValue) ? defaultValue : newValue;
+  }
+  function getWindowWidth() {
+    var screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+    var landscape = screenFix && Math.abs(window.orientation) === 90;
+    var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+    var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+    return windowWidth;
+  }
+  function useRem() {
+    var config = __uniConfig.globalStyle || {};
+    var maxWidth2 = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
+    var baseWidth2 = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
+    function updateRem() {
+      var width = getWindowWidth();
+      width = width <= maxWidth2 ? width : baseWidth2;
+      document.documentElement.style.fontSize = width / 23.4375 + "px";
+    }
+    updateRem();
+    document.addEventListener("DOMContentLoaded", updateRem);
+    window.addEventListener("load", updateRem);
+    window.addEventListener("resize", updateRem);
+  }
   var activeEffectScope;
   class EffectScope {
     constructor() {
@@ -1143,7 +2009,7 @@
     });
     return instrumentations;
   }
-  function hasOwnProperty$1(key2) {
+  function hasOwnProperty(key2) {
     var obj = toRaw(this);
     track(obj, "has", key2);
     return obj.hasOwnProperty(key2);
@@ -1177,7 +2043,7 @@
           return Reflect.get(arrayInstrumentations, key2, receiver);
         }
         if (key2 === "hasOwnProperty") {
-          return hasOwnProperty$1;
+          return hasOwnProperty;
         }
       }
       var res = Reflect.get(target, key2, receiver);
@@ -5335,11 +6201,11 @@
       ;
     finishComponentSetup(instance, isSSR);
   }
-  var compile$1;
+  var compile;
   function finishComponentSetup(instance, isSSR, skipOptions) {
     var Component = instance.type;
     if (!instance.render) {
-      if (!isSSR && compile$1 && !Component.render) {
+      if (!isSSR && compile && !Component.render) {
         var template = Component.template || resolveMergedOptions(instance).template;
         if (template) {
           var {
@@ -5354,7 +6220,7 @@
             isCustomElement,
             delimiters
           }, compilerOptions), componentCompilerOptions);
-          Component.render = compile$1(template, finalCompilerOptions);
+          Component.render = compile(template, finalCompilerOptions);
         }
       }
       instance.render = Component.render || NOOP;
@@ -5762,13 +6628,13 @@
       }
     }
   }
-  var optionsModifierRE$1 = /(?:Once|Passive|Capture)$/;
+  var optionsModifierRE = /(?:Once|Passive|Capture)$/;
   function parseName(name) {
     var options;
-    if (optionsModifierRE$1.test(name)) {
+    if (optionsModifierRE.test(name)) {
       options = {};
       var m;
-      while (m = name.match(optionsModifierRE$1)) {
+      while (m = name.match(optionsModifierRE)) {
         name = name.slice(0, name.length - m[0].length);
         options[m[0].toLowerCase()] = true;
       }
@@ -5933,872 +6799,6 @@
       return res;
     }
     return container;
-  }
-  var LINEFEED = "\n";
-  var PRIMARY_COLOR = "#007aff";
-  var SCHEME_RE = /^([a-z-]+:)?\/\//i;
-  var DATA_RE = /^data:.*,.*/;
-  var WXS_PROTOCOL = "wxs://";
-  var JSON_PROTOCOL = "json://";
-  var WXS_MODULES = "wxsModules";
-  var RENDERJS_MODULES = "renderjsModules";
-  var ON_PAGE_SCROLL = "onPageScroll";
-  var ON_REACH_BOTTOM = "onReachBottom";
-  var ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
-  function cache(fn) {
-    var cache2 = /* @__PURE__ */ Object.create(null);
-    return (str) => {
-      var hit = cache2[str];
-      return hit || (cache2[str] = fn(str));
-    };
-  }
-  function cacheStringFunction(fn) {
-    return cache(fn);
-  }
-  function hasLeadingSlash(str) {
-    return str.indexOf("/") === 0;
-  }
-  function addLeadingSlash(str) {
-    return hasLeadingSlash(str) ? str : "/" + str;
-  }
-  function once(fn) {
-    var ctx2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
-    var res;
-    return function() {
-      if (fn) {
-        for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
-          args[_key2] = arguments[_key2];
-        }
-        res = fn.apply(ctx2, args);
-        fn = null;
-      }
-      return res;
-    };
-  }
-  function getValueByDataPath(obj, path) {
-    if (!isString(path)) {
-      return;
-    }
-    path = path.replace(/\[(\d+)\]/g, ".$1");
-    var parts = path.split(".");
-    var key2 = parts[0];
-    if (!obj) {
-      obj = {};
-    }
-    if (parts.length === 1) {
-      return obj[key2];
-    }
-    return getValueByDataPath(obj[key2], parts.slice(1).join("."));
-  }
-  var lastLogTime = 0;
-  function formatLog(module) {
-    var now = Date.now();
-    var diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
-      args[_key3 - 1] = arguments[_key3];
-    }
-    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
-  }
-  function formatKey(key2) {
-    return camelize(key2.substring(5));
-  }
-  var initCustomDatasetOnce = /* @__PURE__ */ once((isBuiltInElement2) => {
-    isBuiltInElement2 = isBuiltInElement2 || ((el) => el.tagName.startsWith("UNI-"));
-    var prototype = HTMLElement.prototype;
-    var setAttribute = prototype.setAttribute;
-    prototype.setAttribute = function(key2, value) {
-      if (key2.startsWith("data-") && isBuiltInElement2(this)) {
-        var dataset = this.__uniDataset || (this.__uniDataset = {});
-        dataset[formatKey(key2)] = value;
-      }
-      setAttribute.call(this, key2, value);
-    };
-    var removeAttribute = prototype.removeAttribute;
-    prototype.removeAttribute = function(key2) {
-      if (this.__uniDataset && key2.startsWith("data-") && isBuiltInElement2(this)) {
-        delete this.__uniDataset[formatKey(key2)];
-      }
-      removeAttribute.call(this, key2);
-    };
-  });
-  function getCustomDataset(el) {
-    return extend({}, el.dataset, el.__uniDataset);
-  }
-  var unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, "g");
-  function toFixed(number, precision) {
-    var multiplier = Math.pow(10, precision + 1);
-    var wholeNumber = Math.floor(number * multiplier);
-    return Math.round(wholeNumber / 10) * 10 / multiplier;
-  }
-  var defaultRpx2Unit = {
-    unit: "rem",
-    unitRatio: 10 / 320,
-    unitPrecision: 5
-  };
-  function createRpx2Unit(unit2, unitRatio2, unitPrecision2) {
-    return (val) => val.replace(unitRE, (m, $1) => {
-      if (!$1) {
-        return m;
-      }
-      if (unitRatio2 === 1) {
-        return "".concat($1).concat(unit2);
-      }
-      var value = toFixed(parseFloat($1) * unitRatio2, unitPrecision2);
-      return value === 0 ? "0" : "".concat(value).concat(unit2);
-    });
-  }
-  function passive(passive2) {
-    return {
-      passive: passive2
-    };
-  }
-  function normalizeTarget(el) {
-    var {
-      id: id2,
-      offsetTop,
-      offsetLeft
-    } = el;
-    return {
-      id: id2,
-      dataset: getCustomDataset(el),
-      offsetTop,
-      offsetLeft
-    };
-  }
-  function addFont(family, source, desc) {
-    var fonts = document.fonts;
-    if (fonts) {
-      var fontFace = new FontFace(family, source, desc);
-      return fontFace.load().then(() => {
-        fonts.add && fonts.add(fontFace);
-      });
-    }
-    return new Promise((resolve) => {
-      var style = document.createElement("style");
-      var values = [];
-      if (desc) {
-        var {
-          style: style2,
-          weight,
-          stretch,
-          unicodeRange,
-          variant,
-          featureSettings
-        } = desc;
-        style2 && values.push("font-style:".concat(style2));
-        weight && values.push("font-weight:".concat(weight));
-        stretch && values.push("font-stretch:".concat(stretch));
-        unicodeRange && values.push("unicode-range:".concat(unicodeRange));
-        variant && values.push("font-variant:".concat(variant));
-        featureSettings && values.push("font-feature-settings:".concat(featureSettings));
-      }
-      style.innerText = '@font-face{font-family:"'.concat(family, '";src:').concat(source, ";").concat(values.join(";"), "}");
-      document.head.appendChild(style);
-      resolve();
-    });
-  }
-  function scrollTo(scrollTop, duration, isH5) {
-    if (isString(scrollTop)) {
-      var el = document.querySelector(scrollTop);
-      if (el) {
-        var {
-          top
-        } = el.getBoundingClientRect();
-        scrollTop = top + window.pageYOffset;
-        var pageHeader = document.querySelector("uni-page-head");
-        if (pageHeader) {
-          scrollTop -= pageHeader.offsetHeight;
-        }
-      }
-    }
-    if (scrollTop < 0) {
-      scrollTop = 0;
-    }
-    var documentElement = document.documentElement;
-    var {
-      clientHeight,
-      scrollHeight
-    } = documentElement;
-    scrollTop = Math.min(scrollTop, scrollHeight - clientHeight);
-    if (duration === 0) {
-      documentElement.scrollTop = document.body.scrollTop = scrollTop;
-      return;
-    }
-    if (window.scrollY === scrollTop) {
-      return;
-    }
-    var scrollTo2 = (duration2) => {
-      if (duration2 <= 0) {
-        window.scrollTo(0, scrollTop);
-        return;
-      }
-      var distaince = scrollTop - window.scrollY;
-      requestAnimationFrame(function() {
-        window.scrollTo(0, window.scrollY + distaince / duration2 * 10);
-        scrollTo2(duration2 - 10);
-      });
-    };
-    scrollTo2(duration);
-  }
-  function plusReady(callback) {
-    if (!isFunction(callback)) {
-      return;
-    }
-    if (window.plus) {
-      return callback();
-    }
-    document.addEventListener("plusready", callback);
-  }
-  function normalizeEventType(type, options) {
-    if (options) {
-      if (options.capture) {
-        type += "Capture";
-      }
-      if (options.once) {
-        type += "Once";
-      }
-      if (options.passive) {
-        type += "Passive";
-      }
-    }
-    return "on".concat(capitalize(camelize(type)));
-  }
-  var optionsModifierRE = /(?:Once|Passive|Capture)$/;
-  function parseEventName(name) {
-    var options;
-    if (optionsModifierRE.test(name)) {
-      options = {};
-      var m;
-      while (m = name.match(optionsModifierRE)) {
-        name = name.slice(0, name.length - m[0].length);
-        options[m[0].toLowerCase()] = true;
-      }
-    }
-    return [hyphenate(name.slice(2)), options];
-  }
-  var EventModifierFlags = /* @__PURE__ */ (() => {
-    return {
-      stop: 1,
-      prevent: 1 << 1,
-      self: 1 << 2
-    };
-  })();
-  var ATTR_CLASS = "class";
-  var ATTR_STYLE = "style";
-  var ATTR_INNER_HTML = "innerHTML";
-  var ATTR_TEXT_CONTENT = "textContent";
-  var ATTR_V_SHOW = ".vShow";
-  var ATTR_V_OWNER_ID = ".vOwnerId";
-  var ATTR_V_RENDERJS = ".vRenderjs";
-  var ATTR_CHANGE_PREFIX = "change:";
-  var ACTION_TYPE_PAGE_CREATE = 1;
-  var ACTION_TYPE_PAGE_CREATED = 2;
-  var ACTION_TYPE_CREATE = 3;
-  var ACTION_TYPE_INSERT = 4;
-  var ACTION_TYPE_REMOVE = 5;
-  var ACTION_TYPE_SET_ATTRIBUTE = 6;
-  var ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
-  var ACTION_TYPE_ADD_EVENT = 8;
-  var ACTION_TYPE_REMOVE_EVENT = 9;
-  var ACTION_TYPE_SET_TEXT = 10;
-  var ACTION_TYPE_ADD_WXS_EVENT = 12;
-  var ACTION_TYPE_PAGE_SCROLL = 15;
-  var ACTION_TYPE_EVENT = 20;
-  function debounce(fn, delay, _ref2) {
-    var {
-      clearTimeout: clearTimeout2,
-      setTimeout: setTimeout2
-    } = _ref2;
-    var timeout;
-    var newFn = function() {
-      clearTimeout2(timeout);
-      var timerFn = () => fn.apply(this, arguments);
-      timeout = setTimeout2(timerFn, delay);
-    };
-    newFn.cancel = function() {
-      clearTimeout2(timeout);
-    };
-    return newFn;
-  }
-  var E = function() {
-  };
-  E.prototype = {
-    _id: 1,
-    on: function(name, callback, ctx2) {
-      var e2 = this.e || (this.e = {});
-      (e2[name] || (e2[name] = [])).push({
-        fn: callback,
-        ctx: ctx2,
-        _id: this._id
-      });
-      return this._id++;
-    },
-    once: function(name, callback, ctx2) {
-      var self2 = this;
-      function listener() {
-        self2.off(name, listener);
-        callback.apply(ctx2, arguments);
-      }
-      listener._ = callback;
-      return this.on(name, listener, ctx2);
-    },
-    emit: function(name) {
-      var data = [].slice.call(arguments, 1);
-      var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-      var i2 = 0;
-      var len = evtArr.length;
-      for (i2; i2 < len; i2++) {
-        evtArr[i2].fn.apply(evtArr[i2].ctx, data);
-      }
-      return this;
-    },
-    off: function(name, event) {
-      var e2 = this.e || (this.e = {});
-      var evts = e2[name];
-      var liveEvents = [];
-      if (evts && event) {
-        for (var i2 = evts.length - 1; i2 >= 0; i2--) {
-          if (evts[i2].fn === event || evts[i2].fn._ === event || evts[i2]._id === event) {
-            evts.splice(i2, 1);
-            break;
-          }
-        }
-        liveEvents = evts;
-      }
-      liveEvents.length ? e2[name] = liveEvents : delete e2[name];
-      return this;
-    }
-  };
-  var E$1 = E;
-  var isObject$1 = (val) => val !== null && typeof val === "object";
-  var defaultDelimiters = ["{", "}"];
-  class BaseFormatter {
-    constructor() {
-      this._caches = /* @__PURE__ */ Object.create(null);
-    }
-    interpolate(message, values) {
-      var delimiters = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : defaultDelimiters;
-      if (!values) {
-        return [message];
-      }
-      var tokens = this._caches[message];
-      if (!tokens) {
-        tokens = parse(message, delimiters);
-        this._caches[message] = tokens;
-      }
-      return compile(tokens, values);
-    }
-  }
-  var RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
-  var RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-  function parse(format, _ref) {
-    var [startDelimiter, endDelimiter] = _ref;
-    var tokens = [];
-    var position = 0;
-    var text2 = "";
-    while (position < format.length) {
-      var char = format[position++];
-      if (char === startDelimiter) {
-        if (text2) {
-          tokens.push({
-            type: "text",
-            value: text2
-          });
-        }
-        text2 = "";
-        var sub = "";
-        char = format[position++];
-        while (char !== void 0 && char !== endDelimiter) {
-          sub += char;
-          char = format[position++];
-        }
-        var isClosed = char === endDelimiter;
-        var type = RE_TOKEN_LIST_VALUE.test(sub) ? "list" : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? "named" : "unknown";
-        tokens.push({
-          value: sub,
-          type
-        });
-      } else {
-        text2 += char;
-      }
-    }
-    text2 && tokens.push({
-      type: "text",
-      value: text2
-    });
-    return tokens;
-  }
-  function compile(tokens, values) {
-    var compiled = [];
-    var index2 = 0;
-    var mode2 = Array.isArray(values) ? "list" : isObject$1(values) ? "named" : "unknown";
-    if (mode2 === "unknown") {
-      return compiled;
-    }
-    while (index2 < tokens.length) {
-      var token = tokens[index2];
-      switch (token.type) {
-        case "text":
-          compiled.push(token.value);
-          break;
-        case "list":
-          compiled.push(values[parseInt(token.value, 10)]);
-          break;
-        case "named":
-          if (mode2 === "named") {
-            compiled.push(values[token.value]);
-          }
-          break;
-      }
-      index2++;
-    }
-    return compiled;
-  }
-  var LOCALE_ZH_HANS = "zh-Hans";
-  var LOCALE_ZH_HANT = "zh-Hant";
-  var LOCALE_EN = "en";
-  var LOCALE_FR = "fr";
-  var LOCALE_ES = "es";
-  var hasOwnProperty = Object.prototype.hasOwnProperty;
-  var hasOwn = (val, key2) => hasOwnProperty.call(val, key2);
-  var defaultFormatter = new BaseFormatter();
-  function include(str, parts) {
-    return !!parts.find((part) => str.indexOf(part) !== -1);
-  }
-  function startsWith(str, parts) {
-    return parts.find((part) => str.indexOf(part) === 0);
-  }
-  function normalizeLocale(locale, messages2) {
-    if (!locale) {
-      return;
-    }
-    locale = locale.trim().replace(/_/g, "-");
-    if (messages2 && messages2[locale]) {
-      return locale;
-    }
-    locale = locale.toLowerCase();
-    if (locale === "chinese") {
-      return LOCALE_ZH_HANS;
-    }
-    if (locale.indexOf("zh") === 0) {
-      if (locale.indexOf("-hans") > -1) {
-        return LOCALE_ZH_HANS;
-      }
-      if (locale.indexOf("-hant") > -1) {
-        return LOCALE_ZH_HANT;
-      }
-      if (include(locale, ["-tw", "-hk", "-mo", "-cht"])) {
-        return LOCALE_ZH_HANT;
-      }
-      return LOCALE_ZH_HANS;
-    }
-    var locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
-    if (messages2 && Object.keys(messages2).length > 0) {
-      locales = Object.keys(messages2);
-    }
-    var lang = startsWith(locale, locales);
-    if (lang) {
-      return lang;
-    }
-  }
-  class I18n {
-    constructor(_ref2) {
-      var {
-        locale,
-        fallbackLocale,
-        messages: messages2,
-        watcher,
-        formater: formater2
-      } = _ref2;
-      this.locale = LOCALE_EN;
-      this.fallbackLocale = LOCALE_EN;
-      this.message = {};
-      this.messages = {};
-      this.watchers = [];
-      if (fallbackLocale) {
-        this.fallbackLocale = fallbackLocale;
-      }
-      this.formater = formater2 || defaultFormatter;
-      this.messages = messages2 || {};
-      this.setLocale(locale || LOCALE_EN);
-      if (watcher) {
-        this.watchLocale(watcher);
-      }
-    }
-    setLocale(locale) {
-      var oldLocale = this.locale;
-      this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
-      if (!this.messages[this.locale]) {
-        this.messages[this.locale] = {};
-      }
-      this.message = this.messages[this.locale];
-      if (oldLocale !== this.locale) {
-        this.watchers.forEach((watcher) => {
-          watcher(this.locale, oldLocale);
-        });
-      }
-    }
-    getLocale() {
-      return this.locale;
-    }
-    watchLocale(fn) {
-      var index2 = this.watchers.push(fn) - 1;
-      return () => {
-        this.watchers.splice(index2, 1);
-      };
-    }
-    add(locale, message) {
-      var override = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true;
-      var curMessages = this.messages[locale];
-      if (curMessages) {
-        if (override) {
-          Object.assign(curMessages, message);
-        } else {
-          Object.keys(message).forEach((key2) => {
-            if (!hasOwn(curMessages, key2)) {
-              curMessages[key2] = message[key2];
-            }
-          });
-        }
-      } else {
-        this.messages[locale] = message;
-      }
-    }
-    f(message, values, delimiters) {
-      return this.formater.interpolate(message, values, delimiters).join("");
-    }
-    t(key2, locale, values) {
-      var message = this.message;
-      if (typeof locale === "string") {
-        locale = normalizeLocale(locale, this.messages);
-        locale && (message = this.messages[locale]);
-      } else {
-        values = locale;
-      }
-      if (!hasOwn(message, key2)) {
-        console.warn("Cannot translate the value of keypath ".concat(key2, ". Use the value of keypath as default."));
-        return key2;
-      }
-      return this.formater.interpolate(message[key2], values).join("");
-    }
-  }
-  function watchAppLocale(appVm, i18n2) {
-    if (appVm.$watchLocale) {
-      appVm.$watchLocale((newLocale) => {
-        i18n2.setLocale(newLocale);
-      });
-    } else {
-      appVm.$watch(() => appVm.$locale, (newLocale) => {
-        i18n2.setLocale(newLocale);
-      });
-    }
-  }
-  function getDefaultLocale() {
-    if (typeof uni !== "undefined" && uni.getLocale) {
-      return uni.getLocale();
-    }
-    if (typeof window !== "undefined" && window.getLocale) {
-      return window.getLocale();
-    }
-    return LOCALE_EN;
-  }
-  function initVueI18n(locale) {
-    var messages2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-    var fallbackLocale = arguments.length > 2 ? arguments[2] : void 0;
-    var watcher = arguments.length > 3 ? arguments[3] : void 0;
-    if (typeof locale !== "string") {
-      var options = [messages2, locale];
-      locale = options[0];
-      messages2 = options[1];
-    }
-    if (typeof locale !== "string") {
-      locale = getDefaultLocale();
-    }
-    if (typeof fallbackLocale !== "string") {
-      fallbackLocale = typeof __uniConfig !== "undefined" && __uniConfig.fallbackLocale || LOCALE_EN;
-    }
-    var i18n2 = new I18n({
-      locale,
-      fallbackLocale,
-      messages: messages2,
-      watcher
-    });
-    var t2 = (key2, values) => {
-      if (typeof getApp !== "function") {
-        t2 = function(key22, values2) {
-          return i18n2.t(key22, values2);
-        };
-      } else {
-        var isWatchedAppLocale = false;
-        t2 = function(key22, values2) {
-          var appVm = getApp().$vm;
-          if (appVm) {
-            appVm.$locale;
-            if (!isWatchedAppLocale) {
-              isWatchedAppLocale = true;
-              watchAppLocale(appVm, i18n2);
-            }
-          }
-          return i18n2.t(key22, values2);
-        };
-      }
-      return t2(key2, values);
-    };
-    return {
-      i18n: i18n2,
-      f(message, values, delimiters) {
-        return i18n2.f(message, values, delimiters);
-      },
-      t(key2, values) {
-        return t2(key2, values);
-      },
-      add(locale2, message) {
-        var override = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true;
-        return i18n2.add(locale2, message, override);
-      },
-      watch(fn) {
-        return i18n2.watchLocale(fn);
-      },
-      getLocale() {
-        return i18n2.getLocale();
-      },
-      setLocale(newLocale) {
-        return i18n2.setLocale(newLocale);
-      }
-    };
-  }
-  var isEnableLocale = /* @__PURE__ */ once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
-  var i18n;
-  function useI18n() {
-    if (!i18n) {
-      var locale;
-      {
-        if (typeof getApp === "function") {
-          locale = weex.requireModule("plus").getLanguage();
-        } else {
-          locale = plus.webview.currentWebview().getStyle().locale;
-        }
-      }
-      i18n = initVueI18n(locale);
-      if (isEnableLocale()) {
-        var localeKeys = Object.keys(__uniConfig.locales || {});
-        if (localeKeys.length) {
-          localeKeys.forEach((locale2) => i18n.add(locale2, __uniConfig.locales[locale2]));
-        }
-        i18n.setLocale(locale);
-      }
-    }
-    return i18n;
-  }
-  function normalizeMessages(module, keys, values) {
-    return keys.reduce((res, name, index2) => {
-      res[module + name] = values[index2];
-      return res;
-    }, {});
-  }
-  var initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
-    var name = "uni.video.";
-    var keys = ["danmu", "volume"];
-    {
-      useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]), false);
-    }
-    {
-      useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Danmu", "Volumen"]), false);
-    }
-    {
-      useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Danmu", "Le Volume"]), false);
-    }
-    {
-      useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["弹幕", "音量"]), false);
-    }
-    {
-      useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["彈幕", "音量"]), false);
-    }
-  });
-  var initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
-    var name = "uni.chooseLocation.";
-    var keys = ["search", "cancel"];
-    {
-      useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Find Place", "Cancel"]), false);
-    }
-    {
-      useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Encontrar", "Cancelar"]), false);
-    }
-    {
-      useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Trouve", "Annuler"]), false);
-    }
-    {
-      useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["搜索地点", "取消"]), false);
-    }
-    {
-      useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["搜索地點", "取消"]), false);
-    }
-  });
-  function initBridge(subscribeNamespace) {
-    var emitter = new E$1();
-    return {
-      on(event, callback) {
-        return emitter.on(event, callback);
-      },
-      once(event, callback) {
-        return emitter.once(event, callback);
-      },
-      off(event, callback) {
-        return emitter.off(event, callback);
-      },
-      emit(event) {
-        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-          args[_key - 1] = arguments[_key];
-        }
-        return emitter.emit(event, ...args);
-      },
-      subscribe(event, callback) {
-        var once2 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
-        emitter[once2 ? "once" : "on"]("".concat(subscribeNamespace, ".").concat(event), callback);
-      },
-      unsubscribe(event, callback) {
-        emitter.off("".concat(subscribeNamespace, ".").concat(event), callback);
-      },
-      subscribeHandler(event, args, pageId) {
-        emitter.emit("".concat(subscribeNamespace, ".").concat(event), args, pageId);
-      }
-    };
-  }
-  var INVOKE_VIEW_API = "invokeViewApi";
-  var INVOKE_SERVICE_API = "invokeServiceApi";
-  var invokeServiceMethodId = 1;
-  var invokeServiceMethod = (name, args, callback) => {
-    var {
-      subscribe,
-      publishHandler: publishHandler2
-    } = UniViewJSBridge;
-    var id2 = callback ? invokeServiceMethodId++ : 0;
-    callback && subscribe(INVOKE_SERVICE_API + "." + id2, callback, true);
-    publishHandler2(INVOKE_SERVICE_API, {
-      id: id2,
-      name,
-      args
-    });
-  };
-  var viewMethods = /* @__PURE__ */ Object.create(null);
-  function normalizeViewMethodName(pageId, name) {
-    return pageId + "." + name;
-  }
-  function subscribeViewMethod(pageId, wrapper2) {
-    UniViewJSBridge.subscribe(normalizeViewMethodName(pageId, INVOKE_VIEW_API), wrapper2 ? wrapper2(onInvokeViewMethod) : onInvokeViewMethod);
-  }
-  function registerViewMethod(pageId, name, fn) {
-    name = normalizeViewMethodName(pageId, name);
-    if (!viewMethods[name]) {
-      viewMethods[name] = fn;
-    }
-  }
-  function unregisterViewMethod(pageId, name) {
-    name = normalizeViewMethodName(pageId, name);
-    delete viewMethods[name];
-  }
-  function onInvokeViewMethod(_ref, pageId) {
-    var {
-      id: id2,
-      name,
-      args
-    } = _ref;
-    name = normalizeViewMethodName(pageId, name);
-    var publish = (res) => {
-      id2 && UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id2, res);
-    };
-    var handler = viewMethods[name];
-    if (handler) {
-      handler(args, publish);
-    } else {
-      publish({});
-    }
-  }
-  var ViewJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("service"), {
-    invokeServiceMethod
-  });
-  var LONGPRESS_TIMEOUT = 350;
-  var LONGPRESS_THRESHOLD = 10;
-  var passiveOptions$2 = /* @__PURE__ */ passive(true);
-  var longPressTimer;
-  function clearLongPressTimer() {
-    if (longPressTimer) {
-      clearTimeout(longPressTimer);
-      longPressTimer = null;
-    }
-  }
-  var startPageX = 0;
-  var startPageY = 0;
-  function touchstart(evt) {
-    clearLongPressTimer();
-    if (evt.touches.length !== 1) {
-      return;
-    }
-    var {
-      pageX,
-      pageY
-    } = evt.touches[0];
-    startPageX = pageX;
-    startPageY = pageY;
-    longPressTimer = setTimeout(function() {
-      var customEvent = new CustomEvent("longpress", {
-        bubbles: true,
-        cancelable: true,
-        // @ts-expect-error
-        target: evt.target,
-        currentTarget: evt.currentTarget
-      });
-      customEvent.touches = evt.touches;
-      customEvent.changedTouches = evt.changedTouches;
-      evt.target.dispatchEvent(customEvent);
-    }, LONGPRESS_TIMEOUT);
-  }
-  function touchmove(evt) {
-    if (!longPressTimer) {
-      return;
-    }
-    if (evt.touches.length !== 1) {
-      return clearLongPressTimer();
-    }
-    var {
-      pageX,
-      pageY
-    } = evt.touches[0];
-    if (Math.abs(pageX - startPageX) > LONGPRESS_THRESHOLD || Math.abs(pageY - startPageY) > LONGPRESS_THRESHOLD) {
-      return clearLongPressTimer();
-    }
-  }
-  function initLongPress() {
-    window.addEventListener("touchstart", touchstart, passiveOptions$2);
-    window.addEventListener("touchmove", touchmove, passiveOptions$2);
-    window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
-    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
-  }
-  function checkValue$1(value, defaultValue) {
-    var newValue = Number(value);
-    return isNaN(newValue) ? defaultValue : newValue;
-  }
-  function getWindowWidth() {
-    var screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-    var landscape = screenFix && Math.abs(window.orientation) === 90;
-    var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-    var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
-    return windowWidth;
-  }
-  function useRem() {
-    var config = __uniConfig.globalStyle || {};
-    var maxWidth2 = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
-    var baseWidth2 = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
-    function updateRem() {
-      var width = getWindowWidth();
-      width = width <= maxWidth2 ? width : baseWidth2;
-      document.documentElement.style.fontSize = width / 23.4375 + "px";
-    }
-    updateRem();
-    document.addEventListener("DOMContentLoaded", updateRem);
-    window.addEventListener("load", updateRem);
-    window.addEventListener("resize", updateRem);
   }
   var attrs = ["top", "left", "right", "bottom"];
   var inited$1;
@@ -22437,10 +22437,11 @@
     canForward: "accessForward",
     loadData: "loadData",
     getContentHeight: "getPageHeight",
-    clear: "removeCache"
+    clear: "removeCache",
+    loadUrl: "loadUrl"
   };
   function useMethods(embedRef) {
-    var MethodList = ["evalJS", "back", "forward", "reload", "stop", "canBack", "canForward", "loadData", "getContentHeight", "clear"];
+    var MethodList = ["evalJS", "back", "forward", "reload", "stop", "canBack", "canForward", "loadData", "getContentHeight", "clear", "loadUrl"];
     var methods = {};
     var _loop = function(i3) {
       var methodName = MethodList[i3];
@@ -22449,6 +22450,9 @@
         switch (methodName) {
           case "evalJS":
             return resolve(embed["runJavaScript"]((data || {}).jsCode || ""));
+          case "loadUrl":
+            resolve(embed[HarmonyNativeMethodMap[methodName]](data.url, data.headers));
+            break;
           case "loadData":
             resolve(embed[HarmonyNativeMethodMap[methodName]](data.data, data.mimeType, data.encoding, data.baseUrl));
             break;
@@ -22525,7 +22529,7 @@
           updateTitle: props2.updateTitle,
           webviewStyles: props2.webviewStyles
         },
-        "methods": ["runJavaScript", "backward", "forward", "refresh", "stop", "accessBackward", "accessForward", "loadData", "getPageHeight", "removeCache"],
+        "methods": ["runJavaScript", "backward", "forward", "refresh", "stop", "accessBackward", "accessForward", "loadData", "getPageHeight", "removeCache", "loadUrl"],
         "style": "width:100%;height:100%"
       }, null, 8, ["options"])], 10, ["id"]);
     }

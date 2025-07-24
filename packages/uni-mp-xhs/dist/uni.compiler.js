@@ -73,7 +73,11 @@ const compilerOptions = {
     directiveTransforms,
 };
 const COMPONENTS_DIR = 'xhscomponents';
-const customElements = ['post-note-button', 'group-chat-card'];
+const customElements = [
+    'post-note-button',
+    'group-chat-card',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+];
 const miniProgram = {
     class: {
         array: false,

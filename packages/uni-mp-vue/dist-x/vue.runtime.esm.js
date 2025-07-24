@@ -6344,9 +6344,27 @@ function createScopedSlotInvoker(instance) {
  */
 function dynamicSlot(names, key) {
     if (isString(names)) {
-        return dynamicSlotName(names, key);
+        return normalizeSlotName(names, key);
     }
-    return names.map((name) => dynamicSlotName(name, key));
+    return names.map((name) => normalizeSlotName(name, key));
+}
+function normalizeSlotName(name, key) {
+    const slotName = dynamicSlotName(name);
+    if (key === undefined) {
+        return slotName;
+    }
+    const instance = getCurrentInstance();
+    let isScopedSlot = false;
+    let parent = instance.parent;
+    while (parent) {
+        const invokers = parent.$ssi;
+        if (invokers && invokers[instance.ctx.$scope._$vueId]) {
+            isScopedSlot = true;
+            break;
+        }
+        parent = parent.parent;
+    }
+    return slotName + (isScopedSlot ? `-${key}` : '');
 }
 
 function setRef(ref, id, opts = {}) {

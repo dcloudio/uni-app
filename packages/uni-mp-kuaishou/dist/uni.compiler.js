@@ -56,38 +56,6 @@ var scripts = {
 var isGameTourist = false;
 var simulatorPluginLibVersion = {
 };
-var condition = {
-	search: {
-		current: -1,
-		list: [
-		]
-	},
-	conversation: {
-		current: -1,
-		list: [
-		]
-	},
-	game: {
-		current: -1,
-		list: [
-		]
-	},
-	plugin: {
-		current: -1,
-		list: [
-		]
-	},
-	gamePlugin: {
-		current: -1,
-		list: [
-		]
-	},
-	miniprogram: {
-		current: -1,
-		list: [
-		]
-	}
-};
 var source = {
 	description: description,
 	packOptions: packOptions,
@@ -99,8 +67,7 @@ var source = {
 	debugOptions: debugOptions,
 	scripts: scripts,
 	isGameTourist: isGameTourist,
-	simulatorPluginLibVersion: simulatorPluginLibVersion,
-	condition: condition
+	simulatorPluginLibVersion: simulatorPluginLibVersion
 };
 
 // import { transformOn } from './transforms/vOn'
@@ -118,6 +85,9 @@ const customElements = [
     'web-view',
     'playlet-plugin',
     'address',
+    'page-meta',
+    'navigation-bar',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const compilerOptions = {
     nodeTransforms,

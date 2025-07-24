@@ -215,6 +215,7 @@ const customElements = [
     'join-group-chat',
     'subscribe-message',
     'mpaas-component',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const options = {
     cdn: 2,

@@ -47,7 +47,7 @@ ${polyfillCode}`,
         bundle: true,
         write: false,
         plugins: [esbuildGlobalPlugin(esbuildGlobals(appService))],
-        supported: { bigint: true }
+        supported: { bigint: true },
       }
       resolvedConfig = config
       emittedHashMap.set(resolvedConfig, new Map<string, string>())
