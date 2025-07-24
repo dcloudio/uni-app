@@ -112,6 +112,7 @@ export const options: UniMiniProgramPluginOptions = {
   json: {
     windowOptionsMap: {
       defaultTitle: 'navigationBarTitleText',
+      navigationBarFrontColor: 'navigationBarTextStyle',
       pullRefresh: 'enablePullDownRefresh',
       allowsBounceVertical: 'allowsBounceVertical',
       titleBarColor: 'navigationBarBackgroundColor',
