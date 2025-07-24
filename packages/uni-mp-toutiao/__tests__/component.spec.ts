@@ -12,10 +12,10 @@ describe('mp-toutiao: transform component', () => {
 }`
     )
   })
-  test(`match-media`, () => {
+  test('match-media', () => {
     assert(
-      `<match-media/>`,
-      `<uni-match-media u-i="2a9ec0b0-0" bind:__l="__l"/>`,
+      `<match-media min-width="600" max-height="1000"/>`,
+      `<match-media min-width="600" max-height="1000"/>`,
       `(_ctx, _cache) => {
   return {}
 }`
