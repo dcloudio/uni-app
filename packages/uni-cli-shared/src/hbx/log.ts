@@ -148,6 +148,8 @@ export const errorFormatter: Formatter<LogErrorOptions> = {
   },
 }
 
+const VITE_ROLLUP_FAILED_TO_RESOLVE_IMPORT_RE =
+  /\[vite\]: Rollup failed to resolve import "([^"]+)" from "([^"]+)"/
 function buildErrorMessage(
   err: RollupError & { customPrint?: () => void },
   args: string[] = [],
@@ -156,6 +158,17 @@ function buildErrorMessage(
   if (err.customPrint) {
     err.customPrint()
     return ''
+  }
+  if (VITE_ROLLUP_FAILED_TO_RESOLVE_IMPORT_RE.test(err.message)) {
+    const [, importPath, fromPath] =
+      err.message.match(VITE_ROLLUP_FAILED_TO_RESOLVE_IMPORT_RE) || []
+    err.message = `Could not resolve "${importPath}" from "${fromPath}"`
+    err.id = fromPath
+  }
+  // 移除 from 后面的内容
+  // 主要是处理：Could not resolve "./static/logo1.png" from "../../../../../../Users/xxx/HBuilderProjects/test-x/pages/index/index.uvue?vue&type=script&lang.uts"
+  if (err.id && err.message.startsWith('Could not resolve ')) {
+    err.message = err.message.split(' from ')[0]
   }
   if (err.plugin) {
     // 避免出现这样的错误：[plugin:vite:vue] [plugin vite:vue]
