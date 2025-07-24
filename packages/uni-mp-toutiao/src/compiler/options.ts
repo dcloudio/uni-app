@@ -6,7 +6,7 @@ import {
   transformComponentLink,
   transformDirection,
   transformMPBuiltInTag,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import {
@@ -29,6 +29,7 @@ export const customElements = [
   'rtc-room',
   'clue-order-form',
   'shop-follow-card',
+  'match-media',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
@@ -36,7 +37,7 @@ const projectConfigFilename = 'project.config.json'
 
 const nodeTransforms = [
   transformRef,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformComponentLink,
 ]
 

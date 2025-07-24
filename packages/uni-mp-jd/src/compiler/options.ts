@@ -11,7 +11,6 @@ import {
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
-// import { transformSwiper } from './transforms/transformSwiper'
 
 const projectConfigFilename = 'project.config.json'
 
@@ -24,6 +23,7 @@ const nodeTransforms = [
 export const customElements = [
   'root-portal',
   'page-container',
+  'match-media',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
