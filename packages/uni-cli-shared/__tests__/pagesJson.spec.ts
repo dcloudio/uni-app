@@ -1,6 +1,9 @@
 import path from 'path'
 import { checkPagesJson } from '../src/json/utils'
 import { generateCodeFrame } from '../src/vite/plugins/vitejs/utils'
+import { options as alipayOptions } from '../../uni-mp-alipay/src/compiler/options'
+import { options as weixinOptions } from '../../uni-mp-weixin/src/compiler/options'
+import { parseWindowOptions } from '../src/json/mp/utils'
 
 declare const process: {
   env: {
@@ -99,5 +102,93 @@ describe('pages.json', () => {
         ).replace(/\t/g, ' ')
       ).toMatchSnapshot()
     }
+  })
+
+  test(`test alipay window options`, () => {
+    const source = {
+      navigationBarTextStyle: 'black',
+      navigationBarTitleText: 'uni-app',
+      navigationBarBackgroundColor: '#F8F8F8',
+      backgroundColor: '#F8F8F8',
+      enablePullDownRefresh: true,
+      allowsBounceVertical: true,
+      optionMenu: {
+        icon: 'https://example.com/icon.png',
+        items: [
+          {
+            name: 'menu1',
+            text: '菜单1',
+          },
+        ],
+      },
+      usingComponents: {
+        'custom-component': '/components/custom-component',
+      },
+      navigationBarShadow: {
+        colorType: 'black',
+      },
+      titleImage: 'https://example.com/title.png',
+      transparentTitle: 'always',
+      titlePenetrate: true,
+    } as any
+    const windowOptions = parseWindowOptions(
+      source,
+      'mp-alipay',
+      alipayOptions.json!.windowOptionsMap
+    )
+    expect(windowOptions).toStrictEqual({
+      defaultTitle: 'uni-app',
+      navigationBarFrontColor: 'black',
+      titleBarColor: '#F8F8F8',
+      backgroundColor: '#F8F8F8',
+      pullRefresh: true,
+      allowsBounceVertical: true,
+      optionMenu: {
+        icon: 'https://example.com/icon.png',
+        items: [
+          {
+            name: 'menu1',
+            text: '菜单1',
+          },
+        ],
+      },
+      usingComponents: {
+        'custom-component': '/components/custom-component',
+      },
+      navigationBarShadow: {
+        colorType: 'black',
+      },
+      titleImage: 'https://example.com/title.png',
+      transparentTitle: 'always',
+      titlePenetrate: true,
+    })
+  })
+
+  test(`test weixin window options`, () => {
+    const source = {
+      navigationBarTextStyle: 'black',
+      navigationBarTitleText: 'uni-app',
+      navigationBarBackgroundColor: '#F8F8F8',
+      backgroundColor: '#F8F8F8',
+      enablePullDownRefresh: true,
+      onReachBottomDistance: 50,
+      disableScroll: false,
+      pageOrientation: 'auto',
+    } as any
+    const windowOptions = parseWindowOptions(
+      source,
+      'mp-weixin',
+      weixinOptions.json?.windowOptionsMap
+    )
+    expect(windowOptions).toStrictEqual({
+      navigationBarTextStyle: 'black',
+      navigationBarTitleText: 'uni-app',
+      navigationBarBackgroundColor: '#F8F8F8',
+      backgroundColor: '#F8F8F8',
+      enablePullDownRefresh: true,
+      onReachBottomDistance: 50,
+      disableScroll: false,
+      pageOrientation: 'auto',
+    })
   })
 })
