@@ -12145,7 +12145,15 @@ class VaporComponentInstance {
     return getKeysFromRawProps(this.rawProps);
   }
   // fixed by xxxxxx
-  $waitNativeRender(fn) {}
+  $waitNativeRender(fn) {
+    var proxy = this.proxy;
+    var document = proxy && proxy.$nativePage && proxy.$nativePage.document;
+    if (document) {
+      document.waitNativeRender(fn);
+    } else {
+      fn();
+    }
+  }
 }
 function isVaporComponent(value) {
   return value instanceof VaporComponentInstance;

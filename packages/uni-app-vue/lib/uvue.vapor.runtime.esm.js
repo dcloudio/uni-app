@@ -10685,6 +10685,13 @@ class VaporComponentInstance {
   }
   // fixed by xxxxxx
   $waitNativeRender(fn) {
+    const proxy = this.proxy;
+    const document = proxy && proxy.$nativePage && proxy.$nativePage.document;
+    if (document) {
+      document.waitNativeRender(fn);
+    } else {
+      fn();
+    }
   }
 }
 function isVaporComponent(value) {
