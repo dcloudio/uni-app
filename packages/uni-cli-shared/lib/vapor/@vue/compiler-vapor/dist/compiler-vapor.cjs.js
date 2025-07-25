@@ -1898,7 +1898,12 @@ class DomCodeGenerator {
   createTextNode(content) {
     const varName = this.getNextVariableName();
     const statements = [
-      `const ${varName} = doc.createTextNode(${JSON.stringify(content)})`
+      // 处理换行符\n
+      `const ${varName} = doc.createTextNode(${JSON.stringify(
+        content.replace(/[\\]+n/g, function(match) {
+          return JSON.parse(`"${match}"`);
+        })
+      )})`
     ];
     return { variableName: varName, statements };
   }
@@ -1942,8 +1947,14 @@ class DomCodeGenerator {
             );
           }
         } else {
+          let newValue = value;
+          if (tag === "text" && name === "value") {
+            newValue = value.replace(/[\\]+n/g, function(match) {
+              return JSON.parse(`"${match}"`);
+            });
+          }
           statements.push(
-            `${varName}.setAttribute('${name}', ${JSON.stringify(value)})`
+            `${varName}.setAttribute('${name}', ${JSON.stringify(newValue)})`
           );
         }
       }
@@ -2189,7 +2200,15 @@ function genSetText(oper, context) {
     return [
       NEWLINE,
       `${generated ? "x" : "n"}${element}.setAttribute('value', `,
-      ...texts,
+      // 处理换行符\n
+      ...texts.map((text) => {
+        if (shared.isString(text)) {
+          return text.replace(/[\\]+n/g, function(match) {
+            return JSON.parse(`"${match}"`);
+          });
+        }
+        return text;
+      }),
       ")"
     ];
   }
