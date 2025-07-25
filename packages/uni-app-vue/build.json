@@ -166,7 +166,8 @@
     "replaceAfterBundled": {
       "instanceof Node": "instanceof UniElement",
       "instanceof Element": "instanceof UniElement",
-      "instanceof Comment": "instanceof UniComment"
+      "instanceof Comment": "instanceof UniComment",
+      "arguments\\[1\\] : getCurrentInstance\\(\\);": "arguments[1] : getCurrentGenericInstance();"
     },
     "external": [
       "@vue/shared",
@@ -204,7 +205,8 @@
     "replaceAfterBundled": {
       "instanceof Node": "instanceof UniElement",
       "instanceof Element": "instanceof UniElement",
-      "instanceof Comment": "instanceof UniComment"
+      "instanceof Comment": "instanceof UniComment",
+      "arguments\\[1\\] : getCurrentInstance\\(\\);": "arguments[1] : getCurrentGenericInstance();"
     },
     "external": [
       "@vue/shared",
@@ -393,7 +395,8 @@
     "replaceAfterBundled": {
       "instanceof Node": "instanceof UniElement",
       "instanceof Element": "instanceof UniElement",
-      "instanceof Comment": "instanceof UniComment"
+      "instanceof Comment": "instanceof UniComment",
+      "arguments\\[1\\] : getCurrentInstance\\(\\);": "arguments[1] : getCurrentGenericInstance();"
     },
     "external": [
       "@vue/shared",
@@ -463,7 +466,8 @@
     "replaceAfterBundled": {
       "instanceof Node": "instanceof UniElement",
       "instanceof Element": "instanceof UniElement",
-      "instanceof Comment": "instanceof UniComment"
+      "instanceof Comment": "instanceof UniComment",
+      "arguments\\[1\\] : getCurrentInstance\\(\\);": "arguments[1] : getCurrentGenericInstance();"
     },
     "external": [
       "@vue/shared",

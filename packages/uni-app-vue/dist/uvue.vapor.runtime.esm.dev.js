@@ -13377,7 +13377,7 @@ function unmountPage(pageInstance) {
 var createLifeCycleHook = function (lifecycle) {
   var flag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
   return function (hook) {
-    var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentInstance();
+    var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentGenericInstance();
     // 不使用此判断了，因为组件也可以监听页面的生命周期，当页面作为组件渲染时，那监听的页面生成周期是其所在页面的，而不是其自身的
     // if (true) {
     //   // 如果只是页面生命周期，排除与App公用的，比如onShow、onHide
