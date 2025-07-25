@@ -3,7 +3,7 @@ import { checkPagesJson } from '../src/json/utils'
 import { generateCodeFrame } from '../src/vite/plugins/vitejs/utils'
 import { options as alipayOptions } from '../../uni-mp-alipay/src/compiler/options'
 import { options as weixinOptions } from '../../uni-mp-weixin/src/compiler/options'
-import { parseWindowOptions } from '../src/json/mp/utils'
+import { parseTabBar, parseWindowOptions } from '../src/json/mp/utils'
 
 declare const process: {
   env: {
@@ -205,6 +205,152 @@ describe('pages.json', () => {
       pageOrientation: 'auto',
       visualEffectInBackground: 'hidden',
       backgroundColorTop: '#ffffff',
+    })
+  })
+
+  test(`test alipay tabBar options`, () => {
+    const source = {
+      color: '#7A7E83',
+      selectedColor: '#007AFF',
+      backgroundColor: '#F8F8F8',
+      customize: 'customize',
+      overlay: 'overlay',
+      list: [
+        {
+          pagePath: 'pages/tabBar/component/component',
+          iconPath: 'static/component.png',
+          selectedIconPath: 'static/componentHL.png',
+          text: '内置组件',
+        },
+        {
+          pagePath: 'pages/tabBar/API/API',
+          iconPath: 'static/api.png',
+          selectedIconPath: 'static/apiHL.png',
+          text: '接口',
+        },
+        {
+          pagePath: 'pages/tabBar/extUI/extUI',
+          iconPath: 'static/extui.png',
+          selectedIconPath: 'static/extuiHL.png',
+          text: '扩展组件',
+        },
+        {
+          pagePath: 'pages/tabBar/template/template',
+          iconPath: 'static/template.png',
+          selectedIconPath: 'static/templateHL.png',
+          text: '模板',
+        },
+      ],
+    } as any
+    const tabBar = parseTabBar(
+      source,
+      'mp-alipay',
+      alipayOptions.json!.tabBarOptionsMap,
+      alipayOptions.json!.tabBarItemOptionsMap
+    )
+    expect(tabBar).toStrictEqual({
+      selectedColor: '#007AFF',
+      textColor: '#7A7E83',
+      backgroundColor: '#F8F8F8',
+      customize: 'customize',
+      overlay: 'overlay',
+      items: [
+        {
+          pagePath: 'pages/tabBar/component/component',
+          icon: 'static/component.png',
+          activeIcon: 'static/componentHL.png',
+          name: '内置组件',
+        },
+        {
+          pagePath: 'pages/tabBar/API/API',
+          icon: 'static/api.png',
+          activeIcon: 'static/apiHL.png',
+          name: '接口',
+        },
+        {
+          pagePath: 'pages/tabBar/extUI/extUI',
+          icon: 'static/extui.png',
+          activeIcon: 'static/extuiHL.png',
+          name: '扩展组件',
+        },
+        {
+          pagePath: 'pages/tabBar/template/template',
+          icon: 'static/template.png',
+          activeIcon: 'static/templateHL.png',
+          name: '模板',
+        },
+      ],
+    })
+  })
+
+  test(`test weixin tabBar options`, () => {
+    const source = {
+      color: '#7A7E83',
+      selectedColor: '#007AFF',
+      backgroundColor: '#F8F8F8',
+      list: [
+        {
+          pagePath: 'pages/tabBar/component/component',
+          iconPath: 'static/component.png',
+          selectedIconPath: 'static/componentHL.png',
+          text: '内置组件',
+        },
+        {
+          pagePath: 'pages/tabBar/API/API',
+          iconPath: 'static/api.png',
+          selectedIconPath: 'static/apiHL.png',
+          text: '接口',
+        },
+        {
+          pagePath: 'pages/tabBar/extUI/extUI',
+          iconPath: 'static/extui.png',
+          selectedIconPath: 'static/extuiHL.png',
+          text: '扩展组件',
+        },
+        {
+          pagePath: 'pages/tabBar/template/template',
+          iconPath: 'static/template.png',
+          selectedIconPath: 'static/templateHL.png',
+          text: '模板',
+        },
+      ],
+    } as any
+    const tabBar = parseTabBar(
+      source,
+      'mp-weixin',
+      weixinOptions.json?.tabBarOptionsMap,
+      weixinOptions.json?.tabBarItemOptionsMap
+    )
+    expect(tabBar).toStrictEqual({
+      color: '#7A7E83',
+      selectedColor: '#007AFF',
+      backgroundColor: '#F8F8F8',
+      list: [
+        {
+          pagePath: 'pages/tabBar/component/component',
+          iconPath: 'static/component.png',
+          selectedIconPath: 'static/componentHL.png',
+          text: '内置组件',
+        },
+        {
+          pagePath: 'pages/tabBar/API/API',
+          iconPath: 'static/api.png',
+          selectedIconPath: 'static/apiHL.png',
+          text: '接口',
+        },
+        {
+          pagePath: 'pages/tabBar/extUI/extUI',
+          iconPath: 'static/extui.png',
+          selectedIconPath: 'static/extuiHL.png',
+          text: '扩展组件',
+        },
+        {
+          pagePath: 'pages/tabBar/template/template',
+          iconPath: 'static/template.png',
+          selectedIconPath: 'static/templateHL.png',
+          text: '模板',
+        },
+      ],
     })
   })
 })
