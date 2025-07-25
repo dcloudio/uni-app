@@ -76,6 +76,9 @@ export function initPluginVueOptions(
 
   ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
 
+  // 默认就移除comments节点
+  compilerOptions.comments = false
+
   if (process.env.UNI_PLATFORM !== 'web') {
     // 非 web 平台，使用 factory 模式
     ;(compilerOptions as any).templateMode = 'factory'
