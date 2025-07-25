@@ -130,6 +130,14 @@ describe('pages.json', () => {
       titleImage: 'https://example.com/title.png',
       transparentTitle: 'always',
       titlePenetrate: true,
+      'mp-alipay': {
+        responsive: true,
+        showTitleLoading: 'YES',
+      },
+      'mp-weixin': {
+        visualEffectInBackground: 'hidden',
+        backgroundColorTop: '#ffffff',
+      },
     } as any
     const windowOptions = parseWindowOptions(
       source,
@@ -161,6 +169,8 @@ describe('pages.json', () => {
       titleImage: 'https://example.com/title.png',
       transparentTitle: 'always',
       titlePenetrate: true,
+      responsive: true,
+      showTitleLoading: 'YES',
     })
   })
 
@@ -174,6 +184,10 @@ describe('pages.json', () => {
       onReachBottomDistance: 50,
       disableScroll: false,
       pageOrientation: 'auto',
+      'mp-weixin': {
+        visualEffectInBackground: 'hidden',
+        backgroundColorTop: '#ffffff',
+      },
     } as any
     const windowOptions = parseWindowOptions(
       source,
@@ -189,6 +203,8 @@ describe('pages.json', () => {
       onReachBottomDistance: 50,
       disableScroll: false,
       pageOrientation: 'auto',
+      visualEffectInBackground: 'hidden',
+      backgroundColorTop: '#ffffff',
     })
   })
 })
