@@ -8933,6 +8933,7 @@ exports.onUpdated = onUpdated;
 exports.openBlock = openBlock;
 exports.popScopeId = popScopeId;
 exports.provide = provide;
+exports.publicPropertiesMap = publicPropertiesMap;
 exports.pushScopeId = pushScopeId;
 exports.queuePostFlushCb = queuePostFlushCb;
 exports.registerRuntimeCompiler = registerRuntimeCompiler;

@@ -13015,6 +13015,7 @@ Expected function or array of functions, received type ${typeof value}.`
   exports.popScopeId = popScopeId;
   exports.provide = provide;
   exports.proxyRefs = proxyRefs;
+  exports.publicPropertiesMap = publicPropertiesMap;
   exports.pushScopeId = pushScopeId;
   exports.queuePostFlushCb = queuePostFlushCb;
   exports.reactive = reactive;

@@ -18749,6 +18749,7 @@ ${codeFrame}` : message);
   exports.popScopeId = popScopeId;
   exports.provide = provide;
   exports.proxyRefs = proxyRefs;
+  exports.publicPropertiesMap = publicPropertiesMap;
   exports.pushScopeId = pushScopeId;
   exports.queuePostFlushCb = queuePostFlushCb;
   exports.reactive = reactive;

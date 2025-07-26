@@ -3,9 +3,9 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { warn as warn$2, currentInstance as currentInstance$1, startMeasure, setCurrentInstance, queuePostFlushCb, queueJob, ensureRenderer, shallowRef, simpleSetCurrentInstance, renderSlot, createVNode as createVNode$1, shallowReactive, createInternalObject, isEmitListener, onScopeDispose, baseEmit, baseNormalizePropsOptions, pushWarningContext as pushWarningContext$1, validateProps, popWarningContext as popWarningContext$1, resolvePropValue, isRef as isRef$1, registerHMR, PublicInstanceProxyHandlers, callWithErrorHandling as callWithErrorHandling$1, endMeasure, unregisterHMR, nextUid, EffectScope as EffectScope$1, expose, createAppAPI, initFeatureFlags, setDevtoolsHook as setDevtoolsHook$1, flushOnAppMount, resolveDynamicComponent, vShowOriginalDisplay, vShowHidden as vShowHidden$1, vModelTextInit, vModelCheckboxInit, vModelSelectInit, onMounted, vModelTextUpdate, vModelCheckboxUpdate, vModelGetValue, vModelSetSelected } from '@vue/runtime-dom';
+import { warn as warn$2, currentInstance as currentInstance$1, startMeasure, setCurrentInstance, queuePostFlushCb, queueJob, ensureRenderer, shallowRef, simpleSetCurrentInstance, renderSlot, createVNode as createVNode$1, shallowReactive, createInternalObject, isEmitListener, onScopeDispose, baseEmit, baseNormalizePropsOptions, pushWarningContext as pushWarningContext$1, validateProps, popWarningContext as popWarningContext$1, resolvePropValue, isRef as isRef$1, registerHMR, PublicInstanceProxyHandlers, callWithErrorHandling as callWithErrorHandling$1, endMeasure, unregisterHMR, publicPropertiesMap, nextUid, EffectScope as EffectScope$1, expose, createAppAPI, initFeatureFlags, setDevtoolsHook as setDevtoolsHook$1, flushOnAppMount, resolveDynamicComponent, vShowOriginalDisplay, vShowHidden as vShowHidden$1, vModelTextInit, vModelCheckboxInit, vModelSelectInit, onMounted, vModelTextUpdate, vModelCheckboxUpdate, vModelGetValue, vModelSetSelected } from '@vue/runtime-dom';
 import { isArray, hasOwn, invokeArrayFns, isString, isFunction, EMPTY_OBJ, isOn, isObject, extend, NOOP, parseStringStyle, camelize, canSetValueDirectly, toDisplayString, EMPTY_ARR, NO, YES, getGlobalThis, remove as remove$1, looseEqual } from '@vue/shared';
-import { setActiveSub, EffectScope, ReactiveEffect, isRef, toRaw, isProxy, onEffectCleanup, proxyRefs, onScopeDispose as onScopeDispose$1, markRaw, unref, watch, isReactive, isShallow, shallowReadArray, isReadonly, toReadonly, toReactive, shallowRef as shallowRef$1, traverse } from '@vue/reactivity';
+import { setActiveSub, EffectScope, ReactiveEffect, isRef, toRaw, isProxy, onEffectCleanup, proxyRefs, onScopeDispose as onScopeDispose$1, markRaw, watch, isReactive, isShallow, shallowReadArray, isReadonly, toReadonly, toReactive, shallowRef as shallowRef$1, traverse } from '@vue/reactivity';
 import { normalizeClass, normalizeStyle as normalizeStyle$1 } from '@dcloudio/uni-shared';
 import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
 
@@ -2430,8 +2430,20 @@ function unmountComponent(instance, parentNode) {
 }
 function getExposed(instance) {
   if (instance.exposed) {
-    return instance.exposeProxy || (instance.exposeProxy = new Proxy(markRaw(instance.exposed), {
-      get: (target, key) => unref(target[key])
+    return instance.exposeProxy || // fixed by uts 支持 $callMethod
+    (instance.exposeProxy = new Proxy(markRaw(instance.exposed), {
+      get(target, key) {
+        if (key in target) {
+          return target[key];
+        } else if (key in publicPropertiesMap) {
+          return publicPropertiesMap[key](
+            instance
+          );
+        }
+      },
+      has(target, key) {
+        return key in target || key in publicPropertiesMap;
+      }
     }));
   }
 }

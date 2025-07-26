@@ -13040,6 +13040,7 @@ Make sure to use the production build (*.prod.js) when deploying for production.
   exports.popScopeId = popScopeId;
   exports.provide = provide;
   exports.proxyRefs = proxyRefs;
+  exports.publicPropertiesMap = publicPropertiesMap;
   exports.pushScopeId = pushScopeId;
   exports.queuePostFlushCb = queuePostFlushCb;
   exports.reactive = reactive;
