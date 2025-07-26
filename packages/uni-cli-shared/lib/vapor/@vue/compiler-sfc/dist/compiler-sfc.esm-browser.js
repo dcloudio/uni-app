@@ -44843,17 +44843,23 @@ class HtmlParser {
       const name = content.substring(nameStart, i);
       i = this.skipWhitespace(content, i);
       if (i >= length || content[i] !== "=") {
-        attrs[name] = name;
+        if (!this.isSpecialAttribute(name)) {
+          attrs[name] = name;
+        }
         continue;
       }
       i++;
       i = this.skipWhitespace(content, i);
       if (i >= length) {
-        attrs[name] = "";
+        if (!this.isSpecialAttribute(name)) {
+          attrs[name] = "";
+        }
         continue;
       }
       const value = this.parseAttributeValue(content, i);
-      attrs[name] = value.value;
+      if (!this.isSpecialAttribute(name) || value.value.trim() !== "") {
+        attrs[name] = value.value;
+      }
       i = value.endIndex;
     }
     return attrs;
@@ -44888,6 +44894,12 @@ class HtmlParser {
   // =============================================================================
   // Private Methods - Utilities
   // =============================================================================
+  /**
+   * Check if attribute is a special attribute (id, class, style)
+   */
+  isSpecialAttribute(name) {
+    return name === "id" || name === "class" || name === "style";
+  }
   /**
    * Skip whitespace characters starting from index
    */
@@ -44940,7 +44952,9 @@ class DomCodeGenerator {
   constructor(options) {
     this.variableCounter = 0;
     this.styleCounter = 0;
+    this.disableClassBinding = false;
     this.parseStaticStyle = options.parseStaticStyle;
+    this.disableClassBinding = options.disableClassBinding;
   }
   genNodeStatements(node) {
     this.variableCounter = 0;
@@ -44999,16 +45013,24 @@ class DomCodeGenerator {
     const varName = this.getNextVariableName();
     const statements = [];
     statements.push(`const ${varName} = doc.createElement('${tag}')`);
-    if (attrs && Object.keys(attrs).length > 0) {
+    if (attrs && !isEmptyAttrs(attrs, this.disableClassBinding)) {
+      let shouldCacheStyle = false;
+      if (this.disableClassBinding && "ext:style" in attrs) {
+        shouldCacheStyle = true;
+        delete attrs["ext:style"];
+      }
       for (const [name, value] of Object.entries(attrs)) {
         if (name === "style") {
-          const styleVar = this.getNextStyleVariableName();
-          statements.push(`const ${styleVar} = ${varName}.style`);
-          const styleProperties = this.parseStyleToProperties(value);
-          for (const [prop, val] of styleProperties) {
-            statements.push(
-              `${styleVar}.setProperty("${prop}", ${JSON.stringify(val)})`
-            );
+          const mapStyleStr = this.parseStaticStyle(value);
+          if (mapStyleStr) {
+            if (shouldCacheStyle) {
+              const styleVar = this.getNextStyleVariableName();
+              statements.push(`const ${styleVar} = ${mapStyleStr}`);
+              statements.push(`${varName}.ext.set('style', ${styleVar})`);
+              statements.push(`${varName}.updateStyle(${styleVar})`);
+            } else {
+              statements.push(`${varName}.updateStyle(${mapStyleStr})`);
+            }
           }
         } else {
           let newValue = value;
@@ -45053,29 +45075,11 @@ class DomCodeGenerator {
     }
     return result;
   }
-  getNextVariableName() {
-    return `e${this.variableCounter++}`;
-  }
   getNextStyleVariableName() {
     return `s${this.styleCounter++}`;
   }
-  parseStyleToProperties(style) {
-    if (!style || !style.trim()) {
-      return [];
-    }
-    const mapStr = this.parseStaticStyle(style);
-    const regex = /\['([^']+)',\s*([^\]]+)\]/g;
-    const properties = [];
-    let match;
-    while ((match = regex.exec(mapStr)) !== null) {
-      const prop = match[1];
-      let val = match[2].trim();
-      if (val.startsWith('"') && val.endsWith('"') || val.startsWith("'") && val.endsWith("'")) {
-        val = val.slice(1, -1);
-      }
-      properties.push([prop, val]);
-    }
-    return properties;
+  getNextVariableName() {
+    return `e${this.variableCounter++}`;
   }
   tryInlineChild(child) {
     switch (child.type) {
@@ -45097,7 +45101,7 @@ class DomCodeGenerator {
     if (node.tag === NODE_TYPE_TEXT) {
       return false;
     }
-    if (node.attrs && Object.keys(node.attrs).length > 0) {
+    if (!isEmptyAttrs(node.attrs, this.disableClassBinding)) {
       return false;
     }
     if (node.children && node.children.length > 0) {
@@ -45106,10 +45110,15 @@ class DomCodeGenerator {
     return true;
   }
 }
+function isEmptyAttrs(attrs, disableClassBinding) {
+  return !attrs || Object.keys(attrs).length === 0 || disableClassBinding && Object.keys(attrs).length === 1 && // 上一步会添加ext:style来标记当前节点有class属性，后续根据该属性设置 ext.set('style',...)
+  "ext:style" in attrs;
+}
 class TemplateFactoryGenerator {
   constructor(options) {
     this.codeGenerator = new DomCodeGenerator(options);
     this.isTs = options.isTs || false;
+    this.disableClassBinding = options.disableClassBinding;
   }
   genFactoryFunction(template, index) {
     try {
@@ -45165,11 +45174,13 @@ ${returnStatement}
     }
   }
   isSimpleElement(node) {
+    const emptyAttrs = isEmptyAttrs(node.attrs, this.disableClassBinding);
+    if (!emptyAttrs) return false;
     if (node.tag === NODE_TYPE_TEXT) {
       const textContent = this.extractTextContent(node.children);
-      return !textContent && (!node.attrs || Object.keys(node.attrs).length === 0);
+      return !textContent;
     }
-    return (!node.attrs || Object.keys(node.attrs).length === 0) && (!node.children || node.children.length === 0);
+    return !node.children || node.children.length === 0;
   }
   extractTextContent(children) {
     if (!children || children.length !== 1 || children[0].type !== NODE_TYPE_TEXT) {
@@ -45189,7 +45200,8 @@ ${returnStatement}
 function genFactoryFunctions(templates, context) {
   const generator = new TemplateFactoryGenerator({
     parseStaticStyle: context.options.parseStaticStyle,
-    isTs: context.options.isTS
+    isTs: context.options.isTS,
+    disableClassBinding: context.options.disableClassBinding
   });
   const functions = templates.map(
     (template, index) => generator.genFactoryFunction(template, index)
@@ -46349,9 +46361,17 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
       getEffectIndex
     );
   } else {
+    let hasStaticStyle = false;
+    let hasClass = false;
     for (const prop of propsResult[1]) {
       const { key, values } = prop;
       if (key.isStatic && values.length === 1 && values[0].isStatic) {
+        if (key.content === "style") {
+          hasStaticStyle = true;
+        }
+        if (key.content === "class") {
+          hasClass = true;
+        }
         if (context.options.disableClassBinding && key.content === "class") {
           dynamicProps.push(key.content);
           context.registerEffect(
@@ -46370,6 +46390,9 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
         template += ` ${key.content}`;
         if (values[0].content) template += `="${values[0].content}"`;
       } else {
+        if (key.content === "class") {
+          hasClass = true;
+        }
         dynamicProps.push(key.content);
         context.registerEffect(
           values,
@@ -46382,6 +46405,11 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
           },
           getEffectIndex
         );
+      }
+    }
+    if (context.options.templateMode === "factory" && context.options.disableClassBinding) {
+      if (hasStaticStyle && hasClass) {
+        template += ` ext:style`;
       }
     }
   }
