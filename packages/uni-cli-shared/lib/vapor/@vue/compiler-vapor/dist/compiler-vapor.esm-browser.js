@@ -34465,9 +34465,14 @@ class DomCodeGenerator {
   }
   genTextElementCode(params) {
     const { tag, attrs, children } = params;
-    const textContent = this.extractTextContent(children);
-    const finalAttrs = this.mergeTextAttributes(attrs, textContent);
-    return this.buildElementStatements(tag, finalAttrs, void 0);
+    const hasComplexChildren = children && children.some((child) => child.type === NODE_TYPE_ELEMENT);
+    if (hasComplexChildren) {
+      return this.buildElementStatements(tag, attrs, children);
+    } else {
+      const textContent = this.extractTextContent(children);
+      const finalAttrs = this.mergeTextAttributes(attrs, textContent);
+      return this.buildElementStatements(tag, finalAttrs, void 0);
+    }
   }
   genRegularElementCode(params) {
     const { tag, attrs, children } = params;
@@ -34509,7 +34514,7 @@ class DomCodeGenerator {
         }
       }
     }
-    if (children && children.length > 0 && tag !== NODE_TYPE_TEXT) {
+    if (children && children.length > 0) {
       for (const child of children) {
         const inlineCode = this.tryInlineChild(child);
         if (inlineCode) {
