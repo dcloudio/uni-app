@@ -43,8 +43,11 @@ export function parseInlineStyleSync(
     normalizedDeclarations.push(...expandedDeclarations)
   }
   const styleEntries = normalizedDeclarations.map(
-    ({ prop, value }) => `['${prop}', ${JSON.stringify(value)}]`
+    ({ prop, value }) => `[${JSON.stringify(prop)}, ${JSON.stringify(value)}]`
   )
+  if (styleEntries.length === 0) {
+    return
+  }
   return `new Map([${styleEntries.join(', ')}])`
 }
 
