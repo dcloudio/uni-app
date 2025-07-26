@@ -10486,6 +10486,10 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
   }
   initNativePage && initNativePage(instance.proxy);
   var setupResult = setupFn ? callWithErrorHandling(setupFn, instance, 0, [instance.props, instance]) || EMPTY_OBJ : EMPTY_OBJ;
+  var customApplyOptions = instance.appContext.config.globalProperties.$applyOptions;
+  if (customApplyOptions) {
+    customApplyOptions(component, instance, instance.proxy);
+  }
   initFontFace && initFontFace(instance.proxy);
   {
     if (!setupFn && component.render) {

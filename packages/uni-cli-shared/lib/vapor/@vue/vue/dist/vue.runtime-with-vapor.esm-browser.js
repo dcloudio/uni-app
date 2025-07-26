@@ -14645,6 +14645,10 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot, appContext
     instance.props,
     instance
   ]) || EMPTY_OBJ : EMPTY_OBJ;
+  const customApplyOptions = instance.appContext.config.globalProperties.$applyOptions;
+  if (customApplyOptions) {
+    customApplyOptions(component, instance, instance.proxy);
+  }
   initFontFace && initFontFace(instance.proxy);
   if (!isBlock(setupResult)) {
     if (isFunction(component)) {
