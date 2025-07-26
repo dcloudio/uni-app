@@ -10481,7 +10481,7 @@ function createComponent(component, rawProps, rawSlots, isSingleRoot) {
     initNativePage,
     initFontFace
   } = appContext.config.uniX || {};
-  if (component.mpType === "page") {
+  if (instance.renderer === "page") {
     beforeSetupPage && beforeSetupPage(instance.props, instance);
   }
   initNativePage && initNativePage(instance.proxy);
@@ -10559,6 +10559,9 @@ class VaporComponentInstance {
     }
     this.rawSlots = rawSlots || EMPTY_OBJ;
     this.slots = rawSlots ? rawSlots.$ ? new Proxy(rawSlots, dynamicSlotsProxyHandlers) : rawSlots : EMPTY_OBJ;
+    this.renderer =
+    // @ts-expect-error
+    comp.mpType === "app" ? "app" : rawProps && rawProps.__pagePath ? "page" : "component";
   }
   /**
    * Expose `getKeysFromRawProps` on the instance so it can be used in code
