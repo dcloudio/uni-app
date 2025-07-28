@@ -500,6 +500,14 @@ const protocols = { // 需要做转换的 API 列表
       result.telNumber = info.mobilePhone
       result.errMsg = result.resultStatus
     }
+  },
+  openDocument: {
+    args(fromArgs, toArgs) {
+      if (typeof fromArgs.showMenu === 'boolean') {
+        // 支付宝小程序 showMenu 类型为 string, https://opendocs.alipay.com/mini/api/mwpprc
+        toArgs.showMenu = String(fromArgs.showMenu)
+      }
+    }
   }
 }
 
