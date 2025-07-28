@@ -27,6 +27,7 @@ import {
   resolveMainPathOnce,
   resolveSourceMapPath,
   resolveUTSCompiler,
+  rewriteCreateWorker,
   rewriteUniModulesConsoleExpr,
   tscOutDir,
   uvueOutDir,
@@ -197,14 +198,17 @@ export function uniAppPlugin(): UniVitePlugin {
       // 仅处理 uts 文件
       // 忽略 uni-app-uts/lib/automator/index.uts
       if (!filename.includes('uni-app-uts')) {
-        code = (
-          await transformAutoImport(
-            transformUniCloudMixinDataCom(
-              rewriteUniModulesConsoleExpr(id, code)
-            ),
-            id
-          )
-        ).code
+        code = rewriteCreateWorker(
+          (
+            await transformAutoImport(
+              transformUniCloudMixinDataCom(
+                rewriteUniModulesConsoleExpr(id, code)
+              ),
+              id
+            )
+          ).code,
+          'app-android'
+        )
         const isMainUTS = normalizePath(id) === mainUTS
         this.emitFile({
           type: 'asset',

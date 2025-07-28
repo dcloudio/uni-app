@@ -1,6 +1,7 @@
 import * as path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
+  UniWorkersPlugin,
   enableSourceMap,
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
@@ -25,7 +26,9 @@ import { replaceExtApiPagePaths } from '../js/extApiPages'
 
 export function init() {
   return [
-    ...(isNormalCompileTarget() ? [uniDecryptUniModulesPlugin()] : []),
+    ...(isNormalCompileTarget()
+      ? [UniWorkersPlugin(), uniDecryptUniModulesPlugin()]
+      : []),
     uniHBuilderXConsolePlugin('uni.__log__'),
     // 非 isNormalCompileTarget 时（ext-api模式），仍需要编译 uni_modules 获取 js code
     uniUTSAppUniModulesPlugin({

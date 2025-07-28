@@ -1,4 +1,5 @@
 import {
+  UniWorkersPlugin,
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   uniDecryptUniModulesPlugin,
@@ -21,6 +22,7 @@ export function init() {
     uniAppCssPrePlugin(),
     ...(isNormalCompileTarget()
       ? [
+          UniWorkersPlugin(),
           require('@dcloudio/uni-console/lib/uni.plugin.js')(),
           uniDecryptUniModulesPlugin(),
         ]

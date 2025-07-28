@@ -24,6 +24,7 @@ import {
   normalizeEmitAssetFileName,
   normalizePath,
   offsetToStartAndEnd,
+  parseCreateWorker,
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
 import type { BindingMetadata, Position } from '@vue/compiler-core'
@@ -120,6 +121,12 @@ export async function transformMain(
   // styles
   const stylesCode = await genStyleCode(descriptor, pluginContext)
 
+  let importWorkersCode: string[] = []
+  if (scriptCode) {
+    const { importCodes, code } = parseCreateWorker(scriptCode, 'app-android')
+    importWorkersCode = importCodes
+    scriptCode = code
+  }
   const utsOutput: string[] = [
     scriptCode || genDefaultScriptCode(options.genDefaultAs),
     templateCode,
@@ -127,6 +134,7 @@ export async function transformMain(
       ? `export type ${easyComInstance} = InstanceType<typeof __sfc__>;`
       : '',
     `/*${className}Styles*/\n`,
+    ...importWorkersCode,
   ]
 
   if (templatePreambleCode) {

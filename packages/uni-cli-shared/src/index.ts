@@ -22,6 +22,7 @@ export * from './resolve'
 export * from './scripts'
 export * from './platform'
 export * from './utsUtils'
+export * from './workers'
 
 export {
   parseUniExtApi,

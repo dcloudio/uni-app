@@ -56,6 +56,7 @@ import { existsSync, readdirSync, rmSync } from 'fs-extra'
 import { restoreDebuggerFiles } from './manifest/dex'
 import { compileArkTS, requireUTSPluginCode } from './arkts'
 
+export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
 
 export { getPluginInjectApis, getPluginInjectComponents } from './utils'

@@ -45,6 +45,7 @@ import { emptyDir } from '../../../fs'
 import { initScopedPreContext } from '../../../preprocess/context'
 import { isInHBuilderX } from '../../../hbx'
 import { appendConsoleExpr, rewriteConsoleExpr } from '../../../logs/console'
+import { rewriteCreateWorker } from '../../../workers'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
@@ -136,11 +137,17 @@ function createUniModulesSyncFilePreprocessor(
         preferConst: true,
       })
     } else if (extname === '.uts' || extname === '.ts') {
-      return replaceExtApiPages(
-        rewriteUniModulesConsoleExpr(fileName, preJs(content))
+      return rewriteCreateWorker(
+        replaceExtApiPages(
+          rewriteUniModulesConsoleExpr(fileName, preJs(content))
+        ),
+        utsPlatform
       )
     } else if (extname === '.uvue' || extname === '.vue') {
-      return rewriteUniModulesConsoleExpr(fileName, preJs(preHtml(content)))
+      return rewriteCreateWorker(
+        rewriteUniModulesConsoleExpr(fileName, preJs(preHtml(content))),
+        utsPlatform
+      )
     }
     return content
   }

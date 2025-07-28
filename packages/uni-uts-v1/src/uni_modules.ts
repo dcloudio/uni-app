@@ -304,27 +304,39 @@ function resolveUniModuleVueGlobs() {
   return globs
 }
 
+export async function syncUTSFiles(
+  pattern: string,
+  cwd: string,
+  outputDir: string,
+  rename: boolean,
+  preprocessor: SyncUniModulesFilePreprocessor
+) {
+  return fg(pattern, {
+    cwd,
+    absolute: false,
+  }).then((files) => {
+    return Promise.all(
+      files.map((fileName) =>
+        syncUniModulesFile(fileName, cwd, outputDir, rename, preprocessor).then(
+          () => fileName
+        )
+      )
+    )
+  })
+}
+
 async function syncUniModuleStaticFiles(
   pluginDir: string,
   outputPluginDir: string,
   preprocessor: SyncUniModulesFilePreprocessor
 ) {
-  return fg(`static/**/*`, {
-    cwd: pluginDir,
-    absolute: false,
-  }).then((files) => {
-    return Promise.all(
-      files.map((fileName) =>
-        syncUniModulesFile(
-          fileName,
-          pluginDir,
-          outputPluginDir,
-          false,
-          preprocessor
-        ).then(() => fileName)
-      )
-    )
-  })
+  return syncUTSFiles(
+    `static/**/*`,
+    pluginDir,
+    outputPluginDir,
+    false,
+    preprocessor
+  )
 }
 
 async function syncUniModuleVueFiles(
