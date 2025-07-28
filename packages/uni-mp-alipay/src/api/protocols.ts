@@ -556,6 +556,14 @@ export const chooseAddress = {
     toRes.errMsg = toRes.errMsg + ' ' + fromRes.resultStatus
   },
 }
+export const openDocument = {
+  args(fromArgs: UniApp.OpenDocumentOptions, toArgs: Record<string, any>) {
+    if (typeof fromArgs.showMenu === 'boolean') {
+      // 支付宝小程序 showMenu 类型为 string, https://opendocs.alipay.com/mini/api/mwpprc
+      toArgs.showMenu = String(fromArgs.showMenu)
+    }
+  },
+}
 export const navigateTo = my.canIUse('getOpenerEventChannel')
   ? {}
   : _navigateTo()
