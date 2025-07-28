@@ -99,13 +99,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                "unixVer": "x"
+            },
+            "harmony": {
+                "osVer": "x",
+                "uniVer": "x",
+                "unixVer": "x"
             }
-        },
-        "harmony": {
-            "osVer": "x",
-            "uniVer": "x",
-            "unixVer": "x"
-        },
+        }
      }
    */
   toKotlinList(): kotlin.collections.List<any>
@@ -133,17 +133,12 @@ interface Array<T> {
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
-               "uniVer": "√",
-               "unixVer": "4.61",
-               "uniUtsPlugin": "√",
-               "unixUtsPlugin": "4.61"
+               "osVer": "x",
+               "uniVer": "x",
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
-        },
-        "harmony": {
-            "osVer": "x",
-            "uniVer": "x",
-            "unixVer": "x"
         }
      }
    */
@@ -167,12 +162,12 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+                "osVer": "x",
+                "uniVer": "x",
+                "unixVer": "x"
             }
-        },
-        "harmony": {
-            "osVer": "x",
-            "uniVer": "x",
-            "unixVer": "x"
         },
         "mp": {
           "weixin": {
@@ -208,13 +203,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+                "osVer": "x",
+                "uniVer": "x",
+                "unixVer": "x"
             }
-        },harmony
-        "harmony": {
-            "osVer": "x",
-            "uniVer": "x",
-            "unixVer": "x"
-        },
+        }
      }
    */
   joinToString(separator: string): string
@@ -834,6 +829,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1069,6 +1071,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1265,6 +1274,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1417,6 +1433,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1894,6 +1917,13 @@ interface ArrayConstructor {
                "unixVer": "4.11",
                "uniUtsPlugin": "4.51",
                "unixUtsPlugin": "4.51"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1931,6 +1961,13 @@ interface ArrayConstructor {
                "unixVer": "4.11",
                "uniUtsPlugin": "4.51",
                "unixUtsPlugin": "4.51"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1968,6 +2005,13 @@ interface ArrayConstructor {
                "unixVer": "4.11",
                "uniUtsPlugin": "4.51",
                "unixUtsPlugin": "4.51"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -2008,6 +2052,13 @@ interface ArrayConstructor {
              "unixVer": "4.11",
              "uniUtsPlugin": "4.51",
              "unixUtsPlugin": "4.51"
+          },
+          "harmony": {
+              "osVer": "5.0.0",
+              "uniVer": "√",
+              "unixVer": "4.61",
+              "uniUtsPlugin": "√",
+              "unixUtsPlugin": "4.61"
           }
       },
         "mp": {

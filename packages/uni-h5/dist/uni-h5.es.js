@@ -16116,7 +16116,9 @@ function initHooks(options, instance2, publicThis) {
       if (false)
         ;
       invokeHook(publicThis, ON_LOAD, query);
-      delete instance2.attrs.__pageQuery;
+      if (!instance2.vapor) {
+        delete instance2.attrs.__pageQuery;
+      }
       const $basePage = false ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {

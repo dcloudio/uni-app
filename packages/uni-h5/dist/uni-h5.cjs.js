@@ -8068,7 +8068,9 @@ function initHooks(options, instance, publicThis) {
       if (false)
         ;
       invokeHook(publicThis, uniShared.ON_LOAD, query);
-      delete instance.attrs.__pageQuery;
+      if (!instance.vapor) {
+        delete instance.attrs.__pageQuery;
+      }
       const $basePage = false ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
