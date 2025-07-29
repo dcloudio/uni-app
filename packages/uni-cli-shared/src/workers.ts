@@ -63,13 +63,14 @@ export function UniWorkersPlugin(): Plugin {
       : platform === 'app-harmony'
       ? createAppHarmonyUniModulesSyncFilePreprocessorOnce(false)
       : null
+  const cache: Record<string, number> = {}
   return {
     name: 'uni-workers',
     enforce: 'pre',
-    buildStart() {
+    async buildStart() {
       if (preprocessor) {
         if (refreshWorkers()) {
-          syncWorkersFiles(platform, inputDir, preprocessor)
+          await syncWorkersFiles(platform, inputDir, preprocessor, cache)
         }
       }
     },
@@ -171,10 +172,11 @@ function resolveWorkerPath(
   return className
 }
 
-export async function syncWorkersFiles(
+async function syncWorkersFiles(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string,
-  preprocessor: SyncUniModulesFilePreprocessor
+  preprocessor: SyncUniModulesFilePreprocessor,
+  cache?: Record<string, number>
 ) {
   const workersDir = resolveWorkersDir(inputDir)
   if (workersDir) {
@@ -184,7 +186,8 @@ export async function syncWorkersFiles(
       inputDir,
       tscOutDir(platform as 'app-android' | 'app-ios' | 'app-harmony'),
       true,
-      preprocessor
+      preprocessor,
+      cache
     )
   }
 }

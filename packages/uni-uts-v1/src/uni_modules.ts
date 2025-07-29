@@ -309,18 +309,37 @@ export async function syncUTSFiles(
   cwd: string,
   outputDir: string,
   rename: boolean,
-  preprocessor: SyncUniModulesFilePreprocessor
+  preprocessor: SyncUniModulesFilePreprocessor,
+  cache?: Record<string, number>
 ) {
   return fg(pattern, {
     cwd,
     absolute: false,
   }).then((files) => {
     return Promise.all(
-      files.map((fileName) =>
-        syncUniModulesFile(fileName, cwd, outputDir, rename, preprocessor).then(
-          () => fileName
-        )
-      )
+      files.map(async (fileName) => {
+        let needSync = true
+        if (cache) {
+          const lastModifiedCache = cache[fileName]
+          const lastModified = (await fs.stat(path.resolve(cwd, fileName)))
+            .mtimeMs
+          if (lastModifiedCache && lastModifiedCache === lastModified) {
+            needSync = false
+          } else {
+            cache[fileName] = lastModified
+          }
+        }
+        if (needSync) {
+          return syncUniModulesFile(
+            fileName,
+            cwd,
+            outputDir,
+            rename,
+            preprocessor
+          ).then(() => fileName)
+        }
+        return fileName
+      })
     )
   })
 }
