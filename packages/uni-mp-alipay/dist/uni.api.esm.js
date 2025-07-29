@@ -1885,6 +1885,14 @@ const chooseAddress = {
         toRes.errMsg = toRes.errMsg + ' ' + fromRes.resultStatus;
     },
 };
+const openDocument = {
+    args(fromArgs, toArgs) {
+        if (typeof fromArgs.showMenu === 'boolean') {
+            // 支付宝小程序 showMenu 类型为 string, https://opendocs.alipay.com/mini/api/mwpprc
+            toArgs.showMenu = String(fromArgs.showMenu);
+        }
+    },
+};
 const navigateTo = my.canIUse('getOpenerEventChannel')
     ? {}
     : navigateTo$1();
@@ -1921,6 +1929,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   onNetworkStatusChange: onNetworkStatusChange,
   onSocketMessage: onSocketMessage,
   onSocketOpen: onSocketOpen,
+  openDocument: openDocument,
   openLocation: openLocation,
   pageScrollTo: pageScrollTo,
   previewImage: previewImage,
