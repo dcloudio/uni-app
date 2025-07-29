@@ -8415,6 +8415,15 @@ function initXPage(vm, route, page) {
     vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
+    vm.$basePage.fullPath = vm.$basePage.path;
+    const parentPage = vm.$page.getParentPage();
+    if (parentPage) {
+      if (!parentPage.vm.$dialogPagesNum) {
+        parentPage.vm.$dialogPagesNum = 0;
+      }
+      parentPage.vm.$dialogPagesNum++;
+      vm.$basePage.id = vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum;
+    }
   }
 }
 function useBackgroundColorContent$1(vm) {
@@ -10883,6 +10892,12 @@ function createDialogPageVNode(normalDialogPages, systemDialogPages) {
       type: SYSTEM_DIALOG_TAG
     }))
   ];
+  dialogPages.sort((a2, b) => {
+    var _a, _b, _c, _d;
+    const aId = ((_b = (_a = a2.page.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
+    const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
+    return aId - bId;
+  });
   return openBlock(true), createElementBlock(
     Fragment,
     null,
