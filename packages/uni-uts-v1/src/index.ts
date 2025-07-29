@@ -358,6 +358,7 @@ export async function compile(
             cacheDir,
             pluginRelativeDir,
             is_uni_modules: pkg.is_uni_modules,
+            deps: result?.deps,
           })
         }
       }
@@ -418,6 +419,7 @@ export async function compile(
             cacheDir,
             pluginRelativeDir,
             is_uni_modules: pkg.is_uni_modules,
+            deps: result?.deps,
           })
         }
       }
@@ -642,6 +644,7 @@ export async function compile(
                 cacheDir,
                 pluginRelativeDir,
                 is_uni_modules: pkg.is_uni_modules,
+                deps: res?.deps,
               })
             }
             if (tips) {

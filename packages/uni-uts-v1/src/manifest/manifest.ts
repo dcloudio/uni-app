@@ -1,8 +1,9 @@
 import { existsSync, outputFileSync, readFileSync, statSync } from 'fs-extra'
-import { join } from 'path'
+import { join, relative } from 'path'
 import md5 from 'md5-file'
 import glob from 'fast-glob'
 import type { APP_PLATFORM } from './utils'
+import { normalizePath } from '../shared'
 
 const fileCaches = new Map<
   string,
@@ -48,6 +49,7 @@ interface GenManifestJsonOptions {
   env: Record<string, unknown>
   files?: string[]
   is_uni_modules: boolean
+  deps?: string[]
 }
 
 export interface GenManifestFileOptions {
@@ -57,6 +59,7 @@ export interface GenManifestFileOptions {
   env: Record<string, unknown>
   pluginDir: string
   files?: string[]
+  deps?: string[]
 }
 
 export async function genManifestFile(
@@ -68,6 +71,7 @@ export async function genManifestFile(
     cacheDir,
     pluginRelativeDir,
     is_uni_modules,
+    deps,
   }: GenManifestFileOptions
 ) {
   outputFileSync(
@@ -78,6 +82,7 @@ export async function genManifestFile(
         files,
         env,
         is_uni_modules,
+        deps,
       }),
       null,
       2
@@ -88,13 +93,22 @@ export async function genManifestFile(
 
 export async function genManifestJson(
   platform: APP_PLATFORM,
-  { pluginDir, files, env, is_uni_modules }: GenManifestJsonOptions
+  { pluginDir, files, env, is_uni_modules, deps }: GenManifestJsonOptions
 ): Promise<Manifest> {
   if (!files) {
     files = await resolvePluginFiles(platform, pluginDir, is_uni_modules)
   }
   if (!files) {
     files = []
+  }
+  if (deps && deps.length) {
+    deps.forEach((dep) => {
+      // 主要是补充deps中非插件目录的文件，比如workers
+      const relativeDep = normalizePath(relative(pluginDir, dep))
+      if (relativeDep.startsWith('../')) {
+        files!.push(relativeDep)
+      }
+    })
   }
   return {
     version: VERSION,
@@ -213,11 +227,18 @@ function isEnvExpired(
  * @returns
  */
 async function checkFiles(
-  files: Manifest['files'],
+  oldFiles: Manifest['files'],
   filenames: string[],
   pluginDir: string
 ) {
-  const oldFilenames = Object.keys(files)
+  // oldFiles 是旧的文件列表(包含提前扫描的插件内文件列表和编译后返回的非插件目录的文件列表)，filenames 是新的文件列表（仅包含插件内文件列表）
+  // 需要把oldFiles中非插件目录的文件也添加到filenames中，确保新的文件列表也包含非插件目录的文件
+  const oldFilenames = Object.keys(oldFiles)
+  oldFilenames.forEach((name) => {
+    if (name.startsWith('../')) {
+      filenames.push(name)
+    }
+  })
   // 第一步：优先判断文件列表长度
   if (oldFilenames.length !== filenames.length) {
     return false
@@ -229,7 +250,7 @@ async function checkFiles(
   // 第三步：判断文件 md5
   for (const name of oldFilenames) {
     const md5 = await hash(join(pluginDir, name))
-    if (files[name].md5 !== md5) {
+    if (oldFiles[name].md5 !== md5) {
       return name
     }
   }
