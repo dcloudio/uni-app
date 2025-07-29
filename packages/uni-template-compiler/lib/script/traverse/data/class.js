@@ -60,7 +60,7 @@ function processClassObjectExpression (classValuePath) {
     elements.push(
       t.conditionalExpression(
         t.parenthesizedExpression(propertyPath.node.value),
-        t.stringLiteral(key.name || key.value),
+        propertyPath.node.computed ? t.parenthesizedExpression(key) : t.stringLiteral(key.name || key.value),
         t.stringLiteral('')
       )
     )
