@@ -2,6 +2,7 @@ import path from 'path'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type {
   PluginContext,
+  RollupError,
   SourceMapInput,
   TransformPluginContext,
 } from 'rollup'
@@ -123,9 +124,32 @@ export async function transformMain(
 
   let importWorkersCode: string[] = []
   if (scriptCode) {
-    const { importCodes, code } = parseCreateWorker(scriptCode, 'app-android')
-    importWorkersCode = importCodes
-    scriptCode = code
+    try {
+      const { importCodes, code } = parseCreateWorker(
+        scriptCode,
+        'app-android',
+        filename
+      )
+      importWorkersCode = importCodes
+      scriptCode = code
+    } catch (e: unknown) {
+      if (scriptMap) {
+        const error = e as RollupError
+        if (error.loc) {
+          const { line, column } = error.loc
+          const consumer = new SourceMapConsumer(scriptMap as RawSourceMap)
+          const startPos = consumer.originalPositionFor({
+            line,
+            column,
+          })
+          if (startPos.line != null && startPos.column != null) {
+            error.loc.line = startPos.line
+            error.loc.column = startPos.column
+          }
+        }
+      }
+      throw e
+    }
   }
   const utsOutput: string[] = [
     scriptCode || genDefaultScriptCode(options.genDefaultAs),

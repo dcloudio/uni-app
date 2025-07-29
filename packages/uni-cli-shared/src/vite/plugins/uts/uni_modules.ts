@@ -141,12 +141,14 @@ function createUniModulesSyncFilePreprocessor(
         replaceExtApiPages(
           rewriteUniModulesConsoleExpr(fileName, preJs(content))
         ),
-        utsPlatform
+        utsPlatform,
+        fileName
       )
     } else if (extname === '.uvue' || extname === '.vue') {
       return rewriteCreateWorker(
         rewriteUniModulesConsoleExpr(fileName, preJs(preHtml(content))),
-        utsPlatform
+        utsPlatform,
+        fileName
       )
     }
     return content

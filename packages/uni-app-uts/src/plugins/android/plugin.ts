@@ -207,7 +207,8 @@ export function uniAppPlugin(): UniVitePlugin {
               id
             )
           ).code,
-          'app-android'
+          'app-android',
+          filename
         )
         const isMainUTS = normalizePath(id) === mainUTS
         this.emitFile({

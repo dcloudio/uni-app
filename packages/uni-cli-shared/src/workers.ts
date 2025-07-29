@@ -11,6 +11,8 @@ import {
   createAppHarmonyUniModulesSyncFilePreprocessorOnce,
   createAppIosUniModulesSyncFilePreprocessorOnce,
 } from './vite/plugins/uts/uni_modules'
+import { offsetToLineColumn } from './vite/plugins/vitejs/utils'
+import { createRollupError } from './vite'
 
 let workers: Record<string, string> = {}
 
@@ -82,7 +84,8 @@ export function UniWorkersPlugin(): Plugin {
 
 export function parseCreateWorker(
   code: string,
-  platform: typeof process.env.UNI_UTS_PLATFORM
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  filename?: string
 ) {
   const importCodes: string[] = []
   const matches = code.matchAll(/uni\.createWorker\(['|"](.*)['|"]\)/g)
@@ -100,6 +103,38 @@ export function parseCreateWorker(
         match[0],
         `uni.createWorker(${resolveWorkerPath(workerClass, platform)})`
       )
+    } else {
+      const index = match.index
+      if (typeof index === 'number') {
+        const startIndex = index + /* uni.createWorker(*/ 18
+        const endIndex = index + match[0].length
+        const start = offsetToLineColumn(code, startIndex)
+        const end = offsetToLineColumn(code, endIndex)
+        // 解析对应的行号、列号
+        throw createRollupError(
+          '',
+          filename || '',
+          {
+            name: 'SyntaxError',
+            code: '',
+            message: `worker[${workerPath}]不存在或未正确实现`,
+            loc: {
+              start: {
+                line: start.line,
+                column: start.column,
+                offset: startIndex,
+              },
+              end: {
+                line: end.line,
+                column: end.column,
+                offset: endIndex,
+              },
+              source: '',
+            },
+          },
+          code
+        )
+      }
     }
   }
   return {
@@ -110,9 +145,14 @@ export function parseCreateWorker(
 
 export function rewriteCreateWorker(
   code: string,
-  platform: typeof process.env.UNI_UTS_PLATFORM
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  filename?: string
 ) {
-  let { importCodes, code: newCode } = parseCreateWorker(code, platform)
+  let { importCodes, code: newCode } = parseCreateWorker(
+    code,
+    platform,
+    filename
+  )
   if (importCodes.length > 0) {
     newCode = newCode + '\n' + importCodes.join('\n')
   }
