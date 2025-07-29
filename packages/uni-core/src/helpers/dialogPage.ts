@@ -70,3 +70,33 @@ function getSystemDialogPages(parentPage: UniPage) {
     return parentPage.vm.$pageLayoutInstance?.$systemDialogPages.value
   }
 }
+
+export function dialogPageTriggerPrevDialogPageLifeCycle(
+  parentPage: UniPage | null | undefined,
+  lifeCycle: string
+) {
+  if (!parentPage) return
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1] as unknown as UniPage
+  if (!currentPage || parentPage !== currentPage) return
+  const dialogPages = currentPage.getDialogPages() as UniDialogPage[]
+  const systemDialogPage = getSystemDialogPages(parentPage)
+  const lastSystemDialogPage = systemDialogPage[systemDialogPage.length - 1]
+  const lastDialogPage = dialogPages[dialogPages.length - 1]
+  let prevDialogPage
+  if (!lastDialogPage) {
+    prevDialogPage = lastSystemDialogPage
+  } else if (!lastSystemDialogPage) {
+    prevDialogPage = lastDialogPage
+  } else {
+    const lastSystemDialogPageId =
+      lastSystemDialogPage.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
+    const lastDialogPageId =
+      lastDialogPage.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
+    prevDialogPage =
+      lastSystemDialogPageId > lastDialogPageId
+        ? lastSystemDialogPage
+        : lastDialogPage
+  }
+  prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle)
+}

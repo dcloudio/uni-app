@@ -425,19 +425,3 @@ export function decrementEscBackPageNum() {
     document.removeEventListener('keydown', handleEscKeyPress)
   }
 }
-
-export function triggerDialogPageOnHide(instance: ComponentInternalInstance) {
-  const parentPage = (instance.proxy?.$page as UniPage).getParentPage()
-  const parentPageInstance = parentPage?.vm.$pageLayoutInstance
-  if (parentPageInstance) {
-    const dialogPages = parentPageInstance.$dialogPages.value
-    if (dialogPages.length > 1) {
-      const preDialogPage = dialogPages[dialogPages.length - 2]
-      if (preDialogPage.vm) {
-        const { onHide } = preDialogPage.vm.$
-        onHide && invokeArrayFns(onHide)
-      }
-    }
-  }
-  dialogPageTriggerParentHide(instance.proxy?.$page as UniDialogPage)
-}

@@ -54,10 +54,7 @@ import { handleBeforeEntryPageRoutes } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 //#if _X_
 import { isDialogPageInstance } from '../../x/framework/helpers/utils'
-import {
-  triggerDialogPageOnHide,
-  useBackgroundColorContent,
-} from '../../x/framework/setup/page'
+import { useBackgroundColorContent } from '../../x/framework/setup/page'
 //#endif
 
 interface SetupComponentOptions {
@@ -169,7 +166,6 @@ export function setupPage(comp: any) {
           }
           const pageInstance = getPageInstanceByChild(instance)
           if (isDialogPageInstance(pageInstance)) {
-            triggerDialogPageOnHide(instance)
             useBackgroundColorContent(instance.proxy)
           }
         }

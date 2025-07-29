@@ -6,10 +6,11 @@ import {
   homeSystemDialogPages,
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
-import { parseUrl, removeLeadingSlash } from '@dcloudio/uni-shared'
+import { ON_HIDE, parseUrl, removeLeadingSlash } from '@dcloudio/uni-shared'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import {
+  dialogPageTriggerPrevDialogPageLifeCycle,
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
   normalizeRoute,
@@ -58,6 +59,7 @@ export const openDialogPage = (
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1]
       }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE)
       dialogPage.getParentPage = () => parentPage!
       parentPage.getDialogPages().push(dialogPage)
     }
@@ -75,6 +77,7 @@ export const openDialogPage = (
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1]
       }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE)
       dialogPage.getParentPage = () => parentPage!
       parentPage!.vm.$pageLayoutInstance?.$systemDialogPages.value.push(
         dialogPage
