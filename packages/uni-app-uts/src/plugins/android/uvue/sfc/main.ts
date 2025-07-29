@@ -268,7 +268,8 @@ export async function transformMain(
   if (scriptCode) {
     jsCodes.push(
       await parseImports(
-        scriptCode,
+        scriptCode +
+          (importWorkersCode.length ? '\n' + importWorkersCode.join('\n') : ''),
         resolvedMap && pluginContext
           ? createTryResolve(
               filename,
