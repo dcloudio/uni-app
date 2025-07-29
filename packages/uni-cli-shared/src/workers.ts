@@ -43,7 +43,7 @@ export function initWorkers(workersDir: string, rootDir: string) {
   return workers
 }
 
-export function UniWorkersPlugin(): Plugin {
+export function uniWorkersPlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const platform = process.env.UNI_UTS_PLATFORM
   function refreshWorkers() {
@@ -178,6 +178,13 @@ async function syncWorkersFiles(
   preprocessor: SyncUniModulesFilePreprocessor,
   cache?: Record<string, number>
 ) {
+  if (
+    platform !== 'app-harmony' &&
+    platform !== 'app-android' &&
+    platform !== 'app-ios'
+  ) {
+    return
+  }
   const workersDir = resolveWorkersDir(inputDir)
   if (workersDir) {
     const { syncUTSFiles } = resolveUTSCompiler()
