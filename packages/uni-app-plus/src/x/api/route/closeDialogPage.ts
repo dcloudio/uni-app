@@ -1,5 +1,9 @@
 import { ON_SHOW } from '@dcloudio/uni-shared'
-import { invokeHook, isSystemDialogPage } from '@dcloudio/uni-core'
+import {
+  dialogPageTriggerPrevDialogPageLifeCycle,
+  invokeHook,
+  isSystemDialogPage,
+} from '@dcloudio/uni-core'
 import closeNativeDialogPage from './closeNativeDialogPage'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import { ANI_DURATION } from '../../../service/constants'
@@ -39,12 +43,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         // harmony 端该数组即 getDialogPages 返回的数组
         // 调整删除 dialogPage 时机，以便 dialogPage onUnload 时处理父页面生命周期获取到的数组符合预期
         parentDialogPages.splice(index, 1)
-        if (index > 0 && index === parentDialogPages.length) {
-          invokeHook(
-            parentDialogPages[parentDialogPages.length - 1].vm!,
-            ON_SHOW
-          )
-        }
+        dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
       } else {
         triggerFailCallback(options, 'dialogPage is not a valid page')
         return
@@ -54,12 +53,13 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       if (systemDialogPages) {
         const index = systemDialogPages.indexOf(dialogPage)
         if (index > -1) {
-          systemDialogPages.splice(index, 1)
           closeNativeDialogPage(
             dialogPage,
             options?.animationType || 'auto',
             options?.animationDuration || ANI_DURATION
           )
+          systemDialogPages.splice(index, 1)
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
         } else {
           triggerFailCallback(options, 'dialogPage is not a valid page')
         }

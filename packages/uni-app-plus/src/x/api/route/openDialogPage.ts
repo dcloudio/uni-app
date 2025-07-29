@@ -1,9 +1,9 @@
 import { ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
 import {
   dialogPageTriggerParentHide,
+  dialogPageTriggerPrevDialogPageLifeCycle,
   getCurrentPage,
   getRouteMeta,
-  invokeHook,
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
   normalizeRoute,
@@ -66,9 +66,7 @@ export const openDialogPage = (
       homeDialogPages.push(dialogPage)
     } else {
       const dialogPages = parentPage.getDialogPages()
-      if (dialogPages.length) {
-        invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
-      }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE)
       // iOS normal dialogPage 数据框架不需要存储，由客户端管理
       // 预期仅在鸿蒙上生效
       dialogPages.push(dialogPage)
@@ -84,6 +82,7 @@ export const openDialogPage = (
       if (!parentPage.vm.$systemDialogPages) {
         parentPage.vm.$systemDialogPages = ref<UniDialogPage[]>([])
       }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE)
       // system dialogPage 数据框架需要储存
       parentPage.vm.$systemDialogPages.value.push(dialogPage)
       if (isSystemActionSheetDialogPage(dialogPage)) {
