@@ -707,9 +707,7 @@ export function uniUTSAppUniModulesPlugin(
       if (utsModuleCaches.get(pluginDir)) {
         return utsModuleCaches.get(pluginDir)!().then((result) => {
           if (result) {
-            result.deps.forEach((dep) => {
-              this.addWatchFile(dep)
-            })
+            handleCompileResult(result, this)
             return {
               code: result.code,
               map: null,
@@ -725,9 +723,7 @@ export function uniUTSAppUniModulesPlugin(
       utsModuleCaches.set(pluginDir, compile)
       const result = await compile()
       if (result) {
-        result.deps.forEach((dep) => {
-          this.addWatchFile(dep)
-        })
+        handleCompileResult(result, this)
         return {
           code: result.code,
           map: null,
