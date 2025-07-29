@@ -108,6 +108,19 @@ export function parseApp(
 }
 
 export function initCreateApp(parseAppOptions?: ParseAppOptions) {
+  if (
+    !__DEV__ &&
+    __PLATFORM__ === 'mp-weixin' &&
+    isFunction(wx.preloadAssets)
+  ) {
+    // 微信预加载打点图片
+    const protocol = 'https'
+    setTimeout(() => {
+      wx.preloadAssets({
+        data: [{ type: 'image', src: protocol + __UNI_PRELOAD_SHADOW_IMAGE__ }],
+      })
+    }, 3000)
+  }
   return function createApp(vm: ComponentPublicInstance) {
     return App(parseApp(vm, parseAppOptions))
   }

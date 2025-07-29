@@ -70,6 +70,7 @@ declare var __UNI_FEATURE_I18N_ES__: boolean
 declare var __UNI_FEATURE_I18N_FR__: boolean
 declare var __UNI_FEATURE_I18N_ZH_HANS__: boolean
 declare var __UNI_FEATURE_I18N_ZH_HANT__: boolean
+declare var __UNI_PRELOAD_SHADOW_IMAGE__: string
 // TODO
 declare var __uniRoutes: UniApp.UniRoutes
 declare var __uniConfig: UniApp.UniConfig
