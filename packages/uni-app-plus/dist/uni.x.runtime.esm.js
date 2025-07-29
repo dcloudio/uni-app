@@ -183,6 +183,30 @@ function getSystemDialogPages(parentPage) {
     return ((_parentPage$vm$$syste = parentPage.vm.$systemDialogPages) === null || _parentPage$vm$$syste === void 0 ? void 0 : _parentPage$vm$$syste.value) || [];
   }
 }
+function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
+  if (!parentPage)
+    return;
+  var pages2 = getCurrentPages();
+  var currentPage = pages2[pages2.length - 1];
+  if (!currentPage || parentPage !== currentPage)
+    return;
+  var dialogPages = currentPage.getDialogPages();
+  var systemDialogPage = getSystemDialogPages(parentPage);
+  var lastSystemDialogPage = systemDialogPage[systemDialogPage.length - 1];
+  var lastDialogPage = dialogPages[dialogPages.length - 1];
+  var prevDialogPage;
+  if (!lastDialogPage) {
+    prevDialogPage = lastSystemDialogPage;
+  } else if (!lastSystemDialogPage) {
+    prevDialogPage = lastDialogPage;
+  } else {
+    var _lastSystemDialogPage, _lastDialogPage$vm;
+    var lastSystemDialogPageId = ((_lastSystemDialogPage = lastSystemDialogPage.vm) === null || _lastSystemDialogPage === void 0 || (_lastSystemDialogPage = _lastSystemDialogPage.$basePage) === null || _lastSystemDialogPage === void 0 ? void 0 : _lastSystemDialogPage.id) || Number.MAX_SAFE_INTEGER;
+    var lastDialogPageId = ((_lastDialogPage$vm = lastDialogPage.vm) === null || _lastDialogPage$vm === void 0 || (_lastDialogPage$vm = _lastDialogPage$vm.$basePage) === null || _lastDialogPage$vm === void 0 ? void 0 : _lastDialogPage$vm.id) || Number.MAX_SAFE_INTEGER;
+    prevDialogPage = lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
+  }
+  prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
+}
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
   pageVm.$vm = pageVm;
@@ -1762,9 +1786,7 @@ var closeDialogPage = (options) => {
         var index2 = parentDialogPages.indexOf(dialogPage);
         closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
         parentDialogPages.splice(index2, 1);
-        if (index2 > 0 && index2 === parentDialogPages.length) {
-          invokeHook(parentDialogPages[parentDialogPages.length - 1].vm, ON_SHOW);
-        }
+        dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
       } else {
         triggerFailCallback$1(options, "dialogPage is not a valid page");
         return;
@@ -1775,8 +1797,9 @@ var closeDialogPage = (options) => {
       if (systemDialogPages) {
         var _index = systemDialogPages.indexOf(dialogPage);
         if (_index > -1) {
-          systemDialogPages.splice(_index, 1);
           closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
+          systemDialogPages.splice(_index, 1);
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
         } else {
           triggerFailCallback$1(options, "dialogPage is not a valid page");
         }
@@ -2970,9 +2993,7 @@ var openDialogPage = (options) => {
       homeDialogPages.push(dialogPage);
     } else {
       var dialogPages = parentPage.getDialogPages();
-      if (dialogPages.length) {
-        invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
-      }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
       dialogPages.push(dialogPage);
     }
     setCurrentNormalDialogPage(dialogPage);
@@ -2986,6 +3007,7 @@ var openDialogPage = (options) => {
       if (!parentPage.vm.$systemDialogPages) {
         parentPage.vm.$systemDialogPages = ref([]);
       }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
       parentPage.vm.$systemDialogPages.value.push(dialogPage);
       if (isSystemActionSheetDialogPage(dialogPage)) {
         closePreActionSheet(parentPage.vm.$systemDialogPages.value);

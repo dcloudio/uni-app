@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, normalizeClass, toDisplayString, createCommentVNode } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -1837,9 +1837,6 @@ function isSystemDialogPage(page) {
 function isSystemActionSheetDialogPage(page) {
   return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
 }
-function dialogPageTriggerParentHide(dialogPage) {
-  dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE);
-}
 function dialogPageTriggerParentShow(dialogPage, triggerParentHideDialogPageNum = 0) {
   dialogPageTriggerParentLifeCycle(
     dialogPage,
@@ -1886,6 +1883,30 @@ function getSystemDialogPages(parentPage) {
   {
     return (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
   }
+}
+function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
+  var _a, _b, _c, _d;
+  if (!parentPage)
+    return;
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  if (!currentPage || parentPage !== currentPage)
+    return;
+  const dialogPages = currentPage.getDialogPages();
+  const systemDialogPage = getSystemDialogPages(parentPage);
+  const lastSystemDialogPage = systemDialogPage[systemDialogPage.length - 1];
+  const lastDialogPage = dialogPages[dialogPages.length - 1];
+  let prevDialogPage;
+  if (!lastDialogPage) {
+    prevDialogPage = lastSystemDialogPage;
+  } else if (!lastSystemDialogPage) {
+    prevDialogPage = lastDialogPage;
+  } else {
+    const lastSystemDialogPageId = ((_b = (_a = lastSystemDialogPage.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
+    const lastDialogPageId = ((_d = (_c = lastDialogPage.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
+    prevDialogPage = lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
+  }
+  prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
 }
 function initView() {
   useRem();
@@ -8458,22 +8479,6 @@ function decrementEscBackPageNum() {
     document.removeEventListener("keydown", handleEscKeyPress);
   }
 }
-function triggerDialogPageOnHide(instance2) {
-  var _a, _b;
-  const parentPage = ((_a = instance2.proxy) == null ? void 0 : _a.$page).getParentPage();
-  const parentPageInstance = parentPage == null ? void 0 : parentPage.vm.$pageLayoutInstance;
-  if (parentPageInstance) {
-    const dialogPages = parentPageInstance.$dialogPages.value;
-    if (dialogPages.length > 1) {
-      const preDialogPage = dialogPages[dialogPages.length - 2];
-      if (preDialogPage.vm) {
-        const { onHide } = preDialogPage.vm.$;
-        onHide && invokeArrayFns(onHide);
-      }
-    }
-  }
-  dialogPageTriggerParentHide((_b = instance2.proxy) == null ? void 0 : _b.$page);
-}
 const closeDialogPage = (options) => {
   var _a, _b;
   const currentPages = getCurrentPages();
@@ -8491,12 +8496,7 @@ const closeDialogPage = (options) => {
         const index2 = parentDialogPages.indexOf(dialogPage);
         parentDialogPages.splice(index2, 1);
         invokeHook(dialogPage.vm, ON_UNLOAD);
-        if (index2 > 0 && index2 === parentDialogPages.length) {
-          invokeHook(
-            parentDialogPages[parentDialogPages.length - 1].vm,
-            ON_SHOW
-          );
-        }
+        dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
         dialogPageTriggerParentShow(dialogPage, 1);
         if (!dialogPage.$disableEscBack) {
           decrementEscBackPageNum();
@@ -8511,6 +8511,7 @@ const closeDialogPage = (options) => {
       if (index2 > -1) {
         invokeHook(parentSystemDialogPages[index2].vm, ON_UNLOAD);
         parentSystemDialogPages.splice(index2, 1);
+        dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
         dialogPageTriggerParentShow(dialogPage, 1);
       } else {
         triggerFailCallback$1(options, "dialogPage is not a valid page");
@@ -9537,7 +9538,6 @@ function setupPage(comp) {
           }
           const pageInstance = getPageInstanceByChild(instance2);
           if (isDialogPageInstance(pageInstance)) {
-            triggerDialogPageOnHide(instance2);
             useBackgroundColorContent$1(instance2.proxy);
           }
         }
@@ -27926,6 +27926,7 @@ const openDialogPage = (options) => {
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1];
       }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
       dialogPage.getParentPage = () => parentPage;
       parentPage.getDialogPages().push(dialogPage);
     }
@@ -27942,6 +27943,7 @@ const openDialogPage = (options) => {
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1];
       }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
       dialogPage.getParentPage = () => parentPage;
       (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value.push(
         dialogPage
