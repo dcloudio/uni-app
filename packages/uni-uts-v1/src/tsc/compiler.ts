@@ -207,7 +207,9 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     _type: 'syntactic' | 'semantic',
     diagnostic: tsTypes.Diagnostic
   ) {
-    const throwError = false //diagnostic.code === 2322
+    const throwError = [100006, 110111101, 110111163, 110111120].includes(
+      diagnostic.code
+    )
     const isDebug = debugCompile.enabled
     if (throwError) {
       const error = formatDiagnostic(diagnostic, formatHost)
