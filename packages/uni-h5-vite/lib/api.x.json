@@ -38,6 +38,7 @@
   "getDeviceInfo",
   "getElementById",
   "getEnterOptionsSync",
+  "getFacialRecognitionMetaInfo",
   "getFileInfo",
   "getImageInfo",
   "getLaunchOptionsSync",

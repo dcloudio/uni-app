@@ -74,6 +74,8 @@ export * from '../../../service/api/ui/tabBar'
 export * from '../../../service/api/ui/window'
 export * from '../../../service/api/ui/getElementById'
 
+export * from '../../../service/api/plugin/facialVerify'
+
 export * from '../../../service/api/todo/index'
 
 export {
