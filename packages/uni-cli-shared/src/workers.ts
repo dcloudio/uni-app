@@ -69,8 +69,8 @@ export function uniWorkersPlugin(): Plugin {
     name: 'uni-workers',
     enforce: 'pre',
     async buildStart() {
-      if (preprocessor) {
-        if (refreshWorkers()) {
+      if (refreshWorkers()) {
+        if (preprocessor) {
           await syncWorkersFiles(platform, inputDir, preprocessor, cache)
         }
       }
