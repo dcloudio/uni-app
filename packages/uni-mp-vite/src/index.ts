@@ -13,6 +13,7 @@ import {
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniJavaScriptWorkersPlugin,
   uniSourceMapPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniViteInjectPlugin,
@@ -55,6 +56,9 @@ export default (options: UniMiniProgramPluginOptions) => {
   )
 
   return [
+    ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
+      ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
+      : []),
     ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
     ...(process.env.UNI_APP_X === 'true'
       ? [
@@ -125,9 +129,6 @@ export default (options: UniMiniProgramPluginOptions) => {
         path.relative(path.dirname(process.env.UNI_OUTPUT_DIR), sourceMapDir)
       ),
     }),
-    ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
-      ? [uniWorkersPlugin()]
-      : []),
   ]
 }
 

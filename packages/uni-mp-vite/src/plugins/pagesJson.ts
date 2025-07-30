@@ -11,6 +11,7 @@ import {
   defineUniPagesJsonPlugin,
   findChangedJsonFiles,
   getLocaleFiles,
+  getWorkers,
   initI18nOptionsOnce,
   mergeMiniProgramAppJson,
   normalizePagePath,
@@ -25,6 +26,7 @@ import {
 import { virtualPagePath } from './entry'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import { parseI18nJson } from '@dcloudio/uni-i18n'
+import { isPlainObject } from '@vue/shared'
 
 const debugPagesJson = debug('uni:pages-json')
 
@@ -127,6 +129,22 @@ export function uniPagesJsonPlugin(
           options.project?.source ?? {}
         )
 
+        if (process.env.UNI_APP_X === 'true') {
+          // 当前平台支持workers，且manifest.json中配置了workers，则合并workers配置
+          if (options.app.workers && manifestJson.workers) {
+            // 如果app.json中没有workers配置，则直接合并
+            if (!appJson.workers) {
+              appJson.workers = manifestJson.workers
+            } else if (
+              // 如果app.json中workers配置是对象，且没有path属性，则合并workers配置
+              isPlainObject(appJson.workers) &&
+              !appJson.workers.path
+            ) {
+              appJson.workers.path = manifestJson.workers.path
+            }
+          }
+        }
+
         if (options.json?.formatAppJson) {
           options.json.formatAppJson(appJson, manifestJson, pageJsons)
         }
@@ -200,7 +218,12 @@ function importPagesCode(pagesJson: AppJson) {
         pages.forEach((pagePath) => importPageCode(path.join(root, pagePath)))
     })
   }
+  const workers = getWorkers()
+  const workerCode = Object.keys(workers).map((key) => {
+    return `import('@/${key}')`
+  })
   return `if(!Math){
 ${importPagesCode.join('\n')}
+${workerCode.join('\n')}
 }`
 }

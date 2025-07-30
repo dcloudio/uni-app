@@ -30,5 +30,16 @@
     "replacements": {
       "__X__": "true"
     }
+  },
+  {
+    "input": {
+      "src/worker/index.ts": ["dist-x/uni-worker.js"]
+    },
+    "output": {
+      "format": "iife"
+    },
+    "replacements": {
+      "__X__": "true"
+    }
   }
 ]

@@ -66,6 +66,10 @@ export interface UniMiniProgramPluginOptions {
      * 是否支持全局组件
      */
     usingComponents: boolean
+    /**
+     * 是否支持workers
+     */
+    workers?: boolean
     normalize?: (appJson: AppJson) => AppJson
   }
   project?: {

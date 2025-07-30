@@ -176,6 +176,7 @@ export const options: UniMiniProgramPluginOptions = {
     subpackages: true,
     plugins: true,
     usingComponents: true,
+    workers: true,
   },
   project: {
     filename: projectConfigFilename,

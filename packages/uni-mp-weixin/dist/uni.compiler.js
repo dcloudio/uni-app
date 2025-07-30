@@ -263,6 +263,7 @@ const options = {
         subpackages: true,
         plugins: true,
         usingComponents: true,
+        workers: true,
     },
     project: {
         filename: projectConfigFilename,

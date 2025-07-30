@@ -13,6 +13,7 @@ import {
 } from './vite/plugins/uts/uni_modules'
 import { offsetToLineColumn } from './vite/plugins/vitejs/utils'
 import { createRollupError } from './vite'
+import { resolveBuiltIn } from './resolve'
 
 let workers: Record<string, string> = {}
 
@@ -207,5 +208,33 @@ function resolveWorkersDir(inputDir: string) {
     if (fs.existsSync(dir)) {
       return workersDir
     }
+  }
+}
+
+export function uniJavaScriptWorkersPlugin(): Plugin {
+  const workerPolyfillCode = fs.readFileSync(
+    resolveBuiltIn('@dcloudio/uni-app/dist-x/uni-worker.js'),
+    'utf-8'
+  )
+  return {
+    name: 'uni-javascript-workers',
+    generateBundle(_, bundle) {
+      const workers = getWorkers()
+      const workerPaths = Object.keys(workers).map((key) => {
+        return key.replace('.uts', '.js')
+      })
+      if (workerPaths.length) {
+        Object.keys(bundle).forEach((file) => {
+          if (workerPaths.includes(file)) {
+            const chunk = bundle[file]
+            if (chunk.type === 'chunk') {
+              chunk.code = `${workerPolyfillCode}\n${chunk.code}\nnew ${
+                workers[file.replace('.js', '.uts')]
+              }()`
+            }
+          }
+        })
+      }
+    },
   }
 }

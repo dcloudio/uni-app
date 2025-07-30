@@ -113,7 +113,12 @@ export interface AppJson {
   debug?: boolean
   functionalPages?: boolean
   subPackages?: SubPackage[]
-  workers?: string
+  workers?:
+    | string
+    | {
+        path: string
+        isSubpackage: boolean
+      }
   requiredBackgroundModes?: string[] // audio,location
   plugins?: Plugins
   preloadRule?: PreloadRule
