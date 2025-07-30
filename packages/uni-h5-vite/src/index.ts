@@ -2,6 +2,7 @@ import path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
+  getWorkers,
   isAppVue,
   isEnableConsole,
   isVueSfcFile,
@@ -37,6 +38,7 @@ export default () => [
         uniDecryptUniModulesPlugin(),
         uniUTSUVueJavaScriptPlugin(),
         resolveUTSCompiler().uts2js({
+          platform: 'web',
           inputDir: process.env.UNI_INPUT_DIR,
           version: process.env.UNI_COMPILER_VERSION,
           sourceMap: enableSourceMap(),
@@ -47,6 +49,9 @@ export default () => [
           modules: {
             vueCompilerDom,
             uniCliShared,
+          },
+          resolveWorkers: () => {
+            return getWorkers()
           },
         }),
       ]

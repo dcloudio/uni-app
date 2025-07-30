@@ -2,6 +2,7 @@ import * as path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
+  getWorkers,
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
@@ -52,6 +53,7 @@ export function init() {
         ]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({
+      platform: 'app-ios',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
@@ -59,6 +61,9 @@ export function init() {
       modules: {
         vueCompilerDom,
         uniCliShared,
+      },
+      resolveWorkers: () => {
+        return getWorkers()
       },
     }),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'

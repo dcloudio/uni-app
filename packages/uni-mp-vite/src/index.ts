@@ -3,7 +3,9 @@ import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
   enableSourceMap,
+  getWorkers,
   isEnableConsole,
+  isNormalCompileTarget,
   normalizePath,
   resolveSourceMapPath,
   resolveUTSCompiler,
@@ -14,6 +16,7 @@ import {
   uniSourceMapPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniViteInjectPlugin,
+  uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import {
@@ -58,6 +61,7 @@ export default (options: UniMiniProgramPluginOptions) => {
           uniDecryptUniModulesPlugin(),
           uniUTSUVueJavaScriptPlugin(),
           resolveUTSCompiler().uts2js({
+            platform: process.env.UNI_PLATFORM as any,
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,
             sourceMap: enableSourceMap(),
@@ -68,6 +72,9 @@ export default (options: UniMiniProgramPluginOptions) => {
             modules: {
               vueCompilerDom,
               uniCliShared,
+            },
+            resolveWorkers: () => {
+              return getWorkers()
             },
           }),
         ]
@@ -118,6 +125,9 @@ export default (options: UniMiniProgramPluginOptions) => {
         path.relative(path.dirname(process.env.UNI_OUTPUT_DIR), sourceMapDir)
       ),
     }),
+    ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
+      ? [uniWorkersPlugin()]
+      : []),
   ]
 }
 
