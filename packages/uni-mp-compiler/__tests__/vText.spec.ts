@@ -33,4 +33,13 @@ describe('compiler: transform v-text', () => {
 }`
     )
   })
+  test('with children nodes', () => {
+    assert(
+      `<view v-text="text">hello</view>`,
+      `<view>{{a}}</view>`,
+      `(_ctx, _cache) => {
+  return { a: _t(_ctx.text) }
+}`
+    )
+  })
 })
