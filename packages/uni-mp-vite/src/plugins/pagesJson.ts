@@ -218,10 +218,13 @@ function importPagesCode(pagesJson: AppJson) {
         pages.forEach((pagePath) => importPageCode(path.join(root, pagePath)))
     })
   }
-  const workers = getWorkers()
-  const workerCode = Object.keys(workers).map((key) => {
-    return `import('@/${key}')`
-  })
+  let workerCode: string[] = []
+  if (process.env.UNI_APP_X === 'true') {
+    const workers = getWorkers()
+    workerCode = Object.keys(workers).map((key) => {
+      return `import('@/${key}')`
+    })
+  }
   return `if(!Math){
 ${importPagesCode.join('\n')}
 ${workerCode.join('\n')}
