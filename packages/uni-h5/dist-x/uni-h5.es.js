@@ -8494,8 +8494,8 @@ const closeDialogPage = (options) => {
       if (parentPage && (parentPage.vm.$basePage.meta.isTabBar || currentPages.indexOf(parentPage) !== -1)) {
         const parentDialogPages = parentPage.getDialogPages();
         const index2 = parentDialogPages.indexOf(dialogPage);
-        parentDialogPages.splice(index2, 1);
         invokeHook(dialogPage.vm, ON_UNLOAD);
+        parentDialogPages.splice(index2, 1);
         dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
         dialogPageTriggerParentShow(dialogPage, 1);
         if (!dialogPage.$disableEscBack) {
@@ -27988,7 +27988,10 @@ const openDialogPage = (options) => {
     }
     targetSystemDialogPages.push(dialogPage);
     if (isSystemActionSheetDialogPage(dialogPage)) {
-      closePreSystemDialogPage(targetSystemDialogPages, SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
+      closePreSystemDialogPage(
+        targetSystemDialogPages,
+        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH
+      );
     }
   }
   const successOptions = {
