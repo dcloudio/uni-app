@@ -28,8 +28,8 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       ) {
         const parentDialogPages = parentPage.getDialogPages()
         const index = parentDialogPages.indexOf(dialogPage)
-        parentDialogPages.splice(index, 1)
         invokeHook(dialogPage.vm!, ON_UNLOAD)
+        parentDialogPages.splice(index, 1)
         dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
         dialogPageTriggerParentShow(dialogPage, 1)
         if (!dialogPage.$disableEscBack) {
