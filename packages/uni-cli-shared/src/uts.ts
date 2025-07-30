@@ -73,11 +73,8 @@ export function resolveUTSAppModule(
             'app-harmony',
             'index.uts'
           )
-          if (fs.existsSync(appHarmonyIndex)) {
-            return appHarmonyIndex
-          }
           const appJsIndex = path.resolve(id, basedir, 'app-js', 'index.uts')
-          if (fs.existsSync(appJsIndex)) {
+          if (!fs.existsSync(appHarmonyIndex) && fs.existsSync(appJsIndex)) {
             return appJsIndex
           }
         }
