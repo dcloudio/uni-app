@@ -67,6 +67,8 @@ function getH5Options (manifestJson) {
 
   h5.async = Object.assign({}, defaultAsync, h5.async || {})
 
+  h5.isEnableFacialVerify = h5?.['uni-facialVerify'] || h5?.['uni-facialRecognitionVerify']
+
   let base = h5.router.base
 
   if (!base.startsWith('/') && !base.startsWith('./')) {

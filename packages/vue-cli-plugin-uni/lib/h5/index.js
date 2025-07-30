@@ -29,7 +29,8 @@ const {
   title,
   publicPath,
   template,
-  devServer
+  devServer,
+  isEnableFacialVerify
 } = getH5Options()
 
 const runtimePath = '@dcloudio/uni-mp-weixin/dist/mp.js'
@@ -84,6 +85,10 @@ const vueConfig = {
       baseUrl: publicPath
     }
   }
+}
+
+if (isEnableFacialVerify) {
+  vueConfig.pages.index.AliYunCloudAuthWebSDK = '<script type="text/javascript" src="https://cn-shanghai-aliyun-cloudauth.oss-cn-shanghai.aliyuncs.com/web_sdk_js/jsvm_all.js"></script>'
 }
 
 if (devServer && Object.keys(devServer).length) {
