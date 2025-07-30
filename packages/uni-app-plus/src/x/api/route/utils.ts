@@ -78,3 +78,18 @@ export function handleBeforeEntryPageRoutes() {
   reLaunchPagesBeforeEntryPages.length = 0
   reLaunchPages.forEach(({ args, handler }) => $reLaunch(args, handler))
 }
+
+export function closePreSystemDialogPage(
+  dialogPages: UniDialogPage[],
+  type: string
+) {
+  const targetSystemDialogPages = dialogPages.filter((page): boolean =>
+    page.route.startsWith(type)
+  )
+  if (targetSystemDialogPages.length > 1) {
+    setTimeout(() => {
+      closeNativeDialogPage(targetSystemDialogPages[0])
+      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1)
+    }, 150)
+  }
+}

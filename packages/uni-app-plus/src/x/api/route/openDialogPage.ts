@@ -1,5 +1,6 @@
 import { ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
 import {
+  SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH,
   dialogPageTriggerParentHide,
   dialogPageTriggerPrevDialogPageLifeCycle,
   getCurrentPage,
@@ -21,9 +22,9 @@ import {
 import { registerDialogPage } from '../../framework/page/register'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
-import closeNativeDialogPage from './closeNativeDialogPage'
 import { OPEN_DIALOG_PAGE } from '../../constants'
 import { ref } from 'vue'
+import { closePreSystemDialogPage } from './utils'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -73,21 +74,23 @@ export const openDialogPage = (
     }
     setCurrentNormalDialogPage(dialogPage)
   } else {
+    let targetSystemDialogPages: UniDialogPage[] = []
     if (!parentPage) {
-      homeSystemDialogPages.push(dialogPage)
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(homeSystemDialogPages)
-      }
+      targetSystemDialogPages = homeSystemDialogPages
     } else {
       if (!parentPage.vm.$systemDialogPages) {
         parentPage.vm.$systemDialogPages = ref<UniDialogPage[]>([])
       }
       dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE)
       // system dialogPage 数据框架需要储存
-      parentPage.vm.$systemDialogPages.value.push(dialogPage)
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(parentPage.vm.$systemDialogPages.value)
-      }
+      targetSystemDialogPages = parentPage.vm.$systemDialogPages.value
+    }
+    targetSystemDialogPages.push(dialogPage)
+    if (isSystemActionSheetDialogPage(dialogPage)) {
+      closePreSystemDialogPage(
+        targetSystemDialogPages,
+        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH
+      )
     }
     setCurrentSystemDialogPage(dialogPage)
   }
@@ -165,16 +168,4 @@ function initAnimation(
       globalStyle.animationDuration ||
       ANI_DURATION,
   ] as const
-}
-
-function closePreActionSheet(dialogPages: UniDialogPage[]) {
-  const actionSheets = dialogPages.filter((page): boolean =>
-    isSystemActionSheetDialogPage(page)
-  )
-  if (actionSheets.length > 1) {
-    setTimeout(() => {
-      closeNativeDialogPage(actionSheets[0])
-      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1)
-    }, 150)
-  }
 }
