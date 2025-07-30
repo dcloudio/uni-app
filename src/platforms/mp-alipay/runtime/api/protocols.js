@@ -206,7 +206,7 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   showLoading: {
-    args(
+    args (
       fromArgs,
       toArgs
     ) {
@@ -327,11 +327,11 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   openLocation: {
-    args(fromArgs, toArgs) {
+    args (fromArgs, toArgs) {
       if (!fromArgs.scale) {
         toArgs.scale = 18
       }
-    },
+    }
   },
   getNetworkType: {
     returnValue: _handleNetworkInfo
@@ -379,11 +379,11 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   pageScrollTo: {
-    args(fromArgs, toArgs) {
+    args (fromArgs, toArgs) {
       if (fromArgs.duration === undefined) {
         toArgs.duration = 300
       }
-    },
+    }
   },
   login: {
     name: 'getAuthCode',
@@ -502,7 +502,7 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   openDocument: {
-    args(fromArgs, toArgs) {
+    args (fromArgs, toArgs) {
       if (typeof fromArgs.showMenu === 'boolean') {
         // 支付宝小程序 showMenu 类型为 string, https://opendocs.alipay.com/mini/api/mwpprc
         toArgs.showMenu = String(fromArgs.showMenu)
