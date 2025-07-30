@@ -124,7 +124,9 @@ export function createConfigResolved({
             if (config.isProduction) {
               return (
                 cssCode +
-                genShadowCss(cdn || 0) +
+                (process.env.UNI_PLATFORM !== 'mp-weixin'
+                  ? genShadowCss(cdn || 0)
+                  : '') +
                 realCssVars +
                 componentCustomHiddenCss
               )
