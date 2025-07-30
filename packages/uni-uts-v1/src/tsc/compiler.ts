@@ -29,6 +29,7 @@ export function createUniXCompiler(
     paths?: tsTypes.CompilerOptions['paths']
     rootFiles?: string[]
     normalizeFileName: (str: string) => string
+    isPureSwift?: boolean
   }
 ) {
   const inputDir = normalizePath(options.inputDir)
@@ -90,6 +91,8 @@ export function createUniXCompiler(
       enableUTSNumber: false,
       enableNarrowType: true, // 默认开启
       enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
+      // TODO 调整参数传递方式
+      isPureSwift: options.isPureSwift,
     },
     ...options,
   }
