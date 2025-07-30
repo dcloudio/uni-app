@@ -61,6 +61,14 @@ export const options: UniMiniProgramPluginOptions = {
     },
     copyOptions: {
       assets: [COMPONENTS_DIR],
+      targets: [
+        {
+          src: ['ext.json', 'ascf.config.json'],
+          get dest() {
+            return process.env.UNI_OUTPUT_DIR as string
+          },
+        },
+      ],
     },
   },
   global: 'has',
@@ -72,7 +80,6 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
-    customElements,
     filter: {
       extname: '.hjs',
       lang: 'hjs',
