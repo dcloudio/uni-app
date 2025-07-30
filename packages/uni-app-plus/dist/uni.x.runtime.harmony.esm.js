@@ -2452,6 +2452,15 @@ function handleBeforeEntryPageRoutes() {
     return $reLaunch(args, handler);
   });
 }
+function closePreSystemDialogPage(dialogPages, type) {
+  var targetSystemDialogPages = dialogPages.filter((page) => page.route.startsWith(type));
+  if (targetSystemDialogPages.length > 1) {
+    setTimeout(() => {
+      closeNativeDialogPage(targetSystemDialogPages[0]);
+      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
+    }, 150);
+  }
+}
 var $switchTab = (args, _ref) => {
   var {
     resolve,
@@ -2998,20 +3007,19 @@ var openDialogPage = (options) => {
     }
     setCurrentNormalDialogPage(dialogPage);
   } else {
+    var targetSystemDialogPages = [];
     if (!parentPage) {
-      homeSystemDialogPages.push(dialogPage);
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(homeSystemDialogPages);
-      }
+      targetSystemDialogPages = homeSystemDialogPages;
     } else {
       if (!parentPage.vm.$systemDialogPages) {
         parentPage.vm.$systemDialogPages = ref([]);
       }
       dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
-      parentPage.vm.$systemDialogPages.value.push(dialogPage);
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(parentPage.vm.$systemDialogPages.value);
-      }
+      targetSystemDialogPages = parentPage.vm.$systemDialogPages.value;
+    }
+    targetSystemDialogPages.push(dialogPage);
+    if (isSystemActionSheetDialogPage(dialogPage)) {
+      closePreSystemDialogPage(targetSystemDialogPages, SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
     }
     setCurrentSystemDialogPage(dialogPage);
   }
@@ -3072,15 +3080,6 @@ function initAnimation(path, animationType, animationDuration) {
     _animationType = "none";
   }
   return [_animationType, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
-}
-function closePreActionSheet(dialogPages) {
-  var actionSheets = dialogPages.filter((page) => isSystemActionSheetDialogPage(page));
-  if (actionSheets.length > 1) {
-    setTimeout(() => {
-      closeNativeDialogPage(actionSheets[0]);
-      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
-    }, 150);
-  }
 }
 var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
   var {

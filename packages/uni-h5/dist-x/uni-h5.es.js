@@ -26058,6 +26058,37 @@ const getElementById = /* @__PURE__ */ defineSyncApi(
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
 );
+const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
+  "getFacialRecognitionMetaInfo",
+  () => {
+    if (Object.getPrototypeOf(window) !== Window.prototype) {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象原型被篡改，可能存在劫持"
+      );
+      return "";
+    }
+    if (window.window !== window || window.self !== window) {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象属性引用异常，可能被劫持"
+      );
+      return "";
+    }
+    if (Object.prototype.toString.call(window) !== "[object Window]" && Object.prototype.toString.call(window) !== "[object DOMWindow]") {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象类型标识异常，可能被劫持"
+      );
+      return "";
+    }
+    if (isFunction(window.getMetaInfo)) {
+      return window.getMetaInfo();
+    } else {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象缺少getMetaInfo方法，请参考文档引用：https://doc.dcloud.net.cn/uniCloud/frv/dev.html#window-get-meta-info"
+      );
+      return "";
+    }
+  }
+);
 const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
   API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
   createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
@@ -27886,8 +27917,18 @@ const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
   }
 });
+function closePreSystemDialogPage(dialogPages, type) {
+  const targetSystemDialogPages = dialogPages.filter(
+    (page) => page.route.startsWith(type)
+  );
+  if (targetSystemDialogPages.length > 1) {
+    setTimeout(() => {
+      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
+    }, 150);
+  }
+}
 const openDialogPage = (options) => {
-  var _a, _b, _c, _d;
+  var _a, _b, _c;
   if (!options.url) {
     triggerFailCallback(options, "url is required");
     return null;
@@ -27934,32 +27975,27 @@ const openDialogPage = (options) => {
       incrementEscBackPageNum();
     }
   } else {
+    let targetSystemDialogPages = [];
     if (!currentPages.length) {
-      homeSystemDialogPages.push(dialogPage);
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(homeSystemDialogPages);
-      }
+      targetSystemDialogPages = homeSystemDialogPages;
     } else {
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1];
       }
       dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
       dialogPage.getParentPage = () => parentPage;
-      (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value.push(
-        dialogPage
-      );
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(
-          (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value
-        );
-      }
+      targetSystemDialogPages = (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+    }
+    targetSystemDialogPages.push(dialogPage);
+    if (isSystemActionSheetDialogPage(dialogPage)) {
+      closePreSystemDialogPage(targetSystemDialogPages, SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
     }
   }
   const successOptions = {
     errMsg: "openDialogPage:ok"
   };
-  (_c = options.success) == null ? void 0 : _c.call(options, successOptions);
-  (_d = options.complete) == null ? void 0 : _d.call(options, successOptions);
+  (_b = options.success) == null ? void 0 : _b.call(options, successOptions);
+  (_c = options.complete) == null ? void 0 : _c.call(options, successOptions);
   return dialogPage;
 };
 function triggerFailCallback(options, errMsg) {
@@ -27971,16 +28007,6 @@ function triggerFailCallback(options, errMsg) {
   );
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
-}
-function closePreActionSheet(dialogPages) {
-  const actionSheets = dialogPages.filter(
-    (page) => isSystemActionSheetDialogPage(page)
-  );
-  if (actionSheets.length > 1) {
-    setTimeout(() => {
-      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
-    }, 100);
-  }
 }
 const _sfc_main$2 = {
   data() {
@@ -30221,6 +30247,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getDeviceInfo,
   getElementById,
   getEnterOptionsSync,
+  getFacialRecognitionMetaInfo,
   getFileInfo,
   getImageInfo,
   getLaunchOptionsSync,
@@ -30540,6 +30567,7 @@ export {
   getDeviceInfo,
   getElementById,
   getEnterOptionsSync,
+  getFacialRecognitionMetaInfo,
   getFileInfo,
   getImageInfo,
   getLaunchOptionsSync,

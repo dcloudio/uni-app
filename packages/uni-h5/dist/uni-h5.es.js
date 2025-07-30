@@ -23997,6 +23997,37 @@ const getElementById = /* @__PURE__ */ defineSyncApi(
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
 );
+const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
+  "getFacialRecognitionMetaInfo",
+  () => {
+    if (Object.getPrototypeOf(window) !== Window.prototype) {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象原型被篡改，可能存在劫持"
+      );
+      return "";
+    }
+    if (window.window !== window || window.self !== window) {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象属性引用异常，可能被劫持"
+      );
+      return "";
+    }
+    if (Object.prototype.toString.call(window) !== "[object Window]" && Object.prototype.toString.call(window) !== "[object DOMWindow]") {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象类型标识异常，可能被劫持"
+      );
+      return "";
+    }
+    if (isFunction(window.getMetaInfo)) {
+      return window.getMetaInfo();
+    } else {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象缺少getMetaInfo方法，请参考文档引用：https://doc.dcloud.net.cn/uniCloud/frv/dev.html#window-get-meta-info"
+      );
+      return "";
+    }
+  }
+);
 const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
   API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
   createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
@@ -24144,6 +24175,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getDeviceInfo,
   getElementById,
   getEnterOptionsSync,
+  getFacialRecognitionMetaInfo,
   getFileInfo,
   getImageInfo,
   getLaunchOptionsSync,
@@ -26685,6 +26717,7 @@ export {
   getDeviceInfo,
   getElementById,
   getEnterOptionsSync,
+  getFacialRecognitionMetaInfo,
   getFileInfo,
   getImageInfo,
   getLaunchOptionsSync,
