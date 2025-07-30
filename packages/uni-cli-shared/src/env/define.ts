@@ -77,7 +77,7 @@ export function initDefine(stringifyBoolean: boolean = false) {
     ),
     __UNI_PRELOAD_SHADOW_IMAGE__: JSON.stringify(
       process.env.UNI_PLATFORM === 'mp-weixin'
-        ? createShadowImageUrl(1, 'grey').slice(6)
+        ? createShadowImageUrl(1, 'grey').slice(5)
         : ''
     ),
     ...mpXDefine,
