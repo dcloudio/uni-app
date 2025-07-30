@@ -64,6 +64,24 @@ export function resolveUTSAppModule(
       if (fs.existsSync(path.resolve(id, basedir, 'index.uts'))) {
         return id
       }
+      if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+        // 出于兼容历史项目考虑，鸿蒙优先使用app-harmony，无app-harmony的情况下再使用app-js
+        if (parentDir === 'uni_modules') {
+          const appHarmonyIndex = path.resolve(
+            id,
+            basedir,
+            'app-harmony',
+            'index.uts'
+          )
+          if (fs.existsSync(appHarmonyIndex)) {
+            return appHarmonyIndex
+          }
+          const appJsIndex = path.resolve(id, basedir, 'app-js', 'index.uts')
+          if (fs.existsSync(appJsIndex)) {
+            return appJsIndex
+          }
+        }
+      }
       // customElements 组件
       if (fs.existsSync(path.resolve(id, 'customElements'))) {
         return id

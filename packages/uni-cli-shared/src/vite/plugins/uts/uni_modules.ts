@@ -586,12 +586,15 @@ export function uniUTSAppUniModulesPlugin(
           continue
         }
       }
-      if (process.env.UNI_PLATFORM === 'app-harmony') {
+      if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
         // uniExtApiCompiler本身是为X项目准备的，但是在app-harmony项目中也会调用
         // uni-app-x app-harmony暂不支持其他类型插件
         if (
           !fs.existsSync(
             path.resolve(pluginDir, 'utssdk', 'app-harmony', 'index.uts')
+          ) ||
+          fs.existsSync(
+            path.resolve(pluginDir, 'utssdk', 'app-js', 'index.uts')
           )
         ) {
           continue

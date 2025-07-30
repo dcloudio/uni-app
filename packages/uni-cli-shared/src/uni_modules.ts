@@ -324,6 +324,17 @@ export function parseInjects(
       ) {
         source = `${source}/utssdk/app-js/index.uts`
       }
+    } else if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+      // 出于兼容历史项目考虑，鸿蒙优先使用app-harmony，无app-harmony的情况下再使用app-js
+      if (
+        !fs.existsSync(rootIndexFileName) &&
+        !fs.existsSync(platformIndexFileName) &&
+        fs.existsSync(
+          path.resolve(uniModuleRootDir, 'utssdk', 'app-js', 'index.uts')
+        )
+      ) {
+        source = `${source}/utssdk/app-js/index.uts`
+      }
     }
 
     for (const key in rootDefines) {
@@ -393,7 +404,8 @@ function parseInject(
               if (isPlainObject(appOptions)) {
                 // js engine 下且存在 app-js，不检查
                 const skipCheck =
-                  process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' &&
+                  (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' ||
+                    process.env.UNI_UTS_PLATFORM === 'app-harmony') &&
                   source.includes('app-js')
                 if (!skipCheck) {
                   const targetLanguage =
