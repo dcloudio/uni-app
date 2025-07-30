@@ -1,9 +1,10 @@
-import type { Plugin } from 'vite'
+import type { HtmlTagDescriptor, Plugin } from 'vite'
 
 import {
   getPlatformManifestJson,
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
+import { AliYunCloudAuthWebSDK } from '../../utils'
 
 export function createTransformIndexHtml(): Plugin['transformIndexHtml'] {
   let warned = false
@@ -33,20 +34,35 @@ export function createTransformIndexHtml(): Plugin['transformIndexHtml'] {
         }
       }
     }
-    return {
-      html: html.replace(/<title>(.*?)<\/title>/, `<title>${title}</title>`),
-      tags:
-        process.env.NODE_ENV === 'development'
-          ? [
-              {
-                tag: 'script',
-                children: `if (typeof globalThis === 'undefined') {
+
+    const tags: HtmlTagDescriptor[] =
+      process.env.NODE_ENV === 'development'
+        ? [
+            {
+              tag: 'script',
+              children: `if (typeof globalThis === 'undefined') {
   window.globalThis = window
 }`,
-                injectTo: 'head-prepend',
-              },
-            ]
-          : [],
+              injectTo: 'head-prepend',
+            },
+          ]
+        : []
+
+    if (
+      webManifest?.['uni-facialVerify'] ||
+      webManifest?.['uni-facialRecognitionVerify']
+    ) {
+      tags.push({
+        tag: 'script',
+        attrs: {
+          src: AliYunCloudAuthWebSDK,
+        },
+        injectTo: 'head',
+      })
+    }
+    return {
+      html: html.replace(/<title>(.*?)<\/title>/, `<title>${title}</title>`),
+      tags,
     }
   }
 }
