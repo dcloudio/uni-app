@@ -5,6 +5,7 @@ import {
   getWorkers,
   isAppVue,
   isEnableConsole,
+  isNormalCompileTarget,
   isVueSfcFile,
   resolveUTSCompiler,
   uniCssScopedPlugin,
@@ -12,7 +13,9 @@ import {
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniJavaScriptWorkersPlugin,
   uniUTSUVueJavaScriptPlugin,
+  uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 import * as vueCompilerDom from '@vue/compiler-dom'
 import * as uniCliShared from '@dcloudio/uni-cli-shared'
@@ -32,6 +35,9 @@ import { uniPostSourceMapPlugin } from './plugins/sourcemap'
 import { uniCustomElementPlugin } from './plugins/customElement'
 
 export default () => [
+  ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
+    ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
+    : []),
   ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
   ...(process.env.UNI_APP_X === 'true'
     ? [
