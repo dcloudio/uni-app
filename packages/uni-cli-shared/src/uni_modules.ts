@@ -327,7 +327,6 @@ export function parseInjects(
     } else if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
       // 出于兼容历史项目考虑，鸿蒙优先使用app-harmony，无app-harmony的情况下再使用app-js
       if (
-        !fs.existsSync(rootIndexFileName) &&
         !fs.existsSync(platformIndexFileName) &&
         fs.existsSync(
           path.resolve(uniModuleRootDir, 'utssdk', 'app-js', 'index.uts')
