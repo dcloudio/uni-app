@@ -1,4 +1,4 @@
-import { createShadowImageUrl } from '../utils'
+import { getShadowImagePath } from '../utils'
 import { runByHBuilderX } from '../hbx/env'
 import { getPlatformManifestJsonOnce, parseManifestJsonOnce } from '../json'
 
@@ -76,9 +76,7 @@ export function initDefine(stringifyBoolean: boolean = false) {
       platformManifestJson.darkmode || false
     ),
     __UNI_PRELOAD_SHADOW_IMAGE__: JSON.stringify(
-      process.env.UNI_PLATFORM === 'mp-weixin'
-        ? createShadowImageUrl(1, 'grey').slice(5)
-        : ''
+      process.env.UNI_PLATFORM === 'mp-weixin' ? getShadowImagePath('grey') : ''
     ),
     ...mpXDefine,
   }
