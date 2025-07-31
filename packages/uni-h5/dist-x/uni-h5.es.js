@@ -1830,12 +1830,12 @@ function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
   }
 }
 const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
-const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1 = "uni:actionSheet";
 function isSystemDialogPage(page) {
   return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
 }
 function isSystemActionSheetDialogPage(page) {
-  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
+  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1);
 }
 function dialogPageTriggerParentShow(dialogPage, triggerParentHideDialogPageNum = 0) {
   dialogPageTriggerParentLifeCycle(
@@ -8314,6 +8314,10 @@ class UniPageImpl {
   }
   getDialogPages() {
     return [];
+  }
+  $getSystemDialogPages() {
+    var _a, _b, _c;
+    return ((_c = (_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages) == null ? void 0 : _c.value) || [];
   }
   getAndroidActivity() {
     return null;
@@ -27990,7 +27994,7 @@ const openDialogPage = (options) => {
     if (isSystemActionSheetDialogPage(dialogPage)) {
       closePreSystemDialogPage(
         targetSystemDialogPages,
-        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH
+        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1
       );
     }
   }
@@ -28420,16 +28424,18 @@ const showActionSheet$1 = (options) => {
     }
   });
 };
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
 const hideActionSheet$1 = () => {
-  var _a;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
   if (currentPage == null)
     return;
-  const systemDialogPages = (_a = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
-  systemDialogPages.forEach((page, index2) => {
-    if (page.route.startsWith("uni:actionSheet")) {
-      systemDialogPages.splice(index2, 1);
+  const systemDialogPages = currentPage.$getSystemDialogPages();
+  systemDialogPages.forEach((page) => {
+    if (page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH)) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
     }
   });
 };

@@ -38,34 +38,20 @@ export const showActionSheet: ShowActionSheet = (options: ShowActionSheetOptions
 	})
 }
 
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = 'uni:actionSheet'
+
 export const hideActionSheet = () => {
 	const pages = getCurrentPages()
 	const currentPage = pages[pages.length - 1]
 	if (currentPage == null) return
-	// #ifdef APP-ANDROID
-	const systemDialogPages = currentPage!.vm!.$systemDialogPages
-	// #endif
-	// #ifdef APP-IOS
-	const systemDialogPages = currentPage.getDialogPages('systemDialog')
-	// #endif
-	// #ifdef WEB
-	const systemDialogPages = currentPage.vm.$pageLayoutInstance?.$systemDialogPages.value
-	// #endif
-	// #ifdef APP-ANDROID || APP-IOS || WEB
-	systemDialogPages.forEach((page, index) => {
-		if (page.route.startsWith('uni:actionSheet')) {
-			// #ifdef WEB
-			systemDialogPages.splice(index, 1)
-			// #endif
-			// #ifdef APP-ANDROID
-			systemDialogPages[index].vm?.$close(new Map<string, any | null>([['animationType', 'none']]))
-			// #endif
-			// #ifdef APP-IOS
-			page.close(new Map<string, any>())
-			// #endif
+	const systemDialogPages = currentPage.$getSystemDialogPages()
+	systemDialogPages.forEach((page) => {
+		if (page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH)) {
+			uni.closeDialogPage({
+				dialogPage: page
+			})
 		}
 	})
-	// #endif
 }
 
 export * from './interface.uts'
