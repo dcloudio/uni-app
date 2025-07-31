@@ -15,10 +15,15 @@ import { offsetToLineColumn } from './vite/plugins/vitejs/utils'
 import { createRollupError } from './vite'
 import { resolveBuiltIn } from './resolve'
 
+let workersRootDir: string | null = null
 let workers: Record<string, string> = {}
 
 export function getWorkers() {
   return workers
+}
+
+export function getWorkersRootDir() {
+  return workersRootDir
 }
 
 /**
@@ -50,6 +55,7 @@ export function uniWorkersPlugin(): Plugin {
   function refreshWorkers() {
     const workersDir = resolveWorkersDir(inputDir)
     if (workersDir) {
+      workersRootDir = workersDir
       initWorkers(workersDir, inputDir)
       return true
     }
@@ -200,7 +206,7 @@ async function syncWorkersFiles(
   }
 }
 
-function resolveWorkersDir(inputDir: string) {
+export function resolveWorkersDir(inputDir: string) {
   const manifestJson = parseManifestJsonOnce(inputDir)
   if (manifestJson.workers && typeof manifestJson.workers === 'string') {
     const workersDir: string = normalizePath(manifestJson.workers)
@@ -212,28 +218,56 @@ function resolveWorkersDir(inputDir: string) {
 }
 
 export function uniJavaScriptWorkersPlugin(): Plugin {
-  const workerPolyfillCode = fs.readFileSync(
-    resolveBuiltIn('@dcloudio/uni-app/dist-x/uni-worker.js'),
-    'utf-8'
-  )
+  // 仅小程序平台外置uni-worker.js
+  const external = (process.env.UNI_UTS_PLATFORM || '').startsWith('mp-')
+  let workerPolyfillCode = ''
+  let isWrite = false
   return {
-    name: 'uni-javascript-workers',
+    name: 'uni:javascript-workers',
     generateBundle(_, bundle) {
       const workers = getWorkers()
       const workerPaths = Object.keys(workers).map((key) => {
         return key.replace('.uts', '.js')
       })
       if (workerPaths.length) {
+        if (!workerPolyfillCode) {
+          workerPolyfillCode = fs.readFileSync(
+            resolveBuiltIn('@dcloudio/uni-app/dist-x/uni-worker.js'),
+            'utf-8'
+          )
+        }
         Object.keys(bundle).forEach((file) => {
           if (workerPaths.includes(file)) {
             const chunk = bundle[file]
             if (chunk.type === 'chunk') {
-              chunk.code = `${workerPolyfillCode}\n${chunk.code}\nnew ${
+              const workerCode = external
+                ? `require('${normalizePath(
+                    path.relative(
+                      path.dirname(file),
+                      path.join(getWorkersRootDir()!, 'uni-worker.js')
+                    )
+                  )}')`
+                : workerPolyfillCode
+              chunk.code = `${workerCode}\n${chunk.code}\nnew ${
                 workers[file.replace('.js', '.uts')]
               }()`
             }
           }
         })
+      }
+    },
+    writeBundle() {
+      if (external && Object.keys(getWorkers()).length && !isWrite) {
+        isWrite = true
+        // 写入uni-worker.js
+        fs.outputFileSync(
+          path.resolve(
+            process.env.UNI_OUTPUT_DIR!,
+            getWorkersRootDir()!,
+            'uni-worker.js'
+          ),
+          workerPolyfillCode
+        )
       }
     },
   }

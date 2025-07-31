@@ -1034,6 +1034,10 @@ importers:
       '@vue/shared':
         specifier: 'catalog:'
         version: 3.4.21
+    devDependencies:
+      '@dcloudio/uni-uts-v1':
+        specifier: workspace:*
+        version: link:../uni-uts-v1
 
   packages/uni-app-harmony:
     dependencies:

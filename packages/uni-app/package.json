@@ -34,6 +34,9 @@
     "@dcloudio/uni-stat": "workspace:*",
     "@vue/shared": "catalog:"
   },
+  "devDependencies": {
+    "@dcloudio/uni-uts-v1": "workspace:*"
+  },
   "peerDependencies": {
     "@dcloudio/types": "catalog:"
   }

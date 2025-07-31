@@ -1,6 +1,7 @@
 import path from 'path'
-import { normalizePath } from '../utils'
+import { normalizePath, pathToGlob } from '../utils'
 import { uniConsolePlugin } from '../vite/plugins/console'
+import { resolveWorkersDir } from '../workers'
 
 export { formatAtFilename } from './log'
 
@@ -12,8 +13,19 @@ export {
 } from './alias'
 
 export function uniHBuilderXConsolePlugin(method: string = '__f__') {
+  const exclude: string[] = []
+  if (process.env.UNI_APP_X === 'true') {
+    const workersDir = resolveWorkersDir(process.env.UNI_INPUT_DIR)
+    if (workersDir) {
+      // 排除workers目录
+      exclude.push(
+        pathToGlob(path.join(process.env.UNI_INPUT_DIR, workersDir), '**/*')
+      )
+    }
+  }
   return uniConsolePlugin({
     method,
+    exclude,
     filename(filename) {
       filename = path.relative(process.env.UNI_INPUT_DIR, filename)
       if (filename.startsWith('.') || path.isAbsolute(filename)) {
