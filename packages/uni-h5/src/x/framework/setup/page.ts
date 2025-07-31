@@ -211,6 +211,9 @@ class UniPageImpl implements UniPage {
   getDialogPages(): UniPage[] {
     return []
   }
+  $getSystemDialogPages(): UniDialogPage[] {
+    return this.vm?.$pageLayoutInstance?.$systemDialogPages?.value || []
+  }
   getAndroidActivity() {
     return null
   }
