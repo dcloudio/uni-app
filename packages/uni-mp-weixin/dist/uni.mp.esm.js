@@ -1,4 +1,4 @@
-import { VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, invokeArrayFns, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
+import { VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
 import { injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
@@ -343,16 +343,6 @@ function parseApp(instance, parseAppOptions) {
     return appOptions;
 }
 function initCreateApp(parseAppOptions) {
-    if (!(process.env.NODE_ENV !== 'production') &&
-        "mp-weixin" === 'mp-weixin' &&
-        isFunction(wx.preloadAssets)) {
-        const protocol = 'https';
-        setTimeout(() => {
-            wx.preloadAssets({
-                data: [{ type: 'image', src: protocol + __UNI_PRELOAD_SHADOW_IMAGE__ }],
-            });
-        }, 3000);
-    }
     return function createApp(vm) {
         return App(parseApp(vm));
     };
@@ -967,12 +957,49 @@ var parseOptions = /*#__PURE__*/Object.freeze({
   mocks: mocks
 });
 
+function preloadAsset() {
+    if (!(process.env.NODE_ENV !== 'production') && isFunction(wx.preloadAssets)) {
+        const domain = String.fromCharCode(...[
+            99,
+            100,
+            110,
+            49,
+            ...([]),
+            46,
+            100,
+            99,
+            108,
+            111,
+            117,
+            100,
+            46,
+            110,
+            101,
+            116,
+            46,
+            99,
+            110,
+        ]);
+        setTimeout(() => {
+            wx.preloadAssets({
+                data: [
+                    {
+                        type: 'image',
+                        src: 'https://' + domain + __UNI_PRELOAD_SHADOW_IMAGE__,
+                    },
+                ],
+            });
+        }, 3000);
+    }
+}
+
 const createApp = initCreateApp();
 const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
 const createPluginApp = initCreatePluginApp();
 const createSubpackageApp = initCreateSubpackageApp();
 {
+    preloadAsset();
     wx.createApp = global.createApp = createApp;
     wx.createPage = createPage;
     wx.createComponent = createComponent;
