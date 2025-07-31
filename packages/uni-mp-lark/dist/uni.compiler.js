@@ -2,8 +2,6 @@
 
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
-var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
-var compilerCore = require('@vue/compiler-core');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
@@ -30,36 +28,6 @@ var source = {
 	condition: condition
 };
 
-function transformSwiper(node) {
-    if (node.type !== compilerCore.NodeTypes.ELEMENT || node.tag !== 'swiper') {
-        return;
-    }
-    const disableTouchProp = compilerCore.findProp(node, 'disable-touch', false, true);
-    if (!disableTouchProp) {
-        return;
-    }
-    const { props } = node;
-    if (disableTouchProp.type === compilerCore.NodeTypes.ATTRIBUTE) {
-        // <swiper disable-touch/> => <swiper :touchable="false"/>
-        props.splice(props.indexOf(disableTouchProp), 1, uniCliShared.createBindDirectiveNode('touchable', 'false'));
-    }
-    else {
-        if (disableTouchProp.exp) {
-            // <swiper :disable-touch="true"/> => <swiper :touchable="!(true)"/>
-            let touchable = '';
-            if (disableTouchProp.exp.type === compilerCore.NodeTypes.SIMPLE_EXPRESSION) {
-                if (disableTouchProp.exp.content === 'true') {
-                    touchable = 'false';
-                }
-                else if (disableTouchProp.exp.content === 'false') {
-                    touchable = 'true';
-                }
-            }
-            props.splice(props.indexOf(disableTouchProp), 1, uniCliShared.createBindDirectiveNode('touchable', touchable || `!(${uniMpCompiler.genExpr(disableTouchProp.exp)})`));
-        }
-    }
-}
-
 const customElements = [
     'aweme-data',
     'consume-card',
@@ -72,11 +40,11 @@ const customElements = [
     'aweme-user-card',
     'rtc-room',
     'clue-order-form',
+    'shop-follow-card',
 ];
 const projectConfigFilename = 'project.config.json';
 const nodeTransforms = [
     uniCliShared.transformRef,
-    transformSwiper,
     uniCliShared.transformMatchMedia,
     uniCliShared.transformComponentLink,
 ];
@@ -118,7 +86,7 @@ const options = {
             assets: [COMPONENTS_DIR],
             targets: [
                 {
-                    src: ['ext.json', 'package.json'],
+                    src: ['ext.json', 'package.json', 'project.private.config.json'],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },

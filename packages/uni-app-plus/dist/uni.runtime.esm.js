@@ -15764,6 +15764,11 @@ const props$1 = [
         name: 'playbackRate',
         cache: true,
     },
+    {
+        name: 'sessionCategory',
+        cache: true,
+        default: AUDIO_DEFAULT_SESSION_CATEGORY,
+    },
 ];
 class InnerAudioContext {
     constructor(id) {

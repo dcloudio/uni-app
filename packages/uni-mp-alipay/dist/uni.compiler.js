@@ -16,12 +16,35 @@ var fs__default = /*#__PURE__*/_interopDefault(fs);
 var appid = "touristappid";
 var component2 = true;
 var enableAppxNg = true;
+var axmlStrictCheck = false;
+var enableDistFileMinify = false;
+var enableParallelLoader = false;
 var enableNodeModuleBabelTransform = true;
+var format = 2;
+var pluginResolution = {
+};
+var developOptions = {
+};
+var compileOptions = {
+};
+var uploadExclude = [
+];
+var assetsInclude = [
+];
 var source = {
 	appid: appid,
 	component2: component2,
 	enableAppxNg: enableAppxNg,
-	enableNodeModuleBabelTransform: enableNodeModuleBabelTransform
+	axmlStrictCheck: axmlStrictCheck,
+	enableDistFileMinify: enableDistFileMinify,
+	enableParallelLoader: enableParallelLoader,
+	enableNodeModuleBabelTransform: enableNodeModuleBabelTransform,
+	format: format,
+	pluginResolution: pluginResolution,
+	developOptions: developOptions,
+	compileOptions: compileOptions,
+	uploadExclude: uploadExclude,
+	assetsInclude: assetsInclude
 };
 
 function transformRef(node, context) {
@@ -56,12 +79,13 @@ function customizeEvent(str) {
 }
 
 const event = {
-    format(name, { isCatch, isComponent }) {
+    format(name, { isCatch, isCapture, isComponent }) {
         if (!isComponent && name === 'click') {
             name = 'tap';
         }
         name = eventMap[name] || name;
-        return `${isCatch ? 'catch' : 'on'}${shared.capitalize(customizeEvent(name))}`;
+        // 处理支付宝支持捕获 https://opendocs.alipay.com/mini/framework/events#%E4%BA%8B%E4%BB%B6%E7%9A%84%E6%8D%95%E8%8E%B7%E9%98%B6%E6%AE%B5
+        return `${isCapture ? 'capture-' : ''}${isCatch ? 'catch' : 'on'}${shared.capitalize(customizeEvent(name))}`;
     },
 };
 const eventMap = {
@@ -185,9 +209,12 @@ const customElements = [
     'mkt',
     'page-container',
     'page-meta',
+    'root-portal',
+    'share-element',
     'lottie',
     'join-group-chat',
     'subscribe-message',
+    'mpaas-component',
 ];
 const options = {
     cdn: 2,
