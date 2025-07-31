@@ -35,31 +35,33 @@ export function createTransformIndexHtml(): Plugin['transformIndexHtml'] {
       }
     }
 
-    const tags: HtmlTagDescriptor[] =
-      process.env.NODE_ENV === 'development'
-        ? [
-            {
-              tag: 'script',
-              children: `if (typeof globalThis === 'undefined') {
+    const tags: HtmlTagDescriptor[] = []
+
+    if (process.env.NODE_ENV === 'development') {
+      tags.push(
+        {
+          tag: 'script',
+          children: `if (typeof globalThis === 'undefined') {
   window.globalThis = window
 }`,
-              injectTo: 'head-prepend',
-            },
-          ]
-        : []
-
-    if (
-      webManifest?.['uni-facialVerify'] ||
-      webManifest?.['uni-facialRecognitionVerify']
-    ) {
-      tags.push({
-        tag: 'script',
-        attrs: {
-          src: AliYunCloudAuthWebSDK,
+          injectTo: 'head-prepend',
         },
-        injectTo: 'head',
-      })
+        {
+          tag: 'noscript',
+          children:
+            '在运行期间注入实人认证 SDK。需要开启 JavaScript（发行期间会根据API的使用判断是否注入）',
+          injectTo: 'head',
+        },
+        {
+          tag: 'script',
+          attrs: {
+            src: AliYunCloudAuthWebSDK,
+          },
+          injectTo: 'head',
+        }
+      )
     }
+
     return {
       html: html.replace(/<title>(.*?)<\/title>/, `<title>${title}</title>`),
       tags,

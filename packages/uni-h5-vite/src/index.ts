@@ -33,6 +33,7 @@ import { uniSetupPlugin } from './plugins/setup'
 import { uniSSRPlugin } from './plugins/ssr'
 import { uniPostSourceMapPlugin } from './plugins/sourcemap'
 import { uniCustomElementPlugin } from './plugins/customElement'
+import { uniApiPlugin } from './plugins/api'
 
 export default () => [
   ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
@@ -82,4 +83,5 @@ export default () => [
   uniPostVuePlugin(),
   uniPostSourceMapPlugin(),
   uniCustomElementPlugin(),
+  uniApiPlugin(),
 ]
