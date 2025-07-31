@@ -152,6 +152,19 @@ export function registerPage(
     // TODO ThemeMode
     'light'
   )
+
+  function handleHomeDialogPages(
+    homePage: UniPage,
+    sourceDialogPages: UniPage[],
+    targetDialogPages: UniPage[]
+  ) {
+    sourceDialogPages.forEach((dialogPage) => {
+      dialogPage.getParentPage = () => homePage
+      targetDialogPages.push(dialogPage)
+    })
+    sourceDialogPages.length = 0
+  }
+
   function fn() {
     const page = createVuePage(
       id,
@@ -168,30 +181,21 @@ export function registerPage(
     // })
     const pages = getCurrentPages()
     if (pages.length === 1) {
+      // dialogPages 数据 ios 端不需要框架处理，预期仅在鸿蒙上生效
+      const homePage = pages[0] as unknown as UniPage
+      let sourceDialogPages: UniPage[] = []
+      let targetDialogPages: UniPage[] = []
       if (homeDialogPages.length) {
-        const homePage = pages[0] as unknown as UniPage
-        // harmony manage dialogPages in framework
-        const dialogPages = homePage.getDialogPages()
-        homePage.vm.$.$dialogPages.value = homeDialogPages.map((dialogPage) => {
-          dialogPage.getParentPage = () => homePage
-          dialogPages.push(dialogPage)
-          return dialogPage
-        })
-        homeDialogPages.length = 0
+        sourceDialogPages = homeDialogPages
+        targetDialogPages = homePage.getDialogPages()
       }
       if (homeSystemDialogPages.length) {
-        const homePage = pages[0] as unknown as UniPage
-        if (!homePage.vm.$systemDialogPages) {
-          homePage.vm.$systemDialogPages = ref<UniDialogPage[]>([])
-        }
-        homePage.vm.$systemDialogPages.value = homeSystemDialogPages.map(
-          (dialogPage) => {
-            dialogPage.getParentPage = () => homePage
-            return dialogPage
-          }
-        )
-        homeDialogPages.length = 0
+        sourceDialogPages = homeSystemDialogPages
+        targetDialogPages = (
+          homePage as UniNormalPageImpl
+        ).$getSystemDialogPages()
       }
+      handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages)
     }
     nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
       uni.navigateBack({

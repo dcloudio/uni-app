@@ -23,7 +23,6 @@ import { registerDialogPage } from '../../framework/page/register'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import { OPEN_DIALOG_PAGE } from '../../constants'
-import { ref } from 'vue'
 import { closePreSystemDialogPage } from './utils'
 
 export const openDialogPage = (
@@ -78,12 +77,11 @@ export const openDialogPage = (
     if (!parentPage) {
       targetSystemDialogPages = homeSystemDialogPages
     } else {
-      if (!parentPage.vm.$systemDialogPages) {
-        parentPage.vm.$systemDialogPages = ref<UniDialogPage[]>([])
-      }
       dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE)
-      // system dialogPage 数据框架需要储存
-      targetSystemDialogPages = parentPage.vm.$systemDialogPages.value
+      // system dialogPages 数据 ios 端不需要框架处理，预期仅在鸿蒙上生效
+      targetSystemDialogPages = (
+        parentPage as UniNormalPageImpl
+      ).$getSystemDialogPages()
     }
     targetSystemDialogPages.push(dialogPage)
     if (isSystemActionSheetDialogPage(dialogPage)) {

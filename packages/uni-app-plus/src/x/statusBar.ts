@@ -11,7 +11,9 @@ export function setStatusBarStyle() {
   if (__X__) {
     const currentPage = getCurrentPage() as unknown as UniPage
     const dialogPages = currentPage?.getDialogPages()
-    const systemDialogPages = currentPage?.vm?.$systemDialogPages?.value
+    const systemDialogPages = (
+      currentPage as UniNormalPageImpl
+    ).$getSystemDialogPages()
     if (systemDialogPages?.length && dialogPages?.length) {
       const lastSystemDialogPage =
         systemDialogPages[systemDialogPages.length - 1]

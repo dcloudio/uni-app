@@ -13,8 +13,8 @@ import { $navigateTo } from './navigateTo'
 import { $switchTab } from './switchTab'
 import { _redirectTo } from './redirectTo'
 import { $reLaunch } from './reLaunch'
-import { getCurrentPage } from '@dcloudio/uni-core'
-import { addLeadingSlash } from '@dcloudio/uni-shared'
+import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
+import { ON_SHOW, addLeadingSlash } from '@dcloudio/uni-shared'
 import closeNativeDialogPage from './closeNativeDialogPage'
 
 export function closePage(
@@ -22,22 +22,8 @@ export function closePage(
   animationType: string,
   animationDuration?: number
 ) {
-  const dialogPages = (page.$page as UniPage).getDialogPages()
-  for (let i = dialogPages.length - 1; i >= 0; i--) {
-    closeNativeDialogPage(dialogPages[i])
-  }
-  if ((page as unknown as ComponentInternalInstance).$systemDialogPages) {
-    const systemDialogPages = (page as unknown as ComponentInternalInstance)
-      .$systemDialogPages!.value
-    for (let i = 0; i < systemDialogPages.length; i++) {
-      closeNativeDialogPage(systemDialogPages[i])
-    }
-    ;(page as unknown as ComponentInternalInstance).$systemDialogPages!.value =
-      []
-  }
-  for (let i = dialogPages.length - 1; i >= 0; i--) {
-    closeNativeDialogPage(dialogPages[i])
-  }
+  clearDialogPages(page.$page as UniPage)
+
   const nativePage = page.$nativePage
   nativePage && closeWebview(nativePage, animationType, animationDuration)
   removePage(page)
@@ -92,4 +78,22 @@ export function closePreSystemDialogPage(
       dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1)
     }, 150)
   }
+}
+
+export function clearDialogPages(uniPage: UniPage) {
+  const dialogPages = uniPage.getDialogPages()
+  for (let i = dialogPages.length - 1; i >= 0; i--) {
+    closeNativeDialogPage(dialogPages[i])
+    if (i > 0) {
+      invokeHook(dialogPages[i - 1].vm!, ON_SHOW)
+    }
+  }
+
+  const systemDialogPages = (
+    uniPage as UniNormalPageImpl
+  ).$getSystemDialogPages()
+  for (let i = 0; i < systemDialogPages.length; i++) {
+    closeNativeDialogPage(systemDialogPages[i])
+  }
+  systemDialogPages.length = 0
 }
