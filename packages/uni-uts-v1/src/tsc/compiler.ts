@@ -30,6 +30,7 @@ export function createUniXCompiler(
     rootFiles?: string[]
     normalizeFileName: (str: string) => string
     isPureSwift?: boolean
+    resolveWorkers: () => Record<string, string>
   }
 ) {
   const inputDir = normalizePath(options.inputDir)
@@ -93,6 +94,7 @@ export function createUniXCompiler(
       enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
       // TODO 调整参数传递方式
       isPureSwift: options.isPureSwift,
+      resolveWorkers: options.resolveWorkers,
     },
     ...options,
   }
@@ -210,9 +212,9 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     _type: 'syntactic' | 'semantic',
     diagnostic: tsTypes.Diagnostic
   ) {
-    const throwError = [100006, 110111101, 110111163, 110111120].includes(
-      diagnostic.code
-    )
+    const throwError =
+      diagnostic.__throwError ||
+      [100006, 110111101, 110111163, 110111120].includes(diagnostic.code)
     const isDebug = debugCompile.enabled
     if (throwError) {
       const error = formatDiagnostic(diagnostic, formatHost)
@@ -237,8 +239,8 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     host: tsTypes.FormatDiagnosticsHost
   ): DiagnosticError {
     const ts = compiler.getTypeScript()
-    const errorMessage = `${diagnosticCategoryName(diagnostic)} UTS${
-      diagnostic.code
+    const errorMessage = `${diagnosticCategoryName(diagnostic)}${
+      diagnostic.code ? ' UTS' + diagnostic.code : ''
     }: ${ts.flattenDiagnosticMessageText(
       diagnostic.messageText,
       host.getNewLine()
@@ -272,6 +274,11 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
             }).replace(/\t/g, ' ')
           }
         }
+      } else {
+        frame = generateCodeFrame(diagnostic.file.text, {
+          line,
+          column: character,
+        }).replace(/\t/g, ' ')
       }
 
       if (path.isAbsolute(fileName)) {
@@ -318,5 +325,11 @@ function printError(error: DiagnosticError, color: string, block: string) {
   }
   if (error.frame) {
     console.log(error.frame + blockContent)
+  }
+}
+
+declare module 'typescript' {
+  interface Diagnostic {
+    __throwError?: boolean
   }
 }

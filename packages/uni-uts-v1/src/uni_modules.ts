@@ -11,7 +11,8 @@ type TargetLanguage = Parameters<typeof createUniXCompiler>[1]
 
 function createUniXTargetLanguageCompiler(
   platform: 'app-android' | 'app-ios' | 'app-harmony',
-  language: TargetLanguage
+  language: TargetLanguage,
+  options: CreateUniXCompilerOptions
 ) {
   const tscInputDir = path.join(process.env.UNI_APP_X_TSC_DIR, platform)
   return createUniXCompiler(
@@ -27,23 +28,28 @@ function createUniXTargetLanguageCompiler(
         tscInputDir
       ),
       normalizeFileName: normalizeNodeModules,
+      resolveWorkers: options.resolveWorkers,
     }
   )
 }
 
-export function createUniXArkTSCompiler() {
-  return createUniXTargetLanguageCompiler('app-harmony', 'ArkTS')
+interface CreateUniXCompilerOptions {
+  resolveWorkers: () => Record<string, string>
+}
+
+export function createUniXArkTSCompiler(options: CreateUniXCompilerOptions) {
+  return createUniXTargetLanguageCompiler('app-harmony', 'ArkTS', options)
 }
 
 export const createUniXArkTSCompilerOnce = once(createUniXArkTSCompiler)
 
-export function createUniXKotlinCompiler() {
-  return createUniXTargetLanguageCompiler('app-android', 'Kotlin')
+export function createUniXKotlinCompiler(options: CreateUniXCompilerOptions) {
+  return createUniXTargetLanguageCompiler('app-android', 'Kotlin', options)
 }
 export const createUniXKotlinCompilerOnce = once(createUniXKotlinCompiler)
 
-export function createUniXSwiftCompiler() {
-  return createUniXTargetLanguageCompiler('app-ios', 'Swift')
+export function createUniXSwiftCompiler(options: CreateUniXCompilerOptions) {
+  return createUniXTargetLanguageCompiler('app-ios', 'Swift', options)
 }
 
 export const createUniXSwiftCompilerOnce = once(createUniXSwiftCompiler)

@@ -45,7 +45,7 @@ import { emptyDir } from '../../../fs'
 import { initScopedPreContext } from '../../../preprocess/context'
 import { isInHBuilderX } from '../../../hbx'
 import { appendConsoleExpr, rewriteConsoleExpr } from '../../../logs/console'
-import { rewriteCreateWorker } from '../../../workers'
+import { getWorkers } from '../../../workers'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
@@ -137,19 +137,11 @@ function createUniModulesSyncFilePreprocessor(
         preferConst: true,
       })
     } else if (extname === '.uts' || extname === '.ts') {
-      return rewriteCreateWorker(
-        replaceExtApiPages(
-          rewriteUniModulesConsoleExpr(fileName, preJs(content))
-        ),
-        utsPlatform,
-        fileName
+      return replaceExtApiPages(
+        rewriteUniModulesConsoleExpr(fileName, preJs(content))
       )
     } else if (extname === '.uvue' || extname === '.vue') {
-      return rewriteCreateWorker(
-        rewriteUniModulesConsoleExpr(fileName, preJs(preHtml(content))),
-        utsPlatform,
-        fileName
-      )
+      return rewriteUniModulesConsoleExpr(fileName, preJs(preHtml(content)))
     }
     return content
   }
@@ -331,22 +323,24 @@ export function uniUTSAppUniModulesPlugin(
     resolveTscUniModuleIndexFileName,
   } = resolveUTSCompiler()
 
+  const resolveWorkers = () => getWorkers()
+
   const uniXKotlinCompiler =
     process.env.UNI_APP_X_TSC === 'true' &&
     (process.env.UNI_UTS_PLATFORM === 'app-android' ||
       process.env.UNI_UTS_PLATFORM === 'app')
-      ? createUniXKotlinCompilerOnce()
+      ? createUniXKotlinCompilerOnce({ resolveWorkers })
       : null
   const uniXSwiftCompiler =
     process.env.UNI_APP_X_TSC === 'true' &&
     (process.env.UNI_UTS_PLATFORM === 'app-ios' ||
       process.env.UNI_UTS_PLATFORM === 'app')
-      ? createUniXSwiftCompilerOnce()
+      ? createUniXSwiftCompilerOnce({ resolveWorkers })
       : null
   const uniXArkTSCompiler =
     process.env.UNI_APP_X_TSC === 'true' &&
     process.env.UNI_UTS_PLATFORM === 'app-harmony'
-      ? createUniXArkTSCompilerOnce()
+      ? createUniXArkTSCompilerOnce({ resolveWorkers })
       : null
 
   if (uniXKotlinCompiler) {

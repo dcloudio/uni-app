@@ -2,7 +2,6 @@ import path from 'path'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type {
   PluginContext,
-  RollupError,
   SourceMapInput,
   TransformPluginContext,
 } from 'rollup'
@@ -25,7 +24,6 @@ import {
   normalizeEmitAssetFileName,
   normalizePath,
   offsetToStartAndEnd,
-  parseCreateWorker,
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
 import type { BindingMetadata, Position } from '@vue/compiler-core'
@@ -122,35 +120,6 @@ export async function transformMain(
   // styles
   const stylesCode = await genStyleCode(descriptor, pluginContext)
 
-  let importWorkersCode: string[] = []
-  if (scriptCode) {
-    try {
-      const { importCodes, code } = parseCreateWorker(
-        scriptCode,
-        'app-android',
-        filename
-      )
-      importWorkersCode = importCodes
-      scriptCode = code
-    } catch (e: unknown) {
-      if (scriptMap) {
-        const error = e as RollupError
-        if (error.loc) {
-          const { line, column } = error.loc
-          const consumer = new SourceMapConsumer(scriptMap as RawSourceMap)
-          const startPos = consumer.originalPositionFor({
-            line,
-            column,
-          })
-          if (startPos.line != null && startPos.column != null) {
-            error.loc.line = startPos.line
-            error.loc.column = startPos.column
-          }
-        }
-      }
-      throw e
-    }
-  }
   const utsOutput: string[] = [
     scriptCode || genDefaultScriptCode(options.genDefaultAs),
     templateCode,
@@ -158,7 +127,6 @@ export async function transformMain(
       ? `export type ${easyComInstance} = InstanceType<typeof __sfc__>;`
       : '',
     `/*${className}Styles*/\n`,
-    ...importWorkersCode,
   ]
 
   if (templatePreambleCode) {
@@ -268,8 +236,7 @@ export async function transformMain(
   if (scriptCode) {
     jsCodes.push(
       await parseImports(
-        scriptCode +
-          (importWorkersCode.length ? '\n' + importWorkersCode.join('\n') : ''),
+        scriptCode,
         resolvedMap && pluginContext
           ? createTryResolve(
               filename,

@@ -22,8 +22,8 @@ describe('uni_modules', () => {
           platform,
           pluginDir,
           platform === 'app-android'
-            ? createUniXKotlinCompilerOnce()
-            : createUniXSwiftCompilerOnce(),
+            ? createUniXKotlinCompilerOnce({ resolveWorkers: () => ({}) })
+            : createUniXSwiftCompilerOnce({ resolveWorkers: () => ({}) }),
           {
             rootFiles: [],
             preprocessor: async (content) => {

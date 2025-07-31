@@ -1,5 +1,8 @@
 import type { Plugin } from 'vite'
-import type { SyncUniModulesFilePreprocessor } from '@dcloudio/uni-uts-v1'
+import type {
+  SyncUniModulesFilePreprocessor,
+  UniXCompiler,
+} from '@dcloudio/uni-uts-v1'
 import path from 'path'
 import fs from 'fs-extra'
 import { sync } from 'fast-glob'
@@ -11,8 +14,6 @@ import {
   createAppHarmonyUniModulesSyncFilePreprocessorOnce,
   createAppIosUniModulesSyncFilePreprocessorOnce,
 } from './vite/plugins/uts/uni_modules'
-import { offsetToLineColumn } from './vite/plugins/vitejs/utils'
-import { createRollupError } from './vite'
 import { resolveBuiltIn } from './resolve'
 
 let workersRootDir: string | null = null
@@ -52,6 +53,7 @@ export function initWorkers(workersDir: string, rootDir: string) {
 export function uniWorkersPlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const platform = process.env.UNI_UTS_PLATFORM
+  const resolveWorkers = () => getWorkers()
   function refreshWorkers() {
     const workersDir = resolveWorkersDir(inputDir)
     if (workersDir) {
@@ -71,6 +73,28 @@ export function uniWorkersPlugin(): Plugin {
       ? createAppHarmonyUniModulesSyncFilePreprocessorOnce(false)
       : null
   const cache: Record<string, number> = {}
+
+  const uniXKotlinCompiler =
+    platform === 'app-android'
+      ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
+          resolveWorkers,
+        })
+      : null
+
+  const uniXSwiftCompiler =
+    platform === 'app-ios'
+      ? resolveUTSCompiler().createUniXSwiftCompilerOnce({
+          resolveWorkers,
+        })
+      : null
+
+  const uniXArkTSCompiler =
+    platform === 'app-harmony'
+      ? resolveUTSCompiler().createUniXArkTSCompilerOnce({
+          resolveWorkers,
+        })
+      : null
+
   return {
     name: 'uni-workers',
     enforce: 'pre',
@@ -80,103 +104,27 @@ export function uniWorkersPlugin(): Plugin {
           await syncWorkersFiles(platform, inputDir, preprocessor, cache)
         }
       }
-    },
-    // transform(code) {
-    //   return {
-    //     code: rewriteCreateWorker(code, platform),
-    //     map: null,
-    //   }
-    // },
-  }
-}
-
-export function parseCreateWorker(
-  code: string,
-  platform: typeof process.env.UNI_UTS_PLATFORM,
-  filename?: string
-) {
-  const importCodes: string[] = []
-  const matches = code.matchAll(/uni\.createWorker\(['|"](.*)['|"]\)/g)
-  for (const match of matches) {
-    let workerPath = match[1]
-    if (workerPath.startsWith('/')) {
-      workerPath = workerPath.slice(1)
-    } else if (workerPath.startsWith('@/')) {
-      workerPath = workerPath.slice(2)
-    }
-    const workerClass = workers[normalizePath(workerPath)]
-    if (workerClass) {
-      importCodes.push(`import { ${workerClass} } from '@/${workerPath}'`)
-      code = code.replace(
-        match[0],
-        `uni.createWorker(${resolveWorkerPath(workerClass, platform)})`
-      )
-    } else {
-      const index = match.index
-      if (typeof index === 'number') {
-        const startIndex = index + /* uni.createWorker(*/ 18
-        const endIndex = index + match[0].length
-        const start = offsetToLineColumn(code, startIndex)
-        const end = offsetToLineColumn(code, endIndex)
-        // 解析对应的行号、列号
-        throw createRollupError(
-          '',
-          filename || '',
-          {
-            name: 'SyntaxError',
-            code: '',
-            message: `worker[${workerPath}]不存在或未正确实现`,
-            loc: {
-              start: {
-                line: start.line,
-                column: start.column,
-                offset: startIndex,
-              },
-              end: {
-                line: end.line,
-                column: end.column,
-                offset: endIndex,
-              },
-              source: '',
-            },
-          },
-          code
+      // 需要等待 workers 文件同步完之后，添加到 rootFiles 中，触发 tsc 的编译
+      if (uniXKotlinCompiler) {
+        await initUniXCompilerRootWorkers(
+          tscOutDir('app-android'),
+          uniXKotlinCompiler
         )
       }
-    }
+      if (uniXSwiftCompiler) {
+        await initUniXCompilerRootWorkers(
+          tscOutDir('app-ios'),
+          uniXSwiftCompiler
+        )
+      }
+      if (uniXArkTSCompiler) {
+        await initUniXCompilerRootWorkers(
+          tscOutDir('app-harmony'),
+          uniXArkTSCompiler
+        )
+      }
+    },
   }
-  return {
-    code,
-    importCodes,
-  }
-}
-
-export function rewriteCreateWorker(
-  code: string,
-  platform: typeof process.env.UNI_UTS_PLATFORM,
-  filename?: string
-) {
-  let { importCodes, code: newCode } = parseCreateWorker(
-    code,
-    platform,
-    filename
-  )
-  if (importCodes.length > 0) {
-    newCode = newCode + '\n' + importCodes.join('\n')
-  }
-  return newCode
-}
-
-function resolveWorkerPath(
-  className: string,
-  platform: typeof process.env.UNI_UTS_PLATFORM
-) {
-  if (platform === 'app-android') {
-    return `UTSAndroid.getJavaClass(${className})`
-  } else if (platform === 'app-ios') {
-    return `${className}.self`
-  }
-  return className
 }
 
 async function syncWorkersFiles(
@@ -270,5 +218,22 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
         )
       }
     },
+  }
+}
+
+export async function initUniXCompilerRootWorkers(
+  rootDir: string,
+  compiler: UniXCompiler
+) {
+  const workers = getWorkers()
+  if (Object.keys(workers).length) {
+    for (const key in workers) {
+      const file = path.join(rootDir, key + '.ts')
+      if (fs.existsSync(file)) {
+        if (!compiler.hasRootFile(file)) {
+          await compiler.addRootFile(file)
+        }
+      }
+    }
   }
 }

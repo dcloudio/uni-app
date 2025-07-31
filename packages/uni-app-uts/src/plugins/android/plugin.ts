@@ -14,6 +14,7 @@ import {
   getCurrentCompiledUTSPlugins,
   getUniExtApiProviderRegisters,
   getUniXPagePaths,
+  getWorkers,
   initUTSKotlinAutoImportsOnce,
   isNormalCompileTarget,
   normalizeEmitAssetFileName,
@@ -27,7 +28,6 @@ import {
   resolveMainPathOnce,
   resolveSourceMapPath,
   resolveUTSCompiler,
-  rewriteCreateWorker,
   rewriteUniModulesConsoleExpr,
   tscOutDir,
   uvueOutDir,
@@ -93,9 +93,11 @@ export function uniAppPlugin(): UniVitePlugin {
 
   let resolvedConfig: ResolvedConfig
 
+  const resolveWorkers = () => getWorkers()
+
   const uniXKotlinCompiler =
     process.env.UNI_APP_X_TSC === 'true'
-      ? resolveUTSCompiler().createUniXKotlinCompilerOnce()
+      ? resolveUTSCompiler().createUniXKotlinCompilerOnce({ resolveWorkers })
       : null
   const changedFiles: { fileName: string; event: ChangeEvent }[] = []
 
@@ -198,18 +200,14 @@ export function uniAppPlugin(): UniVitePlugin {
       // 仅处理 uts 文件
       // 忽略 uni-app-uts/lib/automator/index.uts
       if (!filename.includes('uni-app-uts')) {
-        code = rewriteCreateWorker(
-          (
-            await transformAutoImport(
-              transformUniCloudMixinDataCom(
-                rewriteUniModulesConsoleExpr(id, code)
-              ),
-              id
-            )
-          ).code,
-          'app-android',
-          filename
-        )
+        code = (
+          await transformAutoImport(
+            transformUniCloudMixinDataCom(
+              rewriteUniModulesConsoleExpr(id, code)
+            ),
+            id
+          )
+        ).code
         const isMainUTS = normalizePath(id) === mainUTS
         this.emitFile({
           type: 'asset',

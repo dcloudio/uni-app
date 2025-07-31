@@ -789,7 +789,9 @@ export async function buildUniModules(
     await compileUniModuleWithTsc(
       'app-android',
       pluginDir,
-      createUniXKotlinCompiler(),
+      createUniXKotlinCompiler({
+        resolveWorkers: () => ({}),
+      }),
       {
         rootFiles: options.rootFiles,
         preprocessor: syncUniModulesFilePreprocessors.android,
@@ -802,7 +804,9 @@ export async function buildUniModules(
     await compileUniModuleWithTsc(
       'app-ios',
       pluginDir,
-      createUniXSwiftCompiler(),
+      createUniXSwiftCompiler({
+        resolveWorkers: () => ({}),
+      }),
       {
         rootFiles: options.rootFiles,
         preprocessor: syncUniModulesFilePreprocessors.ios,
@@ -815,7 +819,9 @@ export async function buildUniModules(
     await compileUniModuleWithTsc(
       'app-harmony',
       pluginDir,
-      createUniXArkTSCompiler(),
+      createUniXArkTSCompiler({
+        resolveWorkers: () => ({}),
+      }),
       {
         rootFiles: options.rootFiles,
         preprocessor: syncUniModulesFilePreprocessors.harmony,

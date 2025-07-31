@@ -24,6 +24,7 @@ import {
 } from './plugins/uts/uni_modules'
 import { removePlugins } from './utils'
 import { findChangedJsonFiles } from '../json'
+import { getWorkers } from '../workers'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -206,7 +207,9 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       }
       const uniXKotlinCompiler =
         process.env.UNI_APP_X_TSC === 'true'
-          ? resolveUTSCompiler().createUniXKotlinCompilerOnce()
+          ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
+              resolveWorkers: () => getWorkers(),
+            })
           : null
       if (uniXKotlinCompiler) {
         const tscOutputDir = tscOutDir('app-android')
@@ -485,14 +488,15 @@ export function compileCloudUniModuleWithTsc(
     createUniXArkTSCompilerOnce,
   } = resolveUTSCompiler()
   const isX = process.env.UNI_APP_X === 'true'
+  const resolveWorkers = () => getWorkers()
   return compileUniModuleWithTsc(
     platform,
     pluginDir,
     platform === 'app-android'
-      ? createUniXKotlinCompilerOnce()
+      ? createUniXKotlinCompilerOnce({ resolveWorkers })
       : platform === 'app-harmony'
-      ? createUniXArkTSCompilerOnce()
-      : createUniXSwiftCompilerOnce(),
+      ? createUniXArkTSCompilerOnce({ resolveWorkers })
+      : createUniXSwiftCompilerOnce({ resolveWorkers }),
     {
       rootFiles: [],
       preprocessor:
