@@ -269,15 +269,19 @@ function createIdent(platform: UniApp.PLATFORM) {
   return ''
 }
 
-export function createShadowImageUrl(cdn: number, type: string = 'grey') {
+export function getShadowImagePath(type: string) {
   let identStr = ''
   if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'web') {
     const ident = createIdent(process.env.UNI_PLATFORM)
     identStr = ident ? `${ident}/` : ''
   }
+  return `/${identStr}img/shadow-${type}.png`
+}
+
+export function createShadowImageUrl(cdn: number, type: string = 'grey') {
   return `https://cdn${
     (cdn || 0) + (process.env.UNI_APP_X === 'true' ? 1000 : 0) || ''
-  }.dcloud.net.cn/${identStr}img/shadow-${type}.png`
+  }.dcloud.net.cn${getShadowImagePath(type)}`
 }
 
 export function isNormalCompileTarget() {
