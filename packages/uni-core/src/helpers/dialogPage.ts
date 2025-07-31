@@ -63,12 +63,7 @@ function dialogPageTriggerParentLifeCycle(
 }
 
 function getSystemDialogPages(parentPage: UniPage) {
-  if (__PLATFORM__ === 'app') {
-    return parentPage.vm.$systemDialogPages?.value || []
-  }
-  if (__PLATFORM__ === 'h5') {
-    return parentPage.vm.$pageLayoutInstance?.$systemDialogPages.value
-  }
+  return (parentPage as UniNormalPageImpl).$getSystemDialogPages()
 }
 
 export function dialogPageTriggerPrevDialogPageLifeCycle(
