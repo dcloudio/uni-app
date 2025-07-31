@@ -601,6 +601,9 @@ declare class UniDialogPageImpl implements UniPage {
   innerHeight: number
   pageBody: UniPageBody
   safeAreaInsets: UniSafeAreaInsets
+  readonly width: number
+  readonly height: number
+  readonly statusBarHeight: number
   getParentPage: () => UniPage | null
   getParentPageByJS: () => UniPage | null
   getDialogPages(): UniDialogPage[]
@@ -614,6 +617,9 @@ declare class UniDialogPageImpl implements UniPage {
   getAndroidView(): null
   getIOSView(): null
   getHTMLElement(): null
+  getAndroidActivity: () => Activity | null
+  exitFullscreen(options: ExitFullscreenOptions | null): void
+  createElement(tagName: string): UniElement
   $component: any | null
   $disableEscBack: boolean
   $triggerParentHide: boolean
