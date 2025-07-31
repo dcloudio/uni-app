@@ -9,11 +9,11 @@ import {
   resolveBundleInputRoot,
   resolveCustomElements,
   resolveUTSSourceMapPath,
-} from './utils'
-import type { CompileResult } from '.'
+} from '../utils'
+import type { CompileResult } from '../index'
 import { sync } from 'fast-glob'
-import { parseJson } from './shared'
-import { parseUTSSyntaxError } from './stacktrace'
+import { parseJson } from '../shared'
+import { parseUTSSyntaxError } from '../stacktrace'
 
 interface ArkTSCompilerOptions {
   isX?: boolean
