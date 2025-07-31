@@ -1361,6 +1361,13 @@ const protocols = { // 需要做转换的 API 列表
       text: 'data'
     }
   },
+  pageScrollTo: {
+    args (fromArgs, toArgs) {
+      if (fromArgs.duration === undefined) {
+        toArgs.duration = 300;
+      }
+    }
+  },
   login: {
     name: 'getAuthCode',
     returnValue (result) {

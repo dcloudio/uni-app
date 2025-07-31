@@ -367,11 +367,11 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   pageScrollTo: {
-    args(fromArgs, toArgs) {
+    args (fromArgs, toArgs) {
       if (fromArgs.duration === undefined) {
         toArgs.duration = 300
       }
-    },
+    }
   },
   login: {
     name: 'getAuthCode',
