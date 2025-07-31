@@ -13,7 +13,7 @@ const compilerOptions = {
     nodeTransforms: [uniCliShared.transformRef],
 };
 const COMPONENTS_DIR = 'hascomponents';
-const customElements = [
+[
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const miniProgram = {
@@ -57,6 +57,14 @@ const options = {
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
+            targets: [
+                {
+                    src: ['ext.json', 'ascf.config.json'],
+                    get dest() {
+                        return process.env.UNI_OUTPUT_DIR;
+                    },
+                },
+            ],
         },
     },
     global: 'has',
@@ -65,7 +73,7 @@ const options = {
         subpackages: true,
         usingComponents: true,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { filter: {
             extname: '.hjs',
             lang: 'hjs',
             generate(filter, filename) {

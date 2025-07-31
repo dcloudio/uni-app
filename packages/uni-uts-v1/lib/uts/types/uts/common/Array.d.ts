@@ -105,13 +105,24 @@ interface Array<T> {
                 "uniVer": "x",
                 "unixVer": "x"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "x",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+            "uniVer": "x",
+            "unixVer": "x"
         }
      }
    */
   toKotlinList(): kotlin.collections.List<any>
 
   /**
-     将指定的元素追加到此列表的末尾
+     将指定的元素追加到此列表的末尾，不推荐使用本方法，推荐使用push替代。
      @param item 添加到数组的元素。
      @return 是否成功添加
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#add
@@ -127,8 +138,8 @@ interface Array<T> {
             },
             "ios": {
                "osVer": "12.0",
-               "uniVer": "√",
-               "unixVer": "4.11",
+               "uniVer": "x",
+               "unixVer": "x",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
@@ -139,6 +150,17 @@ interface Array<T> {
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             }
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "x",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+            "uniVer": "x",
+            "unixVer": "x"
         }
      }
    */
