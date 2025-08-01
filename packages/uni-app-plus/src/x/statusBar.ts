@@ -16,8 +16,8 @@ export function setStatusBarStyle() {
       const lastSystemDialogPage =
         systemDialogPages[systemDialogPages.length - 1]
       const lastDialogPage = dialogPages[dialogPages.length - 1]
-      // @ts-expect-error
       page =
+        // @ts-expect-error
         Number(lastSystemDialogPage.__nativePageId) >
         Number((lastDialogPage as any).__nativePageId)
           ? lastSystemDialogPage.vm
