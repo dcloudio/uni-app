@@ -1,5 +1,5 @@
 import { extend, isPromise } from '@vue/shared'
-import { type ComponentPublicInstance, ref } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import type { EventChannel, UniNode } from '@dcloudio/uni-shared'
 import {
@@ -191,9 +191,7 @@ export function registerPage(
       }
       if (homeSystemDialogPages.length) {
         sourceDialogPages = homeSystemDialogPages
-        targetDialogPages = (
-          homePage as UniNormalPageImpl
-        ).$getSystemDialogPages()
+        targetDialogPages = homePage.$getSystemDialogPages()
       }
       handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages)
     }

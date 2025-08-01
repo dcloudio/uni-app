@@ -11,13 +11,12 @@ export function setStatusBarStyle() {
   if (__X__) {
     const currentPage = getCurrentPage() as unknown as UniPage
     const dialogPages = currentPage?.getDialogPages()
-    const systemDialogPages = (
-      currentPage as UniNormalPageImpl
-    ).$getSystemDialogPages()
+    const systemDialogPages = currentPage.$getSystemDialogPages()
     if (systemDialogPages?.length && dialogPages?.length) {
       const lastSystemDialogPage =
         systemDialogPages[systemDialogPages.length - 1]
       const lastDialogPage = dialogPages[dialogPages.length - 1]
+      // @ts-expect-error
       page =
         Number(lastSystemDialogPage.__nativePageId) >
         Number((lastDialogPage as any).__nativePageId)

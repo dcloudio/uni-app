@@ -608,6 +608,7 @@ declare class UniDialogPageImpl implements UniPage {
   getParentPage: () => UniPage | null
   getParentPageByJS: () => UniPage | null
   getDialogPages(): UniDialogPage[]
+  $getSystemDialogPages(): UniDialogPage[]
   getPageStyle(): UTSJSONObject
   $getPageStyle(): UTSJSONObject
   getPageStyleByJS(): UTSJSONObject

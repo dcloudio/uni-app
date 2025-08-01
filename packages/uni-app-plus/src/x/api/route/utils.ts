@@ -89,9 +89,7 @@ export function clearDialogPages(uniPage: UniPage) {
     }
   }
 
-  const systemDialogPages = (
-    uniPage as UniNormalPageImpl
-  ).$getSystemDialogPages()
+  const systemDialogPages = uniPage.$getSystemDialogPages()
   for (let i = 0; i < systemDialogPages.length; i++) {
     closeNativeDialogPage(systemDialogPages[i])
   }

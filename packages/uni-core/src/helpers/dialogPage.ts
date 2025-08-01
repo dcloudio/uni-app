@@ -63,7 +63,7 @@ function dialogPageTriggerParentLifeCycle(
 }
 
 function getSystemDialogPages(parentPage: UniPage) {
-  return (parentPage as UniNormalPageImpl).$getSystemDialogPages()
+  return parentPage.$getSystemDialogPages() as UniDialogPage[]
 }
 
 export function dialogPageTriggerPrevDialogPageLifeCycle(
