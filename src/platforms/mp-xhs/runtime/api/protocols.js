@@ -9,9 +9,19 @@ export const protocols = {
   // navigateTo,
   // redirectTo,
   // previewImage,
-  getSystemInfo,
-  getSystemInfoSync: getSystemInfo
   // getUserProfile
+  getSystemInfo,
+  getSystemInfoSync: getSystemInfo,
+  requestPayment: {
+    name: 'requestOrderPayment',
+  },
+  showActionSheet: {
+    args(fromArgs, toArgs) {
+      if (!fromArgs.itemColor) {
+        toArgs.itemColor = '#000000'
+      }
+    },
+  }
 }
 
 // 不支持的 API 列表
