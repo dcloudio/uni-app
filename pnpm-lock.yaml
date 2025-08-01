@@ -25,8 +25,8 @@ catalogs:
       specifier: 7.25.6
       version: 7.25.6
     '@dcloudio/types':
-      specifier: 3.4.16
-      version: 3.4.16
+      specifier: 3.4.19
+      version: 3.4.19
     '@dcloudio/uni-app-x':
       specifier: 0.7.62
       version: 0.7.62
@@ -247,7 +247,7 @@ importers:
         version: 7.25.4(@babel/core@7.25.2)
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.16
+        version: 3.4.19
       '@dcloudio/uni-api':
         specifier: workspace:*
         version: link:packages/uni-api
@@ -1009,7 +1009,7 @@ importers:
     dependencies:
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.16
+        version: 3.4.19
       '@dcloudio/uni-cloud':
         specifier: workspace:*
         version: link:../uni-cloud
@@ -2285,7 +2285,7 @@ importers:
     devDependencies:
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.16
+        version: 3.4.19
 
   packages/uni-stat:
     dependencies:
@@ -3174,8 +3174,8 @@ packages:
   '@cypress/xvfb@1.2.4':
     resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
 
-  '@dcloudio/types@3.4.16':
-    resolution: {integrity: sha512-gJIr1OWtePTDDdjtp8Kh72S/ZGLunoSfHiUvRtXhBmAFNkDWuAKFO90hv62k3GYN/st04xUBQNtBfvhu/YHjww==}
+  '@dcloudio/types@3.4.19':
+    resolution: {integrity: sha512-1foayOFEAQ+jnQLt3ACsovCNjer3/fXn1I2VBpmDOzs2nk/n4UHwRLAxZV/RpxRqaGOPEvKrO/Pq+VI6sAmuRw==}
 
   '@dcloudio/uni-app-x@0.7.62':
     resolution: {integrity: sha512-cUralOYFpjJUueybuF142kzzovmuGGw/Tf4e2f/9Z6798yi7esOXzrJaXuthzSiK5uSYPKdCYCkiPiIoUuLMbw==}
@@ -8751,7 +8751,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@dcloudio/types@3.4.16': {}
+  '@dcloudio/types@3.4.19': {}
 
   '@dcloudio/uni-app-x@0.7.62': {}
 
