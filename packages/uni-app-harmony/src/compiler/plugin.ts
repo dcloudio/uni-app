@@ -1,7 +1,6 @@
 import path from 'path'
 import {
   type UniVitePlugin,
-  buildNonTreeShakingUniModules,
   buildUniExtApis,
   camelize,
   capitalize,
@@ -19,6 +18,7 @@ import type { OutputChunk, PluginContext } from 'rollup'
 import ExternalModuls from './external-modules.json'
 import ExternalModulsX from './external-modules-x.json'
 import { ComponentsWithProvider, ComponentsWithProviderX } from './constants'
+import { buildWorkers } from './workers'
 
 const isX = process.env.UNI_APP_X === 'true'
 const StandaloneExtApis = isX ? ExternalModulsX : ExternalModuls
@@ -167,6 +167,9 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       if (!isX) {
         // x 上暂时编译所有uni ext api，不管代码里是否调用了
         await buildUniExtApis()
+      }
+      if (isX) {
+        await buildWorkers()
       }
     },
   }

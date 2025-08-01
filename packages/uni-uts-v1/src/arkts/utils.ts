@@ -334,7 +334,10 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['effectScope'],
       ['EffectScope'],
       ['getCurrentScope'],
-      ['onScopeDispose']
+      ['onScopeDispose'],
+
+      // worker
+      ['WorkerTaskImpl']
     )
   }
 

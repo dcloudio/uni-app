@@ -193,6 +193,27 @@ var ExternalModulesX = [
 const ComponentsWithProvider = [];
 const ComponentsWithProviderX = ['uni-map'];
 
+async function buildWorkers() {
+    const workers = uniCliShared.getWorkers();
+    if (!Object.keys(workers).length) {
+        return;
+    }
+    const rootDir = uniCliShared.uvueOutDir('app-harmony');
+    const { bundleArkTS, parseUTSSyntaxError } = uniCliShared.resolveUTSCompiler();
+    for (const workPath in workers) {
+        const result = await bundleArkTS({
+            isX: true,
+            filename: path__default.default.resolve(rootDir, workPath),
+            rootDir,
+            outDir: process.env.UNI_OUTPUT_DIR,
+            footer: `new ${workers[workPath]}()`,
+        });
+        if (result && result.error) {
+            throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR);
+        }
+    }
+}
+
 const isX = process.env.UNI_APP_X === 'true';
 const StandaloneExtApis = isX ? ExternalModulesX : ExternalModuls;
 const Providers = StandaloneExtApis.filter((item) => item.type === 'provider');
@@ -304,6 +325,9 @@ function uniAppHarmonyPlugin() {
             if (!isX) {
                 // x 上暂时编译所有uni ext api，不管代码里是否调用了
                 await uniCliShared.buildUniExtApis();
+            }
+            if (isX) {
+                await buildWorkers();
             }
         },
     };

@@ -17,6 +17,7 @@ import { parseUTSSyntaxError } from '../stacktrace'
 import { getArkTSAutoImports, getRuntimePackageName } from './utils'
 
 export { getArkTSAutoImports } from './utils'
+export { bundleArkTS } from './compiler'
 interface ArkTSCompilerOptions {
   isX?: boolean
   isExtApi?: boolean

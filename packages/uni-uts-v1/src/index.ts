@@ -64,6 +64,7 @@ export { getPluginInjectApis, getPluginInjectComponents } from './utils'
 export { parseExportIdentifiers, parseInterfaceTypes } from './code'
 
 export {
+  bundleArkTS,
   compileArkTS,
   compileArkTSExtApi,
   getArkTSAutoImports,
@@ -83,6 +84,7 @@ export { parseInjectModules, parseExtApiProviders } from './utils'
 export * from './sourceMap'
 
 export {
+  parseUTSSyntaxError,
   parseCompileStacktrace,
   parseRuntimeStacktrace,
   parseUTSRuntimeStacktrace,

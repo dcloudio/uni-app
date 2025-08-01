@@ -16,6 +16,8 @@ interface BundleArkTSOptions {
   outDir: string
   sourceMap?: boolean
   uni_modules?: string[]
+  banner?: string
+  footer?: string
 }
 
 export async function bundleArkTS({
@@ -25,6 +27,8 @@ export async function bundleArkTS({
   outDir,
   sourceMap,
   uni_modules,
+  banner,
+  footer,
 }: BundleArkTSOptions) {
   const runtimePackageName = getRuntimePackageName(isX)
   const buildOptions: UTSBundleOptions = {
@@ -47,6 +51,8 @@ export async function bundleArkTS({
       errorFormat: 'json',
       outDir,
       package: '',
+      banner,
+      footer,
       imports: [],
       sourceMap: sourceMap ? path.resolve(resolveUTSSourceMapPath()) : false,
       extname: '.ets',
