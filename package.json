@@ -35,11 +35,11 @@
   },
   "lint-staged": {
     "packages/*/src/**/*.ts?(x)": [
-      "eslint",
+      "eslint --fix",
       "prettier --parser=typescript --write"
     ],
     "packages/*/__tests__/**/*.ts?(x)": [
-      "eslint",
+      "eslint --fix",
       "prettier --parser=typescript --write"
     ]
   },
