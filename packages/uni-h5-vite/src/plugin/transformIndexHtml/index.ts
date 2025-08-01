@@ -4,7 +4,6 @@ import {
   getPlatformManifestJson,
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
-import { AliYunCloudAuthWebSDK } from '../../utils'
 
 export function createTransformIndexHtml(): Plugin['transformIndexHtml'] {
   let warned = false
@@ -38,28 +37,13 @@ export function createTransformIndexHtml(): Plugin['transformIndexHtml'] {
     const tags: HtmlTagDescriptor[] = []
 
     if (process.env.NODE_ENV === 'development') {
-      tags.push(
-        {
-          tag: 'script',
-          children: `if (typeof globalThis === 'undefined') {
+      tags.push({
+        tag: 'script',
+        children: `if (typeof globalThis === 'undefined') {
   window.globalThis = window
 }`,
-          injectTo: 'head-prepend',
-        },
-        {
-          tag: 'noscript',
-          children:
-            '在运行期间注入实人认证 SDK。需要开启 JavaScript（发行期间会根据API的使用判断是否注入）',
-          injectTo: 'head',
-        },
-        {
-          tag: 'script',
-          attrs: {
-            src: AliYunCloudAuthWebSDK,
-          },
-          injectTo: 'head',
-        }
-      )
+        injectTo: 'head-prepend',
+      })
     }
 
     return {

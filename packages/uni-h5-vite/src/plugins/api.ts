@@ -1,23 +1,47 @@
-import type { Plugin } from 'vite'
-import type { OutputChunk } from 'rollup'
+import type { Plugin, ViteDevServer } from 'vite'
 import { AliYunCloudAuthWebSDK } from '../utils'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
+
+let enableFacialRecognition = false
+
+function isEnableFacialRecognition() {
+  return enableFacialRecognition
+}
+
+function setEnableFacialRecognition(enable: boolean) {
+  enableFacialRecognition = enable
+}
+
+function checkFacialRecognition(code: string) {
+  return (
+    code.includes('getFacialRecognitionMetaInfo') ||
+    code.includes('window.getMetaInfo')
+  )
+}
 
 export function uniApiPlugin(): Plugin {
-  let isEnableFacialRecognition = false
-  let isInserted = false
+  let viteServer: ViteDevServer | undefined = undefined
+  const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   return {
     name: 'uni:h5-api',
-    apply: 'build',
-    enforce: 'pre',
-    async generateBundle(_options, bundle) {
-      if (!isEnableFacialRecognition) {
-        const filesNames = Object.keys(bundle)
-        for (const fileName of filesNames) {
-          const chunk = bundle[fileName] as OutputChunk
-          if (chunk && chunk.type === 'chunk' && chunk.code) {
-            isEnableFacialRecognition =
-              chunk.code.includes('getFacialRecognitionMetaInfo') ||
-              chunk.code.includes('window.getMetaInfo')
+    enforce: 'post',
+    configureServer(server) {
+      viteServer = server
+    },
+    transform(code, id) {
+      // 通过transform阶段识别，仅判断inputDir内部的文件，避免框架文件影响
+      if (
+        !isEnableFacialRecognition() &&
+        normalizePath(id).startsWith(inputDir)
+      ) {
+        if (checkFacialRecognition(code)) {
+          setEnableFacialRecognition(true)
+          if (viteServer) {
+            // 开发模式触发重新刷新
+            viteServer.ws.send({
+              type: 'full-reload',
+              path: '*',
+            })
           }
         }
       }
@@ -25,11 +49,9 @@ export function uniApiPlugin(): Plugin {
     transformIndexHtml: {
       order: 'post',
       handler() {
-        if (!isEnableFacialRecognition || isInserted) {
+        if (!isEnableFacialRecognition()) {
           return
         }
-        isInserted = true
-        // 追加框架css
         return [
           {
             tag: 'script',
