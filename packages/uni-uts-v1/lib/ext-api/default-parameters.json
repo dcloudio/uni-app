@@ -69,6 +69,11 @@
       "null"
     ]
   },
+  "uni-getNetworkType": {
+    "offNetworkStatusChange": [
+      "null"
+    ]
+  },
   "uni-keyboard": {
     "hideKeyboard": [
       "null"
