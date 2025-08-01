@@ -29,4 +29,8 @@ export const showActionSheet = {
   },
 }
 
+export const requestPayment = {
+  name: 'requestOrderPayment',
+}
+
 export const navigateTo = _navigateTo()
