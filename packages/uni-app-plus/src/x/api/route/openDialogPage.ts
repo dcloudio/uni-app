@@ -80,7 +80,7 @@ export const openDialogPage = (
       dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE)
       // system dialogPages 数据 ios 端不需要框架处理，预期仅在鸿蒙上生效
       targetSystemDialogPages =
-        parentPage.$getSystemDialogPages() as UniDialogPage[]
+        parentPage.__$$getSystemDialogPages() as UniDialogPage[]
     }
     targetSystemDialogPages.push(dialogPage)
     if (isSystemActionSheetDialogPage(dialogPage)) {

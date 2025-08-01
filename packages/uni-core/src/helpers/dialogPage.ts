@@ -63,6 +63,9 @@ function dialogPageTriggerParentLifeCycle(
 }
 
 function getSystemDialogPages(parentPage: UniPage) {
+  if (__PLATFORM__ === 'app') {
+    return parentPage.__$$getSystemDialogPages() as UniDialogPage[]
+  }
   return parentPage.$getSystemDialogPages() as UniDialogPage[]
 }
 

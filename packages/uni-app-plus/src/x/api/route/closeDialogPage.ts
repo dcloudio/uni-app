@@ -49,7 +49,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         return
       }
     } else {
-      const systemDialogPages = parentPage?.$getSystemDialogPages()
+      const systemDialogPages = parentPage?.__$$getSystemDialogPages()
       if (systemDialogPages) {
         const index = systemDialogPages.indexOf(dialogPage)
         if (index > -1) {

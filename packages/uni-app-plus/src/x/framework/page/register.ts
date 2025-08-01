@@ -191,7 +191,7 @@ export function registerPage(
       }
       if (homeSystemDialogPages.length) {
         sourceDialogPages = homeSystemDialogPages
-        targetDialogPages = homePage.$getSystemDialogPages()
+        targetDialogPages = homePage.__$$getSystemDialogPages()
       }
       handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages)
     }
