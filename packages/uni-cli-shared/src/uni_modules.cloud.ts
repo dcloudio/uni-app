@@ -211,12 +211,7 @@ export function findCloudEncryptUniModules(
       let type: 'utssdk' | 'easycom' | '' = ''
       if (fs.existsSync(utssdkDir)) {
         // app-android 和 app-ios 不能云编译 utssdk 插件，而是需要自定义基座
-        // app-harmony 平台目前不支持云编译
-        if (
-          platform === 'app-android' ||
-          platform === 'app-ios' ||
-          platform === 'app-harmony'
-        ) {
+        if (platform === 'app-android' || platform === 'app-ios') {
           return
         }
         // 其他平台必须有平台index.uts或根目录index.uts
