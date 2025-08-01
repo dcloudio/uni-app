@@ -1879,10 +1879,7 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
   invokeHook(currentPage.vm, lifeCycle);
 }
 function getSystemDialogPages(parentPage) {
-  var _b;
-  {
-    return (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
-  }
+  return parentPage.$getSystemDialogPages();
 }
 function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
   var _a, _b, _c, _d;
@@ -2259,7 +2256,7 @@ function initOn() {
   on2(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
 function onResize$2(res) {
-  var _a, _b;
+  var _a;
   const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
   invokeHook(page, ON_RESIZE, res);
   {
@@ -2267,7 +2264,7 @@ function onResize$2(res) {
     if ((dialogPages == null ? void 0 : dialogPages.length) > 0) {
       invokeHook(dialogPages[dialogPages.length - 1].vm, ON_RESIZE, res);
     }
-    const systemDialogPages = (_b = page == null ? void 0 : page.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
+    const systemDialogPages = page == null ? void 0 : page.$page.$getSystemDialogPages();
     if ((systemDialogPages == null ? void 0 : systemDialogPages.length) > 0) {
       invokeHook(
         systemDialogPages[systemDialogPages.length - 1].vm,

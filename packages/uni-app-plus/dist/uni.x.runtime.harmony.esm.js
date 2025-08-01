@@ -1788,7 +1788,7 @@ var closeDialogPage = (options) => {
         return;
       }
     } else {
-      var systemDialogPages = parentPage.$getSystemDialogPages();
+      var systemDialogPages = parentPage === null || parentPage === void 0 ? void 0 : parentPage.$getSystemDialogPages();
       if (systemDialogPages) {
         var _index = systemDialogPages.indexOf(dialogPage);
         if (_index > -1) {
