@@ -109,7 +109,7 @@ export const options: UniMiniProgramPluginOptions = {
   },
   project: {
     filename: projectConfigFilename,
-    config: ['project.config.json'],
+    config: ['project.config.json', 'project.xhs.json'],
     source,
   },
   template: {
