@@ -428,14 +428,13 @@ function findUniExtApi(error: string, re: RegExp, includeStr: string) {
   return api
 }
 
-const packageFormatter: Formatter = {
+export const packageFormatter: Formatter = {
   format(error, _, appid) {
     if (appid) {
-      return error
-        .replaceAll(parseUniXAppAndroidPackage(appid) + '.', '')
-        .replaceAll('io.dcloud.uts.', '')
+      error = error.replaceAll(parseUniXAppAndroidPackage(appid) + '.', '')
     }
-    return error
+    // 替换所有以 io.dcloud. 开头的包名，只保留最后的类型名
+    return error.replace(/io\.dcloud\.[a-zA-Z0-9_.]+\./g, '')
   },
 }
 

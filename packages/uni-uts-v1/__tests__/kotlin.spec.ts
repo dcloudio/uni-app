@@ -1,6 +1,7 @@
 import path from 'path'
 import {
   hbuilderKotlinCompileErrorFormatter,
+  packageFormatter,
   resolveUTSKotlinFilenameByClassName,
 } from '../src/stacktrace/kotlin'
 import { SPECIAL_CHARS } from '../src/utils'
@@ -76,5 +77,31 @@ describe('uts:kotlin', () => {
         SPECIAL_CHARS.ERROR_BLOCK +
         'error: java.lang.ClassCastException: Array cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
     )
+  })
+  test('packageFormatter', () => {
+    // 'io.dcloud.uts.*',
+    // 'io.dcloud.uniapp.framework.*',
+    // 'io.dcloud.uniapp.vue.*',
+    // 'io.dcloud.uniapp.vue.shared.*',
+    // 'io.dcloud.uniapp.runtime.*',
+    expect(packageFormatter.format('io.dcloud.uts.UTSArray', [], '')).toBe(
+      'UTSArray'
+    )
+    expect(
+      packageFormatter.format('io.dcloud.uniapp.framework.UniConfig', [], '')
+    ).toBe('UniConfig')
+    expect(
+      packageFormatter.format(
+        'io.dcloud.uniapp.vue.UTSReactiveJSONObject',
+        [],
+        ''
+      )
+    ).toBe('UTSReactiveJSONObject')
+    expect(
+      packageFormatter.format('io.dcloud.uniapp.vue.shared.isTrue', [], '')
+    ).toBe('isTrue')
+    expect(
+      packageFormatter.format('io.dcloud.uniapp.runtime.UniEvent', [], '')
+    ).toBe('UniEvent')
   })
 })
