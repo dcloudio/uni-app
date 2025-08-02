@@ -142,17 +142,17 @@ export const UVUE_BUILT_IN_TAGS = [
   'cover-image',
   // custom element
   'match-media',
-  'checkbox',
-  'checkbox-group',
-  'form',
-  'navigator',
-  'picker-view',
-  'picker-view-column',
-  'progress',
-  'slider',
-  'switch',
-  'radio',
-  'radio-group',
+  // 'checkbox',
+  // 'checkbox-group',
+  // 'form',
+  // 'navigator',
+  // 'picker-view',
+  // 'picker-view-column',
+  // 'progress',
+  // 'slider',
+  // 'switch',
+  // 'radio',
+  // 'radio-group',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
@@ -302,9 +302,8 @@ export function isAppIOSUVueNativeTag(tag: string) {
     return true
   }
   if (
-    UVUE_BUILT_IN_TAGS.includes(tag) &&
-    tag != 'navigator' &&
-    tag != 'slider'
+    //  && tag != 'navigator' && tag != 'slider'
+    UVUE_BUILT_IN_TAGS.includes(tag)
   ) {
     return true
   }
