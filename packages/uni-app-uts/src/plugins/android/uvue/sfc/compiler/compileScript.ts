@@ -913,15 +913,19 @@ __ins.emit(event, ...do_not_transform_spread)
   // }
 
   const destructureElements =
-    ctx.hasDefineExposeCall || !options.inlineTemplate
-      ? [`expose: __expose`]
-      : []
+    ctx.hasDefineExposeCall || !options.inlineTemplate ? ['expose'] : []
   // emit 是个函数且不定参数，不通过解构处理
   // if (ctx.emitDecl) {
   // destructureElements.push(`emit: __emit`)
   // }
+  let setupCtxCode = ''
   if (destructureElements.length) {
-    args += `, { ${destructureElements.join(', ')} }: SetupContext`
+    args += `, __setupCtx: SetupContext`
+    const setupCtxCodes: string[] = []
+    destructureElements.forEach((element) => {
+      setupCtxCodes.push(`const __${element} = __setupCtx.${element}`)
+    })
+    setupCtxCode = `\n` + setupCtxCodes.join('\n')
   }
   // 10. finalize default export
   const genDefaultAs = options.genDefaultAs
@@ -982,7 +986,7 @@ __ins.emit(event, ...do_not_transform_spread)
     `\n${genDefaultAs} ${ctx.helper(
       resolveDefineCode(ctx.options.componentType!)
     )}({${runtimeOptions}\n  ` +
-      `${hasAwait ? `async ` : ``}setup(${args}) {
+      `${hasAwait ? `async ` : ``}setup(${args}) {${setupCtxCode}
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy${
         options.genDefaultAs
