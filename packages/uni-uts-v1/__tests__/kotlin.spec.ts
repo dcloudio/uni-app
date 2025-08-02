@@ -1,8 +1,8 @@
 import path from 'path'
 import {
   hbuilderKotlinCompileErrorFormatter,
-  packageFormatter,
   resolveUTSKotlinFilenameByClassName,
+  trimKotlinErrorMessage,
 } from '../src/stacktrace/kotlin'
 import { SPECIAL_CHARS } from '../src/utils'
 
@@ -42,7 +42,7 @@ describe('uts:kotlin', () => {
     ).toBe(
       '\u200C' +
         SPECIAL_CHARS.ERROR_BLOCK +
-        'error: java.lang.ClassCastException: io.dcloud.uniapp.vue.UTSJSONObject cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
+        'error: java.lang.ClassCastException: UTSJSONObject cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
     )
     expect(
       hbuilderKotlinCompileErrorFormatter({
@@ -84,24 +84,28 @@ describe('uts:kotlin', () => {
     // 'io.dcloud.uniapp.vue.*',
     // 'io.dcloud.uniapp.vue.shared.*',
     // 'io.dcloud.uniapp.runtime.*',
-    expect(packageFormatter.format('io.dcloud.uts.UTSArray', [], '')).toBe(
-      'UTSArray'
+    expect(trimKotlinErrorMessage('io.dcloud.uts.UTSArray')).toBe('UTSArray')
+    expect(trimKotlinErrorMessage('io.dcloud.uniapp.framework.UniConfig')).toBe(
+      'UniConfig'
     )
     expect(
-      packageFormatter.format('io.dcloud.uniapp.framework.UniConfig', [], '')
-    ).toBe('UniConfig')
-    expect(
-      packageFormatter.format(
-        'io.dcloud.uniapp.vue.UTSReactiveJSONObject',
-        [],
-        ''
-      )
+      trimKotlinErrorMessage('io.dcloud.uniapp.vue.UTSReactiveJSONObject')
     ).toBe('UTSReactiveJSONObject')
+    expect(trimKotlinErrorMessage('io.dcloud.uniapp.vue.shared.isTrue')).toBe(
+      'isTrue'
+    )
+    expect(trimKotlinErrorMessage('io.dcloud.uniapp.runtime.UniEvent')).toBe(
+      'UniEvent'
+    )
     expect(
-      packageFormatter.format('io.dcloud.uniapp.vue.shared.isTrue', [], '')
-    ).toBe('isTrue')
+      trimKotlinErrorMessage(
+        `Type mismatch: inferred type is A__1 but A was expected`
+      )
+    ).toBe(`Type mismatch: inferred type is A__1 but A was expected`)
     expect(
-      packageFormatter.format('io.dcloud.uniapp.runtime.UniEvent', [], '')
-    ).toBe('UniEvent')
+      trimKotlinErrorMessage(
+        `Type mismatch: inferred type is A__1 but B was expected`
+      )
+    ).toBe(`Type mismatch: inferred type is A but B was expected`)
   })
 })

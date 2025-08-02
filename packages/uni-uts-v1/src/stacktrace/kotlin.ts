@@ -428,14 +428,26 @@ function findUniExtApi(error: string, re: RegExp, includeStr: string) {
   return api
 }
 
-export const packageFormatter: Formatter = {
-  format(error, _, appid) {
-    if (appid) {
-      error = error.replaceAll(parseUniXAppAndroidPackage(appid) + '.', '')
+export function trimKotlinErrorMessage(error: string, appid?: string) {
+  if (appid) {
+    error = error.replaceAll(parseUniXAppAndroidPackage(appid) + '.', '')
+  }
+  let shouldTrimRenamer = true
+  const matches = error.match(TYPE_MISMATCH_RE)
+  if (matches) {
+    const [, inferredType, expectedType] = matches
+    // 如果是类型相同，则不进行重命名，不然会提示A不匹配A，更容易误解
+    if (
+      inferredType.replace('?', '').replace(/__[0-9]+/g, '') ===
+      expectedType.replace('?', '').replace(/__[0-9]+/g, '')
+    ) {
+      shouldTrimRenamer = false
     }
-    // 替换所有以 io.dcloud. 开头的包名，只保留最后的类型名
-    return error.replace(/io\.dcloud\.[a-zA-Z0-9_.]+\./g, '')
-  },
+  }
+  if (shouldTrimRenamer) {
+    error = error.replace(/__[0-9]+/g, '')
+  }
+  return error.replace(/io\.dcloud\.[a-zA-Z0-9_.]+\./g, '')
 }
 
 function parseOrigType(type1: string, type2: string) {
@@ -489,10 +501,7 @@ const compileFormatters: Formatter[] = [
   unresolvedErrorFormatter,
 ]
 
-const runtimeFormatters: Formatter[] = [
-  extApiRuntimeErrorFormatter,
-  packageFormatter,
-]
+const runtimeFormatters: Formatter[] = [extApiRuntimeErrorFormatter]
 
 const UNI_API_RE = /(uni\.\w+)/
 const UNI_CLOUD_API_RE = /(uniCloud\.\w+)/
@@ -524,6 +533,8 @@ function formatKotlinError(
       standardType
     )
   })
+
+  error = trimKotlinErrorMessage(error, appid)
 
   for (const formatter of formatters) {
     const err = formatter.format(error, codes, appid)
