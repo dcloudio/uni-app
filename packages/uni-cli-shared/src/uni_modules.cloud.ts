@@ -196,7 +196,8 @@ const uniModulesEncryptTypes: Map<string, 'utssdk' | 'easycom' | ''> = new Map()
 export function findCloudEncryptUniModules(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string,
-  cacheDir: string = ''
+  cacheDir: string = '',
+  sdkType: CloudCompileSdkType = 'all'
 ) {
   uniModulesEncryptTypes.clear()
   const uniModules: Record<string, EncryptPackageJson | undefined> = {}
@@ -229,6 +230,12 @@ export function findCloudEncryptUniModules(
           return
         }
         type = 'easycom'
+      }
+      if (sdkType === 'utssdk' && type === 'easycom') {
+        return
+      }
+      if (sdkType === 'easycom' && type === 'utssdk') {
+        return
       }
       const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
       uniModules[uniModuleDir] = findEncryptUniModuleCache(
@@ -486,25 +493,32 @@ export function resolveEncryptUniModule(
   }
 }
 
+type CloudCompileSdkType = 'utssdk' | 'easycom' | 'all'
+
+export interface CloudCompileParams {
+  mode: 'development' | 'production'
+  packType: 'debug' | 'release'
+  compilerVersion: string // hxVersion
+  appid: string
+  appname: string
+  platform: typeof process.env.UNI_UTS_PLATFORM // app-android | app-ios | web
+  'uni-app-x': boolean
+  env: Record<string, string>
+}
+
 export async function checkEncryptUniModules(
   inputDir: string,
-  params: {
-    mode: 'development' | 'production'
-    packType: 'debug' | 'release'
-    compilerVersion: string // hxVersion
-    appid: string
-    appname: string
-    platform: typeof process.env.UNI_UTS_PLATFORM // app-android | app-ios | web
-    'uni-app-x': boolean
-  }
+  params: CloudCompileParams,
+  sdkType: CloudCompileSdkType = 'all'
 ) {
-  // 扫描加密插件云编译
-  encryptUniModules = findCloudEncryptUniModules(
+  // 初始化指定 sdk 类型的加密插件
+  const curEncryptUniModules = findCloudEncryptUniModules(
     params.platform,
     inputDir,
-    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
+    sdkType
   )
-  if (!Object.keys(encryptUniModules).length) {
+  if (!Object.keys(curEncryptUniModules).length) {
     return {}
   }
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
@@ -513,7 +527,7 @@ export async function checkEncryptUniModules(
 
   const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!
   const { zipFile, modules } = packUploadEncryptUniModules(
-    encryptUniModules,
+    curEncryptUniModules,
     process.env.UNI_UTS_PLATFORM,
     inputDir,
     cacheDir
@@ -577,10 +591,12 @@ export async function checkEncryptUniModules(
       })
     }
   }
+  // 初始化所有
   encryptUniModules = findCloudEncryptUniModules(
     params.platform,
     inputDir,
-    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
+    'all'
   )
 }
 

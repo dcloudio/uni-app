@@ -29,6 +29,7 @@ import {
   parseUTSModuleDeps,
 } from '../../../uni_modules'
 import {
+  type CloudCompileParams,
   checkEncryptUniModules,
   resolveEncryptUniModule,
 } from '../../../uni_modules.cloud'
@@ -767,7 +768,8 @@ export function uniDecryptUniModulesPlugin(): Plugin {
     async configResolved() {
       if (isX && isNormalCompileTarget()) {
         const manifest = parseManifestJsonOnce(inputDir)
-        await checkEncryptUniModules(inputDir, {
+        const env: Record<string, string> = {}
+        const options: CloudCompileParams = {
           mode:
             process.env.NODE_ENV !== 'development'
               ? 'production'
@@ -780,7 +782,40 @@ export function uniDecryptUniModulesPlugin(): Plugin {
           appname: manifest.name,
           platform: process.env.UNI_UTS_PLATFORM,
           'uni-app-x': isX,
-        })
+          env,
+        }
+        // 鸿蒙平台需要拆分两次云编译
+        if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+          const harmonyEnv = {
+            ...env,
+            UNI_HARMONY_COMPATIBLE_SDK_VERSION:
+              process.env.UNI_HARMONY_COMPATIBLE_SDK_VERSION || '',
+          }
+          await checkEncryptUniModules(
+            inputDir,
+            {
+              ...options,
+              env: {
+                ...harmonyEnv,
+                UNI_HARMONY_SDK_TYPE: 'utssdk',
+              },
+            },
+            'utssdk'
+          )
+          await checkEncryptUniModules(
+            inputDir,
+            {
+              ...options,
+              env: {
+                ...harmonyEnv,
+                UNI_HARMONY_SDK_TYPE: 'easycom',
+              },
+            },
+            'easycom'
+          )
+        } else {
+          await checkEncryptUniModules(inputDir, options, 'all')
+        }
       }
     },
     resolveId(id) {
