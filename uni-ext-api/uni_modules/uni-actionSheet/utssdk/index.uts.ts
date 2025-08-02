@@ -44,7 +44,7 @@ export const hideActionSheet = () => {
 	const pages = getCurrentPages()
 	const currentPage = pages[pages.length - 1]
 	if (currentPage == null) return
-	const systemDialogPages = currentPage.$getSystemDialogPages()
+	const systemDialogPages = currentPage.$getSystemDialogPages();
 	systemDialogPages.forEach((page) => {
 		if (page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH)) {
 			uni.closeDialogPage({

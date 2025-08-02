@@ -140,6 +140,17 @@ const UVUE_BUILT_IN_TAGS = [
     'cover-image',
     // custom element
     'match-media',
+    'checkbox',
+    'checkbox-group',
+    'form',
+    'navigator',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'slider',
+    'switch',
+    'radio',
+    'radio-group',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -268,7 +279,9 @@ function isAppIOSUVueNativeTag(tag) {
     if (NVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
-    if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+    if (UVUE_BUILT_IN_TAGS.includes(tag) &&
+        tag != 'navigator' &&
+        tag != 'slider') {
         return true;
     }
     if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {

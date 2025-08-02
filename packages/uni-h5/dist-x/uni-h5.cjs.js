@@ -3093,6 +3093,9 @@ class UniPageImpl {
     var _a, _b, _c;
     return ((_c = (_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages) == null ? void 0 : _c.value) || [];
   }
+  __$$getSystemDialogPages() {
+    return [];
+  }
   getAndroidActivity() {
     return null;
   }

@@ -1320,6 +1320,9 @@ const showActionSheet = {
         }
     },
 };
+const requestPayment = {
+    name: 'requestOrderPayment',
+};
 const navigateTo = navigateTo$1();
 
 var protocols = /*#__PURE__*/Object.freeze({
@@ -1333,6 +1336,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   onSocketOpen: onSocketOpen,
   previewImage: previewImage,
   redirectTo: redirectTo,
+  requestPayment: requestPayment,
   showActionSheet: showActionSheet
 });
 

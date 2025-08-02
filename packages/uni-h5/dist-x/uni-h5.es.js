@@ -8316,6 +8316,9 @@ class UniPageImpl {
     var _a, _b, _c;
     return ((_c = (_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages) == null ? void 0 : _c.value) || [];
   }
+  __$$getSystemDialogPages() {
+    return [];
+  }
   getAndroidActivity() {
     return null;
   }
@@ -30206,6 +30209,71 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
     showModal$1(args);
   }
 );
+const API_CREATE_WORKER = "createWorker";
+const MESSAGE_EVENT = "__uni_web_worker_message";
+const ERROR_EVENT = "__uni_web_worker_error";
+const createWorker = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_WORKER,
+  (url) => {
+    const threadWorker = new Worker(url);
+    threadWorker.onmessage = (event) => {
+      uni.$emit(MESSAGE_EVENT, event.data);
+    };
+    threadWorker.onmessageerror = (error) => {
+      uni.$emit(ERROR_EVENT, error.data);
+    };
+    threadWorker.onerror = (error) => {
+      uni.$emit(
+        ERROR_EVENT,
+        `${error.message} in ${error.filename}(${error.lineno}:${error.colno})`
+      );
+    };
+    class WorkerImpl {
+      constructor() {
+        this._threadWorker = threadWorker;
+      }
+      onMessage(listener2) {
+        uni.$on(MESSAGE_EVENT, listener2);
+      }
+      onError(listener2) {
+        uni.$on(ERROR_EVENT, listener2);
+      }
+      postMessage(message, options = null) {
+        var _a;
+        this._threadWorker.postMessage(
+          message,
+          (_a = options == null ? void 0 : options.transfer) != null ? _a : void 0
+        );
+      }
+      terminate() {
+        uni.$off(MESSAGE_EVENT);
+        uni.$off(ERROR_EVENT);
+        this._threadWorker.terminate();
+      }
+    }
+    return new WorkerImpl();
+  }
+);
+class WorkerTaskImpl {
+  constructor() {
+    self.onmessage = (e2) => {
+      this.onMessage(e2.data);
+    };
+  }
+  entry() {
+  }
+  onMessage(message) {
+  }
+  postMessage(message, options = null) {
+    let _options = void 0;
+    if ((options == null ? void 0 : options.transfer) && options.transfer.length > 0) {
+      _options = {
+        transfer: options.transfer
+      };
+    }
+    self.postMessage(message, _options);
+  }
+}
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -30213,6 +30281,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   $off,
   $on,
   $once,
+  WorkerTaskImpl,
   __f__,
   addInterceptor,
   addPhoneContact,
@@ -30243,6 +30312,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   createMediaQueryObserver,
   createSelectorQuery,
   createVideoContext,
+  createWorker,
   cssBackdropFilter,
   cssConstant,
   cssEnv,
@@ -30531,6 +30601,7 @@ export {
   index$b as Video,
   __syscom_3 as View,
   indexX as WebView,
+  WorkerTaskImpl,
   __f__,
   addInterceptor,
   addPhoneContact,
@@ -30561,6 +30632,7 @@ export {
   createMediaQueryObserver,
   createSelectorQuery,
   createVideoContext,
+  createWorker,
   cssBackdropFilter,
   cssConstant,
   cssEnv,
