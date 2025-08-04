@@ -29,7 +29,10 @@ interface CreateTransformerOptions {
     enableNarrowType?: boolean;
     enableGenericsParameterDefaults?: boolean;
     isPureSwift?: boolean;
-    resolveWorkers?: () => Record<string, string>;
+    workers?: {
+        resolve?: () => Record<string, string>;
+        extname?: '.ets' | '.js';
+    };
 }
 declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): _uts_transforms_base.UTSTransformerFactoryCreator[];
 

@@ -94,7 +94,15 @@ export function createUniXCompiler(
       enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
       // TODO 调整参数传递方式
       isPureSwift: options.isPureSwift,
-      resolveWorkers: options.resolveWorkers,
+      workers: {
+        resolve: options.resolveWorkers,
+        extname:
+          targetLanguage === 'ArkTS'
+            ? '.ets'
+            : targetLanguage === 'JavaScript'
+            ? '.js'
+            : undefined,
+      },
     },
     ...options,
   }

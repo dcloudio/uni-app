@@ -63,8 +63,11 @@ export function init() {
         vueCompilerDom,
         uniCliShared,
       },
-      resolveWorkers: () => {
-        return getWorkers()
+      workers: {
+        extname: '.ets',
+        resolve: () => {
+          return getWorkers()
+        },
       },
     }),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'

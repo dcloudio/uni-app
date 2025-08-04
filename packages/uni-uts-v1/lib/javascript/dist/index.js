@@ -1,1 +1,4698 @@
-"use strict";var e=require("fs"),t=require("path"),r=require("debug"),i=require("module"),s=require("@rollup/pluginutils"),n=require("colors/safe"),o=require("events"),a=require("find-cache-dir"),c=require("lodash"),l=require("semver"),p=require("source-map-js"),u=require("@babel/code-frame"),d=require("fs-extra"),f=require("graphlib"),m=require("object-hash"),h=require("url");function y(e){var t=Object.create(null);return e&&Object.keys(e).forEach((function(r){if("default"!==r){var i=Object.getOwnPropertyDescriptor(e,r);Object.defineProperty(t,r,i.get?i:{enumerable:!0,get:function(){return e[r]}})}})),t.default=e,Object.freeze(t)}var g=y(e),x=y(t),S=y(c),T=y(d);function v(e){return e.factory.createIdentifier("UTS")}function _(e){return e.replace(/\\/g,"/")}const b=new Map;function E(e){const t=_(e);return b.has(t)?b.get(t):g.existsSync(t)?(b.set(t,!0),!0):(b.set(t,!1),!1)}var N;function C(e,t,r,i,s,n,o){return{code:e,category:t,key:r,message:i,reportsUnnecessary:s,elidedInCompatabilityPyramid:n,reportsDeprecated:o}}!function(e){e[e.Warning=0]="Warning",e[e.Error=1]="Error",e[e.Suggestion=2]="Suggestion",e[e.Message=3]="Message"}(N||(N={}));const I={Type_literal_property_must_have_a_type_annotation:C(1e5,N.Error,"Type_literal_property_must_have_a_type_annotation_100000","Type literal property must have a type annotation."),Only_one_extends_heritage_clause_is_allowed_for_interface:C(100001,N.Error,"Only_one_extends_heritage_clause_is_allowed_for_interface_100001","Only one extends heritage clause is allowed for interface"),Variable_declaration_must_have_initializer:C(100002,N.Error,"Variable_declaration_must_have_initializer_100002","Variable declaration must have initializer."),Nested_type_literal_is_not_supported:C(100003,N.Error,"Nested_type_literal_is_not_supported_100003","Nested type literal is not supported."),Invalid_generic_type_which_can_not_be_constructed:C(100004,N.Error,"Invalid_generic_type_which_can_not_be_constructed_100004","Invalid generic type which can not be constructed."),script_setup_cannot_contain_ES_module_exports:C(100005,N.Error,"script_setup_cannot_contain_ES_module_exports_100005","`<script setup>` cannot contain ES module exports."),Type_aliases_cannot_appear_in_local_scope:C(100006,N.Error,"Type_aliases_cannot_appear_in_local_scope_100006","Type aliases cannot appear in local scope"),direct_declaration_of_Object_Literal_Type_is_not_supported:C(110111101,N.Error,"direct_declaration_of_Object_Literal_Type_is_not_supported_110111101","direct declaration of Object Literal Type is not supported."),Object_literals_only_support_object_types_defined_by_construction_type_and_do_not_support_interfaces:C(110111163,N.Error,"Object_literals_only_support_object_types_defined_by_construction_type_and_do_not_support_interfaces_110111163","Object literals only support object types defined by construction type, and do not support interfaces"),Conditional_statements_must_use_boolean_types:C(110111120,N.Error,"Conditional_statements_must_use_boolean_types_110111120","Conditional statements must use boolean types")},D=_(x.resolve(process.env.UNI_INPUT_DIR||"","uni_modules")),P=["defineComponent","defineVaporComponent","defineApp","defineAsyncComponent","defineMixin"];function A(e){return P.some((t=>e===t||e==="_"+t))}function O(e,r,i){function s(e){return e?.constraintType?.origin?.type||e}function n(e){if(!e)return!1;const t=r.getNullType();return r.isTypeAssignableTo(t,e)}function o(t){return!!(t&&e.isUnionTypeNode(t)&&t.types.some((t=>e.isLiteralTypeNode(t)&&t.literal.kind===e.SyntaxKind.NullKeyword)))}function a(t){if(!t||!e.isCallExpression(t))return!1;const r=t.expression;return!!(r&&e.isIdentifier(r)&&A(r.escapedText.toString()))}function c(e){const t=e?.parent?.parent?.parent;return t&&a(t)}return{ts:e,typeChecker:r,context:i,isImportedSymbol:function(t){return!(!t.declarations||!t.declarations.some((t=>e.isImportSpecifier(t)||e.isImportClause(t)&&t.name)))},isPossibleUTSJSONObjectType:function(e,t=!1){return e?e.isUnion()&&e.types.some((e=>"UTSJSONObject"===s(e).symbol?.escapedName))||"UTSJSONObject"===s(e).symbol?.escapedName:!t},isPossibleNullType:n,isPossiblePromiseNullType:function(e){return!!e&&n(r.getPromisedTypeOfPromise(e))},createTypeNodeWithNullType:function(t,r){const s=i.factory,n=o(t);let a=t;return r&&!n&&(a=e.isUnionTypeNode(t)?s.createUnionTypeNode([...t.types,s.createLiteralTypeNode(s.createNull())]):s.createUnionTypeNode([t,s.createLiteralTypeNode(s.createNull())])),a},isUnionWithNullType:o,isObjectLiteralType:function(t){if(!t)return!1;if("__object"===t.symbol?.escapedName)return!0;const r=t?.objectFlags;if(r&&(r&e.ObjectFlags.ObjectLiteral||r&e.ObjectFlags.FreshLiteral))return!0;const i=t.getSymbol();return!!(i&&i.flags&e.SymbolFlags.ObjectLiteral)},getMethodNameNodeOfObjectLiteral:function(t){if(e.isMethodDeclaration(t))return t.name;const r=t.parent;if(!e.isPropertyAssignment(r))return;const i=r.name;return e.isIdentifier(i)?i:void 0},shouldTransfromToUTSJSONObject:function e(t,i){if(!i||i===r.getAnyType())return!0;if(i.isUnion())return i.types.some((r=>e(t,r)));if(i.isIntersection())return i.types.every((e=>r.isTypeAssignableTo(r.getGlobalType("UTSJSONObject",0,!0),i)));const s=i.getSymbol()||i.aliasSymbol;return!(!s&&!i.isClassOrInterface())&&(!s||"__object"===s?.escapedName||"UTSJSONObject"===s?.escapedName||r.isTypeAssignableTo(r.getGlobalType("UTSJSONObject",0,!0),i))},isVueOrNativeParameter:function t(i){if(!i.parent)return!1;if(e.isPropertyAssignment(i.parent)&&i.parent.parent&&e.isObjectLiteralExpression(i.parent.parent))return t(i.parent.parent);if(!e.isCallExpression(i.parent))return!1;if(-1===i.parent.expression.pos)return!0;const s=r.getTypeAtLocation(i.parent.expression);if(!s)return!1;const n=s.getCallSignatures()?.[0]?.declaration;if(!n)return!1;const o=n.getSourceFile().fileName,a=o.replace(/\\/g,"/").split("/").pop();return o.endsWith("runtime-core.d.ts")||a&&/lib\.es(\d+|next)\..*d.ts/.test(a)},isComponentDataOrProvide:function(t){const r=t.parent;if(!r||!e.isReturnStatement(r))return!1;const i=r?.parent?.parent;if(!i||!e.isMethodDeclaration(i))return!1;const s=i.name;if(!s||!e.isIdentifier(s)||"data"!==s.escapedText.toString()&&"provide"!==s.escapedText.toString())return!1;const n=i?.parent?.parent;return a(n)},isComponentOptions:function(e){const t=e?.parent;return t&&a(t)},isComponentOptionsProperty:c,isComponentProp:function(t){const r=t.parent?.parent,i=r?.parent;return r&&i&&e.isObjectLiteralExpression(r)&&e.isPropertyAssignment(i)&&e.isIdentifier(i.name)&&"props"===i.name.escapedText.toString()&&c(r)},isCreateAppReturnValue:function(r){if(process.env.UNI_INPUT_DIR&&_(t.resolve(process.env.UNI_INPUT_DIR,"main.uts"))===_(r.getSourceFile().fileName)&&r.parent&&e.isReturnStatement(r.parent)){const t=r?.parent?.parent?.parent;if(t&&e.isFunctionDeclaration(t)&&t.name&&e.isIdentifier(t.name)&&"createApp"===t.name.escapedText.toString())return!0}},isSetupReturnValue:function(t){const r=t.parent;return r&&e.isVariableDeclaration(r)&&r.name&&e.isIdentifier(r.name)&&"___returned__"===r.name.escapedText.toString()}}}const k=[260,169,172,171,208,219,253,229,223,213,214,170,216,234,226,303,304,305,209,227,239,217,235,238,277,294,291,293,286,285];function w(e,t){const{ts:r}=e,i=t?.declarations;if(1!==i?.length)return!1;const s=i[0];if(r.isClassDeclaration(s)){const t=s.heritageClauses?.some((t=>t.token===r.SyntaxKind.ExtendsKeyword&&t.types.some((t=>U(e,t.expression)||function(e,t){const r=e.ts;if(!r.isPropertyAccessExpression(t))return!1;const{expression:i,name:s}=t;return r.isIdentifier(s)&&"UTS"===s.escapedText&&r.isIdentifier(i)&&"UTSType"===i.escapedText}(e,t.expression)))));return t}return!1}function F(e,t){return t.symbol&&w(e,t.symbol)}function $(e){const t=e.context.factory,r=e.ts;return t.createPropertyAccessExpression(t.createParenthesizedExpression(t.createAsExpression(t.createIdentifier("globalThis"),t.createKeywordTypeNode(r.SyntaxKind.AnyKeyword))),t.createIdentifier("UTSType"))}function U(e,t){const r=e.ts;if(!r.isPropertyAccessExpression(t))return!1;const{expression:i,name:s}=t;return r.isIdentifier(s)&&"UTSType"===s.escapedText&&r.isParenthesizedExpression(i)&&r.isAsExpression(i.expression)&&r.isIdentifier(i.expression.expression)&&"globalThis"===i.expression.expression.escapedText}function L(e,t){const{ts:r}=e,i=e.context,s=i.factory,n=e.typeChecker,o=s.createStringLiteral("Unknown");if(e.isUnionWithNullType(t)&&2===t.types.length&&(t=t.types.find((e=>e.kind!==r.SyntaxKind.NullKeyword))),r.isTypeReferenceNode(t)){const{typeName:i,typeArguments:a}=t;if(!r.isIdentifier(i))return o;const c=n.getSymbolAtLocation(i),l=c?.declarations?.[0];return l&&function(e,t){if(!e.ts.isClassDeclaration(t))return!1;const{heritageClauses:r}=t,i=r?.[0]?.types?.[0]?.expression;return!(!i||!U(e,i))}(e,l)?a?s.createCallExpression(s.createPropertyAccessExpression($(e),s.createIdentifier("withGenerics")),void 0,[s.createIdentifier(i.escapedText.toString()),s.createArrayLiteralExpression([...a.map((t=>L(e,t)))],!1)]):s.createIdentifier(i.escapedText.toString()):o}if(r.isArrayTypeNode(t))return s.createCallExpression(s.createPropertyAccessExpression($(e),s.createIdentifier("withGenerics")),void 0,[s.createIdentifier("Array"),s.createArrayLiteralExpression([L(e,t.elementType)],!1)]);if(r.isTypeLiteralNode(t))i.addSemanticDiagnostic(r.createDiagnosticForNode(t,I.Nested_type_literal_is_not_supported));else{if(t.kind===r.SyntaxKind.NumberKeyword)return s.createIdentifier("Number");if(t.kind===r.SyntaxKind.StringKeyword)return s.createIdentifier("String");if(t.kind===r.SyntaxKind.BooleanKeyword)return s.createIdentifier("Boolean");if(t.kind===r.SyntaxKind.AnyKeyword)return s.createStringLiteral("Any")}return o}function R(e,t,r){const{ts:i}=e,s=e.context.factory;return s.createMethodDeclaration([s.createToken(i.SyntaxKind.StaticKeyword)],void 0,s.createIdentifier("get$UTSMetadata$"),void 0,void 0,t?[...t.map((e=>s.createParameterDeclaration(void 0,void 0,s.createIdentifier(e.name.escapedText.toString()),s.createToken(i.SyntaxKind.QuestionToken),s.createKeywordTypeNode(i.SyntaxKind.AnyKeyword),void 0)))]:[],void 0,s.createBlock([s.createReturnStatement(s.createAsExpression(r,s.createKeywordTypeNode(i.SyntaxKind.AnyKeyword)))],!0))}function j(e,t,r,i){const s=e.context.factory,n=[s.createPropertyAssignment(s.createIdentifier("kind"),s.createNumericLiteral(r)),s.createPropertyAssignment(s.createIdentifier("interfaces"),s.createArrayLiteralExpression(i,!1))];return"development"===process.env.NODE_ENV&&n.push(s.createPropertyAssignment(s.createIdentifier("name"),s.createStringLiteral(t))),[R(e,void 0,s.createObjectLiteralExpression(n,!0))]}globalThis.__utsUniXGlobalProperties__=globalThis.__utsUniXGlobalProperties__||new Map;function M(e,t){const r=e.ts,i=e.context.factory,{modifiers:s,name:n,typeParameters:o,heritageClauses:a,members:c}=t,l=c.filter((e=>r.isPropertyDeclaration(e))),p=function(e,t,r,i,s){const n=e.context.factory,o=[n.createPropertyAssignment(n.createIdentifier("kind"),n.createNumericLiteral(r)),n.createGetAccessorDeclaration(void 0,n.createIdentifier("fields"),[],void 0,n.createBlock([n.createReturnStatement(n.createObjectLiteralExpression([...i.map((t=>{let r="";(t.jsDoc||[]).forEach((e=>{(e.tags||[]).forEach((e=>{if("JSON_FIELD"===e.tagName.escapedText&&"string"==typeof e.comment){const t=e.comment.length;r="'"===e.comment[0]&&"'"===e.comment[t-1]||'"'===e.comment[0]&&'"'===e.comment[t-1]?e.comment.slice(1,-1):e.comment}}))}));const i=[n.createPropertyAssignment(n.createIdentifier("type"),L(e,t.type)),n.createPropertyAssignment(n.createIdentifier("optional"),t.questionToken||e.isUnionWithNullType(t.type)?n.createTrue():n.createFalse())];return r&&i.push(n.createPropertyAssignment(n.createIdentifier("jsonField"),n.createStringLiteral(r))),n.createPropertyAssignment(n.createIdentifier(t.name.escapedText.toString()),n.createObjectLiteralExpression(i))}))],!0))],!0))];return"development"===process.env.NODE_ENV&&o.push(n.createPropertyAssignment(n.createIdentifier("name"),n.createStringLiteral(t))),[R(e,s,n.createObjectLiteralExpression(o,!0))]}(e,n?n.escapedText.toString():"",2,l,o?[...o]:[]),u=c.find((e=>r.isIndexSignatureDeclaration(e))),d=c.find((e=>r.isConstructorDeclaration(e))),{parameters:f}=d,m=[...f,i.createParameterDeclaration(void 0,void 0,i.createIdentifier("metadata"),void 0,i.createKeywordTypeNode(r.SyntaxKind.AnyKeyword),i.createCallExpression(i.createPropertyAccessExpression(i.createIdentifier(n.escapedText),i.createIdentifier("get$UTSMetadata$")),void 0,[])),i.createParameterDeclaration(void 0,void 0,i.createIdentifier("isJSONParse"),void 0,i.createKeywordTypeNode(r.SyntaxKind.BooleanKeyword),i.createFalse())],h="__props__",y=i.createConstructorDeclaration(void 0,m,i.createBlock([i.createExpressionStatement(i.createCallExpression(i.createSuper(),void 0,[])),i.createExpressionStatement(i.createBinaryExpression(i.createPropertyAccessExpression(i.createThis(),i.createIdentifier(h)),i.createToken(r.SyntaxKind.EqualsToken),i.createCallExpression(i.createPropertyAccessExpression($(e),i.createIdentifier("initProps")),void 0,[i.createIdentifier("options"),i.createIdentifier("metadata"),i.createIdentifier("isJSONParse")]))),...l.map((e=>{const{name:t}=e,s=t.escapedText;return i.createExpressionStatement(i.createBinaryExpression(i.createPropertyAccessExpression(i.createThis(),i.createIdentifier(s)),i.createToken(r.SyntaxKind.EqualsToken),i.createPropertyAccessExpression(i.createPropertyAccessExpression(i.createThis(),i.createIdentifier(h)),i.createIdentifier(s))))})),i.createExpressionStatement(i.createDeleteExpression(i.createPropertyAccessExpression(i.createThis(),i.createIdentifier(h))))],!0));return i.updateClassDeclaration(t,s,n,o,a,[u,...l,...p,y])}function K(e,t,r,i){return s=>{const n=r(s);return r=>{const o=e.isSourceFile(r);return s.fileName||o&&(s.fileName=r.fileName),t.shouldTransform(s.fileName)?(o&&!r.isUTSFile&&(r.isUTSFile=!0,t.isVueFile?.(s.fileName)&&(r.isVueFile=!0)),o&&"parser"===i&&r.statements.length&&(r.statements[0].parent||e.setParentRecursive(r,!0)),n(r)):r}}}function W(e,t){return t&&t!==e&&!Array.isArray(t)&&(t.__parsedByUtsParser=!0,t.parent=e.parent),t}let z;function J(e,t,r){return function(e){if(!e.ObjectFlags.UTSType){const{Class:t,Interface:r,Reference:i,Anonymous:s,ArrayLiteral:n}=e.ObjectFlags;e.ObjectFlags.UTSType=t|r|i|s|n}if(!e.TypeFlags.UTSType){const{Any:t,String:r,Number:i,Boolean:s,Enum:n,StringLiteral:o,NumberLiteral:a,BooleanLiteral:c,EnumLiteral:l,Void:p,Null:u,Object:d,Union:f,TemplateLiteral:m}=e.TypeFlags;e.TypeFlags.UTSType=t|r|i|s|n|o|a|c|l|p|u|d|f|m,e.TypeFlags.UTSStringLike=r|o|m,e.TypeFlags.UTSNumberLike=i|a}}(e),i=>{const s={},n=[],o=[],a=[];return t.forEach((t=>{let c=t(e,i,r);if("function"==typeof c)n.push(K(e,i,c,"before"));else{if(c.parser){const n=t(function(e){if(z)return z;z={...e};const{visitNode:t,visitEachChild:r}=e;return z.visitNode=(e,r)=>t(e,(e=>W(e,r(e)))),z.visitEachChild=(e,t,i)=>r(e,(e=>W(e,t(e))),i),z}(e),i,r);n.parser&&function(e,t,r,i){i.TypeAliasDeclaration&&(r.TypeAliasDeclaration||(r.TypeAliasDeclaration=[])).push(K(e,t,(e=>{const t=i.TypeAliasDeclaration(e);return e=>W(e,t(e))}),"parser")),i.SourceFile&&(r.SourceFile||(r.SourceFile=[])).push(K(e,t,i.SourceFile,"parser"))}(e,i,s,n.parser)}c.before&&n.push(K(e,i,c.before,"before")),c.after&&o.push(K(e,i,c.after,"after")),c.afterDeclarations&&a.push(K(e,i,c.afterDeclarations,"afterDeclarations"))}})),{parser:s,before:n,after:o,afterDeclarations:a}}}function V(e,t){return!!t.isImportTypeNode(e)||(t.forEachChild(e,(e=>V(e,t)))||!1)}function B(e,t,r,i){const s=function(e,t){for(t=e.getOriginalNode(t);;){if(!(t=t.parent))return;switch((t=e.getOriginalNode(t)).kind){case e.SyntaxKind.SourceFile:case e.SyntaxKind.MethodDeclaration:case e.SyntaxKind.MethodSignature:case e.SyntaxKind.FunctionDeclaration:case e.SyntaxKind.FunctionExpression:case e.SyntaxKind.GetAccessor:case e.SyntaxKind.SetAccessor:case e.SyntaxKind.ClassDeclaration:case e.SyntaxKind.InterfaceDeclaration:case e.SyntaxKind.EnumDeclaration:case e.SyntaxKind.ModuleDeclaration:return t}}}(r,t);let n=i.typeToTypeNode(e,s,r.NodeBuilderFlags.None);if(!n&&s&&(n=i.typeToTypeNode(e,void 0,r.NodeBuilderFlags.None)),n)return V(n,r)?i.typeToTypeNode(e,void 0,r.NodeBuilderFlags.None):n}globalThis.__utsHacker__={...globalThis.__utsHacker__},r("uts:transformer:importAndExportDeclaration"),r("uts:transformer:autoImport"),r("uts:transformer:arguments"),r("uts:transformer:checker");function q(e,t,r,i){const{addEmitFlags:s,cast:n,chainBundle:o,Debug:a,EmitFlags:c,isCallChain:l,isExpression:p,isGeneratedIdentifier:u,isIdentifier:d,isNonNullChain:f,isOptionalChain:m,isParenthesizedExpression:h,isSimpleCopiableExpression:y,isSyntheticReference:g,isTaggedTemplateExpression:x,OuterExpressionKinds:S,setOriginalNode:T,setTextRange:v,skipParentheses:_,skipPartiallyEmittedExpressions:b,SyntaxKind:E,TransformFlags:N,visitEachChild:C,visitNode:I,visitNodes:D}=t,{factory:P,hoistVariableDeclaration:A}=r;return o(r,(function(e){if(e.isDeclarationFile)return e;return C(e,O,r)}));function O(e){if(!(e.transformFlags&N.ContainsES2020))return e;switch(e.kind){case E.CallExpression:{const t=w(e,!1);return a.assertNotNode(t,g),t}case E.PropertyAccessExpression:case E.ElementAccessExpression:if(m(e)){const t=$(e,!1,!1);return a.assertNotNode(t,g),t}return C(e,O,r);case E.BinaryExpression:return e.operatorToken.kind===E.QuestionQuestionToken?function(e){let t=I(e.left,O,p),r=t;y(t)||(r=P.createTempVariable(A),t=P.createAssignment(r,t));return v(P.createConditionalExpression(U(t,r),void 0,r,void 0,I(e.right,O,p)),e)}(e):C(e,O,r);case E.DeleteExpression:return function(e){return m(_(e.expression))?T(F(e.expression,!1,!0),e):P.updateDeleteExpression(e,I(e.expression,O,p))}(e);default:return C(e,O,r)}}function k(e,t,r){const i=F(e.expression,t,r);return g(i)?P.createSyntheticReferenceExpression(P.updateParenthesizedExpression(e,i.expression),i.thisArg):P.updateParenthesizedExpression(e,i)}function w(e,t){if(m(e))return $(e,t,!1);if(h(e.expression)&&m(_(e.expression))){const t=k(e.expression,!0,!1),r=D(e.arguments,O,p);return g(t)?v(P.createFunctionCallCall(t.expression,t.thisArg,r),e):P.updateCallExpression(e,t,void 0,r)}return C(e,O,r)}function F(r,s,n){switch(r.kind){case E.ParenthesizedExpression:return k(r,s,n);case E.PropertyAccessExpression:case E.ElementAccessExpression:return function(r,s,n){if(m(r))return $(r,s,n);const o=i.getTypeAtLocation(r.expression);let c,l=I(r.expression,O,p);return a.assertNotNode(l,g),s&&(y(l)?c=l:(c=P.createTempVariable(A,void 0,void 0,void 0,e?B(o,r,t,i):void 0),l=P.createAssignment(c,l))),l=r.kind===E.PropertyAccessExpression?P.updatePropertyAccessExpression(r,l,I(r.name,O,d)):P.updateElementAccessExpression(r,l,I(r.argumentExpression,O,p)),c?P.createSyntheticReferenceExpression(l,c):l}(r,s,n);case E.CallExpression:return w(r,s);default:return I(r,O,p)}}function $(r,o,h){const{expression:_,chain:N}=function(e){if(a.assertNotNode(e,f),f(e))throw new Error("Unexpected non-null chain");const t=[e];for(;!e.questionDotToken&&!x(e);)e=n(b(e.expression),m),a.assertNotNode(e,f),t.unshift(e);return{expression:e.expression,chain:t}}(r),C=i.getTypeAtLocation(_),k=F(b(_),l(N[0]),!1);let w=g(k)?k.thisArg:void 0,$=g(k)?k.expression:k,L=P.restoreOuterExpressions(_,$,S.PartiallyEmittedExpressions);y($)||($=P.createTempVariable(A,void 0,void 0,void 0,e?B(C,r,t,i):void 0),L=P.createAssignment($,L));let R,j=$;for(let r=0;r<N.length;r++){const n=N[r];switch(n.kind){case E.PropertyAccessExpression:case E.ElementAccessExpression:if(r===N.length-1&&o)if(y(j))R=j;else{const r=i.getTypeAtLocation(n.expression);R=P.createTempVariable(A,void 0,void 0,void 0,e?B(r,n,t,i):void 0),j=P.createAssignment(R,j)}j=n.kind===E.PropertyAccessExpression?P.createPropertyAccessExpression(j,I(n.name,O,d)):P.createElementAccessExpression(j,I(n.argumentExpression,O,p));break;case E.CallExpression:0===r&&w?(u(w)||(w=P.cloneNode(w),s(w,c.NoComments)),j=P.createFunctionCallCall(j,w.kind===E.SuperKeyword?P.createThis():w,D(n.arguments,O,p))):j=P.createCallExpression(j,void 0,D(n.arguments,O,p))}T(j,n)}const M=h?P.createConditionalExpression(U(L,$,!0),void 0,P.createTrue(),void 0,P.createDeleteExpression(j)):P.createConditionalExpression(U(L,$,!0),void 0,P.createNull(),void 0,j);return v(M,r),R?P.createSyntheticReferenceExpression(M,R):M}function U(e,t,r){return P.createBinaryExpression(P.createBinaryExpression(e,P.createToken(r?E.EqualsEqualsEqualsToken:E.ExclamationEqualsEqualsToken),P.createNull()),P.createToken(r?E.BarBarToken:E.AmpersandAmpersandToken),P.createBinaryExpression(t,P.createToken(r?E.EqualsEqualsEqualsToken:E.ExclamationEqualsEqualsToken),P.createVoidZero()))}}r("uts:transformer:generics"),r("uts:transformer:in"),r("uts:transformer:keyof"),r("uts:transformer:narrowType:discriminatedUnion"),r("uts:transformer:narrowType:nonNullable"),r("uts:transformer:narrowType"),r("uts:transformer:narrowType:parameterUnionType"),r("uts:transformer:UTSObjectUnionType"),r("uts:transformer:objectLiteral");function H(e,t,r,i){return{code:e,category:t,key:r,message:i}}r("uts:transformer:returnType"),r("uts:transformer:UTSJSONObject"),globalThis.__utsUniXGlobalProperties__=globalThis.__utsUniXGlobalProperties__||new Map;function G(e,t){return e.isExpressionStatement(t)&&e.isCallExpression(t.expression)&&e.isIdentifier(t.expression.expression)&&"defineExpose"===t.expression.expression.text}function Z(e,t){return e.createExportAssignment(void 0,void 0,e.createCallExpression(e.createIdentifier("defineComponent"),void 0,[e.createObjectLiteralExpression([e.createMethodDeclaration(void 0,void 0,e.createIdentifier("setup"),void 0,void 0,[e.createParameterDeclaration(void 0,void 0,e.createIdentifier("props"),void 0,void 0,void 0),e.createParameterDeclaration(void 0,void 0,e.createObjectBindingPattern([e.createBindingElement(void 0,void 0,e.createIdentifier("expose"),void 0)]),void 0,void 0,void 0)],void 0,e.createBlock(t,!0))],!0)]))}let X=null,Q=[];const Y=["defineMixin","definePlugin"],ee=new Map;ee.set("onShow",!1),ee.set("onHide",!1),ee.set("onAppShow",!0),ee.set("onLaunch",!0),ee.set("onError",!0),ee.set("onThemeChange",!0),ee.set("onKeyboardHeightChange",!0),ee.set("onPageNotFound",!0),ee.set("onUnhandledRejection",!0),ee.set("onLastPageBackPress",!1),ee.set("onExit",!1),ee.set("onLoad",!0),ee.set("onShow",!0),ee.set("onReady",!1),ee.set("onUnload",!1),ee.set("onResize",!0),ee.set("onBackPress",!0),ee.set("onPageScroll",!0),ee.set("onTabItemTap",!0),ee.set("onReachBottom",!1),ee.set("onPullDownRefresh",!1),ee.set("beforeCreate",!1),ee.set("created",!1),ee.set("beforeMount",!1),ee.set("mounted",!1),ee.set("beforeUpdate",!1),ee.set("updated",!1),ee.set("beforeUnmount",!1),ee.set("unmounted",!1);function te(e,t){const{ts:r}=e;return e.context.factory.createPropertyAccessExpression(r.isQualifiedName(t.left)?te(e,t.left):t.left,t.right)}function re(e,t,r){const{ts:i}=e,s=e.context.factory,n=i.isQualifiedName(r)?te(e,r):s.createIdentifier(r.escapedText.toString());return s.createNewExpression(n,void 0,[t])}function ie(e,t){const{ts:r}=e,i=e.context,s=e.typeChecker,n=i.factory,{type:o,expression:a}=t;if(!r.isObjectLiteralExpression(a))return;if(r.isTypeReferenceNode(o)&&r.isIdentifier(o.typeName)&&"UTSJSONObject"===o.typeName.escapedText)return n.createNewExpression(n.createIdentifier("UTSJSONObject"),void 0,[a]);let c;try{c=s.getContextualType(a)?.symbol}catch(e){}return c?c&&"UTSJSONObject"===c.escapedName?n.createNewExpression(n.createIdentifier("UTSJSONObject"),void 0,[a]):o&&function(e,t){const r=e.typeChecker.getContextualType(t);return!(!r||!F(e,r))}(e,a)&&r.isObjectLiteralExpression(a)?re(e,a,o.typeName):void 0:void 0}const se={Array_pop:"arrayPop",Array_shift:"arrayShift",Array_find:"arrayFind",Array_findLast:"arrayFindLast",Array_at:"arrayAt",Map_get:"mapGet",WeakMap_get:"weakMapGet",string_codePointAt:"stringCodePointAt",string_at:"stringAt"},ne=Object.keys(se).map((e=>e.split("_")[1])),oe=["uni.request","JSON.parse","JSON.parseArray","JSON.parseObject"];function ae(e,t){const r=e.ts,i=e.context,s=i.factory;if(r.isArrayTypeNode(t)){const{elementType:r}=t;return s.createCallExpression(s.createPropertyAccessExpression(s.createPropertyAccessExpression(v(i),s.createIdentifier("UTSType")),s.createIdentifier("withGenerics")),void 0,[s.createIdentifier("Array"),s.createArrayLiteralExpression([ae(e,r)]),s.createTrue()])}if(r.isTypeReferenceNode(t)){const{typeName:n,typeArguments:o}=t;if(!r.isIdentifier(n)){const e=r.createDiagnosticForNode(n,I.Invalid_generic_type_which_can_not_be_constructed);return i.addSemanticDiagnostic(e),s.createIdentifier("UTSJSONObject")}return o&&0!==o.length?s.createCallExpression(s.createPropertyAccessExpression(s.createPropertyAccessExpression(v(i),s.createIdentifier("UTSType")),s.createIdentifier("withGenerics")),void 0,[s.createIdentifier(n.escapedText.toString()),s.createArrayLiteralExpression(o.map((t=>ae(e,t)))),s.createTrue()]):s.createIdentifier(n.escapedText.toString())}return L(e,t)}const ce=["Array","Map","WeakMap","string","String","number","Number","boolean","Boolean","UTSJSONObject"];function le(e,t,r,i){const s=O(e,t,void 0),n=t.getNullType(),o=t.getUndefinedType(),a=t.getVoidType(),c=t.getStringType();function l(e){let t=e.getBaseTypes();return 1===t?.length&&"String"===t[0].getSymbol()?.getName()}function p(e){return e===o||e===a}return!!(s.isObjectLiteralType(r)&&s.isPossibleUTSJSONObjectType(i)||s.isObjectLiteralType(i)&&s.isPossibleUTSJSONObjectType(r))||(!!(p(r)&&i===n||r===n&&p(i))||(!!(r===c&&l(i)||l(r)&&i===c)||void 0))}const pe=_(x.resolve(process.env.UNI_INPUT_DIR||"","uni_modules"));const ue=new RegExp("^"+D+"/([a-zA-Z0-9_-]+)/index.d.ts$");const de=process.env.UNI_UTS_PLATFORM,fe="app-ios"===de,me="app-harmony"===de;let he=[];he=fe||me?["app-js/index.uts","app-js/index.ts","app-js/index.js"]:[`${de}/index.uts`,`${de}/index.ts`,`${de}/index.js`];const ye={replaceVueTypes:function(e,t){return e.endsWith("runtime-core.d.ts")&&(t=(t=(t=t.replace(/type ObjectInjectOptions = Record<([\s\S]+?)>;/,"type ObjectInjectOptions<I = Data> = {\n    [K in keyof I]: {\n      type: PropType<I[K]>;\n      from?: string;\n      default?: I[K] | (() => I[K]);\n    }\n  };")).replace(/type InjectToObject<T([\s\S]+?): never;/,"type InjectToObject<T> = T extends string[] ? {\n    [K in T[number]]: unknown;\n  } : T extends ObjectInjectOptions<infer I> ? {\n    [K in keyof I]: I[K];\n  } : never;")).replace(/serverPrefetch\?\(\): void \| Promise<any>;/,"serverPrefetch?(): void | Promise<any | null>;")),e.endsWith("app.d.ts")&&(t=t.replace(/\s\sexport function defineApp<D extends OptionsData = OptionsData.*/,"")),t},isTypeRelatedTo:function(e,t,r,i){return le(e,t,r,i)},isRelatedTo:le,tryFileLookup:function(e){if(!process.env.UNI_INPUT_DIR)return;const t=function(e){const t=e.match(ue);return t?t[1]:""}(e);if(t){const e=x.resolve(D,t,"utssdk");if(me){if(E(x.resolve(e,"app-harmony/index.uts")))return}for(let t=0;t<he.length;t++){const r=he[t],i=x.resolve(e,r);if(E(i))return _(i)}if(fe||me)return;const r=x.resolve(D,t,"utssdk/index.uts");if(E(r))return _(r)}else if(e.endsWith(".d.ts")&&!E(e)){const t=e.replace(/\.d\.ts$/,""),r=t+".uvue";if(E(r))return r+".ts";const i=t+".vue";if(E(i))return i+".ts"}else if(e.endsWith(".json")&&E(e))return e+".ts"},componentPublicInstancePropertyAccessFallback:function(e,t,r,i,s,n){if(!e.isPropertyAccessExpression(r)||!e.isExpression(i)||!e.isIdentifier(n))return;const o=s.aliasSymbol?.escapedName.toString();if("ComponentPublicInstance"!==o&&"CreateComponentPublicInstance"!==o)return;const a=n.escapedText.toString(),c=globalThis?.__utsUniXGlobalProperties__;if(c&&c.has(a)){const{initializerNode:r}=c.get(a),i=t.getTypeAtLocation(r);return i.isNumberLiteral()?t.getNumberType():i.isStringLiteral()?t.getStringType():i.flags&e.TypeFlags.BooleanLiteral?t.getBooleanType():i}},isRequireIOSNativeUtsSdk:function(e,t){if(!process.env.UNI_INPUT_DIR)return!1;if("app-ios"!==process.env.UNI_UTS_PLATFORM&&"app-harmony"!==process.env.UNI_UTS_PLATFORM)return!1;let r=t;if(t.startsWith("@/"))r=x.resolve(process.env.UNI_INPUT_DIR,t.slice(2));else if(t.startsWith("."))r=x.resolve(x.dirname(e),t);else if(!x.isAbsolute(t))return!1;const i=x.relative(pe,r).replace(/\\/g,"/");if(i.startsWith(".")||i.indexOf("/")>-1)return!1;if("app-ios"===process.env.UNI_UTS_PLATFORM){if(E(x.resolve(pe,i,"utssdk"))&&!E(x.resolve(pe,i,"utssdk/app-js")))return!0}else if("app-harmony"===process.env.UNI_UTS_PLATFORM&&E(x.resolve(pe,i,"utssdk"))&&E(x.resolve(pe,i,"utssdk","app-harmony"))&&!E(x.resolve(pe,i,"utssdk/app-js")))return!0;return!1},isUtsCompiler:!0,hijackAnyNullUnionType:!0,hijackTsLibResolve:!0,hijackDestructuring:!0,ignoreInstanceofLeftType:!0,ignoreInstanceofRightType:!0,useTypeAndInterfaceAsValue:!0,ignoreAllDebugFail:!0};var ge=[(e,t,r)=>({before(i){const s=t.getProgram().getTypeChecker(),n=q("ArkTS"===r.targetLanguage,e,i,s);return e=>n(e)}}),(e,r,i)=>{function s(r,s){if(e.isSourceFile(s)){if(!s.__relativeFileName){const e=r.getCompilerOptions();if(e.rootDir&&t.isAbsolute(e.rootDir)){const r=_(e.rootDir),i=_(s.fileName);s.__rootDir=r,i.startsWith(r)?s.__relativeFileName=_(t.relative(r,i)):i.includes("/@dcloudio/")&&(s.__relativeFileName="@dcloudio/"+i.split("/@dcloudio/")[1])}s.__relativeFileName||(s.__relativeFileName=t.basename(s.fileName))}if(!r.printNode){const t=e.createPrinter();r.printNode=(r,i)=>t.printNode(e.EmitHint.Unspecified,r,i)}r.addSyntacticDiagnostic||(r.addSyntacticDiagnostic=e=>{s.parseDiagnostics.push(e)},r.addSemanticDiagnostic=e=>{s.bindDiagnostics.push(e)}),r.error||(r.error=e=>{if(i.watch)return e.__throwError=!0,void r.addSyntacticDiagnostic(e);const t=new Error(e.messageText.toString());throw t.diagnostic=e,Object.defineProperty(t,"id",{get:()=>e.file.fileName,set(e){}}),t})}return s}return{before:e=>t=>s(e,t),after:e=>t=>s(e,t),afterDeclarations:e=>t=>s(e,t)}},(e,t)=>({parser:{SourceFile(t){const r=t.factory;function i(e){if(e.endsWith(".uts")||e.endsWith(".ts"))return e.replace(/.u?ts$/,"")}let s=[];function n(o){const a=e.visitEachChild(o,n,t);if(e.isImportDeclaration(a)||e.isExportDeclaration(a)){let t=a.moduleSpecifier;if(t&&e.isStringLiteral(t)){const e=t.text,r=/@\/uni_modules\/([a-zA-Z0-9_-]+)/,i=e.match(r)?.[1];if(i){E(x.resolve(D,i,"encrypt"))&&s.push({range:{pos:Math.max(a.pos-1,0),end:a.pos},type:1})}}}if(e.isImportDeclaration(a)&&a.moduleSpecifier&&e.isStringLiteral(a.moduleSpecifier)){const e=i(a.moduleSpecifier.text);if(e)return r.createImportDeclaration(a.modifiers,a.importClause,r.createStringLiteral(e),a.assertClause)}if(e.isExportDeclaration(a)&&a.moduleSpecifier&&e.isStringLiteral(a.moduleSpecifier)){const e=i(a.moduleSpecifier.text);if(e)return r.createExportDeclaration(a.modifiers,!1,a.exportClause,r.createStringLiteral(e),a.assertClause);if(a.isTypeOnly)return r.createExportDeclaration(a.modifiers,!1,a.exportClause,a.moduleSpecifier,a.assertClause)}return e.isImportClause(a)&&a.isTypeOnly?r.createImportClause(!1,a.name,a.namedBindings):e.isImportSpecifier(a)&&a.isTypeOnly?r.createImportSpecifier(!1,a.propertyName,a.name):e.isExportSpecifier(a)&&a.isTypeOnly?r.createExportSpecifier(!1,a.propertyName,a.name):a}return t=>(t=e.visitNode(t,n),s.length>0&&(t.commentDirectives=t.commentDirectives||[],t.commentDirectives.push(...s),s.length=0),t)}}}),(e,t)=>({before(r){const i=t.getProgram().getTypeChecker();null===X&&i.getGlobalType&&(X=i.getGlobalType("UniApp",0,!1),X&&(Q=X.getProperties().map((e=>e.getName()))));const s=t=>{if(X&&Q.length){if(e.isCallExpression(t)&&e.isPropertyAccessExpression(t.expression)&&e.isIdentifier(t.expression.name)){const r=function(e,t){return e.getContextualType(t)??e.getTypeAtLocation(t)}(i,t.expression.expression);if(r&&r.isIntersection()&&r.types.some((e=>"UniApp"===e.symbol?.name))&&!Q.includes(t.expression.name.text)){console.error(`error: '${t.expression.name.text}' 不是 UniApp 对象的方法，请检查是否拼写错误，如果想调用在 App.uvue 文件中定义的 methods 方法，请使用 .vm?.xxx 的方式调用，详情参考：https://doc.dcloud.net.cn/uni-app-x/api/get-app.html#appmethods`);const r=t.getSourceFile();if(r.__relativeFileName){const i=e.getLineAndCharacterOfPosition(r,t.pos),s=r.__relativeFileName.split("?")[0].replace(/\.(vue|uvue|uts).ts$/g,".$1");console.error("at "+s+":"+i.line)}}}return e.visitEachChild(t,s,r)}return t};return t=>e.visitNode(t,s)}}),e=>({parser:{SourceFile:t=>r=>{const i=s=>{const n=e.visitEachChild(s,i,t);if(e.isCallExpression(n)&&e.isPropertyAccessExpression(n.expression)){const t=n.expression.expression,i=n.expression.name;if(e.isIdentifier(t)&&e.isIdentifier(i)){const e=t.text;"uni"!==e&&"uniCloud"!==e||(r.__utsMeta||(r.__utsMeta={}),r.__utsMeta.uniExtApis||(r.__utsMeta.uniExtApis=new Set),r.__utsMeta.uniExtApis.add(e+"."+i.text))}}return n};return e.visitNode(r,i)}}}),e=>({parser:{SourceFile(t){const{factory:r}=t;let i=!1,s=!1;const n=o=>{if(e.isSourceFile(o)){if(s&&o.text.startsWith("// @uts-setup\n")){const i=o.statements,s=[],n=[],a=[];for(let o=0;o<i.length;o++){const c=i[o];if(e.isImportDeclaration(c))s.push(c);else if(e.isExportAssignment(c)){if(e.isObjectLiteralExpression(c.expression)&&0===c.expression.properties.length)continue;const r=e.createDiagnosticForNode(c,I.script_setup_cannot_contain_ES_module_exports);t.addSyntacticDiagnostic(r)}else G(e,c)?a.push(r.createReturnStatement(c.expression.arguments[0])):n.push(c)}return r.updateSourceFile(o,[...s,Z(r,[...n,...a])])}return e.visitEachChild(o,n,t)}return e.isExportAssignment(o)&&e.isObjectLiteralExpression(o.expression)?r.updateExportAssignment(o,o.modifiers,r.createCallExpression(r.createIdentifier(i?"defineApp":"defineComponent"),void 0,[o.expression])):o};return t=>{if(!t.isVueFile||t.fileName.indexOf("setup=true")>-1)return t;const o=x.basename(t.fileName).split("?")[0].toLowerCase();"app.uvue"!==o&&"app.uvue.ts"!==o||(i=!0),/.u?vue.ts/.test(o)&&(s=!0);const a=e.visitNode(t,n);return a!==t?r.updateSourceFile(a,[r.createImportDeclaration(void 0,r.createImportClause(!1,void 0,r.createNamedImports([r.createImportSpecifier(!1,void 0,r.createIdentifier(i?"defineApp":"defineComponent"))])),r.createStringLiteral("vue")),...a.statements]):a}}},before(t){const{factory:r}=t,i=s=>e.isSourceFile(s)?e.visitEachChild(s,i,t):e.isExportAssignment(s)&&e.isCallExpression(s.expression)?r.updateExportAssignment(s,s.modifiers,r.createCallExpression(r.createIdentifier("defineComponent"),void 0,s.expression.arguments)):e.isImportDeclaration(s)&&s.moduleSpecifier&&e.isStringLiteral(s.moduleSpecifier)&&"vue"===s.moduleSpecifier.text&&s.importClause&&e.isImportClause(s.importClause)&&s.importClause.namedBindings&&e.isNamedImports(s.importClause.namedBindings)&&s.importClause.namedBindings.elements.some((e=>"defineApp"===e.name.text))?r.updateImportDeclaration(s,s.modifiers,r.updateImportClause(s.importClause,!1,void 0,r.createNamedImports(s.importClause.namedBindings.elements.filter((e=>"defineApp"!==e.name.text)))),s.moduleSpecifier,s.assertClause):s;return t=>t.isVueFile?("app.uvue"===x.basename(t.fileName).split("?")[0].toLowerCase()&&(t=e.visitNode(t,i)),t):t}}),(e,t)=>({parser:{SourceFile:t=>{const r=t.factory,i=s=>{let n=e.visitEachChild(s,i,t);return e.isMethodDeclaration(n)&&e.isIdentifier(n.name)&&"valueIterator"===n.name.escapedText?r.createMethodDeclaration(n.modifiers,n.asteriskToken,r.createComputedPropertyName(r.createPropertyAccessExpression(r.createIdentifier("Symbol"),r.createIdentifier("iterator"))),n.questionToken,n.typeParameters,n.parameters,n.type,n.body):e.isExpressionWithTypeArguments(s)&&e.isIdentifier(s.expression)&&"UTSValueIterable"===s.expression.escapedText?r.createExpressionWithTypeArguments(r.createIdentifier("Iterable"),s.typeArguments):n};return r=>e.visitEachChild(r,i,t)}}}),(e,t)=>({parser:{SourceFile(t){const r=t.factory,i=O(e,void 0,t),s=n=>{const o=e.visitEachChild(n,s,t);if(e.isParameter(o)&&!o.type&&!o.dotDotDotToken){const t=o.parent;if(t&&(e.isMethodDeclaration(t)||e.isArrowFunction(t)||e.isFunctionExpression(t))&&0===t.parameters.indexOf(o)){const s=i.getMethodNameNodeOfObjectLiteral(t);if(s&&e.isIdentifier(s)){const t=s.escapedText.toString();if(!0===ee.get(t)){const i=s?.parent?.parent?.parent;if(i&&e.isCallExpression(i)){const s=i.expression;if(e.isIdentifier(s)&&A(s.escapedText.toString()))return r.createParameterDeclaration(o.modifiers,o.dotDotDotToken,o.name,o.questionToken,r.createTypeReferenceNode(r.createIdentifier(t.replace(/^(\w)/,(e=>e.toUpperCase()))+"Options"),void 0),o.initializer)}}}}}return o};return r=>r.isVueFile?e.visitEachChild(r,s,t):r}}}),(e,t)=>({parser:{TypeAliasDeclaration:t=>function(r){const i=t.factory,{modifiers:s=[],name:n,typeParameters:o=[],type:a}=r;return e.isTypeLiteralNode(a)?i.createTypeAliasDeclaration(s,n,o,i.createTypeLiteralNode(i.createNodeArray([i.createIndexSignature(void 0,[i.createParameterDeclaration(void 0,void 0,i.createIdentifier("key"),void 0,i.createKeywordTypeNode(e.SyntaxKind.StringKeyword),void 0)],i.createKeywordTypeNode(e.SyntaxKind.AnyKeyword)),...a.members]))):r},SourceFile(t){const r=O(e,void 0,t),i=s=>{if(e.isTypeAliasDeclaration(s)&&e.isTypeLiteralNode(s.type)){const{modifiers:t=[],name:i,typeParameters:n=[],type:o}=s,a=o.members,c=function(e,t,r,i,s){const{ts:n}=e,o=e.context.factory,a=[],c=s?s.map((t=>{const{modifiers:r,name:i,questionToken:s,jsDoc:c}=t;let l;if(n.isPropertySignature(t))l=t.type;else if(n.isMethodSignature(t)){const{type:e,typeParameters:r,parameters:i}=t;l=o.createFunctionTypeNode(r,i,e)}const p=l&&e.createTypeNodeWithNullType(l,!!s);a.push(o.createPropertySignature(void 0,i,s,p));const u=o.createPropertyDeclaration(r,i,s,p,void 0);return u.jsDoc=c,u})):[],l=o.createTypeLiteralNode(a),p=[],u=o.createIndexSignature(void 0,[o.createParameterDeclaration(void 0,void 0,o.createIdentifier("key"),void 0,o.createKeywordTypeNode(n.SyntaxKind.StringKeyword),void 0)],o.createKeywordTypeNode(n.SyntaxKind.AnyKeyword)),d=o.createConstructorDeclaration(void 0,[o.createParameterDeclaration(void 0,void 0,o.createIdentifier("options"),void 0,l,void 0)],o.createBlock([o.createExpressionStatement(o.createCallExpression(o.createSuper(),void 0,[])),...(s||[]).map((e=>{const t=e.name.escapedText.toString();return o.createExpressionStatement(o.createBinaryExpression(o.createPropertyAccessExpression(o.createThis(),o.createIdentifier(t)),o.createToken(n.SyntaxKind.EqualsToken),o.createPropertyAccessExpression(o.createIdentifier("options"),o.createIdentifier(t))))}))],!0));return p.push(u,...c,d),o.createClassDeclaration(t,r,i?.length?i:void 0,[o.createHeritageClause(n.SyntaxKind.ExtendsKeyword,[o.createExpressionWithTypeArguments($(e),void 0)])],p)}(r,[...t],i,[...n],[...a.filter((t=>e.isPropertySignature(t)||e.isMethodSignature(t)))]);c&&(s=c)}else e.isInterfaceDeclaration(s);return s=e.visitEachChild(s,i,t)};return t=>e.visitNode(t,i)}},before(r){const i=t.getProgram().getTypeChecker(),s=O(e,i,r),n=r.factory,o=t=>{if(e.isPropertyAccessExpression(t)&&U(s,t))t=n.createPropertyAccessExpression(v(r),n.createIdentifier("UTSType"));else if(e.isClassDeclaration(t)){const{heritageClauses:e}=t,r=e?.[0]?.types?.[0]?.expression;r&&U(s,r)&&(t=M(s,t))}return t=e.visitEachChild(t,o,r)};return t=>e.visitNode(t,o)}}),(e,t)=>({parser:{SourceFile(t){const r=t.factory,i=O(e,void 0,t),s=n=>{const o=e.visitEachChild(n,s,t),a=o.parent;if(a&&e.isObjectLiteralExpression(o)){if(i.isSetupReturnValue(o))return o;if(function(e,t){const{ts:r}=e,i=t.parent;return i&&r.isVariableDeclaration(i)&&!i.type}(i,o)||function(e,t){const{ts:r}=e,i=t.parent;return i&&r.isPropertyAccessExpression(i)&&i.expression===t||r.isParenthesizedExpression(i)&&i.parent&&r.isPropertyAccessExpression(i.parent)&&i.parent.expression===i}(i,o)||e.isExportAssignment(a)||!k.includes(a.kind))return r.createAsExpression(o,r.createTypeReferenceNode(r.createIdentifier("UTSJSONObject"),void 0))}return o};return t=>e.visitNode(t,s)}},before(r){const{factory:i}=r,s=t.getProgram().getTypeChecker(),n=O(e,s,r),o=new Map,a=t=>{if(e.isObjectLiteralExpression(t)){if(n.isSetupReturnValue(t))return t;const s=function(e,t,r){const{ts:i}=e,s=e.context,n=e.typeChecker,o=s.factory,a=i.getOriginalNode(t)||t;if((a.flags&i.NodeFlags.Synthesized)===i.NodeFlags.Synthesized)return;const c=a?.parent;if(c&&i.isAsExpression(c)||e.isComponentDataOrProvide(a)||e.isComponentOptions(a)||e.isComponentOptionsProperty(a)||e.isComponentProp(a)||e.isCreateAppReturnValue(a))return;const l=i.getContainerNode(a);if(l&&i.isMethodDeclaration(l)&&l.modifiers&&l.modifiers.some((e=>e.kind===i.SyntaxKind.StaticKeyword))&&i.isIdentifier(l.name)&&"get$UTSMetadata$"===l.name.escapedText)return;let p;try{p=n.getContextualType(a)}catch(e){try{p=n.getContextualType(t)}catch(e){}}if(e.shouldTransfromToUTSJSONObject(t,p))return o.createTypeReferenceNode("UTSJSONObject",void 0);const u=p.symbol,d=u?.escapedName;if(!d||!F(e,p))return;if(n.isSymbolAccessible(u,a,i.SymbolFlags.Class,!0).accessibility!==i.SymbolAccessibility.Accessible)return n.markSymbolAsNotTypeOnly(u),o.createTypeReferenceNode(n.symbolToEntityName(u,i.SymbolFlags.Class,t,void 0),void 0);const f=n.getAccessibleSymbolChain(u,a,u.flags,!1);let m;if(f&&f.length>0)m=n.symbolToEntityName(u,i.SymbolFlags.Class,a,void 0);else{const t=u.declarations;if(!t||1!==t.length)return;const s=t[0].getSourceFile(),n=a.getSourceFile();if(s===n)return;let c,l;if(r.has(u)){const e=r.get(u);c=e.alias,l=e.importDeclaration}else{const t=u.escapedName;if(c=i.getUniqueName(t,n),l=function(e,t,r,i){const{ts:s}=e,n=e.context,o=e.typeChecker;let a="";if(1!==(r?.declarations||[]).length)return;const c=t.symbol?.exports;for(const e of c.keys()){const t=c.get(e).declarations||[];if(1!==t.length)continue;const i=t[0];let n,l;if(s.isClassDeclaration(i)?l=i.name:s.isExportAssignment(i)?l=i.expression:s.isExportSpecifier(i)&&(l=i.name),n=l&&(o.getContextualType(l)?.symbol||o.getTypeAtLocation(l)?.symbol),n===r){a=e;break}}if(!a)return;const l=n.factory,p=l.createIdentifier(i);return"default"===a?l.createImportDeclaration(void 0,l.createImportClause(!1,p,void 0),l.createStringLiteral(t.fileName),void 0):l.createImportDeclaration(void 0,l.createImportClause(!1,void 0,l.createNamedImports([l.createImportSpecifier(!1,a!==i?l.createIdentifier(a):void 0,p)])),l.createStringLiteral(t.fileName),void 0)}(e,s,u,c),!l)return;r.set(u,{symbol:u,alias:c,importDeclaration:l})}m=o.createIdentifier(c)}return n.markSymbolAsNotTypeOnly(u),o.createTypeReferenceNode(m,void 0)}(n,t,o);if(s)return i.createAsExpression(e.visitEachChild(t,a,r),s)}return e.visitEachChild(t,a,r)};return t=>{const r=e.visitNode(t,a),s=[];for(const e of o.values())s.push(e.importDeclaration),t.locals.set(e.alias,e.symbol);const n=Array.from(r.statements);let c=0;for(let t=0;t<n.length;t++){const r=n[t];if(!e.isImportDeclaration(r))break;c=t+1}return n.splice(c,0,...s),i.updateSourceFile(r,n,r.isDeclarationFile,r.referencedFiles,r.typeReferenceDirectives,r.hasNoDefaultLib,r.libReferenceDirectives)}}}),e=>({parser:{SourceFile:t=>r=>{const i=r.fileName,s=globalThis?.__utsUniXGlobalProperties__;if(s)for(const[e,t]of s)t.file===i&&s.delete(e);return function r(n){const o=e.visitEachChild(n,r,t);if(e.isBinaryExpression(o)){const{left:t,operatorToken:r,right:n}=o;if(r.kind===e.SyntaxKind.EqualsToken&&e.isPropertyAccessExpression(t)){const{expression:r,name:o}=t;if(e.isPropertyAccessExpression(r)){const{expression:t,name:a}=r;if("globalProperties"===a.escapedText.toString()&&e.isPropertyAccessExpression(t)){const{name:e}=t;"config"===e.escapedText.toString()&&s.set(o.escapedText.toString(),{file:i,initializerNode:n})}}}}return o}(r)}}}),(e,t)=>({before(r){const i=t.getProgram().getTypeChecker(),s=O(e,i,r),n=t=>(e.isClassDeclaration(t)&&(t=function(e,t){const{ts:r}=e,i=e.context,s=e.typeChecker,n=i.factory,o=t.heritageClauses;if(!o)return t;const a=o.filter((e=>e.token===r.SyntaxKind.ImplementsKeyword));if(1!==a.length)return t;const c=a[0].types,l=[];for(let e=0;e<c.length;e++){const t=c[e];if(!t.expression||!r.isIdentifier(t.expression))continue;const i=s.getSymbolAtLocation(t.expression),n=i?.declarations||[];if(1!==n.length)continue;const o=n[0];r.isClassDeclaration(o)&&l.push(t.expression)}if(0===l.length)return t;const p=t.name?t.name.escapedText.toString():"";return n.updateClassDeclaration(t,t.modifiers,t.name,t.typeParameters,t.heritageClauses,[...j(e,p,0,l),...t.members])}(s,t)),t=e.visitEachChild(t,n,r));return t=>e.visitNode(t,n)}}),(e,t)=>({before(r){const i=t.getProgram().getTypeChecker(),s=O(e,i,r),n=r.factory,o=t=>{if(e.isAsExpression(t)&&t.type){const i=ie(s,t);if(i)return n.createNewExpression(i.expression,i.typeArguments,[e.visitEachChild(t,o,r)])}return t=e.visitEachChild(t,o,r)};return t=>e.visitNode(t,o)}}),(e,t)=>({before(r){const i=t.getProgram().getTypeChecker(),s=O(e,i,r),n=t=>{if(e.isIdentifier(t)){if("JSON"===t.escapedText)return function(e){const t=e.context,r=t.factory;return v(t),r.createPropertyAccessExpression(r.createIdentifier("UTS"),r.createIdentifier("JSON"))}(s)}else e.isBinaryExpression(t)?t.operatorToken.kind===e.SyntaxKind.InstanceOfKeyword&&(t=function(e,t){const r=e.context,i=r.factory;return v(r),i.createCallExpression(i.createPropertyAccessExpression(i.createIdentifier("UTS"),i.createIdentifier("isInstanceOf")),void 0,[t.left,t.right])}(s,t)):e.isCallExpression(t)&&e.isPropertyAccessExpression(t.expression)&&(t=function(e,t){const r=e.context,i=r.factory,s=e.typeChecker,n=e.ts,{expression:o,arguments:a}=t;if(!n.isPropertyAccessExpression(o))return t;const{expression:c,name:l}=o;if(n.isIdentifier(c)&&n.isIdentifier(l)&&oe.includes(`${c.escapedText}.${l.escapedText}`)){const r=t.typeArguments?.[0];if(r&&n.isTypeReferenceNode(r)&&r.pos>0&&n.isIdentifier(r.typeName)){const c=ce.includes(r.typeName.escapedText.toString());let l;if(!c&&(l=s.getSymbolAtLocation(r),!l)){const e=r.typeName.escapedText;l=s.getSymbolsInScope(t,n.SymbolFlags.Type).find((t=>t.escapedName===e))}if(c||l&&w(e,l))return i.updateCallExpression(t,o,void 0,[...a,ae(e,r)])}}if(!n.isIdentifier(l)||!ne.includes(l.escapedText.toString()))return t;if(c.pos<0)return t;const p=s.getTypeAtLocation(c);let u="";s.isArrayType(p)?u="Array":s.isTypeAssignableTo(p,s.getStringType())&&(u="string");const d=p.symbol?.escapedName.toString();"Map"===d?u="Map":"WeakMap"===d&&(u="WeakMap");const f=l.escapedText,m=se[`${u}_${f}`];return m?(v(r),i.createCallExpression(i.createPropertyAccessExpression(i.createIdentifier("UTS"),i.createIdentifier(m)),void 0,[c,...a])):t}(s,t));return t=e.visitEachChild(t,n,r)};return t=>e.visitNode(t,n)}}),(e,t)=>({before(r){const i=t.getProgram().getTypeChecker(),s=O(e,i,r),n=t=>(!e.isVariableDeclaration(t)||t.initializer||t.parent&&e.isCatchClause(t.parent)||!e.isIdentifier(t.name)?e.isParameter(t)?t=function(e,t){const{modifiers:r,dotDotDotToken:i,name:s,questionToken:n,type:o,initializer:a}=t;if(t.pos<0||a||i)return t;const c=e.context.factory,l=e.typeChecker,p=e.ts;return p.isMethodDeclaration(t.parent)&&p.isIdentifier(t.parent.name)&&"setup"===t.parent.name.text?t:n||e.isPossibleNullType(l.getTypeAtLocation(t))?c.updateParameterDeclaration(t,r,i,s,n,o&&e.createTypeNodeWithNullType(o,!0),a||c.createNull()):t}(s,t):(e.isFunctionDeclaration(t)||e.isMethodDeclaration(t)||e.isArrowFunction(t)||e.isFunctionExpression(t)||e.isGetAccessorDeclaration(t))&&(t=function(e,t){const r=e.ts,i=e.context,s=i.factory,n=e.typeChecker,{modifiers:o,type:a}=t,c=o?.some((e=>e.kind===r.SyntaxKind.AsyncKeyword));let l=!1,p=!1;if(a){const r=n.getSignatureFromDeclaration(t)?.getReturnType();if(r&&(l=e.isPossibleNullType(r),p=e.isPossiblePromiseNullType(r),!l&&!p))return t}return r.visitEachChild(t,(function e(t){return r.isFunctionLike(t)?t:r.isReturnStatement(t)&&!t.expression?s.updateReturnStatement(t,c||p?s.createCallExpression(s.createPropertyAccessExpression(s.createIdentifier("Promise"),s.createIdentifier("resolve")),void 0,[s.createNull()]):s.createNull()):r.visitEachChild(t,e,i)}),i)}(s,t)):t=function(e,t){const r=e.context.factory,i=e.typeChecker;return!t.initializer&&t.pos>0&&e.isPossibleNullType(i.getTypeAtLocation(t))?r.updateVariableDeclaration(t,t.name,t.exclamationToken,t.type,r.createNull()):t}(s,t),t=e.visitEachChild(t,n,r));return t=>e.visitNode(t,n)}}),e=>({before:t=>t=>(t.statements.forEach((t=>{if((e.isImportDeclaration(t)||e.isExportDeclaration(t))&&t.moduleSpecifier&&e.isStringLiteral(t.moduleSpecifier)){const e=t.moduleSpecifier.text;(e.endsWith(".uvue.ts")||e.endsWith(".vue.ts"))&&(t.moduleSpecifier.text=e.replace(/.u?ts$/,""))}})),t)}),e=>({before(t){const r=i=>{if(e.isCallExpression(i)&&e.isIdentifier(i.expression)&&i.arguments.length>0){const e=i.expression.escapedText.toString();Y.includes(e)&&(i=i.arguments[0])}return e.visitEachChild(i,r,t)};return t=>e.visitNode(t,r)}}),(e,t,r)=>{const{resolveWorkers:i}=r.transformCreateWorker||{resolveWorkers:()=>({})},s={Worker_Path_Expected_a_string_literal:H(0,e.DiagnosticCategory.Error,"Worker_Path_Expected_a_string_literal_0","uni.createWorker(workerPath) 的 workerPath 参数必须是字符串字面量"),Worker_Path_Not_Found:H(0,e.DiagnosticCategory.Error,"Worker_Path_Not_Found_0","Worker[{0}]路径不存在或未正确实现"),Worker_Not_Supported_on_App_IOS_Uvue:H(0,e.DiagnosticCategory.Error,"Worker_Not_Supported_on_App_IOS_Uvue_0","app-ios平台，目前仅 uts 插件中支持使用 uni.createWorker 创建 worker")};return{before(t){const{factory:n}=t,o=new Map,a=i(),c=i=>{if(e.isCallExpression(i)&&i.arguments.length>=1&&e.isPropertyAccessExpression(i.expression)&&"createWorker"===i.expression.name.escapedText&&e.isIdentifier(i.expression.expression)&&"uni"===i.expression.expression.escapedText){"JavaScript"===r.targetLanguage&&"app-ios"===r.platform&&t.error(e.createDiagnosticForNode(i,s.Worker_Not_Supported_on_App_IOS_Uvue));const c=i.arguments[0];let l="";if(e.isStringLiteral(c)||e.isNoSubstitutionTemplateLiteral(c)?l=c.text:t.error(e.createDiagnosticForNode(c,s.Worker_Path_Expected_a_string_literal)),l)if(l.startsWith("/")&&(l=l.slice(1)),a[l]){if("Kotlin"===r.targetLanguage||"Swift"===r.targetLanguage){const t=n.createIdentifier(a[l]);if(!o.has(l)){const e=n.createImportDeclaration(void 0,n.createImportClause(!1,void 0,n.createNamedImports([n.createImportSpecifier(!1,void 0,t)])),n.createStringLiteral(`@/${l}`),void 0);o.set(l,e)}const r=[n.createArrowFunction(void 0,void 0,[],n.createTypeReferenceNode(n.createIdentifier("WorkerTaskImpl"),void 0),n.createToken(e.SyntaxKind.EqualsGreaterThanToken),n.createNewExpression(t,void 0,[]))];for(let e=1;e<i.arguments.length;e++)r.push(i.arguments[e]);return n.updateCallExpression(i,i.expression,i.typeArguments,r)}if("JavaScript"===r.targetLanguage||"ArkTS"===r.targetLanguage){const e="JavaScript"===r.targetLanguage?".js":".ets",t=[n.createStringLiteral(l.replace(".uts",e))];for(let e=1;e<i.arguments.length;e++)t.push(i.arguments[e]);return n.updateCallExpression(i,i.expression,i.typeArguments,t)}}else t.error(e.createDiagnosticForNode(c,s.Worker_Path_Not_Found,l))}return e.visitEachChild(i,c,t)};return t=>{const r=e.visitNode(t,c);return 0===o.size?r:n.updateSourceFile(r,[...o.values(),...r.statements],r.isDeclarationFile,r.referencedFiles,r.typeReferenceDirectives,r.hasNoDefaultLib,r.libReferenceDirectives)}}}}];const xe=s.normalizePath(x.resolve(process.env.UNI_INPUT_DIR||"","uni_modules")),Se=new RegExp("^"+xe+"/([a-zA-Z0-9_-]+)/"),Te=/\.(u)?vue(.ts)?/;let ve;const _e=new Set;function be(e){return Te.test(e)}function Ee(e,t){if(ve=e,!ve.sys.__rewrited){const{fileExists:e,readFile:r,realpath:i}=ve.sys;ve.sys.realpath=e=>{const t=i?i(e):e;return t.endsWith(".ts")&&_e.has(s.normalizePath(e))?e.replace(".ts",".uts"):t},ve.sys.fileExists=t=>{const r=s.normalizePath(t),i=r.match(Se),n=i?i[1]:"";return(!n||!e(x.resolve(xe,n,"encrypt")))&&(r.endsWith(".ts")&&e(r.replace(".ts",".uts"))?(_e.add(r),!0):!(!r.endsWith(".vue.ts")&&!r.endsWith(".uvue.ts")||!e(r.replace(/.ts$/,"")))||(!(!r.endsWith(".json.ts")||!e(r.replace(/.ts$/,"")))||e(t)))},ve.sys.readFile=(i,n)=>{if(i.endsWith(".ts")&&_e.has(s.normalizePath(i))){const e=i.replace(".ts",".uts"),s=r(e,n);if(null==s)return;return function(e,t){return t.uniCliShared.preUVueJs(t.uniCliShared.preUVueJs(e))}(s,t)}if(i.endsWith(".json.ts")){const o=i.replace(/.ts$/,"");if(e(o)){const e=r(o,n);if(null==e)return;return function(e,t){const r=t.uniCliShared.parseJson(e,!0);return s.dataToEsm(r,{preferConst:!0,compact:!0})}(e,t)}}if(i.endsWith(".vue.ts")||i.endsWith(".uvue.ts")){const s=i.replace(/.ts$/,"");if(e(s)){const e=r(s,n);if(null==e)return;return function(e,t){e=t.uniCliShared.preUVueJs(t.uniCliShared.preUVueHtml(e));const r=t.vueCompilerDom.parse(e).children.find((e=>"script"===e.tag)),i="export default {}";return r?r.props.some((e=>"setup"===e.name))?"// @uts-setup\n"+(r?.children[0]?.content||"")+"\n"+i:r?.children[0]?.content||i:i}(e,t)}}let o=r(i,n);if(null==o)return;i.endsWith("runtime-dom/dist/runtime-dom.d.ts")&&(o=o.replace("runtimeDOMBailTypes: Node | Window;",""));const a=globalThis?.__utsHacker__?.replaceVueTypes;return a?a(i,o):o},ve.sys.__rewrited=!0}}const Ne=new class{constructor(){this.getCanonicalFileName=x.normalize,this.getNewLine=()=>ve.sys.newLine}getCurrentDirectory(){return ve.sys.getCurrentDirectory()}};function Ce(e,t,r){const i={flatMessage:ve.flattenDiagnosticMessageText(t.messageText,Ne.getNewLine()),formatted:ve.formatDiagnosticsWithColorAndContext([t],Ne),category:t.category,code:t.code,type:e};if(t.file&&void 0!==t.start){let{line:e,character:n}=t.file.getLineAndCharacterOfPosition(t.start);if(r){const o=r.originalPositionFor({line:e+1,column:n,bias:p.SourceMapConsumer.LEAST_UPPER_BOUND});if(null!==o.line){if(o.source){const a=r.sourceContentFor(o.source);if(a){const{line:c,character:l}=t.file.getLineAndCharacterOfPosition(t.start+(t.length||0)),p=r.originalPositionFor({line:c+1,column:l});if(null!==p.line){const r=u.codeFrameColumns(a,{start:{line:o.line,column:(o.column||0)+1},end:{line:p.line,column:(p.column||0)+1}});i.rollupError=function(e,t,r,i,s){const n={id:e,message:t,frame:s,loc:{file:e,line:r,column:i}};return n}(t.file.fileName,i.flatMessage,e+1,n+1,r),i.finalRollupError=function(e,t,r,i,s){const n=new Error(t);return Object.assign(n,{message:t,frame:s,loc:{file:e,line:r,column:i}}),Object.defineProperty(n,"id",{get:()=>e,set(e){}}),n}(t.file.fileName,i.flatMessage,o.line,o.column||0,r),i.utsCompilerError={type:"UTSCompilerError",file:s.normalizePath(x.relative(process.env.UNI_INPUT_DIR,t.file.fileName.split("?")[0])),line:o.line,column:o.column||0,message:i.flatMessage,frame:r}}}}e=o.line}}i.fileLine=`${t.file.fileName}(${e+1},${n+1})`}return i}function Ie(e,t,r){return t.map((t=>Ce(e,t,r)))}function De(e,t,r=!0){t.forEach((t=>{let i,s,o;switch(t.category){case ve.DiagnosticCategory.Message:i=e.info,s=n.white,o="";break;case ve.DiagnosticCategory.Error:i=e.error,s=n.red,o="error";break;case ve.DiagnosticCategory.Warning:default:i=e.warn,s=n.yellow,o="warning"}const a=t.type+" ";return r?t.utsCompilerError?i.call(e,t.utsCompilerError):t.rollupError?i.call(e,t.rollupError):i.call(e,`${n.enabled?t.formatted:function(e){if("string"!=typeof e)throw new TypeError(`Expected a \`string\`, got \`${typeof e}\``);return e.replace(Pe,"")}(t.formatted)}`):void 0!==t.fileLine?i.call(e,`${t.fileLine}: ${a}${o} TS${t.code}: ${s(t.flatMessage)}`):i.call(e,`${a}${o} TS${t.code}: ${s(t.flatMessage)}`)}))}const Pe=function({onlyFirst:e=!1}={}){const t=["[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)","(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))"].join("|");return new RegExp(t,e?void 0:"g")}();var Ae;function Oe(e){return"string"==typeof e?e:e()}!function(e){e[e.Error=0]="Error",e[e.Warning=1]="Warning",e[e.Info=2]="Info",e[e.Debug=3]="Debug"}(Ae||(Ae={}));class ke{constructor(e,t,r,i=""){this.verbosity=e,this.bail=t,this.context=r,this.prefix=i}warn(e){this.verbosity<Ae.Warning||this.context.warn(`${Oe(e)}`)}error(e){this.verbosity<Ae.Error||(this.bail?"string"==typeof e||"function"==typeof e?this.context.error(`${Oe(e)}`):this.context.error(e):"UTSCompilerError"===e.type?(console.warn(`warning: ${e.message}`),console.warn(`at ${e.file}:${e.line}:${e.column}`),console.log(e.frame)):"string"==typeof e||"function"==typeof e?this.context.warn(`${Oe(e)}`):this.context.warn(e))}info(e){this.verbosity<Ae.Info||console.log(`${this.prefix}${Oe(e)}`)}debug(e){this.verbosity<Ae.Debug||console.log(`${this.prefix}${Oe(e)}`)}}function we({useTsconfigDeclarationDir:e,cacheRoot:t},r){const i={noEmitHelpers:!1,importHelpers:!0,noResolve:!1,noEmit:!1,noEmitOnError:!1,inlineSourceMap:!1,outDir:s.normalizePath(`${t}/placeholder`),allowNonTsExtensions:!0};if(!r)return i;r.options.moduleResolution===ve.ModuleResolutionKind.Classic&&(i.moduleResolution=ve.ModuleResolutionKind.Node10),void 0===r.options.module&&(i.module=ve.ModuleKind.ES2015),e||(i.declarationDir=void 0);return r.options.sourceMap||(i.sourceRoot=void 0),i}function Fe(e,t){const r=[];return t.forEach((t=>{e instanceof Array?e.forEach((e=>r.push(s.normalizePath(x.join(t,e))))):r.push(s.normalizePath(x.join(t,e)))})),r}class $e{constructor(e,t,r){this.parsedConfig=e,this.transformers=t,this.cwd=r,this.snapshots={},this.versions={},this.customParser={},this.getScriptFileNames=()=>Array.from(this.fileNames.values()),this.getCompilationSettings=()=>this.parsedConfig.options,this.getTypeRootsVersion=()=>0,this.getCurrentDirectory=()=>this.cwd,this.useCaseSensitiveFileNames=()=>ve.sys.useCaseSensitiveFileNames,this.getDefaultLibFileName=ve.getDefaultLibFilePath,this.readDirectory=ve.sys.readDirectory,this.readFile=ve.sys.readFile,this.fileExists=ve.sys.fileExists,this.directoryExists=ve.sys.directoryExists,this.getDirectories=ve.sys.getDirectories,this.realpath=ve.sys.realpath,this.trace=console.log,this.fileNames=new Set(e.fileNames)}reset(){this.snapshots={},this.versions={}}setLanguageService(e){e.shouldTransform=e=>!!e&&(function(e){return be(e)||e.includes(".uts")||_e.has(s.normalizePath(e))}(e)||e.endsWith(".json.ts")||e.endsWith(".d.ts")),e.isVueFile=be,this.service=e,this.customTransformers||this.initTransformers(this.transformers||[])}setSnapshot(e,t){(e=s.normalizePath(e)).endsWith(".uts")&&this.setSnapshot(e.replace(/\.uts$/,".ts"),t);const r=ve.ScriptSnapshot.fromString(t);return this.snapshots[e]=r,this.versions[e]=(this.versions[e]||0)+1,this.fileNames.add(e),r}getScriptSnapshot(e){if((e=s.normalizePath(e))in this.snapshots)return this.snapshots[e];const t=ve.sys.readFile(e);return null!=t?this.setSnapshot(e,t):void 0}getScriptVersion(e){return e=s.normalizePath(e),(this.versions[e]||0).toString()}initTransformers(e){if(void 0===this.service||void 0===e||0===this.transformers.length)return;const t={before:[],after:[],afterDeclarations:[]};for(const r of e){const e=r(this.service);e.parser&&(this.customParser=e.parser),e.before&&(t.before=t.before.concat(e.before)),e.after&&(t.after=t.after.concat(e.after)),e.afterDeclarations&&(t.afterDeclarations=t.afterDeclarations.concat(e.afterDeclarations))}return this.customTransformers=t,globalThis.__utsParser__=this.customParser,t}getCustomTransformers(){return this.customTransformers}setCompilerHost(e){}}class Ue{constructor(e){this.cacheRoot=e,this.rolled=!1,this.oldCacheRoot=`${this.cacheRoot}/cache`,this.newCacheRoot=`${this.cacheRoot}/cache_`,d.emptyDirSync(this.newCacheRoot)}exists(t){return!this.rolled&&(!!e.existsSync(`${this.newCacheRoot}/${t}`)||e.existsSync(`${this.oldCacheRoot}/${t}`))}path(e){return`${this.oldCacheRoot}/${e}`}match(t){return!this.rolled&&(e.existsSync(this.oldCacheRoot)?S.isEqual(e.readdirSync(this.oldCacheRoot).sort(),t.sort()):0===t.length)}read(t){return e.existsSync(`${this.newCacheRoot}/${t}`)?d.readJsonSync(`${this.newCacheRoot}/${t}`,{encoding:"utf8",throws:!1}):d.readJsonSync(`${this.oldCacheRoot}/${t}`,{encoding:"utf8",throws:!1})}write(e,t){this.rolled||void 0!==t&&d.writeJsonSync(`${this.newCacheRoot}/${e}`,t)}touch(e){this.rolled||d.ensureFileSync(`${this.newCacheRoot}/${e}`)}roll(){this.rolled||(this.rolled=!0,d.removeSync(this.oldCacheRoot),e.existsSync(this.newCacheRoot)&&e.renameSync(this.newCacheRoot,this.oldCacheRoot))}}function Le(e,t,r){const i={code:"",references:t,uniExtApis:r};return e.outputFiles.forEach((e=>{e.name.endsWith(".d.ts")?i.dts=e:e.name.endsWith(".d.ts.map")?i.dtsmap=e:e.name.endsWith(".map")?i.map=e.text:i.code=e.text})),i}class Re{constructor(e,t,r,i,s,n,o,a){if(this.noCache=e,this.host=i,this.cacheRoot=s,this.options=n,this.context=a,this.cacheVersion="9",this.cachePrefix="uts_",this.ambientTypesDirty=!1,this.hashOptions={algorithm:"sha1",ignoreUnknown:!1},this.dependencyTree=new f.Graph({directed:!0}),this.dependencyTree.setDefaultNodeLabel((()=>({dirty:!1}))),t&&this.clean(),e)return;this.hashOptions.ignoreUnknown=r,this.cacheDir=`${this.cacheRoot}/${this.cachePrefix}${m({version:this.cacheVersion,rootFilenames:o,options:this.options,tsVersion:ve.version},this.hashOptions)}`,this.init();const c=ve.getAutomaticTypeDirectiveNames(n,ve.sys).map((e=>ve.resolveTypeReferenceDirective(e,void 0,n,ve.sys))).filter((e=>e.resolvedTypeReferenceDirective?.resolvedFileName)).map((e=>e.resolvedTypeReferenceDirective.resolvedFileName));this.ambientTypes=o.filter((e=>e.endsWith(".d.ts"))).concat(c).map((e=>({id:e,snapshot:this.host.getScriptSnapshot(e)}))),this.checkAmbientTypes()}clean(){if(!T.pathExistsSync(this.cacheRoot))return;T.readdirSync(this.cacheRoot).forEach((e=>{const t=`${this.cacheRoot}/${e}`;e.startsWith(this.cachePrefix)?T.statSync(t).isDirectory?(this.context.info(n.blue(`cleaning cache: ${t}`)),T.removeSync(`${t}`)):this.context.debug(`skipping cleaning '${t}' as it is not a directory`):this.context.debug(`skipping cleaning '${t}' as it does not have prefix '${this.cachePrefix}'`)}))}setDependency(e,t){this.context.debug(`${n.blue("dependency")} '${e}'`),this.context.debug(`    imported by '${t}'`),this.dependencyTree.setEdge(t,e)}walkTree(e){if(f.alg.isAcyclic(this.dependencyTree))return f.alg.topsort(this.dependencyTree).forEach((t=>e(t)));this.context.info(n.yellow("import tree has cycles")),this.dependencyTree.nodes().forEach((t=>e(t)))}done(){this.noCache||(this.context.info(n.blue("rolling caches")),this.codeCache.roll(),this.semanticDiagnosticsCache.roll(),this.syntacticDiagnosticsCache.roll(),this.typesCache.roll())}getCompiled(e,t,r){return this.context.info(`${n.blue("transpiling")} '${e}'`),this.getCached(this.codeCache,e,t,Boolean(!this.options.isolatedModules||this.options.declaration),r)}getSyntacticDiagnostics(e,t,r,i){return this.getDiagnostics("syntax",this.syntacticDiagnosticsCache,e,t,r,i)}getSemanticDiagnostics(e,t,r,i){return this.getDiagnostics("semantic",this.semanticDiagnosticsCache,e,t,r,i)}checkAmbientTypes(){this.context.debug(n.blue("Ambient types:"));const e=this.ambientTypes.filter((e=>void 0!==e.snapshot)).map((e=>(this.context.debug(`    ${e.id}`),this.createHash(e.id,e.snapshot))));this.ambientTypesDirty=!this.typesCache.match(e),this.ambientTypesDirty&&this.context.info(n.yellow("ambient types changed, redoing all semantic diagnostics")),e.forEach(this.typesCache.touch,this.typesCache)}getDiagnostics(e,t,r,i,s,n){return this.getCached(t,r,i,"semantic"===e,(()=>Ie(e,s(),n)))}getCached(e,t,r,i,s){if(this.noCache)return s();const o=this.createHash(t,r);if(this.context.debug(`    cache: '${e.path(o)}'`),e.exists(o)&&!this.isDirty(t,i)){this.context.debug(n.green("    cache hit"));const t=e.read(o);if(t)return e.write(o,t),t;this.context.warn(n.yellow("    cache broken, discarding"))}this.context.debug(n.yellow("    cache miss"));const a=s();return e.write(o,a),this.markAsDirty(t),a}init(){this.codeCache=new Ue(`${this.cacheDir}/code`),this.typesCache=new Ue(`${this.cacheDir}/types`),this.syntacticDiagnosticsCache=new Ue(`${this.cacheDir}/syntacticDiagnostics`),this.semanticDiagnosticsCache=new Ue(`${this.cacheDir}/semanticDiagnostics`)}markAsDirty(e){this.dependencyTree.setNode(e,{dirty:!0})}isDirty(e,t){const r=this.dependencyTree.node(e);if(!r)return!1;if(!t||r.dirty)return r.dirty;if(this.ambientTypesDirty)return!0;const i=f.alg.dijkstra(this.dependencyTree,e);return Object.keys(i).some((e=>{const t=i[e];if(!e||t.distance===1/0)return!1;const r=this.dependencyTree.node(e),s=void 0===r||r.dirty;return s&&this.context.debug(`    import changed: ${e}`),s}))}createHash(e,t){const r=t.getText(0,t.getLength());return m({data:r,id:e,compilerVersion:process.env.HX_Version||process.env.UNI_COMPILER_VERSION},this.hashOptions)}}const je="tslib",Me="\0tslib.js",Ke=">=5.0.0",We=">=3.0.0";class ze extends o.EventEmitter{constructor(){super(),this._codeMap=new Map,this._easycomUsage=new Map,this._easycoms=[]}has(e){return this._codeMap.has(s.normalizePath(e))}set(e,t){const r=s.normalizePath(e);this.get(r)!==t&&(this._codeMap.set(e,t),this.emit("change",{fileName:r,source:t}))}get(e){return this._codeMap.get(s.normalizePath(e))}forEach(e){this._codeMap.forEach(e)}initUts2jsEasycom(e=this._easycoms){this._easycoms=e||[],this.set("/__uts2js_vfs__/shim-uni-easycom.d.ts",function(e){let t="",r="";return e.forEach(((e,i)=>{const s=c.kebabCase(i).replace(e.pattern,e.replacement);t+=`import ${i} from '${s}'\n`,r+=`  type ${i}ComponentPublicInstance = InstanceType<typeof ${i}>\n`})),`${t}\ndeclare global {\n${r}\n}`}(function(e,t){const r=new Map;return t.forEach(((t,i)=>{const s=c.kebabCase(i),n=e.find((e=>e.pattern.test(s)||c.upperFirst(c.camelCase(e.name))===i));n&&r.set(i,n)})),r}(this._easycoms,this._easycomUsage)))}setEasycomUsage(e,t=[]){e=s.normalizePath(e),this._easycomUsage.forEach(((r,i)=>{t.includes(i)||(r.delete(e),0===r.size&&this._easycomUsage.delete(i))}));for(let r=0;r<t.length;r++){const i=t[r];this._easycomUsage.has(i)?this._easycomUsage.get(i)?.add(e):this._easycomUsage.set(i,new Set([e]))}this.initUts2jsEasycom()}}const Je=e=>{let r,i,o,c,u,d,f,m,h,y,g=!1,x=!1,T=0,v=!0;const _={},E=new Set,N=(e,t,r,i)=>{if(!t)return;e=s.normalizePath(e),E.add(e);const n=((e,t,r)=>h.getSyntacticDiagnostics(e,t,(()=>f.getSyntacticDiagnostics(e)),r).concat(h.getSemanticDiagnostics(e,t,(()=>f.getSemanticDiagnostics(e)),r)))(e,t,i);De(r,n,!1!==c.options.pretty),n.length>0&&(v=!1)},C=(e,t)=>{if(!t.dts)return;const r=s.normalizePath(e);_[r]={type:t.dts,map:t.dtsmap},i.debug((()=>`${n.blue("generated declarations")} for '${r}'`))},I=e=>!(e.endsWith(".d.ts")||e.endsWith(".d.cts")||e.endsWith(".d.mts"))&&!!o(e),D=()=>{g||v||i.info(n.yellow("there were errors or warnings.")),h?.done()},P=Object.assign({},{check:!0,verbosity:Ae.Warning,clean:!1,cacheRoot:a({name:"rollup-plugin-uts"}),include:["*.(|u)ts+(|x)","**/*.(|u)ts+(|x)","**/*.cts","**/*.mts"],exclude:["*.d.ts","**/*.d.ts","**/*.d.cts","**/*.d.mts"],abortOnError:!1,rollupCommonJSResolveHack:!1,tsconfig:void 0,useTsconfigDeclarationDir:!1,tsconfigOverride:{},transformers:[],tsconfigDefaults:{},objectHashIgnoreUnknownHack:!1,cwd:process.cwd()},e);P.typescript||(P.typescript=require("typescript")),Ee(P.typescript,e.modules),globalThis.uts2jsSourceCodeMap=new ze;const A={name:"uts",options:e=>(r={...e},e),configureServer(e){e.watcher.addListener("all",((e,t)=>{if("add"===e||"unlink"===e){const e=s.normalizePath(t);b.has(e)&&b.delete(e)}}))},buildStart(){m=ve.createDocumentRegistry(),i=new ke(P.verbosity,P.abortOnError,this,"uts: "),g="true"===process.env.ROLLUP_WATCH||!!this.meta.watchMode,({parsedTsConfig:c,fileName:u}=function(e,r){const i=ve.findConfigFile(r.cwd,ve.sys.fileExists,r.tsconfig);void 0===r.tsconfig||i||e.error(`failed to open '${r.tsconfig}'`);let s,n={},o=r.cwd,a=!0;if(i){const r=ve.sys.readFile(i),c=ve.parseConfigFileTextToJson(i,r);a=c.config?.pretty??a,void 0!==c.error&&(De(e,Ie("config",[c.error]),a),e.error(`failed to parse '${i}'`)),n=c.config,o=t.dirname(i),s=i}const c={};S.merge(c,r.tsconfigDefaults,n,r.tsconfigOverride);const l=ve.parseJsonConfigFileContent(c,ve.sys,o,we(r),s),p=we(r,l),u=ve.parseJsonConfigFileContent(c,ve.sys,o,p,s),d=u.options.module;return d!==ve.ModuleKind.ES2015&&d!==ve.ModuleKind.ES2020&&d!==ve.ModuleKind.ES2022&&d!==ve.ModuleKind.ESNext&&e.error(`Incompatible tsconfig option. Module resolves to '${ve.ModuleKind[d]}'. This is incompatible with Rollup, please use 'module: "ES2015"', 'module: "ES2020"', 'module: "ES2022"', or 'module: "ESNext"'.`),De(e,Ie("config",u.errors),a),e.debug(`built-in options overrides: ${JSON.stringify(p,void 0,4)}`),e.debug(`parsed tsconfig: ${JSON.stringify(u,void 0,4)}`),{parsedTsConfig:u,fileName:i}}(i,P)),i.info(`typescript version: ${ve.version}`),i.info(`tslib version: ${P.utsOptions.tslibVersion}`),i.info(`rollup version: ${this.meta.rollupVersion}`),l.satisfies(ve.version,Ke,{includePrerelease:!0})||i.error(`Installed TypeScript version '${ve.version}' is outside of supported range '${Ke}'`),l.satisfies(this.meta.rollupVersion,We,{includePrerelease:!0})||i.error(`Installed Rollup version '${this.meta.rollupVersion}' is outside of supported range '${We}'`),x=l.satisfies(this.meta.rollupVersion,">=2.60.0",{includePrerelease:!0}),x||i.warn((()=>`${n.yellow("You are using a Rollup version '<2.60.0'")}. This may result in type-only files being ignored.`)),i.info("rollup-plugin-uts version: 1.0.0"),i.debug((()=>`plugin options:\n${JSON.stringify(P,((e,t)=>"typescript"===e?`version ${t.version}`:t),4)}`)),i.debug((()=>`rollup config:\n${JSON.stringify(r,void 0,4)}`)),i.debug((()=>`tsconfig path: ${u}`)),P.objectHashIgnoreUnknownHack&&i.warn((()=>`${n.yellow("You are using 'objectHashIgnoreUnknownHack' option")}. If you enabled it because of async functions, try disabling it now.`)),P.rollupCommonJSResolveHack&&i.warn((()=>`${n.yellow("You are using 'rollupCommonJSResolveHack' option")}. This is no longer needed, try disabling it now.`)),g&&i.info("running in watch mode"),o=function(e,t,r){let i=t.include,n=t.exclude;return r.options.rootDirs&&(i=Fe(i,r.options.rootDirs),n=Fe(n,r.options.rootDirs)),r.projectReferences&&(i=Fe(i,r.projectReferences.map((e=>e.path))).concat(i),n=Fe(n,r.projectReferences.map((e=>e.path))).concat(n)),e.debug((()=>`included:\n${JSON.stringify(i,void 0,4)}`)),e.debug((()=>`excluded:\n${JSON.stringify(n,void 0,4)}`)),s.createFilter(i,n,{resolve:r.options.rootDir})}(i,P,c),d=new $e(c,P.transformers,P.cwd),globalThis.uts2jsSourceCodeMap.forEach(((e,t)=>{d.setSnapshot(t,e)})),d.setSnapshot(je,P.utsOptions.tslibSource),globalThis.uts2jsSourceCodeMap.on("change",(function(e){const{fileName:t,source:r}=e||{};d.setSnapshot(t,r)})),f=ve.createLanguageService(d,m),d.setLanguageService(f);const e=P.clean,a=P.noCache||P.clean;if(h=new Re(a,e,P.objectHashIgnoreUnknownHack,d,P.cacheRoot,c.options,c.fileNames,i),y=new Set,P.check){const e=Ie("options",f.getCompilerOptionsDiagnostics());De(i,e,!1!==c.options.pretty),e.length>0&&(v=!1)}},watchChange(e,t){const r=s.normalizePath(e);if(delete _[r],E.delete(r),"web"===process.env.UNI_UTS_PLATFORM)return;const{event:i}=t||{};"create"!==i&&"delete"!==i||b.has(r)&&b.delete(r)},resolveId(e,r){if(e===je)return Me;if(!r)return;r=s.normalizePath(r);const o=ve.nodeModuleNameResolver(e,r,c.options,ve.sys);let a=o.resolvedModule?.resolvedFileName;if(a){if(_e.has(s.normalizePath(a))&&(a=a.replace(".ts",".uts")),/.u?vue.ts$/.test(a))return a=a.replace(/.ts$/,""),t.normalize(a);if(I(a))return h.setDependency(a,r),i.debug((()=>`${n.blue("resolving")} '${e}' imported by '${r}'`)),i.debug((()=>`    to '${a}'`)),t.normalize(a)}},load:e=>e===Me?P.utsOptions.tslibSource:null,async transform(r,a){y.add(a);const l=r.matchAll(/([a-zA-Z0-9]+)ComponentPublicInstance/g),m=[];for(const e of l)m.push(e[1]);m.length>0&&globalThis.uts2jsSourceCodeMap.setEasycomUsage(s.normalizePath(a),m);let T=a;if(T.endsWith(".json")&&(T=T.replace(/.json$/,".uts")),!o(T))return;const _=d.setSnapshot(T,r),b=h.getCompiled(T,_,(()=>{let r;const o=f.getProgram()?.getSourceFile(T);if("uts"===P.utsOptions.emitType){const e=[];if(o){const r=ve.createPrinter({}).printSourceFile(o,{host:Ne,map:{file:s.normalizePath(t.relative(P.utsOptions.inputDir??"",a)),sourceRoot:"",sourcesDirectoryPath:P.utsOptions.inputDir??""}});r.code&&e.push({name:"",writeByteOrderMark:!1,text:r.code}),r.map&&e.push({name:".map",writeByteOrderMark:!1,text:r.map})}else this.error(new Error(`Could not find source file: '${a}'.`));r={outputFiles:e,emitSkipped:!1}}else try{r=f.getEmitOutput(T)}catch(e){if(e instanceof Error&&e.diagnostic){const t=Ie("transform",[e.diagnostic],new p.SourceMapConsumer(this.getCombinedSourcemap())),r="web"===P.utsOptions.platform?"rollupError":"finalRollupError";t[0][r]&&this.error(t[0][r])}throw e}r.emitSkipped&&(v=!1,N(T,_,i,e?.abortOnError?void 0:new p.SourceMapConsumer(this.getCombinedSourcemap())),this.error(n.red(`Emit skipped for '${a}'. See https://github.com/microsoft/TypeScript/issues/49790 for potential reasons why this may occur`)));const l=function(e,t,r){if(!t)return[];const i=ve.preProcessFile(t.getText(0,t.getLength()),!0,!0);return S.compact(i.referencedFiles.concat(i.importedFiles).map((t=>{const i=ve.nodeModuleNameResolver(t.fileName,e,r,ve.sys),n=i.resolvedModule?.resolvedFileName;return n&&_e.has(s.normalizePath(n))&&n.endsWith(".ts")?n.replace(/.ts$/,".uts"):n})))}(T,_,c.options);return Le(r,l,[...o?.__utsMeta?.uniExtApis||[]])}));if(P.check&&N(T,_,i,new p.SourceMapConsumer(this.getCombinedSourcemap())),!b)return;if(g&&b.references&&(u&&this.addWatchFile(u),b.references.map(this.addWatchFile,this),i.debug((()=>`${n.green("    watching")}: ${b.references.join("\nuts:               ")}`))),C(a,b),b.references&&x)for(const e of b.references){if(!I(e))continue;const t=await this.resolve(e,a);t&&!y.has(t.id)&&await this.load({id:t.id})}if(c.options.emitDeclarationOnly)return void i.debug((()=>`${n.blue("emitDeclarationOnly")} enabled, not transforming TS`));const E={code:b.code,map:{mappings:""},meta:{uniExtApis:b.uniExtApis?[...b.uniExtApis]:[]}};if(b.map){P.sourceMapCallback?.(a,b.map);const e=JSON.parse(b.map);e.sourceRoot&&(e.sources=e.sources.map((r=>t.isAbsolute(r)?r:e.sourceRoot+r))),E.map=e}return E},buildEnd(e){if(T=0,e&&(D(),this.error(e)),!P.check)return D();g&&h.walkTree((e=>{if(!o(e))return;const t=d.getScriptSnapshot(e);N(e,t,i)})),c.fileNames.forEach((e=>{const t=s.normalizePath(e);if(E.has(t)||!o(t))return;i.debug((()=>`type-checking missed '${t}'`));const r=d.getScriptSnapshot(t);N(t,r,i)})),D()},generateBundle(e){if(i.debug((()=>`generating target ${T+1}`)),T++,!c.options.declaration)return;c.fileNames.forEach((e=>{const t=s.normalizePath(e);if(t in _||!o(t))return;i.debug((()=>`generating missed declarations for '${t}'`));const r=Le(f.getEmitOutput(t,!0));C(t,r)}));const r=(r,o,a)=>{if(!a)return;let c=a.name;if(c.includes("?")&&(c=c.split("?",1)+o),P.useTsconfigDeclarationDir)return i.debug((()=>`${n.blue("emitting declarations")} for '${r}' to '${c}'`)),void ve.sys.writeFile(c,a.text,a.writeByteOrderMark);let l=a.text;const p=`${P.cacheRoot}/placeholder`;if(".d.ts.map"===o&&(e?.file||e?.dir)){const r=e.file?t.dirname(e.file):e.dir,i=JSON.parse(l);i.sources=i.sources.map((e=>{const i=t.resolve(p,e);return s.normalizePath(t.relative(r,i))})),l=JSON.stringify(i)}const u=s.normalizePath(t.relative(p,c));i.debug((()=>`${n.blue("emitting declarations")} for '${r}' to '${u}'`)),this.emitFile({type:"asset",source:l,fileName:u})};Object.keys(_).forEach((e=>{const{type:t,map:i}=_[e];r(e,".d.ts",t),r(e,".d.ts.map",i)}))}};return A},Ve=h.pathToFileURL(__filename).href,Be=t.dirname(h.fileURLToPath(Ve)),qe=i.createRequire(Ve);let He=!1;exports.uts2js=function({inputDir:r,modules:i,...s}){He||(He=!0,globalThis.__utsHacker__={...globalThis.__utsHacker__,...ye});const n=s.include??["**/*.uts","**/*.ts"],o=s.typescript??qe("typescript"),a={...s,modules:i||{},include:n,typescript:o,transformers:[J(o,ge,{platform:s.platform,targetLanguage:"JavaScript",setParentRecursive:!0,transformCreateWorker:{resolveWorkers:s.resolveWorkers||(()=>({}))}})],utsOptions:{platform:s.platform,tslibSource:e.readFileSync(t.resolve(Be,"../lib/runtime/index.js"),"utf8")}};a.tsconfigOverride||(a.tsconfigOverride={compilerOptions:{}}),a.tsconfigOverride.compilerOptions||(a.tsconfigOverride.compilerOptions={});const c=a.tsconfigOverride.compilerOptions,l={baseUrl:r?"src"===t.basename(r)?t.dirname(r):r:".",moduleResolution:"Bundler",importHelpers:!0,mapRoot:c.sourceMap?r:void 0,target:"ES2016"};for(const e in l)c.hasOwnProperty(e)||(c[e]=l[e]);return[Je(a)]};
+'use strict';
+
+var fs = require('fs');
+var path = require('path');
+var debug = require('debug');
+var module$1 = require('module');
+var pluginutils = require('@rollup/pluginutils');
+var safe = require('colors/safe');
+var events = require('events');
+var findCacheDir = require('find-cache-dir');
+var _ = require('lodash');
+var semver = require('semver');
+var sourceMapJs = require('source-map-js');
+var codeFrame = require('@babel/code-frame');
+var fs$1 = require('fs-extra');
+var graphlib = require('graphlib');
+var objHash = require('object-hash');
+var url = require('url');
+
+function _interopNamespaceDefault(e) {
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== 'default') {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function () { return e[k]; }
+        });
+      }
+    });
+  }
+  n.default = e;
+  return Object.freeze(n);
+}
+
+var fs__namespace = /*#__PURE__*/_interopNamespaceDefault(fs);
+var path__namespace = /*#__PURE__*/_interopNamespaceDefault(path);
+var ___namespace = /*#__PURE__*/_interopNamespaceDefault(_);
+var fs__namespace$1 = /*#__PURE__*/_interopNamespaceDefault(fs$1);
+
+function createUTSHelper(context) {
+    return context.factory.createIdentifier("UTS" /* IDENTIFIER.UTS */);
+}
+
+// 这些是uts插件类型的声明文件
+function normalizePath(id) {
+    return id.replace(/\\/g, '/');
+}
+
+const fsExistsMap = new Map();
+function fsExistsSync(p) {
+    const normalizedPath = normalizePath(p);
+    if (fsExistsMap.has(normalizedPath)) {
+        return fsExistsMap.get(normalizedPath);
+    }
+    if (fs__namespace.existsSync(normalizedPath)) {
+        fsExistsMap.set(normalizedPath, true);
+        return true;
+    }
+    fsExistsMap.set(normalizedPath, false);
+    return false;
+}
+
+var DiagnosticCategory;
+(function (DiagnosticCategory) {
+    DiagnosticCategory[DiagnosticCategory["Warning"] = 0] = "Warning";
+    DiagnosticCategory[DiagnosticCategory["Error"] = 1] = "Error";
+    DiagnosticCategory[DiagnosticCategory["Suggestion"] = 2] = "Suggestion";
+    DiagnosticCategory[DiagnosticCategory["Message"] = 3] = "Message";
+})(DiagnosticCategory || (DiagnosticCategory = {}));
+
+// <auto-generated />
+// generated from 'packages/shared/src/diagnosticMessages.json'
+function diag$1(code, category, key, message, reportsUnnecessary, elidedInCompatabilityPyramid, reportsDeprecated) {
+    return { code, category, key, message, reportsUnnecessary, elidedInCompatabilityPyramid, reportsDeprecated };
+}
+/** @internal */
+const UTSDiagnostics = {
+    Type_literal_property_must_have_a_type_annotation: diag$1(100000, DiagnosticCategory.Error, "Type_literal_property_must_have_a_type_annotation_100000", "Type literal property must have a type annotation."),
+    Only_one_extends_heritage_clause_is_allowed_for_interface: diag$1(100001, DiagnosticCategory.Error, "Only_one_extends_heritage_clause_is_allowed_for_interface_100001", "Only one extends heritage clause is allowed for interface"),
+    Variable_declaration_must_have_initializer: diag$1(100002, DiagnosticCategory.Error, "Variable_declaration_must_have_initializer_100002", "Variable declaration must have initializer."),
+    Nested_type_literal_is_not_supported: diag$1(100003, DiagnosticCategory.Error, "Nested_type_literal_is_not_supported_100003", "Nested type literal is not supported."),
+    Invalid_generic_type_which_can_not_be_constructed: diag$1(100004, DiagnosticCategory.Error, "Invalid_generic_type_which_can_not_be_constructed_100004", "Invalid generic type which can not be constructed."),
+    script_setup_cannot_contain_ES_module_exports: diag$1(100005, DiagnosticCategory.Error, "script_setup_cannot_contain_ES_module_exports_100005", "`<script setup>` cannot contain ES module exports."),
+    Type_aliases_cannot_appear_in_local_scope: diag$1(100006, DiagnosticCategory.Error, "Type_aliases_cannot_appear_in_local_scope_100006", "Type aliases cannot appear in local scope"),
+    direct_declaration_of_Object_Literal_Type_is_not_supported: diag$1(110111101, DiagnosticCategory.Error, "direct_declaration_of_Object_Literal_Type_is_not_supported_110111101", "direct declaration of Object Literal Type is not supported."),
+    Object_literals_only_support_object_types_defined_by_construction_type_and_do_not_support_interfaces: diag$1(110111163, DiagnosticCategory.Error, "Object_literals_only_support_object_types_defined_by_construction_type_and_do_not_support_interfaces_110111163", "Object literals only support object types defined by construction type, and do not support interfaces"),
+    Conditional_statements_must_use_boolean_types: diag$1(110111120, DiagnosticCategory.Error, "Conditional_statements_must_use_boolean_types_110111120", "Conditional statements must use boolean types"),
+};
+
+const uniModulesPath$2 = normalizePath(path__namespace.resolve((process.env.UNI_INPUT_DIR || ''), 'uni_modules'));
+
+const defineMethodList = [
+    "defineComponent" /* IDENTIFIER.DEFINE_COMPONENT */,
+    "defineVaporComponent" /* IDENTIFIER.DEFINE_VAPOR_COMPONENT */,
+    "defineApp" /* IDENTIFIER.DEFINE_APP */,
+    "defineAsyncComponent" /* IDENTIFIER.DEFINE_ASYNC_COMPONENT */,
+    "defineMixin" /* IDENTIFIER.DEFINE_MIXIN */,
+];
+function isDefineMethod(name) {
+    return defineMethodList.some((defineMethod) => {
+        return name === defineMethod || name === '_' + defineMethod;
+    });
+}
+function createTsUtils(ts, typeChecker, // parse阶段不传
+context) {
+    function isImportedSymbol(symbol) {
+        /**
+         * import x from 'xx'
+         * import { x } from 'xx'
+         */
+        return !!(symbol.declarations &&
+            symbol.declarations.some((declaration) => {
+                return (ts.isImportSpecifier(declaration) ||
+                    (ts.isImportClause(declaration) && declaration.name));
+            }));
+    }
+    function getOriginalType(type) {
+        // @ts-ignore
+        return type?.constraintType?.origin?.type || type;
+    }
+    function isObjectLiteralType(type) {
+        if (!type) {
+            return false;
+        }
+        // TODO 优化此处判断逻辑
+        if (type.symbol?.escapedName === '__object') {
+            return true;
+        }
+        // @ts-ignore
+        const flags = type?.objectFlags;
+        if (flags &&
+            (flags & ts.ObjectFlags.ObjectLiteral ||
+                flags & ts.ObjectFlags.FreshLiteral)) {
+            return true;
+        }
+        const symbol = type.getSymbol();
+        if (symbol && symbol.flags & ts.SymbolFlags.ObjectLiteral) {
+            return true;
+        }
+        return false;
+    }
+    function isPossibleNullType(type) {
+        if (!type) {
+            return false;
+        }
+        const nullType = typeChecker.getNullType();
+        // @ts-ignore
+        return typeChecker.isTypeAssignableTo(nullType, type);
+    }
+    function isPossiblePromiseNullType(type) {
+        if (!type) {
+            return false;
+        }
+        // @ts-ignore
+        return isPossibleNullType(typeChecker.getPromisedTypeOfPromise(type));
+    }
+    function isPossibleUTSJSONObjectType(type, ignoreUnresolved = false) {
+        /**
+         * 以下三种情况都认为是可能的UTSJSONObject类型，进行转化
+         * - 未知类型
+         * - UTSJSONObject类型
+         * - 联合类型，其中包含UTSJSONObject类型
+         */
+        if (!type) {
+            return !ignoreUnresolved;
+        }
+        // const orginalType = getOriginalType(type)
+        // return orginalType.symbol?.escapedName === IDENTIFIER.UTSJSONObject
+        return ((type.isUnion() &&
+            type.types.some((type) => getOriginalType(type).symbol?.escapedName ===
+                "UTSJSONObject" /* IDENTIFIER.UTSJSONObject */)) ||
+            getOriginalType(type).symbol?.escapedName === "UTSJSONObject" /* IDENTIFIER.UTSJSONObject */);
+    }
+    function isUnionWithNullType(typeNode) {
+        return !!(typeNode &&
+            ts.isUnionTypeNode(typeNode) &&
+            typeNode.types.some((type) => ts.isLiteralTypeNode(type) &&
+                type.literal.kind === ts.SyntaxKind.NullKeyword));
+    }
+    /**
+     * 获取对象字面量方法名节点
+     */
+    function getMethodNameNodeOfObjectLiteral(node) {
+        if (ts.isMethodDeclaration(node)) {
+            return node.name;
+        }
+        const parent = node.parent;
+        if (!ts.isPropertyAssignment(parent)) {
+            return;
+        }
+        const propertyName = parent.name;
+        return ts.isIdentifier(propertyName) ? propertyName : undefined;
+    }
+    function createTypeNodeWithNullType(typeNode, withQuestionToken) {
+        const factory = context.factory;
+        const unionWithNullType = isUnionWithNullType(typeNode);
+        let realMemberType = typeNode;
+        if (withQuestionToken && !unionWithNullType) {
+            // 尝试为memberType添加null类型
+            if (ts.isUnionTypeNode(typeNode)) {
+                realMemberType = factory.createUnionTypeNode([
+                    ...typeNode.types,
+                    factory.createLiteralTypeNode(factory.createNull()),
+                ]);
+            }
+            else {
+                realMemberType = factory.createUnionTypeNode([
+                    typeNode,
+                    factory.createLiteralTypeNode(factory.createNull()),
+                ]);
+            }
+        }
+        return realMemberType;
+    }
+    function isVueOrNativeParameter(node) {
+        if (!node.parent) {
+            return false;
+        }
+        if (ts.isPropertyAssignment(node.parent) &&
+            node.parent.parent &&
+            ts.isObjectLiteralExpression(node.parent.parent)) {
+            return isVueOrNativeParameter(node.parent.parent);
+        }
+        if (!ts.isCallExpression(node.parent)) {
+            return false;
+        }
+        else if (node.parent.expression.pos === -1) {
+            // uts编译器生成的节点如果期望转为UTSJSONObject，会在parse阶段生成AsExpression节点
+            return true;
+        }
+        const exprType = typeChecker.getTypeAtLocation(node.parent.expression);
+        if (!exprType) {
+            return false;
+        }
+        const callDecl = exprType.getCallSignatures()?.[0]?.declaration;
+        if (!callDecl) {
+            return false;
+        }
+        const fileName = callDecl.getSourceFile().fileName;
+        const rawFileName = fileName.replace(/\\/g, '/').split('/').pop();
+        return (fileName.endsWith('runtime-core.d.ts') ||
+            (rawFileName && /lib\.es(\d+|next)\..*d.ts/.test(rawFileName)));
+    }
+    /**
+     * 父级节点不是AsExpression时方可调用此方法，用于规避parse阶段生成的AsExpression节点
+     * 基于如下两个原因，这里不使用isTypeAssignableTo判断UTSJSONObject类型是否能赋值给contextualType类型
+     * - uts规范下开发者不能写复杂类型
+     * - parse阶段hack了UTSJSONObject类型和Object类型的关系，导致如果一个类型的所有属性都是可选时，isTypeAssignableTo(UTSJONObject, contextualType)会返回true
+     */
+    function shouldTransfromToUTSJSONObject(node, contextualType) {
+        if (!contextualType || contextualType === typeChecker.getAnyType()) {
+            return true;
+        }
+        if (contextualType.isUnion()) {
+            return contextualType.types.some((type) => {
+                return shouldTransfromToUTSJSONObject(node, type);
+            });
+        }
+        if (contextualType.isIntersection()) {
+            return contextualType.types.every((type) => {
+                return typeChecker.isTypeAssignableTo(typeChecker.getGlobalType("UTSJSONObject" /* IDENTIFIER.UTSJSONObject */, 
+                /*arity*/ 0, true), contextualType);
+            });
+        }
+        const symbol = contextualType.getSymbol() || contextualType.aliasSymbol;
+        if (!symbol && !contextualType.isClassOrInterface()) {
+            // 各种基础类型，number、string、boolean、null、undefined、void、never等
+            return false;
+        }
+        /**
+         * 难点：编译为js时是无法准确判断一个对象字面量是不是需要编译为UTSJSONObject的。目前的方案算是贪婪模式，可能是UTSJSONObject的都编译为UTSJSONObject。特殊情况提前排除
+         */
+        return (!symbol ||
+            symbol?.escapedName === '__object' ||
+            symbol?.escapedName === 'UTSJSONObject' ||
+            typeChecker.isTypeAssignableTo(typeChecker.getGlobalType("UTSJSONObject" /* IDENTIFIER.UTSJSONObject */, 
+            /*arity*/ 0, true), contextualType));
+    }
+    function isDefineComponentCall(callExpression) {
+        if (!callExpression || !ts.isCallExpression(callExpression)) {
+            return false;
+        }
+        const defineComponentFunctionName = callExpression.expression;
+        if (!defineComponentFunctionName ||
+            !ts.isIdentifier(defineComponentFunctionName) ||
+            !isDefineMethod(defineComponentFunctionName.escapedText.toString())) {
+            return false;
+        }
+        return true;
+    }
+    function isComponentOptions(node) {
+        const callExpression = node?.parent;
+        return callExpression && isDefineComponentCall(callExpression);
+    }
+    function isComponentOptionsProperty(node) {
+        const callExpression = node?.parent?.parent?.parent;
+        return callExpression && isDefineComponentCall(callExpression);
+    }
+    function isComponentProp(node) {
+        const grandParent = node.parent?.parent;
+        const greatGrandParent = grandParent?.parent;
+        return (grandParent &&
+            greatGrandParent &&
+            ts.isObjectLiteralExpression(grandParent) &&
+            ts.isPropertyAssignment(greatGrandParent) &&
+            ts.isIdentifier(greatGrandParent.name) &&
+            greatGrandParent.name.escapedText.toString() === 'props' &&
+            isComponentOptionsProperty(grandParent));
+    }
+    /**
+     * 判断是否为组件data或provide，此方法不能完美判断如下情况，后续再找更佳方案
+     *
+     * data() {
+     *   const a = {a: 1}
+     *   return a
+     * }
+     */
+    function isComponentDataOrProvide(node) {
+        const returnExpression = node.parent;
+        if (!returnExpression || !ts.isReturnStatement(returnExpression)) {
+            return false;
+        }
+        const containingFunction = returnExpression?.parent?.parent;
+        if (!containingFunction || !ts.isMethodDeclaration(containingFunction)) {
+            return false;
+        }
+        const functionName = containingFunction.name;
+        if (!functionName ||
+            !ts.isIdentifier(functionName) ||
+            (functionName.escapedText.toString() !== 'data' &&
+                functionName.escapedText.toString() !== 'provide')) {
+            return false;
+        }
+        const callExpression = containingFunction?.parent?.parent;
+        return isDefineComponentCall(callExpression);
+    }
+    function isCreateAppReturnValue(node) {
+        if (process.env.UNI_INPUT_DIR &&
+            normalizePath(path.resolve(process.env.UNI_INPUT_DIR, 'main.uts')) ===
+                normalizePath(node.getSourceFile().fileName) &&
+            node.parent &&
+            ts.isReturnStatement(node.parent)) {
+            const containingFunction = node?.parent?.parent?.parent;
+            if (containingFunction &&
+                ts.isFunctionDeclaration(containingFunction) &&
+                containingFunction.name &&
+                ts.isIdentifier(containingFunction.name) &&
+                containingFunction.name.escapedText.toString() === 'createApp') {
+                return true;
+            }
+        }
+    }
+    // 简单判断一下是否为setup返回值，继续向上查找浪费性能
+    function isSetupReturnValue(node) {
+        const parent = node.parent;
+        return (parent &&
+            ts.isVariableDeclaration(parent) &&
+            parent.name &&
+            ts.isIdentifier(parent.name) &&
+            parent.name.escapedText.toString() === '___returned__');
+    }
+    return {
+        ts,
+        typeChecker,
+        context,
+        isImportedSymbol,
+        isPossibleUTSJSONObjectType,
+        isPossibleNullType,
+        isPossiblePromiseNullType,
+        createTypeNodeWithNullType,
+        isUnionWithNullType,
+        isObjectLiteralType,
+        getMethodNameNodeOfObjectLiteral,
+        shouldTransfromToUTSJSONObject,
+        isVueOrNativeParameter,
+        isComponentDataOrProvide,
+        isComponentOptions,
+        isComponentOptionsProperty,
+        isComponentProp,
+        isCreateAppReturnValue,
+        isSetupReturnValue,
+    };
+}
+const CONTEXTUAL_TYPE_NODE_KINDS = [
+    260 /* VariableDeclaration */, 169 /* Parameter */,
+    172 /* PropertyDeclaration */, 171 /* PropertySignature */,
+    208 /* BindingElement */, 219 /* ArrowFunction */, 253 /* ReturnStatement */,
+    229 /* YieldExpression */, 223 /* AwaitExpression */,
+    213 /* CallExpression */, 214 /* NewExpression */, 170 /* Decorator */,
+    216 /* TypeAssertionExpression */, 234 /* AsExpression */,
+    226 /* BinaryExpression */, 303 /* PropertyAssignment */,
+    304 /* ShorthandPropertyAssignment */, 305 /* SpreadAssignment */,
+    209 /* ArrayLiteralExpression */, 227 /* ConditionalExpression */,
+    239 /* TemplateSpan */, 217 /* ParenthesizedExpression */,
+    235 /* NonNullExpression */, 238 /* SatisfiesExpression */,
+    277 /* ExportAssignment */, 294 /* JsxExpression */, 291 /* JsxAttribute */,
+    293 /* JsxSpreadAttribute */, 286 /* JsxOpeningElement */,
+    285 /* JsxSelfClosingElement */,
+];
+
+function isSymbolTransformable(tsUtils, symbol) {
+    const { ts } = tsUtils;
+    const declarations = symbol?.declarations;
+    if (declarations?.length !== 1) {
+        return false;
+    }
+    const declaration = declarations[0];
+    if (ts.isClassDeclaration(declaration)) {
+        const isUTSType = declaration.heritageClauses?.some((heritageClause) => {
+            return (heritageClause.token === ts.SyntaxKind.ExtendsKeyword &&
+                heritageClause.types.some((type) => {
+                    return (isTempUTSTypeNode(tsUtils, type.expression) ||
+                        isUTSTypeNode(tsUtils, type.expression));
+                }));
+        });
+        return isUTSType;
+    }
+    return false;
+}
+function isNodeTransformable(tsUtils, node) {
+    const typeChecker = tsUtils.typeChecker;
+    const type = typeChecker.getContextualType(node);
+    return !!(type && isTypeTransformable(tsUtils, type));
+}
+function isTypeTransformable(tsUtils, type) {
+    return type.symbol && isSymbolTransformable(tsUtils, type.symbol);
+}
+function createTempUTSTypeNode(tsUtils) {
+    const context = tsUtils.context;
+    const factory = context.factory;
+    const ts = tsUtils.ts;
+    // (glbalThis as any).UTSType
+    return factory.createPropertyAccessExpression(factory.createParenthesizedExpression(factory.createAsExpression(factory.createIdentifier("globalThis" /* IDENTIFIER.GLOBAL_THIS */), factory.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword))), factory.createIdentifier("UTSType" /* IDENTIFIER.UTS_TYPE */));
+}
+function isTempUTSTypeNode(tsUtils, node) {
+    const ts = tsUtils.ts;
+    if (!ts.isPropertyAccessExpression(node)) {
+        return false;
+    }
+    const { expression, name } = node;
+    return (ts.isIdentifier(name) &&
+        name.escapedText === "UTSType" /* IDENTIFIER.UTS_TYPE */ &&
+        ts.isParenthesizedExpression(expression) &&
+        ts.isAsExpression(expression.expression) &&
+        ts.isIdentifier(expression.expression.expression) &&
+        expression.expression.expression.escapedText === "globalThis" /* IDENTIFIER.GLOBAL_THIS */);
+}
+function isUTSTypeClass(tsUtils, node) {
+    const ts = tsUtils.ts;
+    if (!ts.isClassDeclaration(node)) {
+        return false;
+    }
+    const { heritageClauses } = node;
+    const parentClass = heritageClauses?.[0]?.types?.[0]?.expression;
+    if (parentClass && isTempUTSTypeNode(tsUtils, parentClass)) {
+        return true;
+    }
+    return false;
+}
+function isUTSTypeNode(tsUtils, node) {
+    const ts = tsUtils.ts;
+    if (!ts.isPropertyAccessExpression(node)) {
+        return false;
+    }
+    const { expression, name } = node;
+    return (ts.isIdentifier(name) &&
+        name.escapedText === "UTS" /* IDENTIFIER.UTS */ &&
+        ts.isIdentifier(expression) &&
+        expression.escapedText === "UTSType" /* IDENTIFIER.UTS_TYPE */);
+}
+function createRuntimeTypeNode(tsUtils, type) {
+    const { ts } = tsUtils;
+    const context = tsUtils.context;
+    const factory = context.factory;
+    const typeChecker = tsUtils.typeChecker;
+    const unknown = factory.createStringLiteral('Unknown');
+    if (tsUtils.isUnionWithNullType(type) && type.types.length === 2) {
+        // xxx | null 直接按照 xxx 类型处理，并同时添加optional: true标记
+        type = type.types.find((item) => item.kind !== ts.SyntaxKind.NullKeyword);
+    }
+    // 注意此方法未支持所有typeNode类型，仅支持如下情况
+    if (ts.isTypeReferenceNode(type)) {
+        const { typeName, typeArguments } = type;
+        if (!ts.isIdentifier(typeName)) {
+            return unknown;
+        }
+        const symbol = typeChecker.getSymbolAtLocation(typeName);
+        const declaration = symbol?.declarations?.[0];
+        if (!declaration || !isUTSTypeClass(tsUtils, declaration)) {
+            return unknown;
+        }
+        if (!typeArguments) {
+            return factory.createIdentifier(typeName.escapedText.toString());
+        }
+        return factory.createCallExpression(factory.createPropertyAccessExpression(createTempUTSTypeNode(tsUtils), factory.createIdentifier('withGenerics')), undefined, [
+            factory.createIdentifier(typeName.escapedText.toString()),
+            factory.createArrayLiteralExpression([
+                ...typeArguments.map((typeArgument) => createRuntimeTypeNode(tsUtils, typeArgument)),
+            ], false),
+        ]);
+    }
+    else if (ts.isArrayTypeNode(type)) {
+        return factory.createCallExpression(factory.createPropertyAccessExpression(createTempUTSTypeNode(tsUtils), factory.createIdentifier('withGenerics')), undefined, [
+            factory.createIdentifier('Array'),
+            factory.createArrayLiteralExpression([createRuntimeTypeNode(tsUtils, type.elementType)], false),
+        ]);
+    }
+    else if (ts.isTypeLiteralNode(type)) {
+        context.addSemanticDiagnostic(ts.createDiagnosticForNode(type, UTSDiagnostics.Nested_type_literal_is_not_supported));
+    }
+    else if (type.kind === ts.SyntaxKind.NumberKeyword) {
+        return factory.createIdentifier('Number');
+    }
+    else if (type.kind === ts.SyntaxKind.StringKeyword) {
+        return factory.createIdentifier('String');
+    }
+    else if (type.kind === ts.SyntaxKind.BooleanKeyword) {
+        return factory.createIdentifier('Boolean');
+    }
+    else if (type.kind === ts.SyntaxKind.AnyKeyword) {
+        return factory.createStringLiteral('Any');
+    }
+    return unknown;
+}
+/**
+ * class A {
+ *   a: number
+ *   protected b(){
+ *   }
+ *   constructor(a: number) {
+ *     this.a = a
+ *   }
+ * }
+ *
+ * // 错误 Property 'b' is missing in type '{ a: number; }' but required in type 'A'.
+ * const a: A = {
+ *   a: 1,
+ * }
+ *
+ * // 正确
+ * const a = {
+ *   a: 1
+ * } as A
+ */
+function createStaticGetUTSMetadataNode(tsUtils, typeParameters, metadata) {
+    const { ts } = tsUtils;
+    const context = tsUtils.context;
+    const factory = context.factory;
+    return factory.createMethodDeclaration([factory.createToken(ts.SyntaxKind.StaticKeyword)], undefined, factory.createIdentifier('get' + "$UTSMetadata$" /* IDENTIFIER.UTS_METADATA */), undefined, undefined, typeParameters
+        ? [
+            ...typeParameters.map((typeParameter) => {
+                return factory.createParameterDeclaration(undefined, undefined, factory.createIdentifier(typeParameter.name.escapedText.toString()), factory.createToken(ts.SyntaxKind.QuestionToken), factory.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword), undefined);
+            }),
+        ]
+        : [], undefined, factory.createBlock([
+        factory.createReturnStatement(factory.createAsExpression(metadata, factory.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword))),
+    ], true));
+}
+// class和interface使用此方法，不记录字段名，仅记录类型与继承关系，此方法在parse阶段调用
+function createBasicUTSMetadataNode(tsUtils, name, kind, interfaceNameList) {
+    const context = tsUtils.context;
+    const factory = context.factory;
+    const utsMetadataNodeMembers = [
+        factory.createPropertyAssignment(factory.createIdentifier('kind'), factory.createNumericLiteral(kind)),
+        factory.createPropertyAssignment(factory.createIdentifier('interfaces'), factory.createArrayLiteralExpression(interfaceNameList, false)),
+    ];
+    if (process.env.NODE_ENV === 'development') {
+        utsMetadataNodeMembers.push(factory.createPropertyAssignment(factory.createIdentifier('name'), factory.createStringLiteral(name)));
+    }
+    return [
+        createStaticGetUTSMetadataNode(tsUtils, undefined, factory.createObjectLiteralExpression(utsMetadataNodeMembers, true)),
+    ];
+}
+// type字面量声明使用此方法，此方法在transform阶段执行
+function createTypeUTSMetadataNode(tsUtils, name, kind, members, typeParameters) {
+    const context = tsUtils.context;
+    const factory = context.factory;
+    // { kind: 0, interfaces: [] }
+    const utsMetadataNodeMembers = [
+        factory.createPropertyAssignment(factory.createIdentifier('kind'), factory.createNumericLiteral(kind)),
+        /**
+         * get fields() {
+         *   return {
+         *     a: {
+         *       type: Number,
+         *       optional: false,
+         *       jsonField: 'a_b',
+         *     },
+         *   }
+         * }
+         */
+        factory.createGetAccessorDeclaration(undefined, factory.createIdentifier('fields'), [], undefined, factory.createBlock([
+            factory.createReturnStatement(factory.createObjectLiteralExpression([
+                ...members.map((member) => {
+                    let jsonField = '';
+                    // ts.getJSDocTags 无法获取member的jsDoc，暂未排查原因，先通过下面的方式绕过
+                    // @ts-ignore
+                    const jsDoc = (member.jsDoc || []);
+                    jsDoc.forEach((jsDocItem) => {
+                        const tags = jsDocItem.tags || [];
+                        tags.forEach((item) => {
+                            if (item.tagName.escapedText === "JSON_FIELD" /* IDENTIFIER.JSON_FIELD */ &&
+                                typeof item.comment === 'string') {
+                                const commentLength = item.comment.length;
+                                if ((item.comment[0] === "'" &&
+                                    item.comment[commentLength - 1] === "'") ||
+                                    (item.comment[0] === '"' &&
+                                        item.comment[commentLength - 1] === '"')) {
+                                    jsonField = item.comment.slice(1, -1);
+                                }
+                                else {
+                                    jsonField = item.comment;
+                                }
+                            }
+                        });
+                    });
+                    const fieldInfoObjectElements = [
+                        factory.createPropertyAssignment(factory.createIdentifier('type'), createRuntimeTypeNode(tsUtils, member.type)),
+                        factory.createPropertyAssignment(factory.createIdentifier('optional'), member.questionToken ||
+                            tsUtils.isUnionWithNullType(member.type)
+                            ? factory.createTrue()
+                            : factory.createFalse()),
+                    ];
+                    if (jsonField) {
+                        fieldInfoObjectElements.push(factory.createPropertyAssignment(factory.createIdentifier('jsonField'), factory.createStringLiteral(jsonField)));
+                    }
+                    return factory.createPropertyAssignment(factory.createIdentifier(member.name.escapedText.toString()), factory.createObjectLiteralExpression(fieldInfoObjectElements));
+                }),
+            ], true)),
+        ], true)),
+    ];
+    if (process.env.NODE_ENV === 'development') {
+        utsMetadataNodeMembers.push(factory.createPropertyAssignment(factory.createIdentifier('name'), factory.createStringLiteral(name)));
+    }
+    return [
+        createStaticGetUTSMetadataNode(tsUtils, typeParameters, factory.createObjectLiteralExpression(utsMetadataNodeMembers, true)),
+    ];
+}
+
+function addUTSMetadataNodeForClassIfNeeded(tsUtils, node) {
+    const { ts } = tsUtils;
+    const context = tsUtils.context;
+    const typeChecker = tsUtils.typeChecker;
+    // 仅为impements添加utsMetadataNode
+    const factory = context.factory;
+    const heritageClauses = node.heritageClauses;
+    if (!heritageClauses) {
+        return node;
+    }
+    const implementsHeritageClauses = heritageClauses.filter((item) => {
+        return item.token === ts.SyntaxKind.ImplementsKeyword;
+    });
+    if (implementsHeritageClauses.length !== 1) {
+        return node;
+    }
+    const types = implementsHeritageClauses[0].types;
+    const interfaceNameList = [];
+    for (let i = 0; i < types.length; i++) {
+        const type = types[i];
+        if (!type.expression || !ts.isIdentifier(type.expression)) {
+            continue;
+        }
+        const symbol = typeChecker.getSymbolAtLocation(type.expression);
+        const declarations = symbol?.declarations || [];
+        if (declarations.length !== 1) {
+            continue;
+        }
+        const declaration = declarations[0];
+        if (!ts.isClassDeclaration(declaration)) {
+            continue;
+        }
+        interfaceNameList.push(type.expression);
+    }
+    if (interfaceNameList.length === 0) {
+        return node;
+    }
+    const className = node.name ? node.name.escapedText.toString() : '';
+    return factory.updateClassDeclaration(node, node.modifiers, node.name, node.typeParameters, node.heritageClauses, [
+        ...createBasicUTSMetadataNode(tsUtils, className, 0 /* UTS_CLASS_METADATA_KIND.CLASS */, interfaceNameList),
+        ...node.members,
+    ]);
+}
+const transformClassImplements = (ts, ls) => {
+    return {
+        before(context) {
+            const program = ls.getProgram();
+            const typeChecker = program.getTypeChecker();
+            const tsUtils = createTsUtils(ts, typeChecker, context);
+            const visitor = (node) => {
+                if (ts.isClassDeclaration(node)) {
+                    node = addUTSMetadataNodeForClassIfNeeded(tsUtils, node);
+                }
+                node = ts.visitEachChild(node, visitor, context);
+                return node;
+            };
+            return (node) => {
+                return ts.visitNode(node, visitor);
+            };
+        },
+    };
+};
+
+globalThis.__utsUniXGlobalProperties__ =
+    globalThis.__utsUniXGlobalProperties__ || new Map();
+/**
+ * .config.
+ */
+const transformComponentExtraProperty = (ts) => {
+    return {
+        parser: {
+            SourceFile(context) {
+                return (sourceFile) => {
+                    const sourceFileName = sourceFile.fileName;
+                    const globalPropertiesMap = globalThis
+                        ?.__utsUniXGlobalProperties__;
+                    if (globalPropertiesMap) {
+                        for (const [key, value] of globalPropertiesMap) {
+                            if (value.file === sourceFileName) {
+                                globalPropertiesMap.delete(key);
+                            }
+                        }
+                    }
+                    function visitNode(node) {
+                        const updatedNode = ts.visitEachChild(node, visitNode, context);
+                        if (ts.isBinaryExpression(updatedNode)) {
+                            const { left, operatorToken, right } = updatedNode;
+                            if (operatorToken.kind === ts.SyntaxKind.EqualsToken) {
+                                if (ts.isPropertyAccessExpression(left)) {
+                                    const { expression: globalPropertiesExpression, name: globalPropertyName, } = left;
+                                    if (ts.isPropertyAccessExpression(globalPropertiesExpression)) {
+                                        const { expression: appConfigExpression, name: globalPropertiesIdentifier, } = globalPropertiesExpression;
+                                        if (globalPropertiesIdentifier.escapedText.toString() ===
+                                            'globalProperties' &&
+                                            ts.isPropertyAccessExpression(appConfigExpression)) {
+                                            const { name: configIdentifier } = appConfigExpression;
+                                            if (configIdentifier.escapedText.toString() === 'config') {
+                                                globalPropertiesMap.set(globalPropertyName.escapedText.toString(), {
+                                                    file: sourceFileName,
+                                                    initializerNode: right,
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return updatedNode;
+                    }
+                    return visitNode(sourceFile);
+                };
+            },
+        },
+    };
+};
+
+/**
+ * 1. 将 import xxx from 'xxx.uts' 转换为 import xxx from 'xxx'
+ * @param ts
+ * @returns
+ */
+const transformImportDeclaration = (ts, ls) => {
+    return {
+        parser: {
+            SourceFile(context) {
+                const factory = context.factory;
+                function parseSpecifier(text) {
+                    if (text.endsWith('.uts') || text.endsWith('.ts')) {
+                        return text.replace(/.u?ts$/, '');
+                    }
+                }
+                let commentDirectives = [];
+                function visitor(node) {
+                    const updatedNode = ts.visitEachChild(node, visitor, context);
+                    if (ts.isImportDeclaration(updatedNode) ||
+                        ts.isExportDeclaration(updatedNode)) {
+                        let moduleSpecifier = updatedNode.moduleSpecifier;
+                        if (moduleSpecifier && ts.isStringLiteral(moduleSpecifier)) {
+                            const text = moduleSpecifier.text;
+                            const uniModuleNameReg = /@\/uni_modules\/([a-zA-Z0-9_-]+)/;
+                            const uniModuleName = text.match(uniModuleNameReg)?.[1];
+                            if (uniModuleName) {
+                                const encryptPath = path__namespace.resolve(uniModulesPath$2, uniModuleName, 'encrypt');
+                                if (fsExistsSync(encryptPath)) {
+                                    commentDirectives.push({
+                                        range: {
+                                            pos: Math.max(updatedNode.pos - 1, 0),
+                                            end: updatedNode.pos,
+                                        },
+                                        type: 1,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    if (ts.isImportDeclaration(updatedNode) &&
+                        updatedNode.moduleSpecifier &&
+                        ts.isStringLiteral(updatedNode.moduleSpecifier)) {
+                        const specifier = parseSpecifier(updatedNode.moduleSpecifier.text);
+                        if (specifier) {
+                            return factory.createImportDeclaration(updatedNode.modifiers, updatedNode.importClause, factory.createStringLiteral(specifier), updatedNode.assertClause);
+                        }
+                    }
+                    if (ts.isExportDeclaration(updatedNode) &&
+                        updatedNode.moduleSpecifier &&
+                        ts.isStringLiteral(updatedNode.moduleSpecifier)) {
+                        const specifier = parseSpecifier(updatedNode.moduleSpecifier.text);
+                        if (specifier) {
+                            return factory.createExportDeclaration(updatedNode.modifiers, false, // isTypeOnly
+                            updatedNode.exportClause, factory.createStringLiteral(specifier), updatedNode.assertClause);
+                        }
+                        else if (updatedNode.isTypeOnly) {
+                            return factory.createExportDeclaration(updatedNode.modifiers, false, // isTypeOnly
+                            updatedNode.exportClause, updatedNode.moduleSpecifier, updatedNode.assertClause);
+                        }
+                    }
+                    if (ts.isImportClause(updatedNode) && updatedNode.isTypeOnly) {
+                        return factory.createImportClause(false, // isTypeOnly
+                        updatedNode.name, updatedNode.namedBindings);
+                    }
+                    else if (ts.isImportSpecifier(updatedNode) &&
+                        updatedNode.isTypeOnly) {
+                        return factory.createImportSpecifier(false, // isTypeOnly
+                        updatedNode.propertyName, updatedNode.name);
+                    }
+                    else if (ts.isExportSpecifier(updatedNode) &&
+                        updatedNode.isTypeOnly) {
+                        return factory.createExportSpecifier(false, // isTypeOnly
+                        updatedNode.propertyName, updatedNode.name);
+                    }
+                    return updatedNode;
+                }
+                return (sourceFile) => {
+                    sourceFile = ts.visitNode(sourceFile, visitor);
+                    if (commentDirectives.length > 0) {
+                        // @ts-ignore
+                        sourceFile.commentDirectives =
+                            // @ts-ignore
+                            sourceFile.commentDirectives || [];
+                        // @ts-ignore
+                        sourceFile.commentDirectives.push(...commentDirectives);
+                        commentDirectives.length = 0;
+                    }
+                    return sourceFile;
+                };
+            },
+        },
+    };
+};
+
+function generateImportSymbolFromSourceFile(tsUtils, sourceFile, symbol, alias) {
+    const { ts } = tsUtils;
+    const context = tsUtils.context;
+    const typeChecker = tsUtils.typeChecker;
+    let exportSymbolName = '';
+    const symbolDeclarations = symbol?.declarations || [];
+    const declarationLength = symbolDeclarations.length;
+    if (declarationLength !== 1) {
+        return;
+    }
+    // @ts-expect-error
+    const exports = sourceFile.symbol?.exports;
+    for (const exportKey of exports.keys()) {
+        const exportSymbolDeclarations = exports.get(exportKey).declarations || [];
+        if (exportSymbolDeclarations.length !== 1) {
+            continue;
+        }
+        const exportSymbolDeclaration = exportSymbolDeclarations[0];
+        let symbolToCheck;
+        let exportNodeToCheck;
+        if (ts.isClassDeclaration(exportSymbolDeclaration)) {
+            exportNodeToCheck = exportSymbolDeclaration.name;
+        }
+        else if (ts.isExportAssignment(exportSymbolDeclaration)) {
+            exportNodeToCheck = exportSymbolDeclaration.expression;
+        }
+        else if (ts.isExportSpecifier(exportSymbolDeclaration)) {
+            exportNodeToCheck = exportSymbolDeclaration.name;
+        }
+        symbolToCheck =
+            exportNodeToCheck &&
+                (typeChecker.getContextualType(exportNodeToCheck)
+                    ?.symbol ||
+                    typeChecker.getTypeAtLocation(exportNodeToCheck)?.symbol);
+        if (symbolToCheck === symbol) {
+            exportSymbolName = exportKey;
+            break;
+        }
+    }
+    if (!exportSymbolName) {
+        return;
+    }
+    const factory = context.factory;
+    const aliasIdentifier = factory.createIdentifier(alias);
+    if (exportSymbolName === 'default') {
+        return factory.createImportDeclaration(undefined, factory.createImportClause(false, aliasIdentifier, undefined), factory.createStringLiteral(sourceFile.fileName), undefined);
+    }
+    return factory.createImportDeclaration(undefined, factory.createImportClause(false, undefined, factory.createNamedImports([
+        factory.createImportSpecifier(false, exportSymbolName !== alias
+            ? factory.createIdentifier(exportSymbolName)
+            : undefined, aliasIdentifier),
+    ])), factory.createStringLiteral(sourceFile.fileName), undefined);
+}
+// function setSymbolReferenced(symbol: tsTypes.Symbol, referenced: boolean) {
+//   // @ts-ignore
+//   symbol.links
+// }
+function getObjectLiteralTypeNode(tsUtils, node, symbolAutoImportMap) {
+    const { ts } = tsUtils;
+    const context = tsUtils.context;
+    const typeChecker = tsUtils.typeChecker;
+    const factory = context.factory;
+    const originalNode = (ts.getOriginalNode(node) ||
+        node);
+    if ((originalNode.flags & ts.NodeFlags.Synthesized) ===
+        ts.NodeFlags.Synthesized) {
+        return;
+    }
+    /**
+     * main.uts的createApp返回值及任意文件的setup函数的返回值不转化为UTSJSONObject
+     */
+    const tempParent = originalNode?.parent;
+    if ((tempParent && ts.isAsExpression(tempParent)) ||
+        tsUtils.isComponentDataOrProvide(originalNode) ||
+        tsUtils.isComponentOptions(originalNode) ||
+        tsUtils.isComponentOptionsProperty(originalNode) ||
+        tsUtils.isComponentProp(originalNode) ||
+        tsUtils.isCreateAppReturnValue(originalNode)) {
+        return;
+    }
+    const containerNode = ts.getContainerNode(originalNode);
+    if (containerNode &&
+        ts.isMethodDeclaration(containerNode) &&
+        containerNode.modifiers &&
+        containerNode.modifiers.some((modifier) => modifier.kind === ts.SyntaxKind.StaticKeyword) &&
+        ts.isIdentifier(containerNode.name) &&
+        containerNode.name.escapedText === 'get' + "$UTSMetadata$" /* IDENTIFIER.UTS_METADATA */) {
+        // 生成static get$UTSMetadata$()会在非常早的时机执行，其中的所有代码都不需要转化
+        return;
+    }
+    /**
+     * getContextualType内部逻辑非常复杂
+     * 目前遇到的问题：页面data内包含对象字面量，onLoad内包含interface，如果先在before阶段转化interface则会导致上层所有节点被修改丢失symbol。导致getContextualType内部报错。
+     * 暂时将ObjectLiteral添加as或者转为UTSJSONObject的逻辑移至最早的before内执行
+     *
+     * 后续可能的解决方案：所有的transformer内仅做标记不进行before阶段转化，最后添加一个读取标记用于生成最终语法树的transformer。
+     *
+     * TODO 调研更优的解决方案
+     * 更新：此问题疑似由介入tsc parse阶段设置parent的操作引发，parse阶段setParent无法去除。
+     * 为此问题做了一次调整：parse阶段仅使用create不使用update，避免originalNode混乱，仍然无法消除此问题
+     * 目前的解决方案是：contextualType获取两次，一次originalNode的一次node的
+     */
+    let contextualType;
+    try {
+        contextualType = typeChecker.getContextualType(originalNode);
+    }
+    catch (error) {
+        try {
+            contextualType = typeChecker.getContextualType(node);
+        }
+        catch (e) { }
+    }
+    if (tsUtils.shouldTransfromToUTSJSONObject(node, contextualType)) {
+        return factory.createTypeReferenceNode("UTSJSONObject" /* IDENTIFIER.UTSJSONObject */, undefined);
+    }
+    /**
+     * 为未声明类型的ObjectLiteral添加as
+     */
+    const symbol = contextualType.symbol;
+    const className = symbol?.escapedName;
+    if (!className || !isTypeTransformable(tsUtils, contextualType)) {
+        return;
+    }
+    /**
+     * 判断contextualType在当前作用域的可访问性
+     * - type声明在同一个文件的可访问位置，无需自动引入即可直接使用
+     * - type声明由其他文件导出，需要自动引入
+     * - 其他情况不予转化并给出告警？
+     */
+    // @ts-expect-error 内部方法
+    const symbolAccessibilityResult = typeChecker.isSymbolAccessible(symbol, originalNode, ts.SymbolFlags.Class, true);
+    if (symbolAccessibilityResult.accessibility !==
+        // @ts-expect-error 内部属性
+        ts.SymbolAccessibility.Accessible) {
+        /*
+         * symbol不可通过当前作用域访问，也无法自动引入
+         * symbol在同一文件内非全局（注意此场景即使可以访问到也会进入此分支）
+         */
+        // @ts-expect-error 内部方法
+        typeChecker.markSymbolAsNotTypeOnly(symbol);
+        return factory.createTypeReferenceNode(typeChecker.symbolToEntityName(symbol, ts.SymbolFlags.Class, node, undefined), undefined);
+    }
+    // @ts-expect-error 内部方法
+    const accessibleSymbolChain = typeChecker.getAccessibleSymbolChain(symbol, originalNode, symbol.flags, false);
+    let typeName;
+    if (accessibleSymbolChain && accessibleSymbolChain.length > 0) {
+        // symbol可通过当前作用域访问，无需自动引入
+        typeName = typeChecker.symbolToEntityName(symbol, ts.SymbolFlags.Class, originalNode, undefined);
+    }
+    else {
+        // symbol不可通过当前作用域访问，但是需要自动引入
+        const symbolDeclarations = symbol.declarations;
+        if (!symbolDeclarations || symbolDeclarations.length !== 1) {
+            return;
+        }
+        const symbolDeclaration = symbolDeclarations[0];
+        const symbolDeclarationSourceFile = symbolDeclaration.getSourceFile();
+        const sourceFile = originalNode.getSourceFile();
+        if (symbolDeclarationSourceFile === sourceFile) {
+            // 正常情况下不应进入此条件判断
+            return;
+        }
+        let typeNameStr;
+        let importDeclaration;
+        if (symbolAutoImportMap.has(symbol)) {
+            const cache = symbolAutoImportMap.get(symbol);
+            typeNameStr = cache.alias;
+            importDeclaration = cache.importDeclaration;
+        }
+        else {
+            const originalTypeNameStr = symbol.escapedName;
+            // @ts-ignore
+            typeNameStr = ts.getUniqueName(originalTypeNameStr, sourceFile);
+            importDeclaration = generateImportSymbolFromSourceFile(tsUtils, symbolDeclarationSourceFile, symbol, typeNameStr);
+            if (!importDeclaration) {
+                return;
+            }
+            symbolAutoImportMap.set(symbol, {
+                symbol,
+                alias: typeNameStr,
+                importDeclaration,
+            });
+        }
+        typeName = factory.createIdentifier(typeNameStr);
+    }
+    // @ts-expect-error 内部方法
+    typeChecker.markSymbolAsNotTypeOnly(symbol);
+    return factory.createTypeReferenceNode(typeName, undefined);
+}
+function isAccessedUTSJSONObject(tsUtils, node) {
+    const { ts } = tsUtils;
+    const parent = node.parent;
+    // TODO ((((ObjectLiteralExpression)))).toMap()
+    return ((parent &&
+        ts.isPropertyAccessExpression(parent) &&
+        parent.expression === node) ||
+        (ts.isParenthesizedExpression(parent) &&
+            parent.parent &&
+            ts.isPropertyAccessExpression(parent.parent) &&
+            parent.parent.expression === parent));
+}
+function isUnTypedUTSJSONObjectDeclaration(tsUtils, node) {
+    const { ts } = tsUtils;
+    const parent = node.parent;
+    return parent && ts.isVariableDeclaration(parent) && !parent.type;
+}
+const transformObjectLiteral = (ts, ls) => {
+    return {
+        parser: {
+            SourceFile(context) {
+                const factory = context.factory;
+                const tsUtils = createTsUtils(ts, undefined, context);
+                const visitor = (node) => {
+                    const updatedNode = ts.visitEachChild(node, visitor, context);
+                    const parent = updatedNode.parent;
+                    // 特殊处理变量声明，转为UTSJSONObject
+                    if (parent && ts.isObjectLiteralExpression(updatedNode)) {
+                        if (tsUtils.isSetupReturnValue(updatedNode)) {
+                            return updatedNode;
+                        }
+                        if (
+                        // 未声明类型的变量
+                        isUnTypedUTSJSONObjectDeclaration(tsUtils, updatedNode) ||
+                            isAccessedUTSJSONObject(tsUtils, updatedNode) ||
+                            ts.isExportAssignment(parent) ||
+                            // 无需推断类型的对象字面量
+                            !CONTEXTUAL_TYPE_NODE_KINDS.includes(parent.kind)) {
+                            return factory.createAsExpression(updatedNode, factory.createTypeReferenceNode(factory.createIdentifier("UTSJSONObject" /* IDENTIFIER.UTSJSONObject */), undefined));
+                        }
+                    }
+                    return updatedNode;
+                };
+                return (node) => {
+                    return ts.visitNode(node, visitor);
+                };
+            },
+        },
+        before(context) {
+            const { factory } = context;
+            const program = ls.getProgram();
+            const typeChecker = program.getTypeChecker();
+            const tsUtils = createTsUtils(ts, typeChecker, context);
+            const symbolAutoImportMap = new Map();
+            const visitor = (node) => {
+                if (ts.isObjectLiteralExpression(node)) {
+                    if (tsUtils.isSetupReturnValue(node)) {
+                        return node;
+                    }
+                    const typeNode = getObjectLiteralTypeNode(tsUtils, node, symbolAutoImportMap);
+                    if (typeNode) {
+                        return factory.createAsExpression(ts.visitEachChild(node, visitor, context), typeNode);
+                    }
+                }
+                return ts.visitEachChild(node, visitor, context);
+            };
+            return (node) => {
+                const sourceFile = ts.visitNode(node, visitor);
+                const importDeclarationList = [];
+                for (const cache of symbolAutoImportMap.values()) {
+                    importDeclarationList.push(cache.importDeclaration);
+                    // @ts-expect-error 内部属性
+                    node.locals.set(cache.alias, cache.symbol);
+                }
+                const updatedStatements = Array.from(sourceFile.statements);
+                let insertIndex = 0;
+                for (let i = 0; i < updatedStatements.length; i++) {
+                    const statement = updatedStatements[i];
+                    if (ts.isImportDeclaration(statement)) {
+                        insertIndex = i + 1;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                updatedStatements.splice(insertIndex, 0, ...importDeclarationList);
+                return factory.updateSourceFile(sourceFile, updatedStatements, sourceFile.isDeclarationFile, sourceFile.referencedFiles, sourceFile.typeReferenceDirectives, sourceFile.hasNoDefaultLib, sourceFile.libReferenceDirectives);
+            };
+        },
+    };
+};
+
+/**
+ * uts-compiler内部会自动引入vue文件，由于内部hack会导致引入的文件后缀为.u?vue.ts
+ * 将 import xxx from 'xxx.u?vue.ts' 转换为 import xxx from 'xxx.u?vue'
+ */
+const transformRemoveVueTsExtention = (ts) => {
+    return {
+        before(context) {
+            return (node) => {
+                node.statements.forEach((node) => {
+                    if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
+                        if (node.moduleSpecifier &&
+                            ts.isStringLiteral(node.moduleSpecifier)) {
+                            const text = node.moduleSpecifier.text;
+                            if (text.endsWith('.uvue.ts') || text.endsWith('.vue.ts')) {
+                                node.moduleSpecifier.text = text.replace(/.u?ts$/, '');
+                            }
+                        }
+                    }
+                });
+                return node;
+            };
+        },
+    };
+};
+
+// function createInterfaceClassDeclaration(
+//   tsUtils: TsUtils,
+//   modifiers: tsTypes.ModifierLike[] | undefined = [],
+//   name: tsTypes.Identifier,
+//   typeParameters: tsTypes.TypeParameterDeclaration[] | undefined,
+//   heritageClauses: tsTypes.HeritageClause[] | undefined,
+//   members: (tsTypes.PropertySignature | tsTypes.MethodSignature)[],
+// ) {
+//   const { ts } = tsUtils
+//   const context = tsUtils.context!
+//   const factory = context.factory
+//   function addAbstract(
+//     modifiers: tsTypes.ModifierLike[],
+//   ): tsTypes.ModifierLike[] {
+//     return [
+//       ...(modifiers || []),
+//       factory.createToken(ts.SyntaxKind.AbstractKeyword),
+//     ]
+//   }
+//   const extendsIdentifierList: tsTypes.Identifier[] = []
+//   if (
+//     heritageClauses &&
+//     (heritageClauses.length > 1 ||
+//       (heritageClauses.length === 1 &&
+//         heritageClauses.some(
+//           (item) => item.token !== ts.SyntaxKind.ExtendsKeyword,
+//         )))
+//   ) {
+//     context.addSyntacticDiagnostic(
+//       ts.createDiagnosticForNode(
+//         heritageClauses[0].parent,
+//         UTSDiagnostics.Only_one_extends_heritage_clause_is_allowed_for_interface,
+//       ),
+//     )
+//     return
+//   }
+//   // 不保留interface的继承链
+//   // const heritageClausesTypes =
+//   //   heritageClauses && heritageClauses.length > 0
+//   //     ? [...heritageClauses[0].types]
+//   //     : []
+//   // for (let i = 0; i < heritageClausesTypes.length; i++) {
+//   //   const type = heritageClausesTypes[i]
+//   //   if (ts.isIdentifier(type.expression)) {
+//   //     extendsIdentifierList.push(type.expression)
+//   //   }
+//   // }
+//   const classMembers = members.map((member) => {
+//     const {
+//       modifiers = [] as tsTypes.ModifierLike[],
+//       name: memberName,
+//       questionToken,
+//     } = member
+//     let memberType: tsTypes.TypeNode | undefined
+//     if (ts.isPropertySignature(member)) {
+//       memberType = member.type
+//     } else if (ts.isMethodSignature(member)) {
+//       const { type: returnType, typeParameters, parameters } = member
+//       memberType = factory.createFunctionTypeNode(
+//         typeParameters,
+//         parameters,
+//         returnType!,
+//       )
+//     }
+//     const realMemberType =
+//       memberType &&
+//       tsUtils.createTypeNodeWithNullType(memberType, !!questionToken)
+//     return factory.createPropertyDeclaration(
+//       addAbstract([...modifiers]),
+//       memberName,
+//       questionToken,
+//       realMemberType,
+//       /*initializer*/ undefined,
+//     )
+//   })
+//   const utsMetadataNodes = createBasicUTSMetadataNode(
+//     tsUtils,
+//     UTS_CLASS_METADATA_KIND.INTERFACE,
+//     extendsIdentifierList,
+//   )
+//   return factory.createClassDeclaration(
+//     addAbstract(modifiers),
+//     name,
+//     typeParameters?.length ? typeParameters : undefined,
+//     undefined,
+//     [...utsMetadataNodes, ...classMembers],
+//   )
+// }
+function createTypeClassDeclaration(tsUtils, modifiers, name, typeParameters, members) {
+    const { ts } = tsUtils;
+    const context = tsUtils.context;
+    const factory = context.factory;
+    const optionsTypeMembers = [];
+    const classMembers = !members
+        ? []
+        : members.map((member) => {
+            const { modifiers, name: memberName, questionToken, 
+            // @ts-ignore
+            jsDoc, } = member;
+            let memberType;
+            if (ts.isPropertySignature(member)) {
+                memberType = member.type;
+            }
+            else if (ts.isMethodSignature(member)) {
+                const { type: returnType, typeParameters, parameters } = member;
+                memberType = factory.createFunctionTypeNode(typeParameters, parameters, returnType);
+            }
+            const realMemberType = memberType &&
+                tsUtils.createTypeNodeWithNullType(memberType, !!questionToken);
+            optionsTypeMembers.push(factory.createPropertySignature(
+            /*modifiers*/ undefined, memberName, questionToken, realMemberType));
+            const propertyDeclaration = factory.createPropertyDeclaration(modifiers, memberName, questionToken, realMemberType, 
+            /*initializer*/ undefined);
+            // @ts-ignore
+            propertyDeclaration.jsDoc = jsDoc;
+            return propertyDeclaration;
+        });
+    const optionsType = factory.createTypeLiteralNode(optionsTypeMembers);
+    const generatedMembers = [];
+    // [key: string] : any
+    const indexSignature = factory.createIndexSignature(undefined, [
+        factory.createParameterDeclaration(undefined, undefined, factory.createIdentifier('key'), undefined, factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword), undefined),
+    ], factory.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword));
+    const constructorNode = factory.createConstructorDeclaration(undefined, [
+        factory.createParameterDeclaration(undefined, undefined, factory.createIdentifier('options'), undefined, optionsType, undefined),
+    ], factory.createBlock([
+        factory.createExpressionStatement(factory.createCallExpression(factory.createSuper(), undefined, [])),
+        ...(members || []).map((item) => {
+            const nameStr = item.name.escapedText.toString();
+            return factory.createExpressionStatement(factory.createBinaryExpression(factory.createPropertyAccessExpression(factory.createThis(), factory.createIdentifier(nameStr)), factory.createToken(ts.SyntaxKind.EqualsToken), factory.createPropertyAccessExpression(factory.createIdentifier('options'), factory.createIdentifier(nameStr))));
+        }),
+    ], true));
+    generatedMembers.push(indexSignature, ...classMembers, constructorNode);
+    const classDeclaration = factory.createClassDeclaration(modifiers, name, typeParameters?.length ? typeParameters : undefined, [
+        factory.createHeritageClause(ts.SyntaxKind.ExtendsKeyword, [
+            factory.createExpressionWithTypeArguments(createTempUTSTypeNode(tsUtils), undefined),
+        ]),
+    ], generatedMembers);
+    return classDeclaration;
+}
+function transformTypeClass(tsUtils, node) {
+    const ts = tsUtils.ts;
+    const context = tsUtils.context;
+    const factory = context.factory;
+    const { modifiers, name, typeParameters, heritageClauses, members } = node;
+    const properties = members.filter((item) => ts.isPropertyDeclaration(item));
+    /**
+     * static get$UTSMetadata() {}
+     */
+    const typeName = name ? name.escapedText.toString() : '';
+    // 此方法内由于要处理泛型类型使用了typeChecker，因此只能在before阶段调用
+    const utsMetadataNode = createTypeUTSMetadataNode(tsUtils, typeName, 2 /* UTS_CLASS_METADATA_KIND.TYPE */, properties, typeParameters ? [...typeParameters] : []);
+    const indexSignature = members.find((item) => ts.isIndexSignatureDeclaration(item));
+    const originalConstructorNode = members.find((item) => ts.isConstructorDeclaration(item));
+    const { parameters } = originalConstructorNode;
+    const constructorParameters = [
+        ...parameters,
+        factory.createParameterDeclaration(undefined, undefined, factory.createIdentifier('metadata'), undefined, factory.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword), factory.createCallExpression(factory.createPropertyAccessExpression(factory.createIdentifier(name.escapedText), factory.createIdentifier('get' + "$UTSMetadata$" /* IDENTIFIER.UTS_METADATA */)), undefined, [])),
+        factory.createParameterDeclaration(
+        /*modifiers*/ undefined, 
+        /*dotDotDotToken*/ undefined, factory.createIdentifier('isJSONParse'), 
+        /*questionToken*/ undefined, factory.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword), 
+        /*initializer*/ factory.createFalse()),
+    ];
+    const tempPropsName = '__props__';
+    const constructorNode = factory.createConstructorDeclaration(
+    /*modifiers*/ undefined, constructorParameters, factory.createBlock([
+        // super()
+        factory.createExpressionStatement(factory.createCallExpression(factory.createSuper(), undefined, [])),
+        /**
+         * const props = (globalThis as any).UTSType.initProps(options, metadata, isJSONParse) 不可在parse阶段使用改为下面的用法
+         * this.__props__ = (globalThis as any).UTSType.initProps(options, metadata, isJSONParse)
+         * delete this.__props__
+         */
+        // this.__props__ = (globalThis as any).UTSType.initProps(options, metadata, isJSONParse)
+        factory.createExpressionStatement(factory.createBinaryExpression(factory.createPropertyAccessExpression(factory.createThis(), factory.createIdentifier(tempPropsName)), factory.createToken(ts.SyntaxKind.EqualsToken), factory.createCallExpression(factory.createPropertyAccessExpression(createTempUTSTypeNode(tsUtils), factory.createIdentifier('initProps')), undefined, [
+            factory.createIdentifier('options'),
+            factory.createIdentifier('metadata'),
+            factory.createIdentifier('isJSONParse'),
+        ]))),
+        // this.a = this.__props__.a
+        ...properties.map((member) => {
+            const { name: memberName } = member;
+            const memberNameText = memberName
+                .escapedText;
+            return factory.createExpressionStatement(factory.createBinaryExpression(factory.createPropertyAccessExpression(factory.createThis(), factory.createIdentifier(memberNameText)), factory.createToken(ts.SyntaxKind.EqualsToken), factory.createPropertyAccessExpression(factory.createPropertyAccessExpression(factory.createThis(), factory.createIdentifier(tempPropsName)), factory.createIdentifier(memberNameText))));
+        }),
+        // delete this.__props__
+        factory.createExpressionStatement(factory.createDeleteExpression(factory.createPropertyAccessExpression(factory.createThis(), factory.createIdentifier(tempPropsName)))),
+    ], 
+    /*multiLine*/ true));
+    return factory.updateClassDeclaration(node, modifiers, name, typeParameters, heritageClauses, [indexSignature, ...properties, ...utsMetadataNode, constructorNode]);
+}
+/**
+ * 处理继承关系。如果class实现自interface，对应的实例应能通过instanceof判断为interface实例
+ * class extends -> class(abstract + not abstract) 不保存interfaces信息
+ * class implements -> interface + abstract class 保存interfaces信息，在此处处理
+ * interface extends -> interface + class(abstract + not abstract) 保存interfaces信息，在transformTypeAndInterface内处理
+ * interface implements -> ×
+ *
+ * instanceof -> UTS.isInstanceOf
+ *
+ * 额外注意的点
+ * - class声明可以嵌套
+ * - 不再支持interface重复声明自动合并，需要抛出错误
+ */
+const transformTypeAndInterface = (ts, ls) => {
+    return {
+        parser: {
+            TypeAliasDeclaration(context) {
+                return function (node) {
+                    const factory = context.factory;
+                    const { modifiers = [], name, typeParameters = [], type } = node;
+                    if (ts.isTypeLiteralNode(type)) {
+                        return factory.createTypeAliasDeclaration(modifiers, name, typeParameters, factory.createTypeLiteralNode(factory.createNodeArray([
+                            factory.createIndexSignature(undefined, [
+                                factory.createParameterDeclaration(undefined, undefined, factory.createIdentifier('key'), undefined, factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword), undefined),
+                            ], factory.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword)),
+                            ...type.members,
+                        ])));
+                    }
+                    return node;
+                };
+            },
+            SourceFile(context) {
+                const tsUtils = createTsUtils(ts, undefined, context);
+                // let hasTypeDeclaration = false
+                const visitor = (node) => {
+                    if (ts.isTypeAliasDeclaration(node) &&
+                        ts.isTypeLiteralNode(node.type)) {
+                        const { modifiers = [], name, typeParameters = [], type } = node;
+                        const members = type.members;
+                        const classDeclaration = createTypeClassDeclaration(tsUtils, [...modifiers], name, [...typeParameters], [
+                            ...members.filter((item) => ts.isPropertySignature(item) || ts.isMethodSignature(item)),
+                        ]);
+                        if (classDeclaration) {
+                            // hasTypeDeclaration = true
+                            node = classDeclaration;
+                        }
+                    }
+                    else if (ts.isInterfaceDeclaration(node)) ;
+                    node = ts.visitEachChild(node, visitor, context);
+                    return node;
+                };
+                return (node) => {
+                    return ts.visitNode(node, visitor);
+                };
+            },
+        },
+        before(context) {
+            const program = ls.getProgram();
+            const typeChecker = program.getTypeChecker();
+            const tsUtils = createTsUtils(ts, typeChecker, context);
+            const factory = context.factory;
+            const visitor = (node) => {
+                if (ts.isPropertyAccessExpression(node) &&
+                    isTempUTSTypeNode(tsUtils, node)) {
+                    // 替换所有临时UTSTypeNode
+                    /**
+                     * parse阶段不能访问createUTSHelper（即使在context上挂上相关方法也不行），用globalThis占位，在此处替换
+                     */
+                    node = factory.createPropertyAccessExpression(createUTSHelper(context), factory.createIdentifier("UTSType" /* IDENTIFIER.UTS_TYPE */));
+                }
+                else if (ts.isClassDeclaration(node)) {
+                    // 转化type声明的class的metadata
+                    const { heritageClauses } = node;
+                    const parentClass = heritageClauses?.[0]?.types?.[0]?.expression;
+                    if (parentClass && isTempUTSTypeNode(tsUtils, parentClass)) {
+                        node = transformTypeClass(tsUtils, node);
+                    }
+                }
+                node = ts.visitEachChild(node, visitor, context);
+                return node;
+            };
+            return (node) => {
+                return ts.visitNode(node, visitor);
+            };
+        },
+    };
+};
+/**
+ * TODO
+ * - 将子作用域内的type声明提升到最外层，以便转化对象字面量时能引用到
+ * - interface、type生成的class继承自uts内置类
+ */
+
+/**
+ * 收集uni和uniCloud的扩展api，后续考虑通过参数控制是否启用收集
+ */
+const transformUniExtApi = (ts) => {
+    return {
+        parser: {
+            SourceFile(context) {
+                return (sourceFile) => {
+                    const visitor = (node) => {
+                        const updatedNode = ts.visitEachChild(node, visitor, context);
+                        if (ts.isCallExpression(updatedNode) &&
+                            ts.isPropertyAccessExpression(updatedNode.expression)) {
+                            const obj = updatedNode.expression.expression;
+                            const prop = updatedNode.expression.name;
+                            if (ts.isIdentifier(obj) && ts.isIdentifier(prop)) {
+                                const objName = obj.text;
+                                if (objName === 'uni' || objName === 'uniCloud') {
+                                    if (!sourceFile.__utsMeta) {
+                                        sourceFile.__utsMeta = {};
+                                    }
+                                    if (!sourceFile.__utsMeta.uniExtApis) {
+                                        sourceFile.__utsMeta.uniExtApis = new Set();
+                                    }
+                                    sourceFile.__utsMeta.uniExtApis.add(objName + '.' + prop.text);
+                                }
+                            }
+                        }
+                        return updatedNode;
+                    };
+                    return ts.visitNode(sourceFile, visitor);
+                };
+            },
+        },
+    };
+};
+
+globalThis.__utsHacker__ = {
+    ...globalThis.__utsHacker__,
+};
+
+debug('uts:transformer:importAndExportDeclaration');
+
+function wrapTransformer(ts, ls, transformer, type) {
+    return (context) => {
+        const transform = transformer(context);
+        return (node) => {
+            const isSourceFile = ts.isSourceFile(node);
+            if (!context.fileName) {
+                if (isSourceFile) {
+                    context.fileName = node.fileName;
+                }
+            }
+            if (ls.shouldTransform(context.fileName)) {
+                if (isSourceFile && !node.isUTSFile) {
+                    node.isUTSFile = true;
+                    if (ls.isVueFile?.(context.fileName)) {
+                        node.isVueFile = true;
+                    }
+                }
+                if (isSourceFile && type === 'parser') {
+                    if (node.statements.length) {
+                        if (!node.statements[0].parent) {
+                            // parser 阶段如果没有关联父节点
+                            // @ts-expect-error 内部方法
+                            ts.setParentRecursive(node, true);
+                        }
+                    }
+                }
+                return transform(node);
+            }
+            return node;
+        };
+    };
+}
+function setupParserNode(originalNode, newNode) {
+    if (newNode && newNode !== originalNode && !Array.isArray(newNode)) {
+        newNode.__parsedByUtsParser = true;
+        newNode.parent = originalNode.parent;
+    }
+    return newNode;
+}
+let parserTs;
+function createParserTsOnce(ts) {
+    if (parserTs) {
+        return parserTs;
+    }
+    parserTs = {
+        ...ts,
+    };
+    const { visitNode, visitEachChild } = ts;
+    parserTs.visitNode = (node, visitor) => {
+        const realVisitor = (node) => {
+            const originalNode = node;
+            const newNode = visitor(node);
+            return setupParserNode(originalNode, newNode);
+        };
+        return visitNode(node, realVisitor);
+    };
+    parserTs.visitEachChild = (node, visitor, context) => {
+        const realVisitor = (node) => {
+            const originalNode = node;
+            const newNode = visitor(node);
+            return setupParserNode(originalNode, newNode);
+        };
+        return visitEachChild(node, realVisitor, context);
+    };
+    return parserTs;
+}
+function initParser(ts, ls, parser, parserTransformers, transformOptions) {
+    // if (options.InterfaceDeclaration) {
+    //   ;(parser.InterfaceDeclaration || (parser.InterfaceDeclaration = [])).push(
+    //     wrapTransformer(ts, ls, options.InterfaceDeclaration),
+    //   )
+    // }
+    if (parserTransformers.TypeAliasDeclaration) {
+        (parser.TypeAliasDeclaration || (parser.TypeAliasDeclaration = [])).push(
+        // TODO allowDtsFiles配置项优化
+        wrapTransformer(ts, ls, (context) => {
+            const transformer = parserTransformers.TypeAliasDeclaration(context);
+            return (node) => {
+                const originalNode = node;
+                const newNode = transformer(node);
+                return setupParserNode(originalNode, newNode);
+            };
+        }, 'parser'));
+    }
+    if (parserTransformers.SourceFile) {
+        (parser.SourceFile || (parser.SourceFile = [])).push(wrapTransformer(ts, ls, parserTransformers.SourceFile, 'parser'));
+    }
+}
+function parseTransformer(ts, transformers, options) {
+    initTs(ts);
+    return (ls) => {
+        const parser = {};
+        const before = [];
+        const after = [];
+        const afterDeclarations = [];
+        transformers.forEach((creator) => {
+            let transformer = creator(ts, ls, options);
+            if (typeof transformer === 'function') {
+                before.push(wrapTransformer(ts, ls, transformer, 'before'));
+            }
+            else {
+                if (transformer.parser) {
+                    // TODO 优化此处逻辑
+                    const transformer = creator(createParserTsOnce(ts), ls, options);
+                    transformer.parser &&
+                        initParser(ts, ls, parser, transformer.parser);
+                }
+                if (transformer.before) {
+                    before.push(wrapTransformer(ts, ls, transformer.before, 'before'));
+                }
+                if (transformer.after) {
+                    after.push(wrapTransformer(ts, ls, transformer.after, 'after'));
+                }
+                if (transformer.afterDeclarations) {
+                    afterDeclarations.push(wrapTransformer(ts, ls, transformer.afterDeclarations, 'afterDeclarations'));
+                }
+            }
+        });
+        return {
+            parser,
+            before,
+            after,
+            afterDeclarations,
+        };
+    };
+}
+function initTs(ts, options) {
+    if (!ts.ObjectFlags.UTSType) {
+        const { Class, Interface, Reference, Anonymous, ArrayLiteral } = ts.ObjectFlags;
+        // @ts-expect-error
+        ts.ObjectFlags.UTSType =
+            Class | Interface | Reference | Anonymous | ArrayLiteral;
+    }
+    if (!ts.TypeFlags.UTSType) {
+        const { Any, String, Number, Boolean, Enum, StringLiteral, NumberLiteral, BooleanLiteral, EnumLiteral, Void, Null, Object, Union, TemplateLiteral, } = ts.TypeFlags;
+        // @ts-expect-error
+        ts.TypeFlags.UTSType =
+            Any |
+                String |
+                Number |
+                Boolean |
+                Enum |
+                StringLiteral |
+                NumberLiteral |
+                BooleanLiteral |
+                EnumLiteral |
+                Void |
+                Null |
+                Object |
+                Union |
+                TemplateLiteral;
+        // @ts-expect-error
+        ts.TypeFlags.UTSStringLike = String | StringLiteral | TemplateLiteral;
+        // @ts-expect-error
+        ts.TypeFlags.UTSNumberLike = Number | NumberLiteral;
+    }
+}
+
+function resolveExpressionType(checker, node) {
+    return checker.getContextualType(node) ?? checker.getTypeAtLocation(node);
+}
+function getContainerNode(ts, node) {
+    node = ts.getOriginalNode(node);
+    while (true) {
+        node = node.parent;
+        if (!node) {
+            return undefined;
+        }
+        node = ts.getOriginalNode(node);
+        switch (node.kind) {
+            case ts.SyntaxKind.SourceFile:
+            case ts.SyntaxKind.MethodDeclaration:
+            case ts.SyntaxKind.MethodSignature:
+            case ts.SyntaxKind.FunctionDeclaration:
+            case ts.SyntaxKind.FunctionExpression:
+            case ts.SyntaxKind.GetAccessor:
+            case ts.SyntaxKind.SetAccessor:
+            case ts.SyntaxKind.ClassDeclaration:
+            case ts.SyntaxKind.InterfaceDeclaration:
+            case ts.SyntaxKind.EnumDeclaration:
+            case ts.SyntaxKind.ModuleDeclaration:
+                return node;
+        }
+    }
+}
+function containsImportTypeNode(node, ts) {
+    if (ts.isImportTypeNode(node)) {
+        return true;
+    }
+    return (ts.forEachChild(node, (child) => containsImportTypeNode(child, ts)) || false);
+}
+function typeToTypeNode(type, node, ts, checker) {
+    const containerNode = getContainerNode(ts, node);
+    let typeNode = checker.typeToTypeNode(type, containerNode, ts.NodeBuilderFlags.None);
+    // 可能 使用了 containerNode 后反而获取不到类型，尝试直接获取
+    if (!typeNode && containerNode) {
+        typeNode = checker.typeToTypeNode(type, undefined, ts.NodeBuilderFlags.None);
+    }
+    if (typeNode) {
+        // 通过 containerNode 可能获取到 import('type.uts').A 类型
+        // import 目前由autoImport实现了，暂不处理
+        if (containsImportTypeNode(typeNode, ts)) {
+            return checker.typeToTypeNode(type, undefined, ts.NodeBuilderFlags.None);
+        }
+        // 目前不能排除 undefined，ArkTS 可选链的类型还需要保留 undefined 类型
+        // if (ts.isUnionTypeNode(typeNode)) {
+        //   // 排除 undefined 类型
+        //   ;(typeNode as any).types = typeNode.types.filter((t) => {
+        //     if (t.kind === ts.SyntaxKind.UndefinedKeyword) {
+        //       return false
+        //     }
+        //     return true
+        //   })
+        // }
+        return typeNode;
+    }
+    return undefined;
+}
+
+debug('uts:transformer:autoImport');
+
+debug('uts:transformer:arguments');
+
+debug('uts:transformer:checker');
+
+const transformContext = (ts, _, options) => {
+    function initContext(context, node) {
+        if (ts.isSourceFile(node)) {
+            if (!node.__relativeFileName) {
+                const compilerOptions = context.getCompilerOptions();
+                if (compilerOptions.rootDir &&
+                    path.isAbsolute(compilerOptions.rootDir)) {
+                    const rootDir = normalizePath(compilerOptions.rootDir);
+                    const fileName = normalizePath(node.fileName);
+                    node.__rootDir = rootDir;
+                    if (fileName.startsWith(rootDir)) {
+                        node.__relativeFileName = normalizePath(path.relative(rootDir, fileName));
+                    }
+                    else if (fileName.includes('/@dcloudio/')) {
+                        node.__relativeFileName =
+                            '@dcloudio/' + fileName.split('/@dcloudio/')[1];
+                    }
+                }
+                if (!node.__relativeFileName) {
+                    node.__relativeFileName = path.basename(node.fileName);
+                }
+            }
+            if (!context.printNode) {
+                const printer = ts.createPrinter();
+                context.printNode = (node, sourceFile) => {
+                    return printer.printNode(ts.EmitHint.Unspecified, node, sourceFile);
+                };
+            }
+            if (!context.addSyntacticDiagnostic) {
+                context.addSyntacticDiagnostic = (diag) => {
+                    // @ts-expect-error 内部属性
+                    node.parseDiagnostics.push(diag);
+                };
+                context.addSemanticDiagnostic = (diag) => {
+                    // @ts-expect-error 内部属性，借用bindDiagnostics来存储语义诊断
+                    node.bindDiagnostics.push(diag);
+                };
+            }
+            if (!context.error) {
+                context.error = (diagnostic) => {
+                    if (options.watch) {
+                        // watch 模式下底层是setTimeout封装，且被try catch，不能直接抛出异常，需要使用addSyntacticDiagnostic
+                        // 打个标记，让后续流程直接抛出
+                        diagnostic.__throwError = true;
+                        context.addSyntacticDiagnostic(diagnostic);
+                        return;
+                    }
+                    const error = new Error(diagnostic.messageText.toString());
+                    error.diagnostic = diagnostic;
+                    // 指定了id后，不让后续的rollup重写
+                    Object.defineProperty(error, 'id', {
+                        get() {
+                            return diagnostic.file.fileName;
+                        },
+                        set(_v) { },
+                    });
+                    throw error;
+                };
+            }
+        }
+        return node;
+    }
+    return {
+        before(context) {
+            return (node) => {
+                return initContext(context, node);
+            };
+        },
+        after(context) {
+            return (node) => {
+                return initContext(context, node);
+            };
+        },
+        afterDeclarations(context) {
+            return (node) => {
+                return initContext(context, node);
+            };
+        },
+    };
+};
+
+debug('uts:transformer:generics');
+
+debug('uts:transformer:in');
+
+debug('uts:transformer:keyof');
+
+debug('uts:transformer:narrowType:discriminatedUnion');
+
+debug('uts:transformer:narrowType:nonNullable');
+
+debug('uts:transformer:narrowType');
+
+debug('uts:transformer:narrowType:parameterUnionType');
+
+debug('uts:transformer:UTSObjectUnionType');
+
+debug('uts:transformer:objectLiteral');
+
+// TODO 排查Debug的类型错误
+// copy from typescript transformES2020
+function createOptionalChainTransformer(withType, ts, context, checker) {
+    const { addEmitFlags, cast, chainBundle, Debug, EmitFlags, isCallChain, isExpression, isGeneratedIdentifier, isIdentifier, isNonNullChain, isOptionalChain, isParenthesizedExpression, isSimpleCopiableExpression, isSyntheticReference, isTaggedTemplateExpression, OuterExpressionKinds, setOriginalNode, setTextRange, skipParentheses, skipPartiallyEmittedExpressions, SyntaxKind, TransformFlags, visitEachChild, visitNode, visitNodes, } = ts;
+    const { factory, hoistVariableDeclaration } = context;
+    return chainBundle(context, transformSourceFile);
+    function transformSourceFile(node) {
+        if (node.isDeclarationFile) {
+            return node;
+        }
+        return visitEachChild(node, visitor, context);
+    }
+    function visitor(node) {
+        if ((node.transformFlags & TransformFlags.ContainsES2020) === 0) {
+            return node;
+        }
+        switch (node.kind) {
+            case SyntaxKind.CallExpression: {
+                const updated = visitNonOptionalCallExpression(node, 
+                /*captureThisArg*/ false);
+                // @ts-expect-error type error
+                Debug.assertNotNode(updated, isSyntheticReference);
+                return updated;
+            }
+            case SyntaxKind.PropertyAccessExpression:
+            case SyntaxKind.ElementAccessExpression:
+                if (isOptionalChain(node)) {
+                    const updated = visitOptionalExpression(node, 
+                    /*captureThisArg*/ false, 
+                    /*isDelete*/ false);
+                    // @ts-expect-error type error
+                    Debug.assertNotNode(updated, isSyntheticReference);
+                    return updated;
+                }
+                return visitEachChild(node, visitor, context);
+            case SyntaxKind.BinaryExpression:
+                if (node.operatorToken.kind ===
+                    SyntaxKind.QuestionQuestionToken) {
+                    return transformNullishCoalescingExpression(node);
+                }
+                return visitEachChild(node, visitor, context);
+            case SyntaxKind.DeleteExpression:
+                return visitDeleteExpression(node);
+            default:
+                return visitEachChild(node, visitor, context);
+        }
+    }
+    function flattenChain(chain) {
+        // @ts-expect-error type error
+        Debug.assertNotNode(chain, isNonNullChain);
+        if (isNonNullChain(chain)) {
+            throw new Error('Unexpected non-null chain');
+        }
+        const links = [chain];
+        while (!chain.questionDotToken &&
+            !isTaggedTemplateExpression(chain)) {
+            chain = cast(skipPartiallyEmittedExpressions(chain.expression), isOptionalChain);
+            // @ts-expect-error type error
+            Debug.assertNotNode(chain, isNonNullChain);
+            links.unshift(chain);
+        }
+        return { expression: chain.expression, chain: links };
+    }
+    function visitNonOptionalParenthesizedExpression(node, captureThisArg, isDelete) {
+        const expression = visitNonOptionalExpression(node.expression, captureThisArg, isDelete);
+        if (isSyntheticReference(expression)) {
+            // `(a.b)` -> { expression `((_a = a).b)`, thisArg: `_a` }
+            // `(a[b])` -> { expression `((_a = a)[b])`, thisArg: `_a` }
+            return factory.createSyntheticReferenceExpression(factory.updateParenthesizedExpression(node, expression.expression), expression.thisArg);
+        }
+        return factory.updateParenthesizedExpression(node, expression);
+    }
+    function visitNonOptionalPropertyOrElementAccessExpression(node, captureThisArg, isDelete) {
+        if (isOptionalChain(node)) {
+            // If `node` is an optional chain, then it is the outermost chain of an optional expression.
+            return visitOptionalExpression(node, captureThisArg, isDelete);
+        }
+        const type = checker.getTypeAtLocation(node.expression);
+        let expression = visitNode(node.expression, visitor, isExpression);
+        // @ts-expect-error type error
+        Debug.assertNotNode(expression, isSyntheticReference);
+        let thisArg;
+        if (captureThisArg) {
+            if (!isSimpleCopiableExpression(expression)) {
+                thisArg = factory.createTempVariable(hoistVariableDeclaration, undefined, undefined, undefined, withType ? typeToTypeNode(type, node, ts, checker) : undefined);
+                expression = factory.createAssignment(thisArg, expression);
+            }
+            else {
+                thisArg = expression;
+            }
+        }
+        expression =
+            node.kind === SyntaxKind.PropertyAccessExpression
+                ? factory.updatePropertyAccessExpression(node, expression, visitNode(node.name, visitor, isIdentifier))
+                : factory.updateElementAccessExpression(node, expression, visitNode(node.argumentExpression, visitor, isExpression));
+        return thisArg
+            ? factory.createSyntheticReferenceExpression(expression, thisArg)
+            : expression;
+    }
+    function visitNonOptionalCallExpression(node, captureThisArg) {
+        if (isOptionalChain(node)) {
+            // If `node` is an optional chain, then it is the outermost chain of an optional expression.
+            return visitOptionalExpression(node, captureThisArg, /*isDelete*/ false);
+        }
+        if (isParenthesizedExpression(node.expression) &&
+            isOptionalChain(skipParentheses(node.expression))) {
+            // capture thisArg for calls of parenthesized optional chains like `(foo?.bar)()`
+            const expression = visitNonOptionalParenthesizedExpression(node.expression, 
+            /*captureThisArg*/ true, 
+            /*isDelete*/ false);
+            const args = visitNodes(node.arguments, visitor, isExpression);
+            if (isSyntheticReference(expression)) {
+                return setTextRange(factory.createFunctionCallCall(expression.expression, expression.thisArg, args), node);
+            }
+            return factory.updateCallExpression(node, expression, 
+            /*typeArguments*/ undefined, args);
+        }
+        return visitEachChild(node, visitor, context);
+    }
+    function visitNonOptionalExpression(node, captureThisArg, isDelete) {
+        switch (node.kind) {
+            case SyntaxKind.ParenthesizedExpression:
+                return visitNonOptionalParenthesizedExpression(node, captureThisArg, isDelete);
+            case SyntaxKind.PropertyAccessExpression:
+            case SyntaxKind.ElementAccessExpression:
+                return visitNonOptionalPropertyOrElementAccessExpression(node, captureThisArg, isDelete);
+            case SyntaxKind.CallExpression:
+                return visitNonOptionalCallExpression(node, captureThisArg);
+            default:
+                return visitNode(node, visitor, isExpression);
+        }
+    }
+    function visitOptionalExpression(node, captureThisArg, isDelete) {
+        const { expression, chain } = flattenChain(node);
+        const type = checker.getTypeAtLocation(expression);
+        const left = visitNonOptionalExpression(skipPartiallyEmittedExpressions(expression), isCallChain(chain[0]), 
+        /*isDelete*/ false);
+        let leftThisArg = isSyntheticReference(left) ? left.thisArg : undefined;
+        let capturedLeft = isSyntheticReference(left) ? left.expression : left;
+        let leftExpression = factory.restoreOuterExpressions(expression, capturedLeft, OuterExpressionKinds.PartiallyEmittedExpressions);
+        if (!isSimpleCopiableExpression(capturedLeft)) {
+            capturedLeft = factory.createTempVariable(hoistVariableDeclaration, undefined, undefined, undefined, withType ? typeToTypeNode(type, node, ts, checker) : undefined);
+            leftExpression = factory.createAssignment(capturedLeft, leftExpression);
+        }
+        let rightExpression = capturedLeft;
+        let thisArg;
+        for (let i = 0; i < chain.length; i++) {
+            const segment = chain[i];
+            switch (segment.kind) {
+                case SyntaxKind.PropertyAccessExpression:
+                case SyntaxKind.ElementAccessExpression:
+                    if (i === chain.length - 1 && captureThisArg) {
+                        if (!isSimpleCopiableExpression(rightExpression)) {
+                            const type = checker.getTypeAtLocation(segment.expression);
+                            thisArg = factory.createTempVariable(hoistVariableDeclaration, undefined, undefined, undefined, withType
+                                ? typeToTypeNode(type, segment, ts, checker)
+                                : undefined);
+                            rightExpression = factory.createAssignment(thisArg, rightExpression);
+                        }
+                        else {
+                            thisArg = rightExpression;
+                        }
+                    }
+                    rightExpression =
+                        segment.kind === SyntaxKind.PropertyAccessExpression
+                            ? factory.createPropertyAccessExpression(rightExpression, visitNode(segment.name, visitor, isIdentifier))
+                            : factory.createElementAccessExpression(rightExpression, visitNode(segment.argumentExpression, visitor, isExpression));
+                    break;
+                case SyntaxKind.CallExpression:
+                    if (i === 0 && leftThisArg) {
+                        if (!isGeneratedIdentifier(leftThisArg)) {
+                            leftThisArg = factory.cloneNode(leftThisArg);
+                            addEmitFlags(leftThisArg, EmitFlags.NoComments);
+                        }
+                        rightExpression = factory.createFunctionCallCall(rightExpression, leftThisArg.kind === SyntaxKind.SuperKeyword
+                            ? factory.createThis()
+                            : leftThisArg, visitNodes(segment.arguments, visitor, isExpression));
+                    }
+                    else {
+                        rightExpression = factory.createCallExpression(rightExpression, 
+                        /*typeArguments*/ undefined, visitNodes(segment.arguments, visitor, isExpression));
+                    }
+                    break;
+            }
+            setOriginalNode(rightExpression, segment);
+        }
+        const target = isDelete
+            ? factory.createConditionalExpression(createNotNullCondition(leftExpression, capturedLeft, /*invert*/ true), 
+            /*questionToken*/ undefined, factory.createTrue(), 
+            /*colonToken*/ undefined, factory.createDeleteExpression(rightExpression))
+            : factory.createConditionalExpression(createNotNullCondition(leftExpression, capturedLeft, /*invert*/ true), 
+            /*questionToken*/ undefined, factory.createNull(), 
+            /*colonToken*/ undefined, rightExpression);
+        setTextRange(target, node);
+        return thisArg
+            ? factory.createSyntheticReferenceExpression(target, thisArg)
+            : target;
+    }
+    function createNotNullCondition(left, right, invert) {
+        // 使用 == 或 != 来简单判断
+        // return factory.createBinaryExpression(
+        //   left,
+        //   factory.createToken(
+        //     invert
+        //       ? SyntaxKind.EqualsEqualsToken
+        //       : SyntaxKind.ExclamationEqualsToken,
+        //   ),
+        //   factory.createNull(),
+        // )
+        return factory.createBinaryExpression(factory.createBinaryExpression(left, factory.createToken(invert
+            ? SyntaxKind.EqualsEqualsEqualsToken
+            : SyntaxKind.ExclamationEqualsEqualsToken), factory.createNull()), factory.createToken(invert ? SyntaxKind.BarBarToken : SyntaxKind.AmpersandAmpersandToken), factory.createBinaryExpression(right, factory.createToken(invert
+            ? SyntaxKind.EqualsEqualsEqualsToken
+            : SyntaxKind.ExclamationEqualsEqualsToken), factory.createVoidZero()));
+    }
+    function transformNullishCoalescingExpression(node) {
+        let left = visitNode(node.left, visitor, isExpression);
+        let right = left;
+        if (!isSimpleCopiableExpression(left)) {
+            right = factory.createTempVariable(hoistVariableDeclaration);
+            left = factory.createAssignment(right, left);
+        }
+        return setTextRange(factory.createConditionalExpression(createNotNullCondition(left, right), 
+        /*questionToken*/ undefined, right, 
+        /*colonToken*/ undefined, visitNode(node.right, visitor, isExpression)), node);
+    }
+    function visitDeleteExpression(node) {
+        return isOptionalChain(skipParentheses(node.expression))
+            ? setOriginalNode(visitNonOptionalExpression(node.expression, 
+            /*captureThisArg*/ false, 
+            /*isDelete*/ true), node)
+            : factory.updateDeleteExpression(node, visitNode(node.expression, visitor, isExpression));
+    }
+}
+/**
+ * 在 parse 阶段将可选链编译为返回null，而不是undefined
+ * @param ts
+ * @returns
+ */
+const transformOptionalChain = (ts, ls, options) => {
+    return {
+        before(context) {
+            const program = ls.getProgram();
+            const checker = program.getTypeChecker();
+            const transform = createOptionalChainTransformer(options.targetLanguage === 'ArkTS', ts, context, checker);
+            return (node) => transform(node);
+        },
+    };
+};
+
+debug('uts:transformer:returnType');
+
+debug('uts:transformer:UTSJSONObject');
+
+globalThis.__utsUniXGlobalProperties__ =
+    globalThis.__utsUniXGlobalProperties__ || new Map();
+
+function diag(code, category, key, message) {
+    return {
+        code,
+        category,
+        key,
+        message,
+    };
+}
+// createWorker('workers/request/index.uts') => createWorker(RequestTask)
+const transformCreateWorker = (ts, _ls, options) => {
+    const { extname, resolveWorkers } = options.transformCreateWorker || {
+        resolveWorkers: () => ({}),
+    };
+    const WorkerDiagnostics = {
+        Worker_Path_Expected_a_string_literal: diag(0, ts.DiagnosticCategory.Error, 'Worker_Path_Expected_a_string_literal_0', 'uni.createWorker(workerPath) 的 workerPath 参数必须是字符串字面量'),
+        Worker_Path_Not_Found: diag(0, ts.DiagnosticCategory.Error, 'Worker_Path_Not_Found_0', 'Worker[{0}]路径不存在或未正确实现'),
+        Worker_Not_Supported_on_App_IOS_Uvue: diag(0, ts.DiagnosticCategory.Error, 'Worker_Not_Supported_on_App_IOS_Uvue_0', 'app-ios平台，目前仅 uts 插件中支持使用 uni.createWorker 创建 worker'),
+    };
+    return {
+        before(context) {
+            const { factory } = context;
+            const autoImports = new Map();
+            const workers = resolveWorkers();
+            const visitor = (node) => {
+                if (ts.isCallExpression(node) &&
+                    node.arguments.length >= 1 &&
+                    ts.isPropertyAccessExpression(node.expression) &&
+                    node.expression.name.escapedText === 'createWorker' &&
+                    ts.isIdentifier(node.expression.expression) &&
+                    node.expression.expression.escapedText === 'uni') {
+                    if (options.targetLanguage === 'JavaScript' &&
+                        options.platform === 'app-ios') {
+                        context.error(ts.createDiagnosticForNode(node, WorkerDiagnostics.Worker_Not_Supported_on_App_IOS_Uvue));
+                    }
+                    const firstArg = node.arguments[0];
+                    let workerPath = '';
+                    if (ts.isStringLiteral(firstArg)) {
+                        workerPath = firstArg.text;
+                    }
+                    else if (ts.isNoSubstitutionTemplateLiteral(firstArg)) {
+                        workerPath = firstArg.text;
+                    }
+                    else {
+                        context.error(ts.createDiagnosticForNode(firstArg, WorkerDiagnostics.Worker_Path_Expected_a_string_literal));
+                    }
+                    if (workerPath) {
+                        if (workerPath.startsWith('/')) {
+                            workerPath = workerPath.slice(1);
+                        }
+                        if (workers[workerPath]) {
+                            // 目前仅 Kotlin 和 Swift，需要重写参数以及导入 worker
+                            if (options.targetLanguage === 'Kotlin' ||
+                                options.targetLanguage === 'Swift') {
+                                const workerIdent = factory.createIdentifier(workers[workerPath]);
+                                if (!autoImports.has(workerPath)) {
+                                    const importDeclaration = factory.createImportDeclaration(undefined, factory.createImportClause(false, undefined, factory.createNamedImports([
+                                        factory.createImportSpecifier(false, undefined, workerIdent),
+                                    ])), factory.createStringLiteral(`@/${workerPath}`), undefined);
+                                    autoImports.set(workerPath, importDeclaration);
+                                }
+                                // 增加 workerIdent 的导入
+                                const newArguments = [
+                                    factory.createArrowFunction(undefined, undefined, [], factory.createTypeReferenceNode(factory.createIdentifier("WorkerTaskImpl" /* IDENTIFIER.WORKER_TASK_IMPL */), undefined), factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), factory.createNewExpression(workerIdent, undefined, [])),
+                                ];
+                                for (let i = 1; i < node.arguments.length; i++) {
+                                    newArguments.push(node.arguments[i]);
+                                }
+                                return factory.updateCallExpression(node, node.expression, node.typeArguments, newArguments);
+                            }
+                            else if (extname) {
+                                // 调整 workerPath 参数文件名后缀
+                                const newArguments = [
+                                    factory.createStringLiteral(workerPath.replace('.uts', extname)),
+                                ];
+                                for (let i = 1; i < node.arguments.length; i++) {
+                                    newArguments.push(node.arguments[i]);
+                                }
+                                return factory.updateCallExpression(node, node.expression, node.typeArguments, newArguments);
+                            }
+                        }
+                        else {
+                            context.error(ts.createDiagnosticForNode(firstArg, WorkerDiagnostics.Worker_Path_Not_Found, workerPath));
+                        }
+                    }
+                }
+                return ts.visitEachChild(node, visitor, context);
+            };
+            return (node) => {
+                const updatedNode = ts.visitNode(node, visitor);
+                if (autoImports.size === 0) {
+                    return updatedNode;
+                }
+                return factory.updateSourceFile(updatedNode, [...autoImports.values(), ...updatedNode.statements], updatedNode.isDeclarationFile, updatedNode.referencedFiles, updatedNode.typeReferenceDirectives, updatedNode.hasNoDefaultLib, updatedNode.libReferenceDirectives);
+            };
+        },
+    };
+};
+
+function isDefineExposeStatement(ts, node) {
+    return (ts.isExpressionStatement(node) &&
+        ts.isCallExpression(node.expression) &&
+        ts.isIdentifier(node.expression.expression) &&
+        node.expression.expression.text === "defineExpose" /* IDENTIFIER.DEFINE_EXPOSE */);
+}
+// 仅类型校验时使用
+function createDefineComponentForSetup(factory, setupStatements) {
+    return factory.createExportAssignment(undefined, undefined, factory.createCallExpression(factory.createIdentifier("defineComponent" /* IDENTIFIER.DEFINE_COMPONENT */), undefined, [
+        factory.createObjectLiteralExpression([
+            factory.createMethodDeclaration(undefined, undefined, factory.createIdentifier('setup'), undefined, undefined, [
+                factory.createParameterDeclaration(undefined, undefined, factory.createIdentifier('props'), undefined, undefined, undefined),
+                factory.createParameterDeclaration(undefined, undefined, factory.createObjectBindingPattern([
+                    factory.createBindingElement(undefined, undefined, factory.createIdentifier('expose'), undefined),
+                ]), undefined, undefined, undefined),
+            ], undefined, factory.createBlock(setupStatements, true)),
+        ], true),
+    ]));
+}
+/**
+ * 1. 将 export default {} 转换为 export default defineComponent({})
+ * > 理论上该逻辑放在预处理环节实现也是可以的，编译器本身也要实现自动导入vue的相关方法，稍后评估吧
+ * @param ts
+ * @returns
+ */
+const transformVueDefineComponent = (ts) => {
+    return {
+        parser: {
+            SourceFile(context) {
+                const { factory } = context;
+                let isAppUvue = false;
+                let isVueTs = false;
+                const visitor = (node) => {
+                    // 仅 SourceFile 需要遍历子节点，其他不需要，减少遍历流程
+                    if (ts.isSourceFile(node)) {
+                        if (isVueTs && node.text.startsWith('// @uts-setup\n')) {
+                            const statements = node.statements;
+                            const importStatements = [];
+                            const setupStatements = [];
+                            const setupReturnStatements = [];
+                            for (let i = 0; i < statements.length; i++) {
+                                const statement = statements[i];
+                                if (ts.isImportDeclaration(statement)) {
+                                    importStatements.push(statement);
+                                }
+                                else if (ts.isExportAssignment(statement)) {
+                                    if (ts.isObjectLiteralExpression(statement.expression) &&
+                                        statement.expression.properties.length === 0) {
+                                        continue;
+                                    }
+                                    const diagnostic = ts.createDiagnosticForNode(statement, UTSDiagnostics.script_setup_cannot_contain_ES_module_exports);
+                                    context.addSyntacticDiagnostic(diagnostic);
+                                }
+                                else if (isDefineExposeStatement(ts, statement)) {
+                                    setupReturnStatements.push(factory.createReturnStatement(statement.expression
+                                        .arguments[0]));
+                                }
+                                else {
+                                    setupStatements.push(statement);
+                                }
+                            }
+                            // return factory.createSourceFile(
+                            //   [
+                            //     ...(importStatements as tsTypes.Statement[]),
+                            //     createDefineComponentForSetup(factory, setupStatements),
+                            //   ],
+                            //   factory.createToken(ts.SyntaxKind.EndOfFileToken),
+                            //   ts.NodeFlags.None,
+                            // )
+                            return factory.updateSourceFile(node, [
+                                ...importStatements,
+                                createDefineComponentForSetup(factory, [
+                                    ...setupStatements,
+                                    ...setupReturnStatements,
+                                ]),
+                            ]);
+                        }
+                        return ts.visitEachChild(node, visitor, context);
+                    }
+                    // 简单判断 export default {}，暂不支持其他方式
+                    if (ts.isExportAssignment(node) &&
+                        ts.isObjectLiteralExpression(node.expression)) {
+                        return factory.updateExportAssignment(node, node.modifiers, factory.createCallExpression(factory.createIdentifier(isAppUvue
+                            ? "defineApp" /* IDENTIFIER.DEFINE_APP */
+                            : "defineComponent" /* IDENTIFIER.DEFINE_COMPONENT */), undefined, [node.expression]));
+                    }
+                    return node;
+                };
+                return (node) => {
+                    if (!node.isVueFile || node.fileName.indexOf('setup=true') > -1) {
+                        return node;
+                    }
+                    // 判断是否是App.vue  App.uvue?import&vue&type=script&lang.uts
+                    const fileName = path__namespace
+                        .basename(node.fileName)
+                        .split('?')[0]
+                        .toLowerCase();
+                    if (fileName === 'app.uvue' || fileName === 'app.uvue.ts') {
+                        isAppUvue = true;
+                    }
+                    if (/.u?vue.ts/.test(fileName)) {
+                        isVueTs = true;
+                    }
+                    const sourceFile = ts.visitNode(node, visitor);
+                    if (sourceFile !== node) {
+                        /**
+                         * 添加 import { defineComponent } from 'vue'
+                         * App.uvue添加 import { defineApp } from 'vue'
+                         */
+                        return factory.updateSourceFile(sourceFile, [
+                            factory.createImportDeclaration(undefined, factory.createImportClause(false, undefined, factory.createNamedImports([
+                                factory.createImportSpecifier(false, undefined, factory.createIdentifier(isAppUvue
+                                    ? "defineApp" /* IDENTIFIER.DEFINE_APP */
+                                    : "defineComponent" /* IDENTIFIER.DEFINE_COMPONENT */)),
+                            ])), factory.createStringLiteral("vue" /* IDENTIFIER.VUE */)),
+                            ...sourceFile.statements,
+                        ]);
+                    }
+                    return sourceFile;
+                };
+            },
+        },
+        before(context) {
+            // 将App.uvue内的defineApp重置为defineComponent
+            const { factory } = context;
+            const visitor = (node) => {
+                // 仅 SourceFile 需要遍历子节点，其他不需要，减少遍历流程
+                if (ts.isSourceFile(node)) {
+                    return ts.visitEachChild(node, visitor, context);
+                }
+                // 简单判断 export default {}，暂不支持其他方式
+                if (ts.isExportAssignment(node) &&
+                    ts.isCallExpression(node.expression)) {
+                    return factory.updateExportAssignment(node, node.modifiers, factory.createCallExpression(factory.createIdentifier("defineComponent" /* IDENTIFIER.DEFINE_COMPONENT */), undefined, node.expression.arguments));
+                }
+                else if (ts.isImportDeclaration(node)) {
+                    // 删除 import { defineComponent } from 'vue'
+                    if (node.moduleSpecifier &&
+                        ts.isStringLiteral(node.moduleSpecifier) &&
+                        node.moduleSpecifier.text === "vue" /* IDENTIFIER.VUE */ &&
+                        node.importClause &&
+                        ts.isImportClause(node.importClause) &&
+                        node.importClause.namedBindings &&
+                        ts.isNamedImports(node.importClause.namedBindings) &&
+                        node.importClause.namedBindings.elements.some((element) => element.name.text === "defineApp" /* IDENTIFIER.DEFINE_APP */)) {
+                        return factory.updateImportDeclaration(node, node.modifiers, factory.updateImportClause(node.importClause, false, undefined, factory.createNamedImports(node.importClause.namedBindings.elements.filter((element) => element.name.text !== "defineApp" /* IDENTIFIER.DEFINE_APP */))), node.moduleSpecifier, node.assertClause);
+                    }
+                }
+                return node;
+            };
+            return (node) => {
+                if (!node.isVueFile) {
+                    return node;
+                }
+                // 判断是否是App.vue  App.uvue?import&vue&type=script&lang.uts
+                if (path__namespace.basename(node.fileName).split('?')[0].toLowerCase() ===
+                    'app.uvue') {
+                    node = ts.visitNode(node, visitor);
+                }
+                return node;
+            };
+        },
+    };
+};
+
+let globalUniAppType = null;
+let globalUniAppProperties = [];
+const transformUniApp = (ts, ls) => {
+    return {
+        before(context) {
+            const program = ls.getProgram();
+            const checker = program.getTypeChecker();
+            if (globalUniAppType === null && checker.getGlobalType) {
+                globalUniAppType = checker.getGlobalType('UniApp', 
+                /*arity*/ 0, false);
+                if (globalUniAppType) {
+                    globalUniAppProperties = globalUniAppType
+                        .getProperties()
+                        .map((p) => p.getName());
+                }
+            }
+            const visitor = (node) => {
+                if (globalUniAppType && globalUniAppProperties.length) {
+                    // 如果是 CallExpression，则检查是否 UniApp 的 API，比如 app.test() 确认 app 是 UniApp 类型
+                    // 判断 test 是否是 globalUniAppType 的方法
+                    if (ts.isCallExpression(node) &&
+                        ts.isPropertyAccessExpression(node.expression) &&
+                        ts.isIdentifier(node.expression.name)) {
+                        const type = resolveExpressionType(checker, node.expression.expression);
+                        if (type &&
+                            type.isIntersection() &&
+                            type.types.some((t) => t.symbol?.name === 'UniApp')) {
+                            if (!globalUniAppProperties.includes(node.expression.name.text)) {
+                                console.error(`error: '${node.expression.name.text}' 不是 UniApp 对象的方法，请检查是否拼写错误，如果想调用在 App.uvue 文件中定义的 methods 方法，请使用 .vm?.xxx 的方式调用，详情参考：https://doc.dcloud.net.cn/uni-app-x/api/get-app.html#appmethods`);
+                                const sourceFile = node.getSourceFile();
+                                if (sourceFile.__relativeFileName) {
+                                    const lineAndCharacter = ts.getLineAndCharacterOfPosition(sourceFile, node.pos);
+                                    const fileName = sourceFile.__relativeFileName
+                                        .split('?')[0]
+                                        .replace(/\.(vue|uvue|uts).ts$/g, '.$1');
+                                    console.error('at ' + fileName + ':' + lineAndCharacter.line);
+                                }
+                                // const lineAndCharacter = ts.getLineAndCharacterOfPosition(
+                                //   sourceFile,
+                                //   node.pos,
+                                // )
+                                // const start = ts.getPositionOfLineAndCharacter(
+                                //   sourceFile,
+                                //   lineAndCharacter.line - 2,
+                                //   0,
+                                //   // @ts-expect-error
+                                //   /* allowEdits */ true,
+                                // )
+                                // const end = ts.getPositionOfLineAndCharacter(
+                                //   sourceFile,
+                                //   lineAndCharacter.line + 2,
+                                //   1000,
+                                //   // @ts-expect-error
+                                //   /* allowEdits */ true,
+                                // )
+                                // const text = sourceFile.getText().slice(start, end)
+                                // console.error(text)
+                            }
+                        }
+                    }
+                    return ts.visitEachChild(node, visitor, context);
+                }
+                return node;
+            };
+            return (node) => {
+                return ts.visitNode(node, visitor);
+            };
+        },
+    };
+};
+
+const COMPILE_TIME_METHODS = [
+    "defineMixin" /* IDENTIFIER.DEFINE_MIXIN */,
+    "definePlugin" /* IDENTIFIER.DEFINE_PLUGIN */,
+];
+const removeCompileTimeMethod = (ts) => {
+    return {
+        before(context) {
+            // 移除编译时方法
+            const visitor = (node) => {
+                if (ts.isCallExpression(node) &&
+                    ts.isIdentifier(node.expression) &&
+                    node.arguments.length > 0) {
+                    const methodName = node.expression.escapedText.toString();
+                    if (COMPILE_TIME_METHODS.includes(methodName)) {
+                        node = node.arguments[0];
+                    }
+                }
+                return ts.visitEachChild(node, visitor, context);
+            };
+            return (node) => {
+                return ts.visitNode(node, visitor);
+            };
+        },
+    };
+};
+
+const lifeCycleMap = new Map();
+// App and Page
+lifeCycleMap.set('onShow', false);
+lifeCycleMap.set('onHide', false);
+// App
+lifeCycleMap.set('onAppShow', true); // true 表示有参数
+lifeCycleMap.set('onLaunch', true);
+lifeCycleMap.set('onError', true);
+lifeCycleMap.set('onThemeChange', true);
+lifeCycleMap.set('onKeyboardHeightChange', true);
+lifeCycleMap.set('onPageNotFound', true);
+lifeCycleMap.set('onUnhandledRejection', true);
+lifeCycleMap.set('onLastPageBackPress', false);
+lifeCycleMap.set('onExit', false);
+// Page
+lifeCycleMap.set('onLoad', true);
+lifeCycleMap.set('onShow', true); // 页面onShow无参数、App onShow有参数，这里都按照有参数处理
+lifeCycleMap.set('onReady', false);
+lifeCycleMap.set('onUnload', false);
+lifeCycleMap.set('onResize', true);
+lifeCycleMap.set('onBackPress', true);
+lifeCycleMap.set('onPageScroll', true);
+lifeCycleMap.set('onTabItemTap', true);
+lifeCycleMap.set('onReachBottom', false);
+lifeCycleMap.set('onPullDownRefresh', false);
+// Vue
+lifeCycleMap.set('beforeCreate', false);
+lifeCycleMap.set('created', false);
+lifeCycleMap.set('beforeMount', false);
+lifeCycleMap.set('mounted', false);
+lifeCycleMap.set('beforeUpdate', false);
+lifeCycleMap.set('updated', false);
+lifeCycleMap.set('beforeUnmount', false);
+lifeCycleMap.set('unmounted', false);
+/**
+ * defineComponent({
+ *   onLoad(options) {},
+ *   onShow: () => {},
+ *   onLaunch: function (){},
+ * })
+ */
+const transformLifeCycleOptions = (ts, ls) => {
+    return {
+        parser: {
+            SourceFile(context) {
+                const factory = context.factory;
+                const tsUtils = createTsUtils(ts, undefined, context);
+                const visitor = (node) => {
+                    const updatedNode = ts.visitEachChild(node, visitor, context);
+                    if (ts.isParameter(updatedNode) &&
+                        !updatedNode.type &&
+                        !updatedNode.dotDotDotToken) {
+                        const methodNode = updatedNode.parent;
+                        if (methodNode &&
+                            (ts.isMethodDeclaration(methodNode) ||
+                                ts.isArrowFunction(methodNode) ||
+                                ts.isFunctionExpression(methodNode)) &&
+                            methodNode.parameters.indexOf(updatedNode) === 0) {
+                            const methodNameNode = tsUtils.getMethodNameNodeOfObjectLiteral(methodNode);
+                            if (methodNameNode && ts.isIdentifier(methodNameNode)) {
+                                const methodName = methodNameNode.escapedText.toString();
+                                if (lifeCycleMap.get(methodName) === true) {
+                                    const callExpressionNode = methodNameNode?.parent?.parent?.parent;
+                                    if (callExpressionNode &&
+                                        ts.isCallExpression(callExpressionNode)) {
+                                        const callExpressionNameNode = callExpressionNode.expression;
+                                        if (ts.isIdentifier(callExpressionNameNode) &&
+                                            isDefineMethod(callExpressionNameNode.escapedText.toString())) {
+                                            return factory.createParameterDeclaration(updatedNode.modifiers, updatedNode.dotDotDotToken, updatedNode.name, updatedNode.questionToken, factory.createTypeReferenceNode(factory.createIdentifier(methodName.replace(/^(\w)/, (str) => str.toUpperCase()) + 'Options'), undefined), updatedNode.initializer);
+                                            // return factory.updateParameterDeclaration(
+                                            //   node,
+                                            //   node.modifiers,
+                                            //   node.dotDotDotToken,
+                                            //   node.name,
+                                            //   node.questionToken,
+                                            //   factory.createTypeReferenceNode(
+                                            //     factory.createIdentifier(
+                                            //       methodName.replace(/^(\w)/, (str) =>
+                                            //         str.toUpperCase(),
+                                            //       ) + 'Options',
+                                            //     ),
+                                            //     undefined,
+                                            //   ),
+                                            //   node.initializer,
+                                            // )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return updatedNode;
+                };
+                return (node) => {
+                    if (!node.isVueFile) {
+                        return node;
+                    }
+                    return ts.visitEachChild(node, visitor, context);
+                };
+            },
+        },
+    };
+};
+
+/**
+ * module M {
+ *     export module E {
+ *         export type C = {
+ *             a: number
+ *         }
+ *         export class D { }
+ *     }
+ * }
+ * const a = {
+ *     a: 1
+ * } as M.E.C
+ * new M.E.D()
+ */
+function transformQualifiedNameToPropertyAccessExpression(tsUtils, node) {
+    const { ts } = tsUtils;
+    const context = tsUtils.context;
+    const factory = context.factory;
+    return factory.createPropertyAccessExpression(ts.isQualifiedName(node.left)
+        ? transformQualifiedNameToPropertyAccessExpression(tsUtils, node.left)
+        : node.left, node.right);
+}
+function createNewExpressionFromObjectLiteral(tsUtils, objectLiteral, className) {
+    const { ts } = tsUtils;
+    const context = tsUtils.context;
+    const factory = context.factory;
+    const classExpression = ts.isQualifiedName(className)
+        ? transformQualifiedNameToPropertyAccessExpression(tsUtils, className)
+        : factory.createIdentifier(className.escapedText.toString());
+    return factory.createNewExpression(classExpression, undefined, [
+        objectLiteral,
+    ]);
+}
+function transformAsExpression(tsUtils, node) {
+    const { ts } = tsUtils;
+    const context = tsUtils.context;
+    const typeChecker = tsUtils.typeChecker;
+    const factory = context.factory;
+    const { type, expression } = node;
+    if (!ts.isObjectLiteralExpression(expression)) {
+        return;
+    }
+    if (ts.isTypeReferenceNode(type) &&
+        ts.isIdentifier(type.typeName) &&
+        type.typeName.escapedText === 'UTSJSONObject') {
+        return factory.createNewExpression(factory.createIdentifier('UTSJSONObject'), undefined, [expression]);
+    }
+    let symbol;
+    try {
+        symbol = typeChecker.getContextualType(expression)?.symbol;
+    }
+    catch (error) { }
+    if (!symbol) {
+        return;
+    }
+    if (symbol && symbol.escapedName === 'UTSJSONObject') {
+        return factory.createNewExpression(factory.createIdentifier('UTSJSONObject'), undefined, [expression]);
+    }
+    if (type &&
+        isNodeTransformable(tsUtils, expression) &&
+        ts.isObjectLiteralExpression(expression)) {
+        return createNewExpressionFromObjectLiteral(tsUtils, expression, type.typeName);
+    }
+}
+const transformTypedObjectLiteral = (ts, ls) => {
+    return {
+        before(context) {
+            const program = ls.getProgram();
+            const typeChecker = program.getTypeChecker();
+            const tsUtils = createTsUtils(ts, typeChecker, context);
+            const factory = context.factory;
+            const visitor = (node) => {
+                if (ts.isAsExpression(node) && node.type) {
+                    const transformed = transformAsExpression(tsUtils, node);
+                    if (transformed) {
+                        return factory.createNewExpression(transformed.expression, transformed.typeArguments, [ts.visitEachChild(node, visitor, context)]);
+                    }
+                }
+                node = ts.visitEachChild(node, visitor, context);
+                return node;
+            };
+            return (node) => {
+                return ts.visitNode(node, visitor);
+            };
+        },
+    };
+};
+
+function parseVariableDeclaration(tsUtils, node) {
+    const context = tsUtils.context;
+    const factory = context.factory;
+    const typeChecker = tsUtils.typeChecker;
+    // node.type 包含 null
+    if (!node.initializer &&
+        node.pos > 0 &&
+        tsUtils.isPossibleNullType(typeChecker.getTypeAtLocation(node))) {
+        return factory.updateVariableDeclaration(node, node.name, node.exclamationToken, node.type, factory.createNull());
+    }
+    return node;
+}
+function parseParameter(tsUtils, node) {
+    const { modifiers, dotDotDotToken, name, questionToken, type, initializer } = node;
+    if (node.pos < 0 || initializer || dotDotDotToken) {
+        return node;
+    }
+    const context = tsUtils.context;
+    const factory = context.factory;
+    const typeChecker = tsUtils.typeChecker;
+    const ts = tsUtils.ts;
+    if (ts.isMethodDeclaration(node.parent) &&
+        ts.isIdentifier(node.parent.name) &&
+        node.parent.name.text === 'setup') {
+        /**
+         * vue内部会通过setup.length判断需不需要传context给setup函数。
+         * (function(props, context){}).length === 2
+         * (function(props = 1, context){}).length === 0
+         */
+        return node;
+    }
+    if (questionToken ||
+        tsUtils.isPossibleNullType(typeChecker.getTypeAtLocation(node))) {
+        return factory.updateParameterDeclaration(node, modifiers, dotDotDotToken, name, questionToken, type && tsUtils.createTypeNodeWithNullType(type, true), initializer || factory.createNull());
+    }
+    return node;
+}
+/**
+ * 开发者自行指定返回值为为null或包含null时，将`return`转化为`return null`
+ * 未指定返回类型时，将`return`转化为`return null`
+ *
+ * TODO: 返回值类型指定为`Promise<null>`时，需要将`return`转化为`return Promise.resolve(null)`
+ */
+function parseFunctionLikeDeclaration(tsUtils, node) {
+    const ts = tsUtils.ts;
+    const context = tsUtils.context;
+    const factory = context.factory;
+    const typeChecker = tsUtils.typeChecker;
+    const { modifiers, type } = node;
+    const isAsync = modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.AsyncKeyword);
+    let returnNullType = false;
+    let returnPromiseNullType = false;
+    if (type) {
+        const returnType = typeChecker
+            .getSignatureFromDeclaration(node)
+            ?.getReturnType();
+        if (returnType) {
+            returnNullType = tsUtils.isPossibleNullType(returnType);
+            returnPromiseNullType = tsUtils.isPossiblePromiseNullType(returnType);
+            if (!returnNullType && !returnPromiseNullType) {
+                return node;
+            }
+        }
+    }
+    function findReturnStatement(node) {
+        if (ts.isFunctionLike(node)) {
+            return node;
+        }
+        else if (ts.isReturnStatement(node)) {
+            if (!node.expression) {
+                return factory.updateReturnStatement(node, isAsync || returnPromiseNullType
+                    ? factory.createCallExpression(factory.createPropertyAccessExpression(factory.createIdentifier('Promise'), factory.createIdentifier('resolve')), undefined, [factory.createNull()])
+                    : factory.createNull());
+            }
+        }
+        return ts.visitEachChild(node, findReturnStatement, context);
+    }
+    return ts.visitEachChild(node, findReturnStatement, context);
+}
+const transformUndefinedToNull = (ts, ls) => {
+    return {
+        before(context) {
+            const program = ls.getProgram();
+            const typeChecker = program.getTypeChecker();
+            const tsUtils = createTsUtils(ts, typeChecker, context);
+            const visitor = (node) => {
+                if (ts.isVariableDeclaration(node) &&
+                    !node.initializer &&
+                    (!node.parent || !ts.isCatchClause(node.parent)) &&
+                    ts.isIdentifier(node.name)) {
+                    // 为未初始化的变量声明增加默认值，属性声明在transformTypeAndInterface内处理
+                    node = parseVariableDeclaration(tsUtils, node);
+                }
+                else if (ts.isParameter(node)) {
+                    // 为可选参数增加默认值
+                    node = parseParameter(tsUtils, node);
+                }
+                else if (ts.isFunctionDeclaration(node) ||
+                    ts.isMethodDeclaration(node) ||
+                    ts.isArrowFunction(node) ||
+                    ts.isFunctionExpression(node) ||
+                    ts.isGetAccessorDeclaration(node)) {
+                    // 为函数声明增加默认值
+                    node = parseFunctionLikeDeclaration(tsUtils, node);
+                }
+                node = ts.visitEachChild(node, visitor, context);
+                return node;
+            };
+            return (node) => {
+                return ts.visitNode(node, visitor);
+            };
+        },
+    };
+};
+
+// function isJsNativeType(symbol: tsTypes.Symbol): boolean {
+//   if (!symbol) return false
+//   const declarations = symbol.getDeclarations()
+//   if (!declarations) return false
+//   for (const declaration of declarations) {
+//     if (
+//       declaration.getSourceFile().isDeclarationFile &&
+//       /lib\..*\.d\.ts/i.test(declaration.getSourceFile().fileName)
+//     ) {
+//       return true
+//     }
+//   }
+//   return false
+// }
+function transformJSON(tsUtils) {
+    const context = tsUtils.context;
+    const factory = context.factory;
+    createUTSHelper(context);
+    return factory.createPropertyAccessExpression(factory.createIdentifier("UTS" /* IDENTIFIER.UTS */), factory.createIdentifier("JSON" /* IDENTIFIER.JSON */));
+}
+function transformInstanceof(tsUtils, node) {
+    const context = tsUtils.context;
+    const factory = context.factory;
+    createUTSHelper(context);
+    return factory.createCallExpression(factory.createPropertyAccessExpression(factory.createIdentifier("UTS" /* IDENTIFIER.UTS */), factory.createIdentifier('isInstanceOf')), undefined, [node.left, node.right]);
+}
+const JS_RUNTIME_CALL_EXPRESSION_MAP = {
+    Array_pop: 'arrayPop',
+    Array_shift: 'arrayShift',
+    Array_find: 'arrayFind',
+    Array_findLast: 'arrayFindLast',
+    Array_at: 'arrayAt',
+    Map_get: 'mapGet',
+    WeakMap_get: 'weakMapGet',
+    string_codePointAt: 'stringCodePointAt',
+    string_at: 'stringAt',
+};
+const JS_RUNTIME_CALL_METHOD_LIST = Object.keys(JS_RUNTIME_CALL_EXPRESSION_MAP).map((item) => item.split('_')[1]);
+const GENERIC_TYPE_AS_PARAMETER_METHOD_MAP = [
+    'uni.request',
+    'JSON.parse',
+    'JSON.parseArray',
+    'JSON.parseObject',
+];
+function genericTypeToRuntimeType(tsUtils, type) {
+    const ts = tsUtils.ts;
+    const context = tsUtils.context;
+    const factory = context.factory;
+    if (ts.isArrayTypeNode(type)) {
+        const { elementType } = type;
+        return factory.createCallExpression(factory.createPropertyAccessExpression(factory.createPropertyAccessExpression(createUTSHelper(context), factory.createIdentifier("UTSType" /* IDENTIFIER.UTS_TYPE */)), factory.createIdentifier('withGenerics')), undefined, [
+            factory.createIdentifier('Array'),
+            factory.createArrayLiteralExpression([
+                genericTypeToRuntimeType(tsUtils, elementType),
+            ]),
+            factory.createTrue(),
+        ]);
+    }
+    if (ts.isTypeReferenceNode(type)) {
+        const { typeName, typeArguments } = type;
+        if (!ts.isIdentifier(typeName)) {
+            const diag = ts.createDiagnosticForNode(typeName, UTSDiagnostics.Invalid_generic_type_which_can_not_be_constructed);
+            context.addSemanticDiagnostic(diag);
+            return factory.createIdentifier("UTSJSONObject" /* IDENTIFIER.UTSJSONObject */);
+        }
+        if (!typeArguments || typeArguments.length === 0) {
+            return factory.createIdentifier(typeName.escapedText.toString());
+        }
+        return factory.createCallExpression(factory.createPropertyAccessExpression(factory.createPropertyAccessExpression(createUTSHelper(context), factory.createIdentifier("UTSType" /* IDENTIFIER.UTS_TYPE */)), factory.createIdentifier('withGenerics')), undefined, [
+            factory.createIdentifier(typeName.escapedText.toString()),
+            factory.createArrayLiteralExpression(typeArguments.map((item) => genericTypeToRuntimeType(tsUtils, item))),
+            factory.createTrue(),
+        ]);
+    }
+    return createRuntimeTypeNode(tsUtils, type);
+}
+const nativeTypeNames = [
+    'Array',
+    'Map',
+    'WeakMap',
+    'string',
+    'String',
+    'number',
+    'Number',
+    'boolean',
+    'Boolean',
+    'UTSJSONObject',
+];
+function parseJsRuntimeCallExpression(tsUtils, node) {
+    const context = tsUtils.context;
+    const factory = context.factory;
+    const typeChecker = tsUtils.typeChecker;
+    const ts = tsUtils.ts;
+    const { expression, arguments: args } = node;
+    if (!ts.isPropertyAccessExpression(expression)) {
+        return node;
+    }
+    const { expression: object, name: prop } = expression;
+    if (ts.isIdentifier(object) && ts.isIdentifier(prop)) {
+        if (GENERIC_TYPE_AS_PARAMETER_METHOD_MAP.includes(`${object.escapedText}.${prop.escapedText}`)) {
+            const typeArgument = node.typeArguments?.[0];
+            if (typeArgument &&
+                ts.isTypeReferenceNode(typeArgument) &&
+                typeArgument.pos > 0 &&
+                ts.isIdentifier(typeArgument.typeName)) {
+                const isNativeType = nativeTypeNames.includes(typeArgument.typeName.escapedText.toString());
+                let symbol;
+                if (!isNativeType) {
+                    symbol = typeChecker.getSymbolAtLocation(typeArgument);
+                    if (!symbol) {
+                        const typeName = typeArgument.typeName.escapedText;
+                        symbol = typeChecker
+                            .getSymbolsInScope(node, ts.SymbolFlags.Type)
+                            .find((item) => item.escapedName === typeName);
+                    }
+                }
+                if (isNativeType ||
+                    (symbol && isSymbolTransformable(tsUtils, symbol))) {
+                    return factory.updateCallExpression(node, expression, undefined, [
+                        ...args,
+                        genericTypeToRuntimeType(tsUtils, typeArgument),
+                    ]);
+                }
+            }
+        }
+    }
+    if (!ts.isIdentifier(prop) ||
+        !JS_RUNTIME_CALL_METHOD_LIST.includes(prop.escapedText.toString())) {
+        return node;
+    }
+    if (object.pos < 0) {
+        return node;
+    }
+    const objectType = typeChecker.getTypeAtLocation(object);
+    // 注意需要处理Map<string, any> Array<number> WeakMap<Object, any>等场景
+    let objectBaseTypeName = '';
+    if (typeChecker.isArrayType(objectType)) {
+        objectBaseTypeName = 'Array';
+    }
+    else if (
+    // @ts-ignore
+    typeChecker.isTypeAssignableTo(objectType, typeChecker.getStringType())) {
+        objectBaseTypeName = 'string';
+    }
+    const symbolName = objectType.symbol?.escapedName.toString();
+    if (symbolName === 'Map') {
+        objectBaseTypeName = 'Map';
+    }
+    else if (symbolName === 'WeakMap') {
+        objectBaseTypeName = 'WeakMap';
+    }
+    const propName = prop.escapedText;
+    const helperName = JS_RUNTIME_CALL_EXPRESSION_MAP[`${objectBaseTypeName}_${propName}`];
+    if (!helperName) {
+        return node;
+    }
+    createUTSHelper(context);
+    return factory.createCallExpression(factory.createPropertyAccessExpression(factory.createIdentifier("UTS" /* IDENTIFIER.UTS */), factory.createIdentifier(helperName)), undefined, [object, ...args]);
+}
+const transformUTSRuntime = (ts, ls) => {
+    return {
+        before(context) {
+            const program = ls.getProgram();
+            const typeChecker = program.getTypeChecker();
+            const tsUtils = createTsUtils(ts, typeChecker, context);
+            const visitor = (node) => {
+                if (ts.isIdentifier(node)) {
+                    if (node.escapedText === "JSON" /* IDENTIFIER.JSON */) {
+                        // 替换JSON对象
+                        return transformJSON(tsUtils);
+                    }
+                }
+                else if (ts.isBinaryExpression(node)) {
+                    if (node.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword) {
+                        node = transformInstanceof(tsUtils, node);
+                    }
+                }
+                else if (ts.isCallExpression(node)) {
+                    if (ts.isPropertyAccessExpression(node.expression)) {
+                        node = parseJsRuntimeCallExpression(tsUtils, node);
+                    }
+                }
+                node = ts.visitEachChild(node, visitor, context);
+                return node;
+            };
+            return (node) => {
+                return ts.visitNode(node, visitor);
+            };
+        },
+    };
+};
+
+const transformUTSValueIterable = (ts, ls) => {
+    return {
+        parser: {
+            SourceFile: (context) => {
+                const factory = context.factory;
+                const visitor = (node) => {
+                    let updatedNode = ts.visitEachChild(node, visitor, context);
+                    if (ts.isMethodDeclaration(updatedNode) &&
+                        ts.isIdentifier(updatedNode.name) &&
+                        updatedNode.name.escapedText === 'valueIterator') {
+                        return factory.createMethodDeclaration(updatedNode.modifiers, updatedNode.asteriskToken, factory.createComputedPropertyName(factory.createPropertyAccessExpression(factory.createIdentifier('Symbol'), factory.createIdentifier('iterator'))), updatedNode.questionToken, updatedNode.typeParameters, updatedNode.parameters, updatedNode.type, updatedNode.body);
+                    }
+                    else if (ts.isExpressionWithTypeArguments(node) &&
+                        ts.isIdentifier(node.expression) &&
+                        node.expression.escapedText === 'UTSValueIterable') {
+                        return factory.createExpressionWithTypeArguments(factory.createIdentifier('Iterable'), node.typeArguments);
+                    }
+                    return updatedNode;
+                };
+                return (node) => {
+                    return ts.visitEachChild(node, visitor, context);
+                };
+            },
+        },
+    };
+};
+
+function componentPublicInstancePropertyAccessFallback(ts, typeChecker, node, left, leftType, right) {
+    if (!ts.isPropertyAccessExpression(node) ||
+        !ts.isExpression(left) ||
+        !ts.isIdentifier(right)) {
+        return;
+    }
+    const leftTypeAliasSymbolName = leftType.aliasSymbol?.escapedName.toString();
+    if (leftTypeAliasSymbolName !== 'ComponentPublicInstance' &&
+        leftTypeAliasSymbolName !== 'CreateComponentPublicInstance') {
+        return;
+    }
+    const propertyName = right.escapedText.toString();
+    const globalPropertiesMap = globalThis?.__utsUniXGlobalProperties__;
+    if (globalPropertiesMap && globalPropertiesMap.has(propertyName)) {
+        const { initializerNode } = globalPropertiesMap.get(propertyName);
+        const type = typeChecker.getTypeAtLocation(initializerNode);
+        if (type.isNumberLiteral()) {
+            return typeChecker.getNumberType();
+        }
+        else if (type.isStringLiteral()) {
+            return typeChecker.getStringType();
+        }
+        else if (type.flags & ts.TypeFlags.BooleanLiteral) {
+            return typeChecker.getBooleanType();
+        }
+        return type;
+    }
+}
+
+function isRelatedTo(ts, typeChecker, source, target) {
+    const tsUtils = createTsUtils(ts, typeChecker, undefined);
+    const nullType = typeChecker.getNullType();
+    const undefinedType = typeChecker.getUndefinedType();
+    const voidType = typeChecker.getVoidType();
+    // const anyType = typeChecker.getAnyType()
+    const stringType = typeChecker.getStringType();
+    function isPossibleSpecialStringType(type) {
+        // TODO 副作用String可以赋值给string类型
+        let baseTypes = type.getBaseTypes();
+        return (baseTypes?.length === 1 &&
+            baseTypes[0].getSymbol()?.getName() === 'String');
+    }
+    function isUndefinedType(type) {
+        return type === undefinedType || type === voidType;
+    }
+    if ((tsUtils.isObjectLiteralType(source) &&
+        tsUtils.isPossibleUTSJSONObjectType(target)) ||
+        (tsUtils.isObjectLiteralType(target) &&
+            tsUtils.isPossibleUTSJSONObjectType(source))) {
+        /**
+         * ObjectLiteral可以赋给UTSJSONObject
+         */
+        return true;
+    }
+    else if ((isUndefinedType(source) && target === nullType) ||
+        (source === nullType && isUndefinedType(target))) {
+        /**
+         * undefined可以赋给null
+         * 为处理函数返回值类型为undefined的情况
+         * function test(): number | null {
+         *   return
+         * }
+         * TODO: 寻找更优解决方案
+         */
+        return true;
+    }
+    // else if (
+    //   ((source === nullType || isUndefinedType(source)) && target === anyType) ||
+    //   ((target === nullType || isUndefinedType(target)) && source === anyType)
+    // ) {
+    //   // null | undefined 均不可赋给 any
+    //   return false
+    // }
+    else if ((source === stringType && isPossibleSpecialStringType(target)) ||
+        (isPossibleSpecialStringType(source) && target === stringType)) {
+        return true;
+    }
+}
+
+const uniModulesPath$1 = normalizePath(path__namespace.resolve((process.env.UNI_INPUT_DIR || ''), 'uni_modules'));
+function isRequireIOSNativeUtsSdk(importer, importee) {
+    if (!process.env.UNI_INPUT_DIR) {
+        return false;
+    }
+    if (process.env.UNI_UTS_PLATFORM !== 'app-ios' &&
+        process.env.UNI_UTS_PLATFORM !== 'app-harmony') {
+        return false;
+    }
+    let importeeAbsolutePath = importee;
+    if (importee.startsWith('@/')) {
+        importeeAbsolutePath = path__namespace.resolve(process.env.UNI_INPUT_DIR, importee.slice(2));
+    }
+    else if (importee.startsWith('.')) {
+        importeeAbsolutePath = path__namespace.resolve(path__namespace.dirname(importer), importee);
+    }
+    else if (path__namespace.isAbsolute(importee)) ;
+    else {
+        return false;
+    }
+    const uniModuleName = path__namespace
+        .relative(uniModulesPath$1, importeeAbsolutePath)
+        .replace(/\\/g, '/');
+    if (uniModuleName.startsWith('.') || uniModuleName.indexOf('/') > -1) {
+        return false;
+    }
+    if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+        if (fsExistsSync(path__namespace.resolve(uniModulesPath$1, uniModuleName, 'utssdk')) &&
+            !fsExistsSync(path__namespace.resolve(uniModulesPath$1, uniModuleName, 'utssdk/app-js'))) {
+            return true;
+        }
+    }
+    else if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+        // 鸿蒙平台和iOS平台不同，无论何时都优先使用app-harmony
+        if (fsExistsSync(path__namespace.resolve(uniModulesPath$1, uniModuleName, 'utssdk')) &&
+            fsExistsSync(path__namespace.resolve(uniModulesPath$1, uniModuleName, 'utssdk', 'app-harmony')) &&
+            !fsExistsSync(path__namespace.resolve(uniModulesPath$1, uniModuleName, 'utssdk/app-js'))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function isTypeRelatedTo(ts, typeChecker, source, target) {
+    return isRelatedTo(ts, typeChecker, source, target);
+}
+
+/**
+ * 仅uts2js需要执行，目前主要用于提前处理vue相关类型文件内容，最终在rollup-plugin-uts内加载文件时执行
+ */
+function replaceVueTypes(fileName, content) {
+    if (fileName.endsWith('runtime-core.d.ts')) {
+        /**
+         * 替换inject的定义为以下内容
+         * type ObjectInjectOptions<I = Data> = {
+         *   [K in keyof I]: {
+         *     type: PropType<I[K]>;
+         *     default: I[K];
+         *   }
+         * };
+         * type InjectToObject<T> = T extends string[] ? {
+         *   [K in T[number]]: unknown;
+         * } : T extends ObjectInjectOptions<infer I> ? {
+         *   [K in keyof I]: I[K];
+         * } : never;
+         */
+        content = content.replace(/type ObjectInjectOptions = Record<([\s\S]+?)>;/, `type ObjectInjectOptions<I = Data> = {
+    [K in keyof I]: {
+      type: PropType<I[K]>;
+      from?: string;
+      default?: I[K] | (() => I[K]);
+    }
+  };`);
+        content = content.replace(/type InjectToObject<T([\s\S]+?): never;/, `type InjectToObject<T> = T extends string[] ? {
+    [K in T[number]]: unknown;
+  } : T extends ObjectInjectOptions<infer I> ? {
+    [K in keyof I]: I[K];
+  } : never;`);
+        // 由于null undefined不能赋值给any导致serverPrefetch报错，此处将serverPrefetch的Promise<any>替换为Promise<any | null>
+        content = content.replace(/serverPrefetch\?\(\): void \| Promise<any>;/, `serverPrefetch?(): void | Promise<any | null>;`);
+    }
+    if (fileName.endsWith('app.d.ts')) {
+        content = content.replace(/\s\sexport function defineApp<D extends OptionsData = OptionsData.*/, '');
+    }
+    return content;
+}
+
+const uniModulesRegExp = new RegExp('^' + uniModulesPath$2 + '/([a-zA-Z0-9_-]+)/index.d.ts$');
+function getUniModulesName(fileName) {
+    const matches = fileName.match(uniModulesRegExp);
+    return matches ? matches[1] : '';
+}
+// TODO 本应修改tryResolveExtension来实现和这个列表一致的逻辑，遇到无法解决的Bug暂时回退为此方案resolve非vue后缀文件
+// const COMMON_EXTENSIONS = [
+//   '.uts',
+//   '.mjs',
+//   '.js',
+//   '.ts',
+//   '.jsx',
+//   '.tsx',
+//   '.json',
+//   '.uvue',
+//   '.vue',
+// ]
+const utsPlatForm = process.env.UNI_UTS_PLATFORM;
+const isIOS = utsPlatForm === 'app-ios';
+const isHarmony = utsPlatForm === 'app-harmony';
+let POSSIBLE_UNI_MODULE_PLATFORM_ENTRY = [];
+const appJsEntries = ['app-js/index.uts', 'app-js/index.ts', 'app-js/index.js'];
+const appNativeEntries = [
+    `${utsPlatForm}/index.uts`,
+    `${utsPlatForm}/index.ts`,
+    `${utsPlatForm}/index.js`,
+];
+if (isIOS || isHarmony) {
+    POSSIBLE_UNI_MODULE_PLATFORM_ENTRY = appJsEntries;
+}
+else {
+    POSSIBLE_UNI_MODULE_PLATFORM_ENTRY = appNativeEntries;
+}
+function tryFileLookup(fileName) {
+    if (!process.env.UNI_INPUT_DIR) {
+        return;
+    }
+    const uniModuleName = getUniModulesName(fileName);
+    if (uniModuleName) {
+        const uniModuleDir = path__namespace.resolve(uniModulesPath$2, uniModuleName, 'utssdk');
+        if (isHarmony) {
+            // app-harmony目录存在时不使用app-js
+            const appHarmonyEntry = path__namespace.resolve(uniModuleDir, 'app-harmony/index.uts');
+            if (fsExistsSync(appHarmonyEntry)) {
+                return;
+            }
+        }
+        // 处理uni_modules引用逻辑
+        for (let i = 0; i < POSSIBLE_UNI_MODULE_PLATFORM_ENTRY.length; i++) {
+            const entry = POSSIBLE_UNI_MODULE_PLATFORM_ENTRY[i];
+            const entryPath = path__namespace.resolve(uniModuleDir, entry);
+            if (fsExistsSync(entryPath)) {
+                return normalizePath(entryPath);
+            }
+        }
+        if (isIOS || isHarmony) {
+            // app-ios不查找根目录入口
+            return;
+        }
+        const commonEntry = path__namespace.resolve(uniModulesPath$2, uniModuleName, 'utssdk/index.uts');
+        if (fsExistsSync(commonEntry)) {
+            return normalizePath(commonEntry);
+        }
+    }
+    else if (fileName.endsWith('.d.ts') && !fsExistsSync(fileName)) {
+        // 处理不带后缀的uvue、vue文件引入逻辑，uts文件在插件内处理
+        const fileNameWithoutExt = fileName.replace(/\.d\.ts$/, '');
+        const possibleUvueFile = fileNameWithoutExt + '.uvue';
+        if (fsExistsSync(possibleUvueFile)) {
+            return possibleUvueFile + '.ts';
+        }
+        const possibleVueFile = fileNameWithoutExt + '.vue';
+        if (fsExistsSync(possibleVueFile)) {
+            return possibleVueFile + '.ts';
+        }
+    }
+    else if (fileName.endsWith('.json') && fsExistsSync(fileName)) {
+        // json文件不可通过修改readFile进行处理，因为ts本身还会读取tsconfig.json和package.json，另外tsconfig.json内也可以依赖其他json文件
+        return fileName + '.ts';
+    }
+}
+
+const hacker = {
+    replaceVueTypes,
+    isTypeRelatedTo,
+    isRelatedTo,
+    tryFileLookup,
+    componentPublicInstancePropertyAccessFallback,
+    isRequireIOSNativeUtsSdk,
+    // tryExtensionAfter,
+    // tryExtensionBefore,
+    isUtsCompiler: true,
+    hijackAnyNullUnionType: true,
+    hijackTsLibResolve: true,
+    hijackDestructuring: true,
+    ignoreInstanceofLeftType: true,
+    ignoreInstanceofRightType: true,
+    useTypeAndInterfaceAsValue: true,
+    ignoreAllDebugFail: true,
+};
+
+var transformers = [
+    transformOptionalChain,
+    transformContext,
+    transformImportDeclaration,
+    transformUniApp,
+    transformUniExtApi,
+    transformVueDefineComponent,
+    transformUTSValueIterable,
+    transformLifeCycleOptions,
+    transformTypeAndInterface,
+    transformObjectLiteral,
+    transformComponentExtraProperty,
+    transformClassImplements,
+    transformTypedObjectLiteral,
+    transformUTSRuntime,
+    transformUndefinedToNull,
+    transformRemoveVueTsExtention,
+    removeCompileTimeMethod,
+    transformCreateWorker,
+];
+
+const uniModulesPath = pluginutils.normalizePath(path__namespace.resolve((process.env.UNI_INPUT_DIR || ''), 'uni_modules'));
+const uniModuleNameReg = new RegExp('^' + uniModulesPath + '/([a-zA-Z0-9_-]+)/');
+const VUE_FILE_RE = /\.(u)?vue(.ts)?/;
+let tsModule;
+const utsFileNames = new Set();
+function isUTSFile(fileName) {
+    return (isVueFile(fileName) ||
+        fileName.includes('.uts') ||
+        utsFileNames.has(pluginutils.normalizePath(fileName)));
+}
+function isVueFile(fileName) {
+    return VUE_FILE_RE.test(fileName);
+}
+function preprocessVueFile(content, modules) {
+    // 获取script标签内的内容
+    content = modules.uniCliShared.preUVueJs(modules.uniCliShared.preUVueHtml(content));
+    const scriptNode = modules.vueCompilerDom
+        .parse(content)
+        .children.find((item) => item.tag === 'script');
+    const emptyVueFile = 'export default {}';
+    if (!scriptNode) {
+        return emptyVueFile;
+    }
+    // TODO defineExpose
+    if (scriptNode.props.some((prop) => prop.name === 'setup')) {
+        // .vue.ts文件仅会在tsc内部处理时使用，使用了setup的文件导出空对象保证类型正确即可
+        return ('// @uts-setup\n' +
+            (scriptNode?.children[0]?.content || '') +
+            '\n' +
+            emptyVueFile);
+    }
+    else {
+        return scriptNode?.children[0]?.content || emptyVueFile;
+    }
+}
+function preprocessUtsFile(content, modules) {
+    return modules.uniCliShared.preUVueJs(modules.uniCliShared.preUVueJs(content));
+}
+function preprocessJsonFile(content, modules) {
+    const data = modules.uniCliShared.parseJson(content, true);
+    return pluginutils.dataToEsm(data, {
+        preferConst: true,
+        compact: true,
+    });
+}
+function setTypescriptModule(override, modules) {
+    tsModule = override;
+    // @ts-expect-error 判断是否已重写
+    if (!tsModule.sys.__rewrited) {
+        const { fileExists, readFile, realpath } = tsModule.sys;
+        tsModule.sys.realpath = (path) => {
+            const realFilePath = realpath ? realpath(path) : path;
+            if (realFilePath.endsWith('.ts')) {
+                if (utsFileNames.has(pluginutils.normalizePath(path))) {
+                    return path.replace('.ts', '.uts');
+                }
+            }
+            return realFilePath;
+        };
+        tsModule.sys.fileExists = (path) => {
+            const normalizedPath = pluginutils.normalizePath(path);
+            const matches = normalizedPath.match(uniModuleNameReg);
+            const uniModuleName = matches ? matches[1] : '';
+            if (uniModuleName &&
+                fileExists(path__namespace.resolve(uniModulesPath, uniModuleName, 'encrypt'))) {
+                return false;
+            }
+            if (normalizedPath.endsWith('.ts')) {
+                if (fileExists(normalizedPath.replace('.ts', '.uts'))) {
+                    utsFileNames.add(normalizedPath);
+                    return true;
+                }
+            }
+            if (normalizedPath.endsWith('.vue.ts') ||
+                normalizedPath.endsWith('.uvue.ts')) {
+                if (fileExists(normalizedPath.replace(/.ts$/, ''))) {
+                    return true;
+                }
+            }
+            if (normalizedPath.endsWith('.json.ts')) {
+                if (fileExists(normalizedPath.replace(/.ts$/, ''))) {
+                    return true;
+                }
+            }
+            return fileExists(path);
+        };
+        tsModule.sys.readFile = (path, encoding) => {
+            if (path.endsWith('.ts')) {
+                if (utsFileNames.has(pluginutils.normalizePath(path))) {
+                    const utsPath = path.replace('.ts', '.uts');
+                    const content = readFile(utsPath, encoding);
+                    if (content == null) {
+                        return;
+                    }
+                    return preprocessUtsFile(content, modules);
+                }
+            }
+            if (path.endsWith('.json.ts')) {
+                const jsonPath = path.replace(/.ts$/, '');
+                if (fileExists(jsonPath)) {
+                    const content = readFile(jsonPath, encoding);
+                    if (content == null) {
+                        return;
+                    }
+                    return preprocessJsonFile(content, modules);
+                }
+            }
+            if (path.endsWith('.vue.ts') || path.endsWith('.uvue.ts')) {
+                const vuePath = path.replace(/.ts$/, '');
+                if (fileExists(vuePath)) {
+                    const content = readFile(vuePath, encoding);
+                    if (content == null) {
+                        return;
+                    }
+                    return preprocessVueFile(content, modules);
+                }
+            }
+            let content = readFile(path, encoding);
+            if (content == null) {
+                return;
+            }
+            if (path.endsWith('runtime-dom/dist/runtime-dom.d.ts')) {
+                // TODO 在tsc处理vue文件时，vue文件已经在头部引入jsx相关类型，简介引用了runtime-dom的类型，导致产生了runtimeDOMBailTypes: any; 在UnwrapRef类型推断时时会导致进入到错误的条件分支
+                content = content.replace('runtimeDOMBailTypes: Node | Window;', '');
+            }
+            const replaceVueTypes = globalThis?.__utsHacker__
+                ?.replaceVueTypes;
+            return replaceVueTypes ? replaceVueTypes(path, content) : content;
+        };
+        // @ts-expect-error 设置重写标识
+        tsModule.sys.__rewrited = true;
+    }
+}
+
+class FormatHost {
+    constructor() {
+        this.getCanonicalFileName = path__namespace.normalize;
+        this.getNewLine = () => tsModule.sys.newLine;
+    }
+    getCurrentDirectory() {
+        return tsModule.sys.getCurrentDirectory();
+    }
+}
+const formatHost = new FormatHost();
+
+function isUTSCompilerError(error) {
+    return error.type === 'UTSCompilerError';
+}
+// function formatDiagnosticFormatted(
+//   diagnostic: IDiagnostics,
+//   codeFrame: string,
+// ) {
+//   let color
+//   let category
+//   switch (diagnostic.category) {
+//     case tsModule.DiagnosticCategory.Message:
+//       color = white
+//       category = ''
+//       break
+//     case tsModule.DiagnosticCategory.Error:
+//       color = red
+//       category = 'error'
+//       break
+//     case tsModule.DiagnosticCategory.Warning:
+//     default:
+//       color = yellow
+//       category = 'warning'
+//       break
+//   }
+//   return `${category} TS${diagnostic.code}: ${color(diagnostic.flatMessage)}
+// ${codeFrame}`
+// }
+function formatDiagnostic(type, diagnostic, map) {
+    const entry = {
+        flatMessage: tsModule.flattenDiagnosticMessageText(diagnostic.messageText, formatHost.getNewLine()),
+        formatted: tsModule.formatDiagnosticsWithColorAndContext([diagnostic], formatHost),
+        category: diagnostic.category,
+        code: diagnostic.code,
+        type,
+    };
+    if (diagnostic.file && diagnostic.start !== undefined) {
+        let { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
+        if (map) {
+            const mapped = map.originalPositionFor({
+                line: line + 1,
+                column: character,
+                bias: sourceMapJs.SourceMapConsumer.LEAST_UPPER_BOUND,
+            });
+            if (mapped.line !== null) {
+                if (mapped.source) {
+                    const content = map.sourceContentFor(mapped.source);
+                    if (content) {
+                        const { line: endLine, character: endColumn } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start + (diagnostic.length || 0));
+                        const end = map.originalPositionFor({
+                            line: endLine + 1,
+                            column: endColumn,
+                        });
+                        if (end.line !== null) {
+                            const frame = codeFrame.codeFrameColumns(content, {
+                                start: {
+                                    line: mapped.line,
+                                    column: (mapped.column || 0) + 1,
+                                },
+                                end: {
+                                    line: end.line,
+                                    column: (end.column || 0) + 1,
+                                },
+                            });
+                            entry.rollupError = createRollupError(diagnostic.file.fileName, entry.flatMessage, line + 1, // 不使用sourcemap之后的line，rollup会自动处理
+                            character + 1, frame);
+                            entry.finalRollupError = createFinalRollupError(diagnostic.file.fileName, entry.flatMessage, mapped.line, // 不使用sourcemap之后的line，rollup会自动处理
+                            mapped.column || 0, frame);
+                            entry.utsCompilerError = {
+                                type: 'UTSCompilerError',
+                                file: pluginutils.normalizePath(path__namespace.relative(process.env.UNI_INPUT_DIR, diagnostic.file.fileName.split('?')[0])),
+                                line: mapped.line,
+                                column: mapped.column || 0,
+                                message: entry.flatMessage,
+                                frame,
+                            };
+                        }
+                    }
+                }
+                line = mapped.line;
+            }
+        }
+        entry.fileLine = `${diagnostic.file.fileName}(${line + 1},${character + 1})`;
+    }
+    return entry;
+}
+function convertDiagnostic(type, data, map) {
+    return data.map((diagnostic) => {
+        return formatDiagnostic(type, diagnostic, map);
+    });
+}
+function printDiagnostics(context, diagnostics, pretty = true) {
+    diagnostics.forEach((diagnostic) => {
+        let print;
+        let color;
+        let category;
+        switch (diagnostic.category) {
+            case tsModule.DiagnosticCategory.Message:
+                print = context.info;
+                color = safe.white;
+                category = '';
+                break;
+            case tsModule.DiagnosticCategory.Error:
+                print = context.error;
+                color = safe.red;
+                category = 'error';
+                break;
+            case tsModule.DiagnosticCategory.Warning:
+            default:
+                print = context.warn;
+                color = safe.yellow;
+                category = 'warning';
+                break;
+        }
+        const type = diagnostic.type + ' ';
+        if (pretty) {
+            if (diagnostic.utsCompilerError) {
+                return print.call(context, diagnostic.utsCompilerError);
+            }
+            if (diagnostic.rollupError) {
+                return print.call(context, diagnostic.rollupError);
+            }
+            return print.call(context, `${safe.enabled ? diagnostic.formatted : stripAnsi(diagnostic.formatted)}`);
+        }
+        if (diagnostic.fileLine !== undefined)
+            return print.call(context, `${diagnostic.fileLine}: ${type}${category} TS${diagnostic.code}: ${color(diagnostic.flatMessage)}`);
+        return print.call(context, `${type}${category} TS${diagnostic.code}: ${color(diagnostic.flatMessage)}`);
+    });
+}
+const regex = ansiRegex();
+// 避免增加新的依赖包
+function stripAnsi(string) {
+    if (typeof string !== 'string') {
+        throw new TypeError(`Expected a \`string\`, got \`${typeof string}\``);
+    }
+    // Even though the regex is global, we don't need to reset the `.lastIndex`
+    // because unlike `.exec()` and `.test()`, `.replace()` does it automatically
+    // and doing it manually has a performance penalty.
+    return string.replace(regex, '');
+}
+// https://github.com/chalk/ansi-regex/blob/main/index.js
+function ansiRegex({ onlyFirst = false } = {}) {
+    const pattern = [
+        '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
+        '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))',
+    ].join('|');
+    return new RegExp(pattern, onlyFirst ? undefined : 'g');
+}
+function createRollupError(file, message, line, column, frame) {
+    const rollupError = {
+        id: file,
+        message,
+        frame,
+        loc: {
+            file,
+            line,
+            column,
+        },
+    };
+    return rollupError;
+}
+function createFinalRollupError(file, message, line, column, frame) {
+    const rollupError = new Error(message);
+    Object.assign(rollupError, {
+        message,
+        frame,
+        loc: {
+            file,
+            line,
+            column,
+        },
+    });
+    Object.defineProperty(rollupError, 'id', {
+        get() {
+            return file;
+        },
+        set(_v) { },
+    });
+    return rollupError;
+}
+
+var VerbosityLevel;
+(function (VerbosityLevel) {
+    VerbosityLevel[VerbosityLevel["Error"] = 0] = "Error";
+    VerbosityLevel[VerbosityLevel["Warning"] = 1] = "Warning";
+    VerbosityLevel[VerbosityLevel["Info"] = 2] = "Info";
+    VerbosityLevel[VerbosityLevel["Debug"] = 3] = "Debug";
+})(VerbosityLevel || (VerbosityLevel = {}));
+function getText(message) {
+    return typeof message === 'string' ? message : message();
+}
+/** cannot be used in options hook (which does not have this.warn and this.error), but can be in other hooks */
+class RollupContext {
+    constructor(verbosity, bail, context, prefix = '') {
+        this.verbosity = verbosity;
+        this.bail = bail;
+        this.context = context;
+        this.prefix = prefix;
+    }
+    warn(message) {
+        if (this.verbosity < VerbosityLevel.Warning)
+            return;
+        this.context.warn(`${getText(message)}`);
+    }
+    error(message) {
+        if (this.verbosity < VerbosityLevel.Error)
+            return;
+        if (this.bail) {
+            // abortOnError
+            if (typeof message === 'string' || typeof message === 'function') {
+                this.context.error(`${getText(message)}`);
+            }
+            else {
+                this.context.error(message);
+            }
+        }
+        else {
+            if (isUTSCompilerError(message)) {
+                console.warn(`warning: ${message.message}`);
+                console.warn(`at ${message.file}:${message.line}:${message.column}`);
+                console.log(message.frame);
+            }
+            else if (typeof message === 'string' || typeof message === 'function') {
+                this.context.warn(`${getText(message)}`);
+            }
+            else {
+                this.context.warn(message);
+            }
+        }
+    }
+    info(message) {
+        if (this.verbosity < VerbosityLevel.Info)
+            return;
+        console.log(`${this.prefix}${getText(message)}`);
+    }
+    debug(message) {
+        if (this.verbosity < VerbosityLevel.Debug)
+            return;
+        console.log(`${this.prefix}${getText(message)}`);
+    }
+}
+
+function getOptionsOverrides({ useTsconfigDeclarationDir, cacheRoot }, preParsedTsconfig) {
+    const overrides = {
+        noEmitHelpers: false,
+        importHelpers: true,
+        noResolve: false,
+        noEmit: false,
+        noEmitOnError: false,
+        inlineSourceMap: false,
+        outDir: pluginutils.normalizePath(`${cacheRoot}/placeholder`),
+        allowNonTsExtensions: true,
+    };
+    if (!preParsedTsconfig)
+        return overrides;
+    if (preParsedTsconfig.options.moduleResolution ===
+        tsModule.ModuleResolutionKind.Classic)
+        overrides.moduleResolution = tsModule.ModuleResolutionKind.Node10;
+    if (preParsedTsconfig.options.module === undefined)
+        overrides.module = tsModule.ModuleKind.ES2015;
+    // only set declarationDir if useTsconfigDeclarationDir is enabled
+    if (!useTsconfigDeclarationDir)
+        overrides.declarationDir = undefined;
+    // unsetting sourceRoot if sourceMap is not enabled (in case original tsconfig had inlineSourceMap set that is being unset and would cause TS5051)
+    const sourceMap = preParsedTsconfig.options.sourceMap;
+    if (!sourceMap)
+        overrides.sourceRoot = undefined;
+    return overrides;
+}
+function expandIncludeWithDirs(include, dirs) {
+    const newDirs = [];
+    dirs.forEach((root) => {
+        if (include instanceof Array)
+            include.forEach((x) => newDirs.push(pluginutils.normalizePath(path__namespace.join(root, x))));
+        else
+            newDirs.push(pluginutils.normalizePath(path__namespace.join(root, include)));
+    });
+    return newDirs;
+}
+function createFilter(context, pluginOptions, parsedConfig) {
+    let included = pluginOptions.include;
+    let excluded = pluginOptions.exclude;
+    if (parsedConfig.options.rootDirs) {
+        included = expandIncludeWithDirs(included, parsedConfig.options.rootDirs);
+        excluded = expandIncludeWithDirs(excluded, parsedConfig.options.rootDirs);
+    }
+    if (parsedConfig.projectReferences) {
+        included = expandIncludeWithDirs(included, parsedConfig.projectReferences.map((x) => x.path)).concat(included);
+        excluded = expandIncludeWithDirs(excluded, parsedConfig.projectReferences.map((x) => x.path)).concat(excluded);
+    }
+    context.debug(() => `included:\n${JSON.stringify(included, undefined, 4)}`);
+    context.debug(() => `excluded:\n${JSON.stringify(excluded, undefined, 4)}`);
+    return pluginutils.createFilter(included, excluded, {
+        resolve: parsedConfig.options.rootDir,
+    });
+}
+
+class LanguageServiceHost {
+    constructor(parsedConfig, transformers, cwd) {
+        this.parsedConfig = parsedConfig;
+        this.transformers = transformers;
+        this.cwd = cwd;
+        this.snapshots = {};
+        this.versions = {};
+        this.customParser = {};
+        this.getScriptFileNames = () => Array.from(this.fileNames.values());
+        this.getCompilationSettings = () => this.parsedConfig.options;
+        this.getTypeRootsVersion = () => 0;
+        this.getCurrentDirectory = () => this.cwd;
+        this.useCaseSensitiveFileNames = () => tsModule.sys.useCaseSensitiveFileNames;
+        this.getDefaultLibFileName = tsModule.getDefaultLibFilePath; // confusing naming: https://github.com/microsoft/TypeScript/issues/35318
+        this.readDirectory = tsModule.sys.readDirectory;
+        this.readFile = tsModule.sys.readFile;
+        this.fileExists = tsModule.sys.fileExists;
+        this.directoryExists = tsModule.sys.directoryExists;
+        this.getDirectories = tsModule.sys.getDirectories;
+        this.realpath = tsModule.sys.realpath; // this exists in the default implementation: https://github.com/microsoft/TypeScript/blob/ab2523bbe0352d4486f67b73473d2143ad64d03d/src/compiler/sys.ts#L1288
+        this.trace = console.log;
+        this.fileNames = new Set(parsedConfig.fileNames);
+    }
+    reset() {
+        this.snapshots = {};
+        this.versions = {};
+    }
+    setLanguageService(service) {
+        // 补充辅助方法
+        service.shouldTransform = (fileName) => {
+            if (!fileName) {
+                return false;
+            }
+            return (isUTSFile(fileName) ||
+                // uts2js 要用
+                fileName.endsWith('.json.ts') ||
+                fileName.endsWith('.d.ts'));
+        };
+        service.isVueFile = isVueFile;
+        this.service = service;
+        // // 初始化service时，初始化transformers，仅初始化一次
+        if (!this.customTransformers) {
+            this.initTransformers(this.transformers || []);
+        }
+    }
+    setSnapshot(fileName, source) {
+        fileName = pluginutils.normalizePath(fileName);
+        if (fileName.endsWith('.uts')) {
+            this.setSnapshot(fileName.replace(/\.uts$/, '.ts'), source);
+        }
+        const snapshot = tsModule.ScriptSnapshot.fromString(source);
+        this.snapshots[fileName] = snapshot;
+        this.versions[fileName] = (this.versions[fileName] || 0) + 1;
+        this.fileNames.add(fileName);
+        return snapshot;
+    }
+    getScriptSnapshot(fileName) {
+        fileName = pluginutils.normalizePath(fileName);
+        if (fileName in this.snapshots)
+            return this.snapshots[fileName];
+        const source = tsModule.sys.readFile(fileName);
+        if (source != null)
+            return this.setSnapshot(fileName, source);
+        return undefined;
+    }
+    getScriptVersion(fileName) {
+        fileName = pluginutils.normalizePath(fileName);
+        return (this.versions[fileName] || 0).toString();
+    }
+    initTransformers(transformers) {
+        if (this.service === undefined ||
+            transformers === undefined ||
+            this.transformers.length === 0)
+            return undefined;
+        const transformer = {
+            before: [],
+            after: [],
+            afterDeclarations: [],
+        };
+        for (const creator of transformers) {
+            const factory = creator(this.service);
+            if (factory.parser) {
+                this.customParser = factory.parser;
+            }
+            if (factory.before)
+                transformer.before = transformer.before.concat(factory.before);
+            if (factory.after)
+                transformer.after = transformer.after.concat(factory.after);
+            if (factory.afterDeclarations)
+                transformer.afterDeclarations = transformer.afterDeclarations.concat(factory.afterDeclarations);
+        }
+        this.customTransformers = transformer;
+        globalThis.__utsParser__ = this.customParser;
+        return transformer;
+    }
+    getCustomTransformers() {
+        return this.customTransformers;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setCompilerHost(host) {
+        // TODO: implement
+    }
+}
+
+function parseTsConfig(context, pluginOptions) {
+    const fileName = tsModule.findConfigFile(pluginOptions.cwd, tsModule.sys.fileExists, pluginOptions.tsconfig);
+    // if the value was provided, but no file, fail hard
+    if (pluginOptions.tsconfig !== undefined && !fileName)
+        context.error(`failed to open '${pluginOptions.tsconfig}'`);
+    let loadedConfig = {};
+    let baseDir = pluginOptions.cwd;
+    let configFileName;
+    let pretty = true;
+    if (fileName) {
+        const text = tsModule.sys.readFile(fileName); // readFile only returns undefined when the file doesn't exist, which we already checked above
+        const result = tsModule.parseConfigFileTextToJson(fileName, text);
+        pretty = result.config?.pretty ?? pretty;
+        if (result.error !== undefined) {
+            printDiagnostics(context, convertDiagnostic('config', [result.error]), pretty);
+            context.error(`failed to parse '${fileName}'`);
+        }
+        loadedConfig = result.config;
+        baseDir = path.dirname(fileName);
+        configFileName = fileName;
+    }
+    const mergedConfig = {};
+    ___namespace.merge(mergedConfig, pluginOptions.tsconfigDefaults, loadedConfig, pluginOptions.tsconfigOverride);
+    const preParsedTsConfig = tsModule.parseJsonConfigFileContent(mergedConfig, tsModule.sys, baseDir, getOptionsOverrides(pluginOptions), configFileName);
+    const compilerOptionsOverride = getOptionsOverrides(pluginOptions, preParsedTsConfig);
+    const parsedTsConfig = tsModule.parseJsonConfigFileContent(mergedConfig, tsModule.sys, baseDir, compilerOptionsOverride, configFileName);
+    const module = parsedTsConfig.options.module;
+    if (module !== tsModule.ModuleKind.ES2015 &&
+        module !== tsModule.ModuleKind.ES2020 &&
+        module !== tsModule.ModuleKind.ES2022 &&
+        module !== tsModule.ModuleKind.ESNext)
+        context.error(`Incompatible tsconfig option. Module resolves to '${tsModule.ModuleKind[module]}'. This is incompatible with Rollup, please use 'module: "ES2015"', 'module: "ES2020"', 'module: "ES2022"', or 'module: "ESNext"'.`);
+    printDiagnostics(context, convertDiagnostic('config', parsedTsConfig.errors), pretty);
+    context.debug(`built-in options overrides: ${JSON.stringify(compilerOptionsOverride, undefined, 4)}`);
+    context.debug(`parsed tsconfig: ${JSON.stringify(parsedTsConfig, undefined, 4)}`);
+    return { parsedTsConfig, fileName };
+}
+
+/**
+ * Saves data in new cache folder or reads it from old one.
+ * Avoids perpetually growing cache and situations when things need to consider changed and then reverted data to be changed.
+ */
+class RollingCache {
+    /** @param cacheRoot: root folder for the cache */
+    constructor(cacheRoot) {
+        this.cacheRoot = cacheRoot;
+        this.rolled = false;
+        this.oldCacheRoot = `${this.cacheRoot}/cache`;
+        this.newCacheRoot = `${this.cacheRoot}/cache_`;
+        fs$1.emptyDirSync(this.newCacheRoot);
+    }
+    /** @returns true if name exists in either old cache or new cache */
+    exists(name) {
+        if (this.rolled)
+            return false;
+        if (fs.existsSync(`${this.newCacheRoot}/${name}`))
+            return true;
+        return fs.existsSync(`${this.oldCacheRoot}/${name}`);
+    }
+    path(name) {
+        return `${this.oldCacheRoot}/${name}`;
+    }
+    /** @returns true if old cache contains all names and nothing more */
+    match(names) {
+        if (this.rolled)
+            return false;
+        if (!fs.existsSync(this.oldCacheRoot))
+            return names.length === 0; // empty folder matches
+        return ___namespace.isEqual(fs.readdirSync(this.oldCacheRoot).sort(), names.sort());
+    }
+    /** @returns data for name, must exist in either old cache or new cache */
+    read(name) {
+        if (fs.existsSync(`${this.newCacheRoot}/${name}`))
+            return fs$1.readJsonSync(`${this.newCacheRoot}/${name}`, {
+                encoding: 'utf8',
+                throws: false,
+            });
+        return fs$1.readJsonSync(`${this.oldCacheRoot}/${name}`, {
+            encoding: 'utf8',
+            throws: false,
+        });
+    }
+    write(name, data) {
+        if (this.rolled)
+            return;
+        if (data === undefined)
+            return;
+        fs$1.writeJsonSync(`${this.newCacheRoot}/${name}`, data);
+    }
+    touch(name) {
+        if (this.rolled)
+            return;
+        fs$1.ensureFileSync(`${this.newCacheRoot}/${name}`);
+    }
+    /** clears old cache and moves new in its place */
+    roll() {
+        if (this.rolled)
+            return;
+        this.rolled = true;
+        fs$1.removeSync(this.oldCacheRoot);
+        if (fs.existsSync(this.newCacheRoot)) {
+            fs.renameSync(this.newCacheRoot, this.oldCacheRoot);
+        }
+    }
+}
+
+function convertEmitOutput(output, references, uniExtApis) {
+    const out = { code: '', references, uniExtApis };
+    output.outputFiles.forEach((e) => {
+        if (e.name.endsWith('.d.ts'))
+            out.dts = e;
+        else if (e.name.endsWith('.d.ts.map'))
+            out.dtsmap = e;
+        else if (e.name.endsWith('.map'))
+            out.map = e.text;
+        else
+            out.code = e.text;
+    });
+    return out;
+}
+function getAllReferences(importer, snapshot, options) {
+    if (!snapshot)
+        return [];
+    const info = tsModule.preProcessFile(snapshot.getText(0, snapshot.getLength()), true, true);
+    return ___namespace.compact(info.referencedFiles.concat(info.importedFiles).map((reference) => {
+        const resolved = tsModule.nodeModuleNameResolver(reference.fileName, importer, options, tsModule.sys);
+        const resolvedFileName = resolved.resolvedModule?.resolvedFileName;
+        if (resolvedFileName &&
+            utsFileNames.has(pluginutils.normalizePath(resolvedFileName)) &&
+            resolvedFileName.endsWith('.ts')) {
+            return resolvedFileName.replace(/.ts$/, '.uts');
+        }
+        return resolvedFileName;
+    }));
+}
+class TsCache {
+    constructor(noCache, runClean, hashIgnoreUnknown, host, cacheRoot, options, rootFilenames, context) {
+        this.noCache = noCache;
+        this.host = host;
+        this.cacheRoot = cacheRoot;
+        this.options = options;
+        this.context = context;
+        this.cacheVersion = '9';
+        this.cachePrefix = 'uts_';
+        this.ambientTypesDirty = false;
+        // fixed by xxxxxx add const
+        this.hashOptions = { algorithm: 'sha1', ignoreUnknown: false };
+        this.dependencyTree = new graphlib.Graph({ directed: true });
+        this.dependencyTree.setDefaultNodeLabel(() => ({ dirty: false }));
+        if (runClean)
+            this.clean();
+        if (noCache)
+            return;
+        this.hashOptions.ignoreUnknown = hashIgnoreUnknown;
+        this.cacheDir = `${this.cacheRoot}/${this.cachePrefix}${objHash({
+            version: this.cacheVersion,
+            rootFilenames,
+            options: this.options,
+            tsVersion: tsModule.version,
+        }, this.hashOptions)}`;
+        this.init();
+        const automaticTypes = tsModule
+            .getAutomaticTypeDirectiveNames(options, tsModule.sys)
+            .map((entry) => tsModule.resolveTypeReferenceDirective(entry, undefined, options, tsModule.sys))
+            .filter((entry) => entry.resolvedTypeReferenceDirective?.resolvedFileName)
+            .map((entry) => entry.resolvedTypeReferenceDirective.resolvedFileName);
+        this.ambientTypes = rootFilenames
+            .filter((file) => file.endsWith('.d.ts'))
+            .concat(automaticTypes)
+            .map((id) => ({ id, snapshot: this.host.getScriptSnapshot(id) }));
+        this.checkAmbientTypes();
+    }
+    clean() {
+        if (!fs__namespace$1.pathExistsSync(this.cacheRoot))
+            return;
+        const entries = fs__namespace$1.readdirSync(this.cacheRoot);
+        entries.forEach((e) => {
+            const dir = `${this.cacheRoot}/${e}`;
+            /* istanbul ignore if -- this is a safety check, but shouldn't happen when using a dedicated cache dir */
+            if (!e.startsWith(this.cachePrefix)) {
+                this.context.debug(`skipping cleaning '${dir}' as it does not have prefix '${this.cachePrefix}'`);
+                return;
+            }
+            /* istanbul ignore if -- this is a safety check, but should never happen in normal usage */
+            if (!fs__namespace$1.statSync(dir).isDirectory) {
+                this.context.debug(`skipping cleaning '${dir}' as it is not a directory`);
+                return;
+            }
+            this.context.info(safe.blue(`cleaning cache: ${dir}`));
+            fs__namespace$1.removeSync(`${dir}`);
+        });
+    }
+    setDependency(importee, importer) {
+        // importee -> importer
+        this.context.debug(`${safe.blue('dependency')} '${importee}'`);
+        this.context.debug(`    imported by '${importer}'`);
+        this.dependencyTree.setEdge(importer, importee);
+    }
+    walkTree(cb) {
+        if (graphlib.alg.isAcyclic(this.dependencyTree))
+            return graphlib.alg.topsort(this.dependencyTree).forEach((id) => cb(id));
+        this.context.info(safe.yellow('import tree has cycles'));
+        this.dependencyTree.nodes().forEach((id) => cb(id));
+    }
+    done() {
+        if (this.noCache)
+            return;
+        this.context.info(safe.blue('rolling caches'));
+        this.codeCache.roll();
+        this.semanticDiagnosticsCache.roll();
+        this.syntacticDiagnosticsCache.roll();
+        this.typesCache.roll();
+    }
+    getCompiled(id, snapshot, transform) {
+        this.context.info(`${safe.blue('transpiling')} '${id}'`);
+        // if !isolatedModules, compiled JS code can change if its imports do (e.g. enums). also, declarations can change based on imports as well
+        return this.getCached(this.codeCache, id, snapshot, Boolean(!this.options.isolatedModules || this.options.declaration), transform);
+    }
+    getSyntacticDiagnostics(id, snapshot, check, map) {
+        return this.getDiagnostics('syntax', this.syntacticDiagnosticsCache, id, snapshot, check, map);
+    }
+    getSemanticDiagnostics(id, snapshot, check, map) {
+        return this.getDiagnostics('semantic', this.semanticDiagnosticsCache, id, snapshot, check, map);
+    }
+    checkAmbientTypes() {
+        this.context.debug(safe.blue('Ambient types:'));
+        const typeHashes = this.ambientTypes
+            .filter((snapshot) => snapshot.snapshot !== undefined)
+            .map((snapshot) => {
+            this.context.debug(`    ${snapshot.id}`);
+            return this.createHash(snapshot.id, snapshot.snapshot);
+        });
+        // types dirty if any d.ts changed, added or removed
+        this.ambientTypesDirty = !this.typesCache.match(typeHashes);
+        if (this.ambientTypesDirty)
+            this.context.info(safe.yellow('ambient types changed, redoing all semantic diagnostics'));
+        typeHashes.forEach(this.typesCache.touch, this.typesCache);
+    }
+    getDiagnostics(type, cache, id, snapshot, check, map) {
+        // don't need to check imports for syntactic diagnostics (per https://github.com/microsoft/TypeScript/wiki/Using-the-Language-Service-API#design-goals)
+        return this.getCached(cache, id, snapshot, type === 'semantic', () => convertDiagnostic(type, check(), map));
+    }
+    getCached(cache, id, snapshot, checkImports, convert) {
+        if (this.noCache)
+            return convert();
+        const hash = this.createHash(id, snapshot);
+        this.context.debug(`    cache: '${cache.path(hash)}'`);
+        if (cache.exists(hash) && !this.isDirty(id, checkImports)) {
+            this.context.debug(safe.green('    cache hit'));
+            const data = cache.read(hash);
+            if (data) {
+                cache.write(hash, data);
+                return data;
+            } /* istanbul ignore next -- should only happen when corrupted cache */
+            else
+                this.context.warn(safe.yellow('    cache broken, discarding'));
+        }
+        this.context.debug(safe.yellow('    cache miss'));
+        const convertedData = convert();
+        cache.write(hash, convertedData);
+        this.markAsDirty(id);
+        return convertedData;
+    }
+    init() {
+        this.codeCache = new RollingCache(`${this.cacheDir}/code`);
+        this.typesCache = new RollingCache(`${this.cacheDir}/types`);
+        this.syntacticDiagnosticsCache = new RollingCache(`${this.cacheDir}/syntacticDiagnostics`);
+        this.semanticDiagnosticsCache = new RollingCache(`${this.cacheDir}/semanticDiagnostics`);
+    }
+    markAsDirty(id) {
+        this.dependencyTree.setNode(id, { dirty: true });
+    }
+    /** @returns true if node, any of its imports, or any ambient types changed */
+    isDirty(id, checkImports) {
+        const label = this.dependencyTree.node(id);
+        if (!label)
+            return false;
+        if (!checkImports || label.dirty)
+            return label.dirty;
+        if (this.ambientTypesDirty)
+            return true;
+        const dependencies = graphlib.alg.dijkstra(this.dependencyTree, id);
+        return Object.keys(dependencies).some((node) => {
+            const dependency = dependencies[node];
+            if (!node || dependency.distance === Infinity)
+                return false;
+            const l = this.dependencyTree.node(node);
+            const dirty = l === undefined ? true : l.dirty;
+            if (dirty)
+                this.context.debug(`    import changed: ${node}`);
+            return dirty;
+        });
+    }
+    /** @returns an FS-safe hash string for use as a path to the cached content */
+    createHash(id, snapshot) {
+        const data = snapshot.getText(0, snapshot.getLength());
+        return objHash({
+            data,
+            id,
+            compilerVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
+        }, this.hashOptions);
+    }
+}
+
+// The injected id for helpers.
+const TSLIB = 'tslib';
+const TSLIB_VIRTUAL = '\0tslib.js';
+
+// const debugUTS2JS = debug('uts2js')
+// these use globals during testing and are substituted by rollup-plugin-re during builds
+const TS_VERSION_RANGE = ">=5.0.0";
+const ROLLUP_VERSION_RANGE = ">=3.0.0";
+const ROLLUP_PLUGIN_UTS_VERSION = "1.0.0";
+function buildEasycomsDts(usedEasycom) {
+    let importVueCode = '';
+    let declareInstanceCode = '';
+    usedEasycom.forEach((easycom, easycomCompName) => {
+        const easycomName = _.kebabCase(easycomCompName);
+        const easycomPath = easycomName.replace(easycom.pattern, easycom.replacement);
+        importVueCode += `import ${easycomCompName} from '${easycomPath}'\n`;
+        declareInstanceCode += `  type ${easycomCompName}ComponentPublicInstance = InstanceType<typeof ${easycomCompName}>\n`;
+    });
+    return `${importVueCode}
+declare global {
+${declareInstanceCode}
+}`;
+}
+function filterEasycoms(easycoms, easycomUsage) {
+    const usedEasycom = new Map();
+    easycomUsage.forEach((_$1, easycomCompName) => {
+        const easycomName = _.kebabCase(easycomCompName);
+        const easycom = easycoms.find((easycom) => {
+            /**
+             * 由组件名并不能准确推导出匹配的easycom，如
+             * test-type-1 => TestType1
+             * test-type1 => TestType1
+             * 此处稍微兼容了上面的场景，但是并不完善
+             */
+            return (easycom.pattern.test(easycomName) ||
+                _.upperFirst(_.camelCase(easycom.name)) === easycomCompName);
+        });
+        easycom && usedEasycom.set(easycomCompName, easycom);
+    });
+    return usedEasycom;
+}
+class Uts2jsSourceCodeMap extends events.EventEmitter {
+    constructor() {
+        super();
+        this._codeMap = new Map();
+        this._easycomUsage = new Map();
+        this._easycoms = [];
+    }
+    has(key) {
+        return this._codeMap.has(pluginutils.normalizePath(key));
+    }
+    set(key, value) {
+        const realKey = pluginutils.normalizePath(key);
+        const content = this.get(realKey);
+        if (content === value) {
+            return;
+        }
+        this._codeMap.set(key, value);
+        this.emit('change', { fileName: realKey, source: value });
+    }
+    get(key) {
+        return this._codeMap.get(pluginutils.normalizePath(key));
+    }
+    forEach(callback) {
+        this._codeMap.forEach(callback);
+    }
+    initUts2jsEasycom(easycoms = this._easycoms) {
+        this._easycoms = easycoms || [];
+        this.set('/__uts2js_vfs__/shim-uni-easycom.d.ts', buildEasycomsDts(filterEasycoms(this._easycoms, this._easycomUsage)));
+    }
+    setEasycomUsage(fileName, easycomCompNames = []) {
+        fileName = pluginutils.normalizePath(fileName);
+        // 移除可能存在的旧引用
+        this._easycomUsage.forEach((value, key) => {
+            if (!easycomCompNames.includes(key)) {
+                value.delete(fileName);
+                if (value.size === 0) {
+                    this._easycomUsage.delete(key);
+                }
+            }
+        });
+        for (let i = 0; i < easycomCompNames.length; i++) {
+            const easycomCompName = easycomCompNames[i];
+            if (!this._easycomUsage.has(easycomCompName)) {
+                this._easycomUsage.set(easycomCompName, new Set([fileName]));
+            }
+            else {
+                this._easycomUsage.get(easycomCompName)?.add(fileName);
+            }
+        }
+        this.initUts2jsEasycom();
+    }
+}
+const typescript = (options) => {
+    let watchMode = false;
+    let supportsThisLoad = false;
+    let generateRound = 0;
+    let rollupOptions;
+    let context;
+    let filter;
+    let parsedConfig;
+    let tsConfigPath;
+    let servicesHost;
+    let service;
+    let documentRegistry; // keep the same DocumentRegistry between watch cycles
+    let cache;
+    let noErrors = true;
+    let transformedFiles;
+    const declarations = {};
+    const checkedFiles = new Set();
+    const getDiagnostics = (id, snapshot, map) => {
+        return cache
+            .getSyntacticDiagnostics(id, snapshot, () => {
+            return service.getSyntacticDiagnostics(id);
+        }, map)
+            .concat(cache.getSemanticDiagnostics(id, snapshot, () => {
+            return service.getSemanticDiagnostics(id);
+        }, map));
+    };
+    const typecheckFile = (id, snapshot, tcContext, map) => {
+        if (!snapshot)
+            return;
+        id = pluginutils.normalizePath(id);
+        checkedFiles.add(id); // must come before print, as that could bail
+        const diagnostics = getDiagnostics(id, snapshot, map);
+        printDiagnostics(tcContext, diagnostics, parsedConfig.options.pretty !== false);
+        if (diagnostics.length > 0)
+            noErrors = false;
+    };
+    const addDeclaration = (id, result) => {
+        if (!result.dts)
+            return;
+        const key = pluginutils.normalizePath(id);
+        declarations[key] = { type: result.dts, map: result.dtsmap };
+        context.debug(() => `${safe.blue('generated declarations')} for '${key}'`);
+    };
+    /** common resolution check -- only resolve files that aren't declarations and pass `filter` */
+    const shouldResolve = (id) => {
+        if (id.endsWith('.d.ts') || id.endsWith('.d.cts') || id.endsWith('.d.mts'))
+            return false;
+        if (!filter(id))
+            return false;
+        return true;
+    };
+    /** to be called at the end of Rollup's build phase, before output generation */
+    const buildDone = () => {
+        if (!watchMode && !noErrors)
+            context.info(safe.yellow('there were errors or warnings.'));
+        cache?.done(); // if there's an initialization error in `buildStart`, such as a `tsconfig` error, the cache may not exist yet
+    };
+    const pluginOptions = Object.assign({}, {
+        check: true,
+        verbosity: VerbosityLevel.Warning,
+        clean: false,
+        cacheRoot: findCacheDir({ name: 'rollup-plugin-uts' }),
+        include: ['*.(|u)ts+(|x)', '**/*.(|u)ts+(|x)', '**/*.cts', '**/*.mts'],
+        exclude: ['*.d.ts', '**/*.d.ts', '**/*.d.cts', '**/*.d.mts'],
+        abortOnError: false,
+        rollupCommonJSResolveHack: false,
+        tsconfig: undefined,
+        useTsconfigDeclarationDir: false,
+        tsconfigOverride: {},
+        transformers: [],
+        tsconfigDefaults: {},
+        objectHashIgnoreUnknownHack: false,
+        cwd: process.cwd(),
+    }, options);
+    if (!pluginOptions.typescript) {
+        pluginOptions.typescript = require('typescript');
+    }
+    setTypescriptModule(pluginOptions.typescript, options.modules);
+    globalThis.uts2jsSourceCodeMap = new Uts2jsSourceCodeMap();
+    const self = {
+        name: 'uts',
+        options(config) {
+            rollupOptions = { ...config };
+            return config;
+        },
+        configureServer(server) {
+            server.watcher.addListener('all', (event, filePath) => {
+                if (event === 'add' || event === 'unlink') {
+                    const key = pluginutils.normalizePath(filePath);
+                    if (fsExistsMap.has(key)) {
+                        fsExistsMap.delete(key);
+                    }
+                }
+            });
+        },
+        buildStart() {
+            // 调整到 buildStart 中，确保每次都是全新的 documentRegistry
+            // 这样可以确保每次 transform 时 getEmitOutput 获取到最新的代码，否则会出现缓存的问题
+            // 因为 typescript 内部的 documentRegistry 使用 buckets 做了跨 languageService 的 sourceFile 缓存
+            // 标准的 rollup-plugin-typescript2 插件，在 buildStart 时，创建了新的 languageService，当启用 check 时
+            // 会在 buildStart 阶段，触发一遍 sourceFile 的构建，此时 version 为 1，然后 transform 阶段 setSnapshot 时
+            // version 会变为 2，接着热更新时，会使用新的 languageService，该 service 会使用
+            // version 1 与 buckets 中缓存的 version 2 作比较，不一致，则更新为最新的 sourceFile
+            // 在 uvue 编译中，uvue 文件在 buildStart 阶段不会触发 version 变化，所以一直是 1，导致二次更新比较失败，始终使用了
+            // 首次的缓存信息，故，目前先启用全新 documentRegistry，确保不使用缓存，但会影响速度，
+            // 后续将该插件调整为官方@rollup/plugin-typescript?
+            // eslint-disable-next-line prefer-const
+            documentRegistry = tsModule.createDocumentRegistry();
+            context = new RollupContext(pluginOptions.verbosity, pluginOptions.abortOnError, this, 'uts: ');
+            watchMode = process.env.ROLLUP_WATCH === 'true' || !!this.meta.watchMode // meta.watchMode was added in 2.14.0 to capture watch via Rollup API (i.e. no env var) (c.f. https://github.com/rollup/rollup/blob/master/CHANGELOG.md#2140)
+            ;
+            ({ parsedTsConfig: parsedConfig, fileName: tsConfigPath } =
+                parseTsConfig(context, pluginOptions));
+            // print out all versions and configurations
+            context.info(`typescript version: ${tsModule.version}`);
+            context.info(`tslib version: ${pluginOptions.utsOptions.tslibVersion}`);
+            context.info(`rollup version: ${this.meta.rollupVersion}`);
+            if (!semver.satisfies(tsModule.version, TS_VERSION_RANGE, {
+                includePrerelease: true,
+            }))
+                context.error(`Installed TypeScript version '${tsModule.version}' is outside of supported range '${TS_VERSION_RANGE}'`);
+            if (!semver.satisfies(this.meta.rollupVersion, ROLLUP_VERSION_RANGE, {
+                includePrerelease: true,
+            }))
+                context.error(`Installed Rollup version '${this.meta.rollupVersion}' is outside of supported range '${ROLLUP_VERSION_RANGE}'`);
+            supportsThisLoad = semver.satisfies(this.meta.rollupVersion, '>=2.60.0', {
+                includePrerelease: true,
+            }); // this.load is 2.60.0+ only (c.f. https://github.com/rollup/rollup/blob/master/CHANGELOG.md#2600)
+            if (!supportsThisLoad)
+                context.warn(() => `${safe.yellow("You are using a Rollup version '<2.60.0'")}. This may result in type-only files being ignored.`);
+            context.info(`rollup-plugin-uts version: ${ROLLUP_PLUGIN_UTS_VERSION}`);
+            context.debug(() => `plugin options:\n${JSON.stringify(pluginOptions, (key, value) => key === 'typescript'
+                ? `version ${value.version}`
+                : value, 4)}`);
+            context.debug(() => `rollup config:\n${JSON.stringify(rollupOptions, undefined, 4)}`);
+            context.debug(() => `tsconfig path: ${tsConfigPath}`);
+            if (pluginOptions.objectHashIgnoreUnknownHack)
+                context.warn(() => `${safe.yellow("You are using 'objectHashIgnoreUnknownHack' option")}. If you enabled it because of async functions, try disabling it now.`);
+            if (pluginOptions.rollupCommonJSResolveHack)
+                context.warn(() => `${safe.yellow("You are using 'rollupCommonJSResolveHack' option")}. This is no longer needed, try disabling it now.`);
+            if (watchMode)
+                context.info(`running in watch mode`);
+            filter = createFilter(context, pluginOptions, parsedConfig);
+            servicesHost = new LanguageServiceHost(parsedConfig, pluginOptions.transformers, pluginOptions.cwd);
+            globalThis.uts2jsSourceCodeMap.forEach((source, fileName) => {
+                servicesHost.setSnapshot(fileName, source);
+            });
+            servicesHost.setSnapshot(TSLIB, pluginOptions.utsOptions.tslibSource);
+            globalThis.uts2jsSourceCodeMap.on('change', function (options) {
+                const { fileName, source } = options || {};
+                servicesHost.setSnapshot(fileName, source);
+            });
+            service = tsModule.createLanguageService(servicesHost, documentRegistry);
+            servicesHost.setLanguageService(service);
+            const runClean = pluginOptions.clean;
+            const noCache = pluginOptions.noCache || pluginOptions.clean;
+            cache = new TsCache(noCache, runClean, pluginOptions.objectHashIgnoreUnknownHack, servicesHost, pluginOptions.cacheRoot, parsedConfig.options, parsedConfig.fileNames, context);
+            // reset transformedFiles Set on each watch cycle
+            transformedFiles = new Set();
+            // printing compiler option errors
+            if (pluginOptions.check) {
+                const diagnostics = convertDiagnostic('options', service.getCompilerOptionsDiagnostics());
+                printDiagnostics(context, diagnostics, parsedConfig.options.pretty !== false);
+                if (diagnostics.length > 0)
+                    noErrors = false;
+            }
+        },
+        watchChange(id, change) {
+            const key = pluginutils.normalizePath(id);
+            delete declarations[key];
+            checkedFiles.delete(key);
+            // 此处仅在被依赖的文件变动时触发，不如devServer watch内准确，比如.d.ts文件变动不会触发。编译安卓、iOS时无法使用devServer回退为此方案
+            if (process.env.UNI_UTS_PLATFORM === 'web') {
+                return;
+            }
+            const { event } = change || {};
+            if (event === 'create' || event === 'delete') {
+                if (fsExistsMap.has(key)) {
+                    fsExistsMap.delete(key);
+                }
+            }
+        },
+        resolveId(importee, importer) {
+            if (importee === TSLIB)
+                return TSLIB_VIRTUAL;
+            if (!importer)
+                return;
+            importer = pluginutils.normalizePath(importer);
+            // TODO: use module resolution cache
+            const result = tsModule.nodeModuleNameResolver(importee, importer, parsedConfig.options, tsModule.sys);
+            let resolved = result.resolvedModule?.resolvedFileName;
+            if (!resolved)
+                return;
+            if (utsFileNames.has(pluginutils.normalizePath(resolved))) {
+                resolved = resolved.replace('.ts', '.uts');
+            }
+            if (/.u?vue.ts$/.test(resolved)) {
+                resolved = resolved.replace(/.ts$/, '');
+                return path.normalize(resolved);
+            }
+            if (!shouldResolve(resolved))
+                return;
+            cache.setDependency(resolved, importer);
+            context.debug(() => `${safe.blue('resolving')} '${importee}' imported by '${importer}'`);
+            context.debug(() => `    to '${resolved}'`);
+            return path.normalize(resolved); // use host OS separators to fix Windows issue: https://github.com/ezolenko/rollup-plugin-typescript2/pull/251
+        },
+        load(id) {
+            if (id === TSLIB_VIRTUAL)
+                return pluginOptions.utsOptions.tslibSource;
+            return null;
+        },
+        async transform(code, id) {
+            transformedFiles.add(id); // note: this does not need normalization as we only compare Rollup <-> Rollup, and not Rollup <-> TS
+            // 检索文件中使用到的easycom
+            const easycomMatches = code.matchAll(/([a-zA-Z0-9]+)ComponentPublicInstance/g);
+            const easycomCompNames = [];
+            for (const match of easycomMatches) {
+                easycomCompNames.push(match[1]);
+            }
+            easycomCompNames.length > 0 &&
+                globalThis.uts2jsSourceCodeMap.setEasycomUsage(pluginutils.normalizePath(id), easycomCompNames);
+            let transformId = id;
+            if (transformId.endsWith('.json')) {
+                transformId = transformId.replace(/.json$/, '.uts');
+            }
+            if (!filter(transformId))
+                return undefined;
+            // const start = Date.now()
+            const snapshot = servicesHost.setSnapshot(transformId, code);
+            // getting compiled file from cache or from ts
+            const result = cache.getCompiled(transformId, snapshot, () => {
+                let output;
+                // 输出uts (带类型)
+                const sourceFile = service.getProgram()?.getSourceFile(transformId);
+                if (pluginOptions.utsOptions.emitType === 'uts') {
+                    const outputFiles = [];
+                    if (!sourceFile) {
+                        this.error(new Error(`Could not find source file: '${id}'.`));
+                    }
+                    else {
+                        const printer = tsModule.createPrinter({});
+                        const result = printer.printSourceFile(sourceFile, {
+                            host: formatHost,
+                            map: {
+                                file: pluginutils.normalizePath(path.relative(pluginOptions.utsOptions.inputDir ?? '', id)),
+                                sourceRoot: '',
+                                sourcesDirectoryPath: pluginOptions.utsOptions.inputDir ?? '',
+                            },
+                        });
+                        if (result.code) {
+                            outputFiles.push({
+                                name: '',
+                                writeByteOrderMark: false,
+                                text: result.code,
+                            });
+                        }
+                        if (result.map) {
+                            outputFiles.push({
+                                name: '.map',
+                                writeByteOrderMark: false,
+                                text: result.map,
+                            });
+                        }
+                    }
+                    output = {
+                        outputFiles,
+                        emitSkipped: false,
+                    };
+                }
+                else {
+                    // 输出 js
+                    try {
+                        output = service.getEmitOutput(transformId);
+                    }
+                    catch (e) {
+                        // 拦截 transform 阶段主动 throw 出来的错误
+                        if (e instanceof Error && e.diagnostic) {
+                            const diagnostics = convertDiagnostic('transform', [e.diagnostic], new sourceMapJs.SourceMapConsumer(this.getCombinedSourcemap()));
+                            // web平台内部会再走一遍sourcemap解析，其他平台不会走，需要自行处理
+                            const errorKey = pluginOptions.utsOptions.platform === 'web'
+                                ? 'rollupError'
+                                : 'finalRollupError';
+                            if (diagnostics[0][errorKey]) {
+                                this.error(diagnostics[0][errorKey]);
+                            }
+                        }
+                        throw e;
+                    }
+                }
+                if (output.emitSkipped) {
+                    noErrors = false;
+                    // always checking on fatal errors, even if options.check is set to false
+                    typecheckFile(transformId, snapshot, context, options?.abortOnError
+                        ? undefined
+                        : new sourceMapJs.SourceMapConsumer(this.getCombinedSourcemap()));
+                    // since no output was generated, aborting compilation
+                    this.error(safe.red(`Emit skipped for '${id}'. See https://github.com/microsoft/TypeScript/issues/49790 for potential reasons why this may occur`));
+                }
+                const references = getAllReferences(transformId, snapshot, parsedConfig.options);
+                return convertEmitOutput(output, references, [
+                    ...(sourceFile?.__utsMeta?.uniExtApis || []),
+                ]);
+            });
+            if (pluginOptions.check)
+                typecheckFile(transformId, snapshot, context, new sourceMapJs.SourceMapConsumer(this.getCombinedSourcemap()));
+            if (!result)
+                return undefined;
+            if (watchMode && result.references) {
+                if (tsConfigPath)
+                    this.addWatchFile(tsConfigPath);
+                result.references.map(this.addWatchFile, this);
+                context.debug(() => `${safe.green('    watching')}: ${result.references.join('\nuts:               ')}`);
+            }
+            addDeclaration(id, result);
+            // handle all type-only imports by resolving + loading all of TS's references
+            // Rollup can't see these otherwise, because they are "emit-less" and produce no JS
+            if (result.references && supportsThisLoad) {
+                for (const ref of result.references) {
+                    // pre-emptively filter out files that we don't resolve ourselves (e.g. declarations). don't add new files to Rollup's pipeline if we can't resolve them
+                    if (!shouldResolve(ref))
+                        continue;
+                    const module = await this.resolve(ref, id);
+                    if (!module || transformedFiles.has(module.id))
+                        // check for circular references (per https://rollupjs.org/guide/en/#thisload)
+                        continue;
+                    // wait for all to be loaded (otherwise, as this is async, some may end up only loading after `generateBundle`)
+                    await this.load({ id: module.id });
+                }
+            }
+            // if a user sets this compilerOption, they probably want another plugin (e.g. Babel, ESBuild) to transform their TS instead, while rpt2 just type-checks and/or outputs declarations
+            // note that result.code is non-existent if emitDeclarationOnly per https://github.com/ezolenko/rollup-plugin-typescript2/issues/268
+            if (parsedConfig.options.emitDeclarationOnly) {
+                context.debug(() => `${safe.blue('emitDeclarationOnly')} enabled, not transforming TS`);
+                return undefined;
+            }
+            const transformResult = {
+                code: result.code,
+                map: { mappings: '' },
+                meta: {
+                    uniExtApis: result.uniExtApis ? [...result.uniExtApis] : [],
+                },
+            };
+            if (result.map) {
+                pluginOptions.sourceMapCallback?.(id, result.map);
+                const map = JSON.parse(result.map);
+                if (map.sourceRoot) {
+                    map.sources = map.sources.map((source) => {
+                        if (!path.isAbsolute(source)) {
+                            return map.sourceRoot + source;
+                        }
+                        return source;
+                    });
+                }
+                transformResult.map = map;
+            }
+            // debugUTS2JS(`${Date.now() - start}ms ${id}`)
+            return transformResult;
+        },
+        buildEnd(err) {
+            generateRound = 0; // in watch mode, buildEnd resets generate count just before generateBundle for each output
+            if (err) {
+                buildDone();
+                this.error(err);
+            }
+            if (!pluginOptions.check)
+                return buildDone();
+            // walkTree once on each cycle when in watch mode
+            if (watchMode) {
+                cache.walkTree((id) => {
+                    if (!filter(id))
+                        return;
+                    const snapshot = servicesHost.getScriptSnapshot(id);
+                    typecheckFile(id, snapshot, context);
+                });
+            }
+            // type-check missed files as well
+            parsedConfig.fileNames.forEach((name) => {
+                const key = pluginutils.normalizePath(name);
+                if (checkedFiles.has(key) || !filter(key))
+                    // don't duplicate if it's already been checked
+                    return;
+                context.debug(() => `type-checking missed '${key}'`);
+                const snapshot = servicesHost.getScriptSnapshot(key);
+                typecheckFile(key, snapshot, context);
+            });
+            buildDone();
+        },
+        generateBundle(_output) {
+            context.debug(() => `generating target ${generateRound + 1}`);
+            generateRound++;
+            if (!parsedConfig.options.declaration)
+                return;
+            parsedConfig.fileNames.forEach((name) => {
+                const key = pluginutils.normalizePath(name);
+                if (key in declarations || !filter(key))
+                    return;
+                context.debug(() => `generating missed declarations for '${key}'`);
+                const out = convertEmitOutput(service.getEmitOutput(key, true));
+                addDeclaration(key, out);
+            });
+            const emitDeclaration = (key, extension, entry) => {
+                if (!entry)
+                    return;
+                let fileName = entry.name;
+                if (fileName.includes('?'))
+                    // HACK for rollup-plugin-vue, it creates virtual modules in form 'file.vue?rollup-plugin-vue=script.ts'
+                    fileName = fileName.split('?', 1) + extension;
+                // If 'useTsconfigDeclarationDir' is in plugin options, directly write to 'declarationDir'.
+                // This may not be under Rollup's output directory, and thus can't be emitted as an asset.
+                if (pluginOptions.useTsconfigDeclarationDir) {
+                    context.debug(() => `${safe.blue('emitting declarations')} for '${key}' to '${fileName}'`);
+                    tsModule.sys.writeFile(fileName, entry.text, entry.writeByteOrderMark);
+                    return;
+                }
+                // don't mutate the entry because generateBundle gets called multiple times
+                let entryText = entry.text;
+                const cachePlaceholder = `${pluginOptions.cacheRoot}/placeholder`;
+                // modify declaration map sources to correct relative path (only if outputting)
+                if (extension === '.d.ts.map' && (_output?.file || _output?.dir)) {
+                    const declarationDir = (_output.file ? path.dirname(_output.file) : _output.dir);
+                    const parsedText = JSON.parse(entryText);
+                    // invert back to absolute, then make relative to declarationDir
+                    parsedText.sources = parsedText.sources.map((source) => {
+                        const absolutePath = path.resolve(cachePlaceholder, source);
+                        return pluginutils.normalizePath(path.relative(declarationDir, absolutePath));
+                    });
+                    entryText = JSON.stringify(parsedText);
+                }
+                const relativePath = pluginutils.normalizePath(path.relative(cachePlaceholder, fileName));
+                context.debug(() => `${safe.blue('emitting declarations')} for '${key}' to '${relativePath}'`);
+                this.emitFile({
+                    type: 'asset',
+                    source: entryText,
+                    fileName: relativePath,
+                });
+            };
+            Object.keys(declarations).forEach((key) => {
+                const { type, map } = declarations[key];
+                emitDeclaration(key, '.d.ts', type);
+                emitDeclaration(key, '.d.ts.map', map);
+            });
+        },
+    };
+    return self;
+};
+
+const __url = url.pathToFileURL(__filename).href;
+const __dirname$1 = path.dirname(url.fileURLToPath(__url));
+const require$1 = module$1.createRequire(__url);
+let hacked = false;
+function uts2js({ inputDir, modules, ...options }) {
+    if (!hacked) {
+        hacked = true;
+        globalThis.__utsHacker__ = {
+            ...globalThis.__utsHacker__,
+            ...hacker,
+        };
+    }
+    const include = options.include ?? [
+        '**/*.uts',
+        '**/*.ts',
+        // '**/*.uvue',
+        // '**/*.vue',
+    ];
+    const ts = options.typescript ?? require$1('typescript');
+    const rputsOptions = {
+        ...options,
+        modules: modules || {},
+        include,
+        typescript: ts,
+        transformers: [
+            parseTransformer(ts, transformers, {
+                platform: options.platform,
+                targetLanguage: 'JavaScript',
+                setParentRecursive: true,
+                transformCreateWorker: {
+                    extname: options.workers?.extname,
+                    resolveWorkers: options.workers?.resolve || (() => ({})),
+                },
+            }),
+        ],
+        utsOptions: {
+            platform: options.platform,
+            tslibSource: fs.readFileSync(path.resolve(__dirname$1, '../lib/runtime/index.js'), 'utf8'),
+        },
+    };
+    if (!rputsOptions.tsconfigOverride) {
+        rputsOptions.tsconfigOverride = {
+            compilerOptions: {},
+        };
+    }
+    if (!rputsOptions.tsconfigOverride.compilerOptions) {
+        rputsOptions.tsconfigOverride.compilerOptions = {};
+    }
+    const overrideCompilerOptions = rputsOptions.tsconfigOverride.compilerOptions;
+    const defaultCompilerOptions = {
+        baseUrl: inputDir
+            ? path.basename(inputDir) === 'src'
+                ? path.dirname(inputDir)
+                : inputDir
+            : '.',
+        moduleResolution: 'Bundler',
+        importHelpers: true,
+        mapRoot: overrideCompilerOptions.sourceMap ? inputDir : undefined,
+        target: 'ES2016',
+    };
+    for (const key in defaultCompilerOptions) {
+        if (!overrideCompilerOptions.hasOwnProperty(key)) {
+            overrideCompilerOptions[key] = defaultCompilerOptions[key];
+        }
+    }
+    return [typescript(rputsOptions)];
+}
+
+exports.uts2js = uts2js;

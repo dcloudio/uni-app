@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite'
+import type { Plugin, ViteDevServer } from 'vite'
 import type {
   SyncUniModulesFilePreprocessor,
   UniXCompiler,
@@ -7,7 +7,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { sync } from 'fast-glob'
 import { normalizePath } from './utils'
-import { parseManifestJsonOnce } from './json'
+import { getPlatformManifestJson, parseManifestJsonOnce } from './json'
 import { resolveUTSCompiler, tscOutDir } from './uts'
 import {
   createAppAndroidUniModulesSyncFilePreprocessorOnce,
@@ -18,7 +18,7 @@ import { resolveBuiltIn } from './resolve'
 
 let workersRootDir: string | null = null
 let workers: Record<string, string> = {}
-
+let workersJavaScriptIds: string[] = []
 export function getWorkers() {
   return workers
 }
@@ -38,13 +38,16 @@ export function initWorkers(workersDir: string, rootDir: string) {
     return workers
   }
   workers = {}
+  workersJavaScriptIds = []
   sync('**/*.uts', { cwd: dir }).forEach((file) => {
     const content = fs.readFileSync(path.join(dir, file), 'utf-8')
     const match = content.match(
       /export\s+class\s+(.*)\s+extends\s+WorkerTaskImpl\s*{/
     )
     if (match && match[1]) {
-      workers[normalizePath(path.join(workersDir, file))] = match[1]
+      const key = normalizePath(path.join(workersDir, file))
+      workers[key] = match[1]
+      workersJavaScriptIds.push(key.replace('.uts', '.js'))
     }
   })
   return workers
@@ -177,8 +180,28 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
   let workerPolyfillCode = ''
   let isWrite = false
   const UniAppWorkerJSName = external ? 'uni-worker.mp.js' : 'uni-worker.web.js'
+  let viteServer: ViteDevServer | null = null
+  let webRouterBase = '/'
   return {
     name: 'uni:javascript-workers',
+    configureServer(server) {
+      viteServer = server
+      const web =
+        getPlatformManifestJson(
+          parseManifestJsonOnce(process.env.UNI_INPUT_DIR),
+          'web'
+        ) || {}
+      if (web?.router?.base) {
+        webRouterBase = web.router.base
+      }
+    },
+    resolveId(id) {
+      if (viteServer && workersJavaScriptIds.length) {
+        if (workersJavaScriptIds.includes(id.replace(webRouterBase, ''))) {
+          return id.replace('.js', '.uts?import')
+        }
+      }
+    },
     generateBundle(_, bundle) {
       const workers = getWorkers()
       const workerPaths = Object.keys(workers).map((key) => {

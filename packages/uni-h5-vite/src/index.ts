@@ -57,8 +57,11 @@ export default () => [
             vueCompilerDom,
             uniCliShared,
           },
-          resolveWorkers: () => {
-            return getWorkers()
+          workers: {
+            extname: '.js',
+            resolve: () => {
+              return getWorkers()
+            },
           },
         }),
       ]

@@ -79,10 +79,10 @@ function generatePagesJsonCode(
   const vueType = process.env.UNI_APP_X === 'true' ? 'uvue' : 'nvue'
 
   let workersCode = ''
-  if (process.env.UNI_APP_X === 'true') {
+  if (config.command === 'build' && process.env.UNI_APP_X === 'true') {
     const workers = getWorkers()
     const workerCode = Object.keys(workers).map((key) => {
-      return `import'@/${key}?worker'`
+      return `import('@/${key}?worker')`
     })
     workersCode = workerCode.join('\n')
   }
