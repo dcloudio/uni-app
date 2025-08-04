@@ -178,8 +178,10 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
   invokeHook(currentPage.vm, lifeCycle);
 }
 function getSystemDialogPages(parentPage) {
+  if (!parentPage)
+    return [];
   {
-    return parentPage.__$$getSystemDialogPages();
+    return typeof parentPage.__$$getSystemDialogPages === "undefined" ? parentPage.$getSystemDialogPages() : parentPage.__$$getSystemDialogPages();
   }
 }
 function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
@@ -1733,7 +1735,7 @@ function setStatusBarStyle() {
   {
     var currentPage = getCurrentPage();
     var dialogPages = currentPage === null || currentPage === void 0 ? void 0 : currentPage.getDialogPages();
-    var systemDialogPages = currentPage.__$$getSystemDialogPages();
+    var systemDialogPages = getSystemDialogPages(currentPage);
     if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length && dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
       var lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
       var lastDialogPage = dialogPages[dialogPages.length - 1];
@@ -1791,7 +1793,7 @@ var closeDialogPage = (options) => {
         return;
       }
     } else {
-      var systemDialogPages = parentPage === null || parentPage === void 0 ? void 0 : parentPage.__$$getSystemDialogPages();
+      var systemDialogPages = getSystemDialogPages(parentPage);
       if (systemDialogPages) {
         var _index = systemDialogPages.indexOf(dialogPage);
         if (_index > -1) {
@@ -2086,7 +2088,7 @@ function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
     var currentPage = getCurrentPage();
     if (currentPage) {
-      var systemDialogPages = currentPage.__$$getSystemDialogPages();
+      var systemDialogPages = getSystemDialogPages(currentPage);
       var dialogPages = currentPage.getDialogPages();
       if (systemDialogPages.length > 0 || dialogPages.length > 0) {
         var lastSystemDialog = systemDialogPages[systemDialogPages.length - 1];
@@ -2452,7 +2454,7 @@ function clearDialogPages(uniPage) {
       invokeHook(dialogPages[i - 1].vm, ON_SHOW);
     }
   }
-  var systemDialogPages = uniPage.__$$getSystemDialogPages();
+  var systemDialogPages = getSystemDialogPages(uniPage);
   for (var _i = 0; _i < systemDialogPages.length; _i++) {
     closeNativeDialogPage(systemDialogPages[_i]);
   }
@@ -2991,7 +2993,7 @@ var openDialogPage = (options) => {
       targetSystemDialogPages = homeSystemDialogPages;
     } else {
       dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
-      targetSystemDialogPages = parentPage.__$$getSystemDialogPages();
+      targetSystemDialogPages = getSystemDialogPages(parentPage);
     }
     targetSystemDialogPages.push(dialogPage);
     if (isSystemActionSheetDialogPage(dialogPage)) {
