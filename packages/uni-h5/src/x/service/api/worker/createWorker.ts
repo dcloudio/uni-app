@@ -1,25 +1,31 @@
-import { defineSyncApi } from '@dcloudio/uni-api'
+import { $emit, $off, $on, defineSyncApi } from '@dcloudio/uni-api'
+import { getRealPath } from '@dcloudio/uni-platform'
 type WorkerInterface = ReturnType<typeof uni.createWorker>
 
 const API_CREATE_WORKER = 'createWorker'
-const MESSAGE_EVENT = '__uni_web_worker_message'
-const ERROR_EVENT = '__uni_web_worker_error'
+const MESSAGE_EVENT = '__UNI_WEB_WORKER_MESSAGE'
+const ERROR_EVENT = '__UNI_WEB_WORKER_ERROR'
+
+let id = 0
 
 export const createWorker = defineSyncApi(
   API_CREATE_WORKER,
   (url: string): WorkerInterface => {
-    const threadWorker = new Worker(url)
+    const MESSAGE_EVENT_NAME = `${MESSAGE_EVENT}_${id}`
+    const ERROR_EVENT_NAME = `${ERROR_EVENT}_${id}`
+    id++
+    const threadWorker = new Worker(getRealPath(url))
 
     threadWorker.onmessage = (event) => {
-      uni.$emit(MESSAGE_EVENT, event.data)
+      $emit(MESSAGE_EVENT_NAME, event.data)
     }
     threadWorker.onmessageerror = (error) => {
-      uni.$emit(ERROR_EVENT, error.data)
+      $emit(ERROR_EVENT_NAME, error.data)
     }
     // onerror 触发后，会销毁 worker 实例
     threadWorker.onerror = (error) => {
-      uni.$emit(
-        ERROR_EVENT,
+      $emit(
+        ERROR_EVENT_NAME,
         `${error.message} in ${error.filename}(${error.lineno}:${error.colno})`
       )
     }
@@ -31,10 +37,10 @@ export const createWorker = defineSyncApi(
       }
 
       onMessage(listener: UniNamespace.WorkerOnMessageCallback): void {
-        uni.$on(MESSAGE_EVENT, listener)
+        $on(MESSAGE_EVENT_NAME, listener)
       }
       onError(listener: UniNamespace.WorkerOnErrorCallback): void {
-        uni.$on(ERROR_EVENT, listener)
+        $on(ERROR_EVENT_NAME, listener)
       }
       postMessage(
         message: Object,
@@ -46,8 +52,8 @@ export const createWorker = defineSyncApi(
         )
       }
       terminate(): void {
-        uni.$off(MESSAGE_EVENT)
-        uni.$off(ERROR_EVENT)
+        $off(MESSAGE_EVENT_NAME)
+        $off(ERROR_EVENT_NAME)
         this._threadWorker.terminate()
       }
     }
