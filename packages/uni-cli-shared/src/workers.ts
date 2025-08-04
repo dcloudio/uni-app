@@ -156,11 +156,17 @@ async function syncWorkersFiles(
 
 export function resolveWorkersDir(inputDir: string) {
   const manifestJson = parseManifestJsonOnce(inputDir)
-  if (manifestJson.workers && typeof manifestJson.workers === 'string') {
-    const workersDir: string = normalizePath(manifestJson.workers)
-    const dir = path.join(inputDir, workersDir)
-    if (fs.existsSync(dir)) {
-      return workersDir
+  if (manifestJson.workers) {
+    let workersDir =
+      typeof manifestJson.workers === 'string'
+        ? manifestJson.workers
+        : manifestJson.workers.path
+    if (workersDir) {
+      workersDir = normalizePath(workersDir)
+      const dir = path.join(inputDir, workersDir)
+      if (fs.existsSync(dir)) {
+        return workersDir
+      }
     }
   }
 }
