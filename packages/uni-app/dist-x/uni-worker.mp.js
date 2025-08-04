@@ -705,12 +705,27 @@
 
     // @ts-expect-error
     class WorkerTaskImpl {
+        constructor() {
+            {
+                worker.onMessage((e) => {
+                    this.onMessage(e);
+                });
+            }
+        }
+        entry() { }
+        onMessage(message) { }
+        postMessage(message, options = null) {
+            {
+                worker.postMessage(message);
+            }
+        }
     }
     // @ts-expect-error
     globalThis.WorkerTaskImpl = WorkerTaskImpl;
 
     exports.UTSJSONObject = UTSJSONObject$1;
     exports.UniError = UniError;
+    exports.WorkerTaskImpl = WorkerTaskImpl;
 
     return exports;
 
