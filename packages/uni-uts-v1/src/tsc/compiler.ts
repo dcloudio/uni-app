@@ -215,7 +215,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     // 暂时屏蔽错误
     // const throwError = diagnostic.__throwError
 
-    const throwError = [2300, 100006, 110111101, 110111163, 110111120].includes(
+    const throwError = [100006, 110111101, 110111163, 110111120].includes(
       diagnostic.code
     )
     const isDebug = debugCompile.enabled
