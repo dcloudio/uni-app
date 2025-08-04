@@ -62,9 +62,15 @@ function dialogPageTriggerParentLifeCycle(
   invokeHook(currentPage.vm, lifeCycle)
 }
 
-function getSystemDialogPages(parentPage: UniPage) {
+export function getSystemDialogPages(
+  parentPage: UniPage | null
+): UniDialogPage[] {
+  if (!parentPage) return []
   if (__PLATFORM__ === 'app') {
-    return parentPage.__$$getSystemDialogPages() as UniDialogPage[]
+    // $getSystemDialogPages harmony __$$getSystemDialogPages ios
+    return typeof parentPage.__$$getSystemDialogPages === 'undefined'
+      ? (parentPage.$getSystemDialogPages() as UniDialogPage[])
+      : (parentPage.__$$getSystemDialogPages() as UniDialogPage[])
   }
   return parentPage.$getSystemDialogPages() as UniDialogPage[]
 }

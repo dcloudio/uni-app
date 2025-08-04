@@ -13,7 +13,11 @@ import { $navigateTo } from './navigateTo'
 import { $switchTab } from './switchTab'
 import { _redirectTo } from './redirectTo'
 import { $reLaunch } from './reLaunch'
-import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
+import {
+  getCurrentPage,
+  getSystemDialogPages,
+  invokeHook,
+} from '@dcloudio/uni-core'
 import { ON_SHOW, addLeadingSlash } from '@dcloudio/uni-shared'
 import closeNativeDialogPage from './closeNativeDialogPage'
 
@@ -89,7 +93,7 @@ export function clearDialogPages(uniPage: UniPage) {
     }
   }
 
-  const systemDialogPages = uniPage.__$$getSystemDialogPages()
+  const systemDialogPages = getSystemDialogPages(uniPage)
   for (let i = 0; i < systemDialogPages.length; i++) {
     closeNativeDialogPage(systemDialogPages[i])
   }

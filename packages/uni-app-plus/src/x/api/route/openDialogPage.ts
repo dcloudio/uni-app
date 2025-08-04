@@ -5,6 +5,7 @@ import {
   dialogPageTriggerPrevDialogPageLifeCycle,
   getCurrentPage,
   getRouteMeta,
+  getSystemDialogPages,
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
   normalizeRoute,
@@ -79,8 +80,7 @@ export const openDialogPage = (
     } else {
       dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE)
       // system dialogPages 数据 ios 端不需要框架处理，预期仅在鸿蒙上生效
-      targetSystemDialogPages =
-        parentPage.__$$getSystemDialogPages() as UniDialogPage[]
+      targetSystemDialogPages = getSystemDialogPages(parentPage)
     }
     targetSystemDialogPages.push(dialogPage)
     if (isSystemActionSheetDialogPage(dialogPage)) {

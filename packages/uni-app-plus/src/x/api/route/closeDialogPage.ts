@@ -1,6 +1,7 @@
 import { ON_SHOW } from '@dcloudio/uni-shared'
 import {
   dialogPageTriggerPrevDialogPageLifeCycle,
+  getSystemDialogPages,
   invokeHook,
   isSystemDialogPage,
 } from '@dcloudio/uni-core'
@@ -49,7 +50,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         return
       }
     } else {
-      const systemDialogPages = parentPage?.__$$getSystemDialogPages()
+      const systemDialogPages = getSystemDialogPages(parentPage)
       if (systemDialogPages) {
         const index = systemDialogPages.indexOf(dialogPage)
         if (index > -1) {

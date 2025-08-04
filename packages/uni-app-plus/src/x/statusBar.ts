@@ -1,4 +1,4 @@
-import { getCurrentPage } from '@dcloudio/uni-core'
+import { getCurrentPage, getSystemDialogPages } from '@dcloudio/uni-core'
 import type { ComponentPublicInstance } from 'vue'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
 
@@ -11,7 +11,7 @@ export function setStatusBarStyle() {
   if (__X__) {
     const currentPage = getCurrentPage() as unknown as UniPage
     const dialogPages = currentPage?.getDialogPages()
-    const systemDialogPages = currentPage.__$$getSystemDialogPages()
+    const systemDialogPages = getSystemDialogPages(currentPage)
     if (systemDialogPages?.length && dialogPages?.length) {
       const lastSystemDialogPage =
         systemDialogPages[systemDialogPages.length - 1]
