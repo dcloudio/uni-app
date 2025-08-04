@@ -17,6 +17,7 @@ import {
 import source from './project.config.json'
 
 export const customElements = [
+  'draw-ad',
   'aweme-data',
   'consume-card',
   'pay-button',
