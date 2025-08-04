@@ -33,13 +33,28 @@
   },
   {
     "input": {
-      "src/worker/index.ts": ["dist-x/uni-worker.js"]
+      "src/worker/index.ts": ["dist-x/uni-worker.web.js"]
     },
     "output": {
       "format": "iife"
     },
     "replacements": {
-      "__X__": "true"
+      "__X__": "true",
+      "__WEB__": "true",
+      "__MP__": "false"
+    }
+  },
+  {
+    "input": {
+      "src/worker/index.ts": ["dist-x/uni-worker.mp.js"]
+    },
+    "output": {
+      "format": "iife"
+    },
+    "replacements": {
+      "__X__": "true",
+      "__WEB__": "false",
+      "__MP__": "true"
     }
   }
 ]

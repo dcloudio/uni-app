@@ -54,28 +54,3 @@ export const createWorker = defineSyncApi(
     return new WorkerImpl()
   }
 )
-
-export class WorkerTaskImpl {
-  constructor() {
-    self.onmessage = (e) => {
-      this.onMessage(e.data)
-    }
-  }
-
-  entry(): void {}
-
-  onMessage(message: Object): void {}
-
-  postMessage(
-    message: Object,
-    options: WindowPostMessageOptions | null = null
-  ): void {
-    let _options: WindowPostMessageOptions | undefined = undefined
-    if (options?.transfer && options.transfer.length > 0) {
-      _options = {
-        transfer: options.transfer as Transferable[],
-      }
-    }
-    self.postMessage(message, _options)
-  }
-}
