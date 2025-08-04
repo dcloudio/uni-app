@@ -145,6 +145,7 @@ const tags = {
   ],
   // 抖音小程序平台独有组件
   'mp-toutiao': [
+    'draw-ad',
     'aweme-data',
     'consume-card',
     'pay-button',
