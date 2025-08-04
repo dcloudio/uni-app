@@ -172,10 +172,11 @@ export function resolveWorkersDir(inputDir: string) {
 }
 
 export function uniJavaScriptWorkersPlugin(): Plugin {
-  // 仅小程序平台外置uni-worker.js
+  // 仅小程序平台外置uni-worker.mp.js
   const external = (process.env.UNI_UTS_PLATFORM || '').startsWith('mp-')
   let workerPolyfillCode = ''
   let isWrite = false
+  const UniAppWorkerJSName = external ? 'uni-worker.mp.js' : 'uni-worker.web.js'
   return {
     name: 'uni:javascript-workers',
     generateBundle(_, bundle) {
@@ -186,7 +187,7 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
       if (workerPaths.length) {
         if (!workerPolyfillCode) {
           workerPolyfillCode = fs.readFileSync(
-            resolveBuiltIn('@dcloudio/uni-app/dist-x/uni-worker.js'),
+            resolveBuiltIn(`@dcloudio/uni-app/dist-x/${UniAppWorkerJSName}`),
             'utf-8'
           )
         }
