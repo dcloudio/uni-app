@@ -3184,7 +3184,7 @@ function initXPage(vm, route, page) {
         parentPage.vm.$dialogPagesNum = 0;
       }
       parentPage.vm.$dialogPagesNum++;
-      vm.$basePage.id = vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum;
+      vm.$basePage.id = parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum;
     }
   }
 }
