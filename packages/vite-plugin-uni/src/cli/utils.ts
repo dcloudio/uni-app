@@ -34,6 +34,8 @@ export const PLATFORMS = [
   'mp-toutiao',
   'mp-weixin',
   'mp-xhs',
+  'mp-jd',
+  'mp-harmony',
   'quickapp-webview',
   'quickapp-webview-huawei',
   'quickapp-webview-union',
@@ -49,6 +51,8 @@ export type PLATFORM =
   | 'mp-toutiao'
   | 'mp-weixin'
   | 'mp-xhs'
+  | 'mp-jd'
+  | 'mp-harmony'
   | 'quickapp-webview'
   | 'quickapp-webview-huawei'
   | 'quickapp-webview-union'
