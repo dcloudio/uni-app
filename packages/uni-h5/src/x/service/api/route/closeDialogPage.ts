@@ -30,7 +30,9 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         const index = parentDialogPages.indexOf(dialogPage)
         invokeHook(dialogPage.vm!, ON_UNLOAD)
         parentDialogPages.splice(index, 1)
-        dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
+        if (index === parentDialogPages.length) {
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
+        }
         dialogPageTriggerParentShow(dialogPage, 1)
         if (!dialogPage.$disableEscBack) {
           decrementEscBackPageNum()
@@ -46,7 +48,9 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       if (index > -1) {
         invokeHook(parentSystemDialogPages[index].vm!, ON_UNLOAD)
         parentSystemDialogPages.splice(index, 1)
-        dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
+        if (index === parentSystemDialogPages.length) {
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
+        }
         dialogPageTriggerParentShow(dialogPage, 1)
       } else {
         triggerFailCallback(options, 'dialogPage is not a valid page')

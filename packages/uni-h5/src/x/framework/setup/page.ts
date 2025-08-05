@@ -1,18 +1,8 @@
 import safeAreaInsets from 'safe-area-insets'
-import {
-  type ComponentInternalInstance,
-  type ComponentPublicInstance,
-  markRaw,
-  watchEffect,
-} from 'vue'
-import {
-  dialogPageTriggerParentHide,
-  getCurrentPage,
-  initPageVm,
-} from '@dcloudio/uni-core'
+import { type ComponentPublicInstance, markRaw, watchEffect } from 'vue'
+import { getCurrentPage, initPageVm } from '@dcloudio/uni-core'
 import {
   ON_REACH_BOTTOM_DISTANCE,
-  invokeArrayFns,
   normalizeTitleColor,
   removeLeadingSlash,
 } from '@dcloudio/uni-shared'
@@ -386,7 +376,8 @@ export function initXPage(
         parentPage.vm.$dialogPagesNum = 0
       }
       parentPage.vm.$dialogPagesNum++
-      vm.$basePage.id = vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum
+      vm.$basePage.id =
+        parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum
     }
   }
 }

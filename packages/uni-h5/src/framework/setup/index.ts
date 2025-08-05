@@ -28,6 +28,9 @@ import {
 } from '@dcloudio/uni-shared'
 import { injectAppHooks } from '@dcloudio/uni-api'
 import {
+  //#if _X_
+  dialogPageTriggerParentHide,
+  //#endif
   getCurrentPage,
   invokeHook,
   subscribeViewMethod,
@@ -168,6 +171,7 @@ export function setupPage(comp: any) {
           if (isDialogPageInstance(pageInstance)) {
             useBackgroundColorContent(instance.proxy)
           }
+          dialogPageTriggerParentHide(instance.proxy?.$page as UniDialogPage)
         }
         onPageReady(instance)
         const { onReady } = instance
