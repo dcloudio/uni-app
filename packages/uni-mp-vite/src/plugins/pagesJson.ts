@@ -143,6 +143,13 @@ export function uniPagesJsonPlugin(
               appJson.workers.path = manifestJson.workers.path
             }
           }
+          if (isPlainObject(appJson.workers) && appJson.workers.path) {
+            // 微信小程序测试对象结构的话，如果isSubpackage是false，会报找不到
+            // 故：只有isSubpackage为true保持对象结构，否则用字符串
+            if (!appJson.workers.isSubpackage) {
+              appJson.workers = appJson.workers.path
+            }
+          }
         }
 
         if (options.json?.formatAppJson) {
