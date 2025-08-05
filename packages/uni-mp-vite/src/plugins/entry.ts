@@ -43,13 +43,16 @@ export function isUniComponentUrl(id: string) {
   return id.startsWith(uniComponentPrefix)
 }
 
-const styleIsolationRE =
-  /export\s+default\s+[\s\S]*?styleIsolation\s*:\s*['|"](isolated|apply-shared|shared)['|"]/
-function parseComponentStyleIsolation(file: string) {
-  const content = fs.readFileSync(file, 'utf-8')
-  const matches = content.match(styleIsolationRE)
-  if (matches) {
-    return matches[1]
+const styleIsolationRE = [
+  /defineOptions\s*[\s\S]*?styleIsolation\s*:\s*['"](isolated|apply-shared|shared)['"]/,
+  /export\s+default\s+[\s\S]*?styleIsolation\s*:\s*['|"](isolated|apply-shared|shared)['|"]/,
+]
+export function parseComponentStyleIsolation(content: string) {
+  for (const regex of styleIsolationRE) {
+    const matches = content.match(regex)
+    if (matches) {
+      return matches[1]
+    }
   }
 }
 
@@ -113,7 +116,7 @@ ${global}.createPage(MiniProgramPage)`,
 
         if (process.env.UNI_PLATFORM === 'mp-alipay') {
           json.styleIsolation =
-            parseComponentStyleIsolation(filepath) ||
+            parseComponentStyleIsolation(fs.readFileSync(filepath, 'utf-8')) ||
             platformOptions.styleIsolation ||
             'apply-shared'
         }
@@ -121,8 +124,9 @@ ${global}.createPage(MiniProgramPage)`,
         if (process.env.UNI_PLATFORM === 'mp-weixin') {
           if (platformOptions.styleIsolation) {
             json.styleIsolation =
-              parseComponentStyleIsolation(filepath) ||
-              platformOptions.styleIsolation
+              parseComponentStyleIsolation(
+                fs.readFileSync(filepath, 'utf-8')
+              ) || platformOptions.styleIsolation
           }
         }
 
