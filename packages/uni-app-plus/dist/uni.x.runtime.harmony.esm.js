@@ -1787,7 +1787,9 @@ var closeDialogPage = (options) => {
         var index2 = parentDialogPages.indexOf(dialogPage);
         closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
         parentDialogPages.splice(index2, 1);
-        dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
+        if (index2 === parentDialogPages.length) {
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
+        }
       } else {
         triggerFailCallback$1(options, "dialogPage is not a valid page");
         return;
@@ -1799,7 +1801,9 @@ var closeDialogPage = (options) => {
         if (_index > -1) {
           closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
           systemDialogPages.splice(_index, 1);
-          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
+          if (_index === systemDialogPages.length) {
+            dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
+          }
         } else {
           triggerFailCallback$1(options, "dialogPage is not a valid page");
         }
