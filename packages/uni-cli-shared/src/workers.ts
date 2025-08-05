@@ -243,22 +243,26 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
       }
     },
     load(id) {
-      if (viteServer) {
-        const filename = id.split('?')[0]
-        const workerClass = parseWorkerClass(filename)
-        if (workerClass === false) {
-          return
+      const filename = id.split('?')[0]
+      const workerClass = parseWorkerClass(filename)
+      if (workerClass === false) {
+        return
+      }
+      if (fs.existsSync(filename)) {
+        let code =
+          (viteServer ? `import '${workerPolyfillPath}';` : '') +
+          fs
+            .readFileSync(filename, 'utf-8')
+            // 移除 export
+            .replace(
+              /export\s+class\s+(.*)\s+extends\s+WorkerTaskImpl\s*{/,
+              'class $1 extends WorkerTaskImpl {'
+            )
+        // 如果是入口文件，需要追加初始化代码
+        if (workerClass) {
+          code += `\n;new ${workerClass}().entry()`
         }
-        if (fs.existsSync(filename)) {
-          let code =
-            `import '${workerPolyfillPath}';` +
-            fs.readFileSync(filename, 'utf-8')
-          // 如果是入口文件，需要追加初始化代码
-          if (workerClass) {
-            code += `\n;new ${workerClass}().entry()`
-          }
-          return code
-        }
+        return code
       }
     },
     generateBundle(_, bundle) {
@@ -279,9 +283,7 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
                     )
                   )}')`
                 : workerPolyfillCode
-              chunk.code = `${workerCode}\n${chunk.code}\nnew ${
-                workers[file.replace('.js', '.uts')]
-              }().entry()`
+              chunk.code = `${workerCode}\n${chunk.code}`
             }
           }
         })
