@@ -1,4 +1,5 @@
 (function (exports) {
+    'raw js';
     'use strict';
 
     function arrayPop(array) {

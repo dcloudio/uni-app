@@ -6,6 +6,7 @@ import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
 import { extend, hasOwn } from '@vue/shared'
 import {
   getDevServerOptions,
+  getWorkersRootDir,
   initPostcssPlugin,
   isInHBuilderX,
   isSsr,
@@ -132,15 +133,21 @@ export function createConfig(options: {
                   : '.[hash]'
               const { assetsDir } = options.resolvedConfig!.build
               if (chunkInfo.facadeModuleId) {
-                const dirname = path.relative(
-                  inputDir,
-                  path.dirname(chunkInfo.facadeModuleId)
+                const dirname = normalizePath(
+                  path.relative(
+                    inputDir,
+                    path.dirname(chunkInfo.facadeModuleId)
+                  )
                 )
                 if (dirname) {
+                  // 保留workers的目录结构，目前不支持不同的workers引入同一个uts文件，因为目前不能很好的分别打包进各自的chunk中
+                  const workersRootDir = getWorkersRootDir()
+                  if (workersRootDir && dirname.startsWith(workersRootDir)) {
+                    return `${dirname}/[name].js`
+                  }
                   return path.posix.join(
                     assetsDir,
-                    normalizePath(dirname).replace(/\//g, '-') +
-                      `-[name]${hash}.js`
+                    dirname.replace(/\//g, '-') + `-[name]${hash}.js`
                   )
                 }
               }

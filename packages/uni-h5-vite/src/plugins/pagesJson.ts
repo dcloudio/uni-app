@@ -84,7 +84,10 @@ function generatePagesJsonCode(
     const workerCode = Object.keys(workers).map((key) => {
       return `import('@/${key}?worker')`
     })
-    workersCode = workerCode.join('\n')
+    if (workerCode.length) {
+      // 仅用于激活动态chunk，运行时不能执行
+      workersCode = `if(!Math){\n${workerCode.join('\n')}\n}`
+    }
   }
 
   return `

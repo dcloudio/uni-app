@@ -14,7 +14,12 @@ export const createWorker = defineSyncApi(
     const MESSAGE_EVENT_NAME = `${MESSAGE_EVENT}_${id}`
     const ERROR_EVENT_NAME = `${ERROR_EVENT}_${id}`
     id++
-    const threadWorker = new Worker(getRealPath(url))
+    const threadWorker = new Worker(
+      getRealPath(url.startsWith('/') ? url : '/' + url),
+      {
+        type: 'module',
+      }
+    )
 
     threadWorker.onmessage = (event) => {
       $emit(MESSAGE_EVENT_NAME, event.data)

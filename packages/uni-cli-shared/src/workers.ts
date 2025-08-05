@@ -18,7 +18,6 @@ import { resolveBuiltIn } from './resolve'
 
 let workersRootDir: string | null = null
 let workers: Record<string, string> = {}
-let workersJavaScriptIds: string[] = []
 export function getWorkers() {
   return workers
 }
@@ -38,7 +37,6 @@ export function initWorkers(workersDir: string, rootDir: string) {
     return workers
   }
   workers = {}
-  workersJavaScriptIds = []
   sync('**/*.uts', { cwd: dir }).forEach((file) => {
     const content = fs.readFileSync(path.join(dir, file), 'utf-8')
     const match = content.match(
@@ -47,7 +45,6 @@ export function initWorkers(workersDir: string, rootDir: string) {
     if (match && match[1]) {
       const key = normalizePath(path.join(workersDir, file))
       workers[key] = match[1]
-      workersJavaScriptIds.push(key.replace('.uts', '.js'))
     }
   })
   return workers
@@ -182,6 +179,33 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
   const UniAppWorkerJSName = external ? 'uni-worker.mp.js' : 'uni-worker.web.js'
   let viteServer: ViteDevServer | null = null
   let webRouterBase = '/'
+  let workersRootPath: string | null = null
+  const workerPolyfillPath = `@dcloudio/uni-app/dist-x/${UniAppWorkerJSName}`
+  const workerPolyfillAbsPath = normalizePath(
+    resolveBuiltIn(workerPolyfillPath)
+  )
+  function isWorkerFile(id: string) {
+    if (workersRootPath) {
+      return id.startsWith(workersRootPath)
+    }
+    return false
+  }
+  function parseWorkerEntryFile(workerJsPath: string) {
+    const workerPath = workerJsPath.slice(1).replace('.js', '.uts')
+    if (workerPath in workers) {
+      return normalizePath(path.resolve(process.env.UNI_INPUT_DIR, workerPath))
+    }
+  }
+  function parseWorkerClass(id: string) {
+    const filename = id.split('?')[0]
+    if (isWorkerFile(filename)) {
+      const workerPath = normalizePath(
+        path.relative(process.env.UNI_INPUT_DIR, filename)
+      )
+      return workers[workerPath] || ''
+    }
+    return false
+  }
   return {
     name: 'uni:javascript-workers',
     configureServer(server) {
@@ -193,12 +217,47 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
         ) || {}
       if (web?.router?.base) {
         webRouterBase = web.router.base
+        console.log('webRouterBase', webRouterBase)
+      }
+    },
+    buildStart() {
+      if (!workerPolyfillCode && Object.keys(getWorkers()).length) {
+        workersRootPath = normalizePath(
+          path.resolve(process.env.UNI_INPUT_DIR!, getWorkersRootDir()!)
+        )
+        workerPolyfillCode = fs.readFileSync(workerPolyfillAbsPath, 'utf-8')
       }
     },
     resolveId(id) {
-      if (viteServer && workersJavaScriptIds.length) {
-        if (workersJavaScriptIds.includes(id.replace(webRouterBase, ''))) {
-          return id.replace('.js', '.uts?import')
+      // uni.createWorker('workers/request/index.uts')
+      // 编译阶段调整为 uni.createWorker('workers/request/index.js')，确保开发和运行时都是用.js后缀加载
+      // 不调整成js后缀或.uts?import这些格式， vite 是不会走transform逻辑的，而是直接读取文件内容
+      if (viteServer) {
+        const workerEntryFile = parseWorkerEntryFile(id)
+        if (workerEntryFile) {
+          return workerEntryFile
+        }
+        if (id === workerPolyfillPath) {
+          return workerPolyfillAbsPath
+        }
+      }
+    },
+    load(id) {
+      if (viteServer) {
+        const filename = id.split('?')[0]
+        const workerClass = parseWorkerClass(filename)
+        if (workerClass === false) {
+          return
+        }
+        if (fs.existsSync(filename)) {
+          let code =
+            `import '${workerPolyfillPath}';` +
+            fs.readFileSync(filename, 'utf-8')
+          // 如果是入口文件，需要追加初始化代码
+          if (workerClass) {
+            code += `\n;new ${workerClass}().entry()`
+          }
+          return code
         }
       }
     },
@@ -208,12 +267,6 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
         return key.replace('.uts', '.js')
       })
       if (workerPaths.length) {
-        if (!workerPolyfillCode) {
-          workerPolyfillCode = fs.readFileSync(
-            resolveBuiltIn(`@dcloudio/uni-app/dist-x/${UniAppWorkerJSName}`),
-            'utf-8'
-          )
-        }
         Object.keys(bundle).forEach((file) => {
           if (workerPaths.includes(file)) {
             const chunk = bundle[file]
@@ -228,7 +281,7 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
                 : workerPolyfillCode
               chunk.code = `${workerCode}\n${chunk.code}\nnew ${
                 workers[file.replace('.js', '.uts')]
-              }()`
+              }().entry()`
             }
           }
         })
