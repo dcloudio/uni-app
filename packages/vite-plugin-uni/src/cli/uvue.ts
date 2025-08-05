@@ -118,7 +118,11 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
       process.exit(0)
     }
   } catch (e: any) {
-    console.error(e.message || e)
+    if (e.customPrint) {
+      e.customPrint()
+    } else {
+      console.error(e.message || e)
+    }
     console.error(`Build failed with errors.`)
     process.exit(1)
   }
