@@ -17,7 +17,7 @@ export async function buildWorkers() {
       filename: path.resolve(rootDir, workPath),
       rootDir,
       outDir: process.env.UNI_OUTPUT_DIR,
-      footer: `new ${workers[workPath]}()`,
+      footer: `;(new ${workers[workPath]}()).entry()`,
     })
     if (result && result.error) {
       throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
