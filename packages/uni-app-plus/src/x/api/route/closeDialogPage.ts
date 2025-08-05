@@ -44,7 +44,9 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         // harmony 端该数组即 getDialogPages 返回的数组
         // 调整删除 dialogPage 时机，以便 dialogPage onUnload 时处理父页面生命周期获取到的数组符合预期
         parentDialogPages.splice(index, 1)
-        dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
+        if (index === parentDialogPages.length) {
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
+        }
       } else {
         triggerFailCallback(options, 'dialogPage is not a valid page')
         return
@@ -60,7 +62,9 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
             options?.animationDuration || ANI_DURATION
           )
           systemDialogPages.splice(index, 1)
-          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
+          if (index === systemDialogPages.length) {
+            dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
+          }
         } else {
           triggerFailCallback(options, 'dialogPage is not a valid page')
         }
