@@ -29,6 +29,7 @@ var source = {
 };
 
 const customElements = [
+    'draw-ad',
     'aweme-data',
     'consume-card',
     'pay-button',

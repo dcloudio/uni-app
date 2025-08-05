@@ -1879,6 +1879,8 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
   invokeHook(currentPage.vm, lifeCycle);
 }
 function getSystemDialogPages(parentPage) {
+  if (!parentPage)
+    return [];
   return parentPage.$getSystemDialogPages();
 }
 function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
@@ -8622,10 +8624,10 @@ function removePage(routeKey, removeRouteCaches = true) {
     pageVm.$page.vm = null;
   }
 }
-let id = /* @__PURE__ */ getStateId();
+let id$1 = /* @__PURE__ */ getStateId();
 function createPageState(type, __id__) {
   return {
-    __id__: __id__ || ++id,
+    __id__: __id__ || ++id$1,
     __type__: type
   };
 }
@@ -30210,21 +30212,30 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
   }
 );
 const API_CREATE_WORKER = "createWorker";
-const MESSAGE_EVENT = "__uni_web_worker_message";
-const ERROR_EVENT = "__uni_web_worker_error";
+const MESSAGE_EVENT = "__UNI_WEB_WORKER_MESSAGE";
+const ERROR_EVENT = "__UNI_WEB_WORKER_ERROR";
+let id = 0;
 const createWorker = /* @__PURE__ */ defineSyncApi(
   API_CREATE_WORKER,
   (url) => {
-    const threadWorker = new Worker(url);
+    const MESSAGE_EVENT_NAME = `${MESSAGE_EVENT}_${id}`;
+    const ERROR_EVENT_NAME = `${ERROR_EVENT}_${id}`;
+    id++;
+    const threadWorker = new Worker(
+      getRealPath(url.startsWith("/") ? url : "/" + url),
+      {
+        type: "module"
+      }
+    );
     threadWorker.onmessage = (event) => {
-      uni.$emit(MESSAGE_EVENT, event.data);
+      $emit(MESSAGE_EVENT_NAME, event.data);
     };
     threadWorker.onmessageerror = (error) => {
-      uni.$emit(ERROR_EVENT, error.data);
+      $emit(ERROR_EVENT_NAME, error.data);
     };
     threadWorker.onerror = (error) => {
-      uni.$emit(
-        ERROR_EVENT,
+      $emit(
+        ERROR_EVENT_NAME,
         `${error.message} in ${error.filename}(${error.lineno}:${error.colno})`
       );
     };
@@ -30233,10 +30244,10 @@ const createWorker = /* @__PURE__ */ defineSyncApi(
         this._threadWorker = threadWorker;
       }
       onMessage(listener2) {
-        uni.$on(MESSAGE_EVENT, listener2);
+        $on(MESSAGE_EVENT_NAME, listener2);
       }
       onError(listener2) {
-        uni.$on(ERROR_EVENT, listener2);
+        $on(ERROR_EVENT_NAME, listener2);
       }
       postMessage(message, options = null) {
         var _a;
@@ -30246,34 +30257,14 @@ const createWorker = /* @__PURE__ */ defineSyncApi(
         );
       }
       terminate() {
-        uni.$off(MESSAGE_EVENT);
-        uni.$off(ERROR_EVENT);
+        $off(MESSAGE_EVENT_NAME);
+        $off(ERROR_EVENT_NAME);
         this._threadWorker.terminate();
       }
     }
     return new WorkerImpl();
   }
 );
-class WorkerTaskImpl {
-  constructor() {
-    self.onmessage = (e2) => {
-      this.onMessage(e2.data);
-    };
-  }
-  entry() {
-  }
-  onMessage(message) {
-  }
-  postMessage(message, options = null) {
-    let _options = void 0;
-    if ((options == null ? void 0 : options.transfer) && options.transfer.length > 0) {
-      _options = {
-        transfer: options.transfer
-      };
-    }
-    self.postMessage(message, _options);
-  }
-}
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -30281,7 +30272,6 @@ const api = /* @__PURE__ */ Object.defineProperty({
   $off,
   $on,
   $once,
-  WorkerTaskImpl,
   __f__,
   addInterceptor,
   addPhoneContact,
@@ -30601,7 +30591,6 @@ export {
   index$b as Video,
   __syscom_3 as View,
   indexX as WebView,
-  WorkerTaskImpl,
   __f__,
   addInterceptor,
   addPhoneContact,

@@ -1661,17 +1661,5 @@ var protocols = /*#__PURE__*/Object.freeze({
 
 const wx$1 = initWx();
 var index = initUni(shims, protocols, wx$1);
-class WorkerTaskImpl {
-    constructor() {
-        worker.onMessage = (e) => {
-            this.onMessage(e.data);
-        };
-    }
-    entry() { }
-    onMessage(message) { }
-    postMessage(message) {
-        worker.postMessage(message);
-    }
-}
 
-export { WorkerTaskImpl, index as default, wx$1 as wx };
+export { index as default, wx$1 as wx };

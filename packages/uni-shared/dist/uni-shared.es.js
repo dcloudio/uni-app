@@ -277,6 +277,20 @@ function isAppIOSUVueNativeTag(tag) {
     if (NVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
+    // TODO
+    if ([
+        'checkbox',
+        'checkbox-group',
+        'form',
+        'picker-view',
+        'picker-view-column',
+        'progress',
+        'switch',
+        'radio',
+        'radio-group',
+    ].includes(tag)) {
+        return true;
+    }
     if (
     //  && tag != 'navigator' && tag != 'slider'
     UVUE_BUILT_IN_TAGS.includes(tag)) {
