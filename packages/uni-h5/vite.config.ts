@@ -93,9 +93,7 @@ if (FORMAT === 'es') {
           '__IMPORT_META_ENV_BASE_URL__',
           'import.meta.env.BASE_URL'
         )
-        if (!isNewX) {
-          genApiJson(esBundle.code)
-        }
+        genApiJson(esBundle.code)
       }
     },
   })
