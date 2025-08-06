@@ -10,7 +10,7 @@
     "build": "node scripts/build.js",
     "build:h5": "node scripts/build.js uni-app uts uni-uts-v1 uni-app-uvue uni-cli-shared uni-h5 uni-i18n uni-stat uni-shared uni-h5-vite vite-plugin-uni uni-nvue-styler",
     "build:app": "node scripts/build.js uni-app-uts uni-app-plus uni-app-vite uni-app-vue uni-app-uvue",
-    "build:mp": "node scripts/build.js uni-mp-vue uni-mp-vite uni-mp-compiler uni-mp-alipay uni-mp-baidu uni-mp-kuaishou uni-mp-lark uni-mp-qq uni-mp-toutiao uni-mp-weixin uni-mp-xhs uni-mp-jd uni-quickapp-webview",
+    "build:mp": "node scripts/build.js uni-mp-vue uni-mp-vite uni-mp-compiler uni-mp-alipay uni-mp-baidu uni-mp-kuaishou uni-mp-lark uni-mp-qq uni-mp-toutiao uni-mp-weixin uni-mp-xhs uni-mp-jd uni-quickapp-webview uni-mp-harmony",
     "size": "npm run build size-check",
     "lint": "eslint 'packages/*/src/**/*.ts?(x)' packages/*/__tests__/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
