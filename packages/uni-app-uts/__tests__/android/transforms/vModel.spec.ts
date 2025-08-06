@@ -127,7 +127,7 @@ foo
     assert(
       `<input v-model.number="model" />`,
       `_cE(\"input\", _uM({
-  modelValue: _ctx.model,
+  modelValue: handleModelValueForModifierNumber(_ctx.model),
   onInput: ($event: UniInputEvent) => {(_ctx.model) = looseToNumber($event.detail.value)}
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )

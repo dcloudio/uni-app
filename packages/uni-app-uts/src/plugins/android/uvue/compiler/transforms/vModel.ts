@@ -7,6 +7,7 @@ import {
   type ExpressionNode,
   NodeTypes,
   type Property,
+  type SimpleExpressionNode,
   createCompoundExpression,
   createObjectProperty,
   createSimpleExpression,
@@ -164,7 +165,10 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
 
   const props = [
     // modelValue: foo
-    createObjectProperty(propName, exp),
+    createObjectProperty(
+      propName,
+      getModelValueWithModifiers(dir, exp as SimpleExpressionNode)
+    ),
     // "onUpdate:modelValue": $event => (foo = $event)
     createObjectProperty(eventName, assignmentExp),
   ]
@@ -227,4 +231,17 @@ function withNumber(dir: DirectiveNode): boolean {
 
 function withTrim(dir: DirectiveNode): boolean {
   return dir.modifiers.includes('trim')
+}
+
+function getModelValueWithModifiers(
+  dir: DirectiveNode,
+  exp: SimpleExpressionNode
+): SimpleExpressionNode {
+  if (withNumber(dir)) {
+    return {
+      ...exp,
+      content: `handleModelValueForModifierNumber(${exp.content})`,
+    } as SimpleExpressionNode
+  }
+  return exp
 }
