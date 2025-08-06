@@ -23,6 +23,7 @@ import {
   nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 import { ON_READY } from '@dcloudio/uni-shared'
+import { isString } from '@vue/shared'
 
 const waitingSetData = __PLATFORM__ !== 'mp-weixin' && __PLATFORM__ !== 'mp-qq'
 
@@ -78,6 +79,29 @@ export function initLifetimes({
           },
         }
       ) as ComponentPublicInstance
+
+      if (__PLATFORM__ === 'mp-jd') {
+        // jd 在触发事件（input）时，会从原型链上取值，导致 vOn 事件函数取不到 question/190631 question/212442
+        const o = Object.getPrototypeOf(this)
+        Object.keys(this)
+          .map((key) => {
+            // TODO 仅写入 vOn 的事件函数 uni-mp-vue/src/helpers/vOn.ts
+            if (
+              /e\d/.test(key) &&
+              this[key]?.name &&
+              this[key].name === 'invoker'
+            ) {
+              return key
+            }
+          })
+          .filter(Boolean)
+          .forEach((key) => {
+            if (isString(key)) {
+              o[key] = this[key]
+            }
+          })
+        Object.setPrototypeOf(this, o)
+      }
 
       if (__X__) {
         this.vm = this.$vm
