@@ -1,5 +1,5 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
-import { isArray, isFunction, hasOwn, extend, isPlainObject } from '@vue/shared';
+import { isArray, isFunction, hasOwn, extend, isPlainObject, isString } from '@vue/shared';
 import { nextTick, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
@@ -750,6 +750,23 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                     initComponentInstance(instance, options);
                 },
             });
+            {
+                const o = Object.getPrototypeOf(this);
+                Object.keys(this)
+                    .map(key => {
+                    var _a;
+                    if (/e\d/.test(key) && ((_a = this[key]) === null || _a === void 0 ? void 0 : _a.name) && this[key].name === 'invoker') {
+                        return key;
+                    }
+                })
+                    .filter(Boolean)
+                    .forEach((key) => {
+                    if (isString(key)) {
+                        o[key] = this[key];
+                    }
+                });
+                Object.setPrototypeOf(this, o);
+            }
             if (process.env.UNI_DEBUG) {
                 console.log('uni-app:[' +
                     Date.now() +
@@ -924,22 +941,6 @@ var parseOptions = extend({}, baseParseOptions, {
 
 const createComponent = initCreateComponent(parseOptions);
 const createPage = initCreatePage(parseOptions);
-// 重写 Object.getPrototypeOf、Object.prototype.hasOwnProperty 方法
-// jd 会从原型链上拿值，导致后追加的属性无法被拿到
-const OriginalGetPrototypeOf = Object.getPrototypeOf;
-Object.getPrototypeOf = function (obj) {
-    if ('$vm' in obj) {
-        return obj;
-    }
-    return OriginalGetPrototypeOf.call(this, obj);
-};
-const OriginalHasOwnProperty = Object.prototype.hasOwnProperty;
-Object.prototype.hasOwnProperty = function (key) {
-    if ('$vm' in this && key in this) {
-        return true;
-    }
-    return OriginalHasOwnProperty.call(this, key);
-};
 jd.EventChannel = EventChannel;
 jd.createApp = global.createApp = createApp;
 jd.createPage = createPage;
