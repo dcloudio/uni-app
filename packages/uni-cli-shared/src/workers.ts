@@ -255,7 +255,7 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
             .readFileSync(filename, 'utf-8')
             // 移除 export
             .replace(
-              /export\s+class\s+(.*)\s+extends\s+WorkerTaskImpl\s*{/,
+              /class\s+(.*)\s+extends\s+WorkerTaskImpl/,
               'class $1 extends WorkerTaskImpl {'
             )
         // 如果是入口文件，需要追加初始化代码
