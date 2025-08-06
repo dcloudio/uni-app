@@ -39,9 +39,7 @@ export function initWorkers(workersDir: string, rootDir: string) {
   workers = {}
   sync('**/*.uts', { cwd: dir }).forEach((file) => {
     const content = fs.readFileSync(path.join(dir, file), 'utf-8')
-    const match = content.match(
-      /export\s+class\s+(.*)\s+extends\s+WorkerTaskImpl\s*{/
-    )
+    const match = content.match(/class\s+(.*)\s+extends\s+WorkerTaskImpl/)
     if (match && match[1]) {
       const key = normalizePath(path.join(workersDir, file))
       workers[key] = match[1]
