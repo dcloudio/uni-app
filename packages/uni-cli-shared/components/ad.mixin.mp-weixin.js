@@ -250,12 +250,16 @@ export default {
       switch (this.wxAdType) {
         case AdType.RewardedVideo:
           if (this._wxRewardedAd) {
-            this._wxRewardedAd.load()
+            this._wxRewardedAd.load().catch((err) => {
+              this._dispatchEvent(EventType.Error, err)
+            })
           }
           break
         case AdType.Interstitial:
           if (this._wxInterstitialAd) {
-            this._wxInterstitialAd.load()
+            this._wxInterstitialAd.load().catch((err) => {
+              this._dispatchEvent(EventType.Error, err)
+            })
           }
           break
       }
@@ -275,11 +279,7 @@ export default {
           }
           // eslint-disable-next-line handle-callback-err
           this._wxRewardedAd.show().catch((err) => {
-            this._wxRewardedAd.load().then(() => {
-              this._wxRewardedAd.show()
-            }).catch((err) => {
-              this._dispatchEvent(EventType.Error, err)
-            })
+            this._dispatchEvent(EventType.Error, err)
           })
           break
         case AdType.Interstitial:
@@ -288,11 +288,7 @@ export default {
           }
           // eslint-disable-next-line handle-callback-err
           this._wxInterstitialAd.show().catch((err) => {
-            this._wxInterstitialAd.load().then(() => {
-              this._wxInterstitialAd.show()
-            }).catch((err) => {
-              this._dispatchEvent(EventType.Error, err)
-            })
+            this._dispatchEvent(EventType.Error, err)
           })
           break
       }
@@ -327,8 +323,6 @@ export default {
         }
       })
 
-      this._wxRewardedAd.load().then(() => { }).catch((_) => { })
-
       this.loading = true
     },
 
@@ -345,7 +339,9 @@ export default {
         this._dispatchEvent(EventType.Load, {})
         if (this._userInvokeShowFlag) {
           this._userInvokeShowFlag = false
-          this._wxInterstitialAd.show()
+          this._wxInterstitialAd.show().catch((err) => {
+            this._dispatchEvent(EventType.Error, err)
+          })
         }
       })
 
@@ -358,7 +354,9 @@ export default {
         this._dispatchEvent(EventType.Close, res)
       })
 
-      this._wxInterstitialAd.load().then(() => { }).catch((_) => { })
+      this._wxInterstitialAd.load().catch((err) => {
+        this._dispatchEvent(EventType.Error, err)
+      })
 
       this.loading = true
     },
