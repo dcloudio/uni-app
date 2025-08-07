@@ -24,7 +24,7 @@ import type { CompileResult } from './index'
 import { hbuilderKotlinCompileErrorFormatter } from './stacktrace/kotlin'
 
 // 手动维护，不依赖uni-cli-shared
-type EncryptArtifacts = {
+export type EncryptArtifacts = {
   env: {
     compilerVersion: string
   } & Record<string, any>

@@ -15,6 +15,8 @@ import { sync } from 'fast-glob'
 import { parseJson } from '../shared'
 import { parseUTSSyntaxError } from '../stacktrace'
 import { getArkTSAutoImports, getRuntimePackageName } from './utils'
+import { compileEncrypt } from './encrypt'
+import { isEncrypt } from '../encrypt'
 
 export { getArkTSAutoImports } from './utils'
 export { bundleArkTS } from './compiler'
@@ -338,6 +340,10 @@ export async function compileArkTS(
   pluginDir: string,
   options: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
+  // 加密插件
+  if (isEncrypt(pluginDir)) {
+    return compileEncrypt(pluginDir, options.isX)
+  }
   const inputDir = process.env.UNI_INPUT_DIR
   const pluginId = path.basename(pluginDir)
   return compileArkTSExtApi(

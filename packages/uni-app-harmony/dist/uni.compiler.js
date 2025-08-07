@@ -5,12 +5,14 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var appVite = require('@dcloudio/uni-app-vite');
 var uniAppUts = require('@dcloudio/uni-app-uts');
 var path = require('path');
+var fs = require('fs-extra');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var appVite__default = /*#__PURE__*/_interopDefault(appVite);
 var path__default = /*#__PURE__*/_interopDefault(path);
+var fs__default = /*#__PURE__*/_interopDefault(fs);
 
 var ExternalModuls = [
 	{
@@ -477,7 +479,8 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
     Array.from(utsPlugins)
         .sort()
         .forEach((plugin) => {
-        const injects = uniCliShared.parseUniExtApi(path__default.default.resolve(uniModulesDir, plugin), plugin, true, 'app-harmony', 'arkts');
+        const pluginDir = path__default.default.resolve(uniModulesDir, plugin);
+        const injects = uniCliShared.parseUniExtApi(pluginDir, plugin, true, 'app-harmony', 'arkts');
         const harmonyPackageName = `@uni_modules/${plugin.toLowerCase()}`;
         if (injects) {
             Object.keys(injects).forEach((key) => {
@@ -496,6 +499,7 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
             moduleSpecifier: harmonyPackageName,
             plugin,
             source: 'local',
+            encrypt: isEncrypt(pluginDir),
         });
     });
     const relatedModules = getRelatedModules(inputDir);
@@ -640,12 +644,17 @@ function initUniExtApi() {
     const modules = [];
     projectDeps.forEach((dep) => {
         if (dep.source === 'local') {
-            const depPath = './uni_modules/' + dep.plugin;
+            const depPath = './uni_modules/' +
+                dep.plugin +
+                (dep.encrypt ? '/utssdk/app-harmony/module.har' : '');
             dependencies[dep.moduleSpecifier] = depPath;
-            modules.push({
-                name: generateHarName(dep.moduleSpecifier),
-                srcPath: depPath,
-            });
+            // 加密插件不生成module信息
+            if (!dep.encrypt) {
+                modules.push({
+                    name: generateHarName(dep.moduleSpecifier),
+                    srcPath: depPath,
+                });
+            }
         }
         else {
             if (!dependencies[dep.moduleSpecifier]) {
@@ -663,6 +672,9 @@ function initUniExtApi() {
         fileName: 'uni_modules/build-profile.json5',
         source: JSON.stringify({ modules }, null, 2),
     });
+}
+function isEncrypt(pluginDir) {
+    return fs__default.default.existsSync(path__default.default.resolve(pluginDir, 'encrypt'));
 }
 
 const externalModulesX = ExternalModulesX;
