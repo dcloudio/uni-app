@@ -16,7 +16,8 @@ export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
 
 const debugTscWatcher = debug('uts:tsc:watcher')
 const debugCompile = debug('uts:tsc:compile')
-const UNI_APP_X_TYPE_VALIDATION = process.env.UNI_APP_X_TYPE_VALIDATION || false
+const UNI_APP_X_TYPE_VALIDATION =
+  process.env.UNI_APP_X_TYPE_VALIDATION === 'true' ? true : false
 type TargetLanguage = `${UniXCompilerOptions['targetLanguage']}`
 
 export function createUniXCompiler(
