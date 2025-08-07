@@ -16,7 +16,7 @@ export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
 
 const debugTscWatcher = debug('uts:tsc:watcher')
 const debugCompile = debug('uts:tsc:compile')
-
+const UNI_APP_X_TYPE_VALIDATION = process.env.UNI_APP_X_TYPE_VALIDATION || false
 type TargetLanguage = `${UniXCompilerOptions['targetLanguage']}`
 
 export function createUniXCompiler(
@@ -220,11 +220,20 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     _type: 'syntactic' | 'semantic',
     diagnostic: tsTypes.Diagnostic
   ) {
+    const errorCode = UNI_APP_X_TYPE_VALIDATION
+      ? [2300, 2451, 2349, 110111119]
+      : []
     const throwError =
       diagnostic.__throwError ||
-      [100006, 110111101, 110111163, 110111120, 110111134, 110111164].includes(
-        diagnostic.code
-      )
+      [
+        100006,
+        110111101,
+        110111163,
+        110111120,
+        110111134,
+        110111164,
+        ...errorCode,
+      ].includes(diagnostic.code)
     const isDebug = debugCompile.enabled
     if (throwError) {
       const error = formatDiagnostic(diagnostic, formatHost)
