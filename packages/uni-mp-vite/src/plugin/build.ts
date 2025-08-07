@@ -16,6 +16,7 @@ import {
   isMiniProgramAssetFile,
   normalizeMiniProgramFilename,
   normalizePath,
+  parseJson,
   parseManifestJsonOnce,
   removeExt,
   resolveMainPathOnce,
@@ -134,6 +135,38 @@ function sourcemapPathTransform(
   )
 }
 
+// 获取子包的插件导出
+function getSubpackagePluginExports(inputDir: string): Record<string, string> {
+  const pagesJsonPath = path.join(inputDir, 'pages.json')
+  const pluginExports: Record<string, string> = {}
+  const pagesJson = parseJson(
+    fs.readFileSync(pagesJsonPath, 'utf8'),
+    true,
+    pagesJsonPath
+  ) as UniApp.PagesJson
+  const subPackages = (
+    pagesJson.subPackages ||
+    pagesJson.subpackages ||
+    []
+  ).filter((pkg) => pkg.root && pkg.plugins)
+
+  for (const pkg of subPackages) {
+    const plugins = Object.values(pkg.plugins!)
+    for (const plugin of plugins) {
+      if (!plugin.export) {
+        continue
+      }
+      const pluginExportFile = path.resolve(inputDir, pkg.root, plugin.export)
+      if (!fs.existsSync(pluginExportFile)) {
+        notFound(pluginExportFile)
+      }
+      pluginExports[removeExt(path.join(pkg.root, plugin.export))] =
+        pluginExportFile
+    }
+  }
+  return pluginExports
+}
+
 function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
   const inputOptions: Record<string, string> = {
     app: resolveMainPathOnce(inputDir),
@@ -141,6 +174,10 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
   if (process.env.UNI_MP_PLUGIN) {
     return inputOptions
   }
+  const pluginExports = getSubpackagePluginExports(inputDir)
+  Object.keys(pluginExports).forEach((exportPath) => {
+    inputOptions[exportPath] = pluginExports[exportPath]
+  })
   const manifestJson = parseManifestJsonOnce(inputDir)
   const plugins = manifestJson[platform]?.plugins || {}
   Object.keys(plugins).forEach((name) => {

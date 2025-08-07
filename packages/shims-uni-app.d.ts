@@ -277,6 +277,10 @@ declare namespace UniNamespace {
   interface PagesJsonSubpackagesOptions {
     root: string
     pages: PagesJsonPageOptions[]
+    plugins?: Record<
+      string,
+      { version: string; provider: string; export?: string }
+    >
   }
 
   interface PagesJsonWindowOptions extends PagesJsonPageOptions {
