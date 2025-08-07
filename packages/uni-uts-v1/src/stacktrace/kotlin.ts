@@ -186,10 +186,11 @@ function resolveSourceMapFile(
 
 const DEFAULT_APPID = '__UNI__uniappx'
 
-function normalizeAppid(appid: string) {
+export function normalizeAppid(appid: string) {
   return appid.replace(/_/g, '')
 }
-function createRegExp(appid: string) {
+
+export function createUniXPackageRegExp(appid: string) {
   return new RegExp('uni\\.' + appid + '\\.(.*)\\..*\\(*\\.kt:([0-9]+)\\)')
 }
 
@@ -258,10 +259,11 @@ export function parseUTSKotlinRuntimeStacktrace(
     return ''
   }
   updateUTSKotlinSourceMapManifestCache(options.cacheDir)
-  const re = createRegExp(appid)
+  const re = createUniXPackageRegExp(appid)
   const res: string[] = []
   const lines = stacktrace.split(splitRE)
   const sourceMapDir = resolveSourceMapDirByCacheDir(options.cacheDir)
+  let changed = false
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     const codes = parseUTSKotlinRuntimeStacktraceLine(line, re, sourceMapDir)
@@ -292,8 +294,15 @@ export function parseUTSKotlinRuntimeStacktrace(
         SPECIAL_CHARS.ERROR_BLOCK
       )
     } else {
-      res.push(line)
+      const newLine = parseUTSKotlinRuntimeFilename(line, re, options.cacheDir)
+      if (!changed && newLine !== line) {
+        changed = true
+      }
+      res.push(newLine)
     }
+  }
+  if (changed) {
+    return res.join('\n')
   }
   return ''
 }
@@ -308,6 +317,35 @@ function resolveCausedBy(lines: string[]) {
   return lines[0]
 }
 
+/**
+ * 将类似
+ * at uni.UNI1F0998C.GenPagesIndexIndex$Companion$setup$1.invoke(index.kt:25)
+ * 转换为
+ * at uni.UNI1F0998C.GenPagesIndexIndex$Companion$setup$1.invoke(at /xx/xx/index.kt:25)
+ * @param lineStr
+ * @param re
+ * @param options
+ * @returns
+ */
+export function parseUTSKotlinRuntimeFilename(
+  lineStr: string,
+  re: RegExp,
+  cacheDir?: string
+) {
+  const matches = lineStr.match(re)
+  if (!matches) {
+    return lineStr
+  }
+  const [, className] = matches
+  const filename = parseFilenameByClassName(className)
+  return lineStr.replace(
+    /\(.*.kt:([0-9]+)\)/,
+    `(at ${
+      cacheDir ? normalizePath(path.resolve(cacheDir, filename)) : filename
+    }:$1)`
+  )
+}
+
 function parseUTSKotlinRuntimeStacktraceLine(
   lineStr: string,
   re: RegExp,
@@ -320,10 +358,8 @@ function parseUTSKotlinRuntimeStacktraceLine(
   }
 
   const [, className, line] = matches
-  const sourceMapFile = resolveSourceMapFileBySourceFile(
-    parseFilenameByClassName(className),
-    sourceMapDir
-  )
+  const filename = parseFilenameByClassName(className)
+  const sourceMapFile = resolveSourceMapFileBySourceFile(filename, sourceMapDir)
   if (!sourceMapFile) {
     return lines
   }
