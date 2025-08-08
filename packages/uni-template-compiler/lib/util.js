@@ -335,6 +335,10 @@ function isRootElement (path) {
   return result.isReturnStatement()
 }
 
+function isVForElement (path) {
+  return path.findParent(path => path.isCallExpression() && path.get('callee').isIdentifier({ name: METHOD_RENDER_LIST }))
+}
+
 /**
  * 事件绑定是否存在成员表达式 => obj.click2()
  * @param {*} path
@@ -389,5 +393,6 @@ module.exports = {
   hasEscapeQuote,
   hasLengthProperty,
   isRootElement,
+  isVForElement,
   hasMemberExpression
 }
