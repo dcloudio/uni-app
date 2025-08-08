@@ -97,10 +97,6 @@ process.env.VUE_APP_NAME = manifestJsonObj.name
 
 process.env.UNI_USING_V3_SCOPED = true
 
-// 导出到小程序插件
-process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(Object.keys(platformOptions.plugins || {}).map(pluginName =>
-  platformOptions.plugins[pluginName].export))
-
 const isH5 = !process.env.UNI_SUB_PLATFORM && process.env.UNI_PLATFORM === 'h5'
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -300,6 +296,39 @@ if (manifestJsonObj.debug) {
 
 process.UNI_STAT_CONFIG = {
   appid: manifestJsonObj.appid
+}
+
+// 导出到小程序插件
+const mpPluginExports = Object.keys(platformOptions.plugins || {}).map(
+  pluginName => platformOptions.plugins[pluginName].export
+)
+// 小程序分包导出到插件
+if (process.env.UNI_PLATFORM.indexOf('mp-') > -1 && Array.isArray(pagesJsonObj.subPackages)) {
+  pagesJsonObj.subPackages.forEach(subPackage => {
+    if (subPackage && subPackage.plugins) {
+      Object.keys(subPackage.plugins).forEach(pluginName => {
+        const plugin = subPackage.plugins[pluginName]
+        if (plugin.export) {
+          const pluginExportFileRelative = path.join(subPackage.root, plugin.export)
+          const pluginExportFile = path.resolve(process.env.UNI_INPUT_DIR, pluginExportFileRelative)
+          if (!fs.existsSync(pluginExportFile)) {
+            console.log()
+            console.error(
+              uniI18n.__('pluginUni.entryDileNoExistsCheckAfterRetry', {
+                0: pluginExportFile
+              })
+            )
+            console.log()
+            process.exit(0)
+          }
+          mpPluginExports.push(pluginExportFileRelative)
+        }
+      })
+    }
+  })
+}
+if (mpPluginExports.length) {
+  process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(mpPluginExports)
 }
 
 // 默认启用 自定义组件模式
