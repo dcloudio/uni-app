@@ -32,6 +32,7 @@ interface CreateTransformerOptions {
     workers?: {
         resolve?: () => Record<string, string>;
         extname?: '.ets' | '.js';
+        rewriteRootDir?: string;
     };
 }
 declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): _uts_transforms_base.UTSTransformerFactoryCreator[];

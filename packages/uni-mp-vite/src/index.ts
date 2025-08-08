@@ -9,6 +9,7 @@ import {
   normalizePath,
   resolveSourceMapPath,
   resolveUTSCompiler,
+  resolveWorkersRootDir,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
@@ -79,6 +80,7 @@ export default (options: UniMiniProgramPluginOptions) => {
             },
             workers: {
               extname: '.js',
+              rewriteRootDir: resolveWorkersRootDir(),
               resolve: () => {
                 return getWorkers()
               },
