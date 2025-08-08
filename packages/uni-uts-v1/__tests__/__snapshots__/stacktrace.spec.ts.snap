@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`uts:stacktrace parseUTSArkTSPluginStacktrace 1`] = `
-"⁠ Argument of type 'UniNativeViewElement | null' is not assignable to parameter of type 'UniNativeViewElement'.
+"‌‌⁠ Argument of type 'UniNativeViewElement | null' is not assignable to parameter of type 'UniNativeViewElement'.
   Type 'null' is not assignable to type 'UniNativeViewElement'.
 at uni_modules/native-button/utssdk/app-harmony/index.uts:91:47
 89 |              const nativeViewElement = iterateElement(ins.$el as UniElement)
@@ -13,7 +13,7 @@ at uni_modules/native-button/utssdk/app-harmony/index.uts:91:47
 `;
 
 exports[`uts:stacktrace parseUTSArkTSPluginStacktrace 2`] = `
-"⁠ Cannot find name 'param'. Did you mean 'params'?
+"‌‌⁠ Cannot find name 'param'. Did you mean 'params'?
 at uni_modules/native-button/utssdk/app-harmony/builder.ets:8:9
 6  |      .onClick(() => {
 7  |          console.log('params 123',params)
@@ -24,7 +24,7 @@ at uni_modules/native-button/utssdk/app-harmony/builder.ets:8:9
 `;
 
 exports[`uts:stacktrace parseUTSArkTSPluginStacktrace 3`] = `
-"⁠ Cannot find name 'nativeViewElemen'. Did you mean 'nativeViewElement'?
+"‌‌⁠ Cannot find name 'nativeViewElemen'. Did you mean 'nativeViewElement'?
 at uni_modules/native-button/utssdk/app-harmony/index.uts:90:16
 88 |          if (ins.$el != null) {
 89 |              const nativeViewElement = iterateElement(ins.$el as UniElement)
@@ -37,7 +37,7 @@ at uni_modules/native-button/utssdk/app-harmony/index.uts:90:16
 exports[`uts:stacktrace parseUTSArkTSPluginStacktrace 4`] = `"1 WARN: ArkTS:WARN File: D:/demo-projects/demo-app-x/unpackage/debug/app-harmony-fde54b25/oh_modules/.ohpm/@dcloudio+uni-app-x-runtime@8kwvevyo0ovlx9ebtjtkdkzydpkx+j5qpbuuwz5vjge=/oh_modules/@dcloudio/uni-app-x-runtime/src/main/ets/runtime/dom/NamedNodeMap.ets:16:45"`;
 
 exports[`uts:stacktrace parseUTSArkTSPluginStacktrace 5`] = `
-"‌⁠error: Cannot find name 'nativeViewElemen'. Did you mean 'nativeViewElement'?‌
+"‌‌⁠error: Cannot find name 'nativeViewElemen'. Did you mean 'nativeViewElement'?‌
 at uni_modules/native-button/utssdk/app-harmony/index.uts:90:16
 88 |          if (ins.$el != null) {
 89 |              const nativeViewElement = iterateElement(ins.$el as UniElement)
@@ -48,7 +48,7 @@ at uni_modules/native-button/utssdk/app-harmony/index.uts:90:16
 `;
 
 exports[`uts:stacktrace parseUTSKotlinStacktrace 1`] = `
-"‌⁠error: Unresolved reference: test‌
+"‌‌⁠error: Unresolved reference: test‌
 at components/test/test.vue:14:28
 12 |          methods: {
 13 |              onClick() {
@@ -59,7 +59,7 @@ at components/test/test.vue:14:28
 `;
 
 exports[`uts:stacktrace parseUTSKotlinStacktrace 2`] = `
-"‌⁠error: Unresolved reference: test‌
+"‌‌⁠error: Unresolved reference: test‌
 at App.vue:4:38
 2  |      export default {
 3  |          onLaunch: function() {

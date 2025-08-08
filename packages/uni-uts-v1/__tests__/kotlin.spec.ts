@@ -5,6 +5,7 @@ import {
   trimKotlinErrorMessage,
 } from '../src/stacktrace/kotlin'
 import { SPECIAL_CHARS } from '../src/utils'
+import { COLORS } from '../src/stacktrace/utils'
 
 describe('uts:kotlin', () => {
   test('resolveUTSKotlinFileByClassName', () => {
@@ -29,9 +30,10 @@ describe('uts:kotlin', () => {
           'Type mismatch: inferred type is () -> Unit but () -> String was expected',
       })
     ).toBe(
-      '\u200C' +
+      COLORS.error +
         SPECIAL_CHARS.ERROR_BLOCK +
-        'error: 类型不匹配: 推断类型是() -> Unit \x1b[90m/* = void */\x1b[39m，但预期的是() -> String。\u200C'
+        'error: 类型不匹配: 推断类型是() -> Unit \x1b[90m/* = void */\x1b[39m，但预期的是() -> String。' +
+        COLORS.error
     )
     expect(
       hbuilderKotlinCompileErrorFormatter({
@@ -40,9 +42,11 @@ describe('uts:kotlin', () => {
           'java.lang.ClassCastException: io.dcloud.uniapp.vue.UTSReactiveJSONObject cannot be cast to uni.UNIXXXXXXX.A‌',
       })
     ).toBe(
-      '\u200C' +
+      COLORS.error +
+        COLORS.error +
         SPECIAL_CHARS.ERROR_BLOCK +
-        'error: java.lang.ClassCastException: UTSJSONObject cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
+        'error: java.lang.ClassCastException: UTSJSONObject cannot be cast to uni.UNIXXXXXXX.A‌' +
+        COLORS.error
     )
     expect(
       hbuilderKotlinCompileErrorFormatter({
@@ -51,9 +55,11 @@ describe('uts:kotlin', () => {
           'java.lang.ClassCastException: UTSReactiveSet cannot be cast to uni.UNIXXXXXXX.A‌',
       })
     ).toBe(
-      '\u200C' +
+      COLORS.error +
+        COLORS.error +
         SPECIAL_CHARS.ERROR_BLOCK +
-        'error: java.lang.ClassCastException: Set cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
+        'error: java.lang.ClassCastException: Set cannot be cast to uni.UNIXXXXXXX.A‌' +
+        COLORS.error
     )
     expect(
       hbuilderKotlinCompileErrorFormatter({
@@ -62,9 +68,11 @@ describe('uts:kotlin', () => {
           'java.lang.ClassCastException: UTSReactiveMap cannot be cast to uni.UNIXXXXXXX.A‌',
       })
     ).toBe(
-      '\u200C' +
+      COLORS.error +
+        COLORS.error +
         SPECIAL_CHARS.ERROR_BLOCK +
-        'error: java.lang.ClassCastException: Map cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
+        'error: java.lang.ClassCastException: Map cannot be cast to uni.UNIXXXXXXX.A‌' +
+        COLORS.error
     )
     expect(
       hbuilderKotlinCompileErrorFormatter({
@@ -73,9 +81,11 @@ describe('uts:kotlin', () => {
           'java.lang.ClassCastException: UTSReactiveArray cannot be cast to uni.UNIXXXXXXX.A‌',
       })
     ).toBe(
-      '\u200C' +
+      COLORS.error +
+        COLORS.error +
         SPECIAL_CHARS.ERROR_BLOCK +
-        'error: java.lang.ClassCastException: Array cannot be cast to uni.UNIXXXXXXX.A‌\u200C'
+        'error: java.lang.ClassCastException: Array cannot be cast to uni.UNIXXXXXXX.A‌' +
+        COLORS.error
     )
   })
   test('packageFormatter', () => {

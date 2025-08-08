@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path, { relative } from 'path'
 import { normalizePath } from '../shared'
-import { SPECIAL_CHARS } from '../utils'
 
 export type FormattedErrorString = string & {
   _formatted: boolean
@@ -25,13 +24,12 @@ export function addConfusingBlock(
   error: string | FormattedErrorString
 ): string {
   if (!isFormattedErrorString(error)) {
-    if (error.startsWith(SPECIAL_CHARS.ERROR_BLOCK)) {
-      return error.replace(
-        SPECIAL_CHARS.ERROR_BLOCK,
-        SPECIAL_CHARS.ERROR_BLOCK + SPECIAL_CHARS.CONFUSING_BLOCK
-      )
+    if (error.startsWith(COLORS.error)) {
+      return error.replace(COLORS.error, COLORS.error + COLORS.error)
+    } else if (error.startsWith(COLORS.warn)) {
+      return error.replace(COLORS.warn, COLORS.warn + COLORS.warn)
     } else {
-      return SPECIAL_CHARS.CONFUSING_BLOCK + error
+      return COLORS.error + COLORS.error + error
     }
   }
   return error

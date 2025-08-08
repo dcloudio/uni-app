@@ -53,7 +53,6 @@ export const ERR_MSG_PLACEHOLDER = `___ERR_MSG___`
 export const SPECIAL_CHARS = {
   WARN_BLOCK: '\uFEFF', // 警告块前后标识
   ERROR_BLOCK: '\u2060', // 错误块前后标识
-  CONFUSING_BLOCK: '', // 看不懂的块标识
 }
 
 export interface RunOptions {
