@@ -1,7 +1,7 @@
 import path, { join, relative } from 'path'
 import type { CompileResult } from '../index'
 import { normalizePath } from '../shared'
-import { requireUniHelpers } from '../utils'
+import { requireUTSPluginCode, requireUniHelpers } from '../utils'
 
 export async function compileEncrypt(
   pluginDir: string,
@@ -13,6 +13,7 @@ export async function compileEncrypt(
 async function compileEncryptByUniHelpers(pluginDir: string) {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
+  const pluginId = path.basename(pluginDir)
   const pluginRelativeDir = relative(inputDir, pluginDir)
   const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
   const cachePluginDir = path.resolve(
@@ -34,7 +35,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
   }
   return {
     dir: outputPluginDir,
-    code: 'export default {}',
+    code: requireUTSPluginCode(pluginId, false),
     deps: [] as string[],
     encrypt: true,
     inject_apis: [],
