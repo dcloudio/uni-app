@@ -76,6 +76,10 @@ export const options: UniMiniProgramPluginOptions = {
     darkmode: false,
     subpackages: true,
     usingComponents: true,
+    normalize(appJson) {
+      // TODO
+      return appJson
+    },
   },
   template: {
     /* eslint-disable no-restricted-syntax */
