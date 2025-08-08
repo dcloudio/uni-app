@@ -174,10 +174,12 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
   if (process.env.UNI_MP_PLUGIN) {
     return inputOptions
   }
-  const pluginExports = getSubpackagePluginExports(inputDir)
-  Object.keys(pluginExports).forEach((exportPath) => {
-    inputOptions[exportPath] = pluginExports[exportPath]
-  })
+  if (platform === 'mp-weixin') {
+    const pluginExports = getSubpackagePluginExports(inputDir)
+    Object.keys(pluginExports).forEach((exportPath) => {
+      inputOptions[exportPath] = pluginExports[exportPath]
+    })
+  }
   const manifestJson = parseManifestJsonOnce(inputDir)
   const plugins = manifestJson[platform]?.plugins || {}
   Object.keys(plugins).forEach((name) => {
