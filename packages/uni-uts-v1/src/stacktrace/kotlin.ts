@@ -351,7 +351,9 @@ export function parseUTSKotlinRuntimeFilename(
   return lineStr.replace(
     /\(.*.kt:([0-9]+)\)/,
     `(at ${
-      cacheDir ? normalizePath(path.resolve(cacheDir, filename)) : filename
+      cacheDir
+        ? normalizePath(path.resolve(cacheDir, 'src', filename))
+        : filename
     }:$1)`
   )
 }
