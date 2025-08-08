@@ -283,7 +283,11 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
     },
     generateBundle(_, bundle) {
       const workers = getWorkers()
+      const workerRootDir = resolveWorkersRootDir()
       const workerPaths = Object.keys(workers).map((key) => {
+        if (key.startsWith('uni_modules')) {
+          key = workerRootDir + '/' + key
+        }
         return key.replace('.uts', '.js')
       })
       if (workerPaths.length) {

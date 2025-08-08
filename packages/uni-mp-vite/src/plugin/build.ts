@@ -10,6 +10,7 @@ import {
   dynamicImportPolyfill,
   emptyDir,
   enableSourceMap,
+  getWorkersRootDirs,
   hasJsonFile,
   isCSSRequest,
   isEnableConsole,
@@ -20,6 +21,7 @@ import {
   parseManifestJsonOnce,
   removeExt,
   resolveMainPathOnce,
+  resolveWorkersRootDir,
 } from '@dcloudio/uni-cli-shared'
 import type { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
@@ -223,6 +225,11 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
         const chunkFileName = removeExt(
           normalizePath(path.relative(inputDir, filename))
         )
+        // uni_modules中的workers需要合并到根目录workers目录
+        const workerChunkName = resolveWorkerChunkName(chunkFileName)
+        if (workerChunkName) {
+          return workerChunkName
+        }
         if (
           !chunkFileNameBlackList.includes(chunkFileName) &&
           !hasJsonFile(chunkFileName) // 无同名的page,component
@@ -246,6 +253,17 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
       debugChunk('common/vendor', id)
       return 'common/vendor'
     }
+  }
+}
+
+function resolveWorkerChunkName(chunkFileName: string) {
+  if (
+    chunkFileName.startsWith('uni_modules') &&
+    chunkFileName.includes('/workers/') &&
+    getWorkersRootDirs().some((dir) => chunkFileName.startsWith(dir))
+  ) {
+    const workerRootDir = resolveWorkersRootDir()
+    return `${workerRootDir}/${chunkFileName}`
   }
 }
 
@@ -298,6 +316,18 @@ function createChunkFileNames(
           process.env.UNI_INPUT_DIR,
           parseVirtualComponentPath(id)
         )
+      }
+      if (getWorkersRootDirs().length) {
+        const normalizedId = normalizePath(id)
+        const filename = normalizedId.split('?')[0]
+        const chunkFileName = removeExt(
+          normalizePath(path.relative(inputDir, filename))
+        )
+        // uni_modules中的workers需要合并到根目录workers目录
+        const workerChunkName = resolveWorkerChunkName(chunkFileName)
+        if (workerChunkName) {
+          return workerChunkName + '.js'
+        }
       }
       return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'
     }
