@@ -51,10 +51,18 @@ export function vOn(value: EventValue | undefined, key?: number | string) {
     existingInvoker.value = value
   } else {
     // add
-    mpInstance[name] = createInvoker(
-      value,
-      instance as unknown as ComponentInternalInstance
-    )
+    if (ctx.$mpPlatform === 'mp-jd' && (value as Function).name === 'onInput') {
+      // jd 在触发事件（input）时，会从原型链上取值，导致 input 事件函数取不到 question/190631 question/212442
+      Object.getPrototypeOf(mpInstance)[name] = createInvoker(
+        value,
+        instance as unknown as ComponentInternalInstance
+      )
+    } else {
+      mpInstance[name] = createInvoker(
+        value,
+        instance as unknown as ComponentInternalInstance
+      )
+    }
   }
   return name
 }
