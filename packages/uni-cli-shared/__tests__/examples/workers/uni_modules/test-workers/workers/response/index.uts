@@ -1,0 +1,13 @@
+export class ResponseTask extends WorkerTaskImpl {
+  constructor() {
+    super()
+  }
+
+  override entry() {
+
+  }
+
+  override onMessage(message : any) {
+
+  }
+}

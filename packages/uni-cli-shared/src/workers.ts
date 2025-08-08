@@ -5,9 +5,10 @@ import type {
 } from '@dcloudio/uni-uts-v1'
 import path from 'path'
 import fs from 'fs-extra'
+import debug from 'debug'
 import { sync } from 'fast-glob'
 import { normalizePath } from './utils'
-import { getPlatformManifestJson, parseManifestJsonOnce } from './json'
+import { parseManifestJsonOnce } from './json'
 import { resolveUTSCompiler, tscOutDir } from './uts'
 import {
   createAppAndroidUniModulesSyncFilePreprocessorOnce,
@@ -16,14 +17,22 @@ import {
 } from './vite/plugins/uts/uni_modules'
 import { resolveBuiltIn } from './resolve'
 
+const debugWorkers = debug('uni:workers')
+
 let workersRootDir: string | null = null
+let workersRootDirs: string[] = []
 let workers: Record<string, string> = {}
 export function getWorkers() {
   return workers
 }
 
-export function getWorkersRootDir() {
-  return workersRootDir
+export function resolveWorkersRootDir() {
+  // 默认是 workers
+  return workersRootDir || 'workers'
+}
+
+export function getWorkersRootDirs() {
+  return workersRootDirs
 }
 
 /**
@@ -31,20 +40,23 @@ export function getWorkersRootDir() {
  * export class MyWorkerTask extends WorkerTaskImpl {}
  * @param dir
  */
-export function initWorkers(workersDir: string, rootDir: string) {
-  const dir = path.join(rootDir, workersDir)
-  if (!fs.existsSync(dir)) {
-    return workers
-  }
+export function initWorkers(workersDirs: string[], rootDir: string) {
   workers = {}
-  sync('**/*.uts', { cwd: dir }).forEach((file) => {
-    const content = fs.readFileSync(path.join(dir, file), 'utf-8')
-    const match = content.match(/class\s+(.*)\s+extends\s+WorkerTaskImpl/)
-    if (match && match[1]) {
-      const key = normalizePath(path.join(workersDir, file))
-      workers[key] = match[1]
+  for (const workersDir of workersDirs) {
+    const dir = path.join(rootDir, workersDir)
+    if (!fs.existsSync(dir)) {
+      continue
     }
-  })
+    sync('**/*.uts', { cwd: dir }).forEach((file) => {
+      const content = fs.readFileSync(path.join(dir, file), 'utf-8')
+      const match = content.match(/class\s+(.*)\s+extends\s+WorkerTaskImpl/)
+      if (match && match[1]) {
+        const key = normalizePath(path.join(workersDir, file))
+        workers[key] = match[1]
+      }
+    })
+  }
+  debugWorkers('workers', workers)
   return workers
 }
 
@@ -53,13 +65,9 @@ export function uniWorkersPlugin(): Plugin {
   const platform = process.env.UNI_UTS_PLATFORM
   const resolveWorkers = () => getWorkers()
   function refreshWorkers() {
-    const workersDir = resolveWorkersDir(inputDir)
-    if (workersDir) {
-      workersRootDir = workersDir
-      initWorkers(workersDir, inputDir)
-      return true
-    }
-    return false
+    workersRootDirs = resolveWorkersDir(inputDir)
+    initWorkers(workersRootDirs, inputDir)
+    return Object.keys(getWorkers()).length > 0
   }
   refreshWorkers()
   const preprocessor =
@@ -138,24 +146,27 @@ async function syncWorkersFiles(
   ) {
     return
   }
-  const workersDir = resolveWorkersDir(inputDir)
-  if (workersDir) {
+  const workersDirs = resolveWorkersDir(inputDir)
+  if (workersDirs.length) {
     const { syncUTSFiles } = resolveUTSCompiler()
-    await syncUTSFiles(
-      normalizePath(path.join(workersDir, '**/*.uts')),
-      inputDir,
-      tscOutDir(platform as 'app-android' | 'app-ios' | 'app-harmony'),
-      true,
-      preprocessor,
-      cache
-    )
+    for (const workersDir of workersDirs) {
+      await syncUTSFiles(
+        normalizePath(path.join(workersDir, '**/*.uts')),
+        inputDir,
+        tscOutDir(platform as 'app-android' | 'app-ios' | 'app-harmony'),
+        true,
+        preprocessor,
+        cache
+      )
+    }
   }
 }
 
-export function resolveWorkersDir(inputDir: string) {
+export function resolveWorkersDir(inputDir: string): Array<string> {
+  const workersDirs: string[] = []
   const manifestJson = parseManifestJsonOnce(inputDir)
   if (manifestJson.workers) {
-    let workersDir =
+    let workersDir: string | undefined =
       typeof manifestJson.workers === 'string'
         ? manifestJson.workers
         : manifestJson.workers.path
@@ -163,10 +174,22 @@ export function resolveWorkersDir(inputDir: string) {
       workersDir = normalizePath(workersDir)
       const dir = path.join(inputDir, workersDir)
       if (fs.existsSync(dir)) {
-        return workersDir
+        workersRootDir = workersDir
+        workersDirs.push(workersDir)
       }
     }
   }
+  // 遍历uni_modules插件目录是否有workers目录
+  const uniModulesDir = path.join(inputDir, 'uni_modules')
+  if (fs.existsSync(uniModulesDir)) {
+    fs.readdirSync(uniModulesDir).forEach((dir) => {
+      if (fs.existsSync(path.join(uniModulesDir, dir, 'workers'))) {
+        workersDirs.push('uni_modules/' + dir + '/workers')
+      }
+    })
+  }
+  debugWorkers('workersDirs', workersDirs)
+  return workersDirs
 }
 
 export function uniJavaScriptWorkersPlugin(): Plugin {
@@ -176,15 +199,14 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
   let isWrite = false
   const UniAppWorkerJSName = external ? 'uni-worker.mp.js' : 'uni-worker.web.js'
   let viteServer: ViteDevServer | null = null
-  let webRouterBase = '/'
-  let workersRootPath: string | null = null
+  const workersRootPaths: string[] = []
   const workerPolyfillPath = `@dcloudio/uni-app/dist-x/${UniAppWorkerJSName}`
   const workerPolyfillAbsPath = normalizePath(
     resolveBuiltIn(workerPolyfillPath)
   )
   function isWorkerFile(id: string) {
-    if (workersRootPath) {
-      return id.startsWith(workersRootPath)
+    if (workersRootPaths.length) {
+      return workersRootPaths.some((dir) => id.startsWith(dir))
     }
     return false
   }
@@ -208,22 +230,18 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
     name: 'uni:javascript-workers',
     configureServer(server) {
       viteServer = server
-      const web =
-        getPlatformManifestJson(
-          parseManifestJsonOnce(process.env.UNI_INPUT_DIR),
-          'web'
-        ) || {}
-      if (web?.router?.base) {
-        webRouterBase = web.router.base
-        console.log('webRouterBase', webRouterBase)
-      }
     },
     buildStart() {
       if (!workerPolyfillCode && Object.keys(getWorkers()).length) {
-        workersRootPath = normalizePath(
-          path.resolve(process.env.UNI_INPUT_DIR!, getWorkersRootDir()!)
-        )
         workerPolyfillCode = fs.readFileSync(workerPolyfillAbsPath, 'utf-8')
+      }
+      workersRootPaths.length = 0
+      for (const workersRootDir of getWorkersRootDirs()) {
+        workersRootPaths.push(
+          normalizePath(
+            path.resolve(process.env.UNI_INPUT_DIR!, workersRootDir)
+          )
+        )
       }
     },
     resolveId(id) {
@@ -277,7 +295,7 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
                 ? `require('${normalizePath(
                     path.relative(
                       path.dirname(file),
-                      path.join(getWorkersRootDir()!, 'uni-worker.js')
+                      path.join(resolveWorkersRootDir(), 'uni-worker.js')
                     )
                   )}')`
                 : workerPolyfillCode
@@ -294,7 +312,7 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
         fs.outputFileSync(
           path.resolve(
             process.env.UNI_OUTPUT_DIR!,
-            getWorkersRootDir()!,
+            resolveWorkersRootDir(),
             'uni-worker.js'
           ),
           workerPolyfillCode

@@ -15,12 +15,14 @@ export {
 export function uniHBuilderXConsolePlugin(method: string = '__f__') {
   const exclude: string[] = []
   if (process.env.UNI_APP_X === 'true') {
-    const workersDir = resolveWorkersDir(process.env.UNI_INPUT_DIR)
-    if (workersDir) {
+    const workersDirs = resolveWorkersDir(process.env.UNI_INPUT_DIR)
+    if (workersDirs.length) {
       // 排除workers目录
-      exclude.push(
-        pathToGlob(path.join(process.env.UNI_INPUT_DIR, workersDir), '**/*')
-      )
+      for (const workersDir of workersDirs) {
+        exclude.push(
+          pathToGlob(path.join(process.env.UNI_INPUT_DIR, workersDir), '**/*')
+        )
+      }
     }
   }
   return uniConsolePlugin({
