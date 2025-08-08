@@ -1,5 +1,5 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
-import { isArray, isFunction, hasOwn, extend, isPlainObject, isString } from '@vue/shared';
+import { isArray, isFunction, hasOwn, extend, isPlainObject } from '@vue/shared';
 import { nextTick, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
@@ -750,27 +750,6 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                     initComponentInstance(instance, options);
                 },
             });
-            {
-                // jd 在触发事件（input）时，会从原型链上取值，导致 vOn 事件函数取不到 question/190631 question/212442
-                const o = Object.getPrototypeOf(this);
-                Object.keys(this)
-                    .map((key) => {
-                    var _a;
-                    // TODO 仅写入 vOn 的事件函数 uni-mp-vue/src/helpers/vOn.ts
-                    if (/e\d/.test(key) &&
-                        ((_a = this[key]) === null || _a === void 0 ? void 0 : _a.name) &&
-                        this[key].name === 'invoker') {
-                        return key;
-                    }
-                })
-                    .filter(Boolean)
-                    .forEach((key) => {
-                    if (isString(key)) {
-                        o[key] = this[key];
-                    }
-                });
-                Object.setPrototypeOf(this, o);
-            }
             if (process.env.UNI_DEBUG) {
                 console.log('uni-app:[' +
                     Date.now() +
