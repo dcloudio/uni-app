@@ -751,11 +751,15 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                 },
             });
             {
+                // jd 在触发事件（input）时，会从原型链上取值，导致 vOn 事件函数取不到 question/190631 question/212442
                 const o = Object.getPrototypeOf(this);
                 Object.keys(this)
-                    .map(key => {
+                    .map((key) => {
                     var _a;
-                    if (/e\d/.test(key) && ((_a = this[key]) === null || _a === void 0 ? void 0 : _a.name) && this[key].name === 'invoker') {
+                    // TODO 仅写入 vOn 的事件函数 uni-mp-vue/src/helpers/vOn.ts
+                    if (/e\d/.test(key) &&
+                        ((_a = this[key]) === null || _a === void 0 ? void 0 : _a.name) &&
+                        this[key].name === 'invoker') {
                         return key;
                     }
                 })

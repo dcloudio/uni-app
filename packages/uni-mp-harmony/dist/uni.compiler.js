@@ -72,6 +72,10 @@ const options = {
         darkmode: false,
         subpackages: true,
         usingComponents: true,
+        normalize(appJson) {
+            // TODO
+            return appJson;
+        },
     },
     template: Object.assign(Object.assign({}, miniProgram), { filter: {
             extname: '.hjs',
