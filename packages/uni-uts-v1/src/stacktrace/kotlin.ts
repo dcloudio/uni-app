@@ -5,7 +5,10 @@ import { originalPositionFor, originalPositionForSync } from '../sourceMap'
 import {
   COLORS,
   type GenerateRuntimeCodeFrameOptions,
+  addConfusingBlock,
+  createFormattedErrorString,
   generateCodeFrame,
+  isFormattedErrorString,
   lineColumnToStartEnd,
   parseErrorWithRules,
   resolveSourceMapDirByCacheDir,
@@ -32,15 +35,14 @@ interface GenerateCodeFrameOptions {
 
 export function hbuilderKotlinCompileErrorFormatter(m: MessageSourceLocation) {
   const msgs: string[] = []
-  // let isFormatted = false
+  let isFormatted = false
   if (m.type === 'error' || m.type === 'exception') {
     const formatted = formatKotlinError(
       m.message,
       m.code?.split('\n') || [],
       compileFormatters
     )
-    // 如果格式化后与原消息不同，则认为格式化成功
-    // isFormatted = m.message !== formatted
+    isFormatted = isFormattedErrorString(formatted)
     m.message = formatted
   }
   let msg = m.type + ': ' + m.message
@@ -90,13 +92,17 @@ export function hbuilderKotlinCompileErrorFormatter(m: MessageSourceLocation) {
     msgs.push(m.code)
   }
   const result = msgs.join('\n')
-  // if (isFormatted) {
-  //   return result
-  // }
-  return parseErrorWithRules(result, {
+  if (isFormatted) {
+    return result
+  }
+  const formatted = parseErrorWithRules(result, {
     language: 'kotlin',
     platform: 'app-android',
   })
+  if (isFormattedErrorString(formatted)) {
+    return formatted
+  }
+  return addConfusingBlock(formatted)
 }
 
 export async function parseUTSKotlinStacktrace(
@@ -278,21 +284,25 @@ export function parseUTSKotlinRuntimeStacktrace(
         runtimeFormatters,
         options.appid
       )
+      let isFormatted = isFormattedErrorString(formatted)
       let error = 'error: ' + formatted
       // const isFormatted = message !== formatted
       if (color) {
         error = color + SPECIAL_CHARS.ERROR_BLOCK + error + color
       }
       let errorStr = [error, ...codes].join('\n')
-      errorStr = parseErrorWithRules(errorStr, {
-        language: 'kotlin',
-        platform: 'app-android',
-      })
-      return (
+      if (!isFormatted) {
+        errorStr = parseErrorWithRules(errorStr, {
+          language: 'kotlin',
+          platform: 'app-android',
+        })
+        isFormatted = isFormattedErrorString(errorStr)
+      }
+      const result =
         (color ? '' : SPECIAL_CHARS.ERROR_BLOCK) +
         errorStr +
         SPECIAL_CHARS.ERROR_BLOCK
-      )
+      return isFormatted ? result : addConfusingBlock(result)
     } else {
       const newLine = parseUTSKotlinRuntimeFilename(line, re, options.cacheDir)
       if (!changed && newLine !== line) {
@@ -417,7 +427,9 @@ const extApiCompileErrorFormatter: Formatter = {
     if (codes.length && error.includes('Unresolved reference: uni_')) {
       const api = findUniExtApi(codes.join('\n'), UNI_API_RE, '^')
       if (api) {
-        return `请检查 ${api} 的拼写是否正确，或确认当前 HBuilderX 版本在当前平台是否支持此 API。`
+        return createFormattedErrorString(
+          `请检查 ${api} 的拼写是否正确，或确认当前 HBuilderX 版本在当前平台是否支持此 API。`
+        )
       }
       return ``
     }
@@ -443,7 +455,9 @@ const extApiRuntimeErrorFormatter: Formatter = {
         } else {
           api = `您使用到的api`
         }
-        return `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
+        return createFormattedErrorString(
+          `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
+        )
       }
     } else if (error.includes('Unresolved reference: uni_')) {
       // let api = findUniExtApi(codes[codes.length - 1], UNI_API_RE)
@@ -508,9 +522,11 @@ const typeMismatchErrorFormatter: Formatter = {
       if (origType) {
         extra = `该错误可能是没有使用import导入${origType}引发的`
       }
-      return `类型不匹配: 推断类型是${normalizedInferredType}，但预期的是${normalizedExpectedType}${
-        extra ? `，${extra}` : ''
-      }。`
+      return createFormattedErrorString(
+        `类型不匹配: 推断类型是${normalizedInferredType}，但预期的是${normalizedExpectedType}${
+          extra ? `，${extra}` : ''
+        }。`
+      )
     }
   },
 }

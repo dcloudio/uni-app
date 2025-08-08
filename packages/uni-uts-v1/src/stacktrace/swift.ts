@@ -4,7 +4,9 @@ import { originalPositionFor } from '../sourceMap'
 import {
   COLORS,
   type CompileStacktraceOptions,
+  addConfusingBlock,
   generateCodeFrame,
+  isFormattedErrorString,
   parseErrorWithRules,
   splitRE,
 } from './utils'
@@ -50,14 +52,15 @@ export async function parseUTSSwiftPluginStacktrace({
       res.push(line)
     }
   }
-  return (
+  const formatted = parseErrorWithRules(res.join('\n'), {
+    language: 'swift',
+    platform: 'app-ios',
+  })
+  const result =
     (colored ? '' : SPECIAL_CHARS.ERROR_BLOCK) +
-    parseErrorWithRules(res.join('\n'), {
-      language: 'swift',
-      platform: 'app-ios',
-    }) +
+    formatted +
     SPECIAL_CHARS.ERROR_BLOCK
-  )
+  return isFormattedErrorString(formatted) ? result : addConfusingBlock(result)
 }
 
 async function parseUTSStacktraceLine(

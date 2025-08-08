@@ -8,7 +8,9 @@ import {
   COLORS,
   type CompileStacktraceOptions,
   type GenerateRuntimeCodeFrameOptions,
+  addConfusingBlock,
   generateCodeFrame,
+  isFormattedErrorString,
   parseErrorWithRules,
   parseRelativeSourceFile,
   splitRE,
@@ -109,11 +111,11 @@ async function parseUTSArkTSStacktrace(
       language: 'arkts',
       platform: 'app-harmony',
     })
-    return (
+    const result =
       (colored ? '' : SPECIAL_CHARS.ERROR_BLOCK) +
       errorStr +
       SPECIAL_CHARS.ERROR_BLOCK
-    )
+    return isFormattedErrorString(errorStr) ? result : addConfusingBlock(result)
   }
   return errorStr
 }

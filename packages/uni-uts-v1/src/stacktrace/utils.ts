@@ -1,6 +1,41 @@
 import fs from 'fs'
 import path, { relative } from 'path'
 import { normalizePath } from '../shared'
+import { SPECIAL_CHARS } from '../utils'
+
+export type FormattedErrorString = string & {
+  _formatted: boolean
+}
+
+export function isFormattedErrorString(
+  error: string
+): error is FormattedErrorString {
+  return (error as FormattedErrorString)._formatted
+}
+
+export function createFormattedErrorString(
+  error: string
+): FormattedErrorString {
+  const formatted = new String(error) as FormattedErrorString
+  formatted._formatted = true
+  return formatted
+}
+
+export function addConfusingBlock(
+  error: string | FormattedErrorString
+): string {
+  if (!isFormattedErrorString(error)) {
+    if (error.startsWith(SPECIAL_CHARS.ERROR_BLOCK)) {
+      return error.replace(
+        SPECIAL_CHARS.ERROR_BLOCK,
+        SPECIAL_CHARS.ERROR_BLOCK + SPECIAL_CHARS.CONFUSING_BLOCK
+      )
+    } else {
+      return SPECIAL_CHARS.CONFUSING_BLOCK + error
+    }
+  }
+  return error
+}
 
 export interface CompileStacktraceOptions {
   env?: Record<string, string>
@@ -207,7 +242,7 @@ function normalizeErrorWithRule(error: string, rules: ErrorRule[]) {
   for (const rule of rules) {
     const re = new RegExp(rule.pattern, rule.flags)
     if (re.test(error)) {
-      return error.replace(re, rule.message)
+      return createFormattedErrorString(error.replace(re, rule.message))
     }
   }
   return error
