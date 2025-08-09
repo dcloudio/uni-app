@@ -10486,7 +10486,7 @@ Component that was made reactive: `,
 
   let currentInstance = null;
   const getCurrentGenericInstance = () => currentInstance || currentRenderingInstance;
-  const getCurrentInstance = () => currentInstance && !currentInstance.vapor ? currentInstance : currentRenderingInstance;
+  const getCurrentInstance = () => getCurrentGenericInstance();
   exports.isInSSRComponentSetup = false;
   let setInSSRSetupState;
   let simpleSetCurrentInstance;
