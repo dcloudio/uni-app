@@ -10,6 +10,7 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   workers?: {
     resolve: () => Record<string, string>
     extname?: string
+    rewriteRootDir?: string
   }
 }
 type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
