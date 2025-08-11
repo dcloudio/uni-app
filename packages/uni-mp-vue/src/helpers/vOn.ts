@@ -51,21 +51,11 @@ export function vOn(value: EventValue | undefined, key?: number | string) {
     // patch
     existingInvoker.value = value
   } else {
-    const invoker = createInvoker(
+    // add
+    mpInstance[name] = createInvoker(
       value,
       instance as unknown as ComponentInternalInstance
     )
-    // add
-    if (
-      ctx.$mpPlatform === 'mp-jd' &&
-      isFunction(value) &&
-      value.name === 'onInput'
-    ) {
-      // jd 在触发 input 时，会从原型链上取值，导致 input 事件函数取不到 question/190631 question/212442
-      Object.getPrototypeOf(mpInstance)[name] = invoker
-    } else {
-      mpInstance[name] = invoker
-    }
   }
   return name
 }
