@@ -3,7 +3,6 @@ import {
   extend,
   hasOwn,
   isArray,
-  isFunction,
   isPlainObject,
   isPromise,
   isString,
