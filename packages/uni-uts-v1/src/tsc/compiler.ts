@@ -222,7 +222,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     diagnostic: tsTypes.Diagnostic
   ) {
     const errorCode = UNI_APP_X_TYPE_VALIDATION
-      ? [2300, 2451, 2349, 110111119]
+      ? [2300, 2451, 2349, 110111119, 2564]
       : []
     const throwError =
       diagnostic.__throwError ||
@@ -233,6 +233,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
         110111120,
         110111134,
         110111164,
+        110111146,
         ...errorCode,
       ].includes(diagnostic.code)
     const isDebug = debugCompile.enabled
@@ -240,6 +241,18 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
       const error = formatDiagnostic(diagnostic, formatHost)
       // 仅回源成功的才抛出错误，否则只打印一下
       if (error.file && error.frame) {
+        const parts = error.file.split('/')
+        if (parts.length > 2 && parts[0] === 'uni_modules') {
+          const encrypt = path.join(
+            process.env.UNI_INPUT_DIR,
+            'uni_modules',
+            parts[1],
+            'encrypt'
+          )
+          if (encrypt && fs.existsSync(encrypt)) {
+            return
+          }
+        }
         throw createRollupError(error)
       } else {
         printError(error, COLORS.error, SPECIAL_CHARS.ERROR_BLOCK)
