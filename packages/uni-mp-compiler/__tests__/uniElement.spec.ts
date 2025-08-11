@@ -23,7 +23,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view id="view"/>`,
-      `<view id="{{a}}" style="{{$eS[a] + ';' + (virtualHostStyle || '')}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden || false}}"/>`,
+      `<view id="{{a}}" style="{{$eS[a] + ';' + (virtualHostStyle || '')}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden === undefined ? false : virtualHostHidden}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _sei(_gei(_ctx, 'view'), 'view'), b: _s(_ses(_gei(_ctx, 'view'))) }
   return __returned__
@@ -46,7 +46,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<custom id="custom"/>`,
-      `<custom u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{b||''}}" class="{{[virtualHostClass]}}" virtualHostClass="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" virtualHostStyle="{{virtualHostStyle}}" hidden="{{virtualHostHidden || false}}" virtualHostHidden="{{virtualHostHidden || false}}"/>`,
+      `<custom u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{b||''}}" class="{{[virtualHostClass]}}" virtualHostClass="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" virtualHostStyle="{{virtualHostStyle}}" hidden="{{virtualHostHidden === undefined ? false : virtualHostHidden}}" virtualHostHidden="{{virtualHostHidden === undefined ? false : virtualHostHidden}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _gei(_ctx, 'custom'), b: _p({ id: _gei(_ctx, 'custom') }) }
   return __returned__
@@ -93,7 +93,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view id="view" style="color:red"/>`,
-      `<view id="{{a}}" style="{{'color:red' + ';' + $eS[a] + ';' + (virtualHostStyle || '')}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden || false}}"/>`,
+      `<view id="{{a}}" style="{{'color:red' + ';' + $eS[a] + ';' + (virtualHostStyle || '')}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden === undefined ? false : virtualHostHidden}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _sei(_gei(_ctx, 'view'), 'view'), b: _s(_ses(_gei(_ctx, 'view'))) }
   return __returned__
@@ -140,7 +140,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view :id="viewId"/>`,
-      `<view id="{{a}}" style="{{$eS[a] + ';' + (virtualHostStyle || '')}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}"/>`,
+      `<view id="{{a}}" style="{{$eS[a] + ';' + (virtualHostStyle || '')}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden === undefined ? false : virtualHostHidden}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _sei(_gei(_ctx, _ctx.viewId), 'view'), b: _s(_ses(_gei(_ctx, _ctx.viewId))) }
   return __returned__
