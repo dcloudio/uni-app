@@ -43,6 +43,7 @@ import {
 import { isWindows } from '../shared'
 
 const DEFAULT_IMPORTS = [
+  'kotlin.properties.Delegates',
   'io.dcloud.uts.Map',
   'io.dcloud.uts.Set',
   'io.dcloud.uts.UTSAndroid',

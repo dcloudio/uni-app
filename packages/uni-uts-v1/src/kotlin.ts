@@ -536,6 +536,7 @@ function resolveConfigJsonFile(filename: string) {
 }
 
 const DEFAULT_IMPORTS = [
+  'kotlin.properties.Delegates',
   'kotlinx.coroutines.async',
   'kotlinx.coroutines.CoroutineScope',
   'kotlinx.coroutines.Deferred',
