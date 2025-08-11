@@ -43,6 +43,7 @@ interface SubPackage {
   root: string
   pages: string[]
   independent?: boolean
+  plugins?: Plugins
 }
 
 interface TabBarItem {
@@ -73,6 +74,7 @@ interface Plugins {
   [name: string]: {
     version: string
     provider: string
+    export?: string
   }
 }
 
