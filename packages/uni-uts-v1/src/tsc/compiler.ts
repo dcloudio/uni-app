@@ -234,6 +234,11 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
         110111134,
         110111164,
         110111146,
+        110111143,
+        110111149,
+        110111138,
+        110111161,
+        110111128,
         ...errorCode,
       ].includes(diagnostic.code)
     const isDebug = debugCompile.enabled
