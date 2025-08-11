@@ -206,7 +206,7 @@ export default {
     },
 
     _onwxchannelerror (e) {
-      this._dispatchEvent(EventType.Error, e.detail)
+      this._dispatchEvent(EventType.Error, e.detail || e)
     },
 
     _dispatchEvent (type, data) {
