@@ -160,20 +160,20 @@
     } else if (osLanguage != null) {
       language.value = osLanguage
     }
-    const appTheme = systemInfo.appTheme
-    if (appTheme != null && appTheme != "auto") {
-      appTheme.value = appTheme
+    const systemAppTheme = systemInfo.appTheme
+    if (systemAppTheme != null && systemAppTheme != "auto") {
+      appTheme.value = systemAppTheme
       handleThemeChange()
     }
-    const osTheme = systemInfo.osTheme
-    if (osTheme != null && appTheme.value == null) {
-      appTheme.value = osTheme
+    const systemOsTheme = systemInfo.osTheme
+    if (systemOsTheme != null && appTheme.value == null) {
+      appTheme.value = systemOsTheme
       handleThemeChange()
     }
     // #ifdef WEB
-    const hostTheme = systemInfo.hostTheme
-    if (hostTheme != null) {
-      hostTheme.value = hostTheme
+    const systemHostTheme = systemInfo.hostTheme
+    if (systemHostTheme != null) {
+      hostTheme.value = systemHostTheme
       handleThemeChange()
     }
     uni.onHostThemeChange((res) => {

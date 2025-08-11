@@ -28113,23 +28113,23 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       } else if (osLanguage != null) {
         language.value = osLanguage;
       }
-      const appTheme2 = systemInfo.appTheme;
-      if (appTheme2 != null && appTheme2 != "auto") {
-        appTheme2.value = appTheme2;
+      const systemAppTheme = systemInfo.appTheme;
+      if (systemAppTheme != null && systemAppTheme != "auto") {
+        appTheme.value = systemAppTheme;
         handleThemeChange();
       }
-      const osTheme = systemInfo.osTheme;
-      if (osTheme != null && appTheme2.value == null) {
-        appTheme2.value = osTheme;
+      const systemOsTheme = systemInfo.osTheme;
+      if (systemOsTheme != null && appTheme.value == null) {
+        appTheme.value = systemOsTheme;
         handleThemeChange();
       }
-      const hostTheme2 = systemInfo.hostTheme;
-      if (hostTheme2 != null) {
-        hostTheme2.value = hostTheme2;
+      const systemHostTheme = systemInfo.hostTheme;
+      if (systemHostTheme != null) {
+        hostTheme.value = systemHostTheme;
         handleThemeChange();
       }
       uni.onHostThemeChange((res) => {
-        hostTheme2.value = res.theme;
+        hostTheme.value = res.theme;
         handleThemeChange();
       });
       windowWidth.value = systemInfo.windowWidth;
