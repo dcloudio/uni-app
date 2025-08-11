@@ -7,7 +7,8 @@ const {
 
 const {
   getCode,
-  isRootElement
+  isRootElement,
+  isVForElement
 } = require('../../../util')
 
 function processClassArrayExpressionElements (classArrayExpression) {
@@ -124,7 +125,7 @@ module.exports = function processClass (paths, path, state) {
       state.errors.add(':class' + uniI18n.__('templateCompiler.noSupportSyntax', { 0: getCode(classValuePath.node) }))
     }
   }
-  if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
+  if (mergeVirtualHostAttributes && isRootElement(path.parentPath) && !isVForElement(path.parentPath)) {
     const virtualHostClass = t.identifier(VIRTUAL_HOST_CLASS)
     if (classArrayExpression) {
       classArrayExpression.elements.push(virtualHostClass)
