@@ -196,6 +196,7 @@ export async function syncUniModuleFilesByCompiler(
     preprocessor
   )
   if (vueFiles.length) {
+    // TODO 有隐患，如果直接拷贝 uts 文件到 .uvue 下，那么这些uts文件就不会走 tsc 编译了，tsc 中处理的逻辑就会被丢失
     // 如果有组件，那将 uts 文件 copy 到 .uvue 目录下，避免 tsc 不 emit 相关的 uts 文件
     // 如果 tsc emit 了，那就会再次覆盖
     await syncUniModulesFiles(
