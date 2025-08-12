@@ -9,6 +9,8 @@ import {
   // transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import { transformOn } from './transforms/vOn'
+import { transformModel } from './transforms/vModel'
 
 import source from './project.config.json'
 // import { transformSwiper } from './transforms/transformSwiper'
@@ -20,6 +22,10 @@ const nodeTransforms = [
   // transformMatchMedia,
   transformComponentLink,
 ]
+const directiveTransforms = {
+  on: transformOn,
+  model: transformModel,
+}
 
 export const customElements = [
   'root-portal',
@@ -29,6 +35,7 @@ export const customElements = [
 
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
+  directiveTransforms,
 }
 
 const COMPONENTS_DIR = 'jdcomponents'
