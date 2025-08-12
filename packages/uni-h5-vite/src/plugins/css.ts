@@ -29,6 +29,7 @@ export function uniCssPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   let file = ''
   let fileName = ''
+  let isInternational = false
   return {
     name: 'uni:h5-css',
     apply: 'build',
@@ -36,6 +37,9 @@ export function uniCssPlugin(): Plugin {
     configResolved(config) {
       resolvedConfig = config
       file = path.join(process.env.UNI_INPUT_DIR, 'uni.css')
+      isInternational = !!(
+        process.env.UNI_APP_ID && process.env.UNI_APP_ID.startsWith('__UNI__G')
+      )
 
       if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
         injectCssPlugin(config, {
@@ -67,7 +71,7 @@ export function uniCssPlugin(): Plugin {
     transform(code, id) {
       id = normalizePath(id)
       if (id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'shadow.css')) {
-        const url = createShadowImageUrl(0, 'grey')
+        const url = createShadowImageUrl(0, 'grey', isInternational)
         return {
           code:
             code +
@@ -89,27 +93,35 @@ export function uniCssPlugin(): Plugin {
             code +
             `
 .uni-page-head-shadow-grey::after {
-  background-image: url('${createShadowImageUrl(0, 'grey')}');
+  background-image: url('${createShadowImageUrl(0, 'grey', isInternational)}');
 }
 
 .uni-page-head-shadow-blue::after {
-  background-image: url('${createShadowImageUrl(0, 'blue')}');
+  background-image: url('${createShadowImageUrl(0, 'blue', isInternational)}');
 }
 
 .uni-page-head-shadow-green::after {
-  background-image: url('${createShadowImageUrl(0, 'green')}');
+  background-image: url('${createShadowImageUrl(0, 'green', isInternational)}');
 }
 
 .uni-page-head-shadow-orange::after {
-  background-image: url('${createShadowImageUrl(0, 'orange')}');
+  background-image: url('${createShadowImageUrl(
+    0,
+    'orange',
+    isInternational
+  )}');
 }
 
 .uni-page-head-shadow-red::after {
-  background-image: url('${createShadowImageUrl(0, 'red')}');
+  background-image: url('${createShadowImageUrl(0, 'red', isInternational)}');
 }
 
 .uni-page-head-shadow-yellow::after {
-  background-image: url('${createShadowImageUrl(0, 'yellow')}');
+  background-image: url('${createShadowImageUrl(
+    0,
+    'yellow',
+    isInternational
+  )}');
 }
             
 `,
