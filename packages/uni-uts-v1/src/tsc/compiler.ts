@@ -251,6 +251,9 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
         if (parts.length > 2 && parts[0] === 'uni_modules') {
           const pluginName = parts[1]
           if (encryptExistCache.has(pluginName)) {
+            if (!encryptExistCache.get(pluginName)) {
+              throw createRollupError(error)
+            }
             return
           }
           const encrypt = path.join(
@@ -262,6 +265,8 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
           if (encrypt && fs.existsSync(encrypt)) {
             encryptExistCache.set(pluginName, true)
             return
+          } else {
+            encryptExistCache.set(pluginName, false)
           }
         }
         throw createRollupError(error)
