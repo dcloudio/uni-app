@@ -208,6 +208,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     getCurrentDirectory: () => inputDir,
     getNewLine: () => compiler.getTypeScript().sys.newLine,
   }
+  const encryptExistCache = new Map()
   return reportDiagnostic
   function diagnosticCategoryName(
     d: { category: tsTypes.DiagnosticCategory },
@@ -222,7 +223,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     diagnostic: tsTypes.Diagnostic
   ) {
     const errorCode = UNI_APP_X_TYPE_VALIDATION
-      ? [2300, 2451, 2349, 110111119, 2564]
+      ? [2300, 2451, 2349, 110111119, 2564, 1023]
       : []
     const throwError =
       diagnostic.__throwError ||
@@ -248,13 +249,18 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
       if (error.file && error.frame) {
         const parts = error.file.split('/')
         if (parts.length > 2 && parts[0] === 'uni_modules') {
+          const pluginName = parts[1]
+          if (encryptExistCache.has(pluginName)) {
+            return
+          }
           const encrypt = path.join(
             process.env.UNI_INPUT_DIR,
             'uni_modules',
-            parts[1],
+            pluginName,
             'encrypt'
           )
           if (encrypt && fs.existsSync(encrypt)) {
+            encryptExistCache.set(pluginName, true)
             return
           }
         }
