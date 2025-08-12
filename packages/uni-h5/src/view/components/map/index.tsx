@@ -389,6 +389,9 @@ function useMap(
           emitBoundsReady()
         }
       )
+      event.addListener(map, 'complete', () => {
+        emitBoundsReady()
+      })
       event.addListener(map, 'click', () => {
         // TODO 编译器将 tap 转换为 click
         trigger('tap', {} as Event, {})
