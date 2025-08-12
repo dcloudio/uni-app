@@ -1,5 +1,5 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
-import { isArray, isFunction, hasOwn, extend, isPlainObject } from '@vue/shared';
+import { isArray, hyphenate, isFunction, hasOwn, extend, isPlainObject } from '@vue/shared';
 import { nextTick, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
@@ -72,6 +72,42 @@ function findVmByVueId(instance, vuePid) {
             return parentVm;
         }
     }
+}
+const EVENT_OPTS = 'eO';
+/**
+ * 需要搭配：
+ * ./componentInstance/index.ts:24 triggerEvent 时传递 __ins__
+ * ./componentProps.ts:49 增加 properties eO
+ * @param this
+ * @param event
+ * @returns
+ */
+function handleEvent(event) {
+    const { type, currentTarget: { dataset }, detail: { __ins__ }, } = event;
+    let methodName = type;
+    // 快手小程序的 __l 方法也会走此处逻辑，但没有 __ins__
+    if (__ins__) {
+        // 自定义事件，通过 triggerEvent 传递 __ins__
+        let eventObj = {};
+        try {
+            // https://github.com/dcloudio/uni-app/issues/3647
+            // 通过字符串序列化解决百度小程序修改对象不触发组件properties变化的Bug
+            eventObj = JSON.parse(__ins__.properties[EVENT_OPTS]);
+        }
+        catch (e) { }
+        methodName = resolveMethodName(type, eventObj);
+    }
+    else if (dataset && dataset[EVENT_OPTS]) {
+        // 快手小程序 input 等内置组件的 input 事件也会走此逻辑，所以从 dataset 中读取
+        methodName = resolveMethodName(type, dataset[EVENT_OPTS]);
+    }
+    if (!this[methodName]) {
+        return console.warn(type + ' not found');
+    }
+    this[methodName](event);
+}
+function resolveMethodName(name, obj) {
+    return obj[name] || obj[hyphenate(name)];
 }
 function nextSetDataTick(mpInstance, fn) {
     // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
@@ -913,6 +949,10 @@ function initCreatePage(parseOptions) {
     };
 }
 
+function parse(pageOptions) {
+    // 京东小程序 input 事件不支持动态事件，故由 __e 分发
+    pageOptions.methods.__e = handleEvent;
+}
 function initRelation(mpInstance, detail) {
     // 兼容triggerEvent
     // @ts-expect-error
@@ -920,6 +960,7 @@ function initRelation(mpInstance, detail) {
 }
 var parseOptions = extend({}, baseParseOptions, {
     initRelation,
+    parse,
 });
 
 const createComponent = initCreateComponent(parseOptions);

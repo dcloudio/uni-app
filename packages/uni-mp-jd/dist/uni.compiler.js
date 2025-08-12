@@ -3,11 +3,36 @@
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var path = require('path');
+var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
 var path__default = /*#__PURE__*/_interopDefault(path);
+
+/**
+ * 京东小程序 input 事件不支持动态事件
+ */
+const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn, {
+    match: (name, node, context) => {
+        if (name === 'input' && (node.tag === 'input' || node.tag === 'textarea')) {
+            return true;
+        }
+        return false;
+    },
+});
+
+/**
+ * 京东小程序 input 事件不支持动态事件，故 v-model 也需要调整
+ */
+const transformModel = uniCliShared.createTransformModel(uniMpCompiler.transformModel, {
+    match: (node, context) => {
+        if (node.tag === 'input' || node.tag === 'textarea') {
+            return true;
+        }
+        return false;
+    },
+});
 
 var compileType = "miniprogram";
 var setting = {
@@ -25,6 +50,10 @@ const nodeTransforms = [
     // transformMatchMedia,
     uniCliShared.transformComponentLink,
 ];
+const directiveTransforms = {
+    on: transformOn,
+    model: transformModel,
+};
 const customElements = [
     'root-portal',
     'page-container',
@@ -32,6 +61,7 @@ const customElements = [
 ];
 const compilerOptions = {
     nodeTransforms,
+    directiveTransforms,
 };
 const COMPONENTS_DIR = 'jdcomponents';
 const miniProgram = {
