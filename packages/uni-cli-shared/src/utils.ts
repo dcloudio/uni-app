@@ -278,10 +278,17 @@ export function getShadowImagePath(type: string) {
   return `/${identStr}img/shadow-${type}.png`
 }
 
-export function createShadowImageUrl(cdn: number, type: string = 'grey') {
-  return `https://cdn${
-    (cdn || 0) + (process.env.UNI_APP_X === 'true' ? 1000 : 0) || ''
-  }.dcloud.net.cn${getShadowImagePath(type)}`
+export function createShadowImageUrl(
+  cdn: number,
+  type: string = 'grey',
+  isInternational: boolean = false
+) {
+  const domain = isInternational
+    ? 'cdn.dcimg.net'
+    : `cdn${
+        (cdn || 0) + (process.env.UNI_APP_X === 'true' ? 1000 : 0) || ''
+      }.dcloud.net.cn`
+  return `https://${domain}${getShadowImagePath(type)}`
 }
 
 export function isNormalCompileTarget() {
