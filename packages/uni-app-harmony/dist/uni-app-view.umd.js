@@ -12446,7 +12446,7 @@
       }
     } else {
       intersectionObserver.USE_MUTATION_OBSERVER = false;
-      var el = $el.querySelector(options.selector);
+      var el = $el.matches(options.selector) ? $el : $el.querySelector(options.selector);
       if (!el) {
         console.warn("Node ".concat(options.selector, " is not found. Intersection observer will not trigger."));
       } else {
@@ -19791,7 +19791,8 @@
         _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
       }
       watch(() => props2.nodes, renderVNode, {
-        immediate: true
+        immediate: true,
+        deep: true
       });
       return () => h("uni-rich-text", {
         ref: rootRef

@@ -20,7 +20,7 @@ var ExternalModuls = [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
 		],
-		version: "1.0.2"
+		version: "1.0.3"
 	},
 	{
 		type: "provider",
@@ -68,6 +68,15 @@ var ExternalModuls = [
 			"setAppBadgeNumber"
 		],
 		version: "1.0.2"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-verify",
+		apis: [
+			"getUniverifyManager",
+			"getUniVerifyManager"
+		],
+		version: "1.0.0"
 	}
 ];
 
@@ -79,7 +88,7 @@ var ExternalModulesX = [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
 		],
-		version: "1.0.2"
+		version: "1.0.3"
 	},
 	{
 		type: "provider",
@@ -135,6 +144,15 @@ var ExternalModulesX = [
 			"setAppBadgeNumber"
 		],
 		version: "1.0.2"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-verify",
+		apis: [
+			"getUniverifyManager",
+			"getUniVerifyManager"
+		],
+		version: "1.0.0"
 	}
 ];
 
@@ -255,7 +273,7 @@ function uniAppHarmonyPlugin() {
                 return;
             }
             // 1.0 特有逻辑，x 上由其他插件完成
-            if (process.env.UNI_APP_X !== 'true') {
+            if (!isX) {
                 // x 上暂时编译所有uni ext api，不管代码里是否调用了
                 await uniCliShared.buildUniExtApis();
             }
@@ -536,9 +554,7 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
         importIds.push('customElements');
     }
     importIds.push('uni');
-    importCodes.unshift(`import { ${importIds.join(', ')} } from '${process.env.UNI_APP_X !== 'true'
-        ? '@dcloudio/uni-app-runtime'
-        : '@dcloudio/uni-app-x-runtime'}'`);
+    importCodes.unshift(`import { ${importIds.join(', ')} } from '${!isX ? '@dcloudio/uni-app-runtime' : '@dcloudio/uni-app-x-runtime'}'`);
     context.emitFile({
         type: 'asset',
         fileName: 'uni_modules/index.generated.ets',
@@ -556,6 +572,18 @@ function initUniExtApi() {
 }
 `,
     });
+    if (isX) {
+        context.emitFile({
+            type: 'asset',
+            fileName: 'import/app-config.ets',
+            source: `import '../app-config'`,
+        });
+        context.emitFile({
+            type: 'asset',
+            fileName: 'import/app-service.ets',
+            source: `import '../app-service'`,
+        });
+    }
     const dependencies = {};
     const modules = [];
     projectDeps.forEach((dep) => {
