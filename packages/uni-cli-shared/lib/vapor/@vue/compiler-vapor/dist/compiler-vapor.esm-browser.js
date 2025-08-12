@@ -34407,6 +34407,7 @@ class HtmlParser {
 }
 
 const NODE_TYPE_TEXT = "text";
+const NODE_TYPE_BUTTON = "button";
 const NODE_TYPE_COMMENT = "comment";
 const NODE_TYPE_ELEMENT = "element";
 const VALUE_ATTR = "value";
@@ -34461,6 +34462,9 @@ class DomCodeGenerator {
     if (tag === NODE_TYPE_TEXT) {
       return this.genTextElementCode({ tag, attrs, children });
     }
+    if (tag === NODE_TYPE_BUTTON) {
+      return this.genButtonElementCode({ tag, attrs, children });
+    }
     return this.genRegularElementCode({ tag, attrs, children });
   }
   genTextElementCode(params) {
@@ -34473,6 +34477,11 @@ class DomCodeGenerator {
       const finalAttrs = this.mergeTextAttributes(attrs, textContent);
       return this.buildElementStatements(tag, finalAttrs, void 0);
     }
+  }
+  genButtonElementCode(params) {
+    const textContent = this.extractTextContent(params.children);
+    const finalAttrs = this.mergeTextAttributes(params.attrs, textContent);
+    return this.buildElementStatements(params.tag, finalAttrs, void 0);
   }
   genRegularElementCode(params) {
     const { tag, attrs, children } = params;
@@ -36316,7 +36325,7 @@ function processInterpolation(context) {
     return;
   }
   context.template += " ";
-  const isParentText = context.options.templateMode === "factory" && context.parent && context.parent.node.type === 1 && context.parent.node.tag === "text";
+  const isParentText = context.options.templateMode === "factory" && context.parent && context.parent.node.type === 1 && (context.parent.node.tag === "text" || context.parent.node.tag === "button");
   const id = isParentText ? context.parent.reference() : context.reference();
   if (values.length === 0) {
     return;
@@ -36341,7 +36350,7 @@ function processInterpolation(context) {
 }
 function processTextContainer(children, context) {
   if (context.options.templateMode === "factory") {
-    if (context.node.tag === "text") {
+    if (context.node.tag === "text" || context.node.tag === "button") {
       return;
     }
   }
