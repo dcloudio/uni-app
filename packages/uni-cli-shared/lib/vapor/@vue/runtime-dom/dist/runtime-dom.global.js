@@ -5457,8 +5457,8 @@ If this is a native custom element, make sure to exclude it from component resol
   }
 
   const getPublicInstance = (i) => {
-    if (!i || i.vapor) return null;
-    if (isStatefulComponent(i))
+    if (!i) return null;
+    if (i.vapor || isStatefulComponent(i))
       return getComponentPublicInstance(i);
     return getPublicInstance(i.parent);
   };

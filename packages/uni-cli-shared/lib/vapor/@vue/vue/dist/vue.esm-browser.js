@@ -5531,8 +5531,8 @@ function toHandlers(obj, preserveCaseIfNecessary) {
 }
 
 const getPublicInstance = (i) => {
-  if (!i || i.vapor) return null;
-  if (isStatefulComponent(i))
+  if (!i) return null;
+  if (i.vapor || isStatefulComponent(i))
     return getComponentPublicInstance(i);
   return getPublicInstance(i.parent);
 };

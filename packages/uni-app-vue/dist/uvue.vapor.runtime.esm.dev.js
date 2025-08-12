@@ -5512,8 +5512,8 @@ function toHandlers(obj, preserveCaseIfNecessary) {
   return ret;
 }
 var getPublicInstance = i => {
-  if (!i || i.vapor) return null;
-  if (isStatefulComponent(i)) return getComponentPublicInstance(i);
+  if (!i) return null;
+  if (i.vapor || isStatefulComponent(i)) return getComponentPublicInstance(i);
   return getPublicInstance(i.parent);
 };
 var publicPropertiesMap =
@@ -9847,7 +9847,7 @@ function invokeVNodeHook(hook, instance, vnode) {
 }
 var currentInstance = null;
 var getCurrentGenericInstance = () => currentInstance || currentRenderingInstance;
-var getCurrentInstance = () => currentInstance && !currentInstance.vapor ? currentInstance : currentRenderingInstance;
+var getCurrentInstance = () => getCurrentGenericInstance();
 var isInSSRComponentSetup = false;
 var setInSSRSetupState;
 var simpleSetCurrentInstance;

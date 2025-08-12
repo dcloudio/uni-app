@@ -3050,8 +3050,8 @@ function onErrorCaptured(hook, target = currentInstance) {
 const NULL_DYNAMIC_COMPONENT = Symbol.for("v-ndc");
 
 const getPublicInstance = (i) => {
-  if (!i || i.vapor) return null;
-  if (isStatefulComponent(i))
+  if (!i) return null;
+  if (i.vapor || isStatefulComponent(i))
     return getComponentPublicInstance(i);
   return getPublicInstance(i.parent);
 };
