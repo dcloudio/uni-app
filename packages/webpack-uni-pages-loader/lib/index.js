@@ -3,15 +3,12 @@ const path = require('path')
 const loaderUtils = require('loader-utils')
 
 const {
+  getPagesJson,
   parsePages,
   normalizePath,
   parsePagesJson,
   parseManifestJson
 } = require('@dcloudio/uni-cli-shared')
-
-const {
-  getPagesJson
-} = require('@dcloudio/uni-cli-shared/lib/cache')
 
 const {
   pagesJsonJsFileName
