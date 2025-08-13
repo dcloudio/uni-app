@@ -441,7 +441,7 @@
         "name": "onNetworkStatusChange",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true,
           "arkts": true
         }
@@ -450,7 +450,7 @@
         "name": "offNetworkStatusChange",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true,
           "arkts": true
         }
