@@ -1393,7 +1393,17 @@ function setDOMProp(el, key, value) {
   needRemove && el.removeAttribute(key);
 }
 function setClass(el, value) {
-  patchClass(el, null, normalizeClass(value), getCurrentGenericInstance());
+  if (el.$root) {
+    const nextClassList = el.classList.slice(0);
+    normalizeClass(value).split(/\s+/).forEach((cls) => {
+      if (!nextClassList.includes(cls)) {
+        nextClassList.push(cls);
+      }
+    });
+    patchClass(el, null, nextClassList.join(" "), getCurrentGenericInstance());
+  } else {
+    patchClass(el, null, normalizeClass(value), getCurrentGenericInstance());
+  }
 }
 function setStyle(el, value) {
   if (el.$root) {

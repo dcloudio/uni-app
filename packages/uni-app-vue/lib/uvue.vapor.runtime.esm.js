@@ -9724,7 +9724,17 @@ function setDOMProp(el, key, value) {
   needRemove && el.removeAttribute(key);
 }
 function setClass(el, value) {
-  patchClass(el, null, normalizeClass$1(value), getCurrentGenericInstance());
+  if (el.$root) {
+    const nextClassList = el.classList.slice(0);
+    normalizeClass$1(value).split(/\s+/).forEach((cls) => {
+      if (!nextClassList.includes(cls)) {
+        nextClassList.push(cls);
+      }
+    });
+    patchClass(el, null, nextClassList.join(" "), getCurrentGenericInstance());
+  } else {
+    patchClass(el, null, normalizeClass$1(value), getCurrentGenericInstance());
+  }
 }
 function setStyle(el, value) {
   if (el.$root) {
@@ -11880,7 +11890,7 @@ function factory(doc, factory2, root) {
   return () => {
     const el = factory2(doc);
     if (root) {
-      el.ext.set("$root", true);
+      el.$root = true;
     }
     return el;
   };
