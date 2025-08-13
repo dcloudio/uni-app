@@ -2317,8 +2317,8 @@ const emptyContext = {
 };
 class VaporComponentInstance {
   constructor(comp, rawProps, rawSlots, appContext) {
-    if (comp.__file) {
-      console.log("vue3 \u84B8\u6C7D\u6A21\u5F0F\uFF1A", `at ${comp.__file}:1`);
+    if (comp.__file || comp.__name) {
+      console.log("vue3 \u84B8\u6C7D\u6A21\u5F0F\uFF1A", `at ${comp.__file || comp.__name}:1`);
     }
     this.vapor = true;
     this.uid = nextUid();

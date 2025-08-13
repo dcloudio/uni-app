@@ -6593,8 +6593,8 @@ const emptyAppContext = createAppContext();
 let uid = 0;
 function createComponentInstance(vnode, parent, suspense) {
   const type = vnode.type;
-  if (type.__file) {
-    console.log("vue3 \u6807\u51C6\u6A21\u5F0F\uFF1A", `at ${type.__file}:1`);
+  if (type.__file || type.__name) {
+    console.log("vue3 \u6807\u51C6\u6A21\u5F0F\uFF1A", `at ${type.__file || type.__name}:1`);
   }
   const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
   const instance = {
