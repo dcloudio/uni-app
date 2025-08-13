@@ -9843,14 +9843,10 @@ function setValue(el, value) {
   if (!isApplyingFallthroughProps && el.$root && hasFallthroughKey("value")) {
     return;
   }
-  el._value = value;
-  var oldValue = el.tagName === "OPTION" ? el.getAttribute("value") : el.value;
-  var newValue = value == null ? "" : value;
-  if (oldValue !== newValue) {
-    el.value = newValue;
-  }
   if (value == null) {
     el.removeAttribute("value");
+  } else {
+    el.setAnyAttribute("value", value);
   }
 }
 function setText(el, value) {
@@ -11633,7 +11629,7 @@ var vModelTextUpdate = (el, oldValue, value, trim, number, lazy) => {
 };
 var vModelDynamic = vModelText;
 function getValue(el) {
-  return "_value" in el ? el._value : el.getAnyAttribute("value");
+  return el.getAnyAttribute("value");
 }
 var vModelCheckboxInit = (el, set) => {};
 var vModelCheckboxUpdate = function (el, oldValue, value) {

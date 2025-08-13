@@ -13843,14 +13843,10 @@ function setValue(el, value) {
   if (!isApplyingFallthroughProps && el.$root && hasFallthroughKey("value")) {
     return;
   }
-  el._value = value;
-  const oldValue = el.tagName === "OPTION" ? el.getAttribute("value") : el.value;
-  const newValue = value == null ? "" : value;
-  if (oldValue !== newValue) {
-    el.value = newValue;
-  }
   if (value == null) {
     el.removeAttribute("value");
+  } else {
+    el.setAnyAttribute("value", value);
   }
 }
 function setText(el, value) {
