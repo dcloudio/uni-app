@@ -163,10 +163,14 @@ function rewriteClassExpression(
   expr: ExpressionNode,
   context: TransformContext
 ) {
-  const expressions = context.filters.length
-    ? [expr]
-    : [context.helperString(NORMALIZE_CLASS) + '(', expr, ')']
-  return rewriteExpression(createCompoundExpression(expressions), context)
+  return rewriteExpression(
+    createCompoundExpression([
+      context.helperString(NORMALIZE_CLASS) + '(',
+      expr,
+      ')',
+    ]),
+    context
+  )
 }
 
 function rewriteClassArrayExpression(

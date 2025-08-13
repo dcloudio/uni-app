@@ -14,67 +14,6 @@ describe('compiler: transform wxs', () => {
       }
     )
   })
-  test('class', () => {
-    assert(
-      `<view :class="utils.formatClass('hello')"><view class="test"></view></view>`,
-      `<view class="{{utils.formatClass('hello')}}"><view class="test"></view></view>`,
-      `(_ctx, _cache) => {
-  return {}
-}`,
-      {
-        filters: ['utils'],
-        cacheHandlers: true,
-      }
-    )
-    assert(
-      `<view :class="formatClass('hello')" class="test1"><view class="test"></view></view>`,
-      `<view class="{{[a, 'test1']}}"><view class="test"></view></view>`,
-      `(_ctx, _cache) => {
-  return { a: _ctx.formatClass('hello') }
-}`,
-      {
-        filters: ['utils'],
-        cacheHandlers: true,
-      }
-    )
-    assert(
-      `<view :class="[utils.formatClass('hello'), 'hello1', utils.formatClass('hello2'), normalizeClass('hello3')]"><view class="test"></view></view>`,
-      `<view class="{{[utils.formatClass('hello'), 'hello1', utils.formatClass('hello2'), a]}}"><view class="test"></view></view>`,
-      `(_ctx, _cache) => {
-  return { a: _ctx.normalizeClass('hello3') }
-}`,
-      {
-        filters: ['utils'],
-        cacheHandlers: true,
-      }
-    )
-    assert(
-      `<view :class="utils.formatClass('hello')"><view class="test"></view></view>`,
-      `<view class="{{utils.formatClass('hello')}}"><view class="test"></view></view>`,
-      `(_ctx, _cache) => { "raw js"
-  const __returned__ = {}
-  return __returned__
-}`,
-      {
-        filters: ['utils'],
-        cacheHandlers: true,
-        isX: true,
-      }
-    )
-    assert(
-      `<view :class="[utils.formatClass('hello'), 'hello1', utils.formatClass('hello2'), normalizeClass('hello3')]"><view class="test"></view></view>`,
-      `<view class="{{[utils.formatClass('hello'), 'hello1', utils.formatClass('hello2'), a]}}"><view class="test"></view></view>`,
-      `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _ctx.normalizeClass('hello3') }
-  return __returned__
-}`,
-      {
-        filters: ['utils'],
-        isX: true,
-        cacheHandlers: true,
-      }
-    )
-  })
   test('cacheHandlers', () => {
     assert(
       `<view :data-threshold="threshold" :change:prop="swipe.showWatch" :prop="is_show" @touchstart="swipe.touchstart"/>`,
