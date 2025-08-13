@@ -24772,6 +24772,9 @@ function useMap(props2, rootRef, emit2) {
         boundsChangedEvent.remove();
         emitBoundsReady();
       });
+      event.addListener(map2, "complete", () => {
+        emitBoundsReady();
+      });
       event.addListener(map2, "click", () => {
         trigger("tap", {}, {});
         trigger("click", {}, {});

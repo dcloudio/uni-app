@@ -5557,13 +5557,7 @@ function vOn(value, key) {
     }
     else {
         // add
-        if (ctx.$mpPlatform === 'mp-jd' && value.name === 'onInput') {
-            // jd 在触发事件（input）时，会从原型链上取值，导致 input 事件函数取不到 question/190631 question/212442
-            Object.getPrototypeOf(mpInstance)[name] = createInvoker(value, instance);
-        }
-        else {
-            mpInstance[name] = createInvoker(value, instance);
-        }
+        mpInstance[name] = createInvoker(value, instance);
     }
     return name;
 }

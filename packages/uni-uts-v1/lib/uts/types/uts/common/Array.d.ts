@@ -2051,8 +2051,6 @@ interface ArrayConstructor {
    */
   from<T, U>(arrayLike: ArrayLike<T>, mapfn: (v: T, k: number) => U): U[];
 
-
-
   /**
    * Array.fromAsync() 静态方法可以由一个异步可迭代对象、可迭代对象或类数组对象创建一个新的、浅拷贝的 Array 实例。
    * @param arrayLike 要转换为数组的异步可迭代、可迭代或类数组对象。
@@ -2098,7 +2096,28 @@ interface ArrayConstructor {
    */
   fromAsync<T, U>(arrayLike: ArrayLike<T>, mapfn: (v: T, k: number) => U): Promise<U[]>;
 
-
+  /**
+     fromNative() 方法 从native 数据结构中 转换得到一个UTS环境下的Array对象
+     支持传入的参数类型有: kotlin.collections.List/ kotlin.Array/kotlin.ByteArray/Kotlin.LongArray/Kotlin.IntArray 等
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#fromNative
+     @uniPlatform {
+        "app": {
+            "android": {
+                "osVer": "5.0",
+                "uniVer": "x",
+                "unixVer": "3.90",
+                "uniUtsPlugin": "√",
+                "unixUtsPlugin": "3.90"
+            },
+            "ios": {
+                "osVer": "x",
+                "uniVer": "x",
+                  "unixVer": "x"
+            }
+        }
+     }
+   */
+  fromNative(input : kotlin.ByteArray | Kotlin.LongArray | Kotlin.IntArray | Kotlin.FloatArray | Kotlin.DoubleArray | Kotlin.ShortArray | Kotlin.CharArray | Kotlin.BooleanArray | kotlin.Array | kotlin.collections.List) : Array;
 
   readonly prototype: any[]
 }

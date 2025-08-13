@@ -80,15 +80,15 @@
     en: string,
     es: string,
     fr: string,
-    'zh-Hans': string,
-    'zh-Hant': string
+    zhHans: string,
+    zhHant: string
   }
   const i18nCancelText = reactive({
     en: 'Cancel',
     es: 'Cancelar',
     fr: 'Annuler',
-    'zh-Hans': '取消',
-    'zh-Hant': '取消',
+    zhHans: '取消',
+    zhHant: '取消',
   } as I18nCancelText)
   const readyEventName = ref('')
   const optionsEventName = ref('')
@@ -101,7 +101,7 @@
   const itemColor = ref<string | null>(null)
   const cancelColor = ref<string | null>(null)
   const backgroundColor = ref<string | null>(null)
-  const language = ref('zh-Hans')
+  const language = ref('zhHans')
   const theme = ref('light')
   const isLandscape = ref(false)
   const bottomNavigationHeight = ref(0)
@@ -118,6 +118,43 @@
   const appThemeChangeCallbackId = ref(-1)
   const osThemeChangeCallbackId = ref(-1)
   // #endif
+
+  // #ifdef WEB
+  const fixSize = () => {
+    const {
+      windowWidth,
+      windowHeight,
+      windowTop
+    } = uni.getSystemInfoSync()
+    windowWidth.value = windowWidth
+    windowHeight.value = windowHeight + (windowTop || 0)
+  }
+  // #endif
+  const closeActionSheet = () => {
+    show.value = false
+    setTimeout(() => {
+      uni.closeDialogPage({
+        dialogPage: uniPageInstance
+      })
+    }, 250)
+  }
+  const handleMenuItemClick = (tapIndex: number) => {
+    menuItemClicked.value = true
+    closeActionSheet()
+    uni.$emit(successEventName.value, tapIndex)
+  }
+  const handleCancel = () => {
+    cancelButtonClicked.value = true
+    closeActionSheet()
+    uni.$emit(failEventName.value, {})
+  }
+  const handleThemeChange = () => {
+    if(hostTheme.value != null){
+      theme.value = hostTheme.value
+    } else if(appTheme.value != null){
+      theme.value = appTheme.value
+    }
+  }
 
   onLoad((options) => {
     readyEventName.value = options['readyEventName']!
@@ -195,9 +232,9 @@
     isLandscape.value = systemInfo.deviceOrientation == 'landscape'
     // #ifdef APP-ANDROID || APP-IOS
     appThemeChangeCallbackId.value = uni.onAppThemeChange((res: AppThemeChangeResult) => {
-      const appTheme = res.appTheme
-      if (appTheme != null && appTheme != "auto") {
-        appTheme.value = appTheme
+      const callbackAppTheme = res.appTheme
+      if (callbackAppTheme != null && callbackAppTheme != "auto") {
+        appTheme.value = callbackAppTheme
         handleThemeChange()
       }
     })
@@ -275,11 +312,11 @@
     if (language.value.startsWith('fr')) {
       return i18nCancelText['fr'] as string
     }
-    if (language.value.startsWith('zh-Hans')) {
-      return i18nCancelText['zh-Hans'] as string
+    if (language.value.startsWith('zhHans')) {
+      return i18nCancelText['zhHans'] as string
     }
-    if (language.value.startsWith('zh-Hant')) {
-      return i18nCancelText['zh-Hant'] as string
+    if (language.value.startsWith('zhHant')) {
+      return i18nCancelText['zhHant'] as string
     }
     return '取消'
   })
@@ -302,7 +339,7 @@
       show.value = true
     }, 10)
   })
-  onResize(() => {
+  onResize((_ : OnResizeOptions) => {
     const systemInfo = uni.getSystemInfoSync()
     isLandscape.value = systemInfo.deviceOrientation == 'landscape'
   })
@@ -323,43 +360,6 @@
     uni.offOsThemeChange(osThemeChangeCallbackId.value)
     // #endif
   })
-    
-  // #ifdef WEB
-  const fixSize = () => {
-    const {
-      windowWidth,
-      windowHeight,
-      windowTop
-    } = uni.getSystemInfoSync()
-    windowWidth.value = windowWidth
-    windowHeight.value = windowHeight + (windowTop || 0)
-  }
-  // #endif
-  const closeActionSheet = () => {
-    show.value = false
-    setTimeout(() => {
-      uni.closeDialogPage({
-        dialogPage: uniPageInstance
-      })
-    }, 250)
-  }
-  const handleMenuItemClick = (tapIndex: number) => {
-    menuItemClicked.value = true
-    closeActionSheet()
-    uni.$emit(successEventName.value, tapIndex)
-  }
-  const handleCancel = () => {
-    cancelButtonClicked.value = true
-    closeActionSheet()
-    uni.$emit(failEventName.value, {})
-  }
-  const handleThemeChange = () => {
-    if(hostTheme.value != null){
-      theme.value = hostTheme.value
-    } else if(appTheme.value != null){
-      theme.value = appTheme.value
-    }
-  }
 </script>
 
 <style>

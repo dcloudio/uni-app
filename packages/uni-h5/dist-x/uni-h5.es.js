@@ -26735,6 +26735,9 @@ function useMap(props2, rootRef, emit2) {
         boundsChangedEvent.remove();
         emitBoundsReady();
       });
+      event.addListener(map2, "complete", () => {
+        emitBoundsReady();
+      });
       event.addListener(map2, "click", () => {
         trigger("tap", {}, {});
         trigger("click", {}, {});
@@ -28050,8 +28053,8 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       en: "Cancel",
       es: "Cancelar",
       fr: "Annuler",
-      "zh-Hans": "取消",
-      "zh-Hant": "取消"
+      zhHans: "取消",
+      zhHant: "取消"
     });
     const readyEventName = ref("");
     const optionsEventName = ref("");
@@ -28064,7 +28067,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     const itemColor = ref(null);
     const cancelColor = ref(null);
     const backgroundColor = ref(null);
-    const language = ref("zh-Hans");
+    const language = ref("zhHans");
     const theme = ref("light");
     const isLandscape2 = ref(false);
     const bottomNavigationHeight = ref(0);
@@ -28075,6 +28078,40 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     const windowWidth = ref(0);
     const windowHeight = ref(0);
     const popover = reactive({});
+    const fixSize = () => {
+      const {
+        windowWidth: windowWidth2,
+        windowHeight: windowHeight2,
+        windowTop
+      } = uni.getSystemInfoSync();
+      windowWidth2.value = windowWidth2;
+      windowHeight2.value = windowHeight2 + (windowTop || 0);
+    };
+    const closeActionSheet = () => {
+      show.value = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: uniPageInstance
+        });
+      }, 250);
+    };
+    const handleMenuItemClick = (tapIndex) => {
+      menuItemClicked.value = true;
+      closeActionSheet();
+      uni.$emit(successEventName.value, tapIndex);
+    };
+    const handleCancel = () => {
+      cancelButtonClicked.value = true;
+      closeActionSheet();
+      uni.$emit(failEventName.value, {});
+    };
+    const handleThemeChange = () => {
+      if (hostTheme.value != null) {
+        theme.value = hostTheme.value;
+      } else if (appTheme.value != null) {
+        theme.value = appTheme.value;
+      }
+    };
     onLoad((options) => {
       readyEventName.value = options["readyEventName"];
       optionsEventName.value = options["optionsEventName"];
@@ -28211,11 +28248,11 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       if (language.value.startsWith("fr")) {
         return i18nCancelText["fr"];
       }
-      if (language.value.startsWith("zh-Hans")) {
-        return i18nCancelText["zh-Hans"];
+      if (language.value.startsWith("zhHans")) {
+        return i18nCancelText["zhHans"];
       }
-      if (language.value.startsWith("zh-Hant")) {
-        return i18nCancelText["zh-Hant"];
+      if (language.value.startsWith("zhHant")) {
+        return i18nCancelText["zhHant"];
       }
       return "取消";
     });
@@ -28231,7 +28268,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
         show.value = true;
       }, 10);
     });
-    onResize(() => {
+    onResize((_) => {
       const systemInfo = uni.getSystemInfoSync();
       isLandscape2.value = systemInfo.deviceOrientation == "landscape";
     });
@@ -28245,40 +28282,6 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       uni.$off(failEventName.value, null);
       window.removeEventListener("resize", fixSize);
     });
-    const fixSize = () => {
-      const {
-        windowWidth: windowWidth2,
-        windowHeight: windowHeight2,
-        windowTop
-      } = uni.getSystemInfoSync();
-      windowWidth2.value = windowWidth2;
-      windowHeight2.value = windowHeight2 + (windowTop || 0);
-    };
-    const closeActionSheet = () => {
-      show.value = false;
-      setTimeout(() => {
-        uni.closeDialogPage({
-          dialogPage: uniPageInstance
-        });
-      }, 250);
-    };
-    const handleMenuItemClick = (tapIndex) => {
-      menuItemClicked.value = true;
-      closeActionSheet();
-      uni.$emit(successEventName.value, tapIndex);
-    };
-    const handleCancel = () => {
-      cancelButtonClicked.value = true;
-      closeActionSheet();
-      uni.$emit(failEventName.value, {});
-    };
-    const handleThemeChange = () => {
-      if (hostTheme.value != null) {
-        theme.value = hostTheme.value;
-      } else if (appTheme.value != null) {
-        theme.value = appTheme.value;
-      }
-    };
     return (_ctx, _cache) => {
       const _component_view = __syscom_3;
       const _component_text = __syscom_0$1;
