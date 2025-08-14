@@ -191,6 +191,22 @@ describe('mp-weixin: transform component', () => {
 }`
     )
   })
+  test('lazy element: movable-view', () => {
+    assert(
+      `<movable-area><movable-view direction="all">drag me</movable-view></movable-area>`,
+      `<movable-area><movable-view direction="all">drag me</movable-view></movable-area>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<movable-area><movable-view :direction="direction">drag me</movable-view></movable-area>`,
+      `<movable-area><block wx:if="{{r0}}"><movable-view direction="{{a}}">drag me</movable-view></block></movable-area>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.direction }
+}`
+    )
+  })
   test('lazy element: scroll-view', () => {
     assert(
       `<scroll-view/>`,
