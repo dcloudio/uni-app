@@ -564,6 +564,6 @@ export const openDocument = {
     }
   },
 }
-export const navigateTo = my.canIUse('getOpenerEventChannel')
+export const navigateTo = my.canIUse('page.getOpenerEventChannel')
   ? {}
   : _navigateTo()
