@@ -762,4 +762,27 @@ border-color: var(--default-border);
       },
     })
   })
+
+  test('css var 全局定义产生编码错误', async () => {
+    const { json, messages } = await objectifierRule(`
+  --color: #fff000;
+  .box {
+    color: var(--color);
+  }
+  .box1{color:#FF0000}
+`)
+    expect(json).toEqual({
+      box: {
+        '': {
+          color: 'var(--color)',
+        },
+      },
+      box1: {
+        '': {
+          color: '#FF0000',
+        },
+      },
+    })
+    expect(messages.length).toBe(1)
+  })
 })

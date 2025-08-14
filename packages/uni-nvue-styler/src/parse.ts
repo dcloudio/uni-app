@@ -1,7 +1,7 @@
 import { isString } from '@vue/shared'
 import postcss, { type Message } from 'postcss'
 import { objectifier } from './objectifier'
-import { expand } from './expand'
+import { expand, vueStyleValidator } from './expand'
 import { normalize } from './normalize'
 import type { NormalizeOptions } from './utils'
 
@@ -18,6 +18,7 @@ interface ParseOptions extends NormalizeOptions {
 
 export async function parse(input: string, options: ParseOptions = {}) {
   const { root, messages } = await postcss([
+    vueStyleValidator(options),
     expand(options),
     normalize(options),
   ])
