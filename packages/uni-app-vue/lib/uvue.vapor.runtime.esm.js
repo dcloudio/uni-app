@@ -10766,9 +10766,9 @@ function unmountComponent(instance, parentNode) {
   }
 }
 function getExposed(instance) {
-  if (instance.exposed) {
+  if (instance.exposed || instance.vapor) {
     return instance.exposeProxy || // fixed by uts 支持 $callMethod
-    (instance.exposeProxy = new Proxy(markRaw(instance.exposed), {
+    (instance.exposeProxy = new Proxy(markRaw(instance.exposed || {}), {
       get(target, key) {
         if (key in target) {
           return target[key];
