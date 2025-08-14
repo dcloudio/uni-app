@@ -531,6 +531,6 @@ export const chooseAddress = {
     toRes.errMsg = toRes.errMsg + ' ' + fromRes.resultStatus
   },
 }
-export const navigateTo = my.canIUse('getOpenerEventChannel')
+export const navigateTo = my.canIUse('page.getOpenerEventChannel')
   ? {}
   : _navigateTo()
