@@ -10,6 +10,7 @@ import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
   EXTNAME_VUE_RE,
   type UniVitePlugin,
+  createResolveStaticAsset,
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   isExternalUrl,
@@ -199,7 +200,14 @@ export function initPluginVueOptions(
     }
   }
   if (options.platform !== 'h5' && options.platform !== 'web') {
-    compilerOptions.nodeTransforms.push(...getBaseNodeTransforms(options.base))
+    compilerOptions.nodeTransforms.push(
+      ...getBaseNodeTransforms(
+        options.base,
+        process.env.UNI_VUE_VAPOR === 'true'
+          ? createResolveStaticAsset(options.inputDir)
+          : undefined
+      )
+    )
   }
 
   if (nodeTransforms) {
