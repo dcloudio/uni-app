@@ -33,10 +33,14 @@ function quit () {
   }
 }
 
-function backWebview (webview, callback) {
+function backWebview (page, callback) {
+  const webview = page.$getAppWebview()
+  if (!page.__uniapp_webview) {
+    return callback(webview)
+  }
   const children = webview.children()
   if (!children || !children.length) { // 有子 webview
-    return callback()
+    return callback(webview)
   }
 
   // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
@@ -48,7 +52,7 @@ function backWebview (webview, callback) {
     if (canBack) {
       childWebview.back() // webview 返回
     } else {
-      callback()
+      callback(webview)
     }
   })
 }
@@ -85,13 +89,7 @@ function back (delta, animationType, animationDuration) {
     })
   }
 
-  const webview = currentPage.$getAppWebview()
-  if (!currentPage.__uniapp_webview) {
-    return backPage(webview)
-  }
-  backWebview(webview, () => {
-    backPage(webview)
-  })
+  backWebview(currentPage, backPage)
 }
 
 export function navigateBack ({
@@ -119,7 +117,7 @@ export function navigateBack ({
   uni.hideLoading()
 
   if (currentPage.$page.meta.isQuit) {
-    quit()
+    backWebview(currentPage, quit)
   } else if (currentPage.$page.id === 1 && __uniConfig.realEntryPagePath) {
     // condition
     __uniConfig.entryPagePath = __uniConfig.realEntryPagePath
