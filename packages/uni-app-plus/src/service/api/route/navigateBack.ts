@@ -123,5 +123,5 @@ function back(
     invokeHook(ON_SHOW)
   }
 
-  _backWebview(currentPage, (webview) => backPage(webview))
+  _backWebview(currentPage, backPage)
 }
