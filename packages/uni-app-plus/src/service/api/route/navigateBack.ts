@@ -43,7 +43,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     uni.hideToast()
     uni.hideLoading()
     if (getPage$BasePage(page).meta.isQuit) {
-      quit()
+      _backWebview(page, quit)
     } else if (isDirectPage(page)) {
       reLaunchEntryPage()
     } else {
@@ -55,8 +55,19 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   NavigateBackProtocol,
   NavigateBackOptions
 )
-let firstBackTime = 0
 
+function _backWebview(
+  page: ComponentPublicInstance,
+  callback: (webview: PlusWebviewWebviewObject) => void
+) {
+  const webview = plus.webview.getWebviewById(`${getPage$BasePage(page).id}`)
+  if (!(page as any).__uniapp_webview) {
+    return callback(webview)
+  }
+  backWebview(webview, () => callback(webview))
+}
+
+let firstBackTime = 0
 function quit() {
   initI18nAppMsgsOnce()
   if (!firstBackTime) {
@@ -112,13 +123,5 @@ function back(
     invokeHook(ON_SHOW)
   }
 
-  const webview = plus.webview.getWebviewById(
-    `${getPage$BasePage(currentPage).id}`
-  )
-  if (!(currentPage as any).__uniapp_webview) {
-    return backPage(webview)
-  }
-  backWebview(webview, () => {
-    backPage(webview)
-  })
+  _backWebview(currentPage, (webview) => backPage(webview))
 }
