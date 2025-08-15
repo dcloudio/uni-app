@@ -13755,11 +13755,7 @@ function shouldSetAsProp(el, key, value, isSVG) {
 
 const hasFallthroughKey = (key) => currentInstance.hasFallthrough && key in currentInstance.attrs;
 function setProp(el, key, value) {
-  if (key in el) {
-    setDOMProp(el, key, value);
-  } else {
-    setAttr(el, key, value);
-  }
+  setAttr(el, key, value);
 }
 function setAttr(el, key, value) {
   if (!isApplyingFallthroughProps && el.$root && hasFallthroughKey(key)) {
