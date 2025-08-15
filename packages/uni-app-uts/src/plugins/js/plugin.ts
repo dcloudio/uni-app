@@ -12,6 +12,7 @@ import {
   injectCssPostPlugin,
   insertBeforePlugin,
   normalizePath,
+  removeExt,
   resolveMainPathOnce,
   tscOutDir,
   uvueOutDir,
@@ -37,7 +38,7 @@ export function createUniAppJsEnginePlugin(
   platform: 'app-ios' | 'app-harmony'
 ) {
   return function uniAppJsEnginePlugin(): UniVitePlugin {
-    const inputDir = process.env.UNI_INPUT_DIR
+    const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
     const outputDir = process.env.UNI_OUTPUT_DIR
     const uvueOutputDir = uvueOutDir(platform)
     const tscOutputDir = tscOutDir(platform)
@@ -64,6 +65,18 @@ export function createUniAppJsEnginePlugin(
       }
     }
     emptyTscDir()
+
+    const isESM =
+      process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
+      fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, '.esm'))
+
+    const paths: Record<string, string> = isESM
+      ? {
+          vue: '@dcloudio/uni-app-x-runtime',
+          '@vue/shared': '@dcloudio/uni-app-x-runtime',
+        }
+      : {}
+
     return {
       name: 'uni:app-uts',
       apply: 'build',
@@ -95,12 +108,28 @@ export function createUniAppJsEnginePlugin(
               output: {
                 name: 'AppService',
                 banner: ``,
-                format: 'iife',
+                format: isESM ? 'esm' : 'iife',
                 entryFileNames: APP_SERVICE_FILENAME,
                 globals: {
                   vue: 'Vue',
                   '@vue/shared': 'uni.VueShared',
                 },
+                paths,
+                manualChunks(id) {
+                  if (isESM) {
+                    const chunkName = normalizePath(id.split('?')[0])
+                    if (chunkName.includes('/@dcloudio/uni-cloud/')) {
+                      return '@dcloudio/uni-cloud'
+                    }
+                    if (chunkName.startsWith(inputDir)) {
+                      return removeExt(
+                        normalizePath(path.relative(inputDir, chunkName))
+                      )
+                    }
+                  }
+                },
+                inlineDynamicImports: false,
+                chunkFileNames: isESM ? 'assets/[name].js' : undefined,
                 sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
                   return normalizePath(
                     path.relative(
