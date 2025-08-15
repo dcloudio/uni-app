@@ -209,6 +209,7 @@ function getMiniProgramOptions(isX) {
             // iOS 平台需要延迟
             input: [{ name: 'bind', arg: ['type'] }],
             textarea: [{ name: 'on', arg: ['input'] }],
+            'movable-view': [{ name: 'bind', arg: ['direction'] }],
         },
         component: {
             ':host': true,

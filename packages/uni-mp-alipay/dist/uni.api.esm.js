@@ -1238,7 +1238,7 @@ function initUni(api, protocols, platform = my) {
     {
         platform.$emit = $emit;
         // @ts-expect-error
-        if (!my.canIUse('getOpenerEventChannel'))
+        if (!my.canIUse('page.getOpenerEventChannel'))
             platform.getEventChannel = getEventChannel;
     }
     return new Proxy({}, UniProxyHandlers);
@@ -1893,7 +1893,7 @@ const openDocument = {
         }
     },
 };
-const navigateTo = my.canIUse('getOpenerEventChannel')
+const navigateTo = my.canIUse('page.getOpenerEventChannel')
     ? {}
     : navigateTo$1();
 

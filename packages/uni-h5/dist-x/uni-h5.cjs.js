@@ -3422,6 +3422,9 @@ let $uniApp;
     getAndroidApplication() {
       return null;
     }
+    getHarmonyAbility() {
+      return null;
+    }
   }
   $uniApp = new UniAppImpl();
 }
