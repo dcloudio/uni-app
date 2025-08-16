@@ -22,7 +22,7 @@ declare namespace NodeJS {
     UNI_RENDERER?: 'native'
     UNI_NVUE_COMPILER: 'uni-app' | 'weex' | 'vue' | 'vite'
     UNI_NVUE_STYLE_COMPILER: 'uni-app' | 'weex'
-    UNI_APP_CODE_SPLITING?: 'true'
+    UNI_APP_CODE_SPLITTING?: 'true'
 
     UNI_CUSTOM_SCRIPT?: string
     UNI_CUSTOM_DEFINE?: string

@@ -14,7 +14,7 @@ export function definePageCode(
     const pageIdentifier = normalizeIdentifier(pagePath)
     const pagePathWithExtname = normalizePagePath(pagePath, platform)
     if (pagePathWithExtname) {
-      if (process.env.UNI_APP_CODE_SPLITING) {
+      if (process.env.UNI_APP_CODE_SPLITTING) {
         // 拆分页面
         importPagesCode.push(
           `const ${pageIdentifier} = ()=>import('./${pagePathWithExtname}')`
