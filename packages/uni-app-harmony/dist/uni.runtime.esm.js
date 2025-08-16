@@ -12316,7 +12316,7 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
 function createPageFactory(component) {
     return () => {
         if (isVuePageAsyncComponent(component)) {
-            return component().then((component) => setupPage(clonedPageComponent(component)));
+            return component().then((component) => setupPage(clonedPageComponent(component.default || component)));
         }
         return setupPage(clonedPageComponent(component));
     };

@@ -66,9 +66,17 @@ export function createUniAppJsEnginePlugin(
     }
     emptyTscDir()
 
-    const isESM =
-      process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
-      fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, '.esm'))
+    if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+      const esmFile = path.resolve(process.env.UNI_INPUT_DIR, '.esm')
+      if (fs.existsSync(esmFile)) {
+        process.env.UNI_APP_OUTPUT_FORMAT = 'esm'
+        if (fs.readFileSync(esmFile, 'utf-8').trim() === 'dynamic') {
+          // 动态导入
+          process.env.UNI_APP_DYNAMIC_IMPORT = 'true'
+        }
+      }
+    }
+    const isESM = process.env.UNI_APP_OUTPUT_FORMAT === 'esm'
 
     const paths: Record<string, string> = isESM
       ? {

@@ -109,7 +109,12 @@ export function uniAppPagesPlugin(): Plugin {
           ),
         })
         return {
-          code: normalizeAppPagesJson(pagesJson),
+          code: normalizeAppPagesJson(
+            pagesJson,
+            'app',
+            process.env.UNI_APP_DYNAMIC_IMPORT === 'true' ||
+              process.env.UNI_APP_CODE_SPLITTING === 'true'
+          ),
           map: { mappings: '' },
         }
       }

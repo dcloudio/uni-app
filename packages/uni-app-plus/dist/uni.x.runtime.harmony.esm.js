@@ -884,7 +884,7 @@ function definePage(pagePath, asyncComponent) {
 function createPageFactory(component) {
   return () => {
     if (isVuePageAsyncComponent(component)) {
-      return component().then((component2) => setupPage(clonedPageComponent(component2)));
+      return component().then((component2) => setupPage(clonedPageComponent(component2.default || component2)));
     }
     return setupPage(clonedPageComponent(component));
   };

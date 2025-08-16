@@ -2,7 +2,8 @@ import { normalizeIdentifier, normalizePagePath } from '../../../utils'
 
 export function definePageCode(
   pagesJson: Record<string, any>,
-  platform: UniApp.PLATFORM = 'app'
+  platform: UniApp.PLATFORM = 'app',
+  dynamicImport: boolean = false
 ) {
   const importPagesCode: string[] = []
   const definePagesCode: string[] = []
@@ -14,7 +15,7 @@ export function definePageCode(
     const pageIdentifier = normalizeIdentifier(pagePath)
     const pagePathWithExtname = normalizePagePath(pagePath, platform)
     if (pagePathWithExtname) {
-      if (process.env.UNI_APP_CODE_SPLITTING) {
+      if (dynamicImport) {
         // 拆分页面
         importPagesCode.push(
           `const ${pageIdentifier} = ()=>import('./${pagePathWithExtname}')`
