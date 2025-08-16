@@ -43,6 +43,7 @@ export interface RegisterPageOptions {
   webview?: IPage
   nvuePageVm?: ComponentPublicInstance
   eventChannel?: EventChannel
+  onRegistered?: () => void
 }
 
 // parsePageStyle
@@ -121,6 +122,7 @@ export function registerPage(
     webview,
     nvuePageVm,
     eventChannel,
+    onRegistered,
   }: RegisterPageOptions,
   onCreated?: (page: IPage) => void,
   delay = 0
@@ -166,80 +168,76 @@ export function registerPage(
   }
 
   function fn() {
-    const page = createVuePage(
-      id,
-      route,
-      query,
-      pageInstance,
-      {},
-      nativePage
-    ) as ComponentPublicInstance
-
-    // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
-    // nativePage.addPageEventListener(ON_SHOW, (_) => {
-    //   invokeHook(page, ON_SHOW)
-    // })
-    const pages = getCurrentPages()
-    if (pages.length === 1) {
-      // dialogPages 数据 ios 端不需要框架处理，预期仅在鸿蒙上生效
-      const homePage = pages[0] as unknown as UniPage
-      let sourceDialogPages: UniPage[] = []
-      let targetDialogPages: UniPage[] = []
-      if (homeDialogPages.length) {
-        sourceDialogPages = homeDialogPages
-        targetDialogPages = homePage.getDialogPages()
-      }
-      if (homeSystemDialogPages.length) {
-        sourceDialogPages = homeSystemDialogPages
-        targetDialogPages = homePage.__$$getSystemDialogPages()
-      }
-      handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages)
-    }
-    nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
-      uni.navigateBack({
-        from: 'popGesture',
-        fail(e) {
-          if (e.errMsg.endsWith('cancel')) {
-            nativePage.show()
+    createVuePage(id, route, query, pageInstance, {}, nativePage).then(
+      (pageComponentPublicInstance) => {
+        // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
+        // nativePage.addPageEventListener(ON_SHOW, (_) => {
+        //   invokeHook(page, ON_SHOW)
+        // })
+        const pages = getCurrentPages()
+        if (pages.length === 1) {
+          // dialogPages 数据 ios 端不需要框架处理，预期仅在鸿蒙上生效
+          const homePage = pages[0] as unknown as UniPage
+          let sourceDialogPages: UniPage[] = []
+          let targetDialogPages: UniPage[] = []
+          if (homeDialogPages.length) {
+            sourceDialogPages = homeDialogPages
+            targetDialogPages = homePage.getDialogPages()
           }
-        },
-      } as UniApp.NavigateBackOptions)
-    })
-    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-      invokeHook(page, ON_UNLOAD)
-    })
-    nativePage.addPageEventListener(ON_READY, (_) => {
-      invokePageReadyHooks(page)
-      invokeHook(page, ON_READY)
-    })
+          if (homeSystemDialogPages.length) {
+            sourceDialogPages = homeSystemDialogPages
+            targetDialogPages = homePage.__$$getSystemDialogPages()
+          }
+          handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages)
+        }
+        nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
+          uni.navigateBack({
+            from: 'popGesture',
+            fail(e) {
+              if (e.errMsg.endsWith('cancel')) {
+                nativePage.show()
+              }
+            },
+          } as UniApp.NavigateBackOptions)
+        })
+        nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+          invokeHook(pageComponentPublicInstance, ON_UNLOAD)
+        })
+        nativePage.addPageEventListener(ON_READY, (_) => {
+          invokePageReadyHooks(pageComponentPublicInstance)
+          invokeHook(pageComponentPublicInstance, ON_READY)
+        })
 
-    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-      invokeHook(page, ON_PAGE_SCROLL, {
-        scrollTop: (arg as unknown as OnPageScrollOptions).scrollTop,
-      })
-    })
+        nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+          invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
+            scrollTop: (arg as unknown as OnPageScrollOptions).scrollTop,
+          })
+        })
 
-    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-      invokeHook(page, ON_PULL_DOWN_REFRESH)
-    })
+        nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+          invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH)
+        })
 
-    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-      invokeHook(page, ON_REACH_BOTTOM)
-    })
+        nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+          invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM)
+        })
 
-    nativePage.addPageEventListener(ON_RESIZE, (arg: any) => {
-      const args: OnResizeOptions = {
-        deviceOrientation: arg.deviceOrientation,
-        size: {
-          windowWidth: arg.size.windowWidth,
-          windowHeight: arg.size.windowHeight,
-          screenWidth: arg.size.screenWidth,
-          screenHeight: arg.size.screenHeight,
-        },
+        nativePage.addPageEventListener(ON_RESIZE, (arg: any) => {
+          const args: OnResizeOptions = {
+            deviceOrientation: arg.deviceOrientation,
+            size: {
+              windowWidth: arg.size.windowWidth,
+              windowHeight: arg.size.windowHeight,
+              screenWidth: arg.size.screenWidth,
+              screenHeight: arg.size.screenHeight,
+            },
+          }
+          invokeHook(pageComponentPublicInstance, ON_RESIZE, args)
+        })
+        nativePage.startRender()
+        onRegistered?.()
       }
-      invokeHook(page, ON_RESIZE, args)
-    })
-    nativePage.startRender()
+    )
   }
   if (delay) {
     setTimeout(fn, delay)
@@ -250,7 +248,14 @@ export function registerPage(
 }
 
 export function registerDialogPage(
-  { url, path, query, openType, eventChannel }: RegisterPageOptions,
+  {
+    url,
+    path,
+    query,
+    openType,
+    eventChannel,
+    onRegistered,
+  }: RegisterPageOptions,
   dialogPage: UniDialogPage,
   onCreated?: (page: IPage) => void,
   delay = 0
@@ -310,59 +315,55 @@ export function registerDialogPage(
     'light'
   )
   function fn() {
-    const page = createVuePage(
-      id,
-      route,
-      query,
-      pageInstance,
-      {},
-      nativePage
-    ) as ComponentPublicInstance
-    // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
-    // nativePage.addPageEventListener(ON_SHOW, (_) => {
-    //   invokeHook(page, ON_SHOW)
-    // })
-    nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
-      closeDialogPage({ dialogPage })
-    })
-    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-      invokeHook(page, ON_UNLOAD)
-      // 此时 systemDialog 已在数组中移除，故需要初始化 1
-      dialogPageTriggerParentShow(
-        dialogPage,
-        isSystemDialogPage(dialogPage) ? 1 : 0
-      )
-    })
-    nativePage.addPageEventListener(ON_READY, (_) => {
-      invokePageReadyHooks(page)
-      invokeHook(page, ON_READY)
-    })
+    createVuePage(id, route, query, pageInstance, {}, nativePage).then(
+      (pageComponentPublicInstance) => {
+        // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
+        // nativePage.addPageEventListener(ON_SHOW, (_) => {
+        //   invokeHook(page, ON_SHOW)
+        // })
+        nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
+          closeDialogPage({ dialogPage })
+        })
+        nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+          invokeHook(pageComponentPublicInstance, ON_UNLOAD)
+          // 此时 systemDialog 已在数组中移除，故需要初始化 1
+          dialogPageTriggerParentShow(
+            dialogPage,
+            isSystemDialogPage(dialogPage) ? 1 : 0
+          )
+        })
+        nativePage.addPageEventListener(ON_READY, (_) => {
+          invokePageReadyHooks(pageComponentPublicInstance)
+          invokeHook(pageComponentPublicInstance, ON_READY)
+        })
 
-    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-      invokeHook(page, ON_PAGE_SCROLL, arg)
-    })
+        nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+          invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, arg)
+        })
 
-    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-      invokeHook(page, ON_PULL_DOWN_REFRESH)
-    })
+        nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+          invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH)
+        })
 
-    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-      invokeHook(page, ON_REACH_BOTTOM)
-    })
+        nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+          invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM)
+        })
 
-    nativePage.addPageEventListener(ON_RESIZE, (arg: any) => {
-      const args: OnResizeOptions = {
-        deviceOrientation: arg.deviceOrientation,
-        size: {
-          windowWidth: arg.size.windowWidth,
-          windowHeight: arg.size.windowHeight,
-          screenWidth: arg.size.screenWidth,
-          screenHeight: arg.size.screenHeight,
-        },
+        nativePage.addPageEventListener(ON_RESIZE, (arg: any) => {
+          const args: OnResizeOptions = {
+            deviceOrientation: arg.deviceOrientation,
+            size: {
+              windowWidth: arg.size.windowWidth,
+              windowHeight: arg.size.windowHeight,
+              screenWidth: arg.size.screenWidth,
+              screenHeight: arg.size.screenHeight,
+            },
+          }
+          invokeHook(pageComponentPublicInstance, ON_RESIZE, args)
+        })
+        nativePage.startRender()
       }
-      invokeHook(page, ON_RESIZE, args)
-    })
-    nativePage.startRender()
+    )
   }
   if (delay) {
     setTimeout(fn, delay)
@@ -379,7 +380,7 @@ function createVuePage(
   __pageInstance: Page.PageInstance['$page'],
   pageOptions: PageNodeOptions,
   nativePage: IPage
-) {
+): { then(fn: (page: ComponentPublicInstance) => void): void } {
   const pageNode = nativePage.document.body
   const app = getVueApp()
   const component = pagesMap.get(__pagePath)!()
@@ -400,5 +401,9 @@ function createVuePage(
   if (isPromise(component)) {
     return component.then((component) => mountPage(component))
   }
-  return mountPage(component)
+  return {
+    then(fn: (page: ComponentPublicInstance) => void) {
+      return fn(mountPage(component))
+    },
+  }
 }
