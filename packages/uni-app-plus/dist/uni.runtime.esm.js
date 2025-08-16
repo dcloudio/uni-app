@@ -20221,7 +20221,7 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     uni.hideToast();
     uni.hideLoading();
     if (getPage$BasePage(page).meta.isQuit) {
-        quit();
+        _backWebview(page, quit);
     }
     else if (isDirectPage(page)) {
         reLaunchEntryPage();
@@ -20232,6 +20232,13 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     }
     return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
+function _backWebview(page, callback) {
+    const webview = plus.webview.getWebviewById(`${getPage$BasePage(page).id}`);
+    if (!page.__uniapp_webview) {
+        return callback(webview);
+    }
+    backWebview(webview, () => callback(webview));
+}
 let firstBackTime = 0;
 function quit() {
     initI18nAppMsgsOnce();
@@ -20279,13 +20286,7 @@ function back(delta, animationType, animationDuration) {
         // 前一个页面触发 onShow
         invokeHook(ON_SHOW);
     };
-    const webview = plus.webview.getWebviewById(`${getPage$BasePage(currentPage).id}`);
-    if (!currentPage.__uniapp_webview) {
-        return backPage(webview);
-    }
-    backWebview(webview, () => {
-        backPage(webview);
-    });
+    _backWebview(currentPage, backPage);
 }
 
 const $navigateTo =  (args, { resolve, reject }) => {
