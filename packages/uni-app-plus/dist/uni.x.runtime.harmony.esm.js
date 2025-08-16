@@ -1535,12 +1535,13 @@ function createTab(path, query, callback) {
     url: path,
     path,
     query,
-    openType: "switchTab"
+    openType: "switchTab",
+    onRegistered() {
+      var page = getCurrentPage().vm;
+      tabBar0.appendItem(page.$basePage.id.toString());
+      callback(page);
+    }
   });
-  callback === null || callback === void 0 || callback();
-  var page = getCurrentPage().vm;
-  tabBar0.appendItem(page.$basePage.id.toString());
-  return page;
 }
 function findTabPage(path) {
   var _tabs$get;
@@ -1579,10 +1580,13 @@ function getTabPage(path) {
   var isFirst = false;
   if (page === null || rebuild) {
     isFirst = true;
-    page = createTab(path, query, callback);
-    tabs.set(path, page);
+    createTab(path, query, (page2) => {
+      tabs.set(path, page2);
+      callback(new TabPageInfo(page2, isFirst));
+    });
+  } else {
+    callback(new TabPageInfo(page, isFirst));
   }
-  return new TabPageInfo(page, isFirst);
 }
 function switchSelect(selected, path) {
   var _getCurrentPage;
@@ -1596,20 +1600,22 @@ function switchSelect(selected, path) {
   var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
   var type = currentPage == null ? "appLaunch" : "switchTab";
   invokeBeforeRouteHooks(type);
-  var pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback);
-  var page = pageInfo.page;
-  if (currentPage !== page) {
-    shouldShow = true;
-    if (currentPage && isTabPage(currentPage)) {
-      invokeHook(currentPage, ON_HIDE);
+  getTabPage(getRealPath(path, true), query, rebuild, (pageInfo) => {
+    callback === null || callback === void 0 || callback();
+    var page = pageInfo.page;
+    if (currentPage !== page) {
+      shouldShow = true;
+      if (currentPage && isTabPage(currentPage)) {
+        invokeHook(currentPage, ON_HIDE);
+      }
     }
-  }
-  tabBar0.switchSelect(page.$basePage.id.toString(), selected);
-  if (shouldShow) {
-    invokeHook(page, ON_SHOW);
-  }
-  selected0 = selected;
-  invokeAfterRouteHooks(type);
+    tabBar0.switchSelect(page.$basePage.id.toString(), selected);
+    if (shouldShow) {
+      invokeHook(page, ON_SHOW);
+    }
+    selected0 = selected;
+    invokeAfterRouteHooks(type);
+  });
 }
 var APP_THEME_AUTO = "auto";
 var THEME_KEY_PREFIX = "@";
@@ -1884,7 +1890,8 @@ function registerPage(_ref, onCreated) {
     openType,
     webview,
     nvuePageVm,
-    eventChannel
+    eventChannel,
+    onRegistered
   } = _ref;
   var delay = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
   var id2 = genWebviewId();
@@ -1916,63 +1923,65 @@ function registerPage(_ref, onCreated) {
     sourceDialogPages.length = 0;
   }
   function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
-    var pages2 = getCurrentPages();
-    if (pages2.length === 1) {
-      var homePage = pages2[0];
-      var sourceDialogPages = [];
-      var targetDialogPages = [];
-      if (homeDialogPages.length) {
-        sourceDialogPages = homeDialogPages;
-        targetDialogPages = homePage.getDialogPages();
+    createVuePage(id2, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
+      var pages2 = getCurrentPages();
+      if (pages2.length === 1) {
+        var homePage = pages2[0];
+        var sourceDialogPages = [];
+        var targetDialogPages = [];
+        if (homeDialogPages.length) {
+          sourceDialogPages = homeDialogPages;
+          targetDialogPages = homePage.getDialogPages();
+        }
+        if (homeSystemDialogPages.length) {
+          sourceDialogPages = homeSystemDialogPages;
+          targetDialogPages = homePage.__$$getSystemDialogPages();
+        }
+        handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages);
       }
-      if (homeSystemDialogPages.length) {
-        sourceDialogPages = homeSystemDialogPages;
-        targetDialogPages = homePage.__$$getSystemDialogPages();
-      }
-      handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages);
-    }
-    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
-      uni.navigateBack({
-        from: "popGesture",
-        fail(e2) {
-          if (e2.errMsg.endsWith("cancel")) {
-            nativePage.show();
+      nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
+        uni.navigateBack({
+          from: "popGesture",
+          fail(e2) {
+            if (e2.errMsg.endsWith("cancel")) {
+              nativePage.show();
+            }
           }
-        }
+        });
       });
-    });
-    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-      invokeHook(page, ON_UNLOAD);
-    });
-    nativePage.addPageEventListener(ON_READY, (_) => {
-      invokePageReadyHooks(page);
-      invokeHook(page, ON_READY);
-    });
-    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-      invokeHook(page, ON_PAGE_SCROLL, {
-        scrollTop: arg.scrollTop
+      nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_UNLOAD);
       });
+      nativePage.addPageEventListener(ON_READY, (_) => {
+        invokePageReadyHooks(pageComponentPublicInstance);
+        invokeHook(pageComponentPublicInstance, ON_READY);
+      });
+      nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+        invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
+          scrollTop: arg.scrollTop
+        });
+      });
+      nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH);
+      });
+      nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM);
+      });
+      nativePage.addPageEventListener(ON_RESIZE, (arg) => {
+        var args = {
+          deviceOrientation: arg.deviceOrientation,
+          size: {
+            windowWidth: arg.size.windowWidth,
+            windowHeight: arg.size.windowHeight,
+            screenWidth: arg.size.screenWidth,
+            screenHeight: arg.size.screenHeight
+          }
+        };
+        invokeHook(pageComponentPublicInstance, ON_RESIZE, args);
+      });
+      nativePage.startRender();
+      onRegistered === null || onRegistered === void 0 || onRegistered();
     });
-    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-      invokeHook(page, ON_PULL_DOWN_REFRESH);
-    });
-    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-      invokeHook(page, ON_REACH_BOTTOM);
-    });
-    nativePage.addPageEventListener(ON_RESIZE, (arg) => {
-      var args = {
-        deviceOrientation: arg.deviceOrientation,
-        size: {
-          windowWidth: arg.size.windowWidth,
-          windowHeight: arg.size.windowHeight,
-          screenWidth: arg.size.screenWidth,
-          screenHeight: arg.size.screenHeight
-        }
-      };
-      invokeHook(page, ON_RESIZE, args);
-    });
-    nativePage.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
@@ -1988,7 +1997,8 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     path,
     query,
     openType,
-    eventChannel
+    eventChannel,
+    onRegistered
   } = _ref2;
   var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
   var id2 = genWebviewId();
@@ -2029,42 +2039,43 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     "light"
   );
   function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
-    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
-      closeDialogPage({
-        dialogPage
+    createVuePage(id2, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
+      nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
+        closeDialogPage({
+          dialogPage
+        });
       });
+      nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_UNLOAD);
+        dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
+      });
+      nativePage.addPageEventListener(ON_READY, (_) => {
+        invokePageReadyHooks(pageComponentPublicInstance);
+        invokeHook(pageComponentPublicInstance, ON_READY);
+      });
+      nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+        invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, arg);
+      });
+      nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH);
+      });
+      nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM);
+      });
+      nativePage.addPageEventListener(ON_RESIZE, (arg) => {
+        var args = {
+          deviceOrientation: arg.deviceOrientation,
+          size: {
+            windowWidth: arg.size.windowWidth,
+            windowHeight: arg.size.windowHeight,
+            screenWidth: arg.size.screenWidth,
+            screenHeight: arg.size.screenHeight
+          }
+        };
+        invokeHook(pageComponentPublicInstance, ON_RESIZE, args);
+      });
+      nativePage.startRender();
     });
-    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-      invokeHook(page, ON_UNLOAD);
-      dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
-    });
-    nativePage.addPageEventListener(ON_READY, (_) => {
-      invokePageReadyHooks(page);
-      invokeHook(page, ON_READY);
-    });
-    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-      invokeHook(page, ON_PAGE_SCROLL, arg);
-    });
-    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-      invokeHook(page, ON_PULL_DOWN_REFRESH);
-    });
-    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-      invokeHook(page, ON_REACH_BOTTOM);
-    });
-    nativePage.addPageEventListener(ON_RESIZE, (arg) => {
-      var args = {
-        deviceOrientation: arg.deviceOrientation,
-        size: {
-          windowWidth: arg.size.windowWidth,
-          windowHeight: arg.size.windowHeight,
-          screenWidth: arg.size.screenWidth,
-          screenHeight: arg.size.screenHeight
-        }
-      };
-      invokeHook(page, ON_RESIZE, args);
-    });
-    nativePage.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
@@ -2086,7 +2097,11 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   if (isPromise(component)) {
     return component.then((component2) => mountPage(component2));
   }
-  return mountPage(component);
+  return {
+    then(fn) {
+      return fn(mountPage(component));
+    }
+  };
 }
 function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
