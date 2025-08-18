@@ -14,6 +14,7 @@ import { initCheckSystemWebview } from './checksystemwebview'
 import { initTabBar } from './tabBar'
 import { initI18n } from './i18n'
 import { initTheme } from '../../theme'
+import { getPlatformManifestJson } from '../../manifest'
 
 export function normalizeAppManifestJson(
   userManifestJson: Record<string, any>,
@@ -23,7 +24,11 @@ export function normalizeAppManifestJson(
     initDefaultManifestJson(),
     userManifestJson
   )
-  const { pages, globalStyle, tabBar } = initTheme(manifestJson, pagesJson)
+  const manifestJsonPlatform = getPlatformManifestJson(manifestJson)
+  const { pages, globalStyle, tabBar } = initTheme(
+    manifestJsonPlatform,
+    pagesJson
+  )
   extend(pagesJson, JSON.parse(JSON.stringify({ pages, globalStyle, tabBar })))
   initAppStatusbar(manifestJson, pagesJson)
   initArguments(manifestJson, pagesJson)

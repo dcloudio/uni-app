@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import { parseJson } from './json'
 import { addLeadingSlash, normalizeStyles, once } from '@dcloudio/uni-shared'
-import { getPlatformManifestJson } from './manifest'
 
 export function hasThemeJson(themeLocation: string) {
   if (!fs.existsSync(themeLocation)) {
@@ -115,10 +114,7 @@ export function initTheme<T extends object>(
   manifestJson: Record<string, any>,
   pagesJson: T
 ) {
-  const platform =
-    process.env.UNI_PLATFORM === 'app' ? 'app-plus' : process.env.UNI_PLATFORM
-  const manifestPlatform = getPlatformManifestJson(manifestJson, platform) || {}
-  const themeConfig = normalizeThemeConfigOnce(manifestPlatform)
+  const themeConfig = normalizeThemeConfigOnce(manifestJson)
   return normalizeStyles(pagesJson, themeConfig)
 }
 
