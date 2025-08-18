@@ -26,9 +26,6 @@ export {
 }
   from 'uni-core/service/api/plugin/__f__'
 export function startGyroscope (params) {
-  if (hasOwn(params, 'interval')) {
-    console.warn('支付宝小程序 startGyroscope暂不支持interval')
-  }
   params.success && params.success({
     errMsg: 'startGyroscope:ok'
   })
