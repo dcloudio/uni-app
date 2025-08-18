@@ -75,6 +75,8 @@ interface Plugins {
     version: string
     provider: string
     export?: string
+    // 支付宝小程序插件运行模式
+    lazy?: boolean
   }
 }
 
