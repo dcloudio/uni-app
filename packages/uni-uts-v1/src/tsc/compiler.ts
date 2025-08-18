@@ -223,7 +223,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     diagnostic: tsTypes.Diagnostic
   ) {
     const errorCode = UNI_APP_X_TYPE_VALIDATION
-      ? [2300, 2451, 2349, 110111119, 2564, 1023]
+      ? [2300, 2451, 110111119, 2564, 1023]
       : []
     const throwError =
       diagnostic.__throwError ||
