@@ -35,9 +35,6 @@ export function removeStorageSync(key: string) {
 }
 
 export function startGyroscope(args: UniApp.StartGyroscopeOptions) {
-  if (hasOwn(args, 'interval')) {
-    console.warn('支付宝小程序 startGyroscope暂不支持interval')
-  }
   args.success &&
     args.success({
       errMsg: 'startGyroscope:ok',
