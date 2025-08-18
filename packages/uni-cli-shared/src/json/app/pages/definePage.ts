@@ -1,4 +1,22 @@
-import { normalizeIdentifier, normalizePagePath } from '../../../utils'
+import {
+  normalizeIdentifier,
+  normalizePagePath,
+  removeExt,
+} from '../../../utils'
+
+export function staticImportPageCode(pagesJson: Record<string, any>) {
+  const importPagesCode: string[] = []
+  pagesJson.pages.forEach((page: UniApp.PagesJsonPageOptions) => {
+    const pagePath = page.path
+    const pagePathWithExtname = normalizePagePath(pagePath, 'app')
+    if (pagePathWithExtname) {
+      importPagesCode.push(
+        `import '../assets/${removeExt(pagePathWithExtname)}'`
+      )
+    }
+  })
+  return importPagesCode.join('\n')
+}
 
 export function definePageCode(
   pagesJson: Record<string, any>,

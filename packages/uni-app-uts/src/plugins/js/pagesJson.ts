@@ -14,6 +14,7 @@ import {
   preUVueJson,
   removeExt,
   runByHBuilderX,
+  staticImportPageCode,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
 import { isPages, setGlobalPageOrientation } from '../utils'
@@ -108,6 +109,16 @@ export function uniAppPagesPlugin(): Plugin {
             parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
           ),
         })
+        if (process.env.UNI_PLATFORM === 'app-harmony') {
+          this.emitFile({
+            type: 'asset',
+            fileName: 'import/dynamic.ets',
+            source:
+              process.env.UNI_APP_DYNAMIC_IMPORT === 'true'
+                ? staticImportPageCode(pagesJson)
+                : '',
+          })
+        }
         return {
           code: normalizeAppPagesJson(
             pagesJson,
