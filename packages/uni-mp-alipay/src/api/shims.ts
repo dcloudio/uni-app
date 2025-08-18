@@ -1,4 +1,4 @@
-import { hasOwn, isFunction } from '@vue/shared'
+import { isFunction } from '@vue/shared'
 
 import { initGetProvider } from '@dcloudio/uni-mp-core'
 
