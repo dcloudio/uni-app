@@ -561,8 +561,26 @@ const UTSJSON = {
             return null;
         }
     },
-    stringify: (value) => {
-        return OriginalJSON.stringify(value);
+    stringify: (value, replacer, space) => {
+        try {
+            if (!replacer) {
+                const visited = new Set();
+                replacer = function (_, v) {
+                    if (typeof v === 'object') {
+                        if (visited.has(v)) {
+                            return null;
+                        }
+                        visited.add(v);
+                    }
+                    return v;
+                };
+            }
+            return OriginalJSON.stringify(value, replacer, space);
+        }
+        catch (error) {
+            console.error(error);
+            return '';
+        }
     },
 };
 
