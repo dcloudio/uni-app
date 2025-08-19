@@ -83,7 +83,10 @@ declare namespace NodeJS {
     UNI_CLI_LAUNCH_PAGE_QUERY?: string // 开发阶段，传入指定入口页面参数
     UNI_SCRIPT?: string // 指定自定义平台，package.json->uni-app->scripts
     UNI_HBUILDERX_LANGID?: string // 当前HBuilderX环境语言，如：zh_CN
-    UNI_INPUT_DIR: string // 输入目录
+    /**
+     * 输入目录
+     */
+    UNI_INPUT_DIR: string
     UNI_OUTPUT_DIR: string // 输出目录
     UNI_MINIMIZE?: 'true' // 是否压缩
     UNI_MP_PLUGIN?: string // 发行小程序插件的插件名
