@@ -9721,15 +9721,33 @@ function setDOMProp(el, key, value) {
 }
 function setClass(el, value) {
   if (el.$root) {
+    setClassIncremental(el, value);
+  } else if ((value = normalizeClass$1(value)) !== el.$cls) {
+    el.$cls = value;
+    patchClass(el, null, normalizeClass$1(value), getCurrentGenericInstance());
+  }
+}
+function setClassIncremental(el, value) {
+  const cacheKey = `$clsi${isApplyingFallthroughProps ? "$" : ""}`;
+  const prev = el[cacheKey];
+  if ((value = el[cacheKey] = normalizeClass$1(value)) !== prev) {
     const nextClassList = el.classList.slice(0);
     normalizeClass$1(value).split(/\s+/).forEach((cls) => {
       if (!nextClassList.includes(cls)) {
         nextClassList.push(cls);
       }
     });
+    if (prev) {
+      for (const cls of prev.split(/\s+/)) {
+        if (!nextClassList.includes(cls)) {
+          const index = nextClassList.indexOf(cls);
+          if (index !== -1) {
+            nextClassList.splice(index, 1);
+          }
+        }
+      }
+    }
     patchClass(el, null, nextClassList.join(" "), getCurrentGenericInstance());
-  } else {
-    patchClass(el, null, normalizeClass$1(value), getCurrentGenericInstance());
   }
 }
 function setStyle(el, value) {
@@ -9752,10 +9770,13 @@ function setValue(el, value) {
   if (!isApplyingFallthroughProps && el.$root && hasFallthroughKey("value")) {
     return;
   }
+  const oldValue = el.getAnyAttribute("value");
+  const newValue = value == null ? "" : value;
+  if (oldValue !== newValue) {
+    el.setAnyAttribute("value", newValue);
+  }
   if (value == null) {
     el.removeAttribute("value");
-  } else {
-    el.setAnyAttribute("value", value);
   }
 }
 function setText(el, value) {
