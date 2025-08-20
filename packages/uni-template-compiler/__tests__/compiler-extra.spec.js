@@ -443,15 +443,15 @@ describe('mp:compiler-extra', () => {
     )
     assertCodegen(
       '<div :class="{ [active]: isActive }">1</div>',
-      `<view class="{{['_div',(isActive)?(active):'']}}">1</view>`
+      '<view class="{{[\'_div\',(isActive)?(active):\'\']}}">1</view>'
     )
     assertCodegen(
-      `<div :class="{ [active ? 'actvieClass' : 'unactiveClass']: isActive }">1</div>`,
-      `<view class="{{['_div',(isActive)?(active?'actvieClass':'unactiveClass'):'']}}">1</view>`
+      '<div :class="{ [active ? \'actvieClass\' : \'unactiveClass\']: isActive }">1</div>',
+      '<view class="{{[\'_div\',(isActive)?(active?\'actvieClass\':\'unactiveClass\'):\'\']}}">1</view>'
     )
     assertCodegen(
-      `<div :class="{ [active ? 'actvieClass' : 'unactiveClass']: isActive, class1: true }">1</div>`,
-      `<view class="{{['_div',(isActive)?(active?'actvieClass':'unactiveClass'):'',(true)?'class1':'']}}">1</view>`
+      '<div :class="{ [active ? \'actvieClass\' : \'unactiveClass\']: isActive, class1: true }">1</div>',
+      '<view class="{{[\'_div\',(isActive)?(active?\'actvieClass\':\'unactiveClass\'):\'\',(true)?\'class1\':\'\']}}">1</view>'
     )
     assertCodegen(
       '<p class="static" :class="{ active: isActive, \'text-danger\': hasError }">2</p>',

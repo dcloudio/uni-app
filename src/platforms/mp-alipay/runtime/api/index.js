@@ -1,8 +1,5 @@
 import createMediaQueryObserver from '../../../mp-weixin/helpers/create-media-query-observer'
-import {
-  isFn,
-  hasOwn
-} from 'uni-shared'
+import { isFn } from 'uni-shared'
 
 import { $on, $off } from 'uni-core/runtime/event-bus'
 
