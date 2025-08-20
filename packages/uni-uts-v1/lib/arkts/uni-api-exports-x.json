@@ -19,6 +19,24 @@
       "GetClipboardDataOptions"
     ],
     [
+      "WorkerErrorCode"
+    ],
+    [
+      "ICreateWorkerError"
+    ],
+    [
+      "WorkerOnMessageCallback"
+    ],
+    [
+      "WorkerOnErrorCallback"
+    ],
+    [
+      "WorkerPostMessageOptions"
+    ],
+    [
+      "Worker"
+    ],
+    [
       "WorkerTaskImpl"
     ],
     [
