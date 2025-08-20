@@ -147,6 +147,10 @@ export async function compileUniModuleWithTsc(
   )
 
   // 添加入口
+  const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(platform, pluginDir)
+  for (const vueFile of vueFiles) {
+    await uniXCompiler.addRootFile(vueFile)
+  }
   const indexFileName = resolveTscUniModuleIndexFileName(platform, pluginDir)
   if (indexFileName) {
     await uniXCompiler.addRootFile(indexFileName)
@@ -192,20 +196,10 @@ export async function syncUniModuleFilesByCompiler(
   // copy vue files
   const vueFiles = await syncUniModuleVueFiles(
     pluginDir,
-    uvueOutputPluginDir,
+    outputPluginDir,
     preprocessor
   )
   if (vueFiles.length) {
-    // TODO 有隐患，如果直接拷贝 uts 文件到 .uvue 下，那么这些uts文件就不会走 tsc 编译了，tsc 中处理的逻辑就会被丢失
-    // 如果有组件，那将 uts 文件 copy 到 .uvue 目录下，避免 tsc 不 emit 相关的 uts 文件
-    // 如果 tsc emit 了，那就会再次覆盖
-    await syncUniModulesFiles(
-      platform,
-      pluginDir,
-      uvueOutputPluginDir,
-      false,
-      preprocessor
-    )
     compiler.debug(
       `${path.basename(pluginDir)} sync vue files(${vueFiles.length})`
     )
@@ -380,7 +374,7 @@ async function syncUniModuleVueFiles(
           fileName,
           pluginDir,
           outputPluginDir,
-          false,
+          true,
           preprocessor
         ).then(() => fileName)
       )
@@ -510,4 +504,19 @@ export function resolveTscUniModuleIndexFileName(
   if (fs.existsSync(indexFileName)) {
     return indexFileName
   }
+}
+
+export function resolveTscUniModuleUTSSDKVueFileNames(
+  platform: UniXCompilerPlatform,
+  pluginDir: string
+) {
+  pluginDir = resolveOutputPluginDir(
+    platform,
+    process.env.UNI_INPUT_DIR,
+    pluginDir
+  )
+  return fg.sync(['**/*.{vue,uvue}.ts'], {
+    cwd: path.resolve(pluginDir, `utssdk/${platform}`),
+    absolute: true,
+  })
 }

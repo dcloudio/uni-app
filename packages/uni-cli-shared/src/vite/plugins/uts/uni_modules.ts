@@ -142,10 +142,36 @@ function createUniModulesSyncFilePreprocessor(
         rewriteUniModulesConsoleExpr(fileName, preJs(content))
       )
     } else if (extname === '.uvue' || extname === '.vue') {
-      return rewriteUniModulesConsoleExpr(fileName, preJs(preHtml(content)))
+      return rewriteUniModulesConsoleExpr(
+        fileName,
+        preUTSSDKVueFile(fileName, preJs(preHtml(content)))
+      )
     }
     return content
   }
+}
+
+function preUTSSDKVueFile(filename: string, content: string) {
+  if (
+    filename.includes('utssdk') &&
+    (filename.includes('app-android') || filename.includes('app-ios'))
+  ) {
+    const { parse } =
+      require('@vue/compiler-sfc') as typeof import('@vue/compiler-sfc')
+    const { descriptor } = parse(content, {
+      sourceMap: false,
+      pad: 'line',
+    })
+    if (descriptor.script?.content) {
+      return (
+        descriptor.script.content +
+        // 补充 template 内容
+        `/*${descriptor.template?.content}*/`
+      )
+    }
+    return content
+  }
+  return content
 }
 
 function replaceExtApiPages(code: string) {
@@ -322,6 +348,7 @@ export function uniUTSAppUniModulesPlugin(
     createUniXArkTSCompilerOnce,
     syncUniModuleFilesByCompiler,
     resolveTscUniModuleIndexFileName,
+    resolveTscUniModuleUTSSDKVueFileNames,
   } = resolveUTSCompiler()
 
   const resolveWorkers = () => getWorkers()
@@ -405,6 +432,13 @@ export function uniUTSAppUniModulesPlugin(
       utsPlugins.add(pluginId)
       if (uniXKotlinCompiler) {
         const platform = 'app-android'
+        const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(
+          platform,
+          pluginDir
+        )
+        for (const vueFile of vueFiles) {
+          await uniXKotlinCompiler.addRootFile(vueFile)
+        }
         const indexFileName = resolveTscUniModuleIndexFileName(
           platform,
           pluginDir
@@ -415,6 +449,13 @@ export function uniUTSAppUniModulesPlugin(
       }
       if (uniXSwiftCompiler) {
         const platform = 'app-ios'
+        const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(
+          platform,
+          pluginDir
+        )
+        for (const vueFile of vueFiles) {
+          await uniXSwiftCompiler.addRootFile(vueFile)
+        }
         const indexFileName = resolveTscUniModuleIndexFileName(
           platform,
           pluginDir
