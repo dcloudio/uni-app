@@ -13,14 +13,14 @@ export const protocols = {
   getSystemInfo,
   getSystemInfoSync: getSystemInfo,
   requestPayment: {
-    name: 'requestOrderPayment',
+    name: 'requestOrderPayment'
   },
   showActionSheet: {
-    args(fromArgs, toArgs) {
+    args (fromArgs, toArgs) {
       if (!fromArgs.itemColor) {
         toArgs.itemColor = '#000000'
       }
-    },
+    }
   }
 }
 

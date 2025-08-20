@@ -9,7 +9,7 @@ const PLATFORMS = getPlatforms()
 
 const alipayWindowMap = {
   defaultTitle: 'navigationBarTitleText',
-  navigationBarFrontColor : 'navigationBarTextStyle',
+  navigationBarFrontColor: 'navigationBarTextStyle',
   pullRefresh: 'enablePullDownRefresh',
   allowsBounceVertical: 'allowsBounceVertical',
   titleBarColor: 'navigationBarBackgroundColor',

@@ -24,10 +24,10 @@ module.exports = {
   },
   copyWebpackOptions (platformOptions, vueOptions) {
     const copyOptions = [
-      'mycomponents', 
-      'customize-tab-bar', 
-      'ext.json', 
-      'preload.json', 
+      'mycomponents',
+      'customize-tab-bar',
+      'ext.json',
+      'preload.json',
       'sitemap.json'
     ]
     global.uniModules.forEach(module => {
