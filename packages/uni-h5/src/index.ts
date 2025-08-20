@@ -118,7 +118,6 @@ export * from './view/bridge'
 //#if _X_
 export * from './x/service/api'
 export * from './x/service/api/uni'
-export * from './x/view/components/customElements'
 //#endif
 
 //#if _X_ && !_NODE_JS_
