@@ -121,13 +121,9 @@
 
   // #ifdef WEB
   const fixSize = () => {
-    const {
-      windowWidth,
-      windowHeight,
-      windowTop
-    } = uni.getSystemInfoSync()
-    windowWidth.value = windowWidth
-    windowHeight.value = windowHeight + (windowTop || 0)
+    const systemInfo = uni.getSystemInfoSync()
+    windowWidth.value = systemInfo.windowWidth
+    windowHeight.value = systemInfo.windowHeight + (systemInfo.windowTop || 0)
   }
   // #endif
   const closeActionSheet = () => {

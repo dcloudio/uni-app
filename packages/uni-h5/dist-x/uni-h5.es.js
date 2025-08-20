@@ -28099,13 +28099,9 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     const windowHeight = ref(0);
     const popover = reactive({});
     const fixSize = () => {
-      const {
-        windowWidth: windowWidth2,
-        windowHeight: windowHeight2,
-        windowTop
-      } = uni.getSystemInfoSync();
-      windowWidth2.value = windowWidth2;
-      windowHeight2.value = windowHeight2 + (windowTop || 0);
+      const systemInfo = uni.getSystemInfoSync();
+      windowWidth.value = systemInfo.windowWidth;
+      windowHeight.value = systemInfo.windowHeight + (systemInfo.windowTop || 0);
     };
     const closeActionSheet = () => {
       show.value = false;
