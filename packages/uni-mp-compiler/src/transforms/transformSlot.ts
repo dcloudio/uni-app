@@ -23,14 +23,13 @@ import {
   isVForScope,
 } from '../transform'
 import { processProps } from './transformElement'
-import { isReferencedByIds, removeAttribute, rewriteExpression } from './utils'
+import { removeAttribute, rewriteExpression } from './utils'
 import {
   createAttributeNode,
   createBindDirectiveNode,
   isDirectiveNode,
 } from '@dcloudio/uni-cli-shared'
 import { DYNAMIC_SLOT } from '..'
-import { parseExpr } from '../ast'
 
 export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
   let slotName: string | ExpressionNode = `"${SLOT_DEFAULT_NAME}"`
@@ -64,20 +63,25 @@ export function rewriteSlot(node: SlotOutletNode, context: TransformContext) {
             p.exp,
             ')',
           ])
-          let slotKey
+          let slotKey: string | undefined
           const keys = parseVForKeyAlias(context)
           if (keys.length) {
-            const babelNode = parseExpr(p.exp, context)
-            // 在 v-for 中，判断是否插槽名使用 v-for 的 key 变量
-            if (babelNode && isReferencedByIds(babelNode, keys)) {
-              slotKey = parseScopedSlotKey(context)
-            }
+            // const babelNode = parseExpr(p.exp, context)
+            // // 在 v-for 中，判断是否插槽名使用 v-for 的 key 变量
+            // if (babelNode && isReferencedByIds(babelNode, keys)) {
+            //   slotKey = parseScopedSlotKey(context)
+            // }
+
+            // 只要在 v-for 中，就需要获取 slotKey，否则会导致作用域插槽的 slotName 不正确
+            // question/211656
+            slotKey = parseScopedSlotKey(context)
           }
           p.exp = rewriteExpression(
             createCompoundExpression([
               context.helperString(DYNAMIC_SLOT) + '(',
               p.exp,
-              slotKey ? `+'-'+` + slotKey : '',
+              // 不能直接拼接，应该放到第二个参数做接收，因为第一个参数应该是原始插槽名，拼接后，会导致dynamicSlot方法里 default=>d 的判断失效
+              slotKey ? `, ${slotKey}` : '',
               ')',
             ]),
             context

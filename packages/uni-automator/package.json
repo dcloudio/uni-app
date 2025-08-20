@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "3.0.0-alpha-4070620250731002",
+  "version": "3.0.0-alpha-4080120250820001",
   "description": "@dcloudio/uni-automator",
   "main": "dist/index.js",
   "files": [
@@ -32,19 +32,19 @@
     "@dcloudio/uni-cli-shared": "workspace:*",
     "address": "^1.1.2",
     "cross-env": "^7.0.3",
-    "debug": "^4.3.3",
+    "debug": "catalog:",
     "default-gateway": "^6.0.3",
-    "fs-extra": "^10.0.0",
-    "jsonc-parser": "^3.2.0",
-    "licia": "^1.29.0",
-    "merge": "^2.1.1",
-    "qrcode-reader": "^1.0.4",
-    "qrcode-terminal": "^0.12.0",
-    "ws": "^8.4.2"
+    "fs-extra": "catalog:",
+    "jsonc-parser": "catalog:",
+    "licia": "catalog:",
+    "merge": "catalog:",
+    "qrcode-reader": "catalog:",
+    "qrcode-terminal": "catalog:",
+    "ws": "catalog:"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7",
-    "@types/fs-extra": "^9.0.13"
+    "@types/debug": "catalog:",
+    "@types/fs-extra": "catalog:"
   },
   "peerDependencies": {
     "jest": "27.0.4",

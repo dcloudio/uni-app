@@ -16387,6 +16387,11 @@
         var index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
         return AUTOCOMPLETES[index2];
       });
+      var inputmode = computed(() => {
+        if (props2.inputmode) {
+          return props2.inputmode;
+        }
+      });
       var cache2 = useCache(props2, type);
       var resetCache = {
         fn: null
@@ -16494,7 +16499,7 @@
           } : {},
           "autocomplete": autocomplete.value,
           "onKeyup": onKeyUpEnter,
-          "inputmode": props2.inputmode
+          "inputmode": inputmode.value
         }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
         return createVNode("uni-input", {
           "ref": rootRef
@@ -19617,7 +19622,7 @@
   function processClickEvent(node, triggerItemClick) {
     if (["a", "img"].includes(node.name) && triggerItemClick) {
       return {
-        onClick: (e2) => {
+        onClickCapture: (e2) => {
           triggerItemClick(e2, {
             node
           });
@@ -21573,7 +21578,7 @@
   const Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
     props: props$e,
-    emits: ["confirm", "linechange", ...emit],
+    emits: ["confirm", "change", "linechange", ...emit],
     setup(props2, _ref) {
       var {
         emit: emit2,
@@ -21615,6 +21620,8 @@
           height
         } = _ref2;
         heightRef.value = height;
+      }
+      function onChange2(event) {
       }
       function confirm(event) {
         trigger2("confirm", event, {
@@ -21685,8 +21692,9 @@
             caretColor: props2.cursorColor
           }),
           "onKeydown": onKeyDownEnter,
-          "onKeyup": onKeyUpEnter
-        }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
+          "onKeyup": onKeyUpEnter,
+          "onChange": onChange2
+        }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
         return createVNode("uni-textarea", {
           "ref": rootRef,
           "auto-height": props2.autoHeight
@@ -21700,11 +21708,14 @@
           "ref": lineRef,
           "class": "uni-textarea-line"
         }, [" "], 512), createVNode("div", {
-          "class": "uni-textarea-compute"
+          "class": {
+            "uni-textarea-compute": true,
+            "uni-textarea-compute-auto-height": props2.autoHeight
+          }
         }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
           "initial": true,
           "onResize": onResize
-        }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
+        }, null, 8, ["initial", "onResize"])], 2), props2.confirmType === "search" ? createVNode("form", {
           "action": "",
           "onSubmit": () => false,
           "class": "uni-input-form"
@@ -22404,7 +22415,7 @@
           for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
             args[_key] = arguments[_key];
           }
-          invokeHarmonyChannel("invokeNativeEmbed", [elId, method, args]);
+          return invokeHarmonyChannel("invokeNativeEmbed", [elId, method, args]);
         };
       });
       expose(exposed);
@@ -22421,19 +22432,36 @@
     back: "backward",
     forward: "forward",
     reload: "refresh",
-    stop: "stop"
+    stop: "stop",
+    canBack: "accessBackward",
+    canForward: "accessForward",
+    loadData: "loadData",
+    getContentHeight: "getPageHeight",
+    clear: "removeCache",
+    loadUrl: "loadUrl"
   };
   function useMethods(embedRef) {
-    var MethodList = ["evalJS", "back", "forward", "reload", "stop"];
+    var MethodList = ["evalJS", "back", "forward", "reload", "stop", "canBack", "canForward", "loadData", "getContentHeight", "clear", "loadUrl"];
     var methods = {};
     var _loop = function(i3) {
       var methodName = MethodList[i3];
       methods[methodName] = function(data, resolve) {
         var embed = embedRef.value;
-        if (methodName === "evalJS") {
-          return resolve(embed["runJavaScript"]((data || {}).jsCode || ""));
-        } else {
-          resolve(embed[HarmonyNativeMethodMap[methodName]]());
+        switch (methodName) {
+          case "evalJS":
+            return resolve(embed["runJavaScript"]((data || {}).jsCode || ""));
+          case "loadUrl":
+            resolve(embed[HarmonyNativeMethodMap[methodName]](data.url, data.headers));
+            break;
+          case "loadData":
+            resolve(embed[HarmonyNativeMethodMap[methodName]](data.data, data.mimeType, data.encoding, data.baseUrl));
+            break;
+          case "clear":
+            resolve(embed[HarmonyNativeMethodMap[methodName]](data.clearRom));
+            break;
+          default:
+            resolve(embed[HarmonyNativeMethodMap[methodName]]());
+            break;
         }
       };
     };
@@ -22501,7 +22529,7 @@
           updateTitle: props2.updateTitle,
           webviewStyles: props2.webviewStyles
         },
-        "methods": ["runJavaScript", "backward", "forward", "refresh", "stop"],
+        "methods": ["runJavaScript", "backward", "forward", "refresh", "stop", "accessBackward", "accessForward", "loadData", "getPageHeight", "removeCache", "loadUrl"],
         "style": "width:100%;height:100%"
       }, null, 8, ["options"])], 10, ["id"]);
     }

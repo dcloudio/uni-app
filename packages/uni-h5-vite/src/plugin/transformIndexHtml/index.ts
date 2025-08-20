@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite'
+import type { HtmlTagDescriptor, Plugin } from 'vite'
 
 import {
   getPlatformManifestJson,
@@ -33,20 +33,22 @@ export function createTransformIndexHtml(): Plugin['transformIndexHtml'] {
         }
       }
     }
-    return {
-      html: html.replace(/<title>(.*?)<\/title>/, `<title>${title}</title>`),
-      tags:
-        process.env.NODE_ENV === 'development'
-          ? [
-              {
-                tag: 'script',
-                children: `if (typeof globalThis === 'undefined') {
+
+    const tags: HtmlTagDescriptor[] = []
+
+    if (process.env.NODE_ENV === 'development') {
+      tags.push({
+        tag: 'script',
+        children: `if (typeof globalThis === 'undefined') {
   window.globalThis = window
 }`,
-                injectTo: 'head-prepend',
-              },
-            ]
-          : [],
+        injectTo: 'head-prepend',
+      })
+    }
+
+    return {
+      html: html.replace(/<title>(.*?)<\/title>/, `<title>${title}</title>`),
+      tags,
     }
   }
 }

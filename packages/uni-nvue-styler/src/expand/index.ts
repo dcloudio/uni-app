@@ -1,4 +1,4 @@
-import type { Plugin } from 'postcss'
+import type { Declaration, Helpers, Plugin } from 'postcss'
 import {
   type NormalizeOptions,
   type TransformDecl,
@@ -18,6 +18,7 @@ import { transformFont } from './font'
 import { transformMargin } from './margin'
 import { transformPadding } from './padding'
 import { transformTransition } from './transition'
+import { transformFlex } from './flex'
 
 function getDeclTransforms(
   options: NormalizeOptions
@@ -51,6 +52,11 @@ function getDeclTransforms(
 
     flexFlow: transformFlexFlow,
   }
+
+  if (options.type === 'uvue') {
+    styleMap.flex = transformFlex
+  }
+
   let result: Record<string, TransformDecl> = {}
   if (__NODE_JS__) {
     styleMap.font = transformFont
@@ -84,6 +90,47 @@ export function expand(options: NormalizeOptions): Plugin {
         }
       }
       ;(decl as any)[expanded] = true
+    },
+  }
+  return plugin
+}
+
+export function vueStyleValidator(options: NormalizeOptions): Plugin {
+  const plugin: Plugin = {
+    postcssPlugin: `${options.type || 'nvue'}:vue-style-validator`,
+    Declaration(decl: Declaration, helper: Helpers) {
+      const isUVue = options.type === 'uvue'
+      if (!isUVue) {
+        return
+      }
+
+      if (decl.prop.startsWith('--')) {
+        const parent = decl.parent
+        // 检查 parent 是否是 Rule 选择器
+        if (!parent || parent.type !== 'rule') {
+          const reason = `ERROR: CSS custom properties must be inside a CSS rule (selector). Found "${decl.prop}" at top level.`
+
+          let needLog = false
+          if (options.logLevel === 'NOTE') {
+            needLog = true
+          } else if (options.logLevel === 'ERROR') {
+            if (reason.startsWith('ERROR:')) {
+              needLog = true
+            }
+          } else {
+            if (!reason.startsWith('NOTE:')) {
+              needLog = true
+            }
+          }
+
+          if (needLog && helper) {
+            decl.warn(helper.result, reason)
+          }
+
+          // 移除这个声明
+          decl.remove()
+        }
+      }
     },
   }
   return plugin

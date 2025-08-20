@@ -9,6 +9,7 @@ import {
 } from '@dcloudio/uni-shared'
 import {
   type MiniProgramCompilerOptions,
+  createAttributeNode,
   formatMiniProgramEvent,
   getEscaper,
   isAttributeNode,
@@ -344,6 +345,17 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
       }
       return genElement(child, context)
     }
+  } else if (
+    slotProp &&
+    node.tag === 'view' &&
+    process.env.UNI_APP_X === 'true'
+  ) {
+    /**
+     * uni-app-x小程序端为了对齐app平台view设置了默认的overflow: hidden样式
+     * 对于slot生成的view节点，这个默认样式大多情况下不符合开发者预期
+     * 在此view节点补充style="overflow: visible"
+     */
+    node.props.push(createAttributeNode('style', 'overflow: visible'))
   }
 
   return genElement(node, context)

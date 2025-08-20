@@ -1049,3 +1049,11 @@ declare class Promise<T> {
     arr: Array<Promise<T>>
   ): Promise<Array<PromiseSettledResult<T>>>
 }
+
+
+interface UTSPromiseAggregateError {
+  name: string,
+  message: string,
+  errors: Array<any | null>,
+  addError(error: any | null): void
+}

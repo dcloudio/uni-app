@@ -6,11 +6,14 @@ import { initLaunchOptions } from './utils'
 
 export function initAppLaunch(appVm: ComponentPublicInstance) {
   injectAppHooks(appVm.$)
-  const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig
+  const { entryPagePath, entryPageQuery, referrerInfo, appScheme, appLink } =
+    __uniConfig
   const args = initLaunchOptions({
     path: entryPagePath,
     query: entryPageQuery,
     referrerInfo: referrerInfo,
+    appScheme,
+    appLink,
   })
   invokeHook(appVm, ON_LAUNCH, args)
   invokeHook(appVm, ON_SHOW, args)

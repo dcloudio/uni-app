@@ -6,6 +6,7 @@ import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
 import { extend, hasOwn } from '@vue/shared'
 import {
   getDevServerOptions,
+  getWorkersRootDirs,
   initPostcssPlugin,
   isInHBuilderX,
   isSsr,
@@ -13,6 +14,7 @@ import {
   parseManifestJsonOnce,
   parseRpx2UnitOnce,
   resolveMainPathOnce,
+  runByHBuilderX,
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { createDefine } from '../utils'
@@ -32,7 +34,6 @@ export function createConfig(options: {
     }
 
     const server: ServerOptions = {
-      host: true,
       hmr: process.env.UNI_AUTOMATOR_WS_ENDPOINT
         ? false
         : {
@@ -56,6 +57,11 @@ export function createConfig(options: {
         ],
       },
       ...getDevServerOptions(parseManifestJsonOnce(inputDir)),
+    }
+
+    if (runByHBuilderX()) {
+      // 仅在 HBuilderX 中运行时，将 host 设置为 true，cli 项目命令行运行需要自行开启 --host 参数
+      server.host = true
     }
 
     if ((server.port as unknown as string) === '') {
@@ -127,15 +133,27 @@ export function createConfig(options: {
                   : '.[hash]'
               const { assetsDir } = options.resolvedConfig!.build
               if (chunkInfo.facadeModuleId) {
-                const dirname = path.relative(
-                  inputDir,
-                  path.dirname(chunkInfo.facadeModuleId)
+                const dirname = normalizePath(
+                  path.relative(
+                    inputDir,
+                    path.dirname(chunkInfo.facadeModuleId)
+                  )
                 )
                 if (dirname) {
+                  // 保留workers的目录结构，目前不支持不同的workers引入同一个uts文件，因为目前不能很好的分别打包进各自的chunk中
+                  const workersRootDir = getWorkersRootDirs()
+                  if (workersRootDir.length) {
+                    if (
+                      workersRootDir.some((workersRootDir) =>
+                        dirname.startsWith(workersRootDir)
+                      )
+                    ) {
+                      return `${dirname}/[name].js`
+                    }
+                  }
                   return path.posix.join(
                     assetsDir,
-                    normalizePath(dirname).replace(/\//g, '-') +
-                      `-[name]${hash}.js`
+                    dirname.replace(/\//g, '-') + `-[name]${hash}.js`
                   )
                 }
               }

@@ -1313,6 +1313,16 @@ var shims = /*#__PURE__*/Object.freeze({
   getProvider: getProvider
 });
 
+const showActionSheet = {
+    args(fromArgs, toArgs) {
+        if (!fromArgs.itemColor) {
+            toArgs.itemColor = '#000000';
+        }
+    },
+};
+const requestPayment = {
+    name: 'requestOrderPayment',
+};
 const navigateTo = navigateTo$1();
 
 var protocols = /*#__PURE__*/Object.freeze({
@@ -1325,7 +1335,9 @@ var protocols = /*#__PURE__*/Object.freeze({
   onSocketMessage: onSocketMessage,
   onSocketOpen: onSocketOpen,
   previewImage: previewImage,
-  redirectTo: redirectTo
+  redirectTo: redirectTo,
+  requestPayment: requestPayment,
+  showActionSheet: showActionSheet
 });
 
 var index = initUni(shims, protocols);

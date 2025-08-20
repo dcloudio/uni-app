@@ -142,6 +142,17 @@ export const UVUE_BUILT_IN_TAGS = [
   'cover-image',
   // custom element
   'match-media',
+  // 'checkbox',
+  // 'checkbox-group',
+  // 'form',
+  // 'navigator',
+  // 'picker-view',
+  // 'picker-view-column',
+  // 'progress',
+  // 'slider',
+  // 'switch',
+  // 'radio',
+  // 'radio-group',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
@@ -290,7 +301,26 @@ export function isAppIOSUVueNativeTag(tag: string) {
   if (NVUE_BUILT_IN_TAGS.includes(tag)) {
     return true
   }
-  if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+  // TODO
+  if (
+    [
+      'checkbox',
+      'checkbox-group',
+      'form',
+      'picker-view',
+      'picker-view-column',
+      'progress',
+      'switch',
+      'radio',
+      'radio-group',
+    ].includes(tag)
+  ) {
+    return true
+  }
+  if (
+    //  && tag != 'navigator' && tag != 'slider'
+    UVUE_BUILT_IN_TAGS.includes(tag)
+  ) {
     return true
   }
   if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {

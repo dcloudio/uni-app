@@ -4,8 +4,8 @@ import Activity from 'android.app.Activity'
  */
 declare class UniActivityParams {
   /**
-     页面路由地址
-     @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-current-pages.html#getcurrentpages
+     当前activity示例
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsactivitycallback.html
      @uniPlatform {
         "app": {
             "android": {

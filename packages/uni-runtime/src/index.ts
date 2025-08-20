@@ -31,8 +31,5 @@ export {
   getCurrentPageMeta,
   getCurrentPageVm,
   getPageIdByVm,
-  //#if _X_
-  isSystemActionSheetDialogPage,
-  //#endif
 } from '@dcloudio/uni-core'
 export const __uniConfig = globalThis.__uniConfig

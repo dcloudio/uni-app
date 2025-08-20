@@ -26,6 +26,7 @@ import {
   ON_RESIZE,
   ON_SAVE_EXIT_STATE,
   ON_SHARE_APP_MESSAGE,
+  ON_SHARE_CHAT,
   ON_SHARE_TIMELINE,
   ON_SHOW,
   ON_TAB_ITEM_TAP,
@@ -159,6 +160,9 @@ export const onSaveExitState =
 export const onShareTimeline = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onShareTimeline']
 >(ON_SHARE_TIMELINE, HookFlags.PAGE)
+export const onShareChat = /*#__PURE__*/ createLifeCycleHook<
+  Required<Page.PageInstance>['onShareChat']
+>(ON_SHARE_CHAT, HookFlags.PAGE)
 export const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onAddToFavorites']
 >(ON_ADD_TO_FAVORITES, HookFlags.PAGE)

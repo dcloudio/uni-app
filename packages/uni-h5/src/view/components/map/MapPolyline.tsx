@@ -1,6 +1,9 @@
-import { inject, PropType, onUnmounted, watch } from 'vue'
-import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
-import { Maps, Map, LatLng, Polyline, PolylineOptions } from './maps'
+import { type PropType, inject, onUnmounted, watch } from 'vue'
+import {
+  defineSystemComponent,
+  type useCustomEvent,
+} from '@dcloudio/uni-components'
+import type { LatLng, Map, Maps, Polyline, PolylineOptions } from './maps'
 import { hexToRgba } from '../../../helpers/hexToRgba'
 import { getIsAMap, getIsBMap } from '../../../helpers/location'
 
@@ -63,7 +66,7 @@ export default /*#__PURE__*/ defineSystemComponent({
           if (getIsAMap()) {
             pointPosition = [point.longitude, point.latitude]
           } else if (getIsBMap()) {
-            // @ts-ignore
+            // @ts-expect-error
             pointPosition = new maps.Point(point.longitude, point.latitude)
           } else {
             pointPosition = new (maps as typeof google.maps).LatLng(
@@ -111,9 +114,9 @@ export default /*#__PURE__*/ defineSystemComponent({
           polylineBorder = new maps.Polyline(polylineBorderOptions)
         }
         if (getIsBMap()) {
-          // @ts-ignore
+          // @ts-expect-error
           polyline = new maps.Polyline(polylineOptions.path, polylineOptions)
-          // @ts-ignore
+          // @ts-expect-error
           map.addOverlay(polyline)
         } else {
           polyline = new maps.Polyline(polylineOptions)

@@ -58,6 +58,9 @@ function formatAppJson(_appJson, manifestJson, _pagesJson) {
 const compilerOptions = {
     nodeTransforms: [uniCliShared.transformRef],
 };
+const customElements = [
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+];
 const miniProgram = {
     class: {
         array: true,
@@ -106,7 +109,7 @@ const options = {
     json: {
         formatAppJson,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.qjs',
             lang: 'qjs',
             generate(filter, filename) {

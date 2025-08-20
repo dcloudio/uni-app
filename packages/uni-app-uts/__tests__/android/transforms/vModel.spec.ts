@@ -53,6 +53,20 @@ describe('compiler: transform v-model', () => {
   onInput: ($event: UniInputEvent) => {(_ctx.model) = $event.detail.value}
 }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])`
     )
+    assert(
+      `<input v-model="model" @input="onInput" />`,
+      `_cE("input", _uM({
+  modelValue: _ctx.model,
+  onInput: [($event: UniInputEvent) => {(_ctx.model) = $event.detail.value}, _ctx.onInput] as Array<any | null>
+}), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])`
+    )
+    assert(
+      `<custom-input v-model="model" @update:modelValue="handleModelValueUpdate"/>`,
+      `_cV(_component_custom_input, _uM({
+  modelValue: _ctx.model,
+  "onUpdate:modelValue": [$event => {(_ctx.model) = $event}, _ctx.handleModelValueUpdate]
+}), null, 8 /* PROPS */, ["modelValue", "onUpdate:modelValue"])`
+    )
   })
 
   // #2426
@@ -113,7 +127,7 @@ foo
     assert(
       `<input v-model.number="model" />`,
       `_cE(\"input\", _uM({
-  modelValue: _ctx.model,
+  modelValue: handleModelValueForModifierNumber(_ctx.model),
   onInput: ($event: UniInputEvent) => {(_ctx.model) = looseToNumber($event.detail.value)}
 }), null, 40 /* PROPS, NEED_HYDRATION */, [\"modelValue\", \"onInput\"])`
     )

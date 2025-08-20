@@ -1,14 +1,17 @@
 import { inject, onUnmounted, reactive } from 'vue'
-import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
+import {
+  defineSystemComponent,
+  type useCustomEvent,
+} from '@dcloudio/uni-components'
 //#if !_NODE_JS_
 import {
-  onCompassChange,
-  offCompassChange,
   getLocation,
+  offCompassChange,
+  onCompassChange,
 } from '../../../service/api'
 //#endif
 import { ICON_PATH_ORIGIN } from '../../../helpers/location'
-import { Maps, Map } from './maps'
+import type { Map, Maps } from './maps'
 import MapMarker from './MapMarker'
 
 type CustomEventTrigger = ReturnType<typeof useCustomEvent>

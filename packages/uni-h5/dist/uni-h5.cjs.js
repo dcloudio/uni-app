@@ -4006,6 +4006,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
+    const inputmode = vue.computed(() => {
+      if (props2.inputmode) {
+        return props2.inputmode;
+      }
+    });
     let cache = useCache(props2, type);
     let resetCache = {
       fn: null
@@ -4113,7 +4118,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": props2.inputmode
+        "inputmode": inputmode.value
       }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
@@ -6124,7 +6129,7 @@ function decodeEntities(htmlString) {
 function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
     return {
-      onClick: (e2) => {
+      onClickCapture: (e2) => {
         triggerItemClick(e2, { node });
         e2.stopPropagation();
         e2.preventDefault();
@@ -7849,7 +7854,7 @@ const ConfirmTypes = ["done", "go", "next", "search", "send"];
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$a,
-  emits: ["confirm", "linechange", ...emit],
+  emits: ["confirm", "change", "linechange", ...emit],
   setup(props2, {
     emit: emit2,
     expose
@@ -7889,6 +7894,8 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       height
     }) {
       heightRef.value = height;
+    }
+    function onChange(event) {
     }
     function confirm(event) {
       trigger("confirm", event, {
@@ -7960,8 +7967,9 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
           }
         },
         "onKeydown": onKeyDownEnter,
-        "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
+        "onKeyup": onKeyUpEnter,
+        "onChange": onChange
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
       return vue.createVNode("uni-textarea", {
         "ref": rootRef,
         "auto-height": props2.autoHeight
@@ -7975,11 +7983,14 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "ref": lineRef,
         "class": "uni-textarea-line"
       }, [" "], 512), vue.createVNode("div", {
-        "class": "uni-textarea-compute"
+        "class": {
+          "uni-textarea-compute": true,
+          "uni-textarea-compute-auto-height": props2.autoHeight
+        }
       }, [valueCompute.value.map((item) => vue.createVNode("div", null, [item.trim() ? item : "."])), vue.createVNode(ResizeSensor, {
         "initial": true,
         "onResize": onResize
-      }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? vue.createVNode("form", {
+      }, null, 8, ["initial", "onResize"])], 2), props2.confirmType === "search" ? vue.createVNode("form", {
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
@@ -8057,7 +8068,9 @@ function initHooks(options, instance, publicThis) {
       if (false)
         ;
       invokeHook(publicThis, uniShared.ON_LOAD, query);
-      delete instance.attrs.__pageQuery;
+      if (!instance.vapor) {
+        delete instance.attrs.__pageQuery;
+      }
       const $basePage = false ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
@@ -9258,7 +9271,23 @@ const onWebInvokeAppService = ({ name, arg }) => {
   if (name === "postMessage")
     ;
   else {
-    uni[name](arg);
+    switch (name) {
+      case "navigateTo":
+        uni.navigateTo(arg);
+        break;
+      case "navigateBack":
+        uni.navigateBack(arg);
+        break;
+      case "switchTab":
+        uni.switchTab(arg);
+        break;
+      case "reLaunch":
+        uni.reLaunch(arg);
+        break;
+      case "redirectTo":
+        uni.redirectTo(arg);
+        break;
+    }
   }
 };
 const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
@@ -10022,9 +10051,9 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
         }
         if (getIsBMap()) {
           let pt = new maps.Point(
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[0],
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[1]
           );
           circle = new maps.Circle(pt, circleOptions.radius, circleOptions);
@@ -10203,7 +10232,7 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           //多边形是否可编辑。
           editable: false,
           // 地图实例，即要显示多边形的地图
-          // @ts-ignore
+          // @ts-expect-error
           map,
           // 区域填充色
           fillColor: "",
@@ -12681,8 +12710,18 @@ function useTopWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
-    const height = el.getBoundingClientRect().height;
+    if (!el) {
+      return;
+    }
+    const uniTopWindowStyleEl = el.parentElement;
+    if (!uniTopWindowStyleEl) {
+      return;
+    }
+    const height = uniTopWindowStyleEl.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
   vue.watch(() => windowRef.value, () => {
@@ -12703,8 +12742,18 @@ function useLeftWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniLeftWindowStyleEl) {
+      return;
+    }
+    const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
   vue.watch(() => windowRef.value, () => {
@@ -12725,8 +12774,18 @@ function useRightWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniRightWindowStyleEl) {
+      return;
+    }
+    const width = uniRightWindowStyleEl.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
   vue.watch(() => windowRef.value, () => {

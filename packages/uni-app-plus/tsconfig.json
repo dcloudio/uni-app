@@ -6,5 +6,5 @@
       "@dcloudio/uni-platform": ["packages/uni-app-plus/src/platform/index.ts"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "../shims-vue-runtime.d.ts"]
 }

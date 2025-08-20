@@ -68,8 +68,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.51",
-   *      "unixUtsPlugin": "4.51"
+   *      "unixVer": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
@@ -141,8 +140,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.51",
-   *      "unixUtsPlugin": "4.51"
+   *      "unixVer": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
@@ -214,8 +212,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.51",
-   *      "unixUtsPlugin": "4.51"
+   *      "unixVer": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
@@ -287,8 +284,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.51",
-   *      "unixUtsPlugin": "4.51"
+   *      "unixVer": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
@@ -384,14 +380,15 @@ export interface Uni {
    *	});
    * ```
    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/show-action-sheet.html#showactionsheet
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/show-action-sheet.html#showactionsheet
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showactionsheet
    * @uniPlatform {
    *  "app": {
    *    "android": {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "3.91",
-   *      "unixUtsPlugin": "3.91"
+   *      "unixVer": "3.91"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
@@ -463,14 +460,14 @@ export interface Uni {
    *	uni.hideActionSheet();
    * ```
    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/hide-action-sheet.html#hideactionsheet
+   * @tutorial_uni_app https://doc.dcloud.net.cn/uni-app-x/api/hide-action-sheet.html#hideactionsheet
    * @uniPlatform {
    *  "app": {
    *    "android": {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.51",
-   *      "unixUtsPlugin": "4.51"
+   *      "unixVer": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",

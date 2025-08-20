@@ -24,6 +24,13 @@
   },
   {
     "type": "provider",
+    "plugin": "uni-oauth-weixin",
+    "provider": "weixin",
+    "service": "oauth",
+    "version": "1.0.0"
+  },
+  {
+    "type": "provider",
     "plugin": "uni-payment-alipay",
     "provider": "alipay",
     "service": "payment",
@@ -54,6 +61,13 @@
       "setAppBadgeNumber"
     ],
     "version": "1.0.2"
+  },
+  {
+    "type": "provider",
+    "plugin": "uni-share-weixin",
+    "provider": "weixin",
+    "service": "share",
+    "version": "1.0.0"
   },
   {
     "type": "extapi",

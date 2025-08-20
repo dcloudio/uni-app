@@ -11,5 +11,6 @@ export {
   parseUniXSplashScreen,
   isUniXPageFile,
   getUniXPagePaths,
+  parseUniXAppAndroidPackage,
 } from './uni-x'
 export { checkPagesJson } from './utils'

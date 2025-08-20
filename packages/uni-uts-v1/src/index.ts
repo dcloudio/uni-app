@@ -15,6 +15,7 @@ import {
 import {
   ERR_MSG_PLACEHOLDER,
   genConfigJson,
+  requireUTSPluginCode,
   resolveAndroidComponents,
   resolveConfigProvider,
   resolveCustomElements,
@@ -56,6 +57,7 @@ import { existsSync, readdirSync, rmSync } from 'fs-extra'
 import { restoreDebuggerFiles } from './manifest/dex'
 import { compileArkTS, requireUTSPluginCode } from './arkts'
 
+export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
 
 export { getPluginInjectApis, getPluginInjectComponents } from './utils'
@@ -63,6 +65,7 @@ export { getPluginInjectApis, getPluginInjectComponents } from './utils'
 export { parseExportIdentifiers, parseInterfaceTypes } from './code'
 
 export {
+  bundleArkTS,
   compileArkTS,
   compileArkTSExtApi,
   getArkTSAutoImports,
@@ -82,6 +85,8 @@ export { parseInjectModules, parseExtApiProviders } from './utils'
 export * from './sourceMap'
 
 export {
+  parseUTSSyntaxError,
+  parseCompileStacktrace,
   parseRuntimeStacktrace,
   parseUTSRuntimeStacktrace,
   parseUTSKotlinRuntimeStacktrace,
@@ -356,6 +361,7 @@ export async function compile(
             cacheDir,
             pluginRelativeDir,
             is_uni_modules: pkg.is_uni_modules,
+            deps: result?.deps,
           })
         }
       }
@@ -416,6 +422,7 @@ export async function compile(
             cacheDir,
             pluginRelativeDir,
             is_uni_modules: pkg.is_uni_modules,
+            deps: result?.deps,
           })
         }
       }
@@ -640,6 +647,7 @@ export async function compile(
                 cacheDir,
                 pluginRelativeDir,
                 is_uni_modules: pkg.is_uni_modules,
+                deps: res?.deps,
               })
             }
             if (tips) {
@@ -784,7 +792,9 @@ export async function buildUniModules(
     await compileUniModuleWithTsc(
       'app-android',
       pluginDir,
-      createUniXKotlinCompiler(),
+      createUniXKotlinCompiler({
+        resolveWorkers: () => ({}),
+      }),
       {
         rootFiles: options.rootFiles,
         preprocessor: syncUniModulesFilePreprocessors.android,
@@ -797,7 +807,9 @@ export async function buildUniModules(
     await compileUniModuleWithTsc(
       'app-ios',
       pluginDir,
-      createUniXSwiftCompiler(),
+      createUniXSwiftCompiler({
+        resolveWorkers: () => ({}),
+      }),
       {
         rootFiles: options.rootFiles,
         preprocessor: syncUniModulesFilePreprocessors.ios,
@@ -810,7 +822,9 @@ export async function buildUniModules(
     await compileUniModuleWithTsc(
       'app-harmony',
       pluginDir,
-      createUniXArkTSCompiler(),
+      createUniXArkTSCompiler({
+        resolveWorkers: () => ({}),
+      }),
       {
         rootFiles: options.rootFiles,
         preprocessor: syncUniModulesFilePreprocessors.harmony,

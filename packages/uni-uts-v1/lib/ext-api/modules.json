@@ -210,7 +210,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
         }
       }
@@ -441,8 +441,8 @@
         "name": "onNetworkStatusChange",
         "app": {
           "js": false,
-          "kotlin": false,
-          "swift": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": true
         }
       },
@@ -450,8 +450,8 @@
         "name": "offNetworkStatusChange",
         "app": {
           "js": false,
-          "kotlin": false,
-          "swift": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": true
         }
       }
@@ -563,6 +563,38 @@
       }
     }
   },
+  "uni-live-player": {
+    "uni": {
+      "createLivePlayerContext": {
+        "name": "createLivePlayerContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    },
+    "easycom": [
+      "live-player"
+    ]
+  },
+  "uni-live-pusher": {
+    "uni": {
+      "createLivePusherContext": {
+        "name": "createLivePusherContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    },
+    "easycom": [
+      "live-pusher"
+    ]
+  },
   "uni-location": {
     "provider": {
       "service": "location"
@@ -570,6 +602,69 @@
     "uni": {
       "getLocation": {
         "name": "getLocation",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "startLocationUpdate": {
+        "name": "startLocationUpdate",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "stopLocationUpdate": {
+        "name": "stopLocationUpdate",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onLocationChange": {
+        "name": "onLocationChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offLocationChange": {
+        "name": "offLocationChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "startLocationUpdateBackground": {
+        "name": "startLocationUpdateBackground",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onLocationChangeError": {
+        "name": "onLocationChangeError",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offLocationChangeError": {
+        "name": "offLocationChangeError",
         "app": {
           "js": false,
           "kotlin": true,
@@ -786,6 +881,18 @@
           "swift": false,
           "arkts": true
         }
+      }
+    }
+  },
+  "uni-oauth-weixin": {
+    "provider": {
+      "service": "oauth",
+      "name": "weixin",
+      "app": {
+        "js": false,
+        "kotlin": false,
+        "swift": false,
+        "arkts": true
       }
     }
   },

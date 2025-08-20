@@ -4,6 +4,7 @@ import {
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   copyMiniProgramThemeJson,
+  getNativeTags,
   transformComponentLink,
   transformDirection,
   transformMPBuiltInTag,
@@ -54,7 +55,13 @@ export const customElements = [
   'sticky-section',
   'store-product',
   'store-home',
+  'store-gift',
+  'store-coupon',
   'keyboard-accessory',
+  'open-data-list',
+  'open-data-item',
+  'selection',
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
 const nodeTransforms: NodeTransform[] = [
@@ -170,6 +177,7 @@ export const options: UniMiniProgramPluginOptions = {
     subpackages: true,
     plugins: true,
     usingComponents: true,
+    workers: true,
   },
   project: {
     filename: projectConfigFilename,

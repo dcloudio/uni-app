@@ -5,31 +5,48 @@ import { camelize, capitalize, normalizePath, requireUniHelpers } from './utils'
 import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
 import { EXTNAME_VUE_RE } from './constants'
+import { encodeBase64Url } from './url'
 
 function genEncryptEasyComModuleIndex(
+  pluginId: string,
   platform: typeof process.env.UNI_UTS_PLATFORM,
   components: Record<string, '.vue' | '.uvue'>
 ) {
+  const isMp = platform.startsWith('mp-')
   const imports: string[] = []
+  const code: string[] = []
   const ids: string[] = []
   Object.keys(components).forEach((component) => {
     const id = capitalize(camelize(component))
-
-    ids.push(id)
+    if (!isMp) {
+      ids.push(id)
+    }
     let instance = ''
     if (platform === 'app-android') {
       instance = genUTSComponentPublicInstanceIdent(component)
       // 类型
       ids.push(instance)
     }
-    imports.push(
-      `import ${id}${
-        instance ? `, { ${instance} }` : ''
-      } from './components/${component}/${component}${components[component]}'`
-    )
+    if (isMp) {
+      const filename = `uni_modules/${pluginId}/components/${component}/${component}${components[component]}`
+      // 为了触发json、wxss的生成
+      imports.push(`import ${id} from '${virtualComponentPath(filename)}'`)
+      code.push(`function defineComponent${id}(){
+  ${process.env.UNI_MP_GLOBAL || 'uni'}.createComponent(${id})
+}`)
+      ids.push(`defineComponent${id}`)
+    } else {
+      imports.push(
+        `import ${id}${
+          instance ? `, { ${instance} }` : ''
+        } from './components/${component}/${component}${components[component]}'`
+      )
+    }
   })
+
   return `
 ${imports.join('\n')}
+${code.join('\n')}
 export { 
   ${ids.join(',\n  ')} 
 }
@@ -38,12 +55,13 @@ export {
 
 // easyCom
 export function genEncryptEasyComModuleCode(
+  pluginId: string,
   platform: typeof process.env.UNI_UTS_PLATFORM,
   components: Record<string, '.vue' | '.uvue'>
 ) {
   // easyCom
   if (components && Object.keys(components).length) {
-    return genEncryptEasyComModuleIndex(platform, components)
+    return genEncryptEasyComModuleIndex(pluginId, platform, components)
   }
   return ''
 }
@@ -97,7 +115,9 @@ export function parseUniModulesWithComponents(
         // 解析加密的 easyCom 插件列表
         const components = parseEasyComComponents(uniModuleDir, inputDir, false)
         if (Object.keys(components).length) {
-          codes.push(genEncryptEasyComModuleCode(platform, components))
+          codes.push(
+            genEncryptEasyComModuleCode(uniModuleDir, platform, components)
+          )
         }
         if (codes.length) {
           uniModules[uniModuleDir] = codes.join(`\n`)
@@ -176,7 +196,8 @@ const uniModulesEncryptTypes: Map<string, 'utssdk' | 'easycom' | ''> = new Map()
 export function findCloudEncryptUniModules(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string,
-  cacheDir: string = ''
+  cacheDir: string = '',
+  sdkType: CloudCompileSdkType = 'all'
 ) {
   uniModulesEncryptTypes.clear()
   const uniModules: Record<string, EncryptPackageJson | undefined> = {}
@@ -191,12 +212,7 @@ export function findCloudEncryptUniModules(
       let type: 'utssdk' | 'easycom' | '' = ''
       if (fs.existsSync(utssdkDir)) {
         // app-android 和 app-ios 不能云编译 utssdk 插件，而是需要自定义基座
-        // app-harmony 平台目前不支持云编译
-        if (
-          platform === 'app-android' ||
-          platform === 'app-ios' ||
-          platform === 'app-harmony'
-        ) {
+        if (platform === 'app-android' || platform === 'app-ios') {
           return
         }
         // 其他平台必须有平台index.uts或根目录index.uts
@@ -214,6 +230,12 @@ export function findCloudEncryptUniModules(
           return
         }
         type = 'easycom'
+      }
+      if (sdkType === 'utssdk' && type === 'easycom') {
+        return
+      }
+      if (sdkType === 'easycom' && type === 'utssdk') {
+        return
       }
       const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
       uniModules[uniModuleDir] = findEncryptUniModuleCache(
@@ -442,10 +464,19 @@ export function resolveEncryptUniModule(
       // 为了避免兼容性问题，
       // 目前排除 app-android 和 app-ios 平台，其他平台需要判断是否uvue文件，比如web端。加密utssdk插件，但同时easycom使用了非加密组件
       if (platform !== 'app-android' && platform !== 'app-ios') {
-        if (uniModulesEncryptTypes.get(uniModuleId) === 'utssdk') {
+        const encryptType = getUniModulesEncryptType(uniModuleId)
+        if (encryptType === 'utssdk') {
           // 如果是utssdk加密插件，且是vue文件，则不走uts-proxy
           if (EXTNAME_VUE_RE.test(id)) {
             return
+          }
+        }
+        // 小程序平台不使用uni_helpers来处理easycom组件，而是用uniEntryPlugin处理
+        if (platform.startsWith('mp-')) {
+          if (encryptType === 'easycom') {
+            if (EXTNAME_VUE_RE.test(id)) {
+              return
+            }
           }
         }
       }
@@ -462,25 +493,32 @@ export function resolveEncryptUniModule(
   }
 }
 
+type CloudCompileSdkType = 'utssdk' | 'easycom' | 'all'
+
+export interface CloudCompileParams {
+  mode: 'development' | 'production'
+  packType: 'debug' | 'release'
+  compilerVersion: string // hxVersion
+  appid: string
+  appname: string
+  platform: typeof process.env.UNI_UTS_PLATFORM // app-android | app-ios | web
+  'uni-app-x': boolean
+  env: Record<string, string>
+}
+
 export async function checkEncryptUniModules(
   inputDir: string,
-  params: {
-    mode: 'development' | 'production'
-    packType: 'debug' | 'release'
-    compilerVersion: string // hxVersion
-    appid: string
-    appname: string
-    platform: typeof process.env.UNI_UTS_PLATFORM // app-android | app-ios | web
-    'uni-app-x': boolean
-  }
+  params: CloudCompileParams,
+  sdkType: CloudCompileSdkType = 'all'
 ) {
-  // 扫描加密插件云编译
-  encryptUniModules = findCloudEncryptUniModules(
+  // 初始化指定 sdk 类型的加密插件
+  const curEncryptUniModules = findCloudEncryptUniModules(
     params.platform,
     inputDir,
-    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
+    sdkType
   )
-  if (!Object.keys(encryptUniModules).length) {
+  if (!Object.keys(curEncryptUniModules).length) {
     return {}
   }
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
@@ -489,7 +527,7 @@ export async function checkEncryptUniModules(
 
   const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!
   const { zipFile, modules } = packUploadEncryptUniModules(
-    encryptUniModules,
+    curEncryptUniModules,
     process.env.UNI_UTS_PLATFORM,
     inputDir,
     cacheDir
@@ -553,11 +591,17 @@ export async function checkEncryptUniModules(
       })
     }
   }
+  // 初始化所有
   encryptUniModules = findCloudEncryptUniModules(
     params.platform,
     inputDir,
-    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
+    'all'
   )
+}
+
+export function getUniModulesEncryptType(pluginId: string) {
+  return uniModulesEncryptTypes.get(pluginId)
 }
 
 export function parseUniModulesArtifacts() {
@@ -579,4 +623,10 @@ export function parseUniModulesArtifacts() {
     }
   })
   return res
+}
+
+const uniComponentPrefix = 'uniComponent://'
+
+export function virtualComponentPath(filepath: string) {
+  return uniComponentPrefix + encodeBase64Url(filepath)
 }

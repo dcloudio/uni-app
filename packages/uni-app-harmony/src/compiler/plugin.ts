@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs-extra'
 import {
   type UniVitePlugin,
   buildUniExtApis,
@@ -18,6 +19,7 @@ import type { OutputChunk, PluginContext } from 'rollup'
 import ExternalModuls from './external-modules.json'
 import ExternalModulsX from './external-modules-x.json'
 import { ComponentsWithProvider, ComponentsWithProviderX } from './constants'
+import { buildWorkers } from './workers'
 
 const isX = process.env.UNI_APP_X === 'true'
 const StandaloneExtApis = isX ? ExternalModulsX : ExternalModuls
@@ -166,6 +168,9 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       if (!isX) {
         // x 上暂时编译所有uni ext api，不管代码里是否调用了
         await buildUniExtApis()
+      }
+      if (isX) {
+        await buildWorkers()
       }
     },
   }
@@ -372,14 +377,16 @@ function genAppHarmonyUniModules(
     moduleSpecifier: string
     plugin: string
     source: 'local' | 'ohpm'
+    encrypt?: boolean
     version?: string
   }[] = []
 
   Array.from(utsPlugins)
     .sort()
     .forEach((plugin) => {
+      const pluginDir = path.resolve(uniModulesDir, plugin)
       const injects = parseUniExtApi(
-        path.resolve(uniModulesDir, plugin),
+        pluginDir,
         plugin,
         true,
         'app-harmony',
@@ -408,6 +415,7 @@ function genAppHarmonyUniModules(
         moduleSpecifier: harmonyPackageName,
         plugin,
         source: 'local',
+        encrypt: isEncrypt(pluginDir),
       })
     })
 
@@ -594,12 +602,18 @@ function initUniExtApi() {
   const modules: { name: string; srcPath: string }[] = []
   projectDeps.forEach((dep) => {
     if (dep.source === 'local') {
-      const depPath = './uni_modules/' + dep.plugin
+      const depPath =
+        './uni_modules/' +
+        dep.plugin +
+        (dep.encrypt ? '/utssdk/app-harmony/module.har' : '')
       dependencies[dep.moduleSpecifier] = depPath
-      modules.push({
-        name: generateHarName(dep.moduleSpecifier),
-        srcPath: depPath,
-      })
+      // 加密插件不生成module信息
+      if (!dep.encrypt) {
+        modules.push({
+          name: generateHarName(dep.moduleSpecifier),
+          srcPath: depPath,
+        })
+      }
     } else {
       if (!dependencies[dep.moduleSpecifier]) {
         dependencies[dep.moduleSpecifier] = `./libs/${generateHarName(
@@ -618,4 +632,8 @@ function initUniExtApi() {
     fileName: 'uni_modules/build-profile.json5',
     source: JSON.stringify({ modules }, null, 2),
   })
+}
+
+function isEncrypt(pluginDir: string) {
+  return fs.existsSync(path.resolve(pluginDir, 'encrypt'))
 }

@@ -4,14 +4,15 @@ import fg from 'fast-glob'
 import { type UniXCompiler, createUniXCompiler } from './tsc/compiler'
 import type { CompilerOptions } from 'typescript'
 import { isInHBuilderX, normalizePath, once } from './shared'
-import { isCustomElementsSupported } from './utils'
+import { resolveCustomElements } from './utils'
 import { camelize, capitalize } from '@vue/shared'
 
 type TargetLanguage = Parameters<typeof createUniXCompiler>[1]
 
 function createUniXTargetLanguageCompiler(
   platform: 'app-android' | 'app-ios' | 'app-harmony',
-  language: TargetLanguage
+  language: TargetLanguage,
+  options: CreateUniXCompilerOptions
 ) {
   const tscInputDir = path.join(process.env.UNI_APP_X_TSC_DIR, platform)
   return createUniXCompiler(
@@ -27,23 +28,28 @@ function createUniXTargetLanguageCompiler(
         tscInputDir
       ),
       normalizeFileName: normalizeNodeModules,
+      resolveWorkers: options.resolveWorkers,
     }
   )
 }
 
-export function createUniXArkTSCompiler() {
-  return createUniXTargetLanguageCompiler('app-harmony', 'ArkTS')
+interface CreateUniXCompilerOptions {
+  resolveWorkers: () => Record<string, string>
+}
+
+export function createUniXArkTSCompiler(options: CreateUniXCompilerOptions) {
+  return createUniXTargetLanguageCompiler('app-harmony', 'ArkTS', options)
 }
 
 export const createUniXArkTSCompilerOnce = once(createUniXArkTSCompiler)
 
-export function createUniXKotlinCompiler() {
-  return createUniXTargetLanguageCompiler('app-android', 'Kotlin')
+export function createUniXKotlinCompiler(options: CreateUniXCompilerOptions) {
+  return createUniXTargetLanguageCompiler('app-android', 'Kotlin', options)
 }
 export const createUniXKotlinCompilerOnce = once(createUniXKotlinCompiler)
 
-export function createUniXSwiftCompiler() {
-  return createUniXTargetLanguageCompiler('app-ios', 'Swift')
+export function createUniXSwiftCompiler(options: CreateUniXCompilerOptions) {
+  return createUniXTargetLanguageCompiler('app-ios', 'Swift', options)
 }
 
 export const createUniXSwiftCompilerOnce = once(createUniXSwiftCompiler)
@@ -141,6 +147,10 @@ export async function compileUniModuleWithTsc(
   )
 
   // 添加入口
+  const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(platform, pluginDir)
+  for (const vueFile of vueFiles) {
+    await uniXCompiler.addRootFile(vueFile)
+  }
   const indexFileName = resolveTscUniModuleIndexFileName(platform, pluginDir)
   if (indexFileName) {
     await uniXCompiler.addRootFile(indexFileName)
@@ -186,19 +196,10 @@ export async function syncUniModuleFilesByCompiler(
   // copy vue files
   const vueFiles = await syncUniModuleVueFiles(
     pluginDir,
-    uvueOutputPluginDir,
+    outputPluginDir,
     preprocessor
   )
   if (vueFiles.length) {
-    // 如果有组件，那将 uts 文件 copy 到 .uvue 目录下，避免 tsc 不 emit 相关的 uts 文件
-    // 如果 tsc emit 了，那就会再次覆盖
-    await syncUniModulesFiles(
-      platform,
-      pluginDir,
-      uvueOutputPluginDir,
-      false,
-      preprocessor
-    )
     compiler.debug(
       `${path.basename(pluginDir)} sync vue files(${vueFiles.length})`
     )
@@ -208,7 +209,7 @@ export async function syncUniModuleFilesByCompiler(
   // 如果是 customElements，且没有utssdk入口文件，需要自动生成一个
   const customElementsDir = path.resolve(pluginDir, 'customElements')
   if (fs.existsSync(customElementsDir)) {
-    const customElements = resolveCustomElements(customElementsDir)
+    const customElements = Object.keys(resolveCustomElements(pluginDir))
     if (customElements.length) {
       const pluginId = path.basename(pluginDir)
       const customElementsCodes = customElements.map((name) => {
@@ -263,37 +264,6 @@ export async function syncUniModuleFilesByCompiler(
     Date.now() - start
   )
 }
-const isDir = (path: string) => {
-  const stat = fs.lstatSync(path)
-  if (stat.isDirectory()) {
-    return true
-  } else if (stat.isSymbolicLink()) {
-    return fs.lstatSync(fs.realpathSync(path)).isDirectory()
-  }
-  return false
-}
-
-function resolveCustomElements(customElementsDir: string) {
-  const pluginDir = path.resolve(customElementsDir, '..')
-  if (!isCustomElementsSupported(pluginDir)) {
-    return []
-  }
-  const customElements: string[] = []
-  fs.readdirSync(customElementsDir).forEach((name) => {
-    const folder = path.resolve(customElementsDir, name)
-    if (!isDir(folder)) {
-      return
-    }
-    const files = fs.readdirSync(folder)
-    // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
-    // customElements 的文件名是 uts 后缀
-    const ext = '.uts'
-    if (files.includes(name + ext)) {
-      customElements.push(name)
-    }
-  })
-  return customElements
-}
 
 function resolveUniModuleGlobs() {
   const extname = `.{uts,ts,json}`
@@ -335,27 +305,58 @@ function resolveUniModuleVueGlobs() {
   return globs
 }
 
+export async function syncUTSFiles(
+  pattern: string,
+  cwd: string,
+  outputDir: string,
+  rename: boolean,
+  preprocessor: SyncUniModulesFilePreprocessor,
+  cache?: Record<string, number>
+) {
+  return fg(pattern, {
+    cwd,
+    absolute: false,
+  }).then((files) => {
+    return Promise.all(
+      files.map(async (fileName) => {
+        let needSync = true
+        if (cache) {
+          const lastModifiedCache = cache[fileName]
+          const lastModified = (await fs.stat(path.resolve(cwd, fileName)))
+            .mtimeMs
+          if (lastModifiedCache && lastModifiedCache === lastModified) {
+            needSync = false
+          } else {
+            cache[fileName] = lastModified
+          }
+        }
+        if (needSync) {
+          return syncUniModulesFile(
+            fileName,
+            cwd,
+            outputDir,
+            rename,
+            preprocessor
+          ).then(() => fileName)
+        }
+        return fileName
+      })
+    )
+  })
+}
+
 async function syncUniModuleStaticFiles(
   pluginDir: string,
   outputPluginDir: string,
   preprocessor: SyncUniModulesFilePreprocessor
 ) {
-  return fg(`static/**/*`, {
-    cwd: pluginDir,
-    absolute: false,
-  }).then((files) => {
-    return Promise.all(
-      files.map((fileName) =>
-        syncUniModulesFile(
-          fileName,
-          pluginDir,
-          outputPluginDir,
-          false,
-          preprocessor
-        ).then(() => fileName)
-      )
-    )
-  })
+  return syncUTSFiles(
+    `static/**/*`,
+    pluginDir,
+    outputPluginDir,
+    false,
+    preprocessor
+  )
 }
 
 async function syncUniModuleVueFiles(
@@ -373,7 +374,7 @@ async function syncUniModuleVueFiles(
           fileName,
           pluginDir,
           outputPluginDir,
-          false,
+          true,
           preprocessor
         ).then(() => fileName)
       )
@@ -503,4 +504,19 @@ export function resolveTscUniModuleIndexFileName(
   if (fs.existsSync(indexFileName)) {
     return indexFileName
   }
+}
+
+export function resolveTscUniModuleUTSSDKVueFileNames(
+  platform: UniXCompilerPlatform,
+  pluginDir: string
+) {
+  pluginDir = resolveOutputPluginDir(
+    platform,
+    process.env.UNI_INPUT_DIR,
+    pluginDir
+  )
+  return fg.sync(['**/*.{vue,uvue}.ts'], {
+    cwd: path.resolve(pluginDir, `utssdk/${platform}`),
+    absolute: true,
+  })
 }

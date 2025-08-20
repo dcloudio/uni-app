@@ -18,8 +18,10 @@ return (): any | null => { return null }
 `;
 
 exports[`defineExpose() 1`] = `
-"export default defineComponent({
-  setup(__props, { expose: __expose }: SetupContext) {
+"
+export default defineComponent({
+  setup(__props, __setupCtx: SetupContext) {
+const __expose = __setupCtx.expose
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;

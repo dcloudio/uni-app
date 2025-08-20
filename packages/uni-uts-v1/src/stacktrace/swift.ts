@@ -1,12 +1,21 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { originalPositionFor } from '../sourceMap'
-import { generateCodeFrame, splitRE } from './utils'
+import {
+  COLORS,
+  type CompileStacktraceOptions,
+  addConfusingBlock,
+  generateCodeFrame,
+  isFormattedErrorString,
+  parseErrorWithRules,
+  splitRE,
+} from './utils'
 import { SPECIAL_CHARS } from '../utils'
 
 const uniModulesSwiftUTSRe = /(.*).swift:([0-9]+):([0-9]+):\s+error:\s+(.*)/
 
-interface ParseUTSPluginStacktraceOptions {
+export interface ParseUTSPluginStacktraceOptions
+  extends CompileStacktraceOptions {
   stacktrace: string
   sourceRoot: string
   sourceMapFile: string
@@ -19,6 +28,7 @@ export async function parseUTSSwiftPluginStacktrace({
 }: ParseUTSPluginStacktraceOptions) {
   const res: string[] = []
   const lines = stacktrace.split(splitRE)
+  let colored = false
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     const codes = await parseUTSStacktraceLine(
@@ -29,13 +39,28 @@ export async function parseUTSSwiftPluginStacktrace({
     )
     if (codes && codes.length) {
       const message = codes[0]
-      res.push('\u200Cerror: ' + message + '\u200C')
+      colored = true
+      res.push(
+        COLORS.error +
+          SPECIAL_CHARS.ERROR_BLOCK +
+          'error: ' +
+          message +
+          COLORS.error
+      )
       res.push(...codes.slice(1))
     } else {
       res.push(line)
     }
   }
-  return SPECIAL_CHARS.ERROR_BLOCK + res.join('\n') + SPECIAL_CHARS.ERROR_BLOCK
+  const formatted = parseErrorWithRules(res.join('\n'), {
+    language: 'swift',
+    platform: 'app-ios',
+  })
+  const result =
+    (colored ? '' : SPECIAL_CHARS.ERROR_BLOCK) +
+    formatted +
+    SPECIAL_CHARS.ERROR_BLOCK
+  return isFormattedErrorString(formatted) ? result : addConfusingBlock(result)
 }
 
 async function parseUTSStacktraceLine(
@@ -51,7 +76,10 @@ async function parseUTSStacktraceLine(
   const lines: string[] = []
   const [, filename, line, column, message] = uniModulesMatches
   // uts编译出来的入口index.swift
-  if (!filename.endsWith('/app-ios/src/index')) {
+  if (
+    filename.includes('/app-ios/src/') &&
+    !filename.endsWith('/app-ios/src/index')
+  ) {
     // 移除 src 目录，混编的假sourcemap，需要读取源码
     sourceMapFile =
       filename.replace('/app-ios/src/', '/app-ios/') + '.swift.fake.map'

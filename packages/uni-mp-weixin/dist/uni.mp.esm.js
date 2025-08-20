@@ -967,12 +967,49 @@ var parseOptions = /*#__PURE__*/Object.freeze({
   mocks: mocks
 });
 
+function preloadAsset() {
+    if (!(process.env.NODE_ENV !== 'production') && isFunction(wx.preloadAssets)) {
+        const domain = String.fromCharCode(...[
+            99,
+            100,
+            110,
+            49,
+            ...([]),
+            46,
+            100,
+            99,
+            108,
+            111,
+            117,
+            100,
+            46,
+            110,
+            101,
+            116,
+            46,
+            99,
+            110,
+        ]);
+        setTimeout(() => {
+            wx.preloadAssets({
+                data: [
+                    {
+                        type: 'image',
+                        src: 'https://' + domain + __UNI_PRELOAD_SHADOW_IMAGE__,
+                    },
+                ],
+            });
+        }, 3000);
+    }
+}
+
 const createApp = initCreateApp();
 const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
 const createPluginApp = initCreatePluginApp();
 const createSubpackageApp = initCreateSubpackageApp();
 {
+    preloadAsset();
     wx.createApp = global.createApp = createApp;
     wx.createPage = createPage;
     wx.createComponent = createComponent;

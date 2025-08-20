@@ -23,7 +23,7 @@ import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import { getNativeApp } from '../../framework/app/app'
 import { setStatusBarStyle } from '../../statusBar'
 import { isDirectPage, reLaunchEntryPage } from './direct'
-import closeNativeDialogPage from './closeNativeDialogPage'
+import { clearDialogPages } from './utils'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
@@ -99,16 +99,14 @@ function back(
       .slice(len - delta, len - 1)
       .reverse()
       .forEach((deltaPage) => {
-        const dialogPages = (deltaPage.$page as UniPage).getDialogPages()
-        for (let i = dialogPages.length - 1; i >= 0; i--) {
-          const dialogPage = dialogPages[i]
-          closeNativeDialogPage(dialogPage)
-        }
-        closeWebview(
-          getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + '')!,
-          'none',
-          0
+        clearDialogPages(deltaPage.$page as UniPage)
+
+        const webview = getNativeApp().pageManager.findPageById(
+          deltaPage.$basePage.id + ''
         )
+        if (webview) {
+          closeWebview(webview, 'none', 0)
+        }
       })
   }
 
@@ -136,28 +134,8 @@ function back(
 
   const webview = getNativeApp().pageManager.findPageById(
     currentPage.$basePage.id + ''
-  )!
-  const dialogPages = (currentPage.$page as UniPage).getDialogPages()
-  for (let i = dialogPages.length - 1; i >= 0; i--) {
-    const dialogPage = dialogPages[i]
-    closeNativeDialogPage(dialogPage)
-    if (i > 0) {
-      invokeHook(dialogPages[i - 1].vm!, ON_SHOW)
-    }
-  }
-  if (
-    (currentPage as unknown as ComponentInternalInstance).$systemDialogPages
-  ) {
-    const systemDialogPages = (
-      currentPage as unknown as ComponentInternalInstance
-    ).$systemDialogPages!.value
-    for (let i = 0; i < systemDialogPages.length; i++) {
-      closeNativeDialogPage(systemDialogPages[i])
-    }
-    ;(
-      currentPage as unknown as ComponentInternalInstance
-    ).$systemDialogPages!.value = []
-  }
+  )
+  clearDialogPages(currentPage.$page as UniPage)
   // TODO 处理子 view
-  backPage(webview)
+  webview && backPage(webview)
 }

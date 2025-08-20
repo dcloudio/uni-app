@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
-import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, watchEffect, watch, computed, camelize, reactive, provide, inject, nextTick } from "vue";
+import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
+import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -178,10 +178,35 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
   invokeHook(currentPage.vm, lifeCycle);
 }
 function getSystemDialogPages(parentPage) {
+  if (!parentPage)
+    return [];
   {
-    var _parentPage$vm$$syste;
-    return ((_parentPage$vm$$syste = parentPage.vm.$systemDialogPages) === null || _parentPage$vm$$syste === void 0 ? void 0 : _parentPage$vm$$syste.value) || [];
+    return typeof parentPage.__$$getSystemDialogPages === "undefined" ? parentPage.$getSystemDialogPages() : parentPage.__$$getSystemDialogPages();
   }
+}
+function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
+  if (!parentPage)
+    return;
+  var pages2 = getCurrentPages();
+  var currentPage = pages2[pages2.length - 1];
+  if (!currentPage || parentPage !== currentPage)
+    return;
+  var dialogPages = currentPage.getDialogPages();
+  var systemDialogPage = getSystemDialogPages(parentPage);
+  var lastSystemDialogPage = systemDialogPage[systemDialogPage.length - 1];
+  var lastDialogPage = dialogPages[dialogPages.length - 1];
+  var prevDialogPage;
+  if (!lastDialogPage) {
+    prevDialogPage = lastSystemDialogPage;
+  } else if (!lastSystemDialogPage) {
+    prevDialogPage = lastDialogPage;
+  } else {
+    var _lastSystemDialogPage, _lastDialogPage$vm;
+    var lastSystemDialogPageId = ((_lastSystemDialogPage = lastSystemDialogPage.vm) === null || _lastSystemDialogPage === void 0 || (_lastSystemDialogPage = _lastSystemDialogPage.$basePage) === null || _lastSystemDialogPage === void 0 ? void 0 : _lastSystemDialogPage.id) || Number.MAX_SAFE_INTEGER;
+    var lastDialogPageId = ((_lastDialogPage$vm = lastDialogPage.vm) === null || _lastDialogPage$vm === void 0 || (_lastDialogPage$vm = _lastDialogPage$vm.$basePage) === null || _lastDialogPage$vm === void 0 ? void 0 : _lastDialogPage$vm.id) || Number.MAX_SAFE_INTEGER;
+    prevDialogPage = lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
+  }
+  prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
 }
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
@@ -623,27 +648,13 @@ function initVueApp(appVm) {
     }
   });
   var appContext = internalInstance.appContext;
+  var mountPage = createMountPage(appContext);
   vueApp = extend(appContext.app, {
     mountPage(pageComponent, pageProps, pageContainer) {
-      var vnode = createVNode(pageComponent, pageProps);
-      vnode.appContext = appContext;
-      vnode.__page_container__ = pageContainer;
-      render(vnode, pageContainer);
-      var publicThis = vnode.component.proxy;
-      publicThis.__page_container__ = pageContainer;
-      return publicThis;
+      return mountPage(pageComponent, pageProps, pageContainer);
     },
     unmountPage: (pageInstance) => {
-      var {
-        __page_container__
-      } = pageInstance;
-      if (__page_container__) {
-        __page_container__.isUnmounted = true;
-        render(null, __page_container__);
-        delete pageInstance.__page_container__;
-        var vnode = pageInstance.$.vnode;
-        delete vnode.__page_container__;
-      }
+      unmountPage(pageInstance);
     }
   });
 }
@@ -717,7 +728,9 @@ function initLaunchOptions(_ref2) {
   var {
     path,
     query,
-    referrerInfo
+    referrerInfo,
+    appScheme,
+    appLink
   } = _ref2;
   extend(launchOptions$1, {
     path,
@@ -725,7 +738,9 @@ function initLaunchOptions(_ref2) {
     referrerInfo: referrerInfo || {},
     // TODO uni-app x
     channel: void 0,
-    launcher: void 0
+    launcher: void 0,
+    appScheme,
+    appLink
   });
   extend(enterOptions$1, launchOptions$1);
   return enterOptions$1;
@@ -774,7 +789,7 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   });
   uniPage.getElementById = (id2) => {
     var _pageVm$$el;
-    var containerNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el._parent;
+    var containerNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
     if (containerNode == null) {
       console.warn("bodyNode is null");
       return null;
@@ -788,41 +803,46 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   }
   onMounted(() => {
     var _pageVm$$el2;
-    var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2._parent;
+    var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
     if (rootElement) {
       rootElement._page = pageVm.$page;
     }
   });
   onBeforeUnmount(() => {
     var _pageVm$$el3;
-    var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3._parent;
+    var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3.parentElement;
     if (rootElement) {
       rootElement._page = null;
     }
   });
 }
+var beforeSetupPage = (props, ctx) => {
+  var {
+    attrs: {
+      __pageId,
+      __pagePath,
+      /*__pageQuery,*/
+      __pageInstance
+    }
+  } = ctx;
+  var instance = getCurrentGenericInstance();
+  var pageVm = instance.proxy;
+  initPageVm(pageVm, __pageInstance);
+  {
+    setupXPage(instance, __pageInstance, pageVm, __pageId, __pagePath);
+  }
+};
 function setupPage(component) {
-  var oldSetup = component.setup;
-  component.inheritAttrs = false;
-  component.setup = (props, ctx) => {
-    var {
-      attrs: {
-        __pageId,
-        __pagePath,
-        /*__pageQuery,*/
-        __pageInstance
+  if (!component.__vapor) {
+    var oldSetup = component.setup;
+    component.inheritAttrs = false;
+    component.setup = (props, ctx) => {
+      beforeSetupPage(props, ctx);
+      if (oldSetup) {
+        return oldSetup(props, ctx);
       }
-    } = ctx;
-    var instance = getCurrentInstance();
-    var pageVm = instance.proxy;
-    initPageVm(pageVm, __pageInstance);
-    {
-      setupXPage(instance, __pageInstance, pageVm, __pageId, __pagePath);
-    }
-    if (oldSetup) {
-      return oldSetup(props, ctx);
-    }
-  };
+    };
+  }
   return component;
 }
 function initScope(pageId, vm, pageInstance) {
@@ -864,7 +884,7 @@ function definePage(pagePath, asyncComponent) {
 function createPageFactory(component) {
   return () => {
     if (isVuePageAsyncComponent(component)) {
-      return component().then((component2) => setupPage(clonedPageComponent(component2)));
+      return component().then((component2) => setupPage(clonedPageComponent(component2.default || component2)));
     }
     return setupPage(clonedPageComponent(component));
   };
@@ -1515,12 +1535,13 @@ function createTab(path, query, callback) {
     url: path,
     path,
     query,
-    openType: "switchTab"
+    openType: "switchTab",
+    onRegistered() {
+      var page = getCurrentPage().vm;
+      tabBar0.appendItem(page.$basePage.id.toString());
+      callback(page);
+    }
   });
-  callback === null || callback === void 0 || callback();
-  var page = getCurrentPage().vm;
-  tabBar0.appendItem(page.$basePage.id.toString());
-  return page;
 }
 function findTabPage(path) {
   var _tabs$get;
@@ -1559,10 +1580,13 @@ function getTabPage(path) {
   var isFirst = false;
   if (page === null || rebuild) {
     isFirst = true;
-    page = createTab(path, query, callback);
-    tabs.set(path, page);
+    createTab(path, query, (page2) => {
+      tabs.set(path, page2);
+      callback(new TabPageInfo(page2, isFirst));
+    });
+  } else {
+    callback(new TabPageInfo(page, isFirst));
   }
-  return new TabPageInfo(page, isFirst);
 }
 function switchSelect(selected, path) {
   var _getCurrentPage;
@@ -1576,20 +1600,22 @@ function switchSelect(selected, path) {
   var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
   var type = currentPage == null ? "appLaunch" : "switchTab";
   invokeBeforeRouteHooks(type);
-  var pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback);
-  var page = pageInfo.page;
-  if (currentPage !== page) {
-    shouldShow = true;
-    if (currentPage && isTabPage(currentPage)) {
-      invokeHook(currentPage, ON_HIDE);
+  getTabPage(getRealPath(path, true), query, rebuild, (pageInfo) => {
+    callback === null || callback === void 0 || callback();
+    var page = pageInfo.page;
+    if (currentPage !== page) {
+      shouldShow = true;
+      if (currentPage && isTabPage(currentPage)) {
+        invokeHook(currentPage, ON_HIDE);
+      }
     }
-  }
-  tabBar0.switchSelect(page.$basePage.id.toString(), selected);
-  if (shouldShow) {
-    invokeHook(page, ON_SHOW);
-  }
-  selected0 = selected;
-  invokeAfterRouteHooks(type);
+    tabBar0.switchSelect(page.$basePage.id.toString(), selected);
+    if (shouldShow) {
+      invokeHook(page, ON_SHOW);
+    }
+    selected0 = selected;
+    invokeAfterRouteHooks(type);
+  });
 }
 var APP_THEME_AUTO = "auto";
 var THEME_KEY_PREFIX = "@";
@@ -1713,14 +1739,14 @@ function useTheme() {
 function setStatusBarStyle() {
   var page;
   {
-    var _currentPage$vm;
     var currentPage = getCurrentPage();
     var dialogPages = currentPage === null || currentPage === void 0 ? void 0 : currentPage.getDialogPages();
-    var systemDialogPages = currentPage === null || currentPage === void 0 || (_currentPage$vm = currentPage.vm) === null || _currentPage$vm === void 0 || (_currentPage$vm = _currentPage$vm.$systemDialogPages) === null || _currentPage$vm === void 0 ? void 0 : _currentPage$vm.value;
+    var systemDialogPages = getSystemDialogPages(currentPage);
     if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length && dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
       var lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
       var lastDialogPage = dialogPages[dialogPages.length - 1];
-      page = Number(lastSystemDialogPage.__nativePageId) > Number(lastDialogPage.__nativePageId) ? lastSystemDialogPage.vm : lastDialogPage.vm;
+      page = // @ts-expect-error
+      Number(lastSystemDialogPage.__nativePageId) > Number(lastDialogPage.__nativePageId) ? lastSystemDialogPage.vm : lastDialogPage.vm;
     } else if (dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
       page = dialogPages[dialogPages.length - 1].vm;
     } else if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length) {
@@ -1762,26 +1788,28 @@ var closeDialogPage = (options) => {
     }
     var parentPage = dialogPage.getParentPage();
     if (!isSystemDialogPage(dialogPage)) {
-      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+      if (parentPage && (isTabPage(parentPage.vm) || currentPages.indexOf(parentPage) !== -1)) {
         var parentDialogPages = parentPage.getDialogPages();
         var index2 = parentDialogPages.indexOf(dialogPage);
         closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
         parentDialogPages.splice(index2, 1);
-        if (index2 > 0 && index2 === parentDialogPages.length) {
-          invokeHook(parentDialogPages[parentDialogPages.length - 1].vm, ON_SHOW);
+        if (index2 === parentDialogPages.length) {
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
         }
       } else {
         triggerFailCallback$1(options, "dialogPage is not a valid page");
         return;
       }
     } else {
-      var _parentPage$vm;
-      var systemDialogPages = parentPage === null || parentPage === void 0 || (_parentPage$vm = parentPage.vm) === null || _parentPage$vm === void 0 || (_parentPage$vm = _parentPage$vm.$systemDialogPages) === null || _parentPage$vm === void 0 ? void 0 : _parentPage$vm.value;
+      var systemDialogPages = getSystemDialogPages(parentPage);
       if (systemDialogPages) {
         var _index = systemDialogPages.indexOf(dialogPage);
         if (_index > -1) {
-          systemDialogPages.splice(_index, 1);
           closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
+          systemDialogPages.splice(_index, 1);
+          if (_index === systemDialogPages.length) {
+            dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
+          }
         } else {
           triggerFailCallback$1(options, "dialogPage is not a valid page");
         }
@@ -1862,7 +1890,8 @@ function registerPage(_ref, onCreated) {
     openType,
     webview,
     nvuePageVm,
-    eventChannel
+    eventChannel,
+    onRegistered
   } = _ref;
   var delay = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
   var id2 = genWebviewId();
@@ -1886,73 +1915,73 @@ function registerPage(_ref, onCreated) {
     // TODO ThemeMode
     "light"
   );
+  function handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages) {
+    sourceDialogPages.forEach((dialogPage) => {
+      dialogPage.getParentPage = () => homePage;
+      targetDialogPages.push(dialogPage);
+    });
+    sourceDialogPages.length = 0;
+  }
   function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
-    var pages2 = getCurrentPages();
-    if (pages2.length === 1) {
-      if (homeDialogPages.length) {
+    createVuePage(id2, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
+      var pages2 = getCurrentPages();
+      if (pages2.length === 1) {
         var homePage = pages2[0];
-        var dialogPages = homePage.getDialogPages();
-        homePage.vm.$.$dialogPages.value = homeDialogPages.map((dialogPage) => {
-          dialogPage.getParentPage = () => homePage;
-          dialogPages.push(dialogPage);
-          return dialogPage;
-        });
-        homeDialogPages.length = 0;
-      }
-      if (homeSystemDialogPages.length) {
-        var _homePage = pages2[0];
-        if (!_homePage.vm.$systemDialogPages) {
-          _homePage.vm.$systemDialogPages = ref([]);
+        var sourceDialogPages = [];
+        var targetDialogPages = [];
+        if (homeDialogPages.length) {
+          sourceDialogPages = homeDialogPages;
+          targetDialogPages = homePage.getDialogPages();
         }
-        _homePage.vm.$systemDialogPages.value = homeSystemDialogPages.map((dialogPage) => {
-          dialogPage.getParentPage = () => _homePage;
-          return dialogPage;
-        });
-        homeDialogPages.length = 0;
+        if (homeSystemDialogPages.length) {
+          sourceDialogPages = homeSystemDialogPages;
+          targetDialogPages = homePage.__$$getSystemDialogPages();
+        }
+        handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages);
       }
-    }
-    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
-      uni.navigateBack({
-        from: "popGesture",
-        fail(e2) {
-          if (e2.errMsg.endsWith("cancel")) {
-            nativePage.show();
+      nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
+        uni.navigateBack({
+          from: "popGesture",
+          fail(e2) {
+            if (e2.errMsg.endsWith("cancel")) {
+              nativePage.show();
+            }
           }
-        }
+        });
       });
-    });
-    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-      invokeHook(page, ON_UNLOAD);
-    });
-    nativePage.addPageEventListener(ON_READY, (_) => {
-      invokePageReadyHooks(page);
-      invokeHook(page, ON_READY);
-    });
-    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-      invokeHook(page, ON_PAGE_SCROLL, {
-        scrollTop: arg.scrollTop
+      nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_UNLOAD);
       });
+      nativePage.addPageEventListener(ON_READY, (_) => {
+        invokePageReadyHooks(pageComponentPublicInstance);
+        invokeHook(pageComponentPublicInstance, ON_READY);
+      });
+      nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+        invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
+          scrollTop: arg.scrollTop
+        });
+      });
+      nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH);
+      });
+      nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM);
+      });
+      nativePage.addPageEventListener(ON_RESIZE, (arg) => {
+        var args = {
+          deviceOrientation: arg.deviceOrientation,
+          size: {
+            windowWidth: arg.size.windowWidth,
+            windowHeight: arg.size.windowHeight,
+            screenWidth: arg.size.screenWidth,
+            screenHeight: arg.size.screenHeight
+          }
+        };
+        invokeHook(pageComponentPublicInstance, ON_RESIZE, args);
+      });
+      nativePage.startRender();
+      onRegistered === null || onRegistered === void 0 || onRegistered();
     });
-    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-      invokeHook(page, ON_PULL_DOWN_REFRESH);
-    });
-    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-      invokeHook(page, ON_REACH_BOTTOM);
-    });
-    nativePage.addPageEventListener(ON_RESIZE, (arg) => {
-      var args = {
-        deviceOrientation: arg.deviceOrientation,
-        size: {
-          windowWidth: arg.size.windowWidth,
-          windowHeight: arg.size.windowHeight,
-          screenWidth: arg.size.screenWidth,
-          screenHeight: arg.size.screenHeight
-        }
-      };
-      invokeHook(page, ON_RESIZE, args);
-    });
-    nativePage.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
@@ -1968,7 +1997,8 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     path,
     query,
     openType,
-    eventChannel
+    eventChannel,
+    onRegistered
   } = _ref2;
   var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
   var id2 = genWebviewId();
@@ -2009,42 +2039,43 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     "light"
   );
   function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
-    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
-      closeDialogPage({
-        dialogPage
+    createVuePage(id2, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
+      nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
+        closeDialogPage({
+          dialogPage
+        });
       });
+      nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_UNLOAD);
+        dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
+      });
+      nativePage.addPageEventListener(ON_READY, (_) => {
+        invokePageReadyHooks(pageComponentPublicInstance);
+        invokeHook(pageComponentPublicInstance, ON_READY);
+      });
+      nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+        invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, arg);
+      });
+      nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH);
+      });
+      nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+        invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM);
+      });
+      nativePage.addPageEventListener(ON_RESIZE, (arg) => {
+        var args = {
+          deviceOrientation: arg.deviceOrientation,
+          size: {
+            windowWidth: arg.size.windowWidth,
+            windowHeight: arg.size.windowHeight,
+            screenWidth: arg.size.screenWidth,
+            screenHeight: arg.size.screenHeight
+          }
+        };
+        invokeHook(pageComponentPublicInstance, ON_RESIZE, args);
+      });
+      nativePage.startRender();
     });
-    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-      invokeHook(page, ON_UNLOAD);
-      dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
-    });
-    nativePage.addPageEventListener(ON_READY, (_) => {
-      invokePageReadyHooks(page);
-      invokeHook(page, ON_READY);
-    });
-    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-      invokeHook(page, ON_PAGE_SCROLL, arg);
-    });
-    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-      invokeHook(page, ON_PULL_DOWN_REFRESH);
-    });
-    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-      invokeHook(page, ON_REACH_BOTTOM);
-    });
-    nativePage.addPageEventListener(ON_RESIZE, (arg) => {
-      var args = {
-        deviceOrientation: arg.deviceOrientation,
-        size: {
-          windowWidth: arg.size.windowWidth,
-          windowHeight: arg.size.windowHeight,
-          screenWidth: arg.size.screenWidth,
-          screenHeight: arg.size.screenHeight
-        }
-      };
-      invokeHook(page, ON_RESIZE, args);
-    });
-    nativePage.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
@@ -2066,13 +2097,17 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   if (isPromise(component)) {
     return component.then((component2) => mountPage(component2));
   }
-  return mountPage(component);
+  return {
+    then(fn) {
+      return fn(mountPage(component));
+    }
+  };
 }
 function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
     var currentPage = getCurrentPage();
     if (currentPage) {
-      var systemDialogPages = currentPage.vm && currentPage.vm.$systemDialogPages && currentPage.vm.$systemDialogPages.value || [];
+      var systemDialogPages = getSystemDialogPages(currentPage);
       var dialogPages = currentPage.getDialogPages();
       if (systemDialogPages.length > 0 || dialogPages.length > 0) {
         var lastSystemDialog = systemDialogPages[systemDialogPages.length - 1];
@@ -2102,7 +2137,6 @@ function handleDialogPageBack(dialogPage) {
     });
   }
 }
-var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font).+)/;
 function removeUrlWrap(source) {
   if (source.startsWith("url(")) {
     if (source.split("format(").length > 1) {
@@ -2114,14 +2148,6 @@ function removeUrlWrap(source) {
     source = source.substring(1, source.length - 1);
   }
   return source;
-}
-function checkOptionSource(options, res) {
-  options.source = removeUrlWrap(options.source);
-  if (!SOURCE_REG.test(options.source)) {
-    res.reject("loadFontFace:fail, source is invalid.", 101);
-    return false;
-  }
-  return true;
 }
 function getLoadFontFaceOptions(options, res) {
   return {
@@ -2141,12 +2167,11 @@ function getLoadFontFaceOptions(options, res) {
   };
 }
 var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
+  options.source = removeUrlWrap(options.source);
   if (options.global === true) {
-    if (checkOptionSource(options, res)) {
-      var app = getNativeApp();
-      var fontInfo = getLoadFontFaceOptions(options, res);
-      app.loadFontFace(fontInfo);
-    }
+    var app = getNativeApp();
+    var fontInfo = getLoadFontFaceOptions(options, res);
+    app.loadFontFace(fontInfo);
   } else {
     var page = getCurrentPage().vm;
     if (!page) {
@@ -2156,17 +2181,15 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
     if (page.$fontFamilySet.has(options.family)) {
       return;
     }
-    if (checkOptionSource(options, res)) {
-      page.$fontFamilySet.add(options.family);
-      var _fontInfo = getLoadFontFaceOptions(options, res);
-      page.$nativePage.loadFontFace(_fontInfo);
-    }
+    page.$fontFamilySet.add(options.family);
+    var _fontInfo = getLoadFontFaceOptions(options, res);
+    page.$nativePage.loadFontFace(_fontInfo);
   }
 });
-function loadFontFaceByStyles(styles2, global) {
-  styles2 = Array.isArray(styles2) ? styles2 : [styles2];
+function loadFontFaceByStyles(styles, global) {
+  styles = Array.isArray(styles) ? styles : [styles];
   var fontFaceStyle = [];
-  styles2.forEach((style) => {
+  styles.forEach((style) => {
     if (style["@FONT-FACE"]) {
       fontFaceStyle.push(...style["@FONT-FACE"]);
     }
@@ -2380,21 +2403,9 @@ function _reLaunch(_ref3) {
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function closePage(page, animationType, animationDuration) {
-  var dialogPages = page.$page.getDialogPages();
-  for (var i = dialogPages.length - 1; i >= 0; i--) {
-    closeNativeDialogPage(dialogPages[i]);
-  }
-  if (page.$systemDialogPages) {
-    var systemDialogPages = page.$systemDialogPages.value;
-    for (var _i = 0; _i < systemDialogPages.length; _i++) {
-      closeNativeDialogPage(systemDialogPages[_i]);
-    }
-    page.$systemDialogPages.value = [];
-  }
-  for (var _i2 = dialogPages.length - 1; _i2 >= 0; _i2--) {
-    closeNativeDialogPage(dialogPages[_i2]);
-  }
-  closeWebview(page.$nativePage, animationType, animationDuration);
+  clearDialogPages(page.$page);
+  var nativePage = page.$nativePage;
+  nativePage && closeWebview(nativePage, animationType, animationDuration);
   removePage(page);
   removeTabBarPage(page);
 }
@@ -2444,6 +2455,29 @@ function handleBeforeEntryPageRoutes() {
     } = _ref4;
     return $reLaunch(args, handler);
   });
+}
+function closePreSystemDialogPage(dialogPages, type) {
+  var targetSystemDialogPages = dialogPages.filter((page) => page.route.startsWith(type));
+  if (targetSystemDialogPages.length > 1) {
+    setTimeout(() => {
+      closeNativeDialogPage(targetSystemDialogPages[0]);
+      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
+    }, 150);
+  }
+}
+function clearDialogPages(uniPage) {
+  var dialogPages = uniPage.getDialogPages();
+  for (var i = dialogPages.length - 1; i >= 0; i--) {
+    closeNativeDialogPage(dialogPages[i]);
+    if (i > 0) {
+      invokeHook(dialogPages[i - 1].vm, ON_SHOW);
+    }
+  }
+  var systemDialogPages = getSystemDialogPages(uniPage);
+  for (var _i = 0; _i < systemDialogPages.length; _i++) {
+    closeNativeDialogPage(systemDialogPages[_i]);
+  }
+  systemDialogPages.length = 0;
 }
 var $switchTab = (args, _ref) => {
   var {
@@ -2624,28 +2658,37 @@ function initOn(app, unregisterApp2) {
 function initService(app, unregisterApp2) {
   initOn(app, unregisterApp2);
 }
+function initNativePage(vm) {
+  var instance = vm.$;
+  if (instance.type.mpType === "app") {
+    return;
+  }
+  var pageId = instance.root.attrs.__pageId;
+  vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
+  if (vm.$page) {
+    vm.$page.__nativePageId = vm.$nativePage.pageId;
+  }
+}
+function initFontFace(vm) {
+  var _vm$$options$styles;
+  var instance = vm.$;
+  if (instance.type.mpType === "app") {
+    return;
+  }
+  loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
+}
 function initComponentInstance(app) {
+  app.config.uniX = {
+    beforeSetupPage,
+    initNativePage,
+    initFontFace
+  };
   app.mixin({
     beforeCreate() {
-      var vm = this;
-      var instance = vm.$;
-      if (instance.type.mpType === "app") {
-        return;
-      }
-      var pageId = instance.root.attrs.__pageId;
-      vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
-      if (vm.$page) {
-        vm.$page.__nativePageId = vm.$nativePage.pageId;
-      }
+      initNativePage(this);
     },
     beforeMount() {
-      var _vm$$options$styles;
-      var vm = this;
-      var instance = vm.$;
-      if (instance.type.mpType === "app") {
-        return;
-      }
-      loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
+      initFontFace(this);
     }
   });
 }
@@ -2886,12 +2929,11 @@ function back(delta, animationType, animationDuration) {
   var currentPage = pages2[len - 1];
   if (delta > 1) {
     pages2.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
-      var dialogPages2 = deltaPage.$page.getDialogPages();
-      for (var i2 = dialogPages2.length - 1; i2 >= 0; i2--) {
-        var dialogPage2 = dialogPages2[i2];
-        closeNativeDialogPage(dialogPage2);
+      clearDialogPages(deltaPage.$page);
+      var webview2 = getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + "");
+      if (webview2) {
+        closeWebview(webview2, "none", 0);
       }
-      closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + ""), "none", 0);
     });
   }
   var backPage = function(webview2) {
@@ -2912,22 +2954,8 @@ function back(delta, animationType, animationDuration) {
     });
   };
   var webview = getNativeApp().pageManager.findPageById(currentPage.$basePage.id + "");
-  var dialogPages = currentPage.$page.getDialogPages();
-  for (var i = dialogPages.length - 1; i >= 0; i--) {
-    var dialogPage = dialogPages[i];
-    closeNativeDialogPage(dialogPage);
-    if (i > 0) {
-      invokeHook(dialogPages[i - 1].vm, ON_SHOW);
-    }
-  }
-  if (currentPage.$systemDialogPages) {
-    var systemDialogPages = currentPage.$systemDialogPages.value;
-    for (var _i = 0; _i < systemDialogPages.length; _i++) {
-      closeNativeDialogPage(systemDialogPages[_i]);
-    }
-    currentPage.$systemDialogPages.value = [];
-  }
-  backPage(webview);
+  clearDialogPages(currentPage.$page);
+  webview && backPage(webview);
 }
 var openDialogPage = (options) => {
   var _options$success, _options$complete;
@@ -2974,26 +3002,21 @@ var openDialogPage = (options) => {
       homeDialogPages.push(dialogPage);
     } else {
       var dialogPages = parentPage.getDialogPages();
-      if (dialogPages.length) {
-        invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
-      }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
       dialogPages.push(dialogPage);
     }
     setCurrentNormalDialogPage(dialogPage);
   } else {
+    var targetSystemDialogPages = [];
     if (!parentPage) {
-      homeSystemDialogPages.push(dialogPage);
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(homeSystemDialogPages);
-      }
+      targetSystemDialogPages = homeSystemDialogPages;
     } else {
-      if (!parentPage.vm.$systemDialogPages) {
-        parentPage.vm.$systemDialogPages = ref([]);
-      }
-      parentPage.vm.$systemDialogPages.value.push(dialogPage);
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(parentPage.vm.$systemDialogPages.value);
-      }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
+      targetSystemDialogPages = getSystemDialogPages(parentPage);
+    }
+    targetSystemDialogPages.push(dialogPage);
+    if (isSystemActionSheetDialogPage(dialogPage)) {
+      closePreSystemDialogPage(targetSystemDialogPages, SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
     }
     setCurrentSystemDialogPage(dialogPage);
   }
@@ -3054,15 +3077,6 @@ function initAnimation(path, animationType, animationDuration) {
     _animationType = "none";
   }
   return [_animationType, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
-}
-function closePreActionSheet(dialogPages) {
-  var actionSheets = dialogPages.filter((page) => isSystemActionSheetDialogPage(page));
-  if (actionSheets.length > 1) {
-    setTimeout(() => {
-      closeNativeDialogPage(actionSheets[0]);
-      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
-    }, 150);
-  }
 }
 var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
   var {
@@ -4636,802 +4650,6 @@ var defineSystemComponent = (options) => {
   };
   return defineComponent(options);
 };
-function $dispatch(context, componentName, eventName) {
-  var _parent;
-  var parent = context.$parent;
-  var name = (_parent = parent) === null || _parent === void 0 || (_parent = _parent.$options) === null || _parent === void 0 ? void 0 : _parent.name;
-  while (parent != null && (name == null || componentName != name)) {
-    parent = parent.$parent;
-    if (parent != null) {
-      var _parent2;
-      name = (_parent2 = parent) === null || _parent2 === void 0 || (_parent2 = _parent2.$options) === null || _parent2 === void 0 ? void 0 : _parent2.name;
-    }
-  }
-  if (parent != null) {
-    if (typeof parent[eventName] === "function") {
-      for (var _len = arguments.length, do_not_transform_spread = new Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
-        do_not_transform_spread[_key - 3] = arguments[_key];
-      }
-      parent[eventName](...do_not_transform_spread);
-    } else {
-      warn("dispatch: ".concat(componentName, " has no method ").concat(eventName));
-    }
-  }
-}
-function $dispatchParent(context, componentName, eventName) {
-  var _parent$$options;
-  var parent = context.$parent;
-  var name = parent === null || parent === void 0 || (_parent$$options = parent.$options) === null || _parent$$options === void 0 ? void 0 : _parent$$options.name;
-  if (parent !== null && (name === null || componentName === name)) {
-    if (typeof parent[eventName] === "function") {
-      for (var _len2 = arguments.length, do_not_transform_spread = new Array(_len2 > 3 ? _len2 - 3 : 0), _key2 = 3; _key2 < _len2; _key2++) {
-        do_not_transform_spread[_key2 - 3] = arguments[_key2];
-      }
-      return parent[eventName](...do_not_transform_spread);
-    } else {
-      warn("dispatchParent: ".concat(componentName, " has no method ").concat(eventName));
-    }
-  }
-}
-function initUniCustomEvent(element, e) {
-  e.target = element;
-  e.currentTarget = element;
-  return e;
-}
-var CHECKBOX_NAME = "Checkbox";
-var CHECKBOX_ROOT_ELEMENT = "uni-checkbox-element";
-var UniCheckboxElement = /* @__PURE__ */ (() => class extends UniElementImpl {
-  constructor(data, pageNode) {
-    super(data, pageNode);
-    this.tagName = "CHECKBOX";
-    this.nodeName = this.tagName;
-    this._getAttribute = (key) => {
-      return null;
-    };
-  }
-  getAnyAttribute(key) {
-    var value = this._getAttribute(key);
-    if (value != null) {
-      return value;
-    }
-    return super.getAnyAttribute(key);
-  }
-})();
-var checkboxProps = {
-  checked: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  value: {
-    type: [Object, String],
-    default: ""
-  },
-  // 图标颜色
-  color: {
-    type: String,
-    default: "#007aff"
-  },
-  // 默认的背景颜色
-  backgroundColor: {
-    type: String,
-    default: "#ffffff"
-  },
-  // 默认的边框颜色
-  borderColor: {
-    type: String,
-    default: "#d1d1d1"
-  },
-  // 选中时的背景颜色
-  activeBackgroundColor: {
-    type: String,
-    default: "#ffffff"
-  },
-  // 选中时的边框颜色
-  activeBorderColor: {
-    type: String,
-    default: "#d1d1d1"
-  },
-  // 图标颜色,同color,优先级大于color
-  iconColor: {
-    type: String,
-    default: ""
-  },
-  // 图标颜色,同color,优先级大于iconColor
-  foreColor: {
-    type: String,
-    default: ""
-  }
-};
-var styles = {
-  ["uni-checkbox"]: {
-    "flex-direction": "row",
-    "align-items": "center"
-  },
-  ["uni-checkbox-input"]: {
-    "justify-content": "center",
-    "align-items": "center",
-    position: "relative",
-    "border-top-width": "1px",
-    "border-right-width": "1px",
-    "border-bottom-width": "1px",
-    "border-left-width": "1px",
-    "border-top-style": "solid",
-    "border-right-style": "solid",
-    "border-bottom-style": "solid",
-    "border-left-style": "solid",
-    "border-top-left-radius": "3px",
-    "border-top-right-radius": "3px",
-    "border-bottom-right-radius": "3px",
-    "border-bottom-left-radius": "3px",
-    width: "22px",
-    height: "22px",
-    "margin-right": "5px",
-    "box-sizing": "content-box"
-  },
-  ["uni-icon"]: {
-    "font-family": "uni-icon",
-    "font-size": "16px",
-    width: "16px",
-    height: "16px"
-  }
-};
-const checkbox = /* @__PURE__ */ defineBuiltInComponent({
-  name: CHECKBOX_NAME,
-  rootElement: {
-    name: CHECKBOX_ROOT_ELEMENT,
-    // @ts-expect-error not web element
-    class: UniCheckboxElement
-  },
-  props: checkboxProps,
-  emits: ["click"],
-  setup(props, _ref) {
-    var {
-      emit,
-      slots
-    } = _ref;
-    var icon = "";
-    var instance = getCurrentInstance();
-    var elementRef = ref();
-    var checkboxChecked = ref(props.checked);
-    var checkboxValue = ref("");
-    var setCheckboxChecked = (checked) => {
-      checkboxChecked.value = checked;
-    };
-    watchEffect(() => {
-      checkboxChecked.value = props.checked;
-    });
-    watch(() => checkboxChecked.value, (val) => {
-      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      if (!ctx)
-        return;
-      $dispatch(ctx, "CheckboxGroup", "_changeHandler", {
-        name: checkboxValue.value,
-        checked: checkboxChecked.value,
-        setCheckboxChecked
-      });
-    });
-    watchEffect(() => {
-      checkboxValue.value = props.value.toString();
-    });
-    var iconStyle = computed(() => {
-      if (props.disabled) {
-        return Object.assign({}, styles["uni-icon"]);
-      }
-      var color = "";
-      if (props.foreColor.length > 0) {
-        color = props.foreColor;
-      } else if (props.iconColor.length > 0) {
-        color = props.iconColor;
-      } else {
-        color = props.color;
-      }
-      return Object.assign({}, styles["uni-icon"], {
-        color
-      });
-    });
-    var checkInputStyle = computed(() => {
-      var style = checkboxChecked.value ? checkedStyle.value : uncheckedStyle.value;
-      return Object.assign({}, styles["uni-checkbox-input"], style);
-    });
-    var checkedStyle = computed(() => {
-      if (props.disabled) {
-        return {
-          backgroundColor: "#e1e1e1",
-          borderColor: "#d1d1d1"
-        };
-      }
-      return {
-        backgroundColor: props.activeBackgroundColor,
-        borderColor: props.activeBorderColor
-      };
-    });
-    var uncheckedStyle = computed(() => {
-      if (props.disabled) {
-        return {
-          backgroundColor: "#e1e1e1",
-          borderColor: "#d1d1d1"
-        };
-      }
-      return {
-        backgroundColor: props.backgroundColor,
-        borderColor: props.borderColor
-      };
-    });
-    onMounted(() => {
-      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
-        setCheckboxChecked,
-        name: checkboxValue.value,
-        checked: checkboxChecked.value
-      }, "add");
-      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
-        var _instance$proxy;
-        if (!instance)
-          return;
-        elementRef.value = (_instance$proxy = instance.proxy) === null || _instance$proxy === void 0 ? void 0 : _instance$proxy.$el;
-        elementRef.value._getAttribute = (key) => {
-          var _props$keyString$toSt, _props$keyString;
-          var keyString = camelize(key);
-          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
-        };
-      });
-    });
-    onBeforeUnmount(() => {
-      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
-        setCheckboxChecked,
-        name: checkboxValue.value,
-        checked: checkboxChecked.value
-      }, "remove");
-    });
-    var _onClick = ($event) => {
-      if (props.disabled)
-        return;
-      emit("click", $event);
-      checkboxChecked.value = !checkboxChecked.value;
-    };
-    return () => {
-      var _slots$default;
-      return createVNode("uni-checkbox-element", {
-        "dataUncType": "uni-checkbox",
-        "onClick": _onClick,
-        "class": "uni-checkbox",
-        "style": styles["uni-checkbox"]
-      }, [createVNode("view", {
-        "class": "uni-checkbox-input",
-        "style": checkInputStyle.value
-      }, [createVNode("text", {
-        "class": "uni-icon",
-        "style": iconStyle.value
-      }, [checkboxChecked.value ? icon : ""], 4)], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 12, ["onClick"]);
-    };
-  }
-});
-const checkbox$1 = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  UniCheckboxElement,
-  default: checkbox
-}, Symbol.toStringTag, { value: "Module" });
-var CHECKBOX_GROUP_NAME = "CheckboxGroup";
-var CHECKBOX_GROUP_ROOT_ELEMENT = "uni-checkbox-group-element";
-var checkboxGroupProps = {
-  name: {
-    type: String,
-    default: ""
-  }
-};
-var UniCheckboxGroupElement = /* @__PURE__ */ (() => class extends UniFormControlElement {
-  constructor(data, pageNode) {
-    super(data, pageNode);
-    this._initialValue = [];
-    this.tagName = "CHECKBOX-GROUP";
-    this.nodeName = this.tagName;
-    this._getAttribute = (key) => {
-      return null;
-    };
-    this._getValue = () => {
-      return this._initialValue;
-    };
-    this._setValue = (value) => {
-    };
-  }
-  get value() {
-    return this._getValue();
-  }
-  set value(value) {
-    this._setValue(value);
-  }
-  getAnyAttribute(key) {
-    var value = this._getAttribute(key);
-    if (value != null) {
-      return value;
-    }
-    return super.getAnyAttribute(key);
-  }
-  reset() {
-    this.value = this._initialValue.slice(0);
-  }
-})();
-class UniCheckboxGroupChangeEventDetail {
-  constructor(value) {
-    this.value = value;
-  }
-}
-var UniCheckboxGroupChangeEvent = /* @__PURE__ */ (() => class extends UniCustomEvent {
-  constructor(value) {
-    super("change", {
-      detail: new UniCheckboxGroupChangeEventDetail(value)
-    });
-  }
-})();
-const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
-  name: CHECKBOX_GROUP_NAME,
-  rootElement: {
-    name: CHECKBOX_GROUP_ROOT_ELEMENT,
-    // @ts-expect-error not web element
-    class: UniCheckboxGroupElement
-  },
-  props: checkboxGroupProps,
-  emits: ["change"],
-  setup(props, _ref) {
-    var {
-      emit,
-      expose,
-      slots
-    } = _ref;
-    var $checkboxList = ref([]);
-    var uniCheckboxGroupElementRef = ref();
-    var instance = getCurrentInstance();
-    var _checkboxGroupUpdateHandler = (info, type) => {
-      if (type == "add") {
-        $checkboxList.value.push(info);
-      } else {
-        var index2 = $checkboxList.value.findIndex((i) => i.name === info.name);
-        if (index2 !== -1) {
-          $checkboxList.value.splice(index2, 1);
-        }
-      }
-    };
-    var _changeHandler = (info) => {
-      $checkboxList.value.forEach((i) => {
-        if (i.name === info.name) {
-          i.checked = info.checked;
-        }
-      });
-      emit("change", initUniCustomEvent(uniCheckboxGroupElementRef.value, new UniCheckboxGroupChangeEvent(_getValue())));
-    };
-    var _getValue = () => {
-      var valueArray = [];
-      $checkboxList.value.forEach((info) => {
-        if (info.checked) {
-          valueArray.push(info.name);
-        }
-      });
-      return valueArray;
-    };
-    var _setValue = (valueArray) => {
-      $checkboxList.value.forEach((info) => {
-        info.setCheckboxChecked(valueArray.includes(info.name));
-      });
-    };
-    onMounted(() => {
-      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
-        if (!instance)
-          return;
-        if (!uniCheckboxGroupElementRef.value)
-          return;
-        uniCheckboxGroupElementRef.value._getValue = _getValue;
-        uniCheckboxGroupElementRef.value._setValue = _setValue;
-        uniCheckboxGroupElementRef.value._initialValue = _getValue();
-        uniCheckboxGroupElementRef.value._getAttribute = (key) => {
-          var _props$keyString$toSt, _props$keyString;
-          var keyString = camelize(key);
-          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
-        };
-      });
-    });
-    expose({
-      _checkboxGroupUpdateHandler,
-      _changeHandler,
-      _getValue,
-      _setValue
-    });
-    return () => {
-      var _slots$default;
-      return createVNode("uni-checkbox-group-element", {
-        "ref": uniCheckboxGroupElementRef
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 512);
-    };
-  }
-});
-const checkboxGroup$1 = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  UniCheckboxGroupChangeEvent,
-  UniCheckboxGroupElement,
-  default: checkboxGroup
-}, Symbol.toStringTag, { value: "Module" });
-var RADIO_NAME = "Radio";
-var RADIO_ROOT_ELEMENT = "uni-radio-element";
-var UniRadioElement = /* @__PURE__ */ (() => class extends UniElementImpl {
-  constructor(data, pageNode) {
-    super(data, pageNode);
-    this.tagName = "RADIO";
-    this.nodeName = this.tagName;
-    this._getAttribute = (key) => {
-      return null;
-    };
-  }
-  getAnyAttribute(key) {
-    var value = this._getAttribute(key);
-    if (value != null) {
-      return value;
-    }
-    return super.getAnyAttribute(key);
-  }
-})();
-var radioProps = {
-  checked: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  value: {
-    type: [Object, String],
-    default: ""
-  },
-  // 选中时的背景颜色
-  color: {
-    type: String,
-    default: "#007AFF"
-  },
-  // 默认的背景颜色
-  backgroundColor: {
-    type: String,
-    default: "#ffffff"
-  },
-  // 默认的边框颜色
-  borderColor: {
-    type: String,
-    default: "#d1d1d1"
-  },
-  // 选中时的背景颜色,同color,优先级大于color
-  activeBackgroundColor: {
-    type: String,
-    default: ""
-  },
-  // 选中时的边框颜色，默认为选中时的背景颜色
-  activeBorderColor: {
-    type: String,
-    default: ""
-  },
-  // 图标颜色
-  iconColor: {
-    type: String,
-    default: "#ffffff"
-  },
-  // 高于 iconColor 和 color
-  foreColor: {
-    type: String,
-    default: ""
-  }
-};
-var _style_0$1 = {
-  "uni-radio": {
-    "": {
-      flexDirection: "row",
-      alignItems: "center"
-    }
-  },
-  "uni-radio-input": {
-    "": {
-      position: "relative",
-      alignItems: "center",
-      justifyContent: "center",
-      marginRight: "5px",
-      borderStyle: "solid",
-      borderWidth: "1px",
-      borderRadius: "50px",
-      width: "22px",
-      height: "22px",
-      boxSizing: "content-box"
-    }
-  },
-  "uni-radio-input-icon": {
-    "": {
-      fontFamily: "uni-icon",
-      fontSize: "14px",
-      width: "14px",
-      height: "14px"
-    }
-  }
-};
-var styleList = _style_0$1;
-const radio = /* @__PURE__ */ defineBuiltInComponent({
-  name: RADIO_NAME,
-  rootElement: {
-    name: RADIO_ROOT_ELEMENT,
-    // @ts-expect-error not web element
-    class: UniRadioElement
-  },
-  props: radioProps,
-  setup(props, _ref) {
-    var {
-      slots,
-      expose
-    } = _ref;
-    var uniRadioElementRef = ref();
-    var styleUniRadio = computed(() => styleList["uni-radio"][""]);
-    var styleUniRadioInput = computed(() => {
-      return Object.assign({}, styleList["uni-radio-input"][""], radioChecked.value ? checkedStyle.value : uncheckedStyle.value);
-    });
-    var styleUniRadioInputIcon = computed(() => {
-      return Object.assign({}, styleList["uni-radio-input-icon"][""], iconStyle.value);
-    });
-    var checkedStyle = computed(() => {
-      if (props.disabled) {
-        return {
-          backgroundColor: "#e1e1e1",
-          borderColor: "#d1d1d1"
-        };
-      }
-      var backgroundColor = props.activeBackgroundColor.length > 0 ? props.activeBackgroundColor : props.color;
-      var borderColor = props.activeBorderColor.length > 0 ? props.activeBorderColor : backgroundColor;
-      return {
-        backgroundColor,
-        borderColor
-      };
-    });
-    var uncheckedStyle = computed(() => {
-      if (props.disabled) {
-        return {
-          backgroundColor: "#e1e1e1",
-          borderColor: "#d1d1d1"
-        };
-      }
-      return {
-        backgroundColor: props.backgroundColor,
-        borderColor: props.borderColor
-      };
-    });
-    var iconStyle = computed(() => {
-      var color = "";
-      if (props.foreColor.length > 0) {
-        color = props.foreColor;
-      } else if (props.iconColor.length > 0) {
-        color = props.iconColor;
-      }
-      return {
-        color: props.disabled ? "#adadad" : color
-      };
-    });
-    var icon = "";
-    var radioChecked = ref(props.checked);
-    var radioValue = ref(props.value.toString());
-    watchEffect(() => {
-      radioChecked.value = props.checked;
-    });
-    var setRadioChecked = (value) => {
-      radioChecked.value = value;
-    };
-    watchEffect(() => {
-      radioValue.value = props.value.toString();
-    });
-    watch(() => radioChecked.value, (val) => {
-      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      if (!ctx)
-        return;
-      if (val) {
-        $dispatch(ctx, "RadioGroup", "_changeHandler", {
-          name: radioValue.value,
-          checked: radioChecked.value,
-          setRadioChecked
-        });
-      }
-    });
-    expose({
-      radioValue
-    });
-    var instance = getCurrentInstance();
-    onMounted(() => {
-      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
-        if (instance === null)
-          return;
-        uniRadioElementRef.value._getAttribute = (key) => {
-          var _props$keyString$toSt, _props$keyString;
-          var keyString = camelize(key);
-          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
-        };
-      });
-      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx, "RadioGroup", "_radioGroupUpdateHandler", {
-        name: radioValue.value,
-        checked: radioChecked.value,
-        setRadioChecked
-      }, "add");
-    });
-    onBeforeUnmount(() => {
-      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx, "RadioGroup", "_radioGroupUpdateHandler", {
-        name: radioValue.value,
-        checked: radioChecked.value,
-        setRadioChecked
-      }, "remove");
-    });
-    var _onClick = () => {
-      if (props.disabled || radioChecked.value)
-        return;
-      radioChecked.value = !radioChecked.value;
-    };
-    return () => {
-      var _slots$default;
-      return createVNode("uni-radio-element", {
-        "dataUncType": "uni-radio",
-        "class": "uni-radio",
-        "style": styleUniRadio.value,
-        "ref": uniRadioElementRef,
-        "onClick": _onClick
-      }, [createVNode("view", {
-        "class": "uni-radio-input",
-        "style": styleUniRadioInput.value
-      }, [createVNode("text", {
-        "class": "uni-radio-input-icon",
-        "style": styleUniRadioInputIcon.value
-      }, [radioChecked.value ? icon : ""], 4)], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 12, ["onClick"]);
-    };
-  }
-});
-const radio$1 = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  UniRadioElement,
-  default: radio
-}, Symbol.toStringTag, { value: "Module" });
-var RADIOGROUP_NAME = "RadioGroup";
-var RADIOGROUP_ROOT_ELEMENT = "uni-radio-group-element";
-var RadioProps = {
-  name: {
-    type: String,
-    default: ""
-  }
-};
-var UniRadioGroupElement = /* @__PURE__ */ (() => class extends UniFormControlElement {
-  constructor(data, pageNode) {
-    super(data, pageNode);
-    this._initialValue = "";
-    this.tagName = "RADIO-GROUP";
-    this.nodeName = this.tagName;
-    this._getAttribute = (key) => {
-      return null;
-    };
-    this._getValue = () => {
-      return this._initialValue;
-    };
-    this._setValue = (value) => {
-    };
-  }
-  getAnyAttribute(key) {
-    var value = this._getAttribute(key);
-    if (value != null) {
-      return value;
-    }
-    return super.getAnyAttribute(key);
-  }
-  get value() {
-    return this._getValue();
-  }
-  set value(value) {
-    this._setValue(value);
-  }
-  reset() {
-    this.value = this._initialValue;
-  }
-})();
-class UniRadioGroupChangeEventDetail {
-  constructor(value) {
-    this.value = value;
-  }
-}
-var UniRadioGroupChangeEvent = /* @__PURE__ */ (() => class extends UniCustomEvent {
-  constructor(value) {
-    super("change", {
-      detail: new UniRadioGroupChangeEventDetail(value)
-    });
-  }
-})();
-const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
-  name: RADIOGROUP_NAME,
-  rootElement: {
-    name: RADIOGROUP_ROOT_ELEMENT,
-    // @ts-expect-error not web element
-    class: UniRadioGroupElement
-  },
-  props: RadioProps,
-  emits: ["change"],
-  setup(props, _ref) {
-    var {
-      emit,
-      slots,
-      expose
-    } = _ref;
-    var $radioList = ref([]);
-    var uniRadioGroupElementRef = ref();
-    var instance = getCurrentInstance();
-    var _radioGroupUpdateHandler = (info, type) => {
-      if (type == "add") {
-        $radioList.value.push(info);
-      } else {
-        var index2 = $radioList.value.findIndex((i) => i.name == info.name);
-        if (index2 !== -1) {
-          $radioList.value.splice(index2, 1);
-        }
-      }
-    };
-    var _changeHandler = (data) => {
-      _setValue(data.name);
-      emit("change", initUniCustomEvent(uniRadioGroupElementRef.value, new UniRadioGroupChangeEvent(data.name)));
-    };
-    var _getValue = () => {
-      var value = "";
-      $radioList.value.forEach((info) => {
-        if (info.checked) {
-          value = info.name;
-        }
-      });
-      return value;
-    };
-    var _setValue = (name) => {
-      $radioList.value.forEach((info) => {
-        if (info.name == name) {
-          info.checked = true;
-          info.setRadioChecked(true);
-        } else {
-          info.checked = false;
-          info.setRadioChecked(false);
-        }
-      });
-    };
-    onMounted(() => {
-      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
-        if (!instance)
-          return;
-        if (!uniRadioGroupElementRef.value)
-          return;
-        uniRadioGroupElementRef.value._getValue = _getValue;
-        uniRadioGroupElementRef.value._setValue = _setValue;
-        uniRadioGroupElementRef.value._initialValue = _getValue();
-        uniRadioGroupElementRef.value._getAttribute = (key) => {
-          var _props$keyString$toSt, _props$keyString;
-          var keyString = camelize(key);
-          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
-        };
-      });
-    });
-    expose({
-      _radioGroupUpdateHandler,
-      _getValue,
-      _setValue,
-      _changeHandler
-    });
-    return () => {
-      var _slots$default;
-      return createVNode("uni-radio-group-element", {
-        "ref": uniRadioGroupElementRef
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 512);
-    };
-  }
-});
-const radioGroup$1 = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  UniRadioGroupChangeEvent,
-  UniRadioGroupElement,
-  default: radioGroup
-}, Symbol.toStringTag, { value: "Module" });
 var UniNavigatorElement = /* @__PURE__ */ (() => class extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
@@ -5554,7 +4772,6 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
       }
     };
     return () => {
-      var _slots$default;
       return createVNode("uni-navigator-element", {
         "ref": $uniNavigatorElement,
         "onClick": _onClick,
@@ -5562,7 +4779,7 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
         "hoverStopPropagation": props.hoverStopPropagation,
         "hoverStartTime": props.hoverStartTime,
         "hoverStayTime": props.hoverStayTime
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 8, ["onClick", "hoverClass", "hoverStopPropagation", "hoverStartTime", "hoverStayTime"]);
+      }, [renderSlot(slots, "default")], 8, ["onClick", "hoverClass", "hoverStopPropagation", "hoverStartTime", "hoverStayTime"]);
     };
   }
 });
@@ -5571,663 +4788,9 @@ const navigator$1 = /* @__PURE__ */ Object.defineProperty({
   UniNavigatorElement,
   default: navigator
 }, Symbol.toStringTag, { value: "Module" });
-var BACKGROUND_COLOR = "#EBEBEB";
-var PRIMARY_COLOR = "#007AFF";
-var ANIMATE_INTERVAL_DEFAULT = 30;
-var FONT_SIZE = 16;
-var STROKE_WIDTH = 6;
-class UniProgressActiveendEventDetail {
-  constructor(value) {
-    this.curPercent = value;
-  }
-}
-var UniProgressActiveendEvent = /* @__PURE__ */ (() => class extends UniCustomEvent {
-  constructor(value) {
-    super("activeend", {
-      detail: new UniProgressActiveendEventDetail(value)
-    });
-  }
-})();
-var UniProgressElement = /* @__PURE__ */ (() => class extends UniElementImpl {
-  constructor(data, pageNode) {
-    super(data, pageNode);
-    this.tagName = "PROGRESS";
-    this.nodeName = this.tagName;
-    this._getAttribute = (key) => {
-      return null;
-    };
-  }
-  getAnyAttribute(key) {
-    var value = this._getAttribute(key);
-    if (value != null) {
-      return value;
-    }
-    return super.getAnyAttribute(key);
-  }
-})();
-var progressProps = {
-  percent: {
-    type: Number,
-    default: 0
-  },
-  showInfo: {
-    type: Boolean,
-    default: false
-  },
-  borderRadius: {
-    type: Number,
-    default: 0
-  },
-  fontSize: {
-    type: Number,
-    default: FONT_SIZE
-  },
-  strokeWidth: {
-    type: Number,
-    default: STROKE_WIDTH
-  },
-  active: {
-    type: Boolean,
-    default: false
-  },
-  activeColor: {
-    type: String,
-    default: PRIMARY_COLOR
-  },
-  activeMode: {
-    type: String,
-    default: "backwards"
-  },
-  backgroundColor: {
-    type: String,
-    default: BACKGROUND_COLOR
-  },
-  duration: {
-    type: Number,
-    default: ANIMATE_INTERVAL_DEFAULT
-  }
-};
-var _style = {
-  "uni-progress": {
-    "": {
-      flexDirection: "row",
-      alignItems: "center"
-    }
-  },
-  "uni-progress-bar": {
-    "": {
-      flex: "1",
-      overflow: "hidden"
-    }
-  },
-  "uni-progress-info": {
-    "": {
-      marginLeft: "15px"
-    }
-  }
-};
-const progress = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Progress",
-  rootElement: {
-    name: "uni-progress-element",
-    // @ts-expect-error not web element
-    class: UniProgressElement
-  },
-  emit: ["activeend"],
-  props: progressProps,
-  setup(props, _ref) {
-    var {
-      emit
-    } = _ref;
-    var data = reactive({
-      $uniProgressElement: null,
-      curPercent: 0,
-      _timerId: 0,
-      _lastPercent: 0
-    });
-    var textStr = computed(() => {
-      return "".concat(data.curPercent, "%");
-    });
-    var instance = getCurrentInstance();
-    var styleUniProgress = computed(() => _style["uni-progress"][""]);
-    var styleUniProgressBar = computed(() => _style["uni-progress-bar"][""]);
-    var barStyle = computed(() => {
-      var style = {
-        height: "".concat(props.strokeWidth, "px"),
-        borderRadius: "".concat(props.borderRadius, "px"),
-        backgroundColor: props.backgroundColor
-      };
-      return Object.assign({}, styleUniProgressBar.value, style);
-    });
-    var innerBarStyle = computed(() => {
-      var style = {
-        width: "".concat(data.curPercent, "%"),
-        height: "".concat(props.strokeWidth, "px"),
-        backgroundColor: "".concat(props.activeColor)
-      };
-      return Object.assign({}, style);
-    });
-    var textStyle = computed(() => {
-      var fontSize = props.fontSize;
-      var style = {
-        fontSize: "".concat(fontSize, "px"),
-        minWidth: "".concat(fontSize * 2, "px")
-      };
-      return Object.assign({}, _style["uni-progress-info"][""], style);
-    });
-    var finalPercent = computed(() => {
-      var percent = props.percent;
-      if (percent > 100)
-        percent = 100;
-      if (percent < 0)
-        percent = 0;
-      return percent;
-    });
-    watch(() => finalPercent.value, (_, oldVal) => {
-      data._lastPercent = oldVal;
-      clearTimer();
-      _animate();
-    });
-    var _animate = () => {
-      var percent = finalPercent.value;
-      if (!props.active) {
-        data.curPercent = percent;
-        return;
-      }
-      data.curPercent = props.activeMode === "forwards" ? data._lastPercent : 0;
-      data._timerId = setInterval(() => {
-        if (percent <= data.curPercent + 1) {
-          clearTimer();
-          data.curPercent = percent;
-          emit("activeend", initUniCustomEvent(data.$uniProgressElement, new UniProgressActiveendEvent(percent)));
-        } else {
-          ++data.curPercent;
-        }
-      }, props.duration);
-    };
-    var clearTimer = () => {
-      clearInterval(data._timerId);
-    };
-    onMounted(() => {
-      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
-        var _instance$proxy;
-        if (!instance)
-          return;
-        data.$uniProgressElement = (_instance$proxy = instance.proxy) === null || _instance$proxy === void 0 ? void 0 : _instance$proxy.$el;
-        data.$uniProgressElement._getAttribute = (key) => {
-          var _props$keyString$toSt, _props$keyString;
-          var keyString = camelize(key);
-          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
-        };
-        _animate();
-      });
-    });
-    onBeforeUnmount(() => {
-      clearTimer();
-    });
-    return () => {
-      return createVNode("uni-progress-element", {
-        "class": "uni-progress",
-        "style": styleUniProgress.value
-      }, [createVNode("view", {
-        "class": "uni-progress-bar",
-        "style": barStyle.value
-      }, [createVNode("view", {
-        "class": "uni-progress-inner-bar",
-        "style": innerBarStyle.value
-      }, null, 4)], 4), props.showInfo ? createVNode("view", {
-        "class": "uni-progress-info",
-        "style": textStyle.value
-      }, [textStr.value], 4) : null], 4);
-    };
-  }
-});
-const progress$1 = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  UniProgressActiveendEvent,
-  UniProgressElement,
-  default: progress
-}, Symbol.toStringTag, { value: "Module" });
-var _style_picker_view = {
-  "uni-picker-view": {
-    "": {
-      position: "relative"
-    }
-  },
-  "uni-picker-view-wrapper": {
-    "": {
-      display: "flex",
-      flexDirection: "row",
-      position: "absolute",
-      top: "0",
-      left: "0",
-      right: "0",
-      bottom: "0",
-      overflow: "hidden"
-    }
-  }
-};
-var _style_picker_column = {
-  "uni-picker-view-column": {
-    "": {
-      flex: "1",
-      position: "relative",
-      alignItems: "stretch",
-      overflow: "hidden"
-    }
-  },
-  "uni-picker-view-mask": {
-    "": {
-      position: "absolute",
-      top: "0",
-      left: "0",
-      right: "0",
-      bottom: "0",
-      pointerEvents: "none"
-    }
-  },
-  "uni-picker-view-mask-top": {
-    "": {
-      bottom: "0",
-      backgroundImage: "linear-gradient(to bottom,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.6))"
-    }
-  },
-  "uni-picker-view-mask-bottom": {
-    "": {
-      top: "0",
-      backgroundImage: "linear-gradient(to top,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.6))"
-    }
-  },
-  "uni-picker-view-group": {
-    "": {
-      flexDirection: "column",
-      position: "absolute",
-      top: "0",
-      left: "0",
-      right: "0",
-      bottom: "0"
-    }
-  },
-  "uni-picker-view-content": {
-    "": {
-      flexDirection: "column",
-      paddingTop: "0",
-      paddingRight: "0",
-      paddingBottom: "0",
-      paddingLeft: "0"
-    }
-  },
-  "uni-picker-view-indicator": {
-    "": {
-      position: "absolute",
-      left: "0",
-      right: "0",
-      top: "0",
-      height: "34px",
-      borderColor: "#e5e5e5",
-      borderTopWidth: "1px",
-      borderBottomWidth: "1px",
-      pointerEvents: "none"
-    }
-  }
-};
-var UniPickerViewColumnElement = /* @__PURE__ */ (() => class extends UniElementImpl {
-  constructor(data, pageNode) {
-    super(data, pageNode);
-    this.tagName = "PICKER-VIEW-COLUMN";
-    this.nodeName = this.tagName;
-    this._getAttribute = (key) => {
-      return null;
-    };
-  }
-  getAnyAttribute(key) {
-    var value = this._getAttribute(key);
-    if (value != null) {
-      return value;
-    }
-    return super.getAnyAttribute(key);
-  }
-})();
-class UniPickerViewChangeEventDetail {
-  constructor(value) {
-    this.value = value;
-  }
-}
-var UniPickerViewChangeEvent = /* @__PURE__ */ (() => class extends UniCustomEvent {
-  constructor(value) {
-    super("change", {
-      detail: new UniPickerViewChangeEventDetail(value)
-    });
-  }
-})();
-var UniPickerViewElement = /* @__PURE__ */ (() => class extends UniElementImpl {
-  constructor(data, pageNode) {
-    super(data, pageNode);
-    this.tagName = "PICKER-VIEW";
-    this.nodeName = this.tagName;
-    this._getAttribute = (key) => {
-      return null;
-    };
-  }
-  getAnyAttribute(key) {
-    var value = this._getAttribute(key);
-    if (value != null) {
-      return value;
-    }
-    return super.getAnyAttribute(key);
-  }
-})();
-const pickerView = /* @__PURE__ */ defineBuiltInComponent({
-  name: "PickerView",
-  rootElement: {
-    name: "uni-picker-view-element",
-    // @ts-expect-error not web element
-    class: UniPickerViewElement
-  },
-  props: {
-    value: {
-      type: Array,
-      default: []
-    },
-    indicatorStyle: {
-      type: String,
-      default: ""
-    },
-    maskTopStyle: {
-      type: String,
-      default: ""
-    },
-    maskBottomStyle: {
-      type: String,
-      default: ""
-    }
-  },
-  emits: ["change"],
-  setup(props, _ref) {
-    var {
-      emit,
-      expose,
-      slots
-    } = _ref;
-    var data = reactive({
-      $uniPickerViewElement: null,
-      $items: [],
-      valueSync: []
-    });
-    watch(() => props.value, (val) => {
-      val.forEach((_val, index2) => {
-        if (data.$items.length > index2) {
-          var _data$$items$index$$$;
-          var fn = (_data$$items$index$$$ = data.$items[index2].$.exposed) === null || _data$$items$index$$$ === void 0 ? void 0 : _data$$items$index$$$.setCurrent;
-          fn(_val);
-        }
-      });
-      data.valueSync = [...val];
-    }, {
-      immediate: true
-    });
-    provide("pickerViewProps", props);
-    var pickerViewElementRef = ref();
-    var instance = getCurrentInstance();
-    var _pickerViewUpdateHandler = (vm, type) => {
-      if (type == "add") {
-        data.$items.push(vm);
-        if (data.$items.length > data.valueSync.length) {
-          data.valueSync.push(0);
-        }
-      } else {
-        var index2 = data.$items.indexOf(vm);
-        if (index2 != -1) {
-          data.$items.splice(index2, 1);
-          data.valueSync.splice(index2, 1);
-        }
-      }
-    };
-    var getItemValue = (vm) => {
-      var index2 = data.$items.indexOf(vm);
-      if (index2 != -1) {
-        if (props.value.length > index2) {
-          return props.value[index2];
-        }
-      }
-      return 0;
-    };
-    var setItemValue = (vm, val) => {
-      var index2 = data.$items.indexOf(vm);
-      if (index2 != -1) {
-        if (data.valueSync.length > index2) {
-          data.valueSync[index2] = val;
-        }
-        emit("change", initUniCustomEvent(pickerViewElementRef.value, new UniPickerViewChangeEvent([...data.valueSync])));
-      }
-    };
-    expose({
-      _pickerViewUpdateHandler,
-      getItemValue,
-      setItemValue
-    });
-    onMounted(() => {
-      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
-        if (!instance || !pickerViewElementRef.value)
-          return;
-        pickerViewElementRef.value._getAttribute = (key) => {
-          var _props$keyString$toSt, _props$keyString;
-          var keyString = camelize(key);
-          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
-        };
-      });
-    });
-    var styleUniPickerView = _style_picker_view["uni-picker-view"][""];
-    var styleUniPickerViewWrapper = _style_picker_view["uni-picker-view-wrapper"][""];
-    return () => {
-      var _slots$default;
-      return createVNode("uni-picker-view-element", {
-        "ref": pickerViewElementRef,
-        "class": "uni-picker-view",
-        "style": styleUniPickerView
-      }, [createVNode("view", {
-        "class": "uni-picker-view-wrapper",
-        "style": styleUniPickerViewWrapper
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 4)], 4);
-    };
-  }
-});
-const pickerView$1 = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  UniPickerViewChangeEvent,
-  UniPickerViewElement,
-  default: pickerView
-}, Symbol.toStringTag, { value: "Module" });
-const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
-  name: "PickerViewColumn",
-  rootElement: {
-    name: "uni-picker-view-column-element",
-    // @ts-expect-error
-    class: UniPickerViewColumnElement
-  },
-  setup(_props, _ref) {
-    var {
-      slots,
-      expose
-    } = _ref;
-    var instance = getCurrentInstance();
-    var pickerColumnRef = ref();
-    var indicator = ref();
-    var scrollViewRef = ref();
-    var contentRef = ref();
-    var pickerViewProps = inject("pickerViewProps");
-    var data = reactive({
-      height: 0,
-      indicatorHeight: 0,
-      current: 0,
-      scrollToElementTime: 0,
-      maskTopStyle: "",
-      maskBottomStyle: "",
-      indicatorStyle: "",
-      contentStyle: "",
-      _isMounted: false
-    });
-    var formatUserStyle = (styleStr) => {
-      var formatUserStyle2 = parseStringStyle(styleStr);
-      if (isString(formatUserStyle2["background-color"]) || isString(formatUserStyle2["background"])) {
-        formatUserStyle2 = Object.assign({}, formatUserStyle2, {
-          backgroundImage: "",
-          background: formatUserStyle2["background-color"] || formatUserStyle2["background"]
-        });
-      }
-      return formatUserStyle2;
-    };
-    var contentStyle = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-content"][""], parseStringStyle(data.contentStyle));
-    });
-    var maskTopStyle = computed(() => {
-      var userStyle = formatUserStyle(pickerViewProps.maskTopStyle);
-      var style = Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-top"][""], parseStringStyle(data.maskTopStyle), userStyle);
-      return style;
-    });
-    var maskBottomStyle = computed(() => {
-      var userStyle = formatUserStyle(pickerViewProps.maskBottomStyle);
-      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-bottom"][""], parseStringStyle(data.maskBottomStyle), userStyle);
-    });
-    var indicatorStyle = computed(() => {
-      var val = Object.assign({}, _style_picker_column["uni-picker-view-indicator"][""], parseStringStyle(pickerViewProps.indicatorStyle), parseStringStyle(data.indicatorStyle));
-      return val;
-    });
-    var styleUniPickerViewColumn = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-column"][""]);
-    });
-    var styleUniPickerViewGroup = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-group"][""]);
-    });
-    var styleViewMask = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""]);
-    });
-    var init2 = () => {
-      data.height = pickerColumnRef.value.offsetHeight;
-      data.indicatorHeight = indicator.value.offsetHeight;
-      var padding = (data.height - data.indicatorHeight) / 2;
-      var maskPosition = "".concat(data.height - padding, "px");
-      data.maskTopStyle += ";bottom:".concat(maskPosition);
-      data.maskBottomStyle += ";top:".concat(maskPosition);
-      data.indicatorStyle = ";top:".concat(padding, "px");
-      data.contentStyle = "padding-top:".concat(padding, "px;padding-bottom:").concat(padding, "px");
-      nextTick(() => {
-        if (data.current != 0) {
-          setCurrent(data.current);
-        }
-      });
-    };
-    var onScrollend = (e) => {
-      if (Date.now() - data.scrollToElementTime < 200) {
-        return;
-      }
-      var y = e.detail.scrollTop;
-      if (data.indicatorHeight === 0) {
-        return;
-      }
-      var current = Math.round(y / data.indicatorHeight);
-      if (y % data.indicatorHeight != 0) {
-        setCurrent(current);
-      } else {
-        data.current = current;
-      }
-    };
-    var setCurrent = (current) => {
-      var scrollTop = current * data.indicatorHeight;
-      scrollViewRef.value.setAnyAttribute("scroll-top", scrollTop);
-      data.current = current;
-      data.scrollToElementTime = Date.now();
-    };
-    var uniResizeObserver = new UniResizeObserver((entries) => {
-      init2();
-    });
-    var created = () => {
-      var _instance$parent;
-      var $parent = (instance === null || instance === void 0 || (_instance$parent = instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.type.name) === "PickerView" ? instance === null || instance === void 0 ? void 0 : instance.parent : null;
-      if ($parent !== null) {
-        $dispatchParent(instance === null || instance === void 0 ? void 0 : instance.proxy, "PickerView", "_pickerViewUpdateHandler", instance === null || instance === void 0 ? void 0 : instance.proxy, "add");
-        data.current = $dispatchParent(instance === null || instance === void 0 ? void 0 : instance.proxy, "PickerView", "getItemValue", instance === null || instance === void 0 ? void 0 : instance.proxy);
-      }
-    };
-    created();
-    expose({
-      setCurrent
-    });
-    onMounted(() => {
-      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
-        if (!instance || !pickerColumnRef.value)
-          return;
-        init2();
-        setTimeout(() => {
-          data._isMounted = true;
-        }, 1e3);
-        uniResizeObserver.observe(pickerColumnRef.value);
-      });
-    });
-    onBeforeUnmount(() => {
-      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      uniResizeObserver.disconnect();
-      $dispatch(ctx, "PickerView", "_pickerViewUpdateHandler", ctx, "remove");
-    });
-    watch(() => data.current, (val, oldVal) => {
-      if (data._isMounted && val != oldVal) {
-        var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
-        $dispatch(ctx, "PickerView", "setItemValue", ctx, val);
-      }
-    });
-    return () => {
-      var _slots$default;
-      return createVNode("uni-picker-view-column-element", {
-        "class": "uni-picker-view-column",
-        "style": styleUniPickerViewColumn.value,
-        "ref": pickerColumnRef
-      }, [createVNode("scroll-view", {
-        "deceleration-rate": 0.3,
-        "onScrollend": onScrollend,
-        "class": "uni-picker-view-group",
-        "style": styleUniPickerViewGroup.value,
-        "scroll-with-animation": data._isMounted,
-        "direction": "vertical",
-        "show-scrollbar": false,
-        "ref": scrollViewRef
-      }, [createVNode("view", {
-        "class": "uni-picker-view-content",
-        "style": contentStyle.value,
-        "ref": contentRef
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 4)], 44, ["onScrollend", "scroll-with-animation"]), createVNode("view", {
-        "userInteractionEnabled": false,
-        "class": "uni-picker-view-mask",
-        "style": styleViewMask.value
-      }, [createVNode("view", {
-        "class": "uni-picker-view-mask uni-picker-view-mask-top",
-        "style": maskTopStyle.value
-      }, null, 4), createVNode("view", {
-        "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
-        "style": maskBottomStyle.value
-      }, null, 4)], 4), createVNode("view", {
-        "ref": indicator,
-        "userInteractionEnabled": false,
-        "class": "uni-picker-view-indicator",
-        "style": indicatorStyle.value
-      }, null, 4)], 4);
-    };
-  }
-});
-const pickerViewColumn$1 = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  UniPickerViewColumnElement,
-  default: pickerViewColumn
-}, Symbol.toStringTag, { value: "Module" });
 const index = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  Checkbox: checkbox$1,
-  CheckboxGroup: checkboxGroup$1,
-  Navigator: navigator$1,
-  PickerView: pickerView$1,
-  PickerViewColumn: pickerViewColumn$1,
-  Progress: progress$1,
-  Radio: radio$1,
-  RadioGroup: radioGroup$1
+  Navigator: navigator$1
 }, Symbol.toStringTag, { value: "Module" });
 export {
   definePage as __definePage,

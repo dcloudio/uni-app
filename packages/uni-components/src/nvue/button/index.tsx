@@ -1,22 +1,22 @@
 import {
+  Text,
+  computed,
+  defineComponent,
   inject,
   onBeforeUnmount,
   ref,
-  defineComponent,
-  Text,
-  computed,
 } from 'vue'
-import { uniLabelKey, UniLabelCtx } from '../label'
+import { type UniLabelCtx, uniLabelKey } from '../label'
 import { useListeners } from '../../helpers/useListeners'
 import { useAttrs } from '../../helpers/useAttrs'
 import {
+  type NVueComponentStyles,
   createNVueTextVNode,
-  NVueComponentStyles,
   useHoverClass,
 } from '../utils'
 import { buttonProps } from '../../components/button'
 import { extend } from '@vue/shared'
-import { uniFormKey, UniFormCtx } from '../../components/form'
+import { type UniFormCtx, uniFormKey } from '../../components/form'
 
 const buttonStyle: NVueComponentStyles = [
   {

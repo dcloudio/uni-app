@@ -1238,7 +1238,7 @@ function initUni(api, protocols, platform = my) {
     {
         platform.$emit = $emit;
         // @ts-expect-error
-        if (!my.canIUse('getOpenerEventChannel'))
+        if (!my.canIUse('page.getOpenerEventChannel'))
             platform.getEventChannel = getEventChannel;
     }
     return new Proxy({}, UniProxyHandlers);
@@ -1291,9 +1291,6 @@ function removeStorageSync(key) {
     });
 }
 function startGyroscope(args) {
-    if (hasOwn(args, 'interval')) {
-        console.warn('支付宝小程序 startGyroscope暂不支持interval');
-    }
     args.success &&
         args.success({
             errMsg: 'startGyroscope:ok',
@@ -1504,16 +1501,33 @@ const request = {
 /**
  * 钉钉小程序 setNavigationBarColor 不支持 frontColor
  */
-const setNavigationBarColor = {
-    name: 'setNavigationBar',
-    args: {
-        frontColor: false,
-        animation: false,
-    },
-};
-const setNavigationBarTitle = {
-    name: 'setNavigationBar',
-};
+function setNavigationBarColor() {
+    if (my.canIUse('setNavigationBarColor')) {
+        return {
+            name: 'setNavigationBarColor',
+            args: {
+                animation: false,
+            },
+        };
+    }
+    return {
+        name: 'setNavigationBar',
+        args: {
+            frontColor: false,
+            animation: false,
+        },
+    };
+}
+function setNavigationBarTitle() {
+    if (my.canIUse('setNavigationBarTitle')) {
+        return {
+            name: 'setNavigationBarTitle',
+        };
+    }
+    return {
+        name: 'setNavigationBar',
+    };
+}
 /**
  * Note:
  * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
@@ -1576,8 +1590,12 @@ const showActionSheet = {
     },
 };
 const showLoading = {
-    args: {
-        title: 'content',
+    args(fromArgs, toArgs // mini-types feedback.d.ts 未包含 mask
+    ) {
+        if (!fromArgs.mask) {
+            toArgs.mask = false;
+        }
+        toArgs.content = fromArgs.title;
     },
 };
 const uploadFile = {
@@ -1696,8 +1714,10 @@ const getLocation = {
     },
 };
 const openLocation = {
-    args: {
-    // TODO address 参数在阿里上是必传的
+    args(fromArgs, toArgs) {
+        if (!fromArgs.scale) {
+            toArgs.scale = 18;
+        }
     },
 };
 const getNetworkType = {
@@ -1862,7 +1882,15 @@ const chooseAddress = {
         toRes.errMsg = toRes.errMsg + ' ' + fromRes.resultStatus;
     },
 };
-const navigateTo = my.canIUse('getOpenerEventChannel')
+const openDocument = {
+    args(fromArgs, toArgs) {
+        if (typeof fromArgs.showMenu === 'boolean') {
+            // 支付宝小程序 showMenu 类型为 string, https://opendocs.alipay.com/mini/api/mwpprc
+            toArgs.showMenu = String(fromArgs.showMenu);
+        }
+    },
+};
+const navigateTo = my.canIUse('page.getOpenerEventChannel')
     ? {}
     : navigateTo$1();
 
@@ -1898,6 +1926,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   onNetworkStatusChange: onNetworkStatusChange,
   onSocketMessage: onSocketMessage,
   onSocketOpen: onSocketOpen,
+  openDocument: openDocument,
   openLocation: openLocation,
   pageScrollTo: pageScrollTo,
   previewImage: previewImage,

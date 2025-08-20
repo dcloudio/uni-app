@@ -23,6 +23,7 @@ import {
   isProperty,
   isReference,
 } from '../utils'
+import { isUniHelpers } from '../../uts'
 
 interface Scope {
   parent: Scope
@@ -85,7 +86,8 @@ export function uniViteInjectPlugin(
     enforce: options.enforce ?? 'post',
     transform(code, id) {
       if (!filter(id)) return null
-      if (!isJsFile(id)) return null
+      // 加密插件也要走后续注入逻辑
+      if (!isJsFile(id) && !isUniHelpers(id)) return null
 
       // debugInjectTry(id)
       if (code.search(firstpass) === -1) return null

@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`defineEmits basic usage 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   emits: ['foo', 'bar'],
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -19,7 +20,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineEmits w/ runtime options 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   emits: ['a', 'b'],
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -138,7 +140,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineEmits w/ type (property syntax string literal) 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   emits: ["foo:bar"],
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -156,7 +159,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineEmits w/ type (property syntax) 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   emits: ["foo", "bar"],
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -234,7 +238,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineEmits w/ type (type literal w/ call signatures) 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   emits: ["foo", "bar", "baz"],
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -273,7 +278,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineEmits w/ type (union) 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   emits: ["foo", "bar", "baz"],
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -291,7 +297,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineEmits w/ type 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   emits: ["foo", "bar"],
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -309,7 +316,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineEmits w/ type from normal script 1`] = `
-"export interface Emits { (e: 'foo' | 'bar'): void }
+"
+      export interface Emits { (e: 'foo' | 'bar'): void }
     
 export default defineComponent({
   emits: ["foo", "bar"],

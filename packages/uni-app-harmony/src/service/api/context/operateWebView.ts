@@ -53,6 +53,38 @@ export function createWebviewContext(
       stop() {
         operateWebView(id, pageId, 'stop')
       },
+      canBack(callback: (res: any) => void) {
+        operateWebView(id, pageId, 'canBack', {}, (canBack) =>
+          callback?.({ canBack })
+        )
+      },
+      canForward(callback: (res: any) => void) {
+        operateWebView(id, pageId, 'canForward', {}, (canForward) =>
+          callback?.({ canForward })
+        )
+      },
+      loadUrl(options: any) {
+        operateWebView(id, pageId, 'loadUrl', {
+          url: options.url,
+          headers: options.headers ?? [],
+        })
+      },
+      loadData(options: any) {
+        operateWebView(id, pageId, 'loadData', {
+          data: options.data,
+          mimeType: options.mimeType ?? 'text/html',
+          encoding: options.encoding ?? 'UTF-8',
+          baseUrl: options.baseUrl ?? '',
+        })
+      },
+      getContentHeight(callback: (res: any) => void) {
+        operateWebView(id, pageId, 'getContentHeight', {}, (height) =>
+          callback?.({ height })
+        )
+      },
+      clear() {
+        operateWebView(id, pageId, 'clear', { clearRom: true })
+      },
     }
   } else {
     UniServiceJSBridge.emit(ON_ERROR, 'createWebviewContext:fail')

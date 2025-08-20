@@ -2,6 +2,9 @@ export * from '../../lib/uvue.runtime.esm'
 import type { ComponentCustomOptions } from 'vue'
 import { ref, shallowRef } from '../../lib/uvue.runtime.esm'
 import { defineComponent as origDefineComponent } from '../../lib/uvue.runtime.esm'
+// TODO 临时方案，后续升级到最新vue版本，则不需要这个方法
+import { getCurrentInstance } from '../../lib/uvue.runtime.esm'
+export const getCurrentGenericInstance = getCurrentInstance
 
 export const defineComponent = (options: any) => {
   const rootElement: ComponentCustomOptions['rootElement'] | undefined =

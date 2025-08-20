@@ -1,6 +1,7 @@
 import { decrementEscBackPageNum } from '../../../framework/setup/page'
 import {
   dialogPageTriggerParentShow,
+  dialogPageTriggerPrevDialogPageLifeCycle,
   invokeHook,
   isSystemDialogPage,
 } from '@dcloudio/uni-core'
@@ -20,16 +21,17 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
     const dialogPage = options?.dialogPage! as UniDialogPage
     const parentPage = dialogPage.getParentPage()
     if (!isSystemDialogPage(dialogPage)) {
-      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+      if (
+        parentPage &&
+        (parentPage.vm.$basePage.meta.isTabBar ||
+          currentPages.indexOf(parentPage) !== -1)
+      ) {
         const parentDialogPages = parentPage.getDialogPages()
         const index = parentDialogPages.indexOf(dialogPage)
-        parentDialogPages.splice(index, 1)
         invokeHook(dialogPage.vm!, ON_UNLOAD)
-        if (index > 0 && index === parentDialogPages.length) {
-          invokeHook(
-            parentDialogPages[parentDialogPages.length - 1].vm!,
-            ON_SHOW
-          )
+        parentDialogPages.splice(index, 1)
+        if (index === parentDialogPages.length) {
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
         }
         dialogPageTriggerParentShow(dialogPage, 1)
         if (!dialogPage.$disableEscBack) {
@@ -46,6 +48,9 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       if (index > -1) {
         invokeHook(parentSystemDialogPages[index].vm!, ON_UNLOAD)
         parentSystemDialogPages.splice(index, 1)
+        if (index === parentSystemDialogPages.length) {
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW)
+        }
         dialogPageTriggerParentShow(dialogPage, 1)
       } else {
         triggerFailCallback(options, 'dialogPage is not a valid page')

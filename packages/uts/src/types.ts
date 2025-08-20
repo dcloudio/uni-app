@@ -52,6 +52,7 @@ export type UTSOutputOptions = {
   imports?: string[]
   sourceMap?: boolean | string
   inlineSourcesContent?: boolean
+  errorFormat?: 'pretty' | 'json' // 默认 pretty
   extname: string
   logFilename?: boolean
   noColor?: boolean
@@ -62,16 +63,20 @@ export type UTSOutputOptions = {
   isPlugin?: boolean
   isModule?: boolean
   isExtApi?: boolean
+  isPureSwift?: boolean
   split?: boolean
   splitClass?: boolean
   disableSplitManifest?: boolean
   removeImports?: boolean
   dropImports?: string[]
   returnExportIdent?: boolean
+  forcePreprocess?: boolean
   uniAppX?: {
     uvueOutDir: string
   }
   transform?: {
+    enableSwiftUtsArray?: boolean
+    enableSwiftUtsMap?: boolean
     enableUtsNumber?: boolean
     enableNarrowType?: boolean
     enableGenericsParameterDefaults?: boolean

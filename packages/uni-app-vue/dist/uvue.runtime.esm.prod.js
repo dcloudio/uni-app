@@ -1,6 +1,6 @@
-import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, isIntegerKey, hasOwn, isMap, makeMap, hyphenate, capitalize, isPromise, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, getGlobalThis, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$2, looseToNumber, isGloballyAllowed, NO } from '@vue/shared';
+import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, isIntegerKey, hasOwn, isMap, makeMap, hyphenate, capitalize, isPromise, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, getGlobalThis, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$1, looseToNumber, isGloballyAllowed, NO } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 
 /**
@@ -1395,6 +1395,7 @@ function createDecl(prop, value, important, raws, source) {
   }
   return decl;
 }
+var isNumber = val => typeof val === 'number';
 var backgroundColor = 'backgroundColor';
 var backgroundImage = 'backgroundImage';
 var handleTransformBackground = decl => {
@@ -1722,6 +1723,78 @@ var transformTransition = decl => {
   match[4] && result.push(createDecl(transitionDelay, match[4], important, raws, source));
   return result;
 };
+var flexGrow = 'flexGrow';
+var flexShrink = 'flexShrink';
+var flexBasis = 'flexBasis';
+var transformFlex = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var result = [];
+  var splitResult = value.trim().split(/\s+/);
+  // 是否 flex-grow 的有效值 <number [0,∞]>
+  var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
+  var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
+  var isFlexBasisValid = v => typeof v === 'string' && v.trim() !== '';
+  if (splitResult.length === 1) {
+    // 关键字处理
+    if (value === 'none') {
+      result.push(createDecl(flexGrow, '0', important, raws, source), createDecl(flexShrink, '0', important, raws, source), createDecl(flexBasis, 'auto', important, raws, source));
+      return result;
+    }
+    if (value === 'auto') {
+      result.push(createDecl(flexGrow, '1', important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, 'auto', important, raws, source));
+      return result;
+    }
+    if (value === 'initial') {
+      result.push(createDecl(flexGrow, '0', important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, 'auto', important, raws, source));
+      return result;
+    }
+    var v = splitResult[0];
+    // number 视为 flex-grow
+    if (isFlexGrowValid(v)) {
+      if (Number(v) < 0) {
+        return [];
+      }
+      result.push(createDecl(flexGrow, v, important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, '0%', important, raws, source));
+      return result;
+    } else if (isFlexBasisValid(v)) {
+      result.push(createDecl(flexGrow, '1', important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, v, important, raws, source));
+      return result;
+    } else {
+      return [decl];
+    }
+  } else if (splitResult.length === 2) {
+    var [v1, v2] = splitResult;
+    if (isFlexGrowValid(v1)) {
+      if (isFlexShrinkValid(v2)) {
+        // flex: 1 2 => 1 2 0%
+        result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, v2, important, raws, source), createDecl(flexBasis, '0%', important, raws, source));
+        return result;
+      } else {
+        // flex: 1 100px => 1 1 100px
+        result.push(createDecl(flexGrow, v1, important, raws, source), createDecl(flexShrink, '1', important, raws, source), createDecl(flexBasis, v2, important, raws, source));
+        return result;
+      }
+    } else {
+      return [decl];
+    }
+  } else if (splitResult.length === 3) {
+    var [_v, _v2, v3] = splitResult;
+    if (isFlexGrowValid(_v) && isFlexShrinkValid(_v2)) {
+      result.push(createDecl(flexGrow, _v, important, raws, source), createDecl(flexShrink, _v2, important, raws, source), createDecl(flexBasis, v3, important, raws, source));
+      return result;
+    } else {
+      // fallback
+      return [decl];
+    }
+  }
+  // 其它情况，原样返回
+  return [decl];
+};
 function getDeclTransforms(options) {
   var transformBorder = options.type == 'uvue' ? createTransformBorder() : createTransformBorderNvue();
   var styleMap = {
@@ -1742,6 +1815,9 @@ function getDeclTransforms(options) {
     padding: transformPadding,
     flexFlow: transformFlexFlow
   };
+  if (options.type === 'uvue') {
+    styleMap.flex = transformFlex;
+  }
   var result = {};
   {
     result = styleMap;
@@ -7002,7 +7078,7 @@ function _createVNode(type) {
       if (isProxy(style) && !isArray$1(style)) {
         style = extend({}, style);
       }
-      props.style = normalizeStyle$1(style);
+      props.style = normalizeStyle(style);
     }
   }
   var shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
@@ -7157,7 +7233,7 @@ function mergeProps() {
           ret.class = normalizeClass([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        ret.style = normalizeStyle$1([ret.style, toMerge.style]);
+        ret.style = normalizeStyle([ret.style, toMerge.style]);
       } else if (isOn(key)) {
         var existing = ret[key];
         var incoming = toMerge[key];
@@ -7875,7 +7951,7 @@ function patchClass(el, pre, next) {
   var classList = next ? next.split(" ") : [];
   el.classList = classList;
   setExtraStyles(el, parseStyleSheet(instance));
-  if (instance.parent != null && instance !== instance.root) {
+  if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
     setExtraParentStyles(el, instance.parent.type.styles);
   }
   updateClassStyles(el);
@@ -8083,7 +8159,7 @@ function transformAttr(el, key, value, instance) {
         var sytle = parseStringStyle(camelize(value));
         return [camelized, sytle];
       }
-      return [camelized, normalizeStyle$2(value)];
+      return [camelized, normalizeStyle$1(value)];
     }
   }
   return [key, value];
@@ -8158,42 +8234,20 @@ function createInvoker(initialValue, instance) {
 var processDeclaration = expand({
   type: "uvue"
 }).Declaration;
-function createDeclaration(prop, value) {
-  var newValue = value + "";
-  if (newValue.includes("!important")) {
-    return {
-      prop,
-      value: newValue.replace(/\s*!important/, ""),
-      important: true
-    };
-  }
-  return {
+function parseStyleDecl(prop, value) {
+  var newValue = String(value);
+  var isImportant = newValue.includes("!important");
+  var decl = {
     prop,
-    value: newValue,
-    important: false
-  };
-}
-function normalizeStyle(name, value) {
-  var decl = Object.assign({}, {
+    value: isImportant ? newValue.replace(/\s*!important/, "") : newValue,
+    important: isImportant,
     replaceWith(newProps) {
       props = newProps;
     }
-  }, createDeclaration(name, value));
+  };
   var props = [decl];
   processDeclaration(decl);
   return props;
-}
-function setStyle(expandRes) {
-  var resArr = expandRes.map(item => {
-    return [item.prop, item.value];
-  });
-  var resMap = new Map(resArr);
-  return resMap;
-}
-function parseStyleDecl(prop, value) {
-  var val = normalizeStyle(prop, value);
-  var res = setStyle(val);
-  return res;
 }
 function isSame(a, b) {
   return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
@@ -8215,9 +8269,9 @@ function patchStyle(el, prev, next) {
         if (next[key] == null) {
           var _key = key.startsWith("--") ? key : camelize(key);
           var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-          parseStyleDecl(_key, value).forEach((value2, key2) => {
-            batchedStyles.set(key2, value2);
-            style == null ? void 0 : style.delete(key2);
+          parseStyleDecl(_key, value).forEach(item => {
+            batchedStyles.set(item.prop, item.value);
+            style == null ? void 0 : style.delete(item.prop);
           });
         }
       }
@@ -8226,9 +8280,9 @@ function patchStyle(el, prev, next) {
         var prevValue = prev[_key15];
         if (!isSame(prevValue, _value2)) {
           var _key16 = _key15.startsWith("--") ? _key15 : camelize(_key15);
-          parseStyleDecl(_key16, _value2).forEach((value2, key2) => {
-            batchedStyles.set(key2, value2);
-            style == null ? void 0 : style.set(key2, value2);
+          parseStyleDecl(_key16, _value2).forEach(item => {
+            batchedStyles.set(item.prop, item.value);
+            style == null ? void 0 : style.set(item.prop, item.value);
           });
         }
       }
@@ -8250,8 +8304,8 @@ function patchStyle(el, prev, next) {
   el.updateStyle(batchedStyles);
 }
 function setBatchedStyles(batchedStyles, key, value) {
-  parseStyleDecl(key, value).forEach((value2, key2) => {
-    batchedStyles.set(key2, value2);
+  parseStyleDecl(key, value).forEach(item => {
+    batchedStyles.set(item.prop, item.value);
   });
 }
 var vModelTags = ["u-input", "u-textarea"];
@@ -8468,6 +8522,29 @@ var createApp = function () {
   };
   return app;
 };
+function createMountPage(appContext) {
+  return function mountPage(pageComponent, pageProps, pageContainer) {
+    var vnode = createVNode(pageComponent, pageProps);
+    vnode.appContext = appContext;
+    vnode.__page_container__ = pageContainer;
+    render(vnode, pageContainer);
+    var publicThis = vnode.component.proxy;
+    publicThis.__page_container__ = pageContainer;
+    return publicThis;
+  };
+}
+function unmountPage(pageInstance) {
+  var {
+    __page_container__
+  } = pageInstance;
+  if (__page_container__) {
+    __page_container__.isUnmounted = true;
+    render(null, __page_container__);
+    delete pageInstance.__page_container__;
+    var vnode = pageInstance.$.vnode;
+    delete vnode.__page_container__;
+  }
+}
 
 /// <reference types="@dcloudio/types" />
 // function isUniPage(target: ComponentInternalInstance | null): boolean {
@@ -8523,6 +8600,7 @@ function renderComponentSlot(slots, name) {
   }
   return null;
 }
+var getCurrentGenericInstance = getCurrentInstance;
 var defineComponent = options => {
   var rootElement = options.rootElement;
   if (rootElement && typeof customElements !== 'undefined') {
@@ -8532,4 +8610,4 @@ var defineComponent = options => {
 };
 var ssrRef = ref;
 var shallowSsrRef = shallowRef;
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderComponentSlot, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, ssrContextKey, ssrRef, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderComponentSlot, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, ssrContextKey, ssrRef, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

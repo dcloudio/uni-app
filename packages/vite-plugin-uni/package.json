@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vite-plugin-uni",
-  "version": "3.0.0-alpha-4070620250731002",
+  "version": "3.0.0-alpha-4080120250820001",
   "description": "uni-app vite plugin",
   "bin": {
     "uni": "bin/uni.js"
@@ -24,48 +24,49 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@babel/core": "^7.23.3",
+    "@babel/core": "catalog:",
     "@babel/plugin-syntax-import-meta": "^7.10.4",
     "@babel/plugin-transform-typescript": "^7.23.3",
     "@dcloudio/uni-cli-shared": "workspace:*",
+    "@dcloudio/uni-nvue-styler": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@rollup/pluginutils": "^5.0.5",
-    "@vitejs/plugin-legacy": "5.3.2",
-    "@vitejs/plugin-vue": "5.1.0",
-    "@vitejs/plugin-vue-jsx": "3.1.0",
-    "@vue/compiler-core": "3.4.21",
-    "@vue/compiler-dom": "3.4.21",
-    "@vue/compiler-sfc": "3.4.21",
-    "@vue/shared": "3.4.21",
+    "@rollup/pluginutils": "catalog:",
+    "@vitejs/plugin-legacy": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vitejs/plugin-vue-jsx": "catalog:",
+    "@vue/compiler-core": "catalog:",
+    "@vue/compiler-dom": "catalog:",
+    "@vue/compiler-sfc": "catalog:",
+    "@vue/shared": "catalog:",
     "cac": "6.7.9",
-    "debug": "^4.3.3",
-    "estree-walker": "^2.0.2",
-    "express": "^4.17.1",
-    "fast-glob": "^3.2.11",
-    "fs-extra": "^10.0.0",
-    "hash-sum": "^2.0.0",
-    "jsonc-parser": "^3.2.0",
-    "magic-string": "^0.30.7",
-    "picocolors": "^1.0.0",
+    "debug": "catalog:",
+    "estree-walker": "catalog:",
+    "express": "catalog:",
+    "fast-glob": "catalog:",
+    "fs-extra": "catalog:",
+    "hash-sum": "catalog:",
+    "jsonc-parser": "catalog:",
+    "magic-string": "catalog:",
+    "picocolors": "catalog:",
     "terser": "^5.4.0",
-    "unplugin-auto-import": "19.1.0"
+    "unplugin-auto-import": "catalog:"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7",
-    "@types/estree": "^1.0.5",
+    "@types/debug": "catalog:",
+    "@types/estree": "catalog:",
     "@types/express": "^4.17.12",
-    "@types/fs-extra": "^9.0.13",
-    "@types/sass": "^1.16.0",
+    "@types/fs-extra": "catalog:",
+    "@types/sass": "catalog:",
     "@vue/babel-plugin-jsx": "1.2.2",
-    "chokidar": "^3.5.3",
-    "vite": "^5.2.8",
-    "vue": "3.4.21"
+    "chokidar": "catalog:",
+    "vite": "catalog:",
+    "vue": "catalog:"
   },
   "peerDependencies": {
-    "vite": "^5.2.8"
+    "vite": "catalog:"
   },
   "uni-app": {
-    "compilerVersion": "4.76"
+    "compilerVersion": "4.81"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da"
 }

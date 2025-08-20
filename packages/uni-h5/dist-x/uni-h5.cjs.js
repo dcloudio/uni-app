@@ -42,7 +42,6 @@ var IDENTIFIER;
   IDENTIFIER2["UTSJSONObject"] = "UTSJSONObject";
   IDENTIFIER2["JSON"] = "JSON";
   IDENTIFIER2["UTS"] = "UTS";
-  IDENTIFIER2["DEFINE_COMPONENT"] = "defineComponent";
   IDENTIFIER2["VUE"] = "vue";
   IDENTIFIER2["GLOBAL_THIS"] = "globalThis";
   IDENTIFIER2["UTS_TYPE"] = "UTSType";
@@ -503,8 +502,25 @@ const UTSJSON = {
       return null;
     }
   },
-  stringify: (value) => {
-    return OriginalJSON.stringify(value);
+  stringify: (value, replacer, space) => {
+    try {
+      if (!replacer) {
+        const visited = /* @__PURE__ */ new Set();
+        replacer = function(_, v2) {
+          if (typeof v2 === "object") {
+            if (visited.has(v2)) {
+              return null;
+            }
+            visited.add(v2);
+          }
+          return v2;
+        };
+      }
+      return OriginalJSON.stringify(value, replacer, space);
+    } catch (error) {
+      console.error(error);
+      return "";
+    }
   }
 };
 function mapGet(map, key) {
@@ -1626,91 +1642,11 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-const rpx2Unit = uniShared.createRpx2Unit(
+uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unit,
   uniShared.defaultRpx2Unit.unitRatio,
   uniShared.defaultRpx2Unit.unitPrecision
 );
-function transformRpx(value) {
-  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
-    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return rpx2Unit(num + "rpx");
-    });
-  }
-  return value;
-}
-class UniElement extends HTMLElement {
-  constructor() {
-    super();
-    this._props = {};
-    this._page = null;
-    this.__isUniElement = true;
-  }
-  attachVmProps(props2) {
-    this._props = props2;
-  }
-  getAttribute(qualifiedName) {
-    const name = shared.camelize(qualifiedName);
-    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
-    return attr2 === void 0 ? null : attr2;
-  }
-  getPage() {
-    if (this._page) {
-      return this._page;
-    }
-    let parent = this.parentNode;
-    while (parent && !parent._page) {
-      parent = parent.parentNode;
-    }
-    return (parent == null ? void 0 : parent._page) || null;
-  }
-  get uniPage() {
-    return this.getPage();
-  }
-  getBoundingClientRectAsync(callback) {
-    var _a, _b;
-    if (callback) {
-      const domRect = this.getBoundingClientRect();
-      try {
-        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
-      } catch (error) {
-        console.error(error);
-      }
-      try {
-        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
-      } catch (error) {
-        console.error(error);
-      }
-      return;
-    }
-    return new Promise((resolve, reject) => {
-      const domRect = this.getBoundingClientRect();
-      resolve(domRect);
-    });
-  }
-  get style() {
-    const originalStyle = super.style;
-    if (originalStyle.__patchRpx__) {
-      return originalStyle;
-    }
-    originalStyle.__patchRpx__ = true;
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
-    super.style.setProperty = function(property, value, priority) {
-      return originalSetProperty(
-        property,
-        value ? transformRpx(value + "") : value,
-        priority || void 0
-      );
-    };
-    return super.style;
-  }
-  get tagName() {
-    return super.tagName.replace(/^UNI-/, "");
-  }
-  get nodeName() {
-    return super.nodeName.replace(/^UNI-/, "");
-  }
-}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -3170,6 +3106,13 @@ class UniPageImpl {
   getDialogPages() {
     return [];
   }
+  $getSystemDialogPages() {
+    var _a, _b, _c;
+    return ((_c = (_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages) == null ? void 0 : _c.value) || [];
+  }
+  __$$getSystemDialogPages() {
+    return [];
+  }
   getAndroidActivity() {
     return null;
   }
@@ -3220,12 +3163,8 @@ function initXPage(vm, route, page) {
   };
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
-    let targetRoute = (route == null ? void 0 : route.path) || "";
-    if (targetRoute.startsWith("/")) {
-      targetRoute = targetRoute.substring(1);
-    }
     const uniPage = new UniNormalPageImpl({
-      route: targetRoute,
+      route: (route == null ? void 0 : route.path) ? uniShared.removeLeadingSlash(route == null ? void 0 : route.path) : "",
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
@@ -3255,6 +3194,15 @@ function initXPage(vm, route, page) {
     vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
+    vm.$basePage.fullPath = vm.$basePage.path;
+    const parentPage = vm.$page.getParentPage();
+    if (parentPage) {
+      if (!parentPage.vm.$dialogPagesNum) {
+        parentPage.vm.$dialogPagesNum = 0;
+      }
+      parentPage.vm.$dialogPagesNum++;
+      vm.$basePage.id = parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum;
+    }
   }
 }
 const SEP = "$$";
@@ -3489,6 +3437,9 @@ let $uniApp;
       return (appVm == null ? void 0 : appVm.globalData) || {};
     }
     getAndroidApplication() {
+      return null;
+    }
+    getHarmonyAbility() {
       return null;
     }
   }
@@ -4285,6 +4236,12 @@ function createDialogPageVNode(normalDialogPages, systemDialogPages) {
       type: SYSTEM_DIALOG_TAG
     }))
   ];
+  dialogPages.sort((a, b) => {
+    var _a, _b, _c, _d;
+    const aId = ((_b = (_a = a.page.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
+    const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
+    return aId - bId;
+  });
   return vue.openBlock(true), vue.createElementBlock(
     vue.Fragment,
     null,
@@ -5296,36 +5253,8 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     default: ""
   }
 });
-const resolveDigitDecimalPointDeleteContentBackward = uniShared.once(() => {
+uniShared.once(() => {
 });
-function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
-  if (cache.value) {
-    if (event.data === ".") {
-      if (cache.value.slice(-1) === ".") {
-        state.value = input.value = cache.value = cache.value.slice(0, -1);
-        return false;
-      }
-      if (cache.value && !cache.value.includes(".")) {
-        cache.value += ".";
-        if (resetCache) {
-          resetCache.fn = () => {
-            state.value = input.value = cache.value = cache.value.slice(0, -1);
-            input.removeEventListener("blur", resetCache.fn);
-          };
-          input.addEventListener("blur", resetCache.fn);
-        }
-        return false;
-      }
-    } else if (event.inputType === "deleteContentBackward") {
-      if (resolveDigitDecimalPointDeleteContentBackward()) {
-        if (cache.value.slice(-2, -1) === ".") {
-          cache.value = state.value = input.value = cache.value.slice(0, -2);
-          return true;
-        }
-      }
-    }
-  }
-}
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
@@ -5378,10 +5307,19 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
+    const inputmode = vue.computed(() => {
+      if (props2.inputmode) {
+        return props2.inputmode;
+      }
+      {
+        const inputmodeMap = {
+          number: "numeric",
+          digit: "decimal"
+        };
+        return Object.values(INPUT_MODES).includes(props2.type) ? props2.type : inputmodeMap[props2.type];
+      }
+    });
     let cache = useCache(props2, type);
-    let resetCache = {
-      fn: null
-    };
     const rootRef = vue.ref(null);
     const {
       fieldRef,
@@ -5390,40 +5328,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       fixDisabledColor,
       trigger
     } = useField(props2, rootRef, emit2, (event, state2) => {
-      const input = event.target;
-      if (type.value === "number") {
-        if (resetCache.fn) {
-          input.removeEventListener("blur", resetCache.fn);
-          resetCache.fn = null;
-        }
-        if (input.validity && !input.validity.valid) {
-          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
-            cache.value = "-";
-            state2.value = "";
-            resetCache.fn = () => {
-              cache.value = input.value = "";
-            };
-            input.addEventListener("blur", resetCache.fn);
-            return false;
-          }
-          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
-          cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
-          return false;
-        } else {
-          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
-          cache.value = input.value;
-        }
-        const maxlength = state2.maxlength;
-        if (maxlength > 0 && input.value.length > maxlength) {
-          input.value = input.value.slice(0, maxlength);
-          state2.value = input.value;
-          const modelValue = props2.modelValue !== void 0 && props2.modelValue !== null ? props2.modelValue.toString() : "";
-          return modelValue !== input.value;
-        }
+      {
+        return;
       }
     });
     vue.watch(() => state.value, (value) => {
@@ -5485,7 +5391,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": props2.inputmode
+        "inputmode": inputmode.value
       }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
@@ -7500,7 +7406,7 @@ function decodeEntities(htmlString) {
 function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
     return {
-      onClick: (e2) => {
+      onClickCapture: (e2) => {
         if (node.name === "a") {
           triggerItemClick(e2, { href: (node.attrs || {}).href });
         } else {
@@ -9258,7 +9164,7 @@ const ConfirmTypes = ["done", "go", "next", "search", "send"];
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
-  emits: ["confirm", "linechange", ...emit],
+  emits: ["confirm", "change", "linechange", ...emit],
   setup(props2, {
     emit: emit2,
     expose
@@ -9302,10 +9208,17 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         wrapper.style.height = "";
       }
     });
-    function onResize2({
+    function onResize({
       height
     }) {
       heightRef.value = height;
+    }
+    function onChange2(event) {
+      {
+        trigger("change", event, {
+          value: state.value
+        });
+      }
     }
     function confirm(event) {
       trigger("confirm", event, {
@@ -9377,8 +9290,9 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
           }
         },
         "onKeydown": onKeyDownEnter,
-        "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
+        "onKeyup": onKeyUpEnter,
+        "onChange": onChange2
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
       return vue.createVNode("uni-textarea", {
         "ref": rootRef,
         "auto-height": props2.autoHeight
@@ -9392,11 +9306,14 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "ref": lineRef,
         "class": "uni-textarea-line"
       }, [" "], 512), vue.createVNode("div", {
-        "class": "uni-textarea-compute"
+        "class": {
+          "uni-textarea-compute": true,
+          "uni-textarea-compute-auto-height": props2.autoHeight
+        }
       }, [valueCompute.value.map((item) => vue.createVNode("div", null, [item.trim() ? item : "."])), vue.createVNode(ResizeSensor, {
         "initial": true,
-        "onResize": onResize2
-      }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? vue.createVNode("form", {
+        "onResize": onResize
+      }, null, 8, ["initial", "onResize"])], 2), props2.confirmType === "search" ? vue.createVNode("form", {
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
@@ -9404,8 +9321,6 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniViewElement extends UniElement {
-}
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ shared.extend({}, hoverProps),
@@ -9627,7 +9542,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
-    function onResize2() {
+    function onResize() {
       childStatus.forEach((status) => {
         status.cachedSizeUpdated = false;
       });
@@ -9682,7 +9597,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-list-view-content",
         "style": contentStyle.value
       }, [visibleVNode], 4)], 4), vue.createVNode(ResizeSensor, {
-        "onResize": onResize2
+        "onResize": onResize
       }, null, 8, ["onResize"])], 512);
     };
   }
@@ -10028,7 +9943,9 @@ function initHooks(options, instance, publicThis) {
       if (false)
         ;
       invokeHook(publicThis, uniShared.ON_LOAD, query);
-      delete instance.attrs.__pageQuery;
+      if (!instance.vapor) {
+        delete instance.attrs.__pageQuery;
+      }
       const $basePage = true ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
@@ -11092,7 +11009,23 @@ const onWebInvokeAppService = ({ name, arg }) => {
   if (name === "postMessage")
     ;
   else {
-    uni[name](arg);
+    switch (name) {
+      case "navigateTo":
+        uni.navigateTo(arg);
+        break;
+      case "navigateBack":
+        uni.navigateBack(arg);
+        break;
+      case "switchTab":
+        uni.switchTab(arg);
+        break;
+      case "reLaunch":
+        uni.reLaunch(arg);
+        break;
+      case "redirectTo":
+        uni.redirectTo(arg);
+        break;
+    }
   }
 };
 const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
@@ -11815,9 +11748,9 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
         }
         if (getIsBMap()) {
           let pt = new maps.Point(
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[0],
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[1]
           );
           circle = new maps.Circle(pt, circleOptions.radius, circleOptions);
@@ -11996,7 +11929,7 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           //多边形是否可编辑。
           editable: false,
           // 地图实例，即要显示多边形的地图
-          // @ts-ignore
+          // @ts-expect-error
           map,
           // 区域填充色
           fillColor: "",
@@ -13262,110 +13195,6 @@ const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
 const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
 const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
-const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = vue.getCurrentInstance()) => {
-  !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
-};
-const onResize = /* @__PURE__ */ createLifeCycleHook(
-  uniShared.ON_RESIZE,
-  2
-  /* HookFlags.PAGE */
-);
-const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
-class UniMatchMediaElement extends UniViewElement {
-  constructor() {
-    super();
-    this._experssions = [];
-  }
-  static get observedAttributes() {
-    return [
-      "orientation",
-      "width",
-      "minWidth",
-      "maxWidth",
-      "height",
-      "minHeight",
-      "maxHeight"
-    ];
-  }
-  connectedCallback() {
-    this._experssions = this.getExpressions();
-    this.uniPage.vm.$.$waitNativeRender(() => {
-      this.toggleElement(this.isValid({
-        width: this.uniPage.pageBody.width,
-        height: this.uniPage.pageBody.height,
-        orientation: uni.getDeviceInfo().deviceOrientation
-      }));
-    });
-    onResize((res) => {
-      this.toggleElement(this.isValid({
-        orientation: res.deviceOrientation,
-        width: res.size.windowWidth,
-        height: res.size.windowHeight
-      }));
-    }, this.uniPage.vm.$);
-  }
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (this._experssions.length == 0) {
-      return;
-    }
-    const matches = name.match(RE_MQ_FEATURE);
-    if (matches == null || matches.length == 0) {
-      return;
-    }
-    const modifier = matches[1] != null ? matches[1] : "";
-    const feature = matches[2] != null ? matches[2].toLowerCase() : "";
-    const expression = this._experssions.find((expr) => expr.feature == feature && expr.modifier == modifier);
-    if (expression == null) {
-      return;
-    }
-    expression.value = newValue;
-    this.toggleElement(this.isValid({
-      width: this.uniPage.pageBody.width,
-      height: this.uniPage.pageBody.height,
-      orientation: uni.getDeviceInfo().deviceOrientation
-    }));
-  }
-  getExpressions() {
-    const expressions = [];
-    UniMatchMediaElement.observedAttributes.forEach((key) => {
-      const value = this.getAttribute(key);
-      const feature = key.match(RE_MQ_FEATURE);
-      if (value != null && feature != null && feature.length > 0) {
-        expressions.push({
-          modifier: feature[1] != null ? feature[1] : "",
-          feature: feature[2] != null ? feature[2].toLowerCase() : "",
-          value
-        });
-      }
-    });
-    return expressions;
-  }
-  // 显示或者隐藏页面元素
-  toggleElement(show) {
-    this.style.setProperty("display", show ? "flex" : "none");
-  }
-  isValid(values) {
-    return this._experssions.every((expression) => {
-      switch (expression.feature) {
-        case "orientation":
-          return values[expression.feature] === this.getAttribute(expression.feature);
-      }
-      const expressionValue = values[expression.feature];
-      switch (expression.modifier) {
-        case "min":
-          return parseFloat(expression.value) <= expressionValue;
-        case "max":
-          return parseFloat(expression.value) >= expressionValue;
-        default:
-          return parseFloat(expression.value) === expressionValue;
-      }
-    });
-  }
-}
-const MatchMedia = /* @__PURE__ */ (() => {
-  customElements.define("uni-match-media", UniMatchMediaElement);
-  return "uni-match-media";
-})();
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -13680,7 +13509,7 @@ function parseResponseText(responseText, responseType, dataType2) {
   let res = responseText;
   if (responseType === "text" && dataType2 === "json") {
     try {
-      res = UTS.JSON.parse(res);
+      res = UTS.JSON.parse(res) || res;
     } catch (error) {
     }
   }
@@ -14534,8 +14363,18 @@ function useTopWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
-    const height = el.getBoundingClientRect().height;
+    if (!el) {
+      return;
+    }
+    const uniTopWindowStyleEl = el.parentElement;
+    if (!uniTopWindowStyleEl) {
+      return;
+    }
+    const height = uniTopWindowStyleEl.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
   vue.watch(() => windowRef.value, () => {
@@ -14556,8 +14395,18 @@ function useLeftWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniLeftWindowStyleEl) {
+      return;
+    }
+    const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
   vue.watch(() => windowRef.value, () => {
@@ -14578,8 +14427,18 @@ function useRightWindow(layoutState) {
   const windowRef = vue.ref(null);
   function updateWindow() {
     const instance = windowRef.value;
+    if (!instance || !instance.$) {
+      return;
+    }
     const el = uniShared.resolveOwnerEl(instance.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniRightWindowStyleEl) {
+      return;
+    }
+    const width = uniRightWindowStyleEl.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
   vue.watch(() => windowRef.value, () => {
@@ -14674,7 +14533,6 @@ exports.ListView = index$g;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
 exports.Map = index$9;
-exports.MatchMedia = MatchMedia;
 exports.MovableArea = index$s;
 exports.MovableView = index$r;
 exports.Navigator = index$q;

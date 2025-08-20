@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-vue-devtools",
-  "version": "3.0.0-alpha-4070620250731002",
+  "version": "3.0.0-alpha-4080120250820001",
   "description": "uni-vue-devtools",
   "module": "dist/runtime.es.js",
   "files": [
@@ -24,7 +24,7 @@
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
     "detect-port": "^1.5.1",
-    "express": "^4.17.1",
+    "express": "catalog:",
     "open": "^8.4.0",
     "socket.io": "^4.4.0"
   }

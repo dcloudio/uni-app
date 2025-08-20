@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, normalizeClass, toDisplayString, createCommentVNode } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_READY, onCreateVueApp } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -47,7 +47,6 @@ var IDENTIFIER;
   IDENTIFIER2["UTSJSONObject"] = "UTSJSONObject";
   IDENTIFIER2["JSON"] = "JSON";
   IDENTIFIER2["UTS"] = "UTS";
-  IDENTIFIER2["DEFINE_COMPONENT"] = "defineComponent";
   IDENTIFIER2["VUE"] = "vue";
   IDENTIFIER2["GLOBAL_THIS"] = "globalThis";
   IDENTIFIER2["UTS_TYPE"] = "UTSType";
@@ -508,8 +507,25 @@ const UTSJSON = {
       return null;
     }
   },
-  stringify: (value) => {
-    return OriginalJSON.stringify(value);
+  stringify: (value, replacer, space) => {
+    try {
+      if (!replacer) {
+        const visited = /* @__PURE__ */ new Set();
+        replacer = function(_, v2) {
+          if (typeof v2 === "object") {
+            if (visited.has(v2)) {
+              return null;
+            }
+            visited.add(v2);
+          }
+          return v2;
+        };
+      }
+      return OriginalJSON.stringify(value, replacer, space);
+    } catch (error) {
+      console.error(error);
+      return "";
+    }
   }
 };
 function mapGet(map, key) {
@@ -1610,7 +1626,7 @@ function getPageIdByVm(instance2) {
     return getPageProxyId(rootProxy);
   }
 }
-function getCurrentPage() {
+function getCurrentPage$1() {
   const pages = getCurrentPages();
   const len = pages.length;
   if (len) {
@@ -1619,7 +1635,7 @@ function getCurrentPage() {
 }
 function getCurrentPageMeta() {
   var _a, _b;
-  const $page = (_b = (_a = getCurrentPage()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
+  const $page = (_b = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
   if ($page) {
     return $page.meta;
   }
@@ -1633,7 +1649,7 @@ function getCurrentPageId() {
 }
 function getCurrentPageVm() {
   var _a;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
   if (page) {
     return page.$vm;
   }
@@ -1831,12 +1847,12 @@ function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
   }
 }
 const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
-const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1 = "uni:actionSheet";
 function isSystemDialogPage(page) {
   return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
 }
 function isSystemActionSheetDialogPage(page) {
-  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
+  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1);
 }
 function dialogPageTriggerParentHide(dialogPage) {
   dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE);
@@ -1883,10 +1899,33 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
   invokeHook(currentPage.vm, lifeCycle);
 }
 function getSystemDialogPages(parentPage) {
-  var _b;
-  {
-    return (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
+  if (!parentPage)
+    return [];
+  return parentPage.$getSystemDialogPages();
+}
+function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
+  var _a, _b, _c, _d;
+  if (!parentPage)
+    return;
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  if (!currentPage || parentPage !== currentPage)
+    return;
+  const dialogPages = currentPage.getDialogPages();
+  const systemDialogPage = getSystemDialogPages(parentPage);
+  const lastSystemDialogPage = systemDialogPage[systemDialogPage.length - 1];
+  const lastDialogPage = dialogPages[dialogPages.length - 1];
+  let prevDialogPage;
+  if (!lastDialogPage) {
+    prevDialogPage = lastSystemDialogPage;
+  } else if (!lastSystemDialogPage) {
+    prevDialogPage = lastDialogPage;
+  } else {
+    const lastSystemDialogPageId = ((_b = (_a = lastSystemDialogPage.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
+    const lastDialogPageId = ((_d = (_c = lastDialogPage.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
+    prevDialogPage = lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
   }
+  prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
 }
 function initView() {
   useRem();
@@ -2239,15 +2278,15 @@ function initOn() {
   on2(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
 function onResize$2(res) {
-  var _a, _b;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  var _a;
+  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
   invokeHook(page, ON_RESIZE, res);
   {
     const dialogPages = page == null ? void 0 : page.$page.getDialogPages();
     if ((dialogPages == null ? void 0 : dialogPages.length) > 0) {
       invokeHook(dialogPages[dialogPages.length - 1].vm, ON_RESIZE, res);
     }
-    const systemDialogPages = (_b = page == null ? void 0 : page.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
+    const systemDialogPages = page == null ? void 0 : page.$page.$getSystemDialogPages();
     if ((systemDialogPages == null ? void 0 : systemDialogPages.length) > 0) {
       invokeHook(
         systemDialogPages[systemDialogPages.length - 1].vm,
@@ -2260,7 +2299,7 @@ function onResize$2(res) {
 }
 function onAppEnterForeground(enterOptions2) {
   var _a;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
   invokeHook(
     getApp().vm,
     ON_SHOW,
@@ -2275,7 +2314,7 @@ function onAppEnterBackground() {
     ON_HIDE
   );
   invokeHook(
-    (_a = getCurrentPage()) == null ? void 0 : _a.vm,
+    (_a = getCurrentPage$1()) == null ? void 0 : _a.vm,
     ON_HIDE
   );
 }
@@ -6486,6 +6525,7 @@ const OpenDocumentProtocol = {
   fileType: String
 };
 const API_HIDE_KEYBOARD = "hideKeyboard";
+const API_CHOOSE_LOCATION = "chooseLocation";
 const API_GET_LOCATION = "getLocation";
 const coordTypes$1 = ["wgs84", "gcj02"];
 const GetLocationOptions = {
@@ -7111,6 +7151,7 @@ const PageScrollToOptions = {
     duration: 300
   }
 };
+const API_SHOW_ACTION_SHEET = "showActionSheet";
 const API_SHOW_LOADING = "showLoading";
 const ShowLoadingProtocol = {
   title: String,
@@ -7122,6 +7163,7 @@ const ShowLoadingOptions = {
     mask: false
   }
 };
+const API_SHOW_MODAL = "showModal";
 const API_SHOW_TOAST = "showToast";
 const SHOW_TOAST_ICON = [
   "success",
@@ -7924,7 +7966,7 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
 );
 function removeLastPage() {
   var _a;
-  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
   if (!page) {
     return;
   }
@@ -8152,7 +8194,7 @@ const homeDialogPages = [];
 const homeSystemDialogPages = [];
 function getPageElement(page) {
   var _a;
-  const currentPage = getCurrentPage();
+  const currentPage = getCurrentPage$1();
   if (page !== currentPage) {
     const dialogPages = currentPage.getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
@@ -8269,7 +8311,7 @@ class UniPageImpl {
     this.setPageStyle(style);
   }
   getElementById(id2) {
-    const currentPage = getCurrentPage();
+    const currentPage = getCurrentPage$1();
     if (currentPage !== this) {
       return null;
     }
@@ -8283,13 +8325,20 @@ class UniPageImpl {
     return null;
   }
   getHTMLElement() {
-    const currentPage = getCurrentPage();
+    const currentPage = getCurrentPage$1();
     if (currentPage !== this) {
       return null;
     }
     return document.querySelector("uni-page-body");
   }
   getDialogPages() {
+    return [];
+  }
+  $getSystemDialogPages() {
+    var _a, _b, _c;
+    return ((_c = (_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages) == null ? void 0 : _c.value) || [];
+  }
+  __$$getSystemDialogPages() {
     return [];
   }
   getAndroidActivity() {
@@ -8339,7 +8388,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
   getElementById(id2) {
     var _a;
-    const currentPage = getCurrentPage();
+    const currentPage = getCurrentPage$1();
     if (currentPage !== this.getParentPage()) {
       return null;
     }
@@ -8350,7 +8399,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
   getHTMLElement() {
     var _a;
-    const currentPage = getCurrentPage();
+    const currentPage = getCurrentPage$1();
     if (currentPage !== this.getParentPage()) {
       return null;
     }
@@ -8382,12 +8431,8 @@ function initXPage(vm, route, page) {
   };
   const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
-    let targetRoute = (route == null ? void 0 : route.path) || "";
-    if (targetRoute.startsWith("/")) {
-      targetRoute = targetRoute.substring(1);
-    }
     const uniPage = new UniNormalPageImpl({
-      route: targetRoute,
+      route: (route == null ? void 0 : route.path) ? removeLeadingSlash(route == null ? void 0 : route.path) : "",
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
       vm
     });
@@ -8417,6 +8462,15 @@ function initXPage(vm, route, page) {
     vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
+    vm.$basePage.fullPath = vm.$basePage.path;
+    const parentPage = vm.$page.getParentPage();
+    if (parentPage) {
+      if (!parentPage.vm.$dialogPagesNum) {
+        parentPage.vm.$dialogPagesNum = 0;
+      }
+      parentPage.vm.$dialogPagesNum++;
+      vm.$basePage.id = parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum;
+    }
   }
 }
 function useBackgroundColorContent$1(vm) {
@@ -8431,7 +8485,7 @@ function useBackgroundColorContent$1(vm) {
 }
 function handleEscKeyPress(event) {
   if (event.key === "Escape") {
-    const currentPage = getCurrentPage();
+    const currentPage = getCurrentPage$1();
     const dialogPages = currentPage.getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
     if (!dialogPage.$disableEscBack) {
@@ -8451,22 +8505,6 @@ function decrementEscBackPageNum() {
     document.removeEventListener("keydown", handleEscKeyPress);
   }
 }
-function triggerDialogPageOnHide(instance2) {
-  var _a, _b;
-  const parentPage = ((_a = instance2.proxy) == null ? void 0 : _a.$page).getParentPage();
-  const parentPageInstance = parentPage == null ? void 0 : parentPage.vm.$pageLayoutInstance;
-  if (parentPageInstance) {
-    const dialogPages = parentPageInstance.$dialogPages.value;
-    if (dialogPages.length > 1) {
-      const preDialogPage = dialogPages[dialogPages.length - 2];
-      if (preDialogPage.vm) {
-        const { onHide } = preDialogPage.vm.$;
-        onHide && invokeArrayFns(onHide);
-      }
-    }
-  }
-  dialogPageTriggerParentHide((_b = instance2.proxy) == null ? void 0 : _b.$page);
-}
 const closeDialogPage = (options) => {
   var _a, _b;
   const currentPages = getCurrentPages();
@@ -8479,16 +8517,13 @@ const closeDialogPage = (options) => {
     const dialogPage = options == null ? void 0 : options.dialogPage;
     const parentPage = dialogPage.getParentPage();
     if (!isSystemDialogPage(dialogPage)) {
-      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+      if (parentPage && (parentPage.vm.$basePage.meta.isTabBar || currentPages.indexOf(parentPage) !== -1)) {
         const parentDialogPages = parentPage.getDialogPages();
         const index2 = parentDialogPages.indexOf(dialogPage);
-        parentDialogPages.splice(index2, 1);
         invokeHook(dialogPage.vm, ON_UNLOAD);
-        if (index2 > 0 && index2 === parentDialogPages.length) {
-          invokeHook(
-            parentDialogPages[parentDialogPages.length - 1].vm,
-            ON_SHOW
-          );
+        parentDialogPages.splice(index2, 1);
+        if (index2 === parentDialogPages.length) {
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
         }
         dialogPageTriggerParentShow(dialogPage, 1);
         if (!dialogPage.$disableEscBack) {
@@ -8504,6 +8539,9 @@ const closeDialogPage = (options) => {
       if (index2 > -1) {
         invokeHook(parentSystemDialogPages[index2].vm, ON_UNLOAD);
         parentSystemDialogPages.splice(index2, 1);
+        if (index2 === parentSystemDialogPages.length) {
+          dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
+        }
         dialogPageTriggerParentShow(dialogPage, 1);
       } else {
         triggerFailCallback$1(options, "dialogPage is not a valid page");
@@ -8610,10 +8648,10 @@ function removePage(routeKey, removeRouteCaches = true) {
     pageVm.$page.vm = null;
   }
 }
-let id = /* @__PURE__ */ getStateId();
+let id$1 = /* @__PURE__ */ getStateId();
 function createPageState(type, __id__) {
   return {
-    __id__: __id__ || ++id,
+    __id__: __id__ || ++id$1,
     __type__: type
   };
 }
@@ -9419,6 +9457,9 @@ let $uniApp;
     getAndroidApplication() {
       return null;
     }
+    getHarmonyAbility() {
+      return null;
+    }
   }
   $uniApp = new UniAppImpl();
 }
@@ -9512,7 +9553,7 @@ function setupPage(comp) {
       watch(
         [instance2.onReachBottom, instance2.onPageScroll],
         () => {
-          const currentPage = getCurrentPage().vm;
+          const currentPage = getCurrentPage$1().vm;
           if (instance2.proxy === currentPage) {
             initPageScrollListener(instance2, pageMeta);
           }
@@ -9523,20 +9564,20 @@ function setupPage(comp) {
         onPageShow(instance2, pageMeta);
       });
       onMounted(() => {
-        var _a;
+        var _a, _b;
         {
           if (instance2.subTree.el) {
             instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
           }
           const pageInstance = getPageInstanceByChild(instance2);
           if (isDialogPageInstance(pageInstance)) {
-            triggerDialogPageOnHide(instance2);
             useBackgroundColorContent$1(instance2.proxy);
           }
+          dialogPageTriggerParentHide((_b = instance2.proxy) == null ? void 0 : _b.$page);
         }
         onPageReady(instance2);
-        const { onReady } = instance2;
-        onReady && invokeArrayFns$1(onReady);
+        const { onReady: onReady2 } = instance2;
+        onReady2 && invokeArrayFns$1(onReady2);
         invokeOnTabItemTap(route);
       });
       onBeforeActivate(() => {
@@ -10445,7 +10486,7 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("uni-page-refresh", null, [
     createElementVNode("div", {
       style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
@@ -10475,7 +10516,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2]]);
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -10885,6 +10926,12 @@ function createDialogPageVNode(normalDialogPages, systemDialogPages) {
       type: SYSTEM_DIALOG_TAG
     }))
   ];
+  dialogPages.sort((a2, b) => {
+    var _a, _b, _c, _d;
+    const aId = ((_b = (_a = a2.page.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
+    const bId = ((_d = (_c = b.page.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
+    return aId - bId;
+  });
   return openBlock(true), createElementBlock(
     Fragment,
     null,
@@ -12712,7 +12759,7 @@ const props$o = /* @__PURE__ */ extend({}, props$p, {
     default: ""
   }
 });
-const resolveDigitDecimalPointDeleteContentBackward = once(() => {
+once(() => {
   {
     const ua2 = navigator.userAgent;
     let osVersion = "";
@@ -12728,34 +12775,6 @@ const resolveDigitDecimalPointDeleteContentBackward = once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
-function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
-  if (cache.value) {
-    if (event.data === ".") {
-      if (cache.value.slice(-1) === ".") {
-        state2.value = input.value = cache.value = cache.value.slice(0, -1);
-        return false;
-      }
-      if (cache.value && !cache.value.includes(".")) {
-        cache.value += ".";
-        if (resetCache) {
-          resetCache.fn = () => {
-            state2.value = input.value = cache.value = cache.value.slice(0, -1);
-            input.removeEventListener("blur", resetCache.fn);
-          };
-          input.addEventListener("blur", resetCache.fn);
-        }
-        return false;
-      }
-    } else if (event.inputType === "deleteContentBackward") {
-      if (resolveDigitDecimalPointDeleteContentBackward()) {
-        if (cache.value.slice(-2, -1) === ".") {
-          cache.value = state2.value = input.value = cache.value.slice(0, -2);
-          return true;
-        }
-      }
-    }
-  }
-}
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
@@ -12818,10 +12837,19 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
+    const inputmode = computed(() => {
+      if (props2.inputmode) {
+        return props2.inputmode;
+      }
+      {
+        const inputmodeMap = {
+          number: "numeric",
+          digit: "decimal"
+        };
+        return Object.values(INPUT_MODES).includes(props2.type) ? props2.type : inputmodeMap[props2.type];
+      }
+    });
     let cache = useCache(props2, type);
-    let resetCache = {
-      fn: null
-    };
     const rootRef = ref(null);
     const {
       fieldRef,
@@ -12830,40 +12858,8 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
       fixDisabledColor,
       trigger
     } = useField(props2, rootRef, emit2, (event, state22) => {
-      const input = event.target;
-      if (type.value === "number") {
-        if (resetCache.fn) {
-          input.removeEventListener("blur", resetCache.fn);
-          resetCache.fn = null;
-        }
-        if (input.validity && !input.validity.valid) {
-          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
-            cache.value = "-";
-            state22.value = "";
-            resetCache.fn = () => {
-              cache.value = input.value = "";
-            };
-            input.addEventListener("blur", resetCache.fn);
-            return false;
-          }
-          const res = resolveDigitDecimalPoint(event, cache, state22, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
-          cache.value = state22.value = input.value = cache.value === "-" ? "" : cache.value;
-          return false;
-        } else {
-          const res = resolveDigitDecimalPoint(event, cache, state22, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
-          cache.value = input.value;
-        }
-        const maxlength = state22.maxlength;
-        if (maxlength > 0 && input.value.length > maxlength) {
-          input.value = input.value.slice(0, maxlength);
-          state22.value = input.value;
-          const modelValue = props2.modelValue !== void 0 && props2.modelValue !== null ? props2.modelValue.toString() : "";
-          return modelValue !== input.value;
-        }
+      {
+        return;
       }
     });
     watch(() => state2.value, (value) => {
@@ -12937,7 +12933,7 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
         } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": props2.inputmode
+        "inputmode": inputmode.value
       }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return createVNode("uni-input", {
         "ref": rootRef
@@ -16212,7 +16208,7 @@ function decodeEntities(htmlString) {
 function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
     return {
-      onClick: (e2) => {
+      onClickCapture: (e2) => {
         if (node.name === "a") {
           triggerItemClick(e2, { href: (node.attrs || {}).href });
         } else {
@@ -18444,7 +18440,7 @@ class UniTextareaElement extends UniElement {
 const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$f,
-  emits: ["confirm", "linechange", ...emit],
+  emits: ["confirm", "change", "linechange", ...emit],
   rootElement: {
     name: "uni-textarea",
     class: UniTextareaElement
@@ -18496,6 +18492,13 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
       height
     }) {
       heightRef.value = height;
+    }
+    function onChange2(event) {
+      {
+        trigger("change", event, {
+          value: state2.value
+        });
+      }
     }
     function confirm(event) {
       trigger("confirm", event, {
@@ -18582,8 +18585,9 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
           }
         },
         "onKeydown": onKeyDownEnter,
-        "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
+        "onKeyup": onKeyUpEnter,
+        "onChange": onChange2
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
       return createVNode("uni-textarea", {
         "ref": rootRef,
         "auto-height": props2.autoHeight
@@ -18597,11 +18601,14 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
         "ref": lineRef,
         "class": "uni-textarea-line"
       }, [" "], 512), createVNode("div", {
-        "class": "uni-textarea-compute"
+        "class": {
+          "uni-textarea-compute": true,
+          "uni-textarea-compute-auto-height": props2.autoHeight
+        }
       }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
         "initial": true,
         "onResize": onResize2
-      }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
+      }, null, 8, ["initial", "onResize"])], 2), props2.confirmType === "search" ? createVNode("form", {
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
@@ -19530,7 +19537,9 @@ function initHooks(options, instance2, publicThis) {
       if (false)
         ;
       invokeHook(publicThis, ON_LOAD, query);
-      delete instance2.attrs.__pageQuery;
+      if (!instance2.vapor) {
+        delete instance2.attrs.__pageQuery;
+      }
       const $basePage = true ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
@@ -20892,7 +20901,23 @@ const onWebInvokeAppService = ({ name, arg }) => {
   if (name === "postMessage")
     ;
   else {
-    uni[name](arg);
+    switch (name) {
+      case "navigateTo":
+        uni.navigateTo(arg);
+        break;
+      case "navigateBack":
+        uni.navigateBack(arg);
+        break;
+      case "switchTab":
+        uni.switchTab(arg);
+        break;
+      case "reLaunch":
+        uni.reLaunch(arg);
+        break;
+      case "redirectTo":
+        uni.redirectTo(arg);
+        break;
+    }
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
@@ -22013,9 +22038,9 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
         }
         if (getIsBMap()) {
           let pt = new maps2.Point(
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[0],
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[1]
           );
           circle = new maps2.Circle(pt, circleOptions.radius, circleOptions);
@@ -23844,7 +23869,7 @@ function parseResponseText(responseText, responseType, dataType2) {
   let res = responseText;
   if (responseType === "text" && dataType2 === "json") {
     try {
-      res = UTS.JSON.parse(res);
+      res = UTS.JSON.parse(res) || res;
     } catch (error) {
     }
   }
@@ -24007,6 +24032,9 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
     }
     var uploadTask = new UploadTask();
     if (!isArray(files2) || !files2.length) {
+      if (!filePath) {
+        reject("file error");
+      }
       files2 = [
         {
           name,
@@ -24654,7 +24682,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
       canBack = false;
     }
     {
-      const currentPage = getCurrentPage();
+      const currentPage = getCurrentPage$1();
       if (currentPage) {
         const dialogPages = currentPage.getDialogPages();
         const dialogPage = dialogPages[dialogPages.length - 1];
@@ -25797,8 +25825,18 @@ function useTopWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
-    const height = el.getBoundingClientRect().height;
+    if (!el) {
+      return;
+    }
+    const uniTopWindowStyleEl = el.parentElement;
+    if (!uniTopWindowStyleEl) {
+      return;
+    }
+    const height = uniTopWindowStyleEl.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
   watch(() => windowRef.value, () => {
@@ -25819,8 +25857,18 @@ function useLeftWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniLeftWindowStyleEl) {
+      return;
+    }
+    const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
   watch(() => windowRef.value, () => {
@@ -25841,8 +25889,18 @@ function useRightWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniRightWindowStyleEl) {
+      return;
+    }
+    const width = uniRightWindowStyleEl.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
   watch(() => windowRef.value, () => {
@@ -26032,6 +26090,37 @@ const getElementById = /* @__PURE__ */ defineSyncApi(
   (id2) => {
     const uniPageBody = document.querySelector("uni-page-body");
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
+  }
+);
+const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
+  "getFacialRecognitionMetaInfo",
+  () => {
+    if (Object.getPrototypeOf(window) !== Window.prototype) {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象原型被篡改，可能存在劫持"
+      );
+      return "";
+    }
+    if (window.window !== window || window.self !== window) {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象属性引用异常，可能被劫持"
+      );
+      return "";
+    }
+    if (Object.prototype.toString.call(window) !== "[object Window]" && Object.prototype.toString.call(window) !== "[object DOMWindow]") {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象类型标识异常，可能被劫持"
+      );
+      return "";
+    }
+    if (isFunction(window.getMetaInfo)) {
+      return window.getMetaInfo();
+    } else {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象缺少getMetaInfo方法，请参考文档引用：https://doc.dcloud.net.cn/uniCloud/frv/dev.html#window-get-meta-info"
+      );
+      return "";
+    }
   }
 );
 const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
@@ -26349,7 +26438,7 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           //多边形是否可编辑。
           editable: false,
           // 地图实例，即要显示多边形的地图
-          // @ts-ignore
+          // @ts-expect-error
           map,
           // 区域填充色
           fillColor: "",
@@ -26664,6 +26753,9 @@ function useMap(props2, rootRef, emit2) {
     } else {
       const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
         boundsChangedEvent.remove();
+        emitBoundsReady();
+      });
+      event.addListener(map2, "complete", () => {
         emitBoundsReady();
       });
       event.addListener(map2, "click", () => {
@@ -27756,6 +27848,21 @@ const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
   !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
+const onLoad = /* @__PURE__ */ createLifeCycleHook(
+  ON_LOAD,
+  2
+  /* HookFlags.PAGE */
+);
+const onReady = /* @__PURE__ */ createLifeCycleHook(
+  ON_READY,
+  2
+  /* HookFlags.PAGE */
+);
+const onUnload = /* @__PURE__ */ createLifeCycleHook(
+  ON_UNLOAD,
+  2
+  /* HookFlags.PAGE */
+);
 const onResize = /* @__PURE__ */ createLifeCycleHook(
   ON_RESIZE,
   2
@@ -27796,7 +27903,7 @@ class UniMatchMediaElement extends UniViewElement {
     }, this.uniPage.vm.$);
   }
   attributeChangedCallback(name, oldValue, newValue) {
-    if (this._experssions.length == 0) {
+    if (this._experssions.length == 0 || newValue == null) {
       return;
     }
     const matches2 = name.match(RE_MQ_FEATURE);
@@ -27862,8 +27969,18 @@ const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
   }
 });
+function closePreSystemDialogPage(dialogPages, type) {
+  const targetSystemDialogPages = dialogPages.filter(
+    (page) => page.route.startsWith(type)
+  );
+  if (targetSystemDialogPages.length > 1) {
+    setTimeout(() => {
+      dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
+    }, 150);
+  }
+}
 const openDialogPage = (options) => {
-  var _a, _b, _c, _d;
+  var _a, _b, _c;
   if (!options.url) {
     triggerFailCallback(options, "url is required");
     return null;
@@ -27877,10 +27994,10 @@ const openDialogPage = (options) => {
     return null;
   }
   const targetRoute = __uniRoutes.find((route) => {
-    return path.indexOf(route.meta.route) !== -1;
+    return route.path === path || `/${route.meta.route}` === path;
   });
   const dialogPage = new UniDialogPageImpl({
-    route: path.startsWith("/") ? path.substring(1) : path,
+    route: removeLeadingSlash(path),
     options: new UTSJSONObject(query),
     $component: targetRoute.component,
     getParentPage: () => null,
@@ -27902,6 +28019,7 @@ const openDialogPage = (options) => {
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1];
       }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
       dialogPage.getParentPage = () => parentPage;
       parentPage.getDialogPages().push(dialogPage);
     }
@@ -27909,31 +28027,30 @@ const openDialogPage = (options) => {
       incrementEscBackPageNum();
     }
   } else {
+    let targetSystemDialogPages = [];
     if (!currentPages.length) {
-      homeSystemDialogPages.push(dialogPage);
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(homeSystemDialogPages);
-      }
+      targetSystemDialogPages = homeSystemDialogPages;
     } else {
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1];
       }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE);
       dialogPage.getParentPage = () => parentPage;
-      (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value.push(
-        dialogPage
+      targetSystemDialogPages = (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+    }
+    targetSystemDialogPages.push(dialogPage);
+    if (isSystemActionSheetDialogPage(dialogPage)) {
+      closePreSystemDialogPage(
+        targetSystemDialogPages,
+        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1
       );
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(
-          (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value
-        );
-      }
     }
   }
   const successOptions = {
     errMsg: "openDialogPage:ok"
   };
-  (_c = options.success) == null ? void 0 : _c.call(options, successOptions);
-  (_d = options.complete) == null ? void 0 : _d.call(options, successOptions);
+  (_b = options.success) == null ? void 0 : _b.call(options, successOptions);
+  (_c = options.complete) == null ? void 0 : _c.call(options, successOptions);
   return dialogPage;
 };
 function triggerFailCallback(options, errMsg) {
@@ -27946,163 +28063,182 @@ function triggerFailCallback(options, errMsg) {
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-function closePreActionSheet(dialogPages) {
-  const actionSheets = dialogPages.filter(
-    (page) => isSystemActionSheetDialogPage(page)
-  );
-  if (actionSheets.length > 1) {
-    setTimeout(() => {
-      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
-    }, 100);
-  }
-}
-const _sfc_main$2 = {
-  data() {
-    return {
-      show: false,
-      i18nCancelText: {
-        en: "Cancel",
-        es: "Cancelar",
-        fr: "Annuler",
-        "zh-Hans": "取消",
-        "zh-Hant": "取消"
-      },
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      title: null,
-      itemList: [],
-      optionCancelText: null,
-      titleColor: null,
-      itemColor: null,
-      cancelColor: null,
-      backgroundColor: null,
-      language: "zh-Hans",
-      theme: "light",
-      isLandscape: false,
-      windowWidth: 0,
-      windowHeight: 0,
-      popover: {},
-      bottomNavigationHeight: 0,
-      appTheme: null,
-      hostTheme: null,
-      menuItemClicked: false,
-      cancelButtonClicked: false
+const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+  __name: "actionSheet",
+  setup(__props) {
+    const pageInstance = getCurrentInstance().proxy;
+    const uniPageInstance = pageInstance.$page;
+    const show = ref(false);
+    const i18nCancelText = reactive({
+      en: "Cancel",
+      es: "Cancelar",
+      fr: "Annuler",
+      zhHans: "取消",
+      zhHant: "取消"
+    });
+    const readyEventName = ref("");
+    const optionsEventName = ref("");
+    const successEventName = ref("");
+    const failEventName = ref("");
+    const title = ref(null);
+    const itemList = ref([]);
+    const optionCancelText = ref(null);
+    const titleColor = ref(null);
+    const itemColor = ref(null);
+    const cancelColor = ref(null);
+    const backgroundColor = ref(null);
+    const language = ref("zhHans");
+    const theme = ref("light");
+    const isLandscape2 = ref(false);
+    const bottomNavigationHeight = ref(0);
+    const appTheme = ref(null);
+    const hostTheme = ref(null);
+    const menuItemClicked = ref(false);
+    const cancelButtonClicked = ref(false);
+    const windowWidth = ref(0);
+    const windowHeight = ref(0);
+    const popover = reactive({});
+    const fixSize = () => {
+      const systemInfo = uni.getSystemInfoSync();
+      windowWidth.value = systemInfo.windowWidth;
+      windowHeight.value = systemInfo.windowHeight + (systemInfo.windowTop || 0);
     };
-  },
-  onLoad(options) {
-    this.readyEventName = options["readyEventName"];
-    this.optionsEventName = options["optionsEventName"];
-    this.successEventName = options["successEventName"];
-    this.failEventName = options["failEventName"];
-    uni.$on(this.optionsEventName, (data) => {
-      this.itemList = data["itemList"];
-      if (data["title"] != null) {
-        this.title = data["title"];
+    const closeActionSheet = () => {
+      show.value = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: uniPageInstance
+        });
+      }, 250);
+    };
+    const handleMenuItemClick = (tapIndex) => {
+      menuItemClicked.value = true;
+      closeActionSheet();
+      uni.$emit(successEventName.value, tapIndex);
+    };
+    const handleCancel = () => {
+      cancelButtonClicked.value = true;
+      closeActionSheet();
+      uni.$emit(failEventName.value, {});
+    };
+    const handleThemeChange = () => {
+      if (hostTheme.value != null) {
+        theme.value = hostTheme.value;
+      } else if (appTheme.value != null) {
+        theme.value = appTheme.value;
       }
-      if (data["cancelText"] != null) {
-        this.optionCancelText = data["cancelText"];
+    };
+    onLoad((options) => {
+      readyEventName.value = options["readyEventName"];
+      optionsEventName.value = options["optionsEventName"];
+      successEventName.value = options["successEventName"];
+      failEventName.value = options["failEventName"];
+      uni.$on(optionsEventName.value, (data) => {
+        itemList.value = data["itemList"];
+        if (data["title"] != null) {
+          title.value = data["title"];
+        }
+        if (data["cancelText"] != null) {
+          optionCancelText.value = data["cancelText"];
+        }
+        if (data["titleColor"] != null) {
+          titleColor.value = data["titleColor"];
+        }
+        if (data["itemColor"] != null) {
+          itemColor.value = data["itemColor"];
+        }
+        if (data["cancelColor"] != null) {
+          cancelColor.value = data["cancelColor"];
+        }
+        if (data["backgroundColor"] != null) {
+          backgroundColor.value = data["backgroundColor"];
+        }
+        if (data["popover"] != null) {
+          popover.value = data["popover"];
+        }
+      });
+      uni.$emit(readyEventName.value, {});
+      const systemInfo = uni.getSystemInfoSync();
+      const osLanguage = systemInfo.osLanguage;
+      const appLanguage = systemInfo.appLanguage;
+      if (appLanguage != null) {
+        language.value = appLanguage;
+      } else if (osLanguage != null) {
+        language.value = osLanguage;
       }
-      if (data["titleColor"] != null) {
-        this.titleColor = data["titleColor"];
+      const systemAppTheme = systemInfo.appTheme;
+      if (systemAppTheme != null && systemAppTheme != "auto") {
+        appTheme.value = systemAppTheme;
+        handleThemeChange();
       }
-      if (data["itemColor"] != null) {
-        this.itemColor = data["itemColor"];
+      const systemOsTheme = systemInfo.osTheme;
+      if (systemOsTheme != null && appTheme.value == null) {
+        appTheme.value = systemOsTheme;
+        handleThemeChange();
       }
-      if (data["cancelColor"] != null) {
-        this.cancelColor = data["cancelColor"];
+      const systemHostTheme = systemInfo.hostTheme;
+      if (systemHostTheme != null) {
+        hostTheme.value = systemHostTheme;
+        handleThemeChange();
       }
-      if (data["backgroundColor"] != null) {
-        this.backgroundColor = data["backgroundColor"];
-      }
-      if (data["popover"] != null) {
-        this.popover = data["popover"];
-      }
+      uni.onHostThemeChange((res) => {
+        hostTheme.value = res.theme;
+        handleThemeChange();
+      });
+      windowWidth.value = systemInfo.windowWidth;
+      windowHeight.value = systemInfo.windowHeight;
+      window.addEventListener("resize", fixSize);
+      const locale = uni.getLocale();
+      language.value = locale;
+      uni.onLocaleChange((res) => {
+        if (res.locale) {
+          language.value = res.locale;
+        }
+      });
+      isLandscape2.value = systemInfo.deviceOrientation == "landscape";
     });
-    uni.$emit(this.readyEventName, {});
-    const systemInfo = uni.getSystemInfoSync();
-    const osLanguage = systemInfo.osLanguage;
-    const appLanguage = systemInfo.appLanguage;
-    if (appLanguage != null) {
-      this.language = appLanguage;
-    } else if (osLanguage != null) {
-      this.language = osLanguage;
-    }
-    const appTheme = systemInfo.appTheme;
-    if (appTheme != null && appTheme != "auto") {
-      this.appTheme = appTheme;
-      this.handleThemeChange();
-    }
-    const osTheme = systemInfo.osTheme;
-    if (osTheme != null && this.appTheme == null) {
-      this.appTheme = osTheme;
-      this.handleThemeChange();
-    }
-    const hostTheme = systemInfo.hostTheme;
-    if (hostTheme != null) {
-      this.hostTheme = hostTheme;
-      this.handleThemeChange();
-    }
-    uni.onHostThemeChange((res) => {
-      this.hostTheme = res.theme;
-      this.handleThemeChange();
+    const isWidescreen = computed(() => {
+      return windowHeight.value >= 500 && windowWidth.value >= 500;
     });
-    this.windowHeight = systemInfo.windowHeight;
-    this.windowWidth = systemInfo.windowWidth;
-    window.addEventListener("resize", this.fixSize);
-    const locale = uni.getLocale();
-    this.language = locale;
-    uni.onLocaleChange((res) => {
-      if (res.locale) {
-        this.language = res.locale;
-      }
-    });
-    this.isLandscape = systemInfo.deviceOrientation == "landscape";
-  },
-  computed: {
-    isWidescreen() {
-      return this.windowHeight >= 500 && this.windowWidth >= 500;
-    },
-    containerStyle() {
-      if (Object.keys(this.popover).length == 0) {
+    const containerStyle = computed(() => {
+      if (Object.keys(popover).length == 0) {
         return {};
       }
       const res = {
         transform: "none !important"
       };
-      const top = this.popover.top;
-      const left = this.popover.left;
-      const width = this.popover.width;
-      const height = this.popover.height;
+      const top = popover.top;
+      const left = popover.left;
+      const width = popover.width;
+      const height = popover.height;
       const center = left + width / 2;
       const contentLeft = Math.max(0, center - 300 / 2);
       res["left"] = `${contentLeft}px`;
-      const vcl = this.windowHeight / 2;
+      const vcl = windowHeight.value / 2;
       if (top + height - vcl > vcl - top) {
         res["top"] = "auto";
-        res["bottom"] = `${this.windowHeight - top + 6}px`;
+        res["bottom"] = `${windowHeight.value - top + 6}px`;
       } else {
         res["top"] = `${top + height + 6}px`;
       }
       return res;
-    },
-    triangleStyle() {
-      if (Object.keys(this.popover).length == 0) {
+    });
+    const triangleStyle = computed(() => {
+      if (Object.keys(popover).length == 0) {
         return {};
       }
       const res = {};
-      const borderColor = this.backgroundColor || (this.theme == "dark" ? "#2C2C2B" : "#fcfcfd");
-      const top = this.popover.top;
-      const left = this.popover.left;
-      const width = this.popover.width;
-      const height = this.popover.height;
+      const borderColor = backgroundColor.value || (theme.value == "dark" ? "#2C2C2B" : "#fcfcfd");
+      const top = popover.top;
+      const left = popover.left;
+      const width = popover.width;
+      const height = popover.height;
       const center = left + width / 2;
       const contentLeft = Math.max(0, center - 300 / 2);
       let triangleLeft = Math.max(12, center - contentLeft);
       triangleLeft = Math.min(300 - 12, triangleLeft);
       res["left"] = `${triangleLeft}px`;
-      const vcl = this.windowHeight / 2;
+      const vcl = windowHeight.value / 2;
       if (top + height - vcl > vcl - top) {
         res["bottom"] = "-6px";
         res["border-width"] = "6px 6px 0 6px";
@@ -28113,205 +28249,174 @@ const _sfc_main$2 = {
         res["border-color"] = `transparent transparent ${borderColor} transparent`;
       }
       return res;
-    },
-    cancelText() {
-      if (this.optionCancelText != null) {
-        const res = this.optionCancelText;
+    });
+    const cancelText = computed(() => {
+      if (optionCancelText.value != null) {
+        const res = optionCancelText.value;
         return res;
       }
-      if (this.language.startsWith("en")) {
-        return this.i18nCancelText["en"];
+      if (language.value.startsWith("en")) {
+        return i18nCancelText["en"];
       }
-      if (this.language.startsWith("es")) {
-        return this.i18nCancelText["es"];
+      if (language.value.startsWith("es")) {
+        return i18nCancelText["es"];
       }
-      if (this.language.startsWith("fr")) {
-        return this.i18nCancelText["fr"];
+      if (language.value.startsWith("fr")) {
+        return i18nCancelText["fr"];
       }
-      if (this.language.startsWith("zh-Hans")) {
-        return this.i18nCancelText["zh-Hans"];
+      if (language.value.startsWith("zhHans")) {
+        return i18nCancelText["zhHans"];
       }
-      if (this.language.startsWith("zh-Hant")) {
-        return this.i18nCancelText["zh-Hant"];
+      if (language.value.startsWith("zhHant")) {
+        return i18nCancelText["zhHant"];
       }
       return "取消";
-    },
-    computedBackgroundColor() {
-      return this.backgroundColor !== null ? this.backgroundColor : this.theme == "dark" ? "#2C2C2B" : "#ffffff";
-    }
-  },
-  onReady() {
-    this.bottomNavigationHeight = this.$page.safeAreaInsets.bottom;
-    setTimeout(() => {
-      this.show = true;
-    }, 10);
-  },
-  onResize() {
-    const systemInfo = uni.getSystemInfoSync();
-    this.isLandscape = systemInfo.deviceOrientation == "landscape";
-  },
-  onUnload() {
-    if (!this.menuItemClicked && !this.cancelButtonClicked) {
-      uni.$emit(this.failEventName, {});
-    }
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-    window.removeEventListener("resize", this.fixSize);
-  },
-  methods: {
-    fixSize() {
-      const {
-        windowWidth,
-        windowHeight,
-        windowTop
-      } = uni.getSystemInfoSync();
-      this.windowWidth = windowWidth;
-      this.windowHeight = windowHeight + (windowTop || 0);
-    },
-    closeActionSheet() {
-      this.show = false;
+    });
+    const computedBackgroundColor = computed(() => {
+      return backgroundColor.value !== null ? backgroundColor.value : theme.value == "dark" ? "#2C2C2B" : "#ffffff";
+    });
+    const hoverClass = computed(() => {
+      return theme.value == "dark" ? "uni-action-sheet_dialog__hover__dark__mode" : "uni-action-sheet_dialog__hover";
+    });
+    onReady(() => {
+      bottomNavigationHeight.value = uniPageInstance.safeAreaInsets.bottom;
       setTimeout(() => {
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        });
-      }, 250);
-    },
-    handleMenuItemClick(tapIndex) {
-      this.menuItemClicked = true;
-      this.closeActionSheet();
-      uni.$emit(this.successEventName, tapIndex);
-    },
-    handleCancel() {
-      this.cancelButtonClicked = true;
-      this.closeActionSheet();
-      uni.$emit(this.failEventName, {});
-    },
-    handleThemeChange() {
-      if (this.hostTheme != null) {
-        this.theme = this.hostTheme;
-      } else if (this.appTheme != null) {
-        this.theme = this.appTheme;
+        show.value = true;
+      }, 10);
+    });
+    onResize((_) => {
+      const systemInfo = uni.getSystemInfoSync();
+      isLandscape2.value = systemInfo.deviceOrientation == "landscape";
+    });
+    onUnload(() => {
+      if (!menuItemClicked.value && !cancelButtonClicked.value) {
+        uni.$emit(failEventName.value, {});
       }
-    }
-  }
-};
-const _style_0$2 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_view = __syscom_3;
-  const _component_text = __syscom_0$1;
-  return openBlock(), createBlock(_component_view, null, {
-    default: withCtx(() => [
-      createVNode(_component_view, {
-        class: normalizeClass(["uni-action-sheet_dialog__mask", { "uni-action-sheet_dialog__mask__show": $data.show }]),
-        onClick: $options.handleCancel
-      }, null, 8, ["class", "onClick"]),
-      createVNode(_component_view, {
-        style: normalizeStyle($options.isWidescreen ? $options.containerStyle : {}),
-        class: normalizeClass(["uni-action-sheet_dialog__container", {
-          "uni-action-sheet_dialog__show": $data.show,
-          "uni-action-sheet_dark__mode": $data.theme == "dark",
-          "uni-action-sheet_landscape__mode": $data.isLandscape
-        }])
-      }, {
+      uni.$off(optionsEventName.value, null);
+      uni.$off(readyEventName.value, null);
+      uni.$off(successEventName.value, null);
+      uni.$off(failEventName.value, null);
+      window.removeEventListener("resize", fixSize);
+    });
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_3;
+      const _component_text = __syscom_0$1;
+      return openBlock(), createBlock(_component_view, null, {
         default: withCtx(() => [
           createVNode(_component_view, {
-            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
-            class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
+            class: normalizeClass(["uni-action-sheet_dialog__mask", { "uni-action-sheet_dialog__mask__show": show.value }]),
+            onClick: handleCancel
+          }, null, 8, ["class"]),
+          createVNode(_component_view, {
+            style: normalizeStyle(isWidescreen.value ? containerStyle.value : {}),
+            class: normalizeClass(["uni-action-sheet_dialog__container", {
+              "uni-action-sheet_dialog__show": show.value,
+              "uni-action-sheet_dark__mode": theme.value == "dark",
+              "uni-action-sheet_landscape__mode": isLandscape2.value
+            }])
           }, {
             default: withCtx(() => [
-              $data.title ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
-                createVNode(_component_view, {
-                  class: normalizeClass(["uni-action-sheet_dialog__title border-b", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
-                }, {
-                  default: withCtx(() => [
-                    createVNode(_component_text, {
-                      style: normalizeStyle($data.titleColor != null ? { color: $data.titleColor } : {}),
-                      class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+              createVNode(_component_view, {
+                style: normalizeStyle(backgroundColor.value != null ? { backgroundColor: backgroundColor.value } : {}),
+                class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value }])
+              }, {
+                default: withCtx(() => [
+                  title.value ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
+                    createVNode(_component_view, {
+                      class: normalizeClass(["uni-action-sheet_dialog__title border-b", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value }])
                     }, {
                       default: withCtx(() => [
-                        createTextVNode(toDisplayString($data.title), 1)
+                        createVNode(_component_text, {
+                          style: normalizeStyle(titleColor.value != null ? { color: titleColor.value } : {}),
+                          class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
+                        }, {
+                          default: withCtx(() => [
+                            createTextVNode(toDisplayString(title.value), 1)
+                          ]),
+                          _: 1
+                        }, 8, ["style", "class"])
                       ]),
                       _: 1
-                    }, 8, ["style", "class"])
-                  ]),
-                  _: 1
-                }, 8, ["class"]),
-                createVNode(_component_view, {
-                  class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
-                }, null, 8, ["class"])
-              ], 64)) : createCommentVNode("", true),
-              createVNode(_component_view, {
-                class: normalizeClass(["uni-action-sheet_dialog__cell__container", { "uni-action-sheet_landscape__mode": $data.isLandscape }])
-              }, {
-                default: withCtx(() => [
-                  (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
-                    return openBlock(), createElementBlock(Fragment, { key: index2 }, [
-                      index2 !== 0 ? (openBlock(), createBlock(_component_view, {
-                        key: 0,
-                        class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
-                      }, null, 8, ["class"])) : createCommentVNode("", true),
-                      createVNode(_component_view, {
-                        class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape, "border-t": index2 !== 0 }]),
-                        onClick: ($event) => $options.handleMenuItemClick(index2)
-                      }, {
-                        default: withCtx(() => [
-                          createVNode(_component_text, {
-                            style: normalizeStyle($data.itemColor != null ? { color: $data.itemColor } : {}),
-                            class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                    }, 8, ["class"]),
+                    createVNode(_component_view, {
+                      class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
+                    }, null, 8, ["class"])
+                  ], 64)) : createCommentVNode("", true),
+                  createVNode(_component_view, {
+                    class: normalizeClass(["uni-action-sheet_dialog__cell__container", { "uni-action-sheet_landscape__mode": isLandscape2.value }])
+                  }, {
+                    default: withCtx(() => [
+                      (openBlock(true), createElementBlock(Fragment, null, renderList(itemList.value, (item, index2) => {
+                        return openBlock(), createElementBlock(Fragment, { key: index2 }, [
+                          index2 !== 0 ? (openBlock(), createBlock(_component_view, {
+                            key: 0,
+                            class: normalizeClass(["divider", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
+                          }, null, 8, ["class"])) : createCommentVNode("", true),
+                          createVNode(_component_view, {
+                            class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value, "border-t": index2 !== 0 }]),
+                            "hover-class": hoverClass.value,
+                            onClick: ($event) => handleMenuItemClick(index2)
                           }, {
                             default: withCtx(() => [
-                              createTextVNode(toDisplayString(item), 1)
+                              createVNode(_component_text, {
+                                style: normalizeStyle(itemColor.value != null ? { color: itemColor.value } : {}),
+                                class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
+                              }, {
+                                default: withCtx(() => [
+                                  createTextVNode(toDisplayString(item), 1)
+                                ]),
+                                _: 2
+                              }, 1032, ["style", "class"])
                             ]),
                             _: 2
-                          }, 1032, ["style", "class"])
-                        ]),
-                        _: 2
-                      }, 1032, ["class", "onClick"])
-                    ], 64);
-                  }), 128))
+                          }, 1032, ["class", "hover-class", "onClick"])
+                        ], 64);
+                      }), 128))
+                    ]),
+                    _: 1
+                  }, 8, ["class"])
                 ]),
                 _: 1
-              }, 8, ["class"])
-            ]),
-            _: 1
-          }, 8, ["style", "class"]),
-          createVNode(_component_view, {
-            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
-            class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
-            onClick: $options.handleCancel
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_text, {
-                style: normalizeStyle($data.cancelColor != null ? { color: $data.cancelColor } : {}),
-                class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+              }, 8, ["style", "class"]),
+              createVNode(_component_view, {
+                style: normalizeStyle(backgroundColor.value != null ? { backgroundColor: backgroundColor.value } : {}),
+                class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_dark__mode": theme.value == "dark", "uni-action-sheet_landscape__mode": isLandscape2.value }]),
+                "hover-class": hoverClass.value,
+                onClick: handleCancel
               }, {
                 default: withCtx(() => [
-                  createTextVNode(toDisplayString($options.cancelText), 1)
+                  createVNode(_component_text, {
+                    style: normalizeStyle(cancelColor.value != null ? { color: cancelColor.value } : {}),
+                    class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": theme.value == "dark" }])
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString(cancelText.value), 1)
+                    ]),
+                    _: 1
+                  }, 8, ["style", "class"])
                 ]),
                 _: 1
-              }, 8, ["style", "class"])
+              }, 8, ["style", "class", "hover-class"]),
+              !isLandscape2.value ? (openBlock(), createBlock(_component_view, {
+                key: 0,
+                style: normalizeStyle({ height: `${bottomNavigationHeight.value}px`, backgroundColor: computedBackgroundColor.value })
+              }, null, 8, ["style"])) : createCommentVNode("", true),
+              isWidescreen.value && Object.keys(popover).length > 0 ? (openBlock(), createBlock(_component_view, {
+                key: 1,
+                style: normalizeStyle(triangleStyle.value),
+                class: "uni-action-sheet_dialog__triangle"
+              }, null, 8, ["style"])) : createCommentVNode("", true)
             ]),
             _: 1
-          }, 8, ["style", "class", "onClick"]),
-          !$data.isLandscape ? (openBlock(), createBlock(_component_view, {
-            key: 0,
-            style: normalizeStyle({ height: `${$data.bottomNavigationHeight}px`, backgroundColor: $options.computedBackgroundColor })
-          }, null, 8, ["style"])) : createCommentVNode("", true),
-          $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createBlock(_component_view, {
-            key: 1,
-            style: normalizeStyle($options.triangleStyle),
-            class: "uni-action-sheet_dialog__triangle"
-          }, null, 8, ["style"])) : createCommentVNode("", true)
+          }, 8, ["style", "class"])
         ]),
         _: 1
-      }, 8, ["style", "class"])
-    ]),
-    _: 1
-  });
-}
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$2]]]);
+      });
+    };
+  }
+});
+const _style_0$2 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    transition-property: transform;\n    transition-duration: 0.15s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.uni-action-sheet_dialog__hover__dark__mode {\n		background-color: #1c1c1c;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n.divider.uni-action-sheet_dark__mode {\n    background-color: #2F3131;\n}\n\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$2]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {
     this.errMsg = errMsg;
@@ -28325,8 +28430,7 @@ class ShowActionSheetFailImpl extends UniError {
     this.errCode = errCode;
   }
 }
-const showActionSheet = (options) => {
-  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
+const showActionSheet$1 = (options) => {
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_action_sheet_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
@@ -28334,7 +28438,7 @@ const showActionSheet = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options);
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
   });
   uni.$on(successEventName, (index2) => {
     var _a, _b;
@@ -28361,19 +28465,47 @@ const showActionSheet = (options) => {
     }
   });
 };
-const hideActionSheet = () => {
-  var _a;
-  const currentPage = getCurrentPage();
-  if (!currentPage)
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
+const hideActionSheet$1 = () => {
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  if (currentPage == null)
     return;
-  const systemDialogPages = (_a = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
-  for (let i = 0; i < systemDialogPages.length; i++) {
-    if (isSystemActionSheetDialogPage(systemDialogPages[i])) {
-      systemDialogPages.splice(i, 1);
-      return;
+  const systemDialogPages = currentPage.$getSystemDialogPages();
+  systemDialogPages.forEach((page) => {
+    if (page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH)) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
     }
-  }
+  });
 };
+const registerActionSheetOnce = /* @__PURE__ */ once(() => {
+  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
+});
+const hideActionSheet = () => {
+  registerActionSheetOnce();
+  hideActionSheet$1();
+};
+const showActionSheet = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_ACTION_SHEET,
+  (args, { resolve, reject }) => {
+    registerActionSheetOnce();
+    showActionSheet$1(
+      extend(
+        {
+          success: (res) => {
+            resolve(res);
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        },
+        args
+      )
+    );
+  }
+);
 const defaultPoi = {
   latitude: 39.908823,
   longitude: 116.39747
@@ -29572,7 +29704,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   }, 8, ["class"]);
 }
-const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
 class ChooseLocationFailImpl extends UniError {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
@@ -29580,8 +29712,7 @@ class ChooseLocationFailImpl extends UniError {
     this.errMsg = errMsg;
   }
 }
-const chooseLocation = (options) => {
-  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
+const chooseLocation$1 = (options) => {
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_choose_location_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
@@ -29614,6 +29745,16 @@ const chooseLocation = (options) => {
     }
   });
 };
+const registerChooseLocationOnce = /* @__PURE__ */ once(() => {
+  registerSystemRoute("uni:chooseLocation", UniChooseLocationPage);
+});
+const chooseLocation = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_LOCATION,
+  (args, { resolve, reject }) => {
+    registerChooseLocationOnce();
+    chooseLocation$1(args);
+  }
+);
 const _sfc_main = {
   data() {
     return {
@@ -29996,9 +30137,8 @@ class UniHideModalFailImpl extends UniError {
     this.errCode = errCode;
   }
 }
-const showModal = (options) => {
+const showModal$1 = (options) => {
   var _a, _b;
-  registerSystemRoute("uni:uniModal", UniModalPage);
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_modal_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
@@ -30046,7 +30186,7 @@ const showModal = (options) => {
     return null;
   }
 };
-const hideModal = function(options) {
+const hideModal$1 = function(options) {
   var _a, _b, _c, _d, _e;
   const currentPage = getCurrentPage();
   if (!currentPage) {
@@ -30092,6 +30232,78 @@ function notifyClosedDialog(perPage) {
 function isSystemModalDialogPage(page) {
   return page.route.startsWith("uni:uniModal");
 }
+const API_HIDE_MODAL = "hideModal";
+const registerModalOnce = /* @__PURE__ */ once(() => {
+  registerSystemRoute("uni:uniModal", UniModalPage);
+});
+const hideModal = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_MODAL,
+  (args, { resolve, reject }) => {
+    registerModalOnce();
+    hideModal$1(args);
+  }
+);
+const showModal = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_MODAL,
+  (args, { resolve, reject }) => {
+    registerModalOnce();
+    showModal$1(args);
+  }
+);
+const API_CREATE_WORKER = "createWorker";
+const MESSAGE_EVENT = "__UNI_WEB_WORKER_MESSAGE";
+const ERROR_EVENT = "__UNI_WEB_WORKER_ERROR";
+let id = 0;
+const createWorker = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_WORKER,
+  (url) => {
+    const MESSAGE_EVENT_NAME = `${MESSAGE_EVENT}_${id}`;
+    const ERROR_EVENT_NAME = `${ERROR_EVENT}_${id}`;
+    id++;
+    const threadWorker = new Worker(
+      getRealPath(url.startsWith("/") ? url : "/" + url),
+      {
+        type: "module"
+      }
+    );
+    threadWorker.onmessage = (event) => {
+      $emit(MESSAGE_EVENT_NAME, event.data);
+    };
+    threadWorker.onmessageerror = (error) => {
+      $emit(ERROR_EVENT_NAME, error.data);
+    };
+    threadWorker.onerror = (error) => {
+      $emit(
+        ERROR_EVENT_NAME,
+        `${error.message} in ${error.filename}(${error.lineno}:${error.colno})`
+      );
+    };
+    class WorkerImpl {
+      constructor() {
+        this._threadWorker = threadWorker;
+      }
+      onMessage(listener2) {
+        $on(MESSAGE_EVENT_NAME, listener2);
+      }
+      onError(listener2) {
+        $on(ERROR_EVENT_NAME, listener2);
+      }
+      postMessage(message, options = null) {
+        var _a;
+        this._threadWorker.postMessage(
+          message,
+          (_a = options == null ? void 0 : options.transfer) != null ? _a : void 0
+        );
+      }
+      terminate() {
+        $off(MESSAGE_EVENT_NAME);
+        $off(ERROR_EVENT_NAME);
+        this._threadWorker.terminate();
+      }
+    }
+    return new WorkerImpl();
+  }
+);
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -30129,6 +30341,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   createMediaQueryObserver,
   createSelectorQuery,
   createVideoContext,
+  createWorker,
   cssBackdropFilter,
   cssConstant,
   cssEnv,
@@ -30139,6 +30352,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getDeviceInfo,
   getElementById,
   getEnterOptionsSync,
+  getFacialRecognitionMetaInfo,
   getFileInfo,
   getImageInfo,
   getLaunchOptionsSync,
@@ -30446,6 +30660,7 @@ export {
   createMediaQueryObserver,
   createSelectorQuery,
   createVideoContext,
+  createWorker,
   cssBackdropFilter,
   cssConstant,
   cssEnv,
@@ -30458,6 +30673,7 @@ export {
   getDeviceInfo,
   getElementById,
   getEnterOptionsSync,
+  getFacialRecognitionMetaInfo,
   getFileInfo,
   getImageInfo,
   getLaunchOptionsSync,

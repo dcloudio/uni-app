@@ -162,7 +162,7 @@ describe('uvue-style', () => {
     expect(code).toMatchSnapshot()
   })
   test('css var', async () => {
-    const { code } = await parse(
+    const { code, messages } = await parse(
       `
         .content {
             top: var(--window-top);
@@ -170,23 +170,51 @@ describe('uvue-style', () => {
             height: var(--status-bar-height);
         }
         `,
-      { type: 'uvue', map: true, ts: true }
-    )
-    expect(code).toMatchSnapshot()
-  })
-  test('css calc', async () => {
-    const { code, messages } = await parse(
-      `
-        .content {
-            top: calc(var(--window-top) + 10px);
-            bottom: calc(10px - var(--window-bottom));
-            height: calc(var(--status-bar-height) * 2);
-        }
-        `,
       { type: 'uvue', platform: 'app-android', map: true, ts: true }
     )
     expect(messages).toHaveLength(0)
     expect(code).toMatchSnapshot()
+
+    const res2 = await parse(
+      ` .test {
+          --border-top-color: red;
+          border-top-color: var(--border-top-color);
+        }
+        `,
+      { type: 'uvue', platform: 'app-ios' }
+    )
+    expect(res2.messages).toHaveLength(0)
+    expect(JSON.parse(res2.code)).toEqual({
+      test: {
+        '': {
+          '--border-top-color': 'red',
+          borderTopColor: 'var(--border-top-color)',
+        },
+      },
+    })
+  })
+  test('css calc 不支持', async () => {
+    const { code, messages } = await parse(
+      `.content {
+            top: calc(var(--window-top) + 10px);
+            bottom: calc(10px - var(--window-bottom));
+            height: calc(var(--status-bar-height) * 2);
+        }`,
+      { type: 'uvue', platform: 'app-android', map: true, ts: true }
+    )
+    expect(messages).toHaveLength(3)
+    expect(code).toMatchSnapshot()
+
+    const res2 = await parse(
+      `.content {
+          width: calc(100% - 20px);
+          top: calc(var(--window-top) + 10px);
+        }
+        `,
+      { type: 'uvue', platform: 'app-android', logLevel: 'WARNING' }
+    )
+    expect(res2.messages).toHaveLength(2)
+    expect(res2.code).toBe('{}')
   })
 
   test('support env', async () => {
@@ -201,6 +229,7 @@ describe('uvue-style', () => {
   }`,
       { type: 'uvue', platform: 'app-android' }
     )
+    expect(messages).toHaveLength(0)
     expect(JSON.parse(code)).toEqual({
       top: {
         '': {
@@ -210,7 +239,16 @@ describe('uvue-style', () => {
         },
       },
     })
-    expect(messages).toHaveLength(0)
+
+    const res2 = await parse(
+      `.top {
+      padding-bottom: calc(100px - env(safe-area-inset-bottom));
+    }`,
+      { type: 'uvue', platform: 'app-android' }
+    )
+
+    expect(res2.messages).toHaveLength(1)
+    expect(res2.code).toBe('{}')
   })
 
   test('support css text-shadow', async () => {
@@ -247,6 +285,59 @@ describe('uvue-style', () => {
       },
     })
     expect(messages.length).toBe(0)
+  })
+
+  test('flex', async () => {
+    const { code, messages } = await parse(
+      `
+        .content {
+            flex: 1;
+        }
+        `,
+      { type: 'uvue', platform: 'app-android' }
+    )
+    expect(JSON.parse(code)).toEqual({
+      content: {
+        '': {
+          flexBasis: '0%',
+          flexGrow: 1,
+          flexShrink: 1,
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
+
+    const res2 = await parse(
+      `
+        .content {
+            flex: -1;
+        }
+        .content2 {
+            flex: 100px;
+        }
+        .content3 {
+            flex: auto;
+        }
+        `,
+      { type: 'uvue', platform: 'app-android' }
+    )
+    expect(res2.messages).toHaveLength(0)
+    expect(JSON.parse(res2.code)).toEqual({
+      content2: {
+        '': {
+          flexBasis: '100px',
+          flexGrow: 1,
+          flexShrink: 1,
+        },
+      },
+      content3: {
+        '': {
+          flexBasis: 'auto',
+          flexGrow: 1,
+          flexShrink: 1,
+        },
+      },
+    })
   })
 })
 

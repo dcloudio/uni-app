@@ -3,7 +3,7 @@ import {
   createNavigatorOnClick,
   navigatorProps,
 } from '../../components/navigator'
-import { NVueComponentStyles, useHoverClass } from '../utils'
+import { type NVueComponentStyles, useHoverClass } from '../utils'
 
 const navigatorStyles: NVueComponentStyles = [
   {

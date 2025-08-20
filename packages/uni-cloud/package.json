@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cloud",
-  "version": "3.0.0-alpha-4070620250731002",
+  "version": "3.0.0-alpha-4080120250820001",
   "description": "@dcloudio/uni-cloud",
   "main": "dist/uni-cloud.cjs.js",
   "module": "dist/uni-cloud.es.js",
@@ -23,7 +23,7 @@
     "@dcloudio/uni-cli-shared": "workspace:*",
     "@dcloudio/uni-i18n": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@vue/shared": "3.4.21",
-    "fast-glob": "^3.2.11"
+    "@vue/shared": "catalog:",
+    "fast-glob": "catalog:"
   }
 }

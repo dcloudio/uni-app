@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app",
-  "version": "3.0.0-alpha-4070620250731002",
+  "version": "3.0.0-alpha-4080120250820001",
   "description": "@dcloudio/uni-app",
   "main": "./dist/uni-app.cjs.js",
   "module": "./dist/uni-app.es.js",
@@ -32,9 +32,12 @@
     "@dcloudio/uni-push": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
     "@dcloudio/uni-stat": "workspace:*",
-    "@vue/shared": "3.4.21"
+    "@vue/shared": "catalog:"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-uts-v1": "workspace:*"
   },
   "peerDependencies": {
-    "@dcloudio/types": "^3.4.14"
+    "@dcloudio/types": "catalog:"
   }
 }

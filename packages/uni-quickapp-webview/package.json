@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-quickapp-webview",
-  "version": "3.0.0-alpha-4070620250731002",
+  "version": "3.0.0-alpha-4080120250820001",
   "description": "uni-app quickapp-webview",
   "main": "dist/index.js",
   "files": [
@@ -33,6 +33,6 @@
     "@dcloudio/uni-mp-vite": "workspace:*",
     "@dcloudio/uni-mp-vue": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@vue/shared": "3.4.21"
+    "@vue/shared": "catalog:"
   }
 }

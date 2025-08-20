@@ -73,7 +73,7 @@ declare module '@vue/runtime-core' {
     $updateScopedSlots: () => void
     $scopedSlotsData?: {
       path: string
-      index: number
+      index: number | string
       data: Record<string, unknown>
     }[]
     // h5 | app
@@ -123,4 +123,21 @@ declare module '@vue/runtime-core' {
     tagName: string,
     elementClass: unknown
   ): void
+
+  interface AppConfig {
+    uniX: {
+      beforeSetupPage: (props: any, ctx: any) => void
+      initNativePage: (vm: ComponentPublicInstance) => void
+      initFontFace: (vm: ComponentPublicInstance) => void
+    }
+  }
+  function createMountPage(
+    appContext: AppContext
+  ): (
+    pageComponent: VuePageComponent,
+    pageProps: Record<string, any>,
+    pageContainer: UniNode
+  ) => ComponentPublicInstance
+  function unmountPage(pageInstance: ComponentPublicInstance): void
+  function getCurrentGenericInstance(): ComponentInternalInstance
 }

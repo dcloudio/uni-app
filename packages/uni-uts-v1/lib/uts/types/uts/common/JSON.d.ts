@@ -34,6 +34,33 @@ interface JSON {
      JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的 JavaScript 值或对象。提供可选的 reviver 函数用以在返回之前对所得到的对象执行变换 (操作)。
      @param text 要被解析成 JavaScript 值的字符串
      @param reviver [可选] 转换器，如果传入该参数 (函数)，可以用来修改解析生成的原始值，调用时机在 parse 函数返回之前。
+     @param_uniPlatform reviver {
+       "app": {
+         "android": {
+           "osVer": "x",
+           "uniVer": "x",
+           "unixVer": "x",
+           "uniUtsPlugin": "x",
+           "unixUtsPlugin": "x"
+         },
+         "ios": {
+           "osVer": "x",
+           "uniVer": "x",
+           "uniUtsPlugin": "x",
+           "unixVer": "x",
+           "unixUtsPlugin": "x"
+         },
+         "harmony": {
+           "osVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       }
+     }
      @param ignoreError [ignoreError=false] 是否要忽略，解析错误时引发的控制台报错，默认为false
      @param_uniPlatform ignoreError {
        "app": {
@@ -52,14 +79,14 @@ interface JSON {
            "unixUtsPlugin": "x"
          },
          "harmony": {
-           "osVer": "x",
-           "uniVer": "x",
-           "unixVer": "x"
+           "osVer": "√",
+           "uniVer": "√",
+           "unixVer": "√"
          }
        },
        "web": {
-         "uniVer": "x",
-         "unixVer": "x"
+         "uniVer": "√",
+         "unixVer": "√"
        }
      }
      @return 返回一个any 或者 null

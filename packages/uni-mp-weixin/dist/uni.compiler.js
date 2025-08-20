@@ -152,7 +152,13 @@ const customElements = [
     'sticky-section',
     'store-product',
     'store-home',
+    'store-gift',
+    'store-coupon',
     'keyboard-accessory',
+    'open-data-list',
+    'open-data-item',
+    'selection',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const nodeTransforms = [
     uniCliShared.transformRef,
@@ -203,6 +209,7 @@ function getMiniProgramOptions(isX) {
             // iOS 平台需要延迟
             input: [{ name: 'bind', arg: ['type'] }],
             textarea: [{ name: 'on', arg: ['input'] }],
+            'movable-view': [{ name: 'bind', arg: ['direction'] }],
         },
         component: {
             ':host': true,
@@ -257,6 +264,7 @@ const options = {
         subpackages: true,
         plugins: true,
         usingComponents: true,
+        workers: true,
     },
     project: {
         filename: projectConfigFilename,

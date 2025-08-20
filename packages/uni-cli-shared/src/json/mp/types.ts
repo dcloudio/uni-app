@@ -43,6 +43,7 @@ interface SubPackage {
   root: string
   pages: string[]
   independent?: boolean
+  plugins?: Plugins
 }
 
 interface TabBarItem {
@@ -73,6 +74,9 @@ interface Plugins {
   [name: string]: {
     version: string
     provider: string
+    export?: string
+    // 支付宝小程序插件运行模式
+    lazy?: boolean
   }
 }
 
@@ -113,7 +117,12 @@ export interface AppJson {
   debug?: boolean
   functionalPages?: boolean
   subPackages?: SubPackage[]
-  workers?: string
+  workers?:
+    | string
+    | {
+        path: string
+        isSubpackage: boolean
+      }
   requiredBackgroundModes?: string[] // audio,location
   plugins?: Plugins
   preloadRule?: PreloadRule

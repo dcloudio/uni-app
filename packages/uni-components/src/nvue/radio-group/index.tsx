@@ -1,23 +1,23 @@
 import {
   defineComponent,
   inject,
-  provide,
-  ref,
   onBeforeUnmount,
   onMounted,
+  provide,
+  ref,
 } from 'vue'
 import {
-  uniRadioGroupKey,
-  UniRadioGroupFieldCtx,
-  UniRadioGroupCtx,
-  RadioGroupProps,
+  type RadioGroupProps,
+  type UniRadioGroupCtx,
+  type UniRadioGroupFieldCtx,
   radioGroupProps,
+  uniRadioGroupKey,
 } from '../../components/radio-group'
-import { UniFormCtx, uniFormKey } from '../../components/form'
+import { type UniFormCtx, uniFormKey } from '../../components/form'
 import {
-  CustomEventTrigger,
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  EmitEvent,
 } from '../../helpers/useNVueEvent'
 
 export default defineComponent({

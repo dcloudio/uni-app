@@ -27,8 +27,7 @@ function onResize(res: UniApp.WindowResizeResult) {
     if (dialogPages?.length > 0) {
       invokeHook(dialogPages[dialogPages.length - 1].vm, ON_RESIZE, res)
     }
-    const systemDialogPages =
-      page?.$pageLayoutInstance?.$systemDialogPages.value
+    const systemDialogPages = page?.$page.$getSystemDialogPages()
     if (systemDialogPages?.length > 0) {
       invokeHook(
         systemDialogPages[systemDialogPages.length - 1].vm,

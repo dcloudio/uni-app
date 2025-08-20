@@ -178,13 +178,19 @@ function findPageRoute(path: string) {
 function createTab(
   path: string,
   query: Record<string, string>,
-  callback?: () => void
-): Page {
-  registerPage({ url: path, path, query, openType: 'switchTab' })
-  callback?.()
-  const page = (getCurrentPage() as unknown as UniPage).vm
-  tabBar0!.appendItem(page!.$basePage.id.toString())
-  return page
+  callback: (page: Page) => void
+) {
+  registerPage({
+    url: path,
+    path,
+    query,
+    openType: 'switchTab',
+    onRegistered() {
+      const page = (getCurrentPage() as unknown as UniPage).vm
+      tabBar0!.appendItem(page.$basePage.id.toString())
+      callback(page)
+    },
+  })
 }
 
 function findTabPage(path: string): Page | null {
@@ -230,16 +236,19 @@ function getTabPage(
   path: string,
   query: Record<string, string> = {},
   rebuild: boolean = false,
-  callback?: () => void
-): TabPageInfo {
-  let page = findTabPage(path)
+  callback: (tabPageInfo: TabPageInfo) => void
+) {
+  const page = findTabPage(path)
   let isFirst = false
   if (page === null || rebuild) {
     isFirst = true
-    page = createTab(path, query, callback)
-    tabs.set(path, page!)
+    createTab(path, query, (page) => {
+      tabs.set(path, page)
+      callback(new TabPageInfo(page, isFirst))
+    })
+  } else {
+    callback(new TabPageInfo(page, isFirst))
   }
-  return new TabPageInfo(page, isFirst)
 }
 
 /**
@@ -263,24 +272,25 @@ export function switchSelect(
   // invokeArrayFns(beforeRouteHooks, type)
   invokeBeforeRouteHooks(type)
 
-  const pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback)
-  const page = pageInfo.page
-  if (currentPage !== page) {
-    shouldShow = true
-    if (currentPage && isTabPage(currentPage)) {
-      invokeHook(currentPage!, ON_HIDE)
+  getTabPage(getRealPath(path, true), query, rebuild, (pageInfo) => {
+    callback?.()
+    const page = pageInfo.page
+    if (currentPage !== page) {
+      shouldShow = true
+      if (currentPage && isTabPage(currentPage)) {
+        invokeHook(currentPage!, ON_HIDE)
+      }
     }
-  }
-  tabBar0!.switchSelect(page!.$basePage.id.toString(), selected)
+    tabBar0!.switchSelect(page.$basePage.id.toString(), selected)
+    // TODO use page show status
+    if (shouldShow) {
+      // resetNavigatorLock()
+      invokeHook(page, ON_SHOW)
+    }
+    selected0 = selected
 
-  // TODO use page show status
-  if (shouldShow) {
-    // resetNavigatorLock()
-    invokeHook(page!, ON_SHOW)
-  }
-  selected0 = selected
-
-  // 执行afterRoute
-  // invokeArrayFns(afterRouteHooks, type)
-  invokeAfterRouteHooks(type)
+    // 执行afterRoute
+    // invokeArrayFns(afterRouteHooks, type)
+    invokeAfterRouteHooks(type)
+  })
 }

@@ -2,6 +2,7 @@ import * as path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
+  getWorkers,
   isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
@@ -10,9 +11,11 @@ import {
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniStatsPlugin,
   uniUTSAppUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUniModulesExtApiPlugin,
+  uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import * as vueCompilerDom from '@vue/compiler-dom'
@@ -25,7 +28,9 @@ import { replaceExtApiPagePaths } from '../js/extApiPages'
 
 export function init() {
   return [
-    ...(isNormalCompileTarget() ? [uniDecryptUniModulesPlugin()] : []),
+    ...(isNormalCompileTarget()
+      ? [uniWorkersPlugin(), uniDecryptUniModulesPlugin()]
+      : []),
     uniHBuilderXConsolePlugin('uni.__f__'),
     // 非 isNormalCompileTarget 时（ext-api模式），仍需要编译 uni_modules 获取 js code
     uniUTSAppUniModulesPlugin({
@@ -49,6 +54,7 @@ export function init() {
         ]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({
+      platform: 'app-harmony',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
@@ -57,9 +63,16 @@ export function init() {
         vueCompilerDom,
         uniCliShared,
       },
+      workers: {
+        extname: '.ets',
+        resolve: () => {
+          return getWorkers()
+        },
+      },
     }),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),
+    ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
   ]
 }

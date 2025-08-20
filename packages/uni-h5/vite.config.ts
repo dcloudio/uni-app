@@ -93,9 +93,7 @@ if (FORMAT === 'es') {
           '__IMPORT_META_ENV_BASE_URL__',
           'import.meta.env.BASE_URL'
         )
-        if (!isNewX) {
-          genApiJson(esBundle.code)
-        }
+        genApiJson(esBundle.code)
       }
     },
   })
@@ -153,11 +151,11 @@ export default defineConfig({
   plugins: [
     ...(isNewX
       ? [
-        uniUVueTypeScriptPlugin(),
-        prePlugin,
-        uniExtApi(),
-        uts2ts({ target: 'uni-h5', platform: 'web' }),
-      ]
+          uniUVueTypeScriptPlugin(),
+          prePlugin,
+          uniExtApi(),
+          uts2ts({ target: 'uni-h5', platform: 'web' }),
+        ]
       : []),
     vue({
       customElement: isX,
@@ -249,13 +247,8 @@ function uniExtApi() {
           'defineAsyncApi',
         ],
         // TODO 整理autoImport规则或改为全局变量，目前下面的部分仅服务于match-media
-        '@dcloudio/uni-components': [
-          'UniViewElementImpl',
-          'UniViewElement',
-        ],
-        '@dcloudio/uni-app': [
-          'onResize'
-        ]
+        '@dcloudio/uni-components': ['UniViewElementImpl', 'UniViewElement'],
+        '@dcloudio/uni-app': ['onResize'],
       },
     ],
   })

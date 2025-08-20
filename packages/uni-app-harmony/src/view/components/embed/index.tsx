@@ -69,7 +69,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
     props.methods.forEach((method) => {
       exposed[method] = (...args: any[]) => {
-        invokeHarmonyChannel('invokeNativeEmbed', [elId, method, args])
+        return invokeHarmonyChannel('invokeNativeEmbed', [elId, method, args])
       }
     })
     expose(exposed)

@@ -1,20 +1,20 @@
 import {
-  defineComponent,
-  Ref,
-  ref,
-  reactive,
-  watch,
+  type ExtractPropTypes,
+  type Ref,
   computed,
+  defineComponent,
   onMounted,
-  ExtractPropTypes,
+  reactive,
+  ref,
+  watch,
 } from 'vue'
 import {
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  EmitEvent,
-  CustomEventTrigger,
 } from '../../helpers/useNVueEvent'
 import { getComponentSize } from '../helpers'
-import { NVueComponentStyles, createNVueTextVNode } from '../utils'
+import { type NVueComponentStyles, createNVueTextVNode } from '../utils'
 import { PROGRESS_VALUES, progressProps } from '../../components/progress'
 
 const progressStyles: NVueComponentStyles = [

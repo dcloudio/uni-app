@@ -1,8 +1,27 @@
-import { normalizeIdentifier, normalizePagePath } from '../../../utils'
+import {
+  normalizeIdentifier,
+  normalizePagePath,
+  removeExt,
+} from '../../../utils'
+
+export function staticImportPageCode(pagesJson: Record<string, any>) {
+  const importPagesCode: string[] = []
+  pagesJson.pages.forEach((page: UniApp.PagesJsonPageOptions) => {
+    const pagePath = page.path
+    const pagePathWithExtname = normalizePagePath(pagePath, 'app')
+    if (pagePathWithExtname) {
+      importPagesCode.push(
+        `import '../assets/${removeExt(pagePathWithExtname)}'`
+      )
+    }
+  })
+  return importPagesCode.join('\n')
+}
 
 export function definePageCode(
   pagesJson: Record<string, any>,
-  platform: UniApp.PLATFORM = 'app'
+  platform: UniApp.PLATFORM = 'app',
+  dynamicImport: boolean = false
 ) {
   const importPagesCode: string[] = []
   const definePagesCode: string[] = []
@@ -14,7 +33,7 @@ export function definePageCode(
     const pageIdentifier = normalizeIdentifier(pagePath)
     const pagePathWithExtname = normalizePagePath(pagePath, platform)
     if (pagePathWithExtname) {
-      if (process.env.UNI_APP_CODE_SPLITING) {
+      if (dynamicImport) {
         // 拆分页面
         importPagesCode.push(
           `const ${pageIdentifier} = ()=>import('./${pagePathWithExtname}')`

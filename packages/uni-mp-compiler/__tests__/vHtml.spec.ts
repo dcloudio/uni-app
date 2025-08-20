@@ -26,4 +26,13 @@ describe('compiler: transform v-html', () => {
 }`
     )
   })
+  test('with children nodes', () => {
+    assert(
+      `<view v-html="html">hello</view>`,
+      `<view><rich-text nodes="{{a}}"/></view>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.html }
+}`
+    )
+  })
 })

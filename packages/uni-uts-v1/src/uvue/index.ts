@@ -38,11 +38,12 @@ import {
 } from '../utils'
 import {
   type KotlinManifestCache,
-  hbuilderFormatter,
+  hbuilderKotlinCompileErrorFormatter,
 } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
 
 const DEFAULT_IMPORTS = [
+  'kotlin.properties.Delegates',
   'io.dcloud.uts.Map',
   'io.dcloud.uts.Set',
   'io.dcloud.uts.UTSAndroid',
@@ -138,6 +139,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     hbxVersion,
     input,
     output: {
+      errorFormat: 'json',
       isX: true,
       isSingleThread: true,
       isApp: true,
@@ -203,7 +205,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   }
 
   if (result.error) {
-    throw parseUTSSyntaxError(result.error, inputDir)
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
   }
   if (isProd) {
     const autoImportUniCloud = shouldAutoImportUniCloud()
@@ -400,7 +402,7 @@ async function runKotlinDev(
           kotlinSrcOutDir,
           resolveUniAppXSourceMapPath(kotlinRootOutDir),
           waiting,
-          hbuilderFormatter
+          hbuilderKotlinCompileErrorFormatter
         ),
       }
       result.kotlinc = true

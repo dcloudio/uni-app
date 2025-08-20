@@ -115,7 +115,7 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
     assert(
       `<view/>`,
       `<view/>`,
-      `(_ctx, _cache) => {
+      `(_ctx, _cache) => { "raw js"
   const __returned__ = {}
   return __returned__
 }`,

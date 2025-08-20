@@ -121,6 +121,10 @@ export * from './x/service/api/uni'
 export * from './x/view/components/customElements'
 //#endif
 
+//#if _X_ && !_NODE_JS_
+export * from './x/view/components/customElements'
+//#endif
+
 //#if !_X_
 export * from './service/api'
 // @ts-expect-error

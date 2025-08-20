@@ -1,13 +1,13 @@
-import { ExtractPropTypes, reactive, watch } from 'vue'
-import { createSvgIconVNode, ICON_PATH_BACK } from '@dcloudio/uni-core'
+import { type ExtractPropTypes, reactive, watch } from 'vue'
+import { ICON_PATH_BACK, createSvgIconVNode } from '@dcloudio/uni-core'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 import { usePreventScroll } from '../../../../helpers/usePreventScroll'
 import {
-  Point,
   ICON_PATH_LOCTAION,
   ICON_PATH_ORIGIN,
   ICON_PATH_TARGET,
   MapType,
+  type Point,
   getMapInfo,
 } from '../../../../helpers/location'
 import { Map } from '../../../../view/components'

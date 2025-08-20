@@ -215,6 +215,7 @@ const customElements = [
     'join-group-chat',
     'subscribe-message',
     'mpaas-component',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const options = {
     cdn: 2,
@@ -230,7 +231,12 @@ const options = {
             targets: [
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
-                    src: ['customize-tab-bar', 'ext.json', 'preload.json'],
+                    src: [
+                        'customize-tab-bar',
+                        'ext.json',
+                        'preload.json',
+                        'sitemap.json',
+                    ],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },
@@ -242,6 +248,7 @@ const options = {
     json: {
         windowOptionsMap: {
             defaultTitle: 'navigationBarTitleText',
+            navigationBarFrontColor: 'navigationBarTextStyle',
             pullRefresh: 'enablePullDownRefresh',
             allowsBounceVertical: 'allowsBounceVertical',
             titleBarColor: 'navigationBarBackgroundColor',

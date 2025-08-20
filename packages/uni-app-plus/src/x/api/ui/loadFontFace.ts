@@ -10,32 +10,6 @@ import type {
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { getNativeApp } from '../../framework/app/app'
 
-// export abstract class LoadFontFaceError extends UniError {
-//   abstract override errCode: LoadFontFaceErrCode
-// }
-
-// class LoadFontFaceErrorImpl extends LoadFontFaceError {
-//   override errCode: LoadFontFaceErrCode
-//   constructor(
-//     errMsg: string,
-//     errCode: LoadFontFaceErrCode = 4,
-//     data: any | null = null,
-//     cause: Error | null = null,
-//     errSubject: string = ''
-//   ) {
-//     super()
-//     this.errMsg = errMsg
-//     this.errCode = errCode
-//     this.data = data
-//     this.cause = cause
-//     this.errSubject = errSubject
-//   }
-// }
-
-// 支持 data:font/ttf 格式 base64 字体
-const SOURCE_REG =
-  /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font).+)/
-
 function removeUrlWrap(source: string): string {
   // 考虑 url(xxx) format(xxx) 的情况，去掉 format(xxx)
   if (source.startsWith('url(')) {
@@ -48,22 +22,6 @@ function removeUrlWrap(source: string): string {
     source = source.substring(1, source.length - 1)
   }
   return source
-}
-
-function checkOptionSource(
-  options: LoadFontFaceOptions,
-  res: AsyncApiRes<UniNamespace.LoadFontFaceOptions>
-): boolean {
-  options.source = removeUrlWrap(options.source as string)
-  if (!SOURCE_REG.test(options.source as string)) {
-    // const err = new LoadFontFaceErrorImpl(
-    //   'loadFontFace:fail, source is invalid.',
-    //   101
-    // )
-    res.reject('loadFontFace:fail, source is invalid.', 101)
-    return false
-  }
-  return true
 }
 
 function getLoadFontFaceOptions(
@@ -95,12 +53,12 @@ function getLoadFontFaceOptions(
 export const loadFontFace = defineAsyncApi(
   API_LOAD_FONT_FACE,
   (options: LoadFontFaceOptions, res) => {
+    options.source = removeUrlWrap(options.source as string)
+
     if (options.global === true) {
-      if (checkOptionSource(options, res)) {
-        const app = getNativeApp()
-        const fontInfo = getLoadFontFaceOptions(options, res)
-        app.loadFontFace(fontInfo)
-      }
+      const app = getNativeApp()
+      const fontInfo = getLoadFontFaceOptions(options, res)
+      app.loadFontFace(fontInfo)
     } else {
       const page = (getCurrentPage() as unknown as UniPage).vm
 
@@ -114,11 +72,9 @@ export const loadFontFace = defineAsyncApi(
         return
       }
 
-      if (checkOptionSource(options, res)) {
-        page!.$fontFamilySet.add(options.family)
-        const fontInfo = getLoadFontFaceOptions(options, res)
-        page.$nativePage!.loadFontFace(fontInfo)
-      }
+      page!.$fontFamilySet.add(options.family)
+      const fontInfo = getLoadFontFaceOptions(options, res)
+      page.$nativePage!.loadFontFace(fontInfo)
     }
   },
   LoadFontFaceProtocol

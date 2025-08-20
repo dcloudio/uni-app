@@ -1,19 +1,19 @@
 import {
+  type ExtractPropTypes,
+  type Ref,
+  computed,
+  onBeforeUnmount,
   ref,
   watch,
-  onBeforeUnmount,
-  Ref,
-  computed,
-  ExtractPropTypes,
 } from 'vue'
 import { extend } from '@vue/shared'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { getCurrentPageId } from '@dcloudio/uni-core'
 import { getRealPath } from '../../../platform/getRealPath'
 import {
+  WEBVIEW_ID_PREFIX,
   WEBVIEW_INSERTED,
   WEBVIEW_REMOVED,
-  WEBVIEW_ID_PREFIX,
 } from '../../../constants'
 import { NAVBAR_HEIGHT } from '@dcloudio/uni-shared'
 import { useNative } from '../../../helpers/useNative'

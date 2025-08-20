@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-stat",
-  "version": "3.0.0-alpha-4070620250731002",
+  "version": "3.0.0-alpha-4080120250820001",
   "description": "@dcloudio/uni-stat",
   "main": "dist/uni-stat.es.js",
   "module": "dist/uni-stat.es.js",
@@ -22,9 +22,9 @@
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "debug": "^4.3.3"
+    "debug": "catalog:"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7"
+    "@types/debug": "catalog:"
   }
 }

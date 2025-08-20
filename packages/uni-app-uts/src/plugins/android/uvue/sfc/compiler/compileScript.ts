@@ -913,15 +913,19 @@ __ins.emit(event, ...do_not_transform_spread)
   // }
 
   const destructureElements =
-    ctx.hasDefineExposeCall || !options.inlineTemplate
-      ? [`expose: __expose`]
-      : []
+    ctx.hasDefineExposeCall || !options.inlineTemplate ? ['expose'] : []
   // emit 是个函数且不定参数，不通过解构处理
   // if (ctx.emitDecl) {
   // destructureElements.push(`emit: __emit`)
   // }
+  let setupCtxCode = ''
   if (destructureElements.length) {
-    args += `, { ${destructureElements.join(', ')} }: SetupContext`
+    args += `, __setupCtx: SetupContext`
+    const setupCtxCodes: string[] = []
+    destructureElements.forEach((element) => {
+      setupCtxCodes.push(`const __${element} = __setupCtx.${element}`)
+    })
+    setupCtxCode = `\n` + setupCtxCodes.join('\n')
   }
   // 10. finalize default export
   const genDefaultAs = options.genDefaultAs
@@ -982,7 +986,7 @@ __ins.emit(event, ...do_not_transform_spread)
     `\n${genDefaultAs} ${ctx.helper(
       resolveDefineCode(ctx.options.componentType!)
     )}({${runtimeOptions}\n  ` +
-      `${hasAwait ? `async ` : ``}setup(${args}) {
+      `${hasAwait ? `async ` : ``}setup(${args}) {${setupCtxCode}
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy${
         options.genDefaultAs
@@ -1002,18 +1006,15 @@ ${exposeCall}`
       bindingMetadata: ctx.bindingMetadata,
       rootDir: options.root,
       className: options.className,
+      sourceMap: options.sourceMap,
     })
     if (preamble) {
       ctx.s.prepend(preamble)
     }
 
     // 放到最后，以免查找 offset 有问题
-    let offset = map ? (ctx.s.toString().match(/\r?\n/g)?.length ?? 0) + 1 : 1
-    if (options.genDefaultAs) {
-      offset = offset - 2 // 排除 export default __sfc__
-    }
+    let offset = map ? ctx.s.toString().match(/\r?\n/g)?.length ?? 0 : 0
     ctx.s.appendRight(endOffset, `\nreturn ${code}\n}\n\n})`)
-    ctx.s.trim()
     scriptMap =
       options.sourceMap !== false
         ? (ctx.s.generateMap({

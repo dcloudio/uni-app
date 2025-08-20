@@ -76,7 +76,10 @@ export function initHooks(
         }
       }
       invokeHook(publicThis, ON_LOAD, query)
-      delete instance.attrs.__pageQuery
+      // @ts-expect-error vapor 模式下 attrs 是只读代理对象，目前不支持删除
+      if (!instance.vapor) {
+        delete instance.attrs.__pageQuery
+      }
       // iOS-X 的非 Tab 页面与 uni-app 一致固定触发 onShow
       const $basePage = __X__
         ? publicThis.$basePage

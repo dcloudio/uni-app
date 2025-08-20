@@ -199,13 +199,11 @@ checkbox {
 /* 
  * 目前仅适配微信小程序，其他小程序平台需要额外适配
  */
-radio .wx-radio-wrapper,
-checkbox .wx-checkbox-wrapper {
+radio .wx-radio-wrapper{
   display: flex;
   flex-direction: inherit;
   align-content: inherit;
   justify-content: inherit;
   align-items: inherit;
-  width: 100%;
-  height: 100%;
+  flex: 1;
 }

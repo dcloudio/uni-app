@@ -1,16 +1,16 @@
 import {
-  Ref,
-  ref,
-  reactive,
-  ExtractPropTypes,
-  watch,
+  type ExtractPropTypes,
+  type Ref,
   onBeforeUnmount,
+  reactive,
+  ref,
+  watch,
 } from 'vue'
 import {
+  type CustomEventTrigger,
+  type EmitEvent,
   defineBuiltInComponent,
   useCustomEvent,
-  CustomEventTrigger,
-  EmitEvent,
 } from '@dcloudio/uni-components'
 import { useCover } from '../../../helpers/useCover'
 import { getRealPath } from '../../../platform/getRealPath'

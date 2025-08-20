@@ -1,15 +1,15 @@
-import { onBeforeUnmount, onMounted, watch, inject, ref, computed } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniElement } from '../../helpers/UniElement'
-import { UniRadioGroupCtx, uniRadioGroupKey } from '../radio-group'
-import { UniFormCtx, uniFormKey } from '../form'
-import { uniLabelKey, UniLabelCtx } from '../label'
+import { type UniRadioGroupCtx, uniRadioGroupKey } from '../radio-group'
+import { type UniFormCtx, uniFormKey } from '../form'
+import { type UniLabelCtx, uniLabelKey } from '../label'
 import {
-  createSvgIconVNode,
   ICON_PATH_SUCCESS_NO_CIRCLE,
+  createSvgIconVNode,
 } from '@dcloudio/uni-core'
 
 const props = {
@@ -192,7 +192,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           >
             <div
               class="uni-radio-input"
-              // @ts-ignore
+              // @ts-expect-error
               class={{ 'uni-radio-input-disabled': props.disabled }}
               style={radioStyle.value}
             >

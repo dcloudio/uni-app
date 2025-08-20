@@ -1,19 +1,23 @@
 import path from 'path'
 import debug from 'debug'
+import fs from 'fs-extra'
 import type * as tsTypes from 'typescript'
-
+import type { RollupError } from 'rollup'
 import type {
   UniXCompiler,
   UniXCompilerOptions,
 } from '../../lib/uni-x/dist/compiler'
 import { originalPositionForSync } from '../sourceMap'
 import { normalizePath } from '../shared'
-import { isEnableGenericsParameterDefaults } from '../utils'
+import { SPECIAL_CHARS, isEnableGenericsParameterDefaults } from '../utils'
+import { COLORS, generateCodeFrame } from '../stacktrace/utils'
 
 export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
 
 const debugTscWatcher = debug('uts:tsc:watcher')
-
+const debugCompile = debug('uts:tsc:compile')
+const UNI_APP_X_TYPE_VALIDATION =
+  process.env.UNI_APP_X_TYPE_VALIDATION === 'true' ? true : false
 type TargetLanguage = `${UniXCompilerOptions['targetLanguage']}`
 
 export function createUniXCompiler(
@@ -26,6 +30,8 @@ export function createUniXCompiler(
     paths?: tsTypes.CompilerOptions['paths']
     rootFiles?: string[]
     normalizeFileName: (str: string) => string
+    isPureSwift?: boolean
+    resolveWorkers: () => Record<string, string>
   }
 ) {
   const inputDir = normalizePath(options.inputDir)
@@ -75,33 +81,73 @@ export function createUniXCompiler(
     mode,
     targetLanguage: targetLanguage as UniXCompilerOptions['targetLanguage'],
     tsFactory,
+    hxPluginDir: pluginPath,
     paths: options.paths,
     utsLibDir,
     hxLanguageServiceDir,
     sourceMap,
     inlineSources: sourceMap,
-    originalPositionForSync,
     watchFile,
     incremental: mode === 'development',
     transformOptions: {
       enableUTSNumber: false,
       enableNarrowType: true, // 默认开启
       enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
+      // TODO 调整参数传递方式
+      isPureSwift: options.isPureSwift,
+      workers: {
+        resolve: options.resolveWorkers,
+        extname:
+          targetLanguage === 'ArkTS'
+            ? '.ets'
+            : targetLanguage === 'JavaScript'
+            ? '.js'
+            : undefined,
+      },
     },
     ...options,
   }
   const { UniXCompiler } = require('../../lib/uni-x/dist/compiler')
   const compiler: UniXCompiler = new UniXCompiler(compilerOptions)
-  compiler.invalidate = (files) => {
+  const reportDiagnostic = createReportDiagnostic(compiler, inputDir)
+  // 目前触发编译的，只有addRootFile、addRootFiles、invalidate
+  // 所以这里监听这些方法，并打印出诊断信息
+  const oldAddRootFile = compiler.addRootFile
+  compiler.addRootFile = async function (file) {
+    await oldAddRootFile.call(compiler, file)
+    reportDiagnostics()
+  }
+  const oldAddRootFiles = compiler.addRootFiles
+  compiler.addRootFiles = async function (files) {
+    await oldAddRootFiles.call(compiler, files)
+    reportDiagnostics()
+  }
+  compiler.invalidate = async (files) => {
     let timeout = 300
     for (const { fileName, event } of files) {
       if (fileWatcher.onWatchFileChange(fileName, event!)) {
         timeout = 2000
       }
     }
-    return compiler.wait(timeout)
+    await compiler.wait(timeout)
+    reportDiagnostics()
   }
+
   return compiler
+
+  function reportDiagnostics() {
+    const program = compiler.getProgram()
+    if (program) {
+      const syntacticDiagnostics = program.getSyntacticDiagnostics()
+      syntacticDiagnostics.forEach((diagnostic) => {
+        reportDiagnostic('syntactic', diagnostic)
+      })
+      const semanticDiagnostics = program.getSemanticDiagnostics()
+      semanticDiagnostics.forEach((diagnostic) => {
+        reportDiagnostic('semantic', diagnostic)
+      })
+    }
+  }
 }
 
 const replacements = /(\.uts|\.uvue|\.vue|\.json)\.ts$/
@@ -153,5 +199,186 @@ class UTSFileWatcher {
       debugTscWatcher(relativeFileName, ' not found')
     }
     return false
+  }
+}
+
+function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
+  const formatHost: tsTypes.FormatDiagnosticsHost = {
+    getCanonicalFileName: (path) => path,
+    getCurrentDirectory: () => inputDir,
+    getNewLine: () => compiler.getTypeScript().sys.newLine,
+  }
+  const encryptExistCache = new Map()
+  return reportDiagnostic
+  function diagnosticCategoryName(
+    d: { category: tsTypes.DiagnosticCategory },
+    lowerCase = true
+  ): string {
+    const name = compiler.getTypeScript().DiagnosticCategory[d.category]
+    return lowerCase ? name.toLowerCase() : name
+  }
+
+  function reportDiagnostic(
+    _type: 'syntactic' | 'semantic',
+    diagnostic: tsTypes.Diagnostic
+  ) {
+    const errorCode = UNI_APP_X_TYPE_VALIDATION
+      ? [2300, 2451, 110111119, 2564, 1023]
+      : []
+    const throwError =
+      diagnostic.__throwError ||
+      [
+        100006,
+        110111101,
+        110111163,
+        110111120,
+        110111134,
+        110111164,
+        110111146,
+        110111143,
+        110111149,
+        110111138,
+        110111161,
+        110111128,
+        ...errorCode,
+      ].includes(diagnostic.code)
+    const isDebug = debugCompile.enabled
+    if (throwError) {
+      const error = formatDiagnostic(diagnostic, formatHost)
+      // 仅回源成功的才抛出错误，否则只打印一下
+      if (error.file && error.frame) {
+        const parts = error.file.split('/')
+        if (parts.length > 2 && parts[0] === 'uni_modules') {
+          const pluginName = parts[1]
+          if (encryptExistCache.has(pluginName)) {
+            if (!encryptExistCache.get(pluginName)) {
+              throw createRollupError(error)
+            }
+            return
+          }
+          const encrypt = path.join(
+            process.env.UNI_INPUT_DIR,
+            'uni_modules',
+            pluginName,
+            'encrypt'
+          )
+          if (encrypt && fs.existsSync(encrypt)) {
+            encryptExistCache.set(pluginName, true)
+            return
+          } else {
+            encryptExistCache.set(pluginName, false)
+          }
+        }
+        throw createRollupError(error)
+      } else {
+        printError(error, COLORS.error, SPECIAL_CHARS.ERROR_BLOCK)
+      }
+    }
+    if (isDebug) {
+      printError(
+        formatDiagnostic(diagnostic, formatHost),
+        COLORS.error,
+        SPECIAL_CHARS.ERROR_BLOCK
+      )
+    }
+  }
+
+  function formatDiagnostic(
+    diagnostic: tsTypes.Diagnostic,
+    host: tsTypes.FormatDiagnosticsHost
+  ): DiagnosticError {
+    const ts = compiler.getTypeScript()
+    const errorMessage = `${diagnosticCategoryName(diagnostic)}${
+      diagnostic.code ? ' UTS' + diagnostic.code : ''
+    }: ${ts.flattenDiagnosticMessageText(
+      diagnostic.messageText,
+      host.getNewLine()
+    )}`
+    if (diagnostic.file) {
+      let frame: string | undefined
+      let { line, character } = ts.getLineAndCharacterOfPosition(
+        diagnostic.file,
+        diagnostic.start!
+      )
+      line = line + 1
+      character = character + 1
+      let fileName = diagnostic.file.fileName
+
+      const sourceMapFile = fileName + '.map'
+      if (fs.existsSync(sourceMapFile)) {
+        const pos = originalPositionForSync({
+          sourceMapFile,
+          line,
+          column: character - 1,
+          withSourceContent: true,
+        })
+        if (pos && pos.source) {
+          line = pos.line
+          character = pos.column
+          fileName = pos.source
+          if (pos.sourceContent) {
+            frame = generateCodeFrame(pos.sourceContent, {
+              line,
+              column: character,
+            }).replace(/\t/g, ' ')
+          }
+        }
+      } else {
+        frame = generateCodeFrame(diagnostic.file.text, {
+          line,
+          column: character,
+        }).replace(/\t/g, ' ')
+      }
+
+      if (path.isAbsolute(fileName)) {
+        fileName = path.relative(inputDir, fileName)
+      }
+      fileName = fileName.replace(/\.(uvue|vue|uts)\.ts/, '.$1')
+      return {
+        msg: errorMessage,
+        file: fileName,
+        line,
+        column: character,
+        frame,
+      }
+    }
+
+    return {
+      msg: errorMessage,
+    }
+  }
+}
+interface DiagnosticError {
+  msg: string
+  file?: string
+  line?: number
+  column?: number
+  frame?: string
+}
+
+export function createRollupError(error: DiagnosticError): RollupError {
+  const rollupError: RollupError & { customPrint?: () => void } = new Error(
+    error.msg
+  )
+  rollupError.customPrint = () => {
+    printError(error, COLORS.error, SPECIAL_CHARS.ERROR_BLOCK)
+  }
+  return rollupError
+}
+
+function printError(error: DiagnosticError, color: string, block: string) {
+  const blockContent = error.file && error.frame ? block : ''
+  console.log(color + blockContent + error.msg + color)
+  if (error.file) {
+    console.log(`at ${error.file}:${error.line}:${error.column}`)
+  }
+  if (error.frame) {
+    console.log(error.frame + blockContent)
+  }
+}
+
+declare module 'typescript' {
+  interface Diagnostic {
+    __throwError?: boolean
   }
 }

@@ -1,12 +1,12 @@
-import { Ref, ref, watch, onBeforeUnmount } from 'vue'
+import { type Ref, onBeforeUnmount, ref, watch } from 'vue'
 import {
+  type EmitEvent,
   defineBuiltInComponent,
-  useCustomEvent,
-  EmitEvent,
-  useSubscribe,
   useContextInfo,
+  useCustomEvent,
+  useSubscribe,
 } from '@dcloudio/uni-components'
-import { useNativeAttrs, useNative } from '../../../helpers/useNative'
+import { useNative, useNativeAttrs } from '../../../helpers/useNative'
 
 const props = {
   id: {

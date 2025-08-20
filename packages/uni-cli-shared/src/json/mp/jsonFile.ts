@@ -108,8 +108,10 @@ export function findChangedJsonFiles(
       findChangedFile(name, jsonsCache.get(name))
     }
   }
-  findChangedFile('app', appJsonCache)
-  findChangedFiles(jsonPagesCache)
+  if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+    findChangedFile('app', appJsonCache)
+    findChangedFiles(jsonPagesCache)
+  }
   findChangedFiles(jsonComponentsCache)
   return changedJsonFiles
 }

@@ -10558,6 +10558,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
+    const inputmode = computed(() => {
+      if (props2.inputmode) {
+        return props2.inputmode;
+      }
+    });
     let cache = useCache(props2, type);
     let resetCache = {
       fn: null
@@ -10665,7 +10670,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
-        "inputmode": props2.inputmode
+        "inputmode": inputmode.value
       }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return createVNode("uni-input", {
         "ref": rootRef
@@ -13796,7 +13801,7 @@ function decodeEntities(htmlString) {
 function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
     return {
-      onClick: (e2) => {
+      onClickCapture: (e2) => {
         triggerItemClick(e2, { node });
         e2.stopPropagation();
         e2.preventDefault();
@@ -15837,7 +15842,7 @@ function setFixMargin() {
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$h,
-  emits: ["confirm", "linechange", ...emit],
+  emits: ["confirm", "change", "linechange", ...emit],
   setup(props2, {
     emit: emit2,
     expose
@@ -15877,6 +15882,8 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       height
     }) {
       heightRef.value = height;
+    }
+    function onChange2(event) {
     }
     function confirm(event) {
       trigger("confirm", event, {
@@ -15951,8 +15958,9 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
           }
         },
         "onKeydown": onKeyDownEnter,
-        "onKeyup": onKeyUpEnter
-      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
+        "onKeyup": onKeyUpEnter,
+        "onChange": onChange2
+      }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
       return createVNode("uni-textarea", {
         "ref": rootRef,
         "auto-height": props2.autoHeight
@@ -15966,11 +15974,14 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "ref": lineRef,
         "class": "uni-textarea-line"
       }, [" "], 512), createVNode("div", {
-        "class": "uni-textarea-compute"
+        "class": {
+          "uni-textarea-compute": true,
+          "uni-textarea-compute-auto-height": props2.autoHeight
+        }
       }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
         "initial": true,
         "onResize": onResize2
-      }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
+      }, null, 8, ["initial", "onResize"])], 2), props2.confirmType === "search" ? createVNode("form", {
         "action": "",
         "onSubmit": () => false,
         "class": "uni-input-form"
@@ -16105,7 +16116,9 @@ function initHooks(options, instance2, publicThis) {
       if (false)
         ;
       invokeHook(publicThis, ON_LOAD, query);
-      delete instance2.attrs.__pageQuery;
+      if (!instance2.vapor) {
+        delete instance2.attrs.__pageQuery;
+      }
       const $basePage = false ? publicThis.$basePage : publicThis.$page;
       if (true) {
         if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
@@ -17553,7 +17566,23 @@ const onWebInvokeAppService = ({ name, arg }) => {
   if (name === "postMessage")
     ;
   else {
-    uni[name](arg);
+    switch (name) {
+      case "navigateTo":
+        uni.navigateTo(arg);
+        break;
+      case "navigateBack":
+        uni.navigateBack(arg);
+        break;
+      case "switchTab":
+        uni.switchTab(arg);
+        break;
+      case "reLaunch":
+        uni.reLaunch(arg);
+        break;
+      case "redirectTo":
+        uni.redirectTo(arg);
+        break;
+    }
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
@@ -18746,9 +18775,9 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
         }
         if (getIsBMap()) {
           let pt = new maps2.Point(
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[0],
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[1]
           );
           circle = new maps2.Circle(pt, circleOptions.radius, circleOptions);
@@ -20983,6 +21012,9 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
   }, { resolve, reject }) => {
     var uploadTask = new UploadTask();
     if (!isArray(files2) || !files2.length) {
+      if (!filePath) {
+        reject("file error");
+      }
       files2 = [
         {
           name,
@@ -23698,8 +23730,18 @@ function useTopWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
-    const height = el.getBoundingClientRect().height;
+    if (!el) {
+      return;
+    }
+    const uniTopWindowStyleEl = el.parentElement;
+    if (!uniTopWindowStyleEl) {
+      return;
+    }
+    const height = uniTopWindowStyleEl.getBoundingClientRect().height;
     layoutState.topWindowHeight = height;
   }
   watch(() => windowRef.value, () => {
@@ -23720,8 +23762,18 @@ function useLeftWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniLeftWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniLeftWindowStyleEl) {
+      return;
+    }
+    const width = uniLeftWindowStyleEl.getBoundingClientRect().width;
     layoutState.leftWindowWidth = width;
   }
   watch(() => windowRef.value, () => {
@@ -23742,8 +23794,18 @@ function useRightWindow(layoutState) {
   const windowRef = ref(null);
   function updateWindow() {
     const instance2 = windowRef.value;
+    if (!instance2 || !instance2.$) {
+      return;
+    }
     const el = resolveOwnerEl(instance2.$);
-    const width = el.getBoundingClientRect().width;
+    if (!el) {
+      return;
+    }
+    const uniRightWindowStyleEl = el.parentElement && el.parentElement.parentElement;
+    if (!uniRightWindowStyleEl) {
+      return;
+    }
+    const width = uniRightWindowStyleEl.getBoundingClientRect().width;
     layoutState.rightWindowWidth = width;
   }
   watch(() => windowRef.value, () => {
@@ -23935,6 +23997,37 @@ const getElementById = /* @__PURE__ */ defineSyncApi(
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
 );
+const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
+  "getFacialRecognitionMetaInfo",
+  () => {
+    if (Object.getPrototypeOf(window) !== Window.prototype) {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象原型被篡改，可能存在劫持"
+      );
+      return "";
+    }
+    if (window.window !== window || window.self !== window) {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象属性引用异常，可能被劫持"
+      );
+      return "";
+    }
+    if (Object.prototype.toString.call(window) !== "[object Window]" && Object.prototype.toString.call(window) !== "[object DOMWindow]") {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象类型标识异常，可能被劫持"
+      );
+      return "";
+    }
+    if (isFunction(window.getMetaInfo)) {
+      return window.getMetaInfo();
+    } else {
+      console.error(
+        "getFacialRecognitionMetaInfo:fail window对象缺少getMetaInfo方法，请参考文档引用：https://doc.dcloud.net.cn/uniCloud/frv/dev.html#window-get-meta-info"
+      );
+      return "";
+    }
+  }
+);
 const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
   API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
   createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
@@ -24082,6 +24175,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getDeviceInfo,
   getElementById,
   getEnterOptionsSync,
+  getFacialRecognitionMetaInfo,
   getFileInfo,
   getImageInfo,
   getLaunchOptionsSync,
@@ -24361,7 +24455,7 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           //多边形是否可编辑。
           editable: false,
           // 地图实例，即要显示多边形的地图
-          // @ts-ignore
+          // @ts-expect-error
           map,
           // 区域填充色
           fillColor: "",
@@ -24676,6 +24770,9 @@ function useMap(props2, rootRef, emit2) {
     } else {
       const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
         boundsChangedEvent.remove();
+        emitBoundsReady();
+      });
+      event.addListener(map2, "complete", () => {
         emitBoundsReady();
       });
       event.addListener(map2, "click", () => {
@@ -26623,6 +26720,7 @@ export {
   getDeviceInfo,
   getElementById,
   getEnterOptionsSync,
+  getFacialRecognitionMetaInfo,
   getFileInfo,
   getImageInfo,
   getLaunchOptionsSync,

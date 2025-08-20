@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-kuaishou",
-  "version": "3.0.0-alpha-4070620250731002",
+  "version": "3.0.0-alpha-4080120250820001",
   "description": "uni-app mp-kuaishou",
   "main": "dist/index.js",
   "files": [
@@ -32,7 +32,7 @@
     "@dcloudio/uni-mp-vue": "workspace:*",
     "@dcloudio/uni-mp-weixin": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
-    "@vue/compiler-core": "3.4.21",
-    "@vue/shared": "3.4.21"
+    "@vue/compiler-core": "catalog:",
+    "@vue/shared": "catalog:"
   }
 }

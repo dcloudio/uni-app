@@ -5,12 +5,14 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var appVite = require('@dcloudio/uni-app-vite');
 var uniAppUts = require('@dcloudio/uni-app-uts');
 var path = require('path');
+var fs = require('fs-extra');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var appVite__default = /*#__PURE__*/_interopDefault(appVite);
 var path__default = /*#__PURE__*/_interopDefault(path);
+var fs__default = /*#__PURE__*/_interopDefault(fs);
 
 var ExternalModuls = [
 	{
@@ -35,6 +37,13 @@ var ExternalModuls = [
 		provider: "huawei",
 		service: "oauth",
 		version: "1.0.2"
+	},
+	{
+		type: "provider",
+		plugin: "uni-oauth-weixin",
+		provider: "weixin",
+		service: "oauth",
+		version: "1.0.0"
 	},
 	{
 		type: "provider",
@@ -68,6 +77,13 @@ var ExternalModuls = [
 			"setAppBadgeNumber"
 		],
 		version: "1.0.2"
+	},
+	{
+		type: "provider",
+		plugin: "uni-share-weixin",
+		provider: "weixin",
+		service: "share",
+		version: "1.0.0"
 	},
 	{
 		type: "extapi",
@@ -114,6 +130,13 @@ var ExternalModulesX = [
 	},
 	{
 		type: "provider",
+		plugin: "uni-oauth-weixin",
+		provider: "weixin",
+		service: "oauth",
+		version: "1.0.0"
+	},
+	{
+		type: "provider",
 		plugin: "uni-payment-alipay",
 		provider: "alipay",
 		service: "payment",
@@ -146,6 +169,13 @@ var ExternalModulesX = [
 		version: "1.0.2"
 	},
 	{
+		type: "provider",
+		plugin: "uni-share-weixin",
+		provider: "weixin",
+		service: "share",
+		version: "1.0.0"
+	},
+	{
 		type: "extapi",
 		plugin: "uni-verify",
 		apis: [
@@ -164,6 +194,27 @@ var ExternalModulesX = [
 // TODO 未来component类型的provider需要重构，比如uni-map-tencent需要依赖内置基础模块uni-map，先基于现状实现。
 const ComponentsWithProvider = [];
 const ComponentsWithProviderX = ['uni-map'];
+
+async function buildWorkers() {
+    const workers = uniCliShared.getWorkers();
+    if (!Object.keys(workers).length) {
+        return;
+    }
+    const rootDir = uniCliShared.uvueOutDir('app-harmony');
+    const { bundleArkTS, parseUTSSyntaxError } = uniCliShared.resolveUTSCompiler();
+    for (const workPath in workers) {
+        const result = await bundleArkTS({
+            isX: true,
+            filename: path__default.default.resolve(rootDir, workPath),
+            rootDir,
+            outDir: process.env.UNI_OUTPUT_DIR,
+            footer: `;(new ${workers[workPath]}()).entry()`,
+        });
+        if (result && result.error) {
+            throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR);
+        }
+    }
+}
 
 const isX = process.env.UNI_APP_X === 'true';
 const StandaloneExtApis = isX ? ExternalModulesX : ExternalModuls;
@@ -276,6 +327,9 @@ function uniAppHarmonyPlugin() {
             if (!isX) {
                 // x 上暂时编译所有uni ext api，不管代码里是否调用了
                 await uniCliShared.buildUniExtApis();
+            }
+            if (isX) {
+                await buildWorkers();
             }
         },
     };
@@ -425,7 +479,8 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
     Array.from(utsPlugins)
         .sort()
         .forEach((plugin) => {
-        const injects = uniCliShared.parseUniExtApi(path__default.default.resolve(uniModulesDir, plugin), plugin, true, 'app-harmony', 'arkts');
+        const pluginDir = path__default.default.resolve(uniModulesDir, plugin);
+        const injects = uniCliShared.parseUniExtApi(pluginDir, plugin, true, 'app-harmony', 'arkts');
         const harmonyPackageName = `@uni_modules/${plugin.toLowerCase()}`;
         if (injects) {
             Object.keys(injects).forEach((key) => {
@@ -444,6 +499,7 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
             moduleSpecifier: harmonyPackageName,
             plugin,
             source: 'local',
+            encrypt: isEncrypt(pluginDir),
         });
     });
     const relatedModules = getRelatedModules(inputDir);
@@ -588,12 +644,17 @@ function initUniExtApi() {
     const modules = [];
     projectDeps.forEach((dep) => {
         if (dep.source === 'local') {
-            const depPath = './uni_modules/' + dep.plugin;
+            const depPath = './uni_modules/' +
+                dep.plugin +
+                (dep.encrypt ? '/utssdk/app-harmony/module.har' : '');
             dependencies[dep.moduleSpecifier] = depPath;
-            modules.push({
-                name: generateHarName(dep.moduleSpecifier),
-                srcPath: depPath,
-            });
+            // 加密插件不生成module信息
+            if (!dep.encrypt) {
+                modules.push({
+                    name: generateHarName(dep.moduleSpecifier),
+                    srcPath: depPath,
+                });
+            }
         }
         else {
             if (!dependencies[dep.moduleSpecifier]) {
@@ -611,6 +672,9 @@ function initUniExtApi() {
         fileName: 'uni_modules/build-profile.json5',
         source: JSON.stringify({ modules }, null, 2),
     });
+}
+function isEncrypt(pluginDir) {
+    return fs__default.default.existsSync(path__default.default.resolve(pluginDir, 'encrypt'));
 }
 
 const externalModulesX = ExternalModulesX;

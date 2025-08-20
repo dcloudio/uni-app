@@ -148,11 +148,28 @@ export const errorFormatter: Formatter<LogErrorOptions> = {
   },
 }
 
+const VITE_ROLLUP_FAILED_TO_RESOLVE_IMPORT_RE =
+  /\[vite\]: Rollup failed to resolve import "([^"]+)" from "([^"]+)"/
 function buildErrorMessage(
-  err: RollupError,
+  err: RollupError & { customPrint?: () => void },
   args: string[] = [],
   includeStack = true
 ): string {
+  if (err.customPrint) {
+    err.customPrint()
+    return ''
+  }
+  if (VITE_ROLLUP_FAILED_TO_RESOLVE_IMPORT_RE.test(err.message)) {
+    const [, importPath, fromPath] =
+      err.message.match(VITE_ROLLUP_FAILED_TO_RESOLVE_IMPORT_RE) || []
+    err.message = `Could not resolve "${importPath}" from "${fromPath}"`
+    err.id = fromPath
+  }
+  // 移除 from 后面的内容
+  // 主要是处理：Could not resolve "./static/logo1.png" from "../../../../../../Users/xxx/HBuilderProjects/test-x/pages/index/index.uvue?vue&type=script&lang.uts"
+  if (err.id && err.message.startsWith('Could not resolve ')) {
+    err.message = err.message.split(' from ')[0]
+  }
   if (err.plugin) {
     // 避免出现这样的错误：[plugin:vite:vue] [plugin vite:vue]
     if (err.message.startsWith(`[plugin ${err.plugin}]`)) {
@@ -161,7 +178,7 @@ function buildErrorMessage(
         // [plugin:vite:vue]  pages/index/index.vue (2:12): v-on="" is not supported
         const locStr = `(${err.loc.line}:${err.loc.column}):`
         if (msg.includes(locStr)) {
-          msg = msg.split(locStr)[1]
+          msg = msg.split(locStr)[1].trim()
         }
       }
       args.push(
@@ -175,6 +192,13 @@ function buildErrorMessage(
         messages.slice(1).forEach((msg) => {
           otherMsgs.push(`[plugin:${msg}`)
         })
+      }
+      if (err.loc) {
+        // [plugin:vite:vue]  pages/index/index.vue (2:12): v-on="" is not supported
+        const locStr = `(${err.loc.line}:${err.loc.column}):`
+        if (err.message.includes(locStr)) {
+          err.message = err.message.split(locStr)[1].trim()
+        }
       }
       args.push(
         `${colors.magenta('[plugin:' + err.plugin + ']')} ${colors.red(

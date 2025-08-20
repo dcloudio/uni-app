@@ -1,16 +1,16 @@
 import { extend, isArray } from '@vue/shared'
 import {
-  Ref,
+  type ExtractPropTypes,
+  type Ref,
+  defineComponent,
+  inject,
+  onBeforeUnmount,
   ref,
   watch,
-  ExtractPropTypes,
-  defineComponent,
-  onBeforeUnmount,
-  inject,
 } from 'vue'
-import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
-import { showPage, Page } from '@dcloudio/uni-core'
-import { UniFormCtx, uniFormKey } from '../../components/form'
+import { type EmitEvent, useCustomEvent } from '../../helpers/useNVueEvent'
+import { type Page, showPage } from '@dcloudio/uni-core'
+import { type UniFormCtx, uniFormKey } from '../../components/form'
 
 type Mode = 'selector' | 'multiSelector' | 'time' | 'date'
 type Field = 'year' | 'month' | 'day'

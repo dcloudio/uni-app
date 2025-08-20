@@ -61,6 +61,27 @@ export function resolveUTSAppModule(
           }
         }
       }
+      /**
+       * 鸿蒙平台解析优先级
+       * 1. utssdk/app-harmony/index.uts (native)
+       * 2. utssdk/app-js/index.uts (js)
+       * 3. utssdk/index.uts (native)
+       */
+      if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+        // 出于兼容历史项目考虑，鸿蒙优先使用app-harmony，无app-harmony的情况下再使用app-js
+        if (parentDir === 'uni_modules') {
+          const appHarmonyIndex = path.resolve(
+            id,
+            basedir,
+            'app-harmony',
+            'index.uts'
+          )
+          const appJsIndex = path.resolve(id, basedir, 'app-js', 'index.uts')
+          if (!fs.existsSync(appHarmonyIndex) && fs.existsSync(appJsIndex)) {
+            return appJsIndex
+          }
+        }
+      }
       if (fs.existsSync(path.resolve(id, basedir, 'index.uts'))) {
         return id
       }

@@ -1,41 +1,41 @@
 import {
+  type ExtractPropTypes,
+  type Ref,
+  type StyleValue,
+  Transition,
+  computed,
+  inject,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  renderList,
   watch,
   watchEffect,
-  onBeforeUnmount,
-  inject,
-  reactive,
-  computed,
-  ref,
-  nextTick,
-  renderList,
-  Transition,
-  Ref,
-  ExtractPropTypes,
-  onMounted,
-  StyleValue,
 } from 'vue'
 import { isArray } from '@vue/shared'
 import {
+  type CustomEventTrigger,
+  type EmitEvent,
+  PickerView,
+  PickerViewColumn,
+  UniElement,
+  type UniFormCtx,
+  defineBuiltInComponent,
+  uniFormKey,
   useBooleanAttr,
   useCustomEvent,
   withWebEvent,
-  PickerView,
-  PickerViewColumn,
-  UniFormCtx,
-  uniFormKey,
-  defineBuiltInComponent,
-  CustomEventTrigger,
-  EmitEvent,
-  UniElement,
 } from '@dcloudio/uni-components'
 import { formatDateTime } from '@dcloudio/uni-shared'
 import { usePopupStyle } from '../../../helpers/usePopupStyle'
 import { useKeyboard } from '../../../helpers/useKeyboard'
 import {
   initI18nPickerMsgsOnce,
-  useI18n,
   onEventPrevent,
   onEventStop,
+  useI18n,
 } from '@dcloudio/uni-core'
 
 function getDefaultStartValue(props: Props) {
@@ -311,7 +311,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <div
               ref={pickerRef}
               class="uni-picker-container"
-              // @ts-ignore
+              // @ts-expect-error
               class={`uni-${mode}-${selectorTypeComputed.value}`}
               onWheel={onEventPrevent}
               onTouchmove={onEventPrevent}
@@ -327,7 +327,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               {!system.value ? (
                 <div
                   class={{ 'uni-picker-toggle': visible }}
-                  // @ts-ignore
+                  // @ts-expect-error
                   class="uni-picker-custom"
                   style={popupStyle.content}
                 >
@@ -349,7 +349,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                     <PickerView
                       value={_l10nColumn(valueArray)}
                       class="uni-picker-content"
-                      // @ts-ignore
+                      // @ts-expect-error
                       onChange={_pickerViewChange}
                     >
                       {renderList(
@@ -378,7 +378,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                       <div
                         key={index}
                         class="uni-picker-item"
-                        // @ts-ignore
+                        // @ts-expect-error
                         class={{ selected: valueArray[0] === index }}
                         onClick={() => {
                           valueArray[0] = index
@@ -404,7 +404,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             >
               <input
                 class="uni-picker-system_input"
-                // @ts-ignore
+                // @ts-expect-error
                 class={system.value}
                 ref={inputRef}
                 value={valueSync as any}

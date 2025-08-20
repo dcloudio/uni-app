@@ -10,17 +10,18 @@ import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
   EXTNAME_VUE_RE,
   type UniVitePlugin,
+  createResolveStaticAsset,
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   isExternalUrl,
   normalizePath,
   preJs,
+  resolveUniTypeScript,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
-
+import { parseInlineStyleSync } from '@dcloudio/uni-nvue-styler'
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
-import { resolveUniTypeScript } from '@dcloudio/uni-cli-shared'
 
 const pluginVuePath = require.resolve('@vitejs/plugin-vue')
 const normalizedPluginVuePath = normalizePath(pluginVuePath)
@@ -75,6 +76,25 @@ export function initPluginVueOptions(
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
   ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
+
+  // 默认就移除comments节点
+  compilerOptions.comments = false
+
+  if (process.env.UNI_PLATFORM !== 'web') {
+    // 非 web 平台，使用 factory 模式
+    ;(compilerOptions as any).templateMode = 'factory'
+    // 目前禁用事件委托
+    ;(compilerOptions as any).disableEventDelegation = true
+    // 禁用 class 绑定，全部编译为 setClass 模式
+    ;(compilerOptions as any).disableClassBinding = true
+    // 解析静态样式
+    ;(compilerOptions as any).parseStaticStyle = (style: string) => {
+      return parseInlineStyleSync(style, {
+        type: 'uvue',
+        platform: process.env.UNI_UTS_PLATFORM,
+      })
+    }
+  }
 
   const {
     compiler,
@@ -180,7 +200,14 @@ export function initPluginVueOptions(
     }
   }
   if (options.platform !== 'h5' && options.platform !== 'web') {
-    compilerOptions.nodeTransforms.push(...getBaseNodeTransforms(options.base))
+    compilerOptions.nodeTransforms.push(
+      ...getBaseNodeTransforms(
+        options.base,
+        process.env.UNI_VUE_VAPOR === 'true'
+          ? createResolveStaticAsset(options.inputDir)
+          : undefined
+      )
+    )
   }
 
   if (nodeTransforms) {

@@ -335,6 +335,7 @@ export declare const MINI_PROGRAM_PAGE_RUNTIME_HOOKS: {
     readonly onPageScroll: 1;
     readonly onShareAppMessage: number;
     readonly onShareTimeline: number;
+    readonly onShareChat: number;
 };
 
 export declare const NAVBAR_HEIGHT = 44;

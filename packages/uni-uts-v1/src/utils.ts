@@ -509,10 +509,36 @@ export function isCustomElementsSupported(pluginDir: string) {
   return true
 }
 
+export function resolveExtApiCustomElementsFilter(
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
+  pluginDir: string
+) {
+  // TODO pluginDir可能是在.uvue目录，此时没有package.json，后续如果该配置对开发者开放，可以考虑将package.json复制到.uvue目录下
+  const pkgPath = path.resolve(pluginDir, 'package.json')
+  const pkg = fs.existsSync(pkgPath) ? require(pkgPath) : {}
+  const options = pkg.uni_modules?.customElements?.[platform]
+  if (typeof options === 'object') {
+    return (name: string) => {
+      if (Array.isArray(options.include)) {
+        return options.include.includes(name)
+      }
+      if (Array.isArray(options.exclude)) {
+        return !options.exclude.includes(name)
+      }
+      return true
+    }
+  }
+  return (name: string) => true
+}
+
 export function resolveCustomElements(pluginDir: string) {
   if (!isCustomElementsSupported(pluginDir)) {
     return {}
   }
+  const filter = resolveExtApiCustomElementsFilter(
+    process.env.UNI_UTS_PLATFORM as 'app-android' | 'app-ios' | 'app-harmony',
+    pluginDir
+  )
   const customElements: Record<string, string> = {}
   const customElementsDir = path.resolve(pluginDir, 'customElements')
   if (fs.existsSync(customElementsDir)) {
@@ -526,7 +552,9 @@ export function resolveCustomElements(pluginDir: string) {
         const files = fs.readdirSync(folder)
         // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
         if (files.includes(name + ext)) {
-          customElements[name] = path.resolve(folder, name + ext)
+          if (filter(name)) {
+            customElements[name] = path.resolve(folder, name + ext)
+          }
         }
       }
     })
@@ -1204,6 +1232,14 @@ export function isEnableInlineReified() {
   return isEnableUTSFeature('enableInlineReified')
 }
 
+export function isEnableSwiftUtsArray() {
+  return isEnableUTSFeature('enableSwiftUtsArray')
+}
+
+export function isEnableSwiftUtsMap() {
+  return isEnableUTSFeature('enableSwiftUtsMap')
+}
+
 export function updateManifestModulesByCloud(
   platform: 'app-android' | 'app-ios',
   inputDir: string,
@@ -1279,4 +1315,14 @@ export function getPluginInjectCustomElements() {
 
 export function getPluginInjectComponents() {
   return [...pluginInjectComponents]
+}
+
+export function requireUTSPluginCode(pluginId: string, _isExtApi: boolean) {
+  // 应该不需要返回uni，全都使用requireUTSPlugin即可，因为extApi也可能导出其他内容自己内部使用，比如map组件+createMapContext
+  // UNI_COMPILE_EXT_API_INPUT 是js-framework-next用来编译鸿蒙ext-api插件的js代码
+  // 此时不能返回uni，应该返回uni.requireUTSPlugin('uni_modules/${pluginId}')
+  // if (isExtApi && !process.env.UNI_COMPILE_EXT_API_INPUT) {
+  //   return `export default uni`
+  // }
+  return `export default uni.requireUTSPlugin('uni_modules/${pluginId}')`
 }

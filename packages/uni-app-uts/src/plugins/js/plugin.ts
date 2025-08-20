@@ -4,6 +4,7 @@ import type { ResolvedConfig } from 'vite'
 import {
   APP_SERVICE_FILENAME,
   type UniVitePlugin,
+  buildNonTreeShakingUniModules,
   buildUniExtApis,
   createEncryptCssUrlReplacer,
   emptyDir,
@@ -11,6 +12,7 @@ import {
   injectCssPostPlugin,
   insertBeforePlugin,
   normalizePath,
+  removeExt,
   resolveMainPathOnce,
   tscOutDir,
   uvueOutDir,
@@ -36,7 +38,7 @@ export function createUniAppJsEnginePlugin(
   platform: 'app-ios' | 'app-harmony'
 ) {
   return function uniAppJsEnginePlugin(): UniVitePlugin {
-    const inputDir = process.env.UNI_INPUT_DIR
+    const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
     const outputDir = process.env.UNI_OUTPUT_DIR
     const uvueOutputDir = uvueOutDir(platform)
     const tscOutputDir = tscOutDir(platform)
@@ -63,6 +65,26 @@ export function createUniAppJsEnginePlugin(
       }
     }
     emptyTscDir()
+
+    if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+      const esmFile = path.resolve(process.env.UNI_INPUT_DIR, '.esm')
+      if (fs.existsSync(esmFile)) {
+        process.env.UNI_APP_OUTPUT_FORMAT = 'esm'
+        if (fs.readFileSync(esmFile, 'utf-8').trim() === 'dynamic') {
+          // 动态导入
+          process.env.UNI_APP_DYNAMIC_IMPORT = 'true'
+        }
+      }
+    }
+    const isESM = process.env.UNI_APP_OUTPUT_FORMAT === 'esm'
+
+    const paths: Record<string, string> = isESM
+      ? {
+          vue: '@dcloudio/uni-app-x-runtime',
+          '@vue/shared': '@dcloudio/uni-app-x-runtime',
+        }
+      : {}
+
     return {
       name: 'uni:app-uts',
       apply: 'build',
@@ -94,12 +116,28 @@ export function createUniAppJsEnginePlugin(
               output: {
                 name: 'AppService',
                 banner: ``,
-                format: 'iife',
+                format: isESM ? 'esm' : 'iife',
                 entryFileNames: APP_SERVICE_FILENAME,
                 globals: {
                   vue: 'Vue',
                   '@vue/shared': 'uni.VueShared',
                 },
+                paths,
+                manualChunks(id) {
+                  if (isESM) {
+                    const chunkName = normalizePath(id.split('?')[0])
+                    if (chunkName.includes('/@dcloudio/uni-cloud/')) {
+                      return '@dcloudio/uni-cloud'
+                    }
+                    if (chunkName.startsWith(inputDir)) {
+                      return removeExt(
+                        normalizePath(path.relative(inputDir, chunkName))
+                      )
+                    }
+                  }
+                },
+                inlineDynamicImports: false,
+                chunkFileNames: isESM ? 'assets/[name].js' : undefined,
                 sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
                   return normalizePath(
                     path.relative(
@@ -120,6 +158,18 @@ export function createUniAppJsEnginePlugin(
         configResolved(config)
         initUniAppJsEngineCssPlugin(config)
         insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
+        // 如果开启了 vapor 模式，则禁用 vue 的 devtools，让 @vitejs/plugin-vue 不管是开发还是发行，均生成发行代码
+        // 理论上非 vapor 也应该禁用，但为了不引发其他问题，暂时只禁用 vapor 模式
+        if (process.env.UNI_VUE_VAPOR === 'true') {
+          const plugin = config.plugins.find((p) => p.name === 'vite:vue')
+          if (plugin?.api?.options) {
+            plugin.api.options.devToolsEnabled = false
+            plugin.api.options.isProduction = true
+            // TODO 临时禁用，目前有bug 等待 https://github.com/vuejs/core/pull/13630 合并
+            // 使用内部自己定义的 transformAssetUrls
+            plugin.api.options.template.transformAssetUrls = false
+          }
+        }
       },
       generateBundle(_, bundle) {
         const APP_SERVICE_FILENAME_MAP = APP_SERVICE_FILENAME + '.map'
@@ -149,6 +199,7 @@ export function createUniAppJsEnginePlugin(
         // 框架内部编译时，不需要
         if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
           await buildUniExtApis()
+          await buildNonTreeShakingUniModules()
         }
       },
     }

@@ -9,6 +9,7 @@ import {
   checkPagesJson,
   createRollupError,
   defineUniPagesJsonPlugin,
+  getWorkers,
   isEnableTreeShaking,
   normalizeIdentifier,
   normalizePagePath,
@@ -76,6 +77,19 @@ function generatePagesJsonCode(
   const uniConfigCode = generateConfig(globalName, pagesJson, config)
   const cssCode = generateCssCode(config)
   const vueType = process.env.UNI_APP_X === 'true' ? 'uvue' : 'nvue'
+
+  let workersCode = ''
+  if (config.command === 'build' && process.env.UNI_APP_X === 'true') {
+    const workers = getWorkers()
+    const workerCode = Object.keys(workers).map((key) => {
+      return `import('@/${key}?worker')`
+    })
+    if (workerCode.length) {
+      // 仅用于激活动态chunk，运行时不能执行
+      workersCode = `if(!Math){\n${workerCode.join('\n')}\n}`
+    }
+  }
+
   return `
 import { defineAsyncComponent, resolveComponent, createVNode, withCtx, openBlock, createBlock } from 'vue'
 import { PageComponent, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
@@ -88,6 +102,7 @@ ${uniConfigCode}
 ${defineLayoutComponentsCode}
 ${definePagesCode}
 ${uniRoutesCode}
+${workersCode}
 ${config.command === 'serve' ? hmrCode : ''}
 export {}
 `

@@ -21,4 +21,16 @@ export {
   onSocketMessage,
 }
 
+export const showActionSheet = {
+  args(fromArgs, toArgs) {
+    if (!fromArgs.itemColor) {
+      toArgs.itemColor = '#000000'
+    }
+  },
+}
+
+export const requestPayment = {
+  name: 'requestOrderPayment',
+}
+
 export const navigateTo = _navigateTo()

@@ -145,15 +145,32 @@ export const request = {
 /**
  * 钉钉小程序 setNavigationBarColor 不支持 frontColor
  */
-export const setNavigationBarColor = {
-  name: 'setNavigationBar',
-  args: {
-    frontColor: false,
-    animation: false,
-  },
+export function setNavigationBarColor() {
+  if (my.canIUse('setNavigationBarColor')) {
+    return {
+      name: 'setNavigationBarColor',
+      args: {
+        animation: false,
+      },
+    }
+  }
+  return {
+    name: 'setNavigationBar',
+    args: {
+      frontColor: false,
+      animation: false,
+    },
+  }
 }
-export const setNavigationBarTitle = {
-  name: 'setNavigationBar',
+export function setNavigationBarTitle() {
+  if (my.canIUse('setNavigationBarTitle')) {
+    return {
+      name: 'setNavigationBarTitle',
+    }
+  }
+  return {
+    name: 'setNavigationBar',
+  }
 }
 
 /**
@@ -221,8 +238,14 @@ export const showActionSheet = {
   },
 }
 export const showLoading = {
-  args: {
-    title: 'content',
+  args(
+    fromArgs: UniApp.ShowLoadingOptions,
+    toArgs: my.IShowLoadingOptions & { mask: boolean } // mini-types feedback.d.ts 未包含 mask
+  ) {
+    if (!fromArgs.mask) {
+      toArgs.mask = false
+    }
+    toArgs.content = fromArgs.title
   },
 }
 export const uploadFile = {
@@ -358,8 +381,10 @@ export const getLocation = {
   },
 }
 export const openLocation = {
-  args: {
-    // TODO address 参数在阿里上是必传的
+  args(fromArgs: UniApp.OpenLocationOptions, toArgs: my.IOpenLocationOptions) {
+    if (!fromArgs.scale) {
+      toArgs.scale = 18
+    }
   },
 }
 export const getNetworkType = {
@@ -529,6 +554,14 @@ export const chooseAddress = {
     toRes.detailInfo = info.address
     toRes.telNumber = info.mobilePhone
     toRes.errMsg = toRes.errMsg + ' ' + fromRes.resultStatus
+  },
+}
+export const openDocument = {
+  args(fromArgs: UniApp.OpenDocumentOptions, toArgs: Record<string, any>) {
+    if (typeof fromArgs.showMenu === 'boolean') {
+      // 支付宝小程序 showMenu 类型为 string, https://opendocs.alipay.com/mini/api/mwpprc
+      toArgs.showMenu = String(fromArgs.showMenu)
+    }
   },
 }
 export const navigateTo = my.canIUse('page.getOpenerEventChannel')

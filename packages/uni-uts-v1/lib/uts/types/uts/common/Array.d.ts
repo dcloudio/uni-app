@@ -99,19 +99,30 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                "unixVer": "x"
+            },
+            "harmony": {
+                "osVer": "x",
+                "uniVer": "x",
+                "unixVer": "x"
             }
         },
-        "harmony": {
-            "osVer": "x",
+        "mp": {
+          "weixin": {
+            "hostVer": "x",
             "uniVer": "x",
             "unixVer": "x"
+          }
         },
+        "web": {
+            "uniVer": "x",
+            "unixVer": "x"
+        }
      }
    */
   toKotlinList(): kotlin.collections.List<any>
 
   /**
-     将指定的元素追加到此列表的末尾
+     将指定的元素追加到此列表的末尾，不推荐使用本方法，推荐使用push替代。
      @param item 添加到数组的元素。
      @return 是否成功添加
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#add
@@ -127,21 +138,27 @@ interface Array<T> {
             },
             "ios": {
                "osVer": "12.0",
-               "uniVer": "√",
-               "unixVer": "4.11",
+               "uniVer": "x",
+               "unixVer": "x",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-               "osVer": "5.0.0",
-               "uniVer": "√",
-               "unixVer": "4.61",
-               "uniUtsPlugin": "√",
-               "unixUtsPlugin": "4.61"
+               "osVer": "x",
+               "uniVer": "x",
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
-        "harmony": {
-            "osVer": "x",
+        "mp": {
+          "weixin": {
+            "hostVer": "x",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
+        },
+        "web": {
             "uniVer": "x",
             "unixVer": "x"
         }
@@ -167,12 +184,12 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+                "osVer": "x",
+                "uniVer": "x",
+                "unixVer": "x"
             }
-        },
-        "harmony": {
-            "osVer": "x",
-            "uniVer": "x",
-            "unixVer": "x"
         },
         "mp": {
           "weixin": {
@@ -208,13 +225,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+                "osVer": "x",
+                "uniVer": "x",
+                "unixVer": "x"
             }
-        },harmony
-        "harmony": {
-            "osVer": "x",
-            "uniVer": "x",
-            "unixVer": "x"
-        },
+        }
      }
    */
   joinToString(separator: string): string
@@ -834,6 +851,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1069,6 +1093,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1265,6 +1296,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1417,6 +1455,13 @@ interface Array<T> {
                "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1894,6 +1939,13 @@ interface ArrayConstructor {
                "unixVer": "4.11",
                "uniUtsPlugin": "4.51",
                "unixUtsPlugin": "4.51"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1931,6 +1983,13 @@ interface ArrayConstructor {
                "unixVer": "4.11",
                "uniUtsPlugin": "4.51",
                "unixUtsPlugin": "4.51"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1968,6 +2027,13 @@ interface ArrayConstructor {
                "unixVer": "4.11",
                "uniUtsPlugin": "4.51",
                "unixUtsPlugin": "4.51"
+            },
+            "harmony": {
+               "osVer": "5.0.0",
+               "uniVer": "√",
+               "unixVer": "4.61",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.61"
             }
         },
         "mp": {
@@ -1984,8 +2050,6 @@ interface ArrayConstructor {
       }
    */
   from<T, U>(arrayLike: ArrayLike<T>, mapfn: (v: T, k: number) => U): U[];
-
-
 
   /**
    * Array.fromAsync() 静态方法可以由一个异步可迭代对象、可迭代对象或类数组对象创建一个新的、浅拷贝的 Array 实例。
@@ -2008,6 +2072,13 @@ interface ArrayConstructor {
              "unixVer": "4.11",
              "uniUtsPlugin": "4.51",
              "unixUtsPlugin": "4.51"
+          },
+          "harmony": {
+              "osVer": "5.0.0",
+              "uniVer": "√",
+              "unixVer": "4.61",
+              "uniUtsPlugin": "√",
+              "unixUtsPlugin": "4.61"
           }
       },
         "mp": {
@@ -2025,7 +2096,28 @@ interface ArrayConstructor {
    */
   fromAsync<T, U>(arrayLike: ArrayLike<T>, mapfn: (v: T, k: number) => U): Promise<U[]>;
 
-
+  /**
+     fromNative() 方法 从native 数据结构中 转换得到一个UTS环境下的Array对象
+     支持传入的参数类型有: kotlin.collections.List/ kotlin.Array/kotlin.ByteArray/Kotlin.LongArray/Kotlin.IntArray 等
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#fromNative
+     @uniPlatform {
+        "app": {
+            "android": {
+                "osVer": "5.0",
+                "uniVer": "x",
+                "unixVer": "3.90",
+                "uniUtsPlugin": "√",
+                "unixUtsPlugin": "3.90"
+            },
+            "ios": {
+                "osVer": "x",
+                "uniVer": "x",
+                  "unixVer": "x"
+            }
+        }
+     }
+   */
+  fromNative(input : kotlin.ByteArray | Kotlin.LongArray | Kotlin.IntArray | Kotlin.FloatArray | Kotlin.DoubleArray | Kotlin.ShortArray | Kotlin.CharArray | Kotlin.BooleanArray | kotlin.Array | kotlin.collections.List) : Array;
 
   readonly prototype: any[]
 }

@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-console",
-  "version": "3.0.0-alpha-4070620250731002",
+  "version": "3.0.0-alpha-4080120250820001",
   "description": "uni-app console",
   "module": "dist/index.esm.js",
   "files": [
@@ -20,6 +20,6 @@
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
-    "fs-extra": "^10.0.0"
+    "fs-extra": "catalog:"
   }
 }

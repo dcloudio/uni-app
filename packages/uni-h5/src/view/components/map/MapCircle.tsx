@@ -1,10 +1,13 @@
 import { inject, onUnmounted, watch } from 'vue'
-import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
-import { Maps, Map, Circle, CircleOptions } from './maps'
+import {
+  defineSystemComponent,
+  type useCustomEvent,
+} from '@dcloudio/uni-components'
+import type { Circle, CircleOptions, Map, Maps } from './maps'
 import { hexToRgba } from '../../../helpers/hexToRgba'
 import { getIsAMap, getIsBMap } from '../../../helpers/location'
-import { QQMaps } from './maps/qq/types'
-import { GoogleMaps } from './maps/google/types'
+import type { QQMaps } from './maps/qq/types'
+import type { GoogleMaps } from './maps/google/types'
 
 const props = {
   latitude: { type: [Number, String], require: true },
@@ -75,16 +78,16 @@ export default /*#__PURE__*/ defineSystemComponent({
           }
         }
         if (getIsBMap()) {
-          // @ts-ignore
+          // @ts-expect-error
           let pt = new maps.Point(
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[0],
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[1]
           )
-          // @ts-ignore
+          // @ts-expect-error
           circle = new maps.Circle(pt, circleOptions.radius, circleOptions)
-          // @ts-ignore
+          // @ts-expect-error
           map.addOverlay(circle)
         } else {
           circle = new maps.Circle(circleOptions)

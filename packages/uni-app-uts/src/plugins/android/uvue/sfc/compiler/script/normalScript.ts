@@ -3,7 +3,6 @@ import type { BindingMetadata, SFCDescriptor } from '@vue/compiler-sfc'
 import {
   addUTSEasyComAutoImports,
   addUniModulesExtApiComponents,
-  enableSourceMap,
 } from '@dcloudio/uni-cli-shared'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
 import type { ScriptCompileContext } from './context'
@@ -106,11 +105,13 @@ export function processTemplate(
     bindingMetadata,
     className,
     rootDir,
+    sourceMap,
   }: {
     relativeFilename: string
     bindingMetadata?: BindingMetadata
     className: string
     rootDir: string
+    sourceMap?: boolean
   },
   pluginContext?: TransformPluginContext
 ) {
@@ -123,13 +124,19 @@ export function processTemplate(
       inline: !!sfc.scriptSetup,
       className,
       rootDir,
-      sourceMap: enableSourceMap(),
+      sourceMap: !!sourceMap,
       bindingMetadata,
     },
     pluginContext
   )
-  const { code, preamble, elements, map, easyComponentAutoImports } =
-    genTemplateCode(sfc, options)
+  const {
+    code,
+    preamble,
+    elements,
+    map,
+    easyComponentAutoImports,
+    preambleMap,
+  } = genTemplateCode(sfc, options)
   if (easyComponentAutoImports) {
     Object.keys(easyComponentAutoImports).forEach((source) => {
       addUTSEasyComAutoImports(source, easyComponentAutoImports[source])
@@ -150,5 +157,5 @@ export function processTemplate(
       addExtApiComponents(components)
     }
   }
-  return { code, map, preamble }
+  return { code, map, preamble, preambleMap }
 }

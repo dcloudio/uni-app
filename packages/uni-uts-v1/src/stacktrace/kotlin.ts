@@ -5,8 +5,12 @@ import { originalPositionFor, originalPositionForSync } from '../sourceMap'
 import {
   COLORS,
   type GenerateRuntimeCodeFrameOptions,
+  addConfusingBlock,
+  createFormattedErrorString,
   generateCodeFrame,
+  isFormattedErrorString,
   lineColumnToStartEnd,
+  parseErrorWithRules,
   resolveSourceMapDirByCacheDir,
   resolveSourceMapFileBySourceFile,
   splitRE,
@@ -29,10 +33,17 @@ interface GenerateCodeFrameOptions {
   format: (msg: MessageSourceLocation) => string
 }
 
-export function hbuilderFormatter(m: MessageSourceLocation) {
+export function hbuilderKotlinCompileErrorFormatter(m: MessageSourceLocation) {
   const msgs: string[] = []
+  let isFormatted = false
   if (m.type === 'error' || m.type === 'exception') {
-    m.message = formatKotlinError(m.message, [], compileFormatters)
+    const formatted = formatKotlinError(
+      m.message,
+      m.code?.split('\n') || [],
+      compileFormatters
+    )
+    isFormatted = isFormattedErrorString(formatted)
+    m.message = formatted
   }
   let msg = m.type + ': ' + m.message
   if (m.type === 'warning') {
@@ -49,10 +60,10 @@ export function hbuilderFormatter(m: MessageSourceLocation) {
       .forEach((m, index) => {
         // 重要：区块标识需要放到颜色值之后
         msgs.push(
-          '\u200B' +
+          COLORS.warn +
             (index === 0 ? SPECIAL_CHARS.WARN_BLOCK : '') +
             m +
-            '\u200B'
+            COLORS.warn
         )
       })
   } else if (m.type === 'error' || m.type === 'exception') {
@@ -62,10 +73,10 @@ export function hbuilderFormatter(m: MessageSourceLocation) {
       .forEach((m, index) => {
         // 重要：区块标识需要放到颜色值之后
         msgs.push(
-          '\u200C' +
+          COLORS.error +
             (index === 0 ? SPECIAL_CHARS.ERROR_BLOCK : '') +
             m +
-            '\u200C'
+            COLORS.error
         )
       })
   } else {
@@ -80,7 +91,18 @@ export function hbuilderFormatter(m: MessageSourceLocation) {
   if (m.code) {
     msgs.push(m.code)
   }
-  return msgs.join('\n')
+  const result = msgs.join('\n')
+  if (isFormatted) {
+    return result
+  }
+  const formatted = parseErrorWithRules(result, {
+    language: 'kotlin',
+    platform: 'app-android',
+  })
+  if (isFormattedErrorString(formatted)) {
+    return formatted
+  }
+  return addConfusingBlock(formatted)
 }
 
 export async function parseUTSKotlinStacktrace(
@@ -170,10 +192,11 @@ function resolveSourceMapFile(
 
 const DEFAULT_APPID = '__UNI__uniappx'
 
-function normalizeAppid(appid: string) {
+export function normalizeAppid(appid: string) {
   return appid.replace(/_/g, '')
 }
-function createRegExp(appid: string) {
+
+export function createUniXPackageRegExp(appid: string) {
   return new RegExp('uni\\.' + appid + '\\.(.*)\\..*\\(*\\.kt:([0-9]+)\\)')
 }
 
@@ -242,10 +265,11 @@ export function parseUTSKotlinRuntimeStacktrace(
     return ''
   }
   updateUTSKotlinSourceMapManifestCache(options.cacheDir)
-  const re = createRegExp(appid)
+  const re = createUniXPackageRegExp(appid)
   const res: string[] = []
   const lines = stacktrace.split(splitRE)
   const sourceMapDir = resolveSourceMapDirByCacheDir(options.cacheDir)
+  let changed = false
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     const codes = parseUTSKotlinRuntimeStacktraceLine(line, re, sourceMapDir)
@@ -253,20 +277,42 @@ export function parseUTSKotlinRuntimeStacktrace(
       const color = options.logType
         ? COLORS[options.logType as string] || ''
         : ''
-      let error =
-        'error: ' +
-        formatKotlinError(resolveCausedBy(res), codes, runtimeFormatters)
-      if (color) {
-        error = color + error + color
-      }
-      return (
-        SPECIAL_CHARS.ERROR_BLOCK +
-        [error, ...codes].join('\n') +
-        SPECIAL_CHARS.ERROR_BLOCK
+      const message = resolveCausedBy(res)
+      const formatted = formatKotlinError(
+        message,
+        codes,
+        runtimeFormatters,
+        options.appid
       )
+      let isFormatted = isFormattedErrorString(formatted)
+      let error = 'error: ' + formatted
+      // const isFormatted = message !== formatted
+      if (color) {
+        error = color + SPECIAL_CHARS.ERROR_BLOCK + error + color
+      }
+      let errorStr = [error, ...codes].join('\n')
+      if (!isFormatted) {
+        errorStr = parseErrorWithRules(errorStr, {
+          language: 'kotlin',
+          platform: 'app-android',
+        })
+        isFormatted = isFormattedErrorString(errorStr)
+      }
+      const result =
+        (color ? '' : SPECIAL_CHARS.ERROR_BLOCK) +
+        errorStr +
+        SPECIAL_CHARS.ERROR_BLOCK
+      return isFormatted ? result : addConfusingBlock(result)
     } else {
-      res.push(line)
+      const newLine = parseUTSKotlinRuntimeFilename(line, re, options.cacheDir)
+      if (!changed && newLine !== line) {
+        changed = true
+      }
+      res.push(newLine)
     }
+  }
+  if (changed) {
+    return res.join('\n')
   }
   return ''
 }
@@ -281,6 +327,37 @@ function resolveCausedBy(lines: string[]) {
   return lines[0]
 }
 
+/**
+ * 将类似
+ * at uni.UNI1F0998C.GenPagesIndexIndex$Companion$setup$1.invoke(index.kt:25)
+ * 转换为
+ * at uni.UNI1F0998C.GenPagesIndexIndex$Companion$setup$1.invoke(at /xx/xx/index.kt:25)
+ * @param lineStr
+ * @param re
+ * @param options
+ * @returns
+ */
+export function parseUTSKotlinRuntimeFilename(
+  lineStr: string,
+  re: RegExp,
+  cacheDir?: string
+) {
+  const matches = lineStr.match(re)
+  if (!matches) {
+    return lineStr
+  }
+  const [, className] = matches
+  const filename = parseFilenameByClassName(className)
+  return lineStr.replace(
+    /\(.*.kt:([0-9]+)\)/,
+    `(at ${
+      cacheDir
+        ? normalizePath(path.resolve(cacheDir, 'src', filename))
+        : filename
+    }:$1)`
+  )
+}
+
 function parseUTSKotlinRuntimeStacktraceLine(
   lineStr: string,
   re: RegExp,
@@ -293,10 +370,8 @@ function parseUTSKotlinRuntimeStacktraceLine(
   }
 
   const [, className, line] = matches
-  const sourceMapFile = resolveSourceMapFileBySourceFile(
-    parseFilenameByClassName(className),
-    sourceMapDir
-  )
+  const filename = parseFilenameByClassName(className)
+  const sourceMapFile = resolveSourceMapFileBySourceFile(filename, sourceMapDir)
   if (!sourceMapFile) {
     return lines
   }
@@ -330,7 +405,7 @@ function parseUTSKotlinRuntimeStacktraceLine(
 }
 
 interface Formatter {
-  format(error: string, codes: string[]): string | undefined
+  format(error: string, codes: string[], appid?: string): string | undefined
 }
 
 const TYPE_MISMATCH_RE =
@@ -349,35 +424,82 @@ function normalizeType(type: string) {
   return type
 }
 
-const extApiErrorFormatter: Formatter = {
+const extApiCompileErrorFormatter: Formatter = {
   format(error, codes) {
-    if (error.includes('Failed resolution of: L')) {
+    if (codes.length && error.includes('Unresolved reference: uni_')) {
+      const api = findUniExtApi(codes.join('\n'), UNI_API_RE, '^')
+      if (api) {
+        return createFormattedErrorString(
+          `请检查 ${api} 的拼写是否正确，或确认当前 HBuilderX 版本在当前平台是否支持此 API。`
+        )
+      }
+      return ``
+    }
+  },
+}
+
+const extApiRuntimeErrorFormatter: Formatter = {
+  format(error, codes) {
+    if (codes.length && error.includes('Failed resolution of: L')) {
       let isUniExtApi =
         error.includes('uts/sdk/modules/DCloudUni') ||
         error.includes('io/dcloud/uniapp/extapi/')
       let isUniCloudApi =
         !isUniExtApi && error.includes('io/dcloud/unicloud/UniCloud')
       if (isUniExtApi || isUniCloudApi) {
-        let api = ''
-        // 第一步先遍历查找^^^^^的索引
-        const codeFrames = codes[codes.length - 1].split(splitRE)
-        const index = codeFrames.findIndex((frame) => frame.includes('^^^^^'))
-        if (index > 0) {
-          // 第二步，取前一条记录，查找uni.开头的api
-          api = findApi(
-            codeFrames[index - 1],
-            isUniCloudApi ? UNI_CLOUD_API_RE : UNI_API_RE
-          )
-        }
+        let api = findUniExtApi(
+          codes[codes.length - 1],
+          isUniCloudApi ? UNI_CLOUD_API_RE : UNI_API_RE,
+          '^^^^^'
+        )
         if (api) {
           api = `api ${api}`
         } else {
           api = `您使用到的api`
         }
-        return `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
+        return createFormattedErrorString(
+          `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
+        )
       }
+    } else if (error.includes('Unresolved reference: uni_')) {
+      // let api = findUniExtApi(codes[codes.length - 1], UNI_API_RE)
+      return ``
     }
   },
+}
+
+function findUniExtApi(error: string, re: RegExp, includeStr: string) {
+  let api = ''
+  // 第一步先遍历查找^^^^^的索引
+  const codeFrames = error.split(splitRE)
+  const index = codeFrames.findIndex((frame) => frame.includes(includeStr))
+  if (index > 0) {
+    // 第二步，取前一条记录，查找uni.开头的api
+    api = findApi(codeFrames[index - 1], re)
+  }
+  return api
+}
+
+export function trimKotlinErrorMessage(error: string, appid?: string) {
+  if (appid) {
+    error = error.replaceAll(parseUniXAppAndroidPackage(appid) + '.', '')
+  }
+  let shouldTrimRenamer = true
+  const matches = error.match(TYPE_MISMATCH_RE)
+  if (matches) {
+    const [, inferredType, expectedType] = matches
+    // 如果是类型相同，则不进行重命名，不然会提示A不匹配A，更容易误解
+    if (
+      inferredType.replace('?', '').replace(/__[0-9]+/g, '') ===
+      expectedType.replace('?', '').replace(/__[0-9]+/g, '')
+    ) {
+      shouldTrimRenamer = false
+    }
+  }
+  if (shouldTrimRenamer) {
+    error = error.replace(/__[0-9]+/g, '')
+  }
+  return error.replace(/io\.dcloud\.[a-zA-Z0-9_.]+\./g, '')
 }
 
 function parseOrigType(type1: string, type2: string) {
@@ -402,9 +524,11 @@ const typeMismatchErrorFormatter: Formatter = {
       if (origType) {
         extra = `该错误可能是没有使用import导入${origType}引发的`
       }
-      return `类型不匹配: 推断类型是${normalizedInferredType}，但预期的是${normalizedExpectedType}${
-        extra ? `，${extra}` : ''
-      }。`
+      return createFormattedErrorString(
+        `类型不匹配: 推断类型是${normalizedInferredType}，但预期的是${normalizedExpectedType}${
+          extra ? `，${extra}` : ''
+        }。`
+      )
     }
   },
 }
@@ -422,16 +546,16 @@ const unresolvedErrorFormatter: Formatter = {
         return `${error}。[详情](${api.url})`
       }
     }
-    return error
   },
 }
 
 const compileFormatters: Formatter[] = [
   typeMismatchErrorFormatter,
+  extApiCompileErrorFormatter,
   unresolvedErrorFormatter,
 ]
 
-const runtimeFormatters: Formatter[] = [extApiErrorFormatter]
+const runtimeFormatters: Formatter[] = [extApiRuntimeErrorFormatter]
 
 const UNI_API_RE = /(uni\.\w+)/
 const UNI_CLOUD_API_RE = /(uniCloud\.\w+)/
@@ -446,7 +570,8 @@ function findApi(msg: string, re: RegExp) {
 function formatKotlinError(
   error: string,
   codes: string[],
-  formatters: Formatter[]
+  formatters: Formatter[],
+  appid?: string
 ): string {
   // 替换响应式类型为标准类型，使用对象映射提高可维护性
   const typeReplacements: Record<string, string> = {
@@ -463,11 +588,17 @@ function formatKotlinError(
     )
   })
 
+  error = trimKotlinErrorMessage(error, appid)
+
   for (const formatter of formatters) {
-    const err = formatter.format(error, codes)
+    const err = formatter.format(error, codes, appid)
     if (err) {
       return err
     }
   }
   return error
+}
+
+function parseUniXAppAndroidPackage(appid: string) {
+  return 'uni.' + appid.replace(/_/g, '')
 }

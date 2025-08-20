@@ -1305,10 +1305,14 @@ if (has.canIUse('requestPayment')) {
     providers.payment.push('huawei');
 }
 const getProvider = initGetProvider(providers);
+const navigateToMiniProgram = has.navigateToAtomicService;
+const navigateBackMiniProgram = has.navigateBackAtomicService;
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  getProvider: getProvider
+  getProvider: getProvider,
+  navigateBackMiniProgram: navigateBackMiniProgram,
+  navigateToMiniProgram: navigateToMiniProgram
 });
 
 const navigateTo = navigateTo$1();

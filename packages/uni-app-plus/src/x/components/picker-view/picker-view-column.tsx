@@ -9,6 +9,7 @@ import {
   onMounted,
   reactive,
   ref,
+  renderSlot,
   watch,
 } from 'vue'
 
@@ -207,9 +208,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
         init()
 
-        setTimeout(() => {
-          data._isMounted = true
-        }, 1000)
+        data._isMounted = true
 
         uniResizeObserver.observe(pickerColumnRef.value!)
       })
@@ -253,7 +252,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               style={contentStyle.value}
               ref={contentRef}
             >
-              {slots.default?.()}
+              {renderSlot(slots, 'default')}
             </view>
           </scroll-view>
           <view

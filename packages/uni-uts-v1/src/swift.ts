@@ -11,6 +11,8 @@ import {
   getCompilerServer,
   getUTSCompiler,
   isColorSupported,
+  isEnableSwiftUtsArray,
+  isEnableSwiftUtsMap,
   moveRootIndexSourceMap,
   normalizeUTSResult,
   parseExtApiDefaultParameters,
@@ -90,7 +92,7 @@ export async function runSwiftProd(
     return
   }
   if (result.error) {
-    throw parseUTSSyntaxError(result.error, inputDir)
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
   }
 
   const autoImportUniCloud = shouldAutoImportUniCloud()
@@ -202,7 +204,7 @@ export async function runSwiftDev(
     return
   }
   if (result.error) {
-    throw parseUTSSyntaxError(result.error, inputDir)
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
   }
   result.type = 'swift'
 
@@ -324,6 +326,7 @@ export async function compile(
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input,
     output: {
+      errorFormat: 'json',
       isX,
       isSingleThread,
       isPlugin,
@@ -343,6 +346,9 @@ export async function compile(
         uniExtApiDefaultNamespace: 'DCloudUTSExtAPI',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
+        enableSwiftUtsArray: isEnableSwiftUtsArray(),
+        enableSwiftUtsMap: isEnableSwiftUtsMap(),
+
         ...transform,
       },
     },

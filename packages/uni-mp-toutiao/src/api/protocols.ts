@@ -13,11 +13,6 @@ export const connectSocket = {
     method: false,
   },
 }
-export const chooseVideo = {
-  args: {
-    camera: false,
-  },
-}
 export const scanCode = {
   args: {
     onlyFromCamera: false,
@@ -45,10 +40,5 @@ export const requestPayment = {
   name: tt.pay ? 'pay' : 'requestPayment',
   args: {
     orderInfo: tt.pay ? 'orderInfo' : 'data',
-  },
-}
-export const getFileInfo = {
-  args: {
-    digestAlgorithm: false,
   },
 }

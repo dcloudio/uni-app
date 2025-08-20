@@ -1,3 +1,4 @@
+import path from 'path'
 import { camelize, extend, isString } from '@vue/shared'
 import { isComponentTag } from '@dcloudio/uni-shared'
 import {
@@ -18,11 +19,16 @@ import {
   isStaticExp,
   locStub,
 } from '@vue/compiler-core'
-import { createAssetUrlTransformWithOptions } from './transforms/templateTransformAssetUrl'
+import {
+  type AssetURLOptions,
+  createAssetUrlTransformWithOptions,
+} from './transforms/templateTransformAssetUrl'
 import { createSrcsetTransformWithOptions } from './transforms/templateTransformSrcset'
 import { isDirectiveNode } from '../vite/utils/ast'
 import { parseVueRequest } from '../vite/utils/url'
 import { EXTNAME_VUE_RE } from '../constants'
+import { normalizePath } from '../utils'
+import { parseUrl } from './transforms/templateUtils'
 
 export const VUE_REF = 'r'
 export const VUE_REF_IN_FOR = 'r-i-f'
@@ -116,7 +122,14 @@ export function createBindDirectiveNode(
   return createDirectiveNode('bind', name, value)
 }
 
-export function createUniVueTransformAssetUrls(base: string) {
+export function createUniVueTransformAssetUrls(
+  base: string,
+  resolveStaticAsset?: (
+    relativePath: string,
+    context: TransformContext,
+    options: AssetURLOptions
+  ) => string
+) {
   return {
     base,
     includeAbsolute: true,
@@ -135,11 +148,22 @@ export function createUniVueTransformAssetUrls(base: string) {
       'u-image': ['src'],
       'u-video': ['src', 'poster'],
     },
+    resolveStaticAsset: resolveStaticAsset || null,
   }
 }
 
-export function getBaseNodeTransforms(base: string) {
-  const transformAssetUrls = createUniVueTransformAssetUrls(base)
+export function getBaseNodeTransforms(
+  base: string,
+  resolveStaticAsset?: (
+    relativePath: string,
+    context: TransformContext,
+    options: AssetURLOptions
+  ) => string
+) {
+  const transformAssetUrls = createUniVueTransformAssetUrls(
+    base,
+    resolveStaticAsset
+  )
   return [
     createAssetUrlTransformWithOptions(transformAssetUrls),
     createSrcsetTransformWithOptions(transformAssetUrls),
@@ -233,4 +257,35 @@ export function advancePositionWithMutation(
       : numberOfCharacters - lastNewLinePos
 
   return pos
+}
+
+export function createResolveStaticAsset(inputDir: string) {
+  return function resolveStaticAsset(
+    relativePath: string,
+    context: TransformContext,
+    options: AssetURLOptions
+  ) {
+    const newRelativePath = normalizePath(
+      path.relative(
+        inputDir,
+        path.resolve(path.dirname(context.filename), relativePath)
+      )
+    )
+    if (options.base) {
+      // explicit base - directly rewrite relative urls into absolute url
+      // to avoid generating extra imports
+      // Allow for full hostnames provided in options.base
+      const base = parseUrl(options.base)
+      const protocol = base.protocol || ''
+      const host = base.host ? protocol + '//' + base.host : ''
+      const basePath = base.path || '/'
+      const url = parseUrl(newRelativePath)
+      // when packaged in the browser, path will be using the posix-
+      // only version provided by rollup-plugin-node-builtins.
+      return (
+        host + (path.posix || path).join(basePath, url.path + (url.hash || ''))
+      )
+    }
+    return newRelativePath
+  }
 }

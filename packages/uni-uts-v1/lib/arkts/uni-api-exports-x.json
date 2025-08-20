@@ -19,6 +19,27 @@
       "GetClipboardDataOptions"
     ],
     [
+      "WorkerErrorCode"
+    ],
+    [
+      "ICreateWorkerError"
+    ],
+    [
+      "WorkerOnMessageCallback"
+    ],
+    [
+      "WorkerOnErrorCallback"
+    ],
+    [
+      "WorkerPostMessageOptions"
+    ],
+    [
+      "Worker"
+    ],
+    [
+      "WorkerTaskImpl"
+    ],
+    [
       "LegacySaveFileSuccess"
     ],
     [
@@ -295,6 +316,12 @@
       "HideKeyboardOptions"
     ],
     [
+      "LocationErrorCode"
+    ],
+    [
+      "IGetLocationFail"
+    ],
+    [
       "GetLocationFail"
     ],
     [
@@ -305,6 +332,45 @@
     ],
     [
       "GetLocationOptions"
+    ],
+    [
+      "StartLocationUpdateSuccess"
+    ],
+    [
+      "StartLocationUpdateOptionsType"
+    ],
+    [
+      "StartLocationUpdateOptions"
+    ],
+    [
+      "StartLocationUpdate"
+    ],
+    [
+      "StopLocationUpdateSuccess"
+    ],
+    [
+      "StopLocationUpdateOptions"
+    ],
+    [
+      "StopLocationUpdate"
+    ],
+    [
+      "OnLocationChangeResult"
+    ],
+    [
+      "OnLocationChangeCallback"
+    ],
+    [
+      "OnLocationChangeErrorCallback"
+    ],
+    [
+      "StartLocationUpdateBackgroundSuccess"
+    ],
+    [
+      "StartLocationUpdateBackgroundOptions"
+    ],
+    [
+      "StartLocationUpdateBackground"
     ],
     [
       "UniLocationProvider"
@@ -736,6 +802,12 @@
       "GetUserInfoOptions"
     ],
     [
+      "IOauthFail"
+    ],
+    [
+      "OauthErrorCode"
+    ],
+    [
       "OpenAppAuthorizeSetting"
     ],
     [
@@ -850,13 +922,31 @@
       "ScanCodeOptions"
     ],
     [
+      "IShareFail"
+    ],
+    [
+      "ShareErrorCode"
+    ],
+    [
       "Share"
+    ],
+    [
+      "ShareMiniProgramShareType"
     ],
     [
       "ShareSuccess"
     ],
     [
+      "ShareFail"
+    ],
+    [
+      "ShareComplete"
+    ],
+    [
       "ShareProvider"
+    ],
+    [
+      "ShareScene"
     ],
     [
       "ShareOptions"

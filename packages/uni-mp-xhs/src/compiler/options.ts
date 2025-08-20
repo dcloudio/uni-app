@@ -2,6 +2,7 @@ import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
   type MiniProgramCompilerOptions,
+  getNativeTags,
   transformComponentLink,
   transformMatchMedia,
   transformRef,
@@ -24,7 +25,11 @@ export const compilerOptions: CompilerOptions = {
 
 const COMPONENTS_DIR = 'xhscomponents'
 
-export const customElements = ['post-note-button', 'group-chat-card']
+export const customElements = [
+  'post-note-button',
+  'group-chat-card',
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+]
 
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
@@ -104,7 +109,7 @@ export const options: UniMiniProgramPluginOptions = {
   },
   project: {
     filename: projectConfigFilename,
-    config: ['project.config.json'],
+    config: ['project.config.json', 'project.xhs.json'],
     source,
   },
   template: {

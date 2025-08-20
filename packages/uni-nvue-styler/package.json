@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-nvue-styler",
-  "version": "3.0.0-alpha-4070620250731002",
+  "version": "3.0.0-alpha-4080120250820001",
   "description": "uni-nvue-styler",
   "main": "./dist/uni-nvue-styler.cjs.js",
   "types": "./dist/uni-nvue-styler.d.ts",
@@ -20,6 +20,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "parse-css-font": "^4.0.0",
-    "postcss": "^8.4.35"
+    "postcss": "catalog:"
   }
 }

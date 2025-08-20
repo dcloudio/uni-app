@@ -76,6 +76,8 @@ export * from './ui/tabBar'
 export * from './ui/window'
 export * from './ui/getElementById'
 
+export * from './plugin/facialVerify'
+
 export * from './todo/index'
 
 export {

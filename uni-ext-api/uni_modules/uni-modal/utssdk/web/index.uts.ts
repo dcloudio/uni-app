@@ -1,11 +1,6 @@
-import { registerSystemRoute, getCurrentPage } from '@dcloudio/uni-runtime'
-import UniModalPage from "@/uni_modules/uni-modal/pages/uniModal/uniModal.vue";
-import { ShowModal, ShowModalOptions,UniShowModalResult,UniShowModalFailImpl } from "../interface.uts";
-import { HideModal, HideModalOptions,UniHideModalResult,UniHideModalFailImpl} from "../interface.uts";
+import { ShowModal, ShowModalOptions, UniShowModalResult, UniShowModalFailImpl, HideModal, HideModalOptions, UniHideModalResult, UniHideModalFailImpl } from "../interface.uts";
 
 export const showModal: ShowModal = (options: ShowModalOptions) => {
-	registerSystemRoute("uni:uniModal", UniModalPage);
-
 	const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
 	const baseEventName = `uni_modal_${uuid}`
 	const readyEventName = `${baseEventName}_ready`
