@@ -9,6 +9,7 @@ const PLATFORMS = getPlatforms()
 
 const alipayWindowMap = {
   defaultTitle: 'navigationBarTitleText',
+  navigationBarFrontColor : 'navigationBarTextStyle',
   pullRefresh: 'enablePullDownRefresh',
   allowsBounceVertical: 'allowsBounceVertical',
   titleBarColor: 'navigationBarBackgroundColor',
@@ -32,7 +33,8 @@ const alipayTabBarMap = {
   textColor: 'color',
   selectedColor: 'selectedColor',
   backgroundColor: 'backgroundColor',
-  items: 'list'
+  items: 'list',
+  overlay: 'overlay'
 }
 
 const alipayTabBarItemMap = {

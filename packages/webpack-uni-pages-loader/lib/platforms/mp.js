@@ -145,7 +145,8 @@ const platformJson2ProjectJson = {
   packOptions: deepCopy,
   debugOptions: deepCopy,
   scripts: deepCopy,
-  cloudbaseRoot: defaultCopy
+  cloudbaseRoot: defaultCopy,
+  watchOptions: deepCopy
 }
 
 function copyToJson (json, fromJson, options) {
@@ -281,7 +282,7 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
 
   const projectPath =
     projectName &&
-    path.resolve(process.env.VUE_CLI_CONTEXT || process.cwd(), projectName)
+    path.resolve(process.env.VUE_CLI_CONTEXT || process.env.UNI_INPUT_DIR, projectName)
 
   if (projectPath && fs.existsSync(projectPath)) {
     // 自定义 project.config.json

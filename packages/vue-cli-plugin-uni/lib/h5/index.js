@@ -18,8 +18,10 @@ const {
 const modifyVueLoader = require('../vue-loader')
 
 const WebpackHtmlAppendPlugin = require('../../packages/webpack-html-append-plugin')
-
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
+const WebpackHtmlInjectAliYunPlugin = require('../../packages/webpack-html-inject-aliyun-plugin/index')
+
+const { AliYunCloudAuthWebSDK } = require('../util')
 
 function resolve (dir) {
   return path.resolve(__dirname, '../../', dir)
@@ -84,6 +86,12 @@ const vueConfig = {
       baseUrl: publicPath
     }
   }
+}
+
+if (process.env.NODE_ENV !== 'production') {
+  vueConfig.pages.index.AliYunCloudAuthWebSDK = `<noscript>在运行期间注入实人认证 SDK。需要开启 JavaScript（发行期间会根据API的使用判断是否注入）</noscript>\n<script type="text/javascript" src="${AliYunCloudAuthWebSDK}"></script>`
+} else {
+  plugins.push(new WebpackHtmlInjectAliYunPlugin(AliYunCloudAuthWebSDK))
 }
 
 if (devServer && Object.keys(devServer).length) {

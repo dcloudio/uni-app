@@ -15,7 +15,7 @@ module.exports = {
     project: 'project.config.json'
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = ['jdcomponents']
+    const copyOptions = ['jdcomponents', 'custom-tab-bar', 'project.config.json']
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/jdcomponents')
     })

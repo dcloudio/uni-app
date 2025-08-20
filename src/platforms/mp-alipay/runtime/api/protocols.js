@@ -144,6 +144,11 @@ const protocols = { // 需要做转换的 API 列表
   showModal ({
     showCancel = true
   } = {}) {
+    if (my.canIUse('showModal')) {
+      return {
+        name: 'showModal'
+      }
+    }
     if (showCancel) {
       return {
         name: 'confirm',
@@ -194,16 +199,21 @@ const protocols = { // 需要做转换的 API 列表
   showActionSheet: {
     name: 'showActionSheet',
     args: {
-      itemList: 'items',
-      itemColor: false
+      itemList: 'items'
     },
     returnValue: {
       index: 'tapIndex'
     }
   },
   showLoading: {
-    args: {
-      title: 'content'
+    args (
+      fromArgs,
+      toArgs
+    ) {
+      if (!fromArgs.mask) {
+        toArgs.mask = false
+      }
+      toArgs.content = fromArgs.title
     }
   },
   uploadFile: {
@@ -317,8 +327,10 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   openLocation: {
-    args: {
-      // TODO address 参数在阿里上是必传的
+    args (fromArgs, toArgs) {
+      if (!fromArgs.scale) {
+        toArgs.scale = 18
+      }
     }
   },
   getNetworkType: {
@@ -487,6 +499,14 @@ const protocols = { // 需要做转换的 API 列表
       result.detailInfo = info.address
       result.telNumber = info.mobilePhone
       result.errMsg = result.resultStatus
+    }
+  },
+  openDocument: {
+    args (fromArgs, toArgs) {
+      if (typeof fromArgs.showMenu === 'boolean') {
+        // 支付宝小程序 showMenu 类型为 string, https://opendocs.alipay.com/mini/api/mwpprc
+        toArgs.showMenu = String(fromArgs.showMenu)
+      }
     }
   }
 }

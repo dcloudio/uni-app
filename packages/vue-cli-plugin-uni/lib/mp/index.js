@@ -201,15 +201,17 @@ module.exports = {
     }
 
     {
-      const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx';
-      [].concat(
-        process.env.UNI_MP_PLUGIN
-          ? process.env.UNI_MP_PLUGIN_MAIN
-          : JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT)
-      ).forEach(fileName => addToUniEntry(fileName))
-      beforeCode += `
-// @ts-ignore
-${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
+      const globalEnv = process.env.UNI_PLATFORM === 'mp-alipay' ? 'my' : 'wx'
+      if (process.env.UNI_MP_PLUGIN) {
+        addToUniEntry(process.env.UNI_MP_PLUGIN_MAIN)
+      } else if (process.env.UNI_MP_PLUGIN_EXPORT) {
+        let exportFiles = JSON.parse(process.env.UNI_MP_PLUGIN_EXPORT)
+        if (typeof exportFiles === 'string') {
+          exportFiles = [exportFiles]
+        }
+        exportFiles.forEach(fileName => addToUniEntry(fileName))
+      }
+      beforeCode += `\n// @ts-ignore\n${globalEnv}.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;`
     }
 
     const alias = { // 仅 mp-weixin

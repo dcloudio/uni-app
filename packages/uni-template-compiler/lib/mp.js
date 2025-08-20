@@ -113,8 +113,13 @@ const tags = {
     // 'span', // todo: 临时移除 span 的支持，后续判断 skyline 环境进行区分 ask 190418
     'sticky-header',
     'sticky-section',
+    'store-product',
+    'store-home',
+    'store-gift',
+    'store-coupon',
     'open-data-list',
-    'open-data-item'
+    'open-data-item',
+    'selection'
   ],
   // 支付宝小程序平台独有组件
   'mp-alipay': [
@@ -131,12 +136,16 @@ const tags = {
     'mkt',
     'page-container',
     'page-meta',
+    'root-portal',
+    'share-element',
     'lottie',
     'join-group-chat',
-    'subscribe-message'
+    'subscribe-message',
+    'mpass-component'
   ],
   // 抖音小程序平台独有组件
   'mp-toutiao': [
+    'draw-ad',
     'aweme-data',
     'consume-card',
     'pay-button',
@@ -146,13 +155,20 @@ const tags = {
     'live-preview',
     'aweme-live-book',
     'aweme-user-card',
-    'rtc-room'
+    'rtc-room',
+    'clue-order-form',
+    'shop-follow-card'
   ],
   'mp-kuaishou': [
     'follow-service',
     'payment-list',
-    'playlet'
-  ]
+    'playlet',
+    'address',
+    'page-meta',
+    'navigation-bar'
+  ],
+  'mp-xhs': ['post-note-button', 'group-chat-card'],
+  'mp-jd': ['root-portal', 'page-container']
 }
 
 const baseCompiler = {

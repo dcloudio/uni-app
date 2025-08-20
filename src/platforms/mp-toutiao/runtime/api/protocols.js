@@ -109,11 +109,6 @@ const protocols = {
       method: false
     }
   },
-  chooseVideo: {
-    args: {
-      camera: false
-    }
-  },
   scanCode: {
     args: {
       onlyFromCamera: false,
@@ -141,11 +136,6 @@ const protocols = {
     name: tt.pay ? 'pay' : 'requestPayment',
     args: {
       orderInfo: tt.pay ? 'orderInfo' : 'data'
-    }
-  },
-  getFileInfo: {
-    args: {
-      digestAlgorithm: false
     }
   }
 }

@@ -97,7 +97,7 @@ function decodeEntities (htmlString) {
   })
 }
 
-function normlizeValue (tagName, name, value) {
+function normalizeValue (tagName, name, value) {
   if (tagName === 'img' && name === 'src') return getRealPath(value)
   return value
 }
@@ -134,7 +134,7 @@ export default function parseNodes (nodes, parentNode, scopeId, triggerItemClick
               break
             default:
               if (tagAttrs.indexOf(name) !== -1) {
-                elem.setAttribute(name, normlizeValue(tagName, name, value))
+                elem.setAttribute(name, normalizeValue(tagName, name, value))
               }
           }
         })

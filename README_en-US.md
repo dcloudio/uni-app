@@ -6,7 +6,7 @@
 
 `uni-app` is a unified front-end framework that uses `Vue.js` to develop applet, H5, and App. Official website address: [https://uniapp.dcloud.io](https://uniapp.dcloud.io)
 
-Developers use `Vue` syntax to write code, and `uni-app` framework compiles it into small programs (WeChat/Alipay/Baidu/ByteDance/QQ/Kuishou/Dingding/Xiaohongshu), App (iOS/Android) ), H5 and other platforms to ensure its correct operation and achieve an excellent experience.
+Developers use `Vue` syntax to write code, and `uni-app` framework compiles it into small programs (WeChat/Alipay/Baidu/ByteDance/QQ/Kuishou/Dingding/Xiaohongshu), App (iOS/Android/HarmonyOS) ), H5 and other platforms to ensure its correct operation and achieve an excellent experience.
 
 # Features of uni-app
 
