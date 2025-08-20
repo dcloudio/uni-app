@@ -13509,7 +13509,7 @@ function parseResponseText(responseText, responseType, dataType2) {
   let res = responseText;
   if (responseType === "text" && dataType2 === "json") {
     try {
-      res = UTS.JSON.parse(res);
+      res = UTS.JSON.parse(res) || res;
     } catch (error) {
     }
   }
