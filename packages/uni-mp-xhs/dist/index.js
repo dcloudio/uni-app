@@ -326,7 +326,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
+  /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS|getFacialRecognitionMetaInfo/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -835,9 +835,19 @@ const protocols = {
   // navigateTo,
   // redirectTo,
   // previewImage,
-  getSystemInfo,
-  getSystemInfoSync: getSystemInfo
   // getUserProfile
+  getSystemInfo,
+  getSystemInfoSync: getSystemInfo,
+  requestPayment: {
+    name: 'requestOrderPayment'
+  },
+  showActionSheet: {
+    args (fromArgs, toArgs) {
+      if (!fromArgs.itemColor) {
+        toArgs.itemColor = '#000000';
+      }
+    }
+  }
 };
 
 // 不支持的 API 列表

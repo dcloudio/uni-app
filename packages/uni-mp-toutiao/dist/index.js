@@ -326,7 +326,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
+  /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS|getFacialRecognitionMetaInfo/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1110,11 +1110,6 @@ const protocols = {
       method: false
     }
   },
-  chooseVideo: {
-    args: {
-      camera: false
-    }
-  },
   scanCode: {
     args: {
       onlyFromCamera: false,
@@ -1142,11 +1137,6 @@ const protocols = {
     name: tt.pay ? 'pay' : 'requestPayment',
     args: {
       orderInfo: tt.pay ? 'orderInfo' : 'data'
-    }
-  },
-  getFileInfo: {
-    args: {
-      digestAlgorithm: false
     }
   }
 };

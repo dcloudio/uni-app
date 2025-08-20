@@ -326,7 +326,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
+  /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS|getFacialRecognitionMetaInfo/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1139,7 +1139,7 @@ const protocols = { // 需要做转换的 API 列表
   showModal ({
     showCancel = true
   } = {}) {
-    if(my.canIUse('showModal')) {
+    if (my.canIUse('showModal')) {
       return {
         name: 'showModal'
       }
@@ -1194,15 +1194,21 @@ const protocols = { // 需要做转换的 API 列表
   showActionSheet: {
     name: 'showActionSheet',
     args: {
-      itemList: 'items',
+      itemList: 'items'
     },
     returnValue: {
       index: 'tapIndex'
     }
   },
   showLoading: {
-    args: {
-      title: 'content'
+    args (
+      fromArgs,
+      toArgs
+    ) {
+      if (!fromArgs.mask) {
+        toArgs.mask = false;
+      }
+      toArgs.content = fromArgs.title;
     }
   },
   uploadFile: {
@@ -1316,8 +1322,10 @@ const protocols = { // 需要做转换的 API 列表
     }
   },
   openLocation: {
-    args: {
-      // TODO address 参数在阿里上是必传的
+    args (fromArgs, toArgs) {
+      if (!fromArgs.scale) {
+        toArgs.scale = 18;
+      }
     }
   },
   getNetworkType: {
@@ -1486,6 +1494,14 @@ const protocols = { // 需要做转换的 API 列表
       result.detailInfo = info.address;
       result.telNumber = info.mobilePhone;
       result.errMsg = result.resultStatus;
+    }
+  },
+  openDocument: {
+    args (fromArgs, toArgs) {
+      if (typeof fromArgs.showMenu === 'boolean') {
+        // 支付宝小程序 showMenu 类型为 string, https://opendocs.alipay.com/mini/api/mwpprc
+        toArgs.showMenu = String(fromArgs.showMenu);
+      }
     }
   }
 };
@@ -1926,9 +1942,6 @@ function __f__ (
 
 let onKeyboardHeightChangeCallback;
 function startGyroscope (params) {
-  if (hasOwn(params, 'interval')) {
-    console.warn('支付宝小程序 startGyroscope暂不支持interval');
-  }
   params.success && params.success({
     errMsg: 'startGyroscope:ok'
   });
@@ -2959,7 +2972,7 @@ const hooks = [
 function initEventChannel$1 () {
   Vue.prototype.getOpenerEventChannel = function () {
     {
-      if (my.canIUse('getOpenerEventChannel')) { return this.$scope.getOpenerEventChannel() }
+      if (my.canIUse('page.getOpenerEventChannel')) { return this.$scope.getOpenerEventChannel() }
     }
     if (!this.__eventChannel__) {
       this.__eventChannel__ = new EventChannel();
