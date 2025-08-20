@@ -16251,29 +16251,29 @@ class LivePusherContextVue {
         this.id = id;
         this.pageId = pageId;
     }
-    start() {
-        publishToView(this.id, this.pageId, 'start');
+    start(options) {
+        publishToView(this.id, this.pageId, 'start', options);
     }
-    stop() {
-        publishToView(this.id, this.pageId, 'stop');
+    stop(options) {
+        publishToView(this.id, this.pageId, 'stop', options);
     }
-    pause() {
-        publishToView(this.id, this.pageId, 'pause');
+    pause(options) {
+        publishToView(this.id, this.pageId, 'pause', options);
     }
-    resume() {
-        publishToView(this.id, this.pageId, 'resume');
+    resume(options) {
+        publishToView(this.id, this.pageId, 'resume', options);
     }
-    switchCamera() {
-        publishToView(this.id, this.pageId, 'switchCamera');
+    switchCamera(options) {
+        publishToView(this.id, this.pageId, 'switchCamera', options); // todo
     }
-    startPreview() {
-        publishToView(this.id, this.pageId, 'preview');
+    startPreview(options) {
+        publishToView(this.id, this.pageId, 'preview', options);
     }
-    stopPreview() {
-        publishToView(this.id, this.pageId, 'stop');
+    stopPreview(options) {
+        publishToView(this.id, this.pageId, 'stop', options);
     }
-    snapshot() {
-        publishToView(this.id, this.pageId, 'snapshot');
+    snapshot(options) {
+        publishToView(this.id, this.pageId, 'snapshot', options);
     }
 }
 const createLivePusherContext = defineSyncApi(API_CREATE_LIVE_PUSHER_CONTEXT, (id, vm) => {

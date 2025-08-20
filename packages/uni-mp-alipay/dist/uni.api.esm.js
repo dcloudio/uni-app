@@ -1291,9 +1291,6 @@ function removeStorageSync(key) {
     });
 }
 function startGyroscope(args) {
-    if (hasOwn(args, 'interval')) {
-        console.warn('支付宝小程序 startGyroscope暂不支持interval');
-    }
     args.success &&
         args.success({
             errMsg: 'startGyroscope:ok',

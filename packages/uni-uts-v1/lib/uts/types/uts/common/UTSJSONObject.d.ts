@@ -639,16 +639,23 @@ interface UTSJSONObject {
                "unixUtsPlugin": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "osVer": "x",
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x"
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
            "uniVer": "x",
            "unixVer": "x"
+        },
+        "mp": {
+          "weixin": {
+            "hostVer": "x",
+            "uniVer": "x",
+            "unixVer": "x"
+          }
         }
      }
    */

@@ -507,8 +507,25 @@ const UTSJSON = {
       return null;
     }
   },
-  stringify: (value) => {
-    return OriginalJSON.stringify(value);
+  stringify: (value, replacer, space) => {
+    try {
+      if (!replacer) {
+        const visited = /* @__PURE__ */ new Set();
+        replacer = function(_, v2) {
+          if (typeof v2 === "object") {
+            if (visited.has(v2)) {
+              return null;
+            }
+            visited.add(v2);
+          }
+          return v2;
+        };
+      }
+      return OriginalJSON.stringify(value, replacer, space);
+    } catch (error) {
+      console.error(error);
+      return "";
+    }
   }
 };
 function mapGet(map, key) {
