@@ -2,7 +2,7 @@ const compiler = require("../lib");
 
 function assertCodegen(template, templateCode, renderCode = "with(this){}") {
   const res = compiler.compile(template, {
-    resourcePath: "test.wxml",
+    resourcePath: "it.wxml",
     mp: Object.assign(
       {
         minified: true,
@@ -23,7 +23,7 @@ function assertCodegen(template, templateCode, renderCode = "with(this){}") {
 }
 
 describe("compiler-mp-merge-virtual-host-attributes", () => {
-  test("root node class", () => {
+  it("root node class", () => {
     assertCodegen(
       '<view class="red blue"><text>hello world</text></view>',
       `<view class="{{['red','blue',virtualHostClass]}}" style="{{virtualHostStyle}}"><text>hello world</text></view>`
@@ -50,7 +50,7 @@ describe("compiler-mp-merge-virtual-host-attributes", () => {
     );
   });
 
-  test("root node style", () => {
+  it("root node style", () => {
     assertCodegen(
       '<view style="color: red"><text>hello world</text></view>',
       `<view class="{{[virtualHostClass]}}" style="{{'color:red;'+(virtualHostStyle||'')}}"><text>hello world</text></view>`
@@ -67,7 +67,7 @@ describe("compiler-mp-merge-virtual-host-attributes", () => {
     );
   });
 
-  test("root node class and style", () => {
+  it("root node class and style", () => {
     assertCodegen(
       '<view class="red blue" style="color: red"><text>hello world</text></view>',
       `<view class="{{['red','blue',virtualHostClass]}}" style="{{'color:red;'+(virtualHostStyle||'')}}"><text>hello world</text></view>`
@@ -89,7 +89,7 @@ describe("compiler-mp-merge-virtual-host-attributes", () => {
     );
   });
 
-  test("child node with v-for directive", () => {
+  it("child node with v-for directive", () => {
     assertCodegen(
       '<view><text v-for="item in 3" :key="item">hello world {{ item }}</text></view>',
       `<view class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}"><block wx:for="{{3}}" wx:for-item="item" wx:for-index="__i0__" wx:key="*this"><text>{{"hello world "+item}}</text></block></view>`
