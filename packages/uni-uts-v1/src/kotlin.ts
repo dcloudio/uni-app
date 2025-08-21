@@ -408,15 +408,11 @@ export async function compileAndroidDex(
 ) {
   const inputDir = process.env.UNI_INPUT_DIR
   const { getKotlincHome, compile: compileDex } = compilerServer
+  const jars = getKotlinCompileJars(isX, depJars, compilerServer)
   const options = {
     pageCount: 0,
-    kotlinc: resolveKotlincArgs(
-      kotlinFiles,
-      jarFile,
-      getKotlincHome(),
-      getKotlinCompileJars(isX, depJars, compilerServer)
-    ),
-    d8: resolveD8Args(jarFile),
+    kotlinc: resolveKotlincArgs(kotlinFiles, jarFile, getKotlincHome(), jars),
+    d8: resolveD8Args(jarFile, jars),
     sourceRoot: inputDir,
     sourceMapPath,
     stderrListener,
@@ -707,8 +703,16 @@ export function resolveKotlincArgs(
 
 export const D8_DEFAULT_ARGS = ['--min-api', '19']
 
-export function resolveD8Args(filename: string) {
-  return [filename, ...D8_DEFAULT_ARGS, '--output', resolveDexPath(filename)]
+export function resolveD8Args(filename: string, jars: string[]) {
+  return [
+    filename,
+    ...D8_DEFAULT_ARGS,
+    '--output',
+    resolveDexPath(filename),
+    ...jars.flatMap((jar) => {
+      return ['--classpath', jar]
+    }),
+  ]
 }
 
 function resolveLibs(filename: string) {
