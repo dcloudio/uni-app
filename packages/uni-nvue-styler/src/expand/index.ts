@@ -106,9 +106,12 @@ export function vueStyleValidator(options: NormalizeOptions): Plugin {
 
       if (decl.prop.startsWith('--')) {
         const parent = decl.parent
-        // 检查 parent 是否是 Rule 选择器
-        if (!parent || parent.type !== 'rule') {
-          const reason = `ERROR: CSS custom properties must be inside a CSS rule (selector). Found "${decl.prop}" at top level.`
+        if (
+          parent?.type === 'root' &&
+          parent?.source?.input?.from.includes('&type=style')
+        ) {
+          // 命中：在根节点且不是 template 样式，需要禁止
+          const reason = `ERROR: CSS custom properties must be inside a CSS rule (selector) or @ rule. Found "${decl.prop}" at top level in Vue style block.`
 
           let needLog = false
           if (options.logLevel === 'NOTE') {
