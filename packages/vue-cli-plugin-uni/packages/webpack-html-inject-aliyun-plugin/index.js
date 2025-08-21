@@ -40,7 +40,7 @@ class WebpackHtmlInjectAliYunPlugin {
     if (!this.isEnableFacialRecognition) {
       const assets = compilation.assets
       const chunkNames = Object.keys(assets).filter(name =>
-        name.endsWith('.js')
+        name.endsWith('.js') && !name.includes('chunk-vendors')
       )
       chunkNames.forEach(name => {
         if (!this.isEnableFacialRecognition) {
