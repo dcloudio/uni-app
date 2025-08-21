@@ -19,11 +19,17 @@ export function createIsStaticFile() {
         return normalizePath(path.join(subPackage.root, 'static')) + '/'
       })
   }
-  return function isStaticFile(relativeFile: string): boolean {
+  return function isStaticFile(
+    relativeFile: string,
+    onlySubPackages = false // 是否只判断子包 static 下的文件
+  ): boolean {
     if (path.isAbsolute(relativeFile)) {
       relativeFile = normalizePath(
         path.relative(process.env.UNI_INPUT_DIR, relativeFile)
       )
+    }
+    if (onlySubPackages) {
+      return subPackageStatics.some((s) => relativeFile.startsWith(s))
     }
     return (
       relativeFile.startsWith('static/') ||
@@ -33,7 +39,9 @@ export function createIsStaticFile() {
   }
 }
 
-let isStaticFile: (file: string) => boolean
+export type IsStaticFile = (file: string, onlySubPackages?: boolean) => boolean
+
+let isStaticFile: IsStaticFile
 export function getIsStaticFile() {
   if (!isStaticFile) {
     isStaticFile = createIsStaticFile()

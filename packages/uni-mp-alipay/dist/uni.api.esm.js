@@ -1519,8 +1519,7 @@ const setNavigationBarTitle = {
  * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
  */
 function showModal({ showCancel = true } = {}) {
-    const canIUseShowModal = my.canIUse('showModal');
-    if (canIUseShowModal) {
+    if (my.canIUse('showModal')) {
         return {
             name: 'showModal',
         };
@@ -1555,9 +1554,6 @@ function showModal({ showCancel = true } = {}) {
 function showToast({ icon = 'success' } = {}) {
     const args = {
         title: 'content',
-        icon: 'type',
-        image: false,
-        mask: false,
     };
     if (icon === 'loading') {
         return {
@@ -1567,14 +1563,13 @@ function showToast({ icon = 'success' } = {}) {
     }
     return {
         name: 'showToast',
-        args,
+        args: extend({ icon: 'type' }, args),
     };
 }
 const showActionSheet = {
     name: 'showActionSheet',
     args: {
         itemList: 'items',
-        itemColor: false,
     },
     returnValue: {
         index: 'tapIndex',
@@ -1739,8 +1734,10 @@ const getClipboardData = {
     },
 };
 const pageScrollTo = {
-    args: {
-        duration: false,
+    args(fromArgs, toArgs) {
+        if (fromArgs.duration === undefined) {
+            toArgs.duration = 300;
+        }
     },
 };
 const login = {

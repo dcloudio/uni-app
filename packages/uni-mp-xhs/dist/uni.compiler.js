@@ -73,7 +73,7 @@ const compilerOptions = {
     directiveTransforms,
 };
 const COMPONENTS_DIR = 'xhscomponents';
-const customElements = ['post-note-button'];
+const customElements = ['post-note-button', 'group-chat-card'];
 const miniProgram = {
     class: {
         array: false,

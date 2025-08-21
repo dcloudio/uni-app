@@ -7680,7 +7680,8 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
       _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
     }
     vue.watch(() => props2.nodes, renderVNode, {
-      immediate: true
+      immediate: true,
+      deep: true
     });
     return () => vue.h("uni-rich-text", {
       ref: rootRef
@@ -13304,7 +13305,7 @@ class UniMatchMediaElement extends UniViewElement {
     }, this.uniPage.vm.$);
   }
   attributeChangedCallback(name, oldValue, newValue) {
-    if (this._experssions.length == 0 || newValue == null) {
+    if (this._experssions.length == 0) {
       return;
     }
     const matches = name.match(RE_MQ_FEATURE);

@@ -1,3 +1,4 @@
+import { getShadowImagePath } from '../utils'
 import { runByHBuilderX } from '../hbx/env'
 import { getPlatformManifestJsonOnce, parseManifestJsonOnce } from '../json'
 
@@ -7,7 +8,8 @@ export function initDefine(stringifyBoolean: boolean = false) {
   const isRunByHBuilderX = runByHBuilderX()
   const isDebug = !!manifestJson.debug
   const isX = process.env.UNI_APP_X === 'true'
-  const isMP = process.env.UNI_PLATFORM.startsWith('mp')
+  const isMP =
+    process.env.UNI_PLATFORM && process.env.UNI_PLATFORM.startsWith('mp-')
 
   process.env['UNI_APP_ID'] = manifestJson.appid
 
@@ -72,6 +74,9 @@ export function initDefine(stringifyBoolean: boolean = false) {
     ),
     'process.env.VUE_APP_DARK_MODE': JSON.stringify(
       platformManifestJson.darkmode || false
+    ),
+    __UNI_PRELOAD_SHADOW_IMAGE__: JSON.stringify(
+      process.env.UNI_PLATFORM === 'mp-weixin' ? getShadowImagePath('grey') : ''
     ),
     ...mpXDefine,
   }

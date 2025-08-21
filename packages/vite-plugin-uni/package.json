@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/vite-plugin-uni",
-  "version": "3.0.0-4070520250711001",
+  "version": "3.0.0-alpha-4070620250731002",
   "description": "uni-app vite plugin",
   "bin": {
     "uni": "bin/uni.js"
@@ -65,7 +65,7 @@
     "vite": "^5.2.8"
   },
   "uni-app": {
-    "compilerVersion": "4.75"
+    "compilerVersion": "4.76"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da"
 }
