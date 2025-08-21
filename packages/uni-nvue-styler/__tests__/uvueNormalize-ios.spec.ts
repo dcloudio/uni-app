@@ -1,12 +1,15 @@
 import { parse } from '../src'
+import type { ParseOptions } from '../src/parse'
 
 // for uvue version
-async function objectifierRule(input: string) {
-  const { code, messages } = await parse(input, {
+async function objectifierRule(input: string, options: ParseOptions = {}) {
+  const opt = Object.assign({}, options, {
     logLevel: 'NOTE',
     type: 'uvue',
     platform: 'app-ios',
   })
+
+  const { code, messages } = await parse(input, opt)
 
   return {
     json: JSON.parse(code),
@@ -764,14 +767,19 @@ border-color: var(--default-border);
   })
 
   test('css var 全局定义产生编码错误', async () => {
-    const { json, messages } = await objectifierRule(`
+    const res = await objectifierRule(
+      `
   --color: #fff000;
   .box {
     color: var(--color);
   }
   .box1{color:#FF0000}
-`)
-    expect(json).toEqual({
+`,
+      {
+        filename: 'index.uvue?vue&type=style&index=0&lang.css',
+      }
+    )
+    expect(res.json).toEqual({
       box: {
         '': {
           color: 'var(--color)',
@@ -783,6 +791,28 @@ border-color: var(--default-border);
         },
       },
     })
-    expect(messages.length).toBe(1)
+    expect(res.messages.length).toBe(1)
+
+    const res2 = await objectifierRule(`
+  --color: #fff000;
+  .box {
+    color: var(--color);
+  }
+  .box1{color:#FF0000}
+`)
+    expect(res2.json).toEqual({
+      '--color': '#fff000',
+      box: {
+        '': {
+          color: 'var(--color)',
+        },
+      },
+      box1: {
+        '': {
+          color: '#FF0000',
+        },
+      },
+    })
+    expect(res2.messages.length).toBe(0)
   })
 })

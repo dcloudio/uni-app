@@ -5,7 +5,7 @@ import { expand, vueStyleValidator } from './expand'
 import { normalize } from './normalize'
 import type { NormalizeOptions } from './utils'
 
-interface ParseOptions extends NormalizeOptions {
+export interface ParseOptions extends NormalizeOptions {
   filename?: string
   map?: boolean
   mapOf?: string
