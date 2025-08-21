@@ -377,6 +377,14 @@ async function runKotlinDev(
       const kotlinClassOutDir = kotlinClassDir(kotlinRootOutDir)
       const waiting = { done: undefined }
 
+      const jars = getDefaultJar(2)
+        // 加密插件已经迁移到普通插件目录了，理论上不需要了
+        .concat(getUniModulesEncryptCacheJars(cacheDir)) // 加密插件jar
+        .concat(getUniModulesCacheJars(cacheDir)) // 普通插件jar
+        .concat(getUniModulesJars(outputDir)) // cli版本插件jar（没有指定cache的时候）
+        .concat(configJsonJars) // 插件config.json依赖
+        .concat(libsJars) // 插件本地libs
+
       const compileOptions = {
         version: 'v2',
         pageCount,
@@ -384,17 +392,13 @@ async function runKotlinDev(
           kotlinChangedFiles,
           kotlinClassOutDir,
           getKotlincHome(),
-          [kotlinClassOutDir].concat(
-            getDefaultJar(2)
-              // 加密插件已经迁移到普通插件目录了，理论上不需要了
-              .concat(getUniModulesEncryptCacheJars(cacheDir)) // 加密插件jar
-              .concat(getUniModulesCacheJars(cacheDir)) // 普通插件jar
-              .concat(getUniModulesJars(outputDir)) // cli版本插件jar（没有指定cache的时候）
-              .concat(configJsonJars) // 插件config.json依赖
-              .concat(libsJars) // 插件本地libs
-          )
+          [kotlinClassOutDir].concat(jars)
         ).concat(['-module-name', `main-${+Date.now()}`]),
-        d8: D8_DEFAULT_ARGS,
+        d8: D8_DEFAULT_ARGS.concat(
+          jars.flatMap((jar) => {
+            return ['--classpath', jar]
+          })
+        ),
         kotlinOutDir: kotlinClassOutDir,
         dexOutDir: kotlinDexOutDir,
         inputDir: kotlinSrcOutDir,
