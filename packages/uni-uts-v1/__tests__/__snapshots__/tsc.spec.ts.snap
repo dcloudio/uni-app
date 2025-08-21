@@ -8,10 +8,10 @@ exports[`uni_modules tsc test-a app-android: utssdk/app-android/index.uts 1`] = 
 `;
 
 exports[`uni_modules tsc test-a app-android: utssdk/app-android/index.vue 1`] = `
-"<template></template>
-<script>
+"<template><>/template><script>;
 export default {}
-</script>"
+    < /script>;
+"
 `;
 
 exports[`uni_modules tsc test-a app-android: utssdk/app-ios/index.uts 1`] = `
