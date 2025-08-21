@@ -5,7 +5,7 @@ import {
   type MiniProgramCompilerOptions,
   getNativeTags,
   transformComponentLink,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -14,7 +14,7 @@ import source from './project.config.json'
 
 const nodeTransforms = [
   transformRef,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformComponentLink,
 ]
 

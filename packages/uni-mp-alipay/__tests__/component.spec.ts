@@ -11,10 +11,10 @@ describe('mp-alipay: transform component', () => {
     const code = customElements.map((tag) => `<${tag}/>`).join('')
     assert(code, code, blankScript)
   })
-  test(`match-media`, () => {
+  test('match-media', () => {
     assert(
-      `<match-media/>`,
-      `<uni-match-media u-i="2a9ec0b0-0" onVI="__l"/>`,
+      `<match-media min-width="600" max-height="1000"/>`,
+      `<match-media min-width="600" max-height="1000"/>`,
       blankScript
     )
   })

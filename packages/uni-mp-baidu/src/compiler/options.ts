@@ -3,7 +3,7 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   type MiniProgramCompilerOptions,
   getNativeTags,
-  transformMatchMedia,
+  // transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -40,7 +40,11 @@ export const customElements = [
   'talos-svg',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
-const nodeTransforms = [transformRef, transformFor, transformMatchMedia]
+const nodeTransforms = [
+  transformRef,
+  transformFor,
+  // transformMatchMedia
+]
 const directiveTransforms = {
   on: transformOn,
   model: transformModel,

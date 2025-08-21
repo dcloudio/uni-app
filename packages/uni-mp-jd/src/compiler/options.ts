@@ -13,7 +13,6 @@ import { transformOn } from './transforms/vOn'
 import { transformModel } from './transforms/vModel'
 
 import source from './project.config.json'
-// import { transformSwiper } from './transforms/transformSwiper'
 
 const projectConfigFilename = 'project.config.json'
 
@@ -30,6 +29,7 @@ const directiveTransforms = {
 export const customElements = [
   'root-portal',
   'page-container',
+  'match-media',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
