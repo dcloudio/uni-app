@@ -1084,16 +1084,6 @@ function parseApp(instance, parseAppOptions) {
     return appOptions;
 }
 function initCreateApp(parseAppOptions) {
-    if (!(process.env.NODE_ENV !== 'production') &&
-        "mp-weixin" === 'mp-weixin' &&
-        isFunction(wx.preloadAssets)) {
-        const protocol = 'https';
-        setTimeout(() => {
-            wx.preloadAssets({
-                data: [{ type: 'image', src: protocol + __UNI_PRELOAD_SHADOW_IMAGE__ }],
-            });
-        }, 3000);
-    }
     return function createApp(vm) {
         return App(parseApp(vm));
     };
