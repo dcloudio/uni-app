@@ -47,9 +47,7 @@ class WebpackHtmlInjectAliYunPlugin {
           const asset = assets[name]
           const source = asset.source()
 
-          this.isEnableFacialRecognition =
-            source.includes('getFacialRecognitionMetaInfo') ||
-            source.includes('window.getMetaInfo')
+          this.isEnableFacialRecognition = source.includes('uni.getFacialRecognitionMetaInfo')
         }
       })
     }
