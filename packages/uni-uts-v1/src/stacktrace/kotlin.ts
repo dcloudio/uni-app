@@ -426,7 +426,7 @@ function normalizeType(type: string) {
 
 const extApiCompileErrorFormatter: Formatter = {
   format(error, codes) {
-    if (codes.length && error.includes('Unresolved reference: uni_')) {
+    if (codes.length && error.includes(`Unresolved reference `)) {
       const api = findUniExtApi(codes.join('\n'), UNI_API_RE, '^')
       if (api) {
         return createFormattedErrorString(
@@ -461,7 +461,7 @@ const extApiRuntimeErrorFormatter: Formatter = {
           `[EXCEPTION] 当前运行的基座未包含${api}，请重新打包自定义基座再运行。`
         )
       }
-    } else if (error.includes('Unresolved reference: uni_')) {
+    } else if (error.includes(`Unresolved reference 'uni_`)) {
       // let api = findUniExtApi(codes[codes.length - 1], UNI_API_RE)
       return ``
     }
@@ -534,7 +534,7 @@ const typeMismatchErrorFormatter: Formatter = {
 }
 
 // error: Unresolved reference: PreLoginOptions‌
-const UNRESOLVED_REFERENCE_RE = /Unresolved reference: (.*)/
+const UNRESOLVED_REFERENCE_RE = /Unresolved reference '(.*)'/
 const unresolvedApiMap = require('../../lib/kotlin/unresolved.json')
 const unresolvedErrorFormatter: Formatter = {
   format(error, _) {
@@ -543,7 +543,7 @@ const unresolvedErrorFormatter: Formatter = {
       const name = matches[1].trim()
       const api = unresolvedApiMap[name]
       if (api) {
-        return `${error}。[详情](${api.url})`
+        return `找不到名称"${name}"。[详情](${api.url})`
       }
     }
   },
