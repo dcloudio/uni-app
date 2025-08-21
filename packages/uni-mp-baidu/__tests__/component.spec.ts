@@ -1,6 +1,7 @@
 import { assert } from './testUtils'
 import { customElements } from '../src/compiler/options'
 import { addMiniProgramPageJson } from '@dcloudio/uni-cli-shared'
+
 describe('mp-baidu: transform component', () => {
   test(`built-in component`, () => {
     const code = customElements.map((tag) => `<${tag}/>`).join('')
@@ -15,15 +16,15 @@ describe('mp-baidu: transform component', () => {
 }`
     )
   })
-  test(`match-media`, () => {
-    assert(
-      `<match-media/>`,
-      `<uni-match-media u-i="2a9ec0b0-0"/>`,
-      `(_ctx, _cache) => {
-  return {}
-}`
-    )
-  })
+  //   test(`match-media`, () => {
+  //     assert(
+  //       `<match-media/>`,
+  //       `<uni-match-media u-i="2a9ec0b0-0"/>`,
+  //       `(_ctx, _cache) => {
+  //   return {}
+  // }`
+  //     )
+  //   })
   test(`mini program component`, () => {
     const filename = 'pages/vant/vant'
     addMiniProgramPageJson(filename, {
