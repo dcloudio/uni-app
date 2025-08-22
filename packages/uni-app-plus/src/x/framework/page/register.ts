@@ -399,7 +399,12 @@ function createVuePage(
       pageNode as unknown as UniNode
     )
   if (isPromise(component)) {
-    return component.then((component) => mountPage(component))
+    return component
+      .then((component) => mountPage(component))
+      .catch((err) => {
+        console.error(err)
+        throw err
+      })
   }
   return {
     then(fn: (page: ComponentPublicInstance) => void) {
