@@ -95,14 +95,24 @@ function _navigateTo({
       }
       // 有动画时先执行 show
       const page = registerPage(
-        { url, path, query, openType: 'navigateTo', eventChannel },
+        {
+          url,
+          path,
+          query,
+          openType: 'navigateTo',
+          eventChannel,
+          onRegistered() {
+            // 页面可能异步注册，需要调整callback执行时机，否则callback中setStatusBarStyle会执行getCurrentPage()
+            // 异步加载的时候，如果立即执行，获取到的不对，所以放到onRegistered中
+            if (noAnimation) {
+              callback(page)
+            }
+          },
+        },
         noAnimation ? undefined : callback,
         // 有动画时延迟创建 vm
         noAnimation ? 0 : 1
       )
-      if (noAnimation) {
-        callback(page)
-      }
     }, 0)
   })
 }
