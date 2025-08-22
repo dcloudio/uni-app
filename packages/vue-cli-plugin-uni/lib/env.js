@@ -327,9 +327,7 @@ if (process.env.UNI_PLATFORM.indexOf('mp-') > -1 && Array.isArray(pagesJsonObj.s
     }
   })
 }
-if (mpPluginExports.length) {
-  process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(mpPluginExports)
-}
+process.env.UNI_MP_PLUGIN_EXPORT = JSON.stringify(mpPluginExports)
 
 // 默认启用 自定义组件模式
 // if (isInHBuilderXAlpha) {
