@@ -119,7 +119,9 @@ export function initEasycoms(
     clearUTSComponents()
     clearUTSCustomElements()
     initEasycom(easyComOptions)
-    initUTSEasycomCustomElements()
+    if (isX) {
+      initUTSEasycomCustomElements()
+    }
     initUTSEasycom()
   }
   const componentExtNames = isX ? 'uvue|vue' : 'vue'
@@ -131,7 +133,7 @@ export function initEasycoms(
         'uni_modules/*/components/*/*.(' + componentExtNames + '|jsx|tsx)',
         'utssdk/*/**/*.(' + componentExtNames + ')',
         'uni_modules/*/utssdk/*/*.(' + componentExtNames + ')',
-        'uni_modules/*/customElements/*/*.uts',
+        ...(isX ? ['uni_modules/*/customElements/*/*.uts'] : []),
       ],
       [],
       {
@@ -145,7 +147,9 @@ export function initEasycoms(
         clearUTSComponents()
         clearUTSCustomElements()
         initEasycom(easyComOptions)
-        initUTSEasycomCustomElements()
+        if (isX) {
+          initUTSEasycomCustomElements()
+        }
         initUTSEasycom()
       }
     },
