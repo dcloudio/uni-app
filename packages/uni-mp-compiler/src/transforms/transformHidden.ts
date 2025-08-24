@@ -6,6 +6,7 @@ import {
   identifier,
   isIdentifier,
   logicalExpression,
+  stringLiteral,
   unaryExpression,
 } from '@babel/types'
 import {
@@ -56,10 +57,14 @@ export function rewriteHidden(
   if (virtualHost) {
     const staticClassPropIndex = findStaticHiddenIndex(props)
     // skyline模式hidden传undefined会导致元素被隐藏
-    const virtualHostHiddenPolyfill = logicalExpression(
-      '||',
-      identifier(VIRTUAL_HOST_HIDDEN),
-      booleanLiteral(false)
+    const virtualHostHiddenPolyfill = conditionalExpression(
+      binaryExpression(
+        '===',
+        identifier(VIRTUAL_HOST_HIDDEN),
+        identifier('undefined')
+      ),
+      booleanLiteral(false),
+      identifier(VIRTUAL_HOST_HIDDEN)
     )
     if (expr || staticClassPropIndex > -1) {
       let res: Expression = booleanLiteral(true)
@@ -73,18 +78,22 @@ export function rewriteHidden(
           res = unaryExpression('!', res)
         }
       }
-      hiddenBindingExpr = logicalExpression(
-        '||',
-        conditionalExpression(
+      hiddenBindingExpr = conditionalExpression(
+        logicalExpression(
+          '||',
           binaryExpression(
             '===',
             identifier(VIRTUAL_HOST_HIDDEN),
             identifier('undefined')
           ),
-          res,
-          identifier(VIRTUAL_HOST_HIDDEN)
+          binaryExpression(
+            '===',
+            identifier(VIRTUAL_HOST_HIDDEN),
+            stringLiteral('')
+          )
         ),
-        booleanLiteral(false)
+        logicalExpression('||', res, booleanLiteral(false)),
+        identifier(VIRTUAL_HOST_HIDDEN)
       )
     } else {
       hiddenBindingExpr = virtualHostHiddenPolyfill
