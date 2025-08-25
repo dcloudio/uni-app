@@ -91,7 +91,11 @@ const customElements = [
     'talos-svg',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
-const nodeTransforms = [uniCliShared.transformRef, transformFor, uniCliShared.transformMatchMedia];
+const nodeTransforms = [
+    uniCliShared.transformRef,
+    transformFor,
+    // transformMatchMedia
+];
 const directiveTransforms = {
     on: transformOn,
     model: transformModel,

@@ -22331,6 +22331,9 @@
           },
           setSoftinputTemporary(options) {
             invokeHarmonyChannel("setSoftinputTemporary", [options]);
+          },
+          setPullToRefresh(options) {
+            invokeHarmonyChannel("setPullToRefresh", [options]);
           }
         }, invokeHarmonyChannel("currentWebview"));
       },

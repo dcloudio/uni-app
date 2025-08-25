@@ -189,7 +189,7 @@ const miniProgram = {
 const nodeTransforms = [
     transformRef,
     transformOpenType,
-    uniCliShared.transformMatchMedia,
+    // transformMatchMedia,
     uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, compilerCore.NodeTypes.ATTRIBUTE),
 ];
 const compilerOptions = {
@@ -215,6 +215,7 @@ const customElements = [
     'join-group-chat',
     'subscribe-message',
     'mpaas-component',
+    'match-media',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const options = {

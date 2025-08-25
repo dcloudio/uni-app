@@ -42,12 +42,13 @@ const customElements = [
     'rtc-room',
     'clue-order-form',
     'shop-follow-card',
+    'match-media',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const projectConfigFilename = 'project.config.json';
 const nodeTransforms = [
     uniCliShared.transformRef,
-    uniCliShared.transformMatchMedia,
+    // transformMatchMedia,
     uniCliShared.transformComponentLink,
 ];
 if (process.env.UNI_APP_X === 'true') {

@@ -69,7 +69,11 @@ const directiveTransforms = {
     model: transformModel,
 };
 const compilerOptions = {
-    nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink, uniCliShared.transformMatchMedia],
+    nodeTransforms: [
+        uniCliShared.transformRef,
+        uniCliShared.transformComponentLink,
+        // transformMatchMedia
+    ],
     directiveTransforms,
 };
 const COMPONENTS_DIR = 'xhscomponents';

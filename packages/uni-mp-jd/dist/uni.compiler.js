@@ -43,7 +43,6 @@ var source = {
 	setting: setting
 };
 
-// import { transformSwiper } from './transforms/transformSwiper'
 const projectConfigFilename = 'project.config.json';
 const nodeTransforms = [
     uniCliShared.transformRef,
@@ -57,6 +56,7 @@ const directiveTransforms = {
 const customElements = [
     'root-portal',
     'page-container',
+    'match-media',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const compilerOptions = {
