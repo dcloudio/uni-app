@@ -176,7 +176,7 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
   if (process.env.UNI_MP_PLUGIN) {
     return inputOptions
   }
-  if (platform === 'mp-weixin') {
+  if (platform === 'mp-weixin' || platform === 'mp-alipay') {
     const pluginExports = getSubpackagePluginExports(inputDir)
     Object.keys(pluginExports).forEach((exportPath) => {
       inputOptions[exportPath] = pluginExports[exportPath]
