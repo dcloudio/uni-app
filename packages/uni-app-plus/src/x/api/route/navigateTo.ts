@@ -94,14 +94,14 @@ function _navigateTo({
         })
       }
       // 有动画时先执行 show
-      const page = registerPage(
+      registerPage(
         {
           url,
           path,
           query,
           openType: 'navigateTo',
           eventChannel,
-          onRegistered() {
+          onRegistered(page) {
             // 页面可能异步注册，需要调整callback执行时机，否则callback中setStatusBarStyle会执行getCurrentPage()
             // 异步加载的时候，如果立即执行，获取到的不对，所以放到onRegistered中
             if (noAnimation) {
