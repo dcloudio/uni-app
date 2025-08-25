@@ -187,7 +187,7 @@ export function initMocks(
   })
 }
 
-function hasHook(this: ComponentPublicInstance, name: string) {
+export function hasHook(this: ComponentPublicInstance, name: string) {
   const hooks = (this.$ as any)[name]
   if (hooks && hooks.length) {
     return true
@@ -195,7 +195,11 @@ function hasHook(this: ComponentPublicInstance, name: string) {
   return false
 }
 
-function callHook(this: ComponentPublicInstance, name: string, args?: unknown) {
+export function callHook(
+  this: ComponentPublicInstance,
+  name: string,
+  args?: unknown
+) {
   if (name === 'mounted') {
     callHook.call(this, 'bm') // beforeMount
     this.$.isMounted = true
