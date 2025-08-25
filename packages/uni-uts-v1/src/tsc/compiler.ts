@@ -20,6 +20,9 @@ const UNI_APP_X_TYPE_VALIDATION =
   process.env.UNI_APP_X_TYPE_VALIDATION === 'true' ? true : false
 type TargetLanguage = `${UniXCompilerOptions['targetLanguage']}`
 
+const hbxVersion = process.env.HX_Version || ''
+const hxDev = hbxVersion.endsWith('-dev')
+
 export function createUniXCompiler(
   mode: UniXCompilerOptions['mode'],
   targetLanguage: TargetLanguage,
@@ -243,6 +246,13 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
         ...errorCode,
       ].includes(diagnostic.code)
     const isDebug = debugCompile.enabled
+
+    const isWarning = hxDev && errorCode.includes(diagnostic.code)
+    const color = isWarning ? COLORS.warn : COLORS.error
+    const block = isWarning
+      ? SPECIAL_CHARS.WARN_BLOCK
+      : SPECIAL_CHARS.ERROR_BLOCK
+
     if (throwError) {
       const error = formatDiagnostic(diagnostic, formatHost)
       // 仅回源成功的才抛出错误，否则只打印一下
@@ -252,7 +262,11 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
           const pluginName = parts[1]
           if (encryptExistCache.has(pluginName)) {
             if (!encryptExistCache.get(pluginName)) {
-              throw createRollupError(error)
+              if (!isWarning) {
+                throw createRollupError(error)
+              } else {
+                printError(error, color, block)
+              }
             }
             return
           }
@@ -269,9 +283,18 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
             encryptExistCache.set(pluginName, false)
           }
         }
-        throw createRollupError(error)
+
+        if (!isWarning) {
+          throw createRollupError(error)
+        } else {
+          printError(error, color, block)
+        }
       } else {
-        printError(error, COLORS.error, SPECIAL_CHARS.ERROR_BLOCK)
+        if (!isWarning) {
+          throw createRollupError(error)
+        } else {
+          printError(error, color, block)
+        }
       }
     }
     if (isDebug) {
