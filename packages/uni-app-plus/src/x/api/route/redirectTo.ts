@@ -66,16 +66,16 @@ export function _redirectTo({
             isTabPage(lastPage) || getAllPages().length === 1
               ? 'reLaunch'
               : 'redirectTo',
+          onRegistered() {
+            if (lastPage) {
+              removePages(lastPage)
+            }
+            resolve(undefined)
+            setStatusBarStyle()
+          },
         }),
         'none',
-        0,
-        () => {
-          if (lastPage) {
-            removePages(lastPage)
-          }
-          resolve(undefined)
-          setStatusBarStyle()
-        }
+        0
       )
       invokeBeforeRouteHooks(API_REDIRECT_TO)
     }, 0)
