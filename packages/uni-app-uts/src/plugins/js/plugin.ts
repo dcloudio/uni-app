@@ -11,6 +11,7 @@ import {
   injectCssPlugin,
   injectCssPostPlugin,
   insertBeforePlugin,
+  isNormalCompileTarget,
   normalizePath,
   removeExt,
   resolveMainPathOnce,
@@ -66,7 +67,10 @@ export function createUniAppJsEnginePlugin(
     }
     emptyTscDir()
 
-    if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+    if (
+      process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
+      isNormalCompileTarget()
+    ) {
       // 拆分模式
       process.env.UNI_APP_OUTPUT_FORMAT = 'esm'
       // 动态导入
