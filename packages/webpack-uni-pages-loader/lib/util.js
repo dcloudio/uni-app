@@ -162,7 +162,8 @@ const NON_APP_JSON_KEYS = [
   'slotMultipleInstance',
   'uniStatistics',
   'mergeVirtualHostAttributes',
-  'styleIsolation'
+  'styleIsolation',
+  'nativeTags'
 ]
 module.exports = {
   hasOwn,
