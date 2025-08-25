@@ -24,7 +24,7 @@ export const transformUTSComponent: NodeTransform = (node, context) => {
   if (utsCustomElement) {
     components.add(node.tag)
   } else if (matchUTSComponent(node.tag)) {
-    if (components.has(node.tag)) {
+    if (!components.has(node.tag)) {
       components.add(node.tag)
     }
   }
