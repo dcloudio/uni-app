@@ -1,8 +1,11 @@
 const uniI18n = require('@dcloudio/uni-cli-i18n')
+const { getManifestJson } = require('@dcloudio/uni-cli-shared/lib/manifest')
 
 const EVENTS = {
   click: 'tap'
 }
+const manifestJson = getManifestJson()
+const nativeTags = (manifestJson[process.env.UNI_PLATFORM] || {}).nativeTags || []
 const tags = {
   // 小程序平台通用组件
   base: [
@@ -77,7 +80,8 @@ const tags = {
     'talos-control-container',
     'talos-na-refresh-control',
     'talos-modal',
-    'talos-svg'
+    'talos-svg',
+    ...nativeTags
   ],
   'mp-weixin': [
     'page-container',
@@ -119,7 +123,8 @@ const tags = {
     'store-coupon',
     'open-data-list',
     'open-data-item',
-    'selection'
+    'selection',
+    ...nativeTags
   ],
   // 支付宝小程序平台独有组件
   'mp-alipay': [
@@ -141,7 +146,8 @@ const tags = {
     'lottie',
     'join-group-chat',
     'subscribe-message',
-    'mpass-component'
+    'mpass-component',
+    ...nativeTags
   ],
   // 抖音小程序平台独有组件
   'mp-toutiao': [
@@ -157,7 +163,8 @@ const tags = {
     'aweme-user-card',
     'rtc-room',
     'clue-order-form',
-    'shop-follow-card'
+    'shop-follow-card',
+    ...nativeTags
   ],
   'mp-kuaishou': [
     'follow-service',
@@ -165,10 +172,13 @@ const tags = {
     'playlet',
     'address',
     'page-meta',
-    'navigation-bar'
+    'navigation-bar',
+    ...nativeTags
   ],
-  'mp-xhs': ['post-note-button', 'group-chat-card'],
-  'mp-jd': ['root-portal', 'page-container']
+  'mp-xhs': ['post-note-button', 'group-chat-card', ...nativeTags],
+  'mp-jd': ['root-portal', 'page-container', ...nativeTags],
+  'mp-qq': [...nativeTags],
+  'mp-harmony': [...nativeTags]
 }
 
 const baseCompiler = {
