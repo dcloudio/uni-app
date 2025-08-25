@@ -43,7 +43,7 @@ export interface RegisterPageOptions {
   webview?: IPage
   nvuePageVm?: ComponentPublicInstance
   eventChannel?: EventChannel
-  onRegistered?: () => void
+  onRegistered?: (page: IPage) => void
 }
 
 // parsePageStyle
@@ -235,7 +235,7 @@ export function registerPage(
           invokeHook(pageComponentPublicInstance, ON_RESIZE, args)
         })
         nativePage.startRender()
-        onRegistered?.()
+        onRegistered?.(nativePage)
       }
     )
   }
