@@ -14,6 +14,9 @@ export default {
           setSoftinputTemporary(options: any) {
             invokeHarmonyChannel('setSoftinputTemporary', [options])
           },
+          setPullToRefresh(options: any) {
+            invokeHarmonyChannel('setPullToRefresh', [options])
+          },
         },
         invokeHarmonyChannel('currentWebview')
       )
