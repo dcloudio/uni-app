@@ -130,6 +130,10 @@ const uniMiniProgramHarmonyPlugin = {
         }
     },
 };
-var index = [uniMiniProgramHarmonyPlugin, ...initMiniProgramPlugin__default.default(options)];
+var index = [
+    uniMiniProgramHarmonyPlugin,
+    ...initMiniProgramPlugin__default.default(options),
+    uniCliShared.uniStatsPlugin(),
+];
 
 module.exports = index;
