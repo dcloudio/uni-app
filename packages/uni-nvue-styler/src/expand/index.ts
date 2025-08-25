@@ -108,7 +108,8 @@ export function vueStyleValidator(options: NormalizeOptions): Plugin {
         const parent = decl.parent
         if (
           parent?.type === 'root' &&
-          parent?.source?.input?.from.includes('&type=style')
+          (parent?.source?.input?.from.includes('&type=style') ||
+            parent?.source?.input?.from.endsWith('uvue.style.uts'))
         ) {
           // 命中：在根节点且不是 template 样式，需要禁止
           const reason = `ERROR: CSS custom properties must be inside a CSS rule (selector) or @ rule. Found "${decl.prop}" at top level in Vue style block.`
