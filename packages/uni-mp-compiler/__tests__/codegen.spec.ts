@@ -114,9 +114,9 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
   test('setup with x', () => {
     assert(
       `<view/>`,
-      `<view/>`,
+      `<view style="{{'--status-bar-height:' + a}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = {}
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
   return __returned__
 }`,
       { inline: true, mode: 'module', prefixIdentifiers: false, isX: true }

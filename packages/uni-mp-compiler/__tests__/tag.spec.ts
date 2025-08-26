@@ -34,9 +34,9 @@ describe('compiler: transform tag', () => {
   test('built-in custom elements (x)', () => {
     assert(
       `<uni-cloud-db-element ref="udb"/>`,
-      `<view u-t="uni-cloud-db-element" ref="udb" id="r0-2a9ec0b0" style="{{$eS[a]}}"/>`,
+      `<view u-t="uni-cloud-db-element" ref="udb" style="{{$eS[a]}}" id="r0-2a9ec0b0"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "uni-cloud-db-element", "type": 2 }, 'udb'), b: _s(_ses('r0-2a9ec0b0')) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "uni-cloud-db-element", "type": 2 }, 'udb'), b: _s(_ses('r0-2a9ec0b0', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` })) }
   return __returned__
 }`,
       {

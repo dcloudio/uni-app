@@ -34,9 +34,9 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
     )
     assert(
       `<view ref="page"><image ref="img" /></view>`,
-      `<view ref=\"page\" id=\"{{c}}\" style=\"{{$eS[c] + ';' + (virtualHostStyle || '')}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}\"><image ref=\"img\" id=\"r0-2a9ec0b0\" style=\"{{$eS[a]}}\"/></view>`,
+      `<view ref=\"page\" style=\"{{$eS[c] + ';' + (virtualHostStyle || '')}}\" id=\"{{c}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}\"><image ref=\"img\" id=\"r0-2a9ec0b0\" style=\"{{$eS[a]}}\"/></view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('r0-2a9ec0b0', 'image', 'img'), b: _s(_ses('r0-2a9ec0b0')), c: _sei(_gei(_ctx, '', 'r1-2a9ec0b0'), 'view', 'page'), d: _s(_ses(_gei(_ctx, '', 'r1-2a9ec0b0'))) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', 'image', 'img'), b: _s(_ses('r0-2a9ec0b0')), c: _sei(_gei(_ctx, '', 'r1-2a9ec0b0'), 'view', 'page'), d: _s(_ses(_gei(_ctx, '', 'r1-2a9ec0b0'), { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` })) }
   return __returned__
 }`,
       optionsX
@@ -165,25 +165,25 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
       `<view :id="id1"></view>`,
       `<view id=\"{{a}}\" style=\"{{$eS[a] + ';' + (virtualHostStyle || '')}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}\"></view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei(_gei(_ctx, _ctx.id1), 'view'), b: _s(_ses(_gei(_ctx, _ctx.id1))) }
+  const __returned__ = { a: _sei(_gei(_ctx, _ctx.id1), 'view'), b: _s(_ses(_gei(_ctx, _ctx.id1), { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` })) }
   return __returned__
 }`,
       optionsX
     )
     assert(
       `<view id="page"><image ref="img" /></view>`,
-      `<view id=\"{{c}}\" style=\"{{$eS[c] + ';' + (virtualHostStyle || '')}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}\"><image ref=\"img\" id=\"r0-2a9ec0b0\" style=\"{{$eS[a]}}\"/></view>`,
+      `<view style=\"{{$eS[c] + ';' + (virtualHostStyle || '')}}\" id=\"{{c}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}\"><image ref=\"img\" id=\"r0-2a9ec0b0\" style=\"{{$eS[a]}}\"/></view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('r0-2a9ec0b0', 'image', 'img'), b: _s(_ses('r0-2a9ec0b0')), c: _sei(_gei(_ctx, 'page'), 'view'), d: _s(_ses(_gei(_ctx, 'page'))) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', 'image', 'img'), b: _s(_ses('r0-2a9ec0b0')), c: _sei(_gei(_ctx, 'page'), 'view'), d: _s(_ses(_gei(_ctx, 'page'), { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` })) }
   return __returned__
 }`,
       optionsX
     )
     assert(
       `<view id="page" ref="page"><image ref="img" /></view>`,
-      `<view ref=\"page\" id=\"{{c}}\" style=\"{{$eS[c] + ';' + (virtualHostStyle || '')}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}\"><image ref=\"img\" id=\"r0-2a9ec0b0\" style=\"{{$eS[a]}}\"/></view>`,
+      `<view ref=\"page\" style=\"{{$eS[c] + ';' + (virtualHostStyle || '')}}\" id=\"{{c}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}\"><image ref=\"img\" id=\"r0-2a9ec0b0\" style=\"{{$eS[a]}}\"/></view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('r0-2a9ec0b0', 'image', 'img'), b: _s(_ses('r0-2a9ec0b0')), c: _sei(_gei(_ctx, 'page', 'r1-2a9ec0b0'), 'view', 'page'), d: _s(_ses(_gei(_ctx, 'page', 'r1-2a9ec0b0'))) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', 'image', 'img'), b: _s(_ses('r0-2a9ec0b0')), c: _sei(_gei(_ctx, 'page', 'r1-2a9ec0b0'), 'view', 'page'), d: _s(_ses(_gei(_ctx, 'page', 'r1-2a9ec0b0'), { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` })) }
   return __returned__
 }`,
       optionsX
