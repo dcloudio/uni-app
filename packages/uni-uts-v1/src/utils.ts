@@ -297,7 +297,24 @@ export function genUTSPlatformResource(
         overwrite: true,
       }
     )
-    copyPlatformFiles(utsInputDir, path.join(utsOutputDir, 'src'), extname)
+    // 为了减少影响范围，仅限 ext-api 和非 x 下生效
+    if (process.env.UNI_COMPILE_TARGET === 'ext-api' && !options.isX) {
+      copyPlatformNativeLanguageFiles(
+        utsInputDir,
+        path.join(utsOutputDir, 'src'),
+        ['.swift'],
+        (fileName, content) => {
+          // 非 x 平台，需要替换所有 DCloudUniappRuntime 导入为 DCloudUTSFoundation
+          content = content.replace(
+            /DCloudUniappRuntime/g,
+            'DCloudUTSFoundation'
+          )
+          return content
+        }
+      )
+    } else {
+      copyPlatformFiles(utsInputDir, path.join(utsOutputDir, 'src'), extname)
+    }
   }
 
   if (options.result.chunks) {
