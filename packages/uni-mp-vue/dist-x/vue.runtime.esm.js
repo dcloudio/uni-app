@@ -1,4 +1,4 @@
-import { isRootHook, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, normalizeStyle as normalizeStyle$1, dynamicSlotName, normalizeClass as normalizeClass$1 } from '@dcloudio/uni-shared';
+import { isRootHook, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, UNI_STATUS_BAR_HEIGHT, normalizeStyle as normalizeStyle$1, dynamicSlotName, normalizeClass as normalizeClass$1 } from '@dcloudio/uni-shared';
 import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
@@ -5478,6 +5478,8 @@ var plugin = {
         initApp(app);
         app.config.globalProperties.pruneComponentPropsCache =
             pruneComponentPropsCache;
+        app.config.globalProperties[UNI_STATUS_BAR_HEIGHT] =
+            wx.getWindowInfo().statusBarHeight;
         const oldMount = app.mount;
         app.mount = function mount(rootContainer) {
             const instance = oldMount.call(app, rootContainer);

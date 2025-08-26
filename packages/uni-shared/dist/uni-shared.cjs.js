@@ -441,6 +441,8 @@ const VIRTUAL_HOST_STYLE = 'virtualHostStyle';
 const VIRTUAL_HOST_CLASS = 'virtualHostClass';
 const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden';
 const VIRTUAL_HOST_ID = 'virtualHostId';
+// statusBarHeight
+const UNI_STATUS_BAR_HEIGHT = 'u_s_b_h';
 
 function cache(fn) {
     const cache = Object.create(null);
@@ -1884,6 +1886,7 @@ exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
 exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.UNI_SSR_TITLE = UNI_SSR_TITLE;
+exports.UNI_STATUS_BAR_HEIGHT = UNI_STATUS_BAR_HEIGHT;
 exports.UNI_STORAGE_LOCALE = UNI_STORAGE_LOCALE;
 exports.UNI_UI_CONFLICT_TAGS = UNI_UI_CONFLICT_TAGS;
 exports.UVUE_BUILT_IN_TAGS = UVUE_BUILT_IN_TAGS;
