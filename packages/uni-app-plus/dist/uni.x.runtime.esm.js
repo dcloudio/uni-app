@@ -1752,7 +1752,7 @@ function setStatusBarStyle() {
     } else if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length) {
       page = systemDialogPages[systemDialogPages.length - 1].vm;
     } else {
-      page = currentPage.vm;
+      page = currentPage === null || currentPage === void 0 ? void 0 : currentPage.vm;
     }
   }
   if (page) {
@@ -1761,7 +1761,8 @@ function setStatusBarStyle() {
   }
 }
 function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
-  var webview = getNativeApp().pageManager.findPageById(dialogPage.vm.$basePage.id + "");
+  var _dialogPage$vm;
+  var webview = getNativeApp().pageManager.findPageById(((_dialogPage$vm = dialogPage.vm) === null || _dialogPage$vm === void 0 ? void 0 : _dialogPage$vm.$basePage.id) + "");
   if (webview) {
     closeWebview(webview, animationType || "none", animationDuration || 0, () => {
       getVueApp().unmountPage(dialogPage.vm);
@@ -1980,7 +1981,7 @@ function registerPage(_ref, onCreated) {
         invokeHook(pageComponentPublicInstance, ON_RESIZE, args);
       });
       nativePage.startRender();
-      onRegistered === null || onRegistered === void 0 || onRegistered();
+      onRegistered === null || onRegistered === void 0 || onRegistered(nativePage);
     });
   }
   if (delay) {
@@ -2095,7 +2096,10 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
     __pageInstance
   }, __pageQuery), pageNode);
   if (isPromise(component)) {
-    return component.then((component2) => mountPage(component2));
+    return component.then((component2) => mountPage(component2)).catch((err) => {
+      console.error(err);
+      throw err;
+    });
   }
   return {
     then(fn) {
@@ -2321,14 +2325,15 @@ function _redirectTo(_ref3) {
         url,
         path,
         query,
-        openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
-      }), "none", 0, () => {
-        if (lastPage) {
-          removePages(lastPage);
+        openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo",
+        onRegistered() {
+          if (lastPage) {
+            removePages(lastPage);
+          }
+          resolve(void 0);
+          setStatusBarStyle();
         }
-        resolve(void 0);
-        setStatusBarStyle();
-      });
+      }), "none", 0);
       invokeBeforeRouteHooks(API_REDIRECT_TO);
     }, 0);
   });
@@ -2393,8 +2398,9 @@ function _reLaunch(_ref3) {
           url,
           path,
           query,
-          openType: "reLaunch"
-        }), "none", 0, callback);
+          openType: "reLaunch",
+          onRegistered: callback
+        }), "none", 0);
       } else {
         switchSelect(selected, path, query, true, callback);
       }
@@ -2823,8 +2829,8 @@ function _navigateTo(_ref2) {
   return new Promise((resolve) => {
     setTimeout(() => {
       var noAnimation = aniType === "none" || aniDuration === 0;
-      function callback(page2) {
-        showWebview(page2, aniType, aniDuration, () => {
+      function callback(page) {
+        showWebview(page, aniType, aniDuration, () => {
           invokeAfterRouteHooks(currentRouteType);
           resolve({
             eventChannel
@@ -2832,21 +2838,23 @@ function _navigateTo(_ref2) {
           setStatusBarStyle();
         });
       }
-      var page = registerPage(
+      registerPage(
         {
           url,
           path,
           query,
           openType: "navigateTo",
-          eventChannel
+          eventChannel,
+          onRegistered(page) {
+            if (noAnimation) {
+              callback(page);
+            }
+          }
         },
         noAnimation ? void 0 : callback,
         // 有动画时延迟创建 vm
         noAnimation ? 0 : 1
       );
-      if (noAnimation) {
-        callback(page);
-      }
     }, 0);
   });
 }
