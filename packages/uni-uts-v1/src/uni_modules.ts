@@ -12,7 +12,7 @@ type TargetLanguage = Parameters<typeof createUniXCompiler>[1]
 function createUniXTargetLanguageCompiler(
   platform: 'app-android' | 'app-ios' | 'app-harmony',
   language: TargetLanguage,
-  options: CreateUniXCompilerOptions
+  options?: CreateUniXCompilerOptions
 ) {
   const tscInputDir = path.join(process.env.UNI_APP_X_TSC_DIR, platform)
   return createUniXCompiler(
@@ -28,13 +28,14 @@ function createUniXTargetLanguageCompiler(
         tscInputDir
       ),
       normalizeFileName: normalizeNodeModules,
-      resolveWorkers: options.resolveWorkers,
+      // 非 uni x 项目，不传 resolveWorkers 参数
+      resolveWorkers: options?.resolveWorkers || (() => ({})),
     }
   )
 }
 
 interface CreateUniXCompilerOptions {
-  resolveWorkers: () => Record<string, string>
+  resolveWorkers?: () => Record<string, string>
 }
 
 export function createUniXArkTSCompiler(options: CreateUniXCompilerOptions) {
