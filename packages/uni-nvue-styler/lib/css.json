@@ -8674,6 +8674,134 @@
               "unixVer": "4.0"
             }
           }
+        },
+        {
+          "name": "pre-line",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "pre",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "pre-wrap",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "break-spaces",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.81"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
