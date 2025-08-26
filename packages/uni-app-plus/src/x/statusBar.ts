@@ -27,7 +27,7 @@ export function setStatusBarStyle() {
     } else if (systemDialogPages?.length) {
       page = systemDialogPages[systemDialogPages.length - 1].vm
     } else {
-      page = currentPage.vm
+      page = currentPage?.vm
     }
   } else {
     page = getCurrentPage() as ComponentPublicInstance
