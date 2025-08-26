@@ -1,6 +1,9 @@
 import type { App } from 'vue'
 
 import { initApp } from '@dcloudio/uni-vue'
+// #if _X_
+import { UNI_STATUS_BAR_HEIGHT } from '@dcloudio/uni-shared'
+// #endif
 import { pruneComponentPropsCache } from './helpers/renderProps'
 
 export default {
@@ -9,7 +12,10 @@ export default {
 
     app.config.globalProperties.pruneComponentPropsCache =
       pruneComponentPropsCache
-
+    // #if _X_
+    app.config.globalProperties[UNI_STATUS_BAR_HEIGHT] =
+      wx.getWindowInfo().statusBarHeight
+    // #endif
     const oldMount = app.mount
     app.mount = function mount(rootContainer: any) {
       const instance = oldMount.call(app, rootContainer)

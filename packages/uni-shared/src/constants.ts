@@ -95,3 +95,6 @@ export const VIRTUAL_HOST_STYLE = 'virtualHostStyle'
 export const VIRTUAL_HOST_CLASS = 'virtualHostClass'
 export const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden'
 export const VIRTUAL_HOST_ID = 'virtualHostId'
+
+// statusBarHeight
+export const UNI_STATUS_BAR_HEIGHT = 'u_s_b_h'
