@@ -732,6 +732,8 @@ export declare const UNI_SSR_STORE = "store";
 
 export declare const UNI_SSR_TITLE = "title";
 
+export declare const UNI_STATUS_BAR_HEIGHT = "u_s_b_h";
+
 export declare const UNI_STORAGE_LOCALE = "UNI_LOCALE";
 
 export declare const UNI_UI_CONFLICT_TAGS: string[];

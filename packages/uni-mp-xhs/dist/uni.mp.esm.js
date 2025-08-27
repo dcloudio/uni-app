@@ -842,7 +842,6 @@ function handleLink(event) {
     detail.parent = parentVm;
 }
 
-xhs.canIUse('component2');
 const mocks$1 = ['nodeId', 'componentId', 'componentPath'];
 function initSpecialMethods(mpInstance) {
     if (!mpInstance.$vm) {
