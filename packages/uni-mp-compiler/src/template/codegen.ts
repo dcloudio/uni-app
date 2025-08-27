@@ -154,11 +154,22 @@ export function genNode(
           ) && node.children.length === 0
         // 当存在 <slot name="default" :xxx="xxx"><slot> 时，在后面添加 <slot></slot>，使默认插槽生效
         if (isEmptyDefaultSlot) {
+          const isVIfSlot = isIfElementNode(node)
+          if (isVIfSlot) {
+            context.push(`<block`)
+            genVIfCode(node, context)
+            context.push(`>`)
+            delete (node as any).vIf
+          }
           genSlot(node, context)
-          return genSlot(
+          genSlot(
             extend({}, node, { props: [], children: [], loc: {} }),
             context
           )
+          if (isVIfSlot) {
+            context.push(`</block>`)
+          }
+          return
         }
         return genSlot(node, context)
       } else if (node.tagType === ElementTypes.COMPONENT) {
