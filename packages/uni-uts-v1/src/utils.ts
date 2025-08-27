@@ -298,7 +298,11 @@ export function genUTSPlatformResource(
       }
     )
     // 为了减少影响范围，仅限 ext-api 和非 x 下生效
-    if (process.env.UNI_COMPILE_TARGET === 'ext-api' && !options.isX) {
+    if (
+      platform === 'app-ios' &&
+      process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+      !options.isX
+    ) {
       copyPlatformNativeLanguageFiles(
         utsInputDir,
         path.join(utsOutputDir, 'src'),
