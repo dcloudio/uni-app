@@ -19,10 +19,10 @@
       "GetClipboardDataOptions"
     ],
     [
-      "WorkerErrorCode"
+      "WorkerOnErrorCallbackResultErrorCode"
     ],
     [
-      "ICreateWorkerError"
+      "WorkerOnErrorCallbackResult"
     ],
     [
       "WorkerOnMessageCallback"
