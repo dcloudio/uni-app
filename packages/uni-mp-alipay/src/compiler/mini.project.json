@@ -8,9 +8,17 @@
   "enableNodeModuleBabelTransform": true,
   "format": 2,
   "pluginResolution": {},
-  "developOptions": {},
+  "developOptions": {
+    "parallel": false,
+    "minify": false
+  },
   "compileOptions": {
-    "component2": true
+    "component2": true,
+    "transpile": {
+      "script": {
+        "ignore": []
+      }
+    }
   },
   "uploadExclude": [],
   "assetsInclude": []
