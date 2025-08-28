@@ -11,6 +11,7 @@ import {
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { registerSystemRoute } from '../../../framework/route'
+import { extend } from '@vue/shared'
 
 const API_HIDE_MODAL = 'hideModal'
 type API_TYPE_HIDE_MODAL = (options: unknown | null) => void
@@ -23,14 +24,20 @@ export const hideModal = defineAsyncApi<API_TYPE_HIDE_MODAL>(
   API_HIDE_MODAL,
   (args, { resolve, reject }) => {
     registerModalOnce()
-    hideModalApi(args, {
-      success: (res) => {
-        resolve(res)
-      },
-      fail: (err) => {
-        reject(err)
-      },
-    })
+    hideModalApi(
+      // 拷贝参数，避免 defineAsyncApi 处理 args 影响传入参数
+      extend(
+        {
+          success: (res) => {
+            resolve(res)
+          },
+          fail: (err) => {
+            reject(err)
+          },
+        },
+        args
+      )
+    )
   }
 )
 
@@ -38,13 +45,18 @@ export const showModal = defineAsyncApi<API_TYPE_SHOW_MODAL>(
   API_SHOW_MODAL,
   (args, { resolve, reject }) => {
     registerModalOnce()
-    showModalApi(args, {
-      success: (res) => {
-        resolve(res)
-      },
-      fail: (err) => {
-        reject(err)
-      },
-    })
+    showModalApi(
+      extend(
+        {
+          success: (res) => {
+            resolve(res)
+          },
+          fail: (err) => {
+            reject(err)
+          },
+        },
+        args
+      )
+    )
   }
 )
