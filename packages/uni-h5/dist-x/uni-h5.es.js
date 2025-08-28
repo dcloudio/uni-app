@@ -28492,7 +28492,7 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
   (args, { resolve, reject }) => {
     registerActionSheetOnce();
     showActionSheet$1(
-      extend(
+      /* @__PURE__ */ extend(
         {
           success: (res) => {
             resolve(res);
@@ -29752,7 +29752,19 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
   API_CHOOSE_LOCATION,
   (args, { resolve, reject }) => {
     registerChooseLocationOnce();
-    chooseLocation$1(args);
+    chooseLocation$1(
+      /* @__PURE__ */ extend(
+        {
+          success: (res) => {
+            resolve(res);
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        },
+        args
+      )
+    );
   }
 );
 const _sfc_main = {
@@ -30240,14 +30252,38 @@ const hideModal = /* @__PURE__ */ defineAsyncApi(
   API_HIDE_MODAL,
   (args, { resolve, reject }) => {
     registerModalOnce();
-    hideModal$1(args);
+    hideModal$1(
+      /* @__PURE__ */ extend(
+        {
+          success: (res) => {
+            resolve(res);
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        },
+        args
+      )
+    );
   }
 );
 const showModal = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_MODAL,
   (args, { resolve, reject }) => {
     registerModalOnce();
-    showModal$1(args);
+    showModal$1(
+      extend(
+        {
+          success: (res) => {
+            resolve(res);
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        },
+        args
+      )
+    );
   }
 );
 const API_CREATE_WORKER = "createWorker";
