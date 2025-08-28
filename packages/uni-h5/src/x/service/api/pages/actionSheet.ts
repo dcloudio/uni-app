@@ -27,6 +27,7 @@ export const showActionSheet = defineAsyncApi<API_TYPE_SHOW_ACTION_SHEET>(
   (args, { resolve, reject }) => {
     registerActionSheetOnce()
     showActionSheetApi(
+      // 拷贝参数，避免 defineAsyncApi 处理 args 影响传入参数
       extend(
         {
           success: (res) => {
