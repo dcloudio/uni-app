@@ -247,7 +247,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
       ].includes(diagnostic.code)
     const isDebug = debugCompile.enabled
 
-    const isWarning = hxDev && errorCode.includes(diagnostic.code)
+    const isWarning = !hxDev && errorCode.includes(diagnostic.code)
     const color = isWarning ? COLORS.warn : COLORS.error
     const block = isWarning
       ? SPECIAL_CHARS.WARN_BLOCK
