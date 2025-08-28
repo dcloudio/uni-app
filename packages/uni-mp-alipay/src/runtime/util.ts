@@ -146,7 +146,7 @@ export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
     if (isString(refInForName)) {
       ;(refs[refInForName] || (refs[refInForName] = [])).push(refValue)
     } else {
-      setRef(refInForName, refValue, refs, setupState)
+      setRef(refInForName, refValue, refs, setupState, true)
     }
   }
 }
@@ -170,7 +170,8 @@ function setRef(
   ref: Ref | ((ref: object | null, refs: Record<string, any>) => void),
   refValue: ComponentPublicInstance,
   refs: Record<string, unknown>,
-  setupState: Data
+  setupState: Data,
+  isRefInVFor = false
 ) {
   if (isRef(ref)) {
     ref.value = refValue
@@ -178,6 +179,17 @@ function setRef(
     const templateRef = ref(refValue, refs)
     if (isTemplateRef(templateRef)) {
       setTemplateRef(templateRef, refValue, setupState)
+      // 对于 template ref，需要手动同步到 refs，否则 getCurrentInstance().proxy.$refs 获取不到
+      if (!templateRef.k || !isRef(templateRef.r)) {
+        return
+      }
+      if (isRefInVFor) {
+        ;(
+          (refs[templateRef.k] || (refs[templateRef.k] = [])) as unknown[]
+        ).push(refValue)
+      } else {
+        refs[templateRef.k] = refValue
+      }
     }
   }
 }
