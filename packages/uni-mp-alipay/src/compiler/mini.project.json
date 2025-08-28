@@ -9,7 +9,9 @@
   "format": 2,
   "pluginResolution": {},
   "developOptions": {},
-  "compileOptions": {},
+  "compileOptions": {
+    "component2": true
+  },
   "uploadExclude": [],
   "assetsInclude": []
 }
