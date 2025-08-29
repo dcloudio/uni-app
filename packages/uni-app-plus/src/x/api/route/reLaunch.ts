@@ -49,6 +49,7 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
       let selected: number = getTabIndex(path)
       function callback() {
         pages.forEach((page) => closePage(page, 'none'))
+        pages.length = 0
         resolve(undefined)
         setStatusBarStyle()
       }
