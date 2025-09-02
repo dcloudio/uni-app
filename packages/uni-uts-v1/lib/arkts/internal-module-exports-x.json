@@ -76,7 +76,19 @@
       "HideModal"
     ],
     [
+      "HideModalErrorCode"
+    ],
+    [
+      "HideModalFail"
+    ],
+    [
+      "HideModalFailImpl"
+    ],
+    [
       "HideModalOptions"
+    ],
+    [
+      "HideModalResult"
     ],
     [
       "IPreviewImageError"
@@ -154,7 +166,19 @@
       "ShowModal"
     ],
     [
+      "ShowModalErrorCode"
+    ],
+    [
+      "ShowModalFail"
+    ],
+    [
+      "ShowModalFailImpl"
+    ],
+    [
       "ShowModalOptions"
+    ],
+    [
+      "ShowModalResult"
     ],
     [
       "UniButtonElement"
@@ -184,13 +208,7 @@
       "UniFormSubmitEvent"
     ],
     [
-      "UniHideModalErrorCode"
-    ],
-    [
       "UniHideModalFail"
-    ],
-    [
-      "UniHideModalFailImpl"
     ],
     [
       "UniHideModalResult"
@@ -247,13 +265,7 @@
       "UniRichTextItemClickEvent"
     ],
     [
-      "UniShowModalErrorCode"
-    ],
-    [
       "UniShowModalFail"
-    ],
-    [
-      "UniShowModalFailImpl"
     ],
     [
       "UniShowModalResult"
