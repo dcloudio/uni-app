@@ -356,11 +356,7 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
       }
       return genElement(child, context)
     }
-  } else if (
-    slotProp &&
-    node.tag === 'view' &&
-    process.env.UNI_APP_X === 'true'
-  ) {
+  } else if (slotProp && node.tag === 'view' && context.isX) {
     /**
      * uni-app-x小程序端为了对齐app平台view设置了默认的overflow: hidden样式
      * 对于slot生成的view节点，这个默认样式大多情况下不符合开发者预期
