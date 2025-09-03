@@ -15,4 +15,4 @@ export {
   getLaunchOptions,
   getEnterOptions,
 } from '@dcloudio/uni-app-plus/service/framework/app/utils'
-export { setCurrentPageMeta } from '../service/api/ui/setPageMeta'
+export { setCurrentPageMeta } from '@dcloudio/uni-app-plus/service/api/ui/setPageMeta'
