@@ -24739,7 +24739,7 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
   },
   PreloadPageProtocol
 );
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "production" && !process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
   document.addEventListener("DOMContentLoaded", () => {
     console.log("Preload pages in uni-app-x development mode.");
     __uniRoutes.reduce((prev, route) => {
