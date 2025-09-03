@@ -88,7 +88,6 @@ function removePages(currentPage: ComponentPublicInstance) {
     pages.forEach((page) => {
       closePage(page, 'none')
     })
-    pages.length = 0
   } else {
     closePage(currentPage, 'none')
   }
