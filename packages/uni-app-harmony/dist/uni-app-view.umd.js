@@ -22334,6 +22334,9 @@
           },
           setPullToRefresh(options) {
             invokeHarmonyChannel("setPullToRefresh", [options]);
+          },
+          setStyle(options) {
+            invokeHarmonyChannel("setStyle", [options]);
           }
         }, invokeHarmonyChannel("currentWebview"));
       },

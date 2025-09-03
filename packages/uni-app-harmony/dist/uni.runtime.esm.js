@@ -8516,6 +8516,10 @@ function findComponentRectAll(dom, nvueElementInfos, index, result, callback) {
     });
 }
 
+function setCurrentPageMeta(page, options) {
+    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, getPage$BasePage(page).id);
+}
+
 function getEventName$1(reqId) {
     const EVENT_NAME = 'IntersectionObserver';
     return `${EVENT_NAME}.${reqId}`;
@@ -8635,11 +8639,6 @@ function operateMap(id, pageId, type, data, operateMapCallback) {
         type,
         data,
     }, pageId, operateMapCallback);
-}
-
-function setCurrentPageMeta(page, options) {
-    const pageId = getPageIdByVm(page);
-    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, pageId);
 }
 
 const API_UPX2PX = 'upx2px';
@@ -13769,11 +13768,13 @@ function initGlobalEvent() {
 
 function initAppLaunch(appVm) {
     injectAppHooks(appVm.$);
-    const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
+    const { entryPagePath, entryPageQuery, referrerInfo, appScheme, appLink } = __uniConfig;
     const args = initLaunchOptions({
         path: entryPagePath,
         query: entryPageQuery,
         referrerInfo: referrerInfo,
+        appScheme,
+        appLink,
     });
     invokeHook(appVm, ON_LAUNCH, args);
     invokeHook(appVm, ON_SHOW, args);
