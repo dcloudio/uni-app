@@ -1360,6 +1360,17 @@ export function inferRuntimeType(
       case 'TSTypeReference': {
         const resolved = resolveTypeReference(ctx, node, scope)
         if (resolved) {
+          if (
+            node.typeName.type === 'Identifier' &&
+            resolved.type === 'TSTypeLiteral'
+          ) {
+            return [
+              `Object as PropType<${scope.source.slice(
+                node.start! + scope.offset,
+                node.end! + scope.offset
+              )}>`,
+            ]
+          }
           return inferRuntimeType(ctx, resolved, from, resolved._ownerScope)
         }
         if (node.typeName.type === 'Identifier') {

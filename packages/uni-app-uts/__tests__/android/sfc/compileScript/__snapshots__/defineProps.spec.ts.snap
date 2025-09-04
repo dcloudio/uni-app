@@ -20,6 +20,32 @@ return (): any | null => { return null }
 })"
 `;
 
+exports[`defineProps complex custom props type 1`] = `
+"type TestType = {
+    a?: number,
+    b?: number
+  }
+  type CustomPropsType = {
+    item: TestType
+  }
+  
+export default defineComponent({
+  props: {
+    item: { type: Object as PropType<TestType>, required: true, default: {} as TestType }
+  },
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy;
+const _cache = __ins.renderCache;
+
+  const props = __props
+
+return (): any | null => { return null }
+}
+
+})"
+`;
+
 exports[`defineProps custom element retains the props type & default value & production mode 1`] = `
 "interface Props { 
           foo?: number;
