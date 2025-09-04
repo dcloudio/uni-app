@@ -1374,6 +1374,14 @@ export function inferRuntimeType(
           return inferRuntimeType(ctx, resolved, from, resolved._ownerScope)
         }
         if (node.typeName.type === 'Identifier') {
+          if (node.typeName.name === 'Array') {
+            return [
+              `Array as PropType<${scope.source.slice(
+                node.start! + scope.offset,
+                node.end! + scope.offset
+              )}>`,
+            ]
+          }
           return [
             scope.source.slice(
               node.start! + scope.offset,
