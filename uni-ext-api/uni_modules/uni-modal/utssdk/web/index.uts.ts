@@ -1,4 +1,4 @@
-import { ShowModal, ShowModalOptions, UniShowModalResult, UniShowModalFailImpl, HideModal, HideModalOptions, UniHideModalResult, UniHideModalFailImpl } from "../interface.uts";
+import { ShowModal, ShowModalOptions, ShowModalResult, ShowModalFailImpl, HideModal, HideModalOptions, HideModalResult, HideModalFailImpl } from "../interface.uts";
 
 export const showModal: ShowModal = (options: ShowModalOptions) => {
 	const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
@@ -17,14 +17,14 @@ export const showModal: ShowModal = (options: ShowModalOptions) => {
 			cancel : inputParam["cancel"] as boolean,
 			confirm : inputParam["confirm"] as boolean,
 			content : inputParam["content"] as string
-		} as UniShowModalResult
+		} as ShowModalResult
 		
 		options.success?.(res)
 		options.complete?.(res)
 	})
 	uni.$on(failEventName, () => {
 	  
-	  const res = new UniShowModalFailImpl()
+	  const res = new ShowModalFailImpl()
 	  options.fail?.(res)
 	  options.complete?.(res)
 	  
@@ -32,7 +32,7 @@ export const showModal: ShowModal = (options: ShowModalOptions) => {
 	let openRet = uni.openDialogPage({
 		url: `/uni_modules/uni-modal/pages/uniModal/uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
 		fail(err) {
-			const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`)
+			const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`)
 			options.fail?.(res)
 			options.complete?.(res)
 			uni.$off(readyEventName)
@@ -47,7 +47,7 @@ export const showModal: ShowModal = (options: ShowModalOptions) => {
 		/**
 		 * 返回null 或者 类型不匹配等不应该存在的情况，返回未知错误码-4
 		 */
-		const res = new UniShowModalFailImpl()
+		const res = new ShowModalFailImpl()
 		options.fail?.(res)
 		options.complete?.(res)
 		return null
@@ -62,7 +62,7 @@ export const hideModal: HideModal = function (
 	
 	const currentPage = getCurrentPage() as unknown as UniPage
 	if (!currentPage){
-		const res = new UniHideModalFailImpl()
+		const res = new HideModalFailImpl()
 		options?.fail?.(res)
 		options?.complete?.(res)
 		return
@@ -103,7 +103,7 @@ export const hideModal: HideModal = function (
 	
 	
 	let res = {
-	} as UniHideModalResult
+	} as HideModalResult
 	options?.success?.(res)
 	options?.complete?.(res)
 	

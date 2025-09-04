@@ -1752,7 +1752,7 @@ function setStatusBarStyle() {
     } else if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length) {
       page = systemDialogPages[systemDialogPages.length - 1].vm;
     } else {
-      page = currentPage.vm;
+      page = currentPage === null || currentPage === void 0 ? void 0 : currentPage.vm;
     }
   }
   if (page) {
@@ -1761,7 +1761,8 @@ function setStatusBarStyle() {
   }
 }
 function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
-  var webview = getNativeApp().pageManager.findPageById(dialogPage.vm.$basePage.id + "");
+  var _dialogPage$vm;
+  var webview = getNativeApp().pageManager.findPageById(((_dialogPage$vm = dialogPage.vm) === null || _dialogPage$vm === void 0 ? void 0 : _dialogPage$vm.$basePage.id) + "");
   if (webview) {
     closeWebview(webview, animationType || "none", animationDuration || 0, () => {
       getVueApp().unmountPage(dialogPage.vm);
@@ -2389,6 +2390,7 @@ function _reLaunch(_ref3) {
       var selected = getTabIndex(path);
       function callback() {
         pages2.forEach((page) => closePage(page, "none"));
+        pages2.length = 0;
         resolve(void 0);
         setStatusBarStyle();
       }

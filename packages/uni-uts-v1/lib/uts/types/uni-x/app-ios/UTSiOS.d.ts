@@ -1,3 +1,24 @@
+
+/**
+ * 线程上下文
+ */
+declare class UniThreadContext {
+
+  /**
+  *  当前线程
+  */
+  thread : Thread;
+
+  /**
+  *  当前线程对应的runloop
+  */
+  runLoop : RunLoop;
+
+  /**
+  *  当前线程是否是主线程
+  */
+  isMainThread : boolean;
+}
 interface UTSiOS {
 	/**
 	 * 获取当前 app 显示的 UIViewController。
@@ -672,6 +693,52 @@ interface UTSiOS {
    * }
    */
   convert2AbsFullPath(inputPath: string):string;
+
+
+  /**
+   * 获取当前线程信息
+   *
+   * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOS.html#currentThreadContext
+   * @return 持有线程信息的对象
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "x",
+   *  		     "uniVer": "x",
+   * 			     "unixVer": "x"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *  	    	 "uniVer": "x",
+   * 			     "unixVer": "4.81"
+   *        }
+   *    }
+   * }
+   */
+  currentThreadContext():UniThreadContext;
+
+  /**
+   * 在指定线程执行任务
+   *
+   * @tutorial https://uniapp.dcloud.net.cn/uts/UTSiOS.html#currentThreadContext
+   * @param context 通过currentThreadContext获取的线程上下文对象
+   * @param task 回调函数
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "x",
+   *  		     "uniVer": "x",
+   * 			     "unixVer": "x"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *  	    	 "uniVer": "x",
+   * 			     "unixVer": "4.81"
+   *        }
+   *    }
+   * }
+   */
+  executeOnThread(context:UniThreadContext,task:() => void):void;
 }
 
 

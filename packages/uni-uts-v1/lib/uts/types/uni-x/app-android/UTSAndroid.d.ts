@@ -23,7 +23,9 @@ declare class PrivacyOption {
   isAgree : boolean;
 }
 
-
+/**
+ * since 4.81 update kotlin 2.2.0
+ */
 interface UTSAndroid {
 
   /**
@@ -669,6 +671,29 @@ interface UTSAndroid {
      }
    */
   getAppName() : string;
+
+  /**
+     获取当前应用是否在暗黑模式
+     @return 当前应用是否在暗黑模式
+     @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getAppDarkMode
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5",
+               "uniVer": "x",
+               "unixVer": "3.90",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "3.90"
+            },
+            "ios": {
+               "osVer": "x",
+               "uniVer": "x",
+                 "unixVer": "x"
+            }
+        }
+     }
+   */
+  getAppDarkMode() : boolean;
 
   /**
      获取manifest.json 中配置的应用版本信息

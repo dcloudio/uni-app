@@ -14,25 +14,28 @@ export type UniShowModalResult =  {
 	confirm: boolean
 }
 
-export type UniShowModalErrorCode = 4
+export type ShowModalResult = UniShowModalResult
+
+export type ShowModalErrorCode = 4
 
 export interface UniShowModalFail extends IUniError {
-  errCode: UniShowModalErrorCode
+  errCode: ShowModalErrorCode
 }
 
-export class UniShowModalFailImpl extends UniError implements UniShowModalFail {
-  override errCode: UniShowModalErrorCode
-  constructor(errMsg: string = 'showModal:fail cancel', errCode: UniShowModalErrorCode = 4) {
+export type ShowModalFail = UniShowModalFail
+
+export class ShowModalFailImpl extends UniError implements ShowModalFail {
+  override errCode: ShowModalErrorCode
+  constructor(errMsg: string = 'showModal:fail cancel', errCode: ShowModalErrorCode = 4) {
     super()
     this.errMsg = errMsg
     this.errCode = errCode
   }
 }
 
+type UniShowModalFailCallback = (result: ShowModalFail) => void
 
-type UniShowModalFailCallback = (result: UniShowModalFail) => void
-
-type UniShowModalSuccessCallback = (result: UniShowModalResult) => void
+type UniShowModalSuccessCallback = (result: ShowModalResult) => void
 
 type UniShowModalCompleteCallback = (result: any) => void
 
@@ -90,7 +93,6 @@ export type ShowModalOptions = {
    */
   complete?: UniShowModalCompleteCallback | null
 }
-
 export type ShowModal = (options: ShowModalOptions) => ModalPage | null;
 
 export type ModalPage = UniPage;
@@ -102,24 +104,28 @@ export type UniHideModalResult =  {
 
 }
 
-export type UniHideModalErrorCode = 4
+export type HideModalResult = UniHideModalResult
+
+export type HideModalErrorCode = 4
 
 export interface UniHideModalFail extends IUniError {
-  errCode: UniHideModalErrorCode
+  errCode: HideModalErrorCode
 }
 
-export class UniHideModalFailImpl extends UniError implements UniHideModalFail {
-  override errCode: UniHideModalErrorCode
-  constructor(errMsg: string = 'hideModal:fail cancel', errCode: UniHideModalErrorCode = 4) {
+export type HideModalFail = UniHideModalFail
+
+export class HideModalFailImpl extends UniError implements HideModalFail {
+  override errCode: HideModalErrorCode
+  constructor(errMsg: string = 'hideModal:fail cancel', errCode: HideModalErrorCode = 4) {
     super()
     this.errMsg = errMsg
     this.errCode = errCode
   }
 }
 
-type UniHideModalFailCallback = (result: UniHideModalFail) => void
+type UniHideModalFailCallback = (result: HideModalFail) => void
 
-type UniHideModalSuccessCallback = (result: UniHideModalResult) => void
+type UniHideModalSuccessCallback = (result: HideModalResult) => void
 
 type UniHideModalCompleteCallback = (result: any) => void
 
