@@ -165,7 +165,7 @@ function parseUTSSyntaxJsonError(error: UTSSyntaxJsonError, inputDir: string) {
       column: error.column,
       withSourceContent: true,
     })
-    if (result) {
+    if (result && result.source) {
       Object.defineProperty(normalizedError, 'id', {
         get() {
           return path.resolve(inputDir, result.source)
