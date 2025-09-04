@@ -151,7 +151,9 @@ const props = defineProps({ foo: String })
     expect(content).toMatch(
       `array: { type: Array as PropType<string[]>, required: true }`
     )
-    expect(content).toMatch(`arrayRef: { type: Array<any>, required: true }`)
+    expect(content).toMatch(
+      `arrayRef: { type: Array as PropType<Array<any>>, required: true }`
+    )
     expect(content).toMatch(
       `tuple: { type: Array as PropType<[number, number]>, required: true }`
     )
@@ -857,14 +859,24 @@ const props = defineProps({ foo: String })
   }
   type CustomPropsType = {
     item: TestType
+    items1: TestType[]
+    items2: Array<TestType>
   }
   const props = withDefaults(defineProps<CustomPropsType>(), {
-    item: {} as TestType
+    item: {} as TestType,
+    items1: [] as TestType[],
+    items2: [] as Array<TestType>
   })
 </script>`
     )
     expect(content).toMatch(
       `item: { type: Object as PropType<TestType>, required: true, default: {} as TestType }`
+    )
+    expect(content).toMatch(
+      `items1: { type: Array as PropType<TestType[]>, required: true, default: [] as TestType[] }`
+    )
+    expect(content).toMatch(
+      `items2: { type: Array as PropType<Array<TestType>>, required: true, default: [] as Array<TestType> }`
     )
     assertCode(content)
   })

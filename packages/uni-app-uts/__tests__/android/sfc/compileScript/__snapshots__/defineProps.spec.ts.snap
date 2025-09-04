@@ -27,11 +27,15 @@ exports[`defineProps complex custom props type 1`] = `
   }
   type CustomPropsType = {
     item: TestType
+    items1: TestType[]
+    items2: Array<TestType>
   }
   
 export default defineComponent({
   props: {
-    item: { type: Object as PropType<TestType>, required: true, default: {} as TestType }
+    item: { type: Object as PropType<TestType>, required: true, default: {} as TestType },
+    items1: { type: Array as PropType<TestType[]>, required: true, default: [] as TestType[] },
+    items2: { type: Array as PropType<Array<TestType>>, required: true, default: [] as Array<TestType> }
   },
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -336,7 +340,7 @@ export default defineComponent({
     objectRef: { type: Object, required: true },
     dateTime: { type: Date, required: true },
     array: { type: Array as PropType<string[]>, required: true },
-    arrayRef: { type: Array<any>, required: true },
+    arrayRef: { type: Array as PropType<Array<any>>, required: true },
     tuple: { type: Array as PropType<[number, number]>, required: true },
     set: { type: Set<string>, required: true },
     literal: { type: String, required: true },
