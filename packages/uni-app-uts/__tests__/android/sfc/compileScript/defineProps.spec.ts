@@ -847,4 +847,25 @@ const props = defineProps({ foo: String })
     )
     assertCode(content)
   })
+
+  test('complex custom props type', () => {
+    const { content } = compile(
+      `<script setup lang="ts">
+  type TestType = {
+    a?: number,
+    b?: number
+  }
+  type CustomPropsType = {
+    item: TestType
+  }
+  const props = withDefaults(defineProps<CustomPropsType>(), {
+    item: {} as TestType
+  })
+</script>`
+    )
+    expect(content).toMatch(
+      `item: { type: Object as PropType<TestType>, required: true, default: {} as TestType }`
+    )
+    assertCode(content)
+  })
 })
