@@ -1,4 +1,5 @@
 import { isString } from '@vue/shared'
+import type { RedirectInfo } from '../../../service/framework/app/utils'
 
 const BORDER_COLORS = new Map<string, string>([
   ['white', 'rgba(255, 255, 255, 0.33)'],
@@ -32,4 +33,25 @@ export function fixBorderStyle(tabBarConfig: Map<string, any>) {
 
   tabBarConfig.set('borderStyle', borderStyle)
   tabBarConfig.delete('borderColor')
+}
+
+export function parseRedirectInfo(app: IApp): RedirectInfo {
+  const redirectInfo = app.getRedirectInfo()
+  const path: string = redirectInfo.get('path') ?? ''
+  const query: string = redirectInfo.get('query') ?? ''
+  const userAction: boolean = redirectInfo.get('userAction') ?? false
+  const appScheme: string = redirectInfo.get('appScheme') ?? ''
+  const appLink: string = redirectInfo.get('appLink') ?? ''
+  const referrerInfo: UniApp.UniConfig['referrerInfo'] = {
+    appId: app.appid,
+    extraData: {},
+  }
+  return {
+    path: path || '',
+    query: query ? '?' + query : '',
+    referrerInfo,
+    userAction,
+    appScheme,
+    appLink,
+  }
 }

@@ -13,6 +13,7 @@ import { initSubscribeHandlers } from './subscriber'
 import { initVueApp } from '../../../service/framework/app/vueApp'
 import type { IApp } from '@dcloudio/uni-app-x/types/native'
 import { initService } from './initService'
+import { initEntry } from './initEntry'
 // import { initKeyboardEvent } from '../dom/keyboard'
 import { setNativeApp } from './app'
 import { initComponentInstance } from './initComponentInstance'
@@ -90,7 +91,6 @@ export function registerApp(
   if (__DEV__) {
     console.log(formatLog('registerApp'))
   }
-  initEntryPagePath(nativeApp)
 
   setNativeApp(nativeApp)
 
@@ -121,7 +121,8 @@ export function registerApp(
 
   initService(nativeApp, unregisterApp)
 
-  // initEntry()
+  initEntry(nativeApp)
+  initEntryPagePath(nativeApp)
   // initTabBar()
   initGlobalEvent(nativeApp)
   // initKeyboardEvent()
