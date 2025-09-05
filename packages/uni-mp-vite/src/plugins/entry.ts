@@ -11,6 +11,7 @@ import {
   normalizeMiniProgramFilename,
   normalizePath,
   parseManifestJsonOnce,
+  parseMiniProgramPagesJson,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
@@ -56,6 +57,30 @@ export function parseComponentStyleIsolation(content: string) {
   }
 }
 
+let hasOptimizationSubPackages = false // 是否开启分包优化配置
+let subPackages: string[] = []
+function initSubPackages() {
+  const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+  const platform = process.env.UNI_PLATFORM
+  const manifestJson = parseManifestJsonOnce(inputDir)
+  hasOptimizationSubPackages =
+    platform && manifestJson[platform]?.optimization?.subPackages
+  const { appJson } = parseMiniProgramPagesJson(
+    fs.readFileSync(path.resolve(inputDir, 'pages.json'), 'utf8'),
+    platform,
+    { subpackages: true }
+  )
+  subPackages = Object.values(appJson.subPackages || appJson.subpackages || {})
+    .filter(Boolean)
+    .map(({ root }) => `${root.replace(/\/$/, '')}/`)
+}
+export function getSubPackages() {
+  return {
+    hasOptimizationSubPackages,
+    subPackages,
+  }
+}
+
 export function uniEntryPlugin({
   global,
   template,
@@ -75,6 +100,7 @@ export function uniEntryPlugin({
     },
     buildStart() {
       easycomEncryptComponentPaths.clear()
+      initSubPackages()
     },
     load(id) {
       if (isUniPageUrl(id)) {
