@@ -200,6 +200,9 @@ export default {
             this.customFullscreen = 'uni-ad-custom-fullscreen'
           }
           this.loading = true
+          if (!adData.dcloudAdpid) {
+            adData.dcloudAdpid = this.adpid
+          }
           this.selectComponent('.uniad-plugin-wx').setConfig(adData)
         }
       })
@@ -225,13 +228,17 @@ export default {
             version,
             expireTime
           }) => {
+            const uniOptions = {
+              adpid: this.adpid
+            }
             adComponent.show({
               userId: this.urlCallback.userId || '',
               extra: this.urlCallback.extra || '',
               encryptKey,
               iv,
               version,
-              expireTime
+              expireTime,
+              uniOptions
             })
           },
           fail: (err) => {
