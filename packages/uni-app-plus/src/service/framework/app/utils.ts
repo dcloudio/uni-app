@@ -36,6 +36,9 @@ export function initEnterOptions({
     appScheme,
     appLink,
   })
+  if (__X__) {
+    enterOptions.query = new UTSJSONObject(enterOptions.query)
+  }
 }
 
 export function initLaunchOptions({
@@ -47,7 +50,7 @@ export function initLaunchOptions({
 }: Partial<RedirectInfo>) {
   extend(launchOptions, {
     path,
-    query: query ? parseQuery(query) : {},
+    query: query ? new UTSJSONObject(parseQuery(query)) : {},
     referrerInfo: referrerInfo || {},
     // TODO uni-app x
     channel: __X__ ? undefined : plus.runtime.channel,
@@ -55,6 +58,9 @@ export function initLaunchOptions({
     appScheme,
     appLink,
   })
+  if (__X__) {
+    launchOptions.query = new UTSJSONObject(launchOptions.query)
+  }
   extend(enterOptions, launchOptions)
 
   return enterOptions
