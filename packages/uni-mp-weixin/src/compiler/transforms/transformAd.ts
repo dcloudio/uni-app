@@ -1,4 +1,4 @@
-import { findJsonFile, isElementNode } from '@dcloudio/uni-cli-shared'
+import { isElementNode } from '@dcloudio/uni-cli-shared'
 import {
   ElementTypes,
   type RootNode,
@@ -13,8 +13,6 @@ const AD_COMPONENTS: Array<string> = [
   'ad-fullscreen-video',
   'ad-interstitial',
 ]
-
-import uniadAppJson from '../uniad.app.json'
 
 let appJsonUniadFlag = false
 
@@ -38,6 +36,5 @@ export function transformAd(
   if (AD_COMPONENTS.indexOf(node.tag) > -1) {
     appJsonUniadFlag = true
     process.env.HAS_WXAD = '1'
-    uniadAppJson(findJsonFile('app'))
   }
 }
