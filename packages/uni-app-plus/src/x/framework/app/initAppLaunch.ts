@@ -23,7 +23,10 @@ export function initAppLaunch(appVm: ComponentPublicInstance) {
   const app = getNativeApp()
   const schemaLink = app.getLaunchOptionsSync()
 
-  const launchOption = extend({}, args, schemaLink)
+  const launchOption = extend({}, args, {
+    appScheme: schemaLink.appScheme.length === 0 ? null : schemaLink.appScheme,
+    appLink: schemaLink.appLink.length === 0 ? null : schemaLink.appLink,
+  })
 
   // onLaunchOption
   setLaunchOptionsSync(launchOption)
