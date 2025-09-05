@@ -50,7 +50,7 @@ export function initLaunchOptions({
 }: Partial<RedirectInfo>) {
   extend(launchOptions, {
     path,
-    query: query ? new UTSJSONObject(parseQuery(query)) : {},
+    query: query ? parseQuery(query) : {},
     referrerInfo: referrerInfo || {},
     // TODO uni-app x
     channel: __X__ ? undefined : plus.runtime.channel,
