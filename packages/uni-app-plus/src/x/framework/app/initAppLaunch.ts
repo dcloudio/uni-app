@@ -24,8 +24,9 @@ export function initAppLaunch(appVm: ComponentPublicInstance) {
   const schemaLink = app.getLaunchOptionsSync()
 
   const launchOption = extend({}, args, {
-    appScheme: schemaLink.appScheme.length === 0 ? null : schemaLink.appScheme,
-    appLink: schemaLink.appLink.length === 0 ? null : schemaLink.appLink,
+    // TODO 确认类型appScheme的类型，目前会出现undefined
+    appScheme: !schemaLink.appScheme ? null : schemaLink.appScheme,
+    appLink: !schemaLink.appLink ? null : schemaLink.appLink,
   })
 
   // onLaunchOption
