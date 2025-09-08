@@ -3,7 +3,7 @@ import { extend } from '@vue/shared'
 import { formatLog } from '@dcloudio/uni-shared'
 import { defineGlobalData } from '@dcloudio/uni-core'
 
-// import { initEntry } from './initEntry'
+import { initEntry } from './initEntry'
 // import { initTabBar } from './initTabBar'
 import { initGlobalEvent } from './initGlobalEvent'
 import { initAppLaunch } from './initAppLaunch'
