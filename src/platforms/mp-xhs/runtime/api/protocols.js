@@ -13,7 +13,7 @@ export const protocols = {
   getSystemInfo,
   getSystemInfoSync: getSystemInfo,
   requestPayment: {
-    name: 'requestOrderPayment'
+    name: 'requestGuaranteeOrderPayment'
   },
   showActionSheet: {
     args (fromArgs, toArgs) {
