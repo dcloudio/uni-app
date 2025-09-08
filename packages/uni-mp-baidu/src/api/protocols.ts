@@ -83,7 +83,6 @@ export const navigateToMiniProgram = {
   name: 'navigateToSmartProgram',
   args: {
     appId: 'appKey',
-    envVersion: false,
   },
 }
 
