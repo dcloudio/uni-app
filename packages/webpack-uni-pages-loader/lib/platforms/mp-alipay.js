@@ -91,10 +91,20 @@ const projectMap = {
   format: 2,
   miniprogramRoot: './',
   pluginRoot: undefined, // pluginRoot 没有默认值
-  compileOptions: {},
+  compileOptions: {
+    component2: true,
+    transpile: {
+      script: {
+        ignore: []
+      }
+    }
+  },
   uploadExclude: [],
   assetsInclude: [],
-  developOptions: {},
+  developOptions: {
+    parallel: false,
+    minify: false
+  },
   pluginResolution: {},
   scripts: {}
 }
