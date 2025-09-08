@@ -30,7 +30,7 @@ export const showActionSheet = {
 }
 
 export const requestPayment = {
-  name: 'requestOrderPayment',
+  name: 'requestGuaranteeOrderPayment',
 }
 
 export const navigateTo = _navigateTo()
