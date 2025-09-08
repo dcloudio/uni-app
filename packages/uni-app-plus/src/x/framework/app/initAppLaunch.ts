@@ -21,13 +21,15 @@ export function initAppLaunch(appVm: ComponentPublicInstance) {
   })
 
   const app = getNativeApp()
-  const schemaLink = app.getLaunchOptionsSync()
+  const schemaLink = app.getLaunchOptionsSync() ?? {
+    appScheme: '',
+    appLink: '',
+  }
+  const appScheme =
+    schemaLink.appScheme?.length === 0 ? null : schemaLink.appScheme
+  const appLink = schemaLink.appLink?.length === 0 ? null : schemaLink.appLink
 
-  const launchOption = extend({}, args, {
-    // TODO 确认类型appScheme的类型，目前会出现undefined
-    appScheme: !schemaLink.appScheme ? null : schemaLink.appScheme,
-    appLink: !schemaLink.appLink ? null : schemaLink.appLink,
-  })
+  const launchOption = extend({}, args, { appScheme, appLink })
 
   // onLaunchOption
   setLaunchOptionsSync(launchOption)
