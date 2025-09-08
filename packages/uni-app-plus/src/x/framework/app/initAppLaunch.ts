@@ -26,8 +26,17 @@ export function initAppLaunch(appVm: ComponentPublicInstance) {
     appLink: '',
   }
   const appScheme =
-    schemaLink.appScheme?.length === 0 ? null : schemaLink.appScheme
-  const appLink = schemaLink.appLink?.length === 0 ? null : schemaLink.appLink
+    schemaLink.appScheme == null
+      ? null
+      : schemaLink.appScheme.length === 0
+      ? null
+      : schemaLink.appScheme
+  const appLink =
+    schemaLink.appLink == null
+      ? null
+      : schemaLink.appLink.length === 0
+      ? null
+      : schemaLink.appLink
 
   const launchOption = extend({}, args, { appScheme, appLink })
 
