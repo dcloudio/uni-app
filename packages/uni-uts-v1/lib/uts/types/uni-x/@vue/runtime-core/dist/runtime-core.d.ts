@@ -1662,6 +1662,15 @@ export declare const withKeys: <T extends (event: KeyboardEvent) => any>(fn: T &
     } | undefined;
 }, modifiers: string[]) => T;
 
+export declare function useModel<
+    M extends PropertyKey,
+    T extends Record<string, any>,
+    K extends keyof T
+>(
+    props: T,
+    name: K,
+    options?: DefineModelOptions<T[K]>
+): ModelRef<T[K], M>
 export declare function useModel<R>(props: any, name: string, options?: any): ModelRef<R, string>;
 
 export declare const vShow: ObjectDirective;
