@@ -146,6 +146,11 @@ export default {
   mounted() {
     this.scrollTop && this.pageScrollTo()
   },
+  // #ifdef H5
+  activated () {
+    this.setPageMeta()
+  },
+  // #endif
   methods: {
     setPullDownRefresh (webview, enabled) {
       webview.setStyle({
