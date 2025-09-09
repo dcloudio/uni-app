@@ -188,7 +188,7 @@ export function initPluginVueOptions(
   if (
     typeof userOptionsTransformAssetUrls !== 'boolean' &&
     !!userOptionsTransformAssetUrls?.tags &&
-    !Array.isArray(userOptionsTransformAssetUrls.tags)
+    !isArray(userOptionsTransformAssetUrls.tags)
   ) {
     templateOptions.transformAssetUrls = {
       ...builtInTransformAssetUrls,
