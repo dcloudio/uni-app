@@ -3,8 +3,6 @@ import {
   hasOwn
 } from 'uni-shared'
 
-export const isComponent2 = xhs.canIUse('component2')
-
 export const mocks = ['$id']
 
 export function initSpecialMethods (mpInstance) {
