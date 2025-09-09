@@ -111,8 +111,7 @@ const protocols = {
   navigateToMiniProgram: {
     name: 'navigateToSmartProgram',
     args: {
-      appId: 'appKey',
-      envVersion: false
+      appId: 'appKey'
     }
   },
   navigateBackMiniProgram: {
