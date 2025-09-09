@@ -282,7 +282,7 @@ var serviceContext = (function () {
     'initUTSPackageName',
     'requireUTSPlugin',
     'registerUTSPlugin',
-    'registerUTSInterface',
+    'registerUTSInterface'
   ];
 
   const ad = [
@@ -298,7 +298,8 @@ var serviceContext = (function () {
     'onPushMessage',
     'offPushMessage',
     'createPushMessage',
-    'getChannelManager'
+    'getChannelManager',
+    'getFacialRecognitionMetaInfo'
   ];
 
   const apis = [
@@ -954,7 +955,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
+    /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS|getFacialRecognitionMetaInfo/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -1020,7 +1021,7 @@ var serviceContext = (function () {
     }
     return function promiseApi (options = {}, ...params) {
       if (isFn(options.success) || isFn(options.fail) || isFn(options.complete)) {
-        return wrapperReturnValue(name, invokeApi(name, api, options, ...params))
+        return wrapperReturnValue(name, invokeApi(name, api, Object.assign({}, options), ...params))
       }
       return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
         invokeApi(name, api, Object.assign({}, options, {
@@ -7858,7 +7859,14 @@ var serviceContext = (function () {
         });
       });
       tabBar && tabBar.onClick(({ index }) => {
+        const fromIndex = config.selectedIndex;
         clickCallback(config.list[index], index);
+        const toIndex = config.selectedIndex;
+        if (index !== toIndex) {
+          tabBar.switchSelect({
+            index: fromIndex
+          });
+        }
       });
       tabBar && tabBar.onMidButtonClick(() => {
         publish('onTabBarMidButtonTap', {});
@@ -7887,6 +7895,7 @@ var serviceContext = (function () {
         tabBar && tabBar.switchSelect({
           index
         });
+        this.config.selectedIndex = index;
         return true
       }
       return false
@@ -11120,10 +11129,14 @@ var serviceContext = (function () {
     }
   }
 
-  function backWebview (webview, callback) {
+  function backWebview (page, callback) {
+    const webview = page.$getAppWebview();
+    if (!page.__uniapp_webview) {
+      return callback(webview)
+    }
     const children = webview.children();
     if (!children || !children.length) { // 有子 webview
-      return callback()
+      return callback(webview)
     }
 
     // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
@@ -11135,7 +11148,7 @@ var serviceContext = (function () {
       if (canBack) {
         childWebview.back(); // webview 返回
       } else {
-        callback();
+        callback(webview);
       }
     });
   }
@@ -11172,13 +11185,7 @@ var serviceContext = (function () {
       });
     };
 
-    const webview = currentPage.$getAppWebview();
-    if (!currentPage.__uniapp_webview) {
-      return backPage(webview)
-    }
-    backWebview(webview, () => {
-      backPage(webview);
-    });
+    backWebview(currentPage, backPage);
   }
 
   function navigateBack$1 ({
@@ -11206,7 +11213,7 @@ var serviceContext = (function () {
     uni.hideLoading();
 
     if (currentPage.$page.meta.isQuit) {
-      quit();
+      backWebview(currentPage, quit);
     } else if (currentPage.$page.id === 1 && __uniConfig.realEntryPagePath) {
       // condition
       __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
@@ -21370,7 +21377,9 @@ var serviceContext = (function () {
       name: 'volume'
     },
     {
-      name: 'sessionCategory'
+      name: 'sessionCategory',
+      cache: true,
+      default: 'playback'
     },
     {
       name: 'playbackRate',
@@ -22708,6 +22717,19 @@ var serviceContext = (function () {
       return this._selectorQuery
     }
 
+    node (callback) {
+      this._selectorQuery._push(
+        this._selector,
+        this._component,
+        this._single,
+        {
+          node: true
+        },
+        callback
+      );
+      return this._selectorQuery
+    }
+
     scrollOffset (callback) {
       this._selectorQuery._push(
         this._selector,
@@ -22890,7 +22912,7 @@ var serviceContext = (function () {
   function setPageMeta$1 (args) {
     const pages = getCurrentPages();
     if (pages.length) {
-      UniServiceJSBridge.publishHandler('setPageMeta', args, pages[pages.length - 1].$page.id);
+      UniServiceJSBridge.publishHandler('setPageMeta', args, typeof args.pageId !== 'undefined' ? args.pageId : pages[pages.length - 1].$page.id);
     }
     return {}
   }
