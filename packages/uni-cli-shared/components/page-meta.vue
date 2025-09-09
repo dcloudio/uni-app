@@ -66,8 +66,7 @@ export default {
   created () {
     const pages = getCurrentPages()
     const currentPage = pages[pages.length - 1]
-    const page = pages[0]
-    this.$pageVm = page.$vm || page
+    this.$pageVm = currentPage.$vm || currentPage
     // event
     // h5 暂不支持生命周期 onResize,补充后，可以移除该条件编译
     // #ifdef H5
@@ -86,7 +85,7 @@ export default {
     })
 
     // #ifdef APP-PLUS
-    this._currentWebview = page.$getAppWebview()
+    this._currentWebview = currentPage.$getAppWebview()
     if (this.enablePullDownRefresh) {
       this.setPullDownRefresh(this._currentWebview, true)
     }
