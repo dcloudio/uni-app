@@ -4,6 +4,7 @@ import {
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   copyMiniProgramThemeJson,
+  createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
   transformDirection,
@@ -157,7 +158,6 @@ export const options: UniMiniProgramPluginOptions = {
         {
           src: [
             'sitemap.json',
-            'ext.json',
             'custom-tab-bar',
             'functional-pages',
             'project.private.config.json',
@@ -168,6 +168,7 @@ export const options: UniMiniProgramPluginOptions = {
           },
         },
         ...copyMiniProgramThemeJson(),
+        createCopyPluginTarget(['ext.json']),
       ],
     },
   },

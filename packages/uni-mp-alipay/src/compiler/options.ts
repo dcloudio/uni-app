@@ -6,6 +6,7 @@ import {
   COMPONENT_ON_LINK,
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
+  createCopyPluginTarget,
   createTransformComponentLink,
   getNativeTags,
   // transformMatchMedia,
@@ -101,16 +102,12 @@ export const options: UniMiniProgramPluginOptions = {
       targets: [
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
-          src: [
-            'customize-tab-bar',
-            'ext.json',
-            'preload.json',
-            'sitemap.json',
-          ],
+          src: ['customize-tab-bar', 'preload.json', 'sitemap.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },
         },
+        createCopyPluginTarget(['ext.json']),
       ],
     },
   },
