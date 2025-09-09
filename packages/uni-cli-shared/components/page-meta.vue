@@ -140,9 +140,11 @@ export default {
     setPageMeta () {
       // h5 和 app-plus 设置 rootFontSize
       // #ifdef H5 || APP-PLUS
-      uni.setPageMeta({
-        pageStyle: this.pageStyle,
-        rootFontSize: this.rootFontSize
+      this.$nextTick(() => {
+        uni.setPageMeta({
+          pageStyle: this.pageStyle,
+          rootFontSize: this.rootFontSize
+        })
       })
       // #endif
     },
