@@ -98,10 +98,9 @@ export default {
   created () {
     const pages = getCurrentPages()
     const currentPage = pages[pages.length - 1]
-    const page = pages[0]
     this.$pageVm = currentPage.$vm || currentPage
     // #ifdef APP-PLUS
-    this._currentWebview = page.$getAppWebview()
+    this._currentWebview = currentPage.$getAppWebview()
     if (this.enablePullDownRefresh) {
       this.setPullDownRefresh(this._currentWebview, true)
     }
