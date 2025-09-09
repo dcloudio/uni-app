@@ -1321,7 +1321,7 @@ const showActionSheet = {
     },
 };
 const requestPayment = {
-    name: 'requestOrderPayment',
+    name: 'requestGuaranteeOrderPayment',
 };
 const navigateTo = navigateTo$1();
 
