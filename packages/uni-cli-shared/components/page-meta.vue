@@ -128,6 +128,11 @@ export default {
   mounted () {
     this.scrollTop && this.pageScrollTo()
   },
+  // #ifndef H5
+  activated () {
+    this.setPageMeta()
+  },
+  // #endif
   methods: {
     setPullDownRefresh (webview, enabled) {
       webview.setStyle({
