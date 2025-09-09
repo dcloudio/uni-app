@@ -128,7 +128,7 @@ export default {
   mounted () {
     this.scrollTop && this.pageScrollTo()
   },
-  // #ifndef H5
+  // #ifdef H5
   activated () {
     this.setPageMeta()
   },
