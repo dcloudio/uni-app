@@ -2070,7 +2070,9 @@ function findComponentRectAll(dom, nvueElementInfos, index, result, callback) {
 }
 
 function setCurrentPageMeta(page, options) {
-    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, getPage$BasePage(page).id);
+    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, typeof options.pageId !== 'undefined'
+        ? options.pageId
+        : getPage$BasePage(page).id);
 }
 
 function getRealPath(filepath) {

@@ -742,6 +742,9 @@ function initLaunchOptions(_ref2) {
     appScheme,
     appLink
   });
+  {
+    launchOptions$1.query = new UTSJSONObject(launchOptions$1.query);
+  }
   extend(enterOptions$1, launchOptions$1);
   return enterOptions$1;
 }
@@ -1430,6 +1433,27 @@ function fixBorderStyle(tabBarConfig) {
   tabBarConfig.set("borderStyle", borderStyle);
   tabBarConfig.delete("borderColor");
 }
+function parseRedirectInfo(app) {
+  var _redirectInfo$get, _redirectInfo$get2, _redirectInfo$get3, _redirectInfo$get4, _redirectInfo$get5;
+  var redirectInfo = app.getRedirectInfo();
+  var path = (_redirectInfo$get = redirectInfo.get("path")) !== null && _redirectInfo$get !== void 0 ? _redirectInfo$get : "";
+  var query = (_redirectInfo$get2 = redirectInfo.get("query")) !== null && _redirectInfo$get2 !== void 0 ? _redirectInfo$get2 : "";
+  var userAction = (_redirectInfo$get3 = redirectInfo.get("userAction")) !== null && _redirectInfo$get3 !== void 0 ? _redirectInfo$get3 : false;
+  var appScheme = (_redirectInfo$get4 = redirectInfo.get("appScheme")) !== null && _redirectInfo$get4 !== void 0 ? _redirectInfo$get4 : "";
+  var appLink = (_redirectInfo$get5 = redirectInfo.get("appLink")) !== null && _redirectInfo$get5 !== void 0 ? _redirectInfo$get5 : "";
+  var referrerInfo = {
+    appId: app.appid,
+    extraData: {}
+  };
+  return {
+    path: path || "",
+    query: query ? "?" + query : "",
+    referrerInfo,
+    userAction,
+    appScheme,
+    appLink
+  };
+}
 var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
 var selected0 = -1;
@@ -2107,6 +2131,43 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
     }
   };
 }
+var isInitEntryPage = false;
+function initEntry(app) {
+  if (isInitEntryPage) {
+    return;
+  }
+  isInitEntryPage = true;
+  var entryPagePath;
+  var entryPageQuery;
+  var redirectInfo = app.getRedirectInfo();
+  if (redirectInfo.size > 0) {
+    var {
+      path,
+      query
+      /* referrerInfo, appScheme, appLink */
+    } = parseRedirectInfo(app);
+    if (path) {
+      entryPagePath = path;
+      entryPageQuery = query;
+    }
+  }
+  if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+    if (entryPageQuery) {
+      __uniConfig.entryPageQuery = entryPageQuery;
+    }
+    return;
+  }
+  var entryRoute = addLeadingSlash(entryPagePath);
+  var routeOptions = getRouteOptions(entryRoute);
+  if (!routeOptions) {
+    return;
+  }
+  if (!routeOptions.meta.isTabBar) {
+    __uniConfig.realEntryPagePath = __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+  }
+  __uniConfig.entryPagePath = entryPagePath;
+  __uniConfig.entryPageQuery = entryPageQuery;
+}
 function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
     var currentPage = getCurrentPage();
@@ -2249,6 +2310,7 @@ var getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SY
   return Object.assign({}, baseInfo, enterOptions);
 });
 function initAppLaunch(appVm) {
+  var _app$getLaunchOptions;
   injectAppHooks(appVm.$);
   var {
     entryPagePath,
@@ -2261,8 +2323,16 @@ function initAppLaunch(appVm) {
     referrerInfo
   });
   var app = getNativeApp();
-  var schemaLink = app.getLaunchOptionsSync();
-  var launchOption = extend({}, args, schemaLink);
+  var schemaLink = (_app$getLaunchOptions = app.getLaunchOptionsSync()) !== null && _app$getLaunchOptions !== void 0 ? _app$getLaunchOptions : {
+    appScheme: "",
+    appLink: ""
+  };
+  var appScheme = schemaLink.appScheme == null ? null : schemaLink.appScheme.length === 0 ? null : schemaLink.appScheme;
+  var appLink = schemaLink.appLink == null ? null : schemaLink.appLink.length === 0 ? null : schemaLink.appLink;
+  var launchOption = extend({}, args, {
+    appScheme,
+    appLink
+  });
   setLaunchOptionsSync(launchOption);
   invokeHook(appVm, ON_LAUNCH, launchOption);
   var showOption = extend({}, launchOption);
@@ -2722,7 +2792,6 @@ function initUniApp(uniApp) {
   });
 }
 function registerApp(appVm, nativeApp2, uniApp) {
-  initEntryPagePath(nativeApp2);
   setNativeApp(nativeApp2);
   initVueApp(appVm);
   appCtx = appVm;
@@ -2734,6 +2803,8 @@ function registerApp(appVm, nativeApp2, uniApp) {
   extend(appCtx, defaultApp);
   defineGlobalData(appCtx, defaultApp.globalData);
   initService(nativeApp2, unregisterApp);
+  initEntry(nativeApp2);
+  initEntryPagePath(nativeApp2);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
   initAppError(appVm, nativeApp2);
