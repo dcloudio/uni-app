@@ -64,7 +64,9 @@ export default {
     }
   },
   created () {
-    const page = getCurrentPages()[0]
+    const pages = getCurrentPages()
+    const currentPage = pages[pages.length - 1]
+    const page = pages[0]
     this.$pageVm = page.$vm || page
     // event
     // h5 暂不支持生命周期 onResize,补充后，可以移除该条件编译
@@ -102,7 +104,7 @@ export default {
       this.rootFontSize,
       this.pageStyle
     ], () => {
-      this.setPageMeta()
+      this.setPageMeta(currentPage.$page.id)
     })
     this.$watch(() => [
       this.backgroundColor,
@@ -142,13 +144,14 @@ export default {
         }
       })
     },
-    setPageMeta () {
+    setPageMeta (pageId) {
       // h5 和 app-plus 设置 rootFontSize
       // #ifdef H5 || APP-PLUS
       this.$nextTick(() => {
         uni.setPageMeta({
           pageStyle: this.pageStyle,
-          rootFontSize: this.rootFontSize
+          rootFontSize: this.rootFontSize,
+          pageId
         })
       })
       // #endif
