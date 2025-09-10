@@ -225,9 +225,14 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     _type: 'syntactic' | 'semantic',
     diagnostic: tsTypes.Diagnostic
   ) {
-    const errorCode = UNI_APP_X_TYPE_VALIDATION
-      ? [2300, 2451, 110111119, 2564, 1023]
-      : []
+    const stableCode = [2300, 2451, 110111119, 2564, 1023]
+    const internalUseCode = [2355, 4117, 2348, 2310, 18047]
+    const code = [...stableCode]
+    if (hxDev) {
+      // 只有内部版本才开启
+      code.push(...internalUseCode)
+    }
+    const errorCode = UNI_APP_X_TYPE_VALIDATION ? code : []
     const throwError =
       diagnostic.__throwError ||
       [
