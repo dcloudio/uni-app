@@ -2,6 +2,7 @@ import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
   type MiniProgramCompilerOptions,
+  createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
   // transformMatchMedia,
@@ -94,13 +95,13 @@ export const options: UniMiniProgramPluginOptions = {
           src: [
             'sitemap.json',
             'project.private.config.json',
-            'ext.json',
             projectConfigFilename,
           ],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },
         },
+        createCopyPluginTarget(['ext.json']),
         // ...copyMiniProgramThemeJson(),
       ],
     },

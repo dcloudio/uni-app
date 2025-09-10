@@ -2,6 +2,7 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
   type MiniProgramCompilerOptions,
+  createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
   transformDirection,
@@ -82,11 +83,12 @@ export const options: UniMiniProgramPluginOptions = {
       assets: [COMPONENTS_DIR],
       targets: [
         {
-          src: ['ext.json', 'package.json', 'project.private.config.json'],
+          src: ['package.json', 'project.private.config.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },
         },
+        createCopyPluginTarget(['ext.json']),
       ],
     },
   },

@@ -2,6 +2,7 @@ import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   type MiniProgramCompilerOptions,
+  createCopyPluginTarget,
   getNativeTags,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
@@ -63,11 +64,12 @@ export const options: UniMiniProgramPluginOptions = {
       assets: [COMPONENTS_DIR],
       targets: [
         {
-          src: ['ext.json', 'ascf.config.json'],
+          src: ['ascf.config.json'],
           get dest() {
             return process.env.UNI_OUTPUT_DIR as string
           },
         },
+        createCopyPluginTarget(['ext.json']),
       ],
     },
   },
