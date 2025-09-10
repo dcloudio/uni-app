@@ -1,3 +1,8 @@
+const path = require('path')
+const {
+  parseJson
+} = require('@dcloudio/uni-cli-shared/lib/json')
+
 module.exports = {
   options: {
     cssVars: {
