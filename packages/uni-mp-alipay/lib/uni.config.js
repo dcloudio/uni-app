@@ -26,21 +26,22 @@ module.exports = {
     const copyOptions = [
       'mycomponents',
       'customize-tab-bar',
-      'ext.json',
       'preload.json',
       'sitemap.json'
     ]
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/mycomponents')
     })
-
+    copyOptions.push({
+      from: path.resolve(process.env.UNI_INPUT_DIR, 'ext.json'),
+      transform: content => JSON.stringify(parseJson(content.toString(), true), null, 2)
+    })
     if (process.env.UNI_MP_PLUGIN) {
       copyOptions.push({
         from: path.resolve(process.env.UNI_INPUT_DIR, 'plugin.json'),
         transform: content => JSON.stringify(parseJson(content.toString(), true))
       })
     }
-
     return copyOptions
   }
 }

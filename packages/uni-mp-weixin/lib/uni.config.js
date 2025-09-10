@@ -28,7 +28,6 @@ module.exports = {
     const CopyWebpackPluginVersion = Number(require('copy-webpack-plugin/package.json').version.split('.')[0])
     const copyOptions = [
       'sitemap.json',
-      'ext.json',
       'custom-tab-bar',
       'functional-pages',
       'project.private.config.json'
@@ -42,6 +41,11 @@ module.exports = {
     }
 
     copyOptions.push(copyMiniProgramThemeJson(platformOptions, vueOptions))
+
+    copyOptions.push({
+      from: path.resolve(process.env.UNI_INPUT_DIR, 'ext.json'),
+      transform: content => JSON.stringify(parseJson(content.toString(), true), null, 2)
+    })
 
     const workers = platformOptions.workers
     workers && copyOptions.push(typeof workers === 'object' ? workers.path : workers)

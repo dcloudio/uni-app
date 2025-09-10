@@ -17,12 +17,15 @@ module.exports = {
   copyWebpackOptions (platformOptions, vueOptions) {
     const copyOptions = [
       'xhscomponents',
-      'ext.json',
       'sitemap.json',
       'project.private.config.json'
     ]
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/xhscomponents')
+    })
+    copyOptions.push({
+      from: path.resolve(process.env.UNI_INPUT_DIR, 'ext.json'),
+      transform: content => JSON.stringify(parseJson(content.toString(), true), null, 2)
     })
     return copyOptions
   }
