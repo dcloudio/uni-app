@@ -36,20 +36,22 @@ module.exports = {
     Object.assign(platformOptions, manifestJson['mp-harmony'] || {}, platformOptions)
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = [
-      'ascf.config.json',
-      'ext.json'
-    ]
+    const copyOptions = ['ascf.config.json',]
     let jsConfigPath = path.resolve(process.env.UNI_INPUT_DIR, 'jsconfig.json')
     if (!fs.existsSync(jsConfigPath)) {
       jsConfigPath = path.resolve(__dirname, 'assets/jsconfig.json')
     }
     copyOptions.push(jsConfigPath)
-
+    
     const signCopyOption = getSignCopyOption()
     if (signCopyOption) {
       copyOptions.push(signCopyOption)
     }
+
+    copyOptions.push({
+      from: path.resolve(process.env.UNI_INPUT_DIR, 'ext.json'),
+      transform: content => JSON.stringify(parseJson(content.toString(), true), null, 2)
+    })
 
     return copyOptions
   }

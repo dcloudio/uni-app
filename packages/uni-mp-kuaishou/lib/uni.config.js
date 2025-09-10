@@ -15,9 +15,13 @@ module.exports = {
     subPackages: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = ['kscomponents', 'ext.json', 'project.private.config.json']
+    const copyOptions = ['kscomponents', 'project.private.config.json']
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/kscomponents')
+    })
+    copyOptions.push({
+      from: path.resolve(process.env.UNI_INPUT_DIR, 'ext.json'),
+      transform: content => JSON.stringify(parseJson(content.toString(), true), null, 2)
     })
     return copyOptions
   }
