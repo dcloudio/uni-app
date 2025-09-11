@@ -100,6 +100,10 @@ function resolveDigitDecimalPoint(
   }
 }
 
+function isPaste(event: InputEvent) {
+  return event.inputType === 'insertFromPaste'
+}
+
 type Props = ExtractPropTypes<typeof props>
 type ResetCache = { fn: (() => void) | null }
 function useCache(props: Props, type: ComputedRef<string>) {
@@ -264,17 +268,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           }
 
           // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
-          const maxlength = state.maxlength
-          if (maxlength > 0 && input.value.length > maxlength) {
-            input.value = input.value.slice(0, maxlength)
-            state.value = input.value
-            // 字符长度超出范围不触发 input 事件
-            // 当用户ctrl + v粘贴过长字符时，截断后的input.value 和原来的输入框值不相等时，需要触发input事件
-            const modelValue =
-              props.modelValue !== undefined && props.modelValue !== null
-                ? props.modelValue.toString()
-                : ''
-            return modelValue !== input.value
+          if (
+            state.maxlength > 0 &&
+            input.value.length > state.maxlength &&
+            !isPaste(event as InputEvent)
+          ) {
+            input.value = cache.value = state.value
+            return false
           }
         }
       })
@@ -284,6 +284,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         if (props.type === 'number' && !(cache.value === '-' && value === '')) {
           cache.value = value.toString()
         }
+      }
+    )
+    watch(
+      () => props.maxlength,
+      (length) => {
+        length = parseInt(length as any, 10)
+        const realValue = state.value.slice(0, length)
+        realValue !== state.value && (state.value = realValue)
       }
     )
     const NUMBER_TYPES = ['number', 'digit']
@@ -351,7 +359,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             // v-model 会导致 type 为 number 或 digit 时赋值为 number 类型
             value={state.value}
             onInput={(event: Event) => {
-              state.value = (event.target as HTMLInputElement).value.toString()
+              const value = (event.target as HTMLInputElement).value.toString()
+              if (
+                type.value === 'number' &&
+                state.maxlength > 0 &&
+                value.length > state.maxlength
+              ) {
+                if (isPaste(event as InputEvent)) {
+                  state.value = value.slice(0, state.maxlength)
+                }
+                return
+              }
+              state.value = value
             }}
             disabled={!!props.disabled}
             type={type.value}
