@@ -7,6 +7,7 @@ import { getCurrentInstance, injectHook, isInSSRComponentSetup } from 'vue'
 import {
   ON_ADD_TO_FAVORITES,
   ON_BACK_PRESS,
+  ON_COPY_URL,
   ON_ERROR,
   ON_EXIT,
   ON_HIDE,
@@ -169,6 +170,9 @@ export const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook<
 export const onShareAppMessage = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onShareAppMessage']
 >(ON_SHARE_APP_MESSAGE, HookFlags.PAGE)
+export const onCopyUrl = /*#__PURE__*/ createLifeCycleHook<
+  Required<Page.PageInstance>['onCopyUrl']
+>(ON_COPY_URL, HookFlags.PAGE)
 
 export const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onNavigationBarButtonTap']
