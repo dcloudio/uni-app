@@ -4,7 +4,8 @@ const { getManifestJson } = require('@dcloudio/uni-cli-shared/lib/manifest')
 const EVENTS = {
   click: 'tap'
 }
-const manifestJson = getManifestJson()
+// UNI_INPUT_DIR 在 test 环境下不存在
+const manifestJson = process.env.UNI_INPUT_DIR ? getManifestJson() : {}
 const nativeTags = (manifestJson[process.env.UNI_PLATFORM] || {}).nativeTags || []
 const tags = {
   // 小程序平台通用组件
