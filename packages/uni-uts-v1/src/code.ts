@@ -857,13 +857,17 @@ async function parseCode(
       filename: relative(filename, inputDir),
       noColor: !isColorSupported(),
     })
+    if (ast.error) {
+      console.error(ast.error)
+      return []
+    }
     return parseAst(
       ast,
       createResolveTypeReferenceName(namespace, ast, types.class),
       types
     )
   } catch (e: any) {
-    // console.error(parseUTSSyntaxError(e, process.env.UNI_INPUT_DIR))
+    console.error(parseUTSSyntaxError(e, process.env.UNI_INPUT_DIR))
   }
   return []
 }
