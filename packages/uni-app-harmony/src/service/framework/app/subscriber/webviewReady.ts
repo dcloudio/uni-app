@@ -41,14 +41,23 @@ export function subscribeWebviewReady(_data: unknown, pageId: string) {
 
 function onLaunchWebviewReady() {
   // TODO closeSplashscreen
-  const entryPagePath = addLeadingSlash(__uniConfig.entryPagePath!)
-  const routeOptions = getRouteOptions(entryPagePath)!
+  let entryPagePath = addLeadingSlash(__uniConfig.entryPagePath!)
+  let routeOptions = getRouteOptions(entryPagePath)
+  if (!routeOptions) {
+    if (__uniRoutes.length > 0) {
+      entryPagePath = __uniRoutes[0].path
+      routeOptions = getRouteOptions(addLeadingSlash(entryPagePath))
+    } else {
+      console.error('未匹配到路由，请检查配置')
+      return
+    }
+  }
   const args = {
     url: entryPagePath + (__uniConfig.entryPageQuery || ''),
     openType: 'appLaunch',
   }
   const handler = { resolve() {}, reject() {} }
-  if (routeOptions.meta.isTabBar) {
+  if (routeOptions?.meta?.isTabBar) {
     return $switchTab(args, handler)
   }
   return $navigateTo(args, handler)
