@@ -27,8 +27,8 @@ describe('mp:compiler-mp-qq', () => {
       '<text>{{\'N: \'+title+"\\\\n′"}}</text>'
     )
     assertCodegen(
-      '<text>我是第一行1\n我的第二行</text>',
-      '<text>我是第一行1\n我的第二行</text>'
+      '<text>我是第一行1\\n我的第二行\n </text>',
+      '<text>我是第一行1\\n我的第二行 </text>'
     )
     assertCodegen(
       '<text>我是第一行2\n我的第二行1{{title}}</text>',
