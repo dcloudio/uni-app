@@ -69,6 +69,7 @@ export const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh'
 
 export const ON_SHARE_TIMELINE = 'onShareTimeline'
 export const ON_SHARE_CHAT = 'onShareChat' // xhs-share
+export const ON_COPY_URL = 'onCopyUrl'
 export const ON_ADD_TO_FAVORITES = 'onAddToFavorites'
 export const ON_SHARE_APP_MESSAGE = 'onShareAppMessage'
 // navigationBar

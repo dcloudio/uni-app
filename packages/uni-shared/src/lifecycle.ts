@@ -2,6 +2,7 @@ import { isFunction } from '@vue/shared'
 import {
   ON_ADD_TO_FAVORITES,
   ON_BACK_PRESS,
+  ON_COPY_URL,
   ON_ERROR,
   ON_EXIT,
   ON_HIDE,
@@ -44,6 +45,7 @@ const PAGE_HOOKS = [
   ON_SHARE_TIMELINE,
   ON_SHARE_APP_MESSAGE,
   ON_SHARE_CHAT,
+  ON_COPY_URL,
   ON_ADD_TO_FAVORITES,
   ON_SAVE_EXIT_STATE,
   ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -88,6 +90,7 @@ export const UniLifecycleHooks = [
   ON_ADD_TO_FAVORITES,
   ON_SHARE_APP_MESSAGE,
   ON_SHARE_CHAT,
+  ON_COPY_URL,
   ON_SAVE_EXIT_STATE,
   ON_NAVIGATION_BAR_BUTTON_TAP,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -102,6 +105,7 @@ export const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
     onShareAppMessage: 1 << 1,
     onShareTimeline: 1 << 2,
     onShareChat: 1 << 3,
+    onCopyUrl: 1 << 4,
   } as const
 })()
 
