@@ -10,6 +10,7 @@ const {
 } = require('../util')
 
 const parseTextExpr = require('./text-parser')
+const { condense } = require('@dcloudio/vue-cli-plugin-uni/lib/util')
 
 function parseRef (el, genVar) {
   if (el.ref && isVar(el.ref)) {
@@ -106,8 +107,9 @@ function parseProps (el, genVar) {
 
 function parseText (el, parent, state) {
   // fixed by xxxxxx 注意：保持平台一致性，trim 一下
+  // fix: 和 vue3 一致行为，防止去除 &nbsp; 等空白符
   el.parent && (el.parent = parent)
-  el.expression = parseTextExpr(el.text.trim(), false, state).expression
+  el.expression = parseTextExpr(condense(el.text), false, state).expression
 }
 
 module.exports = {

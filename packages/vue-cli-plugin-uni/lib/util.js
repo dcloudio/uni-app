@@ -5,6 +5,9 @@ const {
   pathToGlob
 } = require('@dcloudio/uni-cli-shared/lib/util')
 
+function isWhitespace (c) {
+  return c === 32 /** SPACE */ || c === 10 /** NewLine */ || c === 9 /** Tab */ || c === 12 /** FormFeed */ || c === 13 /** CarriageReturn */
+}
 let partialIdentifier = false
 module.exports = {
   getPartialIdentifier () {
@@ -115,6 +118,62 @@ module.exports = {
         )
       }
     }
+  },
+  /**
+   * 压缩字符串空白字符
+   * - 连续空白合并为单个空格
+   * - 根据 trimSide 控制只处理左侧或右侧空白
+   *
+   * @param {string} str - 待处理字符串
+   * @param {'left'|'right'|'both'|'none'} trimSide - 压缩的方向
+   * @returns {string} 处理后的字符串
+   */
+  condense (str, trimSide = 'both') {
+    const len = str.length
+    let ret = ''
+    let prevCharIsWhitespace = false
+
+    let firstNonWhitespace = 0
+    while (firstNonWhitespace < len && isWhitespace(str.charCodeAt(firstNonWhitespace))) {
+      firstNonWhitespace++
+    }
+
+    let lastNonWhitespace = len - 1
+    while (lastNonWhitespace >= 0 && isWhitespace(str.charCodeAt(lastNonWhitespace))) {
+      lastNonWhitespace--
+    }
+
+    for (let i = 0; i < len; i++) {
+      const code = str.charCodeAt(i)
+
+      if (isWhitespace(code)) {
+        let shouldCondense = false
+
+        if (trimSide === 'both') {
+          shouldCondense = true
+        } else if (trimSide === 'left') {
+          if (i <= firstNonWhitespace) shouldCondense = true
+        } else if (trimSide === 'right') {
+          if (i >= lastNonWhitespace) shouldCondense = true
+        } else {
+          shouldCondense = false // none
+        }
+
+        if (shouldCondense) {
+          if (!prevCharIsWhitespace) {
+            ret += ' '
+            prevCharIsWhitespace = true
+          }
+        } else {
+          ret += str[i]
+        }
+      } else {
+        ret += str[i]
+        prevCharIsWhitespace = false
+      }
+    }
+
+    return ret
   },
   AliYunCloudAuthWebSDK: 'https://cn-shanghai-aliyun-cloudauth.oss-cn-shanghai.aliyuncs.com/web_sdk_js/jsvm_all.js'
 }

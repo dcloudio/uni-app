@@ -5,6 +5,7 @@ const babelTraverse = require('@babel/traverse').default
 
 const generate = require('./generate')
 const uniI18n = require('@dcloudio/uni-cli-i18n')
+const { condense } = require('@dcloudio/vue-cli-plugin-uni/lib/util')
 
 const {
   genCode,
@@ -583,13 +584,13 @@ function getLeftStringLiteral (expr) {
 }
 
 function trim (text, type) {
-  // TODO 保留换行符？
+  // fix: 和 vue3 一致行为，防止去除 &nbsp; 等空白符
   if (type === 'left') {
     text = text.trimLeft()
   } else if (type === 'right') {
     text = text.trimRight()
   } else {
-    text = text.trim()
+    text = condense(text)
   }
   return text
 }
