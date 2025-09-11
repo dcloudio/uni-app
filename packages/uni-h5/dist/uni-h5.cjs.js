@@ -3954,6 +3954,9 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
     }
   }
 }
+function isPaste(event) {
+  return event.inputType === "insertFromPaste";
+}
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
@@ -4050,12 +4053,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             return res;
           cache.value = input.value;
         }
-        const maxlength = state2.maxlength;
-        if (maxlength > 0 && input.value.length > maxlength) {
-          input.value = input.value.slice(0, maxlength);
-          state2.value = input.value;
-          const modelValue = props2.modelValue !== void 0 && props2.modelValue !== null ? props2.modelValue.toString() : "";
-          return modelValue !== input.value;
+        if (state2.maxlength > 0 && input.value.length > state2.maxlength && !isPaste(event)) {
+          input.value = cache.value = state2.value;
+          return false;
         }
       }
     });
@@ -4063,6 +4063,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       if (props2.type === "number" && !(cache.value === "-" && value === "")) {
         cache.value = value.toString();
       }
+    });
+    vue.watch(() => props2.maxlength, (length) => {
+      length = parseInt(length, 10);
+      const realValue = state.value.slice(0, length);
+      realValue !== state.value && (state.value = realValue);
     });
     const NUMBER_TYPES = ["number", "digit"];
     const step = vue.computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
@@ -4104,7 +4109,14 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "ref": fieldRef,
         "value": state.value,
         "onInput": (event) => {
-          state.value = event.target.value.toString();
+          const value = event.target.value.toString();
+          if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
+            if (isPaste(event)) {
+              state.value = value.slice(0, state.maxlength);
+            }
+            return;
+          }
+          state.value = value;
         },
         "disabled": !!props2.disabled,
         "type": type.value,

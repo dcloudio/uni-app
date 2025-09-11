@@ -12775,6 +12775,9 @@ once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
+function isPaste(event) {
+  return event.inputType === "insertFromPaste";
+}
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
@@ -12867,6 +12870,11 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
         cache.value = value.toString();
       }
     });
+    watch(() => props2.maxlength, (length) => {
+      length = parseInt(length, 10);
+      const realValue = state2.value.slice(0, length);
+      realValue !== state2.value && (state2.value = realValue);
+    });
     const NUMBER_TYPES = ["number", "digit"];
     const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
     function onKeyUpEnter(event) {
@@ -12919,7 +12927,14 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
         "ref": fieldRef,
         "value": state2.value,
         "onInput": (event) => {
-          state2.value = event.target.value.toString();
+          const value = event.target.value.toString();
+          if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
+            if (isPaste(event)) {
+              state2.value = value.slice(0, state2.maxlength);
+            }
+            return;
+          }
+          state2.value = value;
         },
         "disabled": !!props2.disabled,
         "type": type.value,
