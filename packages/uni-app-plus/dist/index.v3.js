@@ -22912,7 +22912,7 @@ var serviceContext = (function () {
   function setPageMeta$1 (args) {
     const pages = getCurrentPages();
     if (pages.length) {
-      UniServiceJSBridge.publishHandler('setPageMeta', args, pages[pages.length - 1].$page.id);
+      UniServiceJSBridge.publishHandler('setPageMeta', args, typeof args.pageId !== 'undefined' ? args.pageId : pages[pages.length - 1].$page.id);
     }
     return {}
   }
