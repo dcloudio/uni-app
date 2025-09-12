@@ -254,8 +254,7 @@ const protocols = { // 需要做转换的 API 列表
   },
   connectSocket: {
     args: {
-      method: false,
-      protocols: false
+      method: false
     }
     // TODO 有没有返回值还需要测试下
   },
