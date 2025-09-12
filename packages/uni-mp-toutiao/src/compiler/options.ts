@@ -70,6 +70,14 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
 }
 
+export const commonCopyTargets = [
+  {
+    src: ['package.json', 'project.private.config.json'],
+    get dest() {
+      return process.env.UNI_OUTPUT_DIR
+    },
+  },
+]
 export const options: UniMiniProgramPluginOptions = {
   cdn: 4,
   vite: {
@@ -81,15 +89,7 @@ export const options: UniMiniProgramPluginOptions = {
     },
     copyOptions: {
       assets: [COMPONENTS_DIR],
-      targets: [
-        {
-          src: ['package.json', 'project.private.config.json'],
-          get dest() {
-            return process.env.UNI_OUTPUT_DIR
-          },
-        },
-        createCopyPluginTarget(['ext.json']),
-      ],
+      targets: [...commonCopyTargets, createCopyPluginTarget(['ext.json'])],
     },
   },
   global: 'tt',
