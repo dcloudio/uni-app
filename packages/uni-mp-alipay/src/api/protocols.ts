@@ -296,7 +296,6 @@ export const chooseVideo = {
 export const connectSocket = {
   args: {
     method: false,
-    protocols: false,
   },
   // TODO 有没有返回值还需要测试下
 }
