@@ -73,4 +73,36 @@ describe('compiler: transform wxs', () => {
       }
     )
   })
+  test('class', () => {
+    assert(
+      `<view :class="utils.fc('classA')" class="classB"><view :class="pc('classC')"><text :class="utils.fc('classD')">Hello</text></view></view>`,
+      `<view class="{{[utils.fc('classA'), 'classB']}}"><view class="{{a}}"><text class="{{utils.fc('classD')}}">Hello</text></view></view>`,
+      `(_ctx, _cache) => {
+  return { a: _n(_ctx.pc('classC')) }
+}`,
+      {
+        filters: ['utils'],
+      }
+    )
+    assert(
+      `<view :class="utils.fc('classA')" class="classB">Hello</view><text :class="pc('classC')">World</text><view :class="utils.fc('classD')">!</view>`,
+      `<view class="{{[utils.fc('classA'), 'classB']}}">Hello</view><text class="{{a}}">World</text><view class="{{utils.fc('classD')}}">!</view>`,
+      `(_ctx, _cache) => {
+  return { a: _n(_ctx.pc('classC')) }
+}`,
+      {
+        filters: ['utils'],
+      }
+    )
+    assert(
+      `<view :class="{[utils.fc('checked')]: checked, [utils.fc('disabled')]: disabled, readonly: readonly}" class="classB"/>`,
+      `<view class="{{[a && utils.fc('checked'), b && utils.fc('disabled'), c && 'readonly', 'classB']}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.checked ? 1 : '', b: _ctx.disabled ? 1 : '', c: _ctx.readonly ? 1 : '' }
+}`,
+      {
+        filters: ['utils'],
+      }
+    )
+  })
 })
