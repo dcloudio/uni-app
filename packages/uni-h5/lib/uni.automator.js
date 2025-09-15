@@ -1,1 +1,302 @@
-"use strict";var e=require("debug"),t=require("postcss-selector-parser"),o=require("fs");function a(e){return e&&"object"==typeof e&&"default"in e?e:{default:e}}var r=a(e),n=a(t),s=a(o);const i=r.default("automator:devtool");function c(e){e.walk((e=>{if("tag"===e.type){const t=e.value;e.value="page"===t?"uni-page-body":"uni-"+t}}))}const l=["Page.getElement","Page.getElements","Element.getElement","Element.getElements"];function p(e){try{return require(e)}catch(t){return require(require.resolve(e,{paths:[process.cwd()]}))}}/^win/.test(process.platform);const u=["chromium","firefox","webkit"];let w=!1;try{w=!!p("playwright")}catch(e){}const d=new Map;function f(e="chromium"){const t=e&&u.includes(e)?e:u[0];let o=d.get(t);return o||(o=function(e){if("webkit"===e)return h("webkit");if("firefox"===e)return h("firefox");if(w)return h("chromium");throw new Error("Playwright dependency not found, please install playwright!")}(t),d.set(t,o)),o}function h(e){const t=p("playwright");let o,a;return{type:e,provider:"playwright",async open(r,n,s){o=await t[e].launch(n.options),"firefox"===e&&(n.contextOptions.isMobile=!1),i(`browser.newContext ${JSON.stringify(n.contextOptions)}`);const c=await o.newContext(n.contextOptions);a=await c.newPage(),a.on("console",(e=>{s.emit("App.logAdded",{type:e.type(),args:[e.text()]})})),a.on("pageerror",(e=>{s.emit("App.exceptionThrown",e)})),await a.goto(n.url||r),await a.waitForTimeout(1e3)},close:()=>o.close(),screenshot(e=!1){let t={fullPage:e};return"true"===process.env.UNI_AUTOMATOR_WEB_SCREENSHOT_NO_NAVIGATION_BAR&&(t={fullPage:e,clip:{x:0,y:44,width:Number.MAX_VALUE,height:Number.MAX_VALUE}}),a.screenshot(t).then((e=>e.toString("base64")))},swipe:e=>new Promise((async t=>{const{startPoint:o,endPoint:r}=e;await a.evaluate((([e,t])=>{window.scrollBy({left:e.x-t.x,top:e.y-t.y,behavior:"smooth"})}),[o,r]),t("swipe success")})),tap:e=>new Promise((async t=>{const{x:o,y:r,duration:n}=e;await a.mouse.move(o,r),await a.mouse.down(),await a.waitForTimeout(n||0),await a.mouse.up(),t("tap success")})),keyboardInput:e=>new Promise((async t=>{await a.keyboard.type(e.text),t("keyboardInput success")}))}}let y;const m={"Tool.close":{reflect:async()=>{await y.close()}},"App.start":{reflect:async()=>{}},"App.exit":{reflect:async()=>{}},"App.enableLog":{reflect:()=>Promise.resolve()},"App.captureScreenshot":{reflect:async(e,t)=>{const o=await y.screenshot(!!t.fullPage);return i(`App.captureScreenshot ${o.length}`),{data:o}}},"App.swipe":{reflect:async(e,t)=>{const o=await y.swipe(t);return i(`App.swipe ${o.length}`),{data:o}}},"App.tap":{reflect:async(e,t)=>{const o=await y.tap(t);return i(`App.tap ${o.length}`),{data:o}}},"App.keyboardInput":{reflect:async(e,t)=>{const o=await y.keyboardInput(t);return i(`App.keyboardInput ${o.length}`),{data:o}}}};!function(e){l.forEach((t=>{e[t]=function(e){return{reflect:async(t,o)=>t(e,o,!1),params:e=>(e.selector&&(e.selector=n.default(c).processSync(e.selector)),e)}}(t)}))}(m);const g={devtools:{name:"browser",paths:[],validate:async function(e){var t;return e.options=e.options||{},e.executablePath&&!e.options.executablePath&&(e.options.executablePath=e.executablePath),e.contextOptions={viewport:Object.assign({width:375,height:667},e.options.defaultViewport||{}),hasTouch:!0,isMobile:!0,deviceScaleFactor:(null===(t=e.options.defaultViewport)||void 0===t?void 0:t.deviceScaleFactor)||2},e.options.defaultViewport=Object.assign({width:375,height:667,deviceScaleFactor:2,hasTouch:!0,isMobile:!0},e.options.defaultViewport||{}),e.teardown||(e.teardown=!1===e.options.headless?"disconnect":"close"),e},create:async function(e,t,o){t.executablePath?await new Promise(((o,a)=>{const{exec:r}=require("node:child_process");if(/^win/.test(process.platform)){const a="C:\\Users\\Public\\AppData\\Local\\chrome";s.default.existsSync(a)||s.default.mkdirSync(a,{recursive:!0}),r(`start ${t.executablePath} --user-data-dir=${a} ${e}`,(e=>{if(e)throw console.error(`open ${t.executablePath} fail, ${e}`),Error(e)})),setTimeout((()=>{o(null)}),1e3)}else r(`open -a "${t.executablePath}" ${e}`,(e=>{e&&(console.error(`open ${t.executablePath} fail, ${e}`),a(e)),o(null)}))})):(y=f(process.env.BROWSER),i("createDevtools "+(y.provider+" "+y.type+" "+JSON.stringify(t))),await y.open(e,t,o))}},shouldCompile:(e,t)=>!t.url,adapter:m};module.exports=g;
+'use strict';
+
+var debug = require('debug');
+var parser = require('postcss-selector-parser');
+var fs = require('fs');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var debug__default = /*#__PURE__*/_interopDefaultLegacy(debug);
+var parser__default = /*#__PURE__*/_interopDefaultLegacy(parser);
+var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
+
+const debugDevtools = debug__default["default"]("automator:devtool");
+function transform(selectors) {
+    selectors.walk((selector) => {
+        if (selector.type === "tag") {
+            const value = selector.value;
+            if (value === "page") {
+                {
+                    selector.value = "uni-page-body";
+                }
+            }
+            else {
+                selector.value = "uni-" + value;
+            }
+        }
+    });
+}
+function transSelector(method) {
+    return {
+        reflect: async (send, params) => send(method, params, false),
+        params(params) {
+            if (params.selector) {
+                params.selector = parser__default["default"](transform).processSync(params.selector);
+            }
+            return params;
+        },
+    };
+}
+const methods = [
+    "Page.getElement",
+    "Page.getElements",
+    "Element.getElement",
+    "Element.getElements",
+];
+function initAdapter(adapter) {
+    methods.forEach((method) => {
+        adapter[method] = transSelector(method);
+    });
+}
+
+/^win/.test(process.platform);
+function requireModule(id) {
+    try {
+        return require(id);
+    }
+    catch (e) {
+        return require(require.resolve(id, { paths: [process.cwd()] }));
+    }
+}
+
+const browserTypes = ["chromium", "firefox", "webkit"];
+let hasPlaywright = false;
+try {
+    hasPlaywright = !!requireModule("playwright");
+}
+catch (e) { }
+const browserDevtoolsMap = new Map();
+function getBrowserDevtools(browser = "chromium") {
+    const browserType = browser
+        ? browserTypes.includes(browser)
+            ? browser
+            : browserTypes[0]
+        : browserTypes[0];
+    let browserDevtools = browserDevtoolsMap.get(browserType);
+    if (!browserDevtools) {
+        browserDevtools = createBrowserDevtools(browserType);
+        browserDevtoolsMap.set(browserType, browserDevtools);
+    }
+    return browserDevtools;
+}
+function createBrowserDevtools(browserType) {
+    if (browserType === "webkit") {
+        return createPlaywright("webkit");
+    }
+    else if (browserType === "firefox") {
+        return createPlaywright("firefox");
+    }
+    if (hasPlaywright) {
+        return createPlaywright("chromium");
+    }
+    throw new Error("Playwright dependency not found, please install playwright!");
+}
+function createPlaywright(browserType) {
+    const playwright = requireModule("playwright");
+    let browser;
+    let page;
+    return {
+        type: browserType,
+        provider: "playwright",
+        async open(url, options, puppet) {
+            browser = await playwright[browserType].launch(options.options);
+            if (browserType === "firefox") {
+                options.contextOptions.isMobile = false;
+            }
+            debugDevtools(`browser.newContext ${JSON.stringify(options.contextOptions)}`);
+            const context = await browser.newContext(options.contextOptions);
+            page = await context.newPage();
+            page.on("console", (msg) => {
+                puppet.emit("App.logAdded", { type: msg.type(), args: [msg.text()] });
+            });
+            page.on("pageerror", (err) => {
+                puppet.emit("App.exceptionThrown", err);
+            });
+            await page.goto(options.url || url);
+            await page.waitForTimeout(1000);
+        },
+        close() {
+            return browser.close();
+        },
+        screenshot(fullPage = false) {
+            let params = { fullPage };
+            if (process.env.UNI_AUTOMATOR_WEB_SCREENSHOT_NO_NAVIGATION_BAR === "true") {
+                // 截图产物移除导航栏
+                params = {
+                    fullPage,
+                    clip: {
+                        x: 0,
+                        y: 44,
+                        width: Number.MAX_VALUE,
+                        height: Number.MAX_VALUE,
+                    },
+                };
+            }
+            return page.screenshot(params).then((res) => res.toString("base64"));
+        },
+        swipe(options) {
+            return new Promise(async (resolve) => {
+                // mouse.wheel Mouse wheel is not supported in mobile WebKit
+                // page.mouse.move can't scroll
+                const { startPoint, endPoint } = options;
+                await page.evaluate(([startPoint, endPoint]) => {
+                    window.scrollBy({
+                        left: startPoint.x - endPoint.x,
+                        top: startPoint.y - endPoint.y,
+                        behavior: "smooth",
+                    });
+                }, [startPoint, endPoint]);
+                resolve(`swipe success`);
+            });
+        },
+        tap(options) {
+            return new Promise(async (resolve) => {
+                const { x, y, duration } = options;
+                await page.mouse.move(x, y);
+                await page.mouse.down();
+                await page.waitForTimeout(duration || 0);
+                await page.mouse.up();
+                resolve(`tap success`);
+            });
+        },
+        keyboardInput(options) {
+            return new Promise(async (resolve) => {
+                await page.keyboard.type(options.text);
+                resolve(`keyboardInput success`);
+            });
+        },
+    };
+}
+
+async function validateDevtools(options) {
+    var _a;
+    options.options = options.options || {};
+    if (options.executablePath && !options.options.executablePath) {
+        options.options.executablePath = options.executablePath;
+    }
+    // playwright
+    options.contextOptions = {
+        viewport: Object.assign({ width: 375, height: 667 }, (options.options.defaultViewport || {})),
+        hasTouch: true,
+        isMobile: true,
+        deviceScaleFactor: ((_a = options.options.defaultViewport) === null || _a === void 0 ? void 0 : _a.deviceScaleFactor) || 2,
+    };
+    options.options.defaultViewport = Object.assign({ width: 375, height: 667, deviceScaleFactor: 2, hasTouch: true, isMobile: true }, (options.options.defaultViewport || {}));
+    if (!options.teardown) {
+        options.teardown =
+            options.options.headless === false ? "disconnect" : "close";
+    }
+    return options;
+}
+let browserDevtools;
+async function createDevtools(url, options, puppet) {
+    if (options.executablePath) {
+        await new Promise((resolve, reject) => {
+            const { exec } = require("node:child_process");
+            if (/^win/.test(process.platform)) {
+                const chromeTemporaryDataDir = "C:\\Users\\Public\\AppData\\Local\\chrome";
+                if (!fs__default["default"].existsSync(chromeTemporaryDataDir)) {
+                    fs__default["default"].mkdirSync(chromeTemporaryDataDir, { recursive: true });
+                }
+                exec(`start ${options.executablePath} --user-data-dir=${chromeTemporaryDataDir} ${url}`, (error) => {
+                    if (error) {
+                        console.error(`open ${options.executablePath} fail, ${error}`);
+                        throw Error(error);
+                    }
+                });
+                // window 浏览器启动后不会触发回调(只有错误弹框关闭或者浏览器关闭才会触发)，默认 1s 后 resolve
+                setTimeout(() => {
+                    resolve(null);
+                }, 1000);
+            }
+            else {
+                exec(`open -a "${options.executablePath}" ${url}`, (error) => {
+                    if (error) {
+                        console.error(`open ${options.executablePath} fail, ${error}`);
+                        reject(error);
+                    }
+                    resolve(null);
+                });
+            }
+        });
+    }
+    else {
+        browserDevtools = getBrowserDevtools(process.env.BROWSER);
+        debugDevtools(`createDevtools ${browserDevtools.provider +
+            " " +
+            browserDevtools.type +
+            " " +
+            JSON.stringify(options)}`);
+        await browserDevtools.open(url, options, puppet);
+    }
+}
+const adapter = {
+    "Tool.close": {
+        reflect: async () => {
+            await browserDevtools.close();
+        },
+    },
+    "App.start": {
+        reflect: async () => { },
+    },
+    "App.exit": {
+        reflect: async () => { },
+    },
+    "App.enableLog": {
+        reflect: () => Promise.resolve(),
+    },
+    "App.captureScreenshot": {
+        reflect: async (send, params) => {
+            const data = await browserDevtools.screenshot(!!params.fullPage);
+            debugDevtools(`App.captureScreenshot ${data.length}`);
+            return {
+                data,
+            };
+        },
+    },
+    "App.swipe": {
+        reflect: async (send, params) => {
+            const data = await browserDevtools.swipe(params);
+            debugDevtools(`App.swipe ${data.length}`);
+            return {
+                data,
+            };
+        },
+    },
+    "App.tap": {
+        reflect: async (send, params) => {
+            const data = await browserDevtools.tap(params);
+            debugDevtools(`App.tap ${data.length}`);
+            return {
+                data,
+            };
+        },
+    },
+    "App.keyboardInput": {
+        reflect: async (send, params) => {
+            const data = await browserDevtools.keyboardInput(params);
+            debugDevtools(`App.keyboardInput ${data.length}`);
+            return {
+                data,
+            };
+        },
+    },
+};
+initAdapter(adapter);
+const puppet = {
+    devtools: {
+        name: "browser",
+        paths: [],
+        validate: validateDevtools,
+        create: createDevtools,
+    },
+    shouldCompile(options, devtoolsOptions) {
+        if (devtoolsOptions.url) {
+            return false;
+        }
+        return true;
+    },
+    adapter,
+};
+
+module.exports = puppet;

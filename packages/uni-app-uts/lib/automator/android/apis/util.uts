@@ -44,7 +44,32 @@ export function pageGetData(
 export function pageSetData(vm: Page, data: Map<string, any | null>): void {
   data.forEach((value: any | null, key: string) => {
     // @ts-expect-error
-    vm.$data.set(key, value)
+    if (vm.$.exposed.size > 0) {
+      // @ts-expect-error
+      const vmData = vm.$.exposed;
+      // @ts-expect-error
+      if (value instanceof UTSJSONObject) {
+        value.toMap().forEach((childValue: any | null, childKey: string) => {
+          if (vmData[key] != null) {
+            // @ts-expect-error
+            if (vmData[key] instanceof UTSObject) {
+              // @ts-expect-error
+              (vmData[key] as UTSObject)[childKey] = childValue;
+              // @ts-expect-error
+            } else if (vmData[key] instanceof UTSJSONObject) {
+              // @ts-expect-error
+              (vmData[key] as UTSJSONObject)[childKey] = childValue;
+            }
+          }
+        })
+      } else {
+        // @ts-expect-error
+        vmData[key] = data[key];
+      }
+    } else {
+    // @ts-expect-error
+      vm.$data.set(key, value)
+    }
   })
 }
 // @ts-expect-error
