@@ -44,6 +44,7 @@ import {
   rewriteExpression,
   rewriteSpreadElement,
 } from './utils'
+import { isString, isSymbol } from '@vue/shared'
 
 export function isClassBinding({ arg }: DirectiveNode) {
   return (
@@ -163,6 +164,17 @@ function rewriteClassExpression(
   expr: ExpressionNode,
   context: TransformContext
 ) {
+  if (expr.type === NodeTypes.COMPOUND_EXPRESSION) {
+    const firstChild = expr.children[0]
+    const isFilter =
+      !isString(firstChild) &&
+      !isSymbol(firstChild) &&
+      firstChild.type === NodeTypes.SIMPLE_EXPRESSION &&
+      context.filters.includes(firstChild.content)
+    if (isFilter) {
+      return rewriteExpression(expr, context)
+    }
+  }
   return rewriteExpression(
     createCompoundExpression([
       context.helperString(NORMALIZE_CLASS) + '(',
