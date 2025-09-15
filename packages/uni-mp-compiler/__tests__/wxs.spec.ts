@@ -105,4 +105,36 @@ describe('compiler: transform wxs', () => {
       }
     )
   })
+  test('style', () => {
+    assert(
+      `<view :style="utils.fs('styleA')" style="color: green">Hello</view><view :style="ps('styleB')">World</view><view :style="utils.fs('styleB')">Test</view>`,
+      `<view style="{{utils.fs('styleA') + ';' + 'color:green'}}">Hello</view><view style="{{a}}">World</view><view style="{{utils.fs('styleB')}}">Test</view>`,
+      `(_ctx, _cache) => {
+  return { a: _s(_ctx.ps('styleB')) }
+}`,
+      {
+        filters: ['utils'],
+      }
+    )
+    assert(
+      `<view :style="utils.fs('styleA')" style="color: green"><view :style="ps('styleB')"><view :style="utils.fs('styleB')">Hello</view></view></view>`,
+      `<view style="{{utils.fs('styleA') + ';' + 'color:green'}}"><view style="{{a}}"><view style="{{utils.fs('styleB')}}">Hello</view></view></view>`,
+      `(_ctx, _cache) => {
+  return { a: _s(_ctx.ps('styleB')) }
+}`,
+      {
+        filters: ['utils'],
+      }
+    )
+    assert(
+      `<view :style="{'font-size': utils.fs('15px'), 'background': utils.fs('red')}" style="color: green">Hello</view>`,
+      `<view style="{{'font-size:' + utils.fs('15px') + ';' + ('background:' + utils.fs('red')) + ';' + 'color:green'}}">Hello</view>`,
+      `(_ctx, _cache) => {
+  return {}
+}`,
+      {
+        filters: ['utils'],
+      }
+    )
+  })
 })
