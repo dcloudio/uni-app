@@ -38,13 +38,13 @@ import { genBabelExpr } from '../codegen'
 import { NORMALIZE_CLASS } from '../runtimeHelpers'
 import type { TransformContext } from '../transform'
 import {
+  isFilterExpr,
   isStaticLiteral,
   parseExprWithRewrite,
   parseExprWithRewriteClass,
   rewriteExpression,
   rewriteSpreadElement,
 } from './utils'
-import { isString, isSymbol } from '@vue/shared'
 
 export function isClassBinding({ arg }: DirectiveNode) {
   return (
@@ -164,16 +164,8 @@ function rewriteClassExpression(
   expr: ExpressionNode,
   context: TransformContext
 ) {
-  if (expr.type === NodeTypes.COMPOUND_EXPRESSION) {
-    const firstChild = expr.children[0]
-    const isFilter =
-      !isString(firstChild) &&
-      !isSymbol(firstChild) &&
-      firstChild.type === NodeTypes.SIMPLE_EXPRESSION &&
-      context.filters.includes(firstChild.content)
-    if (isFilter) {
-      return rewriteExpression(expr, context)
-    }
+  if (isFilterExpr(expr, context)) {
+    return rewriteExpression(expr, context)
   }
   return rewriteExpression(
     createCompoundExpression([
