@@ -24,6 +24,7 @@ import type { TransformContext } from '../transform'
 import type { DirectiveTransformResult } from './transformElement'
 import { isBuiltInIdentifier, processExpression } from './transformExpression'
 import { parseVForScope } from './vFor'
+import { isFilterExpr } from './utils'
 
 const fnExpRE =
   /^\s*([\w$_]+|(async\s*)?\([^)]*?\))\s*=>|^\s*(async\s+)?function(?:\s+[\w$]+)?\s*\(/
@@ -184,19 +185,6 @@ export const transformOn: DirectiveTransform = (
   // mark the key as handler for props normalization check
   ret.props.forEach((p) => (p.key.isHandlerKey = true))
   return ret
-}
-
-function isFilterExpr(value: ExpressionNode, context: TransformContext) {
-  if (context.filters.length && value.type === NodeTypes.COMPOUND_EXPRESSION) {
-    const firstChild = value.children[0] as ExpressionNode
-    if (
-      firstChild.type === NodeTypes.SIMPLE_EXPRESSION &&
-      context.filters.includes(firstChild.content)
-    ) {
-      return true
-    }
-  }
-  return false
 }
 
 export function wrapperVOn(
