@@ -35,6 +35,7 @@ import { parseExpr, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
 import type { TransformContext } from '../transform'
 import {
+  isFilterExpr,
   isStaticLiteral,
   parseExprWithRewrite,
   rewirteWithHelper,
@@ -149,6 +150,9 @@ function rewriteStyleExpression(
   expr: ExpressionNode,
   context: TransformContext
 ) {
+  if (isFilterExpr(expr, context)) {
+    return rewriteExpression(expr, context)
+  }
   return rewriteExpression(
     createCompoundExpression([
       context.helperString(STRINGIFY_STYLE) + '(',
