@@ -8,7 +8,7 @@ import { isString } from '@vue/shared'
 import { normalizePath } from '../utils'
 import type { Formatter } from '../logs/format'
 
-import { EXTNAME_VUE_RE } from '../constants'
+import { EXTNAME_VUE_RE, SPECIAL_CHARS } from '../constants'
 import { parseVue } from '../vite/utils/ast'
 import { generateCodeFrame } from '../vite/plugins/vitejs/utils'
 
@@ -148,6 +148,18 @@ export const errorFormatter: Formatter<LogErrorOptions> = {
   },
 }
 
+interface ErrorWithBlockFlag extends Error {
+  __errorBlocked: true
+}
+
+export function createErrorWithBlockFlag(msg: string): ErrorWithBlockFlag {
+  const error = new Error(msg) as ErrorWithBlockFlag
+  error.__errorBlocked = true
+  return error
+}
+
+let shouldAddErrorBlock: boolean | null = null
+
 const VITE_ROLLUP_FAILED_TO_RESOLVE_IMPORT_RE =
   /\[vite\]: Rollup failed to resolve import "([^"]+)" from "([^"]+)"/
 function buildErrorMessage(
@@ -240,6 +252,19 @@ function buildErrorMessage(
   }
   if (includeStack && err.stack) {
     args.push(pad(cleanStack(err.stack)))
+  }
+  if (shouldAddErrorBlock === null) {
+    shouldAddErrorBlock = // 目前仅限 x 的 app 平台
+      process.env.UNI_APP_X === 'true' &&
+      (process.env.UNI_UTS_PLATFORM === 'app-android' ||
+        process.env.UNI_UTS_PLATFORM === 'app-ios' ||
+        process.env.UNI_UTS_PLATFORM === 'app-harmony')
+  }
+  if (shouldAddErrorBlock) {
+    if (!(err as ErrorWithBlockFlag).__errorBlocked) {
+      args[0] = SPECIAL_CHARS.ERROR_BLOCK + args[0]
+      args[args.length - 1] = args[args.length - 1] + SPECIAL_CHARS.ERROR_BLOCK
+    }
   }
   return args.join('\n')
 }

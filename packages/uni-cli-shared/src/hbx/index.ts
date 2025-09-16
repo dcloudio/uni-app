@@ -3,7 +3,7 @@ import { normalizePath, pathToGlob } from '../utils'
 import { uniConsolePlugin } from '../vite/plugins/console'
 import { resolveWorkersDir } from '../workers'
 
-export { formatAtFilename } from './log'
+export { formatAtFilename, createErrorWithBlockFlag } from './log'
 
 export * from './env'
 export {
