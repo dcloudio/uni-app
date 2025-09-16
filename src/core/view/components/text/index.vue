@@ -73,4 +73,10 @@ export default {
 		user-select: text;
 		-webkit-user-select: text;
 	}
+  uni-text {
+    white-space: pre-line;
+  }
+  uni-text span {
+    display: inline;
+  }
 </style>
