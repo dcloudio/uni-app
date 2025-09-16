@@ -212,7 +212,6 @@ const options = {
                 {
                     src: [
                         'sitemap.json',
-                        'ext.json',
                         'custom-tab-bar',
                         'functional-pages',
                         'project.private.config.json',
@@ -223,6 +222,7 @@ const options = {
                     },
                 },
                 ...uniCliShared.copyMiniProgramThemeJson(),
+                uniCliShared.createCopyPluginTarget(['ext.json']),
             ],
         },
     },

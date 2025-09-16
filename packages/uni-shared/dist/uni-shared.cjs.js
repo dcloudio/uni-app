@@ -422,6 +422,7 @@ const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_SHARE_TIMELINE = 'onShareTimeline';
 const ON_SHARE_CHAT = 'onShareChat'; // xhs-share
+const ON_COPY_URL = 'onCopyUrl';
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 // navigationBar
@@ -1562,6 +1563,7 @@ const PAGE_HOOKS = [
     ON_SHARE_TIMELINE,
     ON_SHARE_APP_MESSAGE,
     ON_SHARE_CHAT,
+    ON_COPY_URL,
     ON_ADD_TO_FAVORITES,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -1601,6 +1603,7 @@ const UniLifecycleHooks = [
     ON_ADD_TO_FAVORITES,
     ON_SHARE_APP_MESSAGE,
     ON_SHARE_CHAT,
+    ON_COPY_URL,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -1614,6 +1617,7 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
         onShareAppMessage: 1 << 1,
         onShareTimeline: 1 << 2,
         onShareChat: 1 << 3,
+        onCopyUrl: 1 << 4,
     };
 })();
 function isUniLifecycleHook(name, value, checkType = true) {
@@ -1839,6 +1843,7 @@ exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
 exports.ON_APP_ENTER_FOREGROUND = ON_APP_ENTER_FOREGROUND;
 exports.ON_BACK_PRESS = ON_BACK_PRESS;
+exports.ON_COPY_URL = ON_COPY_URL;
 exports.ON_ERROR = ON_ERROR;
 exports.ON_EXIT = ON_EXIT;
 exports.ON_HIDE = ON_HIDE;

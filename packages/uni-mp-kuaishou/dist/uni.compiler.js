@@ -124,11 +124,12 @@ const options = {
             assets: [COMPONENTS_DIR],
             targets: [
                 {
-                    src: ['ext.json', 'project.private.config.json'],
+                    src: ['project.private.config.json'],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },
                 },
+                uniCliShared.createCopyPluginTarget(['ext.json']),
             ],
         },
     },

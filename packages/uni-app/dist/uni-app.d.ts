@@ -44,6 +44,8 @@ export declare const onAddToFavorites: (hook: (options: Page.AddToFavoritesOptio
 
 export declare const onBackPress: (hook: (options: Page.BackPressOption) => any, target?: ComponentInternalInstance | null) => void;
 
+export declare const onCopyUrl: (hook: (options: Page.OnCopyUrlOptions) => Page.CopyUrlContent, target?: ComponentInternalInstance | null) => void;
+
 export declare const onError: (hook: (error: string) => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onExit: (hook: () => void, target?: ComponentInternalInstance | null) => void;
@@ -92,7 +94,7 @@ export declare const onShareAppMessage: (hook: (options: Page.ShareAppMessageOpt
 
 export declare const onShareChat: (hook: (options: Page.OnShareChatOptions) => Page.ShareChatContent, target?: ComponentInternalInstance | null) => void;
 
-export declare const onShareTimeline: (hook: () => Page.ShareTimelineContent, target?: ComponentInternalInstance | null) => void;
+export declare const onShareTimeline: (hook: (options: Page.OnShareTimelineOptions) => Page.ShareTimelineContent, target?: ComponentInternalInstance | null) => void;
 
 export declare const onShow: (hook: ((options?: App.LaunchShowOption | undefined) => void) | (() => void), target?: ComponentInternalInstance | null) => void;
 

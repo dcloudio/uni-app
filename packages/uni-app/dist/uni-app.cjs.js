@@ -147,6 +147,7 @@ const onShareTimeline = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_TIM
 const onShareChat = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_CHAT, 2 /* HookFlags.PAGE */);
 const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_ADD_TO_FAVORITES, 2 /* HookFlags.PAGE */);
 const onShareAppMessage = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
+const onCopyUrl = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_COPY_URL, 2 /* HookFlags.PAGE */);
 const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, 2 /* HookFlags.PAGE */);
 const onNavigationBarSearchInputChanged = 
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, 2 /* HookFlags.PAGE */);
@@ -189,6 +190,7 @@ exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
 exports.onAddToFavorites = onAddToFavorites;
 exports.onBackPress = onBackPress;
+exports.onCopyUrl = onCopyUrl;
 exports.onError = onError;
 exports.onExit = onExit;
 exports.onHide = onHide;

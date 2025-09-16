@@ -76,6 +76,14 @@ const miniProgram = {
         setStyle: true,
     },
 };
+const commonCopyTargets = [
+    {
+        src: ['package.json', 'project.private.config.json'],
+        get dest() {
+            return process.env.UNI_OUTPUT_DIR;
+        },
+    },
+];
 const options = {
     cdn: 4,
     vite: {
@@ -87,14 +95,7 @@ const options = {
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
-            targets: [
-                {
-                    src: ['ext.json', 'package.json', 'project.private.config.json'],
-                    get dest() {
-                        return process.env.UNI_OUTPUT_DIR;
-                    },
-                },
-            ],
+            targets: [...commonCopyTargets, uniCliShared.createCopyPluginTarget(['ext.json'])],
         },
     },
     global: 'tt',

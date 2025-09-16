@@ -140,13 +140,13 @@ const options = {
                     src: [
                         'sitemap.json',
                         'project.private.config.json',
-                        'ext.json',
                         projectConfigFilename,
                     ],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },
                 },
+                uniCliShared.createCopyPluginTarget(['ext.json']),
                 // ...copyMiniProgramThemeJson(),
             ],
         },

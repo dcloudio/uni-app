@@ -241,16 +241,12 @@ const options = {
             targets: [
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
-                    src: [
-                        'customize-tab-bar',
-                        'ext.json',
-                        'preload.json',
-                        'sitemap.json',
-                    ],
+                    src: ['customize-tab-bar', 'preload.json', 'sitemap.json'],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },
                 },
+                uniCliShared.createCopyPluginTarget(['ext.json']),
             ],
         },
     },

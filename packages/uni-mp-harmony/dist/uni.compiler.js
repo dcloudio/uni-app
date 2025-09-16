@@ -59,11 +59,12 @@ const options = {
             assets: [COMPONENTS_DIR],
             targets: [
                 {
-                    src: ['ext.json', 'ascf.config.json'],
+                    src: ['ascf.config.json'],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },
                 },
+                uniCliShared.createCopyPluginTarget(['ext.json']),
             ],
         },
     },
