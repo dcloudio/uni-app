@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const {
   parseJson
@@ -30,10 +31,13 @@ module.exports = {
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/xhscomponents')
     })
-    copyOptions.push({
-      from: path.resolve(process.env.UNI_INPUT_DIR, 'ext.json'),
-      transform: content => JSON.stringify(parseJson(content.toString(), true), null, 2)
-    })
+    const extJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'ext.json')
+    if (fs.existsSync(extJsonPath)) {
+      copyOptions.push({
+        from: extJsonPath,
+        transform: content => JSON.stringify(parseJson(content.toString(), true), null, 2)
+      })
+    }
     return copyOptions
   }
 }

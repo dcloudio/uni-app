@@ -42,10 +42,13 @@ module.exports = {
 
     copyOptions.push(copyMiniProgramThemeJson(platformOptions, vueOptions))
 
-    copyOptions.push({
-      from: path.resolve(process.env.UNI_INPUT_DIR, 'ext.json'),
-      transform: content => JSON.stringify(parseJson(content.toString(), true), null, 2)
-    })
+    const extJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'ext.json')
+    if (fs.existsSync(extJsonPath)) {
+      copyOptions.push({
+        from: extJsonPath,
+        transform: content => JSON.stringify(parseJson(content.toString(), true), null, 2)
+      })
+    }
 
     const workers = platformOptions.workers
     workers && copyOptions.push(typeof workers === 'object' ? workers.path : workers)
