@@ -604,6 +604,21 @@ class Android extends Launcher {
                 uuid: this.id,
                 packageName: process.env.UNI_TEST_BASE_PACKAGE_NAME || this.package,
                 sourcePath: from,
+                runTimeLog(options) {
+                    var _a, _b, _c;
+                    if (Array.isArray(options.contents.hyperlinks)) {
+                        options.contents.hyperlinks.forEach((item) => {
+                            var _a;
+                            if (((_a = item.link) === null || _a === void 0 ? void 0 : _a.indexOf("leaking objects")) > -1) {
+                                console.error("\x1b[1;91m%s\x1b[0m", `内存泄露: ${item.link}`);
+                            }
+                        });
+                    }
+                    if (((_b = (_a = options.contents) === null || _a === void 0 ? void 0 : _a.logStr) === null || _b === void 0 ? void 0 : _b.indexOf("---BEGIN:EXCEPTION---")) > -1) {
+                        const errorTagIndex = (_c = options.contents.logStr) === null || _c === void 0 ? void 0 : _c.indexOf("---BEGIN:EXCEPTION---");
+                        console.error("\x1b[1;91m%s\x1b[0m", `error: ${options.contents.logStr.substring(errorTagIndex + 21)}`);
+                    }
+                },
             });
             pushResources.start();
             this.needStart = false;
