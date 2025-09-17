@@ -9,8 +9,10 @@ module.exports = {
     },
     extnames: {
       style: '.ttss',
-      template: '.ttml'
+      template: '.ttml',
+      filter: 'sjs'
     },
+    filterTag: 'sjs',
     subPackages: true,
     project: 'project.tt.json'
   },
