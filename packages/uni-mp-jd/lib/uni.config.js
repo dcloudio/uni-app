@@ -9,8 +9,10 @@ module.exports = {
     },
     extnames: {
       style: '.jxss',
-      template: '.jxml'
+      template: '.jxml',
+      filter: '.jds'
     },
+    filterTag: 'jds',
     subPackages: true,
     project: 'project.config.json'
   },
