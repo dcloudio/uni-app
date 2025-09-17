@@ -9,8 +9,10 @@ module.exports = {
     },
     extnames: {
       style: '.css',
-      template: '.xhsml'
+      template: '.xhsml',
+      filter: '.sjs'
     },
+    filterTag: 'sjs',
     project: 'project.config.json',
     subPackages: true
   },
