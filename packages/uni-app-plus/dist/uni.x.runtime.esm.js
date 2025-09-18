@@ -2623,8 +2623,18 @@ function subscribeWebviewReady(_data, pageId) {
   onLaunchWebviewReady();
 }
 function onLaunchWebviewReady() {
+  var _routeOptions;
   var entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
   var routeOptions = getRouteOptions(entryPagePath);
+  if (!routeOptions) {
+    if (__uniRoutes.length > 0) {
+      entryPagePath = __uniRoutes[0].path;
+      routeOptions = getRouteOptions(addLeadingSlash(entryPagePath));
+    } else {
+      console.error("未匹配到路由，请检查配置");
+      return;
+    }
+  }
   var args = {
     url: entryPagePath + (__uniConfig.entryPageQuery || ""),
     openType: "appLaunch"
@@ -2635,7 +2645,7 @@ function onLaunchWebviewReady() {
     reject() {
     }
   };
-  if (routeOptions.meta.isTabBar) {
+  if ((_routeOptions = routeOptions) !== null && _routeOptions !== void 0 && (_routeOptions = _routeOptions.meta) !== null && _routeOptions !== void 0 && _routeOptions.isTabBar) {
     return $switchTab(args, handler);
   }
   return $navigateTo(args, handler);

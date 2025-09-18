@@ -21133,20 +21133,31 @@ function subscribeWebviewReady(_data, pageId) {
     isLaunchWebview && onLaunchWebviewReady();
 }
 function onLaunchWebviewReady() {
+    var _a, _b;
     const { autoclose, alwaysShowBeforeRender } = __uniConfig.splashscreen;
     if (autoclose && !alwaysShowBeforeRender) {
         plus.navigator.closeSplashscreen();
     }
-    const entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
-    const routeOptions = getRouteOptions(entryPagePath);
-    if (!routeOptions.meta.isNVue) {
+    let entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
+    let routeOptions = getRouteOptions(entryPagePath);
+    if (!routeOptions) {
+        if (__uniRoutes.length > 0) {
+            entryPagePath = __uniRoutes[0].path;
+            routeOptions = getRouteOptions(addLeadingSlash(entryPagePath));
+        }
+        else {
+            console.error('未匹配到路由，请检查配置');
+            return;
+        }
+    }
+    if (!((_a = routeOptions === null || routeOptions === void 0 ? void 0 : routeOptions.meta) === null || _a === void 0 ? void 0 : _a.isNVue)) {
         // 非 nvue 首页，需要主动跳转
         const args = {
             url: entryPagePath + (__uniConfig.entryPageQuery || ''),
             openType: 'appLaunch',
         };
         const handler = { resolve() { }, reject() { } };
-        if (routeOptions.meta.isTabBar) {
+        if ((_b = routeOptions === null || routeOptions === void 0 ? void 0 : routeOptions.meta) === null || _b === void 0 ? void 0 : _b.isTabBar) {
             return $switchTab(args, handler);
         }
         return $navigateTo(args, handler);
