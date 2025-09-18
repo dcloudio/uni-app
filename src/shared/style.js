@@ -33,7 +33,7 @@ function _rpx2Unit (rpx, unit, unitRatio, unitPrecision) {
 export function createRpx2Unit (unit, unitRatio, unitPrecision) {
   // ignore: rpxCalcIncludeWidth
   /**
-   * @param {string} val
+   * @param {string | number} val
    * @returns {string}
    */
   return (val) => {
