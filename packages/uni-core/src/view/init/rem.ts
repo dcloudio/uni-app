@@ -3,9 +3,10 @@ function checkValue(value: unknown, defaultValue: number) {
   return isNaN(newValue) ? defaultValue : newValue
 }
 
+const isApple = () => /^Apple/.test(navigator.vendor)
+
 function getWindowWidth() {
-  const screenFix =
-    /^Apple/.test(navigator.vendor) && typeof window.orientation === 'number'
+  const screenFix = isApple() && typeof window.orientation === 'number'
   const landscape = screenFix && Math.abs(window.orientation as number) === 90
   var screenWidth = screenFix
     ? Math[landscape ? 'max' : 'min'](screen.width, screen.height)
@@ -34,4 +35,12 @@ export function useRem() {
   document.addEventListener('DOMContentLoaded', updateRem)
   window.addEventListener('load', updateRem)
   window.addEventListener('resize', updateRem)
+  if (isApple()) {
+    // fix: ios 在旋转屏幕时获取 window.orientation 不同步
+    window.addEventListener('orientationchange', () => {
+      updateRem()
+      // fix: ios 在从竖屏页面跳转到横屏页面时 font-size 设置失败
+      setTimeout(updateRem, 50)
+    })
+  }
 }
