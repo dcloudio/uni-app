@@ -14,14 +14,20 @@ import {
   objectProperty,
   stringLiteral,
 } from '@babel/types'
-import { VUE_REF, VUE_REF_IN_FOR } from '@dcloudio/uni-cli-shared'
 import {
+  VUE_REF,
+  VUE_REF_IN_FOR,
+  isCompoundExpressionNode,
+} from '@dcloudio/uni-cli-shared'
+import {
+  type CompoundExpressionNode,
   type ElementNode,
   type ExpressionNode,
   NodeTypes,
   type SimpleExpressionNode,
   type SourceLocation,
   type TransformContext as VueTransformContext,
+  createCompoundExpression,
   createSimpleExpression,
 } from '@vue/compiler-core'
 import { walk } from 'estree-walker'
@@ -29,7 +35,7 @@ import { isUndefined, parseExpr } from '../ast'
 import { genBabelExpr, genExpr } from '../codegen'
 import type { CodegenScope } from '../options'
 import { type TransformContext, isVForScope, isVIfScope } from '../transform'
-import { isString, isSymbol } from '@vue/shared'
+import { extend, isString, isSymbol } from '@vue/shared'
 
 // v-i,v-s 不能在 quickapp-webview 中使用，估计是内部处理成了指令之类的
 export const ATTR_VUE_ID = 'u-i'
@@ -240,7 +246,7 @@ export function removeAttribute(node: ElementNode, name: string) {
 }
 
 export function isFilterExpr(value: ExpressionNode, context: TransformContext) {
-  if (context.filters.length && value.type === NodeTypes.COMPOUND_EXPRESSION) {
+  if (context.filters.length && isCompoundExpressionNode(value)) {
     const firstChild = value.children[0]
     if (
       !isString(firstChild) &&
@@ -252,4 +258,22 @@ export function isFilterExpr(value: ExpressionNode, context: TransformContext) {
     }
   }
   return false
+}
+
+export function rewriteFilterChildren(
+  node: CompoundExpressionNode,
+  context: TransformContext
+) {
+  const children = node.children.map((child) => {
+    if (
+      !isString(child) &&
+      !isSymbol(child) &&
+      child.type === NodeTypes.SIMPLE_EXPRESSION &&
+      context.bindingMetadata[child.loc.source]
+    ) {
+      return rewriteExpression(child, context)
+    }
+    return child
+  })
+  return createCompoundExpression([extend({}, node, { children })])
 }
