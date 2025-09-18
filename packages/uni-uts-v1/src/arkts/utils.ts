@@ -337,7 +337,9 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['onScopeDispose'],
 
       // worker
-      ['WorkerTaskImpl']
+      ['WorkerTaskImpl'],
+      ['Worker'],
+      ['WorkerPostMessageOptions']
     )
   }
 
