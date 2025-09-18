@@ -725,6 +725,39 @@ var serviceContext = (function () {
     return styles
   }
 
+  const unitRE = new RegExp('"[^"]+"|\'[^\']+\'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px', 'g');
+
+  function toFixed (number, precision) {
+    const multiplier = Math.pow(10, precision + 1);
+    const wholeNumber = Math.floor(number * multiplier);
+    return (Math.round(wholeNumber / 10) * 10) / multiplier
+  }
+
+  const defaultRpx2Unit = {
+    unit: 'rem',
+    unitRatio: 10 / 320,
+    unitPrecision: 5
+  };
+
+  function createRpx2Unit (unit, unitRatio, unitPrecision) {
+    // ignore: rpxCalcIncludeWidth
+    /**
+     * @param {string} val
+     * @returns {string}
+     */
+    return (val) =>
+      val.replace(unitRE, (m, $1) => {
+        if (!$1) {
+          return m
+        }
+        if (unitRatio === 1) {
+          return `${$1}${unit}`
+        }
+        const value = toFixed(parseFloat($1) * unitRatio, unitPrecision);
+        return value === 0 ? '0' : `${value}${unit}`
+      })
+  }
+
   /**
    * 框架内 try-catch
    */
@@ -4111,6 +4144,7 @@ var serviceContext = (function () {
   }
 
   function upx2px$1 (number, newDeviceWidth) {
+    console.log('+++++ upx2px', number);
     if (deviceWidth === 0) {
       checkDeviceWidth();
     }
@@ -6520,10 +6554,15 @@ var serviceContext = (function () {
     }
   }
 
-  const REGEX_UPX = /(\d+(\.\d+)?)[r|u]px/g;
+  const rpx2unit = createRpx2Unit(defaultRpx2Unit.unit, defaultRpx2Unit.unitRatio, defaultRpx2Unit.unitPrecision);
 
   function transformCSS (css) {
-    return css.replace(REGEX_UPX, (a, b) => {
+    const config = __uniConfig.globalStyle || __uniConfig.window || {};
+    if (config.dynamicRpx === true) {
+      return rpx2unit(css)
+    }
+
+    return css.replace(unitRE, (a, b) => {
       return uni.upx2px(parseInt(b) || 0) + 'px'
     })
   }
