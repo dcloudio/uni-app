@@ -41,6 +41,8 @@ export default {
     'When the standard playground runs to an IOS phone, the uts plugin is temporarily not supported. If you need to call the uts plugin, please use a custom playground',
   'prompt.run.message': 'Run method: open {devtools}, import {outputDir} run.',
   'prompt.run.devtools.app': 'HBuilderX',
+  'prompt.run.devtools.app-harmony': 'HBuilderX',
+  'prompt.run.devtools.mp-harmony': 'HBuilderX',
   'prompt.run.devtools.mp-alipay': 'Alipay Mini Program Devtools',
   'prompt.run.devtools.mp-baidu': 'Baidu Mini Program Devtools',
   'prompt.run.devtools.mp--kuaishou': 'Kuaishou Mini Program Devtools',

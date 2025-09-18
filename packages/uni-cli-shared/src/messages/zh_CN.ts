@@ -41,6 +41,8 @@ export default {
     'iOS手机在标准基座真机运行暂不支持uts插件，如需调用uts插件请使用自定义基座',
   'prompt.run.message': '运行方式：打开 {devtools}, 导入 {outputDir} 运行。',
   'prompt.run.devtools.app': 'HBuilderX',
+  'prompt.run.devtools.app-harmony': 'HBuilderX',
+  'prompt.run.devtools.mp-harmony': 'HBuilderX',
   'prompt.run.devtools.mp-alipay': '支付宝小程序开发者工具',
   'prompt.run.devtools.mp-baidu': '百度开发者工具',
   'prompt.run.devtools.mp--kuaishou': '快手开发者工具',
