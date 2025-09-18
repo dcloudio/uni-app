@@ -867,6 +867,9 @@ function initTabBarI18n(tabBar2) {
       defineI18nProperty(item, ["text"]);
     });
   }
+  if (isEnableLocale() && tabBar2.midButton) {
+    defineI18nProperty(tabBar2.midButton, ["text"]);
+  }
   return tabBar2;
 }
 function initBridge(subscribeNamespace) {
@@ -5255,6 +5258,9 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 uniShared.once(() => {
 });
+function isPaste(event) {
+  return event.inputType === "insertFromPaste";
+}
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
@@ -5337,6 +5343,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         cache.value = value.toString();
       }
     });
+    vue.watch(() => props2.maxlength, (length) => {
+      length = parseInt(length, 10);
+      const realValue = state.value.slice(0, length);
+      realValue !== state.value && (state.value = realValue);
+    });
     const NUMBER_TYPES = ["number", "digit"];
     const step = vue.computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
     function onKeyUpEnter(event) {
@@ -5377,7 +5388,14 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "ref": fieldRef,
         "value": state.value,
         "onInput": (event) => {
-          state.value = event.target.value.toString();
+          const value = event.target.value.toString();
+          if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
+            if (isPaste(event)) {
+              state.value = value.slice(0, state.maxlength);
+            }
+            return;
+          }
+          state.value = value;
         },
         "disabled": !!props2.disabled,
         "type": type.value,

@@ -1104,6 +1104,9 @@ function initTabBarI18n(tabBar2) {
       defineI18nProperty(item, ["text"]);
     });
   }
+  if (isEnableLocale() && tabBar2.midButton) {
+    defineI18nProperty(tabBar2.midButton, ["text"]);
+  }
   return tabBar2;
 }
 function initBridge(subscribeNamespace) {
@@ -1246,8 +1249,9 @@ function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
   return isNaN(newValue) ? defaultValue : newValue;
 }
+const isApple = () => /^Apple/.test(navigator.vendor);
 function getWindowWidth$1() {
-  const screenFix = /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+  const screenFix = isApple() && typeof window.orientation === "number";
   const landscape = screenFix && Math.abs(window.orientation) === 90;
   var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
   var windowWidth = Math.min(
@@ -1270,6 +1274,12 @@ function useRem() {
   document.addEventListener("DOMContentLoaded", updateRem);
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
+  if (isApple()) {
+    window.addEventListener("orientationchange", () => {
+      updateRem();
+      setTimeout(updateRem, 50);
+    });
+  }
 }
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
@@ -3421,7 +3431,7 @@ const props$s = {
 const emit$1 = ["keyboardheightchange"];
 function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
-    const isApple = computed(
+    const isApple2 = computed(
       () => String(navigator.vendor).indexOf("Apple") === 0
     );
     el.addEventListener("focus", () => {
@@ -3430,7 +3440,7 @@ function useKeyboard$1(props2, elRef, trigger) {
     });
     const onKeyboardHide = () => {
       document.removeEventListener("click", iosHideKeyboard, false);
-      if (isApple.value) {
+      if (isApple2.value) {
         document.documentElement.scrollTo(
           document.documentElement.scrollLeft,
           document.documentElement.scrollTop
@@ -3438,7 +3448,7 @@ function useKeyboard$1(props2, elRef, trigger) {
       }
     };
     el.addEventListener("blur", () => {
-      if (isApple.value) {
+      if (isApple2.value) {
         el.blur();
       }
       onKeyboardHide();
@@ -12775,6 +12785,9 @@ once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
+function isPaste(event) {
+  return event.inputType === "insertFromPaste";
+}
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
@@ -12867,6 +12880,11 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
         cache.value = value.toString();
       }
     });
+    watch(() => props2.maxlength, (length) => {
+      length = parseInt(length, 10);
+      const realValue = state2.value.slice(0, length);
+      realValue !== state2.value && (state2.value = realValue);
+    });
     const NUMBER_TYPES = ["number", "digit"];
     const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
     function onKeyUpEnter(event) {
@@ -12919,7 +12937,14 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
         "ref": fieldRef,
         "value": state2.value,
         "onInput": (event) => {
-          state2.value = event.target.value.toString();
+          const value = event.target.value.toString();
+          if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
+            if (isPaste(event)) {
+              state2.value = value.slice(0, state2.maxlength);
+            }
+            return;
+          }
+          state2.value = value;
         },
         "disabled": !!props2.disabled,
         "type": type.value,
@@ -30135,14 +30160,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, 8, ["class"]);
 }
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
-class ShowModalFailImpl extends UniError {
+class UniShowModalFailImpl extends UniError {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
   }
 }
-class HideModalFailImpl extends UniError {
+class UniHideModalFailImpl extends UniError {
   constructor(errMsg = "hideModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -30173,7 +30198,7 @@ const showModal$1 = (options) => {
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res = new ShowModalFailImpl();
+    const res = new UniShowModalFailImpl();
     (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
     (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
   });
@@ -30181,7 +30206,7 @@ const showModal$1 = (options) => {
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
+      const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`);
       (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
       (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
       uni.$off(readyEventName);
@@ -30192,7 +30217,7 @@ const showModal$1 = (options) => {
   if (openRet != null) {
     return openRet;
   } else {
-    const res = new ShowModalFailImpl();
+    const res = new UniShowModalFailImpl();
     (_a = options.fail) == null ? void 0 : _a.call(options, res);
     (_b = options.complete) == null ? void 0 : _b.call(options, res);
     return null;
@@ -30202,7 +30227,7 @@ const hideModal$1 = function(options) {
   var _a, _b, _c, _d, _e;
   const currentPage = getCurrentPage();
   if (!currentPage) {
-    const res2 = new HideModalFailImpl();
+    const res2 = new UniHideModalFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
