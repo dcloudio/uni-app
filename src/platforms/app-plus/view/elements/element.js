@@ -1,17 +1,25 @@
 import {
   camelize,
-  isPlainObject
+  isPlainObject,
+  createRpx2Unit,
+  getRpx2Unit
 } from 'uni-shared'
 import {
   ComponentDescriptor as ComponentDescriptorClass,
   parseStyleText
 } from 'uni-core/view/plugins/wxs/component-descriptor'
 
+const rpx2unit = createRpx2Unit(getRpx2Unit().unit, getRpx2Unit().unitRatio, getRpx2Unit().unitPrecision)
 // upx,rpx 正则匹配
 const unitRE = /\b([+-]?\d+(\.\d+)?)[r|u]px\b/g
 
 const transformUnit = (val) => {
   if (typeof val === 'string') {
+    const config = __uniConfig.globalStyle || __uniConfig.window || {}
+    if (config.dynamicRpx === true) {
+      return rpx2unit(val)
+    }
+
     return val.replace(unitRE, (a, b) => {
       /* eslint-disable no-undef */
       return uni.upx2px(b) + 'px'
