@@ -24,8 +24,17 @@ var format = 2;
 var pluginResolution = {
 };
 var developOptions = {
+	parallel: false,
+	minify: false
 };
 var compileOptions = {
+	component2: true,
+	transpile: {
+		script: {
+			ignore: [
+			]
+		}
+	}
 };
 var uploadExclude = [
 ];

@@ -1477,8 +1477,8 @@ const request = {
                 if (isDingDing &&
                     method.toUpperCase() === 'POST' &&
                     headers['content-type'].indexOf('application/json') === 0) {
-                    // 鸿蒙钉钉 data 强制传递 #ask 205230
-                    const _data = isPlainObject(data) ? JSON.stringify(data) : '{}';
+                    // 鸿蒙钉钉 data 强制传递 #ask 205230 // 复测鸿蒙已修复，不传递 data 不会进入此方法
+                    const _data = isObject(data) ? JSON.stringify(data) : data;
                     return {
                         name: 'data',
                         value: _data,

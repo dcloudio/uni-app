@@ -742,6 +742,9 @@ function initLaunchOptions(_ref2) {
     appScheme,
     appLink
   });
+  {
+    launchOptions$1.query = new UTSJSONObject(launchOptions$1.query);
+  }
   extend(enterOptions$1, launchOptions$1);
   return enterOptions$1;
 }
@@ -2249,6 +2252,7 @@ var getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SY
   return Object.assign({}, baseInfo, enterOptions);
 });
 function initAppLaunch(appVm) {
+  var _app$getLaunchOptions;
   injectAppHooks(appVm.$);
   var {
     entryPagePath,
@@ -2261,8 +2265,16 @@ function initAppLaunch(appVm) {
     referrerInfo
   });
   var app = getNativeApp();
-  var schemaLink = app.getLaunchOptionsSync();
-  var launchOption = extend({}, args, schemaLink);
+  var schemaLink = (_app$getLaunchOptions = app.getLaunchOptionsSync()) !== null && _app$getLaunchOptions !== void 0 ? _app$getLaunchOptions : {
+    appScheme: "",
+    appLink: ""
+  };
+  var appScheme = schemaLink.appScheme == null ? null : schemaLink.appScheme.length === 0 ? null : schemaLink.appScheme;
+  var appLink = schemaLink.appLink == null ? null : schemaLink.appLink.length === 0 ? null : schemaLink.appLink;
+  var launchOption = extend({}, args, {
+    appScheme,
+    appLink
+  });
   setLaunchOptionsSync(launchOption);
   invokeHook(appVm, ON_LAUNCH, launchOption);
   var showOption = extend({}, launchOption);
@@ -2390,6 +2402,7 @@ function _reLaunch(_ref3) {
       var selected = getTabIndex(path);
       function callback() {
         pages2.forEach((page) => closePage(page, "none"));
+        pages2.length = 0;
         resolve(void 0);
         setStatusBarStyle();
       }
@@ -2552,8 +2565,18 @@ function subscribeWebviewReady(_data, pageId) {
   onLaunchWebviewReady();
 }
 function onLaunchWebviewReady() {
+  var _routeOptions;
   var entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
   var routeOptions = getRouteOptions(entryPagePath);
+  if (!routeOptions) {
+    if (__uniRoutes.length > 0) {
+      entryPagePath = __uniRoutes[0].path;
+      routeOptions = getRouteOptions(addLeadingSlash(entryPagePath));
+    } else {
+      console.error("未匹配到路由，请检查配置");
+      return;
+    }
+  }
   var args = {
     url: entryPagePath + (__uniConfig.entryPageQuery || ""),
     openType: "appLaunch"
@@ -2564,7 +2587,7 @@ function onLaunchWebviewReady() {
     reject() {
     }
   };
-  if (routeOptions.meta.isTabBar) {
+  if ((_routeOptions = routeOptions) !== null && _routeOptions !== void 0 && (_routeOptions = _routeOptions.meta) !== null && _routeOptions !== void 0 && _routeOptions.isTabBar) {
     return $switchTab(args, handler);
   }
   return $navigateTo(args, handler);
