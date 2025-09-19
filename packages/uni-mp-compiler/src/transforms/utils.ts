@@ -14,7 +14,12 @@ import {
   objectProperty,
   stringLiteral,
 } from '@babel/types'
-import { VUE_REF, VUE_REF_IN_FOR } from '@dcloudio/uni-cli-shared'
+import {
+  VUE_REF,
+  VUE_REF_IN_FOR,
+  isCompoundExpressionNode,
+  isSimpleExpressionNode,
+} from '@dcloudio/uni-cli-shared'
 import {
   type ElementNode,
   type ExpressionNode,
@@ -239,13 +244,13 @@ export function removeAttribute(node: ElementNode, name: string) {
   }
 }
 
-export function isFilterExpr(value: ExpressionNode, context: TransformContext) {
-  if (context.filters.length && value.type === NodeTypes.COMPOUND_EXPRESSION) {
-    const firstChild = value.children[0]
+export function isFilterExpr(node: ExpressionNode, context: TransformContext) {
+  if (context.filters.length && isCompoundExpressionNode(node)) {
+    const firstChild = node.children[0]
     if (
       !isString(firstChild) &&
       !isSymbol(firstChild) &&
-      firstChild.type === NodeTypes.SIMPLE_EXPRESSION &&
+      isSimpleExpressionNode(firstChild) &&
       context.filters.includes(firstChild.content)
     ) {
       return true
