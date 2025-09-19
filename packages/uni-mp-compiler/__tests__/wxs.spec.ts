@@ -1,3 +1,4 @@
+import { BindingTypes } from '@vue/compiler-core'
 import { assert } from './testUtils'
 
 describe('compiler: transform wxs', () => {
@@ -134,6 +135,49 @@ describe('compiler: transform wxs', () => {
 }`,
       {
         filters: ['utils'],
+      }
+    )
+  })
+  test('reactive variables', () => {
+    assert(
+      `<view>{{ name }} {{ utils.age }} {{ utils.getName('test')}} {{ utils.cls('l-checkbox', name + utils.age, [['checked', isChecked]]) }}</view>`,
+      `<view>{{a}} {{utils.age}} {{utils.getName('test')}} {{utils.cls('l-checkbox', b + utils.age, [['checked', c]])}}</view>`,
+      `(_ctx, _cache) => {
+  return { a: _t(_ctx.name), b: _ctx.name, c: _ctx.isChecked }
+}`,
+      {
+        filters: ['utils'],
+        bindingMetadata: {
+          isChecked: BindingTypes.DATA,
+          name: BindingTypes.DATA,
+        },
+      }
+    )
+    assert(
+      `<view :class="utils.cls('l-checkbox', utils.cls('classB'), [['checked', isChecked]], name)" class="classA"/>`,
+      `<view class="{{[utils.cls('l-checkbox', utils.cls('classB'), [['checked', a]], b), 'classA']}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.isChecked, b: _ctx.name }
+}`,
+      {
+        filters: ['utils'],
+        bindingMetadata: {
+          isChecked: BindingTypes.DATA,
+          name: BindingTypes.DATA,
+        },
+      }
+    )
+    assert(
+      `<view :style="utils.fs('l-checkbox', utils.fs('color'), [['checked', isChecked]])"/>`,
+      `<view style="{{utils.fs('l-checkbox', utils.fs('color'), [['checked', a]])}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.isChecked }
+}`,
+      {
+        filters: ['utils'],
+        bindingMetadata: {
+          isChecked: BindingTypes.DATA,
+        },
       }
     )
   })
