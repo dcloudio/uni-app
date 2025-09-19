@@ -521,13 +521,10 @@ export async function parseInterfaceTypes(
       uni: [],
     }
   }
-  // 懒加载 uts 编译器
-  // eslint-disable-next-line no-restricted-globals
-  const { parse } = require('@dcloudio/uts')
   let ast: Module | null = null
   try {
     const code = fs.readFileSync(interfaceFilename, 'utf8')
-    ast = await parse(
+    ast = await parseUtsCode(
       preprocessor ? await preprocessor(code, interfaceFilename) : code,
       {
         filename: relative(interfaceFilename, options.inputDir!),
@@ -842,6 +839,16 @@ async function parseFile(
   return []
 }
 
+async function parseUtsCode(code: string, options: unknown) {
+  // eslint-disable-next-line no-restricted-globals
+  const { parse } = require('@dcloudio/uts')
+  const result = await parse(code, options)
+  if (result && result.error) {
+    throw result.error
+  }
+  return result
+}
+
 async function parseCode(
   code: string,
   namespace: string,
@@ -849,18 +856,11 @@ async function parseCode(
   filename: string,
   inputDir: string
 ): Promise<ProxyDecl[]> {
-  // 懒加载 uts 编译器
-  // eslint-disable-next-line no-restricted-globals
-  const { parse } = require('@dcloudio/uts')
   try {
-    const ast = await parse(code, {
+    const ast = await parseUtsCode(code, {
       filename: relative(filename, inputDir),
       noColor: !isColorSupported(),
     })
-    if (ast.error) {
-      console.error(ast.error)
-      return []
-    }
     return parseAst(
       ast,
       createResolveTypeReferenceName(namespace, ast, types.class),
@@ -1635,10 +1635,9 @@ export async function parseExportIdentifiers(fileName: string) {
   if (!fs.existsSync(fileName)) {
     return ids
   }
-  const { parse } = require('@dcloudio/uts')
   let ast: Module | null = null
   try {
-    ast = await parse(fs.readFileSync(fileName, 'utf8'), {
+    ast = await parseUtsCode(fs.readFileSync(fileName, 'utf8'), {
       filename: fileName,
       noColor: true,
     })
