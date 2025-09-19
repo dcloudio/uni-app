@@ -1,5 +1,6 @@
 import { resolve } from 'path'
 import type {
+  ToCppCodeOptions,
   UTSBundleOptions,
   UTSOptions,
   UTSParseOptions,
@@ -126,6 +127,26 @@ export async function toArkTS(options: UTSOptions): Promise<UTSResult> {
     .catch((error: Error) => {
       return { error }
     })
+}
+
+export async function toCpp(options: UTSOptions): Promise<UTSResult> {
+  const cppOptions = resolveOptions(options)
+  if (!cppOptions) {
+    return Promise.resolve({})
+  }
+  return bindings
+    .toCpp(toBuffer(cppOptions))
+    .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
+}
+
+export async function toCppCode(options: ToCppCodeOptions): Promise<string> {
+  if (!options.code) {
+    return Promise.resolve('')
+  }
+  return bindings.toCppCode(toBuffer(options))
 }
 
 export async function bundleArkTS(
