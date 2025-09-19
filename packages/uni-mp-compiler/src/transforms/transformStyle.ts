@@ -17,7 +17,6 @@ import {
 } from '@babel/types'
 import {
   type AttributeNode,
-  type CompoundExpressionNode,
   type DirectiveNode,
   type ExpressionNode,
   NodeTypes,
@@ -41,7 +40,6 @@ import {
   parseExprWithRewrite,
   rewirteWithHelper,
   rewriteExpression,
-  rewriteFilterChildren,
   rewriteSpreadElement,
 } from './utils'
 
@@ -153,10 +151,7 @@ function rewriteStyleExpression(
   context: TransformContext
 ) {
   if (isFilterExpr(expr, context)) {
-    return rewriteExpression(
-      rewriteFilterChildren(expr as CompoundExpressionNode, context),
-      context
-    )
+    return rewriteExpression(expr, context)
   }
   return rewriteExpression(
     createCompoundExpression([

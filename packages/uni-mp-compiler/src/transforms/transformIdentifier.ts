@@ -15,7 +15,6 @@ import {
   ATTR_VUE_SLOTS,
   isFilterExpr,
   rewriteExpression,
-  rewriteFilterChildren,
 } from './utils'
 import {
   createVirtualHostClass,
@@ -51,7 +50,6 @@ import {
   rewritePropsBinding,
 } from './transformComponent'
 import {
-  isCompoundExpressionNode,
   isSimpleExpressionNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
@@ -69,11 +67,6 @@ export const transformIdentifier: NodeTransform = (node, context) => {
             content,
             `)`,
           ]),
-          context
-        )
-      } else if (isCompoundExpressionNode(content)) {
-        node.content = rewriteExpression(
-          rewriteFilterChildren(content, context),
           context
         )
       }
