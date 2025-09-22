@@ -78,12 +78,12 @@ export function initModuleAlias() {
     vuePkgs.forEach((pkg) => {
       moduleAlias.addAlias(
         pkg,
-        path.resolve(libDir, 'dom2', '@vue', pkg.split('/').pop()!)
+        path.resolve(libDir, 'dom2', 'app', '@vue', pkg.split('/').pop()!)
       )
     })
     moduleAlias.addAlias(
       '@vitejs/plugin-vue',
-      path.resolve(libDir, 'dom2', '@vitejs', 'plugin-vue')
+      path.resolve(libDir, 'dom2', 'app', '@vitejs', 'plugin-vue')
     )
   } else {
     moduleAlias.addAliases({
