@@ -149,43 +149,44 @@ module.exports = async function (content) {
       )
     }
 
-    if (!utsPlugins.has(pluginId)) {
-      utsPlugins.add(pluginId)
-      if (uniXKotlinCompiler) {
-        const platform = 'app-android'
-        const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(
-          platform,
-          pluginDir
-        )
-        for (const vueFile of vueFiles) {
-          await uniXKotlinCompiler.addRootFile(vueFile)
-        }
-        const indexFileName = resolveTscUniModuleIndexFileName(
-          platform,
-          pluginDir
-        )
-        if (indexFileName) {
-          await uniXKotlinCompiler.addRootFile(indexFileName)
-        }
+    // 不判重了，不然nvue，vue并发同一个插件时，其中一个会跳过tsc编译，直接走到rust那里，导致一些文件还没有生成，比如vue兼容模式组件之类的
+    // if (!utsPlugins.has(pluginId)) {
+    utsPlugins.add(pluginId)
+    if (uniXKotlinCompiler) {
+      const platform = 'app-android'
+      const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(
+        platform,
+        pluginDir
+      )
+      for (const vueFile of vueFiles) {
+        await uniXKotlinCompiler.addRootFile(vueFile)
       }
-      if (uniXSwiftCompiler) {
-        const platform = 'app-ios'
-        const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(
-          platform,
-          pluginDir
-        )
-        for (const vueFile of vueFiles) {
-          await uniXSwiftCompiler.addRootFile(vueFile)
-        }
-        const indexFileName = resolveTscUniModuleIndexFileName(
-          platform,
-          pluginDir
-        )
-        if (indexFileName) {
-          await uniXSwiftCompiler.addRootFile(indexFileName)
-        }
+      const indexFileName = resolveTscUniModuleIndexFileName(
+        platform,
+        pluginDir
+      )
+      if (indexFileName) {
+        await uniXKotlinCompiler.addRootFile(indexFileName)
       }
     }
+    if (uniXSwiftCompiler) {
+      const platform = 'app-ios'
+      const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(
+        platform,
+        pluginDir
+      )
+      for (const vueFile of vueFiles) {
+        await uniXSwiftCompiler.addRootFile(vueFile)
+      }
+      const indexFileName = resolveTscUniModuleIndexFileName(
+        platform,
+        pluginDir
+      )
+      if (indexFileName) {
+        await uniXSwiftCompiler.addRootFile(indexFileName)
+      }
+    }
+    // }
 
     // 处理uni_modules中的文件变更
     const files = changedFiles.get(pluginId)
