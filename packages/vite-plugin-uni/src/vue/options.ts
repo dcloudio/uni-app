@@ -20,6 +20,9 @@ import {
   normalizePath,
   preJs,
   resolveUniTypeScript,
+  setSharedDataClassName,
+  setSharedDataElementCode,
+  setSharedDataNativeViewCode,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { parseInlineStyleSync } from '@dcloudio/uni-nvue-styler'
@@ -83,7 +86,10 @@ export function initPluginVueOptions(
   // 默认就移除comments节点
   compilerOptions.comments = false
 
-  if (process.env.UNI_PLATFORM !== 'web') {
+  if (
+    process.env.UNI_PLATFORM !== 'web' &&
+    process.env.UNI_VUE_VAPOR === 'true'
+  ) {
     // 非 web 平台，使用 factory 模式
     ;(compilerOptions as any).templateMode = 'factory'
     // 目前禁用事件委托
@@ -310,19 +316,17 @@ export function initPluginVueOptions(
       ;(vueOptions.template.compilerOptions as any).extraOptions = (
         descriptor: SFCDescriptor
       ) => {
+        const filename = normalizePath(descriptor.filename.split('?')[0])
+        const className = genDom2ClassName(filename, process.env.UNI_INPUT_DIR)
+        setSharedDataClassName(filename, className)
         return {
-          className: genDom2ClassName(
-            descriptor.filename,
-            process.env.UNI_INPUT_DIR
-          ),
-          componentType: isUniPageFile(descriptor.filename)
-            ? 'page'
-            : 'component',
-          emitElement: (result) => {
-            console.log('emitElement', result)
+          className,
+          componentType: isUniPageFile(filename) ? 'page' : 'component',
+          emitElement: (result: { code: string }) => {
+            setSharedDataElementCode(filename, result.code)
           },
-          emitNativeView: (result) => {
-            console.log('emitElement', result)
+          emitNativeView: (result: { code: string }) => {
+            setSharedDataNativeViewCode(filename, result.code)
           },
           parseStaticStyle(
             type: 'element' | 'nativeView',
