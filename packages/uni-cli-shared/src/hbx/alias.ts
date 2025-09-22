@@ -35,6 +35,16 @@ export function initModuleAlias() {
       }
     }
   }
+  if (
+    !process.env.UNI_VUE_DOM2 &&
+    process.env.UNI_INPUT_DIR &&
+    process.env.UNI_PLATFORM === 'app-harmony'
+  ) {
+    const dom2Config = path.resolve(process.env.UNI_INPUT_DIR, '.dom2')
+    if (fs.existsSync(dom2Config)) {
+      process.env.UNI_VUE_DOM2 = 'true'
+    }
+  }
   if (process.env.UNI_VUE_VAPOR === 'true') {
     const vuePkgs = [
       '@vue/compiler-core',
@@ -54,6 +64,26 @@ export function initModuleAlias() {
     moduleAlias.addAlias(
       '@vitejs/plugin-vue',
       path.resolve(libDir, 'vapor', '@vitejs', 'plugin-vue')
+    )
+  } else if (process.env.UNI_VUE_DOM2 === 'true') {
+    const vuePkgs = [
+      '@vue/compiler-core',
+      '@vue/compiler-dom',
+      '@vue/compiler-sfc',
+      '@vue/compiler-ssr',
+      '@vue/compiler-vapor',
+      '@vue/server-renderer',
+      '@vue/shared',
+    ]
+    vuePkgs.forEach((pkg) => {
+      moduleAlias.addAlias(
+        pkg,
+        path.resolve(libDir, 'dom2', '@vue', pkg.split('/').pop()!)
+      )
+    })
+    moduleAlias.addAlias(
+      '@vitejs/plugin-vue',
+      path.resolve(libDir, 'dom2', '@vitejs', 'plugin-vue')
     )
   } else {
     moduleAlias.addAliases({
