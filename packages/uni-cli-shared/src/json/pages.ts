@@ -22,7 +22,7 @@ export function isUniPageFile(
   inputDir: string = process.env.UNI_INPUT_DIR
 ) {
   if (inputDir && path.isAbsolute(file)) {
-    file = normalizePath(path.relative(inputDir, file))
+    file = normalizePath(path.relative(inputDir, file.split('?')[0]))
   }
   return pagesCacheSet.has(removeExt(file))
 }

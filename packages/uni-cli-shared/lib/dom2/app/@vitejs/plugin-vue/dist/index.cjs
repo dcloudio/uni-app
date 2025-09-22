@@ -326,6 +326,8 @@ function resolveTemplateCompilerOptions(descriptor, options, ssr) {
     preprocessOptions,
     compilerOptions: {
       ...options.template?.compilerOptions,
+      // fixed by uts 需要额外添加参数，比如className
+      ...options.template?.compilerOptions?.extraOptions?.(descriptor),
       scopeId: hasScoped ? `data-v-${id}` : void 0,
       bindingMetadata: resolvedScript ? resolvedScript.bindings : void 0,
       expressionPlugins,
@@ -377,6 +379,8 @@ function resolveScript(descriptor, options, ssr, customElement) {
   }
   const resolved = options.compiler.compileScript(descriptor, {
     ...options.script,
+    // fixed by uts 需要额外添加参数，比如className
+    ...options.script?.extraOptions?.(descriptor),
     id: descriptor.id,
     isProd: options.isProduction,
     inlineTemplate: isUseInlineTemplate(descriptor, options),

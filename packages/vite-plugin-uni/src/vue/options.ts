@@ -3,6 +3,7 @@ import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { Plugin } from 'vite'
 import type {
   AssetURLOptions,
+  SFCDescriptor,
   SFCStyleCompileOptions,
   TemplateCompiler,
 } from '@vue/compiler-sfc'
@@ -12,8 +13,10 @@ import {
   type UniVitePlugin,
   createResolveStaticAsset,
   createUniVueTransformAssetUrls,
+  genDom2ClassName,
   getBaseNodeTransforms,
   isExternalUrl,
+  isUniPageFile,
   normalizePath,
   preJs,
   resolveUniTypeScript,
@@ -289,6 +292,46 @@ export function initPluginVueOptions(
     // decorators or decorators-legacy
     if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
       vueOptions.script.babelParserPlugins.push('decorators')
+    }
+    if (process.env.UNI_VUE_DOM2 === 'true') {
+      ;(vueOptions.script as any).extraOptions = (
+        descriptor: SFCDescriptor
+      ) => {
+        return {
+          className: genDom2ClassName(
+            descriptor.filename,
+            process.env.UNI_INPUT_DIR
+          ),
+          componentType: isUniPageFile(descriptor.filename)
+            ? 'page'
+            : 'component',
+        }
+      }
+      ;(vueOptions.template.compilerOptions as any).extraOptions = (
+        descriptor: SFCDescriptor
+      ) => {
+        return {
+          className: genDom2ClassName(
+            descriptor.filename,
+            process.env.UNI_INPUT_DIR
+          ),
+          componentType: isUniPageFile(descriptor.filename)
+            ? 'page'
+            : 'component',
+          emitElement: (result) => {
+            console.log('emitElement', result)
+          },
+          emitNativeView: (result) => {
+            console.log('emitElement', result)
+          },
+          parseStaticStyle(
+            type: 'element' | 'nativeView',
+            style: string
+          ): Record<string, unknown> {
+            return {}
+          },
+        }
+      }
     }
   }
 
