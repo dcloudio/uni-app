@@ -16566,7 +16566,7 @@ function processNormalScript(ctx, scopeId) {
             if (node.declaration.type === "ObjectExpression") {
               s.appendLeft(
                 node.declaration.start,
-                ctx.descriptor.vapor ? `defineVaporComponent(` : `defineComponent(`
+                ctx.descriptor.vapor ? `defineVaporSharedDataComponent(` : `defineComponent(`
               );
               s.appendRight(node.declaration.end, `)`);
             }
@@ -19413,7 +19413,8 @@ function fileToScope(ctx, filename, asGlobal = false) {
 }
 function parseFile(filename, content, fs, parserPlugins) {
   const ext = path$1.extname(filename);
-  if (ext === ".uts" || ext === ".ts" || ext === ".mts" || ext === ".tsx" || ext === ".mtsx") {
+  if (ext === ".uts" || // fixed by uts
+  ext === ".ts" || ext === ".mts" || ext === ".tsx" || ext === ".mtsx") {
     return parser$1.parse(content, {
       plugins: resolveParserPlugins(
         ext.slice(1),
@@ -21123,11 +21124,19 @@ const ${normalScriptDefaultVar} = ${defaultSpecifier.local.name}
               left--;
             }
           } else if (isDefineEmits) {
-            ctx.s.overwrite(
-              startOffset + init.start,
-              startOffset + init.end,
-              "__emit"
-            );
+            if (options.className && init.type === "CallExpression") {
+              ctx.s.overwrite(
+                startOffset + init.callee.start,
+                startOffset + init.callee.end,
+                ctx.helper("defineEmits")
+              );
+            } else {
+              ctx.s.overwrite(
+                startOffset + init.start,
+                startOffset + init.end,
+                "__emit"
+              );
+            }
           } else {
             lastNonRemoved = i;
           }
@@ -21285,6 +21294,12 @@ let __temp${any}, __restore${any}
   if (ctx.emitDecl) {
     destructureElements.push(`emit: __emit`);
   }
+  if (options.className) {
+    destructureElements.push(`sharedDataScope: __sharedDataScope`);
+    if (options.componentType === "page") {
+      destructureElements.push(`pageId: __pageId`);
+    }
+  }
   if (destructureElements.length) {
     args += `, { ${destructureElements.join(", ")} }`;
   }
@@ -21390,6 +21405,10 @@ ${vapor && !ssr ? `` : `return `}${returned}
   }
   const genDefaultAs = options.genDefaultAs ? `const ${options.genDefaultAs} =` : `export default`;
   let runtimeOptions = ``;
+  if (options.className) {
+    runtimeOptions += `
+  __className,`;
+  }
   if (!ctx.hasDefaultExportName && filename && filename !== DEFAULT_FILENAME) {
     const match = filename.match(/([^/\\]+)\.\w+$/);
     if (match) {
@@ -21421,7 +21440,8 @@ ${vapor && !ssr ? `` : `return `}${returned}
       startOffset,
       `
 ${genDefaultAs} /*@__PURE__*/${ctx.helper(
-        vapor && !ssr ? `defineVaporComponent` : `defineComponent`
+        // fixed by uts
+        vapor && !ssr ? `defineVaporSharedDataComponent` : `defineComponent`
       )}({${def}${runtimeOptions}
   ${hasAwait ? `async ` : ``}setup(${args}) {
 ${exposeCall}`
