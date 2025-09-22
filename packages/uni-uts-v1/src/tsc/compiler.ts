@@ -257,7 +257,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
       const error = formatDiagnostic(diagnostic, formatHost)
       // 仅回源成功的才抛出错误，否则只打印一下
       if (error.file && error.frame) {
-        const parts = error.file.split('/')
+        const parts = error.file.replace(/\\/g, '/').split('/')
         if (parts.length > 2 && parts[0] === 'uni_modules') {
           const pluginName = parts[1]
           if (encryptExistCache.has(pluginName)) {
