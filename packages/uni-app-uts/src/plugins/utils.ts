@@ -33,6 +33,10 @@ export function createUniOptions(
   platform: 'app-android' | 'app-ios' | 'app-harmony'
 ): UniVitePlugin['uni'] {
   return {
+    compiler:
+      process.env.UNI_VUE_DOM2 === 'true'
+        ? require('@dcloudio/compiler-vapor-dom2')
+        : undefined,
     copyOptions() {
       const inputDir = process.env.UNI_INPUT_DIR
       const outputDir = process.env.UNI_OUTPUT_DIR

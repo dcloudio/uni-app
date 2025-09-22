@@ -70,9 +70,7 @@ export function initModuleAlias() {
       '@vue/compiler-core',
       '@vue/compiler-dom',
       '@vue/compiler-sfc',
-      '@vue/compiler-ssr',
       '@vue/compiler-vapor',
-      '@vue/server-renderer',
       '@vue/shared',
     ]
     vuePkgs.forEach((pkg) => {
@@ -84,6 +82,10 @@ export function initModuleAlias() {
     moduleAlias.addAlias(
       '@vitejs/plugin-vue',
       path.resolve(libDir, 'dom2', 'app', '@vitejs', 'plugin-vue')
+    )
+    moduleAlias.addAlias(
+      '@dcloudio/compiler-vapor-dom2',
+      path.resolve(libDir, 'dom2', 'app', '@vue', 'compiler-vapor-dom2')
     )
   } else {
     moduleAlias.addAliases({

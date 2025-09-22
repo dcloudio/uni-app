@@ -203,7 +203,8 @@ export function initPluginVueOptions(
     compilerOptions.nodeTransforms.push(
       ...getBaseNodeTransforms(
         options.base,
-        process.env.UNI_VUE_VAPOR === 'true'
+        process.env.UNI_VUE_VAPOR === 'true' ||
+          process.env.UNI_VUE_DOM2 === 'true'
           ? createResolveStaticAsset(options.inputDir)
           : undefined
       )
