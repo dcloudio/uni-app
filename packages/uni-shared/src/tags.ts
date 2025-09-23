@@ -255,6 +255,8 @@ const NVUE_CUSTOM_COMPONENTS = [
   'picker-view-column',
 ]
 
+export const UNI_AD_PLUGINS = ['uniad-plugin', 'uniad-plugin-wx']
+
 // 内置的easycom组件
 const UVUE_BUILT_IN_EASY_COMPONENTS = [
   'map',

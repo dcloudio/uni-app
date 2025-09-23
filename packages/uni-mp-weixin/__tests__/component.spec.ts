@@ -287,6 +287,23 @@ describe('mp-weixin: transform component', () => {
     )
   })
 
+  test('uniad plugin', () => {
+    assert(
+      `<uniad-plugin adpid="123" unit-id="456"/>`,
+      `<uniad-plugin wx:if="{{r0}}" adpid="123" unit-id="456" u-t="m" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<uniad-plugin-wx adpid="123" unit-id="456"/>`,
+      `<uniad-plugin-wx wx:if="{{r0}}" adpid="123" unit-id="456" u-t="m" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
   // 暂不上线，先注释掉
   //   test('input > keyboard-accessory', () => {
   //     assert(

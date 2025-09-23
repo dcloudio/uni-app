@@ -15,6 +15,7 @@ import {
 } from '../../utils'
 import { relativeFile } from '../../resolve'
 import { isVueSfcFile } from '../../vue/utils'
+import { UNI_AD_PLUGINS } from '@dcloudio/uni-shared'
 
 let appJsonCache: Record<string, any> = {}
 const jsonFilesCache = new Map<string, string>()
@@ -166,11 +167,14 @@ export function findMiniProgramUsingComponents({
   componentsDir?: string
 }): MiniProgramComponents {
   const globalUsingComponents = appJsonCache && appJsonCache.usingComponents
-  // 避免 uniad-plugin 被当作 vue 组件处理
-  const miniProgramComponents: MiniProgramComponents = {
-    'uniad-plugin': 'plugin',
-    'uniad-plugin-wx': 'plugin',
-  }
+  // 避免 uniad 相关插件 被当作 vue 组件处理
+  const miniProgramComponents: MiniProgramComponents = UNI_AD_PLUGINS.reduce(
+    (acc, name) => {
+      acc[name] = 'plugin'
+      return acc
+    },
+    {}
+  )
   if (globalUsingComponents) {
     extend(
       miniProgramComponents,
