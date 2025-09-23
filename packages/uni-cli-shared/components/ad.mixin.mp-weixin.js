@@ -70,6 +70,7 @@ export default {
     if (this.preload && this._canCreateAd()) {
       this.load()
     }
+    this._dispatchEvent('adcreated', { instance: this })
   },
   methods: {
     load () {
@@ -389,6 +390,10 @@ export default {
           this._dispatchEvent(EventType.Error, err)
         }
       })
+    },
+
+    toJSON () {
+      return ''
     }
   }
 }
