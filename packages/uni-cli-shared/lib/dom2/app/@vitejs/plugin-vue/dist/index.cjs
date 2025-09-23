@@ -2913,7 +2913,6 @@ function vuePlugin(rawOptions = {}) {
     const customElement = options.value.features?.customElement || options.value.customElement;
     return typeof customElement === "boolean" ? () => customElement : vite.createFilter(customElement);
   });
-  let transformCachedModule = false;
   return {
     name: "vite:vue",
     api: {
@@ -2996,14 +2995,14 @@ function vuePlugin(rawOptions = {}) {
         }
         _warn(...args);
       };
-      transformCachedModule = config.command === "build" && options.value.sourceMap && config.build.watch != null;
     },
-    shouldTransformCachedModule({ id }) {
-      if (transformCachedModule && parseVueRequest(id).query.vue) {
-        return true;
-      }
-      return false;
-    },
+    // fixed by uts 启用该代码，会导致一个vue页面变更，其他所有vue页面都会被编译
+    // shouldTransformCachedModule({ id }) {
+    //   if (transformCachedModule && parseVueRequest(id).query.vue) {
+    //     return true
+    //   }
+    //   return false
+    // },
     configureServer(server) {
       options.value.devServer = server;
     },

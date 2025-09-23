@@ -73,6 +73,8 @@ export {
   resolveAppHarmonyUniModulesEntryDir,
 } from './arkts'
 
+export { toCppCode } from '@dcloudio/uts'
+
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,

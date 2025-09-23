@@ -11,6 +11,7 @@ import {
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniSharedDataPlugin,
   uniStatsPlugin,
   uniUTSAppUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
@@ -54,6 +55,7 @@ export function init() {
         ]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({
+      dom2: process.env.UNI_VUE_DOM2 === 'true',
       platform: 'app-harmony',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
@@ -70,6 +72,7 @@ export function init() {
         },
       },
     }),
+    ...(process.env.UNI_VUE_DOM2 === 'true' ? [uniSharedDataPlugin()] : []),
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),
