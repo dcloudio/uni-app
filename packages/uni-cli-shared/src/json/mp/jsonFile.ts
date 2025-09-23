@@ -166,7 +166,11 @@ export function findMiniProgramUsingComponents({
   componentsDir?: string
 }): MiniProgramComponents {
   const globalUsingComponents = appJsonCache && appJsonCache.usingComponents
-  const miniProgramComponents: MiniProgramComponents = {}
+  // 避免 uniad-plugin 被当作 vue 组件处理
+  const miniProgramComponents: MiniProgramComponents = {
+    'uniad-plugin': 'plugin',
+    'uniad-plugin-wx': 'plugin',
+  }
   if (globalUsingComponents) {
     extend(
       miniProgramComponents,
