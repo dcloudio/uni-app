@@ -595,7 +595,11 @@
       "live-pusher"
     ]
   },
-  "uni-loading": {},
+  "uni-loading": {
+    "easycom": [
+      "loading"
+    ]
+  },
   "uni-location": {
     "provider": {
       "service": "location"
