@@ -168,13 +168,13 @@ export function findMiniProgramUsingComponents({
 }): MiniProgramComponents {
   const globalUsingComponents = appJsonCache && appJsonCache.usingComponents
   // 避免 uniad 相关插件 被当作 vue 组件处理
-  const miniProgramComponents: MiniProgramComponents = UNI_AD_PLUGINS.reduce(
-    (acc, name) => {
-      acc[name] = 'plugin'
-      return acc
-    },
-    {}
-  )
+  const enableUniAdPlugin = process.env.UNI_PLATFORM === 'mp-weixin'
+  const miniProgramComponents: MiniProgramComponents = enableUniAdPlugin
+    ? UNI_AD_PLUGINS.reduce((acc, name) => {
+        acc[name] = 'plugin'
+        return acc
+      }, {})
+    : {}
   if (globalUsingComponents) {
     extend(
       miniProgramComponents,
