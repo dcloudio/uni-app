@@ -6,10 +6,6 @@ describe('mp-weixin: transform component', () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
   })
 
-  afterEach(() => {
-    delete (process.env as { UNI_PLATFORM?: string }).UNI_PLATFORM
-  })
-
   test(`Components start with wx`, () => {
     assert(
       `<WxBtn/>`,
