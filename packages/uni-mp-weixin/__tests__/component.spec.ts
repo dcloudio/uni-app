@@ -1,6 +1,15 @@
 import { assert } from './testUtils'
 import { customElements } from '../src/compiler/options'
+
 describe('mp-weixin: transform component', () => {
+  beforeEach(() => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+  })
+
+  afterEach(() => {
+    delete (process.env as { UNI_PLATFORM?: string }).UNI_PLATFORM
+  })
+
   test(`Components start with wx`, () => {
     assert(
       `<WxBtn/>`,
