@@ -1088,6 +1088,8 @@ export type ConcreteComponent<Props = {}, RawBindings = any, D = any, C extends 
 export type Component<Props = any, RawBindings = any, D = any, C extends ComputedOptions = ComputedOptions, M extends MethodOptions = MethodOptions, E extends EmitsOptions | Record<string, any[]> = {}, S extends Record<string, any> = any> = ConcreteComponent<Props, RawBindings, D, C, M, E, S> | ComponentPublicInstanceConstructor<Props>;
 
 export type SetupContext<E = EmitsOptions, S extends SlotsType = {}> = E extends any ? {
+    pageId?: number
+    sharedDataScope: UniSharedDataPage
     attrs: Data;
     slots: UnwrapSlotsType<S>;
     emit: EmitFn<E>;

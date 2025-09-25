@@ -1,0 +1,10 @@
+{
+  "name": "@vue/vue",
+  "version": "3.6.0-alpha.2",
+  "description": "@vue/vue",
+  "types": "dist/vue.d.ts",
+  "dependencies": {
+    "@vue/shared": "3.6.0-alpha.2",
+    "@vue/reactivity": "3.6.0-alpha.2"
+  }
+}
