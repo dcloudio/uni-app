@@ -36,7 +36,10 @@ import {
   helperNameMap,
   locStub,
 } from '@vue/compiler-core'
-import { findMiniProgramUsingComponents } from '@dcloudio/uni-cli-shared'
+import {
+  findMiniProgramUsingComponents,
+  isSimpleExpressionNode,
+} from '@dcloudio/uni-cli-shared'
 import type {
   MiniProgramComponentsType,
   MiniProgramFilterOptions,
@@ -154,7 +157,7 @@ export function isScopedSlotVFor({ source }: CodegenVForScope) {
   }
   const first = source.children[0] as ExpressionNode
   return (
-    first.type === NodeTypes.SIMPLE_EXPRESSION &&
+    isSimpleExpressionNode(first) &&
     first.content.includes(SCOPED_SLOT_IDENTIFIER)
   )
 }

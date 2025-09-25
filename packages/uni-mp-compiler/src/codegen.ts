@@ -20,7 +20,11 @@ import {
   type GeneratorOptions,
   default as babelGenerate,
 } from '@babel/generator'
-import { addImportDeclaration, matchEasycom } from '@dcloudio/uni-cli-shared'
+import {
+  addImportDeclaration,
+  isSimpleExpressionNode,
+  matchEasycom,
+} from '@dcloudio/uni-cli-shared'
 import type { SourceMapGenerator } from 'source-map-js'
 import type { CodegenOptions, CodegenRootNode } from './options'
 
@@ -159,7 +163,7 @@ function createCodegenContext(
       if (context.map) {
         if (node) {
           let name
-          if (node.type === NodeTypes.SIMPLE_EXPRESSION && !node.isStatic) {
+          if (isSimpleExpressionNode(node) && !node.isStatic) {
             const content = node.content.replace(/^_ctx\./, '')
             if (content !== node.content && isSimpleIdentifier(content)) {
               name = content
