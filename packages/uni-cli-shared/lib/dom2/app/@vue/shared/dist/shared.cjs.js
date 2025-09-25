@@ -617,6 +617,15 @@ function normalizeCssVarValue(value) {
   return String(value);
 }
 
+const VaporVForFlags = {
+  "FAST_REMOVE": 1,
+  "1": "FAST_REMOVE",
+  "IS_COMPONENT": 2,
+  "2": "IS_COMPONENT",
+  "ONCE": 4,
+  "4": "ONCE"
+};
+
 exports.EMPTY_ARR = EMPTY_ARR;
 exports.EMPTY_OBJ = EMPTY_OBJ;
 exports.NO = NO;
@@ -625,6 +634,7 @@ exports.PatchFlagNames = PatchFlagNames;
 exports.PatchFlags = PatchFlags;
 exports.ShapeFlags = ShapeFlags;
 exports.SlotFlags = SlotFlags;
+exports.VaporVForFlags = VaporVForFlags;
 exports.YES = YES;
 exports.camelize = camelize;
 exports.canSetValueDirectly = canSetValueDirectly;

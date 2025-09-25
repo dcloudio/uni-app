@@ -34132,7 +34132,7 @@ function genSetTemplateRef(oper, context) {
   ];
 }
 function genDeclareOldRef(oper) {
-  return [NEWLINE, `let r${oper.id}: any | null`];
+  return [NEWLINE, `let r${oper.id}`];
 }
 function genRefValue(value, context) {
   if (value && context.options.inline) {
@@ -35180,18 +35180,19 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
       getEffectIndex
     );
   } else {
+    const isDom2 = !!context.options.platform;
     let hasStaticStyle = false;
     let hasClass = false;
     for (const prop of propsResult[1]) {
       const { key, values } = prop;
-      if (key.content === "class") {
+      if (isDom2 && key.content === "class") {
         hasClass = true;
       }
       if (key.isStatic && values.length === 1 && values[0].isStatic) {
-        if (key.content === "style") {
+        if (isDom2 && key.content === "style") {
           hasStaticStyle = true;
         }
-        if (key.content === "class") {
+        if (isDom2 && key.content === "class") {
           dynamicProps.push(key.content);
           context.registerEffect(
             values,

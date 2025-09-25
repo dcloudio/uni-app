@@ -613,4 +613,13 @@ function normalizeCssVarValue(value) {
   return String(value);
 }
 
-export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isArray, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };
+const VaporVForFlags = {
+  "FAST_REMOVE": 1,
+  "1": "FAST_REMOVE",
+  "IS_COMPONENT": 2,
+  "2": "IS_COMPONENT",
+  "ONCE": 4,
+  "4": "ONCE"
+};
+
+export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isArray, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };

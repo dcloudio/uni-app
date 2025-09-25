@@ -79,11 +79,19 @@ export interface SharedDataClassGenerateOptions {
     renderElementCode: string;
     renderNativeViewCode: string;
 }
-interface SharedDataClassGenerateResult {
+interface SharedDataGenerateFile {
+    name: string;
     code: string;
 }
+interface SharedDataClassGenerateResult {
+    files: SharedDataGenerateFile[];
+}
 
-export declare function genSharedDataClass(decl: ClassDeclaration, options: SharedDataClassGenerateOptions): SharedDataClassGenerateResult;
+interface ICppSharedDataClassGenerateResult extends SharedDataClassGenerateResult {
+    groupName?: string;
+}
+
+export declare function genSharedDataClass(decl: ClassDeclaration, options: SharedDataClassGenerateOptions): ICppSharedDataClassGenerateResult;
 export declare function genSharedData(decls: ClassDeclaration[], options: SharedDataClassGenerateOptions): SharedDataClassGenerateResult;
 
 
