@@ -42,6 +42,16 @@ export function initModuleAlias() {
   ) {
     const dom2Config = path.resolve(process.env.UNI_INPUT_DIR, '.dom2')
     if (fs.existsSync(dom2Config)) {
+      try {
+        const config = JSON.parse(fs.readFileSync(dom2Config, 'utf-8'))
+        if (config.cppDir) {
+          process.env.UNI_APP_HARMONY_DOM2_CPP_DIR = path.isAbsolute(
+            config.cppDir
+          )
+            ? config.cppDir
+            : path.resolve(process.env.UNI_INPUT_DIR, config.cppDir)
+        }
+      } catch (e) {}
       process.env.UNI_APP_X_DOM2 = 'true'
     }
   }
