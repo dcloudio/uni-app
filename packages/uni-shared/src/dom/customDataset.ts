@@ -22,7 +22,10 @@ export const initCustomDatasetOnce = /*#__PURE__*/ once(
           ((this as HTMLElementWithDataset).__uniDataset = {})
         dataset[formatKey(key)] = value
       }
-      setAttribute.call(this, key, value)
+      // github issues5773 过滤 web 端 query key为纯数字的情况
+      if (!/\d+/.test(key)) {
+        setAttribute.call(this, key, value)
+      }
     }
     const removeAttribute = prototype.removeAttribute
     prototype.removeAttribute = function (key) {
