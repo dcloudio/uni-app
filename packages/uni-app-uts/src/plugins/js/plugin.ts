@@ -162,7 +162,7 @@ export function createUniAppJsEnginePlugin(
         // 理论上非 vapor 也应该禁用，但为了不引发其他问题，暂时只禁用 vapor 模式
         if (
           process.env.UNI_VUE_VAPOR === 'true' ||
-          process.env.UNI_VUE_DOM2 === 'true'
+          process.env.UNI_APP_X_DOM2 === 'true'
         ) {
           const plugin = config.plugins.find((p) => p.name === 'vite:vue')
           if (plugin?.api?.options) {

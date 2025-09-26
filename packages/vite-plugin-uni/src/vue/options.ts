@@ -213,7 +213,7 @@ export function initPluginVueOptions(
       ...getBaseNodeTransforms(
         options.base,
         process.env.UNI_VUE_VAPOR === 'true' ||
-          process.env.UNI_VUE_DOM2 === 'true'
+          process.env.UNI_APP_X_DOM2 === 'true'
           ? createResolveStaticAsset(options.inputDir)
           : undefined
       )
@@ -299,7 +299,7 @@ export function initPluginVueOptions(
     if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
       vueOptions.script.babelParserPlugins.push('decorators')
     }
-    if (process.env.UNI_VUE_DOM2 === 'true') {
+    if (process.env.UNI_APP_X_DOM2 === 'true') {
       ;(vueOptions.script as any).extraOptions = (
         descriptor: SFCDescriptor
       ) => {

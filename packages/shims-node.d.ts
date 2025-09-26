@@ -79,6 +79,7 @@ declare namespace NodeJS {
     UNI_APP_PLATFORM?: 'android' | 'ios' | 'harmony' // 运行时，可能传入了 UNI_APP_PLATFORM = 'android'|'ios'|'harmony'
     UNI_APP_PRODUCTION_TYPE?: 'WGT' // 发行类型
     UNI_APP_X_CACHE_DIR: string // 当前运行/发行平台的缓存目录，如：unpackage/cache/.app-android
+    UNI_APP_X_DOM2?: 'true' // 是否 dom2 模式
     UNI_CLI_LAUNCH_PAGE_PATH?: string // 开发阶段，传入指定入口页面
     UNI_CLI_LAUNCH_PAGE_QUERY?: string // 开发阶段，传入指定入口页面参数
     UNI_SCRIPT?: string // 指定自定义平台，package.json->uni-app->scripts

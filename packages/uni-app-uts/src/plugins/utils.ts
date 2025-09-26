@@ -34,7 +34,7 @@ export function createUniOptions(
 ): UniVitePlugin['uni'] {
   return {
     compiler:
-      process.env.UNI_VUE_DOM2 === 'true'
+      process.env.UNI_APP_X_DOM2 === 'true'
         ? require('@dcloudio/compiler-vapor-dom2')
         : undefined,
     copyOptions() {
