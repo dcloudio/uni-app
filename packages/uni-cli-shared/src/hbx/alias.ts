@@ -49,7 +49,7 @@ export function initModuleAlias() {
             config.cppDir
           )
             ? config.cppDir
-            : path.resolve(process.env.UNI_INPUT_DIR, config.cppDir)
+            : path.resolve(process.env.UNI_OUTPUT_DIR, config.cppDir)
         }
       } catch (e) {}
       process.env.UNI_APP_X_DOM2 = 'true'
