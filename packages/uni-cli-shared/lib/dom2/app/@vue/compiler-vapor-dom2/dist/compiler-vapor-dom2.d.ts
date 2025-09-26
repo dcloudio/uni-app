@@ -79,15 +79,22 @@ export interface SharedDataClassGenerateOptions {
     renderElementCode: string;
     renderNativeViewCode: string;
 }
-interface SharedDataGenerateFile {
+interface SharedDataGenerateSingleFile {
     name: string;
     code: string;
+    class: string;
+}
+interface SharedDataClassGenerateSingleResult {
+    files: SharedDataGenerateSingleFile[];
+}
+interface SharedDataGenerateFile extends Omit<SharedDataGenerateSingleFile, 'class'> {
+    classes: string[];
 }
 interface SharedDataClassGenerateResult {
     files: SharedDataGenerateFile[];
 }
 
-interface ICppSharedDataClassGenerateResult extends SharedDataClassGenerateResult {
+interface ICppSharedDataClassGenerateResult extends SharedDataClassGenerateSingleResult {
     groupName?: string;
 }
 

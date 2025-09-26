@@ -23,8 +23,8 @@ ${"  ".repeat(o)}`,0];else if(c===X){o++;continue}else if(c===Z){o--;continue}el
 ${rt(`inline ${e.renderElementCode}`,1)}
 ${rt(`inline ${e.renderNativeViewCode}`,1)}
 ${rt(L,1)}
-}`),{files:[{code:M,name:`${a}.h`},{code:L,name:`${a}.cpp`}],groupName:l||o?a:void 0}}function Zt(t,e){return e.targetLanguage==="cpp"?Zs(t,e):{files:[]}}function Qs(t,e){const n=t.map(i=>Zt(i,e)),r={name:".cpp",code:""},s={name:".h",code:""};let a="";return n.forEach(i=>{i.groupName&&(a=i.groupName),i.files.forEach(o=>{o.name.endsWith(".h")?s.code+=(s.code?`
+}`),{files:[{code:M,name:`${a}.h`,class:a},{code:L,name:`${a}.cpp`,class:a}],groupName:l||o?a:void 0}}function Zt(t,e){return e.targetLanguage==="cpp"?Zs(t,e):{files:[]}}function Qs(t,e){const n=t.map(i=>Zt(i,e)),r={name:".cpp",code:"",classes:[]},s={name:".h",code:"",classes:[]};let a="";return n.forEach(i=>{i.groupName&&(a=i.groupName),i.files.forEach(o=>{o.name.endsWith(".h")?(s.code+=(s.code?`
 
-`:"")+o.code:o.name.endsWith(".cpp")&&(r.code+=(r.code?`
+`:"")+o.code,s.classes.push(o.class)):o.name.endsWith(".cpp")&&(r.code+=(r.code?`
 
-`:"")+o.code)})}),a&&(s.name=`${a}.h`,r.name=`${a}.cpp`),{files:[r,s]}}exports.parse=$.parse,exports.COMPONENT_TYPE=hr,exports.RENDERER_TYPE=dr,exports.TARGET_LANGUAGE=pr,exports.TARGET_PLATFORM=fr,exports.compile=Ks,exports.genSharedData=Qs,exports.genSharedDataClass=Zt;
+`:"")+o.code,r.classes.push(o.class))})}),a&&(s.name=`${a}.h`,r.name=`${a}.cpp`),{files:[r,s]}}exports.parse=$.parse,exports.COMPONENT_TYPE=hr,exports.RENDERER_TYPE=dr,exports.TARGET_LANGUAGE=pr,exports.TARGET_PLATFORM=fr,exports.compile=Ks,exports.genSharedData=Qs,exports.genSharedDataClass=Zt;
