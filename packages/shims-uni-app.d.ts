@@ -276,11 +276,14 @@ declare namespace UniNamespace {
   }
   interface PagesJsonSubpackagesOptions {
     root: string
+    name?: string
     pages: PagesJsonPageOptions[]
     plugins?: Record<
       string,
       { version: string; provider: string; export?: string; lazy?: boolean }
     >
+    entry?: string
+    common?: boolean // mp-harmony
   }
 
   interface PagesJsonWindowOptions extends PagesJsonPageOptions {
