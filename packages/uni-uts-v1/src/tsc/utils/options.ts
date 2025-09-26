@@ -31,16 +31,43 @@ function createTsConfigPaths(
       ]
     })
   }
-  return {
-    '@dcloudio/uni-app': [
-      path.resolve(__dirname, '../../../lib/tsconfig/types/dcloudio__uni-app'),
-    ],
-    '@vue/runtime-core': [
-      path.resolve(cliVitePath, 'node_modules/@vue/runtime-core'),
-    ],
-    vue: [path.resolve(cliVitePath, 'node_modules/@vue/runtime-core')],
-    vuex: [path.resolve(cliVitePath, 'node_modules/vuex')],
-    ...virtualPaths,
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    const uniXTypesDir = path.resolve(__dirname, '../../../lib/uts/types/uni-x')
+    return {
+      '@dcloudio/uni-app': [
+        path.resolve(
+          __dirname,
+          '../../../lib/tsconfig/types/dcloudio__uni-app'
+        ),
+      ],
+      '@vue/runtime-core': [
+        path.resolve(uniXTypesDir, '@vue/runtime-core/dist/runtime-core.d.ts'),
+      ],
+      '@vue/runtime-vapor-dom2': [
+        path.resolve(
+          uniXTypesDir,
+          '@vue/runtime-vapor-dom2/dist/runtime-vapor-dom2.d.ts'
+        ),
+      ],
+      vue: [path.resolve(uniXTypesDir, '@vue/vue/dist/vue.d.ts')],
+      vuex: [path.resolve(cliVitePath, 'node_modules/vuex')],
+      ...virtualPaths,
+    }
+  } else {
+    return {
+      '@dcloudio/uni-app': [
+        path.resolve(
+          __dirname,
+          '../../../lib/tsconfig/types/dcloudio__uni-app'
+        ),
+      ],
+      '@vue/runtime-core': [
+        path.resolve(cliVitePath, 'node_modules/@vue/runtime-core'),
+      ],
+      vue: [path.resolve(cliVitePath, 'node_modules/@vue/runtime-core')],
+      vuex: [path.resolve(cliVitePath, 'node_modules/vuex')],
+      ...virtualPaths,
+    }
   }
 }
 
