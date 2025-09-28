@@ -9,7 +9,7 @@ describe('compiler: codegen', () => {
       `import { o as _o, f as _f } from "vue"
 
 export function render(_ctx, _cache) {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }), b: _o(_ctx.onClick) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }), b: _o(_ctx.onClick, "f9") }
 }`,
       { inline: false, mode: 'module', prefixIdentifiers: false }
     )
@@ -22,7 +22,7 @@ export function render(_ctx, _cache) {
       `import { o as _o, f as _f } from "vue"
 
 export function render(_ctx, _cache) {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }), b: _o(_ctx.onClick) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }), b: _o(_ctx.onClick, "71") }
 }`,
       { inline: false, mode: 'module' }
     )
@@ -38,7 +38,7 @@ return function render(_ctx, _cache) {
   with (_ctx) {
     const { o: _o, f: _f } = _Vue
 
-    return { a: _f(items, (item, k0, i0) => { return {}; }), b: _o(onClick) }
+    return { a: _f(items, (item, k0, i0) => { return {}; }), b: _o(onClick, "2e") }
   }
 }`,
       { inline: false, mode: 'function', prefixIdentifiers: false }
@@ -51,7 +51,7 @@ return function render(_ctx, _cache) {
       `const { o: _o, f: _f } = Vue
 
 return function render(_ctx, _cache) {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }), b: _o(_ctx.onClick) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return {}; }), b: _o(_ctx.onClick, "71") }
 }`,
       { inline: false, mode: 'function' }
     )

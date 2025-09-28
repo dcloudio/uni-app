@@ -22,14 +22,14 @@ describe('compiler: transform v-on', () => {
       `<view v-on:click="onClick"/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "0c") }
 }`
     )
     assert(
       `<custom v-on:click="onClick"/>`,
       `<custom bindclick="{{a}}" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "ca") }
 }`
     )
   })
@@ -47,7 +47,7 @@ describe('compiler: transform v-on', () => {
       `<view @click="i++"/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.i++) }
+  return { a: _o($event => _ctx.i++, "d2") }
 }`
     )
   })
@@ -56,7 +56,7 @@ describe('compiler: transform v-on', () => {
       `<view @click="foo();bar()"/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => { _ctx.foo(); _ctx.bar(); }) }
+  return { a: _o($event => { _ctx.foo(); _ctx.bar(); }, "a9") }
 }`
     )
   })
@@ -68,7 +68,7 @@ describe('compiler: transform v-on', () => {
   with (_ctx) {
     const { o: _o } = _Vue
 
-    return { a: _o($event => { foo(); bar(); }) }
+    return { a: _o($event => { foo(); bar(); }, "c7") }
   }
 }`,
       { prefixIdentifiers: false, mode: 'function' }
@@ -79,7 +79,7 @@ describe('compiler: transform v-on', () => {
       `<view @click="foo($event)"/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.foo($event)) }
+  return { a: _o($event => _ctx.foo($event), "e4") }
 }`
     )
   })
@@ -88,7 +88,7 @@ describe('compiler: transform v-on', () => {
       `<view @click="foo($event);bar()"/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => { _ctx.foo($event); _ctx.bar(); }) }
+  return { a: _o($event => { _ctx.foo($event); _ctx.bar(); }, "ff") }
 }`
     )
   })
@@ -97,7 +97,7 @@ describe('compiler: transform v-on', () => {
       `<view @click="$event => foo($event)"/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.foo($event)) }
+  return { a: _o($event => _ctx.foo($event), "7c") }
 }`
     )
   })
@@ -110,7 +110,7 @@ describe('compiler: transform v-on', () => {
 "/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => { _ctx.foo($event); }) }
+  return { a: _o($event => { _ctx.foo($event); }, "5c") }
 }`
     )
   })
@@ -123,7 +123,7 @@ describe('compiler: transform v-on', () => {
 "/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(function ($event) { _ctx.foo($event); }) }
+  return { a: _o(function ($event) { _ctx.foo($event); }, "d2") }
 }`
     )
   })
@@ -135,7 +135,7 @@ describe('compiler: transform v-on', () => {
   with (_ctx) {
     const { o: _o } = _Vue
 
-    return { a: _o(a['b' + c]) }
+    return { a: _o(a['b' + c], "c2") }
   }
 }`,
       {
@@ -149,7 +149,7 @@ describe('compiler: transform v-on', () => {
       `<view @click="a['b' + c]"/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.a['b' + _ctx.c]) }
+  return { a: _o(_ctx.a['b' + _ctx.c], "08") }
 }`
     )
   })
@@ -158,7 +158,7 @@ describe('compiler: transform v-on', () => {
       `<view @click="e => foo(e)"/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(e => _ctx.foo(e)) }
+  return { a: _o(e => _ctx.foo(e), "6a") }
 }`
     )
   })
@@ -190,7 +190,7 @@ describe('compiler: transform v-on', () => {
       `<view v-on:foo-bar="onMount"/>`,
       `<view bind:foo-bar="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onMount) }
+  return { a: _o(_ctx.onMount, "bc") }
 }`
     )
   })
@@ -200,7 +200,7 @@ describe('compiler: transform v-on', () => {
       `<view v-on:vnode-mounted="onMount"/>`,
       `<view bind:vnode-mounted="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onMount) }
+  return { a: _o(_ctx.onMount, "fb") }
 }`
     )
   })
@@ -211,7 +211,7 @@ describe('compiler: transform v-on', () => {
         `<view v-on:click.prevent />`,
         `<view catchtap="{{a}}"/>`,
         `(_ctx, _cache) => {
-  return { a: _o(() => {}) }
+  return { a: _o(() => {}, "2a") }
 }`
       )
     })

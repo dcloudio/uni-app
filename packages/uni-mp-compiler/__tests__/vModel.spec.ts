@@ -7,7 +7,7 @@ describe('compiler: transform v-model', () => {
       `<Comp v-model="model" />`,
       `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.model = $event), b: _p({ modelValue: _ctx.model }) }
+  return { a: _o($event => _ctx.model = $event, "21"), b: _p({ modelValue: _ctx.model }) }
 }`
     )
   })
@@ -16,7 +16,7 @@ describe('compiler: transform v-model', () => {
       `<Comp v-model="model" />`,
       `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o($event => _ctx.model = $event), b: _p({ modelValue: _ctx.model }) }
+  return { a: _o($event => _ctx.model = $event, "21"), b: _p({ modelValue: _ctx.model }) }
 }`,
       {
         cacheHandlers: true,
@@ -28,7 +28,7 @@ describe('compiler: transform v-model', () => {
       `<Comp v-model.number="model" />`,
       `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_m($event => _ctx.model = $event, { number: true }, true)), b: _p({ modelValue: _ctx.model }) }
+  return { a: _o(_m($event => _ctx.model = $event, { number: true }, true), "94"), b: _p({ modelValue: _ctx.model }) }
 }`,
       {
         cacheHandlers: true,
@@ -40,7 +40,7 @@ describe('compiler: transform v-model', () => {
       `<Comp v-model.trim="model" />`,
       `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_m($event => _ctx.model = $event, { trim: true }, true)), b: _p({ modelValue: _ctx.model }) }
+  return { a: _o(_m($event => _ctx.model = $event, { trim: true }, true), "d0"), b: _p({ modelValue: _ctx.model }) }
 }`,
       {
         cacheHandlers: true,
@@ -52,7 +52,7 @@ describe('compiler: transform v-model', () => {
       `<Comp v-model.trim.number="model" />`,
       `<comp u-i="2a9ec0b0-0" bindupdateModelValue="{{a}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_m($event => _ctx.model = $event, { trim: true, number: true }, true)), b: _p({ modelValue: _ctx.model }) }
+  return { a: _o(_m($event => _ctx.model = $event, { trim: true, number: true }, true), "91"), b: _p({ modelValue: _ctx.model }) }
 }`
     )
   })
@@ -61,14 +61,14 @@ describe('compiler: transform v-model', () => {
       `<input v-model="model" />`,
       `<input value="{{a}}" bindinput="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _o($event => _ctx.model = $event.detail.value) }
+  return { a: _ctx.model, b: _o($event => _ctx.model = $event.detail.value, "64") }
 }`
     )
     assert(
       `<textarea v-model="model" />`,
       `<textarea value="{{a}}" bindinput="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _o($event => _ctx.model = $event.detail.value) }
+  return { a: _ctx.model, b: _o($event => _ctx.model = $event.detail.value, "16") }
 }`
     )
   })
@@ -77,7 +77,7 @@ describe('compiler: transform v-model', () => {
       `<input @input="input" v-model="model" />`,
       `<input bindinput="{{a}}" value="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o([$event => _ctx.model = $event.detail.value, _ctx.input]), b: _ctx.model }
+  return { a: _o([$event => _ctx.model = $event.detail.value, _ctx.input], "e3"), b: _ctx.model }
 }`
     )
   })
@@ -86,7 +86,7 @@ describe('compiler: transform v-model', () => {
       `<input v-model.number="model" />`,
       `<input value="{{a}}" bindinput="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _o(_m($event => _ctx.model = $event.detail.value, { number: true })) }
+  return { a: _ctx.model, b: _o(_m($event => _ctx.model = $event.detail.value, { number: true }), "16") }
 }`
     )
   })
@@ -95,7 +95,7 @@ describe('compiler: transform v-model', () => {
       `<input v-model.trim.number="model" />`,
       `<input value="{{a}}" bindinput="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.model, b: _o(_m($event => _ctx.model = $event.detail.value, { trim: true, number: true })) }
+  return { a: _ctx.model, b: _o(_m($event => _ctx.model = $event.detail.value, { trim: true, number: true }), "14") }
 }`
     )
   })
@@ -104,7 +104,7 @@ describe('compiler: transform v-model', () => {
       `<input @input="input" v-model.number="model" />`,
       `<input bindinput="{{a}}" value="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o([_m($event => _ctx.model = $event.detail.value, { number: true }), _ctx.input]), b: _ctx.model }
+  return { a: _o([_m($event => _ctx.model = $event.detail.value, { number: true }), _ctx.input], "d3"), b: _ctx.model }
 }`
     )
   })
