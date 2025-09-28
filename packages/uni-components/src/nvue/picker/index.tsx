@@ -223,14 +223,14 @@ export default /*#__PURE__*/ defineComponent({
     const _showNativePicker = (data: ShowPickerData) => {
       plus.nativeUI[props.mode === mode.TIME ? 'pickTime' : 'pickDate'](
         (res) => {
-          const date = res.date
+          const date = res.date as Date
           trigger('change', {
             value:
               props.mode === mode.TIME
                 ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}`
                 : `${date.getFullYear()}-${padLeft(
                     date.getMonth() + 1
-                  )}-${padLeft(date.getDate())}`,
+                  )}-${padLeft(date.getUTCDate())}`,
           })
         },
         () => {

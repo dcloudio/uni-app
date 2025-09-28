@@ -250,14 +250,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const _showNativePicker = (data: ShowPickerData, popover: any) => {
       plus.nativeUI[props.mode === mode.TIME ? 'pickTime' : 'pickDate'](
         (res) => {
-          const date = res.date
+          const date = res.date as Date
           trigger('change', {} as Event, {
             value:
               props.mode === mode.TIME
                 ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}`
                 : `${date.getFullYear()}-${padLeft(
                     date.getMonth() + 1
-                  )}-${padLeft(date.getDate())}`,
+                  )}-${padLeft(date.getUTCDate())}`,
           })
         },
         () => {
