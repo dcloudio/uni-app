@@ -10,6 +10,7 @@ export interface NormalizeOptions {
   logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
   type?: 'nvue' | 'uvue'
   platform?: typeof process.env.UNI_UTS_PLATFORM
+  dom2?: boolean
 }
 
 export type Normalize = (

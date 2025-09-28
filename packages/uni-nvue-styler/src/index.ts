@@ -4,3 +4,9 @@ export { objectifier } from './objectifier'
 export { parse } from './parse'
 export { parseInlineStyleSync } from './parseSync'
 export { checkColor } from './utils'
+export { parseDom2StaticStyle } from './dom2'
+export {
+  DOM2_APP_PLATFORM,
+  DOM2_APP_TARGET,
+  Dom2StaticStylePropertyValue,
+} from './dom2/types'

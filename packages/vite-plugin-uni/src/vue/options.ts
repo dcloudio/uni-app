@@ -25,7 +25,13 @@ import {
   setSharedDataNativeViewCode,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
-import { parseInlineStyleSync } from '@dcloudio/uni-nvue-styler'
+import {
+  type DOM2_APP_PLATFORM,
+  type DOM2_APP_TARGET,
+  type Dom2StaticStylePropertyValue,
+  parseDom2StaticStyle,
+  parseInlineStyleSync,
+} from '@dcloudio/uni-nvue-styler'
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
 
@@ -329,10 +335,14 @@ export function initPluginVueOptions(
             setSharedDataNativeViewCode(filename, result.code)
           },
           parseStaticStyle(
-            type: 'element' | 'nativeView',
+            platform: DOM2_APP_PLATFORM,
+            target: DOM2_APP_TARGET,
             style: string
-          ): Record<string, unknown> {
-            return {}
+          ): Record<string, Dom2StaticStylePropertyValue> {
+            return parseDom2StaticStyle(style, {
+              platform,
+              target,
+            })
           },
         }
       }

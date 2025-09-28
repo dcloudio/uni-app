@@ -3,7 +3,7 @@
     "outDir": "dist",
     "sourceMap": false,
     "declaration": true,
-    "declarationDir": "./dist/packages/uni-nvue-styler/src",
+    "declarationDir": "./dist/packages/uni-nvue-styler",
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",

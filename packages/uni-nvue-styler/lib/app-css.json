@@ -1,0 +1,819 @@
+{
+  "align-content": {
+    "type": "UniCSSFlexAlignType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleAlignContent"
+        }
+      }
+    }
+  },
+  "align-items": {
+    "type": "UniCSSFlexAlignType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleAlignItems"
+        }
+      }
+    }
+  },
+  "align-self": {
+    "type": "UniCSSFlexAlignType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleAlignSelf"
+        }
+      }
+    }
+  },
+  "flex-basis": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleFlexBasis"
+        }
+      }
+    }
+  },
+  "flex-direction": {
+    "type": "UniCSSFlexDirectionType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleFlexDirection"
+        }
+      }
+    }
+  },
+  "flex-grow": {
+    "type": "UniCSSNumberType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleFlexGrow"
+        }
+      }
+    }
+  },
+  "flex-shrink": {
+    "type": "UniCSSNumberType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleFlexShrink"
+        }
+      }
+    }
+  },
+  "flex-wrap": {
+    "type": "UniCSSFlexWrapType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleFlexWrap"
+        }
+      }
+    }
+  },
+  "justify-content": {
+    "type": "UniCSSFlexAlignType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleJustifyContent"
+        }
+      }
+    }
+  },
+  "bottom": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBottom"
+        }
+      }
+    }
+  },
+  "display": {
+    "type": "UniCSSDisplayType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleDisplay"
+        },
+        "nv-c": {
+          "setter": "display"
+        }
+      },
+      "app-android": {
+        "dom-c": {
+          "setter": "setStyleDisplay"
+        },
+        "nv-kt": {
+          "setter": "display"
+        }
+      }
+    }
+  },
+  "height": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleHeight"
+        }
+      }
+    }
+  },
+  "left": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleLeft"
+        }
+      }
+    }
+  },
+  "max-height": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleMaxHeight"
+        }
+      }
+    }
+  },
+  "max-width": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleMaxWidth"
+        }
+      }
+    }
+  },
+  "min-height": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleMinHeight"
+        }
+      }
+    }
+  },
+  "min-width": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleMinWidth"
+        }
+      }
+    }
+  },
+  "position": {
+    "type": "UniCSSPositionType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStylePosition"
+        },
+        "nv-c": {
+          "setter": "position"
+        }
+      },
+      "app-android": {
+        "dom-c": {
+          "setter": "setStylePosition"
+        },
+        "nv-kt": {
+          "setter": "position"
+        }
+      }
+    }
+  },
+  "right": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleRight"
+        }
+      }
+    }
+  },
+  "top": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleTop"
+        }
+      }
+    }
+  },
+  "width": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleWidth"
+        }
+      }
+    }
+  },
+  "visibility": {
+    "type": "UniCSSVisibilityType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleVisibility"
+        },
+        "nv-c": {
+          "setter": "visibility"
+        }
+      },
+      "app-android": {
+        "dom-c": {
+          "setter": "setStyleVisibility"
+        },
+        "nv-kt": {
+          "setter": "visibility"
+        }
+      }
+    }
+  },
+  "background-clip": {
+    "type": "UniCSSBackgroundClipType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "backgroundClip"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "backgroundClip"
+        }
+      }
+    }
+  },
+  "background-color": {
+    "type": "UniCSSColorType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "backgroundColor"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "backgroundColor"
+        }
+      }
+    }
+  },
+  "background-image": {
+    "type": "UniCSSImageType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "backgroundImage"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "backgroundImage"
+        }
+      }
+    }
+  },
+  "border-bottom-color": {
+    "type": "UniCSSColorType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderColorBottom"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "borderColorBottom"
+        }
+      }
+    }
+  },
+  "border-left-color": {
+    "type": "UniCSSColorType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderColorLeft"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "borderColorBottom"
+        }
+      }
+    }
+  },
+  "border-right-color": {
+    "type": "UniCSSColorType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderColorRight"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "borderColorBottom"
+        }
+      }
+    }
+  },
+  "border-top-color": {
+    "type": "UniCSSColorType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderColorTop"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "borderColorBottom"
+        }
+      }
+    }
+  },
+  "border-bottom-style": {
+    "type": "UniCSSBorderStyleType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBorderBottomStyle"
+        },
+        "nv-c": {
+          "setter": "borderStyleBottom"
+        }
+      },
+      "app-android": {
+        "dom-c": {
+          "setter": "setStyleBorderBottomStyle"
+        },
+        "nv-kt": {
+          "setter": "borderStyleBottom"
+        }
+      }
+    }
+  },
+  "border-left-style": {
+    "type": "UniCSSBorderStyleType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBorderLeftStyle"
+        },
+        "nv-c": {
+          "setter": "borderStyleLeft"
+        }
+      },
+      "app-android": {
+        "dom-c": {
+          "setter": "setStyleBorderBottomStyle"
+        },
+        "nv-kt": {
+          "setter": "borderStyleLeft"
+        }
+      }
+    }
+  },
+  "border-right-style": {
+    "type": "UniCSSBorderStyleType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBorderRightStyle"
+        },
+        "nv-c": {
+          "setter": "borderStyleRight"
+        }
+      },
+      "app-android": {
+        "dom-c": {
+          "setter": "setStyleBorderBottomStyle"
+        },
+        "nv-kt": {
+          "setter": "borderStyleRight"
+        }
+      }
+    }
+  },
+  "border-top-style": {
+    "type": "UniCSSBorderStyleType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBorderTopStyle"
+        },
+        "nv-c": {
+          "setter": "borderStyleTop"
+        }
+      },
+      "app-android": {
+        "dom-c": {
+          "setter": "setStyleBorderBottomStyle"
+        },
+        "nv-kt": {
+          "setter": "borderStyleTop"
+        }
+      }
+    }
+  },
+  "border-bottom-width": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBorderBottomWidth"
+        }
+      }
+    }
+  },
+  "border-left-width": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBorderLeftWidth"
+        }
+      }
+    }
+  },
+  "border-right-width": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBorderRightWidth"
+        }
+      }
+    }
+  },
+  "border-top-width": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBorderTopWidth"
+        }
+      }
+    }
+  },
+  "border-bottom-left-radius": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderRadiusBottomLeft"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "borderRadiusBottomLeft"
+        }
+      }
+    }
+  },
+  "border-bottom-right-radius": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderRadiusBottomRight"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "borderRadiusBottomRight"
+        }
+      }
+    }
+  },
+  "border-top-left-radius": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderRadiusTopLeft"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "borderRadiusTopLeft"
+        }
+      }
+    }
+  },
+  "border-top-right-radius": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderRadiusTopRight"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "borderRadiusTopRight"
+        }
+      }
+    }
+  },
+  "box-shadow": {
+    "type": "UniCSSBoxShadowType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "boxShadow"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "boxShadow"
+        }
+      }
+    }
+  },
+  "box-sizing": {
+    "type": "UniCSSBoxSizingType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBoxSizing"
+        }
+      }
+    }
+  },
+  "margin-bottom": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleMarginBottom"
+        }
+      }
+    }
+  },
+  "margin-left": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleMarginLeft"
+        }
+      }
+    }
+  },
+  "margin-right": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleMarginRight"
+        }
+      }
+    }
+  },
+  "margin-top": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleMarginTop"
+        }
+      }
+    }
+  },
+  "padding-bottom": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStylePaddingBottom"
+        }
+      }
+    }
+  },
+  "padding-left": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStylePaddingLeft"
+        }
+      }
+    }
+  },
+  "padding-right": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStylePaddingRight"
+        }
+      }
+    }
+  },
+  "padding-top": {
+    "type": "UniCSSUnitType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStylePaddingTop"
+        }
+      }
+    }
+  },
+  "opacity": {
+    "type": "UniCSSNumberType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "opacity"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "opacity"
+        }
+      }
+    }
+  },
+  "overflow": {
+    "type": "UniCSSOverflowType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "overflow"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "overflow"
+        }
+      }
+    }
+  },
+  "pointer-events": {
+    "type": "UniCSSPointerEventsType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "pointerEvents"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "pointerEvents"
+        }
+      }
+    }
+  },
+  "z-index": {
+    "type": "UniCSSNumberType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "zIndex"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "zIndex"
+        }
+      }
+    }
+  },
+  "transform": {
+    "type": "UniCSSTransformType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "transform"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "transform"
+        }
+      }
+    }
+  },
+  "transform-origin": {
+    "type": "UniCSSTransformOriginType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "transformOrigin"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "transformOrigin"
+        }
+      }
+    }
+  },
+  "transition-delay": {
+    "type": "UniCSSTimeType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "transitionDelay"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "transitionDelay"
+        }
+      }
+    }
+  },
+  "transition-duration": {
+    "type": "UniCSSTimeType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "transitionDuration"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "transitionDuration"
+        }
+      }
+    }
+  },
+  "transition-property": {
+    "type": "UniCSSTransitionPropertyType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "transitionProperty"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "transitionProperty"
+        }
+      }
+    }
+  },
+  "transition-timing-function": {
+    "type": "UniCSSTimingFunctionType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "transitionTimingFunction"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "transitionTimingFunction"
+        }
+      }
+    }
+  },
+  "--*": {
+    "description": "css变量",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleVariable"
+        }
+      }
+    }
+  },
+  "border-style": {
+    "type": "UniCSSBorderStyleType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBorderStyle"
+        }
+      }
+    }
+  }
+}

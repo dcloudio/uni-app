@@ -210,7 +210,7 @@ const restrictionMap: Partial<Record<Restriction, Normalize>> = {
 // @font-face下不支持的属性
 const invalidFontFaceProperties = ['fontWeight', 'fontStyle', 'fontVariant']
 
-function getUVueNormalizeMap() {
+function getUVueNormalizeMap(options: NormalizeOptions) {
   const result: Record<string, Normalize> = {
     src: normalizeSrc,
   }
@@ -234,7 +234,7 @@ function getUVueNormalizeMap() {
     if (uvueNormalizeMap[prop]) {
       normalize = uvueNormalizeMap[prop]
     } else {
-      const normalizes = getNormalizes(property)
+      const normalizes = getNormalizes(property, options)
       if (normalizes.length > 1) {
         normalize = createCombinedNormalize(normalizes)
       } else if (normalizes.length === 1) {
@@ -261,7 +261,7 @@ function getUVueNormalizeMap() {
 }
 
 // 读取 css.json 的 restrictions
-function getNormalizes(property: Property) {
+function getNormalizes(property: Property, options: NormalizeOptions) {
   const normalizes: Normalize[] = []
   const { restrictions } = property
   restrictions.forEach((restriction) => {
@@ -270,7 +270,9 @@ function getNormalizes(property: Property) {
       if (restriction === Restriction.LENGTH) {
         // 如果同时有number和length，例如line-height: 1.5, line-height: 16px，则不能移除px
         normalize = normalizeLengthWithOptions({
-          removePx: !restrictions.includes(Restriction.NUMBER),
+          removePx: options.dom2
+            ? false
+            : !restrictions.includes(Restriction.NUMBER),
           property: property.name,
         })
       }
@@ -292,7 +294,7 @@ export function getNormalizeMap(options: NormalizeOptions) {
   }
   const uvue = options.type === 'uvue'
   if (uvue) {
-    normalizeMap = getUVueNormalizeMap()
+    normalizeMap = getUVueNormalizeMap(options)
   } else {
     normalizeMap = Object.keys(NVUE_PROP_NAME_GROUPS).reduce<
       Record<string, Normalize>

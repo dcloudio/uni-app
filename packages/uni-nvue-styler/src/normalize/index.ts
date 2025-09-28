@@ -81,6 +81,8 @@ function createDeclarationProcessor(options: NormalizeOptions) {
     if (decl.prop.startsWith('--')) {
       return
     } else {
+      // @ts-expect-error
+      decl.__originalProp = decl.prop
       decl.prop = camelize(decl.prop)
     }
     const { value, log } = normalizeDecl(decl, options)

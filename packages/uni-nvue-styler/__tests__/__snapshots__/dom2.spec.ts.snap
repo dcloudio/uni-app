@@ -1,0 +1,351 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dom2 complex scenarios should handle CSS with mixed variable usage and regular values: mixed-variables 1`] = `
+{
+  "--base-size": {
+    "setterCode": "defineStyleVariable("--base-size", "20px")",
+    "valueCode": ""20px"",
+  },
+  "--border-width": {
+    "setterCode": "defineStyleVariable("--border-width", "2px")",
+    "valueCode": ""2px"",
+  },
+  "--color-blue": {
+    "setterCode": "defineStyleVariable("--color-blue", "#0000FF")",
+    "valueCode": ""#0000FF"",
+  },
+  "--color-red": {
+    "setterCode": "defineStyleVariable("--color-red", "#FF0000")",
+    "valueCode": ""#FF0000"",
+  },
+  "background-color": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundColor, "var(--color-red)")",
+    "valueCode": ""var(--color-red)"",
+  },
+  "border-bottom-color": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BorderBottomColor, "var(--color-blue)")",
+    "valueCode": ""var(--color-blue)"",
+  },
+  "border-bottom-width": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BorderBottomWidth, "var(--border-width)")",
+    "valueCode": ""var(--border-width)"",
+  },
+  "border-left-width": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BorderLeftWidth, "var(--border-width)")",
+    "valueCode": ""var(--border-width)"",
+  },
+  "border-right-width": {
+    "setterCode": "setStyleBorderRightWidth(3, UniCSSUnitType.PX)",
+    "valueCode": ""3"",
+  },
+  "border-top-width": {
+    "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+    "valueCode": ""1"",
+  },
+  "height": {
+    "setterCode": "setStyleHeight(30, UniCSSUnitType.PX)",
+    "valueCode": ""30"",
+  },
+  "margin-bottom": {
+    "setterCode": "setStyleMarginBottom(10, UniCSSUnitType.PX)",
+    "valueCode": ""10"",
+  },
+  "margin-top": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.MarginTop, "var(--base-size)")",
+    "valueCode": ""var(--base-size)"",
+  },
+  "max-width": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.MaxWidth, "var(--base-size)")",
+    "valueCode": ""var(--base-size)"",
+  },
+  "min-height": {
+    "setterCode": "setStyleMinHeight(15, UniCSSUnitType.PX)",
+    "valueCode": ""15"",
+  },
+  "padding-left": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.PaddingLeft, "var(--base-size)")",
+    "valueCode": ""var(--base-size)"",
+  },
+  "padding-right": {
+    "setterCode": "setStylePaddingRight(5, UniCSSUnitType.PX)",
+    "valueCode": ""5"",
+  },
+  "transform": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Transform, "translateX(var(--base-size)) translateY(10px)")",
+    "valueCode": ""translateX(var(--base-size)) translateY(10px)"",
+  },
+  "transform-origin": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.TransformOrigin, "center var(--base-size)")",
+    "valueCode": ""center var(--base-size)"",
+  },
+  "transition-duration": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.TransitionDuration, "var(--base-size)")",
+    "valueCode": ""var(--base-size)"",
+  },
+  "width": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Width, "var(--base-size)")",
+    "valueCode": ""var(--base-size)"",
+  },
+}
+`;
+
+exports[`dom2 complex scenarios should handle complex CSS with different platforms and targets: android-dom-kt 1`] = `
+{
+  "--size": {
+    "setterCode": "defineStyleVariable("--size", "24px")",
+    "valueCode": ""24px"",
+  },
+  "--theme-color": {
+    "setterCode": "defineStyleVariable("--theme-color", "#FF6B6B")",
+    "valueCode": ""#FF6B6B"",
+  },
+  "background-color": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundColor, "var(--theme-color)")",
+    "valueCode": ""var(--theme-color)"",
+  },
+  "height": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Height, "var(--size)")",
+    "valueCode": ""var(--size)"",
+  },
+  "width": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Width, "var(--size)")",
+    "valueCode": ""var(--size)"",
+  },
+}
+`;
+
+exports[`dom2 complex scenarios should handle complex CSS with different platforms and targets: harmony-dom-ts 1`] = `
+{
+  "--size": {
+    "setterCode": "defineStyleVariable("--size", "24px")",
+    "valueCode": ""24px"",
+  },
+  "--theme-color": {
+    "setterCode": "defineStyleVariable("--theme-color", "#FF6B6B")",
+    "valueCode": ""#FF6B6B"",
+  },
+  "background-color": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundColor, "var(--theme-color)")",
+    "valueCode": ""var(--theme-color)"",
+  },
+  "height": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Height, "var(--size)")",
+    "valueCode": ""var(--size)"",
+  },
+  "width": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Width, "var(--size)")",
+    "valueCode": ""var(--size)"",
+  },
+}
+`;
+
+exports[`dom2 complex scenarios should handle complex CSS with different platforms and targets: ios-dom-oc 1`] = `
+{
+  "--size": {
+    "setterCode": "defineStyleVariable("--size", "24px")",
+    "valueCode": ""24px"",
+  },
+  "--theme-color": {
+    "setterCode": "defineStyleVariable("--theme-color", "#FF6B6B")",
+    "valueCode": ""#FF6B6B"",
+  },
+  "background-color": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundColor, "var(--theme-color)")",
+    "valueCode": ""var(--theme-color)"",
+  },
+  "height": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Height, "var(--size)")",
+    "valueCode": ""var(--size)"",
+  },
+  "width": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Width, "var(--size)")",
+    "valueCode": ""var(--size)"",
+  },
+}
+`;
+
+exports[`dom2 complex scenarios should handle complex CSS with multiple properties, variables, and platforms 1`] = `
+{
+  "--border-radius": {
+    "setterCode": "defineStyleVariable("--border-radius", "8px")",
+    "valueCode": ""8px"",
+  },
+  "--opacity-value": {
+    "setterCode": "defineStyleVariable("--opacity-value", "0.8")",
+    "valueCode": ""0.8"",
+  },
+  "--primary-color": {
+    "setterCode": "defineStyleVariable("--primary-color", "#007AFF")",
+    "valueCode": ""#007AFF"",
+  },
+  "--secondary-color": {
+    "setterCode": "defineStyleVariable("--secondary-color", "#34C759")",
+    "valueCode": ""#34C759"",
+  },
+  "--spacing": {
+    "setterCode": "defineStyleVariable("--spacing", "16px")",
+    "valueCode": ""16px"",
+  },
+  "align-items": {
+    "setterCode": "setStyleAlignItems(UniCSSFlexAlignType.Center)",
+    "valueCode": "UniCSSFlexAlignType.Center",
+  },
+  "background-color": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundColor, "var(--primary-color)")",
+    "valueCode": ""var(--primary-color)"",
+  },
+  "background-image": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundImage, "linear-gradient(45deg, var(--primary-color), var(--secondary-color))")",
+    "valueCode": ""linear-gradient(45deg, var(--primary-color), var(--secondary-color))"",
+  },
+  "border-bottom-color": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BorderBottomColor, "var(--secondary-color)")",
+    "valueCode": ""var(--secondary-color)"",
+  },
+  "border-bottom-left-radius": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.BorderBottomLeftRadius, "var(--border-radius)")",
+    "valueCode": ""var(--border-radius)"",
+  },
+  "border-bottom-style": {
+    "setterCode": "setStyleBorderBottomStyle(UniCSSBorderStyleType.Solid)",
+    "valueCode": "UniCSSBorderStyleType.Solid",
+  },
+  "border-bottom-width": {
+    "setterCode": "setStyleBorderBottomWidth(2, UniCSSUnitType.PX)",
+    "valueCode": ""2"",
+  },
+  "border-left-style": {
+    "setterCode": "setStyleBorderLeftStyle(UniCSSBorderStyleType.Dashed)",
+    "valueCode": "UniCSSBorderStyleType.Dashed",
+  },
+  "border-left-width": {
+    "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+    "valueCode": ""1"",
+  },
+  "display": {
+    "setterCode": "setStyleDisplay(UniCSSDisplayType.Flex)",
+    "valueCode": "UniCSSDisplayType.Flex",
+  },
+  "flex-direction": {
+    "setterCode": "setStyleFlexDirection(UniCSSFlexDirectionType.Row)",
+    "valueCode": "UniCSSFlexDirectionType.Row",
+  },
+  "flex-grow": {
+    "setterCode": "setStyleFlexGrow(UniCSSNumberType.1)",
+    "valueCode": "UniCSSNumberType.1",
+  },
+  "flex-shrink": {
+    "setterCode": "setStyleFlexShrink(UniCSSNumberType.0)",
+    "valueCode": "UniCSSNumberType.0",
+  },
+  "height": {
+    "setterCode": "setStyleHeight(200, UniCSSUnitType.PX)",
+    "valueCode": ""200"",
+  },
+  "justify-content": {
+    "setterCode": "setStyleJustifyContent(UniCSSFlexAlignType.FlexStart)",
+    "valueCode": "UniCSSFlexAlignType.FlexStart",
+  },
+  "left": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Left, "var(--spacing)")",
+    "valueCode": ""var(--spacing)"",
+  },
+  "margin-bottom": {
+    "setterCode": "setStyleMarginBottom(8, UniCSSUnitType.PX)",
+    "valueCode": ""8"",
+  },
+  "margin-top": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.MarginTop, "var(--spacing)")",
+    "valueCode": ""var(--spacing)"",
+  },
+  "max-width": {
+    "setterCode": "setStyleMaxWidth(100, UniCSSUnitType.PCT)",
+    "valueCode": ""100"",
+  },
+  "min-height": {
+    "setterCode": "setStyleMinHeight(50, UniCSSUnitType.PX)",
+    "valueCode": ""50"",
+  },
+  "opacity": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Opacity, "var(--opacity-value)")",
+    "valueCode": ""var(--opacity-value)"",
+  },
+  "padding-left": {
+    "setterCode": "setStylePaddingLeft(12, UniCSSUnitType.PX)",
+    "valueCode": ""12"",
+  },
+  "padding-right": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.PaddingRight, "var(--spacing)")",
+    "valueCode": ""var(--spacing)"",
+  },
+  "position": {
+    "setterCode": "setStylePosition(UniCSSPositionType.Relative)",
+    "valueCode": "UniCSSPositionType.Relative",
+  },
+  "top": {
+    "setterCode": "setStyleTop(10, UniCSSUnitType.PX)",
+    "valueCode": ""10"",
+  },
+  "width": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Width, "var(--spacing)")",
+    "valueCode": ""var(--spacing)"",
+  },
+}
+`;
+
+exports[`dom2 complex scenarios should handle edge cases with complex CSS: edge-cases 1`] = `
+{
+  "--double-nested": {
+    "setterCode": "defineStyleVariable("--double-nested", "var(--nested-var)")",
+    "valueCode": ""var(--nested-var)"",
+  },
+  "--empty-var": {
+    "setterCode": "defineStyleVariable("--empty-var", "")",
+    "valueCode": """",
+  },
+  "--nested-var": {
+    "setterCode": "defineStyleVariable("--nested-var", "var(--valid-var)")",
+    "valueCode": ""var(--valid-var)"",
+  },
+  "--valid-var": {
+    "setterCode": "defineStyleVariable("--valid-var", "10px")",
+    "valueCode": ""10px"",
+  },
+  "display": {
+    "setterCode": "setStyleDisplay(UniCSSDisplayType.Flex)",
+    "valueCode": "UniCSSDisplayType.Flex",
+  },
+  "height": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Height, "var(--valid-var)")",
+    "valueCode": ""var(--valid-var)"",
+  },
+  "left": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Left, "var(--double-nested)")",
+    "valueCode": ""var(--double-nested)"",
+  },
+  "max-width": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.MaxWidth, "var(--valid-var)")",
+    "valueCode": ""var(--valid-var)"",
+  },
+  "min-height": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.MinHeight, "var(--empty-var)")",
+    "valueCode": ""var(--empty-var)"",
+  },
+  "position": {
+    "setterCode": "setStylePosition(UniCSSPositionType.Absolute)",
+    "valueCode": "UniCSSPositionType.Absolute",
+  },
+  "top": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Top, "var(--nested-var)")",
+    "valueCode": ""var(--nested-var)"",
+  },
+  "transform": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.Transform, "translateX(var(--valid-var)) translateY(var(--nested-var))")",
+    "valueCode": ""translateX(var(--valid-var)) translateY(var(--nested-var))"",
+  },
+  "transition-duration": {
+    "setterCode": "setStyleVariable(UniCSSPropertyID.TransitionDuration, "var(--valid-var)")",
+    "valueCode": ""var(--valid-var)"",
+  },
+}
+`;

@@ -5,9 +5,13 @@ import type { NormalizeOptions } from './utils'
 
 export interface ParseInlineStyleOptions extends NormalizeOptions {}
 
-export function parseInlineStyleSync(
+export interface ParseStaticStyleDeclarations extends NormalizeOptions {
+  dom2?: boolean
+}
+
+export function parseStaticStyleDeclarations(
   input: string,
-  options: ParseInlineStyleOptions = {}
+  options: ParseStaticStyleDeclarations = {}
 ) {
   const styleObj = parseStringStyle(input)
   const declarations: Declaration[] = []
@@ -42,6 +46,14 @@ export function parseInlineStyleSync(
   } else {
     normalizedDeclarations.push(...expandedDeclarations)
   }
+  return normalizedDeclarations
+}
+
+export function parseInlineStyleSync(
+  input: string,
+  options: ParseInlineStyleOptions = {}
+) {
+  const normalizedDeclarations = parseStaticStyleDeclarations(input, options)
   const styleEntries = normalizedDeclarations.map(
     ({ prop, value }) => `[${JSON.stringify(prop)}, ${JSON.stringify(value)}]`
   )
