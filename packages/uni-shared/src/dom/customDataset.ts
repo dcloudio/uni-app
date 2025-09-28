@@ -22,8 +22,8 @@ export const initCustomDatasetOnce = /*#__PURE__*/ once(
           ((this as HTMLElementWithDataset).__uniDataset = {})
         dataset[formatKey(key)] = value
       }
-      // github issues5773 过滤 web 端 query key为纯数字的情况
-      if (!/\d+/.test(key)) {
+      // github issues5773 过滤 web 端 query key为纯数字、数字开头以及包含 !@-. 特殊字符
+      if (!/^\d/.test(key) && !/[!@\-\.]/.test(key)) {
         setAttribute.call(this, key, value)
       }
     }
