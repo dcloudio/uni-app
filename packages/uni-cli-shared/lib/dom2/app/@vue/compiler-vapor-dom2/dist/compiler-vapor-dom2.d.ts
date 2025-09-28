@@ -7,10 +7,24 @@ export declare enum RENDERER_TYPE {
     ELEMENT = "element",
     NATIVE_VIEW = "nativeView"
 }
-export declare enum TARGET_PLATFORM {
+export declare enum DOM2_APP_PLATFORM {
     APP_ANDROID = "app-android",
     APP_HARMONY = "app-harmony",
     APP_IOS = "app-ios"
+}
+declare enum DOM2_APP_TARGET {
+    DOM_C = "dom-c",
+    DOM_KT = "dom-kt",
+    NV_KT = "nv-kt",
+    TXT_KT = "txt-kt",
+    DOM_OC = "dom-oc",
+    NV_C = "nv-c",
+    TXT_C = "txt-c",
+    DOM_TS = "dom-ts"
+}
+interface Dom2StaticStylePropertyValue {
+    valueCode: string;
+    setterCode: string;
 }
 export declare enum TARGET_LANGUAGE {
     TS = "ts",
@@ -26,7 +40,7 @@ export declare enum COMPONENT_TYPE {
 type BaseDom2SharedOptions = {
     componentType: COMPONENT_TYPE;
     className: string;
-    platform: TARGET_PLATFORM;
+    platform: DOM2_APP_PLATFORM;
     /**
      * 是否忽略属性
      * @param name
@@ -38,7 +52,7 @@ type BaseDom2SharedOptions = {
      * 用于解析静态样式，主要在代码生成阶段使用
      * @default null
      */
-    parseStaticStyle?: (type: RENDERER_TYPE, style: string) => Record<string, unknown>;
+    parseStaticStyle?: (platform: DOM2_APP_PLATFORM, target: DOM2_APP_TARGET, style: string) => Record<string, Dom2StaticStylePropertyValue>;
 };
 export interface VaporDom2CompilerOptions extends CompilerOptions, BaseDom2SharedOptions {
     emitElement?: (result: VaporCodegenResult) => void;
@@ -72,7 +86,7 @@ type VaporDom2CodegenResult = BaseCodegenResult & BaseCodegenResult['sharedData'
 export declare function compile(source: string | RootNode, options: VaporDom2CompilerOptions): VaporDom2CodegenResult;
 
 export interface SharedDataClassGenerateOptions {
-    platform: TARGET_PLATFORM;
+    platform: DOM2_APP_PLATFORM;
     targetLanguage: TARGET_LANGUAGE;
     ts: typeof tsType;
     componentType: COMPONENT_TYPE;
