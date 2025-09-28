@@ -115,4 +115,4 @@ interface ICppSharedDataClassGenerateResult extends SharedDataClassGenerateSingl
 export declare function genSharedDataClass(decl: ClassDeclaration, options: SharedDataClassGenerateOptions): ICppSharedDataClassGenerateResult;
 export declare function genSharedData(decls: ClassDeclaration[], options: SharedDataClassGenerateOptions): SharedDataClassGenerateResult;
 
-
+export { DOM2_APP_PLATFORM as TARGET_PLATFORM,  };
