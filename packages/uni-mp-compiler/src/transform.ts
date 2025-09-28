@@ -38,6 +38,7 @@ import {
 } from '@vue/compiler-core'
 import {
   findMiniProgramUsingComponents,
+  isElementNode,
   isSimpleExpressionNode,
 } from '@dcloudio/uni-cli-shared'
 import type {
@@ -177,7 +178,7 @@ export function transform(root: CodegenRootNode, options: TransformOptions) {
 
 function findRootNode(root: RootNode, context: TransformContext) {
   const children = root.children.filter(
-    (node) => node.type === NodeTypes.ELEMENT && node.tag !== 'template'
+    (node) => isElementNode(node) && node.tag !== 'template'
   )
   if (children.length === 1) {
     context.rootNode = children[0]
@@ -547,7 +548,7 @@ export function createStructuralDirectiveTransform(
     : (n: string) => name.test(n)
 
   return (node, context) => {
-    if (node.type === NodeTypes.ELEMENT) {
+    if (isElementNode(node)) {
       const { props } = node
       // structural directive transforms are not concerned with slots
       // as they are handled separately in vSlot.ts
