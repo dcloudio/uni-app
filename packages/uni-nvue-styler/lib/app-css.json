@@ -30,7 +30,7 @@
     }
   },
   "flex-basis": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -90,7 +90,7 @@
     }
   },
   "bottom": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -121,7 +121,7 @@
     }
   },
   "height": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -131,7 +131,7 @@
     }
   },
   "left": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -141,7 +141,7 @@
     }
   },
   "max-height": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -151,7 +151,7 @@
     }
   },
   "max-width": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -161,7 +161,7 @@
     }
   },
   "min-height": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -171,7 +171,7 @@
     }
   },
   "min-width": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -202,7 +202,7 @@
     }
   },
   "right": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -212,7 +212,7 @@
     }
   },
   "top": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -222,7 +222,7 @@
     }
   },
   "width": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -253,7 +253,7 @@
     }
   },
   "background-clip": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBackgroundClip",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -268,7 +268,7 @@
     }
   },
   "background-color": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeColor",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -283,7 +283,7 @@
     }
   },
   "background-image": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBackgroundImage",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -298,7 +298,7 @@
     }
   },
   "border-bottom-color": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBorderColor",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -313,7 +313,7 @@
     }
   },
   "border-left-color": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBorderColor",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -328,7 +328,7 @@
     }
   },
   "border-right-color": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBorderColor",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -343,7 +343,7 @@
     }
   },
   "border-top-color": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBorderColor",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -365,8 +365,7 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-c": {
-          "setter": "borderStyleBottom",
-          "type": "UniNativeBorderStyle"
+          "setter": "borderStyleBottom"
         }
       },
       "app-android": {
@@ -374,8 +373,7 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-kt": {
-          "setter": "borderStyleBottom",
-          "type": "UniNativeBorderStyle"
+          "setter": "borderStyleBottom"
         }
       }
     }
@@ -388,8 +386,7 @@
           "setter": "setStyleBorderLeftStyle"
         },
         "nv-c": {
-          "setter": "borderStyleLeft",
-          "type": "UniNativeBorderStyle"
+          "setter": "borderStyleLeft"
         }
       },
       "app-android": {
@@ -397,8 +394,7 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-kt": {
-          "setter": "borderStyleLeft",
-          "type": "UniNativeBorderStyle"
+          "setter": "borderStyleLeft"
         }
       }
     }
@@ -411,8 +407,7 @@
           "setter": "setStyleBorderRightStyle"
         },
         "nv-c": {
-          "setter": "borderStyleRight",
-          "type": "UniNativeBorderStyle"
+          "setter": "borderStyleRight"
         }
       },
       "app-android": {
@@ -420,8 +415,7 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-kt": {
-          "setter": "borderStyleRight",
-          "type": "UniNativeBorderStyle"
+          "setter": "borderStyleRight"
         }
       }
     }
@@ -434,8 +428,7 @@
           "setter": "setStyleBorderTopStyle"
         },
         "nv-c": {
-          "setter": "borderStyleTop",
-          "type": "UniNativeBorderStyle"
+          "setter": "borderStyleTop"
         }
       },
       "app-android": {
@@ -443,14 +436,13 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-kt": {
-          "setter": "borderStyleTop",
-          "type": "UniNativeBorderStyle"
+          "setter": "borderStyleTop"
         }
       }
     }
   },
   "border-bottom-width": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -460,7 +452,7 @@
     }
   },
   "border-left-width": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -470,7 +462,7 @@
     }
   },
   "border-right-width": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -480,7 +472,7 @@
     }
   },
   "border-top-width": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -490,7 +482,7 @@
     }
   },
   "border-bottom-left-radius": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBorderRadius",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -505,7 +497,7 @@
     }
   },
   "border-bottom-right-radius": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBorderRadius",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -520,7 +512,7 @@
     }
   },
   "border-top-left-radius": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBorderRadius",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -535,7 +527,7 @@
     }
   },
   "border-top-right-radius": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBorderRadius",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -550,7 +542,7 @@
     }
   },
   "box-shadow": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeBoxShadow",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -575,7 +567,7 @@
     }
   },
   "margin-bottom": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -585,7 +577,7 @@
     }
   },
   "margin-left": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -595,7 +587,7 @@
     }
   },
   "margin-right": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -605,7 +597,7 @@
     }
   },
   "margin-top": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -615,7 +607,7 @@
     }
   },
   "padding-bottom": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -625,7 +617,7 @@
     }
   },
   "padding-left": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -635,7 +627,7 @@
     }
   },
   "padding-right": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -645,7 +637,7 @@
     }
   },
   "padding-top": {
-    "type": "UniCSSUnitType",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -670,7 +662,7 @@
     }
   },
   "overflow": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativeOverflowType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -685,7 +677,7 @@
     }
   },
   "pointer-events": {
-    "type": "UniCSSUnitType",
+    "type": "UniNativePointerEventType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -715,7 +707,6 @@
     }
   },
   "transform": {
-    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -730,7 +721,6 @@
     }
   },
   "transform-origin": {
-    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -745,7 +735,6 @@
     }
   },
   "transition-delay": {
-    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -760,7 +749,6 @@
     }
   },
   "transition-duration": {
-    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -775,7 +763,6 @@
     }
   },
   "transition-property": {
-    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -790,7 +777,6 @@
     }
   },
   "transition-timing-function": {
-    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {

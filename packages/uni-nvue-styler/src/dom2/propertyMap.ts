@@ -33,9 +33,9 @@ export function createPropertyProcessors(
     if (platformConfig) {
       const setter = platformConfig.setter
       const propertyConfig = (appCssJson as AppCssJson)[propertyName]
-      // 优先使用setter的type，如果没有则使用根type
-      const propertyType = platformConfig.type || propertyConfig.type
-      if (propertyType === 'UniCSSUnitType') {
+      // 使用根节点的type
+      const propertyType = propertyConfig.type
+      if (propertyType === 'UniCSSUnitValue') {
         processorMap[propertyName] = createSetStyleUnitValueProcessor(setter)
       } else if (propertyType === 'number') {
         // 对于数字类型的属性（如flex-grow、flex-shrink、opacity、z-index），
