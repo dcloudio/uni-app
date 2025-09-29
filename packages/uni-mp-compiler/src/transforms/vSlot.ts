@@ -30,6 +30,7 @@ import {
 import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
   createBindDirectiveNode,
+  isCommentNode,
   isElementNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
@@ -67,8 +68,7 @@ export const transformSlot: NodeTransform = (node, context) => {
     if (
       isElementNode(slotElement) &&
       slotElement.tag === 'template' &&
-      slotElement.children.filter((node) => node.type !== NodeTypes.COMMENT)
-        .length === 0
+      slotElement.children.filter((node) => !isCommentNode(node)).length === 0
     ) {
       // 如果是 template 且 没有子节点 或者 子节点 都是 注释节点，直接移除节点
       children.splice(i, 1)
@@ -81,7 +81,7 @@ export const transformSlot: NodeTransform = (node, context) => {
       !(slotDir = findDir(slotElement, 'slot', true))
     ) {
       // not a <template v-slot>, skip.
-      if (slotElement.type !== NodeTypes.COMMENT) {
+      if (!isCommentNode(slotElement)) {
         implicitDefaultChildren.push(slotElement)
       }
       continue

@@ -12,6 +12,7 @@ import type {
 
 import {
   type AttributeNode,
+  type CommentNode,
   type CompoundExpressionNode,
   type DirectiveNode,
   type ElementNode,
@@ -123,4 +124,8 @@ export function isCompoundExpressionNode(
   node: Node
 ): node is CompoundExpressionNode {
   return node.type === NodeTypes.COMPOUND_EXPRESSION
+}
+
+export function isCommentNode(node: Node): node is CommentNode {
+  return node.type === NodeTypes.COMMENT
 }
