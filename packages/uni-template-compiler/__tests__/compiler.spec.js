@@ -407,8 +407,18 @@ describe('mp:compiler', () => {
     )
 
     assertCodegen(
+      '<view :style="false==false?{}:{}" style="color:red"></view>',
+      `<view style="{{'color:red;'+(false==false?{}:{})}}"></view>`
+    )
+
+    assertCodegen(
       '<view style="color:red"></view>',
       '<view style="color:red;"></view>'
+    )
+
+    assertCodegen(
+      '<view :style="{color:red}"></view>',
+      "<view style=\"{{'color:'+(red)+';'}}\"></view>"
     )
 
     assertCodegen(
@@ -424,6 +434,11 @@ describe('mp:compiler', () => {
     assertCodegen(
       `<view :style="{ [color1+color2]: 'purple'}"></view>`,
       `<view style="{{(color1+color2)+':'+('purple')+';'}}"></view>`
+    )
+
+    assertCodegen(
+      `<view :style="{ [color]: 'purple'}" style="background-color: aqua;"></view>`,
+      `<view style="{{'background-color:aqua;'+((color)+':'+('purple')+';')}}"></view>`
     )
 
     assertCodegen(
