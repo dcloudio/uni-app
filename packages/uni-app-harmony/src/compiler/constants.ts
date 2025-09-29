@@ -86,4 +86,5 @@ export const ExtApiBlackList = [
   'uni-arrayBufferToBase64',
   'uni-base64ToArrayBuffer',
   'uni-privacy',
+  'uni-showLoading',
 ]
