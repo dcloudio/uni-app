@@ -228,8 +228,8 @@ export default /*#__PURE__*/ defineComponent({
             value:
               props.mode === mode.TIME
                 ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}`
-                : `${date.getFullYear()}-${padLeft(
-                    date.getMonth() + 1
+                : `${date.getUTCFullYear()}-${padLeft(
+                    date.getUTCMonth() + 1
                   )}-${padLeft(date.getUTCDate())}`,
           })
         },
