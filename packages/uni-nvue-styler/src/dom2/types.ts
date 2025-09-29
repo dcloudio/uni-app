@@ -32,6 +32,7 @@ export type UniPlatformConfig = {
   [platform in DOM2_APP_PLATFORM]?: {
     [target in DOM2_APP_TARGET]?: {
       setter: string
+      type?: string
     }
   }
 }

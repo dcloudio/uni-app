@@ -365,7 +365,8 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-c": {
-          "setter": "borderStyleBottom"
+          "setter": "borderStyleBottom",
+          "type": "UniNativeBorderStyle"
         }
       },
       "app-android": {
@@ -373,7 +374,8 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-kt": {
-          "setter": "borderStyleBottom"
+          "setter": "borderStyleBottom",
+          "type": "UniNativeBorderStyle"
         }
       }
     }
@@ -386,7 +388,8 @@
           "setter": "setStyleBorderLeftStyle"
         },
         "nv-c": {
-          "setter": "borderStyleLeft"
+          "setter": "borderStyleLeft",
+          "type": "UniNativeBorderStyle"
         }
       },
       "app-android": {
@@ -394,7 +397,8 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-kt": {
-          "setter": "borderStyleLeft"
+          "setter": "borderStyleLeft",
+          "type": "UniNativeBorderStyle"
         }
       }
     }
@@ -407,7 +411,8 @@
           "setter": "setStyleBorderRightStyle"
         },
         "nv-c": {
-          "setter": "borderStyleRight"
+          "setter": "borderStyleRight",
+          "type": "UniNativeBorderStyle"
         }
       },
       "app-android": {
@@ -415,7 +420,8 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-kt": {
-          "setter": "borderStyleRight"
+          "setter": "borderStyleRight",
+          "type": "UniNativeBorderStyle"
         }
       }
     }
@@ -428,7 +434,8 @@
           "setter": "setStyleBorderTopStyle"
         },
         "nv-c": {
-          "setter": "borderStyleTop"
+          "setter": "borderStyleTop",
+          "type": "UniNativeBorderStyle"
         }
       },
       "app-android": {
@@ -436,7 +443,8 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-kt": {
-          "setter": "borderStyleTop"
+          "setter": "borderStyleTop",
+          "type": "UniNativeBorderStyle"
         }
       }
     }

@@ -33,7 +33,8 @@ export function createPropertyProcessors(
     if (platformConfig) {
       const setter = platformConfig.setter
       const propertyConfig = (appCssJson as AppCssJson)[propertyName]
-      const propertyType = propertyConfig.type
+      // 优先使用setter的type，如果没有则使用根type
+      const propertyType = platformConfig.type || propertyConfig.type
       if (propertyType === 'UniCSSUnitType') {
         processorMap[propertyName] = createSetStyleUnitValueProcessor(setter)
       } else if (propertyType === 'number') {
