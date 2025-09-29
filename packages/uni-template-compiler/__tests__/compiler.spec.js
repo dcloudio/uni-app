@@ -411,6 +411,27 @@ describe('mp:compiler', () => {
       '<view style="color:red;"></view>'
     )
 
+    assertCodegen(
+      `<view :style="{ ['color']: 'purple'}"></view>`,
+      `<view style="{{('color')+':'+('purple')+';'}}"></view>`
+    )
+
+    assertCodegen(
+      `<view :style="{ [color]: 'purple'}"></view>`,
+      `<view style="{{(color)+':'+('purple')+';'}}"></view>`
+    )
+
+    assertCodegen(
+      `<view :style="{ [color1+color2]: 'purple'}"></view>`,
+      `<view style="{{(color1+color2)+':'+('purple')+';'}}"></view>`
+    )
+
+    assertCodegen(
+      `<view :style="{ [fn('color')]: 'purple'}"></view>`,
+      `<view style="{{($root.m0)+':'+('purple')+';'}}"></view>`,
+      "with(this){var m0=fn(\"color\");$mp.data=Object.assign({},{$root:{m0:m0}})}"
+    )
+
     const baseStr = '$mp.data=Object.assign({},{$root:{s0:s0}})}'
 
     // 运算得到
