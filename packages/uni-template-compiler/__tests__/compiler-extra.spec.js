@@ -459,6 +459,11 @@ describe('mp:compiler-extra', () => {
       '<view class="{{[(isActive)?(dynamicKey):\'\']}}">computed key test</view>'
     )
     assertCodegen(
+      `<view :class="{ [fn('class')]: isActive }">computed key test</div>`,
+      '<view class="{{[(isActive)?($root.m0):\'\']}}">computed key test</view>',
+      "with(this){var m0=(isActive)?fn(\"class\"):null;$mp.data=Object.assign({},{$root:{m0:m0}})}"
+    )
+    assertCodegen(
       '<view :class="{ staticKey: isActive }">static key test</div>',
       '<view class="{{[(isActive)?\'staticKey\':\'\']}}">static key test</view>'
     )
