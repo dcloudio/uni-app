@@ -1,4 +1,4 @@
-import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, debounce, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_BACK_PRESS, ON_THEME_CHANGE, OFF_THEME_CHANGE, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
+import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseNVueDataset, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, normalizeTabBarStyles, ON_KEYBOARD_HEIGHT_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, debounce, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM_DISTANCE, parseUrl, ON_BACK_PRESS, OFF_THEME_CHANGE, onCreateVueApp, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE, ON_LAUNCH, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared';
 export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared';
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 export { extend, hasOwn, isArray, isFunction, isPlainObject, isString } from '@vue/shared';
@@ -8517,7 +8517,9 @@ function findComponentRectAll(dom, nvueElementInfos, index, result, callback) {
 }
 
 function setCurrentPageMeta(page, options) {
-    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, getPage$BasePage(page).id);
+    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, typeof options.pageId !== 'undefined'
+        ? options.pageId
+        : getPage$BasePage(page).id);
 }
 
 function getEventName$1(reqId) {
@@ -11134,6 +11136,131 @@ const SetTabBarBadgeOptions = {
     }, IndexOptions.formatArgs),
 };
 
+function getCurrentWebview() {
+    const page = getCurrentPage();
+    if (page) {
+        return page.$getAppWebview();
+    }
+    return null;
+}
+function getWebview(page) {
+    if (page) {
+        return page.$getAppWebview();
+    }
+    return getCurrentWebview();
+}
+
+let lastStatusBarStyle$1;
+let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
+function newSetStatusBarStyle(style) {
+    lastStatusBarStyle$1 = style;
+    oldSetStatusBarStyle(style);
+}
+plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
+function setStatusBarStyle$1(statusBarStyle) {
+    if (!statusBarStyle) {
+        const page = getCurrentPage();
+        if (!page) {
+            return;
+        }
+        statusBarStyle = getPage$BasePage(page).statusBarStyle;
+        if (!statusBarStyle || statusBarStyle === lastStatusBarStyle$1) {
+            return;
+        }
+    }
+    if (statusBarStyle === lastStatusBarStyle$1) {
+        return;
+    }
+    if (('production' !== 'production')) {
+        console.log(formatLog('setStatusBarStyle', statusBarStyle));
+    }
+    lastStatusBarStyle$1 = statusBarStyle;
+    plus.navigator.setStatusBarStyle(statusBarStyle);
+}
+
+function onThemeChange$1(callback) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+}
+function offThemeChange$1(callback) {
+    UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
+}
+function getNavigatorStyle() {
+    return getTheme() === 'dark' ? 'light' : 'dark';
+}
+function getTheme() {
+    return plus.navigator.getUIStyle();
+}
+function changePagesNavigatorStyle() {
+    if (__uniConfig.darkmode) {
+        const theme = getNavigatorStyle();
+        setStatusBarStyle$1(theme);
+        const pages = getAllPages();
+        pages.forEach((page) => {
+            getPage$BasePage(page).statusBarStyle = theme;
+        });
+    }
+}
+function parseTheme(pageStyle) {
+    if (__uniConfig.darkmode) {
+        let parsedStyle = {};
+        let theme = plus.navigator.getUIStyle();
+        parsedStyle = normalizeStyles(pageStyle, __uniConfig.themeConfig, theme);
+        return parsedStyle;
+    }
+    return pageStyle;
+}
+function useTabBarThemeChange(tabBar, options) {
+    if (__uniConfig.darkmode) {
+        const fn = () => {
+            const { list = [], color, selectedColor, backgroundColor, borderStyle, midButton, } = parseTheme(options);
+            if (tabBar) {
+                tabBar.setTabBarStyle({
+                    color,
+                    selectedColor,
+                    backgroundColor,
+                    borderStyle,
+                    midButton,
+                });
+                tabBar.setTabBarItems({
+                    list: list.map((item) => ({
+                        iconPath: item.iconPath,
+                        selectedIconPath: item.selectedIconPath,
+                        visible: item.visible,
+                    })),
+                });
+            }
+        };
+        // 由于应用首次启动获取不到手机 theme 应用首次启动设置下 tabBar
+        fn();
+        onThemeChange$1(fn);
+    }
+}
+function useWebviewThemeChange(webview, getWebviewStyle) {
+    if (__uniConfig.darkmode) {
+        const fn = () => {
+            const webviewStyle = getWebviewStyle();
+            ({
+                animationAlphaBGColor: webviewStyle.animationAlphaBGColor,
+                background: webviewStyle.background,
+                backgroundColorBottom: webviewStyle.backgroundColorBottom,
+                backgroundColorTop: webviewStyle.backgroundColorTop,
+            });
+            var titleNView = webviewStyle.titleNView;
+            if (typeof titleNView !== 'undefined') {
+                typeof titleNView === 'object'
+                        ? {
+                            backgroundColor: titleNView.backgroundColor,
+                            titleColor: titleNView.titleColor,
+                        }
+                        : titleNView;
+            }
+            webview && webview.setStyle(webviewStyle);
+        };
+        onThemeChange$1(fn);
+        webview.addEventListener('close', () => offThemeChange$1(fn));
+    }
+}
+
 let config;
 /**
  * tabbar显示状态
@@ -11263,7 +11390,7 @@ var tabBarInstance = {
             tabBar.onMidButtonClick(() => {
                 return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
             });
-        // TODO useTabBarThemeChange(tabBar, options)
+        useTabBarThemeChange(tabBar, options);
     },
     indexOf(page) {
         const config = this.config;
@@ -11434,20 +11561,6 @@ const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, rej
         }
     });
 }, LoadFontFaceProtocol);
-
-function getCurrentWebview() {
-    const page = getCurrentPage();
-    if (page) {
-        return page.$getAppWebview();
-    }
-    return null;
-}
-function getWebview(page) {
-    if (page) {
-        return page.$getAppWebview();
-    }
-    return getCurrentWebview();
-}
 
 const setNavigationBarTitle = defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, ({ __page__, title }, { resolve, reject }) => {
     const webview = getWebview(__page__);
@@ -11871,51 +11984,6 @@ function initDebugRefresh(isTab, path, query) {
             query: queryString ? queryString.slice(1) : queryString,
         }),
     };
-}
-
-let lastStatusBarStyle$1;
-let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
-function newSetStatusBarStyle(style) {
-    lastStatusBarStyle$1 = style;
-    oldSetStatusBarStyle(style);
-}
-plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
-function setStatusBarStyle$1(statusBarStyle) {
-    if (!statusBarStyle) {
-        const page = getCurrentPage();
-        if (!page) {
-            return;
-        }
-        statusBarStyle = getPage$BasePage(page).statusBarStyle;
-        if (!statusBarStyle || statusBarStyle === lastStatusBarStyle$1) {
-            return;
-        }
-    }
-    if (statusBarStyle === lastStatusBarStyle$1) {
-        return;
-    }
-    if (('production' !== 'production')) {
-        console.log(formatLog('setStatusBarStyle', statusBarStyle));
-    }
-    lastStatusBarStyle$1 = statusBarStyle;
-    plus.navigator.setStatusBarStyle(statusBarStyle);
-}
-
-function getNavigatorStyle() {
-    return getTheme() === 'dark' ? 'light' : 'dark';
-}
-function getTheme() {
-    return plus.navigator.getUIStyle();
-}
-function changePagesNavigatorStyle() {
-    if (__uniConfig.darkmode) {
-        const theme = getNavigatorStyle();
-        setStatusBarStyle$1(theme);
-        const pages = getAllPages();
-        pages.forEach((page) => {
-            getPage$BasePage(page).statusBarStyle = theme;
-        });
-    }
 }
 
 const downgrade = 'HarmonyOS' === 'Android';
@@ -12558,8 +12626,7 @@ function navigate(path, callback, isAppLaunch) {
 }
 
 function initWebviewStyle(webview, path, query, routeMeta) {
-    // TODO parseTheme
-    const getWebviewStyle = () => parseWebviewStyle(path, routeMeta, webview);
+    const getWebviewStyle = () => parseWebviewStyle(path, parseTheme(routeMeta), webview);
     const webviewStyle = getWebviewStyle();
     webviewStyle.uniPageUrl = initUniPageUrl(path, query);
     const isTabBar = !!routeMeta.isTabBar;
@@ -12568,7 +12635,7 @@ function initWebviewStyle(webview, path, query, routeMeta) {
     if (('production' !== 'production')) {
         console.log(formatLog('updateWebview', webviewStyle));
     }
-    // TODO useWebviewThemeChange
+    useWebviewThemeChange(webview, getWebviewStyle);
     webview.setStyle(webviewStyle);
 }
 
@@ -12647,9 +12714,9 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
     initWebview(webview, path, query, routeOptions.meta);
     const route = path.slice(1);
     webview.__uniapp_route = route;
-    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, 
-    // TODO theme
-    'light');
+    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, (__uniConfig.darkmode
+        ? plus.navigator.getUIStyle()
+        : 'light'));
     const id = parseInt(webview.id);
     createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions));
     return webview;
@@ -13625,14 +13692,24 @@ function subscribeWebviewReady(_data, pageId) {
 }
 function onLaunchWebviewReady() {
     // TODO closeSplashscreen
-    const entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
-    const routeOptions = getRouteOptions(entryPagePath);
+    let entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
+    let routeOptions = getRouteOptions(entryPagePath);
+    if (!routeOptions) {
+        if (__uniRoutes.length > 0) {
+            entryPagePath = __uniRoutes[0].path;
+            routeOptions = getRouteOptions(addLeadingSlash(entryPagePath));
+        }
+        else {
+            console.error('未匹配到路由，请检查配置');
+            return;
+        }
+    }
     const args = {
         url: entryPagePath + (__uniConfig.entryPageQuery || ''),
         openType: 'appLaunch',
     };
     const handler = { resolve() { }, reject() { } };
-    if (routeOptions.meta.isTabBar) {
+    if (routeOptions?.meta?.isTabBar) {
         return $switchTab(args, handler);
     }
     return $navigateTo(args, handler);

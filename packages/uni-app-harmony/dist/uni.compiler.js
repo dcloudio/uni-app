@@ -76,7 +76,7 @@ var ExternalModuls = [
 			"createPushMessage",
 			"setAppBadgeNumber"
 		],
-		version: "1.0.2"
+		version: "1.0.3"
 	},
 	{
 		type: "provider",
@@ -166,7 +166,7 @@ var ExternalModulesX = [
 			"createPushMessage",
 			"setAppBadgeNumber"
 		],
-		version: "1.0.2"
+		version: "1.0.3"
 	},
 	{
 		type: "provider",
