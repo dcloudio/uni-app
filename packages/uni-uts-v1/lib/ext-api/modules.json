@@ -1226,6 +1226,28 @@
       }
     }
   },
+  "uni-showLoading": {
+    "uni": {
+      "showLoading": {
+        "name": "showLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "hideLoading": {
+        "name": "hideLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-sse": {
     "uni": {
       "connectEventSource": {
