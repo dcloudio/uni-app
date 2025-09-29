@@ -86,3 +86,17 @@ function parseUnitValue(value: string) {
     }
   }
 }
+
+export function createSetStyleNumberValueProcessor(
+  setter: string
+): PropertyProcessor {
+  return (value) => {
+    const numValue = parseFloat(String(value))
+    if (!isNaN(numValue)) {
+      return {
+        valueCode: `${numValue}`,
+        setterCode: `${setter}(${numValue})`,
+      }
+    }
+  }
+}

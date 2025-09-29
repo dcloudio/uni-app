@@ -1,6 +1,6 @@
 {
   "align-content": {
-    "type": "UniCSSFlexAlignType",
+    "type": "UniCSSAlignContentType",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -10,7 +10,7 @@
     }
   },
   "align-items": {
-    "type": "UniCSSFlexAlignType",
+    "type": "UniCSSAlignItemsType",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -20,7 +20,7 @@
     }
   },
   "align-self": {
-    "type": "UniCSSFlexAlignType",
+    "type": "UniCSSAlignSelfType",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -50,7 +50,7 @@
     }
   },
   "flex-grow": {
-    "type": "UniCSSNumberType",
+    "type": "number",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -60,7 +60,7 @@
     }
   },
   "flex-shrink": {
-    "type": "UniCSSNumberType",
+    "type": "number",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -80,7 +80,7 @@
     }
   },
   "justify-content": {
-    "type": "UniCSSFlexAlignType",
+    "type": "UniCSSJustifyContentType",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -253,7 +253,7 @@
     }
   },
   "background-clip": {
-    "type": "UniCSSBackgroundClipType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -268,7 +268,7 @@
     }
   },
   "background-color": {
-    "type": "UniCSSColorType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -283,7 +283,7 @@
     }
   },
   "background-image": {
-    "type": "UniCSSImageType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -298,7 +298,7 @@
     }
   },
   "border-bottom-color": {
-    "type": "UniCSSColorType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -313,7 +313,7 @@
     }
   },
   "border-left-color": {
-    "type": "UniCSSColorType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -328,7 +328,7 @@
     }
   },
   "border-right-color": {
-    "type": "UniCSSColorType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -343,7 +343,7 @@
     }
   },
   "border-top-color": {
-    "type": "UniCSSColorType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -542,7 +542,7 @@
     }
   },
   "box-shadow": {
-    "type": "UniCSSBoxShadowType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -647,7 +647,7 @@
     }
   },
   "opacity": {
-    "type": "UniCSSNumberType",
+    "type": "number",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -662,7 +662,7 @@
     }
   },
   "overflow": {
-    "type": "UniCSSOverflowType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -677,7 +677,7 @@
     }
   },
   "pointer-events": {
-    "type": "UniCSSPointerEventsType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -692,7 +692,7 @@
     }
   },
   "z-index": {
-    "type": "UniCSSNumberType",
+    "type": "number",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -707,7 +707,7 @@
     }
   },
   "transform": {
-    "type": "UniCSSTransformType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -722,7 +722,7 @@
     }
   },
   "transform-origin": {
-    "type": "UniCSSTransformOriginType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -737,7 +737,7 @@
     }
   },
   "transition-delay": {
-    "type": "UniCSSTimeType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -752,7 +752,7 @@
     }
   },
   "transition-duration": {
-    "type": "UniCSSTimeType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -767,7 +767,7 @@
     }
   },
   "transition-property": {
-    "type": "UniCSSTransitionPropertyType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -782,7 +782,7 @@
     }
   },
   "transition-timing-function": {
-    "type": "UniCSSTimingFunctionType",
+    "type": "UniCSSUnitType",
     "uniPlatform": {
       "app": {
         "nv-c": {
