@@ -453,6 +453,24 @@ describe('mp:compiler-extra', () => {
       '<div :class="{ [active ? \'actvieClass\' : \'unactiveClass\']: isActive, class1: true }">1</div>',
       '<view class="{{[\'_div\',(isActive)?(active?\'actvieClass\':\'unactiveClass\'):\'\',(true)?\'class1\':\'\']}}">1</view>'
     )
+    
+    assertCodegen(
+      '<view :class="{ [dynamicKey]: isActive }">computed key test</div>',
+      '<view class="{{[(isActive)?(dynamicKey):\'\']}}">computed key test</view>'
+    )
+    assertCodegen(
+      '<view :class="{ staticKey: isActive }">static key test</div>',
+      '<view class="{{[(isActive)?\'staticKey\':\'\']}}">static key test</view>'
+    )
+    assertCodegen(
+      '<view :class="{ [dynamicKey]: isActive, staticKey: hasError, [anotherKey]: isValid }">mixed keys test</div>',
+      '<view class="{{[(isActive)?(dynamicKey):\'\',(hasError)?\'staticKey\':\'\',(isValid)?(anotherKey):\'\']}}">mixed keys test</view>'
+    )
+    assertCodegen(
+      '<view :class="{ [prefix + suffix]: isActive, [item.type]: item.visible }">complex computed test</div>',
+      '<view class="{{[(isActive)?(prefix+suffix):\'\',(item.visible)?(item.type):\'\']}}">complex computed test</view>'
+    )
+
     assertCodegen(
       '<p class="static" :class="{ active: isActive, \'text-danger\': hasError }">2</p>',
       '<view class="{{[\'static\',\'_p\',(isActive)?\'active\':\'\',(hasError)?\'text-danger\':\'\']}}">2</view>'
