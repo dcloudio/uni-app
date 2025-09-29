@@ -722,6 +722,8 @@ declare interface Timer {
     clearTimeout: Function;
 }
 
+export declare const UNI_AD_PLUGINS: string[];
+
 export declare const UNI_SSR = "__uniSSR";
 
 export declare const UNI_SSR_DATA = "data";

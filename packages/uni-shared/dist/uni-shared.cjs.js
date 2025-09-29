@@ -236,6 +236,7 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view',
     'picker-view-column',
 ];
+const UNI_AD_PLUGINS = ['uniad-plugin', 'uniad-plugin-wx'];
 // 内置的easycom组件
 const UVUE_BUILT_IN_EASY_COMPONENTS = [
     'map',
@@ -1879,6 +1880,7 @@ exports.SELECTED_COLOR = SELECTED_COLOR;
 exports.SLOT_DEFAULT_NAME = SLOT_DEFAULT_NAME;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
+exports.UNI_AD_PLUGINS = UNI_AD_PLUGINS;
 exports.UNI_SSR = UNI_SSR;
 exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
