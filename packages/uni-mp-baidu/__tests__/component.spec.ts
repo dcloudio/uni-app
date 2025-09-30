@@ -58,7 +58,7 @@ describe('mp-baidu: transform component', () => {
       `<editor @ready="ready"/>`,
       `<block s-if="{{r0}}"><editor bindready="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.ready) }
+  return { a: _o(_ctx.ready, "f8") }
 }`
     )
   })

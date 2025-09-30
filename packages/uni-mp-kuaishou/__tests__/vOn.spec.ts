@@ -7,7 +7,7 @@ describe('mp-kuaishou: transform v-on', () => {
         `<input @input="input"/>`,
         `<input bindinput="{{a}}"/>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.input) }
+  return { a: _o(_ctx.input, "8c") }
 }`
       )
     })
@@ -16,7 +16,7 @@ describe('mp-kuaishou: transform v-on', () => {
         `<textarea @input="input"></textarea>`,
         `<textarea bindinput="{{a}}"></textarea>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.input) }
+  return { a: _o(_ctx.input, "6e") }
 }`
       )
     })
@@ -27,7 +27,7 @@ describe('mp-kuaishou: transform v-on', () => {
         `<custom @tap="tap"/>`,
         `<custom bindtap="{{a}}" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.tap) }
+  return { a: _o(_ctx.tap, "7e") }
 }`
       )
     })
@@ -36,7 +36,7 @@ describe('mp-kuaishou: transform v-on', () => {
         `<custom @click="click"/>`,
         `<custom bindclick="{{a}}" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.click) }
+  return { a: _o(_ctx.click, "b5") }
 }`
       )
     })
@@ -45,7 +45,7 @@ describe('mp-kuaishou: transform v-on', () => {
         `<custom @unmount="unmount" @custom-mount="mount();created();"/>`,
         `<custom bindunmount="{{a}}" bindcustomMount="{{b}}" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.unmount), b: _o($event => { _ctx.mount(); _ctx.created(); }) }
+  return { a: _o(_ctx.unmount, "27"), b: _o($event => { _ctx.mount(); _ctx.created(); }, "0a") }
 }`
       )
     })
@@ -56,7 +56,7 @@ describe('mp-kuaishou: transform v-on', () => {
         `<button open-type="getPhoneNumber" @getphonenumber="getInfo"></button>`,
         `<button open-type="getPhoneNumber" bindgetphonenumber="{{a}}"></button>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.getInfo) }
+  return { a: _o(_ctx.getInfo, "32") }
 }`
       )
     })
@@ -65,7 +65,7 @@ describe('mp-kuaishou: transform v-on', () => {
         `<button open-type="getuserextendinfo" @getuserextendinfo="getInfo"></button>`,
         `<button open-type="getuserextendinfo" bindgetuserextendinfo="{{a}}"></button>`,
         `(_ctx, _cache) => {
-  return { a: _o(_ctx.getInfo) }
+  return { a: _o(_ctx.getInfo, "80") }
 }`
       )
     })

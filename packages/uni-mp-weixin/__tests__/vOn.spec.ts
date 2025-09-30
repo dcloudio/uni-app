@@ -6,14 +6,14 @@ describe('mp-weixin: transform v-on', () => {
       `<view v-on:click="onClick"/>`,
       `<view bindtap="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "0c") }
 }`
     )
     assert(
       `<custom v-on:click="onClick"/>`,
       `<custom bindclick="{{a}}" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onClick) }
+  return { a: _o(_ctx.onClick, "ca") }
 }`
     )
   })
@@ -36,7 +36,7 @@ describe('mp-weixin: transform v-on', () => {
       `<view v-for="item in items" @click="test(item)"/>`,
       `<view wx:for="{{a}}" wx:for-item="item" bindtap="{{item.a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _o($event => _ctx.test(item)) }; }) }
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _o($event => _ctx.test(item), "5b") }; }) }
 }`
     )
     assert(

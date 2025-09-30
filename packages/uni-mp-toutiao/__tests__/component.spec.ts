@@ -50,7 +50,7 @@ describe('mp-toutiao: transform component', () => {
       `<pay-button-sdk :mode="2" :goods-type="2" goods-id="xxxxxx" @getgoodsinfo="getgoodsinfo"/>`,
       `<pay-button-sdk tt:if="{{r0}}" mode="{{2}}" goods-type="{{2}}" goods-id="xxxxxx" bindgetgoodsinfo="{{a}}" u-t="m" u-i="dc555fe4-0" bind:__l="__l"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.getgoodsinfo) }
+  return { a: _o(_ctx.getgoodsinfo, "02") }
 }`,
       {
         filename,

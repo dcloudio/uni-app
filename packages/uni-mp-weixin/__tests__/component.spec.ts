@@ -69,21 +69,21 @@ describe('mp-weixin: transform component', () => {
       `<textarea @input="input"></textarea>`,
       `<block wx:if="{{r0}}"><textarea bindinput="{{a}}"></textarea></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.input) }
+  return { a: _o(_ctx.input, "6e") }
 }`
     )
     assert(
       `<textarea v-model="text"></textarea>`,
       `<block wx:if="{{r0}}"><textarea value="{{a}}" bindinput="{{b}}"></textarea></block>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.text, b: _o($event => _ctx.text = $event.detail.value) }
+  return { a: _ctx.text, b: _o($event => _ctx.text = $event.detail.value, "ec") }
 }`
     )
     assert(
       `<textarea v-if="ok1" @input="input"/><textarea v-else-if="ok2"/><textarea v-else @input="input"/>`,
       `<textarea wx:if="{{a}}" bindinput="{{b}}"/><textarea wx:elif="{{c}}"/><block wx:else><textarea wx:if="{{r0}}" bindinput="{{d}}"/></block>`,
       `(_ctx, _cache) => {
-  return _e({ a: _ctx.ok1 }, _ctx.ok1 ? { b: _o(_ctx.input) } : _ctx.ok2 ? {} : { d: _o(_ctx.input) }, { c: _ctx.ok2 })
+  return _e({ a: _ctx.ok1 }, _ctx.ok1 ? { b: _o(_ctx.input, "74") } : _ctx.ok2 ? {} : { d: _o(_ctx.input, "bb") }, { c: _ctx.ok2 })
 }`
     )
   })
@@ -99,21 +99,21 @@ describe('mp-weixin: transform component', () => {
       `<editor @ready="ready"/>`,
       `<block wx:if="{{r0}}"><editor bindready="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.ready) }
+  return { a: _o(_ctx.ready, "f8") }
 }`
     )
     assert(
       `<editor v-if="ok1" @ready="ready"/><editor v-else-if="ok2"/><editor v-else/>`,
       `<editor wx:if="{{a}}" bindready="{{b}}"/><editor wx:elif="{{c}}"/><editor wx:else/>`,
       `(_ctx, _cache) => {
-  return _e({ a: _ctx.ok1 }, _ctx.ok1 ? { b: _o(_ctx.ready) } : _ctx.ok2 ? {} : {}, { c: _ctx.ok2 })
+  return _e({ a: _ctx.ok1 }, _ctx.ok1 ? { b: _o(_ctx.ready, "f7") } : _ctx.ok2 ? {} : {}, { c: _ctx.ok2 })
 }`
     )
     assert(
       `<editor v-if="ok1" @ready="ready"/><editor v-else-if="ok2"/><editor v-else @ready="ready"/>`,
       `<editor wx:if="{{a}}" bindready="{{b}}"/><editor wx:elif="{{c}}"/><block wx:else><editor wx:if="{{r0}}" bindready="{{d}}"/></block>`,
       `(_ctx, _cache) => {
-  return _e({ a: _ctx.ok1 }, _ctx.ok1 ? { b: _o(_ctx.ready) } : _ctx.ok2 ? {} : { d: _o(_ctx.ready) }, { c: _ctx.ok2 })
+  return _e({ a: _ctx.ok1 }, _ctx.ok1 ? { b: _o(_ctx.ready, "f7") } : _ctx.ok2 ? {} : { d: _o(_ctx.ready, "5d") }, { c: _ctx.ok2 })
 }`
     )
   })
@@ -150,28 +150,28 @@ describe('mp-weixin: transform component', () => {
       `<canvas @touchstart="touchstart"/>`,
       `<block wx:if="{{r0}}"><canvas bindtouchstart="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.touchstart) }
+  return { a: _o(_ctx.touchstart, "bf") }
 }`
     )
     assert(
       `<canvas @touchmove="touchmove"/>`,
       `<block wx:if="{{r0}}"><canvas bindtouchmove="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.touchmove) }
+  return { a: _o(_ctx.touchmove, "cf") }
 }`
     )
     assert(
       `<canvas @touchcancel="touchcancel"/>`,
       `<block wx:if="{{r0}}"><canvas bindtouchcancel="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.touchcancel) }
+  return { a: _o(_ctx.touchcancel, "ec") }
 }`
     )
     assert(
       `<canvas @touchend="touchend"/>`,
       `<block wx:if="{{r0}}"><canvas bindtouchend="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.touchend) }
+  return { a: _o(_ctx.touchend, "d9") }
 }`
     )
     assert(
@@ -224,28 +224,28 @@ describe('mp-weixin: transform component', () => {
       `<scroll-view @dragstart="d"/>`,
       `<block wx:if="{{r0}}"><scroll-view binddragstart="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.d) }
+  return { a: _o(_ctx.d, "c7") }
 }`
     )
     assert(
       `<scroll-view @dragging="d"/>`,
       `<block wx:if="{{r0}}"><scroll-view binddragging="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.d) }
+  return { a: _o(_ctx.d, "a1") }
 }`
     )
     assert(
       `<scroll-view @dragend="d"/>`,
       `<block wx:if="{{r0}}"><scroll-view binddragend="{{a}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.d) }
+  return { a: _o(_ctx.d, "0b") }
 }`
     )
     assert(
       `<scroll-view @dragstart="d" @dragging="d" @dragend="d"/>`,
       `<block wx:if="{{r0}}"><scroll-view binddragstart="{{a}}" binddragging="{{b}}" binddragend="{{c}}"/></block>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.d), b: _o(_ctx.d), c: _o(_ctx.d) }
+  return { a: _o(_ctx.d, "c7"), b: _o(_ctx.d, "a9"), c: _o(_ctx.d, "ba") }
 }`
     )
   })

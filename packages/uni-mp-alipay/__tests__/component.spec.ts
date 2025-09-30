@@ -43,7 +43,7 @@ describe('mp-alipay: transform component', () => {
   ></web-view>`,
       `<web-view src=\"https://https://uniapp.dcloud.io/\" onMessage=\"{{a}}\"></web-view>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onmessage) }
+  return { a: _o(_ctx.onmessage, "69") }
 }`
     )
   })
@@ -96,7 +96,7 @@ describe('mp-alipay: transform component', () => {
       `<subscribe-message template-id='xxxxx' @complete="completeHandler" />`,
       `<subscribe-message template-id="xxxxx" onComplete="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.completeHandler) }
+  return { a: _o(_ctx.completeHandler, "88") }
 }`
     )
   })
@@ -106,7 +106,7 @@ describe('mp-alipay: transform component', () => {
       `<button open-type="chooseAvatar" @chooseavatar="onChooseAvatar" />`,
       `<button open-type="chooseAvatar" onChooseAvatar="{{a}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _o(_ctx.onChooseAvatar) }
+  return { a: _o(_ctx.onChooseAvatar, "3e") }
 }`
     )
   })

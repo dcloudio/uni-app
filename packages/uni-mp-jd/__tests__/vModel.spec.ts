@@ -6,7 +6,7 @@ describe('mp-jd: transform v-model input', () => {
       `<input v-model="model" />`,
       `<input data-e-o="{{a}}" value="{{b}}" bindinput="__e"/>`,
       `(_ctx, _cache) => {
-  return { a: { 'input': _o($event => _ctx.model = $event.detail.value) }, b: _ctx.model }
+  return { a: { 'input': _o($event => _ctx.model = $event.detail.value, "64") }, b: _ctx.model }
 }`
     )
   })
@@ -15,7 +15,7 @@ describe('mp-jd: transform v-model input', () => {
       `<textarea v-model="model" />`,
       `<textarea data-e-o="{{a}}" value="{{b}}" bindinput="__e"/>`,
       `(_ctx, _cache) => {
-  return { a: { 'input': _o($event => _ctx.model = $event.detail.value) }, b: _ctx.model }
+  return { a: { 'input': _o($event => _ctx.model = $event.detail.value, "16") }, b: _ctx.model }
 }`
     )
   })
