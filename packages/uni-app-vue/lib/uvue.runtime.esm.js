@@ -8674,7 +8674,7 @@ function mergeClassStyles(classStyle, classStyleWeights, style) {
 
 function useComputedStyle(keys, options = {}) {
   const i = getCurrentInstance();
-  const r = reactive({});
+  const r = reactive(/* @__PURE__ */ new Map());
   if (i) {
     if (keys.length === 0) {
       return r;
@@ -8716,14 +8716,18 @@ function triggerComputedStyleUpdate(instance) {
       const r = interceptor.reactiveComputedStyle;
       const styles = interceptor.styles;
       for (const key in r) {
-        if (!styles || !styles.has(key)) {
-          r[key] = "";
+        const isCSSVar = key.startsWith("--");
+        const camelizedKey = isCSSVar ? key : camelize(key);
+        if (!styles || !styles.has(camelizedKey)) {
+          r.set(key, "");
         } else {
-          r[key] = styles.get(key);
+          r.set(key, styles.get(camelizedKey));
         }
       }
       styles == null ? void 0 : styles.forEach((value, key) => {
-        r[key] = value;
+        const isCSSVar = key.startsWith("--");
+        const hyphenatedKey = isCSSVar ? key : hyphenate(key);
+        r.set(hyphenatedKey, value);
       });
     });
   }
