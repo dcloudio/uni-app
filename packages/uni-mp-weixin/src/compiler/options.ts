@@ -135,6 +135,7 @@ export function getMiniProgramOptions(
       lang: 'wxs',
       setStyle: true,
     },
+    keyEnabledElements: ['editor-portal'],
   }
 }
 

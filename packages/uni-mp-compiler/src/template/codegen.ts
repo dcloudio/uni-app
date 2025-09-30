@@ -54,6 +54,7 @@ export interface TemplateCodegenContext {
   isMiniProgramComponent: TransformContext['isMiniProgramComponent']
   push(code: string): void
   checkPropName: TemplateCodegenOptions['checkPropName']
+  keyEnabledElements: TemplateCodegenOptions['keyEnabledElements']
 }
 
 /**
@@ -88,6 +89,7 @@ export function generate(
     isBuiltInComponent,
     isMiniProgramComponent,
     checkPropName,
+    keyEnabledElements,
     component,
     autoImportFilters,
     filter,
@@ -105,6 +107,7 @@ export function generate(
     isBuiltInComponent,
     isMiniProgramComponent,
     checkPropName,
+    keyEnabledElements,
     push(code) {
       context.code += code
     },

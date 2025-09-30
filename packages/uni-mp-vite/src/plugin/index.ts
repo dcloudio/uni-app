@@ -96,6 +96,7 @@ export interface UniMiniProgramPluginOptions {
       generate: Parameters<typeof findMiniProgramTemplateFiles>[0]
     }
     compilerOptions?: CompilerOptions
+    keyEnabledElements?: MiniProgramCompilerOptions['keyEnabledElements']
     checkPropName?: MiniProgramCompilerOptions['checkPropName']
   }
   style: {
@@ -141,6 +142,7 @@ export function uniMiniProgramPlugin(
         component: template.component,
         emitFile,
         slot: template.slot,
+        keyEnabledElements: template.keyEnabledElements,
         checkPropName: template.checkPropName,
       },
       compilerOptions: template.compilerOptions,

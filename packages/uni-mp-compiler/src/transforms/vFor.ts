@@ -185,16 +185,20 @@ export const transformFor = createStructuralDirectiveTransform(
       scopes.vFor--
       if (isTemplateNode(node)) {
         node.children.some((c) => {
-          if (c.type === NodeTypes.ELEMENT && !isForElementNode(c)) {
+          if (isElementNode(c) && !isForElementNode(c)) {
             const key = findProp(c, 'key')
             if (key) {
-              context.onError(
-                createCompilerError(
-                  ErrorCodes.X_V_FOR_TEMPLATE_KEY_PLACEMENT,
-                  key.loc
+              const keyEnabledElements =
+                context.miniProgram.keyEnabledElements || []
+              if (!keyEnabledElements.includes(c.tag)) {
+                context.onError(
+                  createCompilerError(
+                    ErrorCodes.X_V_FOR_TEMPLATE_KEY_PLACEMENT,
+                    key.loc
+                  )
                 )
-              )
-              return true
+                return true
+              }
             }
           }
         })
