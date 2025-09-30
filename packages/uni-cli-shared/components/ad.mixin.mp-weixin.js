@@ -321,6 +321,7 @@ export default {
 
       this._wxRewardedAd.onError(err => {
         this.loading = false
+        this.errorMessage = JSON.stringify(err)
         this._dispatchEvent(EventType.Error, err)
       })
 
@@ -329,6 +330,10 @@ export default {
         if (res.isEnded && this._hasCallback()) {
           this._callServer()
         }
+      })
+
+      this._wxRewardedAd.load().then(() => {
+      }).catch((_) => {
       })
 
       this.loading = true
@@ -355,6 +360,7 @@ export default {
 
       this._wxInterstitialAd.onError(err => {
         this.loading = false
+        this.errorMessage = JSON.stringify(err)
         this._dispatchEvent(EventType.Error, err)
       })
 
