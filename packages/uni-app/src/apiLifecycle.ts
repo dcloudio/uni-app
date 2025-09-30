@@ -34,6 +34,7 @@ import {
   ON_THEME_CHANGE,
   ON_UNHANDLE_REJECTION,
   ON_UNLOAD,
+  ON_UPLOAD_DOUYIN_VIDEO,
   type UniLifecycleHooks,
 } from '@dcloudio/uni-shared'
 
@@ -173,6 +174,9 @@ export const onShareAppMessage = /*#__PURE__*/ createLifeCycleHook<
 export const onCopyUrl = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onCopyUrl']
 >(ON_COPY_URL, HookFlags.PAGE)
+export const onUploadDouyinVideo = /*#__PURE__*/ createLifeCycleHook<
+  Required<Page.PageInstance>['onUploadDouyinVideo']
+>(ON_UPLOAD_DOUYIN_VIDEO, HookFlags.PAGE)
 
 export const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onNavigationBarButtonTap']

@@ -59,6 +59,8 @@ export const ON_UNLOAD = 'onUnload'
 export const ON_INIT = 'onInit'
 // 微信特有
 export const ON_SAVE_EXIT_STATE = 'onSaveExitState'
+// 抖音特有
+export const ON_UPLOAD_DOUYIN_VIDEO = 'onUploadDouyinVideo'
 
 export const ON_RESIZE = 'onResize'
 export const ON_BACK_PRESS = 'onBackPress'
