@@ -309,6 +309,24 @@ describe('mp-weixin: transform component', () => {
     )
   })
 
+  test('editor-protal', () => {
+    assert(
+      `<editor id="editor"><editor-portal :key="blockId"><view class="flex"></view></editor-portal></editor>`,
+      `<editor id="editor"><editor-portal key="{{a}}"><view class="flex"></view></editor-portal></editor>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.blockId }
+}`
+    )
+
+    assert(
+      `<editor id="editor"><template v-for="item in customBlockList" :key="item.blockId"><editor-portal :key="item.blockId"><view class="flex"></view></editor-portal></template></editor>`,
+      `<editor id="editor"><block wx:for="{{a}}" wx:for-item="item" wx:key="b"><editor-portal key="{{item.a}}"><view class="flex"></view></editor-portal></block></editor>`,
+      `(_ctx, _cache) => {
+  return { a: _f(_ctx.customBlockList, (item, k0, i0) => { return { a: item.blockId, b: item.blockId }; }) }
+}`
+    )
+  })
+
   // 暂不上线，先注释掉
   //   test('input > keyboard-accessory', () => {
   //     assert(
