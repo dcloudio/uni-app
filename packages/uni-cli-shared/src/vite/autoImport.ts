@@ -172,6 +172,7 @@ const vuePreset = {
     // setup helpers
     'useAttrs',
     'useSlots',
+    'useComputedStyle',
 
     // reactivity,
     'computed',

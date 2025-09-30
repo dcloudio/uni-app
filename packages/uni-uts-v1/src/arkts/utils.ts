@@ -283,6 +283,7 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       // setup helpers
       ['useAttrs'],
       ['useSlots'],
+      ['useComputedStyle'],
 
       // reactivity,
       ['computed'],

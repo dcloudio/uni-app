@@ -7537,6 +7537,7 @@ function normalizeChildren(vnode, children) {
   vnode.shapeFlag |= type;
 }
 function mergeProps(...args) {
+  var _a;
   const ret = {};
   for (let i = 0; i < args.length; i++) {
     const toMerge = args[i];
@@ -7546,7 +7547,40 @@ function mergeProps(...args) {
           ret.class = normalizeClass$1([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        ret.style = normalizeStyle$1([ret.style, toMerge.style]);
+        const computedStyleInterceptors = (_a = currentRenderingInstance) == null ? void 0 : _a.computedStyleInterceptors;
+        let toMergeStyle = void 0;
+        if (computedStyleInterceptors == null ? void 0 : computedStyleInterceptors.length) {
+          const matchedInterceptors = computedStyleInterceptors.filter(
+            (interceptor) => interceptor.styleAttr === "style"
+          );
+          if (matchedInterceptors.length > 0) {
+            toMergeStyle = normalizeStyle$1(toMerge.style);
+            matchedInterceptors.forEach((interceptor) => {
+              interceptor.styles = interceptor.styles || /* @__PURE__ */ new Map();
+              interceptor.styles.clear();
+              if (!toMergeStyle) {
+                interceptor.styles = /* @__PURE__ */ new Map();
+              } else {
+                const keys = interceptor.keys;
+                keys.forEach((key2) => {
+                  let isCSSVar = key2.startsWith("--");
+                  const camelizedKey = isCSSVar ? key2 : camelize(key2);
+                  const hyphenatedKey = isCSSVar ? key2 : hyphenate(camelizedKey);
+                  if (hyphenatedKey in toMergeStyle) {
+                    const value = toMergeStyle[hyphenatedKey];
+                    delete toMergeStyle[hyphenatedKey];
+                    interceptor.styles.set(camelizedKey, value);
+                  }
+                });
+              }
+            });
+          }
+        }
+        if (toMergeStyle) {
+          ret.style = normalizeStyle$1([ret.style, toMergeStyle]);
+        } else {
+          ret.style = normalizeStyle$1([ret.style, toMerge.style]);
+        }
       } else if (isOn(key)) {
         const existing = ret[key];
         const incoming = toMerge[key];
@@ -8340,8 +8374,15 @@ const NODE_EXT_IS_TEXT_NODE = "isTextNode";
 const NODE_EXT_CHILD_NODE = "childNode";
 const NODE_EXT_PARENT_NODE = "parentNode";
 const NODE_EXT_CHILD_NODES = "childNodes";
+const RootElementInstanceMap = /* @__PURE__ */ new WeakMap();
 function setNodeExtraData(el, name, value) {
   el.ext.set(name, value);
+}
+function setRootElementInstance(el, instance) {
+  RootElementInstanceMap.set(el, instance);
+}
+function getRootElementInstance(el) {
+  return RootElementInstanceMap.get(el) || null;
 }
 function getNodeExtraData(el, name) {
   return el.ext.get(name);
@@ -8469,7 +8510,23 @@ function isMatchParentSelector(parentSelector, el) {
   return true;
 }
 const WEIGHT_IMPORTANT = 1e3;
-function parseClassName({ styles, weights }, parentStyles, el) {
+function parseClassName({
+  styles,
+  weights,
+  vueComputedStyles,
+  vueComputedStyleWeights
+}, parentStyles, el, instance = null, isParentStyles = false) {
+  var _a;
+  let computedStyleInterceptors = void 0;
+  if (isParentStyles && instance) {
+    computedStyleInterceptors = (_a = instance.computedStyleInterceptors) == null ? void 0 : _a.filter(
+      (interceptor) => interceptor.classAttr === "class"
+    );
+    computedStyleInterceptors == null ? void 0 : computedStyleInterceptors.forEach((interceptor) => {
+      interceptor.classStyles = interceptor.classStyles || /* @__PURE__ */ new Map();
+      interceptor.classStyles.clear();
+    });
+  }
   each(parentStyles).forEach((parentSelector) => {
     if (parentSelector && el) {
       if (!isMatchParentSelector(parentSelector, el)) {
@@ -8484,11 +8541,26 @@ function parseClassName({ styles, weights }, parentStyles, el) {
       if (isImportant) {
         name = name.slice(1);
       }
-      const oldWeight = weights[name] || 0;
       const weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
-      if (weight >= oldWeight) {
-        weights[name] = weight;
-        styles.set(name, value);
+      let filteredByComputedStyle = false;
+      if (computedStyleInterceptors) {
+        const interceptors = computedStyleInterceptors.filter(
+          (interceptor) => interceptor.keys.indexOf(name) !== -1
+        );
+        filteredByComputedStyle = interceptors.length > 0;
+      }
+      if (filteredByComputedStyle) {
+        const oldWeight = vueComputedStyleWeights[name] || 0;
+        if (weight >= oldWeight) {
+          vueComputedStyleWeights[name] = weight;
+          vueComputedStyles.set(name, value);
+        }
+      } else {
+        const oldWeight = weights[name] || 0;
+        if (weight >= oldWeight) {
+          weights[name] = weight;
+          styles.set(name, value);
+        }
       }
     });
   });
@@ -8497,6 +8569,8 @@ class ParseStyleContext {
   constructor() {
     this.styles = /* @__PURE__ */ new Map();
     this.weights = {};
+    this.vueComputedStyles = /* @__PURE__ */ new Map();
+    this.vueComputedStyleWeights = {};
   }
 }
 function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet, el = null) {
@@ -8514,7 +8588,13 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet, e
         (style) => style[className] !== null
       )) == null ? void 0 : _a[className];
       if (parentStyles != null) {
-        parseClassName(context, parentStyles, el);
+        parseClassName(
+          context,
+          parentStyles,
+          el,
+          el ? getRootElementInstance(el) : null,
+          true
+        );
       }
     });
   }
@@ -8576,8 +8656,11 @@ function extendMap(a, b) {
   return a;
 }
 function toStyle(el, classStyle, classStyleWeights) {
-  const res = extendMap(/* @__PURE__ */ new Map(), classStyle);
   const style = getExtraStyle(el);
+  return mergeClassStyles(classStyle, classStyleWeights, style);
+}
+function mergeClassStyles(classStyle, classStyleWeights, style) {
+  const res = extendMap(/* @__PURE__ */ new Map(), classStyle);
   if (style != null) {
     style.forEach((value, key) => {
       const weight = classStyleWeights[key];
@@ -8587,6 +8670,81 @@ function toStyle(el, classStyle, classStyleWeights) {
     });
   }
   return res;
+}
+
+function useComputedStyle(keys, options = {}) {
+  const i = getCurrentInstance();
+  const r = reactive({});
+  if (i) {
+    if (keys.length === 0) {
+      return r;
+    }
+    const propsDef = i.propsOptions === EMPTY_ARR ? {} : i.propsOptions[0];
+    let { classAttr, styleAttr } = options;
+    if (classAttr || styleAttr) {
+      if (classAttr && classAttr in propsDef) {
+        classAttr = void 0;
+      }
+      if (styleAttr && styleAttr in propsDef) {
+        styleAttr = void 0;
+      }
+    } else if (!("class" in propsDef) && !("style" in propsDef)) {
+      classAttr = "class";
+      styleAttr = "style";
+    }
+    const computedStyleInterceptor = {
+      classAttr,
+      styleAttr,
+      keys,
+      reactiveComputedStyle: r
+    };
+    i.computedStyleInterceptors = i.computedStyleInterceptors || [];
+    i.computedStyleInterceptors.push(computedStyleInterceptor);
+  } else if (!!(process.env.NODE_ENV !== "production")) {
+    warn(
+      `useComputedStyle() is called when there is no active component instance to be associated with.`
+    );
+  }
+  return r;
+}
+function triggerComputedStyleUpdate(instance) {
+  if (instance.computedStyleInterceptors) {
+    instance.computedStyleInterceptors.forEach((interceptor) => {
+      if (interceptor.classAttr !== "class" || interceptor.styleAttr !== "style") {
+        return;
+      }
+      const r = interceptor.reactiveComputedStyle;
+      const styles = interceptor.styles;
+      for (const key in r) {
+        if (!styles || !styles.has(key)) {
+          r[key] = "";
+        } else {
+          r[key] = styles.get(key);
+        }
+      }
+      styles == null ? void 0 : styles.forEach((value, key) => {
+        r[key] = value;
+      });
+    });
+  }
+}
+function collectClassStyles(instance, styles, weight) {
+  if (instance.computedStyleInterceptors) {
+    instance.computedStyleInterceptors.forEach((interceptor) => {
+      if (interceptor.classAttr !== "class") {
+        return;
+      }
+      interceptor.classStyles = interceptor.classStyles || /* @__PURE__ */ new Map();
+      interceptor.classStyles.clear();
+      interceptor.classStylesWeight = {};
+      styles.forEach((value, key) => {
+        if (interceptor.keys.indexOf(key) !== -1) {
+          interceptor.classStyles.set(key, value);
+          interceptor.classStylesWeight[key] = weight[key];
+        }
+      });
+    });
+  }
 }
 
 function patchClass(el, pre, next, instance = null) {
@@ -8601,6 +8759,7 @@ function patchClass(el, pre, next, instance = null) {
       el,
       instance.parent.type.styles
     );
+    setRootElementInstance(el, instance);
   }
   updateClassStyles(el);
 }
@@ -8619,6 +8778,24 @@ function updateClassStyles(el) {
   parseClassStylesResult.styles.forEach((value, key) => {
     oldClassStyle.set(key, value);
   });
+  const instance = getRootElementInstance(el);
+  if (instance && instance.computedStyleInterceptors) {
+    collectClassStyles(
+      instance,
+      parseClassStylesResult.vueComputedStyles,
+      parseClassStylesResult.vueComputedStyleWeights
+    );
+    instance.computedStyleInterceptors.forEach((interceptor) => {
+      if (interceptor.classAttr === "class" && interceptor.classStyles && interceptor.classStylesWeight) {
+        interceptor.styles = mergeClassStyles(
+          interceptor.classStyles,
+          interceptor.classStylesWeight,
+          interceptor.styles
+        );
+      }
+    });
+    triggerComputedStyleUpdate(instance);
+  }
   const styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
   if (styles.size == 0) {
     return;
@@ -8955,6 +9132,10 @@ function patchStyle(el, prev, next) {
   if (el._vsh) {
     batchedStyles.set("display", "none");
   }
+  const instance = getRootElementInstance(el);
+  if (instance && instance.computedStyleInterceptors) {
+    triggerComputedStyleUpdate(instance);
+  }
   el.updateStyle(batchedStyles);
 }
 function setBatchedStyles(batchedStyles, key, value) {
@@ -9179,4 +9360,4 @@ function unmountPage(pageInstance) {
   }
 }
 
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, Static, Suspense, Teleport, Text, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, unmountPage, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, Static, Suspense, Teleport, Text, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, logError, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, unmountPage, useAttrs, useComputedStyle, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
