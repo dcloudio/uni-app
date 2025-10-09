@@ -120,6 +120,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       lazyElement,
       component,
       checkPropName,
+      keyEnabledElements,
     } = options.miniProgram
     genTemplate(ast, {
       class: clazz,
@@ -135,6 +136,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       isBuiltInComponent: context.isBuiltInComponent,
       isMiniProgramComponent: context.isMiniProgramComponent,
       checkPropName,
+      keyEnabledElements,
       autoImportFilters: context.autoImportFilters,
       filter: options.miniProgram?.filter,
     })

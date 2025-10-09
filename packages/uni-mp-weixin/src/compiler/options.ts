@@ -62,6 +62,7 @@ export const customElements = [
   'open-data-list',
   'open-data-item',
   'selection',
+  'editor-portal',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
@@ -134,6 +135,7 @@ export function getMiniProgramOptions(
       lang: 'wxs',
       setStyle: true,
     },
+    keyEnabledElements: ['editor-portal'],
   }
 }
 

@@ -100,6 +100,10 @@ export interface MiniProgramCompilerOptions {
   }
   directive: string
   emitFile?: (emittedFile: EmittedAsset) => string
+  /**
+   * 允许作为 v-for 子节点并保留 key 的组件列表
+   */
+  keyEnabledElements?: string[]
 }
 export interface MiniProgramFilterOptions {
   id: string
