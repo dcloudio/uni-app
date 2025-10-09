@@ -61,6 +61,7 @@ export const ON_INIT = 'onInit'
 export const ON_SAVE_EXIT_STATE = 'onSaveExitState'
 // 抖音特有
 export const ON_UPLOAD_DOUYIN_VIDEO = 'onUploadDouyinVideo'
+export const ON_LIVE_MOUNT = 'onLiveMount'
 
 export const ON_RESIZE = 'onResize'
 export const ON_BACK_PRESS = 'onBackPress'
