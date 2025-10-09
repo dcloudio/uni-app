@@ -85,6 +85,9 @@
       "HideLoadingFailCallback"
     ],
     [
+      "HideLoadingFailErrorCode"
+    ],
+    [
       "HideLoadingFailImpl"
     ],
     [
@@ -118,6 +121,9 @@
       "IPreviewImageError"
     ],
     [
+      "LoadingPage"
+    ],
+    [
       "LongPressActionsFailResult"
     ],
     [
@@ -125,9 +131,6 @@
     ],
     [
       "LongPressActionsSuccessResult"
-    ],
-    [
-      "ModalPage"
     ],
     [
       "ModalPage"
