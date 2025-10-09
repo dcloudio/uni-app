@@ -1038,7 +1038,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "x-arkts": false
         }
       },
       "hideLoading": {
@@ -1046,7 +1047,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "x-arkts": false
         }
       },
       "showModal": {
