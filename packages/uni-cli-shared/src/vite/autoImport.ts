@@ -48,6 +48,7 @@ const uniLifeCyclePreset = {
     'onShareAppMessage',
     'onShareChat', // xhs-share
     'onCopyUrl',
+    'onUploadDouyinVideo',
 
     // 辅助
     'renderComponentSlot',
