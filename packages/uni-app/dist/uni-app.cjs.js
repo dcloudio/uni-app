@@ -148,6 +148,7 @@ const onShareChat = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_CHAT, 2
 const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_ADD_TO_FAVORITES, 2 /* HookFlags.PAGE */);
 const onShareAppMessage = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
 const onCopyUrl = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_COPY_URL, 2 /* HookFlags.PAGE */);
+const onUploadDouyinVideo = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_UPLOAD_DOUYIN_VIDEO, 2 /* HookFlags.PAGE */);
 const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, 2 /* HookFlags.PAGE */);
 const onNavigationBarSearchInputChanged = 
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, 2 /* HookFlags.PAGE */);
@@ -219,6 +220,7 @@ exports.onTabItemTap = onTabItemTap;
 exports.onThemeChange = onThemeChange;
 exports.onUnhandledRejection = onUnhandledRejection;
 exports.onUnload = onUnload;
+exports.onUploadDouyinVideo = onUploadDouyinVideo;
 exports.renderComponentSlot = renderComponentSlot;
 exports.requireNativePlugin = requireNativePlugin;
 exports.resolveEasycom = resolveEasycom;

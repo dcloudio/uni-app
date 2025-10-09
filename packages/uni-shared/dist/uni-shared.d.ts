@@ -337,6 +337,7 @@ export declare const MINI_PROGRAM_PAGE_RUNTIME_HOOKS: {
     readonly onShareTimeline: number;
     readonly onShareChat: number;
     readonly onCopyUrl: number;
+    readonly onUploadDouyinVideo: number;
 };
 
 export declare const NAVBAR_HEIGHT = 44;
@@ -553,6 +554,8 @@ export declare const ON_THEME_CHANGE = "onThemeChange";
 export declare const ON_UNHANDLE_REJECTION = "onUnhandledRejection";
 
 export declare const ON_UNLOAD = "onUnload";
+
+export declare const ON_UPLOAD_DOUYIN_VIDEO = "onUploadDouyinVideo";
 
 export declare const ON_WEB_INVOKE_APP_SERVICE = "onWebInvokeAppService";
 
@@ -821,7 +824,7 @@ export declare class UniInputElement extends UniElement {
     set value(val: string | number);
 }
 
-export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onShareChat", "onCopyUrl", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
+export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onShareChat", "onCopyUrl", "onUploadDouyinVideo", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
 
 export declare class UniNode extends UniEventTarget {
     nodeId?: number;

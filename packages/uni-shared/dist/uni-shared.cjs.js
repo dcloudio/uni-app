@@ -419,6 +419,8 @@ const ON_UNLOAD = 'onUnload';
 const ON_INIT = 'onInit';
 // 微信特有
 const ON_SAVE_EXIT_STATE = 'onSaveExitState';
+// 抖音特有
+const ON_UPLOAD_DOUYIN_VIDEO = 'onUploadDouyinVideo';
 const ON_RESIZE = 'onResize';
 const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
@@ -745,7 +747,10 @@ const initCustomDatasetOnce = /*#__PURE__*/ once((isBuiltInElement) => {
                 (this.__uniDataset = {});
             dataset[formatKey(key)] = value;
         }
-        setAttribute.call(this, key, value);
+        // github issues5773 过滤 web 端 query key为数字开头
+        if (!/^\d/.test(key)) {
+            setAttribute.call(this, key, value);
+        }
     };
     const removeAttribute = prototype.removeAttribute;
     prototype.removeAttribute = function (key) {
@@ -1569,6 +1574,7 @@ const PAGE_HOOKS = [
     ON_SHARE_APP_MESSAGE,
     ON_SHARE_CHAT,
     ON_COPY_URL,
+    ON_UPLOAD_DOUYIN_VIDEO,
     ON_ADD_TO_FAVORITES,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -1609,6 +1615,7 @@ const UniLifecycleHooks = [
     ON_SHARE_APP_MESSAGE,
     ON_SHARE_CHAT,
     ON_COPY_URL,
+    ON_UPLOAD_DOUYIN_VIDEO,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -1623,6 +1630,7 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
         onShareTimeline: 1 << 2,
         onShareChat: 1 << 3,
         onCopyUrl: 1 << 4,
+        onUploadDouyinVideo: 1 << 5,
     };
 })();
 function isUniLifecycleHook(name, value, checkType = true) {
@@ -1880,6 +1888,7 @@ exports.ON_TAB_ITEM_TAP = ON_TAB_ITEM_TAP;
 exports.ON_THEME_CHANGE = ON_THEME_CHANGE;
 exports.ON_UNHANDLE_REJECTION = ON_UNHANDLE_REJECTION;
 exports.ON_UNLOAD = ON_UNLOAD;
+exports.ON_UPLOAD_DOUYIN_VIDEO = ON_UPLOAD_DOUYIN_VIDEO;
 exports.ON_WEB_INVOKE_APP_SERVICE = ON_WEB_INVOKE_APP_SERVICE;
 exports.ON_WXS_INVOKE_CALL_METHOD = ON_WXS_INVOKE_CALL_METHOD;
 exports.PLUS_RE = PLUS_RE;
