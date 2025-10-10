@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
+    "i18n": "^0.15.2",
     "intersection-observer": "^0.7.0",
     "pako": "^1.0.11",
     "postcss-urlrewrite": "^0.3.0",
@@ -80,7 +81,6 @@
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.2.2",
     "glob-escape": "^0.0.2",
-    "i18n": "^0.13.3",
     "jest": "^29.7.0",
     "jsdom": "^16.2.1",
     "jsdom-global": "^3.0.2",
