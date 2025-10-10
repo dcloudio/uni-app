@@ -177,7 +177,7 @@ const tags = {
     'navigation-bar',
     ...nativeTags
   ],
-  'mp-xhs': ['post-note-button', 'group-chat-card', ...nativeTags],
+  'mp-xhs': ['post-note-button', 'group-chat-card', 'video-player', ...nativeTags],
   'mp-jd': ['root-portal', 'page-container', ...nativeTags],
   'mp-qq': [...nativeTags],
   'mp-harmony': [...nativeTags]
