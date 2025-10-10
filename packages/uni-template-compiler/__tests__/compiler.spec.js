@@ -408,7 +408,7 @@ describe('mp:compiler', () => {
 
     assertCodegen(
       '<view :style="false==false?{}:{}" style="color:red"></view>',
-      `<view style="{{'color:red;'+(false==false?{}:{})}}"></view>`
+      '<view style="{{\'color:red;\'+(false==false?{}:{})}}"></view>'
     )
 
     assertCodegen(
@@ -422,29 +422,29 @@ describe('mp:compiler', () => {
     )
 
     assertCodegen(
-      `<view :style="{ ['color']: 'purple'}"></view>`,
-      `<view style="{{('color')+':'+('purple')+';'}}"></view>`
+      '<view :style="{ [\'color\']: \'purple\'}"></view>',
+      '<view style="{{(\'color\')+\':\'+(\'purple\')+\';\'}}"></view>'
     )
 
     assertCodegen(
-      `<view :style="{ [color]: 'purple'}"></view>`,
-      `<view style="{{(color)+':'+('purple')+';'}}"></view>`
+      '<view :style="{ [color]: \'purple\'}"></view>',
+      '<view style="{{(color)+\':\'+(\'purple\')+\';\'}}"></view>'
     )
 
     assertCodegen(
-      `<view :style="{ [color1+color2]: 'purple'}"></view>`,
-      `<view style="{{(color1+color2)+':'+('purple')+';'}}"></view>`
+      '<view :style="{ [color1+color2]: \'purple\'}"></view>',
+      '<view style="{{(color1+color2)+\':\'+(\'purple\')+\';\'}}"></view>'
     )
 
     assertCodegen(
-      `<view :style="{ [color]: 'purple'}" style="background-color: aqua;"></view>`,
-      `<view style="{{'background-color:aqua;'+((color)+':'+('purple')+';')}}"></view>`
+      '<view :style="{ [color]: \'purple\'}" style="background-color: aqua;"></view>',
+      '<view style="{{\'background-color:aqua;\'+((color)+\':\'+(\'purple\')+\';\')}}"></view>'
     )
 
     assertCodegen(
-      `<view :style="{ [fn('color')]: 'purple'}"></view>`,
-      `<view style="{{($root.m0)+':'+('purple')+';'}}"></view>`,
-      "with(this){var m0=fn(\"color\");$mp.data=Object.assign({},{$root:{m0:m0}})}"
+      '<view :style="{ [fn(\'color\')]: \'purple\'}"></view>',
+      '<view style="{{($root.m0)+\':\'+(\'purple\')+\';\'}}"></view>',
+      'with(this){var m0=fn("color");$mp.data=Object.assign({},{$root:{m0:m0}})}'
     )
 
     const baseStr = '$mp.data=Object.assign({},{$root:{s0:s0}})}'
