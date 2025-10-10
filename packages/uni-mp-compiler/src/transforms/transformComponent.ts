@@ -31,7 +31,7 @@ import {
   ATTR_VUE_REF_IN_FOR,
   ATTR_VUE_SLOTS,
   filterObserverName,
-  rewirteWithHelper,
+  rewriteWithHelper,
 } from './utils'
 import { genBabelExpr, genExpr } from '../codegen'
 import {
@@ -300,7 +300,7 @@ export function rewritePropsBinding(
 ) {
   dir.exp = createSimpleExpression(
     genBabelExpr(
-      rewirteWithHelper(
+      rewriteWithHelper(
         RENDER_PROPS,
         parseExpr(dir.exp!, context)!,
         dir.loc,

@@ -72,10 +72,10 @@ export function rewriteSpreadElement(
   loc: SourceLocation,
   context: TransformContext
 ) {
-  return rewirteWithHelper(name, expr.argument, loc, context)
+  return rewriteWithHelper(name, expr.argument, loc, context)
 }
 
-export function rewirteWithHelper(
+export function rewriteWithHelper(
   name: symbol,
   expr: Expression,
   loc: SourceLocation,
