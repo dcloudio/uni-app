@@ -165,6 +165,7 @@ const tags = {
     'rtc-room',
     'clue-order-form',
     'shop-follow-card',
+    'mask',
     ...nativeTags
   ],
   'mp-kuaishou': [
