@@ -11,30 +11,25 @@ export declare enum TriggerOpTypes {
     DELETE = "delete",
     CLEAR = "clear"
 }
-export declare enum ReactiveFlags$1 {
+export declare enum ReactiveFlags {
     SKIP = "__v_skip",
     IS_REACTIVE = "__v_isReactive",
     IS_READONLY = "__v_isReadonly",
     IS_SHALLOW = "__v_isShallow",
-    RAW = "__v_raw",
-    IS_REF = "__v_isRef"
+    RAW = "__v_raw"
 }
 
-export declare class EffectScope implements ReactiveNode {
-    deps: Link | undefined;
-    depsTail: Link | undefined;
-    subs: Link | undefined;
-    subsTail: Link | undefined;
-    flags: number;
+type Dep = Map<ReactiveEffect, number> & {
+    cleanup: () => void;
+    computed?: ComputedRefImpl<any>;
+};
+
+export declare class EffectScope {
+    detached: boolean;
     constructor(detached?: boolean);
     get active(): boolean;
-    pause(): void;
-    /**
-     * Resumes the effect scope, including all child scopes and effects.
-     */
-    resume(): void;
     run<T>(fn: () => T): T | undefined;
-    stop(): void;
+    stop(fromParent?: boolean): void;
 }
 /**
  * Creates an effect scope object which can capture the reactive effects (i.e.
@@ -52,7 +47,6 @@ export declare function effectScope(detached?: boolean): EffectScope;
  * @see {@link https://vuejs.org/api/reactivity-advanced.html#getcurrentscope}
  */
 export declare function getCurrentScope(): EffectScope | undefined;
-export declare function setCurrentScope(scope?: EffectScope): EffectScope | undefined;
 /**
  * Registers a dispose callback on the current active effect scope. The
  * callback will be invoked when the associated effect scope is stopped.
@@ -60,36 +54,11 @@ export declare function setCurrentScope(scope?: EffectScope): EffectScope | unde
  * @param fn - The callback function to attach to the scope's cleanup.
  * @see {@link https://vuejs.org/api/reactivity-advanced.html#onscopedispose}
  */
-export declare function onScopeDispose(fn: () => void, failSilently?: boolean): void;
-
-interface ReactiveNode {
-    deps?: Link;
-    depsTail?: Link;
-    subs?: Link;
-    subsTail?: Link;
-    flags: ReactiveFlags;
-}
-interface Link {
-    dep: ReactiveNode | ComputedRefImpl | ReactiveEffect | EffectScope;
-    sub: ReactiveNode | ComputedRefImpl | ReactiveEffect | EffectScope;
-    prevSub: Link | undefined;
-    nextSub: Link | undefined;
-    prevDep: Link | undefined;
-    nextDep: Link | undefined;
-}
-declare const enum ReactiveFlags {
-    None = 0,
-    Mutable = 1,
-    Watching = 2,
-    RecursedCheck = 4,
-    Recursed = 8,
-    Dirty = 16,
-    Pending = 32
-}
+export declare function onScopeDispose(fn: () => void): void;
 
 export type EffectScheduler = (...args: any[]) => any;
 export type DebuggerEvent = {
-    effect: ReactiveNode;
+    effect: ReactiveEffect;
 } & DebuggerEventExtraInfo;
 export type DebuggerEventExtraInfo = {
     target: object;
@@ -99,49 +68,47 @@ export type DebuggerEventExtraInfo = {
     oldValue?: any;
     oldTarget?: Map<any, any> | Set<any>;
 };
+export declare class ReactiveEffect<T = any> {
+    fn: () => T;
+    trigger: () => void;
+    scheduler?: EffectScheduler | undefined;
+    active: boolean;
+    deps: Dep[];
+    onStop?: () => void;
+    onTrack?: (event: DebuggerEvent) => void;
+    onTrigger?: (event: DebuggerEvent) => void;
+    constructor(fn: () => T, trigger: () => void, scheduler?: EffectScheduler | undefined, scope?: EffectScope);
+    get dirty(): boolean;
+    set dirty(v: boolean);
+    run(): T;
+    stop(): void;
+}
 export interface DebuggerOptions {
     onTrack?: (event: DebuggerEvent) => void;
     onTrigger?: (event: DebuggerEvent) => void;
 }
 export interface ReactiveEffectOptions extends DebuggerOptions {
+    lazy?: boolean;
     scheduler?: EffectScheduler;
+    scope?: EffectScope;
+    allowRecurse?: boolean;
     onStop?: () => void;
 }
-export declare enum EffectFlags {
-    /**
-     * ReactiveEffect only
-     */
-    ALLOW_RECURSE = 128,
-    PAUSED = 256,
-    STOP = 1024
-}
-export declare class ReactiveEffect<T = any> implements ReactiveEffectOptions, ReactiveNode {
-    deps: Link | undefined;
-    depsTail: Link | undefined;
-    subs: Link | undefined;
-    subsTail: Link | undefined;
-    flags: number;
-    onTrack?: (event: DebuggerEvent) => void;
-    onTrigger?: (event: DebuggerEvent) => void;
-    fn(): T;
-    constructor(fn?: () => T);
-    get active(): boolean;
-    pause(): void;
-    resume(): void;
-    notify(): void;
-    run(): T;
-    stop(): void;
-    get dirty(): boolean;
-}
 export interface ReactiveEffectRunner<T = any> {
     (): T;
     effect: ReactiveEffect;
 }
-export interface ReactiveEffectRunner<T = any> {
-    (): T;
-    effect: ReactiveEffect;
-}
-export declare function effect<T = any>(fn: () => T, options?: ReactiveEffectOptions): ReactiveEffectRunner<T>;
+/**
+ * Registers the given function to track reactive updates.
+ *
+ * The given function will be run once immediately. Every time any reactive
+ * property that's accessed within it gets updated, the function will run again.
+ *
+ * @param fn - The function that will track reactive updates.
+ * @param options - Allows to control the effect's behaviour.
+ * @returns A runner that can be used to control the effect after creation.
+ */
+export declare function effect<T = any>(fn: () => T, options?: ReactiveEffectOptions): ReactiveEffectRunner;
 /**
  * Stops the effect associated with the given runner.
  *
@@ -160,61 +127,41 @@ export declare function enableTracking(): void;
  * Resets the previous global effect tracking state.
  */
 export declare function resetTracking(): void;
-/**
- * Registers a cleanup function for the current active effect.
- * The cleanup function is called right before the next effect run, or when the
- * effect is stopped.
- *
- * Throws a warning if there is no current active effect. The warning can be
- * suppressed by passing `true` to the second argument.
- *
- * @param fn - the cleanup function to be registered
- * @param failSilently - if `true`, will not throw warning when called without
- * an active effect.
- */
-export declare function onEffectCleanup(fn: () => void, failSilently?: boolean): void;
+export declare function pauseScheduling(): void;
+export declare function resetScheduling(): void;
 
 declare const ComputedRefSymbol: unique symbol;
-declare const WritableComputedRefSymbol: unique symbol;
-interface BaseComputedRef<T, S = T> extends Ref<T> {
-    [ComputedRefSymbol]: true;
-    /**
-     * @deprecated computed no longer uses effect
-     */
-    effect: ComputedRefImpl;
-}
-export interface ComputedRef<T = any> extends BaseComputedRef<T> {
+export interface ComputedRef<T = any> extends WritableComputedRef<T> {
     readonly value: T;
+    [ComputedRefSymbol]: true;
 }
-export interface WritableComputedRef<T, S = T> extends BaseComputedRef<T, S> {
-    [WritableComputedRefSymbol]: true;
+export interface WritableComputedRef<T> extends Ref<T> {
+    readonly effect: ReactiveEffect<T>;
 }
 export type ComputedGetter<T> = (oldValue?: T) => T;
 export type ComputedSetter<T> = (newValue: T) => void;
-export interface WritableComputedOptions<T, S = T> {
+export interface WritableComputedOptions<T> {
     get: ComputedGetter<T>;
-    set: ComputedSetter<S>;
+    set: ComputedSetter<T>;
 }
-/**
- * @private exported by @vue/reactivity for Vue core use, but not exported from
- * the main vue package
- */
-export declare class ComputedRefImpl<T = any> implements ReactiveNode {
-    fn: ComputedGetter<T>;
-    private readonly setter;
-    subs: Link | undefined;
-    subsTail: Link | undefined;
-    deps: Link | undefined;
-    depsTail: Link | undefined;
-    flags: ReactiveFlags;
-    get effect(): this;
-    get dep(): ReactiveNode;
-    onTrack?: (event: DebuggerEvent) => void;
-    onTrigger?: (event: DebuggerEvent) => void;
-    constructor(fn: ComputedGetter<T>, setter: ComputedSetter<T> | undefined);
+export declare class ComputedRefImpl<T> {
+    private getter;
+    private readonly _setter;
+    dep?: Dep;
+    private _value;
+    readonly effect: ReactiveEffect<T>;
+    readonly __v_isRef = true;
+    readonly [ReactiveFlags.IS_READONLY]: boolean;
+    _cacheable: boolean;
+    /**
+     * Dev only
+     */
+    _warnRecursive?: boolean;
+    constructor(getter: ComputedGetter<T>, _setter: ComputedSetter<T>, isReadonly: boolean, isSSR: boolean);
     get value(): T;
     set value(newValue: T);
-    update(): boolean;
+    get _dirty(): boolean;
+    set _dirty(v: boolean);
 }
 /**
  * Takes a getter function and returns a readonly reactive ref object for the
@@ -250,14 +197,9 @@ export declare class ComputedRefImpl<T = any> implements ReactiveNode {
  * @see {@link https://vuejs.org/api/reactivity-core.html#computed}
  */
 export declare function computed<T>(getter: ComputedGetter<T>, debugOptions?: DebuggerOptions): ComputedRef<T>;
-export declare function computed<T, S = T>(options: WritableComputedOptions<T, S>, debugOptions?: DebuggerOptions): WritableComputedRef<T, S>;
+export declare function computed<T>(options: WritableComputedOptions<T>, debugOptions?: DebuggerOptions): WritableComputedRef<T>;
 
 export type UnwrapNestedRefs<T> = T extends Ref ? T : UnwrapRefSimple<T>;
-declare const ReactiveMarkerSymbol: unique symbol;
-export interface ReactiveMarker {
-    [ReactiveMarkerSymbol]?: void;
-}
-export type Reactive<T> = UnwrapNestedRefs<T> & (T extends readonly any[] ? ReactiveMarker : {});
 /**
  * Returns a reactive proxy of the object.
  *
@@ -273,15 +215,15 @@ export type Reactive<T> = UnwrapNestedRefs<T> & (T extends readonly any[] ? Reac
  * @param target - The source object.
  * @see {@link https://vuejs.org/api/reactivity-core.html#reactive}
  */
-export declare function reactive<T extends object>(target: T): Reactive<T>;
+export declare function reactive<T extends object>(target: T): UnwrapNestedRefs<T>;
 declare const ShallowReactiveMarker: unique symbol;
 export type ShallowReactive<T> = T & {
     [ShallowReactiveMarker]?: true;
 };
 /**
- * Shallow version of {@link reactive}.
+ * Shallow version of {@link reactive()}.
  *
- * Unlike {@link reactive}, there is no deep conversion: only root-level
+ * Unlike {@link reactive()}, there is no deep conversion: only root-level
  * properties are reactive for a shallow reactive object. Property values are
  * stored and exposed as-is - this also means properties with ref values will
  * not be automatically unwrapped.
@@ -319,7 +261,7 @@ export type DeepReadonly<T> = T extends Builtin ? T : T extends Map<infer K, inf
  * the original.
  *
  * A readonly proxy is deep: any nested property accessed will be readonly as
- * well. It also has the same ref-unwrapping behavior as {@link reactive},
+ * well. It also has the same ref-unwrapping behavior as {@link reactive()},
  * except the unwrapped values will also be made readonly.
  *
  * @example
@@ -345,9 +287,9 @@ export type DeepReadonly<T> = T extends Builtin ? T : T extends Map<infer K, inf
  */
 export declare function readonly<T extends object>(target: T): DeepReadonly<UnwrapNestedRefs<T>>;
 /**
- * Shallow version of {@link readonly}.
+ * Shallow version of {@link readonly()}.
  *
- * Unlike {@link readonly}, there is no deep conversion: only root-level
+ * Unlike {@link readonly()}, there is no deep conversion: only root-level
  * properties are made readonly. Property values are stored and exposed as-is -
  * this also means properties with ref values will not be automatically
  * unwrapped.
@@ -376,8 +318,8 @@ export declare function readonly<T extends object>(target: T): DeepReadonly<Unwr
  */
 export declare function shallowReadonly<T extends object>(target: T): Readonly<T>;
 /**
- * Checks if an object is a proxy created by {@link reactive} or
- * {@link shallowReactive} (or {@link ref} in some cases).
+ * Checks if an object is a proxy created by {@link reactive()} or
+ * {@link shallowReactive()} (or {@link ref()} in some cases).
  *
  * @example
  * ```js
@@ -399,7 +341,7 @@ export declare function isReactive(value: unknown): boolean;
  * readonly object can change, but they can't be assigned directly via the
  * passed object.
  *
- * The proxies created by {@link readonly} and {@link shallowReadonly} are
+ * The proxies created by {@link readonly()} and {@link shallowReadonly()} are
  * both considered readonly, as is a computed ref without a set function.
  *
  * @param value - The value to check.
@@ -409,18 +351,18 @@ export declare function isReadonly(value: unknown): boolean;
 export declare function isShallow(value: unknown): boolean;
 /**
  * Checks if an object is a proxy created by {@link reactive},
- * {@link readonly}, {@link shallowReactive} or {@link shallowReadonly}.
+ * {@link readonly}, {@link shallowReactive} or {@link shallowReadonly()}.
  *
  * @param value - The value to check.
  * @see {@link https://vuejs.org/api/reactivity-utilities.html#isproxy}
  */
-export declare function isProxy(value: any): boolean;
+export declare function isProxy(value: unknown): boolean;
 /**
  * Returns the raw, original object of a Vue-created proxy.
  *
  * `toRaw()` can return the original object from proxies created by
- * {@link reactive}, {@link readonly}, {@link shallowReactive} or
- * {@link shallowReadonly}.
+ * {@link reactive()}, {@link readonly()}, {@link shallowReactive()} or
+ * {@link shallowReadonly()}.
  *
  * This is an escape hatch that can be used to temporarily read without
  * incurring proxy access / tracking overhead or write without triggering
@@ -457,7 +399,7 @@ export type Raw<T> = T & {
  * ```
  *
  * **Warning:** `markRaw()` together with the shallow APIs such as
- * {@link shallowReactive} allow you to selectively opt-out of the default
+ * {@link shallowReactive()} allow you to selectively opt-out of the default
  * deep reactive/readonly conversion and embed raw, non-proxied objects in your
  * state graph.
  *
@@ -465,22 +407,6 @@ export type Raw<T> = T & {
  * @see {@link https://vuejs.org/api/reactivity-advanced.html#markraw}
  */
 export declare function markRaw<T extends object>(value: T): Raw<T>;
-/**
- * Returns a reactive proxy of the given value (if possible).
- *
- * If the given value is not an object, the original value itself is returned.
- *
- * @param value - The value for which a reactive proxy shall be created.
- */
-export declare const toReactive: <T extends unknown>(value: T) => T;
-/**
- * Returns a readonly proxy of the given value (if possible).
- *
- * If the given value is not an object, the original value itself is returned.
- *
- * @param value - The value for which a readonly proxy shall be created.
- */
-export declare const toReadonly: <T extends unknown>(value: T) => DeepReadonly<T>;
 
 declare const RefSymbol: unique symbol;
 declare const RawSymbol: unique symbol;
@@ -507,14 +433,14 @@ export declare function isRef<T>(r: Ref<T> | unknown): r is Ref<T>;
  * @param value - The object to wrap in the ref.
  * @see {@link https://vuejs.org/api/reactivity-core.html#ref}
  */
-export declare function ref<T>(value: T): [T] extends [Ref] ? IfAny<T, Ref<T>, T> : Ref<UnwrapRef<T>>;
+export declare function ref<T>(value: T): Ref<UnwrapRef<T>>;
 export declare function ref<T = any>(): Ref<T | undefined>;
 declare const ShallowRefMarker: unique symbol;
-export type ShallowRef<T = any, S = T> = Ref<T> & {
+export type ShallowRef<T = any> = Ref<T> & {
     [ShallowRefMarker]?: true;
 };
 /**
- * Shallow version of {@link ref}.
+ * Shallow version of {@link ref()}.
  *
  * @example
  * ```js
@@ -558,8 +484,8 @@ export declare function shallowRef<T = any>(): ShallowRef<T | undefined>;
  * @see {@link https://vuejs.org/api/reactivity-advanced.html#triggerref}
  */
 export declare function triggerRef(ref: Ref): void;
-export type MaybeRef<T = any> = T | Ref<T> | ShallowRef<T> | WritableComputedRef<T>;
-export type MaybeRefOrGetter<T = any> = MaybeRef<T> | ComputedRef<T> | (() => T);
+export type MaybeRef<T = any> = T | Ref<T>;
+export type MaybeRefOrGetter<T = any> = MaybeRef<T> | (() => T);
 /**
  * Returns the inner value if the argument is a ref, otherwise return the
  * argument itself. This is a sugar function for
@@ -579,7 +505,7 @@ export type MaybeRefOrGetter<T = any> = MaybeRef<T> | ComputedRef<T> | (() => T)
 export declare function unref<T>(ref: MaybeRef<T> | ComputedRef<T>): T;
 /**
  * Normalizes values / refs / getters to values.
- * This is similar to {@link unref}, except that it also normalizes getters.
+ * This is similar to {@link unref()}, except that it also normalizes getters.
  * If the argument is a getter, it will be invoked and its return value will
  * be returned.
  *
@@ -593,11 +519,13 @@ export declare function unref<T>(ref: MaybeRef<T> | ComputedRef<T>): T;
  * @param source - A getter, an existing ref, or a non-function value.
  * @see {@link https://vuejs.org/api/reactivity-utilities.html#tovalue}
  */
-export declare function toValue<T>(source: MaybeRefOrGetter<T>): T;
+export declare function toValue<T>(source: MaybeRefOrGetter<T> | ComputedRef<T>): T;
 /**
- * Returns a proxy for the given object that shallowly unwraps properties that
- * are refs. If the object already is reactive, it's returned as-is. If not, a
- * new reactive proxy is created.
+ * Returns a reactive proxy for the given object.
+ *
+ * If the object already is reactive, it's returned as-is. If not, a new
+ * reactive proxy is created. Direct child properties that are refs are properly
+ * handled, as well.
  *
  * @param objectWithRefs - Either an already-reactive object or a simple object
  * that contains refs.
@@ -621,7 +549,7 @@ export type ToRefs<T = any> = {
 /**
  * Converts a reactive object to a plain object where each property of the
  * resulting object is a ref pointing to the corresponding property of the
- * original object. Each individual ref is created using {@link toRef}.
+ * original object. Each individual ref is created using {@link toRef()}.
  *
  * @param object - Reactive object to be made into an object of linked refs.
  * @see {@link https://vuejs.org/api/reactivity-utilities.html#torefs}
@@ -676,6 +604,7 @@ export declare function toRef<T extends object, K extends keyof T>(object: T, ke
 export declare function toRef<T extends object, K extends keyof T>(object: T, key: K, defaultValue: T[K]): ToRef<Exclude<T[K], undefined>>;
 export declare function toRef<T>(value: object, key: string): T extends () => infer R ? Readonly<Ref<R>> : T extends Ref ? T : Ref<UnwrapRef<T>>;
 export declare function toRef<T>(value: () => T): Readonly<Ref<T>>;
+type BaseTypes = string | number | boolean;
 /**
  * This is a special exported interface for other packages to declare
  * additional types that should bail out for ref unwrapping. For example
@@ -692,11 +621,11 @@ export declare function toRef<T>(value: () => T): Readonly<Ref<T>>;
 export interface RefUnwrapBailTypes {
 }
 export type ShallowUnwrapRef<T> = {
-    [K in keyof T]: DistributeRef<T[K]>;
+    [K in keyof T]: DistrubuteRef<T[K]>;
 };
-type DistributeRef<T> = T extends Ref<infer V> ? V : T;
+type DistrubuteRef<T> = T extends Ref<infer V> ? V : T;
 export type UnwrapRef<T> = T extends ShallowRef<infer V> ? V : T extends Ref<infer V> ? UnwrapRefSimple<V> : UnwrapRefSimple<T>;
-type UnwrapRefSimple<T> = T extends Builtin | Ref | RefUnwrapBailTypes[keyof RefUnwrapBailTypes] | {
+type UnwrapRefSimple<T> = T extends Function | BaseTypes | Ref | RefUnwrapBailTypes[keyof RefUnwrapBailTypes] | {
     [RawSymbol]?: true;
 } ? T : T extends Map<infer K, infer V> ? Map<K, UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof Map<any, any>>> : T extends WeakMap<infer K, infer V> ? WeakMap<K, UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof WeakMap<any, any>>> : T extends Set<infer V> ? Set<UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof Set<any>>> : T extends WeakSet<infer V> ? WeakSet<UnwrapRefSimple<V>> & UnwrapRef<Omit<T, keyof WeakSet<any>>> : T extends ReadonlyArray<any> ? {
     [K in keyof T]: UnwrapRefSimple<T[K]>;
@@ -708,9 +637,12 @@ type UnwrapRefSimple<T> = T extends Builtin | Ref | RefUnwrapBailTypes[keyof Ref
     [P in keyof T]: P extends symbol ? T[P] : UnwrapRef<T[P]>;
 } : T;
 
+/**
+ * @deprecated use `computed` instead. See #5912
+ */
+export declare const deferredComputed: typeof computed;
+
 export declare const ITERATE_KEY: unique symbol;
-export declare const MAP_KEY_ITERATE_KEY: unique symbol;
-export declare const ARRAY_ITERATE_KEY: unique symbol;
 /**
  * Tracks access to a reactive property.
  *
@@ -732,65 +664,3 @@ export declare function track(target: object, type: TrackOpTypes, key: unknown):
  */
 export declare function trigger(target: object, type: TriggerOpTypes, key?: unknown, newValue?: unknown, oldValue?: unknown, oldTarget?: Map<unknown, unknown> | Set<unknown>): void;
 
-/**
- * Track array iteration and return:
- * - if input is reactive: a cloned raw array with reactive values
- * - if input is non-reactive or shallowReactive: the original raw array
- */
-export declare function reactiveReadArray<T>(array: T[]): T[];
-/**
- * Track array iteration and return raw array
- */
-export declare function shallowReadArray<T>(arr: T[]): T[];
-
-export declare enum WatchErrorCodes {
-    WATCH_GETTER = 2,
-    WATCH_CALLBACK = 3,
-    WATCH_CLEANUP = 4
-}
-export type WatchEffect = (onCleanup: OnCleanup) => void;
-export type WatchSource<T = any> = Ref<T> | ComputedRef<T> | (() => T);
-export type WatchCallback<V = any, OV = any> = (value: V, oldValue: OV, onCleanup: OnCleanup) => any;
-export type OnCleanup = (cleanupFn: () => void) => void;
-export interface WatchOptions<Immediate = boolean> extends DebuggerOptions {
-    immediate?: Immediate;
-    deep?: boolean | number;
-    once?: boolean;
-    onWarn?: (msg: string, ...args: any[]) => void;
-}
-export type WatchStopHandle = () => void;
-export interface WatchHandle extends WatchStopHandle {
-    pause: () => void;
-    resume: () => void;
-    stop: () => void;
-}
-/**
- * Returns the current active effect if there is one.
- */
-export declare function getCurrentWatcher(): ReactiveEffect<any> | undefined;
-/**
- * Registers a cleanup callback on the current active effect. This
- * registered cleanup callback will be invoked right before the
- * associated effect re-runs.
- *
- * @param cleanupFn - The callback function to attach to the effect's cleanup.
- * @param failSilently - if `true`, will not throw warning when called without
- * an active effect.
- * @param owner - The effect that this cleanup function should be attached to.
- * By default, the current active effect.
- */
-export declare function onWatcherCleanup(cleanupFn: () => void, failSilently?: boolean, owner?: WatcherEffect | undefined): void;
-export declare class WatcherEffect extends ReactiveEffect {
-    cb?: WatchCallback<any, any> | null | undefined;
-    options: WatchOptions;
-    forceTrigger: boolean;
-    isMultiSource: boolean;
-    oldValue: any;
-    boundCleanup: typeof onWatcherCleanup;
-    constructor(source: WatchSource | WatchSource[] | WatchEffect | object, cb?: WatchCallback<any, any> | null | undefined, options?: WatchOptions);
-    run(initialRun?: boolean): void;
-}
-export declare function watch(source: WatchSource | WatchSource[] | WatchEffect | object, cb?: WatchCallback | null, options?: WatchOptions): WatchHandle;
-export declare function traverse(value: unknown, depth?: number, seen?: Set<unknown>): unknown;
-
-export { ReactiveFlags$1 as ReactiveFlags,  };

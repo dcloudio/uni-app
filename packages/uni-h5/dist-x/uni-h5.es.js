@@ -8516,7 +8516,7 @@ function decrementEscBackPageNum() {
   }
 }
 const closeDialogPage = (options) => {
-  var _a, _b;
+  var _a, _b, _c, _d, _e;
   const currentPages = getCurrentPages();
   const currentPage = currentPages[currentPages.length - 1];
   if (!currentPage) {
@@ -8544,7 +8544,11 @@ const closeDialogPage = (options) => {
         return;
       }
     } else {
-      const parentSystemDialogPages = parentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
+      const parentSystemDialogPages = (_c = (_b = (_a = parentPage.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages) == null ? void 0 : _c.value;
+      if (!parentSystemDialogPages) {
+        triggerFailCallback$1(options, "dialogPage is not a valid page");
+        return;
+      }
       const index2 = parentSystemDialogPages.indexOf(dialogPage);
       if (index2 > -1) {
         invokeHook(parentSystemDialogPages[index2].vm, ON_UNLOAD);
@@ -8573,8 +8577,8 @@ const closeDialogPage = (options) => {
     dialogPages.length = 0;
   }
   const successOptions = { errMsg: "closeDialogPage: ok" };
-  (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, successOptions);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, successOptions);
+  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, successOptions);
+  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, successOptions);
 };
 function triggerFailCallback$1(options, errMsg) {
   var _a, _b;
@@ -20795,7 +20799,10 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
         "poster": props2.poster,
         "autoplay": !!props2.autoplay
       }, videoAttrs.value, {
-        "class": "uni-video-video",
+        "class": {
+          "uni-video-video": true,
+          "uni-video-video-fullscreen": fullscreenState.fullscreen
+        },
         "webkit-playsinline": true,
         "playsinline": true,
         "onDurationchange": onDurationChange,
@@ -24108,9 +24115,18 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
       xhr.onload = function() {
         clearTimeout(timer);
         const statusCode = xhr.status;
+        const responseHeaders = xhr.getAllResponseHeaders();
+        const header2 = responseHeaders ? responseHeaders.trim().split(/[\r\n]+/).reduce((acc, line) => {
+          const parts = line.split(": ");
+          const header3 = parts.shift();
+          const value = parts.join(": ");
+          acc[header3] = value;
+          return acc;
+        }, {}) : {};
         resolve({
           statusCode,
-          data: xhr.responseText || xhr.response
+          data: xhr.responseText || xhr.response,
+          header: header2
         });
       };
       if (!uploadTask._isAbort) {
@@ -30160,14 +30176,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, 8, ["class"]);
 }
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
-class UniShowModalFailImpl extends UniError {
+class ShowModalFailImpl extends UniError {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
   }
 }
-class UniHideModalFailImpl extends UniError {
+class HideModalFailImpl extends UniError {
   constructor(errMsg = "hideModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -30198,7 +30214,7 @@ const showModal$1 = (options) => {
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res = new UniShowModalFailImpl();
+    const res = new ShowModalFailImpl();
     (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
     (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
   });
@@ -30206,7 +30222,7 @@ const showModal$1 = (options) => {
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`);
+      const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
       (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
       (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
       uni.$off(readyEventName);
@@ -30217,7 +30233,7 @@ const showModal$1 = (options) => {
   if (openRet != null) {
     return openRet;
   } else {
-    const res = new UniShowModalFailImpl();
+    const res = new ShowModalFailImpl();
     (_a = options.fail) == null ? void 0 : _a.call(options, res);
     (_b = options.complete) == null ? void 0 : _b.call(options, res);
     return null;
@@ -30227,7 +30243,7 @@ const hideModal$1 = function(options) {
   var _a, _b, _c, _d, _e;
   const currentPage = getCurrentPage();
   if (!currentPage) {
-    const res2 = new UniHideModalFailImpl();
+    const res2 = new HideModalFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;

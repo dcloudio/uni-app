@@ -2817,7 +2817,7 @@ const Picker = /* @__PURE__ */ defineComponent({
       plus.nativeUI[props2.mode === mode.TIME ? "pickTime" : "pickDate"]((res) => {
         const date = res.date;
         trigger("change", {
-          value: props2.mode === mode.TIME ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}` : `${date.getFullYear()}-${padLeft(date.getMonth() + 1)}-${padLeft(date.getDate())}`
+          value: props2.mode === mode.TIME ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}` : `${date.getUTCFullYear()}-${padLeft(date.getUTCMonth() + 1)}-${padLeft(date.getUTCDate())}`
         });
       }, () => {
         trigger("cancel", {});

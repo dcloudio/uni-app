@@ -2480,7 +2480,9 @@ function _reLaunch(_ref3) {
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function closePage(page, animationType, animationDuration) {
-  clearDialogPages(page.$page);
+  if (page.$page) {
+    clearDialogPages(page.$page);
+  }
   var nativePage = page.$nativePage;
   nativePage && closeWebview(nativePage, animationType, animationDuration);
   removePage(page);

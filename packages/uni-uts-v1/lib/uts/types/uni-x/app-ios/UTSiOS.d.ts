@@ -739,6 +739,25 @@ interface UTSiOS {
    * }
    */
   executeOnThread(context:UniThreadContext,task:() => void):void;
+  /**
+   * 判断是否支持某个版本的系统
+   * @return 是否支持
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "x",
+   *  		     "uniVer": "x",
+   * 		    	 "unixVer": "x"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *  	    	 "uniVer": "√",
+   * 		    	 "unixVer": "4.11"
+   *        }
+   *    }
+   * }
+   */
+  available(version: string) : boolean;
 }
 
 

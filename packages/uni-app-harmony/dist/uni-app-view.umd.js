@@ -886,7 +886,9 @@
         var dataset = this.__uniDataset || (this.__uniDataset = {});
         dataset[formatKey(key2)] = value;
       }
-      setAttribute.call(this, key2, value);
+      if (!/^\d/.test(key2)) {
+        setAttribute.call(this, key2, value);
+      }
     };
     var removeAttribute = prototype.removeAttribute;
     prototype.removeAttribute = function(key2) {

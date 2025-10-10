@@ -119,6 +119,56 @@ declare class UniActivityCallback implements IUniActivityCallback {
    */
   onUserInteraction(params : UniActivityParams) : void;
 
+
+  /**
+     对应原生 Activity 的 [onPictureInPictureModeChanged](https://developer.android.com/reference/androidx/activity/ComponentActivity?hl=en#onPictureInPictureModeChanged(kotlin.Boolean)) 函数，该方法在 进入/离开 画中画模式时触发。
+     注意第一个参数为自定义参数 UniActivityParams。
+     @param {UniActivityParams} params 统一返回参数，包括页面路由地址与方法返回值
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#registerActivityCallback - 提供注册和使用此回调的指导。
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5.0",
+               "uniVer": "x",
+               "unixVer": "4.82",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "4.82"
+            },
+            "ios": {
+               "osVer": "x",
+               "uniVer": "x",
+                 "unixVer": "x"
+            }
+        }
+     }
+   */
+  onPictureInPictureModeChanged(params : UniActivityParams) : void;
+
+  /**
+     对应原生 Activity 的 [onPictureInPictureModeChanged](https://developer.android.com/reference/androidx/activity/ComponentActivity?hl=en#onPictureInPictureModeChanged(kotlin.Boolean)) 函数，该方法在 进入/离开 画中画模式时触发。
+     注意第一个参数为自定义参数 UniActivityParams。
+     在super 之前调用
+     @param {UniActivityParams} params 统一返回参数，包括页面路由地址与方法返回值
+     @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#registerActivityCallback - 提供注册和使用此回调的指导。
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5.0",
+               "uniVer": "x",
+               "unixVer": "4.82",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "4.82"
+            },
+            "ios": {
+               "osVer": "x",
+               "uniVer": "x",
+                 "unixVer": "x"
+            }
+        }
+     }
+   */
+  onPrePictureInPictureModeChanged(params : UniActivityParams) : void;
+
   /**
      对应原生 Activity 的 [onUserLeaveHint](https://developer.android.com/reference/android/app/Activity#onUserLeaveHint()) 函数，此方法在用户即将离开应用且返回到上一级活动（通过按Home键等操作造成的）时被调用，用于处理用户即将离开应用前的逻辑。
      注意第一个参数为自定义参数 UniActivityParams。

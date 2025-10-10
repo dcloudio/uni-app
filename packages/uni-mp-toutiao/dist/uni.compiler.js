@@ -43,6 +43,7 @@ const customElements = [
     'clue-order-form',
     'shop-follow-card',
     'match-media',
+    'mask',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const projectConfigFilename = 'project.config.json';

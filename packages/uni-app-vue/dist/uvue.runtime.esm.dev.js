@@ -8495,6 +8495,7 @@ function normalizeChildren(vnode, children) {
   vnode.shapeFlag |= type;
 }
 function mergeProps() {
+  var _a;
   var ret = {};
   for (var i = 0; i < arguments.length; i++) {
     var toMerge = i < 0 || arguments.length <= i ? undefined : arguments[i];
@@ -8504,7 +8505,54 @@ function mergeProps() {
           ret.class = normalizeClass([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        ret.style = normalizeStyle([ret.style, toMerge.style]);
+        (function () {
+          var computedStyleInterceptors = (_a = currentRenderingInstance) == null ? void 0 : _a.computedStyleInterceptors;
+          var toMergeStyle = void 0;
+          if (computedStyleInterceptors == null ? void 0 : computedStyleInterceptors.length) {
+            var matchedInterceptors = computedStyleInterceptors.filter(interceptor => interceptor.styleAttr === "style");
+            if (matchedInterceptors.length > 0) {
+              toMergeStyle = normalizeStyle(toMerge.style);
+              matchedInterceptors.forEach(interceptor => {
+                interceptor.styles = interceptor.styles || /* @__PURE__ */new Map();
+                interceptor.styles.clear();
+                if (!toMergeStyle) {
+                  interceptor.styles = /* @__PURE__ */new Map();
+                } else {
+                  var properties = interceptor.properties;
+                  if (properties) {
+                    properties.forEach(property => {
+                      var isCSSVar = property.startsWith("--");
+                      var camelizedKey = isCSSVar ? property : camelize(property);
+                      var hyphenatedKey = isCSSVar ? property : hyphenate(camelizedKey);
+                      if (hyphenatedKey in toMergeStyle) {
+                        var value = toMergeStyle[hyphenatedKey];
+                        if (interceptor.filterProperties) {
+                          delete toMergeStyle[hyphenatedKey];
+                        }
+                        interceptor.styles.set(camelizedKey, value);
+                      }
+                    });
+                  } else {
+                    for (var key2 in toMergeStyle) {
+                      var value = toMergeStyle[key2];
+                      var isCSSVar = key2.startsWith("--");
+                      var camelizedKey = isCSSVar ? key2 : camelize(key2);
+                      interceptor.styles.set(camelizedKey, value);
+                    }
+                    if (interceptor.filterProperties) {
+                      toMergeStyle = {};
+                    }
+                  }
+                }
+              });
+            }
+          }
+          if (toMergeStyle) {
+            ret.style = normalizeStyle([ret.style, toMergeStyle]);
+          } else {
+            ret.style = normalizeStyle([ret.style, toMerge.style]);
+          }
+        })();
       } else if (isOn(key)) {
         var existing = ret[key];
         var incoming = toMerge[key];
@@ -9217,8 +9265,15 @@ var NODE_EXT_IS_TEXT_NODE = "isTextNode";
 var NODE_EXT_CHILD_NODE = "childNode";
 var NODE_EXT_PARENT_NODE = "parentNode";
 var NODE_EXT_CHILD_NODES = "childNodes";
+var RootElementInstanceMap = /* @__PURE__ */new WeakMap();
 function setNodeExtraData(el, name, value) {
   el.ext.set(name, value);
+}
+function setRootElementInstance(el, instance) {
+  RootElementInstanceMap.set(el, instance);
+}
+function getRootElementInstance(el) {
+  return RootElementInstanceMap.get(el) || null;
 }
 function getNodeExtraData(el, name) {
   return el.ext.get(name);
@@ -9348,8 +9403,21 @@ var WEIGHT_IMPORTANT = 1e3;
 function parseClassName(_ref22, parentStyles, el) {
   var {
     styles,
-    weights
+    weights,
+    vueComputedStyles,
+    vueComputedStyleWeights
   } = _ref22;
+  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  var isParentStyles = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+  var _a;
+  var computedStyleInterceptors = void 0;
+  if (isParentStyles && instance) {
+    computedStyleInterceptors = (_a = instance.computedStyleInterceptors) == null ? void 0 : _a.filter(interceptor => interceptor.classAttr === "class");
+    computedStyleInterceptors == null ? void 0 : computedStyleInterceptors.forEach(interceptor => {
+      interceptor.classStyles = interceptor.classStyles || /* @__PURE__ */new Map();
+      interceptor.classStyles.clear();
+    });
+  }
   each(parentStyles).forEach(parentSelector => {
     if (parentSelector && el) {
       if (!isMatchParentSelector(parentSelector, el)) {
@@ -9364,11 +9432,27 @@ function parseClassName(_ref22, parentStyles, el) {
       if (isImportant) {
         name = name.slice(1);
       }
-      var oldWeight = weights[name] || 0;
       var weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
-      if (weight >= oldWeight) {
-        weights[name] = weight;
-        styles.set(name, value);
+      var filteredByComputedStyle = false;
+      var usedByComputedStyle = false;
+      if (computedStyleInterceptors) {
+        var interceptors = computedStyleInterceptors.filter(interceptor => !interceptor.properties || interceptor.properties.indexOf(name) !== -1);
+        usedByComputedStyle = interceptors.length > 0;
+        filteredByComputedStyle = interceptors.some(interceptor => interceptor.filterProperties);
+      }
+      if (usedByComputedStyle) {
+        var oldWeight = vueComputedStyleWeights[name] || 0;
+        if (weight >= oldWeight) {
+          vueComputedStyleWeights[name] = weight;
+          vueComputedStyles.set(name, value);
+        }
+      }
+      if (!filteredByComputedStyle) {
+        var _oldWeight = weights[name] || 0;
+        if (weight >= _oldWeight) {
+          weights[name] = weight;
+          styles.set(name, value);
+        }
       }
     });
   });
@@ -9377,6 +9461,8 @@ class ParseStyleContext {
   constructor() {
     this.styles = /* @__PURE__ */new Map();
     this.weights = {};
+    this.vueComputedStyles = /* @__PURE__ */new Map();
+    this.vueComputedStyleWeights = {};
   }
 }
 function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet) {
@@ -9385,7 +9471,7 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet) {
   classList.forEach(className => {
     var parentStyles = stylesheet && stylesheet[className];
     if (parentStyles) {
-      parseClassName(context, parentStyles, el);
+      parseClassName(context, parentStyles, el, el ? getRootElementInstance(el) : null, true);
     }
   });
   if (parentStylesheet != null) {
@@ -9393,7 +9479,7 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet) {
       var _a;
       var parentStyles = (_a = (parentStylesheet != null ? parentStylesheet : []).find(style => style[className] !== null)) == null ? void 0 : _a[className];
       if (parentStyles != null) {
-        parseClassName(context, parentStyles, el);
+        parseClassName(context, parentStyles, el, el ? getRootElementInstance(el) : null, true);
       }
     });
   }
@@ -9452,8 +9538,11 @@ function extendMap(a, b) {
   return a;
 }
 function toStyle(el, classStyle, classStyleWeights) {
-  var res = extendMap(/* @__PURE__ */new Map(), classStyle);
   var style = getExtraStyle(el);
+  return mergeClassStyles(classStyle, classStyleWeights, style);
+}
+function mergeClassStyles(classStyle, classStyleWeights, style) {
+  var res = extendMap(/* @__PURE__ */new Map(), classStyle);
   if (style != null) {
     style.forEach((value, key) => {
       var weight = classStyleWeights[key];
@@ -9463,6 +9552,87 @@ function toStyle(el, classStyle, classStyleWeights) {
     });
   }
   return res;
+}
+function useComputedStyle() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var _a;
+  var i = getCurrentInstance();
+  var r = reactive(/* @__PURE__ */new Map());
+  if (i) {
+    var propsDef = i.propsOptions === EMPTY_ARR ? {} : i.propsOptions[0];
+    var {
+      classAttr,
+      styleAttr,
+      properties
+    } = options;
+    var filterProperties = (_a = options.filterProperties) != null ? _a : true;
+    if (classAttr || styleAttr) {
+      if (classAttr && classAttr in propsDef) {
+        classAttr = void 0;
+      }
+      if (styleAttr && styleAttr in propsDef) {
+        styleAttr = void 0;
+      }
+    } else if (!("class" in propsDef) && !("style" in propsDef)) {
+      classAttr = "class";
+      styleAttr = "style";
+    }
+    var computedStyleInterceptor = {
+      classAttr,
+      styleAttr,
+      properties,
+      reactiveComputedStyle: r,
+      filterProperties
+    };
+    i.computedStyleInterceptors = i.computedStyleInterceptors || [];
+    i.computedStyleInterceptors.push(computedStyleInterceptor);
+  } else {
+    warn("useComputedStyle() is called when there is no active component instance to be associated with.");
+  }
+  return r;
+}
+function triggerComputedStyleUpdate(instance) {
+  if (instance.computedStyleInterceptors) {
+    instance.computedStyleInterceptors.forEach(interceptor => {
+      if (interceptor.classAttr !== "class" || interceptor.styleAttr !== "style") {
+        return;
+      }
+      var r = interceptor.reactiveComputedStyle;
+      var styles = interceptor.styles;
+      for (var key in r) {
+        var isCSSVar = key.startsWith("--");
+        var camelizedKey = isCSSVar ? key : camelize(key);
+        if (!styles || !styles.has(camelizedKey)) {
+          r.set(key, "");
+        } else {
+          r.set(key, styles.get(camelizedKey));
+        }
+      }
+      styles == null ? void 0 : styles.forEach((value, key) => {
+        var isCSSVar = key.startsWith("--");
+        var hyphenatedKey = isCSSVar ? key : hyphenate(key);
+        r.set(hyphenatedKey, value);
+      });
+    });
+  }
+}
+function collectClassStyles(instance, styles, weight) {
+  if (instance.computedStyleInterceptors) {
+    instance.computedStyleInterceptors.forEach(interceptor => {
+      if (interceptor.classAttr !== "class") {
+        return;
+      }
+      interceptor.classStyles = interceptor.classStyles || /* @__PURE__ */new Map();
+      interceptor.classStyles.clear();
+      interceptor.classStylesWeight = {};
+      styles.forEach((value, key) => {
+        if (!interceptor.properties || interceptor.properties.indexOf(key) !== -1) {
+          interceptor.classStyles.set(key, value);
+          interceptor.classStylesWeight[key] = weight[key];
+        }
+      });
+    });
+  }
 }
 function patchClass(el, pre, next) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -9474,6 +9644,7 @@ function patchClass(el, pre, next) {
   setExtraStyles(el, parseStyleSheet(instance));
   if (instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
     setExtraParentStyles(el, instance.parent.type.styles);
+    setRootElementInstance(el, instance);
   }
   updateClassStyles(el);
 }
@@ -9492,6 +9663,16 @@ function updateClassStyles(el) {
   parseClassStylesResult.styles.forEach((value, key) => {
     oldClassStyle.set(key, value);
   });
+  var instance = getRootElementInstance(el);
+  if (instance && instance.computedStyleInterceptors) {
+    collectClassStyles(instance, parseClassStylesResult.vueComputedStyles, parseClassStylesResult.vueComputedStyleWeights);
+    instance.computedStyleInterceptors.forEach(interceptor => {
+      if (interceptor.classAttr === "class" && interceptor.classStyles && interceptor.classStylesWeight) {
+        interceptor.styles = mergeClassStyles(interceptor.classStyles, interceptor.classStylesWeight, interceptor.styles);
+      }
+    });
+    triggerComputedStyleUpdate(instance);
+  }
   var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
   if (styles.size == 0) {
     return;
@@ -9822,6 +10003,10 @@ function patchStyle(el, prev, next) {
   if (el._vsh) {
     batchedStyles.set("display", "none");
   }
+  var instance = getRootElementInstance(el);
+  if (instance && instance.computedStyleInterceptors) {
+    triggerComputedStyleUpdate(instance);
+  }
   el.updateStyle(batchedStyles);
 }
 function setBatchedStyles(batchedStyles, key, value) {
@@ -10135,4 +10320,4 @@ var defineComponent = options => {
 };
 var ssrRef = ref;
 var shallowSsrRef = shallowRef;
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderComponentSlot, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, ssrContextKey, ssrRef, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createMountPage, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentGenericInstance, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, onActivated, onBackPress, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onError, onErrorCaptured, onExit, onHide, onLaunch, onLoad, onMounted, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onRenderTracked, onRenderTriggered, onResize, onScopeDispose, onServerPrefetch, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderComponentSlot, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, shallowSsrRef, ssrContextKey, ssrRef, ssrUtils, stop, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unmountPage, unref, useAttrs, useComputedStyle, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

@@ -1,6 +1,6 @@
 import Context from 'android.content.Context'
-
-/**
+import Activity from 'android.app.Activity';
+/**ss
  * 任务分发器
  */
 declare class UTSTaskDispatcher {
@@ -27,6 +27,8 @@ declare class PrivacyOption {
  * since 4.81 update kotlin 2.2.0
  */
 interface UTSAndroid {
+
+  Suppress(...args:string[]):void;
 
   /**
      监听 App配置发生变化, 对应 android原生 onAppConfigChange

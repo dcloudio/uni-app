@@ -17457,7 +17457,10 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "poster": props2.poster,
         "autoplay": !!props2.autoplay
       }, videoAttrs.value, {
-        "class": "uni-video-video",
+        "class": {
+          "uni-video-video": true,
+          "uni-video-video-fullscreen": fullscreenState.fullscreen
+        },
         "webkit-playsinline": true,
         "playsinline": true,
         "onDurationchange": onDurationChange,
@@ -21085,9 +21088,18 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
       xhr.onload = function() {
         clearTimeout(timer);
         const statusCode = xhr.status;
+        const responseHeaders = xhr.getAllResponseHeaders();
+        const header2 = responseHeaders ? responseHeaders.trim().split(/[\r\n]+/).reduce((acc, line) => {
+          const parts = line.split(": ");
+          const header3 = parts.shift();
+          const value = parts.join(": ");
+          acc[header3] = value;
+          return acc;
+        }, {}) : {};
         resolve({
           statusCode,
-          data: xhr.responseText || xhr.response
+          data: xhr.responseText || xhr.response,
+          header: header2
         });
       };
       if (!uploadTask._isAbort) {
