@@ -6,6 +6,12 @@ import { Prettify } from '@vue/shared';
 
 export interface IRProp extends Omit<DirectiveTransformResult, 'value'> {
     values: SimpleExpressionNode[];
+    /**
+     * fixed by uts 当前整个IRProp表达式对应的标识符，目前用于合并class+:class、style+:style的表达式
+     */
+    sharedData?: {
+        ident?: string;
+    };
 }
 export declare enum IRDynamicPropsKind {
     EXPRESSION = 0,// v-bind="value"
