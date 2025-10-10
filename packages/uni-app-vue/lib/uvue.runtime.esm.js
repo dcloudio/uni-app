@@ -7561,17 +7561,31 @@ function mergeProps(...args) {
               if (!toMergeStyle) {
                 interceptor.styles = /* @__PURE__ */ new Map();
               } else {
-                const keys = interceptor.keys;
-                keys.forEach((key2) => {
-                  let isCSSVar = key2.startsWith("--");
-                  const camelizedKey = isCSSVar ? key2 : camelize(key2);
-                  const hyphenatedKey = isCSSVar ? key2 : hyphenate(camelizedKey);
-                  if (hyphenatedKey in toMergeStyle) {
-                    const value = toMergeStyle[hyphenatedKey];
-                    delete toMergeStyle[hyphenatedKey];
+                const properties = interceptor.properties;
+                if (properties) {
+                  properties.forEach((property) => {
+                    let isCSSVar = property.startsWith("--");
+                    const camelizedKey = isCSSVar ? property : camelize(property);
+                    const hyphenatedKey = isCSSVar ? property : hyphenate(camelizedKey);
+                    if (hyphenatedKey in toMergeStyle) {
+                      const value = toMergeStyle[hyphenatedKey];
+                      if (interceptor.filterProperties) {
+                        delete toMergeStyle[hyphenatedKey];
+                      }
+                      interceptor.styles.set(camelizedKey, value);
+                    }
+                  });
+                } else {
+                  for (const key2 in toMergeStyle) {
+                    const value = toMergeStyle[key2];
+                    let isCSSVar = key2.startsWith("--");
+                    const camelizedKey = isCSSVar ? key2 : camelize(key2);
                     interceptor.styles.set(camelizedKey, value);
                   }
-                });
+                  if (interceptor.filterProperties) {
+                    toMergeStyle = {};
+                  }
+                }
               }
             });
           }
@@ -8543,19 +8557,24 @@ function parseClassName({
       }
       const weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
       let filteredByComputedStyle = false;
+      let usedByComputedStyle = false;
       if (computedStyleInterceptors) {
         const interceptors = computedStyleInterceptors.filter(
-          (interceptor) => interceptor.keys.indexOf(name) !== -1
+          (interceptor) => !interceptor.properties || interceptor.properties.indexOf(name) !== -1
         );
-        filteredByComputedStyle = interceptors.length > 0;
+        usedByComputedStyle = interceptors.length > 0;
+        filteredByComputedStyle = interceptors.some(
+          (interceptor) => interceptor.filterProperties
+        );
       }
-      if (filteredByComputedStyle) {
+      if (usedByComputedStyle) {
         const oldWeight = vueComputedStyleWeights[name] || 0;
         if (weight >= oldWeight) {
           vueComputedStyleWeights[name] = weight;
           vueComputedStyles.set(name, value);
         }
-      } else {
+      }
+      if (!filteredByComputedStyle) {
         const oldWeight = weights[name] || 0;
         if (weight >= oldWeight) {
           weights[name] = weight;
@@ -8578,7 +8597,13 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet, e
   classList.forEach((className) => {
     const parentStyles = stylesheet && stylesheet[className];
     if (parentStyles) {
-      parseClassName(context, parentStyles, el);
+      parseClassName(
+        context,
+        parentStyles,
+        el,
+        el ? getRootElementInstance(el) : null,
+        true
+      );
     }
   });
   if (parentStylesheet != null) {
@@ -8672,15 +8697,14 @@ function mergeClassStyles(classStyle, classStyleWeights, style) {
   return res;
 }
 
-function useComputedStyle(keys, options = {}) {
+function useComputedStyle(options = {}) {
+  var _a;
   const i = getCurrentInstance();
   const r = reactive(/* @__PURE__ */ new Map());
   if (i) {
-    if (keys.length === 0) {
-      return r;
-    }
     const propsDef = i.propsOptions === EMPTY_ARR ? {} : i.propsOptions[0];
-    let { classAttr, styleAttr } = options;
+    let { classAttr, styleAttr, properties } = options;
+    let filterProperties = (_a = options.filterProperties) != null ? _a : true;
     if (classAttr || styleAttr) {
       if (classAttr && classAttr in propsDef) {
         classAttr = void 0;
@@ -8695,8 +8719,9 @@ function useComputedStyle(keys, options = {}) {
     const computedStyleInterceptor = {
       classAttr,
       styleAttr,
-      keys,
-      reactiveComputedStyle: r
+      properties,
+      reactiveComputedStyle: r,
+      filterProperties
     };
     i.computedStyleInterceptors = i.computedStyleInterceptors || [];
     i.computedStyleInterceptors.push(computedStyleInterceptor);
@@ -8742,7 +8767,7 @@ function collectClassStyles(instance, styles, weight) {
       interceptor.classStyles.clear();
       interceptor.classStylesWeight = {};
       styles.forEach((value, key) => {
-        if (interceptor.keys.indexOf(key) !== -1) {
+        if (!interceptor.properties || interceptor.properties.indexOf(key) !== -1) {
           interceptor.classStyles.set(key, value);
           interceptor.classStylesWeight[key] = weight[key];
         }
