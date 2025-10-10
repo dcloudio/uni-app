@@ -40,7 +40,8 @@ export function uniHBuilderXConsolePlugin(method: string = '__f__') {
 
 export function isEnableConsole() {
   return !!(
-    process.env.NODE_ENV === 'development' &&
+    (process.env.NODE_ENV === 'development' ||
+      process.env.NODE_ENV === 'test') &&
     process.env.UNI_SOCKET_HOSTS &&
     process.env.UNI_SOCKET_PORT &&
     process.env.UNI_SOCKET_ID
