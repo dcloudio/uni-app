@@ -192,12 +192,13 @@ export async function transformMain(
     // 尝试解析模板中的import，用于检查错误路径，比如<image src="static/logo.png" />
     await parseImports(
       templatePreambleCode,
-      createTemplateTryResolve(
+      createTryResolve(
         filename,
         pluginContext.resolve,
         templatePreambleMap as RawSourceMap,
         // 仅需要再解析script中的import，template上边已经加入了
-        (source) => source.includes('/.uvue/') || source.includes('/.tsc/')
+        (source) => source.includes('/.uvue/') || source.includes('/.tsc/'),
+        false // template中的资源路径解析，不支持external
       )
     )
   }
@@ -399,57 +400,17 @@ function createTryResolve(
   importer: string,
   resolve: PluginContext['resolve'],
   resolvedMap: RawSourceMap,
-  ignore?: (source: string) => boolean
+  ignore?: (source: string) => boolean,
+  external: boolean = true
 ) {
   return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
     if (ignore && ignore(source)) {
       return false
     }
     const resolved = await wrapResolve(resolve)(source, importer)
-    if (!resolved) {
-      const { start, end } = offsetToStartAndEnd(code, ss, se)
-      const consumer = new SourceMapConsumer(resolvedMap)
-      const startPos = consumer.originalPositionFor({
-        line: start.line,
-        column: start.column,
-      })
-      if (
-        startPos.line != null &&
-        startPos.column != null &&
-        startPos.source != null
-      ) {
-        const endPos = consumer.originalPositionFor({
-          line: end.line,
-          column: end.column,
-        })
-        if (endPos.line != null && endPos.column != null) {
-          startPos.column = startPos.column + 1
-          endPos.column = endPos.column + 1
-          throw createResolveError(
-            consumer.sourceContentFor(startPos.source) ?? '',
-            createResolveErrorMsg(source, importer),
-            startPos as unknown as Position,
-            endPos as unknown as Position
-          )
-        }
-      }
-    }
-  }
-}
-
-function createTemplateTryResolve(
-  importer: string,
-  resolve: PluginContext['resolve'],
-  resolvedMap: RawSourceMap,
-  ignore?: (source: string) => boolean
-) {
-  return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
-    if (ignore && ignore(source)) {
-      return false
-    }
-    const resolved = await wrapResolve(resolve)(source, importer)
-    // template 中的资源必定能解析出绝对路径
-    if (!resolved || !path.isAbsolute(resolved.id)) {
+    // external 的判断主要是解决 template 中的静态资源路径解析报错，比如<image src="logo.png" />会被解析为external
+    // 模板中仅支持使用相对路径或绝对路径如："./logo.png" 或 "/static/logo.png" 或 "@/static/logo.png"
+    if (!resolved || (!external && resolved.external)) {
       const { start, end } = offsetToStartAndEnd(code, ss, se)
       const consumer = new SourceMapConsumer(resolvedMap)
       const startPos = consumer.originalPositionFor({
