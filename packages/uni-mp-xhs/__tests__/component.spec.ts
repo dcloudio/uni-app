@@ -61,4 +61,28 @@ describe('mp-xhs: transform component', () => {
 }`
     )
   })
+
+  test('custom elements', () => {
+    assert(
+      `<video-player album-id="674548b2c1f9020001e9f9d1" episode-id="674548b2c1f9020001e9f9d2" :duration="3000" :show-mute-btn="true" @play="handlePlayVideo"></video-player>`,
+      `<video-player album-id="674548b2c1f9020001e9f9d1" episode-id="674548b2c1f9020001e9f9d2" duration="{{3000}}" show-mute-btn="{{true}}" bindplay="{{a}}"></video-player>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.handlePlayVideo, "d4") }
+}`
+    )
+    assert(
+      `<post-note-button title="test title" content="test content" poi-id="3232" @error="handleError"></post-note-button>`,
+      `<post-note-button title="test title" content="test content" poi-id="3232" binderror="{{a}}"></post-note-button>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.handleError, "f6") }
+}`
+    )
+    assert(
+      `<group-chat-card group-ids="sy3YiB1GGlXLTP9KLCLwFtmxWtY3Hno1yfVzYksmLiQ=,aHO9gDeRM3NhfV7+jGDO1Sh1VHPL2OIJDTQ1dQkljbk=" @error="handleError"></group-chat-card>`,
+      `<group-chat-card group-ids="sy3YiB1GGlXLTP9KLCLwFtmxWtY3Hno1yfVzYksmLiQ=,aHO9gDeRM3NhfV7+jGDO1Sh1VHPL2OIJDTQ1dQkljbk=" binderror="{{a}}"></group-chat-card>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.handleError, "c8") }
+}`
+    )
+  })
 })
