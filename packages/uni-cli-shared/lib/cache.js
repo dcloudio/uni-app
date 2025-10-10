@@ -200,6 +200,18 @@ function updateUsingComponents (name, usingComponents, type, content = '') {
   }
   if (oldJsonStr) { // update
     jsonObj.usingComponents = usingComponents
+    // 嵌套组件获取 props 为 null，使用占组件修正父子组件生命周期执行顺序 https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/tutorial/custom-component/placeholder
+    if (process.env.UNI_PLATFORM === 'mp-toutiao') {
+      if (type === 'Component') {
+        const usingComponentnames = Object.keys(jsonObj.usingComponents)
+        if (usingComponentnames.length) {
+          jsonObj.componentPlaceholder = {}
+          usingComponentnames.forEach(componentName => {
+            jsonObj.componentPlaceholder[componentName] = 'view'
+          })
+        }
+      }
+    }
     const newJsonStr = JSON.stringify(jsonObj, null, 2)
     if (newJsonStr !== oldJsonStr) {
       updateJsonFile(name, newJsonStr)
