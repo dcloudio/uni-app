@@ -55,6 +55,7 @@ onMethod('onDownloadTaskStateChange', ({
   errMsg
 }) => {
   const downloadTask = downloadTasks[downloadTaskId]
+  if (downloadTask == null) return
   const callbackId = downloadTask._callbackId
 
   switch (state) {
@@ -66,26 +67,25 @@ onMethod('onDownloadTaskStateChange', ({
           totalBytesExpectedToWrite
         })
       })
-      break
+      return
     case 'success':
       invoke(callbackId, {
         tempFilePath,
         statusCode,
         errMsg: 'request:ok'
       })
-      // eslint-disable-next-line no-fallthrough
+      break
     case 'fail':
       invoke(callbackId, {
         errMsg: 'request:fail ' + errMsg
       })
-      // eslint-disable-next-line no-fallthrough
-    default:
-      // progressUpdate 可能晚于 success
-      setTimeout(() => {
-        delete downloadTasks[downloadTaskId]
-      }, 100)
       break
   }
+
+  // progressUpdate 可能晚于 success
+  setTimeout(() => {
+    delete downloadTasks[downloadTaskId]
+  }, 100)
 })
 export function downloadFile (args, callbackId) {
   const {

@@ -55,6 +55,8 @@ onMethod('onUploadTaskStateChange', ({
   errMsg
 }) => {
   const uploadTask = uploadTasks[uploadTaskId]
+  if (uploadTask == null) return
+
   const callbackId = uploadTask._callbackId
 
   switch (state) {
@@ -66,26 +68,25 @@ onMethod('onUploadTaskStateChange', ({
           totalBytesExpectedToSend
         })
       })
-      break
+      return
     case 'success':
       invoke(callbackId, {
         data,
         statusCode,
         errMsg: 'request:ok'
       })
-      // eslint-disable-next-line no-fallthrough
+      break
     case 'fail':
       invoke(callbackId, {
         errMsg: 'request:fail ' + errMsg
       })
-      // eslint-disable-next-line no-fallthrough
-    default:
-      // progressUpdate 可能晚于 success
-      setTimeout(() => {
-        delete uploadTasks[uploadTaskId]
-      }, 100)
       break
   }
+
+  // progressUpdate 可能晚于 success
+  setTimeout(() => {
+    delete uploadTasks[uploadTaskId]
+  }, 100)
 })
 export function uploadFile (args, callbackId) {
   const {
