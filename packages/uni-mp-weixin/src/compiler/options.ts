@@ -49,6 +49,7 @@ export const customElements = [
   'nested-scroll-body',
   'nested-scroll-header',
   'open-container',
+  'official-account-publish',
   'share-element',
   'snapshot',
   // 'span', //  todo: 临时移除 span 的支持，后续判断 skyline 环境进行区分 ask 190418
