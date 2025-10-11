@@ -1,4 +1,5 @@
 const compiler = require('../lib')
+const { tags } = require('../lib/native-tags')
 
 function assertCodegen (template, templateCode, renderCode = 'with(this){}', options = {}) {
   const res = compiler.compile(template, {
@@ -523,5 +524,21 @@ describe('mp:compiler-mp-weixin', () => {
       '<span></span>',
       '<label class="_span"></label>'
     )
+  })
+})
+
+describe('mp:compiler-mp-weixin native-component', () => {
+  it('native-component', () => {
+    tags['mp-weixin'].forEach(tag => {
+      if (tag === 'match-media') {
+        // 这个标签特殊
+        return
+      }
+
+      assertCodegen(
+        `<${tag} test2="1"></${tag}>`,
+        `<${tag} test2="1"></${tag}>`
+      )
+    })
   })
 })
