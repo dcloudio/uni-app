@@ -1,4 +1,8 @@
 const compiler = require('../lib')
+const { tags } = require('../lib/native-tags')
+
+// 保存原始环境变量
+const originUNIPLATFORM = process.env.UNI_PLATFORM
 
 function assertCodegen (template, templateCode, renderCode = 'with(this){}', options = {}) {
   const res = compiler.compile(template, {
@@ -916,3 +920,44 @@ describe('mp:compiler', () => {
     )
   })
 })
+describe('mp:compiler-mp-* native-component', () => {
+  function assertCodegenInner (template, templateCode, platform, renderCode = 'with(this){}', options = {}) {
+    const res = compiler.compile(template, {
+      resourcePath: 'test.wxml',
+      mp: Object.assign({
+        minified: true,
+        isTest: true,
+        platform: platform
+      }, options)
+    })
+
+    expect(res.template).toBe(templateCode)
+    expect(res.render).toBe(renderCode)
+  }
+  function setup (platform) {
+    process.env.UNI_PLATFORM = platform
+    tags[platform].forEach(tag => {
+      assertCodegenInner(
+        `<${tag} test2="1"></${tag}>`,
+        `<${tag} test2="1"></${tag}>`,
+        platform
+      )
+    })
+  }
+
+  it('mp-* native-component', () => {
+    // mp-weixin 中 match-media 是内置组件
+    setup('mp-weixin')
+    setup('mp-qq')
+    setup('mp-toutiao')
+    setup('mp-baidu')
+    setup('mp-alipay')
+    setup('mp-jd')
+    setup('mp-xhs')
+    setup('mp-kuaishou')
+    setup('mp-harmony')
+  })
+})
+
+// 测试完成后恢复原始环境变量
+process.env.UNI_PLATFORM = originUNIPLATFORM

@@ -526,19 +526,3 @@ describe('mp:compiler-mp-weixin', () => {
     )
   })
 })
-
-describe('mp:compiler-mp-weixin native-component', () => {
-  it('native-component', () => {
-    tags['mp-weixin'].forEach(tag => {
-      if (tag === 'match-media') {
-        // 这个标签特殊
-        return
-      }
-
-      assertCodegen(
-        `<${tag} test2="1"></${tag}>`,
-        `<${tag} test2="1"></${tag}>`
-      )
-    })
-  })
-})
