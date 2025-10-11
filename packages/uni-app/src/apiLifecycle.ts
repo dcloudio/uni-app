@@ -13,6 +13,7 @@ import {
   ON_HIDE,
   ON_INIT,
   ON_LAUNCH,
+  ON_LIVE_MOUNT,
   ON_LOAD,
   ON_NAVIGATION_BAR_BUTTON_TAP,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
@@ -177,6 +178,9 @@ export const onCopyUrl = /*#__PURE__*/ createLifeCycleHook<
 export const onUploadDouyinVideo = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onUploadDouyinVideo']
 >(ON_UPLOAD_DOUYIN_VIDEO, HookFlags.PAGE)
+export const onLiveMount = /*#__PURE__*/ createLifeCycleHook<
+  Required<Page.PageInstance>['onLiveMount']
+>(ON_LIVE_MOUNT, HookFlags.PAGE)
 
 export const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onNavigationBarButtonTap']

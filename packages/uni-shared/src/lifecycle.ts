@@ -8,6 +8,7 @@ import {
   ON_HIDE,
   ON_INIT,
   ON_LAUNCH,
+  ON_LIVE_MOUNT,
   ON_LOAD,
   ON_NAVIGATION_BAR_BUTTON_TAP,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
@@ -48,6 +49,7 @@ const PAGE_HOOKS = [
   ON_SHARE_CHAT,
   ON_COPY_URL,
   ON_UPLOAD_DOUYIN_VIDEO,
+  ON_LIVE_MOUNT,
   ON_ADD_TO_FAVORITES,
   ON_SAVE_EXIT_STATE,
   ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -94,6 +96,7 @@ export const UniLifecycleHooks = [
   ON_SHARE_CHAT,
   ON_COPY_URL,
   ON_UPLOAD_DOUYIN_VIDEO,
+  ON_LIVE_MOUNT,
   ON_SAVE_EXIT_STATE,
   ON_NAVIGATION_BAR_BUTTON_TAP,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -110,6 +113,7 @@ export const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
     onShareChat: 1 << 3,
     onCopyUrl: 1 << 4,
     onUploadDouyinVideo: 1 << 5,
+    onLiveMount: 1 << 6,
   } as const
 })()
 
