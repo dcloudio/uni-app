@@ -421,6 +421,7 @@ const ON_INIT = 'onInit';
 const ON_SAVE_EXIT_STATE = 'onSaveExitState';
 // 抖音特有
 const ON_UPLOAD_DOUYIN_VIDEO = 'onUploadDouyinVideo';
+const ON_LIVE_MOUNT = 'onLiveMount';
 const ON_RESIZE = 'onResize';
 const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
@@ -1575,6 +1576,7 @@ const PAGE_HOOKS = [
     ON_SHARE_CHAT,
     ON_COPY_URL,
     ON_UPLOAD_DOUYIN_VIDEO,
+    ON_LIVE_MOUNT,
     ON_ADD_TO_FAVORITES,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -1616,6 +1618,7 @@ const UniLifecycleHooks = [
     ON_SHARE_CHAT,
     ON_COPY_URL,
     ON_UPLOAD_DOUYIN_VIDEO,
+    ON_LIVE_MOUNT,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -1631,6 +1634,7 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
         onShareChat: 1 << 3,
         onCopyUrl: 1 << 4,
         onUploadDouyinVideo: 1 << 5,
+        onLiveMount: 1 << 6,
     };
 })();
 function isUniLifecycleHook(name, value, checkType = true) {
@@ -1865,6 +1869,7 @@ exports.ON_INIT = ON_INIT;
 exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
 exports.ON_LAST_PAGE_BACK_PRESS = ON_LAST_PAGE_BACK_PRESS;
 exports.ON_LAUNCH = ON_LAUNCH;
+exports.ON_LIVE_MOUNT = ON_LIVE_MOUNT;
 exports.ON_LOAD = ON_LOAD;
 exports.ON_NAVIGATION_BAR_BUTTON_TAP = ON_NAVIGATION_BAR_BUTTON_TAP;
 exports.ON_NAVIGATION_BAR_CHANGE = ON_NAVIGATION_BAR_CHANGE;

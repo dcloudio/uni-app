@@ -149,6 +149,7 @@ const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_ADD_TO_F
 const onShareAppMessage = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
 const onCopyUrl = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_COPY_URL, 2 /* HookFlags.PAGE */);
 const onUploadDouyinVideo = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_UPLOAD_DOUYIN_VIDEO, 2 /* HookFlags.PAGE */);
+const onLiveMount = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_LIVE_MOUNT, 2 /* HookFlags.PAGE */);
 const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, 2 /* HookFlags.PAGE */);
 const onNavigationBarSearchInputChanged = 
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, 2 /* HookFlags.PAGE */);
@@ -197,6 +198,7 @@ exports.onExit = onExit;
 exports.onHide = onHide;
 exports.onInit = onInit;
 exports.onLaunch = onLaunch;
+exports.onLiveMount = onLiveMount;
 exports.onLoad = onLoad;
 exports.onNavigationBarButtonTap = onNavigationBarButtonTap;
 exports.onNavigationBarSearchInputChanged = onNavigationBarSearchInputChanged;

@@ -56,6 +56,8 @@ export declare const onInit: (hook: (query?: AnyObject | undefined) => void, tar
 
 export declare const onLaunch: (hook: (options?: App.LaunchShowOption | undefined) => void, target?: ComponentInternalInstance | null) => void;
 
+export declare const onLiveMount: (hook: (options: Page.LiveMountOptions) => Page.LiveMountContent | Promise<Page.LiveMountContent>, target?: ComponentInternalInstance | null) => void;
+
 export declare const onLoad: (hook: (query?: AnyObject | undefined) => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onNavigationBarButtonTap: (hook: (options: Page.NavigationBarButtonTapOption) => void, target?: ComponentInternalInstance | null) => void;
