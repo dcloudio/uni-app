@@ -12940,7 +12940,7 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
         "key": "input",
         "ref": fieldRef,
         "value": state2.value,
-        "onInput": (event) => {
+        "onInput": withModifiers((event) => {
           const value = event.target.value.toString();
           if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
             if (isPaste(event)) {
@@ -12948,8 +12948,11 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
             }
             return;
           }
+          if (event.inputType === "insertText" && event.data === ".") {
+            return;
+          }
           state2.value = value;
-        },
+        }, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state2.maxlength,

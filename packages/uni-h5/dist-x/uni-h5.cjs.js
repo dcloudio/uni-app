@@ -5387,7 +5387,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "key": "input",
         "ref": fieldRef,
         "value": state.value,
-        "onInput": (event) => {
+        "onInput": vue.withModifiers((event) => {
           const value = event.target.value.toString();
           if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
             if (isPaste(event)) {
@@ -5395,8 +5395,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             }
             return;
           }
+          if (event.inputType === "insertText" && event.data === ".") {
+            return;
+          }
           state.value = value;
-        },
+        }, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state.maxlength,
