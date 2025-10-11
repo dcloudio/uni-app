@@ -2,6 +2,7 @@ const compiler = require('@dcloudio/uni-mp-weixin/lib/uni.compiler.js')
 const path = require('path')
 const t = require('@babel/types')
 const crypto = require('crypto')
+const uniI18n = require('@dcloudio/uni-cli-i18n')
 
 function generateJsCode (properties = '{}') {
   return `tt.createComponent({
@@ -85,7 +86,7 @@ module.exports = Object.assign({}, compiler, {
         ]
         if (t.isIdentifier(value)) {
           if (value.name !== key.name) {
-            state.errors.add(`解构插槽 Prop 时,不支持将${key.name}重命名为${value.name},重命名后会影响性能`)
+            state.errors.add(uniI18n.__('mpWeChat.slotPropNoSupportReanme', { 0: key.name, 1: value.name }))
           }
         } else if (t.isAssignmentPattern(value)) {
           valueObjectProperties.push(t.objectProperty(t.identifier('default'), value.right))
@@ -93,7 +94,7 @@ module.exports = Object.assign({}, compiler, {
         objectProperties.push(t.objectProperty(key, t.objectExpression(valueObjectProperties)))
       })
     } else {
-      state.errors.add(`目前仅支持解构插槽 ${paramExprNode.name},如 v-slot="{ user }"`)
+      state.errors.add(uniI18n.__('mpWeChat.onlySupportDestructuringSlot', { 0: paramExprNode.name, 1: 'v-slot="{ user }"' }))
     }
     const jsContent = generateJsCode(genCode(t.objectExpression(objectProperties), true))
     state.files[jsFile] = jsContent
