@@ -85,6 +85,7 @@ const tags = {
     'channel-video',
     'double-tap-gesture-handler',
     'draggable-sheet',
+    'editor-portal',
     'force-press-gesture-handler',
     'grid-builder',
     'grid-view',
