@@ -23,7 +23,7 @@ import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
 import { uniAppJsPlugin } from './js'
 
-export function initUniAppJsEngineCssPlugin(config: ResolvedConfig) {
+export function initUniAppJsEngineDom1CssPlugin(config: ResolvedConfig) {
   injectCssPlugin(
     config,
     process.env.UNI_COMPILE_TARGET === 'uni_modules'
@@ -156,7 +156,9 @@ export function createUniAppJsEnginePlugin(
       },
       configResolved(config) {
         configResolved(config)
-        initUniAppJsEngineCssPlugin(config)
+        if (process.env.UNI_APP_X_DOM2 !== 'true') {
+          initUniAppJsEngineDom1CssPlugin(config)
+        }
         insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
         // 如果开启了 vapor 模式，则禁用 vue 的 devtools，让 @vitejs/plugin-vue 不管是开发还是发行，均生成发行代码
         // 理论上非 vapor 也应该禁用，但为了不引发其他问题，暂时只禁用 vapor 模式

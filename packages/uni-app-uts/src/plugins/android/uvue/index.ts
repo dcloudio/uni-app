@@ -17,7 +17,8 @@ import {
   getResolvedOptions,
   getSrcDescriptor,
 } from './descriptorCache'
-import { isVue, transformUniCloudMixinDataCom } from '../utils'
+import { transformUniCloudMixinDataCom } from '../utils'
+import { isVue } from '../../utils'
 
 import { transformStyle } from './code/style'
 

@@ -19,7 +19,7 @@ import {
 import autoprefixer from 'autoprefixer'
 import { uts2ts } from '../../scripts/ext-api'
 
-import { initUniAppJsEngineCssPlugin } from '@dcloudio/uni-app-uts'
+import { initUniAppJsEngineDom1CssPlugin } from '@dcloudio/uni-app-uts'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -156,7 +156,7 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
       {
         name: 'uni-x:ios',
         configResolved(config) {
-          initUniAppJsEngineCssPlugin(config)
+          initUniAppJsEngineDom1CssPlugin(config)
         },
       },
       uts2ts({ target: 'uni-app-plus', platform: 'app-js' }),

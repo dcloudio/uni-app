@@ -26,9 +26,11 @@ import { uniAppJsEngineMainPlugin } from '../js/mainUTS'
 import { uniAppManifestPlugin } from '../js/manifestJson'
 import { uniAppPagesPlugin } from '../js/pagesJson'
 import { replaceExtApiPagePaths } from '../js/extApiPages'
+import { uniAppCssPlugin, uniAppCssPrePlugin } from '../dom2/css'
 
 export function init() {
   return [
+    ...(process.env.UNI_APP_X_DOM2 === 'true' ? [uniAppCssPrePlugin()] : []),
     ...(isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniDecryptUniModulesPlugin()]
       : []),
@@ -76,6 +78,7 @@ export function init() {
     ...(process.env.UNI_COMPILE_EXT_API_TYPE === 'pages'
       ? [replaceExtApiPagePaths()]
       : []),
+    ...(process.env.UNI_APP_X_DOM2 === 'true' ? [uniAppCssPlugin()] : []),
     ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
   ]
 }

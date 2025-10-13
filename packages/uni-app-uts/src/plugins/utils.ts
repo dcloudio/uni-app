@@ -295,3 +295,7 @@ export function addExtApiComponents(components: string[]) {
 export function getExtApiComponents() {
   return extApiComponents
 }
+
+export function isVue(filename: string) {
+  return filename.endsWith('.vue') || filename.endsWith('.uvue')
+}

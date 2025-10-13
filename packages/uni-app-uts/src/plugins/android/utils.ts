@@ -194,10 +194,6 @@ export function kotlinOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.kotlin')
 }
 
-export function isVue(filename: string) {
-  return filename.endsWith('.vue') || filename.endsWith('.uvue')
-}
-
 export function stringifyMap(obj: unknown, ts = false) {
   return serialize(obj, ts)
 }

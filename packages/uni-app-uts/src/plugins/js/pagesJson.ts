@@ -18,7 +18,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
 import { isPages, setGlobalPageOrientation } from '../utils'
-import { isVue } from '../android/utils'
+import { isVue } from '../utils'
 
 export function uniAppPagesPlugin(): Plugin {
   const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')

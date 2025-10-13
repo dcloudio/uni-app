@@ -359,6 +359,7 @@ export function cssPostPlugin(
     chunkCssFilename,
     chunkCssCode,
     includeComponentCss,
+    emitFile,
   }: {
     platform: UniApp.PLATFORM
     isJsCode?: boolean
@@ -369,6 +370,7 @@ export function cssPostPlugin(
       cssCode: string
     ) => Promise<string> | string
     includeComponentCss?: boolean
+    emitFile?: (filename: string, cssCode: string) => void
   }
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
@@ -390,7 +392,7 @@ export function cssPostPlugin(
       // build CSS handling ----------------------------------------------------
       styles.set(id, css)
       return {
-        code: modulesCode || '',
+        code: modulesCode || (isJsCode ? 'export default {}' : ''),
         map: { mappings: '' },
         // avoid the css module from being tree-shaken so that we can retrieve
         // it in renderChunk()
@@ -540,11 +542,13 @@ export function cssPostPlugin(
           minify: true,
         })
         if (source.trim()) {
-          this.emitFile({
-            fileName: filename,
-            type: 'asset',
-            source,
-          })
+          emitFile
+            ? emitFile(filename, source)
+            : this.emitFile({
+                fileName: filename,
+                type: 'asset',
+                source,
+              })
         }
       }
     },

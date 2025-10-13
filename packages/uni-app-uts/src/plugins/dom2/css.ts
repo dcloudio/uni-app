@@ -1,4 +1,5 @@
 import type { Plugin, ResolvedConfig } from 'vite'
+import fs from 'fs-extra'
 import path from 'path'
 import colors from 'picocolors'
 
@@ -9,10 +10,9 @@ import {
   cssPlugin,
   cssPostPlugin,
   formatAtFilename,
-  genUTSClassName,
+  genDom2ClassName,
   generateCodeFrame,
   insertBeforePlugin,
-  normalizeNodeModules,
   parseAssets,
   parseVueRequest,
   preUVueCss,
@@ -21,19 +21,10 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
-import {
-  type ResolvedOptions,
-  getDescriptor,
-  getResolvedOptions,
-} from './uvue/descriptorCache'
 import { isVue } from '../utils'
 
 export function uniAppCssPrePlugin(): Plugin {
   const name = 'uni:app-uvue-css-pre'
-  const descriptorOptions: ResolvedOptions = {
-    ...getResolvedOptions(),
-    sourceMap: false,
-  }
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   return {
     name,
@@ -51,13 +42,12 @@ export function uniAppCssPrePlugin(): Plugin {
           const { filename } = parseVueRequest(id)
           if (filename === mainPath) {
             // 合并到App
-            return `App.uvue.style.uts`
+            return `app.style.cpp`
           }
           if (isVue(filename)) {
-            return normalizeNodeModules(
-              (path.isAbsolute(filename)
-                ? path.relative(process.env.UNI_INPUT_DIR, filename)
-                : filename) + '.style.uts'
+            return (
+              genDom2ClassName(filename, process.env.UNI_INPUT_DIR) +
+              '.style.cpp'
             )
           }
         },
@@ -65,13 +55,9 @@ export function uniAppCssPrePlugin(): Plugin {
           cssCode = parseAssets(config, cssCode)
           const { code, messages } = await parse(cssCode, {
             filename,
-            logLevel: 'ERROR',
-            mapOf: '_uM',
-            padStyleMapOf: '_pS',
-            chunk: 100,
+            logLevel: 'WARNING',
             type: 'uvue',
             platform: process.env.UNI_UTS_PLATFORM,
-            trim: true,
           })
           messages.forEach((message) => {
             if (message.type === 'error') {
@@ -89,31 +75,18 @@ export function uniAppCssPrePlugin(): Plugin {
               console.error(msg + SPECIAL_CHARS.ERROR_BLOCK)
             }
           })
-          const fileName = filename.replace('.style.uts', '')
-          const className =
-            process.env.UNI_COMPILE_TARGET === 'ext-api'
-              ? // components/map/map.vue => UniMap
-                genUTSClassName(
-                  path.basename(fileName),
-                  descriptorOptions.classNamePrefix
-                )
-              : genUTSClassName(fileName, descriptorOptions.classNamePrefix)
-
-          return `export const ${className}Styles = ${code}`
+          return code
+        },
+        emitFile(filename, cssCode) {
+          fs.outputFileSync(
+            path.resolve(process.env.UNI_APP_HARMONY_DOM2_CPP_DIR!, filename),
+            cssCode
+          )
         },
       })
       // 增加 css plugins
       // TODO 加密插件
-      insertBeforePlugin(
-        cssPlugin(config, {
-          isAndroidX: true,
-          getDescriptor: (filename) => {
-            return getDescriptor(filename, descriptorOptions, false)
-          },
-        }),
-        name,
-        config
-      )
+      insertBeforePlugin(cssPlugin(config), name, config)
       const plugins = config.plugins as Plugin[]
       const index = plugins.findIndex((p) => p.name === 'uni:app-uvue')
       plugins.splice(index, 0, uvueCssPostPlugin)
@@ -144,9 +117,6 @@ export function uniAppCssPlugin(): Plugin {
       const { messages } = await parse(source, {
         filename,
         logLevel: 'WARNING',
-        map: true,
-        ts: true,
-        noCode: true,
         type: 'uvue',
         platform: process.env.UNI_UTS_PLATFORM,
       })
