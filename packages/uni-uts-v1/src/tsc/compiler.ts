@@ -225,8 +225,10 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     _type: 'syntactic' | 'semantic',
     diagnostic: tsTypes.Diagnostic
   ) {
-    const stableCode = [2300, 2451, 110111119, 2564, 1023]
-    const internalUseCode = [2355, 4117, 2348, 2310, 18047, 120000000]
+    const stableCode = [2300, 2451, 110111119, 2564, 1023, 120000003, 120000004]
+    const internalUseCode = [
+      2355, 4117, 2348, 2310, 18047, 120000000, 120000001,
+    ]
     const code = [...stableCode]
     if (hxDev) {
       // 只有内部版本才开启
