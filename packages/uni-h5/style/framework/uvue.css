@@ -160,6 +160,10 @@ uni-app uni-rich-text {
 }
 
 uni-app uni-text {
+  display: block;
+}
+
+uni-app uni-text>span>uni-text {
   display: inline;
 }
 
