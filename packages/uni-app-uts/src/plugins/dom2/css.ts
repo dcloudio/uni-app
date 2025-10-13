@@ -42,7 +42,7 @@ export function uniAppCssPrePlugin(): Plugin {
           const { filename } = parseVueRequest(id)
           if (filename === mainPath) {
             // 合并到App
-            return `app.style.cpp`
+            return `GenApp.style.cpp`
           }
           if (isVue(filename)) {
             return (
@@ -54,6 +54,7 @@ export function uniAppCssPrePlugin(): Plugin {
         async chunkCssCode(filename, cssCode) {
           cssCode = parseAssets(config, cssCode)
           const { code, messages } = await parse(cssCode, {
+            dom2: true,
             filename,
             logLevel: 'WARNING',
             type: 'uvue',
@@ -115,6 +116,7 @@ export function uniAppCssPlugin(): Plugin {
       source = parseAssets(resolvedConfig, source)
       // 仅做校验使用
       const { messages } = await parse(source, {
+        dom2: true,
         filename,
         logLevel: 'WARNING',
         type: 'uvue',

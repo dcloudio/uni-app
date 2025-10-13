@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs-extra')
-const { sync } = require('fast-glob')
+// const { sync } = require('fast-glob')
 const { config } = require('dotenv')
 config()
 if (process.env.UNI_APP_SYNTAX_DIR) {
@@ -74,3 +74,29 @@ if (process.env.UNI_APP_VUE_TYPES_DIR) {
 //   path.resolve(__dirname, '../packages/uni-uts-v1/lib/uts/types/uni-x/app-android/paths.json'),
 //   JSON.stringify(androidPaths, null, 2)
 // )
+
+const hyphenateRE = /\B([A-Z])/g
+function hyphenate(str) {
+  return str.replace(hyphenateRE, '-$1').toLowerCase()
+}
+
+async function syncDom2UniCSSPropertyID() {
+  const uniAppXDir = path.dirname(require.resolve('@dcloudio/uni-app-x'))
+  const UniCSSPropertyFilename = path.resolve(uniAppXDir, 'types', 'dom2', 'UniCSSProperty.d.ts')
+  const UniCSSPropertyContent = fs.readFileSync(UniCSSPropertyFilename, 'utf-8')
+  const { parse } = require('../packages/uts/dist')
+  const ast = await parse(UniCSSPropertyContent)
+  const properties = []
+  for (const item of ast.body) {
+    if (item.type === 'ExportDeclaration') {
+      if (item.declaration.type === 'TsEnumDeclaration' && item.declaration.id.value === 'UniCSSPropertyID') {
+        item.declaration.members.forEach(member => {
+          // 将首字母小写，驼峰转连字符
+          properties.push(hyphenate(member.id.value))
+        })
+      }
+    }
+  }
+  fs.outputFileSync(path.resolve(__dirname, '../packages/uni-nvue-styler/lib/dom2/properties.json'), JSON.stringify(properties, null, 2))
+}
+syncDom2UniCSSPropertyID()

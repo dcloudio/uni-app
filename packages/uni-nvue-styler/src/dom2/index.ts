@@ -3,7 +3,7 @@ import type {
   ParseDom2StaticStyleOptions,
 } from './types'
 import { parseStaticStyleDeclarations } from '../parseSync'
-import { createPropertyProcessors } from './propertyMap'
+import { createDom2PropertyProcessors } from './propertyMap'
 import {
   defineStyleVariableProcessor,
   setStyleVariableProcessor,
@@ -18,14 +18,26 @@ export function parseDom2StaticStyle(
 
   const declarations = parseStaticStyleDeclarations(
     input,
-    extend({ type: 'uvue', dom2: true }, options)
+    extend(
+      {
+        type: 'uvue',
+        dom2: {
+          platform: options.platform,
+          target: options.target,
+        },
+      },
+      options
+    )
   )
 
   // 以下逻辑执行，很多依赖前置 parseStaticStyleDeclarations 的处理
   // 需要确保有效的属性解析声明，否则会导致错误，
   // 1. 进入到下边的属性单位（如 px 等），必须是都已经支持的
   // 2. 进入到下边的属性名和值，必须是都已经支持的
-  const processors = createPropertyProcessors(options.platform, options.target)
+  const processors = createDom2PropertyProcessors(
+    options.platform,
+    options.target
+  )
 
   for (const declaration of declarations) {
     // @ts-expect-error 上一步 parseStaticStyleDeclarations 中需要把 prop 给驼峰化，单独存储 __originalProp
@@ -37,7 +49,9 @@ export function parseDom2StaticStyle(
         declaration.value,
         propertyName
       )
-      if (processed) {
+      if (processed.error) {
+        console.error(processed.error)
+      } else {
         result[propertyName] = processed
       }
     }
@@ -50,14 +64,18 @@ export function parseDom2StaticStyle(
         declaration.value,
         propertyName
       )
-      if (processed) {
+      if (processed.error) {
+        console.error(processed.error)
+      } else {
         result[propertyName] = processed
       }
     } else {
       const processor = processors[propertyName]
       if (processor) {
         const processed = processor(declaration.value, propertyName)
-        if (processed) {
+        if (processed.error) {
+          console.error(processed.error)
+        } else {
           result[propertyName] = processed
         }
       }

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`dom2 complex scenarios should handle comprehensive CSS with all property types: comprehensive-css 1`] = `
+exports[`dom2 static style complex scenarios should handle comprehensive CSS with all property types: comprehensive-css 1`] = `
 {
   "--border-radius": {
     "setterCode": "defineStyleVariable("--border-radius", "8px")",
@@ -48,7 +48,7 @@ exports[`dom2 complex scenarios should handle comprehensive CSS with all propert
   },
   "border-bottom-width": {
     "setterCode": "setStyleBorderBottomWidth(2, UniCSSUnitType.PX)",
-    "valueCode": ""2"",
+    "valueCode": "{ value: 2, unit: UniCSSUnitType.PX }",
   },
   "border-left-style": {
     "setterCode": "setStyleBorderLeftStyle(UniCSSBorderStyleType.Dashed)",
@@ -56,7 +56,7 @@ exports[`dom2 complex scenarios should handle comprehensive CSS with all propert
   },
   "border-left-width": {
     "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
-    "valueCode": ""1"",
+    "valueCode": "{ value: 1, unit: UniCSSUnitType.PX }",
   },
   "display": {
     "setterCode": "setStyleDisplay(UniCSSDisplayType.Flex)",
@@ -76,7 +76,7 @@ exports[`dom2 complex scenarios should handle comprehensive CSS with all propert
   },
   "height": {
     "setterCode": "setStyleHeight(200, UniCSSUnitType.PX)",
-    "valueCode": ""200"",
+    "valueCode": "{ value: 200, unit: UniCSSUnitType.PX }",
   },
   "justify-content": {
     "setterCode": "setStyleJustifyContent(UniCSSJustifyContentType.FlexStart)",
@@ -88,7 +88,7 @@ exports[`dom2 complex scenarios should handle comprehensive CSS with all propert
   },
   "margin-bottom": {
     "setterCode": "setStyleMarginBottom(8, UniCSSUnitType.PX)",
-    "valueCode": ""8"",
+    "valueCode": "{ value: 8, unit: UniCSSUnitType.PX }",
   },
   "margin-top": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.MarginTop, "var(--spacing)")",
@@ -96,11 +96,11 @@ exports[`dom2 complex scenarios should handle comprehensive CSS with all propert
   },
   "max-width": {
     "setterCode": "setStyleMaxWidth(100, UniCSSUnitType.PCT)",
-    "valueCode": ""100"",
+    "valueCode": "{ value: 100, unit: UniCSSUnitType.PCT }",
   },
   "min-height": {
     "setterCode": "setStyleMinHeight(50, UniCSSUnitType.PX)",
-    "valueCode": ""50"",
+    "valueCode": "{ value: 50, unit: UniCSSUnitType.PX }",
   },
   "opacity": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.Opacity, "var(--opacity-value)")",
@@ -108,7 +108,7 @@ exports[`dom2 complex scenarios should handle comprehensive CSS with all propert
   },
   "padding-left": {
     "setterCode": "setStylePaddingLeft(12, UniCSSUnitType.PX)",
-    "valueCode": ""12"",
+    "valueCode": "{ value: 12, unit: UniCSSUnitType.PX }",
   },
   "padding-right": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.PaddingRight, "var(--spacing)")",
@@ -120,7 +120,7 @@ exports[`dom2 complex scenarios should handle comprehensive CSS with all propert
   },
   "top": {
     "setterCode": "setStyleTop(10, UniCSSUnitType.PX)",
-    "valueCode": ""10"",
+    "valueCode": "{ value: 10, unit: UniCSSUnitType.PX }",
   },
   "width": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.Width, "var(--spacing)")",
@@ -129,7 +129,7 @@ exports[`dom2 complex scenarios should handle comprehensive CSS with all propert
 }
 `;
 
-exports[`dom2 complex scenarios should handle cross-platform compatibility: app-android-dom-kt 1`] = `
+exports[`dom2 static style complex scenarios should handle cross-platform compatibility: app-android-dom-kt 1`] = `
 {
   "--size": {
     "setterCode": "defineStyleVariable("--size", "24px")",
@@ -154,7 +154,7 @@ exports[`dom2 complex scenarios should handle cross-platform compatibility: app-
 }
 `;
 
-exports[`dom2 complex scenarios should handle cross-platform compatibility: app-harmony-dom-ts 1`] = `
+exports[`dom2 static style complex scenarios should handle cross-platform compatibility: app-harmony-dom-ts 1`] = `
 {
   "--size": {
     "setterCode": "defineStyleVariable("--size", "24px")",
@@ -179,7 +179,7 @@ exports[`dom2 complex scenarios should handle cross-platform compatibility: app-
 }
 `;
 
-exports[`dom2 complex scenarios should handle cross-platform compatibility: app-ios-dom-oc 1`] = `
+exports[`dom2 static style complex scenarios should handle cross-platform compatibility: app-ios-dom-oc 1`] = `
 {
   "--size": {
     "setterCode": "defineStyleVariable("--size", "24px")",
@@ -204,7 +204,7 @@ exports[`dom2 complex scenarios should handle cross-platform compatibility: app-
 }
 `;
 
-exports[`dom2 complex scenarios should handle edge cases with complex CSS: edge-cases 1`] = `
+exports[`dom2 static style complex scenarios should handle edge cases with complex CSS: edge-cases 1`] = `
 {
   "--double-nested": {
     "setterCode": "defineStyleVariable("--double-nested", "var(--nested-var)")",
@@ -261,7 +261,7 @@ exports[`dom2 complex scenarios should handle edge cases with complex CSS: edge-
 }
 `;
 
-exports[`dom2 complex scenarios should handle mixed variable usage and regular values: mixed-variables 1`] = `
+exports[`dom2 static style complex scenarios should handle mixed variable usage and regular values: mixed-variables 1`] = `
 {
   "--base-size": {
     "setterCode": "defineStyleVariable("--base-size", "20px")",
@@ -297,19 +297,19 @@ exports[`dom2 complex scenarios should handle mixed variable usage and regular v
   },
   "border-right-width": {
     "setterCode": "setStyleBorderRightWidth(3, UniCSSUnitType.PX)",
-    "valueCode": ""3"",
+    "valueCode": "{ value: 3, unit: UniCSSUnitType.PX }",
   },
   "border-top-width": {
     "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
-    "valueCode": ""1"",
+    "valueCode": "{ value: 1, unit: UniCSSUnitType.PX }",
   },
   "height": {
     "setterCode": "setStyleHeight(30, UniCSSUnitType.PX)",
-    "valueCode": ""30"",
+    "valueCode": "{ value: 30, unit: UniCSSUnitType.PX }",
   },
   "margin-bottom": {
     "setterCode": "setStyleMarginBottom(10, UniCSSUnitType.PX)",
-    "valueCode": ""10"",
+    "valueCode": "{ value: 10, unit: UniCSSUnitType.PX }",
   },
   "margin-top": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.MarginTop, "var(--base-size)")",
@@ -321,7 +321,7 @@ exports[`dom2 complex scenarios should handle mixed variable usage and regular v
   },
   "min-height": {
     "setterCode": "setStyleMinHeight(15, UniCSSUnitType.PX)",
-    "valueCode": ""15"",
+    "valueCode": "{ value: 15, unit: UniCSSUnitType.PX }",
   },
   "padding-left": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.PaddingLeft, "var(--base-size)")",
@@ -329,7 +329,7 @@ exports[`dom2 complex scenarios should handle mixed variable usage and regular v
   },
   "padding-right": {
     "setterCode": "setStylePaddingRight(5, UniCSSUnitType.PX)",
-    "valueCode": ""5"",
+    "valueCode": "{ value: 5, unit: UniCSSUnitType.PX }",
   },
   "transform": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.Transform, "translateX(var(--base-size)) translateY(10px)")",

@@ -1,22 +1,41 @@
 import type { AppCssJson } from './types'
-import appCssJson from '../../lib/app-css.json'
+import appCssJson from '../../lib/dom2/app-css.json'
 import { camelize, capitalize } from '../shared'
 
 export interface PropertyProcessor {
-  (value: string | number, propertyName: string):
-    | {
-        valueCode: string
-        setterCode: string
-      }
-    | undefined
+  (value: string | number, propertyName: string): {
+    error?: string
+    valueCode: string
+    setterCode: string
+  }
+}
+
+function createValueProcessorResult(
+  valueCode: string,
+  setterCode: string
+): ReturnType<PropertyProcessor> {
+  return {
+    valueCode: valueCode,
+    setterCode: setterCode,
+  }
+}
+
+function createValueProcessorError(
+  error: string
+): ReturnType<PropertyProcessor> {
+  return {
+    error: error,
+    valueCode: '',
+    setterCode: '',
+  }
 }
 
 function createDefineStyleVariableProcessor(): PropertyProcessor {
   return (value, propertyName) => {
-    return {
-      valueCode: `"${value}"`,
-      setterCode: `defineStyleVariable("${propertyName}", "${value}")`,
-    }
+    return createValueProcessorResult(
+      `"${value}"`,
+      `defineStyleVariable("${propertyName}", "${value}")`
+    )
   }
 }
 
@@ -24,12 +43,12 @@ export const defineStyleVariableProcessor = createDefineStyleVariableProcessor()
 
 function createSetStyleVariableProcessor(): PropertyProcessor {
   return (value, propertyName) => {
-    return {
-      valueCode: `"${value}"`,
-      setterCode: `setStyleVariable(UniCSSPropertyID.${capitalize(
+    return createValueProcessorResult(
+      `"${value}"`,
+      `setStyleVariable(UniCSSPropertyID.${capitalize(
         camelize(propertyName)
-      )}, "${value}")`,
-    }
+      )}, "${value}")`
+    )
   }
 }
 
@@ -41,11 +60,12 @@ export function createSetStyleUnitValueProcessor(
   return (value) => {
     const unitValue = parseUnitValue(String(value))
     if (unitValue) {
-      return {
-        valueCode: `"${unitValue.value}"`,
-        setterCode: `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`,
-      }
+      return createValueProcessorResult(
+        `{ value: ${unitValue.value}, unit: UniCSSUnitType.${unitValue.unit} }`,
+        `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
+      )
     }
+    return createValueProcessorError(`Invalid unit value: ${value}`)
   }
 }
 
@@ -55,15 +75,15 @@ export function createSetStyleEnumValueProcessor(
   return (value, propertyName) => {
     const propertyConfig = (appCssJson as AppCssJson)[propertyName]
     if (!propertyConfig?.type) {
-      return undefined
+      return createValueProcessorError(`Invalid property: ${propertyName}`)
     }
     const enumTypeName = `${propertyConfig.type}.${capitalize(
       camelize(value + '')
     )}`
-    return {
-      valueCode: enumTypeName,
-      setterCode: setter ? `${setter}(${enumTypeName})` : enumTypeName,
-    }
+    return createValueProcessorResult(
+      enumTypeName,
+      setter ? `${setter}(${enumTypeName})` : enumTypeName
+    )
   }
 }
 
@@ -93,10 +113,8 @@ export function createSetStyleNumberValueProcessor(
   return (value) => {
     const numValue = parseFloat(String(value))
     if (!isNaN(numValue)) {
-      return {
-        valueCode: `${numValue}`,
-        setterCode: `${setter}(${numValue})`,
-      }
+      return createValueProcessorResult(`${numValue}`, `${setter}(${numValue})`)
     }
+    return createValueProcessorError(`Invalid number value: ${value}`)
   }
 }

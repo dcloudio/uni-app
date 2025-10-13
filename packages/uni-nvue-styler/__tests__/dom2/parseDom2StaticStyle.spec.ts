@@ -1,22 +1,22 @@
-import { parseDom2StaticStyle } from '../src/dom2/index'
+import { parseDom2StaticStyle } from '../../src/dom2/index'
 import {
   DOM2_APP_PLATFORM,
   DOM2_APP_TARGET,
   type ParseDom2StaticStyleOptions,
-} from '../src/dom2/types'
+} from '../../src/dom2/types'
 import {
   clearProcessorsCache,
-  createPropertyProcessors,
-} from '../src/dom2/propertyMap'
+  createDom2PropertyProcessors,
+} from '../../src/dom2/propertyMap'
 import {
   createSetStyleEnumValueProcessor,
   createSetStyleNumberValueProcessor,
   createSetStyleUnitValueProcessor,
   defineStyleVariableProcessor,
   setStyleVariableProcessor,
-} from '../src/dom2/processors'
+} from '../../src/dom2/processors'
 
-describe('dom2', () => {
+describe('dom2 static style', () => {
   beforeEach(() => {
     // 清理缓存以确保测试独立性
     clearProcessorsCache()
@@ -293,10 +293,10 @@ describe('dom2', () => {
     })
   })
 
-  describe('createPropertyProcessors', () => {
+  describe('createDom2PropertyProcessors', () => {
     describe('basic functionality', () => {
       test('should create processors for valid platform and target', () => {
-        const processors = createPropertyProcessors(
+        const processors = createDom2PropertyProcessors(
           DOM2_APP_PLATFORM.APP,
           DOM2_APP_TARGET.DOM_C
         )
@@ -307,12 +307,12 @@ describe('dom2', () => {
       })
 
       test('should create different processors for different combinations', () => {
-        const processors1 = createPropertyProcessors(
+        const processors1 = createDom2PropertyProcessors(
           DOM2_APP_PLATFORM.APP_ANDROID,
           DOM2_APP_TARGET.DOM_C
         )
 
-        const processors2 = createPropertyProcessors(
+        const processors2 = createDom2PropertyProcessors(
           DOM2_APP_PLATFORM.APP_IOS,
           DOM2_APP_TARGET.DOM_C
         )
@@ -323,12 +323,12 @@ describe('dom2', () => {
 
     describe('caching', () => {
       test('should cache processors for same platform and target', () => {
-        const processors1 = createPropertyProcessors(
+        const processors1 = createDom2PropertyProcessors(
           DOM2_APP_PLATFORM.APP,
           DOM2_APP_TARGET.DOM_C
         )
 
-        const processors2 = createPropertyProcessors(
+        const processors2 = createDom2PropertyProcessors(
           DOM2_APP_PLATFORM.APP,
           DOM2_APP_TARGET.DOM_C
         )
@@ -340,12 +340,12 @@ describe('dom2', () => {
     describe('cross-platform type support', () => {
       test('should prioritize setter type over root type for cross-platform support', () => {
         // 测试border-top-style属性，它有不同的跨平台类型
-        const domCProcessors = createPropertyProcessors(
+        const domCProcessors = createDom2PropertyProcessors(
           DOM2_APP_PLATFORM.APP,
           DOM2_APP_TARGET.DOM_C
         )
 
-        const nvCProcessors = createPropertyProcessors(
+        const nvCProcessors = createDom2PropertyProcessors(
           DOM2_APP_PLATFORM.APP,
           DOM2_APP_TARGET.NV_C
         )
@@ -365,8 +365,8 @@ describe('dom2', () => {
         )
 
         // 验证不同平台使用不同的setter
-        expect(domCResult?.setterCode).toContain('setStyleBorderTopStyle')
-        expect(nvCResult?.setterCode).toContain('borderStyleTop')
+        expect(domCResult.setterCode).toContain('setStyleBorderTopStyle')
+        expect(nvCResult.setterCode).toContain('borderStyleTop')
       })
     })
   })
@@ -402,7 +402,7 @@ describe('dom2', () => {
         const result = processor('100px', 'width')
 
         expect(result).toEqual({
-          valueCode: '"100"',
+          valueCode: '{ value: 100, unit: UniCSSUnitType.PX }',
           setterCode: 'setWidth(100, UniCSSUnitType.PX)',
         })
       })
@@ -412,7 +412,7 @@ describe('dom2', () => {
         const result = processor('50%', 'width')
 
         expect(result).toEqual({
-          valueCode: '"50"',
+          valueCode: '{ value: 50, unit: UniCSSUnitType.PCT }',
           setterCode: 'setWidth(50, UniCSSUnitType.PCT)',
         })
       })
@@ -422,7 +422,7 @@ describe('dom2', () => {
         const result = processor('0.5', 'opacity')
 
         expect(result).toEqual({
-          valueCode: '"0.5"',
+          valueCode: '{ value: 0.5, unit: UniCSSUnitType.NONE }',
           setterCode: 'setOpacity(0.5, UniCSSUnitType.NONE)',
         })
       })
@@ -431,7 +431,7 @@ describe('dom2', () => {
         const processor = createSetStyleUnitValueProcessor('setWidth')
         const result = processor('invalid', 'width')
 
-        expect(result).toBeUndefined()
+        expect(result.error).toBeDefined()
       })
     })
 
@@ -453,11 +453,9 @@ describe('dom2', () => {
         const processor = createSetStyleEnumValueProcessor('')
         const result = processor('block', 'display')
 
-        if (result) {
-          expect(result).toHaveProperty('valueCode')
-          expect(result).toHaveProperty('setterCode')
-          expect(result.setterCode).toBe(result.valueCode)
-        }
+        expect(result).toHaveProperty('valueCode')
+        expect(result).toHaveProperty('setterCode')
+        expect(result.setterCode).toBe(result.valueCode)
       })
     })
 
@@ -506,14 +504,14 @@ describe('dom2', () => {
         const processor = createSetStyleNumberValueProcessor('setFlexGrow')
         const result = processor('invalid', 'flex-grow')
 
-        expect(result).toBeUndefined()
+        expect(result.error).toBeDefined()
       })
 
       test('should handle empty values', () => {
         const processor = createSetStyleNumberValueProcessor('setFlexGrow')
         const result = processor('', 'flex-grow')
 
-        expect(result).toBeUndefined()
+        expect(result.error).toBeDefined()
       })
 
       test('should handle string numbers', () => {
@@ -531,8 +529,8 @@ describe('dom2', () => {
   describe('clearProcessorsCache', () => {
     test('should clear the processors cache', () => {
       // 创建一些处理器来填充缓存
-      createPropertyProcessors(DOM2_APP_PLATFORM.APP, DOM2_APP_TARGET.DOM_C)
-      createPropertyProcessors(
+      createDom2PropertyProcessors(DOM2_APP_PLATFORM.APP, DOM2_APP_TARGET.DOM_C)
+      createDom2PropertyProcessors(
         DOM2_APP_PLATFORM.APP_ANDROID,
         DOM2_APP_TARGET.DOM_C
       )
@@ -541,12 +539,12 @@ describe('dom2', () => {
       clearProcessorsCache()
 
       // 重新创建处理器，应该得到新的实例
-      const processors1 = createPropertyProcessors(
+      const processors1 = createDom2PropertyProcessors(
         DOM2_APP_PLATFORM.APP,
         DOM2_APP_TARGET.DOM_C
       )
 
-      const processors2 = createPropertyProcessors(
+      const processors2 = createDom2PropertyProcessors(
         DOM2_APP_PLATFORM.APP,
         DOM2_APP_TARGET.DOM_C
       )

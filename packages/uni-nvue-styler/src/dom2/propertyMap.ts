@@ -5,7 +5,7 @@ import {
   createSetStyleUnitValueProcessor,
 } from './processors'
 import type { AppCssJson, DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './types'
-import appCssJson from '../../lib/app-css.json'
+import appCssJson from '../../lib/dom2/app-css.json'
 
 const processorMapCache = new Map<string, Record<string, PropertyProcessor>>()
 
@@ -16,7 +16,7 @@ function getCacheKey(
   return `${platform}:${target}`
 }
 
-export function createPropertyProcessors(
+export function createDom2PropertyProcessors(
   platform: DOM2_APP_PLATFORM,
   target: DOM2_APP_TARGET
 ) {

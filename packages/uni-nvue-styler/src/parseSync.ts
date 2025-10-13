@@ -5,9 +5,7 @@ import type { NormalizeOptions } from './utils'
 
 export interface ParseInlineStyleOptions extends NormalizeOptions {}
 
-export interface ParseStaticStyleDeclarations extends NormalizeOptions {
-  dom2?: boolean
-}
+export interface ParseStaticStyleDeclarations extends NormalizeOptions {}
 
 export function parseStaticStyleDeclarations(
   input: string,

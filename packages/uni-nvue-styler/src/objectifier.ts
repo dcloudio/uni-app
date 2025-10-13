@@ -1,15 +1,28 @@
 import type { Container, Document, Root } from 'postcss'
 import { extend, hasOwn } from '@vue/shared'
 import { COMBINATORS_RE } from './utils'
+import type { DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './dom2/types'
+import type { PropertyProcessor } from './dom2/processors'
+import { createDom2PropertyProcessors } from './dom2/propertyMap'
 
+interface ObjectifierOptions {
+  trim: boolean
+  dom2?: {
+    platform: DOM2_APP_PLATFORM
+    target: DOM2_APP_TARGET
+  }
+}
 interface ObjectifierContext {
   'FONT-FACE': Record<string, unknown>[]
   TRANSITION: Record<string, Record<string, unknown>>
+  dom2?: {
+    propertyProcessors: Record<string, PropertyProcessor>
+  }
 }
 
 export function objectifier(
   node: Root | Document | Container | null,
-  { trim }: { trim: boolean } = { trim: false }
+  options: ObjectifierOptions
 ) {
   if (!node) {
     return {}
@@ -18,8 +31,16 @@ export function objectifier(
     'FONT-FACE': [],
     TRANSITION: {},
   }
-  const result = transform(node, context)
-  if (trim) {
+  if (options.dom2) {
+    context.dom2 = {
+      propertyProcessors: createDom2PropertyProcessors(
+        options.dom2.platform,
+        options.dom2.target
+      ),
+    }
+  }
+  const result = transform(node, context, options)
+  if (options.trim) {
     trimObj(result)
   }
   if (context['FONT-FACE'].length) {
@@ -42,12 +63,13 @@ function trimObj(obj: Record<string, any>) {
 
 function transform(
   node: Root | Document | Container,
-  context: ObjectifierContext
+  context: ObjectifierContext,
+  options: ObjectifierOptions
 ) {
   const result: Record<string, Record<string, unknown> | unknown> = {}
   node.each((child) => {
     if (child.type === 'atrule') {
-      const body = transform(child, context)
+      const body = transform(child, context, options)
       if (child.name === 'font-face') {
         const fontFamily = body.fontFamily as string
         if (fontFamily && '"\''.indexOf(fontFamily[0]) > -1) {
@@ -56,18 +78,39 @@ function transform(
         context['FONT-FACE'].push(body)
       }
     } else if (child.type === 'rule') {
-      const body = transform(child, context)
+      const body = transform(child, context, options)
       child.selectors.forEach((selector) => {
         transformSelector(selector, body, result, context)
       })
     } else if (child.type === 'decl') {
+      const name = context.dom2
+        ? (child as any).__originalProp || child.prop
+        : child.prop
+      let value = child.value
+      if (context.dom2) {
+        const processor = context.dom2.propertyProcessors[name]
+        if (processor) {
+          const valueResult = processor(value, name)
+          if (valueResult.error) {
+            console.error(valueResult.error)
+          } else {
+            value = {
+              toJSON() {
+                return valueResult.valueCode
+              },
+            } as unknown as string
+          }
+        } else {
+          console.error(`Unsupported property: ${name}`)
+        }
+      }
       if (child.important) {
-        result['!' + child.prop] = child.value
+        result['!' + name] = value
         // !important的值域优先级高，故删除非!important的值域
-        delete result[child.prop]
+        delete result[name]
       } else {
-        if (!hasOwn(result, '!' + child.prop)) {
-          result[child.prop] = child.value
+        if (!hasOwn(result, '!' + name)) {
+          result[name] = value
         }
       }
     }

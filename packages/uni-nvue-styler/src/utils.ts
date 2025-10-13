@@ -1,5 +1,6 @@
 import type { Declaration, Source } from 'postcss'
 import { hasOwn } from '@vue/shared'
+import type { DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './dom2/types'
 
 export const COMBINATORS_RE =
   /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/
@@ -10,7 +11,10 @@ export interface NormalizeOptions {
   logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
   type?: 'nvue' | 'uvue'
   platform?: typeof process.env.UNI_UTS_PLATFORM
-  dom2?: boolean
+  dom2?: {
+    platform: DOM2_APP_PLATFORM
+    target: DOM2_APP_TARGET
+  }
 }
 
 export type Normalize = (

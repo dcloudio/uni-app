@@ -18,7 +18,8 @@ export enum DOM2_APP_TARGET {
   DOM_TS = 'dom-ts',
 }
 
-export interface ParseDom2StaticStyleOptions extends NormalizeOptions {
+export interface ParseDom2StaticStyleOptions
+  extends Omit<NormalizeOptions, 'dom2'> {
   platform: DOM2_APP_PLATFORM
   target: DOM2_APP_TARGET
 }
