@@ -105,7 +105,9 @@ function compileTemplate (source, options, compile) {
 
 const compilerModule = {
   preTransformNode (el, options) {
-    if (el.tag === 'match-media' && process.env.UNI_PLATFORM !== 'mp-weixin') {
+    const supportedPlatforms = ['mp-weixin', 'mp-jd']
+    const unsupportedPlatforms = ['mp-xhs', 'mp-kuaishou'] // 小红书和快手无原生 match-media 组件，使用 uni-match-media 组件会报错 uni.createMediaQueryObserver is not a function
+    if (el.tag === 'match-media' && ![...supportedPlatforms, ...unsupportedPlatforms].includes(process.env.UNI_PLATFORM)) {
       el.tag = 'uni-match-media'
     }
     if (process.env.UNI_PLATFORM === 'quickapp-native') {
