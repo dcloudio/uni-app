@@ -3,10 +3,10 @@ import { Plugin } from '@vue/runtime-core'
 // # 全局API
 // ## 应用实例
 import {
-  createApp as createAppOrigin,
-  createSSRApp as createSSRAppOrigin,
+  CreateAppFunction as CreateAppFunctionOrigin,
   App as AppOrigin,
 } from '@vue/runtime-core'
+
 // ## 通用
 import {
   // version
@@ -116,11 +116,13 @@ import {
 } from '@vue/runtime-core'
 // ### 其他类型信息
 import {
+  OnCleanup as OnCleanupOrigin,
+} from '@vue/reactivity'
+import {
   ComponentPublicInstance as ComponentPublicInstanceOrigin,
   ComponentInternalInstance as ComponentInternalInstanceOrigin,
   SetupContext as SetupContextOrigin,
   Ref as RefOrigin,
-  OnCleanup as OnCleanupOrigin,
   DebuggerEvent as DebuggerEventOrigin,
   Directive as DirectiveOrigin,
   DirectiveBinding as DirectiveBindingOrigin,
@@ -195,8 +197,8 @@ import { VNode as VNodeOrigin } from '@vue/runtime-core'
 declare global {
   // # 全局API
   // ## 应用实例
-  const createApp: typeof createAppOrigin
-  const createSSRApp: typeof createSSRAppOrigin
+  const createApp: CreateAppFunctionOrigin<Element>
+  const createSSRApp: CreateAppFunctionOrigin<Element>
   type VueApp = AppOrigin
   // ## 通用
   const nextTick: typeof nextTickOrigin
