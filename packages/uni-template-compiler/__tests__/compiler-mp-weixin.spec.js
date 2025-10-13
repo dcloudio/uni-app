@@ -1,5 +1,4 @@
 const compiler = require('../lib')
-const { tags } = require('../lib/native-tags')
 
 function assertCodegen (template, templateCode, renderCode = 'with(this){}', options = {}) {
   const res = compiler.compile(template, {
@@ -523,6 +522,14 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<span></span>',
       '<label class="_span"></label>'
+    )
+  })
+
+  it('match-media', () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    assertCodegen(
+      '<match-media min-width="300" max-width="600"><view>hello world</view></match-media>',
+      '<match-media min-width="300" max-width="600"><view>hello world</view></match-media>'
     )
   })
 })
