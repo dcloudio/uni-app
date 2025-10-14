@@ -790,6 +790,16 @@
       }
     }
   },
+  "font-size":{
+    "type": "UniCSSUnitValue",
+    "uniPlatform": {
+      "app": {
+        "nv-kt": {
+          "setter": "fontSize"
+        }
+      }
+    }
+  },
   "--*": {
     "description": "css变量",
     "uniPlatform": {
