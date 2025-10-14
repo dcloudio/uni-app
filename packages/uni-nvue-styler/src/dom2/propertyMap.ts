@@ -40,11 +40,15 @@ export function createDom2PropertyProcessors(
         ? 'setStyle'
         : getPlatformConfig(propertyName, platform, target)?.setter
     if (setter) {
+      const language = target === DOM2_APP_TARGET.ALL ? 'cpp' : 'ts'
       const propertyConfig = (appCssJson as AppCssJson)[propertyName]
       // 使用根节点的type
       const propertyType = propertyConfig.type
       if (propertyType === 'UniCSSUnitValue') {
-        processorMap[propertyName] = createSetStyleUnitValueProcessor(setter)
+        processorMap[propertyName] = createSetStyleUnitValueProcessor(
+          setter,
+          language
+        )
       } else if (propertyType === 'UniNativeColor') {
         processorMap[propertyName] =
           createSetStyleNativeColorValueProcessor(setter)
@@ -53,7 +57,10 @@ export function createDom2PropertyProcessors(
         // 创建一个数字值处理器，直接传递数值
         processorMap[propertyName] = createSetStyleNumberValueProcessor(setter)
       } else {
-        processorMap[propertyName] = createSetStyleEnumValueProcessor(setter)
+        processorMap[propertyName] = createSetStyleEnumValueProcessor(
+          setter,
+          language
+        )
       }
     }
   })

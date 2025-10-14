@@ -56,13 +56,16 @@ function createSetStyleVariableProcessor(): PropertyProcessor {
 export const setStyleVariableProcessor = createSetStyleVariableProcessor()
 
 export function createSetStyleUnitValueProcessor(
-  setter: string
+  setter: string,
+  language: 'cpp' | 'ts'
 ): PropertyProcessor {
   return (value) => {
     const unitValue = parseUnitValue(String(value))
     if (unitValue) {
       return createValueProcessorResult(
-        `{ value: ${unitValue.value}, unit: UniCSSUnitType.${unitValue.unit} }`,
+        `UniCSSUnitValue { ${unitValue.value}, UniCSSUnitType${
+          language === 'cpp' ? '::' : '.'
+        }${unitValue.unit} }`,
         `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
       )
     }
@@ -86,16 +89,17 @@ export function createSetStyleNativeColorValueProcessor(
 }
 
 export function createSetStyleEnumValueProcessor(
-  setter: string
+  setter: string,
+  language: 'cpp' | 'ts'
 ): PropertyProcessor {
   return (value, propertyName) => {
     const propertyConfig = (appCssJson as AppCssJson)[propertyName]
     if (!propertyConfig?.type) {
       return createValueProcessorError(`Invalid property: ${propertyName}`)
     }
-    const enumTypeName = `${propertyConfig.type}.${capitalize(
-      camelize(value + '')
-    )}`
+    const enumTypeName = `${propertyConfig.type}${
+      language === 'cpp' ? '::' : '.'
+    }${capitalize(camelize(value + ''))}`
     return createValueProcessorResult(
       enumTypeName,
       setter ? `${setter}(${enumTypeName})` : enumTypeName

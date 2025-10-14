@@ -95,11 +95,7 @@ function transform(
           if (valueResult.error) {
             console.error(valueResult.error)
           } else {
-            value = {
-              toJSON() {
-                return valueResult.valueCode
-              },
-            } as unknown as string
+            value = valueResult.valueCode
           }
           name = `UniCSSPropertyID::` + (properties as any)[name]
         } else {

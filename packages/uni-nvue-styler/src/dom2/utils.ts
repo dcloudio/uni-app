@@ -1,18 +1,37 @@
-export function objToString(obj: any): string {
-  if (obj === null || obj === undefined) {
-    return JSON.stringify(obj)
-  }
+import { DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './types'
 
-  if (typeof obj === 'object' && 'toJSON' in obj) {
-    return obj.toJSON()
+export function getDom2ToString(
+  platform: DOM2_APP_PLATFORM,
+  target: DOM2_APP_TARGET
+) {
+  if (
+    platform === DOM2_APP_PLATFORM.APP_HARMONY &&
+    target === DOM2_APP_TARGET.DOM_C
+  ) {
+    return objToCppString
   }
+  return JSON.stringify
+}
 
-  if (typeof obj === 'object' && !Array.isArray(obj)) {
-    const entries = Object.entries(obj).map(([key, value]) => {
-      return `${key.includes('::') ? key : `"${key}"`}, ${objToString(value)}`
-    })
-    return `{ ${entries.join(',')} }`
-  }
-
-  return JSON.stringify(obj)
+function objToCppString(
+  obj: Record<string, unknown>,
+  depth: number = 0
+): string {
+  const method =
+    depth === 0
+      ? 'make_style_sheet'
+      : depth === 1
+      ? 'make_property_map'
+      : 'make_styles'
+  const entries = Object.entries(obj).map(([key, value]) => {
+    const keyString = key.includes('::') ? key : `"${key}"`
+    if (depth >= 2) {
+      return `{ ${keyString}, ${value} }`
+    }
+    return `{ ${keyString}, ${objToCppString(
+      value as Record<string, unknown>,
+      depth + 1
+    )} }`
+  })
+  return `${method}({ ${entries.join(',')} })`
 }

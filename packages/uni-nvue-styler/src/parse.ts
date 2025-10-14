@@ -4,7 +4,7 @@ import { objectifier } from './objectifier'
 import { expand, vueStyleValidator } from './expand'
 import { normalize } from './normalize'
 import type { NormalizeOptions } from './utils'
-import { objToString } from './dom2/utils'
+import { getDom2ToString } from './dom2/utils'
 
 export interface ParseOptions extends NormalizeOptions {
   filename?: string
@@ -59,7 +59,9 @@ export async function parse(input: string, options: ParseOptions = {}) {
       messages,
     }
   }
-  let code = options.dom2 ? objToString(obj) : JSON.stringify(obj)
+  let code = options.dom2
+    ? getDom2ToString(options.dom2.platform, options.dom2.target)(obj)
+    : JSON.stringify(obj)
   if (options.type === 'uvue') {
     // TODO 暂时仅简易转换 CSS 变量
     code = code.replace(/\:\s*"(.+?)"/g, function (str, p1) {

@@ -398,37 +398,37 @@ describe('dom2 static style', () => {
 
     describe('unit value processor', () => {
       test('should handle pixel values', () => {
-        const processor = createSetStyleUnitValueProcessor('setWidth')
+        const processor = createSetStyleUnitValueProcessor('setWidth', 'ts')
         const result = processor('100px', 'width')
 
         expect(result).toEqual({
-          valueCode: '{ value: 100, unit: UniCSSUnitType.PX }',
+          valueCode: 'UniCSSUnitValue { 100, UniCSSUnitType.PX }',
           setterCode: 'setWidth(100, UniCSSUnitType.PX)',
         })
       })
 
       test('should handle percentage values', () => {
-        const processor = createSetStyleUnitValueProcessor('setWidth')
+        const processor = createSetStyleUnitValueProcessor('setWidth', 'ts')
         const result = processor('50%', 'width')
 
         expect(result).toEqual({
-          valueCode: '{ value: 50, unit: UniCSSUnitType.PCT }',
+          valueCode: 'UniCSSUnitValue { 50, UniCSSUnitType.PCT }',
           setterCode: 'setWidth(50, UniCSSUnitType.PCT)',
         })
       })
 
       test('should handle unitless values', () => {
-        const processor = createSetStyleUnitValueProcessor('setOpacity')
+        const processor = createSetStyleUnitValueProcessor('setOpacity', 'ts')
         const result = processor('0.5', 'opacity')
 
         expect(result).toEqual({
-          valueCode: '{ value: 0.5, unit: UniCSSUnitType.NONE }',
+          valueCode: 'UniCSSUnitValue { 0.5, UniCSSUnitType.NONE }',
           setterCode: 'setOpacity(0.5, UniCSSUnitType.NONE)',
         })
       })
 
       test('should return undefined for invalid values', () => {
-        const processor = createSetStyleUnitValueProcessor('setWidth')
+        const processor = createSetStyleUnitValueProcessor('setWidth', 'ts')
         const result = processor('invalid', 'width')
 
         expect(result.error).toBeDefined()
@@ -437,7 +437,7 @@ describe('dom2 static style', () => {
 
     describe('enum value processor', () => {
       test('should create enum processor with setter', () => {
-        const processor = createSetStyleEnumValueProcessor('setDisplay')
+        const processor = createSetStyleEnumValueProcessor('setDisplay', 'ts')
         // 注意：这个测试依赖于 app-css.json 中的实际配置
         // 如果配置不存在，会返回 undefined
         const result = processor('block', 'display')
@@ -450,7 +450,7 @@ describe('dom2 static style', () => {
       })
 
       test('should create enum processor without setter', () => {
-        const processor = createSetStyleEnumValueProcessor('')
+        const processor = createSetStyleEnumValueProcessor('', 'ts')
         const result = processor('block', 'display')
 
         expect(result).toHaveProperty('valueCode')
