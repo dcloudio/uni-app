@@ -1,6 +1,5 @@
 html,
 body {
-  line-height: 1.2;
   font-family: -apple-system, HelveticaNeue;
 }
 
@@ -76,7 +75,6 @@ uni-app uni-input>.uni-input-wrapper>.uni-input-input {
 uni-app uni-text,
 uni-app uni-textarea,
 uni-app uni-label {
-  line-height: 1.2;
   overflow: hidden;
   flex-basis: auto;
   letter-spacing: 0;

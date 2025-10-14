@@ -175,7 +175,6 @@ text[hidden] {
 text,
 textarea,
 label {
-  line-height: 1.2;
   overflow: hidden;
   flex-basis: auto;
   letter-spacing: 0;
