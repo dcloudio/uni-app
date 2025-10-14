@@ -29,8 +29,9 @@ import { replaceExtApiPagePaths } from '../js/extApiPages'
 import { uniAppCssPlugin, uniAppCssPrePlugin } from '../dom2/css'
 
 export function init() {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return [
-    ...(process.env.UNI_APP_X_DOM2 === 'true' ? [uniAppCssPrePlugin()] : []),
+    ...(isDom2 ? [uniAppCssPrePlugin()] : []),
     ...(isNormalCompileTarget()
       ? [uniWorkersPlugin(), uniDecryptUniModulesPlugin()]
       : []),
@@ -57,12 +58,13 @@ export function init() {
         ]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({
-      dom2: process.env.UNI_APP_X_DOM2 === 'true',
+      dom2: isDom2,
       platform: 'app-harmony',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
       sourceMap: enableSourceMap(),
+      sharedDataLibName: isDom2 ? 'libentry.so' : undefined,
       modules: {
         vueCompilerDom,
         uniCliShared,
