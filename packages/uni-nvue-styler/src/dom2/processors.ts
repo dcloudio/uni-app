@@ -142,6 +142,9 @@ export function createSetStyleNumberValueProcessor(
 function parseNativeColorValue(value: string) {
   const color = tinycolor(value)
   if (color.isValid()) {
-    return '0x' + color.toHex8()
+    // toHex8() 返回 RRGGBBAA，需要转换为 AARRGGBB
+    const hex8 = color.toHex8() // 例如: "ff00ff80"
+    const argb = hex8.slice(6, 8) + hex8.slice(0, 6) // "80" + "ff00ff" = "80ff00ff"
+    return '0x' + argb
   }
 }

@@ -23,13 +23,16 @@
         "../../lib/uts/types/uni-x/@vue/reactivity/dist/reactivity.d.ts"
       ],
       "vue": [
-        "../../lib/uts/types/uni-x/@vue/runtime-core/dist/runtime-core.d.ts"
+        "../../lib/uts/types/uni-x/@vue/vue/dist/vue.d.ts"
       ],
       "@vue/runtime-core": [
         "../../lib/uts/types/uni-x/@vue/runtime-core/dist/runtime-core.d.ts"
       ],
       "@vue/runtime-dom": [
         "../../lib/uts/types/uni-x/@vue/runtime-core/dist/runtime-core.d.ts"
+      ],
+      "@vue/runtime-vapor-dom2":[
+        "../../lib/uts/types/uni-x/@vue/runtime-vapor-dom2/dist/runtime-vapor-dom2.d.ts"
       ],
       "@vue/dts-built-test": ["./dts-built-test/dist/dts-built-test.d.ts"]
     }

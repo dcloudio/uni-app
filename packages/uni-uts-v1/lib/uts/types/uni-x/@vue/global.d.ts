@@ -195,6 +195,10 @@ import { getCurrentInstance as getCurrentInstanceOrigin } from '@vue/runtime-cor
 import { VNode as VNodeOrigin } from '@vue/runtime-core'
 
 declare global {
+  /**
+  * Marker for non-inference type position
+  */
+  type NoInfer<T> = intrinsic
   // # 全局API
   // ## 应用实例
   const createApp: CreateAppFunctionOrigin<Element>

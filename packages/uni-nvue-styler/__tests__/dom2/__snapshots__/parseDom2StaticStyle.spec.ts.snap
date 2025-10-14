@@ -174,8 +174,8 @@ exports[`dom2 static style complex scenarios should handle cross-platform compat
     "valueCode": ""#FF6B6B"",
   },
   "background-color": {
-    "setterCode": "backgroundColor(0xff0000ff)",
-    "valueCode": "0xff0000ff",
+    "setterCode": "backgroundColor(0xffff0000)",
+    "valueCode": "0xffff0000",
   },
   "display": {
     "setterCode": "display(UniCSSDisplayType.Flex)",

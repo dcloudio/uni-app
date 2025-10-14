@@ -84,14 +84,14 @@ export const hideModal: HideModal = function (
 		options?.complete?.(res)
 		return
 	}
-	if(currentPage.vm.$systemDialogPages == null) {
+	if((currentPage as ESObject).$systemDialogPages == null) {
 		const res = new HideModalFailImpl()
 		options?.fail?.(res)
 		options?.complete?.(res)
 		return
 	}
 
-	const dialogPages:Array<UniPage> = currentPage.vm.$systemDialogPages.value
+	const dialogPages:Array<UniPage> = (currentPage as ESObject).$systemDialogPages
 	/**
 	 * 查找需要关闭的dialog实例
 	 */
