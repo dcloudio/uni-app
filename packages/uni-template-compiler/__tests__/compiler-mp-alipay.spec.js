@@ -382,4 +382,11 @@ describe('mp:compiler-mp-alipay', () => {
       "<subscribe-message template-id=\"xxxxx\" data-event-opts=\"{{[['complete',[['completeHandler',['$event']]]]]}}\" onComplete=\"__e\"></subscribe-message>"
     )
   })
+  // ad-feeds
+  it('component: ad-feeds', () => {
+    assertCodegen(
+      '<ad-feeds space-code="ad_tiny_123" />',
+      '<ad-feeds space-code="ad_tiny_123"></ad-feeds>'
+    )
+  })
 })
