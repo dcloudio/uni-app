@@ -16498,7 +16498,7 @@
           "key": "input",
           "ref": fieldRef,
           "value": state.value,
-          "onInput": (event) => {
+          "onInput": withModifiers((event) => {
             var value = event.target.value.toString();
             if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
               if (isPaste(event)) {
@@ -16506,8 +16506,11 @@
               }
               return;
             }
+            if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+              return;
+            }
             state.value = value;
-          },
+          }, ["stop"]),
           "disabled": !!props2.disabled,
           "type": type.value,
           "maxlength": state.maxlength,

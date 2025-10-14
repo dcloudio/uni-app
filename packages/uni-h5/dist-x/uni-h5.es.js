@@ -12948,7 +12948,7 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
             }
             return;
           }
-          if (event.inputType === "insertText" && event.data === ".") {
+          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
             return;
           }
           state2.value = value;

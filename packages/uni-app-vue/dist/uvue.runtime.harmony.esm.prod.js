@@ -7888,6 +7888,7 @@ function parseClassName(_ref21, parentStyles, el) {
     computedStyleInterceptors == null ? void 0 : computedStyleInterceptors.forEach(interceptor => {
       interceptor.classStyles = interceptor.classStyles || /* @__PURE__ */new Map();
       interceptor.classStyles.clear();
+      interceptor.classStylesWeight = {};
     });
   }
   each(parentStyles).forEach(parentSelector => {
@@ -7908,7 +7909,9 @@ function parseClassName(_ref21, parentStyles, el) {
       var filteredByComputedStyle = false;
       var usedByComputedStyle = false;
       if (computedStyleInterceptors) {
-        var interceptors = computedStyleInterceptors.filter(interceptor => !interceptor.properties || interceptor.properties.indexOf(name) !== -1);
+        var isCSSVar = name.startsWith("--");
+        var hyphenatedKey = isCSSVar ? name : hyphenate(name);
+        var interceptors = computedStyleInterceptors.filter(interceptor => !interceptor.properties || interceptor.properties.indexOf(hyphenatedKey) !== -1);
         usedByComputedStyle = interceptors.length > 0;
         filteredByComputedStyle = interceptors.some(interceptor => interceptor.filterProperties);
       }
@@ -8067,6 +8070,9 @@ function triggerComputedStyleUpdate(instance) {
       if (interceptor.classAttr !== "class" || interceptor.styleAttr !== "style") {
         return;
       }
+      if (interceptor.classAttr === "class" && interceptor.classStyles && interceptor.classStylesWeight) {
+        interceptor.styles = mergeClassStyles(interceptor.classStyles, interceptor.classStylesWeight, interceptor.styles);
+      }
       var r = interceptor.reactiveComputedStyle;
       var styles = interceptor.styles;
       for (var key in r) {
@@ -8096,7 +8102,9 @@ function collectClassStyles(instance, styles, weight) {
       interceptor.classStyles.clear();
       interceptor.classStylesWeight = {};
       styles.forEach((value, key) => {
-        if (!interceptor.properties || interceptor.properties.indexOf(key) !== -1) {
+        var isCSSVar = key.startsWith("--");
+        var hyphenatedKey = isCSSVar ? key : hyphenate(key);
+        if (!interceptor.properties || interceptor.properties.indexOf(hyphenatedKey) !== -1) {
           interceptor.classStyles.set(key, value);
           interceptor.classStylesWeight[key] = weight[key];
         }
@@ -8136,11 +8144,6 @@ function updateClassStyles(el) {
   var instance = getRootElementInstance(el);
   if (instance && instance.computedStyleInterceptors) {
     collectClassStyles(instance, parseClassStylesResult.vueComputedStyles, parseClassStylesResult.vueComputedStyleWeights);
-    instance.computedStyleInterceptors.forEach(interceptor => {
-      if (interceptor.classAttr === "class" && interceptor.classStyles && interceptor.classStylesWeight) {
-        interceptor.styles = mergeClassStyles(interceptor.classStyles, interceptor.classStylesWeight, interceptor.styles);
-      }
-    });
     triggerComputedStyleUpdate(instance);
   }
   var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);

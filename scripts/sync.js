@@ -9,15 +9,16 @@ if (process.env.UNI_APP_SYNTAX_DIR) {
   fs.copySync(path.resolve(process.env.UNI_APP_SYNTAX_DIR, 'uts/app-ios'), path.resolve(__dirname, '../packages/uni-uts-v1/lib/uts/types/uni-x/app-ios'))
   fs.copySync(path.resolve(process.env.UNI_APP_SYNTAX_DIR, 'uts/app-js'), path.resolve(__dirname, '../packages/uni-uts-v1/lib/uts/types/uni-x/app-js'))
 }
-if (process.env.UNI_APP_VUE_TYPES_DIR) {
-  ['reactivity', 'runtime-core', 'shared'].forEach(pkg => {
-    const fileName = pkg + '/dist/' + pkg + '.d.ts'
-    fs.copySync(
-      path.resolve(process.env.UNI_APP_VUE_TYPES_DIR, 'packages', fileName),
-      path.resolve(__dirname, '../packages/uni-uts-v1/lib/uts/types/uni-x/@vue', fileName)
-    )
-  })
-}
+// 不再需要同步 vue 的类型，DOM2仓库会同步
+// if (process.env.UNI_APP_VUE_TYPES_DIR) {
+//   ['reactivity', 'runtime-core', 'shared'].forEach(pkg => {
+//     const fileName = pkg + '/dist/' + pkg + '.d.ts'
+//     fs.copySync(
+//       path.resolve(process.env.UNI_APP_VUE_TYPES_DIR, 'packages', fileName),
+//       path.resolve(__dirname, '../packages/uni-uts-v1/lib/uts/types/uni-x/@vue', fileName)
+//     )
+//   })
+// }
 
 // if (process.env.UNI_APsP_ANDROID_TYPES_DIR) {
 //   const globals = ['kotlin/Comparable', 'kotlin/Byte', 'kotlin/UByte', 'kotlin/Short', 'kotlin/UShort', 'kotlin/Int', 'kotlin/UInt', 'kotlin/Long', 'kotlin/ULong', 'kotlin/Float', 'kotlin/Double']

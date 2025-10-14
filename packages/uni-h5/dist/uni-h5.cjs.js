@@ -4119,7 +4119,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             }
             return;
           }
-          if (event.inputType === "insertText" && event.data === ".") {
+          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
             return;
           }
           state.value = value;
