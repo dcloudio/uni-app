@@ -1,3 +1,4 @@
+import tinycolor from 'tinycolor2'
 import type { AppCssJson } from './types'
 import appCssJson from '../../lib/dom2/app-css.json'
 import { camelize, capitalize } from '../shared'
@@ -69,6 +70,21 @@ export function createSetStyleUnitValueProcessor(
   }
 }
 
+export function createSetStyleNativeColorValueProcessor(
+  setter: string
+): PropertyProcessor {
+  return (value) => {
+    const nativeColorValue = parseNativeColorValue(String(value))
+    if (nativeColorValue) {
+      return createValueProcessorResult(
+        `${nativeColorValue}`,
+        `${setter}(${nativeColorValue})`
+      )
+    }
+    return createValueProcessorError(`Invalid color value: ${value}`)
+  }
+}
+
 export function createSetStyleEnumValueProcessor(
   setter: string
 ): PropertyProcessor {
@@ -116,5 +132,12 @@ export function createSetStyleNumberValueProcessor(
       return createValueProcessorResult(`${numValue}`, `${setter}(${numValue})`)
     }
     return createValueProcessorError(`Invalid number value: ${value}`)
+  }
+}
+
+function parseNativeColorValue(value: string) {
+  const color = tinycolor(value)
+  if (color.isValid()) {
+    return '0x' + color.toHex8()
   }
 }

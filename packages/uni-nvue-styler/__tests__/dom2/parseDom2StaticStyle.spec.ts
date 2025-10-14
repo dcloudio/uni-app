@@ -637,7 +637,7 @@ describe('dom2 static style', () => {
         
         width: var(--size);
         height: var(--size);
-        background-color: var(--theme-color);
+        background-color: red;
         display: flex;
         align-items: center;
         position: absolute;

@@ -1,6 +1,7 @@
 import type { PropertyProcessor } from './processors'
 import {
   createSetStyleEnumValueProcessor,
+  createSetStyleNativeColorValueProcessor,
   createSetStyleNumberValueProcessor,
   createSetStyleUnitValueProcessor,
 } from './processors'
@@ -37,6 +38,9 @@ export function createDom2PropertyProcessors(
       const propertyType = propertyConfig.type
       if (propertyType === 'UniCSSUnitValue') {
         processorMap[propertyName] = createSetStyleUnitValueProcessor(setter)
+      } else if (propertyType === 'UniNativeColor') {
+        processorMap[propertyName] =
+          createSetStyleNativeColorValueProcessor(setter)
       } else if (propertyType === 'number') {
         // 对于数字类型的属性（如flex-grow、flex-shrink、opacity、z-index），
         // 创建一个数字值处理器，直接传递数值

@@ -2223,6 +2223,13 @@ importers:
       postcss:
         specifier: 'catalog:'
         version: 8.4.45
+      tinycolor2:
+        specifier: ^1.6.0
+        version: 1.6.0
+    devDependencies:
+      '@types/tinycolor2':
+        specifier: ^1.4.6
+        version: 1.4.6
 
   packages/uni-preprocess:
     dependencies:
@@ -4171,6 +4178,9 @@ packages:
 
   '@types/throttle-debounce@5.0.2':
     resolution: {integrity: sha512-pDzSNulqooSKvSNcksnV72nk8p7gRqN8As71Sp28nov1IgmPKWbOEIwAWvBME5pPTtaXJAvG3O4oc76HlQ4kqQ==}
+
+  '@types/tinycolor2@1.4.6':
+    resolution: {integrity: sha512-iEN8J0BoMnsWBqjVbWH/c0G0Hh7O21lpR2/+PrvAVgWdzL7eexIFm4JN/Wn10PTcmNdtS6U67r499mlWMXOxNw==}
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
@@ -9976,6 +9986,8 @@ snapshots:
       '@types/node': 18.19.50
 
   '@types/throttle-debounce@5.0.2': {}
+
+  '@types/tinycolor2@1.4.6': {}
 
   '@types/yargs-parser@21.0.3': {}
 
