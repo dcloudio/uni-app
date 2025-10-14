@@ -11,7 +11,7 @@ export function updateDocumentTitle(title: string) {
     if (ssrContext) {
       ssrContext[UNI_SSR_TITLE] = title
     }
-  } else {
+  } else if (title && title !== document.title) {
     document.title = title
   }
   UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title })
