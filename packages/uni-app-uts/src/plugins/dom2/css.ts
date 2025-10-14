@@ -51,7 +51,7 @@ export function uniAppCssPrePlugin(): Plugin {
           if (isVue(filename)) {
             return (
               genDom2ClassName(filename, process.env.UNI_INPUT_DIR) +
-              '.style.cpp'
+              'SharedData.style.cpp'
             )
           }
         },
@@ -86,9 +86,15 @@ export function uniAppCssPrePlugin(): Plugin {
           return code
         },
         emitFile(filename, cssCode) {
+          if (filename === 'GenApp.style.cpp') {
+            // TODO 暂不处理
+            return
+          }
+          const className = filename.replace('.style.cpp', '')
           fs.outputFileSync(
             path.resolve(process.env.UNI_APP_HARMONY_DOM2_CPP_DIR!, filename),
-            cssCode
+            `#include "${className}.h"
+vue::shared::UniStyleSheetMap ${className}::_styleSheet = ${cssCode};`
           )
         },
       })
