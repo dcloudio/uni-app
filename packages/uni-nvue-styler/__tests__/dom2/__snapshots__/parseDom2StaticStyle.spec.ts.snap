@@ -26,22 +26,6 @@ exports[`dom2 static style complex scenarios should handle comprehensive CSS wit
     "setterCode": "setStyleAlignItems(UniCSSAlignItemsType.Center)",
     "valueCode": "UniCSSAlignItemsType.Center",
   },
-  "background-color": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundColor, "var(--primary-color)")",
-    "valueCode": ""var(--primary-color)"",
-  },
-  "background-image": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundImage, "linear-gradient(45deg, var(--primary-color), var(--secondary-color))")",
-    "valueCode": ""linear-gradient(45deg, var(--primary-color), var(--secondary-color))"",
-  },
-  "border-bottom-color": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.BorderBottomColor, "var(--secondary-color)")",
-    "valueCode": ""var(--secondary-color)"",
-  },
-  "border-bottom-left-radius": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.BorderBottomLeftRadius, "var(--border-radius)")",
-    "valueCode": ""var(--border-radius)"",
-  },
   "border-bottom-style": {
     "setterCode": "setStyleBorderBottomStyle(UniCSSBorderStyleType.Solid)",
     "valueCode": "UniCSSBorderStyleType.Solid",
@@ -102,10 +86,6 @@ exports[`dom2 static style complex scenarios should handle comprehensive CSS wit
     "setterCode": "setStyleMinHeight(50, UniCSSUnitType.PX)",
     "valueCode": "{ value: 50, unit: UniCSSUnitType.PX }",
   },
-  "opacity": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.Opacity, "var(--opacity-value)")",
-    "valueCode": ""var(--opacity-value)"",
-  },
   "padding-left": {
     "setterCode": "setStylePaddingLeft(12, UniCSSUnitType.PX)",
     "valueCode": "{ value: 12, unit: UniCSSUnitType.PX }",
@@ -139,13 +119,42 @@ exports[`dom2 static style complex scenarios should handle cross-platform compat
     "setterCode": "defineStyleVariable("--theme-color", "#FF6B6B")",
     "valueCode": ""#FF6B6B"",
   },
-  "background-color": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundColor, "var(--theme-color)")",
-    "valueCode": ""var(--theme-color)"",
+}
+`;
+
+exports[`dom2 static style complex scenarios should handle cross-platform compatibility: app-harmony-dom-c 1`] = `
+{
+  "--size": {
+    "setterCode": "defineStyleVariable("--size", "24px")",
+    "valueCode": ""24px"",
+  },
+  "--theme-color": {
+    "setterCode": "defineStyleVariable("--theme-color", "#FF6B6B")",
+    "valueCode": ""#FF6B6B"",
+  },
+  "align-items": {
+    "setterCode": "setStyleAlignItems(UniCSSAlignItemsType.Center)",
+    "valueCode": "UniCSSAlignItemsType.Center",
+  },
+  "display": {
+    "setterCode": "setStyleDisplay(UniCSSDisplayType.Flex)",
+    "valueCode": "UniCSSDisplayType.Flex",
   },
   "height": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.Height, "var(--size)")",
     "valueCode": ""var(--size)"",
+  },
+  "left": {
+    "setterCode": "setStyleLeft(0, UniCSSUnitType.NONE)",
+    "valueCode": "{ value: 0, unit: UniCSSUnitType.NONE }",
+  },
+  "position": {
+    "setterCode": "setStylePosition(UniCSSPositionType.Absolute)",
+    "valueCode": "UniCSSPositionType.Absolute",
+  },
+  "top": {
+    "setterCode": "setStyleTop(0, UniCSSUnitType.NONE)",
+    "valueCode": "{ value: 0, unit: UniCSSUnitType.NONE }",
   },
   "width": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.Width, "var(--size)")",
@@ -154,7 +163,7 @@ exports[`dom2 static style complex scenarios should handle cross-platform compat
 }
 `;
 
-exports[`dom2 static style complex scenarios should handle cross-platform compatibility: app-harmony-dom-ts 1`] = `
+exports[`dom2 static style complex scenarios should handle cross-platform compatibility: app-harmony-nv-c 1`] = `
 {
   "--size": {
     "setterCode": "defineStyleVariable("--size", "24px")",
@@ -168,13 +177,17 @@ exports[`dom2 static style complex scenarios should handle cross-platform compat
     "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundColor, "var(--theme-color)")",
     "valueCode": ""var(--theme-color)"",
   },
-  "height": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.Height, "var(--size)")",
-    "valueCode": ""var(--size)"",
+  "display": {
+    "setterCode": "display(UniCSSDisplayType.Flex)",
+    "valueCode": "UniCSSDisplayType.Flex",
   },
-  "width": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.Width, "var(--size)")",
-    "valueCode": ""var(--size)"",
+  "opacity": {
+    "setterCode": "opacity(0.9)",
+    "valueCode": "0.9",
+  },
+  "position": {
+    "setterCode": "position(UniCSSPositionType.Absolute)",
+    "valueCode": "UniCSSPositionType.Absolute",
   },
 }
 `;
@@ -188,18 +201,6 @@ exports[`dom2 static style complex scenarios should handle cross-platform compat
   "--theme-color": {
     "setterCode": "defineStyleVariable("--theme-color", "#FF6B6B")",
     "valueCode": ""#FF6B6B"",
-  },
-  "background-color": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundColor, "var(--theme-color)")",
-    "valueCode": ""var(--theme-color)"",
-  },
-  "height": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.Height, "var(--size)")",
-    "valueCode": ""var(--size)"",
-  },
-  "width": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.Width, "var(--size)")",
-    "valueCode": ""var(--size)"",
   },
 }
 `;
@@ -250,14 +251,6 @@ exports[`dom2 static style complex scenarios should handle edge cases with compl
     "setterCode": "setStyleVariable(UniCSSPropertyID.Top, "var(--nested-var)")",
     "valueCode": ""var(--nested-var)"",
   },
-  "transform": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.Transform, "translateX(var(--valid-var)) translateY(var(--nested-var))")",
-    "valueCode": ""translateX(var(--valid-var)) translateY(var(--nested-var))"",
-  },
-  "transition-duration": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.TransitionDuration, "var(--valid-var)")",
-    "valueCode": ""var(--valid-var)"",
-  },
 }
 `;
 
@@ -278,14 +271,6 @@ exports[`dom2 static style complex scenarios should handle mixed variable usage 
   "--color-red": {
     "setterCode": "defineStyleVariable("--color-red", "#FF0000")",
     "valueCode": ""#FF0000"",
-  },
-  "background-color": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.BackgroundColor, "var(--color-red)")",
-    "valueCode": ""var(--color-red)"",
-  },
-  "border-bottom-color": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.BorderBottomColor, "var(--color-blue)")",
-    "valueCode": ""var(--color-blue)"",
   },
   "border-bottom-width": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.BorderBottomWidth, "var(--border-width)")",
@@ -330,18 +315,6 @@ exports[`dom2 static style complex scenarios should handle mixed variable usage 
   "padding-right": {
     "setterCode": "setStylePaddingRight(5, UniCSSUnitType.PX)",
     "valueCode": "{ value: 5, unit: UniCSSUnitType.PX }",
-  },
-  "transform": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.Transform, "translateX(var(--base-size)) translateY(10px)")",
-    "valueCode": ""translateX(var(--base-size)) translateY(10px)"",
-  },
-  "transform-origin": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.TransformOrigin, "center var(--base-size)")",
-    "valueCode": ""center var(--base-size)"",
-  },
-  "transition-duration": {
-    "setterCode": "setStyleVariable(UniCSSPropertyID.TransitionDuration, "var(--base-size)")",
-    "valueCode": ""var(--base-size)"",
   },
   "width": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.Width, "var(--base-size)")",

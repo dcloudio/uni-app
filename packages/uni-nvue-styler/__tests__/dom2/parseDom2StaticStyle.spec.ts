@@ -657,7 +657,11 @@ describe('dom2 static style', () => {
         { platform: DOM2_APP_PLATFORM.APP_IOS, target: DOM2_APP_TARGET.DOM_OC },
         {
           platform: DOM2_APP_PLATFORM.APP_HARMONY,
-          target: DOM2_APP_TARGET.DOM_TS,
+          target: DOM2_APP_TARGET.DOM_C,
+        },
+        {
+          platform: DOM2_APP_PLATFORM.APP_HARMONY,
+          target: DOM2_APP_TARGET.NV_C,
         },
       ]
 

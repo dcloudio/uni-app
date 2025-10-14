@@ -60,6 +60,9 @@ export function parseDom2StaticStyle(
       typeof declaration.value === 'string' &&
       declaration.value.includes('var(')
     ) {
+      if (!processors[propertyName]) {
+        continue
+      }
       const processed = setStyleVariableProcessor(
         declaration.value,
         propertyName
