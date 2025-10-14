@@ -9753,7 +9753,7 @@ function invokeOnTabItemTap(route) {
   }
 }
 function updateDocumentTitle(title) {
-  {
+  if (title && title !== document.title) {
     document.title = title;
   }
   UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
@@ -10863,6 +10863,9 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         }
         if (!(routePageMeta == null ? void 0 : routePageMeta.navigationBar.style)) {
           pageMeta.navigationBar.style = "custom";
+        }
+        if (ctx.attrs["data-type"] === SYSTEM_DIALOG_TAG) {
+          pageMeta.navigationBar.titleText = "";
         }
         const parentInstance = inject(
           "parentInstance"

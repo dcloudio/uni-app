@@ -22913,7 +22913,7 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   LoadFontFaceProtocol
 );
 function updateDocumentTitle(title) {
-  {
+  if (title && title !== document.title) {
     document.title = title;
   }
   UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
