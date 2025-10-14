@@ -101,6 +101,16 @@ describe('mp-alipay: transform component', () => {
     )
   })
 
+  test('alipay open component - ad-feeds', () => {
+    assert(
+      `<ad-feeds space-code="ad_tiny_123" @renderSuccess="renderSuccess" />`,
+      `<ad-feeds space-code="ad_tiny_123" onRenderSuccess="{{a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.renderSuccess, "ee") }
+}`
+    )
+  })
+
   test(`button chooseAvatar`, () => {
     assert(
       `<button open-type="chooseAvatar" @chooseavatar="onChooseAvatar" />`,
