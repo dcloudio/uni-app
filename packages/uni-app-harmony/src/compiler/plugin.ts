@@ -116,7 +116,11 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       return {
         build: {
           rollupOptions: {
-            external: [...Object.keys(commandGlobals), ...harmonyGlobals],
+            external: [
+              ...Object.keys(commandGlobals),
+              ...harmonyGlobals,
+              /.*\.so$/,
+            ],
             output: {
               globals: function (id: string) {
                 if (id.startsWith('@kit.')) {
