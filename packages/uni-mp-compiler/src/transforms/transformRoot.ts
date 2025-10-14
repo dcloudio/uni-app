@@ -4,7 +4,11 @@ import {
   NodeTypes,
   findProp,
 } from '@vue/compiler-core'
-import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
+import {
+  createBindDirectiveNode,
+  isElementNode,
+  isSimpleExpressionNode,
+} from '@dcloudio/uni-cli-shared'
 import { UNI_STATUS_BAR_HEIGHT } from '@dcloudio/uni-shared'
 import type { NodeTransform, TransformContext } from '../transform'
 import { parseExpr } from '../ast'
@@ -31,7 +35,7 @@ export const transformRoot: NodeTransform = (node, context) => {
   }
   const hasBindingCssVars = context.bindingCssVars.length > 0
   node.children.forEach((child) => {
-    if (child.type !== NodeTypes.ELEMENT) {
+    if (!isElementNode(child)) {
       return
     }
     hasBindingCssVars && addCssVars(child, context)
@@ -44,7 +48,7 @@ function addCssVars(node: ElementNode, context: TransformContext) {
   if (!styleProp) {
     node.props.push(createBindDirectiveNode('style', CSS_VARS))
   } else {
-    if (styleProp.exp?.type === NodeTypes.SIMPLE_EXPRESSION) {
+    if (styleProp.exp && isSimpleExpressionNode(styleProp.exp)) {
       let expr = parseExpr(styleProp.exp.content, context) as Expression
       if (isArrayExpression(expr)) {
         expr.elements.push(identifier(CSS_VARS))
@@ -76,7 +80,7 @@ function addStatusBarStyle(node: ElementNode, context: TransformContext) {
   if (!styleProp) {
     node.props.push(createBindDirectiveNode('style', genBabelExpr(style)))
   } else {
-    if (styleProp.exp?.type === NodeTypes.SIMPLE_EXPRESSION) {
+    if (styleProp.exp && isSimpleExpressionNode(styleProp.exp)) {
       const originalExpr = parseExpr(
         styleProp.exp.content,
         context

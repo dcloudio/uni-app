@@ -38,6 +38,8 @@ import {
 } from '@vue/compiler-core'
 import {
   findMiniProgramUsingComponents,
+  isCompoundExpressionNode,
+  isDirectiveNode,
   isElementNode,
   isSimpleExpressionNode,
 } from '@dcloudio/uni-cli-shared'
@@ -153,7 +155,7 @@ export function isVForScope(scope: CodegenScope): scope is CodegenVForScope {
 }
 
 export function isScopedSlotVFor({ source }: CodegenVForScope) {
-  if (source.type !== NodeTypes.COMPOUND_EXPRESSION) {
+  if (!isCompoundExpressionNode(source)) {
     return false
   }
   const first = source.children[0] as ExpressionNode
@@ -481,7 +483,7 @@ export function createTransformContext(
         addId(exp)
       } else if (exp.identifiers) {
         exp.identifiers.forEach(addId)
-      } else if (exp.type === NodeTypes.SIMPLE_EXPRESSION) {
+      } else if (isSimpleExpressionNode(exp)) {
         addId(exp.content)
       }
     },
@@ -490,7 +492,7 @@ export function createTransformContext(
         removeId(exp)
       } else if (exp.identifiers) {
         exp.identifiers.forEach(removeId)
-      } else if (exp.type === NodeTypes.SIMPLE_EXPRESSION) {
+      } else if (isSimpleExpressionNode(exp)) {
         removeId(exp.content)
       }
     },
@@ -558,7 +560,7 @@ export function createStructuralDirectiveTransform(
       const exitFns: Array<() => void> = []
       for (let i = 0; i < props.length; i++) {
         const prop = props[i]
-        if (prop.type === NodeTypes.DIRECTIVE && matches(prop.name)) {
+        if (isDirectiveNode(prop) && matches(prop.name)) {
           // structural directives are removed to avoid infinite recursion
           // also we remove them *before* applying so that it can further
           // traverse itself in case it moves the node around
