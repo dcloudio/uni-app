@@ -1,10 +1,10 @@
 import type { Container, Document, Root } from 'postcss'
 import { extend, hasOwn } from '@vue/shared'
 import { COMBINATORS_RE } from './utils'
-import type { DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './dom2/types'
+import { type DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './dom2/types'
 import type { PropertyProcessor } from './dom2/processors'
 import { createDom2PropertyProcessors } from './dom2/propertyMap'
-
+import properties from '../lib/dom2/properties.json'
 interface ObjectifierOptions {
   trim: boolean
   dom2?: {
@@ -35,7 +35,8 @@ export function objectifier(
     context.dom2 = {
       propertyProcessors: createDom2PropertyProcessors(
         options.dom2.platform,
-        options.dom2.target
+        // css 解析时，应该传入ALL，不需要根据target获取setter
+        DOM2_APP_TARGET.ALL
       ),
     }
   }
@@ -83,7 +84,7 @@ function transform(
         transformSelector(selector, body, result, context)
       })
     } else if (child.type === 'decl') {
-      const name = context.dom2
+      let name = context.dom2
         ? (child as any).__originalProp || child.prop
         : child.prop
       let value = child.value
@@ -100,6 +101,7 @@ function transform(
               },
             } as unknown as string
           }
+          name = `UniCSSPropertyID::` + (properties as any)[name]
         } else {
           console.error(`Unsupported property: ${name}`)
         }

@@ -5,7 +5,11 @@ import {
   createSetStyleNumberValueProcessor,
   createSetStyleUnitValueProcessor,
 } from './processors'
-import type { AppCssJson, DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './types'
+import {
+  type AppCssJson,
+  type DOM2_APP_PLATFORM,
+  DOM2_APP_TARGET,
+} from './types'
 import appCssJson from '../../lib/dom2/app-css.json'
 
 const processorMapCache = new Map<string, Record<string, PropertyProcessor>>()
@@ -30,9 +34,12 @@ export function createDom2PropertyProcessors(
   // 从JSON配置中获取所有支持的属性
   const allProperties = Object.keys(appCssJson as AppCssJson)
   allProperties.forEach((propertyName) => {
-    const platformConfig = getPlatformConfig(propertyName, platform, target)
-    if (platformConfig) {
-      const setter = platformConfig.setter
+    // 解析 css 文件样式表时，应该传入ALL，不需要根据target获取setter
+    const setter =
+      target === DOM2_APP_TARGET.ALL
+        ? 'setStyle'
+        : getPlatformConfig(propertyName, platform, target)?.setter
+    if (setter) {
       const propertyConfig = (appCssJson as AppCssJson)[propertyName]
       // 使用根节点的type
       const propertyType = propertyConfig.type
@@ -75,6 +82,9 @@ function getPlatformConfig(
   if (!platformConfig) {
     return null
   }
+  // if(target === DOM2_APP_TARGET.ALL){
+  //   return platformConfig
+  // }
 
   return platformConfig[target] || null
 }

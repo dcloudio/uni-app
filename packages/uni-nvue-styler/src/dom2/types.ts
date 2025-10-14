@@ -8,6 +8,7 @@ export enum DOM2_APP_PLATFORM {
 }
 
 export enum DOM2_APP_TARGET {
+  ALL = 'all',
   DOM_C = 'dom-c',
   DOM_KT = 'dom-kt',
   NV_KT = 'nv-kt',

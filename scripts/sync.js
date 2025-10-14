@@ -87,13 +87,13 @@ async function syncDom2UniCSSPropertyID() {
   const UniCSSPropertyContent = fs.readFileSync(UniCSSPropertyFilename, 'utf-8')
   const { parse } = require('../packages/uts/dist')
   const ast = await parse(UniCSSPropertyContent)
-  const properties = []
+  const properties = {}
   for (const item of ast.body) {
     if (item.type === 'ExportDeclaration') {
       if (item.declaration.type === 'TsEnumDeclaration' && item.declaration.id.value === 'UniCSSPropertyID') {
         item.declaration.members.forEach(member => {
           // 将首字母小写，驼峰转连字符
-          properties.push(hyphenate(member.id.value))
+          properties[hyphenate(member.id.value)] = member.id.value
         })
       }
     }

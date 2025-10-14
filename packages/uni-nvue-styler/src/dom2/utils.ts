@@ -9,7 +9,7 @@ export function objToString(obj: any): string {
 
   if (typeof obj === 'object' && !Array.isArray(obj)) {
     const entries = Object.entries(obj).map(([key, value]) => {
-      return `"${key}": ${objToString(value)}`
+      return `${key ? key : '""'}, ${objToString(value)}`
     })
     return `{ ${entries.join(',')} }`
   }
