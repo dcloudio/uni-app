@@ -85,6 +85,7 @@ export const customElements = [
   'subscribe-message',
   'mpaas-component',
   'match-media',
+  'ad-feeds',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
