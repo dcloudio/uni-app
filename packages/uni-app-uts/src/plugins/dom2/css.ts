@@ -19,7 +19,11 @@ import {
   removePlugins,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
-import { parse } from '@dcloudio/uni-nvue-styler'
+import {
+  type DOM2_APP_PLATFORM,
+  DOM2_APP_TARGET,
+  parse,
+} from '@dcloudio/uni-nvue-styler'
 
 import { isVue } from '../utils'
 
@@ -54,7 +58,10 @@ export function uniAppCssPrePlugin(): Plugin {
         async chunkCssCode(filename, cssCode) {
           cssCode = parseAssets(config, cssCode)
           const { code, messages } = await parse(cssCode, {
-            dom2: true,
+            dom2: {
+              platform: process.env.UNI_UTS_PLATFORM as DOM2_APP_PLATFORM,
+              target: DOM2_APP_TARGET.DOM_C,
+            },
             filename,
             logLevel: 'WARNING',
             type: 'uvue',
@@ -116,7 +123,10 @@ export function uniAppCssPlugin(): Plugin {
       source = parseAssets(resolvedConfig, source)
       // 仅做校验使用
       const { messages } = await parse(source, {
-        dom2: true,
+        dom2: {
+          platform: process.env.UNI_UTS_PLATFORM as DOM2_APP_PLATFORM,
+          target: DOM2_APP_TARGET.DOM_C,
+        },
         filename,
         logLevel: 'WARNING',
         type: 'uvue',
