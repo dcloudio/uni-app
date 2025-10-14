@@ -63,9 +63,9 @@ export function createSetStyleUnitValueProcessor(
     const unitValue = parseUnitValue(String(value))
     if (unitValue) {
       return createValueProcessorResult(
-        `UniCSSUnitValue { ${unitValue.value}, UniCSSUnitType${
+        `UniCSSUnitValue{${unitValue.value}, UniCSSUnitType${
           language === 'cpp' ? '::' : '.'
-        }${unitValue.unit} }`,
+        }${unitValue.unit}}`,
         `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
       )
     }

@@ -402,7 +402,7 @@ describe('dom2 static style', () => {
         const result = processor('100px', 'width')
 
         expect(result).toEqual({
-          valueCode: 'UniCSSUnitValue { 100, UniCSSUnitType.PX }',
+          valueCode: 'UniCSSUnitValue{100, UniCSSUnitType.PX}',
           setterCode: 'setWidth(100, UniCSSUnitType.PX)',
         })
       })
@@ -412,7 +412,7 @@ describe('dom2 static style', () => {
         const result = processor('50%', 'width')
 
         expect(result).toEqual({
-          valueCode: 'UniCSSUnitValue { 50, UniCSSUnitType.PCT }',
+          valueCode: 'UniCSSUnitValue{50, UniCSSUnitType.PCT}',
           setterCode: 'setWidth(50, UniCSSUnitType.PCT)',
         })
       })
@@ -422,7 +422,7 @@ describe('dom2 static style', () => {
         const result = processor('0.5', 'opacity')
 
         expect(result).toEqual({
-          valueCode: 'UniCSSUnitValue { 0.5, UniCSSUnitType.NONE }',
+          valueCode: 'UniCSSUnitValue{0.5, UniCSSUnitType.NONE}',
           setterCode: 'setOpacity(0.5, UniCSSUnitType.NONE)',
         })
       })

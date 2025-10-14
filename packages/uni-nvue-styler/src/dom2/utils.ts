@@ -17,6 +17,9 @@ function objToCppString(
   obj: Record<string, unknown>,
   depth: number = 0
 ): string {
+  if (depth === 0 && Object.keys(obj).length === 0) {
+    return '{}'
+  }
   const method =
     depth === 0
       ? 'make_style_sheet'
