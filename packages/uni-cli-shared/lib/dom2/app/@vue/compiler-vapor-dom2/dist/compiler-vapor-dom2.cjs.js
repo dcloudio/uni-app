@@ -27,4 +27,8 @@ ${R}`),{files:[{code:M,name:`${a}.h`,class:a},{code:R,name:`${a}.cpp`,class:a}],
 
 `:"")+o.code,s.classes.push(o.class)):o.name.endsWith(".cpp")&&(r.code+=(r.code?`
 
-`:"")+o.code,r.classes.push(o.class))})}),a&&(s.name=`${a}.h`,r.name=`${a}.cpp`),{files:[r,s]}}exports.parse=N.parse,exports.COMPONENT_TYPE=mr,exports.DOM2_APP_PLATFORM=Mt,exports.RENDERER_TYPE=pr,exports.TARGET_LANGUAGE=gr,exports.TARGET_PLATFORM=Mt,exports.compile=Gs,exports.genSharedData=ta,exports.genSharedDataClass=en;
+`:"")+o.code,r.classes.push(o.class))})}),a&&(s.name=`${a}.h`,r.name=`${a}.cpp`,s.code=`#include "sdk.h"
+
+${s.code}`,r.code=`#include "${s.name}"
+
+${r.code}`),{files:[r,s]}}exports.parse=N.parse,exports.COMPONENT_TYPE=mr,exports.DOM2_APP_PLATFORM=Mt,exports.RENDERER_TYPE=pr,exports.TARGET_LANGUAGE=gr,exports.TARGET_PLATFORM=Mt,exports.compile=Gs,exports.genSharedData=ta,exports.genSharedDataClass=en;
