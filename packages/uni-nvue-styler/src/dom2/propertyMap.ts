@@ -21,6 +21,12 @@ function getCacheKey(
   return `${platform}:${target}`
 }
 
+const COLOR_TYPES = ['UniNativeColor', 'UniNativeBorderColor']
+
+function isColorType(propertyType?: string) {
+  return propertyType && COLOR_TYPES.includes(propertyType)
+}
+
 export function createDom2PropertyProcessors(
   platform: DOM2_APP_PLATFORM,
   target: DOM2_APP_TARGET
@@ -49,7 +55,7 @@ export function createDom2PropertyProcessors(
           setter,
           language
         )
-      } else if (propertyType === 'UniNativeColor') {
+      } else if (isColorType(propertyType)) {
         processorMap[propertyName] =
           createSetStyleNativeColorValueProcessor(setter)
       } else if (propertyType === 'number') {
