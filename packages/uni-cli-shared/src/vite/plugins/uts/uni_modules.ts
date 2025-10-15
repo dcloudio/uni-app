@@ -300,6 +300,19 @@ const handleCompileResult = (
       pluginContext.addWatchFile(dep)
     })
   }
+  if (
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-android'
+  ) {
+    if (result.errMsg) {
+      const err = new Error(result.errMsg)
+      ;(err as any).customPrint = () => {
+        // 不需要输出，因为编译uts插件的地方已经打印了
+        // console.error(result.errMsg)
+      }
+      throw err
+    }
+  }
 }
 
 // 该插件仅限app-android、app-ios、app-harmony

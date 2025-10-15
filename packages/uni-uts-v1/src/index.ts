@@ -114,6 +114,7 @@ function warn(msg: string) {
 }
 
 export interface CompileResult {
+  errMsg: string
   code: string
   deps: string[]
   encrypt: boolean
@@ -136,6 +137,7 @@ function createResult(
 ): CompileResult {
   return {
     dir,
+    errMsg,
     code: parseErrMsg(code, errMsg),
     deps,
     encrypt: false,
