@@ -31,6 +31,7 @@ import {
 } from './legacy'
 import {
   checkCompile,
+  clearManifestFiles,
   genManifestFile,
   initCheckOptionsEnv,
   restoreDex,
@@ -657,6 +658,11 @@ export async function compile(
             }
             if (versionTips) {
               warn(versionTips)
+            }
+          } else {
+            // 如果编译失败，应该清空已有缓存
+            if (cacheDir) {
+              clearManifestFiles(utsPlatform, pluginRelativeDir, cacheDir)
             }
           }
           const files: string[] = []
