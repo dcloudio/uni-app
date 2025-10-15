@@ -1602,10 +1602,6 @@ export declare function watch<T extends object, Immediate extends Readonly<boole
  */
 export type HydrationStrategy = (hydrate: () => void, forEachElement: (cb: (el: Element) => any) => void) => (() => void) | void;
 export type HydrationStrategyFactory<Options> = (options?: Options) => HydrationStrategy;
-export declare const hydrateOnIdle: HydrationStrategyFactory<number>;
-export declare const hydrateOnVisible: HydrationStrategyFactory<IntersectionObserverInit>;
-export declare const hydrateOnMediaQuery: HydrationStrategyFactory<string>;
-export declare const hydrateOnInteraction: HydrationStrategyFactory<keyof HTMLElementEventMap | Array<keyof HTMLElementEventMap>>;
 
 type AsyncComponentResolveResult<T = Component> = T | {
     default: T;
