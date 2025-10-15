@@ -29,7 +29,7 @@ export function rewriteConsoleExpr(
       map: sourceMap ? s.generateMap({ hires: true }) : { mappings: '' },
     }
   }
-  return { code, map: { mappings: '' } }
+  return { code, map: null }
 }
 
 export function restoreConsoleExpr(code: string): string {

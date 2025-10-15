@@ -43,7 +43,7 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
           }
           return result
         }),
-        map: { mappings: '' },
+        map: null,
       }
     },
   }
