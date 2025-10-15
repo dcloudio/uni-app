@@ -27,6 +27,11 @@ function isColorType(propertyType?: string) {
   return propertyType && COLOR_TYPES.includes(propertyType)
 }
 
+const NUMBER_TYPES = ['number', 'UniNativeBorderRadius']
+function isNumberType(propertyType?: string) {
+  return propertyType && NUMBER_TYPES.includes(propertyType)
+}
+
 export function createDom2PropertyProcessors(
   platform: DOM2_APP_PLATFORM,
   target: DOM2_APP_TARGET
@@ -58,7 +63,7 @@ export function createDom2PropertyProcessors(
       } else if (isColorType(propertyType)) {
         processorMap[propertyName] =
           createSetStyleNativeColorValueProcessor(setter)
-      } else if (propertyType === 'number') {
+      } else if (isNumberType(propertyType)) {
         // 对于数字类型的属性（如flex-grow、flex-shrink、opacity、z-index），
         // 创建一个数字值处理器，直接传递数值
         processorMap[propertyName] = createSetStyleNumberValueProcessor(setter)
