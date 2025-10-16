@@ -9158,15 +9158,15 @@ function patchStyle(el, prev, next) {
     }
     setExtraStyle(el, batchedStyles);
   }
+  const instance = getRootElementInstance(el);
+  if (instance && instance.computedStyleInterceptors) {
+    triggerComputedStyleUpdate(instance);
+  }
   if (batchedStyles.size == 0) {
     return;
   }
   if (el._vsh) {
     batchedStyles.set("display", "none");
-  }
-  const instance = getRootElementInstance(el);
-  if (instance && instance.computedStyleInterceptors) {
-    triggerComputedStyleUpdate(instance);
   }
   el.updateStyle(batchedStyles);
 }
