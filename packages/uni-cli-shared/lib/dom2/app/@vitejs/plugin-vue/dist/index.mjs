@@ -371,10 +371,6 @@ function resolveScript(descriptor, options, ssr, customElement) {
   if (!descriptor.script && !descriptor.scriptSetup) {
     return null;
   }
-  const cached = getResolvedScript(descriptor, ssr);
-  if (cached) {
-    return cached;
-  }
   const resolved = options.compiler.compileScript(descriptor, {
     ...options.script,
     // fixed by uts 需要额外添加参数，比如className
