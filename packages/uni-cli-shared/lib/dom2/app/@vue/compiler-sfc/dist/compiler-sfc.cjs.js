@@ -123,7 +123,7 @@ function requireHashSum () {
 }
 
 var hashSumExports = /*@__PURE__*/ requireHashSum();
-var hash = /*@__PURE__*/getDefaultExportFromCjs(hashSumExports);
+var hash_sum = /*@__PURE__*/getDefaultExportFromCjs(hashSumExports);
 
 const CSS_VARS_HELPER = `useCssVars`;
 function genCssVarsFromList(vars, id, isProd, isSSR = false) {
@@ -142,7 +142,7 @@ function genCssVarsFromList(vars, id, isProd, isSSR = false) {
 }
 function genVarName(id, raw, isProd, isSSR = false) {
   if (isProd) {
-    return hash(id + raw);
+    return hash_sum(id + raw);
   } else {
     return `${id}-${shared.getEscapedCssVarName(raw, isSSR)}`;
   }
@@ -21447,6 +21447,10 @@ ${vapor && !ssr ? `` : `return `}${returned}
   const genDefaultAs = options.genDefaultAs ? `const ${options.genDefaultAs} =` : `export default`;
   let runtimeOptions = ``;
   if (options.className) {
+    if (options.isWatch) {
+      runtimeOptions += `
+  __hash: "${hash_sum(sfc.source)}",`;
+    }
     runtimeOptions += `
   __className,`;
   }

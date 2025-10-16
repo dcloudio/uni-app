@@ -311,6 +311,7 @@ export function initPluginVueOptions(
         descriptor: SFCDescriptor
       ) => {
         return {
+          isWatch: process.env.NODE_ENV === 'development',
           className: genDom2ClassName(
             descriptor.filename,
             process.env.UNI_INPUT_DIR
