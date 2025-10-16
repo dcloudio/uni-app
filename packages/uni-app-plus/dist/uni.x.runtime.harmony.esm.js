@@ -2772,7 +2772,7 @@ function initComponentInstance(app) {
     initNativePage,
     initFontFace
   };
-  app.mixin({
+  !app.vapor && app.mixin({
     beforeCreate() {
       initNativePage(this);
     },
