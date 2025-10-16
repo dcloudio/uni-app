@@ -24,7 +24,6 @@ export const compilerOptions: CompilerOptions = {
 const COMPONENTS_DIR = 'wxcomponents'
 
 export const customElements = [
-  'open-data',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
