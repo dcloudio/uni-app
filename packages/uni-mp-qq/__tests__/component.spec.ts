@@ -19,4 +19,13 @@ describe('mp-qq: transform component', () => {
   // }`
   //     )
   //   })
+  test(`open-data`, () => {
+    assert(
+      `<open-data type="userNickName" lang="zh_CN" @error="error"/>`,
+      `<open-data type="userNickName" lang="zh_CN" binderror="{{a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.error, "62") }
+}`
+    )
+  })
 })
