@@ -18,6 +18,11 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
       if (!isVueSfcFile(id)) {
         return
       }
+      const platform = process.env.UNI_PLATFORM
+      const isApp =
+        platform === 'app' ||
+        platform === 'app-plus' ||
+        platform === 'app-harmony'
       return {
         code: code.replace(/<script([^>]*)>/gi, (match, attributes) => {
           let vapor = false
@@ -43,7 +48,8 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
           }
           return result
         }),
-        map: null,
+        // app平台不可返回null，否则会报错“Multiple conflicting contents for sourcemap source”
+        map: isApp ? { mappings: '' } : null,
       }
     },
   }
