@@ -5,7 +5,11 @@ export function initWebviewApi (readyCallback) {
   if (!isAlipay) {
     return
   }
-  document.addEventListener('DOMContentLoaded', readyCallback)
+  if (document.readyState !== 'loading') {
+    setTimeout(readyCallback, 0)
+  } else {
+    document.addEventListener('DOMContentLoaded', readyCallback)
+  }
   const {
     navigateTo,
     navigateBack,

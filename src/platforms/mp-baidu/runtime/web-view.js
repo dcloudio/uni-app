@@ -5,7 +5,8 @@ const isBaidu = window.swan &&
 export function initWebviewApi (readyCallback) {
   if (!isBaidu) {
     return
-  } if (document.readyState !== 'loading') {
+  }
+  if (document.readyState !== 'loading') {
     setTimeout(readyCallback, 0)
   } else {
     document.addEventListener('DOMContentLoaded', readyCallback)
