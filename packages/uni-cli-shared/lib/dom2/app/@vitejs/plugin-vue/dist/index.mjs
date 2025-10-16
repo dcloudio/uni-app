@@ -176,6 +176,14 @@ function createRollupError(id, error) {
     name,
     stack
   };
+  Object.defineProperty(rollupError, "message", {
+    get() {
+      return message;
+    },
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    set(_v) {
+    }
+  });
   if ("code" in error && error.loc) {
     rollupError.loc = {
       file: id,
@@ -361,23 +369,7 @@ function isUseInlineTemplate(descriptor, options) {
 const scriptIdentifier = `_sfc_main`;
 function resolveScript(descriptor, options, ssr, customElement) {
   if (!descriptor.script && !descriptor.scriptSetup) {
-    if (process.env.UNI_APP_X_DOM2 === "true") {
-      descriptor.vapor = true;
-      descriptor.scriptSetup = {
-        type: "script",
-        content: "",
-        loc: {
-          start: { column: 0, line: 0, offset: 0 },
-          end: { column: 0, line: 0, offset: 0 },
-          source: ""
-        },
-        attrs: { setup: true, vapor: true, lang: "uts" },
-        setup: true,
-        lang: "uts"
-      };
-    } else {
-      return null;
-    }
+    return null;
   }
   const cached = getResolvedScript(descriptor, ssr);
   if (cached) {

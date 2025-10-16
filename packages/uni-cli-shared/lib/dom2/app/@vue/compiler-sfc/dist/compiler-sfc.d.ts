@@ -165,7 +165,10 @@ export interface SFCParseOptions {
     pad?: boolean | 'line' | 'space';
     ignoreEmpty?: boolean;
     compiler?: TemplateCompiler;
-    templateParseOptions?: ParserOptions;
+    templateParseOptions?: ParserOptions & {
+        dom2?: boolean;
+        root?: string;
+    };
 }
 export interface SFCBlock {
     type: string;

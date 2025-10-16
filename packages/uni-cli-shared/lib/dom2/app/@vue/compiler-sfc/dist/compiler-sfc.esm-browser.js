@@ -27191,317 +27191,6 @@ function extractIdentifiers(ids, node) {
   }
 }
 
-var __defProp$a = Object.defineProperty;
-var __defProps$9 = Object.defineProperties;
-var __getOwnPropDescs$9 = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols$a = Object.getOwnPropertySymbols;
-var __hasOwnProp$a = Object.prototype.hasOwnProperty;
-var __propIsEnum$a = Object.prototype.propertyIsEnumerable;
-var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues$a = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp$a.call(b, prop))
-      __defNormalProp$a(a, prop, b[prop]);
-  if (__getOwnPropSymbols$a)
-    for (var prop of __getOwnPropSymbols$a(b)) {
-      if (__propIsEnum$a.call(b, prop))
-        __defNormalProp$a(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps$9 = (a, b) => __defProps$9(a, __getOwnPropDescs$9(b));
-const DEFAULT_FILENAME = "anonymous.vue";
-const parseCache$1 = createCache();
-function parse$2(source, options = {}) {
-  var _a;
-  const sourceKey = genCacheKey(source, __spreadProps$9(__spreadValues$a({}, options), {
-    compiler: { parse: (_a = options.compiler) == null ? void 0 : _a.parse }
-  }));
-  const cache = parseCache$1.get(sourceKey);
-  if (cache) {
-    return cache;
-  }
-  const {
-    sourceMap = true,
-    filename = DEFAULT_FILENAME,
-    sourceRoot = "",
-    pad = false,
-    ignoreEmpty = true,
-    compiler = CompilerDOM,
-    templateParseOptions = {}
-  } = options;
-  const descriptor = {
-    filename,
-    source,
-    template: null,
-    script: null,
-    scriptSetup: null,
-    styles: [],
-    customBlocks: [],
-    cssVars: [],
-    slotted: false,
-    vapor: false,
-    shouldForceReload: (prevImports) => hmrShouldReload(prevImports, descriptor)
-  };
-  const errors = [];
-  const ast = compiler.parse(source, __spreadProps$9(__spreadValues$a({
-    parseMode: "sfc",
-    prefixIdentifiers: true
-  }, templateParseOptions), {
-    onError: (e) => {
-      errors.push(e);
-    }
-  }));
-  ast.children.forEach((node) => {
-    if (node.type !== 1) {
-      return;
-    }
-    if (ignoreEmpty && node.tag !== "template" && isEmpty(node) && !hasAttr(node, "src")) {
-      descriptor.vapor || (descriptor.vapor = hasAttr(node, "vapor"));
-      return;
-    }
-    switch (node.tag) {
-      case "template":
-        if (!descriptor.template) {
-          const templateBlock = descriptor.template = createBlock(
-            node,
-            source,
-            false
-          );
-          descriptor.vapor || (descriptor.vapor = !!templateBlock.attrs.vapor);
-          if (!templateBlock.attrs.src) {
-            templateBlock.ast = createRoot(node.children, source);
-          }
-          if (templateBlock.attrs.functional) {
-            const err = new SyntaxError(
-              `<template functional> is no longer supported in Vue 3, since functional components no longer have significant performance difference from stateful ones. Just use a normal <template> instead.`
-            );
-            err.loc = node.props.find(
-              (p) => p.type === 6 && p.name === "functional"
-            ).loc;
-            errors.push(err);
-          }
-        } else {
-          errors.push(createDuplicateBlockError(node));
-        }
-        break;
-      case "script":
-        const scriptBlock = createBlock(node, source, pad);
-        descriptor.vapor || (descriptor.vapor = !!scriptBlock.attrs.vapor);
-        const isSetup = !!(scriptBlock.attrs.setup || scriptBlock.attrs.vapor);
-        if (isSetup && !descriptor.scriptSetup) {
-          descriptor.scriptSetup = scriptBlock;
-          break;
-        }
-        if (!isSetup && !descriptor.script) {
-          descriptor.script = scriptBlock;
-          break;
-        }
-        errors.push(createDuplicateBlockError(node, isSetup));
-        break;
-      case "style":
-        const styleBlock = createBlock(node, source, pad);
-        if (styleBlock.attrs.vars) {
-          errors.push(
-            new SyntaxError(
-              `<style vars> has been replaced by a new proposal: https://github.com/vuejs/rfcs/pull/231`
-            )
-          );
-        }
-        descriptor.styles.push(styleBlock);
-        break;
-      default:
-        descriptor.customBlocks.push(createBlock(node, source, pad));
-        break;
-    }
-  });
-  if (!descriptor.template && !descriptor.script && !descriptor.scriptSetup) {
-    errors.push(
-      new SyntaxError(
-        `At least one <template> or <script> is required in a single file component. ${descriptor.filename}`
-      )
-    );
-  }
-  if (descriptor.scriptSetup) {
-    if (descriptor.scriptSetup.src) {
-      errors.push(
-        new SyntaxError(
-          `<script setup> cannot use the "src" attribute because its syntax will be ambiguous outside of the component.`
-        )
-      );
-      descriptor.scriptSetup = null;
-    }
-    if (descriptor.script && descriptor.script.src) {
-      errors.push(
-        new SyntaxError(
-          `<script> cannot use the "src" attribute when <script setup> is also present because they must be processed together.`
-        )
-      );
-      descriptor.script = null;
-    }
-  }
-  let templateColumnOffset = 0;
-  if (descriptor.template && (descriptor.template.lang === "pug" || descriptor.template.lang === "jade")) {
-    [descriptor.template.content, templateColumnOffset] = dedent(
-      descriptor.template.content
-    );
-  }
-  if (sourceMap) {
-    const genMap = (block, columnOffset = 0) => {
-      if (block && !block.src) {
-        block.map = generateSourceMap(
-          filename,
-          source,
-          block.content,
-          sourceRoot,
-          !pad || block.type === "template" ? block.loc.start.line - 1 : 0,
-          columnOffset
-        );
-      }
-    };
-    genMap(descriptor.template, templateColumnOffset);
-    genMap(descriptor.script);
-    descriptor.styles.forEach((s) => genMap(s));
-    descriptor.customBlocks.forEach((s) => genMap(s));
-  }
-  descriptor.cssVars = parseCssVars(descriptor);
-  const slottedRE = /(?:::v-|:)slotted\(/;
-  descriptor.slotted = descriptor.styles.some(
-    (s) => s.scoped && slottedRE.test(s.content)
-  );
-  const result = {
-    descriptor,
-    errors
-  };
-  parseCache$1.set(sourceKey, result);
-  return result;
-}
-function createDuplicateBlockError(node, isScriptSetup = false) {
-  const err = new SyntaxError(
-    `Single file component can contain only one <${node.tag}${isScriptSetup ? ` setup` : ``}> element`
-  );
-  err.loc = node.loc;
-  return err;
-}
-function createBlock(node, source, pad) {
-  const type = node.tag;
-  const loc = node.innerLoc;
-  const attrs = {};
-  const block = {
-    type,
-    content: source.slice(loc.start.offset, loc.end.offset),
-    loc,
-    attrs
-  };
-  if (pad) {
-    block.content = padContent(source, block, pad) + block.content;
-  }
-  node.props.forEach((p) => {
-    if (p.type === 6) {
-      const name = p.name;
-      attrs[name] = p.value ? p.value.content || true : true;
-      if (name === "lang") {
-        block.lang = p.value && p.value.content;
-      } else if (name === "src") {
-        block.src = p.value && p.value.content;
-      } else if (type === "style") {
-        if (name === "scoped") {
-          block.scoped = true;
-        } else if (name === "module") {
-          block.module = attrs[name];
-        }
-      } else if (type === "script" && name === "setup") {
-        block.setup = attrs.setup;
-      }
-    }
-  });
-  return block;
-}
-const splitRE = /\r?\n/g;
-const emptyRE = /^(?:\/\/)?\s*$/;
-const replaceRE = /./g;
-function generateSourceMap(filename, source, generated, sourceRoot, lineOffset, columnOffset) {
-  const map = new sourceMapExports.SourceMapGenerator({
-    file: filename.replace(/\\/g, "/"),
-    sourceRoot: sourceRoot.replace(/\\/g, "/")
-  });
-  map.setSourceContent(filename, source);
-  map._sources.add(filename);
-  generated.split(splitRE).forEach((line, index) => {
-    if (!emptyRE.test(line)) {
-      const originalLine = index + 1 + lineOffset;
-      const generatedLine = index + 1;
-      for (let i = 0; i < line.length; i++) {
-        if (!/\s/.test(line[i])) {
-          map._mappings.add({
-            originalLine,
-            originalColumn: i + columnOffset,
-            generatedLine,
-            generatedColumn: i,
-            source: filename,
-            name: null
-          });
-        }
-      }
-    }
-  });
-  return map.toJSON();
-}
-function padContent(content, block, pad) {
-  content = content.slice(0, block.loc.start.offset);
-  if (pad === "space") {
-    return content.replace(replaceRE, " ");
-  } else {
-    const offset = content.split(splitRE).length;
-    const padChar = block.type === "script" && !block.lang ? "//\n" : "\n";
-    return Array(offset).join(padChar);
-  }
-}
-function hasAttr(node, name) {
-  return node.props.some((p) => p.type === 6 && p.name === name);
-}
-function isEmpty(node) {
-  for (let i = 0; i < node.children.length; i++) {
-    const child = node.children[i];
-    if (child.type !== 2 || child.content.trim() !== "") {
-      return false;
-    }
-  }
-  return true;
-}
-function hmrShouldReload(prevImports, next) {
-  if (!next.scriptSetup || next.scriptSetup.lang !== "ts" && next.scriptSetup.lang !== "tsx" && // fixed by uts
-  next.scriptSetup.lang !== "uts") {
-    return false;
-  }
-  for (const key in prevImports) {
-    if (!prevImports[key].isUsedInTemplate && isImportUsed(key, next)) {
-      return true;
-    }
-  }
-  return false;
-}
-function dedent(s) {
-  const lines = s.split("\n");
-  const minIndent = lines.reduce(function(minIndent2, line) {
-    var _a, _b;
-    if (line.trim() === "") {
-      return minIndent2;
-    }
-    const indent = ((_b = (_a = line.match(/^\s*/)) == null ? void 0 : _a[0]) == null ? void 0 : _b.length) || 0;
-    return Math.min(indent, minIndent2);
-  }, Infinity);
-  if (minIndent === 0) {
-    return [s, minIndent];
-  }
-  return [
-    lines.map(function(line) {
-      return line.slice(minIndent);
-    }).join("\n"),
-    minIndent
-  ];
-}
-
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -27749,6 +27438,399 @@ var _polyfillNode_path = /*#__PURE__*/Object.freeze({
   resolve: resolve,
   sep: sep
 });
+
+const UNKNOWN_TYPE = "Unknown";
+function resolveObjectKey(node, computed) {
+  switch (node.type) {
+    case "StringLiteral":
+    case "NumericLiteral":
+      return String(node.value);
+    case "Identifier":
+      if (!computed) return node.name;
+  }
+  return void 0;
+}
+function concatStrings(strs) {
+  return strs.filter((s) => !!s).join(", ");
+}
+function isLiteralNode(node) {
+  return node.type.endsWith("Literal");
+}
+function isCallOf(node, test) {
+  return !!(node && test && node.type === "CallExpression" && node.callee.type === "Identifier" && (typeof test === "string" ? node.callee.name === test : test(node.callee.name)));
+}
+function toRuntimeTypeString(types) {
+  return types.length > 1 ? `[${types.join(", ")}]` : types[0];
+}
+function getImportedName(specifier) {
+  if (specifier.type === "ImportSpecifier")
+    return specifier.imported.type === "Identifier" ? specifier.imported.name : specifier.imported.value;
+  else if (specifier.type === "ImportNamespaceSpecifier") return "*";
+  return "default";
+}
+function getId(node) {
+  return node.type === "Identifier" ? node.name : node.type === "StringLiteral" ? node.value : null;
+}
+const normalize = (path.posix || path).normalize;
+const windowsSlashRE = /\\/g;
+function normalizePath(p) {
+  return normalize(p.replace(windowsSlashRE, "/"));
+}
+const joinPaths = (path.posix || path).join;
+const propNameEscapeSymbolsRE = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~\-]/;
+function getEscapedPropName(key) {
+  return propNameEscapeSymbolsRE.test(key) ? JSON.stringify(key) : key;
+}
+
+var __defProp$a = Object.defineProperty;
+var __defProps$9 = Object.defineProperties;
+var __getOwnPropDescs$9 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$a = Object.getOwnPropertySymbols;
+var __hasOwnProp$a = Object.prototype.hasOwnProperty;
+var __propIsEnum$a = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$a = (obj, key, value) => key in obj ? __defProp$a(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$a = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$a.call(b, prop))
+      __defNormalProp$a(a, prop, b[prop]);
+  if (__getOwnPropSymbols$a)
+    for (var prop of __getOwnPropSymbols$a(b)) {
+      if (__propIsEnum$a.call(b, prop))
+        __defNormalProp$a(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$9 = (a, b) => __defProps$9(a, __getOwnPropDescs$9(b));
+const DEFAULT_FILENAME = "anonymous.vue";
+const parseCache$1 = createCache();
+function parse$2(source, options = {}) {
+  var _a;
+  const sourceKey = genCacheKey(source, __spreadProps$9(__spreadValues$a({}, options), {
+    compiler: { parse: (_a = options.compiler) == null ? void 0 : _a.parse }
+  }));
+  const cache = parseCache$1.get(sourceKey);
+  if (cache) {
+    return cache;
+  }
+  const {
+    sourceMap = true,
+    filename = DEFAULT_FILENAME,
+    sourceRoot = "",
+    pad = false,
+    ignoreEmpty = true,
+    compiler = CompilerDOM,
+    templateParseOptions = {}
+  } = options;
+  const descriptor = {
+    filename,
+    source,
+    template: null,
+    script: null,
+    scriptSetup: null,
+    styles: [],
+    customBlocks: [],
+    cssVars: [],
+    slotted: false,
+    vapor: false,
+    shouldForceReload: (prevImports) => hmrShouldReload(prevImports, descriptor)
+  };
+  const errors = [];
+  const ast = compiler.parse(source, __spreadProps$9(__spreadValues$a({
+    parseMode: "sfc",
+    prefixIdentifiers: true
+  }, templateParseOptions), {
+    onError: (e) => {
+      errors.push(e);
+    }
+  }));
+  ast.children.forEach((node) => {
+    if (node.type !== 1) {
+      return;
+    }
+    if (ignoreEmpty && node.tag !== "template" && isEmpty(node) && !hasAttr(node, "src")) {
+      descriptor.vapor || (descriptor.vapor = hasAttr(node, "vapor"));
+      return;
+    }
+    switch (node.tag) {
+      case "template":
+        if (!descriptor.template) {
+          const templateBlock = descriptor.template = createBlock(
+            node,
+            source,
+            false
+          );
+          descriptor.vapor || (descriptor.vapor = !!templateBlock.attrs.vapor);
+          if (!templateBlock.attrs.src) {
+            templateBlock.ast = createRoot(node.children, source);
+          }
+          if (templateBlock.attrs.functional) {
+            const err = new SyntaxError(
+              `<template functional> is no longer supported in Vue 3, since functional components no longer have significant performance difference from stateful ones. Just use a normal <template> instead.`
+            );
+            err.loc = node.props.find(
+              (p) => p.type === 6 && p.name === "functional"
+            ).loc;
+            errors.push(err);
+          }
+        } else {
+          errors.push(createDuplicateBlockError(node));
+        }
+        break;
+      case "script":
+        const scriptBlock = createBlock(node, source, pad);
+        descriptor.vapor || (descriptor.vapor = !!scriptBlock.attrs.vapor);
+        const isSetup = !!(scriptBlock.attrs.setup || scriptBlock.attrs.vapor);
+        if (isSetup && !descriptor.scriptSetup) {
+          descriptor.scriptSetup = scriptBlock;
+          break;
+        }
+        if (!isSetup && !descriptor.script) {
+          descriptor.script = scriptBlock;
+          break;
+        }
+        errors.push(createDuplicateBlockError(node, isSetup));
+        break;
+      case "style":
+        const styleBlock = createBlock(node, source, pad);
+        if (styleBlock.attrs.vars) {
+          errors.push(
+            new SyntaxError(
+              `<style vars> has been replaced by a new proposal: https://github.com/vuejs/rfcs/pull/231`
+            )
+          );
+        }
+        descriptor.styles.push(styleBlock);
+        break;
+      default:
+        descriptor.customBlocks.push(createBlock(node, source, pad));
+        break;
+    }
+  });
+  if (!descriptor.template && !descriptor.script && !descriptor.scriptSetup) {
+    errors.push(
+      new SyntaxError(
+        `At least one <template> or <script> is required in a single file component. ${descriptor.filename}`
+      )
+    );
+  }
+  if (descriptor.scriptSetup) {
+    if (descriptor.scriptSetup.src) {
+      errors.push(
+        new SyntaxError(
+          `<script setup> cannot use the "src" attribute because its syntax will be ambiguous outside of the component.`
+        )
+      );
+      descriptor.scriptSetup = null;
+    }
+    if (descriptor.script && descriptor.script.src) {
+      errors.push(
+        new SyntaxError(
+          `<script> cannot use the "src" attribute when <script setup> is also present because they must be processed together.`
+        )
+      );
+      descriptor.script = null;
+    }
+  }
+  let templateColumnOffset = 0;
+  if (descriptor.template && (descriptor.template.lang === "pug" || descriptor.template.lang === "jade")) {
+    [descriptor.template.content, templateColumnOffset] = dedent(
+      descriptor.template.content
+    );
+  }
+  if (sourceMap) {
+    const genMap = (block, columnOffset = 0) => {
+      if (block && !block.src) {
+        block.map = generateSourceMap(
+          filename,
+          source,
+          block.content,
+          sourceRoot,
+          !pad || block.type === "template" ? block.loc.start.line - 1 : 0,
+          columnOffset
+        );
+      }
+    };
+    genMap(descriptor.template, templateColumnOffset);
+    genMap(descriptor.script);
+    descriptor.styles.forEach((s) => genMap(s));
+    descriptor.customBlocks.forEach((s) => genMap(s));
+  }
+  descriptor.cssVars = parseCssVars(descriptor);
+  const slottedRE = /(?:::v-|:)slotted\(/;
+  descriptor.slotted = descriptor.styles.some(
+    (s) => s.scoped && slottedRE.test(s.content)
+  );
+  if (templateParseOptions.dom2) {
+    let isAppUVue2 = function() {
+      if (templateParseOptions.root && descriptor.filename) {
+        return normalizePath(descriptor.filename) === normalizePath(templateParseOptions.root + "/App.uvue");
+      }
+      return false;
+    }, createDefaultScriptSetup2 = function() {
+      return {
+        type: "script",
+        content: "",
+        loc: {
+          start: ast.loc.end,
+          end: ast.loc.end,
+          source: ""
+        },
+        attrs: { setup: true, vapor: true, lang: "uts" },
+        setup: true,
+        lang: "uts"
+      };
+    };
+    if (
+      // 没有 script 和 scriptSetup
+      !descriptor.script && !descriptor.scriptSetup
+    ) {
+      descriptor.scriptSetup = createDefaultScriptSetup2();
+    }
+    if (descriptor.script && !isAppUVue2()) {
+      descriptor.script = null;
+      descriptor.template = null;
+      descriptor.scriptSetup = createDefaultScriptSetup2();
+      const error = new SyntaxError(
+        `\u84B8\u6C7D\u6A21\u5F0F\u4EC5\u652F\u6301\u4F7F\u7528<script setup>\uFF0C\u4E0D\u652F\u6301<script>\u9009\u9879\u5F0F`
+      );
+      error.customPrint = () => {
+        console.error(error.message);
+      };
+      errors.push(error);
+    }
+  }
+  const result = {
+    descriptor,
+    errors
+  };
+  parseCache$1.set(sourceKey, result);
+  return result;
+}
+function createDuplicateBlockError(node, isScriptSetup = false) {
+  const err = new SyntaxError(
+    `Single file component can contain only one <${node.tag}${isScriptSetup ? ` setup` : ``}> element`
+  );
+  err.loc = node.loc;
+  return err;
+}
+function createBlock(node, source, pad) {
+  const type = node.tag;
+  const loc = node.innerLoc;
+  const attrs = {};
+  const block = {
+    type,
+    content: source.slice(loc.start.offset, loc.end.offset),
+    loc,
+    attrs
+  };
+  if (pad) {
+    block.content = padContent(source, block, pad) + block.content;
+  }
+  node.props.forEach((p) => {
+    if (p.type === 6) {
+      const name = p.name;
+      attrs[name] = p.value ? p.value.content || true : true;
+      if (name === "lang") {
+        block.lang = p.value && p.value.content;
+      } else if (name === "src") {
+        block.src = p.value && p.value.content;
+      } else if (type === "style") {
+        if (name === "scoped") {
+          block.scoped = true;
+        } else if (name === "module") {
+          block.module = attrs[name];
+        }
+      } else if (type === "script" && name === "setup") {
+        block.setup = attrs.setup;
+      }
+    }
+  });
+  return block;
+}
+const splitRE = /\r?\n/g;
+const emptyRE = /^(?:\/\/)?\s*$/;
+const replaceRE = /./g;
+function generateSourceMap(filename, source, generated, sourceRoot, lineOffset, columnOffset) {
+  const map = new sourceMapExports.SourceMapGenerator({
+    file: filename.replace(/\\/g, "/"),
+    sourceRoot: sourceRoot.replace(/\\/g, "/")
+  });
+  map.setSourceContent(filename, source);
+  map._sources.add(filename);
+  generated.split(splitRE).forEach((line, index) => {
+    if (!emptyRE.test(line)) {
+      const originalLine = index + 1 + lineOffset;
+      const generatedLine = index + 1;
+      for (let i = 0; i < line.length; i++) {
+        if (!/\s/.test(line[i])) {
+          map._mappings.add({
+            originalLine,
+            originalColumn: i + columnOffset,
+            generatedLine,
+            generatedColumn: i,
+            source: filename,
+            name: null
+          });
+        }
+      }
+    }
+  });
+  return map.toJSON();
+}
+function padContent(content, block, pad) {
+  content = content.slice(0, block.loc.start.offset);
+  if (pad === "space") {
+    return content.replace(replaceRE, " ");
+  } else {
+    const offset = content.split(splitRE).length;
+    const padChar = block.type === "script" && !block.lang ? "//\n" : "\n";
+    return Array(offset).join(padChar);
+  }
+}
+function hasAttr(node, name) {
+  return node.props.some((p) => p.type === 6 && p.name === name);
+}
+function isEmpty(node) {
+  for (let i = 0; i < node.children.length; i++) {
+    const child = node.children[i];
+    if (child.type !== 2 || child.content.trim() !== "") {
+      return false;
+    }
+  }
+  return true;
+}
+function hmrShouldReload(prevImports, next) {
+  if (!next.scriptSetup || next.scriptSetup.lang !== "ts" && next.scriptSetup.lang !== "tsx" && // fixed by uts
+  next.scriptSetup.lang !== "uts") {
+    return false;
+  }
+  for (const key in prevImports) {
+    if (!prevImports[key].isUsedInTemplate && isImportUsed(key, next)) {
+      return true;
+    }
+  }
+  return false;
+}
+function dedent(s) {
+  const lines = s.split("\n");
+  const minIndent = lines.reduce(function(minIndent2, line) {
+    var _a, _b;
+    if (line.trim() === "") {
+      return minIndent2;
+    }
+    const indent = ((_b = (_a = line.match(/^\s*/)) == null ? void 0 : _a[0]) == null ? void 0 : _b.length) || 0;
+    return Math.min(indent, minIndent2);
+  }, Infinity);
+  if (minIndent === 0) {
+    return [s, minIndent];
+  }
+  return [
+    lines.map(function(line) {
+      return line.slice(minIndent);
+    }).join("\n"),
+    minIndent
+  ];
+}
 
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 
@@ -60898,49 +60980,6 @@ function preprocess(options, preprocessor) {
     }, options.preprocessOptions),
     options.preprocessCustomRequire
   );
-}
-
-const UNKNOWN_TYPE = "Unknown";
-function resolveObjectKey(node, computed) {
-  switch (node.type) {
-    case "StringLiteral":
-    case "NumericLiteral":
-      return String(node.value);
-    case "Identifier":
-      if (!computed) return node.name;
-  }
-  return void 0;
-}
-function concatStrings(strs) {
-  return strs.filter((s) => !!s).join(", ");
-}
-function isLiteralNode(node) {
-  return node.type.endsWith("Literal");
-}
-function isCallOf(node, test) {
-  return !!(node && test && node.type === "CallExpression" && node.callee.type === "Identifier" && (typeof test === "string" ? node.callee.name === test : test(node.callee.name)));
-}
-function toRuntimeTypeString(types) {
-  return types.length > 1 ? `[${types.join(", ")}]` : types[0];
-}
-function getImportedName(specifier) {
-  if (specifier.type === "ImportSpecifier")
-    return specifier.imported.type === "Identifier" ? specifier.imported.name : specifier.imported.value;
-  else if (specifier.type === "ImportNamespaceSpecifier") return "*";
-  return "default";
-}
-function getId(node) {
-  return node.type === "Identifier" ? node.name : node.type === "StringLiteral" ? node.value : null;
-}
-const normalize = (path.posix || path).normalize;
-const windowsSlashRE = /\\/g;
-function normalizePath(p) {
-  return normalize(p.replace(windowsSlashRE, "/"));
-}
-const joinPaths = (path.posix || path).join;
-const propNameEscapeSymbolsRE = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~\-]/;
-function getEscapedPropName(key) {
-  return propNameEscapeSymbolsRE.test(key) ? JSON.stringify(key) : key;
 }
 
 function analyzeScriptBindings(ast) {

@@ -88,6 +88,7 @@ export function initPluginVueOptions(
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
   ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
+  ;(compilerOptions as any).dom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
   // 默认就移除comments节点
   compilerOptions.comments = false
