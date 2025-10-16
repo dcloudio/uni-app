@@ -6960,6 +6960,12 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   const setScopeId = (el, vnode, scopeId, slotScopeIds, parentComponent) => {
+    if (parentComponent && parentComponent.$pageInstance && el.__isUniElement) {
+      const pageScopeId = parentComponent.$pageInstance.type.__scopeId;
+      if (!scopeId || scopeId !== pageScopeId) {
+        hostSetScopeId(el, pageScopeId);
+      }
+    }
     if (scopeId) {
       hostSetScopeId(el, scopeId);
     }
