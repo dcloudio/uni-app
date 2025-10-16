@@ -27684,9 +27684,11 @@ function parse$2(source, options = {}) {
       // 没有 script 和 scriptSetup
       !descriptor.script && !descriptor.scriptSetup
     ) {
+      descriptor.vapor = true;
       descriptor.scriptSetup = createDefaultScriptSetup2();
     }
     if (descriptor.script && !isAppUVue2()) {
+      descriptor.vapor = true;
       descriptor.script = null;
       descriptor.template = null;
       descriptor.scriptSetup = createDefaultScriptSetup2();
