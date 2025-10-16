@@ -39,6 +39,68 @@ const {
 
 const uniI18n = require('@dcloudio/uni-cli-i18n')
 
+function convertCamelCaseToKebabCase (str) {
+  return str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`)
+}
+
+function parseAsyncComponentComment (commentContent) {
+  try {
+    const config = JSON.parse(commentContent)
+    return {
+      placeholder: config.placeholder || 'view',
+      platform: config.platform || 'mp-weixin'
+    }
+  } catch (e) {
+    // 如果 JSON 解析失败，返回默认值
+    return {
+      placeholder: 'view',
+      platform: 'mp-weixin'
+    }
+  }
+}
+
+function isPlatformMatch (configPlatform, currentPlatform) {
+  if (!configPlatform || !currentPlatform) return false
+
+  // 支持逗号分割的多平台配置
+  const platforms = configPlatform.split(',').map(p => p.trim())
+  return platforms.includes(currentPlatform)
+}
+
+function processAsyncComponentImports (content) {
+  const asyncCustomComponents = []
+  let processedContent = content
+
+  // 处理基于注释的异步组件
+  const commentImportRegex = /\/\*\s*@uni-async-component\s*({[^}]*})?\s*\*\/\s*\n\s*import\s+(\w+)\s+from\s+['"`]([^'"`]+)['"`]/g
+
+  let match
+  while ((match = commentImportRegex.exec(content)) !== null) {
+    const [fullMatch, configJson, localName, importPath] = match
+    const config = parseAsyncComponentComment(configJson || '{}')
+
+    // 检查平台匹配
+    if (isPlatformMatch(config.platform, process.env.UNI_PLATFORM)) {
+      const componentTagName = convertCamelCaseToKebabCase(localName)
+
+      asyncCustomComponents.push({
+        name: componentTagName,
+        value: importPath,
+        placeholder: config.placeholder
+      })
+    }
+
+    // 移除注释，保留 import 语句
+    const newImportStatement = `import ${localName} from '${importPath}'`
+    processedContent = processedContent.replace(fullMatch, newImportStatement)
+  }
+
+  return {
+    content: processedContent,
+    asyncCustomComponents
+  }
+}
+
 module.exports = function (content, map) {
   this.cacheable && this.cacheable()
 
@@ -83,6 +145,10 @@ module.exports = function (content, map) {
     type = 'Component'
   }
 
+  // 处理异步组件导入（在 babel 转换之前）
+  const asyncComponentInfo = processAsyncComponentImports(content)
+  content = asyncComponentInfo.content
+
   const {
     state: {
       components
@@ -90,18 +156,21 @@ module.exports = function (content, map) {
   } = traverse(parser.parse(content, getBabelParserOptions()), {
     type,
     components: [],
+    asyncCustomComponents: asyncComponentInfo.asyncCustomComponents,
     filename: this.resourcePath
   })
 
+  const asyncCustomComponents = asyncComponentInfo.asyncCustomComponents
+
   const callback = this.async()
 
-  if (!components.length) {
+  if (!components.length && !asyncCustomComponents.length) {
     if (type === 'App') {
       callback(null, content, map)
       return
     }
     // 防止组件从有到无，App.vue 中不支持使用组件
-    updateUsingComponents(resourcePath, Object.create(null), type, content)
+    updateUsingComponents(resourcePath, Object.create(null), type, content, asyncCustomComponents)
     callback(null, content, map)
     return
   }
@@ -148,7 +217,7 @@ module.exports = function (content, map) {
       }
       addDynamicImport(babelLoader, resourcePath, dynamicImports)
 
-      updateUsingComponents(resourcePath, usingComponents, type, content)
+      updateUsingComponents(resourcePath, usingComponents, type, content, asyncCustomComponents)
       callback(null, content, map)
     }
   }, err => {

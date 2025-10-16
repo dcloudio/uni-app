@@ -1,7 +1,9 @@
 const path = require('path')
 
 const {
-  normalizePath
+  normalizePath,
+  hyphenate,
+  getComponentName
 } = require('@dcloudio/uni-cli-shared')
 
 const {
@@ -140,6 +142,18 @@ module.exports = function generateJson (compilation) {
       jsonObj.usingComponents = Object.assign(jsonObj.usingAutoImportComponents, jsonObj.usingComponents)
     }
     delete jsonObj.usingAutoImportComponents
+
+    // ----------------------(新增)
+    // 异步分包自定义组件注册其他分包的组件引入
+    if (jsonObj.asyncCustomComponents && jsonObj.asyncCustomComponents.length) {
+      const componentPlaceholder = jsonObj.asyncCustomComponents.reduce((p, n) => {
+        p[getComponentName(hyphenate(n.name))] = n.placeholder || 'view'
+        return p
+      }, {})
+      jsonObj.componentPlaceholder = Object.assign((jsonObj.componentPlaceholder || {}), componentPlaceholder)
+    }
+    delete jsonObj.asyncCustomComponents
+    // ----------------------
 
     // 百度小程序插件内组件使用 usingSwanComponents
     if (process.env.UNI_PLATFORM === 'mp-baidu') {

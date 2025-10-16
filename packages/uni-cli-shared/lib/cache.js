@@ -162,7 +162,7 @@ function parseComponentStyleIsolation (content) {
   }
 }
 
-function updateUsingComponents (name, usingComponents, type, content = '') {
+function updateUsingComponents (name, usingComponents, type, content = '', asyncCustomComponents) {
   if (type === 'Component') {
     componentSet.add(name)
   }
@@ -174,6 +174,12 @@ function updateUsingComponents (name, usingComponents, type, content = '') {
   const jsonObj = oldJsonStr ? JSON.parse(oldJsonStr) : {
     usingComponents
   }
+
+  // 异步分包自定义组件注册其他分包的组件引入
+  if (asyncCustomComponents && asyncCustomComponents.length) {
+    jsonObj.asyncCustomComponents = asyncCustomComponents
+  }
+
   if (type === 'Component') {
     jsonObj.component = true
     if (process.env.UNI_PLATFORM === 'mp-alipay') {
