@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
+    "@dcloudio/uni-mp-compiler": "workspace:*",
     "@dcloudio/uni-mp-vite": "workspace:*",
     "@dcloudio/uni-mp-vue": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",

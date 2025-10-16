@@ -1821,6 +1821,9 @@ importers:
       '@dcloudio/uni-cli-shared':
         specifier: workspace:*
         version: link:../uni-cli-shared
+      '@dcloudio/uni-mp-compiler':
+        specifier: workspace:*
+        version: link:../uni-mp-compiler
       '@dcloudio/uni-mp-vite':
         specifier: workspace:*
         version: link:../uni-mp-vite
@@ -2050,6 +2053,9 @@ importers:
       '@dcloudio/uni-cli-shared':
         specifier: workspace:*
         version: link:../uni-cli-shared
+      '@dcloudio/uni-mp-compiler':
+        specifier: workspace:*
+        version: link:../uni-mp-compiler
       '@dcloudio/uni-mp-vite':
         specifier: workspace:*
         version: link:../uni-mp-vite
@@ -2152,6 +2158,9 @@ importers:
       '@dcloudio/uni-cli-shared':
         specifier: workspace:*
         version: link:../uni-cli-shared
+      '@dcloudio/uni-mp-compiler':
+        specifier: workspace:*
+        version: link:../uni-mp-compiler
       '@dcloudio/uni-mp-vite':
         specifier: workspace:*
         version: link:../uni-mp-vite
