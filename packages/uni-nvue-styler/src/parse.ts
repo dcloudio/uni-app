@@ -1,6 +1,6 @@
 import { isString } from '@vue/shared'
 import postcss, { type Message } from 'postcss'
-import { objectifier } from './objectifier'
+import { objectifierWithMessages } from './objectifier'
 import { expand, vueStyleValidator } from './expand'
 import { normalize } from './normalize'
 import type { NormalizeOptions } from './utils'
@@ -40,12 +40,14 @@ export async function parse(input: string, options: ParseOptions = {}) {
   if (options.noCode === true) {
     return { code: '', messages }
   }
-  const obj = root
-    ? objectifier(root, {
+  const { obj, messages: objMessages } = root
+    ? objectifierWithMessages(root, {
         trim: !!options.trim,
         dom2: options.dom2,
+        parseMessages: messages,
       })
-    : {}
+    : { obj: {}, messages: [] }
+  messages.push(...objMessages)
   if (options.map || options.mapOf) {
     return {
       code: mapToInitStringChunk(

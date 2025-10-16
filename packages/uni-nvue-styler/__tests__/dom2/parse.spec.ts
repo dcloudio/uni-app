@@ -2,7 +2,7 @@ import { DOM2_APP_PLATFORM, DOM2_APP_TARGET, parse } from '../../src/index'
 
 describe('dom2 parse', () => {
   test('basic', async () => {
-    const { code } = await parse(
+    const { code, messages } = await parse(
       `
         .content {
             display: flex;
@@ -14,9 +14,15 @@ describe('dom2 parse', () => {
         .text-area, .title {
             font-size: 36px;
         }
+        .invalid {
+          display: grid;
+          grid-auto-rows: 200px;
+          white-space: nowrap;
+        }
         `,
       {
         type: 'uvue',
+        platform: 'app-harmony',
         dom2: {
           platform: DOM2_APP_PLATFORM.APP_HARMONY,
           target: DOM2_APP_TARGET.DOM_C,
@@ -24,6 +30,7 @@ describe('dom2 parse', () => {
       }
     )
     expect(code).toMatchSnapshot()
+    expect(messages).toMatchSnapshot()
   })
   test('empty', async () => {
     const { code } = await parse(``, {

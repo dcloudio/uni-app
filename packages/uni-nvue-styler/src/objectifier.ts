@@ -1,6 +1,13 @@
-import type { Container, Document, Root } from 'postcss'
+import {
+  type Container,
+  type Document,
+  type Message,
+  type Node,
+  type Root,
+  Warning,
+} from 'postcss'
 import { extend, hasOwn } from '@vue/shared'
-import { COMBINATORS_RE } from './utils'
+import { COMBINATORS_RE, supportedPropertyReason } from './utils'
 import { type DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './dom2/types'
 import type { PropertyProcessor } from './dom2/processors'
 import { createDom2PropertyProcessors } from './dom2/propertyMap'
@@ -11,6 +18,7 @@ interface ObjectifierOptions {
     platform: DOM2_APP_PLATFORM
     target: DOM2_APP_TARGET
   }
+  parseMessages: Message[]
 }
 interface ObjectifierContext {
   'FONT-FACE': Record<string, unknown>[]
@@ -18,18 +26,38 @@ interface ObjectifierContext {
   dom2?: {
     propertyProcessors: Record<string, PropertyProcessor>
   }
+  messages: Message[]
+  warn: (node: Node, message: string) => void
 }
 
 export function objectifier(
   node: Root | Document | Container | null,
   options: ObjectifierOptions
 ) {
+  return objectifierWithMessages(node, options).obj
+}
+
+export function objectifierWithMessages(
+  node: Root | Document | Container | null,
+  options: ObjectifierOptions
+) {
   if (!node) {
-    return {}
+    return { obj: {}, messages: [] }
+  }
+  const parseMessages = options.parseMessages || []
+  function isInParseMessages(node: Node) {
+    return parseMessages.some((message) => message.node.source === node.source)
   }
   const context: ObjectifierContext = {
     'FONT-FACE': [],
     TRANSITION: {},
+    messages: [],
+    warn(node, message) {
+      // 如果parse阶段已经有该节点的错误，则不再添加
+      if (!isInParseMessages(node)) {
+        context.messages.push(new Warning(message, { node }))
+      }
+    },
   }
   if (options.dom2) {
     context.dom2 = {
@@ -50,7 +78,7 @@ export function objectifier(
   if (Object.keys(context.TRANSITION).length) {
     result['@TRANSITION'] = context.TRANSITION
   }
-  return result
+  return { obj: result, messages: context.messages }
 }
 
 function trimObj(obj: Record<string, any>) {
@@ -93,13 +121,14 @@ function transform(
         if (processor) {
           const valueResult = processor(value, name)
           if (valueResult.error) {
-            console.error(valueResult.error)
+            context.warn(child, `WARNING: ${valueResult.error}`)
           } else {
             value = valueResult.valueCode
           }
           name = `UniCSSPropertyID::` + (properties as any)[name]
         } else {
-          console.error(`Unsupported property: ${name}`)
+          context.warn(child, supportedPropertyReason(name))
+          return
         }
       }
       if (child.important) {

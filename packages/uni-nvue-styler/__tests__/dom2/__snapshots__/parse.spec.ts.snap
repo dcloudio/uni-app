@@ -2,4 +2,176 @@
 
 exports[`dom2 parse basic 1`] = `"make_style_sheet({ { "content", make_property_map({ { "", make_styles({ { UniCSSPropertyID::Display, UniCSSDisplayType::Flex } }) } }) },{ "logo", make_property_map({ { "", make_styles({ { UniCSSPropertyID::Width, UniCSSUnitValue{200, UniCSSUnitType::PX} },{ UniCSSPropertyID::Height, UniCSSUnitValue{200, UniCSSUnitType::PX} } }) } }) },{ "text-area", make_property_map({ { "", make_styles({ { UniCSSPropertyID::FontSize, UniCSSUnitValue{36, UniCSSUnitType::PX} } }) } }) },{ "title", make_property_map({ { "", make_styles({ { UniCSSPropertyID::FontSize, UniCSSUnitValue{36, UniCSSUnitType::PX} } }) } }) } })"`;
 
+exports[`dom2 parse basic 2`] = `
+[
+  Warning {
+    "column": 11,
+    "endColumn": 25,
+    "endLine": 13,
+    "line": 13,
+    "node": {
+      "__originalProp": "display",
+      "inputs": [
+        {
+          "css": "
+        .content {
+            display: flex;
+        } 
+        .logo {
+            width: 200px;
+            height: 200px;
+        }
+        .text-area, .title {
+            font-size: 36px;
+        }
+        .invalid {
+          display: grid;
+          grid-auto-rows: 200px;
+          white-space: nowrap;
+        }
+        ",
+          "file": "/Users/fxy/DCloud/uni-app/uni-app-next/foo.css",
+          "hasBOM": false,
+        },
+      ],
+      "prop": "display",
+      "raws": {
+        "before": "
+          ",
+        "between": ": ",
+      },
+      "source": {
+        "end": {
+          "column": 24,
+          "line": 13,
+          "offset": 248,
+        },
+        "inputId": 0,
+        "start": {
+          "column": 11,
+          "line": 13,
+          "offset": 234,
+        },
+      },
+      "type": "decl",
+      "value": "grid",
+    },
+    "plugin": "uvue:normalize",
+    "text": "ERROR: property value \`grid\` is not supported for \`display\` (supported values are: \`flex\`|\`none\`)",
+    "type": "warning",
+  },
+  Warning {
+    "column": 11,
+    "endColumn": 33,
+    "endLine": 14,
+    "line": 14,
+    "node": {
+      "__originalProp": "grid-auto-rows",
+      "inputs": [
+        {
+          "css": "
+        .content {
+            display: flex;
+        } 
+        .logo {
+            width: 200px;
+            height: 200px;
+        }
+        .text-area, .title {
+            font-size: 36px;
+        }
+        .invalid {
+          display: grid;
+          grid-auto-rows: 200px;
+          white-space: nowrap;
+        }
+        ",
+          "file": "/Users/fxy/DCloud/uni-app/uni-app-next/foo.css",
+          "hasBOM": false,
+        },
+      ],
+      "prop": "gridAutoRows",
+      "raws": {
+        "before": "
+          ",
+        "between": ": ",
+      },
+      "source": {
+        "end": {
+          "column": 32,
+          "line": 14,
+          "offset": 281,
+        },
+        "inputId": 0,
+        "start": {
+          "column": 11,
+          "line": 14,
+          "offset": 259,
+        },
+      },
+      "type": "decl",
+      "value": "200px",
+    },
+    "plugin": "uvue:normalize",
+    "text": "WARNING: \`grid-auto-rows\` is not a standard property name (may not be supported)",
+    "type": "warning",
+  },
+  Warning {
+    "column": 11,
+    "endColumn": 31,
+    "endLine": 15,
+    "line": 15,
+    "node": {
+      "__originalProp": "white-space",
+      "inputs": [
+        {
+          "css": "
+        .content {
+            display: flex;
+        } 
+        .logo {
+            width: 200px;
+            height: 200px;
+        }
+        .text-area, .title {
+            font-size: 36px;
+        }
+        .invalid {
+          display: grid;
+          grid-auto-rows: 200px;
+          white-space: nowrap;
+        }
+        ",
+          "file": "/Users/fxy/DCloud/uni-app/uni-app-next/foo.css",
+          "hasBOM": false,
+        },
+      ],
+      "prop": "whiteSpace",
+      "raws": {
+        "before": "
+          ",
+        "between": ": ",
+      },
+      "source": {
+        "end": {
+          "column": 30,
+          "line": 15,
+          "offset": 312,
+        },
+        "inputId": 0,
+        "start": {
+          "column": 11,
+          "line": 15,
+          "offset": 292,
+        },
+      },
+      "type": "decl",
+      "value": "nowrap",
+    },
+    "text": "WARNING: \`white-space\` is not a standard property name (may not be supported)",
+    "type": "warning",
+  },
+]
+`;
+
 exports[`dom2 parse empty 1`] = `"{}"`;
