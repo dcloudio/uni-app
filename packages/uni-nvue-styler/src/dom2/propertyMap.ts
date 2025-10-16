@@ -3,6 +3,7 @@ import {
   createSetStyleEnumValueProcessor,
   createSetStyleNativeColorValueProcessor,
   createSetStyleNumberValueProcessor,
+  createSetStyleStringValueProcessor,
   createSetStyleUnitValueProcessor,
 } from './processors'
 import {
@@ -30,6 +31,11 @@ function isColorType(propertyType?: string) {
 const NUMBER_TYPES = ['number', 'UniNativeBorderRadius']
 function isNumberType(propertyType?: string) {
   return propertyType && NUMBER_TYPES.includes(propertyType)
+}
+
+const STRING_TYPES = ['string', 'UniNativeBoxShadow']
+function isStringType(propertyType?: string) {
+  return propertyType && STRING_TYPES.includes(propertyType)
 }
 
 export function createDom2PropertyProcessors(
@@ -67,6 +73,8 @@ export function createDom2PropertyProcessors(
         // 对于数字类型的属性（如flex-grow、flex-shrink、opacity、z-index），
         // 创建一个数字值处理器，直接传递数值
         processorMap[propertyName] = createSetStyleNumberValueProcessor(setter)
+      } else if (isStringType(propertyType)) {
+        processorMap[propertyName] = createSetStyleStringValueProcessor(setter)
       } else {
         processorMap[propertyName] = createSetStyleEnumValueProcessor(
           setter,

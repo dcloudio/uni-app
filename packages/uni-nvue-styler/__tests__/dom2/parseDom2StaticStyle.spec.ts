@@ -16,6 +16,17 @@ import {
   setStyleVariableProcessor,
 } from '../../src/dom2/processors'
 
+const TEST_OPTIONS_LIST: ParseDom2StaticStyleOptions[] = [
+  // harmony平台
+  {
+    platform: DOM2_APP_PLATFORM.APP_HARMONY,
+    target: DOM2_APP_TARGET.DOM_C,
+  },
+  {
+    platform: DOM2_APP_PLATFORM.APP_HARMONY,
+    target: DOM2_APP_TARGET.NV_C,
+  },
+]
 describe('dom2 static style', () => {
   beforeEach(() => {
     // 清理缓存以确保测试独立性
@@ -27,6 +38,19 @@ describe('dom2 static style', () => {
       platform: DOM2_APP_PLATFORM.APP,
       target: DOM2_APP_TARGET.DOM_C,
     }
+    describe('box-shadow', () => {
+      ;['none', '5px 5px black'].forEach((value) => {
+        test(value, () => {
+          const input = `box-shadow: ${value}`
+          TEST_OPTIONS_LIST.forEach((options) => {
+            const result = parseDom2StaticStyle(input, options)
+            expect(result).toMatchSnapshot(
+              `${options.platform}-${options.target}`
+            )
+          })
+        })
+      })
+    })
 
     describe('basic functionality', () => {
       test('should parse basic CSS properties', () => {

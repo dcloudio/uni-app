@@ -125,12 +125,15 @@ export async function runDev(options: CliOptions & ServerOptions) {
             options.platform === 'app-harmony' ||
             options.platform === 'mp-harmony'
           ) {
-            const files = process.env.UNI_APP_CHANGED_FILES
-            if (files) {
-              return output(
-                'log',
-                M['dev.watching.end.files'].replace('{files}', files)
-              )
+            // 鸿蒙平台cpp变更需要整体编译
+            if (process.env.UNI_APP_X_DOM2_CPP_CHANGED !== 'true') {
+              const files = process.env.UNI_APP_CHANGED_FILES
+              if (files) {
+                return output(
+                  'log',
+                  M['dev.watching.end.files'].replace('{files}', files)
+                )
+              }
             }
           }
           return output('log', M['dev.watching.end'])

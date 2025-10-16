@@ -139,6 +139,14 @@ export function createSetStyleNumberValueProcessor(
   }
 }
 
+export function createSetStyleStringValueProcessor(
+  setter: string
+): PropertyProcessor {
+  return (value) => {
+    return createValueProcessorResult(`"${value}"`, `${setter}("${value}")`)
+  }
+}
+
 function parseNativeColorValue(value: string) {
   const color = tinycolor(value)
   if (color.isValid()) {

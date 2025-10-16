@@ -322,3 +322,25 @@ exports[`dom2 static style complex scenarios should handle mixed variable usage 
   },
 }
 `;
+
+exports[`dom2 static style parseDom2StaticStyle box-shadow 5px 5px black: app-harmony-dom-c 1`] = `{}`;
+
+exports[`dom2 static style parseDom2StaticStyle box-shadow 5px 5px black: app-harmony-nv-c 1`] = `
+{
+  "box-shadow": {
+    "setterCode": "boxShadow("5px 5px black")",
+    "valueCode": ""5px 5px black"",
+  },
+}
+`;
+
+exports[`dom2 static style parseDom2StaticStyle box-shadow none: app-harmony-dom-c 1`] = `{}`;
+
+exports[`dom2 static style parseDom2StaticStyle box-shadow none: app-harmony-nv-c 1`] = `
+{
+  "box-shadow": {
+    "setterCode": "boxShadow("none")",
+    "valueCode": ""none"",
+  },
+}
+`;
