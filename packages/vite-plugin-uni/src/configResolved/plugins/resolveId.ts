@@ -18,20 +18,8 @@ try {
     ) >= 3
 } catch (error) {}
 
-let isVueRouterVersion5 = false
-try {
-  isVueRouterVersion5 =
-    Number(
-      fs
-        .readJSONSync(path.join(resolveBuiltIn('vue-router/package.json')))
-        .version.split('.')[0]
-    ) >= 5
-} catch (error) {}
-
 const BUILT_IN_MODULES = {
-  'vue-router': isVueRouterVersion5
-    ? 'dist/vue-router.mjs'
-    : 'dist/vue-router.esm-bundler.js',
+  'vue-router': 'dist/vue-router.mjs',
   vuex: 'dist/vuex.esm-bundler.js',
   'vue-i18n': 'dist/vue-i18n.esm-bundler.js',
   '@dcloudio/uni-app': 'dist/uni-app.es.js',
