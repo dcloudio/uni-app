@@ -29,7 +29,9 @@ try {
 } catch (error) {}
 
 const BUILT_IN_MODULES = {
-  'vue-router': isVueRouterVersion5 ? '' : 'dist/vue-router.esm-bundler.js',
+  'vue-router': isVueRouterVersion5
+    ? 'dist/vue-router.mjs'
+    : 'dist/vue-router.esm-bundler.js',
   vuex: 'dist/vuex.esm-bundler.js',
   'vue-i18n': 'dist/vue-i18n.esm-bundler.js',
   '@dcloudio/uni-app': 'dist/uni-app.es.js',
