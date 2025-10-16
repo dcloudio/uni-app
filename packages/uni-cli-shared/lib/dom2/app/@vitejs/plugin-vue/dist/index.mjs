@@ -353,12 +353,31 @@ function clearScriptCache() {
   ssrCache = /* @__PURE__ */ new WeakMap();
 }
 function isUseInlineTemplate(descriptor, options) {
+  if (process.env.UNI_APP_X_DOM2 === "true") {
+    return true;
+  }
   return !options.devServer && !options.devToolsEnabled && !!descriptor.scriptSetup && !descriptor.template?.src;
 }
 const scriptIdentifier = `_sfc_main`;
 function resolveScript(descriptor, options, ssr, customElement) {
   if (!descriptor.script && !descriptor.scriptSetup) {
-    return null;
+    if (process.env.UNI_APP_X_DOM2 === "true") {
+      descriptor.vapor = true;
+      descriptor.scriptSetup = {
+        type: "script",
+        content: "",
+        loc: {
+          start: { column: 0, line: 0, offset: 0 },
+          end: { column: 0, line: 0, offset: 0 },
+          source: ""
+        },
+        attrs: { setup: true, vapor: true, lang: "uts" },
+        setup: true,
+        lang: "uts"
+      };
+    } else {
+      return null;
+    }
   }
   const cached = getResolvedScript(descriptor, ssr);
   if (cached) {
