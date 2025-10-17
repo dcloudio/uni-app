@@ -1,17 +1,26 @@
-import type { PropertyProcessor } from './processors'
-import {
-  createSetStyleEnumValueProcessor,
-  createSetStyleNativeColorValueProcessor,
-  createSetStyleNumberValueProcessor,
-  createSetStyleStringValueProcessor,
-  createSetStyleUnitValueProcessor,
-} from './processors'
 import {
   type AppCssJson,
   type DOM2_APP_PLATFORM,
   DOM2_APP_TARGET,
-} from './types'
-import appCssJson from '../../lib/dom2/app-css.json'
+} from '../types'
+import appCssJson from '../../../lib/dom2/app-css.json'
+import type { PropertyProcessor } from './utils'
+import { createSetStyleUnitValueProcessor } from './unit'
+import { createGenEnumCode, createSetStyleEnumValueProcessor } from './enum'
+import { createSetStyleNativeColorValueProcessor, isColorType } from './color'
+import { createSetStyleNumberValueProcessor, isNumberType } from './number'
+import { createSetStyleStringValueProcessor, isStringType } from './string'
+
+export type { PropertyProcessor } from './utils'
+export { createSetStyleNativeColorValueProcessor } from './color'
+export { createSetStyleEnumValueProcessor } from './enum'
+export { createSetStyleNumberValueProcessor } from './number'
+export { createSetStyleStringValueProcessor } from './string'
+export { createSetStyleUnitValueProcessor } from './unit'
+export {
+  defineStyleVariableProcessor,
+  setStyleVariableProcessor,
+} from './variable'
 
 const processorMapCache = new Map<string, Record<string, PropertyProcessor>>()
 
@@ -20,22 +29,6 @@ function getCacheKey(
   target: DOM2_APP_TARGET
 ): string {
   return `${platform}:${target}`
-}
-
-const COLOR_TYPES = ['UniNativeColor', 'UniNativeBorderColor']
-
-function isColorType(propertyType?: string) {
-  return propertyType && COLOR_TYPES.includes(propertyType)
-}
-
-const NUMBER_TYPES = ['number', 'UniNativeBorderRadius']
-function isNumberType(propertyType?: string) {
-  return propertyType && NUMBER_TYPES.includes(propertyType)
-}
-
-const STRING_TYPES = ['string', 'UniNativeBoxShadow']
-function isStringType(propertyType?: string) {
-  return propertyType && STRING_TYPES.includes(propertyType)
 }
 
 export function createDom2PropertyProcessors(
@@ -50,6 +43,8 @@ export function createDom2PropertyProcessors(
   const processorMap: Record<string, PropertyProcessor> = {}
   // 从JSON配置中获取所有支持的属性
   const allProperties = Object.keys(appCssJson as AppCssJson)
+  const language = target === DOM2_APP_TARGET.ALL ? 'cpp' : 'ts'
+  const genEnumCode = createGenEnumCode(language, platform, target)
   allProperties.forEach((propertyName) => {
     // 解析 css 文件样式表时，应该传入ALL，不需要根据target获取setter
     const setter =
@@ -57,7 +52,6 @@ export function createDom2PropertyProcessors(
         ? 'setStyle'
         : getPlatformConfig(propertyName, platform, target)?.setter
     if (setter) {
-      const language = target === DOM2_APP_TARGET.ALL ? 'cpp' : 'ts'
       const propertyConfig = (appCssJson as AppCssJson)[propertyName]
       // 使用根节点的type
       const propertyType = propertyConfig.type
@@ -78,7 +72,7 @@ export function createDom2PropertyProcessors(
       } else {
         processorMap[propertyName] = createSetStyleEnumValueProcessor(
           setter,
-          language
+          genEnumCode
         )
       }
     }

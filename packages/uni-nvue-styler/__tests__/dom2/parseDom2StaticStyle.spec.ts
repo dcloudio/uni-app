@@ -7,7 +7,7 @@ import {
 import {
   clearProcessorsCache,
   createDom2PropertyProcessors,
-} from '../../src/dom2/propertyMap'
+} from '../../src/dom2/processors'
 import {
   createSetStyleEnumValueProcessor,
   createSetStyleNumberValueProcessor,
@@ -15,6 +15,7 @@ import {
   defineStyleVariableProcessor,
   setStyleVariableProcessor,
 } from '../../src/dom2/processors'
+import { createGenEnumCode } from '../../src/dom2/processors/enum'
 
 const TEST_OPTIONS_LIST: ParseDom2StaticStyleOptions[] = [
   // harmony平台
@@ -460,8 +461,16 @@ describe('dom2 static style', () => {
     })
 
     describe('enum value processor', () => {
+      const genEnumCode = createGenEnumCode(
+        'ts',
+        DOM2_APP_PLATFORM.APP_HARMONY,
+        DOM2_APP_TARGET.DOM_C
+      )
       test('should create enum processor with setter', () => {
-        const processor = createSetStyleEnumValueProcessor('setDisplay', 'ts')
+        const processor = createSetStyleEnumValueProcessor(
+          'setDisplay',
+          genEnumCode
+        )
         // 注意：这个测试依赖于 app-css.json 中的实际配置
         // 如果配置不存在，会返回 undefined
         const result = processor('block', 'display')
@@ -474,7 +483,7 @@ describe('dom2 static style', () => {
       })
 
       test('should create enum processor without setter', () => {
-        const processor = createSetStyleEnumValueProcessor('', 'ts')
+        const processor = createSetStyleEnumValueProcessor('', genEnumCode)
         const result = processor('block', 'display')
 
         expect(result).toHaveProperty('valueCode')

@@ -3,7 +3,7 @@ import type {
   ParseDom2StaticStyleOptions,
 } from './types'
 import { parseStaticStyleDeclarations } from '../parseSync'
-import { createDom2PropertyProcessors } from './propertyMap'
+import { createDom2PropertyProcessors } from './processors'
 import {
   defineStyleVariableProcessor,
   setStyleVariableProcessor,

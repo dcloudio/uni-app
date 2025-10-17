@@ -23,32 +23,32 @@ exports[`dom2 static style complex scenarios should handle comprehensive CSS wit
     "valueCode": ""16px"",
   },
   "align-items": {
-    "setterCode": "setStyleAlignItems(UniCSSAlignItemsType.Center)",
-    "valueCode": "UniCSSAlignItemsType.Center",
+    "setterCode": "setStyleAlignItems(UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "Center"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "Center")",
   },
   "border-bottom-style": {
-    "setterCode": "setStyleBorderBottomStyle(UniCSSBorderStyleType.Solid)",
-    "valueCode": "UniCSSBorderStyleType.Solid",
+    "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
   },
   "border-bottom-width": {
     "setterCode": "setStyleBorderBottomWidth(2, UniCSSUnitType.PX)",
     "valueCode": "UniCSSUnitValue{2, UniCSSUnitType.PX}",
   },
   "border-left-style": {
-    "setterCode": "setStyleBorderLeftStyle(UniCSSBorderStyleType.Dashed)",
-    "valueCode": "UniCSSBorderStyleType.Dashed",
+    "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
   },
   "border-left-width": {
     "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
     "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
   },
   "display": {
-    "setterCode": "setStyleDisplay(UniCSSDisplayType.Flex)",
-    "valueCode": "UniCSSDisplayType.Flex",
+    "setterCode": "setStyleDisplay(UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex")",
   },
   "flex-direction": {
-    "setterCode": "setStyleFlexDirection(UniCSSFlexDirectionType.Row)",
-    "valueCode": "UniCSSFlexDirectionType.Row",
+    "setterCode": "setStyleFlexDirection(UTSCPP.propertyAccess(UniCSSFlexDirectionType, "::", "Row"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSFlexDirectionType, "::", "Row")",
   },
   "flex-grow": {
     "setterCode": "setStyleFlexGrow(1)",
@@ -63,8 +63,8 @@ exports[`dom2 static style complex scenarios should handle comprehensive CSS wit
     "valueCode": "UniCSSUnitValue{200, UniCSSUnitType.PX}",
   },
   "justify-content": {
-    "setterCode": "setStyleJustifyContent(UniCSSJustifyContentType.FlexStart)",
-    "valueCode": "UniCSSJustifyContentType.FlexStart",
+    "setterCode": "setStyleJustifyContent(UTSCPP.propertyAccess(UniCSSJustifyContentType, "::", "FlexStart"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSJustifyContentType, "::", "FlexStart")",
   },
   "left": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.Left, "var(--spacing)")",
@@ -95,8 +95,8 @@ exports[`dom2 static style complex scenarios should handle comprehensive CSS wit
     "valueCode": ""var(--spacing)"",
   },
   "position": {
-    "setterCode": "setStylePosition(UniCSSPositionType.Relative)",
-    "valueCode": "UniCSSPositionType.Relative",
+    "setterCode": "setStylePosition(UTSCPP.propertyAccess(UniCSSPositionType, "::", "Relative"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSPositionType, "::", "Relative")",
   },
   "top": {
     "setterCode": "setStyleTop(10, UniCSSUnitType.PX)",
@@ -133,12 +133,12 @@ exports[`dom2 static style complex scenarios should handle cross-platform compat
     "valueCode": ""#FF6B6B"",
   },
   "align-items": {
-    "setterCode": "setStyleAlignItems(UniCSSAlignItemsType.Center)",
-    "valueCode": "UniCSSAlignItemsType.Center",
+    "setterCode": "setStyleAlignItems(UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "Center"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "Center")",
   },
   "display": {
-    "setterCode": "setStyleDisplay(UniCSSDisplayType.Flex)",
-    "valueCode": "UniCSSDisplayType.Flex",
+    "setterCode": "setStyleDisplay(UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex")",
   },
   "height": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.Height, "var(--size)")",
@@ -149,8 +149,8 @@ exports[`dom2 static style complex scenarios should handle cross-platform compat
     "valueCode": "UniCSSUnitValue{0, UniCSSUnitType.NONE}",
   },
   "position": {
-    "setterCode": "setStylePosition(UniCSSPositionType.Absolute)",
-    "valueCode": "UniCSSPositionType.Absolute",
+    "setterCode": "setStylePosition(UTSCPP.propertyAccess(UniCSSPositionType, "::", "Absolute"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSPositionType, "::", "Absolute")",
   },
   "top": {
     "setterCode": "setStyleTop(0, UniCSSUnitType.NONE)",
@@ -178,16 +178,16 @@ exports[`dom2 static style complex scenarios should handle cross-platform compat
     "valueCode": "0xffff0000",
   },
   "display": {
-    "setterCode": "display(UniCSSDisplayType.Flex)",
-    "valueCode": "UniCSSDisplayType.Flex",
+    "setterCode": "display(UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex")",
   },
   "opacity": {
     "setterCode": "opacity(0.9)",
     "valueCode": "0.9",
   },
   "position": {
-    "setterCode": "position(UniCSSPositionType.Absolute)",
-    "valueCode": "UniCSSPositionType.Absolute",
+    "setterCode": "position(UTSCPP.propertyAccess(UniCSSPositionType, "::", "Absolute"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSPositionType, "::", "Absolute")",
   },
 }
 `;
@@ -224,8 +224,8 @@ exports[`dom2 static style complex scenarios should handle edge cases with compl
     "valueCode": ""10px"",
   },
   "display": {
-    "setterCode": "setStyleDisplay(UniCSSDisplayType.Flex)",
-    "valueCode": "UniCSSDisplayType.Flex",
+    "setterCode": "setStyleDisplay(UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex")",
   },
   "height": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.Height, "var(--valid-var)")",
@@ -244,8 +244,8 @@ exports[`dom2 static style complex scenarios should handle edge cases with compl
     "valueCode": ""var(--empty-var)"",
   },
   "position": {
-    "setterCode": "setStylePosition(UniCSSPositionType.Absolute)",
-    "valueCode": "UniCSSPositionType.Absolute",
+    "setterCode": "setStylePosition(UTSCPP.propertyAccess(UniCSSPositionType, "::", "Absolute"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSPositionType, "::", "Absolute")",
   },
   "top": {
     "setterCode": "setStyleVariable(UniCSSPropertyID.Top, "var(--nested-var)")",

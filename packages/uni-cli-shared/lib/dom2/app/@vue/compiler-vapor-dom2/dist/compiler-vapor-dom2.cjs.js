@@ -1,35 +1,5524 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var N=require("@vue/compiler-dom"),p=require("@vue/compiler-vapor"),v=require("@vue/shared"),Ee=require("@babel/parser"),tn=require("@babel/types"),it=require("estree-walker"),nn=require("source-map-js");function na(t,e){}function ra(t,e){}function rn(t,e=[]){const n=t.ast||t._fastPathAst;if(n)return Se(n);if(t.isStatic)return!0;if(t.ast===null)try{return t._fastPathAst=Ee.parseExpression(t.content,{plugins:e}),Se(t._fastPathAst)}catch{}return!1}function Se(t){switch(t=N.unwrapTSNode(t),t.type){case"UnaryExpression":return t.operator==="void"?!1:Se(t.argument);case"ParenthesizedExpression":return Se(t.expression);case"StringLiteral":case"NumericLiteral":case"BooleanLiteral":case"NullLiteral":case"BigIntLiteral":return!0}return!1}function ve(t){try{return!!new Function(`return ${t.content}`)()}catch{}return null}function ot(t){try{const e=new Function(`return ${t.content}`)();return typeof e=="string"?e:null}catch{}return null}function sn(t,e){J(t.key,e),t.values.length>1&&["class","style"].includes(t.key.content)?t.sharedData={ident:e.nextIdent()}:lt(t.values,e)}function lt(t,e,n=!1,r=!1){t.forEach(s=>{J(s,e,n,r)})}function J(t,e,n=!1,r=!1){(n||!rn(t))&&(t.sharedData={ident:e.nextIdent()})}function an(t,e){t.delegate=!1,J(t.key,e),t.sharedData={ident:e.nextIdent()}}function on(t,e){J(t.event,e,!0)}function ln(t,e){J(t.source,e,!0);const n=e.enterIdent();t.keyProp&&J(t.keyProp,e,!0),Pe(t.render,e),n()}function cn(t,e){J(t.value,e)}function ct(t,e){const{condition:n,positive:r,negative:s}=t;ve(n)===null&&J(n,e,!0),oe(r,e),s&&(s.type===1?oe(s,e):ct(s,e))}function un(t,e){sn(t.prop,e)}function dn(t,e){t.sharedData={ident:e.nextIdent()}}function fn({node:t,value:e},n){t.tagType===0&&J(e,n,!0)}function sa(t,e){}function pn(t,e){lt(t.values,e,!1,!0)}function aa(t,e){}function hn(t,e){t.sharedData={ident:e.nextIdent()},t.slots.forEach(n=>{switch(n.slotType){case 0:Object.keys(n.slots).forEach(s=>{oe(n.slots[s],e)});break;case 1:ot(n.name)||(n.name.sharedData={ident:e.nextIdent()}),oe(n.fn,e);break;case 2:J(n.loop.source,e);const r=e.enterIdent();ot(n.name)||(n.name.sharedData={ident:e.nextIdent()}),oe(n.fn,e),r();break;case 3:ut(n,e);break}})}function ut(t,e){ve(t.condition)===null&&J(t.condition,e,!0),oe(t.positive.fn,e),t.negative&&(t.negative.slotType===3?ut(t.negative,e):oe(t.negative.fn,e))}function gn(t,e){const{fallback:n,name:r}=t;J(r,e),n&&oe(n,e)}function mn({dir:{exp:t}},e){t&&J(t,e)}function En({dir:t},e){const n=t.exp;J(n,e,!0),n.sharedData.vModel={eventIdent:e.nextIdent()}}function yn(t,e){switch(t.name){case"show":return mn(t,e);case"model":return En(t,e)}}function dt(t,e){for(const n of t)ft(n,e)}function ft(t,e){$n(t,e)}function $n(t,e){switch(t.type){case 2:return un(t,e);case 3:return dn(t,e);case 4:return pn(t,e);case 5:return an(t,e);case 6:return on(t,e);case 7:return cn(t,e);case 8:return fn(t,e);case 9:return void 0;case 10:return void 0;case 15:return ct(t,e);case 16:return ln(t,e);case 11:return hn(t,e);case 14:return void 0;case 12:return gn(t,e);case 13:return yn(t,e);case 17:return void 0;default:const n=t;throw new Error(`Unhandled operation type in genOperation: ${n}`)}}function Nn(t,e){for(const n of t)Sn(n,e)}function Sn({operations:t},e){dt(t,e)}function Re(t,e){const{operation:n}=t;n&&ft(n,e)}function pt(t,e){const{children:n}=t;let r=0;const s=[];for(const[,a]of n.entries()){a.flags&2&&r--;const i=a.flags&1?a.flags&4?a.anchor:a.id:void 0;if(i===void 0&&!a.hasDynamicChild){Re(a,e);continue}i===a.anchor&&Re(a,e),s.push(a)}for(const a of s)pt(a,e)}function oe(t,e){Pe(t,e)}function Pe(t,e){const{dynamic:n,effect:r,operation:s}=t,a=e.enterBlock(t);for(const i of n.children)Re(i,e);for(const i of n.children)pt(i,e);dt(s,e),Nn(r,e),a()}class Te{constructor(e=1e3,n=30){if(this._chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",this._nextIds=[0],this._generated=[],this._currentIndex=0,e<0)throw new Error("\u9884\u751F\u6210\u6570\u91CF\u4E0D\u80FD\u4E3A\u8D1F\u6570");this._groupSize=n,e>0&&this._pregenerate(e)}_generateId(){const e=[];for(const n of this._nextIds)e.unshift(this._chars[n]);return e.join("")}_generateNextValidId(){let e;do e=this._generateId(),this._increment();while(vn.has(e));return e}_pregenerate(e){this._generated=new Array(e);for(let n=0;n<e;n++)this._generated[n]=this._generateNextValidId()}next(){if(this._currentIndex<this._generated.length)return this._generated[this._currentIndex++];const e=this._generateNextValidId();return this._generated.push(e),this._currentIndex++,e}getIndexOf(e){return this._generated.indexOf(e)}getGroupInfo(e){const n=this.getIndexOf(e);return n===-1?null:{index:Math.floor(n/this._groupSize),bitValue:1<<n%this._groupSize}}reset(){this._nextIds=[0],this._generated=[],this._currentIndex=0}get generatedCount(){return this._generated.length}get currentIndex(){return this._currentIndex}get hasPregenerated(){return this._currentIndex<this._generated.length}get generatedList(){return this._generated}_increment(){for(let e=0;e<this._nextIds.length;e++)if(++this._nextIds[e]>=this._chars.length)this._nextIds[e]=0;else return;this._nextIds.push(0)}*[Symbol.iterator](){for(;;)yield this.next()}}const vn=new Set(["abstract","arguments","await","boolean","break","byte","case","catch","char","class","const","continue","debugger","default","delete","do","double","else","enum","eval","export","extends","false","final","finally","float","for","function","goto","if","implements","import","in","instanceof","int","interface","let","long","native","new","null","package","private","protected","public","return","short","static","super","switch","synchronized","this","throw","throws","transient","true","try","typeof","var","void","volatile","while","with","yield"]);class Tn{constructor(e,n){this._ident=new Te,this._identCache=new Map,this.ir=e,this.options=n,this.block=e.block,this._identCache.set(this._ident,new Map)}enterBlock(e){const n=this.block;return this.block=e,()=>this.block=n}enterIdent(){const e=this._ident;return this._ident=new Te,this._identCache.set(this._ident,new Map),()=>this._ident=e}nextIdent(){return this._ident.next()}}function _n(t,e){const n=new Tn(t,e);Pe(t.block,n)}function Dn({parent:t,elements:e,anchor:n},{helper:r}){let s=e.map(a=>`n${a}`).join(", ");return e.length>1&&(s=`[${s}]`),[p.NEWLINE,...p.genCall(r("insert"),s,`n${t}`,n===void 0?void 0:`n${n}`)]}function In(t,{helper:e}){return[p.NEWLINE,...p.genCall(e("prepend"),`n${t.parent}`,...t.elements.map(n=>`n${n}`))]}function D(t,e,n){const{content:r,ast:s,isStatic:a,loc:i}=t;if(a)return[[JSON.stringify(r),-2,i]];if(!t.content.trim()||s===!1||p.isConstantExpression(t))return[[r,-2,i],n&&` = ${n}`];if(s===null)return ht(r,e,i,n);const o=[],l=new Map,c=[];N.walkIdentifiers(s,f=>{o.push(f),l.set(f,c.slice())},!1,c);let u=!1;if(o.length){const[f,d]=p.buildCodeFragment(),h=s&&N.TS_NODE_TYPES.includes(s.type);return o.sort((g,m)=>g.start-m.start).forEach((g,m)=>{const S=g.start-1,b=g.end-1,_=o[m-1];if(!(h&&m===0)){const I=r.slice(_?_.end-1:0,S);I.length&&d([I,-3])}const w=r.slice(S,b),M=l.get(g),R=M[M.length-1];u||(u=R&&(R.type==="MemberExpression"||R.type==="OptionalMemberExpression")),d(...ht(w,e,{start:N.advancePositionWithClone(t.loc.start,w,S),end:N.advancePositionWithClone(t.loc.start,w,b),source:w},u?void 0:n,g,R,M)),m===o.length-1&&b<r.length&&!h&&d([r.slice(b),-3])}),n&&u&&d(` = ${n}`),f}else return[[r,-3,i]]}function ht(t,e,n,r,s,a,i){const{options:o,helper:l,identifiers:c}=e,{inline:u,bindingMetadata:f}=o;let d=t;const h=c[t];if(h&&h.length){const _=h[0];return v.isString(_)?a&&a.type==="ObjectProperty"&&a.shorthand?[[`${d}: ${_}`,-2,n]]:[[_,-2,n]]:D(_,e,r)}let g;N.isStaticProperty(a)&&a.shorthand&&(g=`${t}: `);const m=f&&f[t];if(u)switch(m){case"setup-let":d=t=r?`_isRef(${t}) ? (${t}.value = ${r}) : (${t} = ${r})`:b();break;case"setup-ref":d=t=S(`${t}.value`);break;case"setup-maybe-ref":const _=a&&N.isInDestructureAssignment(a,i||[]),w=a&&a.type==="AssignmentExpression"&&a.left===s,M=a&&a.type==="UpdateExpression"&&a.argument===s;t=w||M||_?d=`${t}.value`:r?`${l("isRef")}(${t}) ? (${t}.value = ${r}) : null`:b();break;case"props":t=v.genPropsAccessExp(t);break;case"props-aliased":t=v.genPropsAccessExp(f.__propsAliases[t]);break;default:t=S(t)}else xn(t)&&(m==="props-aliased"?t=`$props['${f.__propsAliases[t]}']`:t=`${m==="props"?"$props":"_ctx"}.${t}`),t=S(t);return[g,[t,-2,n,d]];function S(_){return r?`${_} = ${r}`:_}function b(){return`${l("unref")}(${t})`}}function xn(t){return!(v.isGloballyAllowed(t)||t==="require"||t==="$props"||t==="$emit"||t==="$attrs"||t==="$slots")}function Cn(t,e,n){const{seenVariable:r,variableToExpMap:s,expToVariableMap:a,seenIdentifier:i,updatedVariable:o}=bn(e),l=An(t,r,s,a,i,o),c=On(t,e,l,o,a);return Mn([...l,...c],t,n)}function bn(t){const e=Object.create(null),n=new Map,r=new Map,s=new Set,a=new Set,i=(o,l,c,u,f=[])=>{c&&s.add(o),e[o]=(e[o]||0)+1,n.set(o,(n.get(o)||new Set).add(l));const d=r.get(l)||[];d.push({name:o,loc:u}),r.set(l,d),f.some(h=>h.type==="UpdateExpression"||h.type==="AssignmentExpression")&&a.add(o)};for(const o of t){if(!o.ast){o.ast===null&&i(o.content,o,!0);continue}N.walkIdentifiers(o.ast,(l,c,u)=>{if(c&&gt(c)){const f=le(c,d=>{i(d.name,o,!0,{start:d.start,end:d.end})});i(f,o,!1,{start:c.start,end:c.end},u)}else u.some(gt)||i(l.name,o,!0,{start:l.start,end:l.end},u)})}return{seenVariable:e,seenIdentifier:s,variableToExpMap:n,expToVariableMap:r,updatedVariable:a}}function An(t,e,n,r,s,a){const i=[],o=new Map;for(const[l,c]of n)if(!a.has(l)&&e[l]>1&&c.size>0){const u=s.has(l),f=u?l:Le(l);c.forEach(d=>{if(d.ast&&f!==l){const h=o.get(d)||[];h.push({name:f,locs:r.get(d).reduce((g,m)=>(m.name===l&&m.loc&&g.push(m.loc),g),[])}),o.set(d,h)}}),!i.some(d=>d.name===f)&&(!u||wn(l,r,c))&&i.push({name:f,isIdentifier:u,value:v.extend({ast:u?null:_e(t,l)},N.createSimpleExpression(l)),rawName:l,exps:c,seenCount:e[l]})}for(const[l,c]of o)c.flatMap(({name:u,locs:f})=>f.map(({start:d,end:h})=>({start:d,end:h,name:u}))).sort((u,f)=>f.end-u.end).forEach(({start:u,end:f,name:d})=>{l.content=l.content.slice(0,u-1)+d+l.content.slice(f-1)}),l.ast=_e(t,l.content);return i}function wn(t,e,n){const r=Array.from(n,a=>e.get(a).map(i=>i.name));if(r.every(a=>a.length===1)||r.some(a=>a.filter(i=>i===t).length>1))return!0;const s=r[0];return r.some(a=>a.length!==s.length)?!(r.some(a=>a.length>s.length&&a.every(i=>s.includes(i)))||r.some(a=>s.length>a.length&&s.every(i=>a.includes(i)))):!r.some(a=>a.some(i=>s.includes(i)))}function On(t,e,n,r,s){const a=[],i=e.reduce((o,l)=>{const c=s.get(l).map(u=>u.name);return l.ast&&l.ast.type!=="Identifier"&&!(c&&c.some(u=>r.has(u)))&&(o[l.content]=(o[l.content]||0)+1),o},Object.create(null));return Object.entries(i).forEach(([o,l])=>{if(l>1){const c=Le(o);if(!a.some(u=>u.name===c)){const u={};for(let d=n.length-1;d>=0;d--){const h=n[d];!h.exps||!h.seenCount||[...h.exps].every(g=>g.content===o&&h.seenCount===l)&&(u[h.name]=h.rawName,n.splice(d,1))}const f=v.extend({},e.find(d=>d.content===o));Object.keys(u).forEach(d=>{f.content=f.content.replace(d,u[d]),f.ast&&(f.ast=_e(t,f.content))}),a.push({name:c,value:f})}e.forEach(u=>{u.content===o?(u.content=c,u.ast=null):u.content.includes(o)&&(u.content=u.content.replace(new RegExp(kn(o),"g"),c),u.ast=_e(t,u.content))})}}),a}function Mn(t,e,n){const[r,s]=p.buildCodeFragment(),a=Object.create(null),i=new Set;return t.forEach(({name:o,isIdentifier:l,value:c})=>{if(l){const u=a[o]=`_${o}`;i.add(u),n&&s("const "),s(`${u} = `,...D(c,e),p.NEWLINE)}}),t.forEach(({name:o,isIdentifier:l,value:c})=>{if(!l){const u=a[o]=`_${o}`;i.add(u),n&&s("const "),s(`${u} = `,...e.withId(()=>D(c,e),a),p.NEWLINE)}}),{ids:a,frag:r,varNames:[...i]}}function kn(t){return t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function _e(t,e){const n=t.options.expressionPlugins,r={plugins:n?[...n,"typescript"]:["typescript"]};return Ee.parseExpression(`(${e})`,r)}function Le(t){return`${t.replace(/[^a-zA-Z0-9]/g,"_").replace(/_+/g,"_").replace(/_+$/,"")}`}function le(t,e){if(!t)return"";switch(t.type){case"Identifier":return e(t),t.name;case"StringLiteral":return t.extra?t.extra.raw:t.value;case"NumericLiteral":return t.value.toString();case"BinaryExpression":return`${le(t.left,e)} ${t.operator} ${le(t.right,e)}`;case"CallExpression":return`${le(t.callee,e)}(${t.arguments.map(s=>le(s,e)).join(", ")})`;case"MemberExpression":case"OptionalMemberExpression":const n=le(t.object,e),r=t.computed?`[${le(t.property,e)}]`:`.${le(t.property,v.NOOP)}`;return`${n}${r}`;default:return""}}const gt=t=>t.type==="MemberExpression"||t.type==="OptionalMemberExpression";function mt(t,e,n,r){return t.sharedData?p.genCall(e.helper("setSharedData"),e.sharedDataVar,JSON.stringify(t.sharedData.ident),n?p.genCall(n,D(t,e)):D(t,e)):D(t,e)}function Vn(t,e){const{key:n,keyOverride:r,value:s,modifiers:a,sharedData:i}=t,o=Fe(e,s,a);return[p.NEWLINE,...n.sharedData?p.genCall(e.helper("setSharedData"),e.sharedDataVar,JSON.stringify(n.sharedData.ident),l()).concat(p.NEWLINE):[],...p.genCall(e.helper("setSharedDataEvent"),e.sharedDataVar,JSON.stringify(i.ident),o)];function l(){const c=D(n,e);if(r){const u=JSON.stringify(r[0]),f=JSON.stringify(r[1]),d=["(",...c,")"];return[...d,` === ${u} ? ${f} : `,...d]}else return D(n,e)}}function Rn(t,e){return[p.NEWLINE,...p.genCall(e.helper("setSharedDataDynamicEvents"),e.sharedDataVar,JSON.stringify(t.event.sharedData.ident),D(t.event,e))]}function Fe(t,e,n={nonKeys:[],keys:[]},r=!1){let s=["() => {}"];if(e&&e.content.trim())if(N.isMemberExpression(e,t.options))s=D(e,t),!Pn(e,t)&&!r&&(e.ast&&e.ast.type==="TSAsExpression"?s=["(e: any) => (",e.content,")(e)"]:s=["(e: any) => ",...s,"(e)"]);else if(N.isFnExpression(e,t.options))s=D(e,t);else{const a=e.content.includes("$event"),i=e.content.includes(";"),o=a?t.withId(()=>D(e,t),{$event:null}):D(e,t);s=[a?"($event: any) => ":"() => ",i?"{":"(",...o,i?"}":")"]}return r&&s.unshift("() => "),s}function Pn(t,e){if(t.ast===null&&e.options.bindingMetadata[t.content]==="setup-const")return!0}function Ln(t,e){const{helper:n}=e,{source:r,value:s,key:a,index:i,render:o,keyProp:l,once:c,id:u,component:f,onlyChild:d}=t,h=e.sharedDataVar;let g=null;const m=a&&a.content,S=i&&i.content,b=["() => (",...D(r,e),")"],_=ne(),w=e.enterVFor(),[M,R]=e.enterScope(),I={},j=`_for_item${w}`;I[j]=null,_.forEach((y,$)=>{let T=`${j}.value${y?y.path:""}`;if(y)if(y.helper&&(I[y.helper]=null,T=`${y.helper}(${T}, ${y.helperArgs})`),y.dynamic){const x=I[$]=N.createSimpleExpression(T),L=e.options.expressionPlugins;x.ast=Ee.parseExpression(`(${T})`,{plugins:L?[...L,"typescript"]:["typescript"]})}else I[$]=T;else I[$]=T});const H=[e.sharedDataVForVar,", ",j];if(m){const y=`_for_key${w}`;H.push(`, ${y}`),I[m]=`${y}.value`,I[y]=null}if(S){const y=`_for_index${w}`;H.push(`, ${y}`),I[S]=`${y}.value`,I[y]=null}const z=p.genCall(n("setSharedData"),h,JSON.stringify(r.sharedData.ident),$t(e)),ue=me(l,e,e.sharedDataVForVar),{selectorPatterns:P,keyOnlyBindingPatterns:ge}=Et(o,l,I),ee=[],K=[];for(let y=0;y<P.length;y++){const{selector:$}=P[y],T=`_selector${u}_${y}`;ee.push(`let ${T}: (oper: () => void) => void`,p.NEWLINE),y===0&&K.push("({ createSelector }) => {",p.INDENT_START),K.push(p.NEWLINE,`${T} = `,...p.genCall("createSelector",["() => ",...D($,e)])),y===P.length-1&&K.push(p.INDENT_END,p.NEWLINE,"}")}const de=e.withId(()=>{const y=[];return y.push("(",...H,") => {",p.INDENT_START),P.length||ge.length?y.push(...xe(o,e,!1,()=>{const $=[];for(let T=0;T<P.length;T++){const{effect:x}=P[T];$.push(p.NEWLINE,`_selector${u}_${T}(() => {`,p.INDENT_START);for(const L of x.operations)$.push(...Ke(L,e));$.push(p.INDENT_END,p.NEWLINE,"})")}for(const{effect:T}of ge)for(const x of T.operations)$.push(...Ke(x,e));return $})):y.push(...xe(o,e)),y.push(p.INDENT_END,p.NEWLINE,"}"),y},I);R();let te=0;return d&&(te|=1),f&&(te|=2),c&&(te|=4),[p.NEWLINE,...ee,...p.genCall([n("createSharedDataFor"),"undefined"],z,b,de,ue,te?String(te):void 0,K.length?K:void 0)];function ne(){const y=new Map;return s&&(g=s&&s.content,s.ast?N.walkIdentifiers(s.ast,($,T,x,L,re)=>{if(re){let q="",Y=!1,ae,fe;for(let ie=0;ie<x.length;ie++){const k=x[ie],O=x[ie+1]||$;if(k.type==="ObjectProperty"&&k.value===O)k.key.type==="StringLiteral"?q+=`[${JSON.stringify(k.key.value)}]`:k.computed?(Y=!0,q+=`[${s.content.slice(k.key.start-1,k.key.end-1)}]`):q+=`.${k.key.name}`;else if(k.type==="ArrayPattern"){const V=k.elements.indexOf(O);O.type==="RestElement"?q+=`.slice(${V})`:q+=`[${V}]`}else k.type==="ObjectPattern"&&O.type==="RestElement"&&(ae=e.helper("getSharedDataRestElement"),fe="["+k.properties.filter(V=>V.type==="ObjectProperty").map(V=>V.key.type==="StringLiteral"?JSON.stringify(V.key.value):V.computed?(Y=!0,s.content.slice(V.key.start-1,V.key.end-1)):JSON.stringify(V.key.name)).join(", ")+"]");O.type==="AssignmentPattern"&&(k.type==="ObjectProperty"||k.type==="ArrayPattern")&&(Y=!0,ae=e.helper("getSharedDataDefaultValue"),fe=s.content.slice(O.right.start-1,O.right.end-1))}y.set($.name,{path:q,dynamic:Y,helper:ae,helperArgs:fe})}},!0):y.set(g,null)),y}function me(y,$,T){if(!y)return!1;const x=$.withId(()=>p.genCall($.helper("setSharedData"),T,JSON.stringify(y.sharedData.ident),D(y,$)),se());return[...p.genMulti(["(",")",", "],T,g||(m||S?"_":void 0),m||(S?"__":void 0),S)," => (",...x,")"]}function se(){const y={};return m&&(y[m]=null),S&&(y[S]=null),_.forEach(($,T)=>y[T]=null),y}}function Et(t,e,n){const r=[],s=[];return t.effect.forEach(a=>{if(e!==void 0){const i=Wn(a,e.ast,n);i&&(r.push(i),a.generated=!0);const o=Fn(a,e.ast);o&&(s.push(o),a.generated=!0)}}),{keyOnlyBindingPatterns:s,selectorPatterns:r}}function Fn(t,e){if(t.expressions.length===1){const n=t.expressions[0].ast;if(typeof n=="object"&&n!==null&&ye(n,e))return{effect:t}}}function Wn(t,e,n){if(t.expressions.length===1){const r=t.expressions[0].ast;if(typeof r=="object"&&r){const a=[];if(it.walk(r,{enter(i){if(typeof i=="object"&&i&&i.type==="BinaryExpression"&&i.operator==="==="&&i.left.type!=="PrivateName"){const{left:o,right:l}=i;for(const[c,u]of[[o,l],[l,o]]){const f=ye(c,e),d=ye(u,e),h=yt(u,n);f&&!d&&!h.locals.length&&a.push([c,u])}}}}),a.length===1){const[i,o]=a[0],l=t.expressions[0].content;let c=!1;const u=new Map,f=[];if(N.walkIdentifiers(r,d=>{d.start!==i.start&&d.start!==o.start&&(c=!0),u.set(d,f.slice())},!1,f),!c){const d=l.slice(o.start-1,o.end-1);return{effect:t,selector:{content:d,ast:v.extend({},o,{start:1,end:d.length+1}),loc:o.loc,isStatic:!1}}}}}const s=t.expressions[0].content;if(typeof r=="object"&&r&&r.type==="ConditionalExpression"&&r.test.type==="BinaryExpression"&&r.test.operator==="==="&&r.test.left.type!=="PrivateName"&&N.isStaticNode(r.consequent)&&N.isStaticNode(r.alternate)){const a=r.test.left,i=r.test.right;for(const[o,l]of[[a,i],[i,a]]){const c=ye(o,e),u=ye(l,e),f=yt(l,n);if(c&&!u&&!f.locals.length)return{effect:t,selector:{content:s.slice(l.start-1,l.end-1),ast:l,loc:l.loc,isStatic:!1}}}}}}function yt(t,e){let n=[],r=[];const s=[],a=new Map,i=[];N.walkIdentifiers(t,o=>{s.push(o),a.set(o,i.slice())},!1,i);for(const o of s)v.isGloballyAllowed(o.name)||(e[o.name]?r.push(o.name):n.push(o.name));return{globals:n,locals:r}}function ye(t,e){let n=!0;return it.walk(t,{enter(r){if(tn.isNodesEquivalent(r,e)){this.skip();return}r.type==="Identifier"&&(n=!1)}}),n}function $t(t){return`${t.helper("createSharedDataVFor")}(${t.sharedDataScopeVar}, () => useSharedData<\`${t.sharedDataVForClassType}\`>(${t.sharedDataScopeVar}))`}function jn(t,e){var n;const{helper:r}=e,{value:s}=t;return[p.NEWLINE,...(n=s.sharedData)!=null&&n.ident?p.genCall(r("setSharedData"),e.sharedDataVar,JSON.stringify(s.sharedData.ident),D(s,e)):[]]}function Nt(t,e,n=!1){const{helper:r}=e,{condition:s,positive:a,negative:i,once:o}=t,[l,c]=p.buildCodeFragment(),u=["() => ",...St(s,e),""];let f=Ie(a,e),d=!1;return i&&(i.type===1?d=Ie(i,e):d=["() => ",...Nt(i,e,!0)]),n||c(p.NEWLINE),c(...p.genCall(r("createSharedDataIf"),u,f,d,o&&"true")),l}function St(t,e){return t.sharedData?p.genCall(e.helper("setSharedData"),e.sharedDataVar,JSON.stringify(t.sharedData.ident),p.genCall(e.helper("toSharedDataBoolean"),D(t,e))):[JSON.stringify(ve(t))]}const X={setText:{name:"setText"},setHtml:{name:"setHtml"},setClass:{name:"setClass"},setStyle:{name:"setStyle"},setValue:{name:"setValue"},setAttr:{name:"setAttr",needKey:!0},setProp:{name:"setProp",needKey:!0},setDOMProp:{name:"setDOMProp",needKey:!0}};function Jn(t,e){const{prop:{key:n,values:r,modifier:s,sharedData:a},tag:i}=t,o=Bn(i,n.content,s),[l,c]=p.buildCodeFragment();return a?(c(p.NEWLINE,...p.genCall(e.helper(We(o.name)),e.sharedDataVar,JSON.stringify(a.ident),De(r,e))),l):(r.filter(u=>{var f;return(f=u.sharedData)==null?void 0:f.ident}).forEach(u=>{c(p.NEWLINE,...p.genCall(e.helper(We(o.name)),e.sharedDataVar,JSON.stringify(u.sharedData.ident),De([u],e)))}),l)}function Un(t,e){const{helper:n}=e,r=t.props.map(s=>Array.isArray(s)?vt(s,e):s.kind===1?vt([s],e):D(s.value,e));return[p.NEWLINE,...p.genCall(n(We("setDynamicProps")),e.sharedDataVar,JSON.stringify(t.sharedData.ident),p.genMulti(p.DELIMITERS_ARRAY,...r))]}function vt(t,e){return p.genMulti(p.DELIMITERS_OBJECT,...t.map(n=>[...Tt(n,e),": ",...De(n.values,e)]))}function Tt({key:t,modifier:e,runtimeCamelize:n,handler:r,handlerModifiers:s},a){const{helper:i}=a,o=s?s.map(v.capitalize).join(""):"";if(t.isStatic){const c=(r?v.toHandlerKey(t.content):t.content)+o;return[[N.isSimpleIdentifier(c)?c:JSON.stringify(c),-2,t.loc]]}let l=D(t,a);return n&&(l=p.genCall(i("camelize"),l)),r&&(l=p.genCall(i("toHandlerKey"),l)),["[",e&&`${JSON.stringify(e)} + `,...l,o?` + ${JSON.stringify(o)}`:void 0,"]"]}function De(t,e){return t.length===1?D(t[0],e):p.genMulti(p.DELIMITERS_ARRAY,...t.map(n=>D(n,e)))}function Bn(t,e,n){const r=t.toUpperCase();return n?n==="."?_t(e,r)||X.setDOMProp:X.setAttr:_t(e,r)||(/aria[A-Z]/.test(e)?X.setDOMProp:v.isSVGTag(t)||v.shouldSetAsAttr(r,e)||e.includes("-")?X.setAttr:X.setProp)}function _t(t,e){if(t==="value"&&v.canSetValueDirectly(e))return X.setValue;if(t==="class")return X.setClass;if(t==="style")return X.setStyle;if(t==="innerHTML")return X.setHtml;if(t==="textContent")return X.setText}function We(t){switch(t){case"setClass":return"setSharedDataClass";case"setStyle":return"setSharedDataStyle";case"setText":case"setHtml":case"setValue":case"setAttr":case"setProp":case"setDOMProp":return"setSharedDataAttr";case"setDynamicProps":return"setSharedDataDynamicProps";default:const e=t;throw new Error(`Unhandled operation type in genOperation: ${e}`)}}const Dt="_setTemplateRef";function Kn(t,e){let n=p.genCall(Dt,`n${t.element}`,Gn(t.value,e),t.effect?`r${t.element}`:t.refFor?"void 0":void 0,t.refFor&&"true");return t.value.sharedData&&(n=p.genCall(e.helper("setSharedDataTemplateRef"),e.sharedDataVar,JSON.stringify(t.value.sharedData.ident),[`(n${t.element}: number) => {`,...n,"}"])),[p.NEWLINE,t.effect&&`r${t.element} = `,...n]}function Yn(t){return[p.NEWLINE,`let r${t.id}: any | null`]}function Gn(t,e){if(t&&e.options.inline){const n=e.options.bindingMetadata[t.content];if(n==="setup-let"||n==="setup-ref"||n==="setup-maybe-ref")return[t.content]}return D(t,e)}function Hn(t,e){const{helper:n}=e,{values:r}=t,[s,a]=p.buildCodeFragment(),i=new Set;return r.filter(o=>{var l;return(l=o.sharedData)==null?void 0:l.ident}).forEach(o=>{const l=o.sharedData.ident;i.has(l)||(i.add(l),a(p.NEWLINE,...p.genCall(n("setSharedData"),e.sharedDataVar,JSON.stringify(o.sharedData.ident),p.genCall(e.helper("toDisplayString"),D(o,e)))))}),s}function zn(t,e){return[]}function qn({dir:{exp:t}},e){return t?[p.NEWLINE,...p.genCall(e.helper("renderSharedDataEffect"),["() => { ",...p.genCall(e.helper("setSharedData"),e.sharedDataVar,JSON.stringify(t.sharedData.ident),p.genCall(e.helper("toSharedDataBoolean"),D(t,e)))," }"])]:[]}function Xn(t,e){const{dir:{exp:n,modifiers:r}}=t,s=n.sharedData;return[p.NEWLINE,...p.genCall(e.helper("setSharedDataEvent"),e.sharedDataVar,JSON.stringify(s.vModel.eventIdent),p.genCall(e.helper("setSharedDataModel"),e.sharedDataVar,JSON.stringify(s.ident),["() => (",...D(n,e),")"],It(n,e),r.length?`{ ${r.map(a=>a.content+": true").join(",")} }`:void 0))]}function It(t,e){return[`${e.options.isTS?"(_value: any)":"_value"} => (`,...D(t,e,"_value"),")"]}function Zn(t,e){switch(t.name){case"show":return qn(t,e);case"model":return Xn(t,e);default:return[]}}function Qn(t){return t.map(e=>`${N.isSimpleIdentifier(e)?e:JSON.stringify(e)}: true`).join(", ")}function er(t,e){const{helper:n}=e,r=m(),{root:s,props:a,slots:i,sharedData:o}=t,l=ar(i,e),[c,u]=nr(a,e),f=e.withId(()=>xt(a,e),c),d=u.reduce((S,{name:b,value:_})=>{const w=Fe(e,_,void 0,!1);return[...S,`const ${b} = `,...w,p.NEWLINE]},[]),h=t.dynamic&&!t.dynamic.isStatic,g=t.asset;return[p.NEWLINE,...d,`const n${t.id} = `,...p.genCall(n(h?"createSharedDataDynamicComponent":g?"createSharedDataComponentWithFallback":"createSharedDataComponent"),r,f,l,s?"true":!1),p.NEWLINE,...p.genCall(n("setSharedData"),e.sharedDataVar,JSON.stringify(o.ident),[`n${t.id}`,g?"?.sharedData":".sharedData"])];function m(){return t.dynamic?t.dynamic.isStatic?p.genCall(n("resolveDynamicComponent"),D(t.dynamic,e)):["() => (",...D(t.dynamic,e),")"]:t.asset?N.toValidAssetId(t.tag,"component"):D(v.extend(N.createSimpleExpression(t.tag,!1),{ast:null}),e)}}function tr(t,e){const{seenInlineHandlerNames:n}=t;e=Le(e);const r=n[e]||0;return n[e]=r+1,r===0?e:`${e}${r}`}function nr(t,e){const n=Object.create(null),r=[],s=t[0];if(v.isArray(s))for(let a=0;a<s.length;a++){const i=s[a];i.handler&&i.values.forEach((o,l)=>{if(!N.isMemberExpression(o,e.options)){const c=tr(e,`_on_${i.key.content}`);r.push({name:c,value:o}),n[c]=null,i.values[l]=v.extend({ast:null},N.createSimpleExpression(c))}})}return[n,r]}function xt(t,e){const n=t[0];if(v.isArray(n))return!n.length&&t.length===1?void 0:je(n,e,Ct(t.slice(1),e));if(t.length)return je([],e,Ct(t,e))}function je(t,e,n){const r=t.map(s=>bt(s,e,!0));return n&&r.push(["$: ",...n]),p.genMulti(r.length>1?p.DELIMITERS_OBJECT_NEWLINE:p.DELIMITERS_OBJECT,...r)}function Ct(t,e){const{helper:n}=e,r=[];for(const s of t){let a;if(v.isArray(s)){s.length&&r.push(je(s,e));continue}else s.kind===1?a=p.genMulti(p.DELIMITERS_OBJECT,bt(s,e)):(a=D(s.value,e),s.handler&&(a=p.genCall(n("toHandlers"),a)));r.push(["() => (",...a,")"])}if(r.length)return p.genMulti(p.DELIMITERS_ARRAY_NEWLINE,...r)}function bt(t,e,n){const r=De(t.values,e);return[...Tt(t,e),": ",...t.handler?Fe(e,t.values[0],void 0,!0):n?["() => (",...r,")"]:r,...t.model?[...rr(t,e),...sr(t,e)]:[]]}function rr(t,e){const n=t.key.isStatic?[JSON.stringify(`onUpdate:${v.camelize(t.key.content)}`)]:['["onUpdate:" + ',...D(t.key,e),"]"],r=It(t.values[0],e);return[",",p.NEWLINE,...n,": () => ",...r]}function sr(t,e){const{key:n,modelModifiers:r}=t;if(!r||!r.length)return[];const s=n.isStatic?n.content==="modelValue"?["modelModifiers"]:[`${n.content}Modifiers`]:["[",...D(n,e),' + "Modifiers"]'],a=Qn(r);return[",",p.NEWLINE,...s,`: () => ({ ${a} })`]}function ar(t,e){if(!t.length)return;const n=t[0];return n.slotType===0?Je(n,e,t.length>1?t.slice(1):void 0):Je({slots:{}},e,t)}function Je({slots:t},e,n){const r=Object.keys(t).map(s=>[`${JSON.stringify(s)}: `,...Be(t[s],e)]);return n&&r.push(["$: ",...ir(n,e)]),p.genMulti(p.DELIMITERS_OBJECT_NEWLINE,...r)}function ir(t,e){return p.genMulti(p.DELIMITERS_ARRAY_NEWLINE,...t.map(n=>n.slotType===0?Je(n,e):n.slotType===4?n.slots.content:Ue(n,e,!0)))}function Ue(t,e,n=!1){let r;switch(t.slotType){case 1:r=or(t,e);break;case 2:r=lr(t,e);break;case 3:r=cr(t,e);break}return n?["() => (",...r,")"]:r}function or(t,e){const{name:n,fn:r}=t;return p.genMulti(p.DELIMITERS_OBJECT_NEWLINE,["name: ",...mt(n,e,e.helper("toDisplayString"))],["fn: ",...Be(r,e)])}function lr(t,e){e.enterVFor();const{name:n,fn:r,loop:s}=t,{value:a,key:i,index:o,source:l}=s,c=a&&a.content,u=i&&i.content,f=o&&o.content,d={};c&&(d[c]=c),u&&(d[u]=u),f&&(d[f]=f);const h=p.genMulti(p.DELIMITERS_OBJECT_NEWLINE,["name: ",...e.withId(()=>{if(!n.sharedData)return D(n,e);const g=e.enterBlock(r),m=mt(n,e,e.helper("toDisplayString"));return g(),m},d)],["fn: ",...e.withId(()=>Be(r,e),d)]);return[...p.genCall(e.helper("createSharedDataForSlots"),p.genCall(e.helper("setSharedData"),e.sharedDataVar,JSON.stringify(l.sharedData.ident),$t(e)),D(l,e),[...p.genMulti(["(",")",", "],e.sharedDataVForVar,c||(u||f?"_":void 0),u||(f?"__":void 0),f)," => (",...h,")"])]}function cr(t,e){const{condition:n,positive:r,negative:s}=t;return[...St(n,e),p.INDENT_START,p.NEWLINE,"? ",...Ue(r,e),p.NEWLINE,": ",...s?[...Ue(s,e)]:["void 0"],p.INDENT_END]}function Be(t,e){let n=!1,r,s,a,i;const{props:o}=t,l=new Set;o&&(r=o.content,(n=!!o.ast)?([i,a]=e.enterScope(),s=`_slotProps${i}`,N.walkIdentifiers(o.ast,(f,d,h,g,m)=>{m&&l.add(f.name)},!0)):l.add(s=r));const c={};l.forEach(f=>c[f]=n?`${s}[${JSON.stringify(f)}]`:null);const u=e.withId(()=>Ie(t,e,[s]),c);return a&&a(),u}function ur(t,e){const{helper:n}=e,{name:r,fallback:s}=t,[a,i]=p.buildCodeFragment(),o=r.sharedData?["() => (",...p.genCall(e.helper("setSharedData"),e.sharedDataVar,JSON.stringify(r.sharedData.ident),D(r,e)),")"]:D(r,e);let l;return s&&(l=Ie(s,e)),i(p.NEWLINE,...p.genCall(n("createSharedDataSlot"),o,xt(t.props,e)||"null",l)),a}function At(t,e){const[n,r]=p.buildCodeFragment();for(const s of t)r(...wt(s,e));return n}function wt(t,e){const[n,r]=p.buildCodeFragment();return r(...Ke(t,e)),n}function Ke(t,e){switch(t.type){case 2:return Jn(t,e);case 3:return Un(t,e);case 4:return Hn(t,e);case 5:return Vn(t,e);case 6:return Rn(t,e);case 7:return jn(t,e);case 8:return Kn(t,e);case 9:return Dn(t,e);case 10:return In(t,e);case 15:return Nt(t,e);case 16:return Ln(t,e);case 11:return er(t,e);case 14:return Yn(t);case 12:return ur(t,e);case 13:return Zn(t,e);case 17:return zn();default:const n=t;throw new Error(`Unhandled operation type in genOperation: ${n}`)}}function dr(t,e,n){const{helper:r}=e,s=t.flatMap(h=>h.expressions),[a,i,o]=p.buildCodeFragment(),l=n===void 0;let c=0;const{ids:u,frag:f,varNames:d}=Cn(e,s,l);i(...f);for(let h=0;h<t.length;h++){const g=t[h];c+=g.operations.length;const m=e.withId(()=>fr(g,e),u);h>0&&i(p.NEWLINE),a[a.length-1]===")"&&m[0]==="("&&i(";"),i(...m)}return(a.filter(h=>h===p.NEWLINE).length>1||c>1||f.length>0)&&(o("{",p.INDENT_START,p.NEWLINE),i(p.INDENT_END,p.NEWLINE,"}"),t.length||o(p.NEWLINE)),t.length&&(o(p.NEWLINE,`${r("renderSharedDataEffect")}(() => `),i(")")),!l&&d.length&&o(p.NEWLINE,"let ",d.join(", ")),n&&i(...e.withId(n,u)),a}function fr({operations:t},e){const[n,r]=p.buildCodeFragment(),s=At(t,e);return s.filter(a=>a===p.NEWLINE).length>1?r(...s):r(...s.filter(a=>a!==p.NEWLINE)),n}function Ye(t,e){const[n,r]=p.buildCodeFragment(),{operation:s}=t;return s&&r(...wt(s,e)),n}function Ot(t,e){const[n,r]=p.buildCodeFragment(),{children:s}=t;let a=0;const i=[];for(const[o,l]of s.entries()){l.flags&2&&a--;const c=l.flags&1?l.flags&4?l.anchor:l.id:void 0;if(c===void 0&&!l.hasDynamicChild){r(...Ye(l,e));continue}c===l.anchor&&r(...Ye(l,e)),i.push(l)}if(i.length)for(const o of i)r(...Ot(o,e));return n}function Ie(t,e,n=[],r){return["(",...n,") => {",p.INDENT_START,...xe(t,e,r),p.INDENT_END,p.NEWLINE,"}"]}function xe(t,e,n,r){const[s,a]=p.buildCodeFragment(),{dynamic:i,effect:o,operation:l}=t,c=e.enterBlock(t);if(n){for(let f of e.ir.component){const d=N.toValidAssetId(f,"component"),h=f.endsWith("__self");h&&(f=f.slice(0,-6)),a(p.NEWLINE,`const ${d} = `,...p.genCall(e.helper("resolveComponent"),JSON.stringify(f),h?"true":void 0))}u("directive","resolveDirective")}for(const f of i.children)a(...Ye(f,e));for(const f of i.children)a(...Ot(f,e));return a(...At(l,e)),a(...dr(o.filter(f=>!f.generated),e,r)),c(),s;function u(f,d){for(const h of e.ir[f])a(p.NEWLINE,`const ${N.toValidAssetId(h,f)} = `,...p.genCall(e.helper(d),JSON.stringify(h)))}}const pr={ELEMENT:"element",NATIVE_VIEW:"nativeView"},Mt={APP_ANDROID:"app-android",APP_HARMONY:"app-harmony",APP_IOS:"app-ios"};function hr(t,e){switch(t){case"app-harmony":return e==="element"?"dom-c":"nv-c";case"app-android":return e==="element"?"dom-kt":"nv-kt";case"app-ios":return e==="element"?"dom-c":"nv-c"}}const gr={TS:"ts",CPP:"cpp",KOTLIN:"kotlin",SWIFT:"swift"},mr={APP:"app",PAGE:"page",COMPONENT:"component"};class kt{constructor(){this.vForCount=-1}enterVFor(){return this.vForCount++,this.vForCount}get sharedDataVar(){const{node:e}=this.block;let n=!1;return"__vFor"in e&&(n=e.__vFor),e.__vFor=n=e.type===1&&e.tagType===3&&e.props.some(r=>r.type===7&&r.name==="for"),n?this.sharedDataVForVar:"__sharedData"}get sharedDataVForVar(){return`__sharedData_VFor${this.vForCount}`}get sharedDataVForItemVar(){return`__vForItem${this.vForCount}`}}class Er extends kt{constructor(e,n){super(),this.ir=e,this.helpers=new Set([]),this.helper=s=>(this.helpers.add(s),`_${s}`),this.delegates=new Set,this.identifiers=Object.create(null),this.seenInlineHandlerNames=Object.create(null),this.scopeLevel=0;const r={mode:"module",platform:"app-harmony",prefixIdentifiers:!0,sourceMap:!1,filename:"template.vue.html",scopeId:null,runtimeGlobalName:"Vue",runtimeModuleName:"vue",ssrRuntimeModuleName:"vue/server-renderer",ssr:!1,isTS:!1,inSSR:!1,inline:!1,bindingMetadata:{},expressionPlugins:[],componentType:"page",className:""};this.options=v.extend(r,n),this.block=e.block}withId(e,n){const{identifiers:r}=this,s=Object.keys(n);for(const i of s)r[i]||(r[i]=[]),r[i].unshift(n[i]||i);const a=e();return s.forEach(i=>v.remove(r[i],n[i]||i)),a}enterBlock(e){const n=this.block;return this.block=e,()=>this.block=n}enterScope(){return[this.scopeLevel++,()=>this.scopeLevel--]}get sharedDataScopeVar(){return"__sharedDataScope"}get sharedDataVForClassType(){return`\${__SHARED_DATA_CLASS_NAME_TYPE}_VFor${this.vForCount}`}}function yr(t,e){const[n,r]=p.buildCodeFragment(),s=new Er(t,e),{helpers:a}=s,{inline:i}=e;r(p.NEWLINE,"return (function renderSharedData(): UniSharedData { 'raw js'"),r(p.INDENT_START),e.componentType==="page"?(r(p.NEWLINE,"const __sharedData = useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(__pageId!)"),r(p.NEWLINE,"__sharedDataScope = __sharedData")):r(p.NEWLINE,"const __sharedData = useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope)"),t.hasTemplateRef&&r(p.NEWLINE,`const ${Dt} = ${s.helper("createSharedDataTemplateRefSetter")}()`),r(...xe(t.block,s,!0)),r(p.NEWLINE,"return __sharedData"),r(p.INDENT_END,p.NEWLINE),r("})()");const o=$r(s)+Nr(s),l=[...o].filter(f=>f===`
-`).length;l&&!i&&n.unshift(...new Array(l).fill(p.LF));const[c,u]=p.codeFragmentToString(n,s);return{code:c,ast:t,preamble:o,map:u&&u.toJSON(),helpers:a}}function $r({helpers:t,options:e}){let n="";return t.size&&(n+=`import { ${[...t].map(r=>`${r} as _${r}`).join(", ")} } from '${e.runtimeModuleName}';
-`),n}function Nr(t){return`
-const __className = '${t.options.className}' as const
-type __SHARED_DATA_CLASS_NAME_TYPE = \`\${typeof __className}SharedData\`
-`}const E=Symbol("newline"),Vt=Symbol("line feed"),Z=Symbol("indent start"),Q=Symbol("indent end");function U(...t){const e=t.push.bind(t),n=t.unshift.bind(t);return[t,e,n]}function B([t,e,n,r],...s){if(r){for(;s.length>0&&!s[s.length-1];)s.pop();s=s.map(o=>o||r)}else s=s.filter(Boolean);const a=[];i(t);for(let[o,l]of s.entries())i(l),o<s.length-1&&i(n);return i(e),a;function i(o){v.isArray(o)||(o=[o]),a.push(...o)}}const Ce=["[","]",", "],Sr=[["[",Z,E],[Q,E,"]"],[", ",E]],be=[["{",Z,E],[Q,E,"}"],[", ",E]];function A(t,...e){const n=v.isArray(t),r=n?t[0]:t,s=n?t[1]:"null";return[r,...B(["(",")",", ",s],...e)]}function vr(t,e){const{options:{filename:n,sourceMap:r}}=e;let s;r&&(s=new nn.SourceMapGenerator,s.setSourceContent(n,e.ir.source),s._sources.add(n));let a="";const i={line:1,column:1,offset:0};let o=0;for(let c of t){if(!c)continue;if(c===E)c=[`
-${"  ".repeat(o)}`,0];else if(c===Z){o++;continue}else if(c===Q){o--;continue}else if(c===Vt){i.line++,i.column=0,i.offset++;continue}v.isString(c)&&(c=[c]);let[u,f=-2,d,h]=c;a+=u,s&&(d&&l(d.start,h),f===-3?N.advancePositionWithMutation(i,u):(i.offset+=u.length,f===-2?i.column+=u.length:(f===-1&&(f=u.length-1),i.line++,i.column=u.length-f)),d&&d!==N.locStub&&l(d.end))}return[a,s];function l(c,u=null){const{_names:f,_mappings:d}=s;u!==null&&!f.has(u)&&f.add(u),d.add({originalLine:c.line,originalColumn:c.column-1,generatedLine:i.line,generatedColumn:i.column-1,source:n,name:u})}}function Tr({parent:t,elements:e,anchor:n},{helper:r}){let s=e.map(a=>`n${a}`).join(", ");return e.length>1&&(s=`[${s}]`),[E,...A(r("insert"),s,`n${t}`,n===void 0?void 0:`n${n}`)]}function _r(t,{helper:e}){return[E,...A(e("prepend"),`n${t.parent}`,...t.elements.map(n=>`n${n}`))]}function C(t,e,n){const{content:r,ast:s,isStatic:a,loc:i,sharedData:o}=t;if(o)return[[e.sharedDataIdent(o.ident),-2,i]];if(a)return[[JSON.stringify(r),-2,i]];if(!t.content.trim()||s===!1||p.isConstantExpression(t))return[[r,-2,i],n&&` = ${n}`];if(s===null)return Rt(r,e,i,n);const l=[],c=new Map,u=[];N.walkIdentifiers(s,d=>{l.push(d),c.set(d,u.slice())},!1,u);let f=!1;if(l.length){const[d,h]=U(),g=s&&N.TS_NODE_TYPES.includes(s.type);return l.sort((m,S)=>m.start-S.start).forEach((m,S)=>{const b=m.start-1,_=m.end-1,w=l[S-1];if(!(g&&S===0)){const j=r.slice(w?w.end-1:0,b);j.length&&h([j,-3])}const M=r.slice(b,_),R=c.get(m),I=R[R.length-1];f||(f=I&&(I.type==="MemberExpression"||I.type==="OptionalMemberExpression")),h(...Rt(M,e,{start:N.advancePositionWithClone(t.loc.start,M,b),end:N.advancePositionWithClone(t.loc.start,M,_),source:M},f?void 0:n,m,I,R)),S===l.length-1&&_<r.length&&!g&&h([r.slice(_),-3])}),n&&f&&h(` = ${n}`),d}else return[[r,-3,i]]}function Rt(t,e,n,r,s,a,i){const{options:o,helper:l,identifiers:c}=e,{inline:u,bindingMetadata:f}=o;let d=t;const h=c[t];if(h&&h.length){const _=h[0];return v.isString(_)?a&&a.type==="ObjectProperty"&&a.shorthand?[[`${d}: ${_}`,-2,n]]:[[_,-2,n]]:C(_,e,r)}let g;N.isStaticProperty(a)&&a.shorthand&&(g=`${t}: `);const m=f&&f[t];if(u)switch(m){case"setup-let":d=t=r?`_isRef(${t}) ? (${t}.value = ${r}) : (${t} = ${r})`:b();break;case"setup-ref":d=t=S(`${t}.value`);break;case"setup-maybe-ref":const _=a&&N.isInDestructureAssignment(a,i||[]),w=a&&a.type==="AssignmentExpression"&&a.left===s,M=a&&a.type==="UpdateExpression"&&a.argument===s;t=w||M||_?d=`${t}.value`:r?`${l("isRef")}(${t}) ? (${t}.value = ${r}) : null`:b();break;case"props":t=v.genPropsAccessExp(t);break;case"props-aliased":t=v.genPropsAccessExp(f.__propsAliases[t]);break;default:t=S(t)}else Dr(t)&&(m==="props-aliased"?t=`$props['${f.__propsAliases[t]}']`:t=`${m==="props"?"$props":"_ctx"}.${t}`),t=S(t);return[g,[t,-2,n,d]];function S(_){return r?`${_} = ${r}`:_}function b(){return`${l("unref")}(${t})`}}function Dr(t){return!(v.isGloballyAllowed(t)||t==="require"||t==="$props"||t==="$emit"||t==="$attrs"||t==="$slots")}function Ir(t,e,n){const{seenVariable:r,variableToExpMap:s,expToVariableMap:a,seenIdentifier:i,updatedVariable:o}=xr(e),l=Cr(t,r,s,a,i,o),c=Ar(t,e,l,o,a);return wr([...l,...c],t,n)}function xr(t){const e=Object.create(null),n=new Map,r=new Map,s=new Set,a=new Set,i=(o,l,c,u,f=[])=>{c&&s.add(o),e[o]=(e[o]||0)+1,n.set(o,(n.get(o)||new Set).add(l));const d=r.get(l)||[];d.push({name:o,loc:u}),r.set(l,d),f.some(h=>h.type==="UpdateExpression"||h.type==="AssignmentExpression")&&a.add(o)};for(const o of t){if(!o.ast){o.ast===null&&i(o.content,o,!0);continue}N.walkIdentifiers(o.ast,(l,c,u)=>{if(c&&Pt(c)){const f=ce(c,d=>{i(d.name,o,!0,{start:d.start,end:d.end})});i(f,o,!1,{start:c.start,end:c.end},u)}else u.some(Pt)||i(l.name,o,!0,{start:l.start,end:l.end},u)})}return{seenVariable:e,seenIdentifier:s,variableToExpMap:n,expToVariableMap:r,updatedVariable:a}}function Cr(t,e,n,r,s,a){const i=[],o=new Map;for(const[l,c]of n)if(!a.has(l)&&e[l]>1&&c.size>0){const u=s.has(l),f=u?l:Ge(l);c.forEach(d=>{if(d.ast&&f!==l){const h=o.get(d)||[];h.push({name:f,locs:r.get(d).reduce((g,m)=>(m.name===l&&m.loc&&g.push(m.loc),g),[])}),o.set(d,h)}}),!i.some(d=>d.name===f)&&(!u||br(l,r,c))&&i.push({name:f,isIdentifier:u,value:v.extend({ast:u?null:Ae(t,l)},N.createSimpleExpression(l)),rawName:l,exps:c,seenCount:e[l]})}for(const[l,c]of o)c.flatMap(({name:u,locs:f})=>f.map(({start:d,end:h})=>({start:d,end:h,name:u}))).sort((u,f)=>f.end-u.end).forEach(({start:u,end:f,name:d})=>{l.content=l.content.slice(0,u-1)+d+l.content.slice(f-1)}),l.ast=Ae(t,l.content);return i}function br(t,e,n){const r=Array.from(n,a=>e.get(a).map(i=>i.name));if(r.every(a=>a.length===1)||r.some(a=>a.filter(i=>i===t).length>1))return!0;const s=r[0];return r.some(a=>a.length!==s.length)?!(r.some(a=>a.length>s.length&&a.every(i=>s.includes(i)))||r.some(a=>s.length>a.length&&s.every(i=>a.includes(i)))):!r.some(a=>a.some(i=>s.includes(i)))}function Ar(t,e,n,r,s){const a=[],i=e.reduce((o,l)=>{const c=s.get(l).map(u=>u.name);return l.ast&&l.ast.type!=="Identifier"&&!(c&&c.some(u=>r.has(u)))&&(o[l.content]=(o[l.content]||0)+1),o},Object.create(null));return Object.entries(i).forEach(([o,l])=>{if(l>1){const c=Ge(o);if(!a.some(u=>u.name===c)){const u={};for(let d=n.length-1;d>=0;d--){const h=n[d];!h.exps||!h.seenCount||[...h.exps].every(g=>g.content===o&&h.seenCount===l)&&(u[h.name]=h.rawName,n.splice(d,1))}const f=v.extend({},e.find(d=>d.content===o));Object.keys(u).forEach(d=>{f.content=f.content.replace(d,u[d]),f.ast&&(f.ast=Ae(t,f.content))}),a.push({name:c,value:f})}e.forEach(u=>{u.content===o?(u.content=c,u.ast=null):u.content.includes(o)&&(u.content=u.content.replace(new RegExp(Or(o),"g"),c),u.ast=Ae(t,u.content))})}}),a}function wr(t,e,n){const[r,s]=U(),a=Object.create(null),i=new Set;return t.forEach(({name:o,isIdentifier:l,value:c})=>{if(l){const u=a[o]=`_${o}`;i.add(u),n&&s("const "),s(`${u} = `,...C(c,e),E)}}),t.forEach(({name:o,isIdentifier:l,value:c})=>{if(!l){const u=a[o]=`_${o}`;i.add(u),n&&s("const "),s(`${u} = `,...e.withId(()=>C(c,e),a),E)}}),{ids:a,frag:r,varNames:[...i]}}function Or(t){return t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function Ae(t,e){const n=t.options.expressionPlugins,r={plugins:n?[...n,"typescript"]:["typescript"]};return Ee.parseExpression(`(${e})`,r)}function Ge(t){return`${t.replace(/[^a-zA-Z0-9]/g,"_").replace(/_+/g,"_").replace(/_+$/,"")}`}function ce(t,e){if(!t)return"";switch(t.type){case"Identifier":return e(t),t.name;case"StringLiteral":return t.extra?t.extra.raw:t.value;case"NumericLiteral":return t.value.toString();case"BinaryExpression":return`${ce(t.left,e)} ${t.operator} ${ce(t.right,e)}`;case"CallExpression":return`${ce(t.callee,e)}(${t.arguments.map(s=>ce(s,e)).join(", ")})`;case"MemberExpression":case"OptionalMemberExpression":const n=ce(t.object,e),r=t.computed?`[${ce(t.property,e)}]`:`.${ce(t.property,v.NOOP)}`;return`${n}${r}`;default:return""}}const Pt=t=>t.type==="MemberExpression"||t.type==="OptionalMemberExpression";function Mr(t,e){if(!(e.feature&2))return[];const{element:n,key:r,keyOverride:s,modifiers:a,delegate:i,effect:o,sharedData:l}=t,c=d(),u=h(),f=`e${l.ident}${t.element}`;return[E,`const ${f} = ${e.sharedDataIdent(l.ident)}`,E,...A(e.helper(i?"delegate":"onElement"),`n${n}`,c,["(event: UniEvent) => {",`${f}(event)`,"}"],u)];function d(){const g=C(r,e);if(s){const m=JSON.stringify(s[0]),S=JSON.stringify(s[1]),b=["(",...g,")"];return[...b,` === ${m} ? ${S} : `,...b]}else return C(r,e)}function h(){let{options:g}=a;if(!(!g.length&&!o))return B(be,o&&["effect: true"],...g.map(m=>[`${m}: true`]))}}function kr(t,e){if(!(e.feature&2))return[];const{helper:n,sharedDataIdent:r}=e;return[E,...A(n("setElementDynamicEvents"),`n${t.element}`,r(t.event.sharedData.ident))]}function Vr(t,e,n={nonKeys:[],keys:[]},r=!1){let s=["() => {}"];if(e&&e.content.trim())if(N.isMemberExpression(e,t.options))s=C(e,t),!Lr(e,t)&&!r&&(s=["e => ",...s,"(e)"]);else if(N.isFnExpression(e,t.options))s=C(e,t);else{const o=e.content.includes("$event"),l=e.content.includes(";"),c=o?t.withId(()=>C(e,t),{$event:null}):C(e,t);s=[o?"$event => ":"() => ",l?"{":"(",...c,l?"}":")"]}const{keys:a,nonKeys:i}=n;return i.length&&(s=Rr(t,s,i)),a.length&&(s=Pr(t,s,a)),r&&s.unshift("() => "),s}function Rr(t,e,n){return A(t.helper("withModifiers"),e,JSON.stringify(n))}function Pr(t,e,n){return A(t.helper("withKeys"),e,JSON.stringify(n))}function Lr(t,e){if(t.ast===null&&e.options.bindingMetadata[t.content]==="setup-const")return!0}function Fr(t,e){const{helper:n,factoryVar:r}=e,{source:s,value:a,key:i,index:o,render:l,keyProp:c,once:u,id:f,component:d,onlyChild:h}=t;let g=null;const m=i&&i.content,S=o&&o.content,b=["() => (",...C(s,e),")"],_=me(),w=e.enterVFor(),[M,R]=e.enterScope(),I={},j=`_for_item${w}`;I[j]=null,_.forEach(($,T)=>{let x=`${j}.value${$?$.path:""}`;if($)if($.helper&&(I[$.helper]=null,x=`${$.helper}(${x}, ${$.helperArgs})`),$.dynamic){const L=I[T]=N.createSimpleExpression(x),re=e.options.expressionPlugins;L.ast=Ee.parseExpression(`(${x})`,{plugins:re?[...re,"typescript"]:["typescript"]})}else I[T]=x;else I[T]=x});const H=[e.sharedDataVForItemVar],z=`const ${e.sharedDataVForVar} = useSharedDataVFor<UniSharedData, ${e.sharedDataVForClass}>(${e.sharedDataVForItemVar})`,ue=`_for_key${w}`;H.push(`, ${ue}`),m&&(I[m]=`${ue}.value`,I[ue]=null);const P=`_for_index${w}`;H.push(`, ${P}`),S&&(I[S]=`${P}.value`,I[P]=null);const ge=e.enterBlock(l),ee=se(c,e.sharedDataVForItemVar);ge();const{selectorPatterns:K,keyOnlyBindingPatterns:de}=Et(l,c,I),te=e.withId(()=>{const $=[];return $.push("(",...H,") => {",Z,E,z,E),K.length||de.length?$.push(...Ve(l,e,!1,()=>{const T=[];for(let x=0;x<K.length;x++){const{effect:L}=K[x],re=[];for(const q of L.operations)re.push(...Ze(q,e));re.length&&(T.push(E,n(`render${e.helperType}Effect`),"(() => {",Z),T.push(...re),T.push(Q,E,"})"))}for(const{effect:x}of de)for(const L of x.operations)T.push(...Ze(L,e));return T})):$.push(...Ve(l,e)),$.push(Q,E,"}"),$},I);R();let ne=0;return h&&(ne|=1),d&&(ne|=2),u&&(ne|=4),[E,`const n${f} = `,...A([n(`create${e.helperType}For`),"undefined"],r,b,te,ee,ne?String(ne):void 0,void 0)];function me(){const $=new Map;return a&&(g=a&&a.content,a.ast?N.walkIdentifiers(a.ast,(T,x,L,re,q)=>{if(q){let Y="",ae=!1,fe,ie;for(let k=0;k<L.length;k++){const O=L[k],V=L[k+1]||T;if(O.type==="ObjectProperty"&&O.value===V)O.key.type==="StringLiteral"?Y+=`[${JSON.stringify(O.key.value)}]`:O.computed?(ae=!0,Y+=`[${a.content.slice(O.key.start-1,O.key.end-1)}]`):Y+=`.${O.key.name}`;else if(O.type==="ArrayPattern"){const G=O.elements.indexOf(V);V.type==="RestElement"?Y+=`.slice(${G})`:Y+=`[${G}]`}else O.type==="ObjectPattern"&&V.type==="RestElement"&&(fe=e.helper("getRestElement"),ie="["+O.properties.filter(G=>G.type==="ObjectProperty").map(G=>G.key.type==="StringLiteral"?JSON.stringify(G.key.value):G.computed?(ae=!0,a.content.slice(G.key.start-1,G.key.end-1)):JSON.stringify(G.key.name)).join(", ")+"]");V.type==="AssignmentPattern"&&(O.type==="ObjectProperty"||O.type==="ArrayPattern")&&(ae=!0,fe=e.helper("getDefaultValue"),ie=a.content.slice(V.right.start-1,V.right.end-1))}$.set(T.name,{path:Y,dynamic:ae,helper:fe,helperArgs:ie})}},!0):$.set(g,null)),$}function se($,T){if(!$)return!1;const x=e.withId(()=>C($,e),y());return[...B(["(",")",", "],T,"_","__")," => {",E,z,E,"return ",...x,"}"]}function y(){const $={};return m&&($[m]=null),S&&($[S]=null),_.forEach((T,x)=>$[x]=null),$}}function Wr(t,e){const{helper:n}=e,{value:r,element:s}=t;return[E,...A(n("setHtml"),`n${s}`,C(r,e))]}function Lt(t,e,n=!1){const{helper:r,factoryVar:s}=e,{condition:a,positive:i,negative:o,once:l}=t,[c,u]=U(),f=["() => (",...jr(a,e),")"];let d=ke(i,e),h=!1;return o&&(o.type===1?h=ke(o,e):h=["() => ",...Lt(o,e,!0)]),n||u(E,`const n${t.id} = `),u(...A(r(`create${e.helperType}If`),s,f,d,h,l&&"true")),c}function jr(t,e){return t.sharedData?C(t,e):[JSON.stringify(ve(t))]}const we={setElementClass:{name:"setElementClass"},setElementStyle:{name:"setElementStyle"},setElementAttr:{name:"setElementAttr",needKey:!0}},Ft={setNativeViewAttr:{name:"setNativeViewAttr",needKey:!0}};function Jr(t,e){const{helper:n}=e,{prop:{key:r,values:s,modifier:a,sharedData:i},tag:o}=t,l=r.content;if(l==="class"&&!(e.feature&16))return[];if(l==="id"&&!(e.feature&32))return[];const c=e.options.renderer==="nativeView"?Yr(o,l,a):Kr(o,l,a);if(i)return[E,...A([n(c.name),null],`n${t.element}`,c.needKey?C(r,e):!1,e.sharedDataIdent(i.ident))];const u=Br(s,e);return[E,...A([n(c.name),null],`n${t.element}`,c.needKey?C(r,e):!1,u)]}function Ur(t,e){const{helper:n,sharedDataIdent:r}=e;return[E,...A(n(`set${e.helperType}DynamicProps`),`n${t.element}`,r(t.sharedData.ident))]}function Br(t,e){return t.length===1?C(t[0],e):B(Ce,...t.map(n=>C(n,e)))}function Kr(t,e,n){return t.toUpperCase(),n?n==="."&&Wt(e)||we.setElementAttr:Wt(e)||we.setElementAttr}function Wt(t,e){if(t==="class")return we.setElementClass;if(t==="style")return we.setElementStyle}function Yr(t,e,n){return t.toUpperCase(),n&&n==="."&&void 0||Ft.setNativeViewAttr}function Gr(t,e){return t.value.sharedData?[E,e.sharedDataIdent(t.value.sharedData.ident)+`(n${t.element}.getNodeId())`]:[]}function Hr(t){return[]}function zr(t,e){if(!(e.feature&1))return[];const{helper:n}=e,{element:r,values:s,generated:a}=t,i=qr(s,e);return[E,...A(n("setElementText"),`${a?"x":"n"}${r}`,i)]}function qr(t,e){return t.flatMap((n,r)=>{let s=C(n,e);return r>0&&s.unshift(" + "),s})}function Xr(t,e){return e.feature&1?[E,`const x${t.parent} = ${e.helper(`child${e.helperType}`)}(n${t.parent})`]:[]}function Zr(t,e){return e.feature&8?[E,...A(e.helper("applyElementVShow"),`n${t.element}`,["() => (",...C(t.dir.exp,e),")"])]:[]}const Qr={text:"applyElementTextModel",dynamic:"applyElementDynamicModel"};function es(t,e){if(!(e.feature&4))return[];const{modelType:n,element:r,dir:{exp:s,modifiers:a}}=t;return[E,...A(e.helper(Qr[n]),`n${r}`,["() => (",...C(s,e),")"],e.sharedDataIdent(s.sharedData.vModel.eventIdent),a.length?`{ ${a.map(i=>i.content+": true").join(",")} }`:void 0)]}function ts(t,e){switch(t.name){case"show":return Zr(t,e);case"model":return es(t,e);default:return[]}}function He(t,e){const n=ss(t,e.block.operation);return n.length?ns(n,e):[]}function ns(t,e){const{helper:n}=e,r=`n${t[0].element}`,s=t.map(i),a=B(Ce,...s);return[E,...A(n("withVaporDirectives"),r,a)];function i({dir:o,name:l,asset:c}){const u=c?N.toValidAssetId(l,"directive"):C(v.extend(N.createSimpleExpression(l,!1),{ast:null}),e),f=o.exp&&["() => ",...C(o.exp,e)],d=o.arg&&C(o.arg,e),h=!!o.modifiers.length&&["{ ",rs(o.modifiers.map(g=>g.content))," }"];return B(Ce.concat("void 0"),u,f,d,h)}}function rs(t){return t.map(e=>`${N.isSimpleIdentifier(e)?e:JSON.stringify(e)}: true`).join(", ")}function ss(t,e){return e.filter(n=>n.type===13&&n.element===t&&!n.builtin)}function as(t,e){const{helper:n,sharedDataIdent:r}=e,{root:s,props:a,slots:i,sharedData:o}=t,l=ls(i,e),[c,u]=os(a,e),f=u.reduce((d,{name:h,value:g})=>{const m=Vr(e,g,void 0,!1);return[...d,`const ${h} = `,...m,E]},[]);return[E,...f,`const n${t.id} = `,...A(t.dynamic&&!t.dynamic.isStatic?n(`create${e.helperType}DynamicComponent`):t.asset?n(`create${e.helperType}ComponentWithFallback`):n(`create${e.helperType}Component`),r(o.ident),void 0,l,s?"true":!1),...He(t.id,e)]}function is(t,e){const{seenInlineHandlerNames:n}=t;e=Ge(e);const r=n[e]||0;return n[e]=r+1,r===0?e:`${e}${r}`}function os(t,e){const n=Object.create(null),r=[],s=t[0];if(v.isArray(s))for(let a=0;a<s.length;a++){const i=s[a];i.handler&&i.values.forEach((o,l)=>{if(!N.isMemberExpression(o,e.options)){const c=is(e,`_on_${i.key.content}`);r.push({name:c,value:o}),n[c]=null,i.values[l]=v.extend({ast:null},N.createSimpleExpression(c))}})}return[n,r]}function ls(t,e){if(!t.length)return;const n=t[0];return n.slotType===0?ze(n,e,t.length>1?t.slice(1):void 0):ze({slots:{}},e,t)}function ze({slots:t},e,n){const r=Object.keys(t).map(s=>[`${JSON.stringify(s)}: `,...Xe(t[s],e)]);return n&&r.push(["$: ",...cs(n,e)]),B(be,...r)}function cs(t,e){return B(Sr,...t.map(n=>n.slotType===0?ze(n,e):n.slotType===4?n.slots.content:qe(n,e,!0)))}function qe(t,e,n=!1){let r;switch(t.slotType){case 1:r=us(t,e);break;case 2:r=ds(t,e);break;case 3:r=fs(t,e);break}return n?["() => (",...r,")"]:r}function us(t,e){const{name:n,fn:r}=t;return B(be,["name: ",...C(n,e)],["fn: ",...Xe(r,e)])}function ds(t,e){e.enterVFor();const{name:n,fn:r,loop:s}=t,{value:a,key:i,index:o,source:l}=s,c=a&&a.content,u=i&&i.content,f=o&&o.content,d={};c&&(d[c]=c),u&&(d[u]=u),f&&(d[f]=f);const h=B(be,["name: ",...e.withId(()=>{const g=e.enterBlock(r),m=C(n,e);return g(),m},d)],["fn: ",...e.withId(()=>Xe(r,e),d)]);return[...A(e.helper(`create${e.helperType}ForSlots`),C(l,e),[...B(["(",")",", "],e.sharedDataVForVar,c||(u||f?"_":void 0),u||(f?"__":void 0),f)," => (",...h,")"])]}function fs(t,e){const{condition:n,positive:r,negative:s}=t;return[...C(n,e),Z,E,"? ",...qe(r,e),E,": ",...s?[...qe(s,e)]:["void 0"],Q]}function Xe(t,e){let n=!1,r,s,a,i;const{props:o}=t,l=new Set;o&&(r=o.content,(n=!!o.ast)?([i,a]=e.enterScope(),s=`_slotProps${i}`,N.walkIdentifiers(o.ast,(f,d,h,g,m)=>{m&&l.add(f.name)},!0)):l.add(s=r));const c={};l.forEach(f=>c[f]=n?`${s}[${JSON.stringify(f)}]`:null);const u=e.withId(()=>ke(t,e,[s]),c);return a&&a(),u}function ps(t,e){const{helper:n}=e,{id:r,name:s,fallback:a}=t,[i,o]=U(),l=s.isStatic?C(s,e):["() => (",...C(s,e),")"];let c;return a&&(c=ke(a,e)),o(E,`const n${r} = `,...A(n(`create${e.helperType}Slot`),l,"null",c)),i}function jt(t,e){const[n,r]=U();for(const s of t)r(...Jt(s,e));return n}function Jt(t,e){const[n,r]=U();return p.isBlockOperation(t)&&t.parent&&r(...ms(t,e)),r(...Ze(t,e)),n}function Ze(t,e){switch(t.type){case 2:return Jr(t,e);case 3:return Ur(t,e);case 4:return zr(t,e);case 5:return Mr(t,e);case 6:return kr(t,e);case 7:return Wr(t,e);case 8:return Gr(t,e);case 9:return Tr(t,e);case 10:return _r(t,e);case 15:return Lt(t,e);case 16:return Fr(t,e);case 11:return as(t,e);case 14:return Hr();case 12:return ps(t,e);case 13:return ts(t,e);case 17:return Xr(t,e);default:const n=t;throw new Error(`Unhandled operation type in genOperation: ${n}`)}}function hs(t,e,n){const{helper:r}=e,s=t.flatMap(g=>g.expressions),[a,i,o]=U(),l=n===void 0;let c=0;const{ids:u,frag:f,varNames:d}=Ir(e,s,l);for(let g=0;g<t.length;g++){const m=t[g];c+=m.operations.length;const S=e.withEffect(()=>e.withId(()=>gs(m,e),u));g>0&&S.length&&i(E),a[a.length-1]===")"&&S[0]==="("&&i(";"),i(...S)}const h=a.filter(g=>g===E).length;return a.length&&(h>1||c>1||f.length>0)&&(o("{",Z,E),i(Q,E,"}"),t.length||o(E)),t.length&&a.length&&(o(E,`${r(`render${e.helperType}Effect`)}(() => `),i(")")),!l&&d.length&&o(E,"let ",d.join(", ")),n&&i(...e.withId(n,u)),a}function gs({operations:t},e){const[n,r]=U(),s=jt(t,e);return s.filter(a=>a===E).length>1?r(...s):r(...s.filter(a=>a!==E)),n}function ms(t,e){return[E,...A(e.helper(`set${e.helperType}InsertionState`),`n${t.parent}`,t.anchor==null?void 0:t.anchor===-1?"0":`n${t.anchor}`)]}const F={TEXT:"text",BUTTON:"button",COMMENT:"comment",ELEMENT:"element"},W={VALUE_ATTR:"value",EMPTY_STRING:"",UNKNOWN_COMMENT:"unknown",EXT_STYLE_MARKER:"ext:style"},pe={ELEMENT:"e",STYLE:"s",TEMPLATE:"t",FACTORY:"f"},Ut="<!--",Bt="-->",Kt="<!",Qe=/\s/,Es=/[\s=]/,et=/\s*\/$/;class at{constructor(e){this.html=e,this.length=e.length,this.index=0}parse(){const e=[];for(this.index=0;this.index<this.length;)if(this.html[this.index]==="<"){const n=this.parseTag();n?(e.push(n.node),this.index=n.endIndex):this.index++}else{const n=this.parseText();n&&e.push(n)}return e}parseText(){const e=this.index,n=this.html.indexOf("<",e),r=n===-1?this.length:n;if(e===r)return null;const s=this.html.substring(e,r);return this.index=r,{type:"text",content:s}}parseTag(){return this.html.startsWith(Ut,this.index)?this.parseComment():this.html.startsWith(Kt,this.index)?this.parseDoctype():this.parseElement()}parseComment(){const e=this.index+Ut.length,n=this.html.indexOf(Bt,e);return n===-1?null:{node:{type:"comment",content:this.html.substring(e,n)},endIndex:n+Bt.length}}parseDoctype(){const e=this.html.indexOf(">",this.index+Kt.length);return e===-1?null:{node:{type:"comment",content:""},endIndex:e+1}}parseElement(){const e=this.html.indexOf(">",this.index);if(e===-1)return null;const n=this.html.substring(this.index+1,e),{tag:r,attrs:s,selfClosing:a}=this.parseTagContent(n);if(a)return{node:{type:"element",tag:r,attrs:s,children:[]},endIndex:e+1};const i=this.findMatchingEndTag(r,e+1);if(i===-1)return{node:{type:"element",tag:r,attrs:s,children:[]},endIndex:e+1};const o=this.html.substring(e+1,i),l=o?new at(o).parse():[];return{node:{type:"element",tag:r,attrs:s,children:l},endIndex:i+`</${r}>`.length}}parseTagContent(e){const n=et.test(e),r=e.replace(et,"").trim();if(!r)return{tag:"",attrs:{},selfClosing:n};const s=r.search(Qe),a=s===-1?r:r.substring(0,s);if(s===-1)return{tag:a,attrs:{},selfClosing:n};const i=r.substring(s+1),o=this.parseAttributes(i);return{tag:a,attrs:o,selfClosing:n}}parseAttributes(e){const n={};let r=0;const s=e.length;for(;r<s&&(r=this.skipWhitespace(e,r),!(r>=s));){const a=r;for(;r<s&&!Es.test(e[r]);)r++;if(r===a)break;const i=e.substring(a,r);if(r=this.skipWhitespace(e,r),r>=s||e[r]!=="="){this.isSpecialAttribute(i)||(n[i]=i);continue}if(r++,r=this.skipWhitespace(e,r),r>=s){this.isSpecialAttribute(i)||(n[i]="");continue}const o=this.parseAttributeValue(e,r);(!this.isSpecialAttribute(i)||o.value.trim()!=="")&&(n[i]=o.value),r=o.endIndex}return n}parseAttributeValue(e,n){const r=e[n];if(r==='"'||r==="'"){const s=n+1;let a=s;for(;a<e.length&&e[a]!==r;)a++;return{value:e.substring(s,a),endIndex:a<e.length?a+1:a}}else{const s=n;let a=s;for(;a<e.length&&!Qe.test(e[a]);)a++;return{value:e.substring(s,a),endIndex:a}}}isSpecialAttribute(e){return e==="id"||e==="class"||e==="style"}skipWhitespace(e,n){for(;n<e.length&&Qe.test(e[n]);)n++;return n}findMatchingEndTag(e,n){const r=`<${e}`,s=`</${e}>`;let a=1,i=n;for(;a>0&&i<this.length;){const o=this.html.indexOf(r,i),l=this.html.indexOf(s,i);if(l===-1)break;if(o!==-1&&o<l){const c=this.html.indexOf(">",o);if(c!==-1&&c<l){const u=this.html.substring(o+1,c);et.test(u)||a++}i=c+1}else{if(a--,a===0)return l;i=l+s.length}}return-1}}function tt(t){return!t||t.length!==1||t[0].type!==F.TEXT||t[0].content===" "?W.EMPTY_STRING:t[0].content||W.EMPTY_STRING}function nt(t){return!t||Object.keys(t).length===0||Object.keys(t).length===1&&W.EXT_STYLE_MARKER in t}function Yt(t,e){const n=v.extend({},t);return e&&(n[W.VALUE_ATTR]=e),n}function Gt(t){const e="page: UniPage",n=t.options.renderer==="element"?": UniElement":": UniNativeBaseView";return{paramType:e,returnType:n}}function rt(t){return`${pe.ELEMENT}${t.templateVariableCounter++}`}function ys(t){return`${pe.STYLE}${t.templateStyleCounter++}`}function $s(t,e,n=!0){return n&&e.resetTemplateCounters(),Ht(t,e)}function Ht(t,e){switch(t.type){case F.TEXT:return Ns(t.content||W.EMPTY_STRING,e);case F.COMMENT:return zt(t.content||W.EMPTY_STRING,e);case F.ELEMENT:return vs(t,e);default:return zt(W.UNKNOWN_COMMENT,e)}}function Ns(t,e){const n=rt(e),r=[`const ${n} = ${e.genCreateTag("text")}`];return{variableName:n,statements:r}}function zt(t,e){const n=rt(e),r=[`const ${n} = ${e.genCreateTag("comment",JSON.stringify(t))}`];return{variableName:n,statements:r}}const Ss={[F.TEXT]:Ts,[F.BUTTON]:_s};function vs(t,e){const{tag:n,attrs:r,children:s}=t,a={tag:n,attrs:r,children:s},i=Ss[n];return i?i(a,e):Ds(a,e)}function Ts(t,e){const{tag:n,attrs:r,children:s}=t;if(s&&s.some(a=>a.type===F.ELEMENT))return Oe(n,e,r,s);{const a=tt(s),i=Yt(r,a);return Oe(n,e,i,void 0)}}function _s(t,e){const n=tt(t.children),r=Yt(t.attrs,n);return Oe(t.tag,e,r,void 0)}function Ds(t,e){const{tag:n,attrs:r,children:s}=t;return Oe(n,e,r,s)}function Is(t,e){if(!t)return;const n={};for(const[r,s]of Object.entries(t))e.options.isIgnoreAttr(r)||(n[r]=s);return n}function Oe(t,e,n,r){const s=rt(e),a=[];a.push(`const ${s} = ${e.genCreateTag(t)}`);const i=Is(n,e);if(i&&!nt(i)){let o=!1;W.EXT_STYLE_MARKER in i&&(o=!0,delete i[W.EXT_STYLE_MARKER]);for(const[l,c]of Object.entries(i))if(l==="style"){const u=e.options.parseStaticStyle(e.options.platform,hr(e.options.platform,e.options.renderer),c);if(u){const f=Object.keys(u);if(o){const d=ys(e);a.push(`const ${d} = ${JSON.stringify(f.reduce((h,g)=>(h[g]=u[g].valueCode,h),{}))}`),a.push(`${s}.ext.set('style', ${d})`)}f.forEach(d=>{a.push(`${s}.${u[d].setterCode}`)})}else a.push(`${s}.setAttribute(${JSON.stringify(l)}, ${JSON.stringify(c)})`)}else a.push(`${s}.setAttribute(${JSON.stringify(l)}, ${JSON.stringify(c)})`)}if(r&&r.length>0)for(const o of r){const l=xs(o,e);if(l)a.push(e.genAppendChild(s,l));else{const c=Ht(o,e);a.push(...c.statements),a.push(e.genAppendChild(s,c.variableName))}}return{variableName:s,statements:a}}function xs(t,e){switch(t.type){case F.TEXT:return e.genCreateTag("text");case F.COMMENT:return e.genCreateTag("comment",JSON.stringify(t.content||W.EMPTY_STRING));case F.ELEMENT:const n=t;return Cs(n)?e.genCreateTag(n.tag):null;default:return e.genCreateTag("comment",JSON.stringify(W.UNKNOWN_COMMENT))}}function Cs(t){return!(t.tag===F.TEXT||!nt(t.attrs)||t.children&&t.children.length>0)}function bs(t,e,n){try{if(!t||typeof t!="string")return Me(e,n);const r=new at(t).parse();return r.length===0?Me(e,n):r.length===1?As(r[0],e,n):Me(e,n)}catch{return Me(e,n)}}function Me(t,e){const{paramType:n,returnType:r}=Gt(e);return[`const ${pe.FACTORY}${t} = (${n})${r} => {`,E,`  return ${e.genCreateTag("text",JSON.stringify(W.EMPTY_STRING))}`,E,"}"]}function As(t,e,n){const{paramType:r,returnType:s}=Gt(n),a=ws(t,n);if(a)return[`const ${pe.FACTORY}${e} = (${r})${s} => {`,E,`  return ${a}`,E,"}"];const i=$s(t,n),o=[`const ${pe.FACTORY}${e} = (${r})${s} => {`,E];for(const l of i.statements)typeof l=="string"?o.push(`  ${l}`,E):o.push(l,E);return o.push(`  return ${i.variableName}`,E,"}"),o}function ws(t,e){switch(t.type){case F.TEXT:return e.genCreateTag("text");case F.COMMENT:return e.genCreateTag("comment",JSON.stringify(t.content||W.EMPTY_STRING));case F.ELEMENT:const n=t;return Os(n)?e.genCreateTag(n.tag):null;default:return e.genCreateTag("comment",JSON.stringify(W.UNKNOWN_COMMENT))}}function Os(t){return nt(t.attrs)?t.tag===F.TEXT?!tt(t.children):!t.children||t.children.length===0:!1}function Ms(t,e){const n=[];for(let r=0;r<t.length;r++){const s=bs(t[r],r,e);n.push(E,...s)}return n}function ks(t,e,n){const{helper:r,options:s}=n,a=[];for(let i=0;i<t.length;i++){const o=i===e?", true":"";a.push(`const ${pe.TEMPLATE}${i} = ${r(`${s.renderer}Factory`)}(${n.factoryVar}, ${pe.FACTORY}${i}${o})`),i<t.length-1&&a.push(E)}return a}function Vs(t,e,n){return Ms(t,n)}function st(t,e){const[n,r]=U(),{id:s,template:a,operation:i}=t;return s!==void 0&&a!==void 0&&(r(E,`const n${s} = t${a}()`),r(...He(s,e))),i&&r(...Jt(i,e)),n}function qt(t,e,n,r=`n${t.id}`){const{helper:s}=e,[a,i]=U(),{children:o}=t;let l=0,c;const u=[];for(const[f,d]of o.entries()){d.flags&2&&l--;const h=d.flags&1?d.flags&4?d.anchor:d.id:void 0;if(h===void 0&&!d.hasDynamicChild){i(...st(d,e));continue}const g=Number(f)+l,m=h===void 0?`p${e.block.tempId++}`:`n${h}`;if(n(E,`const ${m} = `),c)g-c[1]===1?n(...A(s(`next${e.helperType}`),c[0])):n(...A(s(`nthChild${e.helperType}`),r,String(g)));else if(g===0)n(...A(s(`child${e.helperType}`),r));else{let S=A(s(`child${e.helperType}`),r);g===1?S=A(s(`next${e.helperType}`),S):g>1&&(S=A(s(`nthChild${e.helperType}`),r,String(g))),n(...S)}h===d.anchor&&i(...st(d,e)),h!==void 0&&i(...He(h,e)),c=[m,g],u.push([d,m])}if(u.length)for(const[f,d]of u)i(...qt(f,e,n,d));return a}function ke(t,e,n=[],r){return["(",...n,") => {",Z,...Ve(t,e),Q,E,"}"]}function Ve(t,e,n,r){const[s,a]=U(),{dynamic:i,effect:o,operation:l,returns:c}=t,u=e.enterBlock(t);for(const h of i.children)a(...st(h,e));for(const h of i.children)a(...qt(h,e,a,`n${h.id}`));a(...jt(l,e)),a(...hs(o.filter(h=>!h.generated),e,r)),a(E,"return ");const f=c.map(h=>`n${h}`),d=f.length>1?[...B(Ce,...f),` as Uni${e.helperType}Block[]`]:[f[0]||"null"];return a(...d),u(),s}const Rs=63,Ps=0;function Ls(t){return!1}const Fs=["class","id"];function Ws(t){return t==="style"?!1:Fs.includes(t)||!0}class js extends kt{constructor(e,n){super(),this.ir=e,this.helpers=new Set([]),this.helper=a=>(this.helpers.add(a),`_${a}`),this.delegates=new Set,this.identifiers=Object.create(null),this.seenInlineHandlerNames=Object.create(null),this.scopeLevel=0,this.sharedDataIdent=a=>(this.effectSharedDataIdentifiers.add(a),`${this.sharedDataVar}.get_${a}(__reactivity)`),this.templateVariableCounter=0,this.templateStyleCounter=0,this.effectSharedDataIdentifiers=new Set;const r={mode:"module",platform:"app-harmony",renderer:"element",prefixIdentifiers:!0,sourceMap:!1,filename:"template.vue.html",scopeId:null,runtimeGlobalName:"Vue",runtimeModuleName:"vue",ssrRuntimeModuleName:"vue/server-renderer",ssr:!1,isTS:!1,inSSR:!1,inline:!1,bindingMetadata:{},expressionPlugins:[],componentType:"page",className:"",parseStaticStyle:(a,i,o)=>({}),isIgnoreAttr:()=>!1};this.options=v.extend(r,n),this.block=e.block;const s=this.options.renderer==="nativeView";this.genCreateTag=s?this.genCreateNativeView:this.genCreateElement,this.genAppendChild=s?this.genAppendChildNativeView:this.genAppendChildElement}withId(e,n){const{identifiers:r}=this,s=Object.keys(n);for(const i of s)r[i]||(r[i]=[]),r[i].unshift(n[i]||i);const a=e();return s.forEach(i=>v.remove(r[i],n[i]||i)),a}enterBlock(e){const n=this.block;return this.block=e,()=>this.block=n}enterScope(){return[this.scopeLevel++,()=>this.scopeLevel--]}get factoryVar(){return"__page"}get helperType(){return this.options.renderer==="nativeView"?"NativeView":"Element"}get sharedDataVForClass(){return`${this.options.className}SharedData_VFor${this.vForCount}`}get feature(){return this.options.renderer==="nativeView"?Ps:Rs}resetTemplateCounters(){this.templateVariableCounter=0,this.templateStyleCounter=0}withEffect(e){this.effectSharedDataIdentifiers.clear();const n=e();if(this.effectSharedDataIdentifiers.size){const[r,s]=U();return s(E),s(`if(${Ks(this)}) {`),s(E),s(Z),s(...n),s(Q),s(E),s("}"),this.effectSharedDataIdentifiers.clear(),r}return n}genCreateNativeView(e,n,r){const s=[];n&&e!=="text"&&s.push(n),r?s.push("true"):s.push("false");const a=s.join(", ");switch(e){case"view":return`page.createNativeView(${a})`;case"text":return`page.createNativeTextView(${a})`;case"image":return`page.createNativeImageView(${a})`;case"scroll-view":return`page.createNativeScrollView(${a})`;case"native-view":return`page.createNativeCustomView(${a})`;default:throw new Error(`Invalid tag: ${e}`)}}genCreateElement(e,n,r){const s=[];n&&e!=="comment"&&s.push(n),r?s.push("true"):e!=="comment"&&s.push("false");const a=s.join(", ");switch(e){case"view":return`page.createViewElement(${a})`;case"text":return`page.createTextElement(${a})`;case"image":return`page.createImageElement(${a})`;case"comment":return`page.createComment(${a||'""'})`;case"scroll-view":return`page.createScrollViewElement(${a})`;default:return console.log(`Invalid tag: ${e}`),"page.createViewElement(false)"}}genAppendChildNativeView(e,n){return`${this.helper("appendNativeViewChild")}(${e}, ${n})`}genAppendChildElement(e,n){return`${e}.appendChild(${n})`}}function Xt(t,e){var n;e.renderer=(n=e.renderer)!=null?n:"element",e.isIgnoreAttr=e.renderer==="element"?Ls:Ws;const[r,s]=U(),a=new js(t,e),{helpers:i}=a,o="render"+v.capitalize(e.renderer),l=[`__sharedData: ${e.className}SharedData`,"__page: UniPage","__reactivity: VueReactivity"].join(", ");s(E,`export function ${o}(${l}): Uni${a.helperType}Block {`),s(Z);const c=Vs(t.template,t.rootTemplateIndex,a);if(s(...c),t.template.length>0){const m=ks(t.template,t.rootTemplateIndex,a);s(E,...m)}s(...Ve(t.block,a)),s(Q,E),s("}");const u=Js(a),f=Us(a)+u,d=[...f].filter(m=>m===`
-`).length;d&&r.unshift(...new Array(d).fill(Vt));let[h,g]=vr(r,a);return h=f+h,{code:h,ast:t,preamble:f,map:g&&g.toJSON(),helpers:i}}function Js({delegates:t,helper:e}){return t.size?A(e("delegateEvents"),...Array.from(t).map(n=>`"${n}"`)).join("")+`
-`:""}function Us({helpers:t,helper:e,options:n}){let r="";return["getRestElement","getDefaultValue"].forEach(s=>{t.delete(s)}),t.size&&(r+=`import { ${[...t].map(s=>`${s} as _${s}`).join(", ")} } from '${n.runtimeModuleName}';
-`),r}const Bs=new Te(2e3);function Ks(t){return Array.from(t.effectSharedDataIdentifiers).map(e=>Ys(e,t)).join(" || ")}function Ys(t,e){const{index:n,bitValue:r}=Bs.getGroupInfo(t);return`${e.sharedDataVar}._flag${n} & ${r}`}function Gs(t,e){const n=v.extend({},e),r=v.isString(t)?p.parse(t,n):t,[s,a]=Hs(),{expressionPlugins:i}=e;(!i||!i.includes("typescript"))&&(n.expressionPlugins=[...i||[],"typescript"]);const o=p.transform(r,v.extend({},n,{nodeTransforms:[...s,...e.nodeTransforms||[]],directiveTransforms:v.extend({},a,e.directiveTransforms||{})}));_n(o,{platform:e.platform,bindingMetadata:e.bindingMetadata||v.EMPTY_OBJ});const l=yr(o,n),c=Xt(o,{...n,renderer:"nativeView"}),u=Xt(o,{...n,renderer:"element"});return e.emitElement&&e.emitElement(u),e.emitNativeView&&e.emitNativeView(c),{...l,sharedData:l,nativeView:c,element:u}}function Hs(){return p.getBaseTransformPreset()}function $e(t){return t.text||t.escapedText}function zs(t){return t.name?$e(t.name):""}function qs(t,e){var n;const r=t.heritageClauses;if(!r)return"";const s=r.find(i=>i.token===e.SyntaxKind.ExtendsKeyword),a=(n=s==null?void 0:s.types[0])==null?void 0:n.expression;return!a||!e.isIdentifier(a)?"":$e(a)}function Ne(t,e){return t.kind===e.SyntaxKind.StringKeyword||t.kind===e.SyntaxKind.BooleanKeyword||t.kind===e.SyntaxKind.NumberKeyword||t.kind===e.SyntaxKind.UndefinedKeyword}function Xs(t,e){if(!e.isPropertyDeclaration(t)||t.modifiers&&t.modifiers.length>0&&t.modifiers.some(o=>o.kind===e.SyntaxKind.ReadonlyKeyword)||!t.type)return;const n=t.name;if(!e.isIdentifier(n))return;const r=$e(n),s=t.type;if(!e.isUnionTypeNode(s))return!e.isTypeReferenceNode(s)&&!Ne(s,e)&&!e.isLiteralTypeNode(s)&&!e.isArrayTypeNode(s)?void 0:{memberName:r,type:s,optional:!!t.questionToken};const a=s.types.filter(o=>o.kind!==e.SyntaxKind.UndefinedKeyword&&!(e.isLiteralTypeNode(o)&&o.literal.kind===e.SyntaxKind.NullKeyword));if(a.length!==1)return;const i=a[0];if(!(!e.isTypeReferenceNode(i)&&!Ne(i,e)&&!e.isLiteralTypeNode(i)))return{memberName:r,type:i,optional:!0}}function he(t=1,e=2){return" ".repeat(e*t)}function Zt(t,e){return t.split(`
-`).map(n=>he(e)+n).join(`
-`)}const Qt="ARRAY_STRING",Zs=new Te(2e3);function Qs(t,e){if(e.isTypeReferenceNode(t)&&e.isIdentifier(t.typeName))switch($e(t.typeName)){case"UniSharedDataAny":return"UniSharedDataAny";case"UniSharedDataArray":return"UniSharedDataArray";case"UniSharedDataJSONObject":return"UniSharedDataJSONObject";case"UniSharedDataVFor":return"UniSharedDataVFor";case"UniSharedDataFunctionEventListener":return"UniSharedDataFunctionEventListener";case"UniSharedDataFunctionSetTemplateRef":return"UniSharedDataFunctionSetTemplateRef";case"Array":if(t.typeArguments&&t.typeArguments.length===1&&Ne(t.typeArguments[0],e)&&t.typeArguments[0].kind===e.SyntaxKind.StringKeyword)return Qt;default:return"UniSharedData|"+$e(t.typeName)}if(Ne(t,e))switch(t.kind){case e.SyntaxKind.StringKeyword:return"string";case e.SyntaxKind.BooleanKeyword:return"bool";case e.SyntaxKind.NumberKeyword:return"double";case e.SyntaxKind.UndefinedKeyword:return"null"}if(e.isArrayTypeNode(t)&&Ne(t.elementType,e)&&t.elementType.kind===e.SyntaxKind.StringKeyword)return Qt;if(e.isLiteralTypeNode(t)&&t.literal.kind===e.SyntaxKind.NullKeyword)return"null"}function ea(t,e){const n=e.ts,r=t.name,s={files:[]};if(!r)return s;const a=zs(t);if(!a)return s;const i=qs(t,n);if(!i)return s;const o=i==="UniSharedDataPage",l=i==="UniSharedDataComponent",c=o?"DEFINE_USER_PAGE_SHARED_DATA":l?"DEFINE_USER_COMPONENT_SHARED_DATA":"DEFINE_USER_SHARED_DATA",u=c+"_MEMBER",f="DEFINE_SHARED_DATA_MEMBER_FLAG",d=c+"_CPP",h=d+"_INIT",g=h+"_MEMBER",m=d+"_MEMBER_SETTER",S=t.members;let b="",_="",w="",M=`${c}(${a},
-`,R=`${d}(${a},
-`,I=he(1)+`${h}(${a},
-`,j="",H=new Set;for(let z=0;z<S.length;z++){const ue=S[z],P=Xs(ue,n);if(!P)continue;const ge=P.optional,ee=P.memberName,K=P.type,de=Qs(K,n),{index:te,bitValue:ne}=Zs.getGroupInfo(ee),me="_flag"+te;if(H.add(me),!de)continue;let[se,y]=de.split("|"),$=`${u}_${se.toUpperCase()}`,T=`${m}_${se.toUpperCase()}`;(ge||se==="UniSharedDataAny")&&se!=="null"&&($+="_OR_NULL",T+="_OR_NULL"),_+=he(1)+`${$}(${ee}`,I+=he(2)+`${g}(${ee})
-`,j+=he(1)+`${T}(${a}, ${ee}`,y&&(_+=`, ${y}`,j+=`, ${y}`,b+=`class ${y};
-`),_+=`)
-`,j+=`, ${me}, ${ne})
-`}return w=Array.from(H).map(z=>he(1)+`${f}(${z})
-`).join("")+`
-`,I+=he(1)+`)
-`,M+=w+_+")",b&&(M=b+M),R+=I+j+")",(o||l)&&(R=`namespace {
-${Zt(`inline ${e.renderElementCode}`,1)}
-${Zt(`inline ${e.renderNativeViewCode}`,1)}
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var compilerDom = require('@vue/compiler-dom');
+var compilerVapor = require('@vue/compiler-vapor');
+var shared = require('@vue/shared');
+var parser = require('@babel/parser');
+var types = require('@babel/types');
+var estreeWalker = require('estree-walker');
+var sourceMapJs = require('source-map-js');
+
+function transformInsertNode(oper, context) {
 }
-${R}`),{files:[{code:M,name:`${a}.h`,class:a},{code:R,name:`${a}.cpp`,class:a}],groupName:l||o?a:void 0}}function en(t,e){return e.targetLanguage==="cpp"?ea(t,e):{files:[]}}function ta(t,e){const n=t.map(i=>en(i,e)),r={name:".cpp",code:"",classes:[]},s={name:".h",code:"",classes:[]};let a="";return n.forEach(i=>{i.groupName&&(a=i.groupName),i.files.forEach(o=>{o.name.endsWith(".h")?(s.code+=(s.code?`
+function transformPrependNode(oper, context) {
+}
 
-`:"")+o.code,s.classes.push(o.class)):o.name.endsWith(".cpp")&&(r.code+=(r.code?`
+function isSharedDataStaticExpression(node, expressionPlugins = []) {
+  const ast = node.ast || node._fastPathAst;
+  if (ast) {
+    return isStaticNode(ast);
+  } else if (node.isStatic) {
+    return true;
+  } else if (node.ast === null) {
+    try {
+      node._fastPathAst = parser.parseExpression(node.content, {
+        plugins: expressionPlugins
+      });
+      return isStaticNode(node._fastPathAst);
+    } catch (e) {
+    }
+  }
+  return false;
+}
+function isStaticNode(node) {
+  node = compilerDom.unwrapTSNode(node);
+  switch (node.type) {
+    case "UnaryExpression":
+      if (node.operator === "void") {
+        return false;
+      }
+      return isStaticNode(node.argument);
+    // case 'LogicalExpression': // 1 > 2
+    // case 'BinaryExpression': // 1 + 2
+    //   return isStaticNode(node.left) && isStaticNode(node.right)
+    // case 'ConditionalExpression': {
+    //   // 1 ? 2 : 3
+    //   return (
+    //     isStaticNode(node.test) &&
+    //     isStaticNode(node.consequent) &&
+    //     isStaticNode(node.alternate)
+    //   )
+    // }
+    // case 'SequenceExpression': // (1, 2)
+    // case 'TemplateLiteral': // `foo${1}`
+    //   return node.expressions.every(expr => isStaticNode(expr))
+    case "ParenthesizedExpression":
+      return isStaticNode(node.expression);
+    case "StringLiteral":
+    case "NumericLiteral":
+    case "BooleanLiteral":
+    case "NullLiteral":
+    case "BigIntLiteral":
+      return true;
+  }
+  return false;
+}
+function parseSharedDataBooleanExpression(node) {
+  try {
+    const result = new Function(`return ${node.content}`)();
+    return Boolean(result);
+  } catch (e) {
+  }
+  return null;
+}
+function parseSharedDataStringExpression(node) {
+  try {
+    const result = new Function(`return ${node.content}`)();
+    return typeof result === "string" ? result : null;
+  } catch (e) {
+  }
+  return null;
+}
+function transformIRProp(prop, context) {
+  transformSimpleExpression(prop.key, context);
+  if (prop.values.length > 1 && ["class", "style"].includes(prop.key.content)) {
+    prop.sharedData = {
+      ident: context.nextIdent()
+    };
+  } else {
+    transformSimpleExpressions(prop.values, context);
+  }
+}
+function transformSimpleExpressions(expressions, context, force = false, key = false) {
+  expressions.forEach((expression) => {
+    transformSimpleExpression(expression, context, force, key);
+  });
+}
+function transformSimpleExpression(expression, context, force = false, key = false) {
+  if (force || !isSharedDataStaticExpression(expression)) {
+    expression.sharedData = {
+      ident: context.nextIdent()
+    };
+  }
+}
 
-`:"")+o.code,r.classes.push(o.class))})}),a&&(s.name=`${a}.h`,r.name=`${a}.cpp`,s.code=`#pragma once
+function transformSetEvent(oper, context) {
+  oper.delegate = false;
+  transformSimpleExpression(oper.key, context);
+  oper.sharedData = {
+    ident: context.nextIdent()
+  };
+}
+function transformSetDynamicEvents(oper, context) {
+  transformSimpleExpression(oper.event, context, true);
+}
+
+function transformFor(oper, context) {
+  transformSimpleExpression(oper.source, context, true);
+  const exitIdent = context.enterIdent();
+  if (oper.keyProp) {
+    transformSimpleExpression(oper.keyProp, context, true);
+  }
+  transformBlockContent(oper.render, context);
+  exitIdent();
+}
+
+function transformSetHtml(oper, context) {
+  transformSimpleExpression(oper.value, context);
+}
+
+function transformIf(oper, context) {
+  const { condition, positive, negative } = oper;
+  const result = parseSharedDataBooleanExpression(condition);
+  if (result === null) {
+    transformSimpleExpression(condition, context, true);
+  }
+  transformBlock(positive, context);
+  if (negative) {
+    if (negative.type === 1) {
+      transformBlock(negative, context);
+    } else {
+      transformIf(negative, context);
+    }
+  }
+}
+
+function transformSetProp(oper, context) {
+  transformIRProp(oper.prop, context);
+}
+function transformDynamicProps(oper, context) {
+  oper.sharedData = {
+    ident: context.nextIdent()
+  };
+}
+
+function transformSetTemplateRef({ node, value }, context) {
+  if (node.tagType === 0) {
+    transformSimpleExpression(value, context, true);
+  }
+}
+function transformDeclareOldRef(oper, context) {
+}
+
+function transformSetText(oper, context) {
+  transformSimpleExpressions(oper.values, context, false, true);
+}
+function transformGetTextChild(oper, context) {
+}
+
+function transformCreateComponent(oper, context) {
+  oper.sharedData = {
+    ident: context.nextIdent()
+  };
+  oper.slots.forEach((slot) => {
+    switch (slot.slotType) {
+      case 0:
+        Object.keys(slot.slots).forEach((key) => {
+          transformBlock(slot.slots[key], context);
+        });
+        break;
+      case 1:
+        if (!parseSharedDataStringExpression(slot.name)) {
+          slot.name.sharedData = {
+            ident: context.nextIdent()
+          };
+        }
+        transformBlock(slot.fn, context);
+        break;
+      case 2:
+        transformSimpleExpression(slot.loop.source, context);
+        const exitIdent = context.enterIdent();
+        if (!parseSharedDataStringExpression(slot.name)) {
+          slot.name.sharedData = {
+            ident: context.nextIdent()
+          };
+        }
+        transformBlock(slot.fn, context);
+        exitIdent();
+        break;
+      case 3:
+        transformSlotDynamicConditional(slot, context);
+        break;
+    }
+  });
+}
+function transformSlotDynamicConditional(slot, context) {
+  const result = parseSharedDataBooleanExpression(slot.condition);
+  if (result === null) {
+    transformSimpleExpression(slot.condition, context, true);
+  }
+  transformBlock(slot.positive.fn, context);
+  if (slot.negative) {
+    if (slot.negative.slotType === 3) {
+      transformSlotDynamicConditional(slot.negative, context);
+    } else {
+      transformBlock(slot.negative.fn, context);
+    }
+  }
+}
+
+function transformSlotOutlet(oper, context) {
+  const { fallback, name } = oper;
+  transformSimpleExpression(name, context);
+  if (fallback) {
+    transformBlock(fallback, context);
+  }
+}
+
+function transformVShow({ dir: { exp } }, context) {
+  if (exp) {
+    transformSimpleExpression(exp, context);
+  }
+}
+
+function transformVModel({ dir }, context) {
+  const exp = dir.exp;
+  transformSimpleExpression(exp, context, true);
+  exp.sharedData.vModel = {
+    eventIdent: context.nextIdent()
+  };
+}
+
+function transformBuiltinDirective(oper, context) {
+  switch (oper.name) {
+    case "show":
+      return transformVShow(oper, context);
+    case "model":
+      return transformVModel(oper, context);
+  }
+}
+
+function transformOperations(opers, context) {
+  for (const operation of opers) {
+    transformOperationWithInsertionState(operation, context);
+  }
+}
+function transformOperationWithInsertionState(oper, context) {
+  transformOperation(oper, context);
+}
+function transformOperation(oper, context) {
+  switch (oper.type) {
+    case 2:
+      return transformSetProp(oper, context);
+    case 3:
+      return transformDynamicProps(oper, context);
+    case 4:
+      return transformSetText(oper, context);
+    case 5:
+      return transformSetEvent(oper, context);
+    case 6:
+      return transformSetDynamicEvents(oper, context);
+    case 7:
+      return transformSetHtml(oper, context);
+    case 8:
+      return transformSetTemplateRef(oper, context);
+    case 9:
+      return transformInsertNode();
+    case 10:
+      return transformPrependNode();
+    case 15:
+      return transformIf(oper, context);
+    case 16:
+      return transformFor(oper, context);
+    case 11:
+      return transformCreateComponent(oper, context);
+    case 14:
+      return transformDeclareOldRef();
+    case 12:
+      return transformSlotOutlet(oper, context);
+    case 13:
+      return transformBuiltinDirective(oper, context);
+    case 17:
+      return transformGetTextChild();
+    default:
+      const exhaustiveCheck = oper;
+      throw new Error(
+        `Unhandled operation type in genOperation: ${exhaustiveCheck}`
+      );
+  }
+}
+function transformEffects(effects, context) {
+  for (const effect of effects) {
+    transformEffect(effect, context);
+  }
+}
+function transformEffect({ operations }, context) {
+  transformOperations(operations, context);
+}
+
+function transformSelf(dynamic, context) {
+  const { operation } = dynamic;
+  if (operation) {
+    transformOperationWithInsertionState(operation, context);
+  }
+}
+function transformChildren(dynamic, context) {
+  const { children } = dynamic;
+  const childrenToTransform = [];
+  for (const [, child] of children.entries()) {
+    if (child.flags & 2) ;
+    const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
+    if (id === void 0 && !child.hasDynamicChild) {
+      transformSelf(child, context);
+      continue;
+    }
+    if (id === child.anchor) {
+      transformSelf(child, context);
+    }
+    childrenToTransform.push(child);
+  }
+  for (const child of childrenToTransform) {
+    transformChildren(child, context);
+  }
+}
+
+function transformBlock(oper, context) {
+  transformBlockContent(oper, context);
+}
+function transformBlockContent(block, context) {
+  const { dynamic, effect, operation } = block;
+  const resetBlock = context.enterBlock(block);
+  for (const child of dynamic.children) {
+    transformSelf(child, context);
+  }
+  for (const child of dynamic.children) {
+    transformChildren(child, context);
+  }
+  transformOperations(operation, context);
+  transformEffects(effect, context);
+  resetBlock();
+}
+
+class IdentGenerator {
+  constructor(pregenerateCount = 1e3, groupSize = 30) {
+    this._chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    this._nextIds = [0];
+    this._generated = [];
+    this._currentIndex = 0;
+    if (pregenerateCount < 0) {
+      throw new Error("\u9884\u751F\u6210\u6570\u91CF\u4E0D\u80FD\u4E3A\u8D1F\u6570");
+    }
+    this._groupSize = groupSize;
+    if (pregenerateCount > 0) {
+      this._pregenerate(pregenerateCount);
+    }
+  }
+  _generateId() {
+    const r = [];
+    for (const char of this._nextIds) {
+      r.unshift(this._chars[char]);
+    }
+    return r.join("");
+  }
+  _generateNextValidId() {
+    let id;
+    do {
+      id = this._generateId();
+      this._increment();
+    } while (keywords.has(id));
+    return id;
+  }
+  _pregenerate(count) {
+    this._generated = new Array(count);
+    for (let i = 0; i < count; i++) {
+      this._generated[i] = this._generateNextValidId();
+    }
+  }
+  next() {
+    if (this._currentIndex < this._generated.length) {
+      return this._generated[this._currentIndex++];
+    }
+    const newId = this._generateNextValidId();
+    this._generated.push(newId);
+    this._currentIndex++;
+    return newId;
+  }
+  getIndexOf(variableName) {
+    return this._generated.indexOf(variableName);
+  }
+  getGroupInfo(variableName) {
+    const index = this.getIndexOf(variableName);
+    if (index === -1) return null;
+    return {
+      index: Math.floor(index / this._groupSize),
+      bitValue: 1 << index % this._groupSize
+    };
+  }
+  reset() {
+    this._nextIds = [0];
+    this._generated = [];
+    this._currentIndex = 0;
+  }
+  get generatedCount() {
+    return this._generated.length;
+  }
+  get currentIndex() {
+    return this._currentIndex;
+  }
+  get hasPregenerated() {
+    return this._currentIndex < this._generated.length;
+  }
+  get generatedList() {
+    return this._generated;
+  }
+  _increment() {
+    for (let i = 0; i < this._nextIds.length; i++) {
+      const val = ++this._nextIds[i];
+      if (val >= this._chars.length) {
+        this._nextIds[i] = 0;
+      } else {
+        return;
+      }
+    }
+    this._nextIds.push(0);
+  }
+  *[Symbol.iterator]() {
+    while (true) {
+      yield this.next();
+    }
+  }
+}
+const keywords = /* @__PURE__ */ new Set([
+  "abstract",
+  "arguments",
+  "await",
+  "boolean",
+  "break",
+  "byte",
+  "case",
+  "catch",
+  "char",
+  "class",
+  "const",
+  "continue",
+  "debugger",
+  "default",
+  "delete",
+  "do",
+  "double",
+  "else",
+  "enum",
+  "eval",
+  "export",
+  "extends",
+  "false",
+  "final",
+  "finally",
+  "float",
+  "for",
+  "function",
+  "goto",
+  "if",
+  "implements",
+  "import",
+  "in",
+  "instanceof",
+  "int",
+  "interface",
+  "let",
+  "long",
+  "native",
+  "new",
+  "null",
+  "package",
+  "private",
+  "protected",
+  "public",
+  "return",
+  "short",
+  "static",
+  "super",
+  "switch",
+  "synchronized",
+  "this",
+  "throw",
+  "throws",
+  "transient",
+  "true",
+  "try",
+  "typeof",
+  "var",
+  "void",
+  "volatile",
+  "while",
+  "with",
+  "yield"
+]);
+
+class SharedDataTransformContext {
+  constructor(ir, options) {
+    this._ident = new IdentGenerator();
+    this._identCache = /* @__PURE__ */ new Map();
+    this.ir = ir;
+    this.options = options;
+    this.block = ir.block;
+    this._identCache.set(this._ident, /* @__PURE__ */ new Map());
+  }
+  enterBlock(block) {
+    const parent = this.block;
+    this.block = block;
+    return () => this.block = parent;
+  }
+  enterIdent() {
+    const parent = this._ident;
+    this._ident = new IdentGenerator();
+    this._identCache.set(this._ident, /* @__PURE__ */ new Map());
+    return () => this._ident = parent;
+  }
+  nextIdent() {
+    return this._ident.next();
+  }
+}
+function transformSharedData(ir, options) {
+  const context = new SharedDataTransformContext(ir, options);
+  transformBlockContent(ir.block, context);
+}
+
+function genInsertNode$1({ parent, elements, anchor }, { helper }) {
+  let element = elements.map((el) => `n${el}`).join(", ");
+  if (elements.length > 1) element = `[${element}]`;
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      helper("insert"),
+      element,
+      `n${parent}`,
+      anchor === void 0 ? void 0 : `n${anchor}`
+    )
+  ];
+}
+function genPrependNode$1(oper, { helper }) {
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      helper("prepend"),
+      `n${oper.parent}`,
+      ...oper.elements.map((el) => `n${el}`)
+    )
+  ];
+}
+
+function genExpression$1(node, context, assignment) {
+  const { content, ast, isStatic, loc } = node;
+  if (isStatic) {
+    return [[JSON.stringify(content), -2, loc]];
+  }
+  if (!node.content.trim() || // there was a parsing error
+  ast === false || compilerVapor.isConstantExpression(node)) {
+    return [[content, -2, loc], assignment && ` = ${assignment}`];
+  }
+  if (ast === null) {
+    return genIdentifier$1(content, context, loc, assignment);
+  }
+  const ids = [];
+  const parentStackMap = /* @__PURE__ */ new Map();
+  const parentStack = [];
+  compilerDom.walkIdentifiers(
+    ast,
+    (id) => {
+      ids.push(id);
+      parentStackMap.set(id, parentStack.slice());
+    },
+    false,
+    parentStack
+  );
+  let hasMemberExpression = false;
+  if (ids.length) {
+    const [frag, push] = compilerVapor.buildCodeFragment();
+    const isTSNode = ast && compilerDom.TS_NODE_TYPES.includes(ast.type);
+    ids.sort((a, b) => a.start - b.start).forEach((id, i) => {
+      const start = id.start - 1;
+      const end = id.end - 1;
+      const last = ids[i - 1];
+      if (!(isTSNode && i === 0)) {
+        const leadingText = content.slice(last ? last.end - 1 : 0, start);
+        if (leadingText.length) push([leadingText, -3]);
+      }
+      const source = content.slice(start, end);
+      const parentStack2 = parentStackMap.get(id);
+      const parent = parentStack2[parentStack2.length - 1];
+      hasMemberExpression || (hasMemberExpression = parent && (parent.type === "MemberExpression" || parent.type === "OptionalMemberExpression"));
+      push(
+        ...genIdentifier$1(
+          source,
+          context,
+          {
+            start: compilerDom.advancePositionWithClone(node.loc.start, source, start),
+            end: compilerDom.advancePositionWithClone(node.loc.start, source, end),
+            source
+          },
+          hasMemberExpression ? void 0 : assignment,
+          id,
+          parent,
+          parentStack2
+        )
+      );
+      if (i === ids.length - 1 && end < content.length && !isTSNode) {
+        push([content.slice(end), -3]);
+      }
+    });
+    if (assignment && hasMemberExpression) {
+      push(` = ${assignment}`);
+    }
+    return frag;
+  } else {
+    return [[content, -3, loc]];
+  }
+}
+function genIdentifier$1(raw, context, loc, assignment, id, parent, parentStack) {
+  const { options, helper, identifiers } = context;
+  const { inline, bindingMetadata } = options;
+  let name = raw;
+  const idMap = identifiers[raw];
+  if (idMap && idMap.length) {
+    const replacement = idMap[0];
+    if (shared.isString(replacement)) {
+      if (parent && parent.type === "ObjectProperty" && parent.shorthand) {
+        return [[`${name}: ${replacement}`, -2, loc]];
+      } else {
+        return [[replacement, -2, loc]];
+      }
+    } else {
+      return genExpression$1(replacement, context, assignment);
+    }
+  }
+  let prefix;
+  if (compilerDom.isStaticProperty(parent) && parent.shorthand) {
+    prefix = `${raw}: `;
+  }
+  const type = bindingMetadata && bindingMetadata[raw];
+  if (inline) {
+    switch (type) {
+      case "setup-let":
+        name = raw = assignment ? `_isRef(${raw}) ? (${raw}.value = ${assignment}) : (${raw} = ${assignment})` : unref();
+        break;
+      case "setup-ref":
+        name = raw = withAssignment(`${raw}.value`);
+        break;
+      case "setup-maybe-ref":
+        const isDestructureAssignment = parent && compilerDom.isInDestructureAssignment(parent, parentStack || []);
+        const isAssignmentLVal = parent && parent.type === "AssignmentExpression" && parent.left === id;
+        const isUpdateArg = parent && parent.type === "UpdateExpression" && parent.argument === id;
+        raw = isAssignmentLVal || isUpdateArg || isDestructureAssignment ? name = `${raw}.value` : assignment ? `${helper("isRef")}(${raw}) ? (${raw}.value = ${assignment}) : null` : unref();
+        break;
+      case "props":
+        raw = shared.genPropsAccessExp(raw);
+        break;
+      case "props-aliased":
+        raw = shared.genPropsAccessExp(bindingMetadata.__propsAliases[raw]);
+        break;
+      default:
+        raw = withAssignment(raw);
+    }
+  } else {
+    if (canPrefix$1(raw)) {
+      if (type === "props-aliased") {
+        raw = `$props['${bindingMetadata.__propsAliases[raw]}']`;
+      } else {
+        raw = `${type === "props" ? "$props" : "_ctx"}.${raw}`;
+      }
+    }
+    raw = withAssignment(raw);
+  }
+  return [prefix, [raw, -2, loc, name]];
+  function withAssignment(s) {
+    return assignment ? `${s} = ${assignment}` : s;
+  }
+  function unref() {
+    return `${helper("unref")}(${raw})`;
+  }
+}
+function canPrefix$1(name) {
+  if (shared.isGloballyAllowed(name)) {
+    return false;
+  }
+  if (
+    // special case for webpack compilation
+    name === "require" || name === "$props" || name === "$emit" || name === "$attrs" || name === "$slots"
+  )
+    return false;
+  return true;
+}
+function processExpressions$1(context, expressions, shouldDeclare) {
+  const {
+    seenVariable,
+    variableToExpMap,
+    expToVariableMap,
+    seenIdentifier,
+    updatedVariable
+  } = analyzeExpressions$1(expressions);
+  const varDeclarations = processRepeatedVariables$1(
+    context,
+    seenVariable,
+    variableToExpMap,
+    expToVariableMap,
+    seenIdentifier,
+    updatedVariable
+  );
+  const expDeclarations = processRepeatedExpressions$1(
+    context,
+    expressions,
+    varDeclarations,
+    updatedVariable,
+    expToVariableMap
+  );
+  return genDeclarations$1(
+    [...varDeclarations, ...expDeclarations],
+    context,
+    shouldDeclare
+  );
+}
+function analyzeExpressions$1(expressions) {
+  const seenVariable = /* @__PURE__ */ Object.create(null);
+  const variableToExpMap = /* @__PURE__ */ new Map();
+  const expToVariableMap = /* @__PURE__ */ new Map();
+  const seenIdentifier = /* @__PURE__ */ new Set();
+  const updatedVariable = /* @__PURE__ */ new Set();
+  const registerVariable = (name, exp, isIdentifier, loc, parentStack = []) => {
+    if (isIdentifier) seenIdentifier.add(name);
+    seenVariable[name] = (seenVariable[name] || 0) + 1;
+    variableToExpMap.set(
+      name,
+      (variableToExpMap.get(name) || /* @__PURE__ */ new Set()).add(exp)
+    );
+    const variables = expToVariableMap.get(exp) || [];
+    variables.push({ name, loc });
+    expToVariableMap.set(exp, variables);
+    if (parentStack.some(
+      (p) => p.type === "UpdateExpression" || p.type === "AssignmentExpression"
+    )) {
+      updatedVariable.add(name);
+    }
+  };
+  for (const exp of expressions) {
+    if (!exp.ast) {
+      exp.ast === null && registerVariable(exp.content, exp, true);
+      continue;
+    }
+    compilerDom.walkIdentifiers(exp.ast, (currentNode, parent, parentStack) => {
+      if (parent && isMemberExpression$1(parent)) {
+        const memberExp = extractMemberExpression$1(parent, (id) => {
+          registerVariable(id.name, exp, true, {
+            start: id.start,
+            end: id.end
+          });
+        });
+        registerVariable(
+          memberExp,
+          exp,
+          false,
+          { start: parent.start, end: parent.end },
+          parentStack
+        );
+      } else if (!parentStack.some(isMemberExpression$1)) {
+        registerVariable(
+          currentNode.name,
+          exp,
+          true,
+          { start: currentNode.start, end: currentNode.end },
+          parentStack
+        );
+      }
+    });
+  }
+  return {
+    seenVariable,
+    seenIdentifier,
+    variableToExpMap,
+    expToVariableMap,
+    updatedVariable
+  };
+}
+function processRepeatedVariables$1(context, seenVariable, variableToExpMap, expToVariableMap, seenIdentifier, updatedVariable) {
+  const declarations = [];
+  const expToReplacementMap = /* @__PURE__ */ new Map();
+  for (const [name, exps] of variableToExpMap) {
+    if (updatedVariable.has(name)) continue;
+    if (seenVariable[name] > 1 && exps.size > 0) {
+      const isIdentifier = seenIdentifier.has(name);
+      const varName = isIdentifier ? name : genVarName$1(name);
+      exps.forEach((node) => {
+        if (node.ast && varName !== name) {
+          const replacements = expToReplacementMap.get(node) || [];
+          replacements.push({
+            name: varName,
+            locs: expToVariableMap.get(node).reduce(
+              (locs, v) => {
+                if (v.name === name && v.loc) locs.push(v.loc);
+                return locs;
+              },
+              []
+            )
+          });
+          expToReplacementMap.set(node, replacements);
+        }
+      });
+      if (!declarations.some((d) => d.name === varName) && (!isIdentifier || shouldDeclareVariable$1(name, expToVariableMap, exps))) {
+        declarations.push({
+          name: varName,
+          isIdentifier,
+          value: shared.extend(
+            { ast: isIdentifier ? null : parseExp$1(context, name) },
+            compilerDom.createSimpleExpression(name)
+          ),
+          rawName: name,
+          exps,
+          seenCount: seenVariable[name]
+        });
+      }
+    }
+  }
+  for (const [exp, replacements] of expToReplacementMap) {
+    replacements.flatMap(
+      ({ name, locs }) => locs.map(({ start, end }) => ({ start, end, name }))
+    ).sort((a, b) => b.end - a.end).forEach(({ start, end, name }) => {
+      exp.content = exp.content.slice(0, start - 1) + name + exp.content.slice(end - 1);
+    });
+    exp.ast = parseExp$1(context, exp.content);
+  }
+  return declarations;
+}
+function shouldDeclareVariable$1(name, expToVariableMap, exps) {
+  const vars = Array.from(
+    exps,
+    (exp) => expToVariableMap.get(exp).map((v) => v.name)
+  );
+  if (vars.every((v) => v.length === 1)) {
+    return true;
+  }
+  if (vars.some((v) => v.filter((e) => e === name).length > 1)) {
+    return true;
+  }
+  const first = vars[0];
+  if (vars.some((v) => v.length !== first.length)) {
+    if (vars.some(
+      (v) => v.length > first.length && v.every((e) => first.includes(e))
+    ) || vars.some((v) => first.length > v.length && first.every((e) => v.includes(e)))) {
+      return false;
+    }
+    return true;
+  }
+  if (vars.some((v) => v.some((e) => first.includes(e)))) {
+    return false;
+  }
+  return true;
+}
+function processRepeatedExpressions$1(context, expressions, varDeclarations, updatedVariable, expToVariableMap) {
+  const declarations = [];
+  const seenExp = expressions.reduce(
+    (acc, exp) => {
+      const variables = expToVariableMap.get(exp).map((v) => v.name);
+      if (exp.ast && exp.ast.type !== "Identifier" && !(variables && variables.some((v) => updatedVariable.has(v)))) {
+        acc[exp.content] = (acc[exp.content] || 0) + 1;
+      }
+      return acc;
+    },
+    /* @__PURE__ */ Object.create(null)
+  );
+  Object.entries(seenExp).forEach(([content, count]) => {
+    if (count > 1) {
+      const varName = genVarName$1(content);
+      if (!declarations.some((d) => d.name === varName)) {
+        const delVars = {};
+        for (let i = varDeclarations.length - 1; i >= 0; i--) {
+          const item = varDeclarations[i];
+          if (!item.exps || !item.seenCount) continue;
+          const shouldRemove = [...item.exps].every(
+            (node) => node.content === content && item.seenCount === count
+          );
+          if (shouldRemove) {
+            delVars[item.name] = item.rawName;
+            varDeclarations.splice(i, 1);
+          }
+        }
+        const value = shared.extend(
+          {},
+          expressions.find((exp) => exp.content === content)
+        );
+        Object.keys(delVars).forEach((name) => {
+          value.content = value.content.replace(name, delVars[name]);
+          if (value.ast) value.ast = parseExp$1(context, value.content);
+        });
+        declarations.push({
+          name: varName,
+          value
+        });
+      }
+      expressions.forEach((exp) => {
+        if (exp.content === content) {
+          exp.content = varName;
+          exp.ast = null;
+        } else if (exp.content.includes(content)) {
+          exp.content = exp.content.replace(
+            new RegExp(escapeRegExp$1(content), "g"),
+            varName
+          );
+          exp.ast = parseExp$1(context, exp.content);
+        }
+      });
+    }
+  });
+  return declarations;
+}
+function genDeclarations$1(declarations, context, shouldDeclare) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const ids = /* @__PURE__ */ Object.create(null);
+  const varNames = /* @__PURE__ */ new Set();
+  declarations.forEach(({ name, isIdentifier, value }) => {
+    if (isIdentifier) {
+      const varName = ids[name] = `_${name}`;
+      varNames.add(varName);
+      if (shouldDeclare) {
+        push(`const `);
+      }
+      push(`${varName} = `, ...genExpression$1(value, context), compilerVapor.NEWLINE);
+    }
+  });
+  declarations.forEach(({ name, isIdentifier, value }) => {
+    if (!isIdentifier) {
+      const varName = ids[name] = `_${name}`;
+      varNames.add(varName);
+      if (shouldDeclare) {
+        push(`const `);
+      }
+      push(
+        `${varName} = `,
+        ...context.withId(() => genExpression$1(value, context), ids),
+        compilerVapor.NEWLINE
+      );
+    }
+  });
+  return { ids, frag, varNames: [...varNames] };
+}
+function escapeRegExp$1(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function parseExp$1(context, content) {
+  const plugins = context.options.expressionPlugins;
+  const options = {
+    plugins: plugins ? [...plugins, "typescript"] : ["typescript"]
+  };
+  return parser.parseExpression(`(${content})`, options);
+}
+function genVarName$1(exp) {
+  return `${exp.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_").replace(/_+$/, "")}`;
+}
+function extractMemberExpression$1(exp, onIdentifier) {
+  if (!exp) return "";
+  switch (exp.type) {
+    case "Identifier":
+      onIdentifier(exp);
+      return exp.name;
+    case "StringLiteral":
+      return exp.extra ? exp.extra.raw : exp.value;
+    case "NumericLiteral":
+      return exp.value.toString();
+    case "BinaryExpression":
+      return `${extractMemberExpression$1(exp.left, onIdentifier)} ${exp.operator} ${extractMemberExpression$1(exp.right, onIdentifier)}`;
+    case "CallExpression":
+      return `${extractMemberExpression$1(exp.callee, onIdentifier)}(${exp.arguments.map((arg) => extractMemberExpression$1(arg, onIdentifier)).join(", ")})`;
+    case "MemberExpression":
+    // foo[bar.baz]
+    case "OptionalMemberExpression":
+      const object = extractMemberExpression$1(exp.object, onIdentifier);
+      const prop = exp.computed ? `[${extractMemberExpression$1(exp.property, onIdentifier)}]` : `.${extractMemberExpression$1(exp.property, shared.NOOP)}`;
+      return `${object}${prop}`;
+    default:
+      return "";
+  }
+}
+const isMemberExpression$1 = (node) => {
+  return node.type === "MemberExpression" || node.type === "OptionalMemberExpression";
+};
+function genSharedDataExpression(node, context, helper, inVFor) {
+  if (node.sharedData) {
+    return compilerVapor.genCall(
+      context.helper("setSharedData"),
+      context.sharedDataVar,
+      JSON.stringify(node.sharedData.ident),
+      helper ? compilerVapor.genCall(helper, genExpression$1(node, context)) : genExpression$1(node, context)
+    );
+  }
+  return genExpression$1(node, context);
+}
+
+function genSetEvent$1(oper, context) {
+  const { key, keyOverride, value, modifiers, sharedData } = oper;
+  const handler = genEventHandler$1(context, value, modifiers);
+  return [
+    compilerVapor.NEWLINE,
+    ...key.sharedData ? compilerVapor.genCall(
+      context.helper("setSharedData"),
+      context.sharedDataVar,
+      JSON.stringify(key.sharedData.ident),
+      genName()
+    ).concat(compilerVapor.NEWLINE) : [],
+    ...compilerVapor.genCall(
+      context.helper("setSharedDataEvent"),
+      context.sharedDataVar,
+      JSON.stringify(sharedData.ident),
+      handler
+    )
+  ];
+  function genName() {
+    const expr = genExpression$1(key, context);
+    if (keyOverride) {
+      const find = JSON.stringify(keyOverride[0]);
+      const replacement = JSON.stringify(keyOverride[1]);
+      const wrapped = ["(", ...expr, ")"];
+      return [...wrapped, ` === ${find} ? ${replacement} : `, ...wrapped];
+    } else {
+      return genExpression$1(key, context);
+    }
+  }
+}
+function genSetDynamicEvents$1(oper, context) {
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      context.helper("setSharedDataDynamicEvents"),
+      context.sharedDataVar,
+      JSON.stringify(oper.event.sharedData.ident),
+      genExpression$1(oper.event, context)
+    )
+  ];
+}
+function genEventHandler$1(context, value, modifiers = { nonKeys: [], keys: [] }, extraWrap = false) {
+  let handlerExp = [`() => {}`];
+  if (value && value.content.trim()) {
+    if (compilerDom.isMemberExpression(value, context.options)) {
+      handlerExp = genExpression$1(value, context);
+      if (!isConstantBinding$1(value, context) && !extraWrap) {
+        if (value.ast && value.ast.type === "TSAsExpression") {
+          handlerExp = [`(e: any) => (`, value.content, `)(e)`];
+        } else {
+          handlerExp = [`(e: any) => `, ...handlerExp, `(e)`];
+        }
+      }
+    } else if (compilerDom.isFnExpression(value, context.options)) {
+      handlerExp = genExpression$1(value, context);
+    } else {
+      const referencesEvent = value.content.includes("$event");
+      const hasMultipleStatements = value.content.includes(`;`);
+      const expr = referencesEvent ? context.withId(() => genExpression$1(value, context), {
+        $event: null
+      }) : genExpression$1(value, context);
+      handlerExp = [
+        referencesEvent ? "($event: any) => " : "() => ",
+        hasMultipleStatements ? "{" : "(",
+        ...expr,
+        hasMultipleStatements ? "}" : ")"
+      ];
+    }
+  }
+  if (extraWrap) handlerExp.unshift(`() => `);
+  return handlerExp;
+}
+function isConstantBinding$1(value, context) {
+  if (value.ast === null) {
+    const bindingType = context.options.bindingMetadata[value.content];
+    if (bindingType === "setup-const") {
+      return true;
+    }
+  }
+}
+
+function genFor$1(oper, context) {
+  const { helper } = context;
+  const {
+    source,
+    value,
+    key,
+    index,
+    render,
+    keyProp,
+    once,
+    id,
+    component,
+    onlyChild
+  } = oper;
+  const preSharedDataVar = context.sharedDataVar;
+  let rawValue = null;
+  const rawKey = key && key.content;
+  const rawIndex = index && index.content;
+  const sourceExpr = ["() => (", ...genExpression$1(source, context), ")"];
+  const idToPathMap = parseValueDestructure();
+  const count = context.enterVFor();
+  const [_, exitScope] = context.enterScope();
+  const idMap = {};
+  const itemVar = `_for_item${count}`;
+  idMap[itemVar] = null;
+  idToPathMap.forEach((pathInfo, id2) => {
+    let path = `${itemVar}.value${pathInfo ? pathInfo.path : ""}`;
+    if (pathInfo) {
+      if (pathInfo.helper) {
+        idMap[pathInfo.helper] = null;
+        path = `${pathInfo.helper}(${path}, ${pathInfo.helperArgs})`;
+      }
+      if (pathInfo.dynamic) {
+        const node = idMap[id2] = compilerDom.createSimpleExpression(path);
+        const plugins = context.options.expressionPlugins;
+        node.ast = parser.parseExpression(`(${path})`, {
+          plugins: plugins ? [...plugins, "typescript"] : ["typescript"]
+        });
+      } else {
+        idMap[id2] = path;
+      }
+    } else {
+      idMap[id2] = path;
+    }
+  });
+  const args = [context.sharedDataVForVar, ", ", itemVar];
+  if (rawKey) {
+    const keyVar = `_for_key${count}`;
+    args.push(`, ${keyVar}`);
+    idMap[rawKey] = `${keyVar}.value`;
+    idMap[keyVar] = null;
+  }
+  if (rawIndex) {
+    const indexVar = `_for_index${count}`;
+    args.push(`, ${indexVar}`);
+    idMap[rawIndex] = `${indexVar}.value`;
+    idMap[indexVar] = null;
+  }
+  const newSharedDataVForFrag = compilerVapor.genCall(
+    helper("setSharedData"),
+    preSharedDataVar,
+    JSON.stringify(source.sharedData.ident),
+    genSharedDataVFor(context)
+  );
+  const getKeyFrag = genCallback(keyProp, context, context.sharedDataVForVar);
+  const { selectorPatterns, keyOnlyBindingPatterns } = matchPatterns(
+    render,
+    keyProp,
+    idMap
+  );
+  const selectorDeclarations = [];
+  const selectorSetup = [];
+  for (let i = 0; i < selectorPatterns.length; i++) {
+    const { selector } = selectorPatterns[i];
+    const selectorName = `_selector${id}_${i}`;
+    selectorDeclarations.push(
+      `let ${selectorName}: (oper: () => void) => void`,
+      compilerVapor.NEWLINE
+    );
+    if (i === 0) {
+      selectorSetup.push(`({ createSelector }) => {`, compilerVapor.INDENT_START);
+    }
+    selectorSetup.push(
+      compilerVapor.NEWLINE,
+      `${selectorName} = `,
+      ...compilerVapor.genCall(`createSelector`, [
+        `() => `,
+        ...genExpression$1(selector, context)
+      ])
+    );
+    if (i === selectorPatterns.length - 1) {
+      selectorSetup.push(compilerVapor.INDENT_END, compilerVapor.NEWLINE, "}");
+    }
+  }
+  const blockFn = context.withId(() => {
+    const frag = [];
+    frag.push("(", ...args, ") => {", compilerVapor.INDENT_START);
+    if (selectorPatterns.length || keyOnlyBindingPatterns.length) {
+      frag.push(
+        ...genBlockContent$1(render, context, false, () => {
+          const patternFrag = [];
+          for (let i = 0; i < selectorPatterns.length; i++) {
+            const { effect } = selectorPatterns[i];
+            patternFrag.push(
+              compilerVapor.NEWLINE,
+              `_selector${id}_${i}(() => {`,
+              compilerVapor.INDENT_START
+            );
+            for (const oper2 of effect.operations) {
+              patternFrag.push(...genOperation$1(oper2, context));
+            }
+            patternFrag.push(compilerVapor.INDENT_END, compilerVapor.NEWLINE, `})`);
+          }
+          for (const { effect } of keyOnlyBindingPatterns) {
+            for (const oper2 of effect.operations) {
+              patternFrag.push(...genOperation$1(oper2, context));
+            }
+          }
+          return patternFrag;
+        })
+      );
+    } else {
+      frag.push(...genBlockContent$1(render, context));
+    }
+    frag.push(compilerVapor.INDENT_END, compilerVapor.NEWLINE, "}");
+    return frag;
+  }, idMap);
+  exitScope();
+  let flags = 0;
+  if (onlyChild) {
+    flags |= 1;
+  }
+  if (component) {
+    flags |= 2;
+  }
+  if (once) {
+    flags |= 4;
+  }
+  return [
+    compilerVapor.NEWLINE,
+    ...selectorDeclarations,
+    ...compilerVapor.genCall(
+      [helper("createSharedDataFor"), "undefined"],
+      newSharedDataVForFrag,
+      sourceExpr,
+      blockFn,
+      getKeyFrag,
+      flags ? String(flags) : void 0,
+      selectorSetup.length ? selectorSetup : void 0
+      // todo: hydrationNode
+    )
+  ];
+  function parseValueDestructure() {
+    const map = /* @__PURE__ */ new Map();
+    if (value) {
+      rawValue = value && value.content;
+      if (value.ast) {
+        compilerDom.walkIdentifiers(
+          value.ast,
+          (id2, _2, parentStack, ___, isLocal) => {
+            if (isLocal) {
+              let path = "";
+              let isDynamic = false;
+              let helper2;
+              let helperArgs;
+              for (let i = 0; i < parentStack.length; i++) {
+                const parent = parentStack[i];
+                const child = parentStack[i + 1] || id2;
+                if (parent.type === "ObjectProperty" && parent.value === child) {
+                  if (parent.key.type === "StringLiteral") {
+                    path += `[${JSON.stringify(parent.key.value)}]`;
+                  } else if (parent.computed) {
+                    isDynamic = true;
+                    path += `[${value.content.slice(
+                      parent.key.start - 1,
+                      parent.key.end - 1
+                    )}]`;
+                  } else {
+                    path += `.${parent.key.name}`;
+                  }
+                } else if (parent.type === "ArrayPattern") {
+                  const index2 = parent.elements.indexOf(child);
+                  if (child.type === "RestElement") {
+                    path += `.slice(${index2})`;
+                  } else {
+                    path += `[${index2}]`;
+                  }
+                } else if (parent.type === "ObjectPattern" && child.type === "RestElement") {
+                  helper2 = context.helper("getSharedDataRestElement");
+                  helperArgs = "[" + parent.properties.filter((p) => p.type === "ObjectProperty").map((p) => {
+                    if (p.key.type === "StringLiteral") {
+                      return JSON.stringify(p.key.value);
+                    } else if (p.computed) {
+                      isDynamic = true;
+                      return value.content.slice(
+                        p.key.start - 1,
+                        p.key.end - 1
+                      );
+                    } else {
+                      return JSON.stringify(p.key.name);
+                    }
+                  }).join(", ") + "]";
+                }
+                if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern")) {
+                  isDynamic = true;
+                  helper2 = context.helper("getSharedDataDefaultValue");
+                  helperArgs = value.content.slice(
+                    child.right.start - 1,
+                    child.right.end - 1
+                  );
+                }
+              }
+              map.set(id2.name, { path, dynamic: isDynamic, helper: helper2, helperArgs });
+            }
+          },
+          true
+        );
+      } else {
+        map.set(rawValue, null);
+      }
+    }
+    return map;
+  }
+  function genCallback(expr, context2, sharedDataVForVar) {
+    if (!expr) return false;
+    const res = context2.withId(
+      () => compilerVapor.genCall(
+        context2.helper("setSharedData"),
+        sharedDataVForVar,
+        JSON.stringify(expr.sharedData.ident),
+        genExpression$1(expr, context2)
+      ),
+      genSimpleIdMap()
+    );
+    return [
+      ...compilerVapor.genMulti(
+        ["(", ")", ", "],
+        sharedDataVForVar,
+        rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0,
+        rawKey ? rawKey : rawIndex ? "__" : void 0,
+        rawIndex
+      ),
+      " => (",
+      ...res,
+      ")"
+    ];
+  }
+  function genSimpleIdMap() {
+    const idMap2 = {};
+    if (rawKey) idMap2[rawKey] = null;
+    if (rawIndex) idMap2[rawIndex] = null;
+    idToPathMap.forEach((_2, id2) => idMap2[id2] = null);
+    return idMap2;
+  }
+}
+function matchPatterns(render, keyProp, idMap) {
+  const selectorPatterns = [];
+  const keyOnlyBindingPatterns = [];
+  render.effect.forEach((effect) => {
+    if (keyProp !== void 0) {
+      const selector = matchSelectorPattern(effect, keyProp.ast, idMap);
+      if (selector) {
+        selectorPatterns.push(selector);
+        effect.generated = true;
+      }
+      const keyOnly = matchKeyOnlyBindingPattern(effect, keyProp.ast);
+      if (keyOnly) {
+        keyOnlyBindingPatterns.push(keyOnly);
+        effect.generated = true;
+      }
+    }
+  });
+  return {
+    keyOnlyBindingPatterns,
+    selectorPatterns
+  };
+}
+function matchKeyOnlyBindingPattern(effect, keyAst) {
+  if (effect.expressions.length === 1) {
+    const ast = effect.expressions[0].ast;
+    if (typeof ast === "object" && ast !== null) {
+      if (isKeyOnlyBinding(ast, keyAst)) {
+        return { effect };
+      }
+    }
+  }
+}
+function matchSelectorPattern(effect, keyAst, idMap) {
+  if (effect.expressions.length === 1) {
+    const ast = effect.expressions[0].ast;
+    if (typeof ast === "object" && ast) {
+      const matcheds = [];
+      estreeWalker.walk(ast, {
+        enter(node) {
+          if (typeof node === "object" && node && node.type === "BinaryExpression" && node.operator === "===" && node.left.type !== "PrivateName") {
+            const { left, right } = node;
+            for (const [a, b] of [
+              [left, right],
+              [right, left]
+            ]) {
+              const aIsKey = isKeyOnlyBinding(a, keyAst);
+              const bIsKey = isKeyOnlyBinding(b, keyAst);
+              const bVars = analyzeVariableScopes(b, idMap);
+              if (aIsKey && !bIsKey && !bVars.locals.length) {
+                matcheds.push([a, b]);
+              }
+            }
+          }
+        }
+      });
+      if (matcheds.length === 1) {
+        const [key, selector] = matcheds[0];
+        const content2 = effect.expressions[0].content;
+        let hasExtraId = false;
+        const parentStackMap = /* @__PURE__ */ new Map();
+        const parentStack = [];
+        compilerDom.walkIdentifiers(
+          ast,
+          (id) => {
+            if (id.start !== key.start && id.start !== selector.start) {
+              hasExtraId = true;
+            }
+            parentStackMap.set(id, parentStack.slice());
+          },
+          false,
+          parentStack
+        );
+        if (!hasExtraId) {
+          const name = content2.slice(selector.start - 1, selector.end - 1);
+          return {
+            effect,
+            // @ts-expect-error
+            selector: {
+              content: name,
+              ast: shared.extend({}, selector, {
+                start: 1,
+                end: name.length + 1
+              }),
+              loc: selector.loc,
+              isStatic: false
+            }
+          };
+        }
+      }
+    }
+    const content = effect.expressions[0].content;
+    if (typeof ast === "object" && ast && ast.type === "ConditionalExpression" && ast.test.type === "BinaryExpression" && ast.test.operator === "===" && ast.test.left.type !== "PrivateName" && compilerDom.isStaticNode(ast.consequent) && compilerDom.isStaticNode(ast.alternate)) {
+      const left = ast.test.left;
+      const right = ast.test.right;
+      for (const [a, b] of [
+        [left, right],
+        [right, left]
+      ]) {
+        const aIsKey = isKeyOnlyBinding(a, keyAst);
+        const bIsKey = isKeyOnlyBinding(b, keyAst);
+        const bVars = analyzeVariableScopes(b, idMap);
+        if (aIsKey && !bIsKey && !bVars.locals.length) {
+          return {
+            effect,
+            // @ts-expect-error
+            selector: {
+              content: content.slice(b.start - 1, b.end - 1),
+              ast: b,
+              loc: b.loc,
+              isStatic: false
+            }
+          };
+        }
+      }
+    }
+  }
+}
+function analyzeVariableScopes(ast, idMap) {
+  let globals = [];
+  let locals = [];
+  const ids = [];
+  const parentStackMap = /* @__PURE__ */ new Map();
+  const parentStack = [];
+  compilerDom.walkIdentifiers(
+    ast,
+    (id) => {
+      ids.push(id);
+      parentStackMap.set(id, parentStack.slice());
+    },
+    false,
+    parentStack
+  );
+  for (const id of ids) {
+    if (shared.isGloballyAllowed(id.name)) {
+      continue;
+    }
+    if (idMap[id.name]) {
+      locals.push(id.name);
+    } else {
+      globals.push(id.name);
+    }
+  }
+  return { globals, locals };
+}
+function isKeyOnlyBinding(expr, keyAst) {
+  let only = true;
+  estreeWalker.walk(expr, {
+    enter(node) {
+      if (types.isNodesEquivalent(node, keyAst)) {
+        this.skip();
+        return;
+      }
+      if (node.type === "Identifier") {
+        only = false;
+      }
+    }
+  });
+  return only;
+}
+function genSharedDataVFor(context) {
+  return `${context.helper("createSharedDataVFor")}(${context.sharedDataScopeVar}, () => useSharedData<\`${context.sharedDataVForClassType}\`>(${context.sharedDataScopeVar}))`;
+}
+
+function genSetHtml$1(oper, context) {
+  var _a;
+  const { helper } = context;
+  const { value } = oper;
+  return [
+    compilerVapor.NEWLINE,
+    ...((_a = value.sharedData) == null ? void 0 : _a.ident) ? compilerVapor.genCall(
+      helper("setSharedData"),
+      context.sharedDataVar,
+      JSON.stringify(value.sharedData.ident),
+      genExpression$1(value, context)
+    ) : []
+  ];
+}
+
+function genIf$1(oper, context, isNested = false) {
+  const { helper } = context;
+  const { condition, positive, negative, once } = oper;
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const conditionExpr = [
+    "() => ",
+    ...genCondition$1(condition, context),
+    ""
+  ];
+  let positiveArg = genBlock$1(positive, context);
+  let negativeArg = false;
+  if (negative) {
+    if (negative.type === 1) {
+      negativeArg = genBlock$1(negative, context);
+    } else {
+      negativeArg = ["() => ", ...genIf$1(negative, context, true)];
+    }
+  }
+  if (!isNested) push(compilerVapor.NEWLINE);
+  push(
+    ...compilerVapor.genCall(
+      helper("createSharedDataIf"),
+      conditionExpr,
+      positiveArg,
+      negativeArg,
+      once && "true"
+    )
+  );
+  return frag;
+}
+function genCondition$1(condition, context) {
+  return !condition.sharedData ? [JSON.stringify(parseSharedDataBooleanExpression(condition))] : compilerVapor.genCall(
+    context.helper("setSharedData"),
+    context.sharedDataVar,
+    JSON.stringify(condition.sharedData.ident),
+    compilerVapor.genCall(
+      context.helper("toSharedDataBoolean"),
+      genExpression$1(condition, context)
+    )
+  );
+}
+
+const helpers = {
+  setText: { name: "setText" },
+  setHtml: { name: "setHtml" },
+  setClass: { name: "setClass" },
+  setStyle: { name: "setStyle" },
+  setValue: { name: "setValue" },
+  setAttr: { name: "setAttr", needKey: true },
+  setProp: { name: "setProp", needKey: true },
+  setDOMProp: { name: "setDOMProp", needKey: true }};
+function genSetProp$1(oper, context) {
+  const {
+    prop: { key, values, modifier, sharedData },
+    tag
+  } = oper;
+  const resolvedHelper = getRuntimeHelper(tag, key.content, modifier);
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  if (sharedData) {
+    push(
+      compilerVapor.NEWLINE,
+      ...compilerVapor.genCall(
+        context.helper(
+          getSetSharedDataHelper(resolvedHelper.name)
+        ),
+        context.sharedDataVar,
+        JSON.stringify(sharedData.ident),
+        genPropValue$1(values, context)
+      )
+    );
+    return frag;
+  }
+  values.filter((value) => {
+    var _a;
+    return (_a = value.sharedData) == null ? void 0 : _a.ident;
+  }).forEach((value) => {
+    push(
+      compilerVapor.NEWLINE,
+      ...compilerVapor.genCall(
+        context.helper(
+          getSetSharedDataHelper(resolvedHelper.name)
+        ),
+        context.sharedDataVar,
+        JSON.stringify(value.sharedData.ident),
+        genPropValue$1([value], context)
+      )
+    );
+  });
+  return frag;
+}
+function genDynamicProps$2(oper, context) {
+  const { helper } = context;
+  const values = oper.props.map(
+    (props) => Array.isArray(props) ? genLiteralObjectProps(props, context) : props.kind === 1 ? genLiteralObjectProps([props], context) : genExpression$1(props.value, context)
+  );
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      helper(getSetSharedDataHelper("setDynamicProps")),
+      context.sharedDataVar,
+      JSON.stringify(oper.sharedData.ident),
+      compilerVapor.genMulti(compilerVapor.DELIMITERS_ARRAY, ...values)
+    )
+  ];
+}
+function genLiteralObjectProps(props, context) {
+  return compilerVapor.genMulti(
+    compilerVapor.DELIMITERS_OBJECT,
+    ...props.map((prop) => [
+      ...genPropKey(prop, context),
+      `: `,
+      ...genPropValue$1(prop.values, context)
+    ])
+  );
+}
+function genPropKey({ key: node, modifier, runtimeCamelize, handler, handlerModifiers }, context) {
+  const { helper } = context;
+  const handlerModifierPostfix = handlerModifiers ? handlerModifiers.map(shared.capitalize).join("") : "";
+  if (node.isStatic) {
+    const keyName = (handler ? shared.toHandlerKey(node.content) : node.content) + handlerModifierPostfix;
+    return [
+      [
+        compilerDom.isSimpleIdentifier(keyName) ? keyName : JSON.stringify(keyName),
+        -2,
+        node.loc
+      ]
+    ];
+  }
+  let key = genExpression$1(node, context);
+  if (runtimeCamelize) {
+    key = compilerVapor.genCall(helper("camelize"), key);
+  }
+  if (handler) {
+    key = compilerVapor.genCall(helper("toHandlerKey"), key);
+  }
+  return [
+    "[",
+    modifier && `${JSON.stringify(modifier)} + `,
+    ...key,
+    handlerModifierPostfix ? ` + ${JSON.stringify(handlerModifierPostfix)}` : void 0,
+    "]"
+  ];
+}
+function genPropValue$1(values, context) {
+  if (values.length === 1) {
+    return genExpression$1(values[0], context);
+  }
+  return compilerVapor.genMulti(
+    compilerVapor.DELIMITERS_ARRAY,
+    ...values.map((expr) => genExpression$1(expr, context))
+  );
+}
+function getRuntimeHelper(tag, key, modifier) {
+  const tagName = tag.toUpperCase();
+  if (modifier) {
+    if (modifier === ".") {
+      return getSpecialHelper(key, tagName) || helpers.setDOMProp;
+    } else {
+      return helpers.setAttr;
+    }
+  }
+  const helper = getSpecialHelper(key, tagName);
+  if (helper) {
+    return helper;
+  }
+  if (/aria[A-Z]/.test(key)) {
+    return helpers.setDOMProp;
+  }
+  if (shared.isSVGTag(tag)) {
+    return helpers.setAttr;
+  }
+  if (shared.shouldSetAsAttr(tagName, key) || key.includes("-")) {
+    return helpers.setAttr;
+  }
+  return helpers.setProp;
+}
+function getSpecialHelper(keyName, tagName) {
+  if (keyName === "value" && shared.canSetValueDirectly(tagName)) {
+    return helpers.setValue;
+  } else if (keyName === "class") {
+    return helpers.setClass;
+  } else if (keyName === "style") {
+    return helpers.setStyle;
+  } else if (keyName === "innerHTML") {
+    return helpers.setHtml;
+  } else if (keyName === "textContent") {
+    return helpers.setText;
+  }
+}
+function getSetSharedDataHelper(name) {
+  switch (name) {
+    case "setClass":
+      return `setSharedDataClass`;
+    case "setStyle":
+      return `setSharedDataStyle`;
+    case "setText":
+    case "setHtml":
+    case "setValue":
+    case "setAttr":
+    case "setProp":
+    case "setDOMProp":
+      return `setSharedDataAttr`;
+    case "setDynamicProps":
+      return `setSharedDataDynamicProps`;
+    default:
+      const exhaustiveCheck = name;
+      throw new Error(
+        `Unhandled operation type in genOperation: ${exhaustiveCheck}`
+      );
+  }
+}
+
+const setTemplateRefIdent = `_setTemplateRef`;
+function genSetTemplateRef$1(oper, context) {
+  let setTemplateRefCode = compilerVapor.genCall(
+    setTemplateRefIdent,
+    // will be generated in root scope
+    `n${oper.element}`,
+    genRefValue(oper.value, context),
+    oper.effect ? `r${oper.element}` : oper.refFor ? "void 0" : void 0,
+    oper.refFor && "true"
+  );
+  if (oper.value.sharedData) {
+    setTemplateRefCode = compilerVapor.genCall(
+      context.helper("setSharedDataTemplateRef"),
+      context.sharedDataVar,
+      JSON.stringify(oper.value.sharedData.ident),
+      [`(n${oper.element}: number) => {`, ...setTemplateRefCode, "}"]
+    );
+  }
+  return [compilerVapor.NEWLINE, oper.effect && `r${oper.element} = `, ...setTemplateRefCode];
+}
+function genDeclareOldRef$1(oper) {
+  return [compilerVapor.NEWLINE, `let r${oper.id}: any | null`];
+}
+function genRefValue(value, context) {
+  if (value && context.options.inline) {
+    const binding = context.options.bindingMetadata[value.content];
+    if (binding === "setup-let" || binding === "setup-ref" || binding === "setup-maybe-ref") {
+      return [value.content];
+    }
+  }
+  return genExpression$1(value, context);
+}
+
+function genSetText$1(oper, context) {
+  const { helper } = context;
+  const { values } = oper;
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const identCache = /* @__PURE__ */ new Set();
+  values.filter((value) => {
+    var _a;
+    return (_a = value.sharedData) == null ? void 0 : _a.ident;
+  }).forEach((value) => {
+    const ident = value.sharedData.ident;
+    if (identCache.has(ident)) {
+      return;
+    }
+    identCache.add(ident);
+    push(
+      compilerVapor.NEWLINE,
+      ...compilerVapor.genCall(
+        helper("setSharedData"),
+        context.sharedDataVar,
+        JSON.stringify(value.sharedData.ident),
+        compilerVapor.genCall(
+          context.helper("toDisplayString"),
+          genExpression$1(value, context)
+        )
+      )
+    );
+  });
+  return frag;
+}
+function genGetTextChild$1(oper, context) {
+  return [];
+}
+
+function genVShow$1({ dir: { exp } }, context) {
+  if (!exp) {
+    return [];
+  }
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(context.helper("renderSharedDataEffect"), [
+      `() => { `,
+      ...compilerVapor.genCall(
+        context.helper("setSharedData"),
+        context.sharedDataVar,
+        JSON.stringify(exp.sharedData.ident),
+        compilerVapor.genCall(
+          context.helper("toSharedDataBoolean"),
+          genExpression$1(exp, context)
+        )
+      ),
+      ` }`
+    ])
+  ];
+}
+
+function genVModel$1(oper, context) {
+  const {
+    dir: { exp, modifiers }
+  } = oper;
+  const sharedData = exp.sharedData;
+  return [
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      context.helper("setSharedDataEvent"),
+      context.sharedDataVar,
+      JSON.stringify(sharedData.vModel.eventIdent),
+      compilerVapor.genCall(
+        context.helper("setSharedDataModel"),
+        context.sharedDataVar,
+        JSON.stringify(sharedData.ident),
+        // getter
+        [`() => (`, ...genExpression$1(exp, context), `)`],
+        // setter
+        genModelHandler(exp, context),
+        // modifiers
+        modifiers.length ? `{ ${modifiers.map((e) => e.content + ": true").join(",")} }` : void 0
+      )
+    )
+  ];
+}
+function genModelHandler(exp, context) {
+  return [
+    `${context.options.isTS ? `(_value: any)` : `_value`} => (`,
+    ...genExpression$1(exp, context, "_value"),
+    ")"
+  ];
+}
+
+function genBuiltinDirective$1(oper, context) {
+  switch (oper.name) {
+    case "show":
+      return genVShow$1(oper, context);
+    case "model":
+      return genVModel$1(oper, context);
+    default:
+      return [];
+  }
+}
+function genDirectiveModifiers$1(modifiers) {
+  return modifiers.map(
+    (value) => `${compilerDom.isSimpleIdentifier(value) ? value : JSON.stringify(value)}: true`
+  ).join(", ");
+}
+
+function genCreateComponent$1(operation, context) {
+  const { helper } = context;
+  const tag = genTag();
+  const { root, props, slots, sharedData } = operation;
+  const rawSlots = genRawSlots$1(slots, context);
+  const [ids, handlers] = processInlineHandlers$1(props, context);
+  const rawProps = context.withId(() => genRawProps(props, context), ids);
+  const inlineHandlers = handlers.reduce(
+    (acc, { name, value }) => {
+      const handler = genEventHandler$1(context, value, void 0, false);
+      return [...acc, `const ${name} = `, ...handler, compilerVapor.NEWLINE];
+    },
+    []
+  );
+  const isDynamic = operation.dynamic && !operation.dynamic.isStatic;
+  const isFallback = operation.asset;
+  return [
+    compilerVapor.NEWLINE,
+    ...inlineHandlers,
+    `const n${operation.id} = `,
+    ...compilerVapor.genCall(
+      isDynamic ? helper("createSharedDataDynamicComponent") : isFallback ? helper("createSharedDataComponentWithFallback") : helper("createSharedDataComponent"),
+      tag,
+      rawProps,
+      rawSlots,
+      root ? "true" : false
+      // once && 'true',
+    ),
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      helper("setSharedData"),
+      context.sharedDataVar,
+      JSON.stringify(sharedData.ident),
+      [`n${operation.id}`, isFallback ? "?.sharedData" : ".sharedData"]
+    )
+  ];
+  function genTag() {
+    if (operation.dynamic) {
+      if (operation.dynamic.isStatic) {
+        return compilerVapor.genCall(
+          helper("resolveDynamicComponent"),
+          genExpression$1(operation.dynamic, context)
+        );
+      } else {
+        return ["() => (", ...genExpression$1(operation.dynamic, context), ")"];
+      }
+    } else if (operation.asset) {
+      return compilerDom.toValidAssetId(operation.tag, "component");
+    } else {
+      return genExpression$1(
+        shared.extend(compilerDom.createSimpleExpression(operation.tag, false), { ast: null }),
+        context
+      );
+    }
+  }
+}
+function getUniqueHandlerName$1(context, name) {
+  const { seenInlineHandlerNames } = context;
+  name = genVarName$1(name);
+  const count = seenInlineHandlerNames[name] || 0;
+  seenInlineHandlerNames[name] = count + 1;
+  return count === 0 ? name : `${name}${count}`;
+}
+function processInlineHandlers$1(props, context) {
+  const ids = /* @__PURE__ */ Object.create(null);
+  const handlers = [];
+  const staticProps = props[0];
+  if (shared.isArray(staticProps)) {
+    for (let i = 0; i < staticProps.length; i++) {
+      const prop = staticProps[i];
+      if (!prop.handler) continue;
+      prop.values.forEach((value, i2) => {
+        const isMemberExp = compilerDom.isMemberExpression(value, context.options);
+        if (!isMemberExp) {
+          const name = getUniqueHandlerName$1(context, `_on_${prop.key.content}`);
+          handlers.push({ name, value });
+          ids[name] = null;
+          prop.values[i2] = shared.extend({ ast: null }, compilerDom.createSimpleExpression(name));
+        }
+      });
+    }
+  }
+  return [ids, handlers];
+}
+function genRawProps(props, context) {
+  const staticProps = props[0];
+  if (shared.isArray(staticProps)) {
+    if (!staticProps.length && props.length === 1) {
+      return;
+    }
+    return genStaticProps(
+      staticProps,
+      context,
+      genDynamicProps$1(props.slice(1), context)
+    );
+  } else if (props.length) {
+    return genStaticProps([], context, genDynamicProps$1(props, context));
+  }
+}
+function genStaticProps(props, context, dynamicProps) {
+  const args = props.map((prop) => genProp(prop, context, true));
+  if (dynamicProps) {
+    args.push([`$: `, ...dynamicProps]);
+  }
+  return compilerVapor.genMulti(
+    args.length > 1 ? compilerVapor.DELIMITERS_OBJECT_NEWLINE : compilerVapor.DELIMITERS_OBJECT,
+    ...args
+  );
+}
+function genDynamicProps$1(props, context) {
+  const { helper } = context;
+  const frags = [];
+  for (const p of props) {
+    let expr;
+    if (shared.isArray(p)) {
+      if (p.length) {
+        frags.push(genStaticProps(p, context));
+      }
+      continue;
+    } else {
+      if (p.kind === 1)
+        expr = compilerVapor.genMulti(compilerVapor.DELIMITERS_OBJECT, genProp(p, context));
+      else {
+        expr = genExpression$1(p.value, context);
+        if (p.handler) expr = compilerVapor.genCall(helper("toHandlers"), expr);
+      }
+    }
+    frags.push(["() => (", ...expr, ")"]);
+  }
+  if (frags.length) {
+    return compilerVapor.genMulti(compilerVapor.DELIMITERS_ARRAY_NEWLINE, ...frags);
+  }
+}
+function genProp(prop, context, isStatic) {
+  const values = genPropValue$1(prop.values, context);
+  return [
+    ...genPropKey(prop, context),
+    ": ",
+    ...prop.handler ? genEventHandler$1(
+      context,
+      prop.values[0],
+      void 0,
+      true
+    ) : isStatic ? ["() => (", ...values, ")"] : values,
+    ...prop.model ? [...genModelEvent(prop, context), ...genModelModifiers(prop, context)] : []
+  ];
+}
+function genModelEvent(prop, context) {
+  const name = prop.key.isStatic ? [JSON.stringify(`onUpdate:${shared.camelize(prop.key.content)}`)] : ['["onUpdate:" + ', ...genExpression$1(prop.key, context), "]"];
+  const handler = genModelHandler(prop.values[0], context);
+  return [",", compilerVapor.NEWLINE, ...name, ": () => ", ...handler];
+}
+function genModelModifiers(prop, context) {
+  const { key, modelModifiers } = prop;
+  if (!modelModifiers || !modelModifiers.length) return [];
+  const modifiersKey = key.isStatic ? key.content === "modelValue" ? [`modelModifiers`] : [`${key.content}Modifiers`] : ["[", ...genExpression$1(key, context), ' + "Modifiers"]'];
+  const modifiersVal = genDirectiveModifiers$1(modelModifiers);
+  return [",", compilerVapor.NEWLINE, ...modifiersKey, `: () => ({ ${modifiersVal} })`];
+}
+function genRawSlots$1(slots, context) {
+  if (!slots.length) return;
+  const staticSlots = slots[0];
+  if (staticSlots.slotType === 0) {
+    return genStaticSlots$1(
+      staticSlots,
+      context,
+      slots.length > 1 ? slots.slice(1) : void 0
+    );
+  } else {
+    return genStaticSlots$1(
+      { slots: {} },
+      context,
+      slots
+    );
+  }
+}
+function genStaticSlots$1({ slots }, context, dynamicSlots) {
+  const args = Object.keys(slots).map((name) => [
+    `${JSON.stringify(name)}: `,
+    ...genSlotBlockWithProps$1(slots[name], context)
+  ]);
+  if (dynamicSlots) {
+    args.push([`$: `, ...genDynamicSlots$1(dynamicSlots, context)]);
+  }
+  return compilerVapor.genMulti(compilerVapor.DELIMITERS_OBJECT_NEWLINE, ...args);
+}
+function genDynamicSlots$1(slots, context) {
+  return compilerVapor.genMulti(
+    compilerVapor.DELIMITERS_ARRAY_NEWLINE,
+    ...slots.map(
+      (slot) => slot.slotType === 0 ? genStaticSlots$1(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot$1(slot, context, true)
+    )
+  );
+}
+function genDynamicSlot$1(slot, context, withFunction = false) {
+  let frag;
+  switch (slot.slotType) {
+    case 1:
+      frag = genBasicDynamicSlot$1(slot, context);
+      break;
+    case 2:
+      frag = genLoopSlot$1(slot, context);
+      break;
+    case 3:
+      frag = genConditionalSlot$1(slot, context);
+      break;
+  }
+  return withFunction ? ["() => (", ...frag, ")"] : frag;
+}
+function genBasicDynamicSlot$1(slot, context) {
+  const { name, fn } = slot;
+  return compilerVapor.genMulti(
+    compilerVapor.DELIMITERS_OBJECT_NEWLINE,
+    [
+      "name: ",
+      ...genSharedDataExpression(
+        name,
+        context,
+        context.helper("toDisplayString")
+      )
+    ],
+    ["fn: ", ...genSlotBlockWithProps$1(fn, context)]
+  );
+}
+function genLoopSlot$1(slot, context) {
+  context.enterVFor();
+  const { name, fn, loop } = slot;
+  const { value, key, index, source } = loop;
+  const rawValue = value && value.content;
+  const rawKey = key && key.content;
+  const rawIndex = index && index.content;
+  const idMap = {};
+  if (rawValue) idMap[rawValue] = rawValue;
+  if (rawKey) idMap[rawKey] = rawKey;
+  if (rawIndex) idMap[rawIndex] = rawIndex;
+  const slotExpr = compilerVapor.genMulti(
+    compilerVapor.DELIMITERS_OBJECT_NEWLINE,
+    [
+      "name: ",
+      ...context.withId(() => {
+        if (!name.sharedData) {
+          return genExpression$1(name, context);
+        }
+        const resetBlock = context.enterBlock(fn);
+        const result = genSharedDataExpression(
+          name,
+          context,
+          context.helper("toDisplayString")
+        );
+        resetBlock();
+        return result;
+      }, idMap)
+    ],
+    [
+      "fn: ",
+      ...context.withId(() => genSlotBlockWithProps$1(fn, context), idMap)
+    ]
+  );
+  return [
+    ...compilerVapor.genCall(
+      context.helper("createSharedDataForSlots"),
+      compilerVapor.genCall(
+        context.helper("setSharedData"),
+        context.sharedDataVar,
+        JSON.stringify(source.sharedData.ident),
+        genSharedDataVFor(context)
+      ),
+      genExpression$1(source, context),
+      [
+        ...compilerVapor.genMulti(
+          ["(", ")", ", "],
+          context.sharedDataVForVar,
+          rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0,
+          rawKey ? rawKey : rawIndex ? "__" : void 0,
+          rawIndex
+        ),
+        " => (",
+        ...slotExpr,
+        ")"
+      ]
+    )
+  ];
+}
+function genConditionalSlot$1(slot, context) {
+  const { condition, positive, negative } = slot;
+  return [
+    ...genCondition$1(condition, context),
+    compilerVapor.INDENT_START,
+    compilerVapor.NEWLINE,
+    "? ",
+    ...genDynamicSlot$1(positive, context),
+    compilerVapor.NEWLINE,
+    ": ",
+    ...negative ? [...genDynamicSlot$1(negative, context)] : ["void 0"],
+    compilerVapor.INDENT_END
+  ];
+}
+function genSlotBlockWithProps$1(oper, context) {
+  let isDestructureAssignment = false;
+  let rawProps;
+  let propsName;
+  let exitScope;
+  let depth;
+  const { props } = oper;
+  const idsOfProps = /* @__PURE__ */ new Set();
+  if (props) {
+    rawProps = props.content;
+    if (isDestructureAssignment = !!props.ast) {
+      [depth, exitScope] = context.enterScope();
+      propsName = `_slotProps${depth}`;
+      compilerDom.walkIdentifiers(
+        props.ast,
+        (id, _, __, ___, isLocal) => {
+          if (isLocal) idsOfProps.add(id.name);
+        },
+        true
+      );
+    } else {
+      idsOfProps.add(propsName = rawProps);
+    }
+  }
+  const idMap = {};
+  idsOfProps.forEach(
+    (id) => idMap[id] = isDestructureAssignment ? `${propsName}[${JSON.stringify(id)}]` : null
+  );
+  const blockFn = context.withId(
+    () => genBlock$1(oper, context, [propsName]),
+    idMap
+  );
+  exitScope && exitScope();
+  return blockFn;
+}
+
+function genSlotOutlet$1(oper, context) {
+  const { helper } = context;
+  const { name, fallback } = oper;
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const nameExpr = !name.sharedData ? genExpression$1(name, context) : [
+    "() => (",
+    ...compilerVapor.genCall(
+      context.helper("setSharedData"),
+      context.sharedDataVar,
+      JSON.stringify(name.sharedData.ident),
+      genExpression$1(name, context)
+    ),
+    ")"
+  ];
+  let fallbackArg;
+  if (fallback) {
+    fallbackArg = genBlock$1(fallback, context);
+  }
+  push(
+    compilerVapor.NEWLINE,
+    ...compilerVapor.genCall(
+      helper("createSharedDataSlot"),
+      nameExpr,
+      genRawProps(oper.props, context) || "null",
+      fallbackArg
+    )
+  );
+  return frag;
+}
+
+function genOperations$1(opers, context) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  for (const operation of opers) {
+    push(...genOperationWithInsertionState$1(operation, context));
+  }
+  return frag;
+}
+function genOperationWithInsertionState$1(oper, context) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  push(...genOperation$1(oper, context));
+  return frag;
+}
+function genOperation$1(oper, context) {
+  switch (oper.type) {
+    case 2:
+      return genSetProp$1(oper, context);
+    case 3:
+      return genDynamicProps$2(oper, context);
+    case 4:
+      return genSetText$1(oper, context);
+    case 5:
+      return genSetEvent$1(oper, context);
+    case 6:
+      return genSetDynamicEvents$1(oper, context);
+    case 7:
+      return genSetHtml$1(oper, context);
+    case 8:
+      return genSetTemplateRef$1(oper, context);
+    case 9:
+      return genInsertNode$1(oper, context);
+    case 10:
+      return genPrependNode$1(oper, context);
+    case 15:
+      return genIf$1(oper, context);
+    case 16:
+      return genFor$1(oper, context);
+    case 11:
+      return genCreateComponent$1(oper, context);
+    case 14:
+      return genDeclareOldRef$1(oper);
+    case 12:
+      return genSlotOutlet$1(oper, context);
+    case 13:
+      return genBuiltinDirective$1(oper, context);
+    case 17:
+      return genGetTextChild$1();
+    default:
+      const exhaustiveCheck = oper;
+      throw new Error(
+        `Unhandled operation type in genOperation: ${exhaustiveCheck}`
+      );
+  }
+}
+function genEffects$1(effects, context, genExtraFrag) {
+  const { helper } = context;
+  const expressions = effects.flatMap((effect) => effect.expressions);
+  const [frag, push, unshift] = compilerVapor.buildCodeFragment();
+  const shouldDeclare = genExtraFrag === void 0;
+  let operationsCount = 0;
+  const {
+    ids,
+    frag: declarationFrags,
+    varNames
+  } = processExpressions$1(context, expressions, shouldDeclare);
+  push(...declarationFrags);
+  for (let i = 0; i < effects.length; i++) {
+    const effect = effects[i];
+    operationsCount += effect.operations.length;
+    const frags = context.withId(() => genEffect$1(effect, context), ids);
+    i > 0 && push(compilerVapor.NEWLINE);
+    if (frag[frag.length - 1] === ")" && frags[0] === "(") {
+      push(";");
+    }
+    push(...frags);
+  }
+  const newLineCount = frag.filter((frag2) => frag2 === compilerVapor.NEWLINE).length;
+  if (newLineCount > 1 || operationsCount > 1 || declarationFrags.length > 0) {
+    unshift(`{`, compilerVapor.INDENT_START, compilerVapor.NEWLINE);
+    push(compilerVapor.INDENT_END, compilerVapor.NEWLINE, "}");
+    if (!effects.length) {
+      unshift(compilerVapor.NEWLINE);
+    }
+  }
+  if (effects.length) {
+    unshift(compilerVapor.NEWLINE, `${helper("renderSharedDataEffect")}(() => `);
+    push(`)`);
+  }
+  if (!shouldDeclare && varNames.length) {
+    unshift(compilerVapor.NEWLINE, `let `, varNames.join(", "));
+  }
+  if (genExtraFrag) {
+    push(...context.withId(genExtraFrag, ids));
+  }
+  return frag;
+}
+function genEffect$1({ operations }, context) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const operationsExps = genOperations$1(operations, context);
+  const newlineCount = operationsExps.filter((frag2) => frag2 === compilerVapor.NEWLINE).length;
+  if (newlineCount > 1) {
+    push(...operationsExps);
+  } else {
+    push(...operationsExps.filter((frag2) => frag2 !== compilerVapor.NEWLINE));
+  }
+  return frag;
+}
+
+function genSelf$1(dynamic, context) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const { operation } = dynamic;
+  if (operation) {
+    push(...genOperationWithInsertionState$1(operation, context));
+  }
+  return frag;
+}
+function genChildren$1(dynamic, context) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const { children } = dynamic;
+  const childrenToGen = [];
+  for (const [_, child] of children.entries()) {
+    if (child.flags & 2) ;
+    const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
+    if (id === void 0 && !child.hasDynamicChild) {
+      push(...genSelf$1(child, context));
+      continue;
+    }
+    if (id === child.anchor) {
+      push(...genSelf$1(child, context));
+    }
+    childrenToGen.push(child);
+  }
+  if (childrenToGen.length) {
+    for (const child of childrenToGen) {
+      push(...genChildren$1(child, context));
+    }
+  }
+  return frag;
+}
+
+function genBlock$1(oper, context, args = [], root) {
+  return [
+    "(",
+    ...args,
+    ") => {",
+    compilerVapor.INDENT_START,
+    ...genBlockContent$1(oper, context, root),
+    compilerVapor.INDENT_END,
+    compilerVapor.NEWLINE,
+    "}"
+  ];
+}
+function genBlockContent$1(block, context, root, genEffectsExtraFrag) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const { dynamic, effect, operation } = block;
+  const resetBlock = context.enterBlock(block);
+  if (root) {
+    for (let name of context.ir.component) {
+      const id = compilerDom.toValidAssetId(name, "component");
+      const maybeSelfReference = name.endsWith("__self");
+      if (maybeSelfReference) name = name.slice(0, -6);
+      push(
+        compilerVapor.NEWLINE,
+        `const ${id} = `,
+        ...compilerVapor.genCall(
+          context.helper("resolveComponent"),
+          JSON.stringify(name),
+          // pass additional `maybeSelfReference` flag
+          maybeSelfReference ? "true" : void 0
+        )
+      );
+    }
+    genResolveAssets("directive", "resolveDirective");
+  }
+  for (const child of dynamic.children) {
+    push(...genSelf$1(child, context));
+  }
+  for (const child of dynamic.children) {
+    push(...genChildren$1(child, context));
+  }
+  push(...genOperations$1(operation, context));
+  push(
+    ...genEffects$1(
+      // fixed by uts for 中 matchPatterns 已经处理了一部分 effect
+      effect.filter((effect2) => !effect2.generated),
+      context,
+      genEffectsExtraFrag
+    )
+  );
+  resetBlock();
+  return frag;
+  function genResolveAssets(kind, helper) {
+    for (const name of context.ir[kind]) {
+      push(
+        compilerVapor.NEWLINE,
+        `const ${compilerDom.toValidAssetId(name, kind)} = `,
+        ...compilerVapor.genCall(context.helper(helper), JSON.stringify(name))
+      );
+    }
+  }
+}
+
+const RENDERER_TYPE = {
+  "ELEMENT": "element",
+  "NATIVE_VIEW": "nativeView"
+};
+const DOM2_APP_PLATFORM = {
+  "APP_ANDROID": "app-android",
+  "APP_HARMONY": "app-harmony",
+  "APP_IOS": "app-ios"
+};
+function getDom2AppTarget(platform, type) {
+  switch (platform) {
+    case "app-harmony":
+      return type === "element" ? "dom-c" : "nv-c";
+    case "app-android":
+      return type === "element" ? "dom-kt" : "nv-kt";
+    case "app-ios":
+      return type === "element" ? "dom-c" : "nv-c";
+  }
+}
+const TARGET_LANGUAGE = {
+  "TS": "ts",
+  "CPP": "cpp",
+  "KOTLIN": "kotlin",
+  "SWIFT": "swift"
+};
+const COMPONENT_TYPE = {
+  "APP": "app",
+  "PAGE": "page",
+  "COMPONENT": "component"
+};
+class SharedDataCodegenContext {
+  constructor() {
+    this.vForCount = -1;
+  }
+  enterVFor() {
+    this.vForCount++;
+    return this.vForCount;
+  }
+  get sharedDataVar() {
+    const { node } = this.block;
+    let isInVFor = false;
+    if ("__vFor" in node) {
+      isInVFor = node.__vFor;
+    }
+    node.__vFor = isInVFor = node.type === 1 && node.tagType === 3 && node.props.some(
+      (prop) => prop.type === 7 && prop.name === "for"
+    );
+    return isInVFor ? this.sharedDataVForVar : `__sharedData`;
+  }
+  get sharedDataVForVar() {
+    return `__sharedData_VFor${this.vForCount}`;
+  }
+  get sharedDataVForItemVar() {
+    return `__vForItem${this.vForCount}`;
+  }
+}
+
+class CodegenContext extends SharedDataCodegenContext {
+  constructor(ir, options) {
+    super();
+    this.ir = ir;
+    this.helpers = /* @__PURE__ */ new Set([]);
+    this.helper = (name) => {
+      this.helpers.add(name);
+      return `_${name}`;
+    };
+    this.delegates = /* @__PURE__ */ new Set();
+    this.identifiers = /* @__PURE__ */ Object.create(null);
+    this.seenInlineHandlerNames = /* @__PURE__ */ Object.create(null);
+    this.scopeLevel = 0;
+    const defaultOptions = {
+      mode: "module",
+      platform: "app-harmony",
+      prefixIdentifiers: true,
+      sourceMap: false,
+      filename: `template.vue.html`,
+      scopeId: null,
+      runtimeGlobalName: `Vue`,
+      runtimeModuleName: `vue`,
+      ssrRuntimeModuleName: "vue/server-renderer",
+      ssr: false,
+      isTS: false,
+      inSSR: false,
+      inline: false,
+      bindingMetadata: {},
+      expressionPlugins: [],
+      componentType: "page",
+      className: ""
+    };
+    this.options = shared.extend(defaultOptions, options);
+    this.block = ir.block;
+  }
+  withId(fn, map) {
+    const { identifiers } = this;
+    const ids = Object.keys(map);
+    for (const id of ids) {
+      identifiers[id] || (identifiers[id] = []);
+      identifiers[id].unshift(map[id] || id);
+    }
+    const ret = fn();
+    ids.forEach((id) => shared.remove(identifiers[id], map[id] || id));
+    return ret;
+  }
+  enterBlock(block) {
+    const parent = this.block;
+    this.block = block;
+    return () => this.block = parent;
+  }
+  enterScope() {
+    return [this.scopeLevel++, () => this.scopeLevel--];
+  }
+  get sharedDataScopeVar() {
+    return "__sharedDataScope";
+  }
+  get sharedDataVForClassType() {
+    return `\${__SHARED_DATA_CLASS_NAME_TYPE}_VFor${this.vForCount}`;
+  }
+}
+function generate$1(ir, options) {
+  const [frag, push] = compilerVapor.buildCodeFragment();
+  const context = new CodegenContext(ir, options);
+  const { helpers } = context;
+  const { inline } = options;
+  const functionName = "renderSharedData";
+  push(compilerVapor.NEWLINE, `return (function ${functionName}(): UniSharedData { 'raw js'`);
+  push(compilerVapor.INDENT_START);
+  if (options.componentType === "page") {
+    push(
+      compilerVapor.NEWLINE,
+      `const __sharedData = useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(__pageId!)`
+    );
+    push(compilerVapor.NEWLINE, `__sharedDataScope = __sharedData`);
+  } else {
+    push(
+      compilerVapor.NEWLINE,
+      `const __sharedData = useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope)`
+    );
+  }
+  if (ir.hasTemplateRef) {
+    push(
+      compilerVapor.NEWLINE,
+      `const ${setTemplateRefIdent} = ${context.helper("createSharedDataTemplateRefSetter")}()`
+    );
+  }
+  push(...genBlockContent$1(ir.block, context, true));
+  push(compilerVapor.NEWLINE, `return __sharedData`);
+  push(compilerVapor.INDENT_END, compilerVapor.NEWLINE);
+  push("})()");
+  const imports = genHelperImports$1(context);
+  const preamble = imports + genClassName(context);
+  const newlineCount = [...preamble].filter((c) => c === "\n").length;
+  if (newlineCount && !inline) {
+    frag.unshift(...new Array(newlineCount).fill(compilerVapor.LF));
+  }
+  const [code, map] = compilerVapor.codeFragmentToString(frag, context);
+  return {
+    code,
+    ast: ir,
+    preamble,
+    map: map && map.toJSON(),
+    helpers
+  };
+}
+function genHelperImports$1({ helpers, options }) {
+  let imports = "";
+  if (helpers.size) {
+    imports += `import { ${[...helpers].map((h) => `${h} as _${h}`).join(", ")} } from '${options.runtimeModuleName}';
+`;
+  }
+  return imports;
+}
+function genClassName(context) {
+  return `
+const __className = '${context.options.className}' as const
+type __SHARED_DATA_CLASS_NAME_TYPE = \`\${typeof __className}SharedData\`
+`;
+}
+
+const NEWLINE = Symbol(`newline` );
+const LF = Symbol(`line feed` );
+const INDENT_START = Symbol(`indent start` );
+const INDENT_END = Symbol(`indent end` );
+function buildCodeFragment(...frag) {
+  const push = frag.push.bind(frag);
+  const unshift = frag.unshift.bind(frag);
+  return [frag, push, unshift];
+}
+function genMulti([left, right, seg, placeholder], ...frags) {
+  if (placeholder) {
+    while (frags.length > 0 && !frags[frags.length - 1]) {
+      frags.pop();
+    }
+    frags = frags.map((frag2) => frag2 || placeholder);
+  } else {
+    frags = frags.filter(Boolean);
+  }
+  const frag = [];
+  push(left);
+  for (let [i, fn] of frags.entries()) {
+    push(fn);
+    if (i < frags.length - 1) push(seg);
+  }
+  push(right);
+  return frag;
+  function push(fn) {
+    if (!shared.isArray(fn)) fn = [fn];
+    frag.push(...fn);
+  }
+}
+const DELIMITERS_ARRAY = ["[", "]", ", "];
+const DELIMITERS_ARRAY_NEWLINE = [
+  ["[", INDENT_START, NEWLINE],
+  [INDENT_END, NEWLINE, "]"],
+  [", ", NEWLINE]
+];
+const DELIMITERS_OBJECT_NEWLINE = [
+  ["{", INDENT_START, NEWLINE],
+  [INDENT_END, NEWLINE, "}"],
+  [", ", NEWLINE]
+];
+function genCall(name, ...frags) {
+  const hasPlaceholder = shared.isArray(name);
+  const fnName = hasPlaceholder ? name[0] : name;
+  const placeholder = hasPlaceholder ? name[1] : "null";
+  return [fnName, ...genMulti(["(", ")", ", ", placeholder], ...frags)];
+}
+function codeFragmentToString(code, context) {
+  const {
+    options: { filename, sourceMap }
+  } = context;
+  let map;
+  if (sourceMap) {
+    map = new sourceMapJs.SourceMapGenerator();
+    map.setSourceContent(filename, context.ir.source);
+    map._sources.add(filename);
+  }
+  let codegen = "";
+  const pos = { line: 1, column: 1, offset: 0 };
+  let indentLevel = 0;
+  for (let frag of code) {
+    if (!frag) continue;
+    if (frag === NEWLINE) {
+      frag = [`
+${`  `.repeat(indentLevel)}`, 0];
+    } else if (frag === INDENT_START) {
+      indentLevel++;
+      continue;
+    } else if (frag === INDENT_END) {
+      indentLevel--;
+      continue;
+    } else if (frag === LF) {
+      pos.line++;
+      pos.column = 0;
+      pos.offset++;
+      continue;
+    }
+    if (shared.isString(frag)) frag = [frag];
+    let [code2, newlineIndex = -2, loc, name] = frag;
+    codegen += code2;
+    if (map) {
+      if (loc) addMapping(loc.start, name);
+      if (newlineIndex === -3) {
+        compilerDom.advancePositionWithMutation(pos, code2);
+      } else {
+        pos.offset += code2.length;
+        if (newlineIndex === -2) {
+          pos.column += code2.length;
+        } else {
+          if (newlineIndex === -1) {
+            newlineIndex = code2.length - 1;
+          }
+          pos.line++;
+          pos.column = code2.length - newlineIndex;
+        }
+      }
+      if (loc && loc !== compilerDom.locStub) {
+        addMapping(loc.end);
+      }
+    }
+  }
+  return [codegen, map];
+  function addMapping(loc, name = null) {
+    const { _names, _mappings } = map;
+    if (name !== null && !_names.has(name)) _names.add(name);
+    _mappings.add({
+      originalLine: loc.line,
+      originalColumn: loc.column - 1,
+      // source-map column is 0 based
+      generatedLine: pos.line,
+      generatedColumn: pos.column - 1,
+      source: filename,
+      name
+    });
+  }
+}
+
+function genInsertNode({ parent, elements, anchor }, { helper }) {
+  let element = elements.map((el) => `n${el}`).join(", ");
+  if (elements.length > 1) element = `[${element}]`;
+  return [
+    NEWLINE,
+    ...genCall(
+      helper("insert"),
+      element,
+      `n${parent}`,
+      anchor === void 0 ? void 0 : `n${anchor}`
+    )
+  ];
+}
+function genPrependNode(oper, { helper }) {
+  return [
+    NEWLINE,
+    ...genCall(
+      helper("prepend"),
+      `n${oper.parent}`,
+      ...oper.elements.map((el) => `n${el}`)
+    )
+  ];
+}
+
+function genExpression(node, context, assignment) {
+  const { content, ast, isStatic, loc, sharedData } = node;
+  if (sharedData) {
+    return [[context.sharedDataIdent(sharedData.ident), -2, loc]];
+  }
+  if (isStatic) {
+    return [[JSON.stringify(content), -2, loc]];
+  }
+  if (!node.content.trim() || // there was a parsing error
+  ast === false || compilerVapor.isConstantExpression(node)) {
+    return [[content, -2, loc], assignment && ` = ${assignment}`];
+  }
+  if (ast === null) {
+    return genIdentifier(content, context, loc, assignment);
+  }
+  const ids = [];
+  const parentStackMap = /* @__PURE__ */ new Map();
+  const parentStack = [];
+  compilerDom.walkIdentifiers(
+    ast,
+    (id) => {
+      ids.push(id);
+      parentStackMap.set(id, parentStack.slice());
+    },
+    false,
+    parentStack
+  );
+  let hasMemberExpression = false;
+  if (ids.length) {
+    const [frag, push] = buildCodeFragment();
+    const isTSNode = ast && compilerDom.TS_NODE_TYPES.includes(ast.type);
+    ids.sort((a, b) => a.start - b.start).forEach((id, i) => {
+      const start = id.start - 1;
+      const end = id.end - 1;
+      const last = ids[i - 1];
+      if (!(isTSNode && i === 0)) {
+        const leadingText = content.slice(last ? last.end - 1 : 0, start);
+        if (leadingText.length) push([leadingText, -3]);
+      }
+      const source = content.slice(start, end);
+      const parentStack2 = parentStackMap.get(id);
+      const parent = parentStack2[parentStack2.length - 1];
+      hasMemberExpression || (hasMemberExpression = parent && (parent.type === "MemberExpression" || parent.type === "OptionalMemberExpression"));
+      push(
+        ...genIdentifier(
+          source,
+          context,
+          {
+            start: compilerDom.advancePositionWithClone(node.loc.start, source, start),
+            end: compilerDom.advancePositionWithClone(node.loc.start, source, end),
+            source
+          },
+          hasMemberExpression ? void 0 : assignment,
+          id,
+          parent,
+          parentStack2
+        )
+      );
+      if (i === ids.length - 1 && end < content.length && !isTSNode) {
+        push([content.slice(end), -3]);
+      }
+    });
+    if (assignment && hasMemberExpression) {
+      push(` = ${assignment}`);
+    }
+    return frag;
+  } else {
+    return [[content, -3, loc]];
+  }
+}
+function genIdentifier(raw, context, loc, assignment, id, parent, parentStack) {
+  const { options, helper, identifiers } = context;
+  const { inline, bindingMetadata } = options;
+  let name = raw;
+  const idMap = identifiers[raw];
+  if (idMap && idMap.length) {
+    const replacement = idMap[0];
+    if (shared.isString(replacement)) {
+      if (parent && parent.type === "ObjectProperty" && parent.shorthand) {
+        return [[`${name}: ${replacement}`, -2, loc]];
+      } else {
+        return [[replacement, -2, loc]];
+      }
+    } else {
+      return genExpression(replacement, context, assignment);
+    }
+  }
+  let prefix;
+  if (compilerDom.isStaticProperty(parent) && parent.shorthand) {
+    prefix = `${raw}: `;
+  }
+  const type = bindingMetadata && bindingMetadata[raw];
+  if (inline) {
+    switch (type) {
+      case "setup-let":
+        name = raw = assignment ? `_isRef(${raw}) ? (${raw}.value = ${assignment}) : (${raw} = ${assignment})` : unref();
+        break;
+      case "setup-ref":
+        name = raw = withAssignment(`${raw}.value`);
+        break;
+      case "setup-maybe-ref":
+        const isDestructureAssignment = parent && compilerDom.isInDestructureAssignment(parent, parentStack || []);
+        const isAssignmentLVal = parent && parent.type === "AssignmentExpression" && parent.left === id;
+        const isUpdateArg = parent && parent.type === "UpdateExpression" && parent.argument === id;
+        raw = isAssignmentLVal || isUpdateArg || isDestructureAssignment ? name = `${raw}.value` : assignment ? `${helper("isRef")}(${raw}) ? (${raw}.value = ${assignment}) : null` : unref();
+        break;
+      case "props":
+        raw = shared.genPropsAccessExp(raw);
+        break;
+      case "props-aliased":
+        raw = shared.genPropsAccessExp(bindingMetadata.__propsAliases[raw]);
+        break;
+      default:
+        raw = withAssignment(raw);
+    }
+  } else {
+    if (canPrefix(raw)) {
+      if (type === "props-aliased") {
+        raw = `$props['${bindingMetadata.__propsAliases[raw]}']`;
+      } else {
+        raw = `${type === "props" ? "$props" : "_ctx"}.${raw}`;
+      }
+    }
+    raw = withAssignment(raw);
+  }
+  return [prefix, [raw, -2, loc, name]];
+  function withAssignment(s) {
+    return assignment ? `${s} = ${assignment}` : s;
+  }
+  function unref() {
+    return `${helper("unref")}(${raw})`;
+  }
+}
+function canPrefix(name) {
+  if (shared.isGloballyAllowed(name)) {
+    return false;
+  }
+  if (
+    // special case for webpack compilation
+    name === "require" || name === "$props" || name === "$emit" || name === "$attrs" || name === "$slots"
+  )
+    return false;
+  return true;
+}
+function processExpressions(context, expressions, shouldDeclare) {
+  const {
+    seenVariable,
+    variableToExpMap,
+    expToVariableMap,
+    seenIdentifier,
+    updatedVariable
+  } = analyzeExpressions(expressions);
+  const varDeclarations = processRepeatedVariables(
+    context,
+    seenVariable,
+    variableToExpMap,
+    expToVariableMap,
+    seenIdentifier,
+    updatedVariable
+  );
+  const expDeclarations = processRepeatedExpressions(
+    context,
+    expressions,
+    varDeclarations,
+    updatedVariable,
+    expToVariableMap
+  );
+  return genDeclarations(
+    [...varDeclarations, ...expDeclarations],
+    context,
+    shouldDeclare
+  );
+}
+function analyzeExpressions(expressions) {
+  const seenVariable = /* @__PURE__ */ Object.create(null);
+  const variableToExpMap = /* @__PURE__ */ new Map();
+  const expToVariableMap = /* @__PURE__ */ new Map();
+  const seenIdentifier = /* @__PURE__ */ new Set();
+  const updatedVariable = /* @__PURE__ */ new Set();
+  const registerVariable = (name, exp, isIdentifier, loc, parentStack = []) => {
+    if (isIdentifier) seenIdentifier.add(name);
+    seenVariable[name] = (seenVariable[name] || 0) + 1;
+    variableToExpMap.set(
+      name,
+      (variableToExpMap.get(name) || /* @__PURE__ */ new Set()).add(exp)
+    );
+    const variables = expToVariableMap.get(exp) || [];
+    variables.push({ name, loc });
+    expToVariableMap.set(exp, variables);
+    if (parentStack.some(
+      (p) => p.type === "UpdateExpression" || p.type === "AssignmentExpression"
+    )) {
+      updatedVariable.add(name);
+    }
+  };
+  for (const exp of expressions) {
+    if (!exp.ast) {
+      exp.ast === null && registerVariable(exp.content, exp, true);
+      continue;
+    }
+    compilerDom.walkIdentifiers(exp.ast, (currentNode, parent, parentStack) => {
+      if (parent && isMemberExpression(parent)) {
+        const memberExp = extractMemberExpression(parent, (id) => {
+          registerVariable(id.name, exp, true, {
+            start: id.start,
+            end: id.end
+          });
+        });
+        registerVariable(
+          memberExp,
+          exp,
+          false,
+          { start: parent.start, end: parent.end },
+          parentStack
+        );
+      } else if (!parentStack.some(isMemberExpression)) {
+        registerVariable(
+          currentNode.name,
+          exp,
+          true,
+          { start: currentNode.start, end: currentNode.end },
+          parentStack
+        );
+      }
+    });
+  }
+  return {
+    seenVariable,
+    seenIdentifier,
+    variableToExpMap,
+    expToVariableMap,
+    updatedVariable
+  };
+}
+function processRepeatedVariables(context, seenVariable, variableToExpMap, expToVariableMap, seenIdentifier, updatedVariable) {
+  const declarations = [];
+  const expToReplacementMap = /* @__PURE__ */ new Map();
+  for (const [name, exps] of variableToExpMap) {
+    if (updatedVariable.has(name)) continue;
+    if (seenVariable[name] > 1 && exps.size > 0) {
+      const isIdentifier = seenIdentifier.has(name);
+      const varName = isIdentifier ? name : genVarName(name);
+      exps.forEach((node) => {
+        if (node.ast && varName !== name) {
+          const replacements = expToReplacementMap.get(node) || [];
+          replacements.push({
+            name: varName,
+            locs: expToVariableMap.get(node).reduce(
+              (locs, v) => {
+                if (v.name === name && v.loc) locs.push(v.loc);
+                return locs;
+              },
+              []
+            )
+          });
+          expToReplacementMap.set(node, replacements);
+        }
+      });
+      if (!declarations.some((d) => d.name === varName) && (!isIdentifier || shouldDeclareVariable(name, expToVariableMap, exps))) {
+        declarations.push({
+          name: varName,
+          isIdentifier,
+          value: shared.extend(
+            { ast: isIdentifier ? null : parseExp(context, name) },
+            compilerDom.createSimpleExpression(name)
+          ),
+          rawName: name,
+          exps,
+          seenCount: seenVariable[name]
+        });
+      }
+    }
+  }
+  for (const [exp, replacements] of expToReplacementMap) {
+    replacements.flatMap(
+      ({ name, locs }) => locs.map(({ start, end }) => ({ start, end, name }))
+    ).sort((a, b) => b.end - a.end).forEach(({ start, end, name }) => {
+      exp.content = exp.content.slice(0, start - 1) + name + exp.content.slice(end - 1);
+    });
+    exp.ast = parseExp(context, exp.content);
+  }
+  return declarations;
+}
+function shouldDeclareVariable(name, expToVariableMap, exps) {
+  const vars = Array.from(
+    exps,
+    (exp) => expToVariableMap.get(exp).map((v) => v.name)
+  );
+  if (vars.every((v) => v.length === 1)) {
+    return true;
+  }
+  if (vars.some((v) => v.filter((e) => e === name).length > 1)) {
+    return true;
+  }
+  const first = vars[0];
+  if (vars.some((v) => v.length !== first.length)) {
+    if (vars.some(
+      (v) => v.length > first.length && v.every((e) => first.includes(e))
+    ) || vars.some((v) => first.length > v.length && first.every((e) => v.includes(e)))) {
+      return false;
+    }
+    return true;
+  }
+  if (vars.some((v) => v.some((e) => first.includes(e)))) {
+    return false;
+  }
+  return true;
+}
+function processRepeatedExpressions(context, expressions, varDeclarations, updatedVariable, expToVariableMap) {
+  const declarations = [];
+  const seenExp = expressions.reduce(
+    (acc, exp) => {
+      const variables = expToVariableMap.get(exp).map((v) => v.name);
+      if (exp.ast && exp.ast.type !== "Identifier" && !(variables && variables.some((v) => updatedVariable.has(v)))) {
+        acc[exp.content] = (acc[exp.content] || 0) + 1;
+      }
+      return acc;
+    },
+    /* @__PURE__ */ Object.create(null)
+  );
+  Object.entries(seenExp).forEach(([content, count]) => {
+    if (count > 1) {
+      const varName = genVarName(content);
+      if (!declarations.some((d) => d.name === varName)) {
+        const delVars = {};
+        for (let i = varDeclarations.length - 1; i >= 0; i--) {
+          const item = varDeclarations[i];
+          if (!item.exps || !item.seenCount) continue;
+          const shouldRemove = [...item.exps].every(
+            (node) => node.content === content && item.seenCount === count
+          );
+          if (shouldRemove) {
+            delVars[item.name] = item.rawName;
+            varDeclarations.splice(i, 1);
+          }
+        }
+        const value = shared.extend(
+          {},
+          expressions.find((exp) => exp.content === content)
+        );
+        Object.keys(delVars).forEach((name) => {
+          value.content = value.content.replace(name, delVars[name]);
+          if (value.ast) value.ast = parseExp(context, value.content);
+        });
+        declarations.push({
+          name: varName,
+          value
+        });
+      }
+      expressions.forEach((exp) => {
+        if (exp.content === content) {
+          exp.content = varName;
+          exp.ast = null;
+        } else if (exp.content.includes(content)) {
+          exp.content = exp.content.replace(
+            new RegExp(escapeRegExp(content), "g"),
+            varName
+          );
+          exp.ast = parseExp(context, exp.content);
+        }
+      });
+    }
+  });
+  return declarations;
+}
+function genDeclarations(declarations, context, shouldDeclare) {
+  const [frag, push] = buildCodeFragment();
+  const ids = /* @__PURE__ */ Object.create(null);
+  const varNames = /* @__PURE__ */ new Set();
+  declarations.forEach(({ name, isIdentifier, value }) => {
+    if (isIdentifier) {
+      const varName = ids[name] = `_${name}`;
+      varNames.add(varName);
+      if (shouldDeclare) {
+        push(`const `);
+      }
+      push(`${varName} = `, ...genExpression(value, context), NEWLINE);
+    }
+  });
+  declarations.forEach(({ name, isIdentifier, value }) => {
+    if (!isIdentifier) {
+      const varName = ids[name] = `_${name}`;
+      varNames.add(varName);
+      if (shouldDeclare) {
+        push(`const `);
+      }
+      push(
+        `${varName} = `,
+        ...context.withId(() => genExpression(value, context), ids),
+        NEWLINE
+      );
+    }
+  });
+  return { ids, frag, varNames: [...varNames] };
+}
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function parseExp(context, content) {
+  const plugins = context.options.expressionPlugins;
+  const options = {
+    plugins: plugins ? [...plugins, "typescript"] : ["typescript"]
+  };
+  return parser.parseExpression(`(${content})`, options);
+}
+function genVarName(exp) {
+  return `${exp.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_").replace(/_+$/, "")}`;
+}
+function extractMemberExpression(exp, onIdentifier) {
+  if (!exp) return "";
+  switch (exp.type) {
+    case "Identifier":
+      onIdentifier(exp);
+      return exp.name;
+    case "StringLiteral":
+      return exp.extra ? exp.extra.raw : exp.value;
+    case "NumericLiteral":
+      return exp.value.toString();
+    case "BinaryExpression":
+      return `${extractMemberExpression(exp.left, onIdentifier)} ${exp.operator} ${extractMemberExpression(exp.right, onIdentifier)}`;
+    case "CallExpression":
+      return `${extractMemberExpression(exp.callee, onIdentifier)}(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
+    case "MemberExpression":
+    // foo[bar.baz]
+    case "OptionalMemberExpression":
+      const object = extractMemberExpression(exp.object, onIdentifier);
+      const prop = exp.computed ? `[${extractMemberExpression(exp.property, onIdentifier)}]` : `.${extractMemberExpression(exp.property, shared.NOOP)}`;
+      return `${object}${prop}`;
+    default:
+      return "";
+  }
+}
+const isMemberExpression = (node) => {
+  return node.type === "MemberExpression" || node.type === "OptionalMemberExpression";
+};
+
+function genSetEvent(oper, context) {
+  if (!(context.feature & 2)) {
+    return [];
+  }
+  const { element, key, keyOverride, modifiers, delegate, effect, sharedData } = oper;
+  const name = genName();
+  const eventOptions = genEventOptions();
+  const eventId = `e${sharedData.ident}${oper.element}`;
+  return [
+    NEWLINE,
+    `const ${eventId} = ${context.sharedDataIdent(sharedData.ident)}`,
+    NEWLINE,
+    ...genCall(
+      context.helper(delegate ? "delegate" : "onElement"),
+      `n${element}`,
+      name,
+      [`(event: UniEvent) => {`, `${eventId}(event)`, `}`],
+      eventOptions
+    )
+  ];
+  function genName() {
+    const expr = genExpression(key, context);
+    if (keyOverride) {
+      const find = JSON.stringify(keyOverride[0]);
+      const replacement = JSON.stringify(keyOverride[1]);
+      const wrapped = ["(", ...expr, ")"];
+      return [...wrapped, ` === ${find} ? ${replacement} : `, ...wrapped];
+    } else {
+      return genExpression(key, context);
+    }
+  }
+  function genEventOptions() {
+    let { options } = modifiers;
+    if (!options.length && !effect) return;
+    return genMulti(
+      DELIMITERS_OBJECT_NEWLINE,
+      effect && ["effect: true"],
+      ...options.map((option) => [`${option}: true`])
+    );
+  }
+}
+function genSetDynamicEvents(oper, context) {
+  if (!(context.feature & 2)) {
+    return [];
+  }
+  const { helper, sharedDataIdent } = context;
+  return [
+    NEWLINE,
+    ...genCall(
+      helper("setElementDynamicEvents"),
+      `n${oper.element}`,
+      sharedDataIdent(oper.event.sharedData.ident)
+    )
+  ];
+}
+function genEventHandler(context, value, modifiers = { nonKeys: [], keys: [] }, extraWrap = false) {
+  let handlerExp = [`() => {}`];
+  if (value && value.content.trim()) {
+    if (compilerDom.isMemberExpression(value, context.options)) {
+      handlerExp = genExpression(value, context);
+      if (!isConstantBinding(value, context) && !extraWrap) {
+        handlerExp = [`e => `, ...handlerExp, `(e)`];
+      }
+    } else if (compilerDom.isFnExpression(value, context.options)) {
+      handlerExp = genExpression(value, context);
+    } else {
+      const referencesEvent = value.content.includes("$event");
+      const hasMultipleStatements = value.content.includes(`;`);
+      const expr = referencesEvent ? context.withId(() => genExpression(value, context), {
+        $event: null
+      }) : genExpression(value, context);
+      handlerExp = [
+        referencesEvent ? "$event => " : "() => ",
+        hasMultipleStatements ? "{" : "(",
+        ...expr,
+        hasMultipleStatements ? "}" : ")"
+      ];
+    }
+  }
+  const { keys, nonKeys } = modifiers;
+  if (nonKeys.length)
+    handlerExp = genWithModifiers(context, handlerExp, nonKeys);
+  if (keys.length) handlerExp = genWithKeys(context, handlerExp, keys);
+  if (extraWrap) handlerExp.unshift(`() => `);
+  return handlerExp;
+}
+function genWithModifiers(context, handler, nonKeys) {
+  return genCall(
+    context.helper("withModifiers"),
+    handler,
+    JSON.stringify(nonKeys)
+  );
+}
+function genWithKeys(context, handler, keys) {
+  return genCall(context.helper("withKeys"), handler, JSON.stringify(keys));
+}
+function isConstantBinding(value, context) {
+  if (value.ast === null) {
+    const bindingType = context.options.bindingMetadata[value.content];
+    if (bindingType === "setup-const") {
+      return true;
+    }
+  }
+}
+
+function genFor(oper, context) {
+  const { helper, factoryVar } = context;
+  const {
+    source,
+    value,
+    key,
+    index,
+    render,
+    keyProp,
+    once,
+    id,
+    component,
+    onlyChild
+  } = oper;
+  let rawValue = null;
+  const rawKey = key && key.content;
+  const rawIndex = index && index.content;
+  const sourceExpr = ["() => (", ...genExpression(source, context), ")"];
+  const idToPathMap = parseValueDestructure();
+  const count = context.enterVFor();
+  const [_, exitScope] = context.enterScope();
+  const idMap = {};
+  const itemVar = `_for_item${count}`;
+  idMap[itemVar] = null;
+  idToPathMap.forEach((pathInfo, id2) => {
+    let path = `${itemVar}.value${pathInfo ? pathInfo.path : ""}`;
+    if (pathInfo) {
+      if (pathInfo.helper) {
+        idMap[pathInfo.helper] = null;
+        path = `${pathInfo.helper}(${path}, ${pathInfo.helperArgs})`;
+      }
+      if (pathInfo.dynamic) {
+        const node = idMap[id2] = compilerDom.createSimpleExpression(path);
+        const plugins = context.options.expressionPlugins;
+        node.ast = parser.parseExpression(`(${path})`, {
+          plugins: plugins ? [...plugins, "typescript"] : ["typescript"]
+        });
+      } else {
+        idMap[id2] = path;
+      }
+    } else {
+      idMap[id2] = path;
+    }
+  });
+  const args = [context.sharedDataVForItemVar];
+  const useSharedDataVFor = `const ${context.sharedDataVForVar} = useSharedDataVFor<UniSharedData, ${context.sharedDataVForClass}>(${context.sharedDataVForItemVar})`;
+  const keyVar = `_for_key${count}`;
+  args.push(`, ${keyVar}`);
+  if (rawKey) {
+    idMap[rawKey] = `${keyVar}.value`;
+    idMap[keyVar] = null;
+  }
+  const indexVar = `_for_index${count}`;
+  args.push(`, ${indexVar}`);
+  if (rawIndex) {
+    idMap[rawIndex] = `${indexVar}.value`;
+    idMap[indexVar] = null;
+  }
+  const resetBlock = context.enterBlock(render);
+  const getKeyFrag = genCallback(keyProp, context.sharedDataVForItemVar);
+  resetBlock();
+  const { selectorPatterns, keyOnlyBindingPatterns } = matchPatterns(
+    render,
+    keyProp,
+    idMap
+  );
+  const blockFn = context.withId(() => {
+    const frag = [];
+    frag.push(
+      "(",
+      ...args,
+      ") => {",
+      INDENT_START,
+      NEWLINE,
+      useSharedDataVFor,
+      NEWLINE
+    );
+    if (selectorPatterns.length || keyOnlyBindingPatterns.length) {
+      frag.push(
+        ...genBlockContent(render, context, false, () => {
+          const patternFrag = [];
+          for (let i = 0; i < selectorPatterns.length; i++) {
+            const { effect } = selectorPatterns[i];
+            const operFrag = [];
+            for (const oper2 of effect.operations) {
+              operFrag.push(...genOperation(oper2, context));
+            }
+            if (operFrag.length) {
+              patternFrag.push(
+                NEWLINE,
+                helper(`render${context.helperType}Effect`),
+                `(() => {`,
+                INDENT_START
+              );
+              patternFrag.push(...operFrag);
+              patternFrag.push(INDENT_END, NEWLINE, `})`);
+            }
+          }
+          for (const { effect } of keyOnlyBindingPatterns) {
+            for (const oper2 of effect.operations) {
+              patternFrag.push(...genOperation(oper2, context));
+            }
+          }
+          return patternFrag;
+        })
+      );
+    } else {
+      frag.push(...genBlockContent(render, context));
+    }
+    frag.push(INDENT_END, NEWLINE, "}");
+    return frag;
+  }, idMap);
+  exitScope();
+  let flags = 0;
+  if (onlyChild) {
+    flags |= 1;
+  }
+  if (component) {
+    flags |= 2;
+  }
+  if (once) {
+    flags |= 4;
+  }
+  return [
+    NEWLINE,
+    `const n${id} = `,
+    ...genCall(
+      [helper(`create${context.helperType}For`), "undefined"],
+      factoryVar,
+      sourceExpr,
+      blockFn,
+      getKeyFrag,
+      flags ? String(flags) : void 0,
+      void 0
+      // todo: hydrationNode
+    )
+  ];
+  function parseValueDestructure() {
+    const map = /* @__PURE__ */ new Map();
+    if (value) {
+      rawValue = value && value.content;
+      if (value.ast) {
+        compilerDom.walkIdentifiers(
+          value.ast,
+          (id2, _2, parentStack, ___, isLocal) => {
+            if (isLocal) {
+              let path = "";
+              let isDynamic = false;
+              let helper2;
+              let helperArgs;
+              for (let i = 0; i < parentStack.length; i++) {
+                const parent = parentStack[i];
+                const child = parentStack[i + 1] || id2;
+                if (parent.type === "ObjectProperty" && parent.value === child) {
+                  if (parent.key.type === "StringLiteral") {
+                    path += `[${JSON.stringify(parent.key.value)}]`;
+                  } else if (parent.computed) {
+                    isDynamic = true;
+                    path += `[${value.content.slice(
+                      parent.key.start - 1,
+                      parent.key.end - 1
+                    )}]`;
+                  } else {
+                    path += `.${parent.key.name}`;
+                  }
+                } else if (parent.type === "ArrayPattern") {
+                  const index2 = parent.elements.indexOf(child);
+                  if (child.type === "RestElement") {
+                    path += `.slice(${index2})`;
+                  } else {
+                    path += `[${index2}]`;
+                  }
+                } else if (parent.type === "ObjectPattern" && child.type === "RestElement") {
+                  helper2 = context.helper("getRestElement");
+                  helperArgs = "[" + parent.properties.filter((p) => p.type === "ObjectProperty").map((p) => {
+                    if (p.key.type === "StringLiteral") {
+                      return JSON.stringify(p.key.value);
+                    } else if (p.computed) {
+                      isDynamic = true;
+                      return value.content.slice(
+                        p.key.start - 1,
+                        p.key.end - 1
+                      );
+                    } else {
+                      return JSON.stringify(p.key.name);
+                    }
+                  }).join(", ") + "]";
+                }
+                if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern")) {
+                  isDynamic = true;
+                  helper2 = context.helper("getDefaultValue");
+                  helperArgs = value.content.slice(
+                    child.right.start - 1,
+                    child.right.end - 1
+                  );
+                }
+              }
+              map.set(id2.name, { path, dynamic: isDynamic, helper: helper2, helperArgs });
+            }
+          },
+          true
+        );
+      } else {
+        map.set(rawValue, null);
+      }
+    }
+    return map;
+  }
+  function genCallback(expr, sharedDataVForItemVar) {
+    if (!expr) return false;
+    const res = context.withId(
+      () => genExpression(expr, context),
+      genSimpleIdMap()
+    );
+    return [
+      ...genMulti(["(", ")", ", "], sharedDataVForItemVar, "_", "__"),
+      " => {",
+      NEWLINE,
+      useSharedDataVFor,
+      NEWLINE,
+      "return ",
+      ...res,
+      "}"
+    ];
+  }
+  function genSimpleIdMap() {
+    const idMap2 = {};
+    if (rawKey) idMap2[rawKey] = null;
+    if (rawIndex) idMap2[rawIndex] = null;
+    idToPathMap.forEach((_2, id2) => idMap2[id2] = null);
+    return idMap2;
+  }
+}
+
+function genSetHtml(oper, context) {
+  const { helper } = context;
+  const { value, element } = oper;
+  return [
+    NEWLINE,
+    ...genCall(helper("setHtml"), `n${element}`, genExpression(value, context))
+  ];
+}
+
+function genIf(oper, context, isNested = false) {
+  const { helper, factoryVar } = context;
+  const { condition, positive, negative, once } = oper;
+  const [frag, push] = buildCodeFragment();
+  const conditionExpr = [
+    "() => (",
+    ...genCondition(condition, context),
+    ")"
+  ];
+  let positiveArg = genBlock(positive, context);
+  let negativeArg = false;
+  if (negative) {
+    if (negative.type === 1) {
+      negativeArg = genBlock(negative, context);
+    } else {
+      negativeArg = ["() => ", ...genIf(negative, context, true)];
+    }
+  }
+  if (!isNested) push(NEWLINE, `const n${oper.id} = `);
+  push(
+    ...genCall(
+      helper(`create${context.helperType}If`),
+      factoryVar,
+      conditionExpr,
+      positiveArg,
+      negativeArg,
+      once && "true"
+    )
+  );
+  return frag;
+}
+function genCondition(condition, context) {
+  return !condition.sharedData ? [JSON.stringify(parseSharedDataBooleanExpression(condition))] : genExpression(condition, context);
+}
+
+const elementHelpers = {
+  // setElementHtml: { name: 'setElementHtml' },
+  setElementClass: { name: "setElementClass" },
+  setElementStyle: { name: "setElementStyle" },
+  // setElementValue: { name: 'setElementValue' },
+  setElementAttr: { name: "setElementAttr", needKey: true }
+  // setElementProp: { name: 'setElementProp', needKey: true },
+  // setElementDOMProp: { name: 'setElementDOMProp', needKey: true },
+  // setElementDynamicProps: { name: 'setElementDynamicProps' },
+};
+const nativeViewHelpers = {
+  // setElementText: { name: 'setElementText' },
+  // setElementHtml: { name: 'setElementHtml' },
+  // setElementClass: { name: 'setElementClass' },
+  // setElementStyle: { name: 'setElementStyle' },
+  // setNativeViewValue: { name: 'setNativeViewValue' },
+  setNativeViewAttr: { name: "setNativeViewAttr", needKey: true }
+  // setElementProp: { name: 'setElementProp', needKey: true },
+  // setElementDOMProp: { name: 'setElementDOMProp', needKey: true },
+  // setElementDynamicProps: { name: 'setElementDynamicProps' },
+};
+function genSetProp(oper, context) {
+  const { helper } = context;
+  const {
+    prop: { key, values, modifier, sharedData },
+    tag
+  } = oper;
+  const propName = key.content;
+  if (propName === "class" && !(context.feature & 16)) {
+    return [];
+  }
+  if (propName === "id" && !(context.feature & 32)) {
+    return [];
+  }
+  const resolvedHelper = context.options.renderer === "nativeView" ? getNativeViewRuntimeHelper(tag, propName, modifier) : getElementRuntimeHelper(tag, propName, modifier);
+  if (sharedData) {
+    return [
+      NEWLINE,
+      ...genCall(
+        [helper(resolvedHelper.name), null],
+        `n${oper.element}`,
+        resolvedHelper.needKey ? genExpression(key, context) : false,
+        context.sharedDataIdent(sharedData.ident)
+      )
+    ];
+  }
+  const propValue = genPropValue(values, context);
+  return [
+    NEWLINE,
+    ...genCall(
+      [helper(resolvedHelper.name), null],
+      `n${oper.element}`,
+      resolvedHelper.needKey ? genExpression(key, context) : false,
+      propValue
+    )
+  ];
+}
+function genDynamicProps(oper, context) {
+  const { helper, sharedDataIdent } = context;
+  return [
+    NEWLINE,
+    ...genCall(
+      helper(`set${context.helperType}DynamicProps`),
+      `n${oper.element}`,
+      sharedDataIdent(oper.sharedData.ident)
+    )
+  ];
+}
+function genPropValue(values, context) {
+  if (values.length === 1) {
+    return genExpression(values[0], context);
+  }
+  return genMulti(
+    DELIMITERS_ARRAY,
+    ...values.map((expr) => genExpression(expr, context))
+  );
+}
+function getElementRuntimeHelper(tag, key, modifier) {
+  tag.toUpperCase();
+  if (modifier) {
+    if (modifier === ".") {
+      return getElementSpecialHelper(key) || elementHelpers.setElementAttr;
+    } else {
+      return elementHelpers.setElementAttr;
+    }
+  }
+  const helper = getElementSpecialHelper(key);
+  if (helper) {
+    return helper;
+  }
+  return elementHelpers.setElementAttr;
+}
+function getElementSpecialHelper(keyName, tagName) {
+  if (keyName === "class") {
+    return elementHelpers.setElementClass;
+  } else if (keyName === "style") {
+    return elementHelpers.setElementStyle;
+  }
+}
+function getNativeViewRuntimeHelper(tag, key, modifier) {
+  tag.toUpperCase();
+  if (modifier) {
+    if (modifier === ".") {
+      return getNativeViewSpecialHelper() || nativeViewHelpers.setNativeViewAttr;
+    } else {
+      return nativeViewHelpers.setNativeViewAttr;
+    }
+  }
+  const helper = getNativeViewSpecialHelper();
+  if (helper) {
+    return helper;
+  }
+  return nativeViewHelpers.setNativeViewAttr;
+}
+function getNativeViewSpecialHelper(keyName, tagName) {
+  return;
+}
+
+function genSetTemplateRef(oper, context) {
+  if (oper.value.sharedData) {
+    return [
+      NEWLINE,
+      context.sharedDataIdent(oper.value.sharedData.ident) + `(n${oper.element}.getNodeId())`
+    ];
+  }
+  return [];
+}
+function genDeclareOldRef(oper) {
+  return [];
+}
+
+function genSetText(oper, context) {
+  if (!(context.feature & 1)) {
+    return [];
+  }
+  const { helper } = context;
+  const { element, values, generated } = oper;
+  const texts = combineValues(values, context);
+  return [
+    NEWLINE,
+    ...genCall(
+      helper("setElementText"),
+      `${generated ? "x" : "n"}${element}`,
+      texts
+    )
+  ];
+}
+function combineValues(values, context) {
+  return values.flatMap((value, i) => {
+    let exp = genExpression(value, context);
+    if (i > 0) {
+      exp.unshift(" + ");
+    }
+    return exp;
+  });
+}
+function genGetTextChild(oper, context) {
+  if (!(context.feature & 1)) {
+    return [];
+  }
+  return [
+    NEWLINE,
+    `const x${oper.parent} = ${context.helper(`child${context.helperType}`)}(n${oper.parent})`
+  ];
+}
+
+function genVShow(oper, context) {
+  if (!(context.feature & 8)) {
+    return [];
+  }
+  return [
+    NEWLINE,
+    ...genCall(context.helper("applyElementVShow"), `n${oper.element}`, [
+      `() => (`,
+      ...genExpression(oper.dir.exp, context),
+      `)`
+    ])
+  ];
+}
+
+const helperMap = {
+  text: "applyElementTextModel",
+  dynamic: "applyElementDynamicModel"
+};
+function genVModel(oper, context) {
+  if (!(context.feature & 4)) {
+    return [];
+  }
+  const {
+    modelType,
+    element,
+    dir: { exp, modifiers }
+  } = oper;
+  return [
+    NEWLINE,
+    ...genCall(
+      context.helper(helperMap[modelType]),
+      `n${element}`,
+      // getter
+      [`() => (`, ...genExpression(exp, context), `)`],
+      // setter
+      context.sharedDataIdent(exp.sharedData.vModel.eventIdent),
+      // modifiers
+      modifiers.length ? `{ ${modifiers.map((e) => e.content + ": true").join(",")} }` : void 0
+    )
+  ];
+}
+
+function genBuiltinDirective(oper, context) {
+  switch (oper.name) {
+    case "show":
+      return genVShow(oper, context);
+    case "model":
+      return genVModel(oper, context);
+    default:
+      return [];
+  }
+}
+function genDirectivesForElement(id, context) {
+  const dirs = filterCustomDirectives(id, context.block.operation);
+  return dirs.length ? genCustomDirectives(dirs, context) : [];
+}
+function genCustomDirectives(opers, context) {
+  const { helper } = context;
+  const element = `n${opers[0].element}`;
+  const directiveItems = opers.map(genDirectiveItem);
+  const directives = genMulti(DELIMITERS_ARRAY, ...directiveItems);
+  return [
+    NEWLINE,
+    ...genCall(helper("withVaporDirectives"), element, directives)
+  ];
+  function genDirectiveItem({
+    dir,
+    name,
+    asset
+  }) {
+    const directiveVar = asset ? compilerDom.toValidAssetId(name, "directive") : genExpression(
+      shared.extend(compilerDom.createSimpleExpression(name, false), { ast: null }),
+      context
+    );
+    const value = dir.exp && ["() => ", ...genExpression(dir.exp, context)];
+    const argument = dir.arg && genExpression(dir.arg, context);
+    const modifiers = !!dir.modifiers.length && [
+      "{ ",
+      genDirectiveModifiers(dir.modifiers.map((m) => m.content)),
+      " }"
+    ];
+    return genMulti(
+      DELIMITERS_ARRAY.concat("void 0"),
+      directiveVar,
+      value,
+      argument,
+      modifiers
+    );
+  }
+}
+function genDirectiveModifiers(modifiers) {
+  return modifiers.map(
+    (value) => `${compilerDom.isSimpleIdentifier(value) ? value : JSON.stringify(value)}: true`
+  ).join(", ");
+}
+function filterCustomDirectives(id, operations) {
+  return operations.filter(
+    (oper) => oper.type === 13 && oper.element === id && !oper.builtin
+  );
+}
+
+function genCreateComponent(operation, context) {
+  const { helper, sharedDataIdent } = context;
+  const { root, props, slots, sharedData } = operation;
+  const rawSlots = genRawSlots(slots, context);
+  const [_, handlers] = processInlineHandlers(props, context);
+  const inlineHandlers = handlers.reduce(
+    (acc, { name, value }) => {
+      const handler = genEventHandler(context, value, void 0, false);
+      return [...acc, `const ${name} = `, ...handler, NEWLINE];
+    },
+    []
+  );
+  return [
+    NEWLINE,
+    ...inlineHandlers,
+    `const n${operation.id} = `,
+    ...genCall(
+      operation.dynamic && !operation.dynamic.isStatic ? helper(`create${context.helperType}DynamicComponent`) : operation.asset ? helper(`create${context.helperType}ComponentWithFallback`) : helper(`create${context.helperType}Component`),
+      sharedDataIdent(sharedData.ident),
+      void 0,
+      rawSlots,
+      root ? "true" : false
+      // once && 'true',
+    ),
+    ...genDirectivesForElement(operation.id, context)
+  ];
+}
+function getUniqueHandlerName(context, name) {
+  const { seenInlineHandlerNames } = context;
+  name = genVarName(name);
+  const count = seenInlineHandlerNames[name] || 0;
+  seenInlineHandlerNames[name] = count + 1;
+  return count === 0 ? name : `${name}${count}`;
+}
+function processInlineHandlers(props, context) {
+  const ids = /* @__PURE__ */ Object.create(null);
+  const handlers = [];
+  const staticProps = props[0];
+  if (shared.isArray(staticProps)) {
+    for (let i = 0; i < staticProps.length; i++) {
+      const prop = staticProps[i];
+      if (!prop.handler) continue;
+      prop.values.forEach((value, i2) => {
+        const isMemberExp = compilerDom.isMemberExpression(value, context.options);
+        if (!isMemberExp) {
+          const name = getUniqueHandlerName(context, `_on_${prop.key.content}`);
+          handlers.push({ name, value });
+          ids[name] = null;
+          prop.values[i2] = shared.extend({ ast: null }, compilerDom.createSimpleExpression(name));
+        }
+      });
+    }
+  }
+  return [ids, handlers];
+}
+function genRawSlots(slots, context) {
+  if (!slots.length) return;
+  const staticSlots = slots[0];
+  if (staticSlots.slotType === 0) {
+    return genStaticSlots(
+      staticSlots,
+      context,
+      slots.length > 1 ? slots.slice(1) : void 0
+    );
+  } else {
+    return genStaticSlots(
+      { slots: {} },
+      context,
+      slots
+    );
+  }
+}
+function genStaticSlots({ slots }, context, dynamicSlots) {
+  const args = Object.keys(slots).map((name) => [
+    `${JSON.stringify(name)}: `,
+    ...genSlotBlockWithProps(slots[name], context)
+  ]);
+  if (dynamicSlots) {
+    args.push([`$: `, ...genDynamicSlots(dynamicSlots, context)]);
+  }
+  return genMulti(DELIMITERS_OBJECT_NEWLINE, ...args);
+}
+function genDynamicSlots(slots, context) {
+  return genMulti(
+    DELIMITERS_ARRAY_NEWLINE,
+    ...slots.map(
+      (slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, true)
+    )
+  );
+}
+function genDynamicSlot(slot, context, withFunction = false) {
+  let frag;
+  switch (slot.slotType) {
+    case 1:
+      frag = genBasicDynamicSlot(slot, context);
+      break;
+    case 2:
+      frag = genLoopSlot(slot, context);
+      break;
+    case 3:
+      frag = genConditionalSlot(slot, context);
+      break;
+  }
+  return withFunction ? ["() => (", ...frag, ")"] : frag;
+}
+function genBasicDynamicSlot(slot, context) {
+  const { name, fn } = slot;
+  return genMulti(
+    DELIMITERS_OBJECT_NEWLINE,
+    ["name: ", ...genExpression(name, context)],
+    ["fn: ", ...genSlotBlockWithProps(fn, context)]
+  );
+}
+function genLoopSlot(slot, context) {
+  context.enterVFor();
+  const { name, fn, loop } = slot;
+  const { value, key, index, source } = loop;
+  const rawValue = value && value.content;
+  const rawKey = key && key.content;
+  const rawIndex = index && index.content;
+  const idMap = {};
+  if (rawValue) idMap[rawValue] = rawValue;
+  if (rawKey) idMap[rawKey] = rawKey;
+  if (rawIndex) idMap[rawIndex] = rawIndex;
+  const slotExpr = genMulti(
+    DELIMITERS_OBJECT_NEWLINE,
+    [
+      "name: ",
+      ...context.withId(() => {
+        const resetBlock = context.enterBlock(fn);
+        const result = genExpression(name, context);
+        resetBlock();
+        return result;
+      }, idMap)
+    ],
+    [
+      "fn: ",
+      ...context.withId(() => genSlotBlockWithProps(fn, context), idMap)
+    ]
+  );
+  return [
+    ...genCall(
+      context.helper(`create${context.helperType}ForSlots`),
+      genExpression(source, context),
+      [
+        ...genMulti(
+          ["(", ")", ", "],
+          context.sharedDataVForVar,
+          rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0,
+          rawKey ? rawKey : rawIndex ? "__" : void 0,
+          rawIndex
+        ),
+        " => (",
+        ...slotExpr,
+        ")"
+      ]
+    )
+  ];
+}
+function genConditionalSlot(slot, context) {
+  const { condition, positive, negative } = slot;
+  return [
+    ...genExpression(condition, context),
+    INDENT_START,
+    NEWLINE,
+    "? ",
+    ...genDynamicSlot(positive, context),
+    NEWLINE,
+    ": ",
+    ...negative ? [...genDynamicSlot(negative, context)] : ["void 0"],
+    INDENT_END
+  ];
+}
+function genSlotBlockWithProps(oper, context) {
+  let isDestructureAssignment = false;
+  let rawProps;
+  let propsName;
+  let exitScope;
+  let depth;
+  const { props } = oper;
+  const idsOfProps = /* @__PURE__ */ new Set();
+  if (props) {
+    rawProps = props.content;
+    if (isDestructureAssignment = !!props.ast) {
+      [depth, exitScope] = context.enterScope();
+      propsName = `_slotProps${depth}`;
+      compilerDom.walkIdentifiers(
+        props.ast,
+        (id, _, __, ___, isLocal) => {
+          if (isLocal) idsOfProps.add(id.name);
+        },
+        true
+      );
+    } else {
+      idsOfProps.add(propsName = rawProps);
+    }
+  }
+  const idMap = {};
+  idsOfProps.forEach(
+    (id) => idMap[id] = isDestructureAssignment ? `${propsName}[${JSON.stringify(id)}]` : null
+  );
+  const blockFn = context.withId(
+    () => genBlock(oper, context, [propsName]),
+    idMap
+  );
+  exitScope && exitScope();
+  return blockFn;
+}
+
+function genSlotOutlet(oper, context) {
+  const { helper } = context;
+  const { id, name, fallback } = oper;
+  const [frag, push] = buildCodeFragment();
+  const nameExpr = name.isStatic ? genExpression(name, context) : ["() => (", ...genExpression(name, context), ")"];
+  let fallbackArg;
+  if (fallback) {
+    fallbackArg = genBlock(fallback, context);
+  }
+  push(
+    NEWLINE,
+    `const n${id} = `,
+    ...genCall(
+      helper(`create${context.helperType}Slot`),
+      nameExpr,
+      "null",
+      fallbackArg
+    )
+  );
+  return frag;
+}
+
+function genOperations(opers, context) {
+  const [frag, push] = buildCodeFragment();
+  for (const operation of opers) {
+    push(...genOperationWithInsertionState(operation, context));
+  }
+  return frag;
+}
+function genOperationWithInsertionState(oper, context) {
+  const [frag, push] = buildCodeFragment();
+  if (compilerVapor.isBlockOperation(oper) && oper.parent) {
+    push(...genInsertionState(oper, context));
+  }
+  push(...genOperation(oper, context));
+  return frag;
+}
+function genOperation(oper, context) {
+  switch (oper.type) {
+    case 2:
+      return genSetProp(oper, context);
+    case 3:
+      return genDynamicProps(oper, context);
+    case 4:
+      return genSetText(oper, context);
+    case 5:
+      return genSetEvent(oper, context);
+    case 6:
+      return genSetDynamicEvents(oper, context);
+    case 7:
+      return genSetHtml(oper, context);
+    case 8:
+      return genSetTemplateRef(oper, context);
+    case 9:
+      return genInsertNode(oper, context);
+    case 10:
+      return genPrependNode(oper, context);
+    case 15:
+      return genIf(oper, context);
+    case 16:
+      return genFor(oper, context);
+    case 11:
+      return genCreateComponent(oper, context);
+    case 14:
+      return genDeclareOldRef();
+    case 12:
+      return genSlotOutlet(oper, context);
+    case 13:
+      return genBuiltinDirective(oper, context);
+    case 17:
+      return genGetTextChild(oper, context);
+    default:
+      const exhaustiveCheck = oper;
+      throw new Error(
+        `Unhandled operation type in genOperation: ${exhaustiveCheck}`
+      );
+  }
+}
+function genEffects(effects, context, genExtraFrag) {
+  const { helper } = context;
+  const expressions = effects.flatMap((effect) => effect.expressions);
+  const [frag, push, unshift] = buildCodeFragment();
+  const shouldDeclare = genExtraFrag === void 0;
+  let operationsCount = 0;
+  const {
+    ids,
+    frag: declarationFrags,
+    varNames
+  } = processExpressions(context, expressions, shouldDeclare);
+  for (let i = 0; i < effects.length; i++) {
+    const effect = effects[i];
+    operationsCount += effect.operations.length;
+    const frags = context.withEffect(
+      () => context.withId(() => genEffect(effect, context), ids)
+    );
+    i > 0 && frags.length && push(NEWLINE);
+    if (frag[frag.length - 1] === ")" && frags[0] === "(") {
+      push(";");
+    }
+    push(...frags);
+  }
+  const newLineCount = frag.filter((frag2) => frag2 === NEWLINE).length;
+  if (frag.length && (newLineCount > 1 || operationsCount > 1 || declarationFrags.length > 0)) {
+    unshift(`{`, INDENT_START, NEWLINE);
+    push(INDENT_END, NEWLINE, "}");
+    if (!effects.length) {
+      unshift(NEWLINE);
+    }
+  }
+  if (effects.length && frag.length) {
+    unshift(NEWLINE, `${helper(`render${context.helperType}Effect`)}(() => `);
+    push(`)`);
+  }
+  if (!shouldDeclare && varNames.length) {
+    unshift(NEWLINE, `let `, varNames.join(", "));
+  }
+  if (genExtraFrag) {
+    push(...context.withId(genExtraFrag, ids));
+  }
+  return frag;
+}
+function genEffect({ operations }, context) {
+  const [frag, push] = buildCodeFragment();
+  const operationsExps = genOperations(operations, context);
+  const newlineCount = operationsExps.filter((frag2) => frag2 === NEWLINE).length;
+  if (newlineCount > 1) {
+    push(...operationsExps);
+  } else {
+    push(...operationsExps.filter((frag2) => frag2 !== NEWLINE));
+  }
+  return frag;
+}
+function genInsertionState(operation, context) {
+  return [
+    NEWLINE,
+    ...genCall(
+      context.helper(`set${context.helperType}InsertionState`),
+      `n${operation.parent}`,
+      operation.anchor == null ? void 0 : operation.anchor === -1 ? `0` : `n${operation.anchor}`
+    )
+  ];
+}
+
+const NODE_TYPES = {
+  TEXT: "text",
+  BUTTON: "button",
+  COMMENT: "comment",
+  ELEMENT: "element"
+};
+const CONSTANTS = {
+  VALUE_ATTR: "value",
+  EMPTY_STRING: "",
+  UNKNOWN_COMMENT: "unknown",
+  EXT_STYLE_MARKER: "ext:style"
+};
+const VAR_PREFIXES = {
+  ELEMENT: "e",
+  STYLE: "s",
+  TEMPLATE: "t",
+  FACTORY: "f"
+};
+
+const COMMENT_START = "<!--";
+const COMMENT_END = "-->";
+const DOCTYPE_START = "<!";
+const WHITESPACE_REGEX = /\s/;
+const ATTRIBUTE_NAME_REGEX = /[\s=]/;
+const SELF_CLOSING_REGEX = /\s*\/$/;
+class HtmlParser {
+  constructor(html) {
+    this.html = html;
+    this.length = html.length;
+    this.index = 0;
+  }
+  /**
+   * Parse HTML string into an array of HTML nodes
+   */
+  parse() {
+    const nodes = [];
+    this.index = 0;
+    while (this.index < this.length) {
+      if (this.html[this.index] === "<") {
+        const result = this.parseTag();
+        if (result) {
+          nodes.push(result.node);
+          this.index = result.endIndex;
+        } else {
+          this.index++;
+        }
+      } else {
+        const textNode = this.parseText();
+        if (textNode) {
+          nodes.push(textNode);
+        }
+      }
+    }
+    return nodes;
+  }
+  // =============================================================================
+  // Private Methods - Main Parsing Logic
+  // =============================================================================
+  /**
+   * Parse text content until next tag
+   */
+  parseText() {
+    const start = this.index;
+    const nextTag = this.html.indexOf("<", start);
+    const end = nextTag === -1 ? this.length : nextTag;
+    if (start === end) return null;
+    const content = this.html.substring(start, end);
+    this.index = end;
+    return { type: "text", content };
+  }
+  /**
+   * Parse a tag (element, comment, or doctype)
+   */
+  parseTag() {
+    if (this.html.startsWith(COMMENT_START, this.index)) {
+      return this.parseComment();
+    }
+    if (this.html.startsWith(DOCTYPE_START, this.index)) {
+      return this.parseDoctype();
+    }
+    return this.parseElement();
+  }
+  /**
+   * Parse HTML comment
+   */
+  parseComment() {
+    const start = this.index + COMMENT_START.length;
+    const end = this.html.indexOf(COMMENT_END, start);
+    if (end === -1) return null;
+    const content = this.html.substring(start, end);
+    return {
+      node: { type: "comment", content },
+      endIndex: end + COMMENT_END.length
+    };
+  }
+  /**
+   * Parse DOCTYPE and other declarations
+   */
+  parseDoctype() {
+    const end = this.html.indexOf(">", this.index + DOCTYPE_START.length);
+    if (end === -1) return null;
+    return {
+      node: { type: "comment", content: "" },
+      endIndex: end + 1
+    };
+  }
+  /**
+   * Parse HTML element
+   */
+  parseElement() {
+    const tagEnd = this.html.indexOf(">", this.index);
+    if (tagEnd === -1) return null;
+    const tagContent = this.html.substring(this.index + 1, tagEnd);
+    const { tag, attrs, selfClosing } = this.parseTagContent(tagContent);
+    if (selfClosing) {
+      return {
+        node: { type: "element", tag, attrs, children: [] },
+        endIndex: tagEnd + 1
+      };
+    }
+    const endTagIndex = this.findMatchingEndTag(tag, tagEnd + 1);
+    if (endTagIndex === -1) {
+      return {
+        node: { type: "element", tag, attrs, children: [] },
+        endIndex: tagEnd + 1
+      };
+    }
+    const innerHtml = this.html.substring(tagEnd + 1, endTagIndex);
+    const children = innerHtml ? new HtmlParser(innerHtml).parse() : [];
+    return {
+      node: { type: "element", tag, attrs, children },
+      endIndex: endTagIndex + `</${tag}>`.length
+    };
+  }
+  // =============================================================================
+  // Private Methods - Tag Content Parsing
+  // =============================================================================
+  /**
+   * Parse tag content to extract tag name, attributes, and self-closing flag
+   */
+  parseTagContent(content) {
+    const selfClosing = SELF_CLOSING_REGEX.test(content);
+    const cleanContent = content.replace(SELF_CLOSING_REGEX, "").trim();
+    if (!cleanContent) {
+      return { tag: "", attrs: {}, selfClosing };
+    }
+    const spaceIndex = cleanContent.search(WHITESPACE_REGEX);
+    const tag = spaceIndex === -1 ? cleanContent : cleanContent.substring(0, spaceIndex);
+    if (spaceIndex === -1) {
+      return { tag, attrs: {}, selfClosing };
+    }
+    const attrContent = cleanContent.substring(spaceIndex + 1);
+    const attrs = this.parseAttributes(attrContent);
+    return { tag, attrs, selfClosing };
+  }
+  /**
+   * Parse attributes from attribute content string
+   */
+  parseAttributes(content) {
+    const attrs = {};
+    let i = 0;
+    const length = content.length;
+    while (i < length) {
+      i = this.skipWhitespace(content, i);
+      if (i >= length) break;
+      const nameStart = i;
+      while (i < length && !ATTRIBUTE_NAME_REGEX.test(content[i])) {
+        i++;
+      }
+      if (i === nameStart) break;
+      const name = content.substring(nameStart, i);
+      i = this.skipWhitespace(content, i);
+      if (i >= length || content[i] !== "=") {
+        if (!this.isSpecialAttribute(name)) {
+          attrs[name] = name;
+        }
+        continue;
+      }
+      i++;
+      i = this.skipWhitespace(content, i);
+      if (i >= length) {
+        if (!this.isSpecialAttribute(name)) {
+          attrs[name] = "";
+        }
+        continue;
+      }
+      const value = this.parseAttributeValue(content, i);
+      if (!this.isSpecialAttribute(name) || value.value.trim() !== "") {
+        attrs[name] = value.value;
+      }
+      i = value.endIndex;
+    }
+    return attrs;
+  }
+  /**
+   * Parse attribute value (quoted or unquoted)
+   */
+  parseAttributeValue(content, startIndex) {
+    const quote = content[startIndex];
+    if (quote === '"' || quote === "'") {
+      const valueStart = startIndex + 1;
+      let i = valueStart;
+      while (i < content.length && content[i] !== quote) {
+        i++;
+      }
+      const value = content.substring(valueStart, i);
+      return {
+        value,
+        endIndex: i < content.length ? i + 1 : i
+        // Skip closing quote if found
+      };
+    } else {
+      const valueStart = startIndex;
+      let i = valueStart;
+      while (i < content.length && !WHITESPACE_REGEX.test(content[i])) {
+        i++;
+      }
+      const value = content.substring(valueStart, i);
+      return { value, endIndex: i };
+    }
+  }
+  // =============================================================================
+  // Private Methods - Utilities
+  // =============================================================================
+  /**
+   * Check if attribute is a special attribute (id, class, style)
+   */
+  isSpecialAttribute(name) {
+    return name === "id" || name === "class" || name === "style";
+  }
+  /**
+   * Skip whitespace characters starting from index
+   */
+  skipWhitespace(content, index) {
+    while (index < content.length && WHITESPACE_REGEX.test(content[index])) {
+      index++;
+    }
+    return index;
+  }
+  /**
+   * Find matching end tag for given tag name
+   */
+  findMatchingEndTag(tag, startIndex) {
+    const startTag = `<${tag}`;
+    const endTag = `</${tag}>`;
+    let depth = 1;
+    let searchIndex = startIndex;
+    while (depth > 0 && searchIndex < this.length) {
+      const nextStart = this.html.indexOf(startTag, searchIndex);
+      const nextEnd = this.html.indexOf(endTag, searchIndex);
+      if (nextEnd === -1) break;
+      if (nextStart !== -1 && nextStart < nextEnd) {
+        const nextTagEnd = this.html.indexOf(">", nextStart);
+        if (nextTagEnd !== -1 && nextTagEnd < nextEnd) {
+          const nextTagContent = this.html.substring(nextStart + 1, nextTagEnd);
+          if (!SELF_CLOSING_REGEX.test(nextTagContent)) {
+            depth++;
+          }
+        }
+        searchIndex = nextTagEnd + 1;
+      } else {
+        depth--;
+        if (depth === 0) {
+          return nextEnd;
+        }
+        searchIndex = nextEnd + endTag.length;
+      }
+    }
+    return -1;
+  }
+}
+
+function extractTextContent(children) {
+  if (!children || children.length !== 1 || children[0].type !== NODE_TYPES.TEXT) {
+    return CONSTANTS.EMPTY_STRING;
+  }
+  if (children[0].content === " ") {
+    return CONSTANTS.EMPTY_STRING;
+  }
+  return children[0].content || CONSTANTS.EMPTY_STRING;
+}
+function isEmptyAttrs(attrs) {
+  return !attrs || Object.keys(attrs).length === 0 || Object.keys(attrs).length === 1 && CONSTANTS.EXT_STYLE_MARKER in attrs;
+}
+function mergeTextAttributes(attrs, textContent) {
+  const result = shared.extend({}, attrs);
+  if (textContent) {
+    result[CONSTANTS.VALUE_ATTR] = textContent;
+  }
+  return result;
+}
+function getFunctionSignature(context) {
+  const paramType = "page: UniPage";
+  const returnType = context.options.renderer === "element" ? ": UniElement" : ": UniNativeBaseView";
+  return { paramType, returnType };
+}
+function getNextVariableName(context) {
+  return `${VAR_PREFIXES.ELEMENT}${context.templateVariableCounter++}`;
+}
+function getNextStyleVariableName(context) {
+  return `${VAR_PREFIXES.STYLE}${context.templateStyleCounter++}`;
+}
+
+function genNodeStatements(node, context, resetCounters = true) {
+  if (resetCounters) {
+    context.resetTemplateCounters();
+  }
+  return genNodeCode(node, context);
+}
+function genNodeCode(node, context) {
+  switch (node.type) {
+    case NODE_TYPES.TEXT:
+      return createTextElement(node.content || CONSTANTS.EMPTY_STRING, context);
+    case NODE_TYPES.COMMENT:
+      return createCommentNode(node.content || CONSTANTS.EMPTY_STRING, context);
+    case NODE_TYPES.ELEMENT:
+      return genElementCode(node, context);
+    default:
+      return createCommentNode(CONSTANTS.UNKNOWN_COMMENT, context);
+  }
+}
+function createTextElement(content, context) {
+  const varName = getNextVariableName(context);
+  const statements = [
+    `const ${varName} = ${context.genCreateTag(
+      "text"
+      // JSON.stringify(escapeNewlines(content)),
+    )}`
+  ];
+  return { variableName: varName, statements };
+}
+function createCommentNode(content, context) {
+  const varName = getNextVariableName(context);
+  const statements = [
+    `const ${varName} = ${context.genCreateTag("comment", JSON.stringify(content))}`
+  ];
+  return { variableName: varName, statements };
+}
+const specialTagHandlers = {
+  [NODE_TYPES.TEXT]: genTextElementCode,
+  [NODE_TYPES.BUTTON]: genButtonElementCode
+};
+function genElementCode(node, context) {
+  const { tag, attrs, children } = node;
+  const params = { tag, attrs, children };
+  const handler = specialTagHandlers[tag];
+  if (handler) {
+    return handler(params, context);
+  }
+  return genRegularElementCode(params, context);
+}
+function genTextElementCode(params, context) {
+  const { tag, attrs, children } = params;
+  const hasComplexChildren = children && children.some((child) => child.type === NODE_TYPES.ELEMENT);
+  if (hasComplexChildren) {
+    return buildElementStatements(tag, context, attrs, children);
+  } else {
+    const textContent = extractTextContent(children);
+    const finalAttrs = mergeTextAttributes(attrs, textContent);
+    return buildElementStatements(tag, context, finalAttrs, void 0);
+  }
+}
+function genButtonElementCode(params, context) {
+  const textContent = extractTextContent(params.children);
+  const finalAttrs = mergeTextAttributes(params.attrs, textContent);
+  return buildElementStatements(params.tag, context, finalAttrs, void 0);
+}
+function genRegularElementCode(params, context) {
+  const { tag, attrs, children } = params;
+  return buildElementStatements(tag, context, attrs, children);
+}
+function filterAttrs(attrs, context) {
+  if (!attrs) {
+    return;
+  }
+  const newAttrs = {};
+  for (const [name, value] of Object.entries(attrs)) {
+    if (!context.options.isIgnoreAttr(name)) {
+      newAttrs[name] = value;
+    }
+  }
+  return newAttrs;
+}
+function buildElementStatements(tag, context, nodeAttrs, children) {
+  const varName = getNextVariableName(context);
+  const statements = [];
+  statements.push(`const ${varName} = ${context.genCreateTag(tag)}`);
+  const attrs = filterAttrs(nodeAttrs, context);
+  if (attrs && !isEmptyAttrs(attrs)) {
+    let shouldCacheStyle = false;
+    if (CONSTANTS.EXT_STYLE_MARKER in attrs) {
+      shouldCacheStyle = true;
+      delete attrs[CONSTANTS.EXT_STYLE_MARKER];
+    }
+    for (const [name, value] of Object.entries(attrs)) {
+      if (name === "style") {
+        const styleObj = context.options.parseStaticStyle(
+          context.options.platform,
+          getDom2AppTarget(context.options.platform, context.options.renderer),
+          value
+        );
+        if (styleObj) {
+          const styleKeys = Object.keys(styleObj);
+          if (shouldCacheStyle) {
+            const styleVarName = getNextStyleVariableName(context);
+            statements.push(
+              `const ${styleVarName} = ${JSON.stringify(
+                styleKeys.reduce(
+                  (acc, key) => {
+                    acc[key] = styleObj[key].valueCode;
+                    return acc;
+                  },
+                  {}
+                )
+              )}`
+            );
+            statements.push(`${varName}.ext.set('style', ${styleVarName})`);
+          }
+          styleKeys.forEach((key) => {
+            statements.push(`${varName}.${styleObj[key].setterCode}`);
+          });
+        } else {
+          statements.push(
+            `${varName}.setAttribute(${JSON.stringify(name)}, ${JSON.stringify(value)})`
+          );
+        }
+      } else {
+        statements.push(
+          `${varName}.setAttribute(${JSON.stringify(name)}, ${JSON.stringify(value)})`
+        );
+      }
+    }
+  }
+  if (children && children.length > 0) {
+    for (const child of children) {
+      const inlineCode = tryInlineChild(child, context);
+      if (inlineCode) {
+        statements.push(context.genAppendChild(varName, inlineCode));
+      } else {
+        const childInfo = genNodeCode(child, context);
+        statements.push(...childInfo.statements);
+        statements.push(context.genAppendChild(varName, childInfo.variableName));
+      }
+    }
+  }
+  return { variableName: varName, statements };
+}
+function tryInlineChild(child, context) {
+  switch (child.type) {
+    case NODE_TYPES.TEXT:
+      return context.genCreateTag(
+        "text"
+        // JSON.stringify(child.content || CONSTANTS.EMPTY_STRING),
+      );
+    case NODE_TYPES.COMMENT:
+      return context.genCreateTag(
+        "comment",
+        JSON.stringify(child.content || CONSTANTS.EMPTY_STRING)
+      );
+    case NODE_TYPES.ELEMENT:
+      const elementChild = child;
+      if (canInlineElement(elementChild)) {
+        return context.genCreateTag(elementChild.tag);
+      }
+      return null;
+    default:
+      return context.genCreateTag(
+        "comment",
+        JSON.stringify(CONSTANTS.UNKNOWN_COMMENT)
+      );
+  }
+}
+function canInlineElement(node) {
+  if (node.tag === NODE_TYPES.TEXT) {
+    return false;
+  }
+  if (!isEmptyAttrs(node.attrs)) {
+    return false;
+  }
+  if (node.children && node.children.length > 0) {
+    return false;
+  }
+  return true;
+}
+
+function genFactoryFunction(template, index, context) {
+  try {
+    if (!template || typeof template !== "string") {
+      return genEmptyFunction(index, context);
+    }
+    const parser = new HtmlParser(template);
+    const nodes = parser.parse();
+    if (nodes.length === 0) {
+      return genEmptyFunction(index, context);
+    }
+    if (nodes.length === 1) {
+      return genSingleNodeFunction(nodes[0], index, context);
+    }
+    return genEmptyFunction(index, context);
+  } catch (error) {
+    return genEmptyFunction(index, context);
+  }
+}
+function genEmptyFunction(index, context) {
+  const { paramType, returnType } = getFunctionSignature(context);
+  return [
+    `const ${VAR_PREFIXES.FACTORY}${index} = (${paramType})${returnType} => {`,
+    NEWLINE,
+    `  return ${context.genCreateTag("text", JSON.stringify(CONSTANTS.EMPTY_STRING))}`,
+    NEWLINE,
+    `}`
+  ];
+}
+function genSingleNodeFunction(node, index, context) {
+  const { paramType, returnType } = getFunctionSignature(context);
+  const simpleReturn = tryGenSimpleReturn(node, context);
+  if (simpleReturn) {
+    return [
+      `const ${VAR_PREFIXES.FACTORY}${index} = (${paramType})${returnType} => {`,
+      NEWLINE,
+      `  return ${simpleReturn}`,
+      NEWLINE,
+      `}`
+    ];
+  }
+  const nodeInfo = genNodeStatements(node, context);
+  const result = [
+    `const ${VAR_PREFIXES.FACTORY}${index} = (${paramType})${returnType} => {`,
+    NEWLINE
+  ];
+  for (const stmt of nodeInfo.statements) {
+    if (typeof stmt === "string") {
+      result.push(`  ${stmt}`, NEWLINE);
+    } else {
+      result.push(stmt, NEWLINE);
+    }
+  }
+  result.push(`  return ${nodeInfo.variableName}`, NEWLINE, `}`);
+  return result;
+}
+function tryGenSimpleReturn(node, context) {
+  switch (node.type) {
+    case NODE_TYPES.TEXT:
+      return context.genCreateTag(
+        "text"
+        // JSON.stringify(node.content || CONSTANTS.EMPTY_STRING),
+      );
+    case NODE_TYPES.COMMENT:
+      return context.genCreateTag(
+        "comment",
+        JSON.stringify(node.content || CONSTANTS.EMPTY_STRING)
+      );
+    case NODE_TYPES.ELEMENT:
+      const elementNode = node;
+      if (isSimpleElement(elementNode)) {
+        return context.genCreateTag(elementNode.tag);
+      }
+      return null;
+    default:
+      return context.genCreateTag(
+        "comment",
+        JSON.stringify(CONSTANTS.UNKNOWN_COMMENT)
+      );
+  }
+}
+function isSimpleElement(node) {
+  const emptyAttrs = isEmptyAttrs(node.attrs);
+  if (!emptyAttrs) return false;
+  if (node.tag === NODE_TYPES.TEXT) {
+    const textContent = extractTextContent(node.children);
+    return !textContent;
+  }
+  return !node.children || node.children.length === 0;
+}
+
+function genFactoryFunctions(templates, context) {
+  const result = [];
+  for (let i = 0; i < templates.length; i++) {
+    const functionFragments = genFactoryFunction(templates[i], i, context);
+    result.push(NEWLINE, ...functionFragments);
+  }
+  return result;
+}
+function genFactoryCallsInRender(templates, rootIndex, context) {
+  const { helper, options } = context;
+  const result = [];
+  for (let i = 0; i < templates.length; i++) {
+    const rootParam = i === rootIndex ? ", true" : "";
+    result.push(
+      `const ${VAR_PREFIXES.TEMPLATE}${i} = ${helper(`${options.renderer}Factory`)}(${context.factoryVar}, ${VAR_PREFIXES.FACTORY}${i}${rootParam})`
+    );
+    if (i < templates.length - 1) {
+      result.push(NEWLINE);
+    }
+  }
+  return result;
+}
+
+function genTemplates(templates, _rootIndex, context) {
+  const factoryFunctions = genFactoryFunctions(templates, context);
+  return factoryFunctions;
+}
+function genSelf(dynamic, context) {
+  const [frag, push] = buildCodeFragment();
+  const { id, template, operation } = dynamic;
+  if (id !== void 0 && template !== void 0) {
+    push(NEWLINE, `const n${id} = t${template}()`);
+    push(...genDirectivesForElement(id, context));
+  }
+  if (operation) {
+    push(...genOperationWithInsertionState(operation, context));
+  }
+  return frag;
+}
+function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
+  const { helper } = context;
+  const [frag, push] = buildCodeFragment();
+  const { children } = dynamic;
+  let offset = 0;
+  let prev;
+  const childrenToGen = [];
+  for (const [index, child] of children.entries()) {
+    if (child.flags & 2) {
+      offset--;
+    }
+    const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
+    if (id === void 0 && !child.hasDynamicChild) {
+      push(...genSelf(child, context));
+      continue;
+    }
+    const elementIndex = Number(index) + offset;
+    const variable = id === void 0 ? `p${context.block.tempId++}` : `n${id}`;
+    pushBlock(NEWLINE, `const ${variable} = `);
+    if (prev) {
+      if (elementIndex - prev[1] === 1) {
+        pushBlock(...genCall(helper(`next${context.helperType}`), prev[0]));
+      } else {
+        pushBlock(
+          ...genCall(
+            helper(`nthChild${context.helperType}`),
+            from,
+            String(elementIndex)
+          )
+        );
+      }
+    } else {
+      if (elementIndex === 0) {
+        pushBlock(...genCall(helper(`child${context.helperType}`), from));
+      } else {
+        let init = genCall(helper(`child${context.helperType}`), from);
+        if (elementIndex === 1) {
+          init = genCall(helper(`next${context.helperType}`), init);
+        } else if (elementIndex > 1) {
+          init = genCall(
+            helper(`nthChild${context.helperType}`),
+            from,
+            String(elementIndex)
+          );
+        }
+        pushBlock(...init);
+      }
+    }
+    if (id === child.anchor) {
+      push(...genSelf(child, context));
+    }
+    if (id !== void 0) {
+      push(...genDirectivesForElement(id, context));
+    }
+    prev = [variable, elementIndex];
+    childrenToGen.push([child, variable]);
+  }
+  if (childrenToGen.length) {
+    for (const [child, from2] of childrenToGen) {
+      push(...genChildren(child, context, pushBlock, from2));
+    }
+  }
+  return frag;
+}
+
+function genBlock(oper, context, args = [], root) {
+  return [
+    "(",
+    ...args,
+    ") => {",
+    INDENT_START,
+    ...genBlockContent(oper, context),
+    INDENT_END,
+    NEWLINE,
+    "}"
+  ];
+}
+function genBlockContent(block, context, root, genEffectsExtraFrag) {
+  const [frag, push] = buildCodeFragment();
+  const { dynamic, effect, operation, returns } = block;
+  const resetBlock = context.enterBlock(block);
+  for (const child of dynamic.children) {
+    push(...genSelf(child, context));
+  }
+  for (const child of dynamic.children) {
+    push(...genChildren(child, context, push, `n${child.id}`));
+  }
+  push(...genOperations(operation, context));
+  push(
+    ...genEffects(
+      // fixed by uts for 中 matchPatterns 已经处理了一部分 effect
+      effect.filter((effect2) => !effect2.generated),
+      context,
+      genEffectsExtraFrag
+    )
+  );
+  push(NEWLINE, `return `);
+  const returnNodes = returns.map((n) => `n${n}`);
+  const returnsCode = returnNodes.length > 1 ? [
+    ...genMulti(DELIMITERS_ARRAY, ...returnNodes),
+    ` as Uni${context.helperType}Block[]`
+  ] : [returnNodes[0] || "null"];
+  push(...returnsCode);
+  resetBlock();
+  return frag;
+}
+
+const RENDER_ELEMENT_FEATURE = 1 | 2 | 4 | 8 | 16 | 32;
+const RENDER_NATIVE_VIEW_FEATURE = 0;
+function isIgnoreElementAttr(name) {
+  return false;
+}
+const IGNORE_NATIVE_VIEW_ATTRS = ["class", "id"];
+function isIgnoreNativeViewAttr(name) {
+  if (name === "style") {
+    return false;
+  }
+  return IGNORE_NATIVE_VIEW_ATTRS.includes(name) || true;
+}
+
+class RendererCodegenContext extends SharedDataCodegenContext {
+  constructor(ir, options) {
+    super();
+    this.ir = ir;
+    this.helpers = /* @__PURE__ */ new Set([]);
+    this.helper = (name) => {
+      this.helpers.add(name);
+      return `_${name}`;
+    };
+    this.delegates = /* @__PURE__ */ new Set();
+    this.identifiers = /* @__PURE__ */ Object.create(null);
+    this.seenInlineHandlerNames = /* @__PURE__ */ Object.create(null);
+    this.scopeLevel = 0;
+    this.sharedDataIdent = (ident) => {
+      this.effectSharedDataIdentifiers.add(ident);
+      return `${this.sharedDataVar}.get_${ident}(__reactivity)`;
+    };
+    // Template factory counters
+    this.templateVariableCounter = 0;
+    this.templateStyleCounter = 0;
+    // 记录当前 effect 中使用的 sharedData 标识符列表
+    this.effectSharedDataIdentifiers = /* @__PURE__ */ new Set();
+    const defaultOptions = {
+      mode: "module",
+      platform: "app-harmony",
+      renderer: "element",
+      prefixIdentifiers: true,
+      sourceMap: false,
+      filename: `template.vue.html`,
+      scopeId: null,
+      runtimeGlobalName: `Vue`,
+      runtimeModuleName: `vue`,
+      ssrRuntimeModuleName: "vue/server-renderer",
+      ssr: false,
+      isTS: false,
+      inSSR: false,
+      inline: false,
+      bindingMetadata: {},
+      expressionPlugins: [],
+      componentType: "page",
+      className: "",
+      parseStaticStyle: (platform, target, style) => ({}),
+      isIgnoreAttr: () => false
+    };
+    this.options = shared.extend(defaultOptions, options);
+    this.block = ir.block;
+    const isNativeView = this.options.renderer === "nativeView";
+    this.genCreateTag = isNativeView ? this.genCreateNativeView : this.genCreateElement;
+    this.genAppendChild = isNativeView ? this.genAppendChildNativeView : this.genAppendChildElement;
+  }
+  withId(fn, map) {
+    const { identifiers } = this;
+    const ids = Object.keys(map);
+    for (const id of ids) {
+      identifiers[id] || (identifiers[id] = []);
+      identifiers[id].unshift(map[id] || id);
+    }
+    const ret = fn();
+    ids.forEach((id) => shared.remove(identifiers[id], map[id] || id));
+    return ret;
+  }
+  enterBlock(block) {
+    const parent = this.block;
+    this.block = block;
+    return () => this.block = parent;
+  }
+  enterScope() {
+    return [this.scopeLevel++, () => this.scopeLevel--];
+  }
+  get factoryVar() {
+    return "__page";
+  }
+  get helperType() {
+    return this.options.renderer === "nativeView" ? "NativeView" : "Element";
+  }
+  get sharedDataVForClass() {
+    return `${this.options.className}SharedData_VFor${this.vForCount}`;
+  }
+  get feature() {
+    return this.options.renderer === "nativeView" ? RENDER_NATIVE_VIEW_FEATURE : RENDER_ELEMENT_FEATURE;
+  }
+  resetTemplateCounters() {
+    this.templateVariableCounter = 0;
+    this.templateStyleCounter = 0;
+  }
+  withEffect(fn) {
+    this.effectSharedDataIdentifiers.clear();
+    const result = fn();
+    if (this.effectSharedDataIdentifiers.size) {
+      const [frag, push] = buildCodeFragment();
+      push(NEWLINE);
+      push(`if(${genEffectSharedDataIdentifiers(this)}) {`);
+      push(NEWLINE);
+      push(INDENT_START);
+      push(...result);
+      push(INDENT_END);
+      push(NEWLINE);
+      push("}");
+      this.effectSharedDataIdentifiers.clear();
+      return frag;
+    }
+    return result;
+  }
+  genCreateNativeView(tag, options, flatten) {
+    const createArgs = [];
+    if (options && tag !== "text") {
+      createArgs.push(options);
+    }
+    if (flatten) {
+      createArgs.push("true");
+    } else {
+      createArgs.push("false");
+    }
+    const args = createArgs.join(", ");
+    switch (tag) {
+      case "view":
+        return `page.createNativeView(${args})`;
+      case "text":
+        return `page.createNativeTextView(${args})`;
+      case "image":
+        return `page.createNativeImageView(${args})`;
+      case "scroll-view":
+        return `page.createNativeScrollView(${args})`;
+      case "native-view":
+        return `page.createNativeCustomView(${args})`;
+      default:
+        throw new Error(`Invalid tag: ${tag}`);
+    }
+  }
+  genCreateElement(tag, options, flatten) {
+    const createArgs = [];
+    if (options && tag !== "comment") {
+      createArgs.push(options);
+    }
+    if (flatten) {
+      createArgs.push("true");
+    } else if (tag !== "comment") {
+      createArgs.push("false");
+    }
+    const args = createArgs.join(", ");
+    switch (tag) {
+      case "view":
+        return `page.createViewElement(${args})`;
+      case "text":
+        return `page.createTextElement(${args})`;
+      case "image":
+        return `page.createImageElement(${args})`;
+      case "comment":
+        return `page.createComment(${args || '""'})`;
+      case "scroll-view":
+        return `page.createScrollViewElement(${args})`;
+      default:
+        console.log(`Invalid tag: ${tag}`);
+        return `page.createViewElement(false)`;
+    }
+  }
+  genAppendChildNativeView(node, child) {
+    return `${this.helper("appendNativeViewChild")}(${node}, ${child})`;
+  }
+  genAppendChildElement(node, child) {
+    return `${node}.appendChild(${child})`;
+  }
+}
+function generate(ir, options) {
+  var _a;
+  options.renderer = (_a = options.renderer) != null ? _a : "element";
+  options.isIgnoreAttr = options.renderer === "element" ? isIgnoreElementAttr : isIgnoreNativeViewAttr;
+  const [frag, push] = buildCodeFragment();
+  const context = new RendererCodegenContext(ir, options);
+  const { helpers } = context;
+  const functionName = "render" + shared.capitalize(options.renderer);
+  const signature = [
+    `__sharedData: ${options.className}SharedData`,
+    `__page: UniPage`,
+    `__reactivity: VueReactivity`
+  ].join(", ");
+  {
+    push(
+      NEWLINE,
+      `export function ${functionName}(${signature}): Uni${context.helperType}Block {`
+    );
+  }
+  push(INDENT_START);
+  const templates = genTemplates(ir.template, ir.rootTemplateIndex, context);
+  push(...templates);
+  if (ir.template.length > 0) {
+    const templateCalls = genFactoryCallsInRender(
+      ir.template,
+      ir.rootTemplateIndex,
+      context
+    );
+    push(NEWLINE, ...templateCalls);
+  }
+  push(...genBlockContent(ir.block, context));
+  push(INDENT_END, NEWLINE);
+  {
+    push("}");
+  }
+  const delegates = genDelegates(context);
+  const imports = genHelperImports(context);
+  const preamble = imports + delegates;
+  const newlineCount = [...preamble].filter((c) => c === "\n").length;
+  if (newlineCount && true) {
+    frag.unshift(...new Array(newlineCount).fill(LF));
+  }
+  let [code, map] = codeFragmentToString(frag, context);
+  {
+    code = preamble + code;
+  }
+  return {
+    code,
+    ast: ir,
+    preamble,
+    map: map && map.toJSON(),
+    helpers
+  };
+}
+function genDelegates({ delegates, helper }) {
+  return delegates.size ? genCall(
+    helper("delegateEvents"),
+    ...Array.from(delegates).map((v) => `"${v}"`)
+  ).join("") + "\n" : "";
+}
+function genHelperImports({
+  helpers,
+  helper,
+  options
+}) {
+  let imports = "";
+  ["getRestElement", "getDefaultValue"].forEach((h) => {
+    helpers.delete(h);
+  });
+  if (helpers.size) {
+    imports += `import { ${[...helpers].map((h) => `${h} as _${h}`).join(", ")} } from '${options.runtimeModuleName}';
+`;
+  }
+  return imports;
+}
+const sharedDataIdentGenerator = new IdentGenerator(2e3);
+function genEffectSharedDataIdentifiers(context) {
+  return Array.from(context.effectSharedDataIdentifiers).map((name) => genEffectSharedDataIdentifier(name, context)).join(" || ");
+}
+function genEffectSharedDataIdentifier(name, context) {
+  const { index, bitValue } = sharedDataIdentGenerator.getGroupInfo(name);
+  return `${context.sharedDataVar}._flag${index} & ${bitValue}`;
+}
+
+function compile(source, options) {
+  const resolvedOptions = shared.extend({}, options);
+  const ast = shared.isString(source) ? compilerVapor.parse(source, resolvedOptions) : source;
+  const [nodeTransforms, directiveTransforms] = getBaseTransformPreset();
+  const { expressionPlugins } = options;
+  if (!expressionPlugins || !expressionPlugins.includes("typescript")) {
+    resolvedOptions.expressionPlugins = [
+      ...expressionPlugins || [],
+      "typescript"
+    ];
+  }
+  const vaporIR = compilerVapor.transform(
+    ast,
+    shared.extend({}, resolvedOptions, {
+      nodeTransforms: [
+        ...nodeTransforms,
+        ...options.nodeTransforms || []
+        // user transforms
+      ],
+      directiveTransforms: shared.extend(
+        {},
+        directiveTransforms,
+        options.directiveTransforms || {}
+        // user transforms
+      )
+    })
+  );
+  transformSharedData(vaporIR, {
+    platform: options.platform,
+    bindingMetadata: options.bindingMetadata || shared.EMPTY_OBJ
+  });
+  const sharedDataResult = generate$1(vaporIR, resolvedOptions);
+  const nativeViewResult = generate(vaporIR, {
+    ...resolvedOptions,
+    renderer: "nativeView"
+  });
+  const elementResult = generate(vaporIR, {
+    ...resolvedOptions,
+    renderer: "element"
+  });
+  if (options.emitElement) {
+    options.emitElement(elementResult);
+  }
+  if (options.emitNativeView) {
+    options.emitNativeView(nativeViewResult);
+  }
+  return {
+    ...sharedDataResult,
+    sharedData: sharedDataResult,
+    nativeView: nativeViewResult,
+    element: elementResult
+  };
+}
+function getBaseTransformPreset() {
+  return compilerVapor.getBaseTransformPreset();
+}
+
+function getIdentifierText(ident) {
+  return ident.text || ident.escapedText;
+}
+function getClassName(decl) {
+  return decl.name ? getIdentifierText(decl.name) : "";
+}
+function getSuperClassName(decl, ts) {
+  var _a;
+  const heritageClausesNode = decl.heritageClauses;
+  if (!heritageClausesNode) {
+    return "";
+  }
+  const extendsClause = heritageClausesNode.find(
+    (clause) => clause.token === ts.SyntaxKind.ExtendsKeyword
+  );
+  const superTypeNode = (_a = extendsClause == null ? void 0 : extendsClause.types[0]) == null ? void 0 : _a.expression;
+  if (!superTypeNode || !ts.isIdentifier(superTypeNode)) {
+    return "";
+  }
+  return getIdentifierText(superTypeNode);
+}
+function isKeywordTypeNode(node, ts) {
+  return node.kind === ts.SyntaxKind.StringKeyword || node.kind === ts.SyntaxKind.BooleanKeyword || node.kind === ts.SyntaxKind.NumberKeyword || node.kind === ts.SyntaxKind.UndefinedKeyword;
+}
+function parseClassMemberType(member, ts) {
+  if (!ts.isPropertyDeclaration(member)) {
+    return;
+  }
+  if (member.modifiers && member.modifiers.length > 0 && member.modifiers.some(
+    (modifier) => modifier.kind === ts.SyntaxKind.ReadonlyKeyword
+  )) {
+    return;
+  }
+  if (!member.type) {
+    return;
+  }
+  const memberNameNode = member.name;
+  if (!ts.isIdentifier(memberNameNode)) {
+    return;
+  }
+  const memberName = getIdentifierText(memberNameNode);
+  const memberType = member.type;
+  if (!ts.isUnionTypeNode(memberType)) {
+    if (!ts.isTypeReferenceNode(memberType) && !isKeywordTypeNode(memberType, ts) && !ts.isLiteralTypeNode(memberType) && !ts.isArrayTypeNode(memberType)) {
+      return;
+    }
+    return {
+      memberName,
+      type: memberType,
+      optional: !!member.questionToken
+    };
+  }
+  const typeNotNull = memberType.types.filter(
+    (type2) => type2.kind !== ts.SyntaxKind.UndefinedKeyword && !(ts.isLiteralTypeNode(type2) && type2.literal.kind === ts.SyntaxKind.NullKeyword)
+  );
+  if (typeNotNull.length !== 1) {
+    return;
+  }
+  const type = typeNotNull[0];
+  if (!ts.isTypeReferenceNode(type) && !isKeywordTypeNode(type, ts) && !ts.isLiteralTypeNode(type)) {
+    return;
+  }
+  return {
+    memberName,
+    type,
+    optional: true
+  };
+}
+function indent(level = 1, INDENT = 2) {
+  return " ".repeat(INDENT * level);
+}
+function indentMultiLine(code, level) {
+  return code.split("\n").map((line) => indent(level) + line).join("\n");
+}
+
+const TYPE_ARRAY_STRING = "ARRAY_STRING";
+
+const identGenerator = new IdentGenerator(2e3);
+function formatTypeNode(type, ts) {
+  if (ts.isTypeReferenceNode(type)) {
+    if (ts.isIdentifier(type.typeName)) {
+      switch (getIdentifierText(type.typeName)) {
+        case "UniSharedDataAny":
+          return "UniSharedDataAny";
+        case "UniSharedDataArray":
+          return "UniSharedDataArray";
+        case "UniSharedDataJSONObject":
+          return "UniSharedDataJSONObject";
+        case "UniSharedDataVFor":
+          return "UniSharedDataVFor";
+        case "UniSharedDataFunctionEventListener":
+          return "UniSharedDataFunctionEventListener";
+        case "UniSharedDataFunctionSetTemplateRef":
+          return "UniSharedDataFunctionSetTemplateRef";
+        case "Array":
+          if (type.typeArguments && type.typeArguments.length === 1 && isKeywordTypeNode(type.typeArguments[0], ts) && type.typeArguments[0].kind === ts.SyntaxKind.StringKeyword) {
+            return TYPE_ARRAY_STRING;
+          }
+        default:
+          return "UniSharedData|" + getIdentifierText(type.typeName);
+      }
+    }
+  }
+  if (isKeywordTypeNode(type, ts)) {
+    switch (type.kind) {
+      case ts.SyntaxKind.StringKeyword:
+        return "string";
+      case ts.SyntaxKind.BooleanKeyword:
+        return "bool";
+      case ts.SyntaxKind.NumberKeyword:
+        return "double";
+      case ts.SyntaxKind.UndefinedKeyword:
+        return "null";
+    }
+  }
+  if (ts.isArrayTypeNode(type) && isKeywordTypeNode(type.elementType, ts) && type.elementType.kind === ts.SyntaxKind.StringKeyword) {
+    return TYPE_ARRAY_STRING;
+  }
+  if (ts.isLiteralTypeNode(type)) {
+    if (type.literal.kind === ts.SyntaxKind.NullKeyword) {
+      return "null";
+    }
+  }
+}
+function generateCppSharedDataClass(decl, options) {
+  const ts = options.ts;
+  const nameNode = decl.name;
+  const EMPTY_RESULT = {
+    files: []
+  };
+  if (!nameNode) {
+    return EMPTY_RESULT;
+  }
+  const className = getClassName(decl);
+  if (!className) {
+    return EMPTY_RESULT;
+  }
+  const superClassName = getSuperClassName(decl, ts);
+  if (!superClassName) {
+    return EMPTY_RESULT;
+  }
+  const isPage = superClassName === "UniSharedDataPage";
+  const isComponent = superClassName === "UniSharedDataComponent";
+  const defineMacroH = isPage ? "DEFINE_USER_PAGE_SHARED_DATA" : isComponent ? "DEFINE_USER_COMPONENT_SHARED_DATA" : "DEFINE_USER_SHARED_DATA";
+  const defineMacroHMember = defineMacroH + "_MEMBER";
+  const defineMacroHMemberFlag = "DEFINE_SHARED_DATA_MEMBER_FLAG";
+  const defineMacroCpp = defineMacroH + "_CPP";
+  const defineMacroCppInit = defineMacroCpp + "_INIT";
+  const defineMacroCppInitMember = defineMacroCppInit + "_MEMBER";
+  const defineMacroCppMember = defineMacroCpp + "_MEMBER_SETTER";
+  const members = decl.members;
+  let codeHDecl = "";
+  let codeHMember = "";
+  let codeHFlag = "";
+  let codeH = `${defineMacroH}(${className},
+`;
+  let codeCpp = `${defineMacroCpp}(${className},
+`;
+  let codeCppInit = indent(1) + `${defineMacroCppInit}(${className},
+`;
+  let codeCppMembers = ``;
+  let flags = /* @__PURE__ */ new Set();
+  for (let i = 0; i < members.length; i++) {
+    const member = members[i];
+    const memberTypeInfo = parseClassMemberType(member, ts);
+    if (!memberTypeInfo) {
+      continue;
+    }
+    const optional = memberTypeInfo.optional;
+    const memberName = memberTypeInfo.memberName;
+    const memberTypeNode = memberTypeInfo.type;
+    const memberType = formatTypeNode(memberTypeNode, ts);
+    const { index: groupIndex, bitValue: memberBitValue } = identGenerator.getGroupInfo(memberName);
+    const memberFlag = "_flag" + groupIndex;
+    flags.add(memberFlag);
+    if (!memberType) {
+      continue;
+    }
+    let [memberSetterType, memberRealType] = memberType.split("|");
+    let _defineMacroHMember = `${defineMacroHMember}_${memberSetterType.toUpperCase()}`;
+    let _defineMacroCppMember = `${defineMacroCppMember}_${memberSetterType.toUpperCase()}`;
+    if ((optional || memberSetterType === "UniSharedDataAny") && memberSetterType !== "null") {
+      _defineMacroHMember += `_OR_NULL`;
+      _defineMacroCppMember += `_OR_NULL`;
+    }
+    codeHMember += indent(1) + `${_defineMacroHMember}(${memberName}`;
+    codeCppInit += indent(2) + `${defineMacroCppInitMember}(${memberName})
+`;
+    codeCppMembers += indent(1) + `${_defineMacroCppMember}(${className}, ${memberName}`;
+    if (memberRealType) {
+      codeHMember += `, ${memberRealType}`;
+      codeCppMembers += `, ${memberRealType}`;
+      codeHDecl += `class ${memberRealType};
+`;
+    }
+    codeHMember += `)
+`;
+    codeCppMembers += `, ${memberFlag}, ${memberBitValue})
+`;
+  }
+  codeHFlag = Array.from(flags).map((flag) => indent(1) + `${defineMacroHMemberFlag}(${flag})
+`).join("") + "\n";
+  codeCppInit += indent(1) + `)
+`;
+  codeH += codeHFlag + codeHMember + `)`;
+  if (codeHDecl) {
+    codeH = codeHDecl + codeH;
+  }
+  codeCpp += codeCppInit + codeCppMembers + `)`;
+  if (isPage || isComponent) {
+    codeCpp = `namespace {
+${indentMultiLine(`inline ${options.renderElementCode}`, 1)}
+${indentMultiLine(`inline ${options.renderNativeViewCode}`, 1)}
+}
+${codeCpp}`;
+  }
+  return {
+    files: [
+      {
+        code: codeH,
+        name: `${className}.h`,
+        class: className
+      },
+      {
+        code: codeCpp,
+        name: `${className}.cpp`,
+        class: className
+      }
+    ],
+    groupName: isComponent || isPage ? className : void 0
+  };
+}
+
+function genSharedDataClass(decl, options) {
+  if (options.targetLanguage === "cpp") {
+    return generateCppSharedDataClass(decl, options);
+  }
+  return {
+    files: []
+  };
+}
+function genSharedData(decls, options) {
+  const sharedDataResultList = decls.map(
+    (decl) => genSharedDataClass(decl, options)
+  );
+  const cppFile = {
+    name: ".cpp",
+    code: "",
+    classes: []
+  };
+  const hFile = {
+    name: ".h",
+    code: "",
+    classes: []
+  };
+  let groupName = "";
+  sharedDataResultList.forEach((result) => {
+    if (result.groupName) {
+      groupName = result.groupName;
+    }
+    result.files.forEach((file) => {
+      if (file.name.endsWith(".h")) {
+        hFile.code += (hFile.code ? "\n\n" : "") + file.code;
+        hFile.classes.push(file.class);
+      } else if (file.name.endsWith(".cpp")) {
+        cppFile.code += (cppFile.code ? "\n\n" : "") + file.code;
+        cppFile.classes.push(file.class);
+      }
+    });
+  });
+  if (groupName) {
+    hFile.name = `${groupName}.h`;
+    cppFile.name = `${groupName}.cpp`;
+    hFile.code = `#pragma once
 #include "sdk.h"
 
-${s.code}`,r.code=`#include "${s.name}"
+${hFile.code}`;
+    cppFile.code = `#include "${hFile.name}"
 
-${r.code}`),{files:[r,s]}}exports.parse=N.parse,exports.COMPONENT_TYPE=mr,exports.DOM2_APP_PLATFORM=Mt,exports.RENDERER_TYPE=pr,exports.TARGET_LANGUAGE=gr,exports.TARGET_PLATFORM=Mt,exports.compile=Gs,exports.genSharedData=ta,exports.genSharedDataClass=en;
+${cppFile.code}`;
+  }
+  return {
+    files: [cppFile, hFile]
+  };
+}
+
+exports.parse = compilerDom.parse;
+exports.COMPONENT_TYPE = COMPONENT_TYPE;
+exports.DOM2_APP_PLATFORM = DOM2_APP_PLATFORM;
+exports.RENDERER_TYPE = RENDERER_TYPE;
+exports.TARGET_LANGUAGE = TARGET_LANGUAGE;
+exports.TARGET_PLATFORM = DOM2_APP_PLATFORM;
+exports.compile = compile;
+exports.genSharedData = genSharedData;
+exports.genSharedDataClass = genSharedDataClass;
