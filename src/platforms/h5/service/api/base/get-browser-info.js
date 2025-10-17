@@ -75,6 +75,14 @@ export function getBrowserInfo () {
     if (osversionFind) {
       osversion = osversionFind[1].replace(/_/g, '.')
     }
+    // iOS 26+ 需要从 Version/ 中读取真实版本号
+    const iosVersion = osversion.split('.')[0]
+    if (Number(iosVersion) >= 18) {
+      const versionMatch = ua.match(/Version\/([\d.]+)/)
+      if (versionMatch) {
+        osversion = versionMatch[1]
+      }
+    }
     const modelFind = ua.match(/\(([a-zA-Z]+);/)
     if (modelFind) {
       model = modelFind[1]
