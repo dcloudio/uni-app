@@ -359,7 +359,7 @@ const uniMiniProgramAlipayPlugin = {
         if (id.includes('@vue/shared') || id.includes('@vue\\shared')) {
             return {
                 code: code.replace('//gs', '//g'),
-                map: { mappings: '' },
+                map: null,
             };
         }
     },
