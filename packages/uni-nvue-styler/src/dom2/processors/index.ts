@@ -1,10 +1,5 @@
-import {
-  type AppCssJson,
-  type DOM2_APP_PLATFORM,
-  DOM2_APP_TARGET,
-} from '../types'
-import appCssJson from '../../../lib/dom2/app-css.json'
-import type { PropertyProcessor } from './utils'
+import { type DOM2_APP_PLATFORM, DOM2_APP_TARGET } from '../types'
+import { type PropertyProcessor, getAppCssJson } from './utils'
 import { createSetStyleUnitValueProcessor } from './unit'
 import { createGenEnumCode, createSetStyleEnumValueProcessor } from './enum'
 import { createSetStyleNativeColorValueProcessor, isColorType } from './color'
@@ -46,19 +41,21 @@ export function createDom2PropertyProcessors(
   }
   const processorMap: Record<string, PropertyProcessor> = {}
   // 从JSON配置中获取所有支持的属性
-  const allProperties = Object.keys(appCssJson as AppCssJson)
+  const allProperties = Object.keys(getAppCssJson())
   const language = target === DOM2_APP_TARGET.ALL ? 'cpp' : 'ts'
-  const genEnumCode = createGenEnumCode(language, platform, target)
+
   allProperties.forEach((propertyName) => {
     // 解析 css 文件样式表时，应该传入ALL，不需要根据target获取setter
-    const setter =
+    const targetConfig =
       target === DOM2_APP_TARGET.ALL
-        ? 'setStyle'
-        : getPlatformConfig(propertyName, platform, target)?.setter
-    if (setter) {
-      const propertyConfig = (appCssJson as AppCssJson)[propertyName]
-      // 使用根节点的type
-      const propertyType = propertyConfig.type
+        ? {
+            setter: 'setStyle',
+          }
+        : getTargetConfig(propertyName, platform, target)
+    if (targetConfig) {
+      const setter = targetConfig.setter
+      const propertyType =
+        targetConfig.type || getAppCssJson()[propertyName].type
       if (propertyType === 'UniCSSUnitValue') {
         processorMap[propertyName] = createSetStyleUnitValueProcessor(
           setter,
@@ -76,10 +73,10 @@ export function createDom2PropertyProcessors(
       } else if (isBoxShadowType(propertyType)) {
         processorMap[propertyName] =
           createSetStyleBoxShadowValueProcessor(setter)
-      } else {
+      } else if (propertyType) {
         processorMap[propertyName] = createSetStyleEnumValueProcessor(
           setter,
-          genEnumCode
+          createGenEnumCode(propertyType, language, platform, target)
         )
       }
     }
@@ -90,12 +87,12 @@ export function createDom2PropertyProcessors(
   return processorMap
 }
 
-function getPlatformConfig(
+function getTargetConfig(
   propertyName: string,
   platform: DOM2_APP_PLATFORM,
   target: DOM2_APP_TARGET
 ) {
-  const property = (appCssJson as AppCssJson)[propertyName]
+  const property = getAppCssJson()[propertyName]
   if (!property || !property.uniPlatform) {
     return null
   }

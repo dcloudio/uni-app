@@ -52,6 +52,20 @@ describe('dom2 static style', () => {
         })
       })
     })
+    describe('border', () => {
+      ;['none', 'solid', 'dashed', 'dotted'].forEach((value) => {
+        const borderValue = `1px ${value} black`
+        test(borderValue, () => {
+          const input = `border: ${borderValue}`
+          TEST_OPTIONS_LIST.forEach((options) => {
+            const result = parseDom2StaticStyle(input, options)
+            expect(result).toMatchSnapshot(
+              `${options.platform}-${options.target}`
+            )
+          })
+        })
+      })
+    })
 
     describe('basic functionality', () => {
       test('should parse basic CSS properties', () => {
@@ -461,15 +475,15 @@ describe('dom2 static style', () => {
     })
 
     describe('enum value processor', () => {
-      const genEnumCode = createGenEnumCode(
-        'ts',
-        DOM2_APP_PLATFORM.APP_HARMONY,
-        DOM2_APP_TARGET.DOM_C
-      )
       test('should create enum processor with setter', () => {
         const processor = createSetStyleEnumValueProcessor(
           'setDisplay',
-          genEnumCode
+          createGenEnumCode(
+            'UniCSSDisplayType',
+            'ts',
+            DOM2_APP_PLATFORM.APP_HARMONY,
+            DOM2_APP_TARGET.DOM_C
+          )
         )
         // 注意：这个测试依赖于 app-css.json 中的实际配置
         // 如果配置不存在，会返回 undefined
@@ -483,7 +497,15 @@ describe('dom2 static style', () => {
       })
 
       test('should create enum processor without setter', () => {
-        const processor = createSetStyleEnumValueProcessor('', genEnumCode)
+        const processor = createSetStyleEnumValueProcessor(
+          '',
+          createGenEnumCode(
+            'UniCSSDisplayType',
+            'ts',
+            DOM2_APP_PLATFORM.APP_HARMONY,
+            DOM2_APP_TARGET.DOM_C
+          )
+        )
         const result = processor('block', 'display')
 
         expect(result).toHaveProperty('valueCode')

@@ -323,6 +323,302 @@ exports[`dom2 static style complex scenarios should handle mixed variable usage 
 }
 `;
 
+exports[`dom2 static style parseDom2StaticStyle border 1px dashed black: app-harmony-dom-c 1`] = `
+{
+  "border-bottom-style": {
+    "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+  },
+  "border-bottom-width": {
+    "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-left-style": {
+    "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+  },
+  "border-left-width": {
+    "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-right-style": {
+    "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+  },
+  "border-right-width": {
+    "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-top-style": {
+    "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+  },
+  "border-top-width": {
+    "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+}
+`;
+
+exports[`dom2 static style parseDom2StaticStyle border 1px dashed black: app-harmony-nv-c 1`] = `
+{
+  "border-bottom-color": {
+    "setterCode": "borderColorBottom(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-bottom-style": {
+    "setterCode": "borderStyleBottom(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed")",
+  },
+  "border-left-color": {
+    "setterCode": "borderColorLeft(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-left-style": {
+    "setterCode": "borderStyleLeft(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed")",
+  },
+  "border-right-color": {
+    "setterCode": "borderColorRight(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-right-style": {
+    "setterCode": "borderStyleRight(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed")",
+  },
+  "border-top-color": {
+    "setterCode": "borderColorTop(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-top-style": {
+    "setterCode": "borderStyleTop(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed")",
+  },
+}
+`;
+
+exports[`dom2 static style parseDom2StaticStyle border 1px dotted black: app-harmony-dom-c 1`] = `
+{
+  "border-bottom-style": {
+    "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+  },
+  "border-bottom-width": {
+    "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-left-style": {
+    "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+  },
+  "border-left-width": {
+    "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-right-style": {
+    "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+  },
+  "border-right-width": {
+    "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-top-style": {
+    "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+  },
+  "border-top-width": {
+    "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+}
+`;
+
+exports[`dom2 static style parseDom2StaticStyle border 1px dotted black: app-harmony-nv-c 1`] = `
+{
+  "border-bottom-color": {
+    "setterCode": "borderColorBottom(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-bottom-style": {
+    "setterCode": "borderStyleBottom(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted")",
+  },
+  "border-left-color": {
+    "setterCode": "borderColorLeft(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-left-style": {
+    "setterCode": "borderStyleLeft(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted")",
+  },
+  "border-right-color": {
+    "setterCode": "borderColorRight(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-right-style": {
+    "setterCode": "borderStyleRight(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted")",
+  },
+  "border-top-color": {
+    "setterCode": "borderColorTop(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-top-style": {
+    "setterCode": "borderStyleTop(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted")",
+  },
+}
+`;
+
+exports[`dom2 static style parseDom2StaticStyle border 1px none black: app-harmony-dom-c 1`] = `
+{
+  "border-bottom-style": {
+    "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+  },
+  "border-bottom-width": {
+    "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-left-style": {
+    "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+  },
+  "border-left-width": {
+    "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-right-style": {
+    "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+  },
+  "border-right-width": {
+    "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-top-style": {
+    "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+  },
+  "border-top-width": {
+    "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+}
+`;
+
+exports[`dom2 static style parseDom2StaticStyle border 1px none black: app-harmony-nv-c 1`] = `
+{
+  "border-bottom-color": {
+    "setterCode": "borderColorBottom(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-bottom-style": {
+    "setterCode": "borderStyleBottom(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")",
+  },
+  "border-left-color": {
+    "setterCode": "borderColorLeft(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-left-style": {
+    "setterCode": "borderStyleLeft(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")",
+  },
+  "border-right-color": {
+    "setterCode": "borderColorRight(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-right-style": {
+    "setterCode": "borderStyleRight(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")",
+  },
+  "border-top-color": {
+    "setterCode": "borderColorTop(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-top-style": {
+    "setterCode": "borderStyleTop(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")",
+  },
+}
+`;
+
+exports[`dom2 static style parseDom2StaticStyle border 1px solid black: app-harmony-dom-c 1`] = `
+{
+  "border-bottom-style": {
+    "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-bottom-width": {
+    "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-left-style": {
+    "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-left-width": {
+    "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-right-style": {
+    "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-right-width": {
+    "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-top-style": {
+    "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-top-width": {
+    "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+}
+`;
+
+exports[`dom2 static style parseDom2StaticStyle border 1px solid black: app-harmony-nv-c 1`] = `
+{
+  "border-bottom-color": {
+    "setterCode": "borderColorBottom(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-bottom-style": {
+    "setterCode": "borderStyleBottom(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")",
+  },
+  "border-left-color": {
+    "setterCode": "borderColorLeft(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-left-style": {
+    "setterCode": "borderStyleLeft(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")",
+  },
+  "border-right-color": {
+    "setterCode": "borderColorRight(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-right-style": {
+    "setterCode": "borderStyleRight(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")",
+  },
+  "border-top-color": {
+    "setterCode": "borderColorTop(0xff000000)",
+    "valueCode": "0xff000000",
+  },
+  "border-top-style": {
+    "setterCode": "borderStyleTop(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")",
+  },
+}
+`;
+
 exports[`dom2 static style parseDom2StaticStyle box-shadow 5px 5px black: app-harmony-dom-c 1`] = `{}`;
 
 exports[`dom2 static style parseDom2StaticStyle box-shadow 5px 5px black: app-harmony-nv-c 1`] = `

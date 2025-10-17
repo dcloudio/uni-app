@@ -365,6 +365,7 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-c": {
+		  "type": "UniNativeBorderStyle",
           "setter": "borderStyleBottom"
         }
       },
@@ -386,6 +387,7 @@
           "setter": "setStyleBorderLeftStyle"
         },
         "nv-c": {
+          "type": "UniNativeBorderStyle",
           "setter": "borderStyleLeft"
         }
       },
@@ -407,6 +409,7 @@
           "setter": "setStyleBorderRightStyle"
         },
         "nv-c": {
+          "type": "UniNativeBorderStyle",
           "setter": "borderStyleRight"
         }
       },
@@ -428,6 +431,7 @@
           "setter": "setStyleBorderTopStyle"
         },
         "nv-c": {
+          "type": "UniNativeBorderStyle",
           "setter": "borderStyleTop"
         }
       },
@@ -790,7 +794,7 @@
       }
     }
   },
-  "font-size":{
+  "font-size": {
     "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {

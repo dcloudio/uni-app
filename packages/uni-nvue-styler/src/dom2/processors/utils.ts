@@ -1,3 +1,10 @@
+import type { AppCssJson } from '../types'
+import appCssJson from '../../../lib/dom2/app-css.json'
+
+export function getAppCssJson() {
+  return appCssJson as AppCssJson
+}
+
 export interface PropertyProcessor {
   (value: string | number, propertyName: string): {
     error?: string
