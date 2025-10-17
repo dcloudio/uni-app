@@ -1,8 +1,10 @@
+let bitmapIdCounter = 0
+
 function getBase64 (path) {
   return new Promise(function (resolve, reject) {
     // H5+ 沙箱外路径在iOS无法使用 plus.io 读取
     function onError () {
-      const bitmap = new plus.nativeObj.Bitmap(`bitmap_${Date.now()}_${Math.random()}}`)
+      const bitmap = new plus.nativeObj.Bitmap(`bitmap_${Date.now()}_${Math.random()}_${++bitmapIdCounter}`)
       bitmap.load(path, function () {
         resolve(bitmap.toBase64Data())
         bitmap.clear()
