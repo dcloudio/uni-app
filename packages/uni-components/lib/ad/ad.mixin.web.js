@@ -146,7 +146,7 @@ export default {
     },
 
     _isMobile () {
-      return /android|iphone/i.test(navigator.userAgent.toLowerCase())
+      return /android|phone/i.test(navigator.userAgent.toLowerCase())
     },
 
     _onmpload (e) {
