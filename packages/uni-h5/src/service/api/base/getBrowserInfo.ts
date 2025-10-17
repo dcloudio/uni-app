@@ -1,6 +1,7 @@
 import { isFunction, isString } from '@vue/shared'
 import {
   isAndroid,
+  isHarmony,
   isIOS,
   isIPadOS,
   isLinux,
@@ -184,6 +185,14 @@ export function getBrowserInfo() {
         }
       }
     }
+  } else if (isHarmony) {
+    osname = 'Harmony'
+    deviceType = 'phone'
+    const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/)
+    if (osversionFind) {
+      osversion = osversionFind[1]
+    }
+    model = ''
   } else {
     osname = 'Other'
     osversion = '0'
