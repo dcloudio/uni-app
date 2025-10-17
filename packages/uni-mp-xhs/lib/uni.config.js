@@ -3,6 +3,10 @@ const path = require('path')
 const {
   parseJson
 } = require('@dcloudio/uni-cli-shared/lib/json')
+const { getSubpackageRoots } = require('@dcloudio/uni-cli-shared/lib/pages')
+const { normalizePath } = require('@dcloudio/uni-cli-shared/lib/util')
+
+const COMPONENTS_DIR_NAME = 'xhscomponents'
 
 module.exports = {
   options: {
@@ -24,12 +28,14 @@ module.exports = {
   },
   copyWebpackOptions (platformOptions, vueOptions) {
     const copyOptions = [
-      'xhscomponents',
+      COMPONENTS_DIR_NAME,
       'sitemap.json',
       'project.private.config.json'
     ]
+    const dirs = getSubpackageRoots().map((root) => normalizePath(path.join(root, COMPONENTS_DIR_NAME)))
+    copyOptions.push(...dirs)
     global.uniModules.forEach(module => {
-      copyOptions.push('uni_modules/' + module + '/xhscomponents')
+      copyOptions.push('uni_modules/' + module + '/' + COMPONENTS_DIR_NAME)
     })
     const extJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'ext.json')
     if (fs.existsSync(extJsonPath)) {

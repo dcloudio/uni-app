@@ -3,6 +3,10 @@ const path = require('path')
 const {
   parseJson
 } = require('@dcloudio/uni-cli-shared/lib/json')
+const { getSubpackageRoots } = require('@dcloudio/uni-cli-shared/lib/pages')
+const { normalizePath } = require('@dcloudio/uni-cli-shared/lib/util')
+
+const COMPONENTS_DIR_NAME = 'ttcomponents'
 
 module.exports = {
   options: {
@@ -23,9 +27,11 @@ module.exports = {
     project: 'project.tt.json'
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = ['ttcomponents', 'package.json', 'project.private.config.json']
+    const copyOptions = [COMPONENTS_DIR_NAME, 'package.json', 'project.private.config.json']
+    const dirs = getSubpackageRoots().map((root) => normalizePath(path.join(root, COMPONENTS_DIR_NAME)))
+    copyOptions.push(...dirs)
     global.uniModules.forEach(module => {
-      copyOptions.push('uni_modules/' + module + '/ttcomponents')
+      copyOptions.push('uni_modules/' + module + '/' + COMPONENTS_DIR_NAME)
     })
     const extJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'ext.json')
     if (fs.existsSync(extJsonPath)) {

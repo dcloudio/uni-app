@@ -329,6 +329,14 @@ function generateGlobalUsingComponentsCode (usingComponents) {
   return `${importCode.join(';')};${componentsCode.join(';')};`
 }
 
+function getSubpackageRoots () {
+  const pagesJson = getPagesJson()
+  if (Array.isArray(pagesJson.subPackages) && pagesJson.subPackages.length) {
+    return pagesJson.subPackages.map(({ root }) => root).filter(Boolean)
+  }
+  return []
+}
+
 function getGlobalUsingComponentsCode () {
   const pagesJson = getPagesJson()
   const usingComponents = pagesJson.globalStyle && pagesJson.globalStyle.usingComponents
@@ -575,6 +583,7 @@ module.exports = {
   parsePages,
   parseEntry,
   getPagesJson,
+  getSubpackageRoots,
   parsePagesJson,
   pagesJsonJsFileName,
   getAutoComponents,
