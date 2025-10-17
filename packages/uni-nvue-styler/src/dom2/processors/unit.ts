@@ -24,7 +24,7 @@ export function createSetStyleUnitValueProcessor(
 
 const unitMatchRe = /^(-?(?:\d*\.\d+|\d+\.?\d*))(%|[a-zA-Z]+)?$/
 
-function parseUnitValue(value: string) {
+export function parseUnitValue(value: string) {
   const unitMatch = value.match(unitMatchRe)
   if (unitMatch) {
     const value = parseFloat(unitMatch[1])

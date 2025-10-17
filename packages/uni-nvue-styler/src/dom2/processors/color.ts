@@ -26,7 +26,7 @@ export function createSetStyleNativeColorValueProcessor(
   }
 }
 
-function parseNativeColorValue(value: string) {
+export function parseNativeColorValue(value: string) {
   const color = tinycolor(value)
   if (color.isValid()) {
     // toHex8() 返回 RRGGBBAA，需要转换为 AARRGGBB

@@ -1,6 +1,6 @@
 import { type PropertyProcessor, createValueProcessorResult } from './utils'
 
-const STRING_TYPES = ['string', 'UniNativeBoxShadow']
+const STRING_TYPES = ['string']
 export function isStringType(propertyType?: string) {
   return propertyType && STRING_TYPES.includes(propertyType)
 }

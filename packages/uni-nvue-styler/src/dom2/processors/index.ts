@@ -10,6 +10,10 @@ import { createGenEnumCode, createSetStyleEnumValueProcessor } from './enum'
 import { createSetStyleNativeColorValueProcessor, isColorType } from './color'
 import { createSetStyleNumberValueProcessor, isNumberType } from './number'
 import { createSetStyleStringValueProcessor, isStringType } from './string'
+import {
+  createSetStyleBoxShadowValueProcessor,
+  isBoxShadowType,
+} from './boxShadow'
 
 export type { PropertyProcessor } from './utils'
 export { createSetStyleNativeColorValueProcessor } from './color'
@@ -69,6 +73,9 @@ export function createDom2PropertyProcessors(
         processorMap[propertyName] = createSetStyleNumberValueProcessor(setter)
       } else if (isStringType(propertyType)) {
         processorMap[propertyName] = createSetStyleStringValueProcessor(setter)
+      } else if (isBoxShadowType(propertyType)) {
+        processorMap[propertyName] =
+          createSetStyleBoxShadowValueProcessor(setter)
       } else {
         processorMap[propertyName] = createSetStyleEnumValueProcessor(
           setter,
