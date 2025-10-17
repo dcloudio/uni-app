@@ -90,7 +90,7 @@ export function lifecycleMixin (Vue) {
         setupString = setup.toString()
       } catch (error) {}
       injectHooks.forEach(hook => {
-        if (setupString.indexOf(`uniApp.${hook}`) && !extendOptions[hook]) {
+        if (setupString.includes(`uniApp.${hook}`) && !extendOptions[hook]) {
           extendOptions[hook] = [() => {}]
         }
       })
