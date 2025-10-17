@@ -93,9 +93,9 @@ describe('getBrowserInfo', () => {
 
     const browserInfo = getBrowserInfo()
 
-    expect(browserInfo.osname).toBe('Android')
-    expect(browserInfo.osversion).toBe('10')
-    expect(browserInfo.platform).toBe('android')
+    expect(browserInfo.osname).toBe('Harmony')
+    expect(browserInfo.osversion).toBe('5.1')
+    expect(browserInfo.platform).toBe('harmony')
 
     userAgentSpy.mockRestore()
   })
