@@ -196,6 +196,11 @@ export default /*#__PURE__*/ defineSystemComponent({
       }
     }
     onMapReady((map, maps, trigger) => {
+      if (getIsAMap()) {
+        AMap.plugin('AMap.MoveAnimation', function () {
+          marker = new AMap.Marker()
+        })
+      }
       function updateMarker(option: Props) {
         const title = option.title
         let position: any
@@ -481,22 +486,34 @@ export default /*#__PURE__*/ defineSystemComponent({
               rotation = marker.getRotation()
             }
             const a = marker.getPosition()
-            const b = new (maps as QQMaps | GoogleMaps).LatLng(
-              destination.latitude,
-              destination.longitude
-            )
-            const distance =
-              (
-                maps as QQMaps | GoogleMaps
-              ).geometry.spherical.computeDistanceBetween(a as any, b as any) /
-              1000
+            let b: any
+            let distance = 0
+            let MapsEvent: any
+            if (getIsAMap()) {
+              b = new (maps as AMap.NameSpace).LngLat(
+                destination.longitude,
+                destination.latitude
+              )
+              distance = b.distanceTo(a) / 1000
+              MapsEvent = (maps as AMap.NameSpace).Event
+            } else {
+              b = new (maps as QQMaps | GoogleMaps).LatLng(
+                destination.latitude,
+                destination.longitude
+              )
+              distance =
+                (
+                  maps as QQMaps | GoogleMaps
+                ).geometry.spherical.computeDistanceBetween(
+                  a as any,
+                  b as any
+                ) / 1000
+              MapsEvent = (maps as QQMaps | GoogleMaps).event
+            }
             const time =
               (typeof duration === 'number' ? duration : 1000) /
               (1000 * 60 * 60)
             const speed = distance / time
-            const MapsEvent =
-              (maps as QQMaps | GoogleMaps).event ||
-              (maps as AMap.NameSpace).Event
             const movingEvent = MapsEvent.addListener(
               marker,
               'moving',
@@ -513,8 +530,10 @@ export default /*#__PURE__*/ defineSystemComponent({
               }
             )
             const event = MapsEvent.addListener(marker, 'moveend', () => {
-              event.remove()
-              movingEvent.remove()
+              if (!getIsAMap()) {
+                event.remove()
+                movingEvent.remove()
+              }
               marker.lastPosition = a as QLatLng
               marker.setPosition(b as any)
               const label = marker.label
@@ -531,7 +550,7 @@ export default /*#__PURE__*/ defineSystemComponent({
               }
             })
             let lastRtate = 0
-            if (autoRotate) {
+            if (autoRotate && !getIsAMap()) {
               if (marker.lastPosition) {
                 lastRtate = (
                   maps as QQMaps | GoogleMaps
@@ -550,7 +569,17 @@ export default /*#__PURE__*/ defineSystemComponent({
               marker.setRotation(rotation + rotate)
             }
             if ('moveTo' in marker) {
-              marker.moveTo(b as QLatLng, speed)
+              if (getIsAMap()) {
+                marker.moveTo(
+                  b as QLatLng,
+                  {
+                    duration: duration,
+                    autoRotation: autoRotate,
+                  } as any
+                )
+              } else {
+                marker.moveTo(b as QLatLng, speed)
+              }
             } else {
               marker.setPosition(b as GLatLng)
               MapsEvent.trigger(marker, 'moveend', {})
