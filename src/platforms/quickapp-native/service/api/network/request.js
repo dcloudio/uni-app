@@ -9,7 +9,7 @@ const requestTasks = {}
 
 const publishStateChange = res => {
   publish('onRequestTaskStateChange', res)
-  delete requestTasks[requestTaskId]
+  delete requestTasks[res.requestTaskId]
 }
 
 export function createRequestTaskById (requestTaskId, {
