@@ -53,6 +53,8 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
     "@rollup/plugin-alias": "^3.1.0",
     "@rollup/plugin-commonjs": "^11.1.0",
     "@rollup/plugin-json": "^4.1.0",
@@ -65,6 +67,7 @@
     "@vue/cli-service": "^4.3.1",
     "@vue/test-utils": "^1.0.0-beta.33",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^30.2.0",
     "babylon": "^6.18.0",
     "browserslist": "^4.11.1",
     "chai": "^4.2.0",
@@ -72,7 +75,7 @@
     "cross-env": "^7.0.2",
     "del": "^5.1.0",
     "escape-string-regexp": "4",
-    "eslint": "^6.8.0",
+    "eslint": "7",
     "eslint-config-standard": "^14.1.0",
     "eslint-loader": "^3.0.3",
     "eslint-plugin-import": "^2.20.1",
@@ -150,7 +153,8 @@
     },
     "rules": {
       "no-tabs": 0,
-      "standard/no-callback-literal": 0
+      "standard/no-callback-literal": 0,
+      "accessor-pairs": "off"
     },
     "parserOptions": {
       "parser": "babel-eslint"
