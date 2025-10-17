@@ -123,7 +123,7 @@ function requireHashSum () {
 }
 
 var hashSumExports = /*@__PURE__*/ requireHashSum();
-var hash = /*@__PURE__*/getDefaultExportFromCjs(hashSumExports);
+var hash_sum = /*@__PURE__*/getDefaultExportFromCjs(hashSumExports);
 
 const CSS_VARS_HELPER = `useCssVars`;
 function genCssVarsFromList(vars, id, isProd, isSSR = false) {
@@ -142,7 +142,7 @@ function genCssVarsFromList(vars, id, isProd, isSSR = false) {
 }
 function genVarName(id, raw, isProd, isSSR = false) {
   if (isProd) {
-    return hash(id + raw);
+    return hash_sum(id + raw);
   } else {
     return `${id}-${shared.getEscapedCssVarName(raw, isSSR)}`;
   }
@@ -1766,6 +1766,58 @@ function extractIdentifiers(ids, node) {
   }
 }
 
+const UNKNOWN_TYPE = "Unknown";
+function resolveObjectKey(node, computed) {
+  switch (node.type) {
+    case "StringLiteral":
+    case "NumericLiteral":
+      return String(node.value);
+    case "Identifier":
+      if (!computed) return node.name;
+  }
+  return void 0;
+}
+function concatStrings(strs) {
+  return strs.filter((s) => !!s).join(", ");
+}
+function isLiteralNode(node) {
+  return node.type.endsWith("Literal");
+}
+function isCallOf(node, test) {
+  return !!(node && test && node.type === "CallExpression" && node.callee.type === "Identifier" && (typeof test === "string" ? node.callee.name === test : test(node.callee.name)));
+}
+function toRuntimeTypeString(types) {
+  return types.length > 1 ? `[${types.join(", ")}]` : types[0];
+}
+function getImportedName(specifier) {
+  if (specifier.type === "ImportSpecifier")
+    return specifier.imported.type === "Identifier" ? specifier.imported.name : specifier.imported.value;
+  else if (specifier.type === "ImportNamespaceSpecifier") return "*";
+  return "default";
+}
+function getId(node) {
+  return node.type === "Identifier" ? node.name : node.type === "StringLiteral" ? node.value : null;
+}
+const identity = (str) => str;
+const fileNameLowerCaseRegExp = /[^\u0130\u0131\u00DFa-z0-9\\/:\-_\. ]+/g;
+const toLowerCase = (str) => str.toLowerCase();
+function toFileNameLowerCase(x) {
+  return fileNameLowerCaseRegExp.test(x) ? x.replace(fileNameLowerCaseRegExp, toLowerCase) : x;
+}
+function createGetCanonicalFileName(useCaseSensitiveFileNames) {
+  return useCaseSensitiveFileNames ? identity : toFileNameLowerCase;
+}
+const normalize = (path$1.posix || path$1).normalize;
+const windowsSlashRE = /\\/g;
+function normalizePath(p) {
+  return normalize(p.replace(windowsSlashRE, "/"));
+}
+const joinPaths = (path$1.posix || path$1).join;
+const propNameEscapeSymbolsRE = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~\-]/;
+function getEscapedPropName(key) {
+  return propNameEscapeSymbolsRE.test(key) ? JSON.stringify(key) : key;
+}
+
 const DEFAULT_FILENAME = "anonymous.vue";
 const parseCache$1 = createCache();
 function parse$1(source, options = {}) {
@@ -1926,6 +1978,47 @@ function parse$1(source, options = {}) {
   descriptor.slotted = descriptor.styles.some(
     (s) => s.scoped && slottedRE.test(s.content)
   );
+  if (templateParseOptions.dom2) {
+    let isAppUVue2 = function() {
+      if (templateParseOptions.root && descriptor.filename) {
+        return normalizePath(descriptor.filename) === normalizePath(templateParseOptions.root + "/App.uvue");
+      }
+      return false;
+    }, createDefaultScriptSetup2 = function() {
+      return {
+        type: "script",
+        content: "",
+        loc: {
+          start: ast.loc.end,
+          end: ast.loc.end,
+          source: ""
+        },
+        attrs: { setup: true, vapor: true, lang: "uts" },
+        setup: true,
+        lang: "uts"
+      };
+    };
+    if (
+      // 没有 script 和 scriptSetup
+      !descriptor.script && !descriptor.scriptSetup
+    ) {
+      descriptor.vapor = true;
+      descriptor.scriptSetup = createDefaultScriptSetup2();
+    }
+    if (descriptor.script && !isAppUVue2()) {
+      descriptor.vapor = true;
+      descriptor.script = null;
+      descriptor.template = null;
+      descriptor.scriptSetup = createDefaultScriptSetup2();
+      const error = new SyntaxError(
+        `\u84B8\u6C7D\u6A21\u5F0F\u4EC5\u652F\u6301\u4F7F\u7528<script setup>\uFF0C\u4E0D\u652F\u6301<script>\u9009\u9879\u5F0F`
+      );
+      error.customPrint = () => {
+        console.error(error.message);
+      };
+      errors.push(error);
+    }
+  }
   const result = {
     descriptor,
     errors
@@ -16201,58 +16294,6 @@ function preprocess(options, preprocessor) {
   );
 }
 
-const UNKNOWN_TYPE = "Unknown";
-function resolveObjectKey(node, computed) {
-  switch (node.type) {
-    case "StringLiteral":
-    case "NumericLiteral":
-      return String(node.value);
-    case "Identifier":
-      if (!computed) return node.name;
-  }
-  return void 0;
-}
-function concatStrings(strs) {
-  return strs.filter((s) => !!s).join(", ");
-}
-function isLiteralNode(node) {
-  return node.type.endsWith("Literal");
-}
-function isCallOf(node, test) {
-  return !!(node && test && node.type === "CallExpression" && node.callee.type === "Identifier" && (typeof test === "string" ? node.callee.name === test : test(node.callee.name)));
-}
-function toRuntimeTypeString(types) {
-  return types.length > 1 ? `[${types.join(", ")}]` : types[0];
-}
-function getImportedName(specifier) {
-  if (specifier.type === "ImportSpecifier")
-    return specifier.imported.type === "Identifier" ? specifier.imported.name : specifier.imported.value;
-  else if (specifier.type === "ImportNamespaceSpecifier") return "*";
-  return "default";
-}
-function getId(node) {
-  return node.type === "Identifier" ? node.name : node.type === "StringLiteral" ? node.value : null;
-}
-const identity = (str) => str;
-const fileNameLowerCaseRegExp = /[^\u0130\u0131\u00DFa-z0-9\\/:\-_\. ]+/g;
-const toLowerCase = (str) => str.toLowerCase();
-function toFileNameLowerCase(x) {
-  return fileNameLowerCaseRegExp.test(x) ? x.replace(fileNameLowerCaseRegExp, toLowerCase) : x;
-}
-function createGetCanonicalFileName(useCaseSensitiveFileNames) {
-  return useCaseSensitiveFileNames ? identity : toFileNameLowerCase;
-}
-const normalize = (path$1.posix || path$1).normalize;
-const windowsSlashRE = /\\/g;
-function normalizePath(p) {
-  return normalize(p.replace(windowsSlashRE, "/"));
-}
-const joinPaths = (path$1.posix || path$1).join;
-const propNameEscapeSymbolsRE = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~\-]/;
-function getEscapedPropName(key) {
-  return propNameEscapeSymbolsRE.test(key) ? JSON.stringify(key) : key;
-}
-
 function analyzeScriptBindings(ast) {
   for (const node of ast) {
     if (node.type === "ExportDefaultDeclaration" && node.declaration.type === "ObjectExpression") {
@@ -21407,6 +21448,10 @@ ${vapor && !ssr ? `` : `return `}${returned}
   const genDefaultAs = options.genDefaultAs ? `const ${options.genDefaultAs} =` : `export default`;
   let runtimeOptions = ``;
   if (options.className) {
+    if (options.isWatch) {
+      runtimeOptions += `
+  __hash: "${hash_sum(sfc.source)}",`;
+    }
     runtimeOptions += `
   __className,`;
   }

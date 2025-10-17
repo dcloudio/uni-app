@@ -82,6 +82,7 @@ export declare function createSharedDataComponent<C = any, SharedData extends st
 declare class VaporSharedDataComponentInstance<SharedData extends string = string> implements GenericComponentInstance {
     pageId?: number;
     sharedData: InferSharedData<SharedData, UniSharedDataComponent> | InferSharedData<SharedData, UniSharedDataPage>;
+    sharedDataScope?: UniSharedDataPage;
     vapor: true;
     uid: number;
     type: VaporSharedDataComponent;
@@ -192,6 +193,13 @@ export declare function setSharedDataModel<S extends UniSharedData, V>(sharedDat
 export declare function setSharedDataTemplateRef<S extends UniSharedData>(sharedData: S, key: string, value: UniSharedDataFunctionSetTemplateRef): UniSharedDataFunctionSetTemplateRef;
 export declare function toSharedDataBoolean(value: any | null): boolean;
 export declare function createSharedDataVFor<T extends UniSharedData>(scope: UniSharedDataPage, create: () => T): UniSharedDataVFor<T>;
+/**
+ * 仅限页面 renderSharedData 紧跟着 useSharedDataPage 使用，用于及时给页面示例挂靠 sharedDataScope
+ * 这样组件 create 的时候，就可以及时获取到sharedDataScope
+ * @param scope
+ * @returns
+ */
+export declare function useSharedDataScope<T extends UniSharedDataPage>(scope: T): T;
 
 type TemplateFactory = (page: UniPage) => UniElement & {
     $root?: true;
