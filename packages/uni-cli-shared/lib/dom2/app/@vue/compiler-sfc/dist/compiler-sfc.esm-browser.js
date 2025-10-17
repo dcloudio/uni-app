@@ -65230,7 +65230,8 @@ const ${normalScriptDefaultVar} = ${defaultSpecifier.local.name}
     ctx.userImports
   )) {
     if (isType) continue;
-    ctx.bindingMetadata[key] = imported === "*" || imported === "default" && source2.endsWith(".vue") || source2 === "vue" ? "setup-const" : "setup-maybe-ref";
+    ctx.bindingMetadata[key] = imported === "*" || imported === "default" && // fixed by uts
+    (source2.endsWith(".vue") || source2.endsWith(".uvue")) || source2 === "vue" ? "setup-const" : "setup-maybe-ref";
   }
   for (const key in scriptBindings) {
     ctx.bindingMetadata[key] = scriptBindings[key];
