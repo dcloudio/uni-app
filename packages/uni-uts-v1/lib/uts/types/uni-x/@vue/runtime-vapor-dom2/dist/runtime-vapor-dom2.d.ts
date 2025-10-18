@@ -184,7 +184,7 @@ export declare function setSharedData<S extends UniSharedData, V>(sharedData: S,
 export declare function setSharedDataDynamicProps<S extends UniSharedData>(sharedData: S, key: string, value: any[]): UniSharedDataJSONObject;
 export declare function setSharedDataDynamicEvents<S extends UniSharedData>(sharedData: S, key: string, events: Record<string, (...args: any[]) => any>): UniSharedDataJSONObject;
 export declare function setSharedDataClass<S extends UniSharedData, V>(sharedData: S, key: string, value: V): string[];
-export declare function setSharedDataStyle<S extends UniSharedData, V>(sharedData: S, key: string, value: V): UniSharedDataJSONObject;
+export declare function setSharedDataStyle<S extends UniSharedData, V>(sharedData: S, key: string, value: V): UniElementStyles;
 export declare function setSharedDataAttr<S extends UniSharedData, V>(sharedData: S, key: string, value: V): V;
 export declare function setSharedDataEvent<S extends UniSharedData>(sharedData: S, key: string, value: UniSharedDataFunctionEventListener): UniSharedDataFunctionEventListener;
 export declare function setSharedDataModel<S extends UniSharedData, V>(sharedData: S, key: string, get: () => V, set: (v: V) => void, modifiers?: {
@@ -222,7 +222,7 @@ export declare function setElementText(el: UniElement, value: string): void;
 export declare function setElementHtml(el: UniElement, value: string): void;
 export declare function setElementAttr(el: UniElement, key: string, value: any): void;
 export declare function setElementClass(el: UniElement, value: any): void;
-export declare function setElementStyle(el: UniElement, value: any): void;
+export declare function setElementStyle(el: UniElement, value: UniElementStyles): void;
 export declare function setElementDynamicProps(el: UniElement, args: UniSharedDataJSONObject): void;
 export declare function setElementDynamicEvents(el: UniElement, args: UniSharedDataJSONObject): void;
 type setElementRefFn = (el: UniElement, refId: number, refFor?: boolean) => void;
