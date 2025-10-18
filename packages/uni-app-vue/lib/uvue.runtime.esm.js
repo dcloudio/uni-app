@@ -8788,6 +8788,80 @@ function collectClassStyles(instance, styles, weight) {
   }
 }
 
+const PartElementContextMap = /* @__PURE__ */ new WeakMap();
+function setPartElementContext(el, context) {
+  PartElementContextMap.set(el, context);
+}
+function getPartElementContext(el) {
+  return PartElementContextMap.get(el) || null;
+}
+function patchPart(el, part, instance = null) {
+  el.setAnyAttribute("part", part);
+  if (instance == null) {
+    return;
+  }
+  if (!isString(part) || !part) {
+    setPartElementContext(el, new ParseStyleContext());
+    mergeAndUpdateClassStyles(el);
+    return;
+  }
+  const hostEl = instance.subTree.el;
+  if (hostEl == null || hostEl.tagName == null) {
+    return;
+  }
+  const ownerInstance = instance.vnode.hostInstance;
+  if (ownerInstance == null) {
+    return;
+  }
+  const parentStylesheet = ownerInstance.type.styles;
+  if (parentStylesheet == null || parentStylesheet.length === 0) {
+    return;
+  }
+  const partList = part.split(" ");
+  const context = new ParseStyleContext();
+  let stylesUpdated = false;
+  const partSelectors = partList.map((partName) => `::part(${partName})`);
+  const parentStyles = (parentStylesheet != null ? parentStylesheet : []).filter(
+    (style) => partSelectors.some((partSelector) => style[partSelector] != null)
+  );
+  for (let i = 0; i < parentStyles.length; i++) {
+    const style = parentStyles[i];
+    for (let j = 0; j < partSelectors.length; j++) {
+      const partSelector = partSelectors[j];
+      if (style[partSelector] != null) {
+        const parentPartStyles = style[partSelector];
+        for (let parentSelector in parentPartStyles) {
+          if (!isMatchParentSelector(parentSelector, hostEl)) {
+            continue;
+          }
+          const style2 = parentPartStyles[parentSelector];
+          const weight = parentSelector.split(".").length + 1;
+          for (let key in style2) {
+            const existing = context.weights[key];
+            if (existing == null || weight >= existing) {
+              context.styles.set(key, style2[key]);
+              context.weights[key] = weight;
+              stylesUpdated = true;
+            }
+          }
+        }
+      }
+    }
+  }
+  if (!stylesUpdated) {
+    return;
+  }
+  setPartElementContext(el, context);
+  mergeAndUpdateClassStyles(el);
+}
+
+const ElementClassContextMap = /* @__PURE__ */ new WeakMap();
+function setElementClassContext(el, context) {
+  ElementClassContextMap.set(el, context);
+}
+function getElementClassContext(el) {
+  return ElementClassContextMap.get(el) || null;
+}
 function patchClass(el, pre, next, instance = null) {
   if (!instance) {
     return;
@@ -8805,6 +8879,11 @@ function patchClass(el, pre, next, instance = null) {
   updateClassStyles(el);
 }
 function updateClassStyles(el) {
+  const parseClassStylesResult = parseClassStyles(el);
+  setElementClassContext(el, parseClassStylesResult);
+  mergeAndUpdateClassStyles(el);
+}
+function mergeAndUpdateClassStyles(el) {
   if (el.parentNode == null || isCommentNode(el)) {
     return;
   }
@@ -8815,20 +8894,45 @@ function updateClassStyles(el) {
   oldClassStyle.forEach((_value, key) => {
     oldClassStyle.set(key, "");
   });
-  const parseClassStylesResult = parseClassStyles(el);
-  parseClassStylesResult.styles.forEach((value, key) => {
+  const elementClassContext = getElementClassContext(el);
+  const partStyleContext = getPartElementContext(el);
+  let mergedStyleContext = null;
+  if (elementClassContext && partStyleContext) {
+    mergedStyleContext = new ParseStyleContext();
+    elementClassContext.styles.forEach((value, key) => {
+      mergedStyleContext.styles.set(key, value);
+      mergedStyleContext.weights[key] = elementClassContext.weights[key];
+    });
+    partStyleContext.styles.forEach((value, key) => {
+      var _a;
+      const weight = partStyleContext.weights[key];
+      const oldWeight = (_a = mergedStyleContext.weights[key]) != null ? _a : 0;
+      if (weight > oldWeight) {
+        mergedStyleContext.weights[key] = weight;
+        mergedStyleContext.styles.set(key, partStyleContext.styles.get(key));
+      }
+    });
+  } else if (elementClassContext) {
+    mergedStyleContext = elementClassContext;
+  } else if (partStyleContext) {
+    mergedStyleContext = partStyleContext;
+  }
+  if (mergedStyleContext == null) {
+    return;
+  }
+  mergedStyleContext.styles.forEach((value, key) => {
     oldClassStyle.set(key, value);
   });
   const instance = getRootElementInstance(el);
   if (instance && instance.computedStyleInterceptors) {
     collectClassStyles(
       instance,
-      parseClassStylesResult.vueComputedStyles,
-      parseClassStylesResult.vueComputedStyleWeights
+      mergedStyleContext.vueComputedStyles,
+      mergedStyleContext.vueComputedStyleWeights
     );
     triggerComputedStyleUpdate(instance);
   }
-  const styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
+  const styles = toStyle(el, oldClassStyle, mergedStyleContext.weights);
   if (styles.size == 0) {
     return;
   }
@@ -9182,6 +9286,8 @@ const patchProp = (el, key, prevValue, nextValue, namespace, prevChildren, paren
     patchClass(el, prevValue, nextValue, hostInstance || parentComponent);
   } else if (key === "style") {
     patchStyle(el, prevValue, nextValue);
+  } else if (key === "part") {
+    patchPart(el, nextValue, parentComponent);
   } else if (isOn(key)) {
     if (!isModelListener(key)) {
       patchEvent(el, key, prevValue, nextValue, parentComponent);
