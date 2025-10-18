@@ -16,9 +16,9 @@ export function createSetStyleBoxShadowValueProcessor(
     if (value === 'none') {
       return createValueProcessorResult(`null`, `${setter}(null)`)
     }
-    const boxShadowValueCode =
-      stringifyBoxShadowValue(parseBoxShadowValue(String(value))) +
-      ' as UniNativeBoxShadow'
+    const boxShadowValueCode = stringifyBoxShadowValue(
+      parseBoxShadowValue(String(value))
+    )
 
     return createValueProcessorResult(
       `${boxShadowValueCode}`,
@@ -28,7 +28,7 @@ export function createSetStyleBoxShadowValueProcessor(
 }
 
 function stringifyBoxShadowValue(value: UniNativeBoxShadow): string {
-  return `{isInset: ${value.isInset}, offsetX: ${value.offsetX}, offsetY: ${value.offsetY}, blurRadius: ${value.blurRadius}, spreadRadius: ${value.spreadRadius}, color: ${value.color}}`
+  return `UniNativeBoxShadow(${value.isInset}, ${value.offsetX}, ${value.offsetY}, ${value.blurRadius}, ${value.spreadRadius}, ${value.color})`
 }
 
 const PARTS_REG = /\s(?![^(]*\))/

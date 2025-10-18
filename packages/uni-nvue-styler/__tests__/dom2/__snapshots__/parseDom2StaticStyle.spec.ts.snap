@@ -624,8 +624,8 @@ exports[`dom2 static style parseDom2StaticStyle box-shadow 5px 5px black: app-ha
 exports[`dom2 static style parseDom2StaticStyle box-shadow 5px 5px black: app-harmony-nv-c 1`] = `
 {
   "box-shadow": {
-    "setterCode": "boxShadow({isInset: false, offsetX: 5, offsetY: 5, blurRadius: 0, spreadRadius: 0, color: 0xff000000} as UniNativeBoxShadow)",
-    "valueCode": "{isInset: false, offsetX: 5, offsetY: 5, blurRadius: 0, spreadRadius: 0, color: 0xff000000} as UniNativeBoxShadow",
+    "setterCode": "boxShadow(UniNativeBoxShadow(false, 5, 5, 0, 0, 0xff000000))",
+    "valueCode": "UniNativeBoxShadow(false, 5, 5, 0, 0, 0xff000000)",
   },
 }
 `;
