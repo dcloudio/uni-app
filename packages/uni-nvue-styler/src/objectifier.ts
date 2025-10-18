@@ -155,23 +155,45 @@ function transformSelector(
   if (!res) {
     return
   }
+
   let parentSelector = res[1]
-  let curSelector = res[2].substring(1)
+  let curSelector = res[2]
+  // 恢复 ::part(xxx)
+  if (parentSelector.includes('-_part__')) {
+    parentSelector = parentSelector.replace(/-_part__(.+)_-/g, '::part($1)')
+  }
+  if (curSelector.includes('-_part__')) {
+    curSelector = curSelector.replace(/-_part__(.+)_-/g, '::part($1)')
+  }
   // .a.b => a.b
-  const dotIndex = curSelector.indexOf('.')
-  if (dotIndex > -1) {
-    parentSelector += curSelector.substring(dotIndex)
-    curSelector = curSelector.substring(0, dotIndex)
+  const dotIndex = curSelector.lastIndexOf('.')
+  if (dotIndex > 0) {
+    parentSelector += curSelector.substring(0, dotIndex)
+    curSelector = curSelector.substring(dotIndex)
+  }
+  if (curSelector.indexOf('.') === 0) {
+    curSelector = curSelector.substring(1)
   }
 
-  const pseudoIndex = curSelector.indexOf(':')
-  if (pseudoIndex > -1) {
-    const pseudoClass = curSelector.slice(pseudoIndex)
-    curSelector = curSelector.slice(0, pseudoIndex)
-    Object.keys(body).forEach(function (name) {
-      body[name + pseudoClass] = body[name]
-      delete body[name]
-    })
+  const pseudoElementIndex = curSelector.indexOf('::')
+  if (pseudoElementIndex > -1) {
+    // TODO 目前仅支持::part作为最后个Selector Component使用
+    // ::part(xxx).xxx 是否支持？
+    // ::part(xxx):active 保留原样？
+    const partSelector = curSelector.slice(pseudoElementIndex)
+    const baseSelector = curSelector.substring(0, pseudoElementIndex)
+    curSelector = partSelector
+    parentSelector += baseSelector
+  } else {
+    const pseudoIndex = curSelector.indexOf(':')
+    if (pseudoIndex > -1) {
+      const pseudoClass = curSelector.slice(pseudoIndex)
+      curSelector = curSelector.slice(0, pseudoIndex)
+      Object.keys(body).forEach(function (name) {
+        body[name + pseudoClass] = body[name]
+        delete body[name]
+      })
+    }
   }
   transition(curSelector, body, context)
   if (!Object.keys(body).length) {

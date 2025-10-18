@@ -44,6 +44,11 @@ function createRuleProcessor(opts: NormalizeOptions = {}) {
           if (hasDeepMethod) {
             selector = selector.replace(/:deep\(([^)]+)\)/g, '$1')
           }
+          const hasPart = selector.includes('::part')
+          if (hasPart) {
+            // 先将:part(xxx) 替换为 -_part__xxx_-, 绕过组合符号限制校验
+            selector = selector.replace(/::part\(([^)]+)\)/g, '-_part__$1_-')
+          }
         }
         // 移除组合符周围的空格，合并多个空格
         selector = selector
@@ -57,7 +62,7 @@ function createRuleProcessor(opts: NormalizeOptions = {}) {
         rule.warn(
           helper.result,
           'ERROR: Selector `' +
-            selector +
+            selector.replace(/-_part__(.+)_-/g, '::part($1)') + // TODO 目前仅还原了part，预处理还原逻辑需要完善
             '` is not supported. ' +
             type +
             ' only support classname selector'
