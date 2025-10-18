@@ -347,6 +347,9 @@ export function initPluginVueOptions(
         return {
           className,
           componentType: isUniPageFile(filename) ? 'page' : 'component',
+          relativeFilename: normalizePath(
+            path.relative(process.env.UNI_INPUT_DIR, filename)
+          ),
           emitElement: (result: {
             code: string
             map: Record<string, unknown> | undefined

@@ -317,8 +317,10 @@ function genCall(name, ...frags) {
 }
 function codeFragmentToString(code, context) {
   const {
-    options: { filename, sourceMap }
+    // fixed by uts
+    options: { sourceMap }
   } = context;
+  const filename = context.options.relativeFilename || context.options.filename;
   let map;
   if (sourceMap) {
     map = new sourceMapJs.SourceMapGenerator();
