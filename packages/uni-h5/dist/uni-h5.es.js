@@ -7442,6 +7442,7 @@ const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
 const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
 const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
 const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+const isHarmony = /OpenHarmony/i.test(ua);
 function getScreenFix() {
   return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
 }
@@ -19096,6 +19097,13 @@ function getBrowserInfo() {
     if (osversionFind) {
       osversion = osversionFind[1].replace(/_/g, ".");
     }
+    const iosVersion = osversion.split(".")[0];
+    if (Number(iosVersion) >= 18) {
+      const versionMatch = ua.match(/Version\/([\d\.]+)/);
+      if (versionMatch) {
+        osversion = versionMatch[1];
+      }
+    }
     const modelFind = ua.match(/\(([a-zA-Z]+);/);
     if (modelFind) {
       model = modelFind[1];
@@ -19200,6 +19208,14 @@ function getBrowserInfo() {
         }
       }
     }
+  } else if (isHarmony) {
+    osname = "Harmony";
+    deviceType = "phone";
+    const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    model = "";
   } else {
     osname = "Other";
     osversion = "0";
