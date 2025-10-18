@@ -1,3 +1,4 @@
+import path from 'path'
 import fsExtra from 'fs-extra'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { Plugin } from 'vite'
@@ -327,14 +328,42 @@ export function initPluginVueOptions(
         const filename = normalizePath(descriptor.filename.split('?')[0])
         const className = genDom2ClassName(filename, process.env.UNI_INPUT_DIR)
         setSharedDataClassName(filename, className)
+        function writeSourceMap(
+          sourceMapFileName: string,
+          map: Record<string, unknown>
+        ) {
+          if (process.env.UNI_APP_X_CACHE_DIR) {
+            fsExtra.outputFileSync(
+              path.resolve(
+                process.env.UNI_APP_X_CACHE_DIR,
+                'sourcemap',
+                'cpp',
+                sourceMapFileName
+              ),
+              JSON.stringify(map)
+            )
+          }
+        }
         return {
           className,
           componentType: isUniPageFile(filename) ? 'page' : 'component',
-          emitElement: (result: { code: string }) => {
+          emitElement: (result: {
+            code: string
+            map: Record<string, unknown> | undefined
+          }) => {
             setSharedDataElementCode(filename, result.code)
+            if (result.map) {
+              writeSourceMap(className + '.renderElement.map', result.map)
+            }
           },
-          emitNativeView: (result: { code: string }) => {
+          emitNativeView: (result: {
+            code: string
+            map: Record<string, unknown> | undefined
+          }) => {
             setSharedDataNativeViewCode(filename, result.code)
+            if (result.map) {
+              writeSourceMap(className + '.renderNativeView.map', result.map)
+            }
           },
           parseStaticStyle(
             platform: DOM2_APP_PLATFORM,
