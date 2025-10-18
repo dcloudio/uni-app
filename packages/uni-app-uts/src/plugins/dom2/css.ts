@@ -1,6 +1,7 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'fs-extra'
 import path from 'path'
+import crypto from 'crypto'
 import colors from 'picocolors'
 
 import {
@@ -30,6 +31,7 @@ import { isVue } from '../utils'
 export function uniAppCssPrePlugin(): Plugin {
   const name = 'uni:app-uvue-css-pre'
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
+  const cssCodeCache = new Map<string, string>()
   return {
     name,
     // 需要提前，因为unocss会在configResolved读取vite:css-post插件
@@ -91,6 +93,13 @@ export function uniAppCssPrePlugin(): Plugin {
             return
           }
           const className = filename.replace('.style.cpp', '')
+          const hash = md5(cssCode)
+          // 判断是否发生变化
+          if (cssCodeCache.get(className) === hash) {
+            return
+          }
+          cssCodeCache.set(className, hash)
+          process.env.UNI_APP_X_DOM2_CPP_CHANGED = 'true'
           fs.outputFileSync(
             path.resolve(process.env.UNI_APP_HARMONY_DOM2_CPP_DIR!, filename),
             `#include "${className}.h"
@@ -106,6 +115,10 @@ vue::shared::UniStyleSheetMap ${className}::_styleSheet = ${cssCode};`
       plugins.splice(index, 0, uvueCssPostPlugin)
     },
   }
+}
+
+function md5(code: string) {
+  return crypto.createHash('md5').update(code).digest('hex')
 }
 
 export function uniAppCssPlugin(): Plugin {
