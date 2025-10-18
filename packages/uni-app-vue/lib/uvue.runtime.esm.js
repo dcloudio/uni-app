@@ -8389,6 +8389,7 @@ const NODE_EXT_CHILD_NODE = "childNode";
 const NODE_EXT_PARENT_NODE = "parentNode";
 const NODE_EXT_CHILD_NODES = "childNodes";
 const RootElementInstanceMap = /* @__PURE__ */ new WeakMap();
+const PartElementInstanceMap = /* @__PURE__ */ new WeakMap();
 function setNodeExtraData(el, name, value) {
   el.ext.set(name, value);
 }
@@ -8397,6 +8398,12 @@ function setRootElementInstance(el, instance) {
 }
 function getRootElementInstance(el) {
   return RootElementInstanceMap.get(el) || null;
+}
+function getPartElementInstance(el) {
+  return PartElementInstanceMap.get(el) || null;
+}
+function setPartElementInstance(el, instance) {
+  PartElementInstanceMap.set(el, instance);
 }
 function getNodeExtraData(el, name) {
   return el.ext.get(name);
@@ -8486,9 +8493,27 @@ function useCssStyles(componentStyles) {
   });
   return normalized;
 }
-function hasClass(calssName, el) {
-  const classList = el && el.classList;
-  return classList && classList.includes(calssName);
+function hasClass(className, el) {
+  if (!className.endsWith(")")) {
+    const classList = el && el.classList;
+    return classList && classList.includes(className);
+  }
+  if (!el) {
+    return false;
+  }
+  const partStart = className.indexOf("::part(");
+  const partName = className.slice(partStart + 7, className.length - 1);
+  const part = el.getAnyAttribute("part");
+  if (part == null || !part.split(" ").includes(partName)) {
+    return false;
+  }
+  const realClassName = className.slice(0, partStart).replace(TYPE_RE, "");
+  const partInstance = getPartElementInstance(el);
+  const rootEl = partInstance == null ? void 0 : partInstance.subTree.el;
+  if (rootEl == null || !hasClass(realClassName, rootEl)) {
+    return false;
+  }
+  return true;
 }
 const TYPE_RE = /[+~> ]$/;
 const PROPERTY_PARENT_NODE = "parentNode";
@@ -8805,6 +8830,7 @@ function patchPart(el, part, instance = null) {
     mergeAndUpdateClassStyles(el);
     return;
   }
+  setPartElementInstance(el, instance);
   const hostEl = instance.subTree.el;
   if (hostEl == null || hostEl.tagName == null) {
     return;
