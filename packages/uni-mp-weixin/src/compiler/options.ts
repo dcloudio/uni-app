@@ -4,6 +4,7 @@ import {
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   copyMiniProgramThemeJson,
+  createCopyComponentDirs,
   createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
@@ -151,7 +152,7 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: [COMPONENTS_DIR],
+      assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
