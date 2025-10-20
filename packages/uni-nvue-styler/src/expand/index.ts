@@ -127,7 +127,7 @@ export function vueStyleValidator(options: NormalizeOptions): Plugin {
             }
           }
 
-          if (needLog && helper) {
+          if (needLog && helper && decl.warn) {
             decl.warn(helper.result, reason)
           }
 

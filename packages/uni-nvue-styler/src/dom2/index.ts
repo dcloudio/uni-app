@@ -1,3 +1,4 @@
+import { type Message, Warning } from 'postcss'
 import type {
   Dom2StaticStylePropertyValue,
   ParseDom2StaticStyleOptions,
@@ -14,10 +15,13 @@ import { shorthand } from './shorthand'
 export function parseDom2StaticStyle(
   input: string,
   options: ParseDom2StaticStyleOptions
-): Record<string, Dom2StaticStylePropertyValue> {
+): {
+  obj: Record<string, Dom2StaticStylePropertyValue>
+  messages: Message[]
+} {
   const result: Record<string, Dom2StaticStylePropertyValue> = {}
 
-  const declarations = parseStaticStyleDeclarations(
+  const { decls, messages } = parseStaticStyleDeclarations(
     input,
     extend(
       {
@@ -31,7 +35,7 @@ export function parseDom2StaticStyle(
     )
   )
 
-  shorthand(declarations, options)
+  shorthand(decls, options)
 
   // 以下逻辑执行，很多依赖前置 parseStaticStyleDeclarations 的处理
   // 需要确保有效的属性解析声明，否则会导致错误，
@@ -42,7 +46,7 @@ export function parseDom2StaticStyle(
     options.target
   )
 
-  for (const declaration of declarations) {
+  for (const declaration of decls) {
     // @ts-expect-error 上一步 parseStaticStyleDeclarations 中需要把 prop 给驼峰化，单独存储 __originalProp
     const propertyName = declaration.__originalProp || declaration.prop
 
@@ -53,7 +57,7 @@ export function parseDom2StaticStyle(
         propertyName
       )
       if (processed.error) {
-        console.error(processed.error)
+        messages.push(new Warning(processed.error, { node: declaration }))
       } else {
         result[propertyName] = processed
       }
@@ -71,7 +75,7 @@ export function parseDom2StaticStyle(
         propertyName
       )
       if (processed.error) {
-        console.error(processed.error)
+        messages.push(new Warning(processed.error, { node: declaration }))
       } else {
         result[propertyName] = processed
       }
@@ -80,12 +84,15 @@ export function parseDom2StaticStyle(
       if (processor) {
         const processed = processor(declaration.value, propertyName)
         if (processed.error) {
-          console.error(processed.error)
+          messages.push(new Warning(processed.error, { node: declaration }))
         } else {
           result[propertyName] = processed
         }
       }
     }
   }
-  return result
+  return {
+    obj: result,
+    messages,
+  }
 }

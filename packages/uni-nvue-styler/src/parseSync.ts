@@ -1,4 +1,11 @@
-import type { Declaration } from 'postcss'
+import {
+  type Declaration,
+  type Helpers,
+  type Message,
+  type Result,
+  Warning,
+  type WarningOptions,
+} from 'postcss'
 import { expand } from './expand'
 import { normalize } from './normalize'
 import type { NormalizeOptions } from './utils'
@@ -7,6 +14,26 @@ export interface ParseInlineStyleOptions extends NormalizeOptions {}
 
 export interface ParseStaticStyleDeclarations extends NormalizeOptions {}
 
+class CustomDeclaration {
+  constructor(public prop: string, public value: string | number) {}
+  warn(result: Result, reason: string) {
+    result.warn(reason, {
+      node: this as unknown as Declaration,
+    })
+  }
+}
+
+class CustomResult {
+  messages: Message[] = []
+  warn(message: string, options?: WarningOptions) {
+    this.messages.push(new Warning(message, options))
+  }
+}
+
+class CustomHelpers {
+  result = new CustomResult() as unknown as Result
+}
+
 export function parseStaticStyleDeclarations(
   input: string,
   options: ParseStaticStyleDeclarations = {}
@@ -14,17 +41,21 @@ export function parseStaticStyleDeclarations(
   const styleObj = parseStringStyle(input)
   const declarations: Declaration[] = []
   Object.entries(styleObj).forEach(([key, value]) => {
-    declarations.push({
-      prop: key,
-      value: value,
-    } as Declaration)
+    declarations.push(
+      new CustomDeclaration(key, value) as unknown as Declaration
+    )
   })
+  const helpers = new CustomHelpers() as unknown as Helpers
   const expandedDeclarations: Declaration[] = []
   const { Declaration: expandDeclaration } = expand(options)
   if (typeof expandDeclaration === 'function') {
     declarations.forEach((declaration) => {
       expandedDeclarations.push(
-        ...visit(declaration, expandDeclaration as (decl: Declaration) => void)
+        ...visit(
+          helpers,
+          declaration,
+          expandDeclaration as (decl: Declaration) => void
+        )
       )
     })
   } else {
@@ -36,6 +67,7 @@ export function parseStaticStyleDeclarations(
     expandedDeclarations.forEach((declaration) => {
       normalizedDeclarations.push(
         ...visit(
+          helpers,
           declaration,
           normalizeDeclaration as (decl: Declaration) => void
         )
@@ -44,14 +76,20 @@ export function parseStaticStyleDeclarations(
   } else {
     normalizedDeclarations.push(...expandedDeclarations)
   }
-  return normalizedDeclarations
+  return {
+    decls: normalizedDeclarations,
+    messages: helpers.result.messages,
+  }
 }
 
 export function parseInlineStyleSync(
   input: string,
   options: ParseInlineStyleOptions = {}
 ) {
-  const normalizedDeclarations = parseStaticStyleDeclarations(input, options)
+  const normalizedDeclarations = parseStaticStyleDeclarations(
+    input,
+    options
+  ).decls
   const styleEntries = normalizedDeclarations.map(
     ({ prop, value }) => `[${JSON.stringify(prop)}, ${JSON.stringify(value)}]`
   )
@@ -62,22 +100,28 @@ export function parseInlineStyleSync(
 }
 
 function visit(
+  helpers: CustomHelpers,
   declaration: Declaration,
-  transformDecl: (decl: Declaration) => void
+  transformDecl: (decl: Declaration, helper: Helpers) => void
 ) {
   let removed = false
   let replaced = false
   const result: Declaration[] = []
   declaration.replaceWith = function (nodes) {
     replaced = true
-    result.push(...(nodes as Declaration[]))
+    result.push(
+      // 需要再次封装成 CustomDeclaration，因为内部可能调用 warn
+      ...((nodes as Declaration[]).map(
+        (node) => new CustomDeclaration(node.prop, node.value)
+      ) as Declaration[])
+    )
     return this
   }
   declaration.remove = function () {
     removed = true
     return this
   }
-  transformDecl(declaration)
+  transformDecl(declaration, helpers as unknown as Helpers)
   if (!removed && !replaced) {
     result.push(declaration)
   }

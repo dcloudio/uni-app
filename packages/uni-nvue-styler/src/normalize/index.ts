@@ -94,7 +94,7 @@ function createDeclarationProcessor(options: NormalizeOptions) {
     if (isString(value) || isNumber(value)) {
       decl.value = value
     }
-    if (log && log.reason && helper) {
+    if (log && log.reason && helper && decl.warn) {
       const { reason } = log
       let needLog = false
       if (options.logLevel === 'NOTE') {
