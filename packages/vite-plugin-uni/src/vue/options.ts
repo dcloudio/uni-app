@@ -29,7 +29,6 @@ import {
 import {
   type DOM2_APP_PLATFORM,
   type DOM2_APP_TARGET,
-  type Dom2StaticStylePropertyValue,
   parseDom2StaticStyle,
   parseInlineStyleSync,
 } from '@dcloudio/uni-nvue-styler'
