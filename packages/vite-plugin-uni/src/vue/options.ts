@@ -372,15 +372,11 @@ export function initPluginVueOptions(
             platform: DOM2_APP_PLATFORM,
             target: DOM2_APP_TARGET,
             style: string
-          ): Record<string, Dom2StaticStylePropertyValue> {
-            const { obj, messages } = parseDom2StaticStyle(style, {
+          ) {
+            return parseDom2StaticStyle(style, {
               platform,
               target,
             })
-            if (messages.length) {
-              // console.log(messages)
-            }
-            return obj
           },
         }
       }
