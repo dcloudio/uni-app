@@ -226,7 +226,7 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
     diagnostic: tsTypes.Diagnostic
   ) {
     const stableCode = [
-      2300, 2451, 110111119, 2564, 1023, 120000003, 120000004, 110111165,
+      2300, 2451, 110111119, 2564, 1023, 120000003, 120000004, 110111165, 1005,
     ]
     const internalUseCode = [
       2355, 4117, 2348, 2310, 18047, 120000000, 120000001,
