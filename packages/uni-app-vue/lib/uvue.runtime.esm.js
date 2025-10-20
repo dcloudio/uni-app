@@ -8494,26 +8494,30 @@ function useCssStyles(componentStyles) {
   return normalized;
 }
 function hasClass(className, el) {
+  if (!el) {
+    return [false, null];
+  }
   if (!className.endsWith(")")) {
     const classList = el && el.classList;
-    return classList && classList.includes(className);
-  }
-  if (!el) {
-    return false;
+    return [!!classList && classList.includes(className), el];
   }
   const partStart = className.lastIndexOf("::part(");
   const partName = className.slice(partStart + 7, className.length - 1);
   const part = el.getAnyAttribute("part");
   if (part == null || !part.split(" ").includes(partName)) {
-    return false;
+    return [false, null];
   }
   const baseClassName = className.slice(0, partStart);
   const partInstance = getPartElementInstance(el);
-  const hostEl = partInstance == null ? void 0 : partInstance.subTree.el;
-  if (hostEl == null || !hasClass(baseClassName, hostEl)) {
-    return false;
+  let hostEl = partInstance == null ? void 0 : partInstance.subTree.el;
+  if (hostEl == null) {
+    return [false, null];
   }
-  return true;
+  const [matched, curEl] = hasClass(baseClassName, hostEl);
+  if (!matched) {
+    return [false, null];
+  }
+  return [true, curEl];
 }
 const TYPE_RE = /[+~> ]$/;
 const PROPERTY_PARENT_NODE = "parentNode";
@@ -8528,7 +8532,9 @@ function isMatchParentSelector(parentSelector, el) {
       const property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
       while (el) {
         el = el[property];
-        if (hasClass(className, el)) {
+        const [matched, curEl] = hasClass(className, el);
+        if (matched) {
+          el = curEl;
           break;
         }
       }
@@ -8541,9 +8547,11 @@ function isMatchParentSelector(parentSelector, el) {
       } else if (type === "+") {
         el = el && el[PROPERTY_PREVIOUS_SIBLING];
       }
-      if (!hasClass(className, el)) {
+      const [matched, curEl] = hasClass(className, el);
+      if (!matched) {
         return false;
       }
+      el = curEl;
     }
   }
   return true;
