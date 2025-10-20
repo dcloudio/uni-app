@@ -171,7 +171,8 @@ function transformSelector(
     parentSelector += curSelector.substring(0, dotIndex)
     curSelector = curSelector.substring(dotIndex)
   }
-  if (curSelector.indexOf('.') === 0) {
+  const curSelectorIsClass = curSelector.indexOf('.') === 0
+  if (curSelectorIsClass) {
     curSelector = curSelector.substring(1)
   }
 
@@ -181,7 +182,9 @@ function transformSelector(
     // ::part(xxx).xxx 是否支持？
     // ::part(xxx):active 保留原样？
     const partSelector = curSelector.slice(pseudoElementIndex)
-    const baseSelector = curSelector.substring(0, pseudoElementIndex)
+    const baseSelector =
+      (curSelectorIsClass ? '.' : '') +
+      curSelector.substring(0, pseudoElementIndex)
     curSelector = partSelector
     parentSelector += baseSelector
   } else {
