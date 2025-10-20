@@ -9,6 +9,14 @@ import {
   createSetStyleBoxShadowValueProcessor,
   isBoxShadowType,
 } from './boxShadow'
+import {
+  createSetStyleBorderColorsValueProcessor,
+  isBorderColorsType,
+} from './borderColor'
+import {
+  createSetStyleBorderStylesValueProcessor,
+  isBorderStylesType,
+} from './borderStyle'
 
 export type { PropertyProcessor } from './utils'
 export { createSetStyleNativeColorValueProcessor } from './color'
@@ -70,6 +78,14 @@ export function createDom2PropertyProcessors(
         processorMap[propertyName] = createSetStyleNumberValueProcessor(setter)
       } else if (isStringType(propertyType)) {
         processorMap[propertyName] = createSetStyleStringValueProcessor(setter)
+      } else if (isBorderColorsType(propertyType)) {
+        processorMap[propertyName] =
+          createSetStyleBorderColorsValueProcessor(setter)
+      } else if (isBorderStylesType(propertyType)) {
+        processorMap[propertyName] = createSetStyleBorderStylesValueProcessor(
+          setter,
+          processorMap
+        )
       } else if (isBoxShadowType(propertyType)) {
         processorMap[propertyName] =
           createSetStyleBoxShadowValueProcessor(setter)

@@ -1,0 +1,235 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`border: 1px dashed red: app-harmony(dom-c) 1`] = `
+{
+  "border-bottom-style": {
+    "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+  },
+  "border-bottom-width": {
+    "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-left-style": {
+    "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+  },
+  "border-left-width": {
+    "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-right-style": {
+    "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+  },
+  "border-right-width": {
+    "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-top-style": {
+    "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+  },
+  "border-top-width": {
+    "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+}
+`;
+
+exports[`border: 1px dashed red: app-harmony(nv-c) 1`] = `
+{
+  "border-color": {
+    "setterCode": "borderColor(UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000))",
+    "valueCode": "UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000)",
+  },
+  "border-style": {
+    "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed")))",
+    "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"))",
+  },
+}
+`;
+
+exports[`border: 1px dotted red: app-harmony(dom-c) 1`] = `
+{
+  "border-bottom-style": {
+    "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+  },
+  "border-bottom-width": {
+    "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-left-style": {
+    "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+  },
+  "border-left-width": {
+    "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-right-style": {
+    "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+  },
+  "border-right-width": {
+    "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-top-style": {
+    "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+  },
+  "border-top-width": {
+    "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+}
+`;
+
+exports[`border: 1px dotted red: app-harmony(nv-c) 1`] = `
+{
+  "border-color": {
+    "setterCode": "borderColor(UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000))",
+    "valueCode": "UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000)",
+  },
+  "border-style": {
+    "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted")))",
+    "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"))",
+  },
+}
+`;
+
+exports[`border: 1px invalid red: app-harmony(dom-c) 1`] = `{}`;
+
+exports[`border: 1px invalid red: app-harmony(nv-c) 1`] = `{}`;
+
+exports[`border: 1px none red: app-harmony(dom-c) 1`] = `
+{
+  "border-bottom-style": {
+    "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+  },
+  "border-bottom-width": {
+    "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-left-style": {
+    "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+  },
+  "border-left-width": {
+    "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-right-style": {
+    "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+  },
+  "border-right-width": {
+    "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-top-style": {
+    "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+  },
+  "border-top-width": {
+    "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+}
+`;
+
+exports[`border: 1px none red: app-harmony(nv-c) 1`] = `
+{
+  "border-color": {
+    "setterCode": "borderColor(UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000))",
+    "valueCode": "UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000)",
+  },
+  "border-style": {
+    "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+    "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+  },
+}
+`;
+
+exports[`border: 1px solid red: app-harmony(dom-c) 1`] = `
+{
+  "border-bottom-style": {
+    "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-bottom-width": {
+    "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-left-style": {
+    "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-left-width": {
+    "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-right-style": {
+    "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-right-width": {
+    "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+  "border-top-style": {
+    "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-top-width": {
+    "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+    "valueCode": "UniCSSUnitValue{1, UniCSSUnitType.PX}",
+  },
+}
+`;
+
+exports[`border: 1px solid red: app-harmony(nv-c) 1`] = `
+{
+  "border-color": {
+    "setterCode": "borderColor(UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000))",
+    "valueCode": "UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000)",
+  },
+  "border-style": {
+    "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")))",
+    "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"))",
+  },
+}
+`;
+
+exports[`border-style: solid: app-harmony(dom-c) 1`] = `
+{
+  "border-bottom-style": {
+    "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-left-style": {
+    "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-right-style": {
+    "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+  "border-top-style": {
+    "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+    "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+  },
+}
+`;
+
+exports[`border-style: solid: app-harmony(nv-c) 1`] = `
+{
+  "border-style": {
+    "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")))",
+    "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"))",
+  },
+}
+`;

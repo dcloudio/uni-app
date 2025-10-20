@@ -9,6 +9,7 @@ import {
   setStyleVariableProcessor,
 } from './processors'
 import { extend } from '../shared'
+import { shorthand } from './shorthand'
 
 export function parseDom2StaticStyle(
   input: string,
@@ -29,6 +30,8 @@ export function parseDom2StaticStyle(
       options
     )
   )
+
+  shorthand(declarations, options)
 
   // 以下逻辑执行，很多依赖前置 parseStaticStyleDeclarations 的处理
   // 需要确保有效的属性解析声明，否则会导致错误，

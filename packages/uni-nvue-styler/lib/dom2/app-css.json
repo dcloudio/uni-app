@@ -365,7 +365,7 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-c": {
-		  "type": "UniNativeBorderStyle",
+          "type": "UniNativeBorderStyle",
           "setter": "borderStyleBottom"
         }
       },
@@ -814,12 +814,26 @@
       }
     }
   },
+  "border-color": {
+    "type": "UniNativeBorderColors",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderColor"
+        }
+      }
+    }
+  },
   "border-style": {
     "type": "UniCSSBorderStyleType",
     "uniPlatform": {
       "app": {
         "dom-c": {
           "setter": "setStyleBorderStyle"
+        },
+        "nv-c": {
+          "type": "UniNativeBorderStyles",
+          "setter": "borderStyle"
         }
       }
     }
