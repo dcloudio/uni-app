@@ -4611,7 +4611,7 @@ function buildElementStatements(tag, context, nodeAttrs, children) {
         );
         if (messages && messages.length) {
           messages.forEach((message) => {
-            context.options.onError(
+            context.options.onWarn(
               // TODO 行号，列号
               createDom2CompilerError(message.text)
             );
