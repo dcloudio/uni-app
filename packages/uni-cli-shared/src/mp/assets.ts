@@ -33,12 +33,17 @@ export function createCopyComponentDirs(dir: string) {
   const dirs = [dir]
   const uniModulesDir = 'uni_modules/*/' + dir + '/**/*'
   dirs.push(uniModulesDir)
+  const inputDir = process.env.UNI_INPUT_DIR
+  const platform = process.env.UNI_PLATFORM
+  if (!inputDir || !platform) {
+    return dirs
+  }
   const { appJson } = parseMiniProgramPagesJson(
     fs.readFileSync(
-      path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
+      path.resolve(normalizePath(inputDir), 'pages.json'),
       'utf8'
     ),
-    process.env.UNI_PLATFORM,
+    platform,
     { subpackages: true }
   )
   const roots: string[] = Object.values(
