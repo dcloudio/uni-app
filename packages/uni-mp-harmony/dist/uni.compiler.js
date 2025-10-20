@@ -56,7 +56,7 @@ const options = {
             'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: [COMPONENTS_DIR],
+            assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
             targets: [
                 {
                     src: ['ascf.config.json'],

@@ -103,7 +103,7 @@ const options = {
             /**
              * 静态资源，配置的目录，在 uni_modules 中同样支持
              */
-            assets: [COMPONENTS_DIR],
+            assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
             targets: [
                 {
                     // FileWatcher这个类监听的文件，文件改动触发整体编译？编译什么？

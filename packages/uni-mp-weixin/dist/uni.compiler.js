@@ -205,7 +205,7 @@ const options = {
             'uni-mp-runtime': initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
-            assets: [COMPONENTS_DIR],
+            assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
             targets: [
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
