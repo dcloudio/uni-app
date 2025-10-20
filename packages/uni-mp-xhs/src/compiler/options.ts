@@ -2,6 +2,7 @@ import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
   type MiniProgramCompilerOptions,
+  createCopyComponentDirs,
   createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
@@ -89,7 +90,7 @@ export const options: UniMiniProgramPluginOptions = {
       'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
-      assets: [COMPONENTS_DIR],
+      assets: createCopyComponentDirs(COMPONENTS_DIR),
       targets: [
         // ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
