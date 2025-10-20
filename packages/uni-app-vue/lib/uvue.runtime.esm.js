@@ -8779,7 +8779,7 @@ function triggerComputedStyleUpdate(instance) {
         const isCSSVar = key.startsWith("--");
         const camelizedKey = isCSSVar ? key : camelize(key);
         if (!styles || !styles.has(camelizedKey)) {
-          r.set(key, "");
+          r.delete(key);
         } else {
           r.set(key, styles.get(camelizedKey));
         }
@@ -8787,7 +8787,11 @@ function triggerComputedStyleUpdate(instance) {
       styles == null ? void 0 : styles.forEach((value, key) => {
         const isCSSVar = key.startsWith("--");
         const hyphenatedKey = isCSSVar ? key : hyphenate(key);
-        r.set(hyphenatedKey, value);
+        if (value === "" || value == null) {
+          r.delete(hyphenatedKey);
+        } else {
+          r.set(hyphenatedKey, value);
+        }
       });
     });
   }
@@ -8829,11 +8833,11 @@ function patchPart(el, part, instance = null) {
   updatePartStyles(el);
 }
 function updatePartStyles(el) {
-  const part = el.getAttribute("part");
   const instance = getPartElementInstance(el);
   if (instance == null) {
     return;
   }
+  const part = el.getAttribute("part");
   if (!isString(part) || !part) {
     setPartElementContext(el, new ParseStyleContext());
     mergeAndUpdateClassStyles(el);
