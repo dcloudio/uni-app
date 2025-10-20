@@ -8825,12 +8825,20 @@ function patchPart(el, part, instance = null) {
   if (instance == null) {
     return;
   }
+  setPartElementInstance(el, instance);
+  updatePartStyles(el);
+}
+function updatePartStyles(el) {
+  const part = el.getAttribute("part");
+  const instance = getPartElementInstance(el);
+  if (instance == null) {
+    return;
+  }
   if (!isString(part) || !part) {
     setPartElementContext(el, new ParseStyleContext());
     mergeAndUpdateClassStyles(el);
     return;
   }
-  setPartElementInstance(el, instance);
   const hostEl = instance.subTree.el;
   if (hostEl == null || hostEl.tagName == null) {
     return;
@@ -9003,6 +9011,7 @@ const nodeOps = {
       parent.insertBefore(el, anchor);
     }
     if (parent.isConnected) {
+      updatePartStyles(el);
       updateClassStyles(el);
       updateChildrenClassStyle(el);
     }
@@ -9081,6 +9090,7 @@ const nodeOps = {
 function updateChildrenClassStyle(el) {
   if (el !== null) {
     el.childNodes.forEach((child) => {
+      updatePartStyles(child);
       updateClassStyles(child);
       updateChildrenClassStyle(child);
     });
