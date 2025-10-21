@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`font-size: 10px: app-harmony(dom-c) 1`] = `
+{
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`font-size: 10px: app-harmony(nv-c) 1`] = `
+{
+  "messages": [],
+  "obj": {},
+}
+`;
