@@ -71,30 +71,51 @@ export const shareVideoMessage =
     : wx.shareVideoMessage
 
 //#if _X_
-const THEME_CALLBACK: Array<
-  [HostThemeChangeCallback, UniApp.OnThemeChangeCallback]
-> = []
-
 type HostThemeChangeCallback = (res: { hostTheme: string }) => void
+
+const THEME_CALLBACK_MAP = new Map<
+  number,
+  [HostThemeChangeCallback, UniApp.OnThemeChangeCallback]
+>()
+let CALLBACK_ID = 0
+
 export const onHostThemeChange = (callback: HostThemeChangeCallback) => {
   const onHostThemeChangeCallback: UniApp.OnThemeChangeCallback = (res) => {
     callback({ hostTheme: res.theme })
   }
-  const index = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1
-  wx.onThemeChange && wx.onThemeChange(onHostThemeChangeCallback)
-  return index
+
+  const id = ++CALLBACK_ID
+  THEME_CALLBACK_MAP.set(id, [callback, onHostThemeChangeCallback])
+
+  if (wx.onThemeChange) {
+    wx.onThemeChange(onHostThemeChangeCallback)
+  }
+
+  return id
 }
+
 export const offHostThemeChange = (
   callbackId: number | HostThemeChangeCallback
 ) => {
-  if (isFunction(callbackId)) {
-    callbackId = THEME_CALLBACK.findIndex(
-      ([callback]) => callback === callbackId
-    )
+  let id: number | undefined
+
+  if (typeof callbackId === 'function') {
+    THEME_CALLBACK_MAP.forEach(([cb], key) => {
+      if (cb === callbackId && id === undefined) {
+        id = key
+      }
+    })
+  } else {
+    id = callbackId
   }
-  if (callbackId > -1) {
-    const arr = THEME_CALLBACK.splice(callbackId, 1)[0]
-    isArray(arr) && wx.offThemeChange && wx.offThemeChange(arr[1])
+
+  if (id !== undefined && THEME_CALLBACK_MAP.has(id)) {
+    const [, onHostThemeChangeCallback] = THEME_CALLBACK_MAP.get(id)!
+    THEME_CALLBACK_MAP.delete(id)
+    if (wx.offThemeChange) {
+      wx.offThemeChange(onHostThemeChangeCallback)
+    }
   }
 }
+
 //#endif
