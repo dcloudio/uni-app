@@ -30,7 +30,7 @@ exports[`dom2 parse basic 2`] = `
           white-space: nowrap;
         }
         ",
-          "file": "/Users/fxy/DCloud/uni-app/uni-app-next/foo.css",
+          "file": "foo.css",
           "hasBOM": false,
         },
       ],
@@ -86,7 +86,7 @@ exports[`dom2 parse basic 2`] = `
           white-space: nowrap;
         }
         ",
-          "file": "/Users/fxy/DCloud/uni-app/uni-app-next/foo.css",
+          "file": "foo.css",
           "hasBOM": false,
         },
       ],
@@ -142,7 +142,7 @@ exports[`dom2 parse basic 2`] = `
           white-space: nowrap;
         }
         ",
-          "file": "/Users/fxy/DCloud/uni-app/uni-app-next/foo.css",
+          "file": "foo.css",
           "hasBOM": false,
         },
       ],

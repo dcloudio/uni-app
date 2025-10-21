@@ -20,6 +20,23 @@ describe('getBrowserInfo', () => {
       configurable: true,
       writable: true,
     })
+
+    // mock navigator
+    Object.defineProperty(global, 'navigator', {
+      value: Object.create(
+        {},
+        {
+          userAgent: {
+            get() {
+              return ''
+            },
+            configurable: true,
+          },
+        }
+      ),
+      configurable: true,
+      writable: true,
+    })
   })
 
   it('should return the correct browser info for ios 26.0', async () => {

@@ -1,5 +1,14 @@
 import { DOM2_APP_PLATFORM, DOM2_APP_TARGET, parse } from '../../src/index'
 
+const fixMessageInputFile = (messages: any[]) => {
+  messages.forEach((i) => {
+    const file = i?.node?.source?.input?.file
+    if (file) {
+      i.node.source.input.file = i.node.source.input.file.split('/').pop()
+    }
+  })
+}
+
 describe('dom2 parse', () => {
   test('basic', async () => {
     const { code, messages } = await parse(
@@ -23,6 +32,7 @@ describe('dom2 parse', () => {
       {
         type: 'uvue',
         platform: 'app-harmony',
+        filename: 'foo.css',
         dom2: {
           platform: DOM2_APP_PLATFORM.APP_HARMONY,
           target: DOM2_APP_TARGET.DOM_C,
@@ -30,6 +40,8 @@ describe('dom2 parse', () => {
       }
     )
     expect(code).toMatchSnapshot()
+
+    fixMessageInputFile(messages)
     expect(messages).toMatchSnapshot()
   })
   test('empty', async () => {
