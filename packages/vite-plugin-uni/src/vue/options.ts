@@ -368,13 +368,12 @@ export function initPluginVueOptions(
             }
           },
           parseStaticStyle(
-            platform: DOM2_APP_PLATFORM,
             target: DOM2_APP_TARGET,
             tagName: string,
             style: string
           ) {
             return parseDom2StaticStyle(style, {
-              platform,
+              platform: process.env.UNI_UTS_PLATFORM as DOM2_APP_PLATFORM,
               target,
               tagName,
             })
