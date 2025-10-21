@@ -4,7 +4,8 @@ const fixMessageInputFile = (messages: any[]) => {
   messages.forEach((i) => {
     const file = i?.node?.source?.input?.file
     if (file) {
-      i.node.source.input.file = i.node.source.input.file.split('/').pop()
+      // 兼容 Unix 路径 (/) 和 Windows 路径 (\)
+      i.node.source.input.file = file.split(/[/\\]/).pop()
     }
   })
 }
