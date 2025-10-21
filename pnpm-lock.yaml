@@ -1937,6 +1937,13 @@ importers:
       vue:
         specifier: 'catalog:'
         version: 3.4.21(typescript@5.4.2)
+    devDependencies:
+      '@dcloudio/types':
+        specifier: 'catalog:'
+        version: 3.4.24
+      mini-types:
+        specifier: ^0.1.7
+        version: 0.1.7
 
   packages/uni-mp-harmony:
     dependencies:
