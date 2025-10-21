@@ -10970,6 +10970,112 @@
         }
       },
       "defaultValue": "auto"
+    },
+    {
+      "name": "animation-timing-function",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "ease | linear",
+      "values": [
+        {
+          "name": "ease",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "x",
+                "unixVer": "4.84+"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "x",
+                "unixVer": "4.84"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "x",
+                "unixVer": "4.84"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "linear",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.84"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "x",
+                "unixVer": "4.84"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "x",
+                "unixVer": "4.84"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "4.84+"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "x",
+            "unixVer": "4.84"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "x",
+            "unixVer": "4.84"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "unixTags": [
+        "loading"
+      ],
+      "defaultValue": "linear"
     }
   ],
   "atDirectives": [
