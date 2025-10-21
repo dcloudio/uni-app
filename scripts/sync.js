@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs-extra')
 // const { sync } = require('fast-glob')
+const { buildCss } = require('./build-css')
 const { config } = require('dotenv')
 config()
 if (process.env.UNI_APP_SYNTAX_DIR) {
@@ -101,3 +102,4 @@ async function syncDom2UniCSSPropertyID() {
   fs.outputFileSync(path.resolve(__dirname, '../packages/uni-nvue-styler/lib/dom2/properties.json'), JSON.stringify(properties, null, 2))
 }
 syncDom2UniCSSPropertyID()
+buildCss()
