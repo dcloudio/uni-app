@@ -41,10 +41,12 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     ) {
       return resolve()
     }
-    // TODO 鸿蒙不支持hideToast方法
-    // if (uni.hideToast) {
-    //   uni.hideToast()
-    // }
+    // HarmonyOS API >= 18 支持 hideToast
+    try {
+      if (uni.hideToast) {
+        uni.hideToast()
+      }
+    } catch (error) {}
     if (uni.hideLoading) {
       uni.hideLoading()
     }
