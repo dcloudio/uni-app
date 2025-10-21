@@ -23,6 +23,7 @@ export interface ParseDom2StaticStyleOptions
   extends Omit<NormalizeOptions, 'dom2'> {
   platform: DOM2_APP_PLATFORM
   target: DOM2_APP_TARGET
+  tagName?: string
 }
 
 export interface Dom2StaticStylePropertyValue {

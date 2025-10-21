@@ -13,3 +13,45 @@ exports[`font-size: 10px: app-harmony(nv-c) 1`] = `
   "obj": {},
 }
 `;
+
+exports[`view with font-size: 10px: app-harmony(dom-c) 1`] = `
+{
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "font-size",
+        "prop": "fontSize",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "10px",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "WARNING: property \`font-size\` is only supported on \`<text>|<button>|<input>|<textarea>\`",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`view with font-size: 10px: app-harmony(nv-c) 1`] = `
+{
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "font-size",
+        "prop": "fontSize",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "10px",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "WARNING: property \`font-size\` is only supported on \`<text>|<button>|<input>|<textarea>\`",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;

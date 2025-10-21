@@ -9,10 +9,13 @@ import {
 import { expand } from './expand'
 import { normalize } from './normalize'
 import type { NormalizeOptions } from './utils'
+import { checkTagName } from './dom2/css'
 
 export interface ParseInlineStyleOptions extends NormalizeOptions {}
 
-export interface ParseStaticStyleDeclarations extends NormalizeOptions {}
+export interface ParseStaticStyleDeclarations extends NormalizeOptions {
+  tagName?: string
+}
 
 class CustomDeclaration {
   constructor(public prop: string, public value: string | number) {}
@@ -51,11 +54,7 @@ export function parseStaticStyleDeclarations(
   if (typeof expandDeclaration === 'function') {
     declarations.forEach((declaration) => {
       expandedDeclarations.push(
-        ...visit(
-          helpers,
-          declaration,
-          expandDeclaration as (decl: Declaration) => void
-        )
+        ...visit(helpers, declaration, expandDeclaration)
       )
     })
   } else {
@@ -66,16 +65,25 @@ export function parseStaticStyleDeclarations(
   if (typeof normalizeDeclaration === 'function') {
     expandedDeclarations.forEach((declaration) => {
       normalizedDeclarations.push(
-        ...visit(
-          helpers,
-          declaration,
-          normalizeDeclaration as (decl: Declaration) => void
-        )
+        ...visit(helpers, declaration, normalizeDeclaration)
       )
     })
   } else {
     normalizedDeclarations.push(...expandedDeclarations)
   }
+  if (options.tagName) {
+    const { Declaration: checkTagNameDeclaration } = checkTagName(
+      options.tagName
+    )
+    if (typeof checkTagNameDeclaration === 'function') {
+      normalizedDeclarations.forEach((declaration) => {
+        normalizedDeclarations.push(
+          ...visit(helpers, declaration, checkTagNameDeclaration)
+        )
+      })
+    }
+  }
+
   return {
     decls: normalizedDeclarations,
     messages: helpers.result.messages,

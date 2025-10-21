@@ -22,7 +22,7 @@ exports.buildCss = () => {
   outputFileSync(
     resolve(__dirname, '../packages/uni-nvue-styler/src/dom2/css/tags.ts'),
     `// 此文件是根据 css.json 动态生成，请勿手动修改
-export const cssMap = new Map<string, string[]>([${entries.join(
+export default new Map<string, string[]>([${entries.join(
       ', '
     )}])`
   )
