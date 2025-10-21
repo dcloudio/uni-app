@@ -1485,8 +1485,6 @@ export type Component<PropsOrInstance = any, RawBindings = any, D = any, C exten
 
 export type LifecycleHook<TFn = Function> = (TFn & SchedulerJob)[] | null;
 export type SetupContext<E = EmitsOptions, S extends SlotsType = {}> = E extends any ? {
-    pageId?: number;
-    sharedDataScope: UniSharedDataPage;
     attrs: Data;
     slots: UnwrapSlotsType<S>;
     emit: EmitFn<E>;

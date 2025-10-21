@@ -21336,12 +21336,6 @@ let __temp${any}, __restore${any}
   if (ctx.emitDecl) {
     destructureElements.push(`emit: __emit`);
   }
-  if (options.className) {
-    destructureElements.push(`sharedDataScope: __sharedDataScope`);
-    if (options.componentType === "page") {
-      destructureElements.push(`pageId: __pageId`);
-    }
-  }
   if (destructureElements.length) {
     args += `, { ${destructureElements.join(", ")} }`;
   }

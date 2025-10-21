@@ -82,12 +82,14 @@ export declare function createSharedDataComponent<C = any, SharedData extends st
 declare class VaporSharedDataComponentInstance<SharedData extends string = string> implements GenericComponentInstance {
     pageId?: number;
     sharedData: InferSharedData<SharedData, UniSharedDataComponent> | InferSharedData<SharedData, UniSharedDataPage>;
-    sharedDataScope?: UniSharedDataPage;
+    _sharedDataScope?: UniSharedDataPage;
+    get sharedDataScope(): UniSharedDataPage;
+    set sharedDataScope(scope: UniSharedDataPage);
     vapor: true;
     uid: number;
     type: VaporSharedDataComponent;
-    root: GenericComponentInstance | null;
-    parent: GenericComponentInstance | null;
+    root: VaporSharedDataComponentInstance | null;
+    parent: VaporSharedDataComponentInstance | null;
     appContext: GenericAppContext;
     block: Block;
     scope: EffectScope$1;
@@ -199,7 +201,8 @@ export declare function createSharedDataVFor<T extends UniSharedData>(scope: Uni
  * @param scope
  * @returns
  */
-export declare function useSharedDataScope<T extends UniSharedDataPage>(scope: T): T;
+export declare function useSharedDataScope<T extends UniSharedDataPage>(scope?: T): T;
+export declare function useSharedDataPageId(): number;
 
 type TemplateFactory = (page: UniPage) => UniElement & {
     $root?: true;
