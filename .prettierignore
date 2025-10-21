@@ -23,3 +23,4 @@ packages/uni-uts-vite/lib
 packages/uni-cli-shared/src/checkUpdate.ts
 packages/uni-uts-v1/lib
 packages/uni-app-harmony/types
+packages/uni-nvue-styler/src/dom2/css/tags.ts
