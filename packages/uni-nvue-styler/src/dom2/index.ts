@@ -35,6 +35,17 @@ export function parseDom2StaticStyle(
     )
   )
 
+  // 根据 messages 中的信息，移除无效的 decls
+  if (decls.length) {
+    messages.forEach((m) => {
+      if (m.type === 'warning' || m.type === 'error') {
+        const index = decls.findIndex((d) => d === m.node)
+        if (index !== -1) {
+          decls.splice(index, 1)
+        }
+      }
+    })
+  }
   shorthand(decls, options)
 
   // 以下逻辑执行，很多依赖前置 parseStaticStyleDeclarations 的处理

@@ -24,3 +24,15 @@ describe('border-style:', () => {
     })
   })
 })
+
+describe('border-color:', () => {
+  ;['red'].forEach((value) => {
+    test(value, () => {
+      const input = `border-color: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})

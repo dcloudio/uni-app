@@ -1,18 +1,23 @@
 import { camelize, capitalize } from '../../shared'
-import { type PropertyProcessor, createValueProcessorResult } from './utils'
+import {
+  type PropertyProcessor,
+  PropertyProcessorType,
+  createPropertyProcessor,
+  createValueProcessorResult,
+} from './utils'
 import { type DOM2_APP_PLATFORM, DOM2_APP_TARGET } from '../types'
 
 export function createSetStyleEnumValueProcessor(
   setter: string,
   genEnumCode: (enumValue: string) => string
 ): PropertyProcessor {
-  return (value) => {
+  return createPropertyProcessor((value: string | number) => {
     const enumCode = genEnumCode(capitalize(camelize(value + '')))
     return createValueProcessorResult(
       enumCode,
       setter ? `${setter}(${enumCode})` : enumCode
     )
-  }
+  }, PropertyProcessorType.Enum)
 }
 
 export function createGenEnumCode(

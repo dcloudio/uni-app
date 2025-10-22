@@ -268,6 +268,25 @@ exports[`border: 1px solid red: app-harmony(nv-c) 1`] = `
 }
 `;
 
+exports[`border-color: red: app-harmony(dom-c) 1`] = `
+{
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-color: red: app-harmony(nv-c) 1`] = `
+{
+  "messages": [],
+  "obj": {
+    "border-color": {
+      "setterCode": "borderColor(UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000))",
+      "valueCode": "UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000)",
+    },
+  },
+}
+`;
+
 exports[`border-style: solid: app-harmony(dom-c) 1`] = `
 {
   "messages": [],

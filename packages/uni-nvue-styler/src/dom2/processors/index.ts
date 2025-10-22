@@ -1,5 +1,10 @@
 import { type DOM2_APP_PLATFORM, DOM2_APP_TARGET } from '../types'
-import { type PropertyProcessor, getAppCssJson } from './utils'
+import {
+  type PropertyProcessor,
+  PropertyProcessorType,
+  createPropertyProcessor,
+  getAppCssJson,
+} from './utils'
 import { createSetStyleUnitValueProcessor } from './unit'
 import { createGenEnumCode, createSetStyleEnumValueProcessor } from './enum'
 import { createSetStyleNativeColorValueProcessor, isColorType } from './color'
@@ -17,6 +22,10 @@ import {
   createSetStyleBorderStylesValueProcessor,
   isBorderStylesType,
 } from './borderStyle'
+import {
+  createSetStyleTextShadowValueProcessor,
+  isTextShadowType,
+} from './textShadow'
 
 export type { PropertyProcessor } from './utils'
 export { createSetStyleNativeColorValueProcessor } from './color'
@@ -64,36 +73,19 @@ export function createDom2PropertyProcessors(
       const setter = targetConfig.setter
       const propertyType =
         targetConfig.type || getAppCssJson()[propertyName].type
-      if (propertyType === 'UniCSSUnitValue') {
-        processorMap[propertyName] = createSetStyleUnitValueProcessor(
-          setter,
-          language
+      if (typeof propertyType === 'string') {
+        const processor = createStyleValueProcessor(propertyType, setter)
+        if (processor) {
+          processorMap[propertyName] = processor
+        }
+      } else if (Array.isArray(propertyType)) {
+        const processor = createCombinedStyleValueProcessor(
+          propertyType,
+          setter
         )
-      } else if (isColorType(propertyType)) {
-        processorMap[propertyName] =
-          createSetStyleNativeColorValueProcessor(setter)
-      } else if (isNumberType(propertyType)) {
-        // 对于数字类型的属性（如flex-grow、flex-shrink、opacity、z-index），
-        // 创建一个数字值处理器，直接传递数值
-        processorMap[propertyName] = createSetStyleNumberValueProcessor(setter)
-      } else if (isStringType(propertyType)) {
-        processorMap[propertyName] = createSetStyleStringValueProcessor(setter)
-      } else if (isBorderColorsType(propertyType)) {
-        processorMap[propertyName] =
-          createSetStyleBorderColorsValueProcessor(setter)
-      } else if (isBorderStylesType(propertyType)) {
-        processorMap[propertyName] = createSetStyleBorderStylesValueProcessor(
-          setter,
-          processorMap
-        )
-      } else if (isBoxShadowType(propertyType)) {
-        processorMap[propertyName] =
-          createSetStyleBoxShadowValueProcessor(setter)
-      } else if (propertyType) {
-        processorMap[propertyName] = createSetStyleEnumValueProcessor(
-          setter,
-          createGenEnumCode(propertyType, language, platform, target)
-        )
+        if (processor) {
+          processorMap[propertyName] = processor
+        }
       }
     }
   })
@@ -101,6 +93,88 @@ export function createDom2PropertyProcessors(
   processorMapCache.set(cacheKey, processorMap)
 
   return processorMap
+
+  function createCombinedStyleValueProcessor(
+    propertyTypes: string[],
+    setter: string
+  ): PropertyProcessor | undefined {
+    const processors = propertyTypes
+      .map((type) => createStyleValueProcessor(type, setter))
+      .filter(Boolean) as PropertyProcessor[]
+    if (processors.length === 0) {
+      return undefined
+    }
+    if (processors.length === 1) {
+      return processors[0]
+    }
+    // 目前联合类型，一般是枚举类型联合一个基础类型或者带单位类型
+    let enumProcessor: PropertyProcessor | undefined
+    let baseProcessor: PropertyProcessor | undefined
+    for (const processor of processors) {
+      if (processor.type === PropertyProcessorType.Enum) {
+        enumProcessor = processor
+      } else if (
+        // 目前仅支持这两种联合
+        processor.type === PropertyProcessorType.Unit ||
+        processor.type === PropertyProcessorType.Number
+      ) {
+        baseProcessor = processor
+      }
+    }
+    if (!enumProcessor || !baseProcessor) {
+      throw new Error(`Unsupported property type: ${propertyTypes.join(', ')}`)
+    }
+    let numberProcessor: PropertyProcessor | undefined
+    let unitProcessor: PropertyProcessor | undefined
+    if (baseProcessor.type === PropertyProcessorType.Number) {
+      numberProcessor = createSetStyleNumberValueProcessor(setter)
+    } else if (baseProcessor.type === PropertyProcessorType.Unit) {
+      unitProcessor = createSetStyleUnitValueProcessor(setter, language)
+    }
+    return createPropertyProcessor((value, propertyName) => {
+      if (numberProcessor) {
+        if (/^\d+$/.test(String(value))) {
+          return numberProcessor(value, propertyName)
+        }
+      } else if (unitProcessor) {
+        const result = unitProcessor(value, propertyName)
+        if (!result.error) {
+          return result
+        }
+      }
+      return enumProcessor(value, propertyName)
+    }, PropertyProcessorType.Combined)
+  }
+
+  function createStyleValueProcessor(
+    propertyType: string,
+    setter: string
+  ): PropertyProcessor | undefined {
+    if (propertyType === 'UniCSSUnitValue') {
+      return createSetStyleUnitValueProcessor(setter, language)
+    } else if (isColorType(propertyType)) {
+      return createSetStyleNativeColorValueProcessor(setter)
+    } else if (isNumberType(propertyType)) {
+      // 对于数字类型的属性（如flex-grow、flex-shrink、opacity、z-index），
+      // 创建一个数字值处理器，直接传递数值
+      return createSetStyleNumberValueProcessor(setter)
+    } else if (isStringType(propertyType)) {
+      return createSetStyleStringValueProcessor(setter)
+    } else if (isBorderColorsType(propertyType)) {
+      return createSetStyleBorderColorsValueProcessor(setter)
+    } else if (isBorderStylesType(propertyType)) {
+      return createSetStyleBorderStylesValueProcessor(setter, processorMap)
+    } else if (isBoxShadowType(propertyType)) {
+      return createSetStyleBoxShadowValueProcessor(setter)
+    } else if (isTextShadowType(propertyType)) {
+      return createSetStyleTextShadowValueProcessor(setter)
+    } else if (propertyType) {
+      return createSetStyleEnumValueProcessor(
+        setter,
+        createGenEnumCode(propertyType, language, platform, target)
+      )
+    }
+  }
 }
 
 function getTargetConfig(

@@ -1,4 +1,9 @@
-import { type PropertyProcessor, createValueProcessorResult } from './utils'
+import {
+  type PropertyProcessor,
+  PropertyProcessorType,
+  createPropertyProcessor,
+  createValueProcessorResult,
+} from './utils'
 
 const BORDER_STYLE_TYPES = ['UniNativeBorderStyles']
 
@@ -10,7 +15,7 @@ export function createSetStyleBorderStylesValueProcessor(
   setter: string,
   processorMap: Record<string, PropertyProcessor>
 ): PropertyProcessor {
-  return (value) => {
+  return createPropertyProcessor((value: string | number) => {
     const borderStylesValueCode = stringifyBorderStylesValue(
       parseBorderStylesValue(String(value), processorMap)
     )
@@ -18,7 +23,7 @@ export function createSetStyleBorderStylesValueProcessor(
       `${borderStylesValueCode}`,
       `${setter}(${borderStylesValueCode})`
     )
-  }
+  }, PropertyProcessorType.Struct)
 }
 
 function stringifyBorderStylesValue(

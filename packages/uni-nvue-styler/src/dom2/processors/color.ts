@@ -1,6 +1,8 @@
 import tinycolor from 'tinycolor2'
 import {
   type PropertyProcessor,
+  PropertyProcessorType,
+  createPropertyProcessor,
   createValueProcessorError,
   createValueProcessorResult,
 } from './utils'
@@ -14,7 +16,7 @@ export function isColorType(propertyType?: string) {
 export function createSetStyleNativeColorValueProcessor(
   setter: string
 ): PropertyProcessor {
-  return (value) => {
+  return createPropertyProcessor((value: string | number) => {
     const nativeColorValue = parseNativeColorValue(String(value))
     if (nativeColorValue) {
       return createValueProcessorResult(
@@ -23,7 +25,7 @@ export function createSetStyleNativeColorValueProcessor(
       )
     }
     return createValueProcessorError(`Invalid color value: ${value}`)
-  }
+  }, PropertyProcessorType.Color)
 }
 
 export function parseNativeColorValue(value: string) {

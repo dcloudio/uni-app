@@ -1,5 +1,7 @@
 import {
   type PropertyProcessor,
+  PropertyProcessorType,
+  createPropertyProcessor,
   createValueProcessorError,
   createValueProcessorResult,
 } from './utils'
@@ -8,7 +10,7 @@ export function createSetStyleUnitValueProcessor(
   setter: string,
   language: 'cpp' | 'ts'
 ): PropertyProcessor {
-  return (value) => {
+  return createPropertyProcessor((value) => {
     const unitValue = parseUnitValue(String(value))
     if (unitValue) {
       return createValueProcessorResult(
@@ -19,7 +21,7 @@ export function createSetStyleUnitValueProcessor(
       )
     }
     return createValueProcessorError(`Invalid unit value: ${value}`)
-  }
+  }, PropertyProcessorType.Unit)
 }
 
 const unitMatchRe = /^(-?(?:\d*\.\d+|\d+\.?\d*))(%|[a-zA-Z]+)?$/

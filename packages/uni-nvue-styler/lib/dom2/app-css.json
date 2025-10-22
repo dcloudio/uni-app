@@ -389,7 +389,7 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-c": {
-		  "type": "UniNativeBorderStyle",
+          "type": "UniNativeBorderStyle",
           "setter": "borderStyleBottom"
         }
       },
@@ -879,7 +879,7 @@
     }
   },
   "font-weight": {
-    "type": "UniCSSFontWeightType|number",
+    "type": ["UniCSSFontWeightType", "number"],
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -894,7 +894,7 @@
     }
   },
   "letter-spacing": {
-    "type": "number",
+    "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -909,7 +909,7 @@
     }
   },
   "line-height": {
-    "type": "UniCSSLineHeightType|UniCSSUnitValue",
+    "type": ["UniCSSLineHeightType", "UniCSSUnitValue"],
     "uniPlatform": {
       "app": {
         "dom-c": {

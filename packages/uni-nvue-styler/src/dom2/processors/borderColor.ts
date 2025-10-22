@@ -1,5 +1,10 @@
 import { parseNativeColorValue } from './color'
-import { type PropertyProcessor, createValueProcessorResult } from './utils'
+import {
+  type PropertyProcessor,
+  PropertyProcessorType,
+  createPropertyProcessor,
+  createValueProcessorResult,
+} from './utils'
 
 const BORDER_COLOR_TYPES = ['UniNativeBorderColors']
 
@@ -10,7 +15,7 @@ export function isBorderColorsType(propertyType?: string) {
 export function createSetStyleBorderColorsValueProcessor(
   setter: string
 ): PropertyProcessor {
-  return (value) => {
+  return createPropertyProcessor((value: string | number) => {
     const borderColorsValueCode = stringifyBorderColorsValue(
       parseBorderColorsValue(String(value))
     )
@@ -18,7 +23,7 @@ export function createSetStyleBorderColorsValueProcessor(
       `${borderColorsValueCode}`,
       `${setter}(${borderColorsValueCode})`
     )
-  }
+  }, PropertyProcessorType.Struct)
 }
 
 function stringifyBorderColorsValue(

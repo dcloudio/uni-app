@@ -1,5 +1,7 @@
 import {
   type PropertyProcessor,
+  PropertyProcessorType,
+  createPropertyProcessor,
   createValueProcessorError,
   createValueProcessorResult,
 } from './utils'
@@ -12,11 +14,11 @@ export function isNumberType(propertyType?: string) {
 export function createSetStyleNumberValueProcessor(
   setter: string
 ): PropertyProcessor {
-  return (value) => {
+  return createPropertyProcessor((value) => {
     const numValue = parseFloat(String(value))
     if (!isNaN(numValue)) {
       return createValueProcessorResult(`${numValue}`, `${setter}(${numValue})`)
     }
     return createValueProcessorError(`Invalid number value: ${value}`)
-  }
+  }, PropertyProcessorType.Number)
 }

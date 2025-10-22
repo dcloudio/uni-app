@@ -1,4 +1,9 @@
-import { type PropertyProcessor, createValueProcessorResult } from './utils'
+import {
+  type PropertyProcessor,
+  PropertyProcessorType,
+  createPropertyProcessor,
+  createValueProcessorResult,
+} from './utils'
 
 const STRING_TYPES = ['string']
 export function isStringType(propertyType?: string) {
@@ -8,7 +13,7 @@ export function isStringType(propertyType?: string) {
 export function createSetStyleStringValueProcessor(
   setter: string
 ): PropertyProcessor {
-  return (value) => {
+  return createPropertyProcessor((value) => {
     return createValueProcessorResult(`"${value}"`, `${setter}("${value}")`)
-  }
+  }, PropertyProcessorType.String)
 }

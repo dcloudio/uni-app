@@ -27,7 +27,6 @@ describe('dom2 parse', () => {
         .invalid {
           display: grid;
           grid-auto-rows: 200px;
-          white-space: nowrap;
         }
         `,
       {

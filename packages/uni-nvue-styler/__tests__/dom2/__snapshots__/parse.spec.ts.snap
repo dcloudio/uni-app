@@ -27,7 +27,6 @@ exports[`dom2 parse basic 2`] = `
         .invalid {
           display: grid;
           grid-auto-rows: 200px;
-          white-space: nowrap;
         }
         ",
           "file": "foo.css",
@@ -83,7 +82,6 @@ exports[`dom2 parse basic 2`] = `
         .invalid {
           display: grid;
           grid-auto-rows: 200px;
-          white-space: nowrap;
         }
         ",
           "file": "foo.css",
@@ -114,61 +112,6 @@ exports[`dom2 parse basic 2`] = `
     },
     "plugin": "uvue:normalize",
     "text": "WARNING: \`grid-auto-rows\` is not a standard property name (may not be supported)",
-    "type": "warning",
-  },
-  Warning {
-    "column": 11,
-    "endColumn": 31,
-    "endLine": 15,
-    "line": 15,
-    "node": {
-      "__originalProp": "white-space",
-      "inputs": [
-        {
-          "css": "
-        .content {
-            display: flex;
-        } 
-        .logo {
-            width: 200px;
-            height: 200px;
-        }
-        .text-area, .title {
-            font-size: 36px;
-        }
-        .invalid {
-          display: grid;
-          grid-auto-rows: 200px;
-          white-space: nowrap;
-        }
-        ",
-          "file": "foo.css",
-          "hasBOM": false,
-        },
-      ],
-      "prop": "whiteSpace",
-      "raws": {
-        "before": "
-          ",
-        "between": ": ",
-      },
-      "source": {
-        "end": {
-          "column": 30,
-          "line": 15,
-          "offset": 312,
-        },
-        "inputId": 0,
-        "start": {
-          "column": 11,
-          "line": 15,
-          "offset": 292,
-        },
-      },
-      "type": "decl",
-      "value": "nowrap",
-    },
-    "text": "WARNING: \`white-space\` is not a standard property name (may not be supported)",
     "type": "warning",
   },
 ]
