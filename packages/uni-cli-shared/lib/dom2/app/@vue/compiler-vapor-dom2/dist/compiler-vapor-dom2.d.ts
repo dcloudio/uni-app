@@ -1,5 +1,6 @@
-import { RawSourceMap, RootNode } from '@vue/compiler-dom';
+import { CompilerError, RawSourceMap, RootNode } from '@vue/compiler-dom';
 export { parse } from '@vue/compiler-dom';
+import * as PostCss from 'postcss';
 import { CompilerOptions, VaporCodegenResult, RootIRNode } from '@vue/compiler-vapor';
 import tsType, { ClassDeclaration } from 'typescript';
 
@@ -38,9 +39,11 @@ export declare enum COMPONENT_TYPE {
     COMPONENT = "component"
 }
 type BaseDom2SharedOptions = {
+    root: string;
     componentType: COMPONENT_TYPE;
     className: string;
     platform: DOM2_APP_PLATFORM;
+    relativeFilename?: string;
     /**
      * 是否忽略属性
      * @param name
@@ -52,7 +55,12 @@ type BaseDom2SharedOptions = {
      * 用于解析静态样式，主要在代码生成阶段使用
      * @default null
      */
-    parseStaticStyle?: (platform: DOM2_APP_PLATFORM, target: DOM2_APP_TARGET, style: string) => Record<string, Dom2StaticStylePropertyValue>;
+    parseStaticStyle?: (target: DOM2_APP_TARGET, tagName: string, style: string) => {
+        obj: Record<string, Dom2StaticStylePropertyValue>;
+        messages: PostCss.Message[];
+    };
+    onError?: (error: CompilerError) => void;
+    onWarn?: (warning: CompilerError) => void;
 };
 export interface VaporDom2CompilerOptions extends CompilerOptions, BaseDom2SharedOptions {
     emitElement?: (result: VaporCodegenResult) => void;
