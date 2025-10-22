@@ -127,6 +127,16 @@ export function generate(
   emitFile!({ type: 'asset', fileName: filename, source: context.code })
 }
 
+function isInVFor(node: SlotOutletNode): boolean {
+  while (node) {
+    if (isForElementNode(node)) {
+      return true
+    }
+    node = (node as any).parent
+  }
+  return false
+}
+
 export function genNode(
   node: TemplateChildNode,
   context: TemplateCodegenContext
@@ -154,6 +164,9 @@ export function genNode(
           ) && node.children.length === 0
         // 当存在 <slot name="default" :xxx="xxx"><slot> 时，在后面添加 <slot></slot>，使默认插槽生效
         if (isEmptyDefaultSlot) {
+          if (isInVFor(node)) {
+            return genSlot(node, context)
+          }
           const isVIfSlot = isIfElementNode(node)
           if (isVIfSlot) {
             context.push(`<block`)
