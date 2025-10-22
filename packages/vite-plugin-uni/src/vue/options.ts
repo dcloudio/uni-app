@@ -4,7 +4,6 @@ import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { Plugin } from 'vite'
 import type {
   AssetURLOptions,
-  CompilerError,
   SFCDescriptor,
   SFCStyleCompileOptions,
   TemplateCompiler,
@@ -20,7 +19,6 @@ import {
   isExternalUrl,
   isUniPageFile,
   normalizePath,
-  onVueTemplateCompileLog,
   preJs,
   resolveUniTypeScript,
   setSharedDataClassName,
