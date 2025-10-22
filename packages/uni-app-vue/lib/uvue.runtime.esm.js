@@ -7555,6 +7555,7 @@ function mergeProps(...args) {
           );
           if (matchedInterceptors.length > 0) {
             toMergeStyle = normalizeStyle$1(toMerge.style);
+            let toMergeStyleResult = extend({}, toMergeStyle);
             matchedInterceptors.forEach((interceptor) => {
               interceptor.styles = interceptor.styles || /* @__PURE__ */ new Map();
               interceptor.styles.clear();
@@ -7563,7 +7564,6 @@ function mergeProps(...args) {
               } else {
                 const properties = interceptor.properties;
                 if (properties) {
-                  const toMergeStyleResult = {};
                   for (const key2 in toMergeStyle) {
                     const value = toMergeStyle[key2];
                     const isCSSVar = key2.startsWith("--");
@@ -7571,14 +7571,11 @@ function mergeProps(...args) {
                     if (properties.includes(hyphenatedKey)) {
                       const camelizedKey = isCSSVar ? key2 : camelize(key2);
                       interceptor.styles.set(camelizedKey, value);
-                      if (!interceptor.filterProperties) {
-                        toMergeStyleResult[key2] = value;
+                      if (interceptor.filterProperties) {
+                        delete toMergeStyleResult[key2];
                       }
-                    } else {
-                      toMergeStyleResult[key2] = value;
                     }
                   }
-                  toMergeStyle = toMergeStyleResult;
                 } else {
                   for (const key2 in toMergeStyle) {
                     const value = toMergeStyle[key2];
@@ -7587,11 +7584,12 @@ function mergeProps(...args) {
                     interceptor.styles.set(camelizedKey, value);
                   }
                   if (interceptor.filterProperties) {
-                    toMergeStyle = {};
+                    toMergeStyleResult = {};
                   }
                 }
               }
             });
+            toMergeStyle = toMergeStyleResult;
           }
         }
         if (toMergeStyle) {
