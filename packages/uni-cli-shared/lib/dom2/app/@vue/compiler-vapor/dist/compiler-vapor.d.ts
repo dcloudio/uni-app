@@ -395,6 +395,7 @@ export declare function genCall(name: string | [name: string, placeholder?: Code
 export declare function codeFragmentToString(code: CodeFragment[], context: CodegenContext): [code: string, map: CodegenSourceMapGenerator | undefined];
 
 export declare function wrapTemplate(node: ElementNode, dirs: string[]): TemplateNode;
+export declare const TEXT_PLACEHOLDER = "__vapor_dom2_text_placeholder__";
 
 export declare function compile(source: string | RootNode, options?: CompilerOptions): VaporCodegenResult;
 export type CompilerOptions = HackOptions<CompilerOptions$1>;

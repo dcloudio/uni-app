@@ -32032,6 +32032,7 @@ const EMPTY_EXPRESSION = createSimpleExpression(
   "",
   true
 );
+const TEXT_PLACEHOLDER = "__vapor_dom2_text_placeholder__";
 
 const findProp = findProp$1;
 const findDir = findDir$1;
@@ -46067,7 +46068,9 @@ const transformVText = (dir, node, context) => {
   if (literal != null) {
     context.childrenTemplate = [String(literal)];
   } else {
-    context.childrenTemplate = [" "];
+    context.childrenTemplate = [
+      context.options.platform ? TEXT_PLACEHOLDER : " "
+    ];
     context.registerOperation({
       type: 17,
       // fixed by uts
@@ -46308,7 +46311,7 @@ function processInterpolation(context) {
   if (values.length === 0 && parentNode.type !== 0) {
     return;
   }
-  context.template += " ";
+  context.template += context.options.platform ? TEXT_PLACEHOLDER : " ";
   const id = context.reference();
   if (values.length === 0) {
     return;
@@ -46341,7 +46344,9 @@ function processTextContainer(children, context) {
   if (literals.every((l) => l != null)) {
     context.childrenTemplate = literals.map((l) => String(l));
   } else {
-    context.childrenTemplate = [" "];
+    context.childrenTemplate = [
+      context.options.platform ? TEXT_PLACEHOLDER : " "
+    ];
     context.registerOperation({
       type: 17,
       // fixed by uts
@@ -47037,6 +47042,7 @@ var CompilerVapor = /*#__PURE__*/Object.freeze({
   IRSlotType: IRSlotType,
   LF: LF,
   NEWLINE: NEWLINE,
+  TEXT_PLACEHOLDER: TEXT_PLACEHOLDER,
   VaporErrorCodes: VaporErrorCodes,
   VaporErrorMessages: VaporErrorMessages,
   buildCodeFragment: buildCodeFragment,

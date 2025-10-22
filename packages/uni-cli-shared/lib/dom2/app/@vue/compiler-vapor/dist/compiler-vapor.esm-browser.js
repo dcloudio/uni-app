@@ -21394,6 +21394,7 @@ const EMPTY_EXPRESSION = createSimpleExpression(
   "",
   true
 );
+const TEXT_PLACEHOLDER = "__vapor_dom2_text_placeholder__";
 
 const findProp = findProp$1;
 const findDir = findDir$1;
@@ -35447,7 +35448,9 @@ const transformVText = (dir, node, context) => {
   if (literal != null) {
     context.childrenTemplate = [String(literal)];
   } else {
-    context.childrenTemplate = [" "];
+    context.childrenTemplate = [
+      context.options.platform ? TEXT_PLACEHOLDER : " "
+    ];
     context.registerOperation({
       type: 17,
       // fixed by uts
@@ -35688,7 +35691,7 @@ function processInterpolation(context) {
   if (values.length === 0 && parentNode.type !== 0) {
     return;
   }
-  context.template += " ";
+  context.template += context.options.platform ? TEXT_PLACEHOLDER : " ";
   const id = context.reference();
   if (values.length === 0) {
     return;
@@ -35721,7 +35724,9 @@ function processTextContainer(children, context) {
   if (literals.every((l) => l != null)) {
     context.childrenTemplate = literals.map((l) => String(l));
   } else {
-    context.childrenTemplate = [" "];
+    context.childrenTemplate = [
+      context.options.platform ? TEXT_PLACEHOLDER : " "
+    ];
     context.registerOperation({
       type: 17,
       // fixed by uts
@@ -36402,4 +36407,4 @@ const VaporErrorMessages = {
   [101]: ``
 };
 
-export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicFlag, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, VaporErrorCodes, VaporErrorMessages, buildCodeFragment, codeFragmentToString, compile, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genMulti, generate, getBaseTransformPreset, getLiteralExpressionValue, isBlockOperation, isConstantExpression, isStaticExpression, parse, transform, transformChildren, transformComment, transformElement, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };
+export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicFlag, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_PLACEHOLDER, VaporErrorCodes, VaporErrorMessages, buildCodeFragment, codeFragmentToString, compile, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genMulti, generate, getBaseTransformPreset, getLiteralExpressionValue, isBlockOperation, isConstantExpression, isStaticExpression, parse, transform, transformChildren, transformComment, transformElement, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };
