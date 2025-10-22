@@ -254,6 +254,7 @@ export function traverseChildren(
     const child = parent.children[i]
     if (isString(child)) continue
     context.parent = parent
+    ;(child as any).parent = parent
     context.childIndex = i
     context.onNodeRemoved = nodeRemoved
     traverseNode(child, context)
