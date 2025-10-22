@@ -297,6 +297,16 @@
       }
     }
   },
+  "border-color": {
+    "type": "UniNativeBorderColors",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderColor"
+        }
+      }
+    }
+  },
   "border-bottom-color": {
     "type": "UniNativeBorderColor",
     "uniPlatform": {
@@ -357,6 +367,20 @@
       }
     }
   },
+  "border-style": {
+    "type": "UniCSSBorderStyleType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setStyleBorderStyle"
+        },
+        "nv-c": {
+          "type": "UniNativeBorderStyles",
+          "setter": "borderStyle"
+        }
+      }
+    }
+  },
   "border-bottom-style": {
     "type": "UniCSSBorderStyleType",
     "uniPlatform": {
@@ -365,7 +389,7 @@
           "setter": "setStyleBorderBottomStyle"
         },
         "nv-c": {
-          "type": "UniNativeBorderStyle",
+		  "type": "UniNativeBorderStyle",
           "setter": "borderStyleBottom"
         }
       },
@@ -794,46 +818,193 @@
       }
     }
   },
+  "color": {
+    "type": "UniNativeColor",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setColor"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setColor"
+        }
+      }
+    }
+  },
+  "font-family": {
+    "type": "string",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setFontFamily"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setFontFamily"
+        }
+      }
+    }
+  },
   "font-size": {
     "type": "UniCSSUnitValue",
     "uniPlatform": {
       "app": {
-        "nv-kt": {
-          "setter": "fontSize"
+        "dom-c": {
+          "setter": "setFontSize"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setFontSize"
+        }
+      }
+    }
+  },
+  "font-style": {
+    "type": "UniCSSFontStyleType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setFontStyle"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setFontStyle"
+        }
+      }
+    }
+  },
+  "font-weight": {
+    "type": "UniCSSFontWeightType|number",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setFontWeight"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setFontWeight"
+        }
+      }
+    }
+  },
+  "letter-spacing": {
+    "type": "number",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setLetterSpacing"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setLetterSpacing"
+        }
+      }
+    }
+  },
+  "line-height": {
+    "type": "UniCSSLineHeightType|UniCSSUnitValue",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setLineHeight"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setLineHeight"
+        }
+      }
+    }
+  },
+  "text-align": {
+    "type": "UniCSSTextAlign",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setTextAlign"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setTextAlign"
+        }
+      }
+    }
+  },
+  "text-decoration-line": {
+    "type": "UniCSSTextDecorationLineType",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setTextDecorationLine"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setTextDecorationLine"
+        }
+      }
+    }
+  },
+  "text-overflow": {
+    "type": "UniCSSTextOverflow",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setTextOverflow"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setTextOverflow"
+        }
+      }
+    }
+  },
+  "text-shadow": {
+    "type": "UniCSSTextShadow",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setTextShadow"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setTextShadow"
+        }
+      }
+    }
+  },
+  "white-space": {
+    "type": "UniCSSWhiteSpace",
+    "uniPlatform": {
+      "app": {
+        "dom-c": {
+          "setter": "setWhiteSpace"
+        }
+      },
+      "app-android": {
+        "txt-kt": {
+          "setter": "setWhiteSpace"
         }
       }
     }
   },
   "--*": {
     "description": "css变量",
+    "type": "string",
     "uniPlatform": {
       "app": {
         "dom-c": {
           "setter": "setStyleVariable"
-        }
-      }
-    }
-  },
-  "border-color": {
-    "type": "UniNativeBorderColors",
-    "uniPlatform": {
-      "app": {
-        "nv-c": {
-          "setter": "borderColor"
-        }
-      }
-    }
-  },
-  "border-style": {
-    "type": "UniCSSBorderStyleType",
-    "uniPlatform": {
-      "app": {
-        "dom-c": {
-          "setter": "setStyleBorderStyle"
-        },
-        "nv-c": {
-          "type": "UniNativeBorderStyles",
-          "setter": "borderStyle"
         }
       }
     }
