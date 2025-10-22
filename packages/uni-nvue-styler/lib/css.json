@@ -7554,7 +7554,8 @@
         "text",
         "button",
         "input",
-        "textarea"
+        "textarea",
+        "loading"
       ],
       "defaultValue": "normal"
     },
