@@ -1589,22 +1589,37 @@ const host = baseInfo ? baseInfo.host : null;
 const shareVideoMessage = host && host.env === 'SAAASDK'
     ? wx$2.miniapp.shareVideoMessage
     : wx$2.shareVideoMessage;
-const THEME_CALLBACK = [];
+const THEME_CALLBACK_MAP = new Map();
+let CALLBACK_ID = 0;
 const onHostThemeChange = (callback) => {
     const onHostThemeChangeCallback = (res) => {
         callback({ hostTheme: res.theme });
     };
-    const index = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1;
-    wx$2.onThemeChange && wx$2.onThemeChange(onHostThemeChangeCallback);
-    return index;
+    const id = ++CALLBACK_ID;
+    THEME_CALLBACK_MAP.set(id, [callback, onHostThemeChangeCallback]);
+    if (wx$2.onThemeChange) {
+        wx$2.onThemeChange(onHostThemeChangeCallback);
+    }
+    return id;
 };
 const offHostThemeChange = (callbackId) => {
-    if (isFunction(callbackId)) {
-        callbackId = THEME_CALLBACK.findIndex(([callback]) => callback === callbackId);
+    let id;
+    if (typeof callbackId === 'function') {
+        THEME_CALLBACK_MAP.forEach(([cb], key) => {
+            if (cb === callbackId && id === undefined) {
+                id = key;
+            }
+        });
     }
-    if (callbackId > -1) {
-        const arr = THEME_CALLBACK.splice(callbackId, 1)[0];
-        isArray(arr) && wx$2.offThemeChange && wx$2.offThemeChange(arr[1]);
+    else {
+        id = callbackId;
+    }
+    if (id !== undefined && THEME_CALLBACK_MAP.has(id)) {
+        const [, onHostThemeChangeCallback] = THEME_CALLBACK_MAP.get(id);
+        THEME_CALLBACK_MAP.delete(id);
+        if (wx$2.offThemeChange) {
+            wx$2.offThemeChange(onHostThemeChangeCallback);
+        }
     }
 };
 

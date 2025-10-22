@@ -115,10 +115,9 @@ function initBaseInstance(instance, options) {
         }
     }
     ctx.getOpenerEventChannel = function () {
-        {
+        if (my.canIUse('page.getOpenerEventChannel')) {
             // getOpenerEventChannel 是页面实例方法 https://opendocs.alipay.com/mini/framework/page-detail#getOpenerEventChannel
-            if (my.canIUse('page.getOpenerEventChannel'))
-                return options.mpInstance.getOpenerEventChannel();
+            return options.mpInstance.getOpenerEventChannel();
         }
         if (!this.__eventChannel__) {
             this.__eventChannel__ = new EventChannel();
