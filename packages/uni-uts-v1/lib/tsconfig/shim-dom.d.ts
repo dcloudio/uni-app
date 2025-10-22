@@ -145,6 +145,7 @@ declare global {
   const Crypto: AnyClass<Crypto>
   type CryptoKey = any
   const CryptoKey: AnyClass<CryptoKey>
+  const CSS: any
   type CSSAnimation = any
   const CSSAnimation: AnyClass<CSSAnimation>
   type CSSConditionRule = any
