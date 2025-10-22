@@ -1,5 +1,6 @@
 import {
   type AttributeNode,
+  type CompilerError,
   type ElementNode,
   NodeTypes,
   type ParentNode,
@@ -8,6 +9,8 @@ import {
 } from '@vue/compiler-core'
 import MagicString from 'magic-string'
 import { isElementNode, parseVue } from '../vite/utils/ast'
+import { generateCodeFrameColumns } from '../vite/utils'
+import { SPECIAL_CHARS } from '../constants'
 
 const BLOCK_RE = /<\/block>/
 const WXS_LANG_RE = /lang=["|'](renderjs|wxs|sjs)["|']/
@@ -152,4 +155,28 @@ function parseWxsNode(code: string, nodes: ElementNode[]) {
     }
   })
   return magicString.toString()
+}
+
+export function onVueTemplateCompileLog(
+  type: 'warn' | 'error',
+  error: CompilerError,
+  code: string,
+  relativeFileName: string,
+  templateStartLine: number
+) {
+  const char =
+    type === 'warn' ? SPECIAL_CHARS.WARN_BLOCK : SPECIAL_CHARS.ERROR_BLOCK
+  console[type](char + type + ': ' + error.message + (error.loc ? '' : char))
+  if (error.loc) {
+    const start = error.loc.start
+    console.log(
+      'at ' +
+        relativeFileName +
+        ':' +
+        (start.line + templateStartLine - 1) +
+        ':' +
+        (start.column - 1)
+    )
+    console.log(generateCodeFrameColumns(code, error.loc) + char)
+  }
 }

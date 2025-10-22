@@ -45813,6 +45813,10 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
       if (key.isStatic && values.length === 1 && values[0].isStatic) {
         if (isDom2 && key.content === "style") {
           hasStaticStyle = true;
+          const checkStaticStyle = context.options.checkStaticStyle;
+          if (checkStaticStyle) {
+            checkStaticStyle(node, values[0].content, context);
+          }
         }
         if (isDom2 && key.content === "class") {
           dynamicProps.push(key.content);
