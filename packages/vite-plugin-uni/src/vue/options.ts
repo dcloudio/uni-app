@@ -345,6 +345,7 @@ export function initPluginVueOptions(
         }
         return {
           className,
+          platform: process.env.UNI_UTS_PLATFORM as DOM2_APP_PLATFORM,
           componentType: isUniPageFile(filename) ? 'page' : 'component',
           relativeFilename: normalizePath(
             path.relative(process.env.UNI_INPUT_DIR, filename)
