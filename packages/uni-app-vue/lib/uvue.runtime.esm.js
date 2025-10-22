@@ -8774,15 +8774,15 @@ function triggerComputedStyleUpdate(instance) {
       if (interceptor.classAttr !== "class" || interceptor.styleAttr !== "style") {
         return;
       }
+      let styles = interceptor.styles;
       if (interceptor.classAttr === "class" && interceptor.classStyles && interceptor.classStylesWeight) {
-        interceptor.styles = mergeClassStyles(
+        styles = mergeClassStyles(
           interceptor.classStyles,
           interceptor.classStylesWeight,
           interceptor.styles
         );
       }
       const r = interceptor.reactiveComputedStyle;
-      const styles = interceptor.styles;
       for (const key in r) {
         const isCSSVar = key.startsWith("--");
         const camelizedKey = isCSSVar ? key : camelize(key);
@@ -9269,7 +9269,7 @@ function parseStyleDecl(prop, value) {
 function isSame(a, b) {
   return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
 }
-function patchStyle(el, prev, next) {
+function patchStyle(el, prev, next, instance = null) {
   if (!next) {
     return;
   }
@@ -9310,9 +9310,11 @@ function patchStyle(el, prev, next) {
     }
     setExtraStyle(el, batchedStyles);
   }
-  const instance = getRootElementInstance(el);
-  if (instance && instance.computedStyleInterceptors) {
-    triggerComputedStyleUpdate(instance);
+  if (instance && instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
+    setRootElementInstance(el, instance);
+    if (instance.computedStyleInterceptors) {
+      triggerComputedStyleUpdate(instance);
+    }
   }
   if (batchedStyles.size == 0) {
     return;
@@ -9333,7 +9335,7 @@ const patchProp = (el, key, prevValue, nextValue, namespace, prevChildren, paren
   if (key === "class") {
     patchClass(el, prevValue, nextValue, hostInstance || parentComponent);
   } else if (key === "style") {
-    patchStyle(el, prevValue, nextValue);
+    patchStyle(el, prevValue, nextValue, hostInstance || parentComponent);
   } else if (key === "part") {
     patchPart(el, nextValue, parentComponent);
   } else if (isOn(key)) {
