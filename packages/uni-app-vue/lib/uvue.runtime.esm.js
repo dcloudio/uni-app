@@ -7563,18 +7563,22 @@ function mergeProps(...args) {
               } else {
                 const properties = interceptor.properties;
                 if (properties) {
-                  properties.forEach((property) => {
-                    let isCSSVar = property.startsWith("--");
-                    const camelizedKey = isCSSVar ? property : camelize(property);
-                    const hyphenatedKey = isCSSVar ? property : hyphenate(camelizedKey);
-                    if (hyphenatedKey in toMergeStyle) {
-                      const value = toMergeStyle[hyphenatedKey];
-                      if (interceptor.filterProperties) {
-                        delete toMergeStyle[hyphenatedKey];
-                      }
+                  const toMergeStyleResult = {};
+                  for (const key2 in toMergeStyle) {
+                    const value = toMergeStyle[key2];
+                    const isCSSVar = key2.startsWith("--");
+                    const hyphenatedKey = isCSSVar ? key2 : hyphenate(key2);
+                    if (properties.includes(hyphenatedKey)) {
+                      const camelizedKey = isCSSVar ? key2 : camelize(key2);
                       interceptor.styles.set(camelizedKey, value);
+                      if (!interceptor.filterProperties) {
+                        toMergeStyleResult[key2] = value;
+                      }
+                    } else {
+                      toMergeStyleResult[key2] = value;
                     }
-                  });
+                  }
+                  toMergeStyle = toMergeStyleResult;
                 } else {
                   for (const key2 in toMergeStyle) {
                     const value = toMergeStyle[key2];
