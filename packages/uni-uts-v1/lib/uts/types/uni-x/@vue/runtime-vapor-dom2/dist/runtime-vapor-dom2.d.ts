@@ -204,6 +204,7 @@ export declare function createSharedDataVFor<T extends UniSharedData>(scope: Uni
 export declare function useSharedDataScope<T extends UniSharedDataPage>(scope?: T): T;
 export declare function useSharedDataPageId(): number;
 
+export declare function getCurrentElementVaporComponentInstance(): VaporSharedDataComponentInstance | null;
 type TemplateFactory = (page: UniPage) => UniElement & {
     $root?: true;
 };
@@ -224,7 +225,7 @@ export declare function createElementIf(page: UniPage, condition: () => any, b1:
 export declare function setElementText(el: UniElement, value: string): void;
 export declare function setElementHtml(el: UniElement, value: string): void;
 export declare function setElementAttr(el: UniElement, key: string, value: any): void;
-export declare function setElementClass(el: UniElement, value: any): void;
+export declare function setElementClass(ins: VaporSharedDataComponentInstance, el: UniElement, value: any): void;
 export declare function setElementStyle(el: UniElement, value: UniElementStyles): void;
 export declare function setElementDynamicProps(el: UniElement, args: UniSharedDataJSONObject): void;
 export declare function setElementDynamicEvents(el: UniElement, args: UniSharedDataJSONObject): void;
@@ -246,6 +247,7 @@ export declare function onElement(node: UniElement, event: string, fn: (event: U
     effect?: boolean;
 }): void;
 
+export declare function getCurrentNativeViewVaporComponentInstance(): VaporSharedDataComponentInstance | null;
 type NativeViewFactory = (page: UniPage) => UniNativeBaseView & {
     $root?: true;
 };
