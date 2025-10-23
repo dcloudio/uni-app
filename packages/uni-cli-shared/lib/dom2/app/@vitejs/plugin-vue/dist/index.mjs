@@ -367,9 +367,15 @@ function isUseInlineTemplate(descriptor, options) {
   return !options.devServer && !options.devToolsEnabled && !!descriptor.scriptSetup && !descriptor.template?.src;
 }
 const scriptIdentifier = `_sfc_main`;
-function resolveScript(descriptor, options, ssr, customElement) {
+function resolveScript(useCache, descriptor, options, ssr, customElement) {
   if (!descriptor.script && !descriptor.scriptSetup) {
     return null;
+  }
+  if (useCache) {
+    const cached = getResolvedScript(descriptor, ssr);
+    if (cached) {
+      return cached;
+    }
   }
   const resolved = options.compiler.compileScript(descriptor, {
     ...options.script,
@@ -2682,7 +2688,7 @@ async function genScriptCode(descriptor, options, pluginContext, ssr, customElem
   const vaporFlag = descriptor.vapor ? "__vapor: true" : "";
   let scriptCode = `const ${scriptIdentifier} = { ${vaporFlag} }`;
   let map;
-  const script = resolveScript(descriptor, options, ssr, customElement);
+  const script = resolveScript(false, descriptor, options, ssr, customElement);
   if (script) {
     if (canInlineMain(descriptor, options)) {
       if (!options.compiler.version) {
@@ -3030,6 +3036,8 @@ function vuePlugin(rawOptions = {}) {
         let block;
         if (query.type === "script") {
           block = resolveScript(
+            // fixed by uts
+            true,
             descriptor,
             options.value,
             ssr,
