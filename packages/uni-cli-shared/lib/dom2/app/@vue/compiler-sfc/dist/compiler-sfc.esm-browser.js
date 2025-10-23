@@ -45816,7 +45816,15 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
           hasStaticStyle = true;
           const checkStaticStyle = context.options.checkStaticStyle;
           if (checkStaticStyle) {
-            checkStaticStyle(node, values[0].content, context);
+            checkStaticStyle(
+              values[0].content,
+              {
+                start: key.loc.start,
+                end: values[0].loc.end
+              },
+              node,
+              context
+            );
           }
         }
         if (isDom2 && key.content === "class") {
@@ -48681,6 +48689,14 @@ function doCompileTemplate({
     }
     if (errors.length) {
       patchErrors(errors, source, inMap);
+    }
+    if (warnings.length && compilerOptions.onWarn) {
+      patchErrors(warnings, source, inMap);
+      warnings.forEach((w) => {
+        var _a;
+        return (_a = compilerOptions.onWarn) == null ? void 0 : _a.call(compilerOptions, w);
+      });
+      warnings.length = 0;
     }
   }
   const tips = warnings.map((w) => {
@@ -65372,6 +65388,46 @@ let __temp${any}, __restore${any}
     if (sfc.template && !sfc.template.src) {
       if (ssr) {
         hasInlinedSsrRenderFn = true;
+      }
+      if (!options.templateOptions) {
+        options.templateOptions = {};
+      }
+      if (!options.templateOptions.compilerOptions) {
+        options.templateOptions.compilerOptions = {};
+      }
+      const compilerOptions = options.templateOptions.compilerOptions;
+      const onVueTemplateCompileLog = compilerOptions.onVueTemplateCompileLog;
+      if (onVueTemplateCompileLog) {
+        const onError = compilerOptions.onError;
+        compilerOptions.onError = (error) => {
+          if (error.errorType === "css") {
+            onVueTemplateCompileLog(
+              "error",
+              error,
+              source,
+              compilerOptions.relativeFilename || filename
+            );
+          } else if (onError) {
+            onError(error);
+          } else {
+            throw error;
+          }
+        };
+        const onWarn = compilerOptions.onWarn;
+        compilerOptions.onWarn = (warning) => {
+          if (warning.errorType === "css") {
+            onVueTemplateCompileLog(
+              "warn",
+              warning,
+              source,
+              compilerOptions.relativeFilename || filename
+            );
+          } else if (onWarn) {
+            onWarn(warning);
+          } else {
+            console.warn(warning.message);
+          }
+        };
       }
       const { code, preamble, tips, errors, helpers, map: map2 } = compileTemplate(__spreadProps(__spreadValues$1({
         filename,

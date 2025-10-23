@@ -46,7 +46,6 @@ export function resolveGenTemplateCodeOptions(
     }
   }
   const inputRoot = normalizePath(options.rootDir)
-  const templateStartLine = descriptor.template?.loc.start.line ?? 0
   let preprocessOptions = block.lang && options.preprocessOptions
   if (block.lang === 'pug') {
     preprocessOptions = {
@@ -83,13 +82,7 @@ export function resolveGenTemplateCodeOptions(
           )
         )
       } else {
-        onVueTemplateCompileLog(
-          'warn',
-          warning,
-          code,
-          relativeFileName,
-          templateStartLine
-        )
+        onVueTemplateCompileLog('warn', warning, code, relativeFileName)
       }
     },
     onError(error: CompilerError & { errorType?: 'css' }) {
@@ -103,13 +96,7 @@ export function resolveGenTemplateCodeOptions(
           )
         )
       } else {
-        onVueTemplateCompileLog(
-          'error',
-          error,
-          code,
-          relativeFileName,
-          templateStartLine
-        )
+        onVueTemplateCompileLog('error', error, code, relativeFileName)
       }
     },
     parseUTSComponent,

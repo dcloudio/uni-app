@@ -35196,7 +35196,15 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
           hasStaticStyle = true;
           const checkStaticStyle = context.options.checkStaticStyle;
           if (checkStaticStyle) {
-            checkStaticStyle(node, values[0].content, context);
+            checkStaticStyle(
+              values[0].content,
+              {
+                start: key.loc.start,
+                end: values[0].loc.end
+              },
+              node,
+              context
+            );
           }
         }
         if (isDom2 && key.content === "class") {

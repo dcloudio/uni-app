@@ -19,6 +19,7 @@ import {
   isExternalUrl,
   isUniPageFile,
   normalizePath,
+  onVueTemplateCompileLog,
   preJs,
   resolveUniTypeScript,
   setSharedDataClassName,
@@ -386,6 +387,7 @@ export function initPluginVueOptions(
               tagName,
             })
           },
+          onVueTemplateCompileLog,
         }
       }
     }

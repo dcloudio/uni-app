@@ -161,8 +161,7 @@ export function onVueTemplateCompileLog(
   type: 'warn' | 'error',
   error: CompilerError,
   code: string,
-  relativeFileName: string,
-  templateStartLine: number
+  relativeFileName: string
 ) {
   const char =
     type === 'warn' ? SPECIAL_CHARS.WARN_BLOCK : SPECIAL_CHARS.ERROR_BLOCK
@@ -170,12 +169,7 @@ export function onVueTemplateCompileLog(
   if (error.loc) {
     const start = error.loc.start
     console.log(
-      'at ' +
-        relativeFileName +
-        ':' +
-        (start.line + templateStartLine - 1) +
-        ':' +
-        (start.column - 1)
+      'at ' + relativeFileName + ':' + start.line + ':' + start.column
     )
     console.log(generateCodeFrameColumns(code, error.loc) + char)
   }

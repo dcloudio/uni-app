@@ -61,6 +61,7 @@ type BaseDom2SharedOptions = {
     };
     onError?: (error: CompilerError) => void;
     onWarn?: (warning: CompilerError) => void;
+    onVueTemplateCompileLog?: (type: 'warn' | 'error', error: CompilerError, code: string, relativeFileName: string, templateStartLine: number) => void;
 };
 export interface VaporDom2CompilerOptions extends CompilerOptions, BaseDom2SharedOptions {
     emitElement?: (result: VaporCodegenResult) => void;
