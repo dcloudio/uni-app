@@ -18,6 +18,7 @@ import {
   parseVueRequest,
   preUVueCss,
   removePlugins,
+  resolveAppVue,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import {
@@ -31,6 +32,7 @@ import { isVue } from '../utils'
 export function uniAppCssPrePlugin(): Plugin {
   const name = 'uni:app-uvue-css-pre'
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
+  const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
   const cssCodeCache = new Map<string, string>()
   return {
     name,
@@ -44,9 +46,10 @@ export function uniAppCssPrePlugin(): Plugin {
         isJsCode: true,
         platform: process.env.UNI_PLATFORM,
         includeComponentCss: false,
+        preserveModules: true,
         chunkCssFilename(id: string) {
           const { filename } = parseVueRequest(id)
-          if (filename === mainPath) {
+          if (filename === mainPath || filename === appUVuePath) {
             // 合并到App
             return `GenApp.style.cpp`
           }

@@ -400,6 +400,10 @@ export function cssPostPlugin(
       }
     },
     async renderChunk(_code, chunk, _opts) {
+      if (platform === 'app-harmony' && process.env.UNI_APP_X_DOM2 === 'true') {
+        // 通过 generateBundle 实现
+        return null
+      }
       const id = chunk.facadeModuleId
       if (id) {
         // 云编译小程序时，只会生成一个chunk（index.module.js），不会动态import，给每个组件产生一个chunk，所以这里需要自行处理组件wxss
