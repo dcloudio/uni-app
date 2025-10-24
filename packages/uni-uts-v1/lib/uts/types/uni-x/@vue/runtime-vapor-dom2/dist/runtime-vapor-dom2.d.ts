@@ -228,6 +228,7 @@ export declare function setElementHtml(el: UniElement, value: string): void;
 export declare function setElementAttr(el: UniElement, key: string, value: any): void;
 export declare function setElementClass(ins: UniSharedDataComponent, el: UniElement, value: any): void;
 export declare function setElementStyle(el: UniElement, value: UniElementStyles): void;
+export declare function setElementExtStyle(el: UniElement, value: unknown): void;
 export declare function setElementDynamicProps(el: UniElement, args: UniSharedDataJSONObject): void;
 export declare function setElementDynamicEvents(el: UniElement, args: UniSharedDataJSONObject): void;
 type setElementRefFn = (el: UniElement, refId: number, refFor?: boolean) => void;

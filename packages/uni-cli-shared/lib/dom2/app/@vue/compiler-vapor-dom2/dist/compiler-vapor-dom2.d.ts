@@ -55,8 +55,9 @@ type BaseDom2SharedOptions = {
      * 用于解析静态样式，主要在代码生成阶段使用
      * @default null
      */
-    parseStaticStyle?: (target: DOM2_APP_TARGET, tagName: string, style: string) => {
+    parseStaticStyle?: (target: DOM2_APP_TARGET, tagName: string, style: string, genCode: boolean) => {
         obj: Record<string, Dom2StaticStylePropertyValue>;
+        code?: string;
         messages: PostCss.Message[];
     };
     /**
@@ -69,7 +70,7 @@ type BaseDom2SharedOptions = {
      * @returns
      */
     parseStaticProp?: (target: DOM2_APP_TARGET, tagName: string, propertyName: string, value: string) => {
-        code: string[];
+        code: string;
         errors: string[];
     } | undefined;
     onError?: (error: CompilerError) => void;
