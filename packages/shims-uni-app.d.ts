@@ -600,11 +600,12 @@ declare class UniNormalPageImpl implements UniPage {
   exitFullscreen(options: ExitFullscreenOptions | null): void
   createElement(tagName: string): UniElement
 
+  createElement(type: UniElementType): UniElement
   createElement(type: UniElementType, flatten: boolean): UniElement
   createElement(
     type: UniElementType,
     flatten: boolean,
-    style: UniElementStyles
+    style?: UniElementStyles | null
   ): UniElement
   createViewElement(
     flatten: boolean,
@@ -624,12 +625,13 @@ declare class UniNormalPageImpl implements UniPage {
   createNativeTextView(flatten: boolean): UniNativeTextView
   createNativeImageView(flatten: boolean): UniNativeImageView
   createNativeScrollView(
-    options: UniNativeScrollViewOptions,
-    flatten: boolean
+    options: UniNativeScrollViewOptions
   ): UniNativeScrollView
-  createNativeCustomView(flatten: boolean): UniNativeCustomView
+  createNativeCustomView(): UniNativeCustomView
 
   defineStyleVariable(key: string, value: string): void
+
+  createTextLayout(): UniTextLayout
 }
 
 declare class UniDialogPageImpl implements UniPage {

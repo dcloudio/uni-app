@@ -8495,7 +8495,6 @@ function normalizeChildren(vnode, children) {
   vnode.shapeFlag |= type;
 }
 function mergeProps() {
-  var _a;
   var ret = {};
   for (var i = 0; i < arguments.length; i++) {
     var toMerge = i < 0 || arguments.length <= i ? undefined : arguments[i];
@@ -8505,54 +8504,7 @@ function mergeProps() {
           ret.class = normalizeClass([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        (function () {
-          var computedStyleInterceptors = (_a = currentRenderingInstance) == null ? void 0 : _a.computedStyleInterceptors;
-          var toMergeStyle = void 0;
-          if (computedStyleInterceptors == null ? void 0 : computedStyleInterceptors.length) {
-            var matchedInterceptors = computedStyleInterceptors.filter(interceptor => interceptor.styleAttr === "style");
-            if (matchedInterceptors.length > 0) {
-              toMergeStyle = normalizeStyle(toMerge.style);
-              matchedInterceptors.forEach(interceptor => {
-                interceptor.styles = interceptor.styles || /* @__PURE__ */new Map();
-                interceptor.styles.clear();
-                if (!toMergeStyle) {
-                  interceptor.styles = /* @__PURE__ */new Map();
-                } else {
-                  var properties = interceptor.properties;
-                  if (properties) {
-                    properties.forEach(property => {
-                      var isCSSVar = property.startsWith("--");
-                      var camelizedKey = isCSSVar ? property : camelize(property);
-                      var hyphenatedKey = isCSSVar ? property : hyphenate(camelizedKey);
-                      if (hyphenatedKey in toMergeStyle) {
-                        var value = toMergeStyle[hyphenatedKey];
-                        if (interceptor.filterProperties) {
-                          delete toMergeStyle[hyphenatedKey];
-                        }
-                        interceptor.styles.set(camelizedKey, value);
-                      }
-                    });
-                  } else {
-                    for (var key2 in toMergeStyle) {
-                      var value = toMergeStyle[key2];
-                      var isCSSVar = key2.startsWith("--");
-                      var camelizedKey = isCSSVar ? key2 : camelize(key2);
-                      interceptor.styles.set(camelizedKey, value);
-                    }
-                    if (interceptor.filterProperties) {
-                      toMergeStyle = {};
-                    }
-                  }
-                }
-              });
-            }
-          }
-          if (toMergeStyle) {
-            ret.style = normalizeStyle([ret.style, toMergeStyle]);
-          } else {
-            ret.style = normalizeStyle([ret.style, toMerge.style]);
-          }
-        })();
+        ret.style = normalizeStyle([ret.style, toMerge.style]);
       } else if (isOn(key)) {
         var existing = ret[key];
         var incoming = toMerge[key];
@@ -9266,6 +9218,7 @@ var NODE_EXT_CHILD_NODE = "childNode";
 var NODE_EXT_PARENT_NODE = "parentNode";
 var NODE_EXT_CHILD_NODES = "childNodes";
 var RootElementInstanceMap = /* @__PURE__ */new WeakMap();
+var PartElementInstanceMap = /* @__PURE__ */new WeakMap();
 function setNodeExtraData(el, name, value) {
   el.ext.set(name, value);
 }
@@ -9274,6 +9227,12 @@ function setRootElementInstance(el, instance) {
 }
 function getRootElementInstance(el) {
   return RootElementInstanceMap.get(el) || null;
+}
+function getPartElementInstance(el) {
+  return PartElementInstanceMap.get(el) || null;
+}
+function setPartElementInstance(el, instance) {
+  PartElementInstanceMap.set(el, instance);
 }
 function getNodeExtraData(el, name) {
   return el.ext.get(name);
@@ -9362,9 +9321,42 @@ function useCssStyles(componentStyles) {
   });
   return normalized;
 }
-function hasClass(calssName, el) {
-  var classList = el && el.classList;
-  return classList && classList.includes(calssName);
+function hasClass(className, el) {
+  if (!el) {
+    return [false, null];
+  }
+  if (!className.endsWith(")")) {
+    var classList = el && el.classList;
+    return [!!classList && classList.includes(className), el];
+  }
+  var partStart = className.lastIndexOf("::part(");
+  var partName = className.slice(partStart + 7, className.length - 1);
+  var part = el.getAnyAttribute("part");
+  if (part == null || !part.split(" ").includes(partName)) {
+    return [false, null];
+  }
+  var baseClassName = className.slice(0, partStart);
+  var partInstance = getPartElementInstance(el);
+  var hostEl = partInstance == null ? void 0 : partInstance.subTree.el;
+  if (hostEl == null) {
+    return [false, null];
+  }
+  if (isCommentNode(hostEl)) {
+    var instanceClass = partInstance == null ? void 0 : partInstance.attrs.class;
+    if (!instanceClass || typeof instanceClass !== "string") {
+      return [false, null];
+    }
+    var _classList = instanceClass.split(" ");
+    if (!_classList.includes(baseClassName)) {
+      return [false, null];
+    }
+    return [true, hostEl];
+  }
+  var [matched, curEl] = hasClass(baseClassName, hostEl);
+  if (!matched) {
+    return [false, null];
+  }
+  return [true, curEl];
 }
 var TYPE_RE = /[+~> ]$/;
 var PROPERTY_PARENT_NODE = "parentNode";
@@ -9379,7 +9371,9 @@ function isMatchParentSelector(parentSelector, el) {
       var property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
       while (el) {
         el = el[property];
-        if (hasClass(className, el)) {
+        var [matched, curEl] = hasClass(className, el);
+        if (matched) {
+          el = curEl;
           break;
         }
       }
@@ -9392,9 +9386,11 @@ function isMatchParentSelector(parentSelector, el) {
       } else if (type === "+") {
         el = el && el[PROPERTY_PREVIOUS_SIBLING];
       }
-      if (!hasClass(className, el)) {
+      var [_matched, _curEl] = hasClass(className, el);
+      if (!_matched) {
         return false;
       }
+      el = _curEl;
     }
   }
   return true;
@@ -9403,22 +9399,8 @@ var WEIGHT_IMPORTANT = 1e3;
 function parseClassName(_ref22, parentStyles, el) {
   var {
     styles,
-    weights,
-    vueComputedStyles,
-    vueComputedStyleWeights
+    weights
   } = _ref22;
-  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  var isParentStyles = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-  var _a;
-  var computedStyleInterceptors = void 0;
-  if (isParentStyles && instance) {
-    computedStyleInterceptors = (_a = instance.computedStyleInterceptors) == null ? void 0 : _a.filter(interceptor => interceptor.classAttr === "class");
-    computedStyleInterceptors == null ? void 0 : computedStyleInterceptors.forEach(interceptor => {
-      interceptor.classStyles = interceptor.classStyles || /* @__PURE__ */new Map();
-      interceptor.classStyles.clear();
-      interceptor.classStylesWeight = {};
-    });
-  }
   each(parentStyles).forEach(parentSelector => {
     if (parentSelector && el) {
       if (!isMatchParentSelector(parentSelector, el)) {
@@ -9434,28 +9416,10 @@ function parseClassName(_ref22, parentStyles, el) {
         name = name.slice(1);
       }
       var weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
-      var filteredByComputedStyle = false;
-      var usedByComputedStyle = false;
-      if (computedStyleInterceptors) {
-        var isCSSVar = name.startsWith("--");
-        var hyphenatedKey = isCSSVar ? name : hyphenate(name);
-        var interceptors = computedStyleInterceptors.filter(interceptor => !interceptor.properties || interceptor.properties.indexOf(hyphenatedKey) !== -1);
-        usedByComputedStyle = interceptors.length > 0;
-        filteredByComputedStyle = interceptors.some(interceptor => interceptor.filterProperties);
-      }
-      if (usedByComputedStyle) {
-        var oldWeight = vueComputedStyleWeights[name] || 0;
-        if (weight >= oldWeight) {
-          vueComputedStyleWeights[name] = weight;
-          vueComputedStyles.set(name, value);
-        }
-      }
-      if (!filteredByComputedStyle) {
-        var _oldWeight = weights[name] || 0;
-        if (weight >= _oldWeight) {
-          weights[name] = weight;
-          styles.set(name, value);
-        }
+      var oldWeight = weights[name] || 0;
+      if (weight >= oldWeight) {
+        weights[name] = weight;
+        styles.set(name, value);
       }
     });
   });
@@ -9464,8 +9428,6 @@ class ParseStyleContext {
   constructor() {
     this.styles = /* @__PURE__ */new Map();
     this.weights = {};
-    this.vueComputedStyles = /* @__PURE__ */new Map();
-    this.vueComputedStyleWeights = {};
   }
 }
 function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet) {
@@ -9474,7 +9436,7 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet) {
   classList.forEach(className => {
     var parentStyles = stylesheet && stylesheet[className];
     if (parentStyles) {
-      parseClassName(context, parentStyles, el, el ? getRootElementInstance(el) : null, true);
+      parseClassName(context, parentStyles, el);
     }
   });
   if (parentStylesheet != null) {
@@ -9482,7 +9444,7 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet) {
       var _a;
       var parentStyles = (_a = (parentStylesheet != null ? parentStylesheet : []).find(style => style[className] !== null)) == null ? void 0 : _a[className];
       if (parentStyles != null) {
-        parseClassName(context, parentStyles, el, el ? getRootElementInstance(el) : null, true);
+        parseClassName(context, parentStyles, el);
       }
     });
   }
@@ -9594,53 +9556,136 @@ function useComputedStyle() {
   }
   return r;
 }
-function triggerComputedStyleUpdate(instance) {
+function triggerComputedStyleUpdate(instance, styles) {
   if (instance.computedStyleInterceptors) {
+    var keysToDelete = /* @__PURE__ */new Set();
+    var clearStyles = false;
     instance.computedStyleInterceptors.forEach(interceptor => {
-      if (interceptor.classAttr !== "class" || interceptor.styleAttr !== "style") {
-        return;
-      }
-      if (interceptor.classAttr === "class" && interceptor.classStyles && interceptor.classStylesWeight) {
-        interceptor.styles = mergeClassStyles(interceptor.classStyles, interceptor.classStylesWeight, interceptor.styles);
-      }
       var r = interceptor.reactiveComputedStyle;
-      var styles = interceptor.styles;
-      for (var key in r) {
-        var isCSSVar = key.startsWith("--");
-        var camelizedKey = isCSSVar ? key : camelize(key);
-        if (!styles || !styles.has(camelizedKey)) {
-          r.set(key, "");
-        } else {
-          r.set(key, styles.get(camelizedKey));
-        }
+      var properties = interceptor.properties;
+      if (properties) {
+        styles.forEach((value, key) => {
+          var isCSSVar = key.startsWith("--");
+          var hyphenatedKey = isCSSVar ? key : hyphenate(key);
+          if (properties.includes(hyphenatedKey)) {
+            if (value === "" || value == null) {
+              r.delete(hyphenatedKey);
+            } else {
+              r.set(hyphenatedKey, value);
+            }
+            if (interceptor.filterProperties) {
+              keysToDelete.add(key);
+            }
+          }
+        });
+      } else {
+        styles.forEach((value, key) => {
+          var isCSSVar = key.startsWith("--");
+          var hyphenatedKey = isCSSVar ? key : hyphenate(key);
+          if (value === "" || value == null) {
+            r.delete(hyphenatedKey);
+          } else {
+            r.set(hyphenatedKey, value);
+          }
+        });
+        clearStyles = true;
       }
-      styles == null ? void 0 : styles.forEach((value, key) => {
-        var isCSSVar = key.startsWith("--");
-        var hyphenatedKey = isCSSVar ? key : hyphenate(key);
-        r.set(hyphenatedKey, value);
-      });
     });
+    if (clearStyles) {
+      styles.clear();
+    } else if (keysToDelete.size > 0) {
+      keysToDelete.forEach(key => {
+        styles.delete(key);
+      });
+    }
   }
 }
-function collectClassStyles(instance, styles, weight) {
-  if (instance.computedStyleInterceptors) {
-    instance.computedStyleInterceptors.forEach(interceptor => {
-      if (interceptor.classAttr !== "class") {
-        return;
-      }
-      interceptor.classStyles = interceptor.classStyles || /* @__PURE__ */new Map();
-      interceptor.classStyles.clear();
-      interceptor.classStylesWeight = {};
-      styles.forEach((value, key) => {
-        var isCSSVar = key.startsWith("--");
-        var hyphenatedKey = isCSSVar ? key : hyphenate(key);
-        if (!interceptor.properties || interceptor.properties.indexOf(hyphenatedKey) !== -1) {
-          interceptor.classStyles.set(key, value);
-          interceptor.classStylesWeight[key] = weight[key];
-        }
-      });
-    });
+var PartElementContextMap = /* @__PURE__ */new WeakMap();
+function setPartElementContext(el, context) {
+  PartElementContextMap.set(el, context);
+}
+function getPartElementContext(el) {
+  return PartElementContextMap.get(el) || null;
+}
+function patchPart(el, part) {
+  var instance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  el.setAnyAttribute("part", part);
+  if (instance == null) {
+    return;
   }
+  setPartElementInstance(el, instance);
+  updatePartStyles(el);
+}
+function updatePartStyles(el) {
+  var instance = getPartElementInstance(el);
+  if (instance == null) {
+    return;
+  }
+  var part = el.getAttribute("part");
+  if (!isString(part) || !part) {
+    setPartElementContext(el, new ParseStyleContext());
+    mergeAndUpdateClassStyles(el);
+    return;
+  }
+  var hostEl = instance.subTree.el;
+  if (hostEl == null || hostEl.tagName == null) {
+    return;
+  }
+  var ownerInstance = instance.vnode.hostInstance;
+  if (ownerInstance == null) {
+    return;
+  }
+  var parentStylesheet = ownerInstance.type.styles;
+  if (parentStylesheet == null || parentStylesheet.length === 0) {
+    return;
+  }
+  var partList = part.split(" ");
+  var context = new ParseStyleContext();
+  var stylesUpdated = false;
+  var partSelectors = partList.map(partName => "::part(".concat(partName, ")"));
+  var parentStyles = (parentStylesheet != null ? parentStylesheet : []).filter(style => partSelectors.some(partSelector => style[partSelector] != null));
+  if (isCommentNode(hostEl)) {
+    var instanceClass = instance.attrs.class;
+    if (typeof instanceClass === "string") {
+      hostEl.classList = instanceClass.split(" ");
+    }
+  }
+  for (var i = 0; i < parentStyles.length; i++) {
+    var style = parentStyles[i];
+    for (var j = 0; j < partSelectors.length; j++) {
+      var partSelector = partSelectors[j];
+      if (style[partSelector] != null) {
+        var parentPartStyles = style[partSelector];
+        for (var parentSelector in parentPartStyles) {
+          if (!isMatchParentSelector(parentSelector, hostEl)) {
+            continue;
+          }
+          var style2 = parentPartStyles[parentSelector];
+          var weight = parentSelector.split(".").length + 1;
+          for (var key in style2) {
+            var existing = context.weights[key];
+            if (existing == null || weight >= existing) {
+              context.styles.set(key, style2[key]);
+              context.weights[key] = weight;
+              stylesUpdated = true;
+            }
+          }
+        }
+      }
+    }
+  }
+  if (!stylesUpdated) {
+    return;
+  }
+  setPartElementContext(el, context);
+  mergeAndUpdateClassStyles(el);
+}
+var ElementClassContextMap = /* @__PURE__ */new WeakMap();
+function setElementClassContext(el, context) {
+  ElementClassContextMap.set(el, context);
+}
+function getElementClassContext(el) {
+  return ElementClassContextMap.get(el) || null;
 }
 function patchClass(el, pre, next) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -9657,6 +9702,11 @@ function patchClass(el, pre, next) {
   updateClassStyles(el);
 }
 function updateClassStyles(el) {
+  var parseClassStylesResult = parseClassStyles(el);
+  setElementClassContext(el, parseClassStylesResult);
+  mergeAndUpdateClassStyles(el);
+}
+function mergeAndUpdateClassStyles(el) {
   if (el.parentNode == null || isCommentNode(el)) {
     return;
   }
@@ -9667,16 +9717,40 @@ function updateClassStyles(el) {
   oldClassStyle.forEach((_value, key) => {
     oldClassStyle.set(key, "");
   });
-  var parseClassStylesResult = parseClassStyles(el);
-  parseClassStylesResult.styles.forEach((value, key) => {
+  var elementClassContext = getElementClassContext(el);
+  var partStyleContext = getPartElementContext(el);
+  var mergedStyleContext = null;
+  if (elementClassContext && partStyleContext) {
+    mergedStyleContext = new ParseStyleContext();
+    elementClassContext.styles.forEach((value, key) => {
+      mergedStyleContext.styles.set(key, value);
+      mergedStyleContext.weights[key] = elementClassContext.weights[key];
+    });
+    partStyleContext.styles.forEach((value, key) => {
+      var _a;
+      var weight = partStyleContext.weights[key];
+      var oldWeight = (_a = mergedStyleContext.weights[key]) != null ? _a : 0;
+      if (weight > oldWeight) {
+        mergedStyleContext.weights[key] = weight;
+        mergedStyleContext.styles.set(key, partStyleContext.styles.get(key));
+      }
+    });
+  } else if (elementClassContext) {
+    mergedStyleContext = elementClassContext;
+  } else if (partStyleContext) {
+    mergedStyleContext = partStyleContext;
+  }
+  if (mergedStyleContext == null) {
+    return;
+  }
+  mergedStyleContext.styles.forEach((value, key) => {
     oldClassStyle.set(key, value);
   });
+  var styles = toStyle(el, oldClassStyle, mergedStyleContext.weights);
   var instance = getRootElementInstance(el);
   if (instance && instance.computedStyleInterceptors) {
-    collectClassStyles(instance, parseClassStylesResult.vueComputedStyles, parseClassStylesResult.vueComputedStyleWeights);
-    triggerComputedStyleUpdate(instance);
+    triggerComputedStyleUpdate(instance, styles);
   }
-  var styles = toStyle(el, oldClassStyle, parseClassStylesResult.weights);
   if (styles.size == 0) {
     return;
   }
@@ -9720,6 +9794,7 @@ var nodeOps = {
       parent.insertBefore(el, anchor);
     }
     if (parent.isConnected) {
+      updatePartStyles(el);
       updateClassStyles(el);
       updateChildrenClassStyle(el);
     }
@@ -9798,6 +9873,7 @@ var nodeOps = {
 function updateChildrenClassStyle(el) {
   if (el !== null) {
     el.childNodes.forEach(child => {
+      updatePartStyles(child);
       updateClassStyles(child);
       updateChildrenClassStyle(child);
     });
@@ -9958,6 +10034,7 @@ function isSame(a, b) {
   return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
 }
 function patchStyle(el, prev, next) {
+  var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
   if (!next) {
     return;
   }
@@ -10000,9 +10077,12 @@ function patchStyle(el, prev, next) {
     }
     setExtraStyle(el, batchedStyles);
   }
-  var instance = getRootElementInstance(el);
-  if (instance && instance.computedStyleInterceptors) {
-    triggerComputedStyleUpdate(instance);
+  if (instance && instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
+    setRootElementInstance(el, instance);
+    var computedStyleInterceptors = instance == null ? void 0 : instance.computedStyleInterceptors;
+    if (computedStyleInterceptors) {
+      triggerComputedStyleUpdate(instance, batchedStyles);
+    }
   }
   if (batchedStyles.size == 0) {
     return;
@@ -10022,7 +10102,9 @@ var patchProp = (el, key, prevValue, nextValue, namespace, prevChildren, parentC
   if (key === "class") {
     patchClass(el, prevValue, nextValue, hostInstance || parentComponent);
   } else if (key === "style") {
-    patchStyle(el, prevValue, nextValue);
+    patchStyle(el, prevValue, nextValue, hostInstance || parentComponent);
+  } else if (key === "part") {
+    patchPart(el, nextValue, parentComponent);
   } else if (isOn(key)) {
     if (!isModelListener(key)) {
       patchEvent(el, key, prevValue, nextValue, parentComponent);

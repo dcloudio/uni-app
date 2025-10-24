@@ -13675,7 +13675,9 @@ var tabBarInstance = {
     },
     removeEventListener(_name, callback) {
         const callbackIndex = maskClickCallback.indexOf(callback);
-        maskClickCallback.splice(callbackIndex, 1);
+        if (callbackIndex > -1) {
+            maskClickCallback.splice(callbackIndex, 1);
+        }
     },
 };
 

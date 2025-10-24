@@ -105,7 +105,7 @@
 				hoverClassName:"uni-modal_dialog__content__bottom__button__hover",
 				showAnim: false,
 				isAutoHeight:true,
-				// #ifdef APP-ANDROID || APP-IOS
+				// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 				appThemeChangeCallbackId: -1,
 				// #endif
 
@@ -267,7 +267,7 @@
 			uni.$off(this.readyEventName, null)
 			uni.$off(this.successEventName, null)
 			uni.$off(this.failEventName, null)
-			// #ifdef APP-ANDROID || APP-IOS
+			// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 			uni.offAppThemeChange(this.appThemeChangeCallbackId)
 			// #endif
 		},
@@ -389,7 +389,7 @@
 		background-color: rgba(0, 0, 0, 0.5);
 		transition-duration: 0.1s;
 		transition-property: opacity;
-		opacity: 0;
+		opacity: 0.5;
 	}
 
 	.uni-modal_dialog__mask__show {
