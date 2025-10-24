@@ -7537,7 +7537,6 @@ function normalizeChildren(vnode, children) {
   vnode.shapeFlag |= type;
 }
 function mergeProps(...args) {
-  var _a;
   const ret = {};
   for (let i = 0; i < args.length; i++) {
     const toMerge = args[i];
@@ -7547,56 +7546,7 @@ function mergeProps(...args) {
           ret.class = normalizeClass$1([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        const computedStyleInterceptors = (_a = currentRenderingInstance) == null ? void 0 : _a.computedStyleInterceptors;
-        let toMergeStyle = void 0;
-        if (computedStyleInterceptors == null ? void 0 : computedStyleInterceptors.length) {
-          const matchedInterceptors = computedStyleInterceptors.filter(
-            (interceptor) => interceptor.styleAttr === "style"
-          );
-          if (matchedInterceptors.length > 0) {
-            toMergeStyle = normalizeStyle$1(toMerge.style);
-            let toMergeStyleResult = extend({}, toMergeStyle);
-            matchedInterceptors.forEach((interceptor) => {
-              interceptor.styles = interceptor.styles || /* @__PURE__ */ new Map();
-              interceptor.styles.clear();
-              if (!toMergeStyle) {
-                interceptor.styles = /* @__PURE__ */ new Map();
-              } else {
-                const properties = interceptor.properties;
-                if (properties) {
-                  for (const key2 in toMergeStyle) {
-                    const value = toMergeStyle[key2];
-                    const isCSSVar = key2.startsWith("--");
-                    const hyphenatedKey = isCSSVar ? key2 : hyphenate(key2);
-                    if (properties.includes(hyphenatedKey)) {
-                      const camelizedKey = isCSSVar ? key2 : camelize(key2);
-                      interceptor.styles.set(camelizedKey, value);
-                      if (interceptor.filterProperties) {
-                        delete toMergeStyleResult[key2];
-                      }
-                    }
-                  }
-                } else {
-                  for (const key2 in toMergeStyle) {
-                    const value = toMergeStyle[key2];
-                    let isCSSVar = key2.startsWith("--");
-                    const camelizedKey = isCSSVar ? key2 : camelize(key2);
-                    interceptor.styles.set(camelizedKey, value);
-                  }
-                  if (interceptor.filterProperties) {
-                    toMergeStyleResult = {};
-                  }
-                }
-              }
-            });
-            toMergeStyle = toMergeStyleResult;
-          }
-        }
-        if (toMergeStyle) {
-          ret.style = normalizeStyle$1([ret.style, toMergeStyle]);
-        } else {
-          ret.style = normalizeStyle$1([ret.style, toMerge.style]);
-        }
+        ret.style = normalizeStyle$1([ret.style, toMerge.style]);
       } else if (isOn(key)) {
         const existing = ret[key];
         const incoming = toMerge[key];
@@ -9314,7 +9264,43 @@ function patchStyle(el, prev, next, instance = null) {
   }
   if (instance && instance.parent != null && instance !== instance.root && el === instance.subTree.el) {
     setRootElementInstance(el, instance);
-    if (instance.computedStyleInterceptors) {
+    const computedStyleInterceptors = instance == null ? void 0 : instance.computedStyleInterceptors;
+    if (computedStyleInterceptors) {
+      const matchedInterceptors = computedStyleInterceptors.filter(
+        (interceptor) => interceptor.styleAttr === "style"
+      );
+      let filteredKeys = /* @__PURE__ */ new Set();
+      let clearStyles = false;
+      matchedInterceptors.forEach((interceptor) => {
+        interceptor.styles = interceptor.styles || /* @__PURE__ */ new Map();
+        interceptor.styles.clear();
+        const properties = interceptor.properties;
+        if (properties) {
+          batchedStyles.forEach((value, key) => {
+            const isCSSVar = key.startsWith("--");
+            const hyphenatedKey = isCSSVar ? key : hyphenate(key);
+            if (properties.includes(hyphenatedKey)) {
+              const camelizedKey = isCSSVar ? key : camelize(key);
+              interceptor.styles.set(camelizedKey, value);
+              if (interceptor.filterProperties) {
+                filteredKeys.add(key);
+              }
+            }
+          });
+        } else {
+          batchedStyles.forEach((value, key) => {
+            interceptor.styles.set(key, value);
+          });
+          clearStyles = true;
+        }
+      });
+      if (clearStyles) {
+        batchedStyles.clear();
+      } else if (filteredKeys.size > 0) {
+        filteredKeys.forEach((key) => {
+          batchedStyles.delete(key);
+        });
+      }
       triggerComputedStyleUpdate(instance);
     }
   }
