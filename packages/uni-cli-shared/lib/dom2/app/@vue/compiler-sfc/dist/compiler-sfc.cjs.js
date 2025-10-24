@@ -21387,7 +21387,7 @@ let __temp${any}, __restore${any}
       if (onVueTemplateCompileLog) {
         const onError = compilerOptions.onError;
         compilerOptions.onError = (error) => {
-          if (error.errorType === "css") {
+          if (error.errorType) {
             onVueTemplateCompileLog(
               "error",
               error,
@@ -21402,7 +21402,7 @@ let __temp${any}, __restore${any}
         };
         const onWarn = compilerOptions.onWarn;
         compilerOptions.onWarn = (warning) => {
-          if (warning.errorType === "css") {
+          if (warning.errorType) {
             onVueTemplateCompileLog(
               "warn",
               warning,

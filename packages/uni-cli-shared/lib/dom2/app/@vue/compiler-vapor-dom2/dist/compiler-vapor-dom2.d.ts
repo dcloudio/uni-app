@@ -59,6 +59,19 @@ type BaseDom2SharedOptions = {
         obj: Record<string, Dom2StaticStylePropertyValue>;
         messages: PostCss.Message[];
     };
+    /**
+     * 静态属性解析函数
+     * 用于解析静态属性，主要在代码生成阶段使用
+     * @param target
+     * @param tagName
+     * @param propertyName
+     * @param value
+     * @returns
+     */
+    parseStaticProp?: (target: DOM2_APP_TARGET, tagName: string, propertyName: string, value: string) => {
+        code: string[];
+        errors: string[];
+    } | undefined;
     onError?: (error: CompilerError) => void;
     onWarn?: (warning: CompilerError) => void;
     onVueTemplateCompileLog?: (type: 'warn' | 'error', error: CompilerError, code: string, relativeFileName: string, templateStartLine: number) => void;

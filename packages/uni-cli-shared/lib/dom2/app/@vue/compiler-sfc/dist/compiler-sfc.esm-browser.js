@@ -45804,6 +45804,30 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
     );
   } else {
     const isDom2 = !!context.options.platform;
+    if (isDom2) {
+      const checkStaticProp = context.options.checkStaticProp;
+      if (checkStaticProp) {
+        for (const prop of propsResult[1]) {
+          const { key, values } = prop;
+          if (key.isStatic && values.length === 1 && values[0].isStatic && !["class", "style"].includes(key.content)) {
+            let endLoc = values[0].loc;
+            if (endLoc === locStub) {
+              endLoc = key.loc;
+            }
+            checkStaticProp(
+              key.content,
+              values[0].content,
+              {
+                start: key.loc.start,
+                end: endLoc.end
+              },
+              node,
+              context
+            );
+          }
+        }
+      }
+    }
     let hasStaticStyle = false;
     let hasClass = false;
     for (const prop of propsResult[1]) {
@@ -65400,7 +65424,7 @@ let __temp${any}, __restore${any}
       if (onVueTemplateCompileLog) {
         const onError = compilerOptions.onError;
         compilerOptions.onError = (error) => {
-          if (error.errorType === "css") {
+          if (error.errorType) {
             onVueTemplateCompileLog(
               "error",
               error,
@@ -65415,7 +65439,7 @@ let __temp${any}, __restore${any}
         };
         const onWarn = compilerOptions.onWarn;
         compilerOptions.onWarn = (warning) => {
-          if (warning.errorType === "css") {
+          if (warning.errorType) {
             onVueTemplateCompileLog(
               "warn",
               warning,

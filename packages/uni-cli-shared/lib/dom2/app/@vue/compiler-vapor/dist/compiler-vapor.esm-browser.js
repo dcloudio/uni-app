@@ -35184,6 +35184,30 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
     );
   } else {
     const isDom2 = !!context.options.platform;
+    if (isDom2) {
+      const checkStaticProp = context.options.checkStaticProp;
+      if (checkStaticProp) {
+        for (const prop of propsResult[1]) {
+          const { key, values } = prop;
+          if (key.isStatic && values.length === 1 && values[0].isStatic && !["class", "style"].includes(key.content)) {
+            let endLoc = values[0].loc;
+            if (endLoc === locStub) {
+              endLoc = key.loc;
+            }
+            checkStaticProp(
+              key.content,
+              values[0].content,
+              {
+                start: key.loc.start,
+                end: endLoc.end
+              },
+              node,
+              context
+            );
+          }
+        }
+      }
+    }
     let hasStaticStyle = false;
     let hasClass = false;
     for (const prop of propsResult[1]) {
