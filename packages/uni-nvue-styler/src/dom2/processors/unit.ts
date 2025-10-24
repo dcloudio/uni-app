@@ -13,10 +13,14 @@ export function createSetStyleUnitValueProcessor(
   return createPropertyProcessor((value) => {
     const unitValue = parseUnitValue(String(value))
     if (unitValue) {
+      if (language === 'cpp') {
+        return createValueProcessorResult(
+          `UniCSSUnitValue{${unitValue.value}, UniCSSUnitType::${unitValue.unit}}`,
+          `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
+        )
+      }
       return createValueProcessorResult(
-        `new UniCSSUnitValue(${unitValue.value}, UniCSSUnitType${
-          language === 'cpp' ? '::' : '.'
-        }${unitValue.unit})`,
+        `new UniCSSUnitValue(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`,
         `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
       )
     }
