@@ -49,7 +49,7 @@ type BaseDom2SharedOptions = {
      * @param name
      * @returns
      */
-    isIgnoreAttr?: (name: string) => boolean;
+    isIgnoreAttr?: (tagName: string, attrName: string) => boolean;
     /**
      * 样式解析函数
      * 用于解析静态样式，主要在代码生成阶段使用
