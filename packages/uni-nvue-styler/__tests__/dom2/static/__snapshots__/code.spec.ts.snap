@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`code: border: 1px solid red;color:red: app-harmony(dom-c) 1`] = `
+{
+  "code": "{'border-top-width': new UniCSSUnitValue(1, UniCSSUnitType.PX), 'border-right-width': new UniCSSUnitValue(1, UniCSSUnitType.PX), 'border-bottom-width': new UniCSSUnitValue(1, UniCSSUnitType.PX), 'border-left-width': new UniCSSUnitValue(1, UniCSSUnitType.PX), 'border-top-style': UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), 'border-right-style': UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), 'border-bottom-style': UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), 'border-left-style': UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), 'color': 0xffff0000}",
+  "messages": [],
+  "obj": {
+    "border-bottom-style": {
+      "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+    },
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+    "border-left-style": {
+      "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+    },
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+    "border-right-style": {
+      "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+    },
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+    "border-top-style": {
+      "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+    },
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+    "color": {
+      "setterCode": "setColor(0xffff0000)",
+      "valueCode": "0xffff0000",
+    },
+  },
+}
+`;
+
+exports[`code: border: 1px solid red;color:red: app-harmony(nv-c) 1`] = `
+{
+  "code": "{'border-style': UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")), 'border-color': UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000)}",
+  "messages": [],
+  "obj": {
+    "border-color": {
+      "setterCode": "borderColor(UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000))",
+      "valueCode": "UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000)",
+    },
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"))",
+    },
+  },
+}
+`;

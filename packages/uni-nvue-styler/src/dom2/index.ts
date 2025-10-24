@@ -1,7 +1,8 @@
 import { type Message, Warning } from 'postcss'
-import type {
-  Dom2StaticStylePropertyValue,
-  ParseDom2StaticStyleOptions,
+import {
+  DOM2_APP_TARGET,
+  type Dom2StaticStylePropertyValue,
+  type ParseDom2StaticStyleOptions,
 } from './types'
 import { parseStaticStyleDeclarations } from '../parseSync'
 import { createDom2PropertyProcessors } from './processors'
@@ -17,6 +18,7 @@ export function parseDom2StaticStyle(
   options: ParseDom2StaticStyleOptions
 ): {
   obj: Record<string, Dom2StaticStylePropertyValue>
+  code?: string
   messages: Message[]
 } {
   const result: Record<string, Dom2StaticStylePropertyValue> = {}
@@ -105,5 +107,22 @@ export function parseDom2StaticStyle(
   return {
     obj: result,
     messages,
+    code: options.genCode ? genCode(result, options.target) : undefined,
   }
+}
+
+function genCode(
+  obj: Record<string, Dom2StaticStylePropertyValue>,
+  target: DOM2_APP_TARGET
+): string {
+  if (
+    target === DOM2_APP_TARGET.DOM_C ||
+    target === DOM2_APP_TARGET.NV_C ||
+    target === DOM2_APP_TARGET.TXT_C
+  ) {
+    return `{${Object.entries(obj)
+      .map(([key, value]) => `'${key}': ${value.valueCode}`)
+      .join(', ')}}`
+  }
+  return ''
 }

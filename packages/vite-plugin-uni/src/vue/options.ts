@@ -379,12 +379,14 @@ export function initPluginVueOptions(
           parseStaticStyle(
             target: DOM2_APP_TARGET,
             tagName: string,
-            style: string
+            style: string,
+            genCode: boolean = false
           ) {
             return parseDom2StaticStyle(style, {
               platform: process.env.UNI_UTS_PLATFORM as DOM2_APP_PLATFORM,
               target,
               tagName,
+              genCode,
             })
           },
           onVueTemplateCompileLog,

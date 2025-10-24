@@ -2,6 +2,7 @@
 
 exports[`color: red: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "color": {
@@ -14,6 +15,7 @@ exports[`color: red: app-harmony(dom-c) 1`] = `
 
 exports[`color: red: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -21,6 +23,7 @@ exports[`color: red: app-harmony(nv-c) 1`] = `
 
 exports[`font-family: Arial: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "font-family": {
@@ -33,6 +36,7 @@ exports[`font-family: Arial: app-harmony(dom-c) 1`] = `
 
 exports[`font-family: Arial: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -40,11 +44,12 @@ exports[`font-family: Arial: app-harmony(nv-c) 1`] = `
 
 exports[`font-size: 10px: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "font-size": {
       "setterCode": "setFontSize(10, UniCSSUnitType.PX)",
-      "valueCode": "UniCSSUnitValue{10, UniCSSUnitType.PX}",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
     },
   },
 }
@@ -52,6 +57,7 @@ exports[`font-size: 10px: app-harmony(dom-c) 1`] = `
 
 exports[`font-size: 10px: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -59,6 +65,7 @@ exports[`font-size: 10px: app-harmony(nv-c) 1`] = `
 
 exports[`font-style: italic: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "font-style": {
@@ -71,6 +78,7 @@ exports[`font-style: italic: app-harmony(dom-c) 1`] = `
 
 exports[`font-style: italic: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -78,6 +86,7 @@ exports[`font-style: italic: app-harmony(nv-c) 1`] = `
 
 exports[`font-style: normal: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "font-style": {
@@ -90,6 +99,7 @@ exports[`font-style: normal: app-harmony(dom-c) 1`] = `
 
 exports[`font-style: normal: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -97,6 +107,7 @@ exports[`font-style: normal: app-harmony(nv-c) 1`] = `
 
 exports[`font-weight: 400: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "font-weight": {
@@ -109,6 +120,7 @@ exports[`font-weight: 400: app-harmony(dom-c) 1`] = `
 
 exports[`font-weight: 400: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -116,6 +128,7 @@ exports[`font-weight: 400: app-harmony(nv-c) 1`] = `
 
 exports[`font-weight: 700: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "font-weight": {
@@ -128,6 +141,7 @@ exports[`font-weight: 700: app-harmony(dom-c) 1`] = `
 
 exports[`font-weight: 700: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -135,6 +149,7 @@ exports[`font-weight: 700: app-harmony(nv-c) 1`] = `
 
 exports[`font-weight: bold: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "font-weight": {
@@ -147,6 +162,7 @@ exports[`font-weight: bold: app-harmony(dom-c) 1`] = `
 
 exports[`font-weight: bold: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -154,6 +170,7 @@ exports[`font-weight: bold: app-harmony(nv-c) 1`] = `
 
 exports[`font-weight: normal: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "font-weight": {
@@ -166,6 +183,7 @@ exports[`font-weight: normal: app-harmony(dom-c) 1`] = `
 
 exports[`font-weight: normal: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -173,11 +191,12 @@ exports[`font-weight: normal: app-harmony(nv-c) 1`] = `
 
 exports[`letter-spacing: 10px: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "letter-spacing": {
       "setterCode": "setLetterSpacing(10, UniCSSUnitType.PX)",
-      "valueCode": "UniCSSUnitValue{10, UniCSSUnitType.PX}",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
     },
   },
 }
@@ -185,6 +204,7 @@ exports[`letter-spacing: 10px: app-harmony(dom-c) 1`] = `
 
 exports[`letter-spacing: 10px: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -192,11 +212,12 @@ exports[`letter-spacing: 10px: app-harmony(nv-c) 1`] = `
 
 exports[`line-height: 10px: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "line-height": {
       "setterCode": "setLineHeight(10, UniCSSUnitType.PX)",
-      "valueCode": "UniCSSUnitValue{10, UniCSSUnitType.PX}",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
     },
   },
 }
@@ -204,6 +225,7 @@ exports[`line-height: 10px: app-harmony(dom-c) 1`] = `
 
 exports[`line-height: 10px: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -211,6 +233,7 @@ exports[`line-height: 10px: app-harmony(nv-c) 1`] = `
 
 exports[`line-height: normal: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -232,6 +255,7 @@ exports[`line-height: normal: app-harmony(dom-c) 1`] = `
 
 exports[`line-height: normal: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -253,6 +277,7 @@ exports[`line-height: normal: app-harmony(nv-c) 1`] = `
 
 exports[`text-align: center: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "text-align": {
@@ -265,6 +290,7 @@ exports[`text-align: center: app-harmony(dom-c) 1`] = `
 
 exports[`text-align: center: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -272,6 +298,7 @@ exports[`text-align: center: app-harmony(nv-c) 1`] = `
 
 exports[`text-align: justify: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -293,6 +320,7 @@ exports[`text-align: justify: app-harmony(dom-c) 1`] = `
 
 exports[`text-align: justify: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -314,6 +342,7 @@ exports[`text-align: justify: app-harmony(nv-c) 1`] = `
 
 exports[`text-align: left: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "text-align": {
@@ -326,6 +355,7 @@ exports[`text-align: left: app-harmony(dom-c) 1`] = `
 
 exports[`text-align: left: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -333,6 +363,7 @@ exports[`text-align: left: app-harmony(nv-c) 1`] = `
 
 exports[`text-align: right: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "text-align": {
@@ -345,6 +376,7 @@ exports[`text-align: right: app-harmony(dom-c) 1`] = `
 
 exports[`text-align: right: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -352,6 +384,7 @@ exports[`text-align: right: app-harmony(nv-c) 1`] = `
 
 exports[`text-decoration-line: line-through: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "text-decoration-line": {
@@ -364,6 +397,7 @@ exports[`text-decoration-line: line-through: app-harmony(dom-c) 1`] = `
 
 exports[`text-decoration-line: line-through: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -371,48 +405,28 @@ exports[`text-decoration-line: line-through: app-harmony(nv-c) 1`] = `
 
 exports[`text-decoration-line: none: app-harmony(dom-c) 1`] = `
 {
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "text-decoration-line",
-        "prop": "textDecorationLine",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "none",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "ERROR: property value \`none\` is not supported for \`text-decoration-line\` (supported values are: \`underline\`|\`line-through\`)",
-      "type": "warning",
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "text-decoration-line": {
+      "setterCode": "setTextDecorationLine(UTSCPP.propertyAccess(UniCSSTextDecorationLineType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSTextDecorationLineType, "::", "None")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
 exports[`text-decoration-line: none: app-harmony(nv-c) 1`] = `
 {
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "text-decoration-line",
-        "prop": "textDecorationLine",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "none",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "ERROR: property value \`none\` is not supported for \`text-decoration-line\` (supported values are: \`underline\`|\`line-through\`)",
-      "type": "warning",
-    },
-  ],
+  "code": undefined,
+  "messages": [],
   "obj": {},
 }
 `;
 
 exports[`text-decoration-line: overline: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -424,7 +438,7 @@ exports[`text-decoration-line: overline: app-harmony(dom-c) 1`] = `
         Symbol(expanded): true,
         Symbol(normalized): true,
       },
-      "text": "ERROR: property value \`overline\` is not supported for \`text-decoration-line\` (supported values are: \`underline\`|\`line-through\`)",
+      "text": "ERROR: property value \`overline\` is not supported for \`text-decoration-line\` (supported values are: \`underline\`|\`line-through\`|\`none\`)",
       "type": "warning",
     },
   ],
@@ -434,6 +448,7 @@ exports[`text-decoration-line: overline: app-harmony(dom-c) 1`] = `
 
 exports[`text-decoration-line: overline: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -445,7 +460,7 @@ exports[`text-decoration-line: overline: app-harmony(nv-c) 1`] = `
         Symbol(expanded): true,
         Symbol(normalized): true,
       },
-      "text": "ERROR: property value \`overline\` is not supported for \`text-decoration-line\` (supported values are: \`underline\`|\`line-through\`)",
+      "text": "ERROR: property value \`overline\` is not supported for \`text-decoration-line\` (supported values are: \`underline\`|\`line-through\`|\`none\`)",
       "type": "warning",
     },
   ],
@@ -455,6 +470,7 @@ exports[`text-decoration-line: overline: app-harmony(nv-c) 1`] = `
 
 exports[`text-decoration-line: underline: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "text-decoration-line": {
@@ -467,6 +483,7 @@ exports[`text-decoration-line: underline: app-harmony(dom-c) 1`] = `
 
 exports[`text-decoration-line: underline: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -474,6 +491,7 @@ exports[`text-decoration-line: underline: app-harmony(nv-c) 1`] = `
 
 exports[`text-overflow: clip: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "text-overflow": {
@@ -486,6 +504,7 @@ exports[`text-overflow: clip: app-harmony(dom-c) 1`] = `
 
 exports[`text-overflow: clip: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -493,6 +512,7 @@ exports[`text-overflow: clip: app-harmony(nv-c) 1`] = `
 
 exports[`text-overflow: ellipsis: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "text-overflow": {
@@ -505,6 +525,7 @@ exports[`text-overflow: ellipsis: app-harmony(dom-c) 1`] = `
 
 exports[`text-overflow: ellipsis: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -512,6 +533,7 @@ exports[`text-overflow: ellipsis: app-harmony(nv-c) 1`] = `
 
 exports[`text-shadow: #fc0 1px 0 10px: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -533,6 +555,7 @@ exports[`text-shadow: #fc0 1px 0 10px: app-harmony(dom-c) 1`] = `
 
 exports[`text-shadow: #fc0 1px 0 10px: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -554,6 +577,7 @@ exports[`text-shadow: #fc0 1px 0 10px: app-harmony(nv-c) 1`] = `
 
 exports[`text-shadow: 1px 1px 2px pink: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -575,6 +599,7 @@ exports[`text-shadow: 1px 1px 2px pink: app-harmony(dom-c) 1`] = `
 
 exports[`text-shadow: 1px 1px 2px pink: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -596,6 +621,7 @@ exports[`text-shadow: 1px 1px 2px pink: app-harmony(nv-c) 1`] = `
 
 exports[`text-shadow: 5px 5px #558abb: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -617,6 +643,7 @@ exports[`text-shadow: 5px 5px #558abb: app-harmony(dom-c) 1`] = `
 
 exports[`text-shadow: 5px 5px #558abb: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -638,6 +665,7 @@ exports[`text-shadow: 5px 5px #558abb: app-harmony(nv-c) 1`] = `
 
 exports[`text-shadow: 5px 10px: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -659,6 +687,7 @@ exports[`text-shadow: 5px 10px: app-harmony(dom-c) 1`] = `
 
 exports[`text-shadow: 5px 10px: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -680,6 +709,7 @@ exports[`text-shadow: 5px 10px: app-harmony(nv-c) 1`] = `
 
 exports[`text-shadow: red 2px 5px: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -701,6 +731,7 @@ exports[`text-shadow: red 2px 5px: app-harmony(dom-c) 1`] = `
 
 exports[`text-shadow: red 2px 5px: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -722,6 +753,7 @@ exports[`text-shadow: red 2px 5px: app-harmony(nv-c) 1`] = `
 
 exports[`view with font-size: 10px: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -743,6 +775,7 @@ exports[`view with font-size: 10px: app-harmony(dom-c) 1`] = `
 
 exports[`view with font-size: 10px: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -764,6 +797,7 @@ exports[`view with font-size: 10px: app-harmony(nv-c) 1`] = `
 
 exports[`white-space: break-spaces: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -785,6 +819,7 @@ exports[`white-space: break-spaces: app-harmony(dom-c) 1`] = `
 
 exports[`white-space: break-spaces: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -806,6 +841,7 @@ exports[`white-space: break-spaces: app-harmony(nv-c) 1`] = `
 
 exports[`white-space: normal: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "white-space": {
@@ -818,6 +854,7 @@ exports[`white-space: normal: app-harmony(dom-c) 1`] = `
 
 exports[`white-space: normal: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -825,6 +862,7 @@ exports[`white-space: normal: app-harmony(nv-c) 1`] = `
 
 exports[`white-space: nowrap: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "white-space": {
@@ -837,6 +875,7 @@ exports[`white-space: nowrap: app-harmony(dom-c) 1`] = `
 
 exports[`white-space: nowrap: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -844,6 +883,7 @@ exports[`white-space: nowrap: app-harmony(nv-c) 1`] = `
 
 exports[`white-space: pre: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -865,6 +905,7 @@ exports[`white-space: pre: app-harmony(dom-c) 1`] = `
 
 exports[`white-space: pre: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -886,6 +927,7 @@ exports[`white-space: pre: app-harmony(nv-c) 1`] = `
 
 exports[`white-space: pre-line: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -907,6 +949,7 @@ exports[`white-space: pre-line: app-harmony(dom-c) 1`] = `
 
 exports[`white-space: pre-line: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -928,6 +971,7 @@ exports[`white-space: pre-line: app-harmony(nv-c) 1`] = `
 
 exports[`white-space: pre-wrap: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -949,6 +993,7 @@ exports[`white-space: pre-wrap: app-harmony(dom-c) 1`] = `
 
 exports[`white-space: pre-wrap: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {

@@ -24,6 +24,7 @@ export interface ParseDom2StaticStyleOptions
   platform: DOM2_APP_PLATFORM
   target: DOM2_APP_TARGET
   tagName?: string
+  genCode?: boolean
 }
 
 export interface Dom2StaticStylePropertyValue {

@@ -37,12 +37,16 @@ export function createGenEnumCode(
     target === DOM2_APP_TARGET.TXT_C
   ) {
     return (enumValue: string) => {
-      return `UTSCPP.propertyAccess(${propertyType}, "::", "${capitalize(
-        camelize(enumValue + '')
-      )}")`
+      return genCPPEnumCode(propertyType, enumValue)
     }
   }
   return (enumValue: string) => {
     return `${propertyType}.${capitalize(camelize(enumValue + ''))}`
   }
+}
+
+export function genCPPEnumCode(propertyType: string, enumValue: string) {
+  return `UTSCPP.propertyAccess(${propertyType}, "::", "${capitalize(
+    camelize(enumValue + '')
+  )}")`
 }

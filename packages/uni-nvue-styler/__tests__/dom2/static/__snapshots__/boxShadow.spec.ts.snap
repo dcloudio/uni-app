@@ -2,6 +2,7 @@
 
 exports[`box-shadow: 5px 5px red: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -9,6 +10,7 @@ exports[`box-shadow: 5px 5px red: app-harmony(dom-c) 1`] = `
 
 exports[`box-shadow: 5px 5px red: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "box-shadow": {
@@ -21,6 +23,7 @@ exports[`box-shadow: 5px 5px red: app-harmony(nv-c) 1`] = `
 
 exports[`box-shadow: invalid: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -28,6 +31,7 @@ exports[`box-shadow: invalid: app-harmony(dom-c) 1`] = `
 
 exports[`box-shadow: invalid: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "box-shadow": {
@@ -40,6 +44,7 @@ exports[`box-shadow: invalid: app-harmony(nv-c) 1`] = `
 
 exports[`box-shadow: none: app-harmony(dom-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {},
 }
@@ -47,6 +52,7 @@ exports[`box-shadow: none: app-harmony(dom-c) 1`] = `
 
 exports[`box-shadow: none: app-harmony(nv-c) 1`] = `
 {
+  "code": undefined,
   "messages": [],
   "obj": {
     "box-shadow": {
