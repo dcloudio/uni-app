@@ -13,6 +13,7 @@ import {
   formatMiniProgramEvent,
   getEscaper,
   isAttributeNode,
+  isDirectiveNode,
   isElementNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
@@ -155,7 +156,7 @@ export function genNode(
         const isEmptyDefaultSlot =
           node.props.some(
             (p) =>
-              (p.type === NodeTypes.ATTRIBUTE &&
+              (isAttributeNode(p) &&
                 p.name === 'name' &&
                 p.value?.content === SLOT_DEFAULT_NAME) ||
               (p.name === 'bind' &&
@@ -250,7 +251,7 @@ function genVFor(
 function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   // 移除掉所有非name属性，即移除作用域插槽的绑定指令
   node.props = node.props.filter((prop) => {
-    if (prop.type === NodeTypes.ATTRIBUTE) {
+    if (isAttributeNode(prop)) {
       return prop.name === 'name'
     } else if (prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION) {
       return prop.arg.content === 'name'
@@ -258,7 +259,7 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   })
   const isDefaultSlot = node.props.some(
     (p) =>
-      p.type === NodeTypes.ATTRIBUTE &&
+      isAttributeNode(p) &&
       p.name === 'name' &&
       p.value?.content === SLOT_DEFAULT_NAME
   )
@@ -328,7 +329,7 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
 function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
   const slotProp = node.props.find(
     (prop) =>
-      prop.type === NodeTypes.DIRECTIVE &&
+      isDirectiveNode(prop) &&
       (prop.name === 'slot' ||
         (prop.name === 'bind' &&
           prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
@@ -429,7 +430,7 @@ function isLazyElement(node: ElementNode, context: TemplateCodegenContext) {
   }
   return node.props.some(
     (prop) =>
-      prop.type === NodeTypes.DIRECTIVE &&
+      isDirectiveNode(prop) &&
       (lazyProps as { name: 'on' | 'bind'; arg: string[] }[]).find(
         (lazyProp) => {
           return (
@@ -575,7 +576,7 @@ export function genElementProps(
   context: TemplateCodegenContext
 ) {
   node.props.forEach((prop) => {
-    if (prop.type === NodeTypes.ATTRIBUTE) {
+    if (isAttributeNode(prop)) {
       if (
         context.checkPropName &&
         !context.checkPropName(prop.name, prop, node)
