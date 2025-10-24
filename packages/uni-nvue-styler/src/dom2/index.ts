@@ -10,8 +10,9 @@ import {
   defineStyleVariableProcessor,
   setStyleVariableProcessor,
 } from './processors'
-import { extend } from '../shared'
+import { camelize, capitalize, extend } from '../shared'
 import { shorthand } from './shorthand'
+import { genCPPEnumCode } from './processors/enum'
 
 export function parseDom2StaticStyle(
   input: string,
@@ -121,7 +122,13 @@ function genCode(
     target === DOM2_APP_TARGET.TXT_C
   ) {
     return `{${Object.entries(obj)
-      .map(([key, value]) => `'${key}': ${value.valueCode}`)
+      .map(
+        ([key, value]) =>
+          `[${genCPPEnumCode(
+            'UniCSSPropertyID',
+            capitalize(camelize(key))
+          )}]: ${value.valueCode}`
+      )
       .join(', ')}}`
   }
   return ''

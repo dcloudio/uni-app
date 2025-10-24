@@ -2,7 +2,7 @@
 
 exports[`code: border: 1px solid red;color:red: app-harmony(dom-c) 1`] = `
 {
-  "code": "{'border-top-width': new UniCSSUnitValue(1, UniCSSUnitType.PX), 'border-right-width': new UniCSSUnitValue(1, UniCSSUnitType.PX), 'border-bottom-width': new UniCSSUnitValue(1, UniCSSUnitType.PX), 'border-left-width': new UniCSSUnitValue(1, UniCSSUnitType.PX), 'border-top-style': UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), 'border-right-style': UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), 'border-bottom-style': UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), 'border-left-style': UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), 'color': 0xffff0000}",
+  "code": "{[UTSCPP.propertyAccess(UniCSSPropertyID, "::", "BorderTopWidth")]: new UniCSSUnitValue(1, UniCSSUnitType.PX), [UTSCPP.propertyAccess(UniCSSPropertyID, "::", "BorderRightWidth")]: new UniCSSUnitValue(1, UniCSSUnitType.PX), [UTSCPP.propertyAccess(UniCSSPropertyID, "::", "BorderBottomWidth")]: new UniCSSUnitValue(1, UniCSSUnitType.PX), [UTSCPP.propertyAccess(UniCSSPropertyID, "::", "BorderLeftWidth")]: new UniCSSUnitValue(1, UniCSSUnitType.PX), [UTSCPP.propertyAccess(UniCSSPropertyID, "::", "BorderTopStyle")]: UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), [UTSCPP.propertyAccess(UniCSSPropertyID, "::", "BorderRightStyle")]: UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), [UTSCPP.propertyAccess(UniCSSPropertyID, "::", "BorderBottomStyle")]: UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), [UTSCPP.propertyAccess(UniCSSPropertyID, "::", "BorderLeftStyle")]: UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"), [UTSCPP.propertyAccess(UniCSSPropertyID, "::", "Color")]: 0xffff0000}",
   "messages": [],
   "obj": {
     "border-bottom-style": {
@@ -47,7 +47,7 @@ exports[`code: border: 1px solid red;color:red: app-harmony(dom-c) 1`] = `
 
 exports[`code: border: 1px solid red;color:red: app-harmony(nv-c) 1`] = `
 {
-  "code": "{'border-style': UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")), 'border-color': UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000)}",
+  "code": "{[UTSCPP.propertyAccess(UniCSSPropertyID, "::", "BorderStyle")]: UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")), [UTSCPP.propertyAccess(UniCSSPropertyID, "::", "BorderColor")]: UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000)}",
   "messages": [],
   "obj": {
     "border-color": {
