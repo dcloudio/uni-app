@@ -8465,6 +8465,17 @@ function hasClass(className, el) {
   if (hostEl == null) {
     return [false, null];
   }
+  if (isCommentNode(hostEl)) {
+    const instanceClass = partInstance == null ? void 0 : partInstance.attrs.class;
+    if (!instanceClass || typeof instanceClass !== "string") {
+      return [false, null];
+    }
+    const classList = instanceClass.split(" ");
+    if (!classList.includes(baseClassName)) {
+      return [false, null];
+    }
+    return [true, hostEl];
+  }
   const [matched, curEl] = hasClass(baseClassName, hostEl);
   if (!matched) {
     return [false, null];
@@ -8757,6 +8768,12 @@ function updatePartStyles(el) {
   const parentStyles = (parentStylesheet != null ? parentStylesheet : []).filter(
     (style) => partSelectors.some((partSelector) => style[partSelector] != null)
   );
+  if (isCommentNode(hostEl)) {
+    const instanceClass = instance.attrs.class;
+    if (typeof instanceClass === "string") {
+      hostEl.classList = instanceClass.split(" ");
+    }
+  }
   for (let i = 0; i < parentStyles.length; i++) {
     const style = parentStyles[i];
     for (let j = 0; j < partSelectors.length; j++) {
