@@ -8509,24 +8509,7 @@ function isMatchParentSelector(parentSelector, el) {
   return true;
 }
 const WEIGHT_IMPORTANT = 1e3;
-function parseClassName({
-  styles,
-  weights,
-  vueComputedStyles,
-  vueComputedStyleWeights
-}, parentStyles, el, instance = null, isParentStyles = false) {
-  var _a;
-  let computedStyleInterceptors = void 0;
-  if (isParentStyles && instance) {
-    computedStyleInterceptors = (_a = instance.computedStyleInterceptors) == null ? void 0 : _a.filter(
-      (interceptor) => interceptor.classAttr === "class"
-    );
-    computedStyleInterceptors == null ? void 0 : computedStyleInterceptors.forEach((interceptor) => {
-      interceptor.classStyles = interceptor.classStyles || /* @__PURE__ */ new Map();
-      interceptor.classStyles.clear();
-      interceptor.classStylesWeight = {};
-    });
-  }
+function parseClassName({ styles, weights }, parentStyles, el) {
   each(parentStyles).forEach((parentSelector) => {
     if (parentSelector && el) {
       if (!isMatchParentSelector(parentSelector, el)) {
@@ -8542,32 +8525,10 @@ function parseClassName({
         name = name.slice(1);
       }
       const weight = classWeight + (isImportant ? WEIGHT_IMPORTANT : 0);
-      let filteredByComputedStyle = false;
-      let usedByComputedStyle = false;
-      if (computedStyleInterceptors) {
-        const isCSSVar = name.startsWith("--");
-        const hyphenatedKey = isCSSVar ? name : hyphenate(name);
-        const interceptors = computedStyleInterceptors.filter(
-          (interceptor) => !interceptor.properties || interceptor.properties.indexOf(hyphenatedKey) !== -1
-        );
-        usedByComputedStyle = interceptors.length > 0;
-        filteredByComputedStyle = interceptors.some(
-          (interceptor) => interceptor.filterProperties
-        );
-      }
-      if (usedByComputedStyle) {
-        const oldWeight = vueComputedStyleWeights[name] || 0;
-        if (weight >= oldWeight) {
-          vueComputedStyleWeights[name] = weight;
-          vueComputedStyles.set(name, value);
-        }
-      }
-      if (!filteredByComputedStyle) {
-        const oldWeight = weights[name] || 0;
-        if (weight >= oldWeight) {
-          weights[name] = weight;
-          styles.set(name, value);
-        }
+      const oldWeight = weights[name] || 0;
+      if (weight >= oldWeight) {
+        weights[name] = weight;
+        styles.set(name, value);
       }
     });
   });
@@ -8576,8 +8537,6 @@ class ParseStyleContext {
   constructor() {
     this.styles = /* @__PURE__ */ new Map();
     this.weights = {};
-    this.vueComputedStyles = /* @__PURE__ */ new Map();
-    this.vueComputedStyleWeights = {};
   }
 }
 function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet, el = null) {
@@ -8585,13 +8544,7 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet, e
   classList.forEach((className) => {
     const parentStyles = stylesheet && stylesheet[className];
     if (parentStyles) {
-      parseClassName(
-        context,
-        parentStyles,
-        el,
-        el ? getRootElementInstance(el) : null,
-        true
-      );
+      parseClassName(context, parentStyles, el);
     }
   });
   if (parentStylesheet != null) {
@@ -8601,13 +8554,7 @@ function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet, e
         (style) => style[className] !== null
       )) == null ? void 0 : _a[className];
       if (parentStyles != null) {
-        parseClassName(
-          context,
-          parentStyles,
-          el,
-          el ? getRootElementInstance(el) : null,
-          true
-        );
+        parseClassName(context, parentStyles, el);
       }
     });
   }
@@ -8720,60 +8667,48 @@ function useComputedStyle(options = {}) {
   }
   return r;
 }
-function triggerComputedStyleUpdate(instance) {
+function triggerComputedStyleUpdate(instance, styles) {
   if (instance.computedStyleInterceptors) {
+    const keysToDelete = /* @__PURE__ */ new Set();
+    let clearStyles = false;
     instance.computedStyleInterceptors.forEach((interceptor) => {
-      if (interceptor.classAttr !== "class" || interceptor.styleAttr !== "style") {
-        return;
-      }
-      let styles = interceptor.styles;
-      if (interceptor.classAttr === "class" && interceptor.classStyles && interceptor.classStylesWeight) {
-        styles = mergeClassStyles(
-          interceptor.classStyles,
-          interceptor.classStylesWeight,
-          interceptor.styles
-        );
-      }
       const r = interceptor.reactiveComputedStyle;
-      for (const key in r) {
-        const isCSSVar = key.startsWith("--");
-        const camelizedKey = isCSSVar ? key : camelize(key);
-        if (!styles || !styles.has(camelizedKey)) {
-          r.delete(key);
-        } else {
-          r.set(key, styles.get(camelizedKey));
-        }
+      const properties = interceptor.properties;
+      if (properties) {
+        styles.forEach((value, key) => {
+          const isCSSVar = key.startsWith("--");
+          const hyphenatedKey = isCSSVar ? key : hyphenate(key);
+          if (properties.includes(hyphenatedKey)) {
+            if (value === "" || value == null) {
+              r.delete(hyphenatedKey);
+            } else {
+              r.set(hyphenatedKey, value);
+            }
+            if (interceptor.filterProperties) {
+              keysToDelete.add(key);
+            }
+          }
+        });
+      } else {
+        styles.forEach((value, key) => {
+          const isCSSVar = key.startsWith("--");
+          const hyphenatedKey = isCSSVar ? key : hyphenate(key);
+          if (value === "" || value == null) {
+            r.delete(hyphenatedKey);
+          } else {
+            r.set(hyphenatedKey, value);
+          }
+        });
+        clearStyles = true;
       }
-      styles == null ? void 0 : styles.forEach((value, key) => {
-        const isCSSVar = key.startsWith("--");
-        const hyphenatedKey = isCSSVar ? key : hyphenate(key);
-        if (value === "" || value == null) {
-          r.delete(hyphenatedKey);
-        } else {
-          r.set(hyphenatedKey, value);
-        }
-      });
     });
-  }
-}
-function collectClassStyles(instance, styles, weight) {
-  if (instance.computedStyleInterceptors) {
-    instance.computedStyleInterceptors.forEach((interceptor) => {
-      if (interceptor.classAttr !== "class") {
-        return;
-      }
-      interceptor.classStyles = interceptor.classStyles || /* @__PURE__ */ new Map();
-      interceptor.classStyles.clear();
-      interceptor.classStylesWeight = {};
-      styles.forEach((value, key) => {
-        const isCSSVar = key.startsWith("--");
-        const hyphenatedKey = isCSSVar ? key : hyphenate(key);
-        if (!interceptor.properties || interceptor.properties.indexOf(hyphenatedKey) !== -1) {
-          interceptor.classStyles.set(key, value);
-          interceptor.classStylesWeight[key] = weight[key];
-        }
+    if (clearStyles) {
+      styles.clear();
+    } else if (keysToDelete.size > 0) {
+      keysToDelete.forEach((key) => {
+        styles.delete(key);
       });
-    });
+    }
   }
 }
 
@@ -8921,16 +8856,11 @@ function mergeAndUpdateClassStyles(el) {
   mergedStyleContext.styles.forEach((value, key) => {
     oldClassStyle.set(key, value);
   });
+  const styles = toStyle(el, oldClassStyle, mergedStyleContext.weights);
   const instance = getRootElementInstance(el);
   if (instance && instance.computedStyleInterceptors) {
-    collectClassStyles(
-      instance,
-      mergedStyleContext.vueComputedStyles,
-      mergedStyleContext.vueComputedStyleWeights
-    );
-    triggerComputedStyleUpdate(instance);
+    triggerComputedStyleUpdate(instance, styles);
   }
-  const styles = toStyle(el, oldClassStyle, mergedStyleContext.weights);
   if (styles.size == 0) {
     return;
   }
@@ -9266,42 +9196,7 @@ function patchStyle(el, prev, next, instance = null) {
     setRootElementInstance(el, instance);
     const computedStyleInterceptors = instance == null ? void 0 : instance.computedStyleInterceptors;
     if (computedStyleInterceptors) {
-      const matchedInterceptors = computedStyleInterceptors.filter(
-        (interceptor) => interceptor.styleAttr === "style"
-      );
-      let filteredKeys = /* @__PURE__ */ new Set();
-      let clearStyles = false;
-      matchedInterceptors.forEach((interceptor) => {
-        interceptor.styles = interceptor.styles || /* @__PURE__ */ new Map();
-        interceptor.styles.clear();
-        const properties = interceptor.properties;
-        if (properties) {
-          batchedStyles.forEach((value, key) => {
-            const isCSSVar = key.startsWith("--");
-            const hyphenatedKey = isCSSVar ? key : hyphenate(key);
-            if (properties.includes(hyphenatedKey)) {
-              const camelizedKey = isCSSVar ? key : camelize(key);
-              interceptor.styles.set(camelizedKey, value);
-              if (interceptor.filterProperties) {
-                filteredKeys.add(key);
-              }
-            }
-          });
-        } else {
-          batchedStyles.forEach((value, key) => {
-            interceptor.styles.set(key, value);
-          });
-          clearStyles = true;
-        }
-      });
-      if (clearStyles) {
-        batchedStyles.clear();
-      } else if (filteredKeys.size > 0) {
-        filteredKeys.forEach((key) => {
-          batchedStyles.delete(key);
-        });
-      }
-      triggerComputedStyleUpdate(instance);
+      triggerComputedStyleUpdate(instance, batchedStyles);
     }
   }
   if (batchedStyles.size == 0) {
