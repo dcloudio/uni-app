@@ -718,4 +718,4 @@ realGlobal.UniError = UniError;
 realGlobal.UTS = UTS;
 realGlobal.UTSValueIterable = UTSValueIterable$1;
 
-export { UTSJSONObject$1 as UTSJSONObject, UniError };
+export { UTS, UTSJSONObject$1 as UTSJSONObject, UTSValueIterable$1 as UTSValueIterable, UniError };
