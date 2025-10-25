@@ -205,6 +205,13 @@ export declare function createSharedDataVFor<T extends UniSharedData>(scope: Uni
 export declare function useSharedDataScope<T extends UniSharedDataPage>(scope?: T): T;
 export declare function useSharedDataPageId(): number;
 
+/**
+ * 将字符串值转换为 UniImageModeType 枚举类型
+ * @param value - 字符串值
+ * @returns UniImageModeType 枚举值
+ */
+export declare function toSharedDataImageMode(value: string): UniImageModeType;
+
 export declare function getCurrentElementVaporComponentInstance(): VaporSharedDataComponentInstance | null;
 type TemplateFactory = (page: UniPage) => UniElement & {
     $root?: true;
