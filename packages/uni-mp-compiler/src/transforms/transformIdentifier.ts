@@ -180,6 +180,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               modifiers: [],
               loc: partProp.loc,
             })
+            skipIndex.push(props.length - 1)
           } else if (classProp.type === NodeTypes.DIRECTIVE) {
             const originalClassExpr = classProp.exp!
             classProp.exp = rewriteExpression(
@@ -197,6 +198,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               ]),
               context
             )
+            skipIndex.push(props.indexOf(classProp))
           } else {
             const staticClass = classProp.value?.content || ''
             const newClassDirExpr = rewriteExpression(
@@ -212,7 +214,8 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               ]),
               context
             )
-            props.splice(props.indexOf(classProp), 1, {
+            const classPropIndex = props.indexOf(classProp)
+            props.splice(classPropIndex, 1, {
               type: NodeTypes.DIRECTIVE,
               name: 'bind',
               exp: newClassDirExpr,
@@ -220,6 +223,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               modifiers: [],
               loc: classProp.loc,
             })
+            skipIndex.push(classPropIndex)
           }
         }
       }

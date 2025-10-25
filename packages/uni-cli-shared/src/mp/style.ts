@@ -12,7 +12,7 @@ export function transformScopedCss(cssCode: string) {
 
 export function transformPartSelector(cssCode: string) {
   return cssCode.replace(/::part\(([^)]+)\)/gi, (_, partName) => {
-    return ' ' + getPartClass(partName.trim())
+    return ' .' + getPartClass(partName.trim())
   })
 }
 

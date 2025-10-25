@@ -18,9 +18,9 @@ describe('complier: merge part class', () => {
   test('only static part', () => {
     assert(
       `<view><image part="logo logo-active"/></view>`,
-      `<view style=\"{{'--status-bar-height:' + c}}\"><image part=\"logo logo-active\" class=\"{{b}}\"/></view>`,
+      `<view style=\"{{'--status-bar-height:' + b}}\"><image part=\"logo logo-active\" class=\"{{a}}\"/></view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _mpc('logo logo-active'), b: _n(a), c: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: _mpc('logo logo-active'), b: \`\${_ctx.u_s_b_h}px\` }
   return __returned__
 }`,
       optionsX
@@ -29,9 +29,9 @@ describe('complier: merge part class', () => {
   test('static part with static class', () => {
     assert(
       `<view><image class="img-large" part="logo logo-active"/></view>`,
-      `<view style=\"{{'--status-bar-height:' + c}}\"><image class=\"{{b}}\" part=\"logo logo-active\"/></view>`,
+      `<view style=\"{{'--status-bar-height:' + b}}\"><image class=\"{{a}}\" part=\"logo logo-active\"/></view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _mpc('logo logo-active', 'img-large'), b: _n(a), c: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: _mpc('logo logo-active', 'img-large'), b: \`\${_ctx.u_s_b_h}px\` }
   return __returned__
 }`,
       optionsX
@@ -40,9 +40,9 @@ describe('complier: merge part class', () => {
   test('static part with dynamic class', () => {
     assert(
       `<view><image :class="x" part="logo logo-active"/></view>`,
-      `<view style=\"{{'--status-bar-height:' + c}}\"><image class=\"{{b}}\" part=\"logo logo-active\"/></view>`,
+      `<view style=\"{{'--status-bar-height:' + b}}\"><image class=\"{{a}}\" part=\"logo logo-active\"/></view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _mpc('logo logo-active', _ctx.x), b: _n(a), c: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: _mpc('logo logo-active', _ctx.x), b: \`\${_ctx.u_s_b_h}px\` }
   return __returned__
 }`,
       optionsX
@@ -51,9 +51,9 @@ describe('complier: merge part class', () => {
   test('only dynamic part', () => {
     assert(
       `<view><image :part="p"/></view>`,
-      `<view style=\"{{'--status-bar-height:' + d}}\"><image part=\"{{b}}\" class=\"{{c}}\"/></view>`,
+      `<view style=\"{{'--status-bar-height:' + c}}\"><image part=\"{{b}}\" class=\"{{a}}\"/></view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _mpc(_ctx.p), b: _ctx.p, c: _n(a), d: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: _mpc(_ctx.p), b: _ctx.p, c: \`\${_ctx.u_s_b_h}px\` }
   return __returned__
 }`,
       optionsX
@@ -62,9 +62,9 @@ describe('complier: merge part class', () => {
   test('dynamic part with static class', () => {
     assert(
       `<view><image :part="p" class="img-large"/></view>`,
-      `<view style=\"{{'--status-bar-height:' + d}}\"><image part=\"{{b}}\" class=\"{{c}}\"/></view>`,
+      `<view style=\"{{'--status-bar-height:' + c}}\"><image part=\"{{b}}\" class=\"{{a}}\"/></view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _mpc(_ctx.p, 'img-large'), b: _ctx.p, c: _n(a), d: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: _mpc(_ctx.p, 'img-large'), b: _ctx.p, c: \`\${_ctx.u_s_b_h}px\` }
   return __returned__
 }`,
       optionsX
@@ -73,9 +73,9 @@ describe('complier: merge part class', () => {
   test('dynamic part with dynamic class', () => {
     assert(
       `<view><image :part="p" :class="x"/></view>`,
-      `<view style=\"{{'--status-bar-height:' + d}}\"><image part=\"{{b}}\" class=\"{{c}}\"/></view>`,
+      `<view style=\"{{'--status-bar-height:' + c}}\"><image part=\"{{b}}\" class=\"{{a}}\"/></view>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _mpc(_ctx.p, _ctx.x), b: _ctx.p, c: _n(a), d: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: _mpc(_ctx.p, _ctx.x), b: _ctx.p, c: \`\${_ctx.u_s_b_h}px\` }
   return __returned__
 }`,
       optionsX

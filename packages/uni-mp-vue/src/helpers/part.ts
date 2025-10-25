@@ -3,7 +3,7 @@ import { getPartClass } from '@dcloudio/uni-shared'
 function getPartClassList(partName: string): string {
   return partName
     .split(/\s+/)
-    .map((name) => getPartClass(name))
+    .map((name) => '^' + getPartClass(name))
     .join(' ')
 }
 
