@@ -35187,14 +35187,18 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
     if (isDom2) {
       const checkStaticProp = context.options.checkStaticProp;
       if (checkStaticProp) {
-        for (const prop of propsResult[1]) {
+        const props = propsResult[1];
+        const indicesToRemove = [];
+        for (let i = 0; i < props.length; i++) {
+          const prop = props[i];
           const { key, values } = prop;
-          if (key.isStatic && values.length === 1 && values[0].isStatic && !["class", "style"].includes(key.content)) {
+          if (key.isStatic && values.length === 1 && !["class", "style"].includes(key.content)) {
             let endLoc = values[0].loc;
             if (endLoc === locStub) {
               endLoc = key.loc;
             }
-            checkStaticProp(
+            if (!checkStaticProp(
+              values.length === 1 && values[0].isStatic,
               key.content,
               values[0].content,
               {
@@ -35203,8 +35207,13 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
               },
               node,
               context
-            );
+            )) {
+              indicesToRemove.push(i);
+            }
           }
+        }
+        for (let i = indicesToRemove.length - 1; i >= 0; i--) {
+          props.splice(indicesToRemove[i], 1);
         }
       }
     }
