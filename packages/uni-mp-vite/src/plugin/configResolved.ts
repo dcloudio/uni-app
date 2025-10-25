@@ -19,6 +19,7 @@ import {
   relativeFile,
   removeExt,
   resolveMainPathOnce,
+  transformPartSelector,
   transformScopedCss,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '.'
@@ -114,6 +115,15 @@ export function createConfigResolved({
 
           const isX = process.env.UNI_APP_X === 'true'
           cssCode = transformScopedCss(cssCode)
+          if (isX) {
+            /**
+             * .xxx::part(yyy)替换为.xxx .-_part__yyy_-
+             * 小程序本身不支持::part选择器，直接替换即可
+             * 运行时绑定在内置组件上的part属性生成对应的class合并到class属性内，例如：`^-_part__yyy_-`
+             * ^的作用参考：[引用页面或父组件的样式](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#%E5%BC%95%E7%94%A8%E9%A1%B5%E9%9D%A2%E6%88%96%E7%88%B6%E7%BB%84%E4%BB%B6%E7%9A%84%E6%A0%B7%E5%BC%8F)
+             */
+            cssCode = transformPartSelector(cssCode)
+          }
           if (filename === 'app' + cssExtname) {
             const componentCustomHiddenCss =
               (component &&

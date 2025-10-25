@@ -43,3 +43,7 @@ export function createRpx2Unit(
       return value === 0 ? '0' : `${value}${unit}`
     })
 }
+
+export function getPartClass(partName: string) {
+  return `-_part__${partName}_-`
+}

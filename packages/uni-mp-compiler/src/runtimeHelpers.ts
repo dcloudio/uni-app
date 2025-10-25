@@ -17,6 +17,7 @@ export const WITH_MODEL_MODIFIERS = Symbol(`withModelModifiers`)
 export const SET_UNI_ELEMENT_ID = Symbol(`setUniElementId`)
 export const SET_UNI_ELEMENT_STYLE = Symbol(`setUniElementStyle`)
 export const GEN_UNI_ELEMENT_ID = Symbol(`genUniElementId`)
+export const MERGE_PART_CLASS = Symbol(`mergePartClass`)
 
 registerRuntimeHelpers({
   [V_ON]: 'o',
@@ -37,4 +38,5 @@ registerRuntimeHelpers({
   [SET_UNI_ELEMENT_ID]: 'sei',
   [SET_UNI_ELEMENT_STYLE]: 'ses',
   [GEN_UNI_ELEMENT_ID]: 'gei',
+  [MERGE_PART_CLASS]: 'mpc',
 })

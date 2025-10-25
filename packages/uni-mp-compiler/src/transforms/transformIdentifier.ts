@@ -1,5 +1,6 @@
 import {
   type DirectiveNode,
+  ElementTypes,
   NodeTypes,
   type SimpleExpressionNode,
   createCompoundExpression,
@@ -40,7 +41,7 @@ import {
   isIdBinding,
   rewriteId,
 } from './transformId'
-import { TO_DISPLAY_STRING } from '../runtimeHelpers'
+import { MERGE_PART_CLASS, TO_DISPLAY_STRING } from '../runtimeHelpers'
 import { rewriteSlot } from './transformSlot'
 import { rewriteVSlot } from './vSlot'
 import { rewriteRef } from './transformRef'
@@ -78,12 +79,13 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       let hasHiddenBinding = false
       let hasIdBinding = false
 
-      const { props } = node
+      const { props, tagType } = node
       const virtualHost = !!(
         context.miniProgram.component?.mergeVirtualHostAttributes &&
         context.rootNode === node
       )
 
+      const isElement = tagType === ElementTypes.ELEMENT
       rewriteRef(node, context)
 
       if (context.isX) {
@@ -128,6 +130,96 @@ export const transformIdentifier: NodeTransform = (node, context) => {
                 skipIndex.push(i)
               }
             }
+          }
+        }
+      }
+
+      // 合并part class到class内
+      if (context.isX && isElement) {
+        const partProp = props.find((prop) => {
+          if (prop.type === NodeTypes.DIRECTIVE) {
+            const { arg } = prop
+            if (arg && isSimpleExpressionNode(arg)) {
+              return arg.content === 'part'
+            }
+          } else {
+            return prop.name === 'part'
+          }
+        })
+        if (partProp) {
+          const classProp = props.find((prop) => {
+            if (prop.type === NodeTypes.DIRECTIVE) {
+              const { arg } = prop
+              if (arg && isSimpleExpressionNode(arg)) {
+                return arg.content === 'class'
+              }
+            } else {
+              return prop.name === 'class'
+            }
+            return false
+          })
+          if (classProp == null) {
+            const newClassDirExpr = rewriteExpression(
+              createCompoundExpression([
+                context.helperString(MERGE_PART_CLASS),
+                `(`,
+                partProp.type === NodeTypes.DIRECTIVE
+                  ? partProp.exp!
+                  : createSimpleExpression(
+                      `'${partProp.value?.content || ''}'`
+                    ),
+                `)`,
+              ]),
+              context
+            )
+            props.push({
+              type: NodeTypes.DIRECTIVE,
+              name: 'bind',
+              exp: newClassDirExpr,
+              arg: createSimpleExpression('class', true),
+              modifiers: [],
+              loc: partProp.loc,
+            })
+          } else if (classProp.type === NodeTypes.DIRECTIVE) {
+            const originalClassExpr = classProp.exp!
+            classProp.exp = rewriteExpression(
+              createCompoundExpression([
+                context.helperString(MERGE_PART_CLASS),
+                `(`,
+                partProp.type === NodeTypes.DIRECTIVE
+                  ? partProp.exp!
+                  : createSimpleExpression(
+                      `'${partProp.value?.content || ''}'`
+                    ),
+                `, `,
+                originalClassExpr,
+                `)`,
+              ]),
+              context
+            )
+          } else {
+            const staticClass = classProp.value?.content || ''
+            const newClassDirExpr = rewriteExpression(
+              createCompoundExpression([
+                context.helperString(MERGE_PART_CLASS),
+                `(`,
+                partProp.type === NodeTypes.DIRECTIVE
+                  ? partProp.exp!
+                  : createSimpleExpression(
+                      `'${partProp.value?.content || ''}'`
+                    ),
+                `, '${staticClass}')`,
+              ]),
+              context
+            )
+            props.splice(props.indexOf(classProp), 1, {
+              type: NodeTypes.DIRECTIVE,
+              name: 'bind',
+              exp: newClassDirExpr,
+              arg: createSimpleExpression('class', true),
+              modifiers: [],
+              loc: classProp.loc,
+            })
           }
         }
       }

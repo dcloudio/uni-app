@@ -1,11 +1,18 @@
 import { HTML_TO_MINI_PROGRAM_TAGS } from './tags'
 import { output } from '../logs'
+import { getPartClass } from '@dcloudio/uni-shared'
 
 export function transformScopedCss(cssCode: string) {
   checkHtmlTagSelector(cssCode)
 
   return cssCode.replace(/\[(data-v-[a-f0-9]{8})\]/gi, (_, scopedId) => {
     return '.' + scopedId
+  })
+}
+
+export function transformPartSelector(cssCode: string) {
+  return cssCode.replace(/::part\(([^)]+)\)/gi, (_, partName) => {
+    return ' ' + getPartClass(partName.trim())
   })
 }
 
