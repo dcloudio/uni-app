@@ -1147,6 +1147,7 @@
     },
     {
       "name": "position",
+      "description": "position 属性用于指定元素在页面中的定位方式。与 top、right、bottom、left 等属性决定该元素的最终位置。",
       "restrictions": [
         "enum"
       ],
@@ -1154,6 +1155,7 @@
       "values": [
         {
           "name": "relative",
+          "description": "当前元素将参与父节点布局，根据 top、right、bottom、left 等属性相对于自身偏移。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -1186,6 +1188,7 @@
         },
         {
           "name": "absolute",
+          "description": "当前元素将不参与父节点布局，布局时不会为该元素创建任何空间，在父元素的内容区域中进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -1218,6 +1221,7 @@
         },
         {
           "name": "fixed",
+          "description": "当前元素将不参与父节点布局，将被视为页面根节点的子元素进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -3536,7 +3540,7 @@
     },
     {
       "name": "display",
-      "description": "CSS display 属性设置元素的布局方式，默认值为flex（弹性布局）。",
+      "description": "display 属性设置元素的显示或布局方式，默认值为flex（弹性布局）。",
       "restrictions": [
         "enum"
       ],
@@ -3544,6 +3548,7 @@
       "values": [
         {
           "name": "flex",
+          "description": "该元素根据弹性盒模型布局。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -3576,6 +3581,7 @@
         },
         {
           "name": "none",
+          "description": "使元素不再显示，其对布局不会有影响（页面渲染得好像此元素并不存在），所有的子元素也不会再显示。如需元素占据空间，但不渲染任何东西，应该使用 visibility 属性。",
           "uniPlatform": {
             "app": {
               "android": {
