@@ -22,6 +22,7 @@ import { setUniElementId, setUniElementStyle } from './uniElement'
 import { mergePartClass } from './part'
 // #endif
 import { genUniElementId } from './id'
+import { parseVirtualHostClass } from './virtualHost'
 
 export { setupDevtoolsPlugin } from './devtools'
 
@@ -62,3 +63,4 @@ export const ses = setUniElementStyle
 export const mpc = mergePartClass
 // #endif
 export const gei = genUniElementId
+export const pvhc = parseVirtualHostClass
