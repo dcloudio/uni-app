@@ -2,7 +2,14 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
-    "declaration": true
+    "declaration": true,
+    "paths": {
+      "@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts": [
+        "../packages/uni-uts-v1/lib/javascript/lib/runtime/uts"
+      ]
+    }
   },
-  "exclude": ["../packages/*/__tests__"]
+  "exclude": [
+    "../packages/*/__tests__"
+  ]
 }

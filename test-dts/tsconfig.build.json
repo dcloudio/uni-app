@@ -5,7 +5,17 @@
     "module": "esnext",
     "strict": true,
     "moduleResolution": "node",
-    "lib": ["esnext", "dom"]
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "paths": {
+      "@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts": [
+        "../packages/uni-uts-v1/lib/javascript/lib/runtime/uts"
+      ]
+    }
   },
-  "include": ["./*"]
+  "include": [
+    "./*"
+  ]
 }

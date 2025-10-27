@@ -26,5 +26,4 @@ export * from './globalsAllowList'
  * - tslib(uts)在打包时会直接引用代码内容而不是路径，应避免同一个导出出现多份，否则可能会导致instanceof UTSJSONObject等用法出现问题
  * - 微信小程序开发工具 1.06.2504050 版本global相关用法有调整，使用global.UTSJSONObject = xxx挂载到全局的变量只能通过global.UTSJSONObject访问，不能通过UTSJSONObject访问。换句话说global不再是全局对象的别名
  */
-// @ts-expect-error
 export * from '@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts'
