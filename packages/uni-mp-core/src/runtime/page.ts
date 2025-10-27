@@ -4,6 +4,7 @@ import {
   ON_INIT,
   ON_LOAD,
   ON_READY,
+  UTSJSONObject,
   addLeadingSlash,
   stringifyQuery,
 } from '@dcloudio/uni-shared'
