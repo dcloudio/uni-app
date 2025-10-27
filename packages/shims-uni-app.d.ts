@@ -619,6 +619,7 @@ declare class UniNormalPageImpl implements UniPage {
     flatten: boolean,
     style?: UniElementStyles | null
   ): UniImageElement
+  createNativeViewElement(): UniNativeViewElement
   createComment(data: string): UniElement
 
   createNativeView(flatten: boolean): UniNativeView
