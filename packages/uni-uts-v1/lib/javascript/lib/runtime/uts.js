@@ -293,7 +293,7 @@ function initUTSJSONObjectProperties(obj) {
 function getRealDefaultValue(defaultValue) {
     return defaultValue === void 0 ? null : defaultValue;
 }
-let UTSJSONObject$1 = class UTSJSONObject {
+class UTSJSONObject {
     static keys(obj) {
         return Object.keys(obj);
     }
@@ -481,7 +481,7 @@ let UTSJSONObject$1 = class UTSJSONObject {
             callback(this[key], key);
         }
     }
-};
+}
 
 const OriginalJSON = JSON;
 function createUTSJSONObjectOrArray(obj) {
@@ -491,7 +491,7 @@ function createUTSJSONObjectOrArray(obj) {
         });
     }
     else if (isPlainObject(obj)) {
-        const result = new UTSJSONObject$1({});
+        const result = new UTSJSONObject({});
         for (const key in obj) {
             const value = obj[key];
             result[key] = createUTSJSONObjectOrArray(value);
@@ -505,7 +505,7 @@ function parseObjectOrArray(object, utsType) {
     if (object === null || (objectType !== 'object' && objectType !== 'array')) {
         return object;
     }
-    if (utsType && utsType !== UTSJSONObject$1) {
+    if (utsType && utsType !== UTSJSONObject) {
         try {
             return new utsType(object, undefined, true);
         }
@@ -522,7 +522,7 @@ function parseObjectOrArray(object, utsType) {
 const UTSJSON = {
     parse: (text, reviver, utsType) => {
         // @ts-ignore
-        if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject$1)) {
+        if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject)) {
             utsType = reviver;
             reviver = undefined;
         }
@@ -682,8 +682,8 @@ class UniError extends Error {
     }
 }
 
-let UTSValueIterable$1 = class UTSValueIterable {
-};
+class UTSValueIterable {
+}
 
 // @ts-nocheck
 function getGlobal() {
@@ -713,9 +713,9 @@ function getGlobal() {
     })();
 }
 const realGlobal = getGlobal();
-realGlobal.UTSJSONObject = UTSJSONObject$1;
+realGlobal.UTSJSONObject = UTSJSONObject;
 realGlobal.UniError = UniError;
 realGlobal.UTS = UTS;
-realGlobal.UTSValueIterable = UTSValueIterable$1;
+realGlobal.UTSValueIterable = UTSValueIterable;
 
-export { UTS, UTSJSONObject$1 as UTSJSONObject, UTSValueIterable$1 as UTSValueIterable, UniError };
+export { UTS, UTSJSONObject, UTSValueIterable, UniError };

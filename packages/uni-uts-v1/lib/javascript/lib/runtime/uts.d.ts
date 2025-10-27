@@ -58,10 +58,10 @@ declare enum UTS_CLASS_METADATA_KIND {
     TYPE = 2
 }
 
-declare class UTSJSONObject_2 {
+export declare class UTSJSONObject {
     [key: string]: any;
-    static keys(obj: UTSJSONObject_2): string[];
-    static assign(target: UTSJSONObject_2, ...sources: UTSJSONObject_2[]): UTSJSONObject_2;
+    static keys(obj: UTSJSONObject): string[];
+    static assign(target: UTSJSONObject, ...sources: UTSJSONObject[]): UTSJSONObject;
     constructor(content?: Map<string, any> | Record<string, any>);
     private _resolveKeyPath;
     private _getValue;
@@ -71,12 +71,11 @@ declare class UTSJSONObject_2 {
     getString(key: string, defaultValue: string): string | null;
     getNumber(key: string, defaultValue: number): number | null;
     getBoolean(key: string, defaultValue: boolean): boolean | null;
-    getJSON(key: string, defaultValue: UTSJSONObject_2): UTSJSONObject_2 | null;
+    getJSON(key: string, defaultValue: UTSJSONObject): UTSJSONObject | null;
     getArray<T = any>(key: string, defaultValue: Array<T>): Array<T> | null;
     toMap(): Map<string, any>;
     forEach(callback: (value: any, key: string) => void): void;
 }
-export { UTSJSONObject_2 as UTSJSONObject }
 
 declare interface UTSMetadata {
     name: string;
@@ -102,9 +101,8 @@ declare type UTSTypeFieldType = {
 
 declare type UTSTypeMetadata = Required<UTSMetadata>;
 
-declare abstract class UTSValueIterable_2 {
+export declare abstract class UTSValueIterable {
 }
-export { UTSValueIterable_2 as UTSValueIterable }
 
 declare function weakMapGet<K extends symbol | object, V>(map: WeakMap<K, V>, key: K): V | null;
 
