@@ -7,6 +7,28 @@ function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var debug__default = /*#__PURE__*/_interopDefault(debug);
 
+/**
+ * copy from @uts/shared
+ */
+var IDENTIFIER;
+(function (IDENTIFIER) {
+    IDENTIFIER["UTSJSONObject"] = "UTSJSONObject";
+    IDENTIFIER["JSON"] = "JSON";
+    IDENTIFIER["UTS"] = "UTS";
+    IDENTIFIER["VUE"] = "vue";
+    IDENTIFIER["GLOBAL_THIS"] = "globalThis";
+    IDENTIFIER["UTS_TYPE"] = "UTSType";
+    IDENTIFIER["UTS_METADATA"] = "$UTSMetadata$";
+    IDENTIFIER["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
+    IDENTIFIER["JSON_FIELD"] = "JSON_FIELD";
+})(IDENTIFIER || (IDENTIFIER = {}));
+var UTS_CLASS_METADATA_KIND;
+(function (UTS_CLASS_METADATA_KIND) {
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["CLASS"] = 0] = "CLASS";
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["INTERFACE"] = 1] = "INTERFACE";
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["TYPE"] = 2] = "TYPE";
+})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
+IDENTIFIER.UTS_METADATA;
 function once(fn, ctx = null) {
     let res;
     return ((...args) => {

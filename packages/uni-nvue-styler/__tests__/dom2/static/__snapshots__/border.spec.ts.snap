@@ -123,6 +123,7 @@ exports[`border: 1px invalid red: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "border",
+        "important": false,
         "prop": "border",
         "remove": [Function],
         "replaceWith": [Function],
@@ -146,6 +147,7 @@ exports[`border: 1px invalid red: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "border",
+        "important": false,
         "prop": "border",
         "remove": [Function],
         "replaceWith": [Function],

@@ -1,6 +1,6 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
+import { Emitter, UTS, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
-import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { findUniElement, injectHook } from 'vue';
 
 function getLocaleLanguage() {
@@ -903,7 +903,7 @@ function createUTSJSONObjectIfNeed(obj) {
         return obj;
     }
     // TODO globalThis部分平台表现怪异
-    return globalThis.UTS.JSON.parse(JSON.stringify(obj));
+    return UTS.JSON.parse(JSON.stringify(obj));
 }
 
 const request = {

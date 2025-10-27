@@ -238,6 +238,7 @@ exports[`line-height: normal: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "line-height",
+        "important": false,
         "prop": "lineHeight",
         "remove": [Function],
         "replaceWith": [Function],
@@ -260,6 +261,7 @@ exports[`line-height: normal: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "line-height",
+        "important": false,
         "prop": "lineHeight",
         "remove": [Function],
         "replaceWith": [Function],
@@ -303,6 +305,7 @@ exports[`text-align: justify: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-align",
+        "important": false,
         "prop": "textAlign",
         "remove": [Function],
         "replaceWith": [Function],
@@ -325,6 +328,7 @@ exports[`text-align: justify: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-align",
+        "important": false,
         "prop": "textAlign",
         "remove": [Function],
         "replaceWith": [Function],
@@ -431,6 +435,7 @@ exports[`text-decoration-line: overline: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-decoration-line",
+        "important": false,
         "prop": "textDecorationLine",
         "remove": [Function],
         "replaceWith": [Function],
@@ -453,6 +458,7 @@ exports[`text-decoration-line: overline: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-decoration-line",
+        "important": false,
         "prop": "textDecorationLine",
         "remove": [Function],
         "replaceWith": [Function],
@@ -538,6 +544,7 @@ exports[`text-shadow: #fc0 1px 0 10px: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-shadow",
+        "important": false,
         "prop": "textShadow",
         "remove": [Function],
         "replaceWith": [Function],
@@ -560,6 +567,7 @@ exports[`text-shadow: #fc0 1px 0 10px: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-shadow",
+        "important": false,
         "prop": "textShadow",
         "remove": [Function],
         "replaceWith": [Function],
@@ -582,6 +590,7 @@ exports[`text-shadow: 1px 1px 2px pink: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-shadow",
+        "important": false,
         "prop": "textShadow",
         "remove": [Function],
         "replaceWith": [Function],
@@ -604,6 +613,7 @@ exports[`text-shadow: 1px 1px 2px pink: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-shadow",
+        "important": false,
         "prop": "textShadow",
         "remove": [Function],
         "replaceWith": [Function],
@@ -626,6 +636,7 @@ exports[`text-shadow: 5px 5px #558abb: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-shadow",
+        "important": false,
         "prop": "textShadow",
         "remove": [Function],
         "replaceWith": [Function],
@@ -648,6 +659,7 @@ exports[`text-shadow: 5px 5px #558abb: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-shadow",
+        "important": false,
         "prop": "textShadow",
         "remove": [Function],
         "replaceWith": [Function],
@@ -670,6 +682,7 @@ exports[`text-shadow: 5px 10px: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-shadow",
+        "important": false,
         "prop": "textShadow",
         "remove": [Function],
         "replaceWith": [Function],
@@ -692,6 +705,7 @@ exports[`text-shadow: 5px 10px: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-shadow",
+        "important": false,
         "prop": "textShadow",
         "remove": [Function],
         "replaceWith": [Function],
@@ -714,6 +728,7 @@ exports[`text-shadow: red 2px 5px: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-shadow",
+        "important": false,
         "prop": "textShadow",
         "remove": [Function],
         "replaceWith": [Function],
@@ -736,6 +751,7 @@ exports[`text-shadow: red 2px 5px: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "text-shadow",
+        "important": false,
         "prop": "textShadow",
         "remove": [Function],
         "replaceWith": [Function],
@@ -758,6 +774,7 @@ exports[`view with font-size: 10px: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "font-size",
+        "important": false,
         "prop": "fontSize",
         "remove": [Function],
         "replaceWith": [Function],
@@ -780,6 +797,7 @@ exports[`view with font-size: 10px: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "font-size",
+        "important": false,
         "prop": "fontSize",
         "remove": [Function],
         "replaceWith": [Function],
@@ -802,6 +820,7 @@ exports[`white-space: break-spaces: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "white-space",
+        "important": false,
         "prop": "whiteSpace",
         "remove": [Function],
         "replaceWith": [Function],
@@ -824,6 +843,7 @@ exports[`white-space: break-spaces: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "white-space",
+        "important": false,
         "prop": "whiteSpace",
         "remove": [Function],
         "replaceWith": [Function],
@@ -888,6 +908,7 @@ exports[`white-space: pre: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "white-space",
+        "important": false,
         "prop": "whiteSpace",
         "remove": [Function],
         "replaceWith": [Function],
@@ -910,6 +931,7 @@ exports[`white-space: pre: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "white-space",
+        "important": false,
         "prop": "whiteSpace",
         "remove": [Function],
         "replaceWith": [Function],
@@ -932,6 +954,7 @@ exports[`white-space: pre-line: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "white-space",
+        "important": false,
         "prop": "whiteSpace",
         "remove": [Function],
         "replaceWith": [Function],
@@ -954,6 +977,7 @@ exports[`white-space: pre-line: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "white-space",
+        "important": false,
         "prop": "whiteSpace",
         "remove": [Function],
         "replaceWith": [Function],
@@ -976,6 +1000,7 @@ exports[`white-space: pre-wrap: app-harmony(dom-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "white-space",
+        "important": false,
         "prop": "whiteSpace",
         "remove": [Function],
         "replaceWith": [Function],
@@ -998,6 +1023,7 @@ exports[`white-space: pre-wrap: app-harmony(nv-c) 1`] = `
     Warning {
       "node": CustomDeclaration {
         "__originalProp": "white-space",
+        "important": false,
         "prop": "whiteSpace",
         "remove": [Function],
         "replaceWith": [Function],

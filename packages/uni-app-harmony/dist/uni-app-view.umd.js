@@ -819,6 +819,35 @@
   var ON_PAGE_SCROLL = "onPageScroll";
   var ON_REACH_BOTTOM = "onReachBottom";
   var ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
+  var IDENTIFIER;
+  (function(IDENTIFIER2) {
+    IDENTIFIER2["UTSJSONObject"] = "UTSJSONObject";
+    IDENTIFIER2["JSON"] = "JSON";
+    IDENTIFIER2["UTS"] = "UTS";
+    IDENTIFIER2["VUE"] = "vue";
+    IDENTIFIER2["GLOBAL_THIS"] = "globalThis";
+    IDENTIFIER2["UTS_TYPE"] = "UTSType";
+    IDENTIFIER2["UTS_METADATA"] = "$UTSMetadata$";
+    IDENTIFIER2["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
+    IDENTIFIER2["JSON_FIELD"] = "JSON_FIELD";
+  })(IDENTIFIER || (IDENTIFIER = {}));
+  var UTS_CLASS_METADATA_KIND;
+  (function(UTS_CLASS_METADATA_KIND2) {
+    UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["CLASS"] = 0] = "CLASS";
+    UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["INTERFACE"] = 1] = "INTERFACE";
+    UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["TYPE"] = 2] = "TYPE";
+  })(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
+  IDENTIFIER.UTS_METADATA;
+  var lastLogTime = 0;
+  function formatLog(module) {
+    var now = Date.now();
+    var diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
+      args[_key2 - 1] = arguments[_key2];
+    }
+    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
+  }
   function cache(fn) {
     var cache2 = /* @__PURE__ */ Object.create(null);
     return (str) => {
@@ -840,8 +869,8 @@
     var res;
     return function() {
       if (fn) {
-        for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
-          args[_key2] = arguments[_key2];
+        for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+          args[_key3] = arguments[_key3];
         }
         res = fn.apply(ctx2, args);
         fn = null;
@@ -863,16 +892,6 @@
       return obj[key2];
     }
     return getValueByDataPath(obj[key2], parts.slice(1).join("."));
-  }
-  var lastLogTime = 0;
-  function formatLog(module) {
-    var now = Date.now();
-    var diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
-      args[_key3 - 1] = arguments[_key3];
-    }
-    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
   }
   function formatKey(key2) {
     return camelize(key2.substring(5));

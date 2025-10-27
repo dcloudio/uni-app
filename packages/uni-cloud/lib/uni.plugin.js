@@ -137,6 +137,7 @@ function initUniCloudEnv() {
                         spaceAppId: space.spaceAppId,
                         accessKey: space.accessKey,
                         secretKey: space.secretKey,
+                        endpoint: space.apiEndpoint,
                     };
                 }
                 case 'tencent':

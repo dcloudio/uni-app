@@ -6,6 +6,7 @@ var path = require('path');
 var fs = require('fs');
 var compilerCore = require('@vue/compiler-core');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
+var uniShared = require('@dcloudio/uni-shared');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
@@ -82,11 +83,6 @@ function addVueRef(node, context) {
     props.splice(props.indexOf(refProp), 0, uniCliShared.createAttributeNode('ref', '__r'));
 }
 
-const customizeRE = /:/g;
-function customizeEvent(str) {
-    return shared.camelize(str.replace(customizeRE, '-'));
-}
-
 const event = {
     format(name, { isCatch, isCapture, isComponent }) {
         if (!isComponent && name === 'click') {
@@ -94,7 +90,7 @@ const event = {
         }
         name = eventMap[name] || name;
         // 处理支付宝支持捕获 https://opendocs.alipay.com/mini/framework/events#%E4%BA%8B%E4%BB%B6%E7%9A%84%E6%8D%95%E8%8E%B7%E9%98%B6%E6%AE%B5
-        return `${isCapture ? 'capture-' : ''}${isCatch ? 'catch' : 'on'}${shared.capitalize(customizeEvent(name))}`;
+        return `${isCapture ? 'capture-' : ''}${isCatch ? 'catch' : 'on'}${shared.capitalize(uniShared.customizeEvent(name))}`;
     },
 };
 const eventMap = {
