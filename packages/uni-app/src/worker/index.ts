@@ -1,5 +1,9 @@
-// @ts-expect-error
-export * from '@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts.js'
+export {
+  UTS,
+  UTSJSONObject,
+  UTSValueIterable,
+  UniError,
+} from '@dcloudio/uni-shared'
 
 declare const worker: UniNamespace.Worker
 declare const __WEB__: boolean

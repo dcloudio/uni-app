@@ -10,7 +10,8 @@
       "@vue/shared",
       "@vue/compiler-core",
       "@dcloudio/uni-cli-shared",
-      "@dcloudio/uni-mp-vite"
+      "@dcloudio/uni-mp-vite",
+      "@dcloudio/uni-shared"
     ]
   },
   {

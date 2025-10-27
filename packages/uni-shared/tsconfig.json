@@ -17,12 +17,7 @@
     "lib": [
       "ESNext",
       "DOM"
-    ],
-    "paths": {
-      "@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts": [
-        "../uni-uts-v1/lib/javascript/lib/runtime/uts"
-      ]
-    }
+    ]
   },
   "include": [
     "src",
