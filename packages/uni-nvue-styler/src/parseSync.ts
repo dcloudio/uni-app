@@ -18,7 +18,11 @@ export interface ParseStaticStyleDeclarations extends NormalizeOptions {
 }
 
 class CustomDeclaration {
-  constructor(public prop: string, public value: string | number) {}
+  constructor(
+    public prop: string,
+    public value: string | number,
+    public important?: boolean
+  ) {}
   warn(result: Result, reason: string) {
     result.warn(reason, {
       node: this as unknown as Declaration,
@@ -44,9 +48,14 @@ export function parseStaticStyleDeclarations(
   const styleObj = parseStringStyle(input)
   const declarations: Declaration[] = []
   Object.entries(styleObj).forEach(([key, value]) => {
-    declarations.push(
-      new CustomDeclaration(key, value) as unknown as Declaration
-    )
+    const valueString = value + ''
+    const important = valueString.includes('!important')
+    const decl = new CustomDeclaration(
+      key,
+      valueString.replace('!important', '').trim(),
+      important
+    ) as unknown as Declaration
+    declarations.push(decl)
   })
   const helpers = new CustomHelpers() as unknown as Helpers
   const expandedDeclarations: Declaration[] = []
@@ -120,7 +129,7 @@ function visit(
     result.push(
       // 需要再次封装成 CustomDeclaration，因为内部可能调用 warn
       ...((nodes as Declaration[]).map(
-        (node) => new CustomDeclaration(node.prop, node.value)
+        (node) => new CustomDeclaration(node.prop, node.value, node.important)
       ) as Declaration[])
     )
     return this

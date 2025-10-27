@@ -29,6 +29,11 @@ function objToCppString(
   const entries = Object.entries(obj).map(([key, value]) => {
     const keyString = key.includes('::') ? key : `"${key}"`
     if (depth >= 2) {
+      if (keyString[0] === '!') {
+        return `{ ${keyString.slice(
+          1
+        )}, UniCSSPropertyValueImportant(${value}) }`
+      }
       return `{ ${keyString}, ${value} }`
     }
     return `{ ${keyString}, ${objToCppString(

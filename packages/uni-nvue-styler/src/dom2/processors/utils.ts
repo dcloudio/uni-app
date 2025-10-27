@@ -12,6 +12,7 @@ type PropertyProcessorFn = (
   error?: string
   valueCode: string
   setterCode: string
+  important?: boolean
 }
 
 export type PropertyProcessor = PropertyProcessorFn & {

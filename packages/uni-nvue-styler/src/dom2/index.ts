@@ -1,4 +1,4 @@
-import { type Message, Warning } from 'postcss'
+import { type Declaration, type Message, Warning } from 'postcss'
 import {
   DOM2_APP_TARGET,
   type Dom2StaticStylePropertyValue,
@@ -49,6 +49,9 @@ export function parseDom2StaticStyle(
       }
     })
   }
+
+  important(decls)
+
   shorthand(decls, options)
 
   // 以下逻辑执行，很多依赖前置 parseStaticStyleDeclarations 的处理
@@ -96,6 +99,10 @@ export function parseDom2StaticStyle(
     } else {
       const processor = processors[propertyName]
       if (processor) {
+        let important = false
+        if (declaration.important) {
+          important = true
+        }
         const processed = processor(declaration.value, propertyName)
         if (processed.error) {
           messages.push(new Warning(processed.error, { node: declaration }))
@@ -132,4 +139,36 @@ function genCode(
       .join(', ')}}`
   }
   return ''
+}
+
+/**
+ * 处理 important 和 非 important 权重问题，最终保留权重高的 decl，直接操作原始 decls 数组
+ *
+ * @param decls
+ */
+function important(decls: Declaration[]) {
+  for (let i = decls.length - 1; i >= 0; i--) {
+    const decl = decls[i]
+    const prop = decl.prop
+
+    if (decl.important) {
+      // 如果是 important，删除前面所有相同属性的声明
+      for (let j = i - 1; j >= 0; j--) {
+        const prevProp = decls[j].prop
+        if (prevProp === prop) {
+          decls.splice(j, 1)
+          i--
+        }
+      }
+    } else {
+      // 如果不是 important，只删除前面相同属性的非 important 声明
+      for (let j = i - 1; j >= 0; j--) {
+        const prevProp = decls[j].prop
+        if (prevProp === prop && !decls[j].important) {
+          decls.splice(j, 1)
+          i-- // 删除后需要调整当前索引
+        }
+      }
+    }
+  }
 }
