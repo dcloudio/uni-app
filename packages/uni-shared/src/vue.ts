@@ -16,7 +16,7 @@ import {
 import type { NormalizedStyle } from '@vue/shared'
 import { isBuiltInComponent } from './tags'
 import { SLOT_DEFAULT_NAME } from './constants'
-import { getGlobal } from './utils'
+import { UTSJSONObject } from './uts'
 
 export function isComponentInternalInstance(
   vm: unknown
@@ -94,10 +94,9 @@ export function customizeEvent(str: string) {
 export function normalizeStyle(
   value: unknown
 ): NormalizedStyle | string | undefined {
-  const g = getGlobal()
-  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+  if (value instanceof UTSJSONObject) {
     const styleObject: NormalizedStyle = {}
-    g.UTSJSONObject.keys(value).forEach((key: string) => {
+    UTSJSONObject.keys(value).forEach((key: string) => {
       styleObject[key] = (value as Record<string, any>)[key]
     })
     return vueNormalizeStyle(styleObject)
@@ -130,9 +129,8 @@ export function normalizeStyle(
 
 export function normalizeClass(value: unknown): string {
   let res = ''
-  const g = getGlobal()
-  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
-    g.UTSJSONObject.keys(value).forEach((key: string) => {
+  if (value instanceof UTSJSONObject) {
+    UTSJSONObject.keys(value).forEach((key: string) => {
       if ((value as Record<string, any>)[key]) {
         res += key + ' '
       }

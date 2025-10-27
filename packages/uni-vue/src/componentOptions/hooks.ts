@@ -3,6 +3,7 @@ import {
   LINEFEED,
   ON_LOAD,
   ON_SHOW,
+  UTSJSONObject,
   decodedQuery,
   isUniLifecycleHook,
 } from '@dcloudio/uni-shared'

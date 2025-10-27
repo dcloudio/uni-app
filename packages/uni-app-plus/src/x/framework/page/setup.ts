@@ -16,6 +16,7 @@ import {
   setCurrentSystemDialogPage,
 } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/native/UniPage'
+import { UTSJSONObject } from '@dcloudio/uni-shared'
 
 export function setupXPage(
   instance: ComponentInternalInstance,
