@@ -1,8 +1,19 @@
 {
   "input": {
-    "src/index.ts": ["dist/uni-shared.es.js", "dist/uni-shared.cjs.js"]
+    "src/index.ts": [
+      "dist/uni-shared.es.js",
+      "dist/uni-shared.cjs.js"
+    ]
   },
   "compilerOptions": {
     "declaration": true
+  },
+  "alias": {
+    "entries": [
+      {
+        "find": "@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts",
+        "replacement": "packages/uni-uts-v1/lib/javascript/lib/runtime/uts.js"
+      }
+    ]
   }
 }

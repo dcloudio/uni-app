@@ -114,6 +114,11 @@ const cloudPreset = {
   imports: ['uniCloud', 'UniCloudError'],
 }
 
+const utsJsPreset = {
+  from: '@dcloudio/uni-shared',
+  imports: ['UTS', 'UTSJSONObject', 'UTSValueIterable', 'UniError'],
+}
+
 const uniAppLifeCyclePreset = {
   from: 'vue',
   imports: [
@@ -254,6 +259,9 @@ export function initAutoImportOptions(
     autoImport.push(uniH5Preset)
   } else if (platform.startsWith('mp-')) {
     autoImport.push(uniMiniProgramPreset)
+    if (process.env.UNI_APP_X === 'true') {
+      autoImport.push(utsJsPreset)
+    }
   }
   return {
     ...userOptions,

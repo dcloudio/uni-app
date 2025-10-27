@@ -14,7 +14,19 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "removeComments": false,
-    "lib": ["ESNext", "DOM"]
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "paths": {
+      "@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts": [
+        "../uni-uts-v1/lib/javascript/lib/runtime/uts"
+      ]
+    }
   },
-  "include": ["src", "../global.d.ts", "../shims-uni-app.d.ts"]
+  "include": [
+    "src",
+    "../global.d.ts",
+    "../shims-uni-app.d.ts"
+  ]
 }
