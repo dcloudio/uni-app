@@ -1,5 +1,9 @@
 import { UTSJSONObject, UTSValueIterable } from '../global/index'
-import { IDENTIFIER, UTS_CLASS_METADATA_KIND } from '../utils/index'
+import {
+  IDENTIFIER,
+  UTS_CLASS_METADATA_KIND,
+  UTS_CLASS_METADATA_KIND_LIST,
+} from '../utils/index'
 import { UTSError } from './Error'
 
 type UTSTypeFieldType = {
@@ -20,7 +24,7 @@ type UTSTypeMetadata = Required<UTSMetadata>
 function isUTSMetadata(metadata: any): metadata is UTSMetadata {
   return !!(
     metadata &&
-    metadata.kind in UTS_CLASS_METADATA_KIND &&
+    UTS_CLASS_METADATA_KIND_LIST.includes(metadata.kind) &&
     metadata.interfaces
   )
 }

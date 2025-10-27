@@ -2,7 +2,7 @@
  * copy from @uts/shared
  */
 
-export enum IDENTIFIER {
+export const enum IDENTIFIER {
   UTSJSONObject = 'UTSJSONObject',
   JSON = 'JSON',
   UTS = 'UTS',
@@ -14,8 +14,10 @@ export enum IDENTIFIER {
   JSON_FIELD = 'JSON_FIELD',
 }
 
-export enum UTS_CLASS_METADATA_KIND {
+export const enum UTS_CLASS_METADATA_KIND {
   CLASS = 0,
   INTERFACE,
   TYPE,
 }
+
+export const UTS_CLASS_METADATA_KIND_LIST = [0, 1, 2]
