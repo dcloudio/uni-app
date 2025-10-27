@@ -107,6 +107,7 @@
           "setter": "setStyleDisplay"
         },
         "nv-c": {
+          "type": "UniNativeDisplayType",
           "setter": "display"
         }
       },
@@ -188,6 +189,7 @@
           "setter": "setStylePosition"
         },
         "nv-c": {
+          "type": "UniNativePositionType",
           "setter": "position"
         }
       },
