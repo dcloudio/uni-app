@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`color: #009900: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "color": {
+      "setterCode": "setColor(0xff009900)",
+      "valueCode": "0xff009900",
+    },
+  },
+}
+`;
+
+exports[`color: #009900: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`color: #009900aa: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "color": {
+      "setterCode": "setColor(0xaa009900)",
+      "valueCode": "0xaa009900",
+    },
+  },
+}
+`;
+
+exports[`color: #009900aa: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`color: #090: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "color": {
+      "setterCode": "setColor(0xff009900)",
+      "valueCode": "0xff009900",
+    },
+  },
+}
+`;
+
+exports[`color: #090: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`color: #090a: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "color": {
+      "setterCode": "setColor(0xaa009900)",
+      "valueCode": "0xaa009900",
+    },
+  },
+}
+`;
+
+exports[`color: #090a: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`color: red: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "color": {
+      "setterCode": "setColor(0xffff0000)",
+      "valueCode": "0xffff0000",
+    },
+  },
+}
+`;
+
+exports[`color: red: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`color: rgb(255, 0, 0): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "color": {
+      "setterCode": "setColor(0xffff0000)",
+      "valueCode": "0xffff0000",
+    },
+  },
+}
+`;
+
+exports[`color: rgb(255, 0, 0): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`color: rgba(255, 0, 0, 0.5): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "color": {
+      "setterCode": "setColor(0x80ff0000)",
+      "valueCode": "0x80ff0000",
+    },
+  },
+}
+`;
+
+exports[`color: rgba(255, 0, 0, 0.5): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`color: transparent: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "color": {
+      "setterCode": "setColor(0x00000000)",
+      "valueCode": "0x00000000",
+    },
+  },
+}
+`;
+
+exports[`color: transparent: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
