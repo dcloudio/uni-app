@@ -7189,7 +7189,7 @@
     },
     {
       "name": "color",
-      "description": "color CSS 属性设置文本及文本装饰（text-decoration）的前景色颜色值。",
+      "description": "color 属性设置元素的文本及文本装饰（text-decoration）的前景色颜色值。",
       "restrictions": [
         "color"
       ],
@@ -7236,7 +7236,7 @@
     },
     {
       "name": "font-size",
-      "description": "font-size CSS 属性设置字体大小。更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。",
+      "description": "font-size 属性用于设置字体大小，更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。",
       "restrictions": [
         "length",
         "length-function"
@@ -7284,6 +7284,7 @@
     },
     {
       "name": "font-style",
+      "description": "font-style 属性用于设置字体样式。",
       "restrictions": [
         "enum"
       ],
@@ -7393,6 +7394,7 @@
     },
     {
       "name": "font-weight",
+      "description": "font-weight 属性用于设置字体的粗细程度。",
       "restrictions": [
         "enum"
       ],
@@ -8105,6 +8107,7 @@
     },
     {
       "name": "text-align",
+      "description": "text-align 属性设置元素中文本内容的水平对齐方式。",
       "restrictions": [
         "enum"
       ],
@@ -8250,6 +8253,7 @@
     },
     {
       "name": "font-family",
+      "description": "font-family 属性用于设置元素使用的字体，允许通过给定一个有先后顺序的，由字体名或者字体族名组成的列表来为元素设置字体。",
       "restrictions": [
         "font"
       ],
@@ -8718,6 +8722,7 @@
     },
     {
       "name": "white-space",
+      "description": "white-space 属性用于设置如何处理元素中的空白字符。",
       "restrictions": [
         "enum"
       ],
