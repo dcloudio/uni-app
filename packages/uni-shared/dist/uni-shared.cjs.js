@@ -490,24 +490,7 @@ function arrayAt(array, index) {
 /**
  * copy from @uts/shared
  */
-var IDENTIFIER;
-(function (IDENTIFIER) {
-    IDENTIFIER["UTSJSONObject"] = "UTSJSONObject";
-    IDENTIFIER["JSON"] = "JSON";
-    IDENTIFIER["UTS"] = "UTS";
-    IDENTIFIER["VUE"] = "vue";
-    IDENTIFIER["GLOBAL_THIS"] = "globalThis";
-    IDENTIFIER["UTS_TYPE"] = "UTSType";
-    IDENTIFIER["UTS_METADATA"] = "$UTSMetadata$";
-    IDENTIFIER["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
-    IDENTIFIER["JSON_FIELD"] = "JSON_FIELD";
-})(IDENTIFIER || (IDENTIFIER = {}));
-var UTS_CLASS_METADATA_KIND;
-(function (UTS_CLASS_METADATA_KIND) {
-    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["CLASS"] = 0] = "CLASS";
-    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["INTERFACE"] = 1] = "INTERFACE";
-    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["TYPE"] = 2] = "TYPE";
-})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
+const UTS_CLASS_METADATA_KIND_LIST = [0, 1, 2];
 
 function getType(val) {
     return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
@@ -529,13 +512,13 @@ class UTSError extends Error {
 
 function isUTSMetadata(metadata) {
     return !!(metadata &&
-        metadata.kind in UTS_CLASS_METADATA_KIND &&
+        UTS_CLASS_METADATA_KIND_LIST.includes(metadata.kind) &&
         metadata.interfaces);
 }
 function isNativeType(proto) {
     return !proto || proto === Object.prototype;
 }
-const utsMetadataKey = IDENTIFIER.UTS_METADATA;
+const utsMetadataKey = "$UTSMetadata$" /* IDENTIFIER.UTS_METADATA */;
 /**
  * 处理复杂的继承关系。
  * 例如：
@@ -611,7 +594,7 @@ class UTSType {
     static get$UTSMetadata$(...args) {
         return {
             name: '',
-            kind: UTS_CLASS_METADATA_KIND.TYPE,
+            kind: 2 /* UTS_CLASS_METADATA_KIND.TYPE */,
             interfaces: [],
             fields: {},
         };

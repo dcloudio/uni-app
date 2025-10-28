@@ -985,7 +985,7 @@ export declare const UTS: {
     };
 };
 
-declare enum UTS_CLASS_METADATA_KIND {
+declare const enum UTS_CLASS_METADATA_KIND {
     CLASS = 0,
     INTERFACE = 1,
     TYPE = 2
