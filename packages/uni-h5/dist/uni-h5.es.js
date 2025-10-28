@@ -16570,7 +16570,7 @@ function setupApp(comp) {
               notFound: true,
               openType: "appLaunch",
               path: route.path,
-              query: {},
+              query: decodedQuery(route.query),
               scene: 1001
             };
             handleBeforeEntryPageRoutes();
