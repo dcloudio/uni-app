@@ -259,9 +259,10 @@ export function initAutoImportOptions(
     autoImport.push(uniH5Preset)
   } else if (platform.startsWith('mp-')) {
     autoImport.push(uniMiniProgramPreset)
-  }
-  if (process.env.UNI_APP_X === 'true') {
-    autoImport.push(utsJsPreset)
+    if (process.env.UNI_APP_X === 'true') {
+      // 小程序端使用autoImport
+      autoImport.push(utsJsPreset)
+    }
   }
   return {
     ...userOptions,
