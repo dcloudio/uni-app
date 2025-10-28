@@ -7567,6 +7567,7 @@
     },
     {
       "name": "text-decoration",
+      "description": "text-decoration 属性用于设置元素中文本的修饰线外观，是 text-decoration-line、text-decoration-color、text-decoration-style、text-decoration-thickness 属性的缩写。",
       "restrictions": [
         "enum",
         "color",
@@ -7610,6 +7611,7 @@
     },
     {
       "name": "text-decoration-line",
+      "description": "text-decoration-line 属性用于设置元素中文本的修饰线类型。",
       "restrictions": [
         "enum"
       ],
@@ -7781,6 +7783,7 @@
     },
     {
       "name": "text-decoration-color",
+      "description": "text-decoration-color 属性用于设置元素中文本的修饰线颜色。",
       "restrictions": [
         "color"
       ],
@@ -7821,6 +7824,7 @@
     },
     {
       "name": "text-decoration-style",
+      "description": "text-decoration-style 属性用于设置元素中文本的修饰线样式，线的样式会应用到所有被 text-decoration-line 设定的线，不能为其中的每条线设置不同的样式。",
       "restrictions": [
         "enum"
       ],
@@ -7991,11 +7995,80 @@
     },
     {
       "name": "text-decoration-thickness",
+      "description": "text-decoration-thickness 属性用于设置元素中文本的修饰线的粗细。",
       "restrictions": [
         "length",
         "length-function"
       ],
       "syntax": "auto | from-font | <length> | <percentage> ",
+      "values": [
+        {
+          "name": "auto",
+          "description": "自动为文本装饰线选择合适的粗细。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "-"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "from-font",
+          "description": "如果字体文件中包含了首选的粗细值，则使用字体文件的粗细值。如果字体文件中没有包含首选的粗细值，则效果和设置为 auto 一样。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "-"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
