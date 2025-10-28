@@ -11,7 +11,8 @@
     "style"
   ],
   "sideEffects": [
-    "lib/automator.js"
+    "lib/automator.js",
+    "src/x/polyfill/polyfill.ts"
   ],
   "repository": {
     "type": "git",
