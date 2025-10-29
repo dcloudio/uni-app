@@ -114,7 +114,7 @@ export function rewriteClass(
           rewriteExpression(
             createCompoundExpression([
               `${context.helperString(PARSE_VIRTUAL_HOST_CLASS)}(`,
-              'this.$scope.data.' + VIRTUAL_HOST_CLASS,
+              '_ctx.$scope.data.' + VIRTUAL_HOST_CLASS,
               `)`,
             ]),
             context
