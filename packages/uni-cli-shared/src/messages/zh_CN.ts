@@ -45,7 +45,7 @@ export default {
   'prompt.run.devtools.mp-harmony': 'HBuilderX',
   'prompt.run.devtools.mp-alipay': '支付宝小程序开发者工具',
   'prompt.run.devtools.mp-baidu': '百度开发者工具',
-  'prompt.run.devtools.mp--kuaishou': '快手开发者工具',
+  'prompt.run.devtools.mp-kuaishou': '快手开发者工具',
   'prompt.run.devtools.mp-lark': '飞书开发者工具',
   'prompt.run.devtools.mp-qq': 'QQ小程序开发者工具',
   'prompt.run.devtools.mp-toutiao': '抖音开发者工具',
