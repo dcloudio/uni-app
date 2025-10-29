@@ -45,7 +45,7 @@ export default {
   'prompt.run.devtools.mp-harmony': 'HBuilderX',
   'prompt.run.devtools.mp-alipay': 'Alipay Mini Program Devtools',
   'prompt.run.devtools.mp-baidu': 'Baidu Mini Program Devtools',
-  'prompt.run.devtools.mp--kuaishou': 'Kuaishou Mini Program Devtools',
+  'prompt.run.devtools.mp-kuaishou': 'Kuaishou Mini Program Devtools',
   'prompt.run.devtools.mp-lark': 'Lark Mini Program Devtools',
   'prompt.run.devtools.mp-qq': 'QQ Mini Program Devtools',
   'prompt.run.devtools.mp-toutiao': 'Douyin Mini Program Devtools',
