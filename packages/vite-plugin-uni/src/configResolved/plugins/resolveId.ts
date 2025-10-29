@@ -37,13 +37,20 @@ export function uniResolveIdPlugin(
   options: VitePluginUniResolvedOptions
 ): Plugin {
   const resolveCache: Record<string, string> = {}
-  if (process.env.UNI_APP_X === 'true') {
+  const isX = process.env.UNI_APP_X === 'true'
+  if (isX) {
     BUILT_IN_MODULES['@dcloudio/uni-app'] = 'dist-x/uni-app.es.js'
     BUILT_IN_MODULES['@dcloudio/uni-cloud'] = 'dist/uni-cloud-x.es.js'
   }
   return {
     name: 'uni:resolve-id',
     resolveId(id, importer) {
+      if (isX && process.env.UNI_UTS_PLATFORM.startsWith('mp-')) {
+        // TODO 优化此逻辑，目前unicloud-db等内置组件依赖UTSJSONObject时会自动引用tslib，此处逻辑防止内置组件引用插件内置tslib
+        if (id === 'tslib') {
+          return '\0tslib.js'
+        }
+      }
       const cache = resolveCache[id]
       if (cache) {
         // debugResolve('cache', id, cache)
