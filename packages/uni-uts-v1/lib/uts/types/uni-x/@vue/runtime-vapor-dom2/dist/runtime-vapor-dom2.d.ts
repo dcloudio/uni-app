@@ -214,6 +214,13 @@ export declare function useSharedDataPageId(): number;
  */
 export declare function toSharedDataImageMode(value: string): UniImageModeType;
 
+/**
+ * 将字符串值转换为 UniNativeScrollViewDirectionType 枚举类型
+ * @param value - 字符串值
+ * @returns UniNativeScrollViewDirectionType 枚举值
+ */
+export declare function toSharedDataScrollViewDirection(value: string): UniNativeScrollViewDirectionType;
+
 export declare function getCurrentElementVaporComponentInstance(): VaporSharedDataComponentInstance | null;
 type TemplateFactory = (page: UniPage) => UniElement & {
     $root?: true;
