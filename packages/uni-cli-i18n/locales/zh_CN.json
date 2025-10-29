@@ -70,6 +70,7 @@
   "i18n.fallbackLocale.missing": "当前应用配置的 fallbackLocale 或 locale 为：{locale}，但 locale 目录缺少该语言文件",
   "prompt.run.message": "运行方式：打开 {{devtools}}, 导入 {{outputDir}} 运行。",
   "prompt.run.devtools.app-plus": "HBuilderX",
+  "prompt.run.devtools.mp-harmony": "HBuilderX",
   "prompt.run.devtools.mp-alipay": "支付宝小程序开发者工具",
   "prompt.run.devtools.mp-baidu": "百度开发者工具",
   "prompt.run.devtools.mp-kuaishou": "快手开发者工具",
