@@ -106,7 +106,8 @@ export function uniAppCssPrePlugin(): Plugin {
           fs.outputFileSync(
             path.resolve(process.env.UNI_APP_HARMONY_DOM2_CPP_DIR!, filename),
             `#include "${className}.h"
-vue::css::UniStyleSheetMap ${className}::_styleSheet = ${cssCode};`
+using namespace vue::css;
+UniStyleSheetMap ${className}::_styleSheet = ${cssCode};`
           )
         },
       })
