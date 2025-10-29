@@ -7,7 +7,9 @@
           "setter": "setStyleAlignContent"
         }
       }
-    }
+    },
+    "values": ["auto", "flex-start", "center", "flex-end", "stretch", "baseline", "space-between", "space-around", "space-evenly"],
+    "defaultValue": "stretch"
   },
   "align-items": {
     "type": "UniCSSAlignItemsType",
@@ -17,7 +19,9 @@
           "setter": "setStyleAlignItems"
         }
       }
-    }
+    },
+    "values": ["auto", "flex-start", "center", "flex-end", "stretch", "baseline", "space-between", "space-around", "space-evenly"],
+    "defaultValue": "stretch"
   },
   "align-self": {
     "type": "UniCSSAlignSelfType",
@@ -27,7 +31,9 @@
           "setter": "setStyleAlignSelf"
         }
       }
-    }
+    },
+    "values": ["auto", "flex-start", "center", "flex-end", "stretch", "baseline", "space-between", "space-around", "space-evenly"],
+    "defaultValue": "auto"
   },
   "flex-basis": {
     "type": "UniCSSUnitValue",
@@ -47,7 +53,9 @@
           "setter": "setStyleFlexDirection"
         }
       }
-    }
+    },
+    "values": ["row", "row-reverse", "column", "column-reverse"],
+    "defaultValue": "column"
   },
   "flex-grow": {
     "type": "number",
@@ -77,7 +85,9 @@
           "setter": "setStyleFlexWrap"
         }
       }
-    }
+    },
+    "values": ["nowrap", "wrap", "wrap-reverse"],
+    "defaultValue": "nowrap"
   },
   "justify-content": {
     "type": "UniCSSJustifyContentType",
@@ -87,7 +97,9 @@
           "setter": "setStyleJustifyContent"
         }
       }
-    }
+    },
+    "values": ["auto", "flex-start", "center", "flex-end", "stretch", "baseline", "space-between", "space-around", "space-evenly"],
+    "defaultValue": "flex-start"
   },
   "bottom": {
     "type": "UniCSSUnitValue",
@@ -119,7 +131,9 @@
           "setter": "display"
         }
       }
-    }
+    },
+    "values": ["none", "flex"],
+    "defaultValue": "flex"
   },
   "height": {
     "type": "UniCSSUnitValue",
@@ -201,7 +215,9 @@
           "setter": "position"
         }
       }
-    }
+    },
+    "values": ["relative", "absolute", "fixed", "sticky", "static"],
+    "defaultValue": "relative"
   },
   "right": {
     "type": "UniCSSUnitValue",
@@ -252,7 +268,9 @@
           "setter": "visibility"
         }
       }
-    }
+    },
+    "values": ["visible", "hidden"],
+    "defaultValue": "visible"
   },
   "background-clip": {
     "type": "UniNativeBackgroundClip",
@@ -267,7 +285,9 @@
           "setter": "backgroundClip"
         }
       }
-    }
+    },
+    "values": ["border-box", "padding-box", "content-box"],
+    "defaultValue": "border-box"
   },
   "background-color": {
     "type": "UniNativeColor",
@@ -381,7 +401,9 @@
           "setter": "borderStyle"
         }
       }
-    }
+    },
+    "values": ["none", "solid", "dashed", "dotted" ],
+    "defaultValue": "none"
   },
   "border-bottom-style": {
     "type": "UniCSSBorderStyleType",
@@ -403,7 +425,9 @@
           "setter": "borderStyleBottom"
         }
       }
-    }
+    },
+    "values": ["none", "solid", "dashed", "dotted" ],
+    "defaultValue": "none"
   },
   "border-left-style": {
     "type": "UniCSSBorderStyleType",
@@ -425,7 +449,9 @@
           "setter": "borderStyleLeft"
         }
       }
-    }
+    },
+    "values": ["none", "solid", "dashed", "dotted" ],
+    "defaultValue": "none"
   },
   "border-right-style": {
     "type": "UniCSSBorderStyleType",
@@ -447,7 +473,9 @@
           "setter": "borderStyleRight"
         }
       }
-    }
+    },
+    "values": ["none", "solid", "dashed", "dotted" ],
+    "defaultValue": "none"
   },
   "border-top-style": {
     "type": "UniCSSBorderStyleType",
@@ -469,7 +497,9 @@
           "setter": "borderStyleTop"
         }
       }
-    }
+    },
+    "values": ["none", "solid", "dashed", "dotted" ],
+    "defaultValue": "none"
   },
   "border-bottom-width": {
     "type": "UniCSSUnitValue",
@@ -594,7 +624,9 @@
           "setter": "setStyleBoxSizing"
         }
       }
-    }
+    },
+    "values": ["content-box", "border-box"],
+    "defaultValue": "border-box"
   },
   "margin-bottom": {
     "type": "UniCSSUnitValue",
@@ -704,7 +736,9 @@
           "setter": "overflow"
         }
       }
-    }
+    },
+    "values": ["visible", "hidden"],
+    "defaultValue": "hidden"
   },
   "pointer-events": {
     "type": "UniNativePointerEventType",
@@ -719,7 +753,9 @@
           "setter": "pointerEvents"
         }
       }
-    }
+    },
+    "values": ["auto", "none"],
+    "defaultValue": "auto"
   },
   "z-index": {
     "type": "number",
@@ -878,7 +914,9 @@
           "setter": "setFontStyle"
         }
       }
-    }
+    },
+    "values": ["normal", "italic"],
+    "defaultValue": "normal"
   },
   "font-weight": {
     "type": ["UniCSSFontWeightType", "number"],
@@ -893,7 +931,9 @@
           "setter": "setFontWeight"
         }
       }
-    }
+    },
+    "values": ["normal", "bold", "lighter", "bolder"],
+    "defaultValue": "normal"
   },
   "letter-spacing": {
     "type": "UniCSSUnitValue",
@@ -923,7 +963,9 @@
           "setter": "setLineHeight"
         }
       }
-    }
+    },
+    "values": ["normal"],
+    "defaultValue": "1.2"
   },
   "text-align": {
     "type": "UniCSSTextAlign",
@@ -938,7 +980,9 @@
           "setter": "setTextAlign"
         }
       }
-    }
+    },
+    "values": ["left", "right", "center"],
+    "defaultValue": "left"
   },
   "text-decoration-line": {
     "type": "UniCSSTextDecorationLineType",
@@ -953,7 +997,9 @@
           "setter": "setTextDecorationLine"
         }
       }
-    }
+    },
+    "values": ["none", "underline", "overline", "line-through"],
+    "defaultValue": "none"
   },
   "text-overflow": {
     "type": "UniCSSTextOverflow",
@@ -968,7 +1014,9 @@
           "setter": "setTextOverflow"
         }
       }
-    }
+    },
+    "values": ["clip", "ellipsis" ],
+    "defaultValue": "clip"
   },
   "text-shadow": {
     "type": "UniCSSTextShadow",
@@ -998,7 +1046,9 @@
           "setter": "setWhiteSpace"
         }
       }
-    }
+    },
+    "values": ["normal", "nowrap", "pre", "pre-wrap", "pre-line", "break-spaces"],
+    "defaultValue": "normal"
   },
   "--*": {
     "description": "css变量",
