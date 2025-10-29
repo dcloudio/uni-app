@@ -24,6 +24,7 @@ interface Invoker {
 export function vOn(value: EventValue | undefined, key?: number | string) {
   const instance = getCurrentInstance()! as unknown as {
     $ei: number
+    $currentSlotComponentInstance?: { uid: number; $ei: number }
     ctx: { $scope: Record<string, any>; $mpPlatform: UniApp.PLATFORM }
   }
   const ctx = instance.ctx
@@ -37,7 +38,19 @@ export function vOn(value: EventValue | undefined, key?: number | string) {
       ? '_' + key
       : ''
 
-  const name = 'e' + instance.$ei++ + extraKey
+  let name: string
+
+  if (instance.$currentSlotComponentInstance) {
+    const slotComponentInstance = instance.$currentSlotComponentInstance
+    name =
+      'e' +
+      slotComponentInstance.uid +
+      '_' +
+      slotComponentInstance.$ei++ +
+      extraKey
+  } else {
+    name = 'e' + instance.$ei++ + extraKey
+  }
 
   const mpInstance = ctx.$scope
   if (!value) {
