@@ -26,7 +26,7 @@ const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn, {
  * 京东小程序 input 事件不支持动态事件，故 v-model 也需要调整
  */
 const transformModel = uniCliShared.createTransformModel(uniMpCompiler.transformModel, {
-    match: (node, context) => {
+    match: (node) => {
         if (node.tag === 'input' || node.tag === 'textarea') {
             return true;
         }
