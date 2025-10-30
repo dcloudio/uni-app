@@ -10,7 +10,7 @@ export function rewriteImportVuePlugin(): Plugin {
     async renderChunk(source, chunk) {
       if (chunk.fileName.endsWith('.js')) {
         const rewritten = rewriteImportVue(source)
-        if (rewritten) {
+        if (rewritten.hasChanged()) {
           return {
             code: rewritten.toString(),
             map: rewritten.generateMap(),
@@ -30,7 +30,6 @@ export function rewriteImportVue(input: string) {
     sourceType: 'module',
   }).program.body
   const s = new MagicString(input)
-  let hasChanged = false
   ast.forEach((node) => {
     if (node.type === 'ImportDeclaration' && node.source.value === 'vue') {
       const specifiers = node.specifiers
@@ -59,15 +58,10 @@ export function rewriteImportVue(input: string) {
           node.end!,
           `const { ${imports.join(', ')} } = globalThis.Vue`
         )
-        hasChanged = true
       } else {
         s.remove(node.start!, node.end!)
-        hasChanged = true
       }
     }
   })
-  if (hasChanged) {
-    return s
-  }
-  return
+  return s
 }
