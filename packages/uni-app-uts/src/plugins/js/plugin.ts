@@ -22,6 +22,7 @@ import {
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
 import { uniAppJsPlugin } from './js'
+import { rewriteImportVuePlugin } from './rewriteImportVue'
 
 export function initUniAppJsEngineDom1CssPlugin(config: ResolvedConfig) {
   injectCssPlugin(
@@ -80,7 +81,7 @@ export function createUniAppJsEnginePlugin(
 
     const paths: Record<string, string> = isESM
       ? {
-          vue: '@dcloudio/uni-app-x-runtime',
+          // vue: '@dcloudio/uni-app-x-runtime',
           '@vue/shared': '@dcloudio/uni-app-x-runtime',
         }
       : {}
@@ -123,6 +124,7 @@ export function createUniAppJsEnginePlugin(
                   '@vue/shared': 'uni.VueShared',
                 },
                 paths,
+                plugins: isESM ? [rewriteImportVuePlugin()] : [],
                 manualChunks(id) {
                   if (isESM) {
                     const chunkName = normalizePath(id.split('?')[0])
