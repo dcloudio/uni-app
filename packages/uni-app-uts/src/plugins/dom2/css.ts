@@ -26,6 +26,12 @@ import {
   DOM2_APP_TARGET,
   parse,
 } from '@dcloudio/uni-nvue-styler'
+import {
+  type SourceMapInput,
+  TraceMap,
+  originalPositionFor,
+  sourceContentFor,
+} from '@jridgewell/trace-mapping'
 
 import { isVue } from '../utils'
 
@@ -42,6 +48,8 @@ export function uniAppCssPrePlugin(): Plugin {
     apply: 'build',
     configResolved(config) {
       removePlugins(['vite:css', 'vite:css-post'], config)
+      // 强制启用 css source map
+      config.css.devSourcemap = true
       const uvueCssPostPlugin = cssPostPlugin(config, {
         isJsCode: true,
         platform: process.env.UNI_PLATFORM,
@@ -155,6 +163,14 @@ export function uniAppCssPlugin(): Plugin {
         type: 'uvue',
         platform: process.env.UNI_UTS_PLATFORM,
       })
+      let cssSourceMap: SourceMapInput | undefined
+      if (messages.find((m) => m.type === 'warning')) {
+        const moduleInfo = this.getModuleInfo(filename)
+        cssSourceMap = moduleInfo?.meta.uni?.cssSourceMap
+      }
+      const sourceMap: TraceMap = (
+        cssSourceMap ? new TraceMap(cssSourceMap) : undefined
+      ) as TraceMap
       messages.forEach((message) => {
         if (message.type === 'warning') {
           // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
@@ -162,11 +178,29 @@ export function uniAppCssPlugin(): Plugin {
             SPECIAL_CHARS.WARN_BLOCK +
               colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
           )
-          let msg = formatAtFilename(filename)
-          if (message.line && message.column) {
-            msg += `\n${generateCodeFrame(source, {
-              line: message.line,
-              column: message.column,
+          const originalPos = originalPositionFor(sourceMap, {
+            line: message.line,
+            column: message.column,
+          })
+          let code = source
+          let line = message.line
+          let column = message.column
+          if (originalPos.source) {
+            const sourceContent = sourceContentFor(
+              sourceMap,
+              originalPos.source
+            )
+            if (sourceContent) {
+              code = sourceContent
+              line = originalPos.line
+              column = originalPos.column
+            }
+          }
+          let msg = formatAtFilename(filename, line, column)
+          if (line && column) {
+            msg += `\n${generateCodeFrame(code, {
+              line,
+              column,
             }).replace(/\t/g, ' ')}\n`
           }
           console.log(msg + SPECIAL_CHARS.WARN_BLOCK)

@@ -3070,12 +3070,24 @@ async function transformStyle(code, descriptor, index, options, pluginContext, f
   const finalMap = map && map.mappings !== "" && block.map ? mergeSourceMaps(block.map, map, options.root) : map;
   return {
     code: result.code,
-    map: finalMap,
+    // fixed by uts
+    map: null,
     meta: block.scoped && !descriptor.isTemp ? {
       vite: {
         cssScopeTo: [descriptor.filename, "default"]
+      },
+      // fixed by uts
+      // 走 rollup 的 sourcemap 机制目前有问题
+      // 所以先自己存储使用
+      uni: {
+        cssSourceMap: finalMap
       }
-    } : void 0
+    } : {
+      // fixed by uts
+      uni: {
+        cssSourceMap: finalMap
+      }
+    }
   };
 }
 

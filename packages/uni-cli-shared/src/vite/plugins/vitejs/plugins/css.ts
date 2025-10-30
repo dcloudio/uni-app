@@ -268,6 +268,7 @@ export function cssPlugin(
 
       const {
         code: css,
+        map,
         modules,
         deps,
       } = await compileCSS(
@@ -299,8 +300,7 @@ export function cssPlugin(
 
       return {
         code: css,
-        // TODO CSS source map
-        map: { mappings: '' },
+        map,
       }
     },
   }
