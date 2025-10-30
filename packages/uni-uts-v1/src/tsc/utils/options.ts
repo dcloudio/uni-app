@@ -40,6 +40,12 @@ function createTsConfigPaths(
           '../../../lib/tsconfig/types/dcloudio__uni-app'
         ),
       ],
+      '@vue/shared': [
+        path.resolve(uniXTypesDir, '@vue/shared/dist/shared.d.ts'),
+      ],
+      '@vue/reactivity': [
+        path.resolve(uniXTypesDir, '@vue/reactivity/dist/reactivity.d.ts'),
+      ],
       '@vue/runtime-core': [
         path.resolve(uniXTypesDir, '@vue/runtime-core/dist/runtime-core.d.ts'),
       ],
