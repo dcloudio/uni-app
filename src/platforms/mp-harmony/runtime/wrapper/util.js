@@ -19,54 +19,32 @@ export function initRelation ({
   const nodeId = mpInstance.nodeId + ''
   const webviewId = mpInstance.pageinstance.__pageId__ + ''
 
-  instances[webviewId + '_' + nodeId] = mpInstance.$vm
+  instances[webviewId + '_' + nodeId] = mpInstance
 
-  this.triggerEvent('__l', {
-    vuePid,
-    nodeId,
-    webviewId
+  handleLink.call(mpInstance, {
+    detail: {
+      nodeId,
+      webviewId,
+      vuePid
+    }
   })
 }
 
 export function handleLink ({
-  detail: {
-    nodeId,
-    webviewId
-  }
+  detail
 }) {
-  const vm = instances[webviewId + '_' + nodeId]
-  if (!vm) {
+  const { nodeId, webviewId } = detail
+  const mpInstance = instances[webviewId + '_' + nodeId]
+  if (!mpInstance) {
     return
   }
-  let parentVm = instances[webviewId + '_' + vm.$scope.ownerId]
+
+  const owner = instances[webviewId + '_' + mpInstance.ownerId]
+  let parentVm = owner && owner.$vm
+
   if (!parentVm) {
     parentVm = this.$vm
   }
 
-  vm.$parent = parentVm
-  vm.$root = parentVm.$root
-  parentVm.$children.push(vm)
-
-  const createdVm = function () {
-    vm.__call_hook('created')
-  }
-  const mountedVm = function () {
-    // 处理当前 vm 子
-    if (vm._$childVues) {
-      vm._$childVues.forEach(([createdVm]) => createdVm())
-      vm._$childVues.forEach(([, mountedVm]) => mountedVm())
-      delete vm._$childVues
-    }
-    vm.__call_hook('beforeMount')
-    vm._isMounted = true
-    vm.__call_hook('mounted')
-    vm.__call_hook('onReady')
-  }
-  // 当 parentVm 已经 mounted 时，直接触发，否则延迟
-  if (!parentVm || parentVm._isMounted) {
-    createdVm()
-    mountedVm()
-  } else {
-    (parentVm._$childVues || (parentVm._$childVues = [])).push([createdVm, mountedVm])
-  }
+  detail.parent = parentVm
 }
