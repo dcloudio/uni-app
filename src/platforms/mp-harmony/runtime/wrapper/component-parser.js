@@ -70,7 +70,7 @@ export default function parseComponent (vueComponentOptions, needVueOptions) {
 
     // 处理父子关系
     initRelation.call(this, {
-      vuePid: this._$vuePid,
+      options,
       mpInstance: this
     })
 

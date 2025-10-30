@@ -12,7 +12,7 @@ export {
 export const instances = Object.create(null)
 
 export function initRelation ({
-  vuePid,
+  options,
   mpInstance
 }) {
   // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
@@ -21,12 +21,13 @@ export function initRelation ({
 
   instances[webviewId + '_' + nodeId] = mpInstance
 
+  Object.assign(options, {
+    nodeId,
+    webviewId
+  })
+
   handleLink.call(mpInstance, {
-    detail: {
-      nodeId,
-      webviewId,
-      vuePid
-    }
+    detail: options
   })
 }
 
