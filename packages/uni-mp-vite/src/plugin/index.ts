@@ -191,9 +191,10 @@ export function uniMiniProgramPlugin(
       return (createConfigResolved(options) as Function)(config)
     },
     generateBundle() {
+      const isX = process.env.UNI_APP_X === 'true'
       if (template.filter) {
         const extname = template.filter.extname
-        if (process.env.UNI_APP_X === 'true') {
+        if (isX) {
           if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
             // 目前 mp-weixin（mp-qq）、mp-alipay（mp-dingtalk）、mp-toutiao（mp-lark）均支持视图层setStyle
             if (template.filter.setStyle && !autoImportFilterEmitted) {
@@ -232,7 +233,7 @@ export function uniMiniProgramPlugin(
         return
       }
       if (!resetCssEmitted) {
-        if (process.env.UNI_APP_X === 'true') {
+        if (isX) {
           resetCssEmitted = true
           this.emitFile({
             type: 'asset',
