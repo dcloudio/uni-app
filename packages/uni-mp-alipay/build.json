@@ -43,5 +43,35 @@
       "@vue/shared",
       "vue"
     ]
+  },
+  {
+    "input": {
+      "src/x/runtime/index.ts": "dist-x/uni.mp.esm.js",
+      "src/x/api/index.ts": "dist-x/uni.api.esm.js"
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "@dcloudio/uni-platform",
+          "replacement": "packages/uni-mp-alipay/src/platform/index.ts"
+        },
+        {
+          "find": "@dcloudio/uni-mp-platform",
+          "replacement": "packages/uni-mp-core/src/platform/index.ts"
+        }
+      ]
+    },
+    "replacements": {
+      "__GLOBAL__": "my",
+      "__X__": "true",
+      "__PLATFORM__": "\"mp-alipay\"",
+      "__PLATFORM_TITLE__": "支付宝小程序"
+    },
+    "external": [
+      "@dcloudio/uni-i18n",
+      "@dcloudio/uni-shared",
+      "@vue/shared",
+      "vue"
+    ]
   }
 ]

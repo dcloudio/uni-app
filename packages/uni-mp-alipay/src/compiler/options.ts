@@ -12,7 +12,10 @@ import {
   getNativeTags,
   // transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
-import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import {
+  type UniMiniProgramPluginOptions,
+  resolveMiniProgramRuntime,
+} from '@dcloudio/uni-mp-vite'
 import source from './mini.project.json'
 import { transformRef } from './transforms/transformRef'
 import { event } from './event'
@@ -94,10 +97,10 @@ export const options: UniMiniProgramPluginOptions = {
   cdn: 2,
   vite: {
     inject: {
-      uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],
+      uni: [resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'default'],
     },
     alias: {
-      'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
+      'uni-mp-runtime': resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
       assets: createCopyComponentDirs(COMPONENTS_DIR),
