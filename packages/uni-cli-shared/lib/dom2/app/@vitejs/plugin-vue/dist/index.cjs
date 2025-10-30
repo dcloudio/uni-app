@@ -870,6 +870,10 @@ function stripFilename(path) {
 }
 
 const COLUMN$1 = 0;
+const SOURCES_INDEX = 1;
+const SOURCE_LINE = 2;
+const SOURCE_COLUMN = 3;
+const NAMES_INDEX = 4;
 
 function maybeSort(mappings, owned) {
     const unsortedIndex = nextUnsortedSegmentLine(mappings, 0);
@@ -907,6 +911,56 @@ function sortSegments(line, owned) {
 function sortComparator(a, b) {
     return a[COLUMN$1] - b[COLUMN$1];
 }
+
+let found = false;
+/**
+ * A binary search implementation that returns the index if a match is found.
+ * If no match is found, then the left-index (the index associated with the item that comes just
+ * before the desired index) is returned. To maintain proper sort order, a splice would happen at
+ * the next index:
+ *
+ * ```js
+ * const array = [1, 3];
+ * const needle = 2;
+ * const index = binarySearch(array, needle, (item, needle) => item - needle);
+ *
+ * assert.equal(index, 0);
+ * array.splice(index + 1, 0, needle);
+ * assert.deepEqual(array, [1, 2, 3]);
+ * ```
+ */
+function binarySearch(haystack, needle, low, high) {
+    while (low <= high) {
+        const mid = low + ((high - low) >> 1);
+        const cmp = haystack[mid][COLUMN$1] - needle;
+        if (cmp === 0) {
+            found = true;
+            return mid;
+        }
+        if (cmp < 0) {
+            low = mid + 1;
+        }
+        else {
+            high = mid - 1;
+        }
+    }
+    found = false;
+    return low - 1;
+}
+function upperBound(haystack, needle, index) {
+    for (let i = index + 1; i < haystack.length; index = i++) {
+        if (haystack[i][COLUMN$1] !== needle)
+            break;
+    }
+    return index;
+}
+function lowerBound(haystack, needle, index) {
+    for (let i = index - 1; i >= 0; index = i--) {
+        if (haystack[i][COLUMN$1] !== needle)
+            break;
+    }
+    return index;
+}
 function memoizedState() {
     return {
         lastKey: -1,
@@ -914,6 +968,36 @@ function memoizedState() {
         lastIndex: -1,
     };
 }
+/**
+ * This overly complicated beast is just to record the last tested line/column and the resulting
+ * index, allowing us to skip a few tests if mappings are monotonically increasing.
+ */
+function memoizedBinarySearch(haystack, needle, state, key) {
+    const { lastKey, lastNeedle, lastIndex } = state;
+    let low = 0;
+    let high = haystack.length - 1;
+    if (key === lastKey) {
+        if (needle === lastNeedle) {
+            found = lastIndex !== -1 && haystack[lastIndex][COLUMN$1] === needle;
+            return lastIndex;
+        }
+        if (needle >= lastNeedle) {
+            // lastIndex may be -1 if the previous needle was not found.
+            low = lastIndex === -1 ? 0 : lastIndex;
+        }
+        else {
+            high = lastIndex;
+        }
+    }
+    state.lastKey = key;
+    state.lastNeedle = needle;
+    return (state.lastIndex = binarySearch(haystack, needle, low, high));
+}
+
+const LINE_GTR_ZERO = '`line` must be greater than 0 (lines start at line 1)';
+const COL_GTR_EQ_ZERO = '`column` must be greater than or equal to 0 (columns start at column 0)';
+const LEAST_UPPER_BOUND = -1;
+const GREATEST_LOWER_BOUND = 1;
 class TraceMap {
     constructor(map, mapUrl) {
         const isString = typeof map === 'string';
@@ -959,6 +1043,33 @@ function decodedMappings(map) {
     return ((_a = cast$2(map))._decoded || (_a._decoded = decode(cast$2(map)._encoded)));
 }
 /**
+ * A higher-level API to find the source/line/column associated with a generated line/column
+ * (think, from a stack trace). Line is 1-based, but column is 0-based, due to legacy behavior in
+ * `source-map` library.
+ */
+function originalPositionFor(map, needle) {
+    let { line, column, bias } = needle;
+    line--;
+    if (line < 0)
+        throw new Error(LINE_GTR_ZERO);
+    if (column < 0)
+        throw new Error(COL_GTR_EQ_ZERO);
+    const decoded = decodedMappings(map);
+    // It's common for parent source maps to have pointers to lines that have no
+    // mapping (like a "//# sourceMappingURL=") at the end of the child file.
+    if (line >= decoded.length)
+        return OMapping(null, null, null, null);
+    const segments = decoded[line];
+    const index = traceSegmentInternal(segments, cast$2(map)._decodedMemo, line, column, bias || GREATEST_LOWER_BOUND);
+    if (index === -1)
+        return OMapping(null, null, null, null);
+    const segment = segments[index];
+    if (segment.length === 1)
+        return OMapping(null, null, null, null);
+    const { names, resolvedSources } = map;
+    return OMapping(resolvedSources[segment[SOURCES_INDEX]], segment[SOURCE_LINE] + 1, segment[SOURCE_COLUMN], segment.length === 5 ? names[segment[NAMES_INDEX]] : null);
+}
+/**
  * Iterates each mapping in generated position order.
  */
 function eachMapping(map, cb) {
@@ -991,6 +1102,20 @@ function eachMapping(map, cb) {
             });
         }
     }
+}
+function OMapping(source, line, column, name) {
+    return { source, line, column, name };
+}
+function traceSegmentInternal(segments, memo, line, column, bias) {
+    let index = memoizedBinarySearch(segments, column, memo, line);
+    if (found) {
+        index = (bias === LEAST_UPPER_BOUND ? upperBound : lowerBound)(segments, column, index);
+    }
+    else if (bias === LEAST_UPPER_BOUND)
+        index++;
+    if (index === -1 || index === segments.length)
+        return -1;
+    return index;
 }
 
 /**
@@ -1060,6 +1185,14 @@ function cast(map) {
 }
 function addMapping(map, mapping) {
     return addMappingInternal(false, map, mapping);
+}
+/**
+ * Adds/removes the content of the source file to the source map.
+ */
+function setSourceContent(map, source, content) {
+    const { _sources: sources, _sourcesContent: sourcesContent } = cast(map);
+    const index = put(sources, source);
+    sourcesContent[index] = content;
 }
 /**
  * Returns a sourcemap object (with decoded mappings) suitable for passing to a library that expects
@@ -2857,6 +2990,58 @@ function attrsToQuery(attrs, langFallback, forceLangFallback = false) {
   return query;
 }
 
+function cacheFormatSource(fn) {
+  const cache = /* @__PURE__ */ Object.create(null);
+  return (root, str) => {
+    const hit = cache[str];
+    return hit || (cache[str] = fn(root, str));
+  };
+}
+const formatSource = cacheFormatSource((root, str) => {
+  return vite.normalizePath(path__default.isAbsolute(str) ? path__default.relative(root, str) : str);
+});
+function mergeSourceMaps(firstMap, secondMap, root) {
+  const firstTracer = new TraceMap(
+    firstMap
+  );
+  const secondTracer = new TraceMap(
+    secondMap
+  );
+  const gen = new GenMapping({
+    file: secondMap.file || firstTracer.file,
+    sourceRoot: secondMap.sourceRoot || firstTracer.sourceRoot
+  });
+  if (firstTracer.sources) {
+    firstTracer.sources.forEach((source, index) => {
+      const content = firstTracer.sourcesContent?.[index];
+      if (content)
+        setSourceContent(
+          gen,
+          root && source ? formatSource(root, source) : source || "",
+          content
+        );
+    });
+  }
+  eachMapping(secondTracer, (m) => {
+    if (!m.source) return;
+    const originalPos = originalPositionFor(firstTracer, {
+      line: m.originalLine,
+      column: m.originalColumn
+    });
+    if (originalPos.source) {
+      addMapping(gen, {
+        source: root && originalPos.source ? formatSource(root, originalPos.source) : originalPos.source,
+        original: {
+          line: originalPos.line ?? 1,
+          column: originalPos.column ?? 0
+        },
+        generated: { line: m.generatedLine, column: m.generatedColumn },
+        name: originalPos.name ?? m.name ?? ""
+      });
+    }
+  });
+  return toEncodedMap(gen);
+}
 async function transformStyle(code, descriptor, index, options, pluginContext, filename) {
   const block = descriptor.styles[index];
   const result = await options.compiler.compileStyleAsync({
@@ -2895,9 +3080,10 @@ async function transformStyle(code, descriptor, index, options, pluginContext, f
     result.map,
     filename
   ) : { mappings: "" };
+  const finalMap = map && map.mappings !== "" && block.map ? mergeSourceMaps(block.map, map, options.root) : map;
   return {
     code: result.code,
-    map,
+    map: finalMap,
     meta: block.scoped && !descriptor.isTemp ? {
       vite: {
         cssScopeTo: [descriptor.filename, "default"]
