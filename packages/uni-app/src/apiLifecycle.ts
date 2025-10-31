@@ -33,6 +33,7 @@ import {
   ON_SHOW,
   ON_TAB_ITEM_TAP,
   ON_THEME_CHANGE,
+  ON_TITLE_CLICK,
   ON_UNHANDLE_REJECTION,
   ON_UNLOAD,
   ON_UPLOAD_DOUYIN_VIDEO,
@@ -160,6 +161,9 @@ export const onSaveExitState =
     HookFlags.PAGE
   )
 
+export const onTitleClick = /*#__PURE__*/ createLifeCycleHook<
+  Required<Page.PageInstance>['onTitleClick']
+>(ON_TITLE_CLICK, HookFlags.PAGE)
 export const onShareTimeline = /*#__PURE__*/ createLifeCycleHook<
   Required<Page.PageInstance>['onShareTimeline']
 >(ON_SHARE_TIMELINE, HookFlags.PAGE)
