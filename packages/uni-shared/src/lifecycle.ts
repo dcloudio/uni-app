@@ -28,6 +28,7 @@ import {
   ON_SHOW,
   ON_TAB_ITEM_TAP,
   ON_THEME_CHANGE,
+  ON_TITLE_CLICK,
   ON_UNHANDLE_REJECTION,
   ON_UNLOAD,
   ON_UPLOAD_DOUYIN_VIDEO,
@@ -50,6 +51,7 @@ const PAGE_HOOKS = [
   ON_COPY_URL,
   ON_UPLOAD_DOUYIN_VIDEO,
   ON_LIVE_MOUNT,
+  ON_TITLE_CLICK,
   ON_ADD_TO_FAVORITES,
   ON_SAVE_EXIT_STATE,
   ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -97,6 +99,7 @@ export const UniLifecycleHooks = [
   ON_COPY_URL,
   ON_UPLOAD_DOUYIN_VIDEO,
   ON_LIVE_MOUNT,
+  ON_TITLE_CLICK,
   ON_SAVE_EXIT_STATE,
   ON_NAVIGATION_BAR_BUTTON_TAP,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -114,6 +117,7 @@ export const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
     onCopyUrl: 1 << 4,
     onUploadDouyinVideo: 1 << 5,
     onLiveMount: 1 << 6,
+    onTitleClick: 1 << 7,
   } as const
 })()
 

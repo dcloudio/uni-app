@@ -50,6 +50,7 @@ const uniLifeCyclePreset = {
     'onCopyUrl',
     'onUploadDouyinVideo',
     'onLiveMount',
+    'onTitleClick',
 
     // 辅助
     'renderComponentSlot',
