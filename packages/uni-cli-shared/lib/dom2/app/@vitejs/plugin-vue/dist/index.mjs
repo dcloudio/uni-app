@@ -3029,7 +3029,7 @@ function mergeSourceMaps(firstMap, secondMap, root) {
   });
   return toEncodedMap(gen);
 }
-async function transformStyle(code, descriptor, index, options, pluginContext, filename) {
+async function transformStyle(code, descriptor, index, options, pluginContext, filename, id) {
   const block = descriptor.styles[index];
   const result = await options.compiler.compileStyleAsync({
     ...options.style,
@@ -3067,7 +3067,19 @@ async function transformStyle(code, descriptor, index, options, pluginContext, f
     result.map,
     filename
   ) : { mappings: "" };
-  const finalMap = map && map.mappings !== "" && block.map ? mergeSourceMaps(block.map, map, options.root) : map;
+  let finalMap;
+  if (map && map.mappings !== "") {
+    const moduleInfo = pluginContext.getModuleInfo(id);
+    const cssPreprocessorSourceMap = moduleInfo?.meta?.uni?.cssPreprocessorSourceMap;
+    if (cssPreprocessorSourceMap) {
+      finalMap = mergeSourceMaps(cssPreprocessorSourceMap, map, options.root);
+    } else {
+      finalMap = map;
+    }
+    if (block.map) {
+      finalMap = mergeSourceMaps(block.map, finalMap, options.root);
+    }
+  }
   return {
     code: result.code,
     // fixed by uts
@@ -3295,7 +3307,9 @@ function vuePlugin(rawOptions = {}) {
             Number(query.index || 0),
             options.value,
             this,
-            filename
+            filename,
+            // fixed by uts
+            id
           );
         }
       }

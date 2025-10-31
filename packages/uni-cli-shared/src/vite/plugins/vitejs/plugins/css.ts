@@ -300,7 +300,13 @@ export function cssPlugin(
 
       return {
         code: css,
-        map,
+        map: null,
+        meta: {
+          uni: {
+            // 向后传递用于合并
+            cssPreprocessorSourceMap: map,
+          },
+        },
       }
     },
   }
