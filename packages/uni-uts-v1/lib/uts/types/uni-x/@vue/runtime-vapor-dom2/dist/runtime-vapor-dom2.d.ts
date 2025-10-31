@@ -279,7 +279,7 @@ export declare function childNativeView(node: UniNativeBaseView): UniNativeBaseV
  * @param node
  * @param child
  */
-export declare function appendNativeViewChild(node: UniNativeBaseView, child: UniNativeBaseView): void;
+export declare function appendNativeViewChild(node: UniNativeBaseView, child: UniNativeBaseView | null): void;
 export declare function createNativeViewFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
     createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
