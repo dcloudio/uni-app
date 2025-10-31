@@ -107,7 +107,9 @@ export function createBasicUtsOptions(
       },
     },
   } as UTS2JavaScriptBaseOptions
-
+  if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+    options.tsconfigOverride.compilerOptions.target = 'ESNext'
+  }
   if (!options.tsconfig) {
     if (isInHBuilderXBool || isUTSCloudCompilerBool || isBuildExtApi) {
       options.tsconfig = path.resolve(
