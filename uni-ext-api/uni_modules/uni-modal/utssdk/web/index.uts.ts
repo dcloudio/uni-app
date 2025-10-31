@@ -60,7 +60,8 @@ export const hideModal: HideModal = function (
   options: HideModalOptions|null
 ) {
 	
-	const currentPage = getCurrentPage() as unknown as UniPage
+	const pages = getCurrentPages()
+	const currentPage = pages[pages.length - 1] as unknown as UniPage
 	if (!currentPage){
 		const res = new HideModalFailImpl()
 		options?.fail?.(res)
