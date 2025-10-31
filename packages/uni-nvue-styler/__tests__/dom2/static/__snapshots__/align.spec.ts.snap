@@ -1,0 +1,868 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`align-content: auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-content",
+        "important": false,
+        "prop": "alignContent",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`align-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-content: auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-content",
+        "important": false,
+        "prop": "alignContent",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`align-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-content: baseline: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-content",
+        "important": false,
+        "prop": "alignContent",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "baseline",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`baseline\` is not supported for \`align-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-content: baseline: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-content",
+        "important": false,
+        "prop": "alignContent",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "baseline",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`baseline\` is not supported for \`align-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-content: center: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-content": {
+      "setterCode": "setStyleAlignContent(UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "Center"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "Center")",
+    },
+  },
+}
+`;
+
+exports[`align-content: center: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-content: flex-end: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-content": {
+      "setterCode": "setStyleAlignContent(UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "FlexEnd"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "FlexEnd")",
+    },
+  },
+}
+`;
+
+exports[`align-content: flex-end: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-content: flex-start: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-content": {
+      "setterCode": "setStyleAlignContent(UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "FlexStart"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "FlexStart")",
+    },
+  },
+}
+`;
+
+exports[`align-content: flex-start: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-content: space-around: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-content": {
+      "setterCode": "setStyleAlignContent(UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "SpaceAround"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "SpaceAround")",
+    },
+  },
+}
+`;
+
+exports[`align-content: space-around: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-content: space-between: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-content": {
+      "setterCode": "setStyleAlignContent(UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "SpaceBetween"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "SpaceBetween")",
+    },
+  },
+}
+`;
+
+exports[`align-content: space-between: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-content: space-evenly: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-content",
+        "important": false,
+        "prop": "alignContent",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-evenly",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-evenly\` is not supported for \`align-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-content: space-evenly: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-content",
+        "important": false,
+        "prop": "alignContent",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-evenly",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-evenly\` is not supported for \`align-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-content: stretch: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-content": {
+      "setterCode": "setStyleAlignContent(UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "Stretch"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignContentType, "::", "Stretch")",
+    },
+  },
+}
+`;
+
+exports[`align-content: stretch: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-items: auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-items",
+        "important": false,
+        "prop": "alignItems",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`align-items\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-items: auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-items",
+        "important": false,
+        "prop": "alignItems",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`align-items\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-items: baseline: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-items",
+        "important": false,
+        "prop": "alignItems",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "baseline",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`baseline\` is not supported for \`align-items\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-items: baseline: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-items",
+        "important": false,
+        "prop": "alignItems",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "baseline",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`baseline\` is not supported for \`align-items\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-items: center: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-items": {
+      "setterCode": "setStyleAlignItems(UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "Center"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "Center")",
+    },
+  },
+}
+`;
+
+exports[`align-items: center: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-items: flex-end: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-items": {
+      "setterCode": "setStyleAlignItems(UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "FlexEnd"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "FlexEnd")",
+    },
+  },
+}
+`;
+
+exports[`align-items: flex-end: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-items: flex-start: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-items": {
+      "setterCode": "setStyleAlignItems(UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "FlexStart"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "FlexStart")",
+    },
+  },
+}
+`;
+
+exports[`align-items: flex-start: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-items: space-around: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-items",
+        "important": false,
+        "prop": "alignItems",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-around",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-around\` is not supported for \`align-items\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-items: space-around: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-items",
+        "important": false,
+        "prop": "alignItems",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-around",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-around\` is not supported for \`align-items\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-items: space-between: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-items",
+        "important": false,
+        "prop": "alignItems",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-between",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-between\` is not supported for \`align-items\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-items: space-between: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-items",
+        "important": false,
+        "prop": "alignItems",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-between",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-between\` is not supported for \`align-items\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-items: space-evenly: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-items",
+        "important": false,
+        "prop": "alignItems",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-evenly",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-evenly\` is not supported for \`align-items\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-items: space-evenly: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-items",
+        "important": false,
+        "prop": "alignItems",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-evenly",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-evenly\` is not supported for \`align-items\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-items: stretch: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-items": {
+      "setterCode": "setStyleAlignItems(UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "Stretch"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignItemsType, "::", "Stretch")",
+    },
+  },
+}
+`;
+
+exports[`align-items: stretch: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-self: auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-self": {
+      "setterCode": "setStyleAlignSelf(UTSCPP.propertyAccess(UniCSSAlignSelfType, "::", "Auto"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignSelfType, "::", "Auto")",
+    },
+  },
+}
+`;
+
+exports[`align-self: auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-self: baseline: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-self",
+        "important": false,
+        "prop": "alignSelf",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "baseline",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`baseline\` is not supported for \`align-self\` (supported values are: \`auto\`|\`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-self: baseline: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-self",
+        "important": false,
+        "prop": "alignSelf",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "baseline",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`baseline\` is not supported for \`align-self\` (supported values are: \`auto\`|\`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-self: center: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-self": {
+      "setterCode": "setStyleAlignSelf(UTSCPP.propertyAccess(UniCSSAlignSelfType, "::", "Center"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignSelfType, "::", "Center")",
+    },
+  },
+}
+`;
+
+exports[`align-self: center: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-self: flex-end: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-self": {
+      "setterCode": "setStyleAlignSelf(UTSCPP.propertyAccess(UniCSSAlignSelfType, "::", "FlexEnd"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignSelfType, "::", "FlexEnd")",
+    },
+  },
+}
+`;
+
+exports[`align-self: flex-end: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-self: flex-start: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-self": {
+      "setterCode": "setStyleAlignSelf(UTSCPP.propertyAccess(UniCSSAlignSelfType, "::", "FlexStart"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignSelfType, "::", "FlexStart")",
+    },
+  },
+}
+`;
+
+exports[`align-self: flex-start: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`align-self: space-around: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-self",
+        "important": false,
+        "prop": "alignSelf",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-around",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-around\` is not supported for \`align-self\` (supported values are: \`auto\`|\`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-self: space-around: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-self",
+        "important": false,
+        "prop": "alignSelf",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-around",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-around\` is not supported for \`align-self\` (supported values are: \`auto\`|\`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-self: space-between: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-self",
+        "important": false,
+        "prop": "alignSelf",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-between",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-between\` is not supported for \`align-self\` (supported values are: \`auto\`|\`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-self: space-between: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-self",
+        "important": false,
+        "prop": "alignSelf",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-between",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-between\` is not supported for \`align-self\` (supported values are: \`auto\`|\`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-self: space-evenly: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-self",
+        "important": false,
+        "prop": "alignSelf",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-evenly",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-evenly\` is not supported for \`align-self\` (supported values are: \`auto\`|\`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-self: space-evenly: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "align-self",
+        "important": false,
+        "prop": "alignSelf",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "space-evenly",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`space-evenly\` is not supported for \`align-self\` (supported values are: \`auto\`|\`center\`|\`flex-start\`|\`flex-end\`|\`stretch\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`align-self: stretch: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "align-self": {
+      "setterCode": "setStyleAlignSelf(UTSCPP.propertyAccess(UniCSSAlignSelfType, "::", "Stretch"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSAlignSelfType, "::", "Stretch")",
+    },
+  },
+}
+`;
+
+exports[`align-self: stretch: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;

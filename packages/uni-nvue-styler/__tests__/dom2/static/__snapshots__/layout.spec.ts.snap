@@ -1,0 +1,1387 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`background-clip: border-box: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "background-clip",
+        "important": false,
+        "prop": "backgroundClip",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "border-box",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "WARNING: \`background-clip\` is not a standard property name (may not be supported)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`background-clip: border-box: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "background-clip",
+        "important": false,
+        "prop": "backgroundClip",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "border-box",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "WARNING: \`background-clip\` is not a standard property name (may not be supported)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`background-clip: content-box: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "background-clip",
+        "important": false,
+        "prop": "backgroundClip",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "content-box",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "WARNING: \`background-clip\` is not a standard property name (may not be supported)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`background-clip: content-box: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "background-clip",
+        "important": false,
+        "prop": "backgroundClip",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "content-box",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "WARNING: \`background-clip\` is not a standard property name (may not be supported)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`background-clip: padding-box: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "background-clip",
+        "important": false,
+        "prop": "backgroundClip",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "padding-box",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "WARNING: \`background-clip\` is not a standard property name (may not be supported)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`background-clip: padding-box: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "background-clip",
+        "important": false,
+        "prop": "backgroundClip",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "padding-box",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "WARNING: \`background-clip\` is not a standard property name (may not be supported)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`background-color: #00ff00: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`background-color: #00ff00: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "background-color": {
+      "setterCode": "backgroundColor(0xff00ff00)",
+      "valueCode": "0xff00ff00",
+    },
+  },
+}
+`;
+
+exports[`background-color: red: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`background-color: red: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "background-color": {
+      "setterCode": "backgroundColor(0xffff0000)",
+      "valueCode": "0xffff0000",
+    },
+  },
+}
+`;
+
+exports[`background-color: rgba(0,0,255,0.5): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`background-color: rgba(0,0,255,0.5): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "background-color": {
+      "setterCode": "backgroundColor(0x800000ff)",
+      "valueCode": "0x800000ff",
+    },
+  },
+}
+`;
+
+exports[`background-image: linear-gradient(to bottom,#f5f5f5,#eff2f5): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`background-image: linear-gradient(to bottom,#f5f5f5,#eff2f5): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "background-image": {
+      "setterCode": "backgroundImage(UTSCPP.propertyAccess(UniNativeBackgroundImage, "::", "LinearGradient(to bottom,#f5f5f5,#eff2f5)"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeBackgroundImage, "::", "LinearGradient(to bottom,#f5f5f5,#eff2f5)")",
+    },
+  },
+}
+`;
+
+exports[`display: flex: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "display": {
+      "setterCode": "setStyleDisplay(UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex")",
+    },
+  },
+}
+`;
+
+exports[`display: flex: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "display": {
+      "setterCode": "display(UTSCPP.propertyAccess(UniNativeDisplayType, "::", "Flex"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeDisplayType, "::", "Flex")",
+    },
+  },
+}
+`;
+
+exports[`display: none: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "display": {
+      "setterCode": "setStyleDisplay(UTSCPP.propertyAccess(UniCSSDisplayType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSDisplayType, "::", "None")",
+    },
+  },
+}
+`;
+
+exports[`display: none: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "display": {
+      "setterCode": "display(UTSCPP.propertyAccess(UniNativeDisplayType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeDisplayType, "::", "None")",
+    },
+  },
+}
+`;
+
+exports[`position: absolute: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "position": {
+      "setterCode": "setStylePosition(UTSCPP.propertyAccess(UniCSSPositionType, "::", "Absolute"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSPositionType, "::", "Absolute")",
+    },
+  },
+}
+`;
+
+exports[`position: absolute: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "position": {
+      "setterCode": "position(UTSCPP.propertyAccess(UniNativePositionType, "::", "Absolute"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativePositionType, "::", "Absolute")",
+    },
+  },
+}
+`;
+
+exports[`position: fixed: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "position": {
+      "setterCode": "setStylePosition(UTSCPP.propertyAccess(UniCSSPositionType, "::", "Fixed"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSPositionType, "::", "Fixed")",
+    },
+  },
+}
+`;
+
+exports[`position: fixed: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "position": {
+      "setterCode": "position(UTSCPP.propertyAccess(UniNativePositionType, "::", "Fixed"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativePositionType, "::", "Fixed")",
+    },
+  },
+}
+`;
+
+exports[`position: relative: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "position": {
+      "setterCode": "setStylePosition(UTSCPP.propertyAccess(UniCSSPositionType, "::", "Relative"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSPositionType, "::", "Relative")",
+    },
+  },
+}
+`;
+
+exports[`position: relative: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "position": {
+      "setterCode": "position(UTSCPP.propertyAccess(UniNativePositionType, "::", "Relative"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativePositionType, "::", "Relative")",
+    },
+  },
+}
+`;
+
+exports[`position: static: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "position",
+        "important": false,
+        "prop": "position",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "static",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`static\` is not supported for \`position\` (supported values are: \`relative\`|\`absolute\`|\`fixed\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`position: static: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "position",
+        "important": false,
+        "prop": "position",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "static",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`static\` is not supported for \`position\` (supported values are: \`relative\`|\`absolute\`|\`fixed\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`position: sticky: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "position",
+        "important": false,
+        "prop": "position",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "sticky",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`sticky\` is not supported for \`position\` (supported values are: \`relative\`|\`absolute\`|\`fixed\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`position: sticky: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "position",
+        "important": false,
+        "prop": "position",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "sticky",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`sticky\` is not supported for \`position\` (supported values are: \`relative\`|\`absolute\`|\`fixed\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: bottom-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "bottom": {
+      "setterCode": "setStyleBottom(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`top/right/bottom/left: bottom-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: bottom-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "bottom": {
+      "setterCode": "setStyleBottom(50, UniCSSUnitType.PCT)",
+      "valueCode": "new UniCSSUnitValue(50, UniCSSUnitType.PCT)",
+    },
+  },
+}
+`;
+
+exports[`top/right/bottom/left: bottom-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: bottom-auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "bottom",
+        "important": false,
+        "prop": "bottom",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: auto",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: bottom-auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: left-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "left": {
+      "setterCode": "setStyleLeft(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`top/right/bottom/left: left-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: left-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "left": {
+      "setterCode": "setStyleLeft(50, UniCSSUnitType.PCT)",
+      "valueCode": "new UniCSSUnitValue(50, UniCSSUnitType.PCT)",
+    },
+  },
+}
+`;
+
+exports[`top/right/bottom/left: left-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: left-auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "left",
+        "important": false,
+        "prop": "left",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: auto",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: left-auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: right-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "right": {
+      "setterCode": "setStyleRight(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`top/right/bottom/left: right-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: right-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "right": {
+      "setterCode": "setStyleRight(50, UniCSSUnitType.PCT)",
+      "valueCode": "new UniCSSUnitValue(50, UniCSSUnitType.PCT)",
+    },
+  },
+}
+`;
+
+exports[`top/right/bottom/left: right-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: right-auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "right",
+        "important": false,
+        "prop": "right",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: auto",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: right-auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: top-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "top": {
+      "setterCode": "setStyleTop(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`top/right/bottom/left: top-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: top-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "top": {
+      "setterCode": "setStyleTop(50, UniCSSUnitType.PCT)",
+      "valueCode": "new UniCSSUnitValue(50, UniCSSUnitType.PCT)",
+    },
+  },
+}
+`;
+
+exports[`top/right/bottom/left: top-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: top-auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "top",
+        "important": false,
+        "prop": "top",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: auto",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`top/right/bottom/left: top-auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`visibility: hidden: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "visibility": {
+      "setterCode": "setStyleVisibility(UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Hidden"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Hidden")",
+    },
+  },
+}
+`;
+
+exports[`visibility: hidden: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "visibility": {
+      "setterCode": "visibility(UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Hidden"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Hidden")",
+    },
+  },
+}
+`;
+
+exports[`visibility: visible: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "visibility": {
+      "setterCode": "setStyleVisibility(UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Visible"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Visible")",
+    },
+  },
+}
+`;
+
+exports[`visibility: visible: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "visibility": {
+      "setterCode": "visibility(UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Visible"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Visible")",
+    },
+  },
+}
+`;
+
+exports[`width/height: height-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "height": {
+      "setterCode": "setStyleHeight(50, UniCSSUnitType.PCT)",
+      "valueCode": "new UniCSSUnitValue(50, UniCSSUnitType.PCT)",
+    },
+  },
+}
+`;
+
+exports[`width/height: height-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`width/height: height-100px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "height": {
+      "setterCode": "setStyleHeight(100, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(100, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`width/height: height-100px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`width/height: height-auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "height",
+        "important": false,
+        "prop": "height",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: auto",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: height-auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`width/height: max-height-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "max-height",
+        "important": false,
+        "prop": "maxHeight",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`max-height\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: max-height-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "max-height",
+        "important": false,
+        "prop": "maxHeight",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`max-height\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: max-height-100px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "max-height": {
+      "setterCode": "setStyleMaxHeight(100, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(100, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`width/height: max-height-100px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`width/height: max-height-auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "max-height",
+        "important": false,
+        "prop": "maxHeight",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`max-height\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: max-height-auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "max-height",
+        "important": false,
+        "prop": "maxHeight",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`max-height\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: max-width-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "max-width",
+        "important": false,
+        "prop": "maxWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`max-width\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: max-width-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "max-width",
+        "important": false,
+        "prop": "maxWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`max-width\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: max-width-100px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "max-width": {
+      "setterCode": "setStyleMaxWidth(100, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(100, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`width/height: max-width-100px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`width/height: max-width-auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "max-width",
+        "important": false,
+        "prop": "maxWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`max-width\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: max-width-auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "max-width",
+        "important": false,
+        "prop": "maxWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`max-width\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: min-height-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "min-height",
+        "important": false,
+        "prop": "minHeight",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`min-height\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: min-height-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "min-height",
+        "important": false,
+        "prop": "minHeight",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`min-height\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: min-height-100px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "min-height": {
+      "setterCode": "setStyleMinHeight(100, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(100, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`width/height: min-height-100px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`width/height: min-height-auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "min-height",
+        "important": false,
+        "prop": "minHeight",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`min-height\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: min-height-auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "min-height",
+        "important": false,
+        "prop": "minHeight",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`min-height\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: min-width-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "min-width",
+        "important": false,
+        "prop": "minWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`min-width\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: min-width-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "min-width",
+        "important": false,
+        "prop": "minWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`min-width\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: min-width-100px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "min-width": {
+      "setterCode": "setStyleMinWidth(100, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(100, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`width/height: min-width-100px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`width/height: min-width-auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "min-width",
+        "important": false,
+        "prop": "minWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`min-width\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: min-width-auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "min-width",
+        "important": false,
+        "prop": "minWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`min-width\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: width-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "width": {
+      "setterCode": "setStyleWidth(50, UniCSSUnitType.PCT)",
+      "valueCode": "new UniCSSUnitValue(50, UniCSSUnitType.PCT)",
+    },
+  },
+}
+`;
+
+exports[`width/height: width-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`width/height: width-100px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "width": {
+      "setterCode": "setStyleWidth(100, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(100, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`width/height: width-100px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`width/height: width-auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "width",
+        "important": false,
+        "prop": "width",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: auto",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`width/height: width-auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
