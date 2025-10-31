@@ -423,6 +423,8 @@ const ON_SAVE_EXIT_STATE = 'onSaveExitState';
 // 抖音特有
 const ON_UPLOAD_DOUYIN_VIDEO = 'onUploadDouyinVideo';
 const ON_LIVE_MOUNT = 'onLiveMount';
+// 支付宝特有
+const ON_TITLE_CLICK = 'onTitleClick';
 const ON_RESIZE = 'onResize';
 const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
@@ -2249,6 +2251,7 @@ const PAGE_HOOKS = [
     ON_COPY_URL,
     ON_UPLOAD_DOUYIN_VIDEO,
     ON_LIVE_MOUNT,
+    ON_TITLE_CLICK,
     ON_ADD_TO_FAVORITES,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -2291,6 +2294,7 @@ const UniLifecycleHooks = [
     ON_COPY_URL,
     ON_UPLOAD_DOUYIN_VIDEO,
     ON_LIVE_MOUNT,
+    ON_TITLE_CLICK,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -2307,6 +2311,7 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
         onCopyUrl: 1 << 4,
         onUploadDouyinVideo: 1 << 5,
         onLiveMount: 1 << 6,
+        onTitleClick: 1 << 7,
     };
 })();
 function isUniLifecycleHook(name, value, checkType = true) {
@@ -2563,6 +2568,7 @@ exports.ON_SHARE_TIMELINE = ON_SHARE_TIMELINE;
 exports.ON_SHOW = ON_SHOW;
 exports.ON_TAB_ITEM_TAP = ON_TAB_ITEM_TAP;
 exports.ON_THEME_CHANGE = ON_THEME_CHANGE;
+exports.ON_TITLE_CLICK = ON_TITLE_CLICK;
 exports.ON_UNHANDLE_REJECTION = ON_UNHANDLE_REJECTION;
 exports.ON_UNLOAD = ON_UNLOAD;
 exports.ON_UPLOAD_DOUYIN_VIDEO = ON_UPLOAD_DOUYIN_VIDEO;

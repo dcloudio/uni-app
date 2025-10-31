@@ -1,7 +1,7 @@
 import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
 import { hasOwn } from '@vue/shared';
 export { capitalize, extend, hasOwn, isPlainObject } from '@vue/shared';
-import { sanitise, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_INIT, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SAVE_EXIT_STATE, ON_SHARE_TIMELINE, ON_SHARE_CHAT, ON_ADD_TO_FAVORITES, ON_SHARE_APP_MESSAGE, ON_COPY_URL, ON_UPLOAD_DOUYIN_VIDEO, ON_LIVE_MOUNT, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED } from '@dcloudio/uni-shared';
+import { sanitise, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_INIT, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SAVE_EXIT_STATE, ON_TITLE_CLICK, ON_SHARE_TIMELINE, ON_SHARE_CHAT, ON_ADD_TO_FAVORITES, ON_SHARE_APP_MESSAGE, ON_COPY_URL, ON_UPLOAD_DOUYIN_VIDEO, ON_LIVE_MOUNT, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED } from '@dcloudio/uni-shared';
 
 function getSSRDataType() {
     return getCurrentInstance() ? UNI_SSR_DATA : UNI_SSR_GLOBAL_DATA;
@@ -114,6 +114,7 @@ const onReachBottom = /*#__PURE__*/ createLifeCycleHook(ON_REACH_BOTTOM, 2 /* Ho
 const onPullDownRefresh = /*#__PURE__*/ createLifeCycleHook(ON_PULL_DOWN_REFRESH, 2 /* HookFlags.PAGE */);
 const onSaveExitState = 
 /*#__PURE__*/ createLifeCycleHook(ON_SAVE_EXIT_STATE, 2 /* HookFlags.PAGE */);
+const onTitleClick = /*#__PURE__*/ createLifeCycleHook(ON_TITLE_CLICK, 2 /* HookFlags.PAGE */);
 const onShareTimeline = /*#__PURE__*/ createLifeCycleHook(ON_SHARE_TIMELINE, 2 /* HookFlags.PAGE */);
 const onShareChat = /*#__PURE__*/ createLifeCycleHook(ON_SHARE_CHAT, 2 /* HookFlags.PAGE */);
 const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook(ON_ADD_TO_FAVORITES, 2 /* HookFlags.PAGE */);
@@ -141,4 +142,4 @@ function renderComponentSlot(slots, name, props = null) {
     return null;
 }
 
-export { formatAppLog, formatLog, getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onCopyUrl, onError, onExit, onHide, onInit, onLaunch, onLiveMount, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareChat, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, onUploadDouyinVideo, renderComponentSlot, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
+export { formatAppLog, formatLog, getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onCopyUrl, onError, onExit, onHide, onInit, onLaunch, onLiveMount, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareChat, onShareTimeline, onShow, onTabItemTap, onThemeChange, onTitleClick, onUnhandledRejection, onUnload, onUploadDouyinVideo, renderComponentSlot, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };

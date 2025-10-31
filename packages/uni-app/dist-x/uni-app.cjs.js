@@ -143,6 +143,7 @@ const onReachBottom = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_REACH_BOTTO
 const onPullDownRefresh = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_PULL_DOWN_REFRESH, 2 /* HookFlags.PAGE */);
 const onSaveExitState = 
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SAVE_EXIT_STATE, 2 /* HookFlags.PAGE */);
+const onTitleClick = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_TITLE_CLICK, 2 /* HookFlags.PAGE */);
 const onShareTimeline = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_TIMELINE, 2 /* HookFlags.PAGE */);
 const onShareChat = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_CHAT, 2 /* HookFlags.PAGE */);
 const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_ADD_TO_FAVORITES, 2 /* HookFlags.PAGE */);
@@ -220,6 +221,7 @@ exports.onShareTimeline = onShareTimeline;
 exports.onShow = onShow;
 exports.onTabItemTap = onTabItemTap;
 exports.onThemeChange = onThemeChange;
+exports.onTitleClick = onTitleClick;
 exports.onUnhandledRejection = onUnhandledRejection;
 exports.onUnload = onUnload;
 exports.onUploadDouyinVideo = onUploadDouyinVideo;

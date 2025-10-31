@@ -104,6 +104,8 @@ export declare const onTabItemTap: (hook: (options: Page.TabItemTapOption) => vo
 
 export declare const onThemeChange: (hook: (options: UniApp.OnThemeChangeCallbackResult) => void, target?: ComponentInternalInstance | null) => void;
 
+export declare const onTitleClick: (hook: () => void, target?: ComponentInternalInstance | null) => void;
+
 export declare const onUnhandledRejection: (hook: (options: UniApp.OnUnhandledRejectionCallbackResult) => void, target?: ComponentInternalInstance | null) => void;
 
 export declare const onUnload: (hook: () => any, target?: ComponentInternalInstance | null) => void;

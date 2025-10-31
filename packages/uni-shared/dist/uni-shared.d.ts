@@ -359,6 +359,7 @@ export declare const MINI_PROGRAM_PAGE_RUNTIME_HOOKS: {
     readonly onCopyUrl: number;
     readonly onUploadDouyinVideo: number;
     readonly onLiveMount: number;
+    readonly onTitleClick: number;
 };
 
 export declare const NAVBAR_HEIGHT = 44;
@@ -573,6 +574,8 @@ export declare const ON_SHOW = "onShow";
 export declare const ON_TAB_ITEM_TAP = "onTabItemTap";
 
 export declare const ON_THEME_CHANGE = "onThemeChange";
+
+export declare const ON_TITLE_CLICK = "onTitleClick";
 
 export declare const ON_UNHANDLE_REJECTION = "onUnhandledRejection";
 
@@ -863,7 +866,7 @@ export declare class UniInputElement extends UniElement {
     set value(val: string | number);
 }
 
-export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onShareChat", "onCopyUrl", "onUploadDouyinVideo", "onLiveMount", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
+export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onShareChat", "onCopyUrl", "onUploadDouyinVideo", "onLiveMount", "onTitleClick", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
 
 export declare class UniNode extends UniEventTarget {
     nodeId?: number;
