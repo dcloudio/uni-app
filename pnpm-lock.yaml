@@ -25,8 +25,8 @@ catalogs:
       specifier: 7.25.6
       version: 7.25.6
     '@dcloudio/types':
-      specifier: 3.4.26
-      version: 3.4.26
+      specifier: 3.4.28
+      version: 3.4.28
     '@dcloudio/uni-app-x':
       specifier: 0.7.74
       version: 0.7.74
@@ -247,7 +247,7 @@ importers:
         version: 7.25.4(@babel/core@7.25.2)
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.26
+        version: 3.4.28
       '@dcloudio/uni-api':
         specifier: workspace:*
         version: link:packages/uni-api
@@ -1009,7 +1009,7 @@ importers:
     dependencies:
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.26
+        version: 3.4.28
       '@dcloudio/uni-cloud':
         specifier: workspace:*
         version: link:../uni-cloud
@@ -1940,7 +1940,7 @@ importers:
     devDependencies:
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.26
+        version: 3.4.28
       mini-types:
         specifier: ^0.1.7
         version: 0.1.7
@@ -2308,7 +2308,7 @@ importers:
     devDependencies:
       '@dcloudio/types':
         specifier: 'catalog:'
-        version: 3.4.26
+        version: 3.4.28
 
   packages/uni-stat:
     dependencies:
@@ -3197,8 +3197,8 @@ packages:
   '@cypress/xvfb@1.2.4':
     resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
 
-  '@dcloudio/types@3.4.26':
-    resolution: {integrity: sha512-0vFcJH767OOMJTMZ3ebPw3KVa9akoXqx6MBsI875Y/U9f2pBtR9PB2YqZE/Q9zbwUo5TbfulV0+wJJitwFtl9g==}
+  '@dcloudio/types@3.4.28':
+    resolution: {integrity: sha512-uVIRp1VLBkrL0LaGLgIS/sT3bl1zzVTKZQbfqJEQcSAvBffRdirbSh5OvOHfA1WV5lmCAGfjhKsUQouNEVUQHg==}
 
   '@dcloudio/uni-app-x@0.7.74':
     resolution: {integrity: sha512-1eDa3JqYR662GLZGuFWto7+2Dp4m2sk8eKlAuZcIxmGpzGFOpJRi2Z0c9vCNi2uyjsdHFrtiX+pwWrWS0OJ82A==}
@@ -8772,7 +8772,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@dcloudio/types@3.4.26': {}
+  '@dcloudio/types@3.4.28': {}
 
   '@dcloudio/uni-app-x@0.7.74': {}
 
