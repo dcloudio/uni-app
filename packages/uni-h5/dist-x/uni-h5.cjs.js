@@ -5,6 +5,11 @@ const vue = require("vue");
 const shared = require("@vue/shared");
 const vueRouter = require("vue-router");
 const uniI18n = require("@dcloudio/uni-i18n");
+const realGlobal = uniShared.getGlobal();
+realGlobal.UTS = uniShared.UTS;
+realGlobal.UTSJSONObject = uniShared.UTSJSONObject;
+realGlobal.UTSValueIterable = uniShared.UTSValueIterable;
+realGlobal.UniError = uniShared.UniError;
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -13897,11 +13902,6 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
 }
-const realGlobal = uniShared.getGlobal();
-realGlobal.UTS = uniShared.UTS;
-realGlobal.UTSJSONObject = uniShared.UTSJSONObject;
-realGlobal.UTSValueIterable = uniShared.UTSValueIterable;
-realGlobal.UniError = uniShared.UniError;
 Object.defineProperty(exports, "UTS", {
   enumerable: true,
   get: () => uniShared.UTS

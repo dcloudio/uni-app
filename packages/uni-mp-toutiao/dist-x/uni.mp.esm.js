@@ -1,8 +1,14 @@
-import { VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, UTSJSONObject, addLeadingSlash, stringifyQuery, customizeEvent, getGlobal, UTS, UTSValueIterable, UniError } from '@dcloudio/uni-shared';
+import { getGlobal, UTS, UTSJSONObject, UTSValueIterable, UniError, VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 export { UTS, UTSJSONObject, UTSValueIterable, UniError } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, isString, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
 import { nextTick, onUpdated, pruneUniElements, onUnmounted, destroyUniElements, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, registerCustomElement, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+
+const realGlobal = getGlobal();
+realGlobal.UTS = UTS;
+realGlobal.UTSJSONObject = UTSJSONObject;
+realGlobal.UTSValueIterable = UTSValueIterable;
+realGlobal.UniError = UniError;
 
 function initVueIds(vueIds, mpInstance) {
     if (!vueIds) {
@@ -1185,11 +1191,5 @@ tt.createPage = createPage;
 tt.createComponent = createComponent;
 tt.createSubpackageApp = global.createSubpackageApp =
     createSubpackageApp;
-
-const realGlobal = getGlobal();
-realGlobal.UTS = UTS;
-realGlobal.UTSJSONObject = UTSJSONObject;
-realGlobal.UTSValueIterable = UTSValueIterable;
-realGlobal.UniError = UniError;
 
 export { createApp, createComponent, createPage, createSubpackageApp };
