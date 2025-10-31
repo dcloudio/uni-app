@@ -12,6 +12,7 @@ import { type DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './dom2/types'
 import type { PropertyProcessor } from './dom2/processors'
 import { createDom2PropertyProcessors } from './dom2/processors'
 import properties from '../lib/dom2/properties.json'
+
 interface ObjectifierOptions {
   trim: boolean
   dom2?: {
@@ -117,18 +118,22 @@ function transform(
         : child.prop
       let value = child.value
       if (context.dom2) {
-        const processor = context.dom2.propertyProcessors[name]
-        if (processor) {
-          const valueResult = processor(value, name)
-          if (valueResult.error) {
-            context.warn(child, `WARNING: ${valueResult.error}`)
-          } else {
-            value = valueResult.valueCode
-          }
-          name = `UniCSSPropertyID::` + (properties as any)[name]
+        if (name.startsWith('--')) {
+          // noop
         } else {
-          context.warn(child, supportedPropertyReason(name))
-          return
+          const processor = context.dom2.propertyProcessors[name]
+          if (processor) {
+            const valueResult = processor(value, name)
+            if (valueResult.error) {
+              context.warn(child, `WARNING: ${valueResult.error}`)
+            } else {
+              value = valueResult.valueCode
+            }
+            name = `UniCSSPropertyID::` + (properties as any)[name]
+          } else {
+            context.warn(child, supportedPropertyReason(name))
+            return
+          }
         }
       }
       if (child.important) {

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`dom2 parse basic 1`] = `"make_style_sheet({ { "content", make_property_map({ { "", make_styles({ { UniCSSPropertyID::Display, UniCSSDisplayType::Flex } }) } }) },{ "logo", make_property_map({ { "", make_styles({ { UniCSSPropertyID::Width, UniCSSUnitValue{200, UniCSSUnitType::PX} },{ UniCSSPropertyID::Height, UniCSSUnitValue{200, UniCSSUnitType::PX} } }) } }) },{ "text-area", make_property_map({ { "", make_styles({ { UniCSSPropertyID::FontSize, UniCSSUnitValue{36, UniCSSUnitType::PX} } }) } }) },{ "title", make_property_map({ { "", make_styles({ { UniCSSPropertyID::FontSize, UniCSSUnitValue{36, UniCSSUnitType::PX} } }) } }) } })"`;
+exports[`dom2 parse basic 1`] = `"make_style_sheet({{"content", make_property_map({{"", make_styles({{UniCSSPropertyID::Display, UniCSSDisplayType::Flex}})}})},{"logo", make_property_map({{"", make_styles({{UniCSSPropertyID::Width, UniCSSUnitValue{200, UniCSSUnitType::PX}},{UniCSSPropertyID::Height, UniCSSUnitValue{200, UniCSSUnitType::PX}}})}})},{"text-area", make_property_map({{"", make_styles({{UniCSSPropertyID::FontSize, UniCSSUnitValue{36, UniCSSUnitType::PX}}})}})},{"title", make_property_map({{"", make_styles({{UniCSSPropertyID::FontSize, UniCSSUnitValue{36, UniCSSUnitType::PX}}})}})}})"`;
 
 exports[`dom2 parse basic 2`] = `
 [
@@ -119,4 +119,4 @@ exports[`dom2 parse basic 2`] = `
 
 exports[`dom2 parse empty 1`] = `"{}"`;
 
-exports[`dom2 parse variable 1`] = `"make_style_sheet({ { "content", make_property_map({ { "", make_styles({ { UniCSSPropertyID::Color, "var(--color)" } }) } }) } })"`;
+exports[`dom2 parse variable 1`] = `"make_style_sheet({{"content", make_property_map({{"", make_styles({{UniCSSPropertyID::Variable, UniCSSPropertyValueVariable{{"--color", "red"}, {"--font-size", "16px"}}},{UniCSSPropertyID::Color, "var(--color)"},{UniCSSPropertyID::FontSize, "var(--font-size)"}})}})}})"`;

@@ -2,26 +2,31 @@ import { camelize, capitalize } from '../../shared'
 import {
   type PropertyProcessor,
   PropertyProcessorType,
-  createPropertyProcessor,
   createValueProcessorResult,
 } from './utils'
 
 export function createDefineStyleVariableProcessor(): PropertyProcessor {
-  return createPropertyProcessor((value, propertyName) => {
+  const processor: PropertyProcessor = (value, propertyName) => {
     return createValueProcessorResult(
       `"${value}"`,
       `defineStyleVariable("${propertyName}", "${value}")`
     )
-  }, PropertyProcessorType.DefineVariable)
+  }
+  processor.type = PropertyProcessorType.DefineVariable
+  return processor
 }
 
+export const defineStyleVariableProcessor = createDefineStyleVariableProcessor()
+
 export function createSetStyleVariableProcessor(): PropertyProcessor {
-  return createPropertyProcessor((value, propertyName) => {
+  const processor: PropertyProcessor = (value, propertyName) => {
     return createValueProcessorResult(
       `"${value}"`,
       `setStyleVariable(UniCSSPropertyID.${capitalize(
         camelize(propertyName)
       )}, "${value}")`
     )
-  }, PropertyProcessorType.SetVariable)
+  }
+  processor.type = PropertyProcessorType.SetVariable
+  return processor
 }

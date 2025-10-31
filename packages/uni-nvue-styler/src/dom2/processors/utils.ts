@@ -1,9 +1,6 @@
 import type { AppCssJson } from '../types'
 import appCssJson from '../../../lib/dom2/app-css.json'
-import {
-  createDefineStyleVariableProcessor,
-  createSetStyleVariableProcessor,
-} from './variable'
+import { createSetStyleVariableProcessor } from './variable'
 
 export function getAppCssJson() {
   return appCssJson as AppCssJson
@@ -59,12 +56,8 @@ export const enum PropertyProcessorType {
 function wrapPropertyProcessor(
   processor: PropertyProcessorFn
 ): PropertyProcessorFn {
-  const defineStyleVariableProcessor = createDefineStyleVariableProcessor()
   const setStyleVariableProcessor = createSetStyleVariableProcessor()
   return (value, propertyName) => {
-    if (propertyName.startsWith('--')) {
-      return defineStyleVariableProcessor(value, propertyName)
-    }
     if (typeof value === 'string' && value.includes('var(')) {
       return setStyleVariableProcessor(value, propertyName)
     }

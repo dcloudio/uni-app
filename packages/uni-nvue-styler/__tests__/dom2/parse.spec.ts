@@ -49,7 +49,9 @@ describe('dom2 parse', () => {
       `
       .content {
         --color: red;
+        --font-size: 16px;
         color: var(--color);
+        font-size: var(--font-size);
       }
     `,
       {

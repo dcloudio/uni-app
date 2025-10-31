@@ -10,6 +10,7 @@ import { createDom2PropertyProcessors } from './processors'
 import { camelize, capitalize, extend } from '../shared'
 import { shorthand } from './shorthand'
 import { genCPPEnumCode } from './processors/enum'
+import { defineStyleVariableProcessor } from './processors/variable'
 
 export function parseDom2StaticStyle(
   input: string,
@@ -63,17 +64,29 @@ export function parseDom2StaticStyle(
   for (const declaration of decls) {
     // @ts-expect-error 上一步 parseStaticStyleDeclarations 中需要把 prop 给驼峰化，单独存储 __originalProp
     const propertyName = declaration.__originalProp || declaration.prop
-    const processor = processors[propertyName]
-    if (processor) {
-      let important = false
-      if (declaration.important) {
-        important = true
-      }
-      const processed = processor(declaration.value, propertyName)
+    if (propertyName.startsWith('--')) {
+      const processed = defineStyleVariableProcessor(
+        declaration.value,
+        propertyName
+      )
       if (processed.error) {
         messages.push(new Warning(processed.error, { node: declaration }))
       } else {
         result[propertyName] = processed
+      }
+    } else {
+      const processor = processors[propertyName]
+      if (processor) {
+        let important = false
+        if (declaration.important) {
+          important = true
+        }
+        const processed = processor(declaration.value, propertyName)
+        if (processed.error) {
+          messages.push(new Warning(processed.error, { node: declaration }))
+        } else {
+          result[propertyName] = processed
+        }
       }
     }
   }
@@ -93,15 +106,29 @@ function genCode(
     target === DOM2_APP_TARGET.NV_C ||
     target === DOM2_APP_TARGET.TXT_C
   ) {
-    return `{${Object.entries(obj)
-      .map(
-        ([key, value]) =>
+    const entries: string[] = []
+    const variableEntries: string[] = []
+    Object.entries(obj).forEach(([key, value]) => {
+      if (key.startsWith('--')) {
+        variableEntries.push(`{"${key}", ${value.valueCode}}`)
+      } else {
+        entries.push(
           `[${genCPPEnumCode(
             'UniCSSPropertyID',
             capitalize(camelize(key))
           )}]: ${value.valueCode}`
+        )
+      }
+    })
+    if (variableEntries.length) {
+      entries.unshift(
+        `[${genCPPEnumCode(
+          'UniCSSPropertyID',
+          'Variable'
+        )}]: UniCSSPropertyValueVariable{${variableEntries.join(', ')}}`
       )
-      .join(', ')}}`
+    }
+    return `{${entries.join(', ')}}`
   }
   return ''
 }

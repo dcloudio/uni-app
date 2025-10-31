@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`variable: define variable: app-harmony(dom-c) 1`] = `
+{
+  "code": "{[UTSCPP.propertyAccess(UniCSSPropertyID, "::", "Variable")]: UniCSSPropertyValueVariable{{"--color", "red"}, {"--font-size", "16px"}}}",
+  "messages": [],
+  "obj": {
+    "--color": {
+      "setterCode": "defineStyleVariable("--color", "red")",
+      "valueCode": ""red"",
+    },
+    "--font-size": {
+      "setterCode": "defineStyleVariable("--font-size", "16px")",
+      "valueCode": ""16px"",
+    },
+  },
+}
+`;
+
+exports[`variable: define variable: app-harmony(nv-c) 1`] = `
+{
+  "code": "{[UTSCPP.propertyAccess(UniCSSPropertyID, "::", "Variable")]: UniCSSPropertyValueVariable{{"--color", "red"}, {"--font-size", "16px"}}}",
+  "messages": [],
+  "obj": {
+    "--color": {
+      "setterCode": "defineStyleVariable("--color", "red")",
+      "valueCode": ""red"",
+    },
+    "--font-size": {
+      "setterCode": "defineStyleVariable("--font-size", "16px")",
+      "valueCode": ""16px"",
+    },
+  },
+}
+`;

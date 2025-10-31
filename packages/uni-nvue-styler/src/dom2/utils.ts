@@ -26,20 +26,37 @@ function objToCppString(
       : depth === 1
       ? 'make_property_map'
       : 'make_styles'
-  const entries = Object.entries(obj).map(([key, value]) => {
+  const entries: string[] = []
+  const variableEntries: string[] = []
+  Object.entries(obj).forEach(([key, value]) => {
     const keyString = key.includes('::') ? key : `"${key}"`
     if (depth >= 2) {
-      if (keyString[0] === '!') {
-        return `{ ${keyString.slice(
-          1
-        )}, UniCSSPropertyValueImportant(${value}) }`
+      if (key.startsWith('--')) {
+        variableEntries.push(`{"${key}", "${value}"}`)
+      } else {
+        if (keyString[0] === '!') {
+          entries.push(
+            `{${keyString.slice(1)}, UniCSSPropertyValueImportant(${value})}`
+          )
+        } else {
+          entries.push(`{${keyString}, ${value}}`)
+        }
       }
-      return `{ ${keyString}, ${value} }`
+    } else {
+      entries.push(
+        `{${keyString}, ${objToCppString(
+          value as Record<string, unknown>,
+          depth + 1
+        )}}`
+      )
     }
-    return `{ ${keyString}, ${objToCppString(
-      value as Record<string, unknown>,
-      depth + 1
-    )} }`
   })
-  return `${method}({ ${entries.join(',')} })`
+  if (variableEntries.length) {
+    entries.unshift(
+      `{UniCSSPropertyID::Variable, UniCSSPropertyValueVariable{${variableEntries.join(
+        ', '
+      )}}}`
+    )
+  }
+  return `${method}({${entries.join(',')}})`
 }
