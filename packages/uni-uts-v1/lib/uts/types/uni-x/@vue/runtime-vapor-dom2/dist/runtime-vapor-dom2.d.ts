@@ -242,7 +242,7 @@ export declare function createElementIf(page: UniPage, condition: () => any, b1:
 export declare function setElementText(el: UniElement, value: string): void;
 export declare function setElementHtml(el: UniElement, value: string): void;
 export declare function setElementAttr(el: UniElement, key: string, value: any): void;
-export declare function setElementClass(el: UniElement, value: any): void;
+export declare function setElementClass(component: UniSharedDataComponent, el: UniElement, value: any): void;
 export declare function setElementStyle(el: UniElement, value: UniElementStyles): void;
 export declare function setElementExtStyle(el: UniElement, value: unknown): void;
 export declare function setElementDynamicProps(el: UniElement, args: UniSharedDataJSONObject): void;
