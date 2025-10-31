@@ -5,7 +5,6 @@
       "name": "width",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -173,8 +172,7 @@
     {
       "name": "min-width",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length>",
       "values": [
@@ -376,8 +374,7 @@
     {
       "name": "max-width",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length>",
       "values": [
@@ -577,7 +574,6 @@
       "name": "height",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -745,8 +741,7 @@
     {
       "name": "min-height",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length>",
       "values": [
@@ -948,8 +943,7 @@
     {
       "name": "max-height",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length>",
       "values": [
@@ -1397,7 +1391,6 @@
       "name": "top",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1470,7 +1463,6 @@
       "name": "bottom",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1543,7 +1535,6 @@
       "name": "left",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1616,7 +1607,6 @@
       "name": "right",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1687,6 +1677,7 @@
     },
     {
       "name": "flex-direction",
+      "description": "flex-direction 属性设置弹性容器中的子元素的布局方向，该方向定义为主轴，另一个垂直与它的方向为交叉轴。",
       "restrictions": [
         "enum"
       ],
@@ -1865,6 +1856,7 @@
     },
     {
       "name": "justify-content",
+      "description": "justify-content 属性设置弹性容器的子元素在主轴方向的对齐方式，控制如何在主轴方向分配内容元素之间和周围的空间。",
       "restrictions": [
         "enum"
       ],
@@ -2114,6 +2106,7 @@
     },
     {
       "name": "flex-wrap",
+      "description": "flex-wrap 属性设置弹性容器中的子元素在主轴方向是单行（列）还是多行（列）显示，以及多行（列）显示时的堆叠方向。",
       "restrictions": [
         "enum"
       ],
@@ -2944,10 +2937,10 @@
     {
       "name": "flex",
       "shorthand": true,
+      "description": "flex 属性设置弹性项目如何增大或缩小以适应其弹性容器中可用的空间，是 flex-grow、flex-shrink、flex-basis 的简写。",
       "restrictions": [
         "number",
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]",
@@ -3085,6 +3078,7 @@
     },
     {
       "name": "flex-grow",
+      "description": "flex-grow 属性设置弹性元素在主轴方向的增长系数。此属性定义了元素在弹性容器中分配主轴方向剩余空间的相对比例（即弹性增长因子），增长的可能是弹性元素的宽度或高度，取决于 flex-direction 值。\n剩余空间是指弹性容器尺寸减去所有子元素尺寸之和后的空间。若所有子元素有相同的增长系数，则各子元素将获得等量的剩余空间，否则按不同增长系数的比例进行分配。",
       "restrictions": [
         "number"
       ],
@@ -3122,6 +3116,7 @@
     },
     {
       "name": "flex-shrink",
+      "description": "flex-shrink 属性设置弹性元素在主轴方向的收缩系数。当所有子元素在主轴方向的尺寸之和大于容器时才会发生收缩，会根据元素的收缩系数进行收缩保证不溢出弹性容器。",
       "restrictions": [
         "number"
       ],
@@ -3162,10 +3157,10 @@
     },
     {
       "name": "flex-basis",
+      "description": "flex-basis 属性设置弹性元素在主轴方向的初始大小，即在分配剩余空间（flex-grow）或收缩溢出空间（flex-shrink）的基准尺寸。当弹性元素同时设置了 flex-basis（除 auto 外的值）和 width（或 flex-direction 为 column 时设置了 height），flex-basis 的优先级更高。",
       "restrictions": [
         "number",
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -3269,6 +3264,7 @@
     {
       "name": "flex-flow",
       "shorthand": true,
+      "description": "flex-flow 属性设置弹性容器中子元素的布局主轴方向及单或多行（列）堆叠方向，，是 flex-direction、flex-wrap 的简写。",
       "restrictions": [
         "enum"
       ],
@@ -4542,7 +4538,6 @@
       "shorthand": true,
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "[ <length> | <percentage> ]{1,4}",
@@ -4580,7 +4575,6 @@
       "name": "padding-left",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -4619,7 +4613,6 @@
       "name": "padding-top",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -4658,7 +4651,6 @@
       "name": "padding-right",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -4697,7 +4689,6 @@
       "name": "padding-bottom",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -4737,7 +4728,6 @@
       "shorthand": true,
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "[ <length> | <percentage> | auto ]{1,4}",
@@ -4810,7 +4800,6 @@
       "name": "margin-left",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -4883,7 +4872,6 @@
       "name": "margin-top",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -4956,7 +4944,6 @@
       "name": "margin-right",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -5029,7 +5016,6 @@
       "name": "margin-bottom",
       "restrictions": [
         "length",
-        "length-function",
         "percentage"
       ],
       "description": "margin-bottom 属性设置与元素相关联的盒子模型的下外边距。可以为负值",
@@ -5103,7 +5089,6 @@
       "name": "border",
       "restrictions": [
         "length",
-        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -5977,7 +5962,6 @@
       "name": "border-width",
       "restrictions": [
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "<line-width>{1,4}",
@@ -6114,7 +6098,6 @@
       "name": "border-left-width",
       "restrictions": [
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -6251,7 +6234,6 @@
       "name": "border-top-width",
       "restrictions": [
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -6388,7 +6370,6 @@
       "name": "border-right-width",
       "restrictions": [
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -6525,7 +6506,6 @@
       "name": "border-bottom-width",
       "restrictions": [
         "length",
-        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -6841,8 +6821,7 @@
     {
       "name": "border-radius",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length-percentage>{1,4} [ / <length-percentage>{1,4} ]?",
       "uniPlatform": {
@@ -6878,8 +6857,7 @@
     {
       "name": "border-top-left-radius",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -6915,8 +6893,7 @@
     {
       "name": "border-top-right-radius",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -6952,8 +6929,7 @@
     {
       "name": "border-bottom-left-radius",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -6989,8 +6965,7 @@
     {
       "name": "border-bottom-right-radius",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -7027,7 +7002,6 @@
       "name": "border-top",
       "restrictions": [
         "length",
-        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -7068,7 +7042,6 @@
       "name": "border-bottom",
       "restrictions": [
         "length",
-        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -7109,7 +7082,6 @@
       "name": "border-left",
       "restrictions": [
         "length",
-        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -7150,7 +7122,6 @@
       "name": "border-right",
       "restrictions": [
         "length",
-        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -7238,8 +7209,7 @@
       "name": "font-size",
       "description": "font-size 属性用于设置字体大小，更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<absolute-size> | <relative-size> | <length-percentage>",
       "uniPlatform": {
@@ -7573,8 +7543,7 @@
       "restrictions": [
         "enum",
         "color",
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "<'text-decoration-line'> || <'text-decoration-style'> || <'text-decoration-color'> || <'text-decoration-thickness'>",
       "uniPlatform": {
@@ -7999,8 +7968,7 @@
       "name": "text-decoration-thickness",
       "description": "text-decoration-thickness 属性用于设置元素中文本的修饰线的粗细。",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "auto | from-font | <length> | <percentage> ",
       "values": [
@@ -8592,12 +8560,47 @@
     },
     {
       "name": "line-height",
+      "description": "line-height 属性用于设置多行文本的间距。",
       "restrictions": [
         "length",
-        "length-function",
         "number"
       ],
       "syntax": "normal | <number> | <length> | <percentage>",
+      "values": [
+        {
+          "name": "normal",
+          "description": "web平台由浏览器实现，通常约为 1.2，这取决于元素的 font-family。",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "-"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -8639,7 +8642,7 @@
     },
     {
       "name": "lines",
-      "description": "text 组件专有样式，设置文本组件最大行数",
+      "description": "text 组件专有样式，设置文本的最大行数。",
       "restrictions": [
         "integer"
       ],
@@ -8677,9 +8680,9 @@
     },
     {
       "name": "letter-spacing",
+      "description": "letter-spacing 属性用于设置文本字符的间距表现，正值会导致字符分布得更远，而负值会使字符更接近。",
       "restrictions": [
-        "length",
-        "length-function"
+        "length"
       ],
       "syntax": "normal | <length>",
       "uniPlatform": {
@@ -9037,7 +9040,6 @@
       "restrictions": [
         "enum",
         "length",
-        "length-function",
         "color"
       ],
       "syntax": "none | <shadow>#",
@@ -10783,7 +10785,6 @@
       "shorthand": true,
       "restrictions": [
         "length",
-        "length-function",
         "percentage",
         "enum"
       ],
