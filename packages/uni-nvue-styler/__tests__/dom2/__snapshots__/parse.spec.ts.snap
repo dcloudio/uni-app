@@ -118,3 +118,5 @@ exports[`dom2 parse basic 2`] = `
 `;
 
 exports[`dom2 parse empty 1`] = `"{}"`;
+
+exports[`dom2 parse variable 1`] = `"make_style_sheet({ { "content", make_property_map({ { "", make_styles({ { UniCSSPropertyID::Color, "var(--color)" } }) } }) } })"`;

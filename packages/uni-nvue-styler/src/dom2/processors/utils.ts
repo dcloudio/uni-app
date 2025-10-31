@@ -1,5 +1,9 @@
 import type { AppCssJson } from '../types'
 import appCssJson from '../../../lib/dom2/app-css.json'
+import {
+  createDefineStyleVariableProcessor,
+  createSetStyleVariableProcessor,
+} from './variable'
 
 export function getAppCssJson() {
   return appCssJson as AppCssJson
@@ -46,16 +50,39 @@ export const enum PropertyProcessorType {
   String = 'string',
   Color = 'color',
   Struct = 'struct',
+  DefineVariable = 'defineVariable',
+  SetVariable = 'setVariable',
   Other = 'other',
   Combined = 'combined',
+}
+
+function wrapPropertyProcessor(
+  processor: PropertyProcessorFn
+): PropertyProcessorFn {
+  const defineStyleVariableProcessor = createDefineStyleVariableProcessor()
+  const setStyleVariableProcessor = createSetStyleVariableProcessor()
+  return (value, propertyName) => {
+    if (propertyName.startsWith('--')) {
+      return defineStyleVariableProcessor(value, propertyName)
+    }
+    if (typeof value === 'string' && value.includes('var(')) {
+      return setStyleVariableProcessor(value, propertyName)
+    }
+    return processor(value, propertyName)
+  }
 }
 
 export function createPropertyProcessor(
   processor: PropertyProcessorFn,
   type: PropertyProcessorType
 ): PropertyProcessor {
-  ;(processor as PropertyProcessor).type = type
-  return processor as PropertyProcessor
+  const wrappedProcessor =
+    type === PropertyProcessorType.DefineVariable ||
+    type === PropertyProcessorType.SetVariable
+      ? processor
+      : wrapPropertyProcessor(processor)
+  ;(wrappedProcessor as PropertyProcessor).type = type
+  return wrappedProcessor as PropertyProcessor
 }
 
 export const PARTS_REG = /\s(?![^(]*\))/

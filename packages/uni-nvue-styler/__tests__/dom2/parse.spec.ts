@@ -44,6 +44,24 @@ describe('dom2 parse', () => {
     fixMessageInputFile(messages)
     expect(messages).toMatchSnapshot()
   })
+  test('variable', async () => {
+    const { code } = await parse(
+      `
+      .content {
+        --color: red;
+        color: var(--color);
+      }
+    `,
+      {
+        type: 'uvue',
+        dom2: {
+          platform: DOM2_APP_PLATFORM.APP_HARMONY,
+          target: DOM2_APP_TARGET.DOM_C,
+        },
+      }
+    )
+    expect(code).toMatchSnapshot()
+  })
   test('empty', async () => {
     const { code } = await parse(``, {
       type: 'uvue',

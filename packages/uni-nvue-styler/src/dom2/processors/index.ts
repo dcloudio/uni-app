@@ -33,10 +33,6 @@ export { createSetStyleEnumValueProcessor } from './enum'
 export { createSetStyleNumberValueProcessor } from './number'
 export { createSetStyleStringValueProcessor } from './string'
 export { createSetStyleUnitValueProcessor } from './unit'
-export {
-  defineStyleVariableProcessor,
-  setStyleVariableProcessor,
-} from './variable'
 
 const processorMapCache = new Map<string, Record<string, PropertyProcessor>>()
 

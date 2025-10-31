@@ -6,18 +6,16 @@ import {
   createValueProcessorResult,
 } from './utils'
 
-function createDefineStyleVariableProcessor(): PropertyProcessor {
+export function createDefineStyleVariableProcessor(): PropertyProcessor {
   return createPropertyProcessor((value, propertyName) => {
     return createValueProcessorResult(
       `"${value}"`,
       `defineStyleVariable("${propertyName}", "${value}")`
     )
-  }, PropertyProcessorType.Other)
+  }, PropertyProcessorType.DefineVariable)
 }
 
-export const defineStyleVariableProcessor = createDefineStyleVariableProcessor()
-
-function createSetStyleVariableProcessor(): PropertyProcessor {
+export function createSetStyleVariableProcessor(): PropertyProcessor {
   return createPropertyProcessor((value, propertyName) => {
     return createValueProcessorResult(
       `"${value}"`,
@@ -25,7 +23,5 @@ function createSetStyleVariableProcessor(): PropertyProcessor {
         camelize(propertyName)
       )}, "${value}")`
     )
-  }, PropertyProcessorType.Other)
+  }, PropertyProcessorType.SetVariable)
 }
-
-export const setStyleVariableProcessor = createSetStyleVariableProcessor()

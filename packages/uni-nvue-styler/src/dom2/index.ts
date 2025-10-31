@@ -6,10 +6,7 @@ import {
 } from './types'
 import { parseStaticStyleDeclarations } from '../parseSync'
 import { createDom2PropertyProcessors } from './processors'
-import {
-  defineStyleVariableProcessor,
-  setStyleVariableProcessor,
-} from './processors'
+
 import { camelize, capitalize, extend } from '../shared'
 import { shorthand } from './shorthand'
 import { genCPPEnumCode } from './processors/enum'
@@ -66,49 +63,17 @@ export function parseDom2StaticStyle(
   for (const declaration of decls) {
     // @ts-expect-error 上一步 parseStaticStyleDeclarations 中需要把 prop 给驼峰化，单独存储 __originalProp
     const propertyName = declaration.__originalProp || declaration.prop
-
-    // 判断key是否是定义的css变量
-    if (propertyName.startsWith('--')) {
-      const processed = defineStyleVariableProcessor(
-        declaration.value,
-        propertyName
-      )
+    const processor = processors[propertyName]
+    if (processor) {
+      let important = false
+      if (declaration.important) {
+        important = true
+      }
+      const processed = processor(declaration.value, propertyName)
       if (processed.error) {
         messages.push(new Warning(processed.error, { node: declaration }))
       } else {
         result[propertyName] = processed
-      }
-    }
-    // 判断value是否是css变量
-    else if (
-      typeof declaration.value === 'string' &&
-      declaration.value.includes('var(')
-    ) {
-      if (!processors[propertyName]) {
-        continue
-      }
-      const processed = setStyleVariableProcessor(
-        declaration.value,
-        propertyName
-      )
-      if (processed.error) {
-        messages.push(new Warning(processed.error, { node: declaration }))
-      } else {
-        result[propertyName] = processed
-      }
-    } else {
-      const processor = processors[propertyName]
-      if (processor) {
-        let important = false
-        if (declaration.important) {
-          important = true
-        }
-        const processed = processor(declaration.value, propertyName)
-        if (processed.error) {
-          messages.push(new Warning(processed.error, { node: declaration }))
-        } else {
-          result[propertyName] = processed
-        }
       }
     }
   }
