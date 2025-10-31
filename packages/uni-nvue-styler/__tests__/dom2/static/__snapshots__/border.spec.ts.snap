@@ -280,6 +280,1130 @@ exports[`border: 1px solid red: app-harmony(nv-c) 1`] = `
 }
 `;
 
+exports[`border-*-color: border-bottom-color-#00ff00: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-color: border-bottom-color-#00ff00: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-color": {
+      "setterCode": "borderColor(UniNativeBorderColors(0x00000000, 0x00000000, 0xff00ff00, 0x00000000))",
+      "valueCode": "UniNativeBorderColors(0x00000000, 0x00000000, 0xff00ff00, 0x00000000)",
+    },
+  },
+}
+`;
+
+exports[`border-*-color: border-bottom-color-red: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-color: border-bottom-color-red: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-color": {
+      "setterCode": "borderColor(UniNativeBorderColors(0x00000000, 0x00000000, 0xffff0000, 0x00000000))",
+      "valueCode": "UniNativeBorderColors(0x00000000, 0x00000000, 0xffff0000, 0x00000000)",
+    },
+  },
+}
+`;
+
+exports[`border-*-color: border-left-color-#00ff00: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-color: border-left-color-#00ff00: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-color": {
+      "setterCode": "borderColor(UniNativeBorderColors(0x00000000, 0x00000000, 0x00000000, 0xff00ff00))",
+      "valueCode": "UniNativeBorderColors(0x00000000, 0x00000000, 0x00000000, 0xff00ff00)",
+    },
+  },
+}
+`;
+
+exports[`border-*-color: border-left-color-red: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-color: border-left-color-red: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-color": {
+      "setterCode": "borderColor(UniNativeBorderColors(0x00000000, 0x00000000, 0x00000000, 0xffff0000))",
+      "valueCode": "UniNativeBorderColors(0x00000000, 0x00000000, 0x00000000, 0xffff0000)",
+    },
+  },
+}
+`;
+
+exports[`border-*-color: border-right-color-#00ff00: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-color: border-right-color-#00ff00: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-color": {
+      "setterCode": "borderColor(UniNativeBorderColors(0x00000000, 0xff00ff00, 0x00000000, 0x00000000))",
+      "valueCode": "UniNativeBorderColors(0x00000000, 0xff00ff00, 0x00000000, 0x00000000)",
+    },
+  },
+}
+`;
+
+exports[`border-*-color: border-right-color-red: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-color: border-right-color-red: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-color": {
+      "setterCode": "borderColor(UniNativeBorderColors(0x00000000, 0xffff0000, 0x00000000, 0x00000000))",
+      "valueCode": "UniNativeBorderColors(0x00000000, 0xffff0000, 0x00000000, 0x00000000)",
+    },
+  },
+}
+`;
+
+exports[`border-*-color: border-top-color-#00ff00: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-color: border-top-color-#00ff00: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-color": {
+      "setterCode": "borderColor(UniNativeBorderColors(0xff00ff00, 0x00000000, 0x00000000, 0x00000000))",
+      "valueCode": "UniNativeBorderColors(0xff00ff00, 0x00000000, 0x00000000, 0x00000000)",
+    },
+  },
+}
+`;
+
+exports[`border-*-color: border-top-color-red: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-color: border-top-color-red: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-color": {
+      "setterCode": "borderColor(UniNativeBorderColors(0xffff0000, 0x00000000, 0x00000000, 0x00000000))",
+      "valueCode": "UniNativeBorderColors(0xffff0000, 0x00000000, 0x00000000, 0x00000000)",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-bottom-style-dashed: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-style": {
+      "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-bottom-style-dashed: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-bottom-style-dotted: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-style": {
+      "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-bottom-style-dotted: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-bottom-style-none: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-style": {
+      "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-bottom-style-none: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-bottom-style-solid: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-style": {
+      "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-bottom-style-solid: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-left-style-dashed: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-left-style": {
+      "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-left-style-dashed: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-left-style-dotted: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-left-style": {
+      "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-left-style-dotted: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-left-style-none: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-left-style": {
+      "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-left-style-none: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-left-style-solid: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-left-style": {
+      "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-left-style-solid: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-right-style-dashed: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-right-style": {
+      "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-right-style-dashed: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-right-style-dotted: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-right-style": {
+      "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-right-style-dotted: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-right-style-none: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-right-style": {
+      "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-right-style-none: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-right-style-solid: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-right-style": {
+      "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-right-style-solid: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-top-style-dashed: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-top-style": {
+      "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-top-style-dashed: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-top-style-dotted: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-top-style": {
+      "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-top-style-dotted: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-top-style-none: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-top-style": {
+      "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-top-style-none: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-top-style-solid: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-top-style": {
+      "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Solid")",
+    },
+  },
+}
+`;
+
+exports[`border-*-style: border-top-style-solid: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Solid"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
+    },
+  },
+}
+`;
+
+exports[`border-*-width: border-bottom-width-0: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(0, UniCSSUnitType.NONE)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.NONE)",
+    },
+  },
+}
+`;
+
+exports[`border-*-width: border-bottom-width-0: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-bottom-width-1px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`border-*-width: border-bottom-width-1px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-bottom-width-medium: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-width",
+        "important": false,
+        "prop": "borderBottomWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "medium",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: medium",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-bottom-width-medium: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-bottom-width-thick: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-width",
+        "important": false,
+        "prop": "borderBottomWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thick",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thick",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-bottom-width-thick: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-bottom-width-thin: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-width",
+        "important": false,
+        "prop": "borderBottomWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thin",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thin",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-bottom-width-thin: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-left-width-0: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(0, UniCSSUnitType.NONE)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.NONE)",
+    },
+  },
+}
+`;
+
+exports[`border-*-width: border-left-width-0: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-left-width-1px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`border-*-width: border-left-width-1px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-left-width-medium: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-left-width",
+        "important": false,
+        "prop": "borderLeftWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "medium",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: medium",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-left-width-medium: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-left-width-thick: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-left-width",
+        "important": false,
+        "prop": "borderLeftWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thick",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thick",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-left-width-thick: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-left-width-thin: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-left-width",
+        "important": false,
+        "prop": "borderLeftWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thin",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thin",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-left-width-thin: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-right-width-0: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(0, UniCSSUnitType.NONE)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.NONE)",
+    },
+  },
+}
+`;
+
+exports[`border-*-width: border-right-width-0: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-right-width-1px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`border-*-width: border-right-width-1px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-right-width-medium: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-right-width",
+        "important": false,
+        "prop": "borderRightWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "medium",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: medium",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-right-width-medium: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-right-width-thick: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-right-width",
+        "important": false,
+        "prop": "borderRightWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thick",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thick",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-right-width-thick: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-right-width-thin: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-right-width",
+        "important": false,
+        "prop": "borderRightWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thin",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thin",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-right-width-thin: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-top-width-0: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(0, UniCSSUnitType.NONE)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.NONE)",
+    },
+  },
+}
+`;
+
+exports[`border-*-width: border-top-width-0: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-top-width-1px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`border-*-width: border-top-width-1px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-top-width-medium: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-width",
+        "important": false,
+        "prop": "borderTopWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "medium",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: medium",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-top-width-medium: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-top-width-thick: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-width",
+        "important": false,
+        "prop": "borderTopWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thick",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thick",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-top-width-thick: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-top-width-thin: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-width",
+        "important": false,
+        "prop": "borderTopWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thin",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thin",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-*-width: border-top-width-thin: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
 exports[`border-color: red: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
@@ -296,6 +1420,388 @@ exports[`border-color: red: app-harmony(nv-c) 1`] = `
     "border-color": {
       "setterCode": "borderColor(UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000))",
       "valueCode": "UniNativeBorderColors(0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000)",
+    },
+  },
+}
+`;
+
+exports[`border-radius: border-bottom-left-radius-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-bottom-left-radius-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-left-radius": {
+      "setterCode": "borderRadiusBottomLeft(10)",
+      "valueCode": "10",
+    },
+  },
+}
+`;
+
+exports[`border-radius: border-bottom-left-radius-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-left-radius",
+        "important": false,
+        "prop": "borderBottomLeftRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`border-bottom-left-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-bottom-left-radius-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-left-radius",
+        "important": false,
+        "prop": "borderBottomLeftRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`border-bottom-left-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-bottom-right-radius-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-bottom-right-radius-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-right-radius": {
+      "setterCode": "borderRadiusBottomRight(10)",
+      "valueCode": "10",
+    },
+  },
+}
+`;
+
+exports[`border-radius: border-bottom-right-radius-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-right-radius",
+        "important": false,
+        "prop": "borderBottomRightRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`border-bottom-right-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-bottom-right-radius-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-right-radius",
+        "important": false,
+        "prop": "borderBottomRightRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`border-bottom-right-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-top-left-radius-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-top-left-radius-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-top-left-radius": {
+      "setterCode": "borderRadiusTopLeft(10)",
+      "valueCode": "10",
+    },
+  },
+}
+`;
+
+exports[`border-radius: border-top-left-radius-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-left-radius",
+        "important": false,
+        "prop": "borderTopLeftRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`border-top-left-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-top-left-radius-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-left-radius",
+        "important": false,
+        "prop": "borderTopLeftRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`border-top-left-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-top-right-radius-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-top-right-radius-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-top-right-radius": {
+      "setterCode": "borderRadiusTopRight(10)",
+      "valueCode": "10",
+    },
+  },
+}
+`;
+
+exports[`border-radius: border-top-right-radius-50%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-right-radius",
+        "important": false,
+        "prop": "borderTopRightRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`border-top-right-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-top-right-radius-50%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-right-radius",
+        "important": false,
+        "prop": "borderTopRightRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "50%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`50%\` is not supported for \`border-top-right-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-style: dashed: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-style": {
+      "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+    },
+    "border-left-style": {
+      "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+    },
+    "border-right-style": {
+      "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+    },
+    "border-top-style": {
+      "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dashed")",
+    },
+  },
+}
+`;
+
+exports[`border-style: dashed: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dashed"))",
+    },
+  },
+}
+`;
+
+exports[`border-style: dotted: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-style": {
+      "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+    },
+    "border-left-style": {
+      "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+    },
+    "border-right-style": {
+      "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+    },
+    "border-top-style": {
+      "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "Dotted")",
+    },
+  },
+}
+`;
+
+exports[`border-style: dotted: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "Dotted"))",
+    },
+  },
+}
+`;
+
+exports[`border-style: none: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-style": {
+      "setterCode": "setStyleBorderBottomStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+    },
+    "border-left-style": {
+      "setterCode": "setStyleBorderLeftStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+    },
+    "border-right-style": {
+      "setterCode": "setStyleBorderRightStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+    },
+    "border-top-style": {
+      "setterCode": "setStyleBorderTopStyle(UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderStyleType, "::", "None")",
+    },
+  },
+}
+`;
+
+exports[`border-style: none: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-style": {
+      "setterCode": "borderStyle(UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None")))",
+      "valueCode": "UniNativeBorderStyles(UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"), UTSCPP.propertyAccess(UniNativeBorderStyle, "::", "None"))",
     },
   },
 }

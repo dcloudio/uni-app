@@ -2,9 +2,225 @@ import { parseDom2StaticStyle } from '../../../src/dom2'
 import { TEST_OPTIONS_LIST } from '../utils'
 
 describe('box-shadow:', () => {
-  ;['none', '5px 5px red', 'invalid'].forEach((value) => {
+  ;[
+    'none',
+    '5px 5px red',
+    '5px 5px 10px rgba(0,0,0,0.3)',
+    'inset 0 0 5px #123456',
+    'invalid',
+  ].forEach((value) => {
     test(value, () => {
       const input = `box-shadow: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('box-sizing:', () => {
+  ;['border-box', 'content-box'].forEach((value) => {
+    test(value, () => {
+      const input = `box-sizing: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('margin:', () => {
+  const properties = [
+    'margin-top',
+    'margin-right',
+    'margin-bottom',
+    'margin-left',
+  ] as const
+  ;['10px', 'auto'].forEach((value) => {
+    properties.forEach((property) => {
+      test(`${property}-${value}`, () => {
+        const input = `${property}: ${value}`
+        TEST_OPTIONS_LIST.forEach((options) => {
+          const result = parseDom2StaticStyle(input, options)
+          expect(result).toMatchSnapshot(
+            `${options.platform}(${options.target})`
+          )
+        })
+      })
+    })
+  })
+})
+
+describe('padding:', () => {
+  const properties = [
+    'padding-top',
+    'padding-right',
+    'padding-bottom',
+    'padding-left',
+  ] as const
+  ;['10px', '5%'].forEach((value) => {
+    properties.forEach((property) => {
+      test(`${property}-${value}`, () => {
+        const input = `${property}: ${value}`
+        TEST_OPTIONS_LIST.forEach((options) => {
+          const result = parseDom2StaticStyle(input, options)
+          expect(result).toMatchSnapshot(
+            `${options.platform}(${options.target})`
+          )
+        })
+      })
+    })
+  })
+})
+
+describe('opacity:', () => {
+  ;['1', '0.5', '0'].forEach((value) => {
+    test(value, () => {
+      const input = `opacity: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('overflow:', () => {
+  ;['visible', 'hidden'].forEach((value) => {
+    test(value, () => {
+      const input = `overflow: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('pointer-events:', () => {
+  ;['auto', 'none'].forEach((value) => {
+    test(value, () => {
+      const input = `pointer-events: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('z-index:', () => {
+  ;['1', '100', '0', 'auto'].forEach((value) => {
+    test(value, () => {
+      const input = `z-index: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('transform:', () => {
+  ;['rotate(45deg)', 'scale(1.2)', 'translateX(10px)'].forEach((value) => {
+    test(value, () => {
+      const input = `transform: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('transform-origin:', () => {
+  ;['center', 'top left', '50% 50%'].forEach((value) => {
+    test(value, () => {
+      const input = `transform-origin: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('transition-delay:', () => {
+  ;['0s', '0.5s', '200ms'].forEach((value) => {
+    test(value, () => {
+      const input = `transition-delay: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('transition-duration:', () => {
+  ;['0.3s', '1s', '150ms'].forEach((value) => {
+    test(value, () => {
+      const input = `transition-duration: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('transition-property:', () => {
+  ;[
+    'all',
+    'none',
+    'width',
+    'height',
+    'margin',
+    'margin-top',
+    'margin-bottom',
+    'margin-left',
+    'margin-right',
+    'left',
+    'right',
+    'top',
+    'bottom',
+    'padding',
+    'padding-left',
+    'padding-right',
+    'padding-top',
+    'padding-bottom',
+    'opacity',
+    'background-color',
+    'border-color',
+    'border-top-color',
+    'border-bottom-color',
+    'border-left-color',
+    'border-right-color',
+    'transform',
+  ].forEach((value) => {
+    test(value, () => {
+      const input = `transition-property: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
+describe('transition-timing-function:', () => {
+  ;[
+    'ease',
+    'ease-in',
+    'ease-out',
+    'ease-in-out',
+    'linear',
+    'cubic-bezier',
+  ].forEach((value) => {
+    test(value, () => {
+      const input = `transition-timing-function: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
         const result = parseDom2StaticStyle(input, options)
         expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
