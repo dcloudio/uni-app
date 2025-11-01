@@ -2250,6 +2250,7 @@
     },
     {
       "name": "align-items",
+      "description": "align-items 属性将所有直接子元素上的 align-self 值设置为一个组。在 Flex 弹性布局中控制子元素在交叉轴方向的对齐方式。",
       "restrictions": [
         "enum"
       ],
@@ -2257,6 +2258,7 @@
       "values": [
         {
           "name": "center",
+          "description": "元素在交叉轴上居中。如果元素在交叉轴上的尺寸（高度/宽度）大于其容器，那么在两个方向均等溢出。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2289,6 +2291,7 @@
         },
         {
           "name": "flex-start",
+          "description": "元素在交叉轴上对齐起始位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2321,6 +2324,7 @@
         },
         {
           "name": "flex-end",
+          "description": "元素在交叉轴上对齐结尾位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2353,6 +2357,7 @@
         },
         {
           "name": "stretch",
+          "description": "元素在交叉轴方向未设置尺寸（高度/宽度）或设置为 auto，会被拉伸到与行相同的高度或列相同的宽度。同时元素仍然保持其宽高比例的约束。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2385,6 +2390,7 @@
         },
         {
           "name": "baseline",
+          "description": "所有元素向基线对齐。交叉轴起点到元素基线距离最大的元素将会于交叉轴起点对齐以确定基线。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2461,6 +2467,7 @@
     },
     {
       "name": "align-self",
+       "description": "align-self 属性在 Flex 弹性布局中设置元素在容器中的交叉轴方向的对齐方式，覆盖父元素设置的 align-items 值。",
       "restrictions": [
         "enum"
       ],
@@ -2468,6 +2475,7 @@
       "values": [
         {
           "name": "auto",
+          "description": "默认值。与父元素的 align-items 值一致。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2500,6 +2508,7 @@
         },
         {
           "name": "center",
+          "description": "元素在交叉轴上居中。如果元素在交叉轴上的尺寸（高度/宽度）大于其容器，那么在两个方向均等溢出。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2532,6 +2541,7 @@
         },
         {
           "name": "flex-start",
+          "description": "元素在交叉轴上对齐起始位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2564,6 +2574,7 @@
         },
         {
           "name": "flex-end",
+          "description": "元素在交叉轴上对齐结尾位置。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2596,6 +2607,7 @@
         },
         {
           "name": "stretch",
+          "description": "元素在交叉轴方向未设置尺寸（高度/宽度）或设置为 auto，会被拉伸到与行相同的高度或列相同的宽度。同时元素仍然保持其宽高比例的约束。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2628,6 +2640,7 @@
         },
         {
           "name": "baseline",
+          "description": "所有元素向基线对齐。交叉轴起点到元素基线距离最大的元素将会于交叉轴起点对齐以确定基线。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2695,11 +2708,12 @@
       "restrictions": [
         "enum"
       ],
-      "description": "CSS 的 align-content 属性用于设置交叉轴方向多个行或列的分布方式",
+      "description": "align-content 属性用于在 Flex 弹性布局中设置行或列在交叉轴方向的分布方式。",
       "syntax": "center | flex-start | flex-end | space-between | space-around | stretch",
       "values": [
         {
           "name": "center",
+          "description": "所有行朝向容器的中心填充。每行互相紧挨，相对于容器居中对齐。容器的交叉轴起点边和第一行的距离相等于容器的交叉轴终点边和最后一行的距离。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2732,6 +2746,7 @@
         },
         {
           "name": "flex-start",
+          "description": "所有行从容器交叉轴起点开始填充。第一行的交叉轴起点边和容器的交叉轴起点边对齐。接下来的每一行紧跟前一行。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2764,6 +2779,7 @@
         },
         {
           "name": "flex-end",
+          "description": "所有行从容器交叉轴末尾开始填充。最后一行的交叉轴终点和容器的交叉轴终点对齐，同时所有后续行与前一个对齐。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2796,6 +2812,7 @@
         },
         {
           "name": "space-between",
+          "description": "所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的边对齐。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2828,6 +2845,7 @@
         },
         {
           "name": "space-around",
+          "description": "所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的距离是相邻两行间距的一半。",
           "uniPlatform": {
             "app": {
               "android": {
@@ -2860,6 +2878,7 @@
         },
         {
           "name": "stretch",
+          "description": "拉伸所有行来填满剩余空间，剩余空间平均地分配给每一行。",
           "uniPlatform": {
             "app": {
               "android": {
