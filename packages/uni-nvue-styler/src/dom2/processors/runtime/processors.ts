@@ -2,6 +2,7 @@ import { toSharedDataStyleColorValue } from '../color'
 import { toSharedDataStyleNumberValue } from '../number'
 import { toSharedDataStyleStringValue } from '../string'
 import { toSharedDataStyleUnitValue } from '../unit'
+export const UniCSSPropertyVariable = 1
 export const processors = new Map<string, [number, (value: string) => any]>([
   ['align-content', [48, toSharedDataStyleAlignContent]],
   ['align-items', [46, toSharedDataStyleAlignItems]],

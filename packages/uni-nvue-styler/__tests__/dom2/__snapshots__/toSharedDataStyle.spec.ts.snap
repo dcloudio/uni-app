@@ -2,6 +2,10 @@
 
 exports[`toSharedDataStyle basic 1`] = `
 {
+  "1": {
+    "--color": "red",
+    "--font-size": "16px",
+  },
   "42": 2,
   "45": 2,
   "50": 1,

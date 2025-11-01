@@ -557,6 +557,7 @@ function toSharedDataStyleUnitValue(value) {
     return toSharedDataStyleValueError(`Invalid unit value: ${value}`);
 }
 
+const UniCSSPropertyVariable = 1;
 const processors = new Map([
     ['align-content', [48, toSharedDataStyleAlignContent]],
     ['align-items', [46, toSharedDataStyleAlignItems]],
@@ -993,11 +994,20 @@ function toSharedDataStyleWhiteSpace(value) {
 
 function toSharedDataStyle(style, result = {}) {
     style.forEach((value, key) => {
-        const processor = processors.get(key);
-        if (processor) {
-            const newValue = processor[1](value);
-            if (typeof newValue !== 'undefined') {
-                result[processor[0]] = newValue;
+        if (key.startsWith('--')) {
+            if (!result[UniCSSPropertyVariable]) {
+                result[UniCSSPropertyVariable] = {};
+            }
+            result[UniCSSPropertyVariable][key] =
+                value;
+        }
+        else {
+            const processor = processors.get(key);
+            if (processor) {
+                const newValue = processor[1](value);
+                if (typeof newValue !== 'undefined') {
+                    result[processor[0]] = newValue;
+                }
             }
         }
     });
