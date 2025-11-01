@@ -254,11 +254,13 @@
     "uniPlatform": {
       "app": {
         "nv-c": {
+		  "type": "UniNativeVisibilityType",
           "setter": "visibility"
         }
       },
       "app-android": {
         "nv-kt": {
+		  "type": "UniNativeVisibilityType",
           "setter": "visibility"
         }
       }
