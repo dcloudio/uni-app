@@ -4,6 +4,7 @@ import {
   createPropertyProcessor,
   createValueProcessorError,
   createValueProcessorResult,
+  toSharedDataStyleValueError,
 } from './utils'
 
 const NUMBER_TYPES = ['number', 'UniNativeBorderRadius']
@@ -21,4 +22,12 @@ export function createSetStyleNumberValueProcessor(
     }
     return createValueProcessorError(`Invalid number value: ${value}`)
   }, PropertyProcessorType.Number)
+}
+
+export function toSharedDataStyleNumberValue(value: string | number) {
+  const numValue = parseFloat(String(value))
+  if (!isNaN(numValue)) {
+    return numValue
+  }
+  return toSharedDataStyleValueError(`Invalid number value: ${value}`)
 }

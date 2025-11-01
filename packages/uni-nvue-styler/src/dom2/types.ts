@@ -43,6 +43,8 @@ export type UniPlatformConfig = {
 
 export interface AppCssPropertyConfig {
   type?: string | string[]
+  values?: string[]
+  defaultValue?: string
   uniPlatform: UniPlatformConfig
 }
 

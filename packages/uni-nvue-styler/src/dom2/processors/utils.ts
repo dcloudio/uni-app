@@ -1,4 +1,4 @@
-import type { AppCssJson } from '../types'
+import type { AppCssJson, DOM2_APP_PLATFORM, DOM2_APP_TARGET } from '../types'
 import appCssJson from '../../../lib/dom2/app-css.json'
 import { createSetStyleVariableProcessor } from './variable'
 
@@ -27,6 +27,12 @@ export function createValueProcessorResult(
   return {
     valueCode: valueCode,
     setterCode: setterCode,
+  }
+}
+
+export function toSharedDataStyleValueError(error: string) {
+  if (__DEV__) {
+    console.warn(error)
   }
 }
 
@@ -81,3 +87,29 @@ export function createPropertyProcessor(
 export const PARTS_REG = /\s(?![^(]*\))/
 const LENGTH_REG = /^[0-9]+[a-zA-Z%]+?$/
 export const isLength = (v: string) => v === '0' || LENGTH_REG.test(v)
+
+export function getTargetConfig(
+  propertyName: string,
+  platform: DOM2_APP_PLATFORM,
+  target: DOM2_APP_TARGET
+) {
+  const property = getAppCssJson()[propertyName]
+  if (!property || !property.uniPlatform) {
+    return null
+  }
+
+  const specificPlatform = platform
+  const generalPlatform = 'app'
+
+  const platformConfig =
+    property.uniPlatform[specificPlatform] ||
+    property.uniPlatform[generalPlatform as DOM2_APP_PLATFORM]
+  if (!platformConfig) {
+    return null
+  }
+  // if(target === DOM2_APP_TARGET.ALL){
+  //   return platformConfig
+  // }
+
+  return platformConfig[target] || null
+}

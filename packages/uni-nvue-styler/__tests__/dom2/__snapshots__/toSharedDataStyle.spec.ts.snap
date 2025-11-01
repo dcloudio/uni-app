@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`toSharedDataStyle basic 1`] = `
+{
+  "42": 2,
+  "45": 2,
+  "50": 1,
+  "6": {
+    "unit": 2,
+    "value": 100,
+  },
+  "7": {
+    "unit": 2,
+    "value": 100,
+  },
+  "75": "red",
+}
+`;

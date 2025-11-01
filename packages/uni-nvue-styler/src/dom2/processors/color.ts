@@ -37,3 +37,7 @@ export function parseNativeColorValue(value: string) {
     return '0x' + argb
   }
 }
+
+export function toSharedDataStyleColorValue(value: string | number) {
+  return `${value}`
+}

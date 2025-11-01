@@ -17,3 +17,7 @@ export function createSetStyleStringValueProcessor(
     return createValueProcessorResult(`"${value}"`, `${setter}("${value}")`)
   }, PropertyProcessorType.String)
 }
+
+export function toSharedDataStyleStringValue(value: string | number) {
+  return `${value}`
+}

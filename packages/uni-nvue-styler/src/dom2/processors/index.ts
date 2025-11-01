@@ -4,8 +4,9 @@ import {
   PropertyProcessorType,
   createPropertyProcessor,
   getAppCssJson,
+  getTargetConfig,
 } from './utils'
-import { createSetStyleUnitValueProcessor } from './unit'
+import { createSetStyleUnitValueProcessor, isUnitType } from './unit'
 import { createGenEnumCode, createSetStyleEnumValueProcessor } from './enum'
 import { createSetStyleNativeColorValueProcessor, isColorType } from './color'
 import { createSetStyleNumberValueProcessor, isNumberType } from './number'
@@ -146,7 +147,7 @@ export function createDom2PropertyProcessors(
     propertyType: string,
     setter: string
   ): PropertyProcessor | undefined {
-    if (propertyType === 'UniCSSUnitValue') {
+    if (isUnitType(propertyType)) {
       return createSetStyleUnitValueProcessor(setter, language)
     } else if (isColorType(propertyType)) {
       return createSetStyleNativeColorValueProcessor(setter)
@@ -171,32 +172,6 @@ export function createDom2PropertyProcessors(
       )
     }
   }
-}
-
-function getTargetConfig(
-  propertyName: string,
-  platform: DOM2_APP_PLATFORM,
-  target: DOM2_APP_TARGET
-) {
-  const property = getAppCssJson()[propertyName]
-  if (!property || !property.uniPlatform) {
-    return null
-  }
-
-  const specificPlatform = platform
-  const generalPlatform = 'app'
-
-  const platformConfig =
-    property.uniPlatform[specificPlatform] ||
-    property.uniPlatform[generalPlatform as DOM2_APP_PLATFORM]
-  if (!platformConfig) {
-    return null
-  }
-  // if(target === DOM2_APP_TARGET.ALL){
-  //   return platformConfig
-  // }
-
-  return platformConfig[target] || null
 }
 
 export function clearProcessorsCache() {

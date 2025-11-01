@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 // const { sync } = require('fast-glob')
 const { buildCss } = require('./build-css')
 const { config } = require('dotenv')
+const prettier = require('prettier')
 config()
 if (process.env.UNI_APP_SYNTAX_DIR) {
   fs.copySync(path.resolve(process.env.UNI_APP_SYNTAX_DIR, 'uts/common'), path.resolve(__dirname, '../packages/uni-uts-v1/lib/uts/types/uts/common'))
@@ -101,5 +102,41 @@ async function syncDom2UniCSSPropertyID() {
   }
   fs.outputFileSync(path.resolve(__dirname, '../packages/uni-nvue-styler/lib/dom2/properties.json'), JSON.stringify(properties, null, 2))
 }
+
+
+async function syncDom2UniCSSUnitType() {
+  const uniAppXDir = path.dirname(require.resolve('@dcloudio/uni-app-x'))
+  const UniCSSUnitTypeFilename = path.resolve(uniAppXDir, 'types', 'dom2', 'UniCSSType.d.ts')
+  const UniCSSUnitTypeContent = fs.readFileSync(UniCSSUnitTypeFilename, 'utf-8')
+  const { parse } = require('../packages/uts/dist')
+  const ast = await parse(UniCSSUnitTypeContent)
+  const units = []
+  for (const item of ast.body) {
+    if (item.type === 'ExportDeclaration') {
+      if (item.declaration.type === 'TsEnumDeclaration' && item.declaration.id.value === 'UniCSSUnitType') {
+        item.declaration.members.forEach(member => {
+          units.push(member.id.value)
+        })
+      }
+    }
+  }
+  fs.outputFileSync(path.resolve(__dirname, '../packages/uni-nvue-styler/lib/dom2/units.json'), JSON.stringify(units, null, 2))
+}
+
 syncDom2UniCSSPropertyID()
+syncDom2UniCSSUnitType()
+
 buildCss()
+
+async function genDom2RuntimeCode() {
+  const configFile = await prettier.resolveConfigFile()
+  prettierOptions = {
+    parser: 'typescript',
+    ...((await prettier.resolveConfig(configFile))),
+  }
+  const { genRuntimeCode } = require('../packages/uni-nvue-styler/scripts/dom2.cjs.js')
+  const code = await prettier.format(genRuntimeCode(), prettierOptions)
+  fs.outputFileSync(path.resolve(__dirname, '../packages/uni-nvue-styler/src/dom2/processors/runtime/processors.ts'), code)
+}
+genDom2RuntimeCode()
+

@@ -4,7 +4,14 @@ import {
   createPropertyProcessor,
   createValueProcessorError,
   createValueProcessorResult,
+  toSharedDataStyleValueError,
 } from './utils'
+import Units from '../../../lib/dom2/units.json'
+
+const UNIT_TYPES = ['UniCSSUnitValue']
+export function isUnitType(propertyType?: string) {
+  return propertyType && UNIT_TYPES.includes(propertyType)
+}
 
 export function createSetStyleUnitValueProcessor(
   setter: string,
@@ -46,4 +53,13 @@ export function parseUnitValue(value: string) {
       unit: unit === '%' ? 'PCT' : unit,
     }
   }
+}
+
+export function toSharedDataStyleUnitValue(value: string | number) {
+  const unitValue = parseUnitValue(String(value))
+  if (unitValue) {
+    unitValue.unit = Units.indexOf(unitValue.unit) as unknown as string
+    return unitValue
+  }
+  return toSharedDataStyleValueError(`Invalid unit value: ${value}`)
 }

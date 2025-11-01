@@ -21,5 +21,16 @@
     "compilerOptions": {
       "declaration": true
     }
+  },
+  {
+    "input": {
+      "src/dom2/processors/runtime/generator.ts": ["scripts/dom2.cjs.js"]
+    }
+  },
+  {
+    "input": {
+      "src/dom2/esm.ts": ["dist-x/uni-nvue-styler.es.js"]
+    },
+    "external": ["@vue/shared"]
   }
 ]
