@@ -34,7 +34,9 @@ function isUnitType(propertyType) {
 }
 
 function genRuntimeCode() {
+    // eslint-disable-next-line no-restricted-globals
     const appCssJson = require('../lib/dom2/app-css.json');
+    // eslint-disable-next-line no-restricted-globals
     const properties = require('../lib/dom2/properties.json');
     const allProperties = Object.keys(properties);
     const codes = [

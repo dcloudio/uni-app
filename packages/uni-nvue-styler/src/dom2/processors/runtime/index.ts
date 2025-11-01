@@ -1,7 +1,9 @@
 import { processors } from './processors'
 
-export function toSharedDataStyle(style: Map<string, unknown>) {
-  const result: Record<number, unknown> = {}
+export function toSharedDataStyle(
+  style: Map<string, unknown>,
+  result: Record<number, unknown> = {}
+) {
   style.forEach((value, key) => {
     const processor = processors.get(key)
     if (processor) {

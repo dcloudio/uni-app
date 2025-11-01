@@ -991,8 +991,7 @@ function toSharedDataStyleWhiteSpace(value) {
     }
 }
 
-function toSharedDataStyle(style) {
-    const result = {};
+function toSharedDataStyle(style, result = {}) {
     style.forEach((value, key) => {
         const processor = processors.get(key);
         if (processor) {
