@@ -253,17 +253,11 @@
     "type": "UniCSSVisibilityType",
     "uniPlatform": {
       "app": {
-        "dom-c": {
-          "setter": "setStyleVisibility"
-        },
         "nv-c": {
           "setter": "visibility"
         }
       },
       "app-android": {
-        "dom-c": {
-          "setter": "setStyleVisibility"
-        },
         "nv-kt": {
           "setter": "visibility"
         }
