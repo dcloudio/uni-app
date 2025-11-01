@@ -740,12 +740,7 @@ exports[`visibility: hidden: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {
-    "visibility": {
-      "setterCode": "setStyleVisibility(UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Hidden"))",
-      "valueCode": "UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Hidden")",
-    },
-  },
+  "obj": {},
 }
 `;
 
@@ -755,8 +750,8 @@ exports[`visibility: hidden: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "visibility": {
-      "setterCode": "visibility(UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Hidden"))",
-      "valueCode": "UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Hidden")",
+      "setterCode": "visibility(UTSCPP.propertyAccess(UniNativeVisibilityType, "::", "Hidden"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeVisibilityType, "::", "Hidden")",
     },
   },
 }
@@ -766,12 +761,7 @@ exports[`visibility: visible: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {
-    "visibility": {
-      "setterCode": "setStyleVisibility(UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Visible"))",
-      "valueCode": "UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Visible")",
-    },
-  },
+  "obj": {},
 }
 `;
 
@@ -781,8 +771,8 @@ exports[`visibility: visible: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "visibility": {
-      "setterCode": "visibility(UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Visible"))",
-      "valueCode": "UTSCPP.propertyAccess(UniCSSVisibilityType, "::", "Visible")",
+      "setterCode": "visibility(UTSCPP.propertyAccess(UniNativeVisibilityType, "::", "Visible"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeVisibilityType, "::", "Visible")",
     },
   },
 }
