@@ -19264,7 +19264,16 @@ function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
     uni.hideToast();
-    uni.hideLoading();
+    uni.hideLoading({
+      fail(error) {
+        const pages = getCurrentBasePages();
+        const currentPage = pages[pages.length - 1];
+        if (!currentPage) {
+          return;
+        }
+        throw new Error(error.errMsg);
+      }
+    });
   });
   router.beforeEach((to, from) => {
     if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
