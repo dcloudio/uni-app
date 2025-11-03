@@ -1,11 +1,13 @@
+import { isArray, isString } from '@vue/shared'
+
 export function parseVirtualHostClass(className: string | string[]) {
-  if (Array.isArray(className)) {
+  if (isArray(className)) {
     return className
       .filter(Boolean)
       .map((name) => `^${name}`)
       .join(' ')
   }
-  if (typeof className === 'string') {
+  if (isString(className)) {
     return className
       .split(/\s+/)
       .filter(Boolean)
