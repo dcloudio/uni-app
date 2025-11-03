@@ -8,8 +8,10 @@ import {
   copyMiniProgramPluginJson,
   createCopyComponentDirs,
   createCopyPluginTarget,
+  createMPBuiltInTagTransform,
   createTransformComponentLink,
   getNativeTags,
+  transformDirection,
   // transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
 import {
@@ -64,6 +66,41 @@ const nodeTransforms = [
   // transformMatchMedia,
   createTransformComponentLink(COMPONENT_ON_LINK, NodeTypes.ATTRIBUTE),
 ]
+if (process.env.UNI_APP_X === 'true') {
+  const transformMPBuiltInTagOptions = {
+    propRename: {
+      checkbox: {
+        foreColor: 'color',
+      },
+      radio: {
+        activeBackgroundColor: 'color',
+      },
+      slider: {
+        backgroundColor: 'backgroundColor',
+        activeBackgroundColor: 'activeColor',
+        foreColor: 'handle-color',
+      },
+      switch: {
+        activeBackgroundColor: 'color',
+      },
+    },
+    propAdd: {
+      canvas: [
+        {
+          name: 'type',
+          value: '2d',
+        },
+      ],
+    },
+    tagRename: {
+      'list-view': 'scroll-view',
+    },
+  }
+  nodeTransforms.push(
+    createMPBuiltInTagTransform(transformMPBuiltInTagOptions),
+    transformDirection
+  )
+}
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
 }
