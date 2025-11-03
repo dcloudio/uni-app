@@ -52,6 +52,8 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   directive: 'a:',
   component: {
+    // 支付宝小程序支持 :host 选择器
+    ':host': true,
     dir: COMPONENTS_DIR,
     getPropertySync: true,
   },
