@@ -8,7 +8,6 @@ import {
   copyMiniProgramPluginJson,
   createCopyComponentDirs,
   createCopyPluginTarget,
-  createMPBuiltInTagTransform,
   createTransformComponentLink,
   getNativeTags,
   transformDirection,
@@ -23,6 +22,7 @@ import { transformRef } from './transforms/transformRef'
 import { event } from './event'
 import { transformOpenType } from './transforms/transformOpenType'
 import { isArray } from '@vue/shared'
+import { transformMPBuiltInTag } from './transforms/transformMPBuiltInTag'
 
 const projectConfigFilename = 'mini.project.json'
 const COMPONENTS_DIR = 'mycomponents'
@@ -67,39 +67,7 @@ const nodeTransforms = [
   createTransformComponentLink(COMPONENT_ON_LINK, NodeTypes.ATTRIBUTE),
 ]
 if (process.env.UNI_APP_X === 'true') {
-  const transformMPBuiltInTagOptions = {
-    propRename: {
-      checkbox: {
-        foreColor: 'color',
-      },
-      radio: {
-        activeBackgroundColor: 'color',
-      },
-      slider: {
-        backgroundColor: 'backgroundColor',
-        activeBackgroundColor: 'activeColor',
-        foreColor: 'handle-color',
-      },
-      switch: {
-        activeBackgroundColor: 'color',
-      },
-    },
-    propAdd: {
-      canvas: [
-        {
-          name: 'type',
-          value: '2d',
-        },
-      ],
-    },
-    tagRename: {
-      'list-view': 'scroll-view',
-    },
-  }
-  nodeTransforms.push(
-    createMPBuiltInTagTransform(transformMPBuiltInTagOptions),
-    transformDirection
-  )
+  nodeTransforms.push(transformMPBuiltInTag, transformDirection)
 }
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
