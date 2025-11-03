@@ -24143,7 +24143,7 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
     const path = url.split("?")[0];
     const route = getRouteOptions(path);
     if (!route) {
-      reject(`${url}}`);
+      reject(`${url}`);
       return;
     }
     route.loader && route.loader().then(() => {
