@@ -1,6 +1,9 @@
-import { createMPBuiltInTagTransform } from '@dcloudio/uni-cli-shared'
+import {
+  type TransformMPBuiltInTagOptions,
+  createMPBuiltInTagTransform,
+} from '@dcloudio/uni-cli-shared'
 
-const transformMPBuiltInTagOptions = {
+const transformMPBuiltInTagOptions: TransformMPBuiltInTagOptions = {
   propRename: {
     checkbox: {
       foreColor: 'color',
