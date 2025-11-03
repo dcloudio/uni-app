@@ -24,7 +24,17 @@ export function initRouter(app: App) {
     hideActionSheet()
     hideModal()
     uni.hideToast()
-    uni.hideLoading()
+    // @ts-expect-error
+    uni.hideLoading({
+      fail(error) {
+        const pages = getCurrentBasePages()
+        const currentPage = pages[pages.length - 1]
+        if (!currentPage) {
+          return
+        }
+        throw new Error(error.errMsg)
+      },
+    })
   })
   //#endif
 
