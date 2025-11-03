@@ -303,16 +303,12 @@ export default {
       if (this.inputType === 'number') {
         // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
         const maxlength = parseInt(this.maxlength, 10)
+
         if (maxlength > 0 && $event.target.value.length > maxlength) {
-          // 输入前字符长度超出范围，则不触发input，且将值还原
-          // 否则截取一定长度且触发input
-          $event.target.value = $event.target.value.slice(0, maxlength)
-          this.valueSync = $event.target.value
-          // 粘贴时过长的字符时，需判断和之前的value是否一致，一致则不更新input
-          const preValue = (this.value !== null && this.value !== undefined)
-            ? this.value.toString()
-            : ''
-          if (preValue === $event.target.value) {
+          if ($event.inputType === 'insertFromPaste') {
+            this.$refs.input.value = this.cachedValue = this.valueSync = $event.target.value.slice(0, maxlength)
+          } else {
+            this.$refs.input.value = this.valueSync = this.cachedValue
             outOfMaxlength = true
           }
         }

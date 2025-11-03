@@ -38,7 +38,7 @@ function initEventChannel () {
       return this.$scope.getOpenerEventChannel()
     }
     if (__PLATFORM__ === 'mp-alipay') {
-      if (my.canIUse('getOpenerEventChannel')) { return this.$scope.getOpenerEventChannel() }
+      if (my.canIUse('page.getOpenerEventChannel')) { return this.$scope.getOpenerEventChannel() }
     }
     if (!this.__eventChannel__) {
       this.__eventChannel__ = new EventChannel()

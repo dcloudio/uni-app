@@ -9,7 +9,8 @@ const {
 const {
   getCode,
   hyphenate,
-  isRootElement
+  isRootElement,
+  isVForElement
 } = require('../../../util')
 
 const getMemberExpr = require('../member-expr')
@@ -182,19 +183,19 @@ module.exports = function processStyle (paths, path, state) {
     } else {
       state.errors.add(`:style 不支持 ${getCode(styleValuePath.node)} 语法`)
     }
-    if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
+    if (mergeVirtualHostAttributes && isRootElement(path.parentPath) && !isVForElement(path.parentPath)) {
       styleValuePath.replaceWith(t.binaryExpression('+', styleValuePath.node, t.identifier(VIRTUAL_HOST_STYLE)))
     }
   } else if (staticStylePath) {
-    if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
-      const styleNode = processStaticStyle([t.identifier(VIRTUAL_HOST_STYLE)], staticStylePath, state)
+    if (mergeVirtualHostAttributes && isRootElement(path.parentPath) && !isVForElement(path.parentPath)) {
+      const styleNode = processStaticStyle([t.logicalExpression('||', t.identifier(VIRTUAL_HOST_STYLE), t.stringLiteral(''))], staticStylePath, state)
       const property = t.objectProperty(t.identifier('style'), styleNode)
       path.node.properties.push(property)
       return []
     }
     staticStylePath.get('value').replaceWith(getStaticStyleStringLiteral(staticStylePath, state))
   } else {
-    if (mergeVirtualHostAttributes && isRootElement(path.parentPath)) {
+    if (mergeVirtualHostAttributes && isRootElement(path.parentPath) && !isVForElement(path.parentPath)) {
       const property = t.objectProperty(t.identifier('style'), t.identifier(VIRTUAL_HOST_STYLE))
       path.node.properties.push(property)
     }

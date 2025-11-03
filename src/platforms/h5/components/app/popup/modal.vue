@@ -225,6 +225,8 @@ uni-modal .uni-modal__textarea {
   border: none;
   background-color: #eee;
   text-decoration: inherit;
+  /* 解决单行中文内容会出现滚动条的问题 */
+  line-height: 1.2;
 }
 
 uni-modal .uni-modal__ft {

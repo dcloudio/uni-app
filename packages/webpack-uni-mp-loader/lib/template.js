@@ -59,6 +59,12 @@ module.exports = function (content, map) {
     }
 
     const wxComponents = getWXComponents(resourcePath.replace(path.extname(resourcePath), ''))
+    const filteredWXComponents = Object.entries(wxComponents).reduce((components, [name, path]) => {
+      if (!path.includes('@dcloudio/uni-cli-shared/components')) {
+        components[name] = path
+      }
+      return components
+    }, {})
 
     const params = loaderUtils.parseQuery(this.resourceQuery)
     /* eslint-disable no-mixed-operators */
@@ -74,7 +80,7 @@ module.exports = function (content, map) {
       filterTagName,
       resourcePath,
       emitFile: this.emitFile,
-      wxComponents,
+      wxComponents: filteredWXComponents,
       getJsonFile,
       getShadowTemplate,
       updateSpecialMethods,

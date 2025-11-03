@@ -1,8 +1,5 @@
 import createMediaQueryObserver from '../../../mp-weixin/helpers/create-media-query-observer'
-import {
-  isFn,
-  hasOwn
-} from 'uni-shared'
+import { isFn } from 'uni-shared'
 
 import { $on, $off } from 'uni-core/runtime/event-bus'
 
@@ -26,9 +23,6 @@ export {
 }
   from 'uni-core/service/api/plugin/__f__'
 export function startGyroscope (params) {
-  if (hasOwn(params, 'interval')) {
-    console.warn('支付宝小程序 startGyroscope暂不支持interval')
-  }
   params.success && params.success({
     errMsg: 'startGyroscope:ok'
   })

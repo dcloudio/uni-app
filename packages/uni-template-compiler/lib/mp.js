@@ -1,8 +1,12 @@
 const uniI18n = require('@dcloudio/uni-cli-i18n')
+const { getManifestJson } = require('@dcloudio/uni-cli-shared/lib/manifest')
 
 const EVENTS = {
   click: 'tap'
 }
+// UNI_INPUT_DIR 在 test 环境下不存在
+const manifestJson = process.env.UNI_INPUT_DIR ? getManifestJson() : {}
+const nativeTags = (manifestJson[process.env.UNI_PLATFORM] || {}).nativeTags || []
 const tags = {
   // 小程序平台通用组件
   base: [
@@ -77,7 +81,8 @@ const tags = {
     'talos-control-container',
     'talos-na-refresh-control',
     'talos-modal',
-    'talos-svg'
+    'talos-svg',
+    ...nativeTags
   ],
   'mp-weixin': [
     'page-container',
@@ -113,8 +118,14 @@ const tags = {
     // 'span', // todo: 临时移除 span 的支持，后续判断 skyline 环境进行区分 ask 190418
     'sticky-header',
     'sticky-section',
+    'store-product',
+    'store-home',
+    'store-gift',
+    'store-coupon',
     'open-data-list',
-    'open-data-item'
+    'open-data-item',
+    'selection',
+    ...nativeTags
   ],
   // 支付宝小程序平台独有组件
   'mp-alipay': [
@@ -131,12 +142,17 @@ const tags = {
     'mkt',
     'page-container',
     'page-meta',
+    'root-portal',
+    'share-element',
     'lottie',
     'join-group-chat',
-    'subscribe-message'
+    'subscribe-message',
+    'mpass-component',
+    ...nativeTags
   ],
   // 抖音小程序平台独有组件
   'mp-toutiao': [
+    'draw-ad',
     'aweme-data',
     'consume-card',
     'pay-button',
@@ -146,13 +162,24 @@ const tags = {
     'live-preview',
     'aweme-live-book',
     'aweme-user-card',
-    'rtc-room'
+    'rtc-room',
+    'clue-order-form',
+    'shop-follow-card',
+    ...nativeTags
   ],
   'mp-kuaishou': [
     'follow-service',
     'payment-list',
-    'playlet'
-  ]
+    'playlet',
+    'address',
+    'page-meta',
+    'navigation-bar',
+    ...nativeTags
+  ],
+  'mp-xhs': ['post-note-button', 'group-chat-card', ...nativeTags],
+  'mp-jd': ['root-portal', 'page-container', ...nativeTags],
+  'mp-qq': [...nativeTags],
+  'mp-harmony': [...nativeTags]
 }
 
 const baseCompiler = {

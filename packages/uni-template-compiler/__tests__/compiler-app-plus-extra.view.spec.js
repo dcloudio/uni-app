@@ -44,7 +44,7 @@ describe('codegen', () => {
   it('generate text with multiple statements', () => {
     assertCodegen(
       `<view>{{obj.param1}}123123{{obj.param1}}123123{{obj.param1}}<text> -{{obj.param3}}---{{obj.param3}} </text>{{obj.param2}}aaaa{{obj.param2}}aaaa{{obj.param2}}</view>`,
-      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+"123123"+(_$g(0,'t0-1'))+"123123"+(_$g(0,'t0-2'))),_c('v-uni-text',{attrs:{"_i":1}},[_v("-"+(_$g(1,'t0-0'))+"---"+(_$g(1,'t0-1')))]),_v((_$g(0,'t2-0'))+"aaaa"+(_$g(0,'t2-1'))+"aaaa"+(_$g(0,'t2-2')))],1)}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+"123123"+(_$g(0,'t0-1'))+"123123"+(_$g(0,'t0-2'))),_c('v-uni-text',{attrs:{"_i":1}},[_v(" -"+(_$g(1,'t0-0'))+"---"+(_$g(1,'t0-1'))+" ")]),_v((_$g(0,'t2-0'))+"aaaa"+(_$g(0,'t2-1'))+"aaaa"+(_$g(0,'t2-2')))],1)}`
     )
   })
   it('generate v-slot', () => {
@@ -146,7 +146,7 @@ describe('codegen', () => {
 
     assertCodegen(
       '<view> text </view>',
-      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v("text")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v(" text ")])}`
     )
 
     assertCodegen(
@@ -160,26 +160,26 @@ describe('codegen', () => {
     )
 
     assertCodegen(
-      '<text>\nN: {{title}}\n′</text>',
-      `with(this){return _c('v-uni-text',{attrs:{"_i":0}},[_v("N: "+(_$g(0,'t0-0'))+"\\n′")])}`
+      '<text>\\nN: {{title}}\\n′</text>',
+      `with(this){return _c('v-uni-text',{attrs:{"_i":0}},[_v("\\\\nN: "+(_$g(0,'t0-0'))+"\\\\n′")])}`
     )
     assertCodegen(
-      '<text>我是第一行\n我的第二行</text>',
-      `with(this){return _c('v-uni-text',{attrs:{"_i":0}},[_v("我是第一行\\n我的第二行")])}`
+      '<text>我是第一行\\n我的第二行</text>',
+      `with(this){return _c('v-uni-text',{attrs:{"_i":0}},[_v("我是第一行\\\\n我的第二行")])}`
     )
     assertCodegen(
-      '<text>我是第一行\n我的第二行1{{title}}</text>',
-      `with(this){return _c('v-uni-text',{attrs:{"_i":0}},[_v("我是第一行\\n我的第二行1"+(_$g(0,'t0-0')))])}`
+      '<text>我是第一行\\n我的第二行1{{title}}</text>',
+      `with(this){return _c('v-uni-text',{attrs:{"_i":0}},[_v("我是第一行\\\\n我的第二行1"+(_$g(0,'t0-0')))])}`
     )
     assertCodegen(
       `<text>我是第一行
   我的第二行2{{title}}</text>`,
-      `with(this){return _c('v-uni-text',{attrs:{"_i":0}},[_v("我是第一行\\n  我的第二行2"+(_$g(0,'t0-0')))])}`
+      `with(this){return _c('v-uni-text',{attrs:{"_i":0}},[_v("我是第一行 我的第二行2"+(_$g(0,'t0-0')))])}`
     )
 
     assertCodegen(
       '<view> text text </view>',
-      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v("text text")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v(" text text ")])}`
     )
     assertCodegen(
       '<view>text {{text}} text</view>',
@@ -187,23 +187,28 @@ describe('codegen', () => {
     )
     assertCodegen(
       '<view> text {{text}} 文本 </view>',
-      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v("text "+(_$g(0,'t0-0'))+" 文本")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v(" text "+(_$g(0,'t0-0'))+" 文本 ")])}`
     )
     assertCodegen(
       '<view>{{text}} text  text </view>',
-      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text text ")])}`
     )
     assertCodegen(
       '<view>  {{text}} text  text </view>',
-      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text")])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v(" "+(_$g(0,'t0-0'))+" text text ")])}`
     )
     assertCodegen(
       '<view>{{text}} text  text {{text}}</view>',
-      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text "+(_$g(0,'t0-1')))])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text text "+(_$g(0,'t0-1')))])}`
     )
     assertCodegen(
       '<view>  {{text}} text  text {{text}}  </view>',
-      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v((_$g(0,'t0-0'))+" text  text "+(_$g(0,'t0-1')))])}`
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v(" "+(_$g(0,'t0-0'))+" text text "+(_$g(0,'t0-1'))+" ")])}`
+    )
+    assertCodegen(
+      '<view>apple &nbsp; banana \\n strawberry</view>',
+      // eslint-disable-next-line no-irregular-whitespace
+      `with(this){return _c('uni-view',{attrs:{"_i":0}},[_v("apple   banana \\\\n strawberry")])}`
     )
   })
   it('generate bool attr', () => {

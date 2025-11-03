@@ -1066,5 +1066,9 @@
     "offPushMessage": [
         "/core/service/api/plugin/push.js",
         []
+    ],
+    "getFacialRecognitionMetaInfo": [
+        "/platforms/h5/service/api/plugin/facial-verify.js",
+        []
     ]
 }

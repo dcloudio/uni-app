@@ -47,6 +47,12 @@ function getNodeInfo (el, fields) {
   const {
     top
   } = getWindowOffset()
+  if (fields.node) {
+    const tagName = el.tagName.split('-')[1] || el.tagName
+    if (tagName) {
+      info.node = el.querySelector(tagName)
+    }
+  }
   if (fields.id) {
     info.id = el.id
   }

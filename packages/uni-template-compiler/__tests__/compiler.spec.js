@@ -203,6 +203,10 @@ describe('mp:compiler', () => {
       '<view><block wx:if="{{$slots[one]}}"><slot name="{{one}}"></slot></block><block wx:else>text</block></view>'
     )
     assertCodegen(
+      '<view><slot name="1">text</slot></view>',
+      '<view><block wx:if="{{$slots[1]}}"><slot name="1"></slot></block><block wx:else>text</block></view>'
+    )
+    assertCodegen(
       '<view><slot :name="one+\'test\'">text</slot></view>',
       '<view><block wx:if="{{$slots[one+\'test\']}}"><slot name="{{one+\'test\'}}"></slot></block><block wx:else>text</block></view>'
     )
@@ -445,7 +449,7 @@ describe('mp:compiler', () => {
   it('generate style with mergeVirtualHostAttributes', () => {
     assertCodegen(
       '<view style="color:red">hello world</view>',
-      '<view class="{{[virtualHostClass]}}" style="{{\'color:red;\'+virtualHostStyle}}">hello world</view>',
+      '<view class="{{[virtualHostClass]}}" style="{{\'color:red;\'+(virtualHostStyle||\'\')}}">hello world</view>',
       'with(this){}',
       {
         mergeVirtualHostAttributes: true

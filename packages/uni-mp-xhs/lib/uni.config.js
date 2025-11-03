@@ -9,13 +9,20 @@ module.exports = {
     },
     extnames: {
       style: '.css',
-      template: '.xhsml'
+      template: '.xhsml',
+      filter: '.sjs'
     },
+    filterTag: 'sjs',
     project: 'project.config.json',
     subPackages: true
   },
   copyWebpackOptions (platformOptions, vueOptions) {
-    const copyOptions = ['xhscomponents', 'ext.json']
+    const copyOptions = [
+      'xhscomponents',
+      'ext.json',
+      'sitemap.json',
+      'project.private.config.json'
+    ]
     global.uniModules.forEach(module => {
       copyOptions.push('uni_modules/' + module + '/xhscomponents')
     })

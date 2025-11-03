@@ -18,8 +18,10 @@ const {
 const modifyVueLoader = require('../vue-loader')
 
 const WebpackHtmlAppendPlugin = require('../../packages/webpack-html-append-plugin')
-
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
+const WebpackHtmlInjectAliYunPlugin = require('../../packages/webpack-html-inject-aliyun-plugin/index')
+
+const { AliYunCloudAuthWebSDK } = require('../util')
 
 function resolve (dir) {
   return path.resolve(__dirname, '../../', dir)
@@ -51,7 +53,8 @@ function getProvides () {
 
 const plugins = [
   new WebpackUniAppPlugin(),
-  new webpack.ProvidePlugin(getProvides())
+  new webpack.ProvidePlugin(getProvides()),
+  new WebpackHtmlInjectAliYunPlugin(AliYunCloudAuthWebSDK)
 ]
 
 if (process.env.NODE_ENV !== 'production') {

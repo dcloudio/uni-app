@@ -37,6 +37,7 @@ const parseWxsEvents = require('./parser/wxs-events-parser')
 const preTransformNode = require('./pre-transform-node')
 
 const optimize = require('./optimizer')
+const { condense } = require('@dcloudio/vue-cli-plugin-uni/lib/util')
 
 function createGenVar (id, isScopedSlot) {
   if (isScopedSlot) {
@@ -111,7 +112,8 @@ function checkAutoFill (el) {
 function transformNode (el, parent, state, isScopedSlot) {
   if (el.type === 3) {
     // fixed by xxxxxx 注意：保持平台一致性，trim 一下，理论上service不需要，保险起见也处理一遍
-    el.text = el.text.trim()
+    // fix: 和 vue3 一致行为，防止去除 &nbsp; 等空白符
+    el.text = condense(el.text)
     return
   }
   parseBlock(el, parent)

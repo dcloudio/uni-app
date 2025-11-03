@@ -64,6 +64,11 @@ export function uploadFile ({
   } = UniServiceJSBridge
   var uploadTask = new UploadTask(null, callbackId)
   if (!Array.isArray(files) || !files.length) {
+    if (!filePath) {
+      invoke(callbackId, {
+        errMsg: 'uploadFile:fail file error'
+      })
+    }
     files = [{
       name,
       file,

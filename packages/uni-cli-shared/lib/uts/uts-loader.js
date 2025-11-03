@@ -59,10 +59,34 @@ function createUniModulesSyncFilePreprocessor (
     } else if (extname === '.uts' || extname === '.ts') {
       return preJs(content)
     } else if (extname === '.uvue' || extname === '.vue') {
-      return preJs(preHtml(content))
+      return preUTSSDKVueFile(fileName, preJs(preHtml(content)))
     }
     return content
   }
+}
+
+function preUTSSDKVueFile (filename, content) {
+  if (
+    filename.includes('utssdk') &&
+    (filename.includes('app-android') || filename.includes('app-ios'))
+  ) {
+    const {
+      parseComponent
+    } = require('vue-template-compiler')
+    const descriptor = parseComponent(content, {
+      sourceMap: false,
+      pad: 'line'
+    })
+    if (descriptor.script?.content) {
+      return (
+        descriptor.script.content +
+        // 补充 template 内容
+        `/*${descriptor.template?.content}*/`
+      )
+    }
+    return content
+  }
+  return content
 }
 
 function once (fn, ctx = null) {
@@ -96,7 +120,8 @@ module.exports = async function (content) {
 
   const {
     syncUniModuleFilesByCompiler,
-    resolveTscUniModuleIndexFileName
+    resolveTscUniModuleIndexFileName,
+    resolveTscUniModuleUTSSDKVueFileNames
   } = resolveUTSCompiler()
 
   const compilePlugin = async (pluginDir) => {
@@ -124,27 +149,44 @@ module.exports = async function (content) {
       )
     }
 
-    if (!utsPlugins.has(pluginId)) {
-      utsPlugins.add(pluginId)
-      if (uniXKotlinCompiler) {
-        const indexFileName = resolveTscUniModuleIndexFileName(
-          'app-android',
-          pluginDir
-        )
-        if (indexFileName) {
-          await uniXKotlinCompiler.addRootFile(indexFileName)
-        }
+    // 不判重了，不然nvue，vue并发同一个插件时，其中一个会跳过tsc编译，直接走到rust那里，导致一些文件还没有生成，比如vue兼容模式组件之类的
+    // if (!utsPlugins.has(pluginId)) {
+    utsPlugins.add(pluginId)
+    if (uniXKotlinCompiler) {
+      const platform = 'app-android'
+      const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(
+        platform,
+        pluginDir
+      )
+      for (const vueFile of vueFiles) {
+        await uniXKotlinCompiler.addRootFile(vueFile)
       }
-      if (uniXSwiftCompiler) {
-        const indexFileName = resolveTscUniModuleIndexFileName(
-          'app-ios',
-          pluginDir
-        )
-        if (indexFileName) {
-          await uniXSwiftCompiler.addRootFile(indexFileName)
-        }
+      const indexFileName = resolveTscUniModuleIndexFileName(
+        platform,
+        pluginDir
+      )
+      if (indexFileName) {
+        await uniXKotlinCompiler.addRootFile(indexFileName)
       }
     }
+    if (uniXSwiftCompiler) {
+      const platform = 'app-ios'
+      const vueFiles = resolveTscUniModuleUTSSDKVueFileNames(
+        platform,
+        pluginDir
+      )
+      for (const vueFile of vueFiles) {
+        await uniXSwiftCompiler.addRootFile(vueFile)
+      }
+      const indexFileName = resolveTscUniModuleIndexFileName(
+        platform,
+        pluginDir
+      )
+      if (indexFileName) {
+        await uniXSwiftCompiler.addRootFile(indexFileName)
+      }
+    }
+    // }
 
     // 处理uni_modules中的文件变更
     const files = changedFiles.get(pluginId)

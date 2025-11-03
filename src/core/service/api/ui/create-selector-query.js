@@ -60,6 +60,19 @@ class NodesRef {
     return this._selectorQuery
   }
 
+  node (callback) {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        node: true
+      },
+      callback
+    )
+    return this._selectorQuery
+  }
+
   scrollOffset (callback) {
     this._selectorQuery._push(
       this._selector,

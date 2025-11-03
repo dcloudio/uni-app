@@ -438,6 +438,21 @@ module.exports = function () {
         new uts.UTSResolverPlugin()
       ]
     },
+    watchOptions: {
+      ignored: [
+        path.resolve(process.env.UNI_INPUT_DIR, '.hbuilderx'),
+        path.resolve(process.env.UNI_INPUT_DIR, '.editorconfig'),
+        path.resolve(process.env.UNI_INPUT_DIR, '.gitignore'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'LICENSE'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'unpackage'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud-aliyun'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud-tcb'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud-alipay'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud-dcloud'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'cloudfunctions-aliyun'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'cloudfunctions-tcb')
+      ]
+    },
     resolveLoader: {
       alias: {
         'babel-loader': require.resolve('babel-loader', {
