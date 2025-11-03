@@ -200,6 +200,7 @@ export const options: UniMiniProgramPluginOptions = {
     ...miniProgram,
     customElements,
     filter: {
+      ...miniProgram.filter,
       extname: '.sjs',
       lang: 'sjs',
       generate(filter, filename) {
