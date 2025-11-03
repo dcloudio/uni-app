@@ -13,7 +13,8 @@ export function rewriteImportVuePlugin(): Plugin {
         if (rewritten.hasChanged()) {
           return {
             code: rewritten.toString(),
-            map: rewritten.generateMap(),
+            // 必须指定hires，不然部分情况可能会无法正确映射行号。
+            map: rewritten.generateMap({ hires: 'boundary' }),
           }
         }
       }
