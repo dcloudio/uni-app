@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
+import type { OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import {
   APP_SERVICE_FILENAME,
@@ -179,27 +180,37 @@ export function createUniAppJsEnginePlugin(
         }
       },
       generateBundle(_, bundle) {
-        const APP_SERVICE_FILENAME_MAP = APP_SERVICE_FILENAME + '.map'
-        const appServiceMap = bundle[APP_SERVICE_FILENAME_MAP]
-        if (appServiceMap && appServiceMap.type === 'asset') {
-          const source = JSON.parse(appServiceMap.source as string)
-          source.sourceRoot = normalizePath(inputDir)
-          const newSourceMapFileName = path.resolve(
-            process.env.UNI_APP_X_CACHE_DIR,
-            'sourcemap',
-            APP_SERVICE_FILENAME_MAP
-          )
-          fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
-          delete bundle[APP_SERVICE_FILENAME_MAP]
-          const appService = bundle[APP_SERVICE_FILENAME]
-          if (appService && appService.type === 'chunk') {
-            appService.code = appService.code.replace(
-              `//# sourceMappingURL=app-service.js.map`,
-              `//# sourceMappingURL=` +
-                path.relative(process.env.UNI_OUTPUT_DIR, newSourceMapFileName)
+        // 调整所有sourceMap文件
+        const sourceRoot = normalizePath(inputDir)
+        Object.entries(bundle).forEach(([file, asset]) => {
+          if (file.endsWith('.js.map') && asset.type === 'asset') {
+            const source = JSON.parse(asset.source as string)
+            source.sourceRoot = sourceRoot
+            const newSourceMapFileName = path.resolve(
+              process.env.UNI_APP_X_CACHE_DIR,
+              'sourcemap',
+              file
             )
+            fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
+            const jsFile = file.replace('.js.map', '.js')
+            const outputChunk = bundle[jsFile] as OutputChunk
+            if (outputChunk) {
+              outputChunk.code = outputChunk.code.replace(
+                `//# sourceMappingURL=${path.basename(file)}`,
+                `//# sourceMappingURL=` +
+                  normalizePath(
+                    path.relative(
+                      path.dirname(
+                        path.resolve(process.env.UNI_OUTPUT_DIR, file)
+                      ),
+                      newSourceMapFileName
+                    )
+                  )
+              )
+            }
+            delete bundle[file]
           }
-        }
+        })
       },
       async writeBundle() {
         // x 上暂时编译所有uni ext api，不管代码里是否调用了
