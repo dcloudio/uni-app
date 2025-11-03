@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_READY, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, normalizeClass, toDisplayString, createCommentVNode, resolveComponent } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, isInSSRComponentSetup, normalizeClass, toDisplayString, createCommentVNode } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -15985,7 +15985,7 @@ const props$k = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -17751,7 +17751,7 @@ function parseText(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -17843,7 +17843,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$f,
   emits: ["confirm", "change", "linechange", ...emit],
@@ -18024,7 +18024,7 @@ const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
@@ -18838,6 +18838,93 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
         "style": style.value
       }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
     };
+  }
+});
+function useLoadingStyle(targetElement, options = {}) {
+  const loadingSize = ref("16px");
+  const loadingBorderWidth = ref("0px");
+  let observer = null;
+  const coefficientMap = {
+    medium: options.coefficientMedium || 1,
+    thick: options.coefficientThick || 2
+  };
+  const calculateLoadingWidth = (element) => {
+    if (!element)
+      return;
+    const computedStyle = window.getComputedStyle(element);
+    const width = parseFloat(computedStyle.width);
+    const height = parseFloat(computedStyle.height);
+    const styleAttribute = element.getAttribute("style") || "";
+    let currentBorderWidthKeyword = "medium";
+    const match = styleAttribute.match(/border-width:\s*(medium|thick)/);
+    if (match && match[1]) {
+      currentBorderWidthKeyword = match[1];
+    }
+    if (!coefficientMap[currentBorderWidthKeyword]) {
+      console.warn(
+        `[uni-loading] 无效的 border-width 值: "${currentBorderWidthKeyword}"。将使用默认值 "medium"。`
+      );
+      currentBorderWidthKeyword = "medium";
+    }
+    const coefficient = coefficientMap[currentBorderWidthKeyword];
+    const minSide = Math.min(width, height);
+    const calculatedWidth = minSide / 16 * coefficient;
+    loadingSize.value = `${minSide}px`;
+    loadingBorderWidth.value = `${calculatedWidth}px`;
+  };
+  const setupObserver = () => {
+    if (!targetElement.value)
+      return;
+    calculateLoadingWidth(targetElement.value);
+    observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === "attributes" && (mutation.attributeName === "class" || mutation.attributeName === "style")) {
+          calculateLoadingWidth(targetElement.value);
+          break;
+        }
+      }
+    });
+    observer.observe(targetElement.value, {
+      attributes: true,
+      attributeFilter: ["class", "style"]
+    });
+  };
+  onMounted(() => {
+    setupObserver();
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+    }
+  });
+  return {
+    size: loadingSize,
+    borderWidth: loadingBorderWidth
+  };
+}
+class LoadingElement extends UniElement {
+}
+const __syscom_0$1 = defineBuiltInComponent({
+  name: "Loading",
+  rootElement: {
+    name: "uni-loading",
+    class: LoadingElement
+  },
+  setup() {
+    const LoadingRef = ref(null);
+    const loadingStyle = reactive(useLoadingStyle(LoadingRef));
+    return () => createVNode("view", {
+      "class": "__uni_loading_container__",
+      "ref": LoadingRef
+    }, [createVNode("view", {
+      "class": "__uni-loading__ __loading-4-3__",
+      "style": {
+        boxSizing: "border-box",
+        width: loadingStyle.size,
+        height: loadingStyle.size,
+        borderWidth: loadingStyle.borderWidth
+      }
+    }, null, 4)], 512);
   }
 });
 function normalizeEvent(vm, id2) {
@@ -27703,8 +27790,8 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
       window.removeEventListener("resize", fixSize);
     });
     return (_ctx, _cache) => {
-      const _component_view = __syscom_1;
-      const _component_text = __syscom_0$1;
+      const _component_view = __syscom_2;
+      const _component_text = __syscom_1$1;
       return openBlock(), createBlock(_component_view, null, {
         default: withCtx(() => [
           createVNode(_component_view, {
@@ -28842,11 +28929,11 @@ uni-image > .uni-image-will-change {\r
 `;
 function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_map = __syscom_0;
-  const _component_text = __syscom_0$1;
-  const _component_view = __syscom_1;
+  const _component_text = __syscom_1$1;
+  const _component_view = __syscom_2;
   const _component_input = __syscom_3;
   const _component_image = __syscom_4;
-  const _component_scroll_view = __syscom_2;
+  const _component_scroll_view = __syscom_2$1;
   return openBlock(), createBlock(_component_view, {
     class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
   }, {
@@ -29417,10 +29504,10 @@ const _sfc_main$1 = {
 };
 const _style_0$1 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0.5;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_text = __syscom_0$1;
-  const _component_textarea = __syscom_1$1;
-  const _component_scroll_view = __syscom_2;
-  const _component_view = __syscom_1;
+  const _component_text = __syscom_1$1;
+  const _component_textarea = __syscom_1;
+  const _component_scroll_view = __syscom_2$1;
+  const _component_view = __syscom_2;
   return openBlock(), createBlock(_component_view, {
     class: normalizeClass(["uni-modal_dialog__mask", { "uni-modal_dialog__mask__show": $data.showAnim }])
   }, {
@@ -29733,9 +29820,9 @@ const _sfc_main = {
 };
 const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		width: 136px;\n		max-width: 288px;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n}\n\n	\n";
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_loading = resolveComponent("loading");
-  const _component_text = __syscom_0$1;
-  const _component_view = __syscom_1;
+  const _component_loading = __syscom_0$1;
+  const _component_text = __syscom_1$1;
+  const _component_view = __syscom_2;
   return openBlock(), createBlock(_component_view, {
     class: normalizeClass(["uni-loading_dialog__mask", { "uni-loading_dialog__mask__show": $data.showAnim }])
   }, {
@@ -30181,6 +30268,8 @@ export {
   index$h as ListView,
   index$1 as LivePlayer,
   index as LivePusher,
+  __syscom_0$1 as Loading,
+  LoadingElement,
   __syscom_0 as Map,
   MatchMedia,
   MovableArea,
@@ -30195,15 +30284,15 @@ export {
   index$j as RadioGroup,
   ResizeSensor,
   index$i as RichText,
-  __syscom_2 as ScrollView,
+  __syscom_2$1 as ScrollView,
   indexX$2 as Slider,
   index$e as StickyHeader,
   index$f as StickySection,
   Swiper,
   SwiperItem,
   indexX$1 as Switch,
-  __syscom_0$1 as Text,
-  __syscom_1$1 as Textarea,
+  __syscom_1$1 as Text,
+  __syscom_1 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
@@ -30281,7 +30370,7 @@ export {
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
   index$b as Video,
-  __syscom_1 as View,
+  __syscom_2 as View,
   indexX as WebView,
   __f__,
   addInterceptor,

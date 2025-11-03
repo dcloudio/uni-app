@@ -1210,7 +1210,7 @@ const props$r = {
     default: false
   }
 };
-const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$5 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
   compatConfig: {
@@ -6586,7 +6586,7 @@ const props$i = {
     default: ""
   }
 };
-const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$i,
   setup(props2, {
@@ -7521,7 +7521,7 @@ const props$f = {
     default: false
   }
 };
-const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$f,
   emits: ["changing", "change"],
@@ -8345,7 +8345,7 @@ const props$c = {
     default: ""
   }
 };
-const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$c,
   emits: ["change"],
@@ -9285,6 +9285,37 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "style": style.value
       }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
     };
+  }
+});
+function useLoadingStyle(targetElement, options = {}) {
+  const loadingSize = vue.ref("16px");
+  const loadingBorderWidth = vue.ref("0px");
+  ({
+    medium: options.coefficientMedium || 1,
+    thick: options.coefficientThick || 2
+  });
+  return {
+    size: loadingSize,
+    borderWidth: loadingBorderWidth
+  };
+}
+const indexX$1 = defineBuiltInComponent({
+  name: "Loading",
+  setup() {
+    const LoadingRef = vue.ref(null);
+    const loadingStyle = vue.reactive(useLoadingStyle());
+    return () => vue.createVNode("view", {
+      "class": "__uni_loading_container__",
+      "ref": LoadingRef
+    }, [vue.createVNode("view", {
+      "class": "__uni-loading__ __loading-4-3__",
+      "style": {
+        boxSizing: "border-box",
+        width: loadingStyle.size,
+        height: loadingStyle.size,
+        borderWidth: loadingStyle.borderWidth
+      }
+    }, null, 4)], 512);
   }
 });
 function useSubscribe(callback, name, multiple, pageId) {
@@ -13925,7 +13956,7 @@ exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
 exports.Button = index$y;
 exports.Camera = index$2;
-exports.Canvas = indexX$4;
+exports.Canvas = indexX$5;
 exports.Checkbox = index$w;
 exports.CheckboxGroup = index$x;
 exports.CoverImage = index$7;
@@ -13941,6 +13972,7 @@ exports.ListItem = index$f;
 exports.ListView = index$g;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
+exports.Loading = indexX$1;
 exports.Map = index$9;
 exports.MovableArea = index$s;
 exports.MovableView = index$r;
@@ -13950,17 +13982,17 @@ exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
 exports.Progress = index$p;
-exports.Radio = indexX$3;
+exports.Radio = indexX$4;
 exports.RadioGroup = index$o;
 exports.ResizeSensor = ResizeSensor;
 exports.RichText = index$n;
 exports.ScrollView = index$m;
-exports.Slider = indexX$2;
+exports.Slider = indexX$3;
 exports.StickyHeader = index$d;
 exports.StickySection = index$e;
 exports.Swiper = index$l;
 exports.SwiperItem = index$k;
-exports.Switch = indexX$1;
+exports.Switch = indexX$2;
 exports.Text = index$j;
 exports.Textarea = index$i;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
