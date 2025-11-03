@@ -536,7 +536,7 @@ describe('mp:compiler-mp-weixin', () => {
   it('official-account-publish', () => {
     assertCodegen(
       '<official-account-publish topic="test" background-color="#f7f7f7" :limit="3" placeholder="please input"/>',
-      '<official-account-publish topic=\"test\" background-color=\"#f7f7f7\" limit=\"{{3}}\" placeholder=\"please input\"></official-account-publish>'
+      '<official-account-publish topic="test" background-color="#f7f7f7" limit="{{3}}" placeholder="please input"></official-account-publish>'
     )
   })
 })
