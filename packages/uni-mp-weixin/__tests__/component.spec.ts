@@ -33,6 +33,14 @@ describe('mp-weixin: transform component', () => {
   return {}
 }`
     )
+
+    assert(
+      `<official-account-publish topic="test" background-color="#f7f7f7" :limit="3" placeholder="please input"/>`,
+      `<official-account-publish topic="test" background-color="#f7f7f7" limit="{{3}}" placeholder="please input"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
   })
   test('lazy element: input', () => {
     assert(
