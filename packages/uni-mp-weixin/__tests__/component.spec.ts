@@ -1,5 +1,9 @@
 import { assert } from './testUtils'
 import { customElements } from '../src/compiler/options'
+import {
+  transformDirection,
+  transformMPBuiltInTag,
+} from '@dcloudio/uni-cli-shared'
 
 describe('mp-weixin: transform component', () => {
   beforeEach(() => {
@@ -327,4 +331,326 @@ describe('mp-weixin: transform component', () => {
   // }`
   //     )
   //   })
+})
+
+describe('mp-weixin: transform component x', () => {
+  test(`canvas`, () => {
+    assert(
+      `<canvas/>`,
+      `<canvas style="{{'--status-bar-height:' + a}}" type="2d"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<canvas type="2d"/>`,
+      `<canvas type="2d" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<canvas type="webgl"/>`,
+      `<canvas type="webgl" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`checkbox`, () => {
+    assert(
+      `<checkbox fore-color="#FF0000"/>`,
+      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<checkbox fore-color="#FF0000"/>`,
+      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`radio`, () => {
+    assert(
+      `<radio active-background-color="#FF0000"/>`,
+      `<radio color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<radio color="#FF0000"/>`,
+      `<radio color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`switch`, () => {
+    assert(
+      `<switch active-background-color="#FF0000"/>`,
+      `<switch color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<switch color="#FF0000"/>`,
+      `<switch color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`slider`, () => {
+    assert(
+      `<slider background-color="#FF0000" active-background-color="#FF0000" fore-color="#FF0000"/>`,
+      `<slider backgroundColor="#FF0000" activeColor="#FF0000" block-color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test('list-view', () => {
+    assert(
+      `<list-view/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('list-view direction horizontal', () => {
+    assert(
+      `<list-view direction="horizontal"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="true"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('list-view direction vertical', () => {
+    assert(
+      `<list-view direction="vertical"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('list-view direction all', () => {
+    assert(
+      `<list-view direction="all"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="true" scroll-y="true"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('list-view dynamic direction', () => {
+    assert(
+      `<list-view :direction="dir"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="{{b}}" scroll-y="{{c}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: _ctx.dir === 'horizontal' || _ctx.dir === 'all', c: !_ctx.dir || _ctx.dir === 'vertical' || _ctx.dir === 'all' }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('scroll-view', () => {
+    assert(
+      `<scroll-view/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('scroll-view direction horizontal', () => {
+    assert(
+      `<scroll-view direction="horizontal"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="true"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('scroll-view direction vertical', () => {
+    assert(
+      `<scroll-view direction="vertical"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-y="true"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('scroll-view direction all', () => {
+    assert(
+      `<scroll-view direction="all"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="true" scroll-y="true"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('scroll-view dynamic direction', () => {
+    assert(
+      `<scroll-view :direction="dir"/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true" scroll-x="{{b}}" scroll-y="{{c}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: _ctx.dir === 'horizontal' || _ctx.dir === 'all', c: !_ctx.dir || _ctx.dir === 'vertical' || _ctx.dir === 'all' }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('scroll-view with existing scroll-x should not transform direction', () => {
+    assert(
+      `<scroll-view scroll-x="true" direction="horizontal"/>`,
+      `<scroll-view scroll-x="true" direction="horizontal" style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
+
+  test('scroll-view with existing scroll-y should not transform direction', () => {
+    assert(
+      `<scroll-view scroll-y="true" direction="vertical"/>`,
+      `<scroll-view scroll-y="true" direction="vertical" style="{{'--status-bar-height:' + a}}" enable-flex="true" enhanced="true"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
 })
