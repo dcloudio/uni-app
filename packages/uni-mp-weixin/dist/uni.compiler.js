@@ -33,6 +33,16 @@ function transformAd(node, context) {
     }
 }
 
+function transformLoading(node, context) {
+    if (!uniCliShared.isElementNode(node)) {
+        return;
+    }
+    if (node.tag === 'loading') {
+        node.tag = 'uniloading';
+        node.tagType = compilerCore.ElementTypes.COMPONENT;
+    }
+}
+
 var description = "项目配置文件。";
 var packOptions = {
 	ignore: [
@@ -130,10 +140,10 @@ const customElements = [
 const nodeTransforms = [
     uniCliShared.transformRef,
     uniCliShared.transformComponentLink,
-    transformAd,
+    transformAd
 ];
 if (process.env.UNI_APP_X === 'true') {
-    nodeTransforms.push(uniCliShared.transformMPBuiltInTag, uniCliShared.transformDirection);
+    nodeTransforms.push(uniCliShared.transformMPBuiltInTag, uniCliShared.transformDirection, transformLoading);
 }
 const compilerOptions = {
     nodeTransforms,
