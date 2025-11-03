@@ -25,5 +25,6 @@ describe('h5: compiler', () => {
     expect(compile('<canvas/>').code).toContain(
       `_resolveComponent("v-uni-canvas")`
     )
+    expect(compile('<loading/>').code).toContain(`_resolveComponent("loading")`)
   })
 })

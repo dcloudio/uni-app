@@ -22,7 +22,7 @@ import {
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 
-const xBaseComponents = ['slider', 'switch']
+const xBaseComponents = ['slider', 'switch', 'loading']
 const baseComponents = [
   'audio',
   'button',
@@ -163,13 +163,11 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
 
 function resolveBuiltInCssImport(name: string) {
   const cssImports: string[] = []
-  if (baseComponents.includes(name)) {
-    const isX = process.env.UNI_APP_X === 'true'
-    if (isX && xBaseComponents.includes(name)) {
-      cssImports.push(X_BASE_COMPONENTS_STYLE_PATH + name + '.css')
-    } else {
-      cssImports.push(BASE_COMPONENTS_STYLE_PATH + name + '.css')
-    }
+  const isX = process.env.UNI_APP_X === 'true'
+  if (isX && xBaseComponents.includes(name)) {
+    cssImports.push(X_BASE_COMPONENTS_STYLE_PATH + name + '.css')
+  } else if (baseComponents.includes(name)) {
+    cssImports.push(BASE_COMPONENTS_STYLE_PATH + name + '.css')
   } else {
     cssImports.push(H5_COMPONENTS_STYLE_PATH + name + '.css')
   }

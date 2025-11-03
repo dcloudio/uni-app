@@ -38,12 +38,14 @@ export {
   Textarea,
   View,
   //#if _X_
+  Loading,
   ListView,
   ListItem,
   StickySection,
   StickyHeader,
   //#endif
   //#if _X_ && !_NODE_JS_
+  LoadingElement,
   UniElement,
   UniElement as UniElementImpl,
   UniButtonElement,
