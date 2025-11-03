@@ -577,6 +577,7 @@ interface UTSAndroid {
             }
         }
      }
+     @deprecated 已废弃,请使用 uni.createWorker 替代
    */
   getDispatcher(threadName ?: string | null) : UTSTaskDispatcher;
 
