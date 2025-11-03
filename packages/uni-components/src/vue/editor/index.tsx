@@ -1,11 +1,11 @@
 import { extend } from '@vue/shared'
-import { Ref, ref, onMounted } from 'vue'
+import { type Ref, onMounted, ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useCustomEvent } from '../../helpers/useEvent'
 import { UniElement } from '../../helpers/UniElement'
 import {
-  props as keyboardProps,
   emit as keyboardEmit,
+  props as keyboardProps,
   useKeyboard,
 } from '../../helpers/useKeyboard'
 import { useQuill } from './quill'

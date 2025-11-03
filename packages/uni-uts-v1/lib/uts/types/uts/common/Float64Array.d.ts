@@ -1,4 +1,4 @@
-interface Float64Array {
+interface Float64Arrayy extends TypedArray {
   /**
      数组的长度
      @uniPlatform {

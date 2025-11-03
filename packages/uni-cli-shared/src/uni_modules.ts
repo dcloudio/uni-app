@@ -39,6 +39,76 @@ const extApiProviders: {
 
 const extApiPlugins = new Set<string>()
 
+export function getNonTreeShakingPlugins() {
+  const result: string[] = []
+  if (!process.env.UNI_INPUT_DIR || !process.env.UNI_UTS_PLATFORM) {
+    return result
+  }
+  const uniModulesDir = path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules')
+  if (!fs.existsSync(uniModulesDir)) {
+    return result
+  }
+  const platform = process.env.UNI_UTS_PLATFORM
+  fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
+    const uniModuleRootDir = path.resolve(uniModulesDir, uniModuleDir)
+    const pkgPath = path.resolve(uniModuleRootDir, 'package.json')
+    if (!fs.existsSync(pkgPath)) {
+      return
+    }
+    try {
+      /**
+        "uni_modules": {
+        "treeShaking": {
+            "app": {
+                "android": false,
+                "ios": true,
+                "harmony": false
+            },
+            "web": false
+        }
+      }
+       */
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
+      if (isPlainObject(pkg.uni_modules)) {
+        if (isNonTreeShakingPlugin(platform, pkg.uni_modules)) {
+          result.push(uniModuleDir)
+        }
+      }
+    } catch (e) {}
+  })
+  return result
+}
+
+export function isNonTreeShakingPlugin(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  uni_modules: Record<string, any>
+) {
+  const treeShaking = uni_modules.treeShaking
+  // uni_modules.treeShaking 为 false，表示不进行treeShaking
+  if (treeShaking === false) {
+    return true
+  } else if (isPlainObject(treeShaking)) {
+    // 如果 treeShaking 为对象，则需要根据平台判断是否进行treeShaking
+    // uni_modules.treeShaking.web 为 false，表示不进行treeShaking
+    if (treeShaking[platform] === false) {
+      return true
+    } else {
+      const parts = platform.split('-')
+      if (parts.length === 2) {
+        const [basePlatform, subPlatform] = parts
+        // uni_modules.treeShaking.app 为 false，表示不进行treeShaking
+        if (treeShaking[basePlatform] === false) {
+          return true
+          // uni_modules.treeShaking.app.android 为 false，表示不进行treeShaking
+        } else if (treeShaking[basePlatform]?.[subPlatform] === false) {
+          return true
+        }
+      }
+    }
+  }
+  return false
+}
+
 export function getUniExtApiProviders() {
   return extApiProviders
 }
@@ -254,6 +324,16 @@ export function parseInjects(
       ) {
         source = `${source}/utssdk/app-js/index.uts`
       }
+    } else if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+      // 出于兼容历史项目考虑，鸿蒙优先使用app-harmony，无app-harmony的情况下再使用app-js
+      if (
+        !fs.existsSync(platformIndexFileName) &&
+        fs.existsSync(
+          path.resolve(uniModuleRootDir, 'utssdk', 'app-js', 'index.uts')
+        )
+      ) {
+        source = `${source}/utssdk/app-js/index.uts`
+      }
     }
 
     for (const key in rootDefines) {
@@ -323,7 +403,8 @@ function parseInject(
               if (isPlainObject(appOptions)) {
                 // js engine 下且存在 app-js，不检查
                 const skipCheck =
-                  process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' &&
+                  (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' ||
+                    process.env.UNI_UTS_PLATFORM === 'app-harmony') &&
                   source.includes('app-js')
                 if (!skipCheck) {
                   const targetLanguage =

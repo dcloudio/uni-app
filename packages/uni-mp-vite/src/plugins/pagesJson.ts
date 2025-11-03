@@ -11,6 +11,7 @@ import {
   defineUniPagesJsonPlugin,
   findChangedJsonFiles,
   getLocaleFiles,
+  getWorkers,
   initI18nOptionsOnce,
   mergeMiniProgramAppJson,
   normalizePagePath,
@@ -25,6 +26,7 @@ import {
 import { virtualPagePath } from './entry'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import { parseI18nJson } from '@dcloudio/uni-i18n'
+import { isPlainObject } from '@vue/shared'
 
 const debugPagesJson = debug('uni:pages-json')
 
@@ -127,6 +129,21 @@ export function uniPagesJsonPlugin(
           options.project?.source ?? {}
         )
 
+        if (process.env.UNI_APP_X === 'true') {
+          // 当前平台支持workers，且manifest.json中配置了workers，则合并workers配置
+          if (options.app.workers && Object.keys(getWorkers()).length) {
+            // 如果没有配置，则默认为workers目录
+            appJson.workers = manifestJson.workers || 'workers'
+          }
+          if (isPlainObject(appJson.workers) && appJson.workers.path) {
+            // 微信小程序测试对象结构的话，如果isSubpackage是false，会报找不到
+            // 故：只有isSubpackage为true保持对象结构，否则用字符串
+            if (!appJson.workers.isSubpackage) {
+              appJson.workers = appJson.workers.path
+            }
+          }
+        }
+
         if (options.json?.formatAppJson) {
           options.json.formatAppJson(appJson, manifestJson, pageJsons)
         }
@@ -200,7 +217,15 @@ function importPagesCode(pagesJson: AppJson) {
         pages.forEach((pagePath) => importPageCode(path.join(root, pagePath)))
     })
   }
+  let workerCode: string[] = []
+  if (process.env.UNI_APP_X === 'true') {
+    const workers = getWorkers()
+    workerCode = Object.keys(workers).map((key) => {
+      return `import('@/${key}')`
+    })
+  }
   return `if(!Math){
 ${importPagesCode.join('\n')}
+${workerCode.join('\n')}
 }`
 }

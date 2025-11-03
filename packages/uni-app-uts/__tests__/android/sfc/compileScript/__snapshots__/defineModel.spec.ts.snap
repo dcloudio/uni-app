@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`defineModel() basic usage 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     "modelValue": { required: true },
     "count": {},
@@ -24,7 +25,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineModel() w/ array props 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: /*#__PURE__*/mergeModels(['foo', 'bar'], {
     "count": {},
   }),
@@ -44,7 +46,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineModel() w/ defineProps and defineEmits 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: /*#__PURE__*/mergeModels({ foo: String }, {
     "modelValue": { default: 0 },
   }),
@@ -95,7 +98,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineModel() w/ types, basic usage 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     "modelValue": { type: [Boolean, String] },
     "count": { type: Number },
@@ -124,7 +128,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineModel() w/ types, production mode 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     "modelValue": { type: Boolean },
     "fn": { type: Function as PropType<() => void> },

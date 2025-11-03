@@ -1,17 +1,17 @@
 import {
-  Ref,
+  Comment,
+  type ComponentPublicInstance,
+  type Ref,
+  type SetupContext,
+  type VNode,
+  type WritableComputedRef,
+  computed,
+  nextTick,
+  onMounted,
+  provide,
+  reactive,
   ref,
   watch,
-  provide,
-  WritableComputedRef,
-  computed,
-  reactive,
-  VNode,
-  SetupContext,
-  onMounted,
-  ComponentPublicInstance,
-  nextTick,
-  Comment,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { flatVNode } from '../../helpers/flatVNode'
@@ -20,7 +20,7 @@ import ResizeSensor from '../resize-sensor/index'
 import { useCustomEvent } from '../../helpers/useEvent'
 import { UniElement } from '../../helpers/UniElement'
 import { pickerViewProps } from '../../components/pickerView'
-import type { Props, GetPickerViewColumn } from '../../components/pickerView'
+import type { GetPickerViewColumn, Props } from '../../components/pickerView'
 export { Props, GetPickerViewColumn }
 export interface State {
   value: number[]
@@ -166,7 +166,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-picker-view ref={rootRef}>
           <ResizeSensor
             ref={resizeSensorRef}
-            // @ts-ignore
+            // @ts-expect-error
             onResize={({ height }: { height: number }) =>
               (state.height = height)
             }

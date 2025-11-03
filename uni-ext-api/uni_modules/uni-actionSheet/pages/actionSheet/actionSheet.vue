@@ -13,7 +13,7 @@
         <template v-if="title">
           <view class="uni-action-sheet_dialog__title border-b"
             :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }">
-            <text :style="{ color: titleColor }" class="uni-action-sheet_dialog__title__text"
+            <text :style="titleColor != null ? { color: titleColor } : {}" class="uni-action-sheet_dialog__title__text"
               :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
               {{ title }}
             </text>
@@ -36,8 +36,9 @@
             <!-- #endif -->
               <view class="uni-action-sheet_dialog__cell"
                 :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape, 'border-t': index !== 0 }"
+                :hover-class="hoverClass"
                 @click="handleMenuItemClick(index)">
-                <text :style="{color: itemColor}" class="uni-action-sheet_dialog__cell__text"
+                <text :style="itemColor != null ? { color: itemColor } : {}" class="uni-action-sheet_dialog__cell__text"
                   :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
                   {{ item }}
                 </text>
@@ -52,8 +53,9 @@
       </view>
       <view :style="backgroundColor != null ? {backgroundColor} : {}" class="uni-action-sheet_dialog__action"
         :class="{ 'uni-action-sheet_dark__mode': theme == 'dark', 'uni-action-sheet_landscape__mode': isLandscape }"
+        :hover-class="hoverClass"
         @click="handleCancel">
-        <text :style="{ color: cancelColor }" class="uni-action-sheet_dialog__action__text"
+        <text :style="cancelColor != null ? { color: cancelColor } : {}" class="uni-action-sheet_dialog__action__text"
           :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
           {{ cancelText }}
         </text>
@@ -66,295 +68,294 @@
   </view>
 </template>
 
-<script lang='ts'>
-  export default {
-    data() {
-      return {
-        show: false,
-        i18nCancelText: {
-          en: 'Cancel',
-          es: 'Cancelar',
-          fr: 'Annuler',
-          'zh-Hans': '取消',
-          'zh-Hant': '取消',
-        },
-        readyEventName: '',
-        optionsEventName: '',
-        successEventName: '',
-        failEventName: '',
-        title: null as string | null,
-        itemList: [] as string[],
-        optionCancelText: null as string | null,
-        titleColor: null as string | null,
-        itemColor: null as string | null,
-        cancelColor: null as string | null,
-        backgroundColor: null as string | null,
-        language: 'zh-Hans',
-        theme: 'light',
-        isLandscape: false,
-        // #ifdef WEB
-        windowWidth: 0,
-        windowHeight: 0,
-        popover: {},
-        // #endif
-        bottomNavigationHeight: 0,
-        appTheme: null as string | null,
-        hostTheme: null as string | null,
-        // #ifdef APP-ANDROID || APP-IOS
-        appThemeChangeCallbackId: -1,
-        osThemeChangeCallbackId: -1,
-        // #endif
-        menuItemClicked: false,
-        cancelButtonClicked: false,
-      }
-    },
-    onLoad(options) {
-      this.readyEventName = options['readyEventName']!
-      this.optionsEventName = options['optionsEventName']!
-      this.successEventName = options['successEventName']!
-      this.failEventName = options['failEventName']!
-      uni.$on(this.optionsEventName, (data: UTSJSONObject) => {
-        this.itemList = data['itemList'] as string[]
-        if (data['title'] != null) {
-          this.title = data['title'] as string
-        }
-        if (data['cancelText'] != null) {
-          this.optionCancelText = data['cancelText'] as string
-        }
-        if (data['titleColor'] != null) {
-          this.titleColor = data['titleColor'] as string
-        }
-        if (data['itemColor'] != null) {
-          this.itemColor = data['itemColor'] as string
-        }
-        if (data['cancelColor'] != null) {
-          this.cancelColor = data['cancelColor'] as string
-        }
-        if (data['backgroundColor'] != null) {
-          this.backgroundColor = data['backgroundColor'] as string
-        }
-        // #ifdef WEB
-        if (data['popover'] != null) {
-          this.popover = data['popover']
-        }
-        // #endif
-      })
-      uni.$emit(this.readyEventName, {})
+<script setup lang='ts'>
+  import { getCurrentInstance, reactive, ref, computed } from 'vue'
+  import { onLoad, onReady, onResize, onUnload } from '@dcloudio/uni-app'
 
-      const systemInfo = uni.getSystemInfoSync()
-      const osLanguage = systemInfo.osLanguage
-      const appLanguage = systemInfo.appLanguage
-      if (appLanguage != null) {
-        this.language = appLanguage
-      } else if (osLanguage != null) {
-        this.language = osLanguage
-      }
-      const appTheme = systemInfo.appTheme
-      if (appTheme != null && appTheme != "auto") {
-        this.appTheme = appTheme
-        this.handleThemeChange()
-      }
-      const osTheme = systemInfo.osTheme
-      if (osTheme != null && this.appTheme == null) {
-        this.appTheme = osTheme
-        this.handleThemeChange()
-      }
-      // #ifdef WEB
-      const hostTheme = systemInfo.hostTheme
-      if (hostTheme != null) {
-        this.hostTheme = hostTheme
-        this.handleThemeChange()
-      } 
-      uni.onHostThemeChange((res) => {
-        this.hostTheme = res.theme
-        this.handleThemeChange()
-      });
-      this.windowHeight = systemInfo.windowHeight
-      this.windowWidth = systemInfo.windowWidth
-      window.addEventListener('resize', this.fixSize)
+  const pageInstance = getCurrentInstance()!.proxy!
+  const uniPageInstance = pageInstance.$page
 
-      const locale = uni.getLocale()
-      this.language = locale
-      uni.onLocaleChange((res) => {
-        if (res.locale) {
-          this.language = res.locale
-        }
+  const show = ref(false)
+  type I18nCancelText = {
+    en: string,
+    es: string,
+    fr: string,
+    zhHans: string,
+    zhHant: string
+  }
+  const i18nCancelText = reactive({
+    en: 'Cancel',
+    es: 'Cancelar',
+    fr: 'Annuler',
+    zhHans: '取消',
+    zhHant: '取消',
+  } as I18nCancelText)
+  const readyEventName = ref('')
+  const optionsEventName = ref('')
+  const successEventName = ref('')
+  const failEventName = ref('')
+  const title = ref<string | null>(null)
+  const itemList = ref<string[]>([])
+  const optionCancelText = ref<string | null>(null)
+  const titleColor = ref<string | null>(null)
+  const itemColor = ref<string | null>(null)
+  const cancelColor = ref<string | null>(null)
+  const backgroundColor = ref<string | null>(null)
+  const language = ref('zhHans')
+  const theme = ref('light')
+  const isLandscape = ref(false)
+  const bottomNavigationHeight = ref(0)
+  const appTheme = ref<string | null>(null)
+  const hostTheme = ref<string | null>(null)
+  const menuItemClicked = ref(false)
+  const cancelButtonClicked = ref(false)
+  // #ifdef WEB
+  const windowWidth = ref(0)
+  const windowHeight = ref(0)
+  const popover = reactive({})
+  // #endif
+  // #ifdef APP-ANDROID || APP-IOS
+  const appThemeChangeCallbackId = ref(-1)
+  const osThemeChangeCallbackId = ref(-1)
+  // #endif
+
+  // #ifdef WEB
+  const fixSize = () => {
+    const systemInfo = uni.getSystemInfoSync()
+    windowWidth.value = systemInfo.windowWidth
+    windowHeight.value = systemInfo.windowHeight + (systemInfo.windowTop || 0)
+  }
+  // #endif
+  const closeActionSheet = () => {
+    show.value = false
+    setTimeout(() => {
+      uni.closeDialogPage({
+        dialogPage: uniPageInstance
       })
-      // #endif
-      this.isLandscape = systemInfo.deviceOrientation == 'landscape'
-      // #ifdef APP-ANDROID || APP-IOS
-      this.appThemeChangeCallbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
-        const appTheme = res.appTheme
-        if (appTheme != null && appTheme != "auto") {
-          this.appTheme = appTheme
-          this.handleThemeChange()
-        }
-      })
-      // #endif
-    },
-    computed: {
-      // #ifdef WEB
-      isWidescreen(): boolean {
-        return this.windowHeight >= 500 && this.windowWidth >= 500
-      },
-      containerStyle(): UTSJSONObject {
-        if (Object.keys(this.popover).length == 0) {
-          return {}
-        }
-        const res = {
-          transform: 'none !important'
-        }
-        const top = this.popover.top
-        const left = this.popover.left
-        const width = this.popover.width
-        const height = this.popover.height
-        const center = left + width / 2
-        const contentLeft = Math.max(0, center - 300 / 2)
-        res['left'] = `${contentLeft}px`
-        const vcl = this.windowHeight / 2
-        if (top + height - vcl > vcl - top) {
-          res['top'] = 'auto'
-          res['bottom'] = `${this.windowHeight - top + 6}px`
-        } else {
-          res['top'] = `${top + height + 6}px`
-        }
-        return res
-      },
-      triangleStyle(): UTSJSONObject {
-        if (Object.keys(this.popover).length == 0) {
-          return {}
-        }
-        const res = {}
-        const borderColor = this.backgroundColor || (this.theme == 'dark' ? '#2C2C2B' : '#fcfcfd')
-        const top = this.popover.top
-        const left = this.popover.left
-        const width = this.popover.width
-        const height = this.popover.height
-        const center = left + width / 2
-        const contentLeft = Math.max(0, center - 300 / 2)
-        let triangleLeft = Math.max(12, center - contentLeft)
-        triangleLeft = Math.min(300 - 12, triangleLeft)
-        res['left'] = `${triangleLeft}px`
-        const vcl = this.windowHeight / 2
-        if (top + height - vcl > vcl - top) {
-          res['bottom'] = '-6px'
-          res['border-width'] = '6px 6px 0 6px'
-          res['border-color'] =
-            `${borderColor} transparent transparent transparent`
-        } else {
-          res['top'] = '-6px'
-          res['border-width'] = '0 6px 6px 6px'
-          res['border-color'] =
-            `transparent transparent ${borderColor} transparent`
-        }
-        return res
-      },
-      // #endif
-      cancelText(): string {
-        if (this.optionCancelText != null) {
-          const res = this.optionCancelText!
-            return res
-        }
-        if (this.language.startsWith('en')) {
-          return this.i18nCancelText['en'] as string
-        }
-        if (this.language.startsWith('es')) {
-          return this.i18nCancelText['es'] as string
-        }
-        if (this.language.startsWith('fr')) {
-          return this.i18nCancelText['fr'] as string
-        }
-        if (this.language.startsWith('zh-Hans')) {
-          return this.i18nCancelText['zh-Hans'] as string
-        }
-        if (this.language.startsWith('zh-Hant')) {
-          return this.i18nCancelText['zh-Hant'] as string
-        }
-        return '取消'
-      },
-      computedBackgroundColor(): string {
-        return this.backgroundColor !== null ? this.backgroundColor! : (this.theme == 'dark' ? '#2C2C2B' : '#ffffff')
-      }
-    },
-    onReady() {
-      this.bottomNavigationHeight = this.$page.safeAreaInsets.bottom
-      // #ifdef APP-ANDROID
-      if(this.bottomNavigationHeight == 0){
-        const systemInfo = uni.getSystemInfoSync()
-        this.bottomNavigationHeight = systemInfo.safeAreaInsets.bottom
-      }
-      // #endif
-      setTimeout(() => {
-        this.show = true
-      }, 10)
-    },
-    onResize() {
-      const systemInfo = uni.getSystemInfoSync()
-      this.isLandscape = systemInfo.deviceOrientation == 'landscape'
-    },
-    onUnload() {
-      if (!this.menuItemClicked && !this.cancelButtonClicked) {
-        // 非用户交互导致关闭 actionSheet, 触发 fail 回调
-        uni.$emit(this.failEventName, {})
-      }
-      uni.$off(this.optionsEventName, null)
-      uni.$off(this.readyEventName, null)
-      uni.$off(this.successEventName, null)
-      uni.$off(this.failEventName, null)
-      // #ifdef WEB
-      window.removeEventListener('resize', this.fixSize)
-      // #endif
-      // #ifdef APP-ANDROID || APP-IOS
-      uni.offAppThemeChange(this.appThemeChangeCallbackId)
-      uni.offOsThemeChange(this.osThemeChangeCallbackId)
-      // #endif
-    },
-    methods: {
-      // #ifdef WEB
-      fixSize() {
-        const {
-          windowWidth,
-          windowHeight,
-          windowTop
-        } = uni.getSystemInfoSync()
-        this.windowWidth = windowWidth
-        this.windowHeight = windowHeight + (windowTop || 0)
-      },
-      // #endif
-      closeActionSheet() {
-        this.show = false
-        setTimeout(() => {
-          // #ifdef APP-ANDROID
-          uni.closeDialogPage({
-            dialogPage: this.$page
-          })
-          // #endif
-          // #ifndef APP-ANDROID
-          uni.closeDialogPage({
-            dialogPage: this.$page
-          })
-          // #endif
-        }, 250)
-      },
-      handleMenuItemClick(tapIndex: number) {
-        this.menuItemClicked = true
-        this.closeActionSheet()
-        uni.$emit(this.successEventName, tapIndex)
-      },
-      handleCancel() {
-        this.cancelButtonClicked = true
-        this.closeActionSheet()
-        uni.$emit(this.failEventName, {})
-      },
-      handleThemeChange() {
-        if(this.hostTheme != null){
-          this.theme = this.hostTheme!
-        } else if(this.appTheme != null){
-          this.theme = this.appTheme!
-        }
-      }
+    }, 250)
+  }
+  const handleMenuItemClick = (tapIndex: number) => {
+    menuItemClicked.value = true
+    closeActionSheet()
+    uni.$emit(successEventName.value, tapIndex)
+  }
+  const handleCancel = () => {
+    cancelButtonClicked.value = true
+    closeActionSheet()
+    uni.$emit(failEventName.value, {})
+  }
+  const handleThemeChange = () => {
+    if(hostTheme.value != null){
+      theme.value = hostTheme.value
+    } else if(appTheme.value != null){
+      theme.value = appTheme.value
     }
   }
+
+  onLoad((options) => {
+    readyEventName.value = options['readyEventName']!
+    optionsEventName.value = options['optionsEventName']!
+    successEventName.value = options['successEventName']!
+    failEventName.value = options['failEventName']!
+    uni.$on(optionsEventName.value, (data: UTSJSONObject) => {
+      itemList.value = data['itemList'] as string[]
+      if (data['title'] != null) {
+        title.value = data['title'] as string
+      }
+      if (data['cancelText'] != null) {
+        optionCancelText.value = data['cancelText'] as string
+      }
+      if (data['titleColor'] != null) {
+        titleColor.value = data['titleColor'] as string
+      }
+      if (data['itemColor'] != null) {
+        itemColor.value = data['itemColor'] as string
+      }
+      if (data['cancelColor'] != null) {
+        cancelColor.value = data['cancelColor'] as string
+      }
+      if (data['backgroundColor'] != null) {
+        backgroundColor.value = data['backgroundColor'] as string
+      }
+      // #ifdef WEB
+      if (data['popover'] != null) {
+        popover.value = data['popover']
+      }
+      // #endif
+    })
+    uni.$emit(readyEventName.value, {})
+
+    const systemInfo = uni.getSystemInfoSync()
+    const osLanguage = systemInfo.osLanguage
+    const appLanguage = systemInfo.appLanguage
+    if (appLanguage != null) {
+      language.value = appLanguage
+    } else if (osLanguage != null) {
+      language.value = osLanguage
+    }
+    const systemAppTheme = systemInfo.appTheme
+    if (systemAppTheme != null && systemAppTheme != "auto") {
+      appTheme.value = systemAppTheme
+      handleThemeChange()
+    }
+    const systemOsTheme = systemInfo.osTheme
+    if (systemOsTheme != null && appTheme.value == null) {
+      appTheme.value = systemOsTheme
+      handleThemeChange()
+    }
+    // #ifdef WEB
+    const systemHostTheme = systemInfo.hostTheme
+    if (systemHostTheme != null) {
+      hostTheme.value = systemHostTheme
+      handleThemeChange()
+    }
+    uni.onHostThemeChange((res) => {
+      hostTheme.value = res.theme
+      handleThemeChange()
+    });
+    windowWidth.value = systemInfo.windowWidth
+    windowHeight.value = systemInfo.windowHeight
+    window.addEventListener('resize', fixSize)
+
+    const locale = uni.getLocale()
+    language.value = locale
+    uni.onLocaleChange((res) => {
+      if (res.locale) {
+        language.value = res.locale
+      }
+    })
+    // #endif
+    isLandscape.value = systemInfo.deviceOrientation == 'landscape'
+    // #ifdef APP-ANDROID || APP-IOS
+    appThemeChangeCallbackId.value = uni.onAppThemeChange((res: AppThemeChangeResult) => {
+      const callbackAppTheme = res.appTheme
+      if (callbackAppTheme != null && callbackAppTheme != "auto") {
+        appTheme.value = callbackAppTheme
+        handleThemeChange()
+      }
+    })
+    // #endif
+  })
+    
+  // #ifdef WEB
+  const isWidescreen = computed((): boolean => {
+    return windowHeight.value >= 500 && windowWidth.value >= 500
+  })
+  const containerStyle = computed((): UTSJSONObject => {
+    if (Object.keys(popover).length == 0) {
+      return {}
+    }
+    const res = {
+      transform: 'none !important'
+    }
+    const top = popover.top
+    const left = popover.left
+    const width = popover.width
+    const height = popover.height
+    const center = left + width / 2
+    const contentLeft = Math.max(0, center - 300 / 2)
+    res['left'] = `${contentLeft}px`
+    const vcl = windowHeight.value / 2
+    if (top + height - vcl > vcl - top) {
+      res['top'] = 'auto'
+      res['bottom'] = `${windowHeight.value - top + 6}px`
+    } else {
+      res['top'] = `${top + height + 6}px`
+    }
+    return res
+  })
+  const triangleStyle = computed((): UTSJSONObject => {
+    if (Object.keys(popover).length == 0) {
+      return {}
+    }
+    const res = {}
+    const borderColor = backgroundColor.value || (theme.value == 'dark' ? '#2C2C2B' : '#fcfcfd')
+    const top = popover.top
+    const left = popover.left
+    const width = popover.width
+    const height = popover.height
+    const center = left + width / 2
+    const contentLeft = Math.max(0, center - 300 / 2)
+    let triangleLeft = Math.max(12, center - contentLeft)
+    triangleLeft = Math.min(300 - 12, triangleLeft)
+    res['left'] = `${triangleLeft}px`
+    const vcl = windowHeight.value / 2
+    if (top + height - vcl > vcl - top) {
+      res['bottom'] = '-6px'
+      res['border-width'] = '6px 6px 0 6px'
+      res['border-color'] =
+        `${borderColor} transparent transparent transparent`
+    } else {
+      res['top'] = '-6px'
+      res['border-width'] = '0 6px 6px 6px'
+      res['border-color'] =
+        `transparent transparent ${borderColor} transparent`
+    }
+    return res
+  })
+  // #endif
+  const cancelText = computed((): string => {
+    if (optionCancelText.value != null) {
+      const res = optionCancelText.value
+      return res
+    }
+    if (language.value.startsWith('en')) {
+      return i18nCancelText['en'] as string
+    }
+    if (language.value.startsWith('es')) {
+      return i18nCancelText['es'] as string
+    }
+    if (language.value.startsWith('fr')) {
+      return i18nCancelText['fr'] as string
+    }
+    if (language.value.startsWith('zhHans')) {
+      return i18nCancelText['zhHans'] as string
+    }
+    if (language.value.startsWith('zhHant')) {
+      return i18nCancelText['zhHant'] as string
+    }
+    return '取消'
+  })
+  const computedBackgroundColor = computed((): string => {
+    return backgroundColor.value !== null ? backgroundColor.value : (theme.value == 'dark' ? '#2C2C2B' : '#ffffff')
+  })
+  const hoverClass = computed((): string => {
+    return theme.value == 'dark' ? 'uni-action-sheet_dialog__hover__dark__mode' : 'uni-action-sheet_dialog__hover'
+  })
+
+  onReady(() => {
+    bottomNavigationHeight.value = uniPageInstance.safeAreaInsets.bottom
+    // #ifdef APP-ANDROID
+    if(bottomNavigationHeight.value == 0){
+      const systemInfo = uni.getSystemInfoSync()
+      bottomNavigationHeight.value = systemInfo.safeAreaInsets.bottom
+    }
+    // #endif
+    setTimeout(() => {
+      show.value = true
+    }, 10)
+  })
+  onResize((_ : OnResizeOptions) => {
+    const systemInfo = uni.getSystemInfoSync()
+    isLandscape.value = systemInfo.deviceOrientation == 'landscape'
+  })
+  onUnload(() => {
+    if (!menuItemClicked.value && !cancelButtonClicked.value) {
+      // 非用户交互导致关闭 actionSheet, 触发 fail 回调
+      uni.$emit(failEventName.value, {})
+    }
+    uni.$off(optionsEventName.value, null)
+    uni.$off(readyEventName.value, null)
+    uni.$off(successEventName.value, null)
+    uni.$off(failEventName.value, null)
+    // #ifdef WEB
+    window.removeEventListener('resize', fixSize)
+    // #endif
+    // #ifdef APP-ANDROID || APP-IOS
+    uni.offAppThemeChange(appThemeChangeCallbackId.value)
+    uni.offOsThemeChange(osThemeChangeCallbackId.value)
+    // #endif
+  })
 </script>
 
 <style>
@@ -452,6 +453,13 @@
     scrollbar-width: none;
     /* #endif */
   }
+
+  .uni-action-sheet_dialog__hover {
+		background-color: #efefef;
+	}
+	.uni-action-sheet_dialog__hover__dark__mode {
+		background-color: #1c1c1c;
+	}
   /* #ifdef WEB */
   .divider{
     height: 1px;

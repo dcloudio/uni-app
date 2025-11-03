@@ -59,7 +59,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     MapWeb,
   },
   emits: ['click', 'regionchange', 'controltap', 'markertap', 'callouttap'],
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     function onClick(event) {
       emit('click', event)
     }
@@ -94,7 +94,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             onControltap={onControltap}
             onMarkertap={onMarkertap}
             onCallouttap={onCallouttap}
-          ></MapWeb>
+          >
+            {slots.default && slots.default()}
+          </MapWeb>
         )
       } else {
         return (

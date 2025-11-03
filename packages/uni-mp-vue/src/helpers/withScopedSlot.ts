@@ -8,12 +8,12 @@ export interface ScopedSlotInvokers {
 }
 
 interface ScopedSlotFn {
-  (args: Data, slotName: string, index: number): Record<string, any>
+  (args: Data, slotName: string, index: number | string): Record<string, any>
   path: string
 }
 
 interface ScopedSlotInvoker {
-  (slotName: string, args: Data, index?: number): void
+  (slotName: string, args: Data, index?: number | string): void
   slots: {
     [slotName: string]: {
       fn: ScopedSlotFn
@@ -54,7 +54,7 @@ function createScopedSlotInvoker(instance: ComponentInternalInstance) {
   const invoker: ScopedSlotInvoker = (
     slotName: string,
     args: Data,
-    index?: number
+    index?: number | string
   ) => {
     const slot = invoker.slots[slotName]
     if (!slot) {

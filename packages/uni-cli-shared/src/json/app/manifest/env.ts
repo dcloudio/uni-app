@@ -6,8 +6,8 @@ export function getAppRenderer(manifestJson: Record<string, any>) {
   return ''
 }
 
-export function getAppCodeSpliting(manifestJson: Record<string, any>) {
-  if (manifestJson['app-plus']?.optimization?.codeSpliting === true) {
+export function getAppCodeSplitting(manifestJson: Record<string, any>) {
+  if (manifestJson['app-plus']?.optimization?.codeSplitting === true) {
     return true
   }
   return false

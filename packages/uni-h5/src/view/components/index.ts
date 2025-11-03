@@ -40,6 +40,6 @@ export {
   UniPickerElement,
   //#endif
 }
-//#if _X_
+//#if _X_ && !_NODE_JS_
 export * from '../../x/view/components/customElements'
 //#endif

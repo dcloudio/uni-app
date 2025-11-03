@@ -3,6 +3,7 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN,
   type MiniProgramCompilerOptions,
+  getNativeTags,
   transformComponentLink,
   transformMatchMedia,
   transformRef,
@@ -21,6 +22,10 @@ export const compilerOptions: CompilerOptions = {
   nodeTransforms,
 }
 const COMPONENTS_DIR = 'wxcomponents'
+
+export const customElements = [
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+]
 
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
@@ -121,6 +126,7 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
+    customElements,
     filter: {
       extname: '.qs',
       lang: 'wxs',

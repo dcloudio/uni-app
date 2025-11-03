@@ -7,6 +7,7 @@ import {
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   createTransformComponentLink,
+  getNativeTags,
   transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -82,6 +83,7 @@ export const customElements = [
   'join-group-chat',
   'subscribe-message',
   'mpaas-component',
+  ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
 export const options: UniMiniProgramPluginOptions = {
@@ -98,7 +100,12 @@ export const options: UniMiniProgramPluginOptions = {
       targets: [
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
-          src: ['customize-tab-bar', 'ext.json', 'preload.json'],
+          src: [
+            'customize-tab-bar',
+            'ext.json',
+            'preload.json',
+            'sitemap.json',
+          ],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },
@@ -110,6 +117,7 @@ export const options: UniMiniProgramPluginOptions = {
   json: {
     windowOptionsMap: {
       defaultTitle: 'navigationBarTitleText',
+      navigationBarFrontColor: 'navigationBarTextStyle',
       pullRefresh: 'enablePullDownRefresh',
       allowsBounceVertical: 'allowsBounceVertical',
       titleBarColor: 'navigationBarBackgroundColor',

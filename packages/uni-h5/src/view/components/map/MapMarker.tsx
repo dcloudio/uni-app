@@ -1,27 +1,30 @@
-import { onUnmounted, inject, watch } from 'vue'
+import { inject, onUnmounted, watch } from 'vue'
 import { isFunction } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { defineSystemComponent, useCustomEvent } from '@dcloudio/uni-components'
-import { Maps, Map, LatLng, Callout, CalloutOptions } from './maps'
+import {
+  defineSystemComponent,
+  type useCustomEvent,
+} from '@dcloudio/uni-components'
+import type { Callout, CalloutOptions, LatLng, Map, Maps } from './maps'
 import {
   MapType,
-  getMapInfo,
   getIsAMap,
   getIsBMap,
+  getMapInfo,
 } from '../../../helpers/location'
-import {
+import type {
+  Label as GLabel,
   LatLng as GLatLng,
   Marker as GMarker,
-  Label as GLabel,
-  Icon,
   GoogleMaps,
+  Icon,
 } from './maps/google/types'
-import {
-  Map as QMap,
-  LatLng as QLatLng,
-  Marker as QMarker,
-  Label as QLabel,
+import type {
   MarkerImage,
+  Label as QLabel,
+  LatLng as QLatLng,
+  Map as QMap,
+  Marker as QMarker,
   QQMaps,
 } from './maps/qq/types'
 
@@ -202,7 +205,7 @@ export default /*#__PURE__*/ defineSystemComponent({
             option.latitude
           )
         } else if (getIsBMap()) {
-          // @ts-ignore
+          // @ts-expect-error
           position = new maps.Point(option.longitude, option.latitude)
         } else {
           position = new (maps as QQMaps | GoogleMaps).LatLng(
@@ -253,9 +256,9 @@ export default /*#__PURE__*/ defineSystemComponent({
             }
           }
           if (getIsBMap()) {
-            // @ts-ignore
+            // @ts-expect-error
             marker = new maps.Marker(new maps.Point(position.lng, position.lat))
-            // @ts-ignore
+            // @ts-expect-error
             map.addOverlay(marker)
           } else {
             marker.setPosition(position as any)

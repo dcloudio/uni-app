@@ -1,4 +1,4 @@
-import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
+import { extend, hasOwn, isArray, isObject } from '@vue/shared'
 
 import {
   navigateTo as _navigateTo,
@@ -120,8 +120,8 @@ export const request = {
           method.toUpperCase() === 'POST' &&
           headers['content-type'].indexOf('application/json') === 0
         ) {
-          // 鸿蒙钉钉 data 强制传递 #ask 205230
-          const _data = isPlainObject(data) ? JSON.stringify(data) : '{}'
+          // 鸿蒙钉钉 data 强制传递 #ask 205230 // 复测鸿蒙已修复，不传递 data 不会进入此方法
+          const _data = isObject(data) ? JSON.stringify(data) : data
           return {
             name: 'data',
             value: _data,
@@ -145,15 +145,32 @@ export const request = {
 /**
  * 钉钉小程序 setNavigationBarColor 不支持 frontColor
  */
-export const setNavigationBarColor = {
-  name: 'setNavigationBar',
-  args: {
-    frontColor: false,
-    animation: false,
-  },
+export function setNavigationBarColor() {
+  if (my.canIUse('setNavigationBarColor')) {
+    return {
+      name: 'setNavigationBarColor',
+      args: {
+        animation: false,
+      },
+    }
+  }
+  return {
+    name: 'setNavigationBar',
+    args: {
+      frontColor: false,
+      animation: false,
+    },
+  }
 }
-export const setNavigationBarTitle = {
-  name: 'setNavigationBar',
+export function setNavigationBarTitle() {
+  if (my.canIUse('setNavigationBarTitle')) {
+    return {
+      name: 'setNavigationBarTitle',
+    }
+  }
+  return {
+    name: 'setNavigationBar',
+  }
 }
 
 /**
@@ -221,8 +238,14 @@ export const showActionSheet = {
   },
 }
 export const showLoading = {
-  args: {
-    title: 'content',
+  args(
+    fromArgs: UniApp.ShowLoadingOptions,
+    toArgs: my.IShowLoadingOptions & { mask: boolean } // mini-types feedback.d.ts 未包含 mask
+  ) {
+    if (!fromArgs.mask) {
+      toArgs.mask = false
+    }
+    toArgs.content = fromArgs.title
   },
 }
 export const uploadFile = {
@@ -358,8 +381,10 @@ export const getLocation = {
   },
 }
 export const openLocation = {
-  args: {
-    // TODO address 参数在阿里上是必传的
+  args(fromArgs: UniApp.OpenLocationOptions, toArgs: my.IOpenLocationOptions) {
+    if (!fromArgs.scale) {
+      toArgs.scale = 18
+    }
   },
 }
 export const getNetworkType = {
@@ -531,6 +556,14 @@ export const chooseAddress = {
     toRes.errMsg = toRes.errMsg + ' ' + fromRes.resultStatus
   },
 }
-export const navigateTo = my.canIUse('getOpenerEventChannel')
+export const openDocument = {
+  args(fromArgs: UniApp.OpenDocumentOptions, toArgs: Record<string, any>) {
+    if (typeof fromArgs.showMenu === 'boolean') {
+      // 支付宝小程序 showMenu 类型为 string, https://opendocs.alipay.com/mini/api/mwpprc
+      toArgs.showMenu = String(fromArgs.showMenu)
+    }
+  },
+}
+export const navigateTo = my.canIUse('page.getOpenerEventChannel')
   ? {}
   : _navigateTo()

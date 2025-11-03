@@ -8,7 +8,7 @@ const actions = {
   'uni-app-x': {
     'dev:app-harmony': [
       {
-        filename: 'app-service.js',
+        filename: 'assets/pages/index/index.js',
         includes: `"onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.value = $event)`,
       },
     ],
@@ -32,8 +32,8 @@ const actions = {
     ],
     'build:app-harmony': [
       {
-        filename: 'app-service.js',
-        includes: `vue.isRef(value) ? value.value = $event : null`,
+        filename: 'assets/pages/index/index.js',
+        includes: `isRef(value) ? value.value = $event : null`,
       },
     ],
     'build:app-ios': [

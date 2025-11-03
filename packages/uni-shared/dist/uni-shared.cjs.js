@@ -140,6 +140,17 @@ const UVUE_BUILT_IN_TAGS = [
     'cover-image',
     // custom element
     'match-media',
+    // 'checkbox',
+    // 'checkbox-group',
+    // 'form',
+    // 'navigator',
+    // 'picker-view',
+    // 'picker-view-column',
+    // 'progress',
+    // 'slider',
+    // 'switch',
+    // 'radio',
+    // 'radio-group',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -225,6 +236,7 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view',
     'picker-view-column',
 ];
+const UNI_AD_PLUGINS = ['uniad-plugin', 'uniad-plugin-wx'];
 // 内置的easycom组件
 const UVUE_BUILT_IN_EASY_COMPONENTS = [
     'map',
@@ -268,7 +280,23 @@ function isAppIOSUVueNativeTag(tag) {
     if (NVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
-    if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+    // TODO
+    if ([
+        'checkbox',
+        'checkbox-group',
+        'form',
+        'picker-view',
+        'picker-view-column',
+        'progress',
+        'switch',
+        'radio',
+        'radio-group',
+    ].includes(tag)) {
+        return true;
+    }
+    if (
+    //  && tag != 'navigator' && tag != 'slider'
+    UVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
     if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {
@@ -1584,6 +1612,7 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
         onPageScroll: 1,
         onShareAppMessage: 1 << 1,
         onShareTimeline: 1 << 2,
+        onShareChat: 1 << 3,
     };
 })();
 function isUniLifecycleHook(name, value, checkType = true) {
@@ -1851,6 +1880,7 @@ exports.SELECTED_COLOR = SELECTED_COLOR;
 exports.SLOT_DEFAULT_NAME = SLOT_DEFAULT_NAME;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
+exports.UNI_AD_PLUGINS = UNI_AD_PLUGINS;
 exports.UNI_SSR = UNI_SSR;
 exports.UNI_SSR_DATA = UNI_SSR_DATA;
 exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;

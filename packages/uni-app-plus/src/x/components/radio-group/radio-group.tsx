@@ -1,6 +1,6 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import { camelize, getCurrentInstance, onMounted, ref } from 'vue'
+import { camelize, getCurrentInstance, onMounted, ref, renderSlot } from 'vue'
 import {
   RADIOGROUP_NAME,
   RADIOGROUP_ROOT_ELEMENT,
@@ -128,7 +128,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     return () => {
       return (
         <uni-radio-group-element ref={uniRadioGroupElementRef}>
-          {slots.default?.()}
+          {renderSlot(slots, 'default')}
         </uni-radio-group-element>
       )
     }

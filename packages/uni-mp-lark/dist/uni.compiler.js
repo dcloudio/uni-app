@@ -29,6 +29,7 @@ var source = {
 };
 
 const customElements = [
+    'draw-ad',
     'aweme-data',
     'consume-card',
     'pay-button',
@@ -41,6 +42,7 @@ const customElements = [
     'rtc-room',
     'clue-order-form',
     'shop-follow-card',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const projectConfigFilename = 'project.config.json';
 const nodeTransforms = [

@@ -2,210 +2,11 @@
 
 var fs = require('fs');
 var path = require('path');
-var os = require('os');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var fs__default = /*#__PURE__*/_interopDefault(fs);
 var path__default = /*#__PURE__*/_interopDefault(path);
-var os__default = /*#__PURE__*/_interopDefault(os);
-
-/*  ------------------------------------------------------------------------ */
-const O = Object, isBrowser = 
-/* eslint-disable */
-typeof window !== 'undefined' &&
-    /* eslint-disable */
-    window.window === window &&
-    /* eslint-disable */
-    window.navigator, 
-// @ts-ignore
-nodeRequire = isBrowser ? null : module.require, // to prevent bundlers from expanding the require call
-lastOf = (x) => x[x.length - 1], nixSlashes$1 = (x) => x.replace(/\\/g, '/'), pathRoot = isBrowser ? window.location.href : nixSlashes$1(process.cwd()) + '/';
-/*  ------------------------------------------------------------------------ */
-class StackTracey {
-    constructor(input, uniPlatform, offset) {
-        this.itemsHeader = [];
-        this.isMP = false;
-        const originalInput = input, isParseableSyntaxError = input && input instanceof SyntaxError && !isBrowser;
-        /*  new StackTracey ()            */
-        if (!input) {
-            input = new Error();
-            offset = offset === undefined ? 1 : offset;
-        }
-        /*  new StackTracey (Error)      */
-        if (input instanceof Error) {
-            input = input.stack || '';
-        }
-        /*  new StackTracey (string)     */
-        if (typeof input === 'string') {
-            this.isMP = uniPlatform === 'mp-weixin';
-            input = this.rawParse(input)
-                .slice(offset)
-                .map((x) => this.extractEntryMetadata(x));
-        }
-        /*  new StackTracey (array)      */
-        if (Array.isArray(input)) {
-            if (isParseableSyntaxError) {
-                const rawLines = nodeRequire('util')
-                    .inspect(originalInput)
-                    .split('\n'), fileLine = rawLines[0].split(':'), line = fileLine.pop(), file = fileLine.join(':');
-                if (file) {
-                    input.unshift({
-                        file: nixSlashes$1(file),
-                        line: line,
-                        column: (rawLines[2] || '').indexOf('^') + 1,
-                        sourceLine: rawLines[1],
-                        callee: '(syntax error)',
-                        syntaxError: true,
-                    });
-                }
-            }
-            this.items = input;
-        }
-        else {
-            this.items = [];
-        }
-    }
-    extractEntryMetadata(e) {
-        const decomposedPath = this.decomposePath(e.file || '');
-        const fileRelative = decomposedPath[0];
-        const externalDomain = decomposedPath[1];
-        return O.assign(e, {
-            calleeShort: e.calleeShort || lastOf((e.callee || '').split('.')),
-            fileRelative: fileRelative,
-            fileShort: this.shortenPath(fileRelative),
-            fileName: lastOf((e.file || '').split('/')),
-            thirdParty: this.isThirdParty(fileRelative, externalDomain) && !e.index,
-            externalDomain: externalDomain,
-        });
-    }
-    shortenPath(relativePath) {
-        return relativePath
-            .replace(/^node_modules\//, '')
-            .replace(/^webpack\/bootstrap\//, '')
-            .replace(/^__parcel_source_root\//, '');
-    }
-    decomposePath(fullPath) {
-        let result = fullPath;
-        if (isBrowser)
-            result = result.replace(pathRoot, '');
-        const externalDomainMatch = result.match(/^(http|https)\:\/\/?([^\/]+)\/{1,}(.*)/);
-        const externalDomain = externalDomainMatch
-            ? externalDomainMatch[2]
-            : undefined;
-        result = externalDomainMatch ? externalDomainMatch[3] : result;
-        // if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
-        return [
-            nixSlashes$1(result).replace(/^.*\:\/\/?\/?/, ''), // cut webpack:/// and webpack:/ things
-            externalDomain,
-        ];
-    }
-    isThirdParty(relativePath, externalDomain) {
-        if (this.isMP) {
-            if (typeof externalDomain === 'undefined')
-                return false;
-            return externalDomain !== 'usr';
-        }
-        return (
-        // 由于 hello-uniapp web 端报错携带 hellouniapp.dcloud.net.cn
-        // externalDomain ||
-        relativePath[0] === '~' || // webpack-specific heuristic
-            relativePath[0] === '/' || // external source
-            relativePath.indexOf('@dcloudio') !== -1 ||
-            relativePath.indexOf('weex-main-jsfm') !== -1 ||
-            relativePath.indexOf('webpack/bootstrap') === 0);
-    }
-    rawParse(str) {
-        const lines = (str || '').split('\n');
-        const entries = lines.map((line, index) => {
-            line = line.trim();
-            let callee, fileLineColumn = [], native, planA, planB;
-            if (line.indexOf('file:') !== -1) {
-                line = line.replace(/file:\/\/(.*)www/, 'file://');
-            }
-            if ((planA = line.match(/at (.+) \(eval at .+ \((.+)\), .+\)/)) || // eval calls
-                (planA = line.match(/at (.+) \((.+)\)/)) ||
-                (line.slice(0, 3) !== 'at ' && (planA = line.match(/(.*)@(.*)/)))) {
-                this.itemsHeader.push('%StacktraceyItem%');
-                callee = planA[1];
-                native = planA[2] === 'native';
-                fileLineColumn = (planA[2].match(/(.*):(\d+):(\d+)/) ||
-                    planA[2].match(/(.*):(\d+)/) ||
-                    planA[2].match(/\[(.*)\]/) ||
-                    []).slice(1);
-            }
-            else if ((planB = line.match(/^(at\s*)*(.*)\s+(.+):(\d+):(\d+)/))) {
-                this.itemsHeader.push('%StacktraceyItem%');
-                callee = planB[2].trim();
-                fileLineColumn = planB.slice(3);
-            }
-            else {
-                this.itemsHeader.push(line);
-                return undefined;
-            }
-            /*  Detect things like Array.reduce
-                TODO: detect more built-in types            */
-            if (callee && !fileLineColumn[0]) {
-                const type = callee.split('.')[0];
-                if (type === 'Array') {
-                    native = true;
-                }
-            }
-            return {
-                beforeParse: line,
-                callee: callee || '',
-                /* eslint-disable */
-                index: isBrowser && fileLineColumn[0] === window.location.href,
-                native: native || false,
-                file: nixSlashes$1(fileLineColumn[0] || ''),
-                line: parseInt(fileLineColumn[1] || '', 10) || undefined,
-                column: parseInt(fileLineColumn[2] || '', 10) || undefined,
-            };
-        });
-        return entries.filter((x) => x !== undefined);
-    }
-    maxColumnWidths() {
-        return {
-            callee: 30,
-            file: 60,
-            sourceLine: 80,
-        };
-    }
-    asTable(opts) {
-        const maxColumnWidths = (opts && opts.maxColumnWidths) || this.maxColumnWidths();
-        const trimmed = this
-            .filter((e) => !e.thirdParty)
-            .map((e) => parseItem(e, maxColumnWidths, this.isMP));
-        const trimmedThirdParty = this
-            .filter((e) => e.thirdParty)
-            .map((e) => parseItem(e, maxColumnWidths, this.isMP));
-        return {
-            items: trimmed.items,
-            thirdPartyItems: trimmedThirdParty.items,
-        };
-    }
-}
-const trimEnd = (s, n) => s && (s.length > n ? s.slice(0, n - 1) + '…' : s);
-const trimStart = (s, n) => s && (s.length > n ? '…' + s.slice(-(n - 1)) : s);
-function parseItem(e, maxColumnWidths, isMP) {
-    if (!e.parsed) {
-        return e.beforeParse;
-    }
-    const filePath = (isMP ? e.file && e.file : e.fileShort && e.fileShort) +
-        `${typeof e.line !== 'undefined' ? ':' + e.line : ''}` +
-        `${typeof e.column !== 'undefined' ? ':' + e.column : ''}`;
-    return [
-        'at ' + trimEnd(isMP ? e.callee : e.calleeShort, maxColumnWidths.callee),
-        trimStart(filePath || '', maxColumnWidths.file),
-        trimEnd((e.sourceLine || '').trim() || '', maxColumnWidths.sourceLine),
-    ];
-}
-['map', 'filter', 'slice', 'concat'].forEach((method) => {
-    StackTracey.prototype[method] = function ( /*...args */) {
-        // no support for ...args in Node v4 :(
-        return new StackTracey(this.items[method].apply(this.items, arguments));
-    };
-});
 
 var util$1 = {};
 
@@ -2477,12 +2278,13 @@ function _factoryBSM(aSourceMap, aSourceMapURL) {
  */
 var SourceMapConsumer = sourceMapConsumer.SourceMapConsumer;
 
-const splitRE$1 = /\r?\n/;
+const splitRE = /\r?\n/;
+const STACK_ERROR_PLACEHOLDER = '%StacktraceItem%';
 const range = 2;
 function posToNumber(source, pos) {
     if (typeof pos === 'number')
         return pos;
-    const lines = source.split(splitRE$1);
+    const lines = source.split(splitRE);
     const { line, column } = pos;
     let start = 0;
     for (let i = 0; i < line - 1; i++) {
@@ -2493,7 +2295,7 @@ function posToNumber(source, pos) {
 function generateCodeFrame(source, start = 0, end) {
     start = posToNumber(source, start);
     end = end || start;
-    const lines = source.split(splitRE$1);
+    const lines = source.split(splitRE);
     let count = 0;
     const res = [];
     for (let i = 0; i < lines.length; i++) {
@@ -2523,14 +2325,6 @@ function generateCodeFrame(source, start = 0, end) {
         }
     }
     return res.join('\n');
-}
-let isWindows = false;
-try {
-    isWindows = os__default.default.platform() === 'win32';
-}
-catch (error) { }
-function normalizePath(id) {
-    return isWindows ? id.replace(/\\/g, '/') : id;
 }
 function generateCodeFrameSourceMapConsumer(consumer, m, options = {}) {
     if (m.file) {
@@ -2637,96 +2431,239 @@ ${m.code}
         });
     });
 }
-
-const nixSlashes = (x) => x.replace(/\\/g, '/');
-const sourcemapCatch = {};
-function stacktracey(stacktrace, opts) {
-    const stack = opts.preset.parseStacktrace(stacktrace);
-    let parseStack = Promise.resolve();
-    stack.items.forEach((item, index) => {
-        const fn = (item, index) => {
-            const { line = 0, column = 0, file, fileName, fileRelative } = item;
-            if (item.thirdParty) {
-                return Promise.resolve();
-            }
-            function _getSourceMapContent(file, fileName, fileRelative) {
-                return opts.preset
-                    .getSourceMapContent(file, fileName, fileRelative)
-                    .then((content) => {
-                    if (content) {
-                        return getConsumer(content).then((consumer) => {
-                            return parseSourceMapContent(consumer, {
-                                line: line + (opts.preset.lineOffset || 0),
-                                column,
-                            }, !!opts.withSourceContent);
-                        });
+function normalizePath(id) {
+    return id.replace(/\\/g, '/');
+}
+function getFileContent(sourcemapUrl) {
+    return new Promise((resolve, reject) => {
+        if (/^[http|https]+:/i.test(sourcemapUrl)) {
+            uni.request({
+                url: sourcemapUrl,
+                dataType: 'string',
+                success: (res) => {
+                    if (res.statusCode === 200) {
+                        resolve(res.data);
                     }
-                });
-            }
-            try {
-                return _getSourceMapContent(file, fileName, fileRelative).then((sourceMapContent) => {
-                    if (sourceMapContent) {
-                        const { source, sourcePath, sourceLine, sourceColumn, sourceContent, fileName = '', } = sourceMapContent;
-                        stack.items[index] = Object.assign({}, item, {
-                            file: source,
-                            line: sourceLine,
-                            column: sourceColumn,
-                            fileShort: sourcePath || source,
-                            fileRelative: source,
-                            fileName,
-                            thirdParty: isThirdParty(sourcePath),
-                            parsed: true,
-                            sourceContent,
-                        });
-                        /**
-                         * 以 .js 结尾
-                         * 包含 app-service.js 则需要再解析 两次
-                         * 不包含 app-service.js 则无需再解析 一次
-                         */
-                        const curItem = stack.items[index];
-                        if (stack.isMP &&
-                            curItem.beforeParse.indexOf('app-service') !== -1) {
-                            return fn(curItem, index);
-                        }
+                    else {
+                        resolve('');
                     }
-                });
-            }
-            catch (error) {
-                return Promise.resolve();
-            }
-        };
-        parseStack = parseStack.then(() => {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    fn(item, index).then(resolve);
-                }, 0);
-            });
-        });
-    });
-    const _promise = new Promise((resolve, reject) => {
-        parseStack
-            .then(() => {
-            const parseError = opts.preset.asTableStacktrace({
-                stack,
-                maxColumnWidths: {
-                    callee: 999,
-                    file: 999,
-                    sourceLine: 999,
                 },
-                stacktrace,
+                fail() {
+                    resolve('');
+                },
             });
-            resolve(parseError);
-        })
-            .catch(() => {
-            resolve(stacktrace);
-        });
+        }
+        else {
+            fs__default.default.readFile(sourcemapUrl, 'utf-8', (err, data) => {
+                if (err) {
+                    resolve('');
+                }
+                else {
+                    resolve(data);
+                }
+            });
+        }
     });
-    return _promise;
 }
-function isThirdParty(relativePath) {
-    return relativePath.indexOf('@dcloudio') !== -1;
+
+/*  ------------------------------------------------------------------------ */
+const O = Object, isBrowser = 
+/* eslint-disable */
+typeof window !== 'undefined' &&
+    /* eslint-disable */
+    window.window === window &&
+    /* eslint-disable */
+    window.navigator, 
+// @ts-ignore
+nodeRequire = isBrowser ? null : module.require, // to prevent bundlers from expanding the require call
+lastOf = (x) => x[x.length - 1], nixSlashes = (x) => x.replace(/\\/g, '/'), pathRoot = isBrowser ? window.location.href : nixSlashes(process.cwd()) + '/';
+/*  ------------------------------------------------------------------------ */
+class StackTracey {
+    constructor(input, uniPlatform, offset) {
+        this.itemsHeader = [];
+        this.isMP = false;
+        const originalInput = input, isParseableSyntaxError = input && input instanceof SyntaxError && !isBrowser;
+        /*  new StackTracey ()            */
+        if (!input) {
+            input = new Error();
+            offset = offset === undefined ? 1 : offset;
+        }
+        /*  new StackTracey (Error)      */
+        if (input instanceof Error) {
+            input = input.stack || '';
+        }
+        /*  new StackTracey (string)     */
+        if (typeof input === 'string') {
+            this.isMP = uniPlatform === 'mp-weixin';
+            input = this.rawParse(input)
+                .slice(offset)
+                .map((x) => this.extractEntryMetadata(x));
+        }
+        /*  new StackTracey (array)      */
+        if (Array.isArray(input)) {
+            if (isParseableSyntaxError) {
+                const rawLines = nodeRequire('util')
+                    .inspect(originalInput)
+                    .split('\n'), fileLine = rawLines[0].split(':'), line = fileLine.pop(), file = fileLine.join(':');
+                if (file) {
+                    input.unshift({
+                        file: nixSlashes(file),
+                        line: line,
+                        column: (rawLines[2] || '').indexOf('^') + 1,
+                        sourceLine: rawLines[1],
+                        callee: '(syntax error)',
+                        syntaxError: true,
+                    });
+                }
+            }
+            this.items = input;
+        }
+        else {
+            this.items = [];
+        }
+    }
+    extractEntryMetadata(e) {
+        const decomposedPath = this.decomposePath(e.file || '');
+        const fileRelative = decomposedPath[0];
+        const externalDomain = decomposedPath[1];
+        return O.assign(e, {
+            calleeShort: e.calleeShort || lastOf((e.callee || '').split('.')),
+            fileRelative: fileRelative,
+            fileShort: this.shortenPath(fileRelative),
+            fileName: lastOf((e.file || '').split('/')),
+            thirdParty: this.isThirdParty(fileRelative, externalDomain) && !e.index,
+            externalDomain: externalDomain,
+        });
+    }
+    shortenPath(relativePath) {
+        return relativePath
+            .replace(/^node_modules\//, '')
+            .replace(/^webpack\/bootstrap\//, '')
+            .replace(/^__parcel_source_root\//, '');
+    }
+    decomposePath(fullPath) {
+        let result = fullPath;
+        if (isBrowser)
+            result = result.replace(pathRoot, '');
+        const externalDomainMatch = result.match(/^(http|https)\:\/\/?([^\/]+)\/{1,}(.*)/);
+        const externalDomain = externalDomainMatch
+            ? externalDomainMatch[2]
+            : undefined;
+        result = externalDomainMatch ? externalDomainMatch[3] : result;
+        // if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
+        return [
+            nixSlashes(result).replace(/^.*\:\/\/?\/?/, ''), // cut webpack:/// and webpack:/ things
+            externalDomain,
+        ];
+    }
+    isThirdParty(relativePath, externalDomain) {
+        if (this.isMP) {
+            if (typeof externalDomain === 'undefined')
+                return false;
+            return externalDomain !== 'usr';
+        }
+        return (
+        // 由于 hello-uniapp web 端报错携带 hellouniapp.dcloud.net.cn
+        // externalDomain ||
+        relativePath[0] === '~' || // webpack-specific heuristic
+            relativePath[0] === '/' || // external source
+            relativePath.indexOf('@dcloudio') !== -1 ||
+            relativePath.indexOf('weex-main-jsfm') !== -1 ||
+            relativePath.indexOf('webpack/bootstrap') === 0);
+    }
+    rawParse(str) {
+        const lines = (str || '').split('\n');
+        const entries = lines.map((line, index) => {
+            line = line.trim();
+            let callee, fileLineColumn = [], native, planA, planB;
+            if (line.indexOf('file:') !== -1) {
+                line = line.replace(/file:\/\/(.*)www/, 'file://');
+            }
+            if ((planA = line.match(/at (.+) \(eval at .+ \((.+)\), .+\)/)) || // eval calls
+                (planA = line.match(/at (.+) \((.+)\)/)) ||
+                (line.slice(0, 3) !== 'at ' && (planA = line.match(/(.*)@(.*)/)))) {
+                this.itemsHeader.push(STACK_ERROR_PLACEHOLDER);
+                callee = planA[1];
+                native = planA[2] === 'native';
+                fileLineColumn = (planA[2].match(/(.*):(\d+):(\d+)/) ||
+                    planA[2].match(/(.*):(\d+)/) ||
+                    planA[2].match(/\[(.*)\]/) ||
+                    []).slice(1);
+            }
+            else if ((planB = line.match(/^(at\s*)*(.*)\s+(.+):(\d+):(\d+)/))) {
+                this.itemsHeader.push(STACK_ERROR_PLACEHOLDER);
+                callee = planB[2].trim();
+                fileLineColumn = planB.slice(3);
+            }
+            else {
+                this.itemsHeader.push(line);
+                return undefined;
+            }
+            /*  Detect things like Array.reduce
+                TODO: detect more built-in types            */
+            if (callee && !fileLineColumn[0]) {
+                const type = callee.split('.')[0];
+                if (type === 'Array') {
+                    native = true;
+                }
+            }
+            return {
+                beforeParse: line,
+                callee: callee || '',
+                /* eslint-disable */
+                index: isBrowser && fileLineColumn[0] === window.location.href,
+                native: native || false,
+                file: nixSlashes(fileLineColumn[0] || ''),
+                line: parseInt(fileLineColumn[1] || '', 10) || undefined,
+                column: parseInt(fileLineColumn[2] || '', 10) || undefined,
+            };
+        });
+        return entries.filter((x) => x !== undefined);
+    }
+    maxColumnWidths() {
+        return {
+            callee: 30,
+            file: 60,
+            sourceLine: 80,
+        };
+    }
+    asTable(opts) {
+        const maxColumnWidths = (opts && opts.maxColumnWidths) || this.maxColumnWidths();
+        const trimmed = this
+            .filter((e) => !e.thirdParty)
+            .map((e) => parseItem(e, maxColumnWidths, this.isMP));
+        const trimmedThirdParty = this
+            .filter((e) => e.thirdParty)
+            .map((e) => parseItem(e, maxColumnWidths, this.isMP));
+        return {
+            items: trimmed.items,
+            thirdPartyItems: trimmedThirdParty.items,
+        };
+    }
 }
-function getConsumer(content) {
+const trimEnd = (s, n) => s && (s.length > n ? s.slice(0, n - 1) + '…' : s);
+const trimStart = (s, n) => s && (s.length > n ? '…' + s.slice(-(n - 1)) : s);
+function parseItem(e, maxColumnWidths, isMP) {
+    if (!e.parsed) {
+        return e.beforeParse;
+    }
+    const filePath = (isMP ? e.file && e.file : e.fileShort && e.fileShort) +
+        `${typeof e.line !== 'undefined' ? ':' + e.line : ''}` +
+        `${typeof e.column !== 'undefined' ? ':' + e.column : ''}`;
+    return [
+        'at ' + trimEnd(isMP ? e.callee : e.calleeShort, maxColumnWidths.callee),
+        trimStart(filePath || '', maxColumnWidths.file),
+        trimEnd((e.sourceLine || '').trim() || '', maxColumnWidths.sourceLine),
+    ];
+}
+['map', 'filter', 'slice', 'concat'].forEach((method) => {
+    StackTracey.prototype[method] = function ( /*...args */) {
+        // no support for ...args in Node v4 :(
+        return new StackTracey(this.items[method].apply(this.items, arguments));
+    };
+});
+
+function getSourceMapConsumer(content) {
     return new Promise((resolve, reject) => {
         try {
             if (SourceMapConsumer.with) {
@@ -2745,60 +2682,177 @@ function getConsumer(content) {
         }
     });
 }
+function originalPositionFor(sourceMapContent, position, withSourceContent = false) {
+    return getSourceMapConsumer(sourceMapContent).then((consumer) => {
+        if (position.column === 0) {
+            position.bias = 2 /* BIAS.LEAST_UPPER_BOUND */;
+        }
+        // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
+        const { source, line: sourceLine, column: sourceColumn, } = consumer.originalPositionFor(position);
+        if (source) {
+            const sourcePathSplit = source.split('/');
+            const sourcePath = sourcePathSplit.slice(3).join('/');
+            const fileName = sourcePathSplit.pop();
+            return {
+                source,
+                sourcePath,
+                sourceLine: sourceLine === null ? 0 : sourceLine,
+                sourceColumn: sourceColumn === null ? 0 : sourceColumn,
+                fileName,
+                sourceContent: withSourceContent
+                    ? consumer.sourceContentFor(source, true) || ''
+                    : '',
+            };
+        }
+    });
+}
+const sourcemapCatch = {};
 function getSourceMapContent(sourcemapUrl) {
     try {
-        return (sourcemapCatch[sourcemapUrl] ||
-            (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
+        return sourcemapCatch[sourcemapUrl]
+            ? Promise.resolve(sourcemapCatch[sourcemapUrl])
+            : (sourcemapCatch[sourcemapUrl] = new Promise((resolve, reject) => {
                 try {
-                    if (/^[http|https]+:/i.test(sourcemapUrl)) {
-                        uni.request({
-                            url: sourcemapUrl,
-                            success: (res) => {
-                                if (res.statusCode === 200) {
-                                    sourcemapCatch[sourcemapUrl] = res.data;
-                                    resolve(sourcemapCatch[sourcemapUrl]);
-                                }
-                                else {
-                                    resolve((sourcemapCatch[sourcemapUrl] = ''));
-                                }
-                            },
-                            fail() {
-                                resolve((sourcemapCatch[sourcemapUrl] = ''));
-                            },
+                    getFileContent(sourcemapUrl).then((content) => {
+                        resolve((sourcemapCatch[sourcemapUrl] = content));
+                    });
+                }
+                catch (error) {
+                    resolve((sourcemapCatch[sourcemapUrl] = ''));
+                }
+            }));
+    }
+    catch (error) {
+        return Promise.resolve((sourcemapCatch[sourcemapUrl] = ''));
+    }
+}
+
+let kotlinManifest = {
+    manifest: {},
+};
+function updateUTSKotlinSourceMapManifestCache(url) {
+    return new Promise((resolve, reject) => {
+        let manifestFile = '';
+        if (/^[http|https]+:/i.test(url)) {
+            manifestFile = url;
+        }
+        else {
+            manifestFile = path__default.default.resolve(url, '.manifest.json');
+        }
+        try {
+            getFileContent(manifestFile).then((content) => {
+                try {
+                    const { files } = JSON.parse(content);
+                    if (files) {
+                        const classManifest = {};
+                        Object.keys(files).forEach((name) => {
+                            const kotlinClass = files[name].class;
+                            if (kotlinClass) {
+                                classManifest[kotlinClass] = name;
+                            }
                         });
-                    }
-                    else {
-                        sourcemapCatch[sourcemapUrl] = fs__default.default.readFileSync(sourcemapUrl, 'utf-8');
-                        resolve(sourcemapCatch[sourcemapUrl]);
+                        kotlinManifest.manifest = classManifest;
                     }
                 }
                 catch (error) {
-                    resolve('');
+                    // console.log(`Failed to parse Kotlin manifest file: ${url}`)
                 }
-            })));
-    }
-    catch (error) {
-        return '';
-    }
+                resolve();
+            });
+        }
+        catch (e) { }
+    });
 }
-function parseSourceMapContent(consumer, obj, withSourceContent) {
-    // source -> 'uni-app:///node_modules/@sentry/browser/esm/helpers.js'
-    const { source, line: sourceLine, column: sourceColumn, } = consumer.originalPositionFor(obj);
-    if (source) {
-        const sourcePathSplit = source.split('/');
-        const sourcePath = sourcePathSplit.slice(3).join('/');
-        const fileName = sourcePathSplit.pop();
-        return {
-            source,
-            sourcePath,
-            sourceLine: sourceLine === null ? 0 : sourceLine,
-            sourceColumn: sourceColumn === null ? 0 : sourceColumn,
-            fileName,
-            sourceContent: withSourceContent
-                ? consumer.sourceContentFor(source) || ''
-                : '',
-        };
-    }
+function parseFilenameByClassName(className) {
+    return kotlinManifest.manifest[className.split('$')[0]] || 'index.kt';
+}
+
+function stacktrace(stacktrace, opts) {
+    const _promise = new Promise((resolve, reject) => {
+        opts.preset.precondition().then(() => {
+            let parseStack = Promise.resolve();
+            const stack = opts.preset.parseStacktrace(stacktrace);
+            stack.items.forEach((item, index) => {
+                const fn = (item, index) => {
+                    const { line = 0, column = 0, file, fileName, fileRelative } = item;
+                    if (item.thirdParty) {
+                        return Promise.resolve();
+                    }
+                    function _getSourceMapContent(file, fileName, fileRelative) {
+                        return opts.preset
+                            .getSourceMapContent(file, fileName, fileRelative)
+                            .then((content) => {
+                            if (content) {
+                                return originalPositionFor(content, {
+                                    line: line + (opts.preset.lineOffset || 0),
+                                    column,
+                                }, !!opts.withSourceContent);
+                            }
+                        });
+                    }
+                    try {
+                        return _getSourceMapContent(file, fileName, fileRelative).then((sourceMapContent) => {
+                            if (sourceMapContent) {
+                                const { source, sourcePath, sourceLine, sourceColumn, sourceContent, fileName = '', } = sourceMapContent;
+                                stack.items[index] = Object.assign({}, item, {
+                                    file: source,
+                                    line: sourceLine,
+                                    column: sourceColumn,
+                                    fileShort: sourcePath || source,
+                                    fileRelative: source,
+                                    fileName,
+                                    thirdParty: isThirdParty(sourcePath),
+                                    parsed: true,
+                                    sourceContent,
+                                });
+                                /**
+                                 * 以 .js 结尾
+                                 * 包含 app-service.js 则需要再解析 两次
+                                 * 不包含 app-service.js 则无需再解析 一次
+                                 */
+                                const curItem = stack.items[index];
+                                if (stack.isMP &&
+                                    curItem.beforeParse.indexOf('app-service') !== -1) {
+                                    return fn(curItem, index);
+                                }
+                            }
+                        });
+                    }
+                    catch (error) {
+                        return Promise.resolve();
+                    }
+                };
+                parseStack = parseStack.then(() => {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            fn(item, index).then(resolve);
+                        }, 0);
+                    });
+                });
+            });
+            parseStack
+                .then(() => {
+                const parseError = opts.preset.asTableStacktrace({
+                    stack,
+                    maxColumnWidths: {
+                        callee: 999,
+                        file: 999,
+                        sourceLine: 999,
+                    },
+                    stacktrace,
+                });
+                resolve(parseError);
+            })
+                .catch(() => {
+                resolve(stacktrace);
+            });
+        });
+    });
+    return _promise;
+}
+const stacktracey = stacktrace;
+function isThirdParty(relativePath) {
+    return relativePath.indexOf('@dcloudio') !== -1;
 }
 function joinItem(item) {
     if (typeof item === 'string') {
@@ -2809,7 +2863,7 @@ function joinItem(item) {
     const c = item[2] ? ` ${item[2]}` : '';
     return `${a}${b}${c}`;
 }
-function uniStracktraceyPreset(opts) {
+function uniStacktracePreset(opts) {
     const { base, sourceRoot, splitThirdParty, uniPlatform, lineOffset } = opts;
     let stack;
     return {
@@ -2867,7 +2921,7 @@ function uniStracktraceyPreset(opts) {
                 const { items: stackLines, thirdPartyItems: stackThirdPartyLines } = lines;
                 const userError = stack.itemsHeader
                     .map((item) => {
-                    if (item === '%StacktraceyItem%') {
+                    if (item === STACK_ERROR_PLACEHOLDER) {
                         const _stack = stackLines.shift();
                         return _stack ? joinItem(_stack) : '';
                     }
@@ -2896,15 +2950,22 @@ function uniStracktraceyPreset(opts) {
                 return errorName;
             }
         },
+        precondition() {
+            return Promise.resolve();
+        },
         lineOffset,
     };
 }
-const splitRE = /\r?\n/;
-function utsStracktraceyPreset(opts) {
+const uniStracktraceyPreset = uniStacktracePreset;
+function utsStacktracePreset(opts) {
     const { inputRoot = '', outputRoot = '', sourceMapRoot = '' } = opts;
     let errStack = [];
+    let parseKotlin = false;
     return {
         parseSourceMapUrl(file, fileName, fileRelative) {
+            if (parseKotlin) {
+                return path__default.default.resolve(sourceMapRoot, file + '.map');
+            }
             return path__default.default.resolve(sourceMapRoot, path__default.default.relative(outputRoot, file) + '.map');
         },
         getSourceMapContent(file, fileName, fileRelative) {
@@ -2916,31 +2977,46 @@ function utsStracktraceyPreset(opts) {
             const entries = lines
                 .map((line, index) => {
                 line = line.trim();
-                const matches = line.match(/\s*(.+\.(kt|swift|ets)):([0-9]+):([0-9]+):?\s*(.*)/);
-                if (matches) {
-                    errStack.push('%StacktraceyItem%');
+                let matches = line.match(/\s*(.+\.(kt|swift|ets)):([0-9]+):([0-9]+):?\s*(.*)/);
+                if (!matches) {
+                    matches = line.match(new RegExp('uni\\.\\w+\\.(.*)\\..*\\(*\\.kt:([0-9]+)\\)'));
+                    if (matches) {
+                        parseKotlin = true;
+                    }
                 }
-                else {
-                    errStack.push(line);
+                errStack.push(matches ? STACK_ERROR_PLACEHOLDER : line);
+                if (!matches) {
                     return;
                 }
+                let file = matches[1];
+                let errorLine = matches[3];
+                let column = matches[4];
+                let errMsg = matches[5] || '';
+                let fileShort = line;
+                let fileName = '';
                 if (matches[2] === 'ets') {
-                    matches[1] =
-                        (matches[0].match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] ||
-                            matches[1];
+                    file =
+                        (line.match(/File:\s+(.*):(\d+):(\d+)/) || [])[1] || matches[1];
                 }
-                const fileName = matches[1].replace(/^.*(\\|\/|\:)/, '');
+                if (parseKotlin) {
+                    fileName = fileShort = file = parseFilenameByClassName(file);
+                    errorLine = matches[2];
+                    column = '0';
+                }
+                else {
+                    fileName = file.replace(/^.*(\\|\/|\:)/, '');
+                }
                 return {
                     beforeParse: line,
                     callee: '',
                     index: false,
                     native: false,
-                    file: nixSlashes(matches[1]),
-                    line: parseInt(matches[3]),
-                    column: parseInt(matches[4]),
+                    file: normalizePath(file),
+                    line: parseInt(errorLine),
+                    column: parseInt(column),
                     fileName,
-                    fileShort: line,
-                    errMsg: matches[5] || '',
+                    fileShort,
+                    errMsg,
                     calleeShort: '',
                     fileRelative: '',
                     thirdParty: false,
@@ -2955,11 +3031,12 @@ function utsStracktraceyPreset(opts) {
         asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {
             return errStack
                 .map((item) => {
-                if (item === '%StacktraceyItem%') {
+                if (item === STACK_ERROR_PLACEHOLDER) {
                     const _stack = stack.items.shift();
                     if (_stack) {
-                        return `at ${nixSlashes(path__default.default.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}
-${_stack.errMsg}`;
+                        return `at ${normalizePath(parseKotlin
+                            ? _stack.file
+                            : path__default.default.relative(inputRoot, _stack.file.replace('\\\\?\\', '')))}:${_stack.line}:${_stack.column}${_stack.errMsg ? `\n${_stack.errMsg}` : ''}`;
                     }
                     return '';
                 }
@@ -2967,8 +3044,14 @@ ${_stack.errMsg}`;
             })
                 .join('\n');
         },
+        precondition() {
+            return new Promise((resolve, reject) => {
+                updateUTSKotlinSourceMapManifestCache(sourceMapRoot).finally(resolve);
+            });
+        },
     };
 }
+const utsStracktraceyPreset = utsStacktracePreset;
 
 exports.SourceMapConsumer = SourceMapConsumer;
 exports.generateCodeFrame = generateCodeFrame;
@@ -2976,7 +3059,11 @@ exports.generateCodeFrameSourceMapConsumer = generateCodeFrameSourceMapConsumer;
 exports.generateCodeFrameWithKotlinStacktrace = generateCodeFrameWithKotlinStacktrace;
 exports.generateCodeFrameWithSourceMapPath = generateCodeFrameWithSourceMapPath;
 exports.generateCodeFrameWithSwiftStacktrace = generateCodeFrameWithSwiftStacktrace;
-exports.splitRE = splitRE;
+exports.getSourceMapContent = getSourceMapContent;
+exports.originalPositionFor = originalPositionFor;
+exports.stacktrace = stacktrace;
 exports.stacktracey = stacktracey;
+exports.uniStacktracePreset = uniStacktracePreset;
 exports.uniStracktraceyPreset = uniStracktraceyPreset;
+exports.utsStacktracePreset = utsStacktracePreset;
 exports.utsStracktraceyPreset = utsStracktraceyPreset;

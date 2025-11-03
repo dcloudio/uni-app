@@ -1,22 +1,22 @@
 import {
+  type Ref,
+  computed,
   defineComponent,
+  inject,
   onMounted,
   onUnmounted,
   ref,
-  Ref,
-  computed,
-  inject,
   watch,
 } from 'vue'
-import { useTouchtrack, TouchtrackEvent } from './useTouchtrack'
+import { type TouchtrackEvent, useTouchtrack } from './useTouchtrack'
 import {
-  CustomEventTrigger,
-  EmitEvent,
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
 } from '../../helpers/useNVueEvent'
-import {
-  MovableViewContext,
+import type {
   AddMovableViewContext,
+  MovableViewContext,
   RemoveMovableViewContext,
   SetTouchMovableViewContext,
   TouchMovableViewContext,
@@ -25,11 +25,11 @@ import {
 import {
   Decline,
   Friction,
+  type FrictionCallback,
+  type Props,
+  type Record,
   STD,
   movableViewProps,
-  Props,
-  FrictionCallback,
-  Record,
   v,
 } from '../../components/movable-view'
 import { getComponentSize } from '../helpers'
@@ -213,7 +213,7 @@ function useMovableViewState(
     y: 0,
   }
   let _scale = 1
-  // @ts-ignore
+  // @ts-expect-error
   let _oldScale = 1
   let _translateX = 0
   let _translateY = 0

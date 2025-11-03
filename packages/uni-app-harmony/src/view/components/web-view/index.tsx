@@ -19,17 +19,41 @@ export type OperateWebViewType =
   | 'forward'
   | 'reload'
   | 'stop'
+  | 'canBack'
+  | 'canForward'
+  | 'loadData'
+  | 'getContentHeight'
+  | 'clear'
+  | 'loadUrl'
 
-const HarmonyNativeMethodMap = {
+const HarmonyNativeMethodMap: Record<OperateWebViewType, string> = {
   evalJS: 'runJavaScript',
   back: 'backward',
   forward: 'forward',
   reload: 'refresh',
   stop: 'stop',
+  canBack: 'accessBackward',
+  canForward: 'accessForward',
+  loadData: 'loadData',
+  getContentHeight: 'getPageHeight',
+  clear: 'removeCache',
+  loadUrl: 'loadUrl',
 }
 
 function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
-  const MethodList = ['evalJS', 'back', 'forward', 'reload', 'stop']
+  const MethodList: OperateWebViewType[] = [
+    'evalJS',
+    'back',
+    'forward',
+    'reload',
+    'stop',
+    'canBack',
+    'canForward',
+    'loadData',
+    'getContentHeight',
+    'clear',
+    'loadUrl',
+  ]
   const methods = {} as Record<OperateWebViewType, Function>
 
   for (let i = 0; i < MethodList.length; i++) {
@@ -39,10 +63,30 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
       resolve: (res: any) => void
     ) {
       const embed = embedRef.value!
-      if (methodName === 'evalJS') {
-        return resolve(embed['runJavaScript']((data || {}).jsCode || ''))
-      } else {
-        resolve(embed[HarmonyNativeMethodMap[methodName]]())
+      switch (methodName) {
+        case 'evalJS':
+          return resolve(embed['runJavaScript']((data || {}).jsCode || ''))
+        case 'loadUrl':
+          resolve(
+            embed[HarmonyNativeMethodMap[methodName]](data.url, data.headers)
+          )
+          break
+        case 'loadData':
+          resolve(
+            embed[HarmonyNativeMethodMap[methodName]](
+              data.data,
+              data.mimeType,
+              data.encoding,
+              data.baseUrl
+            )
+          )
+          break
+        case 'clear':
+          resolve(embed[HarmonyNativeMethodMap[methodName]](data.clearRom))
+          break
+        default:
+          resolve(embed[HarmonyNativeMethodMap[methodName]]())
+          break
       }
     }
   }
@@ -125,7 +169,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             updateTitle: props.updateTitle,
             webviewStyles: props.webviewStyles,
           }}
-          methods={['runJavaScript', 'backward', 'forward', 'refresh', 'stop']}
+          methods={[
+            'runJavaScript',
+            'backward',
+            'forward',
+            'refresh',
+            'stop',
+            'accessBackward',
+            'accessForward',
+            'loadData',
+            'getPageHeight',
+            'removeCache',
+            'loadUrl',
+          ]}
           style="width:100%;height:100%"
         />
       </uni-web-view>

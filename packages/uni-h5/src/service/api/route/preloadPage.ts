@@ -31,7 +31,8 @@ export const preloadPage = defineAsyncApi<API_TYPE_PRELOAD_PAGE>(
   PreloadPageProtocol
 )
 
-if (__X__ && __DEV__) {
+// 自动化测试时不进行预加载，避免内存占用过高导致 connection close 问题
+if (__X__ && __DEV__ && !process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
   document.addEventListener('DOMContentLoaded', () => {
     console.log('Preload pages in uni-app-x development mode.')
     __uniRoutes.reduce((prev, route) => {

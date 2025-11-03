@@ -1,8 +1,8 @@
 import { reactive } from 'vue'
 import {
-  defineSystemComponent,
   MovableArea,
   MovableView,
+  defineSystemComponent,
   withWebEvent,
 } from '@dcloudio/uni-components'
 
@@ -72,7 +72,7 @@ export default /*#__PURE__*/ defineSystemComponent({
       return (
         <MovableArea
           style={viewStyle}
-          // @ts-ignore
+          // @ts-expect-error
           onTouchstart={withWebEvent(onTouchStart)}
           onTouchmove={withWebEvent(checkDirection)}
           onTouchend={withWebEvent(onTouchEnd)}
@@ -84,7 +84,7 @@ export default /*#__PURE__*/ defineSystemComponent({
             scale
             scale-min="1"
             scale-max="4"
-            // @ts-ignore
+            // @ts-expect-error
             onScale={onScale}
           >
             <img

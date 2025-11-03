@@ -9,5 +9,10 @@
       ],
       "@dcloudio/uni-mp-polyfill": ["packages/uni-mp-core/src/runtime/polyfill"]
     }
-  }
+  },
+  "include": [
+    "src",
+    "../shims-node.d.ts",
+    "../shims-uni-app.d.ts"
+  ]
 }

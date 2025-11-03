@@ -1,13 +1,13 @@
 import {
+  type ComponentInternalInstance,
+  type ExtractPropTypes,
   defineComponent,
-  ExtractPropTypes,
   getCurrentInstance,
-  ComponentInternalInstance,
-  // @ts-ignore
+  // @ts-expect-error
   parseClassList,
 } from 'vue'
 import { isArray, isString } from '@vue/shared'
-import { props, parseHtml } from '../../components/rich-text'
+import { parseHtml, props } from '../../components/rich-text'
 import { parseStyleText } from '../helpers'
 
 const defaultFontSize = 16

@@ -55,6 +55,7 @@ export default {
   'prompt.run.devtools.quickapp-webview-huawei': '华为快应用开发者工具',
   'prompt.run.devtools.quickapp-webview-union': '快应用联盟开发者工具',
   'uvue.unsupported': 'uvue 暂不支持 {platform} 平台',
+  // 重要：HBuilderX也会用到，如果调整了文案，需要同步调整HBuilderX的文案
   'uvue.dev.watching.end.empty':
     '本次代码变更，编译结果未发生变化，跳过同步手机端程序文件。',
   'uni_modules.import':

@@ -1,17 +1,24 @@
-import { Ref, ref, watch, onBeforeUnmount, ExtractPropTypes, inject } from 'vue'
+import {
+  type ExtractPropTypes,
+  type Ref,
+  inject,
+  onBeforeUnmount,
+  ref,
+  watch,
+} from 'vue'
 import { extend, isArray } from '@vue/shared'
 import {
+  type EmitEvent,
   defineBuiltInComponent,
   useCustomEvent,
-  EmitEvent,
 } from '@dcloudio/uni-components'
 import {
-  useI18n,
+  type Page,
   initI18nPickerMsgsOnce,
   showPage,
-  Page,
+  useI18n,
 } from '@dcloudio/uni-core'
-import { UniFormCtx, uniFormKey } from '@dcloudio/uni-components'
+import { type UniFormCtx, uniFormKey } from '@dcloudio/uni-components'
 import { getNavigationBarHeight } from '../../../helpers/navigationBar'
 import { ON_THEME_CHANGE } from '@dcloudio/uni-shared'
 
@@ -139,7 +146,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Picker',
   props,
   emits: ['change', 'cancel', 'columnchange'],
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     initI18nPickerMsgsOnce()
     const { t, getLocale } = useI18n()
     const rootRef: Ref<HTMLElement | null> = ref(null)
@@ -353,7 +360,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     return () => (
       <uni-picker ref={rootRef} onClick={_show}>
-        <slot />
+        {slots.default && slots.default()}
       </uni-picker>
     )
   },

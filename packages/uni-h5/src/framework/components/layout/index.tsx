@@ -440,8 +440,23 @@ function useTopWindow(layoutState: LayoutState): WindowComponentInfo {
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
     const instance = windowRef.value as ComponentPublicInstance
+    if (!instance || !instance.$) {
+      // 目前 top-window、left-window、right-window 是 AsyncComponent，下方的 watch 触发时 instance 可能为 null
+      return
+    }
     const el = resolveOwnerEl(instance.$) as HTMLElement
-    const height = el.getBoundingClientRect().height
+    if (!el) {
+      return
+    }
+    /**
+     * el指开发者top-window的根节点，其高度可能并不正确。
+     * pages.json内的top-window style被设置到了el的父元素上。需要以父元素的高度为准。此值会影响--top-window-height变量
+     */
+    const uniTopWindowStyleEl = el.parentElement
+    if (!uniTopWindowStyleEl) {
+      return
+    }
+    const height = uniTopWindowStyleEl.getBoundingClientRect().height
     layoutState.topWindowHeight = height
   }
   watch(
@@ -465,8 +480,22 @@ function useLeftWindow(layoutState: LayoutState): WindowComponentInfo {
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
     const instance = windowRef.value as ComponentPublicInstance
+    if (!instance || !instance.$) {
+      return
+    }
     const el = resolveOwnerEl(instance.$) as HTMLElement
-    const width = el.getBoundingClientRect().width
+    if (!el) {
+      return
+    }
+    /**
+     * left-window样式应用节点为el的父元素的父元素。
+     */
+    const uniLeftWindowStyleEl =
+      el.parentElement && el.parentElement.parentElement
+    if (!uniLeftWindowStyleEl) {
+      return
+    }
+    const width = uniLeftWindowStyleEl.getBoundingClientRect().width
     layoutState.leftWindowWidth = width
   }
   watch(
@@ -490,8 +519,22 @@ function useRightWindow(layoutState: LayoutState): WindowComponentInfo {
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
     const instance = windowRef.value as ComponentPublicInstance
+    if (!instance || !instance.$) {
+      return
+    }
     const el = resolveOwnerEl(instance.$) as HTMLElement
-    const width = el.getBoundingClientRect().width
+    if (!el) {
+      return
+    }
+    /**
+     * right-window样式应用节点为el的父元素的父元素。
+     */
+    const uniRightWindowStyleEl =
+      el.parentElement && el.parentElement.parentElement
+    if (!uniRightWindowStyleEl) {
+      return
+    }
+    const width = uniRightWindowStyleEl.getBoundingClientRect().width
     layoutState.rightWindowWidth = width
   }
   watch(
@@ -518,6 +561,9 @@ function createTopWindowTsx(
 ) {
   if (topWindow) {
     const { component: TopWindow, windowRef } = topWindow as WindowComponentInfo
+    /**
+     * 注意如果修改layoutState.topWindowStyle所在的元素，需要同步修改useTopWindow函数中layoutState.topWindowHeight的计算逻辑。
+     */
     return (
       <uni-top-window
         v-show={layoutState.showTopWindow || layoutState.apiShowTopWindow}
@@ -545,6 +591,9 @@ function createLeftWindowTsx(
   if (leftWindow) {
     const { component: LeftWindow, windowRef } =
       leftWindow as WindowComponentInfo
+    /**
+     * 注意如果修改layoutState.leftWindowStyle所在的元素，需要同步修改useLeftWindow函数中layoutState.leftWindowWidth的计算逻辑。
+     */
     return (
       <uni-left-window
         v-show={layoutState.showLeftWindow || layoutState.apiShowLeftWindow}
@@ -572,6 +621,9 @@ function createRightWindowTsx(
   if (rightWindow) {
     const { component: RightWindow, windowRef } =
       rightWindow as WindowComponentInfo
+    /**
+     * 注意如果修改layoutState.rightWindowStyle所在的元素，需要同步修改useRightWindow函数中layoutState.rightWindowWidth的计算逻辑。
+     */
     return (
       <uni-right-window
         v-show={layoutState.showRightWindow || layoutState.apiShowRightWindow}

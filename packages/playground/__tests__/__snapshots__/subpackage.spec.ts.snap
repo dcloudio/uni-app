@@ -17,13 +17,27 @@ exports._imports_2 = _imports_2;
 
 exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin pages/index/index.wxss 1`] = `
 "@import "../../app.wxss";
+
+.test {
+    background-color: red;
+}
 "
 `;
 
-exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `""`;
+exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `
+"
+.test {
+  background-color: red;
+}
+"
+`;
 
 exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin uni_modules/test-module/pages/index/index.wxss 1`] = `
 "@import "../../../../app.wxss";
+
+.test {
+  background-color: red;
+}
 "
 `;
 
@@ -44,13 +58,27 @@ exports._imports_2 = _imports_2;
 
 exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin pages/index/index.wxss 1`] = `
 "@import "../../app.wxss";
+
+.test {
+    background-color: red;
+}
 "
 `;
 
-exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `""`;
+exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `
+"
+.test {
+  background-color: red;
+}
+"
+`;
 
 exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin uni_modules/test-module/pages/index/index.wxss 1`] = `
 "@import "../../../../app.wxss";
+
+.test {
+  background-color: red;
+}
 "
 `;
 
@@ -73,11 +101,19 @@ exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-wei
 "@import "../../app.wxss";
 @import "../../uvue.wxss";
 :host{display:flex;flex-direction:column}
+
+.test {
+    background-color: red;
+}
 "
 `;
 
 exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `
 ":host{display:flex;flex-direction:column}
+
+.test {
+  background-color: red;
+}
 "
 `;
 
@@ -85,6 +121,10 @@ exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-wei
 "@import "../../../../app.wxss";
 @import "../../../../uvue.wxss";
 :host{display:flex;flex-direction:column}
+
+.test {
+  background-color: red;
+}
 "
 `;
 
@@ -107,11 +147,19 @@ exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin 
 "@import "../../app.wxss";
 @import "../../uvue.wxss";
 :host{display:flex;flex-direction:column}
+
+.test {
+    background-color: red;
+}
 "
 `;
 
 exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `
 ":host{display:flex;flex-direction:column}
+
+.test {
+  background-color: red;
+}
 "
 `;
 
@@ -119,5 +167,9 @@ exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin 
 "@import "../../../../app.wxss";
 @import "../../../../uvue.wxss";
 :host{display:flex;flex-direction:column}
+
+.test {
+  background-color: red;
+}
 "
 `;

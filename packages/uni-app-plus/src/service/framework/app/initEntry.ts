@@ -16,12 +16,15 @@ export function initEntry() {
   const weexPlus = weex.requireModule('plus')
 
   if (weexPlus.getRedirectInfo) {
-    const { path, query, referrerInfo } = parseRedirectInfo()!
+    const { path, query, referrerInfo, appScheme, appLink } =
+      parseRedirectInfo()!
     if (path) {
       entryPagePath = path
       entryPageQuery = query
     }
     __uniConfig.referrerInfo = referrerInfo
+    __uniConfig.appScheme = appScheme
+    __uniConfig.appLink = appLink
   } else {
     const argsJsonStr = plus.runtime.arguments
     if (!argsJsonStr) {

@@ -38,6 +38,7 @@ import { genBabelExpr } from '../codegen'
 import { NORMALIZE_CLASS } from '../runtimeHelpers'
 import type { TransformContext } from '../transform'
 import {
+  isFilterExpr,
   isStaticLiteral,
   parseExprWithRewrite,
   parseExprWithRewriteClass,
@@ -163,6 +164,9 @@ function rewriteClassExpression(
   expr: ExpressionNode,
   context: TransformContext
 ) {
+  if (isFilterExpr(expr, context)) {
+    return rewriteExpression(expr, context)
+  }
   return rewriteExpression(
     createCompoundExpression([
       context.helperString(NORMALIZE_CLASS) + '(',

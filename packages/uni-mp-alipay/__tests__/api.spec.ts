@@ -37,7 +37,7 @@ global.my = {
 import { request, showModal } from '../src/api/protocols'
 
 describe('api', () => {
-  test('api-request base', () => {
+  test('api-request base-object-data', () => {
     expect(typeof request.args).toBe('function')
 
     const { header, data } = request.args({
@@ -85,6 +85,20 @@ describe('api', () => {
       name: 'data',
       value: '{"type":"abc"}',
     })
+
+    const fetchRes2 = request.args({
+      url: 'https://www.example.com',
+      method: 'POST',
+      data: [1, { id: 2 }],
+    })
+    expect(fetchRes2.header()).toEqual({
+      name: 'headers',
+      value: { 'content-type': 'application/json' },
+    })
+    expect(fetchRes2.data([1, { id: 2 }])).toEqual({
+      name: 'data',
+      value: '[1,{"id":2}]',
+    })
   })
   test('api-request ding request no body', () => {
     expect(typeof request.args).toBe('function')
@@ -97,9 +111,30 @@ describe('api', () => {
       name: 'headers',
       value: { 'content-type': 'application/json' },
     })
+
+    expect(data(null)).toEqual({
+      name: 'data',
+      value: null,
+    })
     expect(data(undefined)).toEqual({
       name: 'data',
-      value: '{}',
+      value: undefined,
+    })
+    expect(data(1)).toEqual({
+      name: 'data',
+      value: 1,
+    })
+    expect(data('1')).toEqual({
+      name: 'data',
+      value: '1',
+    })
+    expect(data(true)).toEqual({
+      name: 'data',
+      value: true,
+    })
+    expect(data(false)).toEqual({
+      name: 'data',
+      value: false,
     })
   })
 

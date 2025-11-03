@@ -41,6 +41,16 @@ export const parseRpx2UnitOnce = once(
   }
 )
 
+// 获取配置的小程序原生组件
+export function getNativeTags(inputDir?: string, platform?: UniApp.PLATFORM) {
+  if (!inputDir || !platform) {
+    return []
+  }
+  const manifestJson = parseManifestJsonOnce(inputDir)
+  const platformOptions = getPlatformManifestJson(manifestJson, platform)
+  return platformOptions?.nativeTags || []
+}
+
 interface CompilerCompatConfig {
   MODE?: 2 | 3
 }

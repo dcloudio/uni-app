@@ -116,7 +116,8 @@ function initBaseInstance(instance, options) {
     }
     ctx.getOpenerEventChannel = function () {
         {
-            if (my.canIUse('getOpenerEventChannel'))
+            // getOpenerEventChannel 是页面实例方法 https://opendocs.alipay.com/mini/framework/page-detail#getOpenerEventChannel
+            if (my.canIUse('page.getOpenerEventChannel'))
                 return options.mpInstance.getOpenerEventChannel();
         }
         if (!this.__eventChannel__) {
@@ -297,16 +298,6 @@ function parseApp(instance, parseAppOptions) {
     return appOptions;
 }
 function initCreateApp(parseAppOptions) {
-    if (!(process.env.NODE_ENV !== 'production') &&
-        "mp-alipay" === 'mp-weixin' &&
-        isFunction(wx.preloadAssets)) {
-        const protocol = 'https';
-        setTimeout(() => {
-            wx.preloadAssets({
-                data: [{ type: 'image', src: protocol + __UNI_PRELOAD_SHADOW_IMAGE__ }],
-            });
-        }, 3000);
-    }
     return function createApp(vm) {
         return App(parseApp(vm, parseAppOptions));
     };

@@ -2233,7 +2233,7 @@ interface StringConstructor {
         }
      }
    */
-  //(value ?: any) : string;
+  (value ?: any) : string;
   readonly prototype : String;
   /**
      String.fromCharCode() 静态方法返回由指定的 UTF-16 码元序列创建的字符串。

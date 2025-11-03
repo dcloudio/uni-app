@@ -1,10 +1,10 @@
-import { inject, provide, ref, onMounted, onBeforeUnmount } from 'vue'
-import type { Ref, ExtractPropTypes, WritableComputedRef } from 'vue'
+import { inject, onBeforeUnmount, onMounted, provide, ref } from 'vue'
+import type { ExtractPropTypes, Ref, WritableComputedRef } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
-import { UniFormCtx, uniFormKey } from '../form'
+import { type UniFormCtx, uniFormKey } from '../form'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
-import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
+import { type CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
 
 export const uniRadioGroupKey = PolySymbol(__DEV__ ? 'uniCheckGroup' : 'ucg')
 
@@ -72,11 +72,11 @@ function useProvideRadioGroup(
   })
 
   //#if _X_ && !_NODE_JS_
-  // @ts-ignore
+  // @ts-expect-error
   const getFieldsValue = () =>
     fields.find((field) => field.value.radioChecked)?.value.value + ''
   //#else
-  // @ts-ignore
+  // @ts-expect-error
   const getFieldsValue = () =>
     fields.find((field) => field.value.radioChecked)?.value.value
   //#endif

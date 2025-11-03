@@ -114,8 +114,7 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
   let { prop: name, value } = decl
   let result, log
   const normalize = getNormalizeMap(options)[name]
-
-  if (options.type === 'uvue') {
+  if (options.type === 'uvue' && !value.includes('calc')) {
     if (hasCssVar(value)) {
       return {
         value: normalizeCssVar(value),
@@ -160,8 +159,8 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
 function hasCssVar(value: string) {
   return value.includes('var(')
 }
-
-function normalizeCssVar(value: string) {
+export function normalizeCssVar(value: string) {
+  // 目前框架在运行时 initVar 会处理特征值替换为常量
   return value
     .replaceAll(`var(--window-top)`, `CSS_VAR_WINDOW_TOP`)
     .replaceAll(`var(--window-bottom)`, `CSS_VAR_WINDOW_BOTTOM`)

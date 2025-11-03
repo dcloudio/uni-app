@@ -48,11 +48,13 @@ function transform(
   node.each((child) => {
     if (child.type === 'atrule') {
       const body = transform(child, context)
-      const fontFamily = body.fontFamily as string
-      if (fontFamily && '"\''.indexOf(fontFamily[0]) > -1) {
-        body.fontFamily = fontFamily.slice(1, fontFamily.length - 1)
+      if (child.name === 'font-face') {
+        const fontFamily = body.fontFamily as string
+        if (fontFamily && '"\''.indexOf(fontFamily[0]) > -1) {
+          body.fontFamily = fontFamily.slice(1, fontFamily.length - 1)
+        }
+        context['FONT-FACE'].push(body)
       }
-      context['FONT-FACE'].push(body)
     } else if (child.type === 'rule') {
       const body = transform(child, context)
       child.selectors.forEach((selector) => {

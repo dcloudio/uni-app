@@ -1,26 +1,26 @@
 import {
-  ref,
-  onMounted,
-  Ref,
+  type Ref,
   onActivated,
-  onDeactivated,
-  watchEffect,
   onBeforeUnmount,
+  onDeactivated,
+  onMounted,
+  ref,
+  watchEffect,
 } from 'vue'
 import { hasOwn } from '@vue/shared'
 import {
   type EmitEvent,
-  defineBuiltInComponent,
   ResizeSensor,
+  UniElement,
+  defineBuiltInComponent,
   useAttrs,
   useCustomEvent,
-  UniElement,
 } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
-  updateElementStyle,
-  once,
   ON_WEB_INVOKE_APP_SERVICE,
+  once,
+  updateElementStyle,
 } from '@dcloudio/uni-shared'
 import { onWebInvokeAppService } from '../../../service/onWebInvokeAppService'
 
@@ -120,7 +120,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             {...$excludeAttrs.value}
             ref={rootRef}
           >
-            {/* @ts-ignore */}
+            {/* @ts-expect-error */}
             <ResizeSensor onResize={_resize} />
           </uni-web-view>
 

@@ -6,6 +6,7 @@ import {
   createEncryptCssUrlReplacer,
   createShadowImageUrl,
   cssPostPlugin,
+  getUniModulesEncryptType,
   injectAssetPlugin,
   injectCssPlugin,
   injectCssPostPlugin,
@@ -94,9 +95,23 @@ export function createConfigResolved({
               parseVirtualComponentPath(id),
               cssExtname
             )
+          } else if (id.startsWith('uni_modules://')) {
+            return normalizeCssChunkFilename(
+              id.replace('uni_modules://', ''),
+              cssExtname
+            )
           }
         },
         chunkCssCode(filename, cssCode) {
+          // 如果是加密组件，不生成css
+          if (filename.startsWith('uni_modules')) {
+            const pluginId = filename.split('/')[1]
+            const encryptType = getUniModulesEncryptType(pluginId)
+            if (encryptType === 'easycom') {
+              return ''
+            }
+          }
+
           const isX = process.env.UNI_APP_X === 'true'
           cssCode = transformScopedCss(cssCode)
           if (filename === 'app' + cssExtname) {

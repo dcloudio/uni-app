@@ -3,7 +3,6 @@ import { once } from '@dcloudio/uni-shared'
 import {
   type ComputedRef,
   type ExtractPropTypes,
-  type HTMLAttributes,
   type Ref,
   computed,
   onMounted,
@@ -13,6 +12,8 @@ import {
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import {
+  type INPUT_MODE,
+  INPUT_MODES,
   type State,
   emit as fieldEmit,
   props as fieldProps,
@@ -97,6 +98,10 @@ function resolveDigitDecimalPoint(
       }
     }
   }
+}
+
+function isPaste(event: InputEvent) {
+  return event.inputType === 'insertFromPaste'
 }
 
 type Props = ExtractPropTypes<typeof props>
@@ -188,13 +193,30 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           : 0
       return AUTOCOMPLETES[index]
     })
+    const inputmode = computed(() => {
+      if (props.inputmode) {
+        return props.inputmode
+      }
+      if (__X__) {
+        const inputmodeMap = {
+          number: 'numeric',
+          digit: 'decimal',
+        }
+        return Object.values(INPUT_MODES).includes(props.type as INPUT_MODE)
+          ? props.type
+          : inputmodeMap[props.type]
+      }
+    })
     let cache = useCache(props, type)
     let resetCache: ResetCache = { fn: null }
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
       useField(props, rootRef, emit, (event, state) => {
-        const input = event.target as HTMLInputElement
+        if (__X__) {
+          return
+        }
 
+        const input = event.target as HTMLInputElement
         if (type.value === 'number') {
           // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
           if (resetCache.fn) {
@@ -246,17 +268,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           }
 
           // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
-          const maxlength = state.maxlength
-          if (maxlength > 0 && input.value.length > maxlength) {
-            input.value = input.value.slice(0, maxlength)
-            state.value = input.value
-            // 字符长度超出范围不触发 input 事件
-            // 当用户ctrl + v粘贴过长字符时，截断后的input.value 和原来的输入框值不相等时，需要触发input事件
-            const modelValue =
-              props.modelValue !== undefined && props.modelValue !== null
-                ? props.modelValue.toString()
-                : ''
-            return modelValue !== input.value
+          if (
+            state.maxlength > 0 &&
+            input.value.length > state.maxlength &&
+            !isPaste(event as InputEvent)
+          ) {
+            input.value = cache.value = state.value
+            return false
           }
         }
       })
@@ -266,6 +284,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         if (props.type === 'number' && !(cache.value === '-' && value === '')) {
           cache.value = value.toString()
         }
+      }
+    )
+    watch(
+      () => props.maxlength,
+      (length) => {
+        length = parseInt(length as any, 10)
+        const realValue = state.value.slice(0, length)
+        realValue !== state.value && (state.value = realValue)
       }
     )
     const NUMBER_TYPES = ['number', 'digit']
@@ -333,7 +359,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             // v-model 会导致 type 为 number 或 digit 时赋值为 number 类型
             value={state.value}
             onInput={(event: Event) => {
-              state.value = (event.target as HTMLInputElement).value.toString()
+              const value = (event.target as HTMLInputElement).value.toString()
+              if (
+                type.value === 'number' &&
+                state.maxlength > 0 &&
+                value.length > state.maxlength
+              ) {
+                if (isPaste(event as InputEvent)) {
+                  state.value = value.slice(0, state.maxlength)
+                }
+                return
+              }
+              state.value = value
             }}
             disabled={!!props.disabled}
             type={type.value}
@@ -345,7 +382,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             style={props.cursorColor ? { caretColor: props.cursorColor } : {}}
             autocomplete={autocomplete.value}
             onKeyup={onKeyUpEnter}
-            inputmode={props.inputmode as HTMLAttributes['inputmode']}
+            inputmode={inputmode.value}
           />
         )
       return (

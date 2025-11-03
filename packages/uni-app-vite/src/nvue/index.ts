@@ -4,12 +4,12 @@ import {
   uniEasycomPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniStatsPlugin,
   uniUniModulesExtApiPlugin,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniManifestJsonPlugin } from '../plugins/manifestJson'
-import { uniStatsPlugin } from '../plugins/stats'
 import { uniTemplatePlugin } from '../plugins/template'
 import { uniAppNVuePlugin } from './plugin'
 import { uniAppCssPlugin } from './plugins/appCss'

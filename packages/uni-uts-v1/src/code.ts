@@ -535,7 +535,9 @@ export async function parseInterfaceTypes(
       }
     )
   } catch (e) {
-    console.error(parseUTSSyntaxError(e, options.inputDir!))
+    console.error(
+      parseUTSSyntaxError(e, process.env.UNI_INPUT_DIR || options.inputDir!)
+    )
   }
   return parseAstTypes(ast, true)
 }
@@ -861,7 +863,7 @@ async function parseCode(
       types
     )
   } catch (e: any) {
-    // console.error(parseUTSSyntaxError(e, inputDir))
+    // console.error(parseUTSSyntaxError(e, process.env.UNI_INPUT_DIR))
   }
   return []
 }

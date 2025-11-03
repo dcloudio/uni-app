@@ -221,7 +221,7 @@ function parseExtApiInjects(uniModulesDir: string) {
     '',
     uniModulesDir,
     require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-    'uni-ext-api'
+      'uni-ext-api'
     ] || {}
   )
 }
@@ -286,9 +286,12 @@ async function generateExtApiSource({
     const uniModuleConfig = packageJson['uni_modules'] || {}
     if (
       !external.includes(uniModuleName) &&
-      (fs.existsSync(pagesDir) && uniModuleConfig['pages']?.['app-harmony'] !== false ||
-        fs.existsSync(componentsDir) && uniModuleConfig['components']?.['app-harmony'] !== false ||
-        fs.existsSync(customElementsDir) && uniModuleConfig['customElements']?.['app-harmony'] !== false)
+      ((fs.existsSync(pagesDir) &&
+        uniModuleConfig['pages']?.['app-harmony'] !== false) ||
+        (fs.existsSync(componentsDir) &&
+          uniModuleConfig['components']?.['app-harmony'] !== false) ||
+        (fs.existsSync(customElementsDir) &&
+          uniModuleConfig['customElements']?.['app-harmony'] !== false))
     ) {
       continue
     }

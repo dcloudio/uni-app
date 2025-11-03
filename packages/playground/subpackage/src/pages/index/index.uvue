@@ -7,13 +7,16 @@
     </view>
 </template>
 <script>
-    export default {
-        data () {
-            return {}
-        },
-        methods: {
-        }
+export default {
+    data() {
+        return {}
+    },
+    methods: {
     }
+}
 </script>
 <style>
+.test {
+    background-color: red;
+}
 </style>

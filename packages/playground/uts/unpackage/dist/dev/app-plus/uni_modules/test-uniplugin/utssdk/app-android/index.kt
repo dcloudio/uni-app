@@ -23,7 +23,7 @@ interface IUser {
 }
 val `default` = UTSAndroid.getResourcePath("uni_modules/test-uniplugin/static/logo.png")
 typealias ShowToast = (msg: String) -> Unit
-val test1 = arrayOf(1, 2, 3)
+val test__1 = arrayOf(1, 2, 3)
 open class User : IUser {
     open fun login(name: String, pwd: String): UTSPromise<Unit> {
         return wrapUTSPromise(suspend {

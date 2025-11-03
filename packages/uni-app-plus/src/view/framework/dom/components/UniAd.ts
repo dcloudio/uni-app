@@ -1,4 +1,5 @@
 import type { UniNodeJSON } from '@dcloudio/uni-shared'
+import '../../../../../style/ad.css'
 import Ad from '../../../components/ad'
 
 import { UniComponent } from './UniComponent'

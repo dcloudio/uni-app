@@ -427,9 +427,9 @@ interface UTSAndroid {
 
 
   /**
-     获取资源文件的原生路径。
-     @param resourceName 资源文件相对于工程的绝对路径, 如：“/static/logo.png”
-     @return 该资源在原生目录下的路径
+     获取资源文件的原生平台路径。
+     @param resourceName 资源文件相对于项目的绝对路径, 如：“/static/logo.png”
+     @return 该资源在原生平台的路径
      @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getResourcePath
      @uniPlatform {
         "app": {

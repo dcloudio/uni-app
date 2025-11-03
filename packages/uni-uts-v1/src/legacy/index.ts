@@ -126,9 +126,13 @@ export function generateCodeFrameWithKotlinStacktrace(
     name,
     outputDir
   )
+  //  e: file://uni_modules/test-api/utssdk/app-android/src/index.kt:70:23 Initializer type mismatch: expected 'String', actual 'Int'.
   return generateCodeFrameWithStacktrace(
     stacktrace,
-    /e:\s+(.*):\s+\(([0-9]+),\s+([0-9]+)\):\s+(.*)/g,
+    // kotlin 1.x 的错误格式
+    // /e:\s+(.*):\s+\(([0-9]+),\s+([0-9]+)\):\s+(.*)/g,
+    // kotlin 2.2.0 的错误格式
+    /e:\s+(.*):([0-9]+):([0-9]+)\s+(.*)/g,
     {
       sourceRoot: inputDir,
       sourceMapFilename,

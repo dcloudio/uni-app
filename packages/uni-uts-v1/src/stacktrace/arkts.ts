@@ -5,8 +5,13 @@ import {
   resolveUTSPluginSourceMapFile,
 } from '../sourceMap'
 import {
+  COLORS,
+  type CompileStacktraceOptions,
   type GenerateRuntimeCodeFrameOptions,
+  addConfusingBlock,
   generateCodeFrame,
+  isFormattedErrorString,
+  parseErrorWithRules,
   parseRelativeSourceFile,
   splitRE,
 } from './utils'
@@ -16,7 +21,8 @@ import {
   parseUTSJavaScriptRuntimeStacktrace,
 } from './js'
 import { SPECIAL_CHARS } from '../utils'
-export interface ParseUTSArkTSPluginStacktraceOptions {
+export interface ParseUTSArkTSPluginStacktraceOptions
+  extends CompileStacktraceOptions {
   /**
    * 项目输入目录 = process.env.UNI_INPUT_DIR
    */
@@ -28,6 +34,8 @@ export interface ParseUTSArkTSPluginStacktraceOptions {
 }
 
 const ARKTS_COMPILE_ERROR_RE = /File:\s+(.*):(\d+):(\d+)/
+const NEW_ARKTS_COMPILE_ERROR_RE =
+  /Error Message: (.*). At File:\s+(.*):(\d+):(\d+)/
 // at test (uni_modules/test-error/utssdk/app-harmony/index.ets:2:11)
 const ARKTS_RUNTIME_ERROR_RE =
   /at\s+(?:.*)\s+\((uni_modules\/.*?\.ets):(\d+):(\d+)\)/
@@ -39,30 +47,45 @@ export async function parseUTSArkTSPluginStacktrace(
   stacktrace: string,
   options: ParseUTSArkTSPluginStacktraceOptions
 ) {
-  return parseUTSArkTSStacktrace(
-    'compile',
-    stacktrace,
-    options,
-    ARKTS_COMPILE_ERROR_RE
-  )
+  return parseUTSArkTSStacktrace('compile', stacktrace, options, (lineStr) => {
+    let match = lineStr.match(NEW_ARKTS_COMPILE_ERROR_RE)
+    if (match) {
+      return {
+        msg: match[1],
+        etsFile: match[2],
+        line: match[3],
+        column: match[4],
+      }
+    }
+    match = lineStr.match(ARKTS_COMPILE_ERROR_RE)
+    if (match) {
+      return {
+        etsFile: match[1],
+        line: match[2],
+        column: match[3],
+      }
+    }
+  })
 }
 
 async function parseUTSArkTSStacktrace(
   type: 'compile' | 'runtime',
   stacktrace: string,
   options: ParseUTSArkTSPluginStacktraceOptions,
-  re: RegExp
+  parse: ParseErrorLine
 ) {
   const lines = stacktrace.split(splitRE)
   const res: string[] = []
   const errorMessageLines: string[] = []
   let parsedError = false
+  let colored = false
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     try {
-      const codes = await parseUTSStacktraceLine(line, re, options)
+      const codes = await parseUTSStacktraceLine(line, parse, options)
       if (codes && codes.length) {
         parsedError = true
+        colored = codes[0].startsWith(COLORS.error)
         res.push(...codes)
         if (type === 'runtime') {
           if (errorMessageLines.length) {
@@ -82,26 +105,47 @@ async function parseUTSArkTSStacktrace(
   } else {
     res.push(...errorMessageLines)
   }
+  let errorStr = res.join('\n')
   if (parsedError) {
-    return (
-      SPECIAL_CHARS.ERROR_BLOCK + res.join('\n') + SPECIAL_CHARS.ERROR_BLOCK
-    )
+    errorStr = parseErrorWithRules(errorStr, {
+      language: 'arkts',
+      platform: 'app-harmony',
+    })
+    const result =
+      (colored ? '' : SPECIAL_CHARS.ERROR_BLOCK) +
+      errorStr +
+      SPECIAL_CHARS.ERROR_BLOCK
+    return isFormattedErrorString(errorStr) ? result : addConfusingBlock(result)
   }
-  return res.join('\n')
+  return errorStr
 }
+
+type ParseErrorLineResult = {
+  msg?: string
+  etsFile: string
+  line: string
+  column: string
+}
+
+type ParseErrorLine = (lineStr: string) => ParseErrorLineResult | undefined
 
 async function parseUTSStacktraceLine(
   lineStr: string,
-  re: RegExp,
+  parse: ParseErrorLine,
   options: ParseUTSArkTSPluginStacktraceOptions
 ) {
-  const uniModulesMatches = lineStr.match(re)
-  if (!uniModulesMatches) {
+  const result = parse(lineStr)
+  if (!result) {
     return
   }
-  const lines: string[] = []
-  const [, etsFile, line, column] = uniModulesMatches
 
+  const { msg, etsFile, line, column } = result
+  const lines: string[] = []
+  if (msg) {
+    lines.push(
+      `${COLORS.error}${SPECIAL_CHARS.ERROR_BLOCK}error: ${msg}${COLORS.error}`
+    )
+  }
   // 编译时获取到的是绝对路径
   const filename = isAbsolute(etsFile)
     ? etsFile
@@ -196,10 +240,15 @@ export function parseUTSArkTSRuntimeStacktrace(
   stacktrace: string,
   options: GenerateAppHarmonyArkTSRuntimeCodeFrameOptions
 ) {
-  return parseUTSArkTSStacktrace(
-    'runtime',
-    stacktrace,
-    options,
-    ARKTS_RUNTIME_ERROR_RE
-  )
+  return parseUTSArkTSStacktrace('runtime', stacktrace, options, (lineStr) => {
+    const match = lineStr.match(ARKTS_RUNTIME_ERROR_RE)
+    if (!match) {
+      return
+    }
+    return {
+      etsFile: match[1],
+      line: match[2],
+      column: match[3],
+    }
+  })
 }

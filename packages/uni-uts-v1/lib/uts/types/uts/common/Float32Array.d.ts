@@ -1,4 +1,4 @@
-interface Float32Array {
+interface Float32Arrayy extends TypedArray {
 
   /**
      数组的长度

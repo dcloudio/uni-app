@@ -1,21 +1,21 @@
 import {
+  type Ref,
+  computed,
   defineComponent,
   inject,
   onBeforeUnmount,
-  Ref,
   ref,
-  computed,
   watch,
 } from 'vue'
-import { uniLabelKey, UniLabelCtx } from '../label'
+import { type UniLabelCtx, uniLabelKey } from '../label'
 import { useListeners } from '../../helpers/useListeners'
-import { NVueComponentStyles, createNVueTextVNode } from '../utils'
+import { type NVueComponentStyles, createNVueTextVNode } from '../utils'
 import { radioProps } from '../../components/radio'
 import {
+  type UniRadioGroupCtx,
   uniRadioGroupKey,
-  UniRadioGroupCtx,
 } from '../../components/radio-group'
-import { UniFormCtx, uniFormKey } from '../../components/form'
+import { type UniFormCtx, uniFormKey } from '../../components/form'
 
 const radioStyles: NVueComponentStyles = [
   {

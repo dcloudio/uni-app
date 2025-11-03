@@ -32,6 +32,14 @@ export const ExternalModules: IExternalModule[] = [
     type: 'provider',
   },
   {
+    name: 'uni-oauth-weixin',
+    type: 'provider',
+  },
+  {
+    name: 'uni-share-weixin',
+    type: 'provider',
+  },
+  {
     name: 'uni-payment-wxpay',
     type: 'provider',
   },

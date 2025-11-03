@@ -6,14 +6,17 @@ import {
   homeSystemDialogPages,
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
-import { parseUrl } from '@dcloudio/uni-shared'
+import { ON_HIDE, parseUrl, removeLeadingSlash } from '@dcloudio/uni-shared'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import {
+  SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH,
+  dialogPageTriggerPrevDialogPageLifeCycle,
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
   normalizeRoute,
 } from '@dcloudio/uni-core'
+import { closePreSystemDialogPage } from './utils'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -32,10 +35,10 @@ export const openDialogPage = (
     return null
   }
   const targetRoute = __uniRoutes.find((route) => {
-    return path.indexOf(route.meta.route) !== -1
+    return route.path === path || `/${route.meta.route}` === path
   })
   const dialogPage = new UniDialogPageImpl({
-    route: path.startsWith('/') ? path.substring(1) : path,
+    route: removeLeadingSlash(path),
     options: new UTSJSONObject(query),
     $component: targetRoute!.component,
     getParentPage: () => null,
@@ -58,6 +61,7 @@ export const openDialogPage = (
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1]
       }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE)
       dialogPage.getParentPage = () => parentPage!
       parentPage.getDialogPages().push(dialogPage)
     }
@@ -66,24 +70,24 @@ export const openDialogPage = (
       incrementEscBackPageNum()
     }
   } else {
+    let targetSystemDialogPages: UniDialogPage[] = []
     if (!currentPages.length) {
-      homeSystemDialogPages.push(dialogPage)
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(homeSystemDialogPages)
-      }
+      targetSystemDialogPages = homeSystemDialogPages
     } else {
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1]
       }
+      dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_HIDE)
       dialogPage.getParentPage = () => parentPage!
-      parentPage!.vm.$pageLayoutInstance?.$systemDialogPages.value.push(
-        dialogPage
+      targetSystemDialogPages =
+        parentPage!.vm.$pageLayoutInstance?.$systemDialogPages.value
+    }
+    targetSystemDialogPages.push(dialogPage)
+    if (isSystemActionSheetDialogPage(dialogPage)) {
+      closePreSystemDialogPage(
+        targetSystemDialogPages,
+        SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH
       )
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(
-          parentPage!.vm.$pageLayoutInstance?.$systemDialogPages.value
-        )
-      }
     }
   }
 
@@ -105,15 +109,4 @@ function triggerFailCallback(options: OpenDialogPageOptions, errMsg: string) {
   // @ts-expect-error
   options.fail?.(failOptions)
   options.complete?.(failOptions)
-}
-
-function closePreActionSheet(dialogPages: UniDialogPage[]) {
-  const actionSheets = dialogPages.filter((page): boolean =>
-    isSystemActionSheetDialogPage(page)
-  )
-  if (actionSheets.length > 1) {
-    setTimeout(() => {
-      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1)
-    }, 100)
-  }
 }

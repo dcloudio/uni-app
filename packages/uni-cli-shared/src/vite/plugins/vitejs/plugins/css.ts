@@ -400,6 +400,42 @@ export function cssPostPlugin(
     async renderChunk(_code, chunk, _opts) {
       const id = chunk.facadeModuleId
       if (id) {
+        // 云编译小程序时，只会生成一个chunk（index.module.js），不会动态import，给每个组件产生一个chunk，所以这里需要自行处理组件wxss
+        if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+          if (
+            platform &&
+            platform.startsWith('mp-') &&
+            id.endsWith('index.module.uts')
+          ) {
+            // 第一遍：处理以.uvue、.vue结尾的组件
+            Object.keys(chunk.modules).forEach((id) => {
+              if (id.endsWith('.uvue') || id.endsWith('.vue')) {
+                const filename = chunkCssFilename('uni_modules://' + id)
+                if (filename) {
+                  cssChunks.set(filename, [
+                    ...findCssModuleIds.call(this, id, includeComponentCss),
+                  ])
+                }
+              }
+            })
+            // 第二遍：处理包含vue&type=style的组件，当使用setup时，该chunk的modules没有包含.uvue、.vue结尾的组件，仅包含type=script、type=style的导入
+            Object.keys(chunk.modules).forEach((id) => {
+              if (id.includes('vue&type=style')) {
+                const filename = chunkCssFilename('uni_modules://' + id)
+                if (filename) {
+                  if (!cssChunks.has(filename)) {
+                    cssChunks.set(filename, [
+                      id,
+                      ...findCssModuleIds.call(this, id, includeComponentCss),
+                    ])
+                  }
+                }
+              }
+            })
+          }
+          return null
+        }
+
         const filename = chunkCssFilename(id)
         if (filename) {
           if (
@@ -503,11 +539,13 @@ export function cssPostPlugin(
           inlined: false,
           minify: true,
         })
-        this.emitFile({
-          fileName: filename,
-          type: 'asset',
-          source,
-        })
+        if (source.trim()) {
+          this.emitFile({
+            fileName: filename,
+            type: 'asset',
+            source,
+          })
+        }
       }
     },
   }

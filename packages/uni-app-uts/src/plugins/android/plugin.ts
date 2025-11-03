@@ -6,6 +6,7 @@ import { extend, isString } from '@vue/shared'
 import type { ChangeEvent } from 'rollup'
 import {
   type UniVitePlugin,
+  buildNonTreeShakingUniModules,
   buildUniExtApis,
   emptyDir,
   enableSourceMap,
@@ -13,6 +14,7 @@ import {
   getCurrentCompiledUTSPlugins,
   getUniExtApiProviderRegisters,
   getUniXPagePaths,
+  getWorkers,
   initUTSKotlinAutoImportsOnce,
   isNormalCompileTarget,
   normalizeEmitAssetFileName,
@@ -21,6 +23,7 @@ import {
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
   parseUniModulesArtifacts,
+  parseUniXAppAndroidPackage,
   parseVueRequest,
   resolveMainPathOnce,
   resolveSourceMapPath,
@@ -90,9 +93,11 @@ export function uniAppPlugin(): UniVitePlugin {
 
   let resolvedConfig: ResolvedConfig
 
+  const resolveWorkers = () => getWorkers()
+
   const uniXKotlinCompiler =
     process.env.UNI_APP_X_TSC === 'true'
-      ? resolveUTSCompiler().createUniXKotlinCompilerOnce()
+      ? resolveUTSCompiler().createUniXKotlinCompilerOnce({ resolveWorkers })
       : null
   const changedFiles: { fileName: string; event: ChangeEvent }[] = []
 
@@ -148,7 +153,8 @@ export function uniAppPlugin(): UniVitePlugin {
                 return false
               }
               // android 系统库，三方库，iOS 的库呢？一般不包含.
-              if (source.includes('.')) {
+              // static/logo.png
+              if (source.includes('.') && !source.startsWith('static/')) {
                 return true
               }
               return false
@@ -324,6 +330,7 @@ export function uniAppPlugin(): UniVitePlugin {
       }
       // x 上暂时编译所有uni ext api，不管代码里是否调用了
       await buildUniExtApis()
+      await buildNonTreeShakingUniModules()
       const uniCloudObjectInfo = getUniCloudObjectInfo(uniCloudSpaceList)
       if (uniCloudObjectInfo.length > 0) {
         process.env.UNI_APP_X_UNICLOUD_OBJECT = 'true'
@@ -337,8 +344,9 @@ export function uniAppPlugin(): UniVitePlugin {
         disableSplitManifest: process.env.NODE_ENV !== 'development',
         inputDir: uvueOutputDir,
         outputDir: outputDir,
-        package:
-          'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
+        package: parseUniXAppAndroidPackage(
+          manifestJson.appid || DEFAULT_APPID
+        ),
         sourceMap: enableSourceMap(),
         uni_modules: [...getCurrentCompiledUTSPlugins()],
         pages: getUniXPagePaths(),

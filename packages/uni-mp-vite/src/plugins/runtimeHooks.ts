@@ -1,5 +1,10 @@
 import type { Plugin } from 'vite'
-import { MINI_PROGRAM_PAGE_RUNTIME_HOOKS } from '@dcloudio/uni-shared'
+import {
+  MINI_PROGRAM_PAGE_RUNTIME_HOOKS,
+  ON_SHARE_APP_MESSAGE,
+  ON_SHARE_CHAT,
+  ON_SHARE_TIMELINE,
+} from '@dcloudio/uni-shared'
 import {
   enableSourceMap,
   isUniPageSetupAndTs,
@@ -37,8 +42,11 @@ export function uniRuntimeHooksPlugin(): Plugin {
       if (!matches) {
         return null
       }
-      if (matches.includes('onShareTimeline')) {
-        matches.push('onShareAppMessage')
+      if (
+        matches.includes(ON_SHARE_TIMELINE) ||
+        matches.includes(ON_SHARE_CHAT)
+      ) {
+        matches.push(ON_SHARE_APP_MESSAGE)
       }
       const hooks = new Set<RuntimeHooks>(matches as RuntimeHooks[])
       let flag = 0

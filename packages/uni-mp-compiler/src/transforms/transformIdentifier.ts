@@ -13,6 +13,7 @@ import {
   ATTR_SET_ELEMENT_ANIMATION,
   ATTR_SET_ELEMENT_STYLE,
   ATTR_VUE_SLOTS,
+  isFilterExpr,
   rewriteExpression,
 } from './utils'
 import {
@@ -52,22 +53,13 @@ import {
   isSimpleExpressionNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
-import { isString, isSymbol } from '@vue/shared'
 import { rewriteId as rewriteIdX } from './transformUniElement'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
     if (node.type === NodeTypes.INTERPOLATION) {
       const content = node.content
-      let isFilter = false
-      if (content.type === NodeTypes.COMPOUND_EXPRESSION) {
-        const firstChild = content.children[0]
-        isFilter =
-          !isString(firstChild) &&
-          !isSymbol(firstChild) &&
-          firstChild.type === NodeTypes.SIMPLE_EXPRESSION &&
-          context.filters.includes(firstChild.content)
-      }
+      let isFilter = isFilterExpr(content, context)
       if (!isFilter) {
         node.content = rewriteExpression(
           createCompoundExpression([

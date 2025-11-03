@@ -5,6 +5,7 @@ import { setCurrentPageMeta } from '@dcloudio/uni-platform'
 export interface SetPageMetaOptions {
   pageStyle?: string
   rootFontSize?: string
+  pageId?: number
   success?: (result: any) => void
   fail?: (result: any) => void
   complete?: (result: any) => void

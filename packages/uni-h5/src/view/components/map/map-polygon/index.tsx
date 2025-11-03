@@ -1,19 +1,19 @@
-import { inject, watch, onUnmounted } from 'vue'
+import { inject, onUnmounted, watch } from 'vue'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 import props from './props'
-import {
-  OnMapReady,
-  Polygon,
-  Props,
-  Point,
+import type {
   CustomEventTrigger,
+  OnMapReady,
+  Point,
+  Polygon,
   PolygonOptions,
+  Props,
 } from './interface'
-import { GoogleMap, QQMap } from '../maps'
+import type { GoogleMap, QQMap } from '../maps'
 import { hexToRgba } from '../../../../helpers/hexToRgba'
 import { getIsAMap, getIsBMap } from '../../../../helpers/location'
-import { QQMaps } from '../maps/qq/types'
-import { GoogleMaps } from '../maps/google/types'
+import type { QQMaps } from '../maps/qq/types'
+import type { GoogleMaps } from '../maps/google/types'
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'MapPolygon',
@@ -46,7 +46,7 @@ export default /*#__PURE__*/ defineSystemComponent({
             if (getIsAMap()) {
               return [longitude, latitude]
             } else if (getIsBMap()) {
-              // @ts-ignore
+              // @ts-expect-error
               return new maps.Point(longitude, latitude)
             } else {
               return new (maps as QQMaps | GoogleMaps).LatLng(
@@ -70,7 +70,7 @@ export default /*#__PURE__*/ defineSystemComponent({
             editable: false,
 
             // 地图实例，即要显示多边形的地图
-            // @ts-ignore
+            // @ts-expect-error
             map,
 
             // 区域填充色
@@ -127,9 +127,9 @@ export default /*#__PURE__*/ defineSystemComponent({
             return
           }
           if (getIsBMap()) {
-            // @ts-ignore
+            // @ts-expect-error
             polygonIns = new maps.Polygon(polygonOptions.path, polygonOptions)
-            // @ts-ignore
+            // @ts-expect-error
             map.addOverlay(polygonIns)
           } else {
             // 说明是新增区域

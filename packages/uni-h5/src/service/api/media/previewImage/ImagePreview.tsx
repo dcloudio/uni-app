@@ -1,19 +1,19 @@
 import {
-  PropType,
-  onMounted,
-  Ref,
-  ref,
-  ExtractPropTypes,
-  watch,
+  type ExtractPropTypes,
+  type PropType,
+  type Ref,
   nextTick,
+  onMounted,
+  ref,
+  watch,
 } from 'vue'
-import { StyleValue } from '@vue/runtime-dom'
+import type { StyleValue } from '@vue/runtime-dom'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 import { Swiper, SwiperItem } from '@dcloudio/uni-components'
 import { usePreventScroll } from '../../../../helpers/usePreventScroll'
 import { useKeyboard } from '../../../../helpers/useKeyboard'
 import ImageView from './ImageView'
-import { createSvgIconVNode, ICON_PATH_CLOSE } from '@dcloudio/uni-core'
+import { ICON_PATH_CLOSE, createSvgIconVNode } from '@dcloudio/uni-core'
 
 const props = {
   urls: {
@@ -128,7 +128,7 @@ export default /*#__PURE__*/ defineSystemComponent({
           <Swiper
             navigation="auto"
             current={indexRef.value}
-            // @ts-ignore
+            // @ts-expect-error
             onChange={onChange}
             indicator-dots={false}
             autoplay={false}

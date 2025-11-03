@@ -29,6 +29,8 @@ import { isUndefined, parseExpr } from '../ast'
 import { genBabelExpr, genExpr } from '../codegen'
 import type { CodegenScope } from '../options'
 import { type TransformContext, isVForScope, isVIfScope } from '../transform'
+import { isString, isSymbol } from '@vue/shared'
+
 // v-i,v-s 不能在 quickapp-webview 中使用，估计是内部处理成了指令之类的
 export const ATTR_VUE_ID = 'u-i'
 export const ATTR_VUE_SLOTS = 'u-s'
@@ -235,4 +237,19 @@ export function removeAttribute(node: ElementNode, name: string) {
   if (index > -1) {
     node.props.splice(index, 1)
   }
+}
+
+export function isFilterExpr(value: ExpressionNode, context: TransformContext) {
+  if (context.filters.length && value.type === NodeTypes.COMPOUND_EXPRESSION) {
+    const firstChild = value.children[0]
+    if (
+      !isString(firstChild) &&
+      !isSymbol(firstChild) &&
+      firstChild.type === NodeTypes.SIMPLE_EXPRESSION &&
+      context.filters.includes(firstChild.content)
+    ) {
+      return true
+    }
+  }
+  return false
 }

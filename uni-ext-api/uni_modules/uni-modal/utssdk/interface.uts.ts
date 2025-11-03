@@ -164,8 +164,8 @@ export interface Uni {
 	    }
 	  });
 	  ```
-	 * @tutorial-uni-app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showmodal
-	 * @tutorial-uni-app-x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showmodal
+	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showmodal
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showmodal
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showmodal
 	 * @uniPlatform
 	  {
@@ -174,8 +174,7 @@ export interface Uni {
 	        "osVer": "5.0",
 	        "uniVer": "√",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "3.91",
-	        "unixUtsPlugin": "3.91"
+	        "unixVer": "3.91"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
@@ -250,8 +249,8 @@ export interface Uni {
 			}
 		});
 	  ```
-	 * @tutorial-uni-app https://uniapp.dcloud.net.cn/api/ui/prompt.html#hidemodal
-	 * @tutorial-uni-app-x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hidemodal
+	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#hidemodal
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hidemodal
 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hidemodal
 	 * @uniPlatform
 	  {
@@ -260,8 +259,7 @@ export interface Uni {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixVer": "4.61"
 	      },
 	      "ios": {
 	        "osVer": "12.0",

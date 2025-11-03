@@ -49,15 +49,21 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
       let selected: number = getTabIndex(path)
       function callback() {
         pages.forEach((page) => closePage(page, 'none'))
+        pages.length = 0
         resolve(undefined)
         setStatusBarStyle()
       }
       if (selected === -1) {
         showWebview(
-          registerPage({ url, path, query, openType: 'reLaunch' }),
+          registerPage({
+            url,
+            path,
+            query,
+            openType: 'reLaunch',
+            onRegistered: callback,
+          }),
           'none',
-          0,
-          callback
+          0
         )
       } else {
         switchSelect(selected, path, query, true, callback)

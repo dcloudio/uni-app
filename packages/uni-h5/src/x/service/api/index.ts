@@ -74,6 +74,8 @@ export * from '../../../service/api/ui/tabBar'
 export * from '../../../service/api/ui/window'
 export * from '../../../service/api/ui/getElementById'
 
+export * from '../../../service/api/plugin/facialVerify'
+
 export * from '../../../service/api/todo/index'
 
 export {
@@ -133,6 +135,7 @@ export * from '../../../service/api/context/createCanvasContextAsync'
 export * from './route/openDialogPage'
 export * from './route/closeDialogPage'
 export * from './pages'
+export * from './worker/createWorker'
 //#endif
 
 // export * from '@dcloudio/uni-ext-api/uni-getLaunchOptionsSync'

@@ -116,7 +116,7 @@ interface Node {
 function processClickEvent(node: Node, triggerItemClick: Function) {
   if (['a', 'img'].includes(node.name) && triggerItemClick) {
     return {
-      onClick: (e: Event) => {
+      onClickCapture: (e: Event) => {
         //#if !_X_
         triggerItemClick(e, { node })
         //#endif

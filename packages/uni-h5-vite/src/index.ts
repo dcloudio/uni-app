@@ -2,8 +2,10 @@ import path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
+  getWorkers,
   isAppVue,
   isEnableConsole,
+  isNormalCompileTarget,
   isVueSfcFile,
   resolveUTSCompiler,
   uniCssScopedPlugin,
@@ -11,7 +13,9 @@ import {
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniJavaScriptWorkersPlugin,
   uniUTSUVueJavaScriptPlugin,
+  uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 import * as vueCompilerDom from '@vue/compiler-dom'
 import * as uniCliShared from '@dcloudio/uni-cli-shared'
@@ -29,14 +33,19 @@ import { uniSetupPlugin } from './plugins/setup'
 import { uniSSRPlugin } from './plugins/ssr'
 import { uniPostSourceMapPlugin } from './plugins/sourcemap'
 import { uniCustomElementPlugin } from './plugins/customElement'
+import { uniApiPlugin } from './plugins/api'
 
 export default () => [
+  ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
+    ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
+    : []),
   ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
   ...(process.env.UNI_APP_X === 'true'
     ? [
         uniDecryptUniModulesPlugin(),
         uniUTSUVueJavaScriptPlugin(),
         resolveUTSCompiler().uts2js({
+          platform: 'web',
           inputDir: process.env.UNI_INPUT_DIR,
           version: process.env.UNI_COMPILER_VERSION,
           sourceMap: enableSourceMap(),
@@ -47,6 +56,12 @@ export default () => [
           modules: {
             vueCompilerDom,
             uniCliShared,
+          },
+          workers: {
+            extname: '.js',
+            resolve: () => {
+              return getWorkers()
+            },
           },
         }),
       ]
@@ -71,4 +86,5 @@ export default () => [
   uniPostVuePlugin(),
   uniPostSourceMapPlugin(),
   uniCustomElementPlugin(),
+  uniApiPlugin(),
 ]

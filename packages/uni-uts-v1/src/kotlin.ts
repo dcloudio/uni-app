@@ -47,7 +47,7 @@ import type { APP_PLATFORM } from './manifest/utils'
 import { restoreDex } from './manifest'
 import {
   type MessageSourceLocation,
-  hbuilderFormatter,
+  hbuilderKotlinCompileErrorFormatter,
 } from './stacktrace/kotlin'
 import { uvueOutDir } from './uvue'
 import { storeIndexKt } from './manifest/dex'
@@ -143,7 +143,7 @@ export async function runKotlinProd(
     return
   }
   if (result.error) {
-    throw parseUTSSyntaxError(result.error, inputDir)
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
   }
 
   const autoImportUniCloud = shouldAutoImportUniCloud()
@@ -262,7 +262,7 @@ export async function runKotlinDev(
     return
   }
   if (result.error) {
-    throw parseUTSSyntaxError(result.error, inputDir)
+    throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR)
   }
   result.type = 'kotlin'
   result.changed = []
@@ -351,7 +351,7 @@ export async function runKotlinDev(
         outputDir,
         resolveSourceMapPath(),
         waiting,
-        hbuilderFormatter
+        hbuilderKotlinCompileErrorFormatter
       )
     )
 
@@ -408,15 +408,11 @@ export async function compileAndroidDex(
 ) {
   const inputDir = process.env.UNI_INPUT_DIR
   const { getKotlincHome, compile: compileDex } = compilerServer
+  const jars = getKotlinCompileJars(isX, depJars, compilerServer)
   const options = {
     pageCount: 0,
-    kotlinc: resolveKotlincArgs(
-      kotlinFiles,
-      jarFile,
-      getKotlincHome(),
-      getKotlinCompileJars(isX, depJars, compilerServer)
-    ),
-    d8: resolveD8Args(jarFile),
+    kotlinc: resolveKotlincArgs(kotlinFiles, jarFile, getKotlincHome(), jars),
+    d8: resolveD8Args(jarFile, jars),
     sourceRoot: inputDir,
     sourceMapPath,
     stderrListener,
@@ -536,6 +532,7 @@ function resolveConfigJsonFile(filename: string) {
 }
 
 const DEFAULT_IMPORTS = [
+  'kotlin.properties.Delegates',
   'kotlinx.coroutines.async',
   'kotlinx.coroutines.CoroutineScope',
   'kotlinx.coroutines.Deferred',
@@ -636,6 +633,7 @@ export async function compile(
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input,
     output: {
+      errorFormat: 'json',
       outFilename: outFilename ? outFilename : undefined,
       isX,
       isSingleThread,
@@ -705,8 +703,16 @@ export function resolveKotlincArgs(
 
 export const D8_DEFAULT_ARGS = ['--min-api', '19']
 
-export function resolveD8Args(filename: string) {
-  return [filename, ...D8_DEFAULT_ARGS, '--output', resolveDexPath(filename)]
+export function resolveD8Args(filename: string, jars: string[]) {
+  return [
+    filename,
+    ...D8_DEFAULT_ARGS,
+    '--output',
+    resolveDexPath(filename),
+    ...jars.flatMap((jar) => {
+      return ['--classpath', jar]
+    }),
+  ]
 }
 
 function resolveLibs(filename: string) {

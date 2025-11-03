@@ -1,23 +1,23 @@
 import {
-  defineComponent,
-  Ref,
-  ref,
+  type ExtractPropTypes,
+  type Ref,
   computed,
-  watch,
+  defineComponent,
+  inject,
   onMounted,
   onUnmounted,
-  inject,
   reactive,
-  ExtractPropTypes,
+  ref,
+  watch,
 } from 'vue'
 import {
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  EmitEvent,
-  CustomEventTrigger,
 } from '../../helpers/useNVueEvent'
 import { getComponentSize } from '../helpers'
-import { NVueComponentStyles, createNVueTextVNode } from '../utils'
-import { uniFormKey, UniFormCtx } from '../../components/form'
+import { type NVueComponentStyles, createNVueTextVNode } from '../utils'
+import { type UniFormCtx, uniFormKey } from '../../components/form'
 import { sliderProps } from '../../components/slider'
 
 const slierStyles: NVueComponentStyles = [

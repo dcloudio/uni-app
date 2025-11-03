@@ -26,6 +26,9 @@ if (__X__) {
     getAndroidApplication() {
       return null
     }
+    getHarmonyAbility() {
+      return null
+    }
   }
   $uniApp = new UniAppImpl()
 }

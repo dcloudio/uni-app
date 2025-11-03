@@ -1,21 +1,21 @@
 import {
+  type Ref,
+  computed,
   defineComponent,
   inject,
   onBeforeUnmount,
-  Ref,
   ref,
-  computed,
   watch,
 } from 'vue'
 import { useListeners } from '../../helpers/useListeners'
-import { NVueComponentStyles, createNVueTextVNode } from '../utils'
+import { type NVueComponentStyles, createNVueTextVNode } from '../utils'
 import { checkboxProps } from '../../components/checkbox'
 import {
+  type UniCheckGroupCtx,
   uniCheckGroupKey,
-  UniCheckGroupCtx,
 } from '../../components/checkbox-group'
-import { UniFormCtx, uniFormKey } from '../../components/form'
-import { uniLabelKey, UniLabelCtx } from '../label'
+import { type UniFormCtx, uniFormKey } from '../../components/form'
+import { type UniLabelCtx, uniLabelKey } from '../label'
 
 const checkboxStyles: NVueComponentStyles = [
   {

@@ -164,6 +164,11 @@ function createDialogPageVNode(
       type: SYSTEM_DIALOG_TAG,
     })),
   ]
+  dialogPages.sort((a, b) => {
+    const aId = a.page.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
+    const bId = b.page.vm?.$basePage?.id || Number.MAX_SAFE_INTEGER
+    return aId - bId
+  })
   return (
     openBlock(true),
     createElementBlock(

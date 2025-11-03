@@ -1,1 +1,0 @@
-{"version":3,"sources":["/Users/fxy/DCloud/test-uts/uni_modules/test-uts2/utssdk/app-android/index.uts"],"sourcesContent":["export function test(): string {\n  return 2;\n}\n"],"names":[],"mappings":";;;;;;AAAO,IAAS,QAAQ,MAAM,CAAC;IAC7B,OAAO,CAAC;AACV"}

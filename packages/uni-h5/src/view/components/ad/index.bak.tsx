@@ -1,10 +1,10 @@
-import { ref, Ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { type Ref, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import {
+  type CustomEventTrigger,
+  type EmitEvent,
   defineBuiltInComponent,
   useAttrs,
   useCustomEvent,
-  EmitEvent,
-  CustomEventTrigger,
 } from '@dcloudio/uni-components'
 
 //#region ad

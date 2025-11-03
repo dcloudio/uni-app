@@ -73,7 +73,11 @@ const compilerOptions = {
     directiveTransforms,
 };
 const COMPONENTS_DIR = 'xhscomponents';
-const customElements = ['post-note-button', 'group-chat-card'];
+const customElements = [
+    'post-note-button',
+    'group-chat-card',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+];
 const miniProgram = {
     class: {
         array: false,
@@ -151,7 +155,7 @@ const options = {
     },
     project: {
         filename: projectConfigFilename,
-        config: ['project.config.json'],
+        config: ['project.config.json', 'project.xhs.json'],
         source,
     },
     template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {

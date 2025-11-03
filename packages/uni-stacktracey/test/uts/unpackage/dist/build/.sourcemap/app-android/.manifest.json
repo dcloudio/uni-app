@@ -1,0 +1,28 @@
+{
+  "version": "1",
+  "env": {
+    "compiler_version": "4.71.2025061206-alpha"
+  },
+  "files": {
+    "pages/index/index.kt": {
+      "class": "GenPagesIndexIndex",
+      "md5": "011d242b71fd1ee127520f3003f59f3a20a17b5d"
+    },
+    "uni_modules/uni-upgrade-center-app/pages/uni-app-x/upgrade-popup.kt": {
+      "md5": "21e6c7741777ada04047d7d26f0733c142aa8b26",
+      "class": "GenUniModulesUniUpgradeCenterAppPagesUniAppXUpgradePopup"
+    },
+    "index.kt": {
+      "md5": "1883dee44eeb220d49d43cd9203a98944e3a987d",
+      "class": ""
+    },
+    "pages/B/B.kt": {
+      "class": "GenPagesBB",
+      "md5": "e23f99e91898a03fda14d48f928d97332fa2627f"
+    },
+    "pages/C/C.kt": {
+      "md5": "39e9789f215aeaa7ec3d1ab0c0f08a33f6da8e66",
+      "class": "GenPagesCC"
+    }
+  }
+}

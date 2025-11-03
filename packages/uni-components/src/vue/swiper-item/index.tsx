@@ -1,5 +1,9 @@
-import { Ref, ref, onMounted, onUnmounted, inject } from 'vue'
-import { AddSwiperContext, SwiperContext, RemoveSwiperContext } from '../swiper'
+import { type Ref, inject, onMounted, onUnmounted, ref } from 'vue'
+import type {
+  AddSwiperContext,
+  RemoveSwiperContext,
+  SwiperContext,
+} from '../swiper'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 

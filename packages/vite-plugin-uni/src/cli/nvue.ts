@@ -1,5 +1,5 @@
 import {
-  getAppCodeSpliting,
+  getAppCodeSplitting,
   getAppRenderer,
   getNVueCompiler,
   getNVueStyleCompiler,
@@ -23,7 +23,7 @@ export function initNVueEnv() {
   if (getNVueStyleCompiler(manifestJson) === 'uni-app') {
     process.env.UNI_NVUE_STYLE_COMPILER = 'uni-app'
   }
-  if (getAppCodeSpliting(manifestJson)) {
-    process.env.UNI_APP_CODE_SPLITING = 'true'
+  if (getAppCodeSplitting(manifestJson)) {
+    process.env.UNI_APP_CODE_SPLITTING = 'true'
   }
 }

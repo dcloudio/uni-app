@@ -65,7 +65,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
             // 首次全量同步
             if (
               options.platform === 'app' ||
-              options.platform === 'app-harmony'
+              options.platform === 'app-harmony' ||
+              options.platform === 'mp-harmony'
             ) {
               process.env.UNI_APP_CHANGED_FILES = ''
             }
@@ -120,7 +121,10 @@ export async function runDev(options: CliOptions & ServerOptions) {
                 )
               )
             }
-          } else if (options.platform === 'app-harmony') {
+          } else if (
+            options.platform === 'app-harmony' ||
+            options.platform === 'mp-harmony'
+          ) {
             const files = process.env.UNI_APP_CHANGED_FILES
             if (files) {
               return output(

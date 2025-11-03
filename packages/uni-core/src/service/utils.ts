@@ -6,6 +6,8 @@ export interface LaunchOptions {
   query: Record<string, any>
   scene: number
   referrerInfo: { appId: string; extraData: Record<string, any> }
+  appScheme?: string
+  appLink?: string
 }
 
 export function createLaunchOptions() {

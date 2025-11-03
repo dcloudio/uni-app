@@ -81,8 +81,8 @@ interface TextDecoder {
                 "osVer": "12.0",
                 "uniVer": "x",
                 "uniUtsPlugin": "x",
-                "unixVer": "4.71",
-                "unixUtsPlugin": "4.71"
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
               },
             "harmony": {
                "osVer": "5.0.2",

@@ -15,6 +15,7 @@ import {
 } from '../../utils'
 import { relativeFile } from '../../resolve'
 import { isVueSfcFile } from '../../vue/utils'
+import { UNI_AD_PLUGINS } from '@dcloudio/uni-shared'
 
 let appJsonCache: Record<string, any> = {}
 const jsonFilesCache = new Map<string, string>()
@@ -108,8 +109,10 @@ export function findChangedJsonFiles(
       findChangedFile(name, jsonsCache.get(name))
     }
   }
-  findChangedFile('app', appJsonCache)
-  findChangedFiles(jsonPagesCache)
+  if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+    findChangedFile('app', appJsonCache)
+    findChangedFiles(jsonPagesCache)
+  }
   findChangedFiles(jsonComponentsCache)
   return changedJsonFiles
 }
@@ -164,7 +167,14 @@ export function findMiniProgramUsingComponents({
   componentsDir?: string
 }): MiniProgramComponents {
   const globalUsingComponents = appJsonCache && appJsonCache.usingComponents
-  const miniProgramComponents: MiniProgramComponents = {}
+  // 避免 uniad 相关插件 被当作 vue 组件处理
+  const enableUniAdPlugin = process.env.UNI_PLATFORM === 'mp-weixin'
+  const miniProgramComponents: MiniProgramComponents = enableUniAdPlugin
+    ? UNI_AD_PLUGINS.reduce((acc, name) => {
+        acc[name] = 'plugin'
+        return acc
+      }, {})
+    : {}
   if (globalUsingComponents) {
     extend(
       miniProgramComponents,

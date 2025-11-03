@@ -60,7 +60,7 @@ public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
         options.complete!(res)
     }
 }
-public func test1(_ callback:@escaping () -> Void) -> String {
+public func test1(_ callback: @escaping () -> Void) -> String {
     console.log(UTSJSONObject([
         "a": "b"
     ]), " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33")
@@ -166,7 +166,7 @@ public class TestByJs : Test {
         return self.test()
     }
 }
-public func testAsyncByJs(utsCompletionHandler:@escaping (_ res: Any?, _ err: Any?) -> Void) {
+public func testAsyncByJs(utsCompletionHandler: @escaping (_ res: Any?, _ err: Any?) -> Void) {
     testAsync().then({
     (res) -> Void in
     utsCompletionHandler(res, nil)
@@ -193,7 +193,7 @@ public class UTSSDKModulesTestUniPluginIndexSwift : NSObject {
     public static func s_test1ByJs(_ callback: UTSCallback) -> String {
         return test1ByJs(callback)
     }
-    public static func s_testAsyncByJs(utsCompletionHandler:@escaping (_ res: Any?, _ err: Any?) -> Void) {
+    public static func s_testAsyncByJs(utsCompletionHandler: @escaping (_ res: Any?, _ err: Any?) -> Void) {
         return testAsyncByJs(utsCompletionHandler: utsCompletionHandler)
     }
     public static func s_showToast1ByJs(_ msg: String) -> Void {

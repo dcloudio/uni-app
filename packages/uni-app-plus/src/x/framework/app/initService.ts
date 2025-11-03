@@ -28,7 +28,6 @@ export function initOn(app: IApp, unregisterApp: () => void) {
             appLink: newIntent.appLink ?? null,
           })
         }
-        // @ts-expect-error add onNewIntent event
         callbackWrapper = app.addEventListener('onNewIntent', handleNewIntent)
 
         const timeout = setTimeout(() => {

@@ -54,6 +54,9 @@ export async function parse(source: string, options: UTSParseOptions = {}) {
   return bindings
     .parse(source, toBuffer(options))
     .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
 }
 
 export async function toKotlin(options: UTSOptions): Promise<UTSResult> {
@@ -64,6 +67,9 @@ export async function toKotlin(options: UTSOptions): Promise<UTSResult> {
   return bindings
     .toKotlin(toBuffer(kotlinOptions))
     .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
 }
 
 export async function bundleKotlin(
@@ -104,6 +110,9 @@ export async function bundleSwift(
   return bindings
     .bundleSwift(toBuffer(bundleOptions))
     .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
 }
 
 export async function toArkTS(options: UTSOptions): Promise<UTSResult> {
@@ -129,6 +138,9 @@ export async function bundleArkTS(
   return bindings
     .bundleArkTS(toBuffer(bundleOptions))
     .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
 }
 
 function toBuffer(t: any): Buffer {

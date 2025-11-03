@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useCurrentPageId } from '@dcloudio/uni-core'
 import { withWebEvent } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '../../helpers/component'

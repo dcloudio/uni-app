@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import type { OutputAsset } from 'rollup'
-import { ASSETS_INLINE_LIMIT } from '@dcloudio/uni-cli-shared'
+import { ASSETS_INLINE_LIMIT, uniStatsPlugin } from '@dcloudio/uni-cli-shared'
 import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 import { options } from './options'
 
@@ -44,4 +44,8 @@ const uniMiniProgramHarmonyPlugin: Plugin = {
   },
 }
 
-export default [uniMiniProgramHarmonyPlugin, ...initMiniProgramPlugin(options)]
+export default [
+  uniMiniProgramHarmonyPlugin,
+  ...initMiniProgramPlugin(options),
+  uniStatsPlugin(),
+]

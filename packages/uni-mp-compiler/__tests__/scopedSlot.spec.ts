@@ -17,6 +17,29 @@ describe('compiler: transform scoped slots', () => {
 }`
     )
   })
+  test('default slot + v-if', () => {
+    assert(
+      `<view><slot v-if="ok" :item="item"/></view>`,
+      `<view><block wx:if="{{a}}"><slot name="d"/><slot/></block></view>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.ok }, _ctx.ok ? { b: _r("d", { item: _ctx.item }) } : {})
+}`
+    )
+    assert(
+      `<view><text v-if="ok">123</text><slot v-else-if="ok2" :item="item"/></view>`,
+      `<view><text wx:if="{{a}}">123</text><block wx:elif="{{b}}"><slot name="d"/><slot/></block></view>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.ok }, _ctx.ok ? {} : _ctx.ok2 ? { c: _r("d", { item: _ctx.item }) } : {}, { b: _ctx.ok2 })
+}`
+    )
+    assert(
+      `<view><text v-if="ok">123</text><slot v-else :item="item"/></view>`,
+      `<view><text wx:if="{{a}}">123</text><block wx:else><slot name="d"/><slot/></block></view>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.ok }, _ctx.ok ? {} : { b: _r("d", { item: _ctx.item }) })
+}`
+    )
+  })
   test('named slots', () => {
     assert(
       `<view><slot name="header" :item="item" :index="index"/></view>`,

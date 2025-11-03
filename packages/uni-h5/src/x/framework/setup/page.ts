@@ -1,19 +1,10 @@
 import safeAreaInsets from 'safe-area-insets'
-import {
-  type ComponentInternalInstance,
-  type ComponentPublicInstance,
-  markRaw,
-  watchEffect,
-} from 'vue'
-import {
-  dialogPageTriggerParentHide,
-  getCurrentPage,
-  initPageVm,
-} from '@dcloudio/uni-core'
+import { type ComponentPublicInstance, markRaw, watchEffect } from 'vue'
+import { getCurrentPage, initPageVm } from '@dcloudio/uni-core'
 import {
   ON_REACH_BOTTOM_DISTANCE,
-  invokeArrayFns,
   normalizeTitleColor,
+  removeLeadingSlash,
 } from '@dcloudio/uni-shared'
 import { handleBeforeEntryPageRoutes } from '../../../service/api/route/utils'
 
@@ -210,6 +201,12 @@ class UniPageImpl implements UniPage {
   getDialogPages(): UniPage[] {
     return []
   }
+  $getSystemDialogPages(): UniDialogPage[] {
+    return this.vm?.$pageLayoutInstance?.$systemDialogPages?.value || []
+  }
+  __$$getSystemDialogPages(): UniDialogPage[] {
+    return []
+  }
   getAndroidActivity() {
     return null
   }
@@ -338,13 +335,8 @@ export function initXPage(
   }
   const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
-    let targetRoute = route?.path || ''
-    if (targetRoute.startsWith('/')) {
-      targetRoute = targetRoute.substring(1)
-    }
-
     const uniPage = new UniNormalPageImpl({
-      route: targetRoute,
+      route: route?.path ? removeLeadingSlash(route?.path) : '',
       options: new UTSJSONObject(route?.query || {}),
       vm,
     })
@@ -376,6 +368,17 @@ export function initXPage(
     vm.$page = vm.$pageLayoutInstance?.$dialogPage!
     pageInstance.$dialogPage!.vm = vm
     pageInstance.$dialogPage!.$vm = vm
+    // fix dialogPage $basePage.fullPath & $basePage.id
+    vm.$basePage.fullPath = vm.$basePage.path
+    const parentPage = vm.$page.getParentPage()
+    if (parentPage) {
+      if (!parentPage.vm.$dialogPagesNum) {
+        parentPage.vm.$dialogPagesNum = 0
+      }
+      parentPage.vm.$dialogPagesNum++
+      vm.$basePage.id =
+        parentPage.vm.$basePage.id * 10 + parentPage.vm.$dialogPagesNum
+    }
   }
 }
 
@@ -418,20 +421,4 @@ export function decrementEscBackPageNum() {
   if (escBackPageNum === 0) {
     document.removeEventListener('keydown', handleEscKeyPress)
   }
-}
-
-export function triggerDialogPageOnHide(instance: ComponentInternalInstance) {
-  const parentPage = (instance.proxy?.$page as UniPage).getParentPage()
-  const parentPageInstance = parentPage?.vm.$pageLayoutInstance
-  if (parentPageInstance) {
-    const dialogPages = parentPageInstance.$dialogPages.value
-    if (dialogPages.length > 1) {
-      const preDialogPage = dialogPages[dialogPages.length - 2]
-      if (preDialogPage.vm) {
-        const { onHide } = preDialogPage.vm.$
-        onHide && invokeArrayFns(onHide)
-      }
-    }
-  }
-  dialogPageTriggerParentHide(instance.proxy?.$page as UniDialogPage)
 }

@@ -131,18 +131,22 @@ function initOnError() {
             originalConsole.error(err);
         }
     }
-    if (typeof uni.onError === 'function') {
-        uni.onError(onError);
-    }
-    if (typeof uni.onUnhandledRejection === 'function') {
-        uni.onUnhandledRejection(onError);
+    if (typeof uni !== 'undefined') {
+        if (typeof uni.onError === 'function') {
+            uni.onError(onError);
+        }
+        if (typeof uni.onUnhandledRejection === 'function') {
+            uni.onUnhandledRejection(onError);
+        }
     }
     return function offError() {
-        if (typeof uni.offError === 'function') {
-            uni.offError(onError);
-        }
-        if (typeof uni.offUnhandledRejection === 'function') {
-            uni.offUnhandledRejection(onError);
+        if (typeof uni !== 'undefined') {
+            if (typeof uni.offError === 'function') {
+                uni.offError(onError);
+            }
+            if (typeof uni.offUnhandledRejection === 'function') {
+                uni.offUnhandledRejection(onError);
+            }
         }
     };
 }

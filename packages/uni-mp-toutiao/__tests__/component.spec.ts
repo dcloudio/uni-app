@@ -1,5 +1,6 @@
 import { addMiniProgramPageJson } from '@dcloudio/uni-cli-shared'
 import { assert } from './testUtils'
+import { customElements } from '../src/compiler/options'
 
 describe('mp-toutiao: transform component', () => {
   test(`component with v-show`, () => {
@@ -54,6 +55,16 @@ describe('mp-toutiao: transform component', () => {
       {
         filename,
       }
+    )
+  })
+  test(`built-in component`, () => {
+    const code = customElements.map((tag) => `<${tag}/>`).join('')
+    assert(
+      code,
+      code,
+      `(_ctx, _cache) => {
+  return {}
+}`
     )
   })
 })

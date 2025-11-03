@@ -49,7 +49,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
             output: {
               name: 'AppService',
               banner: polyfillCode + restoreGlobalCode,
-              format: process.env.UNI_APP_CODE_SPLITING ? 'amd' : 'iife',
+              format: process.env.UNI_APP_CODE_SPLITTING ? 'amd' : 'iife',
               amd: {
                 autoId: true,
               },

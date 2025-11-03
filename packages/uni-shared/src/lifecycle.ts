@@ -101,6 +101,7 @@ export const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /*#__PURE__*/ (() => {
     onPageScroll: 1,
     onShareAppMessage: 1 << 1,
     onShareTimeline: 1 << 2,
+    onShareChat: 1 << 3,
   } as const
 })()
 

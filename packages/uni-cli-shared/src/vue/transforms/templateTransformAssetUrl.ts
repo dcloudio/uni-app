@@ -32,6 +32,17 @@ export interface AssetURLOptions {
    */
   includeAbsolute?: boolean
   tags?: AssetURLTagConfig
+
+  /**
+   * 将static静态资源转换为绝对路径的函数
+   */
+  resolveStaticAsset?:
+    | ((
+        relativePath: string,
+        context: TransformContext,
+        options: AssetURLOptions
+      ) => string)
+    | null
 }
 
 export const defaultAssetUrlOptions: Required<AssetURLOptions> = {
@@ -44,6 +55,7 @@ export const defaultAssetUrlOptions: Required<AssetURLOptions> = {
     image: ['xlink:href', 'href'],
     use: ['xlink:href', 'href'],
   },
+  resolveStaticAsset: null,
 }
 
 export const normalizeOptions = (
@@ -129,21 +141,33 @@ export const transformAssetUrl: NodeTransform = (
       // 当static相对路径经过vue的transformAssetUrl后，就变成了 import 语句，不会再走到下边的逻辑里
       // 最初的设计，应该是用uni-app的transformAssetUrl来直接替换vue的transformAssetUrl的。
       // 如果后续要替换，需要考虑这个问题
-      if (options.base && attr.value.content[0] === '.' && isStaticAsset) {
-        // explicit base - directly rewrite relative urls into absolute url
-        // to avoid generating extra imports
-        // Allow for full hostnames provided in options.base
-        const base = parseUrl(options.base)
-        const protocol = base.protocol || ''
-        const host = base.host ? protocol + '//' + base.host : ''
-        const basePath = base.path || '/'
+      if (attr.value.content[0] === '.' && isStaticAsset) {
+        // resolveStaticAsset 里边会处理分包、uni_modules里的 static 资源
+        // 为了减少影响范围，目前仅限蒸汽模式的App端使用吧。
+        if (options.resolveStaticAsset) {
+          attr.value.content = options.resolveStaticAsset(
+            attr.value.content,
+            context,
+            options
+          )
+          return
+        }
+        if (options.base) {
+          // explicit base - directly rewrite relative urls into absolute url
+          // to avoid generating extra imports
+          // Allow for full hostnames provided in options.base
+          const base = parseUrl(options.base)
+          const protocol = base.protocol || ''
+          const host = base.host ? protocol + '//' + base.host : ''
+          const basePath = base.path || '/'
 
-        // when packaged in the browser, path will be using the posix-
-        // only version provided by rollup-plugin-node-builtins.
-        attr.value.content =
-          host +
-          (path.posix || path).join(basePath, url.path + (url.hash || ''))
-        return
+          // when packaged in the browser, path will be using the posix-
+          // only version provided by rollup-plugin-node-builtins.
+          attr.value.content =
+            host +
+            (path.posix || path).join(basePath, url.path + (url.hash || ''))
+          return
+        }
       }
 
       // otherwise, transform the url into an import.

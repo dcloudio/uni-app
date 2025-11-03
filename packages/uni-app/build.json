@@ -30,5 +30,39 @@
     "replacements": {
       "__X__": "true"
     }
+  },
+  {
+    "input": {
+      "src/worker/index.ts": ["dist-x/uni-worker.web.js"]
+    },
+    "output": {
+      "format": "iife",
+      "extend": false
+    },
+    "replacements": {
+      "__X__": "true",
+      "__WEB__": "true",
+      "__MP__": "false"
+    },
+    "replaceAfterBundled": {
+      "'use strict';": "'raw js';\n    'use strict';"
+    }
+  },
+  {
+    "input": {
+      "src/worker/index.ts": ["dist-x/uni-worker.mp.js"]
+    },
+    "output": {
+      "format": "iife",
+      "extend": false
+    },
+    "replacements": {
+      "__X__": "true",
+      "__WEB__": "false",
+      "__MP__": "true"
+    },
+    "replaceAfterBundled": {
+      "'use strict';": "'raw js';\n    'use strict';"
+    }
   }
 ]

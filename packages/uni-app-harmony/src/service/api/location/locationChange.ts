@@ -25,9 +25,8 @@ export const startLocationUpdate =
   defineAsyncApi<API_TYPE_START_LOCATION_UPDATE>(
     API_START_LOCATION_UPDATE,
     (options, { resolve, reject }) => {
-      watchId =
-        watchId ||
-        plus.geolocation.watchPosition(
+      const watch = () => {
+        const id = plus.geolocation.watchPosition(
           (res) => {
             started = true
             UniServiceJSBridge.invokeOnCallback(
@@ -49,6 +48,9 @@ export const startLocationUpdate =
             enableHighAccuracy: true,
           }
         )
+        return id === -1 ? watchId : id
+      }
+      watchId = watchId || watch()
       setTimeout(resolve, 100)
     },
     StartLocationUpdateProtocol,
@@ -59,9 +61,8 @@ export const startLocationUpdateBackground =
   defineAsyncApi<API_TYPE_START_LOCATION_UPDATE>(
     'startLocationUpdateBackground',
     (options, { resolve, reject }) => {
-      watchId =
-        watchId ||
-        plus.geolocation.watchPosition(
+      const watch = () => {
+        const id = plus.geolocation.watchPosition(
           (res) => {
             started = true
             UniServiceJSBridge.invokeOnCallback(
@@ -85,6 +86,9 @@ export const startLocationUpdateBackground =
             background: true,
           }
         )
+        return id === -1 ? watchId : id
+      }
+      watchId = watchId || watch()
       setTimeout(resolve, 100)
     }
   )

@@ -144,6 +144,7 @@ const onPullDownRefresh = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_PULL_DO
 const onSaveExitState = 
 /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SAVE_EXIT_STATE, 2 /* HookFlags.PAGE */);
 const onShareTimeline = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_TIMELINE, 2 /* HookFlags.PAGE */);
+const onShareChat = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_CHAT, 2 /* HookFlags.PAGE */);
 const onAddToFavorites = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_ADD_TO_FAVORITES, 2 /* HookFlags.PAGE */);
 const onShareAppMessage = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
 const onNavigationBarButtonTap = /*#__PURE__*/ createLifeCycleHook(uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, 2 /* HookFlags.PAGE */);
@@ -209,6 +210,7 @@ exports.onReady = onReady;
 exports.onResize = onResize;
 exports.onSaveExitState = onSaveExitState;
 exports.onShareAppMessage = onShareAppMessage;
+exports.onShareChat = onShareChat;
 exports.onShareTimeline = onShareTimeline;
 exports.onShow = onShow;
 exports.onTabItemTap = onTabItemTap;

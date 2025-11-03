@@ -69,6 +69,11 @@
       "null"
     ]
   },
+  "uni-getNetworkType": {
+    "offNetworkStatusChange": [
+      "null"
+    ]
+  },
   "uni-keyboard": {
     "hideKeyboard": [
       "null"
@@ -120,6 +125,18 @@
       "null"
     ],
     "showTabBar": [
+      "null"
+    ]
+  },
+  "uni-live-player": {
+    "createLivePlayerContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-live-pusher": {
+    "createLivePusherContext": [
+      null,
       "null"
     ]
   },

@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
-import { iconProps, iconColors } from '../../components/icon'
-import { NVueComponentStyles, createNVueTextVNode } from '../utils'
+import { iconColors, iconProps } from '../../components/icon'
+import { type NVueComponentStyles, createNVueTextVNode } from '../utils'
 
 const iconChars: Record<string, string> = {
   success: '\uEA06',

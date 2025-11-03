@@ -1,6 +1,11 @@
 import { assert } from './testUtils'
 import { customElements } from '../src/compiler/options'
+
 describe('mp-weixin: transform component', () => {
+  beforeEach(() => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+  })
+
   test(`Components start with wx`, () => {
     assert(
       `<WxBtn/>`,
@@ -191,6 +196,22 @@ describe('mp-weixin: transform component', () => {
 }`
     )
   })
+  test('lazy element: movable-view', () => {
+    assert(
+      `<movable-area><movable-view direction="all">drag me</movable-view></movable-area>`,
+      `<movable-area><movable-view direction="all">drag me</movable-view></movable-area>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<movable-area><movable-view :direction="direction">drag me</movable-view></movable-area>`,
+      `<movable-area><block wx:if="{{r0}}"><movable-view direction="{{a}}">drag me</movable-view></block></movable-area>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.direction }
+}`
+    )
+  })
   test('lazy element: scroll-view', () => {
     assert(
       `<scroll-view/>`,
@@ -251,7 +272,7 @@ describe('mp-weixin: transform component', () => {
     assert(
       `<unicloud-db ref="udb"/>`,
       `<unicloud-db class="r" u-r="udb" u-i="2a9ec0b0-0" bind:__l="__l" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[b]}}" change:eA="{{uV.sA}}" eA="{{$eA[b]}}" u-p="{{c||''}}"/>`,
-      `(_ctx, _cache) => {
+      `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _sr('udb', '2a9ec0b0-0'), b: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), c: _p({ id: 'r0-2a9ec0b0' }) }
   return __returned__
 }`,
@@ -265,6 +286,23 @@ describe('mp-weixin: transform component', () => {
     assert(
       `<input>`,
       `<input></input>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
+  test('uniad plugin', () => {
+    assert(
+      `<uniad-plugin adpid="123" unit-id="456"/>`,
+      `<uniad-plugin wx:if="{{r0}}" adpid="123" unit-id="456" u-t="m" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<uniad-plugin-wx adpid="123" unit-id="456"/>`,
+      `<uniad-plugin-wx wx:if="{{r0}}" adpid="123" unit-id="456" u-t="m" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
       `(_ctx, _cache) => {
   return {}
 }`

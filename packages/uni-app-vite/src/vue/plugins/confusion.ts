@@ -25,7 +25,7 @@ export function uniConfusionPlugin(): Plugin {
         build: {
           rollupOptions: {
             output: {
-              format: process.env.UNI_APP_CODE_SPLITING ? 'amd' : 'cjs',
+              format: process.env.UNI_APP_CODE_SPLITTING ? 'amd' : 'cjs',
               manualChunks(id) {
                 if (isConfusionFile(path.relative(inputDir, id))) {
                   return removeExt(APP_CONFUSION_FILENAME)

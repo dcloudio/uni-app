@@ -1,52 +1,58 @@
 <template>
 	<view class="uni-modal_dialog__mask" :class="{ 'uni-modal_dialog__mask__show': showAnim }" >
-		
-		<view class="uni-modal_dialog__container" 
+
+		<view class="uni-modal_dialog__container"
 			id="modal_content"
 			:style="{bottom:inputBottom}"
 			:class="{'uni-modal_dialog__show': showAnim,  'uni-modal_dark__mode': theme == 'dark'}">
 			<!--ios need -->
 			<view class="uni-modal_dialog__container__wrapper" :class="{'uni-modal_dark__mode': theme == 'dark'}">
-				
+
 				<text class="uni-modal_dialog__title__text" :class="{'uni-modal_dark__mode': theme == 'dark'}" v-if="title">
 					{{ title }}
 				</text>
-				
+
 				<view class="uni-modal_dialog__content">
-					
-					<textarea v-if="editable" v-model="content" 
+
+					<textarea v-if="editable" v-model="content"
 						class="uni-modal_dialog__content__textarea"
 						placeholder-class="modalContent_content_edit_placeholder"
-						:class="{ 'uni-modal_dark__mode': theme == 'dark'}" 
-						:adjust-position="false" 
+						:class="{ 'uni-modal_dark__mode': theme == 'dark'}"
+						:adjust-position="false"
 						@blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange"
 						id="textarea_content_input"
 						ref="ref_textarea_content_input"
 						:auto-height="isAutoHeight"
 						:placeholder="placeholderText" />
-						
-					<text v-if="!editable && content.length > 0" class="uni-modal_dialog__content__text">
-						{{ content }}
-					</text>
-					
+
+					<scroll-view v-if="!editable && content.length > 0"
+								class="uni-modal_dialog__content__scrollview"
+								show-scrollbar="true"
+								:style="{maxHeight:maxScrollHeight}"
+								>
+						<text class="uni-modal_dialog__content__scrollview__text">
+							{{ content }}
+						</text>
+					</scroll-view>
+
 				</view>
 
 				<view class="uni-modal_dialog__content__topline" :class="{ 'uni-modal_dark__mode': theme == 'dark'}"></view>
 				<view class="uni-modal_dialog__content__bottom">
-					<view v-if="showCancel" 
-						class="uni-modal_dialog__content__bottom__button" 
+					<view v-if="showCancel"
+						class="uni-modal_dialog__content__bottom__button"
 						:class="{ 'uni-modal_dark__mode': theme == 'dark'}"
-						:hover-class="hoverClassName" 
+						:hover-class="hoverClassName"
 						 @click="handleCancel">
 						<text :style="{ color: cancelColor }"
 							class="uni-modal_dialog__content__bottom__button__text">{{cancelText}}</text>
 					</view>
 					<view v-if="showCancel" class="uni-modal_dialog__content__bottom__splitline"
 						:class="{ 'uni-modal_dark__mode': theme == 'dark'}"></view>
-					<view 
-						class="uni-modal_dialog__content__bottom__button" 
-						:class="{ 'uni-modal_dark__mode': theme == 'dark'}" 
-						:hover-class="hoverClassName" 
+					<view
+						class="uni-modal_dialog__content__bottom__button"
+						:class="{ 'uni-modal_dark__mode': theme == 'dark'}"
+						:hover-class="hoverClassName"
 						@click="handleSure">
 						<text :style="{ color: confirmColor }"
 							class="uni-modal_dialog__content__bottom__button__text__sure">
@@ -93,6 +99,7 @@
 				cancelColor: '#000000',
 				confirmColor: '#4A5E86',
 				inputBottom: '0px',
+				maxScrollHeight: '192px',
 				inputCancelColor: null as string | null,
 				inputConfirmColor: null as string | null,
 				hoverClassName:"uni-modal_dialog__content__bottom__button__hover",
@@ -104,15 +111,15 @@
 
 			}
 		},
-		
+
 		onReady() {
-			
+
 			setTimeout(() => {
 				this.showAnim = true
 			}, 10)
-			
+
 		},
-		
+
 		computed: {
 			cancelText(): string {
 			  if (this.inputCancelText != null) {
@@ -160,12 +167,15 @@
 			},
 		},
 		onLoad(options) {
-			
+
 			/**
 			 * show modal 不需要对内置文案进行i18n适配。（参考微信）
 			 */
 			const systemInfo = uni.getSystemInfoSync()
 			const osLanguage = systemInfo.osLanguage
+			// ios need
+			const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55)
+			this.maxScrollHeight = scrollHeight + "px"
 			/**
 			 * add since 2025-04-03 目前暂不支持设置app language
 			 */
@@ -199,12 +209,12 @@
 			if (appTheme != null) {
 				const osTheme = systemInfo.osTheme??'light'
 				this.theme = ('auto'==appTheme)?osTheme:appTheme
-			} 
+			}
 			this.appThemeChangeCallbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
 				this.theme = res.appTheme
 				this.updateUI()
 			})
-			
+
 			// #endif
 			this.readyEventName = options['readyEventName'] !
 			this.optionsEventName = options['optionsEventName'] !
@@ -235,23 +245,23 @@
 				if (data['cancelText'] != null) {
 					this.inputCancelText = data['cancelText'] as string
 				}
-				
+
 				if (data['confirmColor'] != null) {
 					this.inputConfirmColor = data['confirmColor'] as string
 				}
 				if (data['cancelColor'] != null) {
 					this.inputCancelColor = data['cancelColor'] as string
 				}
-				
+
 				this.updateUI()
-				
+
 			})
 
 			uni.$emit(this.readyEventName, {})
-			
+
 
 		},
-		
+
 		onUnload() {
 			uni.$off(this.optionsEventName, null)
 			uni.$off(this.readyEventName, null)
@@ -261,9 +271,9 @@
 			uni.offAppThemeChange(this.appThemeChangeCallbackId)
 			// #endif
 		},
-		
+
 		onBackPress(_):boolean|null {
-			
+
 			let ret = {
 				cancel : false,
 				confirm : false,
@@ -271,14 +281,14 @@
 			uni.$emit(this.successEventName, JSON.stringify(ret))
 			return false
 		},
-		
+
 		methods: {
 			onInputBlur(e:UniTextareaBlurEvent) {
 				// 退出编辑状态
 				setTimeout(() => {
 					this.inputBottom = '0px';
 				}, 220)
-				
+
 			},
 			onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
 				// 进入编辑状态，设置content 向上偏移键盘高度的 1/2
@@ -288,7 +298,7 @@
 					this.inputBottom = `${calcBottom}px`;
 				}
 			},
-			
+
 			isValidColor(inputColor:string|null){
 				const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 				if(inputColor == null){
@@ -304,7 +314,7 @@
 			 * update ui when theme change.
 			 */
 			updateUI(){
-				
+
 				if (this.isValidColor(this.inputConfirmColor)) {
 					this.confirmColor = this.inputConfirmColor!
 				} else {
@@ -326,18 +336,18 @@
 						this.cancelColor = '#000000'
 					}
 				}
-				
+
 				if(this.theme == "dark"){
 					this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode"
 				}else{
 					this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover"
 				}
-				
+
 			},
-			
+
 			closeModal() {
 				this.showAnim = false
-				setTimeout(() => {		
+				setTimeout(() => {
 					uni.closeDialogPage({
 						dialogPage: this.$page
 					})
@@ -381,11 +391,11 @@
 		transition-property: opacity;
 		opacity: 0;
 	}
-	
+
 	.uni-modal_dialog__mask__show {
 		opacity: 1;
 	}
-	
+
 	/**
 	 * 居中的内容展示区域
 	 */
@@ -402,7 +412,7 @@
 		transition-duration: 0.1s;
 		transition-property: opacity,transform;
 	}
-	
+
 	.uni-modal_dialog__container.uni-modal_dialog__show {
 		opacity: 1;
 		transform: scale(1);
@@ -411,19 +421,19 @@
 	.uni-modal_dialog__container.uni-modal_dark__mode {
 		background-color: #272727;
 	}
-	
+
 	.uni-modal_dialog__container__wrapper {
 		width: 100%;
-		height: 100%; 
+		height: 100%;
 		padding-top: 10px;
 		background-color: white;
 		border-radius: 8px;
 	}
-	
+
 	.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {
 		background-color: #272727;
 	}
-	
+
 	.uni-modal_dialog__title__text {
 		font-size: 16px;
 		font-weight: bold;
@@ -451,25 +461,20 @@
 		padding: 18px;
 	}
 
-	.uni-modal_dialog__content__text {
+	.uni-modal_dialog__content__scrollview {
+		max-height: 192px;
+		margin: 2px;
+		width: 100%;
+	}
+
+
+	.uni-modal_dialog__content__scrollview__text {
 		font-size: 16px;
 		font-weight: normal;
-		margin-top: 2px;
-		margin-left: 2px;
-		margin-right: 2px;
-		margin-bottom: 12px;
 		text-align: center;
 		color: #747474;
-		lines: 6;
 		width: 100%;
-		text-overflow: ellipsis;
-		/* #ifdef WEB */
-		display: -webkit-box;
-		-webkit-line-clamp: 6;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-		word-break: break-word;
-		/* #endif */
+		padding-bottom: 10px;
 	}
 
 	.uni-modal_dialog__content__textarea {
@@ -497,17 +502,17 @@
 	.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {
 		color: #CFCFCF;
 	}
-	
+
 	.uni-modal_dialog__content__topline {
 		width: 100%;
 		height: 0.5px;
 		background-color: #E0E0E0;
 	}
-	
+
 	.uni-modal_dialog__content__topline.uni-modal_dark__mode {
 		background-color: #303030;
 	}
-	
+
 	.uni-modal_dialog__content__bottom {
 		display: flex;
 		width: 100%;

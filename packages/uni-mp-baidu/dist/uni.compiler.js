@@ -89,6 +89,7 @@ const customElements = [
     'talos-na-refresh-control',
     'talos-modal',
     'talos-svg',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const nodeTransforms = [uniCliShared.transformRef, transformFor, uniCliShared.transformMatchMedia];
 const directiveTransforms = {

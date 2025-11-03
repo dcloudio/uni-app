@@ -67,7 +67,7 @@ function createPageFactory(
   return () => {
     if (isVuePageAsyncComponent(component)) {
       return component().then((component) =>
-        setupPage(clonedPageComponent(component))
+        setupPage(clonedPageComponent(component.default || component))
       )
     }
     return setupPage(clonedPageComponent(component))

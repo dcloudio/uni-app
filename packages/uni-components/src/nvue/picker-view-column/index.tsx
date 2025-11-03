@@ -1,19 +1,19 @@
 import {
-  defineComponent,
-  inject,
-  ref,
-  Ref,
-  watch,
-  VNode,
+  type ExtractPropTypes,
+  type Ref,
+  type VNode,
+  type WritableComputedRef,
   computed,
+  defineComponent,
   getCurrentInstance,
+  inject,
   onMounted,
-  ExtractPropTypes,
-  WritableComputedRef,
+  ref,
+  watch,
 } from 'vue'
 import { extend, isString } from '@vue/shared'
-import { Props, GetPickerViewColumn } from '../picker-view'
-import { parseStyleText, getComponentSize } from '../helpers'
+import type { GetPickerViewColumn, Props } from '../picker-view'
+import { getComponentSize, parseStyleText } from '../helpers'
 
 type ScrollOptions = {
   showScrollbar: boolean

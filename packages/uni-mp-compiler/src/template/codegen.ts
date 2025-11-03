@@ -9,6 +9,7 @@ import {
 } from '@dcloudio/uni-shared'
 import {
   type MiniProgramCompilerOptions,
+  createAttributeNode,
   formatMiniProgramEvent,
   getEscaper,
   isAttributeNode,
@@ -153,11 +154,22 @@ export function genNode(
           ) && node.children.length === 0
         // 当存在 <slot name="default" :xxx="xxx"><slot> 时，在后面添加 <slot></slot>，使默认插槽生效
         if (isEmptyDefaultSlot) {
+          const isVIfSlot = isIfElementNode(node)
+          if (isVIfSlot) {
+            context.push(`<block`)
+            genVIfCode(node, context)
+            context.push(`>`)
+            delete (node as any).vIf
+          }
           genSlot(node, context)
-          return genSlot(
+          genSlot(
             extend({}, node, { props: [], children: [], loc: {} }),
             context
           )
+          if (isVIfSlot) {
+            context.push(`</block>`)
+          }
+          return
         }
         return genSlot(node, context)
       } else if (node.tagType === ElementTypes.COMPONENT) {
@@ -344,6 +356,13 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
       }
       return genElement(child, context)
     }
+  } else if (slotProp && node.tag === 'view' && context.isX) {
+    /**
+     * uni-app-x小程序端为了对齐app平台view设置了默认的overflow: hidden样式
+     * 对于slot生成的view节点，这个默认样式大多情况下不符合开发者预期
+     * 在此view节点补充style="overflow: visible"
+     */
+    node.props.push(createAttributeNode('style', 'overflow: visible'))
   }
 
   return genElement(node, context)

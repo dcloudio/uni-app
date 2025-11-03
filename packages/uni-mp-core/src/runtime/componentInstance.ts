@@ -128,7 +128,8 @@ export function initBaseInstance(
       return options.mpInstance.getOpenerEventChannel()
     }
     if (__PLATFORM__ === 'mp-alipay') {
-      if (my.canIUse('getOpenerEventChannel'))
+      // getOpenerEventChannel 是页面实例方法 https://opendocs.alipay.com/mini/framework/page-detail#getOpenerEventChannel
+      if (my.canIUse('page.getOpenerEventChannel'))
         return options.mpInstance.getOpenerEventChannel()
     }
     if (!this.__eventChannel__) {

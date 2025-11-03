@@ -1,23 +1,23 @@
 import {
-  defineComponent,
-  computed,
-  watch,
-  ref,
-  Ref,
-  reactive,
-  VNode,
-  provide,
-  ExtractPropTypes,
   Comment,
+  type ExtractPropTypes,
+  type Ref,
+  type VNode,
+  computed,
+  defineComponent,
   nextTick,
+  provide,
+  reactive,
+  ref,
+  watch,
 } from 'vue'
 import { extend } from '@vue/shared'
 import {
+  type GetPickerViewColumn,
   pickerViewProps,
-  GetPickerViewColumn,
 } from '../../components/pickerView'
 import { flatVNode } from '../../helpers/flatVNode'
-import { useCustomEvent, EmitEvent } from '../../helpers/useNVueEvent'
+import { type EmitEvent, useCustomEvent } from '../../helpers/useNVueEvent'
 
 export type { Props, GetPickerViewColumn }
 const nvuePickerViewProps = extend({}, pickerViewProps, {

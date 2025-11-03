@@ -1,17 +1,17 @@
 import { defineComponent, inject, provide, ref } from 'vue'
 import {
-  CustomEventTrigger,
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  EmitEvent,
 } from '../../helpers/useNVueEvent'
 import {
-  uniCheckGroupKey,
-  UniCheckGroupCtx,
-  UniCheckGroupFieldCtx,
-  CheckBoxGroupProps,
+  type CheckBoxGroupProps,
+  type UniCheckGroupCtx,
+  type UniCheckGroupFieldCtx,
   checkboxGroupProps,
+  uniCheckGroupKey,
 } from '../../components/checkbox-group'
-import { UniFormCtx, uniFormKey } from '../../components/form'
+import { type UniFormCtx, uniFormKey } from '../../components/form'
 
 export default defineComponent({
   name: 'CheckboxGroup',

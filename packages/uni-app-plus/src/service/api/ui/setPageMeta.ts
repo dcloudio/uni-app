@@ -9,6 +9,8 @@ export function setCurrentPageMeta(
   UniServiceJSBridge.invokeViewMethod(
     'setPageMeta',
     options,
-    getPage$BasePage(page).id
+    typeof options.pageId !== 'undefined'
+      ? options.pageId
+      : getPage$BasePage(page).id
   )
 }

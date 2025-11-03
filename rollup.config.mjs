@@ -33,7 +33,7 @@ const configs = []
 
 let buildOptions = require(resolve(`build.json`))
 
-function normalizeOutput (file, output = {}) {
+function normalizeOutput(file, output = {}) {
   return Object.assign(
     {
       file,
@@ -76,7 +76,7 @@ buildOptions.forEach((buildOption) => {
 
 export default configs
 
-function resolveTsconfigJson () {
+function resolveTsconfigJson() {
   const tsconfigJsonPath = resolve('tsconfig.json')
   if (
     fs.existsSync(tsconfigJsonPath)
@@ -88,7 +88,7 @@ function resolveTsconfigJson () {
   return path.resolve(__dirname, 'tsconfig.json')
 }
 
-function parseExternal (external) {
+function parseExternal(external) {
   const parsed = external === false
     ? []
     : Array.isArray(external)
@@ -108,7 +108,7 @@ function parseExternal (external) {
   })
 }
 
-function createConfig (entryFile, output, buildOption) {
+function createConfig(entryFile, output, buildOption) {
   const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
   const tsOptions = {
     check: !process.env.TRANSPILE_ONLY &&
@@ -180,7 +180,7 @@ function createConfig (entryFile, output, buildOption) {
     const replacements = buildOption.replaceAfterBundled
     plugins.push({
       name: 'replace-after-bundled',
-      generateBundle (_options, bundles) {
+      generateBundle(_options, bundles) {
         Object.keys(bundles).forEach((name) => {
           const bundle = bundles[name]
           if (!bundle.code) {
@@ -202,16 +202,16 @@ function createConfig (entryFile, output, buildOption) {
      * importReplacements: [{
      *   module: '@vue/shared',
      *   specifiers: [{
-     *     name: 'isIntergerKey',
+     *     name: 'isIntegerKey',
      *     replaceModule: '@dcloudio/uni-shared', // default is module
-     *     replaceName: 'isIntergerKey', // default is name
+     *     replaceName: 'isIntegerKey', // default is name
      *   }],
      * }]
      */
     const importReplacements = buildOption.importReplacements
     plugins.push({
       name: 'replace-import',
-      transform (code, id) {
+      transform(code, id) {
         if (!id.endsWith('.js')) {
           return
         }
@@ -300,17 +300,20 @@ function createConfig (entryFile, output, buildOption) {
     }
     plugins.push({
       name: 'replace-text',
-      transform (code, id) {
+      transform(code, id) {
         if (!id.endsWith('.js')) {
           return
         }
         let newCode = code
         textReplacements.forEach(textReplacement => {
-          const {
+          let {
             file,
             find,
             replace
           } = textReplacement
+          if (file.startsWith('packages/')) {
+            file = path.resolve(__dirname, file)
+          }
           const fileFull = require.resolve(file)
           if (path.normalize(id) !== path.normalize(fileFull)) {
             return
@@ -350,7 +353,7 @@ function createConfig (entryFile, output, buildOption) {
       buildOption.treeshake === false
         ? false
         : {
-          moduleSideEffects (id) {
+          moduleSideEffects(id) {
             if (id.endsWith('polyfill.ts')) {
               console.log('[WARN]:sideEffects[' + id + ']')
               return true
@@ -361,11 +364,11 @@ function createConfig (entryFile, output, buildOption) {
   }
 }
 
-function createAliasPlugin (buildOption) {
+function createAliasPlugin(buildOption) {
   return alias(buildOption.alias || {})
 }
 
-function createReplacePlugin (buildOption, format) {
+function createReplacePlugin(buildOption, format) {
   const replacements = {
     __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,

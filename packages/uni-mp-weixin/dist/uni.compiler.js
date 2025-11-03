@@ -8,37 +8,6 @@ function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
 
-function getDefaultExportFromCjs (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
-
-var uniad_app_json = function (appJson) {
-  if (!appJson.plugins) {
-    appJson.plugins = {};
-  }
-  if (!appJson.plugins['uni-ad']) {
-    appJson.plugins['uni-ad'] = {
-      version: '1.3.7',
-      provider: 'wxf72d316417b6767f',
-    };
-  }
-  if (!appJson.plugins['coral-adv']) {
-    appJson.plugins['coral-adv'] = {
-      version: '1.0.27',
-      provider: 'wx0e203209e27b1e66',
-    };
-  }
-
-  if (!appJson.usingComponents) {
-    appJson.usingComponents = {};
-  }
-  if (!appJson.usingComponents['uniad-plugin']) {
-    appJson.usingComponents['uniad-plugin'] = 'plugin://uni-ad/ad';
-  }
-};
-
-var uniadAppJson = /*@__PURE__*/getDefaultExportFromCjs(uniad_app_json);
-
 const AD_COMPONENTS = [
     'uniad',
     'ad-rewarded-video',
@@ -61,7 +30,6 @@ function transformAd(node, context) {
     if (AD_COMPONENTS.indexOf(node.tag) > -1) {
         appJsonUniadFlag = true;
         process.env.HAS_WXAD = '1';
-        uniadAppJson(uniCliShared.findJsonFile('app'));
     }
 }
 
@@ -152,7 +120,13 @@ const customElements = [
     'sticky-section',
     'store-product',
     'store-home',
+    'store-gift',
+    'store-coupon',
     'keyboard-accessory',
+    'open-data-list',
+    'open-data-item',
+    'selection',
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const nodeTransforms = [
     uniCliShared.transformRef,
@@ -203,6 +177,7 @@ function getMiniProgramOptions(isX) {
             // iOS 平台需要延迟
             input: [{ name: 'bind', arg: ['type'] }],
             textarea: [{ name: 'on', arg: ['input'] }],
+            'movable-view': [{ name: 'bind', arg: ['direction'] }],
         },
         component: {
             ':host': true,
@@ -257,6 +232,7 @@ const options = {
         subpackages: true,
         plugins: true,
         usingComponents: true,
+        workers: true,
     },
     project: {
         filename: projectConfigFilename,

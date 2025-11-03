@@ -1,4 +1,4 @@
-import { computed, PropType } from 'vue'
+import { type PropType, computed } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 

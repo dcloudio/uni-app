@@ -44,7 +44,6 @@ var IDENTIFIER;
     IDENTIFIER["UTSJSONObject"] = "UTSJSONObject";
     IDENTIFIER["JSON"] = "JSON";
     IDENTIFIER["UTS"] = "UTS";
-    IDENTIFIER["DEFINE_COMPONENT"] = "defineComponent";
     IDENTIFIER["VUE"] = "vue";
     IDENTIFIER["GLOBAL_THIS"] = "globalThis";
     IDENTIFIER["UTS_TYPE"] = "UTSType";
@@ -567,8 +566,26 @@ const UTSJSON = {
             return null;
         }
     },
-    stringify: (value) => {
-        return OriginalJSON.stringify(value);
+    stringify: (value, replacer, space) => {
+        try {
+            if (!replacer) {
+                const visited = new Set();
+                replacer = function (_, v) {
+                    if (typeof v === 'object') {
+                        if (visited.has(v)) {
+                            return null;
+                        }
+                        visited.add(v);
+                    }
+                    return v;
+                };
+            }
+            return OriginalJSON.stringify(value, replacer, space);
+        }
+        catch (error) {
+            console.error(error);
+            return '';
+        }
     },
 };
 
@@ -1067,16 +1084,6 @@ function parseApp(instance, parseAppOptions) {
     return appOptions;
 }
 function initCreateApp(parseAppOptions) {
-    if (!(process.env.NODE_ENV !== 'production') &&
-        "mp-weixin" === 'mp-weixin' &&
-        isFunction(wx.preloadAssets)) {
-        const protocol = 'https';
-        setTimeout(() => {
-            wx.preloadAssets({
-                data: [{ type: 'image', src: protocol + __UNI_PRELOAD_SHADOW_IMAGE__ }],
-            });
-        }, 3000);
-    }
     return function createApp(vm) {
         return App(parseApp(vm));
     };
@@ -1745,12 +1752,49 @@ var parseOptions = /*#__PURE__*/Object.freeze({
     mocks: mocks
 });
 
+function preloadAsset() {
+    if (!(process.env.NODE_ENV !== 'production') && isFunction(wx.preloadAssets)) {
+        const domain = String.fromCharCode(...[
+            99,
+            100,
+            110,
+            49,
+            ...([49, 48, 48, 48] ),
+            46,
+            100,
+            99,
+            108,
+            111,
+            117,
+            100,
+            46,
+            110,
+            101,
+            116,
+            46,
+            99,
+            110,
+        ]);
+        setTimeout(() => {
+            wx.preloadAssets({
+                data: [
+                    {
+                        type: 'image',
+                        src: 'https://' + domain + __UNI_PRELOAD_SHADOW_IMAGE__,
+                    },
+                ],
+            });
+        }, 3000);
+    }
+}
+
 const createApp = initCreateApp();
 const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
 const createPluginApp = initCreatePluginApp();
 const createSubpackageApp = initCreateSubpackageApp();
 {
+    preloadAsset();
     wx.createApp = global.createApp = createApp;
     wx.createPage = createPage;
     wx.createComponent = createComponent;

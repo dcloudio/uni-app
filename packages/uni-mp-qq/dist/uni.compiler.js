@@ -91,6 +91,9 @@ const compilerOptions = {
     nodeTransforms,
 };
 const COMPONENTS_DIR = 'wxcomponents';
+const customElements = [
+    ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+];
 const miniProgram = {
     class: {
         array: true,
@@ -185,7 +188,7 @@ const options = {
             return projectJson;
         },
     },
-    template: Object.assign(Object.assign({}, miniProgram), { filter: {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
             extname: '.qs',
             lang: 'wxs',
             generate(filter, filename) {

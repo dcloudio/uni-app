@@ -83,7 +83,7 @@ export function initUni(
   if (__PLATFORM__ === 'mp-alipay') {
     platform.$emit = $emit
     // @ts-expect-error
-    if (!my.canIUse('getOpenerEventChannel'))
+    if (!my.canIUse('page.getOpenerEventChannel'))
       platform.getEventChannel = getEventChannel
   }
   // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题

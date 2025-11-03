@@ -52,7 +52,7 @@ export function setupXPage(
   uniPage.getElementById = (
     id: string.IDString | string
   ): UniElement | null => {
-    const containerNode = pageVm.$el?._parent
+    const containerNode = pageVm.$el?.parentElement
     if (containerNode == null) {
       console.warn('bodyNode is null')
       return null
@@ -71,13 +71,13 @@ export function setupXPage(
   }
 
   onMounted(() => {
-    const rootElement = pageVm.$el?._parent
+    const rootElement = pageVm.$el?.parentElement
     if (rootElement) {
       rootElement._page = pageVm.$page
     }
   })
   onBeforeUnmount(() => {
-    const rootElement = pageVm.$el?._parent
+    const rootElement = pageVm.$el?.parentElement
     if (rootElement) {
       rootElement._page = null
     }

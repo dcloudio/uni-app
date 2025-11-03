@@ -10,15 +10,18 @@ import {
   dynamicImportPolyfill,
   emptyDir,
   enableSourceMap,
+  getWorkersRootDirs,
   hasJsonFile,
   isCSSRequest,
   isEnableConsole,
   isMiniProgramAssetFile,
   normalizeMiniProgramFilename,
   normalizePath,
+  parseJson,
   parseManifestJsonOnce,
   removeExt,
   resolveMainPathOnce,
+  resolveWorkersRootDir,
 } from '@dcloudio/uni-cli-shared'
 import type { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
@@ -134,12 +137,50 @@ function sourcemapPathTransform(
   )
 }
 
+// 获取子包的插件导出
+function getSubpackagePluginExports(inputDir: string): Record<string, string> {
+  const pagesJsonPath = path.join(inputDir, 'pages.json')
+  const pluginExports: Record<string, string> = {}
+  const pagesJson = parseJson(
+    fs.readFileSync(pagesJsonPath, 'utf8'),
+    true,
+    pagesJsonPath
+  ) as UniApp.PagesJson
+  const subPackages = (
+    pagesJson.subPackages ||
+    pagesJson.subpackages ||
+    []
+  ).filter((pkg) => pkg.root && pkg.plugins)
+
+  for (const pkg of subPackages) {
+    const plugins = Object.values(pkg.plugins!)
+    for (const plugin of plugins) {
+      if (!plugin.export) {
+        continue
+      }
+      const pluginExportFile = path.resolve(inputDir, pkg.root, plugin.export)
+      if (!fs.existsSync(pluginExportFile)) {
+        notFound(pluginExportFile)
+      }
+      pluginExports[removeExt(path.join(pkg.root, plugin.export))] =
+        pluginExportFile
+    }
+  }
+  return pluginExports
+}
+
 function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
   const inputOptions: Record<string, string> = {
     app: resolveMainPathOnce(inputDir),
   }
   if (process.env.UNI_MP_PLUGIN) {
     return inputOptions
+  }
+  if (platform === 'mp-weixin') {
+    const pluginExports = getSubpackagePluginExports(inputDir)
+    Object.keys(pluginExports).forEach((exportPath) => {
+      inputOptions[exportPath] = pluginExports[exportPath]
+    })
   }
   const manifestJson = parseManifestJsonOnce(inputDir)
   const plugins = manifestJson[platform]?.plugins || {}
@@ -184,6 +225,11 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
         const chunkFileName = removeExt(
           normalizePath(path.relative(inputDir, filename))
         )
+        // uni_modules中的workers需要合并到根目录workers目录
+        const workerChunkName = resolveWorkerChunkName(chunkFileName)
+        if (workerChunkName) {
+          return workerChunkName
+        }
         if (
           !chunkFileNameBlackList.includes(chunkFileName) &&
           !hasJsonFile(chunkFileName) // 无同名的page,component
@@ -207,6 +253,17 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
       debugChunk('common/vendor', id)
       return 'common/vendor'
     }
+  }
+}
+
+function resolveWorkerChunkName(chunkFileName: string) {
+  if (
+    chunkFileName.startsWith('uni_modules') &&
+    chunkFileName.includes('/workers/') &&
+    getWorkersRootDirs().some((dir) => chunkFileName.startsWith(dir))
+  ) {
+    const workerRootDir = resolveWorkersRootDir()
+    return `${workerRootDir}/${chunkFileName}`
   }
 }
 
@@ -259,6 +316,18 @@ function createChunkFileNames(
           process.env.UNI_INPUT_DIR,
           parseVirtualComponentPath(id)
         )
+      }
+      if (getWorkersRootDirs().length) {
+        const normalizedId = normalizePath(id)
+        const filename = normalizedId.split('?')[0]
+        const chunkFileName = removeExt(
+          normalizePath(path.relative(inputDir, filename))
+        )
+        // uni_modules中的workers需要合并到根目录workers目录
+        const workerChunkName = resolveWorkerChunkName(chunkFileName)
+        if (workerChunkName) {
+          return workerChunkName + '.js'
+        }
       }
       return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'
     }

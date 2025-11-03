@@ -2,7 +2,7 @@ import { once, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normaliz
 export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared';
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 export { extend, hasOwn, isArray, isFunction, isPlainObject, isString } from '@vue/shared';
-import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
+import { ref, createMountPage, unmountPage, injectHook, queuePostFlushCb, getCurrentGenericInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
 
 /*
  * base64-arraybuffer
@@ -8371,27 +8371,13 @@ function initVueApp(appVm) {
         },
     });
     const appContext = internalInstance.appContext;
+    const mountPage = createMountPage(appContext);
     vueApp = extend(appContext.app, {
         mountPage(pageComponent, pageProps, pageContainer) {
-            const vnode = createVNode(pageComponent, pageProps);
-            // store app context on the root VNode.
-            // this will be set on the root instance on initial mount.
-            vnode.appContext = appContext;
-            vnode.__page_container__ = pageContainer;
-            render(vnode, pageContainer);
-            const publicThis = vnode.component.proxy;
-            publicThis.__page_container__ = pageContainer;
-            return publicThis;
+            return mountPage(pageComponent, pageProps, pageContainer);
         },
         unmountPage: (pageInstance) => {
-            const { __page_container__ } = pageInstance;
-            if (__page_container__) {
-                __page_container__.isUnmounted = true;
-                render(null, __page_container__);
-                delete pageInstance.__page_container__;
-                const vnode = pageInstance.$.vnode;
-                delete vnode.__page_container__;
-            }
+            unmountPage(pageInstance);
         },
     });
 }
@@ -8589,14 +8575,16 @@ function getLaunchOptions() {
 function getEnterOptions() {
     return extend({}, enterOptions);
 }
-function initEnterOptions({ path, query, referrerInfo, }) {
+function initEnterOptions({ path, query, referrerInfo, appScheme, appLink, }) {
     extend(enterOptions, {
         path,
         query: query ? parseQuery(query) : {},
         referrerInfo: referrerInfo || {},
+        appScheme,
+        appLink,
     });
 }
-function initLaunchOptions({ path, query, referrerInfo, }) {
+function initLaunchOptions({ path, query, referrerInfo, appScheme, appLink, }) {
     extend(launchOptions, {
         path,
         query: query ? parseQuery(query) : {},
@@ -8604,6 +8592,8 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         // TODO uni-app x
         channel: plus.runtime.channel,
         launcher: plus.runtime.launcher,
+        appScheme,
+        appLink,
     });
     extend(enterOptions, launchOptions);
     return enterOptions;
@@ -8611,7 +8601,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
 function parseRedirectInfo() {
     const weexPlus = weex.requireModule('plus');
     if (weexPlus.getRedirectInfo) {
-        const { path, query, extraData, userAction, fromAppid } = weexPlus.getRedirectInfo() || {};
+        const { path, query, extraData, userAction, fromAppid, appScheme, appLink, } = weexPlus.getRedirectInfo() || {};
         const referrerInfo = {
             appId: fromAppid,
             extraData: {},
@@ -8624,6 +8614,8 @@ function parseRedirectInfo() {
             query: query ? '?' + query : '',
             referrerInfo,
             userAction,
+            appScheme,
+            appLink,
         };
     }
 }
@@ -12242,34 +12234,39 @@ function createPageNode(pageId, pageOptions, setup) {
     return new UniPageNode(pageId, pageOptions, setup);
 }
 
+const beforeSetupPage = (props, ctx) => {
+    const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
+    if (('production' !== 'production')) {
+        console.log(formatLog(__pagePath, 'setup'));
+    }
+    const instance = getCurrentGenericInstance();
+    const pageVm = instance.proxy;
+    initPageVm(pageVm, __pageInstance);
+    {
+        addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
+        onMounted(() => {
+            nextTick(() => {
+                // onShow被延迟，故onReady也同时延迟
+                invokeHook(pageVm, ON_READY);
+            });
+            // TODO preloadSubPackages
+        });
+        onBeforeUnmount(() => {
+            invokeHook(pageVm, ON_UNLOAD);
+        });
+    }
+};
 function setupPage(component) {
-    const oldSetup = component.setup;
-    component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
-    component.setup = (props, ctx) => {
-        const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
-        if (('production' !== 'production')) {
-            console.log(formatLog(__pagePath, 'setup'));
-        }
-        const instance = getCurrentInstance();
-        const pageVm = instance.proxy;
-        initPageVm(pageVm, __pageInstance);
-        {
-            addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
-            onMounted(() => {
-                nextTick(() => {
-                    // onShow被延迟，故onReady也同时延迟
-                    invokeHook(pageVm, ON_READY);
-                });
-                // TODO preloadSubPackages
-            });
-            onBeforeUnmount(() => {
-                invokeHook(pageVm, ON_UNLOAD);
-            });
-        }
-        if (oldSetup) {
-            return oldSetup(props, ctx);
-        }
-    };
+    if (!component.__vapor) {
+        const oldSetup = component.setup;
+        component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
+        component.setup = (props, ctx) => {
+            beforeSetupPage(props, ctx);
+            if (oldSetup) {
+                return oldSetup(props, ctx);
+            }
+        };
+    }
     return component;
 }
 function initScope(pageId, vm, pageInstance) {
@@ -12319,7 +12316,7 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
 function createPageFactory(component) {
     return () => {
         if (isVuePageAsyncComponent(component)) {
-            return component().then((component) => setupPage(clonedPageComponent(component)));
+            return component().then((component) => setupPage(clonedPageComponent(component.default || component)));
         }
         return setupPage(clonedPageComponent(component));
     };
@@ -12339,12 +12336,14 @@ function initEntry() {
     let entryPageQuery;
     const weexPlus = weex.requireModule('plus');
     if (weexPlus.getRedirectInfo) {
-        const { path, query, referrerInfo } = parseRedirectInfo();
+        const { path, query, referrerInfo, appScheme, appLink } = parseRedirectInfo();
         if (path) {
             entryPagePath = path;
             entryPageQuery = query;
         }
         __uniConfig.referrerInfo = referrerInfo;
+        __uniConfig.appScheme = appScheme;
+        __uniConfig.appLink = appLink;
     }
     else {
         const argsJsonStr = plus.runtime.arguments;
@@ -12774,17 +12773,24 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
         uni.hideLoading();
     }
     if (page.$page.meta.isQuit) {
-        quit();
+        _backWebview(page, quit);
     }
     else if (isDirectPage(page)) {
         reLaunchEntryPage();
     }
     else {
         const { delta, animationType, animationDuration } = args;
-        back(delta, animationType, animationDuration, from);
+        back(delta, animationType, animationDuration);
     }
     return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
+function _backWebview(page, callback) {
+    const webview = plus.webview.getWebviewById(`${page.$page.id}`);
+    if (!page.__uniapp_webview) {
+        return callback(webview);
+    }
+    backWebview(webview, () => callback(webview));
+}
 let firstBackTime = 0;
 function quit() {
     initI18nAppMsgsOnce();
@@ -12832,13 +12838,7 @@ function back(delta, animationType, animationDuration, from) {
         // 前一个页面触发 onShow
         invokeHook(ON_SHOW);
     };
-    const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
-    if (!currentPage.__uniapp_webview || from === 'navigateBack') {
-        return backPage(webview);
-    }
-    backWebview(webview, () => {
-        backPage(webview);
-    });
+    _backWebview(currentPage, backPage);
 }
 
 const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
@@ -13259,45 +13259,49 @@ function subscribeGetLocation() {
 let started = false;
 let watchId = 0;
 const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (options, { resolve, reject }) => {
-    watchId =
-        watchId ||
-            plus.geolocation.watchPosition((res) => {
+    const watch = () => {
+        const id = plus.geolocation.watchPosition((res) => {
+            started = true;
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
+        }, (error) => {
+            if (!started) {
+                reject(error.message);
                 started = true;
-                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
-            }, (error) => {
-                if (!started) {
-                    reject(error.message);
-                    started = true;
-                }
-                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
-                    errMsg: `onLocationChange:fail ${error.message}`,
-                });
-            }, {
-                coordsType: options?.type,
-                enableHighAccuracy: true,
+            }
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+                errMsg: `onLocationChange:fail ${error.message}`,
             });
+        }, {
+            coordsType: options?.type,
+            enableHighAccuracy: true,
+        });
+        return id === -1 ? watchId : id;
+    };
+    watchId = watchId || watch();
     setTimeout(resolve, 100);
 }, StartLocationUpdateProtocol, StartLocationUpdateOptions);
 const startLocationUpdateBackground = defineAsyncApi('startLocationUpdateBackground', (options, { resolve, reject }) => {
-    watchId =
-        watchId ||
-            plus.geolocation.watchPosition((res) => {
+    const watch = () => {
+        const id = plus.geolocation.watchPosition((res) => {
+            started = true;
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
+        }, (error) => {
+            if (!started) {
+                reject(error.message);
                 started = true;
-                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
-            }, (error) => {
-                if (!started) {
-                    reject(error.message);
-                    started = true;
-                }
-                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
-                    errMsg: `onLocationChange:fail ${error.message}`,
-                });
-            }, {
-                coordsType: options?.type,
-                enableHighAccuracy: true,
-                // @ts-expect-error 增加background参数
-                background: true,
+            }
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+                errMsg: `onLocationChange:fail ${error.message}`,
             });
+        }, {
+            coordsType: options?.type,
+            enableHighAccuracy: true,
+            // @ts-expect-error 增加background参数
+            background: true,
+        });
+        return id === -1 ? watchId : id;
+    };
+    watchId = watchId || watch();
     setTimeout(resolve, 100);
 });
 const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
@@ -13346,6 +13350,32 @@ function createWebviewContext(id, componentInstance) {
             },
             stop() {
                 operateWebView(id, pageId, 'stop');
+            },
+            canBack(callback) {
+                operateWebView(id, pageId, 'canBack', {}, (canBack) => callback?.({ canBack }));
+            },
+            canForward(callback) {
+                operateWebView(id, pageId, 'canForward', {}, (canForward) => callback?.({ canForward }));
+            },
+            loadUrl(options) {
+                operateWebView(id, pageId, 'loadUrl', {
+                    url: options.url,
+                    headers: options.headers ?? [],
+                });
+            },
+            loadData(options) {
+                operateWebView(id, pageId, 'loadData', {
+                    data: options.data,
+                    mimeType: options.mimeType ?? 'text/html',
+                    encoding: options.encoding ?? 'UTF-8',
+                    baseUrl: options.baseUrl ?? '',
+                });
+            },
+            getContentHeight(callback) {
+                operateWebView(id, pageId, 'getContentHeight', {}, (height) => callback?.({ height }));
+            },
+            clear() {
+                operateWebView(id, pageId, 'clear', { clearRom: true });
             },
         };
     }
@@ -13597,14 +13627,24 @@ function subscribeWebviewReady(_data, pageId) {
 }
 function onLaunchWebviewReady() {
     // TODO closeSplashscreen
-    const entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
-    const routeOptions = getRouteOptions(entryPagePath);
+    let entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
+    let routeOptions = getRouteOptions(entryPagePath);
+    if (!routeOptions) {
+        if (__uniRoutes.length > 0) {
+            entryPagePath = __uniRoutes[0].path;
+            routeOptions = getRouteOptions(addLeadingSlash(entryPagePath));
+        }
+        else {
+            console.error('未匹配到路由，请检查配置');
+            return;
+        }
+    }
     const args = {
         url: entryPagePath + (__uniConfig.entryPageQuery || ''),
         openType: 'appLaunch',
     };
     const handler = { resolve() { }, reject() { } };
-    if (routeOptions.meta.isTabBar) {
+    if (routeOptions?.meta?.isTabBar) {
         return $switchTab(args, handler);
     }
     return $navigateTo(args, handler);
@@ -13740,11 +13780,13 @@ function initGlobalEvent() {
 
 function initAppLaunch(appVm) {
     injectAppHooks(appVm.$);
-    const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
+    const { entryPagePath, entryPageQuery, referrerInfo, appScheme, appLink } = __uniConfig;
     const args = initLaunchOptions({
         path: entryPagePath,
         query: entryPageQuery,
         referrerInfo: referrerInfo,
+        appScheme,
+        appLink,
     });
     invokeHook(appVm, ON_LAUNCH, args);
     invokeHook(appVm, ON_SHOW, args);

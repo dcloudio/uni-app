@@ -20,6 +20,36 @@ return (): any | null => { return null }
 })"
 `;
 
+exports[`defineProps complex custom props type 1`] = `
+"type TestType = {
+    a?: number,
+    b?: number
+  }
+  type CustomPropsType = {
+    item: TestType
+    items1: TestType[]
+    items2: Array<TestType>
+  }
+  
+export default defineComponent({
+  props: {
+    item: { type: Object as PropType<TestType>, required: true, default: {} as TestType },
+    items1: { type: Array as PropType<TestType[]>, required: true, default: [] as TestType[] },
+    items2: { type: Array as PropType<Array<TestType>>, required: true, default: [] as Array<TestType> }
+  },
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy;
+const _cache = __ins.renderCache;
+
+  const props = __props
+
+return (): any | null => { return null }
+}
+
+})"
+`;
+
 exports[`defineProps custom element retains the props type & default value & production mode 1`] = `
 "interface Props { 
           foo?: number;
@@ -45,7 +75,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps custom element retains the props type & production mode 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   __name: 'app.ce',
   props: {
     foo: { type: Number, required: true }
@@ -64,7 +95,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps defineProps w/ runtime options 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: { foo: String },
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -80,7 +112,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps destructure without enabling reactive destructure 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     foo: { type: Foo, required: true }
   },
@@ -98,7 +131,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps should escape names w/ special symbols 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     "spa ce": { type: Object, required: true },
     "exclamation!mark": { type: Object, required: true },
@@ -143,7 +177,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps w/ TS assertion 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: ['foo'],
   setup(__props) {
 const __ins = getCurrentInstance()!;
@@ -180,7 +215,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps w/ exported interface in normal script 1`] = `
-"export interface Props { x?: number }
+"
+      export interface Props { x?: number }
     
 export default defineComponent({
   __props: Props,
@@ -304,7 +340,7 @@ export default defineComponent({
     objectRef: { type: Object, required: true },
     dateTime: { type: Date, required: true },
     array: { type: Array as PropType<string[]>, required: true },
-    arrayRef: { type: Array<any>, required: true },
+    arrayRef: { type: Array as PropType<Array<any>>, required: true },
     tuple: { type: Array as PropType<[number, number]>, required: true },
     set: { type: Set<string>, required: true },
     literal: { type: String, required: true },
@@ -368,7 +404,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps withDefaults (static) + normal script 1`] = `
-"interface Props {
+"
+      interface Props {
         a?: string;
       }
     
@@ -391,7 +428,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps withDefaults (static) 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     foo: { type: String, required: false, default: 'hi' },
     bar: { type: Number, required: false },
@@ -415,7 +453,8 @@ return (): any | null => { return null }
 `;
 
 exports[`defineProps withDefaults (static) w/ production mode 1`] = `
-"export default defineComponent({
+"
+export default defineComponent({
   props: {
     foo: { type: Function as PropType<() => void>, required: true },
     bar: { type: Boolean, required: true },

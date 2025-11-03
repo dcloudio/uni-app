@@ -96,10 +96,11 @@ export default {
     }
   },
   created () {
-    const page = getCurrentPages()[0]
-    this.$pageVm = page.$vm || page
+    const pages = getCurrentPages()
+    const currentPage = pages[pages.length - 1]
+    this.$pageVm = currentPage.$vm || currentPage
     // #ifdef APP-PLUS
-    this._currentWebview = page.$getAppWebview()
+    this._currentWebview = currentPage.$getAppWebview()
     if (this.enablePullDownRefresh) {
       this.setPullDownRefresh(this._currentWebview, true)
     }
@@ -117,7 +118,7 @@ export default {
       this.rootFontSize,
       this.pageStyle
     ], () => {
-      this.setPageMeta()
+      this.setPageMeta(currentPage.$page.id)
     })
     this.$watch(() => [
       this.backgroundColor,
@@ -146,6 +147,11 @@ export default {
   mounted() {
     this.scrollTop && this.pageScrollTo()
   },
+  // #ifdef H5
+  activated () {
+    this.setPageMeta()
+  },
+  // #endif
   methods: {
     setPullDownRefresh (webview, enabled) {
       webview.setStyle({
@@ -155,12 +161,15 @@ export default {
         }
       })
     },
-    setPageMeta () {
+    setPageMeta (pageId) {
       // h5 和 app-plus 设置 rootFontSize
       // #ifdef H5 || APP-PLUS
-      uni.setPageMeta({
-        pageStyle: this.pageStyle,
-        rootFontSize: this.rootFontSize
+      this.$nextTick(() => {
+        uni.setPageMeta({
+          pageStyle: this.pageStyle,
+          rootFontSize: this.rootFontSize,
+          pageId
+        })
       })
       // #endif
     },

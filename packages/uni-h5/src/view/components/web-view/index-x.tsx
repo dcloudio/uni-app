@@ -1,14 +1,14 @@
-import { ref, onMounted, Ref, watchEffect } from 'vue'
+import { type Ref, onMounted, ref, watchEffect } from 'vue'
 import { hasOwn } from '@vue/shared'
 import {
   type EmitEvent,
+  UniElement,
   defineBuiltInComponent,
   useAttrs,
   useCustomEvent,
-  UniElement,
 } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { once, ON_WEB_INVOKE_APP_SERVICE } from '@dcloudio/uni-shared'
+import { ON_WEB_INVOKE_APP_SERVICE, once } from '@dcloudio/uni-shared'
 import { onWebInvokeAppService } from '../../../service/onWebInvokeAppService'
 
 const Invoke = /*#__PURE__*/ once(() =>

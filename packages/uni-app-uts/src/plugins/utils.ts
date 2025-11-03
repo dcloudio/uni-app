@@ -212,6 +212,7 @@ export function normalizeManifestJson(
       manifest.app = userManifestJson.app
     }
   }
+
   return manifest
 }
 

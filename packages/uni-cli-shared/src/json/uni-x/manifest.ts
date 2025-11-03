@@ -22,3 +22,7 @@ export function parseUniXSplashScreen(
   }
   return false
 }
+
+export function parseUniXAppAndroidPackage(appid: string) {
+  return 'uni.' + appid.replace(/_/g, '')
+}

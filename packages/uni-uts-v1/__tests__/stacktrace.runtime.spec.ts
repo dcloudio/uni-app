@@ -3,6 +3,11 @@ import path from 'path'
 
 import { parseRuntimeStacktrace } from '../src/stacktrace'
 import { normalizePath } from '../src/shared'
+import {
+  createUniXPackageRegExp,
+  normalizeAppid,
+  parseUTSKotlinRuntimeFilename,
+} from '../src/stacktrace/kotlin'
 
 describe('uts:stacktrace:runtime', () => {
   // 添加 beforeAll 来设置 HTTP mock
@@ -334,5 +339,16 @@ at test (uni_modules/test-error/utssdk/app-harmony/index.ets:2:11)`,
         }
       )
     ).toMatchSnapshot()
+  })
+
+  test('parseUTSKotlinRuntimeFilename', async () => {
+    expect(
+      parseUTSKotlinRuntimeFilename(
+        'at uni.UNIXXXXXXX.GenPagesIndexIndex$Companion$setup$1.invoke(index.kt:25)',
+        createUniXPackageRegExp(normalizeAppid('__UNI__XXXXXXX'))
+      )
+    ).toBe(
+      'at uni.UNIXXXXXXX.GenPagesIndexIndex$Companion$setup$1.invoke(at pages/index/index.kt:25)'
+    )
   })
 })

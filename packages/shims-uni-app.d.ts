@@ -111,6 +111,8 @@ declare namespace UniNamespace {
     appVersionCode: string
     darkmode: Boolean | ThemeMode
     themeConfig: ThemeJson
+    appScheme?: string
+    appLink?: string
   }
 
   interface UniRoute {
@@ -125,14 +127,14 @@ declare namespace UniNamespace {
 
   interface PageNavigationBarButton {
     type:
-    | 'none'
-    | 'forward'
-    | 'back'
-    | 'share'
-    | 'favorite'
-    | 'home'
-    | 'menu'
-    | 'close'
+      | 'none'
+      | 'forward'
+      | 'back'
+      | 'share'
+      | 'favorite'
+      | 'home'
+      | 'menu'
+      | 'close'
     color: string
     background?: string
     badgeText?: string
@@ -275,6 +277,10 @@ declare namespace UniNamespace {
   interface PagesJsonSubpackagesOptions {
     root: string
     pages: PagesJsonPageOptions[]
+    plugins?: Record<
+      string,
+      { version: string; provider: string; export?: string; lazy?: boolean }
+    >
   }
 
   interface PagesJsonWindowOptions extends PagesJsonPageOptions {
@@ -386,7 +392,7 @@ declare namespace UniNamespace {
     customize?: boolean
   }
 
-  interface ComponentDescriptor { }
+  interface ComponentDescriptor {}
 
   type OnApiLike = (callback: (result: unknown) => void) => void
   type CallbackFunction = (...args: any[]) => void
@@ -575,6 +581,8 @@ declare class UniNormalPageImpl implements UniPage {
   getParentPage: () => UniPage | null
   getParentPageByJS: () => UniPage | null
   getDialogPages(): UniDialogPage[]
+  $getSystemDialogPages(): UniDialogPage[]
+  __$$getSystemDialogPages(): UniDialogPage[]
   getPageStyle(): UTSJSONObject
   $getPageStyle(): UTSJSONObject
   getPageStyleByJS(): UTSJSONObject
@@ -599,9 +607,14 @@ declare class UniDialogPageImpl implements UniPage {
   innerHeight: number
   pageBody: UniPageBody
   safeAreaInsets: UniSafeAreaInsets
+  readonly width: number
+  readonly height: number
+  readonly statusBarHeight: number
   getParentPage: () => UniPage | null
   getParentPageByJS: () => UniPage | null
   getDialogPages(): UniDialogPage[]
+  $getSystemDialogPages(): UniDialogPage[]
+  __$$getSystemDialogPages(): UniDialogPage[]
   getPageStyle(): UTSJSONObject
   $getPageStyle(): UTSJSONObject
   getPageStyleByJS(): UTSJSONObject
@@ -612,6 +625,9 @@ declare class UniDialogPageImpl implements UniPage {
   getAndroidView(): null
   getIOSView(): null
   getHTMLElement(): null
+  getAndroidActivity: () => Activity | null
+  exitFullscreen(options: ExitFullscreenOptions | null): void
+  createElement(tagName: string): UniElement
   $component: any | null
   $disableEscBack: boolean
   $triggerParentHide: boolean

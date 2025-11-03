@@ -10,6 +10,7 @@ import { transformFont } from '../src/expand/font'
 import { createTransformBox } from '../src/expand/margin'
 import { transformTransition } from '../src/expand/transition'
 import { fillBorderPostion, postionTypes } from './test_utils'
+import { transformFlex } from '../src/expand/flex'
 
 function parseDecl(input: string) {
   return (parse(input).nodes[0] as Rule).nodes[0] as Declaration
@@ -1000,6 +1001,75 @@ describe('nvue-styler: expand', () => {
 }`)
       expect(transformBackground(decl)).toEqual(
         backgrounds[value].map((node) => {
+          return Object.assign({ raws: decl.raws, source: decl.source }, node)
+        })
+      )
+    })
+  })
+  test('transform flex', () => {
+    const cases: Record<string, Record<string, string>[]> = {
+      none: [
+        { type: 'decl', prop: 'flex-grow', value: '0' },
+        { type: 'decl', prop: 'flex-shrink', value: '0' },
+        { type: 'decl', prop: 'flex-basis', value: 'auto' },
+      ],
+      auto: [
+        { type: 'decl', prop: 'flex-grow', value: '1' },
+        { type: 'decl', prop: 'flex-shrink', value: '1' },
+        { type: 'decl', prop: 'flex-basis', value: 'auto' },
+      ],
+      // check
+      initial: [
+        { type: 'decl', prop: 'flex-grow', value: '0' },
+        { type: 'decl', prop: 'flex-shrink', value: '1' },
+        { type: 'decl', prop: 'flex-basis', value: 'auto' },
+      ],
+      '1': [
+        { type: 'decl', prop: 'flex-grow', value: '1' },
+        { type: 'decl', prop: 'flex-shrink', value: '1' },
+        { type: 'decl', prop: 'flex-basis', value: '0%' },
+      ],
+      '2': [
+        { type: 'decl', prop: 'flex-grow', value: '2' },
+        { type: 'decl', prop: 'flex-shrink', value: '1' },
+        { type: 'decl', prop: 'flex-basis', value: '0%' },
+      ],
+      '100px': [
+        { type: 'decl', prop: 'flex-grow', value: '1' },
+        { type: 'decl', prop: 'flex-shrink', value: '1' },
+        { type: 'decl', prop: 'flex-basis', value: '100px' },
+      ],
+      'min-content': [
+        { type: 'decl', prop: 'flex-grow', value: '1' },
+        { type: 'decl', prop: 'flex-shrink', value: '1' },
+        { type: 'decl', prop: 'flex-basis', value: 'min-content' },
+      ],
+      '1 3': [
+        { type: 'decl', prop: 'flex-grow', value: '1' },
+        { type: 'decl', prop: 'flex-shrink', value: '3' },
+        { type: 'decl', prop: 'flex-basis', value: '0%' },
+      ],
+      '1 101px': [
+        { type: 'decl', prop: 'flex-grow', value: '1' },
+        { type: 'decl', prop: 'flex-shrink', value: '1' },
+        { type: 'decl', prop: 'flex-basis', value: '101px' },
+      ],
+      '1 2 30%': [
+        { type: 'decl', prop: 'flex-grow', value: '1' },
+        { type: 'decl', prop: 'flex-shrink', value: '2' },
+        { type: 'decl', prop: 'flex-basis', value: '30%' },
+      ],
+      '1 2 auto': [
+        { type: 'decl', prop: 'flex-grow', value: '1' },
+        { type: 'decl', prop: 'flex-shrink', value: '2' },
+        { type: 'decl', prop: 'flex-basis', value: 'auto' },
+      ],
+    }
+    Object.keys(cases).forEach((value) => {
+      const decl = parseDecl(`.test {\n  flex: ${value}\n}`)
+      const res = transformFlex(decl)
+      expect(res).toEqual(
+        cases[value].map((node) => {
           return Object.assign({ raws: decl.raws, source: decl.source }, node)
         })
       )

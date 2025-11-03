@@ -3,17 +3,22 @@ import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
   enableSourceMap,
+  getWorkers,
   isEnableConsole,
+  isNormalCompileTarget,
   normalizePath,
   resolveSourceMapPath,
   resolveUTSCompiler,
+  resolveWorkersRootDir,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniJavaScriptWorkersPlugin,
   uniSourceMapPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniViteInjectPlugin,
+  uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import {
@@ -42,6 +47,8 @@ export default (options: UniMiniProgramPluginOptions) => {
   if (!options.app.plugins) {
     delete process.env.UNI_MP_PLUGIN
   }
+  // 云编译会使用该环境变量
+  process.env.UNI_MP_GLOBAL = options.global
   const normalizeComponentName = options.template.component?.normalizeName
 
   const sourceMapDir = resolveSourceMapPath(
@@ -50,12 +57,16 @@ export default (options: UniMiniProgramPluginOptions) => {
   )
 
   return [
+    ...(process.env.UNI_APP_X === 'true' && isNormalCompileTarget()
+      ? [uniWorkersPlugin(), uniJavaScriptWorkersPlugin()]
+      : []),
     ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
     ...(process.env.UNI_APP_X === 'true'
       ? [
           uniDecryptUniModulesPlugin(),
           uniUTSUVueJavaScriptPlugin(),
           resolveUTSCompiler().uts2js({
+            platform: process.env.UNI_PLATFORM as any,
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,
             sourceMap: enableSourceMap(),
@@ -66,6 +77,13 @@ export default (options: UniMiniProgramPluginOptions) => {
             modules: {
               vueCompilerDom,
               uniCliShared,
+            },
+            workers: {
+              extname: '.js',
+              rewriteRootDir: resolveWorkersRootDir(),
+              resolve: () => {
+                return getWorkers()
+              },
             },
           }),
         ]
@@ -83,10 +101,17 @@ export default (options: UniMiniProgramPluginOptions) => {
           uniPagesJsonPlugin(options),
         ]),
     uniEntryPlugin(options),
-    uniViteInjectPlugin(
-      'uni:mp-inject',
-      extend({ exclude: [/uni.api.esm/, /uni.mp.esm/] }, options.vite.inject)
-    ),
+    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ? []
+      : [
+          uniViteInjectPlugin(
+            'uni:mp-inject',
+            extend(
+              { exclude: [/uni.api.esm/, /uni.mp.esm/] },
+              options.vite.inject
+            )
+          ),
+        ]),
     uniRenderjsPlugin({ lang: options.template.filter?.lang }),
     uniRuntimeHooksPlugin(),
     uniMiniProgramPlugin(options),

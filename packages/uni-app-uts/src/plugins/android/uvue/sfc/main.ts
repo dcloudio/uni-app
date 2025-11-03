@@ -9,7 +9,13 @@ import { type RawSourceMap, SourceMapConsumer } from 'source-map-js'
 import type { EncodedSourceMap as TraceEncodedSourceMap } from '@jridgewell/trace-mapping'
 import { TraceMap, eachMapping } from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap as GenEncodedSourceMap } from '@jridgewell/gen-mapping'
-import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
+import {
+  GenMapping,
+  addMapping,
+  fromMap,
+  setSourceContent,
+  toEncodedMap,
+} from '@jridgewell/gen-mapping'
 import {
   createResolveErrorMsg,
   createRollupError,
@@ -85,6 +91,7 @@ export async function transformMain(
   } = await genScriptCode(descriptor, scriptOptions)
 
   let templatePreambleCode = ''
+  let templatePreambleMap: RawSourceMap | undefined = undefined
   let templateCode = ''
   let templateMap: RawSourceMap | undefined = undefined
 
@@ -92,19 +99,21 @@ export async function transformMain(
     // template
     const isInline = !!descriptor.scriptSetup
     if (!isInline) {
-      const { code, map, preamble } = processTemplate(
+      const { code, map, preamble, preambleMap } = processTemplate(
         descriptor,
         {
           relativeFilename,
           bindingMetadata: bindingMetadata,
           rootDir: options.root,
           className,
+          sourceMap: options.sourceMap,
         },
         pluginContext
       )
       templateCode = code
       templateMap = map
       templatePreambleCode = preamble || ''
+      templatePreambleMap = preambleMap
     }
   }
 
@@ -126,15 +135,25 @@ export async function transformMain(
 
   let resolvedMap: RawSourceMap | undefined = undefined
   if (options.sourceMap) {
-    if (scriptMap && templateMap) {
+    // 如果开发者的script是空的，会产生一个默认的scriptCode代码，此时需要构造一个scriptMap
+    if (templateMap && (scriptMap || scriptCode)) {
       // if the template is inlined into the main module (indicated by the presence
       // of templateMap), we need to concatenate the two source maps.
+      let gen: GenMapping
+      if (!scriptMap && scriptCode) {
+        gen = new GenMapping({
+          file: descriptor.relativeFilename,
+          sourceRoot: '',
+        })
+        setSourceContent(gen, descriptor.relativeFilename, descriptor.source)
+      } else {
+        gen = fromMap(
+          // version property of result.map is declared as string
+          // but actually it is `3`
+          scriptMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap
+        )
+      }
 
-      const gen = fromMap(
-        // version property of result.map is declared as string
-        // but actually it is `3`
-        scriptMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap
-      )
       const tracer = new TraceMap(
         // same above
         templateMap as Omit<RawSourceMap, 'version'> as TraceEncodedSourceMap
@@ -168,6 +187,20 @@ export async function transformMain(
 
   // handle TS transpilation
   let utsCode = utsOutput.filter(Boolean).join('\n')
+
+  if (templatePreambleCode && templatePreambleMap && pluginContext) {
+    // 尝试解析模板中的import，用于检查错误路径，比如<image src="static/logo.png" />
+    await parseImports(
+      templatePreambleCode,
+      createTryResolve(
+        filename,
+        pluginContext.resolve,
+        templatePreambleMap as RawSourceMap,
+        // 仅需要再解析script中的import，template上边已经加入了
+        (source) => source.includes('/.uvue/') || source.includes('/.tsc/')
+      )
+    )
+  }
 
   const jsCodes = [templatePreambleCode]
 

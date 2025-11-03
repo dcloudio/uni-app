@@ -402,7 +402,7 @@ function parseResponseText(
     try {
       //#if _X_
       // @ts-expect-error
-      res = UTS.JSON.parse(res)
+      res = UTS.JSON.parse(res) || res
       //#else
       res = JSON.parse(res)
       //#endif

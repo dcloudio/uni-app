@@ -1,21 +1,21 @@
 import {
-  defineComponent,
-  ref,
-  onMounted,
-  watch,
+  type ExtractPropTypes,
+  type VNode,
   computed,
+  defineComponent,
+  onMounted,
   reactive,
-  ExtractPropTypes,
-  VNode,
+  ref,
+  watch,
 } from 'vue'
 import { isString } from '@vue/shared'
 import {
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  EmitEvent,
-  CustomEventTrigger,
 } from '../../helpers/useNVueEvent'
 import { getComponentSize } from '../helpers'
-import { NVueComponentStyles } from '../utils'
+import type { NVueComponentStyles } from '../utils'
 import { flatVNode } from '../../helpers/flatVNode'
 import { swiperProps } from '../../components/swiper'
 

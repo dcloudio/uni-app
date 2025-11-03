@@ -38,4 +38,35 @@ describe('compiler: transform hidden', () => {
 }`
     )
   })
+
+  test('v-show', () => {
+    assert(
+      `<view v-show="true"/>`,
+      `<view hidden="{{!true}}"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<view v-show="false"/>`,
+      `<view hidden="{{!false}}"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<view v-show="foo"/>`,
+      `<view hidden="{{!a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.foo }
+}`
+    )
+    assert(
+      `<view v-show="foo | bar"/>`,
+      `<view hidden="{{!a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.foo | _ctx.bar }
+}`
+    )
+  })
 })

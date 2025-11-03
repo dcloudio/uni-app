@@ -9,6 +9,7 @@ import {
   provide,
   reactive,
   ref,
+  renderSlot,
   watch,
 } from 'vue'
 import { _style_picker_view as _style } from './style'
@@ -154,7 +155,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             class="uni-picker-view-wrapper"
             style={styleUniPickerViewWrapper}
           >
-            {slots.default?.()}
+            {renderSlot(slots, 'default')}
           </view>
         </uni-picker-view-element>
       )

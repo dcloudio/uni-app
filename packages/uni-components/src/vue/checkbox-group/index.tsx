@@ -1,11 +1,11 @@
-import { inject, provide, ref, onMounted } from 'vue'
-import type { Ref, ExtractPropTypes, ComputedRef } from 'vue'
+import { inject, onMounted, provide, ref } from 'vue'
+import type { ComputedRef, ExtractPropTypes, Ref } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
-import { UniFormCtx, uniFormKey } from '../form'
+import { type UniFormCtx, uniFormKey } from '../form'
 import {
-  CustomEventTrigger,
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  EmitEvent,
 } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
@@ -75,10 +75,10 @@ function useProvideCheckGroup(
     fields.reduce((res, field) => {
       if (field.value.checkboxChecked) {
         //#if _X_ && !_NODE_JS_
-        // @ts-ignore
+        // @ts-expect-error
         res.push(field.value.value + '')
         //#else
-        // @ts-ignore
+        // @ts-expect-error
         res.push(field.value.value)
         //#endif
       }

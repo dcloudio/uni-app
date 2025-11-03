@@ -7,6 +7,7 @@ import {
   getCurrentInstance,
   onMounted,
   ref,
+  renderSlot,
 } from 'vue'
 
 export const UniFormElement = /* @__PURE__ */ (() =>
@@ -140,7 +141,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     return () => {
       return (
-        <uni-form-element ref={formRef}>{slots.default?.()}</uni-form-element>
+        <uni-form-element ref={formRef}>
+          {renderSlot(slots, 'default')}
+        </uni-form-element>
       )
     }
   },

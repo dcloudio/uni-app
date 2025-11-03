@@ -5768,11 +5768,29 @@ function createScopedSlotInvoker(instance) {
  * @param names
  * @returns
  */
-function dynamicSlot(names) {
+function dynamicSlot(names, key) {
     if (isString(names)) {
-        return dynamicSlotName(names);
+        return normalizeSlotName(names, key);
     }
-    return names.map((name) => dynamicSlotName(name));
+    return names.map((name) => normalizeSlotName(name, key));
+}
+function normalizeSlotName(name, key) {
+    const slotName = dynamicSlotName(name);
+    if (key === undefined) {
+        return slotName;
+    }
+    const instance = getCurrentInstance();
+    let isScopedSlot = false;
+    let parent = instance.parent;
+    while (parent) {
+        const invokers = parent.$ssi;
+        if (invokers && invokers[instance.ctx.$scope._$vueId]) {
+            isScopedSlot = true;
+            break;
+        }
+        parent = parent.parent;
+    }
+    return slotName + (isScopedSlot ? `-${key}` : '');
 }
 
 function setRef(ref, id, opts = {}) {
@@ -5831,7 +5849,7 @@ function setupDevtoolsPlugin() {
 
 const o = (value, key) => vOn(value, key);
 const f = (source, renderItem) => vFor(source, renderItem);
-const d = (names) => dynamicSlot(names);
+const d = (names, key) => dynamicSlot(names, key);
 const r = (name, props, key) => renderSlot(name, props, key);
 const w = (fn, options) => withScopedSlot(fn, options);
 const s = (value) => stringifyStyle(value);

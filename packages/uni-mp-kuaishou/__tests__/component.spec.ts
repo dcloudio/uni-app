@@ -123,4 +123,40 @@ describe('mp-kuaishou: transform component', () => {
 }`
     )
   })
+
+  // test page-meta
+  test('test page-meta component', () => {
+    assert(
+      `<page-meta :scroll-duration="400" root-font-size="16px" />`,
+      `<page-meta scroll-duration="{{400}}" root-font-size="16px"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<page-meta :scroll-duration="400" root-font-size="16px"></page-meta>`,
+      `<page-meta scroll-duration="{{400}}" root-font-size="16px"></page-meta>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
+  // test navigation-bar
+  test('test navigation-bar component', () => {
+    assert(
+      `<navigation-bar :loading="true" title="navigationBar" />`,
+      `<navigation-bar loading="{{true}}" title="navigationBar"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<navigation-bar :loading="true" title="navigationBar"></navigation-bar>`,
+      `<navigation-bar loading="{{true}}" title="navigationBar"></navigation-bar>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
 })
