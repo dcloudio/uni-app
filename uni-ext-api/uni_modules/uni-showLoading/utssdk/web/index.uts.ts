@@ -58,7 +58,8 @@ export const hideLoading: HideLoading = function (
   options: HideLoadingOptions|null
 ) {
 	
-	const currentPage = getCurrentPage() as unknown as UniPage
+	const pages = getCurrentPages()
+	const currentPage = pages[pages.length - 1] as unknown as UniPage
 	if (!currentPage){
 		const res = new HideLoadingFailImpl()
 		options?.fail?.(res)

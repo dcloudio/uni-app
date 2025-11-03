@@ -29813,7 +29813,8 @@ const showLoading$1 = (options) => {
 };
 const hideLoading$1 = function(options) {
   var _a, _b, _c, _d, _e;
-  const currentPage = getCurrentPage();
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
   if (!currentPage) {
     const res2 = new HideLoadingFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
