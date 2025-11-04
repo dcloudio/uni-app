@@ -9,11 +9,10 @@ const RESIZE_SENSOR_CSS = BASE_COMPONENTS_STYLE_PATH + 'resize-sensor.css'
 const REFRESHER_CSS = BASE_COMPONENTS_STYLE_PATH + 'refresher.css'
 
 export const API_DEPS_CSS = (isX: boolean) => {
-  return {
+  const deps_css = {
     showModal: [`${H5_API_STYLE_PATH}modal.css`],
     showToast: [`${H5_API_STYLE_PATH}toast.css`],
     showActionSheet: [`${H5_API_STYLE_PATH}action-sheet.css`],
-    showLoading: [isX ? `${X_BASE_COMPONENTS_STYLE_PATH}loading.css` : ''],
     previewImage: [
       RESIZE_SENSOR_CSS,
       `${BASE_COMPONENTS_STYLE_PATH}swiper.css`,
@@ -34,6 +33,11 @@ export const API_DEPS_CSS = (isX: boolean) => {
       `${BASE_COMPONENTS_STYLE_PATH}/scroll-view.css`,
     ],
   }
+  if (isX) {
+    // @ts-expect-error
+    deps_css.showLoading = [`${X_BASE_COMPONENTS_STYLE_PATH}loading.css`]
+  }
+  return deps_css
 }
 export const COMPONENT_DEPS_CSS = (isX: boolean) => {
   return {
