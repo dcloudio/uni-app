@@ -128,6 +128,7 @@ export const options: UniMiniProgramPluginOptions = {
       titleImage: 'titleImage',
       transparentTitle: 'transparentTitle',
       titlePenetrate: 'titlePenetrate',
+      onReachBottomDistance: 'onReachBottomDistance',
     },
     tabBarOptionsMap: {
       customize: 'customize',
