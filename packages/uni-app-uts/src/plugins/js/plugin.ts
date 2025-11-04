@@ -1,6 +1,5 @@
 import path from 'path'
 import fs from 'fs-extra'
-import type { OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import {
   APP_SERVICE_FILENAME,
@@ -192,23 +191,6 @@ export function createUniAppJsEnginePlugin(
               file
             )
             fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
-            const jsFile = file.replace('.js.map', '.js')
-            const outputChunk = bundle[jsFile] as OutputChunk
-            if (outputChunk) {
-              outputChunk.code = outputChunk.code.replace(
-                `//# sourceMappingURL=${path.basename(file)}`,
-                `//# sourceMappingURL=` +
-                  normalizePath(
-                    path.relative(
-                      path.dirname(
-                        path.resolve(process.env.UNI_OUTPUT_DIR, file)
-                      ),
-                      newSourceMapFileName
-                    )
-                  )
-              )
-            }
-            delete bundle[file]
           }
         })
       },
