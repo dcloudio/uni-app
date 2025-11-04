@@ -20,6 +20,7 @@ const alipayWindowMap = {
   titleImage: 'titleImage',
   transparentTitle: 'transparentTitle',
   titlePenetrate: 'titlePenetrate',
+  onReachBottomDistance: 'onReachBottomDistance',
   barButtonTheme: {
     key: 'navigationBarTextStyle',
     transform: function (value) {
