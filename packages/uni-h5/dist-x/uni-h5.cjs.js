@@ -1017,7 +1017,7 @@ uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unitPrecision
 );
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1077,7 +1077,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1153,7 +1153,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1210,7 +1210,7 @@ const props$r = {
     default: false
   }
 };
-const indexX$5 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
   compatConfig: {
@@ -1237,7 +1237,7 @@ const props$q = {
     default: ""
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$q,
   emits: ["change"],
@@ -1338,7 +1338,7 @@ const props$p = {
     default: ""
   }
 };
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$p,
   setup(props2, {
@@ -3397,7 +3397,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main = {
+const _sfc_main$1 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -3462,7 +3462,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render]]);
 const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
@@ -3825,7 +3825,7 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$n,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -3886,7 +3886,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -4005,7 +4005,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$m,
   setup(props2, {
@@ -4861,7 +4861,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -5409,7 +5409,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -6056,7 +6056,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -6378,7 +6378,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -6468,7 +6468,7 @@ const props$j = {
     default: ""
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$j,
   // emits: ['change'],
@@ -6586,7 +6586,7 @@ const props$i = {
     default: ""
   }
 };
-const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$i,
   setup(props2, {
@@ -6950,7 +6950,7 @@ const props$h = {
     }
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -7154,7 +7154,7 @@ const props$g = {
     default: false
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -7521,7 +7521,7 @@ const props$f = {
     default: false
   }
 };
-const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$f,
   emits: ["changing", "change"],
@@ -8053,7 +8053,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$e,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -8284,7 +8284,7 @@ const props$d = {
     default: ""
   }
 };
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$d,
   setup(props2, {
@@ -8345,7 +8345,7 @@ const props$c = {
     default: ""
   }
 };
-const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$c,
   emits: ["change"],
@@ -8477,7 +8477,7 @@ function normalizeText(text, { space, decode }) {
 function parseText(text, options) {
   return normalizeText(text, options).split(uniShared.LINEFEED);
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -8551,7 +8551,7 @@ const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
   emits: ["confirm", "change", "linechange", ...emit],
@@ -8711,7 +8711,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ shared.extend({}, hoverProps),
   setup(props2, {
@@ -9299,25 +9299,55 @@ function useLoadingStyle(targetElement, options = {}) {
     borderWidth: loadingBorderWidth
   };
 }
-const indexX$1 = defineBuiltInComponent({
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const _sfc_main = /* @__PURE__ */ vue.defineComponent(__spreadProps(__spreadValues({}, {
   name: "Loading",
-  setup() {
+  __reserved: true,
+  compatConfig: {
+    MODE: 3
+  }
+}), {
+  __name: "index-x",
+  setup(__props) {
     const LoadingRef = vue.ref(null);
     const loadingStyle = vue.reactive(useLoadingStyle());
-    return () => vue.createVNode("view", {
-      "class": "__uni_loading_container__",
-      "ref": LoadingRef
-    }, [vue.createVNode("view", {
-      "class": "__uni-loading__ __loading-4-3__",
-      "style": {
-        boxSizing: "border-box",
-        width: loadingStyle.size,
-        height: loadingStyle.size,
-        borderWidth: loadingStyle.borderWidth
-      }
-    }, null, 4)], 512);
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_0;
+      return vue.openBlock(), vue.createBlock(_component_view, {
+        class: "__uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, {
+        default: vue.withCtx(() => [
+          vue.createVNode(_component_view, {
+            class: "__uni-loading__ __loading-4-3__",
+            style: vue.normalizeStyle([{ "box-sizing": "border-box" }, { width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }])
+          }, null, 8, ["style"])
+        ]),
+        _: 1
+      }, 512);
+    };
   }
-});
+}));
 function useSubscribe(callback, name, multiple, pageId) {
   const instance = vue.getCurrentInstance();
   instance.proxy;
@@ -13954,51 +13984,51 @@ exports.AdContentPage = index$4;
 exports.AdDraw = index$3;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$y;
+exports.Button = index$x;
 exports.Camera = index$2;
-exports.Canvas = indexX$5;
-exports.Checkbox = index$w;
-exports.CheckboxGroup = index$x;
+exports.Canvas = indexX$4;
+exports.Checkbox = index$v;
+exports.CheckboxGroup = index$w;
 exports.CoverImage = index$7;
 exports.CoverView = index$8;
-exports.Editor = index$v;
-exports.Form = index$A;
-exports.Icon = index$u;
-exports.Image = index$t;
+exports.Editor = index$u;
+exports.Form = index$z;
+exports.Icon = index$t;
+exports.Image = index$s;
 exports.Input = Input;
-exports.Label = index$z;
+exports.Label = index$y;
 exports.LayoutComponent = LayoutComponent;
 exports.ListItem = index$f;
 exports.ListView = index$g;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
-exports.Loading = indexX$1;
+exports.Loading = _sfc_main;
 exports.Map = index$9;
-exports.MovableArea = index$s;
-exports.MovableView = index$r;
-exports.Navigator = index$q;
+exports.MovableArea = index$r;
+exports.MovableView = index$q;
+exports.Navigator = index$p;
 exports.PageComponent = PageComponent;
 exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$p;
-exports.Radio = indexX$4;
-exports.RadioGroup = index$o;
+exports.Progress = index$o;
+exports.Radio = indexX$3;
+exports.RadioGroup = index$n;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$n;
-exports.ScrollView = index$m;
-exports.Slider = indexX$3;
+exports.RichText = index$m;
+exports.ScrollView = index$l;
+exports.Slider = indexX$2;
 exports.StickyHeader = index$d;
 exports.StickySection = index$e;
-exports.Swiper = index$l;
-exports.SwiperItem = index$k;
-exports.Switch = indexX$2;
-exports.Text = index$j;
-exports.Textarea = index$i;
+exports.Swiper = index$k;
+exports.SwiperItem = index$j;
+exports.Switch = indexX$1;
+exports.Text = index$i;
+exports.Textarea = index$h;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
 exports.Video = index$a;
-exports.View = index$h;
+exports.View = __syscom_0;
 exports.WebView = indexX;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;

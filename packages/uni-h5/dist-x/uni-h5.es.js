@@ -9836,7 +9836,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main$4 = {
+const _sfc_main$5 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -9901,7 +9901,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$3]]);
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -18902,31 +18902,55 @@ function useLoadingStyle(targetElement, options = {}) {
     borderWidth: loadingBorderWidth
   };
 }
-class LoadingElement extends UniElement {
-}
-const __syscom_0$1 = defineBuiltInComponent({
+var __defProp2 = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp2 = (obj, key, value) => key in obj ? __defProp2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp2(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp2(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
+const _sfc_main$4 = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
   name: "Loading",
-  rootElement: {
-    name: "uni-loading",
-    class: LoadingElement
-  },
-  setup() {
+  __reserved: true,
+  compatConfig: {
+    MODE: 3
+  }
+}), {
+  __name: "index-x",
+  setup(__props) {
     const LoadingRef = ref(null);
     const loadingStyle = reactive(useLoadingStyle(LoadingRef));
-    return () => createVNode("view", {
-      "class": "__uni_loading_container__",
-      "ref": LoadingRef
-    }, [createVNode("view", {
-      "class": "__uni-loading__ __loading-4-3__",
-      "style": {
-        boxSizing: "border-box",
-        width: loadingStyle.size,
-        height: loadingStyle.size,
-        borderWidth: loadingStyle.borderWidth
-      }
-    }, null, 4)], 512);
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_2;
+      return openBlock(), createBlock(_component_view, {
+        class: "__uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            class: "__uni-loading__ __loading-4-3__",
+            style: normalizeStyle([{ "box-sizing": "border-box" }, { width: loadingStyle.size, height: loadingStyle.size, borderWidth: loadingStyle.borderWidth }])
+          }, null, 8, ["style"])
+        ]),
+        _: 1
+      }, 512);
+    };
   }
-});
+}));
 function normalizeEvent(vm, id2) {
   if (!id2) {
     id2 = vm.id;
@@ -29818,9 +29842,9 @@ const _sfc_main = {
   },
   methods: {}
 };
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		width: 136px;\n		max-width: 288px;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n}\n\n	\n";
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		width: 136px;\n		max-width: 288px;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_loading = __syscom_0$1;
+  const _component_loading = _sfc_main$4;
   const _component_text = __syscom_1$1;
   const _component_view = __syscom_2;
   return openBlock(), createBlock(_component_view, {
@@ -30268,8 +30292,7 @@ export {
   index$h as ListView,
   index$1 as LivePlayer,
   index as LivePusher,
-  __syscom_0$1 as Loading,
-  LoadingElement,
+  _sfc_main$4 as Loading,
   __syscom_0 as Map,
   MatchMedia,
   MovableArea,
