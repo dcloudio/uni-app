@@ -7,7 +7,6 @@ import { isBuiltInComponent, isUniXElement } from '@dcloudio/uni-shared'
 import type { ExportNamedDeclaration } from 'estree'
 
 const BLACKLIST = [
-  'LoadingElement',
   'AsyncErrorComponent',
   'AsyncLoadingComponent',
   'LayoutComponent',

@@ -1,3 +1,4 @@
+
 .__uni_loading_container__ {
   width: 16px;
   height: 16px;
@@ -5,9 +6,7 @@
   animation-timing-function: linear;
   justify-content: center;
   align-items: center;
-  display: flex;
 }
-
 .__uni-loading__ {
   width: 100%;
   height: 100%;
@@ -22,12 +21,7 @@
   image-rendering: crisp-edges;
   /* 边缘清晰 */
   animation: k-loading-spin 1.333s infinite;
-  /* #ifdef MP-WEIXIN */
-  animation-timing-function: linear;
-  /* #endif */
-  /* #ifdef WEB */
   animation-timing-function: inherit;
-  /* #endif */
 }
 
 /*.uni-loading_.loading-4-1 {
@@ -40,12 +34,7 @@
 }*/
 
 .__loading-4-3__ {
-  /* #ifdef MP-WEIXIN */
-  border-color: #000;
-  /* #endif */
-  /* #ifdef WEB */
   border-color: inherit;
-  /* #endif */
   border-right-color: transparent !important;
 }
 

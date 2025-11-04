@@ -151,11 +151,11 @@ export default defineConfig({
   plugins: [
     ...(isNewX
       ? [
-          uniUVueTypeScriptPlugin(),
-          prePlugin,
-          uniExtApi(),
-          uts2ts({ target: 'uni-h5', platform: 'web' }),
-        ]
+        uniUVueTypeScriptPlugin(),
+        prePlugin,
+        uniExtApi(),
+        uts2ts({ target: 'uni-h5', platform: 'web' }),
+      ]
       : []),
     vue({
       customElement: isX,

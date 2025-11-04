@@ -1,12 +1,12 @@
 <template>
-  <view class="__uni-loading__ __loading-4-3__"></view>
+  <view class="__uni-loading__ __loading-4-3__" style="box-sizing: border-box;"></view>
 </template>
-
+<script setup lang="uts">
+</script>
 <style>
 .__uni-loading__ {
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
   border-radius: 100%;
   border-width: 1px;
   border-style: solid;

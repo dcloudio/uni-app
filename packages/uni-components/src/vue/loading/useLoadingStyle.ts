@@ -13,12 +13,12 @@ export function useLoadingStyle(
   const loadingBorderWidth = ref('0px')
   let observer: MutationObserver | null = null
 
-  const coefficientMap = {
+  const coefficientMap: Record<string, number> = {
     medium: options.coefficientMedium || 1,
     thick: options.coefficientThick || 2,
   }
 
-  const calculateLoadingWidth = (element) => {
+  const calculateLoadingWidth = (element: HTMLElement) => {
     if (!element) return
 
     const computedStyle = window.getComputedStyle(element)
