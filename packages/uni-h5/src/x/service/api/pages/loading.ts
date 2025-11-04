@@ -45,7 +45,7 @@ export const showLoading = defineAsyncApi<API_TYPE_SHOW_LOADING>(
   API_SHOW_LOADING,
   (args, { resolve, reject }) => {
     registerLoadingOnce()
-    showLoadingApi(
+    return showLoadingApi(
       extend(
         {
           success: (res) => {
