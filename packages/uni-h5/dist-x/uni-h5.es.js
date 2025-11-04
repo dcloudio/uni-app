@@ -29971,7 +29971,7 @@ const showLoading = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_LOADING,
   (args, { resolve, reject }) => {
     registerLoadingOnce();
-    showLoading$1(
+    return showLoading$1(
       extend(
         {
           success: (res) => {
