@@ -130,6 +130,7 @@ describe('pages.json', () => {
       titleImage: 'https://example.com/title.png',
       transparentTitle: 'always',
       titlePenetrate: true,
+      onReachBottomDistance: 34,
       'mp-alipay': {
         responsive: true,
         showTitleLoading: 'YES',
@@ -169,6 +170,7 @@ describe('pages.json', () => {
       titleImage: 'https://example.com/title.png',
       transparentTitle: 'always',
       titlePenetrate: true,
+      onReachBottomDistance: 34,
       responsive: true,
       showTitleLoading: 'YES',
     })
