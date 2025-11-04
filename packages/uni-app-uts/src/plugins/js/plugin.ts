@@ -152,6 +152,14 @@ export function createUniAppJsEnginePlugin(
                   )
                 },
               },
+              treeshake: {
+                moduleSideEffects: (id: string, external: boolean) => {
+                  if (id === '@vue/shared') {
+                    return false
+                  }
+                  return true
+                },
+              },
             },
           },
         }
