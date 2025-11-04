@@ -181,6 +181,9 @@ function slash(path) {
 }
 
 function createRollupError(id, error) {
+  if (error.customPrint) {
+    return error;
+  }
   const { message, name, stack } = error;
   const rollupError = {
     id,
