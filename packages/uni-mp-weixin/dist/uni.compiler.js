@@ -140,7 +140,7 @@ const customElements = [
 const nodeTransforms = [
     uniCliShared.transformRef,
     uniCliShared.transformComponentLink,
-    transformAd
+    transformAd,
 ];
 if (process.env.UNI_APP_X === 'true') {
     nodeTransforms.push(uniCliShared.transformMPBuiltInTag, uniCliShared.transformDirection, transformLoading);
