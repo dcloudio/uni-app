@@ -16,6 +16,8 @@ export * from './onCreateVueApp'
 export { default as Emitter } from './TinyEmitter'
 export * from './theme'
 
+export * from './dom2/tags'
+
 export * from './node/locale'
 export * from './polyfill'
 export * from './globalsAllowList'

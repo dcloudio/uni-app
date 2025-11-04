@@ -299,6 +299,8 @@ export declare function isComponentInternalInstance(vm: unknown): vm is Componen
 
 export declare function isComponentTag(tag: string): boolean;
 
+export declare function isDom2AppHarmonyNativeTag(tag: string): boolean;
+
 export declare const isGloballyAllowed: (key: string) => boolean;
 
 export declare function isH5CustomElement(tag: string, isX?: boolean): boolean;

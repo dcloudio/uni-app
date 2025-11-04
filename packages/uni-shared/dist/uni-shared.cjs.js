@@ -2462,6 +2462,11 @@ function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     return styles;
 }
 
+const APP_NATIVE_TAGS = ['view', 'text', 'image', 'scroll-view', 'native-view'];
+function isDom2AppHarmonyNativeTag(tag) {
+    return APP_NATIVE_TAGS.includes(tag);
+}
+
 function getEnvLocale() {
     const { env } = process;
     const lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;
@@ -2658,6 +2663,7 @@ exports.isAppVoidTag = isAppVoidTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
+exports.isDom2AppHarmonyNativeTag = isDom2AppHarmonyNativeTag;
 exports.isGloballyAllowed = isGloballyAllowed;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
