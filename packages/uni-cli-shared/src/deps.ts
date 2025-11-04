@@ -2,6 +2,7 @@ import {
   BASE_COMPONENTS_STYLE_PATH,
   H5_API_STYLE_PATH,
   H5_COMPONENTS_STYLE_PATH,
+  X_BASE_COMPONENTS_STYLE_PATH,
 } from './constants'
 
 const RESIZE_SENSOR_CSS = BASE_COMPONENTS_STYLE_PATH + 'resize-sensor.css'
@@ -12,6 +13,7 @@ export const API_DEPS_CSS = (isX: boolean) => {
     showModal: [`${H5_API_STYLE_PATH}modal.css`],
     showToast: [`${H5_API_STYLE_PATH}toast.css`],
     showActionSheet: [`${H5_API_STYLE_PATH}action-sheet.css`],
+    showLoading: [isX ? `${X_BASE_COMPONENTS_STYLE_PATH}loading.css` : ''],
     previewImage: [
       RESIZE_SENSOR_CSS,
       `${BASE_COMPONENTS_STYLE_PATH}swiper.css`,
