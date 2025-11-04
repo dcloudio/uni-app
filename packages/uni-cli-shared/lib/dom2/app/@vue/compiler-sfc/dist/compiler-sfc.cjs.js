@@ -2019,6 +2019,25 @@ function parse$1(source, options = {}) {
       errors.push(error);
     }
   }
+  if (errors.length > 0 && options.templateParseOptions && options.templateParseOptions.extraOptions) {
+    const extraOptions = options.templateParseOptions.extraOptions(
+      descriptor
+    );
+    if (extraOptions.onVueTemplateCompileLog) {
+      errors.forEach((err) => {
+        if (!err.customPrint) {
+          err.customPrint = () => {
+            extraOptions.onVueTemplateCompileLog(
+              "error",
+              err,
+              descriptor.source,
+              extraOptions.relativeFilename || filename
+            );
+          };
+        }
+      });
+    }
+  }
   const result = {
     descriptor,
     errors
@@ -21388,13 +21407,16 @@ let __temp${any}, __restore${any}
         const onError = compilerOptions.onError;
         compilerOptions.onError = (error) => {
           if (error.errorType) {
-            onVueTemplateCompileLog(
-              "error",
-              error,
-              source,
-              compilerOptions.relativeFilename || filename
-            );
-          } else if (onError) {
+            error.customPrint = () => {
+              onVueTemplateCompileLog(
+                "error",
+                error,
+                source,
+                compilerOptions.relativeFilename || filename
+              );
+            };
+          }
+          if (onError) {
             onError(error);
           } else {
             throw error;
@@ -21443,14 +21465,25 @@ let __temp${any}, __restore${any}
         throw new Error(err);
       } else if (err) {
         if (err.loc) {
-          err.message += `
+          if (onVueTemplateCompileLog) {
+            err.customPrint = () => {
+              onVueTemplateCompileLog(
+                "error",
+                err,
+                source,
+                compilerOptions.relativeFilename || filename
+              );
+            };
+          } else {
+            err.message += `
 
 ` + sfc.filename + "\n" + shared.generateCodeFrame(
-            source,
-            err.loc.start.offset,
-            err.loc.end.offset
-          ) + `
+              source,
+              err.loc.start.offset,
+              err.loc.end.offset
+            ) + `
 `;
+          }
         }
         throw err;
       }
