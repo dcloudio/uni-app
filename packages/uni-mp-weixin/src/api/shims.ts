@@ -4,7 +4,7 @@ import {
 } from '@dcloudio/uni-mp-core'
 import { mocks } from '../runtime/parseOptions'
 import { initWx } from './wx'
-import { isArray, isFunction } from '@vue/shared'
+import { isFunction } from '@vue/shared'
 
 export const getProvider = initGetProvider({
   oauth: ['weixin'],
@@ -99,7 +99,7 @@ export const offHostThemeChange = (
 ) => {
   let id: number | undefined
 
-  if (typeof callbackId === 'function') {
+  if (isFunction(callbackId)) {
     THEME_CALLBACK_MAP.forEach(([cb], key) => {
       if (cb === callbackId && id === undefined) {
         id = key
