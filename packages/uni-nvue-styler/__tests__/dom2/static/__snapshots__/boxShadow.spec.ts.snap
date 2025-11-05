@@ -670,7 +670,7 @@ exports[`pointer-events: none: app-harmony(nv-c) 1`] = `
 }
 `;
 
-exports[`transform: rotate(45deg): app-harmony(dom-c) 1`] = `
+exports[`transform: matrix(1, 0.5, -0.5, 1, 10, 20): app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
@@ -678,11 +678,142 @@ exports[`transform: rotate(45deg): app-harmony(dom-c) 1`] = `
 }
 `;
 
-exports[`transform: rotate(45deg): app-harmony(nv-c) 1`] = `
+exports[`transform: matrix(1, 0.5, -0.5, 1, 10, 20): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformMatrix(1.0f, 0.5f, -0.5f, 1.0f, 10.0f, 20.0f)})",
+      "valueCode": "{UniCSSTransformMatrix(1.0f, 0.5f, -0.5f, 1.0f, 10.0f, 20.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: perspective(1000px): app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
   "obj": {},
+}
+`;
+
+exports[`transform: perspective(1000px): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformPerspective(1000.0f)})",
+      "valueCode": "{UniCSSTransformPerspective(1000.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: rotate(30deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: rotate(30deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformRotate(30.0f)})",
+      "valueCode": "{UniCSSTransformRotate(30.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: rotate3d(1, 1, 1, 45deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: rotate3d(1, 1, 1, 45deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformRotate::Rotate3D(1.0f, 1.0f, 1.0f, 45.0f)})",
+      "valueCode": "{UniCSSTransformRotate::Rotate3D(1.0f, 1.0f, 1.0f, 45.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: rotateX(45deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: rotateX(45deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformRotate::RotateX(45.0f)})",
+      "valueCode": "{UniCSSTransformRotate::RotateX(45.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: rotateY(60deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: rotateY(60deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformRotate::RotateY(60.0f)})",
+      "valueCode": "{UniCSSTransformRotate::RotateY(60.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: rotateZ(90deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: rotateZ(90deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformRotate::RotateZ(90.0f)})",
+      "valueCode": "{UniCSSTransformRotate::RotateZ(90.0f)}",
+    },
+  },
 }
 `;
 
@@ -698,11 +829,16 @@ exports[`transform: scale(1.2): app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformScale(1.2f)})",
+      "valueCode": "{UniCSSTransformScale(1.2f)}",
+    },
+  },
 }
 `;
 
-exports[`transform: translateX(10px): app-harmony(dom-c) 1`] = `
+exports[`transform: scale(1.2, 1.5): app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
@@ -710,11 +846,289 @@ exports[`transform: translateX(10px): app-harmony(dom-c) 1`] = `
 }
 `;
 
-exports[`transform: translateX(10px): app-harmony(nv-c) 1`] = `
+exports[`transform: scale(1.2, 1.5): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformScale(1.2f, 1.5f)})",
+      "valueCode": "{UniCSSTransformScale(1.2f, 1.5f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: scale3d(1.2, 1.5, 1.0): app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
   "obj": {},
+}
+`;
+
+exports[`transform: scale3d(1.2, 1.5, 1.0): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformScale(1.2f, 1.5f, 1.0f)})",
+      "valueCode": "{UniCSSTransformScale(1.2f, 1.5f, 1.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: skew(15deg, 0deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: skew(15deg, 0deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformSkew(15.0f, 0.0f)})",
+      "valueCode": "{UniCSSTransformSkew(15.0f, 0.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: skew(15deg, 30deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: skew(15deg, 30deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformSkew(15.0f, 30.0f)})",
+      "valueCode": "{UniCSSTransformSkew(15.0f, 30.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: skewX(20deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: skewX(20deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformSkew::SkewX(20.0f)})",
+      "valueCode": "{UniCSSTransformSkew::SkewX(20.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: skewY(25deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: skewY(25deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformSkew::SkewY(25.0f)})",
+      "valueCode": "{UniCSSTransformSkew::SkewY(25.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 20, 0, 1): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 20, 0, 1): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformMatrix3D({1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 10.0f, 20.0f, 0.0f, 1.0f})})",
+      "valueCode": "{UniCSSTransformMatrix3D({1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 10.0f, 20.0f, 0.0f, 1.0f})}",
+    },
+  },
+}
+`;
+
+exports[`transform: transform: skew(15deg, 30deg) skewX(20deg) skewY(25deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: transform: skew(15deg, 30deg) skewX(20deg) skewY(25deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformSkew(15.0f, 30.0f), UniCSSTransformSkew::SkewX(20.0f), UniCSSTransformSkew::SkewY(25.0f)})",
+      "valueCode": "{UniCSSTransformSkew(15.0f, 30.0f), UniCSSTransformSkew::SkewX(20.0f), UniCSSTransformSkew::SkewY(25.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: translate(40px, 0px) rotate(30deg) scale(1.2) skew(15deg, 0deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: translate(40px, 0px) rotate(30deg) scale(1.2) skew(15deg, 0deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformTranslate(40.0f, 0.0f), UniCSSTransformRotate(30.0f), UniCSSTransformScale(1.2f), UniCSSTransformSkew(15.0f, 0.0f)})",
+      "valueCode": "{UniCSSTransformTranslate(40.0f, 0.0f), UniCSSTransformRotate(30.0f), UniCSSTransformScale(1.2f), UniCSSTransformSkew(15.0f, 0.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: translate(40px, 0px) rotate(30deg) scale(1.2): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: translate(40px, 0px) rotate(30deg) scale(1.2): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformTranslate(40.0f, 0.0f), UniCSSTransformRotate(30.0f), UniCSSTransformScale(1.2f)})",
+      "valueCode": "{UniCSSTransformTranslate(40.0f, 0.0f), UniCSSTransformRotate(30.0f), UniCSSTransformScale(1.2f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: translate(40px, 0px): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: translate(40px, 0px): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformTranslate(40.0f, 0.0f)})",
+      "valueCode": "{UniCSSTransformTranslate(40.0f, 0.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: translate3d(40px, 0px, 10px): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: translate3d(40px, 0px, 10px): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformTranslate(40.0f, 0.0f, 10.0f)})",
+      "valueCode": "{UniCSSTransformTranslate(40.0f, 0.0f, 10.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: translate3d(40px, 20px, 10px) scale3d(1.2, 1.5, 1.0) rotate3d(1, 1, 1, 45deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: translate3d(40px, 20px, 10px) scale3d(1.2, 1.5, 1.0) rotate3d(1, 1, 1, 45deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformTranslate(40.0f, 20.0f, 10.0f), UniCSSTransformScale(1.2f, 1.5f, 1.0f), UniCSSTransformRotate::Rotate3D(1.0f, 1.0f, 1.0f, 45.0f)})",
+      "valueCode": "{UniCSSTransformTranslate(40.0f, 20.0f, 10.0f), UniCSSTransformScale(1.2f, 1.5f, 1.0f), UniCSSTransformRotate::Rotate3D(1.0f, 1.0f, 1.0f, 45.0f)}",
+    },
+  },
+}
+`;
+
+exports[`transform: translateX(40px) translateY(20px) translateZ(10px) rotateX(45deg) rotateY(60deg) rotateZ(90deg): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform: translateX(40px) translateY(20px) translateZ(10px) rotateX(45deg) rotateY(60deg) rotateZ(90deg): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform": {
+      "setterCode": "transform({UniCSSTransformTranslate::TranslateX(40.0f), UniCSSTransformTranslate::TranslateY(20.0f), UniCSSTransformTranslate::TranslateZ(10.0f), UniCSSTransformRotate::RotateX(45.0f), UniCSSTransformRotate::RotateY(60.0f), UniCSSTransformRotate::RotateZ(90.0f)})",
+      "valueCode": "{UniCSSTransformTranslate::TranslateX(40.0f), UniCSSTransformTranslate::TranslateY(20.0f), UniCSSTransformTranslate::TranslateZ(10.0f), UniCSSTransformRotate::RotateX(45.0f), UniCSSTransformRotate::RotateY(60.0f), UniCSSTransformRotate::RotateZ(90.0f)}",
+    },
+  },
 }
 `;
 
@@ -730,7 +1144,12 @@ exports[`transform-origin: 50% 50%: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "50% 50%"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "50% 50%")",
+    },
+  },
 }
 `;
 
@@ -746,7 +1165,12 @@ exports[`transform-origin: center: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "Center"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "Center")",
+    },
+  },
 }
 `;
 
@@ -762,7 +1186,12 @@ exports[`transform-origin: top left: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "Top left"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "Top left")",
+    },
+  },
 }
 `;
 

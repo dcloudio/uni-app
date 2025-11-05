@@ -769,6 +769,7 @@
     }
   },
   "transform": {
+    "type": "UniNativeTransform",
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -783,6 +784,7 @@
     }
   },
   "transform-origin": {
+    "type": "UniNativeTransformOrigin",
     "uniPlatform": {
       "app": {
         "nv-c": {

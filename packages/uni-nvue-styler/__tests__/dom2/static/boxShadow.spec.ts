@@ -124,7 +124,30 @@ describe('z-index:', () => {
 })
 
 describe('transform:', () => {
-  ;['rotate(45deg)', 'scale(1.2)', 'translateX(10px)'].forEach((value) => {
+  ;[
+    'translate(40px, 0px) rotate(30deg) scale(1.2)',
+    'translateX(40px) translateY(20px) translateZ(10px) rotateX(45deg) rotateY(60deg) rotateZ(90deg)',
+    'translate3d(40px, 20px, 10px) scale3d(1.2, 1.5, 1.0) rotate3d(1, 1, 1, 45deg)',
+    'transform: skew(15deg, 30deg) skewX(20deg) skewY(25deg)',
+    'matrix(1, 0.5, -0.5, 1, 10, 20)',
+    'transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 20, 0, 1)',
+    'perspective(1000px)',
+    'translate(40px, 0px) rotate(30deg) scale(1.2) skew(15deg, 0deg)',
+    'translate(40px, 0px)',
+    'translate3d(40px, 0px, 10px)',
+    'scale(1.2)',
+    'scale(1.2, 1.5)',
+    'scale3d(1.2, 1.5, 1.0)',
+    'rotate(30deg)',
+    'rotateX(45deg)',
+    'rotateY(60deg)',
+    'rotateZ(90deg)',
+    'rotate3d(1, 1, 1, 45deg)',
+    'skew(15deg, 0deg)',
+    'skew(15deg, 30deg)',
+    'skewX(20deg)',
+    'skewY(25deg)',
+  ].forEach((value) => {
     test(value, () => {
       const input = `transform: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {

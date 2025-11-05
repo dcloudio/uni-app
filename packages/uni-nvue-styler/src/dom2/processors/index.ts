@@ -27,6 +27,10 @@ import {
   createSetStyleTextShadowValueProcessor,
   isTextShadowType,
 } from './textShadow'
+import {
+  createSetStyleTransformValueProcessor,
+  isTransformType,
+} from './transform'
 
 export type { PropertyProcessor } from './utils'
 export { createSetStyleNativeColorValueProcessor } from './color'
@@ -165,6 +169,8 @@ export function createDom2PropertyProcessors(
       return createSetStyleBoxShadowValueProcessor(setter)
     } else if (isTextShadowType(propertyType)) {
       return createSetStyleTextShadowValueProcessor(setter)
+    } else if (isTransformType(propertyType)) {
+      return createSetStyleTransformValueProcessor(setter)
     } else if (propertyType) {
       return createSetStyleEnumValueProcessor(
         setter,
