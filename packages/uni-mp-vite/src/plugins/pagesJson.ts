@@ -7,7 +7,6 @@ import {
   addMiniProgramAppJson,
   addMiniProgramPageJson,
   checkPagesJson,
-  createRollupError,
   defineUniPagesJsonPlugin,
   findChangedJsonFiles,
   getLocaleFiles,
@@ -79,29 +78,15 @@ export function uniPagesJsonPlugin(
         if (!opts.filter(id)) {
           return null
         }
+        this.addWatchFile(path.resolve(inputDir, 'pages.json'))
         if (process.env.UNI_APP_X === 'true') {
           // 调整换行符，确保 parseTree 的loc正确
           const jsonCode = code.replace(/\r\n/g, '\n')
-          try {
-            checkPagesJson(
-              preUVueJson(jsonCode, 'pages.json'),
-              process.env.UNI_INPUT_DIR
-            )
-          } catch (err: any) {
-            if (err.loc) {
-              const error = createRollupError(
-                'uni:mp-pages-json',
-                path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'),
-                err,
-                jsonCode
-              )
-              this.error(error)
-            } else {
-              throw err
-            }
-          }
+          checkPagesJson(
+            preUVueJson(jsonCode, 'pages.json'),
+            process.env.UNI_INPUT_DIR
+          )
         }
-        this.addWatchFile(path.resolve(inputDir, 'pages.json'))
         getLocaleFiles(path.resolve(inputDir, 'locale')).forEach((filepath) => {
           this.addWatchFile(filepath)
         })

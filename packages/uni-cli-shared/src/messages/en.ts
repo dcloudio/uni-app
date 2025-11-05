@@ -61,4 +61,5 @@ export default {
     'The compilation outcome remains unchanged; there is no need to synchronize.',
   'uni_modules.import': 'Plug-in [{0}] only supports @/uni_modules/{1}.',
   'pages.json.page.notfound': 'The page "{pagePath}" does not exist.',
+  'pages.json.page.slash': 'The Path "{pagePath}" cannot start with "/"',
 } as const

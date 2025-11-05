@@ -2,7 +2,6 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   PAGES_JSON_UTS,
-  createRollupError,
   genUTSClassName,
   normalizeUniAppXAppPagesJson,
   parseArguments,
@@ -53,22 +52,7 @@ export function uniAppPagesPlugin(): Plugin {
         }
         // 调整换行符，确保 parseTree 的loc正确
         code = code.replace(/\r\n/g, '\n')
-        try {
-          pagesJson = normalizeUniAppXAppPagesJson(code)
-        } catch (err: any) {
-          if (err.loc) {
-            const error = createRollupError(
-              'uni:app-pages-json',
-              pagesJsonPath,
-              err,
-              code
-            )
-            this.error(error)
-          } else {
-            throw err
-          }
-        }
-
+        pagesJson = normalizeUniAppXAppPagesJson(code)
         imports = []
         routes = []
 
