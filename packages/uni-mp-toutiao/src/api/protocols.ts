@@ -42,3 +42,18 @@ export const requestPayment = {
     orderInfo: tt.pay ? 'orderInfo' : 'data',
   },
 }
+// 抖音小程序使用 showTabBar/hideTabBar 时，animation 不传值会警告 animation should be boolean but get undefined:undefined
+export const showTabBar = {
+  args(fromArgs: UniApp.ShowTabBarOptions, toArgs: UniApp.ShowTabBarOptions) {
+    if (fromArgs.animation === undefined) {
+      toArgs.animation = false
+    }
+  },
+}
+export const hideTabBar = {
+  args(fromArgs: UniApp.ShowTabBarOptions, toArgs: UniApp.ShowTabBarOptions) {
+    if (fromArgs.animation === undefined) {
+      toArgs.animation = false
+    }
+  },
+}
