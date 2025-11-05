@@ -14,6 +14,7 @@ import {
 } from '@dcloudio/uni-shared'
 import type { CompilerOptions } from '@vue/compiler-core'
 import { transformCustomElement } from './transforms/transformCustomElement'
+import { transformAttributePart } from './transforms/transformAttributePart'
 
 function realIsH5CustomElement(tag: string) {
   // TODO isH5CustomElement目前被多个平台引用，重构比较麻烦
@@ -37,6 +38,9 @@ const nodeTransforms = [
 if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.splice(nodeTransforms.indexOf(transformMatchMedia), 1)
   nodeTransforms.push(transformCustomElement)
+  if (process.env.UNI_UTS_PLATFORM === 'web') {
+    nodeTransforms.push(transformAttributePart)
+  }
 }
 
 export const compilerOptions: CompilerOptions = {

@@ -47,3 +47,11 @@ export function createRpx2Unit(
 export function getPartClass(partName: string) {
   return `-_part__${partName}_-`
 }
+
+export function batchGetPartClass(partNames: string) {
+  return partNames
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((partName) => getPartClass(partName))
+    .join(' ')
+}
