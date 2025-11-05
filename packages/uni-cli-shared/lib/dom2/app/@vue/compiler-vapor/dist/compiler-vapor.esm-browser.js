@@ -21785,7 +21785,9 @@ const IRNodeTypes = {
   "FOR": 16,
   "16": "FOR",
   "GET_TEXT_CHILD": 17,
-  "17": "GET_TEXT_CHILD"
+  "17": "GET_TEXT_CHILD",
+  "GET_INSERTION_PARENT": 18,
+  "18": "GET_INSERTION_PARENT"
 };
 const DynamicFlag = {
   "NONE": 0,
@@ -34646,6 +34648,9 @@ function genOperation(oper, context) {
       return genBuiltinDirective(oper, context);
     case 17:
       return genGetTextChild(oper, context);
+    // fixed by uts
+    case 18:
+      return [];
     default:
       const exhaustiveCheck = oper;
       throw new Error(
@@ -35732,10 +35737,23 @@ function processInterpolation(context) {
   if (values.length === 0 && parentNode.type !== 0) {
     return;
   }
-  const shouldReuseParentText = parentNode.loc.source.startsWith("<slot") && parentNode.type === 1 && parentNode.tag === "template" && context.parent && context.parent.parent && context.parent.parent.node.type === 1 && context.parent.parent.node.tag === "text" && // 确保 slot 只有文本类内容
+  const grandNode = context.parent.parent && context.parent.parent.node;
+  function isComponent(node) {
+    return !!(node && node.type === 1 && node.tagType === 1);
+  }
+  const isInComponentSlot = parentNode.type === 1 && (parentNode.tagType === 1 || isTemplateNode(parentNode) && isComponent(grandNode));
+  const shouldReuseParentText = !isInComponentSlot && parentNode.loc.source.startsWith("<slot") && parentNode.type === 1 && parentNode.tag === "template" && grandNode && grandNode.tag === "text" && // 确保 slot 只有文本类内容
   parentNode.children.every((child) => isTextLike(child));
   let id;
-  if (shouldReuseParentText) {
+  if (isInComponentSlot) {
+    context.dynamic.flags |= 2;
+    id = context.reference();
+    context.registerOperation({
+      type: 18,
+      node: context.node,
+      id
+    });
+  } else if (shouldReuseParentText) {
     id = context.parent.parent.reference();
     context.dynamic.flags |= 2;
   } else {

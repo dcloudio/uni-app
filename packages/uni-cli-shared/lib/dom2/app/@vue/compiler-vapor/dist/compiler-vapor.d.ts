@@ -83,7 +83,8 @@ export declare enum IRNodeTypes {
     DECLARE_OLD_REF = 14,// consider make it more general
     IF = 15,
     FOR = 16,
-    GET_TEXT_CHILD = 17
+    GET_TEXT_CHILD = 17,
+    GET_INSERTION_PARENT = 18
 }
 export interface BaseIRNode {
     type: IRNodeTypes;
@@ -253,8 +254,12 @@ export interface GetTextChildIRNode extends BaseIRNode {
     type: IRNodeTypes.GET_TEXT_CHILD;
     parent: number;
 }
+export interface GetInsertionParentIRNode extends BaseIRNode {
+    type: IRNodeTypes.GET_INSERTION_PARENT;
+    id: number;
+}
 export type IRNode = OperationNode | RootIRNode;
-export type OperationNode = SetPropIRNode | SetDynamicPropsIRNode | SetTextIRNode | SetEventIRNode | SetDynamicEventsIRNode | SetHtmlIRNode | SetTemplateRefIRNode | InsertNodeIRNode | PrependNodeIRNode | DirectiveIRNode | IfIRNode | ForIRNode | CreateComponentIRNode | DeclareOldRefIRNode | SlotOutletIRNode | GetTextChildIRNode;
+export type OperationNode = SetPropIRNode | SetDynamicPropsIRNode | SetTextIRNode | SetEventIRNode | SetDynamicEventsIRNode | SetHtmlIRNode | SetTemplateRefIRNode | InsertNodeIRNode | PrependNodeIRNode | DirectiveIRNode | IfIRNode | ForIRNode | CreateComponentIRNode | DeclareOldRefIRNode | SlotOutletIRNode | GetTextChildIRNode | GetInsertionParentIRNode;
 export declare enum DynamicFlag {
     NONE = 0,
     /**
