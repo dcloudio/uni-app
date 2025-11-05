@@ -88,6 +88,9 @@ export function initPageInstance(mpPageInstance: MPComponentInstance) {
   if (__X__) {
     Object.assign(mpPageInstance, {
       get width(): number {
+        if (__PLATFORM__ === 'mp-toutiao') {
+          return __GLOBAL__.getSystemInfoSync().windowWidth
+        }
         return __GLOBAL__.getWindowInfo().windowWidth
       },
       get height(): number {
@@ -96,6 +99,9 @@ export function initPageInstance(mpPageInstance: MPComponentInstance) {
         return windowInfo.windowHeight + windowInfo.screenTop
       },
       get statusBarHeight(): number {
+        if (__PLATFORM__ === 'mp-toutiao') {
+          return __GLOBAL__.getSystemInfoSync().statusBarHeight
+        }
         return __GLOBAL__.getWindowInfo().statusBarHeight
       },
       get safeAreaInsets() {
