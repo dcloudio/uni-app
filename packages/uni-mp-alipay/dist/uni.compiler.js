@@ -262,6 +262,7 @@ const options = {
             titleImage: 'titleImage',
             transparentTitle: 'transparentTitle',
             titlePenetrate: 'titlePenetrate',
+            onReachBottomDistance: 'onReachBottomDistance',
         },
         tabBarOptionsMap: {
             customize: 'customize',
