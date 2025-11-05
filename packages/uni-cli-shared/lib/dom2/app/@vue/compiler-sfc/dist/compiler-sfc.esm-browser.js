@@ -46371,8 +46371,16 @@ function processInterpolation(context) {
   if (values.length === 0 && parentNode.type !== 0) {
     return;
   }
-  context.template += context.options.platform ? TEXT_PLACEHOLDER : " ";
-  const id = context.reference();
+  const shouldReuseParentText = parentNode.loc.source.startsWith("<slot") && parentNode.type === 1 && parentNode.tag === "template" && context.parent && context.parent.parent && context.parent.parent.node.type === 1 && context.parent.parent.node.tag === "text" && // 确保 slot 只有文本类内容
+  parentNode.children.every((child) => isTextLike(child));
+  let id;
+  if (shouldReuseParentText) {
+    id = context.parent.parent.reference();
+    context.dynamic.flags |= 2;
+  } else {
+    context.template += context.options.platform ? TEXT_PLACEHOLDER : " ";
+    id = context.reference();
+  }
   if (values.length === 0) {
     return;
   }
