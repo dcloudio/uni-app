@@ -27607,27 +27607,41 @@ function parse$2(source, options = {}) {
     }
   });
   if (!descriptor.template && !descriptor.script && !descriptor.scriptSetup) {
-    errors.push(
-      new SyntaxError(
-        `At least one <template> or <script> is required in a single file component. ${descriptor.filename}`
-      )
+    const err = new SyntaxError(
+      `At least one <template> or <script> is required in a single file component. `
     );
+    err.loc = ast.loc;
+    errors.push(err);
   }
   if (descriptor.scriptSetup) {
     if (descriptor.scriptSetup.src) {
-      errors.push(
-        new SyntaxError(
-          `<script setup> cannot use the "src" attribute because its syntax will be ambiguous outside of the component.`
-        )
+      const err = new SyntaxError(
+        `<script setup> cannot use the "src" attribute because its syntax will be ambiguous outside of the component.`
       );
+      const loc = descriptor.scriptSetup.loc;
+      err.loc = {
+        start: __spreadProps$9(__spreadValues$a({}, loc.start), {
+          column: 0
+        }),
+        end: __spreadValues$a({}, loc.start),
+        source: ""
+      };
+      errors.push(err);
       descriptor.scriptSetup = null;
     }
     if (descriptor.script && descriptor.script.src) {
-      errors.push(
-        new SyntaxError(
-          `<script> cannot use the "src" attribute when <script setup> is also present because they must be processed together.`
-        )
+      const err = new SyntaxError(
+        `<script> cannot use the "src" attribute when <script setup> is also present because they must be processed together.`
       );
+      const loc = descriptor.script.loc;
+      err.loc = {
+        start: __spreadProps$9(__spreadValues$a({}, loc.start), {
+          column: 0
+        }),
+        end: __spreadValues$a({}, loc.start),
+        source: ""
+      };
+      errors.push(err);
       descriptor.script = null;
     }
   }
@@ -27688,17 +27702,22 @@ function parse$2(source, options = {}) {
       descriptor.scriptSetup = createDefaultScriptSetup2();
     }
     if (descriptor.script && !isAppUVue2()) {
+      const err = new SyntaxError(
+        `\u84B8\u6C7D\u6A21\u5F0F\u4EC5\u652F\u6301\u4F7F\u7528<script setup>\uFF0C\u4E0D\u652F\u6301<script>\u9009\u9879\u5F0F`
+      );
+      const loc = descriptor.script.loc;
+      err.loc = {
+        start: __spreadProps$9(__spreadValues$a({}, loc.start), {
+          column: 0
+        }),
+        end: __spreadValues$a({}, loc.start),
+        source: ""
+      };
+      errors.push(err);
       descriptor.vapor = true;
       descriptor.script = null;
       descriptor.template = null;
       descriptor.scriptSetup = createDefaultScriptSetup2();
-      const error = new SyntaxError(
-        `\u84B8\u6C7D\u6A21\u5F0F\u4EC5\u652F\u6301\u4F7F\u7528<script setup>\uFF0C\u4E0D\u652F\u6301<script>\u9009\u9879\u5F0F`
-      );
-      error.customPrint = () => {
-        console.error(error.message);
-      };
-      errors.push(error);
     }
   }
   if (errors.length > 0 && options.templateParseOptions && options.templateParseOptions.extraOptions) {
