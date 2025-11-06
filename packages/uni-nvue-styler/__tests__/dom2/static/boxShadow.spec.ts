@@ -159,7 +159,21 @@ describe('transform:', () => {
 })
 
 describe('transform-origin:', () => {
-  ;['center', 'top left', '50% 50%'].forEach((value) => {
+  ;[
+    'center',
+    'top left',
+    '50% 50%',
+    '20px 30px',
+    'center center',
+    'left top',
+    'right bottom',
+    '20px 50% 10px',
+    '30%',
+    'left center',
+    '25% 75%',
+    '10px 20px 5px',
+    '30% 60% 15px',
+  ].forEach((value) => {
     test(value, () => {
       const input = `transform-origin: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {

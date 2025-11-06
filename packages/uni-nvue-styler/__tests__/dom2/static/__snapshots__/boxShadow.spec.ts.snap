@@ -1132,6 +1132,132 @@ exports[`transform: translateX(40px) translateY(20px) translateZ(10px) rotateX(4
 }
 `;
 
+exports[`transform-origin: 10px 20px 5px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: 10px 20px 5px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::Px(10.0f, 20.0f, 5.0f))",
+      "valueCode": "UniCSSTransformOrigin::Px(10.0f, 20.0f, 5.0f)",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: 20px 30px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: 20px 30px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::Px(20.0f, 30.0f))",
+      "valueCode": "UniCSSTransformOrigin::Px(20.0f, 30.0f)",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: 20px 50% 10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: 20px 50% 10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(10.0f, UniCSSUnitType::PX)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(10.0f, UniCSSUnitType::PX))",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: 25% 75%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: 25% 75%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::Percent(25.0f, 75.0f))",
+      "valueCode": "UniCSSTransformOrigin::Percent(25.0f, 75.0f)",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: 30% 60% 15px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: 30% 60% 15px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::Percent(30.0f, 60.0f, 15.0f))",
+      "valueCode": "UniCSSTransformOrigin::Percent(30.0f, 60.0f, 15.0f)",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: 30%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: 30%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::Percent(30.0f))",
+      "valueCode": "UniCSSTransformOrigin::Percent(30.0f)",
+    },
+  },
+}
+`;
+
 exports[`transform-origin: 50% 50%: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
@@ -1146,8 +1272,29 @@ exports[`transform-origin: 50% 50%: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "50% 50%"))",
-      "valueCode": "UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "50% 50%")",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::Percent(50.0f, 50.0f))",
+      "valueCode": "UniCSSTransformOrigin::Percent(50.0f, 50.0f)",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: center center: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: center center: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::Center())",
+      "valueCode": "UniCSSTransformOrigin::Center()",
     },
   },
 }
@@ -1167,8 +1314,71 @@ exports[`transform-origin: center: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "Center"))",
-      "valueCode": "UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "Center")",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::Center())",
+      "valueCode": "UniCSSTransformOrigin::Center()",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: left center: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: left center: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::LeftCenter())",
+      "valueCode": "UniCSSTransformOrigin::LeftCenter()",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: left top: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: left top: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::LeftTop())",
+      "valueCode": "UniCSSTransformOrigin::LeftTop()",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: right bottom: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: right bottom: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::RightBottom())",
+      "valueCode": "UniCSSTransformOrigin::RightBottom()",
     },
   },
 }
@@ -1188,8 +1398,8 @@ exports[`transform-origin: top left: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "Top left"))",
-      "valueCode": "UTSCPP.propertyAccess(UniNativeTransformOrigin, "::", "Top left")",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin::Percent(0.0f, 0.0f))",
+      "valueCode": "UniCSSTransformOrigin::Percent(0.0f, 0.0f)",
     },
   },
 }

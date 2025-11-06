@@ -31,6 +31,10 @@ import {
   createSetStyleTransformValueProcessor,
   isTransformType,
 } from './transform'
+import {
+  createSetStyleTransformOriginValueProcessor,
+  isTransformOriginType,
+} from './transformOrigin'
 
 export type { PropertyProcessor } from './utils'
 export { createSetStyleNativeColorValueProcessor } from './color'
@@ -171,6 +175,8 @@ export function createDom2PropertyProcessors(
       return createSetStyleTextShadowValueProcessor(setter)
     } else if (isTransformType(propertyType)) {
       return createSetStyleTransformValueProcessor(setter)
+    } else if (isTransformOriginType(propertyType)) {
+      return createSetStyleTransformOriginValueProcessor(setter)
     } else if (propertyType) {
       return createSetStyleEnumValueProcessor(
         setter,
