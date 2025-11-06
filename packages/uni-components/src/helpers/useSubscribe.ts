@@ -10,6 +10,7 @@ import {
   registerViewMethod,
   unregisterViewMethod,
 } from '@dcloudio/uni-core'
+import { useCurrentPageId } from '@dcloudio/uni-core'
 
 type SubscribeCallbackRes<Res = any> = (
   type: string,
@@ -63,6 +64,7 @@ export function useSubscribe<Res = any>(
 ) {
   const instance = getCurrentInstance()!
   const vm = instance.proxy!
+  pageId = pageId == null ? useCurrentPageId() : pageId
   onMounted(() => {
     addSubscribe(name || normalizeEvent(vm)!, callback, pageId)
     if (multiple || !name) {

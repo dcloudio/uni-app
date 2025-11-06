@@ -179,6 +179,6 @@ export function initPageInternalInstance(
   }
 }
 
-function getPageProxyId(proxy: ComponentPublicInstance) {
+export function getPageProxyId(proxy: ComponentPublicInstance) {
   return (proxy.$page as Page.PageInstance['$page'])?.id || proxy.$basePage?.id
 }
