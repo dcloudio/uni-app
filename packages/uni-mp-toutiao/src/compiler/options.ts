@@ -7,7 +7,6 @@ import {
   getNativeTags,
   transformComponentLink,
   transformDirection,
-  transformMPBuiltInTag,
   // transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
@@ -15,6 +14,7 @@ import {
   type UniMiniProgramPluginOptions,
   resolveMiniProgramRuntime,
 } from '@dcloudio/uni-mp-vite'
+import { transformMPBuiltInTag } from './transforms/transformMPBuiltInTag'
 
 import source from './project.config.json'
 
