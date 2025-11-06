@@ -9,6 +9,9 @@ import {
 
 const TRANSFORM_ORIGIN_TYPES = ['UniNativeTransformOrigin']
 
+// 开关：是否支持关键字（如 left, center, right, top, bottom 等）
+const SUPPORT_KEYWORDS = false
+
 export function isTransformOriginType(propertyType?: string) {
   return propertyType && TRANSFORM_ORIGIN_TYPES.includes(propertyType)
 }
@@ -17,18 +20,19 @@ export function createSetStyleTransformOriginValueProcessor(
   setter: string
 ): PropertyProcessor {
   return createPropertyProcessor((value: string | number) => {
-    const transformOriginCode = parseTransformOriginValue(String(value))
+    const result = parseTransformOriginValue(String(value))
 
-    if (!transformOriginCode) {
+    if (result.error) {
+      return createValueProcessorError(result.error)
+    }
+
+    if (!result.code) {
       return createValueProcessorError(
         `Invalid transform-origin value: ${value}`
       )
     }
 
-    return createValueProcessorResult(
-      transformOriginCode,
-      `${setter}(${transformOriginCode})`
-    )
+    return createValueProcessorResult(result.code, `${setter}(${result.code})`)
   }, PropertyProcessorType.Struct)
 }
 
@@ -42,19 +46,38 @@ interface ParsedValue {
   unit: string
 }
 
-function parseTransformOriginValue(str: string): string {
+interface ParseResult {
+  code: string
+  error?: string
+}
+
+function parseTransformOriginValue(str: string): ParseResult {
   const parts = str.trim().split(/\s+/)
 
-  // 处理关键字组合
-  const keywordResult = tryKeywordCombination(parts)
-  if (keywordResult) {
-    return keywordResult
+  // 检查是否包含不支持的关键字
+  if (!SUPPORT_KEYWORDS) {
+    for (const part of parts) {
+      if (isKeyword(part)) {
+        return {
+          code: '',
+          error: `Invalid transform-origin value: ${part}`,
+        }
+      }
+    }
+  }
+
+  // 处理关键字组合（如果启用）
+  if (SUPPORT_KEYWORDS) {
+    const keywordResult = tryKeywordCombination(parts)
+    if (keywordResult) {
+      return { code: keywordResult }
+    }
   }
 
   // 解析数值
   const values: ParsedValue[] = []
   for (const part of parts) {
-    if (isKeyword(part)) {
+    if (SUPPORT_KEYWORDS && isKeyword(part)) {
       // 关键字转换为对应的值
       const keywordValue = keywordToValue(part)
       if (keywordValue) {
@@ -72,16 +95,16 @@ function parseTransformOriginValue(str: string): string {
   }
 
   if (values.length === 0) {
-    return ''
+    return { code: '' }
   }
 
   // 单值情况
   if (values.length === 1) {
     const v = values[0]
-    if (v.unit === 'PCT') {
-      return `UniCSSTransformOrigin::Percent(${toFloat(v.value)})`
-    } else if (v.unit === 'PX' || v.unit === 'NONE') {
-      return `UniCSSTransformOrigin::Px(${toFloat(v.value)})`
+    return {
+      code: `UniCSSTransformOrigin(UniCSSUnitValue(${toFloat(
+        v.value
+      )}, UniCSSUnitType::${v.unit}))`,
     }
   }
 
@@ -89,28 +112,13 @@ function parseTransformOriginValue(str: string): string {
   if (values.length === 2) {
     const v1 = values[0]
     const v2 = values[1]
-
-    // 如果都是百分比
-    if (v1.unit === 'PCT' && v2.unit === 'PCT') {
-      return `UniCSSTransformOrigin::Percent(${toFloat(v1.value)}, ${toFloat(
+    return {
+      code: `UniCSSTransformOrigin(UniCSSUnitValue(${toFloat(
+        v1.value
+      )}, UniCSSUnitType::${v1.unit}), UniCSSUnitValue(${toFloat(
         v2.value
-      )})`
+      )}, UniCSSUnitType::${v2.unit}))`,
     }
-    // 如果都是像素
-    if (
-      (v1.unit === 'PX' || v1.unit === 'NONE') &&
-      (v2.unit === 'PX' || v2.unit === 'NONE')
-    ) {
-      return `UniCSSTransformOrigin::Px(${toFloat(v1.value)}, ${toFloat(
-        v2.value
-      )})`
-    }
-    // 混合单位，使用完整构造器
-    return `UniCSSTransformOrigin(UniCSSUnitValue(${toFloat(
-      v1.value
-    )}, UniCSSUnitType::${v1.unit}), UniCSSUnitValue(${toFloat(
-      v2.value
-    )}, UniCSSUnitType::${v2.unit}))`
   }
 
   // 三个值的情况 (3D)
@@ -118,34 +126,18 @@ function parseTransformOriginValue(str: string): string {
     const v1 = values[0]
     const v2 = values[1]
     const v3 = values[2]
-
-    // 如果都是百分比（前两个）
-    if (v1.unit === 'PCT' && v2.unit === 'PCT') {
-      return `UniCSSTransformOrigin::Percent(${toFloat(v1.value)}, ${toFloat(
+    return {
+      code: `UniCSSTransformOrigin(UniCSSUnitValue(${toFloat(
+        v1.value
+      )}, UniCSSUnitType::${v1.unit}), UniCSSUnitValue(${toFloat(
         v2.value
-      )}, ${toFloat(v3.value)})`
+      )}, UniCSSUnitType::${v2.unit}), UniCSSUnitValue(${toFloat(
+        v3.value
+      )}, UniCSSUnitType::${v3.unit}))`,
     }
-    // 如果前两个都是像素
-    if (
-      (v1.unit === 'PX' || v1.unit === 'NONE') &&
-      (v2.unit === 'PX' || v2.unit === 'NONE') &&
-      (v3.unit === 'PX' || v3.unit === 'NONE')
-    ) {
-      return `UniCSSTransformOrigin::Px(${toFloat(v1.value)}, ${toFloat(
-        v2.value
-      )}, ${toFloat(v3.value)})`
-    }
-    // 混合单位，使用完整构造器
-    return `UniCSSTransformOrigin(UniCSSUnitValue(${toFloat(
-      v1.value
-    )}, UniCSSUnitType::${v1.unit}), UniCSSUnitValue(${toFloat(
-      v2.value
-    )}, UniCSSUnitType::${v2.unit}), UniCSSUnitValue(${toFloat(
-      v3.value
-    )}, UniCSSUnitType::${v3.unit}))`
   }
 
-  return ''
+  return { code: '' }
 }
 
 // 关键字判断
@@ -182,7 +174,7 @@ function keywordToValue(keyword: string): ParsedValue | null {
 }
 
 // 尝试关键字组合的便捷方法
-function tryKeywordCombination(parts: string[]): string | null {
+function tryKeywordCombination(parts: string[]): string {
   if (parts.length === 1) {
     const part = parts[0].toLowerCase()
     if (part === 'center') {
@@ -240,5 +232,5 @@ function tryKeywordCombination(parts: string[]): string | null {
     }
   }
 
-  return null
+  return ''
 }

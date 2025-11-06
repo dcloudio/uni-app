@@ -1146,8 +1146,8 @@ exports[`transform-origin: 10px 20px 5px: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::Px(10.0f, 20.0f, 5.0f))",
-      "valueCode": "UniCSSTransformOrigin::Px(10.0f, 20.0f, 5.0f)",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(10.0f, UniCSSUnitType::PX), UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(5.0f, UniCSSUnitType::PX)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(10.0f, UniCSSUnitType::PX), UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(5.0f, UniCSSUnitType::PX))",
     },
   },
 }
@@ -1167,8 +1167,8 @@ exports[`transform-origin: 20px 30px: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::Px(20.0f, 30.0f))",
-      "valueCode": "UniCSSTransformOrigin::Px(20.0f, 30.0f)",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(30.0f, UniCSSUnitType::PX)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(30.0f, UniCSSUnitType::PX))",
     },
   },
 }
@@ -1209,8 +1209,8 @@ exports[`transform-origin: 25% 75%: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::Percent(25.0f, 75.0f))",
-      "valueCode": "UniCSSTransformOrigin::Percent(25.0f, 75.0f)",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(25.0f, UniCSSUnitType::PCT), UniCSSUnitValue(75.0f, UniCSSUnitType::PCT)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(25.0f, UniCSSUnitType::PCT), UniCSSUnitValue(75.0f, UniCSSUnitType::PCT))",
     },
   },
 }
@@ -1230,8 +1230,8 @@ exports[`transform-origin: 30% 60% 15px: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::Percent(30.0f, 60.0f, 15.0f))",
-      "valueCode": "UniCSSTransformOrigin::Percent(30.0f, 60.0f, 15.0f)",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(30.0f, UniCSSUnitType::PCT), UniCSSUnitValue(60.0f, UniCSSUnitType::PCT), UniCSSUnitValue(15.0f, UniCSSUnitType::PX)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(30.0f, UniCSSUnitType::PCT), UniCSSUnitValue(60.0f, UniCSSUnitType::PCT), UniCSSUnitValue(15.0f, UniCSSUnitType::PX))",
     },
   },
 }
@@ -1251,8 +1251,8 @@ exports[`transform-origin: 30%: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::Percent(30.0f))",
-      "valueCode": "UniCSSTransformOrigin::Percent(30.0f)",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(30.0f, UniCSSUnitType::PCT)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(30.0f, UniCSSUnitType::PCT))",
     },
   },
 }
@@ -1272,8 +1272,8 @@ exports[`transform-origin: 50% 50%: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::Percent(50.0f, 50.0f))",
-      "valueCode": "UniCSSTransformOrigin::Percent(50.0f, 50.0f)",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT))",
     },
   },
 }
@@ -1290,13 +1290,23 @@ exports[`transform-origin: center center: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: center center: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::Center())",
-      "valueCode": "UniCSSTransformOrigin::Center()",
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transform-origin",
+        "important": false,
+        "prop": "transformOrigin",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "center center",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid transform-origin value: center",
+      "type": "warning",
     },
-  },
+  ],
+  "obj": {},
 }
 `;
 
@@ -1311,13 +1321,23 @@ exports[`transform-origin: center: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: center: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::Center())",
-      "valueCode": "UniCSSTransformOrigin::Center()",
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transform-origin",
+        "important": false,
+        "prop": "transformOrigin",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "center",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid transform-origin value: center",
+      "type": "warning",
     },
-  },
+  ],
+  "obj": {},
 }
 `;
 
@@ -1332,13 +1352,23 @@ exports[`transform-origin: left center: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: left center: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::LeftCenter())",
-      "valueCode": "UniCSSTransformOrigin::LeftCenter()",
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transform-origin",
+        "important": false,
+        "prop": "transformOrigin",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "left center",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid transform-origin value: left",
+      "type": "warning",
     },
-  },
+  ],
+  "obj": {},
 }
 `;
 
@@ -1353,13 +1383,23 @@ exports[`transform-origin: left top: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: left top: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::LeftTop())",
-      "valueCode": "UniCSSTransformOrigin::LeftTop()",
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transform-origin",
+        "important": false,
+        "prop": "transformOrigin",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "left top",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid transform-origin value: left",
+      "type": "warning",
     },
-  },
+  ],
+  "obj": {},
 }
 `;
 
@@ -1374,13 +1414,23 @@ exports[`transform-origin: right bottom: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: right bottom: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::RightBottom())",
-      "valueCode": "UniCSSTransformOrigin::RightBottom()",
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transform-origin",
+        "important": false,
+        "prop": "transformOrigin",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "right bottom",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid transform-origin value: right",
+      "type": "warning",
     },
-  },
+  ],
+  "obj": {},
 }
 `;
 
@@ -1395,13 +1445,23 @@ exports[`transform-origin: top left: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: top left: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin::Percent(0.0f, 0.0f))",
-      "valueCode": "UniCSSTransformOrigin::Percent(0.0f, 0.0f)",
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transform-origin",
+        "important": false,
+        "prop": "transformOrigin",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "top left",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid transform-origin value: top",
+      "type": "warning",
     },
-  },
+  ],
+  "obj": {},
 }
 `;
 
