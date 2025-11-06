@@ -1604,7 +1604,7 @@ const onHostThemeChange = (callback) => {
 };
 const offHostThemeChange = (callbackId) => {
     let id;
-    if (typeof callbackId === 'function') {
+    if (isFunction(callbackId)) {
         THEME_CALLBACK_MAP.forEach(([cb], key) => {
             if (cb === callbackId && id === undefined) {
                 id = key;

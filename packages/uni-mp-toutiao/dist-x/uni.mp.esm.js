@@ -857,7 +857,9 @@ function initPageInstance(mpPageInstance) {
     {
         Object.assign(mpPageInstance, {
             get width() {
-                return tt.getWindowInfo().windowWidth;
+                {
+                    return tt.getSystemInfoSync().windowWidth;
+                }
             },
             get height() {
                 const windowInfo = tt.getWindowInfo();
@@ -865,7 +867,9 @@ function initPageInstance(mpPageInstance) {
                 return windowInfo.windowHeight + windowInfo.screenTop;
             },
             get statusBarHeight() {
-                return tt.getWindowInfo().statusBarHeight;
+                {
+                    return tt.getSystemInfoSync().statusBarHeight;
+                }
             },
             get safeAreaInsets() {
                 const windowInfo = tt.getWindowInfo();
