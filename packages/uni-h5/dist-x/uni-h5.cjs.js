@@ -9915,6 +9915,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
 function useSubscribe(callback, name, multiple, pageId) {
   const instance = vue.getCurrentInstance();
   instance.proxy;
+  pageId = pageId == null ? useCurrentPageId() : pageId;
 }
 let index$c = 0;
 function useContextInfo(_id) {

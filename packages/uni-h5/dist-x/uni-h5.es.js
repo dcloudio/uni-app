@@ -1626,7 +1626,7 @@ function getPageIdByVm(instance2) {
     return getPageProxyId(rootProxy);
   }
 }
-function getCurrentPage$1() {
+function getCurrentPage() {
   const pages = getCurrentPages();
   const len = pages.length;
   if (len) {
@@ -1635,7 +1635,7 @@ function getCurrentPage$1() {
 }
 function getCurrentPageMeta() {
   var _a, _b;
-  const $page = (_b = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
+  const $page = (_b = (_a = getCurrentPage()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
   if ($page) {
     return $page.meta;
   }
@@ -1649,7 +1649,7 @@ function getCurrentPageId() {
 }
 function getCurrentPageVm() {
   var _a;
-  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   if (page) {
     return page.$vm;
   }
@@ -2279,7 +2279,7 @@ function initOn() {
 }
 function onResize$2(res) {
   var _a;
-  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(page, ON_RESIZE, res);
   {
     const dialogPages = page == null ? void 0 : page.$page.getDialogPages();
@@ -2299,7 +2299,7 @@ function onResize$2(res) {
 }
 function onAppEnterForeground(enterOptions2) {
   var _a;
-  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(
     getApp().vm,
     ON_SHOW,
@@ -2314,7 +2314,7 @@ function onAppEnterBackground() {
     ON_HIDE
   );
   invokeHook(
-    (_a = getCurrentPage$1()) == null ? void 0 : _a.vm,
+    (_a = getCurrentPage()) == null ? void 0 : _a.vm,
     ON_HIDE
   );
 }
@@ -7966,7 +7966,7 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
 );
 function removeLastPage() {
   var _a;
-  const page = (_a = getCurrentPage$1()) == null ? void 0 : _a.vm;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   if (!page) {
     return;
   }
@@ -8194,7 +8194,7 @@ const homeDialogPages = [];
 const homeSystemDialogPages = [];
 function getPageElement(page) {
   var _a;
-  const currentPage = getCurrentPage$1();
+  const currentPage = getCurrentPage();
   if (page !== currentPage) {
     const dialogPages = currentPage.getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
@@ -8311,7 +8311,7 @@ class UniPageImpl {
     this.setPageStyle(style);
   }
   getElementById(id2) {
-    const currentPage = getCurrentPage$1();
+    const currentPage = getCurrentPage();
     if (currentPage !== this) {
       return null;
     }
@@ -8325,7 +8325,7 @@ class UniPageImpl {
     return null;
   }
   getHTMLElement() {
-    const currentPage = getCurrentPage$1();
+    const currentPage = getCurrentPage();
     if (currentPage !== this) {
       return null;
     }
@@ -8388,7 +8388,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
   getElementById(id2) {
     var _a;
-    const currentPage = getCurrentPage$1();
+    const currentPage = getCurrentPage();
     if (currentPage !== this.getParentPage()) {
       return null;
     }
@@ -8399,7 +8399,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
   getHTMLElement() {
     var _a;
-    const currentPage = getCurrentPage$1();
+    const currentPage = getCurrentPage();
     if (currentPage !== this.getParentPage()) {
       return null;
     }
@@ -8485,7 +8485,7 @@ function useBackgroundColorContent$1(vm) {
 }
 function handleEscKeyPress(event) {
   if (event.key === "Escape") {
-    const currentPage = getCurrentPage$1();
+    const currentPage = getCurrentPage();
     const dialogPages = currentPage.getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
     if (!dialogPage.$disableEscBack) {
@@ -9553,7 +9553,7 @@ function setupPage(comp) {
       watch(
         [instance2.onReachBottom, instance2.onPageScroll],
         () => {
-          const currentPage = getCurrentPage$1().vm;
+          const currentPage = getCurrentPage().vm;
           if (instance2.proxy === currentPage) {
             initPageScrollListener(instance2, pageMeta);
           }
@@ -9603,9 +9603,10 @@ function setupPage(comp) {
           }
         }
       });
-      subscribeViewMethod(pageMeta.id);
+      const pageId = getPageProxyId(instance2.proxy);
+      subscribeViewMethod(pageId);
       onBeforeUnmount(() => {
-        unsubscribeViewMethod(pageMeta.id);
+        unsubscribeViewMethod(pageId);
         {
           if (instance2.subTree.el) {
             instance2.subTree.el._page = null;
@@ -19479,6 +19480,7 @@ function removeSubscribe(name, pageId) {
 function useSubscribe(callback, name, multiple, pageId) {
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
+  pageId = pageId == null ? useCurrentPageId() : pageId;
   onMounted(() => {
     addSubscribe(name || normalizeEvent(vm), callback, pageId);
     if (multiple || !name) {
@@ -24697,7 +24699,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
       canBack = false;
     }
     {
-      const currentPage = getCurrentPage$1();
+      const currentPage = getCurrentPage();
       if (currentPage) {
         const dialogPages = currentPage.getDialogPages();
         const dialogPage = dialogPages[dialogPages.length - 1];
@@ -30026,7 +30028,7 @@ const _sfc_main = {
     }
   }
 };
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0.5;\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_text = __syscom_0$1;
   const _component_textarea = __syscom_1;
@@ -30150,14 +30152,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, 8, ["class"]);
 }
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
-class UniShowModalFailImpl extends UniError {
+class ShowModalFailImpl extends UniError {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
   }
 }
-class UniHideModalFailImpl extends UniError {
+class HideModalFailImpl extends UniError {
   constructor(errMsg = "hideModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
@@ -30188,7 +30190,7 @@ const showModal$1 = (options) => {
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res = new UniShowModalFailImpl();
+    const res = new ShowModalFailImpl();
     (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
     (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
   });
@@ -30196,7 +30198,7 @@ const showModal$1 = (options) => {
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`);
+      const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
       (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
       (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
       uni.$off(readyEventName);
@@ -30207,7 +30209,7 @@ const showModal$1 = (options) => {
   if (openRet != null) {
     return openRet;
   } else {
-    const res = new UniShowModalFailImpl();
+    const res = new ShowModalFailImpl();
     (_a = options.fail) == null ? void 0 : _a.call(options, res);
     (_b = options.complete) == null ? void 0 : _b.call(options, res);
     return null;
@@ -30215,9 +30217,10 @@ const showModal$1 = (options) => {
 };
 const hideModal$1 = function(options) {
   var _a, _b, _c, _d, _e;
-  const currentPage = getCurrentPage();
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
   if (!currentPage) {
-    const res2 = new UniHideModalFailImpl();
+    const res2 = new HideModalFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;

@@ -1063,13 +1063,13 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 function useCurrentPageId() {
   {
     const { $pageInstance } = getCurrentInstance();
-    return $pageInstance && getPageProxyId($pageInstance.proxy);
+    return $pageInstance && getPageProxyId$1($pageInstance.proxy);
   }
 }
 function getPageIdByVm(instance2) {
   const vm = resolveComponentInstance(instance2);
   if (vm.$page) {
-    return getPageProxyId(vm);
+    return getPageProxyId$1(vm);
   }
   if (!vm.$) {
     return;
@@ -1077,12 +1077,12 @@ function getPageIdByVm(instance2) {
   {
     const { $pageInstance } = vm.$;
     if ($pageInstance) {
-      return getPageProxyId($pageInstance.proxy);
+      return getPageProxyId$1($pageInstance.proxy);
     }
   }
   const rootProxy = vm.$.root.proxy;
   if (rootProxy && rootProxy.$page) {
-    return getPageProxyId(rootProxy);
+    return getPageProxyId$1(rootProxy);
   }
 }
 function getCurrentPage() {
@@ -1157,7 +1157,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
 }
-function getPageProxyId(proxy) {
+function getPageProxyId$1(proxy) {
   var _a, _b;
   return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
 }
@@ -16056,6 +16056,7 @@ function removeSubscribe(name, pageId) {
 function useSubscribe(callback, name, multiple, pageId) {
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
+  pageId = pageId == null ? useCurrentPageId() : pageId;
   onMounted(() => {
     addSubscribe(name || normalizeEvent(vm), callback, pageId);
     if (multiple || !name) {
@@ -16524,9 +16525,10 @@ function setupPage(comp) {
           }
         }
       });
-      subscribeViewMethod(pageMeta.id);
+      const pageId = getPageProxyId(instance2.proxy);
+      subscribeViewMethod(pageId);
       onBeforeUnmount(() => {
-        unsubscribeViewMethod(pageMeta.id);
+        unsubscribeViewMethod(pageId);
       });
       return query;
     }
