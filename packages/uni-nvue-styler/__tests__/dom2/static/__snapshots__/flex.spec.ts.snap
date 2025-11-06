@@ -361,7 +361,7 @@ exports[`justify-content: auto: app-harmony(dom-c) 1`] = `
         Symbol(expanded): true,
         Symbol(normalized): true,
       },
-      "text": "ERROR: property value \`auto\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`)",
+      "text": "ERROR: property value \`auto\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`space-evenly\`)",
       "type": "warning",
     },
   ],
@@ -384,7 +384,7 @@ exports[`justify-content: auto: app-harmony(nv-c) 1`] = `
         Symbol(expanded): true,
         Symbol(normalized): true,
       },
-      "text": "ERROR: property value \`auto\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`)",
+      "text": "ERROR: property value \`auto\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`space-evenly\`)",
       "type": "warning",
     },
   ],
@@ -407,7 +407,7 @@ exports[`justify-content: baseline: app-harmony(dom-c) 1`] = `
         Symbol(expanded): true,
         Symbol(normalized): true,
       },
-      "text": "ERROR: property value \`baseline\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`)",
+      "text": "ERROR: property value \`baseline\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`space-evenly\`)",
       "type": "warning",
     },
   ],
@@ -430,7 +430,7 @@ exports[`justify-content: baseline: app-harmony(nv-c) 1`] = `
         Symbol(expanded): true,
         Symbol(normalized): true,
       },
-      "text": "ERROR: property value \`baseline\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`)",
+      "text": "ERROR: property value \`baseline\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`space-evenly\`)",
       "type": "warning",
     },
   ],
@@ -546,45 +546,20 @@ exports[`justify-content: space-between: app-harmony(nv-c) 1`] = `
 exports[`justify-content: space-evenly: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "justify-content",
-        "important": false,
-        "prop": "justifyContent",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "space-evenly",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "ERROR: property value \`space-evenly\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`)",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "justify-content": {
+      "setterCode": "setStyleJustifyContent(UTSCPP.propertyAccess(UniCSSJustifyContentType, "::", "SpaceEvenly"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSJustifyContentType, "::", "SpaceEvenly")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
 exports[`justify-content: space-evenly: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "justify-content",
-        "important": false,
-        "prop": "justifyContent",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "space-evenly",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "ERROR: property value \`space-evenly\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`)",
-      "type": "warning",
-    },
-  ],
+  "messages": [],
   "obj": {},
 }
 `;
@@ -604,7 +579,7 @@ exports[`justify-content: stretch: app-harmony(dom-c) 1`] = `
         Symbol(expanded): true,
         Symbol(normalized): true,
       },
-      "text": "ERROR: property value \`stretch\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`)",
+      "text": "ERROR: property value \`stretch\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`space-evenly\`)",
       "type": "warning",
     },
   ],
@@ -627,7 +602,7 @@ exports[`justify-content: stretch: app-harmony(nv-c) 1`] = `
         Symbol(expanded): true,
         Symbol(normalized): true,
       },
-      "text": "ERROR: property value \`stretch\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`)",
+      "text": "ERROR: property value \`stretch\` is not supported for \`justify-content\` (supported values are: \`center\`|\`flex-start\`|\`flex-end\`|\`space-between\`|\`space-around\`|\`space-evenly\`)",
       "type": "warning",
     },
   ],
