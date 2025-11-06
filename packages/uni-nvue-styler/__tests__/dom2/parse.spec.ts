@@ -64,6 +64,16 @@ describe('dom2 parse', () => {
     )
     expect(code).toMatchSnapshot()
   })
+  test('null', async () => {
+    const { code } = await parse(`.foo{box-shadow: none;}`, {
+      type: 'uvue',
+      dom2: {
+        platform: DOM2_APP_PLATFORM.APP_HARMONY,
+        target: DOM2_APP_TARGET.DOM_C,
+      },
+    })
+    expect(code).toMatchSnapshot()
+  })
   test('empty', async () => {
     const { code } = await parse(``, {
       type: 'uvue',

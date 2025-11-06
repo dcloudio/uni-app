@@ -531,7 +531,7 @@ var Units = [
 ];
 
 const unitMatchRe = /^(-?(?:\d*\.\d+|\d+\.?\d*))(%|[a-zA-Z]+)?$/;
-function parseUnitValue(value) {
+function parseUnitValue(value, defaultUnit = 'NONE') {
     const unitMatch = value.match(unitMatchRe);
     if (unitMatch) {
         const value = parseFloat(unitMatch[1]);
@@ -539,7 +539,7 @@ function parseUnitValue(value) {
         if (unit === null) {
             return {
                 value: value,
-                unit: 'NONE',
+                unit: defaultUnit,
             };
         }
         return {

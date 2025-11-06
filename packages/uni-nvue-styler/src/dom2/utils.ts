@@ -29,6 +29,9 @@ function objToCppString(
   const entries: string[] = []
   const variableEntries: string[] = []
   Object.entries(obj).forEach(([key, value]) => {
+    if (value == 'null') {
+      value = 'nullptr'
+    }
     const keyString = key.includes('::') ? key : `"${key}"`
     if (depth >= 2) {
       if (key.startsWith('--')) {
