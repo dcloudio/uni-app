@@ -9004,13 +9004,13 @@
               "harmony": {
                 "osVer": "5.0.0",
                 "uniVer": "x",
-                "unixVer": "x"
+                "unixVer": "4.61"
               }
             },
             "mp": {
               "weixin": {
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "4.41"
               }
             },
             "web": {
@@ -9035,13 +9035,13 @@
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "x",
-            "unixVer": "x"
+            "unixVer": "4.61"
           }
         },
         "mp": {
           "weixin": {
             "uniVer": "√",
-            "unixVer": "x"
+            "unixVer": "4.41"
           }
         },
         "web": {
