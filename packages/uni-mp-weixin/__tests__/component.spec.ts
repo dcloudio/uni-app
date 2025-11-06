@@ -334,6 +334,34 @@ describe('mp-weixin: transform component', () => {
 })
 
 describe('mp-weixin: transform component x', () => {
+  test(`rich-text`, () => {
+    assert(
+      `<rich-text selectable/>`,
+      `<rich-text user-select style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<rich-text :selectable="false"/>`,
+      `<rich-text user-select="{{false}}" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
   test(`canvas`, () => {
     assert(
       `<canvas/>`,
