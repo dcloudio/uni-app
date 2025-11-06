@@ -1,4 +1,8 @@
-import { type DOM2_APP_PLATFORM, DOM2_APP_TARGET } from '../types'
+import {
+  type DOM2_APP_LANGUAGE,
+  type DOM2_APP_PLATFORM,
+  DOM2_APP_TARGET,
+} from '../types'
 import {
   type PropertyProcessor,
   PropertyProcessorType,
@@ -47,16 +51,18 @@ const processorMapCache = new Map<string, Record<string, PropertyProcessor>>()
 
 function getCacheKey(
   platform: DOM2_APP_PLATFORM,
-  target: DOM2_APP_TARGET
+  target: DOM2_APP_TARGET,
+  language: DOM2_APP_LANGUAGE
 ): string {
-  return `${platform}:${target}`
+  return `${platform}:${target}:${language}`
 }
 
 export function createDom2PropertyProcessors(
   platform: DOM2_APP_PLATFORM,
-  target: DOM2_APP_TARGET
+  target: DOM2_APP_TARGET,
+  language: DOM2_APP_LANGUAGE
 ) {
-  const cacheKey = getCacheKey(platform, target)
+  const cacheKey = getCacheKey(platform, target, language)
 
   if (processorMapCache.has(cacheKey)) {
     return processorMapCache.get(cacheKey)!
@@ -64,7 +70,6 @@ export function createDom2PropertyProcessors(
   const processorMap: Record<string, PropertyProcessor> = {}
   // 从JSON配置中获取所有支持的属性
   const allProperties = Object.keys(getAppCssJson())
-  const language = target === DOM2_APP_TARGET.ALL ? 'cpp' : 'ts'
 
   allProperties.forEach((propertyName) => {
     // 解析 css 文件样式表时，应该传入ALL，不需要根据target获取setter

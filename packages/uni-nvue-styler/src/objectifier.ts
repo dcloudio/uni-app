@@ -8,7 +8,11 @@ import {
 } from 'postcss'
 import { extend, hasOwn } from '@vue/shared'
 import { COMBINATORS_RE, supportedPropertyReason } from './utils'
-import { type DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './dom2/types'
+import {
+  DOM2_APP_LANGUAGE,
+  type DOM2_APP_PLATFORM,
+  DOM2_APP_TARGET,
+} from './dom2/types'
 import type { PropertyProcessor } from './dom2/processors'
 import { createDom2PropertyProcessors } from './dom2/processors'
 import properties from '../lib/dom2/properties.json'
@@ -64,8 +68,9 @@ export function objectifierWithMessages(
     context.dom2 = {
       propertyProcessors: createDom2PropertyProcessors(
         options.dom2.platform,
-        // css 解析时，应该传入ALL，不需要根据target获取setter
-        DOM2_APP_TARGET.ALL
+        // css 解析时，应该传入ALL，不需要根据target获取setter，且目标语言是cpp
+        DOM2_APP_TARGET.ALL,
+        DOM2_APP_LANGUAGE.CPP
       ),
     }
   }

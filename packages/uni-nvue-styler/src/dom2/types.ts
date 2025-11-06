@@ -1,5 +1,10 @@
 import type { NormalizeOptions } from '../utils'
 
+export enum DOM2_APP_LANGUAGE {
+  TS = 'ts',
+  CPP = 'cpp',
+}
+
 export enum DOM2_APP_PLATFORM {
   APP = 'app',
   APP_ANDROID = 'app-android',

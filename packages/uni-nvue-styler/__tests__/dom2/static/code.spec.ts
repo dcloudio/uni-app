@@ -3,7 +3,7 @@ import { parseDom2StaticStyle } from '../../../src/dom2'
 import { TEST_OPTIONS_LIST } from '../utils'
 
 describe('parseDom2StaticStyle:', () => {
-  const style = `border: 1px solid red;color:red`
+  const style = `border: 1px solid red;color:red;background-color:red`
   test(style, () => {
     TEST_OPTIONS_LIST.forEach((options) => {
       const result = parseDom2StaticStyle(style, {
@@ -12,6 +12,12 @@ describe('parseDom2StaticStyle:', () => {
       })
       expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
     })
+    const result = parseDom2StaticStyle(style, {
+      platform: DOM2_APP_PLATFORM.APP_HARMONY,
+      target: DOM2_APP_TARGET.ALL,
+      genCode: true,
+    })
+    expect(result).toMatchSnapshot(`all`)
   })
 })
 

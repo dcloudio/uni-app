@@ -1,5 +1,6 @@
 import { type Declaration, type Message, Warning } from 'postcss'
 import {
+  DOM2_APP_LANGUAGE,
   DOM2_APP_TARGET,
   type Dom2StaticStylePropertyValue,
   type ParseDom2StaticStyleOptions,
@@ -58,7 +59,8 @@ export function parseDom2StaticStyle(
   // 2. 进入到下边的属性名和值，必须是都已经支持的
   const processors = createDom2PropertyProcessors(
     options.platform,
-    options.target
+    options.target,
+    DOM2_APP_LANGUAGE.TS
   )
 
   for (const declaration of decls) {
@@ -102,6 +104,7 @@ function genCode(
   target: DOM2_APP_TARGET
 ): string {
   if (
+    target === DOM2_APP_TARGET.ALL ||
     target === DOM2_APP_TARGET.DOM_C ||
     target === DOM2_APP_TARGET.NV_C ||
     target === DOM2_APP_TARGET.TXT_C

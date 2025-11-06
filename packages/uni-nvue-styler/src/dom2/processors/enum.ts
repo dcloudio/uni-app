@@ -5,7 +5,7 @@ import {
   createPropertyProcessor,
   createValueProcessorResult,
 } from './utils'
-import { type DOM2_APP_PLATFORM, DOM2_APP_TARGET } from '../types'
+import { DOM2_APP_PLATFORM, type DOM2_APP_TARGET } from '../types'
 
 export function createSetStyleEnumValueProcessor(
   setter: string,
@@ -23,7 +23,7 @@ export function createSetStyleEnumValueProcessor(
 export function createGenEnumCode(
   propertyType: string,
   language: 'cpp' | 'ts',
-  _platform: DOM2_APP_PLATFORM,
+  platform: DOM2_APP_PLATFORM,
   target: DOM2_APP_TARGET
 ) {
   if (language === 'cpp') {
@@ -32,9 +32,8 @@ export function createGenEnumCode(
     }
   }
   if (
-    target === DOM2_APP_TARGET.DOM_C ||
-    target === DOM2_APP_TARGET.NV_C ||
-    target === DOM2_APP_TARGET.TXT_C
+    platform === DOM2_APP_PLATFORM.APP_HARMONY ||
+    platform === DOM2_APP_PLATFORM.APP_IOS
   ) {
     return (enumValue: string) => {
       return genCPPEnumCode(propertyType, enumValue)

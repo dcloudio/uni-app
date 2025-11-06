@@ -3223,13 +3223,18 @@ function processInterpolation(context) {
   if (values.length === 0 && parentNode.type !== 0) {
     return;
   }
-  const grandNode = context.parent.parent && context.parent.parent.node;
-  function isComponent(node) {
-    return !!(node && node.type === 1 && node.tagType === 1);
+  const isDom2 = !!context.options.platform;
+  let isInComponentSlot = false;
+  let shouldReuseParentText = false;
+  if (isDom2) {
+    let isComponent2 = function(node) {
+      return !!(node && node.type === 1 && node.tagType === 1);
+    };
+    const grandNode = context.parent.parent && context.parent.parent.node;
+    isInComponentSlot = parentNode.type === 1 && (parentNode.tagType === 1 || compilerDom.isTemplateNode(parentNode) && isComponent2(grandNode));
+    shouldReuseParentText = !!(!isInComponentSlot && parentNode.loc.source.startsWith("<slot") && parentNode.type === 1 && parentNode.tag === "template" && grandNode && grandNode.tag === "text" && // 确保 slot 只有文本类内容
+    parentNode.children.every((child) => isTextLike(child)));
   }
-  const isInComponentSlot = parentNode.type === 1 && (parentNode.tagType === 1 || compilerDom.isTemplateNode(parentNode) && isComponent(grandNode));
-  const shouldReuseParentText = !isInComponentSlot && parentNode.loc.source.startsWith("<slot") && parentNode.type === 1 && parentNode.tag === "template" && grandNode && grandNode.tag === "text" && // 确保 slot 只有文本类内容
-  parentNode.children.every((child) => isTextLike(child));
   let id;
   if (isInComponentSlot) {
     context.dynamic.flags |= 2;
@@ -3243,7 +3248,7 @@ function processInterpolation(context) {
     id = context.parent.parent.reference();
     context.dynamic.flags |= 2;
   } else {
-    context.template += context.options.platform ? TEXT_PLACEHOLDER : " ";
+    context.template += isDom2 ? TEXT_PLACEHOLDER : " ";
     id = context.reference();
   }
   if (values.length === 0) {
