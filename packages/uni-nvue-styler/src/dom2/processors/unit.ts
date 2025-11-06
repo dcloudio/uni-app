@@ -17,8 +17,11 @@ export function createSetStyleUnitValueProcessor(
   setter: string,
   language: 'cpp' | 'ts'
 ): PropertyProcessor {
-  return createPropertyProcessor((value) => {
-    const unitValue = parseUnitValue(String(value))
+  return createPropertyProcessor((value, propertyName) => {
+    const unitValue = parseUnitValue(
+      String(value),
+      propertyName === 'line-height' ? 'EM' : 'NONE'
+    )
     if (unitValue) {
       if (language === 'cpp') {
         return createValueProcessorResult(
@@ -37,7 +40,7 @@ export function createSetStyleUnitValueProcessor(
 
 const unitMatchRe = /^(-?(?:\d*\.\d+|\d+\.?\d*))(%|[a-zA-Z]+)?$/
 
-export function parseUnitValue(value: string) {
+export function parseUnitValue(value: string, defaultUnit = 'NONE') {
   const unitMatch = value.match(unitMatchRe)
   if (unitMatch) {
     const value = parseFloat(unitMatch[1])
@@ -45,7 +48,7 @@ export function parseUnitValue(value: string) {
     if (unit === null) {
       return {
         value: value,
-        unit: 'NONE',
+        unit: defaultUnit,
       }
     }
     return {

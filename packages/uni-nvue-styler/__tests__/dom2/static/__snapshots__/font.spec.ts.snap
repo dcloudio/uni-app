@@ -210,6 +210,27 @@ exports[`letter-spacing: 10px: app-harmony(nv-c) 1`] = `
 }
 `;
 
+exports[`line-height: 1.4: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "line-height": {
+      "setterCode": "setLineHeight(1.4, UniCSSUnitType.EM)",
+      "valueCode": "new UniCSSUnitValue(1.4, UniCSSUnitType.EM)",
+    },
+  },
+}
+`;
+
+exports[`line-height: 1.4: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
 exports[`line-height: 10px: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,

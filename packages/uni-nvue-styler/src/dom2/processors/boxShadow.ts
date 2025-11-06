@@ -47,7 +47,7 @@ function parseBoxShadowValue(str: string): UniNativeBoxShadow {
   const unitValues = parts
     .filter((n) => n !== 'inset')
     .filter((n) => n !== color)
-    .map(parseUnitValue)
+    .map((v) => parseUnitValue(v))
   if (unitValues.length < 4) {
     unitValues.push(
       ...Array(4 - unitValues.length).fill({ value: 0, unit: 'NONE' })

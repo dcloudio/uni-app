@@ -74,7 +74,7 @@ describe('letter-spacing:', () => {
 })
 
 describe('line-height:', () => {
-  ;['10px', 'normal'].forEach((value) => {
+  ;['1.4', '10px', 'normal'].forEach((value) => {
     test(value, () => {
       const input = `line-height: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
