@@ -1,72 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`pages.json pages check 1`] = `
-{
-  "code": "CompilerError",
-  "loc": {
-    "start": {
-      "column": 14,
-      "line": 7,
-    },
-  },
-  "message": "The page "pages/index/test" does not exist.",
-  "name": "CompilerError",
-  "offsetEnd": 100,
-  "offsetStart": 82,
-}
-`;
+exports[`pages.json pages check 1`] = `[Error: The page "pages/index/test" does not exist.]`;
 
 exports[`pages.json pages check 2`] = `
-"5  |      },
-6  |      {
-7  |        "path": "pages/index/test"
-   |                ^^^^^^^^^^^^^^^^^^
-8  |      }
-9  |    ]"
+"   5 |     },
+   6 |     {
+>  7 |       "path": "pages/index/test"
+     |              ^^^^^^^^^^^^^^^^^^
+   8 |     }
+   9 |   ]
+  10 | }"
 `;
 
-exports[`pages.json subPackages check 1`] = `
-{
-  "code": "CompilerError",
-  "loc": {
-    "start": {
-      "column": 18,
-      "line": 7,
-    },
-  },
-  "message": "The page "pages/API/index/index" does not exist.",
-  "name": "CompilerError",
-  "offsetEnd": 112,
-  "offsetStart": 99,
-}
-`;
+exports[`pages.json subPackages check 1`] = `[Error: The page "pages/API/index/index" does not exist.]`;
 
 exports[`pages.json subPackages check 2`] = `
-"5  |        "pages": [
-6  |          {
-7  |            "path": "index/index"
-   |                    ^^^^^^^^^^^^^
-8  |          }
-9  |        ]"
+"   5 |       "pages": [
+   6 |         {
+>  7 |           "path": "index/index"
+     |                  ^^^^^^^^^^^^^
+   8 |         }
+   9 |       ]
+  10 |     }"
 `;
 
-exports[`pages.json subpackages check 1`] = `
-{
-  "code": "CompilerError",
-  "loc": {
-    "start": {
-      "column": 53,
-      "line": 1,
-    },
-  },
-  "message": "The page "pages/API/index/index" does not exist.",
-  "name": "CompilerError",
-  "offsetEnd": 66,
-  "offsetStart": 53,
-}
-`;
+exports[`pages.json subpackages check 1`] = `[Error: The page "pages/API/index/index" does not exist.]`;
 
 exports[`pages.json subpackages check 2`] = `
-"1  |  {"subpackages":[{"root":"pages/API","pages":[{"path":"index/index"}]}]}
-   |                                                       ^^^^^^^^^^^^^"
+"> 1 | {"subpackages":[{"root":"pages/API","pages":[{"path":"index/index"}]}]}
+    |                                                     ^^^^^^^^^^^^^"
 `;
