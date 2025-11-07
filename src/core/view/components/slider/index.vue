@@ -242,7 +242,17 @@ export default {
     _filterValue (e) {
       const max = Number(this.max)
       const min = Number(this.min)
-      return e < min ? min : e > max ? max : computeController.mul.call(Math.round((e - min) / this.step), this.step) + min
+      if (e < min) return min
+      if (e > max) return max
+
+      // 使用精度控制的除法和乘法操作
+      const steps = Math.round(computeController.div.call((e - min), this.step))
+      const result = computeController.add.call(computeController.mul.call(steps, this.step), min)
+
+      // 最终精度修正：根据step的小数位数来确定结果的小数位数
+      const stepStr = this.step.toString()
+      const decimalPlaces = stepStr.includes('.') ? stepStr.split('.')[1].length : 0
+      return decimalPlaces > 0 ? Number(result.toFixed(decimalPlaces)) : result
     },
     _getValueWidth () {
       return 100 * (this.sliderValue - this.min) / (this.max - this.min) + '%'
