@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import { sync } from 'fast-glob'
 import { parse } from '@vue/compiler-sfc'
-import { type ProcessContext, preprocess } from '../packages/uni-preprocess'
+
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -14,7 +14,7 @@ interface syncExtComponentOptions {
   index?: string
   css?: string
   dir?: string
-  preContext: ProcessContext
+  preContext: unknown
   libX?: syncExtComponentOptions
 }
 const syncExtComponents: Record<string, { web?: syncExtComponentOptions, 'mp-weixin'?: syncExtComponentOptions }> = {
@@ -61,6 +61,7 @@ ${templateContent}
 `
 }
 export function syncExtComponentFile(apiDirs: string[]) {
+  const { preprocess } = require('@dcloudio/uni-preprocess')
   const uniComponentsPath = resolve('../packages/uni-components')
   const uniComponentsVuePath = path.resolve(uniComponentsPath, './src/vue')
   const uniComponentsLibXPath = path.resolve(uniComponentsPath, './lib-x')
@@ -101,7 +102,7 @@ export function syncExtComponentFile(apiDirs: string[]) {
                         if (scriptSetupContent.length) {
                           const regex = /^\s*(import[\s\S]*?from\s+['"][\s\S]*?['"];?)/gm
 
-                          const imports = []
+                          const imports:string[] = []
                           let execResult
                           while (execResult = regex.exec(scriptSetupContent)) {
                             const importStr = execResult[1]

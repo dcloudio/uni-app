@@ -1,15 +1,11 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncExtComponentFile = syncExtComponentFile;
-var fs_extra_1 = __importDefault(require("fs-extra"));
-var path_1 = __importDefault(require("path"));
+exports.syncExtComponentFile = void 0;
+var fs_extra_1 = require("fs-extra");
+var path_1 = require("path");
 var fast_glob_1 = require("fast-glob");
 var compiler_sfc_1 = require("@vue/compiler-sfc");
-var uni_preprocess_1 = require("../packages/uni-preprocess");
 function resolve(file) {
     return path_1.default.resolve(__dirname, file);
 }
@@ -37,6 +33,7 @@ function createVueSFCCode(name, templateContent, scriptContent) {
     return "<script setup lang=\"ts\">\n".concat(scriptContent.import, "\n\ndefineOptions({\n  name: ").concat(JSON.stringify(name), ",\n  __reserved: true,\n  compatConfig: {\n    MODE: 3\n  }\n})\n\n").concat(scriptContent.content, "\n</script>\n\n<template>\n").concat(templateContent, "\n</template>\n");
 }
 function syncExtComponentFile(apiDirs) {
+    var preprocess = require('@dcloudio/uni-preprocess').preprocess;
     var uniComponentsPath = resolve('../packages/uni-components');
     var uniComponentsVuePath = path_1.default.resolve(uniComponentsPath, './src/vue');
     var uniComponentsLibXPath = path_1.default.resolve(uniComponentsPath, './lib-x');
@@ -61,7 +58,7 @@ function syncExtComponentFile(apiDirs) {
                                     case '.vue': {
                                         var originCode = fs_extra_1.default.readFileSync(filePath, { encoding: 'utf-8' });
                                         if (syncExtComponentOption.name) {
-                                            var vueCode = (0, uni_preprocess_1.preprocess)((0, uni_preprocess_1.preprocess)(originCode, { type: 'html', context: syncExtComponentOption.preContext }).code, { type: 'js', context: syncExtComponentOption.preContext }).code;
+                                            var vueCode = preprocess(preprocess(originCode, { type: 'html', context: syncExtComponentOption.preContext }).code, { type: 'js', context: syncExtComponentOption.preContext }).code;
                                             var sfcParseResult = (0, compiler_sfc_1.parse)(vueCode);
                                             if (sfcParseResult.errors.length) {
                                                 console.error("[uni-h5 (syncExtComponentFile)] ".concat(componentName, " parse ").concat(filePath, " error:"), sfcParseResult.errors);
@@ -96,7 +93,7 @@ function syncExtComponentFile(apiDirs) {
                                         // libX 暂只支持 .vue 文件
                                         var libX = syncExtComponentOption.libX;
                                         if (libX) {
-                                            var vueCode = (0, uni_preprocess_1.preprocess)((0, uni_preprocess_1.preprocess)(originCode, { type: 'html', context: libX.preContext }).code, { type: 'js', context: libX.preContext }).code;
+                                            var vueCode = preprocess(preprocess(originCode, { type: 'html', context: libX.preContext }).code, { type: 'js', context: libX.preContext }).code;
                                             fs_extra_1.default.outputFileSync(path_1.default.resolve(uniComponentsLibXPath, "".concat((_g = libX.dir) !== null && _g !== void 0 ? _g : buildInComponentName, "/").concat((_h = libX.index) !== null && _h !== void 0 ? _h : buildInComponentName, ".vue")), vueCode);
                                         }
                                         break;
@@ -106,7 +103,7 @@ function syncExtComponentFile(apiDirs) {
                                     case '.uts': {
                                         var _l = path_1.default.parse(filePath), name_1 = _l.name, ext_1 = _l.ext;
                                         var originCode = fs_extra_1.default.readFileSync(filePath, { encoding: 'utf-8' });
-                                        var preCode = (0, uni_preprocess_1.preprocess)(originCode, {
+                                        var preCode = preprocess(originCode, {
                                             type: 'js',
                                             context: syncExtComponentOption.preContext
                                         }).code;
@@ -125,3 +122,4 @@ function syncExtComponentFile(apiDirs) {
         console.error('[uni-h5 (syncExtComponentFile)] sync ext component file error:', error);
     }
 }
+exports.syncExtComponentFile = syncExtComponentFile;
