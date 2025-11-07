@@ -58,8 +58,8 @@ import { updateCurPageCssVar } from '../../helpers/cssVar'
 //#if _X_
 import { isDialogPageInstance } from '../../x/framework/helpers/utils'
 import { useBackgroundColorContent } from '../../x/framework/setup/page'
-import { getPageProxyId } from '@dcloudio/uni-core'
 //#endif
+import { getPageProxyId } from '@dcloudio/uni-core'
 
 interface SetupComponentOptions {
   clone?: boolean
