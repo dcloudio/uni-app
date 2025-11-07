@@ -27,7 +27,6 @@ export function createSetStyleTransformValueProcessor(
     if (!transformValueCode) {
       return createValueProcessorError(`Invalid transform value: ${value}`)
     }
-
     return createValueProcessorResult(
       `${transformValueCode}`,
       `${setter}(${transformValueCode})`
@@ -35,9 +34,14 @@ export function createSetStyleTransformValueProcessor(
   }, PropertyProcessorType.Struct)
 }
 
+interface TransformArg {
+  value: number
+  unit: string
+}
+
 interface TransformFunction {
   name: string
-  args: number[]
+  args: TransformArg[]
 }
 
 /**
@@ -53,6 +57,15 @@ function toFloatLiteral(value: number): string {
   return `${value}.0f`
 }
 
+/**
+ * 将 TransformArg 转换为 UniCSSUnitValue 代码字符串
+ */
+function argToUnitValue(arg: TransformArg): string {
+  return `UniCSSUnitValue(${toFloatLiteral(arg.value)}, UniCSSUnitType::${
+    arg.unit
+  })`
+}
+
 function stringifyTransformValue(functions: TransformFunction[]): string {
   if (functions.length === 0) {
     return ''
@@ -60,84 +73,109 @@ function stringifyTransformValue(functions: TransformFunction[]): string {
 
   const functionCodes = functions
     .map((func) => {
-      const args = func.args.map(toFloatLiteral)
+      const args = func.args
 
       switch (func.name) {
         case 'translate':
           if (args.length === 1) {
-            return `UniCSSTransformTranslate(${args[0]})`
+            return `UniCSSTransformTranslate(${argToUnitValue(args[0])})`
           }
-          return `UniCSSTransformTranslate(${args[0]}, ${
-            args[1] || toFloatLiteral(0)
-          })`
+          return `UniCSSTransformTranslate(${argToUnitValue(
+            args[0]
+          )}, ${argToUnitValue(args[1] || { value: 0, unit: 'PX' })})`
 
         case 'translateX':
-          return `UniCSSTransformTranslate::TranslateX(${args[0]})`
+          return `UniCSSTransformTranslate::TranslateX(${argToUnitValue(
+            args[0]
+          )})`
 
         case 'translateY':
-          return `UniCSSTransformTranslate::TranslateY(${args[0]})`
+          return `UniCSSTransformTranslate::TranslateY(${argToUnitValue(
+            args[0]
+          )})`
 
         case 'translateZ':
-          return `UniCSSTransformTranslate::TranslateZ(${args[0]})`
+          return `UniCSSTransformTranslate::TranslateZ(${argToUnitValue(
+            args[0]
+          )})`
 
         case 'translate3d':
-          return `UniCSSTransformTranslate(${args[0]}, ${args[1]}, ${args[2]})`
+          return `UniCSSTransformTranslate(${argToUnitValue(
+            args[0]
+          )}, ${argToUnitValue(args[1])}, ${argToUnitValue(args[2])})`
 
         case 'scale':
           if (args.length === 1) {
-            return `UniCSSTransformScale(${args[0]})`
+            return `UniCSSTransformScale(${argToUnitValue(args[0])})`
           }
-          return `UniCSSTransformScale(${args[0]}, ${args[1]})`
+          return `UniCSSTransformScale(${argToUnitValue(
+            args[0]
+          )}, ${argToUnitValue(args[1])})`
 
         case 'scaleX':
-          return `UniCSSTransformScale::ScaleX(${args[0]})`
+          return `UniCSSTransformScale::ScaleX(${argToUnitValue(args[0])})`
 
         case 'scaleY':
-          return `UniCSSTransformScale::ScaleY(${args[0]})`
+          return `UniCSSTransformScale::ScaleY(${argToUnitValue(args[0])})`
 
         case 'scaleZ':
-          return `UniCSSTransformScale::ScaleZ(${args[0]})`
+          return `UniCSSTransformScale::ScaleZ(${argToUnitValue(args[0])})`
 
         case 'scale3d':
-          return `UniCSSTransformScale(${args[0]}, ${args[1]}, ${args[2]})`
+          return `UniCSSTransformScale(${argToUnitValue(
+            args[0]
+          )}, ${argToUnitValue(args[1])}, ${argToUnitValue(args[2])})`
 
         case 'rotate':
-          return `UniCSSTransformRotate(${args[0]})`
+          return `UniCSSTransformRotate(${argToUnitValue(args[0])})`
 
         case 'rotateX':
-          return `UniCSSTransformRotate::RotateX(${args[0]})`
+          return `UniCSSTransformRotate::RotateX(${argToUnitValue(args[0])})`
 
         case 'rotateY':
-          return `UniCSSTransformRotate::RotateY(${args[0]})`
+          return `UniCSSTransformRotate::RotateY(${argToUnitValue(args[0])})`
 
         case 'rotateZ':
-          return `UniCSSTransformRotate::RotateZ(${args[0]})`
+          return `UniCSSTransformRotate::RotateZ(${argToUnitValue(args[0])})`
 
         case 'rotate3d':
-          return `UniCSSTransformRotate::Rotate3D(${args[0]}, ${args[1]}, ${args[2]}, ${args[3]})`
+          return `UniCSSTransformRotate::Rotate3D(${argToUnitValue(
+            args[0]
+          )}, ${argToUnitValue(args[1])}, ${argToUnitValue(
+            args[2]
+          )}, ${argToUnitValue(args[3])})`
 
         case 'skew':
           if (args.length === 1) {
-            return `UniCSSTransformSkew(${args[0]})`
+            return `UniCSSTransformSkew(${argToUnitValue(args[0])})`
           }
-          return `UniCSSTransformSkew(${args[0]}, ${
-            args[1] || toFloatLiteral(0)
-          })`
+          return `UniCSSTransformSkew(${argToUnitValue(
+            args[0]
+          )}, ${argToUnitValue(args[1] || { value: 0, unit: 'DEG' })})`
 
         case 'skewX':
-          return `UniCSSTransformSkew::SkewX(${args[0]})`
+          return `UniCSSTransformSkew(${argToUnitValue(args[0])})`
 
         case 'skewY':
-          return `UniCSSTransformSkew::SkewY(${args[0]})`
+          return `UniCSSTransformSkew(${argToUnitValue({
+            value: 0,
+            unit: 'DEG',
+          })}, ${argToUnitValue(args[0])})`
 
         case 'matrix':
-          return `UniCSSTransformMatrix(${args.join(', ')})`
+          // matrix 仍然使用 float，不包装 UniCSSUnitValue
+          return `UniCSSTransformMatrix(${args
+            .map((arg) => toFloatLiteral(arg.value))
+            .join(', ')})`
 
         case 'matrix3d':
-          return `UniCSSTransformMatrix3D({${args.join(', ')}})`
+          // matrix3d 仍然使用 float，不包装 UniCSSUnitValue
+          return `UniCSSTransformMatrix3D({${args
+            .map((arg) => toFloatLiteral(arg.value))
+            .join(', ')}})`
 
         case 'perspective':
-          return `UniCSSTransformPerspective(${args[0]})`
+          return `UniCSSTransformPerspective(${argToUnitValue(args[0])})`
 
         default:
           return ''
@@ -176,10 +214,13 @@ function parseTransformValue(str: string): TransformFunction[] {
   return functions
 }
 
-function parseTransformArgs(funcName: string, argsString: string): number[] {
+function parseTransformArgs(
+  funcName: string,
+  argsString: string
+): TransformArg[] {
   const parts = argsString.split(/[,\s]+/).filter((part) => part.trim() !== '')
 
-  const args: number[] = []
+  const args: TransformArg[] = []
 
   for (const part of parts) {
     const trimmed = part.trim()
@@ -187,22 +228,23 @@ function parseTransformArgs(funcName: string, argsString: string): number[] {
     if (isAngleFunction(funcName)) {
       const angleValue = parseAngleValue(trimmed)
       if (angleValue !== null) {
-        args.push(angleValue)
+        args.push({ value: angleValue, unit: 'DEG' })
       }
     } else if (isScaleFunction(funcName)) {
       const numValue = parseFloat(trimmed)
       if (!isNaN(numValue)) {
-        args.push(numValue)
+        args.push({ value: numValue, unit: 'NONE' })
       }
     } else if (funcName === 'matrix' || funcName === 'matrix3d') {
       const numValue = parseFloat(trimmed)
       if (!isNaN(numValue)) {
-        args.push(numValue)
+        args.push({ value: numValue, unit: 'NONE' })
       }
     } else {
+      // translate 系列和 perspective
       const unitValue = parseUnitValue(trimmed)
       if (unitValue) {
-        args.push(unitValue.value)
+        args.push({ value: unitValue.value, unit: unitValue.unit })
       }
     }
   }
