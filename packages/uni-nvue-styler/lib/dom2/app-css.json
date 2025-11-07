@@ -8,7 +8,17 @@
         }
       }
     },
-    "values": ["auto", "flex-start", "center", "flex-end", "stretch", "baseline", "space-between", "space-around", "space-evenly"],
+    "values": [
+      "auto",
+      "flex-start",
+      "center",
+      "flex-end",
+      "stretch",
+      "baseline",
+      "space-between",
+      "space-around",
+      "space-evenly"
+    ],
     "defaultValue": "stretch"
   },
   "align-items": {
@@ -20,7 +30,17 @@
         }
       }
     },
-    "values": ["auto", "flex-start", "center", "flex-end", "stretch", "baseline", "space-between", "space-around", "space-evenly"],
+    "values": [
+      "auto",
+      "flex-start",
+      "center",
+      "flex-end",
+      "stretch",
+      "baseline",
+      "space-between",
+      "space-around",
+      "space-evenly"
+    ],
     "defaultValue": "stretch"
   },
   "align-self": {
@@ -32,20 +52,25 @@
         }
       }
     },
-    "values": ["auto", "flex-start", "center", "flex-end", "stretch", "baseline", "space-between", "space-around", "space-evenly"],
+    "values": [
+      "auto",
+      "flex-start",
+      "center",
+      "flex-end",
+      "stretch",
+      "baseline",
+      "space-between",
+      "space-around",
+      "space-evenly"
+    ],
     "defaultValue": "auto"
   },
   "flex-basis": {
-    "type": "UniCSSFlexBasisType",
+    "type": ["UniCSSFlexBasisType", "UniCSSUnitValue"],
     "uniPlatform": {
       "app": {
-        "nv-c": {
-          "setter": "flexBasis"
-        }
-      },
-      "app-android": {
-        "nv-kt": {
-          "setter": "flexBasis"
+        "dom-c": {
+          "setter": "setStyleFlexBasis"
         }
       }
     },
@@ -105,7 +130,17 @@
         }
       }
     },
-    "values": ["auto", "flex-start", "center", "flex-end", "stretch", "baseline", "space-between", "space-around", "space-evenly"],
+    "values": [
+      "auto",
+      "flex-start",
+      "center",
+      "flex-end",
+      "stretch",
+      "baseline",
+      "space-between",
+      "space-around",
+      "space-evenly"
+    ],
     "defaultValue": "flex-start"
   },
   "bottom": {
@@ -261,13 +296,13 @@
     "uniPlatform": {
       "app": {
         "nv-c": {
-		  "type": "UniNativeVisibilityType",
+          "type": "UniNativeVisibilityType",
           "setter": "visibility"
         }
       },
       "app-android": {
         "nv-kt": {
-		  "type": "UniNativeVisibilityType",
+          "type": "UniNativeVisibilityType",
           "setter": "visibility"
         }
       }
@@ -405,7 +440,7 @@
         }
       }
     },
-    "values": ["none", "solid", "dashed", "dotted" ],
+    "values": ["none", "solid", "dashed", "dotted"],
     "defaultValue": "none"
   },
   "border-bottom-style": {
@@ -429,7 +464,7 @@
         }
       }
     },
-    "values": ["none", "solid", "dashed", "dotted" ],
+    "values": ["none", "solid", "dashed", "dotted"],
     "defaultValue": "none"
   },
   "border-left-style": {
@@ -453,7 +488,7 @@
         }
       }
     },
-    "values": ["none", "solid", "dashed", "dotted" ],
+    "values": ["none", "solid", "dashed", "dotted"],
     "defaultValue": "none"
   },
   "border-right-style": {
@@ -477,7 +512,7 @@
         }
       }
     },
-    "values": ["none", "solid", "dashed", "dotted" ],
+    "values": ["none", "solid", "dashed", "dotted"],
     "defaultValue": "none"
   },
   "border-top-style": {
@@ -501,7 +536,7 @@
         }
       }
     },
-    "values": ["none", "solid", "dashed", "dotted" ],
+    "values": ["none", "solid", "dashed", "dotted"],
     "defaultValue": "none"
   },
   "border-bottom-width": {
@@ -603,23 +638,6 @@
         }
       }
     }
-  },
-  "border-width": {
-    "type": "UniCSSBorderWidthType",
-    "uniPlatform": {
-      "app": {
-        "nv-c": {
-          "setter": "borderWidth"
-        }
-      },
-      "app-android": {
-        "nv-kt": {
-          "setter": "borderWidth"
-        }
-      }
-    },
-    "values": ["thin", "medium", "thick"],
-    "defaultValue": "medium"
   },
   "box-shadow": {
     "type": "UniNativeBoxShadow",
@@ -1037,7 +1055,7 @@
         }
       }
     },
-    "values": ["clip", "ellipsis" ],
+    "values": ["clip", "ellipsis"],
     "defaultValue": "clip"
   },
   "text-shadow": {
@@ -1069,7 +1087,14 @@
         }
       }
     },
-    "values": ["normal", "nowrap", "pre", "pre-wrap", "pre-line", "break-spaces"],
+    "values": [
+      "normal",
+      "nowrap",
+      "pre",
+      "pre-wrap",
+      "pre-line",
+      "break-spaces"
+    ],
     "defaultValue": "normal"
   },
   "--*": {

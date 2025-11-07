@@ -26,7 +26,7 @@ describe('flex-wrap:', () => {
 })
 
 describe('flex-basis:', () => {
-  ;['auto', '10px', '50%'].forEach((value) => {
+  ;['auto', 'content', '10px', '50%'].forEach((value) => {
     test(value, () => {
       const input = `flex-basis: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
