@@ -1,1137 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`box-shadow: 5px 5px 10px rgba(0,0,0,0.3): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`box-shadow: 5px 5px 10px rgba(0,0,0,0.3): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "box-shadow": {
-      "setterCode": "boxShadow(UniNativeBoxShadow(false, 5, 5, 10, 0, 0x4d000000))",
-      "valueCode": "UniNativeBoxShadow(false, 5, 5, 10, 0, 0x4d000000)",
-    },
-  },
-}
-`;
-
-exports[`box-shadow: 5px 5px red: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`box-shadow: 5px 5px red: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "box-shadow": {
-      "setterCode": "boxShadow(UniNativeBoxShadow(false, 5, 5, 0, 0, 0xffff0000))",
-      "valueCode": "UniNativeBoxShadow(false, 5, 5, 0, 0, 0xffff0000)",
-    },
-  },
-}
-`;
-
-exports[`box-shadow: inset 0 0 5px #123456: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`box-shadow: inset 0 0 5px #123456: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "box-shadow": {
-      "setterCode": "boxShadow(UniNativeBoxShadow(true, 0, 0, 5, 0, 0xff123456))",
-      "valueCode": "UniNativeBoxShadow(true, 0, 0, 5, 0, 0xff123456)",
-    },
-  },
-}
-`;
-
-exports[`box-shadow: invalid: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`box-shadow: invalid: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "box-shadow": {
-      "setterCode": "boxShadow(UniNativeBoxShadow(false, 0, 0, 0, 0, 0))",
-      "valueCode": "UniNativeBoxShadow(false, 0, 0, 0, 0, 0)",
-    },
-  },
-}
-`;
-
-exports[`box-shadow: none: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`box-shadow: none: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "box-shadow": {
-      "setterCode": "boxShadow(null)",
-      "valueCode": "null",
-    },
-  },
-}
-`;
-
-exports[`box-sizing: border-box: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "box-sizing": {
-      "setterCode": "setStyleBoxSizing(UTSCPP.propertyAccess(UniCSSBoxSizingType, "::", "BorderBox"))",
-      "valueCode": "UTSCPP.propertyAccess(UniCSSBoxSizingType, "::", "BorderBox")",
-    },
-  },
-}
-`;
-
-exports[`box-sizing: border-box: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`box-sizing: content-box: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "box-sizing": {
-      "setterCode": "setStyleBoxSizing(UTSCPP.propertyAccess(UniCSSBoxSizingType, "::", "ContentBox"))",
-      "valueCode": "UTSCPP.propertyAccess(UniCSSBoxSizingType, "::", "ContentBox")",
-    },
-  },
-}
-`;
-
-exports[`box-sizing: content-box: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-bottom-10px: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "margin-bottom": {
-      "setterCode": "setStyleMarginBottom(10, UniCSSUnitType.PX)",
-      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
-    },
-  },
-}
-`;
-
-exports[`margin: margin-bottom-10px: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-bottom-auto: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "margin-bottom",
-        "important": false,
-        "prop": "marginBottom",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: auto",
-      "type": "warning",
-    },
-  ],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-bottom-auto: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-left-10px: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "margin-left": {
-      "setterCode": "setStyleMarginLeft(10, UniCSSUnitType.PX)",
-      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
-    },
-  },
-}
-`;
-
-exports[`margin: margin-left-10px: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-left-auto: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "margin-left",
-        "important": false,
-        "prop": "marginLeft",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: auto",
-      "type": "warning",
-    },
-  ],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-left-auto: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-right-10px: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "margin-right": {
-      "setterCode": "setStyleMarginRight(10, UniCSSUnitType.PX)",
-      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
-    },
-  },
-}
-`;
-
-exports[`margin: margin-right-10px: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-right-auto: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "margin-right",
-        "important": false,
-        "prop": "marginRight",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: auto",
-      "type": "warning",
-    },
-  ],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-right-auto: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-top-10px: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "margin-top": {
-      "setterCode": "setStyleMarginTop(10, UniCSSUnitType.PX)",
-      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
-    },
-  },
-}
-`;
-
-exports[`margin: margin-top-10px: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-top-auto: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "margin-top",
-        "important": false,
-        "prop": "marginTop",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: auto",
-      "type": "warning",
-    },
-  ],
-  "obj": {},
-}
-`;
-
-exports[`margin: margin-top-auto: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`opacity: 0.5: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`opacity: 0.5: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "opacity": {
-      "setterCode": "opacity(0.5)",
-      "valueCode": "0.5",
-    },
-  },
-}
-`;
-
-exports[`opacity: 0: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`opacity: 0: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "opacity": {
-      "setterCode": "opacity(0)",
-      "valueCode": "0",
-    },
-  },
-}
-`;
-
-exports[`opacity: 1: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`opacity: 1: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "opacity": {
-      "setterCode": "opacity(1)",
-      "valueCode": "1",
-    },
-  },
-}
-`;
-
-exports[`overflow: hidden: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`overflow: hidden: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "overflow": {
-      "setterCode": "overflow(UTSCPP.propertyAccess(UniNativeOverflowType, "::", "Hidden"))",
-      "valueCode": "UTSCPP.propertyAccess(UniNativeOverflowType, "::", "Hidden")",
-    },
-  },
-}
-`;
-
-exports[`overflow: visible: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`overflow: visible: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "overflow": {
-      "setterCode": "overflow(UTSCPP.propertyAccess(UniNativeOverflowType, "::", "Visible"))",
-      "valueCode": "UTSCPP.propertyAccess(UniNativeOverflowType, "::", "Visible")",
-    },
-  },
-}
-`;
-
-exports[`padding: padding-bottom-5%: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "padding-bottom": {
-      "setterCode": "setStylePaddingBottom(5, UniCSSUnitType.PCT)",
-      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PCT)",
-    },
-  },
-}
-`;
-
-exports[`padding: padding-bottom-5%: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`padding: padding-bottom-10px: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "padding-bottom": {
-      "setterCode": "setStylePaddingBottom(10, UniCSSUnitType.PX)",
-      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
-    },
-  },
-}
-`;
-
-exports[`padding: padding-bottom-10px: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`padding: padding-left-5%: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "padding-left": {
-      "setterCode": "setStylePaddingLeft(5, UniCSSUnitType.PCT)",
-      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PCT)",
-    },
-  },
-}
-`;
-
-exports[`padding: padding-left-5%: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`padding: padding-left-10px: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "padding-left": {
-      "setterCode": "setStylePaddingLeft(10, UniCSSUnitType.PX)",
-      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
-    },
-  },
-}
-`;
-
-exports[`padding: padding-left-10px: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`padding: padding-right-5%: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "padding-right": {
-      "setterCode": "setStylePaddingRight(5, UniCSSUnitType.PCT)",
-      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PCT)",
-    },
-  },
-}
-`;
-
-exports[`padding: padding-right-5%: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`padding: padding-right-10px: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "padding-right": {
-      "setterCode": "setStylePaddingRight(10, UniCSSUnitType.PX)",
-      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
-    },
-  },
-}
-`;
-
-exports[`padding: padding-right-10px: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`padding: padding-top-5%: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "padding-top": {
-      "setterCode": "setStylePaddingTop(5, UniCSSUnitType.PCT)",
-      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PCT)",
-    },
-  },
-}
-`;
-
-exports[`padding: padding-top-5%: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`padding: padding-top-10px: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "padding-top": {
-      "setterCode": "setStylePaddingTop(10, UniCSSUnitType.PX)",
-      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
-    },
-  },
-}
-`;
-
-exports[`padding: padding-top-10px: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`pointer-events: auto: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`pointer-events: auto: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "pointer-events": {
-      "setterCode": "pointerEvents(UTSCPP.propertyAccess(UniNativePointerEventType, "::", "Auto"))",
-      "valueCode": "UTSCPP.propertyAccess(UniNativePointerEventType, "::", "Auto")",
-    },
-  },
-}
-`;
-
-exports[`pointer-events: none: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`pointer-events: none: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "pointer-events": {
-      "setterCode": "pointerEvents(UTSCPP.propertyAccess(UniNativePointerEventType, "::", "None"))",
-      "valueCode": "UTSCPP.propertyAccess(UniNativePointerEventType, "::", "None")",
-    },
-  },
-}
-`;
-
-exports[`transform: matrix(1, 0.5, -0.5, 1, 10, 20): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: matrix(1, 0.5, -0.5, 1, 10, 20): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformMatrix(1.0f, 0.5f, -0.5f, 1.0f, 10.0f, 20.0f)})",
-      "valueCode": "{UniCSSTransformMatrix(1.0f, 0.5f, -0.5f, 1.0f, 10.0f, 20.0f)}",
-    },
-  },
-}
-`;
-
-exports[`transform: perspective(1000px): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: perspective(1000px): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformPerspective(UniCSSUnitValue(1000.0f, UniCSSUnitType::PX))})",
-      "valueCode": "{UniCSSTransformPerspective(UniCSSUnitValue(1000.0f, UniCSSUnitType::PX))}",
-    },
-  },
-}
-`;
-
-exports[`transform: rotate(30deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: rotate(30deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: rotate3d(1, 1, 1, 45deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: rotate3d(1, 1, 1, 45deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformRotate::Rotate3D(UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformRotate::Rotate3D(UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: rotateX(45deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: rotateX(45deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformRotate::RotateX(UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformRotate::RotateX(UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: rotateY(60deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: rotateY(60deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformRotate::RotateY(UniCSSUnitValue(60.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformRotate::RotateY(UniCSSUnitValue(60.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: rotateZ(90deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: rotateZ(90deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformRotate::RotateZ(UniCSSUnitValue(90.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformRotate::RotateZ(UniCSSUnitValue(90.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: scale(1.2): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: scale(1.2): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE))})",
-      "valueCode": "{UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE))}",
-    },
-  },
-}
-`;
-
-exports[`transform: scale(1.2, 1.5): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: scale(1.2, 1.5): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE))})",
-      "valueCode": "{UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE))}",
-    },
-  },
-}
-`;
-
-exports[`transform: scale3d(1.2, 1.5, 1.0): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: scale3d(1.2, 1.5, 1.0): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE), UniCSSUnitValue(1.0f, UniCSSUnitType::NONE))})",
-      "valueCode": "{UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE), UniCSSUnitValue(1.0f, UniCSSUnitType::NONE))}",
-    },
-  },
-}
-`;
-
-exports[`transform: skew(15deg, 0deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: skew(15deg, 0deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(0.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(0.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: skew(15deg, 30deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: skew(15deg, 30deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(30.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(30.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: skewX(20deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: skewX(20deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformSkew(UniCSSUnitValue(20.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformSkew(UniCSSUnitValue(20.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: skewY(25deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: skewY(25deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformSkew(UniCSSUnitValue(0.0f, UniCSSUnitType::DEG), UniCSSUnitValue(25.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformSkew(UniCSSUnitValue(0.0f, UniCSSUnitType::DEG), UniCSSUnitValue(25.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 20, 0, 1): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 20, 0, 1): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformMatrix3D({1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 10.0f, 20.0f, 0.0f, 1.0f})})",
-      "valueCode": "{UniCSSTransformMatrix3D({1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 10.0f, 20.0f, 0.0f, 1.0f})}",
-    },
-  },
-}
-`;
-
-exports[`transform: transform: skew(15deg, 30deg) skewX(20deg) skewY(25deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: transform: skew(15deg, 30deg) skewX(20deg) skewY(25deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformSkew(UniCSSUnitValue(20.0f, UniCSSUnitType::DEG)), UniCSSTransformSkew(UniCSSUnitValue(0.0f, UniCSSUnitType::DEG), UniCSSUnitValue(25.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformSkew(UniCSSUnitValue(20.0f, UniCSSUnitType::DEG)), UniCSSTransformSkew(UniCSSUnitValue(0.0f, UniCSSUnitType::DEG), UniCSSUnitValue(25.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: translate(40px, 0px) rotate(30deg) scale(1.2) skew(15deg, 0deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: translate(40px, 0px) rotate(30deg) scale(1.2) skew(15deg, 0deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX)), UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE)), UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(0.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX)), UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE)), UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(0.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: translate(40px, 0px) rotate(30deg) scale(1.2): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: translate(40px, 0px) rotate(30deg) scale(1.2): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX)), UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE))})",
-      "valueCode": "{UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX)), UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE))}",
-    },
-  },
-}
-`;
-
-exports[`transform: translate(40px, 0px): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: translate(40px, 0px): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX))})",
-      "valueCode": "{UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX))}",
-    },
-  },
-}
-`;
-
-exports[`transform: translate3d(40px, 0px, 10px): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: translate3d(40px, 0px, 10px): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX), UniCSSUnitValue(10.0f, UniCSSUnitType::PX))})",
-      "valueCode": "{UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX), UniCSSUnitValue(10.0f, UniCSSUnitType::PX))}",
-    },
-  },
-}
-`;
-
-exports[`transform: translate3d(40px, 20px, 10px) scale3d(1.2, 1.5, 1.0) rotate3d(1, 1, 1, 45deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: translate3d(40px, 20px, 10px) scale3d(1.2, 1.5, 1.0) rotate3d(1, 1, 1, 45deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(10.0f, UniCSSUnitType::PX)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE), UniCSSUnitValue(1.0f, UniCSSUnitType::NONE)), UniCSSTransformRotate::Rotate3D(UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(10.0f, UniCSSUnitType::PX)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE), UniCSSUnitValue(1.0f, UniCSSUnitType::NONE)), UniCSSTransformRotate::Rotate3D(UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
-exports[`transform: translateX(40px) translateY(20px) translateZ(10px) rotateX(45deg) rotateY(60deg) rotateZ(90deg): app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transform: translateX(40px) translateY(20px) translateZ(10px) rotateX(45deg) rotateY(60deg) rotateZ(90deg): app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate::TranslateX(UniCSSUnitValue(40.0f, UniCSSUnitType::PX)), UniCSSTransformTranslate::TranslateY(UniCSSUnitValue(20.0f, UniCSSUnitType::PX)), UniCSSTransformTranslate::TranslateZ(UniCSSUnitValue(10.0f, UniCSSUnitType::PX)), UniCSSTransformRotate::RotateX(UniCSSUnitValue(45.0f, UniCSSUnitType::DEG)), UniCSSTransformRotate::RotateY(UniCSSUnitValue(60.0f, UniCSSUnitType::DEG)), UniCSSTransformRotate::RotateZ(UniCSSUnitValue(90.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformTranslate::TranslateX(UniCSSUnitValue(40.0f, UniCSSUnitType::PX)), UniCSSTransformTranslate::TranslateY(UniCSSUnitValue(20.0f, UniCSSUnitType::PX)), UniCSSTransformTranslate::TranslateZ(UniCSSUnitValue(10.0f, UniCSSUnitType::PX)), UniCSSTransformRotate::RotateX(UniCSSUnitValue(45.0f, UniCSSUnitType::DEG)), UniCSSTransformRotate::RotateY(UniCSSUnitValue(60.0f, UniCSSUnitType::DEG)), UniCSSTransformRotate::RotateZ(UniCSSUnitValue(90.0f, UniCSSUnitType::DEG))}",
-    },
-  },
-}
-`;
-
 exports[`transform-origin: 10px 20px 5px: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
@@ -1279,6 +147,58 @@ exports[`transform-origin: 50% 50%: app-harmony(nv-c) 1`] = `
 }
 `;
 
+exports[`transform-origin: bottom center 10%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: bottom center 10%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transform-origin",
+        "important": false,
+        "prop": "transformOrigin",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "bottom center 10%",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid transform-origin value: bottom",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: bottom: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: bottom: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE))",
+    },
+  },
+}
+`;
+
 exports[`transform-origin: center center: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
@@ -1290,23 +210,13 @@ exports[`transform-origin: center center: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: center center: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transform-origin",
-        "important": false,
-        "prop": "transformOrigin",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "center center",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid transform-origin value: center",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT))",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1321,23 +231,13 @@ exports[`transform-origin: center: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: center: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transform-origin",
-        "important": false,
-        "prop": "transformOrigin",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "center",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid transform-origin value: center",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE))",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1352,6 +252,48 @@ exports[`transform-origin: left center: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: left center: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT))",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: left top 60px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: left top 60px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(60.0f, UniCSSUnitType::PX)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(60.0f, UniCSSUnitType::PX))",
+    },
+  },
+}
+`;
+
+exports[`transform-origin: left top right: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transform-origin: left top right: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
   "messages": [
     Warning {
       "node": CustomDeclaration {
@@ -1360,11 +302,11 @@ exports[`transform-origin: left center: app-harmony(nv-c) 1`] = `
         "prop": "transformOrigin",
         "remove": [Function],
         "replaceWith": [Function],
-        "value": "left center",
+        "value": "left top right",
         Symbol(expanded): true,
         Symbol(normalized): true,
       },
-      "text": "Invalid transform-origin value: left",
+      "text": "Invalid transform-origin value: right",
       "type": "warning",
     },
   ],
@@ -1383,23 +325,34 @@ exports[`transform-origin: left top: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: left top: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transform-origin",
-        "important": false,
-        "prop": "transformOrigin",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "left top",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid transform-origin value: left",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT))",
     },
-  ],
+  },
+}
+`;
+
+exports[`transform-origin: left: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
   "obj": {},
+}
+`;
+
+exports[`transform-origin: left: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE))",
+    },
+  },
 }
 `;
 
@@ -1414,23 +367,34 @@ exports[`transform-origin: right bottom: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: right bottom: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transform-origin",
-        "important": false,
-        "prop": "transformOrigin",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "right bottom",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid transform-origin value: right",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(100.0f, UniCSSUnitType::PCT)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(100.0f, UniCSSUnitType::PCT))",
     },
-  ],
+  },
+}
+`;
+
+exports[`transform-origin: right: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
   "obj": {},
+}
+`;
+
+exports[`transform-origin: right: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE))",
+    },
+  },
 }
 `;
 
@@ -1465,7 +429,7 @@ exports[`transform-origin: top left: app-harmony(nv-c) 1`] = `
 }
 `;
 
-exports[`transition-delay: 0.5s: app-harmony(dom-c) 1`] = `
+exports[`transform-origin: top: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
@@ -1473,741 +437,15 @@ exports[`transition-delay: 0.5s: app-harmony(dom-c) 1`] = `
 }
 `;
 
-exports[`transition-delay: 0.5s: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-delay: 0s: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-delay: 0s: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-delay: 200ms: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-delay: 200ms: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-duration: 0.3s: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-duration: 0.3s: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-duration: 1s: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-duration: 1s: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-duration: 150ms: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-duration: 150ms: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: all: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: all: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: background-color: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: background-color: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: border-bottom-color: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: border-bottom-color: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: border-color: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: border-color: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: border-left-color: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: border-left-color: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: border-right-color: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: border-right-color: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: border-top-color: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: border-top-color: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: bottom: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: bottom: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: height: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: height: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: left: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: left: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: margin: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: margin: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: margin-bottom: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: margin-bottom: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: margin-left: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: margin-left: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: margin-right: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: margin-right: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: margin-top: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: margin-top: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: none: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: none: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: opacity: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: opacity: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: padding: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: padding: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: padding-bottom: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: padding-bottom: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: padding-left: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: padding-left: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: padding-right: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: padding-right: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: padding-top: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: padding-top: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: right: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: right: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: top: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: top: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: transform: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: transform: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: width: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-property: width: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: cubic-bezier: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transition-timing-function",
-        "important": false,
-        "prop": "transitionTimingFunction",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "cubic-bezier",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "ERROR: property value \`cubic-bezier\` is not supported for \`transition-timing-function\` (supported values are: \`linear\`|\`ease\`|\`ease-in\`|\`ease-out\`|\`ease-in-out\`|\`cubic-bezier(n,n,n,n)\`)",
-      "type": "warning",
-    },
-  ],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: cubic-bezier: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transition-timing-function",
-        "important": false,
-        "prop": "transitionTimingFunction",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "cubic-bezier",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "ERROR: property value \`cubic-bezier\` is not supported for \`transition-timing-function\` (supported values are: \`linear\`|\`ease\`|\`ease-in\`|\`ease-out\`|\`ease-in-out\`|\`cubic-bezier(n,n,n,n)\`)",
-      "type": "warning",
-    },
-  ],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: ease: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: ease: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: ease-in: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: ease-in: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: ease-in-out: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: ease-in-out: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: ease-out: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: ease-out: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: linear: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`transition-timing-function: linear: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`z-index: 0: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`z-index: 0: app-harmony(nv-c) 1`] = `
+exports[`transform-origin: top: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
   "obj": {
-    "z-index": {
-      "setterCode": "zIndex(0)",
-      "valueCode": "0",
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE)))",
+      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE))",
     },
   },
-}
-`;
-
-exports[`z-index: 1: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`z-index: 1: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "z-index": {
-      "setterCode": "zIndex(1)",
-      "valueCode": "1",
-    },
-  },
-}
-`;
-
-exports[`z-index: 100: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {},
-}
-`;
-
-exports[`z-index: 100: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [],
-  "obj": {
-    "z-index": {
-      "setterCode": "zIndex(100)",
-      "valueCode": "100",
-    },
-  },
-}
-`;
-
-exports[`z-index: auto: app-harmony(dom-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "z-index",
-        "important": false,
-        "prop": "zIndex",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "ERROR: property value \`auto\` is not supported for \`z-index\` (supported values are: \`integer\`)",
-      "type": "warning",
-    },
-  ],
-  "obj": {},
-}
-`;
-
-exports[`z-index: auto: app-harmony(nv-c) 1`] = `
-{
-  "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "z-index",
-        "important": false,
-        "prop": "zIndex",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "ERROR: property value \`auto\` is not supported for \`z-index\` (supported values are: \`integer\`)",
-      "type": "warning",
-    },
-  ],
-  "obj": {},
 }
 `;

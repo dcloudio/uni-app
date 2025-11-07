@@ -9,9 +9,6 @@ import {
 
 const TRANSFORM_ORIGIN_TYPES = ['UniNativeTransformOrigin']
 
-// 开关：是否支持关键字（如 left, center, right, top, bottom 等）
-const SUPPORT_KEYWORDS = false
-
 export function isTransformOriginType(propertyType?: string) {
   return propertyType && TRANSFORM_ORIGIN_TYPES.includes(propertyType)
 }
@@ -52,185 +49,185 @@ interface ParseResult {
 }
 
 function parseTransformOriginValue(str: string): ParseResult {
-  const parts = str.trim().split(/\s+/)
+  const parts = str
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
 
-  // 检查是否包含不支持的关键字
-  if (!SUPPORT_KEYWORDS) {
-    for (const part of parts) {
-      if (isKeyword(part)) {
-        return {
-          code: '',
-          error: `Invalid transform-origin value: ${part}`,
-        }
-      }
-    }
-  }
-
-  // 处理关键字组合（如果启用）
-  if (SUPPORT_KEYWORDS) {
-    const keywordResult = tryKeywordCombination(parts)
-    if (keywordResult) {
-      return { code: keywordResult }
-    }
-  }
-
-  // 解析数值
-  const values: ParsedValue[] = []
-  for (const part of parts) {
-    if (SUPPORT_KEYWORDS && isKeyword(part)) {
-      // 关键字转换为对应的值
-      const keywordValue = keywordToValue(part)
-      if (keywordValue) {
-        values.push(keywordValue)
-      }
-    } else {
-      const unitValue = parseUnitValue(part)
-      if (unitValue) {
-        values.push({
-          value: unitValue.value,
-          unit: unitValue.unit,
-        })
-      }
-    }
-  }
-
-  if (values.length === 0) {
+  if (parts.length === 0) {
     return { code: '' }
   }
 
-  // 单值情况
-  if (values.length === 1) {
-    const v = values[0]
-    return {
-      code: `UniCSSTransformOrigin(UniCSSUnitValue(${toFloat(
-        v.value
-      )}, UniCSSUnitType::${v.unit}))`,
-    }
-  }
-
-  // 两个值的情况
-  if (values.length === 2) {
-    const v1 = values[0]
-    const v2 = values[1]
-    return {
-      code: `UniCSSTransformOrigin(UniCSSUnitValue(${toFloat(
-        v1.value
-      )}, UniCSSUnitType::${v1.unit}), UniCSSUnitValue(${toFloat(
-        v2.value
-      )}, UniCSSUnitType::${v2.unit}))`,
-    }
-  }
-
-  // 三个值的情况 (3D)
-  if (values.length === 3) {
-    const v1 = values[0]
-    const v2 = values[1]
-    const v3 = values[2]
-    return {
-      code: `UniCSSTransformOrigin(UniCSSUnitValue(${toFloat(
-        v1.value
-      )}, UniCSSUnitType::${v1.unit}), UniCSSUnitValue(${toFloat(
-        v2.value
-      )}, UniCSSUnitType::${v2.unit}), UniCSSUnitValue(${toFloat(
-        v3.value
-      )}, UniCSSUnitType::${v3.unit}))`,
-    }
-  }
-
-  return { code: '' }
-}
-
-// 关键字判断
-function isKeyword(value: string): boolean {
-  const keywords = [
-    'left',
-    'center',
-    'right',
-    'top',
-    'bottom',
-    'initial',
-    'inherit',
-  ]
-  return keywords.includes(value.toLowerCase())
-}
-
-// 关键字转换为数值
-function keywordToValue(keyword: string): ParsedValue | null {
-  const lowerKeyword = keyword.toLowerCase()
-  switch (lowerKeyword) {
-    case 'left':
-      return { value: 0, unit: 'PCT' }
-    case 'center':
-      return { value: 50, unit: 'PCT' }
-    case 'right':
-      return { value: 100, unit: 'PCT' }
-    case 'top':
-      return { value: 0, unit: 'PCT' }
-    case 'bottom':
-      return { value: 100, unit: 'PCT' }
-    default:
-      return null
-  }
-}
-
-// 尝试关键字组合的便捷方法
-function tryKeywordCombination(parts: string[]): string {
   if (parts.length === 1) {
-    const part = parts[0].toLowerCase()
-    if (part === 'center') {
-      return 'UniCSSTransformOrigin::Center()'
+    const keywordExpansion = expandSingleKeyword(parts[0])
+    if (keywordExpansion) {
+      return { code: buildTransformOriginCode(keywordExpansion) }
+    }
+
+    const parsed = parseUnitValue(parts[0])
+    if (parsed) {
+      return {
+        code: buildTransformOriginCode([
+          {
+            value: parsed.value,
+            unit: parsed.unit,
+          },
+        ]),
+      }
+    }
+
+    return {
+      code: '',
+      error: `Invalid transform-origin value: ${parts[0]}`,
     }
   }
 
-  if (parts.length === 2) {
-    const part1 = parts[0].toLowerCase()
-    const part2 = parts[1].toLowerCase()
+  if (parts.length === 2 || parts.length === 3) {
+    const x = parseAxisValue(parts[0], 'x')
+    if ('error' in x) {
+      return { code: '', error: x.error }
+    }
 
-    // center center
-    if (part1 === 'center' && part2 === 'center') {
-      return 'UniCSSTransformOrigin::Center()'
+    const y = parseAxisValue(parts[1], 'y')
+    if ('error' in y) {
+      return { code: '', error: y.error }
     }
-    // left top
-    if (part1 === 'left' && part2 === 'top') {
-      return 'UniCSSTransformOrigin::LeftTop()'
+
+    const values: ParsedValue[] = [x, y]
+
+    if (parts.length === 3) {
+      const z = parseZValue(parts[2])
+      if ('error' in z) {
+        return { code: '', error: z.error }
+      }
+      values.push(z)
     }
-    // left center
-    if (part1 === 'left' && part2 === 'center') {
-      return 'UniCSSTransformOrigin::LeftCenter()'
-    }
-    // left bottom
-    if (part1 === 'left' && part2 === 'bottom') {
-      return 'UniCSSTransformOrigin::LeftBottom()'
-    }
-    // right top
-    if (part1 === 'right' && part2 === 'top') {
-      return 'UniCSSTransformOrigin::RightTop()'
-    }
-    // right center
-    if (part1 === 'right' && part2 === 'center') {
-      return 'UniCSSTransformOrigin::RightCenter()'
-    }
-    // right bottom
-    if (part1 === 'right' && part2 === 'bottom') {
-      return 'UniCSSTransformOrigin::RightBottom()'
-    }
-    // center top
-    if (part1 === 'center' && part2 === 'top') {
-      return 'UniCSSTransformOrigin::CenterTop()'
-    }
-    // center bottom
-    if (part1 === 'center' && part2 === 'bottom') {
-      return 'UniCSSTransformOrigin::CenterBottom()'
-    }
-    // top center 等价于 center top
-    if (part1 === 'top' && part2 === 'center') {
-      return 'UniCSSTransformOrigin::CenterTop()'
-    }
-    // bottom center 等价于 center bottom
-    if (part1 === 'bottom' && part2 === 'center') {
-      return 'UniCSSTransformOrigin::CenterBottom()'
+
+    return { code: buildTransformOriginCode(values) }
+  }
+
+  return {
+    code: '',
+    error: `Invalid transform-origin value: ${str}`,
+  }
+}
+
+function buildTransformOriginCode(values: ParsedValue[]): string {
+  const args = values
+    .map(
+      (v) =>
+        `UniCSSUnitValue(${toFloat(v.value)}, UniCSSUnitType::${v.unit})`
+    )
+    .join(', ')
+
+  return `UniCSSTransformOrigin(${args})`
+}
+
+function expandSingleKeyword(part: string): ParsedValue[] | null {
+  const lower = part.toLowerCase()
+  const mapping = SINGLE_KEYWORD_MAP[lower]
+  if (!mapping) {
+    return null
+  }
+
+  return mapping.map((item) => ({ value: item.value, unit: item.unit }))
+}
+
+type Axis = 'x' | 'y'
+
+type ParsedValueResult = ParsedValue | { error: string }
+
+function parseAxisValue(part: string, axis: Axis): ParsedValueResult {
+  const lower = part.toLowerCase()
+  const keywordValue = axisKeywordToValue(lower, axis)
+  if (keywordValue) {
+    return {
+      value: keywordValue.value,
+      unit: keywordValue.unit,
     }
   }
 
-  return ''
+  const unitValue = parseUnitValue(part)
+  if (unitValue) {
+    return {
+      value: unitValue.value,
+      unit: unitValue.unit,
+    }
+  }
+
+  return {
+    error: `Invalid transform-origin value: ${part}`,
+  }
+}
+
+function parseZValue(part: string): ParsedValueResult {
+  const lower = part.toLowerCase()
+  if (isAxisKeyword(lower)) {
+    return {
+      error: `Invalid transform-origin value: ${part}`,
+    }
+  }
+
+  const unitValue = parseUnitValue(part)
+  if (!unitValue || unitValue.unit === 'PCT') {
+    return {
+      error: `Invalid transform-origin value: ${part}`,
+    }
+  }
+
+  return {
+    value: unitValue.value,
+    unit: unitValue.unit,
+  }
+}
+
+function isAxisKeyword(keyword: string): boolean {
+  return keyword in X_AXIS_KEYWORD_MAP || keyword in Y_AXIS_KEYWORD_MAP
+}
+
+function axisKeywordToValue(keyword: string, axis: Axis): ParsedValue | null {
+  if (axis === 'x') {
+    return X_AXIS_KEYWORD_MAP[keyword] || null
+  }
+  return Y_AXIS_KEYWORD_MAP[keyword] || null
+}
+
+const X_AXIS_KEYWORD_MAP: Record<string, ParsedValue> = {
+  left: { value: 0, unit: 'PCT' },
+  center: { value: 50, unit: 'PCT' },
+  right: { value: 100, unit: 'PCT' },
+}
+
+const Y_AXIS_KEYWORD_MAP: Record<string, ParsedValue> = {
+  top: { value: 0, unit: 'PCT' },
+  center: { value: 50, unit: 'PCT' },
+  bottom: { value: 100, unit: 'PCT' },
+}
+
+const SINGLE_KEYWORD_MAP: Record<string, ParsedValue[]> = {
+  left: [
+    { value: 0, unit: 'PCT' },
+    { value: 50, unit: 'PCT' },
+    { value: 0, unit: 'NONE' },
+  ],
+  center: [
+    { value: 50, unit: 'PCT' },
+    { value: 50, unit: 'PCT' },
+    { value: 0, unit: 'NONE' },
+  ],
+  right: [
+    { value: 100, unit: 'PCT' },
+    { value: 50, unit: 'PCT' },
+    { value: 0, unit: 'NONE' },
+  ],
+  top: [
+    { value: 50, unit: 'PCT' },
+    { value: 0, unit: 'PCT' },
+    { value: 0, unit: 'NONE' },
+  ],
+  bottom: [
+    { value: 50, unit: 'PCT' },
+    { value: 100, unit: 'PCT' },
+    { value: 0, unit: 'NONE' },
+  ],
 }
