@@ -1063,13 +1063,13 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 function useCurrentPageId() {
   {
     const { $pageInstance } = getCurrentInstance();
-    return $pageInstance && getPageProxyId$1($pageInstance.proxy);
+    return $pageInstance && getPageProxyId($pageInstance.proxy);
   }
 }
 function getPageIdByVm(instance2) {
   const vm = resolveComponentInstance(instance2);
   if (vm.$page) {
-    return getPageProxyId$1(vm);
+    return getPageProxyId(vm);
   }
   if (!vm.$) {
     return;
@@ -1077,12 +1077,12 @@ function getPageIdByVm(instance2) {
   {
     const { $pageInstance } = vm.$;
     if ($pageInstance) {
-      return getPageProxyId$1($pageInstance.proxy);
+      return getPageProxyId($pageInstance.proxy);
     }
   }
   const rootProxy = vm.$.root.proxy;
   if (rootProxy && rootProxy.$page) {
-    return getPageProxyId$1(rootProxy);
+    return getPageProxyId(rootProxy);
   }
 }
 function getCurrentPage() {
@@ -1157,7 +1157,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
 }
-function getPageProxyId$1(proxy) {
+function getPageProxyId(proxy) {
   var _a, _b;
   return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
 }
