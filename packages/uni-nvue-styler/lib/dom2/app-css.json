@@ -36,14 +36,21 @@
     "defaultValue": "auto"
   },
   "flex-basis": {
-    "type": "UniCSSUnitValue",
+    "type": "UniCSSFlexBasisType",
     "uniPlatform": {
       "app": {
-        "dom-c": {
-          "setter": "setStyleFlexBasis"
+        "nv-c": {
+          "setter": "flexBasis"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "flexBasis"
         }
       }
-    }
+    },
+    "values": ["auto", "content"],
+    "defaultValue": "medium"
   },
   "flex-direction": {
     "type": "UniCSSFlexDirectionType",
@@ -596,6 +603,23 @@
         }
       }
     }
+  },
+  "border-width": {
+    "type": "UniCSSBorderWidthType",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "borderWidth"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "borderWidth"
+        }
+      }
+    },
+    "values": ["thin", "medium", "thick"],
+    "defaultValue": "medium"
   },
   "box-shadow": {
     "type": "UniNativeBoxShadow",

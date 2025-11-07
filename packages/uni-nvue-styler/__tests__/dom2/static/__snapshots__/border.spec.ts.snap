@@ -1844,3 +1844,309 @@ exports[`border-style: solid: app-harmony(nv-c) 1`] = `
   },
 }
 `;
+
+exports[`border-width: border-width: 0: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(0, UniCSSUnitType.NONE)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.NONE)",
+    },
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(0, UniCSSUnitType.NONE)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.NONE)",
+    },
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(0, UniCSSUnitType.NONE)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.NONE)",
+    },
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(0, UniCSSUnitType.NONE)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.NONE)",
+    },
+  },
+}
+`;
+
+exports[`border-width: border-width: 0: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-width: border-width: 1px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(1, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(1, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`border-width: border-width: 1px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-width: border-width: 5px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(5, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PX)",
+    },
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(5, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PX)",
+    },
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(5, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PX)",
+    },
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(5, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`border-width: border-width: 5px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-width: border-width: medium: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-width",
+        "important": undefined,
+        "prop": "borderTopWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "medium",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: medium",
+      "type": "warning",
+    },
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-right-width",
+        "important": undefined,
+        "prop": "borderRightWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "medium",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: medium",
+      "type": "warning",
+    },
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-width",
+        "important": undefined,
+        "prop": "borderBottomWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "medium",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: medium",
+      "type": "warning",
+    },
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-left-width",
+        "important": undefined,
+        "prop": "borderLeftWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "medium",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: medium",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-width: border-width: medium: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-width: border-width: thick: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-width",
+        "important": undefined,
+        "prop": "borderTopWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thick",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thick",
+      "type": "warning",
+    },
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-right-width",
+        "important": undefined,
+        "prop": "borderRightWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thick",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thick",
+      "type": "warning",
+    },
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-width",
+        "important": undefined,
+        "prop": "borderBottomWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thick",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thick",
+      "type": "warning",
+    },
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-left-width",
+        "important": undefined,
+        "prop": "borderLeftWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thick",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thick",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-width: border-width: thick: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`border-width: border-width: thin: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-width",
+        "important": undefined,
+        "prop": "borderTopWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thin",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thin",
+      "type": "warning",
+    },
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-right-width",
+        "important": undefined,
+        "prop": "borderRightWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thin",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thin",
+      "type": "warning",
+    },
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-width",
+        "important": undefined,
+        "prop": "borderBottomWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thin",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thin",
+      "type": "warning",
+    },
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-left-width",
+        "important": undefined,
+        "prop": "borderLeftWidth",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "thin",
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: thin",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-width: border-width: thin: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;

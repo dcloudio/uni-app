@@ -127,3 +127,15 @@ describe('border-radius:', () => {
     })
   })
 })
+
+describe('border-width:', () => {
+  ;['1px', '0', '5px', 'thin', 'medium', 'thick'].forEach((value) => {
+    test(`border-width: ${value}`, () => {
+      const input = `border-width: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
