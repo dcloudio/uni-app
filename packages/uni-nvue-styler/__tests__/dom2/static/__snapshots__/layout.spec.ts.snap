@@ -215,20 +215,8 @@ exports[`background-image: linear-gradient(to bottom,#f5f5f5,#eff2f5): app-harmo
   "messages": [],
   "obj": {
     "background-image": {
-      "setterCode": "backgroundImage(UniNativeLinearGradient(
-    UniNativeLinearGradientDirectionType::ToBottom,
-    std::vector<UniNativeLinearGradientColorStop>{
-        {0xfff5f5f5, -1.0f},
-        {0xffeff2f5, -1.0f}
-    }
-))",
-      "valueCode": "UniNativeLinearGradient(
-    UniNativeLinearGradientDirectionType::ToBottom,
-    std::vector<UniNativeLinearGradientColorStop>{
-        {0xfff5f5f5, -1.0f},
-        {0xffeff2f5, -1.0f}
-    }
-)",
+      "setterCode": "backgroundImage(UTSCPP.propertyAccess(UniNativeBackgroundImage, "::", "LinearGradient(to bottom,#f5f5f5,#eff2f5)"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeBackgroundImage, "::", "LinearGradient(to bottom,#f5f5f5,#eff2f5)")",
     },
   },
 }
