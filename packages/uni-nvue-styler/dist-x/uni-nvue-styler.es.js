@@ -1,4 +1,4 @@
-import { hyphenate, capitalize } from '@vue/shared';
+import { hyphenate } from '@vue/shared';
 
 function createDecl(prop, value, important, raws, source) {
     const decl = {
@@ -15,8 +15,8 @@ function createDecl(prop, value, important, raws, source) {
 }
 const isNumber = (val) => typeof val === 'number';
 
-const backgroundColor = 'backgroundColor';
-const backgroundImage = 'backgroundImage';
+const backgroundColor = 'background-color' ;
+const backgroundImage = 'background-image' ;
 const handleTransformBackground = (decl) => {
     const { value, important, raws, source } = decl;
     if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
@@ -66,24 +66,21 @@ function createTransformBackground(options) {
 }
 
 function borderTop() {
-    return 'borderTop';
+    return 'border-top-' ;
 }
 function borderRight() {
-    return 'borderRight';
+    return 'border-right-' ;
 }
 function borderBottom() {
-    return 'borderBottom';
+    return 'border-bottom-' ;
 }
 function borderLeft() {
-    return 'borderLeft';
+    return 'border-left-' ;
 }
 const transformBorderColor = (decl) => {
     const { prop, value, important, raws, source } = decl;
     const _property_split = hyphenate(prop).split('-');
     let property = _property_split[_property_split.length - 1];
-    {
-        property = capitalize(property);
-    }
     const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/); // 1pt
     switch (splitResult.length) {
         case 1:
@@ -111,9 +108,6 @@ const transformBorderColor = (decl) => {
 const transformBorderColorNvue = (decl) => {
     const { prop, value, important, raws, source } = decl;
     let property = hyphenate(prop).split('-')[1];
-    {
-        property = capitalize(property);
-    }
     const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
     switch (splitResult.length) {
         case 1:
@@ -142,13 +136,13 @@ const transformBorderWidthNvue = transformBorderColorNvue;
 function createTransformBorder(options) {
     return (decl) => {
         const borderWidth = () => {
-            return 'Width';
+            return '-width' ;
         };
         const borderStyle = () => {
-            return 'Style';
+            return '-style' ;
         };
         const borderColor = () => {
-            return 'Color';
+            return '-color' ;
         };
         const { prop, value, important, raws, source } = decl;
         let splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
@@ -199,9 +193,9 @@ function createTransformBorder(options) {
 }
 function createTransformBorderNvue(options) {
     return (decl) => {
-        const borderWidth = 'Width';
-        const borderStyle = 'Style';
-        const borderColor = 'Color';
+        const borderWidth = '-width' ;
+        const borderStyle = '-style' ;
+        const borderColor = '-color' ;
         const { prop, value, important, raws, source } = decl;
         const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
         const result = [
@@ -223,10 +217,14 @@ function createTransformBorderNvue(options) {
     };
 }
 
-const borderTopLeftRadius = 'borderTopLeftRadius';
-const borderTopRightRadius = 'borderTopRightRadius';
-const borderBottomRightRadius = 'borderBottomRightRadius';
-const borderBottomLeftRadius = 'borderBottomLeftRadius';
+const borderTopLeftRadius = 'border-top-left-radius'
+    ;
+const borderTopRightRadius = 'border-top-right-radius'
+    ;
+const borderBottomRightRadius = 'border-bottom-right-radius'
+    ;
+const borderBottomLeftRadius = 'border-bottom-left-radius'
+    ;
 const transformBorderRadius = (decl) => {
     const { value, important, raws, source } = decl;
     const splitResult = value.split(/\s+/);
@@ -276,8 +274,8 @@ const transformBorderRadiusNvue = (decl) => {
     ];
 };
 
-const flexDirection = 'flexDirection';
-const flexWrap = 'flexWrap';
+const flexDirection = 'flex-direction' ;
+const flexWrap = 'flex-wrap' ;
 const transformFlexFlow = (decl) => {
     const { value, important, raws, source } = decl;
     const splitResult = value.split(/\s+/);
@@ -297,10 +295,10 @@ const transformFlexFlow = (decl) => {
     ];
 };
 
-const top = 'Top';
-const right = 'Right';
-const bottom = 'Bottom';
-const left = 'Left';
+const top = '-top' ;
+const right = '-right' ;
+const bottom = '-bottom' ;
+const left = '-left' ;
 const createTransformBox = (type) => {
     return (decl) => {
         const { value, important, raws, source } = decl;
@@ -328,10 +326,13 @@ const transformMargin = createTransformBox('margin');
 
 const transformPadding = createTransformBox('padding');
 
-const transitionProperty = 'transitionProperty';
-const transitionDuration = 'transitionDuration';
-const transitionTimingFunction = 'transitionTimingFunction';
-const transitionDelay = 'transitionDelay';
+const transitionProperty = 'transition-property'
+    ;
+const transitionDuration = 'transition-duration'
+    ;
+const transitionTimingFunction = 'transition-timing-function'
+    ;
+const transitionDelay = 'transition-delay' ;
 const transformTransition = (decl) => {
     const { value, important, raws, source } = decl;
     const result = [];
@@ -360,9 +361,9 @@ const transformTransition = (decl) => {
     return result;
 };
 
-const flexGrow = 'flexGrow';
-const flexShrink = 'flexShrink';
-const flexBasis = 'flexBasis';
+const flexGrow = 'flex-grow' ;
+const flexShrink = 'flex-shrink' ;
+const flexBasis = 'flex-basis' ;
 const transformFlex = (decl) => {
     const { value, important, raws, source } = decl;
     const result = [];

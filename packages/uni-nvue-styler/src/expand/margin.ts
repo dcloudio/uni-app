@@ -1,9 +1,9 @@
 import { type TransformDecl, createDecl } from '../utils'
 
-const top = __NODE_JS__ ? '-top' : 'Top'
-const right = __NODE_JS__ ? '-right' : 'Right'
-const bottom = __NODE_JS__ ? '-bottom' : 'Bottom'
-const left = __NODE_JS__ ? '-left' : 'Left'
+const top = __HYPHENATE__ ? '-top' : 'Top'
+const right = __HYPHENATE__ ? '-right' : 'Right'
+const bottom = __HYPHENATE__ ? '-bottom' : 'Bottom'
+const left = __HYPHENATE__ ? '-left' : 'Left'
 export const createTransformBox = (
   type: 'margin' | 'padding'
 ): TransformDecl => {

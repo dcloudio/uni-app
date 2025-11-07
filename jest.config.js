@@ -9,6 +9,7 @@ module.exports = {
     __X__: false,
     __DEV__: false,
     __TEST__: true,
+    __HYPHENATE__: true,
     __NODE_JS__: true,
     __VERSION__: require('./package.json').version,
     __BROWSER__: false,

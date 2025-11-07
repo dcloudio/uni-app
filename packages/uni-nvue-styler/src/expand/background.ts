@@ -1,8 +1,8 @@
 import type { Declaration } from 'postcss'
 import { type NormalizeOptions, type TransformDecl, createDecl } from '../utils'
 
-const backgroundColor = __NODE_JS__ ? 'background-color' : 'backgroundColor'
-const backgroundImage = __NODE_JS__ ? 'background-image' : 'backgroundImage'
+const backgroundColor = __HYPHENATE__ ? 'background-color' : 'backgroundColor'
+const backgroundImage = __HYPHENATE__ ? 'background-image' : 'backgroundImage'
 
 const handleTransformBackground = (decl: Declaration) => {
   const { value, important, raws, source } = decl

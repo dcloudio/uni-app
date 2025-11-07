@@ -9,22 +9,13 @@ export function createTransformBorder(
 ): TransformDecl {
   return (decl: Declaration): Declaration[] => {
     const borderWidth = (): string => {
-      if (__NODE_JS__) {
-        return '-width'
-      }
-      return 'Width'
+      return __HYPHENATE__ ? '-width' : 'Width'
     }
     const borderStyle = (): string => {
-      if (__NODE_JS__) {
-        return '-style'
-      }
-      return 'Style'
+      return __HYPHENATE__ ? '-style' : 'Style'
     }
     const borderColor = (): string => {
-      if (__NODE_JS__) {
-        return '-color'
-      }
-      return 'Color'
+      return __HYPHENATE__ ? '-color' : 'Color'
     }
     const { prop, value, important, raws, source } = decl
 
@@ -107,9 +98,9 @@ export function createTransformBorderNvue(
   options: NormalizeOptions
 ): TransformDecl {
   return (decl) => {
-    const borderWidth = __NODE_JS__ ? '-width' : 'Width'
-    const borderStyle = __NODE_JS__ ? '-style' : 'Style'
-    const borderColor = __NODE_JS__ ? '-color' : 'Color'
+    const borderWidth = __HYPHENATE__ ? '-width' : 'Width'
+    const borderStyle = __HYPHENATE__ ? '-style' : 'Style'
+    const borderColor = __HYPHENATE__ ? '-color' : 'Color'
 
     const { prop, value, important, raws, source } = decl
     const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)

@@ -1,16 +1,16 @@
 import type { Declaration } from 'postcss'
 import { type TransformDecl, createDecl } from '../utils'
 
-const transitionProperty = __NODE_JS__
+const transitionProperty = __HYPHENATE__
   ? 'transition-property'
   : 'transitionProperty'
-const transitionDuration = __NODE_JS__
+const transitionDuration = __HYPHENATE__
   ? 'transition-duration'
   : 'transitionDuration'
-const transitionTimingFunction = __NODE_JS__
+const transitionTimingFunction = __HYPHENATE__
   ? 'transition-timing-function'
   : 'transitionTimingFunction'
-const transitionDelay = __NODE_JS__ ? 'transition-delay' : 'transitionDelay'
+const transitionDelay = __HYPHENATE__ ? 'transition-delay' : 'transitionDelay'
 export const transformTransition: TransformDecl = (decl) => {
   const { value, important, raws, source } = decl
 

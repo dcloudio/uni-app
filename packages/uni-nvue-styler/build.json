@@ -3,11 +3,17 @@
     "input": {
       "src/esm.ts": ["dist/uni-nvue-styler.es.js"]
     },
+    "replacements": {
+      "__HYPHENATE__": "false"
+    },
     "external": ["@vue/shared"]
   },
   {
     "input": {
       "src/index.ts": ["dist/uni-nvue-styler.cjs.js"]
+    },
+    "replacements": {
+      "__HYPHENATE__": "true"
     },
     "external": ["postcss", "parse-css-font"],
     "alias": {
@@ -30,6 +36,9 @@
   {
     "input": {
       "src/dom2/esm.ts": ["dist-x/uni-nvue-styler.es.js"]
+    },
+    "replacements": {
+      "__HYPHENATE__": "true"
     },
     "external": ["@vue/shared"]
   }

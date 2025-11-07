@@ -1,7 +1,7 @@
 import { type TransformDecl, createDecl } from '../utils'
 
-const flexDirection = __NODE_JS__ ? 'flex-direction' : 'flexDirection'
-const flexWrap = __NODE_JS__ ? 'flex-wrap' : 'flexWrap'
+const flexDirection = __HYPHENATE__ ? 'flex-direction' : 'flexDirection'
+const flexWrap = __HYPHENATE__ ? 'flex-wrap' : 'flexWrap'
 export const transformFlexFlow: TransformDecl = (decl) => {
   const { value, important, raws, source } = decl
   const splitResult = value.split(/\s+/)
