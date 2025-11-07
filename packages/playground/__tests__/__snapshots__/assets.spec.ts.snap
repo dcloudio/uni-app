@@ -294,6 +294,16 @@ exports[`assets playground uni-app-x dev:app-ios: app-service.js 1`] = `
 ]
 `;
 
+exports[`assets playground uni-app-x dev:app-ios: app-service.js.map 1`] = `
+[
+  ""uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"",
+  ""uni_modules/test-com/static/uni_modules-test-com-static_logo.png"",
+  ""pages/index/static/pages-index-static_invalid-static.jpg"",
+  ""static/static_logo.png"",
+  ""pages/sub/static/pages-sub-static_2.jpg"",
+]
+`;
+
 exports[`assets playground uni-app-x dev:app-ios: assets/pages-index-static_invalid-static.34ae5d3b.jpg 1`] = `"pages-index-static_invalid-static.34ae5d3b.jpg"`;
 
 exports[`assets playground uni-app-x dev:app-ios: pages/sub/static/pages-sub-static_2.jpg 1`] = `"pages-sub-static_2.jpg"`;
