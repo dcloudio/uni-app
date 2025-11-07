@@ -909,23 +909,13 @@ exports[`border-*-width: border-bottom-width-1px: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-bottom-width-medium: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-bottom-width",
-        "important": false,
-        "prop": "borderBottomWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "medium",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: medium",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -940,23 +930,13 @@ exports[`border-*-width: border-bottom-width-medium: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-bottom-width-thick: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-bottom-width",
-        "important": false,
-        "prop": "borderBottomWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thick",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thick",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -971,23 +951,13 @@ exports[`border-*-width: border-bottom-width-thick: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-bottom-width-thin: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-bottom-width",
-        "important": false,
-        "prop": "borderBottomWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thin",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thin",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1044,23 +1014,13 @@ exports[`border-*-width: border-left-width-1px: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-left-width-medium: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-left-width",
-        "important": false,
-        "prop": "borderLeftWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "medium",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: medium",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1075,23 +1035,13 @@ exports[`border-*-width: border-left-width-medium: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-left-width-thick: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-left-width",
-        "important": false,
-        "prop": "borderLeftWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thick",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thick",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1106,23 +1056,13 @@ exports[`border-*-width: border-left-width-thick: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-left-width-thin: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-left-width",
-        "important": false,
-        "prop": "borderLeftWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thin",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thin",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1179,23 +1119,13 @@ exports[`border-*-width: border-right-width-1px: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-right-width-medium: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-right-width",
-        "important": false,
-        "prop": "borderRightWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "medium",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: medium",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1210,23 +1140,13 @@ exports[`border-*-width: border-right-width-medium: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-right-width-thick: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-right-width",
-        "important": false,
-        "prop": "borderRightWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thick",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thick",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1241,23 +1161,13 @@ exports[`border-*-width: border-right-width-thick: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-right-width-thin: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-right-width",
-        "important": false,
-        "prop": "borderRightWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thin",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thin",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1314,23 +1224,13 @@ exports[`border-*-width: border-top-width-1px: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-top-width-medium: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-top-width",
-        "important": false,
-        "prop": "borderTopWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "medium",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: medium",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1345,23 +1245,13 @@ exports[`border-*-width: border-top-width-medium: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-top-width-thick: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-top-width",
-        "important": false,
-        "prop": "borderTopWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thick",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thick",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1376,23 +1266,13 @@ exports[`border-*-width: border-top-width-thick: app-harmony(nv-c) 1`] = `
 exports[`border-*-width: border-top-width-thin: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-top-width",
-        "important": false,
-        "prop": "borderTopWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thin",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thin",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1947,61 +1827,25 @@ exports[`border-width: border-width: 5px: app-harmony(nv-c) 1`] = `
 exports[`border-width: border-width: medium: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-top-width",
-        "important": undefined,
-        "prop": "borderTopWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "medium",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: medium",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium")",
     },
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-right-width",
-        "important": undefined,
-        "prop": "borderRightWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "medium",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: medium",
-      "type": "warning",
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium")",
     },
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-bottom-width",
-        "important": undefined,
-        "prop": "borderBottomWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "medium",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: medium",
-      "type": "warning",
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium")",
     },
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-left-width",
-        "important": undefined,
-        "prop": "borderLeftWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "medium",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: medium",
-      "type": "warning",
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Medium")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -2016,61 +1860,25 @@ exports[`border-width: border-width: medium: app-harmony(nv-c) 1`] = `
 exports[`border-width: border-width: thick: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-top-width",
-        "important": undefined,
-        "prop": "borderTopWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thick",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thick",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick")",
     },
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-right-width",
-        "important": undefined,
-        "prop": "borderRightWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thick",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thick",
-      "type": "warning",
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick")",
     },
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-bottom-width",
-        "important": undefined,
-        "prop": "borderBottomWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thick",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thick",
-      "type": "warning",
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick")",
     },
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-left-width",
-        "important": undefined,
-        "prop": "borderLeftWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thick",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thick",
-      "type": "warning",
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thick")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -2085,61 +1893,25 @@ exports[`border-width: border-width: thick: app-harmony(nv-c) 1`] = `
 exports[`border-width: border-width: thin: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-top-width",
-        "important": undefined,
-        "prop": "borderTopWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thin",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thin",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "border-bottom-width": {
+      "setterCode": "setStyleBorderBottomWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin")",
     },
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-right-width",
-        "important": undefined,
-        "prop": "borderRightWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thin",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thin",
-      "type": "warning",
+    "border-left-width": {
+      "setterCode": "setStyleBorderLeftWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin")",
     },
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-bottom-width",
-        "important": undefined,
-        "prop": "borderBottomWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thin",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thin",
-      "type": "warning",
+    "border-right-width": {
+      "setterCode": "setStyleBorderRightWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin")",
     },
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "border-left-width",
-        "important": undefined,
-        "prop": "borderLeftWidth",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "thin",
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: thin",
-      "type": "warning",
+    "border-top-width": {
+      "setterCode": "setStyleBorderTopWidth(UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSBorderWidthType, "::", "Thin")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 

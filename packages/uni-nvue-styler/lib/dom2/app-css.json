@@ -540,44 +540,52 @@
     "defaultValue": "none"
   },
   "border-bottom-width": {
-    "type": "UniCSSUnitValue",
+    "type": ["UniCSSBorderWidthType", "UniCSSUnitValue"],
     "uniPlatform": {
       "app": {
         "dom-c": {
           "setter": "setStyleBorderBottomWidth"
         }
       }
-    }
+    },
+    "values": ["thin", "medium", "thick"],
+    "defaultValue": "medium"
   },
   "border-left-width": {
-    "type": "UniCSSUnitValue",
+    "type": ["UniCSSBorderWidthType", "UniCSSUnitValue"],
     "uniPlatform": {
       "app": {
         "dom-c": {
           "setter": "setStyleBorderLeftWidth"
         }
       }
-    }
+    },
+    "values": ["thin", "medium", "thick"],
+    "defaultValue": "medium"
   },
   "border-right-width": {
-    "type": "UniCSSUnitValue",
+    "type": ["UniCSSBorderWidthType", "UniCSSUnitValue"],
     "uniPlatform": {
       "app": {
         "dom-c": {
           "setter": "setStyleBorderRightWidth"
         }
       }
-    }
+    },
+    "values": ["thin", "medium", "thick"],
+    "defaultValue": "medium"
   },
   "border-top-width": {
-    "type": "UniCSSUnitValue",
+    "type": ["UniCSSBorderWidthType", "UniCSSUnitValue"],
     "uniPlatform": {
       "app": {
         "dom-c": {
           "setter": "setStyleBorderTopWidth"
         }
       }
-    }
+    },
+    "values": ["thin", "medium", "thick"],
+    "defaultValue": "medium"
   },
   "border-bottom-left-radius": {
     "type": "UniNativeBorderRadius",
