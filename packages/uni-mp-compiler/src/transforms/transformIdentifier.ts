@@ -51,6 +51,8 @@ import {
   rewritePropsBinding,
 } from './transformComponent'
 import {
+  isDirectiveNode,
+  isElementNode,
   isSimpleExpressionNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
@@ -73,7 +75,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       }
     } else if (isSlotOutlet(node)) {
       rewriteSlot(node, context)
-    } else if (node.type === NodeTypes.ELEMENT) {
+    } else if (isElementNode(node)) {
       let hasClassBinding = false
       let hasStyleBinding = false
       let hasHiddenBinding = false
@@ -92,7 +94,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         if (virtualHost) {
           for (let i = 0; i < props.length; i++) {
             const dir = props[i]
-            if (dir.type === NodeTypes.DIRECTIVE) {
+            if (isDirectiveNode(dir)) {
               if (isIdBinding(dir)) {
                 hasIdBinding = true
                 rewriteId(i, dir, props, virtualHost, context, true)
@@ -121,7 +123,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       if (context.isX) {
         for (let i = 0; i < props.length; i++) {
           const dir = props[i]
-          if (dir.type === NodeTypes.DIRECTIVE) {
+          if (isDirectiveNode(dir)) {
             const { arg, exp } = dir
             if (arg && exp && isSimpleExpressionNode(arg)) {
               if (arg.content === 'id' || arg.content === ATTR_ELEMENT_ID) {
@@ -137,7 +139,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       // 合并part class到class内
       if (context.isX && isElement) {
         const partProp = props.find((prop) => {
-          if (prop.type === NodeTypes.DIRECTIVE) {
+          if (isDirectiveNode(prop)) {
             const { arg } = prop
             if (arg && isSimpleExpressionNode(arg)) {
               return arg.content === 'part'
@@ -148,7 +150,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         })
         if (partProp) {
           const classProp = props.find((prop) => {
-            if (prop.type === NodeTypes.DIRECTIVE) {
+            if (isDirectiveNode(prop)) {
               const { arg } = prop
               if (arg && isSimpleExpressionNode(arg)) {
                 return arg.content === 'class'
@@ -163,7 +165,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               createCompoundExpression([
                 context.helperString(MERGE_PART_CLASS),
                 `(`,
-                partProp.type === NodeTypes.DIRECTIVE
+                isDirectiveNode(partProp)
                   ? partProp.exp!
                   : createSimpleExpression(
                       `'${partProp.value?.content || ''}'`
@@ -181,13 +183,13 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               loc: partProp.loc,
             })
             skipIndex.push(props.length - 1)
-          } else if (classProp.type === NodeTypes.DIRECTIVE) {
+          } else if (isDirectiveNode(classProp)) {
             const originalClassExpr = classProp.exp!
             classProp.exp = rewriteExpression(
               createCompoundExpression([
                 context.helperString(MERGE_PART_CLASS),
                 `(`,
-                partProp.type === NodeTypes.DIRECTIVE
+                isDirectiveNode(partProp)
                   ? partProp.exp!
                   : createSimpleExpression(
                       `'${partProp.value?.content || ''}'`
@@ -205,7 +207,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               createCompoundExpression([
                 context.helperString(MERGE_PART_CLASS),
                 `(`,
-                partProp.type === NodeTypes.DIRECTIVE
+                isDirectiveNode(partProp)
                   ? partProp.exp!
                   : createSimpleExpression(
                       `'${partProp.value?.content || ''}'`
@@ -236,11 +238,11 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           }
         }
         const dir = props[i]
-        if (dir.type === NodeTypes.DIRECTIVE) {
+        if (isDirectiveNode(dir)) {
           const arg = dir.arg
           if (arg) {
             // TODO 指令暂不不支持动态参数,v-bind:[arg] v-on:[event]
-            if (!(arg.type === NodeTypes.SIMPLE_EXPRESSION && arg.isStatic)) {
+            if (!(isSimpleExpressionNode(arg) && arg.isStatic)) {
               // v-slot:[slotName] 支持
               if (dir.name === 'slot') {
                 rewriteVSlot(dir, context)
@@ -340,8 +342,10 @@ const builtInProps = [ATTR_VUE_SLOTS]
 
 function isBuiltIn({ arg, exp }: DirectiveNode) {
   return (
-    arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+    arg &&
+    isSimpleExpressionNode(arg) &&
     builtInProps.includes(arg.content) &&
-    exp?.type === NodeTypes.SIMPLE_EXPRESSION
+    exp &&
+    isSimpleExpressionNode(exp)
   )
 }
