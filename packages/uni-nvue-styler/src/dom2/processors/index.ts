@@ -39,6 +39,10 @@ import {
   createSetStyleTransformOriginValueProcessor,
   isTransformOriginType,
 } from './transformOrigin'
+import {
+  createSetStyleBorderWidthValueProcessor,
+  isBorderWidthType,
+} from './borderWidth'
 // import {
 //   createSetStyleBackgroundImageValueProcessor,
 //   isBackgroundImageType,
@@ -178,6 +182,8 @@ export function createDom2PropertyProcessors(
       return createSetStyleBorderColorsValueProcessor(setter)
     } else if (isBorderStylesType(propertyType)) {
       return createSetStyleBorderStylesValueProcessor(setter, processorMap)
+    } else if (isBorderWidthType(propertyType)) {
+      return createSetStyleBorderWidthValueProcessor(setter, language)
     } else if (isBoxShadowType(propertyType)) {
       return createSetStyleBoxShadowValueProcessor(setter)
     } else if (isTextShadowType(propertyType)) {

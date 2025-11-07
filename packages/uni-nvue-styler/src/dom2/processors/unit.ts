@@ -13,6 +13,28 @@ export function isUnitType(propertyType?: string) {
   return propertyType && UNIT_TYPES.includes(propertyType)
 }
 
+interface UnitValue {
+  value: number
+  unit: string
+}
+
+export function toUnitValueResult(
+  setter: string,
+  language: 'cpp' | 'ts',
+  unitValue: UnitValue
+) {
+  if (language === 'cpp') {
+    return createValueProcessorResult(
+      `UniCSSUnitValue{${unitValue.value}, UniCSSUnitType::${unitValue.unit}}`,
+      `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
+    )
+  }
+  return createValueProcessorResult(
+    `new UniCSSUnitValue(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`,
+    `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
+  )
+}
+
 export function createSetStyleUnitValueProcessor(
   setter: string,
   language: 'cpp' | 'ts'
@@ -23,16 +45,7 @@ export function createSetStyleUnitValueProcessor(
       propertyName === 'line-height' ? 'EM' : 'NONE'
     )
     if (unitValue) {
-      if (language === 'cpp') {
-        return createValueProcessorResult(
-          `UniCSSUnitValue{${unitValue.value}, UniCSSUnitType::${unitValue.unit}}`,
-          `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
-        )
-      }
-      return createValueProcessorResult(
-        `new UniCSSUnitValue(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`,
-        `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
-      )
+      return toUnitValueResult(setter, language, unitValue)
     }
     return createValueProcessorError(`Invalid unit value: ${value}`)
   }, PropertyProcessorType.Unit)
@@ -40,7 +53,10 @@ export function createSetStyleUnitValueProcessor(
 
 const unitMatchRe = /^(-?(?:\d*\.\d+|\d+\.?\d*))(%|[a-zA-Z]+)?$/
 
-export function parseUnitValue(value: string, defaultUnit = 'NONE') {
+export function parseUnitValue(
+  value: string,
+  defaultUnit = 'NONE'
+): UnitValue | undefined {
   const unitMatch = value.match(unitMatchRe)
   if (unitMatch) {
     const value = parseFloat(unitMatch[1])
