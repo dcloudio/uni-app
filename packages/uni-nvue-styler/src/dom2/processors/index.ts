@@ -39,10 +39,10 @@ import {
   createSetStyleTransformOriginValueProcessor,
   isTransformOriginType,
 } from './transformOrigin'
-import {
-  createSetStyleBackgroundImageValueProcessor,
-  isBackgroundImageType,
-} from './backgroundImage'
+// import {
+//   createSetStyleBackgroundImageValueProcessor,
+//   isBackgroundImageType,
+// } from './backgroundImage'
 
 export type { PropertyProcessor } from './utils'
 export { createSetStyleNativeColorValueProcessor } from './color'
@@ -186,9 +186,11 @@ export function createDom2PropertyProcessors(
       return createSetStyleTransformValueProcessor(setter)
     } else if (isTransformOriginType(propertyType)) {
       return createSetStyleTransformOriginValueProcessor(setter)
-    } else if (isBackgroundImageType(propertyType)) {
-      return createSetStyleBackgroundImageValueProcessor(setter)
-    } else if (propertyType) {
+    }
+    // else if (isBackgroundImageType(propertyType)) {
+    // return createSetStyleBackgroundImageValueProcessor(setter)
+    // }
+    else if (propertyType) {
       return createSetStyleEnumValueProcessor(
         setter,
         createGenEnumCode(propertyType, language, platform, target)
