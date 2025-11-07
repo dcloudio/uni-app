@@ -1448,6 +1448,21 @@ const requestPayment = {
         orderInfo: tt.pay ? 'orderInfo' : 'data',
     },
 };
+// 抖音小程序使用 showTabBar/hideTabBar 时，animation 不传值会警告 animation should be boolean but get undefined:undefined
+const showTabBar = {
+    args(fromArgs, toArgs) {
+        if (fromArgs.animation === undefined) {
+            toArgs.animation = false;
+        }
+    },
+};
+const hideTabBar = {
+    args(fromArgs, toArgs) {
+        if (fromArgs.animation === undefined) {
+            toArgs.animation = false;
+        }
+    },
+};
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
@@ -1455,6 +1470,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getUserInfo: getUserInfo,
+  hideTabBar: hideTabBar,
   login: login,
   navigateTo: navigateTo,
   offError: offError,
@@ -1463,6 +1479,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   redirectTo: redirectTo,
   requestPayment: requestPayment,
   scanCode: scanCode,
+  showTabBar: showTabBar,
   startAccelerometer: startAccelerometer
 });
 
