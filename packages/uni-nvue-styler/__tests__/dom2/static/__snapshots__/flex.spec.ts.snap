@@ -45,13 +45,23 @@ exports[`flex-basis: 50%: app-harmony(nv-c) 1`] = `
 exports[`flex-basis: auto: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
-  "obj": {
-    "flex-basis": {
-      "setterCode": "setStyleFlexBasis(UTSCPP.propertyAccess(UniCSSFlexBasisType, "::", "Auto"))",
-      "valueCode": "UTSCPP.propertyAccess(UniCSSFlexBasisType, "::", "Auto")",
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "flex-basis",
+        "important": false,
+        "prop": "flexBasis",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Invalid unit value: auto",
+      "type": "warning",
     },
-  },
+  ],
+  "obj": {},
 }
 `;
 
