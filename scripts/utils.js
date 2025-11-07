@@ -4,6 +4,7 @@ const colors = require('picocolors')
 
 const priority = {
   uts: 100,
+  'uni-preprocess': 100,
   'uni-uts-v1': 99,
   'uni-shared': 98,
   'uni-i18n': 90,
