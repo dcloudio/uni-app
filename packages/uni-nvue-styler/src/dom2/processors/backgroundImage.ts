@@ -42,11 +42,6 @@ export function createSetStyleBackgroundImageValueProcessor(
   }, PropertyProcessorType.Struct)
 }
 
-// 辅助函数：将数字格式化为浮点数字符串
-function toFloat(value: number): string {
-  return value % 1 === 0 ? `${value}.0f` : `${value}f`
-}
-
 interface GradientColorStop {
   color: number | string
   position: number

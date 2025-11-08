@@ -1146,8 +1146,8 @@ exports[`transform-origin: 10px 20px 5px: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(10.0f, UniCSSUnitType::PX), UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(5.0f, UniCSSUnitType::PX)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(10.0f, UniCSSUnitType::PX), UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(5.0f, UniCSSUnitType::PX))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(10, UniCSSUnitType.PX), new UniCSSUnitValue(20, UniCSSUnitType.PX), new UniCSSUnitValue(5, UniCSSUnitType.PX)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(10, UniCSSUnitType.PX), new UniCSSUnitValue(20, UniCSSUnitType.PX), new UniCSSUnitValue(5, UniCSSUnitType.PX))",
     },
   },
 }
@@ -1167,8 +1167,8 @@ exports[`transform-origin: 20px 30px: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(30.0f, UniCSSUnitType::PX)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(30.0f, UniCSSUnitType::PX))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(20, UniCSSUnitType.PX), new UniCSSUnitValue(30, UniCSSUnitType.PX)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(20, UniCSSUnitType.PX), new UniCSSUnitValue(30, UniCSSUnitType.PX))",
     },
   },
 }
@@ -1188,8 +1188,8 @@ exports[`transform-origin: 20px 50% 10px: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(10.0f, UniCSSUnitType::PX)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(10.0f, UniCSSUnitType::PX))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(20, UniCSSUnitType.PX), new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(10, UniCSSUnitType.PX)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(20, UniCSSUnitType.PX), new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(10, UniCSSUnitType.PX))",
     },
   },
 }
@@ -1209,8 +1209,8 @@ exports[`transform-origin: 25% 75%: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(25.0f, UniCSSUnitType::PCT), UniCSSUnitValue(75.0f, UniCSSUnitType::PCT)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(25.0f, UniCSSUnitType::PCT), UniCSSUnitValue(75.0f, UniCSSUnitType::PCT))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(25, UniCSSUnitType.PCT), new UniCSSUnitValue(75, UniCSSUnitType.PCT)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(25, UniCSSUnitType.PCT), new UniCSSUnitValue(75, UniCSSUnitType.PCT))",
     },
   },
 }
@@ -1230,8 +1230,8 @@ exports[`transform-origin: 30% 60% 15px: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(30.0f, UniCSSUnitType::PCT), UniCSSUnitValue(60.0f, UniCSSUnitType::PCT), UniCSSUnitValue(15.0f, UniCSSUnitType::PX)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(30.0f, UniCSSUnitType::PCT), UniCSSUnitValue(60.0f, UniCSSUnitType::PCT), UniCSSUnitValue(15.0f, UniCSSUnitType::PX))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(30, UniCSSUnitType.PCT), new UniCSSUnitValue(60, UniCSSUnitType.PCT), new UniCSSUnitValue(15, UniCSSUnitType.PX)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(30, UniCSSUnitType.PCT), new UniCSSUnitValue(60, UniCSSUnitType.PCT), new UniCSSUnitValue(15, UniCSSUnitType.PX))",
     },
   },
 }
@@ -1251,8 +1251,8 @@ exports[`transform-origin: 30%: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(30.0f, UniCSSUnitType::PCT)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(30.0f, UniCSSUnitType::PCT))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(30, UniCSSUnitType.PCT)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(30, UniCSSUnitType.PCT))",
     },
   },
 }
@@ -1272,8 +1272,8 @@ exports[`transform-origin: 50% 50%: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT))",
     },
   },
 }
@@ -1324,8 +1324,8 @@ exports[`transform-origin: bottom: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(100, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.NONE)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(100, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.NONE))",
     },
   },
 }
@@ -1345,8 +1345,8 @@ exports[`transform-origin: center center: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT))",
     },
   },
 }
@@ -1366,8 +1366,8 @@ exports[`transform-origin: center: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.NONE)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.NONE))",
     },
   },
 }
@@ -1387,8 +1387,8 @@ exports[`transform-origin: left center: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT))",
     },
   },
 }
@@ -1408,8 +1408,8 @@ exports[`transform-origin: left top 60px: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(60.0f, UniCSSUnitType::PX)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(60.0f, UniCSSUnitType::PX))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(60, UniCSSUnitType.PX)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(60, UniCSSUnitType.PX))",
     },
   },
 }
@@ -1460,8 +1460,8 @@ exports[`transform-origin: left top: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.PCT)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.PCT))",
     },
   },
 }
@@ -1481,8 +1481,8 @@ exports[`transform-origin: left: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.NONE)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.NONE))",
     },
   },
 }
@@ -1502,8 +1502,8 @@ exports[`transform-origin: right bottom: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(100.0f, UniCSSUnitType::PCT)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(100.0f, UniCSSUnitType::PCT))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(100, UniCSSUnitType.PCT), new UniCSSUnitValue(100, UniCSSUnitType.PCT)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(100, UniCSSUnitType.PCT), new UniCSSUnitValue(100, UniCSSUnitType.PCT))",
     },
   },
 }
@@ -1523,8 +1523,8 @@ exports[`transform-origin: right: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(100.0f, UniCSSUnitType::PCT), UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(100, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.NONE)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(100, UniCSSUnitType.PCT), new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.NONE))",
     },
   },
 }
@@ -1575,8 +1575,8 @@ exports[`transform-origin: top: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform-origin": {
-      "setterCode": "transformOrigin(UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE)))",
-      "valueCode": "UniCSSTransformOrigin(UniCSSUnitValue(50.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::PCT), UniCSSUnitValue(0.0f, UniCSSUnitType::NONE))",
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.NONE)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(50, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.NONE))",
     },
   },
 }

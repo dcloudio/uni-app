@@ -191,7 +191,7 @@ export function createDom2PropertyProcessors(
     } else if (isTransformType(propertyType)) {
       return createSetStyleTransformValueProcessor(setter, language)
     } else if (isTransformOriginType(propertyType)) {
-      return createSetStyleTransformOriginValueProcessor(setter)
+      return createSetStyleTransformOriginValueProcessor(setter, language)
     }
     // else if (isBackgroundImageType(propertyType)) {
     // return createSetStyleBackgroundImageValueProcessor(setter)

@@ -1,4 +1,5 @@
-import { parseUnitValue } from './unit'
+import type { DOM2_APP_LANGUAGE } from '../types'
+import { parseUnitValue, toUnitValueCode } from './unit'
 import {
   type PropertyProcessor,
   PropertyProcessorType,
@@ -14,10 +15,11 @@ export function isTransformOriginType(propertyType?: string) {
 }
 
 export function createSetStyleTransformOriginValueProcessor(
-  setter: string
+  setter: string,
+  language: DOM2_APP_LANGUAGE
 ): PropertyProcessor {
   return createPropertyProcessor((value: string | number) => {
-    const result = parseTransformOriginValue(String(value))
+    const result = parseTransformOriginValue(String(value), language)
 
     if (result.error) {
       return createValueProcessorError(result.error)
@@ -33,11 +35,6 @@ export function createSetStyleTransformOriginValueProcessor(
   }, PropertyProcessorType.Struct)
 }
 
-// 辅助函数：将数字格式化为浮点数字符串
-function toFloat(value: number): string {
-  return value % 1 === 0 ? `${value}.0f` : `${value}f`
-}
-
 interface ParsedValue {
   value: number
   unit: string
@@ -48,11 +45,11 @@ interface ParseResult {
   error?: string
 }
 
-function parseTransformOriginValue(str: string): ParseResult {
-  const parts = str
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
+function parseTransformOriginValue(
+  str: string,
+  language: DOM2_APP_LANGUAGE
+): ParseResult {
+  const parts = str.trim().split(/\s+/).filter(Boolean)
 
   if (parts.length === 0) {
     return { code: '' }
@@ -61,18 +58,21 @@ function parseTransformOriginValue(str: string): ParseResult {
   if (parts.length === 1) {
     const keywordExpansion = expandSingleKeyword(parts[0])
     if (keywordExpansion) {
-      return { code: buildTransformOriginCode(keywordExpansion) }
+      return { code: buildTransformOriginCode(keywordExpansion, language) }
     }
 
     const parsed = parseUnitValue(parts[0])
     if (parsed) {
       return {
-        code: buildTransformOriginCode([
-          {
-            value: parsed.value,
-            unit: parsed.unit,
-          },
-        ]),
+        code: buildTransformOriginCode(
+          [
+            {
+              value: parsed.value,
+              unit: parsed.unit,
+            },
+          ],
+          language
+        ),
       }
     }
 
@@ -103,7 +103,7 @@ function parseTransformOriginValue(str: string): ParseResult {
       values.push(z)
     }
 
-    return { code: buildTransformOriginCode(values) }
+    return { code: buildTransformOriginCode(values, language) }
   }
 
   return {
@@ -112,13 +112,11 @@ function parseTransformOriginValue(str: string): ParseResult {
   }
 }
 
-function buildTransformOriginCode(values: ParsedValue[]): string {
-  const args = values
-    .map(
-      (v) =>
-        `UniCSSUnitValue(${toFloat(v.value)}, UniCSSUnitType::${v.unit})`
-    )
-    .join(', ')
+function buildTransformOriginCode(
+  values: ParsedValue[],
+  language: DOM2_APP_LANGUAGE
+): string {
+  const args = values.map((v) => toUnitValueCode(v, language)).join(', ')
 
   return `UniCSSTransformOrigin(${args})`
 }
