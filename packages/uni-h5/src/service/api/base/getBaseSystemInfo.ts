@@ -52,9 +52,13 @@ export function getWindowWidth(screenWidth: number) {
  */
 export function getBaseSystemInfo() {
   const screenFix = getScreenFix()
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  )
+  /**
+   * 安卓平台微信内置浏览器在调整微信字体大小小于标准字体时，windowWidth会大于screenWidth，此时计算rpx等时应以windowWidth为准
+   * iOS端微信内置浏览器没有这个问题
+   */
+  const windowWidth = screenFix
+    ? getWindowWidth(getScreenWidth(screenFix, isLandscape(screenFix)))
+    : Math.min(window.innerWidth, document.documentElement.clientWidth)
   return {
     platform: isIOS ? 'ios' : 'other',
     pixelRatio: window.devicePixelRatio,
