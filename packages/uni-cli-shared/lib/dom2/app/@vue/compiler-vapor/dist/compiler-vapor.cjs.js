@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-vapor v3.6.0-alpha.2
+* @vue/compiler-vapor v3.6.0-alpha.3
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -25,7 +25,8 @@ const newBlock = (node) => ({
   effect: [],
   operation: [],
   returns: [],
-  tempId: 0
+  tempId: 0,
+  hasDeferredVShow: false
 });
 function wrapTemplate(node, dirs) {
   if (node.tagType === 3) {
@@ -53,6 +54,7 @@ const EMPTY_EXPRESSION = compilerDom.createSimpleExpression(
   true
 );
 const TEXT_PLACEHOLDER = "__vapor_dom2_text_placeholder__";
+const TEXT_NODE_PLACEHOLDER = "__vapor_dom2_text_node_placeholder__";
 
 const findProp = compilerDom.findProp;
 const findDir = compilerDom.findDir;
@@ -89,6 +91,40 @@ function getLiteralExpressionValue(exp) {
     }
   }
   return exp.isStatic ? exp.content : null;
+}
+function isInTransition(context) {
+  const parentNode = context.parent && context.parent.node;
+  return !!(parentNode && isTransitionNode(parentNode));
+}
+function isTransitionNode(node) {
+  return node.type === 1 && isTransitionTag(node.tag);
+}
+function isTransitionTag(tag) {
+  tag = tag.toLowerCase();
+  return tag === "transition" || tag === "vaportransition";
+}
+function isTransitionGroupTag(tag) {
+  tag = tag.toLowerCase().replace(/-/g, "");
+  return tag === "transitiongroup" || tag === "vaportransitiongroup";
+}
+function isKeepAliveTag(tag) {
+  tag = tag.toLowerCase();
+  return tag === "keepalive" || tag === "vaporkeepalive";
+}
+function isTeleportTag(tag) {
+  tag = tag.toLowerCase();
+  return tag === "teleport" || tag === "vaporteleport";
+}
+function isBuiltInComponent(tag) {
+  if (isTeleportTag(tag)) {
+    return "VaporTeleport";
+  } else if (isKeepAliveTag(tag)) {
+    return "VaporKeepAlive";
+  } else if (isTransitionTag(tag)) {
+    return "VaporTransition";
+  } else if (isTransitionGroupTag(tag)) {
+    return "VaporTransitionGroup";
+  }
 }
 
 class TransformContext {
@@ -302,13 +338,13 @@ const DELIMITERS_ARRAY = ["[", "]", ", "];
 const DELIMITERS_ARRAY_NEWLINE = [
   ["[", INDENT_START, NEWLINE],
   [INDENT_END, NEWLINE, "]"],
-  [", ", NEWLINE]
+  [",", NEWLINE]
 ];
 const DELIMITERS_OBJECT = ["{ ", " }", ", "];
 const DELIMITERS_OBJECT_NEWLINE = [
   ["{", INDENT_START, NEWLINE],
   [INDENT_END, NEWLINE, "}"],
-  [", ", NEWLINE]
+  [",", NEWLINE]
 ];
 function genCall(name, ...frags) {
   const hasPlaceholder = shared.isArray(name);
@@ -1428,10 +1464,15 @@ function isKeyOnlyBinding(expr, keyAst) {
 
 function genSetHtml(oper, context) {
   const { helper } = context;
-  const { value, element } = oper;
+  const { value, element, isComponent } = oper;
   return [
     NEWLINE,
-    ...genCall(helper("setHtml"), `n${element}`, genExpression(value, context))
+    ...genCall(
+      // use setBlockHtml for component
+      isComponent ? helper("setBlockHtml") : helper("setHtml"),
+      `n${element}`,
+      genExpression(value, context)
+    )
   ];
 }
 
@@ -1520,7 +1561,7 @@ function genLiteralObjectProps(props, context) {
 }
 function genPropKey({ key: node, modifier, runtimeCamelize, handler, handlerModifiers }, context) {
   const { helper } = context;
-  const handlerModifierPostfix = handlerModifiers ? handlerModifiers.map(shared.capitalize).join("") : "";
+  const handlerModifierPostfix = handlerModifiers && handlerModifiers.options ? handlerModifiers.options.map(shared.capitalize).join("") : "";
   if (node.isStatic) {
     const keyName = (handler ? shared.toHandlerKey(node.content) : node.content) + handlerModifierPostfix;
     return [
@@ -1595,6 +1636,7 @@ function getSpecialHelper(keyName, tagName) {
 
 const setTemplateRefIdent = `_setTemplateRef`;
 function genSetTemplateRef(oper, context) {
+  const [refValue, refKey] = genRefValue(oper.value, context);
   return [
     NEWLINE,
     oper.effect && `r${oper.element} = `,
@@ -1602,9 +1644,10 @@ function genSetTemplateRef(oper, context) {
       setTemplateRefIdent,
       // will be generated in root scope
       `n${oper.element}`,
-      genRefValue(oper.value, context),
+      refValue,
       oper.effect ? `r${oper.element}` : oper.refFor ? "void 0" : void 0,
-      oper.refFor && "true"
+      oper.refFor && "true",
+      refKey
     )
   ];
 }
@@ -1615,19 +1658,24 @@ function genRefValue(value, context) {
   if (value && context.options.inline) {
     const binding = context.options.bindingMetadata[value.content];
     if (binding === "setup-let" || binding === "setup-ref" || binding === "setup-maybe-ref") {
-      return [value.content];
+      return [[value.content], JSON.stringify(value.content)];
     }
   }
-  return genExpression(value, context);
+  return [genExpression(value, context)];
 }
 
 function genSetText(oper, context) {
   const { helper } = context;
-  const { element, values, generated, jsx } = oper;
+  const { element, values, generated, jsx, isComponent } = oper;
   const texts = combineValues(values, context, jsx);
   return [
     NEWLINE,
-    ...genCall(helper("setText"), `${generated ? "x" : "n"}${element}`, texts)
+    ...genCall(
+      // use setBlockText for component
+      isComponent ? helper("setBlockText") : helper("setText"),
+      `${generated && !isComponent ? "x" : "n"}${element}`,
+      texts
+    )
   ];
 }
 function combineValues(values, context, jsx) {
@@ -1645,18 +1693,21 @@ function combineValues(values, context, jsx) {
 function genGetTextChild(oper, context) {
   return [
     NEWLINE,
-    `const x${oper.parent} = ${context.helper("child")}(n${oper.parent})`
+    `const x${oper.parent} = ${context.helper("txt")}(n${oper.parent})`
   ];
 }
 
 function genVShow(oper, context) {
+  const { deferred, element } = oper;
   return [
     NEWLINE,
-    ...genCall(context.helper("applyVShow"), `n${oper.element}`, [
+    deferred ? `deferredApplyVShows.push(() => ` : void 0,
+    ...genCall(context.helper("applyVShow"), `n${element}`, [
       `() => (`,
       ...genExpression(oper.dir.exp, context),
       `)`
-    ])
+    ]),
+    deferred ? `)` : void 0
   ];
 }
 
@@ -1795,8 +1846,14 @@ function genCreateComponent(operation, context) {
     } else if (operation.asset) {
       return compilerDom.toValidAssetId(operation.tag, "component");
     } else {
+      const { tag: tag2 } = operation;
+      const builtInTag = isBuiltInComponent(tag2);
+      if (builtInTag) {
+        helper(builtInTag);
+        return `_${builtInTag}`;
+      }
       return genExpression(
-        shared.extend(compilerDom.createSimpleExpression(operation.tag, false), { ast: null }),
+        shared.extend(compilerDom.createSimpleExpression(tag2, false), { ast: null }),
         context
       );
     }
@@ -1820,7 +1877,10 @@ function processInlineHandlers(props, context) {
       prop.values.forEach((value, i2) => {
         const isMemberExp = compilerDom.isMemberExpression(value, context.options);
         if (!isMemberExp) {
-          const name = getUniqueHandlerName(context, `_on_${prop.key.content}`);
+          const name = getUniqueHandlerName(
+            context,
+            `_on_${prop.key.content.replace(/-/g, "_")}`
+          );
           handlers.push({ name, value });
           ids[name] = null;
           prop.values[i2] = shared.extend({ ast: null }, compilerDom.createSimpleExpression(name));
@@ -1887,7 +1947,7 @@ function genProp(prop, context, isStatic) {
     ...prop.handler ? genEventHandler(
       context,
       prop.values[0],
-      void 0,
+      prop.handlerModifiers,
       true
     ) : isStatic ? ["() => (", ...values, ")"] : values,
     ...prop.model ? [...genModelEvent(prop, context), ...genModelModifiers(prop, context)] : []
@@ -2019,7 +2079,7 @@ function genSlotBlockWithProps(oper, context) {
   let propsName;
   let exitScope;
   let depth;
-  const { props } = oper;
+  const { props, key, node } = oper;
   const idsOfProps = /* @__PURE__ */ new Set();
   if (props) {
     rawProps = props.content;
@@ -2041,17 +2101,39 @@ function genSlotBlockWithProps(oper, context) {
   idsOfProps.forEach(
     (id) => idMap[id] = isDestructureAssignment ? `${propsName}[${JSON.stringify(id)}]` : null
   );
-  const blockFn = context.withId(
+  let blockFn = context.withId(
     () => genBlock(oper, context, [propsName]),
     idMap
   );
   exitScope && exitScope();
+  if (key) {
+    blockFn = [
+      `() => {`,
+      INDENT_START,
+      NEWLINE,
+      `return `,
+      ...genCall(
+        context.helper("createKeyedFragment"),
+        [`() => `, ...genExpression(key, context)],
+        blockFn
+      ),
+      INDENT_END,
+      NEWLINE,
+      `}`
+    ];
+  }
+  if (node.type === 1 && // Not a real component
+  !isTeleportTag(node.tag) && // Needs to determine whether to activate/deactivate based on instance.parent being KeepAlive
+  !isKeepAliveTag(node.tag) && // Slot updates need to trigger TransitionGroup's onBeforeUpdate/onUpdated hook
+  !isTransitionGroupTag(node.tag)) {
+    blockFn = [`${context.helper("withVaporCtx")}(`, ...blockFn, `)`];
+  }
   return blockFn;
 }
 
 function genSlotOutlet(oper, context) {
   const { helper } = context;
-  const { id, name, fallback } = oper;
+  const { id, name, fallback, noSlotted } = oper;
   const [frag, push] = buildCodeFragment();
   const nameExpr = name.isStatic ? genExpression(name, context) : ["() => (", ...genExpression(name, context), ")"];
   let fallbackArg;
@@ -2065,7 +2147,11 @@ function genSlotOutlet(oper, context) {
       helper("createSlot"),
       nameExpr,
       genRawProps(oper.props, context) || "null",
-      fallbackArg
+      fallbackArg,
+      noSlotted && "undefined",
+      // instance
+      noSlotted && "true"
+      // noSlotted
     )
   );
   return frag;
@@ -2184,12 +2270,18 @@ function genEffect({ operations }, context) {
   return frag;
 }
 function genInsertionState(operation, context) {
+  const { parent, anchor, append, last } = operation;
   return [
     NEWLINE,
     ...genCall(
       context.helper("setInsertionState"),
-      `n${operation.parent}`,
-      operation.anchor == null ? void 0 : operation.anchor === -1 ? `0` : `n${operation.anchor}`
+      `n${parent}`,
+      anchor == null ? void 0 : anchor === -1 ? `0` : append ? (
+        // null or anchor > 0 for append
+        // anchor > 0 is the logical index of append node - used for locate node during hydration
+        anchor === 0 ? "null" : `${anchor}`
+      ) : `n${anchor}`,
+      last && "true"
     )
   ];
 }
@@ -2204,13 +2296,16 @@ function genTemplates(templates, rootIndex, { helper }) {
 }
 function genSelf(dynamic, context) {
   const [frag, push] = buildCodeFragment();
-  const { id, template, operation } = dynamic;
+  const { id, template, operation, hasDynamicChild } = dynamic;
   if (id !== void 0 && template !== void 0) {
     push(NEWLINE, `const n${id} = t${template}()`);
     push(...genDirectivesForElement(id, context));
   }
   if (operation) {
     push(...genOperationWithInsertionState(operation, context));
+  }
+  if (hasDynamicChild) {
+    push(...genChildren(dynamic, context, push, `n${id}`));
   }
   return frag;
 }
@@ -2220,51 +2315,65 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
   const { children } = dynamic;
   let offset = 0;
   let prev;
-  const childrenToGen = [];
+  let ifBranchCount = 0;
+  let prependCount = 0;
   for (const [index, child] of children.entries()) {
+    if (child.operation && child.operation.anchor === -1) {
+      prependCount++;
+    }
     if (child.flags & 2) {
       offset--;
+    } else if (child.ifBranch) {
+      ifBranchCount++;
     }
     const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
     if (id === void 0 && !child.hasDynamicChild) {
       push(...genSelf(child, context));
       continue;
     }
-    const elementIndex = Number(index) + offset;
+    const elementIndex = index + offset;
+    const logicalIndex = elementIndex - ifBranchCount + prependCount;
     const variable = id === void 0 ? `p${context.block.tempId++}` : `n${id}`;
     pushBlock(NEWLINE, `const ${variable} = `);
     if (prev) {
       if (elementIndex - prev[1] === 1) {
-        pushBlock(...genCall(helper("next"), prev[0]));
+        pushBlock(...genCall(helper("next"), prev[0], String(logicalIndex)));
       } else {
-        pushBlock(...genCall(helper("nthChild"), from, String(elementIndex)));
+        pushBlock(
+          ...genCall(
+            helper("nthChild"),
+            from,
+            String(elementIndex),
+            String(logicalIndex)
+          )
+        );
       }
     } else {
       if (elementIndex === 0) {
-        pushBlock(...genCall(helper("child"), from));
+        pushBlock(...genCall(helper("child"), from, String(logicalIndex)));
       } else {
         let init = genCall(helper("child"), from);
         if (elementIndex === 1) {
-          init = genCall(helper("next"), init);
+          init = genCall(helper("next"), init, String(logicalIndex));
         } else if (elementIndex > 1) {
-          init = genCall(helper("nthChild"), from, String(elementIndex));
+          init = genCall(
+            helper("nthChild"),
+            from,
+            String(elementIndex),
+            String(logicalIndex)
+          );
         }
         pushBlock(...init);
       }
     }
-    if (id === child.anchor) {
+    if (id === child.anchor && !child.hasDynamicChild) {
       push(...genSelf(child, context));
     }
     if (id !== void 0) {
       push(...genDirectivesForElement(id, context));
     }
     prev = [variable, elementIndex];
-    childrenToGen.push([child, variable]);
-  }
-  if (childrenToGen.length) {
-    for (const [child, from2] of childrenToGen) {
-      push(...genChildren(child, context, pushBlock, from2));
-    }
+    push(...genChildren(child, context, pushBlock, variable));
   }
   return frag;
 }
@@ -2283,8 +2392,11 @@ function genBlock(oper, context, args = [], root) {
 }
 function genBlockContent(block, context, root, genEffectsExtraFrag) {
   const [frag, push] = buildCodeFragment();
-  const { dynamic, effect, operation, returns } = block;
+  const { dynamic, effect, operation, returns, key } = block;
   const resetBlock = context.enterBlock(block);
+  if (block.hasDeferredVShow) {
+    push(NEWLINE, `const deferredApplyVShows = []`);
+  }
   if (root) {
     for (let name of context.ir.component) {
       const id = compilerDom.toValidAssetId(name, "component");
@@ -2307,10 +2419,21 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
     push(...genSelf(child, context));
   }
   for (const child of dynamic.children) {
-    push(...genChildren(child, context, push, `n${child.id}`));
+    if (!child.hasDynamicChild) {
+      push(...genChildren(child, context, push, `n${child.id}`));
+    }
   }
   push(...genOperations(operation, context));
   push(...genEffects(effect, context, genEffectsExtraFrag));
+  if (block.hasDeferredVShow) {
+    push(NEWLINE, `deferredApplyVShows.forEach(fn => fn())`);
+  }
+  if (dynamic.needsKey) {
+    for (const child of dynamic.children) {
+      const keyValue = key ? genExpression(key, context) : JSON.stringify(child.id);
+      push(NEWLINE, `n${child.id}.$key = `, ...keyValue);
+    }
+  }
   push(NEWLINE, `return `);
   const returnNodes = returns.map((n) => `n${n}`);
   const returnsCode = returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "null"];
@@ -2469,15 +2592,17 @@ const transformChildren = (node, context) => {
 };
 function processDynamicChildren(context) {
   let prevDynamics = [];
-  let hasStaticTemplate = false;
+  let staticCount = 0;
+  let dynamicCount = 0;
+  let lastInsertionChild;
   const children = context.dynamic.children;
   for (const [index, child] of children.entries()) {
     if (child.flags & 4) {
-      prevDynamics.push(child);
+      prevDynamics.push(lastInsertionChild = child);
     }
     if (!(child.flags & 2)) {
       if (prevDynamics.length) {
-        if (hasStaticTemplate) {
+        if (staticCount) {
           context.childrenTemplate[index - prevDynamics.length] = `<!>`;
           prevDynamics[0].flags -= 2;
           const anchor = prevDynamics[0].anchor = context.increaseId();
@@ -2490,16 +2615,26 @@ function processDynamicChildren(context) {
             /* prepend */
           );
         }
+        dynamicCount += prevDynamics.length;
         prevDynamics = [];
       }
-      hasStaticTemplate = true;
+      staticCount++;
     }
   }
   if (prevDynamics.length) {
-    registerInsertion(prevDynamics, context);
+    registerInsertion(
+      prevDynamics,
+      context,
+      // the logical index of append child
+      dynamicCount + staticCount,
+      true
+    );
+  }
+  if (lastInsertionChild && lastInsertionChild.operation) {
+    lastInsertionChild.operation.last = true;
   }
 }
-function registerInsertion(dynamics, context, anchor) {
+function registerInsertion(dynamics, context, anchor, append) {
   for (const child of dynamics) {
     if (child.template != null) {
       context.registerOperation({
@@ -2508,11 +2643,12 @@ function registerInsertion(dynamics, context, anchor) {
         node: context.node,
         elements: dynamics.map((child2) => child2.id),
         parent: context.reference(),
-        anchor
+        anchor: append ? void 0 : anchor
       });
     } else if (child.operation && isBlockOperation(child.operation)) {
       child.operation.parent = context.reference();
       child.operation.anchor = anchor;
+      child.operation.append = append;
     }
   }
 }
@@ -2580,6 +2716,11 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
       tag = fromSetup;
       asset = false;
     }
+    const builtInTag = isBuiltInComponent(tag);
+    if (builtInTag) {
+      tag = builtInTag;
+      asset = false;
+    }
     const dotIndex = tag.indexOf(".");
     if (dotIndex > 0) {
       const ns = resolveSetupReference(tag.slice(0, dotIndex), context);
@@ -2638,6 +2779,7 @@ function resolveSetupReference(name, context) {
   const PascalName = shared.capitalize(camelName);
   return bindings[name] ? name : bindings[camelName] ? camelName : bindings[PascalName] ? PascalName : void 0;
 }
+const dynamicKeys = ["indeterminate"];
 function transformNativeElement(node, propsResult, singleRoot, context, getEffectIndex) {
   const { tag } = node;
   const { scopeId } = context.options;
@@ -2701,7 +2843,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
       if (isDom2 && key.content === "class") {
         hasClass = true;
       }
-      if (key.isStatic && values.length === 1 && values[0].isStatic) {
+      if (key.isStatic && values.length === 1 && values[0].isStatic && !dynamicKeys.includes(key.content)) {
         if (isDom2 && key.content === "style") {
           hasStaticStyle = true;
           const checkStaticStyle = context.options.checkStaticStyle;
@@ -2897,7 +3039,7 @@ function dedupeProperties(results) {
     }
     const name = prop.key.content;
     const existing = knownProps.get(name);
-    if (existing) {
+    if (existing && existing.handler === prop.handler) {
       if (name === "style" || name === "class") {
         mergePropValues(existing, prop);
       }
@@ -2941,11 +3083,11 @@ const transformVHtml = (dir, node, context) => {
     // fixed by uts
     node,
     element: context.reference(),
-    value: exp
+    value: exp,
+    isComponent: node.tagType === 1
   });
 };
 
-/*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
 function makeMap(str) {
   const map = /* @__PURE__ */ Object.create(null);
@@ -2980,12 +3122,15 @@ const transformVText = (dir, node, context) => {
     context.childrenTemplate = [
       context.options.platform ? TEXT_PLACEHOLDER : " "
     ];
-    context.registerOperation({
-      type: 17,
-      // fixed by uts
-      node,
-      parent: context.reference()
-    });
+    const isComponent = node.tagType === 1;
+    if (!isComponent) {
+      context.registerOperation({
+        type: 17,
+        // fixed by uts
+        node,
+        parent: context.reference()
+      });
+    }
     context.registerEffect([exp], {
       type: 4,
       // fixed by uts
@@ -3085,7 +3230,11 @@ const transformVOn = (dir, node, context) => {
       key: arg,
       value: handler,
       handler: true,
-      handlerModifiers: eventOptionModifiers
+      handlerModifiers: {
+        keys: keyModifiers,
+        nonKeys: nonKeyModifiers,
+        options: eventOptionModifiers
+      }
     };
   }
   const delegate = arg.isStatic && !eventOptionModifiers.length && delegatedEvents(arg.content);
@@ -3125,6 +3274,14 @@ const transformVShow = (dir, node, context) => {
     );
     return;
   }
+  let shouldDeferred = false;
+  const parentNode = context.parent && context.parent.node;
+  if (parentNode && parentNode.type === 1) {
+    shouldDeferred = !!(isTransitionTag(parentNode.tag) && findProp(parentNode, "appear", false, true));
+    if (shouldDeferred) {
+      context.parent.parent.block.hasDeferredVShow = true;
+    }
+  }
   context.registerOperation({
     type: 13,
     // fixed by uts
@@ -3132,7 +3289,8 @@ const transformVShow = (dir, node, context) => {
     element: context.reference(),
     dir,
     name: "show",
-    builtin: true
+    builtin: true,
+    deferred: shouldDeferred
   });
 };
 
@@ -3206,7 +3364,7 @@ const transformText = (node, context) => {
   } else if (node.type === 5) {
     processInterpolation(context);
   } else if (node.type === 2) {
-    context.template += node.content;
+    context.template += shared.escapeHtml(node.content);
   }
 };
 function processInterpolation(context) {
@@ -3224,6 +3382,7 @@ function processInterpolation(context) {
     return;
   }
   const isDom2 = !!context.options.platform;
+  let isTextNode = false;
   let isInComponentSlot = false;
   let shouldReuseParentText = false;
   if (isDom2) {
@@ -3234,23 +3393,10 @@ function processInterpolation(context) {
     isInComponentSlot = parentNode.type === 1 && (parentNode.tagType === 1 || compilerDom.isTemplateNode(parentNode) && isComponent2(grandNode));
     shouldReuseParentText = !!(!isInComponentSlot && parentNode.loc.source.startsWith("<slot") && parentNode.type === 1 && parentNode.tag === "template" && grandNode && grandNode.tag === "text" && // 确保 slot 只有文本类内容
     parentNode.children.every((child) => isTextLike(child)));
+    isTextNode = isInComponentSlot || shouldReuseParentText;
   }
-  let id;
-  if (isInComponentSlot) {
-    context.dynamic.flags |= 2;
-    id = context.reference();
-    context.registerOperation({
-      type: 18,
-      node: context.node,
-      id
-    });
-  } else if (shouldReuseParentText) {
-    id = context.parent.parent.reference();
-    context.dynamic.flags |= 2;
-  } else {
-    context.template += isDom2 ? TEXT_PLACEHOLDER : " ";
-    id = context.reference();
-  }
+  context.template += isDom2 ? isTextNode ? TEXT_NODE_PLACEHOLDER : TEXT_PLACEHOLDER : " ";
+  const id = context.reference();
   if (values.length === 0) {
     return;
   }
@@ -3280,7 +3426,7 @@ function processTextContainer(children, context) {
   const values = processTextLikeChildren(children, context);
   const literals = values.map(getLiteralExpressionValue);
   if (literals.every((l) => l != null)) {
-    context.childrenTemplate = literals.map((l) => String(l));
+    context.childrenTemplate = literals.map((l) => shared.escapeHtml(String(l)));
   } else {
     context.childrenTemplate = [
       context.options.platform ? TEXT_PLACEHOLDER : " "
@@ -3439,7 +3585,7 @@ const transformComment = (node, context) => {
     context.comment.push(node);
     context.dynamic.flags |= 2;
   } else {
-    context.template += `<!--${node.content}-->`;
+    context.template += `<!--${shared.escapeHtml(node.content)}-->`;
   }
 };
 function getSiblingIf(context, reverse) {
@@ -3495,6 +3641,7 @@ function processIf(node, dir, context) {
     };
   } else {
     const siblingIf = getSiblingIf(context, true);
+    context.dynamic.ifBranch = true;
     const siblings = context.parent && context.parent.dynamic.children;
     let lastIfNode;
     if (siblings) {
@@ -3553,6 +3700,7 @@ function createIfBranch(node, context) {
   const branch = newBlock(node);
   const exitBlock = context.enterBlock(branch);
   context.reference();
+  branch.dynamic.needsKey = isInTransition(context);
   return [branch, exitBlock];
 }
 
@@ -3577,7 +3725,8 @@ function processFor(node, dir, context) {
   const { source, value, key, index } = parseResult;
   const keyProp = findProp(node, "key");
   const keyProperty = keyProp && propToExpression(keyProp);
-  const isComponent = node.tagType === 1;
+  const isComponent = node.tagType === 1 || // template v-for with a single component child
+  isTemplateWithSingleComponent(node);
   context.node = node = wrapTemplate(node, ["for"]);
   context.dynamic.flags |= 2 | 4;
   const id = context.reference();
@@ -3607,6 +3756,13 @@ function processFor(node, dir, context) {
       onlyChild: !!isOnlyChild
     };
   };
+}
+function isTemplateWithSingleComponent(node) {
+  if (node.tag !== "template") return false;
+  const nonCommentChildren = node.children.filter(
+    (c) => c.type !== 3
+  );
+  return nonCommentChildren.length === 1 && nonCommentChildren[0].type === 1 && nonCommentChildren[0].tagType === 1;
 }
 
 const transformSlotOutlet = (node, context) => {
@@ -3683,7 +3839,8 @@ const transformSlotOutlet = (node, context) => {
       id,
       name: slotName,
       props: irProps,
-      fallback
+      fallback,
+      noSlotted: !!(context.options.scopeId && !context.options.slotted)
     };
   };
 };
@@ -3745,7 +3902,22 @@ function transformComponentSlot(node, dir, context) {
       markNonTemplate(n, context);
     });
   }
-  const [block, onExit] = createSlotBlock(node, dir, context);
+  let slotKey;
+  if (isTransitionNode(node) && nonSlotTemplateChildren.length) {
+    const nonCommentChild = nonSlotTemplateChildren.find(
+      (n) => n.type !== 3
+    );
+    if (nonCommentChild) {
+      const keyProp = findProp(
+        nonCommentChild,
+        "key"
+      );
+      if (keyProp) {
+        slotKey = keyProp.exp;
+      }
+    }
+  }
+  const [block, onExit] = createSlotBlock(node, dir, context, slotKey);
   const { slots } = context;
   return () => {
     onExit();
@@ -3879,15 +4051,50 @@ function hasStaticSlot(slots, name) {
     if (slot.slotType === 0) return !!slot.slots[name];
   });
 }
-function createSlotBlock(slotNode, dir, context) {
+function createSlotBlock(slotNode, dir, context, key = void 0) {
   const block = newBlock(slotNode);
   block.props = dir && dir.exp;
+  if (key) {
+    block.key = key;
+    block.dynamic.needsKey = true;
+  }
   const exitBlock = context.enterBlock(block);
   return [block, exitBlock];
 }
 function isNonWhitespaceContent(node) {
   if (node.type !== 2) return true;
   return !!node.content.trim();
+}
+
+const transformTransition = (node, context) => {
+  if (node.type === 1 && node.tagType === 1) {
+    if (isTransitionTag(node.tag)) {
+      return compilerDom.postTransformTransition(
+        node,
+        context.options.onError,
+        hasMultipleChildren
+      );
+    }
+  }
+};
+function hasMultipleChildren(node) {
+  const children = node.children = node.children.filter(
+    (c) => c.type !== 3 && !(c.type === 2 && !c.content.trim())
+  );
+  const first = children[0];
+  if (children.length === 1 && first.type === 1 && (findDir(first, "for") || compilerDom.isTemplateNode(first))) {
+    return true;
+  }
+  const hasElse = (node2) => findDir(node2, "else-if") || findDir(node2, "else", true);
+  if (children.every(
+    (c, index) => c.type === 1 && // not template
+    !compilerDom.isTemplateNode(c) && // not has v-for
+    !findDir(c, "for") && // if the first child has v-if, the rest should also have v-else-if/v-else
+    (index === 0 ? findDir(c, "if") : hasElse(c)) && !hasMultipleChildren(c)
+  )) {
+    return false;
+  }
+  return children.length > 1;
 }
 
 function compile(source, options = {}) {
@@ -3908,6 +4115,7 @@ function compile(source, options = {}) {
     shared.extend({}, resolvedOptions, {
       nodeTransforms: [
         ...nodeTransforms,
+        ...[transformTransition] ,
         ...options.nodeTransforms || []
         // user transforms
       ],
@@ -3979,6 +4187,7 @@ exports.IRNodeTypes = IRNodeTypes;
 exports.IRSlotType = IRSlotType;
 exports.LF = LF;
 exports.NEWLINE = NEWLINE;
+exports.TEXT_NODE_PLACEHOLDER = TEXT_NODE_PLACEHOLDER;
 exports.TEXT_PLACEHOLDER = TEXT_PLACEHOLDER;
 exports.VaporErrorCodes = VaporErrorCodes;
 exports.VaporErrorMessages = VaporErrorMessages;
@@ -3993,8 +4202,13 @@ exports.generate = generate;
 exports.getBaseTransformPreset = getBaseTransformPreset;
 exports.getLiteralExpressionValue = getLiteralExpressionValue;
 exports.isBlockOperation = isBlockOperation;
+exports.isBuiltInComponent = isBuiltInComponent;
 exports.isConstantExpression = isConstantExpression;
+exports.isKeepAliveTag = isKeepAliveTag;
 exports.isStaticExpression = isStaticExpression;
+exports.isTeleportTag = isTeleportTag;
+exports.isTransitionGroupTag = isTransitionGroupTag;
+exports.isTransitionTag = isTransitionTag;
 exports.transform = transform;
 exports.transformChildren = transformChildren;
 exports.transformComment = transformComment;

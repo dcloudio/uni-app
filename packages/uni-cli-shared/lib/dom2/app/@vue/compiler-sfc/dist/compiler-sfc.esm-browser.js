@@ -1,9 +1,8 @@
 /**
-* @vue/compiler-sfc v3.6.0-alpha.2
+* @vue/compiler-sfc v3.6.0-alpha.3
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-/*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
 function makeMap(str) {
   const map = /* @__PURE__ */ Object.create(null);
@@ -45,10 +44,10 @@ const isBuiltInDirective = /* @__PURE__ */ makeMap(
 );
 const cacheStringFunction = (fn) => {
   const cache = /* @__PURE__ */ Object.create(null);
-  return (str) => {
+  return ((str) => {
     const hit = cache[str];
     return hit || (cache[str] = fn(str));
-  };
+  });
 };
 const camelizeRE = /-(\w)/g;
 const camelizeReplacer = (_, c) => c ? c.toUpperCase() : "";
@@ -269,6 +268,9 @@ function shouldSetAsAttr(tagName, key) {
     return true;
   }
   if ((key === "width" || key === "height") && (tagName === "IMG" || tagName === "VIDEO" || tagName === "CANVAS" || tagName === "SOURCE")) {
+    return true;
+  }
+  if (key === "sandbox" && tagName === "IFRAME") {
     return true;
   }
   return false;
@@ -2921,7 +2923,7 @@ function requireLib$2 () {
 	    allowUndeclaredExports: false,
 	    allowYieldOutsideFunction: false,
 	    plugins: [],
-	    strictMode: null,
+	    strictMode: undefined,
 	    ranges: false,
 	    tokens: false,
 	    createImportExpressions: false,
@@ -3109,7 +3111,6 @@ function requireLib$2 () {
 	  }
 	  convertPrivateNameToPrivateIdentifier(node) {
 	    const name = super.getPrivateNameSV(node);
-	    node = node;
 	    delete node.id;
 	    node.name = name;
 	    return this.castNodeTo(node, "PrivateIdentifier");
@@ -3224,8 +3225,8 @@ function requireLib$2 () {
 	    node.kind = "init";
 	    return this.finishNode(node, "Property");
 	  }
-	  isValidLVal(type, isUnparenthesizedInAssign, binding) {
-	    return type === "Property" ? "value" : super.isValidLVal(type, isUnparenthesizedInAssign, binding);
+	  isValidLVal(type, disallowCallExpression, isUnparenthesizedInAssign, binding) {
+	    return type === "Property" ? "value" : super.isValidLVal(type, disallowCallExpression, isUnparenthesizedInAssign, binding);
 	  }
 	  isAssignable(node, isBinding) {
 	    if (node != null && this.isObjectProperty(node)) {
@@ -3259,11 +3260,14 @@ function requireLib$2 () {
 	  finishCallExpression(unfinished, optional) {
 	    const node = super.finishCallExpression(unfinished, optional);
 	    if (node.callee.type === "Import") {
-	      var _ref, _ref2;
+	      var _ref;
 	      this.castNodeTo(node, "ImportExpression");
 	      node.source = node.arguments[0];
 	      node.options = (_ref = node.arguments[1]) != null ? _ref : null;
-	      node.attributes = (_ref2 = node.arguments[1]) != null ? _ref2 : null;
+	      {
+	        var _ref2;
+	        node.attributes = (_ref2 = node.arguments[1]) != null ? _ref2 : null;
+	      }
 	      delete node.arguments;
 	      delete node.callee;
 	    } else if (node.type === "OptionalCallExpression") {
@@ -3939,13 +3943,13 @@ function requireLib$2 () {
 	    context.push(types.j_expr, types.j_oTag);
 	  };
 	}
-	let nonASCIIidentifierStartChars = "\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u037f\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u052f\u0531-\u0556\u0559\u0560-\u0588\u05d0-\u05ea\u05ef-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u0860-\u086a\u0870-\u0887\u0889-\u088e\u08a0-\u08c9\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u09fc\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0af9\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c39\u0c3d\u0c58-\u0c5a\u0c5d\u0c60\u0c61\u0c80\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cdd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d04-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d54-\u0d56\u0d5f-\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e86-\u0e8a\u0e8c-\u0ea3\u0ea5\u0ea7-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f5\u13f8-\u13fd\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f8\u1700-\u1711\u171f-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1878\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191e\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19b0-\u19c9\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4c\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1c80-\u1c8a\u1c90-\u1cba\u1cbd-\u1cbf\u1ce9-\u1cec\u1cee-\u1cf3\u1cf5\u1cf6\u1cfa\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2118-\u211d\u2124\u2126\u2128\u212a-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309b-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312f\u3131-\u318e\u31a0-\u31bf\u31f0-\u31ff\u3400-\u4dbf\u4e00-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua69d\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua7cd\ua7d0\ua7d1\ua7d3\ua7d5-\ua7dc\ua7f2-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua8fd\ua8fe\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\ua9e0-\ua9e4\ua9e6-\ua9ef\ua9fa-\ua9fe\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa7e-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uab30-\uab5a\uab5c-\uab69\uab70-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc";
-	let nonASCIIidentifierChars = "\xb7\u0300-\u036f\u0387\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u064b-\u0669\u0670\u06d6-\u06dc\u06df-\u06e4\u06e7\u06e8\u06ea-\u06ed\u06f0-\u06f9\u0711\u0730-\u074a\u07a6-\u07b0\u07c0-\u07c9\u07eb-\u07f3\u07fd\u0816-\u0819\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0859-\u085b\u0897-\u089f\u08ca-\u08e1\u08e3-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09cb-\u09cd\u09d7\u09e2\u09e3\u09e6-\u09ef\u09fe\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2\u0ae3\u0ae6-\u0aef\u0afa-\u0aff\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b55-\u0b57\u0b62\u0b63\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c00-\u0c04\u0c3c\u0c3e-\u0c44\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62\u0c63\u0c66-\u0c6f\u0c81-\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2\u0ce3\u0ce6-\u0cef\u0cf3\u0d00-\u0d03\u0d3b\u0d3c\u0d3e-\u0d44\u0d46-\u0d48\u0d4a-\u0d4d\u0d57\u0d62\u0d63\u0d66-\u0d6f\u0d81-\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0de6-\u0def\u0df2\u0df3\u0e31\u0e34-\u0e3a\u0e47-\u0e4e\u0e50-\u0e59\u0eb1\u0eb4-\u0ebc\u0ec8-\u0ece\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f3e\u0f3f\u0f71-\u0f84\u0f86\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u102b-\u103e\u1040-\u1049\u1056-\u1059\u105e-\u1060\u1062-\u1064\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u1369-\u1371\u1712-\u1715\u1732-\u1734\u1752\u1753\u1772\u1773\u17b4-\u17d3\u17dd\u17e0-\u17e9\u180b-\u180d\u180f-\u1819\u18a9\u1920-\u192b\u1930-\u193b\u1946-\u194f\u19d0-\u19da\u1a17-\u1a1b\u1a55-\u1a5e\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1ab0-\u1abd\u1abf-\u1ace\u1b00-\u1b04\u1b34-\u1b44\u1b50-\u1b59\u1b6b-\u1b73\u1b80-\u1b82\u1ba1-\u1bad\u1bb0-\u1bb9\u1be6-\u1bf3\u1c24-\u1c37\u1c40-\u1c49\u1c50-\u1c59\u1cd0-\u1cd2\u1cd4-\u1ce8\u1ced\u1cf4\u1cf7-\u1cf9\u1dc0-\u1dff\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2cef-\u2cf1\u2d7f\u2de0-\u2dff\u302a-\u302f\u3099\u309a\u30fb\ua620-\ua629\ua66f\ua674-\ua67d\ua69e\ua69f\ua6f0\ua6f1\ua802\ua806\ua80b\ua823-\ua827\ua82c\ua880\ua881\ua8b4-\ua8c5\ua8d0-\ua8d9\ua8e0-\ua8f1\ua8ff-\ua909\ua926-\ua92d\ua947-\ua953\ua980-\ua983\ua9b3-\ua9c0\ua9d0-\ua9d9\ua9e5\ua9f0-\ua9f9\uaa29-\uaa36\uaa43\uaa4c\uaa4d\uaa50-\uaa59\uaa7b-\uaa7d\uaab0\uaab2-\uaab4\uaab7\uaab8\uaabe\uaabf\uaac1\uaaeb-\uaaef\uaaf5\uaaf6\uabe3-\uabea\uabec\uabed\uabf0-\uabf9\ufb1e\ufe00-\ufe0f\ufe20-\ufe2f\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f\uff65";
+	let nonASCIIidentifierStartChars = "\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u037f\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u052f\u0531-\u0556\u0559\u0560-\u0588\u05d0-\u05ea\u05ef-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u0860-\u086a\u0870-\u0887\u0889-\u088f\u08a0-\u08c9\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u09fc\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0af9\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c39\u0c3d\u0c58-\u0c5a\u0c5c\u0c5d\u0c60\u0c61\u0c80\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cdc-\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d04-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d54-\u0d56\u0d5f-\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e86-\u0e8a\u0e8c-\u0ea3\u0ea5\u0ea7-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f5\u13f8-\u13fd\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f8\u1700-\u1711\u171f-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1878\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191e\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19b0-\u19c9\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4c\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1c80-\u1c8a\u1c90-\u1cba\u1cbd-\u1cbf\u1ce9-\u1cec\u1cee-\u1cf3\u1cf5\u1cf6\u1cfa\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2118-\u211d\u2124\u2126\u2128\u212a-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309b-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312f\u3131-\u318e\u31a0-\u31bf\u31f0-\u31ff\u3400-\u4dbf\u4e00-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua69d\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua7dc\ua7f1-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua8fd\ua8fe\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\ua9e0-\ua9e4\ua9e6-\ua9ef\ua9fa-\ua9fe\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa7e-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uab30-\uab5a\uab5c-\uab69\uab70-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc";
+	let nonASCIIidentifierChars = "\xb7\u0300-\u036f\u0387\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u064b-\u0669\u0670\u06d6-\u06dc\u06df-\u06e4\u06e7\u06e8\u06ea-\u06ed\u06f0-\u06f9\u0711\u0730-\u074a\u07a6-\u07b0\u07c0-\u07c9\u07eb-\u07f3\u07fd\u0816-\u0819\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0859-\u085b\u0897-\u089f\u08ca-\u08e1\u08e3-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09cb-\u09cd\u09d7\u09e2\u09e3\u09e6-\u09ef\u09fe\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2\u0ae3\u0ae6-\u0aef\u0afa-\u0aff\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b55-\u0b57\u0b62\u0b63\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c00-\u0c04\u0c3c\u0c3e-\u0c44\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62\u0c63\u0c66-\u0c6f\u0c81-\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2\u0ce3\u0ce6-\u0cef\u0cf3\u0d00-\u0d03\u0d3b\u0d3c\u0d3e-\u0d44\u0d46-\u0d48\u0d4a-\u0d4d\u0d57\u0d62\u0d63\u0d66-\u0d6f\u0d81-\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0de6-\u0def\u0df2\u0df3\u0e31\u0e34-\u0e3a\u0e47-\u0e4e\u0e50-\u0e59\u0eb1\u0eb4-\u0ebc\u0ec8-\u0ece\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f3e\u0f3f\u0f71-\u0f84\u0f86\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u102b-\u103e\u1040-\u1049\u1056-\u1059\u105e-\u1060\u1062-\u1064\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u1369-\u1371\u1712-\u1715\u1732-\u1734\u1752\u1753\u1772\u1773\u17b4-\u17d3\u17dd\u17e0-\u17e9\u180b-\u180d\u180f-\u1819\u18a9\u1920-\u192b\u1930-\u193b\u1946-\u194f\u19d0-\u19da\u1a17-\u1a1b\u1a55-\u1a5e\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1ab0-\u1abd\u1abf-\u1add\u1ae0-\u1aeb\u1b00-\u1b04\u1b34-\u1b44\u1b50-\u1b59\u1b6b-\u1b73\u1b80-\u1b82\u1ba1-\u1bad\u1bb0-\u1bb9\u1be6-\u1bf3\u1c24-\u1c37\u1c40-\u1c49\u1c50-\u1c59\u1cd0-\u1cd2\u1cd4-\u1ce8\u1ced\u1cf4\u1cf7-\u1cf9\u1dc0-\u1dff\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2cef-\u2cf1\u2d7f\u2de0-\u2dff\u302a-\u302f\u3099\u309a\u30fb\ua620-\ua629\ua66f\ua674-\ua67d\ua69e\ua69f\ua6f0\ua6f1\ua802\ua806\ua80b\ua823-\ua827\ua82c\ua880\ua881\ua8b4-\ua8c5\ua8d0-\ua8d9\ua8e0-\ua8f1\ua8ff-\ua909\ua926-\ua92d\ua947-\ua953\ua980-\ua983\ua9b3-\ua9c0\ua9d0-\ua9d9\ua9e5\ua9f0-\ua9f9\uaa29-\uaa36\uaa43\uaa4c\uaa4d\uaa50-\uaa59\uaa7b-\uaa7d\uaab0\uaab2-\uaab4\uaab7\uaab8\uaabe\uaabf\uaac1\uaaeb-\uaaef\uaaf5\uaaf6\uabe3-\uabea\uabec\uabed\uabf0-\uabf9\ufb1e\ufe00-\ufe0f\ufe20-\ufe2f\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f\uff65";
 	const nonASCIIidentifierStart = new RegExp("[" + nonASCIIidentifierStartChars + "]");
 	const nonASCIIidentifier = new RegExp("[" + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "]");
 	nonASCIIidentifierStartChars = nonASCIIidentifierChars = null;
-	const astralIdentifierStartCodes = [0, 11, 2, 25, 2, 18, 2, 1, 2, 14, 3, 13, 35, 122, 70, 52, 268, 28, 4, 48, 48, 31, 14, 29, 6, 37, 11, 29, 3, 35, 5, 7, 2, 4, 43, 157, 19, 35, 5, 35, 5, 39, 9, 51, 13, 10, 2, 14, 2, 6, 2, 1, 2, 10, 2, 14, 2, 6, 2, 1, 4, 51, 13, 310, 10, 21, 11, 7, 25, 5, 2, 41, 2, 8, 70, 5, 3, 0, 2, 43, 2, 1, 4, 0, 3, 22, 11, 22, 10, 30, 66, 18, 2, 1, 11, 21, 11, 25, 71, 55, 7, 1, 65, 0, 16, 3, 2, 2, 2, 28, 43, 28, 4, 28, 36, 7, 2, 27, 28, 53, 11, 21, 11, 18, 14, 17, 111, 72, 56, 50, 14, 50, 14, 35, 39, 27, 10, 22, 251, 41, 7, 1, 17, 2, 60, 28, 11, 0, 9, 21, 43, 17, 47, 20, 28, 22, 13, 52, 58, 1, 3, 0, 14, 44, 33, 24, 27, 35, 30, 0, 3, 0, 9, 34, 4, 0, 13, 47, 15, 3, 22, 0, 2, 0, 36, 17, 2, 24, 20, 1, 64, 6, 2, 0, 2, 3, 2, 14, 2, 9, 8, 46, 39, 7, 3, 1, 3, 21, 2, 6, 2, 1, 2, 4, 4, 0, 19, 0, 13, 4, 31, 9, 2, 0, 3, 0, 2, 37, 2, 0, 26, 0, 2, 0, 45, 52, 19, 3, 21, 2, 31, 47, 21, 1, 2, 0, 185, 46, 42, 3, 37, 47, 21, 0, 60, 42, 14, 0, 72, 26, 38, 6, 186, 43, 117, 63, 32, 7, 3, 0, 3, 7, 2, 1, 2, 23, 16, 0, 2, 0, 95, 7, 3, 38, 17, 0, 2, 0, 29, 0, 11, 39, 8, 0, 22, 0, 12, 45, 20, 0, 19, 72, 200, 32, 32, 8, 2, 36, 18, 0, 50, 29, 113, 6, 2, 1, 2, 37, 22, 0, 26, 5, 2, 1, 2, 31, 15, 0, 328, 18, 16, 0, 2, 12, 2, 33, 125, 0, 80, 921, 103, 110, 18, 195, 2637, 96, 16, 1071, 18, 5, 26, 3994, 6, 582, 6842, 29, 1763, 568, 8, 30, 18, 78, 18, 29, 19, 47, 17, 3, 32, 20, 6, 18, 433, 44, 212, 63, 129, 74, 6, 0, 67, 12, 65, 1, 2, 0, 29, 6135, 9, 1237, 42, 9, 8936, 3, 2, 6, 2, 1, 2, 290, 16, 0, 30, 2, 3, 0, 15, 3, 9, 395, 2309, 106, 6, 12, 4, 8, 8, 9, 5991, 84, 2, 70, 2, 1, 3, 0, 3, 1, 3, 3, 2, 11, 2, 0, 2, 6, 2, 64, 2, 3, 3, 7, 2, 6, 2, 27, 2, 3, 2, 4, 2, 0, 4, 6, 2, 339, 3, 24, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 7, 1845, 30, 7, 5, 262, 61, 147, 44, 11, 6, 17, 0, 322, 29, 19, 43, 485, 27, 229, 29, 3, 0, 496, 6, 2, 3, 2, 1, 2, 14, 2, 196, 60, 67, 8, 0, 1205, 3, 2, 26, 2, 1, 2, 0, 3, 0, 2, 9, 2, 3, 2, 0, 2, 0, 7, 0, 5, 0, 2, 0, 2, 0, 2, 2, 2, 1, 2, 0, 3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 1, 2, 0, 3, 3, 2, 6, 2, 3, 2, 3, 2, 0, 2, 9, 2, 16, 6, 2, 2, 4, 2, 16, 4421, 42719, 33, 4153, 7, 221, 3, 5761, 15, 7472, 16, 621, 2467, 541, 1507, 4938, 6, 4191];
-	const astralIdentifierCodes = [509, 0, 227, 0, 150, 4, 294, 9, 1368, 2, 2, 1, 6, 3, 41, 2, 5, 0, 166, 1, 574, 3, 9, 9, 7, 9, 32, 4, 318, 1, 80, 3, 71, 10, 50, 3, 123, 2, 54, 14, 32, 10, 3, 1, 11, 3, 46, 10, 8, 0, 46, 9, 7, 2, 37, 13, 2, 9, 6, 1, 45, 0, 13, 2, 49, 13, 9, 3, 2, 11, 83, 11, 7, 0, 3, 0, 158, 11, 6, 9, 7, 3, 56, 1, 2, 6, 3, 1, 3, 2, 10, 0, 11, 1, 3, 6, 4, 4, 68, 8, 2, 0, 3, 0, 2, 3, 2, 4, 2, 0, 15, 1, 83, 17, 10, 9, 5, 0, 82, 19, 13, 9, 214, 6, 3, 8, 28, 1, 83, 16, 16, 9, 82, 12, 9, 9, 7, 19, 58, 14, 5, 9, 243, 14, 166, 9, 71, 5, 2, 1, 3, 3, 2, 0, 2, 1, 13, 9, 120, 6, 3, 6, 4, 0, 29, 9, 41, 6, 2, 3, 9, 0, 10, 10, 47, 15, 343, 9, 54, 7, 2, 7, 17, 9, 57, 21, 2, 13, 123, 5, 4, 0, 2, 1, 2, 6, 2, 0, 9, 9, 49, 4, 2, 1, 2, 4, 9, 9, 330, 3, 10, 1, 2, 0, 49, 6, 4, 4, 14, 10, 5350, 0, 7, 14, 11465, 27, 2343, 9, 87, 9, 39, 4, 60, 6, 26, 9, 535, 9, 470, 0, 2, 54, 8, 3, 82, 0, 12, 1, 19628, 1, 4178, 9, 519, 45, 3, 22, 543, 4, 4, 5, 9, 7, 3, 6, 31, 3, 149, 2, 1418, 49, 513, 54, 5, 49, 9, 0, 15, 0, 23, 4, 2, 14, 1361, 6, 2, 16, 3, 6, 2, 1, 2, 4, 101, 0, 161, 6, 10, 9, 357, 0, 62, 13, 499, 13, 245, 1, 2, 9, 726, 6, 110, 6, 6, 9, 4759, 9, 787719, 239];
+	const astralIdentifierStartCodes = [0, 11, 2, 25, 2, 18, 2, 1, 2, 14, 3, 13, 35, 122, 70, 52, 268, 28, 4, 48, 48, 31, 14, 29, 6, 37, 11, 29, 3, 35, 5, 7, 2, 4, 43, 157, 19, 35, 5, 35, 5, 39, 9, 51, 13, 10, 2, 14, 2, 6, 2, 1, 2, 10, 2, 14, 2, 6, 2, 1, 4, 51, 13, 310, 10, 21, 11, 7, 25, 5, 2, 41, 2, 8, 70, 5, 3, 0, 2, 43, 2, 1, 4, 0, 3, 22, 11, 22, 10, 30, 66, 18, 2, 1, 11, 21, 11, 25, 7, 25, 39, 55, 7, 1, 65, 0, 16, 3, 2, 2, 2, 28, 43, 28, 4, 28, 36, 7, 2, 27, 28, 53, 11, 21, 11, 18, 14, 17, 111, 72, 56, 50, 14, 50, 14, 35, 39, 27, 10, 22, 251, 41, 7, 1, 17, 5, 57, 28, 11, 0, 9, 21, 43, 17, 47, 20, 28, 22, 13, 52, 58, 1, 3, 0, 14, 44, 33, 24, 27, 35, 30, 0, 3, 0, 9, 34, 4, 0, 13, 47, 15, 3, 22, 0, 2, 0, 36, 17, 2, 24, 20, 1, 64, 6, 2, 0, 2, 3, 2, 14, 2, 9, 8, 46, 39, 7, 3, 1, 3, 21, 2, 6, 2, 1, 2, 4, 4, 0, 19, 0, 13, 4, 31, 9, 2, 0, 3, 0, 2, 37, 2, 0, 26, 0, 2, 0, 45, 52, 19, 3, 21, 2, 31, 47, 21, 1, 2, 0, 185, 46, 42, 3, 37, 47, 21, 0, 60, 42, 14, 0, 72, 26, 38, 6, 186, 43, 117, 63, 32, 7, 3, 0, 3, 7, 2, 1, 2, 23, 16, 0, 2, 0, 95, 7, 3, 38, 17, 0, 2, 0, 29, 0, 11, 39, 8, 0, 22, 0, 12, 45, 20, 0, 19, 72, 200, 32, 32, 8, 2, 36, 18, 0, 50, 29, 113, 6, 2, 1, 2, 37, 22, 0, 26, 5, 2, 1, 2, 31, 15, 0, 24, 43, 261, 18, 16, 0, 2, 12, 2, 33, 125, 0, 80, 921, 103, 110, 18, 195, 2637, 96, 16, 1071, 18, 5, 26, 3994, 6, 582, 6842, 29, 1763, 568, 8, 30, 18, 78, 18, 29, 19, 47, 17, 3, 32, 20, 6, 18, 433, 44, 212, 63, 33, 24, 3, 24, 45, 74, 6, 0, 67, 12, 65, 1, 2, 0, 15, 4, 10, 7381, 42, 31, 98, 114, 8702, 3, 2, 6, 2, 1, 2, 290, 16, 0, 30, 2, 3, 0, 15, 3, 9, 395, 2309, 106, 6, 12, 4, 8, 8, 9, 5991, 84, 2, 70, 2, 1, 3, 0, 3, 1, 3, 3, 2, 11, 2, 0, 2, 6, 2, 64, 2, 3, 3, 7, 2, 6, 2, 27, 2, 3, 2, 4, 2, 0, 4, 6, 2, 339, 3, 24, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 7, 1845, 30, 7, 5, 262, 61, 147, 44, 11, 6, 17, 0, 322, 29, 19, 43, 485, 27, 229, 29, 3, 0, 208, 30, 2, 2, 2, 1, 2, 6, 3, 4, 10, 1, 225, 6, 2, 3, 2, 1, 2, 14, 2, 196, 60, 67, 8, 0, 1205, 3, 2, 26, 2, 1, 2, 0, 3, 0, 2, 9, 2, 3, 2, 0, 2, 0, 7, 0, 5, 0, 2, 0, 2, 0, 2, 2, 2, 1, 2, 0, 3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 1, 2, 0, 3, 3, 2, 6, 2, 3, 2, 3, 2, 0, 2, 9, 2, 16, 6, 2, 2, 4, 2, 16, 4421, 42719, 33, 4381, 3, 5773, 3, 7472, 16, 621, 2467, 541, 1507, 4938, 6, 8489];
+	const astralIdentifierCodes = [509, 0, 227, 0, 150, 4, 294, 9, 1368, 2, 2, 1, 6, 3, 41, 2, 5, 0, 166, 1, 574, 3, 9, 9, 7, 9, 32, 4, 318, 1, 78, 5, 71, 10, 50, 3, 123, 2, 54, 14, 32, 10, 3, 1, 11, 3, 46, 10, 8, 0, 46, 9, 7, 2, 37, 13, 2, 9, 6, 1, 45, 0, 13, 2, 49, 13, 9, 3, 2, 11, 83, 11, 7, 0, 3, 0, 158, 11, 6, 9, 7, 3, 56, 1, 2, 6, 3, 1, 3, 2, 10, 0, 11, 1, 3, 6, 4, 4, 68, 8, 2, 0, 3, 0, 2, 3, 2, 4, 2, 0, 15, 1, 83, 17, 10, 9, 5, 0, 82, 19, 13, 9, 214, 6, 3, 8, 28, 1, 83, 16, 16, 9, 82, 12, 9, 9, 7, 19, 58, 14, 5, 9, 243, 14, 166, 9, 71, 5, 2, 1, 3, 3, 2, 0, 2, 1, 13, 9, 120, 6, 3, 6, 4, 0, 29, 9, 41, 6, 2, 3, 9, 0, 10, 10, 47, 15, 199, 7, 137, 9, 54, 7, 2, 7, 17, 9, 57, 21, 2, 13, 123, 5, 4, 0, 2, 1, 2, 6, 2, 0, 9, 9, 49, 4, 2, 1, 2, 4, 9, 9, 55, 9, 266, 3, 10, 1, 2, 0, 49, 6, 4, 4, 14, 10, 5350, 0, 7, 14, 11465, 27, 2343, 9, 87, 9, 39, 4, 60, 6, 26, 9, 535, 9, 470, 0, 2, 54, 8, 3, 82, 0, 12, 1, 19628, 1, 4178, 9, 519, 45, 3, 22, 543, 4, 4, 5, 9, 7, 3, 6, 31, 3, 149, 2, 1418, 49, 513, 54, 5, 49, 9, 0, 15, 0, 23, 4, 2, 14, 1361, 6, 2, 16, 3, 6, 2, 1, 2, 4, 101, 0, 161, 6, 10, 9, 357, 0, 62, 13, 499, 13, 245, 1, 2, 9, 233, 0, 3, 0, 8, 1, 6, 0, 475, 6, 110, 6, 6, 9, 4759, 9, 787719, 239];
 	function isInAstralSet(code, set) {
 	  let pos = 0x10000;
 	  for (let i = 0, length = set.length; i < length; i += 2) {
@@ -4129,7 +4133,7 @@ function requireLib$2 () {
 	    if (bindingType & 8) {
 	      return scope.names.has(name);
 	    }
-	    const type = scope.names.get(name);
+	    const type = scope.names.get(name) || 0;
 	    if (bindingType & 16) {
 	      return (type & 2) > 0 || !this.treatFunctionsAsVarInScope(scope) && (type & 1) > 0;
 	    }
@@ -4444,9 +4448,8 @@ function requireLib$2 () {
 	      return this.flowParseDeclareInterface(node);
 	    } else if (this.match(82)) {
 	      return this.flowParseDeclareExportDeclaration(node, insideModule);
-	    } else {
-	      this.unexpected();
 	    }
+	    throw this.unexpected();
 	  }
 	  flowParseDeclareVariable(node) {
 	    this.next();
@@ -4466,18 +4469,17 @@ function requireLib$2 () {
 	    const body = bodyNode.body = [];
 	    this.expect(5);
 	    while (!this.match(8)) {
-	      let bodyNode = this.startNode();
+	      const bodyNode = this.startNode();
 	      if (this.match(83)) {
 	        this.next();
 	        if (!this.isContextual(130) && !this.match(87)) {
 	          this.raise(FlowErrors.InvalidNonTypeImportInDeclareModule, this.state.lastTokStartLoc);
 	        }
-	        super.parseImport(bodyNode);
+	        body.push(super.parseImport(bodyNode));
 	      } else {
 	        this.expectContextual(125, FlowErrors.UnsupportedStatementInDeclareModule);
-	        bodyNode = this.flowParseDeclare(bodyNode, true);
+	        body.push(this.flowParseDeclare(bodyNode, true));
 	      }
-	      body.push(bodyNode);
 	    }
 	    this.scope.exit();
 	    this.expect(8);
@@ -4538,7 +4540,7 @@ function requireLib$2 () {
 	        }
 	      }
 	    }
-	    this.unexpected();
+	    throw this.unexpected();
 	  }
 	  flowParseDeclareModuleExports(node) {
 	    this.next();
@@ -4746,7 +4748,7 @@ function requireLib$2 () {
 	    return this.finishNode(node, "TypeParameterInstantiation");
 	  }
 	  flowParseTypeParameterInstantiationCallOrNew() {
-	    if (this.reScan_lt() !== 47) return;
+	    if (this.reScan_lt() !== 47) return null;
 	    const node = this.startNode();
 	    const oldInType = this.state.inType;
 	    node.params = [];
@@ -5242,8 +5244,7 @@ function requireLib$2 () {
 	          }
 	          throw this.raise(FlowErrors.UnexpectedSubtractionOperand, this.state.startLoc);
 	        }
-	        this.unexpected();
-	        return;
+	        throw this.unexpected();
 	      case 135:
 	        return this.parseLiteral(this.state.value, "NumberLiteralTypeAnnotation");
 	      case 136:
@@ -5274,7 +5275,7 @@ function requireLib$2 () {
 	          return this.flowIdentToTypeAnnotation(startLoc, node, this.parseIdentifier());
 	        }
 	    }
-	    this.unexpected();
+	    throw this.unexpected();
 	  }
 	  flowParsePostfixType() {
 	    const startLoc = this.state.startLoc;
@@ -5735,15 +5736,15 @@ function requireLib$2 () {
 	    }
 	    return exprList;
 	  }
-	  parseArrayLike(close, canBePattern, isTuple, refExpressionErrors) {
-	    const node = super.parseArrayLike(close, canBePattern, isTuple, refExpressionErrors);
-	    if (canBePattern && !this.state.maybeInArrowParameters) {
+	  parseArrayLike(close, isTuple, refExpressionErrors) {
+	    const node = super.parseArrayLike(close, isTuple, refExpressionErrors);
+	    if (refExpressionErrors != null && !this.state.maybeInArrowParameters) {
 	      this.toReferencedList(node.elements);
 	    }
 	    return node;
 	  }
-	  isValidLVal(type, isParenthesized, binding) {
-	    return type === "TypeCastExpression" || super.isValidLVal(type, isParenthesized, binding);
+	  isValidLVal(type, disallowCallExpression, isParenthesized, binding) {
+	    return type === "TypeCastExpression" || super.isValidLVal(type, disallowCallExpression, isParenthesized, binding);
 	  }
 	  parseClassProperty(node) {
 	    if (this.match(14)) {
@@ -7592,10 +7593,8 @@ function requireLib$2 () {
 	        setLeadingComments(commentWS.trailingNode, comments);
 	      }
 	    } else {
-	      const {
-	        containingNode: node,
-	        start: commentStart
-	      } = commentWS;
+	      const node = commentWS.containingNode;
+	      const commentStart = commentWS.start;
 	      if (this.input.charCodeAt(this.offsetToSourcePos(commentStart) - 1) === 44) {
 	        switch (node.type) {
 	          case "ObjectExpression":
@@ -8416,7 +8415,7 @@ function requireLib$2 () {
 	      const commentWhitespace = {
 	        start: this.sourceToOffsetPos(spaceStart),
 	        end: this.sourceToOffsetPos(end),
-	        comments,
+	        comments: comments,
 	        leadingNode: null,
 	        trailingNode: null,
 	        containingNode: null
@@ -9427,7 +9426,7 @@ function requireLib$2 () {
 	        };
 	      }
 	      return {
-	        node,
+	        node: node,
 	        error: null,
 	        thrown: false,
 	        aborted: false,
@@ -9683,7 +9682,7 @@ function requireLib$2 () {
 	      if (isLHS) {
 	        if (parenthesized.type === "Identifier") {
 	          this.expressionScope.recordArrowParameterBindingError(Errors.InvalidParenthesizedAssignment, node);
-	        } else if (parenthesized.type !== "MemberExpression" && !this.isOptionalMemberExpression(parenthesized)) {
+	        } else if (parenthesized.type !== "CallExpression" && parenthesized.type !== "MemberExpression" && !this.isOptionalMemberExpression(parenthesized)) {
 	          this.raise(Errors.InvalidParenthesizedAssignment, node);
 	        }
 	      } else {
@@ -9959,7 +9958,7 @@ function requireLib$2 () {
 	    node.right = this.parseMaybeAssignAllowIn();
 	    return this.finishNode(node, "AssignmentPattern");
 	  }
-	  isValidLVal(type, isUnparenthesizedInAssign, binding) {
+	  isValidLVal(type, disallowCallExpression, isUnparenthesizedInAssign, binding) {
 	    switch (type) {
 	      case "AssignmentPattern":
 	        return "left";
@@ -9975,13 +9974,17 @@ function requireLib$2 () {
 	        return "properties";
 	      case "VoidPattern":
 	        return true;
+	      case "CallExpression":
+	        if (!disallowCallExpression && !this.state.strict && this.optionFlags & 8192) {
+	          return true;
+	        }
 	    }
 	    return false;
 	  }
 	  isOptionalMemberExpression(expression) {
 	    return expression.type === "OptionalMemberExpression";
 	  }
-	  checkLVal(expression, ancestor, binding = 64, checkClashes = false, strictModeChanged = false, hasParenthesizedAncestor = false) {
+	  checkLVal(expression, ancestor, binding = 64, checkClashes = false, strictModeChanged = false, hasParenthesizedAncestor = false, disallowCallExpression = false) {
 	    var _expression$extra;
 	    const type = expression.type;
 	    if (this.isObjectMethod(expression)) return;
@@ -10016,7 +10019,9 @@ function requireLib$2 () {
 	    } else if (type === "VoidPattern" && ancestor.type === "CatchClause") {
 	      this.raise(Errors.VoidPatternCatchClauseParam, expression);
 	    }
-	    const validity = this.isValidLVal(type, !(hasParenthesizedAncestor || (_expression$extra = expression.extra) != null && _expression$extra.parenthesized) && ancestor.type === "AssignmentExpression", binding);
+	    const unwrappedExpression = unwrapParenthesizedExpression(expression);
+	    disallowCallExpression || (disallowCallExpression = unwrappedExpression.type === "CallExpression" && (unwrappedExpression.callee.type === "Import" || unwrappedExpression.callee.type === "Super"));
+	    const validity = this.isValidLVal(type, disallowCallExpression, !(hasParenthesizedAncestor || (_expression$extra = expression.extra) != null && _expression$extra.parenthesized) && ancestor.type === "AssignmentExpression", binding);
 	    if (validity === true) return;
 	    if (validity === false) {
 	      const ParseErrorClass = binding === 64 ? Errors.InvalidLhs : Errors.InvalidLhsBinding;
@@ -10039,11 +10044,11 @@ function requireLib$2 () {
 	    if (Array.isArray(val)) {
 	      for (const child of val) {
 	        if (child) {
-	          this.checkLVal(child, nextAncestor, binding, checkClashes, strictModeChanged, isParenthesizedExpression);
+	          this.checkLVal(child, nextAncestor, binding, checkClashes, strictModeChanged, isParenthesizedExpression, true);
 	        }
 	      }
 	    } else if (val) {
-	      this.checkLVal(val, nextAncestor, binding, checkClashes, strictModeChanged, isParenthesizedExpression);
+	      this.checkLVal(val, nextAncestor, binding, checkClashes, strictModeChanged, isParenthesizedExpression, disallowCallExpression);
 	    }
 	  }
 	  checkIdentifier(at, bindingType, strictModeChanged = false) {
@@ -10091,6 +10096,7 @@ function requireLib$2 () {
 	    return true;
 	  }
 	}
+	const keywordAndTSRelationalOperator = /in(?:stanceof)?|as|satisfies/y;
 	function nonNull(x) {
 	  if (x == null) {
 	    throw new Error(`Unexpected ${x} value.`);
@@ -10474,6 +10480,7 @@ function requireLib$2 () {
 	    this.expect(14);
 	    withProperty.value = this.tsParseImportTypeWithPropertyValue();
 	    node.properties = [this.finishObjectProperty(withProperty)];
+	    this.eat(12);
 	    this.expect(8);
 	    return this.finishNode(node, "ObjectExpression");
 	  }
@@ -10977,7 +10984,7 @@ function requireLib$2 () {
 	          }
 	        }
 	    }
-	    this.unexpected();
+	    throw this.unexpected();
 	  }
 	  tsParseArrayTypeOrHigher() {
 	    const {
@@ -11541,52 +11548,22 @@ function requireLib$2 () {
 	          }
 	        default:
 	          if (tokenIsIdentifier(startType)) {
-	            return this.tsParseDeclaration(node, this.state.value, true, null);
+	            return this.tsParseDeclaration(node, this.state.type, true, null);
 	          }
 	      }
 	    });
 	  }
 	  tsTryParseExportDeclaration() {
-	    return this.tsParseDeclaration(this.startNode(), this.state.value, true, null);
+	    return this.tsParseDeclaration(this.startNode(), this.state.type, true, null);
 	  }
-	  tsParseExpressionStatement(node, expr, decorators) {
-	    switch (expr.name) {
-	      case "declare":
-	        {
-	          const declaration = this.tsTryParseDeclare(node);
-	          if (declaration) {
-	            declaration.declare = true;
-	          }
-	          return declaration;
-	        }
-	      case "global":
-	        if (this.match(5)) {
-	          this.scope.enter(1024);
-	          this.prodParam.enter(0);
-	          const mod = node;
-	          mod.kind = "global";
-	          {
-	            node.global = true;
-	          }
-	          mod.id = expr;
-	          mod.body = this.tsParseModuleBlock();
-	          this.scope.exit();
-	          this.prodParam.exit();
-	          return this.finishNode(mod, "TSModuleDeclaration");
-	        }
-	        break;
-	      default:
-	        return this.tsParseDeclaration(node, expr.name, false, decorators);
-	    }
-	  }
-	  tsParseDeclaration(node, value, next, decorators) {
-	    switch (value) {
-	      case "abstract":
+	  tsParseDeclaration(node, type, next, decorators) {
+	    switch (type) {
+	      case 124:
 	        if (this.tsCheckLineTerminator(next) && (this.match(80) || tokenIsIdentifier(this.state.type))) {
 	          return this.tsParseAbstractDeclaration(node, decorators);
 	        }
 	        break;
-	      case "module":
+	      case 127:
 	        if (this.tsCheckLineTerminator(next)) {
 	          if (this.match(134)) {
 	            return this.tsParseAmbientExternalModuleDeclaration(node);
@@ -11596,13 +11573,13 @@ function requireLib$2 () {
 	          }
 	        }
 	        break;
-	      case "namespace":
+	      case 128:
 	        if (this.tsCheckLineTerminator(next) && tokenIsIdentifier(this.state.type)) {
 	          node.kind = "namespace";
 	          return this.tsParseModuleOrNamespaceDeclaration(node);
 	        }
 	        break;
-	      case "type":
+	      case 130:
 	        if (this.tsCheckLineTerminator(next) && tokenIsIdentifier(this.state.type)) {
 	          return this.tsParseTypeAliasDeclaration(node);
 	        }
@@ -11743,8 +11720,8 @@ function requireLib$2 () {
 	    this.tsCheckForInvalidTypeCasts(exprList);
 	    return exprList;
 	  }
-	  parseArrayLike(close, canBePattern, isTuple, refExpressionErrors) {
-	    const node = super.parseArrayLike(close, canBePattern, isTuple, refExpressionErrors);
+	  parseArrayLike(close, isTuple, refExpressionErrors) {
+	    const node = super.parseArrayLike(close, isTuple, refExpressionErrors);
 	    if (node.type === "ArrayExpression") {
 	      this.tsCheckForInvalidTypeCasts(node.elements);
 	    }
@@ -11773,6 +11750,7 @@ function requireLib$2 () {
 	        if (!noCalls && this.atPossibleAsyncArrow(base)) {
 	          const asyncArrowFn = this.tsTryParseGenericAsyncArrowFunction(startLoc);
 	          if (asyncArrowFn) {
+	            state.stop = true;
 	            return asyncArrowFn;
 	          }
 	        }
@@ -11988,19 +11966,85 @@ function requireLib$2 () {
 	    return declaration;
 	  }
 	  parseStatementContent(flags, decorators) {
-	    if (this.match(75) && this.isLookaheadContextual("enum")) {
-	      const node = this.startNode();
-	      this.expect(75);
-	      return this.tsParseEnumDeclaration(node, {
-	        const: true
-	      });
-	    }
-	    if (this.isContextual(126)) {
-	      return this.tsParseEnumDeclaration(this.startNode());
-	    }
-	    if (this.isContextual(129)) {
-	      const result = this.tsParseInterfaceDeclaration(this.startNode());
-	      if (result) return result;
+	    if (!this.state.containsEsc) {
+	      switch (this.state.type) {
+	        case 75:
+	          {
+	            if (this.isLookaheadContextual("enum")) {
+	              const node = this.startNode();
+	              this.expect(75);
+	              return this.tsParseEnumDeclaration(node, {
+	                const: true
+	              });
+	            }
+	            break;
+	          }
+	        case 124:
+	        case 125:
+	          {
+	            if (this.nextTokenIsIdentifierAndNotTSRelationalOperatorOnSameLine()) {
+	              const token = this.state.type;
+	              const node = this.startNode();
+	              this.next();
+	              const declaration = token === 125 ? this.tsTryParseDeclare(node) : this.tsParseAbstractDeclaration(node, decorators);
+	              if (declaration) {
+	                if (token === 125) {
+	                  declaration.declare = true;
+	                }
+	                return declaration;
+	              } else {
+	                node.expression = this.createIdentifier(this.startNodeAt(node.loc.start), token === 125 ? "declare" : "abstract");
+	                this.semicolon(false);
+	                return this.finishNode(node, "ExpressionStatement");
+	              }
+	            }
+	            break;
+	          }
+	        case 126:
+	          return this.tsParseEnumDeclaration(this.startNode());
+	        case 112:
+	          {
+	            const nextCh = this.lookaheadCharCode();
+	            if (nextCh === 123) {
+	              const node = this.startNode();
+	              return this.tsParseAmbientExternalModuleDeclaration(node);
+	            }
+	            break;
+	          }
+	        case 129:
+	          {
+	            const result = this.tsParseInterfaceDeclaration(this.startNode());
+	            if (result) return result;
+	            break;
+	          }
+	        case 127:
+	          {
+	            if (this.nextTokenIsIdentifierOrStringLiteralOnSameLine()) {
+	              const node = this.startNode();
+	              this.next();
+	              return this.tsParseDeclaration(node, 127, false, decorators);
+	            }
+	            break;
+	          }
+	        case 128:
+	          {
+	            if (this.nextTokenIsIdentifierOnSameLine()) {
+	              const node = this.startNode();
+	              this.next();
+	              return this.tsParseDeclaration(node, 128, false, decorators);
+	            }
+	            break;
+	          }
+	        case 130:
+	          {
+	            if (this.nextTokenIsIdentifierOnSameLine()) {
+	              const node = this.startNode();
+	              this.next();
+	              return this.tsParseTypeAliasDeclaration(node);
+	            }
+	            break;
+	          }
+	      }
 	    }
 	    return super.parseStatementContent(flags, decorators);
 	  }
@@ -12083,10 +12127,6 @@ function requireLib$2 () {
 	    if (methodOrProp.declare && this.match(10)) {
 	      this.raise(TSErrors.ClassMethodHasDeclare, methodOrProp);
 	    }
-	  }
-	  parseExpressionStatement(node, expr, decorators) {
-	    const decl = expr.type === "Identifier" ? this.tsParseExpressionStatement(node, expr, decorators) : undefined;
-	    return decl || super.parseExpressionStatement(node, expr, decorators);
 	  }
 	  shouldParseExportDeclaration() {
 	    if (this.tsIsDeclarationStart()) return true;
@@ -12412,7 +12452,7 @@ function requireLib$2 () {
 	        super.checkToRestConversion(node, allowPattern);
 	    }
 	  }
-	  isValidLVal(type, isUnparenthesizedInAssign, binding) {
+	  isValidLVal(type, disallowCallExpression, isUnparenthesizedInAssign, binding) {
 	    switch (type) {
 	      case "TSTypeCastExpression":
 	        return true;
@@ -12425,7 +12465,7 @@ function requireLib$2 () {
 	      case "TSTypeAssertion":
 	        return (binding !== 64 || !isUnparenthesizedInAssign) && ["expression", true];
 	      default:
-	        return super.isValidLVal(type, isUnparenthesizedInAssign, binding);
+	        return super.isValidLVal(type, disallowCallExpression, isUnparenthesizedInAssign, binding);
 	    }
 	  }
 	  parseBindingAtom() {
@@ -12587,10 +12627,11 @@ function requireLib$2 () {
 	        node.abstract = true;
 	        this.raise(TSErrors.NonClassMethodPropertyHasAbstractModifier, node);
 	        return this.tsParseInterfaceDeclaration(node);
+	      } else {
+	        return null;
 	      }
-	    } else {
-	      this.unexpected(null, 80);
 	    }
+	    throw this.unexpected(null, 80);
 	  }
 	  parseMethod(node, isGenerator, isAsync, isConstructor, allowDirectSuper, type, inClassScope) {
 	    const method = super.parseMethod(node, isGenerator, isAsync, isConstructor, allowDirectSuper, type, inClassScope);
@@ -12700,7 +12741,7 @@ function requireLib$2 () {
 	    }
 	  }
 	  fillOptionalPropertiesForTSESLint(node) {
-	    var _node$directive, _node$decorators, _node$optional, _node$typeAnnotation, _node$accessibility, _node$decorators2, _node$override, _node$readonly, _node$static, _node$declare, _node$returnType, _node$typeParameters, _node$optional2, _node$optional3, _node$accessibility2, _node$readonly2, _node$static2, _node$declare2, _node$definite, _node$readonly3, _node$typeAnnotation2, _node$accessibility3, _node$decorators3, _node$override2, _node$optional4, _node$id, _node$abstract, _node$declare3, _node$decorators4, _node$implements, _node$superTypeArgume, _node$typeParameters2, _node$declare4, _node$definite2, _node$const, _node$declare5, _node$computed, _node$qualifier, _node$options, _node$declare6, _node$extends, _node$declare7, _node$global, _node$const2, _node$in, _node$out;
+	    var _node$directive, _node$decorators, _node$optional, _node$typeAnnotation, _node$accessibility, _node$decorators2, _node$override, _node$readonly, _node$static, _node$declare, _node$returnType, _node$typeParameters, _node$optional2, _node$optional3, _node$accessibility2, _node$readonly2, _node$static2, _node$declare2, _node$definite, _node$readonly3, _node$typeAnnotation2, _node$accessibility3, _node$decorators3, _node$override2, _node$optional4, _node$id, _node$abstract, _node$declare3, _node$decorators4, _node$implements, _node$superTypeArgume, _node$typeParameters2, _node$declare4, _node$definite2, _node$const, _node$declare5, _node$computed, _node$qualifier, _node$options, _node$declare6, _node$extends, _node$optional5, _node$readonly4, _node$declare7, _node$global, _node$const2, _node$in, _node$out;
 	    switch (node.type) {
 	      case "ExpressionStatement":
 	        (_node$directive = node.directive) != null ? _node$directive : node.directive = undefined;
@@ -12791,6 +12832,10 @@ function requireLib$2 () {
 	        (_node$declare6 = node.declare) != null ? _node$declare6 : node.declare = false;
 	        (_node$extends = node.extends) != null ? _node$extends : node.extends = [];
 	        return;
+	      case "TSMappedType":
+	        (_node$optional5 = node.optional) != null ? _node$optional5 : node.optional = false;
+	        (_node$readonly4 = node.readonly) != null ? _node$readonly4 : node.readonly = undefined;
+	        return;
 	      case "TSModuleDeclaration":
 	        (_node$declare7 = node.declare) != null ? _node$declare7 : node.declare = false;
 	        (_node$global = node.global) != null ? _node$global : node.global = node.kind === "global";
@@ -12801,6 +12846,32 @@ function requireLib$2 () {
 	        (_node$out = node.out) != null ? _node$out : node.out = false;
 	        return;
 	    }
+	  }
+	  chStartsBindingIdentifierAndNotRelationalOperator(ch, pos) {
+	    if (isIdentifierStart(ch)) {
+	      keywordAndTSRelationalOperator.lastIndex = pos;
+	      if (keywordAndTSRelationalOperator.test(this.input)) {
+	        const endCh = this.codePointAtPos(keywordAndTSRelationalOperator.lastIndex);
+	        if (!isIdentifierChar(endCh) && endCh !== 92) {
+	          return false;
+	        }
+	      }
+	      return true;
+	    } else if (ch === 92) {
+	      return true;
+	    } else {
+	      return false;
+	    }
+	  }
+	  nextTokenIsIdentifierAndNotTSRelationalOperatorOnSameLine() {
+	    const next = this.nextTokenInLineStart();
+	    const nextCh = this.codePointAtPos(next);
+	    return this.chStartsBindingIdentifierAndNotRelationalOperator(nextCh, next);
+	  }
+	  nextTokenIsIdentifierOrStringLiteralOnSameLine() {
+	    const next = this.nextTokenInLineStart();
+	    const nextCh = this.codePointAtPos(next);
+	    return this.chStartsBindingIdentifier(nextCh, next) || nextCh === 34 || nextCh === 39;
 	  }
 	};
 	function isPossiblyLiteralEnum(expression) {
@@ -12930,8 +13001,8 @@ function requireLib$2 () {
 	  parseBindingAtom() {
 	    return this.parsePlaceholder("Pattern") || super.parseBindingAtom();
 	  }
-	  isValidLVal(type, isParenthesized, binding) {
-	    return type === "Placeholder" || super.isValidLVal(type, isParenthesized, binding);
+	  isValidLVal(type, disallowCallExpression, isParenthesized, binding) {
+	    return type === "Placeholder" || super.isValidLVal(type, disallowCallExpression, isParenthesized, binding);
 	  }
 	  toAssignable(node, isLHS) {
 	    if (node && node.type === "Placeholder" && node.expectedNode === "Expression") {
@@ -13331,7 +13402,7 @@ function requireLib$2 () {
 	      }
 	      this.next();
 	      node.right = this.parseMaybeAssign();
-	      this.checkLVal(left, this.finishNode(node, "AssignmentExpression"));
+	      this.checkLVal(left, this.finishNode(node, "AssignmentExpression"), undefined, undefined, undefined, undefined, operator === "||=" || operator === "&&=" || operator === "??=");
 	      return node;
 	    } else if (ownExpressionErrors) {
 	      this.checkExpressionErrors(refExpressionErrors, true);
@@ -13805,7 +13876,7 @@ function requireLib$2 () {
 	        }
 	      case 0:
 	        {
-	          return this.parseArrayLike(3, true, false, refExpressionErrors);
+	          return this.parseArrayLike(3, false, refExpressionErrors);
 	        }
 	      case 5:
 	        {
@@ -13862,25 +13933,22 @@ function requireLib$2 () {
 	          if (pipeProposal) {
 	            return this.parseTopicReference(pipeProposal);
 	          }
-	          this.unexpected();
-	          break;
+	          throw this.unexpected();
 	        }
 	      case 47:
 	        {
 	          const lookaheadCh = this.input.codePointAt(this.nextTokenStart());
 	          if (isIdentifierStart(lookaheadCh) || lookaheadCh === 62) {
-	            this.expectOnePlugin(["jsx", "flow", "typescript"]);
-	          } else {
-	            this.unexpected();
+	            throw this.expectOnePlugin(["jsx", "flow", "typescript"]);
 	          }
-	          break;
+	          throw this.unexpected();
 	        }
 	      default:
 	        {
 	          if (type === 137) {
 	            return this.parseDecimalLiteral(this.state.value);
 	          } else if (type === 2 || type === 1) {
-	            return this.parseArrayLike(this.state.type === 2 ? 4 : 3, false, true);
+	            return this.parseArrayLike(this.state.type === 2 ? 4 : 3, true);
 	          } else if (type === 6 || type === 7) {
 	            return this.parseObjectLike(this.state.type === 6 ? 9 : 8, false, true);
 	          }
@@ -13917,7 +13985,7 @@ function requireLib$2 () {
 	          }
 	          return id;
 	        } else {
-	          this.unexpected();
+	          throw this.unexpected();
 	        }
 	    }
 	  }
@@ -13930,9 +13998,8 @@ function requireLib$2 () {
 	      this.state.end--;
 	      this.state.endLoc = createPositionWithColumnOffset(this.state.endLoc, -1);
 	      return this.parseTopicReference(pipeProposal);
-	    } else {
-	      this.unexpected();
 	    }
+	    throw this.unexpected();
 	  }
 	  parseTopicReference(pipeProposal) {
 	    const node = this.startNode();
@@ -14008,10 +14075,18 @@ function requireLib$2 () {
 	  parseSuper() {
 	    const node = this.startNode();
 	    this.next();
-	    if (this.match(10) && !this.scope.allowDirectSuper && !(this.optionFlags & 16)) {
-	      this.raise(Errors.SuperNotAllowed, node);
-	    } else if (!this.scope.allowSuper && !(this.optionFlags & 16)) {
-	      this.raise(Errors.UnexpectedSuper, node);
+	    if (this.match(10) && !this.scope.allowDirectSuper) {
+	      {
+	        if (!(this.optionFlags & 16)) {
+	          this.raise(Errors.SuperNotAllowed, node);
+	        }
+	      }
+	    } else if (!this.scope.allowSuper) {
+	      {
+	        if (!(this.optionFlags & 16)) {
+	          this.raise(Errors.UnexpectedSuper, node);
+	        }
+	      }
 	    }
 	    if (!this.match(10) && !this.match(0) && !this.match(16)) {
 	      this.raise(Errors.UnsupportedSuper, node);
@@ -14525,7 +14600,7 @@ function requireLib$2 () {
 	    this.scope.exit();
 	    return finishedNode;
 	  }
-	  parseArrayLike(close, canBePattern, isTuple, refExpressionErrors) {
+	  parseArrayLike(close, isTuple, refExpressionErrors) {
 	    if (isTuple) {
 	      this.expectPlugin("recordAndTuple");
 	    }
@@ -15151,9 +15226,7 @@ function requireLib$2 () {
 	    if (!this.isContextual(107)) {
 	      return false;
 	    }
-	    const next = this.nextTokenInLineStart();
-	    const nextCh = this.codePointAtPos(next);
-	    return this.chStartsBindingIdentifier(nextCh, next);
+	    return this.nextTokenIsIdentifierOnSameLine();
 	  }
 	  isForUsing() {
 	    if (!this.isContextual(107)) {
@@ -15171,6 +15244,11 @@ function requireLib$2 () {
 	      return true;
 	    }
 	    return false;
+	  }
+	  nextTokenIsIdentifierOnSameLine() {
+	    const next = this.nextTokenInLineStart();
+	    const nextCh = this.codePointAtPos(next);
+	    return this.chStartsBindingIdentifier(nextCh, next);
 	  }
 	  isAwaitUsing() {
 	    if (!this.isContextual(96)) {
@@ -16314,7 +16392,7 @@ function requireLib$2 () {
 	      this.sawUnambiguousESM = true;
 	      return this.finishNode(node2, "ExportDefaultDeclaration");
 	    }
-	    this.unexpected(null, 5);
+	    throw this.unexpected(null, 5);
 	  }
 	  eatExportStar(node) {
 	    return this.eat(55);
@@ -16906,54 +16984,54 @@ function requireLib$2 () {
 	}
 	class Parser extends StatementParser {
 	  constructor(options, input, pluginsMap) {
-	    options = getOptions(options);
-	    super(options, input);
-	    this.options = options;
+	    const normalizedOptions = getOptions(options);
+	    super(normalizedOptions, input);
+	    this.options = normalizedOptions;
 	    this.initializeScopes();
 	    this.plugins = pluginsMap;
-	    this.filename = options.sourceFilename;
-	    this.startIndex = options.startIndex;
+	    this.filename = normalizedOptions.sourceFilename;
+	    this.startIndex = normalizedOptions.startIndex;
 	    let optionFlags = 0;
-	    if (options.allowAwaitOutsideFunction) {
+	    if (normalizedOptions.allowAwaitOutsideFunction) {
 	      optionFlags |= 1;
 	    }
-	    if (options.allowReturnOutsideFunction) {
+	    if (normalizedOptions.allowReturnOutsideFunction) {
 	      optionFlags |= 2;
 	    }
-	    if (options.allowImportExportEverywhere) {
+	    if (normalizedOptions.allowImportExportEverywhere) {
 	      optionFlags |= 8;
 	    }
-	    if (options.allowSuperOutsideMethod) {
+	    if (normalizedOptions.allowSuperOutsideMethod) {
 	      optionFlags |= 16;
 	    }
-	    if (options.allowUndeclaredExports) {
+	    if (normalizedOptions.allowUndeclaredExports) {
 	      optionFlags |= 64;
 	    }
-	    if (options.allowNewTargetOutsideFunction) {
+	    if (normalizedOptions.allowNewTargetOutsideFunction) {
 	      optionFlags |= 4;
 	    }
-	    if (options.allowYieldOutsideFunction) {
+	    if (normalizedOptions.allowYieldOutsideFunction) {
 	      optionFlags |= 32;
 	    }
-	    if (options.ranges) {
+	    if (normalizedOptions.ranges) {
 	      optionFlags |= 128;
 	    }
-	    if (options.tokens) {
+	    if (normalizedOptions.tokens) {
 	      optionFlags |= 256;
 	    }
-	    if (options.createImportExpressions) {
+	    if (normalizedOptions.createImportExpressions) {
 	      optionFlags |= 512;
 	    }
-	    if (options.createParenthesizedExpressions) {
+	    if (normalizedOptions.createParenthesizedExpressions) {
 	      optionFlags |= 1024;
 	    }
-	    if (options.errorRecovery) {
+	    if (normalizedOptions.errorRecovery) {
 	      optionFlags |= 2048;
 	    }
-	    if (options.attachComment) {
+	    if (normalizedOptions.attachComment) {
 	      optionFlags |= 4096;
 	    }
-	    if (options.annexB) {
+	    if (normalizedOptions.annexB) {
 	      optionFlags |= 8192;
 	    }
 	    this.optionFlags = optionFlags;
@@ -16967,10 +17045,10 @@ function requireLib$2 () {
 	    const program = this.startNode();
 	    this.nextToken();
 	    file.errors = null;
-	    this.parseTopLevel(file, program);
-	    file.errors = this.state.errors;
-	    file.comments.length = this.state.commentsLen;
-	    return file;
+	    const result = this.parseTopLevel(file, program);
+	    result.errors = this.state.errors;
+	    result.comments.length = this.state.commentsLen;
+	    return result;
 	  }
 	}
 	function parse(input, options) {
@@ -17302,16 +17380,34 @@ function walkIdentifiers(root, onIdentifier, includeAll = false, parentStack = [
             (id) => markScopeIdentifier(node, id, knownIds)
           );
         }
+      } else if (node.type === "SwitchStatement") {
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          walkSwitchStatement(
+            node,
+            false,
+            (id) => markScopeIdentifier(node, id, knownIds)
+          );
+        }
       } else if (node.type === "CatchClause" && node.param) {
-        for (const id of extractIdentifiers$1(node.param)) {
-          markScopeIdentifier(node, id, knownIds);
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          for (const id of extractIdentifiers$1(node.param)) {
+            markScopeIdentifier(node, id, knownIds);
+          }
         }
       } else if (isForStatement(node)) {
-        walkForStatement(
-          node,
-          false,
-          (id) => markScopeIdentifier(node, id, knownIds)
-        );
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          walkForStatement(
+            node,
+            false,
+            (id) => markScopeIdentifier(node, id, knownIds)
+          );
+        }
       }
     },
     leave(node, parent) {
@@ -17334,14 +17430,15 @@ function isReferencedIdentifier(id, parent, parentStack) {
   if (id.name === "arguments") {
     return false;
   }
-  if (isReferenced$1(id, parent)) {
+  if (isReferenced$1(id, parent, parentStack[parentStack.length - 2])) {
     return true;
   }
   switch (parent.type) {
     case "AssignmentExpression":
     case "AssignmentPattern":
       return true;
-    case "ObjectPattern":
+    case "ObjectProperty":
+      return parent.key !== id && isInDestructureAssignment(parent, parentStack);
     case "ArrayPattern":
       return isInDestructureAssignment(parent, parentStack);
   }
@@ -17381,7 +17478,8 @@ function walkFunctionParams(node, onIdent) {
   }
 }
 function walkBlockDeclarations(block, onIdent) {
-  for (const stmt of block.body) {
+  const body = block.type === "SwitchCase" ? block.consequent : block.body;
+  for (const stmt of body) {
     if (stmt.type === "VariableDeclaration") {
       if (stmt.declare) continue;
       for (const decl of stmt.declarations) {
@@ -17394,6 +17492,8 @@ function walkBlockDeclarations(block, onIdent) {
       onIdent(stmt.id);
     } else if (isForStatement(stmt)) {
       walkForStatement(stmt, true, onIdent);
+    } else if (stmt.type === "SwitchStatement") {
+      walkSwitchStatement(stmt, true, onIdent);
     }
   }
 }
@@ -17408,6 +17508,20 @@ function walkForStatement(stmt, isVar, onIdent) {
         onIdent(id);
       }
     }
+  }
+}
+function walkSwitchStatement(stmt, isVar, onIdent) {
+  for (const cs of stmt.cases) {
+    for (const stmt2 of cs.consequent) {
+      if (stmt2.type === "VariableDeclaration" && (stmt2.kind === "var" ? isVar : !isVar)) {
+        for (const decl of stmt2.declarations) {
+          for (const id of extractIdentifiers$1(decl.id)) {
+            onIdent(id);
+          }
+        }
+      }
+    }
+    walkBlockDeclarations(cs, onIdent);
   }
 }
 function extractIdentifiers$1(param, nodes = []) {
@@ -17510,7 +17624,7 @@ function isReferenced$1(node, parent, grandparent) {
       if (parent.key === node) {
         return !!parent.computed;
       }
-      return true;
+      return !grandparent || grandparent.type !== "ObjectPattern";
     // no: class { NODE = value; }
     // yes: class { [NODE] = value; }
     // yes: class { key = NODE; }
@@ -17560,6 +17674,9 @@ function isReferenced$1(node, parent, grandparent) {
     // yes: export { NODE as foo };
     // no: export { NODE as foo } from "foo";
     case "ExportSpecifier":
+      if (grandparent == null ? void 0 : grandparent.source) {
+        return false;
+      }
       return parent.local === node;
     // no: import NODE from "foo";
     // no: import * as NODE from "foo";
@@ -17693,7 +17810,7 @@ function isCoreComponent(tag) {
       return BASE_TRANSITION;
   }
 }
-const nonIdentifierRE = /^\d|[^\$\w\xA0-\uFFFF]/;
+const nonIdentifierRE = /^$|^\d|[^\$\w\xA0-\uFFFF]/;
 const isSimpleIdentifier = (name) => !nonIdentifierRE.test(name);
 const validFirstIdentCharRE = /[A-Za-z_$\xA0-\uFFFF]/;
 const validIdentCharRE = /[\.\?\w$\xA0-\uFFFF]/;
@@ -17773,7 +17890,7 @@ const isMemberExpressionNode = (exp, context) => {
   }
 };
 const isMemberExpression$1 = isMemberExpressionNode;
-const fnExpRE = /^\s*(async\s*)?(\([^)]*?\)|[\w$_]+)\s*(:[^=]+)?=>|^\s*(async\s+)?function(?:\s+[\w$]+)?\s*\(/;
+const fnExpRE = /^\s*(?:async\s*)?(?:\([^)]*?\)|[\w$_]+)\s*(?::[^=]+)?=>|^\s*(?:async\s+)?function(?:\s+[\w$]+)?\s*\(/;
 const isFnExpressionBrowser = (exp) => fnExpRE.test(getExpSource(exp));
 const isFnExpressionNode = (exp, context) => {
   try {
@@ -17857,6 +17974,9 @@ function hasDynamicKeyVBind(node) {
 }
 function isText$1(node) {
   return node.type === 5 || node.type === 2;
+}
+function isVPre(p) {
+  return p.type === 7 && p.name === "pre";
 }
 function isVSlot(p) {
   return p.type === 7 && p.name === "slot";
@@ -18156,7 +18276,7 @@ const tokenizer = new Tokenizer(stack, {
   ondirarg(start, end) {
     if (start === end) return;
     const arg = getSlice(start, end);
-    if (inVPre) {
+    if (inVPre && !isVPre(currentProp)) {
       currentProp.name += arg;
       setLocEnd(currentProp.nameLoc, end);
     } else {
@@ -18171,7 +18291,7 @@ const tokenizer = new Tokenizer(stack, {
   },
   ondirmodifier(start, end) {
     const mod = getSlice(start, end);
-    if (inVPre) {
+    if (inVPre && !isVPre(currentProp)) {
       currentProp.name += "." + mod;
       setLocEnd(currentProp.nameLoc, end);
     } else if (currentProp.name === "slot") {
@@ -18735,6 +18855,11 @@ function walk$1(node, parent, context, doNotHoistNode = false, inFor = false) {
     } else if (child.type === 12) {
       const constantType = doNotHoistNode ? 0 : getConstantType(child, context);
       if (constantType >= 2) {
+        if (child.codegenNode.type === 14 && child.codegenNode.arguments.length > 0) {
+          child.codegenNode.arguments.push(
+            -1 + (` /* ${PatchFlagNames[-1]} */` )
+          );
+        }
         toCache.push(child);
         continue;
       }
@@ -18763,7 +18888,6 @@ function walk$1(node, parent, context, doNotHoistNode = false, inFor = false) {
     }
   }
   let cachedAsArray = false;
-  const slotCacheKeys = [];
   if (toCache.length === children.length && node.type === 1) {
     if (node.tagType === 0 && node.codegenNode && node.codegenNode.type === 13 && isArray$3(node.codegenNode.children)) {
       node.codegenNode.children = getCacheExpression(
@@ -18773,7 +18897,6 @@ function walk$1(node, parent, context, doNotHoistNode = false, inFor = false) {
     } else if (node.tagType === 1 && node.codegenNode && node.codegenNode.type === 13 && node.codegenNode.children && !isArray$3(node.codegenNode.children) && node.codegenNode.children.type === 15) {
       const slot = getSlotNode(node.codegenNode, "default");
       if (slot) {
-        slotCacheKeys.push(context.cached.length);
         slot.returns = getCacheExpression(
           createArrayExpression(slot.returns)
         );
@@ -18783,7 +18906,6 @@ function walk$1(node, parent, context, doNotHoistNode = false, inFor = false) {
       const slotName = findDir$1(node, "slot", true);
       const slot = slotName && slotName.arg && getSlotNode(parent.codegenNode, slotName.arg);
       if (slot) {
-        slotCacheKeys.push(context.cached.length);
         slot.returns = getCacheExpression(
           createArrayExpression(slot.returns)
         );
@@ -18793,23 +18915,12 @@ function walk$1(node, parent, context, doNotHoistNode = false, inFor = false) {
   }
   if (!cachedAsArray) {
     for (const child of toCache) {
-      slotCacheKeys.push(context.cached.length);
       child.codegenNode = context.cache(child.codegenNode);
     }
   }
-  if (slotCacheKeys.length && node.type === 1 && node.tagType === 1 && node.codegenNode && node.codegenNode.type === 13 && node.codegenNode.children && !isArray$3(node.codegenNode.children) && node.codegenNode.children.type === 15) {
-    node.codegenNode.children.properties.push(
-      createObjectProperty(
-        `__`,
-        createSimpleExpression(JSON.stringify(slotCacheKeys), false)
-      )
-    );
-  }
   function getCacheExpression(value) {
     const exp = context.cache(value);
-    if (inFor && context.hmr) {
-      exp.needArraySpread = true;
-    }
+    exp.needArraySpread = true;
     return exp;
   }
   function getSlotNode(node2, name) {
@@ -23680,14 +23791,17 @@ function processExpression(node, context, asParams = false, asRawStatements = fa
     knownIds
   );
   const children = [];
+  const isTSNode = TS_NODE_TYPES.includes(ast.type);
   ids.sort((a, b) => a.start - b.start);
   ids.forEach((id, i) => {
     const start = id.start - 1;
     const end = id.end - 1;
     const last = ids[i - 1];
-    const leadingText = rawExp.slice(last ? last.end - 1 : 0, start);
-    if (leadingText.length || id.prefix) {
-      children.push(leadingText + (id.prefix || ``));
+    if (!(isTSNode && i === 0)) {
+      const leadingText = rawExp.slice(last ? last.end - 1 : 0, start);
+      if (leadingText.length || id.prefix) {
+        children.push(leadingText + (id.prefix || ``));
+      }
     }
     const source = rawExp.slice(start, end);
     children.push(
@@ -23702,7 +23816,7 @@ function processExpression(node, context, asParams = false, asRawStatements = fa
         id.isConstant ? 3 : 0
       )
     );
-    if (i === ids.length - 1 && end < rawExp.length) {
+    if (i === ids.length - 1 && end < rawExp.length && !isTSNode) {
       children.push(rawExp.slice(end));
     }
   });
@@ -23740,7 +23854,7 @@ function isConst(type) {
 }
 
 const transformIf = createStructuralDirectiveTransform$1(
-  /^(if|else|else-if)$/,
+  /^(?:if|else|else-if)$/,
   (node, dir, context) => {
     return processIf$1(node, dir, context, (ifNode, branch, isRoot) => {
       const siblings = context.parent.children;
@@ -23809,7 +23923,7 @@ function processIf$1(node, dir, context, processCodegen) {
         continue;
       }
       if (sibling && sibling.type === 9) {
-        if (dir.name === "else-if" && sibling.branches[sibling.branches.length - 1].condition === void 0) {
+        if ((dir.name === "else-if" || dir.name === "else") && sibling.branches[sibling.branches.length - 1].condition === void 0) {
           context.onError(
             createCompilerError(30, node.loc)
           );
@@ -23958,90 +24072,6 @@ function getParentCondition(node) {
   }
 }
 
-const transformBind = (dir, _node, context) => {
-  const { modifiers, loc } = dir;
-  const arg = dir.arg;
-  let { exp } = dir;
-  if (exp && exp.type === 4 && !exp.content.trim()) {
-    {
-      context.onError(
-        createCompilerError(34, loc)
-      );
-      return {
-        props: [
-          createObjectProperty(arg, createSimpleExpression("", true, loc))
-        ]
-      };
-    }
-  }
-  if (!exp) {
-    if (arg.type !== 4 || !arg.isStatic) {
-      context.onError(
-        createCompilerError(
-          52,
-          arg.loc
-        )
-      );
-      return {
-        props: [
-          createObjectProperty(arg, createSimpleExpression("", true, loc))
-        ]
-      };
-    }
-    transformBindShorthand(dir, context);
-    exp = dir.exp;
-  }
-  if (arg.type !== 4) {
-    arg.children.unshift(`(`);
-    arg.children.push(`) || ""`);
-  } else if (!arg.isStatic) {
-    arg.content = `${arg.content} || ""`;
-  }
-  if (modifiers.some((mod) => mod.content === "camel")) {
-    if (arg.type === 4) {
-      if (arg.isStatic) {
-        arg.content = camelize(arg.content);
-      } else {
-        arg.content = `${context.helperString(CAMELIZE)}(${arg.content})`;
-      }
-    } else {
-      arg.children.unshift(`${context.helperString(CAMELIZE)}(`);
-      arg.children.push(`)`);
-    }
-  }
-  if (!context.inSSR) {
-    if (modifiers.some((mod) => mod.content === "prop")) {
-      injectPrefix(arg, ".");
-    }
-    if (modifiers.some((mod) => mod.content === "attr")) {
-      injectPrefix(arg, "^");
-    }
-  }
-  return {
-    props: [createObjectProperty(arg, exp)]
-  };
-};
-const transformBindShorthand = (dir, context) => {
-  const arg = dir.arg;
-  const propName = camelize(arg.content);
-  dir.exp = createSimpleExpression(propName, false, arg.loc);
-  {
-    dir.exp = processExpression(dir.exp, context);
-  }
-};
-const injectPrefix = (arg, prefix) => {
-  if (arg.type === 4) {
-    if (arg.isStatic) {
-      arg.content = prefix + arg.content;
-    } else {
-      arg.content = `\`${prefix}\${${arg.content}}\``;
-    }
-  } else {
-    arg.children.unshift(`'${prefix}' + (`);
-    arg.children.push(`)`);
-  }
-};
-
 const transformFor = createStructuralDirectiveTransform$1(
   "for",
   (node, dir, context) => {
@@ -24054,9 +24084,6 @@ const transformFor = createStructuralDirectiveTransform$1(
       const memo = findDir$1(node, "memo");
       const keyProp = findProp$1(node, `key`, false, true);
       const isDirKey = keyProp && keyProp.type === 7;
-      if (isDirKey && !keyProp.exp) {
-        transformBindShorthand(keyProp, context);
-      }
       let keyExp = keyProp && (keyProp.type === 6 ? keyProp.value ? createSimpleExpression(keyProp.value.content, true) : void 0 : keyProp.exp);
       if (memo && keyExp && isDirKey) {
         {
@@ -24337,7 +24364,9 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
   const dynamicSlots = [];
   let hasDynamicSlots = context.scopes.vSlot > 0 || context.scopes.vFor > 0;
   if (!context.ssr && context.prefixIdentifiers) {
-    hasDynamicSlots = hasScopeRef(node, context.identifiers);
+    hasDynamicSlots = node.props.some(
+      (prop) => isVSlot(prop) && (hasScopeRef(prop.arg, context.identifiers) || hasScopeRef(prop.exp, context.identifiers))
+    ) || children.some((child) => hasScopeRef(child, context.identifiers));
   }
   const onComponentSlot = findDir$1(node, "slot", true);
   if (onComponentSlot) {
@@ -24400,7 +24429,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
       );
     } else if (vElse = findDir$1(
       slotElement,
-      /^else(-if)?$/,
+      /^else(?:-if)?$/,
       true
       /* allowEmpty */
     )) {
@@ -24412,7 +24441,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
           break;
         }
       }
-      if (prev && isTemplateNode(prev) && findDir$1(prev, /^(else-)?if$/)) {
+      if (prev && isTemplateNode(prev) && findDir$1(prev, /^(?:else-)?if$/)) {
         let conditional = dynamicSlots[dynamicSlots.length - 1];
         while (conditional.alternate.type === 19) {
           conditional = conditional.alternate;
@@ -25327,6 +25356,65 @@ const transformOn$1 = (dir, node, context, augmentor) => {
   return ret;
 };
 
+const transformBind = (dir, _node, context) => {
+  const { modifiers, loc } = dir;
+  const arg = dir.arg;
+  let { exp } = dir;
+  if (exp && exp.type === 4 && !exp.content.trim()) {
+    {
+      context.onError(
+        createCompilerError(34, loc)
+      );
+      return {
+        props: [
+          createObjectProperty(arg, createSimpleExpression("", true, loc))
+        ]
+      };
+    }
+  }
+  if (arg.type !== 4) {
+    arg.children.unshift(`(`);
+    arg.children.push(`) || ""`);
+  } else if (!arg.isStatic) {
+    arg.content = arg.content ? `${arg.content} || ""` : `""`;
+  }
+  if (modifiers.some((mod) => mod.content === "camel")) {
+    if (arg.type === 4) {
+      if (arg.isStatic) {
+        arg.content = camelize(arg.content);
+      } else {
+        arg.content = `${context.helperString(CAMELIZE)}(${arg.content})`;
+      }
+    } else {
+      arg.children.unshift(`${context.helperString(CAMELIZE)}(`);
+      arg.children.push(`)`);
+    }
+  }
+  if (!context.inSSR) {
+    if (modifiers.some((mod) => mod.content === "prop")) {
+      injectPrefix(arg, ".");
+    }
+    if (modifiers.some((mod) => mod.content === "attr")) {
+      injectPrefix(arg, "^");
+    }
+  }
+  return {
+    props: [createObjectProperty(arg, exp)]
+  };
+};
+const injectPrefix = (arg, prefix) => {
+  if (arg.type === 4) {
+    if (arg.isStatic) {
+      arg.content = prefix + arg.content;
+    } else {
+      arg.content = `\`${prefix}\${${arg.content}}\``;
+    }
+  } else {
+    arg.children.unshift(`'${prefix}' + (`);
+    arg.children.push(`)`);
+  }
+};
+
 const transformText$1 = (node, context) => {
   if (node.type === 0 || node.type === 1 || node.type === 11 || node.type === 10) {
     return () => {
@@ -25511,7 +25599,7 @@ const seen$1 = /* @__PURE__ */ new WeakSet();
 const transformMemo = (node, context) => {
   if (node.type === 1) {
     const dir = findDir$1(node, "memo");
-    if (!dir || seen$1.has(node)) {
+    if (!dir || seen$1.has(node) || context.inSSR) {
       return;
     }
     seen$1.add(node);
@@ -25533,9 +25621,36 @@ const transformMemo = (node, context) => {
   }
 };
 
+const transformVBindShorthand = (node, context) => {
+  if (node.type === 1) {
+    for (const prop of node.props) {
+      if (prop.type === 7 && prop.name === "bind" && (!prop.exp || // #13930 :foo in in-DOM templates will be parsed into :foo="" by browser
+      false) && prop.arg) {
+        const arg = prop.arg;
+        if (arg.type !== 4 || !arg.isStatic) {
+          context.onError(
+            createCompilerError(
+              52,
+              arg.loc
+            )
+          );
+          prop.exp = createSimpleExpression("", true, arg.loc);
+        } else {
+          const propName = camelize(arg.content);
+          if (validFirstIdentCharRE.test(propName[0]) || // allow hyphen first char for https://github.com/vuejs/language-tools/pull/3424
+          propName[0] === "-") {
+            prop.exp = createSimpleExpression(propName, false, arg.loc);
+          }
+        }
+      }
+    }
+  }
+};
+
 function getBaseTransformPreset$1(prefixIdentifiers) {
   return [
     [
+      transformVBindShorthand,
       transformOnce,
       transformIf,
       transformMemo,
@@ -26004,50 +26119,50 @@ const transformShow = (dir, node, context) => {
   };
 };
 
-const transformTransition = (node, context) => {
+const transformTransition$1 = (node, context) => {
   if (node.type === 1 && node.tagType === 1) {
     const component = context.isBuiltInComponent(node.tag);
     if (component === TRANSITION) {
-      return () => {
-        if (!node.children.length) {
-          return;
-        }
-        if (hasMultipleChildren(node)) {
-          context.onError(
-            createDOMCompilerError(
-              62,
-              {
-                start: node.children[0].loc.start,
-                end: node.children[node.children.length - 1].loc.end,
-                source: ""
-              }
-            )
-          );
-        }
-        const child = node.children[0];
-        if (child.type === 1) {
-          for (const p of child.props) {
-            if (p.type === 7 && p.name === "show") {
-              node.props.push({
-                type: 6,
-                name: "persisted",
-                nameLoc: node.loc,
-                value: void 0,
-                loc: node.loc
-              });
-            }
-          }
-        }
-      };
+      return postTransformTransition(node, context.onError);
     }
   }
 };
-function hasMultipleChildren(node) {
+function postTransformTransition(node, onError, hasMultipleChildren = defaultHasMultipleChildren) {
+  return () => {
+    if (!node.children.length) {
+      return;
+    }
+    if (hasMultipleChildren(node)) {
+      onError(
+        createDOMCompilerError(62, {
+          start: node.children[0].loc.start,
+          end: node.children[node.children.length - 1].loc.end,
+          source: ""
+        })
+      );
+    }
+    const child = node.children[0];
+    if (child.type === 1) {
+      for (const p of child.props) {
+        if (p.type === 7 && p.name === "show") {
+          node.props.push({
+            type: 6,
+            name: "persisted",
+            nameLoc: node.loc,
+            value: void 0,
+            loc: node.loc
+          });
+        }
+      }
+    }
+  };
+}
+function defaultHasMultipleChildren(node) {
   const children = node.children = node.children.filter(
     (c) => c.type !== 3 && !(c.type === 2 && !c.content.trim())
   );
   const child = children[0];
-  return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(hasMultipleChildren);
+  return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(defaultHasMultipleChildren);
 }
 
 const expReplaceRE = /__VUE_EXP_START__(.*?)__VUE_EXP_END__/g;
@@ -26122,7 +26237,7 @@ const getCachedNode = (node) => {
     return node.codegenNode;
   }
 };
-const dataAriaRE = /^(data|aria)-/;
+const dataAriaRE = /^(?:data|aria)-/;
 const isStringifiableAttr = (name, ns) => {
   return (ns === 0 ? isKnownHtmlAttr(name) : ns === 1 ? isKnownSvgAttr(name) : ns === 2 ? isKnownMathMLAttr(name) : false) || dataAriaRE.test(name);
 };
@@ -26131,6 +26246,9 @@ const isNonStringifiable = /* @__PURE__ */ makeMap(
 );
 function analyzeNode(node) {
   if (node.type === 1 && isNonStringifiable(node.tag)) {
+    return false;
+  }
+  if (node.type === 1 && findDir$1(node, "once", true)) {
     return false;
   }
   if (node.type === 12) {
@@ -26470,7 +26588,7 @@ const validateHtmlNesting = (node, context) => {
 
 const DOMNodeTransforms = [
   transformStyle,
-  ...[transformTransition, validateHtmlNesting] 
+  ...[transformTransition$1, validateHtmlNesting] 
 ];
 const DOMDirectiveTransforms = {
   cloak: noopDirectiveTransform,
@@ -26646,12 +26764,14 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   isStaticPropertyKey: isStaticPropertyKey,
   isTemplateNode: isTemplateNode,
   isText: isText$1,
+  isVPre: isVPre,
   isVSlot: isVSlot,
   isValidHTMLNesting: isValidHTMLNesting,
   locStub: locStub,
   noopDirectiveTransform: noopDirectiveTransform,
   parse: parse$3,
   parserOptions: parserOptions,
+  postTransformTransition: postTransformTransition,
   processExpression: processExpression,
   processFor: processFor$1,
   processIf: processIf$1,
@@ -26670,8 +26790,10 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   transformModel: transformModel$1,
   transformOn: transformOn$1,
   transformStyle: transformStyle,
+  transformVBindShorthand: transformVBindShorthand,
   traverseNode: traverseNode,
   unwrapTSNode: unwrapTSNode,
+  validFirstIdentCharRE: validFirstIdentCharRE,
   walkBlockDeclarations: walkBlockDeclarations,
   walkFunctionParams: walkFunctionParams,
   walkIdentifiers: walkIdentifiers,
@@ -26775,7 +26897,7 @@ function genCssVarsFromList(vars, id, isProd, isSSR = false) {
 }
 function genVarName$1(id, raw, isProd, isSSR = false) {
   if (isProd) {
-    return hash_sum(id + raw);
+    return hash_sum(id + raw).replace(/^\d/, (r) => `v${r}`);
   } else {
     return `${id}-${getEscapedCssVarName(raw, isSSR)}`;
   }
@@ -27130,8 +27252,8 @@ function createCache(max = 500) {
   }
 }
 
-function isImportUsed(local, sfc) {
-  return resolveTemplateUsedIdentifiers(sfc).has(local);
+function isUsedInTemplate(identifier, sfc) {
+  return resolveTemplateUsedIdentifiers(sfc).has(identifier);
 }
 const templateUsageCheckCache = createCache();
 function resolveTemplateUsedIdentifiers(sfc) {
@@ -27471,6 +27593,9 @@ function getImportedName(specifier) {
 function getId(node) {
   return node.type === "Identifier" ? node.name : node.type === "StringLiteral" ? node.value : null;
 }
+function getStringLiteralKey(node) {
+  return node.computed ? node.key.type === "TemplateLiteral" && !node.key.expressions.length ? node.key.quasis.map((q) => q.value.cooked).join("") : null : node.key.type === "Identifier" ? node.key.name : node.key.type === "StringLiteral" ? node.key.value : node.key.type === "NumericLiteral" ? String(node.key.value) : null;
+}
 const normalize = (path.posix || path).normalize;
 const windowsSlashRE = /\\/g;
 function normalizePath(p) {
@@ -27481,6 +27606,11 @@ const propNameEscapeSymbolsRE = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~\-]/;
 function getEscapedPropName(key) {
   return propNameEscapeSymbolsRE.test(key) ? JSON.stringify(key) : key;
 }
+const isJS = (...langs) => langs.some((lang) => lang === "js" || lang === "jsx");
+const isTS = (...langs) => (
+  // fixed by uts
+  langs.some((lang) => lang === "ts" || lang === "tsx" || lang === "uts")
+);
 
 var __defProp$a = Object.defineProperty;
 var __defProps$9 = Object.defineProperties;
@@ -27845,7 +27975,7 @@ function hmrShouldReload(prevImports, next) {
     return false;
   }
   for (const key in prevImports) {
-    if (!prevImports[key].isUsedInTemplate && isImportUsed(key, next)) {
+    if (!prevImports[key].isUsedInTemplate && isUsedInTemplate(key, next)) {
       return true;
     }
   }
@@ -31768,7 +31898,7 @@ function isRelativeUrl(url) {
   const firstChar = url.charAt(0);
   return firstChar === "." || firstChar === "~" || firstChar === "@";
 }
-const externalRE = /^(https?:)?\/\//;
+const externalRE = /^(?:https?:)?\/\//;
 function isExternalUrl(url) {
   return externalRE.test(url);
 }
@@ -31942,7 +32072,7 @@ const transformSrcset = (node, context, options = defaultAssetUrlOptions) => {
             }
           }
           const shouldProcessUrl = (url) => {
-            return !isExternalUrl(url) && !isDataUrl(url) && (options.includeAbsolute || isRelativeUrl(url));
+            return url && !isExternalUrl(url) && !isDataUrl(url) && (options.includeAbsolute || isRelativeUrl(url));
           };
           if (!imageCandidates.some(({ url }) => shouldProcessUrl(url))) {
             return;
@@ -32043,7 +32173,8 @@ const newBlock = (node) => ({
   effect: [],
   operation: [],
   returns: [],
-  tempId: 0
+  tempId: 0,
+  hasDeferredVShow: false
 });
 function wrapTemplate(node, dirs) {
   if (node.tagType === 3) {
@@ -32071,6 +32202,7 @@ const EMPTY_EXPRESSION = createSimpleExpression(
   true
 );
 const TEXT_PLACEHOLDER = "__vapor_dom2_text_placeholder__";
+const TEXT_NODE_PLACEHOLDER = "__vapor_dom2_text_node_placeholder__";
 
 const findProp = findProp$1;
 const findDir = findDir$1;
@@ -32107,6 +32239,40 @@ function getLiteralExpressionValue(exp) {
     }
   }
   return exp.isStatic ? exp.content : null;
+}
+function isInTransition(context) {
+  const parentNode = context.parent && context.parent.node;
+  return !!(parentNode && isTransitionNode(parentNode));
+}
+function isTransitionNode(node) {
+  return node.type === 1 && isTransitionTag(node.tag);
+}
+function isTransitionTag(tag) {
+  tag = tag.toLowerCase();
+  return tag === "transition" || tag === "vaportransition";
+}
+function isTransitionGroupTag(tag) {
+  tag = tag.toLowerCase().replace(/-/g, "");
+  return tag === "transitiongroup" || tag === "vaportransitiongroup";
+}
+function isKeepAliveTag(tag) {
+  tag = tag.toLowerCase();
+  return tag === "keepalive" || tag === "vaporkeepalive";
+}
+function isTeleportTag(tag) {
+  tag = tag.toLowerCase();
+  return tag === "teleport" || tag === "vaporteleport";
+}
+function isBuiltInComponent(tag) {
+  if (isTeleportTag(tag)) {
+    return "VaporTeleport";
+  } else if (isKeepAliveTag(tag)) {
+    return "VaporKeepAlive";
+  } else if (isTransitionTag(tag)) {
+    return "VaporTransition";
+  } else if (isTransitionGroupTag(tag)) {
+    return "VaporTransitionGroup";
+  }
 }
 
 class TransformContext {
@@ -32320,13 +32486,13 @@ const DELIMITERS_ARRAY = ["[", "]", ", "];
 const DELIMITERS_ARRAY_NEWLINE = [
   ["[", INDENT_START, NEWLINE],
   [INDENT_END, NEWLINE, "]"],
-  [", ", NEWLINE]
+  [",", NEWLINE]
 ];
 const DELIMITERS_OBJECT = ["{ ", " }", ", "];
 const DELIMITERS_OBJECT_NEWLINE = [
   ["{", INDENT_START, NEWLINE],
   [INDENT_END, NEWLINE, "}"],
-  [", ", NEWLINE]
+  [",", NEWLINE]
 ];
 function genCall(name, ...frags) {
   const hasPlaceholder = isArray$3(name);
@@ -35293,7 +35459,6 @@ function requireGenerated$3 () {
 	    case "AssignmentPattern":
 	    case "ArrayPattern":
 	    case "ObjectPattern":
-	    case "OptionalMemberExpression":
 	    case "TSParameterProperty":
 	    case "TSAsExpression":
 	    case "TSSatisfiesExpression":
@@ -36165,13 +36330,13 @@ function requireIdentifier () {
 	identifier.isIdentifierChar = isIdentifierChar;
 	identifier.isIdentifierName = isIdentifierName;
 	identifier.isIdentifierStart = isIdentifierStart;
-	let nonASCIIidentifierStartChars = "\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u037f\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u052f\u0531-\u0556\u0559\u0560-\u0588\u05d0-\u05ea\u05ef-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u0860-\u086a\u0870-\u0887\u0889-\u088e\u08a0-\u08c9\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u09fc\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0af9\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c39\u0c3d\u0c58-\u0c5a\u0c5d\u0c60\u0c61\u0c80\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cdd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d04-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d54-\u0d56\u0d5f-\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e86-\u0e8a\u0e8c-\u0ea3\u0ea5\u0ea7-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f5\u13f8-\u13fd\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f8\u1700-\u1711\u171f-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1878\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191e\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19b0-\u19c9\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4c\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1c80-\u1c8a\u1c90-\u1cba\u1cbd-\u1cbf\u1ce9-\u1cec\u1cee-\u1cf3\u1cf5\u1cf6\u1cfa\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2118-\u211d\u2124\u2126\u2128\u212a-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309b-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312f\u3131-\u318e\u31a0-\u31bf\u31f0-\u31ff\u3400-\u4dbf\u4e00-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua69d\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua7cd\ua7d0\ua7d1\ua7d3\ua7d5-\ua7dc\ua7f2-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua8fd\ua8fe\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\ua9e0-\ua9e4\ua9e6-\ua9ef\ua9fa-\ua9fe\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa7e-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uab30-\uab5a\uab5c-\uab69\uab70-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc";
-	let nonASCIIidentifierChars = "\xb7\u0300-\u036f\u0387\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u064b-\u0669\u0670\u06d6-\u06dc\u06df-\u06e4\u06e7\u06e8\u06ea-\u06ed\u06f0-\u06f9\u0711\u0730-\u074a\u07a6-\u07b0\u07c0-\u07c9\u07eb-\u07f3\u07fd\u0816-\u0819\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0859-\u085b\u0897-\u089f\u08ca-\u08e1\u08e3-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09cb-\u09cd\u09d7\u09e2\u09e3\u09e6-\u09ef\u09fe\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2\u0ae3\u0ae6-\u0aef\u0afa-\u0aff\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b55-\u0b57\u0b62\u0b63\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c00-\u0c04\u0c3c\u0c3e-\u0c44\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62\u0c63\u0c66-\u0c6f\u0c81-\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2\u0ce3\u0ce6-\u0cef\u0cf3\u0d00-\u0d03\u0d3b\u0d3c\u0d3e-\u0d44\u0d46-\u0d48\u0d4a-\u0d4d\u0d57\u0d62\u0d63\u0d66-\u0d6f\u0d81-\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0de6-\u0def\u0df2\u0df3\u0e31\u0e34-\u0e3a\u0e47-\u0e4e\u0e50-\u0e59\u0eb1\u0eb4-\u0ebc\u0ec8-\u0ece\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f3e\u0f3f\u0f71-\u0f84\u0f86\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u102b-\u103e\u1040-\u1049\u1056-\u1059\u105e-\u1060\u1062-\u1064\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u1369-\u1371\u1712-\u1715\u1732-\u1734\u1752\u1753\u1772\u1773\u17b4-\u17d3\u17dd\u17e0-\u17e9\u180b-\u180d\u180f-\u1819\u18a9\u1920-\u192b\u1930-\u193b\u1946-\u194f\u19d0-\u19da\u1a17-\u1a1b\u1a55-\u1a5e\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1ab0-\u1abd\u1abf-\u1ace\u1b00-\u1b04\u1b34-\u1b44\u1b50-\u1b59\u1b6b-\u1b73\u1b80-\u1b82\u1ba1-\u1bad\u1bb0-\u1bb9\u1be6-\u1bf3\u1c24-\u1c37\u1c40-\u1c49\u1c50-\u1c59\u1cd0-\u1cd2\u1cd4-\u1ce8\u1ced\u1cf4\u1cf7-\u1cf9\u1dc0-\u1dff\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2cef-\u2cf1\u2d7f\u2de0-\u2dff\u302a-\u302f\u3099\u309a\u30fb\ua620-\ua629\ua66f\ua674-\ua67d\ua69e\ua69f\ua6f0\ua6f1\ua802\ua806\ua80b\ua823-\ua827\ua82c\ua880\ua881\ua8b4-\ua8c5\ua8d0-\ua8d9\ua8e0-\ua8f1\ua8ff-\ua909\ua926-\ua92d\ua947-\ua953\ua980-\ua983\ua9b3-\ua9c0\ua9d0-\ua9d9\ua9e5\ua9f0-\ua9f9\uaa29-\uaa36\uaa43\uaa4c\uaa4d\uaa50-\uaa59\uaa7b-\uaa7d\uaab0\uaab2-\uaab4\uaab7\uaab8\uaabe\uaabf\uaac1\uaaeb-\uaaef\uaaf5\uaaf6\uabe3-\uabea\uabec\uabed\uabf0-\uabf9\ufb1e\ufe00-\ufe0f\ufe20-\ufe2f\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f\uff65";
+	let nonASCIIidentifierStartChars = "\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u037f\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u052f\u0531-\u0556\u0559\u0560-\u0588\u05d0-\u05ea\u05ef-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u0860-\u086a\u0870-\u0887\u0889-\u088f\u08a0-\u08c9\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u09fc\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0af9\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c39\u0c3d\u0c58-\u0c5a\u0c5c\u0c5d\u0c60\u0c61\u0c80\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cdc-\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d04-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d54-\u0d56\u0d5f-\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e86-\u0e8a\u0e8c-\u0ea3\u0ea5\u0ea7-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f5\u13f8-\u13fd\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f8\u1700-\u1711\u171f-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1878\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191e\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19b0-\u19c9\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4c\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1c80-\u1c8a\u1c90-\u1cba\u1cbd-\u1cbf\u1ce9-\u1cec\u1cee-\u1cf3\u1cf5\u1cf6\u1cfa\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2118-\u211d\u2124\u2126\u2128\u212a-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309b-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312f\u3131-\u318e\u31a0-\u31bf\u31f0-\u31ff\u3400-\u4dbf\u4e00-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua69d\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua7dc\ua7f1-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua8fd\ua8fe\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\ua9e0-\ua9e4\ua9e6-\ua9ef\ua9fa-\ua9fe\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa7e-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uab30-\uab5a\uab5c-\uab69\uab70-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc";
+	let nonASCIIidentifierChars = "\xb7\u0300-\u036f\u0387\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u064b-\u0669\u0670\u06d6-\u06dc\u06df-\u06e4\u06e7\u06e8\u06ea-\u06ed\u06f0-\u06f9\u0711\u0730-\u074a\u07a6-\u07b0\u07c0-\u07c9\u07eb-\u07f3\u07fd\u0816-\u0819\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0859-\u085b\u0897-\u089f\u08ca-\u08e1\u08e3-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09cb-\u09cd\u09d7\u09e2\u09e3\u09e6-\u09ef\u09fe\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2\u0ae3\u0ae6-\u0aef\u0afa-\u0aff\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b55-\u0b57\u0b62\u0b63\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c00-\u0c04\u0c3c\u0c3e-\u0c44\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62\u0c63\u0c66-\u0c6f\u0c81-\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2\u0ce3\u0ce6-\u0cef\u0cf3\u0d00-\u0d03\u0d3b\u0d3c\u0d3e-\u0d44\u0d46-\u0d48\u0d4a-\u0d4d\u0d57\u0d62\u0d63\u0d66-\u0d6f\u0d81-\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0de6-\u0def\u0df2\u0df3\u0e31\u0e34-\u0e3a\u0e47-\u0e4e\u0e50-\u0e59\u0eb1\u0eb4-\u0ebc\u0ec8-\u0ece\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f3e\u0f3f\u0f71-\u0f84\u0f86\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u102b-\u103e\u1040-\u1049\u1056-\u1059\u105e-\u1060\u1062-\u1064\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u1369-\u1371\u1712-\u1715\u1732-\u1734\u1752\u1753\u1772\u1773\u17b4-\u17d3\u17dd\u17e0-\u17e9\u180b-\u180d\u180f-\u1819\u18a9\u1920-\u192b\u1930-\u193b\u1946-\u194f\u19d0-\u19da\u1a17-\u1a1b\u1a55-\u1a5e\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1ab0-\u1abd\u1abf-\u1add\u1ae0-\u1aeb\u1b00-\u1b04\u1b34-\u1b44\u1b50-\u1b59\u1b6b-\u1b73\u1b80-\u1b82\u1ba1-\u1bad\u1bb0-\u1bb9\u1be6-\u1bf3\u1c24-\u1c37\u1c40-\u1c49\u1c50-\u1c59\u1cd0-\u1cd2\u1cd4-\u1ce8\u1ced\u1cf4\u1cf7-\u1cf9\u1dc0-\u1dff\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2cef-\u2cf1\u2d7f\u2de0-\u2dff\u302a-\u302f\u3099\u309a\u30fb\ua620-\ua629\ua66f\ua674-\ua67d\ua69e\ua69f\ua6f0\ua6f1\ua802\ua806\ua80b\ua823-\ua827\ua82c\ua880\ua881\ua8b4-\ua8c5\ua8d0-\ua8d9\ua8e0-\ua8f1\ua8ff-\ua909\ua926-\ua92d\ua947-\ua953\ua980-\ua983\ua9b3-\ua9c0\ua9d0-\ua9d9\ua9e5\ua9f0-\ua9f9\uaa29-\uaa36\uaa43\uaa4c\uaa4d\uaa50-\uaa59\uaa7b-\uaa7d\uaab0\uaab2-\uaab4\uaab7\uaab8\uaabe\uaabf\uaac1\uaaeb-\uaaef\uaaf5\uaaf6\uabe3-\uabea\uabec\uabed\uabf0-\uabf9\ufb1e\ufe00-\ufe0f\ufe20-\ufe2f\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f\uff65";
 	const nonASCIIidentifierStart = new RegExp("[" + nonASCIIidentifierStartChars + "]");
 	const nonASCIIidentifier = new RegExp("[" + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "]");
 	nonASCIIidentifierStartChars = nonASCIIidentifierChars = null;
-	const astralIdentifierStartCodes = [0, 11, 2, 25, 2, 18, 2, 1, 2, 14, 3, 13, 35, 122, 70, 52, 268, 28, 4, 48, 48, 31, 14, 29, 6, 37, 11, 29, 3, 35, 5, 7, 2, 4, 43, 157, 19, 35, 5, 35, 5, 39, 9, 51, 13, 10, 2, 14, 2, 6, 2, 1, 2, 10, 2, 14, 2, 6, 2, 1, 4, 51, 13, 310, 10, 21, 11, 7, 25, 5, 2, 41, 2, 8, 70, 5, 3, 0, 2, 43, 2, 1, 4, 0, 3, 22, 11, 22, 10, 30, 66, 18, 2, 1, 11, 21, 11, 25, 71, 55, 7, 1, 65, 0, 16, 3, 2, 2, 2, 28, 43, 28, 4, 28, 36, 7, 2, 27, 28, 53, 11, 21, 11, 18, 14, 17, 111, 72, 56, 50, 14, 50, 14, 35, 39, 27, 10, 22, 251, 41, 7, 1, 17, 2, 60, 28, 11, 0, 9, 21, 43, 17, 47, 20, 28, 22, 13, 52, 58, 1, 3, 0, 14, 44, 33, 24, 27, 35, 30, 0, 3, 0, 9, 34, 4, 0, 13, 47, 15, 3, 22, 0, 2, 0, 36, 17, 2, 24, 20, 1, 64, 6, 2, 0, 2, 3, 2, 14, 2, 9, 8, 46, 39, 7, 3, 1, 3, 21, 2, 6, 2, 1, 2, 4, 4, 0, 19, 0, 13, 4, 31, 9, 2, 0, 3, 0, 2, 37, 2, 0, 26, 0, 2, 0, 45, 52, 19, 3, 21, 2, 31, 47, 21, 1, 2, 0, 185, 46, 42, 3, 37, 47, 21, 0, 60, 42, 14, 0, 72, 26, 38, 6, 186, 43, 117, 63, 32, 7, 3, 0, 3, 7, 2, 1, 2, 23, 16, 0, 2, 0, 95, 7, 3, 38, 17, 0, 2, 0, 29, 0, 11, 39, 8, 0, 22, 0, 12, 45, 20, 0, 19, 72, 200, 32, 32, 8, 2, 36, 18, 0, 50, 29, 113, 6, 2, 1, 2, 37, 22, 0, 26, 5, 2, 1, 2, 31, 15, 0, 328, 18, 16, 0, 2, 12, 2, 33, 125, 0, 80, 921, 103, 110, 18, 195, 2637, 96, 16, 1071, 18, 5, 26, 3994, 6, 582, 6842, 29, 1763, 568, 8, 30, 18, 78, 18, 29, 19, 47, 17, 3, 32, 20, 6, 18, 433, 44, 212, 63, 129, 74, 6, 0, 67, 12, 65, 1, 2, 0, 29, 6135, 9, 1237, 42, 9, 8936, 3, 2, 6, 2, 1, 2, 290, 16, 0, 30, 2, 3, 0, 15, 3, 9, 395, 2309, 106, 6, 12, 4, 8, 8, 9, 5991, 84, 2, 70, 2, 1, 3, 0, 3, 1, 3, 3, 2, 11, 2, 0, 2, 6, 2, 64, 2, 3, 3, 7, 2, 6, 2, 27, 2, 3, 2, 4, 2, 0, 4, 6, 2, 339, 3, 24, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 7, 1845, 30, 7, 5, 262, 61, 147, 44, 11, 6, 17, 0, 322, 29, 19, 43, 485, 27, 229, 29, 3, 0, 496, 6, 2, 3, 2, 1, 2, 14, 2, 196, 60, 67, 8, 0, 1205, 3, 2, 26, 2, 1, 2, 0, 3, 0, 2, 9, 2, 3, 2, 0, 2, 0, 7, 0, 5, 0, 2, 0, 2, 0, 2, 2, 2, 1, 2, 0, 3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 1, 2, 0, 3, 3, 2, 6, 2, 3, 2, 3, 2, 0, 2, 9, 2, 16, 6, 2, 2, 4, 2, 16, 4421, 42719, 33, 4153, 7, 221, 3, 5761, 15, 7472, 16, 621, 2467, 541, 1507, 4938, 6, 4191];
-	const astralIdentifierCodes = [509, 0, 227, 0, 150, 4, 294, 9, 1368, 2, 2, 1, 6, 3, 41, 2, 5, 0, 166, 1, 574, 3, 9, 9, 7, 9, 32, 4, 318, 1, 80, 3, 71, 10, 50, 3, 123, 2, 54, 14, 32, 10, 3, 1, 11, 3, 46, 10, 8, 0, 46, 9, 7, 2, 37, 13, 2, 9, 6, 1, 45, 0, 13, 2, 49, 13, 9, 3, 2, 11, 83, 11, 7, 0, 3, 0, 158, 11, 6, 9, 7, 3, 56, 1, 2, 6, 3, 1, 3, 2, 10, 0, 11, 1, 3, 6, 4, 4, 68, 8, 2, 0, 3, 0, 2, 3, 2, 4, 2, 0, 15, 1, 83, 17, 10, 9, 5, 0, 82, 19, 13, 9, 214, 6, 3, 8, 28, 1, 83, 16, 16, 9, 82, 12, 9, 9, 7, 19, 58, 14, 5, 9, 243, 14, 166, 9, 71, 5, 2, 1, 3, 3, 2, 0, 2, 1, 13, 9, 120, 6, 3, 6, 4, 0, 29, 9, 41, 6, 2, 3, 9, 0, 10, 10, 47, 15, 343, 9, 54, 7, 2, 7, 17, 9, 57, 21, 2, 13, 123, 5, 4, 0, 2, 1, 2, 6, 2, 0, 9, 9, 49, 4, 2, 1, 2, 4, 9, 9, 330, 3, 10, 1, 2, 0, 49, 6, 4, 4, 14, 10, 5350, 0, 7, 14, 11465, 27, 2343, 9, 87, 9, 39, 4, 60, 6, 26, 9, 535, 9, 470, 0, 2, 54, 8, 3, 82, 0, 12, 1, 19628, 1, 4178, 9, 519, 45, 3, 22, 543, 4, 4, 5, 9, 7, 3, 6, 31, 3, 149, 2, 1418, 49, 513, 54, 5, 49, 9, 0, 15, 0, 23, 4, 2, 14, 1361, 6, 2, 16, 3, 6, 2, 1, 2, 4, 101, 0, 161, 6, 10, 9, 357, 0, 62, 13, 499, 13, 245, 1, 2, 9, 726, 6, 110, 6, 6, 9, 4759, 9, 787719, 239];
+	const astralIdentifierStartCodes = [0, 11, 2, 25, 2, 18, 2, 1, 2, 14, 3, 13, 35, 122, 70, 52, 268, 28, 4, 48, 48, 31, 14, 29, 6, 37, 11, 29, 3, 35, 5, 7, 2, 4, 43, 157, 19, 35, 5, 35, 5, 39, 9, 51, 13, 10, 2, 14, 2, 6, 2, 1, 2, 10, 2, 14, 2, 6, 2, 1, 4, 51, 13, 310, 10, 21, 11, 7, 25, 5, 2, 41, 2, 8, 70, 5, 3, 0, 2, 43, 2, 1, 4, 0, 3, 22, 11, 22, 10, 30, 66, 18, 2, 1, 11, 21, 11, 25, 7, 25, 39, 55, 7, 1, 65, 0, 16, 3, 2, 2, 2, 28, 43, 28, 4, 28, 36, 7, 2, 27, 28, 53, 11, 21, 11, 18, 14, 17, 111, 72, 56, 50, 14, 50, 14, 35, 39, 27, 10, 22, 251, 41, 7, 1, 17, 5, 57, 28, 11, 0, 9, 21, 43, 17, 47, 20, 28, 22, 13, 52, 58, 1, 3, 0, 14, 44, 33, 24, 27, 35, 30, 0, 3, 0, 9, 34, 4, 0, 13, 47, 15, 3, 22, 0, 2, 0, 36, 17, 2, 24, 20, 1, 64, 6, 2, 0, 2, 3, 2, 14, 2, 9, 8, 46, 39, 7, 3, 1, 3, 21, 2, 6, 2, 1, 2, 4, 4, 0, 19, 0, 13, 4, 31, 9, 2, 0, 3, 0, 2, 37, 2, 0, 26, 0, 2, 0, 45, 52, 19, 3, 21, 2, 31, 47, 21, 1, 2, 0, 185, 46, 42, 3, 37, 47, 21, 0, 60, 42, 14, 0, 72, 26, 38, 6, 186, 43, 117, 63, 32, 7, 3, 0, 3, 7, 2, 1, 2, 23, 16, 0, 2, 0, 95, 7, 3, 38, 17, 0, 2, 0, 29, 0, 11, 39, 8, 0, 22, 0, 12, 45, 20, 0, 19, 72, 200, 32, 32, 8, 2, 36, 18, 0, 50, 29, 113, 6, 2, 1, 2, 37, 22, 0, 26, 5, 2, 1, 2, 31, 15, 0, 24, 43, 261, 18, 16, 0, 2, 12, 2, 33, 125, 0, 80, 921, 103, 110, 18, 195, 2637, 96, 16, 1071, 18, 5, 26, 3994, 6, 582, 6842, 29, 1763, 568, 8, 30, 18, 78, 18, 29, 19, 47, 17, 3, 32, 20, 6, 18, 433, 44, 212, 63, 33, 24, 3, 24, 45, 74, 6, 0, 67, 12, 65, 1, 2, 0, 15, 4, 10, 7381, 42, 31, 98, 114, 8702, 3, 2, 6, 2, 1, 2, 290, 16, 0, 30, 2, 3, 0, 15, 3, 9, 395, 2309, 106, 6, 12, 4, 8, 8, 9, 5991, 84, 2, 70, 2, 1, 3, 0, 3, 1, 3, 3, 2, 11, 2, 0, 2, 6, 2, 64, 2, 3, 3, 7, 2, 6, 2, 27, 2, 3, 2, 4, 2, 0, 4, 6, 2, 339, 3, 24, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 7, 1845, 30, 7, 5, 262, 61, 147, 44, 11, 6, 17, 0, 322, 29, 19, 43, 485, 27, 229, 29, 3, 0, 208, 30, 2, 2, 2, 1, 2, 6, 3, 4, 10, 1, 225, 6, 2, 3, 2, 1, 2, 14, 2, 196, 60, 67, 8, 0, 1205, 3, 2, 26, 2, 1, 2, 0, 3, 0, 2, 9, 2, 3, 2, 0, 2, 0, 7, 0, 5, 0, 2, 0, 2, 0, 2, 2, 2, 1, 2, 0, 3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 1, 2, 0, 3, 3, 2, 6, 2, 3, 2, 3, 2, 0, 2, 9, 2, 16, 6, 2, 2, 4, 2, 16, 4421, 42719, 33, 4381, 3, 5773, 3, 7472, 16, 621, 2467, 541, 1507, 4938, 6, 8489];
+	const astralIdentifierCodes = [509, 0, 227, 0, 150, 4, 294, 9, 1368, 2, 2, 1, 6, 3, 41, 2, 5, 0, 166, 1, 574, 3, 9, 9, 7, 9, 32, 4, 318, 1, 78, 5, 71, 10, 50, 3, 123, 2, 54, 14, 32, 10, 3, 1, 11, 3, 46, 10, 8, 0, 46, 9, 7, 2, 37, 13, 2, 9, 6, 1, 45, 0, 13, 2, 49, 13, 9, 3, 2, 11, 83, 11, 7, 0, 3, 0, 158, 11, 6, 9, 7, 3, 56, 1, 2, 6, 3, 1, 3, 2, 10, 0, 11, 1, 3, 6, 4, 4, 68, 8, 2, 0, 3, 0, 2, 3, 2, 4, 2, 0, 15, 1, 83, 17, 10, 9, 5, 0, 82, 19, 13, 9, 214, 6, 3, 8, 28, 1, 83, 16, 16, 9, 82, 12, 9, 9, 7, 19, 58, 14, 5, 9, 243, 14, 166, 9, 71, 5, 2, 1, 3, 3, 2, 0, 2, 1, 13, 9, 120, 6, 3, 6, 4, 0, 29, 9, 41, 6, 2, 3, 9, 0, 10, 10, 47, 15, 199, 7, 137, 9, 54, 7, 2, 7, 17, 9, 57, 21, 2, 13, 123, 5, 4, 0, 2, 1, 2, 6, 2, 0, 9, 9, 49, 4, 2, 1, 2, 4, 9, 9, 55, 9, 266, 3, 10, 1, 2, 0, 49, 6, 4, 4, 14, 10, 5350, 0, 7, 14, 11465, 27, 2343, 9, 87, 9, 39, 4, 60, 6, 26, 9, 535, 9, 470, 0, 2, 54, 8, 3, 82, 0, 12, 1, 19628, 1, 4178, 9, 519, 45, 3, 22, 543, 4, 4, 5, 9, 7, 3, 6, 31, 3, 149, 2, 1418, 49, 513, 54, 5, 49, 9, 0, 15, 0, 23, 4, 2, 14, 1361, 6, 2, 16, 3, 6, 2, 1, 2, 4, 101, 0, 161, 6, 10, 9, 357, 0, 62, 13, 499, 13, 245, 1, 2, 9, 233, 0, 3, 0, 8, 1, 6, 0, 475, 6, 110, 6, 6, 9, 4759, 9, 787719, 239];
 	function isInAstralSet(code, set) {
 	  let pos = 0x10000;
 	  for (let i = 0, length = set.length; i < length; i += 2) {
@@ -36418,7 +36583,7 @@ function requireUtils () {
 	Object.defineProperty(utils, "__esModule", {
 	  value: true
 	});
-	utils.allExpandedTypes = utils.VISITOR_KEYS = utils.NODE_PARENT_VALIDATIONS = utils.NODE_FIELDS = utils.FLIPPED_ALIAS_KEYS = utils.DEPRECATED_KEYS = utils.BUILDER_KEYS = utils.ALIAS_KEYS = void 0;
+	utils.allExpandedTypes = utils.VISITOR_KEYS = utils.NODE_UNION_SHAPES__PRIVATE = utils.NODE_PARENT_VALIDATIONS = utils.NODE_FIELDS = utils.FLIPPED_ALIAS_KEYS = utils.DEPRECATED_KEYS = utils.BUILDER_KEYS = utils.ALIAS_KEYS = void 0;
 	utils.arrayOf = arrayOf;
 	utils.arrayOfType = arrayOfType;
 	utils.assertEach = assertEach;
@@ -36445,6 +36610,7 @@ function requireUtils () {
 	const BUILDER_KEYS = utils.BUILDER_KEYS = {};
 	const DEPRECATED_KEYS = utils.DEPRECATED_KEYS = {};
 	const NODE_PARENT_VALIDATIONS = utils.NODE_PARENT_VALIDATIONS = {};
+	const NODE_UNION_SHAPES__PRIVATE = utils.NODE_UNION_SHAPES__PRIVATE = {};
 	function getType(val) {
 	  if (Array.isArray(val)) {
 	    return "array";
@@ -36621,7 +36787,7 @@ function requireUtils () {
 	  }
 	  return validate;
 	}
-	const validTypeOpts = new Set(["aliases", "builder", "deprecatedAlias", "fields", "inherits", "visitor", "validate"]);
+	const validTypeOpts = new Set(["aliases", "builder", "deprecatedAlias", "fields", "inherits", "visitor", "validate", "unionShape"]);
 	const validFieldKeys = new Set(["default", "optional", "deprecated", "validate"]);
 	const store = {};
 	function defineAliasedType(...aliases) {
@@ -36700,6 +36866,9 @@ function requireUtils () {
 	  });
 	  if (opts.validate) {
 	    NODE_PARENT_VALIDATIONS[type] = opts.validate;
+	  }
+	  if (opts.unionShape) {
+	    NODE_UNION_SHAPES__PRIVATE[type] = opts.unionShape;
 	  }
 	  store[type] = opts;
 	}
@@ -36814,6 +36983,12 @@ function requireDefinitions () {
 		  enumerable: true,
 		  get: function () {
 		    return _utils.NODE_PARENT_VALIDATIONS;
+		  }
+		});
+		Object.defineProperty(exports, "NODE_UNION_SHAPES__PRIVATE", {
+		  enumerable: true,
+		  get: function () {
+		    return _utils.NODE_UNION_SHAPES__PRIVATE;
 		  }
 		});
 		Object.defineProperty(exports, "PLACEHOLDERS", {
@@ -39498,7 +39673,7 @@ function requireLowercase () {
 	  validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
 	  return node;
 	}
-	function tsTypeOperator(typeAnnotation, operator) {
+	function tsTypeOperator(typeAnnotation, operator = "keyof") {
 	  const node = {
 	    type: "TSTypeOperator",
 	    typeAnnotation,
@@ -44614,10 +44789,15 @@ function isKeyOnlyBinding(expr, keyAst) {
 
 function genSetHtml(oper, context) {
   const { helper } = context;
-  const { value, element } = oper;
+  const { value, element, isComponent } = oper;
   return [
     NEWLINE,
-    ...genCall(helper("setHtml"), `n${element}`, genExpression(value, context))
+    ...genCall(
+      // use setBlockHtml for component
+      isComponent ? helper("setBlockHtml") : helper("setHtml"),
+      `n${element}`,
+      genExpression(value, context)
+    )
   ];
 }
 
@@ -44706,7 +44886,7 @@ function genLiteralObjectProps(props, context) {
 }
 function genPropKey({ key: node, modifier, runtimeCamelize, handler, handlerModifiers }, context) {
   const { helper } = context;
-  const handlerModifierPostfix = handlerModifiers ? handlerModifiers.map(capitalize).join("") : "";
+  const handlerModifierPostfix = handlerModifiers && handlerModifiers.options ? handlerModifiers.options.map(capitalize).join("") : "";
   if (node.isStatic) {
     const keyName = (handler ? toHandlerKey(node.content) : node.content) + handlerModifierPostfix;
     return [
@@ -44781,6 +44961,7 @@ function getSpecialHelper(keyName, tagName) {
 
 const setTemplateRefIdent = `_setTemplateRef`;
 function genSetTemplateRef(oper, context) {
+  const [refValue, refKey] = genRefValue(oper.value, context);
   return [
     NEWLINE,
     oper.effect && `r${oper.element} = `,
@@ -44788,9 +44969,10 @@ function genSetTemplateRef(oper, context) {
       setTemplateRefIdent,
       // will be generated in root scope
       `n${oper.element}`,
-      genRefValue(oper.value, context),
+      refValue,
       oper.effect ? `r${oper.element}` : oper.refFor ? "void 0" : void 0,
-      oper.refFor && "true"
+      oper.refFor && "true",
+      refKey
     )
   ];
 }
@@ -44801,19 +44983,24 @@ function genRefValue(value, context) {
   if (value && context.options.inline) {
     const binding = context.options.bindingMetadata[value.content];
     if (binding === "setup-let" || binding === "setup-ref" || binding === "setup-maybe-ref") {
-      return [value.content];
+      return [[value.content], JSON.stringify(value.content)];
     }
   }
-  return genExpression(value, context);
+  return [genExpression(value, context)];
 }
 
 function genSetText(oper, context) {
   const { helper } = context;
-  const { element, values, generated, jsx } = oper;
+  const { element, values, generated, jsx, isComponent } = oper;
   const texts = combineValues(values, context, jsx);
   return [
     NEWLINE,
-    ...genCall(helper("setText"), `${generated ? "x" : "n"}${element}`, texts)
+    ...genCall(
+      // use setBlockText for component
+      isComponent ? helper("setBlockText") : helper("setText"),
+      `${generated && !isComponent ? "x" : "n"}${element}`,
+      texts
+    )
   ];
 }
 function combineValues(values, context, jsx) {
@@ -44831,18 +45018,21 @@ function combineValues(values, context, jsx) {
 function genGetTextChild(oper, context) {
   return [
     NEWLINE,
-    `const x${oper.parent} = ${context.helper("child")}(n${oper.parent})`
+    `const x${oper.parent} = ${context.helper("txt")}(n${oper.parent})`
   ];
 }
 
 function genVShow(oper, context) {
+  const { deferred, element } = oper;
   return [
     NEWLINE,
-    ...genCall(context.helper("applyVShow"), `n${oper.element}`, [
+    deferred ? `deferredApplyVShows.push(() => ` : void 0,
+    ...genCall(context.helper("applyVShow"), `n${element}`, [
       `() => (`,
       ...genExpression(oper.dir.exp, context),
       `)`
-    ])
+    ]),
+    deferred ? `)` : void 0
   ];
 }
 
@@ -44981,8 +45171,14 @@ function genCreateComponent(operation, context) {
     } else if (operation.asset) {
       return toValidAssetId(operation.tag, "component");
     } else {
+      const { tag: tag2 } = operation;
+      const builtInTag = isBuiltInComponent(tag2);
+      if (builtInTag) {
+        helper(builtInTag);
+        return `_${builtInTag}`;
+      }
       return genExpression(
-        extend(createSimpleExpression(operation.tag, false), { ast: null }),
+        extend(createSimpleExpression(tag2, false), { ast: null }),
         context
       );
     }
@@ -45006,7 +45202,10 @@ function processInlineHandlers(props, context) {
       prop.values.forEach((value, i2) => {
         const isMemberExp = isMemberExpression$1(value, context.options);
         if (!isMemberExp) {
-          const name = getUniqueHandlerName(context, `_on_${prop.key.content}`);
+          const name = getUniqueHandlerName(
+            context,
+            `_on_${prop.key.content.replace(/-/g, "_")}`
+          );
           handlers.push({ name, value });
           ids[name] = null;
           prop.values[i2] = extend({ ast: null }, createSimpleExpression(name));
@@ -45073,7 +45272,7 @@ function genProp(prop, context, isStatic) {
     ...prop.handler ? genEventHandler(
       context,
       prop.values[0],
-      void 0,
+      prop.handlerModifiers,
       true
     ) : isStatic ? ["() => (", ...values, ")"] : values,
     ...prop.model ? [...genModelEvent(prop, context), ...genModelModifiers(prop, context)] : []
@@ -45205,7 +45404,7 @@ function genSlotBlockWithProps(oper, context) {
   let propsName;
   let exitScope;
   let depth;
-  const { props } = oper;
+  const { props, key, node } = oper;
   const idsOfProps = /* @__PURE__ */ new Set();
   if (props) {
     rawProps = props.content;
@@ -45227,17 +45426,39 @@ function genSlotBlockWithProps(oper, context) {
   idsOfProps.forEach(
     (id) => idMap[id] = isDestructureAssignment ? `${propsName}[${JSON.stringify(id)}]` : null
   );
-  const blockFn = context.withId(
+  let blockFn = context.withId(
     () => genBlock(oper, context, [propsName]),
     idMap
   );
   exitScope && exitScope();
+  if (key) {
+    blockFn = [
+      `() => {`,
+      INDENT_START,
+      NEWLINE,
+      `return `,
+      ...genCall(
+        context.helper("createKeyedFragment"),
+        [`() => `, ...genExpression(key, context)],
+        blockFn
+      ),
+      INDENT_END,
+      NEWLINE,
+      `}`
+    ];
+  }
+  if (node.type === 1 && // Not a real component
+  !isTeleportTag(node.tag) && // Needs to determine whether to activate/deactivate based on instance.parent being KeepAlive
+  !isKeepAliveTag(node.tag) && // Slot updates need to trigger TransitionGroup's onBeforeUpdate/onUpdated hook
+  !isTransitionGroupTag(node.tag)) {
+    blockFn = [`${context.helper("withVaporCtx")}(`, ...blockFn, `)`];
+  }
   return blockFn;
 }
 
 function genSlotOutlet(oper, context) {
   const { helper } = context;
-  const { id, name, fallback } = oper;
+  const { id, name, fallback, noSlotted } = oper;
   const [frag, push] = buildCodeFragment();
   const nameExpr = name.isStatic ? genExpression(name, context) : ["() => (", ...genExpression(name, context), ")"];
   let fallbackArg;
@@ -45251,7 +45472,11 @@ function genSlotOutlet(oper, context) {
       helper("createSlot"),
       nameExpr,
       genRawProps(oper.props, context) || "null",
-      fallbackArg
+      fallbackArg,
+      noSlotted && "undefined",
+      // instance
+      noSlotted && "true"
+      // noSlotted
     )
   );
   return frag;
@@ -45370,12 +45595,18 @@ function genEffect({ operations }, context) {
   return frag;
 }
 function genInsertionState(operation, context) {
+  const { parent, anchor, append, last } = operation;
   return [
     NEWLINE,
     ...genCall(
       context.helper("setInsertionState"),
-      `n${operation.parent}`,
-      operation.anchor == null ? void 0 : operation.anchor === -1 ? `0` : `n${operation.anchor}`
+      `n${parent}`,
+      anchor == null ? void 0 : anchor === -1 ? `0` : append ? (
+        // null or anchor > 0 for append
+        // anchor > 0 is the logical index of append node - used for locate node during hydration
+        anchor === 0 ? "null" : `${anchor}`
+      ) : `n${anchor}`,
+      last && "true"
     )
   ];
 }
@@ -45390,13 +45621,16 @@ function genTemplates(templates, rootIndex, { helper }) {
 }
 function genSelf(dynamic, context) {
   const [frag, push] = buildCodeFragment();
-  const { id, template, operation } = dynamic;
+  const { id, template, operation, hasDynamicChild } = dynamic;
   if (id !== void 0 && template !== void 0) {
     push(NEWLINE, `const n${id} = t${template}()`);
     push(...genDirectivesForElement(id, context));
   }
   if (operation) {
     push(...genOperationWithInsertionState(operation, context));
+  }
+  if (hasDynamicChild) {
+    push(...genChildren(dynamic, context, push, `n${id}`));
   }
   return frag;
 }
@@ -45406,51 +45640,65 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
   const { children } = dynamic;
   let offset = 0;
   let prev;
-  const childrenToGen = [];
+  let ifBranchCount = 0;
+  let prependCount = 0;
   for (const [index, child] of children.entries()) {
+    if (child.operation && child.operation.anchor === -1) {
+      prependCount++;
+    }
     if (child.flags & 2) {
       offset--;
+    } else if (child.ifBranch) {
+      ifBranchCount++;
     }
     const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
     if (id === void 0 && !child.hasDynamicChild) {
       push(...genSelf(child, context));
       continue;
     }
-    const elementIndex = Number(index) + offset;
+    const elementIndex = index + offset;
+    const logicalIndex = elementIndex - ifBranchCount + prependCount;
     const variable = id === void 0 ? `p${context.block.tempId++}` : `n${id}`;
     pushBlock(NEWLINE, `const ${variable} = `);
     if (prev) {
       if (elementIndex - prev[1] === 1) {
-        pushBlock(...genCall(helper("next"), prev[0]));
+        pushBlock(...genCall(helper("next"), prev[0], String(logicalIndex)));
       } else {
-        pushBlock(...genCall(helper("nthChild"), from, String(elementIndex)));
+        pushBlock(
+          ...genCall(
+            helper("nthChild"),
+            from,
+            String(elementIndex),
+            String(logicalIndex)
+          )
+        );
       }
     } else {
       if (elementIndex === 0) {
-        pushBlock(...genCall(helper("child"), from));
+        pushBlock(...genCall(helper("child"), from, String(logicalIndex)));
       } else {
         let init = genCall(helper("child"), from);
         if (elementIndex === 1) {
-          init = genCall(helper("next"), init);
+          init = genCall(helper("next"), init, String(logicalIndex));
         } else if (elementIndex > 1) {
-          init = genCall(helper("nthChild"), from, String(elementIndex));
+          init = genCall(
+            helper("nthChild"),
+            from,
+            String(elementIndex),
+            String(logicalIndex)
+          );
         }
         pushBlock(...init);
       }
     }
-    if (id === child.anchor) {
+    if (id === child.anchor && !child.hasDynamicChild) {
       push(...genSelf(child, context));
     }
     if (id !== void 0) {
       push(...genDirectivesForElement(id, context));
     }
     prev = [variable, elementIndex];
-    childrenToGen.push([child, variable]);
-  }
-  if (childrenToGen.length) {
-    for (const [child, from2] of childrenToGen) {
-      push(...genChildren(child, context, pushBlock, from2));
-    }
+    push(...genChildren(child, context, pushBlock, variable));
   }
   return frag;
 }
@@ -45469,8 +45717,11 @@ function genBlock(oper, context, args = [], root) {
 }
 function genBlockContent(block, context, root, genEffectsExtraFrag) {
   const [frag, push] = buildCodeFragment();
-  const { dynamic, effect, operation, returns } = block;
+  const { dynamic, effect, operation, returns, key } = block;
   const resetBlock = context.enterBlock(block);
+  if (block.hasDeferredVShow) {
+    push(NEWLINE, `const deferredApplyVShows = []`);
+  }
   if (root) {
     for (let name of context.ir.component) {
       const id = toValidAssetId(name, "component");
@@ -45493,10 +45744,21 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
     push(...genSelf(child, context));
   }
   for (const child of dynamic.children) {
-    push(...genChildren(child, context, push, `n${child.id}`));
+    if (!child.hasDynamicChild) {
+      push(...genChildren(child, context, push, `n${child.id}`));
+    }
   }
   push(...genOperations(operation, context));
   push(...genEffects(effect, context, genEffectsExtraFrag));
+  if (block.hasDeferredVShow) {
+    push(NEWLINE, `deferredApplyVShows.forEach(fn => fn())`);
+  }
+  if (dynamic.needsKey) {
+    for (const child of dynamic.children) {
+      const keyValue = key ? genExpression(key, context) : JSON.stringify(child.id);
+      push(NEWLINE, `n${child.id}.$key = `, ...keyValue);
+    }
+  }
   push(NEWLINE, `return `);
   const returnNodes = returns.map((n) => `n${n}`);
   const returnsCode = returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "null"];
@@ -45655,15 +45917,17 @@ const transformChildren = (node, context) => {
 };
 function processDynamicChildren(context) {
   let prevDynamics = [];
-  let hasStaticTemplate = false;
+  let staticCount = 0;
+  let dynamicCount = 0;
+  let lastInsertionChild;
   const children = context.dynamic.children;
   for (const [index, child] of children.entries()) {
     if (child.flags & 4) {
-      prevDynamics.push(child);
+      prevDynamics.push(lastInsertionChild = child);
     }
     if (!(child.flags & 2)) {
       if (prevDynamics.length) {
-        if (hasStaticTemplate) {
+        if (staticCount) {
           context.childrenTemplate[index - prevDynamics.length] = `<!>`;
           prevDynamics[0].flags -= 2;
           const anchor = prevDynamics[0].anchor = context.increaseId();
@@ -45676,16 +45940,26 @@ function processDynamicChildren(context) {
             /* prepend */
           );
         }
+        dynamicCount += prevDynamics.length;
         prevDynamics = [];
       }
-      hasStaticTemplate = true;
+      staticCount++;
     }
   }
   if (prevDynamics.length) {
-    registerInsertion(prevDynamics, context);
+    registerInsertion(
+      prevDynamics,
+      context,
+      // the logical index of append child
+      dynamicCount + staticCount,
+      true
+    );
+  }
+  if (lastInsertionChild && lastInsertionChild.operation) {
+    lastInsertionChild.operation.last = true;
   }
 }
-function registerInsertion(dynamics, context, anchor) {
+function registerInsertion(dynamics, context, anchor, append) {
   for (const child of dynamics) {
     if (child.template != null) {
       context.registerOperation({
@@ -45694,11 +45968,12 @@ function registerInsertion(dynamics, context, anchor) {
         node: context.node,
         elements: dynamics.map((child2) => child2.id),
         parent: context.reference(),
-        anchor
+        anchor: append ? void 0 : anchor
       });
     } else if (child.operation && isBlockOperation(child.operation)) {
       child.operation.parent = context.reference();
       child.operation.anchor = anchor;
+      child.operation.append = append;
     }
   }
 }
@@ -45766,6 +46041,11 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
       tag = fromSetup;
       asset = false;
     }
+    const builtInTag = isBuiltInComponent(tag);
+    if (builtInTag) {
+      tag = builtInTag;
+      asset = false;
+    }
     const dotIndex = tag.indexOf(".");
     if (dotIndex > 0) {
       const ns = resolveSetupReference(tag.slice(0, dotIndex), context);
@@ -45824,6 +46104,7 @@ function resolveSetupReference(name, context) {
   const PascalName = capitalize(camelName);
   return bindings[name] ? name : bindings[camelName] ? camelName : bindings[PascalName] ? PascalName : void 0;
 }
+const dynamicKeys = ["indeterminate"];
 function transformNativeElement(node, propsResult, singleRoot, context, getEffectIndex) {
   const { tag } = node;
   const { scopeId } = context.options;
@@ -45887,7 +46168,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
       if (isDom2 && key.content === "class") {
         hasClass = true;
       }
-      if (key.isStatic && values.length === 1 && values[0].isStatic) {
+      if (key.isStatic && values.length === 1 && values[0].isStatic && !dynamicKeys.includes(key.content)) {
         if (isDom2 && key.content === "style") {
           hasStaticStyle = true;
           const checkStaticStyle = context.options.checkStaticStyle;
@@ -46083,7 +46364,7 @@ function dedupeProperties(results) {
     }
     const name = prop.key.content;
     const existing = knownProps.get(name);
-    if (existing) {
+    if (existing && existing.handler === prop.handler) {
       if (name === "style" || name === "class") {
         mergePropValues(existing, prop);
       }
@@ -46127,7 +46408,8 @@ const transformVHtml = (dir, node, context) => {
     // fixed by uts
     node,
     element: context.reference(),
-    value: exp
+    value: exp,
+    isComponent: node.tagType === 1
   });
 };
 
@@ -46155,12 +46437,15 @@ const transformVText = (dir, node, context) => {
     context.childrenTemplate = [
       context.options.platform ? TEXT_PLACEHOLDER : " "
     ];
-    context.registerOperation({
-      type: 17,
-      // fixed by uts
-      node,
-      parent: context.reference()
-    });
+    const isComponent = node.tagType === 1;
+    if (!isComponent) {
+      context.registerOperation({
+        type: 17,
+        // fixed by uts
+        node,
+        parent: context.reference()
+      });
+    }
     context.registerEffect([exp], {
       type: 4,
       // fixed by uts
@@ -46257,7 +46542,11 @@ const transformVOn = (dir, node, context) => {
       key: arg,
       value: handler,
       handler: true,
-      handlerModifiers: eventOptionModifiers
+      handlerModifiers: {
+        keys: keyModifiers,
+        nonKeys: nonKeyModifiers,
+        options: eventOptionModifiers
+      }
     };
   }
   const delegate = arg.isStatic && !eventOptionModifiers.length && delegatedEvents(arg.content);
@@ -46297,6 +46586,14 @@ const transformVShow = (dir, node, context) => {
     );
     return;
   }
+  let shouldDeferred = false;
+  const parentNode = context.parent && context.parent.node;
+  if (parentNode && parentNode.type === 1) {
+    shouldDeferred = !!(isTransitionTag(parentNode.tag) && findProp(parentNode, "appear", false, true));
+    if (shouldDeferred) {
+      context.parent.parent.block.hasDeferredVShow = true;
+    }
+  }
   context.registerOperation({
     type: 13,
     // fixed by uts
@@ -46304,7 +46601,8 @@ const transformVShow = (dir, node, context) => {
     element: context.reference(),
     dir,
     name: "show",
-    builtin: true
+    builtin: true,
+    deferred: shouldDeferred
   });
 };
 
@@ -46378,7 +46676,7 @@ const transformText = (node, context) => {
   } else if (node.type === 5) {
     processInterpolation(context);
   } else if (node.type === 2) {
-    context.template += node.content;
+    context.template += escapeHtml(node.content);
   }
 };
 function processInterpolation(context) {
@@ -46396,6 +46694,7 @@ function processInterpolation(context) {
     return;
   }
   const isDom2 = !!context.options.platform;
+  let isTextNode = false;
   let isInComponentSlot = false;
   let shouldReuseParentText = false;
   if (isDom2) {
@@ -46406,23 +46705,10 @@ function processInterpolation(context) {
     isInComponentSlot = parentNode.type === 1 && (parentNode.tagType === 1 || isTemplateNode(parentNode) && isComponent2(grandNode));
     shouldReuseParentText = !!(!isInComponentSlot && parentNode.loc.source.startsWith("<slot") && parentNode.type === 1 && parentNode.tag === "template" && grandNode && grandNode.tag === "text" && // 确保 slot 只有文本类内容
     parentNode.children.every((child) => isTextLike(child)));
+    isTextNode = isInComponentSlot || shouldReuseParentText;
   }
-  let id;
-  if (isInComponentSlot) {
-    context.dynamic.flags |= 2;
-    id = context.reference();
-    context.registerOperation({
-      type: 18,
-      node: context.node,
-      id
-    });
-  } else if (shouldReuseParentText) {
-    id = context.parent.parent.reference();
-    context.dynamic.flags |= 2;
-  } else {
-    context.template += isDom2 ? TEXT_PLACEHOLDER : " ";
-    id = context.reference();
-  }
+  context.template += isDom2 ? isTextNode ? TEXT_NODE_PLACEHOLDER : TEXT_PLACEHOLDER : " ";
+  const id = context.reference();
   if (values.length === 0) {
     return;
   }
@@ -46452,7 +46738,7 @@ function processTextContainer(children, context) {
   const values = processTextLikeChildren(children, context);
   const literals = values.map(getLiteralExpressionValue);
   if (literals.every((l) => l != null)) {
-    context.childrenTemplate = literals.map((l) => String(l));
+    context.childrenTemplate = literals.map((l) => escapeHtml(String(l)));
   } else {
     context.childrenTemplate = [
       context.options.platform ? TEXT_PLACEHOLDER : " "
@@ -46611,7 +46897,7 @@ const transformComment = (node, context) => {
     context.comment.push(node);
     context.dynamic.flags |= 2;
   } else {
-    context.template += `<!--${node.content}-->`;
+    context.template += `<!--${escapeHtml(node.content)}-->`;
   }
 };
 function getSiblingIf(context, reverse) {
@@ -46667,6 +46953,7 @@ function processIf(node, dir, context) {
     };
   } else {
     const siblingIf = getSiblingIf(context, true);
+    context.dynamic.ifBranch = true;
     const siblings = context.parent && context.parent.dynamic.children;
     let lastIfNode;
     if (siblings) {
@@ -46725,6 +47012,7 @@ function createIfBranch(node, context) {
   const branch = newBlock(node);
   const exitBlock = context.enterBlock(branch);
   context.reference();
+  branch.dynamic.needsKey = isInTransition(context);
   return [branch, exitBlock];
 }
 
@@ -46749,7 +47037,8 @@ function processFor(node, dir, context) {
   const { source, value, key, index } = parseResult;
   const keyProp = findProp(node, "key");
   const keyProperty = keyProp && propToExpression(keyProp);
-  const isComponent = node.tagType === 1;
+  const isComponent = node.tagType === 1 || // template v-for with a single component child
+  isTemplateWithSingleComponent(node);
   context.node = node = wrapTemplate(node, ["for"]);
   context.dynamic.flags |= 2 | 4;
   const id = context.reference();
@@ -46779,6 +47068,13 @@ function processFor(node, dir, context) {
       onlyChild: !!isOnlyChild
     };
   };
+}
+function isTemplateWithSingleComponent(node) {
+  if (node.tag !== "template") return false;
+  const nonCommentChildren = node.children.filter(
+    (c) => c.type !== 3
+  );
+  return nonCommentChildren.length === 1 && nonCommentChildren[0].type === 1 && nonCommentChildren[0].tagType === 1;
 }
 
 const transformSlotOutlet = (node, context) => {
@@ -46855,7 +47151,8 @@ const transformSlotOutlet = (node, context) => {
       id,
       name: slotName,
       props: irProps,
-      fallback
+      fallback,
+      noSlotted: !!(context.options.scopeId && !context.options.slotted)
     };
   };
 };
@@ -46917,7 +47214,22 @@ function transformComponentSlot(node, dir, context) {
       markNonTemplate(n, context);
     });
   }
-  const [block, onExit] = createSlotBlock(node, dir, context);
+  let slotKey;
+  if (isTransitionNode(node) && nonSlotTemplateChildren.length) {
+    const nonCommentChild = nonSlotTemplateChildren.find(
+      (n) => n.type !== 3
+    );
+    if (nonCommentChild) {
+      const keyProp = findProp(
+        nonCommentChild,
+        "key"
+      );
+      if (keyProp) {
+        slotKey = keyProp.exp;
+      }
+    }
+  }
+  const [block, onExit] = createSlotBlock(node, dir, context, slotKey);
   const { slots } = context;
   return () => {
     onExit();
@@ -47051,15 +47363,50 @@ function hasStaticSlot(slots, name) {
     if (slot.slotType === 0) return !!slot.slots[name];
   });
 }
-function createSlotBlock(slotNode, dir, context) {
+function createSlotBlock(slotNode, dir, context, key = void 0) {
   const block = newBlock(slotNode);
   block.props = dir && dir.exp;
+  if (key) {
+    block.key = key;
+    block.dynamic.needsKey = true;
+  }
   const exitBlock = context.enterBlock(block);
   return [block, exitBlock];
 }
 function isNonWhitespaceContent(node) {
   if (node.type !== 2) return true;
   return !!node.content.trim();
+}
+
+const transformTransition = (node, context) => {
+  if (node.type === 1 && node.tagType === 1) {
+    if (isTransitionTag(node.tag)) {
+      return postTransformTransition(
+        node,
+        context.options.onError,
+        hasMultipleChildren
+      );
+    }
+  }
+};
+function hasMultipleChildren(node) {
+  const children = node.children = node.children.filter(
+    (c) => c.type !== 3 && !(c.type === 2 && !c.content.trim())
+  );
+  const first = children[0];
+  if (children.length === 1 && first.type === 1 && (findDir(first, "for") || isTemplateNode(first))) {
+    return true;
+  }
+  const hasElse = (node2) => findDir(node2, "else-if") || findDir(node2, "else", true);
+  if (children.every(
+    (c, index) => c.type === 1 && // not template
+    !isTemplateNode(c) && // not has v-for
+    !findDir(c, "for") && // if the first child has v-if, the rest should also have v-else-if/v-else
+    (index === 0 ? findDir(c, "if") : hasElse(c)) && !hasMultipleChildren(c)
+  )) {
+    return false;
+  }
+  return children.length > 1;
 }
 
 function compile$1(source, options = {}) {
@@ -47080,6 +47427,7 @@ function compile$1(source, options = {}) {
     extend({}, resolvedOptions, {
       nodeTransforms: [
         ...nodeTransforms,
+        ...[transformTransition] ,
         ...options.nodeTransforms || []
         // user transforms
       ],
@@ -47152,6 +47500,7 @@ var CompilerVapor = /*#__PURE__*/Object.freeze({
   IRSlotType: IRSlotType,
   LF: LF,
   NEWLINE: NEWLINE,
+  TEXT_NODE_PLACEHOLDER: TEXT_NODE_PLACEHOLDER,
   TEXT_PLACEHOLDER: TEXT_PLACEHOLDER,
   VaporErrorCodes: VaporErrorCodes,
   VaporErrorMessages: VaporErrorMessages,
@@ -47166,8 +47515,13 @@ var CompilerVapor = /*#__PURE__*/Object.freeze({
   getBaseTransformPreset: getBaseTransformPreset,
   getLiteralExpressionValue: getLiteralExpressionValue,
   isBlockOperation: isBlockOperation,
+  isBuiltInComponent: isBuiltInComponent,
   isConstantExpression: isConstantExpression,
+  isKeepAliveTag: isKeepAliveTag,
   isStaticExpression: isStaticExpression,
+  isTeleportTag: isTeleportTag,
+  isTransitionGroupTag: isTransitionGroupTag,
+  isTransitionTag: isTransitionTag,
   parse: parse$3,
   transform: transform,
   transformChildren: transformChildren,
@@ -47238,7 +47592,7 @@ const ssrHelpers = {
 registerRuntimeHelpers(ssrHelpers);
 
 const ssrTransformIf = createStructuralDirectiveTransform$1(
-  /^(if|else|else-if)$/,
+  /^(?:if|else|else-if)$/,
   processIf$1
 );
 function ssrProcessIf(node, context, disableNestedFragments = false, disableComment = false) {
@@ -47477,6 +47831,14 @@ const ssrTransformElement = (node, context) => {
     const hasCustomDir = node.props.some(
       (p) => p.type === 7 && !isBuiltInDirective(p.name)
     );
+    const vShowPropIndex = node.props.findIndex(
+      (i) => i.type === 7 && i.name === "show"
+    );
+    if (vShowPropIndex !== -1) {
+      const vShowProp = node.props[vShowPropIndex];
+      node.props.splice(vShowPropIndex, 1);
+      node.props.push(vShowProp);
+    }
     const needMergeProps = hasDynamicVBind || hasCustomDir;
     if (needMergeProps) {
       const { props, directives } = buildProps$1(
@@ -47495,7 +47857,7 @@ const ssrTransformElement = (node, context) => {
         );
         if (node.tag === "textarea") {
           const existingText = node.children[0];
-          if (!existingText || existingText.type !== 5) {
+          if (!hasContentOverrideDirective(node) && (!existingText || existingText.type !== 5)) {
             const tempId = `_temp${context.temps++}`;
             propsExp.arguments = [
               createAssignmentExpression(
@@ -47542,8 +47904,7 @@ const ssrTransformElement = (node, context) => {
             ];
           }
         } else if (directives.length && !node.children.length) {
-          const vText = findDir$1(node, "text");
-          if (!vText) {
+          if (!hasContentOverrideDirective(node)) {
             const tempId = `_temp${context.temps++}`;
             propsExp.arguments = [
               createAssignmentExpression(
@@ -47756,6 +48117,9 @@ function findVModel(node) {
   return node.props.find(
     (p) => p.type === 7 && p.name === "model" && p.exp
   );
+}
+function hasContentOverrideDirective(node) {
+  return !!findDir$1(node, "text") || !!findDir$1(node, "html");
 }
 function ssrProcessElement(node, context) {
   const isVoidTag = context.options.isVoidTag || NO;
@@ -48572,6 +48936,7 @@ function compile(source, options = {}) {
   transform$1(ast, __spreadProps$6(__spreadValues$7({}, options), {
     hoistStatic: false,
     nodeTransforms: [
+      transformVBindShorthand,
       ssrTransformIf,
       ssrTransformFor,
       trackVForSlotScopes,
@@ -57316,8 +57681,9 @@ function requireDist () {
 var distExports = /*@__PURE__*/ requireDist();
 var selectorParser = /*@__PURE__*/getDefaultExportFromCjs(distExports);
 
-const animationNameRE = /^(-\w+-)?animation-name$/;
-const animationRE = /^(-\w+-)?animation$/;
+const animationNameRE = /^(?:-\w+-)?animation-name$/;
+const animationRE = /^(?:-\w+-)?animation$/;
+const keyframesRE = /^(?:-\w+-)?keyframes$/;
 const scopedPlugin = (id = "") => {
   const keyframes = /* @__PURE__ */ Object.create(null);
   const shortId = id.replace(/^data-v-/, "");
@@ -57327,7 +57693,7 @@ const scopedPlugin = (id = "") => {
       processRule(id, rule);
     },
     AtRule(node) {
-      if (/-?keyframes$/.test(node.name) && !node.params.endsWith(`-${shortId}`)) {
+      if (keyframesRE.test(node.name) && !node.params.endsWith(`-${shortId}`)) {
         keyframes[node.params] = node.params = node.params + "-" + shortId;
       }
     },
@@ -57356,7 +57722,7 @@ const scopedPlugin = (id = "") => {
 };
 const processedRules = /* @__PURE__ */ new WeakSet();
 function processRule(id, rule) {
-  if (processedRules.has(rule) || rule.parent && rule.parent.type === "atrule" && /-?keyframes$/.test(rule.parent.name)) {
+  if (processedRules.has(rule) || rule.parent && rule.parent.type === "atrule" && keyframesRE.test(rule.parent.name)) {
     return;
   }
   processedRules.add(rule);
@@ -61838,6 +62204,10 @@ class MagicString {
 			if (chunk.outro.length) mappings.advance(chunk.outro);
 		});
 
+		if (this.outro) {
+			mappings.advance(this.outro);
+		}
+
 		return {
 			file: options.file ? options.file.split(/[/\\]/).pop() : undefined,
 			sources: [
@@ -62304,12 +62674,18 @@ class MagicString {
 		if (this.byStart[index] || this.byEnd[index]) return;
 
 		let chunk = this.lastSearchedChunk;
+		let previousChunk = chunk;
 		const searchForward = index > chunk.end;
 
 		while (chunk) {
 			if (chunk.contains(index)) return this._splitChunk(chunk, index);
 
 			chunk = searchForward ? this.byStart[chunk.end] : this.byEnd[chunk.start];
+
+			// Prevent infinite loop (e.g. via empty chunks, where start === end)
+			if (chunk === previousChunk) return;
+
+			previousChunk = chunk;
 		}
 	}
 
@@ -62497,7 +62873,12 @@ class MagicString {
 		const index = original.indexOf(string);
 
 		if (index !== -1) {
-			this.overwrite(index, index + string.length, replacement);
+			if (typeof replacement === 'function') {
+				replacement = replacement(string, index, original);
+			}
+			if (string !== replacement) {
+				this.overwrite(index, index + string.length, replacement);
+			}
 		}
 
 		return this;
@@ -62520,7 +62901,11 @@ class MagicString {
 			index = original.indexOf(string, index + stringLength)
 		) {
 			const previous = original.slice(index, index + stringLength);
-			if (previous !== replacement) this.overwrite(index, index + stringLength, replacement);
+			let _replacement = replacement;
+			if (typeof replacement === 'function') {
+				_replacement = replacement(previous, index, original);
+			}
+			if (previous !== _replacement) this.overwrite(index, index + stringLength, _replacement);
 		}
 
 		return this;
@@ -62571,8 +62956,8 @@ class ScriptCompileContext {
     const { script, scriptSetup } = descriptor;
     const scriptLang = script && script.lang;
     const scriptSetupLang = scriptSetup && scriptSetup.lang;
-    this.isJS = scriptLang === "js" || scriptLang === "jsx" || scriptSetupLang === "js" || scriptSetupLang === "jsx";
-    this.isTS = scriptLang === "ts" || scriptLang === "tsx" || scriptSetupLang === "ts" || scriptSetupLang === "tsx";
+    this.isJS = isJS(scriptLang, scriptSetupLang);
+    this.isTS = isTS(scriptLang, scriptSetupLang);
     this.isUTS = scriptLang === "uts" || scriptSetupLang === "uts";
     const customElement = options.customElement;
     const filename = this.descriptor.filename;
@@ -63031,13 +63416,9 @@ function typeElementsToMap(ctx, elements, scope = ctxToScope(ctx), typeParameter
         Object.assign(scope.types, typeParameters);
       }
       e._ownerScope = scope;
-      const name = getId(e.key);
-      if (name && !e.computed) {
+      const name = getStringLiteralKey(e);
+      if (name !== null) {
         res.props[name] = e;
-      } else if (e.key.type === "TemplateLiteral") {
-        for (const key of resolveTemplateKeys(ctx, e.key, scope)) {
-          res.props[key] = e;
-        }
       } else {
         ctx.error(
           `Unsupported computed key in type referenced by a macro`,
@@ -63435,7 +63816,7 @@ function registerTS(_loadTS) {
     } catch (err) {
       if (typeof err.message === "string" && err.message.includes("Cannot find module")) {
         throw new Error(
-          'Failed to load TypeScript, which is required for resolving imported types. Please make sure "typescript" is installed as a project dependency.'
+          'Failed to load TypeScript, which is required for resolving imported types. Please make sure "TypeScript" is installed as a project dependency.'
         );
       } else {
         throw new Error(
@@ -63655,7 +64036,11 @@ function recordTypes(ctx, body, scope, asGlobal = false) {
         }
       } else if (stmt.type === "TSModuleDeclaration" && stmt.global) {
         for (const s of stmt.body.body) {
-          recordType(s, types, declares);
+          if (s.type === "ExportNamedDeclaration" && s.declaration) {
+            recordType(s.declaration, types, declares);
+          } else {
+            recordType(s, types, declares);
+          }
         }
       }
     } else {
@@ -63829,7 +64214,10 @@ function recordImport(node, imports) {
     };
   }
 }
-function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx), isKeyOf = false) {
+function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx), isKeyOf = false, typeParameters) {
+  if (node.leadingComments && node.leadingComments.some((c) => c.value.includes("@vue-ignore"))) {
+    return [UNKNOWN_TYPE];
+  }
   try {
     switch (node.type) {
       case "TSStringKeyword":
@@ -63902,12 +64290,38 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
       case "TSTypeReference": {
         const resolved = resolveTypeReference(ctx, node, scope);
         if (resolved) {
-          if (resolved.type === "TSTypeAliasDeclaration" && resolved.typeAnnotation.type === "TSFunctionType") {
-            return ["Function"];
+          if (resolved.type === "TSTypeAliasDeclaration") {
+            if (resolved.typeAnnotation.type === "TSFunctionType") {
+              return ["Function"];
+            }
+            if (node.typeParameters) {
+              const typeParams = /* @__PURE__ */ Object.create(null);
+              if (resolved.typeParameters) {
+                resolved.typeParameters.params.forEach((p, i) => {
+                  typeParams[p.name] = node.typeParameters.params[i];
+                });
+              }
+              return inferRuntimeType(
+                ctx,
+                resolved.typeAnnotation,
+                resolved._ownerScope,
+                isKeyOf,
+                typeParams
+              );
+            }
           }
           return inferRuntimeType(ctx, resolved, resolved._ownerScope, isKeyOf);
         }
         if (node.typeName.type === "Identifier") {
+          if (typeParameters && typeParameters[node.typeName.name]) {
+            return inferRuntimeType(
+              ctx,
+              typeParameters[node.typeName.name],
+              scope,
+              isKeyOf,
+              typeParameters
+            );
+          }
           if (isKeyOf) {
             switch (node.typeName.name) {
               case "String":
@@ -64030,11 +64444,33 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
       case "TSParenthesizedType":
         return inferRuntimeType(ctx, node.typeAnnotation, scope);
       case "TSUnionType":
-        return flattenTypes(ctx, node.types, scope, isKeyOf);
+        return flattenTypes(ctx, node.types, scope, isKeyOf, typeParameters);
       case "TSIntersectionType": {
-        return flattenTypes(ctx, node.types, scope, isKeyOf).filter(
-          (t) => t !== UNKNOWN_TYPE
-        );
+        return flattenTypes(
+          ctx,
+          node.types,
+          scope,
+          isKeyOf,
+          typeParameters
+        ).filter((t) => t !== UNKNOWN_TYPE);
+      }
+      case "TSMappedType": {
+        const { typeAnnotation, typeParameter } = node;
+        if (typeAnnotation && typeAnnotation.type === "TSIndexedAccessType" && typeParameter && typeParameter.constraint && typeParameters) {
+          const constraint = typeParameter.constraint;
+          if (constraint.type === "TSTypeOperator" && constraint.operator === "keyof" && constraint.typeAnnotation && constraint.typeAnnotation.type === "TSTypeReference" && constraint.typeAnnotation.typeName.type === "Identifier") {
+            const typeName = constraint.typeAnnotation.typeName.name;
+            const index = typeAnnotation.indexType;
+            const obj = typeAnnotation.objectType;
+            if (obj && obj.type === "TSTypeReference" && obj.typeName.type === "Identifier" && obj.typeName.name === typeName && index && index.type === "TSTypeReference" && index.typeName.type === "Identifier" && index.typeName.name === typeParameter.name) {
+              const targetType = typeParameters[typeName];
+              if (targetType) {
+                return inferRuntimeType(ctx, targetType, scope);
+              }
+            }
+          }
+        }
+        return [UNKNOWN_TYPE];
       }
       case "TSEnumDeclaration":
         return inferEnumType(node);
@@ -64089,14 +64525,16 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
   }
   return [UNKNOWN_TYPE];
 }
-function flattenTypes(ctx, types, scope, isKeyOf = false) {
+function flattenTypes(ctx, types, scope, isKeyOf = false, typeParameters = void 0) {
   if (types.length === 1) {
-    return inferRuntimeType(ctx, types[0], scope, isKeyOf);
+    return inferRuntimeType(ctx, types[0], scope, isKeyOf, typeParameters);
   }
   return [
     ...new Set(
       [].concat(
-        ...types.map((t) => inferRuntimeType(ctx, t, scope, isKeyOf))
+        ...types.map(
+          (t) => inferRuntimeType(ctx, t, scope, isKeyOf, typeParameters)
+        )
       )
     )
   ];
@@ -64182,7 +64620,7 @@ function ctorToType(ctorType) {
 }
 function findStaticPropertyType(node, key) {
   const prop = node.members.find(
-    (m) => m.type === "TSPropertySignature" && !m.computed && getId(m.key) === key && m.typeAnnotation
+    (m) => m.type === "TSPropertySignature" && getStringLiteralKey(m) === key && m.typeAnnotation
   );
   return prop && prop.typeAnnotation.typeAnnotation;
 }
@@ -65005,7 +65443,6 @@ function compileScript(sfc, options) {
 Upgrade your vite or vue-loader version for compatibility with the latest experimental proposals.`
     );
   }
-  const ctx = new ScriptCompileContext(sfc, options);
   const { script, scriptSetup, source, filename } = sfc;
   const hoistStatic = options.hoistStatic !== false && !script;
   const scopeId = options.id ? options.id.replace(/^data-v-/, "") : "";
@@ -65013,20 +65450,27 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
   const scriptSetupLang = scriptSetup && scriptSetup.lang;
   const vapor = sfc.vapor || options.vapor;
   const ssr = (_a = options.templateOptions) == null ? void 0 : _a.ssr;
-  if (!scriptSetup) {
-    if (!script) {
-      throw new Error(`[@vue/compiler-sfc] SFC contains no <script> tags.`);
-    }
-    return processNormalScript(ctx, scopeId);
-  }
-  if (script && scriptLang !== scriptSetupLang) {
+  const setupPreambleLines = [];
+  const isJSOrTS = isJS(scriptLang, scriptSetupLang) || isTS(scriptLang, scriptSetupLang);
+  if (script && scriptSetup && scriptLang !== scriptSetupLang) {
     throw new Error(
       `[@vue/compiler-sfc] <script> and <script setup> must have the same language type.`
     );
   }
-  if (scriptSetupLang && !ctx.isJS && !ctx.isTS && !ctx.isUTS) {
+  if (!scriptSetup) {
+    if (!script) {
+      throw new Error(`[@vue/compiler-sfc] SFC contains no <script> tags.`);
+    }
+    if (script.lang && !isJSOrTS) {
+      return script;
+    }
+    const ctx2 = new ScriptCompileContext(sfc, options);
+    return processNormalScript(ctx2, scopeId);
+  }
+  if (scriptSetupLang && !isJSOrTS) {
     return scriptSetup;
   }
+  const ctx = new ScriptCompileContext(sfc, options);
   const scriptBindings = /* @__PURE__ */ Object.create(null);
   const setupBindings = /* @__PURE__ */ Object.create(null);
   let defaultExport;
@@ -65052,10 +65496,10 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
     ctx.s.move(start, end, 0);
   }
   function registerUserImport(source2, local, imported, isType, isFromSetup, needTemplateUsageCheck) {
-    let isUsedInTemplate = needTemplateUsageCheck;
+    let isImportUsed = needTemplateUsageCheck;
     if (needTemplateUsageCheck && (ctx.isTS || ctx.isUTS) && // fixed by uts
     sfc.template && !sfc.template.src && !sfc.template.lang) {
-      isUsedInTemplate = isImportUsed(local, sfc);
+      isImportUsed = isUsedInTemplate(local, sfc);
     }
     ctx.userImports[local] = {
       isType,
@@ -65063,7 +65507,7 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
       local,
       source: source2,
       isFromSetup,
-      isUsedInTemplate
+      isUsedInTemplate: isImportUsed
     };
   }
   function checkInvalidScopeReference(node, method) {
@@ -65078,8 +65522,36 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
       }
     });
   }
+  function buildDestructureElements() {
+    if (!sfc.template || !sfc.template.ast) return;
+    const builtins = {
+      $props: {
+        bindingType: "setup-reactive-const",
+        setup: () => setupPreambleLines.push(`const $props = __props`)
+      },
+      $emit: {
+        bindingType: "setup-const",
+        setup: () => ctx.emitDecl ? setupPreambleLines.push(`const $emit = __emit`) : destructureElements.push("emit: $emit")
+      },
+      $attrs: {
+        bindingType: "setup-reactive-const",
+        setup: () => destructureElements.push("attrs: $attrs")
+      },
+      $slots: {
+        bindingType: "setup-reactive-const",
+        setup: () => destructureElements.push("slots: $slots")
+      }
+    };
+    for (const [name, config] of Object.entries(builtins)) {
+      if (isUsedInTemplate(name, sfc) && !ctx.bindingMetadata[name]) {
+        config.setup();
+        ctx.bindingMetadata[name] = config.bindingType;
+      }
+    }
+  }
   const scriptAst = ctx.scriptAst;
   const scriptSetupAst = ctx.scriptSetupAst;
+  const inlineMode = options.inlineTemplate;
   if (scriptAst) {
     for (const node of scriptAst.body) {
       if (node.type === "ImportDeclaration") {
@@ -65091,7 +65563,7 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
             imported,
             node.importKind === "type" || specifier.type === "ImportSpecifier" && specifier.importKind === "type",
             false,
-            !options.inlineTemplate
+            !inlineMode
           );
         }
       }
@@ -65116,6 +65588,13 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
         const local = specifier.local.name;
         const imported = getImportedName(specifier);
         const source2 = node.source.value;
+        if (vapor && ssr && specifier.type === "ImportSpecifier" && source2 === "vue" && imported === "defineVaporAsyncComponent") {
+          ctx.s.overwrite(
+            specifier.start + startOffset,
+            specifier.end + startOffset,
+            `defineAsyncComponent as ${local}`
+          );
+        }
         const existing = ctx.userImports[local];
         if (source2 === "vue" && MACROS.includes(imported)) {
           if (local === imported) {
@@ -65145,7 +65624,7 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
             imported,
             node.importKind === "type" || specifier.type === "ImportSpecifier" && specifier.importKind === "type",
             true,
-            !options.inlineTemplate
+            !inlineMode
           );
         }
       }
@@ -65458,16 +65937,20 @@ ${genCssVarsCode(
 let __temp${any}, __restore${any}
 `);
   }
-  const destructureElements = ctx.hasDefineExposeCall || !options.inlineTemplate ? [`expose: __expose`] : [];
+  const destructureElements = ctx.hasDefineExposeCall || !inlineMode ? [`expose: __expose`] : [];
   if (ctx.emitDecl) {
     destructureElements.push(`emit: __emit`);
+  }
+  if (inlineMode) {
+    buildDestructureElements();
   }
   if (destructureElements.length) {
     args += `, { ${destructureElements.join(", ")} }`;
   }
   let templateMap;
   let returned;
-  if (!options.inlineTemplate || !sfc.template && ctx.hasDefaultExportRender) {
+  const propsDecl = genRuntimeProps(ctx);
+  if (!inlineMode || !sfc.template && ctx.hasDefaultExportRender) {
     const allBindings = __spreadValues$1(__spreadValues$1({}, scriptBindings), setupBindings);
     for (const key in ctx.userImports) {
       if (!ctx.userImports[key].isType && ctx.userImports[key].isUsedInTemplate) {
@@ -65593,7 +66076,7 @@ let __temp${any}, __restore${any}
       returned = `() => {}`;
     }
   }
-  if (!options.inlineTemplate && true) {
+  if (!inlineMode && true) {
     ctx.s.appendRight(
       endOffset,
       `
@@ -65636,7 +66119,6 @@ ${vapor && !ssr ? `` : `return `}${returned}
     runtimeOptions += `
   __ssrInlineRender: true,`;
   }
-  const propsDecl = genRuntimeProps(ctx);
   if (propsDecl) runtimeOptions += `
   props: ${propsDecl},`;
   const emitsDecl = genRuntimeEmits(ctx);
@@ -65646,9 +66128,15 @@ ${vapor && !ssr ? `` : `return `}${returned}
   if (ctx.optionsRuntimeDecl) {
     definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
   }
-  const exposeCall = ctx.hasDefineExposeCall || options.inlineTemplate ? `` : `  __expose();
-`;
+  if (!ctx.hasDefineExposeCall && !inlineMode)
+    setupPreambleLines.push(`__expose();`);
+  const setupPreamble = setupPreambleLines.length ? `  ${setupPreambleLines.join("\n  ")}
+` : "";
   if (ctx.isTS || ctx.isUTS) {
+    if (ssr && vapor) {
+      runtimeOptions += `
+  __vapor: true,`;
+    }
     const def = (defaultExport ? `
   ...${normalScriptDefaultVar},` : ``) + (definedOptions ? `
   ...${definedOptions},` : "");
@@ -65660,7 +66148,7 @@ ${genDefaultAs} /*@__PURE__*/${ctx.helper(
         vapor && !ssr ? `defineVaporSharedDataComponent` : `defineComponent`
       )}({${def}${runtimeOptions}
   ${hasAwait ? `async ` : ``}setup(${args}) {
-${exposeCall}`
+${setupPreamble}`
     );
     ctx.s.appendRight(endOffset, `})`);
   } else {
@@ -65674,7 +66162,7 @@ ${exposeCall}`
         `
 ${genDefaultAs} /*@__PURE__*/Object.assign(${defaultExport ? `${normalScriptDefaultVar}, ` : ""}${definedOptions ? `${definedOptions}, ` : ""}{${runtimeOptions}
   ${hasAwait ? `async ` : ``}setup(${args}) {
-${exposeCall}`
+${setupPreamble}`
       );
       ctx.s.appendRight(endOffset, `})`);
     } else {
@@ -65683,7 +66171,7 @@ ${exposeCall}`
         `
 ${genDefaultAs} {${runtimeOptions}
   ${hasAwait ? `async ` : ``}setup(${args}) {
-${exposeCall}`
+${setupPreamble}`
       );
       ctx.s.appendRight(endOffset, `}`);
     }
@@ -65897,7 +66385,7 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-const version = "3.6.0-alpha.2";
+const version = "3.6.0-alpha.3";
 const parseCache = parseCache$1;
 const errorMessages = __spreadValues(__spreadValues({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

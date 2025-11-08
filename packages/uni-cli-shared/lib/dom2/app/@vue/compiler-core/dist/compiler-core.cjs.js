@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-core v3.6.0-alpha.2
+* @vue/compiler-core v3.6.0-alpha.3
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -1574,16 +1574,34 @@ function walkIdentifiers(root, onIdentifier, includeAll = false, parentStack = [
             (id) => markScopeIdentifier(node, id, knownIds)
           );
         }
+      } else if (node.type === "SwitchStatement") {
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          walkSwitchStatement(
+            node,
+            false,
+            (id) => markScopeIdentifier(node, id, knownIds)
+          );
+        }
       } else if (node.type === "CatchClause" && node.param) {
-        for (const id of extractIdentifiers(node.param)) {
-          markScopeIdentifier(node, id, knownIds);
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          for (const id of extractIdentifiers(node.param)) {
+            markScopeIdentifier(node, id, knownIds);
+          }
         }
       } else if (isForStatement(node)) {
-        walkForStatement(
-          node,
-          false,
-          (id) => markScopeIdentifier(node, id, knownIds)
-        );
+        if (node.scopeIds) {
+          node.scopeIds.forEach((id) => markKnownIds(id, knownIds));
+        } else {
+          walkForStatement(
+            node,
+            false,
+            (id) => markScopeIdentifier(node, id, knownIds)
+          );
+        }
       }
     },
     leave(node, parent) {
@@ -1606,14 +1624,15 @@ function isReferencedIdentifier(id, parent, parentStack) {
   if (id.name === "arguments") {
     return false;
   }
-  if (isReferenced(id, parent)) {
+  if (isReferenced(id, parent, parentStack[parentStack.length - 2])) {
     return true;
   }
   switch (parent.type) {
     case "AssignmentExpression":
     case "AssignmentPattern":
       return true;
-    case "ObjectPattern":
+    case "ObjectProperty":
+      return parent.key !== id && isInDestructureAssignment(parent, parentStack);
     case "ArrayPattern":
       return isInDestructureAssignment(parent, parentStack);
   }
@@ -1653,7 +1672,8 @@ function walkFunctionParams(node, onIdent) {
   }
 }
 function walkBlockDeclarations(block, onIdent) {
-  for (const stmt of block.body) {
+  const body = block.type === "SwitchCase" ? block.consequent : block.body;
+  for (const stmt of body) {
     if (stmt.type === "VariableDeclaration") {
       if (stmt.declare) continue;
       for (const decl of stmt.declarations) {
@@ -1666,6 +1686,8 @@ function walkBlockDeclarations(block, onIdent) {
       onIdent(stmt.id);
     } else if (isForStatement(stmt)) {
       walkForStatement(stmt, true, onIdent);
+    } else if (stmt.type === "SwitchStatement") {
+      walkSwitchStatement(stmt, true, onIdent);
     }
   }
 }
@@ -1680,6 +1702,20 @@ function walkForStatement(stmt, isVar, onIdent) {
         onIdent(id);
       }
     }
+  }
+}
+function walkSwitchStatement(stmt, isVar, onIdent) {
+  for (const cs of stmt.cases) {
+    for (const stmt2 of cs.consequent) {
+      if (stmt2.type === "VariableDeclaration" && (stmt2.kind === "var" ? isVar : !isVar)) {
+        for (const decl of stmt2.declarations) {
+          for (const id of extractIdentifiers(decl.id)) {
+            onIdent(id);
+          }
+        }
+      }
+    }
+    walkBlockDeclarations(cs, onIdent);
   }
 }
 function extractIdentifiers(param, nodes = []) {
@@ -1782,7 +1818,7 @@ function isReferenced(node, parent, grandparent) {
       if (parent.key === node) {
         return !!parent.computed;
       }
-      return true;
+      return !grandparent || grandparent.type !== "ObjectPattern";
     // no: class { NODE = value; }
     // yes: class { [NODE] = value; }
     // yes: class { key = NODE; }
@@ -1832,6 +1868,9 @@ function isReferenced(node, parent, grandparent) {
     // yes: export { NODE as foo };
     // no: export { NODE as foo } from "foo";
     case "ExportSpecifier":
+      if (grandparent == null ? void 0 : grandparent.source) {
+        return false;
+      }
       return parent.local === node;
     // no: import NODE from "foo";
     // no: import * as NODE from "foo";
@@ -1965,7 +2004,7 @@ function isCoreComponent(tag) {
       return BASE_TRANSITION;
   }
 }
-const nonIdentifierRE = /^\d|[^\$\w\xA0-\uFFFF]/;
+const nonIdentifierRE = /^$|^\d|[^\$\w\xA0-\uFFFF]/;
 const isSimpleIdentifier = (name) => !nonIdentifierRE.test(name);
 const validFirstIdentCharRE = /[A-Za-z_$\xA0-\uFFFF]/;
 const validIdentCharRE = /[\.\?\w$\xA0-\uFFFF]/;
@@ -2045,7 +2084,7 @@ const isMemberExpressionNode = (exp, context) => {
   }
 };
 const isMemberExpression = isMemberExpressionNode;
-const fnExpRE = /^\s*(async\s*)?(\([^)]*?\)|[\w$_]+)\s*(:[^=]+)?=>|^\s*(async\s+)?function(?:\s+[\w$]+)?\s*\(/;
+const fnExpRE = /^\s*(?:async\s*)?(?:\([^)]*?\)|[\w$_]+)\s*(?::[^=]+)?=>|^\s*(?:async\s+)?function(?:\s+[\w$]+)?\s*\(/;
 const isFnExpressionBrowser = (exp) => fnExpRE.test(getExpSource(exp));
 const isFnExpressionNode = (exp, context) => {
   try {
@@ -2129,6 +2168,9 @@ function hasDynamicKeyVBind(node) {
 }
 function isText$1(node) {
   return node.type === 5 || node.type === 2;
+}
+function isVPre(p) {
+  return p.type === 7 && p.name === "pre";
 }
 function isVSlot(p) {
   return p.type === 7 && p.name === "slot";
@@ -2428,7 +2470,7 @@ const tokenizer = new Tokenizer(stack, {
   ondirarg(start, end) {
     if (start === end) return;
     const arg = getSlice(start, end);
-    if (inVPre) {
+    if (inVPre && !isVPre(currentProp)) {
       currentProp.name += arg;
       setLocEnd(currentProp.nameLoc, end);
     } else {
@@ -2443,7 +2485,7 @@ const tokenizer = new Tokenizer(stack, {
   },
   ondirmodifier(start, end) {
     const mod = getSlice(start, end);
-    if (inVPre) {
+    if (inVPre && !isVPre(currentProp)) {
       currentProp.name += "." + mod;
       setLocEnd(currentProp.nameLoc, end);
     } else if (currentProp.name === "slot") {
@@ -3090,6 +3132,11 @@ function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
     } else if (child.type === 12) {
       const constantType = doNotHoistNode ? 0 : getConstantType(child, context);
       if (constantType >= 2) {
+        if (child.codegenNode.type === 14 && child.codegenNode.arguments.length > 0) {
+          child.codegenNode.arguments.push(
+            -1 + (` /* ${shared.PatchFlagNames[-1]} */` )
+          );
+        }
         toCache.push(child);
         continue;
       }
@@ -3118,7 +3165,6 @@ function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
     }
   }
   let cachedAsArray = false;
-  const slotCacheKeys = [];
   if (toCache.length === children.length && node.type === 1) {
     if (node.tagType === 0 && node.codegenNode && node.codegenNode.type === 13 && shared.isArray(node.codegenNode.children)) {
       node.codegenNode.children = getCacheExpression(
@@ -3128,7 +3174,6 @@ function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
     } else if (node.tagType === 1 && node.codegenNode && node.codegenNode.type === 13 && node.codegenNode.children && !shared.isArray(node.codegenNode.children) && node.codegenNode.children.type === 15) {
       const slot = getSlotNode(node.codegenNode, "default");
       if (slot) {
-        slotCacheKeys.push(context.cached.length);
         slot.returns = getCacheExpression(
           createArrayExpression(slot.returns)
         );
@@ -3138,7 +3183,6 @@ function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
       const slotName = findDir(node, "slot", true);
       const slot = slotName && slotName.arg && getSlotNode(parent.codegenNode, slotName.arg);
       if (slot) {
-        slotCacheKeys.push(context.cached.length);
         slot.returns = getCacheExpression(
           createArrayExpression(slot.returns)
         );
@@ -3148,23 +3192,12 @@ function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
   }
   if (!cachedAsArray) {
     for (const child of toCache) {
-      slotCacheKeys.push(context.cached.length);
       child.codegenNode = context.cache(child.codegenNode);
     }
   }
-  if (slotCacheKeys.length && node.type === 1 && node.tagType === 1 && node.codegenNode && node.codegenNode.type === 13 && node.codegenNode.children && !shared.isArray(node.codegenNode.children) && node.codegenNode.children.type === 15) {
-    node.codegenNode.children.properties.push(
-      createObjectProperty(
-        `__`,
-        createSimpleExpression(JSON.stringify(slotCacheKeys), false)
-      )
-    );
-  }
   function getCacheExpression(value) {
     const exp = context.cache(value);
-    if (inFor && context.hmr) {
-      exp.needArraySpread = true;
-    }
+    exp.needArraySpread = true;
     return exp;
   }
   function getSlotNode(node2, name) {
@@ -4629,14 +4662,17 @@ function processExpression(node, context, asParams = false, asRawStatements = fa
     knownIds
   );
   const children = [];
+  const isTSNode = TS_NODE_TYPES.includes(ast.type);
   ids.sort((a, b) => a.start - b.start);
   ids.forEach((id, i) => {
     const start = id.start - 1;
     const end = id.end - 1;
     const last = ids[i - 1];
-    const leadingText = rawExp.slice(last ? last.end - 1 : 0, start);
-    if (leadingText.length || id.prefix) {
-      children.push(leadingText + (id.prefix || ``));
+    if (!(isTSNode && i === 0)) {
+      const leadingText = rawExp.slice(last ? last.end - 1 : 0, start);
+      if (leadingText.length || id.prefix) {
+        children.push(leadingText + (id.prefix || ``));
+      }
     }
     const source = rawExp.slice(start, end);
     children.push(
@@ -4651,7 +4687,7 @@ function processExpression(node, context, asParams = false, asRawStatements = fa
         id.isConstant ? 3 : 0
       )
     );
-    if (i === ids.length - 1 && end < rawExp.length) {
+    if (i === ids.length - 1 && end < rawExp.length && !isTSNode) {
       children.push(rawExp.slice(end));
     }
   });
@@ -4689,7 +4725,7 @@ function isConst(type) {
 }
 
 const transformIf = createStructuralDirectiveTransform(
-  /^(if|else|else-if)$/,
+  /^(?:if|else|else-if)$/,
   (node, dir, context) => {
     return processIf(node, dir, context, (ifNode, branch, isRoot) => {
       const siblings = context.parent.children;
@@ -4758,7 +4794,7 @@ function processIf(node, dir, context, processCodegen) {
         continue;
       }
       if (sibling && sibling.type === 9) {
-        if (dir.name === "else-if" && sibling.branches[sibling.branches.length - 1].condition === void 0) {
+        if ((dir.name === "else-if" || dir.name === "else") && sibling.branches[sibling.branches.length - 1].condition === void 0) {
           context.onError(
             createCompilerError(30, node.loc)
           );
@@ -4907,90 +4943,6 @@ function getParentCondition(node) {
   }
 }
 
-const transformBind = (dir, _node, context) => {
-  const { modifiers, loc } = dir;
-  const arg = dir.arg;
-  let { exp } = dir;
-  if (exp && exp.type === 4 && !exp.content.trim()) {
-    {
-      context.onError(
-        createCompilerError(34, loc)
-      );
-      return {
-        props: [
-          createObjectProperty(arg, createSimpleExpression("", true, loc))
-        ]
-      };
-    }
-  }
-  if (!exp) {
-    if (arg.type !== 4 || !arg.isStatic) {
-      context.onError(
-        createCompilerError(
-          52,
-          arg.loc
-        )
-      );
-      return {
-        props: [
-          createObjectProperty(arg, createSimpleExpression("", true, loc))
-        ]
-      };
-    }
-    transformBindShorthand(dir, context);
-    exp = dir.exp;
-  }
-  if (arg.type !== 4) {
-    arg.children.unshift(`(`);
-    arg.children.push(`) || ""`);
-  } else if (!arg.isStatic) {
-    arg.content = `${arg.content} || ""`;
-  }
-  if (modifiers.some((mod) => mod.content === "camel")) {
-    if (arg.type === 4) {
-      if (arg.isStatic) {
-        arg.content = shared.camelize(arg.content);
-      } else {
-        arg.content = `${context.helperString(CAMELIZE)}(${arg.content})`;
-      }
-    } else {
-      arg.children.unshift(`${context.helperString(CAMELIZE)}(`);
-      arg.children.push(`)`);
-    }
-  }
-  if (!context.inSSR) {
-    if (modifiers.some((mod) => mod.content === "prop")) {
-      injectPrefix(arg, ".");
-    }
-    if (modifiers.some((mod) => mod.content === "attr")) {
-      injectPrefix(arg, "^");
-    }
-  }
-  return {
-    props: [createObjectProperty(arg, exp)]
-  };
-};
-const transformBindShorthand = (dir, context) => {
-  const arg = dir.arg;
-  const propName = shared.camelize(arg.content);
-  dir.exp = createSimpleExpression(propName, false, arg.loc);
-  {
-    dir.exp = processExpression(dir.exp, context);
-  }
-};
-const injectPrefix = (arg, prefix) => {
-  if (arg.type === 4) {
-    if (arg.isStatic) {
-      arg.content = prefix + arg.content;
-    } else {
-      arg.content = `\`${prefix}\${${arg.content}}\``;
-    }
-  } else {
-    arg.children.unshift(`'${prefix}' + (`);
-    arg.children.push(`)`);
-  }
-};
-
 const transformFor = createStructuralDirectiveTransform(
   "for",
   (node, dir, context) => {
@@ -5003,9 +4955,6 @@ const transformFor = createStructuralDirectiveTransform(
       const memo = findDir(node, "memo");
       const keyProp = findProp(node, `key`, false, true);
       const isDirKey = keyProp && keyProp.type === 7;
-      if (isDirKey && !keyProp.exp) {
-        transformBindShorthand(keyProp, context);
-      }
       let keyExp = keyProp && (keyProp.type === 6 ? keyProp.value ? createSimpleExpression(keyProp.value.content, true) : void 0 : keyProp.exp);
       if (memo && keyExp && isDirKey) {
         {
@@ -5286,7 +5235,9 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
   const dynamicSlots = [];
   let hasDynamicSlots = context.scopes.vSlot > 0 || context.scopes.vFor > 0;
   if (!context.ssr && context.prefixIdentifiers) {
-    hasDynamicSlots = hasScopeRef(node, context.identifiers);
+    hasDynamicSlots = node.props.some(
+      (prop) => isVSlot(prop) && (hasScopeRef(prop.arg, context.identifiers) || hasScopeRef(prop.exp, context.identifiers))
+    ) || children.some((child) => hasScopeRef(child, context.identifiers));
   }
   const onComponentSlot = findDir(node, "slot", true);
   if (onComponentSlot) {
@@ -5349,7 +5300,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
       );
     } else if (vElse = findDir(
       slotElement,
-      /^else(-if)?$/,
+      /^else(?:-if)?$/,
       true
       /* allowEmpty */
     )) {
@@ -5361,7 +5312,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
           break;
         }
       }
-      if (prev && isTemplateNode(prev) && findDir(prev, /^(else-)?if$/)) {
+      if (prev && isTemplateNode(prev) && findDir(prev, /^(?:else-)?if$/)) {
         let conditional = dynamicSlots[dynamicSlots.length - 1];
         while (conditional.alternate.type === 19) {
           conditional = conditional.alternate;
@@ -6319,6 +6270,65 @@ const transformOn = (dir, node, context, augmentor) => {
   return ret;
 };
 
+const transformBind = (dir, _node, context) => {
+  const { modifiers, loc } = dir;
+  const arg = dir.arg;
+  let { exp } = dir;
+  if (exp && exp.type === 4 && !exp.content.trim()) {
+    {
+      context.onError(
+        createCompilerError(34, loc)
+      );
+      return {
+        props: [
+          createObjectProperty(arg, createSimpleExpression("", true, loc))
+        ]
+      };
+    }
+  }
+  if (arg.type !== 4) {
+    arg.children.unshift(`(`);
+    arg.children.push(`) || ""`);
+  } else if (!arg.isStatic) {
+    arg.content = arg.content ? `${arg.content} || ""` : `""`;
+  }
+  if (modifiers.some((mod) => mod.content === "camel")) {
+    if (arg.type === 4) {
+      if (arg.isStatic) {
+        arg.content = shared.camelize(arg.content);
+      } else {
+        arg.content = `${context.helperString(CAMELIZE)}(${arg.content})`;
+      }
+    } else {
+      arg.children.unshift(`${context.helperString(CAMELIZE)}(`);
+      arg.children.push(`)`);
+    }
+  }
+  if (!context.inSSR) {
+    if (modifiers.some((mod) => mod.content === "prop")) {
+      injectPrefix(arg, ".");
+    }
+    if (modifiers.some((mod) => mod.content === "attr")) {
+      injectPrefix(arg, "^");
+    }
+  }
+  return {
+    props: [createObjectProperty(arg, exp)]
+  };
+};
+const injectPrefix = (arg, prefix) => {
+  if (arg.type === 4) {
+    if (arg.isStatic) {
+      arg.content = prefix + arg.content;
+    } else {
+      arg.content = `\`${prefix}\${${arg.content}}\``;
+    }
+  } else {
+    arg.children.unshift(`'${prefix}' + (`);
+    arg.children.push(`)`);
+  }
+};
+
 const transformText = (node, context) => {
   if (node.type === 0 || node.type === 1 || node.type === 11 || node.type === 10) {
     return () => {
@@ -6652,7 +6662,7 @@ const seen = /* @__PURE__ */ new WeakSet();
 const transformMemo = (node, context) => {
   if (node.type === 1) {
     const dir = findDir(node, "memo");
-    if (!dir || seen.has(node)) {
+    if (!dir || seen.has(node) || context.inSSR) {
       return;
     }
     seen.add(node);
@@ -6674,9 +6684,36 @@ const transformMemo = (node, context) => {
   }
 };
 
+const transformVBindShorthand = (node, context) => {
+  if (node.type === 1) {
+    for (const prop of node.props) {
+      if (prop.type === 7 && prop.name === "bind" && (!prop.exp || // #13930 :foo in in-DOM templates will be parsed into :foo="" by browser
+      false) && prop.arg) {
+        const arg = prop.arg;
+        if (arg.type !== 4 || !arg.isStatic) {
+          context.onError(
+            createCompilerError(
+              52,
+              arg.loc
+            )
+          );
+          prop.exp = createSimpleExpression("", true, arg.loc);
+        } else {
+          const propName = shared.camelize(arg.content);
+          if (validFirstIdentCharRE.test(propName[0]) || // allow hyphen first char for https://github.com/vuejs/language-tools/pull/3424
+          propName[0] === "-") {
+            prop.exp = createSimpleExpression(propName, false, arg.loc);
+          }
+        }
+      }
+    }
+  }
+};
+
 function getBaseTransformPreset(prefixIdentifiers) {
   return [
     [
+      transformVBindShorthand,
       transformOnce,
       transformIf,
       transformMemo,
@@ -6875,6 +6912,7 @@ exports.isStaticProperty = isStaticProperty;
 exports.isStaticPropertyKey = isStaticPropertyKey;
 exports.isTemplateNode = isTemplateNode;
 exports.isText = isText$1;
+exports.isVPre = isVPre;
 exports.isVSlot = isVSlot;
 exports.locStub = locStub;
 exports.noopDirectiveTransform = noopDirectiveTransform;
@@ -6894,8 +6932,10 @@ exports.transformElement = transformElement;
 exports.transformExpression = transformExpression;
 exports.transformModel = transformModel;
 exports.transformOn = transformOn;
+exports.transformVBindShorthand = transformVBindShorthand;
 exports.traverseNode = traverseNode;
 exports.unwrapTSNode = unwrapTSNode;
+exports.validFirstIdentCharRE = validFirstIdentCharRE;
 exports.walkBlockDeclarations = walkBlockDeclarations;
 exports.walkFunctionParams = walkFunctionParams;
 exports.walkIdentifiers = walkIdentifiers;

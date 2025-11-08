@@ -1,9 +1,9 @@
 /**
-* @vue/compiler-core v3.6.0-alpha.2
+* @vue/compiler-core v3.6.0-alpha.3
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, NOOP, isObject, extend, NO, isSymbol, isArray, EMPTY_OBJ, capitalize, camelize, PatchFlagNames, makeMap, slotFlagsText, isOn, isBuiltInDirective, isReservedProp, toHandlerKey } from '@vue/shared';
+import { isString, NOOP, isObject, extend, NO, isSymbol, PatchFlagNames, isArray, EMPTY_OBJ, capitalize, camelize, makeMap, slotFlagsText, isOn, isBuiltInDirective, isReservedProp, toHandlerKey } from '@vue/shared';
 export { generateCodeFrame } from '@vue/shared';
 
 const FRAGMENT = Symbol(!!(process.env.NODE_ENV !== "production") ? `Fragment` : ``);
@@ -1514,7 +1514,8 @@ function walkFunctionParams(node, onIdent) {
   }
 }
 function walkBlockDeclarations(block, onIdent) {
-  for (const stmt of block.body) {
+  const body = block.type === "SwitchCase" ? block.consequent : block.body;
+  for (const stmt of body) {
     if (stmt.type === "VariableDeclaration") {
       if (stmt.declare) continue;
       for (const decl of stmt.declarations) {
@@ -1527,6 +1528,8 @@ function walkBlockDeclarations(block, onIdent) {
       onIdent(stmt.id);
     } else if (isForStatement(stmt)) {
       walkForStatement(stmt, true, onIdent);
+    } else if (stmt.type === "SwitchStatement") {
+      walkSwitchStatement(stmt, true, onIdent);
     }
   }
 }
@@ -1541,6 +1544,20 @@ function walkForStatement(stmt, isVar, onIdent) {
         onIdent(id);
       }
     }
+  }
+}
+function walkSwitchStatement(stmt, isVar, onIdent) {
+  for (const cs of stmt.cases) {
+    for (const stmt2 of cs.consequent) {
+      if (stmt2.type === "VariableDeclaration" && (stmt2.kind === "var" ? isVar : !isVar)) {
+        for (const decl of stmt2.declarations) {
+          for (const id of extractIdentifiers(decl.id)) {
+            onIdent(id);
+          }
+        }
+      }
+    }
+    walkBlockDeclarations(cs, onIdent);
   }
 }
 function extractIdentifiers(param, nodes = []) {
@@ -1673,7 +1690,7 @@ function isCoreComponent(tag) {
       return BASE_TRANSITION;
   }
 }
-const nonIdentifierRE = /^\d|[^\$\w\xA0-\uFFFF]/;
+const nonIdentifierRE = /^$|^\d|[^\$\w\xA0-\uFFFF]/;
 const isSimpleIdentifier = (name) => !nonIdentifierRE.test(name);
 const validFirstIdentCharRE = /[A-Za-z_$\xA0-\uFFFF]/;
 const validIdentCharRE = /[\.\?\w$\xA0-\uFFFF]/;
@@ -1743,7 +1760,7 @@ const isMemberExpressionBrowser = (exp) => {
 };
 const isMemberExpressionNode = NOOP ;
 const isMemberExpression = isMemberExpressionBrowser ;
-const fnExpRE = /^\s*(async\s*)?(\([^)]*?\)|[\w$_]+)\s*(:[^=]+)?=>|^\s*(async\s+)?function(?:\s+[\w$]+)?\s*\(/;
+const fnExpRE = /^\s*(?:async\s*)?(?:\([^)]*?\)|[\w$_]+)\s*(?::[^=]+)?=>|^\s*(?:async\s+)?function(?:\s+[\w$]+)?\s*\(/;
 const isFnExpressionBrowser = (exp) => fnExpRE.test(getExpSource(exp));
 const isFnExpressionNode = NOOP ;
 const isFnExpression = isFnExpressionBrowser ;
@@ -1811,6 +1828,9 @@ function hasDynamicKeyVBind(node) {
 }
 function isText$1(node) {
   return node.type === 5 || node.type === 2;
+}
+function isVPre(p) {
+  return p.type === 7 && p.name === "pre";
 }
 function isVSlot(p) {
   return p.type === 7 && p.name === "slot";
@@ -2111,7 +2131,7 @@ const tokenizer = new Tokenizer(stack, {
   ondirarg(start, end) {
     if (start === end) return;
     const arg = getSlice(start, end);
-    if (inVPre) {
+    if (inVPre && !isVPre(currentProp)) {
       currentProp.name += arg;
       setLocEnd(currentProp.nameLoc, end);
     } else {
@@ -2126,7 +2146,7 @@ const tokenizer = new Tokenizer(stack, {
   },
   ondirmodifier(start, end) {
     const mod = getSlice(start, end);
-    if (inVPre) {
+    if (inVPre && !isVPre(currentProp)) {
       currentProp.name += "." + mod;
       setLocEnd(currentProp.nameLoc, end);
     } else if (currentProp.name === "slot") {
@@ -2754,6 +2774,11 @@ function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
     } else if (child.type === 12) {
       const constantType = doNotHoistNode ? 0 : getConstantType(child, context);
       if (constantType >= 2) {
+        if (child.codegenNode.type === 14 && child.codegenNode.arguments.length > 0) {
+          child.codegenNode.arguments.push(
+            -1 + (!!(process.env.NODE_ENV !== "production") ? ` /* ${PatchFlagNames[-1]} */` : ``)
+          );
+        }
         toCache.push(child);
         continue;
       }
@@ -2782,7 +2807,6 @@ function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
     }
   }
   let cachedAsArray = false;
-  const slotCacheKeys = [];
   if (toCache.length === children.length && node.type === 1) {
     if (node.tagType === 0 && node.codegenNode && node.codegenNode.type === 13 && isArray(node.codegenNode.children)) {
       node.codegenNode.children = getCacheExpression(
@@ -2792,7 +2816,6 @@ function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
     } else if (node.tagType === 1 && node.codegenNode && node.codegenNode.type === 13 && node.codegenNode.children && !isArray(node.codegenNode.children) && node.codegenNode.children.type === 15) {
       const slot = getSlotNode(node.codegenNode, "default");
       if (slot) {
-        slotCacheKeys.push(context.cached.length);
         slot.returns = getCacheExpression(
           createArrayExpression(slot.returns)
         );
@@ -2802,7 +2825,6 @@ function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
       const slotName = findDir(node, "slot", true);
       const slot = slotName && slotName.arg && getSlotNode(parent.codegenNode, slotName.arg);
       if (slot) {
-        slotCacheKeys.push(context.cached.length);
         slot.returns = getCacheExpression(
           createArrayExpression(slot.returns)
         );
@@ -2812,23 +2834,12 @@ function walk(node, parent, context, doNotHoistNode = false, inFor = false) {
   }
   if (!cachedAsArray) {
     for (const child of toCache) {
-      slotCacheKeys.push(context.cached.length);
       child.codegenNode = context.cache(child.codegenNode);
     }
   }
-  if (slotCacheKeys.length && node.type === 1 && node.tagType === 1 && node.codegenNode && node.codegenNode.type === 13 && node.codegenNode.children && !isArray(node.codegenNode.children) && node.codegenNode.children.type === 15) {
-    node.codegenNode.children.properties.push(
-      createObjectProperty(
-        `__`,
-        createSimpleExpression(JSON.stringify(slotCacheKeys), false)
-      )
-    );
-  }
   function getCacheExpression(value) {
     const exp = context.cache(value);
-    if (inFor && context.hmr) {
-      exp.needArraySpread = true;
-    }
+    exp.needArraySpread = true;
     return exp;
   }
   function getSlotNode(node2, name) {
@@ -3982,7 +3993,7 @@ function stringifyExpression(exp) {
 }
 
 const transformIf = createStructuralDirectiveTransform(
-  /^(if|else|else-if)$/,
+  /^(?:if|else|else-if)$/,
   (node, dir, context) => {
     return processIf(node, dir, context, (ifNode, branch, isRoot) => {
       const siblings = context.parent.children;
@@ -4051,7 +4062,7 @@ function processIf(node, dir, context, processCodegen) {
         continue;
       }
       if (sibling && sibling.type === 9) {
-        if (dir.name === "else-if" && sibling.branches[sibling.branches.length - 1].condition === void 0) {
+        if ((dir.name === "else-if" || dir.name === "else") && sibling.branches[sibling.branches.length - 1].condition === void 0) {
           context.onError(
             createCompilerError(30, node.loc)
           );
@@ -4200,80 +4211,6 @@ function getParentCondition(node) {
   }
 }
 
-const transformBind = (dir, _node, context) => {
-  const { modifiers, loc } = dir;
-  const arg = dir.arg;
-  let { exp } = dir;
-  if (exp && exp.type === 4 && !exp.content.trim()) {
-    {
-      exp = void 0;
-    }
-  }
-  if (!exp) {
-    if (arg.type !== 4 || !arg.isStatic) {
-      context.onError(
-        createCompilerError(
-          52,
-          arg.loc
-        )
-      );
-      return {
-        props: [
-          createObjectProperty(arg, createSimpleExpression("", true, loc))
-        ]
-      };
-    }
-    transformBindShorthand(dir);
-    exp = dir.exp;
-  }
-  if (arg.type !== 4) {
-    arg.children.unshift(`(`);
-    arg.children.push(`) || ""`);
-  } else if (!arg.isStatic) {
-    arg.content = `${arg.content} || ""`;
-  }
-  if (modifiers.some((mod) => mod.content === "camel")) {
-    if (arg.type === 4) {
-      if (arg.isStatic) {
-        arg.content = camelize(arg.content);
-      } else {
-        arg.content = `${context.helperString(CAMELIZE)}(${arg.content})`;
-      }
-    } else {
-      arg.children.unshift(`${context.helperString(CAMELIZE)}(`);
-      arg.children.push(`)`);
-    }
-  }
-  if (!context.inSSR) {
-    if (modifiers.some((mod) => mod.content === "prop")) {
-      injectPrefix(arg, ".");
-    }
-    if (modifiers.some((mod) => mod.content === "attr")) {
-      injectPrefix(arg, "^");
-    }
-  }
-  return {
-    props: [createObjectProperty(arg, exp)]
-  };
-};
-const transformBindShorthand = (dir, context) => {
-  const arg = dir.arg;
-  const propName = camelize(arg.content);
-  dir.exp = createSimpleExpression(propName, false, arg.loc);
-};
-const injectPrefix = (arg, prefix) => {
-  if (arg.type === 4) {
-    if (arg.isStatic) {
-      arg.content = prefix + arg.content;
-    } else {
-      arg.content = `\`${prefix}\${${arg.content}}\``;
-    }
-  } else {
-    arg.children.unshift(`'${prefix}' + (`);
-    arg.children.push(`)`);
-  }
-};
-
 const transformFor = createStructuralDirectiveTransform(
   "for",
   (node, dir, context) => {
@@ -4285,10 +4222,7 @@ const transformFor = createStructuralDirectiveTransform(
       const isTemplate = isTemplateNode(node);
       const memo = findDir(node, "memo");
       const keyProp = findProp(node, `key`, false, true);
-      const isDirKey = keyProp && keyProp.type === 7;
-      if (isDirKey && !keyProp.exp) {
-        transformBindShorthand(keyProp);
-      }
+      keyProp && keyProp.type === 7;
       let keyExp = keyProp && (keyProp.type === 6 ? keyProp.value ? createSimpleExpression(keyProp.value.content, true) : void 0 : keyProp.exp);
       const keyProperty = keyProp && keyExp ? createObjectProperty(`key`, keyExp) : null;
       const isStableFragment = forNode.source.type === 4 && forNode.source.constType > 0;
@@ -4588,7 +4522,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
       );
     } else if (vElse = findDir(
       slotElement,
-      /^else(-if)?$/,
+      /^else(?:-if)?$/,
       true
       /* allowEmpty */
     )) {
@@ -4600,7 +4534,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
           break;
         }
       }
-      if (prev && isTemplateNode(prev) && findDir(prev, /^(else-)?if$/)) {
+      if (prev && isTemplateNode(prev) && findDir(prev, /^(?:else-)?if$/)) {
         let conditional = dynamicSlots[dynamicSlots.length - 1];
         while (conditional.alternate.type === 19) {
           conditional = conditional.alternate;
@@ -5460,6 +5394,58 @@ const transformOn = (dir, node, context, augmentor) => {
   return ret;
 };
 
+const transformBind = (dir, _node, context) => {
+  const { modifiers, loc } = dir;
+  const arg = dir.arg;
+  let { exp } = dir;
+  if (exp && exp.type === 4 && !exp.content.trim()) {
+    {
+      exp = void 0;
+    }
+  }
+  if (arg.type !== 4) {
+    arg.children.unshift(`(`);
+    arg.children.push(`) || ""`);
+  } else if (!arg.isStatic) {
+    arg.content = arg.content ? `${arg.content} || ""` : `""`;
+  }
+  if (modifiers.some((mod) => mod.content === "camel")) {
+    if (arg.type === 4) {
+      if (arg.isStatic) {
+        arg.content = camelize(arg.content);
+      } else {
+        arg.content = `${context.helperString(CAMELIZE)}(${arg.content})`;
+      }
+    } else {
+      arg.children.unshift(`${context.helperString(CAMELIZE)}(`);
+      arg.children.push(`)`);
+    }
+  }
+  if (!context.inSSR) {
+    if (modifiers.some((mod) => mod.content === "prop")) {
+      injectPrefix(arg, ".");
+    }
+    if (modifiers.some((mod) => mod.content === "attr")) {
+      injectPrefix(arg, "^");
+    }
+  }
+  return {
+    props: [createObjectProperty(arg, exp)]
+  };
+};
+const injectPrefix = (arg, prefix) => {
+  if (arg.type === 4) {
+    if (arg.isStatic) {
+      arg.content = prefix + arg.content;
+    } else {
+      arg.content = `\`${prefix}\${${arg.content}}\``;
+    }
+  } else {
+    arg.children.unshift(`'${prefix}' + (`);
+    arg.children.push(`)`);
+  }
+};
+
 const transformText = (node, context) => {
   if (node.type === 0 || node.type === 1 || node.type === 11 || node.type === 10) {
     return () => {
@@ -5768,7 +5754,7 @@ const seen = /* @__PURE__ */ new WeakSet();
 const transformMemo = (node, context) => {
   if (node.type === 1) {
     const dir = findDir(node, "memo");
-    if (!dir || seen.has(node)) {
+    if (!dir || seen.has(node) || context.inSSR) {
       return;
     }
     seen.add(node);
@@ -5790,9 +5776,36 @@ const transformMemo = (node, context) => {
   }
 };
 
+const transformVBindShorthand = (node, context) => {
+  if (node.type === 1) {
+    for (const prop of node.props) {
+      if (prop.type === 7 && prop.name === "bind" && (!prop.exp || // #13930 :foo in in-DOM templates will be parsed into :foo="" by browser
+      prop.exp.type === 4 && !prop.exp.content.trim()) && prop.arg) {
+        const arg = prop.arg;
+        if (arg.type !== 4 || !arg.isStatic) {
+          context.onError(
+            createCompilerError(
+              52,
+              arg.loc
+            )
+          );
+          prop.exp = createSimpleExpression("", true, arg.loc);
+        } else {
+          const propName = camelize(arg.content);
+          if (validFirstIdentCharRE.test(propName[0]) || // allow hyphen first char for https://github.com/vuejs/language-tools/pull/3424
+          propName[0] === "-") {
+            prop.exp = createSimpleExpression(propName, false, arg.loc);
+          }
+        }
+      }
+    }
+  }
+};
+
 function getBaseTransformPreset(prefixIdentifiers) {
   return [
     [
+      transformVBindShorthand,
       transformOnce,
       transformIf,
       transformMemo,
@@ -5867,4 +5880,4 @@ const BindingTypes = {
 
 const noopDirectiveTransform = () => ({ props: [] });
 
-export { BASE_TRANSITION, BindingTypes, CAMELIZE, CAPITALIZE, CREATE_BLOCK, CREATE_COMMENT, CREATE_ELEMENT_BLOCK, CREATE_ELEMENT_VNODE, CREATE_SLOTS, CREATE_STATIC, CREATE_TEXT, CREATE_VNODE, CompilerDeprecationTypes, ConstantTypes, ElementTypes, ErrorCodes, FRAGMENT, GUARD_REACTIVE_PROPS, IS_MEMO_SAME, IS_REF, KEEP_ALIVE, MERGE_PROPS, NORMALIZE_CLASS, NORMALIZE_PROPS, NORMALIZE_STYLE, Namespaces, NewlineType, NodeTypes, OPEN_BLOCK, POP_SCOPE_ID, PUSH_SCOPE_ID, RENDER_LIST, RENDER_SLOT, RESOLVE_COMPONENT, RESOLVE_DIRECTIVE, RESOLVE_DYNAMIC_COMPONENT, RESOLVE_FILTER, SET_BLOCK_TRACKING, SUSPENSE, TELEPORT, TO_DISPLAY_STRING, TO_HANDLERS, TO_HANDLER_KEY, TS_NODE_TYPES, UNREF, WITH_CTX, WITH_DIRECTIVES, WITH_MEMO, advancePositionWithClone, advancePositionWithMutation, assert, baseCompile, baseParse, buildDirectiveArgs, buildProps, buildSlots, checkCompatEnabled, convertToBlock, createArrayExpression, createAssignmentExpression, createBlockStatement, createCacheExpression, createCallExpression, createCompilerError, createCompoundExpression, createConditionalExpression, createForLoopParams, createFunctionExpression, createIfStatement, createInterpolation, createObjectExpression, createObjectProperty, createReturnStatement, createRoot, createSequenceExpression, createSimpleExpression, createStructuralDirectiveTransform, createTemplateLiteral, createTransformContext, createVNodeCall, defaultOnError, defaultOnWarn, errorMessages, extractIdentifiers, findDir, findProp, forAliasRE, generate, getBaseTransformPreset, getConstantType, getMemoedVNodeCall, getSelfName, getVNodeBlockHelper, getVNodeHelper, hasDynamicKeyVBind, hasScopeRef, helperNameMap, injectProp, isConstantNode, isCoreComponent, isFnExpression, isFnExpressionBrowser, isFnExpressionNode, isFunctionType, isInDestructureAssignment, isInNewExpression, isLiteralWhitelisted, isMemberExpression, isMemberExpressionBrowser, isMemberExpressionNode, isReferencedIdentifier, isSimpleIdentifier, isSlotOutlet, isStaticArgOf, isStaticExp, isStaticNode, isStaticProperty, isStaticPropertyKey, isTemplateNode, isText$1 as isText, isVSlot, locStub, noopDirectiveTransform, processExpression, processFor, processIf, processSlotOutlet, registerRuntimeHelpers, resolveComponentType, stringifyExpression, toValidAssetId, trackSlotScopes, trackVForSlotScopes, transform, transformBind, transformElement, transformExpression, transformModel, transformOn, traverseNode, unwrapTSNode, walkBlockDeclarations, walkFunctionParams, walkIdentifiers, warnDeprecation };
+export { BASE_TRANSITION, BindingTypes, CAMELIZE, CAPITALIZE, CREATE_BLOCK, CREATE_COMMENT, CREATE_ELEMENT_BLOCK, CREATE_ELEMENT_VNODE, CREATE_SLOTS, CREATE_STATIC, CREATE_TEXT, CREATE_VNODE, CompilerDeprecationTypes, ConstantTypes, ElementTypes, ErrorCodes, FRAGMENT, GUARD_REACTIVE_PROPS, IS_MEMO_SAME, IS_REF, KEEP_ALIVE, MERGE_PROPS, NORMALIZE_CLASS, NORMALIZE_PROPS, NORMALIZE_STYLE, Namespaces, NewlineType, NodeTypes, OPEN_BLOCK, POP_SCOPE_ID, PUSH_SCOPE_ID, RENDER_LIST, RENDER_SLOT, RESOLVE_COMPONENT, RESOLVE_DIRECTIVE, RESOLVE_DYNAMIC_COMPONENT, RESOLVE_FILTER, SET_BLOCK_TRACKING, SUSPENSE, TELEPORT, TO_DISPLAY_STRING, TO_HANDLERS, TO_HANDLER_KEY, TS_NODE_TYPES, UNREF, WITH_CTX, WITH_DIRECTIVES, WITH_MEMO, advancePositionWithClone, advancePositionWithMutation, assert, baseCompile, baseParse, buildDirectiveArgs, buildProps, buildSlots, checkCompatEnabled, convertToBlock, createArrayExpression, createAssignmentExpression, createBlockStatement, createCacheExpression, createCallExpression, createCompilerError, createCompoundExpression, createConditionalExpression, createForLoopParams, createFunctionExpression, createIfStatement, createInterpolation, createObjectExpression, createObjectProperty, createReturnStatement, createRoot, createSequenceExpression, createSimpleExpression, createStructuralDirectiveTransform, createTemplateLiteral, createTransformContext, createVNodeCall, defaultOnError, defaultOnWarn, errorMessages, extractIdentifiers, findDir, findProp, forAliasRE, generate, getBaseTransformPreset, getConstantType, getMemoedVNodeCall, getSelfName, getVNodeBlockHelper, getVNodeHelper, hasDynamicKeyVBind, hasScopeRef, helperNameMap, injectProp, isConstantNode, isCoreComponent, isFnExpression, isFnExpressionBrowser, isFnExpressionNode, isFunctionType, isInDestructureAssignment, isInNewExpression, isLiteralWhitelisted, isMemberExpression, isMemberExpressionBrowser, isMemberExpressionNode, isReferencedIdentifier, isSimpleIdentifier, isSlotOutlet, isStaticArgOf, isStaticExp, isStaticNode, isStaticProperty, isStaticPropertyKey, isTemplateNode, isText$1 as isText, isVPre, isVSlot, locStub, noopDirectiveTransform, processExpression, processFor, processIf, processSlotOutlet, registerRuntimeHelpers, resolveComponentType, stringifyExpression, toValidAssetId, trackSlotScopes, trackVForSlotScopes, transform, transformBind, transformElement, transformExpression, transformModel, transformOn, transformVBindShorthand, traverseNode, unwrapTSNode, validFirstIdentCharRE, walkBlockDeclarations, walkFunctionParams, walkIdentifiers, warnDeprecation };

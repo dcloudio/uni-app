@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-alpha.2
+* @vue/compiler-sfc v3.6.0-alpha.3
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -142,7 +142,7 @@ function genCssVarsFromList(vars, id, isProd, isSSR = false) {
 }
 function genVarName(id, raw, isProd, isSSR = false) {
   if (isProd) {
-    return hash_sum(id + raw);
+    return hash_sum(id + raw).replace(/^\d/, (r) => `v${r}`);
   } else {
     return `${id}-${shared.getEscapedCssVarName(raw, isSSR)}`;
   }
@@ -1705,8 +1705,8 @@ function createCache(max = 500) {
   return new LRUCache({ max });
 }
 
-function isImportUsed(local, sfc) {
-  return resolveTemplateUsedIdentifiers(sfc).has(local);
+function isUsedInTemplate(identifier, sfc) {
+  return resolveTemplateUsedIdentifiers(sfc).has(identifier);
 }
 const templateUsageCheckCache = createCache();
 function resolveTemplateUsedIdentifiers(sfc) {
@@ -1798,6 +1798,9 @@ function getImportedName(specifier) {
 function getId(node) {
   return node.type === "Identifier" ? node.name : node.type === "StringLiteral" ? node.value : null;
 }
+function getStringLiteralKey(node) {
+  return node.computed ? node.key.type === "TemplateLiteral" && !node.key.expressions.length ? node.key.quasis.map((q) => q.value.cooked).join("") : null : node.key.type === "Identifier" ? node.key.name : node.key.type === "StringLiteral" ? node.key.value : node.key.type === "NumericLiteral" ? String(node.key.value) : null;
+}
 const identity = (str) => str;
 const fileNameLowerCaseRegExp = /[^\u0130\u0131\u00DFa-z0-9\\/:\-_\. ]+/g;
 const toLowerCase = (str) => str.toLowerCase();
@@ -1817,6 +1820,11 @@ const propNameEscapeSymbolsRE = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~\-]/;
 function getEscapedPropName(key) {
   return propNameEscapeSymbolsRE.test(key) ? JSON.stringify(key) : key;
 }
+const isJS = (...langs) => langs.some((lang) => lang === "js" || lang === "jsx");
+const isTS = (...langs) => (
+  // fixed by uts
+  langs.some((lang) => lang === "ts" || lang === "tsx" || lang === "uts")
+);
 
 const DEFAULT_FILENAME = "anonymous.vue";
 const parseCache$1 = createCache();
@@ -2172,7 +2180,7 @@ function hmrShouldReload(prevImports, next) {
     return false;
   }
   for (const key in prevImports) {
-    if (!prevImports[key].isUsedInTemplate && isImportUsed(key, next)) {
+    if (!prevImports[key].isUsedInTemplate && isUsedInTemplate(key, next)) {
       return true;
     }
   }
@@ -2203,7 +2211,7 @@ function isRelativeUrl(url) {
   const firstChar = url.charAt(0);
   return firstChar === "." || firstChar === "~" || firstChar === "@";
 }
-const externalRE = /^(https?:)?\/\//;
+const externalRE = /^(?:https?:)?\/\//;
 function isExternalUrl(url) {
   return externalRE.test(url);
 }
@@ -2362,7 +2370,7 @@ const transformSrcset = (node, context, options = defaultAssetUrlOptions) => {
             }
           }
           const shouldProcessUrl = (url) => {
-            return !isExternalUrl(url) && !isDataUrl(url) && (options.includeAbsolute || isRelativeUrl(url));
+            return url && !isExternalUrl(url) && !isDataUrl(url) && (options.includeAbsolute || isRelativeUrl(url));
           };
           if (!imageCandidates.some(({ url }) => shouldProcessUrl(url))) {
             return;
@@ -8150,8 +8158,9 @@ function requireDist () {
 var distExports = /*@__PURE__*/ requireDist();
 var selectorParser = /*@__PURE__*/getDefaultExportFromCjs(distExports);
 
-const animationNameRE = /^(-\w+-)?animation-name$/;
-const animationRE = /^(-\w+-)?animation$/;
+const animationNameRE = /^(?:-\w+-)?animation-name$/;
+const animationRE = /^(?:-\w+-)?animation$/;
+const keyframesRE = /^(?:-\w+-)?keyframes$/;
 const scopedPlugin = (id = "") => {
   const keyframes = /* @__PURE__ */ Object.create(null);
   const shortId = id.replace(/^data-v-/, "");
@@ -8161,7 +8170,7 @@ const scopedPlugin = (id = "") => {
       processRule(id, rule);
     },
     AtRule(node) {
-      if (/-?keyframes$/.test(node.name) && !node.params.endsWith(`-${shortId}`)) {
+      if (keyframesRE.test(node.name) && !node.params.endsWith(`-${shortId}`)) {
         keyframes[node.params] = node.params = node.params + "-" + shortId;
       }
     },
@@ -8190,7 +8199,7 @@ const scopedPlugin = (id = "") => {
 };
 const processedRules = /* @__PURE__ */ new WeakSet();
 function processRule(id, rule) {
-  if (processedRules.has(rule) || rule.parent && rule.parent.type === "atrule" && /-?keyframes$/.test(rule.parent.name)) {
+  if (processedRules.has(rule) || rule.parent && rule.parent.type === "atrule" && keyframesRE.test(rule.parent.name)) {
     return;
   }
   processedRules.add(rule);
@@ -16448,8 +16457,8 @@ class ScriptCompileContext {
     const { script, scriptSetup } = descriptor;
     const scriptLang = script && script.lang;
     const scriptSetupLang = scriptSetup && scriptSetup.lang;
-    this.isJS = scriptLang === "js" || scriptLang === "jsx" || scriptSetupLang === "js" || scriptSetupLang === "jsx";
-    this.isTS = scriptLang === "ts" || scriptLang === "tsx" || scriptSetupLang === "ts" || scriptSetupLang === "tsx";
+    this.isJS = isJS(scriptLang, scriptSetupLang);
+    this.isTS = isTS(scriptLang, scriptSetupLang);
     this.isUTS = scriptLang === "uts" || scriptSetupLang === "uts";
     const customElement = options.customElement;
     const filename = this.descriptor.filename;
@@ -17102,21 +17111,35 @@ const parseClass = (glob, position) => {
 /**
  * Un-escape a string that has been escaped with {@link escape}.
  *
- * If the {@link windowsPathsNoEscape} option is used, then square-brace
- * escapes are removed, but not backslash escapes.  For example, it will turn
- * the string `'[*]'` into `*`, but it will not turn `'\\*'` into `'*'`,
- * becuase `\` is a path separator in `windowsPathsNoEscape` mode.
+ * If the {@link MinimatchOptions.windowsPathsNoEscape} option is used, then
+ * square-bracket escapes are removed, but not backslash escapes.
  *
- * When `windowsPathsNoEscape` is not set, then both brace escapes and
+ * For example, it will turn the string `'[*]'` into `*`, but it will not
+ * turn `'\\*'` into `'*'`, because `\` is a path separator in
+ * `windowsPathsNoEscape` mode.
+ *
+ * When `windowsPathsNoEscape` is not set, then both square-bracket escapes and
  * backslash escapes are removed.
  *
  * Slashes (and backslashes in `windowsPathsNoEscape` mode) cannot be escaped
  * or unescaped.
+ *
+ * When `magicalBraces` is not set, escapes of braces (`{` and `}`) will not be
+ * unescaped.
  */
-const unescape = (s, { windowsPathsNoEscape = false, } = {}) => {
+const unescape = (s, { windowsPathsNoEscape = false, magicalBraces = true, } = {}) => {
+    if (magicalBraces) {
+        return windowsPathsNoEscape
+            ? s.replace(/\[([^\/\\])\]/g, '$1')
+            : s
+                .replace(/((?!\\).|^)\[([^\/\\])\]/g, '$1$2')
+                .replace(/\\([^\/])/g, '$1');
+    }
     return windowsPathsNoEscape
-        ? s.replace(/\[([^\/\\])\]/g, '$1')
-        : s.replace(/((?!\\).|^)\[([^\/\\])\]/g, '$1$2').replace(/\\([^\/])/g, '$1');
+        ? s.replace(/\[([^\/\\{}])\]/g, '$1')
+        : s
+            .replace(/((?!\\).|^)\[([^\/\\{}])\]/g, '$1$2')
+            .replace(/\\([^\/{}])/g, '$1');
 };
 
 // parse a single path portion
@@ -17531,7 +17554,9 @@ class AST {
         if (this.#root === this)
             this.#fillNegs();
         if (!this.type) {
-            const noEmpty = this.isStart() && this.isEnd();
+            const noEmpty = this.isStart() &&
+                this.isEnd() &&
+                !this.#parts.some(s => typeof s !== 'string');
             const src = this.#parts
                 .map(p => {
                 const [re, _, hasMagic, uflag] = typeof p === 'string'
@@ -17687,10 +17712,7 @@ class AST {
                 }
             }
             if (c === '*') {
-                if (noEmpty && glob === '*')
-                    re += starNoEmpty;
-                else
-                    re += star$1;
+                re += noEmpty && glob === '*' ? starNoEmpty : star$1;
                 hasMagic = true;
                 continue;
             }
@@ -17708,16 +17730,24 @@ class AST {
 /**
  * Escape all magic characters in a glob pattern.
  *
- * If the {@link windowsPathsNoEscape | GlobOptions.windowsPathsNoEscape}
+ * If the {@link MinimatchOptions.windowsPathsNoEscape}
  * option is used, then characters are escaped by wrapping in `[]`, because
  * a magic character wrapped in a character class can only be satisfied by
  * that exact character.  In this mode, `\` is _not_ escaped, because it is
  * not interpreted as a magic character, but instead as a path separator.
+ *
+ * If the {@link MinimatchOptions.magicalBraces} option is used,
+ * then braces (`{` and `}`) will be escaped.
  */
-const escape = (s, { windowsPathsNoEscape = false, } = {}) => {
+const escape = (s, { windowsPathsNoEscape = false, magicalBraces = false, } = {}) => {
     // don't need to escape +@! because we escape the parens
     // that make those magic, and escaping ! as [!] isn't valid,
     // because [!]] is a valid glob class meaning not ']'.
+    if (magicalBraces) {
+        return windowsPathsNoEscape
+            ? s.replace(/[?*()[\]{}]/g, '[$&]')
+            : s.replace(/[?*()[\]\\{}]/g, '\\$&');
+    }
     return windowsPathsNoEscape
         ? s.replace(/[?*()[\]]/g, '[$&]')
         : s.replace(/[?*()[\]\\]/g, '\\$&');
@@ -18351,7 +18381,7 @@ class Minimatch {
             }
         }
         // resolve and reduce . and .. portions in the file as well.
-        // dont' need to do the second phase, because it's only one string[]
+        // don't need to do the second phase, because it's only one string[]
         const { optimizationLevel = 1 } = this.options;
         if (optimizationLevel >= 2) {
             file = this.levelTwoFileOptimize(file);
@@ -18604,14 +18634,25 @@ class Minimatch {
                     }
                 }
                 else if (next === undefined) {
-                    pp[i - 1] = prev + '(?:\\/|' + twoStar + ')?';
+                    pp[i - 1] = prev + '(?:\\/|\\/' + twoStar + ')?';
                 }
                 else if (next !== GLOBSTAR) {
                     pp[i - 1] = prev + '(?:\\/|\\/' + twoStar + '\\/)' + next;
                     pp[i + 1] = GLOBSTAR;
                 }
             });
-            return pp.filter(p => p !== GLOBSTAR).join('/');
+            const filtered = pp.filter(p => p !== GLOBSTAR);
+            // For partial matches, we need to make the pattern match
+            // any prefix of the full path. We do this by generating
+            // alternative patterns that match progressively longer prefixes.
+            if (this.partial && filtered.length >= 1) {
+                const prefixes = [];
+                for (let i = 1; i <= filtered.length; i++) {
+                    prefixes.push(filtered.slice(0, i).join('/'));
+                }
+                return '(?:' + prefixes.join('|') + ')';
+            }
+            return filtered.join('/');
         })
             .join('|');
         // need to wrap in parens if we had more than one thing with |,
@@ -18620,6 +18661,10 @@ class Minimatch {
         // must match entire pattern
         // ending in a * or ** will make it less strict.
         re = '^' + open + re + close + '$';
+        // In partial mode, '/' should always match as it's a valid prefix for any pattern
+        if (this.partial) {
+            re = '^(?:\\/|' + open + re.slice(1, -1) + close + ')$';
+        }
         // can match anything, as long as it's not this.
         if (this.negate)
             re = '^(?!' + re + ').+$';
@@ -18890,13 +18935,9 @@ function typeElementsToMap(ctx, elements, scope = ctxToScope(ctx), typeParameter
         Object.assign(scope.types, typeParameters);
       }
       e._ownerScope = scope;
-      const name = getId(e.key);
-      if (name && !e.computed) {
+      const name = getStringLiteralKey(e);
+      if (name !== null) {
         res.props[name] = e;
-      } else if (e.key.type === "TemplateLiteral") {
-        for (const key of resolveTemplateKeys(ctx, e.key, scope)) {
-          res.props[key] = e;
-        }
       } else {
         ctx.error(
           `Unsupported computed key in type referenced by a macro`,
@@ -19295,7 +19336,7 @@ function registerTS(_loadTS) {
     } catch (err) {
       if (typeof err.message === "string" && err.message.includes("Cannot find module")) {
         throw new Error(
-          'Failed to load TypeScript, which is required for resolving imported types. Please make sure "typescript" is installed as a project dependency.'
+          'Failed to load TypeScript, which is required for resolving imported types. Please make sure "TypeScript" is installed as a project dependency.'
         );
       } else {
         throw new Error(
@@ -19370,7 +19411,7 @@ function importSourceToScope(ctx, node, scope, source) {
         if (loadTS) ts = loadTS();
         if (!ts) {
           return ctx.error(
-            `Failed to resolve import source ${JSON.stringify(source)}. typescript is required as a peer dep for vue in order to support resolving types from module imports.`,
+            `Failed to resolve import source ${JSON.stringify(source)}. TypeScript is required as a peer dep for vue in order to support resolving types from module imports.`,
             node,
             scope
           );
@@ -19421,14 +19462,19 @@ function resolveWithTS(containingFile, source, ts2, fs) {
     if (configs.length === 1) {
       matchedConfig = configs[0];
     } else {
+      const [major, minor] = ts2.versionMajorMinor.split(".").map(Number);
+      const getPattern = (base, p) => {
+        const supportsConfigDir = major > 5 || major === 5 && minor >= 5;
+        return p.startsWith("${configDir}") && supportsConfigDir ? normalizePath(p.replace("${configDir}", path$1.dirname(configPath))) : joinPaths(base, p);
+      };
       for (const c of configs) {
         const base = normalizePath(
           c.config.options.pathsBasePath || path$1.dirname(c.config.options.configFilePath)
         );
         const included = (_a = c.config.raw) == null ? void 0 : _a.include;
         const excluded = (_b = c.config.raw) == null ? void 0 : _b.exclude;
-        if (!included && (!base || containingFile.startsWith(base)) || (included == null ? void 0 : included.some((p) => minimatch(containingFile, joinPaths(base, p))))) {
-          if (excluded && excluded.some((p) => minimatch(containingFile, joinPaths(base, p)))) {
+        if (!included && (!base || containingFile.startsWith(base)) || (included == null ? void 0 : included.some((p) => minimatch(containingFile, getPattern(base, p))))) {
+          if (excluded && excluded.some((p) => minimatch(containingFile, getPattern(base, p)))) {
             continue;
           }
           matchedConfig = c;
@@ -19603,7 +19649,11 @@ function recordTypes(ctx, body, scope, asGlobal = false) {
         }
       } else if (stmt.type === "TSModuleDeclaration" && stmt.global) {
         for (const s of stmt.body.body) {
-          recordType(s, types, declares);
+          if (s.type === "ExportNamedDeclaration" && s.declaration) {
+            recordType(s.declaration, types, declares);
+          } else {
+            recordType(s, types, declares);
+          }
         }
       }
     } else {
@@ -19777,7 +19827,10 @@ function recordImport(node, imports) {
     };
   }
 }
-function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx), isKeyOf = false) {
+function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx), isKeyOf = false, typeParameters) {
+  if (node.leadingComments && node.leadingComments.some((c) => c.value.includes("@vue-ignore"))) {
+    return [UNKNOWN_TYPE];
+  }
   try {
     switch (node.type) {
       case "TSStringKeyword":
@@ -19850,12 +19903,38 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
       case "TSTypeReference": {
         const resolved = resolveTypeReference(ctx, node, scope);
         if (resolved) {
-          if (resolved.type === "TSTypeAliasDeclaration" && resolved.typeAnnotation.type === "TSFunctionType") {
-            return ["Function"];
+          if (resolved.type === "TSTypeAliasDeclaration") {
+            if (resolved.typeAnnotation.type === "TSFunctionType") {
+              return ["Function"];
+            }
+            if (node.typeParameters) {
+              const typeParams = /* @__PURE__ */ Object.create(null);
+              if (resolved.typeParameters) {
+                resolved.typeParameters.params.forEach((p, i) => {
+                  typeParams[p.name] = node.typeParameters.params[i];
+                });
+              }
+              return inferRuntimeType(
+                ctx,
+                resolved.typeAnnotation,
+                resolved._ownerScope,
+                isKeyOf,
+                typeParams
+              );
+            }
           }
           return inferRuntimeType(ctx, resolved, resolved._ownerScope, isKeyOf);
         }
         if (node.typeName.type === "Identifier") {
+          if (typeParameters && typeParameters[node.typeName.name]) {
+            return inferRuntimeType(
+              ctx,
+              typeParameters[node.typeName.name],
+              scope,
+              isKeyOf,
+              typeParameters
+            );
+          }
           if (isKeyOf) {
             switch (node.typeName.name) {
               case "String":
@@ -19978,11 +20057,33 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
       case "TSParenthesizedType":
         return inferRuntimeType(ctx, node.typeAnnotation, scope);
       case "TSUnionType":
-        return flattenTypes(ctx, node.types, scope, isKeyOf);
+        return flattenTypes(ctx, node.types, scope, isKeyOf, typeParameters);
       case "TSIntersectionType": {
-        return flattenTypes(ctx, node.types, scope, isKeyOf).filter(
-          (t) => t !== UNKNOWN_TYPE
-        );
+        return flattenTypes(
+          ctx,
+          node.types,
+          scope,
+          isKeyOf,
+          typeParameters
+        ).filter((t) => t !== UNKNOWN_TYPE);
+      }
+      case "TSMappedType": {
+        const { typeAnnotation, typeParameter } = node;
+        if (typeAnnotation && typeAnnotation.type === "TSIndexedAccessType" && typeParameter && typeParameter.constraint && typeParameters) {
+          const constraint = typeParameter.constraint;
+          if (constraint.type === "TSTypeOperator" && constraint.operator === "keyof" && constraint.typeAnnotation && constraint.typeAnnotation.type === "TSTypeReference" && constraint.typeAnnotation.typeName.type === "Identifier") {
+            const typeName = constraint.typeAnnotation.typeName.name;
+            const index = typeAnnotation.indexType;
+            const obj = typeAnnotation.objectType;
+            if (obj && obj.type === "TSTypeReference" && obj.typeName.type === "Identifier" && obj.typeName.name === typeName && index && index.type === "TSTypeReference" && index.typeName.type === "Identifier" && index.typeName.name === typeParameter.name) {
+              const targetType = typeParameters[typeName];
+              if (targetType) {
+                return inferRuntimeType(ctx, targetType, scope);
+              }
+            }
+          }
+        }
+        return [UNKNOWN_TYPE];
       }
       case "TSEnumDeclaration":
         return inferEnumType(node);
@@ -20037,14 +20138,16 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
   }
   return [UNKNOWN_TYPE];
 }
-function flattenTypes(ctx, types, scope, isKeyOf = false) {
+function flattenTypes(ctx, types, scope, isKeyOf = false, typeParameters = void 0) {
   if (types.length === 1) {
-    return inferRuntimeType(ctx, types[0], scope, isKeyOf);
+    return inferRuntimeType(ctx, types[0], scope, isKeyOf, typeParameters);
   }
   return [
     ...new Set(
       [].concat(
-        ...types.map((t) => inferRuntimeType(ctx, t, scope, isKeyOf))
+        ...types.map(
+          (t) => inferRuntimeType(ctx, t, scope, isKeyOf, typeParameters)
+        )
       )
     )
   ];
@@ -20130,7 +20233,7 @@ function ctorToType(ctorType) {
 }
 function findStaticPropertyType(node, key) {
   const prop = node.members.find(
-    (m) => m.type === "TSPropertySignature" && !m.computed && getId(m.key) === key && m.typeAnnotation
+    (m) => m.type === "TSPropertySignature" && getStringLiteralKey(m) === key && m.typeAnnotation
   );
   return prop && prop.typeAnnotation.typeAnnotation;
 }
@@ -20934,7 +21037,6 @@ function compileScript(sfc, options) {
 Upgrade your vite or vue-loader version for compatibility with the latest experimental proposals.`
     );
   }
-  const ctx = new ScriptCompileContext(sfc, options);
   const { script, scriptSetup, source, filename } = sfc;
   const hoistStatic = options.hoistStatic !== false && !script;
   const scopeId = options.id ? options.id.replace(/^data-v-/, "") : "";
@@ -20942,20 +21044,27 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
   const scriptSetupLang = scriptSetup && scriptSetup.lang;
   const vapor = sfc.vapor || options.vapor;
   const ssr = (_a = options.templateOptions) == null ? void 0 : _a.ssr;
-  if (!scriptSetup) {
-    if (!script) {
-      throw new Error(`[@vue/compiler-sfc] SFC contains no <script> tags.`);
-    }
-    return processNormalScript(ctx, scopeId);
-  }
-  if (script && scriptLang !== scriptSetupLang) {
+  const setupPreambleLines = [];
+  const isJSOrTS = isJS(scriptLang, scriptSetupLang) || isTS(scriptLang, scriptSetupLang);
+  if (script && scriptSetup && scriptLang !== scriptSetupLang) {
     throw new Error(
       `[@vue/compiler-sfc] <script> and <script setup> must have the same language type.`
     );
   }
-  if (scriptSetupLang && !ctx.isJS && !ctx.isTS && !ctx.isUTS) {
+  if (!scriptSetup) {
+    if (!script) {
+      throw new Error(`[@vue/compiler-sfc] SFC contains no <script> tags.`);
+    }
+    if (script.lang && !isJSOrTS) {
+      return script;
+    }
+    const ctx2 = new ScriptCompileContext(sfc, options);
+    return processNormalScript(ctx2, scopeId);
+  }
+  if (scriptSetupLang && !isJSOrTS) {
     return scriptSetup;
   }
+  const ctx = new ScriptCompileContext(sfc, options);
   const scriptBindings = /* @__PURE__ */ Object.create(null);
   const setupBindings = /* @__PURE__ */ Object.create(null);
   let defaultExport;
@@ -20981,10 +21090,10 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
     ctx.s.move(start, end, 0);
   }
   function registerUserImport(source2, local, imported, isType, isFromSetup, needTemplateUsageCheck) {
-    let isUsedInTemplate = needTemplateUsageCheck;
+    let isImportUsed = needTemplateUsageCheck;
     if (needTemplateUsageCheck && (ctx.isTS || ctx.isUTS) && // fixed by uts
     sfc.template && !sfc.template.src && !sfc.template.lang) {
-      isUsedInTemplate = isImportUsed(local, sfc);
+      isImportUsed = isUsedInTemplate(local, sfc);
     }
     ctx.userImports[local] = {
       isType,
@@ -20992,7 +21101,7 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
       local,
       source: source2,
       isFromSetup,
-      isUsedInTemplate
+      isUsedInTemplate: isImportUsed
     };
   }
   function checkInvalidScopeReference(node, method) {
@@ -21007,8 +21116,36 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
       }
     });
   }
+  function buildDestructureElements() {
+    if (!sfc.template || !sfc.template.ast) return;
+    const builtins = {
+      $props: {
+        bindingType: "setup-reactive-const",
+        setup: () => setupPreambleLines.push(`const $props = __props`)
+      },
+      $emit: {
+        bindingType: "setup-const",
+        setup: () => ctx.emitDecl ? setupPreambleLines.push(`const $emit = __emit`) : destructureElements.push("emit: $emit")
+      },
+      $attrs: {
+        bindingType: "setup-reactive-const",
+        setup: () => destructureElements.push("attrs: $attrs")
+      },
+      $slots: {
+        bindingType: "setup-reactive-const",
+        setup: () => destructureElements.push("slots: $slots")
+      }
+    };
+    for (const [name, config] of Object.entries(builtins)) {
+      if (isUsedInTemplate(name, sfc) && !ctx.bindingMetadata[name]) {
+        config.setup();
+        ctx.bindingMetadata[name] = config.bindingType;
+      }
+    }
+  }
   const scriptAst = ctx.scriptAst;
   const scriptSetupAst = ctx.scriptSetupAst;
+  const inlineMode = options.inlineTemplate;
   if (scriptAst) {
     for (const node of scriptAst.body) {
       if (node.type === "ImportDeclaration") {
@@ -21020,7 +21157,7 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
             imported,
             node.importKind === "type" || specifier.type === "ImportSpecifier" && specifier.importKind === "type",
             false,
-            !options.inlineTemplate
+            !inlineMode
           );
         }
       }
@@ -21045,6 +21182,13 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
         const local = specifier.local.name;
         const imported = getImportedName(specifier);
         const source2 = node.source.value;
+        if (vapor && ssr && specifier.type === "ImportSpecifier" && source2 === "vue" && imported === "defineVaporAsyncComponent") {
+          ctx.s.overwrite(
+            specifier.start + startOffset,
+            specifier.end + startOffset,
+            `defineAsyncComponent as ${local}`
+          );
+        }
         const existing = ctx.userImports[local];
         if (source2 === "vue" && MACROS.includes(imported)) {
           if (local === imported) {
@@ -21074,7 +21218,7 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
             imported,
             node.importKind === "type" || specifier.type === "ImportSpecifier" && specifier.importKind === "type",
             true,
-            !options.inlineTemplate
+            !inlineMode
           );
         }
       }
@@ -21387,16 +21531,20 @@ ${genCssVarsCode(
 let __temp${any}, __restore${any}
 `);
   }
-  const destructureElements = ctx.hasDefineExposeCall || !options.inlineTemplate ? [`expose: __expose`] : [];
+  const destructureElements = ctx.hasDefineExposeCall || !inlineMode ? [`expose: __expose`] : [];
   if (ctx.emitDecl) {
     destructureElements.push(`emit: __emit`);
+  }
+  if (inlineMode) {
+    buildDestructureElements();
   }
   if (destructureElements.length) {
     args += `, { ${destructureElements.join(", ")} }`;
   }
   let templateMap;
   let returned;
-  if (!options.inlineTemplate || !sfc.template && ctx.hasDefaultExportRender) {
+  const propsDecl = genRuntimeProps(ctx);
+  if (!inlineMode || !sfc.template && ctx.hasDefaultExportRender) {
     const allBindings = {
       ...scriptBindings,
       ...setupBindings
@@ -21526,7 +21674,7 @@ let __temp${any}, __restore${any}
       returned = `() => {}`;
     }
   }
-  if (!options.inlineTemplate && true) {
+  if (!inlineMode && true) {
     ctx.s.appendRight(
       endOffset,
       `
@@ -21569,7 +21717,6 @@ ${vapor && !ssr ? `` : `return `}${returned}
     runtimeOptions += `
   __ssrInlineRender: true,`;
   }
-  const propsDecl = genRuntimeProps(ctx);
   if (propsDecl) runtimeOptions += `
   props: ${propsDecl},`;
   const emitsDecl = genRuntimeEmits(ctx);
@@ -21579,9 +21726,15 @@ ${vapor && !ssr ? `` : `return `}${returned}
   if (ctx.optionsRuntimeDecl) {
     definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
   }
-  const exposeCall = ctx.hasDefineExposeCall || options.inlineTemplate ? `` : `  __expose();
-`;
+  if (!ctx.hasDefineExposeCall && !inlineMode)
+    setupPreambleLines.push(`__expose();`);
+  const setupPreamble = setupPreambleLines.length ? `  ${setupPreambleLines.join("\n  ")}
+` : "";
   if (ctx.isTS || ctx.isUTS) {
+    if (ssr && vapor) {
+      runtimeOptions += `
+  __vapor: true,`;
+    }
     const def = (defaultExport ? `
   ...${normalScriptDefaultVar},` : ``) + (definedOptions ? `
   ...${definedOptions},` : "");
@@ -21593,7 +21746,7 @@ ${genDefaultAs} /*@__PURE__*/${ctx.helper(
         vapor && !ssr ? `defineVaporSharedDataComponent` : `defineComponent`
       )}({${def}${runtimeOptions}
   ${hasAwait ? `async ` : ``}setup(${args}) {
-${exposeCall}`
+${setupPreamble}`
     );
     ctx.s.appendRight(endOffset, `})`);
   } else {
@@ -21607,7 +21760,7 @@ ${exposeCall}`
         `
 ${genDefaultAs} /*@__PURE__*/Object.assign(${defaultExport ? `${normalScriptDefaultVar}, ` : ""}${definedOptions ? `${definedOptions}, ` : ""}{${runtimeOptions}
   ${hasAwait ? `async ` : ``}setup(${args}) {
-${exposeCall}`
+${setupPreamble}`
       );
       ctx.s.appendRight(endOffset, `})`);
     } else {
@@ -21616,7 +21769,7 @@ ${exposeCall}`
         `
 ${genDefaultAs} {${runtimeOptions}
   ${hasAwait ? `async ` : ``}setup(${args}) {
-${exposeCall}`
+${setupPreamble}`
       );
       ctx.s.appendRight(endOffset, `}`);
     }
@@ -21815,7 +21968,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
   return generator.toJSON();
 }
 
-const version = "3.6.0-alpha.2";
+const version = "3.6.0-alpha.3";
 const parseCache = parseCache$1;
 const errorMessages = {
   ...CompilerDOM.errorMessages,

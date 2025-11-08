@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.6.0-alpha.2
+* @vue/compiler-dom v3.6.0-alpha.3
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -422,46 +422,46 @@ const transformTransition = (node, context) => {
   if (node.type === 1 && node.tagType === 1) {
     const component = context.isBuiltInComponent(node.tag);
     if (component === TRANSITION) {
-      return () => {
-        if (!node.children.length) {
-          return;
-        }
-        if (hasMultipleChildren(node)) {
-          context.onError(
-            createDOMCompilerError(
-              62,
-              {
-                start: node.children[0].loc.start,
-                end: node.children[node.children.length - 1].loc.end,
-                source: ""
-              }
-            )
-          );
-        }
-        const child = node.children[0];
-        if (child.type === 1) {
-          for (const p of child.props) {
-            if (p.type === 7 && p.name === "show") {
-              node.props.push({
-                type: 6,
-                name: "persisted",
-                nameLoc: node.loc,
-                value: void 0,
-                loc: node.loc
-              });
-            }
-          }
-        }
-      };
+      return postTransformTransition(node, context.onError);
     }
   }
 };
-function hasMultipleChildren(node) {
+function postTransformTransition(node, onError, hasMultipleChildren = defaultHasMultipleChildren) {
+  return () => {
+    if (!node.children.length) {
+      return;
+    }
+    if (hasMultipleChildren(node)) {
+      onError(
+        createDOMCompilerError(62, {
+          start: node.children[0].loc.start,
+          end: node.children[node.children.length - 1].loc.end,
+          source: ""
+        })
+      );
+    }
+    const child = node.children[0];
+    if (child.type === 1) {
+      for (const p of child.props) {
+        if (p.type === 7 && p.name === "show") {
+          node.props.push({
+            type: 6,
+            name: "persisted",
+            nameLoc: node.loc,
+            value: void 0,
+            loc: node.loc
+          });
+        }
+      }
+    }
+  };
+}
+function defaultHasMultipleChildren(node) {
   const children = node.children = node.children.filter(
     (c) => c.type !== 3 && !(c.type === 2 && !c.content.trim())
   );
   const child = children[0];
-  return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(hasMultipleChildren);
+  return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(defaultHasMultipleChildren);
 }
 
 const ignoreSideEffectTags = (node, context) => {
@@ -690,4 +690,4 @@ function parse(template, options = {}) {
   return baseParse(template, extend({}, parserOptions, options));
 }
 
-export { DOMDirectiveTransforms, DOMErrorCodes, DOMErrorMessages, DOMNodeTransforms, TRANSITION, TRANSITION_GROUP, V_MODEL_CHECKBOX, V_MODEL_DYNAMIC, V_MODEL_RADIO, V_MODEL_SELECT, V_MODEL_TEXT, V_ON_WITH_KEYS, V_ON_WITH_MODIFIERS, V_SHOW, compile, createDOMCompilerError, isValidHTMLNesting, parse, parserOptions, resolveModifiers, transformStyle };
+export { DOMDirectiveTransforms, DOMErrorCodes, DOMErrorMessages, DOMNodeTransforms, TRANSITION, TRANSITION_GROUP, V_MODEL_CHECKBOX, V_MODEL_DYNAMIC, V_MODEL_RADIO, V_MODEL_SELECT, V_MODEL_TEXT, V_ON_WITH_KEYS, V_ON_WITH_MODIFIERS, V_SHOW, compile, createDOMCompilerError, isValidHTMLNesting, parse, parserOptions, postTransformTransition, resolveModifiers, transformStyle };

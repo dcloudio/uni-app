@@ -1,6 +1,6 @@
 import { PatchFlags } from '@vue/shared';
 export { generateCodeFrame } from '@vue/shared';
-import { Node as Node$1, Identifier, Function, BlockStatement as BlockStatement$1, Program, ObjectProperty } from '@babel/types';
+import { Node as Node$1, Identifier, Function, BlockStatement as BlockStatement$1, SwitchCase, Program, ObjectProperty } from '@babel/types';
 import { ParserPlugin } from '@babel/parser';
 
 export declare const FRAGMENT: unique symbol;
@@ -1039,6 +1039,7 @@ export declare function baseCompile(source: string | RootNode, options?: Compile
 export declare const isStaticExp: (p: JSChildNode) => p is SimpleExpressionNode;
 export declare function isCoreComponent(tag: string): symbol | void;
 export declare const isSimpleIdentifier: (name: string) => boolean;
+export declare const validFirstIdentCharRE: RegExp;
 /**
  * Simple lexer to check if an expression is a member expression. This is
  * lax and only checks validity at the root level (i.e. does not validate exps
@@ -1060,6 +1061,7 @@ export declare function findProp(node: ElementNode, name: string, dynamicOnly?: 
 export declare function isStaticArgOf(arg: DirectiveNode['arg'], name: string): boolean;
 export declare function hasDynamicKeyVBind(node: ElementNode): boolean;
 export declare function isText(node: TemplateChildNode): node is TextNode | InterpolationNode;
+export declare function isVPre(p: ElementNode['props'][0]): p is DirectiveNode;
 export declare function isVSlot(p: ElementNode['props'][0]): p is DirectiveNode;
 export declare function isTemplateNode(node: RootNode | TemplateChildNode): node is TemplateNode;
 export declare function isSlotOutlet(node: RootNode | TemplateChildNode): node is SlotOutletNode;
@@ -1077,7 +1079,7 @@ export declare function isReferencedIdentifier(id: Identifier, parent: Node$1 | 
 export declare function isInDestructureAssignment(parent: Node$1, parentStack: Node$1[]): boolean;
 export declare function isInNewExpression(parentStack: Node$1[]): boolean;
 export declare function walkFunctionParams(node: Function, onIdent: (id: Identifier) => void): void;
-export declare function walkBlockDeclarations(block: BlockStatement$1 | Program, onIdent: (node: Identifier) => void): void;
+export declare function walkBlockDeclarations(block: BlockStatement$1 | SwitchCase | Program, onIdent: (node: Identifier) => void): void;
 export declare function extractIdentifiers(param: Node$1, nodes?: Identifier[]): Identifier[];
 export declare const isFunctionType: (node: Node$1) => node is Function;
 export declare const isStaticProperty: (node?: Node$1) => node is ObjectProperty;
@@ -1112,6 +1114,8 @@ export declare function buildSlots(node: ElementNode, context: TransformContext,
     slots: SlotsExpression;
     hasDynamicSlots: boolean;
 };
+
+export declare const transformVBindShorthand: NodeTransform;
 
 interface SlotOutletProcessResult {
     slotName: string | ExpressionNode;

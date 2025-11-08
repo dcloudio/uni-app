@@ -1,5 +1,5 @@
 /**
-* @vue/shared v3.6.0-alpha.2
+* @vue/shared v3.6.0-alpha.3
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -7,7 +7,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-/*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
 function makeMap(str) {
   const map = /* @__PURE__ */ Object.create(null);
@@ -64,10 +63,10 @@ const isBuiltInDirective = /* @__PURE__ */ makeMap(
 );
 const cacheStringFunction = (fn) => {
   const cache = /* @__PURE__ */ Object.create(null);
-  return (str) => {
+  return ((str) => {
     const hit = cache[str];
     return hit || (cache[str] = fn(str));
-  };
+  });
 };
 const camelizeRE = /-(\w)/g;
 const camelizeReplacer = (_, c) => c ? c.toUpperCase() : "";
@@ -400,6 +399,9 @@ function shouldSetAsAttr(tagName, key) {
     return true;
   }
   if ((key === "width" || key === "height") && (tagName === "IMG" || tagName === "VIDEO" || tagName === "CANVAS" || tagName === "SOURCE")) {
+    return true;
+  }
+  if (key === "sandbox" && tagName === "IFRAME") {
     return true;
   }
   return false;

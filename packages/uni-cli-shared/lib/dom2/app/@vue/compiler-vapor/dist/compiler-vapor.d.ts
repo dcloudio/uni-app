@@ -89,6 +89,7 @@ export declare enum IRNodeTypes {
 export interface BaseIRNode {
     type: IRNodeTypes;
     node: Node;
+    key?: SimpleExpressionNode | undefined;
 }
 export type CoreHelper = keyof typeof packages_runtime_dom_src;
 export type VaporHelper = keyof typeof packages_runtime_vapor_src;
@@ -100,6 +101,7 @@ export interface BlockIRNode extends BaseIRNode {
     effect: IREffect[];
     operation: OperationNode[];
     returns: number[];
+    hasDeferredVShow: boolean;
 }
 export interface RootIRNode {
     type: IRNodeTypes.ROOT;
@@ -121,6 +123,8 @@ export interface IfIRNode extends BaseIRNode {
     once?: boolean;
     parent?: number;
     anchor?: number;
+    append?: boolean;
+    last?: boolean;
 }
 export interface IRFor {
     source: SimpleExpressionNode;
@@ -138,6 +142,8 @@ export interface ForIRNode extends BaseIRNode, IRFor {
     onlyChild: boolean;
     parent?: number;
     anchor?: number;
+    append?: boolean;
+    last?: boolean;
 }
 export interface SetPropIRNode extends BaseIRNode {
     type: IRNodeTypes.SET_PROP;
@@ -167,6 +173,7 @@ export interface SetTextIRNode extends BaseIRNode {
     values: SimpleExpressionNode[];
     generated?: boolean;
     jsx?: boolean;
+    isComponent?: boolean;
 }
 export type KeyOverride = [find: string, replacement: string];
 export interface SetEventIRNode extends BaseIRNode {
@@ -192,6 +199,7 @@ export interface SetHtmlIRNode extends BaseIRNode {
     type: IRNodeTypes.SET_HTML;
     element: number;
     value: SimpleExpressionNode;
+    isComponent?: boolean;
 }
 export interface SetTemplateRefIRNode extends BaseIRNode {
     type: IRNodeTypes.SET_TEMPLATE_REF;
@@ -219,6 +227,7 @@ export interface DirectiveIRNode extends BaseIRNode {
     builtin?: boolean;
     asset?: boolean;
     modelType?: 'text' | 'dynamic' | 'radio' | 'checkbox' | 'select';
+    deferred?: boolean;
 }
 export interface CreateComponentIRNode extends BaseIRNode {
     type: IRNodeTypes.CREATE_COMPONENT_NODE;
@@ -232,6 +241,8 @@ export interface CreateComponentIRNode extends BaseIRNode {
     dynamic?: SimpleExpressionNode;
     parent?: number;
     anchor?: number;
+    append?: boolean;
+    last?: boolean;
     /**
      * fixed by uts 当前表达式对应的标识符
      */
@@ -247,8 +258,11 @@ export interface SlotOutletIRNode extends BaseIRNode {
     name: SimpleExpressionNode;
     props: IRProps[];
     fallback?: BlockIRNode;
+    noSlotted?: boolean;
     parent?: number;
     anchor?: number;
+    append?: boolean;
+    last?: boolean;
 }
 export interface GetTextChildIRNode extends BaseIRNode {
     type: IRNodeTypes.GET_TEXT_CHILD;
@@ -282,7 +296,9 @@ export interface IRDynamicInfo {
     children: IRDynamicInfo[];
     template?: number;
     hasDynamicChild?: boolean;
+    needsKey?: boolean;
     operation?: OperationNode;
+    ifBranch?: boolean;
 }
 export interface IREffect {
     expressions: SimpleExpressionNode[];
@@ -312,7 +328,7 @@ interface DirectiveTransformResult {
     modifier?: '.' | '^';
     runtimeCamelize?: boolean;
     handler?: boolean;
-    handlerModifiers?: string[];
+    handlerModifiers?: SetEventIRNode['modifiers'];
     model?: boolean;
     modelModifiers?: string[];
 }
@@ -401,6 +417,7 @@ export declare function codeFragmentToString(code: CodeFragment[], context: Code
 
 export declare function wrapTemplate(node: ElementNode, dirs: string[]): TemplateNode;
 export declare const TEXT_PLACEHOLDER = "__vapor_dom2_text_placeholder__";
+export declare const TEXT_NODE_PLACEHOLDER = "__vapor_dom2_text_node_placeholder__";
 
 export declare function compile(source: string | RootNode, options?: CompilerOptions): VaporCodegenResult;
 export type CompilerOptions = HackOptions<CompilerOptions$1>;
@@ -455,5 +472,10 @@ export declare const transformVSlot: NodeTransform;
 export declare function isConstantExpression(exp: SimpleExpressionNode): boolean;
 export declare function isStaticExpression(node: SimpleExpressionNode, bindings: BindingMetadata): boolean;
 export declare function getLiteralExpressionValue(exp: SimpleExpressionNode): number | string | boolean | null;
+export declare function isTransitionTag(tag: string): boolean;
+export declare function isTransitionGroupTag(tag: string): boolean;
+export declare function isKeepAliveTag(tag: string): boolean;
+export declare function isTeleportTag(tag: string): boolean;
+export declare function isBuiltInComponent(tag: string): string | undefined;
 
 

@@ -70,6 +70,7 @@ interface ReactiveNode {
     flags: ReactiveFlags;
 }
 interface Link {
+    version: number;
     dep: ReactiveNode | ComputedRefImpl | ReactiveEffect | EffectScope;
     sub: ReactiveNode | ComputedRefImpl | ReactiveEffect | EffectScope;
     prevSub: Link | undefined;
@@ -791,6 +792,6 @@ export declare class WatcherEffect extends ReactiveEffect {
     run(initialRun?: boolean): void;
 }
 export declare function watch(source: WatchSource | WatchSource[] | WatchEffect | object, cb?: WatchCallback | null, options?: WatchOptions): WatchHandle;
-export declare function traverse(value: unknown, depth?: number, seen?: Set<unknown>): unknown;
+export declare function traverse(value: unknown, depth?: number, seen?: Map<unknown, number>): unknown;
 
 export { ReactiveFlags$1 as ReactiveFlags,  };

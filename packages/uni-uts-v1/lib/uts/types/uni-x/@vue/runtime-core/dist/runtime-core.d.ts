@@ -44,7 +44,7 @@ declare enum SchedulerJobFlags {
     ALLOW_RECURSE = 2,
     DISPOSED = 4
 }
-interface SchedulerJob extends Function {
+export interface SchedulerJob extends Function {
     order?: number;
     /**
      * flags can technically be undefined, but it can still be used in bitwise
@@ -345,7 +345,7 @@ type MappedOmit<T, K extends keyof any> = {
 type InferDefaults<T> = {
     [K in keyof T]?: InferDefault<T, T[K]>;
 };
-type NativeType = null | number | string | boolean | symbol | Function;
+type NativeType = null | undefined | number | string | boolean | symbol | Function;
 type InferDefault<P, T> = ((props: P) => T & {}) | (T extends NativeType ? T : never);
 type PropsWithDefaults<T, Defaults extends InferDefaults<T>, BKeys extends keyof T> = T extends unknown ? Readonly<MappedOmit<T, keyof Defaults>> & {
     readonly [K in keyof Defaults as K extends keyof T ? K : never]-?: K extends keyof T ? Defaults[K] extends undefined ? IfAny<Defaults[K], NotUndefined<T[K]>, T[K]> : NotUndefined<T[K]> : never;
@@ -410,17 +410,17 @@ return withDirectives(h(comp), [
 ])
 */
 
-export interface DirectiveBinding<Value = any, Modifiers extends string = string, Arg extends string = string> {
+export interface DirectiveBinding<Value = any, Modifiers extends string = string, Arg = any> {
     instance: ComponentPublicInstance | Record<string, any> | null;
     value: Value;
     oldValue: Value | null;
     arg?: Arg;
     modifiers: DirectiveModifiers<Modifiers>;
-    dir: ObjectDirective<any, Value>;
+    dir: ObjectDirective<any, Value, Modifiers, Arg>;
 }
-export type DirectiveHook<HostElement = any, Prev = VNode<any, HostElement> | null, Value = any, Modifiers extends string = string, Arg extends string = string> = (el: HostElement, binding: DirectiveBinding<Value, Modifiers, Arg>, vnode: VNode<any, HostElement>, prevVNode: Prev) => void;
-type SSRDirectiveHook<Value = any, Modifiers extends string = string, Arg extends string = string> = (binding: DirectiveBinding<Value, Modifiers, Arg>, vnode: VNode) => Data | undefined;
-export interface ObjectDirective<HostElement = any, Value = any, Modifiers extends string = string, Arg extends string = string> {
+export type DirectiveHook<HostElement = any, Prev = VNode<any, HostElement> | null, Value = any, Modifiers extends string = string, Arg = any> = (el: HostElement, binding: DirectiveBinding<Value, Modifiers, Arg>, vnode: VNode<any, HostElement>, prevVNode: Prev) => void;
+type SSRDirectiveHook<Value = any, Modifiers extends string = string, Arg = any> = (binding: DirectiveBinding<Value, Modifiers, Arg>, vnode: VNode) => Data | undefined;
+export interface ObjectDirective<HostElement = any, Value = any, Modifiers extends string = string, Arg = any> {
     created?: DirectiveHook<HostElement, null, Value, Modifiers, Arg>;
     beforeMount?: DirectiveHook<HostElement, null, Value, Modifiers, Arg>;
     mounted?: DirectiveHook<HostElement, null, Value, Modifiers, Arg>;
@@ -431,10 +431,10 @@ export interface ObjectDirective<HostElement = any, Value = any, Modifiers exten
     getSSRProps?: SSRDirectiveHook<Value, Modifiers, Arg>;
     deep?: boolean;
 }
-export type FunctionDirective<HostElement = any, V = any, Modifiers extends string = string, Arg extends string = string> = DirectiveHook<HostElement, any, V, Modifiers, Arg>;
-export type Directive<HostElement = any, Value = any, Modifiers extends string = string, Arg extends string = string> = ObjectDirective<HostElement, Value, Modifiers, Arg> | FunctionDirective<HostElement, Value, Modifiers, Arg>;
+export type FunctionDirective<HostElement = any, V = any, Modifiers extends string = string, Arg = any> = DirectiveHook<HostElement, any, V, Modifiers, Arg>;
+export type Directive<HostElement = any, Value = any, Modifiers extends string = string, Arg = any> = ObjectDirective<HostElement, Value, Modifiers, Arg> | FunctionDirective<HostElement, Value, Modifiers, Arg>;
 export type DirectiveModifiers<K extends string = string> = Partial<Record<K, boolean>>;
-export type DirectiveArguments = Array<[Directive | undefined] | [Directive | undefined, any] | [Directive | undefined, any, string] | [Directive | undefined, any, string | undefined, DirectiveModifiers]>;
+export type DirectiveArguments = Array<[Directive | undefined] | [Directive | undefined, any] | [Directive | undefined, any, any] | [Directive | undefined, any, any, DirectiveModifiers]>;
 /**
  * Adds directives to a VNode.
  */
@@ -517,6 +517,10 @@ C extends ComputedOptions = {}, M extends MethodOptions = {}, E extends EmitsOpt
 } & ExposedKeys<IfAny<P, P, Readonly<Defaults> & Omit<P, keyof ShallowUnwrapRef<B> | keyof Defaults>> & ShallowUnwrapRef<B> & UnwrapNestedRefs<D> & ExtractComputedReturns<C> & M & ComponentCustomProperties & InjectToObject<I>, Exposed>;
 type PublicPropertiesMap = Record<string, (i: ComponentInternalInstance) => any>;
 export declare const publicPropertiesMap: PublicPropertiesMap;
+interface ComponentRenderContext {
+    [key: string]: any;
+    _: ComponentInternalInstance;
+}
 export declare const PublicInstanceProxyHandlers: ProxyHandler<any>;
 
 declare enum LifecycleHooks {
@@ -594,8 +598,14 @@ declare function normalizeSuspenseChildren(vnode: VNode): void;
 export type RootHydrateFunction = (vnode: VNode<Node, Element>, container: (Element | ShadowRoot) & {
     _vnode?: VNode;
 }) => void;
+declare function createHydrationFunctions(rendererInternals: RendererInternals<Node, Element>): [
+    RootHydrateFunction,
+    (node: Node, vnode: VNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized?: boolean) => Node | null
+];
 
 type Hook<T = () => void> = T | T[];
+declare const leaveCbKey: unique symbol;
+declare const enterCbKey: unique symbol;
 export interface BaseTransitionProps<HostElement = RendererElement> {
     mode?: 'in-out' | 'out-in' | 'default';
     appear?: boolean;
@@ -624,11 +634,16 @@ export interface TransitionHooks<HostElement = RendererElement> {
     delayLeave?(el: HostElement, earlyRemove: () => void, delayedLeave: () => void): void;
     delayedLeave?(): void;
 }
+type PendingCallback = (cancelled?: boolean) => void;
 export interface TransitionState {
     isMounted: boolean;
     isLeaving: boolean;
     isUnmounting: boolean;
-    leavingVNodes: Map<any, Record<string, VNode>>;
+    leavingNodes: Map<any, Record<string, any>>;
+}
+export interface TransitionElement {
+    [enterCbKey]?: PendingCallback;
+    [leaveCbKey]?: PendingCallback;
 }
 export declare function useTransitionState(): TransitionState;
 export declare const BaseTransitionPropsValidators: Record<string, any>;
@@ -640,7 +655,13 @@ export declare const BaseTransition: {
         };
     };
 };
-export declare function resolveTransitionHooks(vnode: VNode, props: BaseTransitionProps<any>, state: TransitionState, instance: ComponentInternalInstance, postClone?: (hooks: TransitionHooks) => void): TransitionHooks;
+export interface TransitionHooksContext {
+    setLeavingNodeCache: (node: any) => void;
+    unsetLeavingNodeCache: (node: any) => void;
+    earlyRemove: () => void;
+    cloneHooks: (node: any) => TransitionHooks;
+}
+export declare function resolveTransitionHooks(vnode: VNode, props: BaseTransitionProps<any>, state: TransitionState, instance: GenericComponentInstance, postClone?: (hooks: TransitionHooks) => void): TransitionHooks;
 export declare function setTransitionHooks(vnode: VNode, hooks: TransitionHooks): void;
 export declare function getTransitionRawChildren(children: VNode[], keepComment?: boolean, parentKey?: VNode['key']): VNode[];
 
@@ -651,6 +672,7 @@ export interface Renderer<HostElement = RendererElement> {
 }
 export interface HydrationRenderer extends Renderer<Element | ShadowRoot> {
     hydrate: RootHydrateFunction;
+    hydrateNode: ReturnType<typeof createHydrationFunctions>[1];
 }
 export type ElementNamespace = 'svg' | 'mathml' | undefined;
 export type RootRenderFunction<HostElement = RendererElement> = (vnode: VNode | null, container: HostElement, namespace?: ElementNamespace) => void;
@@ -731,6 +753,13 @@ export interface KeepAliveProps {
     exclude?: MatchPattern;
     max?: number | string;
 }
+export interface KeepAliveContext extends ComponentRenderContext {
+    renderer: RendererInternals;
+    activate: (vnode: VNode, container: RendererElement, anchor: RendererNode | null, namespace: ElementNamespace, optimized: boolean) => void;
+    deactivate: (vnode: VNode) => void;
+    getCachedComponent: (vnode: VNode) => VNode;
+    getStorageContainer: () => RendererElement;
+}
 export declare const KeepAlive: {
     __isKeepAlive: true;
     new (): {
@@ -740,8 +769,8 @@ export declare const KeepAlive: {
         };
     };
 };
-export declare function onActivated(hook: Function, target?: ComponentInternalInstance | null): void;
-export declare function onDeactivated(hook: Function, target?: ComponentInternalInstance | null): void;
+export declare function onActivated(hook: Function, target?: GenericComponentInstance | null): void;
+export declare function onDeactivated(hook: Function, target?: GenericComponentInstance | null): void;
 
 export declare function injectHook(type: LifecycleHooks, hook: Function & {
     __weh?: Function;
@@ -828,7 +857,7 @@ declare function configureCompat(config: CompatConfig): void;
 export interface ComponentCustomOptions {
 }
 export type RenderFunction = () => VNodeChild;
-export interface ComponentOptionsBase<Props, RawBindings, D, C extends ComputedOptions, M extends MethodOptions, Mixin extends ComponentOptionsMixin, Extends extends ComponentOptionsMixin, E extends EmitsOptions, EE extends string = string, Defaults = {}, I extends ComponentInjectOptions = {}, II extends string = string, S extends SlotsType = {}, LC extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions> extends LegacyOptions<Props, D, C, M, Mixin, Extends, I, II, Provide>, ComponentInternalOptions, ComponentCustomOptions {
+export interface ComponentOptionsBase<Props, RawBindings, D, C extends ComputedOptions, M extends MethodOptions, Mixin extends ComponentOptionsMixin, Extends extends ComponentOptionsMixin, E extends EmitsOptions, EE extends string = string, Defaults = {}, I extends ComponentInjectOptions = {}, II extends string = string, S extends SlotsType = {}, LC extends Record<string, Component> = {}, Directives extends Record<string, Directive> = {}, Exposed extends string = string, Provide extends ComponentProvideOptions = ComponentProvideOptions> extends LegacyOptions<Props, D, C, M, Mixin, Extends, I, II, Provide>, ComponentInternalOptions, AsyncComponentInternalOptions, ComponentCustomOptions {
     setup?: (this: void, props: LooseRequired<Props & Prettify<UnwrapMixinsType<IntersectionMixin<Mixin> & IntersectionMixin<Extends>, 'P'>>>, ctx: SetupContext<E, S>) => Promise<RawBindings> | RawBindings | RenderFunction | void;
     name?: string;
     template?: string | object;
@@ -925,8 +954,8 @@ interface LegacyOptions<Props, D, C extends ComputedOptions, M extends MethodOpt
      * #3468
      *
      * type-only, used to assist Mixin's type inference,
-     * typescript will try to simplify the inferred `Mixin` type,
-     * with the `__differentiator`, typescript won't be able to combine different mixins,
+     * TypeScript will try to simplify the inferred `Mixin` type,
+     * with the `__differentiator`, TypeScript won't be able to combine different mixins,
      * because the `__differentiator` will be different
      */
     __differentiator?: keyof D | keyof C | keyof M;
@@ -1057,8 +1086,8 @@ export interface App<HostElement = any> {
     mixin(mixin: ComponentOptions): this;
     component(name: string): Component | undefined;
     component<T extends Component | DefineComponent>(name: string, component: T): this;
-    directive<HostElement = any, Value = any, Modifiers extends string = string, Arg extends string = string>(name: string): Directive<HostElement, Value, Modifiers, Arg> | undefined;
-    directive<HostElement = any, Value = any, Modifiers extends string = string, Arg extends string = string>(name: string, directive: Directive<HostElement, Value, Modifiers, Arg>): this;
+    directive<HostElement = any, Value = any, Modifiers extends string = string, Arg = any>(name: string): Directive<HostElement, Value, Modifiers, Arg> | undefined;
+    directive<HostElement = any, Value = any, Modifiers extends string = string, Arg = any>(name: string, directive: Directive<HostElement, Value, Modifiers, Arg>): this;
     mount(rootContainer: HostElement | string, 
     /**
      * @internal
@@ -1267,6 +1296,7 @@ export interface VNode<HostNode = RendererNode, HostElement = RendererElement, E
     dirs: DirectiveBinding[] | null;
     transition: TransitionHooks<HostElement> | null;
     el: HostNode | null;
+    placeholder: HostNode | null;
     anchor: HostNode | null;
     target: HostElement | null;
     targetStart: HostNode | null;
@@ -1437,6 +1467,10 @@ export interface ComponentInternalOptions {
      */
     __vapor?: boolean;
     /**
+     * indicates keep-alive component
+     */
+    __isKeepAlive?: boolean;
+    /**
      * Compat build only, for bailing out of certain compatibility behavior
      */
     __isBuiltIn?: boolean;
@@ -1448,6 +1482,8 @@ export interface ComponentInternalOptions {
      * name inferred from filename
      */
     __name?: string;
+}
+export interface AsyncComponentInternalOptions<R = ConcreteComponent, I = ComponentInternalInstance> {
 }
 export interface FunctionalComponent<P = {}, E extends EmitsOptions | Record<string, any[]> = {}, S extends Record<string, any> = any, EE extends EmitsOptions = ShortEmitsToObject<E>> extends ComponentInternalOptions {
     (props: P & EmitsToProps<EE>, ctx: Omit<SetupContext<EE, IfAny<S, {}, SlotsType<S>>>, 'expose'>): any;
@@ -1605,20 +1641,19 @@ type AsyncComponentResolveResult<T = Component> = T | {
     default: T;
 };
 export type AsyncComponentLoader<T = any> = () => Promise<AsyncComponentResolveResult<T>>;
-export interface AsyncComponentOptions<T = any> {
+export interface AsyncComponentOptions<T = any, C = any> {
     loader: AsyncComponentLoader<T>;
-    loadingComponent?: Component;
-    errorComponent?: Component;
+    loadingComponent?: C;
+    errorComponent?: C;
     delay?: number;
     timeout?: number;
     suspensible?: boolean;
     hydrate?: HydrationStrategy;
     onError?: (error: Error, retry: () => void, fail: () => void, attempts: number) => any;
 }
-/*! #__NO_SIDE_EFFECTS__ */
 export declare function defineAsyncComponent<T extends Component = {
     new (): ComponentPublicInstance;
-}>(source: AsyncComponentLoader<T> | AsyncComponentOptions<T>): T;
+}>(source: AsyncComponentLoader<T> | AsyncComponentOptions<T, Component>): T;
 
 export declare function useModel<M extends PropertyKey, T extends Record<string, any>, K extends keyof T, G = T[K], S = T[K]>(props: T, name: K, options?: DefineModelOptions<T[K], G, S>): ModelRef<T[K], M, G, S>;
 export declare function useModel<R>(props: any, name: string, options?: {

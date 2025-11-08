@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.6.0-alpha.2
+* @vue/compiler-dom v3.6.0-alpha.3
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -389,6 +389,44 @@ const transformShow = (dir, node, context) => {
   };
 };
 
+function postTransformTransition(node, onError, hasMultipleChildren = defaultHasMultipleChildren) {
+  return () => {
+    if (!node.children.length) {
+      return;
+    }
+    if (hasMultipleChildren(node)) {
+      onError(
+        createDOMCompilerError(62, {
+          start: node.children[0].loc.start,
+          end: node.children[node.children.length - 1].loc.end,
+          source: ""
+        })
+      );
+    }
+    const child = node.children[0];
+    if (child.type === 1) {
+      for (const p of child.props) {
+        if (p.type === 7 && p.name === "show") {
+          node.props.push({
+            type: 6,
+            name: "persisted",
+            nameLoc: node.loc,
+            value: void 0,
+            loc: node.loc
+          });
+        }
+      }
+    }
+  };
+}
+function defaultHasMultipleChildren(node) {
+  const children = node.children = node.children.filter(
+    (c) => c.type !== 3 && !(c.type === 2 && !c.content.trim())
+  );
+  const child = children[0];
+  return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(defaultHasMultipleChildren);
+}
+
 const expReplaceRE = /__VUE_EXP_START__(.*?)__VUE_EXP_END__/g;
 const stringifyStatic = (children, context, parent) => {
   if (context.scopes.vSlot > 0) {
@@ -461,7 +499,7 @@ const getCachedNode = (node) => {
     return node.codegenNode;
   }
 };
-const dataAriaRE = /^(data|aria)-/;
+const dataAriaRE = /^(?:data|aria)-/;
 const isStringifiableAttr = (name, ns) => {
   return (ns === 0 ? shared.isKnownHtmlAttr(name) : ns === 1 ? shared.isKnownSvgAttr(name) : ns === 2 ? shared.isKnownMathMLAttr(name) : false) || dataAriaRE.test(name);
 };
@@ -470,6 +508,9 @@ const isNonStringifiable = /* @__PURE__ */ shared.makeMap(
 );
 function analyzeNode(node) {
   if (node.type === 1 && isNonStringifiable(node.tag)) {
+    return false;
+  }
+  if (node.type === 1 && compilerCore.findDir(node, "once", true)) {
     return false;
   }
   if (node.type === 12) {
@@ -849,6 +890,7 @@ exports.createDOMCompilerError = createDOMCompilerError;
 exports.isValidHTMLNesting = isValidHTMLNesting;
 exports.parse = parse;
 exports.parserOptions = parserOptions;
+exports.postTransformTransition = postTransformTransition;
 exports.resolveModifiers = resolveModifiers;
 exports.transformStyle = transformStyle;
 Object.keys(compilerCore).forEach(function (k) {

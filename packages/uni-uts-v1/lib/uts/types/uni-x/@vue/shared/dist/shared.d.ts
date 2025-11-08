@@ -5,7 +5,6 @@
  * \/\*#\_\_PURE\_\_\*\/
  * So that rollup can tree-shake them if necessary.
  */
-/*! #__NO_SIDE_EFFECTS__ */
 export declare function makeMap(str: string): (key: string) => boolean;
 
 export declare const EMPTY_OBJ: {
@@ -358,7 +357,7 @@ export declare enum VaporVForFlags {
      */
     IS_COMPONENT = 2,
     /**
-     * v-for inside v-ince
+     * v-for inside v-once
      */
     ONCE = 4
 }

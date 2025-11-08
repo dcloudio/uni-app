@@ -1,4 +1,4 @@
-import { ParserOptions, NodeTransform, SourceLocation, CompilerError, ExpressionNode, SimpleExpressionNode, TransformContext, DirectiveTransform, RootNode, CompilerOptions, CodegenResult } from '@vue/compiler-core';
+import { ParserOptions, NodeTransform, SourceLocation, CompilerError, ExpressionNode, SimpleExpressionNode, TransformContext, ComponentNode, DirectiveTransform, RootNode, CompilerOptions, CodegenResult } from '@vue/compiler-core';
 export * from '@vue/compiler-core';
 
 export declare const parserOptions: ParserOptions;
@@ -54,6 +54,8 @@ export declare const resolveModifiers: (key: ExpressionNode | string, modifiers:
  * returns true if given parent-child nesting is valid HTML
  */
 export declare function isValidHTMLNesting(parent: string, child: string): boolean;
+
+export declare function postTransformTransition(node: ComponentNode, onError: (error: CompilerError) => void, hasMultipleChildren?: (node: ComponentNode) => boolean): () => void;
 
 export declare const DOMNodeTransforms: NodeTransform[];
 export declare const DOMDirectiveTransforms: Record<string, DirectiveTransform>;

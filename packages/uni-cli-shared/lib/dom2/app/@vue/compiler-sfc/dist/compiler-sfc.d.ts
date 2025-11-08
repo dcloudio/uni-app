@@ -475,7 +475,7 @@ export declare function registerTS(_loadTS: () => typeof TS): void;
  * @private
  */
 export declare function invalidateTypeCache(filename: string): void;
-export declare function inferRuntimeType(ctx: TypeResolveContext, node: Node & MaybeWithScope, scope?: TypeScope, isKeyOf?: boolean): string[];
+export declare function inferRuntimeType(ctx: TypeResolveContext, node: Node & MaybeWithScope, scope?: TypeScope, isKeyOf?: boolean, typeParameters?: Record<string, Node>): string[];
 
 export declare function extractRuntimeEmits(ctx: TypeResolveContext): Set<string>;
 
