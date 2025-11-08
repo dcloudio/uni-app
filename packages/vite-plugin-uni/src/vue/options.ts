@@ -22,9 +22,6 @@ import {
   onVueTemplateCompileLog,
   preJs,
   resolveUniTypeScript,
-  setSharedDataClassName,
-  setSharedDataElementCode,
-  setSharedDataNativeViewCode,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
 import {
@@ -331,23 +328,6 @@ export function initPluginVueOptions(
       ): VaporDom2CompilerOptions => {
         const filename = normalizePath(descriptor.filename.split('?')[0])
         const className = genDom2ClassName(filename, process.env.UNI_INPUT_DIR)
-        setSharedDataClassName(filename, className)
-        function writeSourceMap(
-          sourceMapFileName: string,
-          map: Record<string, unknown>
-        ) {
-          if (process.env.UNI_APP_X_CACHE_DIR) {
-            fsExtra.outputFileSync(
-              path.resolve(
-                process.env.UNI_APP_X_CACHE_DIR,
-                'sourcemap',
-                'cpp',
-                sourceMapFileName
-              ),
-              JSON.stringify(map)
-            )
-          }
-        }
         return {
           root: normalizePath(process.env.UNI_INPUT_DIR),
           className,
@@ -358,24 +338,6 @@ export function initPluginVueOptions(
           relativeFilename: normalizePath(
             path.relative(process.env.UNI_INPUT_DIR, filename)
           ),
-          emitElement: (result: {
-            code: string
-            map: Record<string, unknown> | undefined
-          }) => {
-            setSharedDataElementCode(filename, result.code)
-            if (result.map) {
-              writeSourceMap(className + '.renderElement.map', result.map)
-            }
-          },
-          emitNativeView: (result: {
-            code: string
-            map: Record<string, unknown> | undefined
-          }) => {
-            setSharedDataNativeViewCode(filename, result.code)
-            if (result.map) {
-              writeSourceMap(className + '.renderNativeView.map', result.map)
-            }
-          },
           parseStaticStyle(
             target: DOM2_APP_TARGET,
             tagName: string,

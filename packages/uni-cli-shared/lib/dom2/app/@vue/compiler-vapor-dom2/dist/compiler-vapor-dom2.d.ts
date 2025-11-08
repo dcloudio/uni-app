@@ -1,7 +1,7 @@
 import { CompilerError, RawSourceMap, RootNode } from '@vue/compiler-dom';
 export { parse } from '@vue/compiler-dom';
 import * as PostCss from 'postcss';
-import { CompilerOptions, VaporCodegenResult, RootIRNode } from '@vue/compiler-vapor';
+import { CompilerOptions, RootIRNode } from '@vue/compiler-vapor';
 import tsType, { ClassDeclaration } from 'typescript';
 
 export declare enum RENDERER_TYPE {
@@ -79,8 +79,6 @@ type BaseDom2SharedOptions = {
     onVueTemplateCompileLog?: (type: 'warn' | 'error', error: CompilerError, code: string, relativeFileName: string, templateStartLine: number) => void;
 };
 export interface VaporDom2CompilerOptions extends CompilerOptions, BaseDom2SharedOptions {
-    emitElement?: (result: VaporCodegenResult) => void;
-    emitNativeView?: (result: VaporCodegenResult) => void;
 }
 interface BaseCodegenResult {
     sharedData: {
@@ -138,5 +136,12 @@ interface ICppSharedDataClassGenerateResult extends SharedDataClassGenerateSingl
 
 export declare function genSharedDataClass(decl: ClassDeclaration, options: SharedDataClassGenerateOptions): ICppSharedDataClassGenerateResult;
 export declare function genSharedData(decls: ClassDeclaration[], options: SharedDataClassGenerateOptions): SharedDataClassGenerateResult;
+
+interface SharedDataResult {
+    className: string;
+    renderElementCode: string;
+    renderNativeViewCode: string;
+}
+export declare function getSharedDataResult(key: string): SharedDataResult;
 
 export { DOM2_APP_PLATFORM as TARGET_PLATFORM,  };
