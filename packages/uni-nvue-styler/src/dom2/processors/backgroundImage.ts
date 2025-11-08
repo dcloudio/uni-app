@@ -70,7 +70,7 @@ function parseLinearGradient(str: string): string {
   } else if (firstPart.includes('deg')) {
     // 角度方向
     const angle = parseFloat(firstPart)
-    direction = `UniNativeLinearGradientDirectionType::Angle(${toFloat(angle)})`
+    direction = `UniNativeLinearGradientDirectionType::Angle(${angle})`
     startIndex = 1
   } else {
     // 没有指定方向，默认是 to bottom（180deg）
@@ -98,7 +98,7 @@ function parseLinearGradient(str: string): string {
         typeof stop.color === 'number'
           ? `0x${stop.color.toString(16).padStart(8, '0')}`
           : stop.color
-      return `{${color}, ${toFloat(stop.position)}}`
+      return `{${color}, ${stop.position}}`
     })
     .join(',\n        ')
 

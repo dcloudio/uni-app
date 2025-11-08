@@ -74,7 +74,7 @@ const translateOption: TransformOption = {
 }
 const scaleOption: TransformOption = {
   className: 'UniCSSTransformScale',
-  type: 'number',
+  type: 'unit',
 }
 const rotateOption: TransformOption = {
   className: 'UniCSSTransformRotate',
