@@ -18,7 +18,7 @@ export const getWindowInfo = defineSyncApi<typeof uni.getWindowInfo>(
     const landscape = isLandscape(screenFix)
     const screenWidth = getScreenWidth(screenFix, landscape)
     const screenHeight = getScreenHeight(screenFix, landscape)
-    const windowWidth = getWindowWidth(screenWidth)
+    const windowWidth = getWindowWidth()
     let windowHeight = window.innerHeight
     const statusBarHeight = safeAreaInsets.top
 
