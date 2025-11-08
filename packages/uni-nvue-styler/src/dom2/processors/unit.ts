@@ -7,6 +7,7 @@ import {
   toSharedDataStyleValueError,
 } from './utils'
 import Units from '../../../lib/dom2/units.json'
+import { DOM2_APP_LANGUAGE } from '../types'
 
 const UNIT_TYPES = ['UniCSSUnitValue']
 export function isUnitType(propertyType?: string) {
@@ -18,26 +19,30 @@ interface UnitValue {
   unit: string
 }
 
+export function toUnitValueCode(
+  unitValue: UnitValue,
+  language: DOM2_APP_LANGUAGE
+) {
+  if (language === DOM2_APP_LANGUAGE.CPP) {
+    return `UniCSSUnitValue{${unitValue.value}, UniCSSUnitType::${unitValue.unit}}`
+  }
+  return `new UniCSSUnitValue(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
+}
+
 export function toUnitValueResult(
   setter: string,
-  language: 'cpp' | 'ts',
+  language: DOM2_APP_LANGUAGE,
   unitValue: UnitValue
 ) {
-  if (language === 'cpp') {
-    return createValueProcessorResult(
-      `UniCSSUnitValue{${unitValue.value}, UniCSSUnitType::${unitValue.unit}}`,
-      `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
-    )
-  }
   return createValueProcessorResult(
-    `new UniCSSUnitValue(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`,
+    toUnitValueCode(unitValue, language),
     `${setter}(${unitValue.value}, UniCSSUnitType.${unitValue.unit})`
   )
 }
 
 export function createSetStyleUnitValueProcessor(
   setter: string,
-  language: 'cpp' | 'ts'
+  language: DOM2_APP_LANGUAGE
 ): PropertyProcessor {
   return createPropertyProcessor((value, propertyName) => {
     const unitValue = parseUnitValue(

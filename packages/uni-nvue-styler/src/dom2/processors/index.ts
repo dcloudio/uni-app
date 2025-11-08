@@ -189,7 +189,7 @@ export function createDom2PropertyProcessors(
     } else if (isTextShadowType(propertyType)) {
       return createSetStyleTextShadowValueProcessor(setter)
     } else if (isTransformType(propertyType)) {
-      return createSetStyleTransformValueProcessor(setter)
+      return createSetStyleTransformValueProcessor(setter, language)
     } else if (isTransformOriginType(propertyType)) {
       return createSetStyleTransformOriginValueProcessor(setter)
     }

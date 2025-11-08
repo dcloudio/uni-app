@@ -684,8 +684,8 @@ exports[`transform: matrix(1, 0.5, -0.5, 1, 10, 20): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformMatrix(1.0f, 0.5f, -0.5f, 1.0f, 10.0f, 20.0f)})",
-      "valueCode": "{UniCSSTransformMatrix(1.0f, 0.5f, -0.5f, 1.0f, 10.0f, 20.0f)}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformMatrix, "::", "Matrix")(1, 0.5, -0.5, 1, 10, 20)])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformMatrix, "::", "Matrix")(1, 0.5, -0.5, 1, 10, 20)]",
     },
   },
 }
@@ -705,8 +705,8 @@ exports[`transform: perspective(1000px): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformPerspective(UniCSSUnitValue(1000.0f, UniCSSUnitType::PX))})",
-      "valueCode": "{UniCSSTransformPerspective(UniCSSUnitValue(1000.0f, UniCSSUnitType::PX))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformPerspective, "::", "Perspective")(new UniCSSUnitValue(1000, UniCSSUnitType.PX))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformPerspective, "::", "Perspective")(new UniCSSUnitValue(1000, UniCSSUnitType.PX))]",
     },
   },
 }
@@ -726,8 +726,8 @@ exports[`transform: rotate(30deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotate")(new UniCSSUnitValue(30, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotate")(new UniCSSUnitValue(30, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -747,8 +747,8 @@ exports[`transform: rotate3d(1, 1, 1, 45deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformRotate::Rotate3D(UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformRotate::Rotate3D(UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotate3d")(new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(45, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotate3d")(new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(45, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -768,8 +768,8 @@ exports[`transform: rotateX(45deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformRotate::RotateX(UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformRotate::RotateX(UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateX")(new UniCSSUnitValue(45, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateX")(new UniCSSUnitValue(45, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -789,8 +789,8 @@ exports[`transform: rotateY(60deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformRotate::RotateY(UniCSSUnitValue(60.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformRotate::RotateY(UniCSSUnitValue(60.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateY")(new UniCSSUnitValue(60, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateY")(new UniCSSUnitValue(60, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -810,8 +810,8 @@ exports[`transform: rotateZ(90deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformRotate::RotateZ(UniCSSUnitValue(90.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformRotate::RotateZ(UniCSSUnitValue(90.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateZ")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateZ")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -831,8 +831,8 @@ exports[`transform: scale(1.2): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE))})",
-      "valueCode": "{UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale")(1.2)])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale")(1.2)]",
     },
   },
 }
@@ -852,8 +852,8 @@ exports[`transform: scale(1.2, 1.5): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE))})",
-      "valueCode": "{UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale")(1.2, 1.5)])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale")(1.2, 1.5)]",
     },
   },
 }
@@ -873,8 +873,8 @@ exports[`transform: scale3d(1.2, 1.5, 1.0): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE), UniCSSUnitValue(1.0f, UniCSSUnitType::NONE))})",
-      "valueCode": "{UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE), UniCSSUnitValue(1.0f, UniCSSUnitType::NONE))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale3d")(1.2, 1.5, 1)])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale3d")(1.2, 1.5, 1)]",
     },
   },
 }
@@ -894,8 +894,8 @@ exports[`transform: skew(15deg, 0deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(0.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(0.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(0, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(0, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -915,8 +915,8 @@ exports[`transform: skew(15deg, 30deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(30.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(30.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(30, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(30, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -936,8 +936,8 @@ exports[`transform: skewX(20deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformSkew(UniCSSUnitValue(20.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformSkew(UniCSSUnitValue(20.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewX")(new UniCSSUnitValue(20, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewX")(new UniCSSUnitValue(20, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -957,8 +957,8 @@ exports[`transform: skewY(25deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformSkew(UniCSSUnitValue(0.0f, UniCSSUnitType::DEG), UniCSSUnitValue(25.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformSkew(UniCSSUnitValue(0.0f, UniCSSUnitType::DEG), UniCSSUnitValue(25.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewY")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewY")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -978,8 +978,8 @@ exports[`transform: transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformMatrix3D({1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 10.0f, 20.0f, 0.0f, 1.0f})})",
-      "valueCode": "{UniCSSTransformMatrix3D({1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 10.0f, 20.0f, 0.0f, 1.0f})}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformMatrix3D, "::", "Matrix3d")(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 20, 0, 1)])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformMatrix3D, "::", "Matrix3d")(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 20, 0, 1)]",
     },
   },
 }
@@ -999,8 +999,8 @@ exports[`transform: transform: skew(15deg, 30deg) skewX(20deg) skewY(25deg): app
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformSkew(UniCSSUnitValue(20.0f, UniCSSUnitType::DEG)), UniCSSTransformSkew(UniCSSUnitValue(0.0f, UniCSSUnitType::DEG), UniCSSUnitValue(25.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformSkew(UniCSSUnitValue(20.0f, UniCSSUnitType::DEG)), UniCSSTransformSkew(UniCSSUnitValue(0.0f, UniCSSUnitType::DEG), UniCSSUnitValue(25.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(30, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewX")(new UniCSSUnitValue(20, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewY")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(30, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewX")(new UniCSSUnitValue(20, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewY")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -1020,8 +1020,8 @@ exports[`transform: translate(40px, 0px) rotate(30deg) scale(1.2) skew(15deg, 0d
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX)), UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE)), UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(0.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX)), UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE)), UniCSSTransformSkew(UniCSSUnitValue(15.0f, UniCSSUnitType::DEG), UniCSSUnitValue(0.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translate")(new UniCSSUnitValue(40, UniCSSUnitType.PX), new UniCSSUnitValue(0, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotate")(new UniCSSUnitValue(30, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale")(1.2), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(0, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translate")(new UniCSSUnitValue(40, UniCSSUnitType.PX), new UniCSSUnitValue(0, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotate")(new UniCSSUnitValue(30, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale")(1.2), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(0, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -1041,8 +1041,8 @@ exports[`transform: translate(40px, 0px) rotate(30deg) scale(1.2): app-harmony(n
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX)), UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE))})",
-      "valueCode": "{UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX)), UniCSSTransformRotate(UniCSSUnitValue(30.0f, UniCSSUnitType::DEG)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translate")(new UniCSSUnitValue(40, UniCSSUnitType.PX), new UniCSSUnitValue(0, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotate")(new UniCSSUnitValue(30, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale")(1.2)])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translate")(new UniCSSUnitValue(40, UniCSSUnitType.PX), new UniCSSUnitValue(0, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotate")(new UniCSSUnitValue(30, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale")(1.2)]",
     },
   },
 }
@@ -1062,8 +1062,8 @@ exports[`transform: translate(40px, 0px): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX))})",
-      "valueCode": "{UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translate")(new UniCSSUnitValue(40, UniCSSUnitType.PX), new UniCSSUnitValue(0, UniCSSUnitType.PX))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translate")(new UniCSSUnitValue(40, UniCSSUnitType.PX), new UniCSSUnitValue(0, UniCSSUnitType.PX))]",
     },
   },
 }
@@ -1083,8 +1083,8 @@ exports[`transform: translate3d(40px, 0px, 10px): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX), UniCSSUnitValue(10.0f, UniCSSUnitType::PX))})",
-      "valueCode": "{UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(0.0f, UniCSSUnitType::PX), UniCSSUnitValue(10.0f, UniCSSUnitType::PX))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translate3d")(new UniCSSUnitValue(40, UniCSSUnitType.PX), new UniCSSUnitValue(0, UniCSSUnitType.PX), new UniCSSUnitValue(10, UniCSSUnitType.PX))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translate3d")(new UniCSSUnitValue(40, UniCSSUnitType.PX), new UniCSSUnitValue(0, UniCSSUnitType.PX), new UniCSSUnitValue(10, UniCSSUnitType.PX))]",
     },
   },
 }
@@ -1104,8 +1104,8 @@ exports[`transform: translate3d(40px, 20px, 10px) scale3d(1.2, 1.5, 1.0) rotate3
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(10.0f, UniCSSUnitType::PX)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE), UniCSSUnitValue(1.0f, UniCSSUnitType::NONE)), UniCSSTransformRotate::Rotate3D(UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformTranslate(UniCSSUnitValue(40.0f, UniCSSUnitType::PX), UniCSSUnitValue(20.0f, UniCSSUnitType::PX), UniCSSUnitValue(10.0f, UniCSSUnitType::PX)), UniCSSTransformScale(UniCSSUnitValue(1.2f, UniCSSUnitType::NONE), UniCSSUnitValue(1.5f, UniCSSUnitType::NONE), UniCSSUnitValue(1.0f, UniCSSUnitType::NONE)), UniCSSTransformRotate::Rotate3D(UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(1.0f, UniCSSUnitType::DEG), UniCSSUnitValue(45.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translate3d")(new UniCSSUnitValue(40, UniCSSUnitType.PX), new UniCSSUnitValue(20, UniCSSUnitType.PX), new UniCSSUnitValue(10, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale3d")(1.2, 1.5, 1), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotate3d")(new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(45, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translate3d")(new UniCSSUnitValue(40, UniCSSUnitType.PX), new UniCSSUnitValue(20, UniCSSUnitType.PX), new UniCSSUnitValue(10, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformScale, "::", "Scale3d")(1.2, 1.5, 1), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotate3d")(new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(1, UniCSSUnitType.DEG), new UniCSSUnitValue(45, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -1125,8 +1125,8 @@ exports[`transform: translateX(40px) translateY(20px) translateZ(10px) rotateX(4
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform({UniCSSTransformTranslate::TranslateX(UniCSSUnitValue(40.0f, UniCSSUnitType::PX)), UniCSSTransformTranslate::TranslateY(UniCSSUnitValue(20.0f, UniCSSUnitType::PX)), UniCSSTransformTranslate::TranslateZ(UniCSSUnitValue(10.0f, UniCSSUnitType::PX)), UniCSSTransformRotate::RotateX(UniCSSUnitValue(45.0f, UniCSSUnitType::DEG)), UniCSSTransformRotate::RotateY(UniCSSUnitValue(60.0f, UniCSSUnitType::DEG)), UniCSSTransformRotate::RotateZ(UniCSSUnitValue(90.0f, UniCSSUnitType::DEG))})",
-      "valueCode": "{UniCSSTransformTranslate::TranslateX(UniCSSUnitValue(40.0f, UniCSSUnitType::PX)), UniCSSTransformTranslate::TranslateY(UniCSSUnitValue(20.0f, UniCSSUnitType::PX)), UniCSSTransformTranslate::TranslateZ(UniCSSUnitValue(10.0f, UniCSSUnitType::PX)), UniCSSTransformRotate::RotateX(UniCSSUnitValue(45.0f, UniCSSUnitType::DEG)), UniCSSTransformRotate::RotateY(UniCSSUnitValue(60.0f, UniCSSUnitType::DEG)), UniCSSTransformRotate::RotateZ(UniCSSUnitValue(90.0f, UniCSSUnitType::DEG))}",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateX")(new UniCSSUnitValue(40, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateY")(new UniCSSUnitValue(20, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateZ")(new UniCSSUnitValue(10, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateX")(new UniCSSUnitValue(45, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateY")(new UniCSSUnitValue(60, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateZ")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateX")(new UniCSSUnitValue(40, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateY")(new UniCSSUnitValue(20, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateZ")(new UniCSSUnitValue(10, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateX")(new UniCSSUnitValue(45, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateY")(new UniCSSUnitValue(60, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateZ")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))]",
     },
   },
 }

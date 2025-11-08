@@ -1,4 +1,7 @@
-import { parseUnitValue } from './unit'
+import { camelize, capitalize } from '../../shared'
+import { DOM2_APP_LANGUAGE } from '../types'
+import { genCPPEnumCode } from './enum'
+import { parseUnitValue, toUnitValueCode } from './unit'
 import {
   type PropertyProcessor,
   PropertyProcessorType,
@@ -14,14 +17,16 @@ export function isTransformType(propertyType?: string) {
 }
 
 export function createSetStyleTransformValueProcessor(
-  setter: string
+  setter: string,
+  language: DOM2_APP_LANGUAGE
 ): PropertyProcessor {
   return createPropertyProcessor((value: string | number) => {
     if (value === 'none') {
       return createValueProcessorResult(`null`, `${setter}(null)`)
     }
     const transformValueCode = stringifyTransformValue(
-      parseTransformValue(String(value))
+      parseTransformValue(String(value)),
+      language
     )
 
     if (!transformValueCode) {
@@ -44,29 +49,82 @@ interface TransformFunction {
   args: TransformArg[]
 }
 
-/**
- * 将数字转换为浮点数字面量格式
- * 例如: 40 -> "40.0f", 0 -> "0.0f", 1.5 -> "1.5f"
- */
-function toFloatLiteral(value: number): string {
-  // 如果数字已经有小数点，直接添加 f 后缀
-  if (value % 1 !== 0) {
-    return `${value}f`
+function genCode(
+  language: DOM2_APP_LANGUAGE,
+  className: string,
+  method: string,
+  args: string[]
+) {
+  if (language === DOM2_APP_LANGUAGE.CPP) {
+    return `${className}::${capitalize(camelize(method + ''))}(${args.join(
+      ', '
+    )})`
   }
-  // 如果是整数，添加 .0f 后缀
-  return `${value}.0f`
+  return `${genCPPEnumCode(className, method)}(${args.join(', ')})`
 }
 
-/**
- * 将 TransformArg 转换为 UniCSSUnitValue 代码字符串
- */
-function argToUnitValue(arg: TransformArg): string {
-  return `UniCSSUnitValue(${toFloatLiteral(arg.value)}, UniCSSUnitType::${
-    arg.unit
-  })`
+interface TransformOption {
+  className: string
+  type: 'unit' | 'number'
 }
 
-function stringifyTransformValue(functions: TransformFunction[]): string {
+const translateOption: TransformOption = {
+  className: 'UniCSSTransformTranslate',
+  type: 'unit',
+}
+const scaleOption: TransformOption = {
+  className: 'UniCSSTransformScale',
+  type: 'number',
+}
+const rotateOption: TransformOption = {
+  className: 'UniCSSTransformRotate',
+  type: 'unit',
+}
+const skewOption: TransformOption = {
+  className: 'UniCSSTransformSkew',
+  type: 'unit',
+}
+const matrixOption: TransformOption = {
+  className: 'UniCSSTransformMatrix',
+  type: 'number',
+}
+const matrix3dOption: TransformOption = {
+  className: 'UniCSSTransformMatrix3D',
+  type: 'number',
+}
+const perspectiveOption: TransformOption = {
+  className: 'UniCSSTransformPerspective',
+  type: 'unit',
+}
+
+const transformOptions: Record<string, TransformOption> = {
+  translate: translateOption,
+  translateX: translateOption,
+  translateY: translateOption,
+  translateZ: translateOption,
+  translate3d: translateOption,
+  scale: scaleOption,
+  scaleX: scaleOption,
+  scaleY: scaleOption,
+  scaleZ: scaleOption,
+  scale3d: scaleOption,
+  rotate: rotateOption,
+  rotateX: rotateOption,
+  rotateY: rotateOption,
+  rotateZ: rotateOption,
+  rotate3d: rotateOption,
+  skew: skewOption,
+  skewX: skewOption,
+  skewY: skewOption,
+  matrix: matrixOption,
+  matrix3d: matrix3dOption,
+  perspective: perspectiveOption,
+}
+
+function stringifyTransformValue(
+  functions: TransformFunction[],
+  language: DOM2_APP_LANGUAGE
+): string {
   if (functions.length === 0) {
     return ''
   }
@@ -74,120 +132,35 @@ function stringifyTransformValue(functions: TransformFunction[]): string {
   const functionCodes = functions
     .map((func) => {
       const args = func.args
-
-      switch (func.name) {
-        case 'translate':
-          if (args.length === 1) {
-            return `UniCSSTransformTranslate(${argToUnitValue(args[0])})`
-          }
-          return `UniCSSTransformTranslate(${argToUnitValue(
-            args[0]
-          )}, ${argToUnitValue(args[1] || { value: 0, unit: 'PX' })})`
-
-        case 'translateX':
-          return `UniCSSTransformTranslate::TranslateX(${argToUnitValue(
-            args[0]
-          )})`
-
-        case 'translateY':
-          return `UniCSSTransformTranslate::TranslateY(${argToUnitValue(
-            args[0]
-          )})`
-
-        case 'translateZ':
-          return `UniCSSTransformTranslate::TranslateZ(${argToUnitValue(
-            args[0]
-          )})`
-
-        case 'translate3d':
-          return `UniCSSTransformTranslate(${argToUnitValue(
-            args[0]
-          )}, ${argToUnitValue(args[1])}, ${argToUnitValue(args[2])})`
-
-        case 'scale':
-          if (args.length === 1) {
-            return `UniCSSTransformScale(${argToUnitValue(args[0])})`
-          }
-          return `UniCSSTransformScale(${argToUnitValue(
-            args[0]
-          )}, ${argToUnitValue(args[1])})`
-
-        case 'scaleX':
-          return `UniCSSTransformScale::ScaleX(${argToUnitValue(args[0])})`
-
-        case 'scaleY':
-          return `UniCSSTransformScale::ScaleY(${argToUnitValue(args[0])})`
-
-        case 'scaleZ':
-          return `UniCSSTransformScale::ScaleZ(${argToUnitValue(args[0])})`
-
-        case 'scale3d':
-          return `UniCSSTransformScale(${argToUnitValue(
-            args[0]
-          )}, ${argToUnitValue(args[1])}, ${argToUnitValue(args[2])})`
-
-        case 'rotate':
-          return `UniCSSTransformRotate(${argToUnitValue(args[0])})`
-
-        case 'rotateX':
-          return `UniCSSTransformRotate::RotateX(${argToUnitValue(args[0])})`
-
-        case 'rotateY':
-          return `UniCSSTransformRotate::RotateY(${argToUnitValue(args[0])})`
-
-        case 'rotateZ':
-          return `UniCSSTransformRotate::RotateZ(${argToUnitValue(args[0])})`
-
-        case 'rotate3d':
-          return `UniCSSTransformRotate::Rotate3D(${argToUnitValue(
-            args[0]
-          )}, ${argToUnitValue(args[1])}, ${argToUnitValue(
-            args[2]
-          )}, ${argToUnitValue(args[3])})`
-
-        case 'skew':
-          if (args.length === 1) {
-            return `UniCSSTransformSkew(${argToUnitValue(args[0])})`
-          }
-          return `UniCSSTransformSkew(${argToUnitValue(
-            args[0]
-          )}, ${argToUnitValue(args[1] || { value: 0, unit: 'DEG' })})`
-
-        case 'skewX':
-          return `UniCSSTransformSkew(${argToUnitValue(args[0])})`
-
-        case 'skewY':
-          return `UniCSSTransformSkew(${argToUnitValue({
-            value: 0,
-            unit: 'DEG',
-          })}, ${argToUnitValue(args[0])})`
-
-        case 'matrix':
-          // matrix 仍然使用 float，不包装 UniCSSUnitValue
-          return `UniCSSTransformMatrix(${args
-            .map((arg) => toFloatLiteral(arg.value))
-            .join(', ')})`
-
-        case 'matrix3d':
-          // matrix3d 仍然使用 float，不包装 UniCSSUnitValue
-          return `UniCSSTransformMatrix3D({${args
-            .map((arg) => toFloatLiteral(arg.value))
-            .join(', ')}})`
-
-        case 'perspective':
-          return `UniCSSTransformPerspective(${argToUnitValue(args[0])})`
-
-        default:
-          return ''
+      const option = transformOptions[func.name]
+      if (option) {
+        if (option.type === 'unit') {
+          return genCode(
+            language,
+            option.className,
+            func.name,
+            args.map((arg) => toUnitValueCode(arg, language))
+          )
+        } else if (option.type === 'number') {
+          return genCode(
+            language,
+            option.className,
+            func.name,
+            args.map((arg) => `${arg.value}`)
+          )
+        }
       }
+      return ''
     })
     .filter((code) => code !== '')
 
   if (functionCodes.length === 0) {
     return ''
   }
-
-  return `{${functionCodes.join(', ')}}`
+  if (language === DOM2_APP_LANGUAGE.CPP) {
+    return `{${functionCodes.join(', ')}}`
+  }
+  return `[${functionCodes.join(', ')}]`
 }
 
 function parseTransformValue(str: string): TransformFunction[] {

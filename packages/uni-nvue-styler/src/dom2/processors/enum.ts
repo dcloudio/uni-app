@@ -5,7 +5,11 @@ import {
   createPropertyProcessor,
   createValueProcessorResult,
 } from './utils'
-import { DOM2_APP_PLATFORM, type DOM2_APP_TARGET } from '../types'
+import {
+  DOM2_APP_LANGUAGE,
+  DOM2_APP_PLATFORM,
+  type DOM2_APP_TARGET,
+} from '../types'
 
 export function createSetStyleEnumValueProcessor(
   setter: string,
@@ -22,11 +26,11 @@ export function createSetStyleEnumValueProcessor(
 
 export function createGenEnumCode(
   propertyType: string,
-  language: 'cpp' | 'ts',
+  language: DOM2_APP_LANGUAGE,
   platform: DOM2_APP_PLATFORM,
   target: DOM2_APP_TARGET
 ) {
-  if (language === 'cpp') {
+  if (language === DOM2_APP_LANGUAGE.CPP) {
     return (enumValue: string) => {
       return `${propertyType}::${capitalize(camelize(enumValue + ''))}`
     }

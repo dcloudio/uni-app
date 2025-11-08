@@ -1,3 +1,4 @@
+import type { DOM2_APP_LANGUAGE } from '../types'
 import { toUnitValueResult } from './unit'
 import {
   type PropertyProcessor,
@@ -20,7 +21,7 @@ const ENUM_BORDER_WIDTH_TYPE_VALUES = {
 
 export function createSetStyleBorderWidthValueProcessor(
   setter: string,
-  language: 'cpp' | 'ts'
+  language: DOM2_APP_LANGUAGE
 ): PropertyProcessor {
   return createPropertyProcessor((value: string | number) => {
     const pxValue =
