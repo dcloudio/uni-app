@@ -51,7 +51,7 @@ export const transformBorderRadiusNvue: TransformDecl = (decl) => {
   if (value.includes('/')) {
     return [decl]
   }
-  // const isUvuePlatform = options.type == 'uvue'
+  // const isUvuePlatform = options.type === 'uvue'
   switch (splitResult.length) {
     case 1:
       return [decl]

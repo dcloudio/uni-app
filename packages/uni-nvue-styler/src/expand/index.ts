@@ -24,7 +24,7 @@ function getDeclTransforms(
   options: NormalizeOptions
 ): Record<string, TransformDecl> {
   const transformBorder =
-    options.type == 'uvue'
+    options.type === 'uvue'
       ? createTransformBorder(options)
       : createTransformBorderNvue(options)
   const styleMap: Record<string, TransformDecl> = {
@@ -36,13 +36,13 @@ function getDeclTransforms(
     borderBottom: transformBorder,
     borderLeft: transformBorder,
     borderStyle:
-      options.type == 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
+      options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
     borderWidth:
-      options.type == 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
+      options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
     borderColor:
-      options.type == 'uvue' ? transformBorderColor : transformBorderColorNvue,
+      options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
     borderRadius:
-      options.type == 'uvue'
+      options.type === 'uvue'
         ? transformBorderRadius
         : transformBorderRadiusNvue,
     // uvue已经支持这些简写属性，不需要展开

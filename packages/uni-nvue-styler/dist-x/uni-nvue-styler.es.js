@@ -40,28 +40,10 @@ const handleTransformBackground = (decl) => {
     }
     return [decl];
 };
-const handleTransformBackgroundNvue = (decl) => {
-    const { value, important, raws, source } = decl;
-    if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-        return [createDecl(backgroundColor, value, important, raws, source)];
-    }
-    else if (/^linear-gradient(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, value, important, raws, source)];
-    }
-    else if (value == '') {
-        return [decl];
-    }
-    return [decl];
-};
 function createTransformBackground(options) {
     return (decl) => {
-        // nvue 平台维持原有逻辑不变
-        const isUvuePlatform = options.type === 'uvue';
-        if (isUvuePlatform) {
+        {
             return handleTransformBackground(decl);
-        }
-        else {
-            return handleTransformBackgroundNvue(decl);
         }
     };
 }
@@ -362,7 +344,7 @@ function getDeclTransforms(options) {
     const styleMap = {
         transition: transformTransition,
         border: transformBorder,
-        background: createTransformBackground(options),
+        background: createTransformBackground(),
         borderTop: transformBorder,
         borderRight: transformBorder,
         borderBottom: transformBorder,
@@ -378,7 +360,7 @@ function getDeclTransforms(options) {
         padding: transformPadding,
         flexFlow: transformFlexFlow,
     };
-    if (options.type === 'uvue') {
+    {
         styleMap.flex = transformFlex;
     }
     let result = {};
@@ -397,7 +379,7 @@ function expand(options) {
                 return;
             }
             if (!DeclTransforms) {
-                DeclTransforms = getDeclTransforms(options);
+                DeclTransforms = getDeclTransforms();
             }
             const transform = DeclTransforms[decl.prop];
             if (transform) {
