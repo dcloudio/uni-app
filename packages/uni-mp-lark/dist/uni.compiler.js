@@ -7,6 +7,41 @@ function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
 
+const transformMPBuiltInTagOptions = {
+    propRename: {
+        checkbox: {
+            foreColor: 'color',
+        },
+        radio: {
+            activeBackgroundColor: 'color',
+        },
+        slider: {
+            foreColor: 'block-color',
+        },
+        switch: {
+            activeBackgroundColor: 'color',
+        },
+    },
+    propAdd: {
+        canvas: [
+            {
+                name: 'type',
+                value: '2d',
+            },
+        ],
+        'scroll-view': [
+            {
+                name: 'enhanced',
+                value: 'true',
+            },
+        ],
+    },
+    tagRename: {
+        'list-view': 'scroll-view',
+    },
+};
+const transformMPBuiltInTag = uniCliShared.createMPBuiltInTagTransform(transformMPBuiltInTagOptions);
+
 var setting = {
 	urlCheck: false,
 	es6: true,
@@ -53,7 +88,7 @@ const nodeTransforms = [
     uniCliShared.transformComponentLink,
 ];
 if (process.env.UNI_APP_X === 'true') {
-    nodeTransforms.push(uniCliShared.transformMPBuiltInTag, uniCliShared.transformDirection);
+    nodeTransforms.push(transformMPBuiltInTag, uniCliShared.transformDirection);
 }
 const compilerOptions = {
     nodeTransforms,
