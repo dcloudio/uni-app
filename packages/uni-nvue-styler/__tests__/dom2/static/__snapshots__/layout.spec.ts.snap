@@ -215,8 +215,20 @@ exports[`background-image: linear-gradient(to bottom,#f5f5f5,#eff2f5): app-harmo
   "messages": [],
   "obj": {
     "background-image": {
-      "setterCode": "backgroundImage(UTSCPP.propertyAccess(UniNativeBackgroundImage, "::", "LinearGradient(to bottom,#f5f5f5,#eff2f5)"))",
-      "valueCode": "UTSCPP.propertyAccess(UniNativeBackgroundImage, "::", "LinearGradient(to bottom,#f5f5f5,#eff2f5)")",
+      "setterCode": "backgroundImage(UniNativeLinearGradient(
+    UniNativeLinearGradientDirectionType::ToBottom,
+    std::vector<UniNativeLinearGradientColorStop>{
+        {0xfff5f5f5, -1},
+        {0xffeff2f5, -1}
+    }
+))",
+      "valueCode": "UniNativeLinearGradient(
+    UniNativeLinearGradientDirectionType::ToBottom,
+    std::vector<UniNativeLinearGradientColorStop>{
+        {0xfff5f5f5, -1},
+        {0xffeff2f5, -1}
+    }
+)",
     },
   },
 }
@@ -489,23 +501,13 @@ exports[`top/right/bottom/left: bottom-50%: app-harmony(nv-c) 1`] = `
 exports[`top/right/bottom/left: bottom-auto: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "bottom",
-        "important": false,
-        "prop": "bottom",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: auto",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "bottom": {
+      "setterCode": "setStyleBottom(0, UniCSSUnitType.AUTO)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.AUTO)",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -562,23 +564,13 @@ exports[`top/right/bottom/left: left-50%: app-harmony(nv-c) 1`] = `
 exports[`top/right/bottom/left: left-auto: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "left",
-        "important": false,
-        "prop": "left",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: auto",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "left": {
+      "setterCode": "setStyleLeft(0, UniCSSUnitType.AUTO)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.AUTO)",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -635,23 +627,13 @@ exports[`top/right/bottom/left: right-50%: app-harmony(nv-c) 1`] = `
 exports[`top/right/bottom/left: right-auto: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "right",
-        "important": false,
-        "prop": "right",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: auto",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "right": {
+      "setterCode": "setStyleRight(0, UniCSSUnitType.AUTO)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.AUTO)",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -708,23 +690,13 @@ exports[`top/right/bottom/left: top-50%: app-harmony(nv-c) 1`] = `
 exports[`top/right/bottom/left: top-auto: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "top",
-        "important": false,
-        "prop": "top",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: auto",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "top": {
+      "setterCode": "setStyleTop(0, UniCSSUnitType.AUTO)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.AUTO)",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -823,23 +795,13 @@ exports[`width/height: height-100px: app-harmony(nv-c) 1`] = `
 exports[`width/height: height-auto: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "height",
-        "important": false,
-        "prop": "height",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: auto",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "height": {
+      "setterCode": "setStyleHeight(0, UniCSSUnitType.AUTO)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.AUTO)",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -1348,23 +1310,13 @@ exports[`width/height: width-100px: app-harmony(nv-c) 1`] = `
 exports[`width/height: width-auto: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "width",
-        "important": false,
-        "prop": "width",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "auto",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid unit value: auto",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "width": {
+      "setterCode": "setStyleWidth(0, UniCSSUnitType.AUTO)",
+      "valueCode": "new UniCSSUnitValue(0, UniCSSUnitType.AUTO)",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 

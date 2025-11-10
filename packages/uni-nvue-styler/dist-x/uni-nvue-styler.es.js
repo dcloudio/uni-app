@@ -533,6 +533,12 @@ var Units = [
 
 const unitMatchRe = /^(-?(?:\d*\.\d+|\d+\.?\d*))(%|[a-zA-Z]+)?$/;
 function parseUnitValue(value, defaultUnit = 'NONE') {
+    if (value === 'auto') {
+        return {
+            value: 0,
+            unit: 'AUTO',
+        };
+    }
     const unitMatch = value.match(unitMatchRe);
     if (unitMatch) {
         const value = parseFloat(unitMatch[1]);

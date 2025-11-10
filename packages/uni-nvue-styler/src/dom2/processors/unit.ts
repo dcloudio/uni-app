@@ -62,6 +62,12 @@ export function parseUnitValue(
   value: string,
   defaultUnit = 'NONE'
 ): UnitValue | undefined {
+  if (value === 'auto') {
+    return {
+      value: 0,
+      unit: 'AUTO',
+    }
+  }
   const unitMatch = value.match(unitMatchRe)
   if (unitMatch) {
     const value = parseFloat(unitMatch[1])
