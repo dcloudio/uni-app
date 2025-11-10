@@ -102,7 +102,8 @@ export function createTransformBorderNvue(
     const borderStyle = __HYPHENATE__ ? '-style' : 'Style'
     const borderColor = __HYPHENATE__ ? '-color' : 'Color'
 
-    const { prop, value, important, raws, source } = decl
+    let { prop, value, important, raws, source } = decl
+    value = value.trim()
     const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
     const result = [
       /^[\d\.]+\S*|^(thin|medium|thick)$/,

@@ -5,8 +5,8 @@ const backgroundColor = __HYPHENATE__ ? 'background-color' : 'backgroundColor'
 const backgroundImage = __HYPHENATE__ ? 'background-image' : 'backgroundImage'
 
 const handleTransformBackground = (decl: Declaration) => {
-  const { value, important, raws, source } = decl
-
+  let { value, important, raws, source } = decl
+  value = value.trim()
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     return [
       createDecl(backgroundImage, 'none', important, raws, source),

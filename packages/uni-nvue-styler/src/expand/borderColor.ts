@@ -19,7 +19,8 @@ function borderLeft(): string {
 }
 
 export const transformBorderColor = (decl: Declaration): Declaration[] => {
-  const { prop, value, important, raws, source } = decl
+  let { prop, value, important, raws, source } = decl
+  value = value.trim()
   const _property_split = hyphenate(prop).split('-')
   let property = _property_split[_property_split.length - 1]
   if (!__HYPHENATE__) {
@@ -71,7 +72,8 @@ export const transformBorderColor = (decl: Declaration): Declaration[] => {
 }
 
 export const transformBorderColorNvue = (decl: Declaration): Declaration[] => {
-  const { prop, value, important, raws, source } = decl
+  let { prop, value, important, raws, source } = decl
+  value = value.trim()
   let property = hyphenate(prop).split('-')[1]
   if (!__HYPHENATE__) {
     property = capitalize(property)

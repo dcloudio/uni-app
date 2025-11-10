@@ -3,7 +3,8 @@ import type { Declaration } from 'postcss'
 import { type TransformDecl, createDecl } from '../utils'
 
 export const transformFont: TransformDecl = (decl) => {
-  const { value, important, raws, source } = decl
+  let { value, important, raws, source } = decl
+  value = value.trim()
   const result: Declaration[] = []
   const font = parseCSSFont(value) as IFont
   if ((font as ISystemFont).system) {

@@ -13,7 +13,8 @@ const borderBottomLeftRadius = __HYPHENATE__
   ? 'border-bottom-left-radius'
   : 'borderBottomLeftRadius'
 export const transformBorderRadius: TransformDecl = (decl) => {
-  const { value, important, raws, source } = decl
+  let { value, important, raws, source } = decl
+  value = value.trim()
   const splitResult = value.split(/\s+/)
   if (value.includes('/')) {
     return [decl]
@@ -44,7 +45,8 @@ export const transformBorderRadius: TransformDecl = (decl) => {
 }
 
 export const transformBorderRadiusNvue: TransformDecl = (decl) => {
-  const { value, important, raws, source } = decl
+  let { value, important, raws, source } = decl
+  value = value.trim()
   const splitResult = value.split(/\s+/)
   if (value.includes('/')) {
     return [decl]

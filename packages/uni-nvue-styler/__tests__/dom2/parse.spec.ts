@@ -84,4 +84,21 @@ describe('dom2 parse', () => {
     })
     expect(code).toMatchSnapshot()
   })
+  test('comment', async () => {
+    const { code } = await parse(
+      `
+.content {
+  margin: 0 /* auto */;
+}
+`,
+      {
+        type: 'uvue',
+        dom2: {
+          platform: DOM2_APP_PLATFORM.APP_HARMONY,
+          target: DOM2_APP_TARGET.DOM_C,
+        },
+      }
+    )
+    expect(code).toMatchSnapshot()
+  })
 })

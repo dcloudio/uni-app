@@ -117,6 +117,8 @@ exports[`dom2 parse basic 2`] = `
 ]
 `;
 
+exports[`dom2 parse comment 1`] = `"make_style_sheet({{"content", make_property_map({{"", make_styles({{UniCSSPropertyID::MarginTop, UniCSSUnitValue{0, UniCSSUnitType::NONE}},{UniCSSPropertyID::MarginRight, UniCSSUnitValue{0, UniCSSUnitType::NONE}},{UniCSSPropertyID::MarginBottom, UniCSSUnitValue{0, UniCSSUnitType::NONE}},{UniCSSPropertyID::MarginLeft, UniCSSUnitValue{0, UniCSSUnitType::NONE}}})}})}})"`;
+
 exports[`dom2 parse empty 1`] = `"{}"`;
 
 exports[`dom2 parse null 1`] = `"make_style_sheet({{"foo", make_property_map({{"", make_styles({{UniCSSPropertyID::BoxShadow, nullptr}})}})}})"`;
