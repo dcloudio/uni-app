@@ -8,7 +8,7 @@ import {
 const backgroundColor = __HYPHENATE__ ? 'background-color' : 'backgroundColor'
 const backgroundImage = __HYPHENATE__ ? 'background-image' : 'backgroundImage'
 
-const handleTransformBackground = (decl: Declaration) => {
+const handleTransformBackground = (decl: Declaration): Declaration[] => {
   let { value, important, raws, source } = decl
   value = value.trim()
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
@@ -29,7 +29,7 @@ const handleTransformBackground = (decl: Declaration) => {
   }
   return [decl]
 }
-const handleTransformBackgroundNvue = (decl: Declaration) => {
+const handleTransformBackgroundNvue = (decl: Declaration): Declaration[] => {
   const { value, important, raws, source } = decl
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     return [createDecl(backgroundColor, value, important, raws, source)]

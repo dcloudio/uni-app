@@ -17,9 +17,10 @@ export function createTransformBorder(
 ): TransformDecl {
   return (decl: Declaration): Declaration[] => {
     const { prop, value, important, raws, source } = decl
-
-    let splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
-    const havVar = splitResult.some((str) => str.startsWith('var('))
+    let splitResult: Array<string> = value.replace(/\s*,\s*/g, ',').split(/\s+/)
+    const havVar = splitResult.some((str: string): boolean =>
+      str.startsWith('var(')
+    )
     let result: Array<string | null> = []
     // 包含 var ，直接视为 width/style/color 都使用默认值
     if (havVar) {
