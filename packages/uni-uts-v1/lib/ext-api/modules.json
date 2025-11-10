@@ -520,6 +520,7 @@
       }
     }
   },
+  "uni-input": {},
   "uni-installApk": {
     "uni": {
       "installApk": {
