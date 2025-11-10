@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`background: #ffffff: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`background: #ffffff: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "background-color": {
+      "setterCode": "backgroundColor(0xffffffff)",
+      "valueCode": "0xffffffff",
+    },
+    "background-image": {
+      "setterCode": "backgroundImage(null)",
+      "valueCode": "null",
+    },
+  },
+}
+`;
+
+exports[`background: none: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "background-color",
+        "important": undefined,
+        "prop": "backgroundColor",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "none",
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`none\` is not valid for \`background-color\`",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`background: none: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "background-color",
+        "important": undefined,
+        "prop": "backgroundColor",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "none",
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`none\` is not valid for \`background-color\`",
+      "type": "warning",
+    },
+  ],
+  "obj": {
+    "background-image": {
+      "setterCode": "backgroundImage(null)",
+      "valueCode": "null",
+    },
+  },
+}
+`;
