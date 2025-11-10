@@ -66,14 +66,16 @@
     "defaultValue": "auto"
   },
   "flex-basis": {
-    "type": "UniCSSUnitValue",
+    "type": ["UniCSSFlexBasisType", "UniCSSUnitValue"],
     "uniPlatform": {
       "app": {
         "dom-c": {
           "setter": "setStyleFlexBasis"
         }
       }
-    }
+    },
+    "values": ["auto", "content"],
+    "defaultValue": "auto"
   },
   "flex-direction": {
     "type": "UniCSSFlexDirectionType",
