@@ -68,32 +68,34 @@ interface TransformOption {
   type: PropertyProcessorType.Unit | PropertyProcessorType.Number
 }
 
+const TRANSFORM_CLASS_NAME = 'UniCSSTransform'
+
 const translateOption: TransformOption = {
-  className: 'UniCSSTransformTranslate',
+  className: `${TRANSFORM_CLASS_NAME}Translate`,
   type: PropertyProcessorType.Unit,
 }
 const scaleOption: TransformOption = {
-  className: 'UniCSSTransformScale',
+  className: `${TRANSFORM_CLASS_NAME}Scale`,
   type: PropertyProcessorType.Unit,
 }
 const rotateOption: TransformOption = {
-  className: 'UniCSSTransformRotate',
+  className: `${TRANSFORM_CLASS_NAME}Rotate`,
   type: PropertyProcessorType.Unit,
 }
 const skewOption: TransformOption = {
-  className: 'UniCSSTransformSkew',
+  className: `${TRANSFORM_CLASS_NAME}Skew`,
   type: PropertyProcessorType.Unit,
 }
 const matrixOption: TransformOption = {
-  className: 'UniCSSTransformMatrix',
+  className: `${TRANSFORM_CLASS_NAME}Matrix`,
   type: PropertyProcessorType.Number,
 }
 const matrix3dOption: TransformOption = {
-  className: 'UniCSSTransformMatrix3D',
+  className: `${TRANSFORM_CLASS_NAME}Matrix3D`,
   type: PropertyProcessorType.Number,
 }
 const perspectiveOption: TransformOption = {
-  className: 'UniCSSTransformPerspective',
+  className: `${TRANSFORM_CLASS_NAME}Perspective`,
   type: PropertyProcessorType.Unit,
 }
 
@@ -158,7 +160,7 @@ function stringifyTransformValue(
     return ''
   }
   if (language === DOM2_APP_LANGUAGE.CPP) {
-    return `{${functionCodes.join(', ')}}`
+    return `${TRANSFORM_CLASS_NAME}{${functionCodes.join(', ')}}`
   }
   return `[${functionCodes.join(', ')}]`
 }

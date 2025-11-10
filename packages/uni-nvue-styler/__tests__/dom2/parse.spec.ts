@@ -101,4 +101,21 @@ describe('dom2 parse', () => {
     )
     expect(code).toMatchSnapshot()
   })
+  test('transform', async () => {
+    const { code } = await parse(
+      `
+.content {
+  transform: translate(0%, 0%) scaleX(1) rotate(0deg);
+}
+`,
+      {
+        type: 'uvue',
+        dom2: {
+          platform: DOM2_APP_PLATFORM.APP_HARMONY,
+          target: DOM2_APP_TARGET.DOM_C,
+        },
+      }
+    )
+    expect(code).toMatchSnapshot()
+  })
 })
