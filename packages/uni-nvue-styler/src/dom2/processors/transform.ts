@@ -65,36 +65,36 @@ function genCode(
 
 interface TransformOption {
   className: string
-  type: 'unit' | 'number'
+  type: PropertyProcessorType.Unit | PropertyProcessorType.Number
 }
 
 const translateOption: TransformOption = {
   className: 'UniCSSTransformTranslate',
-  type: 'unit',
+  type: PropertyProcessorType.Unit,
 }
 const scaleOption: TransformOption = {
   className: 'UniCSSTransformScale',
-  type: 'unit',
+  type: PropertyProcessorType.Unit,
 }
 const rotateOption: TransformOption = {
   className: 'UniCSSTransformRotate',
-  type: 'unit',
+  type: PropertyProcessorType.Unit,
 }
 const skewOption: TransformOption = {
   className: 'UniCSSTransformSkew',
-  type: 'unit',
+  type: PropertyProcessorType.Unit,
 }
 const matrixOption: TransformOption = {
   className: 'UniCSSTransformMatrix',
-  type: 'number',
+  type: PropertyProcessorType.Number,
 }
 const matrix3dOption: TransformOption = {
   className: 'UniCSSTransformMatrix3D',
-  type: 'number',
+  type: PropertyProcessorType.Number,
 }
 const perspectiveOption: TransformOption = {
   className: 'UniCSSTransformPerspective',
-  type: 'unit',
+  type: PropertyProcessorType.Unit,
 }
 
 const transformOptions: Record<string, TransformOption> = {
@@ -134,14 +134,14 @@ function stringifyTransformValue(
       const args = func.args
       const option = transformOptions[func.name]
       if (option) {
-        if (option.type === 'unit') {
+        if (option.type === PropertyProcessorType.Unit) {
           return genCode(
             language,
             option.className,
             func.name,
             args.map((arg) => toUnitValueCode(arg, language))
           )
-        } else if (option.type === 'number') {
+        } else if (option.type === PropertyProcessorType.Number) {
           return genCode(
             language,
             option.className,
