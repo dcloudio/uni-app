@@ -7,7 +7,7 @@ import {
   toSharedDataStyleValueError,
 } from './utils'
 
-const NUMBER_TYPES = ['number', 'UniNativeBorderRadius']
+const NUMBER_TYPES = ['number']
 export function isNumberType(propertyType?: string) {
   return propertyType && NUMBER_TYPES.includes(propertyType)
 }

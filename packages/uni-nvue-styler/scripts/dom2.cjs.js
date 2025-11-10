@@ -18,7 +18,7 @@ function isColorType(propertyType) {
     return propertyType && COLOR_TYPES.includes(propertyType);
 }
 
-const NUMBER_TYPES = ['number', 'UniNativeBorderRadius'];
+const NUMBER_TYPES = ['number'];
 function isNumberType(propertyType) {
     return propertyType && NUMBER_TYPES.includes(propertyType);
 }
@@ -28,7 +28,7 @@ function isStringType(propertyType) {
     return propertyType && STRING_TYPES.includes(propertyType);
 }
 
-const UNIT_TYPES = ['UniCSSUnitValue'];
+const UNIT_TYPES = ['UniCSSUnitValue', 'UniNativeBorderRadius'];
 function isUnitType(propertyType) {
     return propertyType && UNIT_TYPES.includes(propertyType);
 }

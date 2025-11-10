@@ -9,7 +9,7 @@ import {
 import Units from '../../../lib/dom2/units.json'
 import { DOM2_APP_LANGUAGE } from '../types'
 
-const UNIT_TYPES = ['UniCSSUnitValue']
+const UNIT_TYPES = ['UniCSSUnitValue', 'UniNativeBorderRadius']
 export function isUnitType(propertyType?: string) {
   return propertyType && UNIT_TYPES.includes(propertyType)
 }

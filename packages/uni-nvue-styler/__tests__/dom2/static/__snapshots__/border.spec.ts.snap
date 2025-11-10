@@ -1319,8 +1319,8 @@ exports[`border-radius: border-bottom-left-radius-10px: app-harmony(nv-c) 1`] = 
   "messages": [],
   "obj": {
     "border-bottom-left-radius": {
-      "setterCode": "borderRadiusBottomLeft(10)",
-      "valueCode": "10",
+      "setterCode": "borderRadiusBottomLeft(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
     },
   },
 }
@@ -1372,6 +1372,52 @@ exports[`border-radius: border-bottom-left-radius-50%: app-harmony(nv-c) 1`] = `
 }
 `;
 
+exports[`border-radius: border-bottom-left-radius-80px 80px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-left-radius",
+        "important": false,
+        "prop": "borderBottomLeftRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "80px 80px",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`80px 80px\` is not supported for \`border-bottom-left-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-bottom-left-radius-80px 80px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-left-radius",
+        "important": false,
+        "prop": "borderBottomLeftRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "80px 80px",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`80px 80px\` is not supported for \`border-bottom-left-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
 exports[`border-radius: border-bottom-right-radius-10px: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
@@ -1386,8 +1432,8 @@ exports[`border-radius: border-bottom-right-radius-10px: app-harmony(nv-c) 1`] =
   "messages": [],
   "obj": {
     "border-bottom-right-radius": {
-      "setterCode": "borderRadiusBottomRight(10)",
-      "valueCode": "10",
+      "setterCode": "borderRadiusBottomRight(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
     },
   },
 }
@@ -1439,6 +1485,52 @@ exports[`border-radius: border-bottom-right-radius-50%: app-harmony(nv-c) 1`] = 
 }
 `;
 
+exports[`border-radius: border-bottom-right-radius-80px 80px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-right-radius",
+        "important": false,
+        "prop": "borderBottomRightRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "80px 80px",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`80px 80px\` is not supported for \`border-bottom-right-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-bottom-right-radius-80px 80px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-bottom-right-radius",
+        "important": false,
+        "prop": "borderBottomRightRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "80px 80px",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`80px 80px\` is not supported for \`border-bottom-right-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
 exports[`border-radius: border-top-left-radius-10px: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
@@ -1453,8 +1545,8 @@ exports[`border-radius: border-top-left-radius-10px: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "border-top-left-radius": {
-      "setterCode": "borderRadiusTopLeft(10)",
-      "valueCode": "10",
+      "setterCode": "borderRadiusTopLeft(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
     },
   },
 }
@@ -1506,6 +1598,52 @@ exports[`border-radius: border-top-left-radius-50%: app-harmony(nv-c) 1`] = `
 }
 `;
 
+exports[`border-radius: border-top-left-radius-80px 80px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-left-radius",
+        "important": false,
+        "prop": "borderTopLeftRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "80px 80px",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`80px 80px\` is not supported for \`border-top-left-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-top-left-radius-80px 80px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-left-radius",
+        "important": false,
+        "prop": "borderTopLeftRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "80px 80px",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`80px 80px\` is not supported for \`border-top-left-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
 exports[`border-radius: border-top-right-radius-10px: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
@@ -1520,8 +1658,8 @@ exports[`border-radius: border-top-right-radius-10px: app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "border-top-right-radius": {
-      "setterCode": "borderRadiusTopRight(10)",
-      "valueCode": "10",
+      "setterCode": "borderRadiusTopRight(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
     },
   },
 }
@@ -1566,6 +1704,52 @@ exports[`border-radius: border-top-right-radius-50%: app-harmony(nv-c) 1`] = `
         Symbol(normalized): true,
       },
       "text": "ERROR: property value \`50%\` is not supported for \`border-top-right-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-top-right-radius-80px 80px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-right-radius",
+        "important": false,
+        "prop": "borderTopRightRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "80px 80px",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`80px 80px\` is not supported for \`border-top-right-radius\` (supported values are: \`number\`|\`pixel\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`border-radius: border-top-right-radius-80px 80px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "border-top-right-radius",
+        "important": false,
+        "prop": "borderTopRightRadius",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "80px 80px",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`80px 80px\` is not supported for \`border-top-right-radius\` (supported values are: \`number\`|\`pixel\`)",
       "type": "warning",
     },
   ],

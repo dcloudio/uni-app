@@ -113,7 +113,7 @@ describe('border-radius:', () => {
     'border-bottom-right-radius',
     'border-bottom-left-radius',
   ] as const
-  ;['10px', '50%'].forEach((value) => {
+  ;['10px', '50%', '80px 80px'].forEach((value) => {
     properties.forEach((property) => {
       test(`${property}-${value}`, () => {
         const input = `${property}: ${value}`
