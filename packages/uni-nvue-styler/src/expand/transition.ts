@@ -1,5 +1,4 @@
-import type { Declaration } from 'postcss'
-import { type TransformDecl, createDecl } from '../utils'
+import { type Declaration, type TransformDecl, createDecl } from '../utils'
 
 const transitionProperty = __HYPHENATE__
   ? 'transition-property'

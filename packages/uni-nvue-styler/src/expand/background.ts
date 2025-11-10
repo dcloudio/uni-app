@@ -1,5 +1,9 @@
-import type { Declaration } from 'postcss'
-import { type NormalizeOptions, type TransformDecl, createDecl } from '../utils'
+import {
+  type Declaration,
+  type NormalizeOptions,
+  type TransformDecl,
+  createDecl,
+} from '../utils'
 
 const backgroundColor = __HYPHENATE__ ? 'background-color' : 'backgroundColor'
 const backgroundImage = __HYPHENATE__ ? 'background-image' : 'backgroundImage'

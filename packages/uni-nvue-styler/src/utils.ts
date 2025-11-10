@@ -2,6 +2,7 @@ import type { Declaration, Source } from 'postcss'
 import { hasOwn } from '@vue/shared'
 import type { DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './dom2/types'
 
+export type { Declaration } from 'postcss'
 export const COMBINATORS_RE =
   /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/
 

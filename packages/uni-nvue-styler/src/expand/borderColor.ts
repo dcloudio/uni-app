@@ -1,6 +1,5 @@
-import type { Declaration } from 'postcss'
 import { capitalize, hyphenate } from '@vue/shared'
-import { createDecl } from '../utils'
+import { type Declaration, createDecl } from '../utils'
 
 const borderTop = __HYPHENATE__ ? 'border-top-' : 'borderTop'
 const borderRight = __HYPHENATE__ ? 'border-right-' : 'borderRight'

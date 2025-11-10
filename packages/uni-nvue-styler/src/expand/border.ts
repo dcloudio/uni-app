@@ -1,5 +1,9 @@
-import type { Declaration } from 'postcss'
-import { type NormalizeOptions, type TransformDecl, createDecl } from '../utils'
+import {
+  type Declaration,
+  type NormalizeOptions,
+  type TransformDecl,
+  createDecl,
+} from '../utils'
 import { transformBorderColor } from './borderColor'
 import { transformBorderStyle } from './borderStyle'
 import { transformBorderWidth } from './borderWidth'
