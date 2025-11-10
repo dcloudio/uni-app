@@ -4,19 +4,14 @@ import { transformBorderColor } from './borderColor'
 import { transformBorderStyle } from './borderStyle'
 import { transformBorderWidth } from './borderWidth'
 
+const borderWidth = __HYPHENATE__ ? '-width' : 'Width'
+const borderStyle = __HYPHENATE__ ? '-style' : 'Style'
+const borderColor = __HYPHENATE__ ? '-color' : 'Color'
+
 export function createTransformBorder(
   options: NormalizeOptions
 ): TransformDecl {
   return (decl: Declaration): Declaration[] => {
-    const borderWidth = (): string => {
-      return __HYPHENATE__ ? '-width' : 'Width'
-    }
-    const borderStyle = (): string => {
-      return __HYPHENATE__ ? '-style' : 'Style'
-    }
-    const borderColor = (): string => {
-      return __HYPHENATE__ ? '-color' : 'Color'
-    }
     const { prop, value, important, raws, source } = decl
 
     let splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
@@ -65,7 +60,7 @@ export function createTransformBorder(
     return [
       ...transformBorderWidth(
         createDecl(
-          prop + borderWidth(),
+          prop + borderWidth,
           defaultWidth(result[0]),
           important,
           raws,
@@ -74,7 +69,7 @@ export function createTransformBorder(
       ),
       ...transformBorderStyle(
         createDecl(
-          prop + borderStyle(),
+          prop + borderStyle,
           defaultStyle(result[1]),
           important,
           raws,
@@ -83,7 +78,7 @@ export function createTransformBorder(
       ),
       ...transformBorderColor(
         createDecl(
-          prop + borderColor(),
+          prop + borderColor,
           defaultColor(result[2]),
           important,
           raws,
@@ -98,10 +93,6 @@ export function createTransformBorderNvue(
   options: NormalizeOptions
 ): TransformDecl {
   return (decl) => {
-    const borderWidth = __HYPHENATE__ ? '-width' : 'Width'
-    const borderStyle = __HYPHENATE__ ? '-style' : 'Style'
-    const borderColor = __HYPHENATE__ ? '-color' : 'Color'
-
     let { prop, value, important, raws, source } = decl
     value = value.trim()
     const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)

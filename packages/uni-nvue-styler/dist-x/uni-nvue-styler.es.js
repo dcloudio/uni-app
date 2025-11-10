@@ -18,7 +18,8 @@ const isNumber = (val) => typeof val === 'number';
 const backgroundColor = 'background-color' ;
 const backgroundImage = 'background-image' ;
 const handleTransformBackground = (decl) => {
-    const { value, important, raws, source } = decl;
+    let { value, important, raws, source } = decl;
+    value = value.trim();
     if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
         return [
             createDecl(backgroundImage, 'none', important, raws, source),
@@ -65,20 +66,13 @@ function createTransformBackground(options) {
     };
 }
 
-function borderTop() {
-    return 'border-top-' ;
-}
-function borderRight() {
-    return 'border-right-' ;
-}
-function borderBottom() {
-    return 'border-bottom-' ;
-}
-function borderLeft() {
-    return 'border-left-' ;
-}
+const borderTop = 'border-top-' ;
+const borderRight = 'border-right-' ;
+const borderBottom = 'border-bottom-' ;
+const borderLeft = 'border-left-' ;
 const transformBorderColor = (decl) => {
-    const { prop, value, important, raws, source } = decl;
+    let { prop, value, important, raws, source } = decl;
+    value = value.trim();
     const _property_split = hyphenate(prop).split('-');
     let property = _property_split[_property_split.length - 1];
     const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/); // 1pt
@@ -99,27 +93,6 @@ const transformBorderColor = (decl) => {
             break;
     }
     return [
-        createDecl(borderTop() + property, splitResult[0], important, raws, source),
-        createDecl(borderRight() + property, splitResult[1], important, raws, source),
-        createDecl(borderBottom() + property, splitResult[2], important, raws, source),
-        createDecl(borderLeft() + property, splitResult[3], important, raws, source),
-    ];
-};
-const transformBorderColorNvue = (decl) => {
-    const { prop, value, important, raws, source } = decl;
-    let property = hyphenate(prop).split('-')[1];
-    const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
-    switch (splitResult.length) {
-        case 1:
-            return [decl];
-        case 2:
-            splitResult.push(splitResult[0], splitResult[1]);
-            break;
-        case 3:
-            splitResult.push(splitResult[1]);
-            break;
-    }
-    return [
         createDecl(borderTop + property, splitResult[0], important, raws, source),
         createDecl(borderRight + property, splitResult[1], important, raws, source),
         createDecl(borderBottom + property, splitResult[2], important, raws, source),
@@ -128,22 +101,14 @@ const transformBorderColorNvue = (decl) => {
 };
 
 const transformBorderStyle = transformBorderColor;
-const transformBorderStyleNvue = transformBorderColorNvue;
 
 const transformBorderWidth = transformBorderColor;
-const transformBorderWidthNvue = transformBorderColorNvue;
 
+const borderWidth = '-width' ;
+const borderStyle = '-style' ;
+const borderColor = '-color' ;
 function createTransformBorder(options) {
     return (decl) => {
-        const borderWidth = () => {
-            return '-width' ;
-        };
-        const borderStyle = () => {
-            return '-style' ;
-        };
-        const borderColor = () => {
-            return '-color' ;
-        };
         const { prop, value, important, raws, source } = decl;
         let splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
         const havVar = splitResult.some((str) => str.startsWith('var('));
@@ -185,34 +150,9 @@ function createTransformBorder(options) {
             return '#000000';
         };
         return [
-            ...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)),
-            ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)),
-            ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source)),
-        ];
-    };
-}
-function createTransformBorderNvue(options) {
-    return (decl) => {
-        const borderWidth = '-width' ;
-        const borderStyle = '-style' ;
-        const borderColor = '-color' ;
-        const { prop, value, important, raws, source } = decl;
-        const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
-        const result = [
-            /^[\d\.]+\S*|^(thin|medium|thick)$/,
-            /^(solid|dashed|dotted|none)$/,
-            /\S+/,
-        ].map((item) => {
-            const index = splitResult.findIndex((str) => item.test(str));
-            return index < 0 ? null : splitResult.splice(index, 1)[0];
-        });
-        if (splitResult.length) {
-            return [decl];
-        }
-        return [
-            createDecl(prop + borderWidth, (result[0] || '0').trim(), important, raws, source),
-            createDecl(prop + borderStyle, (result[1] || 'solid').trim(), important, raws, source),
-            createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source),
+            ...transformBorderWidth(createDecl(prop + borderWidth, defaultWidth(result[0]), important, raws, source)),
+            ...transformBorderStyle(createDecl(prop + borderStyle, defaultStyle(result[1]), important, raws, source)),
+            ...transformBorderColor(createDecl(prop + borderColor, defaultColor(result[2]), important, raws, source)),
         ];
     };
 }
@@ -226,7 +166,8 @@ const borderBottomRightRadius = 'border-bottom-right-radius'
 const borderBottomLeftRadius = 'border-bottom-left-radius'
     ;
 const transformBorderRadius = (decl) => {
-    const { value, important, raws, source } = decl;
+    let { value, important, raws, source } = decl;
+    value = value.trim();
     const splitResult = value.split(/\s+/);
     if (value.includes('/')) {
         return [decl];
@@ -249,35 +190,12 @@ const transformBorderRadius = (decl) => {
         createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source),
     ];
 };
-const transformBorderRadiusNvue = (decl) => {
-    const { value, important, raws, source } = decl;
-    const splitResult = value.split(/\s+/);
-    if (value.includes('/')) {
-        return [decl];
-    }
-    // const isUvuePlatform = options.type == 'uvue'
-    switch (splitResult.length) {
-        case 1:
-            return [decl];
-        case 2:
-            splitResult.push(splitResult[0], splitResult[1]);
-            break;
-        case 3:
-            splitResult.push(splitResult[1]);
-            break;
-    }
-    return [
-        createDecl(borderTopLeftRadius, splitResult[0], important, raws, source),
-        createDecl(borderTopRightRadius, splitResult[1], important, raws, source),
-        createDecl(borderBottomRightRadius, splitResult[2], important, raws, source),
-        createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source),
-    ];
-};
 
 const flexDirection = 'flex-direction' ;
 const flexWrap = 'flex-wrap' ;
 const transformFlexFlow = (decl) => {
-    const { value, important, raws, source } = decl;
+    let { value, important, raws, source } = decl;
+    value = value.trim();
     const splitResult = value.split(/\s+/);
     const result = [
         /^(column|column-reverse|row|row-reverse)$/,
@@ -302,7 +220,7 @@ const left = '-left' ;
 const createTransformBox = (type) => {
     return (decl) => {
         const { value, important, raws, source } = decl;
-        const splitResult = value.split(/\s+/);
+        const splitResult = value.trim().split(/\s+/);
         switch (splitResult.length) {
             case 1:
                 splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
@@ -334,12 +252,13 @@ const transitionTimingFunction = 'transition-timing-function'
     ;
 const transitionDelay = 'transition-delay' ;
 const transformTransition = (decl) => {
-    const { value, important, raws, source } = decl;
+    let { value, important, raws, source } = decl;
+    value = value.trim();
     const result = [];
     let match;
     // 针对 cubic-bezier 特殊处理
     // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
-    if (decl.value.includes('cubic-bezier')) {
+    if (value.includes('cubic-bezier')) {
         const CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/;
         match = value.match(CHUNK_REGEXP);
     }
@@ -365,9 +284,10 @@ const flexGrow = 'flex-grow' ;
 const flexShrink = 'flex-shrink' ;
 const flexBasis = 'flex-basis' ;
 const transformFlex = (decl) => {
-    const { value, important, raws, source } = decl;
+    let { value, important, raws, source } = decl;
+    value = value.trim();
     const result = [];
-    const splitResult = value.trim().split(/\s+/);
+    const splitResult = value.split(/\s+/);
     // 是否 flex-grow 的有效值 <number [0,∞]>
     const isFlexGrowValid = (v) => isNumber(Number(v)) && !Number.isNaN(Number(v));
     const isFlexShrinkValid = (v) => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
@@ -437,9 +357,8 @@ const transformFlex = (decl) => {
 };
 
 function getDeclTransforms(options) {
-    const transformBorder = options.type == 'uvue'
-        ? createTransformBorder()
-        : createTransformBorderNvue();
+    const transformBorder = createTransformBorder()
+        ;
     const styleMap = {
         transition: transformTransition,
         border: transformBorder,
@@ -448,12 +367,11 @@ function getDeclTransforms(options) {
         borderRight: transformBorder,
         borderBottom: transformBorder,
         borderLeft: transformBorder,
-        borderStyle: options.type == 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
-        borderWidth: options.type == 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
-        borderColor: options.type == 'uvue' ? transformBorderColor : transformBorderColorNvue,
-        borderRadius: options.type == 'uvue'
-            ? transformBorderRadius
-            : transformBorderRadiusNvue,
+        borderStyle: transformBorderStyle ,
+        borderWidth: transformBorderWidth ,
+        borderColor: transformBorderColor ,
+        borderRadius: transformBorderRadius
+            ,
         // uvue已经支持这些简写属性，不需要展开
         // margin,padding继续展开，确保样式的优先级
         margin: transformMargin,

@@ -38,7 +38,8 @@
       "src/dom2/esm.ts": ["dist-x/uni-nvue-styler.es.js"]
     },
     "replacements": {
-      "__HYPHENATE__": "true"
+      "__HYPHENATE__": "true",
+      "options.type == 'uvue'": "true"
     },
     "external": ["@vue/shared"]
   }

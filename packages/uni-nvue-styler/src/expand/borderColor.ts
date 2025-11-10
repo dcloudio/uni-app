@@ -2,21 +2,10 @@ import type { Declaration } from 'postcss'
 import { capitalize, hyphenate } from '@vue/shared'
 import { createDecl } from '../utils'
 
-function borderTop(): string {
-  return __HYPHENATE__ ? 'border-top-' : 'borderTop'
-}
-
-function borderRight(): string {
-  return __HYPHENATE__ ? 'border-right-' : 'borderRight'
-}
-
-function borderBottom(): string {
-  return __HYPHENATE__ ? 'border-bottom-' : 'borderBottom'
-}
-
-function borderLeft(): string {
-  return __HYPHENATE__ ? 'border-left-' : 'borderLeft'
-}
+const borderTop = __HYPHENATE__ ? 'border-top-' : 'borderTop'
+const borderRight = __HYPHENATE__ ? 'border-right-' : 'borderRight'
+const borderBottom = __HYPHENATE__ ? 'border-bottom-' : 'borderBottom'
+const borderLeft = __HYPHENATE__ ? 'border-left-' : 'borderLeft'
 
 export const transformBorderColor = (decl: Declaration): Declaration[] => {
   let { prop, value, important, raws, source } = decl
@@ -46,28 +35,16 @@ export const transformBorderColor = (decl: Declaration): Declaration[] => {
   }
 
   return [
-    createDecl(borderTop() + property, splitResult[0], important, raws, source),
+    createDecl(borderTop + property, splitResult[0], important, raws, source),
+    createDecl(borderRight + property, splitResult[1], important, raws, source),
     createDecl(
-      borderRight() + property,
-      splitResult[1],
-      important,
-      raws,
-      source
-    ),
-    createDecl(
-      borderBottom() + property,
+      borderBottom + property,
       splitResult[2],
       important,
       raws,
       source
     ),
-    createDecl(
-      borderLeft() + property,
-      splitResult[3],
-      important,
-      raws,
-      source
-    ),
+    createDecl(borderLeft + property, splitResult[3], important, raws, source),
   ]
 }
 
