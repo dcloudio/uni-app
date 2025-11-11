@@ -44,7 +44,7 @@ function processElement (ast, state, isRoot) {
   if (platform.isComponent(ast.type)) {
     if (platformName === 'mp-alipay') {
       ast.attr.onVueInit = INTERNAL_EVENT_LINK
-    } else if (platformName !== 'mp-baidu' && platformName !== 'mp-harmony' && platformName !== 'quickapp-webview') {
+    } else if (platformName !== 'mp-baidu' && platformName !== 'mp-harmony') {
       ast.attr['bind:' + INTERNAL_EVENT_LINK] = INTERNAL_EVENT_LINK
     }
     // TODO 过滤小程序原生组件
