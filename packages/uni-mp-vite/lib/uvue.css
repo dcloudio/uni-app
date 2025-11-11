@@ -190,6 +190,7 @@ checkbox {
   align-items: center;
 }
 
+/* #ifdef MP-WEIXIN */
 /* 
  * 目前仅适配微信小程序，其他小程序平台需要额外适配
  */
@@ -201,3 +202,4 @@ radio .wx-radio-wrapper{
   align-items: inherit;
   flex: 1;
 }
+/* #endif */
