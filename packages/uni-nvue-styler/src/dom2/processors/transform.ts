@@ -140,14 +140,14 @@ function stringifyTransformValue(
           return genCode(
             language,
             option.className,
-            func.name,
+            capitalize(func.name.toLowerCase()),
             args.map((arg) => toUnitValueCode(arg, language))
           )
         } else if (option.type === PropertyProcessorType.Number) {
           return genCode(
             language,
             option.className,
-            func.name,
+            capitalize(func.name.toLowerCase()),
             args.map((arg) => `${arg.value}`)
           )
         }

@@ -560,8 +560,8 @@ exports[`transform: rotateX(45deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateX")(new UniCSSUnitValue(45, UniCSSUnitType.DEG))])",
-      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateX")(new UniCSSUnitValue(45, UniCSSUnitType.DEG))]",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatex")(new UniCSSUnitValue(45, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatex")(new UniCSSUnitValue(45, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -581,8 +581,8 @@ exports[`transform: rotateY(60deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateY")(new UniCSSUnitValue(60, UniCSSUnitType.DEG))])",
-      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateY")(new UniCSSUnitValue(60, UniCSSUnitType.DEG))]",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatey")(new UniCSSUnitValue(60, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatey")(new UniCSSUnitValue(60, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -602,8 +602,8 @@ exports[`transform: rotateZ(90deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateZ")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))])",
-      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateZ")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))]",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatez")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatez")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -728,8 +728,8 @@ exports[`transform: skewX(20deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewX")(new UniCSSUnitValue(20, UniCSSUnitType.DEG))])",
-      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewX")(new UniCSSUnitValue(20, UniCSSUnitType.DEG))]",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skewx")(new UniCSSUnitValue(20, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skewx")(new UniCSSUnitValue(20, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -749,8 +749,8 @@ exports[`transform: skewY(25deg): app-harmony(nv-c) 1`] = `
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewY")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))])",
-      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewY")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))]",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skewy")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skewy")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -791,8 +791,8 @@ exports[`transform: transform: skew(15deg, 30deg) skewX(20deg) skewY(25deg): app
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(30, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewX")(new UniCSSUnitValue(20, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewY")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))])",
-      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(30, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewX")(new UniCSSUnitValue(20, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "SkewY")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))]",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(30, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skewx")(new UniCSSUnitValue(20, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skewy")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skew")(new UniCSSUnitValue(15, UniCSSUnitType.DEG), new UniCSSUnitValue(30, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skewx")(new UniCSSUnitValue(20, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformSkew, "::", "Skewy")(new UniCSSUnitValue(25, UniCSSUnitType.DEG))]",
     },
   },
 }
@@ -917,8 +917,8 @@ exports[`transform: translateX(40px) translateY(20px) translateZ(10px) rotateX(4
   "messages": [],
   "obj": {
     "transform": {
-      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateX")(new UniCSSUnitValue(40, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateY")(new UniCSSUnitValue(20, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateZ")(new UniCSSUnitValue(10, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateX")(new UniCSSUnitValue(45, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateY")(new UniCSSUnitValue(60, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateZ")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))])",
-      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateX")(new UniCSSUnitValue(40, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateY")(new UniCSSUnitValue(20, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "TranslateZ")(new UniCSSUnitValue(10, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateX")(new UniCSSUnitValue(45, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateY")(new UniCSSUnitValue(60, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "RotateZ")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))]",
+      "setterCode": "transform([UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translatex")(new UniCSSUnitValue(40, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translatey")(new UniCSSUnitValue(20, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translatez")(new UniCSSUnitValue(10, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatex")(new UniCSSUnitValue(45, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatey")(new UniCSSUnitValue(60, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatez")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))])",
+      "valueCode": "[UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translatex")(new UniCSSUnitValue(40, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translatey")(new UniCSSUnitValue(20, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformTranslate, "::", "Translatez")(new UniCSSUnitValue(10, UniCSSUnitType.PX)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatex")(new UniCSSUnitValue(45, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatey")(new UniCSSUnitValue(60, UniCSSUnitType.DEG)), UTSCPP.propertyAccess(UniCSSTransformRotate, "::", "Rotatez")(new UniCSSUnitValue(90, UniCSSUnitType.DEG))]",
     },
   },
 }
