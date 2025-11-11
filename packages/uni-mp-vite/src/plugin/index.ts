@@ -12,6 +12,7 @@ import {
   parseManifestJsonOnce,
   parseRpx2UnitOnce,
   parseUniXFlexDirection,
+  preCss,
   resolveBuiltIn,
   resolveVueI18nRuntime,
 } from '@dcloudio/uni-cli-shared'
@@ -266,9 +267,9 @@ export function uniMiniProgramPlugin(
 }
 
 export function genUVueCssCode(manifestJson: Record<string, any>) {
-  let cssCode = fs.readFileSync(
-    path.resolve(__dirname, '../../lib/uvue.css'),
-    'utf8'
+  let cssCode = preCss(
+    fs.readFileSync(path.resolve(__dirname, '../../lib/uvue.css'), 'utf8'),
+    'uvue.css'
   )
   const flexDirection = parseUniXFlexDirection(manifestJson)
   if (flexDirection !== 'column') {
