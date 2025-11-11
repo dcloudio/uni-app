@@ -1,4 +1,4 @@
-import { camelize, capitalize, extend } from '../../shared'
+import { camelize, capitalize, extend } from '@vue/shared'
 import { DOM2_APP_LANGUAGE } from '../types'
 import { genCPPEnumCode } from './enum'
 import { parseUnitValue, toUnitValueCode } from './unit'

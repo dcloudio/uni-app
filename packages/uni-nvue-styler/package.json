@@ -20,6 +20,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@vue/shared": "catalog:",
     "tinycolor2": "^1.6.0",
     "parse-css-font": "^4.0.0",
     "postcss": "catalog:"

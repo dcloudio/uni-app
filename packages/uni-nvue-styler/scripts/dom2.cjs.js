@@ -1,17 +1,6 @@
 'use strict';
 
-const cacheStringFunction = (fn) => {
-    const cache = Object.create(null);
-    return ((str) => {
-        const hit = cache[str];
-        return hit || (cache[str] = fn(str));
-    });
-};
-const camelizeRE = /-(\w)/g;
-const camelize = cacheStringFunction((str) => {
-    return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''));
-});
-const capitalize = cacheStringFunction((str) => str.charAt(0).toUpperCase() + str.slice(1));
+var shared = require('@vue/shared');
 
 const COLOR_TYPES = ['UniNativeColor', 'UniNativeBorderColor'];
 function isColorType(propertyType) {
@@ -64,7 +53,7 @@ function genRuntimeCode() {
         }
         entries.push(`['${propertyName}', [${propertyId}, ${processorCode ||
             (propertyOptions.values
-                ? `toSharedDataStyle${capitalize(camelize(propertyName + ''))}`
+                ? `toSharedDataStyle${shared.capitalize(shared.camelize(propertyName + ''))}`
                 : `toSharedDataStyleStringValue`)}]]`);
     });
     codes.push(`export const UniCSSPropertyVariable = ${allProperties.indexOf('variable')}`);
@@ -86,7 +75,7 @@ function genRuntimeCode() {
         }
     }
     function genEnumCode(name, values, defaultValue) {
-        return `function toSharedDataStyle${capitalize(camelize(name + ''))}(value: string | number) {
+        return `function toSharedDataStyle${shared.capitalize(shared.camelize(name + ''))}(value: string | number) {
   switch (value) {
 ${genEnumSwitch(values, values.indexOf(defaultValue))}
   }

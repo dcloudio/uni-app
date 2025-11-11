@@ -1,7 +1,7 @@
 import { isColorType } from '../color'
 import { isNumberType } from '../number'
 import { isStringType } from '../string'
-import { camelize, capitalize } from '../../../shared'
+import { camelize, capitalize } from '@vue/shared'
 import { isUnitType } from '../unit'
 import type { AppCssJson } from '../../types'
 

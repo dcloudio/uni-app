@@ -1,6 +1,6 @@
 import type { Declaration } from 'postcss'
 import { createDecl } from '../../utils'
-import { capitalize } from '../../shared'
+import { capitalize } from '@vue/shared'
 
 export function mergeShorthand(
   decls: Declaration[],

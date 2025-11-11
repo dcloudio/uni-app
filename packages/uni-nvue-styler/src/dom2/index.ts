@@ -8,7 +8,7 @@ import {
 import { parseStaticStyleDeclarations } from '../parseSync'
 import { createDom2PropertyProcessors } from './processors'
 
-import { camelize, capitalize, extend } from '../shared'
+import { camelize, capitalize, extend } from '@vue/shared'
 import { shorthand } from './shorthand'
 import { genCPPEnumCode } from './processors/enum'
 import { defineStyleVariableProcessor } from './processors/variable'

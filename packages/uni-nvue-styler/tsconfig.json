@@ -14,10 +14,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "removeComments": false,
-    "lib": ["ESNext", "DOM"],
-    "paths": {
-      "shared": ["./src/shared.ts"]
-    }
+    "lib": ["ESNext", "DOM"]
   },
   "include": [
     "src",

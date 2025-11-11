@@ -1,4 +1,4 @@
-import { camelize, capitalize } from '../../shared'
+import { camelize, capitalize } from '@vue/shared'
 import {
   type PropertyProcessor,
   PropertyProcessorType,

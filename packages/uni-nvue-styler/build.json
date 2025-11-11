@@ -15,15 +15,7 @@
     "replacements": {
       "__HYPHENATE__": "true"
     },
-    "external": ["postcss", "parse-css-font"],
-    "alias": {
-      "entries": [
-        {
-          "find": "shared",
-          "replacement": "@vue/shared"
-        }
-      ]
-    },
+    "external": ["@vue/shared", "postcss", "parse-css-font"],
     "compilerOptions": {
       "declaration": true
     }
