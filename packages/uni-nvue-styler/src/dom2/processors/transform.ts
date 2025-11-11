@@ -174,7 +174,7 @@ function stringifyTransformValue(
   if (language === DOM2_APP_LANGUAGE.CPP) {
     return `${TRANSFORM_CLASS_NAME}{${functionCodes.join(', ')}}`
   }
-  return `[${functionCodes.join(', ')}]`
+  return `[${functionCodes.join(', ')}] as ${TRANSFORM_CLASS_NAME}[]`
 }
 
 function parseTransformValue(str: string): TransformFunction[] {
