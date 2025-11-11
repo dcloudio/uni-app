@@ -71,16 +71,29 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
             embed[HarmonyNativeMethodMap[methodName]](data.url, data.headers)
           )
           break
-        case 'loadData':
+        case 'loadData': {
+          /**
+           * @tutorial https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-webview#loaddata
+           *
+           * 若加载本地图片，可以给baseUrl或historyUrl任一参数赋值空格，详情请参考示例代码。
+           * 加载本地图片场景，baseUrl和historyUrl不能同时为空，否则图片无法成功加载。
+           * 若html中的富文本中带有注入#等特殊字符，建议将baseUrl和historyUrl两个参数的值设置为"空格"。
+           * data数据必须使用base64编码或将内容中的任何#字符编码为%23。否则#将被视为内容的结尾而剩余的文本将被用作文档片段标识符。
+           */
+          let _data = data.data
+          if (data.encoding?.toLowerCase() !== 'base64') {
+            _data = _data.replace(/#/g, '%23')
+          }
           resolve(
             embed[HarmonyNativeMethodMap[methodName]](
-              data.data,
+              _data,
               data.mimeType,
               data.encoding,
               data.baseUrl
             )
           )
           break
+        }
         case 'clear':
           resolve(embed[HarmonyNativeMethodMap[methodName]](data.clearRom))
           break
