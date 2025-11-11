@@ -1,10 +1,10 @@
 import { parseDom2StaticStyle } from '../../../src/dom2'
 import { TEST_OPTIONS_LIST } from '../utils'
 
-describe('background:', () => {
-  ;['none', '#ffffff'].forEach((value) => {
+describe('transition-delay:', () => {
+  ;['0s', '0.5s', '200ms'].forEach((value) => {
     test(value, () => {
-      const input = `background: ${value}`
+      const input = `transition-delay: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
         const result = parseDom2StaticStyle(input, options)
         expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
@@ -13,10 +13,10 @@ describe('background:', () => {
   })
 })
 
-describe('background-color:', () => {
-  ;['red', '#00ff00', 'rgba(0,0,255,0.5)'].forEach((value) => {
+describe('transition-duration:', () => {
+  ;['0.3s', '1s', '150ms'].forEach((value) => {
     test(value, () => {
-      const input = `background-color: ${value}`
+      const input = `transition-duration: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
         const result = parseDom2StaticStyle(input, options)
         expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
@@ -25,14 +25,37 @@ describe('background-color:', () => {
   })
 })
 
-describe('background-image:', () => {
+describe('transition-property:', () => {
   ;[
-    'linear-gradient(to bottom,#f5f5f5,#eff2f5)',
-    'linear-gradient(to left, red, yellow)',
-    'linear-gradient(to bottom, rgba(255, 255, 0, 0.5), rgba(0, 0, 255, 0.5))',
+    'all',
+    'none',
+    'width',
+    'height',
+    'margin',
+    'margin-top',
+    'margin-bottom',
+    'margin-left',
+    'margin-right',
+    'left',
+    'right',
+    'top',
+    'bottom',
+    'padding',
+    'padding-left',
+    'padding-right',
+    'padding-top',
+    'padding-bottom',
+    'opacity',
+    'background-color',
+    'border-color',
+    'border-top-color',
+    'border-bottom-color',
+    'border-left-color',
+    'border-right-color',
+    'transform',
   ].forEach((value) => {
     test(value, () => {
-      const input = `background-image: ${value}`
+      const input = `transition-property: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
         const result = parseDom2StaticStyle(input, options)
         expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
@@ -41,10 +64,17 @@ describe('background-image:', () => {
   })
 })
 
-describe('background-clip:', () => {
-  ;['border-box', 'padding-box', 'content-box'].forEach((value) => {
+describe('transition-timing-function:', () => {
+  ;[
+    'ease',
+    'ease-in',
+    'ease-out',
+    'ease-in-out',
+    'linear',
+    'cubic-bezier',
+  ].forEach((value) => {
     test(value, () => {
-      const input = `background-clip: ${value}`
+      const input = `transition-timing-function: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
         const result = parseDom2StaticStyle(input, options)
         expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)

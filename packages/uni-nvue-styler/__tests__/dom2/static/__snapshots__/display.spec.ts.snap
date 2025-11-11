@@ -1,0 +1,257 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`opacity: 0.5: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`opacity: 0.5: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "opacity": {
+      "setterCode": "opacity(0.5)",
+      "valueCode": "0.5",
+    },
+  },
+}
+`;
+
+exports[`opacity: 0: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`opacity: 0: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "opacity": {
+      "setterCode": "opacity(0)",
+      "valueCode": "0",
+    },
+  },
+}
+`;
+
+exports[`opacity: 1: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`opacity: 1: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "opacity": {
+      "setterCode": "opacity(1)",
+      "valueCode": "1",
+    },
+  },
+}
+`;
+
+exports[`overflow: hidden: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`overflow: hidden: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "overflow": {
+      "setterCode": "overflow(UTSCPP.propertyAccess(UniNativeOverflowType, "::", "Hidden"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeOverflowType, "::", "Hidden")",
+    },
+  },
+}
+`;
+
+exports[`overflow: visible: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`overflow: visible: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "overflow": {
+      "setterCode": "overflow(UTSCPP.propertyAccess(UniNativeOverflowType, "::", "Visible"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeOverflowType, "::", "Visible")",
+    },
+  },
+}
+`;
+
+exports[`pointer-events: auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`pointer-events: auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "pointer-events": {
+      "setterCode": "pointerEvents(UTSCPP.propertyAccess(UniNativePointerEventType, "::", "Auto"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativePointerEventType, "::", "Auto")",
+    },
+  },
+}
+`;
+
+exports[`pointer-events: none: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`pointer-events: none: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "pointer-events": {
+      "setterCode": "pointerEvents(UTSCPP.propertyAccess(UniNativePointerEventType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativePointerEventType, "::", "None")",
+    },
+  },
+}
+`;
+
+exports[`z-index: 0: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`z-index: 0: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "z-index": {
+      "setterCode": "zIndex(0)",
+      "valueCode": "0",
+    },
+  },
+}
+`;
+
+exports[`z-index: 1: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`z-index: 1: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "z-index": {
+      "setterCode": "zIndex(1)",
+      "valueCode": "1",
+    },
+  },
+}
+`;
+
+exports[`z-index: 100: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`z-index: 100: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "z-index": {
+      "setterCode": "zIndex(100)",
+      "valueCode": "100",
+    },
+  },
+}
+`;
+
+exports[`z-index: auto: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "z-index",
+        "important": false,
+        "prop": "zIndex",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`z-index\` (supported values are: \`integer\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`z-index: auto: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "z-index",
+        "important": false,
+        "prop": "zIndex",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "auto",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`auto\` is not supported for \`z-index\` (supported values are: \`integer\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;

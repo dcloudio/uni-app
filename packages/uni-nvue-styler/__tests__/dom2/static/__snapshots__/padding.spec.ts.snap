@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`padding: padding-bottom-5%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "padding-bottom": {
+      "setterCode": "setStylePaddingBottom(5, UniCSSUnitType.PCT)",
+      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PCT)",
+    },
+  },
+}
+`;
+
+exports[`padding: padding-bottom-5%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`padding: padding-bottom-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "padding-bottom": {
+      "setterCode": "setStylePaddingBottom(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`padding: padding-bottom-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`padding: padding-left-5%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "padding-left": {
+      "setterCode": "setStylePaddingLeft(5, UniCSSUnitType.PCT)",
+      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PCT)",
+    },
+  },
+}
+`;
+
+exports[`padding: padding-left-5%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`padding: padding-left-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "padding-left": {
+      "setterCode": "setStylePaddingLeft(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`padding: padding-left-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`padding: padding-right-5%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "padding-right": {
+      "setterCode": "setStylePaddingRight(5, UniCSSUnitType.PCT)",
+      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PCT)",
+    },
+  },
+}
+`;
+
+exports[`padding: padding-right-5%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`padding: padding-right-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "padding-right": {
+      "setterCode": "setStylePaddingRight(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`padding: padding-right-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`padding: padding-top-5%: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "padding-top": {
+      "setterCode": "setStylePaddingTop(5, UniCSSUnitType.PCT)",
+      "valueCode": "new UniCSSUnitValue(5, UniCSSUnitType.PCT)",
+    },
+  },
+}
+`;
+
+exports[`padding: padding-top-5%: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`padding: padding-top-10px: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "padding-top": {
+      "setterCode": "setStylePaddingTop(10, UniCSSUnitType.PX)",
+      "valueCode": "new UniCSSUnitValue(10, UniCSSUnitType.PX)",
+    },
+  },
+}
+`;
+
+exports[`padding: padding-top-10px: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;

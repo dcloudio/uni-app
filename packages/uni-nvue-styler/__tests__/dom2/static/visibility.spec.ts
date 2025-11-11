@@ -1,16 +1,10 @@
 import { parseDom2StaticStyle } from '../../../src/dom2'
 import { TEST_OPTIONS_LIST } from '../utils'
 
-describe('box-shadow:', () => {
-  ;[
-    'none',
-    '5px 5px red',
-    '5px 5px 10px rgba(0,0,0,0.3)',
-    'inset 0 0 5px #123456',
-    'invalid',
-  ].forEach((value) => {
+describe('display:', () => {
+  ;['none', 'flex'].forEach((value) => {
     test(value, () => {
-      const input = `box-shadow: ${value}`
+      const input = `display: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
         const result = parseDom2StaticStyle(input, options)
         expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
@@ -19,10 +13,10 @@ describe('box-shadow:', () => {
   })
 })
 
-describe('box-sizing:', () => {
-  ;['border-box', 'content-box'].forEach((value) => {
+describe('visibility:', () => {
+  ;['visible', 'hidden'].forEach((value) => {
     test(value, () => {
-      const input = `box-sizing: ${value}`
+      const input = `visibility: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
         const result = parseDom2StaticStyle(input, options)
         expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)

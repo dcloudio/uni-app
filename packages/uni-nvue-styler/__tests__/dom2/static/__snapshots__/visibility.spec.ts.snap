@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`display: flex: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "display": {
+      "setterCode": "setStyleDisplay(UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSDisplayType, "::", "Flex")",
+    },
+  },
+}
+`;
+
+exports[`display: flex: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "display": {
+      "setterCode": "display(UTSCPP.propertyAccess(UniNativeDisplayType, "::", "Flex"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeDisplayType, "::", "Flex")",
+    },
+  },
+}
+`;
+
+exports[`display: none: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "display": {
+      "setterCode": "setStyleDisplay(UTSCPP.propertyAccess(UniCSSDisplayType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniCSSDisplayType, "::", "None")",
+    },
+  },
+}
+`;
+
+exports[`display: none: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "display": {
+      "setterCode": "display(UTSCPP.propertyAccess(UniNativeDisplayType, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeDisplayType, "::", "None")",
+    },
+  },
+}
+`;
+
+exports[`visibility: hidden: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`visibility: hidden: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "visibility": {
+      "setterCode": "visibility(UTSCPP.propertyAccess(UniNativeVisibilityType, "::", "Hidden"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeVisibilityType, "::", "Hidden")",
+    },
+  },
+}
+`;
+
+exports[`visibility: visible: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`visibility: visible: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "visibility": {
+      "setterCode": "visibility(UTSCPP.propertyAccess(UniNativeVisibilityType, "::", "Visible"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeVisibilityType, "::", "Visible")",
+    },
+  },
+}
+`;
