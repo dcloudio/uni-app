@@ -201,6 +201,27 @@ exports[`background-color: rgba(0,0,255,0.5): app-harmony(nv-c) 1`] = `
 }
 `;
 
+exports[`background-image: linear-gradient(to bottom, rgba(255, 255, 0, 0.5), rgba(0, 0, 255, 0.5)): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`background-image: linear-gradient(to bottom, rgba(255, 255, 0, 0.5), rgba(0, 0, 255, 0.5)): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "background-image": {
+      "setterCode": "backgroundImage(new UniNativeLinearGradient(UTSCPP.propertyAccess(UniNativeLinearGradientDirectionType, "::", "ToBottom"),[new UniNativeLinearGradientColorStop(0x80ffff00, 0),new UniNativeLinearGradientColorStop(0x800000ff, 0)]))",
+      "valueCode": "new UniNativeLinearGradient(UTSCPP.propertyAccess(UniNativeLinearGradientDirectionType, "::", "ToBottom"),[new UniNativeLinearGradientColorStop(0x80ffff00, 0),new UniNativeLinearGradientColorStop(0x800000ff, 0)])",
+    },
+  },
+}
+`;
+
 exports[`background-image: linear-gradient(to bottom,#f5f5f5,#eff2f5): app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
@@ -215,20 +236,29 @@ exports[`background-image: linear-gradient(to bottom,#f5f5f5,#eff2f5): app-harmo
   "messages": [],
   "obj": {
     "background-image": {
-      "setterCode": "backgroundImage(UniNativeLinearGradient(
-    UniNativeLinearGradientDirectionType::ToBottom,
-    std::vector<UniNativeLinearGradientColorStop>{
-        {0xfff5f5f5, -1},
-        {0xffeff2f5, -1}
-    }
-))",
-      "valueCode": "UniNativeLinearGradient(
-    UniNativeLinearGradientDirectionType::ToBottom,
-    std::vector<UniNativeLinearGradientColorStop>{
-        {0xfff5f5f5, -1},
-        {0xffeff2f5, -1}
-    }
-)",
+      "setterCode": "backgroundImage(new UniNativeLinearGradient(UTSCPP.propertyAccess(UniNativeLinearGradientDirectionType, "::", "ToBottom"),[new UniNativeLinearGradientColorStop(0xfff5f5f5, 0),new UniNativeLinearGradientColorStop(0xffeff2f5, 0)]))",
+      "valueCode": "new UniNativeLinearGradient(UTSCPP.propertyAccess(UniNativeLinearGradientDirectionType, "::", "ToBottom"),[new UniNativeLinearGradientColorStop(0xfff5f5f5, 0),new UniNativeLinearGradientColorStop(0xffeff2f5, 0)])",
+    },
+  },
+}
+`;
+
+exports[`background-image: linear-gradient(to left, red, yellow): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`background-image: linear-gradient(to left, red, yellow): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "background-image": {
+      "setterCode": "backgroundImage(new UniNativeLinearGradient(UTSCPP.propertyAccess(UniNativeLinearGradientDirectionType, "::", "ToLeft"),[new UniNativeLinearGradientColorStop(0xffff0000, 0),new UniNativeLinearGradientColorStop(0xffffff00, 0)]))",
+      "valueCode": "new UniNativeLinearGradient(UTSCPP.propertyAccess(UniNativeLinearGradientDirectionType, "::", "ToLeft"),[new UniNativeLinearGradientColorStop(0xffff0000, 0),new UniNativeLinearGradientColorStop(0xffffff00, 0)])",
     },
   },
 }

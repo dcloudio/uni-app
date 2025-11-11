@@ -91,7 +91,11 @@ describe('background-color:', () => {
 })
 
 describe('background-image:', () => {
-  ;['linear-gradient(to bottom,#f5f5f5,#eff2f5)'].forEach((value) => {
+  ;[
+    'linear-gradient(to bottom,#f5f5f5,#eff2f5)',
+    'linear-gradient(to left, red, yellow)',
+    'linear-gradient(to bottom, rgba(255, 255, 0, 0.5), rgba(0, 0, 255, 0.5))',
+  ].forEach((value) => {
     test(value, () => {
       const input = `background-image: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
