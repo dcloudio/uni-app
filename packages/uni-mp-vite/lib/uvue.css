@@ -167,10 +167,6 @@ text {
   display: inline;
 }
 
-text[hidden] {
-  display: none !important;
-}
-
 text,
 textarea,
 label {
