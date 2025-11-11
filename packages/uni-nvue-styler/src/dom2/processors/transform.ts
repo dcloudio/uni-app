@@ -1,4 +1,4 @@
-import { camelize, capitalize } from '../../shared'
+import { camelize, capitalize, extend } from '../../shared'
 import { DOM2_APP_LANGUAGE } from '../types'
 import { genCPPEnumCode } from './enum'
 import { parseUnitValue, toUnitValueCode } from './unit'
@@ -66,6 +66,7 @@ function genCode(
 interface TransformOption {
   className: string
   type: PropertyProcessorType.Unit | PropertyProcessorType.Number
+  spread?: boolean
 }
 
 const TRANSFORM_CLASS_NAME = 'UniCSSTransform'
@@ -73,18 +74,22 @@ const TRANSFORM_CLASS_NAME = 'UniCSSTransform'
 const translateOption: TransformOption = {
   className: `${TRANSFORM_CLASS_NAME}Translate`,
   type: PropertyProcessorType.Unit,
+  spread: true,
 }
 const scaleOption: TransformOption = {
   className: `${TRANSFORM_CLASS_NAME}Scale`,
   type: PropertyProcessorType.Unit,
+  spread: true,
 }
 const rotateOption: TransformOption = {
   className: `${TRANSFORM_CLASS_NAME}Rotate`,
   type: PropertyProcessorType.Unit,
+  spread: true,
 }
 const skewOption: TransformOption = {
   className: `${TRANSFORM_CLASS_NAME}Skew`,
   type: PropertyProcessorType.Unit,
+  spread: true,
 }
 const matrixOption: TransformOption = {
   className: `${TRANSFORM_CLASS_NAME}Matrix`,
@@ -97,6 +102,7 @@ const matrix3dOption: TransformOption = {
 const perspectiveOption: TransformOption = {
   className: `${TRANSFORM_CLASS_NAME}Perspective`,
   type: PropertyProcessorType.Unit,
+  spread: true,
 }
 
 const transformOptions: Record<string, TransformOption> = {
@@ -104,17 +110,17 @@ const transformOptions: Record<string, TransformOption> = {
   translateX: translateOption,
   translateY: translateOption,
   translateZ: translateOption,
-  translate3d: translateOption,
+  translate3d: extend({}, translateOption, { spread: false }),
   scale: scaleOption,
   scaleX: scaleOption,
   scaleY: scaleOption,
   scaleZ: scaleOption,
-  scale3d: scaleOption,
+  scale3d: extend({}, scaleOption, { spread: false }),
   rotate: rotateOption,
   rotateX: rotateOption,
   rotateY: rotateOption,
   rotateZ: rotateOption,
-  rotate3d: rotateOption,
+  rotate3d: extend({}, rotateOption, { spread: false }),
   skew: skewOption,
   skewX: skewOption,
   skewY: skewOption,
@@ -137,11 +143,17 @@ function stringifyTransformValue(
       const option = transformOptions[func.name]
       if (option) {
         if (option.type === PropertyProcessorType.Unit) {
+          const operator = language === DOM2_APP_LANGUAGE.CPP ? '::' : '.'
           return genCode(
             language,
             option.className,
             capitalize(func.name.toLowerCase()),
-            args.map((arg) => toUnitValueCode(arg, language))
+            args.map((arg) => {
+              if (option.spread) {
+                return `${arg.value}, UniCSSUnitType${operator}${arg.unit}`
+              }
+              return toUnitValueCode(arg, language)
+            })
           )
         } else if (option.type === PropertyProcessorType.Number) {
           return genCode(
