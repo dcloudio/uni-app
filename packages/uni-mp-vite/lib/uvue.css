@@ -81,7 +81,6 @@ ad-rewarded-video[hidden],
 ad[hidden],
 animation-view[hidden],
 audio[hidden],
-block[hidden],
 button[hidden],
 camera[hidden],
 canvas[hidden],
@@ -193,7 +192,7 @@ checkbox {
 /* 
  * 目前仅适配微信小程序，其他小程序平台需要额外适配
  */
-radio .wx-radio-wrapper{
+radio .wx-radio-wrapper {
   display: flex;
   flex-direction: inherit;
   align-content: inherit;
