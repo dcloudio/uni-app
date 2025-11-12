@@ -29,11 +29,7 @@ import {
   parseDom2StaticStyle,
   parseInlineStyleSync,
 } from '@dcloudio/uni-nvue-styler'
-import type {
-  COMPONENT_TYPE,
-  DOM2_APP_PLATFORM,
-  VaporDom2CompilerOptions,
-} from '@dcloudio/uni-cli-shared/lib/dom2/app/@vue/compiler-vapor-dom2/dist/compiler-vapor-dom2'
+
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
 
@@ -325,16 +321,14 @@ export function initPluginVueOptions(
       }
       ;(vueOptions.template.compilerOptions as any).extraOptions = (
         descriptor: SFCDescriptor
-      ): VaporDom2CompilerOptions => {
+      ) => {
         const filename = normalizePath(descriptor.filename.split('?')[0])
         const className = genDom2ClassName(filename, process.env.UNI_INPUT_DIR)
         return {
           root: normalizePath(process.env.UNI_INPUT_DIR),
           className,
-          platform: process.env.UNI_UTS_PLATFORM as DOM2_APP_PLATFORM,
-          componentType: (isUniPageFile(filename)
-            ? 'page'
-            : 'component') as COMPONENT_TYPE,
+          platform: process.env.UNI_UTS_PLATFORM,
+          componentType: isUniPageFile(filename) ? 'page' : 'component',
           relativeFilename: normalizePath(
             path.relative(process.env.UNI_INPUT_DIR, filename)
           ),
@@ -345,7 +339,7 @@ export function initPluginVueOptions(
             genCode: boolean = false
           ) {
             return parseDom2StaticStyle(style, {
-              platform: process.env.UNI_UTS_PLATFORM as DOM2_APP_PLATFORM,
+              platform: process.env.UNI_UTS_PLATFORM as any,
               target,
               tagName,
               genCode,
