@@ -7,6 +7,7 @@ import {
   SUPPORT_CSS_UNIT,
   hyphenateStyleProperty,
   isNumber,
+  supportedPropertyReason,
 } from '../utils'
 import { getNormalizeMap } from './map'
 
@@ -151,10 +152,7 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
     }
     result = { value: value }
     log = {
-      reason:
-        'WARNING: `' +
-        hyphenateStyleProperty(name) +
-        '` is not a standard property name (may not be supported)',
+      reason: supportedPropertyReason(name),
     }
   }
   return {
