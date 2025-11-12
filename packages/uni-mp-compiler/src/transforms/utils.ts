@@ -35,6 +35,7 @@ import { genBabelExpr, genExpr } from '../codegen'
 import type { CodegenScope } from '../options'
 import { type TransformContext, isVForScope, isVIfScope } from '../transform'
 import { isString, isSymbol } from '@vue/shared'
+import { ATTR_CHANGE_PREFIX } from '@dcloudio/uni-shared'
 
 // v-i,v-s 不能在 quickapp-webview 中使用，估计是内部处理成了指令之类的
 export const ATTR_VUE_ID = 'u-i'
@@ -59,7 +60,7 @@ export const FILTER_SET_ELEMENT_ANIMATION = 'sA' // setAnimation
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 
 export function filterObserverName(name: string) {
-  return 'change:' + name
+  return ATTR_CHANGE_PREFIX + name
 }
 
 export function filterName(name: string) {
