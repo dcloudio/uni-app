@@ -632,7 +632,7 @@ exports[`transform-origin: bottom center 10%: app-harmony(nv-c) 1`] = `
         Symbol(expanded): true,
         Symbol(normalized): true,
       },
-      "text": "Invalid transform-origin value: bottom",
+      "text": "Invalid transform-origin value: 10%",
       "type": "warning",
     },
   ],
@@ -871,23 +871,13 @@ exports[`transform-origin: top left: app-harmony(dom-c) 1`] = `
 exports[`transform-origin: top left: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transform-origin",
-        "important": false,
-        "prop": "transformOrigin",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "top left",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Invalid transform-origin value: top",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "transform-origin": {
+      "setterCode": "transformOrigin(UniCSSTransformOrigin(new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.PCT)))",
+      "valueCode": "UniCSSTransformOrigin(new UniCSSUnitValue(0, UniCSSUnitType.PCT), new UniCSSUnitValue(0, UniCSSUnitType.PCT))",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 

@@ -137,7 +137,20 @@ type ParsedValueResult = ParsedValue | { error: string }
 
 function parseAxisValue(part: string, axis: Axis): ParsedValueResult {
   const lower = part.toLowerCase()
-  const keywordValue = axisKeywordToValue(lower, axis)
+
+  // 首先尝试匹配当前轴的关键字
+  let keywordValue = axisKeywordToValue(lower, axis)
+  if (keywordValue) {
+    return {
+      value: keywordValue.value,
+      unit: keywordValue.unit,
+    }
+  }
+
+  // 如果当前轴没有匹配，尝试另一个轴的关键字
+  // 这样可以支持 "top left" 或 "left top" 这种顺序
+  const otherAxis = axis === 'x' ? 'y' : 'x'
+  keywordValue = axisKeywordToValue(lower, otherAxis)
   if (keywordValue) {
     return {
       value: keywordValue.value,
