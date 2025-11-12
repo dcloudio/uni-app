@@ -16,7 +16,7 @@ export const vibrateShort = defineAsyncApi<API_TYPE_VIBRATE_SHORT>(
     if (_isSupport && window.navigator.vibrate(15)) {
       resolve()
     } else {
-      reject('vibrateLong:fail')
+      reject('vibrateShort:fail')
     }
   }
 )
