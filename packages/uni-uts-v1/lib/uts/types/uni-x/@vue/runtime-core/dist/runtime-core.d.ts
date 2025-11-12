@@ -1392,6 +1392,14 @@ export declare const getCurrentGenericInstance: () => GenericComponentInstance |
  */
 export declare const getCurrentInstance: () => ComponentInternalInstance | null;
 export declare let isInSSRComponentSetup: boolean;
+declare const internalOptions: readonly ["ce", "type"];
+/**
+ * fixed by uts remove internal
+ */
+export declare const useInstanceOption: <K extends (typeof internalOptions)[number]>(key: K, silent?: boolean) => {
+    hasInstance: boolean;
+    value: GenericComponentInstance[K] | undefined;
+};
 
 type Data = Record<string, unknown>;
 /**

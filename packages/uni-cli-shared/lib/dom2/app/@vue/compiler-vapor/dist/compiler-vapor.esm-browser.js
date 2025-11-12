@@ -34857,9 +34857,11 @@ function genSlotBlockWithProps(oper, context) {
       `}`
     ];
   }
-  if (node.type === 1 && // Not a real component
-  !isTeleportTag(node.tag) && // Needs to determine whether to activate/deactivate based on instance.parent being KeepAlive
-  !isKeepAliveTag(node.tag) && // Slot updates need to trigger TransitionGroup's onBeforeUpdate/onUpdated hook
+  if (node.type === 1 && // // Not a real component
+  // !isTeleportTag(node.tag) &&
+  // // Needs to determine whether to activate/deactivate based on instance.parent being KeepAlive
+  // !isKeepAliveTag(node.tag) &&
+  // // Slot updates need to trigger TransitionGroup's onBeforeUpdate/onUpdated hook
   !isTransitionGroupTag(node.tag)) {
     blockFn = [`${context.helper("withVaporCtx")}(`, ...blockFn, `)`];
   }

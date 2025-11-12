@@ -39,21 +39,7 @@ type DynamicSlot = {
 };
 type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
 type DynamicSlotSource = StaticSlots | DynamicSlotFn;
-/**
- * Wraps a slot function to execute in the parent component's context.
- *
- * This ensures that:
- * 1. Reactive effects created inside the slot (e.g., `renderEffect`) bind to the
- *    parent's instance, so the parent's lifecycle hooks fire when the slot's
- *    reactive dependencies change.
- * 2. Elements created in the slot inherit the parent's scopeId for proper style
- *    scoping in scoped CSS.
- *
- * **Rationale**: Slots are defined in the parent's template, so the parent should
- * own the rendering context and be aware of updates.
- *
- */
-export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any | null): BlockFn;
+export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any): BlockFn;
 export declare function createSharedDataSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot): void;
 
 export type VaporSharedDataComponent = ObjectVaporSharedDataComponent & {
@@ -93,7 +79,7 @@ type LooseRawSlots = Record<string, VaporSlot | DynamicSlotSource[]> & {
 };
 export declare function createSharedDataComponent<C = any, SharedData extends string = C extends {
     __className: infer K extends string;
-} ? `${K}SharedData` : string>(definedComponent: C, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, appContext?: GenericAppContext): VaporSharedDataComponentInstance<SharedData>;
+} ? `${K}SharedData` : string>(definedComponent: C, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext): VaporSharedDataComponentInstance<SharedData>;
 declare class VaporSharedDataComponentInstance<SharedData extends string = string> implements GenericComponentInstance {
     pageId?: number;
     sharedData: InferSharedData<SharedData, UniSharedDataComponent> | InferSharedData<SharedData, UniSharedDataPage>;
@@ -115,6 +101,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
     attrs: Record<string, any>;
     propsDefaults: Record<string, any> | null;
     slots: StaticSlots;
+    slotScopeOwner: VaporSharedDataComponentInstance | null;
     rawPropsRef?: ShallowRef<any>;
     rawSlotsRef?: ShallowRef<any>;
     emit: EmitFn;
@@ -153,7 +140,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
     emitsOptions?: ObjectEmitsOptions | null;
     isSingleRoot?: boolean;
     renderer: 'app' | 'page' | 'component';
-    constructor(comp: VaporSharedDataComponent, rawProps?: RawProps | null, rawSlots?: RawSlots | null, appContext?: GenericAppContext);
+    constructor(comp: VaporSharedDataComponent, rawProps?: RawProps | null, rawSlots?: RawSlots | null, appContext?: GenericAppContext, once?: boolean, parent?: VaporSharedDataComponentInstance | null);
     /**
      * Expose `getKeysFromRawProps` on the instance so it can be used in code
      * paths where it's needed, e.g. `useModel`
@@ -167,7 +154,7 @@ export declare function isVaporSharedDataComponent(value: unknown): value is Vap
  * and needs rely on runtime resolution - where it might fallback to a plain
  * element if the resolution fails.
  */
-export declare function createSharedDataComponentWithFallback(comp: VaporSharedDataComponent | string | any, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean): VaporSharedDataComponentInstance | null;
+export declare function createSharedDataComponentWithFallback(comp: VaporSharedDataComponent | string | any, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext): VaporSharedDataComponentInstance | null;
 
 export declare const createVaporApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
 export declare const createVaporSSRApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
@@ -193,7 +180,7 @@ type RefEl = Element | VaporSharedDataComponentInstance;
 type setRefFn = (el: RefEl | number | null, ref: NodeRef, oldRef?: NodeRef | null, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
 export declare function createSharedDataTemplateRefSetter(): setRefFn;
 
-export declare function createSharedDataDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean): void;
+export declare function createSharedDataDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean, once?: boolean): void;
 
 export declare function renderSharedDataEffect(fn: () => void, noLifecycle?: boolean): void;
 export declare function nextSharedDataTick(fn: () => void): Promise<void>;
