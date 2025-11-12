@@ -268,6 +268,7 @@ export declare function getElementInsertionParent(): UniElement | null;
 export declare function onElement(node: UniElement, event: string, fn: (event: UniEvent) => void, options?: AddEventListenerOptions & {
     effect?: boolean;
 }): void;
+export declare function onElementRef(node: UniElement, fn: Function): void;
 
 export declare function getCurrentNativeViewVaporComponentInstance(): VaporSharedDataComponentInstance | null;
 type NativeViewFactory = (page: UniPage) => UniNativeBaseView & {
