@@ -168,6 +168,36 @@ function transformOpenType(node) {
     props.push(uniCliShared.createOnDirectiveNode('error', `$onAliAuthError(${method},$event)`));
 }
 
+const transformMPBuiltInTagOptions = {
+    propRename: {
+        checkbox: {
+            foreColor: 'color',
+        },
+        radio: {
+            activeBackgroundColor: 'color',
+        },
+        slider: {
+            activeBackgroundColor: 'active-color',
+            foreColor: 'handle-color',
+        },
+        switch: {
+            activeBackgroundColor: 'color',
+        },
+    },
+    propAdd: {
+        canvas: [
+            {
+                name: 'type',
+                value: '2d',
+            },
+        ],
+    },
+    tagRename: {
+        'list-view': 'scroll-view',
+    },
+};
+const transformMPBuiltInTag = uniCliShared.createMPBuiltInTagTransform(transformMPBuiltInTagOptions);
+
 const projectConfigFilename = 'mini.project.json';
 const COMPONENTS_DIR = 'mycomponents';
 const miniProgram = {
@@ -183,6 +213,8 @@ const miniProgram = {
     },
     directive: 'a:',
     component: {
+        // 只有组件支持 :host 选择器，还需开启 virtualHost: false (https://opendocs.alipay.com/mini/framework/component-template#%3Ahost%20%E9%80%89%E6%8B%A9%E5%99%A8)
+        ':host': true,
         dir: COMPONENTS_DIR,
         getPropertySync: true,
     },
@@ -197,6 +229,9 @@ const nodeTransforms = [
     // transformMatchMedia,
     uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, compilerCore.NodeTypes.ATTRIBUTE),
 ];
+if (process.env.UNI_APP_X === 'true') {
+    nodeTransforms.push(transformMPBuiltInTag, uniCliShared.transformDirection);
+}
 const compilerOptions = {
     nodeTransforms,
 };
@@ -228,10 +263,10 @@ const options = {
     cdn: 2,
     vite: {
         inject: {
-            uni: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'default'],
+            uni: [initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'default'],
         },
         alias: {
-            'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
+            'uni-mp-runtime': initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
             assets: uniCliShared.createCopyComponentDirs(COMPONENTS_DIR),
@@ -283,7 +318,7 @@ const options = {
         darkmode: false,
         subpackages: true,
         plugins: true,
-        usingComponents: false,
+        usingComponents: true,
         normalize(appJson) {
             // 支付宝小程序默认主包，分包 js 模块不共享，会导致 getCurrentInstance，setCurrentInstance 不一致
             appJson.subPackageBuildType = 'shared';
@@ -318,15 +353,11 @@ const options = {
             return projectJson;
         },
     },
-    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
-            extname: '.sjs',
-            lang: 'sjs',
-            generate(filter, filename) {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: Object.assign(Object.assign({}, miniProgram.filter), { extname: '.sjs', lang: 'sjs', generate(filter, filename) {
                 // TODO 标签内的 code 代码需要独立生成一个 sjs 文件
                 // 暂不处理，让开发者自己全部使用 src 引入
                 return `<import-sjs name="${filter.name}" from="${filename}.sjs"/>`;
-            },
-        }, extname: '.axml', compilerOptions }),
+            } }), extname: '.axml', compilerOptions }),
     style: {
         extname: '.acss',
     },

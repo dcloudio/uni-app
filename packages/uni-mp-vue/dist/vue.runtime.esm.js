@@ -5844,13 +5844,13 @@ function genUniElementId(_ctx, idBinding, genId) {
 }
 
 function parseVirtualHostClass(className) {
-    if (Array.isArray(className)) {
+    if (isArray(className)) {
         return className
             .filter(Boolean)
             .map((name) => `^${name}`)
             .join(' ');
     }
-    if (typeof className === 'string') {
+    if (isString(className)) {
         return className
             .split(/\s+/)
             .filter(Boolean)
