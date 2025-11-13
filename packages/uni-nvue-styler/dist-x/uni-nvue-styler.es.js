@@ -607,16 +607,7 @@ const processors = new Map([
     ['font-family', [68, toSharedDataStyleStringValue]],
     ['font-size', [69, toSharedDataStyleUnitValue]],
     ['font-style', [70, toSharedDataStyleFontStyleValue]],
-    [
-        'font-weight',
-        [
-            71,
-            createToSharedDataStyleCombinedValue([
-                toSharedDataStyleNumberValue,
-                toSharedDataStyleFontWeightValue,
-            ]),
-        ],
-    ],
+    ['font-weight', [71, toSharedDataStyleStringValue]],
     ['letter-spacing', [73, toSharedDataStyleUnitValue]],
     [
         'line-height',
@@ -920,20 +911,6 @@ function toSharedDataStyleFontStyleValue(value) {
             return 0;
         case 'italic':
             return 1;
-        default:
-            return 0;
-    }
-}
-function toSharedDataStyleFontWeightValue(value) {
-    switch (value) {
-        case 'normal':
-            return 0;
-        case 'bold':
-            return 1;
-        case 'lighter':
-            return 2;
-        case 'bolder':
-            return 3;
         default:
             return 0;
     }

@@ -53,24 +53,25 @@ function genRuntimeCode() {
         const propertyOptions = appCssJson[propertyName];
         let processorCode;
         const propertyType = propertyOptions.type;
+        if (!propertyType) {
+            console.warn(`Property ${propertyName} has no type`);
+            entries.push(`['${propertyName}', [${propertyId}, toSharedDataStyleStringValue]]`);
+            return;
+        }
         const isSingleType = typeof propertyType === 'string';
         const isUnionType = Array.isArray(propertyType);
         if (isSingleType) {
             processorCode = createValueProcessor(propertyType);
         }
-        else if (isUnionType) {
-            processorCode = createCombinedValueProcessor(propertyName, propertyType, propertyOptions);
+        else if (isUnionType &&
+            isEnumAndBasicType(propertyType, propertyOptions)) {
+            processorCode = createCombinedValueProcessor(propertyName, propertyType);
         }
-        if (propertyOptions.values) {
-            if (isSingleType ||
-                (isUnionType &&
-                    // 如果是联合类型，且每一个都不是定制处理器
-                    !propertyType.every((type) => createValueProcessor(type)))) {
-                enumCodes.push(genEnumCode(propertyName, propertyOptions.values, propertyOptions.defaultValue));
-            }
+        if (propertyType && shouldGenEnumCode(propertyType, propertyOptions)) {
+            enumCodes.push(genEnumCode(propertyName, propertyOptions.values, propertyOptions.defaultValue));
         }
         entries.push(`['${propertyName}', [${propertyId}, ${processorCode ||
-            (propertyOptions.values
+            (isEnumType(propertyType, propertyOptions)
                 ? genEnumProcessorName(propertyName)
                 : `toSharedDataStyleStringValue`)}]]`);
     });
@@ -81,22 +82,41 @@ function genRuntimeCode() {
     function genEnumProcessorName(propertyName) {
         return `toSharedDataStyle${shared.capitalize(shared.camelize(propertyName + ''))}Value`;
     }
-    function createCombinedValueProcessor(propertyName, propertyType, propertyOptions) {
-        // 目前仅支持两个的联合
+    function isEnumType(propertyType, propertyOptions) {
+        if (typeof propertyType === 'string') {
+            return !!propertyOptions.values;
+        }
+        return isEnumAndBasicType(propertyType, propertyOptions);
+    }
+    function isEnumAndBasicType(propertyType, propertyOptions) {
         if (propertyType.length === 2 && propertyOptions.values) {
             const basicType = propertyType[1];
-            const enumType = propertyType[0];
-            if (!(isNumberType(basicType) || isUnitType(basicType))) {
-                throw new Error(`Unsupported property type: ${basicType}`);
+            // 目前运行时无法区分枚举数值和普通数值，所以不支持 number 类型
+            if (isUnitType(basicType)) {
+                return true;
             }
-            return `createToSharedDataStyleCombinedValue([${[
-                createValueProcessor(basicType),
-                createValueProcessor(enumType) ?? genEnumProcessorName(propertyName),
-            ].join(', ')}])`;
         }
-        else {
-            throw new Error(`Unsupported property type: ${propertyType.join(', ')}`);
+        return false;
+    }
+    function shouldGenEnumCode(propertyType, propertyOptions) {
+        if (typeof propertyType === 'string') {
+            return !!propertyOptions.values;
         }
+        if (isEnumAndBasicType(propertyType, propertyOptions)) {
+            if (propertyType.every((type) => createValueProcessor(type))) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+    function createCombinedValueProcessor(propertyName, propertyType) {
+        const basicType = propertyType[1];
+        const enumType = propertyType[0];
+        return `createToSharedDataStyleCombinedValue([${[
+            createValueProcessor(basicType),
+            createValueProcessor(enumType) ?? genEnumProcessorName(propertyName),
+        ].join(', ')}])`;
     }
     function createValueProcessor(propertyType) {
         if (isUnitType(propertyType)) {
