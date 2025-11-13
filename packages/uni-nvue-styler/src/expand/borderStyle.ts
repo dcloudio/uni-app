@@ -1,5 +1,3 @@
-import { transformBorderColor, transformBorderColorNvue } from './borderColor'
+import { createTransformBorderColor } from './borderColor'
 
-export const transformBorderStyle = transformBorderColor
-
-export const transformBorderStyleNvue = transformBorderColorNvue
+export const createTransformBorderStyle = createTransformBorderColor

@@ -4,136 +4,144 @@ import {
   type TransformDecl,
   createDecl,
 } from '../utils'
-import { transformBorderColor } from './borderColor'
-import { transformBorderStyle } from './borderStyle'
-import { transformBorderWidth } from './borderWidth'
+import { createTransformBorderColor } from './borderColor'
+import { createTransformBorderStyle } from './borderStyle'
+import { createTransformBorderWidth } from './borderWidth'
 
 const borderWidth = __HYPHENATE__ ? '-width' : 'Width'
 const borderStyle = __HYPHENATE__ ? '-style' : 'Style'
 const borderColor = __HYPHENATE__ ? '-color' : 'Color'
 
+const handleTransformBorder = (decl: Declaration): Declaration[] => {
+  const { prop, value, important, raws, source } = decl
+  let splitResult: Array<string> = value.replace(/\s*,\s*/g, ',').split(/\s+/)
+  const havVar = splitResult.some((str: string): boolean =>
+    str.startsWith('var(')
+  )
+  let result: Array<string | null> = []
+  // 包含 var ，直接视为 width/style/color 都使用默认值
+  if (havVar) {
+    result = splitResult
+    splitResult = []
+  } else {
+    result = [
+      /^[\d\.]+\S*|^(thin|medium|thick)$/,
+      /^(solid|dashed|dotted|none)$/,
+      /\S+/,
+    ].map((item): string | null => {
+      const index = splitResult.findIndex((str: string): boolean =>
+        item.test(str)
+      )
+      return index < 0 ? null : splitResult.splice(index, 1)[0]
+    })
+  }
+
+  if (splitResult.length > 0 && value != '') {
+    return [decl]
+  }
+
+  const defaultWidth = (str: string | null): string => {
+    if (str != null) {
+      return str.trim()
+    }
+    return 'medium'
+  }
+  const defaultStyle = (str: string | null): string => {
+    if (str != null) {
+      return str.trim()
+    }
+    return 'none'
+  }
+  const defaultColor = (str: string | null): string => {
+    if (str != null) {
+      return str.trim()
+    }
+    return '#000000'
+  }
+
+  const defaultOptions = {
+    type: 'uvue' as const,
+  }
+
+  return [
+    ...createTransformBorderWidth(defaultOptions)(
+      createDecl(
+        prop + borderWidth,
+        defaultWidth(result[0]),
+        important,
+        raws,
+        source
+      )
+    ),
+    ...createTransformBorderStyle(defaultOptions)(
+      createDecl(
+        prop + borderStyle,
+        defaultStyle(result[1]),
+        important,
+        raws,
+        source
+      )
+    ),
+    ...createTransformBorderColor({
+      type: 'uvue',
+    })(
+      createDecl(
+        prop + borderColor,
+        defaultColor(result[2]),
+        important,
+        raws,
+        source
+      )
+    ),
+  ]
+}
+
+const handleTransformBorderNvue = (decl: Declaration): Declaration[] => {
+  let { prop, value, important, raws, source } = decl
+  value = value.trim()
+  const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
+  const result = [
+    /^[\d\.]+\S*|^(thin|medium|thick)$/,
+    /^(solid|dashed|dotted|none)$/,
+    /\S+/,
+  ].map((item) => {
+    const index = splitResult.findIndex((str) => item.test(str))
+    return index < 0 ? null : splitResult.splice(index, 1)[0]
+  })
+  if (splitResult.length) {
+    return [decl]
+  }
+  return [
+    createDecl(
+      prop + borderWidth,
+      (result[0] || '0').trim(),
+      important,
+      raws,
+      source
+    ),
+    createDecl(
+      prop + borderStyle,
+      (result[1] || 'solid').trim(),
+      important,
+      raws,
+      source
+    ),
+    createDecl(
+      prop + borderColor,
+      (result[2] || '#000000').trim(),
+      important,
+      raws,
+      source
+    ),
+  ]
+}
+
 export function createTransformBorder(
   options: NormalizeOptions
 ): TransformDecl {
   return (decl: Declaration): Declaration[] => {
-    const { prop, value, important, raws, source } = decl
-    let splitResult: Array<string> = value.replace(/\s*,\s*/g, ',').split(/\s+/)
-    const havVar = splitResult.some((str: string): boolean =>
-      str.startsWith('var(')
-    )
-    let result: Array<string | null> = []
-    // 包含 var ，直接视为 width/style/color 都使用默认值
-    if (havVar) {
-      result = splitResult
-      splitResult = []
-    } else {
-      result = [
-        /^[\d\.]+\S*|^(thin|medium|thick)$/,
-        /^(solid|dashed|dotted|none)$/,
-        /\S+/,
-      ].map((item): string | null => {
-        const index = splitResult.findIndex((str: string): boolean =>
-          item.test(str)
-        )
-        return index < 0 ? null : splitResult.splice(index, 1)[0]
-      })
-    }
-
-    if (splitResult.length > 0 && value != '') {
-      return [decl]
-    }
-
-    const defaultWidth = (str: string | null): string => {
-      if (str != null) {
-        return str.trim()
-      }
-      return 'medium'
-    }
-    const defaultStyle = (str: string | null): string => {
-      if (str != null) {
-        return str.trim()
-      }
-      return 'none'
-    }
-    const defaultColor = (str: string | null): string => {
-      if (str != null) {
-        return str.trim()
-      }
-      return '#000000'
-    }
-
-    return [
-      ...transformBorderWidth(
-        createDecl(
-          prop + borderWidth,
-          defaultWidth(result[0]),
-          important,
-          raws,
-          source
-        )
-      ),
-      ...transformBorderStyle(
-        createDecl(
-          prop + borderStyle,
-          defaultStyle(result[1]),
-          important,
-          raws,
-          source
-        )
-      ),
-      ...transformBorderColor(
-        createDecl(
-          prop + borderColor,
-          defaultColor(result[2]),
-          important,
-          raws,
-          source
-        )
-      ),
-    ]
-  }
-}
-
-export function createTransformBorderNvue(
-  options: NormalizeOptions
-): TransformDecl {
-  return (decl) => {
-    let { prop, value, important, raws, source } = decl
-    value = value.trim()
-    const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
-    const result = [
-      /^[\d\.]+\S*|^(thin|medium|thick)$/,
-      /^(solid|dashed|dotted|none)$/,
-      /\S+/,
-    ].map((item) => {
-      const index = splitResult.findIndex((str) => item.test(str))
-      return index < 0 ? null : splitResult.splice(index, 1)[0]
-    })
-    if (splitResult.length) {
-      return [decl]
-    }
-    return [
-      createDecl(
-        prop + borderWidth,
-        (result[0] || '0').trim(),
-        important,
-        raws,
-        source
-      ),
-      createDecl(
-        prop + borderStyle,
-        (result[1] || 'solid').trim(),
-        important,
-        raws,
-        source
-      ),
-      createDecl(
-        prop + borderColor,
-        (result[2] || '#000000').trim(),
-        important,
-        raws,
-        source
-      ),
-    ]
+    return options.type === 'uvue'
+      ? handleTransformBorder(decl)
+      : handleTransformBorderNvue(decl)
   }
 }

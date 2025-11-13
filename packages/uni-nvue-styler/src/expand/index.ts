@@ -5,14 +5,11 @@ import {
   hyphenateStyleProperty,
 } from '../utils'
 import { createTransformBackground } from './background'
-import { createTransformBorder, createTransformBorderNvue } from './border'
-import { transformBorderColor, transformBorderColorNvue } from './borderColor'
-import {
-  transformBorderRadius,
-  transformBorderRadiusNvue,
-} from './borderRadius'
-import { transformBorderStyle, transformBorderStyleNvue } from './borderStyle'
-import { transformBorderWidth, transformBorderWidthNvue } from './borderWidth'
+import { createTransformBorder } from './border'
+import { createTransformBorderColor } from './borderColor'
+import { createTransformBorderRadius } from './borderRadius'
+import { createTransformBorderStyle } from './borderStyle'
+import { createTransformBorderWidth } from './borderWidth'
 import { transformFlexFlow } from './flexFlow'
 import { transformFont } from './font'
 import { transformMargin } from './margin'
@@ -23,10 +20,7 @@ import { transformFlex } from './flex'
 function getDeclTransforms(
   options: NormalizeOptions
 ): Record<string, TransformDecl> {
-  const transformBorder =
-    options.type === 'uvue'
-      ? createTransformBorder(options)
-      : createTransformBorderNvue(options)
+  const transformBorder = createTransformBorder(options)
   const styleMap: Record<string, TransformDecl> = {
     transition: transformTransition,
     border: transformBorder,
@@ -35,16 +29,10 @@ function getDeclTransforms(
     borderRight: transformBorder,
     borderBottom: transformBorder,
     borderLeft: transformBorder,
-    borderStyle:
-      options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
-    borderWidth:
-      options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
-    borderColor:
-      options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
-    borderRadius:
-      options.type === 'uvue'
-        ? transformBorderRadius
-        : transformBorderRadiusNvue,
+    borderStyle: createTransformBorderStyle(options),
+    borderWidth: createTransformBorderWidth(options),
+    borderColor: createTransformBorderColor(options),
+    borderRadius: createTransformBorderRadius(options),
     // uvue已经支持这些简写属性，不需要展开
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,

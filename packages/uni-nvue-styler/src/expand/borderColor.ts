@@ -1,12 +1,17 @@
 import { capitalize, hyphenate } from '@vue/shared'
-import { type Declaration, createDecl } from '../utils'
+import {
+  type Declaration,
+  type NormalizeOptions,
+  type TransformDecl,
+  createDecl,
+} from '../utils'
 
 const borderTop = __HYPHENATE__ ? 'border-top-' : 'borderTop'
 const borderRight = __HYPHENATE__ ? 'border-right-' : 'borderRight'
 const borderBottom = __HYPHENATE__ ? 'border-bottom-' : 'borderBottom'
 const borderLeft = __HYPHENATE__ ? 'border-left-' : 'borderLeft'
 
-export const transformBorderColor = (decl: Declaration): Declaration[] => {
+const transformBorderColor = (decl: Declaration): Declaration[] => {
   let { prop, value, important, raws, source } = decl
   value = value.trim()
   const _property_split = hyphenate(prop).split('-')
@@ -47,7 +52,7 @@ export const transformBorderColor = (decl: Declaration): Declaration[] => {
   ]
 }
 
-export const transformBorderColorNvue = (decl: Declaration): Declaration[] => {
+const transformBorderColorNvue = (decl: Declaration): Declaration[] => {
   let { prop, value, important, raws, source } = decl
   value = value.trim()
   let property = hyphenate(prop).split('-')[1]
@@ -78,4 +83,14 @@ export const transformBorderColorNvue = (decl: Declaration): Declaration[] => {
     ),
     createDecl(borderLeft + property, splitResult[3], important, raws, source),
   ]
+}
+
+export function createTransformBorderColor(
+  options: NormalizeOptions
+): TransformDecl {
+  return (decl: Declaration): Declaration[] => {
+    return options.type === 'uvue'
+      ? transformBorderColor(decl)
+      : transformBorderColorNvue(decl)
+  }
 }

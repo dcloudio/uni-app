@@ -1,4 +1,4 @@
-import { type Declaration, type TransformDecl, createDecl } from '../utils'
+import { type Declaration, createDecl } from '../utils'
 
 const transitionProperty = __HYPHENATE__
   ? 'transition-property'
@@ -10,13 +10,13 @@ const transitionTimingFunction = __HYPHENATE__
   ? 'transition-timing-function'
   : 'transitionTimingFunction'
 const transitionDelay = __HYPHENATE__ ? 'transition-delay' : 'transitionDelay'
-export const transformTransition: TransformDecl = (decl) => {
-  let { value, important, raws, source } = decl
-  value = value.trim()
+
+export const transformTransition = (decl: Declaration): Declaration[] => {
+  const { value, important, raws, source } = decl
 
   const result: Declaration[] = []
 
-  let match
+  let match: RegExpMatchArray | null = null
 
   // 针对 cubic-bezier 特殊处理
   // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
@@ -29,25 +29,49 @@ export const transformTransition: TransformDecl = (decl) => {
     const CHUNK_REGEXP =
       /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/
 
-    match = value.match(CHUNK_REGEXP)
+    match = CHUNK_REGEXP.exec(value)
   }
 
-  if (!match) {
+  if (match == null) {
     return result
   }
-  match[1] &&
+  if (match[1] != null) {
     result.push(
-      createDecl(transitionProperty, match[1], important, raws, source)
+      createDecl(
+        transitionProperty,
+        match[1] as string,
+        important,
+        raws,
+        source
+      )
     )
-  match[2] &&
+  }
+  if (match[2] != null) {
     result.push(
-      createDecl(transitionDuration, match[2], important, raws, source)
+      createDecl(
+        transitionDuration,
+        match[2] as string,
+        important,
+        raws,
+        source
+      )
     )
-  match[3] &&
+  }
+  if (match[3] != null) {
     result.push(
-      createDecl(transitionTimingFunction, match[3], important, raws, source)
+      createDecl(
+        transitionTimingFunction,
+        match[3] as string,
+        important,
+        raws,
+        source
+      )
     )
-  match[4] &&
-    result.push(createDecl(transitionDelay, match[4], important, raws, source))
+  }
+  if (match[4] != null) {
+    result.push(
+      createDecl(transitionDelay, match[4] as string, important, raws, source)
+    )
+  }
   return result
 }
