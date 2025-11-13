@@ -150,7 +150,7 @@ export function createConfigResolved({
               const flexDirection = parseUniXFlexDirection(
                 parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
               )
-              cssCode = `:host{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
+              cssCode = `:host,page{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
             }
 
             if (!isMiniProgramPageFile(filename)) {

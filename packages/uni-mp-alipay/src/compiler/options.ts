@@ -52,7 +52,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   directive: 'a:',
   component: {
-    // 支付宝小程序支持 :host 选择器
+    // 只有组件支持 :host 选择器，还需开启 virtualHost: false (https://opendocs.alipay.com/mini/framework/component-template#%3Ahost%20%E9%80%89%E6%8B%A9%E5%99%A8)
     ':host': true,
     dir: COMPONENTS_DIR,
     getPropertySync: true,
