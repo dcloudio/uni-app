@@ -2,6 +2,13 @@ import { parseDom2StaticStyle } from '../../../src/dom2'
 import { TEST_OPTIONS_LIST } from '../utils'
 
 describe('border:', () => {
+  test(`border: none`, () => {
+    const input = `border: none`
+    TEST_OPTIONS_LIST.forEach((options) => {
+      const result = parseDom2StaticStyle(input, options)
+      expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+    })
+  })
   ;['none', 'solid', 'dashed', 'dotted', 'invalid'].forEach((value) => {
     const borderValue = `1px ${value} red`
     test(borderValue, () => {
