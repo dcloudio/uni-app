@@ -101,7 +101,8 @@ export function uniAppCssPrePlugin(): Plugin {
           const { ASDSF } = requireUniHelpers()
           ASDSF(
             normalizePath(filename),
-            genDom2ClassName(filename, process.env.UNI_INPUT_DIR),
+            genDom2ClassName(filename, process.env.UNI_INPUT_DIR) +
+              'SharedData',
             cssCode
           )
         },
