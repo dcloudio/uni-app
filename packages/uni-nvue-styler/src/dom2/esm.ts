@@ -1,2 +1,5 @@
 export { expand } from '../expand'
-export { toSharedDataStyle } from './processors/runtime'
+export {
+  toSharedDataStyle,
+  toSharedDataStyleColorValue,
+} from './processors/runtime'

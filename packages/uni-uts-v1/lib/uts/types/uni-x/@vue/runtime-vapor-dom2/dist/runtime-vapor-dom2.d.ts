@@ -199,6 +199,7 @@ export declare function setSharedDataTemplateRef<S extends UniSharedData>(shared
 export declare function toSharedDataBoolean(value: any | null): boolean;
 export declare function toSharedDataNumber(value: any | null): number;
 export declare function toSharedDataString(value: any | null): string;
+export declare function toSharedDataColor(value: any | null): number;
 export declare function createSharedDataVFor<T extends UniSharedData>(scope: UniSharedDataPage, create: () => T): UniSharedDataVFor<T>;
 /**
  * 仅限页面 renderSharedData 紧跟着 useSharedDataPage 使用，用于及时给页面示例挂靠 sharedDataScope

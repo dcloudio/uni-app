@@ -38,6 +38,13 @@ export function parseNativeColorValue(value: string) {
   }
 }
 
-export function toSharedDataStyleColorValue(value: string | number) {
-  return `${value}`
+export function toSharedDataStyleColorValue(value: string | number): number {
+  if (value) {
+    const nativeColorValue = parseNativeColorValue(String(value))
+    if (nativeColorValue) {
+      return parseInt(nativeColorValue)
+    }
+  }
+  // 如果失败，返回透明
+  return 0x00000000
 }

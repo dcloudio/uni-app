@@ -27,7 +27,7 @@
   },
   {
     "input": {
-      "src/dom2/esm.ts": ["dist-x/uni-nvue-styler.es.js"]
+      "src/dom2/esm.ts": ["dist-dom2/uni-uvue-styler.es.js"]
     },
     "replacements": {
       "__HYPHENATE__": "true",
