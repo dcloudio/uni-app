@@ -174,7 +174,7 @@
         }
       }
     },
-    "values": ["none", "flex"],
+    "values": ["flex", "none"],
     "defaultValue": "flex"
   },
   "height": {
