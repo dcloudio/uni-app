@@ -707,6 +707,19 @@
       }
     }
   },
+  "uni-map-amap": {
+    "uni": {
+      "createMapContext": {
+        "name": "createMapContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-map-tencent": {
     "uni": {
       "createMapContext": {
