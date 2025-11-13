@@ -1,7 +1,4 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import fs from 'fs-extra'
-import path from 'path'
-import crypto from 'crypto'
 import colors from 'picocolors'
 
 import {
@@ -14,10 +11,12 @@ import {
   genDom2ClassName,
   generateCodeFrame,
   insertBeforePlugin,
+  normalizePath,
   parseAssets,
   parseVueRequest,
   preUVueCss,
   removePlugins,
+  requireUniHelpers,
   resolveAppVue,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
@@ -39,7 +38,6 @@ export function uniAppCssPrePlugin(): Plugin {
   const name = 'uni:app-uvue-css-pre'
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
-  const cssCodeCache = new Map<string, string>()
   return {
     name,
     // 需要提前，因为unocss会在configResolved读取vite:css-post插件
@@ -59,13 +57,10 @@ export function uniAppCssPrePlugin(): Plugin {
           const { filename } = parseVueRequest(id)
           if (filename === mainPath || filename === appUVuePath) {
             // 合并到App
-            return `GenApp.style.cpp`
+            return `GenApp`
           }
           if (isVue(filename)) {
-            return (
-              genDom2ClassName(filename, process.env.UNI_INPUT_DIR) +
-              'SharedData.style.cpp'
-            )
+            return filename
           }
         },
         async chunkCssCode(filename, cssCode) {
@@ -99,23 +94,15 @@ export function uniAppCssPrePlugin(): Plugin {
           return code
         },
         emitFile(filename, cssCode) {
-          if (filename === 'GenApp.style.cpp') {
+          if (filename === 'GenApp') {
             // TODO 暂不处理
             return
           }
-          const className = filename.replace('.style.cpp', '')
-          const hash = md5(cssCode)
-          // 判断是否发生变化
-          if (cssCodeCache.get(className) === hash) {
-            return
-          }
-          cssCodeCache.set(className, hash)
-          process.env.UNI_APP_X_DOM2_CPP_CHANGED = 'true'
-          fs.outputFileSync(
-            path.resolve(process.env.UNI_APP_HARMONY_DOM2_CPP_DIR!, filename),
-            `#include "${className}.h"
-using namespace vue::css;
-UniStyleSheetMap ${className}::_styleSheet = ${cssCode};`
+          const { ASDSF } = requireUniHelpers()
+          ASDSF(
+            normalizePath(filename),
+            genDom2ClassName(filename, process.env.UNI_INPUT_DIR),
+            cssCode
           )
         },
       })
@@ -123,14 +110,11 @@ UniStyleSheetMap ${className}::_styleSheet = ${cssCode};`
       // TODO 加密插件
       insertBeforePlugin(cssPlugin(config), name, config)
       const plugins = config.plugins as Plugin[]
-      const index = plugins.findIndex((p) => p.name === 'uni:app-uvue')
+      // 重要：必须放到 uni:sd 前
+      const index = plugins.findIndex((p) => p.name === 'uni:sd')
       plugins.splice(index, 0, uvueCssPostPlugin)
     },
   }
-}
-
-function md5(code: string) {
-  return crypto.createHash('md5').update(code).digest('hex')
 }
 
 export function uniAppCssPlugin(): Plugin {
