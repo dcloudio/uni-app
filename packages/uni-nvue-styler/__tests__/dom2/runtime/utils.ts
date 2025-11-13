@@ -1,25 +1,5 @@
 import type { Declaration } from 'postcss'
-import { expand, toSharedDataStyle } from '../../src/dom2/esm'
-
-describe('toSharedDataStyle', () => {
-  test('basic', () => {
-    const style = new Map<string, unknown>()
-    style.set('width', '100px')
-    style.set('height', '100px')
-    style.set('display', 'flex')
-    style.set('justify-content', 'center')
-    style.set('flex-grow', '2')
-    style.set('color', 'red')
-    style.set('--color', 'red')
-    style.set('--font-size', '16px')
-    const result = toSharedDataStyle(style)
-    expect(result).toMatchSnapshot()
-  })
-  test('border: 1px solid red', () => {
-    const result = toSharedDataStyle(parseStyleDecl('border', '1px solid red'))
-    expect(result).toMatchSnapshot()
-  })
-})
+import { expand } from '../../../src/dom2/esm'
 
 const processDeclaration = expand({ type: 'uvue' }).Declaration as (
   decl: Declaration
@@ -70,7 +50,10 @@ function setStyle(expandRes: any[]) {
  * 解析 style，返回 Map
  * eg: width, null => map [['width', '']]
  */
-function parseStyleDecl(prop: string, value: any | null): Map<string, any> {
+export function parseStyleDecl(
+  prop: string,
+  value: any | null
+): Map<string, any> {
   const val = normalizeStyle(prop, value)
   const res = setStyle(val)
   return res

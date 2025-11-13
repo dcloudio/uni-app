@@ -14,7 +14,7 @@ export function isUnitType(propertyType?: string) {
   return propertyType && UNIT_TYPES.includes(propertyType)
 }
 
-interface UnitValue {
+export interface UnitValue {
   value: number
   unit: string
 }
@@ -85,11 +85,18 @@ export function parseUnitValue(
   }
 }
 
-export function toSharedDataStyleUnitValue(value: string | number) {
+export interface SharedDataStyleUnitValue {
+  value: number
+  unit: number
+}
+
+export function toSharedDataStyleUnitValue(
+  value: string | number
+): SharedDataStyleUnitValue | void {
   const unitValue = parseUnitValue(String(value))
   if (unitValue) {
     unitValue.unit = Units.indexOf(unitValue.unit) as unknown as string
-    return unitValue
+    return unitValue as unknown as SharedDataStyleUnitValue
   }
   return toSharedDataStyleValueError(`Invalid unit value: ${value}`)
 }

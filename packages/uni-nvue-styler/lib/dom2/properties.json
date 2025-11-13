@@ -93,5 +93,6 @@
   "transition-timing-function": "TransitionTimingFunction",
   "opacity": "Opacity",
   "box-shadow": "BoxShadow",
-  "pointer-events": "PointerEvents"
+  "pointer-events": "PointerEvents",
+  "all": "All"
 }

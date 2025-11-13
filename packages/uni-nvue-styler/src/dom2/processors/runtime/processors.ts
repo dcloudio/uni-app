@@ -1,32 +1,44 @@
+// 此文件是根据 app-css.json 和 properties.json 动态生成，请勿手动修改
 import { toSharedDataStyleColorValue } from '../color'
 import { toSharedDataStyleNumberValue } from '../number'
 import { toSharedDataStyleStringValue } from '../string'
 import { toSharedDataStyleUnitValue } from '../unit'
+import { toSharedDataStyleBorderWidthValue } from '../borderWidth'
+import { createToSharedDataStyleCombinedValue } from './utils'
 export const UniCSSPropertyVariable = 1
 export const processors = new Map<string, [number, (value: string) => any]>([
-  ['align-content', [48, toSharedDataStyleAlignContent]],
-  ['align-items', [46, toSharedDataStyleAlignItems]],
-  ['align-self', [47, toSharedDataStyleAlignSelf]],
-  ['flex-basis', [44, toSharedDataStyleUnitValue]],
-  ['flex-direction', [39, toSharedDataStyleFlexDirection]],
+  ['align-content', [48, toSharedDataStyleAlignContentValue]],
+  ['align-items', [46, toSharedDataStyleAlignItemsValue]],
+  ['align-self', [47, toSharedDataStyleAlignSelfValue]],
+  [
+    'flex-basis',
+    [
+      44,
+      createToSharedDataStyleCombinedValue([
+        toSharedDataStyleUnitValue,
+        toSharedDataStyleFlexBasisValue,
+      ]),
+    ],
+  ],
+  ['flex-direction', [39, toSharedDataStyleFlexDirectionValue]],
   ['flex-grow', [42, toSharedDataStyleNumberValue]],
   ['flex-shrink', [43, toSharedDataStyleNumberValue]],
-  ['flex-wrap', [40, toSharedDataStyleFlexWrap]],
-  ['justify-content', [45, toSharedDataStyleJustifyContent]],
+  ['flex-wrap', [40, toSharedDataStyleFlexWrapValue]],
+  ['justify-content', [45, toSharedDataStyleJustifyContentValue]],
   ['bottom', [4, toSharedDataStyleUnitValue]],
-  ['display', [50, toSharedDataStyleDisplay]],
+  ['display', [50, toSharedDataStyleDisplayValue]],
   ['height', [7, toSharedDataStyleUnitValue]],
   ['left', [5, toSharedDataStyleUnitValue]],
   ['max-height', [11, toSharedDataStyleUnitValue]],
   ['max-width', [10, toSharedDataStyleUnitValue]],
   ['min-height', [9, toSharedDataStyleUnitValue]],
   ['min-width', [8, toSharedDataStyleUnitValue]],
-  ['position', [51, toSharedDataStylePosition]],
+  ['position', [51, toSharedDataStylePositionValue]],
   ['right', [3, toSharedDataStyleUnitValue]],
   ['top', [2, toSharedDataStyleUnitValue]],
   ['width', [6, toSharedDataStyleUnitValue]],
-  ['visibility', [52, toSharedDataStyleVisibility]],
-  ['background-clip', [67, toSharedDataStyleBackgroundClip]],
+  ['visibility', [52, toSharedDataStyleVisibilityValue]],
+  ['background-clip', [67, toSharedDataStyleBackgroundClipValue]],
   ['background-color', [65, toSharedDataStyleColorValue]],
   ['background-image', [66, toSharedDataStyleStringValue]],
   ['border-color', [58, toSharedDataStyleStringValue]],
@@ -34,21 +46,57 @@ export const processors = new Map<string, [number, (value: string) => any]>([
   ['border-left-color', [61, toSharedDataStyleColorValue]],
   ['border-right-color', [63, toSharedDataStyleColorValue]],
   ['border-top-color', [56, toSharedDataStyleColorValue]],
-  ['border-style', [25, toSharedDataStyleBorderStyle]],
-  ['border-bottom-style', [34, toSharedDataStyleBorderBottomStyle]],
-  ['border-left-style', [37, toSharedDataStyleBorderLeftStyle]],
-  ['border-right-style', [31, toSharedDataStyleBorderRightStyle]],
-  ['border-top-style', [28, toSharedDataStyleBorderTopStyle]],
-  ['border-bottom-width', [33, toSharedDataStyleUnitValue]],
-  ['border-left-width', [36, toSharedDataStyleUnitValue]],
-  ['border-right-width', [30, toSharedDataStyleUnitValue]],
-  ['border-top-width', [27, toSharedDataStyleUnitValue]],
-  ['border-bottom-left-radius', [54, toSharedDataStyleNumberValue]],
-  ['border-bottom-right-radius', [55, toSharedDataStyleNumberValue]],
-  ['border-top-left-radius', [59, toSharedDataStyleNumberValue]],
-  ['border-top-right-radius', [60, toSharedDataStyleNumberValue]],
+  ['border-style', [25, toSharedDataStyleBorderStyleValue]],
+  ['border-bottom-style', [34, toSharedDataStyleBorderBottomStyleValue]],
+  ['border-left-style', [37, toSharedDataStyleBorderLeftStyleValue]],
+  ['border-right-style', [31, toSharedDataStyleBorderRightStyleValue]],
+  ['border-top-style', [28, toSharedDataStyleBorderTopStyleValue]],
+  [
+    'border-bottom-width',
+    [
+      33,
+      createToSharedDataStyleCombinedValue([
+        toSharedDataStyleUnitValue,
+        toSharedDataStyleBorderWidthValue,
+      ]),
+    ],
+  ],
+  [
+    'border-left-width',
+    [
+      36,
+      createToSharedDataStyleCombinedValue([
+        toSharedDataStyleUnitValue,
+        toSharedDataStyleBorderWidthValue,
+      ]),
+    ],
+  ],
+  [
+    'border-right-width',
+    [
+      30,
+      createToSharedDataStyleCombinedValue([
+        toSharedDataStyleUnitValue,
+        toSharedDataStyleBorderWidthValue,
+      ]),
+    ],
+  ],
+  [
+    'border-top-width',
+    [
+      27,
+      createToSharedDataStyleCombinedValue([
+        toSharedDataStyleUnitValue,
+        toSharedDataStyleBorderWidthValue,
+      ]),
+    ],
+  ],
+  ['border-bottom-left-radius', [54, toSharedDataStyleUnitValue]],
+  ['border-bottom-right-radius', [55, toSharedDataStyleUnitValue]],
+  ['border-top-left-radius', [59, toSharedDataStyleUnitValue]],
+  ['border-top-right-radius', [60, toSharedDataStyleUnitValue]],
   ['box-shadow', [93, toSharedDataStyleStringValue]],
-  ['box-sizing', [12, toSharedDataStyleBoxSizing]],
+  ['box-sizing', [12, toSharedDataStyleBoxSizingValue]],
   ['margin-bottom', [16, toSharedDataStyleUnitValue]],
   ['margin-left', [17, toSharedDataStyleUnitValue]],
   ['margin-right', [15, toSharedDataStyleUnitValue]],
@@ -58,8 +106,8 @@ export const processors = new Map<string, [number, (value: string) => any]>([
   ['padding-right', [20, toSharedDataStyleUnitValue]],
   ['padding-top', [19, toSharedDataStyleUnitValue]],
   ['opacity', [92, toSharedDataStyleNumberValue]],
-  ['overflow', [53, toSharedDataStyleOverflow]],
-  ['pointer-events', [94, toSharedDataStylePointerEvents]],
+  ['overflow', [53, toSharedDataStyleOverflowValue]],
+  ['pointer-events', [94, toSharedDataStylePointerEventsValue]],
   ['z-index', [49, toSharedDataStyleNumberValue]],
   ['transform', [85, toSharedDataStyleStringValue]],
   ['transform-origin', [86, toSharedDataStyleStringValue]],
@@ -70,17 +118,35 @@ export const processors = new Map<string, [number, (value: string) => any]>([
   ['color', [75, toSharedDataStyleColorValue]],
   ['font-family', [68, toSharedDataStyleStringValue]],
   ['font-size', [69, toSharedDataStyleUnitValue]],
-  ['font-style', [70, toSharedDataStyleFontStyle]],
-  ['font-weight', [71, toSharedDataStyleFontWeight]],
+  ['font-style', [70, toSharedDataStyleFontStyleValue]],
+  [
+    'font-weight',
+    [
+      71,
+      createToSharedDataStyleCombinedValue([
+        toSharedDataStyleNumberValue,
+        toSharedDataStyleFontWeightValue,
+      ]),
+    ],
+  ],
   ['letter-spacing', [73, toSharedDataStyleUnitValue]],
-  ['line-height', [72, toSharedDataStyleLineHeight]],
-  ['text-align', [76, toSharedDataStyleTextAlign]],
-  ['text-decoration-line', [79, toSharedDataStyleTextDecorationLine]],
-  ['text-overflow', [82, toSharedDataStyleTextOverflow]],
+  [
+    'line-height',
+    [
+      72,
+      createToSharedDataStyleCombinedValue([
+        toSharedDataStyleUnitValue,
+        toSharedDataStyleLineHeightValue,
+      ]),
+    ],
+  ],
+  ['text-align', [76, toSharedDataStyleTextAlignValue]],
+  ['text-decoration-line', [79, toSharedDataStyleTextDecorationLineValue]],
+  ['text-overflow', [82, toSharedDataStyleTextOverflowValue]],
   ['text-shadow', [83, toSharedDataStyleStringValue]],
-  ['white-space', [84, toSharedDataStyleWhiteSpace]],
+  ['white-space', [84, toSharedDataStyleWhiteSpaceValue]],
 ])
-function toSharedDataStyleAlignContent(value: string | number) {
+function toSharedDataStyleAlignContentValue(value: string | number) {
   switch (value) {
     case 'auto':
       return 0
@@ -104,7 +170,7 @@ function toSharedDataStyleAlignContent(value: string | number) {
       return 4
   }
 }
-function toSharedDataStyleAlignItems(value: string | number) {
+function toSharedDataStyleAlignItemsValue(value: string | number) {
   switch (value) {
     case 'auto':
       return 0
@@ -128,7 +194,7 @@ function toSharedDataStyleAlignItems(value: string | number) {
       return 4
   }
 }
-function toSharedDataStyleAlignSelf(value: string | number) {
+function toSharedDataStyleAlignSelfValue(value: string | number) {
   switch (value) {
     case 'auto':
       return 0
@@ -152,7 +218,17 @@ function toSharedDataStyleAlignSelf(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleFlexDirection(value: string | number) {
+function toSharedDataStyleFlexBasisValue(value: string | number) {
+  switch (value) {
+    case 'auto':
+      return 0
+    case 'content':
+      return 1
+    default:
+      return 0
+  }
+}
+function toSharedDataStyleFlexDirectionValue(value: string | number) {
   switch (value) {
     case 'row':
       return 0
@@ -166,7 +242,7 @@ function toSharedDataStyleFlexDirection(value: string | number) {
       return 2
   }
 }
-function toSharedDataStyleFlexWrap(value: string | number) {
+function toSharedDataStyleFlexWrapValue(value: string | number) {
   switch (value) {
     case 'nowrap':
       return 0
@@ -178,7 +254,7 @@ function toSharedDataStyleFlexWrap(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleJustifyContent(value: string | number) {
+function toSharedDataStyleJustifyContentValue(value: string | number) {
   switch (value) {
     case 'auto':
       return 0
@@ -202,17 +278,17 @@ function toSharedDataStyleJustifyContent(value: string | number) {
       return 1
   }
 }
-function toSharedDataStyleDisplay(value: string | number) {
+function toSharedDataStyleDisplayValue(value: string | number) {
   switch (value) {
-    case 'none':
-      return 0
     case 'flex':
+      return 0
+    case 'none':
       return 1
     default:
-      return 1
+      return 0
   }
 }
-function toSharedDataStylePosition(value: string | number) {
+function toSharedDataStylePositionValue(value: string | number) {
   switch (value) {
     case 'relative':
       return 0
@@ -228,7 +304,7 @@ function toSharedDataStylePosition(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleVisibility(value: string | number) {
+function toSharedDataStyleVisibilityValue(value: string | number) {
   switch (value) {
     case 'visible':
       return 0
@@ -238,7 +314,7 @@ function toSharedDataStyleVisibility(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleBackgroundClip(value: string | number) {
+function toSharedDataStyleBackgroundClipValue(value: string | number) {
   switch (value) {
     case 'border-box':
       return 0
@@ -250,7 +326,7 @@ function toSharedDataStyleBackgroundClip(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleBorderStyle(value: string | number) {
+function toSharedDataStyleBorderStyleValue(value: string | number) {
   switch (value) {
     case 'none':
       return 0
@@ -264,7 +340,7 @@ function toSharedDataStyleBorderStyle(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleBorderBottomStyle(value: string | number) {
+function toSharedDataStyleBorderBottomStyleValue(value: string | number) {
   switch (value) {
     case 'none':
       return 0
@@ -278,7 +354,7 @@ function toSharedDataStyleBorderBottomStyle(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleBorderLeftStyle(value: string | number) {
+function toSharedDataStyleBorderLeftStyleValue(value: string | number) {
   switch (value) {
     case 'none':
       return 0
@@ -292,7 +368,7 @@ function toSharedDataStyleBorderLeftStyle(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleBorderRightStyle(value: string | number) {
+function toSharedDataStyleBorderRightStyleValue(value: string | number) {
   switch (value) {
     case 'none':
       return 0
@@ -306,7 +382,7 @@ function toSharedDataStyleBorderRightStyle(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleBorderTopStyle(value: string | number) {
+function toSharedDataStyleBorderTopStyleValue(value: string | number) {
   switch (value) {
     case 'none':
       return 0
@@ -320,7 +396,7 @@ function toSharedDataStyleBorderTopStyle(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleBoxSizing(value: string | number) {
+function toSharedDataStyleBoxSizingValue(value: string | number) {
   switch (value) {
     case 'content-box':
       return 0
@@ -330,7 +406,7 @@ function toSharedDataStyleBoxSizing(value: string | number) {
       return 1
   }
 }
-function toSharedDataStyleOverflow(value: string | number) {
+function toSharedDataStyleOverflowValue(value: string | number) {
   switch (value) {
     case 'visible':
       return 0
@@ -340,7 +416,7 @@ function toSharedDataStyleOverflow(value: string | number) {
       return 1
   }
 }
-function toSharedDataStylePointerEvents(value: string | number) {
+function toSharedDataStylePointerEventsValue(value: string | number) {
   switch (value) {
     case 'auto':
       return 0
@@ -350,7 +426,7 @@ function toSharedDataStylePointerEvents(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleFontStyle(value: string | number) {
+function toSharedDataStyleFontStyleValue(value: string | number) {
   switch (value) {
     case 'normal':
       return 0
@@ -360,7 +436,7 @@ function toSharedDataStyleFontStyle(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleFontWeight(value: string | number) {
+function toSharedDataStyleFontWeightValue(value: string | number) {
   switch (value) {
     case 'normal':
       return 0
@@ -374,7 +450,7 @@ function toSharedDataStyleFontWeight(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleLineHeight(value: string | number) {
+function toSharedDataStyleLineHeightValue(value: string | number) {
   switch (value) {
     case 'normal':
       return 0
@@ -382,7 +458,7 @@ function toSharedDataStyleLineHeight(value: string | number) {
       return -1
   }
 }
-function toSharedDataStyleTextAlign(value: string | number) {
+function toSharedDataStyleTextAlignValue(value: string | number) {
   switch (value) {
     case 'left':
       return 0
@@ -394,7 +470,7 @@ function toSharedDataStyleTextAlign(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleTextDecorationLine(value: string | number) {
+function toSharedDataStyleTextDecorationLineValue(value: string | number) {
   switch (value) {
     case 'none':
       return 0
@@ -408,7 +484,7 @@ function toSharedDataStyleTextDecorationLine(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleTextOverflow(value: string | number) {
+function toSharedDataStyleTextOverflowValue(value: string | number) {
   switch (value) {
     case 'clip':
       return 0
@@ -418,7 +494,7 @@ function toSharedDataStyleTextOverflow(value: string | number) {
       return 0
   }
 }
-function toSharedDataStyleWhiteSpace(value: string | number) {
+function toSharedDataStyleWhiteSpaceValue(value: string | number) {
   switch (value) {
     case 'normal':
       return 0

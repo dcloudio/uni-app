@@ -464,31 +464,69 @@ function toSharedDataStyleUnitValue(value) {
     return toSharedDataStyleValueError(`Invalid unit value: ${value}`);
 }
 
+const ENUM_BORDER_WIDTH_TYPE_VALUES = {
+    thin: 1,
+    medium: 3,
+    thick: 5,
+};
+function toSharedDataStyleBorderWidthValue(value) {
+    const pxValue = ENUM_BORDER_WIDTH_TYPE_VALUES[value];
+    if (pxValue) {
+        return {
+            value: pxValue,
+            unit: 2, // PX 固定值 2
+        };
+    }
+    return toSharedDataStyleUnitValue(value);
+}
+
+function createToSharedDataStyleCombinedValue(processors) {
+    return (value) => {
+        for (const processor of processors) {
+            const result = processor(value);
+            if (result) {
+                return result;
+            }
+        }
+        return toSharedDataStyleValueError(`Invalid value: ${value}`);
+    };
+}
+
+// 此文件是根据 app-css.json 和 properties.json 动态生成，请勿手动修改
 const UniCSSPropertyVariable = 1;
 const processors = new Map([
-    ['align-content', [48, toSharedDataStyleAlignContent]],
-    ['align-items', [46, toSharedDataStyleAlignItems]],
-    ['align-self', [47, toSharedDataStyleAlignSelf]],
-    ['flex-basis', [44, toSharedDataStyleUnitValue]],
-    ['flex-direction', [39, toSharedDataStyleFlexDirection]],
+    ['align-content', [48, toSharedDataStyleAlignContentValue]],
+    ['align-items', [46, toSharedDataStyleAlignItemsValue]],
+    ['align-self', [47, toSharedDataStyleAlignSelfValue]],
+    [
+        'flex-basis',
+        [
+            44,
+            createToSharedDataStyleCombinedValue([
+                toSharedDataStyleUnitValue,
+                toSharedDataStyleFlexBasisValue,
+            ]),
+        ],
+    ],
+    ['flex-direction', [39, toSharedDataStyleFlexDirectionValue]],
     ['flex-grow', [42, toSharedDataStyleNumberValue]],
     ['flex-shrink', [43, toSharedDataStyleNumberValue]],
-    ['flex-wrap', [40, toSharedDataStyleFlexWrap]],
-    ['justify-content', [45, toSharedDataStyleJustifyContent]],
+    ['flex-wrap', [40, toSharedDataStyleFlexWrapValue]],
+    ['justify-content', [45, toSharedDataStyleJustifyContentValue]],
     ['bottom', [4, toSharedDataStyleUnitValue]],
-    ['display', [50, toSharedDataStyleDisplay]],
+    ['display', [50, toSharedDataStyleDisplayValue]],
     ['height', [7, toSharedDataStyleUnitValue]],
     ['left', [5, toSharedDataStyleUnitValue]],
     ['max-height', [11, toSharedDataStyleUnitValue]],
     ['max-width', [10, toSharedDataStyleUnitValue]],
     ['min-height', [9, toSharedDataStyleUnitValue]],
     ['min-width', [8, toSharedDataStyleUnitValue]],
-    ['position', [51, toSharedDataStylePosition]],
+    ['position', [51, toSharedDataStylePositionValue]],
     ['right', [3, toSharedDataStyleUnitValue]],
     ['top', [2, toSharedDataStyleUnitValue]],
     ['width', [6, toSharedDataStyleUnitValue]],
-    ['visibility', [52, toSharedDataStyleVisibility]],
-    ['background-clip', [67, toSharedDataStyleBackgroundClip]],
+    ['visibility', [52, toSharedDataStyleVisibilityValue]],
+    ['background-clip', [67, toSharedDataStyleBackgroundClipValue]],
     ['background-color', [65, toSharedDataStyleColorValue]],
     ['background-image', [66, toSharedDataStyleStringValue]],
     ['border-color', [58, toSharedDataStyleStringValue]],
@@ -496,21 +534,57 @@ const processors = new Map([
     ['border-left-color', [61, toSharedDataStyleColorValue]],
     ['border-right-color', [63, toSharedDataStyleColorValue]],
     ['border-top-color', [56, toSharedDataStyleColorValue]],
-    ['border-style', [25, toSharedDataStyleBorderStyle]],
-    ['border-bottom-style', [34, toSharedDataStyleBorderBottomStyle]],
-    ['border-left-style', [37, toSharedDataStyleBorderLeftStyle]],
-    ['border-right-style', [31, toSharedDataStyleBorderRightStyle]],
-    ['border-top-style', [28, toSharedDataStyleBorderTopStyle]],
-    ['border-bottom-width', [33, toSharedDataStyleUnitValue]],
-    ['border-left-width', [36, toSharedDataStyleUnitValue]],
-    ['border-right-width', [30, toSharedDataStyleUnitValue]],
-    ['border-top-width', [27, toSharedDataStyleUnitValue]],
-    ['border-bottom-left-radius', [54, toSharedDataStyleNumberValue]],
-    ['border-bottom-right-radius', [55, toSharedDataStyleNumberValue]],
-    ['border-top-left-radius', [59, toSharedDataStyleNumberValue]],
-    ['border-top-right-radius', [60, toSharedDataStyleNumberValue]],
+    ['border-style', [25, toSharedDataStyleBorderStyleValue]],
+    ['border-bottom-style', [34, toSharedDataStyleBorderBottomStyleValue]],
+    ['border-left-style', [37, toSharedDataStyleBorderLeftStyleValue]],
+    ['border-right-style', [31, toSharedDataStyleBorderRightStyleValue]],
+    ['border-top-style', [28, toSharedDataStyleBorderTopStyleValue]],
+    [
+        'border-bottom-width',
+        [
+            33,
+            createToSharedDataStyleCombinedValue([
+                toSharedDataStyleUnitValue,
+                toSharedDataStyleBorderWidthValue,
+            ]),
+        ],
+    ],
+    [
+        'border-left-width',
+        [
+            36,
+            createToSharedDataStyleCombinedValue([
+                toSharedDataStyleUnitValue,
+                toSharedDataStyleBorderWidthValue,
+            ]),
+        ],
+    ],
+    [
+        'border-right-width',
+        [
+            30,
+            createToSharedDataStyleCombinedValue([
+                toSharedDataStyleUnitValue,
+                toSharedDataStyleBorderWidthValue,
+            ]),
+        ],
+    ],
+    [
+        'border-top-width',
+        [
+            27,
+            createToSharedDataStyleCombinedValue([
+                toSharedDataStyleUnitValue,
+                toSharedDataStyleBorderWidthValue,
+            ]),
+        ],
+    ],
+    ['border-bottom-left-radius', [54, toSharedDataStyleUnitValue]],
+    ['border-bottom-right-radius', [55, toSharedDataStyleUnitValue]],
+    ['border-top-left-radius', [59, toSharedDataStyleUnitValue]],
+    ['border-top-right-radius', [60, toSharedDataStyleUnitValue]],
     ['box-shadow', [93, toSharedDataStyleStringValue]],
-    ['box-sizing', [12, toSharedDataStyleBoxSizing]],
+    ['box-sizing', [12, toSharedDataStyleBoxSizingValue]],
     ['margin-bottom', [16, toSharedDataStyleUnitValue]],
     ['margin-left', [17, toSharedDataStyleUnitValue]],
     ['margin-right', [15, toSharedDataStyleUnitValue]],
@@ -520,8 +594,8 @@ const processors = new Map([
     ['padding-right', [20, toSharedDataStyleUnitValue]],
     ['padding-top', [19, toSharedDataStyleUnitValue]],
     ['opacity', [92, toSharedDataStyleNumberValue]],
-    ['overflow', [53, toSharedDataStyleOverflow]],
-    ['pointer-events', [94, toSharedDataStylePointerEvents]],
+    ['overflow', [53, toSharedDataStyleOverflowValue]],
+    ['pointer-events', [94, toSharedDataStylePointerEventsValue]],
     ['z-index', [49, toSharedDataStyleNumberValue]],
     ['transform', [85, toSharedDataStyleStringValue]],
     ['transform-origin', [86, toSharedDataStyleStringValue]],
@@ -532,17 +606,35 @@ const processors = new Map([
     ['color', [75, toSharedDataStyleColorValue]],
     ['font-family', [68, toSharedDataStyleStringValue]],
     ['font-size', [69, toSharedDataStyleUnitValue]],
-    ['font-style', [70, toSharedDataStyleFontStyle]],
-    ['font-weight', [71, toSharedDataStyleFontWeight]],
+    ['font-style', [70, toSharedDataStyleFontStyleValue]],
+    [
+        'font-weight',
+        [
+            71,
+            createToSharedDataStyleCombinedValue([
+                toSharedDataStyleNumberValue,
+                toSharedDataStyleFontWeightValue,
+            ]),
+        ],
+    ],
     ['letter-spacing', [73, toSharedDataStyleUnitValue]],
-    ['line-height', [72, toSharedDataStyleLineHeight]],
-    ['text-align', [76, toSharedDataStyleTextAlign]],
-    ['text-decoration-line', [79, toSharedDataStyleTextDecorationLine]],
-    ['text-overflow', [82, toSharedDataStyleTextOverflow]],
+    [
+        'line-height',
+        [
+            72,
+            createToSharedDataStyleCombinedValue([
+                toSharedDataStyleUnitValue,
+                toSharedDataStyleLineHeightValue,
+            ]),
+        ],
+    ],
+    ['text-align', [76, toSharedDataStyleTextAlignValue]],
+    ['text-decoration-line', [79, toSharedDataStyleTextDecorationLineValue]],
+    ['text-overflow', [82, toSharedDataStyleTextOverflowValue]],
     ['text-shadow', [83, toSharedDataStyleStringValue]],
-    ['white-space', [84, toSharedDataStyleWhiteSpace]],
+    ['white-space', [84, toSharedDataStyleWhiteSpaceValue]],
 ]);
-function toSharedDataStyleAlignContent(value) {
+function toSharedDataStyleAlignContentValue(value) {
     switch (value) {
         case 'auto':
             return 0;
@@ -566,7 +658,7 @@ function toSharedDataStyleAlignContent(value) {
             return 4;
     }
 }
-function toSharedDataStyleAlignItems(value) {
+function toSharedDataStyleAlignItemsValue(value) {
     switch (value) {
         case 'auto':
             return 0;
@@ -590,7 +682,7 @@ function toSharedDataStyleAlignItems(value) {
             return 4;
     }
 }
-function toSharedDataStyleAlignSelf(value) {
+function toSharedDataStyleAlignSelfValue(value) {
     switch (value) {
         case 'auto':
             return 0;
@@ -614,7 +706,17 @@ function toSharedDataStyleAlignSelf(value) {
             return 0;
     }
 }
-function toSharedDataStyleFlexDirection(value) {
+function toSharedDataStyleFlexBasisValue(value) {
+    switch (value) {
+        case 'auto':
+            return 0;
+        case 'content':
+            return 1;
+        default:
+            return 0;
+    }
+}
+function toSharedDataStyleFlexDirectionValue(value) {
     switch (value) {
         case 'row':
             return 0;
@@ -628,7 +730,7 @@ function toSharedDataStyleFlexDirection(value) {
             return 2;
     }
 }
-function toSharedDataStyleFlexWrap(value) {
+function toSharedDataStyleFlexWrapValue(value) {
     switch (value) {
         case 'nowrap':
             return 0;
@@ -640,7 +742,7 @@ function toSharedDataStyleFlexWrap(value) {
             return 0;
     }
 }
-function toSharedDataStyleJustifyContent(value) {
+function toSharedDataStyleJustifyContentValue(value) {
     switch (value) {
         case 'auto':
             return 0;
@@ -664,17 +766,17 @@ function toSharedDataStyleJustifyContent(value) {
             return 1;
     }
 }
-function toSharedDataStyleDisplay(value) {
+function toSharedDataStyleDisplayValue(value) {
     switch (value) {
-        case 'none':
-            return 0;
         case 'flex':
+            return 0;
+        case 'none':
             return 1;
         default:
-            return 1;
+            return 0;
     }
 }
-function toSharedDataStylePosition(value) {
+function toSharedDataStylePositionValue(value) {
     switch (value) {
         case 'relative':
             return 0;
@@ -690,7 +792,7 @@ function toSharedDataStylePosition(value) {
             return 0;
     }
 }
-function toSharedDataStyleVisibility(value) {
+function toSharedDataStyleVisibilityValue(value) {
     switch (value) {
         case 'visible':
             return 0;
@@ -700,7 +802,7 @@ function toSharedDataStyleVisibility(value) {
             return 0;
     }
 }
-function toSharedDataStyleBackgroundClip(value) {
+function toSharedDataStyleBackgroundClipValue(value) {
     switch (value) {
         case 'border-box':
             return 0;
@@ -712,7 +814,7 @@ function toSharedDataStyleBackgroundClip(value) {
             return 0;
     }
 }
-function toSharedDataStyleBorderStyle(value) {
+function toSharedDataStyleBorderStyleValue(value) {
     switch (value) {
         case 'none':
             return 0;
@@ -726,7 +828,7 @@ function toSharedDataStyleBorderStyle(value) {
             return 0;
     }
 }
-function toSharedDataStyleBorderBottomStyle(value) {
+function toSharedDataStyleBorderBottomStyleValue(value) {
     switch (value) {
         case 'none':
             return 0;
@@ -740,7 +842,7 @@ function toSharedDataStyleBorderBottomStyle(value) {
             return 0;
     }
 }
-function toSharedDataStyleBorderLeftStyle(value) {
+function toSharedDataStyleBorderLeftStyleValue(value) {
     switch (value) {
         case 'none':
             return 0;
@@ -754,7 +856,7 @@ function toSharedDataStyleBorderLeftStyle(value) {
             return 0;
     }
 }
-function toSharedDataStyleBorderRightStyle(value) {
+function toSharedDataStyleBorderRightStyleValue(value) {
     switch (value) {
         case 'none':
             return 0;
@@ -768,7 +870,7 @@ function toSharedDataStyleBorderRightStyle(value) {
             return 0;
     }
 }
-function toSharedDataStyleBorderTopStyle(value) {
+function toSharedDataStyleBorderTopStyleValue(value) {
     switch (value) {
         case 'none':
             return 0;
@@ -782,7 +884,7 @@ function toSharedDataStyleBorderTopStyle(value) {
             return 0;
     }
 }
-function toSharedDataStyleBoxSizing(value) {
+function toSharedDataStyleBoxSizingValue(value) {
     switch (value) {
         case 'content-box':
             return 0;
@@ -792,7 +894,7 @@ function toSharedDataStyleBoxSizing(value) {
             return 1;
     }
 }
-function toSharedDataStyleOverflow(value) {
+function toSharedDataStyleOverflowValue(value) {
     switch (value) {
         case 'visible':
             return 0;
@@ -802,7 +904,7 @@ function toSharedDataStyleOverflow(value) {
             return 1;
     }
 }
-function toSharedDataStylePointerEvents(value) {
+function toSharedDataStylePointerEventsValue(value) {
     switch (value) {
         case 'auto':
             return 0;
@@ -812,7 +914,7 @@ function toSharedDataStylePointerEvents(value) {
             return 0;
     }
 }
-function toSharedDataStyleFontStyle(value) {
+function toSharedDataStyleFontStyleValue(value) {
     switch (value) {
         case 'normal':
             return 0;
@@ -822,7 +924,7 @@ function toSharedDataStyleFontStyle(value) {
             return 0;
     }
 }
-function toSharedDataStyleFontWeight(value) {
+function toSharedDataStyleFontWeightValue(value) {
     switch (value) {
         case 'normal':
             return 0;
@@ -836,7 +938,7 @@ function toSharedDataStyleFontWeight(value) {
             return 0;
     }
 }
-function toSharedDataStyleLineHeight(value) {
+function toSharedDataStyleLineHeightValue(value) {
     switch (value) {
         case 'normal':
             return 0;
@@ -844,7 +946,7 @@ function toSharedDataStyleLineHeight(value) {
             return -1;
     }
 }
-function toSharedDataStyleTextAlign(value) {
+function toSharedDataStyleTextAlignValue(value) {
     switch (value) {
         case 'left':
             return 0;
@@ -856,7 +958,7 @@ function toSharedDataStyleTextAlign(value) {
             return 0;
     }
 }
-function toSharedDataStyleTextDecorationLine(value) {
+function toSharedDataStyleTextDecorationLineValue(value) {
     switch (value) {
         case 'none':
             return 0;
@@ -870,7 +972,7 @@ function toSharedDataStyleTextDecorationLine(value) {
             return 0;
     }
 }
-function toSharedDataStyleTextOverflow(value) {
+function toSharedDataStyleTextOverflowValue(value) {
     switch (value) {
         case 'clip':
             return 0;
@@ -880,7 +982,7 @@ function toSharedDataStyleTextOverflow(value) {
             return 0;
     }
 }
-function toSharedDataStyleWhiteSpace(value) {
+function toSharedDataStyleWhiteSpaceValue(value) {
     switch (value) {
         case 'normal':
             return 0;

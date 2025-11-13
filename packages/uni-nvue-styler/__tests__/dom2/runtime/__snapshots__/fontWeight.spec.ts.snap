@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`font-weight: 400 1`] = `
+{
+  "71": 400,
+}
+`;
+
+exports[`font-weight: 700 1`] = `
+{
+  "71": 700,
+}
+`;
+
+exports[`font-weight: bold 1`] = `
+{
+  "71": 1,
+}
+`;
+
+exports[`font-weight: bolder 1`] = `
+{
+  "71": 3,
+}
+`;
+
+exports[`font-weight: lighter 1`] = `
+{
+  "71": 2,
+}
+`;
+
+exports[`font-weight: normal 1`] = `{}`;

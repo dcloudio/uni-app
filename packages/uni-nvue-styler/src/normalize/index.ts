@@ -5,7 +5,6 @@ import {
   LENGTH_REGEXP,
   type NormalizeOptions,
   SUPPORT_CSS_UNIT,
-  hyphenateStyleProperty,
   isNumber,
   supportedPropertyReason,
 } from '../utils'

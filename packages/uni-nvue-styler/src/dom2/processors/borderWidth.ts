@@ -1,5 +1,9 @@
 import type { DOM2_APP_LANGUAGE } from '../types'
-import { toUnitValueResult } from './unit'
+import {
+  type SharedDataStyleUnitValue,
+  toSharedDataStyleUnitValue,
+  toUnitValueResult,
+} from './unit'
 import {
   type PropertyProcessor,
   PropertyProcessorType,
@@ -36,4 +40,20 @@ export function createSetStyleBorderWidthValueProcessor(
     }
     return createValueProcessorError(`Invalid border width value: ${value}`)
   }, PropertyProcessorType.Enum)
+}
+
+export function toSharedDataStyleBorderWidthValue(
+  value: string | number
+): SharedDataStyleUnitValue | void {
+  const pxValue =
+    ENUM_BORDER_WIDTH_TYPE_VALUES[
+      value as keyof typeof ENUM_BORDER_WIDTH_TYPE_VALUES
+    ]
+  if (pxValue) {
+    return {
+      value: pxValue,
+      unit: 2, // PX 固定值 2
+    }
+  }
+  return toSharedDataStyleUnitValue(value)
 }
