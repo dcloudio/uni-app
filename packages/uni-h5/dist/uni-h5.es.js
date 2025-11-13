@@ -714,11 +714,11 @@ function getWindowWidth$1() {
   const screenFix = isApple() && typeof window.orientation === "number";
   const landscape = screenFix && Math.abs(window.orientation) === 90;
   var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var windowWidth = Math.min(
+  var windowWidth = screenFix ? Math.min(
     window.innerWidth,
     document.documentElement.clientWidth,
     screenWidth
-  ) || screenWidth;
+  ) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
   return windowWidth;
 }
 function useRem() {
@@ -7455,18 +7455,21 @@ function getScreenWidth(screenFix, landscape) {
 function getScreenHeight(screenFix, landscape) {
   return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
 }
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
+function getWindowWidth() {
+  const screenFix = getScreenFix();
+  if (screenFix) {
+    const screenWidth = getScreenWidth(screenFix, isLandscape(screenFix));
+    return Math.min(
+      window.innerWidth,
+      document.documentElement.clientWidth,
+      screenWidth
+    ) || screenWidth;
+  } else {
+    return Math.min(window.innerWidth, document.documentElement.clientWidth);
+  }
 }
 function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
+  const windowWidth = getWindowWidth();
   return {
     platform: isIOS ? "ios" : "other",
     pixelRatio: window.devicePixelRatio,
@@ -19270,7 +19273,7 @@ const getWindowInfo = /* @__PURE__ */ defineSyncApi(
     const landscape = isLandscape(screenFix);
     const screenWidth = getScreenWidth(screenFix, landscape);
     const screenHeight = getScreenHeight(screenFix, landscape);
-    const windowWidth = getWindowWidth(screenWidth);
+    const windowWidth = getWindowWidth();
     let windowHeight = window.innerHeight;
     const statusBarHeight = safeAreaInsets$1.top;
     const safeArea = {
@@ -19594,7 +19597,7 @@ const vibrateShort = /* @__PURE__ */ defineAsyncApi(
     if (_isSupport && window.navigator.vibrate(15)) {
       resolve();
     } else {
-      reject("vibrateLong:fail");
+      reject("vibrateShort:fail");
     }
   }
 );

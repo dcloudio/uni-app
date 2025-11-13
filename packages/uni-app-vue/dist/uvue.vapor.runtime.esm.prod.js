@@ -2063,6 +2063,7 @@ var handleTransformBackground = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
   } else if (/^linear-gradient(.+)$/.test(value)) {
@@ -2099,18 +2100,10 @@ function createTransformBackground(options) {
     }
   };
 }
-function borderTop() {
-  return 'borderTop';
-}
-function borderRight() {
-  return 'borderRight';
-}
-function borderBottom() {
-  return 'borderBottom';
-}
-function borderLeft() {
-  return 'borderLeft';
-}
+var borderTop = 'borderTop';
+var borderRight = 'borderRight';
+var borderBottom = 'borderBottom';
+var borderLeft = 'borderLeft';
 var transformBorderColor = decl => {
   var {
     prop,
@@ -2119,6 +2112,7 @@ var transformBorderColor = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var _property_split = hyphenate(prop).split('-');
   var property = _property_split[_property_split.length - 1];
   {
@@ -2141,7 +2135,7 @@ var transformBorderColor = decl => {
       splitResult.push(splitResult[1]);
       break;
   }
-  return [createDecl(borderTop() + property, splitResult[0], important, raws, source), createDecl(borderRight() + property, splitResult[1], important, raws, source), createDecl(borderBottom() + property, splitResult[2], important, raws, source), createDecl(borderLeft() + property, splitResult[3], important, raws, source)];
+  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
 };
 var transformBorderColorNvue = decl => {
   var {
@@ -2151,6 +2145,7 @@ var transformBorderColorNvue = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var property = hyphenate(prop).split('-')[1];
   {
     property = capitalize(property);
@@ -2172,17 +2167,11 @@ var transformBorderStyle = transformBorderColor;
 var transformBorderStyleNvue = transformBorderColorNvue;
 var transformBorderWidth = transformBorderColor;
 var transformBorderWidthNvue = transformBorderColorNvue;
+var borderWidth = 'Width';
+var borderStyle = 'Style';
+var borderColor = 'Color';
 function createTransformBorder(options) {
   return decl => {
-    var borderWidth = () => {
-      return 'Width';
-    };
-    var borderStyle = () => {
-      return 'Style';
-    };
-    var borderColor = () => {
-      return 'Color';
-    };
     var {
       prop,
       value,
@@ -2224,14 +2213,11 @@ function createTransformBorder(options) {
       }
       return '#000000';
     };
-    return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
+    return [...transformBorderWidth(createDecl(prop + borderWidth, defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle, defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor, defaultColor(result[2]), important, raws, source))];
   };
 }
 function createTransformBorderNvue(options) {
   return decl => {
-    var borderWidth = 'Width';
-    var borderStyle = 'Style';
-    var borderColor = 'Color';
     var {
       prop,
       value,
@@ -2239,6 +2225,7 @@ function createTransformBorderNvue(options) {
       raws,
       source
     } = decl;
+    value = value.trim();
     var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
     var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
       var index = splitResult.findIndex(str => item.test(str));
@@ -2261,6 +2248,7 @@ var transformBorderRadius = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var splitResult = value.split(/\s+/);
   if (value.includes('/')) {
     return [decl];
@@ -2285,11 +2273,12 @@ var transformBorderRadiusNvue = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var splitResult = value.split(/\s+/);
   if (value.includes('/')) {
     return [decl];
   }
-  // const isUvuePlatform = options.type == 'uvue'
+  // const isUvuePlatform = options.type === 'uvue'
   switch (splitResult.length) {
     case 1:
       return [decl];
@@ -2311,6 +2300,7 @@ var transformFlexFlow = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var splitResult = value.split(/\s+/);
   var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
     var index = splitResult.findIndex(str => item.test(str));
@@ -2333,7 +2323,7 @@ var createTransformBox = type => {
       raws,
       source
     } = decl;
-    var splitResult = value.split(/\s+/);
+    var splitResult = value.trim().split(/\s+/);
     switch (splitResult.length) {
       case 1:
         splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
@@ -2361,11 +2351,12 @@ var transformTransition = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var result = [];
   var match;
   // 针对 cubic-bezier 特殊处理
   // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
-  if (decl.value.includes('cubic-bezier')) {
+  if (value.includes('cubic-bezier')) {
     var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/;
     match = value.match(CHUNK_REGEXP);
   } else {
@@ -2391,8 +2382,9 @@ var transformFlex = decl => {
     raws,
     source
   } = decl;
+  value = value.trim();
   var result = [];
-  var splitResult = value.trim().split(/\s+/);
+  var splitResult = value.split(/\s+/);
   // 是否 flex-grow 的有效值 <number [0,∞]>
   var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
   var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
@@ -2454,7 +2446,7 @@ var transformFlex = decl => {
   return [decl];
 };
 function getDeclTransforms(options) {
-  var transformBorder = options.type == 'uvue' ? createTransformBorder() : createTransformBorderNvue();
+  var transformBorder = options.type === 'uvue' ? createTransformBorder() : createTransformBorderNvue();
   var styleMap = {
     transition: transformTransition,
     border: transformBorder,
@@ -2463,10 +2455,10 @@ function getDeclTransforms(options) {
     borderRight: transformBorder,
     borderBottom: transformBorder,
     borderLeft: transformBorder,
-    borderStyle: options.type == 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
-    borderWidth: options.type == 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
-    borderColor: options.type == 'uvue' ? transformBorderColor : transformBorderColorNvue,
-    borderRadius: options.type == 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
+    borderStyle: options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
+    borderWidth: options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
+    borderColor: options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
+    borderRadius: options.type === 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
     // uvue已经支持这些简写属性，不需要展开
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,

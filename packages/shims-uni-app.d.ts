@@ -599,40 +599,6 @@ declare class UniNormalPageImpl implements UniPage {
   getAndroidActivity(): Activity | null
   exitFullscreen(options: ExitFullscreenOptions | null): void
   createElement(tagName: string): UniElement
-
-  createElement(type: UniElementType): UniElement
-  createElement(type: UniElementType, flatten: boolean): UniElement
-  createElement(
-    type: UniElementType,
-    flatten: boolean,
-    style?: UniElementStyles | null
-  ): UniElement
-  createViewElement(
-    flatten: boolean,
-    style?: UniElementStyles | null
-  ): UniViewElement
-  createTextElement(
-    flatten: boolean,
-    style?: UniElementStyles | null
-  ): UniTextElement
-  createImageElement(
-    flatten: boolean,
-    style?: UniElementStyles | null
-  ): UniImageElement
-  createNativeViewElement(): UniNativeViewElement
-  createComment(data: string): UniElement
-
-  createNativeView(flatten: boolean): UniNativeView
-  createNativeTextView(flatten: boolean): UniNativeTextView
-  createNativeImageView(flatten: boolean): UniNativeImageView
-  createNativeScrollView(
-    options: UniNativeScrollViewOptions
-  ): UniNativeScrollView
-  createNativeCustomView(): UniNativeCustomView
-
-  defineStyleVariable(key: string, value: string): void
-
-  createTextLayout(): UniTextLayout
 }
 
 declare class UniDialogPageImpl implements UniPage {

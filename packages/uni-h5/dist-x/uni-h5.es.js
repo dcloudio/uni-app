@@ -620,11 +620,11 @@ function getWindowWidth$1() {
   const screenFix = isApple() && typeof window.orientation === "number";
   const landscape = screenFix && Math.abs(window.orientation) === 90;
   var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var windowWidth = Math.min(
+  var windowWidth = screenFix ? Math.min(
     window.innerWidth,
     document.documentElement.clientWidth,
     screenWidth
-  ) || screenWidth;
+  ) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
   return windowWidth;
 }
 function useRem() {
@@ -8288,18 +8288,21 @@ function getScreenWidth(screenFix, landscape) {
 function getScreenHeight(screenFix, landscape) {
   return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
 }
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
+function getWindowWidth() {
+  const screenFix = getScreenFix();
+  if (screenFix) {
+    const screenWidth = getScreenWidth(screenFix, isLandscape(screenFix));
+    return Math.min(
+      window.innerWidth,
+      document.documentElement.clientWidth,
+      screenWidth
+    ) || screenWidth;
+  } else {
+    return Math.min(window.innerWidth, document.documentElement.clientWidth);
+  }
 }
 function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
+  const windowWidth = getWindowWidth();
   return {
     platform: isIOS ? "ios" : "other",
     pixelRatio: window.devicePixelRatio,
@@ -21827,7 +21830,7 @@ const getWindowInfo = /* @__PURE__ */ defineSyncApi(
     const landscape = isLandscape(screenFix);
     const screenWidth = getScreenWidth(screenFix, landscape);
     const screenHeight = getScreenHeight(screenFix, landscape);
-    const windowWidth = getWindowWidth(screenWidth);
+    const windowWidth = getWindowWidth();
     let windowHeight = window.innerHeight;
     const statusBarHeight = safeAreaInsets$1.top;
     const safeArea = {
@@ -22155,7 +22158,7 @@ const vibrateShort = /* @__PURE__ */ defineAsyncApi(
     if (_isSupport && window.navigator.vibrate(15)) {
       resolve();
     } else {
-      reject("vibrateLong:fail");
+      reject("vibrateShort:fail");
     }
   }
 );
@@ -28104,7 +28107,8 @@ const _sfc_main$2 = {
       mapHeight: 350,
       loadingPath,
       loadingRotate: 0,
-      loadingTimer: -1
+      loadingTimer: -1,
+      timeoutTimers: []
     };
   },
   onLoad(options) {
@@ -28121,6 +28125,9 @@ const _sfc_main$2 = {
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
+    this.clearSearchValueChangeTimer();
+    this.clearLoadingTimer();
+    this.clearAllTimeoutTimers();
   },
   onResize() {
     this.getSystemInfo();
@@ -28334,7 +28341,7 @@ const _sfc_main$2 = {
             }
             this.searchLoading = false;
             if (this.selected == -1) {
-              setTimeout(() => {
+              this.safeSetTimeout(() => {
                 this.selected = 0;
               }, 20);
               this.lastPoi.latitude = this.latitude;
@@ -28442,7 +28449,7 @@ const _sfc_main$2 = {
                 element.style.setProperty("transition-duration", `${duration}ms`);
                 element.style.setProperty("transform", "translateY(0px)");
                 element.style.setProperty("transform", "translateY(-15px)");
-                setTimeout(() => {
+                this.safeSetTimeout(() => {
                   element.style.setProperty("transform", "translateY(0px)");
                 }, duration);
               }
@@ -28456,6 +28463,32 @@ const _sfc_main$2 = {
         clearTimeout(this.searchValueChangeTimer);
         this.searchValueChangeTimer = -1;
       }
+    },
+    clearLoadingTimer() {
+      if (this.loadingTimer != -1) {
+        clearInterval(this.loadingTimer);
+        this.loadingTimer = -1;
+      }
+    },
+    clearAllTimeoutTimers() {
+      this.timeoutTimers.forEach((timer) => {
+        if (timer != -1) {
+          clearTimeout(timer);
+        }
+      });
+      this.timeoutTimers = [];
+    },
+    safeSetTimeout(callback, delay) {
+      let timerId = -1;
+      timerId = setTimeout(() => {
+        callback();
+        const index2 = this.timeoutTimers.indexOf(timerId);
+        if (index2 > -1) {
+          this.timeoutTimers.splice(index2, 1);
+        }
+      }, delay);
+      this.timeoutTimers.push(timerId);
+      return timerId;
     },
     searchValueChange(e2) {
       this.clearSearchValueChangeTimer();
@@ -28487,7 +28520,7 @@ const _sfc_main$2 = {
       }
     },
     updateScrollTop(scrollTop) {
-      setTimeout(() => {
+      this.safeSetTimeout(() => {
         this.scrollTop = scrollTop;
       }, 10);
     },
@@ -28553,10 +28586,7 @@ const _sfc_main$2 = {
   },
   watch: {
     searchLoading(val) {
-      if (this.loadingTimer != -1) {
-        clearInterval(this.loadingTimer);
-        this.loadingTimer = -1;
-      }
+      this.clearLoadingTimer();
       if (val) {
         this.loadingRotate += 100;
         this.loadingTimer = setInterval(() => {
@@ -29844,7 +29874,7 @@ const _sfc_main = {
   },
   methods: {}
 };
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		width: 136px;\n		max-width: 288px;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_loading = _sfc_main$4;
   const _component_text = __syscom_1$1;

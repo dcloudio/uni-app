@@ -90,6 +90,8 @@ export declare const ATTR_V_SHOW = ".vShow";
 
 export declare const BACKGROUND_COLOR = "#f7f7f7";
 
+export declare function batchGetPartClass(partNames: string): string;
+
 export declare const borderStyles: {
     black: string;
     white: string;

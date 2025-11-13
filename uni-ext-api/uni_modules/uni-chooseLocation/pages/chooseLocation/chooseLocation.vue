@@ -208,7 +208,8 @@
         mapHeight: 350,
         loadingPath: loadingPath,
         loadingRotate: 0,
-        loadingTimer: -1
+        loadingTimer: -1,
+        timeoutTimers: [] as Array<number>
       }
     },
     onLoad(options : UTSJSONObject) {
@@ -225,6 +226,9 @@
       uni.$off(this.readyEventName, null);
       uni.$off(this.successEventName, null);
       uni.$off(this.failEventName, null);
+      this.clearSearchValueChangeTimer();
+      this.clearLoadingTimer();
+      this.clearAllTimeoutTimers();
     },
     onResize() {
       this.getSystemInfo();
@@ -268,7 +272,7 @@
           this.longitude = this.chooseLocationOptions.longitude as number;
           this.locationComplete = true;
           // #ifdef APP-HARMONY
-          setTimeout(() => {
+          this.safeSetTimeout(() => {
             this.getPoi('getLocation');
           }, 100);
           // #endif
@@ -458,7 +462,7 @@
               this.searchLoading = false;
               if (this.selected == -1) {
                 // 延迟修改 selected ,否则会导致鸿蒙在一开始的时候不显示
-                setTimeout(() => {
+                this.safeSetTimeout(() => {
                   this.selected = 0;
                 }, 20);
                 this.lastPoi.latitude = this.latitude;
@@ -591,7 +595,7 @@
                   element.style.setProperty('transition-duration', `${duration}ms`);
                   element.style.setProperty('transform', 'translateY(0px)');
                   element.style.setProperty('transform', 'translateY(-15px)');
-                  setTimeout(() => {
+                  this.safeSetTimeout(() => {
                     element.style.setProperty('transform', 'translateY(0px)');
                   }, duration);
                 }
@@ -605,6 +609,32 @@
           clearTimeout(this.searchValueChangeTimer);
           this.searchValueChangeTimer = -1;
         }
+      },
+      clearLoadingTimer() {
+        if (this.loadingTimer != -1) {
+          clearInterval(this.loadingTimer);
+          this.loadingTimer = -1;
+        }
+      },
+      clearAllTimeoutTimers() {
+        this.timeoutTimers.forEach((timer: number) => {
+          if (timer != -1) {
+            clearTimeout(timer);
+          }
+        });
+        this.timeoutTimers = [];
+      },
+      safeSetTimeout(callback: () => void, delay: number): number {
+        let timerId: number = -1;
+        timerId = setTimeout(() => {
+          callback();
+          const index = this.timeoutTimers.indexOf(timerId);
+          if (index > -1) {
+            this.timeoutTimers.splice(index, 1);
+          }
+        }, delay);
+        this.timeoutTimers.push(timerId);
+        return timerId;
       },
       searchValueChange(e : UniInputEvent) {
         this.clearSearchValueChangeTimer();
@@ -636,7 +666,7 @@
         }
       },
       updateScrollTop(scrollTop : number) {
-        setTimeout(() => {
+        this.safeSetTimeout(() => {
           this.scrollTop = scrollTop;
         }, 10);
       },
@@ -714,10 +744,7 @@
     },
     watch: {
       searchLoading(val : boolean) {
-        if (this.loadingTimer != -1) {
-          clearInterval(this.loadingTimer);
-          this.loadingTimer = -1;
-        }
+        this.clearLoadingTimer();
         if (val) {
           this.loadingRotate += 100;
           this.loadingTimer = setInterval(() => {

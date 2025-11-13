@@ -38,7 +38,7 @@ export function setupXPage(
       setCurrentNormalDialogPage(null)
     }
   } else {
-    uniPage = new UniNormalPageImpl()
+    uniPage = new UniNormalPageImpl() as unknown as UniPage
   }
   pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
   pageVm.$page = uniPage

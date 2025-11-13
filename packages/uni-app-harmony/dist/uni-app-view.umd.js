@@ -1660,7 +1660,7 @@
     var screenFix = isApple() && typeof window.orientation === "number";
     var landscape = screenFix && Math.abs(window.orientation) === 90;
     var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-    var windowWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth;
+    var windowWidth = screenFix ? Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
     return windowWidth;
   }
   function useRem() {
@@ -21760,7 +21760,7 @@
     if (!name) {
       return;
     }
-    registerViewMethod(getCurrentPageId(), name, (_ref, resolve) => {
+    registerViewMethod(pageId || getCurrentPageId(), name, (_ref, resolve) => {
       var {
         type,
         data
@@ -21772,22 +21772,23 @@
     if (!name) {
       return;
     }
-    unregisterViewMethod(getCurrentPageId(), name);
+    unregisterViewMethod(pageId || getCurrentPageId(), name);
   }
   function useSubscribe(callback, name, multiple, pageId) {
     var instance = getCurrentInstance();
     var vm = instance.proxy;
+    pageId = pageId == null ? useCurrentPageId() : pageId;
     onMounted(() => {
-      addSubscribe(name || normalizeEvent(vm), callback);
+      addSubscribe(name || normalizeEvent(vm), callback, pageId);
       {
         watch(() => vm.id, (value, oldValue) => {
-          addSubscribe(normalizeEvent(vm, value), callback);
+          addSubscribe(normalizeEvent(vm, value), callback, pageId);
           removeSubscribe(oldValue && normalizeEvent(vm, oldValue));
         });
       }
     });
     onBeforeUnmount(() => {
-      removeSubscribe(name || normalizeEvent(vm));
+      removeSubscribe(name || normalizeEvent(vm), pageId);
     });
   }
   var index$2 = 0;
@@ -22483,9 +22484,15 @@
           case "loadUrl":
             resolve(embed[HarmonyNativeMethodMap[methodName]](data.url, data.headers));
             break;
-          case "loadData":
-            resolve(embed[HarmonyNativeMethodMap[methodName]](data.data, data.mimeType, data.encoding, data.baseUrl));
+          case "loadData": {
+            var _data$encoding;
+            var _data = data.data;
+            if (((_data$encoding = data.encoding) === null || _data$encoding === void 0 ? void 0 : _data$encoding.toLowerCase()) !== "base64") {
+              _data = _data.replace(/#/g, "%23");
+            }
+            resolve(embed[HarmonyNativeMethodMap[methodName]](_data, data.mimeType, data.encoding, data.baseUrl));
             break;
+          }
           case "clear":
             resolve(embed[HarmonyNativeMethodMap[methodName]](data.clearRom));
             break;

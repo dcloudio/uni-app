@@ -92,8 +92,8 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		width: 136px;
-		max-width: 288px;
+		min-width: 136px;
+		max-width: 600rpx;
 		height: 136px;
 		padding: 10px;
 		background-color: rgba(76, 76, 76, 1);
@@ -127,6 +127,12 @@
 		lines:1;
 		text-align: center;
 		text-overflow: ellipsis;
+		/* #ifdef WEB */
+		display: -webkit-box;
+		-webkit-line-clamp: 1; /* 限制显示两行 */
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		/* #endif */
 	}
 
 	

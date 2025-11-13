@@ -1472,6 +1472,13 @@ function createRpx2Unit(unit, unitRatio, unitPrecision) {
 function getPartClass(partName) {
     return `-_part__${partName}_-`;
 }
+function batchGetPartClass(partNames) {
+    return partNames
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((partName) => getPartClass(partName))
+        .join(' ');
+}
 
 function passive(passive) {
     return { passive };
@@ -2625,6 +2632,7 @@ exports.WXS_MODULES = WXS_MODULES;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;
 exports.addFont = addFont;
 exports.addLeadingSlash = addLeadingSlash;
+exports.batchGetPartClass = batchGetPartClass;
 exports.borderStyles = borderStyles;
 exports.cache = cache;
 exports.cacheStringFunction = cacheStringFunction;
