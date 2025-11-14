@@ -1,4 +1,4 @@
-import { PatchFlags } from '@vue/shared';
+import { Namespace, PatchFlags, Namespaces } from '@vue/shared';
 export { generateCodeFrame } from '@vue/shared';
 import { Node as Node$1, Identifier, Function, BlockStatement as BlockStatement$1, SwitchCase, Program, ObjectProperty } from '@babel/types';
 import { ParserPlugin } from '@babel/parser';
@@ -83,8 +83,8 @@ interface DirectiveTransformResult {
     ssrTagParts?: TemplateLiteral['elements'];
 }
 export type StructuralDirectiveTransform = (node: ElementNode, dir: DirectiveNode, context: TransformContext) => void | (() => void);
-interface ImportItem {
-    exp: string | ExpressionNode;
+export interface ImportItem {
+    exp: SimpleExpressionNode;
     path: string;
 }
 export interface TransformContext extends Required<Omit<TransformOptions, keyof CompilerCompatOptions>>, CompilerCompatOptions {
@@ -142,12 +142,6 @@ export declare function buildProps(node: ElementNode, context: TransformContext,
 };
 export declare function buildDirectiveArgs(dir: DirectiveNode, context: TransformContext): ArrayExpression;
 
-export type Namespace = number;
-export declare enum Namespaces {
-    HTML = 0,
-    SVG = 1,
-    MATH_ML = 2
-}
 export declare enum NodeTypes {
     ROOT = 0,
     ELEMENT = 1,

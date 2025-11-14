@@ -58,7 +58,9 @@ export interface SchedulerJob extends Function {
     i?: GenericComponentInstance;
 }
 type SchedulerJobs = SchedulerJob | SchedulerJob[];
-export declare function nextTick<T = void, R = void>(this: T, fn?: (this: T) => R, instance?: GenericComponentInstance | null): Promise<Awaited<R>>;
+export declare function nextTick(): Promise<void>;
+export declare function nextTick<T, R>(this: T, fn: (this: T) => R | Promise<R>): Promise<R>;
+export declare function nextTick<T, R>(this: T, fn: (this: T) => R | Promise<R>, instance: GenericComponentInstance): Promise<R>;
 export declare function queuePostFlushCb(jobs: SchedulerJobs, id?: number): void;
 
 export type ComponentPropsOptions<P = Data> = ComponentObjectPropsOptions<P> | string[];
@@ -1392,14 +1394,6 @@ export declare const getCurrentGenericInstance: () => GenericComponentInstance |
  */
 export declare const getCurrentInstance: () => ComponentInternalInstance | null;
 export declare let isInSSRComponentSetup: boolean;
-declare const internalOptions: readonly ["ce", "type"];
-/**
- * fixed by uts remove internal
- */
-export declare const useInstanceOption: <K extends (typeof internalOptions)[number]>(key: K, silent?: boolean) => {
-    hasInstance: boolean;
-    value: GenericComponentInstance[K] | undefined;
-};
 
 type Data = Record<string, unknown>;
 /**

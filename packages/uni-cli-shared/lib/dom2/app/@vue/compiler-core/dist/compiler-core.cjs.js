@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-core v3.6.0-alpha.3
+* @vue/compiler-core v3.6.0-alpha.4
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -135,14 +135,6 @@ function registerRuntimeHelpers(helpers) {
   });
 }
 
-const Namespaces = {
-  "HTML": 0,
-  "0": "HTML",
-  "SVG": 1,
-  "1": "SVG",
-  "MATH_ML": 2,
-  "2": "MATH_ML"
-};
 const NodeTypes = {
   "ROOT": 0,
   "0": "ROOT",
@@ -4662,17 +4654,14 @@ function processExpression(node, context, asParams = false, asRawStatements = fa
     knownIds
   );
   const children = [];
-  const isTSNode = TS_NODE_TYPES.includes(ast.type);
   ids.sort((a, b) => a.start - b.start);
   ids.forEach((id, i) => {
     const start = id.start - 1;
     const end = id.end - 1;
     const last = ids[i - 1];
-    if (!(isTSNode && i === 0)) {
-      const leadingText = rawExp.slice(last ? last.end - 1 : 0, start);
-      if (leadingText.length || id.prefix) {
-        children.push(leadingText + (id.prefix || ``));
-      }
+    const leadingText = rawExp.slice(last ? last.end - 1 : 0, start);
+    if (leadingText.length || id.prefix) {
+      children.push(leadingText + (id.prefix || ``));
     }
     const source = rawExp.slice(start, end);
     children.push(
@@ -4687,7 +4676,7 @@ function processExpression(node, context, asParams = false, asRawStatements = fa
         id.isConstant ? 3 : 0
       )
     );
-    if (i === ids.length - 1 && end < rawExp.length && !isTSNode) {
+    if (i === ids.length - 1 && end < rawExp.length) {
       children.push(rawExp.slice(end));
     }
   });
@@ -6490,7 +6479,7 @@ const transformModel = (dir, node, context) => {
   }
   if (dir.modifiers.length && node.tagType === 1) {
     const modifiers = dir.modifiers.map((m) => m.content).map((m) => (isSimpleIdentifier(m) ? m : JSON.stringify(m)) + `: true`).join(`, `);
-    const modifiersKey = arg ? isStaticExp(arg) ? `${arg.content}Modifiers` : createCompoundExpression([arg, ' + "Modifiers"']) : `modelModifiers`;
+    const modifiersKey = arg ? isStaticExp(arg) ? shared.getModifierPropName(arg.content) : createCompoundExpression([arg, ' + "Modifiers"']) : `modelModifiers`;
     props.push(
       createObjectProperty(
         modifiersKey,
@@ -6817,7 +6806,6 @@ exports.MERGE_PROPS = MERGE_PROPS;
 exports.NORMALIZE_CLASS = NORMALIZE_CLASS;
 exports.NORMALIZE_PROPS = NORMALIZE_PROPS;
 exports.NORMALIZE_STYLE = NORMALIZE_STYLE;
-exports.Namespaces = Namespaces;
 exports.NewlineType = NewlineType;
 exports.NodeTypes = NodeTypes;
 exports.OPEN_BLOCK = OPEN_BLOCK;

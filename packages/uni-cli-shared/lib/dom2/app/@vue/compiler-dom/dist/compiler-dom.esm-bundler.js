@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.6.0-alpha.3
+* @vue/compiler-dom v3.6.0-alpha.4
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -75,7 +75,7 @@ const parserOptions = {
     let ns = parent ? parent.ns : rootNamespace;
     if (parent && ns === 2) {
       if (parent.tag === "annotation-xml") {
-        if (tag === "svg") {
+        if (isSVGTag(tag)) {
           return 1;
         }
         if (parent.props.some(
@@ -92,10 +92,10 @@ const parserOptions = {
       }
     }
     if (ns === 0) {
-      if (tag === "svg") {
+      if (isSVGTag(tag)) {
         return 1;
       }
-      if (tag === "math") {
+      if (isMathMLTag(tag)) {
         return 2;
       }
     }

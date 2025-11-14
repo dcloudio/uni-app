@@ -108,6 +108,10 @@ export interface ReactiveEffectOptions extends DebuggerOptions {
     scheduler?: EffectScheduler;
     onStop?: () => void;
 }
+export interface ReactiveEffectRunner<T = any> {
+    (): T;
+    effect: ReactiveEffect;
+}
 export declare enum EffectFlags {
     /**
      * ReactiveEffect only
@@ -133,14 +137,6 @@ export declare class ReactiveEffect<T = any> implements ReactiveEffectOptions, R
     run(): T;
     stop(): void;
     get dirty(): boolean;
-}
-export interface ReactiveEffectRunner<T = any> {
-    (): T;
-    effect: ReactiveEffect;
-}
-export interface ReactiveEffectRunner<T = any> {
-    (): T;
-    effect: ReactiveEffect;
 }
 export declare function effect<T = any>(fn: () => T, options?: ReactiveEffectOptions): ReactiveEffectRunner<T>;
 /**

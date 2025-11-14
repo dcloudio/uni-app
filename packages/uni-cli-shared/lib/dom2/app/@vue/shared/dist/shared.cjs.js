@@ -1,5 +1,5 @@
 /**
-* @vue/shared v3.6.0-alpha.3
+* @vue/shared v3.6.0-alpha.4
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -86,6 +86,9 @@ const toHandlerKey = cacheStringFunction(
     return s;
   }
 );
+const getModifierPropName = (name) => {
+  return `${name === "modelValue" || name === "model-value" ? "model" : name}Modifiers${name === "model" ? "$" : ""}`;
+};
 const hasChanged = (value, oldValue) => !Object.is(value, oldValue);
 const invokeArrayFns = (fns, ...arg) => {
   for (let i = 0; i < fns.length; i++) {
@@ -407,6 +410,15 @@ function shouldSetAsAttr(tagName, key) {
   return false;
 }
 
+const Namespaces = {
+  "HTML": 0,
+  "0": "HTML",
+  "SVG": 1,
+  "1": "SVG",
+  "MATH_ML": 2,
+  "2": "MATH_ML"
+};
+
 const escapeRE = /["'&<>]/;
 function escapeHtml(string) {
   const str = "" + string;
@@ -632,6 +644,7 @@ exports.EMPTY_ARR = EMPTY_ARR;
 exports.EMPTY_OBJ = EMPTY_OBJ;
 exports.NO = NO;
 exports.NOOP = NOOP;
+exports.Namespaces = Namespaces;
 exports.PatchFlagNames = PatchFlagNames;
 exports.PatchFlags = PatchFlags;
 exports.ShapeFlags = ShapeFlags;
@@ -651,6 +664,7 @@ exports.genPropsAccessExp = genPropsAccessExp;
 exports.generateCodeFrame = generateCodeFrame;
 exports.getEscapedCssVarName = getEscapedCssVarName;
 exports.getGlobalThis = getGlobalThis;
+exports.getModifierPropName = getModifierPropName;
 exports.getSequence = getSequence;
 exports.hasChanged = hasChanged;
 exports.hasOwn = hasOwn;

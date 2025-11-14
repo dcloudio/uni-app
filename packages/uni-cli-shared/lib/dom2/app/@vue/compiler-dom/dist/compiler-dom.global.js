@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.6.0-alpha.3
+* @vue/compiler-dom v3.6.0-alpha.4
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -52,6 +52,9 @@ var VueCompilerDOM = (function (exports) {
       return s;
     }
   );
+  const getModifierPropName = (name) => {
+    return `${name === "modelValue" || name === "model-value" ? "model" : name}Modifiers${name === "model" ? "$" : ""}`;
+  };
 
   const PatchFlagNames = {
     [1]: `TEXT`,
@@ -263,14 +266,6 @@ var VueCompilerDOM = (function (exports) {
     });
   }
 
-  const Namespaces = {
-    "HTML": 0,
-    "0": "HTML",
-    "SVG": 1,
-    "1": "SVG",
-    "MATH_ML": 2,
-    "2": "MATH_ML"
-  };
   const NodeTypes = {
     "ROOT": 0,
     "0": "ROOT",
@@ -5713,7 +5708,7 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
     ];
     if (dir.modifiers.length && node.tagType === 1) {
       const modifiers = dir.modifiers.map((m) => m.content).map((m) => (isSimpleIdentifier(m) ? m : JSON.stringify(m)) + `: true`).join(`, `);
-      const modifiersKey = arg ? isStaticExp(arg) ? `${arg.content}Modifiers` : createCompoundExpression([arg, ' + "Modifiers"']) : `modelModifiers`;
+      const modifiersKey = arg ? isStaticExp(arg) ? getModifierPropName(arg.content) : createCompoundExpression([arg, ' + "Modifiers"']) : `modelModifiers`;
       props.push(
         createObjectProperty(
           modifiersKey,
@@ -6079,7 +6074,7 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
       let ns = parent ? parent.ns : rootNamespace;
       if (parent && ns === 2) {
         if (parent.tag === "annotation-xml") {
-          if (tag === "svg") {
+          if (isSVGTag(tag)) {
             return 1;
           }
           if (parent.props.some(
@@ -6096,10 +6091,10 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
         }
       }
       if (ns === 0) {
-        if (tag === "svg") {
+        if (isSVGTag(tag)) {
           return 1;
         }
-        if (tag === "math") {
+        if (isMathMLTag(tag)) {
           return 2;
         }
       }
@@ -6723,7 +6718,6 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
   exports.NORMALIZE_CLASS = NORMALIZE_CLASS;
   exports.NORMALIZE_PROPS = NORMALIZE_PROPS;
   exports.NORMALIZE_STYLE = NORMALIZE_STYLE;
-  exports.Namespaces = Namespaces;
   exports.NewlineType = NewlineType;
   exports.NodeTypes = NodeTypes;
   exports.OPEN_BLOCK = OPEN_BLOCK;

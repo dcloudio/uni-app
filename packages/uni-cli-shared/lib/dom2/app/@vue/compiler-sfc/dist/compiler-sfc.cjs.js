@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-alpha.3
+* @vue/compiler-sfc v3.6.0-alpha.4
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -2396,54 +2396,49 @@ const transformSrcset = (node, context, options = defaultAssetUrlOptions) => {
               return;
             }
           }
-          const compoundExpression = compilerCore.createCompoundExpression([], attr.loc);
+          let content = "";
           imageCandidates.forEach(({ url, descriptor }, index2) => {
             if (shouldProcessUrl(url)) {
               const { path: path2 } = parseUrl(url);
-              let exp2;
               if (path2) {
+                let exp2 = "";
                 const existingImportsIndex = context.imports.findIndex(
                   (i) => i.path === path2
                 );
                 if (existingImportsIndex > -1) {
-                  exp2 = compilerCore.createSimpleExpression(
-                    `_imports_${existingImportsIndex}`,
-                    false,
-                    attr.loc,
-                    3
-                  );
+                  exp2 = `_imports_${existingImportsIndex}`;
                 } else {
-                  exp2 = compilerCore.createSimpleExpression(
-                    `_imports_${context.imports.length}`,
-                    false,
-                    attr.loc,
-                    3
-                  );
-                  context.imports.push({ exp: exp2, path: path2 });
+                  exp2 = `_imports_${context.imports.length}`;
+                  context.imports.push({
+                    exp: compilerCore.createSimpleExpression(
+                      exp2,
+                      false,
+                      attr.loc,
+                      3
+                    ),
+                    path: path2
+                  });
                 }
-                compoundExpression.children.push(exp2);
+                content += exp2;
               }
             } else {
-              const exp2 = compilerCore.createSimpleExpression(
-                `"${url}"`,
-                false,
-                attr.loc,
-                3
-              );
-              compoundExpression.children.push(exp2);
+              content += `"${url}"`;
             }
             const isNotLast = imageCandidates.length - 1 > index2;
-            if (descriptor && isNotLast) {
-              compoundExpression.children.push(` + ' ${descriptor}, ' + `);
-            } else if (descriptor) {
-              compoundExpression.children.push(` + ' ${descriptor}'`);
+            if (descriptor) {
+              content += ` + ' ${descriptor}${isNotLast ? ", " : ""}'${isNotLast ? " + " : ""}`;
             } else if (isNotLast) {
-              compoundExpression.children.push(` + ', ' + `);
+              content += ` + ', ' + `;
             }
           });
-          let exp = compoundExpression;
+          let exp = compilerCore.createSimpleExpression(
+            content,
+            false,
+            attr.loc,
+            3
+          );
           if (context.hoistStatic) {
-            exp = context.hoist(compoundExpression);
+            exp = context.hoist(exp);
             exp.constType = 3;
           }
           node.props[index] = {
@@ -20370,9 +20365,7 @@ function genModelProps(ctx) {
     }
     modelPropsDecl += `
     ${JSON.stringify(name)}: ${decl},`;
-    const modifierPropName = JSON.stringify(
-      name === "modelValue" ? `modelModifiers` : `${name}Modifiers`
-    );
+    const modifierPropName = JSON.stringify(shared.getModifierPropName(name));
     modelPropsDecl += `
     ${modifierPropName}: {},`;
   }
@@ -21968,7 +21961,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
   return generator.toJSON();
 }
 
-const version = "3.6.0-alpha.3";
+const version = "3.6.0-alpha.4";
 const parseCache = parseCache$1;
 const errorMessages = {
   ...CompilerDOM.errorMessages,

@@ -2,7 +2,8 @@ import { SimpleExpressionNode, RootNode, Node, TemplateChildNode, DirectiveNode,
 export { parse } from '@vue/compiler-dom';
 import * as packages_runtime_vapor_src from 'packages/runtime-vapor/src';
 import * as packages_runtime_dom_src from 'packages/runtime-dom/src';
-import { Prettify } from '@vue/shared';
+import { Prettify, Namespace } from '@vue/shared';
+import { ImportItem } from '@vue/compiler-core';
 
 export interface IRProp extends Omit<DirectiveTransformResult, 'value'> {
     values: SimpleExpressionNode[];
@@ -107,7 +108,8 @@ export interface RootIRNode {
     type: IRNodeTypes.ROOT;
     node: RootNode;
     source: string;
-    template: string[];
+    template: Map<string, Namespace>;
+    templateIndexMap: Map<string, number>;
     rootTemplateIndex?: number;
     component: Set<string>;
     directive: Set<string>;
@@ -157,6 +159,7 @@ export interface SetDynamicPropsIRNode extends BaseIRNode {
     element: number;
     props: IRProps[];
     root: boolean;
+    tag: string;
     /**
      * fixed by uts 当前整个动态绑定表达式对应的标识符，因为动态绑定需要在sharedData层对数据做格式化，不能单个生成标识符，不然需要在c层再格式化一次
      */
@@ -239,6 +242,7 @@ export interface CreateComponentIRNode extends BaseIRNode {
     root: boolean;
     once: boolean;
     dynamic?: SimpleExpressionNode;
+    isCustomElement: boolean;
     parent?: number;
     anchor?: number;
     append?: boolean;
@@ -346,6 +350,7 @@ export declare class TransformContext<T extends AllNode = AllNode> {
     template: string;
     childrenTemplate: (string | null)[];
     dynamic: IRDynamicInfo;
+    imports: ImportItem[];
     inVOnce: boolean;
     inVFor: number;
     comment: CommentNode[];
@@ -353,9 +358,11 @@ export declare class TransformContext<T extends AllNode = AllNode> {
     directive: Set<string>;
     slots: IRSlots[];
     private globalId;
+    private nextIdMap;
     constructor(ir: RootIRNode, node: T, options?: TransformOptions);
     enterBlock(ir: BlockIRNode, isVFor?: boolean): () => void;
     increaseId: () => number;
+    private initNextIdMap;
     reference(): number;
     pushTemplate(content: string): number;
     registerTemplate(): number;
@@ -370,7 +377,8 @@ export type CodegenOptions = Omit<CodegenOptions$1, 'optimizeImports'>;
 export declare class CodegenContext {
     ir: RootIRNode;
     options: Required<CodegenOptions>;
-    helpers: Set<string>;
+    bindingNames: Set<string>;
+    helpers: Map<string, string>;
     helper: (name: CoreHelper | VaporHelper) => string;
     delegates: Set<string>;
     identifiers: Record<string, (string | SimpleExpressionNode)[]>;
@@ -380,6 +388,13 @@ export declare class CodegenContext {
     enterBlock(block: BlockIRNode): () => BlockIRNode;
     scopeLevel: number;
     enterScope(): [level: number, exit: () => number];
+    private templateVars;
+    private nextIdMap;
+    private lastIdMap;
+    private lastTIndex;
+    private initNextIdMap;
+    tName(i: number): string;
+    pName(i: number): string;
     constructor(ir: RootIRNode, options: CodegenOptions);
 }
 export interface VaporCodegenResult extends BaseCodegenResult {
@@ -388,6 +403,7 @@ export interface VaporCodegenResult extends BaseCodegenResult {
 }
 export declare function generate(ir: RootIRNode, options?: CodegenOptions): VaporCodegenResult;
 
+export declare const IMPORT_EXPR_RE: RegExp;
 export declare const NEWLINE: unique symbol;
 /** increase offset but don't push actual code */
 export declare const LF: unique symbol;
@@ -471,7 +487,7 @@ export declare const transformVSlot: NodeTransform;
 
 export declare function isConstantExpression(exp: SimpleExpressionNode): boolean;
 export declare function isStaticExpression(node: SimpleExpressionNode, bindings: BindingMetadata): boolean;
-export declare function getLiteralExpressionValue(exp: SimpleExpressionNode): number | string | boolean | null;
+export declare function getLiteralExpressionValue(exp: SimpleExpressionNode, excludeNumber?: boolean): string | null;
 export declare function isTransitionTag(tag: string): boolean;
 export declare function isTransitionGroupTag(tag: string): boolean;
 export declare function isKeepAliveTag(tag: string): boolean;

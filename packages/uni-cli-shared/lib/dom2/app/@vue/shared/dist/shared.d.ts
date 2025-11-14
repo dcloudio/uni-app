@@ -60,6 +60,13 @@ export declare const capitalize: <T extends string>(str: T) => Capitalize<T>;
  * @private
  */
 export declare const toHandlerKey: <T extends string>(str: T) => T extends '' ? '' : `on${Capitalize<T>}`;
+/**
+ * #13070 When v-model and v-model:model directives are used together,
+ * they will generate the same modelModifiers prop,
+ * so a `$` suffix is added to avoid conflicts.
+ * @private
+ */
+export declare const getModifierPropName: (name: string) => string;
 export declare const hasChanged: (value: any, oldValue: any) => boolean;
 export declare const invokeArrayFns: (fns: Function[], ...arg: any[]) => void;
 export declare const def: (obj: object, key: string | symbol, value: any, writable?: boolean) => void;
@@ -300,6 +307,13 @@ export declare const isKnownMathMLAttr: (key: string) => boolean;
  */
 export declare function isRenderableAttrValue(value: unknown): boolean;
 export declare function shouldSetAsAttr(tagName: string, key: string): boolean;
+
+export type Namespace = number;
+export declare enum Namespaces {
+    HTML = 0,
+    SVG = 1,
+    MATH_ML = 2
+}
 
 export declare function escapeHtml(string: unknown): string;
 export declare function escapeHtmlComment(src: string): string;
