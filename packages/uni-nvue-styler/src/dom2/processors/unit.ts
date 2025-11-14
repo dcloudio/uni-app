@@ -52,7 +52,7 @@ export function createSetStyleUnitValueProcessor(
     if (unitValue) {
       return toUnitValueResult(setter, language, unitValue)
     }
-    return createValueProcessorError(`Invalid unit value: ${value}`)
+    return createValueProcessorError(value, propertyName)
   }, PropertyProcessorType.Unit)
 }
 
@@ -91,12 +91,13 @@ export interface SharedDataStyleUnitValue {
 }
 
 export function toSharedDataStyleUnitValue(
-  value: string | number
+  value: string | number,
+  propertyName: string
 ): SharedDataStyleUnitValue | void {
   const unitValue = parseUnitValue(String(value))
   if (unitValue) {
     unitValue.unit = Units.indexOf(unitValue.unit) as unknown as string
     return unitValue as unknown as SharedDataStyleUnitValue
   }
-  return toSharedDataStyleValueError(`Invalid unit value: ${value}`)
+  return toSharedDataStyleValueError(value, propertyName)
 }

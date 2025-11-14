@@ -18,7 +18,7 @@ export function createSetStyleBackgroundImageValueProcessor(
   setter: string,
   language: DOM2_APP_LANGUAGE
 ): PropertyProcessor {
-  return createPropertyProcessor((value: string | number) => {
+  return createPropertyProcessor((value: string | number, propertyName) => {
     const valueStr = String(value).trim()
 
     if (valueStr === 'none') {
@@ -29,9 +29,7 @@ export function createSetStyleBackgroundImageValueProcessor(
     if (valueStr.startsWith('linear-gradient(')) {
       const gradientCode = parseLinearGradient(valueStr, language)
       if (!gradientCode) {
-        return createValueProcessorError(
-          `Invalid background-image value: ${value}`
-        )
+        return createValueProcessorError(value, propertyName)
       }
       return createValueProcessorResult(
         gradientCode,
@@ -40,7 +38,7 @@ export function createSetStyleBackgroundImageValueProcessor(
     }
 
     // 其他类型暂不支持
-    return createValueProcessorError(`Invalid background-image value: ${value}`)
+    return createValueProcessorError(value, propertyName)
   }, PropertyProcessorType.Struct)
 }
 

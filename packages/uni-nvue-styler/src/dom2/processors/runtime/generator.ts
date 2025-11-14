@@ -73,7 +73,7 @@ export function genRuntimeCode() {
     `export const UniCSSPropertyVariable = ${allProperties.indexOf('variable')}`
   )
   codes.push(
-    `export const processors = new Map<string, [number, (value: string) => any]>([${entries.join(
+    `export const processors = new Map<string, [number, (value: string, propertyName: string) => any]>([${entries.join(
       ', \n'
     )}])`
   )

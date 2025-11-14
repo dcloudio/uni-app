@@ -1,15 +1,15 @@
 import { toSharedDataStyleValueError } from '../utils'
 
 export function createToSharedDataStyleCombinedValue(
-  processors: Array<(value: string | number) => any>
+  processors: Array<(value: string | number, propertyName: string) => any>
 ) {
-  return (value: string | number) => {
+  return (value: string | number, propertyName: string) => {
     for (const processor of processors) {
-      const result = processor(value)
+      const result = processor(value, propertyName)
       if (result) {
         return result
       }
     }
-    return toSharedDataStyleValueError(`Invalid value: ${value}`)
+    return toSharedDataStyleValueError(value, propertyName)
   }
 }

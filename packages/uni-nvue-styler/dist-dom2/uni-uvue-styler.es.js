@@ -1574,9 +1574,9 @@ function validateWCAG2Parms(parms) {
   };
 }
 
-function toSharedDataStyleValueError(error) {
+function toSharedDataStyleValueError(value, propertyName) {
     if ((process.env.NODE_ENV !== 'production')) {
-        console.warn(error);
+        console.warn(`Property '${propertyName}' has invalid value: '${value}'`);
     }
 }
 
@@ -1600,12 +1600,12 @@ function toSharedDataStyleColorValue(value) {
     return 0x00000000;
 }
 
-function toSharedDataStyleNumberValue(value) {
+function toSharedDataStyleNumberValue(value, propertyName) {
     const numValue = parseFloat(String(value));
     if (!isNaN(numValue)) {
         return numValue;
     }
-    return toSharedDataStyleValueError(`Invalid number value: ${value}`);
+    return toSharedDataStyleValueError(value, propertyName);
 }
 
 function toSharedDataStyleStringValue(value) {
@@ -1650,13 +1650,13 @@ function parseUnitValue(value, defaultUnit = 'NONE') {
         };
     }
 }
-function toSharedDataStyleUnitValue(value) {
+function toSharedDataStyleUnitValue(value, propertyName) {
     const unitValue = parseUnitValue(String(value));
     if (unitValue) {
         unitValue.unit = Units.indexOf(unitValue.unit);
         return unitValue;
     }
-    return toSharedDataStyleValueError(`Invalid unit value: ${value}`);
+    return toSharedDataStyleValueError(value, propertyName);
 }
 
 const ENUM_BORDER_WIDTH_TYPE_VALUES = {
@@ -1664,7 +1664,7 @@ const ENUM_BORDER_WIDTH_TYPE_VALUES = {
     medium: 3,
     thick: 5,
 };
-function toSharedDataStyleBorderWidthValue(value) {
+function toSharedDataStyleBorderWidthValue(value, propertyName) {
     const pxValue = ENUM_BORDER_WIDTH_TYPE_VALUES[value];
     if (pxValue) {
         return {
@@ -1672,18 +1672,18 @@ function toSharedDataStyleBorderWidthValue(value) {
             unit: 2, // PX 固定值 2
         };
     }
-    return toSharedDataStyleUnitValue(value);
+    return toSharedDataStyleUnitValue(value, propertyName);
 }
 
 function createToSharedDataStyleCombinedValue(processors) {
-    return (value) => {
+    return (value, propertyName) => {
         for (const processor of processors) {
-            const result = processor(value);
+            const result = processor(value, propertyName);
             if (result) {
                 return result;
             }
         }
-        return toSharedDataStyleValueError(`Invalid value: ${value}`);
+        return toSharedDataStyleValueError(value, propertyName);
     };
 }
 
@@ -2185,7 +2185,7 @@ function toSharedDataStyle(style, result = {}) {
         else {
             const processor = processors.get(key);
             if (processor) {
-                const newValue = processor[1](value);
+                const newValue = processor[1](value, key);
                 if (typeof newValue !== 'undefined') {
                     result[processor[0]] = newValue;
                 }

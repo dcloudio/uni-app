@@ -18,19 +18,11 @@ export function createSetStyleTransformOriginValueProcessor(
   setter: string,
   language: DOM2_APP_LANGUAGE
 ): PropertyProcessor {
-  return createPropertyProcessor((value: string | number) => {
+  return createPropertyProcessor((value: string | number, propertyName) => {
     const result = parseTransformOriginValue(String(value), language)
-
-    if (result.error) {
-      return createValueProcessorError(result.error)
-    }
-
     if (!result.code) {
-      return createValueProcessorError(
-        `Invalid transform-origin value: ${value}`
-      )
+      return createValueProcessorError(value, propertyName)
     }
-
     return createValueProcessorResult(result.code, `${setter}(${result.code})`)
   }, PropertyProcessorType.Struct)
 }
@@ -78,7 +70,6 @@ function parseTransformOriginValue(
 
     return {
       code: '',
-      error: `Invalid transform-origin value: ${parts[0]}`,
     }
   }
 
@@ -108,7 +99,6 @@ function parseTransformOriginValue(
 
   return {
     code: '',
-    error: `Invalid transform-origin value: ${str}`,
   }
 }
 

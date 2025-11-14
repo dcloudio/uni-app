@@ -66,7 +66,7 @@
     "defaultValue": "auto"
   },
   "flex-basis": {
-    "type": ["UniCSSFlexBasisType", "UniCSSUnitValue"],
+    "type": ["UniCSSUnitValue", "UniCSSFlexBasisType"],
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -540,7 +540,7 @@
     "defaultValue": "none"
   },
   "border-bottom-width": {
-    "type": ["UniCSSBorderWidthType", "UniCSSUnitValue"],
+    "type": ["UniCSSUnitValue", "UniCSSBorderWidthType"],
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -552,7 +552,7 @@
     "defaultValue": "medium"
   },
   "border-left-width": {
-    "type": ["UniCSSBorderWidthType", "UniCSSUnitValue"],
+    "type": ["UniCSSUnitValue", "UniCSSBorderWidthType"],
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -564,7 +564,7 @@
     "defaultValue": "medium"
   },
   "border-right-width": {
-    "type": ["UniCSSBorderWidthType", "UniCSSUnitValue"],
+    "type": ["UniCSSUnitValue", "UniCSSBorderWidthType"],
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -576,7 +576,7 @@
     "defaultValue": "medium"
   },
   "border-top-width": {
-    "type": ["UniCSSBorderWidthType", "UniCSSUnitValue"],
+    "type": ["UniCSSUnitValue", "UniCSSBorderWidthType"],
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -967,7 +967,7 @@
     "defaultValue": "normal"
   },
   "font-weight": {
-    "type": ["UniCSSFontWeightType", "number"],
+    "type": ["number", "UniCSSFontWeightType"],
     "uniPlatform": {
       "app": {
         "dom-c": {
@@ -999,7 +999,7 @@
     }
   },
   "line-height": {
-    "type": ["UniCSSLineHeightType", "UniCSSUnitValue"],
+    "type": ["UniCSSUnitValue", "UniCSSLineHeightType"],
     "uniPlatform": {
       "app": {
         "dom-c": {

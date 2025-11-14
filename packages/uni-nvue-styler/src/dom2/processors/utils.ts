@@ -30,17 +30,21 @@ export function createValueProcessorResult(
   }
 }
 
-export function toSharedDataStyleValueError(error: string) {
+export function toSharedDataStyleValueError(
+  value: string | number,
+  propertyName: string
+) {
   if (__DEV__) {
-    console.warn(error)
+    console.warn(`Property '${propertyName}' has invalid value: '${value}'`)
   }
 }
 
 export function createValueProcessorError(
-  error: string
+  value: string | number,
+  propertyName: string
 ): ReturnType<PropertyProcessor> {
   return {
-    error: error,
+    error: `Property '${propertyName}' has invalid value: '${value}'`,
     valueCode: '',
     setterCode: '',
   }

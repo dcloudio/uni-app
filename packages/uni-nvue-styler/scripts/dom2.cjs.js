@@ -76,7 +76,7 @@ function genRuntimeCode() {
                 : `toSharedDataStyleStringValue`)}]]`);
     });
     codes.push(`export const UniCSSPropertyVariable = ${allProperties.indexOf('variable')}`);
-    codes.push(`export const processors = new Map<string, [number, (value: string) => any]>([${entries.join(', \n')}])`);
+    codes.push(`export const processors = new Map<string, [number, (value: string, propertyName: string) => any]>([${entries.join(', \n')}])`);
     codes.push(...enumCodes);
     return codes.join('\n');
     function genEnumProcessorName(propertyName) {

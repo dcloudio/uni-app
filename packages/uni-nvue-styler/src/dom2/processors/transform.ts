@@ -20,7 +20,7 @@ export function createSetStyleTransformValueProcessor(
   setter: string,
   language: DOM2_APP_LANGUAGE
 ): PropertyProcessor {
-  return createPropertyProcessor((value: string | number) => {
+  return createPropertyProcessor((value: string | number, propertyName) => {
     if (value === 'none') {
       return createValueProcessorResult(`null`, `${setter}(null)`)
     }
@@ -30,7 +30,7 @@ export function createSetStyleTransformValueProcessor(
     )
 
     if (!transformValueCode) {
-      return createValueProcessorError(`Invalid transform value: ${value}`)
+      return createValueProcessorError(value, propertyName)
     }
     return createValueProcessorResult(
       `${transformValueCode}`,

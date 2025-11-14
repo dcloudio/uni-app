@@ -27,7 +27,7 @@ export function createSetStyleBorderWidthValueProcessor(
   setter: string,
   language: DOM2_APP_LANGUAGE
 ): PropertyProcessor {
-  return createPropertyProcessor((value: string | number) => {
+  return createPropertyProcessor((value: string | number, propertyName) => {
     const pxValue =
       ENUM_BORDER_WIDTH_TYPE_VALUES[
         value as keyof typeof ENUM_BORDER_WIDTH_TYPE_VALUES
@@ -38,12 +38,13 @@ export function createSetStyleBorderWidthValueProcessor(
         unit: 'PX',
       })
     }
-    return createValueProcessorError(`Invalid border width value: ${value}`)
+    return createValueProcessorError(value, propertyName)
   }, PropertyProcessorType.Enum)
 }
 
 export function toSharedDataStyleBorderWidthValue(
-  value: string | number
+  value: string | number,
+  propertyName: string
 ): SharedDataStyleUnitValue | void {
   const pxValue =
     ENUM_BORDER_WIDTH_TYPE_VALUES[
@@ -55,5 +56,5 @@ export function toSharedDataStyleBorderWidthValue(
       unit: 2, // PX 固定值 2
     }
   }
-  return toSharedDataStyleUnitValue(value)
+  return toSharedDataStyleUnitValue(value, propertyName)
 }

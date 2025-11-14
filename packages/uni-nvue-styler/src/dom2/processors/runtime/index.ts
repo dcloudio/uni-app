@@ -15,7 +15,7 @@ export function toSharedDataStyle(
     } else {
       const processor = processors.get(key)
       if (processor) {
-        const newValue = processor[1](value as string)
+        const newValue = processor[1](value as string, key)
         if (typeof newValue !== 'undefined') {
           result[processor[0]] = newValue
         }

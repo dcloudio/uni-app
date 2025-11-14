@@ -16,7 +16,7 @@ export function isColorType(propertyType?: string) {
 export function createSetStyleNativeColorValueProcessor(
   setter: string
 ): PropertyProcessor {
-  return createPropertyProcessor((value: string | number) => {
+  return createPropertyProcessor((value: string | number, propertyName) => {
     const nativeColorValue = parseNativeColorValue(String(value))
     if (nativeColorValue) {
       return createValueProcessorResult(
@@ -24,7 +24,7 @@ export function createSetStyleNativeColorValueProcessor(
         `${setter}(${nativeColorValue})`
       )
     }
-    return createValueProcessorError(`Invalid color value: ${value}`)
+    return createValueProcessorError(value, propertyName)
   }, PropertyProcessorType.Color)
 }
 

@@ -15,19 +15,22 @@ export function isNumberType(propertyType?: string) {
 export function createSetStyleNumberValueProcessor(
   setter: string
 ): PropertyProcessor {
-  return createPropertyProcessor((value) => {
+  return createPropertyProcessor((value, propertyName) => {
     const numValue = parseFloat(String(value))
     if (!isNaN(numValue)) {
       return createValueProcessorResult(`${numValue}`, `${setter}(${numValue})`)
     }
-    return createValueProcessorError(`Invalid number value: ${value}`)
+    return createValueProcessorError(value, propertyName)
   }, PropertyProcessorType.Number)
 }
 
-export function toSharedDataStyleNumberValue(value: string | number) {
+export function toSharedDataStyleNumberValue(
+  value: string | number,
+  propertyName: string
+) {
   const numValue = parseFloat(String(value))
   if (!isNaN(numValue)) {
     return numValue
   }
-  return toSharedDataStyleValueError(`Invalid number value: ${value}`)
+  return toSharedDataStyleValueError(value, propertyName)
 }

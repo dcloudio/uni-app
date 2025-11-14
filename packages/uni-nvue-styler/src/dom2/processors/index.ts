@@ -7,6 +7,7 @@ import {
   type PropertyProcessor,
   PropertyProcessorType,
   createPropertyProcessor,
+  createValueProcessorError,
   getAppCssJson,
   getTargetConfig,
 } from './utils'
@@ -116,51 +117,28 @@ export function createDom2PropertyProcessors(
     propertyTypes: string[],
     setter: string
   ): PropertyProcessor | undefined {
-    const processors = propertyTypes
-      .map((type) => createStyleValueProcessor(type, setter))
-      .filter(Boolean) as PropertyProcessor[]
+    const processorSet = new Set<PropertyProcessor>()
+    propertyTypes.forEach((type) => {
+      const processor = createStyleValueProcessor(type, setter)
+      if (processor) {
+        processorSet.add(processor)
+      }
+    })
+    const processors = Array.from(processorSet)
     if (processors.length === 0) {
       return undefined
     }
     if (processors.length === 1) {
       return processors[0]
     }
-    // 目前联合类型，一般是枚举类型联合一个基础类型或者带单位类型
-    let enumProcessor: PropertyProcessor | undefined
-    let baseProcessor: PropertyProcessor | undefined
-    for (const processor of processors) {
-      if (processor.type === PropertyProcessorType.Enum) {
-        enumProcessor = processor
-      } else if (
-        // 目前仅支持这两种联合
-        processor.type === PropertyProcessorType.Unit ||
-        processor.type === PropertyProcessorType.Number
-      ) {
-        baseProcessor = processor
-      }
-    }
-    if (!enumProcessor || !baseProcessor) {
-      throw new Error(`Unsupported property type: ${propertyTypes.join(', ')}`)
-    }
-    let numberProcessor: PropertyProcessor | undefined
-    let unitProcessor: PropertyProcessor | undefined
-    if (baseProcessor.type === PropertyProcessorType.Number) {
-      numberProcessor = createSetStyleNumberValueProcessor(setter)
-    } else if (baseProcessor.type === PropertyProcessorType.Unit) {
-      unitProcessor = createSetStyleUnitValueProcessor(setter, language)
-    }
     return createPropertyProcessor((value, propertyName) => {
-      if (numberProcessor) {
-        if (/^\d+$/.test(String(value))) {
-          return numberProcessor(value, propertyName)
-        }
-      } else if (unitProcessor) {
-        const result = unitProcessor(value, propertyName)
+      for (const processor of processors) {
+        const result = processor(value, propertyName)
         if (!result.error) {
           return result
         }
       }
-      return enumProcessor(value, propertyName)
+      return createValueProcessorError(value, propertyName)
     }, PropertyProcessorType.Combined)
   }
 

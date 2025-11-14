@@ -17,6 +17,6 @@ exports[`toSharedDataStyle basic 1`] = `
     "unit": 2,
     "value": 100,
   },
-  "75": "red",
+  "75": 4294901760,
 }
 `;

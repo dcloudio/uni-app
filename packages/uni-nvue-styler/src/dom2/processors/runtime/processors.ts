@@ -6,7 +6,10 @@ import { toSharedDataStyleUnitValue } from '../unit'
 import { toSharedDataStyleBorderWidthValue } from '../borderWidth'
 import { createToSharedDataStyleCombinedValue } from './utils'
 export const UniCSSPropertyVariable = 1
-export const processors = new Map<string, [number, (value: string) => any]>([
+export const processors = new Map<
+  string,
+  [number, (value: string, propertyName: string) => any]
+>([
   ['align-content', [48, toSharedDataStyleAlignContentValue]],
   ['align-items', [46, toSharedDataStyleAlignItemsValue]],
   ['align-self', [47, toSharedDataStyleAlignSelfValue]],
