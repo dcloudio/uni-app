@@ -1595,7 +1595,9 @@ const showLoading = {
         if (!fromArgs.mask) {
             toArgs.mask = false;
         }
-        toArgs.content = fromArgs.title;
+        if (fromArgs.title) {
+            toArgs.content = fromArgs.title;
+        }
     },
 };
 const uploadFile = {
