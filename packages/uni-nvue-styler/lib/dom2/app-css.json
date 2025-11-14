@@ -849,7 +849,6 @@
     }
   },
   "transition-delay": {
-    "type": ["UniNativeTransitionDelay", "UniNativeTransitionDelays"],
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -864,7 +863,6 @@
     }
   },
   "transition-duration": {
-    "type": ["UniNativeTransitionDuration", "UniNativeTransitionDurations"],
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -879,7 +877,6 @@
     }
   },
   "transition-property": {
-    "type": ["UniNativeTransitionProperty", "UniNativeTransitionPropertys"],
     "uniPlatform": {
       "app": {
         "nv-c": {
@@ -894,7 +891,6 @@
     }
   },
   "transition-timing-function": {
-    "type": ["UniNativeTransitionTimingFunction", "UniNativeTransitionTimingFunctions"],
     "uniPlatform": {
       "app": {
         "nv-c": {
