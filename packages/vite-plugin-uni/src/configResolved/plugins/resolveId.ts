@@ -19,7 +19,7 @@ try {
 } catch (error) {}
 
 const BUILT_IN_MODULES = {
-  'vue-router': 'dist/vue-router.esm-bundler.js',
+  'vue-router': 'dist/vue-router.mjs',
   vuex: 'dist/vuex.esm-bundler.js',
   'vue-i18n': 'dist/vue-i18n.esm-bundler.js',
   '@dcloudio/uni-app': 'dist/uni-app.es.js',
