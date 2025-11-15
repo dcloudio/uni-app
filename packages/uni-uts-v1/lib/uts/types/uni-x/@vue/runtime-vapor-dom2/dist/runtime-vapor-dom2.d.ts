@@ -3,6 +3,7 @@ export { defineComponent as defineVaporSharedDataComponent } from '@vue/runtime-
 export * from '@vue/runtime-x';
 export { hyphenate } from '@vue/shared';
 import { EffectScope, ShallowRef, Reactive, Ref } from '@vue/reactivity';
+export { toSharedDataStyle } from '@dcloudio/uni-nvue-styler/dist-dom2/uni-uvue-styler.es';
 import { Element as Element$1 } from '@dcloudio/uni-app-x/types/native';
 
 type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[];

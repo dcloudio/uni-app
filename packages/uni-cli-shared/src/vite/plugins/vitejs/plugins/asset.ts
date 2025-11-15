@@ -13,7 +13,7 @@ import type {
 import { isFunction, isString } from '@vue/shared'
 import type { Plugin } from '../plugin'
 import type { ResolvedConfig } from '../config'
-import { cleanUrl, normalizePath } from '../utils'
+import { cleanUrl, isWindows, normalizePath } from '../utils'
 import { withSourcemap } from '../../../../vite/utils/utils'
 import {
   normalizeEmitAssetFileName,
@@ -207,6 +207,29 @@ export function fileToUrl(
   isStaticFile: IsStaticFile
 ): string {
   return fileToBuiltUrl(id, config, ctx, false, canInline, isStaticFile)
+}
+
+export function getAssetFilenameById(
+  id: string,
+  config: ResolvedConfig
+): string | undefined {
+  const [cacheForUrl] = assetCache.get(config)!
+  if (cacheForUrl) {
+    let assetUrl = cacheForUrl.get(id)
+    // 以防万一路径不一致
+    if (!assetUrl && isWindows) {
+      assetUrl = cacheForUrl.get(normalizePath(id))
+    }
+    if (assetUrl) {
+      const matches = assetUrl.match(
+        /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/
+      )
+      if (matches) {
+        const [, hash] = matches
+        return getAssetFilename(hash, config)
+      }
+    }
+  }
 }
 
 export function getAssetFilename(

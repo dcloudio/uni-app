@@ -265,10 +265,17 @@ export function createResolveStaticAsset(inputDir: string) {
     context: TransformContext,
     options: AssetURLOptions
   ) {
+    let filename = context.filename
+    if (!filename && (context as any).options?.filename) {
+      filename = (context as any).options.filename
+    }
+    if (!filename) {
+      return relativePath
+    }
     const newRelativePath = normalizePath(
       path.relative(
         inputDir,
-        path.resolve(path.dirname(context.filename), relativePath)
+        path.resolve(path.dirname(filename), relativePath)
       )
     )
     if (options.base) {

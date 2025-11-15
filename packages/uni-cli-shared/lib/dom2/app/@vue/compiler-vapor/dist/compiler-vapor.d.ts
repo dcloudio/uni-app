@@ -403,6 +403,8 @@ export interface VaporCodegenResult extends BaseCodegenResult {
 }
 export declare function generate(ir: RootIRNode, options?: CodegenOptions): VaporCodegenResult;
 
+export declare const IMPORT_EXP_START = "__IMPORT_EXP_START__";
+export declare const IMPORT_EXP_END = "__IMPORT_EXP_END__";
 export declare const IMPORT_EXPR_RE: RegExp;
 export declare const NEWLINE: unique symbol;
 /** increase offset but don't push actual code */
