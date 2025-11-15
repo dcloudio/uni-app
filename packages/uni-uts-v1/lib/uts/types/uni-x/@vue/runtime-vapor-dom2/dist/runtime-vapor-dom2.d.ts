@@ -212,6 +212,17 @@ export declare function useSharedDataScope<T extends UniSharedDataPage>(scope?: 
 export declare function useSharedDataPageId(): number;
 
 /**
+ * 将字符串值转换为 UniNativeSlotType 枚举类型
+ * @param value - 字符串值
+ * @returns UniNativeSlotType 枚举值
+ */
+export declare function toSharedDataGlobalSlot(value: string): UniNativeSlotType;
+export declare const toSharedDataViewSlot: (value: string) => UniNativeSlotType;
+export declare const toSharedDataTextSlot: (value: string) => UniNativeSlotType;
+export declare const toSharedDataImageSlot: (value: string) => UniNativeSlotType;
+export declare const toSharedDataScrollViewSlot: (value: string) => UniNativeSlotType;
+
+/**
  * 将字符串值转换为 UniImageModeType 枚举类型
  * @param value - 字符串值
  * @returns UniImageModeType 枚举值
