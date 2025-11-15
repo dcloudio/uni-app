@@ -159,7 +159,32 @@ function useImageLoader(
     state.origHeight = height
     state.imgSrc = imgSrc
   }
-  const loadImage = (src: string) => {
+
+  const observer = ref<IntersectionObserver>()
+  const cleanupObserver = () => {
+    if (observer.value) {
+      observer.value?.disconnect()
+      observer.value = undefined
+    }
+  }
+  const lazyLoadImage = (src: string) => {
+    resetImage()
+    setState()
+    if (!observer.value) {
+      observer.value = new IntersectionObserver(([{ isIntersecting }]) => {
+        if (isIntersecting) {
+          _loadImage(src)
+          cleanupObserver()
+        }
+      })
+      observer.value.observe(state.rootEl!)
+    }
+  }
+
+  const loadImage = (src: string) =>
+    props.lazyLoad ? lazyLoadImage(src) : _loadImage(src)
+
+  const _loadImage = (src: string) => {
     if (!src) {
       resetImage()
       setState()
@@ -217,7 +242,10 @@ function useImageLoader(
     }
   )
   onMounted(() => loadImage(state.src))
-  onBeforeUnmount(() => resetImage())
+  onBeforeUnmount(() => {
+    cleanupObserver()
+    resetImage()
+  })
 }
 
 const isChrome = __NODE_JS__ ? false : navigator.vendor === 'Google Inc.'
