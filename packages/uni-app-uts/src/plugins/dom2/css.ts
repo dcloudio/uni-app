@@ -111,8 +111,8 @@ export function uniAppCssPrePlugin(): Plugin {
       // TODO 加密插件
       insertBeforePlugin(cssPlugin(config), name, config)
       const plugins = config.plugins as Plugin[]
-      // 重要：必须放到 uni:sd 前
-      const index = plugins.findIndex((p) => p.name === 'uni:sd')
+      // 重要：必须放到 unplugin-auto-import、uni:sd 前
+      const index = plugins.findIndex((p) => p.name === 'unplugin-auto-import')
       plugins.splice(index, 0, uvueCssPostPlugin)
     },
   }
