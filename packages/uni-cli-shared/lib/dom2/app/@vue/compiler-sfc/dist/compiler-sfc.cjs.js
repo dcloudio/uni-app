@@ -2063,12 +2063,7 @@ function parse$1(source, options = {}) {
       errors.forEach((err) => {
         if (!err.customPrint) {
           err.customPrint = () => {
-            extraOptions.onVueTemplateCompileLog(
-              "error",
-              err,
-              descriptor.source,
-              extraOptions.relativeFilename || filename
-            );
+            extraOptions.onVueTemplateCompileLog("error", err);
           };
         }
       });
@@ -21577,12 +21572,7 @@ let __temp${any}, __restore${any}
         compilerOptions.onError = (error) => {
           if (error.errorType) {
             error.customPrint = () => {
-              onVueTemplateCompileLog(
-                "error",
-                error,
-                source,
-                compilerOptions.relativeFilename || filename
-              );
+              onVueTemplateCompileLog("error", error);
             };
           }
           if (onError) {
@@ -21594,12 +21584,7 @@ let __temp${any}, __restore${any}
         const onWarn = compilerOptions.onWarn;
         compilerOptions.onWarn = (warning) => {
           if (warning.errorType) {
-            onVueTemplateCompileLog(
-              "warn",
-              warning,
-              source,
-              compilerOptions.relativeFilename || filename
-            );
+            onVueTemplateCompileLog("warn", warning);
           } else if (onWarn) {
             onWarn(warning);
           } else {
@@ -21636,12 +21621,7 @@ let __temp${any}, __restore${any}
         if (err.loc) {
           if (onVueTemplateCompileLog) {
             err.customPrint = () => {
-              onVueTemplateCompileLog(
-                "error",
-                err,
-                source,
-                compilerOptions.relativeFilename || filename
-              );
+              onVueTemplateCompileLog("error", err);
             };
           } else {
             err.message += `

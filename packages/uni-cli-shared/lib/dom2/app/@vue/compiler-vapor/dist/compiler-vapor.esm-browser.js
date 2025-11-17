@@ -22328,8 +22328,10 @@ function analyzeExpressions(expressions) {
       exp.ast === null && registerVariable(exp.content, exp, true);
       continue;
     }
+    const seenParents = /* @__PURE__ */ new Set();
     walkIdentifiers(exp.ast, (currentNode, parent, parentStack) => {
-      if (parent && isMemberExpression(parent)) {
+      if (parent && isMemberExpression(parent) && !seenParents.has(parent)) {
+        seenParents.add(parent);
         const memberExp = extractMemberExpression(parent, (id) => {
           registerVariable(id.name, exp, true, {
             start: id.start,
@@ -22407,7 +22409,7 @@ function processRepeatedVariables(context, seenVariable, variableToExpMap, expTo
     ).sort((a, b) => b.end - a.end).forEach(({ start, end, name }) => {
       exp.content = exp.content.slice(0, start - 1) + name + exp.content.slice(end - 1);
     });
-    exp.ast = parseExp(context, exp.content);
+    exp.ast = parseExp(context, exp.content, exp.loc);
   }
   return declarations;
 }
@@ -22472,7 +22474,7 @@ function processRepeatedExpressions(context, expressions, varDeclarations, updat
         );
         Object.keys(delVars).forEach((name) => {
           value.content = value.content.replace(name, delVars[name]);
-          if (value.ast) value.ast = parseExp(context, value.content);
+          if (value.ast) value.ast = parseExp(context, value.content, value.loc);
         });
         declarations.push({
           name: varName,
@@ -22488,7 +22490,7 @@ function processRepeatedExpressions(context, expressions, varDeclarations, updat
             new RegExp(escapeRegExp(content), "g"),
             varName
           );
-          exp.ast = parseExp(context, exp.content);
+          exp.ast = parseExp(context, exp.content, exp.loc);
         }
       });
     }
@@ -22528,12 +22530,22 @@ function genDeclarations(declarations, context, shouldDeclare) {
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
-function parseExp(context, content) {
+function parseExp(context, content, loc) {
   const plugins = context.options.expressionPlugins;
   const options = {
     plugins: plugins ? [...plugins, "typescript"] : ["typescript"]
   };
-  return libExports.parseExpression(`(${content})`, options);
+  try {
+    return libExports.parseExpression(`(${content})`, options);
+  } catch (e) {
+    if (loc) {
+      const error = new SyntaxError(e.message);
+      error.loc = loc;
+      context.options.onError(error);
+      throw error;
+    }
+    throw e;
+  }
 }
 function genVarName(exp) {
   return `${exp.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_").replace(/_+$/, "")}`;

@@ -4,6 +4,7 @@ import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { Plugin } from 'vite'
 import type {
   AssetURLOptions,
+  CompilerError,
   SFCDescriptor,
   SFCStyleCompileOptions,
   TemplateCompiler,
@@ -324,14 +325,15 @@ export function initPluginVueOptions(
       ) => {
         const filename = normalizePath(descriptor.filename.split('?')[0])
         const className = genDom2ClassName(filename, process.env.UNI_INPUT_DIR)
+        const relativeFilename = normalizePath(
+          path.relative(process.env.UNI_INPUT_DIR, filename)
+        )
         return {
           root: normalizePath(process.env.UNI_INPUT_DIR),
           className,
           platform: process.env.UNI_UTS_PLATFORM,
           componentType: isUniPageFile(filename) ? 'page' : 'component',
-          relativeFilename: normalizePath(
-            path.relative(process.env.UNI_INPUT_DIR, filename)
-          ),
+          relativeFilename,
           parseStaticStyle(
             target: DOM2_APP_TARGET,
             tagName: string,
@@ -345,7 +347,17 @@ export function initPluginVueOptions(
               genCode,
             })
           },
-          onVueTemplateCompileLog,
+          onVueTemplateCompileLog(
+            type: 'warn' | 'error',
+            error: CompilerError
+          ) {
+            return onVueTemplateCompileLog(
+              type,
+              error,
+              descriptor.source,
+              relativeFilename
+            )
+          },
         }
       }
     }
