@@ -240,7 +240,7 @@ export const showActionSheet = {
 export const showLoading = {
   args(
     fromArgs: UniApp.ShowLoadingOptions,
-    toArgs: my.IShowLoadingOptions & { mask: boolean } // mini-types feedback.d.ts 未包含 mask
+    toArgs: my.IShowLoadingOptions & { mask?: boolean } // mini-types feedback.d.ts 未包含 mask
   ) {
     if (!fromArgs.mask) {
       toArgs.mask = false
