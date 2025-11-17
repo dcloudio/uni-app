@@ -330,7 +330,8 @@ export function initEnv(
       M['app.compiler.version'].replace(
         '{version}',
         process.env.UNI_COMPILER_VERSION +
-          `（${process.env.UNI_APP_X === 'true' ? 'uni-app x' : 'vue3'}）`
+          `（${process.env.UNI_APP_X === 'true' ? 'uni-app x' : 'vue3'}）` +
+          (process.env.UNI_APP_X_DOM2 === 'true' ? '蒸汽模式' : '')
       )
     )
   }
