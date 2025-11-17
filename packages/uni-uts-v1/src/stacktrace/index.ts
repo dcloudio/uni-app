@@ -31,6 +31,7 @@ import {
   type ParseUTSPluginStacktraceOptions,
   parseUTSSwiftPluginStacktrace,
 } from './swift'
+import { type ParseCppStacktraceOptions, parseCppStacktrace } from './cpp'
 
 export { parseUTSSwiftPluginStacktrace } from './swift'
 export { parseUTSArkTSPluginStacktrace } from './arkts'
@@ -64,8 +65,12 @@ export async function parseCompileStacktrace(
         platform: 'app-ios'
         language: 'swift'
       })
+    | ParseCppStacktraceOptions
 ) {
   initEnv(options)
+  if (options.language === 'cpp') {
+    return parseCppStacktrace(stacktrace, options)
+  }
   if (options.platform === 'app-harmony' && options.language === 'arkts') {
     return parseUTSArkTSPluginStacktrace(stacktrace, options)
   }
