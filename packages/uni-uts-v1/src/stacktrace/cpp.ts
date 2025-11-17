@@ -8,13 +8,12 @@ import { originalPositionFor } from '../sourceMap'
 export interface ParseCppStacktraceOptions extends CompileStacktraceOptions {
   platform: 'app-harmony' | 'app-ios' | 'app-android'
   language: 'cpp'
-  stacktrace: string
   cacheDir: string
 }
 
-// TODO 不同平台cpp堆栈是否一致
+// TODO 区分不同平台cpp路径
 export const CPP_RUNTIME_ERROR_RE =
-  /src\/main\/cpp(.*\.cpp):(\d+):(\d+):\serror:\s(.*)/
+  /src\/main\/cpp\/(.*\.cpp):(\d+):(\d+):\serror:\s(.*)/
 
 /**
  * cpp暂时只处理编译错误
@@ -35,6 +34,26 @@ export async function parseCppStacktrace(
 
   const sourceMapDir = resolveSourceMapDirByCacheDir(options.cacheDir)
   const [, filePath, line, column, message] = matched
+  const codeFrame = await generateCppCodeFrame(
+    sourceMapDir,
+    filePath,
+    line,
+    column,
+    message
+  )
+  if (codeFrame) {
+    return codeFrame
+  }
+  return stacktrace
+}
+
+export async function generateCppCodeFrame(
+  sourceMapDir: string,
+  filePath: string,
+  line: string,
+  column: string,
+  message: string
+): Promise<string | undefined> {
   const lines: string[] = []
   lines.push(message)
   const sourceMapFile = resolveSourceMapFileBySourceFile(
@@ -42,7 +61,7 @@ export async function parseCppStacktrace(
     sourceMapDir
   )
   if (!sourceMapFile) {
-    return stacktrace
+    return
   }
   const originalPosition = await originalPositionFor({
     sourceMapFile,
@@ -51,7 +70,7 @@ export async function parseCppStacktrace(
     withSourceContent: true,
   })
   if (!originalPosition.source) {
-    return stacktrace
+    return
   }
   lines.push(
     `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${

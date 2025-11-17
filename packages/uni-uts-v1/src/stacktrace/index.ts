@@ -42,6 +42,7 @@ export {
 } from './kotlin'
 
 export { parseUTSJavaScriptRuntimeStacktrace } from './js'
+export { parseCppStacktrace } from './cpp'
 
 function initEnv(
   options: CompileStacktraceOptions | GenerateRuntimeCodeFrameOptions

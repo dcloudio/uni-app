@@ -1,6 +1,7 @@
 import path from 'path'
 import {
   parseCompileStacktrace,
+  parseCppStacktrace,
   parseUTSArkTSPluginStacktrace,
   parseUTSKotlinStacktrace,
   parseUTSSwiftPluginStacktrace,
@@ -104,6 +105,10 @@ describe('uts:stacktrace', () => {
     const outputDir = normalizePath(
       path.resolve(__dirname, 'examples/uts/unpackage/dist/dev/app-harmony')
     )
+    const cacheDir = path.resolve(
+      __dirname,
+      'examples/uts/unpackage/cache/app-harmony'
+    )
     expect(
       await parseUTSArkTSPluginStacktrace(
         `1 ERROR: ArkTS:ERROR File: ${inputDir}/unpackage/debug/app-harmony-9ed02395/uni_modules/native-button/utssdk/app-harmony/index.ets:74:48
@@ -112,6 +117,7 @@ describe('uts:stacktrace', () => {
         {
           inputDir,
           outputDir,
+          cacheDir,
         }
       )
     ).toMatchSnapshot()
@@ -124,6 +130,7 @@ describe('uts:stacktrace', () => {
           language: 'arkts',
           inputDir,
           outputDir,
+          cacheDir,
         }
       )
     ).toMatchSnapshot()
@@ -134,6 +141,7 @@ describe('uts:stacktrace', () => {
         {
           inputDir,
           outputDir,
+          cacheDir,
         }
       )
     ).toMatchSnapshot()
@@ -144,6 +152,7 @@ describe('uts:stacktrace', () => {
           inputDir: 'D:/demo-projects/demo-app-x/',
           outputDir:
             'D:/demo-projects/demo-app-x/unpackage/dist/dev/app-harmony',
+          cacheDir,
         }
       )
     ).toMatchSnapshot()
@@ -153,8 +162,27 @@ describe('uts:stacktrace', () => {
         {
           inputDir,
           outputDir,
+          cacheDir,
         }
       )
     ).toMatchSnapshot()
   })
+  // TODO 修复sourceMap生成问题后再启用cpp测试
+  //   test('parseCppStacktrace', async () => {
+  //     expect(
+  //       await parseCppStacktrace(
+  //         `/Volumes/CrucialX6/workspace/HBuilderXProjects/test-dom2-cpp-source-map/unpackage/dist/dev/app-harmony/entry/src/main/cpp/GenPagesIndexIndexSharedData.cpp:105:15: error: no member named 'backgroundColor123' in 'uniappx::NativeViewImpl'; did you mean 'backgroundColor'?
+  // e0->backgroundColor123(0xffff0000);
+  //     ^~~~~~~~~~~~~~~~~~
+  //     backgroundColor`,
+  //         {
+  //           platform: 'app-harmony',
+  //           cacheDir: path.resolve(
+  //             __dirname,
+  //             'examples/uts/unpackage/cache/app-harmony'
+  //           ),
+  //         }
+  //       )
+  //     ).toMatchSnapshot()
+  //   })
 })

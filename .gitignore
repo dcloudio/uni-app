@@ -30,4 +30,5 @@ scripts/package.json
 !*.ets.map
 !*.kt.map
 !*.swift.map
+!*.cpp.map
 !app-service.js.map

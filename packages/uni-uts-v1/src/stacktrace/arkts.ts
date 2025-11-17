@@ -13,6 +13,7 @@ import {
   isFormattedErrorString,
   parseErrorWithRules,
   parseRelativeSourceFile,
+  resolveSourceMapDirByCacheDir,
   splitRE,
 } from './utils'
 import { existsSync, readFileSync } from 'fs-extra'
@@ -21,6 +22,7 @@ import {
   parseUTSJavaScriptRuntimeStacktrace,
 } from './js'
 import { SPECIAL_CHARS } from '../utils'
+import { CPP_RUNTIME_ERROR_RE, generateCppCodeFrame } from './cpp'
 export interface ParseUTSArkTSPluginStacktraceOptions
   extends CompileStacktraceOptions {
   /**
@@ -31,6 +33,10 @@ export interface ParseUTSArkTSPluginStacktraceOptions
    * 项目输出目录 = process.env.UNI_OUTPUT_DIR
    */
   outputDir: string
+  /**
+   * 缓存目录
+   */
+  cacheDir: string
 }
 
 const ARKTS_COMPILE_ERROR_RE = /File:\s+(.*):(\d+):(\d+)/
@@ -57,6 +63,15 @@ export async function parseUTSArkTSPluginStacktrace(
         column: match[4],
       }
     }
+    match = lineStr.match(CPP_RUNTIME_ERROR_RE)
+    if (match) {
+      return {
+        etsFile: match[1],
+        line: match[2],
+        column: match[3],
+        msg: match[4],
+      }
+    }
     match = lineStr.match(ARKTS_COMPILE_ERROR_RE)
     if (match) {
       return {
@@ -79,11 +94,20 @@ async function parseUTSArkTSStacktrace(
   const errorMessageLines: string[] = []
   let parsedError = false
   let colored = false
+  // let ignoreNextNLine = 0
   for (let i = 0; i < lines.length; i++) {
+    // if (ignoreNextNLine > 0) {
+    //   ignoreNextNLine--
+    //   continue
+    // }
     const line = lines[i]
     try {
       const codes = await parseUTSStacktraceLine(line, parse, options)
       if (codes && codes.length) {
+        // 无法确定后面几行属于当前错误
+        // if (CPP_RUNTIME_ERROR_RE.test(line)) {
+        //   ignoreNextNLine = 3
+        // }
         parsedError = true
         colored = codes[0].startsWith(COLORS.error)
         res.push(...codes)
@@ -138,9 +162,18 @@ async function parseUTSStacktraceLine(
   if (!result) {
     return
   }
-
   const { msg, etsFile, line, column } = result
   const lines: string[] = []
+  if (etsFile.endsWith('.cpp')) {
+    const codeFrame = await generateCppCodeFrame(
+      resolveSourceMapDirByCacheDir(options.cacheDir),
+      etsFile,
+      line,
+      column,
+      msg || ''
+    )
+    return codeFrame?.split('\n')
+  }
   if (msg) {
     lines.push(
       `${COLORS.error}${SPECIAL_CHARS.ERROR_BLOCK}error: ${msg}${COLORS.error}`
