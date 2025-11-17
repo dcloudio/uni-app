@@ -48,6 +48,10 @@ import {
   createSetStyleBackgroundImageValueProcessor,
   isBackgroundImageType,
 } from './backgroundImage'
+import {
+  createSetStyleTransitionValueProcessor,
+  isTransitionType,
+} from './transition'
 
 export type { PropertyProcessor } from './utils'
 export { createSetStyleNativeColorValueProcessor } from './color'
@@ -172,6 +176,12 @@ export function createDom2PropertyProcessors(
       return createSetStyleTransformOriginValueProcessor(setter, language)
     } else if (isBackgroundImageType(propertyType)) {
       return createSetStyleBackgroundImageValueProcessor(setter, language)
+    } else if (isTransitionType(propertyType)) {
+      return createSetStyleTransitionValueProcessor(
+        setter,
+        language,
+        propertyType
+      )
     } else if (propertyType) {
       return createSetStyleEnumValueProcessor(
         setter,

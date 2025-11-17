@@ -117,3 +117,27 @@ export function getTargetConfig(
 
   return platformConfig[target] || null
 }
+
+export function normalizeDurationToMilliseconds(
+  enumValue: string
+): string | null {
+  const match = /^(-?\d*\.?\d+)(ms|s)$/i.exec(enumValue.trim())
+  if (!match) {
+    return null
+  }
+  const numericPart = parseFloat(match[1])
+  if (Number.isNaN(numericPart)) {
+    return null
+  }
+  const unit = match[2].toLowerCase()
+  const milliseconds = unit === 's' ? numericPart * 1000 : numericPart
+  if (!Number.isFinite(milliseconds)) {
+    return null
+  }
+  return formatFloatLiteral(milliseconds)
+}
+
+function formatFloatLiteral(value: number): string {
+  const str = value.toString()
+  return str.includes('.') ? str : `${str}.0`
+}

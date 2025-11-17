@@ -12,7 +12,12 @@ exports[`transition-delay: 0.5s: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-delay": {
+      "setterCode": "transitionDelay(500.0)",
+      "valueCode": "500.0",
+    },
+  },
 }
 `;
 
@@ -28,6 +33,57 @@ exports[`transition-delay: 0s: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
+  "obj": {
+    "transition-delay": {
+      "setterCode": "transitionDelay(0.0)",
+      "valueCode": "0.0",
+    },
+  },
+}
+`;
+
+exports[`transition-delay: 2s, 4ms: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transition-delay",
+        "important": false,
+        "prop": "transitionDelay",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "2s, 4ms",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`2s, 4ms\` is not supported for \`transition-delay\` (supported values are: \`number of seconds\`|\`milliseconds\`)",
+      "type": "warning",
+    },
+  ],
+  "obj": {},
+}
+`;
+
+exports[`transition-delay: 2s, 4ms: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transition-delay",
+        "important": false,
+        "prop": "transitionDelay",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "2s, 4ms",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "ERROR: property value \`2s, 4ms\` is not supported for \`transition-delay\` (supported values are: \`number of seconds\`|\`milliseconds\`)",
+      "type": "warning",
+    },
+  ],
   "obj": {},
 }
 `;
@@ -44,7 +100,12 @@ exports[`transition-delay: 200ms: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-delay": {
+      "setterCode": "transitionDelay(200.0)",
+      "valueCode": "200.0",
+    },
+  },
 }
 `;
 

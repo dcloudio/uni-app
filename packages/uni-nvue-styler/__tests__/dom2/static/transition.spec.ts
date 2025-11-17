@@ -2,7 +2,7 @@ import { parseDom2StaticStyle } from '../../../src/dom2'
 import { TEST_OPTIONS_LIST } from '../utils'
 
 describe('transition-delay:', () => {
-  ;['0s', '0.5s', '200ms'].forEach((value) => {
+  ;['0s', '0.5s', '200ms', '2s, 4ms'].forEach((value) => {
     test(value, () => {
       const input = `transition-delay: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
