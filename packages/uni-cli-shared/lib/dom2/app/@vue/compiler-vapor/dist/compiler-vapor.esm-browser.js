@@ -22440,7 +22440,9 @@ function processRepeatedExpressions(context, expressions, varDeclarations, updat
   const declarations = [];
   const seenExp = expressions.reduce(
     (acc, exp) => {
-      const variables = expToVariableMap.get(exp).map((v) => v.name);
+      const vars = expToVariableMap.get(exp);
+      if (!vars) return acc;
+      const variables = vars.map((v) => v.name);
       if (exp.ast && exp.ast.type !== "Identifier" && !(variables && variables.some((v) => updatedVariable.has(v)))) {
         acc[exp.content] = (acc[exp.content] || 0) + 1;
       }
@@ -22556,12 +22558,14 @@ function extractMemberExpression(exp, onIdentifier) {
       const object = extractMemberExpression(exp.object, onIdentifier);
       const prop = exp.computed ? `[${extractMemberExpression(exp.property, onIdentifier)}]` : `.${extractMemberExpression(exp.property, NOOP)}`;
       return `${object}${prop}`;
+    case "TSNonNullExpression":
+      return `${extractMemberExpression(exp.expression, onIdentifier)}!`;
     default:
       return "";
   }
 }
 const isMemberExpression = (node) => {
-  return node.type === "MemberExpression" || node.type === "OptionalMemberExpression";
+  return node.type === "MemberExpression" || node.type === "OptionalMemberExpression" || node.type === "TSNonNullExpression";
 };
 
 function genSetEvent(oper, context) {
