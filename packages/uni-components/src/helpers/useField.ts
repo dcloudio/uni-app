@@ -100,6 +100,10 @@ export const props = /*#__PURE__*/ extend(
       type: [Boolean, String],
       default: false,
     },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
     /**
      * 已废弃属性，用于历史兼容
      */
