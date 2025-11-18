@@ -1,7 +1,7 @@
 import path from 'path'
 import {
   parseCompileStacktrace,
-  parseCppStacktrace,
+  // parseCppStacktrace,
   parseUTSArkTSPluginStacktrace,
   parseUTSKotlinStacktrace,
   parseUTSSwiftPluginStacktrace,
