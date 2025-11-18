@@ -1,5 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`transition: all: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transition: all: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "All"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "All")",
+    },
+  },
+}
+`;
+
+exports[`transition: none: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transition: none: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "None")",
+    },
+  },
+}
+`;
+
 exports[`transition-delay: 0.5s: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
@@ -785,6 +827,27 @@ exports[`transition-timing-function: cubic-bezier: app-harmony(nv-c) 1`] = `
 }
 `;
 
+exports[`transition-timing-function: ease, ease-in, cubic-bezier(0.1, 0.7, 1, 0.1): app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transition-timing-function: ease, ease-in, cubic-bezier(0.1, 0.7, 1, 0.1): app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transition-timing-function": {
+      "setterCode": "transitionTimingFunction([UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "Ease()"),UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "EaseIn()"),UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "CubicBezier(0.1, 0.7, 1, 0.1)")])",
+      "valueCode": "[UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "Ease()"),UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "EaseIn()"),UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "CubicBezier(0.1, 0.7, 1, 0.1)")]",
+    },
+  },
+}
+`;
+
 exports[`transition-timing-function: ease: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,
@@ -796,23 +859,13 @@ exports[`transition-timing-function: ease: app-harmony(dom-c) 1`] = `
 exports[`transition-timing-function: ease: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transition-timing-function",
-        "important": false,
-        "prop": "transitionTimingFunction",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "ease",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Property 'transition-timing-function' has invalid value: 'ease'",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "transition-timing-function": {
+      "setterCode": "transitionTimingFunction(UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "Ease()"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "Ease()")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -827,23 +880,13 @@ exports[`transition-timing-function: ease-in: app-harmony(dom-c) 1`] = `
 exports[`transition-timing-function: ease-in: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transition-timing-function",
-        "important": false,
-        "prop": "transitionTimingFunction",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "ease-in",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Property 'transition-timing-function' has invalid value: 'ease-in'",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "transition-timing-function": {
+      "setterCode": "transitionTimingFunction(UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "EaseIn()"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "EaseIn()")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -858,23 +901,13 @@ exports[`transition-timing-function: ease-in-out: app-harmony(dom-c) 1`] = `
 exports[`transition-timing-function: ease-in-out: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transition-timing-function",
-        "important": false,
-        "prop": "transitionTimingFunction",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "ease-in-out",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Property 'transition-timing-function' has invalid value: 'ease-in-out'",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "transition-timing-function": {
+      "setterCode": "transitionTimingFunction(UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "EaseInOut()"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "EaseInOut()")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -889,23 +922,13 @@ exports[`transition-timing-function: ease-out: app-harmony(dom-c) 1`] = `
 exports[`transition-timing-function: ease-out: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transition-timing-function",
-        "important": false,
-        "prop": "transitionTimingFunction",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "ease-out",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Property 'transition-timing-function' has invalid value: 'ease-out'",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "transition-timing-function": {
+      "setterCode": "transitionTimingFunction(UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "EaseOut()"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "EaseOut()")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;
 
@@ -920,22 +943,12 @@ exports[`transition-timing-function: linear: app-harmony(dom-c) 1`] = `
 exports[`transition-timing-function: linear: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [
-    Warning {
-      "node": CustomDeclaration {
-        "__originalProp": "transition-timing-function",
-        "important": false,
-        "prop": "transitionTimingFunction",
-        "remove": [Function],
-        "replaceWith": [Function],
-        "value": "linear",
-        Symbol(expanded): true,
-        Symbol(normalized): true,
-      },
-      "text": "Property 'transition-timing-function' has invalid value: 'linear'",
-      "type": "warning",
+  "messages": [],
+  "obj": {
+    "transition-timing-function": {
+      "setterCode": "transitionTimingFunction(UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "Linear()"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionTimingFunction, "::", "Linear()")",
     },
-  ],
-  "obj": {},
+  },
 }
 `;

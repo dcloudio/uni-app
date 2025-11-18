@@ -1,6 +1,18 @@
 import { parseDom2StaticStyle } from '../../../src/dom2'
 import { TEST_OPTIONS_LIST } from '../utils'
 
+describe('transition:', () => {
+  ;['all', 'none'].forEach((value) => {
+    test(value, () => {
+      const input = `transition: ${value}`
+      TEST_OPTIONS_LIST.forEach((options) => {
+        const result = parseDom2StaticStyle(input, options)
+        expect(result).toMatchSnapshot(`${options.platform}(${options.target})`)
+      })
+    })
+  })
+})
+
 describe('transition-delay:', () => {
   ;['0s', '0.5s', '200ms', '2s, 4ms'].forEach((value) => {
     test(value, () => {
@@ -73,6 +85,7 @@ describe('transition-timing-function:', () => {
     'ease-in-out',
     'linear',
     'cubic-bezier',
+    'ease, ease-in, cubic-bezier(0.1, 0.7, 1, 0.1)',
   ].forEach((value) => {
     test(value, () => {
       const input = `transition-timing-function: ${value}`

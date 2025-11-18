@@ -848,6 +848,21 @@
       }
     }
   },
+  "transition": {
+    "type": "UniCSSTransitionItem",
+    "uniPlatform": {
+      "app": {
+        "nv-c": {
+          "setter": "transition"
+        }
+      },
+      "app-android": {
+        "nv-kt": {
+          "setter": "transition"
+        }
+      }
+    }
+  },
   "transition-delay": {
     "type": "UniNativeTransitionDelay",
     "uniPlatform": {
@@ -894,7 +909,7 @@
     }
   },
   "transition-timing-function": {
-    "type": ["UniNativeTransitionTimingFunction", "UniNativeTransitionTimingFunctions"],
+    "type": "UniNativeTransitionTimingFunction",
     "uniPlatform": {
       "app": {
         "nv-c": {
