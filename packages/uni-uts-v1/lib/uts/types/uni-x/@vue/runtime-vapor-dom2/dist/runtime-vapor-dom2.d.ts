@@ -40,6 +40,11 @@ type DynamicSlot = {
 };
 type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
 type DynamicSlotSource = StaticSlots | DynamicSlotFn;
+/**
+ * Wrap a slot function to memoize currentInstance
+ * 1. ensure correct currentInstance in forwarded slots
+ * 2. elements created in the slot inherit the slot owner's scopeId
+ */
 export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any): BlockFn;
 export declare function createSharedDataSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot): void;
 
@@ -102,7 +107,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
     attrs: Record<string, any>;
     propsDefaults: Record<string, any> | null;
     slots: StaticSlots;
-    slotScopeOwner: VaporSharedDataComponentInstance | null;
+    scopeId?: string | null;
     rawPropsRef?: ShallowRef<any>;
     rawSlotsRef?: ShallowRef<any>;
     emit: EmitFn;
