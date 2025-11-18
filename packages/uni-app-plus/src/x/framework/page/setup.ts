@@ -50,16 +50,7 @@ export function setupXPage(
       return new UTSJSONObject(pageVm.$basePage.options)
     },
   })
-  uniPage.getElementById = (
-    id: string.IDString | string
-  ): UniElement | null => {
-    const containerNode = pageVm.$el?.parentElement
-    if (containerNode == null) {
-      console.warn('bodyNode is null')
-      return null
-    }
-    return containerNode.querySelector(`#${id}`)
-  }
+
   uniPage.vm = pageVm
   uniPage.$vm = pageVm
 
