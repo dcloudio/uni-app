@@ -3002,7 +3002,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
             );
           }
         }
-        if (isDom2 && key.content === "class") {
+        if (isDom2 && (key.content === "class" || key.content === "hover-class")) {
           dynamicProps.push(key.content);
           context.registerEffect(
             values,
@@ -3184,7 +3184,7 @@ function dedupeProperties(results) {
     const name = prop.key.content;
     const existing = knownProps.get(name);
     if (existing && existing.handler === prop.handler) {
-      if (name === "style" || name === "class") {
+      if (name === "style" || name === "class" || name === "hover-class") {
         mergePropValues(existing, prop);
       }
     } else {
