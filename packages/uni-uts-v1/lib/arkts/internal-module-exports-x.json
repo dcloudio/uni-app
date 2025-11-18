@@ -67,9 +67,6 @@
       "CreateVideoContext"
     ],
     [
-      "CreateWebviewContext"
-    ],
-    [
       "Danmu"
     ],
     [
@@ -388,12 +385,6 @@
       "UniVideoTimeUpdateEventDetail"
     ],
     [
-      "UniWebViewElement"
-    ],
-    [
-      "UniWebviewContextLoadDataOptions"
-    ],
-    [
       "VideoContext"
     ],
     [
@@ -434,15 +425,6 @@
     ],
     [
       "VideoTimeUpdateEventDetail"
-    ],
-    [
-      "WebViewProgressStyles"
-    ],
-    [
-      "WebViewStyles"
-    ],
-    [
-      "WebviewContext"
     ]
   ]
 }
