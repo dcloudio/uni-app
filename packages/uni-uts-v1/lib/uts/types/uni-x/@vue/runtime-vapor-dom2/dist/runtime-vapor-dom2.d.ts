@@ -45,7 +45,7 @@ type DynamicSlotSource = StaticSlots | DynamicSlotFn;
  * 1. ensure correct currentInstance in forwarded slots
  * 2. elements created in the slot inherit the slot owner's scopeId
  */
-export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any): BlockFn;
+export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any, type?: 'string'): BlockFn;
 export declare function createSharedDataSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot): void;
 
 export type VaporSharedDataComponent = ObjectVaporSharedDataComponent & {
