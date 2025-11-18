@@ -1524,11 +1524,6 @@
       }
     }
   },
-  "uni-web-view": {
-    "easycom": [
-      "web-view"
-    ]
-  },
   "uni-websocket": {
     "uni": {
       "connectSocket": {
