@@ -121,7 +121,12 @@ exports[`transition-duration: 0.3s: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-duration": {
+      "setterCode": "transitionDuration(300.0)",
+      "valueCode": "300.0",
+    },
+  },
 }
 `;
 
@@ -137,7 +142,12 @@ exports[`transition-duration: 1s: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-duration": {
+      "setterCode": "transitionDuration(1000.0)",
+      "valueCode": "1000.0",
+    },
+  },
 }
 `;
 
@@ -153,7 +163,12 @@ exports[`transition-duration: 150ms: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-duration": {
+      "setterCode": "transitionDuration(150.0)",
+      "valueCode": "150.0",
+    },
+  },
 }
 `;
 
@@ -169,7 +184,12 @@ exports[`transition-property: all: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "All"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "All")",
+    },
+  },
 }
 `;
 
@@ -185,7 +205,12 @@ exports[`transition-property: background-color: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BackgroundColor"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BackgroundColor")",
+    },
+  },
 }
 `;
 
@@ -201,7 +226,12 @@ exports[`transition-property: border-bottom-color: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BorderBottomColor"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BorderBottomColor")",
+    },
+  },
 }
 `;
 
@@ -217,7 +247,12 @@ exports[`transition-property: border-color: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BorderColor"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BorderColor")",
+    },
+  },
 }
 `;
 
@@ -233,7 +268,12 @@ exports[`transition-property: border-left-color: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BorderLeftColor"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BorderLeftColor")",
+    },
+  },
 }
 `;
 
@@ -249,7 +289,12 @@ exports[`transition-property: border-right-color: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BorderRightColor"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BorderRightColor")",
+    },
+  },
 }
 `;
 
@@ -265,7 +310,12 @@ exports[`transition-property: border-top-color: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BorderTopColor"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "BorderTopColor")",
+    },
+  },
 }
 `;
 
@@ -281,7 +331,12 @@ exports[`transition-property: bottom: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Bottom"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Bottom")",
+    },
+  },
 }
 `;
 
@@ -297,7 +352,12 @@ exports[`transition-property: height: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Height"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Height")",
+    },
+  },
 }
 `;
 
@@ -313,7 +373,12 @@ exports[`transition-property: left: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Left"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Left")",
+    },
+  },
 }
 `;
 
@@ -329,7 +394,12 @@ exports[`transition-property: margin: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Margin"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Margin")",
+    },
+  },
 }
 `;
 
@@ -345,7 +415,33 @@ exports[`transition-property: margin-bottom: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "MarginBottom"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "MarginBottom")",
+    },
+  },
+}
+`;
+
+exports[`transition-property: margin-left, margin-top: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
   "obj": {},
+}
+`;
+
+exports[`transition-property: margin-left, margin-top: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty([UTSCPP.propertyAccess(UniNativeTransitionProperty, "::" , "MarginLeft"),UTSCPP.propertyAccess(UniNativeTransitionProperty, "::" , "MarginTop")])",
+      "valueCode": "[UTSCPP.propertyAccess(UniNativeTransitionProperty, "::" , "MarginLeft"),UTSCPP.propertyAccess(UniNativeTransitionProperty, "::" , "MarginTop")]",
+    },
+  },
 }
 `;
 
@@ -361,7 +457,12 @@ exports[`transition-property: margin-left: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "MarginLeft"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "MarginLeft")",
+    },
+  },
 }
 `;
 
@@ -377,7 +478,12 @@ exports[`transition-property: margin-right: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "MarginRight"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "MarginRight")",
+    },
+  },
 }
 `;
 
@@ -393,7 +499,12 @@ exports[`transition-property: margin-top: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "MarginTop"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "MarginTop")",
+    },
+  },
 }
 `;
 
@@ -409,7 +520,12 @@ exports[`transition-property: none: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "None"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "None")",
+    },
+  },
 }
 `;
 
@@ -425,7 +541,12 @@ exports[`transition-property: opacity: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Opacity"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Opacity")",
+    },
+  },
 }
 `;
 
@@ -441,7 +562,12 @@ exports[`transition-property: padding: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Padding"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Padding")",
+    },
+  },
 }
 `;
 
@@ -457,7 +583,12 @@ exports[`transition-property: padding-bottom: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "PaddingBottom"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "PaddingBottom")",
+    },
+  },
 }
 `;
 
@@ -473,7 +604,12 @@ exports[`transition-property: padding-left: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "PaddingLeft"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "PaddingLeft")",
+    },
+  },
 }
 `;
 
@@ -489,7 +625,12 @@ exports[`transition-property: padding-right: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "PaddingRight"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "PaddingRight")",
+    },
+  },
 }
 `;
 
@@ -505,7 +646,12 @@ exports[`transition-property: padding-top: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "PaddingTop"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "PaddingTop")",
+    },
+  },
 }
 `;
 
@@ -521,7 +667,12 @@ exports[`transition-property: right: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Right"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Right")",
+    },
+  },
 }
 `;
 
@@ -537,7 +688,12 @@ exports[`transition-property: top: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Top"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Top")",
+    },
+  },
 }
 `;
 
@@ -553,7 +709,12 @@ exports[`transition-property: transform: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Transform"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Transform")",
+    },
+  },
 }
 `;
 
@@ -569,7 +730,12 @@ exports[`transition-property: width: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
   "messages": [],
-  "obj": {},
+  "obj": {
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Width"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "Width")",
+    },
+  },
 }
 `;
 
@@ -630,7 +796,22 @@ exports[`transition-timing-function: ease: app-harmony(dom-c) 1`] = `
 exports[`transition-timing-function: ease: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transition-timing-function",
+        "important": false,
+        "prop": "transitionTimingFunction",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "ease",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Property 'transition-timing-function' has invalid value: 'ease'",
+      "type": "warning",
+    },
+  ],
   "obj": {},
 }
 `;
@@ -646,7 +827,22 @@ exports[`transition-timing-function: ease-in: app-harmony(dom-c) 1`] = `
 exports[`transition-timing-function: ease-in: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transition-timing-function",
+        "important": false,
+        "prop": "transitionTimingFunction",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "ease-in",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Property 'transition-timing-function' has invalid value: 'ease-in'",
+      "type": "warning",
+    },
+  ],
   "obj": {},
 }
 `;
@@ -662,7 +858,22 @@ exports[`transition-timing-function: ease-in-out: app-harmony(dom-c) 1`] = `
 exports[`transition-timing-function: ease-in-out: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transition-timing-function",
+        "important": false,
+        "prop": "transitionTimingFunction",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "ease-in-out",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Property 'transition-timing-function' has invalid value: 'ease-in-out'",
+      "type": "warning",
+    },
+  ],
   "obj": {},
 }
 `;
@@ -678,7 +889,22 @@ exports[`transition-timing-function: ease-out: app-harmony(dom-c) 1`] = `
 exports[`transition-timing-function: ease-out: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transition-timing-function",
+        "important": false,
+        "prop": "transitionTimingFunction",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "ease-out",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Property 'transition-timing-function' has invalid value: 'ease-out'",
+      "type": "warning",
+    },
+  ],
   "obj": {},
 }
 `;
@@ -694,7 +920,22 @@ exports[`transition-timing-function: linear: app-harmony(dom-c) 1`] = `
 exports[`transition-timing-function: linear: app-harmony(nv-c) 1`] = `
 {
   "code": undefined,
-  "messages": [],
+  "messages": [
+    Warning {
+      "node": CustomDeclaration {
+        "__originalProp": "transition-timing-function",
+        "important": false,
+        "prop": "transitionTimingFunction",
+        "remove": [Function],
+        "replaceWith": [Function],
+        "value": "linear",
+        Symbol(expanded): true,
+        Symbol(normalized): true,
+      },
+      "text": "Property 'transition-timing-function' has invalid value: 'linear'",
+      "type": "warning",
+    },
+  ],
   "obj": {},
 }
 `;

@@ -53,6 +53,7 @@ describe('transition-property:', () => {
     'border-left-color',
     'border-right-color',
     'transform',
+    'margin-left, margin-top',
   ].forEach((value) => {
     test(value, () => {
       const input = `transition-property: ${value}`
