@@ -38,13 +38,20 @@ export function parseNativeColorValue(value: string) {
   }
 }
 
-export function toSharedDataStyleColorValue(value: string | number): number {
+export function parseUniNativeColorValue(
+  value: string | number,
+  defaultValue?: number
+) {
   if (value) {
     const nativeColorValue = parseNativeColorValue(String(value))
     if (nativeColorValue) {
       return parseInt(nativeColorValue)
     }
   }
+  return defaultValue
+}
+
+export function toSharedDataStyleColorValue(value: string | number): number {
   // 如果失败，返回透明
-  return 0x00000000
+  return parseUniNativeColorValue(value, 0x00000000) as number
 }

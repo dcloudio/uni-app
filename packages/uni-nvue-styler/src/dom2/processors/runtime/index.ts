@@ -1,6 +1,5 @@
 import { UniCSSPropertyVariable, processors } from './processors'
-
-export { toSharedDataStyleColorValue } from '../color'
+export { toSharedDataStyleColorValue, parseUniNativeColorValue } from '../color'
 export function toSharedDataStyle(
   style: Map<string, unknown>,
   result: Record<number, unknown> = {}
