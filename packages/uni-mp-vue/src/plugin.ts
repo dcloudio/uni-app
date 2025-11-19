@@ -13,6 +13,7 @@ export default {
     app.config.globalProperties.pruneComponentPropsCache =
       pruneComponentPropsCache
     // #if _X_
+    // TODO 此处不支持 __GLOBAL__，并且有些小程序(如抖音小程序)没有 getWindowInfo 方法
     app.config.globalProperties[UNI_STATUS_BAR_HEIGHT] =
       wx.getWindowInfo().statusBarHeight
     // #endif
