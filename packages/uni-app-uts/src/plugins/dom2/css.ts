@@ -57,7 +57,7 @@ export function uniAppCssPrePlugin(): Plugin {
           const { filename } = parseVueRequest(id)
           if (filename === mainPath || filename === appUVuePath) {
             // 合并到App
-            return `GenApp`
+            return `App.uvue`
           }
           if (isVue(filename)) {
             return filename
@@ -94,10 +94,6 @@ export function uniAppCssPrePlugin(): Plugin {
           return code
         },
         emitFile(filename, cssCode) {
-          if (filename === 'GenApp') {
-            // TODO 暂不处理
-            return
-          }
           const { ASDSF } = requireUniHelpers()
           ASDSF(
             normalizePath(filename),
