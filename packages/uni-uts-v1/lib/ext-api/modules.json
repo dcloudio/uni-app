@@ -1524,6 +1524,19 @@
       }
     }
   },
+  "uni-web-view": {
+    "uni": {
+      "createMapContext": {
+        "name": "createWebviewContext",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-websocket": {
     "uni": {
       "connectSocket": {
