@@ -8,7 +8,9 @@ export function genDom2ClassName(
   prefix = 'Gen'
 ) {
   return genUTSClassName(
-    normalizePath(path.relative(inputDir, filename)),
+    normalizePath(
+      path.isAbsolute(filename) ? path.relative(inputDir, filename) : filename
+    ),
     prefix
   )
 }
