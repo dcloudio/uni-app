@@ -21,6 +21,31 @@ exports[`transition: all: app-harmony(nv-c) 1`] = `
 }
 `;
 
+exports[`transition: margin-right 2s: app-harmony(dom-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {},
+}
+`;
+
+exports[`transition: margin-right 2s: app-harmony(nv-c) 1`] = `
+{
+  "code": undefined,
+  "messages": [],
+  "obj": {
+    "transition-duration": {
+      "setterCode": "transitionDuration(2000.0)",
+      "valueCode": "2000.0",
+    },
+    "transition-property": {
+      "setterCode": "transitionProperty(UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "MarginRight"))",
+      "valueCode": "UTSCPP.propertyAccess(UniNativeTransitionProperty, "::", "MarginRight")",
+    },
+  },
+}
+`;
+
 exports[`transition: none: app-harmony(dom-c) 1`] = `
 {
   "code": undefined,

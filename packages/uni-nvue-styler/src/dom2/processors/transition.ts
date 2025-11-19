@@ -10,14 +10,12 @@ import {
 } from './utils'
 import { genCPPEnumCode } from './enum'
 
-const TRANSITION = 'UniCSSTransitionItem'
 const UNINATIVETRANSITIONDELAY_TYPE = 'UniNativeTransitionDelay'
 const UNINATIVETRANSITIONDURATION_TYPE = 'UniNativeTransitionDuration'
 const UNINATIVETRANSITIONPROPERTY_TYPE = 'UniNativeTransitionProperty'
 const UNINATIVETRANSITIONTIMINGFUNCTION_TYPE =
   'UniNativeTransitionTimingFunction'
 const UNINATIVETRANSITION_TYPES = [
-  TRANSITION,
   UNINATIVETRANSITIONDELAY_TYPE,
   UNINATIVETRANSITIONDURATION_TYPE,
   UNINATIVETRANSITIONPROPERTY_TYPE,
@@ -49,8 +47,6 @@ export function createSetStyleTransitionValueProcessor(
         propertyType,
         language
       )
-    } else if (propertyType === TRANSITION) {
-      code = parseTransitionShorthandValue(String(value), language)
     }
 
     if (!code) {
@@ -168,75 +164,6 @@ function parseTransitionTimingFunctionValue(
   }
 
   return parseSingleFunction(functions[0])
-}
-
-function parseTransitionShorthandValue(
-  value: string,
-  language: DOM2_APP_LANGUAGE
-): string {
-  const trimmedValue = value.trim()
-  if (!trimmedValue) return ''
-
-  // 简单的解析逻辑：property duration [timing-function] [delay]
-  const parts = trimmedValue.split(/\s+/)
-  if (parts.length < 2) return '' // 至少需要 property 和 duration
-
-  const property = parts[0]
-  let duration = ''
-  let timingFunction = ''
-  let delay = ''
-
-  // 解析各个部分
-  for (let i = 1; i < parts.length; i++) {
-    const part = parts[i]
-    // 判断是时间还是 timing-function
-    if (part.match(/^\d+(\.\d+)?(s|ms)$/)) {
-      if (!duration) {
-        duration = part
-      } else {
-        delay = part
-      }
-    } else if (part.startsWith('cubic-bezier(')) {
-      // cubic-bezier 可能跨多个部分
-      let cubicBezier = part
-      while (i < parts.length - 1 && !cubicBezier.includes(')')) {
-        i++
-        cubicBezier += ' ' + parts[i]
-      }
-      timingFunction = cubicBezier
-    } else {
-      // 其他认为是 timing-function 关键字
-      timingFunction = part
-    }
-  }
-
-  // 构建代码
-  const propertyCode = parseTransitionPropertyValue(
-    property,
-    UNINATIVETRANSITIONPROPERTY_TYPE,
-    language
-  )
-  const durationCode = duration
-    ? parseTransitionDurationValue(duration, language)
-    : '0.0'
-  const timingFunctionCode = timingFunction
-    ? parseTransitionTimingFunctionValue(
-        timingFunction,
-        UNINATIVETRANSITIONTIMINGFUNCTION_TYPE,
-        language
-      )
-    : language === DOM2_APP_LANGUAGE.CPP
-    ? `${UNINATIVETRANSITIONTIMINGFUNCTION_TYPE}(UniCSSTransitionTimingFunction::Ease())`
-    : `UTSCPP.propertyAccess(${UNINATIVETRANSITIONTIMINGFUNCTION_TYPE}, "::", "Ease()")`
-  const delayCode = delay
-    ? parseTransitionDurationValue(delay, language)
-    : '0.0'
-
-  if (language === DOM2_APP_LANGUAGE.CPP) {
-    return `${TRANSITION}{${propertyCode}, ${UNINATIVETRANSITIONDURATION_TYPE}(${durationCode}), ${timingFunctionCode}, ${UNINATIVETRANSITIONDELAY_TYPE}(${delayCode})}`
-  } else {
-    return `UTSCPP.createObject(${TRANSITION}, {property: ${propertyCode}, duration: UTSCPP.createObject(${UNINATIVETRANSITIONDURATION_TYPE}, ${durationCode}), timingFunction: ${timingFunctionCode}, delay: UTSCPP.createObject(${UNINATIVETRANSITIONDELAY_TYPE}, ${delayCode})})`
-  }
 }
 
 function parseTransitionDurationValue(

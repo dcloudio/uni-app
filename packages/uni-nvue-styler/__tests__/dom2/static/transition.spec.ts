@@ -2,7 +2,7 @@ import { parseDom2StaticStyle } from '../../../src/dom2'
 import { TEST_OPTIONS_LIST } from '../utils'
 
 describe('transition:', () => {
-  ;['all', 'none'].forEach((value) => {
+  ;['all', 'none', 'margin-right 2s'].forEach((value) => {
     test(value, () => {
       const input = `transition: ${value}`
       TEST_OPTIONS_LIST.forEach((options) => {
