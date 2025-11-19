@@ -121,6 +121,21 @@ exports[`dom2 parse comment 1`] = `"make_style_sheet({{"content", make_property_
 
 exports[`dom2 parse empty 1`] = `"{}"`;
 
+exports[`dom2 parse font-face 1`] = `"{}"`;
+
+exports[`dom2 parse font-face 2`] = `
+[
+  {
+    "font-family": "UniIconsFontFamily1",
+    "src": "url('./uniicons.ttf')",
+  },
+  {
+    "font-family": "UniIconsFontFamily2",
+    "src": "url('./uniicons.ttf')",
+  },
+]
+`;
+
 exports[`dom2 parse null 1`] = `"make_style_sheet({{"foo", make_property_map({{"", make_styles({{UniCSSPropertyID::BoxShadow, nullptr}})}})}})"`;
 
 exports[`dom2 parse transform 1`] = `"make_style_sheet({{"content", make_property_map({{"", make_styles({{UniCSSPropertyID::Transform, UniCSSTransform{UniCSSTransformTranslate::Translate(0, UniCSSUnitType::PCT, 0, UniCSSUnitType::PCT), UniCSSTransformScale::Scalex(1, UniCSSUnitType::NONE), UniCSSTransformRotate::Rotate(0, UniCSSUnitType::DEG)}}})}})}})"`;

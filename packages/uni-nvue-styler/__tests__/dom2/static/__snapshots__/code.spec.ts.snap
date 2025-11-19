@@ -9,6 +9,7 @@ exports[`parse .test {
 } 1`] = `
 {
   "code": "make_style_sheet({{"test", make_property_map({{"", make_styles({{UniCSSPropertyID::BorderTopStyle, UniCSSPropertyValueImportant(UniCSSBorderStyleType::Solid)},{UniCSSPropertyID::BorderRightStyle, UniCSSPropertyValueImportant(UniCSSBorderStyleType::Solid)},{UniCSSPropertyID::BorderBottomStyle, UniCSSPropertyValueImportant(UniCSSBorderStyleType::Solid)},{UniCSSPropertyID::BorderLeftStyle, UniCSSPropertyValueImportant(UniCSSBorderStyleType::Solid)},{UniCSSPropertyID::BorderTopWidth, UniCSSPropertyValueImportant(UniCSSUnitValue{1, UniCSSUnitType::PX})},{UniCSSPropertyID::BorderRightWidth, UniCSSPropertyValueImportant(UniCSSUnitValue{1, UniCSSUnitType::PX})},{UniCSSPropertyID::BorderBottomWidth, UniCSSPropertyValueImportant(UniCSSUnitValue{1, UniCSSUnitType::PX})},{UniCSSPropertyID::BorderLeftWidth, UniCSSPropertyValueImportant(UniCSSUnitValue{1, UniCSSUnitType::PX})},{UniCSSPropertyID::BorderTopColor, UniCSSPropertyValueImportant(0xffff0000)},{UniCSSPropertyID::BorderRightColor, UniCSSPropertyValueImportant(0xffff0000)},{UniCSSPropertyID::BorderBottomColor, UniCSSPropertyValueImportant(0xffff0000)},{UniCSSPropertyID::BorderLeftColor, UniCSSPropertyValueImportant(0xffff0000)},{UniCSSPropertyID::Color, UniCSSPropertyValueImportant(0xff0000ff)}})}})}})",
+  "fontFaces": [],
   "messages": [],
 }
 `;

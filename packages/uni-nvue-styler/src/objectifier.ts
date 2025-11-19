@@ -122,7 +122,7 @@ function transform(
         ? (child as any).__originalProp || child.prop
         : child.prop
       let value = child.value
-      if (context.dom2) {
+      if (context.dom2 && child.parent?.type === 'rule') {
         if (name.startsWith('--')) {
           // noop
         } else {

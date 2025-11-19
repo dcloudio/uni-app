@@ -61,6 +61,11 @@ export async function parse(input: string, options: ParseOptions = {}) {
       messages,
     }
   }
+  let dom2FontFaces: unknown[] = []
+  if (options.dom2 && obj['@FONT-FACE']) {
+    dom2FontFaces = obj['@FONT-FACE'] as unknown[]
+    delete obj['@FONT-FACE']
+  }
   let code = options.dom2
     ? getDom2ToString(options.dom2.platform, options.dom2.target)(obj)
     : JSON.stringify(obj)
@@ -69,6 +74,9 @@ export async function parse(input: string, options: ParseOptions = {}) {
     code = code.replace(/\:\s*"(.+?)"/g, function (str, p1) {
       return isExpr(p1) ? `:${p1}` : str
     })
+  }
+  if (options.dom2) {
+    return { code, messages, fontFaces: dom2FontFaces }
   }
   return { code, messages }
 }

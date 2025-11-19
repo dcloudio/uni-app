@@ -118,4 +118,28 @@ describe('dom2 parse', () => {
     )
     expect(code).toMatchSnapshot()
   })
+
+  test('font-face', async () => {
+    const { code, fontFaces } = await parse(
+      `
+@font-face {
+  font-family: UniIconsFontFamily1;
+  src: url('./uniicons.ttf');
+}
+@font-face {
+  font-family: UniIconsFontFamily2;
+  src: url('./uniicons.ttf');
+}
+`,
+      {
+        type: 'uvue',
+        dom2: {
+          platform: DOM2_APP_PLATFORM.APP_HARMONY,
+          target: DOM2_APP_TARGET.DOM_C,
+        },
+      }
+    )
+    expect(code).toMatchSnapshot()
+    expect(fontFaces).toMatchSnapshot()
+  })
 })
