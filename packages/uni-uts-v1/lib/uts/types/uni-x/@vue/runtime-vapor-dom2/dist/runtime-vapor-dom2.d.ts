@@ -50,6 +50,7 @@ export declare function createSharedDataSlot(name: string | (() => string), rawP
 
 export type VaporSharedDataComponent = ObjectVaporSharedDataComponent & {
     __className?: string;
+    externalClasses?: string[];
 };
 type VaporSharedDataSetupFn = (props: any, ctx: Pick<VaporSharedDataComponentInstance, 'slots' | 'attrs' | 'emit' | 'expose' | 'pageId'>) => UniSharedData;
 interface ObjectVaporSharedDataComponent extends ComponentInternalOptions, SharedInternalOptions {
@@ -76,6 +77,11 @@ interface SharedInternalOptions {
      * Cached normalized emits options.
      */
     __emitsOptions?: ObjectEmitsOptions;
+    /**
+     * fixed by uts
+     * Cached external classes options.
+     */
+    __externalClassesOptions?: string[];
 }
 type LooseRawProps = Record<string, (() => unknown) | DynamicPropsSource[]> & {
     $?: DynamicPropsSource[];
