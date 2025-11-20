@@ -408,10 +408,10 @@ export function genResolveEasycomCode(
   if (!importDeclarations.includes(RESOLVE_EASYCOM_IMPORT_CODE)) {
     importDeclarations.push(RESOLVE_EASYCOM_IMPORT_CODE)
   }
-  return `resolveEasycom(${code.replace(
-    '_resolveComponent',
-    '__resolveDynamicComponent'
-  )}, ${name})`
+  return `resolveEasycom(${code
+    .replace('_resolveComponent', '__resolveDynamicComponent')
+    // 移除 maybeSelfReference 逻辑，easycom 优先级高于自引用组件
+    .replace(', true)', ')')}, ${name})`
 }
 
 export const UNI_EASYCOM_EXCLUDE = [/@dcloudio\/uni-h5/]
