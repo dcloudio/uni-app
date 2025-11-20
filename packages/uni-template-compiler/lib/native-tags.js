@@ -164,6 +164,7 @@ const tags = {
     'clue-order-form',
     'shop-follow-card',
     'mask',
+    'video-player',
     ...nativeTags
   ],
   'mp-kuaishou': [
