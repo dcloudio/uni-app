@@ -34,6 +34,7 @@ export const customElements = [
   'shop-follow-card',
   'match-media',
   'mask',
+  'video-player',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
