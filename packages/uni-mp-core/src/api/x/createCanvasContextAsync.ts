@@ -67,10 +67,15 @@ export const createCanvasContextAsync = defineAsyncApi(
     if (!page || !page.$vm) {
       reject('current page invalid.')
     } else {
-      const query = options.component
-        ? __GLOBAL__.createSelectorQuery().in(options.component)
-        : __GLOBAL__.createSelectorQuery()
-      query
+      const query = __GLOBAL__.createSelectorQuery()
+      if (__PLATFORM__ === 'mp-alipay' && options.component) {
+        // 支付宝小程序 in 只支持在 Component 中使用，Page 中使用返回值为 null https://opendocs.alipay.com/mini/0cs688?pathHash=aba8a9f8#%E7%AE%80%E4%BB%8B
+        query.in = function () {
+          return this
+        }
+      }
+      const baseQuery = options.component ? query.in(options.component) : query
+      baseQuery
         .select('#' + options.id)
         .fields({ node: true, size: true }, () => {})
         .exec((res) => {
