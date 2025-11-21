@@ -27,6 +27,23 @@ function isBorderWidthType(propertyType) {
     return propertyType && BORDER_WIDTH_TYPES.includes(propertyType);
 }
 
+const TRANSITION_CLASS_NAME = 'UniNativeTransition';
+const TRANSITION_DELAY_CLASS_NAME = `${TRANSITION_CLASS_NAME}Delay`;
+const TRANSITION_DURATION_CLASS_NAME = `${TRANSITION_CLASS_NAME}Duration`;
+const TRANSITION_PROPERTY_CLASS_NAME = `${TRANSITION_CLASS_NAME}Property`;
+const TRANSITION_TIMING_FUNCTION_CLASS_NAME = `${TRANSITION_CLASS_NAME}TimingFunction`;
+const TRANSITION_TYPES = [
+    TRANSITION_DELAY_CLASS_NAME,
+    TRANSITION_DURATION_CLASS_NAME,
+    TRANSITION_PROPERTY_CLASS_NAME,
+    // 复数，单词拼写不对，应该是：Properties
+    TRANSITION_PROPERTY_CLASS_NAME + 's',
+    TRANSITION_TIMING_FUNCTION_CLASS_NAME,
+];
+function isTransitionType(propertyType) {
+    return propertyType && TRANSITION_TYPES.includes(propertyType);
+}
+
 function genRuntimeCode() {
     // eslint-disable-next-line no-restricted-globals
     const appCssJson = require('../lib/dom2/app-css.json');
@@ -64,14 +81,15 @@ function genRuntimeCode() {
             processorCode = createValueProcessor(propertyType);
         }
         else if (isUnionType &&
-            isEnumAndBasicType(propertyType, propertyOptions)) {
+            !isEnumAndNumberType(propertyType, propertyOptions)) {
+            // enum 和 number 目前无法区分，暂不支持运行时解析
             processorCode = createCombinedValueProcessor(propertyName, propertyType);
         }
         if (propertyType && shouldGenEnumCode(propertyType, propertyOptions)) {
             enumCodes.push(genEnumCode(propertyName, propertyOptions.values, propertyOptions.defaultValue));
         }
         entries.push(`['${propertyName}', [${propertyId}, ${processorCode ||
-            (isEnumType(propertyType, propertyOptions)
+            (shouldGenEnumCode(propertyType, propertyOptions)
                 ? genEnumProcessorName(propertyName)
                 : `toSharedDataStyleStringValue`)}]]`);
     });
@@ -82,41 +100,39 @@ function genRuntimeCode() {
     function genEnumProcessorName(propertyName) {
         return `toSharedDataStyle${shared.capitalize(shared.camelize(propertyName + ''))}Value`;
     }
-    function isEnumType(propertyType, propertyOptions) {
-        if (typeof propertyType === 'string') {
-            return !!propertyOptions.values;
-        }
-        return isEnumAndBasicType(propertyType, propertyOptions);
-    }
-    function isEnumAndBasicType(propertyType, propertyOptions) {
-        if (propertyType.length === 2 && propertyOptions.values) {
-            const basicType = propertyType[1];
-            // 目前运行时无法区分枚举数值和普通数值，所以不支持 number 类型
-            if (isUnitType(basicType)) {
-                return true;
-            }
-        }
-        return false;
-    }
     function shouldGenEnumCode(propertyType, propertyOptions) {
-        if (typeof propertyType === 'string') {
-            return !!propertyOptions.values;
-        }
-        if (isEnumAndBasicType(propertyType, propertyOptions)) {
-            if (propertyType.every((type) => createValueProcessor(type))) {
-                return false;
+        if (hasEnumType(propertyType, propertyOptions)) {
+            if (shared.isArray(propertyType)) {
+                return !isEnumAndNumberType(propertyType, propertyOptions);
             }
             return true;
         }
         return false;
     }
+    function hasEnumType(propertyType, propertyOptions) {
+        if (!propertyOptions.values) {
+            return false;
+        }
+        if (typeof propertyType === 'string') {
+            return true;
+        }
+        return propertyType.some((type) => !createValueProcessor(type));
+    }
+    function isEnumAndNumberType(propertyType, propertyOptions) {
+        if (hasEnumType(propertyType, propertyOptions)) {
+            return propertyType.some((type) => isNumberType(type));
+        }
+        return false;
+    }
     function createCombinedValueProcessor(propertyName, propertyType) {
-        const basicType = propertyType[1];
-        const enumType = propertyType[0];
-        return `createToSharedDataStyleCombinedValue([${[
-            createValueProcessor(basicType),
-            createValueProcessor(enumType) ?? genEnumProcessorName(propertyName),
-        ].join(', ')}])`;
+        const types = new Set();
+        propertyType.forEach((type) => {
+            types.add(createValueProcessor(type) ?? genEnumProcessorName(propertyName));
+        });
+        if (types.size > 1) {
+            return `createToSharedDataStyleCombinedValue([${Array.from(types).join(', ')}])`;
+        }
+        return Array.from(types)[0];
     }
     function createValueProcessor(propertyType) {
         if (isUnitType(propertyType)) {
@@ -128,7 +144,7 @@ function genRuntimeCode() {
         else if (isNumberType(propertyType)) {
             return `toSharedDataStyleNumberValue`;
         }
-        else if (isStringType(propertyType)) {
+        else if (isStringType(propertyType) || isTransitionType(propertyType)) {
             return `toSharedDataStyleStringValue`;
         }
         else if (isBorderWidthType(propertyType)) {

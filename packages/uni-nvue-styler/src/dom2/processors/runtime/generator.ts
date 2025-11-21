@@ -1,10 +1,11 @@
 import { isColorType } from '../color'
 import { isNumberType } from '../number'
 import { isStringType } from '../string'
-import { camelize, capitalize } from '@vue/shared'
+import { camelize, capitalize, isArray } from '@vue/shared'
 import { isUnitType } from '../unit'
 import type { AppCssJson, AppCssPropertyConfig } from '../../types'
 import { isBorderWidthType } from '../borderWidth'
+import { isTransitionType } from '../transition'
 
 export function genRuntimeCode() {
   // eslint-disable-next-line no-restricted-globals
@@ -45,8 +46,9 @@ export function genRuntimeCode() {
       processorCode = createValueProcessor(propertyType)
     } else if (
       isUnionType &&
-      isEnumAndBasicType(propertyType, propertyOptions)
+      !isEnumAndNumberType(propertyType, propertyOptions)
     ) {
+      // enum 和 number 目前无法区分，暂不支持运行时解析
       processorCode = createCombinedValueProcessor(propertyName, propertyType)
     }
 
@@ -62,7 +64,7 @@ export function genRuntimeCode() {
     entries.push(
       `['${propertyName}', [${propertyId}, ${
         processorCode ||
-        (isEnumType(propertyType!, propertyOptions)
+        (shouldGenEnumCode(propertyType!, propertyOptions)
           ? genEnumProcessorName(propertyName)
           : `toSharedDataStyleStringValue`)
       }]]`
@@ -86,42 +88,38 @@ export function genRuntimeCode() {
     return `toSharedDataStyle${capitalize(camelize(propertyName + ''))}Value`
   }
 
-  function isEnumType(
+  function shouldGenEnumCode(
     propertyType: string | string[],
     propertyOptions: AppCssPropertyConfig
   ) {
-    if (typeof propertyType === 'string') {
-      return !!propertyOptions.values
-    }
-    return isEnumAndBasicType(propertyType, propertyOptions)
-  }
-
-  function isEnumAndBasicType(
-    propertyType: string[],
-    propertyOptions: AppCssPropertyConfig
-  ) {
-    if (propertyType.length === 2 && propertyOptions.values) {
-      const basicType = propertyType[1]
-      // 目前运行时无法区分枚举数值和普通数值，所以不支持 number 类型
-      if (isUnitType(basicType)) {
-        return true
+    if (hasEnumType(propertyType, propertyOptions)) {
+      if (isArray(propertyType)) {
+        return !isEnumAndNumberType(propertyType, propertyOptions)
       }
+      return true
     }
     return false
   }
 
-  function shouldGenEnumCode(
-    propertyType: string[] | string,
+  function hasEnumType(
+    propertyType: string | string[],
     propertyOptions: AppCssPropertyConfig
   ) {
-    if (typeof propertyType === 'string') {
-      return !!propertyOptions.values
+    if (!propertyOptions.values) {
+      return false
     }
-    if (isEnumAndBasicType(propertyType, propertyOptions)) {
-      if (propertyType.every((type) => createValueProcessor(type))) {
-        return false
-      }
+    if (typeof propertyType === 'string') {
       return true
+    }
+    return propertyType.some((type) => !createValueProcessor(type))
+  }
+
+  function isEnumAndNumberType(
+    propertyType: string[],
+    propertyOptions: AppCssPropertyConfig
+  ) {
+    if (hasEnumType(propertyType, propertyOptions)) {
+      return propertyType.some((type) => isNumberType(type))
     }
     return false
   }
@@ -130,12 +128,18 @@ export function genRuntimeCode() {
     propertyName: string,
     propertyType: string[]
   ) {
-    const basicType = propertyType[1]
-    const enumType = propertyType[0]
-    return `createToSharedDataStyleCombinedValue([${[
-      createValueProcessor(basicType)!,
-      createValueProcessor(enumType) ?? genEnumProcessorName(propertyName),
-    ].join(', ')}])`
+    const types = new Set<string>()
+    propertyType.forEach((type) => {
+      types.add(
+        createValueProcessor(type) ?? genEnumProcessorName(propertyName)
+      )
+    })
+    if (types.size > 1) {
+      return `createToSharedDataStyleCombinedValue([${Array.from(types).join(
+        ', '
+      )}])`
+    }
+    return Array.from(types)[0]
   }
 
   function createValueProcessor(propertyType: string) {
@@ -145,7 +149,7 @@ export function genRuntimeCode() {
       return `toSharedDataStyleColorValue`
     } else if (isNumberType(propertyType)) {
       return `toSharedDataStyleNumberValue`
-    } else if (isStringType(propertyType)) {
+    } else if (isStringType(propertyType) || isTransitionType(propertyType)) {
       return `toSharedDataStyleStringValue`
     } else if (isBorderWidthType(propertyType)) {
       return `toSharedDataStyleBorderWidthValue`

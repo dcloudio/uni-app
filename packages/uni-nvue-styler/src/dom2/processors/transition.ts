@@ -10,20 +10,22 @@ import {
 } from './utils'
 import { genCPPEnumCode } from './enum'
 
-const UNINATIVETRANSITIONDELAY_TYPE = 'UniNativeTransitionDelay'
-const UNINATIVETRANSITIONDURATION_TYPE = 'UniNativeTransitionDuration'
-const UNINATIVETRANSITIONPROPERTY_TYPE = 'UniNativeTransitionProperty'
-const UNINATIVETRANSITIONTIMINGFUNCTION_TYPE =
-  'UniNativeTransitionTimingFunction'
-const UNINATIVETRANSITION_TYPES = [
-  UNINATIVETRANSITIONDELAY_TYPE,
-  UNINATIVETRANSITIONDURATION_TYPE,
-  UNINATIVETRANSITIONPROPERTY_TYPE,
-  UNINATIVETRANSITIONTIMINGFUNCTION_TYPE,
+const TRANSITION_CLASS_NAME = 'UniNativeTransition'
+const TRANSITION_DELAY_CLASS_NAME = `${TRANSITION_CLASS_NAME}Delay`
+const TRANSITION_DURATION_CLASS_NAME = `${TRANSITION_CLASS_NAME}Duration`
+const TRANSITION_PROPERTY_CLASS_NAME = `${TRANSITION_CLASS_NAME}Property`
+const TRANSITION_TIMING_FUNCTION_CLASS_NAME = `${TRANSITION_CLASS_NAME}TimingFunction`
+const TRANSITION_TYPES = [
+  TRANSITION_DELAY_CLASS_NAME,
+  TRANSITION_DURATION_CLASS_NAME,
+  TRANSITION_PROPERTY_CLASS_NAME,
+  // 复数，单词拼写不对，应该是：Properties
+  TRANSITION_PROPERTY_CLASS_NAME + 's',
+  TRANSITION_TIMING_FUNCTION_CLASS_NAME,
 ]
 
 export function isTransitionType(propertyType?: string) {
-  return propertyType && UNINATIVETRANSITION_TYPES.includes(propertyType)
+  return propertyType && TRANSITION_TYPES.includes(propertyType)
 }
 
 export function createSetStyleTransitionValueProcessor(
@@ -35,13 +37,13 @@ export function createSetStyleTransitionValueProcessor(
     let code = ''
 
     if (
-      propertyType === UNINATIVETRANSITIONDELAY_TYPE ||
-      propertyType === UNINATIVETRANSITIONDURATION_TYPE
+      propertyType === TRANSITION_DELAY_CLASS_NAME ||
+      propertyType === TRANSITION_DURATION_CLASS_NAME
     ) {
       code = parseTransitionDurationValue(String(value), language)
-    } else if (propertyType === UNINATIVETRANSITIONPROPERTY_TYPE) {
+    } else if (propertyType === TRANSITION_PROPERTY_CLASS_NAME) {
       code = parseTransitionPropertyValue(String(value), propertyType, language)
-    } else if (propertyType === UNINATIVETRANSITIONTIMINGFUNCTION_TYPE) {
+    } else if (propertyType === TRANSITION_TIMING_FUNCTION_CLASS_NAME) {
       code = parseTransitionTimingFunctionValue(
         String(value),
         propertyType,
