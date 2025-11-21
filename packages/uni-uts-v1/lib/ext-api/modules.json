@@ -1526,16 +1526,19 @@
   },
   "uni-web-view": {
     "uni": {
-      "createMapContext": {
+      "createWebviewContext": {
         "name": "createWebviewContext",
         "app": {
           "js": false,
           "kotlin": false,
           "swift": true,
-          "arkts": true
+          "arkts": false
         }
       }
-    }
+    },
+    "easycom": [
+      "web-view"
+    ]
   },
   "uni-websocket": {
     "uni": {
