@@ -79,6 +79,7 @@ const customElements = [
     'shop-follow-card',
     'match-media',
     'mask',
+    'video-player',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const projectConfigFilename = 'project.config.json';

@@ -511,10 +511,15 @@ const createCanvasContextAsync = defineAsyncApi(API_CREATE_CANVAS_CONTEXT_ASYNC,
         reject('current page invalid.');
     }
     else {
-        const query = options.component
-            ? my.createSelectorQuery().in(options.component)
-            : my.createSelectorQuery();
-        query
+        const query = my.createSelectorQuery();
+        if (options.component) {
+            // 支付宝小程序 in 只支持在 Component 中使用，Page 中使用返回值为 null https://opendocs.alipay.com/mini/0cs688?pathHash=aba8a9f8#%E7%AE%80%E4%BB%8B
+            query.in = function () {
+                return this;
+            };
+        }
+        const baseQuery = options.component ? query.in(options.component) : query;
+        baseQuery
             .select('#' + options.id)
             .fields({ node: true, size: true }, () => { })
             .exec((res) => {

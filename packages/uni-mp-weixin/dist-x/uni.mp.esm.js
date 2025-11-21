@@ -851,6 +851,7 @@ function initPageInstance(mpPageInstance) {
             get height() {
                 const windowInfo = wx.getWindowInfo();
                 // 某些版本的微信小程序开发工具获取tabBar页面的screenTop不对，其数值包含了tabBar高度及底部安全区，如果有开发者问起让他使用真机测试即可。
+                // TODO 抖音小程序没有 getWindowInfo 方法，暂时无法获取 screenTop
                 return windowInfo.windowHeight + windowInfo.screenTop;
             },
             get statusBarHeight() {

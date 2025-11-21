@@ -513,10 +513,9 @@ const createCanvasContextAsync = defineAsyncApi(API_CREATE_CANVAS_CONTEXT_ASYNC,
         reject('current page invalid.');
     }
     else {
-        const query = options.component
-            ? wx.createSelectorQuery().in(options.component)
-            : wx.createSelectorQuery();
-        query
+        const query = wx.createSelectorQuery();
+        const baseQuery = options.component ? query.in(options.component) : query;
+        baseQuery
             .select('#' + options.id)
             .fields({ node: true, size: true }, () => { })
             .exec((res) => {

@@ -2600,19 +2600,19 @@ function getDeclTransforms(options) {
     transition: transformTransition,
     border: transformBorder,
     background: createTransformBackground(options),
-    borderTop: transformBorder,
-    borderRight: transformBorder,
-    borderBottom: transformBorder,
-    borderLeft: transformBorder,
-    borderStyle: options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
-    borderWidth: options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
-    borderColor: options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
-    borderRadius: options.type === 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
+    ['borderTop']: transformBorder,
+    ['borderRight']: transformBorder,
+    ['borderBottom']: transformBorder,
+    ['borderLeft']: transformBorder,
+    ['borderStyle']: options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
+    ['borderWidth']: options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
+    ['borderColor']: options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
+    ['borderRadius']: options.type === 'uvue' ? transformBorderRadius : transformBorderRadiusNvue,
     // uvue已经支持这些简写属性，不需要展开
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
     padding: transformPadding,
-    flexFlow: transformFlexFlow
+    ['flexFlow']: transformFlexFlow
   };
   if (options.type === 'uvue') {
     styleMap.flex = transformFlex;
