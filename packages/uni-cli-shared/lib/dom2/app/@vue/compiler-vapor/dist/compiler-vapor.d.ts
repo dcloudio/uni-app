@@ -1,4 +1,4 @@
-import { SimpleExpressionNode, RootNode, Node, TemplateChildNode, DirectiveNode, CompoundExpressionNode, AllNode, ElementNode, CompilerCompatOptions, CommentNode, TransformOptions as TransformOptions$1, CodegenOptions as CodegenOptions$1, BaseCodegenResult, SourceLocation, CodegenSourceMapGenerator, TemplateNode, CompilerOptions as CompilerOptions$1, CompilerError, BindingMetadata } from '@vue/compiler-dom';
+import { SimpleExpressionNode, RootNode, Node, TemplateChildNode, DirectiveNode, CompoundExpressionNode, NodeTypes, AllNode, ElementNode, CompilerCompatOptions, CommentNode, TransformOptions as TransformOptions$1, CodegenOptions as CodegenOptions$1, BaseCodegenResult, SourceLocation, CodegenSourceMapGenerator, TemplateNode, CompilerOptions as CompilerOptions$1, CompilerError, BindingMetadata } from '@vue/compiler-dom';
 export { parse } from '@vue/compiler-dom';
 import * as packages_runtime_vapor_src from 'packages/runtime-vapor/src';
 import * as packages_runtime_dom_src from 'packages/runtime-dom/src';
@@ -303,6 +303,8 @@ export interface IRDynamicInfo {
     needsKey?: boolean;
     operation?: OperationNode;
     ifBranch?: boolean;
+    type?: NodeTypes;
+    tag?: string;
 }
 export interface IREffect {
     expressions: SimpleExpressionNode[];

@@ -2719,6 +2719,10 @@ const transformChildren = (node, context) => {
     if (childDynamic.hasDynamicChild || childDynamic.id !== void 0 || childDynamic.flags & 2 || childDynamic.flags & 4) {
       context.dynamic.hasDynamicChild = true;
     }
+    childDynamic.type = child.type;
+    if (child.type === 1) {
+      childDynamic.tag = child.tag;
+    }
     context.dynamic.children[i] = childDynamic;
   }
   if (!isFragment) {
