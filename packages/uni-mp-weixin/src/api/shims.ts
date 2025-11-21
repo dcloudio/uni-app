@@ -48,16 +48,16 @@ export function createSelectorQuery() {
 
 const wx = initWx()
 
-if (!__GLOBAL__.canIUse('getAppBaseInfo')) {
-  __GLOBAL__.getAppBaseInfo = __GLOBAL__.getSystemInfoSync
+if (!wx.getAppBaseInfo || !wx.getAppBaseInfo()) {
+  wx.getAppBaseInfo = wx.getSystemInfoSync
 }
 
-if (!__GLOBAL__.canIUse('getWindowInfo')) {
-  __GLOBAL__.getWindowInfo = __GLOBAL__.getSystemInfoSync
+if (!wx.getWindowInfo || !wx.getWindowInfo()) {
+  wx.getWindowInfo = wx.getSystemInfoSync
 }
 
-if (!__GLOBAL__.canIUse('getDeviceInfo')) {
-  __GLOBAL__.getDeviceInfo = __GLOBAL__.getSystemInfoSync
+if (!wx.getDeviceInfo || !wx.getDeviceInfo()) {
+  wx.getDeviceInfo = wx.getSystemInfoSync
 }
 
 let baseInfo = wx.getAppBaseInfo && wx.getAppBaseInfo()
