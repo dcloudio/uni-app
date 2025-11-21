@@ -1416,13 +1416,13 @@ function createSelectorQuery() {
     return query;
 }
 const wx$2 = initWx();
-if (!wx$2.canIUse('getAppBaseInfo')) {
+if (!wx$2.getAppBaseInfo || !wx$2.getAppBaseInfo()) {
     wx$2.getAppBaseInfo = wx$2.getSystemInfoSync;
 }
-if (!wx$2.canIUse('getWindowInfo')) {
+if (!wx$2.getWindowInfo || !wx$2.getWindowInfo()) {
     wx$2.getWindowInfo = wx$2.getSystemInfoSync;
 }
-if (!wx$2.canIUse('getDeviceInfo')) {
+if (!wx$2.getDeviceInfo || !wx$2.getDeviceInfo()) {
     wx$2.getDeviceInfo = wx$2.getSystemInfoSync;
 }
 let baseInfo = wx$2.getAppBaseInfo && wx$2.getAppBaseInfo();
