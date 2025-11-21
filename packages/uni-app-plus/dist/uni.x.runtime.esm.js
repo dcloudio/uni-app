@@ -790,30 +790,21 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
       return new UTSJSONObject(pageVm.$basePage.options);
     }
   });
-  uniPage.getElementById = (id2) => {
-    var _pageVm$$el;
-    var containerNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
-    if (containerNode == null) {
-      console.warn("bodyNode is null");
-      return null;
-    }
-    return containerNode.querySelector("#".concat(id2));
-  };
   uniPage.vm = pageVm;
   uniPage.$vm = pageVm;
   if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
     addCurrentPageWithInitScope(pageId, pageVm, pageInstance);
   }
   onMounted(() => {
-    var _pageVm$$el2;
-    var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
+    var _pageVm$$el;
+    var rootElement = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
     if (rootElement) {
       rootElement._page = pageVm.$page;
     }
   });
   onBeforeUnmount(() => {
-    var _pageVm$$el3;
-    var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3.parentElement;
+    var _pageVm$$el2;
+    var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
     if (rootElement) {
       rootElement._page = null;
     }
@@ -3350,17 +3341,11 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   resolve();
 });
 var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
-  var _page$$el;
-  var page = getCurrentPage().vm;
+  var page = getCurrentPage();
   if (page == null) {
     return null;
   }
-  var bodyNode = (_page$$el = page.$el) === null || _page$$el === void 0 ? void 0 : _page$$el.parentNode;
-  if (bodyNode == null) {
-    console.warn("bodyNode is null");
-    return null;
-  }
-  return bodyNode.querySelector("#".concat(id2));
+  return page.getElementById(id2);
 });
 function isVueComponent(comp) {
   var has$instance = typeof comp.$ === "object";
