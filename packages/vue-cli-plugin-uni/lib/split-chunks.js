@@ -208,8 +208,10 @@ module.exports = function getSplitChunks () {
                 return true
               }
             }
-          } else {
-            return hasMainPackageComponent(m.module, subPackageRoot)
+          } else if (m.dependency && m.dependency.getReference()) {
+            if (hasMainPackageComponent(m.module, subPackageRoot)) {
+              return true
+            }
           }
         }
       }
