@@ -345,20 +345,20 @@ function getDeclTransforms(options) {
         transition: transformTransition,
         border: transformBorder,
         background: createTransformBackground(),
-        borderTop: transformBorder,
-        borderRight: transformBorder,
-        borderBottom: transformBorder,
-        borderLeft: transformBorder,
-        borderStyle: transformBorderStyle ,
-        borderWidth: transformBorderWidth ,
-        borderColor: transformBorderColor ,
-        borderRadius: transformBorderRadius
+        ['border-top' ]: transformBorder,
+        ['border-right' ]: transformBorder,
+        ['border-bottom' ]: transformBorder,
+        ['border-left' ]: transformBorder,
+        ['border-style' ]: transformBorderStyle ,
+        ['border-width' ]: transformBorderWidth ,
+        ['border-color' ]: transformBorderColor ,
+        ['border-radius' ]: transformBorderRadius
             ,
         // uvue已经支持这些简写属性，不需要展开
         // margin,padding继续展开，确保样式的优先级
         margin: transformMargin,
         padding: transformPadding,
-        flexFlow: transformFlexFlow,
+        ['flex-flow' ]: transformFlexFlow,
     };
     {
         styleMap.flex = transformFlex;
@@ -1589,15 +1589,18 @@ function parseNativeColorValue(value) {
         return '0x' + argb;
     }
 }
-function toSharedDataStyleColorValue(value) {
+function parseUniNativeColorValue(value, defaultValue) {
     if (value) {
         const nativeColorValue = parseNativeColorValue(String(value));
         if (nativeColorValue) {
             return parseInt(nativeColorValue);
         }
     }
+    return defaultValue;
+}
+function toSharedDataStyleColorValue(value) {
     // 如果失败，返回透明
-    return 0x00000000;
+    return parseUniNativeColorValue(value, 0x00000000);
 }
 
 function toSharedDataStyleNumberValue(value, propertyName) {

@@ -4,7 +4,8 @@
       "src/esm.ts": ["dist/uni-nvue-styler.es.js"]
     },
     "replacements": {
-      "__HYPHENATE__": "false"
+      "__HYPHENATE__": "false",
+      "__RUN_TIME__": "true"
     },
     "external": ["@vue/shared"]
   },
@@ -13,7 +14,8 @@
       "src/index.ts": ["dist/uni-nvue-styler.cjs.js"]
     },
     "replacements": {
-      "__HYPHENATE__": "true"
+      "__HYPHENATE__": "true",
+      "__RUN_TIME__": "false"
     },
     "external": ["@vue/shared", "postcss", "parse-css-font"],
     "compilerOptions": {
@@ -31,6 +33,7 @@
     },
     "replacements": {
       "__HYPHENATE__": "true",
+      "__RUN_TIME__": "true",
       "options.type === 'uvue'": "true"
     },
     "external": ["@vue/shared"]

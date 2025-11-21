@@ -6,8 +6,6 @@ import { EffectScope, ShallowRef, Reactive, Ref } from '@vue/reactivity';
 export { toSharedDataStyle } from '@dcloudio/uni-nvue-styler/dist-dom2/uni-uvue-styler.es';
 import { Element as Element$1 } from '@dcloudio/uni-app-x/types/native';
 
-type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[];
-type BlockFn = (...args: any[]) => void;
 declare class VaporFragment {
     nodes: Block;
     anchor?: Node;
@@ -23,6 +21,9 @@ declare class DynamicFragment extends VaporFragment {
     constructor(anchorLabel?: string);
     update(render?: BlockFn | null, key?: any): void;
 }
+
+type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[];
+type BlockFn = (...args: any[]) => void;
 
 type RawProps = Record<string, () => unknown> & {
     $?: DynamicPropsSource[];

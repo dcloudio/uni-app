@@ -31,17 +31,21 @@ function getDeclTransforms(
     transition: transformTransition,
     border: transformBorder,
     background: createTransformBackground(options),
-    borderTop: transformBorder,
-    borderRight: transformBorder,
-    borderBottom: transformBorder,
-    borderLeft: transformBorder,
-    borderStyle:
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-top' : 'borderTop']:
+      transformBorder,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-right' : 'borderRight']:
+      transformBorder,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-bottom' : 'borderBottom']:
+      transformBorder,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-left' : 'borderLeft']:
+      transformBorder,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-style' : 'borderStyle']:
       options.type === 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
-    borderWidth:
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-width' : 'borderWidth']:
       options.type === 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
-    borderColor:
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-color' : 'borderColor']:
       options.type === 'uvue' ? transformBorderColor : transformBorderColorNvue,
-    borderRadius:
+    [__RUN_TIME__ && __HYPHENATE__ ? 'border-radius' : 'borderRadius']:
       options.type === 'uvue'
         ? transformBorderRadius
         : transformBorderRadiusNvue,
@@ -49,8 +53,8 @@ function getDeclTransforms(
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
     padding: transformPadding,
-
-    flexFlow: transformFlexFlow,
+    [__RUN_TIME__ && __HYPHENATE__ ? 'flex-flow' : 'flexFlow']:
+      transformFlexFlow,
   }
 
   if (options.type === 'uvue') {
