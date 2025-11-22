@@ -43,7 +43,11 @@ import { preCss, preNVueCss } from '../../../../preprocess'
 import { filterPrefersColorScheme } from '../../../../postcss/plugins/uniapp'
 import { emptyCssComments } from '../cleanString'
 
-import { PAGES_JSON_JS, PAGES_JSON_UTS } from '../../../../constants'
+import {
+  JS_STYLE_PLACEHOLDER_STR,
+  PAGES_JSON_JS,
+  PAGES_JSON_UTS,
+} from '../../../../constants'
 import { createRollupError } from '../../../utils/utils'
 import { createCompilerError } from '@vue/compiler-core'
 import { createResolveErrorMsg } from '../../../../utils'
@@ -397,8 +401,17 @@ export function cssPostPlugin(
 
       // build CSS handling ----------------------------------------------------
       styles.set(id, css)
+      const isDom2Harmony =
+        process.env.UNI_APP_X_DOM2 === 'true' &&
+        process.env.UNI_UTS_PLATFORM === 'app-harmony'
       return {
-        code: modulesCode || (isJsCode ? 'export default {}' : ''),
+        code:
+          modulesCode ||
+          (isJsCode
+            ? isDom2Harmony
+              ? `export default ${JS_STYLE_PLACEHOLDER_STR}`
+              : 'export default {}'
+            : ''),
         map: { mappings: '' },
         // avoid the css module from being tree-shaken so that we can retrieve
         // it in renderChunk()

@@ -2,6 +2,8 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import colors from 'picocolors'
 
 import {
+  JS_STYLE_PLACEHOLDER_MARKER,
+  JS_STYLE_PLACEHOLDER_RE,
   SPECIAL_CHARS,
   commonjsProxyRE,
   cssLangRE,
@@ -32,7 +34,9 @@ import {
   sourceContentFor,
 } from '@jridgewell/trace-mapping'
 
-import { isVue } from '../utils'
+import { DOM2_CSS_CACHE_MAP, isVue } from '../utils'
+
+const CSS_FILE_ID_MAP = new Map<string, string>()
 
 export function uniAppCssPrePlugin(): Plugin {
   const name = 'uni:app-uvue-css-pre'
@@ -54,18 +58,22 @@ export function uniAppCssPrePlugin(): Plugin {
         includeComponentCss: false,
         preserveModules: true,
         chunkCssFilename(id: string) {
+          // 暂不支持多style标签
           const { filename } = parseVueRequest(id)
           if (filename === mainPath || filename === appUVuePath) {
             // 合并到App
+            CSS_FILE_ID_MAP.set(`App.uvue`, id)
             return `App.uvue`
           }
           if (isVue(filename)) {
+            CSS_FILE_ID_MAP.set(filename, id)
             return filename
           }
         },
         async chunkCssCode(filename, cssCode) {
+          // filename
           cssCode = parseAssets(config, cssCode)
-          const { code, messages } = await parse(cssCode, {
+          const { code, messages, fontFaces } = await parse(cssCode, {
             dom2: {
               platform: process.env.UNI_UTS_PLATFORM as DOM2_APP_PLATFORM,
               target: DOM2_APP_TARGET.DOM_C,
@@ -75,6 +83,30 @@ export function uniAppCssPrePlugin(): Plugin {
             type: 'uvue',
             platform: process.env.UNI_UTS_PLATFORM,
           })
+          const isDom2Harmony =
+            process.env.UNI_APP_X_DOM2 === 'true' &&
+            process.env.UNI_UTS_PLATFORM === 'app-harmony'
+          if (isDom2Harmony && fontFaces) {
+            const id = CSS_FILE_ID_MAP.get(filename)
+            if (id) {
+              const cloneFontFaces = fontFaces.reduce(
+                (acc: any[], cur: any) => {
+                  const clone = { ...cur }
+                  if (!clone.fontFamily) {
+                    clone.fontFamily = cur['font-family']
+                    delete clone['font-family']
+                  }
+                  acc.push(clone)
+                  return acc
+                },
+                [] as any[]
+              )
+              DOM2_CSS_CACHE_MAP.set(
+                id,
+                JSON.stringify({ '@FONT-FACE': cloneFontFaces })
+              )
+            }
+          }
           messages.forEach((message) => {
             if (message.type === 'error') {
               console.error(
@@ -103,6 +135,40 @@ export function uniAppCssPrePlugin(): Plugin {
           )
         },
       })
+      const uvueCssInlinePostPlugin: Plugin = {
+        name: 'uni:app-uvue-css-inline-post',
+        apply: 'build',
+        generateBundle(_, bundle) {
+          // 暂时保留此条件容错
+          const isDom2Harmony =
+            process.env.UNI_APP_X_DOM2 === 'true' &&
+            process.env.UNI_UTS_PLATFORM === 'app-harmony'
+          if (isDom2Harmony) {
+            Object.entries(bundle).forEach(([file, asset]) => {
+              // 不支持多style标签
+              if (asset.type === 'chunk') {
+                let fontFaces: string | undefined
+                for (let i = 0; i < asset.moduleIds.length; i++) {
+                  const moduleId = asset.moduleIds[i]
+                  if (DOM2_CSS_CACHE_MAP.has(moduleId)) {
+                    fontFaces = DOM2_CSS_CACHE_MAP.get(moduleId)
+                    DOM2_CSS_CACHE_MAP.delete(moduleId)
+                    break
+                  }
+                }
+                if (fontFaces) {
+                  asset.code = asset.code.replace(
+                    JS_STYLE_PLACEHOLDER_RE,
+                    fontFaces
+                  )
+                } else if (asset.code.includes(JS_STYLE_PLACEHOLDER_MARKER)) {
+                  asset.code = asset.code.replace(JS_STYLE_PLACEHOLDER_RE, '{}')
+                }
+              }
+            })
+          }
+        },
+      }
       // 增加 css plugins
       // TODO 加密插件
       insertBeforePlugin(cssPlugin(config), name, config)
@@ -110,6 +176,12 @@ export function uniAppCssPrePlugin(): Plugin {
       // 重要：必须放到 unplugin-auto-import、uni:sd 前
       const index = plugins.findIndex((p) => p.name === 'unplugin-auto-import')
       plugins.splice(index, 0, uvueCssPostPlugin)
+      const isDom2Harmony =
+        process.env.UNI_APP_X_DOM2 === 'true' &&
+        process.env.UNI_UTS_PLATFORM === 'app-harmony'
+      if (isDom2Harmony) {
+        plugins.splice(index + 1, 0, uvueCssInlinePostPlugin)
+      }
     },
   }
 }

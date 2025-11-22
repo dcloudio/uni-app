@@ -303,3 +303,5 @@ export function getExtApiComponents() {
 export function isVue(filename: string) {
   return filename.endsWith('.vue') || filename.endsWith('.uvue')
 }
+
+export const DOM2_CSS_CACHE_MAP = new Map<string, string>()
