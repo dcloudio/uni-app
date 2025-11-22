@@ -1873,6 +1873,13 @@ function parse$1(source, options = {}) {
     if (node.type !== 1) {
       return;
     }
+    if (node.tag === "script") {
+      const cppBlock = createCppBlock(node, errors);
+      if (cppBlock) {
+        descriptor.scriptCpp = cppBlock;
+        return;
+      }
+    }
     if (ignoreEmpty && node.tag !== "template" && isEmpty(node) && !hasAttr(node, "src")) {
       descriptor.vapor || (descriptor.vapor = hasAttr(node, "vapor"));
       return;
@@ -2200,6 +2207,48 @@ function dedent(s) {
     }).join("\n"),
     minIndent
   ];
+}
+function createCppBlock({ props, loc }, errors) {
+  if (!props.some(
+    (p) => p.type === 6 && p.name === "lang" && p.value && p.value.content === "cpp"
+  )) {
+    return;
+  }
+  let module = "";
+  let src = "";
+  props.forEach((p) => {
+    if (p.type === 6) {
+      const attrName = p.name;
+      const attrValue = p.value && p.value.content;
+      if (attrName === "module") {
+        module = attrValue || "";
+      } else if (attrName === "src") {
+        src = attrValue || "";
+      }
+    }
+  });
+  if (!module) {
+    const err = new SyntaxError(
+      `<script lang="cpp"> \u5FC5\u987B\u6307\u5B9A module \u5C5E\u6027`
+    );
+    err.loc = loc;
+    errors.push(err);
+    return;
+  }
+  if (!src) {
+    const err = new SyntaxError(
+      `<script lang="cpp"> \u5FC5\u987B\u6307\u5B9A src \u5C5E\u6027`
+    );
+    err.loc = loc;
+    errors.push(err);
+    return;
+  }
+  return {
+    src,
+    module,
+    className: "",
+    namespace: ""
+  };
 }
 
 function isRelativeUrl(url) {
