@@ -22,8 +22,8 @@ function handleNetworkInfo(
   fromRes: my.IGetNetworkTypeSuccessResult,
   toRes: UniApp.GetNetworkTypeSuccess
 ) {
-  const nextworkType = fromRes.networkType
-  switch (nextworkType) {
+  const networkType = fromRes.networkType
+  switch (networkType) {
     case 'NOTREACHABLE':
       toRes.networkType = 'none'
       break
