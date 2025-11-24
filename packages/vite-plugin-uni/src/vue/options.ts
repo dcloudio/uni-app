@@ -19,6 +19,7 @@ import {
   getBaseNodeTransforms,
   isExternalUrl,
   isUniPageFile,
+  matchEasycom,
   normalizePath,
   onVueTemplateCompileLog,
   preJs,
@@ -136,9 +137,13 @@ export function initPluginVueOptions(
     ;(compilerOptions as any).miniProgram = miniProgram
   }
 
+  const isDev = process.env.UNI_HX_VERSION_DEV === 'true'
   if (isNativeTag) {
     const userIsNativeTag = compilerOptions.isNativeTag
     compilerOptions.isNativeTag = (tag) => {
+      if (isDev && matchEasycom(tag)) {
+        return false
+      }
       if (isNativeTag(tag)) {
         return true
       }

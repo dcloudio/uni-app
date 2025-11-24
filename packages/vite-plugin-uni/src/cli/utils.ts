@@ -312,7 +312,10 @@ export function initEnv(
   process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
     ? 'a'
     : 'r'
-
+  process.env.UNI_HX_VERSION_DEV =
+    process.env.HX_Version && process.env.HX_Version.includes('-dev')
+      ? 'true'
+      : 'false'
   initPreContext(
     process.env.UNI_PLATFORM,
     process.env.UNI_CUSTOM_CONTEXT,

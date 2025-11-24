@@ -6,6 +6,7 @@ import {
   createTransformTag,
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
+  matchEasycom,
   transformTapToClick,
 } from '@dcloudio/uni-cli-shared'
 import { initRuntimeHelpersOnce } from './runtimeHelpers'
@@ -98,10 +99,13 @@ export function compile(
       : options.mode === 'module'
 
   wrapOptionsLog(template, options)
-
+  const isDev = process.env.UNI_HX_VERSION_DEV === 'true'
   const isNativeTag =
     options?.isNativeTag ||
     function (tag: string) {
+      if (isDev && matchEasycom(tag)) {
+        return false
+      }
       return (
         isAppUVueNativeTag(tag) ||
         !!options.parseUTSCustomElement?.(tag, options.targetLanguage!) ||

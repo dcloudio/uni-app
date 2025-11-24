@@ -71,6 +71,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   let needCombineBuiltInCss = false
   componentDepsCss = COMPONENT_DEPS_CSS(process.env.UNI_APP_X === 'true')
+  const isDev = process.env.UNI_HX_VERSION_DEV === 'true'
   return {
     name: 'uni:h5-easycom',
     configResolved(config) {
@@ -93,26 +94,15 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
         /_resolveComponent\("(.+?)"(, true)?\)/g,
         (str, name) => {
           if (name && !name.startsWith('_')) {
-            if (isBuiltInComponent(name)) {
-              name = name.replace(COMPONENT_PREFIX, '')
-              const local = `__syscom_${i++}`
-              if (needCombineBuiltInCss) {
-                // 发行模式下，应该将内置组件css输出到入口css中
-                resolveBuiltInCssImport(name).forEach((cssImport) =>
-                  buildInCssSet.add(cssImport)
-                )
-                return addImportDeclaration(
-                  importDeclarations,
-                  local,
-                  H5_COMPONENTS_PATH,
-                  capitalize(camelize(name))
-                )
+            // 为了兼容性，仅处理dev模式
+            if (!isDev) {
+              const result = buildInComponent()
+              if (result) {
+                return result
               }
-              return addBuiltInImportDeclaration(
-                importDeclarations,
-                local,
-                name
-              )
+            }
+            if (isDev && name.startsWith('v-uni-')) {
+              name = name.replace('v-uni-', '')
             }
             const source = matchEasycom(name)
             if (source) {
@@ -145,6 +135,35 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
                   isHelpers ? capitalize(camelize(name)) : ''
                 )
               )
+            }
+            if (isDev) {
+              const result = buildInComponent()
+              if (result) {
+                return result
+              }
+            }
+            function buildInComponent() {
+              if (isBuiltInComponent(name)) {
+                name = name.replace(COMPONENT_PREFIX, '')
+                const local = `__syscom_${i++}`
+                if (needCombineBuiltInCss) {
+                  // 发行模式下，应该将内置组件css输出到入口css中
+                  resolveBuiltInCssImport(name).forEach((cssImport) =>
+                    buildInCssSet.add(cssImport)
+                  )
+                  return addImportDeclaration(
+                    importDeclarations,
+                    local,
+                    H5_COMPONENTS_PATH,
+                    capitalize(camelize(name))
+                  )
+                }
+                return addBuiltInImportDeclaration(
+                  importDeclarations,
+                  local,
+                  name
+                )
+              }
             }
           }
           return str
