@@ -6,6 +6,7 @@ import {
   createValueProcessorError,
   createValueProcessorResult,
 } from './utils'
+import { DOM2_APP_TARGET, type PropertyProcessorOptions } from '../types'
 
 const COLOR_TYPES = ['UniNativeColor', 'UniNativeBorderColor']
 
@@ -13,19 +14,45 @@ export function isColorType(propertyType?: string) {
   return propertyType && COLOR_TYPES.includes(propertyType)
 }
 
+const dummyValueProcessorResult = createValueProcessorResult('', '')
+
 export function createSetStyleNativeColorValueProcessor(
   setter: string
 ): PropertyProcessor {
-  return createPropertyProcessor((value: string | number, propertyName) => {
-    const nativeColorValue = parseNativeColorValue(String(value))
-    if (nativeColorValue) {
-      return createValueProcessorResult(
-        `${nativeColorValue}`,
-        `${setter}(${nativeColorValue})`
-      )
-    }
-    return createValueProcessorError(value, propertyName)
-  }, PropertyProcessorType.Color)
+  return createPropertyProcessor(
+    (
+      value: string | number,
+      propertyName,
+      options?: PropertyProcessorOptions
+    ) => {
+      // background-color 特例处理，在text标签上生成到element
+      if (
+        options?.target === DOM2_APP_TARGET.DOM_C &&
+        propertyName === 'background-color'
+      ) {
+        if (options?.tagName !== 'text') {
+          return dummyValueProcessorResult
+        }
+      }
+      // 移除 native view 上的 background-color
+      if (
+        options?.target === DOM2_APP_TARGET.NV_C &&
+        propertyName === 'background-color' &&
+        options?.tagName === 'text'
+      ) {
+        return dummyValueProcessorResult
+      }
+      const nativeColorValue = parseNativeColorValue(String(value))
+      if (nativeColorValue) {
+        return createValueProcessorResult(
+          `${nativeColorValue}`,
+          `${setter}(${nativeColorValue})`
+        )
+      }
+      return createValueProcessorError(value, propertyName)
+    },
+    PropertyProcessorType.Color
+  )
 }
 
 export function parseNativeColorValue(value: string) {

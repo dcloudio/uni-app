@@ -1,4 +1,9 @@
-import type { AppCssJson, DOM2_APP_PLATFORM, DOM2_APP_TARGET } from '../types'
+import {
+  type AppCssJson,
+  type DOM2_APP_PLATFORM,
+  DOM2_APP_TARGET,
+  type PropertyProcessorOptions,
+} from '../types'
 import appCssJson from '../../../lib/dom2/app-css.json'
 import { createSetStyleVariableProcessor } from './variable'
 
@@ -8,7 +13,8 @@ export function getAppCssJson() {
 
 type PropertyProcessorFn = (
   value: string | number,
-  propertyName: string
+  propertyName: string,
+  options?: PropertyProcessorOptions
 ) => {
   error?: string
   valueCode: string
@@ -67,11 +73,11 @@ function wrapPropertyProcessor(
   processor: PropertyProcessorFn
 ): PropertyProcessorFn {
   const setStyleVariableProcessor = createSetStyleVariableProcessor()
-  return (value, propertyName) => {
+  return (value, propertyName, options) => {
     if (typeof value === 'string' && value.includes('var(')) {
-      return setStyleVariableProcessor(value, propertyName)
+      return setStyleVariableProcessor(value, propertyName, options)
     }
-    return processor(value, propertyName)
+    return processor(value, propertyName, options)
   }
 }
 
@@ -114,7 +120,12 @@ export function getTargetConfig(
   // if(target === DOM2_APP_TARGET.ALL){
   //   return platformConfig
   // }
-
+  // background-color 特例处理，在text标签上生成到element
+  if (propertyName === 'background-color' && target === DOM2_APP_TARGET.DOM_C) {
+    return {
+      setter: 'setBackgroundColor',
+    }
+  }
   return platformConfig[target] || null
 }
 

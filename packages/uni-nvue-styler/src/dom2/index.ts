@@ -83,7 +83,17 @@ export function parseDom2StaticStyle(
         if (declaration.important) {
           important = true
         }
-        const processed = processor(declaration.value, propertyName)
+        const processed = processor(
+          declaration.value,
+          propertyName,
+          options
+            ? {
+                platform: options.platform,
+                target: options.target,
+                tagName: options.tagName || '',
+              }
+            : undefined
+        )
         if (processed.error) {
           messages.push(new Warning(processed.error, { node: declaration }))
         } else {

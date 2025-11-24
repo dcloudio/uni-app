@@ -32,6 +32,12 @@ export interface ParseDom2StaticStyleOptions
   genCode?: boolean
 }
 
+export interface PropertyProcessorOptions {
+  platform: DOM2_APP_PLATFORM
+  target: DOM2_APP_TARGET
+  tagName: string
+}
+
 export interface Dom2StaticStylePropertyValue {
   valueCode: string
   setterCode: string
