@@ -22,7 +22,13 @@ export function uniCopyPlugin({
 }: Pick<VitePluginUniResolvedOptions, 'outputDir' | 'copyOptions'>): Plugin {
   const staticDir = PUBLIC_DIR + '/**/*'
   const uniModulesStaticDir = 'uni_modules/*/' + PUBLIC_DIR + '/**/*'
+  const uniModulesCppDir =
+    process.env.UNI_APP_X_DOM2 === 'true' ? 'uni_modules/*/cppsdk/**/*' : ''
   const assets = [staticDir, uniModulesStaticDir]
+  const cppAssets: string[] = []
+  if (uniModulesCppDir) {
+    cppAssets.push(uniModulesCppDir)
+  }
   const subpackages = parseSubpackagesRootOnce(
     process.env.UNI_INPUT_DIR,
     process.env.UNI_PLATFORM
@@ -30,6 +36,9 @@ export function uniCopyPlugin({
   subpackages.forEach((root) => {
     assets.push(normalizePath(path.join(root, staticDir)))
     assets.push(normalizePath(path.join(root, uniModulesStaticDir)))
+    if (uniModulesCppDir) {
+      cppAssets.push(normalizePath(path.join(root, uniModulesCppDir)))
+    }
   })
   copyOptions!.assets.forEach((asset) => {
     assets.push(asset)
@@ -38,25 +47,15 @@ export function uniCopyPlugin({
   const platform = process.env.UNI_PLATFORM
   const utsPlatform = process.env.UNI_UTS_PLATFORM
   // 非当前平台 static 目录
-  const ignorePlatformStaticDirs = getPlatforms()
-    .filter((p) => {
-      if (platform === 'app') {
-        if (process.env.UNI_APP_X === 'true') {
-          if (p === 'app-android' || p === 'app-ios' || p === 'app-harmony') {
-            return p !== utsPlatform
-          }
-          return p !== 'app'
-        }
-        return p !== 'app' && p !== 'app-plus'
-      } else if (platform === 'h5' || platform === 'web') {
-        return p !== 'h5' && p !== 'web'
-      } else if (platform.startsWith('app-')) {
-        return p !== 'app' && p !== platform
-      }
-      return p !== platform
-    })
-    // 在最后增加 / 是为了避免误判以 platform 开头的目录，比如 app-test
-    .map((p) => '/' + PUBLIC_DIR + '/' + p + '/')
+  const ignorePlatformStaticDirs = createIgnorePlatformDirs(
+    PUBLIC_DIR,
+    platform,
+    utsPlatform
+  )
+  // 非当前平台 cppsdk 目录
+  const ignorePlatformCppDirs = uniModulesCppDir
+    ? createIgnorePlatformDirs('cppsdk', platform, utsPlatform)
+    : []
 
   const targets: UniViteCopyPluginTarget[] = [
     {
@@ -88,6 +87,27 @@ export function uniCopyPlugin({
     },
   ]
   targets.push(...copyOptions!.targets)
+  if (process.env.UNI_APP_HARMONY_DOM2_CPP_DIR && cppAssets.length) {
+    targets.push({
+      src: cppAssets,
+      dest: process.env.UNI_APP_HARMONY_DOM2_CPP_DIR,
+      watchOptions: {
+        readyTimeout: getReadyTimeout(),
+        ignored(path: string) {
+          const normalizedPath = normalizePath(path)
+          if (
+            ignorePlatformCppDirs.find((dir) =>
+              // dir都是以 / 结尾，所以这里也要以 / 结尾
+              (normalizedPath + '/').includes(dir)
+            )
+          ) {
+            return fs.statSync(normalizedPath).isDirectory()
+          }
+          return false
+        },
+      },
+    })
+  }
   debugCopy(targets)
   checkIgnoreStatic(
     ignorePlatformStaticDirs.map((dir) => dir.substring(1).split('/'))
@@ -130,4 +150,32 @@ function getReadyTimeout() {
   }
   // 仅在生产环境使用
   return 4000
+}
+
+function createIgnorePlatformDirs(
+  dir: string,
+  platform: UniApp.PLATFORM,
+  utsPlatform: UniApp.PLATFORM
+) {
+  return (
+    getPlatforms()
+      .filter((p) => {
+        if (platform === 'app') {
+          if (process.env.UNI_APP_X === 'true') {
+            if (p === 'app-android' || p === 'app-ios' || p === 'app-harmony') {
+              return p !== utsPlatform
+            }
+            return p !== 'app'
+          }
+          return p !== 'app' && p !== 'app-plus'
+        } else if (platform === 'h5' || platform === 'web') {
+          return p !== 'h5' && p !== 'web'
+        } else if (platform.startsWith('app-')) {
+          return p !== 'app' && p !== platform
+        }
+        return p !== platform
+      })
+      // 在最后增加 / 是为了避免误判以 platform 开头的目录，比如 app-test
+      .map((p) => '/' + dir + '/' + p + '/')
+  )
 }
