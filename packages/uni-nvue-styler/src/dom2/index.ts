@@ -97,7 +97,9 @@ export function parseDom2StaticStyle(
         if (processed.error) {
           messages.push(new Warning(processed.error, { node: declaration }))
         } else {
-          result[propertyName] = processed
+          if (processed.valueCode) {
+            result[propertyName] = processed
+          }
         }
       }
     }
@@ -122,6 +124,10 @@ function genCode(
     const entries: string[] = []
     const variableEntries: string[] = []
     Object.entries(obj).forEach(([key, value]) => {
+      // preprocessor 可能返回空字符串
+      if (!value.valueCode) {
+        return
+      }
       if (key.startsWith('--')) {
         variableEntries.push(`{"${key}", ${value.valueCode}}`)
       } else {
