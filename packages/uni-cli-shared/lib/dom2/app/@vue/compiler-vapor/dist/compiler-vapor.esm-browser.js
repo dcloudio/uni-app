@@ -22433,7 +22433,7 @@ function shouldDeclareVariable(name, expToVariableMap, exps) {
     }
     return true;
   }
-  if (vars.some((v) => v.some((e) => first.includes(e)))) {
+  if (vars.every((v) => v.every((e, idx) => e === first[idx]))) {
     return false;
   }
   return true;
@@ -22571,7 +22571,7 @@ function extractMemberExpression(exp, onIdentifier) {
       const prop = exp.computed ? `[${extractMemberExpression(exp.property, onIdentifier)}]` : `.${extractMemberExpression(exp.property, NOOP)}`;
       return `${object}${prop}`;
     case "TSNonNullExpression":
-      return `${extractMemberExpression(exp.expression, onIdentifier)}!`;
+      return `${extractMemberExpression(exp.expression, onIdentifier)}`;
     default:
       return "";
   }
