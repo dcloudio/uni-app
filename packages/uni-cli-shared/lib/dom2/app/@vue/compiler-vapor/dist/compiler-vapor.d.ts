@@ -255,6 +255,7 @@ export interface CreateComponentIRNode extends BaseIRNode {
 export interface DeclareOldRefIRNode extends BaseIRNode {
     type: IRNodeTypes.DECLARE_OLD_REF;
     id: number;
+    value: SimpleExpressionNode;
 }
 export interface SlotOutletIRNode extends BaseIRNode {
     type: IRNodeTypes.SLOT_OUTLET_NODE;

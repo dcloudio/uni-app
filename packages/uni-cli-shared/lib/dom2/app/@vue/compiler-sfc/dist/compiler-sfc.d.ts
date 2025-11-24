@@ -227,18 +227,19 @@ export interface SFCDescriptor {
      * pruning result changes due to template changes.
      */
     shouldForceReload: (prevImports: Record<string, ImportBinding>) => boolean;
-    scriptCpp?: CppBlock;
+    scriptCppBlocks: SFCScriptCppBlock[];
 }
 export interface SFCParseResult {
     descriptor: SFCDescriptor;
     errors: (CompilerError | SyntaxError)[];
 }
 export declare function parse(source: string, options?: SFCParseOptions): SFCParseResult;
-interface CppBlock {
+export interface SFCScriptCppBlock {
     src: string;
     module: string;
     className: string;
     namespace: string;
+    errors?: SyntaxError[];
 }
 
 type PreprocessLang = 'less' | 'sass' | 'scss' | 'styl' | 'stylus';

@@ -24993,6 +24993,7 @@ const transformTemplateRef = (node, context) => {
       type: 14,
       // fixed by uts
       node,
+      value,
       id
     });
     context.registerEffect([value], {

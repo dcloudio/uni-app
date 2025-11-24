@@ -3,6 +3,8 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
+import { existsSync } from 'node:fs';
+
 // @__NO_SIDE_EFFECTS__
 function makeMap(str) {
   const map = /* @__PURE__ */ Object.create(null);
@@ -27650,6 +27652,8 @@ function parse$2(source, options = {}) {
     scriptSetup: null,
     styles: [],
     customBlocks: [],
+    // fixed by uts
+    scriptCppBlocks: [],
     cssVars: [],
     slotted: false,
     vapor: false,
@@ -27669,9 +27673,14 @@ function parse$2(source, options = {}) {
       return;
     }
     if (node.tag === "script") {
-      const cppBlock = createCppBlock(node, errors);
+      const cppBlock = createCppBlock(node, options);
       if (cppBlock) {
-        descriptor.scriptCpp = cppBlock;
+        if (cppBlock.errors && cppBlock.errors.length > 0) {
+          errors.push(...cppBlock.errors);
+          delete cppBlock.errors;
+          return;
+        }
+        descriptor.scriptCppBlocks.push(cppBlock);
         return;
       }
     }
@@ -27994,7 +28003,7 @@ function dedent(s) {
     minIndent
   ];
 }
-function createCppBlock({ props, loc }, errors) {
+function createCppBlock({ props, loc }, options) {
   if (!props.some(
     (p) => p.type === 6 && p.name === "lang" && p.value && p.value.content === "cpp"
   )) {
@@ -28002,7 +28011,11 @@ function createCppBlock({ props, loc }, errors) {
   }
   let module = "";
   let src = "";
+  let className = "";
+  let namespace = "";
+  const errors = [];
   props.forEach((p) => {
+    var _a, _b;
     if (p.type === 6) {
       const attrName = p.name;
       const attrValue = p.value && p.value.content;
@@ -28010,30 +28023,60 @@ function createCppBlock({ props, loc }, errors) {
         module = attrValue || "";
       } else if (attrName === "src") {
         src = attrValue || "";
+        if (options.filename && ((_a = options.templateParseOptions) == null ? void 0 : _a.root)) {
+          const absSrc = joinPaths(options.filename, "..", src);
+          if (!existsSync(absSrc)) {
+            const err = new SyntaxError(`\u6587\u4EF6\u4E0D\u5B58\u5728: ${src}`);
+            err.loc = loc;
+            errors.push(err);
+            return;
+          }
+          src = normalizePath(absSrc).replace((_b = options.templateParseOptions) == null ? void 0 : _b.root, "").slice(1);
+          if (!src.startsWith("uni_modules")) {
+            const err = new SyntaxError(
+              `<script lang="cpp"> \u7684 src \u6BD4\u5982\u653E\u5728 uni_modules \u63D2\u4EF6 cppsdk \u76EE\u5F55\u4E2D`
+            );
+            err.loc = loc;
+            errors.push(err);
+            return;
+          }
+        }
+      } else if (attrName === "class-name") {
+        className = attrValue || "";
+      } else if (attrName === "namespace") {
+        namespace = attrValue || "";
       }
     }
   });
-  if (!module) {
-    const err = new SyntaxError(
-      `<script lang="cpp"> \u5FC5\u987B\u6307\u5B9A module \u5C5E\u6027`
-    );
-    err.loc = loc;
-    errors.push(err);
-    return;
-  }
-  if (!src) {
-    const err = new SyntaxError(
-      `<script lang="cpp"> \u5FC5\u987B\u6307\u5B9A src \u5C5E\u6027`
-    );
-    err.loc = loc;
-    errors.push(err);
-    return;
+  if (!errors.length) {
+    if (!module) {
+      const err = new SyntaxError(
+        `<script lang="cpp"> \u5FC5\u987B\u6307\u5B9A module \u5C5E\u6027`
+      );
+      err.loc = loc;
+      errors.push(err);
+    }
+    if (!src) {
+      const err = new SyntaxError(
+        `<script lang="cpp"> \u5FC5\u987B\u6307\u5B9A src \u5C5E\u6027`
+      );
+      err.loc = loc;
+      errors.push(err);
+    }
+    if (!className) {
+      const err = new SyntaxError(
+        `<script lang="cpp"> \u5FC5\u987B\u6307\u5B9A class-name \u5C5E\u6027`
+      );
+      err.loc = loc;
+      errors.push(err);
+    }
   }
   return {
     src,
     module,
-    className: "",
-    namespace: ""
+    className,
+    namespace,
+    errors
   };
 }
 
@@ -35628,6 +35671,7 @@ const transformTemplateRef = (node, context) => {
       type: 14,
       // fixed by uts
       node,
+      value,
       id
     });
     context.registerEffect([value], {
