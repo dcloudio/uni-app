@@ -334,6 +334,7 @@ export function initPluginVueOptions(
           platform: process.env.UNI_UTS_PLATFORM,
           componentType: isUniPageFile(filename) ? 'page' : 'component',
           relativeFilename,
+          scriptCppBlocks: (descriptor as any).scriptCppBlocks,
           parseStaticStyle(
             target: DOM2_APP_TARGET,
             tagName: string,
