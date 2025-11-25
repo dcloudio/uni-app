@@ -6857,6 +6857,12 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     const sliderValueRef = vue.ref(null);
     const sliderHandleRef = vue.ref(null);
     const sliderValue = vue.ref(Number(props2.value));
+    if (sliderValue.value < Number(props2.min)) {
+      sliderValue.value = Number(props2.min);
+    }
+    if (sliderValue.value > Number(props2.max)) {
+      sliderValue.value = Number(props2.max);
+    }
     vue.watch(() => props2.value, (val) => {
       sliderValue.value = Number(val);
     });

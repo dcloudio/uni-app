@@ -14698,6 +14698,12 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
     const sliderValueRef = ref(null);
     const sliderHandleRef = ref(null);
     const sliderValue = ref(Number(props2.value));
+    if (sliderValue.value < Number(props2.min)) {
+      sliderValue.value = Number(props2.min);
+    }
+    if (sliderValue.value > Number(props2.max)) {
+      sliderValue.value = Number(props2.max);
+    }
     watch(() => props2.value, (val) => {
       sliderValue.value = Number(val);
     });
