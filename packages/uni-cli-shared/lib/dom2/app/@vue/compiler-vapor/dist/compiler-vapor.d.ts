@@ -85,7 +85,8 @@ export declare enum IRNodeTypes {
     IF = 15,
     FOR = 16,
     GET_TEXT_CHILD = 17,
-    GET_INSERTION_PARENT = 18
+    GET_INSERTION_PARENT = 18,
+    SET_CHANGE_PROP = 19
 }
 export interface BaseIRNode {
     type: IRNodeTypes;
@@ -153,6 +154,7 @@ export interface SetPropIRNode extends BaseIRNode {
     element: number;
     prop: IRProp;
     tag: string;
+    isChangeProp?: boolean;
 }
 export interface SetDynamicPropsIRNode extends BaseIRNode {
     type: IRNodeTypes.SET_DYNAMIC_PROPS;
@@ -276,8 +278,12 @@ export interface GetInsertionParentIRNode extends BaseIRNode {
     type: IRNodeTypes.GET_INSERTION_PARENT;
     id: number;
 }
+export interface SetChangePropIRNode extends BaseIRNode {
+    type: IRNodeTypes.SET_CHANGE_PROP;
+    prop: IRProp;
+}
 export type IRNode = OperationNode | RootIRNode;
-export type OperationNode = SetPropIRNode | SetDynamicPropsIRNode | SetTextIRNode | SetEventIRNode | SetDynamicEventsIRNode | SetHtmlIRNode | SetTemplateRefIRNode | InsertNodeIRNode | PrependNodeIRNode | DirectiveIRNode | IfIRNode | ForIRNode | CreateComponentIRNode | DeclareOldRefIRNode | SlotOutletIRNode | GetTextChildIRNode | GetInsertionParentIRNode;
+export type OperationNode = SetPropIRNode | SetDynamicPropsIRNode | SetTextIRNode | SetEventIRNode | SetDynamicEventsIRNode | SetHtmlIRNode | SetTemplateRefIRNode | InsertNodeIRNode | PrependNodeIRNode | DirectiveIRNode | IfIRNode | ForIRNode | CreateComponentIRNode | DeclareOldRefIRNode | SlotOutletIRNode | GetTextChildIRNode | GetInsertionParentIRNode | SetChangePropIRNode;
 export declare enum DynamicFlag {
     NONE = 0,
     /**

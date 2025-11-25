@@ -22122,7 +22122,9 @@ const IRNodeTypes = {
   "GET_TEXT_CHILD": 17,
   "17": "GET_TEXT_CHILD",
   "GET_INSERTION_PARENT": 18,
-  "18": "GET_INSERTION_PARENT"
+  "18": "GET_INSERTION_PARENT",
+  "SET_CHANGE_PROP": 19,
+  "19": "SET_CHANGE_PROP"
 };
 const DynamicFlag = {
   "NONE": 0,
@@ -23839,6 +23841,9 @@ function genOperation(oper, context) {
     // fixed by uts
     case 18:
       return [];
+    // fixed by uts
+    case 19:
+      return [];
     default:
       const exhaustiveCheck = oper;
       throw new Error(
@@ -24529,7 +24534,12 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
     );
   } else {
     const isDom2 = !!context.options.platform;
+    const changeProps = [];
     if (isDom2) {
+      const resolveChangeProp = context.options.resolveChangeProp;
+      if (resolveChangeProp) {
+        changeProps.push(...resolveChangeProp(propsResult[1], context));
+      }
       const checkStaticProp = context.options.checkStaticProp;
       if (checkStaticProp) {
         const props = propsResult[1];
@@ -24537,6 +24547,9 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
         for (let i = 0; i < props.length; i++) {
           const prop = props[i];
           const { key, values } = prop;
+          if (key.content.startsWith("change:") || changeProps.includes(key.content)) {
+            continue;
+          }
           if (key.isStatic && values.length === 1 && !["class", "style"].includes(key.content)) {
             let endLoc = values[0].loc;
             if (endLoc === locStub) {
@@ -24566,8 +24579,25 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
     let hasClass = false;
     for (const prop of propsResult[1]) {
       const { key, values } = prop;
-      if (isDom2 && key.content === "class") {
-        hasClass = true;
+      if (isDom2) {
+        if (key.content.startsWith("change:")) {
+          dynamicProps.push(key.content);
+          values[0].isStatic = false;
+          context.registerEffect(
+            values,
+            {
+              type: 19,
+              // fixed by uts
+              node,
+              prop
+            },
+            getEffectIndex
+          );
+          continue;
+        }
+        if (key.content === "class") {
+          hasClass = true;
+        }
       }
       if (context.imports.some(
         (imported) => values[0].content.includes(imported.exp.content)
@@ -24615,6 +24645,8 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
             type: 2,
             // fixed by uts
             node,
+            // fixed by uts
+            isChangeProp: changeProps.includes(key.content),
             element: context.reference(),
             prop,
             tag
