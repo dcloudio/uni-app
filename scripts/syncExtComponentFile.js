@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncExtComponentFile = void 0;
-var fs_extra_1 = require("fs-extra");
-var path_1 = require("path");
+exports.syncExtComponentFile = syncExtComponentFile;
+var fs_extra_1 = __importDefault(require("fs-extra"));
+var path_1 = __importDefault(require("path"));
 var fast_glob_1 = require("fast-glob");
 var compiler_sfc_1 = require("@vue/compiler-sfc");
 function resolve(file) {
@@ -33,7 +36,7 @@ function createVueSFCCode(name, templateContent, scriptContent) {
     return "<script setup lang=\"ts\">\n".concat(scriptContent.import, "\n\ndefineOptions({\n  name: ").concat(JSON.stringify(name), ",\n  __reserved: true,\n  compatConfig: {\n    MODE: 3\n  }\n})\n\n").concat(scriptContent.content, "\n</script>\n\n<template>\n").concat(templateContent, "\n</template>\n");
 }
 function syncExtComponentFile(apiDirs) {
-    var preprocess = require('@dcloudio/uni-preprocess').preprocess;
+    var preprocess = require('../packages/uni-preprocess').preprocess;
     var uniComponentsPath = resolve('../packages/uni-components');
     var uniComponentsVuePath = path_1.default.resolve(uniComponentsPath, './src/vue');
     var uniComponentsLibXPath = path_1.default.resolve(uniComponentsPath, './lib-x');
@@ -55,6 +58,7 @@ function syncExtComponentFile(apiDirs) {
                                 var _a, _b, _c, _d, _e, _f, _g, _h, _j;
                                 var _k = path_1.default.parse(path_1.default.relative(componentPath_1, filePath)), buildInComponentName = _k.name, ext = _k.ext, dir = _k.dir;
                                 switch (ext) {
+                                    case '.uvue':
                                     case '.vue': {
                                         var originCode = fs_extra_1.default.readFileSync(filePath, { encoding: 'utf-8' });
                                         if (syncExtComponentOption.name) {
@@ -122,4 +126,3 @@ function syncExtComponentFile(apiDirs) {
         console.error('[uni-h5 (syncExtComponentFile)] sync ext component file error:', error);
     }
 }
-exports.syncExtComponentFile = syncExtComponentFile;

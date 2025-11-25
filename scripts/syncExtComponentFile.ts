@@ -61,7 +61,7 @@ ${templateContent}
 `
 }
 export function syncExtComponentFile(apiDirs: string[]) {
-  const { preprocess } = require('@dcloudio/uni-preprocess')
+  const { preprocess } = require('../packages/uni-preprocess')
   const uniComponentsPath = resolve('../packages/uni-components')
   const uniComponentsVuePath = path.resolve(uniComponentsPath, './src/vue')
   const uniComponentsLibXPath = path.resolve(uniComponentsPath, './lib-x')
@@ -83,6 +83,7 @@ export function syncExtComponentFile(apiDirs: string[]) {
               sync(path.join(componentPath, '**')).forEach(filePath => {
                 const { name: buildInComponentName, ext, dir } = path.parse(path.relative(componentPath, filePath))
                 switch (ext) {
+                  case '.uvue':
                   case '.vue': {
                     const originCode = fs.readFileSync(filePath, { encoding: 'utf-8' })
                     if (syncExtComponentOption.name) {
@@ -102,7 +103,7 @@ export function syncExtComponentFile(apiDirs: string[]) {
                         if (scriptSetupContent.length) {
                           const regex = /^\s*(import[\s\S]*?from\s+['"][\s\S]*?['"];?)/gm
 
-                          const imports:string[] = []
+                          const imports: string[] = []
                           let execResult
                           while (execResult = regex.exec(scriptSetupContent)) {
                             const importStr = execResult[1]
