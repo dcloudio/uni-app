@@ -326,7 +326,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
+  /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS|getFacialRecognitionMetaInfo/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -835,9 +835,19 @@ const protocols = {
   // navigateTo,
   // redirectTo,
   // previewImage,
-  getSystemInfo,
-  getSystemInfoSync: getSystemInfo
   // getUserProfile
+  getSystemInfo,
+  getSystemInfoSync: getSystemInfo,
+  requestPayment: {
+    name: 'requestGuaranteeOrderPayment'
+  },
+  showActionSheet: {
+    args (fromArgs, toArgs) {
+      if (!fromArgs.itemColor) {
+        toArgs.itemColor = '#000000';
+      }
+    }
+  }
 };
 
 // 不支持的 API 列表
@@ -2261,8 +2271,6 @@ function stringifyQuery (obj, encodeStr = encode) {
   return res ? `?${res}` : ''
 }
 
-const isComponent2 = xhs.canIUse('component2');
-
 function initSpecialMethods (mpInstance) {
   if (!mpInstance.$vm) {
     return
@@ -2301,7 +2309,13 @@ const handleWrap = function (mp, destory) {
     } else {
       // TODO remove handleRef
       this[key] = function () {
-        mp.props[eventName].apply(this, arguments);
+        if (mp.props[eventName]) {
+          mp.props[eventName].apply(this, arguments);
+        } else {
+          if (process.env.NODE_ENV !== 'production') {
+            console.log(`UNIAPP[xhs handleWrap]:[${+new Date()}]`, `事件 ${eventName} 未绑定处理函数`);
+          }
+        }
       };
     }
   });
@@ -2324,39 +2338,36 @@ function parsePage (vuePageOptions) {
     onLoad (query) {
       const properties = this.props;
 
-      this.__query = query;
-      this.__options = {
+      const options = {
         mpType: 'page',
         mpInstance: this,
         propsData: properties
       };
-    },
-    onReady () {
-      // initChildVues(this)
+
       // 初始化 vue 实例
-      this.$vm = new VueComponent(this.__options);
+      this.$vm = new VueComponent(options);
+
+      initSpecialMethods(this);
 
       // 触发首次 setData
       this.$vm.$mount();
 
-      initSpecialMethods(this);
-      this.$vm._isMounted = true;
-      this.$vm.__call_hook('mounted');
-
-      // mounted => onLoad
-      this.options = this.__query;
-      this.$vm.$mp.query = this.__query; // 兼容 mpvue
-      const copyQuery = Object.assign({}, this.__query);
+      const copyQuery = Object.assign({}, query);
       delete copyQuery.__id__;
+
       this.$page = {
         fullPath: '/' + this.route + stringifyQuery(copyQuery)
       };
 
-      this.$vm.__call_hook('onLoad', this.__query);
-      this.$vm.__call_hook('onShow');
-      setTimeout(() => {
-        this.$vm.__call_hook('onReady');
-      });
+      this.options = query;
+      this.$vm.$mp.query = query; // 兼容 mpvue
+      this.$vm.__call_hook('onLoad', query);
+    },
+    onReady () {
+      // initChildVues(this)
+      this.$vm._isMounted = true;
+      this.$vm.__call_hook('mounted');
+      this.$vm.__call_hook('onReady');
     },
     onUnload () {
       this.$vm.__call_hook('onUnload');
