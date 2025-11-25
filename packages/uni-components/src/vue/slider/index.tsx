@@ -228,6 +228,14 @@ function useSliderLoader(
   sliderValueRef: HTMLRef,
   trigger: CustomEventTrigger
 ) {
+  const truthStep = computed(() => {
+    const step = Number(props.step)
+    if (isNaN(step)) {
+      return 1
+    }
+    return step
+  })
+
   const _onClick = ($event: MouseEvent) => {
     if (props.disabled) {
       return
@@ -238,15 +246,8 @@ function useSliderLoader(
     })
   }
 
-  const _filterValue = (e: number) => {
-    const max = Number(props.max)
-    const min = Number(props.min)
-    const step = Number(props.step)
-    return e < min
-      ? min
-      : e > max
-      ? max
-      : computeController.mul.call(Math.round((e - min) / step), step) + min
+  const _filterValue = (min: number, step: number, value: number) => {
+    return Math.round((value - min) / step) * step + min
   }
 
   const _onUserChangedValue = (e: MouseEvent) => {
@@ -260,8 +261,13 @@ function useSliderLoader(
     const offsetWidth =
       slider.offsetWidth - (props.showValue ? sliderRightBoxWidth : 0)
     const boxLeft = slider.getBoundingClientRect().left
-    const value = ((e.x - boxLeft) * (max - min)) / offsetWidth + min
-    sliderValue.value = _filterValue(value)
+    const proportion = (e.x - boxLeft) / offsetWidth
+    const stepDecimal = (truthStep.value + '').split('.')[1]
+    sliderValue.value = parseFloat(
+      _filterValue(min, truthStep.value, lerp(min, max, proportion)).toFixed(
+        stepDecimal ? stepDecimal.length : 0
+      )
+    )
   }
 
   const _onTrack = (e: TouchtrackEvent) => {
@@ -303,23 +309,7 @@ function useSliderLoader(
   return { _onClick, _onTrack }
 }
 
-var computeController = {
-  mul: function (arg: number) {
-    let m = 0
-    let s1 = this.toString()
-    let s2 = arg.toString()
-    try {
-      // 获得小数位数
-      m += s1.split('.')[1].length
-    } catch (e) {}
-    try {
-      // 获得小数位数
-      m += s2.split('.')[1].length
-    } catch (e) {}
-    // 转为十进制计算后，要除以两个数的共同小数位数
-    return (
-      (Number(s1.replace('.', '')) * Number(s2.replace('.', ''))) /
-      Math.pow(10, m)
-    )
-  },
+function lerp(min: number, max: number, t: number) {
+  t = Math.min(1, Math.max(0, t))
+  return min * (1 - t) + max * t
 }
