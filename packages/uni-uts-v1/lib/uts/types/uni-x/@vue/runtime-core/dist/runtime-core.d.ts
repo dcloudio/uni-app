@@ -1004,7 +1004,7 @@ export type ComponentOptionsWithoutProps<Props = {}, RawBindings = {}, D = {}, C
      * @private for language-tools use only
      */
     __typeEmits?: TE;
-} & ThisType<CreateComponentPublicInstanceWithMixins<PE, RawBindings, D, C, M, Mixin, Extends, ResolvedEmits, EE, {}, false, I, S, LC, Directives, Exposed>>;
+} & ThisType<CreateComponentPublicInstanceWithMixins<PE, RawBindings, D, C, M, Mixin, Extends, ResolvedEmits, EE, {}, false, I, S, LC, Directives, string>>;
 /**
  * @deprecated
  */
@@ -1012,7 +1012,7 @@ export type ComponentOptionsWithArrayProps<PropNames extends string = string, Ra
     [key in PropNames]?: any;
 } & EmitsToProps<E>>>> = ComponentOptionsBase<Props, RawBindings, D, C, M, Mixin, Extends, E, EE, {}, I, II, S, LC, Directives, Exposed, Provide> & {
     props: PropNames[];
-} & ThisType<CreateComponentPublicInstanceWithMixins<Props, RawBindings, D, C, M, Mixin, Extends, E, Props, {}, false, I, S, LC, Directives, Exposed>>;
+} & ThisType<CreateComponentPublicInstanceWithMixins<Props, RawBindings, D, C, M, Mixin, Extends, E, Props, {}, false, I, S, LC, Directives, string>>;
 /**
  * @deprecated
  */
@@ -1077,7 +1077,7 @@ export declare function defineComponent<TypeProps, RuntimePropsOptions extends C
      */
     __className?: ClassName;
 } & ComponentOptionsBase<ToResolvedProps<InferredProps, ResolvedEmits>, SetupBindings, Data, Computed, Methods, Mixin, Extends, RuntimeEmitsOptions, RuntimeEmitsKeys, {}, // Defaults
-InjectOptions, InjectKeys, Slots, LocalComponents, Directives, Exposed, Provide> & ThisType<CreateComponentPublicInstanceWithMixins<ToResolvedProps<InferredProps, ResolvedEmits>, SetupBindings, Data, Computed, Methods, Mixin, Extends, ResolvedEmits, {}, {}, false, InjectOptions, Slots, LocalComponents, Directives, Exposed>>): DefineComponent<InferredProps, SetupBindings, Data, Computed, Methods, Mixin, Extends, ResolvedEmits, RuntimeEmitsKeys, PublicProps, ToResolvedProps<InferredProps, ResolvedEmits>, ExtractDefaultPropTypes<RuntimePropsOptions>, Slots, LocalComponents, Directives, Exposed, Provide, unknown extends TypeProps ? true : false, TypeRefs, TypeEl, ClassName, InjectOptions>;
+InjectOptions, InjectKeys, Slots, LocalComponents, Directives, Exposed, Provide> & ThisType<CreateComponentPublicInstanceWithMixins<ToResolvedProps<InferredProps, ResolvedEmits>, SetupBindings, Data, Computed, Methods, Mixin, Extends, ResolvedEmits, {}, {}, false, InjectOptions, Slots, LocalComponents, Directives, string>>): DefineComponent<InferredProps, SetupBindings, Data, Computed, Methods, Mixin, Extends, ResolvedEmits, RuntimeEmitsKeys, PublicProps, ToResolvedProps<InferredProps, ResolvedEmits>, ExtractDefaultPropTypes<RuntimePropsOptions>, Slots, LocalComponents, Directives, Exposed, Provide, unknown extends TypeProps ? true : false, TypeRefs, TypeEl, ClassName, InjectOptions>;
 
 export interface App<HostElement = any> {
     vapor?: boolean;

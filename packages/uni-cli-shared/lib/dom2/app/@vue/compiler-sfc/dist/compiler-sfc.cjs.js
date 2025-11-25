@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-alpha.4
+* @vue/compiler-sfc v3.6.0-alpha.5
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -127,6 +127,9 @@ var hashSumExports = /*@__PURE__*/ requireHashSum();
 var hash_sum = /*@__PURE__*/getDefaultExportFromCjs(hashSumExports);
 
 const CSS_VARS_HELPER = `useCssVars`;
+function getCssVarsHelper(vapor) {
+  return vapor ? `useVaporCssVars` : CSS_VARS_HELPER;
+}
 function genCssVarsFromList(vars, id, isProd, isSSR = false) {
   return `{
   ${vars.map(
@@ -235,7 +238,7 @@ const cssVarsPlugin = (opts) => {
   };
 };
 cssVarsPlugin.postcss = true;
-function genCssVarsCode(vars, bindings, id, isProd) {
+function genCssVarsCode(vars, bindings, id, isProd, vapor) {
   const varsExp = genCssVarsFromList(vars, id, isProd);
   const exp = CompilerDOM.createSimpleExpression(varsExp, false);
   const context = CompilerDOM.createTransformContext(CompilerDOM.createRoot([]), {
@@ -247,7 +250,7 @@ function genCssVarsCode(vars, bindings, id, isProd) {
   const transformedString = transformed.type === 4 ? transformed.content : transformed.children.map((c) => {
     return typeof c === "string" ? c : c.content;
   }).join("");
-  return `_${CSS_VARS_HELPER}(_ctx => (${transformedString}))`;
+  return `_${getCssVarsHelper(vapor)}(_ctx => (${transformedString}))`;
 }
 function genNormalScriptCssVarsCode(cssVars, bindings, id, isProd, defaultVar) {
   return `
@@ -21564,7 +21567,7 @@ const ${normalScriptDefaultVar} = ${defaultSpecifier.local.name}
   }
   if (sfc.cssVars.length && // no need to do this when targeting SSR
   !ssr) {
-    ctx.helperImports.add(CSS_VARS_HELPER);
+    ctx.helperImports.add(getCssVarsHelper(vapor));
     ctx.helperImports.add("unref");
     ctx.s.prependLeft(
       startOffset,
@@ -21573,7 +21576,8 @@ ${genCssVarsCode(
         sfc.cssVars,
         ctx.bindingMetadata,
         scopeId,
-        !!options.isProd
+        !!options.isProd,
+        vapor
       )}
 `
     );
@@ -22032,7 +22036,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
   return generator.toJSON();
 }
 
-const version = "3.6.0-alpha.4";
+const version = "3.6.0-alpha.5";
 const parseCache = parseCache$1;
 const errorMessages = {
   ...CompilerDOM.errorMessages,

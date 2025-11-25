@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-core v3.6.0-alpha.4
+* @vue/compiler-core v3.6.0-alpha.5
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -2306,7 +2306,43 @@ function getMemoedVNodeCall(node) {
     return node;
   }
 }
+function filterNonCommentChildren(node) {
+  return node.children.filter((n) => n.type !== 3);
+}
+function hasSingleChild(node) {
+  return filterNonCommentChildren(node).length === 1;
+}
+function isSingleIfBlock(parent) {
+  let hasEncounteredIf = false;
+  for (const c of filterNonCommentChildren(parent)) {
+    if (c.type === 9 || c.type === 1 && findDir(c, "if")) {
+      if (hasEncounteredIf) return false;
+      hasEncounteredIf = true;
+    } else if (
+      // node before v-if
+      !hasEncounteredIf || // non else nodes
+      !(c.type === 1 && findDir(c, /^else(-if)?$/, true))
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
 const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+(\S[\s\S]*)/;
+function isAllWhitespace(str) {
+  for (let i = 0; i < str.length; i++) {
+    if (!isWhitespace(str.charCodeAt(i))) {
+      return false;
+    }
+  }
+  return true;
+}
+function isWhitespaceText(node) {
+  return node.type === 2 && isAllWhitespace(node.content) || node.type === 12 && isWhitespaceText(node.content);
+}
+function isCommentOrWhitespace(node) {
+  return node.type === 3 || isWhitespaceText(node);
+}
 
 const defaultParserOptions = {
   parseMode: "base",
@@ -2925,14 +2961,6 @@ function condenseWhitespace(nodes) {
     }
   }
   return removedWhitespace ? nodes.filter(Boolean) : nodes;
-}
-function isAllWhitespace(str) {
-  for (let i = 0; i < str.length; i++) {
-    if (!isWhitespace(str.charCodeAt(i))) {
-      return false;
-    }
-  }
-  return true;
 }
 function hasNewlineChar(str) {
   for (let i = 0; i < str.length; i++) {
@@ -4773,13 +4801,11 @@ function processIf(node, dir, context, processCodegen) {
     let i = siblings.indexOf(node);
     while (i-- >= -1) {
       const sibling = siblings[i];
-      if (sibling && sibling.type === 3) {
+      if (sibling && isCommentOrWhitespace(sibling)) {
         context.removeNode(sibling);
-        comments.unshift(sibling);
-        continue;
-      }
-      if (sibling && sibling.type === 2 && !sibling.content.trim().length) {
-        context.removeNode(sibling);
+        if (sibling.type === 3) {
+          comments.unshift(sibling);
+        }
         continue;
       }
       if (sibling && sibling.type === 9) {
@@ -5297,7 +5323,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
       let prev;
       while (j--) {
         prev = children[j];
-        if (prev.type !== 3 && isNonWhitespaceContent(prev)) {
+        if (!isCommentOrWhitespace(prev)) {
           break;
         }
       }
@@ -5375,7 +5401,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
     } else if (implicitDefaultChildren.length && // #3766
     // with whitespace: 'preserve', whitespaces between slots will end up in
     // implicitDefaultChildren. Ignore if all implicit children are whitespaces.
-    implicitDefaultChildren.some((node2) => isNonWhitespaceContent(node2))) {
+    !implicitDefaultChildren.every(isWhitespaceText)) {
       if (hasNamedDefaultSlot) {
         context.onError(
           createCompilerError(
@@ -5447,11 +5473,6 @@ function hasForwardedSlots(children) {
     }
   }
   return false;
-}
-function isNonWhitespaceContent(node) {
-  if (node.type !== 2 && node.type !== 12)
-    return true;
-  return node.type === 2 ? !!node.content.trim() : isNonWhitespaceContent(node.content);
 }
 
 const directiveImportMap = /* @__PURE__ */ new WeakMap();
@@ -6864,6 +6885,7 @@ exports.defaultOnError = defaultOnError;
 exports.defaultOnWarn = defaultOnWarn;
 exports.errorMessages = errorMessages;
 exports.extractIdentifiers = extractIdentifiers;
+exports.filterNonCommentChildren = filterNonCommentChildren;
 exports.findDir = findDir;
 exports.findProp = findProp;
 exports.forAliasRE = forAliasRE;
@@ -6876,8 +6898,11 @@ exports.getVNodeBlockHelper = getVNodeBlockHelper;
 exports.getVNodeHelper = getVNodeHelper;
 exports.hasDynamicKeyVBind = hasDynamicKeyVBind;
 exports.hasScopeRef = hasScopeRef;
+exports.hasSingleChild = hasSingleChild;
 exports.helperNameMap = helperNameMap;
 exports.injectProp = injectProp;
+exports.isAllWhitespace = isAllWhitespace;
+exports.isCommentOrWhitespace = isCommentOrWhitespace;
 exports.isConstantNode = isConstantNode;
 exports.isCoreComponent = isCoreComponent;
 exports.isFnExpression = isFnExpression;
@@ -6892,6 +6917,7 @@ exports.isMemberExpressionBrowser = isMemberExpressionBrowser;
 exports.isMemberExpressionNode = isMemberExpressionNode;
 exports.isReferencedIdentifier = isReferencedIdentifier;
 exports.isSimpleIdentifier = isSimpleIdentifier;
+exports.isSingleIfBlock = isSingleIfBlock;
 exports.isSlotOutlet = isSlotOutlet;
 exports.isStaticArgOf = isStaticArgOf;
 exports.isStaticExp = isStaticExp;
@@ -6902,6 +6928,7 @@ exports.isTemplateNode = isTemplateNode;
 exports.isText = isText$1;
 exports.isVPre = isVPre;
 exports.isVSlot = isVSlot;
+exports.isWhitespaceText = isWhitespaceText;
 exports.locStub = locStub;
 exports.noopDirectiveTransform = noopDirectiveTransform;
 exports.processExpression = processExpression;

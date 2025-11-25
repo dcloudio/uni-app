@@ -1,9 +1,9 @@
 /**
-* @vue/compiler-dom v3.6.0-alpha.4
+* @vue/compiler-dom v3.6.0-alpha.5
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { registerRuntimeHelpers, createSimpleExpression, createCompilerError, createObjectProperty, createCallExpression, getConstantType, TO_DISPLAY_STRING, transformModel as transformModel$1, findProp, hasDynamicKeyVBind, findDir, isStaticArgOf, transformOn as transformOn$1, isStaticExp, createCompoundExpression, checkCompatEnabled, noopDirectiveTransform, baseCompile, baseParse } from '@vue/compiler-core';
+import { registerRuntimeHelpers, createSimpleExpression, createCompilerError, createObjectProperty, createCallExpression, getConstantType, TO_DISPLAY_STRING, transformModel as transformModel$1, findProp, hasDynamicKeyVBind, findDir, isStaticArgOf, transformOn as transformOn$1, isStaticExp, createCompoundExpression, checkCompatEnabled, isCommentOrWhitespace, noopDirectiveTransform, baseCompile, baseParse } from '@vue/compiler-core';
 export * from '@vue/compiler-core';
 import { isHTMLTag, isSVGTag, isMathMLTag, isVoidTag, parseStringStyle, makeMap, capitalize, isString, extend } from '@vue/shared';
 
@@ -458,7 +458,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
 }
 function defaultHasMultipleChildren(node) {
   const children = node.children = node.children.filter(
-    (c) => c.type !== 3 && !(c.type === 2 && !c.content.trim())
+    (c) => !isCommentOrWhitespace(c)
   );
   const child = children[0];
   return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(defaultHasMultipleChildren);

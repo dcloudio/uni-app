@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-alpha.4
+* @vue/compiler-sfc v3.6.0-alpha.5
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -18117,7 +18117,43 @@ function getMemoedVNodeCall(node) {
     return node;
   }
 }
+function filterNonCommentChildren(node) {
+  return node.children.filter((n) => n.type !== 3);
+}
+function hasSingleChild(node) {
+  return filterNonCommentChildren(node).length === 1;
+}
+function isSingleIfBlock(parent) {
+  let hasEncounteredIf = false;
+  for (const c of filterNonCommentChildren(parent)) {
+    if (c.type === 9 || c.type === 1 && findDir$1(c, "if")) {
+      if (hasEncounteredIf) return false;
+      hasEncounteredIf = true;
+    } else if (
+      // node before v-if
+      !hasEncounteredIf || // non else nodes
+      !(c.type === 1 && findDir$1(c, /^else(-if)?$/, true))
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
 const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+(\S[\s\S]*)/;
+function isAllWhitespace(str) {
+  for (let i = 0; i < str.length; i++) {
+    if (!isWhitespace(str.charCodeAt(i))) {
+      return false;
+    }
+  }
+  return true;
+}
+function isWhitespaceText(node) {
+  return node.type === 2 && isAllWhitespace(node.content) || node.type === 12 && isWhitespaceText(node.content);
+}
+function isCommentOrWhitespace(node) {
+  return node.type === 3 || isWhitespaceText(node);
+}
 
 const defaultParserOptions = {
   parseMode: "base",
@@ -18653,14 +18689,6 @@ function condenseWhitespace(nodes) {
     }
   }
   return removedWhitespace ? nodes.filter(Boolean) : nodes;
-}
-function isAllWhitespace(str) {
-  for (let i = 0; i < str.length; i++) {
-    if (!isWhitespace(str.charCodeAt(i))) {
-      return false;
-    }
-  }
-  return true;
 }
 function hasNewlineChar(str) {
   for (let i = 0; i < str.length; i++) {
@@ -23907,13 +23935,11 @@ function processIf$1(node, dir, context, processCodegen) {
     let i = siblings.indexOf(node);
     while (i-- >= -1) {
       const sibling = siblings[i];
-      if (sibling && sibling.type === 3) {
+      if (sibling && isCommentOrWhitespace(sibling)) {
         context.removeNode(sibling);
-        comments.unshift(sibling);
-        continue;
-      }
-      if (sibling && sibling.type === 2 && !sibling.content.trim().length) {
-        context.removeNode(sibling);
+        if (sibling.type === 3) {
+          comments.unshift(sibling);
+        }
         continue;
       }
       if (sibling && sibling.type === 9) {
@@ -24431,7 +24457,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
       let prev;
       while (j--) {
         prev = children[j];
-        if (prev.type !== 3 && isNonWhitespaceContent$1(prev)) {
+        if (!isCommentOrWhitespace(prev)) {
           break;
         }
       }
@@ -24506,7 +24532,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
     } else if (implicitDefaultChildren.length && // #3766
     // with whitespace: 'preserve', whitespaces between slots will end up in
     // implicitDefaultChildren. Ignore if all implicit children are whitespaces.
-    implicitDefaultChildren.some((node2) => isNonWhitespaceContent$1(node2))) {
+    !implicitDefaultChildren.every(isWhitespaceText)) {
       if (hasNamedDefaultSlot) {
         context.onError(
           createCompilerError(
@@ -24578,11 +24604,6 @@ function hasForwardedSlots(children) {
     }
   }
   return false;
-}
-function isNonWhitespaceContent$1(node) {
-  if (node.type !== 2 && node.type !== 12)
-    return true;
-  return node.type === 2 ? !!node.content.trim() : isNonWhitespaceContent$1(node.content);
 }
 
 const directiveImportMap = /* @__PURE__ */ new WeakMap();
@@ -26153,7 +26174,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
 }
 function defaultHasMultipleChildren(node) {
   const children = node.children = node.children.filter(
-    (c) => c.type !== 3 && !(c.type === 2 && !c.content.trim())
+    (c) => !isCommentOrWhitespace(c)
   );
   const child = children[0];
   return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(defaultHasMultipleChildren);
@@ -26720,6 +26741,7 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   defaultOnWarn: defaultOnWarn,
   errorMessages: errorMessages$1,
   extractIdentifiers: extractIdentifiers$1,
+  filterNonCommentChildren: filterNonCommentChildren,
   findDir: findDir$1,
   findProp: findProp$1,
   forAliasRE: forAliasRE,
@@ -26733,8 +26755,11 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   getVNodeHelper: getVNodeHelper,
   hasDynamicKeyVBind: hasDynamicKeyVBind,
   hasScopeRef: hasScopeRef,
+  hasSingleChild: hasSingleChild,
   helperNameMap: helperNameMap,
   injectProp: injectProp,
+  isAllWhitespace: isAllWhitespace,
+  isCommentOrWhitespace: isCommentOrWhitespace,
   isConstantNode: isConstantNode,
   isCoreComponent: isCoreComponent,
   isFnExpression: isFnExpression,
@@ -26749,6 +26774,7 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   isMemberExpressionNode: isMemberExpressionNode,
   isReferencedIdentifier: isReferencedIdentifier,
   isSimpleIdentifier: isSimpleIdentifier,
+  isSingleIfBlock: isSingleIfBlock,
   isSlotOutlet: isSlotOutlet,
   isStaticArgOf: isStaticArgOf,
   isStaticExp: isStaticExp,
@@ -26760,6 +26786,7 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   isVPre: isVPre,
   isVSlot: isVSlot,
   isValidHTMLNesting: isValidHTMLNesting,
+  isWhitespaceText: isWhitespaceText,
   locStub: locStub,
   noopDirectiveTransform: noopDirectiveTransform,
   parse: parse$3,
@@ -26874,6 +26901,9 @@ var hashSumExports = /*@__PURE__*/ requireHashSum();
 var hash_sum = /*@__PURE__*/getDefaultExportFromCjs(hashSumExports);
 
 const CSS_VARS_HELPER = `useCssVars`;
+function getCssVarsHelper(vapor) {
+  return vapor ? `useVaporCssVars` : CSS_VARS_HELPER;
+}
 function genCssVarsFromList(vars, id, isProd, isSSR = false) {
   return `{
   ${vars.map(
@@ -26982,7 +27012,7 @@ const cssVarsPlugin = (opts) => {
   };
 };
 cssVarsPlugin.postcss = true;
-function genCssVarsCode(vars, bindings, id, isProd) {
+function genCssVarsCode(vars, bindings, id, isProd, vapor) {
   const varsExp = genCssVarsFromList(vars, id, isProd);
   const exp = createSimpleExpression(varsExp, false);
   const context = createTransformContext(createRoot([]), {
@@ -26994,7 +27024,7 @@ function genCssVarsCode(vars, bindings, id, isProd) {
   const transformedString = transformed.type === 4 ? transformed.content : transformed.children.map((c) => {
     return typeof c === "string" ? c : c.content;
   }).join("");
-  return `_${CSS_VARS_HELPER}(_ctx => (${transformedString}))`;
+  return `_${getCssVarsHelper(vapor)}(_ctx => (${transformedString}))`;
 }
 function genNormalScriptCssVarsCode(cssVars, bindings, id, isProd, defaultVar) {
   return `
@@ -32506,6 +32536,7 @@ function transform(node, options = {}) {
     source: node.source,
     template: /* @__PURE__ */ new Map(),
     templateIndexMap: /* @__PURE__ */ new Map(),
+    rootTemplateIndexes: /* @__PURE__ */ new Set(),
     component: /* @__PURE__ */ new Set(),
     directive: /* @__PURE__ */ new Set(),
     block: newBlock(node),
@@ -33826,7 +33857,6 @@ function genDynamicProps$1(oper, context) {
       helper("setDynamicProps"),
       `n${oper.element}`,
       genMulti(DELIMITERS_ARRAY, ...values),
-      oper.root && "true",
       isSVG && "true"
     )
   ];
@@ -34407,7 +34437,7 @@ function genSlotBlockWithProps(oper, context) {
       `}`
     ];
   }
-  if (node.type === 1) {
+  if (node.type === 1 && !isKeepAliveTag(node.tag)) {
     blockFn = [`${context.helper("withVaporCtx")}(`, ...blockFn, `)`];
   }
   return blockFn;
@@ -34566,7 +34596,7 @@ function genInsertionState(operation, context) {
   ];
 }
 
-function genTemplates(templates, rootIndex, context) {
+function genTemplates(templates, rootIndexes, context) {
   const result = [];
   let i = 0;
   templates.forEach((ns, template) => {
@@ -34577,7 +34607,7 @@ function genTemplates(templates, rootIndex, context) {
         // replace import expressions with string concatenation
         IMPORT_EXPR_RE,
         `" + $1 + "`
-      )}${i === rootIndex ? ", true" : ns ? ", false" : ""}${ns ? `, ${ns}` : ""})
+      )}${rootIndexes.has(i) ? ", true" : ns ? ", false" : ""}${ns ? `, ${ns}` : ""})
 `
     );
     i++;
@@ -34877,7 +34907,7 @@ function generate(ir, options = {}) {
     push("}");
   }
   const delegates = genDelegates(context);
-  const templates = genTemplates(ir.template, ir.rootTemplateIndex, context);
+  const templates = genTemplates(ir.template, ir.rootTemplateIndexes, context);
   const imports = genHelperImports(context) + genAssetImports(context);
   const preamble = imports + templates + delegates;
   const newlineCount = [...preamble].filter((c) => c === "\n").length;
@@ -35044,11 +35074,7 @@ const transformElement = (node, context) => {
       isDynamicComponent,
       getEffectIndex
     );
-    let { parent } = context;
-    while (parent && parent.parent && parent.node.type === 1 && parent.node.tagType === 3) {
-      parent = parent.parent;
-    }
-    const singleRoot = context.root === parent && parent.node.children.filter((child) => child.type !== 3).length === 1 || isCustomElement;
+    const singleRoot = isSingleRoot(context);
     if (isComponent) {
       transformComponentElement(
         node,
@@ -35069,6 +35095,22 @@ const transformElement = (node, context) => {
     }
   };
 };
+function isSingleRoot(context) {
+  if (context.inVFor) {
+    return false;
+  }
+  let { parent } = context;
+  if (parent && !(hasSingleChild(parent.node) || isSingleIfBlock(parent.node))) {
+    return false;
+  }
+  while (parent && parent.parent && parent.node.type === 1 && parent.node.tagType === 3) {
+    parent = parent.parent;
+    if (!(hasSingleChild(parent.node) || isSingleIfBlock(parent.node))) {
+      return false;
+    }
+  }
+  return context.root === parent;
+}
 function transformComponentElement(node, propsResult, singleRoot, context, isDynamicComponent, isCustomElement) {
   const dynamicComponent = isDynamicComponent ? resolveDynamicComponent(node) : void 0;
   let { tag } = node;
@@ -35108,7 +35150,7 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
     tag,
     props: propsResult[0] ? propsResult[1] : [propsResult[1]],
     asset,
-    root: singleRoot && !context.inVFor,
+    root: singleRoot,
     slots: [...context.slots],
     once: context.inVOnce,
     dynamic: dynamicComponent,
@@ -35161,7 +35203,6 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
         node,
         element: context.reference(),
         props: dynamicArgs,
-        root: singleRoot,
         tag
       },
       getEffectIndex
@@ -35237,7 +35278,6 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
               node,
               element: context.reference(),
               prop,
-              root: singleRoot,
               tag
             },
             getEffectIndex
@@ -35257,7 +35297,6 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
             node,
             element: context.reference(),
             prop,
-            root: singleRoot,
             tag
           },
           getEffectIndex
@@ -35273,7 +35312,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
     template += `</${tag}>`;
   }
   if (singleRoot) {
-    context.ir.rootTemplateIndex = context.ir.template.size;
+    context.ir.rootTemplateIndexes.add(context.ir.template.size);
   }
   if (context.parent && context.parent.node.type === 1 && !isValidHTMLNesting(context.parent.node.tag, tag)) {
     context.reference();
@@ -36070,7 +36109,9 @@ function processFor(node, dir, context) {
   }
   const { source, value, key, index } = parseResult;
   const keyProp = findProp(node, "key");
+  const typeProp = findProp(node, "type");
   const keyProperty = keyProp && propToExpression(keyProp);
+  const typeProperty = typeProp && propToExpression(typeProp);
   const isComponent = node.tagType === 1 || // template v-for with a single component child
   isTemplateWithSingleComponent(node);
   context.node = node = wrapTemplate(node, ["for"]);
@@ -36093,6 +36134,7 @@ function processFor(node, dir, context) {
       key,
       index,
       keyProp: keyProperty,
+      typeProp: typeProperty,
       render,
       once: context.inVOnce || isStaticExpression(
         source,
@@ -37720,11 +37762,11 @@ const ssrTransformModel = (dir, node, context) => {
   }
   if (node.tagType === 0) {
     const res = { props: [] };
-    const defaultProps = [
-      // default value binding for text type inputs
-      createObjectProperty(`value`, model)
-    ];
     if (node.tag === "input") {
+      const defaultProps = [
+        // default value binding for text type inputs
+        createObjectProperty(`value`, model)
+      ];
       const type = findProp$1(node, "type");
       if (type) {
         const value = findValueBinding(node);
@@ -37845,14 +37887,12 @@ const ssrTransformShow = (dir, node, context) => {
   };
 };
 
-const filterChild = (node) => node.children.filter((n) => n.type !== 3);
-const hasSingleChild = (node) => filterChild(node).length === 1;
 const ssrInjectFallthroughAttrs = (node, context) => {
   if (node.type === 0) {
     context.identifiers._attrs = 1;
   }
   if (node.type === 1 && node.tagType === 1 && (node.tag === "transition" || node.tag === "Transition" || node.tag === "KeepAlive" || node.tag === "keep-alive")) {
-    const rootChildren = filterChild(context.root);
+    const rootChildren = filterNonCommentChildren(context.root);
     if (rootChildren.length === 1 && rootChildren[0] === node) {
       if (hasSingleChild(node)) {
         injectFallthroughAttrs(node.children[0]);
@@ -37865,20 +37905,9 @@ const ssrInjectFallthroughAttrs = (node, context) => {
     return;
   }
   if (node.type === 10 && hasSingleChild(node)) {
-    let hasEncounteredIf = false;
-    for (const c of filterChild(parent)) {
-      if (c.type === 9 || c.type === 1 && findDir$1(c, "if")) {
-        if (hasEncounteredIf) return;
-        hasEncounteredIf = true;
-      } else if (
-        // node before v-if
-        !hasEncounteredIf || // non else nodes
-        !(c.type === 1 && findDir$1(c, /else/, true))
-      ) {
-        return;
-      }
+    if (isSingleIfBlock(parent)) {
+      injectFallthroughAttrs(node.children[0]);
     }
-    injectFallthroughAttrs(node.children[0]);
   } else if (hasSingleChild(parent)) {
     injectFallthroughAttrs(node);
   }
@@ -54926,7 +54955,7 @@ const ${normalScriptDefaultVar} = ${defaultSpecifier.local.name}
   }
   if (sfc.cssVars.length && // no need to do this when targeting SSR
   !ssr) {
-    ctx.helperImports.add(CSS_VARS_HELPER);
+    ctx.helperImports.add(getCssVarsHelper(vapor));
     ctx.helperImports.add("unref");
     ctx.s.prependLeft(
       startOffset,
@@ -54935,7 +54964,8 @@ ${genCssVarsCode(
         sfc.cssVars,
         ctx.bindingMetadata,
         scopeId,
-        !!options.isProd
+        !!options.isProd,
+        vapor
       )}
 `
     );
@@ -55405,7 +55435,7 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-const version = "3.6.0-alpha.4";
+const version = "3.6.0-alpha.5";
 const parseCache = parseCache$1;
 const errorMessages = __spreadValues(__spreadValues({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

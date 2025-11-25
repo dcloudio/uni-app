@@ -992,7 +992,6 @@ export interface BaseCodegenResult {
 }
 export interface CodegenResult extends BaseCodegenResult {
     ast: RootNode;
-    helpers: Set<symbol>;
 }
 export declare enum NewlineType {
     /** Start with `\n` */
@@ -1063,7 +1062,13 @@ export declare function injectProp(node: VNodeCall | RenderSlotCall, prop: Prope
 export declare function toValidAssetId(name: string, type: 'component' | 'directive' | 'filter'): string;
 export declare function hasScopeRef(node: TemplateChildNode | IfBranchNode | ExpressionNode | CacheExpression | undefined, ids: TransformContext['identifiers']): boolean;
 export declare function getMemoedVNodeCall(node: BlockCodegenNode | MemoExpression): VNodeCall | RenderSlotCall;
+export declare function filterNonCommentChildren(node: ParentNode): TemplateChildNode[];
+export declare function hasSingleChild(node: ParentNode): boolean;
+export declare function isSingleIfBlock(parent: ParentNode): boolean;
 export declare const forAliasRE: RegExp;
+export declare function isAllWhitespace(str: string): boolean;
+export declare function isWhitespaceText(node: TemplateChildNode): boolean;
+export declare function isCommentOrWhitespace(node: TemplateChildNode): boolean;
 
 /**
  * Return value indicates whether the AST walked can be a constant

@@ -110,7 +110,7 @@ export interface RootIRNode {
     source: string;
     template: Map<string, Namespace>;
     templateIndexMap: Map<string, number>;
-    rootTemplateIndex?: number;
+    rootTemplateIndexes: Set<number>;
     component: Set<string>;
     directive: Set<string>;
     block: BlockIRNode;
@@ -138,6 +138,7 @@ export interface ForIRNode extends BaseIRNode, IRFor {
     type: IRNodeTypes.FOR;
     id: number;
     keyProp?: SimpleExpressionNode;
+    typeProp?: SimpleExpressionNode;
     render: BlockIRNode;
     once: boolean;
     component: boolean;
@@ -151,14 +152,12 @@ export interface SetPropIRNode extends BaseIRNode {
     type: IRNodeTypes.SET_PROP;
     element: number;
     prop: IRProp;
-    root: boolean;
     tag: string;
 }
 export interface SetDynamicPropsIRNode extends BaseIRNode {
     type: IRNodeTypes.SET_DYNAMIC_PROPS;
     element: number;
     props: IRProps[];
-    root: boolean;
     tag: string;
     /**
      * fixed by uts 当前整个动态绑定表达式对应的标识符，因为动态绑定需要在sharedData层对数据做格式化，不能单个生成标识符，不然需要在c层再格式化一次

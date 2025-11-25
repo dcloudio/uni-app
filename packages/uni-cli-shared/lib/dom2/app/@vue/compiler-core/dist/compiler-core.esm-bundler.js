@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-core v3.6.0-alpha.4
+* @vue/compiler-core v3.6.0-alpha.5
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -1967,7 +1967,43 @@ function getMemoedVNodeCall(node) {
     return node;
   }
 }
+function filterNonCommentChildren(node) {
+  return node.children.filter((n) => n.type !== 3);
+}
+function hasSingleChild(node) {
+  return filterNonCommentChildren(node).length === 1;
+}
+function isSingleIfBlock(parent) {
+  let hasEncounteredIf = false;
+  for (const c of filterNonCommentChildren(parent)) {
+    if (c.type === 9 || c.type === 1 && findDir(c, "if")) {
+      if (hasEncounteredIf) return false;
+      hasEncounteredIf = true;
+    } else if (
+      // node before v-if
+      !hasEncounteredIf || // non else nodes
+      !(c.type === 1 && findDir(c, /^else(-if)?$/, true))
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
 const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+(\S[\s\S]*)/;
+function isAllWhitespace(str) {
+  for (let i = 0; i < str.length; i++) {
+    if (!isWhitespace(str.charCodeAt(i))) {
+      return false;
+    }
+  }
+  return true;
+}
+function isWhitespaceText(node) {
+  return node.type === 2 && isAllWhitespace(node.content) || node.type === 12 && isWhitespaceText(node.content);
+}
+function isCommentOrWhitespace(node) {
+  return node.type === 3 || isWhitespaceText(node);
+}
 
 const defaultParserOptions = {
   parseMode: "base",
@@ -2589,14 +2625,6 @@ function condenseWhitespace(nodes) {
     }
   }
   return removedWhitespace ? nodes.filter(Boolean) : nodes;
-}
-function isAllWhitespace(str) {
-  for (let i = 0; i < str.length; i++) {
-    if (!isWhitespace(str.charCodeAt(i))) {
-      return false;
-    }
-  }
-  return true;
 }
 function hasNewlineChar(str) {
   for (let i = 0; i < str.length; i++) {
@@ -4044,13 +4072,11 @@ function processIf(node, dir, context, processCodegen) {
     let i = siblings.indexOf(node);
     while (i-- >= -1) {
       const sibling = siblings[i];
-      if (sibling && sibling.type === 3) {
+      if (sibling && isCommentOrWhitespace(sibling)) {
         context.removeNode(sibling);
-        !!(process.env.NODE_ENV !== "production") && comments.unshift(sibling);
-        continue;
-      }
-      if (sibling && sibling.type === 2 && !sibling.content.trim().length) {
-        context.removeNode(sibling);
+        if (!!(process.env.NODE_ENV !== "production") && sibling.type === 3) {
+          comments.unshift(sibling);
+        }
         continue;
       }
       if (sibling && sibling.type === 9) {
@@ -4522,7 +4548,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
       let prev;
       while (j--) {
         prev = children[j];
-        if (prev.type !== 3 && isNonWhitespaceContent(prev)) {
+        if (!isCommentOrWhitespace(prev)) {
           break;
         }
       }
@@ -4600,7 +4626,7 @@ function buildSlots(node, context, buildSlotFn = buildClientSlotFn) {
     } else if (implicitDefaultChildren.length && // #3766
     // with whitespace: 'preserve', whitespaces between slots will end up in
     // implicitDefaultChildren. Ignore if all implicit children are whitespaces.
-    implicitDefaultChildren.some((node2) => isNonWhitespaceContent(node2))) {
+    !implicitDefaultChildren.every(isWhitespaceText)) {
       if (hasNamedDefaultSlot) {
         context.onError(
           createCompilerError(
@@ -4672,11 +4698,6 @@ function hasForwardedSlots(children) {
     }
   }
   return false;
-}
-function isNonWhitespaceContent(node) {
-  if (node.type !== 2 && node.type !== 12)
-    return true;
-  return node.type === 2 ? !!node.content.trim() : isNonWhitespaceContent(node.content);
 }
 
 const directiveImportMap = /* @__PURE__ */ new WeakMap();
@@ -5872,4 +5893,4 @@ const BindingTypes = {
 
 const noopDirectiveTransform = () => ({ props: [] });
 
-export { BASE_TRANSITION, BindingTypes, CAMELIZE, CAPITALIZE, CREATE_BLOCK, CREATE_COMMENT, CREATE_ELEMENT_BLOCK, CREATE_ELEMENT_VNODE, CREATE_SLOTS, CREATE_STATIC, CREATE_TEXT, CREATE_VNODE, CompilerDeprecationTypes, ConstantTypes, ElementTypes, ErrorCodes, FRAGMENT, GUARD_REACTIVE_PROPS, IS_MEMO_SAME, IS_REF, KEEP_ALIVE, MERGE_PROPS, NORMALIZE_CLASS, NORMALIZE_PROPS, NORMALIZE_STYLE, NewlineType, NodeTypes, OPEN_BLOCK, POP_SCOPE_ID, PUSH_SCOPE_ID, RENDER_LIST, RENDER_SLOT, RESOLVE_COMPONENT, RESOLVE_DIRECTIVE, RESOLVE_DYNAMIC_COMPONENT, RESOLVE_FILTER, SET_BLOCK_TRACKING, SUSPENSE, TELEPORT, TO_DISPLAY_STRING, TO_HANDLERS, TO_HANDLER_KEY, TS_NODE_TYPES, UNREF, WITH_CTX, WITH_DIRECTIVES, WITH_MEMO, advancePositionWithClone, advancePositionWithMutation, assert, baseCompile, baseParse, buildDirectiveArgs, buildProps, buildSlots, checkCompatEnabled, convertToBlock, createArrayExpression, createAssignmentExpression, createBlockStatement, createCacheExpression, createCallExpression, createCompilerError, createCompoundExpression, createConditionalExpression, createForLoopParams, createFunctionExpression, createIfStatement, createInterpolation, createObjectExpression, createObjectProperty, createReturnStatement, createRoot, createSequenceExpression, createSimpleExpression, createStructuralDirectiveTransform, createTemplateLiteral, createTransformContext, createVNodeCall, defaultOnError, defaultOnWarn, errorMessages, extractIdentifiers, findDir, findProp, forAliasRE, generate, getBaseTransformPreset, getConstantType, getMemoedVNodeCall, getSelfName, getVNodeBlockHelper, getVNodeHelper, hasDynamicKeyVBind, hasScopeRef, helperNameMap, injectProp, isConstantNode, isCoreComponent, isFnExpression, isFnExpressionBrowser, isFnExpressionNode, isFunctionType, isInDestructureAssignment, isInNewExpression, isLiteralWhitelisted, isMemberExpression, isMemberExpressionBrowser, isMemberExpressionNode, isReferencedIdentifier, isSimpleIdentifier, isSlotOutlet, isStaticArgOf, isStaticExp, isStaticNode, isStaticProperty, isStaticPropertyKey, isTemplateNode, isText$1 as isText, isVPre, isVSlot, locStub, noopDirectiveTransform, processExpression, processFor, processIf, processSlotOutlet, registerRuntimeHelpers, resolveComponentType, stringifyExpression, toValidAssetId, trackSlotScopes, trackVForSlotScopes, transform, transformBind, transformElement, transformExpression, transformModel, transformOn, transformVBindShorthand, traverseNode, unwrapTSNode, validFirstIdentCharRE, walkBlockDeclarations, walkFunctionParams, walkIdentifiers, warnDeprecation };
+export { BASE_TRANSITION, BindingTypes, CAMELIZE, CAPITALIZE, CREATE_BLOCK, CREATE_COMMENT, CREATE_ELEMENT_BLOCK, CREATE_ELEMENT_VNODE, CREATE_SLOTS, CREATE_STATIC, CREATE_TEXT, CREATE_VNODE, CompilerDeprecationTypes, ConstantTypes, ElementTypes, ErrorCodes, FRAGMENT, GUARD_REACTIVE_PROPS, IS_MEMO_SAME, IS_REF, KEEP_ALIVE, MERGE_PROPS, NORMALIZE_CLASS, NORMALIZE_PROPS, NORMALIZE_STYLE, NewlineType, NodeTypes, OPEN_BLOCK, POP_SCOPE_ID, PUSH_SCOPE_ID, RENDER_LIST, RENDER_SLOT, RESOLVE_COMPONENT, RESOLVE_DIRECTIVE, RESOLVE_DYNAMIC_COMPONENT, RESOLVE_FILTER, SET_BLOCK_TRACKING, SUSPENSE, TELEPORT, TO_DISPLAY_STRING, TO_HANDLERS, TO_HANDLER_KEY, TS_NODE_TYPES, UNREF, WITH_CTX, WITH_DIRECTIVES, WITH_MEMO, advancePositionWithClone, advancePositionWithMutation, assert, baseCompile, baseParse, buildDirectiveArgs, buildProps, buildSlots, checkCompatEnabled, convertToBlock, createArrayExpression, createAssignmentExpression, createBlockStatement, createCacheExpression, createCallExpression, createCompilerError, createCompoundExpression, createConditionalExpression, createForLoopParams, createFunctionExpression, createIfStatement, createInterpolation, createObjectExpression, createObjectProperty, createReturnStatement, createRoot, createSequenceExpression, createSimpleExpression, createStructuralDirectiveTransform, createTemplateLiteral, createTransformContext, createVNodeCall, defaultOnError, defaultOnWarn, errorMessages, extractIdentifiers, filterNonCommentChildren, findDir, findProp, forAliasRE, generate, getBaseTransformPreset, getConstantType, getMemoedVNodeCall, getSelfName, getVNodeBlockHelper, getVNodeHelper, hasDynamicKeyVBind, hasScopeRef, hasSingleChild, helperNameMap, injectProp, isAllWhitespace, isCommentOrWhitespace, isConstantNode, isCoreComponent, isFnExpression, isFnExpressionBrowser, isFnExpressionNode, isFunctionType, isInDestructureAssignment, isInNewExpression, isLiteralWhitelisted, isMemberExpression, isMemberExpressionBrowser, isMemberExpressionNode, isReferencedIdentifier, isSimpleIdentifier, isSingleIfBlock, isSlotOutlet, isStaticArgOf, isStaticExp, isStaticNode, isStaticProperty, isStaticPropertyKey, isTemplateNode, isText$1 as isText, isVPre, isVSlot, isWhitespaceText, locStub, noopDirectiveTransform, processExpression, processFor, processIf, processSlotOutlet, registerRuntimeHelpers, resolveComponentType, stringifyExpression, toValidAssetId, trackSlotScopes, trackVForSlotScopes, transform, transformBind, transformElement, transformExpression, transformModel, transformOn, transformVBindShorthand, traverseNode, unwrapTSNode, validFirstIdentCharRE, walkBlockDeclarations, walkFunctionParams, walkIdentifiers, warnDeprecation };

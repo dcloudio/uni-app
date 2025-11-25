@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-vapor v3.6.0-alpha.4
+* @vue/compiler-vapor v3.6.0-alpha.5
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -284,6 +284,7 @@ function transform(node, options = {}) {
     source: node.source,
     template: /* @__PURE__ */ new Map(),
     templateIndexMap: /* @__PURE__ */ new Map(),
+    rootTemplateIndexes: /* @__PURE__ */ new Set(),
     component: /* @__PURE__ */ new Set(),
     directive: /* @__PURE__ */ new Set(),
     block: newBlock(node),
@@ -1604,7 +1605,6 @@ function genDynamicProps$1(oper, context) {
       helper("setDynamicProps"),
       `n${oper.element}`,
       genMulti(DELIMITERS_ARRAY, ...values),
-      oper.root && "true",
       isSVG && "true"
     )
   ];
@@ -2185,7 +2185,7 @@ function genSlotBlockWithProps(oper, context) {
       `}`
     ];
   }
-  if (node.type === 1) {
+  if (node.type === 1 && !isKeepAliveTag(node.tag)) {
     blockFn = [`${context.helper("withVaporCtx")}(`, ...blockFn, `)`];
   }
   return blockFn;
@@ -2344,7 +2344,7 @@ function genInsertionState(operation, context) {
   ];
 }
 
-function genTemplates(templates, rootIndex, context) {
+function genTemplates(templates, rootIndexes, context) {
   const result = [];
   let i = 0;
   templates.forEach((ns, template) => {
@@ -2355,7 +2355,7 @@ function genTemplates(templates, rootIndex, context) {
         // replace import expressions with string concatenation
         IMPORT_EXPR_RE,
         `" + $1 + "`
-      )}${i === rootIndex ? ", true" : ns ? ", false" : ""}${ns ? `, ${ns}` : ""})
+      )}${rootIndexes.has(i) ? ", true" : ns ? ", false" : ""}${ns ? `, ${ns}` : ""})
 `
     );
     i++;
@@ -2655,7 +2655,7 @@ function generate(ir, options = {}) {
     push("}");
   }
   const delegates = genDelegates(context);
-  const templates = genTemplates(ir.template, ir.rootTemplateIndex, context);
+  const templates = genTemplates(ir.template, ir.rootTemplateIndexes, context);
   const imports = genHelperImports(context) + genAssetImports(context);
   const preamble = imports + templates + delegates;
   const newlineCount = [...preamble].filter((c) => c === "\n").length;
@@ -2822,11 +2822,7 @@ const transformElement = (node, context) => {
       isDynamicComponent,
       getEffectIndex
     );
-    let { parent } = context;
-    while (parent && parent.parent && parent.node.type === 1 && parent.node.tagType === 3) {
-      parent = parent.parent;
-    }
-    const singleRoot = context.root === parent && parent.node.children.filter((child) => child.type !== 3).length === 1 || isCustomElement;
+    const singleRoot = isSingleRoot(context);
     if (isComponent) {
       transformComponentElement(
         node,
@@ -2847,6 +2843,22 @@ const transformElement = (node, context) => {
     }
   };
 };
+function isSingleRoot(context) {
+  if (context.inVFor) {
+    return false;
+  }
+  let { parent } = context;
+  if (parent && !(compilerDom.hasSingleChild(parent.node) || compilerDom.isSingleIfBlock(parent.node))) {
+    return false;
+  }
+  while (parent && parent.parent && parent.node.type === 1 && parent.node.tagType === 3) {
+    parent = parent.parent;
+    if (!(compilerDom.hasSingleChild(parent.node) || compilerDom.isSingleIfBlock(parent.node))) {
+      return false;
+    }
+  }
+  return context.root === parent;
+}
 function transformComponentElement(node, propsResult, singleRoot, context, isDynamicComponent, isCustomElement) {
   const dynamicComponent = isDynamicComponent ? resolveDynamicComponent(node) : void 0;
   let { tag } = node;
@@ -2886,7 +2898,7 @@ function transformComponentElement(node, propsResult, singleRoot, context, isDyn
     tag,
     props: propsResult[0] ? propsResult[1] : [propsResult[1]],
     asset,
-    root: singleRoot && !context.inVFor,
+    root: singleRoot,
     slots: [...context.slots],
     once: context.inVOnce,
     dynamic: dynamicComponent,
@@ -2939,7 +2951,6 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
         node,
         element: context.reference(),
         props: dynamicArgs,
-        root: singleRoot,
         tag
       },
       getEffectIndex
@@ -3015,7 +3026,6 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
               node,
               element: context.reference(),
               prop,
-              root: singleRoot,
               tag
             },
             getEffectIndex
@@ -3035,7 +3045,6 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
             node,
             element: context.reference(),
             prop,
-            root: singleRoot,
             tag
           },
           getEffectIndex
@@ -3051,7 +3060,7 @@ function transformNativeElement(node, propsResult, singleRoot, context, getEffec
     template += `</${tag}>`;
   }
   if (singleRoot) {
-    context.ir.rootTemplateIndex = context.ir.template.size;
+    context.ir.rootTemplateIndexes.add(context.ir.template.size);
   }
   if (context.parent && context.parent.node.type === 1 && !compilerDom.isValidHTMLNesting(context.parent.node.tag, tag)) {
     context.reference();
@@ -3861,7 +3870,9 @@ function processFor(node, dir, context) {
   }
   const { source, value, key, index } = parseResult;
   const keyProp = findProp(node, "key");
+  const typeProp = findProp(node, "type");
   const keyProperty = keyProp && propToExpression(keyProp);
+  const typeProperty = typeProp && propToExpression(typeProp);
   const isComponent = node.tagType === 1 || // template v-for with a single component child
   isTemplateWithSingleComponent(node);
   context.node = node = wrapTemplate(node, ["for"]);
@@ -3884,6 +3895,7 @@ function processFor(node, dir, context) {
       key,
       index,
       keyProp: keyProperty,
+      typeProp: typeProperty,
       render,
       once: context.inVOnce || isStaticExpression(
         source,

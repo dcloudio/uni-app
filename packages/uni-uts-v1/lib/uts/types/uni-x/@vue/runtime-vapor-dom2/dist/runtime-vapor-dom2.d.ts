@@ -181,6 +181,9 @@ export declare function createSharedDataIf(condition: () => any, b1: () => void,
 type ItemOf<S> = S extends readonly (infer T)[] ? T : S extends Reactive<readonly (infer T)[]> ? T : S extends Set<infer T> ? T : S extends Map<infer K, infer V> ? [K, V] : S extends string ? string : S extends number ? number : S extends Record<any, infer V> ? V : S extends Iterable<infer T> ? T : any;
 type KeyOf<S> = S extends Record<any, any> ? string : number;
 type IndexOfKey<K> = K extends string ? number : undefined;
+export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => number, flags?: number, setup?: (_: {
+    createSelector: (source: () => any) => (cb: () => void) => void;
+}) => void) => void;
 export declare const createSharedDataFor: <S extends UniSharedData, Source>(sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number, setup?: (_: {
     createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void) => void;
@@ -265,6 +268,9 @@ export declare function createElementSlot(page: UniPage, name: string | (() => s
 export declare function createElementFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
     createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
+export declare function createElementRecycleFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, getType?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => number) | null, flags?: number, setup?: (_: {
+    createSelector: (source: () => any) => (cb: () => void) => void;
+}) => void): VaporFragment;
 export declare function createElementForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => DynamicSlot): DynamicSlot[];
 export declare function createElementIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, once?: boolean): Block;
 export declare function setElementText(el: UniElement | UniText | null, value: string): void;
@@ -312,6 +318,9 @@ export declare function childNativeView(node: UniNativeBaseView): UniNativeBaseV
  */
 export declare function appendNativeViewChild(node: UniNativeBaseView, child: UniNativeBaseView | null): void;
 export declare function createNativeViewFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
+    createSelector: (source: () => any) => (cb: () => void) => void;
+}) => void): VaporFragment;
+export declare function createNativeViewRecycleFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, getType?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => number) | null, flags?: number, setup?: (_: {
     createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
 export declare function createNativeViewIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, once?: boolean): Block;

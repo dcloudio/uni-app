@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.6.0-alpha.4
+* @vue/compiler-dom v3.6.0-alpha.5
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -421,7 +421,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
 }
 function defaultHasMultipleChildren(node) {
   const children = node.children = node.children.filter(
-    (c) => c.type !== 3 && !(c.type === 2 && !c.content.trim())
+    (c) => !compilerCore.isCommentOrWhitespace(c)
   );
   const child = children[0];
   return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(defaultHasMultipleChildren);
