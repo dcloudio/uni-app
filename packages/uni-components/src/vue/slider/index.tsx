@@ -1,4 +1,12 @@
-import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import {
+  computed,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+  watchEffect,
+} from 'vue'
 import type { ExtractPropTypes, Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import {
@@ -88,6 +96,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const sliderValueRef: HTMLRef = ref(null)
     const sliderHandleRef: HTMLRef = ref(null)
     const sliderValue = ref(Number(props.value))
+    if (sliderValue.value < Number(props.min)) {
+      sliderValue.value = Number(props.min)
+    }
+    if (sliderValue.value > Number(props.max)) {
+      sliderValue.value = Number(props.max)
+    }
     watch(
       () => props.value,
       (val) => {
