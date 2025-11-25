@@ -14782,6 +14782,13 @@ function useSliderState(props2, sliderValue) {
   return state2;
 }
 function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
+  const truthStep = computed(() => {
+    const step = Number(props2.step);
+    if (isNaN(step)) {
+      return 1;
+    }
+    return step;
+  });
   const _onClick = ($event) => {
     if (props2.disabled) {
       return;
@@ -14791,11 +14798,8 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
       value: sliderValue.value
     });
   };
-  const _filterValue = (e2) => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    const step = Number(props2.step);
-    return e2 < min ? min : e2 > max ? max : computeController.mul.call(Math.round((e2 - min) / step), step) + min;
+  const _filterValue = (min, step, value) => {
+    return Math.round((value - min) / step) * step + min;
   };
   const _onUserChangedValue = (e2) => {
     const max = Number(props2.max);
@@ -14807,8 +14811,9 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     const slider = sliderRef.value;
     const offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
     const boxLeft = slider.getBoundingClientRect().left;
-    const value = (e2.x - boxLeft) * (max - min) / offsetWidth + min;
-    sliderValue.value = _filterValue(value);
+    const proportion = (e2.x - boxLeft) / offsetWidth;
+    const stepDecimal = (truthStep.value + "").split(".")[1];
+    sliderValue.value = parseFloat(_filterValue(min, truthStep.value, lerp(min, max, proportion)).toFixed(stepDecimal ? stepDecimal.length : 0));
   };
   const _onTrack = (e2) => {
     if (!props2.disabled) {
@@ -14844,22 +14849,10 @@ function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger
     _onTrack
   };
 }
-var computeController = {
-  mul: function(arg) {
-    let m = 0;
-    let s1 = this.toString();
-    let s2 = arg.toString();
-    try {
-      m += s1.split(".")[1].length;
-    } catch (e2) {
-    }
-    try {
-      m += s2.split(".")[1].length;
-    } catch (e2) {
-    }
-    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-  }
-};
+function lerp(min, max, t2) {
+  t2 = Math.min(1, Math.max(0, t2));
+  return min * (1 - t2) + max * t2;
+}
 const props$k = {
   indicatorDots: {
     type: [Boolean, String],
