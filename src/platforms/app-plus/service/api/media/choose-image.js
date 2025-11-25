@@ -38,6 +38,7 @@ export function chooseImage ({
   function successCallback (paths) {
     const tempFiles = []
     const tempFilePaths = []
+    let source = "album";
     Promise.all(paths.map((path) => getFileInfo(path)))
       .then((filesInfo) => {
         filesInfo.forEach((file, index) => {
@@ -49,13 +50,15 @@ export function chooseImage ({
         invoke(callbackId, {
           errMsg: 'chooseImage:ok',
           tempFilePaths,
-          tempFiles
+          tempFiles,
+          source 
         })
       })
       .catch(errorCallback)
   }
 
   function openCamera () {
+    source = "camera";
     const camera = plus.camera.getCamera()
     camera.captureImage(path => successCallback([path]),
       errorCallback, {
@@ -67,6 +70,7 @@ export function chooseImage ({
   }
 
   function openAlbum () {
+    source = "album";
     plus.gallery.pick(({ files }) => successCallback(files), errorCallback, {
       maximum: count,
       multiple: true,
