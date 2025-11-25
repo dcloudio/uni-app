@@ -336,6 +336,9 @@ export declare function withNativeViewVaporCtx(fn: Function): BlockFn;
 export declare function createNativeViewSlot(page: UniPage, name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot): Block;
 export declare function createNativeViewForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => DynamicSlot): DynamicSlot[];
 
+export declare function runOnMainQueue(fn: () => void): void;
+export declare function createUserClass<T>(): T;
+
 export declare const ssrRef: typeof ref;
 export declare const shallowSsrRef: typeof shallowRef;
 
