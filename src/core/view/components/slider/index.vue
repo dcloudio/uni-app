@@ -157,6 +157,12 @@ export default {
     this.touchtrack(this.$refs['uni-slider-handle'], '_onTrack')
   },
   created () {
+    if (this.sliderValue < Number(this.min)) {
+      this.sliderValue = Number(this.min)
+    }
+    if (this.sliderValue > Number(this.max)) {
+      this.sliderValue = Number(this.max)
+    }
     this.$dispatch('Form', 'uni-form-group-update', {
       type: 'add',
       vm: this
