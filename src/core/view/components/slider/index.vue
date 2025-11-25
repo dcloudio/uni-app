@@ -42,75 +42,9 @@ import {
 } from 'uni-mixins'
 import touchtrack from 'uni-mixins/touchtrack'
 
-// 处理js计算小数时的精度问题
-var computeController = {
-  add: function (arg) {
-    var r1, r2, m
-    try {
-      // 获得小数位数
-      r1 = this.toString().split('.')[1].length
-    } catch (e) {
-      r1 = 0
-    }
-    try {
-      // 获得小数位数
-      r2 = arg.toString().split('.')[1].length
-    } catch (e) {
-      r2 = 0
-    }
-    m = Math.pow(10, Math.max(r1, r2))
-    return (this * m + arg * m) / m
-  },
-  sub: function (arg) {
-    return this.add(-arg)
-  },
-  mul: function (arg) {
-    var m = 0; var s1 = this.toString(); var s2 = arg.toString()
-    try {
-      // 获得小数位数
-      m += s1.split('.')[1].length
-    } catch (e) { }
-    try {
-      // 获得小数位数
-      m += s2.split('.')[1].length
-    } catch (e) { }
-    // 转为十进制计算后，要除以两个数的共同小数位数
-    return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m)
-  },
-  div: function (arg) {
-    var t1 = 0; var t2 = 0; var r1; var r2
-    try {
-      // 获得小数位数
-      t1 = this.toString().split('.')[1].length
-    } catch (e) { }
-    try {
-      // 获得小数位数
-      t2 = arg.toString().split('.')[1].length
-    } catch (e) { }
-    r1 = Number(this.toString().replace('.', ''))
-    r2 = Number(arg.toString().replace('.', ''))
-    // 转为十进制计算后，要乘以除数与被除数小数位数的差
-    return (r1 / r2) * Math.pow(10, t2 - t1)
-  },
-  mod: function (arg) {
-    var t1 = 0; var t2 = 0; var r1; var r2
-    try {
-      t1 = this.toString().split('.')[1].length
-    } catch (e) { }
-    try {
-      t2 = arg.toString().split('.')[1].length
-    } catch (e) { }
-    // 小数位数
-    var digit = Math.pow(10, Math.abs(t1 - t2))
-    // eslint-disable-next-line eqeqeq
-    if (digit == 1) { digit = Math.pow(10, t1) }
-    // 计算余数
-    r1 = (this * digit).toString().split('.')[0]
-    r2 = arg * digit
-    // 小数点后数字，直接拼接上即可
-    var decimals = (this * digit).toString().split('.')[1] ? (this * digit).toString().split('.')[1] : ''
-    return (r1 % r2 + decimals) / digit
-  }
+function lerp (min, max, t) {
+  t = Math.min(1, Math.max(0, t))
+  return min * (1 - t) + max * t
 }
 
 export default {
@@ -205,6 +139,13 @@ export default {
         backgroundColor: this._getActiveColor(),
         width: this._getValueWidth()
       }
+    },
+    truthStep () {
+      const step = Number(this.step)
+      if (isNaN(step)) {
+        return 1
+      }
+      return step
     }
   },
   watch: {
@@ -229,6 +170,8 @@ export default {
   },
   methods: {
     _onUserChangedValue (e) {
+      const max = Number(this.max)
+      const min = Number(this.min)
       const sliderRightBox = this.$refs['uni-slider-value']
       const sliderRightBoxLeft = getComputedStyle(sliderRightBox, null).marginLeft
       let sliderRightBoxWidth = sliderRightBox.offsetWidth
@@ -236,23 +179,16 @@ export default {
       const slider = this.$refs['uni-slider']
       const offsetWidth = slider.offsetWidth - (this.showValue ? sliderRightBoxWidth : 0)
       const boxLeft = slider.getBoundingClientRect().left
-      const value = (e.x - boxLeft) * (this.max - this.min) / offsetWidth + Number(this.min)
-      this.sliderValue = this._filterValue(value)
+      const proportion = (e.x - boxLeft) / offsetWidth
+      const stepDecimal = (this.truthStep + '').split('.')[1]
+      this.sliderValue = parseFloat(
+        this._filterValue(min, this.truthStep, lerp(min, max, proportion)).toFixed(
+          stepDecimal ? stepDecimal.length : 0
+        )
+      )
     },
-    _filterValue (e) {
-      const max = Number(this.max)
-      const min = Number(this.min)
-      if (e < min) return min
-      if (e > max) return max
-
-      // 使用精度控制的除法和乘法操作
-      const steps = Math.round(computeController.div.call((e - min), this.step))
-      const result = computeController.add.call(computeController.mul.call(steps, this.step), min)
-
-      // 最终精度修正：根据step的小数位数来确定结果的小数位数
-      const stepStr = this.step.toString()
-      const decimalPlaces = stepStr.includes('.') ? stepStr.split('.')[1].length : 0
-      return decimalPlaces > 0 ? Number(result.toFixed(decimalPlaces)) : result
+    _filterValue (min, step, value) {
+      return Math.round((value - min) / step) * step + min
     },
     _getValueWidth () {
       return 100 * (this.sliderValue - this.min) / (this.max - this.min) + '%'
@@ -300,93 +236,93 @@ export default {
 }
 </script>
 <style>
-	uni-slider {
-		margin: 10px 18px;
-		padding: 0;
-		display: block;
-	}
+uni-slider {
+  margin: 10px 18px;
+  padding: 0;
+  display: block;
+}
 
-	uni-slider[hidden] {
-		display: none;
-	}
+uni-slider[hidden] {
+  display: none;
+}
 
-	uni-slider .uni-slider-wrapper {
-		display: -webkit-flex;
-		display: flex;
-		-webkit-align-items: center;
-		align-items: center;
-		min-height: 16px;
-	}
+uni-slider .uni-slider-wrapper {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  min-height: 16px;
+}
 
-	uni-slider .uni-slider-tap-area {
-		-webkit-flex: 1;
-		flex: 1;
-		padding: 8px 0;
-	}
+uni-slider .uni-slider-tap-area {
+  -webkit-flex: 1;
+  flex: 1;
+  padding: 8px 0;
+}
 
-	uni-slider .uni-slider-handle-wrapper {
-		position: relative;
-		height: 2px;
-		border-radius: 5px;
-		background-color: #e9e9e9;
-		cursor: pointer;
-		transition: background-color 0.3s ease;
-		-webkit-tap-highlight-color: transparent;
-	}
+uni-slider .uni-slider-handle-wrapper {
+  position: relative;
+  height: 2px;
+  border-radius: 5px;
+  background-color: #e9e9e9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
 
-	uni-slider .uni-slider-track {
-		height: 100%;
-		border-radius: 6px;
-		background-color: #007aff;
-		transition: background-color 0.3s ease;
-	}
+uni-slider .uni-slider-track {
+  height: 100%;
+  border-radius: 6px;
+  background-color: #007aff;
+  transition: background-color 0.3s ease;
+}
 
-	uni-slider .uni-slider-handle,
-	uni-slider .uni-slider-thumb {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		cursor: pointer;
-		border-radius: 50%;
-		transition: border-color 0.3s ease;
-	}
+uni-slider .uni-slider-handle,
+uni-slider .uni-slider-thumb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: border-color 0.3s ease;
+}
 
-	uni-slider .uni-slider-handle {
-		width: 28px;
-		height: 28px;
-		margin-top: -14px;
-		margin-left: -14px;
-		background-color: transparent;
-		z-index: 3;
-		cursor: grab;
-	}
+uni-slider .uni-slider-handle {
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
+  margin-left: -14px;
+  background-color: transparent;
+  z-index: 3;
+  cursor: grab;
+}
 
-	uni-slider .uni-slider-thumb {
-		z-index: 2;
-		box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
-	}
+uni-slider .uni-slider-thumb {
+  z-index: 2;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
 
-	uni-slider .uni-slider-step {
-		position: absolute;
-		width: 100%;
-		height: 2px;
-		background: transparent;
-		z-index: 1;
-	}
+uni-slider .uni-slider-step {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  z-index: 1;
+}
 
-	uni-slider .uni-slider-value {
-    width: 3ch;
-		color: #888;
-		font-size: 14px;
-		margin-left: 1em;
-	}
+uni-slider .uni-slider-value {
+  width: 3ch;
+  color: #888;
+  font-size: 14px;
+  margin-left: 1em;
+}
 
-	uni-slider .uni-slider-disabled .uni-slider-track {
-		background-color: #ccc;
-	}
+uni-slider .uni-slider-disabled .uni-slider-track {
+  background-color: #ccc;
+}
 
-	uni-slider .uni-slider-disabled .uni-slider-thumb {
-		background-color: #FFF;
-		border-color: #ccc;
-	}
+uni-slider .uni-slider-disabled .uni-slider-thumb {
+  background-color: #FFF;
+  border-color: #ccc;
+}
 </style>
