@@ -111,17 +111,19 @@ class SelectorQuery {
   exec (callback) {
     invokeMethod('requestComponentInfo', this._page, this._queue, res => {
       const queueCbs = this._queueCb
-      res.forEach((result, index) => {
-        if (Array.isArray(result)) {
-          result.forEach(convertContext)
-        } else {
-          convertContext(result)
-        }
-        const queueCb = queueCbs[index]
-        if (isFn(queueCb)) {
-          queueCb.call(this, result)
-        }
-      })
+      if(res && res.length) {
+        res.forEach((result, index) => {
+          if (Array.isArray(result)) {
+            result.forEach(convertContext)
+          } else {
+            convertContext(result)
+          }
+          const queueCb = queueCbs[index]
+          if (isFn(queueCb)) {
+            queueCb.call(this, result)
+          }
+        })
+      }
       isFn(callback) && callback.call(this, res)
     })
 
