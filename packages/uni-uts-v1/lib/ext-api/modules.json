@@ -1530,7 +1530,7 @@
         "name": "createWebviewContext",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true,
           "arkts": false
         }
