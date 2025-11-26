@@ -1112,6 +1112,27 @@
     ],
     [
       "OnSocketCloseCallback"
+    ],
+    [
+      "OnAppCrashCallback"
+    ],
+    [
+      "OnAppCrash"
+    ],
+    [
+      "OffAppCrash"
+    ],
+    [
+      "AppCrashInfo"
+    ],
+    [
+      "GetAppCrashInfo"
+    ],
+    [
+      "DeleteAppCrashInfo"
+    ],
+    [
+      "CreatAppCrash"
     ]
   ]
 }
