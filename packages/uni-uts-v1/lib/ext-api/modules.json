@@ -157,7 +157,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__offAppCrash": {
@@ -165,7 +166,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__getAppCrashInfo": {
@@ -173,7 +175,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__deleteAppCrashInfo": {
@@ -181,7 +184,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "__createAppCrash": {
@@ -189,7 +193,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -222,6 +227,18 @@
         "name": "createRequestPermissionListener",
         "app": {
           "js": true,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-createWebviewContext": {
+    "uni": {
+      "createWebviewContext": {
+        "name": "createWebviewContext",
+        "app": {
+          "js": false,
           "kotlin": true,
           "swift": false
         }
