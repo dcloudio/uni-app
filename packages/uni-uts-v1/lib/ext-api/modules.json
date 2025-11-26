@@ -1485,6 +1485,9 @@
         }
       }
     },
+    "components": [
+      "video"
+    ],
     "easycom": [
       "video"
     ]
