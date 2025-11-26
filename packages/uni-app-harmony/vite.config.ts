@@ -221,7 +221,7 @@ function parseExtApiInjects(uniModulesDir: string) {
     '',
     uniModulesDir,
     require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-      'uni-ext-api'
+    'uni-ext-api'
     ] || {}
   )
 }
@@ -245,6 +245,24 @@ interface IGenerateSourceFilesOptions {
   type: 'api'
   tempDir: string
   external: string[]
+}
+
+// TODO 移动到公共位置
+function friendlyCapitalize(str: string): string {
+  let forCapitalize = ''
+  let i = 0
+  for (; i < str.length; i++) {
+    const char = str.charAt(i)
+    if (char === '_') {
+      continue
+    } else if (char === '$') {
+      forCapitalize += char
+    } else {
+      break
+    }
+  }
+  forCapitalize += capitalize(str.slice(i))
+  return forCapitalize
 }
 
 async function generateExtApiSource({
@@ -342,8 +360,7 @@ async function generateExtApiSource({
     const apiTypeSpecifiers: string[] = []
     Object.keys(injects).forEach((key) => {
       const api = injects[key][1]
-      const apiType =
-        api[0] === '$' ? '$' + capitalize(api.slice(1)) : capitalize(api)
+      const apiType = friendlyCapitalize(api)
       apiSpecifiers.push(api)
       apiTypeSpecifiers.push(apiType)
       defineExtApis.push(api)
