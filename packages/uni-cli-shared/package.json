@@ -67,6 +67,7 @@
     "resolve": "catalog:",
     "source-map-js": "catalog:",
     "tapable": "^2.2.0",
+    "tinycolor2": "catalog:",
     "unimport": "catalog:",
     "unplugin-auto-import": "catalog:",
     "xregexp": "catalog:"

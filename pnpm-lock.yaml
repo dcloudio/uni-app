@@ -198,6 +198,9 @@ catalogs:
     source-map-js:
       specifier: 1.2.1
       version: 1.2.1
+    tinycolor2:
+      specifier: 1.6.0
+      version: 1.6.0
     unimport:
       specifier: 4.1.1
       version: 4.1.1
@@ -1511,6 +1514,9 @@ importers:
       tapable:
         specifier: ^2.2.0
         version: 2.2.1
+      tinycolor2:
+        specifier: 'catalog:'
+        version: 1.6.0
       unimport:
         specifier: 'catalog:'
         version: 4.1.1
@@ -2243,7 +2249,7 @@ importers:
         specifier: 'catalog:'
         version: 8.4.45
       tinycolor2:
-        specifier: ^1.6.0
+        specifier: 'catalog:'
         version: 1.6.0
     devDependencies:
       '@types/tinycolor2':

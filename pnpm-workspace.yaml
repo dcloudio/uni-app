@@ -77,3 +77,4 @@ catalog:
   'vuex': 4.1.0
   'ws': 8.18.0
   'xregexp': 3.1.0
+  "tinycolor2": 1.6.0
