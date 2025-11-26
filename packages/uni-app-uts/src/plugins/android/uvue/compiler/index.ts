@@ -103,8 +103,12 @@ export function compile(
   const isNativeTag =
     options?.isNativeTag ||
     function (tag: string) {
-      if (isDev && matchEasycom(tag)) {
-        return false
+      if (isDev) {
+        const source = matchEasycom(tag)
+        // 不能是uts插件的easycom组件
+        if (source && !source.includes('?uts-proxy')) {
+          return false
+        }
       }
       return (
         isAppUVueNativeTag(tag) ||

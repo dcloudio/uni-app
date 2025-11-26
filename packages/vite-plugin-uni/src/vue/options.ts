@@ -141,8 +141,12 @@ export function initPluginVueOptions(
   if (isNativeTag) {
     const userIsNativeTag = compilerOptions.isNativeTag
     compilerOptions.isNativeTag = (tag) => {
-      if (isDev && matchEasycom(tag)) {
-        return false
+      if (isDev) {
+        const source = matchEasycom(tag)
+        // 不能是uts插件的easycom组件
+        if (source && !source.includes('?uts-proxy')) {
+          return false
+        }
       }
       if (isNativeTag(tag)) {
         return true
