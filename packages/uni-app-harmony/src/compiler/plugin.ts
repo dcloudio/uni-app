@@ -108,8 +108,6 @@ function generateHarmonyImportExternalCode(harmonyPackageNames: string[]) {
     .join('')
 }
 
-const internalUniExtApis = new Set<string>(['uni-crash'])
-
 export function uniAppHarmonyPlugin(): UniVitePlugin {
   return {
     name: 'uni:app-harmony',
@@ -143,7 +141,7 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       }
     },
     async generateBundle(_, bundle) {
-      const utsExtApis = new Set<string>(internalUniExtApis)
+      const utsExtApis = new Set<string>()
 
       const utsPlugins = getCurrentCompiledUTSPlugins()
       const utsProviders = getCurrentCompiledUTSProviders()
