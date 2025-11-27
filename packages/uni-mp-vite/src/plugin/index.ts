@@ -197,7 +197,7 @@ export function uniMiniProgramPlugin(
         const extname = template.filter.extname
         if (isX) {
           if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
-            // 目前 mp-weixin（mp-qq）、mp-alipay（mp-dingtalk）、mp-toutiao（mp-lark）均支持视图层setStyle
+            // 目前 mp-weixin（mp-qq）、mp-alipay（mp-dingtalk）、mp-toutiao（mp-lark）、mp-xhs 均支持视图层setStyle
             if (template.filter.setStyle && !autoImportFilterEmitted) {
               autoImportFilterEmitted = true
               let uniViewPath = '../../lib/filters/uniView.cjs.js'
