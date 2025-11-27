@@ -5,6 +5,7 @@ import {
   createCopyPluginTarget,
   getNativeTags,
   transformComponentLink,
+  transformDirection,
   // transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
@@ -16,18 +17,25 @@ import {
 import source from './project.config.json'
 import { transformOn } from './transforms/vOn'
 import { transformModel } from './transforms/vModel'
+import { transformMPBuiltInTag } from './transforms/transformMPBuiltInTag'
 
 const directiveTransforms = {
   on: transformOn,
   model: transformModel,
 }
 
+const nodeTransforms = [
+  transformRef,
+  transformComponentLink,
+  // transformMatchMedia
+]
+
+if (process.env.UNI_APP_X === 'true') {
+  nodeTransforms.push(transformMPBuiltInTag, transformDirection)
+}
+
 export const compilerOptions: CompilerOptions = {
-  nodeTransforms: [
-    transformRef,
-    transformComponentLink,
-    // transformMatchMedia
-  ],
+  nodeTransforms,
   directiveTransforms,
 }
 
