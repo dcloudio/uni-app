@@ -38,7 +38,7 @@ export function initModuleAlias() {
 
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     if (
-      process.env.UNI_PLATFORM === 'app-harmony' &&
+      process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
       process.env.UNI_OUTPUT_DIR
     ) {
       if (!process.env.UNI_APP_HARMONY_DOM2_CPP_DIR) {

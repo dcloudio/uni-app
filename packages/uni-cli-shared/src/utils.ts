@@ -225,11 +225,14 @@ export function enableSourceMap() {
 }
 
 export function requireUniHelpers() {
-  require(path.resolve(
-    process.env.UNI_HBUILDERX_PLUGINS,
-    'uni_helpers/lib/bytenode'
-  ))
-  return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+  if (process.env.UNI_HBUILDERX_PLUGINS) {
+    require(path.resolve(
+      process.env.UNI_HBUILDERX_PLUGINS,
+      'uni_helpers/lib/bytenode'
+    ))
+  }
+  return require(process.env.UNI_HELPERS_DIR ??
+    path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
 }
 
 export function normalizeEmitAssetFileName(fileName: string) {
