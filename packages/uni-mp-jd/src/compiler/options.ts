@@ -3,6 +3,7 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
   type MiniProgramCompilerOptions,
+  copyMiniProgramThemeJson,
   createCopyComponentDirs,
   getNativeTags,
   transformComponentLink,
@@ -91,6 +92,7 @@ export const options: UniMiniProgramPluginOptions = {
             return process.env.UNI_OUTPUT_DIR
           },
         },
+        ...copyMiniProgramThemeJson(),
       ],
     },
   },

@@ -113,6 +113,7 @@ const options = {
                         return process.env.UNI_OUTPUT_DIR;
                     },
                 },
+                ...uniCliShared.copyMiniProgramThemeJson(),
             ],
         },
     },
