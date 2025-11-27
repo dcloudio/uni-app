@@ -4375,6 +4375,7 @@ exports.TEXT_NODE_PLACEHOLDER = TEXT_NODE_PLACEHOLDER;
 exports.TEXT_PLACEHOLDER = TEXT_PLACEHOLDER;
 exports.VaporErrorCodes = VaporErrorCodes;
 exports.VaporErrorMessages = VaporErrorMessages;
+exports.analyzeExpressions = analyzeExpressions;
 exports.buildCodeFragment = buildCodeFragment;
 exports.codeFragmentToString = codeFragmentToString;
 exports.compile = compile;

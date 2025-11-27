@@ -36615,6 +36615,7 @@ var CompilerVapor = /*#__PURE__*/Object.freeze({
   TEXT_PLACEHOLDER: TEXT_PLACEHOLDER,
   VaporErrorCodes: VaporErrorCodes,
   VaporErrorMessages: VaporErrorMessages,
+  analyzeExpressions: analyzeExpressions,
   buildCodeFragment: buildCodeFragment,
   codeFragmentToString: codeFragmentToString,
   compile: compile$1,

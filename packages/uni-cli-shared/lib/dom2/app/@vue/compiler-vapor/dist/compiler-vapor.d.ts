@@ -504,4 +504,18 @@ export declare function isKeepAliveTag(tag: string): boolean;
 export declare function isTeleportTag(tag: string): boolean;
 export declare function isBuiltInComponent(tag: string): string | undefined;
 
+export declare function analyzeExpressions(expressions: SimpleExpressionNode[]): {
+    seenVariable: Record<string, number>;
+    variableToExpMap: Map<string, Set<SimpleExpressionNode>>;
+    expToVariableMap: Map<SimpleExpressionNode, Array<{
+        name: string;
+        loc?: {
+            start: number;
+            end: number;
+        };
+    }>>;
+    seenIdentifier: Set<string>;
+    updatedVariable: Set<string>;
+};
+
 
