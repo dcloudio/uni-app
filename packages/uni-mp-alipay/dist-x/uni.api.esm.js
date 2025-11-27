@@ -1507,8 +1507,8 @@ var shims = /*#__PURE__*/Object.freeze({
 });
 
 function handleNetworkInfo(fromRes, toRes) {
-    const nextworkType = fromRes.networkType;
-    switch (nextworkType) {
+    const networkType = fromRes.networkType;
+    switch (networkType) {
         case 'NOTREACHABLE':
             toRes.networkType = 'none';
             break;

@@ -20522,6 +20522,12 @@
       var sliderValueRef = ref(null);
       var sliderHandleRef = ref(null);
       var sliderValue = ref(Number(props2.value));
+      if (sliderValue.value < Number(props2.min)) {
+        sliderValue.value = Number(props2.min);
+      }
+      if (sliderValue.value > Number(props2.max)) {
+        sliderValue.value = Number(props2.max);
+      }
       watch(() => props2.value, (val) => {
         sliderValue.value = Number(val);
       });
@@ -20606,6 +20612,13 @@
     return state;
   }
   function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger2) {
+    var truthStep = computed(() => {
+      var step2 = Number(props2.step);
+      if (isNaN(step2)) {
+        return 1;
+      }
+      return step2;
+    });
     var _onClick = ($event) => {
       if (props2.disabled) {
         return;
@@ -20615,11 +20628,8 @@
         value: sliderValue.value
       });
     };
-    var _filterValue = (e2) => {
-      var max2 = Number(props2.max);
-      var min2 = Number(props2.min);
-      var step2 = Number(props2.step);
-      return e2 < min2 ? min2 : e2 > max2 ? max2 : computeController.mul.call(Math.round((e2 - min2) / step2), step2) + min2;
+    var _filterValue = (min2, step2, value) => {
+      return Math.round((value - min2) / step2) * step2 + min2;
     };
     var _onUserChangedValue = (e2) => {
       var max2 = Number(props2.max);
@@ -20631,8 +20641,9 @@
       var slider = sliderRef.value;
       var offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
       var boxLeft = slider.getBoundingClientRect().left;
-      var value = (e2.x - boxLeft) * (max2 - min2) / offsetWidth + min2;
-      sliderValue.value = _filterValue(value);
+      var proportion = (e2.x - boxLeft) / offsetWidth;
+      var stepDecimal = (truthStep.value + "").split(".")[1];
+      sliderValue.value = parseFloat(_filterValue(min2, truthStep.value, lerp(min2, max2, proportion)).toFixed(stepDecimal ? stepDecimal.length : 0));
     };
     var _onTrack = (e2) => {
       if (!props2.disabled) {
@@ -20668,22 +20679,10 @@
       _onTrack
     };
   }
-  var computeController = {
-    mul: function(arg) {
-      var m = 0;
-      var s1 = this.toString();
-      var s2 = arg.toString();
-      try {
-        m += s1.split(".")[1].length;
-      } catch (e2) {
-      }
-      try {
-        m += s2.split(".")[1].length;
-      } catch (e2) {
-      }
-      return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-    }
-  };
+  function lerp(min2, max2, t2) {
+    t2 = Math.min(1, Math.max(0, t2));
+    return min2 * (1 - t2) + max2 * t2;
+  }
   var props$h = {
     indicatorDots: {
       type: [Boolean, String],
