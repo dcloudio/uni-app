@@ -1,4 +1,5 @@
 import { assert } from './testUtils'
+import { transformMPBuiltInTag } from '../src/compiler/transforms/transformMPBuiltInTag'
 
 describe('mp-xhs: transform component', () => {
   test('lazy element: textarea', () => {
@@ -83,6 +84,161 @@ describe('mp-xhs: transform component', () => {
       `(_ctx, _cache) => {
   return { a: _o(_ctx.handleError, "c8") }
 }`
+    )
+  })
+})
+
+describe('mp-xhs: transform component x', () => {
+  test('checkbox prop rename', () => {
+    assert(
+      `<checkbox fore-color="#FF0000"/>`,
+      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<checkbox fore-color="#FF0000" checked/>`,
+      `<checkbox color="#FF0000" checked style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test('radio prop rename', () => {
+    assert(
+      `<radio active-background-color="#FF0000"/>`,
+      `<radio color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<radio color="#FF0000"/>`,
+      `<radio color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test('slider prop rename', () => {
+    assert(
+      `<slider active-background-color="#FF0000" fore-color="#00FF00"/>`,
+      `<slider active-color="#FF0000" block-color="#00FF00" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<slider active-background-color="#FF0000"/>`,
+      `<slider active-color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<slider fore-color="#00FF00"/>`,
+      `<slider block-color="#00FF00" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test('switch prop rename', () => {
+    assert(
+      `<switch active-background-color="#FF0000"/>`,
+      `<switch color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<switch color="#FF0000"/>`,
+      `<switch color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test('tag rename: list-view to scroll-view', () => {
+    assert(
+      `<list-view/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<list-view scroll-y="true"/>`,
+      `<scroll-view scroll-y="true" style="{{'--status-bar-height:' + a}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
     )
   })
 })
