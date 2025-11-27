@@ -1,19 +1,16 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import colors from 'picocolors'
 
 import {
   JS_STYLE_PLACEHOLDER_MARKER,
   JS_STYLE_PLACEHOLDER_RE,
-  SPECIAL_CHARS,
   commonjsProxyRE,
   cssLangRE,
   cssPlugin,
   cssPostPlugin,
-  formatAtFilename,
   genDom2ClassName,
-  generateCodeFrame,
   insertBeforePlugin,
   normalizePath,
+  onCompileLog,
   parseAssets,
   parseVueRequest,
   preUVueCss,
@@ -109,18 +106,17 @@ export function uniAppCssPrePlugin(): Plugin {
           }
           messages.forEach((message) => {
             if (message.type === 'error') {
-              console.error(
-                SPECIAL_CHARS.ERROR_BLOCK +
-                  `[plugin:uni:app-uvue-css] ${message.text}`
-              )
-              let msg = formatAtFilename(filename)
-              if (message.line && message.column) {
-                msg += `\n${generateCodeFrame(cssCode, {
+              onCompileLog(
+                'error',
+                { name: 'CSSError', message: message.text },
+                cssCode,
+                filename,
+                {
+                  plugin: 'uni:app-uvue-css',
                   line: message.line,
                   column: message.column,
-                }).replace(/\t/g, ' ')}`
-              }
-              console.error(msg + SPECIAL_CHARS.ERROR_BLOCK)
+                }
+              )
             }
           })
           return code
@@ -227,10 +223,6 @@ export function uniAppCssPlugin(): Plugin {
       messages.forEach((message) => {
         if (message.type === 'warning') {
           // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
-          console.warn(
-            SPECIAL_CHARS.WARN_BLOCK +
-              colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
-          )
           const originalPos = originalPositionFor(sourceMap, {
             line: message.line,
             column: message.column,
@@ -249,14 +241,17 @@ export function uniAppCssPlugin(): Plugin {
               column = originalPos.column
             }
           }
-          let msg = formatAtFilename(filename, line, column)
-          if (line && column) {
-            msg += `\n${generateCodeFrame(code, {
+          onCompileLog(
+            'warn',
+            { name: 'CSSWarning', message: message.text },
+            code,
+            filename,
+            {
+              plugin: 'uni:app-uvue-css',
               line,
               column,
-            }).replace(/\t/g, ' ')}\n`
-          }
-          console.log(msg + SPECIAL_CHARS.WARN_BLOCK)
+            }
+          )
         }
       })
       return {

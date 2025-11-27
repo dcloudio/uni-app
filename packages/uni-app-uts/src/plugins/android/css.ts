@@ -1,18 +1,15 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import path from 'path'
-import colors from 'picocolors'
 
 import {
-  SPECIAL_CHARS,
   commonjsProxyRE,
   cssLangRE,
   cssPlugin,
   cssPostPlugin,
-  formatAtFilename,
   genUTSClassName,
-  generateCodeFrame,
   insertBeforePlugin,
   normalizeNodeModules,
+  onCompileLog,
   parseAssets,
   parseVueRequest,
   preUVueCss,
@@ -75,18 +72,17 @@ export function uniAppCssPrePlugin(): Plugin {
           })
           messages.forEach((message) => {
             if (message.type === 'error') {
-              console.error(
-                SPECIAL_CHARS.ERROR_BLOCK +
-                  `[plugin:uni:app-uvue-css] ${message.text}`
-              )
-              let msg = formatAtFilename(filename)
-              if (message.line && message.column) {
-                msg += `\n${generateCodeFrame(cssCode, {
+              onCompileLog(
+                'error',
+                { name: 'CSSError', message: message.text },
+                cssCode,
+                filename,
+                {
+                  plugin: 'uni:app-uvue-css',
                   line: message.line,
                   column: message.column,
-                }).replace(/\t/g, ' ')}`
-              }
-              console.error(msg + SPECIAL_CHARS.ERROR_BLOCK)
+                }
+              )
             }
           })
           const fileName = filename.replace('.style.uts', '')
@@ -153,18 +149,17 @@ export function uniAppCssPlugin(): Plugin {
       messages.forEach((message) => {
         if (message.type === 'warning') {
           // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
-          console.warn(
-            SPECIAL_CHARS.WARN_BLOCK +
-              colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
-          )
-          let msg = formatAtFilename(filename)
-          if (message.line && message.column) {
-            msg += `\n${generateCodeFrame(source, {
+          onCompileLog(
+            'warn',
+            { name: 'CSSWarning', message: message.text },
+            source,
+            filename,
+            {
+              plugin: 'uni:app-uvue-css',
               line: message.line,
               column: message.column,
-            }).replace(/\t/g, ' ')}\n`
-          }
-          console.log(msg + SPECIAL_CHARS.WARN_BLOCK)
+            }
+          )
         }
       })
       return {
