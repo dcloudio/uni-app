@@ -166,6 +166,12 @@
       "null"
     ]
   },
+  "uni-web-view": {
+    "createWebViewContext": [
+      null,
+      "null"
+    ]
+  },
   "uni-compass": {
     "startCompass": [
       "null"
