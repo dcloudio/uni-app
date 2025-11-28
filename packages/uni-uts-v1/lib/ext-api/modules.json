@@ -1531,8 +1531,8 @@
   },
   "uni-web-view": {
     "uni": {
-      "createWebviewContext": {
-        "name": "createWebviewContext",
+      "createWebViewContext": {
+        "name": "createWebViewContext",
         "app": {
           "js": false,
           "kotlin": true,
