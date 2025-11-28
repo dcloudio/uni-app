@@ -100,7 +100,9 @@ export function uniAppCssPrePlugin(): Plugin {
               )
               DOM2_CSS_CACHE_MAP.set(
                 id,
-                JSON.stringify({ '@FONT-FACE': cloneFontFaces })
+                cloneFontFaces.length
+                  ? JSON.stringify({ '@FONT-FACE': cloneFontFaces })
+                  : '{}'
               )
             }
           }
