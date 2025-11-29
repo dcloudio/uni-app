@@ -26,11 +26,6 @@ import {
   resolveUniTypeScript,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
-import {
-  type DOM2_APP_TARGET,
-  parseDom2StaticStyle,
-  parseInlineStyleSync,
-} from '@dcloudio/uni-nvue-styler'
 
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
@@ -92,25 +87,6 @@ export function initPluginVueOptions(
 
   // 默认就移除comments节点
   compilerOptions.comments = false
-
-  if (
-    process.env.UNI_PLATFORM !== 'web' &&
-    process.env.UNI_VUE_VAPOR === 'true'
-  ) {
-    // 非 web 平台，使用 factory 模式
-    ;(compilerOptions as any).templateMode = 'factory'
-    // 目前禁用事件委托
-    ;(compilerOptions as any).disableEventDelegation = true
-    // 禁用 class 绑定，全部编译为 setClass 模式
-    ;(compilerOptions as any).disableClassBinding = true
-    // 解析静态样式
-    ;(compilerOptions as any).parseStaticStyle = (style: string) => {
-      return parseInlineStyleSync(style, {
-        type: 'uvue',
-        platform: process.env.UNI_UTS_PLATFORM,
-      })
-    }
-  }
 
   const {
     compiler,
@@ -344,19 +320,6 @@ export function initPluginVueOptions(
           componentType: isUniPageFile(filename) ? 'page' : 'component',
           relativeFilename,
           scriptCppBlocks: (descriptor as any).scriptCppBlocks,
-          parseStaticStyle(
-            target: DOM2_APP_TARGET,
-            tagName: string,
-            style: string,
-            genCode: boolean = false
-          ) {
-            return parseDom2StaticStyle(style, {
-              platform: process.env.UNI_UTS_PLATFORM as any,
-              target,
-              tagName,
-              genCode,
-            })
-          },
           onVueTemplateCompileLog(
             type: 'warn' | 'error',
             error: CompilerError

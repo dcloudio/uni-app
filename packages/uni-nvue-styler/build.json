@@ -24,11 +24,6 @@
   },
   {
     "input": {
-      "src/dom2/processors/runtime/generator.ts": ["scripts/dom2.cjs.js"]
-    }
-  },
-  {
-    "input": {
       "src/dom2/esm.ts": ["dist-dom2/uni-uvue-styler.es.js"]
     },
     "replacements": {

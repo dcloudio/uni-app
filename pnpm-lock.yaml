@@ -172,8 +172,8 @@ catalogs:
       specifier: 1.1.0
       version: 1.1.0
     postcss:
-      specifier: 8.4.45
-      version: 8.4.45
+      specifier: 8.5.6
+      version: 8.5.6
     postcss-selector-parser:
       specifier: 6.1.2
       version: 6.1.2
@@ -1092,13 +1092,13 @@ importers:
         version: 3.4.21
       autoprefixer:
         specifier: 'catalog:'
-        version: 10.4.20(postcss@8.4.45)
+        version: 10.4.20(postcss@8.5.6)
       pako:
         specifier: 'catalog:'
         version: 1.0.11
       postcss:
         specifier: 'catalog:'
-        version: 8.4.45
+        version: 8.5.6
       vue:
         specifier: 'catalog:'
         version: 3.4.21(typescript@5.4.2)
@@ -1156,13 +1156,13 @@ importers:
         version: 3.4.21
       autoprefixer:
         specifier: 'catalog:'
-        version: 10.4.20(postcss@8.4.45)
+        version: 10.4.20(postcss@8.5.6)
       pako:
         specifier: 'catalog:'
         version: 1.0.11
       postcss:
         specifier: 'catalog:'
-        version: 8.4.45
+        version: 8.5.6
       vue:
         specifier: 'catalog:'
         version: 3.4.21(typescript@5.4.2)
@@ -1302,7 +1302,7 @@ importers:
         version: 0.20.2
       postcss:
         specifier: 'catalog:'
-        version: 8.4.45
+        version: 8.5.6
       rollup:
         specifier: 'catalog:'
         version: 4.21.2
@@ -1394,6 +1394,9 @@ importers:
       '@dcloudio/uni-i18n':
         specifier: workspace:*
         version: link:../uni-i18n
+      '@dcloudio/uni-nvue-styler':
+        specifier: workspace:*
+        version: link:../uni-nvue-styler
       '@dcloudio/uni-shared':
         specifier: workspace:*
         version: link:../uni-shared
@@ -1432,7 +1435,7 @@ importers:
         version: 0.5.16
       autoprefixer:
         specifier: 'catalog:'
-        version: 10.4.20(postcss@8.4.45)
+        version: 10.4.20(postcss@8.5.6)
       base64url:
         specifier: ^3.0.1
         version: 3.0.1
@@ -1495,13 +1498,13 @@ importers:
         version: 1.1.0
       postcss-import:
         specifier: ^14.0.2
-        version: 14.1.0(postcss@8.4.45)
+        version: 14.1.0(postcss@8.5.6)
       postcss-load-config:
         specifier: ^3.1.1
-        version: 3.1.4(postcss@8.4.45)
+        version: 3.1.4(postcss@8.5.6)
       postcss-modules:
         specifier: ^4.3.0
-        version: 4.3.1(postcss@8.4.45)
+        version: 4.3.1(postcss@8.5.6)
       postcss-selector-parser:
         specifier: 'catalog:'
         version: 6.1.2
@@ -1574,7 +1577,7 @@ importers:
         version: link:@types/@babel/code-frame
       postcss:
         specifier: 'catalog:'
-        version: 8.4.45
+        version: 8.5.6
       vue:
         specifier: 'catalog:'
         version: 3.4.21(typescript@5.4.2)
@@ -2247,7 +2250,7 @@ importers:
         version: 4.0.0
       postcss:
         specifier: 'catalog:'
-        version: 8.4.45
+        version: 8.5.6
       tinycolor2:
         specifier: 'catalog:'
         version: 1.6.0
@@ -6560,6 +6563,11 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
+  nanoid@3.3.11:
+    resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -6781,6 +6789,9 @@ packages:
   picocolors@1.1.0:
     resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
 
+  picocolors@1.1.1:
+    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
+
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
@@ -6871,6 +6882,10 @@ packages:
 
   postcss@8.4.45:
     resolution: {integrity: sha512-7KTLTdzdZZYscUc65XmjFiB73vBhBfbPztCYdUNvlaso9PrzjzcmjqBPR0lNGkcVlcO4BjiO5rK/qNz+XAen1Q==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.6:
+    resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -10188,7 +10203,7 @@ snapshots:
       '@vue/shared': 3.4.21
       estree-walker: 2.0.2
       magic-string: 0.30.11
-      postcss: 8.4.45
+      postcss: 8.5.6
       source-map-js: 1.2.1
 
   '@vue/compiler-ssr@3.4.21':
@@ -10370,14 +10385,14 @@ snapshots:
 
   at-least-node@1.0.0: {}
 
-  autoprefixer@10.4.20(postcss@8.4.45):
+  autoprefixer@10.4.20(postcss@8.5.6):
     dependencies:
       browserslist: 4.23.3
       caniuse-lite: 1.0.30001660
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.1.0
-      postcss: 8.4.45
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
   aws-sign2@0.7.0: {}
@@ -11782,9 +11797,9 @@ snapshots:
 
   icss-replace-symbols@1.1.0: {}
 
-  icss-utils@5.1.0(postcss@8.4.45):
+  icss-utils@5.1.0(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.45
+      postcss: 8.5.6
 
   idb-wrapper@1.7.2: {}
 
@@ -13067,6 +13082,8 @@ snapshots:
 
   ms@2.1.3: {}
 
+  nanoid@3.3.11: {}
+
   nanoid@3.3.7: {}
 
   natural-compare@1.4.0: {}
@@ -13262,6 +13279,8 @@ snapshots:
 
   picocolors@1.1.0: {}
 
+  picocolors@1.1.1: {}
+
   picomatch@2.3.1: {}
 
   picomatch@4.0.2: {}
@@ -13290,51 +13309,51 @@ snapshots:
 
   pngjs@3.4.0: {}
 
-  postcss-import@14.1.0(postcss@8.4.45):
+  postcss-import@14.1.0(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.45
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
       resolve: 1.22.8
 
-  postcss-load-config@3.1.4(postcss@8.4.45):
+  postcss-load-config@3.1.4(postcss@8.5.6):
     dependencies:
       lilconfig: 2.1.0
       yaml: 1.10.2
     optionalDependencies:
-      postcss: 8.4.45
+      postcss: 8.5.6
 
-  postcss-modules-extract-imports@3.1.0(postcss@8.4.45):
+  postcss-modules-extract-imports@3.1.0(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.45
+      postcss: 8.5.6
 
-  postcss-modules-local-by-default@4.0.5(postcss@8.4.45):
+  postcss-modules-local-by-default@4.0.5(postcss@8.5.6):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.45)
-      postcss: 8.4.45
+      icss-utils: 5.1.0(postcss@8.5.6)
+      postcss: 8.5.6
       postcss-selector-parser: 6.1.2
       postcss-value-parser: 4.2.0
 
-  postcss-modules-scope@3.2.0(postcss@8.4.45):
+  postcss-modules-scope@3.2.0(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.45
+      postcss: 8.5.6
       postcss-selector-parser: 6.1.2
 
-  postcss-modules-values@4.0.0(postcss@8.4.45):
+  postcss-modules-values@4.0.0(postcss@8.5.6):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.45)
-      postcss: 8.4.45
+      icss-utils: 5.1.0(postcss@8.5.6)
+      postcss: 8.5.6
 
-  postcss-modules@4.3.1(postcss@8.4.45):
+  postcss-modules@4.3.1(postcss@8.5.6):
     dependencies:
       generic-names: 4.0.0
       icss-replace-symbols: 1.1.0
       lodash.camelcase: 4.3.0
-      postcss: 8.4.45
-      postcss-modules-extract-imports: 3.1.0(postcss@8.4.45)
-      postcss-modules-local-by-default: 4.0.5(postcss@8.4.45)
-      postcss-modules-scope: 3.2.0(postcss@8.4.45)
-      postcss-modules-values: 4.0.0(postcss@8.4.45)
+      postcss: 8.5.6
+      postcss-modules-extract-imports: 3.1.0(postcss@8.5.6)
+      postcss-modules-local-by-default: 4.0.5(postcss@8.5.6)
+      postcss-modules-scope: 3.2.0(postcss@8.5.6)
+      postcss-modules-values: 4.0.0(postcss@8.5.6)
       string-hash: 1.1.3
 
   postcss-selector-parser@6.1.2:
@@ -13348,6 +13367,12 @@ snapshots:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.1.0
+      source-map-js: 1.2.1
+
+  postcss@8.5.6:
+    dependencies:
+      nanoid: 3.3.11
+      picocolors: 1.1.1
       source-map-js: 1.2.1
 
   prelude-ls@1.2.1: {}

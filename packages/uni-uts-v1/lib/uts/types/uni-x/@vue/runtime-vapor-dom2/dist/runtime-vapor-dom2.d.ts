@@ -3,7 +3,6 @@ export { defineComponent as defineVaporSharedDataComponent } from '@vue/runtime-
 export * from '@vue/runtime-x';
 export { hyphenate } from '@vue/shared';
 import { EffectScope, ShallowRef, Reactive, Ref } from '@vue/reactivity';
-export { toSharedDataStyle } from '@dcloudio/uni-nvue-styler/dist-dom2/uni-uvue-styler.es';
 import { Element as Element$1 } from '@dcloudio/uni-app-x/types/native';
 
 declare class VaporFragment {
@@ -172,6 +171,8 @@ export declare function createSharedDataComponentWithFallback(comp: VaporSharedD
 export declare const createVaporApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
 export declare const createVaporSSRApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
 export declare const createApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
+
+export declare function toSharedDataStyle(style: Map<string, unknown>, result?: Record<number, unknown>): Record<number, unknown>;
 
 export declare function createMountPage(appContext: AppContext): (pageComponent: ReturnType<typeof defineComponent> | VaporSharedDataComponent, pageProps: Record<string, any>, pageContainer?: Element$1) => ComponentPublicInstance;
 export declare function unmountPage(pageInstance: ComponentPublicInstance): void;

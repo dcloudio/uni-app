@@ -20,11 +20,6 @@ import {
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import {
-  type DOM2_APP_PLATFORM,
-  DOM2_APP_TARGET,
-  parse,
-} from '@dcloudio/uni-nvue-styler'
-import {
   type SourceMapInput,
   TraceMap,
   originalPositionFor,
@@ -39,6 +34,7 @@ export function uniAppCssPrePlugin(): Plugin {
   const name = 'uni:app-uvue-css-pre'
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
+  const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
   return {
     name,
     // 需要提前，因为unocss会在configResolved读取vite:css-post插件
@@ -70,14 +66,7 @@ export function uniAppCssPrePlugin(): Plugin {
         async chunkCssCode(filename, cssCode) {
           // filename
           cssCode = parseAssets(config, cssCode)
-          const { code, messages, fontFaces } = await parse(cssCode, {
-            dom2: {
-              platform: process.env.UNI_UTS_PLATFORM as DOM2_APP_PLATFORM,
-              target: DOM2_APP_TARGET.DOM_C,
-            },
-            filename,
-            logLevel: 'WARNING',
-            type: 'uvue',
+          const { code, messages, fontFaces } = await parseCss(cssCode, {
             platform: process.env.UNI_UTS_PLATFORM,
           })
           const isDom2Harmony =
@@ -186,6 +175,7 @@ export function uniAppCssPrePlugin(): Plugin {
 
 export function uniAppCssPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
+  const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
   return {
     name: 'uni:app-uvue-css',
     apply: 'build',
@@ -204,14 +194,7 @@ export function uniAppCssPlugin(): Plugin {
       }
       source = parseAssets(resolvedConfig, source)
       // 仅做校验使用
-      const { messages } = await parse(source, {
-        dom2: {
-          platform: process.env.UNI_UTS_PLATFORM as DOM2_APP_PLATFORM,
-          target: DOM2_APP_TARGET.DOM_C,
-        },
-        filename,
-        logLevel: 'WARNING',
-        type: 'uvue',
+      const { messages } = await parseCss(source, {
         platform: process.env.UNI_UTS_PLATFORM,
       })
       let cssSourceMap: SourceMapInput | undefined

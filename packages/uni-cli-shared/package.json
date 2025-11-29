@@ -27,6 +27,7 @@
     "@babel/parser": "catalog:",
     "@babel/types": "catalog:",
     "@dcloudio/uni-i18n": "workspace:*",
+    "@dcloudio/uni-nvue-styler": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
     "@intlify/core-base": "9.1.9",
     "@intlify/shared": "9.1.9",

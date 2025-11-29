@@ -1,6 +1,5 @@
 import type { Declaration, Source } from 'postcss'
 import { hasOwn } from '@vue/shared'
-import type { DOM2_APP_PLATFORM, DOM2_APP_TARGET } from './dom2/types'
 
 export type { Declaration } from 'postcss'
 export const COMBINATORS_RE =
@@ -11,11 +10,8 @@ export type TransformDecl = (decl: Declaration) => Declaration[]
 export interface NormalizeOptions {
   logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
   type?: 'nvue' | 'uvue'
-  platform?: typeof process.env.UNI_UTS_PLATFORM
-  dom2?: {
-    platform: DOM2_APP_PLATFORM
-    target: DOM2_APP_TARGET
-  }
+  platform?: typeof process.env.UNI_UTS_PLATFOR
+  keepUnitPx?: boolean
 }
 
 export type Normalize = (

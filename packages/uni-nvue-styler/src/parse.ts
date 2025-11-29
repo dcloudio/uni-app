@@ -4,7 +4,6 @@ import { objectifierWithMessages } from './objectifier'
 import { expand, vueStyleValidator } from './expand'
 import { normalize } from './normalize'
 import type { NormalizeOptions } from './utils'
-import { getDom2ToString } from './dom2/utils'
 
 export interface ParseOptions extends NormalizeOptions {
   filename?: string
@@ -43,7 +42,6 @@ export async function parse(input: string, options: ParseOptions = {}) {
   const { obj, messages: objMessages } = root
     ? objectifierWithMessages(root, {
         trim: !!options.trim,
-        dom2: options.dom2,
         parseMessages: messages,
       })
     : { obj: {}, messages: [] }
@@ -61,22 +59,12 @@ export async function parse(input: string, options: ParseOptions = {}) {
       messages,
     }
   }
-  let dom2FontFaces: unknown[] = []
-  if (options.dom2 && obj['@FONT-FACE']) {
-    dom2FontFaces = obj['@FONT-FACE'] as unknown[]
-    delete obj['@FONT-FACE']
-  }
-  let code = options.dom2
-    ? getDom2ToString(options.dom2.platform, options.dom2.target)(obj)
-    : JSON.stringify(obj)
+  let code = JSON.stringify(obj)
   if (options.type === 'uvue') {
     // TODO 暂时仅简易转换 CSS 变量
     code = code.replace(/\:\s*"(.+?)"/g, function (str, p1) {
       return isExpr(p1) ? `:${p1}` : str
     })
-  }
-  if (options.dom2) {
-    return { code, messages, fontFaces: dom2FontFaces }
   }
   return { code, messages }
 }

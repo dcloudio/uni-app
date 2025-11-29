@@ -1,5 +1,6 @@
 import {
   type Container,
+  type Declaration,
   type Document,
   type Message,
   type Node,
@@ -7,30 +8,19 @@ import {
   Warning,
 } from 'postcss'
 import { extend, hasOwn } from '@vue/shared'
-import { COMBINATORS_RE, supportedPropertyReason } from './utils'
-import {
-  DOM2_APP_LANGUAGE,
-  type DOM2_APP_PLATFORM,
-  DOM2_APP_TARGET,
-} from './dom2/types'
-import type { PropertyProcessor } from './dom2/processors'
-import { createDom2PropertyProcessors } from './dom2/processors'
-import properties from '../lib/dom2/properties.json'
+import { COMBINATORS_RE } from './utils'
 
 interface ObjectifierOptions {
   trim: boolean
-  dom2?: {
-    platform: DOM2_APP_PLATFORM
-    target: DOM2_APP_TARGET
-  }
   parseMessages: Message[]
+  visitor?: (
+    node: Declaration,
+    context: ObjectifierContext
+  ) => { name: string; value: string } | false
 }
-interface ObjectifierContext {
+export interface ObjectifierContext {
   'FONT-FACE': Record<string, unknown>[]
   TRANSITION: Record<string, Record<string, unknown>>
-  dom2?: {
-    propertyProcessors: Record<string, PropertyProcessor>
-  }
   messages: Message[]
   warn: (node: Node, message: string) => void
 }
@@ -63,16 +53,6 @@ export function objectifierWithMessages(
         context.messages.push(new Warning(message, { node }))
       }
     },
-  }
-  if (options.dom2) {
-    context.dom2 = {
-      propertyProcessors: createDom2PropertyProcessors(
-        options.dom2.platform,
-        // css 解析时，应该传入ALL，不需要根据target获取setter，且目标语言是cpp
-        DOM2_APP_TARGET.ALL,
-        DOM2_APP_LANGUAGE.CPP
-      ),
-    }
   }
   const result = transform(node, context, options)
   if (options.trim) {
@@ -118,28 +98,15 @@ function transform(
         transformSelector(selector, body, result, context)
       })
     } else if (child.type === 'decl') {
-      let name = context.dom2
-        ? (child as any).__originalProp || child.prop
-        : child.prop
+      let name = child.prop
       let value = child.value
-      if (context.dom2 && child.parent?.type === 'rule') {
-        if (name.startsWith('--')) {
-          // noop
-        } else {
-          const processor = context.dom2.propertyProcessors[name]
-          if (processor) {
-            const valueResult = processor(value, name)
-            if (valueResult.error) {
-              context.warn(child, `WARNING: ${valueResult.error}`)
-            } else {
-              value = valueResult.valueCode
-            }
-            name = `UniCSSPropertyID::` + (properties as any)[name]
-          } else {
-            context.warn(child, supportedPropertyReason(name))
-            return
-          }
+      if (options.visitor) {
+        const result = options.visitor(child, context)
+        if (!result) {
+          return
         }
+        name = result.name
+        value = result.value
       }
       if (child.important) {
         result['!' + name] = value

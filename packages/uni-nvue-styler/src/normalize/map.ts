@@ -270,7 +270,7 @@ function getNormalizes(property: Property, options: NormalizeOptions) {
       if (restriction === Restriction.LENGTH) {
         // 如果同时有number和length，例如line-height: 1.5, line-height: 16px，则不能移除px
         normalize = normalizeLengthWithOptions({
-          removePx: options.dom2
+          removePx: options.keepUnitPx
             ? false
             : !restrictions.includes(Restriction.NUMBER),
           property: property.name,
