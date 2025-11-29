@@ -39,6 +39,18 @@ export interface CompileLogOptions {
   column?: number
 }
 
+const suppressedCompileLogs: Array<() => void> = []
+
+let isSuppressed = false
+
+export function suppressVueCompileLog(suppressed: boolean) {
+  isSuppressed = suppressed
+  if (!suppressed) {
+    suppressedCompileLogs.forEach((fn) => fn())
+    suppressedCompileLogs.length = 0
+  }
+}
+
 export function onCompileLog(
   type: 'warn' | 'error',
   error: CompileLogError,
@@ -46,28 +58,40 @@ export function onCompileLog(
   relativeFileName: string,
   options?: CompileLogOptions
 ) {
-  const char =
-    type === 'warn' ? SPECIAL_CHARS.WARN_BLOCK : SPECIAL_CHARS.ERROR_BLOCK
-  if (options?.plugin) {
-    // CSS 插件格式
-    const colorFn = type === 'warn' ? colors.yellow : (s: string) => s
-    console[type](char + colorFn(`[plugin:${options.plugin}] ${error.message}`))
-    let msg = formatAtFilename(relativeFileName, options.line, options.column)
-    if (options.line && options.column) {
-      msg += `\n${generateCodeFrame(code, {
-        line: options.line,
-        column: options.column,
-      }).replace(/\t/g, ' ')}\n`
-    }
-    console.log(msg + char)
-  } else {
-    console[type](char + type + ': ' + error.message + (error.loc ? '' : char))
-    if (error.loc) {
-      const start = error.loc.start
-      console.log(
-        'at ' + relativeFileName + ':' + start.line + ':' + start.column
+  if (isSuppressed) {
+    // 不会导致内存泄漏吧？
+    suppressedCompileLogs.push(print)
+    return
+  }
+  print()
+  function print() {
+    const char =
+      type === 'warn' ? SPECIAL_CHARS.WARN_BLOCK : SPECIAL_CHARS.ERROR_BLOCK
+    if (options?.plugin) {
+      // CSS 插件格式
+      const colorFn = type === 'warn' ? colors.yellow : (s: string) => s
+      console[type](
+        char + colorFn(`[plugin:${options.plugin}] ${error.message}`)
       )
-      console.log(generateCodeFrameColumns(code, error.loc) + char)
+      let msg = formatAtFilename(relativeFileName, options.line, options.column)
+      if (options.line && options.column) {
+        msg += `\n${generateCodeFrame(code, {
+          line: options.line,
+          column: options.column,
+        }).replace(/\t/g, ' ')}\n`
+      }
+      console.log(msg + char)
+    } else {
+      console[type](
+        char + type + ': ' + error.message + (error.loc ? '' : char)
+      )
+      if (error.loc) {
+        const start = error.loc.start
+        console.log(
+          'at ' + relativeFileName + ':' + start.line + ':' + start.column
+        )
+        console.log(generateCodeFrameColumns(code, error.loc) + char)
+      }
     }
   }
 }

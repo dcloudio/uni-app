@@ -10,6 +10,7 @@ import {
   isInHBuilderX,
   output,
   runByHBuilderX,
+  suppressVueCompileLog,
 } from '@dcloudio/uni-cli-shared'
 import type { CliOptions } from '.'
 import { build, buildSSR } from './build'
@@ -52,8 +53,12 @@ export async function runDev(options: CliOptions & ServerOptions) {
       initEasycom()
       let isFirstStart = true
       let isFirstEnd = true
+      const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
       await build(options, async (event) => {
         if (event.code === 'BUNDLE_START') {
+          if (isDom2) {
+            suppressVueCompileLog(false)
+          }
           if (isFirstStart) {
             isFirstStart = false
             return
@@ -146,6 +151,9 @@ export async function runDev(options: CliOptions & ServerOptions) {
             }, 2000)
           }
         } else if (event.code === 'ERROR') {
+          if (isDom2) {
+            suppressVueCompileLog(true)
+          }
           if (runByHBuilderX()) {
             setTimeout(() => {
               console.error(`Build failed with errors.`)
