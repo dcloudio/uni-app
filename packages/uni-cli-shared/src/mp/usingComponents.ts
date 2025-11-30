@@ -1,16 +1,22 @@
 import {
+  type ExportDefaultDeclaration,
   type IfStatement,
   type ImportDeclaration,
   type Node,
+  type ObjectExpression,
   type ObjectProperty,
   type Program,
   type Statement,
   type StringLiteral,
   isBlockStatement,
   isCallExpression,
+  isExportDefaultDeclaration,
+  isExpression,
   isIdentifier,
   isIfStatement,
   isImportDeclaration,
+  isImportDefaultSpecifier,
+  isImportSpecifier,
   isMemberExpression,
   isObjectExpression,
   isObjectProperty,
@@ -28,6 +34,7 @@ import { BINDING_COMPONENTS, EXTNAME_VUE_RE } from '../constants'
 import { isAppVue, normalizeMiniProgramFilename, removeExt } from '../utils'
 import { cleanUrl, parseVueRequest } from '../vite/utils'
 import { addMiniProgramUsingComponents } from '../json/mp/jsonFile'
+import path from 'path'
 
 type BindingComponents = Record<
   string,
@@ -190,11 +197,111 @@ export async function updateMiniProgramGlobalComponents(
   }
 }
 
+function parseVueComponentName(filename: string) {
+  let name = path.basename(removeExt(filename))
+
+  const ast = scriptDescriptors.get(filename)?.ast
+  if (!ast) return name
+
+  // 获取默认导出定义
+  const exportDefaultDecliaration = ast.body.find((node) =>
+    isExportDefaultDeclaration(node)
+  ) as ExportDefaultDeclaration | undefined
+
+  if (!exportDefaultDecliaration) return name
+
+  // 获取vue的defineComponent导入变量名和plugin-vue:export-helper默认导入的本地变量名
+  let defineComponentLocalName: string | null = null
+  let exportHelperLocalName: string | null = null
+
+  for (const node of ast.body) {
+    if (!isImportDeclaration(node)) continue
+    if (node.source.value === 'vue') {
+      const importSpecifer = node.specifiers.find(
+        (specifer) =>
+          isImportSpecifier(specifer) &&
+          isIdentifier(specifer.imported, { name: 'defineComponent' })
+      )
+      if (isImportSpecifier(importSpecifer)) {
+        defineComponentLocalName = importSpecifer.local.name
+      }
+    } else if (
+      // plugin-vue:export-helper前可能有\0
+      /^\0?plugin-vue:export-helper$/.test(node.source.value)
+    ) {
+      const importSpecifer = node.specifiers.find((specifer) =>
+        isImportDefaultSpecifier(specifer)
+      )
+      if (isImportDefaultSpecifier(importSpecifer)) {
+        exportHelperLocalName = importSpecifer.local.name
+      }
+    }
+  }
+
+  let { declaration } = exportDefaultDecliaration
+  // 如果默认导出调用plugin-vue:export-helper默认导入的方法则取方法的第一个参数
+  if (
+    exportHelperLocalName &&
+    isCallExpression(declaration) &&
+    isIdentifier(declaration.callee, { name: exportHelperLocalName }) &&
+    isExpression(declaration.arguments[0])
+  ) {
+    declaration = declaration.arguments[0]
+  }
+
+  // 获取组件定义对象
+  let defineComponentDeclaration: ObjectExpression | null = null
+
+  // 如果declaration是变量则尝试查找该变量
+  if (isIdentifier(declaration)) {
+    const { name } = declaration
+    for (const node of ast.body) {
+      if (isVariableDeclaration(node)) {
+        const declarator = node.declarations.find((declarator) =>
+          isIdentifier(declarator.id, { name })
+        )
+        if (declarator?.init) {
+          declaration = declarator.init
+        }
+      } else if (isExportDefaultDeclaration(node)) {
+        break
+      }
+    }
+  }
+
+  if (isObjectExpression(declaration)) {
+    defineComponentDeclaration = declaration
+  } else if (
+    defineComponentLocalName &&
+    isCallExpression(declaration) &&
+    isIdentifier(declaration.callee, { name: defineComponentLocalName }) &&
+    isObjectExpression(declaration.arguments[0])
+  ) {
+    defineComponentDeclaration = declaration.arguments[0]
+  }
+
+  if (!defineComponentDeclaration) return name
+
+  // 尝试从组件定义对象中获取组件名
+  for (const prop of defineComponentDeclaration.properties) {
+    if (
+      isObjectProperty(prop) &&
+      isIdentifier(prop.key) &&
+      /^(__)?name$/.test(prop.key.name) &&
+      isStringLiteral(prop.value)
+    ) {
+      return prop.value.value || name
+    }
+  }
+  return name
+}
+
 function createUsingComponents(
   bindingComponents: BindingComponents,
   imports: ImportDeclaration[],
   inputDir: string,
-  normalizeComponentName: (name: string) => string
+  normalizeComponentName: (name: string) => string,
+  filename?: string
 ) {
   const usingComponents: Record<string, string> = {}
   imports.forEach(({ source: { value }, specifiers: [specifier] }) => {
@@ -211,6 +318,27 @@ function createUsingComponents(
       )
     }
   })
+
+  if (filename) {
+    const componentName = normalizeComponentName(
+      hyphenate(parseVueComponentName(filename))
+    )
+
+    if (
+      !Object.keys(bindingComponents).find(
+        (v) =>
+          normalizeComponentName(hyphenate(bindingComponents[v].tag)) ===
+          componentName
+      )
+    )
+      return usingComponents
+    if (!usingComponents[componentName]) {
+      usingComponents[componentName] = addLeadingSlash(
+        removeExt(normalizeMiniProgramFilename(filename, inputDir))
+      )
+    }
+  }
+
   return usingComponents
 }
 
@@ -250,7 +378,8 @@ export function updateMiniProgramComponentsByMainFilename(
       bindingComponents,
       imports,
       inputDir,
-      normalizeComponentName
+      normalizeComponentName,
+      mainFilename
     )
   )
 }
@@ -347,6 +476,7 @@ interface ParseDescriptor {
 }
 export interface ScriptDescriptor extends TemplateDescriptor {
   setupBindingComponents: BindingComponents
+  ast: Program
 }
 
 async function parseGlobalDescriptor(
@@ -396,6 +526,7 @@ export async function parseScriptDescriptor(
     bindingComponents: parseComponents(ast),
     setupBindingComponents: findBindingComponents(ast.body),
     imports,
+    ast,
   }
 
   scriptDescriptors.set(filename, descriptor)
