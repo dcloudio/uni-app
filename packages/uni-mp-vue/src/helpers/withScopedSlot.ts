@@ -65,7 +65,9 @@ function createScopedSlotInvoker(instance: ComponentInternalInstance) {
     index = index || 0
     // 确保当前 slot 的上下文，类似 withCtx
     const prevInstance = setCurrentRenderingInstance(instance)
+    instance.$currentSlotComponentInstance = prevInstance
     const data = slot.fn(args, slotName + (hasIndex ? '-' + index : ''), index)
+    delete instance.$currentSlotComponentInstance
     const path = slot.fn.path
     setCurrentRenderingInstance(prevInstance)
     ;(instance.$scopedSlotsData || (instance.$scopedSlotsData = [])).push({
