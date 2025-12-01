@@ -1,217 +1,475 @@
 {
   "@dcloudio/uni-app-runtime": [
     [
-      "SetClipboardData"
+      "$Emit"
     ],
     [
-      "SetClipboardDataSuccess"
+      "$Off"
     ],
     [
-      "SetClipboardDataOptions"
+      "$On"
     ],
     [
-      "GetClipboardData"
-    ],
-    [
-      "GetClipboardDataSuccess"
-    ],
-    [
-      "GetClipboardDataOptions"
-    ],
-    [
-      "WorkerOnErrorCallbackResultErrorCode"
-    ],
-    [
-      "WorkerOnErrorCallbackResult"
-    ],
-    [
-      "WorkerOnMessageCallback"
-    ],
-    [
-      "WorkerOnErrorCallback"
-    ],
-    [
-      "WorkerPostMessageOptions"
-    ],
-    [
-      "Worker"
-    ],
-    [
-      "WorkerTaskImpl"
-    ],
-    [
-      "LegacySaveFileSuccess"
-    ],
-    [
-      "LegacySaveFileFail"
-    ],
-    [
-      "LegacySaveFileOptions"
-    ],
-    [
-      "LegacyGetFileInfoSuccess"
-    ],
-    [
-      "LegacyGetFileInfoFail"
-    ],
-    [
-      "LegacyGetFileInfoOptions"
-    ],
-    [
-      "LegacyGetSavedFileInfoSuccess"
-    ],
-    [
-      "LegacyGetSavedFileInfoFail"
-    ],
-    [
-      "LegacyGetSavedFileInfoOptions"
-    ],
-    [
-      "LegacyRemoveSavedFileSuccess"
-    ],
-    [
-      "LegacyRemoveSavedFileFail"
-    ],
-    [
-      "LegacyRemoveSavedFileOptions"
-    ],
-    [
-      "LegacySavedFileListItem"
-    ],
-    [
-      "LegacyGetSavedFileListSuccess"
-    ],
-    [
-      "LegacyGetSavedFileListFail"
-    ],
-    [
-      "LegacyGetSavedFileListOptions"
-    ],
-    [
-      "SaveFile"
-    ],
-    [
-      "GetFileInfo"
-    ],
-    [
-      "GetSavedFileInfo"
-    ],
-    [
-      "RemoveSavedFile"
-    ],
-    [
-      "GetSavedFileList"
-    ],
-    [
-      "ReadFileSuccessResult"
-    ],
-    [
-      "OpenFileSuccessResult"
-    ],
-    [
-      "FileManagerSuccessResult"
-    ],
-    [
-      "ReadFileOptions"
-    ],
-    [
-      "WriteFileOptions"
-    ],
-    [
-      "AppendFileOptions"
-    ],
-    [
-      "OpenFileOptions"
-    ],
-    [
-      "OpenFileSyncOptions"
-    ],
-    [
-      "UnLinkOptions"
-    ],
-    [
-      "MkDirOptions"
-    ],
-    [
-      "RmDirOptions"
-    ],
-    [
-      "ReadDirSuccessResult"
-    ],
-    [
-      "ReadDirOptions"
+      "$Once"
     ],
     [
       "AccessOptions"
     ],
     [
-      "RenameOptions"
+      "AddPhoneContact"
     ],
     [
-      "CopyFileOptions"
+      "AddPhoneContactComplete"
     ],
     [
-      "SaveFileOptions"
+      "AddPhoneContactCompleteCallback"
     ],
     [
-      "SaveFileSuccessResult"
+      "AddPhoneContactFail"
     ],
     [
-      "GetFileInfoSuccessResult"
+      "AddPhoneContactFailCallback"
     ],
     [
-      "GetFileInfoOptions"
+      "AddPhoneContactOptions"
     ],
     [
-      "Stats"
+      "AddPhoneContactSuccess"
     ],
     [
-      "FileStats"
+      "AddPhoneContactSuccessCallback"
     ],
     [
-      "StatSuccessResult"
+      "AppCrashInfo"
     ],
     [
-      "StatOptions"
+      "AppThemeChangeResult"
     ],
     [
-      "UnzipFileOptions"
+      "AppThemeErrorCode"
     ],
     [
-      "GetSavedFileListResult"
+      "AppThemeFail"
     ],
     [
-      "GetSavedFileListOptions"
+      "AppendFileOptions"
     ],
     [
-      "TruncateFileOptions"
+      "AppleLoginAppleInfo"
     ],
     [
-      "ReadCompressedFileOptions"
+      "ArrayBufferToBase64"
     ],
     [
-      "RemoveSavedFileOptions"
+      "BackgroundAudioManager"
     ],
     [
-      "WriteResult"
+      "Base64ToArrayBuffer"
     ],
     [
-      "WriteOptions"
+      "Certificate"
     ],
     [
-      "WriteSyncOptions"
+      "CheckIsSoterEnrolledInDevice"
+    ],
+    [
+      "CheckIsSoterEnrolledInDeviceComplete"
+    ],
+    [
+      "CheckIsSoterEnrolledInDeviceCompleteCallback"
+    ],
+    [
+      "CheckIsSoterEnrolledInDeviceFail"
+    ],
+    [
+      "CheckIsSoterEnrolledInDeviceFailCallback"
+    ],
+    [
+      "CheckIsSoterEnrolledInDeviceOptions"
+    ],
+    [
+      "CheckIsSoterEnrolledInDeviceSuccess"
+    ],
+    [
+      "CheckIsSoterEnrolledInDeviceSuccessCallback"
+    ],
+    [
+      "CheckIsSupportSoterAuthentication"
+    ],
+    [
+      "CheckIsSupportSoterAuthenticationComplete"
+    ],
+    [
+      "CheckIsSupportSoterAuthenticationCompleteCallback"
+    ],
+    [
+      "CheckIsSupportSoterAuthenticationFail"
+    ],
+    [
+      "CheckIsSupportSoterAuthenticationFailCallback"
+    ],
+    [
+      "CheckIsSupportSoterAuthenticationOptions"
+    ],
+    [
+      "CheckIsSupportSoterAuthenticationSuccess"
+    ],
+    [
+      "CheckIsSupportSoterAuthenticationSuccessCallback"
+    ],
+    [
+      "ChooseFile"
+    ],
+    [
+      "ChooseFileComplete"
+    ],
+    [
+      "ChooseFileCompleteCallback"
+    ],
+    [
+      "ChooseFileFail"
+    ],
+    [
+      "ChooseFileFailCallback"
+    ],
+    [
+      "ChooseFileOptions"
+    ],
+    [
+      "ChooseFileSuccess"
+    ],
+    [
+      "ChooseFileSuccessCallback"
+    ],
+    [
+      "ChooseFileTempFile"
+    ],
+    [
+      "ChooseImage"
+    ],
+    [
+      "ChooseImageAlbumMode"
+    ],
+    [
+      "ChooseImageCompleteCallback"
+    ],
+    [
+      "ChooseImageCropOptions"
+    ],
+    [
+      "ChooseImageFail"
+    ],
+    [
+      "ChooseImageFailCallback"
+    ],
+    [
+      "ChooseImageOptions"
+    ],
+    [
+      "ChooseImagePageOrientation"
+    ],
+    [
+      "ChooseImageSuccess"
+    ],
+    [
+      "ChooseImageSuccessCallback"
+    ],
+    [
+      "ChooseImageTempFile"
+    ],
+    [
+      "ChooseMedia"
+    ],
+    [
+      "ChooseMediaCompleteCallback"
+    ],
+    [
+      "ChooseMediaErrorCode"
+    ],
+    [
+      "ChooseMediaFail"
+    ],
+    [
+      "ChooseMediaFailCallback"
+    ],
+    [
+      "ChooseMediaFileType"
+    ],
+    [
+      "ChooseMediaOptions"
+    ],
+    [
+      "ChooseMediaPageOrientation"
+    ],
+    [
+      "ChooseMediaSuccess"
+    ],
+    [
+      "ChooseMediaSuccessCallback"
+    ],
+    [
+      "ChooseMediaTempFile"
+    ],
+    [
+      "ChooseVideo"
+    ],
+    [
+      "ChooseVideoAlbumMode"
+    ],
+    [
+      "ChooseVideoCompleteCallback"
+    ],
+    [
+      "ChooseVideoFail"
+    ],
+    [
+      "ChooseVideoFailCallback"
+    ],
+    [
+      "ChooseVideoOptions"
+    ],
+    [
+      "ChooseVideoPageOrientation"
+    ],
+    [
+      "ChooseVideoSuccess"
+    ],
+    [
+      "ChooseVideoSuccessCallback"
+    ],
+    [
+      "ClearStorage"
+    ],
+    [
+      "ClearStorageCompleteCallback"
+    ],
+    [
+      "ClearStorageFailCallback"
+    ],
+    [
+      "ClearStorageOptions"
+    ],
+    [
+      "ClearStorageSuccess"
+    ],
+    [
+      "ClearStorageSuccessCallback"
+    ],
+    [
+      "ClearStorageSync"
+    ],
+    [
+      "ClipBoardErrorCode"
     ],
     [
       "CloseOptions"
     ],
     [
+      "ClosePreviewImage"
+    ],
+    [
+      "ClosePreviewImageCompleteCallback"
+    ],
+    [
+      "ClosePreviewImageFail"
+    ],
+    [
+      "ClosePreviewImageFailCallback"
+    ],
+    [
+      "ClosePreviewImageOptions"
+    ],
+    [
+      "ClosePreviewImageSuccess"
+    ],
+    [
+      "ClosePreviewImageSuccessCallback"
+    ],
+    [
+      "CloseSocket"
+    ],
+    [
+      "CloseSocketOptions"
+    ],
+    [
       "CloseSyncOptions"
     ],
     [
-      "FStatSuccessResult"
+      "CompressImage"
+    ],
+    [
+      "CompressImageCompleteCallback"
+    ],
+    [
+      "CompressImageFail"
+    ],
+    [
+      "CompressImageFailCallback"
+    ],
+    [
+      "CompressImageOptions"
+    ],
+    [
+      "CompressImageSuccess"
+    ],
+    [
+      "CompressImageSuccessCallback"
+    ],
+    [
+      "CompressVideo"
+    ],
+    [
+      "CompressVideoCompleteCallback"
+    ],
+    [
+      "CompressVideoFail"
+    ],
+    [
+      "CompressVideoFailCallback"
+    ],
+    [
+      "CompressVideoOptions"
+    ],
+    [
+      "CompressVideoSuccess"
+    ],
+    [
+      "CompressVideoSuccessCallback"
+    ],
+    [
+      "ConfigMTLS"
+    ],
+    [
+      "ConfigMTLSComplete"
+    ],
+    [
+      "ConfigMTLSCompleteCallback"
+    ],
+    [
+      "ConfigMTLSFail"
+    ],
+    [
+      "ConfigMTLSFailCallback"
+    ],
+    [
+      "ConfigMTLSOptions"
+    ],
+    [
+      "ConfigMTLSSuccess"
+    ],
+    [
+      "ConfigMTLSSuccessCallback"
+    ],
+    [
+      "ConnectSocket"
+    ],
+    [
+      "ConnectSocketErrorCode"
+    ],
+    [
+      "ConnectSocketFail"
+    ],
+    [
+      "ConnectSocketOptions"
+    ],
+    [
+      "ConnectSocketSuccess"
+    ],
+    [
+      "CopyFileOptions"
+    ],
+    [
+      "CreateAppCrash"
+    ],
+    [
+      "CreateBackgroundAudioErrorCode"
+    ],
+    [
+      "CreateInnerAudioContext"
+    ],
+    [
+      "CreateInnerAudioContextErrorCode"
+    ],
+    [
+      "CreateWebviewContext"
+    ],
+    [
+      "CreateWorker"
+    ],
+    [
+      "CutoutRect"
+    ],
+    [
+      "DeleteAppCrashInfo"
+    ],
+    [
+      "DownloadFile"
+    ],
+    [
+      "DownloadFileComplete"
+    ],
+    [
+      "DownloadFileCompleteCallback"
+    ],
+    [
+      "DownloadFileFail"
+    ],
+    [
+      "DownloadFileFailCallback"
+    ],
+    [
+      "DownloadFileOptions"
+    ],
+    [
+      "DownloadFileProgressUpdateCallback"
+    ],
+    [
+      "DownloadFileSuccess"
+    ],
+    [
+      "DownloadFileSuccessCallback"
+    ],
+    [
+      "DownloadTask"
+    ],
+    [
+      "EntriesResult"
+    ],
+    [
+      "EntryItem"
+    ],
+    [
+      "Exit"
+    ],
+    [
+      "ExitCompleteCallback"
+    ],
+    [
+      "ExitErrorCode"
+    ],
+    [
+      "ExitFail"
+    ],
+    [
+      "ExitFailCallback"
+    ],
+    [
+      "ExitOptions"
+    ],
+    [
+      "ExitSuccess"
+    ],
+    [
+      "ExitSuccessCallback"
     ],
     [
       "FStatOptions"
+    ],
+    [
+      "FStatSuccessCallback"
+    ],
+    [
+      "FStatSuccessResult"
     ],
     [
       "FStatSyncOptions"
@@ -223,52 +481,208 @@
       "FTruncateFileSyncOptions"
     ],
     [
-      "EntriesResult"
+      "FileManagerCompleteCallback"
     ],
     [
-      "ZipFileItem"
+      "FileManagerFailCallback"
     ],
     [
-      "ReadZipEntryOptions"
+      "FileManagerSuccessCallback"
     ],
     [
-      "ReadSuccessCallbackResult"
+      "FileManagerSuccessResult"
     ],
     [
-      "ReadOption"
-    ],
-    [
-      "ReadSyncOption"
-    ],
-    [
-      "ReadResult"
+      "FileStats"
     ],
     [
       "FileSystemManager"
     ],
     [
+      "FileSystemManagerErrorCode"
+    ],
+    [
       "FileSystemManagerFail"
     ],
     [
-      "IFileSystemManagerFail"
+      "GeneralCallbackResult"
     ],
     [
-      "GetAppBaseInfoResult"
+      "GetAppAuthorizeSetting"
+    ],
+    [
+      "GetAppAuthorizeSettingResult"
     ],
     [
       "GetAppBaseInfo"
     ],
     [
-      "GetDeviceInfoResult"
+      "GetAppBaseInfoOptions"
+    ],
+    [
+      "GetAppBaseInfoResult"
+    ],
+    [
+      "GetAppCrashInfo"
+    ],
+    [
+      "GetBackgroundAudioManager"
+    ],
+    [
+      "GetClipboardData"
+    ],
+    [
+      "GetClipboardDataComplete"
+    ],
+    [
+      "GetClipboardDataCompleteCallback"
+    ],
+    [
+      "GetClipboardDataFail"
+    ],
+    [
+      "GetClipboardDataFailCallback"
+    ],
+    [
+      "GetClipboardDataOptions"
+    ],
+    [
+      "GetClipboardDataSuccess"
+    ],
+    [
+      "GetClipboardDataSuccessCallback"
     ],
     [
       "GetDeviceInfo"
     ],
     [
+      "GetDeviceInfoOptions"
+    ],
+    [
+      "GetDeviceInfoResult"
+    ],
+    [
+      "GetElementById"
+    ],
+    [
+      "GetFileInfo"
+    ],
+    [
+      "GetFileInfoOptions"
+    ],
+    [
+      "GetFileInfoSuccessCallback"
+    ],
+    [
+      "GetFileInfoSuccessResult"
+    ],
+    [
+      "GetFileSystemManager"
+    ],
+    [
+      "GetImageInfo"
+    ],
+    [
+      "GetImageInfoCompleteCallback"
+    ],
+    [
+      "GetImageInfoFail"
+    ],
+    [
+      "GetImageInfoFailCallback"
+    ],
+    [
+      "GetImageInfoOptions"
+    ],
+    [
+      "GetImageInfoSuccess"
+    ],
+    [
+      "GetImageInfoSuccessCallback"
+    ],
+    [
+      "GetLocation"
+    ],
+    [
+      "GetLocationFail"
+    ],
+    [
+      "GetLocationFailImpl"
+    ],
+    [
+      "GetLocationOptions"
+    ],
+    [
+      "GetLocationSuccess"
+    ],
+    [
+      "GetNetworkType"
+    ],
+    [
+      "GetNetworkTypeComplete"
+    ],
+    [
+      "GetNetworkTypeCompleteCallback"
+    ],
+    [
+      "GetNetworkTypeFail"
+    ],
+    [
+      "GetNetworkTypeFailCallback"
+    ],
+    [
+      "GetNetworkTypeOptions"
+    ],
+    [
+      "GetNetworkTypeSuccess"
+    ],
+    [
+      "GetNetworkTypeSuccessCallback"
+    ],
+    [
+      "GetPrivacySetting"
+    ],
+    [
+      "GetPrivacySettingCompleteCallback"
+    ],
+    [
+      "GetPrivacySettingFailCallback"
+    ],
+    [
+      "GetPrivacySettingOptions"
+    ],
+    [
+      "GetPrivacySettingSuccessCallback"
+    ],
+    [
+      "GetPrivacySettingSuccessResult"
+    ],
+    [
+      "GetProvider"
+    ],
+    [
+      "GetProviderComplete"
+    ],
+    [
+      "GetProviderCompleteCallback"
+    ],
+    [
+      "GetProviderFail"
+    ],
+    [
+      "GetProviderFailCallback"
+    ],
+    [
+      "GetProviderFailImpl"
+    ],
+    [
+      "GetProviderOptions"
+    ],
+    [
       "GetProviderSuccess"
     ],
     [
-      "GetProviderSyncSuccess"
+      "GetProviderSuccessCallback"
     ],
     [
       "GetProviderSync"
@@ -277,382 +691,805 @@
       "GetProviderSyncOptions"
     ],
     [
-      "GetProviderOptions"
+      "GetProviderSyncSuccess"
     ],
     [
-      "GetProvider"
+      "GetRecorderManager"
+    ],
+    [
+      "GetSavedFileInfo"
+    ],
+    [
+      "GetSavedFileList"
+    ],
+    [
+      "GetSavedFileListCallback"
+    ],
+    [
+      "GetSavedFileListOptions"
+    ],
+    [
+      "GetSavedFileListResult"
+    ],
+    [
+      "GetScreenBrightness"
+    ],
+    [
+      "GetScreenBrightnessComplete"
+    ],
+    [
+      "GetScreenBrightnessCompleteCallback"
+    ],
+    [
+      "GetScreenBrightnessFail"
+    ],
+    [
+      "GetScreenBrightnessFailCallback"
+    ],
+    [
+      "GetScreenBrightnessOptions"
+    ],
+    [
+      "GetScreenBrightnessSuccess"
+    ],
+    [
+      "GetScreenBrightnessSuccessCallback"
+    ],
+    [
+      "GetStorage"
+    ],
+    [
+      "GetStorageCompleteCallback"
+    ],
+    [
+      "GetStorageFailCallback"
+    ],
+    [
+      "GetStorageInfo"
+    ],
+    [
+      "GetStorageInfoCompleteCallback"
+    ],
+    [
+      "GetStorageInfoFailCallback"
+    ],
+    [
+      "GetStorageInfoOptions"
+    ],
+    [
+      "GetStorageInfoSuccess"
+    ],
+    [
+      "GetStorageInfoSuccessCallback"
+    ],
+    [
+      "GetStorageInfoSync"
+    ],
+    [
+      "GetStorageOptions"
+    ],
+    [
+      "GetStorageSuccess"
+    ],
+    [
+      "GetStorageSuccessCallback"
+    ],
+    [
+      "GetStorageSync"
     ],
     [
       "GetSystemInfo"
     ],
     [
-      "GetSystemInfoSync"
+      "GetSystemInfoComplete"
     ],
     [
-      "GetWindowInfo"
-    ],
-    [
-      "SafeArea"
-    ],
-    [
-      "SafeAreaInsets"
-    ],
-    [
-      "GetSystemInfoResult"
+      "GetSystemInfoCompleteCallback"
     ],
     [
       "GetSystemInfoOptions"
     ],
     [
-      "GetWindowInfoResult"
+      "GetSystemInfoResult"
     ],
     [
-      "HideKeyboardSuccess"
+      "GetSystemInfoSuccessCallback"
     ],
     [
-      "HideKeyboardFail"
+      "GetSystemInfoSync"
     ],
     [
-      "HideKeyboardOptions"
+      "GetSystemSetting"
     ],
     [
-      "LocationErrorCode"
+      "GetSystemSettingResult"
     ],
     [
-      "IGetLocationFail"
+      "GetUserInfo"
     ],
     [
-      "GetLocationFail"
+      "GetUserInfoComplete"
     ],
     [
-      "GetLocation"
+      "GetUserInfoCompleteCallback"
     ],
     [
-      "GetLocationSuccess"
+      "GetUserInfoFail"
     ],
     [
-      "GetLocationOptions"
+      "GetUserInfoFailCallback"
     ],
     [
-      "StartLocationUpdateSuccess"
+      "GetUserInfoOptions"
     ],
     [
-      "StartLocationUpdateOptionsType"
+      "GetUserInfoSuccess"
     ],
     [
-      "StartLocationUpdateOptions"
-    ],
-    [
-      "StartLocationUpdate"
-    ],
-    [
-      "StopLocationUpdateSuccess"
-    ],
-    [
-      "StopLocationUpdateOptions"
-    ],
-    [
-      "StopLocationUpdate"
-    ],
-    [
-      "OnLocationChangeResult"
-    ],
-    [
-      "OnLocationChangeCallback"
-    ],
-    [
-      "OnLocationChangeErrorCallback"
-    ],
-    [
-      "StartLocationUpdateBackgroundSuccess"
-    ],
-    [
-      "StartLocationUpdateBackgroundOptions"
-    ],
-    [
-      "StartLocationUpdateBackground"
-    ],
-    [
-      "UniLocationProvider"
-    ],
-    [
-      "MakePhoneCall"
-    ],
-    [
-      "MakePhoneCallSuccess"
-    ],
-    [
-      "MakePhoneCallErrorCode"
-    ],
-    [
-      "MakePhoneCallOptions"
-    ],
-    [
-      "ChooseImageTempFile"
-    ],
-    [
-      "ChooseImageSuccess"
-    ],
-    [
-      "ChooseImageFail"
-    ],
-    [
-      "ChooseImageSuccessCallback"
-    ],
-    [
-      "ChooseImageFailCallback"
-    ],
-    [
-      "ChooseImageCompleteCallback"
-    ],
-    [
-      "ChooseImageCropOptions"
-    ],
-    [
-      "ChooseImagePageOrientation"
-    ],
-    [
-      "ChooseImageAlbumMode"
-    ],
-    [
-      "ChooseImageOptions"
-    ],
-    [
-      "ChooseImage"
-    ],
-    [
-      "PreviewImageSuccess"
-    ],
-    [
-      "PreviewImageFail"
-    ],
-    [
-      "PreviewImageSuccessCallback"
-    ],
-    [
-      "PreviewImageFailCallback"
-    ],
-    [
-      "PreviewImageCompleteCallback"
-    ],
-    [
-      "PreviewImageOptions"
-    ],
-    [
-      "PreviewImage"
-    ],
-    [
-      "ClosePreviewImage"
-    ],
-    [
-      "ClosePreviewImageSuccess"
-    ],
-    [
-      "ClosePreviewImageFail"
-    ],
-    [
-      "ClosePreviewImageSuccessCallback"
-    ],
-    [
-      "ClosePreviewImageFailCallback"
-    ],
-    [
-      "ClosePreviewImageCompleteCallback"
-    ],
-    [
-      "ClosePreviewImageOptions"
-    ],
-    [
-      "GetImageInfo"
-    ],
-    [
-      "GetImageInfoSuccess"
-    ],
-    [
-      "GetImageInfoFail"
-    ],
-    [
-      "GetImageInfoSuccessCallback"
-    ],
-    [
-      "GetImageInfoFailCallback"
-    ],
-    [
-      "GetImageInfoCompleteCallback"
-    ],
-    [
-      "GetImageInfoOptions"
-    ],
-    [
-      "SaveImageToPhotosAlbum"
-    ],
-    [
-      "SaveImageToPhotosAlbumSuccess"
-    ],
-    [
-      "SaveImageToPhotosAlbumFail"
-    ],
-    [
-      "SaveImageToPhotosAlbumSuccessCallback"
-    ],
-    [
-      "SaveImageToPhotosAlbumFailCallback"
-    ],
-    [
-      "SaveImageToPhotosAlbumCompleteCallback"
-    ],
-    [
-      "SaveImageToPhotosAlbumOptions"
-    ],
-    [
-      "CompressImage"
-    ],
-    [
-      "CompressImageSuccess"
-    ],
-    [
-      "CompressImageFail"
-    ],
-    [
-      "CompressImageSuccessCallback"
-    ],
-    [
-      "CompressImageFailCallback"
-    ],
-    [
-      "CompressImageCompleteCallback"
-    ],
-    [
-      "CompressImageOptions"
-    ],
-    [
-      "ChooseVideoSuccess"
-    ],
-    [
-      "ChooseVideoFail"
-    ],
-    [
-      "ChooseVideoSuccessCallback"
-    ],
-    [
-      "ChooseVideoFailCallback"
-    ],
-    [
-      "ChooseVideoCompleteCallback"
-    ],
-    [
-      "ChooseVideoPageOrientation"
-    ],
-    [
-      "ChooseVideoAlbumMode"
-    ],
-    [
-      "ChooseVideoOptions"
-    ],
-    [
-      "ChooseVideo"
-    ],
-    [
-      "GetVideoInfoSuccess"
-    ],
-    [
-      "GetVideoInfoFail"
-    ],
-    [
-      "GetVideoInfoSuccessCallback"
-    ],
-    [
-      "GetVideoInfoFailCallback"
-    ],
-    [
-      "GetVideoInfoCompleteCallback"
-    ],
-    [
-      "GetVideoInfoOptions"
+      "GetUserInfoSuccessCallback"
     ],
     [
       "GetVideoInfo"
     ],
     [
-      "SaveVideoToPhotosAlbumSuccess"
+      "GetVideoInfoCompleteCallback"
     ],
     [
-      "SaveVideoToPhotosAlbumFail"
+      "GetVideoInfoFail"
     ],
     [
-      "SaveVideoToPhotosAlbumSuccessCallback"
+      "GetVideoInfoFailCallback"
     ],
     [
-      "SaveVideoToPhotosAlbumFailCallback"
+      "GetVideoInfoOptions"
     ],
     [
-      "SaveVideoToPhotosAlbumCompleteCallback"
+      "GetVideoInfoSuccess"
     ],
     [
-      "SaveVideoToPhotosAlbumOptions"
+      "GetVideoInfoSuccessCallback"
     ],
     [
-      "SaveVideoToPhotosAlbum"
+      "GetWindowInfo"
     ],
     [
-      "CompressVideoSuccess"
+      "GetWindowInfoResult"
     ],
     [
-      "CompressVideoFail"
+      "HideKeyboard"
     ],
     [
-      "CompressVideoSuccessCallback"
+      "HideKeyboardCompleteCallback"
     ],
     [
-      "CompressVideoFailCallback"
+      "HideKeyboardFail"
     ],
     [
-      "CompressVideoCompleteCallback"
+      "HideKeyboardFailCallback"
     ],
     [
-      "CompressVideoOptions"
+      "HideKeyboardOptions"
     ],
     [
-      "CompressVideo"
+      "HideKeyboardSuccess"
     ],
     [
-      "ChooseFile"
+      "HideKeyboardSuccessCallback"
     ],
     [
-      "ChooseFileSuccess"
+      "HideNavigationBarLoading"
     ],
     [
-      "ChooseFileTempFile"
+      "HideNavigationBarLoadingFail"
     ],
     [
-      "ChooseFileSuccessCallback"
+      "HideNavigationBarLoadingFailCallback"
     ],
     [
-      "ChooseFileFail"
+      "HideNavigationBarLoadingOptions"
     ],
     [
-      "ChooseFileFailCallback"
+      "HideNavigationBarLoadingSuccess"
     ],
     [
-      "ChooseFileComplete"
+      "HideNavigationBarLoadingSuccessCallback"
     ],
     [
-      "ChooseFileCompleteCallback"
+      "HideToast"
     ],
     [
-      "ChooseFileOptions"
+      "IAppThemeFail"
+    ],
+    [
+      "IChooseMediaError"
+    ],
+    [
+      "IClipBoardError"
+    ],
+    [
+      "ICreateBackgroundAudioFail"
+    ],
+    [
+      "ICreateInnerAudioContextFail"
+    ],
+    [
+      "IExitError"
+    ],
+    [
+      "IFileSystemManagerFail"
+    ],
+    [
+      "IGetLocationFail"
+    ],
+    [
+      "IGetProviderFail"
+    ],
+    [
+      "IMakePhoneCallError"
+    ],
+    [
+      "IMediaError"
+    ],
+    [
+      "IOauthFail"
+    ],
+    [
+      "IOpenDocumentError"
+    ],
+    [
+      "IPromptError"
+    ],
+    [
+      "IRecorderManagerFail"
+    ],
+    [
+      "IRequestPaymentFail"
+    ],
+    [
+      "IShareFail"
+    ],
+    [
+      "IShareWithSystemFail"
+    ],
+    [
+      "Icon"
+    ],
+    [
+      "InnerAudioContext"
+    ],
+    [
+      "LegacyGetFileInfoCompleteCallback"
+    ],
+    [
+      "LegacyGetFileInfoFail"
+    ],
+    [
+      "LegacyGetFileInfoFailCallback"
+    ],
+    [
+      "LegacyGetFileInfoOptions"
+    ],
+    [
+      "LegacyGetFileInfoSuccess"
+    ],
+    [
+      "LegacyGetFileInfoSuccessCallback"
+    ],
+    [
+      "LegacyGetSavedFileInfoCompleteCallback"
+    ],
+    [
+      "LegacyGetSavedFileInfoFail"
+    ],
+    [
+      "LegacyGetSavedFileInfoFailCallback"
+    ],
+    [
+      "LegacyGetSavedFileInfoOptions"
+    ],
+    [
+      "LegacyGetSavedFileInfoSuccess"
+    ],
+    [
+      "LegacyGetSavedFileInfoSuccessCallback"
+    ],
+    [
+      "LegacyGetSavedFileListCompleteCallback"
+    ],
+    [
+      "LegacyGetSavedFileListFail"
+    ],
+    [
+      "LegacyGetSavedFileListFailCallback"
+    ],
+    [
+      "LegacyGetSavedFileListOptions"
+    ],
+    [
+      "LegacyGetSavedFileListSuccess"
+    ],
+    [
+      "LegacyGetSavedFileListSuccessCallback"
+    ],
+    [
+      "LegacyRemoveSavedFileCompleteCallback"
+    ],
+    [
+      "LegacyRemoveSavedFileFail"
+    ],
+    [
+      "LegacyRemoveSavedFileFailCallback"
+    ],
+    [
+      "LegacyRemoveSavedFileOptions"
+    ],
+    [
+      "LegacyRemoveSavedFileSuccess"
+    ],
+    [
+      "LegacyRemoveSavedFileSuccessCallback"
+    ],
+    [
+      "LegacySaveFileCompleteCallback"
+    ],
+    [
+      "LegacySaveFileFail"
+    ],
+    [
+      "LegacySaveFileFailCallback"
+    ],
+    [
+      "LegacySaveFileOptions"
+    ],
+    [
+      "LegacySaveFileSuccess"
+    ],
+    [
+      "LegacySaveFileSuccessCallback"
+    ],
+    [
+      "LegacySavedFileListItem"
+    ],
+    [
+      "LoadFontFace"
+    ],
+    [
+      "LoadFontFaceComplete"
+    ],
+    [
+      "LoadFontFaceCompleteCallback"
+    ],
+    [
+      "LoadFontFaceErrCode"
+    ],
+    [
+      "LoadFontFaceFail"
+    ],
+    [
+      "LoadFontFaceFailCallback"
+    ],
+    [
+      "LoadFontFaceOptionDesc"
+    ],
+    [
+      "LoadFontFaceOptions"
+    ],
+    [
+      "LoadFontFaceSuccess"
+    ],
+    [
+      "LoadFontFaceSuccessCallback"
+    ],
+    [
+      "LocationErrorCode"
+    ],
+    [
+      "Login"
+    ],
+    [
+      "LoginComplete"
+    ],
+    [
+      "LoginCompleteCallback"
+    ],
+    [
+      "LoginFail"
+    ],
+    [
+      "LoginFailCallback"
+    ],
+    [
+      "LoginOptions"
+    ],
+    [
+      "LoginSuccess"
+    ],
+    [
+      "LoginSuccessCallback"
+    ],
+    [
+      "LongPressActionsFailResult"
+    ],
+    [
+      "LongPressActionsOptions"
+    ],
+    [
+      "LongPressActionsSuccessResult"
+    ],
+    [
+      "MakePhoneCall"
+    ],
+    [
+      "MakePhoneCallComplete"
+    ],
+    [
+      "MakePhoneCallCompleteCallback"
+    ],
+    [
+      "MakePhoneCallErrorCode"
+    ],
+    [
+      "MakePhoneCallFail"
+    ],
+    [
+      "MakePhoneCallFailCallback"
+    ],
+    [
+      "MakePhoneCallOptions"
+    ],
+    [
+      "MakePhoneCallSuccess"
+    ],
+    [
+      "MakePhoneCallSuccessCallback"
+    ],
+    [
+      "MediaErrorCode"
+    ],
+    [
+      "MediaOrientation"
+    ],
+    [
+      "MkDirOptions"
+    ],
+    [
+      "MkDirSuccessCallback"
+    ],
+    [
+      "OauthErrorCode"
+    ],
+    [
+      "OffAppCrash"
+    ],
+    [
+      "OffAppThemeChange"
+    ],
+    [
+      "OffHostThemeChange"
+    ],
+    [
+      "OffKeyboardHeightChange"
+    ],
+    [
+      "OffLocationChange"
+    ],
+    [
+      "OffLocationChangeError"
+    ],
+    [
+      "OffNetworkStatusChange"
+    ],
+    [
+      "OffOsThemeChange"
+    ],
+    [
+      "OffPrivacyAuthorizationChange"
+    ],
+    [
+      "OnAppCrash"
+    ],
+    [
+      "OnAppCrashCallback"
+    ],
+    [
+      "OnAppThemeChange"
+    ],
+    [
+      "OnAppThemeChangeCallback"
+    ],
+    [
+      "OnHostThemeChange"
+    ],
+    [
+      "OnHostThemeChangeCallback"
+    ],
+    [
+      "OnHostThemeChangeCallbackResult"
+    ],
+    [
+      "OnKeyboardHeightChange"
+    ],
+    [
+      "OnKeyboardHeightChangeCallback"
+    ],
+    [
+      "OnKeyboardHeightChangeCallbackResult"
+    ],
+    [
+      "OnLocationChange"
+    ],
+    [
+      "OnLocationChangeCallback"
+    ],
+    [
+      "OnLocationChangeError"
+    ],
+    [
+      "OnLocationChangeErrorCallback"
+    ],
+    [
+      "OnLocationChangeResult"
+    ],
+    [
+      "OnNetworkStatusChange"
+    ],
+    [
+      "OnNetworkStatusChangeCallback"
+    ],
+    [
+      "OnNetworkStatusChangeCallbackResult"
+    ],
+    [
+      "OnOsThemeChange"
+    ],
+    [
+      "OnOsThemeChangeCallback"
+    ],
+    [
+      "OnPrivacyAuthorizationChange"
+    ],
+    [
+      "OnPrivacyAuthorizationChangeCallback"
+    ],
+    [
+      "OnProgressDownloadResult"
+    ],
+    [
+      "OnProgressUpdateResult"
+    ],
+    [
+      "OnSocketClose"
+    ],
+    [
+      "OnSocketCloseCallback"
+    ],
+    [
+      "OnSocketCloseCallbackResult"
+    ],
+    [
+      "OnSocketError"
+    ],
+    [
+      "OnSocketErrorCallback"
+    ],
+    [
+      "OnSocketErrorCallbackResult"
+    ],
+    [
+      "OnSocketMessage"
+    ],
+    [
+      "OnSocketMessageCallback"
+    ],
+    [
+      "OnSocketMessageCallbackResult"
+    ],
+    [
+      "OnSocketOpen"
+    ],
+    [
+      "OnSocketOpenCallback"
+    ],
+    [
+      "OnSocketOpenCallbackResult"
+    ],
+    [
+      "OnThemeChangeCallbackResult"
+    ],
+    [
+      "OpenAppAuthorizeSetting"
+    ],
+    [
+      "OpenAppAuthorizeSettingComplete"
+    ],
+    [
+      "OpenAppAuthorizeSettingCompleteCallback"
+    ],
+    [
+      "OpenAppAuthorizeSettingFail"
+    ],
+    [
+      "OpenAppAuthorizeSettingFailCallback"
+    ],
+    [
+      "OpenAppAuthorizeSettingOptions"
+    ],
+    [
+      "OpenAppAuthorizeSettingSuccess"
+    ],
+    [
+      "OpenAppAuthorizeSettingSuccessCallback"
+    ],
+    [
+      "OpenDocument"
+    ],
+    [
+      "OpenDocumentCompleteCallback"
+    ],
+    [
+      "OpenDocumentErrorCode"
+    ],
+    [
+      "OpenDocumentFail"
+    ],
+    [
+      "OpenDocumentFailCallback"
+    ],
+    [
+      "OpenDocumentOptions"
+    ],
+    [
+      "OpenDocumentSuccess"
+    ],
+    [
+      "OpenDocumentSuccessCallback"
+    ],
+    [
+      "OpenDocumentSupportedTypes"
+    ],
+    [
+      "OpenFileOptions"
+    ],
+    [
+      "OpenFileSuccessCallback"
+    ],
+    [
+      "OpenFileSuccessResult"
+    ],
+    [
+      "OpenFileSyncOptions"
+    ],
+    [
+      "OsThemeChangeResult"
+    ],
+    [
+      "PreviewImage"
+    ],
+    [
+      "PreviewImageCompleteCallback"
+    ],
+    [
+      "PreviewImageFail"
+    ],
+    [
+      "PreviewImageFailCallback"
+    ],
+    [
+      "PreviewImageOptions"
+    ],
+    [
+      "PreviewImageSuccess"
+    ],
+    [
+      "PreviewImageSuccessCallback"
+    ],
+    [
+      "PrivacyChangeResult"
+    ],
+    [
+      "PromptErrorCode"
+    ],
+    [
+      "ProviderErrorCode"
+    ],
+    [
+      "PullDownRefreshErrorCode"
+    ],
+    [
+      "ReadCompressedFileCallback"
+    ],
+    [
+      "ReadCompressedFileOptions"
+    ],
+    [
+      "ReadCompressedFileResult"
+    ],
+    [
+      "ReadDirOptions"
+    ],
+    [
+      "ReadDirSuccessCallback"
+    ],
+    [
+      "ReadDirSuccessResult"
+    ],
+    [
+      "ReadFileOptions"
+    ],
+    [
+      "ReadFileSuccessCallback"
+    ],
+    [
+      "ReadFileSuccessResult"
+    ],
+    [
+      "ReadOption"
+    ],
+    [
+      "ReadResult"
+    ],
+    [
+      "ReadSuccessCallback"
+    ],
+    [
+      "ReadSuccessCallbackResult"
+    ],
+    [
+      "ReadSyncOption"
+    ],
+    [
+      "ReadZipEntryCallback"
+    ],
+    [
+      "ReadZipEntryOptions"
+    ],
+    [
+      "RecorderManager"
+    ],
+    [
+      "RecorderManagerErrorCode"
+    ],
+    [
+      "RecorderManagerOnStopResult"
+    ],
+    [
+      "RecorderManagerStartOptions"
+    ],
+    [
+      "RemoveSavedFile"
+    ],
+    [
+      "RemoveSavedFileOptions"
+    ],
+    [
+      "RemoveStorage"
+    ],
+    [
+      "RemoveStorageCompleteCallback"
+    ],
+    [
+      "RemoveStorageFailCallback"
+    ],
+    [
+      "RemoveStorageOptions"
+    ],
+    [
+      "RemoveStorageSuccess"
+    ],
+    [
+      "RemoveStorageSuccessCallback"
+    ],
+    [
+      "RemoveStorageSync"
+    ],
+    [
+      "RenameOptions"
     ],
     [
       "Request"
     ],
     [
-      "RequestOptions"
-    ],
-    [
-      "RequestSuccess"
-    ],
-    [
-      "RequestMethod"
+      "RequestCompleteCallback"
     ],
     [
       "RequestErrorCode"
@@ -661,196 +1498,16 @@
       "RequestFail"
     ],
     [
-      "RequestSuccessCallback"
-    ],
-    [
       "RequestFailCallback"
     ],
     [
-      "RequestCompleteCallback"
+      "RequestMethod"
     ],
     [
-      "RequestTaskOnChunkReceivedListenerResult"
-    ],
-    [
-      "RequestTaskOnChunkReceivedCallback"
-    ],
-    [
-      "RequestTaskOnHeadersReceivedListenerResult"
-    ],
-    [
-      "RequestTaskOnHeadersReceivedCallback"
-    ],
-    [
-      "RequestTask"
-    ],
-    [
-      "UploadFile"
-    ],
-    [
-      "UploadFileOptionFiles"
-    ],
-    [
-      "UploadFileSuccess"
-    ],
-    [
-      "UploadFileSuccessCallback"
-    ],
-    [
-      "UploadFileFail"
-    ],
-    [
-      "UploadFileFailCallback"
-    ],
-    [
-      "UploadFileCompleteCallback"
-    ],
-    [
-      "UploadFileOptions"
-    ],
-    [
-      "OnProgressUpdateResult"
-    ],
-    [
-      "UploadFileProgressUpdateCallback"
-    ],
-    [
-      "UploadTask"
-    ],
-    [
-      "DownloadFile"
-    ],
-    [
-      "DownloadFileSuccess"
-    ],
-    [
-      "DownloadFileSuccessCallback"
-    ],
-    [
-      "DownloadFileFail"
-    ],
-    [
-      "DownloadFileFailCallback"
-    ],
-    [
-      "DownloadFileComplete"
-    ],
-    [
-      "DownloadFileCompleteCallback"
-    ],
-    [
-      "DownloadFileOptions"
-    ],
-    [
-      "OnProgressDownloadResult"
-    ],
-    [
-      "DownloadFileProgressUpdateCallback"
-    ],
-    [
-      "DownloadTask"
-    ],
-    [
-      "ConfigMTLS"
-    ],
-    [
-      "Certificate"
-    ],
-    [
-      "ConfigMTLSSuccess"
-    ],
-    [
-      "ConfigMTLSSuccessCallback"
-    ],
-    [
-      "ConfigMTLSFail"
-    ],
-    [
-      "ConfigMTLSFailCallback"
-    ],
-    [
-      "ConfigMTLSComplete"
-    ],
-    [
-      "ConfigMTLSCompleteCallback"
-    ],
-    [
-      "ConfigMTLSOptions"
-    ],
-    [
-      "UniOAuthProvider"
-    ],
-    [
-      "Login"
-    ],
-    [
-      "LoginSuccess"
-    ],
-    [
-      "LoginFail"
-    ],
-    [
-      "LoginOptions"
-    ],
-    [
-      "GetUserInfo"
-    ],
-    [
-      "UserInfo"
-    ],
-    [
-      "GetUserInfoSuccess"
-    ],
-    [
-      "GetUserInfoFail"
-    ],
-    [
-      "GetUserInfoOptions"
-    ],
-    [
-      "IOauthFail"
-    ],
-    [
-      "OauthErrorCode"
-    ],
-    [
-      "OpenAppAuthorizeSetting"
-    ],
-    [
-      "OpenAppAuthorizeSettingSuccess"
-    ],
-    [
-      "OpenAppAuthorizeSettingOptions"
-    ],
-    [
-      "OpenDocumentSuccess"
-    ],
-    [
-      "OpenDocumentFail"
-    ],
-    [
-      "OpenDocumentOptions"
-    ],
-    [
-      "UniPaymentProvider"
-    ],
-    [
-      "RequestPaymentErrorCode"
+      "RequestOptions"
     ],
     [
       "RequestPayment"
-    ],
-    [
-      "RequestPaymentSuccess"
-    ],
-    [
-      "RequestPaymentSuccessCallback"
-    ],
-    [
-      "RequestPaymentFail"
-    ],
-    [
-      "RequestPaymentFailCallback"
     ],
     [
       "RequestPaymentComplete"
@@ -859,220 +1516,118 @@
       "RequestPaymentCompleteCallback"
     ],
     [
+      "RequestPaymentErrorCode"
+    ],
+    [
+      "RequestPaymentFail"
+    ],
+    [
+      "RequestPaymentFailCallback"
+    ],
+    [
+      "RequestPaymentFailImpl"
+    ],
+    [
       "RequestPaymentOptions"
     ],
     [
-      "ShowToastSuccess"
+      "RequestPaymentSuccess"
     ],
     [
-      "ShowToastFail"
+      "RequestPaymentSuccessCallback"
     ],
     [
-      "ShowToastOptions"
+      "RequestSuccess"
     ],
     [
-      "ShowToast"
+      "RequestSuccessCallback"
     ],
     [
-      "HideToast"
+      "RequestTask"
     ],
     [
-      "ShowLoadingSuccess"
+      "RequestTaskOnChunkReceivedCallback"
     ],
     [
-      "ShowLoadingFail"
+      "RequestTaskOnChunkReceivedListenerResult"
     ],
     [
-      "ShowLoadingOptions"
+      "RequestTaskOnHeadersReceivedCallback"
     ],
     [
-      "ShowLoading"
+      "RequestTaskOnHeadersReceivedListenerResult"
     ],
     [
-      "HideLoading"
+      "ResetPrivacyAuthorization"
     ],
     [
-      "ShowModalSuccess"
-    ],
-    [
-      "ShowModalFail"
-    ],
-    [
-      "ShowModalOptions"
-    ],
-    [
-      "ShowModal"
-    ],
-    [
-      "ShowActionSheetSuccess"
-    ],
-    [
-      "ShowActionSheetFail"
-    ],
-    [
-      "ShowActionSheetOptions"
-    ],
-    [
-      "ShowActionSheet"
-    ],
-    [
-      "StartPullDownRefreshOptions"
-    ],
-    [
-      "StartPullDownRefreshSuccess"
+      "RmDirOptions"
     ],
     [
       "Rpx2px"
     ],
     [
-      "ScanCodeSuccess"
+      "SafeArea"
     ],
     [
-      "ScanCodeFail"
+      "SafeAreaInsets"
     ],
     [
-      "ScanCodeOptions"
+      "SaveFile"
     ],
     [
-      "IShareFail"
+      "SaveFileOptions"
     ],
     [
-      "ShareErrorCode"
+      "SaveFileSuccessCallback"
     ],
     [
-      "Share"
+      "SaveFileSuccessResult"
     ],
     [
-      "ShareMiniProgramShareType"
+      "SaveImageToPhotosAlbum"
     ],
     [
-      "ShareSuccess"
+      "SaveImageToPhotosAlbumCompleteCallback"
     ],
     [
-      "ShareFail"
+      "SaveImageToPhotosAlbumFail"
     ],
     [
-      "ShareComplete"
+      "SaveImageToPhotosAlbumFailCallback"
     ],
     [
-      "ShareProvider"
+      "SaveImageToPhotosAlbumOptions"
     ],
     [
-      "ShareScene"
+      "SaveImageToPhotosAlbumSuccess"
     ],
     [
-      "ShareOptions"
+      "SaveImageToPhotosAlbumSuccessCallback"
     ],
     [
-      "UniShareProvider"
+      "SaveVideoToPhotosAlbum"
     ],
     [
-      "ShareWithSystemSuccess"
+      "SaveVideoToPhotosAlbumCompleteCallback"
     ],
     [
-      "ShareWithSystemFail"
+      "SaveVideoToPhotosAlbumFail"
     ],
     [
-      "ShareWithSystemOptions"
+      "SaveVideoToPhotosAlbumFailCallback"
     ],
     [
-      "ShareWithSystem"
+      "SaveVideoToPhotosAlbumOptions"
     ],
     [
-      "SetStorageSuccess"
+      "SaveVideoToPhotosAlbumSuccess"
     ],
     [
-      "SetStorageOptions"
+      "SaveVideoToPhotosAlbumSuccessCallback"
     ],
     [
-      "SetStorage"
-    ],
-    [
-      "SetStorageSync"
-    ],
-    [
-      "GetStorageSuccess"
-    ],
-    [
-      "GetStorageOptions"
-    ],
-    [
-      "GetStorage"
-    ],
-    [
-      "GetStorageSync"
-    ],
-    [
-      "GetStorageInfoSuccess"
-    ],
-    [
-      "GetStorageInfoOptions"
-    ],
-    [
-      "GetStorageInfo"
-    ],
-    [
-      "GetStorageInfoSync"
-    ],
-    [
-      "RemoveStorageSuccess"
-    ],
-    [
-      "RemoveStorageOptions"
-    ],
-    [
-      "RemoveStorage"
-    ],
-    [
-      "RemoveStorageSync"
-    ],
-    [
-      "ClearStorageSuccess"
-    ],
-    [
-      "ClearStorageOptions"
-    ],
-    [
-      "ClearStorage"
-    ],
-    [
-      "ClearStorageSync"
-    ],
-    [
-      "OsThemeChangeResult"
-    ],
-    [
-      "AppThemeChangeResult"
-    ],
-    [
-      "OnOsThemeChangeCallback"
-    ],
-    [
-      "OnAppThemeChangeCallback"
-    ],
-    [
-      "SetAppThemeSuccessResult"
-    ],
-    [
-      "SetAppThemeOptions"
-    ],
-    [
-      "AppThemeFail"
-    ],
-    [
-      "OnHostThemeChangeCallbackResult"
-    ],
-    [
-      "OnHostThemeChangeCallback"
-    ],
-    [
-      "ConnectSocket"
-    ],
-    [
-      "ConnectSocketSuccess"
-    ],
-    [
-      "ConnectSocketOptions"
+      "SendSocketMessage"
     ],
     [
       "SendSocketMessageErrorCode"
@@ -1084,55 +1639,532 @@
       "SendSocketMessageOptions"
     ],
     [
-      "CloseSocketOptions"
+      "SetAppTheme"
     ],
     [
-      "OnSocketOpenCallbackResult"
+      "SetAppThemeCompleteCallback"
     ],
     [
-      "OnSocketMessageCallbackResult"
+      "SetAppThemeFailCallback"
+    ],
+    [
+      "SetAppThemeOptions"
+    ],
+    [
+      "SetAppThemeSuccessCallback"
+    ],
+    [
+      "SetAppThemeSuccessResult"
+    ],
+    [
+      "SetClipboardData"
+    ],
+    [
+      "SetClipboardDataComplete"
+    ],
+    [
+      "SetClipboardDataCompleteCallback"
+    ],
+    [
+      "SetClipboardDataFail"
+    ],
+    [
+      "SetClipboardDataFailCallback"
+    ],
+    [
+      "SetClipboardDataOptions"
+    ],
+    [
+      "SetClipboardDataSuccess"
+    ],
+    [
+      "SetClipboardDataSuccessCallback"
+    ],
+    [
+      "SetInnerAudioOption"
+    ],
+    [
+      "SetInnerAudioOptionComplete"
+    ],
+    [
+      "SetInnerAudioOptionCompleteCallback"
+    ],
+    [
+      "SetInnerAudioOptionFail"
+    ],
+    [
+      "SetInnerAudioOptionFailCallback"
+    ],
+    [
+      "SetInnerAudioOptionOptions"
+    ],
+    [
+      "SetInnerAudioOptionSuccess"
+    ],
+    [
+      "SetInnerAudioOptionSuccessCallback"
+    ],
+    [
+      "SetKeepScreenOn"
+    ],
+    [
+      "SetKeepScreenOnComplete"
+    ],
+    [
+      "SetKeepScreenOnCompleteCallback"
+    ],
+    [
+      "SetKeepScreenOnFail"
+    ],
+    [
+      "SetKeepScreenOnFailCallback"
+    ],
+    [
+      "SetKeepScreenOnOptions"
+    ],
+    [
+      "SetKeepScreenOnSuccess"
+    ],
+    [
+      "SetKeepScreenOnSuccessCallback"
+    ],
+    [
+      "SetNavigationBarColor"
+    ],
+    [
+      "SetNavigationBarColorComplete"
+    ],
+    [
+      "SetNavigationBarColorCompleteCallback"
+    ],
+    [
+      "SetNavigationBarColorErrorCode"
+    ],
+    [
+      "SetNavigationBarColorFail"
+    ],
+    [
+      "SetNavigationBarColorFailCallback"
+    ],
+    [
+      "SetNavigationBarColorOptions"
+    ],
+    [
+      "SetNavigationBarColorSuccess"
+    ],
+    [
+      "SetNavigationBarColorSuccessCallback"
+    ],
+    [
+      "SetNavigationBarTitle"
+    ],
+    [
+      "SetNavigationBarTitleComplete"
+    ],
+    [
+      "SetNavigationBarTitleCompleteCallback"
+    ],
+    [
+      "SetNavigationBarTitleErrorCode"
+    ],
+    [
+      "SetNavigationBarTitleFail"
+    ],
+    [
+      "SetNavigationBarTitleFailCallback"
+    ],
+    [
+      "SetNavigationBarTitleOptions"
+    ],
+    [
+      "SetNavigationBarTitleSuccess"
+    ],
+    [
+      "SetNavigationBarTitleSuccessCallback"
+    ],
+    [
+      "SetScreenBrightness"
+    ],
+    [
+      "SetScreenBrightnessComplete"
+    ],
+    [
+      "SetScreenBrightnessCompleteCallback"
+    ],
+    [
+      "SetScreenBrightnessFail"
+    ],
+    [
+      "SetScreenBrightnessFailCallback"
+    ],
+    [
+      "SetScreenBrightnessOptions"
+    ],
+    [
+      "SetScreenBrightnessSuccess"
+    ],
+    [
+      "SetScreenBrightnessSuccessCallback"
+    ],
+    [
+      "SetStorage"
+    ],
+    [
+      "SetStorageCompleteCallback"
+    ],
+    [
+      "SetStorageFailCallback"
+    ],
+    [
+      "SetStorageOptions"
+    ],
+    [
+      "SetStorageSuccess"
+    ],
+    [
+      "SetStorageSuccessCallback"
+    ],
+    [
+      "SetStorageSync"
+    ],
+    [
+      "Share"
+    ],
+    [
+      "ShareComplete"
+    ],
+    [
+      "ShareCompleteCallback"
+    ],
+    [
+      "ShareErrorCode"
+    ],
+    [
+      "ShareFail"
+    ],
+    [
+      "ShareFailCallback"
+    ],
+    [
+      "ShareMiniProgramShareOptions"
+    ],
+    [
+      "ShareMiniProgramShareType"
+    ],
+    [
+      "ShareOptions"
+    ],
+    [
+      "ShareProvider"
+    ],
+    [
+      "ShareScene"
+    ],
+    [
+      "ShareSuccess"
+    ],
+    [
+      "ShareSuccessCallback"
+    ],
+    [
+      "ShareType"
+    ],
+    [
+      "ShareWithSystem"
+    ],
+    [
+      "ShareWithSystemCallback"
+    ],
+    [
+      "ShareWithSystemErrorCode"
+    ],
+    [
+      "ShareWithSystemFail"
+    ],
+    [
+      "ShareWithSystemFailCallback"
+    ],
+    [
+      "ShareWithSystemOptions"
+    ],
+    [
+      "ShareWithSystemSuccess"
+    ],
+    [
+      "ShareWithSystemSuccessCallback"
+    ],
+    [
+      "ShowNavigationBarLoading"
+    ],
+    [
+      "ShowNavigationBarLoadingFail"
+    ],
+    [
+      "ShowNavigationBarLoadingFailCallback"
+    ],
+    [
+      "ShowNavigationBarLoadingOptions"
+    ],
+    [
+      "ShowNavigationBarLoadingSuccess"
+    ],
+    [
+      "ShowNavigationBarLoadingSuccessCallback"
+    ],
+    [
+      "ShowToast"
+    ],
+    [
+      "ShowToastCompleteCallback"
+    ],
+    [
+      "ShowToastFail"
+    ],
+    [
+      "ShowToastFailCallback"
+    ],
+    [
+      "ShowToastOptions"
+    ],
+    [
+      "ShowToastPosition"
+    ],
+    [
+      "ShowToastSuccess"
+    ],
+    [
+      "ShowToastSuccessCallback"
     ],
     [
       "SocketTask"
     ],
     [
-      "OnSocketOpenCallback"
+      "SoterAuthMode"
     ],
     [
-      "OnSocketErrorCallbackResult"
+      "StartLocationUpdate"
     ],
     [
-      "OnSocketErrorCallback"
+      "StartLocationUpdateBackground"
     ],
     [
-      "OnSocketMessageCallback"
+      "StartLocationUpdateBackgroundOptions"
     ],
     [
-      "OnSocketCloseCallbackResult"
+      "StartLocationUpdateBackgroundOptionsType"
     ],
     [
-      "OnSocketCloseCallback"
+      "StartLocationUpdateBackgroundSuccess"
     ],
     [
-      "OnAppCrashCallback"
+      "StartLocationUpdateOptions"
     ],
     [
-      "OnAppCrash"
+      "StartLocationUpdateOptionsType"
     ],
     [
-      "OffAppCrash"
+      "StartLocationUpdateSuccess"
     ],
     [
-      "AppCrashInfo"
+      "StartPullDownRefresh"
     ],
     [
-      "GetAppCrashInfo"
+      "StartPullDownRefreshComplete"
     ],
     [
-      "DeleteAppCrashInfo"
+      "StartPullDownRefreshCompleteCallback"
     ],
     [
-      "CreateAppCrash"
+      "StartPullDownRefreshFail"
+    ],
+    [
+      "StartPullDownRefreshFailCallback"
+    ],
+    [
+      "StartPullDownRefreshOptions"
+    ],
+    [
+      "StartPullDownRefreshSuccess"
+    ],
+    [
+      "StartPullDownRefreshSuccessCallback"
+    ],
+    [
+      "StartSoterAuthentication"
+    ],
+    [
+      "StartSoterAuthenticationComplete"
+    ],
+    [
+      "StartSoterAuthenticationCompleteCallback"
+    ],
+    [
+      "StartSoterAuthenticationFail"
+    ],
+    [
+      "StartSoterAuthenticationFailCallback"
+    ],
+    [
+      "StartSoterAuthenticationOptions"
+    ],
+    [
+      "StartSoterAuthenticationSuccess"
+    ],
+    [
+      "StartSoterAuthenticationSuccessCallback"
+    ],
+    [
+      "StatOptions"
+    ],
+    [
+      "StatSuccessCallback"
+    ],
+    [
+      "StatSuccessResult"
+    ],
+    [
+      "Stats"
+    ],
+    [
+      "StopLocationUpdate"
+    ],
+    [
+      "StopLocationUpdateOptions"
+    ],
+    [
+      "StopLocationUpdateSuccess"
+    ],
+    [
+      "StopPullDownRefresh"
+    ],
+    [
+      "TruncateFileOptions"
+    ],
+    [
+      "UnLinkOptions"
+    ],
+    [
+      "UnLinkSuccessCallback"
+    ],
+    [
+      "UniLocationProvider"
+    ],
+    [
+      "UniOAuthProvider"
+    ],
+    [
+      "UniPaymentProvider"
+    ],
+    [
+      "UniShareProvider"
+    ],
+    [
+      "UniVerifyButtonListItem"
+    ],
+    [
+      "UniVerifyButtonsStyles"
+    ],
+    [
+      "UniWebviewContextLoadDataOptions"
+    ],
+    [
+      "UniverifyAuthButtonStyles"
+    ],
+    [
+      "UniverifyIconStyles"
+    ],
+    [
+      "UniverifyOtherButtonStyles"
+    ],
+    [
+      "UniverifyPhoneNumStyles"
+    ],
+    [
+      "UniverifyPrivacyItemStyles"
+    ],
+    [
+      "UniverifyPrivacyTermsStyles"
+    ],
+    [
+      "UniverifySloganStyles"
+    ],
+    [
+      "UniverifyStyle"
+    ],
+    [
+      "UnzipFileOptions"
+    ],
+    [
+      "UploadFile"
+    ],
+    [
+      "UploadFileCompleteCallback"
+    ],
+    [
+      "UploadFileFail"
+    ],
+    [
+      "UploadFileFailCallback"
+    ],
+    [
+      "UploadFileOptionFiles"
+    ],
+    [
+      "UploadFileOptions"
+    ],
+    [
+      "UploadFileProgressUpdateCallback"
+    ],
+    [
+      "UploadFileSuccess"
+    ],
+    [
+      "UploadFileSuccessCallback"
+    ],
+    [
+      "UploadTask"
+    ],
+    [
+      "UserInfo"
+    ],
+    [
+      "WebviewContext"
+    ],
+    [
+      "Worker"
+    ],
+    [
+      "WorkerOnErrorCallback"
+    ],
+    [
+      "WorkerOnErrorCallbackResult"
+    ],
+    [
+      "WorkerOnErrorCallbackResultErrorCode"
+    ],
+    [
+      "WorkerOnMessageCallback"
+    ],
+    [
+      "WorkerPostMessageOptions"
+    ],
+    [
+      "WriteCallback"
+    ],
+    [
+      "WriteFileOptions"
+    ],
+    [
+      "WriteOptions"
+    ],
+    [
+      "WriteResult"
+    ],
+    [
+      "WriteSyncOptions"
+    ],
+    [
+      "ZipFileItem"
     ]
   ]
 }
