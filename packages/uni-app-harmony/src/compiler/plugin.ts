@@ -16,13 +16,13 @@ import {
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputChunk, PluginContext } from 'rollup'
-import ExternalModuls from './external-modules.json'
-import ExternalModulsX from './external-modules-x.json'
+import ExternalModules from './external-modules.json'
+import ExternalModulesX from './external-modules-x.json'
 import { ComponentsWithProvider, ComponentsWithProviderX } from './constants'
 import { buildWorkers } from './workers'
 
 const isX = process.env.UNI_APP_X === 'true'
-const StandaloneExtApis = isX ? ExternalModulsX : ExternalModuls
+const StandaloneExtApis = isX ? ExternalModulesX : ExternalModules
 const Providers = StandaloneExtApis.filter(
   (item) => item.type === 'provider'
 ) as {

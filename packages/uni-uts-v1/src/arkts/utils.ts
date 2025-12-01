@@ -344,19 +344,12 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     )
   }
 
-  const uniApiExportsPath = isX
-    ? '../../lib/arkts/uni-api-exports-x.json'
-    : '../../lib/arkts/uni-api-exports.json'
   const externalModuleExportsPath = isX
     ? '../../lib/arkts/external-module-exports-x.json'
     : '../../lib/arkts/external-module-exports.json'
   const internalModuleExportsPath = isX
     ? '../../lib/arkts/internal-module-exports-x.json'
     : '../../lib/arkts/internal-module-exports.json'
-  /**
-   * uni.api.ets
-   */
-  const uniApiExports = tryRequire(uniApiExportsPath)
   /**
    * uni-video、uni-canvas、uni-chooseLocation等内置component、api。uni_module目录下包含
    */
@@ -376,7 +369,6 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     {
       [runtimePackageName]: runtimeExports,
     },
-    uniApiExports,
     internalModuleExports,
     externalModuleExports
   )
