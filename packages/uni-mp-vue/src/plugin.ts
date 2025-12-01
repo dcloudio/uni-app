@@ -14,6 +14,10 @@ function getStatusBarHeight() {
   } else if (typeof my !== 'undefined') {
     // @ts-expect-error
     return my.getWindowInfo().statusBarHeight
+  } else if (typeof tt !== 'undefined') {
+    return tt.getSystemInfoSync().statusBarHeight
+  } else if (typeof xhs !== 'undefined') {
+    return xhs.getSystemInfoSync().statusBarHeight
   }
 }
 // #endif
