@@ -60,7 +60,7 @@ catalog:
   'pako': 1.0.11
   'picocolors': 1.1.0
   'pinia': 2.1.7
-  'postcss': 8.5.6
+  'postcss': 8.4.45
   'postcss-selector-parser': 6.1.2
   'qrcode-reader': 1.0.4
   'qrcode-terminal': 0.12.0
