@@ -15,7 +15,6 @@ import {
   type UniVitePlugin,
   createResolveStaticAsset,
   createUniVueTransformAssetUrls,
-  genDom2ClassName,
   getBaseNodeTransforms,
   isExternalUrl,
   isUniPageFile,
@@ -23,6 +22,7 @@ import {
   normalizePath,
   onVueTemplateCompileLog,
   preJs,
+  requireUniHelpers,
   resolveUniTypeScript,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -296,10 +296,7 @@ export function initPluginVueOptions(
       ) => {
         return {
           isWatch: process.env.NODE_ENV === 'development',
-          className: genDom2ClassName(
-            descriptor.filename,
-            process.env.UNI_INPUT_DIR
-          ),
+          helper: requireUniHelpers(),
           componentType: isUniPageFile(descriptor.filename)
             ? 'page'
             : 'component',
@@ -309,16 +306,15 @@ export function initPluginVueOptions(
         descriptor: SFCDescriptor
       ) => {
         const filename = normalizePath(descriptor.filename.split('?')[0])
-        const className = genDom2ClassName(filename, process.env.UNI_INPUT_DIR)
         const relativeFilename = normalizePath(
           path.relative(process.env.UNI_INPUT_DIR, filename)
         )
         return {
           root: normalizePath(process.env.UNI_INPUT_DIR),
-          className,
           platform: process.env.UNI_UTS_PLATFORM,
           componentType: isUniPageFile(filename) ? 'page' : 'component',
           relativeFilename,
+          helper: requireUniHelpers(),
           scriptCppBlocks: (descriptor as any).scriptCppBlocks,
           onVueTemplateCompileLog(
             type: 'warn' | 'error',

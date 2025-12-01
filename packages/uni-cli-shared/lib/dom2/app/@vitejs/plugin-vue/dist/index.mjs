@@ -237,7 +237,7 @@ function transformTemplateInMain(code, descriptor, options, pluginContext, ssr, 
 }
 function compile(code, descriptor, options, pluginContext, ssr, customElement) {
   const filename = descriptor.filename;
-  resolveScript(descriptor, options, ssr, customElement);
+  resolveScript(false, descriptor, options, ssr, customElement);
   const result = options.compiler.compileTemplate({
     ...resolveTemplateCompilerOptions(descriptor, options, ssr),
     source: code
@@ -306,6 +306,14 @@ function resolveTemplateCompilerOptions(descriptor, options, ssr) {
   if (lang && /tsx?$/.test(lang) && !expressionPlugins.includes("typescript")) {
     expressionPlugins.push("typescript");
   }
+  const extraOptions = options.template?.compilerOptions?.extraOptions?.(descriptor);
+  if (extraOptions.helper) {
+    extraOptions.className = extraOptions.helper.GCN(
+      descriptor.filename,
+      process.env.UNI_INPUT_DIR
+    );
+    extraOptions.r = extraOptions.helper.K;
+  }
   return {
     ...options.template,
     // @ts-expect-error TODO remove when 3.6 is out
@@ -325,7 +333,7 @@ function resolveTemplateCompilerOptions(descriptor, options, ssr) {
     compilerOptions: {
       ...options.template?.compilerOptions,
       // fixed by uts 需要额外添加参数，比如className
-      ...options.template?.compilerOptions?.extraOptions?.(descriptor),
+      ...extraOptions,
       scopeId: hasScoped ? `data-v-${id}` : void 0,
       bindingMetadata: resolvedScript ? resolvedScript.bindings : void 0,
       expressionPlugins,
@@ -380,10 +388,17 @@ function resolveScript(useCache, descriptor, options, ssr, customElement) {
       return cached;
     }
   }
+  const extraOptions = options.script?.extraOptions?.(descriptor);
+  if (extraOptions.helper) {
+    extraOptions.className = extraOptions.helper.GCN(
+      descriptor.filename,
+      process.env.UNI_INPUT_DIR
+    );
+  }
   const resolved = options.compiler.compileScript(descriptor, {
     ...options.script,
-    // fixed by uts 需要额外添加参数，比如className
-    ...options.script?.extraOptions?.(descriptor),
+    // fixed by uts 传递额外参数
+    ...extraOptions,
     id: descriptor.id,
     isProd: options.isProduction,
     inlineTemplate: isUseInlineTemplate(descriptor, options),
@@ -2353,7 +2368,7 @@ async function handleHotUpdate({ file, modules, read }, options, customElement, 
   const affectedModules = /* @__PURE__ */ new Set();
   const mainModule = getMainModule(modules);
   const templateModule = modules.find((m) => /type=template/.test(m.url));
-  resolveScript(descriptor, options, false, customElement);
+  resolveScript(false, descriptor, options, false, customElement);
   const scriptChanged = hasScriptChanged(prevDescriptor, descriptor);
   if (scriptChanged) {
     affectedModules.add(getScriptModule(modules) || mainModule);

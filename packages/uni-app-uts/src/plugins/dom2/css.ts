@@ -7,7 +7,6 @@ import {
   cssLangRE,
   cssPlugin,
   cssPostPlugin,
-  genDom2ClassName,
   insertBeforePlugin,
   normalizePath,
   onCompileLog,
@@ -68,6 +67,7 @@ export function uniAppCssPrePlugin(): Plugin {
           cssCode = parseAssets(config, cssCode)
           const { code, messages, fontFaces } = await parseCss(cssCode, {
             platform: process.env.UNI_UTS_PLATFORM,
+            helper: requireUniHelpers(),
           })
           const isDom2Harmony =
             process.env.UNI_APP_X_DOM2 === 'true' &&
@@ -114,12 +114,7 @@ export function uniAppCssPrePlugin(): Plugin {
         },
         emitFile(filename, cssCode) {
           const { ASDSF } = requireUniHelpers()
-          ASDSF(
-            normalizePath(filename),
-            genDom2ClassName(filename, process.env.UNI_INPUT_DIR) +
-              'SharedData',
-            cssCode
-          )
+          ASDSF(normalizePath(filename), cssCode)
         },
       })
       const uvueCssInlinePostPlugin: Plugin = {
@@ -196,6 +191,7 @@ export function uniAppCssPlugin(): Plugin {
       // 仅做校验使用
       const { messages } = await parseCss(source, {
         platform: process.env.UNI_UTS_PLATFORM,
+        helper: requireUniHelpers(),
       })
       let cssSourceMap: SourceMapInput | undefined
       if (messages.find((m) => m.type === 'warning')) {
