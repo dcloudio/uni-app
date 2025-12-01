@@ -224,6 +224,22 @@ describe('mp-weixin: transform component', () => {
 }`
     )
   })
+  test('lazy element: store-home', () => {
+    assert(
+      `<store-home appid="appid"/>`,
+      `<store-home appid="appid"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<store-home :appid="appid"/>`,
+      `<block wx:if="{{r0}}"><store-home appid="{{a}}"/></block>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.appid }
+}`
+    )
+  })
   test('lazy element: scroll-view', () => {
     assert(
       `<scroll-view/>`,
