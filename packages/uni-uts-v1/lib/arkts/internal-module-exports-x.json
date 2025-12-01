@@ -295,16 +295,7 @@
       "ClosePreviewImage"
     ],
     [
-      "ClosePreviewImage"
-    ],
-    [
       "ClosePreviewImageCompleteCallback"
-    ],
-    [
-      "ClosePreviewImageCompleteCallback"
-    ],
-    [
-      "ClosePreviewImageFail"
     ],
     [
       "ClosePreviewImageFail"
@@ -313,22 +304,10 @@
       "ClosePreviewImageFailCallback"
     ],
     [
-      "ClosePreviewImageFailCallback"
-    ],
-    [
-      "ClosePreviewImageOptions"
-    ],
-    [
       "ClosePreviewImageOptions"
     ],
     [
       "ClosePreviewImageSuccess"
-    ],
-    [
-      "ClosePreviewImageSuccess"
-    ],
-    [
-      "ClosePreviewImageSuccessCallback"
     ],
     [
       "ClosePreviewImageSuccessCallback"
@@ -1234,16 +1213,7 @@
       "LongPressActionsFailResult"
     ],
     [
-      "LongPressActionsFailResult"
-    ],
-    [
       "LongPressActionsOptions"
-    ],
-    [
-      "LongPressActionsOptions"
-    ],
-    [
-      "LongPressActionsSuccessResult"
     ],
     [
       "LongPressActionsSuccessResult"
@@ -1504,12 +1474,6 @@
       "PreviewImage"
     ],
     [
-      "PreviewImage"
-    ],
-    [
-      "PreviewImageCompleteCallback"
-    ],
-    [
       "PreviewImageCompleteCallback"
     ],
     [
@@ -1519,28 +1483,13 @@
       "PreviewImageFail"
     ],
     [
-      "PreviewImageFail"
-    ],
-    [
-      "PreviewImageFailCallback"
-    ],
-    [
       "PreviewImageFailCallback"
     ],
     [
       "PreviewImageOptions"
     ],
     [
-      "PreviewImageOptions"
-    ],
-    [
       "PreviewImageSuccess"
-    ],
-    [
-      "PreviewImageSuccess"
-    ],
-    [
-      "PreviewImageSuccessCallback"
     ],
     [
       "PreviewImageSuccessCallback"
@@ -1553,9 +1502,6 @@
     ],
     [
       "ProviderErrorCode"
-    ],
-    [
-      "PullDownRefreshErrorCode"
     ],
     [
       "ReadCompressedFileCallback"
@@ -2203,30 +2149,6 @@
       "StartLocationUpdateSuccess"
     ],
     [
-      "StartPullDownRefresh"
-    ],
-    [
-      "StartPullDownRefreshComplete"
-    ],
-    [
-      "StartPullDownRefreshCompleteCallback"
-    ],
-    [
-      "StartPullDownRefreshFail"
-    ],
-    [
-      "StartPullDownRefreshFailCallback"
-    ],
-    [
-      "StartPullDownRefreshOptions"
-    ],
-    [
-      "StartPullDownRefreshSuccess"
-    ],
-    [
-      "StartPullDownRefreshSuccessCallback"
-    ],
-    [
       "StartSoterAuthentication"
     ],
     [
@@ -2270,9 +2192,6 @@
     ],
     [
       "StopLocationUpdateSuccess"
-    ],
-    [
-      "StopPullDownRefresh"
     ],
     [
       "TruncateFileOptions"

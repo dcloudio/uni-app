@@ -58,13 +58,7 @@
       "AppleLoginAppleInfo"
     ],
     [
-      "ArrayBufferToBase64"
-    ],
-    [
       "BackgroundAudioManager"
-    ],
-    [
-      "Base64ToArrayBuffer"
     ],
     [
       "Certificate"
@@ -391,13 +385,7 @@
       "CreateInnerAudioContextErrorCode"
     ],
     [
-      "CreateWebviewContext"
-    ],
-    [
       "CreateWorker"
-    ],
-    [
-      "CutoutRect"
     ],
     [
       "DeleteAppCrashInfo"
@@ -562,9 +550,6 @@
       "GetDeviceInfoResult"
     ],
     [
-      "GetElementById"
-    ],
-    [
       "GetFileInfo"
     ],
     [
@@ -638,24 +623,6 @@
     ],
     [
       "GetNetworkTypeSuccessCallback"
-    ],
-    [
-      "GetPrivacySetting"
-    ],
-    [
-      "GetPrivacySettingCompleteCallback"
-    ],
-    [
-      "GetPrivacySettingFailCallback"
-    ],
-    [
-      "GetPrivacySettingOptions"
-    ],
-    [
-      "GetPrivacySettingSuccessCallback"
-    ],
-    [
-      "GetPrivacySettingSuccessResult"
     ],
     [
       "GetProvider"
@@ -877,22 +844,7 @@
       "HideKeyboardSuccessCallback"
     ],
     [
-      "HideNavigationBarLoading"
-    ],
-    [
-      "HideNavigationBarLoadingFail"
-    ],
-    [
-      "HideNavigationBarLoadingFailCallback"
-    ],
-    [
-      "HideNavigationBarLoadingOptions"
-    ],
-    [
-      "HideNavigationBarLoadingSuccess"
-    ],
-    [
-      "HideNavigationBarLoadingSuccessCallback"
+      "HideLoading"
     ],
     [
       "HideToast"
@@ -1051,36 +1003,6 @@
       "LegacySavedFileListItem"
     ],
     [
-      "LoadFontFace"
-    ],
-    [
-      "LoadFontFaceComplete"
-    ],
-    [
-      "LoadFontFaceCompleteCallback"
-    ],
-    [
-      "LoadFontFaceErrCode"
-    ],
-    [
-      "LoadFontFaceFail"
-    ],
-    [
-      "LoadFontFaceFailCallback"
-    ],
-    [
-      "LoadFontFaceOptionDesc"
-    ],
-    [
-      "LoadFontFaceOptions"
-    ],
-    [
-      "LoadFontFaceSuccess"
-    ],
-    [
-      "LoadFontFaceSuccessCallback"
-    ],
-    [
       "LocationErrorCode"
     ],
     [
@@ -1183,9 +1105,6 @@
       "OffOsThemeChange"
     ],
     [
-      "OffPrivacyAuthorizationChange"
-    ],
-    [
       "OnAppCrash"
     ],
     [
@@ -1244,12 +1163,6 @@
     ],
     [
       "OnOsThemeChangeCallback"
-    ],
-    [
-      "OnPrivacyAuthorizationChange"
-    ],
-    [
-      "OnPrivacyAuthorizationChangeCallback"
     ],
     [
       "OnProgressDownloadResult"
@@ -1363,6 +1276,9 @@
       "OsThemeChangeResult"
     ],
     [
+      "Popover"
+    ],
+    [
       "PreviewImage"
     ],
     [
@@ -1382,9 +1298,6 @@
     ],
     [
       "PreviewImageSuccessCallback"
-    ],
-    [
-      "PrivacyChangeResult"
     ],
     [
       "PromptErrorCode"
@@ -1558,9 +1471,6 @@
       "RequestTaskOnHeadersReceivedListenerResult"
     ],
     [
-      "ResetPrivacyAuthorization"
-    ],
-    [
       "RmDirOptions"
     ],
     [
@@ -1729,60 +1639,6 @@
       "SetKeepScreenOnSuccessCallback"
     ],
     [
-      "SetNavigationBarColor"
-    ],
-    [
-      "SetNavigationBarColorComplete"
-    ],
-    [
-      "SetNavigationBarColorCompleteCallback"
-    ],
-    [
-      "SetNavigationBarColorErrorCode"
-    ],
-    [
-      "SetNavigationBarColorFail"
-    ],
-    [
-      "SetNavigationBarColorFailCallback"
-    ],
-    [
-      "SetNavigationBarColorOptions"
-    ],
-    [
-      "SetNavigationBarColorSuccess"
-    ],
-    [
-      "SetNavigationBarColorSuccessCallback"
-    ],
-    [
-      "SetNavigationBarTitle"
-    ],
-    [
-      "SetNavigationBarTitleComplete"
-    ],
-    [
-      "SetNavigationBarTitleCompleteCallback"
-    ],
-    [
-      "SetNavigationBarTitleErrorCode"
-    ],
-    [
-      "SetNavigationBarTitleFail"
-    ],
-    [
-      "SetNavigationBarTitleFailCallback"
-    ],
-    [
-      "SetNavigationBarTitleOptions"
-    ],
-    [
-      "SetNavigationBarTitleSuccess"
-    ],
-    [
-      "SetNavigationBarTitleSuccessCallback"
-    ],
-    [
       "SetScreenBrightness"
     ],
     [
@@ -1894,22 +1750,67 @@
       "ShareWithSystemSuccessCallback"
     ],
     [
-      "ShowNavigationBarLoading"
+      "ShowActionSheet"
     ],
     [
-      "ShowNavigationBarLoadingFail"
+      "ShowActionSheetCompleteCallback"
     ],
     [
-      "ShowNavigationBarLoadingFailCallback"
+      "ShowActionSheetFail"
     ],
     [
-      "ShowNavigationBarLoadingOptions"
+      "ShowActionSheetFailCallback"
     ],
     [
-      "ShowNavigationBarLoadingSuccess"
+      "ShowActionSheetOptions"
     ],
     [
-      "ShowNavigationBarLoadingSuccessCallback"
+      "ShowActionSheetSuccess"
+    ],
+    [
+      "ShowActionSheetSuccessCallback"
+    ],
+    [
+      "ShowLoading"
+    ],
+    [
+      "ShowLoadingCompleteCallback"
+    ],
+    [
+      "ShowLoadingFail"
+    ],
+    [
+      "ShowLoadingFailCallback"
+    ],
+    [
+      "ShowLoadingOptions"
+    ],
+    [
+      "ShowLoadingSuccess"
+    ],
+    [
+      "ShowLoadingSuccessCallback"
+    ],
+    [
+      "ShowModal"
+    ],
+    [
+      "ShowModalCompleteCallback"
+    ],
+    [
+      "ShowModalFail"
+    ],
+    [
+      "ShowModalFailCallback"
+    ],
+    [
+      "ShowModalOptions"
+    ],
+    [
+      "ShowModalSuccess"
+    ],
+    [
+      "ShowModalSuccessCallback"
     ],
     [
       "ShowToast"
@@ -2065,9 +1966,6 @@
       "UniVerifyButtonsStyles"
     ],
     [
-      "UniWebviewContextLoadDataOptions"
-    ],
-    [
       "UniverifyAuthButtonStyles"
     ],
     [
@@ -2126,9 +2024,6 @@
     ],
     [
       "UserInfo"
-    ],
-    [
-      "WebviewContext"
     ],
     [
       "Worker"
