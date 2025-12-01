@@ -387,6 +387,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               ['stop']
             )}
             disabled={!!props.disabled}
+            readonly={!!props.readonly}
             type={type.value}
             maxlength={state.maxlength}
             step={step.value}
