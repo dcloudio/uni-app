@@ -353,10 +353,9 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
   /**
    * uni-video、uni-canvas、uni-chooseLocation等内置component、api。uni_module目录下包含
    */
-  const internalModuleExports: AutoImportOptions =
-    process.env.UNI_COMPILE_TARGET === 'ext-api' || !isX
-      ? {}
-      : tryRequire(internalModuleExportsPath)
+  const internalModuleExports: AutoImportOptions = tryRequire(
+    internalModuleExportsPath
+  )
   /**
    * uni-push等外部api
    */
