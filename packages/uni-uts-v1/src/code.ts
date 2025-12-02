@@ -827,6 +827,17 @@ async function parseFile(
     // filename = resolveUVueFileName(filename)
     if (fs.existsSync(filename)) {
       const code = fs.readFileSync(filename, 'utf8')
+      if (!code || code.trim() === '') {
+        console.error(
+          parseUTSSyntaxError(
+            new Error(
+              `文件内容不能为空: ${relative(filename, options.inputDir!)}`
+            ),
+            process.env.UNI_INPUT_DIR
+          )
+        )
+        return []
+      }
       return parseCode(
         preprocessor ? await preprocessor(code, filename) : code,
         options.namespace,
