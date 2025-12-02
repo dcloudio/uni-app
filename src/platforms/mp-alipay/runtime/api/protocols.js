@@ -76,7 +76,7 @@ function _handleNetworkInfo (result) {
 }
 
 const protocols = { // 需要做转换的 API 列表
-  navigateTo: navigateTo(),
+  navigateTo: my.canIUse('page.getOpenerEventChannel') ? {} : navigateTo(),
   redirectTo,
   returnValue (methodName, res = {}) { // 通用 returnValue 解析
     if (res.error || res.errorMessage) {
