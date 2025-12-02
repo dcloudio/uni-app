@@ -124,7 +124,7 @@ function requireHashSum () {
 }
 
 var hashSumExports = /*@__PURE__*/ requireHashSum();
-var hash_sum = /*@__PURE__*/getDefaultExportFromCjs(hashSumExports);
+var hash = /*@__PURE__*/getDefaultExportFromCjs(hashSumExports);
 
 const CSS_VARS_HELPER = `useCssVars`;
 function getCssVarsHelper(vapor) {
@@ -146,7 +146,7 @@ function genCssVarsFromList(vars, id, isProd, isSSR = false) {
 }
 function genVarName(id, raw, isProd, isSSR = false) {
   if (isProd) {
-    return hash_sum(id + raw).replace(/^\d/, (r) => `v${r}`);
+    return hash(id + raw).replace(/^\d/, (r) => `v${r}`);
   } else {
     return `${id}-${shared.getEscapedCssVarName(raw, isSSR)}`;
   }
@@ -21624,6 +21624,7 @@ let __temp${any}, __restore${any}
   if (destructureElements.length) {
     args += `, { ${destructureElements.join(", ")} }`;
   }
+  let templateHash = "";
   let templateMap;
   let returned;
   const propsDecl = genRuntimeProps(ctx);
@@ -21687,7 +21688,7 @@ let __temp${any}, __restore${any}
           }
         };
       }
-      const { code, preamble, tips, errors, helpers, map: map2 } = compileTemplate({
+      const { code, ast, preamble, tips, errors, helpers, map: map2 } = compileTemplate({
         filename,
         ast: sfc.template.ast,
         source: sfc.template.content,
@@ -21702,9 +21703,14 @@ let __temp${any}, __restore${any}
           ...options.templateOptions && options.templateOptions.compilerOptions,
           inline: true,
           isTS: ctx.isTS,
-          bindingMetadata: ctx.bindingMetadata
+          bindingMetadata: ctx.bindingMetadata,
+          // @ts-expect-error
+          isWatch: options.isWatch
         }
       });
+      if (ast && ast.hash) {
+        templateHash = ast.hash;
+      }
       templateMap = map2;
       if (tips.length) {
         tips.forEach(warnOnce);
@@ -21767,9 +21773,9 @@ ${vapor && !ssr ? `` : `return `}${returned}
   const genDefaultAs = options.genDefaultAs ? `const ${options.genDefaultAs} =` : `export default`;
   let runtimeOptions = ``;
   if (options.className) {
-    if (options.isWatch) {
+    if (options.isWatch && templateHash) {
       runtimeOptions += `
-  __hash: "${hash_sum(sfc.source)}",`;
+  __hash: "${templateHash}",`;
     }
     runtimeOptions += `
   __className,`;

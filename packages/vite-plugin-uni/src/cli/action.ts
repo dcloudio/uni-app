@@ -136,6 +136,15 @@ export async function runDev(options: CliOptions & ServerOptions) {
               }
             }
           }
+          // dom2 下仅 cpp 变更需要整体编译，理论上是不是所有平台，所有场景下，都是这样？
+          // 如果有changedFiles就增量输出，否则就不要输出，而是打印无变更，静态资源走额外的全量同步
+          // 之前之所以没有增量就全量同步，是为了兼容性，怕出意外。
+          if (process.env.UNI_APP_X_DOM2 === 'true') {
+            if (process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true') {
+              return output('log', M['dev.watching.end'])
+            }
+            return output('log', M['uvue.dev.watching.end.empty'])
+          }
           return output('log', M['dev.watching.end'])
         } else if (event.code === 'END') {
           // 重要：1.0 的APP端是自实现的AppWatcher，它是不会触发END事件的，这里边的逻辑只有非1.0的APP端会触发
