@@ -14,57 +14,50 @@ var appVite__default = /*#__PURE__*/_interopDefault(appVite);
 var path__default = /*#__PURE__*/_interopDefault(path);
 var fs__default = /*#__PURE__*/_interopDefault(fs);
 
-var ExternalModuls = [
+var ExternalModules = [
 	{
 		type: "extapi",
 		plugin: "uni-facialVerify",
 		apis: [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
-		],
-		version: "1.0.3"
+		]
 	},
 	{
 		type: "provider",
 		plugin: "uni-location-system",
 		provider: "system",
-		service: "location",
-		version: "1.0.0"
+		service: "location"
 	},
 	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
-		service: "oauth",
-		version: "1.0.2"
+		service: "oauth"
 	},
 	{
 		type: "provider",
 		plugin: "uni-oauth-weixin",
 		provider: "weixin",
-		service: "oauth",
-		version: "1.0.0"
+		service: "oauth"
 	},
 	{
 		type: "provider",
 		plugin: "uni-payment-alipay",
 		provider: "alipay",
-		service: "payment",
-		version: "1.0.2"
+		service: "payment"
 	},
 	{
 		type: "provider",
 		plugin: "uni-payment-huawei",
 		provider: "huawei",
-		service: "payment",
-		version: "1.0.0"
+		service: "payment"
 	},
 	{
 		type: "provider",
 		plugin: "uni-payment-wxpay",
 		provider: "wxpay",
-		service: "payment",
-		version: "1.0.0"
+		service: "payment"
 	},
 	{
 		type: "extapi",
@@ -75,15 +68,13 @@ var ExternalModuls = [
 			"offPushMessage",
 			"createPushMessage",
 			"setAppBadgeNumber"
-		],
-		version: "1.0.3"
+		]
 	},
 	{
 		type: "provider",
 		plugin: "uni-share-weixin",
 		provider: "weixin",
-		service: "share",
-		version: "1.0.0"
+		service: "share"
 	},
 	{
 		type: "extapi",
@@ -91,8 +82,7 @@ var ExternalModuls = [
 		apis: [
 			"getUniverifyManager",
 			"getUniVerifyManager"
-		],
-		version: "1.0.0"
+		]
 	}
 ];
 
@@ -103,58 +93,50 @@ var ExternalModulesX = [
 		apis: [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
-		],
-		version: "1.0.3"
+		]
 	},
 	{
 		type: "provider",
 		plugin: "uni-location-system",
 		provider: "system",
-		service: "location",
-		version: "1.0.0"
+		service: "location"
 	},
 	{
 		type: "extapi",
 		plugin: "uni-map-tencent",
 		apis: [
 			"createMapContext"
-		],
-		version: "1.0.0"
+		]
 	},
 	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
-		service: "oauth",
-		version: "1.0.2"
+		service: "oauth"
 	},
 	{
 		type: "provider",
 		plugin: "uni-oauth-weixin",
 		provider: "weixin",
-		service: "oauth",
-		version: "1.0.0"
+		service: "oauth"
 	},
 	{
 		type: "provider",
 		plugin: "uni-payment-alipay",
 		provider: "alipay",
-		service: "payment",
-		version: "1.0.2"
+		service: "payment"
 	},
 	{
 		type: "provider",
 		plugin: "uni-payment-huawei",
 		provider: "huawei",
-		service: "payment",
-		version: "1.0.0"
+		service: "payment"
 	},
 	{
 		type: "provider",
 		plugin: "uni-payment-wxpay",
 		provider: "wxpay",
-		service: "payment",
-		version: "1.0.0"
+		service: "payment"
 	},
 	{
 		type: "extapi",
@@ -165,15 +147,13 @@ var ExternalModulesX = [
 			"offPushMessage",
 			"createPushMessage",
 			"setAppBadgeNumber"
-		],
-		version: "1.0.3"
+		]
 	},
 	{
 		type: "provider",
 		plugin: "uni-share-weixin",
 		provider: "weixin",
-		service: "share",
-		version: "1.0.0"
+		service: "share"
 	},
 	{
 		type: "extapi",
@@ -181,19 +161,27 @@ var ExternalModulesX = [
 		apis: [
 			"getUniverifyManager",
 			"getUniVerifyManager"
-		],
-		version: "1.0.0"
+		]
 	}
 ];
 
-/**
- * uni-app内部extapi发行到ohpm的uni_modules组织下的包列表
- * 注意此列表会同时被框架编译器和用户项目编译器引用
- */
 // type ExternalModuleSubType = 'customElements' | 'components' | 'pages' | 'utssdk'
 // TODO 未来component类型的provider需要重构，比如uni-map-tencent需要依赖内置基础模块uni-map，先基于现状实现。
 const ComponentsWithProvider = [];
 const ComponentsWithProviderX = ['uni-map'];
+const ExtApiBlackListX = ['uni-pullDownRefresh'];
+const ExtApiBlackList = [
+    'uni-loadFontFace',
+    'uni-getElementById',
+    'uni-document',
+    'uni-navigationBar',
+    'uni-createWebviewContext',
+    'uni-map-tencent',
+    'uni-arrayBufferToBase64',
+    'uni-base64ToArrayBuffer',
+    'uni-privacy',
+    'uni-showLoading',
+];
 
 async function buildWorkers() {
     const workers = uniCliShared.getWorkers();
@@ -217,7 +205,7 @@ async function buildWorkers() {
 }
 
 const isX = process.env.UNI_APP_X === 'true';
-const StandaloneExtApis = isX ? ExternalModulesX : ExternalModuls;
+const StandaloneExtApis = isX ? ExternalModulesX : ExternalModules;
 const Providers = StandaloneExtApis.filter((item) => item.type === 'provider');
 const ComponentWithProviderList = isX
     ? ComponentsWithProviderX
@@ -681,11 +669,11 @@ function isEncrypt(pluginDir) {
     return fs__default.default.existsSync(path__default.default.resolve(pluginDir, 'encrypt'));
 }
 
-const externalModulesX = ExternalModulesX;
 var index = [
     process.env.UNI_APP_X === 'true' ? uniAppUts.initUniAppXHarmonyPlugin : appVite__default.default,
     uniAppHarmonyPlugin,
 ];
 
+exports.ExtApiBlackList = ExtApiBlackList;
+exports.ExtApiBlackListX = ExtApiBlackListX;
 exports.default = index;
-exports.externalModulesX = externalModulesX;

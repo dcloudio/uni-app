@@ -8,9 +8,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import babel from '@rollup/plugin-babel'
 
-import {
-  cssTarget,
-} from '@dcloudio/uni-cli-shared'
+import { cssTarget } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 
 function resolve(file: string) {

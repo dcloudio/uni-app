@@ -187,6 +187,7 @@ function getMiniProgramOptions(isX) {
             input: [{ name: 'bind', arg: ['type'] }],
             textarea: [{ name: 'on', arg: ['input'] }],
             'movable-view': [{ name: 'bind', arg: ['direction'] }],
+            'store-home': [{ name: 'bind', arg: ['appid'] }],
         },
         component: {
             ':host': true,
