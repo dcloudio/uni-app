@@ -99,11 +99,13 @@ export function compile(
       : options.mode === 'module'
 
   wrapOptionsLog(template, options)
-  const isDev = process.env.UNI_HX_VERSION_DEV === 'true'
+  const isDevX =
+    process.env.UNI_HX_VERSION_DEV === 'true' &&
+    process.env.UNI_APP_X === 'true'
   const isNativeTag =
     options?.isNativeTag ||
     function (tag: string) {
-      if (isDev) {
+      if (isDevX) {
         const source = matchEasycom(tag)
         // 不能是uts插件的easycom组件
         if (source && !source.includes('?uts-proxy')) {

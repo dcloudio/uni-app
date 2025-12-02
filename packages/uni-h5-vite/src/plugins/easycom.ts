@@ -71,7 +71,9 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   const filter = createFilter(options.include, options.exclude)
   let needCombineBuiltInCss = false
   componentDepsCss = COMPONENT_DEPS_CSS(process.env.UNI_APP_X === 'true')
-  const isDev = process.env.UNI_HX_VERSION_DEV === 'true'
+  const isDevX =
+    process.env.UNI_HX_VERSION_DEV === 'true' &&
+    process.env.UNI_APP_X === 'true'
   return {
     name: 'uni:h5-easycom',
     configResolved(config) {
@@ -95,13 +97,13 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
         (str, name) => {
           if (name && !name.startsWith('_')) {
             // 为了兼容性，仅处理dev模式
-            if (!isDev) {
+            if (!isDevX) {
               const result = buildInComponent()
               if (result) {
                 return result
               }
             }
-            if (isDev && name.startsWith('v-uni-')) {
+            if (isDevX && name.startsWith('v-uni-')) {
               name = name.replace('v-uni-', '')
             }
             const source = matchEasycom(name)
@@ -136,7 +138,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
                 )
               )
             }
-            if (isDev) {
+            if (isDevX) {
               const result = buildInComponent()
               if (result) {
                 return result

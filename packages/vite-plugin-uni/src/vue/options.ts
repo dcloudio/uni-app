@@ -113,11 +113,13 @@ export function initPluginVueOptions(
     ;(compilerOptions as any).miniProgram = miniProgram
   }
 
-  const isDev = process.env.UNI_HX_VERSION_DEV === 'true'
+  const isDevX =
+    process.env.UNI_HX_VERSION_DEV === 'true' &&
+    process.env.UNI_APP_X === 'true'
   if (isNativeTag) {
     const userIsNativeTag = compilerOptions.isNativeTag
     compilerOptions.isNativeTag = (tag) => {
-      if (isDev) {
+      if (isDevX) {
         const source = matchEasycom(tag)
         // 不能是uts插件的easycom组件
         if (source && !source.includes('?uts-proxy')) {
