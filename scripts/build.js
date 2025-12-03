@@ -29,7 +29,7 @@ const arkTSOnly = args.ets
 
 run()
 
-async function run () {
+async function run() {
   if (!targets.length) {
     await buildAll(allTargets)
   } else {
@@ -37,7 +37,7 @@ async function run () {
   }
 }
 
-function buildWithChildProcess (target) {
+function buildWithChildProcess(target) {
   const args = [__filename, target]
   devOnly && args.push('-d')
   isRelease && args.push('--release')
@@ -57,7 +57,7 @@ function buildWithChildProcess (target) {
   })
 }
 
-function getTargetGroup (targets) {
+function getTargetGroup(targets) {
   const group = {}
   for (let i = 0; i < targets.length; i++) {
     const target = targets[i]
@@ -71,7 +71,7 @@ function getTargetGroup (targets) {
   return group
 }
 
-async function buildAll (targets) {
+async function buildAll(targets) {
   if (!multiProcess) {
     for (const target of targets) {
       await build(target)
@@ -97,7 +97,7 @@ async function buildAll (targets) {
   }
 }
 
-async function build (target) {
+async function build(target) {
   console.log(`\n${colors.bold(target)}:`)
   const pkgDir = path.resolve(`packages/${target}`)
   const pkg = require(`${pkgDir}/package.json`)
@@ -215,6 +215,15 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
+      await execa(
+        'vite',
+        ['build', '--config', path.resolve(pkgDir, 'x.vite.config.ts')],
+        {
+          stdio: 'inherit',
+          env: Object.assign({ FORMAT: 'es', X_RUNTIME_PLATFORM: 'app-harmony', X_VAPOR: 'true' }, process.env, env),
+          cwd: pkgDir,
+        }
+      )
       await sleep(500)
     }
   }
@@ -282,7 +291,7 @@ async function build (target) {
   }
 }
 
-async function buildArkTS (target, buildJson) {
+async function buildArkTS(target, buildJson) {
   const projectDir = path.resolve(__dirname, '../packages', target)
   const { bundleArkTS } = require('../packages/uts/dist')
   const start = Date.now()
@@ -396,7 +405,7 @@ async function buildArkTS (target, buildJson) {
 }
 
 let startTime = Date.now()
-async function sleep (ms) {
+async function sleep(ms) {
   global.gc && global.gc()
   console.log('gc sleep', (Date.now() - startTime) / 1000, 's')
   startTime = Date.now()

@@ -795,20 +795,22 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
     addCurrentPageWithInitScope(pageId, pageVm, pageInstance);
   }
-  onMounted(() => {
-    var _pageVm$$el;
-    var rootElement = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
-    if (rootElement) {
-      rootElement._page = pageVm.$page;
-    }
-  });
-  onBeforeUnmount(() => {
-    var _pageVm$$el2;
-    var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
-    if (rootElement) {
-      rootElement._page = null;
-    }
-  });
+  {
+    onMounted(() => {
+      var _pageVm$$el;
+      var rootElement = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
+      if (rootElement) {
+        rootElement._page = pageVm.$page;
+      }
+    });
+    onBeforeUnmount(() => {
+      var _pageVm$$el2;
+      var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
+      if (rootElement) {
+        rootElement._page = null;
+      }
+    });
+  }
 }
 var beforeSetupPage = (props, ctx) => {
   var {

@@ -89,7 +89,10 @@ const rollupPlugins = [
 
 type X_RUNTIME_PLATFORM = 'app-harmony' | 'app-ios'
 
-function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
+function createConfig(
+  platform: X_RUNTIME_PLATFORM,
+  isVapor: boolean
+): UserConfig {
   const isNativeTag =
     platform === 'app-ios' ? isAppIOSUVueNativeTag : isAppHarmonyUVueNativeTag
   return {
@@ -106,6 +109,7 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
       __UNI_FEATURE_I18N_ZH_HANS__: true,
       __UNI_FEATURE_I18N_ZH_HANT__: true,
       __X__: true,
+      __VAPOR__: isVapor,
     },
     resolve: {
       alias: [
@@ -195,7 +199,9 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
           freeze: false,
           entryFileNames:
             platform === 'app-harmony'
-              ? 'uni.x.runtime.harmony.esm.js'
+              ? isVapor
+                ? 'uni.x.runtime.harmony.vapor.esm.js'
+                : 'uni.x.runtime.harmony.esm.js'
               : 'uni.x.runtime.esm.js',
         },
         preserveEntrySignatures: 'strict',
@@ -213,7 +219,7 @@ function createConfig(platform: X_RUNTIME_PLATFORM): UserConfig {
 
 export default defineConfig(
   createConfig(
-    (process.env as Record<string, string>)
-      .X_RUNTIME_PLATFORM as X_RUNTIME_PLATFORM
+    process.env.X_RUNTIME_PLATFORM as X_RUNTIME_PLATFORM,
+    process.env.X_VAPOR === 'true'
   )
 )

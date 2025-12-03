@@ -62,16 +62,18 @@ export function setupXPage(
     )
   }
 
-  onMounted(() => {
-    const rootElement = pageVm.$el?.parentElement
-    if (rootElement) {
-      rootElement._page = pageVm.$page
-    }
-  })
-  onBeforeUnmount(() => {
-    const rootElement = pageVm.$el?.parentElement
-    if (rootElement) {
-      rootElement._page = null
-    }
-  })
+  if (!__VAPOR__) {
+    onMounted(() => {
+      const rootElement = pageVm.$el?.parentElement
+      if (rootElement) {
+        rootElement._page = pageVm.$page
+      }
+    })
+    onBeforeUnmount(() => {
+      const rootElement = pageVm.$el?.parentElement
+      if (rootElement) {
+        rootElement._page = null
+      }
+    })
+  }
 }

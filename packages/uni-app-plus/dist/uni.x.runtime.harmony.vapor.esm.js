@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
-import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, camelize, createVNode, renderSlot } from "vue";
+import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -794,22 +794,6 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   uniPage.$vm = pageVm;
   if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
     addCurrentPageWithInitScope(pageId, pageVm, pageInstance);
-  }
-  {
-    onMounted(() => {
-      var _pageVm$$el;
-      var rootElement = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
-      if (rootElement) {
-        rootElement._page = pageVm.$page;
-      }
-    });
-    onBeforeUnmount(() => {
-      var _pageVm$$el2;
-      var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
-      if (rootElement) {
-        rootElement._page = null;
-      }
-    });
   }
 }
 var beforeSetupPage = (props, ctx) => {
