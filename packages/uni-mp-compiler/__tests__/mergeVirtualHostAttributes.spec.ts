@@ -14,7 +14,7 @@ const optionsX = {
   ...options,
 }
 
-describe('complier: options with mergeVirtualHostAttributes', () => {
+describe('compiler: options with mergeVirtualHostAttributes', () => {
   test('root node with mergeVirtualHostAttributes', () => {
     assert(
       `<image/>`,
