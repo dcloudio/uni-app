@@ -1539,6 +1539,15 @@
           "swift": true,
           "arkts": false
         }
+      },
+      "createWebviewContext": {
+        "name": "createWebviewContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
       }
     },
     "easycom": [
