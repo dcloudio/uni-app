@@ -123,7 +123,15 @@ export function rewriteClass(
       )
     } else {
       // TODO 其他小程序平台是否支持“^”
-      classBindingExpr.elements.push(identifier(VIRTUAL_HOST_CLASS))
+      // class 不支持数组的小程序，比如支付宝小程序，通过字符串拼接，会出现 class="class1 undefined"
+      const virtualHostClass = context.miniProgram.class.array
+        ? identifier(VIRTUAL_HOST_CLASS)
+        : logicalExpression(
+            '||',
+            identifier(VIRTUAL_HOST_CLASS),
+            stringLiteral('')
+          )
+      classBindingExpr.elements.push(virtualHostClass)
     }
   }
   if (!context.miniProgram.class.array) {
