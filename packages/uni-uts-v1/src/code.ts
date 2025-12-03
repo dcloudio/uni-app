@@ -102,6 +102,7 @@ interface Meta {
   }
 }
 export interface GenProxyCodeOptions {
+  platform?: 'app-android' | 'app-ios'
   is_uni_modules: boolean
   id: string
   name: string
@@ -695,6 +696,7 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
   const iosDecls = (
     await parseFile(
+      options.platform === 'app-ios',
       resolvePlatformIndex('app-ios', module, options),
       options,
       options.iosPreprocessor
@@ -710,6 +712,7 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   })
   const androidDecls = (
     await parseFile(
+      options.platform === 'app-android',
       resolvePlatformIndex('app-android', module, options),
       options,
       options.androidPreprocessor
@@ -730,7 +733,7 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   const decls = mergeDecls(androidDecls, iosDecls)
   // 如果没有平台特有，查找 root index.uts
   if (!decls.length) {
-    return await parseFile(resolveRootIndex(module, options), options)
+    return await parseFile(true, resolveRootIndex(module, options), options)
   }
   return decls
 }
@@ -818,6 +821,7 @@ function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
 }
 
 async function parseFile(
+  checkEmpty: boolean,
   filename: string | undefined | false,
   options: GenProxyCodeOptions,
   preprocessor?: SyncUniModulesFilePreprocessor
@@ -828,14 +832,10 @@ async function parseFile(
     if (fs.existsSync(filename)) {
       const code = fs.readFileSync(filename, 'utf8')
       if (!code || code.trim() === '') {
-        console.error(
-          parseUTSSyntaxError(
-            new Error(
-              `文件内容不能为空: ${relative(filename, options.inputDir!)}`
-            ),
-            process.env.UNI_INPUT_DIR
-          )
-        )
+        if (checkEmpty) {
+          console.error(`error: 文件内容为空，请检查。`)
+          console.error(`at ${relative(filename, options.inputDir!)}:1`)
+        }
         return []
       }
       return parseCode(
