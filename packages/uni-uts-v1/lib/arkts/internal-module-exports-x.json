@@ -1594,9 +1594,6 @@
       "RenameOptions"
     ],
     [
-      "Request"
-    ],
-    [
       "RequestAnimationFrameCallback"
     ],
     [
@@ -2492,6 +2489,9 @@
     ],
     [
       "WorkerPostMessageOptions"
+    ],
+    [
+      "WorkerTaskImpl"
     ],
     [
       "WriteCallback"

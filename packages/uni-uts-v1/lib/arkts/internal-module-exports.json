@@ -1399,9 +1399,6 @@
       "RenameOptions"
     ],
     [
-      "Request"
-    ],
-    [
       "RequestCompleteCallback"
     ],
     [
@@ -2042,6 +2039,9 @@
     ],
     [
       "WorkerPostMessageOptions"
+    ],
+    [
+      "WorkerTaskImpl"
     ],
     [
       "WriteCallback"
