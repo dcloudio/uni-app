@@ -54,5 +54,14 @@ describe('mp-alipay: transform virtualHost class', () => {
 }`,
       options
     )
+
+    assert(
+      `<custom-component :class="class1" class="test"><view>Hello</view> </custom-component>`,
+      `<custom-component u-i="2a9ec0b0-0" class="{{a + ' ' + ('test') + ' ' + (virtualHostClass || '')}}" virtualHostClass="{{a + ' ' + ('test') + ' ' + (virtualHostClass || '')}}" style="{{virtualHostStyle}}" virtualHostStyle="{{virtualHostStyle}}" hidden="{{virtualHostHidden || false}}" virtualHostHidden="{{virtualHostHidden || false}}" id="{{b}}" virtualHostId="{{b}}"><view>Hello</view></custom-component>`,
+      `(_ctx, _cache) => {
+  return { a: _n(_ctx.class1), b: _gei(_ctx, '') }
+}`,
+      options
+    )
   })
 })
