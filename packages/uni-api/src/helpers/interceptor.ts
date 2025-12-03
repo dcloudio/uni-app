@@ -22,7 +22,9 @@ export const scopedInterceptors: { [key: string]: Interceptors } = {}
 
 function wrapperHook(hook: Function, params?: Record<string, any>) {
   return function (data: unknown) {
-    return hook(data, params) || data
+    const result = hook(data, params);
+    // 只有当结果为undefined或null时才返回data，保留false值
+    return result === undefined || result === null ? data : result;
   }
 }
 
@@ -35,12 +37,33 @@ function queue(
   for (let i = 0; i < hooks.length; i++) {
     const hook = hooks[i]
     if (promise) {
-      promise = Promise.resolve(wrapperHook(hook, params))
+      const wrappedHook = wrapperHook(hook, params);
+      promise = promise.then((data) => {
+        const res = wrappedHook(data);
+        if (isPromise(res)) {
+          return res.then((res) => {
+            if (res === false) {
+              return { then() {}, catch() {} } as Promise<undefined>;
+            }
+            return res;
+          });
+        }
+        if (res === false) {
+          return { then() {}, catch() {} } as Promise<undefined>;
+        }
+        return res;
+      });
     } else {
       const res = hook(data, params)
       if (isPromise(res)) {
-        promise = Promise.resolve(res)
-      }
+        // 修改这里：处理异步返回 false 的情况
+        promise = res.then((res) => {
+          if (res === false) {
+            return { then() {}, catch() {} } as Promise<undefined>;
+          }
+          return res;
+        });
+      } 
       if (res === false) {
         return {
           then() {},
