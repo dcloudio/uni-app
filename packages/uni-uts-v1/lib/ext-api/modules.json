@@ -233,18 +233,6 @@
       }
     }
   },
-  "uni-createWebviewContext": {
-    "uni": {
-      "createWebviewContext": {
-        "name": "createWebviewContext",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false
-        }
-      }
-    }
-  },
   "uni-dialogPage": {
     "uni": {
       "openDialogPage": {
