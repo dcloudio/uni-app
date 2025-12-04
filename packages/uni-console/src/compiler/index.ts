@@ -1,5 +1,4 @@
 import type { Plugin } from 'vite'
-import fs from 'fs-extra'
 import path from 'path'
 import {
   defineUniMainJsPlugin,
@@ -12,7 +11,6 @@ const uniConsoleRuntimePlugin = (): Plugin => {
   return {
     name: 'uni:console:runtime',
     config() {
-      const isX = process.env.UNI_APP_X === 'true'
       const isProd = process.env.NODE_ENV === 'production'
       let keepOriginal = true
       if (
@@ -21,13 +19,6 @@ const uniConsoleRuntimePlugin = (): Plugin => {
       ) {
         keepOriginal = false
       }
-      const webviewEvalJsCode =
-        isX && process.env.UNI_UTS_PLATFORM === 'app-android'
-          ? fs.readFileSync(
-              path.join(__dirname, '../dist/__uniwebview.js'),
-              'utf-8'
-            )
-          : ''
       return {
         define: {
           'process.env.UNI_CONSOLE_KEEP_ORIGINAL': process.env
@@ -43,8 +34,6 @@ const uniConsoleRuntimePlugin = (): Plugin => {
           'process.env.UNI_SOCKET_ID': JSON.stringify(
             isProd ? '' : process.env.UNI_SOCKET_ID
           ),
-          'process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE':
-            JSON.stringify(webviewEvalJsCode),
         },
       }
     },

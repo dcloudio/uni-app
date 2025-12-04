@@ -116,7 +116,6 @@ declare namespace NodeJS {
 
     UNI_CONSOLE_KEEP_ORIGINAL: string
     UNI_CONSOLE_WEBVIEW: string
-    UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE: string
   }
 }
 
