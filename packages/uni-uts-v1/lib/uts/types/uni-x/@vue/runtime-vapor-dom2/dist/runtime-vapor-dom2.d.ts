@@ -215,6 +215,19 @@ export declare function createSharedDataTemplateRefSetter(): setRefFn;
 
 export declare function createSharedDataDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean, once?: boolean): void;
 
+type UseComputedStyleOptions = {
+    /**
+     * 需要监听的样式属性列表
+     */
+    properties: string[];
+    /**
+     * 是否从原根节点过滤 properties 中的属性，默认过滤
+     * @default true
+     */
+    filterProperties?: boolean | null;
+};
+export declare function useComputedStyle(options: UseComputedStyleOptions): Map<string, any | null>;
+
 export declare function renderSharedDataEffect(fn: () => void, noLifecycle?: boolean): void;
 export declare function nextSharedDataTick(fn: () => void): Promise<void>;
 
@@ -234,6 +247,8 @@ export declare function toSharedDataNumber(value: any | null): number;
 export declare function toSharedDataString(value: any | null): string;
 export declare function toSharedDataColor(value: any | null): number;
 export declare function createSharedDataVFor<T extends UniSharedData>(scope: UniSharedDataPage, create: () => T): UniSharedDataVFor<T>;
+export declare function withSharedDataPage<T extends UniSharedDataPage>(sharedData: T): T;
+export declare function withSharedDataComponent<T extends UniSharedDataComponent>(sharedData: T): T;
 /**
  * 仅限页面 renderSharedData 紧跟着 useSharedDataPage 使用，用于及时给页面示例挂靠 sharedDataScope
  * 这样组件 create 的时候，就可以及时获取到sharedDataScope

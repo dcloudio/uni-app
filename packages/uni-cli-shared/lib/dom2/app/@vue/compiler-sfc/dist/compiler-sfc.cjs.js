@@ -21112,7 +21112,7 @@ const MACROS = [
   WITH_DEFAULTS
 ];
 function compileScript(sfc, options) {
-  var _a, _b, _c;
+  var _a, _b, _c, _d, _e;
   if (!options.id) {
     warnOnce(
       `compileScript now requires passing the \`id\` option.
@@ -21773,6 +21773,29 @@ ${vapor && !ssr ? `` : `return `}${returned}
   const genDefaultAs = options.genDefaultAs ? `const ${options.genDefaultAs} =` : `export default`;
   let runtimeOptions = ``;
   if (options.className) {
+    const componentType = (
+      // @ts-expect-error
+      options.componentType || "component"
+    );
+    (
+      // @ts-expect-error
+      ((_c = (_b = options.templateOptions) == null ? void 0 : _b.compilerOptions) == null ? void 0 : _c.r) || ((k) => k)
+    );
+    if (componentType === "page") {
+      setupPreambleLines.unshift(
+        `const __sharedDataScope =  _useSharedDataScope(__sharedData)`
+      );
+      setupPreambleLines.unshift(
+        `const __sharedData = _withSharedDataPage(useSharedDataPage<__SHARED_DATA_CLASS_NAME_TYPE>(_useSharedDataPageId()))`
+      );
+    } else {
+      setupPreambleLines.unshift(
+        `const __sharedData = _withSharedDataComponent(useSharedDataComponent<__SHARED_DATA_CLASS_NAME_TYPE>(__sharedDataScope))`
+      );
+      setupPreambleLines.unshift(
+        `const __sharedDataScope =  _useSharedDataScope()`
+      );
+    }
     if (options.isWatch && templateHash) {
       runtimeOptions += `
   __hash: "${templateHash}",`;
@@ -21849,7 +21872,7 @@ ${setupPreamble}`
     }
   }
   if (ctx.helperImports.size > 0) {
-    const runtimeModuleName = (_c = (_b = options.templateOptions) == null ? void 0 : _b.compilerOptions) == null ? void 0 : _c.runtimeModuleName;
+    const runtimeModuleName = (_e = (_d = options.templateOptions) == null ? void 0 : _d.compilerOptions) == null ? void 0 : _e.runtimeModuleName;
     const importSrc = runtimeModuleName ? JSON.stringify(runtimeModuleName) : `'vue'`;
     ctx.s.prepend(
       `import { ${[...ctx.helperImports].map((h) => `${h} as _${h}`).join(", ")} } from ${importSrc}
