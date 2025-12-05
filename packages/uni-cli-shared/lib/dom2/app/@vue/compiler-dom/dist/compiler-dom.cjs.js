@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.6.0-alpha.5
+* @vue/compiler-dom v3.6.0-alpha.6
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -306,7 +306,9 @@ const isNonKeyModifier = /* @__PURE__ */ shared.makeMap(
   `stop,prevent,self,ctrl,shift,alt,meta,exact,middle`
 );
 const maybeKeyModifier = /* @__PURE__ */ shared.makeMap("left,right");
-const isKeyboardEvent = /* @__PURE__ */ shared.makeMap(`onkeyup,onkeydown,onkeypress`);
+const isKeyboardEvent = /* @__PURE__ */ shared.makeMap(
+  `onkeyup,onkeydown,onkeypress`
+);
 const resolveModifiers = (key, modifiers, context, loc) => {
   const keyModifiers = [];
   const nonKeyModifiers = [];
@@ -929,6 +931,7 @@ exports.V_ON_WITH_MODIFIERS = V_ON_WITH_MODIFIERS;
 exports.V_SHOW = V_SHOW;
 exports.compile = compile;
 exports.createDOMCompilerError = createDOMCompilerError;
+exports.isKeyboardEvent = isKeyboardEvent;
 exports.isValidHTMLNesting = isValidHTMLNesting;
 exports.parse = parse;
 exports.parserOptions = parserOptions;

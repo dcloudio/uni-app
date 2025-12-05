@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-sfc v3.6.0-alpha.5
+* @vue/compiler-sfc v3.6.0-alpha.6
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -26039,7 +26039,9 @@ const isNonKeyModifier = /* @__PURE__ */ makeMap(
   `stop,prevent,self,ctrl,shift,alt,meta,exact,middle`
 );
 const maybeKeyModifier = /* @__PURE__ */ makeMap("left,right");
-const isKeyboardEvent = /* @__PURE__ */ makeMap(`onkeyup,onkeydown,onkeypress`);
+const isKeyboardEvent = /* @__PURE__ */ makeMap(
+  `onkeyup,onkeydown,onkeypress`
+);
 const resolveModifiers = (key, modifiers, context, loc) => {
   const keyModifiers = [];
   const nonKeyModifiers = [];
@@ -26768,6 +26770,7 @@ var CompilerDOM = /*#__PURE__*/Object.freeze({
   isFunctionType: isFunctionType,
   isInDestructureAssignment: isInDestructureAssignment,
   isInNewExpression: isInNewExpression,
+  isKeyboardEvent: isKeyboardEvent,
   isLiteralWhitelisted: isLiteralWhitelisted,
   isMemberExpression: isMemberExpression$1,
   isMemberExpressionBrowser: isMemberExpressionBrowser,
@@ -32276,8 +32279,7 @@ const newBlock = (node) => ({
   effect: [],
   operation: [],
   returns: [],
-  tempId: 0,
-  hasDeferredVShow: false
+  tempId: 0
 });
 function wrapTemplate(node, dirs) {
   if (node.tagType === 3) {
@@ -32540,7 +32542,8 @@ function transform(node, options = {}) {
     component: /* @__PURE__ */ new Set(),
     directive: /* @__PURE__ */ new Set(),
     block: newBlock(node),
-    hasTemplateRef: false
+    hasTemplateRef: false,
+    hasDeferredVShow: false
   };
   const context = new TransformContext(ir, node, options);
   transformNode(context);
@@ -33297,7 +33300,7 @@ function genSetEvent(oper, context) {
   const name = genName();
   const handler = [
     `${context.helper("createInvoker")}(`,
-    ...genEventHandler(context, value, modifiers),
+    ...genEventHandler(context, [value], modifiers),
     `)`
   ];
   const eventOptions = genEventOptions();
@@ -33354,37 +33357,47 @@ function genSetDynamicEvents(oper, context) {
     )
   ];
 }
-function genEventHandler(context, value, modifiers = { nonKeys: [], keys: [] }, extraWrap = false) {
-  let handlerExp = [`() => {}`];
-  if (value && value.content.trim()) {
-    if (isMemberExpression$1(value, context.options)) {
-      handlerExp = genExpression(value, context);
-      if (!isConstantBinding(value, context) && !extraWrap) {
-        const isTSNode = value.ast && TS_NODE_TYPES.includes(value.ast.type);
-        handlerExp = [
-          `e => `,
-          isTSNode ? "(" : "",
-          ...handlerExp,
-          isTSNode ? ")" : "",
-          `(e)`
-        ];
+function genEventHandler(context, values, modifiers = { nonKeys: [], keys: [] }, extraWrap = false) {
+  let handlerExp = [];
+  if (values) {
+    values.forEach((value, index) => {
+      let exp = [];
+      if (value && value.content.trim()) {
+        if (isMemberExpression$1(value, context.options)) {
+          exp = genExpression(value, context);
+          if (!isConstantBinding(value, context) && !extraWrap) {
+            const isTSNode = value.ast && TS_NODE_TYPES.includes(value.ast.type);
+            exp = [
+              `e => `,
+              isTSNode ? "(" : "",
+              ...exp,
+              isTSNode ? ")" : "",
+              `(e)`
+            ];
+          }
+        } else if (isFnExpression(value, context.options)) {
+          exp = genExpression(value, context);
+        } else {
+          const referencesEvent = value.content.includes("$event");
+          const hasMultipleStatements = value.content.includes(`;`);
+          const expr = referencesEvent ? context.withId(() => genExpression(value, context), {
+            $event: null
+          }) : genExpression(value, context);
+          exp = [
+            referencesEvent ? "$event => " : "() => ",
+            hasMultipleStatements ? "{" : "(",
+            ...expr,
+            hasMultipleStatements ? "}" : ")"
+          ];
+        }
+        handlerExp = handlerExp.concat([index !== 0 ? ", " : "", ...exp]);
       }
-    } else if (isFnExpression(value, context.options)) {
-      handlerExp = genExpression(value, context);
-    } else {
-      const referencesEvent = value.content.includes("$event");
-      const hasMultipleStatements = value.content.includes(`;`);
-      const expr = referencesEvent ? context.withId(() => genExpression(value, context), {
-        $event: null
-      }) : genExpression(value, context);
-      handlerExp = [
-        referencesEvent ? "$event => " : "() => ",
-        hasMultipleStatements ? "{" : "(",
-        ...expr,
-        hasMultipleStatements ? "}" : ")"
-      ];
+    });
+    if (values.length > 1) {
+      handlerExp = ["[", ...handlerExp, "]"];
     }
   }
+  if (handlerExp.length === 0) handlerExp = ["() => {}"];
   const { keys, nonKeys } = modifiers;
   if (nonKeys.length)
     handlerExp = genWithModifiers(context, handlerExp, nonKeys);
@@ -33425,35 +33438,19 @@ function genFor(oper, context) {
     component,
     onlyChild
   } = oper;
-  let rawValue = null;
+  const rawValue = value && value.content;
   const rawKey = key && key.content;
   const rawIndex = index && index.content;
   const sourceExpr = ["() => (", ...genExpression(source, context), ")"];
-  const idToPathMap = parseValueDestructure();
+  const idToPathMap = parseValueDestructure(value, context);
   const [depth, exitScope] = context.enterScope();
-  const idMap = {};
   const itemVar = `_for_item${depth}`;
+  const idMap = buildDestructureIdMap(
+    idToPathMap,
+    `${itemVar}.value`,
+    context.options.expressionPlugins
+  );
   idMap[itemVar] = null;
-  idToPathMap.forEach((pathInfo, id2) => {
-    let path = `${itemVar}.value${pathInfo ? pathInfo.path : ""}`;
-    if (pathInfo) {
-      if (pathInfo.helper) {
-        idMap[pathInfo.helper] = null;
-        path = `${pathInfo.helper}(${path}, ${pathInfo.helperArgs})`;
-      }
-      if (pathInfo.dynamic) {
-        const node = idMap[id2] = createSimpleExpression(path);
-        const plugins = context.options.expressionPlugins;
-        node.ast = libExports.parseExpression(`(${path})`, {
-          plugins: plugins ? [...plugins, "typescript"] : ["typescript"]
-        });
-      } else {
-        idMap[id2] = path;
-      }
-    } else {
-      idMap[id2] = path;
-    }
-  });
   const args = [itemVar];
   if (rawKey) {
     const keyVar = `_for_key${depth}`;
@@ -33551,77 +33548,6 @@ function genFor(oper, context) {
       // todo: hydrationNode
     )
   ];
-  function parseValueDestructure() {
-    const map = /* @__PURE__ */ new Map();
-    if (value) {
-      rawValue = value && value.content;
-      if (value.ast) {
-        walkIdentifiers(
-          value.ast,
-          (id2, _, parentStack, ___, isLocal) => {
-            if (isLocal) {
-              let path = "";
-              let isDynamic = false;
-              let helper2;
-              let helperArgs;
-              for (let i = 0; i < parentStack.length; i++) {
-                const parent = parentStack[i];
-                const child = parentStack[i + 1] || id2;
-                if (parent.type === "ObjectProperty" && parent.value === child) {
-                  if (parent.key.type === "StringLiteral") {
-                    path += `[${JSON.stringify(parent.key.value)}]`;
-                  } else if (parent.computed) {
-                    isDynamic = true;
-                    path += `[${value.content.slice(
-                      parent.key.start - 1,
-                      parent.key.end - 1
-                    )}]`;
-                  } else {
-                    path += `.${parent.key.name}`;
-                  }
-                } else if (parent.type === "ArrayPattern") {
-                  const index2 = parent.elements.indexOf(child);
-                  if (child.type === "RestElement") {
-                    path += `.slice(${index2})`;
-                  } else {
-                    path += `[${index2}]`;
-                  }
-                } else if (parent.type === "ObjectPattern" && child.type === "RestElement") {
-                  helper2 = context.helper("getRestElement");
-                  helperArgs = "[" + parent.properties.filter((p) => p.type === "ObjectProperty").map((p) => {
-                    if (p.key.type === "StringLiteral") {
-                      return JSON.stringify(p.key.value);
-                    } else if (p.computed) {
-                      isDynamic = true;
-                      return value.content.slice(
-                        p.key.start - 1,
-                        p.key.end - 1
-                      );
-                    } else {
-                      return JSON.stringify(p.key.name);
-                    }
-                  }).join(", ") + "]";
-                }
-                if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern")) {
-                  isDynamic = true;
-                  helper2 = context.helper("getDefaultValue");
-                  helperArgs = value.content.slice(
-                    child.right.start - 1,
-                    child.right.end - 1
-                  );
-                }
-              }
-              map.set(id2.name, { path, dynamic: isDynamic, helper: helper2, helperArgs });
-            }
-          },
-          true
-        );
-      } else {
-        map.set(rawValue, null);
-      }
-    }
-    return map;
-  }
   function genCallback(expr) {
     if (!expr) return false;
     const res = context.withId(
@@ -33647,6 +33573,105 @@ function genFor(oper, context) {
     idToPathMap.forEach((_, id2) => idMap2[id2] = null);
     return idMap2;
   }
+}
+function parseValueDestructure(value, context) {
+  const map = /* @__PURE__ */ new Map();
+  if (value) {
+    const rawValue = value.content;
+    if (value.ast) {
+      const isDom2 = !!context.options.platform;
+      walkIdentifiers(
+        value.ast,
+        (id, _, parentStack, ___, isLocal) => {
+          if (isLocal) {
+            let path = "";
+            let isDynamic = false;
+            let helper;
+            let helperArgs;
+            for (let i = 0; i < parentStack.length; i++) {
+              const parent = parentStack[i];
+              const child = parentStack[i + 1] || id;
+              if (parent.type === "ObjectProperty" && parent.value === child) {
+                if (parent.key.type === "StringLiteral") {
+                  path += `[${JSON.stringify(parent.key.value)}]`;
+                } else if (parent.computed) {
+                  isDynamic = true;
+                  path += `[${rawValue.slice(
+                    parent.key.start - 1,
+                    parent.key.end - 1
+                  )}]`;
+                } else {
+                  path += `.${parent.key.name}`;
+                }
+              } else if (parent.type === "ArrayPattern") {
+                const index = parent.elements.indexOf(child);
+                if (child.type === "RestElement") {
+                  path += `.slice(${index})`;
+                } else {
+                  path += `[${index}]`;
+                }
+              } else if (parent.type === "ObjectPattern" && child.type === "RestElement") {
+                helper = isDom2 ? (
+                  // @ts-expect-error
+                  context.helper("getSharedDataRestElement")
+                ) : context.helper("getRestElement");
+                helperArgs = "[" + parent.properties.filter((p) => p.type === "ObjectProperty").map((p) => {
+                  if (p.key.type === "StringLiteral") {
+                    return JSON.stringify(p.key.value);
+                  } else if (p.computed) {
+                    isDynamic = true;
+                    return rawValue.slice(p.key.start - 1, p.key.end - 1);
+                  } else {
+                    return JSON.stringify(p.key.name);
+                  }
+                }).join(", ") + "]";
+              }
+              if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern")) {
+                isDynamic = true;
+                helper = isDom2 ? (
+                  // @ts-expect-error
+                  context.helper("getSharedDataDefaultValue")
+                ) : context.helper("getDefaultValue");
+                helperArgs = rawValue.slice(
+                  child.right.start - 1,
+                  child.right.end - 1
+                );
+              }
+            }
+            map.set(id.name, { path, dynamic: isDynamic, helper, helperArgs });
+          }
+        },
+        true
+      );
+    } else if (rawValue) {
+      map.set(rawValue, null);
+    }
+  }
+  return map;
+}
+function buildDestructureIdMap(idToPathMap, baseAccessor, plugins) {
+  const idMap = {};
+  idToPathMap.forEach((pathInfo, id) => {
+    let path = baseAccessor;
+    if (pathInfo) {
+      path = `${baseAccessor}${pathInfo.path}`;
+      if (pathInfo.helper) {
+        idMap[pathInfo.helper] = null;
+        path = pathInfo.helperArgs ? `${pathInfo.helper}(${path}, ${pathInfo.helperArgs})` : `${pathInfo.helper}(${path})`;
+      }
+      if (pathInfo.dynamic) {
+        const node = idMap[id] = createSimpleExpression(path);
+        node.ast = libExports.parseExpression(`(${path})`, {
+          plugins: plugins ? [...plugins, "typescript"] : ["typescript"]
+        });
+      } else {
+        idMap[id] = path;
+      }
+    } else {
+      idMap[id] = path;
+    }
+  });
+  return idMap;
 }
 function matchPatterns(render, keyProp, idMap) {
   const selectorPatterns = [];
@@ -33888,6 +33913,7 @@ function genPropKey({ key: node, modifier, runtimeCamelize, handler, handlerModi
   }
   let key = genExpression(node, context);
   if (runtimeCamelize) {
+    key.push(' || ""');
     key = genCall(helper("camelize"), key);
   }
   if (handler) {
@@ -34129,7 +34155,7 @@ function genCreateComponent(operation, context) {
   const rawProps = context.withId(() => genRawProps(props, context), ids);
   const inlineHandlers = handlers.reduce(
     (acc, { name, value }) => {
-      const handler = genEventHandler(context, value, void 0, false);
+      const handler = genEventHandler(context, [value], void 0, false);
       return [...acc, `const ${name} = `, ...handler, NEWLINE];
     },
     []
@@ -34263,7 +34289,7 @@ function genProp(prop, context, isStatic) {
     ": ",
     ...prop.handler ? genEventHandler(
       context,
-      prop.values[0],
+      prop.values,
       prop.handlerModifiers,
       true
     ) : isStatic ? ["() => (", ...values, ")"] : values,
@@ -34391,35 +34417,29 @@ function genConditionalSlot(slot, context) {
   ];
 }
 function genSlotBlockWithProps(oper, context) {
-  let isDestructureAssignment = false;
-  let rawProps;
   let propsName;
   let exitScope;
   let depth;
   const { props, key, node } = oper;
-  const idsOfProps = /* @__PURE__ */ new Set();
+  const idToPathMap = props ? parseValueDestructure(props, context) : /* @__PURE__ */ new Map();
   if (props) {
-    rawProps = props.content;
-    if (isDestructureAssignment = !!props.ast) {
+    if (props.ast) {
       [depth, exitScope] = context.enterScope();
       propsName = `_slotProps${depth}`;
-      walkIdentifiers(
-        props.ast,
-        (id, _, __, ___, isLocal) => {
-          if (isLocal) idsOfProps.add(id.name);
-        },
-        true
-      );
     } else {
-      idsOfProps.add(propsName = rawProps);
+      propsName = props.content;
     }
   }
-  const idMap = {};
-  idsOfProps.forEach(
-    (id) => idMap[id] = isDestructureAssignment ? `${propsName}[${JSON.stringify(id)}]` : null
-  );
+  const idMap = idToPathMap.size ? buildDestructureIdMap(
+    idToPathMap,
+    propsName || "",
+    context.options.expressionPlugins
+  ) : {};
+  if (propsName) {
+    idMap[propsName] = null;
+  }
   let blockFn = context.withId(
-    () => genBlock(oper, context, [propsName]),
+    () => genBlock(oper, context, propsName ? [propsName] : []),
     idMap
   );
   exitScope && exitScope();
@@ -34439,15 +34459,70 @@ function genSlotBlockWithProps(oper, context) {
       `}`
     ];
   }
-  if (node.type === 1 && !isKeepAliveTag(node.tag)) {
-    blockFn = [`${context.helper("withVaporCtx")}(`, ...blockFn, `)`];
+  if (node.type === 1) {
+    if (needsVaporCtx(oper)) {
+      blockFn = [`${context.helper("withVaporCtx")}(`, ...blockFn, `)`];
+    }
   }
   return blockFn;
+}
+function needsVaporCtx(block) {
+  return hasComponentOrSlotInBlock(block);
+}
+function hasComponentOrSlotInBlock(block) {
+  if (hasComponentOrSlotInOperations(block.operation)) return true;
+  return hasComponentOrSlotInDynamic(block.dynamic);
+}
+function hasComponentOrSlotInDynamic(dynamic) {
+  if (dynamic.operation) {
+    const type = dynamic.operation.type;
+    if (type === 11 || type === 12) {
+      return true;
+    }
+    if (type === 15) {
+      if (hasComponentOrSlotInIf(dynamic.operation)) return true;
+    }
+    if (type === 16) {
+      if (hasComponentOrSlotInBlock(dynamic.operation.render))
+        return true;
+    }
+  }
+  for (const child of dynamic.children) {
+    if (hasComponentOrSlotInDynamic(child)) return true;
+  }
+  return false;
+}
+function hasComponentOrSlotInOperations(operations) {
+  for (const op of operations) {
+    switch (op.type) {
+      case 11:
+      case 12:
+        return true;
+      case 15:
+        if (hasComponentOrSlotInIf(op)) return true;
+        break;
+      case 16:
+        if (hasComponentOrSlotInBlock(op.render)) return true;
+        break;
+    }
+  }
+  return false;
+}
+function hasComponentOrSlotInIf(node) {
+  if (hasComponentOrSlotInBlock(node.positive)) return true;
+  if (node.negative) {
+    if ("positive" in node.negative) {
+      return hasComponentOrSlotInIf(node.negative);
+    } else {
+      return hasComponentOrSlotInBlock(node.negative);
+    }
+  }
+  return false;
 }
 
 function genSlotOutlet(oper, context) {
   const { helper } = context;
-  const { id, name, fallback, noSlotted } = oper;
+  const { id, name, fallback, noSlotted, once } = oper;
   const [frag, push] = buildCodeFragment();
   const nameExpr = name.isStatic ? genExpression(name, context) : ["() => (", ...genExpression(name, context), ")"];
   let fallbackArg;
@@ -34462,8 +34537,10 @@ function genSlotOutlet(oper, context) {
       nameExpr,
       genRawProps(oper.props, context) || "null",
       fallbackArg,
-      noSlotted && "true"
+      noSlotted && "true",
       // noSlotted
+      once && "true"
+      // v-once
     )
   );
   return frag;
@@ -34719,9 +34796,6 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
   const [frag, push] = buildCodeFragment();
   const { dynamic, effect, operation, returns, key } = block;
   const resetBlock = context.enterBlock(block);
-  if (block.hasDeferredVShow) {
-    push(NEWLINE, `const deferredApplyVShows = []`);
-  }
   if (root) {
     for (let name of context.ir.component) {
       const id = toValidAssetId(name, "component");
@@ -34750,7 +34824,7 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
   }
   push(...genOperations(operation, context));
   push(...genEffects(effect, context, genEffectsExtraFrag));
-  if (block.hasDeferredVShow) {
+  if (root && context.ir.hasDeferredVShow) {
     push(NEWLINE, `deferredApplyVShows.forEach(fn => fn())`);
   }
   if (dynamic.needsKey) {
@@ -34905,6 +34979,9 @@ function generate(ir, options = {}) {
       NEWLINE,
       `const ${setTemplateRefIdent} = ${context.helper("createTemplateRefSetter")}()`
     );
+  }
+  if (ir.hasDeferredVShow) {
+    push(NEWLINE, `const deferredApplyVShows = []`);
   }
   push(...genBlockContent(ir.block, context, true));
   push(INDENT_END, NEWLINE);
@@ -35065,6 +35142,11 @@ const isReservedProp = /* @__PURE__ */ makeMap(
 const transformElement = (node, context) => {
   let effectIndex = context.block.effect.length;
   const getEffectIndex = () => effectIndex++;
+  let parentSlots;
+  if (node.type === 1 && (node.tagType === 1 || context.options.isCustomElement(node.tag))) {
+    parentSlots = context.slots;
+    context.slots = [];
+  }
   return function postTransformElement() {
     ({ node } = context);
     if (!(node.type === 1 && (node.tagType === 0 || node.tagType === 1)))
@@ -35097,6 +35179,9 @@ const transformElement = (node, context) => {
         context,
         getEffectIndex
       );
+    }
+    if (parentSlots) {
+      context.slots = parentSlots;
     }
   };
 };
@@ -35481,7 +35566,7 @@ function dedupeProperties(results) {
     const name = prop.key.content;
     const existing = knownProps.get(name);
     if (existing && existing.handler === prop.handler) {
-      if (name === "style" || name === "class" || name === "hover-class") {
+      if (name === "style" || name === "class" || prop.handler || name === "hover-class") {
         mergePropValues(existing, prop);
       }
     } else {
@@ -35654,6 +35739,9 @@ const transformVOn = (dir, node, context) => {
       keyOverride = ["click", "contextmenu"];
     }
   }
+  if (keyModifiers.length && isStaticExp(arg) && !isKeyboardEvent(`on${arg.content.toLowerCase()}`)) {
+    keyModifiers.length = 0;
+  }
   if (isComponent || isSlotOutlet) {
     const handler = exp || EMPTY_EXPRESSION;
     return {
@@ -35709,7 +35797,7 @@ const transformVShow = (dir, node, context) => {
   if (parentNode && parentNode.type === 1) {
     shouldDeferred = !!(isTransitionTag(parentNode.tag) && findProp(parentNode, "appear", false, true));
     if (shouldDeferred) {
-      context.parent.parent.block.hasDeferredVShow = true;
+      context.ir.hasDeferredVShow = true;
     }
   }
   context.registerOperation({
@@ -36013,7 +36101,7 @@ function getSiblingIf(context, reverse) {
   let i = siblings.indexOf(context.node);
   while (reverse ? --i >= 0 : ++i < siblings.length) {
     sibling = siblings[i];
-    if (!isCommentLike(sibling)) {
+    if (!isCommentOrWhitespace(sibling)) {
       break;
     }
   }
@@ -36022,9 +36110,6 @@ function getSiblingIf(context, reverse) {
   )) {
     return sibling;
   }
-}
-function isCommentLike(node) {
-  return node.type === 3 || node.type === 2 && !node.content.trim().length;
 }
 
 const transformVIf = createStructuralDirectiveTransform(
@@ -36260,7 +36345,8 @@ const transformSlotOutlet = (node, context) => {
       name: slotName,
       props: irProps,
       fallback,
-      noSlotted: !!(context.options.scopeId && !context.options.slotted)
+      noSlotted: !!(context.options.scopeId && !context.options.slotted),
+      once: context.inVOnce
     };
   };
 };
@@ -36617,6 +36703,7 @@ var CompilerVapor = /*#__PURE__*/Object.freeze({
   VaporErrorMessages: VaporErrorMessages,
   analyzeExpressions: analyzeExpressions,
   buildCodeFragment: buildCodeFragment,
+  buildDestructureIdMap: buildDestructureIdMap,
   codeFragmentToString: codeFragmentToString,
   compile: compile$1,
   createStructuralDirectiveTransform: createStructuralDirectiveTransform,
@@ -36634,7 +36721,9 @@ var CompilerVapor = /*#__PURE__*/Object.freeze({
   isTeleportTag: isTeleportTag,
   isTransitionGroupTag: isTransitionGroupTag,
   isTransitionTag: isTransitionTag,
+  needsVaporCtx: needsVaporCtx,
   parse: parse$3,
+  parseValueDestructure: parseValueDestructure,
   transform: transform,
   transformChildren: transformChildren,
   transformComment: transformComment,
@@ -55474,7 +55563,7 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-const version = "3.6.0-alpha.5";
+const version = "3.6.0-alpha.6";
 const parseCache = parseCache$1;
 const errorMessages = __spreadValues(__spreadValues({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

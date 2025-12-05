@@ -103,7 +103,6 @@ export interface BlockIRNode extends BaseIRNode {
     effect: IREffect[];
     operation: OperationNode[];
     returns: number[];
-    hasDeferredVShow: boolean;
 }
 export interface RootIRNode {
     type: IRNodeTypes.ROOT;
@@ -116,6 +115,7 @@ export interface RootIRNode {
     directive: Set<string>;
     block: BlockIRNode;
     hasTemplateRef: boolean;
+    hasDeferredVShow: boolean;
 }
 export interface IfIRNode extends BaseIRNode {
     type: IRNodeTypes.IF;
@@ -265,6 +265,7 @@ export interface SlotOutletIRNode extends BaseIRNode {
     props: IRProps[];
     fallback?: BlockIRNode;
     noSlotted?: boolean;
+    once?: boolean;
     parent?: number;
     anchor?: number;
     append?: boolean;
@@ -517,5 +518,23 @@ export declare function analyzeExpressions(expressions: SimpleExpressionNode[]):
     seenIdentifier: Set<string>;
     updatedVariable: Set<string>;
 };
+
+export type DestructureMapValue = {
+    path: string;
+    dynamic: boolean;
+    helper?: string;
+    helperArgs?: string;
+};
+export type DestructureMap = Map<string, DestructureMapValue | null>;
+export declare function parseValueDestructure(value: SimpleExpressionNode | undefined, context: CodegenContext): DestructureMap;
+export declare function buildDestructureIdMap(idToPathMap: DestructureMap, baseAccessor: string, plugins: CodegenContext['options']['expressionPlugins']): Record<string, string | SimpleExpressionNode | null>;
+
+/**
+ * Check if a slot block needs withVaporCtx wrapper.
+ * Returns true if the block contains:
+ * - Component creation (needs scopeId inheritance)
+ * - Slot outlet (needs rawSlots from slot owner)
+ */
+export declare function needsVaporCtx(block: BlockIRNode): boolean;
 
 

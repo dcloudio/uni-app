@@ -591,7 +591,7 @@ export interface SuspenseBoundary {
     fallback(fallbackVNode: VNode): void;
     move(container: RendererElement, anchor: RendererNode | null, type: MoveType): void;
     next(): RendererNode | null;
-    registerDep(instance: ComponentInternalInstance, setupRenderEffect: SetupRenderEffectFn, optimized: boolean): void;
+    registerDep(instance: GenericComponentInstance, onResolve: (setupResult: unknown) => void): void;
     unmount(parentSuspense: SuspenseBoundary | null, doRemove?: boolean): void;
 }
 declare function hydrateSuspense(node: Node, vnode: VNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, namespace: ElementNamespace, slotScopeIds: string[] | null, optimized: boolean, rendererInternals: RendererInternals, hydrateNode: (node: Node, vnode: VNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean) => Node | null): Node | null;
@@ -725,7 +725,6 @@ type UnmountFn = (vnode: VNode, parentComponent: ComponentInternalInstance | nul
 type RemoveFn = (vnode: VNode) => void;
 type MountComponentFn = (initialVNode: VNode, container: RendererElement, anchor: RendererNode | null, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, namespace: ElementNamespace, optimized: boolean) => void;
 type UnmountComponentFn = (instance: ComponentInternalInstance, parentSuspense: SuspenseBoundary | null, doRemove?: boolean) => void;
-type SetupRenderEffectFn = (instance: ComponentInternalInstance, initialVNode: VNode, container: RendererElement, anchor: RendererNode | null, parentSuspense: SuspenseBoundary | null, namespace: ElementNamespace, optimized: boolean) => void;
 declare enum MoveType {
     ENTER = 0,
     LEAVE = 1,

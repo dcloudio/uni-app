@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.6.0-alpha.5
+* @vue/compiler-dom v3.6.0-alpha.6
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -6337,7 +6337,9 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
     `stop,prevent,self,ctrl,shift,alt,meta,exact,middle`
   );
   const maybeKeyModifier = /* @__PURE__ */ makeMap("left,right");
-  const isKeyboardEvent = /* @__PURE__ */ makeMap(`onkeyup,onkeydown,onkeypress`);
+  const isKeyboardEvent = /* @__PURE__ */ makeMap(
+    `onkeyup,onkeydown,onkeypress`
+  );
   const resolveModifiers = (key, modifiers, context, loc) => {
     const keyModifiers = [];
     const nonKeyModifiers = [];
@@ -6836,6 +6838,7 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
   exports.isFunctionType = isFunctionType;
   exports.isInDestructureAssignment = isInDestructureAssignment;
   exports.isInNewExpression = isInNewExpression;
+  exports.isKeyboardEvent = isKeyboardEvent;
   exports.isLiteralWhitelisted = isLiteralWhitelisted;
   exports.isMemberExpression = isMemberExpression;
   exports.isMemberExpressionBrowser = isMemberExpressionBrowser;

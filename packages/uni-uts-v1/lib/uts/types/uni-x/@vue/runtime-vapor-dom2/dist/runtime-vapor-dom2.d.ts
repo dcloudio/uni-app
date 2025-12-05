@@ -8,6 +8,7 @@ import { Element as Element$1 } from '@dcloudio/uni-app-x/types/native';
 declare class VaporFragment {
     nodes: Block;
     anchor?: Node;
+    parentComponent?: VaporSharedDataComponentInstance | null;
     insert?: (parent: ParentNode, anchor: Node | null) => void;
     remove?: (parent?: ParentNode) => void;
     constructor(nodes: Block);
@@ -17,8 +18,10 @@ declare class DynamicFragment extends VaporFragment {
     scope: EffectScope | undefined;
     current?: BlockFn;
     fallback?: BlockFn;
+    getScope?: (key: any) => EffectScope | undefined;
     constructor(anchorLabel?: string);
     update(render?: BlockFn | null, key?: any): void;
+    private render;
 }
 
 type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[];
@@ -39,14 +42,16 @@ type DynamicSlot = {
     fn: VaporSlot;
 };
 type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
-type DynamicSlotSource = StaticSlots | DynamicSlotFn;
+export type DynamicSlotSource = StaticSlots | DynamicSlotFn;
 /**
- * Wrap a slot function to memoize currentInstance
- * 1. ensure correct currentInstance in forwarded slots
- * 2. elements created in the slot inherit the slot owner's scopeId
+ * Wrap a slot function to track the slot owner.
+ *
+ * This ensures:
+ * 1. createSlot gets rawSlots from the correct component (slot owner)
+ * 2. Elements inherit the slot owner's scopeId
  */
 export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any, type?: 'string'): BlockFn;
-export declare function createSharedDataSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot): void;
+export declare function createSharedDataSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot, noSlotted?: boolean, once?: boolean): void;
 
 export type VaporSharedDataComponent = ObjectVaporSharedDataComponent & {
     __className?: string;
@@ -125,6 +130,9 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
     provides: Record<string, any>;
     ids: [string, number, number];
     suspense: SuspenseBoundary | null;
+    suspenseId: number;
+    asyncDep: Promise<any> | null;
+    asyncResolved: boolean;
     hasFallthrough: boolean;
     isMounted: boolean;
     isUnmounted: boolean;
@@ -151,8 +159,14 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
     propsOptions?: NormalizedPropsOptions;
     emitsOptions?: ObjectEmitsOptions | null;
     isSingleRoot?: boolean;
+    /**
+     * dev only flag to track whether $attrs was used during render.
+     * If $attrs was used during render then the warning for failed attrs
+     * fallthrough can be suppressed.
+     */
+    accessedAttrs: boolean;
     renderer: 'app' | 'page' | 'component';
-    constructor(comp: VaporSharedDataComponent, rawProps?: RawProps | null, rawSlots?: RawSlots | null, appContext?: GenericAppContext, once?: boolean, parent?: VaporSharedDataComponentInstance | null);
+    constructor(comp: VaporSharedDataComponent, rawProps?: RawProps | null, rawSlots?: RawSlots | null, appContext?: GenericAppContext, once?: boolean);
     /**
      * Expose `getKeysFromRawProps` on the instance so it can be used in code
      * paths where it's needed, e.g. `useModel`

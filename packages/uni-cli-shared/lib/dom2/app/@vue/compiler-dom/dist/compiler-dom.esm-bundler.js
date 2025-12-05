@@ -1,5 +1,5 @@
 /**
-* @vue/compiler-dom v3.6.0-alpha.5
+* @vue/compiler-dom v3.6.0-alpha.6
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -317,7 +317,9 @@ const isNonKeyModifier = /* @__PURE__ */ makeMap(
   `stop,prevent,self,ctrl,shift,alt,meta,exact,middle`
 );
 const maybeKeyModifier = /* @__PURE__ */ makeMap("left,right");
-const isKeyboardEvent = /* @__PURE__ */ makeMap(`onkeyup,onkeydown,onkeypress`);
+const isKeyboardEvent = /* @__PURE__ */ makeMap(
+  `onkeyup,onkeydown,onkeypress`
+);
 const resolveModifiers = (key, modifiers, context, loc) => {
   const keyModifiers = [];
   const nonKeyModifiers = [];
@@ -690,4 +692,4 @@ function parse(template, options = {}) {
   return baseParse(template, extend({}, parserOptions, options));
 }
 
-export { DOMDirectiveTransforms, DOMErrorCodes, DOMErrorMessages, DOMNodeTransforms, TRANSITION, TRANSITION_GROUP, V_MODEL_CHECKBOX, V_MODEL_DYNAMIC, V_MODEL_RADIO, V_MODEL_SELECT, V_MODEL_TEXT, V_ON_WITH_KEYS, V_ON_WITH_MODIFIERS, V_SHOW, compile, createDOMCompilerError, isValidHTMLNesting, parse, parserOptions, postTransformTransition, resolveModifiers, transformStyle };
+export { DOMDirectiveTransforms, DOMErrorCodes, DOMErrorMessages, DOMNodeTransforms, TRANSITION, TRANSITION_GROUP, V_MODEL_CHECKBOX, V_MODEL_DYNAMIC, V_MODEL_RADIO, V_MODEL_SELECT, V_MODEL_TEXT, V_ON_WITH_KEYS, V_ON_WITH_MODIFIERS, V_SHOW, compile, createDOMCompilerError, isKeyboardEvent, isValidHTMLNesting, parse, parserOptions, postTransformTransition, resolveModifiers, transformStyle };

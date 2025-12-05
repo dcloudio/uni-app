@@ -36,6 +36,7 @@ export declare enum DOMErrorCodes {
 }
 export declare const DOMErrorMessages: Record<DOMErrorCodes, string>;
 
+export declare const isKeyboardEvent: (key: string) => boolean;
 export declare const resolveModifiers: (key: ExpressionNode | string, modifiers: SimpleExpressionNode[], context: TransformContext | null, loc: SourceLocation) => {
     keyModifiers: string[];
     nonKeyModifiers: string[];
